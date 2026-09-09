@@ -1,22 +1,23 @@
 // Template registry: maps schema ids to their JSON file and generator module.
 // Works in the browser (fetch + dynamic import) and in Node (fs + import).
 
-import gastric from '../generators/gastric.js?v=mtub2g6e';
-import colonic from '../generators/colonic.js?v=mtub2g6e';
-import prostate from '../generators/prostate.js?v=mtub2g6e';
-import ibd from '../generators/ibd.js?v=mtub2g6e';
+import gastric from '../generators/gastric.js?v=mtuqsqoz';
+import colonic from '../generators/colonic.js?v=mtuqsqoz';
+import prostate from '../generators/prostate.js?v=mtuqsqoz';
+import ibd from '../generators/ibd.js?v=mtuqsqoz';
+import oesophageal from '../generators/oesophageal.js?v=mtuqsqoz';
 
-export const GENERATORS = { gastric, colonic, prostate, ibd };
+export const GENERATORS = { gastric, colonic, prostate, ibd, oesophageal };
 
-export const TEMPLATE_IDS = ['gastric_biopsy', 'colonic_polyp', 'prostate_biopsy', 'ibd_biopsy'];
+export const TEMPLATE_IDS = ['gastric_biopsy', 'colonic_polyp', 'prostate_biopsy', 'ibd_biopsy', 'oesophageal_biopsy'];
 
 export async function loadSchema(id, baseUrl) {
   if (typeof window === 'undefined') {
     const { readFile } = await import('node:fs/promises');
-    const url = new URL(`../schemas/${id}.json?v=mtub2g6e`, import.meta.url);
+    const url = new URL(`../schemas/${id}.json?v=mtuqsqoz`, import.meta.url);
     return JSON.parse(await readFile(url, 'utf8'));
   }
-  const res = await fetch(new URL(`schemas/${id}.json?v=mtub2g6e`, baseUrl || document.baseURI));
+  const res = await fetch(new URL(`schemas/${id}.json?v=mtuqsqoz`, baseUrl || document.baseURI));
   if (!res.ok) throw new Error(`Cannot load schema ${id}: ${res.status}`);
   return res.json();
 }
