@@ -31,7 +31,7 @@ Companion to "Sign-out App — Design Suggestions". Phases are sequential; each 
 - In-memory case state with `sessionStorage` cache when available (the in-thread preview blocks storage; the published site allows it).
 - Deploy the in-thread preview for visual QA, then publish to `https://<subdomain>.pplx.app` (you pick the subdomain, e.g. `signout`). This fixes the origin needed for the OAuth client.
 
-**Done when:** all Phase 0 fixtures pass through the new engine unchanged, and you sign out a week of gastric/polyp cases in it without falling back to the old apps.
+**Done when:** all Phase 0 fixtures pass through the new engine unchanged, and you sign out a week of gastric/polyp cases in it without falling back to the old apps. ✅ Engine, schemas, generic UI and in-thread preview completed 2026-09-09 (27 tests: 16 golden fixtures + 11 engine tests). Publishing to pplx.app happens when you choose the subdomain; the week of live use is yours to run.
 
 ---
 
@@ -82,6 +82,52 @@ Each template ships with fixtures, a "Load example", and its snippet set (H. pyl
 
 ---
 
+## Phase 4b — Generic benign templates from your case mix (3–4 weeks, two templates per week)
+
+**Goal:** cover the formulaic benign resections that the QMH cancer templates do not touch. Priorities come from `docs/case-mix-analysis.md` (600 Docs in "Pathology reports", 2020-08 → 2026-07): two thirds of the folder are gross/block-key drafts, so these templates should carry a **macroscopic + block key** section as well as microscopy and diagnosis.
+
+Ordered by document count × how formulaic the wording already is:
+
+1. **Lymph node(s)** — stand-alone (25 docs) and as a part inside any case (~70 node parts); "NO EVIDENCE OF MALIGNANCY (x/y)" is the single most common diagnosis string (72 hits). Fields: site/station, number of nodes, result (negative / reactive / granulomatous / metastatic), x/y auto-count, largest deposit, extranodal extension, IHC used. Ships as a reusable *part type* so any case can add node parts.
+2. **Placenta** (28 docs) — weight, trimester, singleton/twin + chorionicity, cord (length, diameter, insertion, vessels, funisitis), membranes (chorioamnionitis stage), villitis, infarcts, retroplacental haematoma, meconium, MVM/FVM; standard block key. Default dx "PLACENTA: - NO SIGNIFICANT PATHOLOGY."
+3. **Breast cavity shave margins and benign excision** (~26 benign + margin parts in most of 93 breast docs) — per-margin part label, result (negative / fat necrosis / fibrocystic change / UDH / papilloma / fibroadenoma / ADH), calcification, completeness.
+4. **Thyroid — benign hemithyroidectomy / nodular goitre** (19 benign of 30) and **parathyroid adenoma** (9) — nodule size, capsule, follicular pattern, lymphocytic thyroiditis, PTC negative; parathyroid weight, rim of normal gland, cellularity.
+5. **Gallbladder** (20 docs) — stones, wall thickness, cholecystitis type (chronic / acute / acute-on-chronic / gangrenous / xanthogranulomatous), Rokitansky–Aschoff sinuses, cholesterolosis, adenomyomatous hyperplasia, intestinal metaplasia, dysplasia negative, cystic duct margin.
+6. **Uterus for leiomyoma / adenomyosis ± adnexa** (~29 benign of 49) — leiomyoma count/location/size/degeneration, adenomyosis, endometrial phase or polyp, cervix, per-side tube and ovary findings.
+7. **Ovarian cyst / cystectomy** (15 docs, 10 benign) — side, size, type (endometriotic / haemorrhagic corpus luteum / follicular / serous or mucinous cystadenoma / mature cystic teratoma / paratubal), lining, borderline features negative, torsion.
+8. **Skin — epidermal / pilar cyst** (9) and **benign skin lesion or BCC excision with mm margins** (23) — site, lesion type, rupture/granulomatous reaction, per-margin distances with block refs, BCC subtype/PNI.
+9. **Appendix** (11 docs, 4 stand-alone; the rest inside right hemicolectomies) — inflammation type (acute suppurative / gangrenous / periappendicitis / fibrous obliteration / none), perforation, faecolith, serositis, incidental neoplasm with mesoappendiceal margin.
+10. **Lipoma / benign soft tissue** (9), **pleomorphic adenoma** (15 salivary docs, 4 PA), **tonsils** (4, fully formulaic: reactive lymphoid hyperplasia ± actinomyces).
+
+Not in the folder in meaningful numbers (0–3 docs): hernia sac, haemorrhoids, products of conception. Add them only if they appear in the TAT list.
+
+Each template ships with a `macro` field group and block-key builder, fixtures captured from your own verbatim wording in the analysis (anonymised), "Load example", and the "no evidence of malignancy" macro as a one-key snippet.
+
+**Done when:** placenta, gallbladder, lymph node and thyroid cases are drafted end-to-end in the app (macro → block key → micro → dx) and saved to Drive without editing the Doc afterwards.
+
+---
+
+## Phase 4c — Frozen section sign-out templates (1–2 weeks)
+
+**Goal:** report intraoperative consultations in the same app and carry the result into the final report automatically. 28 of the 600 Docs mention frozen sections; the recurring paraffin sentence is "The paraffin sections confirm the frozen section diagnosis."
+
+- **Frozen section case mode**: parts FS1, FS2 … (separate lettering from the paraffin parts, then linked to them), each with specimen label as received, time received, time reported, reported to (surgeon / OT phone), and a frozen diagnosis line.
+- **Frozen diagnosis pick-lists by scenario**, each generating a one-line intraoperative diagnosis in your style:
+  - Margins (oral SCC, skin/BCC, others): negative / positive / close (mm) / atypical, defer to paraffin.
+  - Sentinel and other lymph nodes: negative / positive (macro-/micrometastasis) / defer.
+  - Parathyroid identification: parathyroid tissue confirmed (hypercellular / normocellular) / thyroid tissue / lymph node / adipose tissue.
+  - Ovarian or adnexal mass: benign / borderline / malignant (favour type) / defer.
+  - Lung, thyroid, and other nodules: benign / malignant (type if possible) / defer to paraffin.
+  - Free text for anything else.
+- **Block handling**: frozen block(s) converted to paraffin ("All embedded in 1 frozen block and subsequently converted to paraffin block"), with the frozen-section slides listed in the block key.
+- **Frozen–paraffin correlation** written into the final report: concordant (auto sentence above), discordant (reason: sampling / interpretation / deferred), or deferred; discordance summarised for QA.
+- **Output**: an INTRAOPERATIVE CONSULTATION block placed before the microscopy in the final report, plus a copy-ready frozen slip for the LIS at the time of the call.
+- Save to Drive the moment the frozen result is called, so the TAT job sees the case as opened the same day.
+
+**Done when:** a margin-frozen SCC case and a parathyroid frozen are reported live from the app, the frozen line appears unchanged in the final Doc, and the correlation sentence is generated without typing.
+
+---
+
 ## Phase 5 — Synoptic / hybrid resections with staging (4–6 weeks)
 
 **Goal:** replace the QMH pages for the resections you report most.
@@ -113,11 +159,13 @@ Each template ships with fixtures, a "Load example", and its snippet set (H. pyl
 | Phase | Scope | Cumulative |
 |---|---|---|
 | 0 | Repo, fixtures, tests | Week 1 |
-| 1 | Schema engine, parity with legacy apps | Weeks 2–4 |
+| 1 | Schema engine, parity with legacy apps ✅ | Weeks 2–4 |
 | 2 | Drive as the store: Sheet + Doc save/reopen | Weeks 5–6 |
 | 3 | Case model, mixed parts, keyboard | Weeks 7–8 |
 | 4 | Prostate, IBD, duodenum, oesophagus, GYN ports | Weeks 9–12 |
-| 5 | QMH import, staging, hybrid/synoptic | Weeks 13–18 |
+| 4b | Generic benign templates from your case mix (nodes, placenta, breast margins, thyroid, gallbladder, uterus, ovarian cyst, skin, appendix) | Weeks 13–16 |
+| 4c | Frozen section sign-out and paraffin correlation | Weeks 17–18 |
+| 5 | QMH import, staging, hybrid/synoptic | Weeks 19–24 |
 | 6 | Polish, analytics | Ongoing |
 
 ## Risks and mitigations
@@ -128,4 +176,5 @@ Each template ships with fixtures, a "Load example", and its snippet set (H. pyl
 - **PHI on personal Drive** → accession-only guard on free text; no names or HKIDs ever entered.
 - **Drive/Sheets API quota or outage** → `sessionStorage` cache of the open case and a retry on save; Copy buttons always work as a manual fallback into the LIS.
 - **Staging rule errors** → unit tests per pT/pN boundary from the CAP protocol tables; edition stamped on output so errors are traceable.
+- **Case-mix sampling bias** → the Drive folder mostly holds drafted resections, not endoscopic biopsies signed out directly in the LIS, so Phase 4 (GI biopsies) is justified by LIS volume while Phase 4b is justified by the Drive tally; revisit the order if the TAT list says otherwise.
 - **Scope creep in Phase 5** → import QMH pages only when you need them; do not convert all 60 up front.

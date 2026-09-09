@@ -6,13 +6,18 @@ Built and hosted inside Perplexity: developed in the workspace, previewed in-thr
 
 Design: `docs/design.md`. Roadmap: `docs/roadmap.md`.
 
-## Status: Phase 0 complete
+## Status: Phase 1 complete (preview deployed)
 
 - [x] Repo skeleton (`schemas/`, `generators/`, `snippets/`, `src/`, `tests/`, `tools/`, `legacy/`)
 - [x] Legacy apps frozen in `legacy/` (gastric v8, colonic polyp)
-- [x] Legacy report logic extracted into pure Node functions (`legacy/*-legacy.js`)
+- [x] Legacy report logic extracted into pure Node functions (`legacy/*-legacy.cjs`)
 - [x] 16 golden fixtures (8 gastric, 8 colonic) captured from the **original HTML apps running in jsdom** and cross-checked against the extracted functions
-- [x] `npm test` — 18 passing
+- [x] `npm test` — 27 passing (16 golden fixtures through the new engine + 11 engine tests)
+- [x] Phase 1: `schemas/gastric_biopsy.json`, `schemas/colonic_polyp.json`; `generators/gastric.js`, `generators/colonic.js`; `src/engine.js` (defaults, showIf, optionsByField, assemble), `src/style.js` (ASCII + opt-in British spelling), `src/registry.js`, `src/store.js` (sessionStorage cache), `src/app.js` (generic UI)
+- [x] Phase 1 UI: template switcher, parts A–J (add / remove / same as previous / reset), chips with number-key selection, live Specimens / Microscopy / Diagnosis preview with per-block copy, Copy diagnosis (Cmd/Ctrl+Shift+C), Copy full report (Cmd/Ctrl+Enter), Load example, light/dark theme, mobile layout
+- [x] `npm run build` → `dist/`; in-thread preview deployed via Perplexity ("Sign-out")
+- [x] `docs/case-mix-analysis.md` — tally of 600 Drive drafts feeding roadmap Phase 4b (generic benign templates) and 4c (frozen sections)
+- [ ] Publish to `https://<subdomain>.pplx.app` (you pick the subdomain)
 - [ ] Google Cloud project + OAuth client (manual, done at start of Phase 2 once the pplx.app subdomain is fixed — see below)
 
 ## Commands
