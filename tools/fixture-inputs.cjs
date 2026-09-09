@@ -2,7 +2,7 @@
 // tools/capture-fixtures.js, which runs BOTH the extracted legacy functions and
 // the original HTML apps (in jsdom) and refuses to write if they disagree.
 
-const { defaultPart } = require('../legacy/gastric-legacy');
+const { defaultPart } = require('../legacy/gastric-legacy.cjs');
 
 function gp(label, index, overrides) { return Object.assign(defaultPart(label, index), overrides || {}); }
 

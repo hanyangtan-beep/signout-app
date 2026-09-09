@@ -1,35 +1,51 @@
 // Golden-output tests. Every fixture under tests/fixtures/ must be reproduced
-// byte-for-byte by the generator under test.
-//
-// Phase 0: generator under test = the extracted legacy functions.
-// Phase 1: point GENERATORS at the new schema engine; the same fixtures must still pass.
+// byte-for-byte by the schema engine. The fixtures were captured from the legacy
+// HTML apps in Phase 0 and are the parity contract for all later refactors.
 
-const test = require('node:test');
-const assert = require('node:assert/strict');
-const fs = require('fs');
-const path = require('path');
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { generate, LETTERS } from '../src/engine.js';
+import { loadAll } from '../src/registry.js';
 
-const gastricLegacy = require('../legacy/gastric-legacy');
-const colonicLegacy = require('../legacy/colonic-legacy');
+const here = path.dirname(fileURLToPath(import.meta.url));
+const registry = await loadAll();
 
-// Swap these implementations in Phase 1. Signature must stay: (input) => expected-shaped object.
-const GENERATORS = {
-  gastric: (input) => gastricLegacy.generate(input),
-  colonic: (input) => ({ report: colonicLegacy.buildReport(input) })
+// Adapters: legacy fixture input shape -> engine case shape.
+const ADAPT = {
+  gastric: (input) => ({
+    schemaId: 'gastric_biopsy',
+    caseTitle: input.caseTitle || '',
+    options: {},
+    parts: input.parts.map((p) => {
+      const { label, ...values } = p;
+      return { label, values };
+    })
+  }),
+  colonic: (input) => ({
+    schemaId: 'colonic_polyp',
+    caseTitle: '',
+    options: { includeHeader: !!input.includeHeader, uppercaseDx: !!input.uppercaseDx },
+    parts: input.specimens.map((values, i) => ({ label: LETTERS[i], values: { ...values } }))
+  })
 };
 
 function loadFixtures(dir) {
-  const full = path.join(__dirname, 'fixtures', dir);
-  return fs.readdirSync(full).filter(f => f.endsWith('.json')).sort()
-    .map(f => JSON.parse(fs.readFileSync(path.join(full, f), 'utf8')));
+  const full = path.join(here, 'fixtures', dir);
+  return fs.readdirSync(full).filter((f) => f.endsWith('.json')).sort()
+    .map((f) => JSON.parse(fs.readFileSync(path.join(full, f), 'utf8')));
 }
 
-for (const [template, generate] of Object.entries(GENERATORS)) {
-  const fixtures = loadFixtures(template);
-  test(`${template}: has fixtures`, () => { assert.ok(fixtures.length >= 5, `expected >=5 fixtures, found ${fixtures.length}`); });
+for (const [name, adapt] of Object.entries(ADAPT)) {
+  const fixtures = loadFixtures(name);
+  test(`${name}: has fixtures`, () => { assert.ok(fixtures.length >= 5, `expected >=5 fixtures, found ${fixtures.length}`); });
   for (const fx of fixtures) {
-    test(`${template}/${fx.name}`, () => {
-      const actual = generate(fx.input);
+    test(`${name}/${fx.name}`, () => {
+      const caseState = adapt(fx.input);
+      const { schema, generator } = registry[caseState.schemaId];
+      const actual = generate(schema, generator, caseState);
       for (const key of Object.keys(fx.expected)) {
         assert.equal(actual[key], fx.expected[key], `${key} differs\n--- expected\n${fx.expected[key]}\n--- actual\n${actual[key]}`);
       }

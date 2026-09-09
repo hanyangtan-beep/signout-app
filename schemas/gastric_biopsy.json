@@ -1,0 +1,132 @@
+{
+  "id": "gastric_biopsy",
+  "version": "2026.09",
+  "name": "Gastric biopsy",
+  "shortName": "Gastric",
+  "organ": "STOMACH",
+  "specimenNoun": "biopsy",
+  "maxParts": 10,
+  "generator": "gastric",
+  "source": "legacy/gastric-biopsy-signout-v8.html",
+  "caseFields": [
+    {
+      "id": "caseTitle",
+      "label": "Case title / specimens",
+      "type": "text",
+      "placeholder": "(A) Antrum and (B) Body",
+      "help": "Sites in the title override the per-part specimen names in the diagnosis lines."
+    }
+  ],
+  "options": [],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen name",
+      "type": "text",
+      "placeholder": "Antrum",
+      "default": ""
+    },
+    {
+      "id": "siteType",
+      "label": "Site (mucosa type)",
+      "type": "select",
+      "options": ["Pyloric type", "Body type", "Cardiac type", "Superficial gastric mucosa", "Indeterminate"],
+      "default": "Body type",
+      "defaultForFirstPart": "Pyloric type"
+    },
+    {
+      "id": "activity",
+      "label": "Activity",
+      "type": "grade",
+      "options": ["Absent", "Mild", "Moderate", "Marked"],
+      "default": "Absent"
+    },
+    {
+      "id": "chronic",
+      "label": "Chronic inflammation",
+      "type": "grade",
+      "options": ["Absent", "Mild", "Moderate", "Marked"],
+      "default": "Absent"
+    },
+    {
+      "id": "follicles",
+      "label": "Reactive lymphoid follicle(s)",
+      "type": "select",
+      "options": ["Absent", "Present"],
+      "default": "Absent"
+    },
+    {
+      "id": "atrophy",
+      "label": "Atrophy",
+      "type": "grade",
+      "options": ["Absent", "Mild", "Moderate", "Marked"],
+      "default": "Absent"
+    },
+    {
+      "id": "ulcer",
+      "label": "Evidence of ulcer / erosion",
+      "type": "select",
+      "options": ["Absent", "Present"],
+      "default": "Absent"
+    },
+    {
+      "id": "imDegree",
+      "label": "Intestinal metaplasia",
+      "type": "grade",
+      "options": ["Absent", "Mild", "Moderate", "Marked"],
+      "default": "Absent"
+    },
+    {
+      "id": "imType",
+      "label": "IM type",
+      "type": "select",
+      "options": ["", "Complete", "Incomplete"],
+      "optionLabels": { "": "Unspecified" },
+      "default": "",
+      "showIf": { "field": "imDegree", "not": "Absent" }
+    },
+    {
+      "id": "dysplasia",
+      "label": "Dysplasia / malignancy",
+      "type": "select",
+      "options": ["Absent", "Indefinite for dysplasia", "Low grade dysplasia", "High grade dysplasia", "Intramucosal carcinoma", "Malignancy present"],
+      "default": "Absent"
+    },
+    {
+      "id": "hp",
+      "label": "Helicobacter pylori",
+      "type": "grade",
+      "options": ["Absent", "Low density", "Moderate density", "High density"],
+      "default": "Absent"
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional notes",
+      "type": "textarea",
+      "default": "",
+      "placeholder": "Appended to the microscopy for this part"
+    }
+  ],
+  "example": {
+    "caseTitle": "(A) Antrum and (B) Body",
+    "options": {},
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "Antrum", "siteType": "Pyloric type", "activity": "Absent", "chronic": "Mild",
+          "follicles": "Absent", "atrophy": "Absent", "ulcer": "Absent", "imDegree": "Absent", "imType": "",
+          "dysplasia": "Absent", "hp": "Absent", "additionalNotes": ""
+        }
+      },
+      {
+        "label": "B",
+        "values": {
+          "specimenName": "Body", "siteType": "Body type", "activity": "Mild", "chronic": "Mild",
+          "follicles": "Present", "atrophy": "Absent", "ulcer": "Present", "imDegree": "Mild", "imType": "Incomplete",
+          "dysplasia": "Absent", "hp": "Moderate density", "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

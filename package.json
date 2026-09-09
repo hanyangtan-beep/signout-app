@@ -7,8 +7,9 @@
   },
   "scripts": {
     "test": "node --test tests/",
-    "fixtures": "node tools/capture-fixtures.js",
-    "fixtures:force": "node tools/capture-fixtures.js --force"
+    "fixtures": "node tools/capture-fixtures.cjs",
+    "fixtures:force": "node tools/capture-fixtures.cjs --force",
+    "build": "node tools/build.js"
   },
   "keywords": [],
   "author": "",
@@ -17,5 +18,6 @@
   "devDependencies": {
     "jsdom": "^29.1.1"
   },
-  "private": true
+  "private": true,
+  "type": "module"
 }

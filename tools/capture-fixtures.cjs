@@ -12,9 +12,9 @@
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
-const inputs = require('./fixture-inputs');
-const gastricLegacy = require('../legacy/gastric-legacy');
-const colonicLegacy = require('../legacy/colonic-legacy');
+const inputs = require('./fixture-inputs.cjs');
+const gastricLegacy = require('../legacy/gastric-legacy.cjs');
+const colonicLegacy = require('../legacy/colonic-legacy.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const FORCE = process.argv.includes('--force');
