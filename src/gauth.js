@@ -36,7 +36,11 @@ export function setActiveAction(name) { activeAction = name || 'signin'; }
 
 /** Where Google sends the browser back: this page, without query or hash. */
 export function redirectUri(loc = window.location) {
-  return `${loc.origin}${loc.pathname}`;
+  // Always the directory the app lives in, with a trailing slash and no file name, query or hash,
+  // so it matches the single registered redirect URI whether the page was opened as
+  // "/", "/index.html" or "/?something".
+  const dir = loc.pathname.replace(/[^/]*$/, '') || '/';
+  return `${loc.origin}${dir}`;
 }
 
 /** Pure: build the authorisation URL. Exported for tests. */

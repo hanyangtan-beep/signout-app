@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildAuthUrl, parseAuthHash } from '../src/gauth.js';
+import { buildAuthUrl, parseAuthHash, redirectUri } from '../src/gauth.js';
 
 const config = { clientId: '123-abc.apps.googleusercontent.com', scopeMode: 'file' };
 
@@ -31,4 +31,11 @@ test('parseAuthHash reports errors and ignores unrelated hashes', () => {
   assert.deepEqual(parseAuthHash('#error=access_denied&state=open%3A1'), { error: 'access_denied', action: 'open' });
   assert.equal(parseAuthHash(''), null);
   assert.equal(parseAuthHash('#part-2'), null);
+});
+
+test('redirectUri normalises to the app directory', () => {
+  for (const p of ['/', '/index.html', '/?x=1', '/#frag']) {
+    const loc = new URL('https://han-signout.pplx.app' + p);
+    assert.equal(redirectUri(loc), 'https://han-signout.pplx.app/');
+  }
 });

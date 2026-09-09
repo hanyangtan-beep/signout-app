@@ -1,14 +1,14 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadAll } from './registry.js?v=mtu7xltd';
+import { loadAll } from './registry.js?v=mtu81wt7';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generate
-} from './engine.js?v=mtu7xltd';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtu7xltd';
-import { loadConfig, saveConfig } from './config.js?v=mtu7xltd';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtu7xltd';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtu7xltd';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtu7xltd';
+} from './engine.js?v=mtu81wt7';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtu81wt7';
+import { loadConfig, saveConfig } from './config.js?v=mtu81wt7';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtu81wt7';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtu81wt7';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtu81wt7';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
