@@ -1,6 +1,6 @@
 # Google Drive set-up (one-time, about 10 minutes)
 
-The app signs into Google in your browser and writes straight to your Drive. Nothing passes through a server, so the only thing to create is a public OAuth "web client" whose allowed origin is the app's URL. Do this once the app has its permanent `https://<subdomain>.pplx.app` address; the in-thread preview cannot be used as an origin.
+The app signs into Google in your browser and writes straight to your Drive. Nothing passes through a server, so the only thing to create is a public OAuth "web client" whose allowed origin is the app's URL. The app's permanent address is `https://han-signout.pplx.app`; the in-thread preview cannot be used as an origin.
 
 ## 1. Google Cloud project
 
@@ -22,7 +22,7 @@ The app signs into Google in your browser and writes straight to your Drive. Not
 
 1. APIs & Services → Credentials → Create credentials → **OAuth client ID**.
 2. Application type **Web application**, name `Sign-out web`.
-3. **Authorised JavaScript origins**: `https://<subdomain>.pplx.app` (exactly, no trailing slash). Add `http://localhost:3000` too if you ever run it locally.
+3. **Authorised JavaScript origins**: `https://han-signout.pplx.app` (exactly, no trailing slash). Add `http://localhost:3000` too if you ever run it locally.
 4. Leave redirect URIs empty (the token flow uses a pop-up, no redirect).
 5. Create and copy the client id (`…apps.googleusercontent.com`). There is no secret to keep.
 

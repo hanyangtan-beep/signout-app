@@ -18,7 +18,7 @@ Design: `docs/design.md`. Roadmap: `docs/roadmap.md`.
 - [x] `npm run build` → `dist/`; in-thread preview deployed via Perplexity ("Sign-out")
 - [x] `docs/case-mix-analysis.md` — tally of 600 Drive drafts feeding roadmap Phase 4b (generic benign templates) and 4c (frozen sections)
 - [x] Phase 2: `src/gauth.js` (Google Identity Services token flow), `src/config.js` (Settings in localStorage), `src/docformat.js` (accession normalisation, PHI guard, Doc layout, Sheet row mapping), `src/drive.js` (Sheet upsert, Doc create/replace, open); case details (accession, status, clinical history, macroscopic, block key); Save (Cmd/Ctrl+S), Open, Settings dialogs; 33 tests
-- [ ] Publish to `https://<subdomain>.pplx.app` (you pick the subdomain)
+- [x] Published at `https://han-signout.pplx.app`
 - [ ] Google Cloud OAuth client — follow `docs/google-setup.md`, then paste the client id into the app's Settings
 
 ## Commands
