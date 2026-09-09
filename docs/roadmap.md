@@ -58,6 +58,7 @@ Companion to "Sign-out App — Design Suggestions". Phases are sequential; each 
 - Case object: accession, clinical history, parts with per-part `templateId`, block key, report mode, status — serialised as the `case_json` saved in Phase 2.
 - Per-part template picker (A gastric, B duodenum, C polyp in one case).
 - Case-level output assembly: specimen title → macroscopic (free text) → block key → microscopy per part → diagnosis lines in order.
+- Single-part cases drop the part letters: when a biopsy case has only one part, the specimen, microscopy and diagnosis lines are emitted without "(A)" (e.g. `STOMACH, antrum, biopsy - CHRONIC GASTRITIS…` rather than `(A) STOMACH, …`). Letters appear automatically once a second part is added. Implemented in the engine's `assemble` step so every template inherits it; the legacy fixtures keep their lettered form as a per-schema `alwaysLetter` option until you decide to retire it.
 - "Same as previous part" copy; "all normal" per part.
 - Case list view over the Sheet: drafts, ready, signed; search by accession.
 - Keyboard model: number keys for options, Tab between fields, `Cmd+Enter` generate, `Cmd+Shift+C` copy diagnosis, `Cmd+S` save to Drive.
