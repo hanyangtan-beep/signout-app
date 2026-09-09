@@ -40,3 +40,16 @@ The app signs into Google in your browser and writes straight to your Drive. Not
 - The Sheet id is cached in the browser after the first save. If you rename or move the Sheet, clear it by changing the sheet name in Settings and back.
 - The Doc body is plain text with fixed headings (CLINICAL HISTORY, SPECIMEN, MACROSCOPIC DESCRIPTION, BLOCK KEY, MICROSCOPIC EXAMINATION, DIAGNOSIS). Saving again replaces the whole Doc body, so edit in the app, not in the Doc.
 - A PHI guard warns before saving if free text looks like an HKID with check digit, an honorific plus name, a phone number, or a date of birth. Accession numbers such as `S25-00123` are not flagged.
+
+
+## Troubleshooting sign-in (learned 2026-09-09)
+
+| Message | Cause | Fix |
+| --- | --- | --- |
+| `Popup window closed` | pplx.app sends `Cross-Origin-Opener-Policy: same-origin`, which kills the GIS pop-up | Fixed: the app uses the redirect flow |
+| `403. That's an error. You do not have access to this page` | Google refuses OAuth inside embedded browsers: the preview panel in a Perplexity thread, or the Perplexity app's in-app browser | Open `https://han-signout.pplx.app` in a real browser tab (Comet, Safari, Chrome) |
+| `No Google client id set` | Old cached JavaScript, or a blank/mistyped id saved in Settings | Fixed: the id ships with the app, blanks and malformed values are ignored, assets are cache-busted per build. Hard-reload once |
+| `Error 401: invalid_client` | A mistyped client id in Settings | Clear the Settings field; the built-in id applies |
+| `Error 400: redirect_uri_mismatch` right after adding the redirect URI | Google serves an already signed-in session a stale copy of the client settings; a fresh session sees the new one | Use a private window once, or sign out of Google and back in; the normal window catches up within about an hour |
+
+First successful save: 2026-09-09 23:15 HKT, Sheet `Sign-out cases` and Doc created in the "Pathology reports" folder.
