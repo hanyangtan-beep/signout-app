@@ -3,7 +3,7 @@
 // so the OAuth client id can be added after publishing without a rebuild.
 
 export const DEFAULTS = {
-  clientId: '',                                       // Web OAuth client id from Google Cloud (Phase 2 manual step)
+  clientId: '834072849408-kerfr1jhg6nc05h3dpk0965juj3b9379.apps.googleusercontent.com', // public web OAuth client id (project han-signout-app); Settings can override
   folderId: '1IDOdz37IQJaYDX7PVFlqB7VFzyfiNXMM',       // "Pathology reports" folder
   sheetName: 'Sign-out cases',
   sheetId: '',                                        // filled in once the Sheet is created/found
