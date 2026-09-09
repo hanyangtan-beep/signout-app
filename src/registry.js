@@ -3,10 +3,12 @@
 
 import gastric from '../generators/gastric.js';
 import colonic from '../generators/colonic.js';
+import prostate from '../generators/prostate.js';
+import ibd from '../generators/ibd.js';
 
-export const GENERATORS = { gastric, colonic };
+export const GENERATORS = { gastric, colonic, prostate, ibd };
 
-export const TEMPLATE_IDS = ['gastric_biopsy', 'colonic_polyp'];
+export const TEMPLATE_IDS = ['gastric_biopsy', 'colonic_polyp', 'prostate_biopsy', 'ibd_biopsy'];
 
 export async function loadSchema(id, baseUrl) {
   if (typeof window === 'undefined') {

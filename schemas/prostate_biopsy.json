@@ -1,0 +1,195 @@
+{
+  "id": "prostate_biopsy",
+  "version": "2026.09",
+  "name": "Prostate biopsy",
+  "shortName": "Prostate",
+  "organ": "PROSTATE",
+  "specimenNoun": "needle core biopsy",
+  "maxParts": 16,
+  "defaultParts": 1,
+  "generator": "prostate",
+  "style": { "british": true },
+  "caseFields": [],
+  "options": [
+    { "id": "includeHeader", "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)", "type": "checkbox", "default": false },
+    { "id": "summary", "label": "Case summary line after the diagnosis (cores positive, highest grade)", "type": "checkbox", "default": true }
+  ],
+  "partDefaults": [
+    { "specimenName": "Right base" }, { "specimenName": "Right mid" }, { "specimenName": "Right apex" },
+    { "specimenName": "Left base" }, { "specimenName": "Left mid" }, { "specimenName": "Left apex" },
+    { "specimenName": "Right lateral base" }, { "specimenName": "Right lateral mid" }, { "specimenName": "Right lateral apex" },
+    { "specimenName": "Left lateral base" }, { "specimenName": "Left lateral mid" }, { "specimenName": "Left lateral apex" },
+    { "specimenName": "Target 1" }, { "specimenName": "Target 2" }, { "specimenName": "Target 3" }, { "specimenName": "Target 4" }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Site",
+      "type": "text",
+      "placeholder": "Right base",
+      "default": ""
+    },
+    {
+      "id": "coresTotal",
+      "label": "Number of cores in this part",
+      "type": "number",
+      "default": "1",
+      "min": 1
+    },
+    {
+      "id": "category",
+      "label": "Diagnosis",
+      "type": "select",
+      "options": ["Benign", "HGPIN", "ASAP", "Adenocarcinoma"],
+      "optionLabels": {
+        "Benign": "Benign prostatic tissue",
+        "HGPIN": "High grade PIN",
+        "ASAP": "ASAP (atypical small acinar proliferation)",
+        "Adenocarcinoma": "Acinar adenocarcinoma"
+      },
+      "default": "Benign"
+    },
+    {
+      "id": "inflammation",
+      "label": "Inflammation",
+      "type": "select",
+      "options": ["Absent", "Chronic", "Acute", "Chronic and acute", "Granulomatous"],
+      "default": "Absent",
+      "showIf": { "field": "category", "is": ["Benign", "HGPIN", "ASAP"] }
+    },
+    {
+      "id": "atrophy",
+      "label": "Atrophy / other benign changes",
+      "type": "select",
+      "options": ["Absent", "Atrophy", "Partial atrophy", "Basal cell hyperplasia", "Adenosis"],
+      "default": "Absent",
+      "showIf": { "field": "category", "is": ["Benign", "HGPIN", "ASAP"] }
+    },
+    {
+      "id": "primary",
+      "label": "Primary Gleason pattern",
+      "type": "select",
+      "options": ["3", "4", "5"],
+      "default": "3",
+      "showIf": { "field": "category", "is": "Adenocarcinoma" }
+    },
+    {
+      "id": "secondary",
+      "label": "Secondary Gleason pattern",
+      "type": "select",
+      "options": ["3", "4", "5"],
+      "default": "3",
+      "showIf": { "field": "category", "is": "Adenocarcinoma" }
+    },
+    {
+      "id": "tertiary5",
+      "label": "Minor (tertiary) pattern 5",
+      "type": "select",
+      "options": ["Absent", "Present"],
+      "default": "Absent",
+      "showIf": { "field": "category", "is": "Adenocarcinoma" }
+    },
+    {
+      "id": "pct45",
+      "label": "Percentage of pattern 4/5",
+      "type": "number",
+      "default": "",
+      "placeholder": "e.g. 20",
+      "suffix": "%",
+      "showIf": { "field": "category", "is": "Adenocarcinoma" },
+      "help": "Recorded when pattern 4 or 5 is present. Leave blank for 3+3 or 5+5."
+    },
+    {
+      "id": "cribriform",
+      "label": "Cribriform pattern 4",
+      "type": "select",
+      "options": ["Absent", "Present"],
+      "default": "Absent",
+      "showIf": { "field": "category", "is": "Adenocarcinoma" }
+    },
+    {
+      "id": "idcp",
+      "label": "Intraductal carcinoma (IDC-P)",
+      "type": "select",
+      "options": ["Absent", "Present"],
+      "default": "Absent",
+      "showIf": { "field": "category", "is": "Adenocarcinoma" }
+    },
+    {
+      "id": "coresPositive",
+      "label": "Cores involved",
+      "type": "number",
+      "default": "1",
+      "min": 0,
+      "showIf": { "field": "category", "is": "Adenocarcinoma" }
+    },
+    {
+      "id": "extentMm",
+      "label": "Maximum linear extent (mm)",
+      "type": "number",
+      "default": "",
+      "step": 0.5,
+      "suffix": "mm",
+      "showIf": { "field": "category", "is": "Adenocarcinoma" }
+    },
+    {
+      "id": "pctTissue",
+      "label": "Percentage of core tissue involved",
+      "type": "number",
+      "default": "",
+      "suffix": "%",
+      "showIf": { "field": "category", "is": "Adenocarcinoma" }
+    },
+    {
+      "id": "pni",
+      "label": "Perineural invasion",
+      "type": "select",
+      "options": ["Absent", "Present"],
+      "default": "Absent",
+      "showIf": { "field": "category", "is": "Adenocarcinoma" }
+    },
+    {
+      "id": "epe",
+      "label": "Extraprostatic extension",
+      "type": "select",
+      "options": ["Not identified", "Present", "Cannot be assessed"],
+      "default": "Not identified",
+      "showIf": { "field": "category", "is": "Adenocarcinoma" }
+    },
+    {
+      "id": "lvi",
+      "label": "Lymphovascular invasion",
+      "type": "select",
+      "options": ["Absent", "Present"],
+      "default": "Absent",
+      "showIf": { "field": "category", "is": "Adenocarcinoma" }
+    },
+    {
+      "id": "hgpinAdjacent",
+      "label": "Adjacent high grade PIN",
+      "type": "select",
+      "options": ["Absent", "Present"],
+      "default": "Absent",
+      "showIf": { "field": "category", "is": "Adenocarcinoma" }
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional notes",
+      "type": "textarea",
+      "default": "",
+      "placeholder": "Appended to the microscopy for this part"
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": { "includeHeader": false, "summary": true },
+    "parts": [
+      { "label": "A", "values": { "specimenName": "Right base", "coresTotal": "2", "category": "Benign", "inflammation": "Chronic", "atrophy": "Absent", "additionalNotes": "" } },
+      { "label": "B", "values": { "specimenName": "Right mid", "coresTotal": "2", "category": "Adenocarcinoma", "primary": "3", "secondary": "4", "tertiary5": "Absent", "pct45": "20", "cribriform": "Absent", "idcp": "Absent", "coresPositive": "1", "extentMm": "4", "pctTissue": "15", "pni": "Absent", "epe": "Not identified", "lvi": "Absent", "hgpinAdjacent": "Present", "additionalNotes": "" } },
+      { "label": "C", "values": { "specimenName": "Right apex", "coresTotal": "2", "category": "Adenocarcinoma", "primary": "4", "secondary": "3", "tertiary5": "Absent", "pct45": "60", "cribriform": "Present", "idcp": "Absent", "coresPositive": "2", "extentMm": "9", "pctTissue": "45", "pni": "Present", "epe": "Not identified", "lvi": "Absent", "hgpinAdjacent": "Absent", "additionalNotes": "" } },
+      { "label": "D", "values": { "specimenName": "Left base", "coresTotal": "2", "category": "Benign", "inflammation": "Absent", "atrophy": "Atrophy", "additionalNotes": "" } },
+      { "label": "E", "values": { "specimenName": "Left mid", "coresTotal": "2", "category": "ASAP", "inflammation": "Absent", "atrophy": "Absent", "additionalNotes": "" } },
+      { "label": "F", "values": { "specimenName": "Left apex", "coresTotal": "2", "category": "HGPIN", "inflammation": "Absent", "atrophy": "Absent", "additionalNotes": "" } }
+    ]
+  }
+}

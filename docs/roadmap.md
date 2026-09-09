@@ -66,7 +66,9 @@ Code complete 2026-09-09 (33 tests; save → update → open round-trip verified
 - Case object: accession, clinical history, parts with per-part `templateId`, block key, report mode, status — serialised as the `case_json` saved in Phase 2.
 - Per-part template picker (A gastric, B duodenum, C polyp in one case).
 - Case-level output assembly: specimen title → macroscopic (free text) → block key → microscopy per part → diagnosis lines in order.
-- Single-part cases drop the part letters: when a biopsy case has only one part, the specimen, microscopy and diagnosis lines are emitted without "(A)" (e.g. `STOMACH, antrum, biopsy - CHRONIC GASTRITIS…` rather than `(A) STOMACH, …`). Letters appear automatically once a second part is added. Implemented in the engine's `assemble` step so every template inherits it; the legacy fixtures keep their lettered form as a per-schema `alwaysLetter` option until you decide to retire it.
+- [x] Single-part cases drop the part letters (2026-09-09): when a biopsy case has only one part, the specimen, microscopy and diagnosis lines are emitted without "(A)" (`STOMACH, antrum, biopsy - CHRONIC GASTRITIS…`). Letters appear automatically once a second part is added. Implemented in `engine.generate` (`dropPartLetters`) so every template inherits it, including gastric and polyp; the legacy golden fixtures pass `options.alwaysLetter` to keep their lettered form.
+- [x] Engine extensions (2026-09-09): parts A–Z (`maxParts` per schema), `partDefaults` (per-position defaults, e.g. a 12-core prostate map or the TI → rectum series), `defaultParts`, a `number` field type, and a `generator.summary(parts, ctx)` hook appended after the diagnosis lines.
+- [x] Prostate and IBD templates pulled forward from Phase 4 (see below).
 - "Same as previous part" copy; "all normal" per part.
 - Case list view over the Sheet: drafts, ready, signed; search by accession.
 - Keyboard model: number keys for options, Tab between fields, `Cmd+Enter` generate, `Cmd+Shift+C` copy diagnosis, `Cmd+S` save to Drive.
@@ -79,8 +81,8 @@ Code complete 2026-09-09 (33 tests; save → update → open round-trip verified
 
 **Goal:** cover the bulk of your daily GI/GU biopsy sign-out.
 
-1. **Prostate biopsy** — cores A–L, per-core Gleason patterns and % / mm, auto Grade Group, cores-positive count, aggregate summary line, PNI / EPE / IDC-P / HGPIN / ASAP. Port logic from your earlier prostate draft app.
-2. **IBD biopsy** — site series (TI → rectum), chronicity, activity grade, basal plasmacytosis, crypt distortion, granulomas, dysplasia, optional Nancy index; derived distribution summary.
+1. [x] **Prostate biopsy** (`schemas/prostate_biopsy.json`, `generators/prostate.js`, 2026-09-09) — up to 16 parts with a 12-core site map plus targets; per-part Benign / HGPIN / ASAP / Adenocarcinoma; Gleason patterns with automatic ISUP Grade Group, % pattern 4/5, minor pattern 5, cribriform, IDC-P, cores involved (clamped to cores in the part), linear extent, % tissue, PNI, EPE, LVI, adjacent HGPIN; case SUMMARY line (cores positive, highest grade, adverse features, ASAP / HGPIN parts) for multi-part cases. Benign lines end "no evidence of malignancy". Snippets (ASAP repeat-biopsy comment) still to come.
+2. [x] **IBD biopsy series** (`schemas/ibd_biopsy.json`, `generators/ibd.js`, 2026-09-09) — TI → rectum site defaults; villous architecture (ileal sites), crypt distortion, basal plasmacytosis, lamina propria chronic inflammation, activity (cryptitis / crypt abscesses / erosion-ulceration), granulomas (crypt-rupture vs non-crypt), Paneth / pyloric metaplasia, dysplasia; optional Nancy index per site; per-site line chosen from chronicity + activity (chronic active / chronic inactive / active without chronicity / non-specific increase / no significant abnormality, with ileitis / colitis / proctitis); SUMMARY describing extent, continuity, rectal involvement or sparing, ileal disease, granulomas, dysplasia, and whether the pattern favours UC or Crohn's. Dysplasia caveat snippet still to come.
 3. **Duodenal biopsy** — Marsh–Oberhuber, IEL count, villous architecture, H. pylori, giardia, Brunner gland/peptic change.
 4. **Oesophageal biopsy** — Barrett's with dysplasia grade, eosinophils/hpf, reflux, candida.
 5. Port **endometrial** and **LEEP** apps into schemas (lower effort, mostly done).

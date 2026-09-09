@@ -19,7 +19,8 @@ Design: `docs/design.md`. Roadmap: `docs/roadmap.md`.
 - [x] `docs/case-mix-analysis.md` — tally of 600 Drive drafts feeding roadmap Phase 4b (generic benign templates) and 4c (frozen sections)
 - [x] Phase 2: `src/gauth.js` (Google Identity Services token flow), `src/config.js` (Settings in localStorage), `src/docformat.js` (accession normalisation, PHI guard, Doc layout, Sheet row mapping), `src/drive.js` (Sheet upsert, Doc create/replace, open); case details (accession, status, clinical history, macroscopic, block key); Save (Cmd/Ctrl+S), Open, Settings dialogs; 33 tests
 - [x] Published at `https://han-signout.pplx.app`
-- [ ] Google Cloud OAuth client — follow `docs/google-setup.md`, then paste the client id into the app's Settings
+- [x] Google Cloud OAuth client created and shipped as the default; first Drive save verified 2026-09-09 (`docs/google-setup.md` has the troubleshooting table)
+- [x] Phase 3 (part 1): `schemas/prostate_biopsy.json` + `generators/prostate.js` (Gleason / Grade Group, cores, extent, cribriform, IDC-P, PNI, EPE, case summary) and `schemas/ibd_biopsy.json` + `generators/ibd.js` (chronicity / activity classification, Nancy index, distribution summary with UC vs Crohn's pattern); engine: single-part rule (no "(A)" for one-part cases), parts A–Z, `partDefaults`, `number` fields, `summary` hook; 55 tests
 
 ## Commands
 

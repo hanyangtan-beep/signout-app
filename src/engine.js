@@ -3,7 +3,7 @@
 
 import { applyStyle } from './style.js';
 
-export const LETTERS = 'ABCDEFGHIJ'.split('');
+export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 export const HEADERS = {
   specimens: 'SPECIMEN:',
@@ -19,6 +19,9 @@ export function defaultValues(schema, index = 0) {
     if (index === 0 && f.defaultForFirstPart !== undefined) v = f.defaultForFirstPart;
     values[f.id] = v;
   }
+  // Per-position defaults (e.g. an IBD site series or a 12-core prostate map).
+  const pd = schema.partDefaults && schema.partDefaults[index];
+  if (pd) Object.assign(values, pd);
   return values;
 }
 
@@ -32,10 +35,11 @@ export function defaultOptions(schema) {
   return o;
 }
 
-/** A fresh case for a schema with `n` parts. */
-export function createCase(schema, n = 1) {
+/** A fresh case for a schema with `n` parts (default: the schema's `defaultParts`, else 1). */
+export function createCase(schema, n) {
+  const count = n ?? schema.defaultParts ?? 1;
   const parts = [];
-  for (let i = 0; i < Math.min(n, schema.maxParts || 10); i++) parts.push(createPart(schema, i));
+  for (let i = 0; i < Math.min(count, schema.maxParts || 10); i++) parts.push(createPart(schema, i));
   return { schemaId: schema.id, schemaVersion: schema.version, caseTitle: '', options: defaultOptions(schema), parts };
 }
 
@@ -78,6 +82,24 @@ export function normalisePart(schema, part) {
   return part;
 }
 
+/**
+ * Single-part rule: a case with one part is written without part letters.
+ * "(A) STOMACH, antrum, biopsy - ..." becomes "STOMACH, antrum, biopsy - ...", and a
+ * microscopy heading line that is only "(A)" disappears. Letters return automatically
+ * once a second part exists. Opt out per schema (`alwaysLetter: true`) or per case
+ * (`options.alwaysLetter`).
+ */
+export function dropPartLetters(text, label = 'A') {
+  const re = new RegExp(`^\\(${label}\\)[ \\t]*`);
+  const out = [];
+  for (const line of String(text ?? '').split('\n')) {
+    if (!re.test(line)) { out.push(line); continue; }
+    const rest = line.replace(re, '');
+    if (rest !== '') out.push(rest); // a bare "(A)" heading line is removed entirely
+  }
+  return out.join('\n');
+}
+
 export function assemble(blocks, includeHeader) {
   const order = ['specimens', 'microscopy', 'diagnosis'];
   const present = order.filter((k) => blocks[k] && blocks[k].trim() !== '');
@@ -100,12 +122,18 @@ export function generate(schema, gen, caseState) {
     ? gen.specimens(parts, ctx)
     : parts.map((p) => `(${p.label}) ${gen.specimenName(p, ctx)}`).join('\n');
   const microscopy = parts.map((p) => gen.microscopy(p, ctx)).join('\n\n');
-  const diagnosis = parts.map((p) => gen.diagnosis(p, ctx)).join('\n');
+  let diagnosis = parts.map((p) => gen.diagnosis(p, ctx)).join('\n');
+  if (gen.summary) {
+    const summary = gen.summary(parts, ctx);
+    if (summary && summary.trim() !== '') diagnosis += `\n\n${summary}`;
+  }
 
+  const single = parts.length === 1 && !schema.alwaysLetter && !options.alwaysLetter;
+  const letters = (text) => (single ? dropPartLetters(text, parts[0].label) : text);
   const blocks = {
-    specimens: applyStyle(specimens, style),
-    microscopy: applyStyle(microscopy, style),
-    diagnosis: applyStyle(diagnosis, style)
+    specimens: applyStyle(letters(specimens), style),
+    microscopy: applyStyle(letters(microscopy), style),
+    diagnosis: applyStyle(letters(diagnosis), style)
   };
   return { ...blocks, report: assemble(blocks, !!options.includeHeader) };
 }

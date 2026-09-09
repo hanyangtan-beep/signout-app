@@ -106,7 +106,7 @@ function setCase(caseState, activePart = 0) {
 
 function newCase(schemaId) {
   const s = state.templates[schemaId].schema;
-  setCase(createCase(s, 1), 0);
+  setCase(createCase(s), 0);
 }
 
 function loadExample() {
@@ -186,7 +186,7 @@ function render() {
 function renderNav() {
   nodes.nav.replaceChildren(...Object.values(state.templates).map(({ schema: s }) =>
     el('button', {
-      type: 'button', 'aria-pressed': String(s.id === state.caseState.schemaId), text: s.name,
+      type: 'button', 'aria-pressed': String(s.id === state.caseState.schemaId), text: s.shortName || s.name, title: s.name,
       onclick: () => switchTemplate(s.id)
     })));
 }
@@ -225,12 +225,14 @@ function renderField(field, part, index) {
   const wrap = el('div', { class: `field${visible ? '' : ' hidden'}`, 'data-field': field.id });
   const value = part.values[field.id];
 
-  if (field.type === 'text' || field.type === 'textarea') {
+  if (field.type === 'text' || field.type === 'textarea' || field.type === 'number') {
     const input = el(field.type === 'textarea' ? 'textarea' : 'input', {
       class: 'input', id, placeholder: field.placeholder || '', rows: field.type === 'textarea' ? 2 : undefined,
       oninput: (e) => { markDirty(); part.values[field.id] = e.target.value; renderReport(); cacheCase(state.caseState); }
     });
     if (field.type === 'text') input.type = 'text';
+    if (field.type === 'number') { input.type = 'number'; input.min = field.min ?? 0; input.step = field.step ?? 1; input.inputMode = 'decimal'; }
+    if (field.suffix) input.dataset.suffix = field.suffix;
     input.value = value ?? '';
     wrap.append(el('label', { for: id, text: field.label }), input);
     return wrap;

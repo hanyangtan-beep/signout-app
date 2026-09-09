@@ -18,7 +18,7 @@ const ADAPT = {
   gastric: (input) => ({
     schemaId: 'gastric_biopsy',
     caseTitle: input.caseTitle || '',
-    options: {},
+    options: { alwaysLetter: true },
     parts: input.parts.map((p) => {
       const { label, ...values } = p;
       return { label, values };
@@ -27,7 +27,7 @@ const ADAPT = {
   colonic: (input) => ({
     schemaId: 'colonic_polyp',
     caseTitle: '',
-    options: { includeHeader: !!input.includeHeader, uppercaseDx: !!input.uppercaseDx },
+    options: { includeHeader: !!input.includeHeader, uppercaseDx: !!input.uppercaseDx, alwaysLetter: true },
     parts: input.specimens.map((values, i) => ({ label: LETTERS[i], values: { ...values } }))
   })
 };
