@@ -43,7 +43,7 @@ test('Doc text has fixed headings in order with the normalised accession first',
   assert.deepEqual(heads, ['CLINICAL HISTORY:', 'SPECIMEN:', 'MACROSCOPIC DESCRIPTION:', 'BLOCK KEY:', 'MICROSCOPIC EXAMINATION:', 'DIAGNOSIS:']);
   assert.ok(text.includes('CLINICAL HISTORY:\nDyspepsia.\n'));
   assert.ok(text.includes('DIAGNOSIS:\n(A) STOMACH, antrum, biopsy - CHRONIC GASTRITIS\n'));
-  assert.match(lines.at(-1), /^Template: gastric_biopsy v1\.0\.0 · Status: ready · Saved \d{4}-\d{2}-\d{2} \d{2}:\d{2} UTC$/);
+  assert.match(lines.at(-1), /^Template: gastric_biopsy · Status: ready · Saved \d{4}-\d{2}-\d{2} \d{2}:\d{2} UTC$/);
 });
 
 test('empty sections render as a dash so the layout is stable', () => {

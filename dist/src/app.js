@@ -1,14 +1,14 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadAll } from './registry.js?v=mtu98jxa';
+import { loadAll } from './registry.js?v=mtub2g6e';
 import {
-  createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generate
-} from './engine.js?v=mtu98jxa';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtu98jxa';
-import { loadConfig, saveConfig } from './config.js?v=mtu98jxa';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtu98jxa';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtu98jxa';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtu98jxa';
+  createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse
+} from './engine.js?v=mtub2g6e';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtub2g6e';
+import { loadConfig, saveConfig } from './config.js?v=mtub2g6e';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtub2g6e';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtub2g6e';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtub2g6e';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -70,9 +70,22 @@ const nodes = {
   toast: $('#toast')
 };
 
-function current() { return state.templates[state.caseState.schemaId]; }
-function schema() { return current().schema; }
 function activePart() { return state.caseState.parts[state.activePart]; }
+const LETTERS_NEXT = (n) => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[n] || '?';
+/** Template entry for a part (each part may use a different template). */
+function templateOf(part) { return state.templates[templateIdOf(state.caseState, part)]; }
+function schemaOf(part) { return templateOf(part).schema; }
+/** Schema of the active part: the one new parts inherit and the nav highlights. */
+function schema() { return schemaOf(activePart()); }
+/** Schemas of every template used by the case, in order of first appearance. */
+function schemasInUse() { return templatesInUse(state.caseState).map((id) => state.templates[id].schema); }
+/** Keep `schemaId` (the case default) equal to part A's template. */
+function syncPrimary() {
+  const cs = state.caseState;
+  cs.parts.forEach((p) => { p.templateId = templateIdOf(cs, p); });
+  cs.schemaId = cs.parts[0].templateId;
+  cs.schemaVersion = state.templates[cs.schemaId].schema.version;
+}
 
 // ---------- theme ----------
 function initTheme() {
@@ -99,6 +112,7 @@ function toast(msg) {
 // ---------- state changes ----------
 function setCase(caseState, activePart = 0) {
   state.caseState = ensureMeta(caseState);
+  syncPrimary();
   state.dirty = false;
   state.activePart = Math.min(activePart, caseState.parts.length - 1);
   render();
@@ -118,17 +132,43 @@ function loadExample() {
   toast('Example loaded');
 }
 
+/**
+ * Header template buttons. On an untouched case they start a new case of that
+ * template; once the case has been edited they switch the *active part* to that
+ * template, so a case can mix parts (A gastric, B gastric, C polyp).
+ */
 function switchTemplate(id) {
-  if (id === state.caseState.schemaId) return;
-  newCase(id);
+  if (!state.dirty && !state.caseState.meta?.accession && !state.caseState.drive?.savedAt) {
+    if (id !== state.caseState.schemaId) newCase(id);
+    return;
+  }
+  setPartTemplate(state.activePart, id);
+}
+
+/** Change one part's template; its values are reset to that template's defaults. */
+function setPartTemplate(i, id) {
+  const parts = state.caseState.parts;
+  if (templateIdOf(state.caseState, parts[i]) === id) return;
+  markDirty();
+  const s = state.templates[id].schema;
+  const own = parts.filter((p, j) => j < i && templateIdOf(state.caseState, p) === id).length; // position within that template
+  parts[i] = { ...createPart(s, own), label: parts[i].label, templateId: id };
+  syncPrimary();
+  render();
+  toast(`Part ${parts[i].label}: ${s.name}`);
+}
+
+function maxPartsForCase() {
+  return Math.max(...schemasInUse().map((s) => s.maxParts || 10));
 }
 
 function addPart() {
   markDirty();
   const s = schema();
   const parts = state.caseState.parts;
-  if (parts.length >= (s.maxParts || 10)) return toast(`Maximum ${s.maxParts} parts`);
-  parts.push(createPart(s, parts.length));
+  if (parts.length >= maxPartsForCase()) return toast(`Maximum ${maxPartsForCase()} parts`);
+  const own = parts.filter((p) => templateIdOf(state.caseState, p) === s.id).length;
+  parts.push({ ...createPart(s, own), templateId: s.id });
   relabel(parts);
   state.activePart = parts.length - 1;
   render();
@@ -140,14 +180,16 @@ function removePart(i) {
   markDirty();
   parts.splice(i, 1);
   relabel(parts);
+  syncPrimary();
   state.activePart = Math.max(0, Math.min(state.activePart, parts.length - 1));
   render();
 }
 
 function resetPart(i) {
   markDirty();
-  const s = schema();
-  state.caseState.parts[i] = createPart(s, i);
+  const part = state.caseState.parts[i];
+  const id = templateIdOf(state.caseState, part);
+  state.caseState.parts[i] = { ...createPart(schemaOf(part), i), label: part.label, templateId: id };
   render();
 }
 
@@ -155,7 +197,10 @@ function copyFromPrevious(i) {
   if (i === 0) return;
   markDirty();
   const prev = state.caseState.parts[i - 1];
-  state.caseState.parts[i].values = { ...prev.values };
+  const part = state.caseState.parts[i];
+  part.templateId = templateIdOf(state.caseState, prev);
+  part.values = { ...prev.values };
+  syncPrimary();
   render();
 }
 
@@ -177,7 +222,9 @@ function render() {
   renderPanel();
   renderOptions();
   renderReport();
-  nodes.statusTemplate.textContent = `${schema().name} · v${schema().version} · ${state.caseState.parts.length} part${state.caseState.parts.length === 1 ? '' : 's'}`;
+  const inUse = schemasInUse();
+  const label = inUse.length === 1 ? `${inUse[0].name} · v${inUse[0].version}` : `Mixed: ${inUse.map((s) => s.shortName || s.name).join(' + ')}`;
+  nodes.statusTemplate.textContent = `${label} · ${state.caseState.parts.length} part${state.caseState.parts.length === 1 ? '' : 's'}`;
   cacheCase(state.caseState);
   renderMeta();
   renderSaveStatus();
@@ -186,13 +233,15 @@ function render() {
 function renderNav() {
   nodes.nav.replaceChildren(...Object.values(state.templates).map(({ schema: s }) =>
     el('button', {
-      type: 'button', 'aria-pressed': String(s.id === state.caseState.schemaId), text: s.shortName || s.name, title: s.name,
+      type: 'button', 'aria-pressed': String(s.id === schema().id), text: s.shortName || s.name,
+      title: state.dirty || state.caseState.meta?.accession ? `Use ${s.name} for part ${activePart().label}` : `New ${s.name} case`,
       onclick: () => switchTemplate(s.id)
     })));
 }
 
 function renderCaseFields() {
-  const fields = schema().caseFields || [];
+  const fields = [];
+  for (const s of schemasInUse()) for (const f of s.caseFields || []) if (!fields.some((g) => g.id === f.id)) fields.push(f);
   nodes.caseFields.replaceChildren(...fields.map((f) => {
     const id = `case-${f.id}`;
     const input = el('input', {
@@ -209,9 +258,11 @@ function renderTabs() {
   const parts = state.caseState.parts;
   nodes.tabs.replaceChildren(...parts.map((p, i) => el('button', {
     type: 'button', role: 'tab', class: 'tab', 'aria-selected': String(i === state.activePart), text: p.label,
+    title: schemaOf(p).name,
     onclick: () => { state.activePart = i; render(); }
   })));
-  nodes.addPart.disabled = parts.length >= (schema().maxParts || 10);
+  nodes.addPart.disabled = parts.length >= maxPartsForCase();
+  nodes.addPart.title = `Add part ${LETTERS_NEXT(parts.length)} (${schema().name})`;
 }
 
 function labelFor(field, value) {
@@ -278,12 +329,20 @@ function focusField(fieldId) {
 }
 
 function renderPanel() {
-  const s = schema();
   const i = state.activePart;
   const part = state.caseState.parts[i];
+  const s = schemaOf(part);
+  const picker = el('select', {
+    class: 'input part-template', 'aria-label': `Template for part ${part.label}`,
+    onchange: (e) => setPartTemplate(i, e.target.value)
+  }, ...Object.values(state.templates).map(({ schema: t }) => {
+    const o = el('option', { value: t.id, text: t.name });
+    if (t.id === s.id) o.selected = true;
+    return o;
+  }));
   const head = el('div', { class: 'part-head' },
     el('h3', { text: `Part ${part.label}` }),
-    el('span', { class: 'part-sub', text: s.organ ? `${s.organ.toLowerCase()} ${s.specimenNoun || ''}`.trim() : '' }),
+    picker,
     el('div', { class: 'part-actions' },
       i > 0 ? el('button', { type: 'button', class: 'btn ghost small', text: 'Same as previous', onclick: () => copyFromPrevious(i) }) : null,
       el('button', { type: 'button', class: 'btn ghost small', text: 'Reset', onclick: () => resetPart(i) }),
@@ -294,7 +353,8 @@ function renderPanel() {
 }
 
 function renderOptions() {
-  const opts = schema().options || [];
+  const opts = [];
+  for (const s of schemasInUse()) for (const o of s.options || []) if (!opts.some((p) => p.id === o.id)) opts.push(o);
   nodes.options.replaceChildren(...opts.map((o) => {
     const input = el('input', { type: 'checkbox', onchange: (e) => { markDirty(); state.caseState.options[o.id] = e.target.checked; renderReport(); cacheCase(state.caseState); } });
     input.checked = !!state.caseState.options[o.id];
@@ -306,7 +366,7 @@ function renderOptions() {
 function highlightParts(text) {
   // Wrap "(A)" part labels for a subtle visual anchor in the mono preview.
   const frag = document.createDocumentFragment();
-  const re = /\(([A-J])\)/g;
+  const re = /\(([A-Z])\)/g;
   let last = 0; let m;
   while ((m = re.exec(text))) {
     if (m.index > last) frag.append(text.slice(last, m.index));
@@ -318,10 +378,9 @@ function highlightParts(text) {
 }
 
 function renderReport() {
-  const { schema: s, generator } = current();
   let out;
   try {
-    out = generate(s, generator, state.caseState);
+    out = generateCase(state.templates, state.caseState);
   } catch (err) {
     nodes.blocks.replaceChildren(el('div', { class: 'block' }, el('pre', { text: `Generator error: ${err.message}` })));
     return;
@@ -434,14 +493,14 @@ function renderCaseList(filter = '') {
     onclick: async () => {
       try {
         const cs = await driveOpen(state.config, r.accession);
-        if (!state.templates[cs.schemaId]) throw new Error(`Template ${cs.schemaId} is not installed`);
+        for (const id of templatesInUse(cs)) if (!state.templates[id]) throw new Error(`Template ${id} is not installed`);
         nodes.dlgOpen.close();
         setCase(cs, 0);
         toast(`Opened ${r.accession}`);
       } catch (err) { toast(err.message); }
     }
   },
-  el('div', {}, el('div', { class: 'acc', text: r.accession }), el('div', { class: 'sub', text: `${state.templates[r.template]?.schema.name || r.template} · ${r.parts} part${r.parts === '1' ? '' : 's'}` })),
+  el('div', {}, el('div', { class: 'acc', text: r.accession }), el('div', { class: 'sub', text: `${String(r.template).split('+').map((id) => state.templates[id]?.schema.shortName || id).join(' + ')} · ${r.parts} part${r.parts === '1' ? '' : 's'}` })),
   el('span', { class: `status ${r.status}`, text: r.status }),
   el('span', { class: 'sub', text: relTime(r.updated) }))));
 }
@@ -521,7 +580,7 @@ async function boot() {
   state.templates = await loadAll();
   const saved = loadCase();
   initDrive();
-  if (saved && state.templates[saved.schemaId]) setCase(saved, 0);
+  if (saved && templatesInUse(saved).every((id) => state.templates[id])) setCase(saved, 0);
   else newCase(Object.keys(state.templates)[0]);
   if (isSignedIn() && !currentUser()) fetchUserInfo(await getToken(state.config, { interactive: false })).then(renderAccount).catch(() => {});
   if (back?.error) toast(back.error === 'access_denied' ? 'Google sign-in was cancelled' : `Google sign-in failed: ${back.error}`);

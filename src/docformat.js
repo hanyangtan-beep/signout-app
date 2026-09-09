@@ -1,6 +1,8 @@
 // Pure helpers shared by the browser Drive layer and the Node tests:
 // accession normalisation, PHI guard, Doc text layout, Sheet row mapping.
 
+import { templateLabel } from './engine.js';
+
 export const SHEET_HEADER = ['accession', 'updated', 'status', 'template', 'parts', 'doc_url', 'doc_id', 'case_json'];
 
 export const STATUSES = ['draft', 'ready', 'signed'];
@@ -48,7 +50,7 @@ export function buildDocText(caseState, out) {
     lines.push((body || '').trim() ? body.trim() : '-');
     lines.push('');
   }
-  lines.push(`Template: ${caseState.schemaId} v${caseState.schemaVersion || ''} · Status: ${meta.status || 'draft'} · Saved ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC`);
+  lines.push(`Template: ${templateLabel(caseState)} · Status: ${meta.status || 'draft'} · Saved ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC`);
   return lines.join('\n');
 }
 
@@ -58,7 +60,7 @@ export function toSheetRow(caseState, docId, docUrl, now = new Date()) {
     normaliseAccession(meta.accession),
     now.toISOString(),
     meta.status || 'draft',
-    caseState.schemaId,
+    templateLabel(caseState),
     String(caseState.parts.length),
     docUrl || '',
     docId || '',

@@ -63,17 +63,17 @@ Code complete 2026-09-09 (33 tests; save → update → open round-trip verified
 
 **Goal:** a case is the unit of work, not a template.
 
-- Case object: accession, clinical history, parts with per-part `templateId`, block key, report mode, status — serialised as the `case_json` saved in Phase 2.
-- Per-part template picker (A gastric, B duodenum, C polyp in one case).
-- Case-level output assembly: specimen title → macroscopic (free text) → block key → microscopy per part → diagnosis lines in order.
+- [x] Case object (2026-09-10): accession, clinical history, macro, block key, status, options and parts with per-part `templateId` — serialised as the `case_json` saved in Phase 2. Older rows without `templateId` fall back to the case `schemaId`. The Sheet's `template` column and the Doc footer record every template used (`gastric_biopsy+colonic_polyp`).
+- [x] Per-part template picker (2026-09-10): each part panel has a template drop-down; the header template buttons start a new case while the case is untouched and switch the *active part* once it has been edited. `+ Part` inherits the active part's template; "Same as previous" copies the template too. Part tabs show the template on hover; the status line reads `Mixed: Gastric + Polyp · 3 parts`.
+- [x] Case-level output assembly (2026-09-10): `engine.generateCase(registry, caseState)` runs each part through its own generator and style, keeps case order in every block, merges template options, and runs per-template hooks (`prepare`, `summary`) over that template's parts only — so a prostate SUMMARY counts prostate cores, not gastric parts. A generator's case-level `specimens` rewrite (gastric title parsing) is used only when the whole case is one template. Doc layout: accession → clinical → macro → block key → microscopy → diagnosis.
 - [x] Single-part cases drop the part letters (2026-09-09): when a biopsy case has only one part, the specimen, microscopy and diagnosis lines are emitted without "(A)" (`STOMACH, antrum, biopsy - CHRONIC GASTRITIS…`). Letters appear automatically once a second part is added. Implemented in `engine.generate` (`dropPartLetters`) so every template inherits it, including gastric and polyp; the legacy golden fixtures pass `options.alwaysLetter` to keep their lettered form.
 - [x] Engine extensions (2026-09-09): parts A–Z (`maxParts` per schema), `partDefaults` (per-position defaults, e.g. a 12-core prostate map or the TI → rectum series), `defaultParts`, a `number` field type, and a `generator.summary(parts, ctx)` hook appended after the diagnosis lines.
 - [x] Prostate and IBD templates pulled forward from Phase 4 (see below).
-- "Same as previous part" copy; "all normal" per part.
-- Case list view over the Sheet: drafts, ready, signed; search by accession.
-- Keyboard model: number keys for options, Tab between fields, `Cmd+Enter` generate, `Cmd+Shift+C` copy diagnosis, `Cmd+S` save to Drive.
+- [x] "Same as previous part" copy; "Reset" returns a part to its template's normal/absent defaults, which serves as "all normal".
+- [x] Case list view over the Sheet (Open dialog): status badge, template(s), part count, last update; search by accession. Filtering by status is still a wish-list item.
+- [x] Keyboard model: number keys for options, Tab between fields, `Cmd+Enter` copies the full report (generation is live), `Cmd+Shift+C` copy diagnosis, `Cmd+S` save to Drive, `Alt+←/→` between parts.
 
-**Done when:** a 3-part mixed OGD + colonoscopy case produces a single coherent report, saves to Drive, and reopens from another browser.
+**Done when:** a 3-part mixed OGD + colonoscopy case produces a single coherent report, saves to Drive, and reopens from another browser. Report assembly and round-trip through the Sheet row are covered by `tests/mixed.test.js`; a real Drive save of a mixed case is the remaining acceptance check.
 
 ---
 

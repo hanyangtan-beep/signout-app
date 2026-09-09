@@ -107,33 +107,95 @@ export function assemble(blocks, includeHeader) {
   return present.map((k) => `${HEADERS[k]}\n${blocks[k]}`).join('\n\n');
 }
 
+/** Template id of a part: its own `templateId`, else the case default. */
+export function templateIdOf(caseState, part) {
+  return part.templateId || caseState.schemaId;
+}
+
+/** Distinct template ids used by a case, in order of first appearance. */
+export function templatesInUse(caseState) {
+  const ids = [];
+  for (const p of caseState.parts) {
+    const id = templateIdOf(caseState, p);
+    if (!ids.includes(id)) ids.push(id);
+  }
+  return ids;
+}
+
+/** "gastric_biopsy+colonic_polyp" — the value stored in the Sheet's template column. */
+export function templateLabel(caseState) {
+  return templatesInUse(caseState).join('+');
+}
+
 /**
- * Generate all output blocks for a case.
+ * Generate all output blocks for a case whose parts may use different templates
+ * (e.g. A gastric, B gastric, C colonic polyp). `templates` is the registry:
+ * `{ [id]: { schema, generator } }`.
+ *
+ * Parts keep their case order in every block. Case-level hooks (`prepare`,
+ * `specimens`, `summary`) run once per template over that template's parts;
+ * `specimens` is only honoured when the whole case uses one template, since it
+ * may rewrite the specimen list from the case title.
+ * @returns {{specimens: string, microscopy: string, diagnosis: string, report: string}}
+ */
+export function generateCase(templates, caseState) {
+  const ids = templatesInUse(caseState);
+  for (const id of ids) if (!templates[id]) throw new Error(`Template ${id} is not installed`);
+
+  const options = {};
+  for (const id of ids) Object.assign(options, defaultOptions(templates[id].schema));
+  Object.assign(options, caseState.options || {});
+
+  // Normalised parts in case order, each tagged with its template.
+  const parts = caseState.parts.map((p) => {
+    const id = templateIdOf(caseState, p);
+    return normalisePart(templates[id].schema, { label: p.label, templateId: id, values: { ...p.values } });
+  });
+
+  // One context per template, holding only that template's parts.
+  const ctxs = {};
+  for (const id of ids) {
+    const { schema, generator: gen } = templates[id];
+    const own = parts.filter((p) => p.templateId === id);
+    const ctx = { schema, gen, case: caseState, options, parts: own, prepared: {} };
+    if (gen.prepare) ctx.prepared = gen.prepare(caseState, ctx) || {};
+    ctxs[id] = ctx;
+  }
+  const styled = (id, text) => applyStyle(text, templates[id].schema.style || {});
+
+  let specimens;
+  if (ids.length === 1 && ctxs[ids[0]].gen.specimens) {
+    specimens = styled(ids[0], ctxs[ids[0]].gen.specimens(parts, ctxs[ids[0]]));
+  } else {
+    specimens = parts.map((p) => styled(p.templateId, `(${p.label}) ${ctxs[p.templateId].gen.specimenName(p, ctxs[p.templateId])}`)).join('\n');
+  }
+  const microscopy = parts.map((p) => styled(p.templateId, ctxs[p.templateId].gen.microscopy(p, ctxs[p.templateId]))).join('\n\n');
+  let diagnosis = parts.map((p) => styled(p.templateId, ctxs[p.templateId].gen.diagnosis(p, ctxs[p.templateId]))).join('\n');
+  for (const id of ids) {
+    const ctx = ctxs[id];
+    if (!ctx.gen.summary) continue;
+    const summary = ctx.gen.summary(ctx.parts, ctx);
+    if (summary && summary.trim() !== '') diagnosis += `\n\n${styled(id, summary)}`;
+  }
+
+  const single = parts.length === 1 && !templates[ids[0]].schema.alwaysLetter && !options.alwaysLetter;
+  const letters = (text) => (single ? dropPartLetters(text, parts[0].label) : text);
+  const blocks = {
+    specimens: tidy(letters(specimens)),
+    microscopy: tidy(letters(microscopy)),
+    diagnosis: tidy(letters(diagnosis))
+  };
+  return { ...blocks, report: assemble(blocks, !!options.includeHeader) };
+}
+
+function tidy(text) { return applyStyle(text, {}); }
+
+/**
+ * Generate all output blocks for a single-template case (legacy entry point; the
+ * fixtures and the per-template tests use it). Every part is forced onto `schema`.
  * @returns {{specimens: string, microscopy: string, diagnosis: string, report: string}}
  */
 export function generate(schema, gen, caseState) {
-  const parts = caseState.parts.map((p) => normalisePart(schema, { label: p.label, values: { ...p.values } }));
-  const options = { ...defaultOptions(schema), ...(caseState.options || {}) };
-  const ctx = { schema, case: caseState, options, parts, prepared: {} };
-  if (gen.prepare) ctx.prepared = gen.prepare(caseState, ctx) || {};
-  const style = schema.style || {};
-
-  const specimens = gen.specimens
-    ? gen.specimens(parts, ctx)
-    : parts.map((p) => `(${p.label}) ${gen.specimenName(p, ctx)}`).join('\n');
-  const microscopy = parts.map((p) => gen.microscopy(p, ctx)).join('\n\n');
-  let diagnosis = parts.map((p) => gen.diagnosis(p, ctx)).join('\n');
-  if (gen.summary) {
-    const summary = gen.summary(parts, ctx);
-    if (summary && summary.trim() !== '') diagnosis += `\n\n${summary}`;
-  }
-
-  const single = parts.length === 1 && !schema.alwaysLetter && !options.alwaysLetter;
-  const letters = (text) => (single ? dropPartLetters(text, parts[0].label) : text);
-  const blocks = {
-    specimens: applyStyle(letters(specimens), style),
-    microscopy: applyStyle(letters(microscopy), style),
-    diagnosis: applyStyle(letters(diagnosis), style)
-  };
-  return { ...blocks, report: assemble(blocks, !!options.includeHeader) };
+  const cs = { ...caseState, schemaId: schema.id, parts: caseState.parts.map((p) => ({ ...p, templateId: schema.id })) };
+  return generateCase({ [schema.id]: { schema, generator: gen } }, cs);
 }
