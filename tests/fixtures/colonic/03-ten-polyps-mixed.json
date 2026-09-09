@@ -1,0 +1,83 @@
+{
+  "name": "03-ten-polyps-mixed",
+  "description": "Maximum of ten specimens (A-J) across all six polyp types and all sites.",
+  "input": {
+    "specimens": [
+      {
+        "site": "Cecum",
+        "type": "tubularAdenoma",
+        "dysplasia": "Low grade dysplasia",
+        "customSpecimen": "",
+        "comment": ""
+      },
+      {
+        "site": "Ascending colon",
+        "type": "sessileSerrated",
+        "dysplasia": "No dysplasia",
+        "customSpecimen": "",
+        "comment": ""
+      },
+      {
+        "site": "Hepatic flexure",
+        "type": "hyperplasticPolyp",
+        "dysplasia": "Not applicable",
+        "customSpecimen": "",
+        "comment": ""
+      },
+      {
+        "site": "Transverse colon",
+        "type": "tubulovillousAdenoma",
+        "dysplasia": "Low grade dysplasia",
+        "customSpecimen": "",
+        "comment": ""
+      },
+      {
+        "site": "Splenic flexure",
+        "type": "tubularAdenoma",
+        "dysplasia": "High grade dysplasia",
+        "customSpecimen": "",
+        "comment": ""
+      },
+      {
+        "site": "Descending colon",
+        "type": "traditionalSerrated",
+        "dysplasia": "Low grade dysplasia",
+        "customSpecimen": "",
+        "comment": ""
+      },
+      {
+        "site": "Sigmoid",
+        "type": "villousAdenoma",
+        "dysplasia": "High grade dysplasia",
+        "customSpecimen": "",
+        "comment": ""
+      },
+      {
+        "site": "Rectosigmoid",
+        "type": "sessileSerrated",
+        "dysplasia": "Low grade dysplasia",
+        "customSpecimen": "",
+        "comment": ""
+      },
+      {
+        "site": "Rectum",
+        "type": "hyperplasticPolyp",
+        "dysplasia": "Not applicable",
+        "customSpecimen": "",
+        "comment": ""
+      },
+      {
+        "site": "Colon, site not specified",
+        "type": "tubularAdenoma",
+        "dysplasia": "Low grade dysplasia",
+        "customSpecimen": "",
+        "comment": ""
+      }
+    ],
+    "includeHeader": true,
+    "uppercaseDx": true
+  },
+  "expected": {
+    "report": "SPECIMEN:\n(A) Cecum polyp\n(B) Ascending colon polyp\n(C) Hepatic flexure polyp\n(D) Transverse colon polyp\n(E) Splenic flexure polyp\n(F) Descending colon polyp\n(G) Sigmoid polyp\n(H) Rectosigmoid polyp\n(I) Rectum polyp\n(J) Colon polyp\n\nMICROSCOPIC EXAMINATION:\n(A)  Sections show a polypoid piece of large intestinal mucosa featuring tubular crypts with low grade dysplasia. There is no evidence of invasive malignancy.\n\n(B)  Sections show a serrated polyp with architectural features in keeping with a sessile serrated lesion / adenoma. No cytological dysplasia is identified. There is no evidence of invasive malignancy.\n\n(C)  Sections show a polypoid piece of large intestinal mucosa featuring hyperplastic crypts with stellate-shaped lumina, in keeping with hyperplastic polyp. There is no evidence of dysplasia or malignancy.\n\n(D)  Sections show a polypoid fragment of large intestinal mucosa with tubulovillous architecture and low grade dysplasia. There is no evidence of invasive malignancy.\n\n(E)  Sections show a polypoid piece of large intestinal mucosa featuring tubular crypts with high grade dysplasia. There is no evidence of invasive malignancy.\n\n(F)  Sections show a serrated polyp with ectopic crypt formation and conventional low grade dysplasia, in keeping with a traditional serrated adenoma. There is no evidence of invasive malignancy.\n\n(G)  Sections show a polypoid fragment of large intestinal mucosa with predominant villous architecture and high grade dysplasia. There is no evidence of invasive malignancy.\n\n(H)  Sections show a sessile serrated lesion / adenoma with superimposed low grade dysplasia. There is no evidence of invasive malignancy.\n\n(I)  Sections show a polypoid piece of large intestinal mucosa featuring hyperplastic crypts with stellate-shaped lumina, in keeping with hyperplastic polyp. There is no evidence of dysplasia or malignancy.\n\n(J)  Sections show a polypoid piece of large intestinal mucosa featuring tubular crypts with low grade dysplasia. There is no evidence of invasive malignancy.\n\nDIAGNOSIS:\n(A) CECUM, Cecum polyp, polypectomy - TUBULAR ADENOMA WITH LOW GRADE DYSPLASIA.\n(B) ASCENDING COLON, Ascending colon polyp, polypectomy - SESSILE SERRATED LESION / ADENOMA.\n(C) HEPATIC FLEXURE, Hepatic flexure polyp, polypectomy - HYPERPLASTIC POLYP.\n(D) TRANSVERSE COLON, Transverse colon polyp, polypectomy - TUBULOVILLOUS ADENOMA WITH LOW GRADE DYSPLASIA.\n(E) SPLENIC FLEXURE, Splenic flexure polyp, polypectomy - TUBULAR ADENOMA WITH HIGH GRADE DYSPLASIA.\n(F) DESCENDING COLON, Descending colon polyp, polypectomy - TRADITIONAL SERRATED ADENOMA WITH LOW GRADE DYSPLASIA.\n(G) SIGMOID, Sigmoid polyp, polypectomy - VILLOUS ADENOMA WITH HIGH GRADE DYSPLASIA.\n(H) RECTOSIGMOID, Rectosigmoid polyp, polypectomy - SESSILE SERRATED LESION / ADENOMA WITH LOW GRADE DYSPLASIA.\n(I) RECTUM, Rectum polyp, polypectomy - HYPERPLASTIC POLYP.\n(J) COLON, Colon polyp, polypectomy - TUBULAR ADENOMA WITH LOW GRADE DYSPLASIA."
+  }
+}

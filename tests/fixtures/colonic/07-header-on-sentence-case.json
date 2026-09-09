@@ -1,0 +1,27 @@
+{
+  "name": "07-header-on-sentence-case",
+  "description": "Header on, uppercase off: sentence-case diagnosis under DIAGNOSIS heading.",
+  "input": {
+    "specimens": [
+      {
+        "site": "Descending colon",
+        "type": "villousAdenoma",
+        "dysplasia": "Low grade dysplasia",
+        "customSpecimen": "",
+        "comment": ""
+      },
+      {
+        "site": "Colon, site not specified",
+        "type": "sessileSerrated",
+        "dysplasia": "No dysplasia",
+        "customSpecimen": "",
+        "comment": ""
+      }
+    ],
+    "includeHeader": true,
+    "uppercaseDx": false
+  },
+  "expected": {
+    "report": "SPECIMEN:\n(A) Descending colon polyp\n(B) Colon polyp\n\nMICROSCOPIC EXAMINATION:\n(A)  Sections show a polypoid fragment of large intestinal mucosa with predominant villous architecture and low grade dysplasia. There is no evidence of invasive malignancy.\n\n(B)  Sections show a serrated polyp with architectural features in keeping with a sessile serrated lesion / adenoma. No cytological dysplasia is identified. There is no evidence of invasive malignancy.\n\nDIAGNOSIS:\n(A) Descending colon, Descending colon polyp, polypectomy - Villous adenoma with low grade dysplasia.\n(B) Colon, Colon polyp, polypectomy - Sessile serrated lesion / adenoma."
+  }
+}

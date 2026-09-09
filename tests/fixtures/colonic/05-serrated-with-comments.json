@@ -1,0 +1,34 @@
+{
+  "name": "05-serrated-with-comments",
+  "description": "SSL without dysplasia, SSL with HGD and TSA with per-specimen comments appended to microscopy.",
+  "input": {
+    "specimens": [
+      {
+        "site": "Ascending colon",
+        "type": "sessileSerrated",
+        "dysplasia": "No dysplasia",
+        "customSpecimen": "",
+        "comment": "The lesion is completely excised in the planes examined."
+      },
+      {
+        "site": "Cecum",
+        "type": "sessileSerrated",
+        "dysplasia": "High grade dysplasia",
+        "customSpecimen": "caecal polyp 12 mm",
+        "comment": ""
+      },
+      {
+        "site": "Rectum",
+        "type": "traditionalSerrated",
+        "dysplasia": "High grade dysplasia",
+        "customSpecimen": "",
+        "comment": "The base is not clearly represented."
+      }
+    ],
+    "includeHeader": true,
+    "uppercaseDx": true
+  },
+  "expected": {
+    "report": "SPECIMEN:\n(A) Ascending colon polyp\n(B) caecal polyp 12 mm\n(C) Rectum polyp\n\nMICROSCOPIC EXAMINATION:\n(A)  Sections show a serrated polyp with architectural features in keeping with a sessile serrated lesion / adenoma. No cytological dysplasia is identified. There is no evidence of invasive malignancy. The lesion is completely excised in the planes examined.\n\n(B)  Sections show a sessile serrated lesion / adenoma with superimposed high grade dysplasia. There is no evidence of invasive malignancy.\n\n(C)  Sections show a serrated polyp with ectopic crypt formation and high grade dysplasia, in keeping with a traditional serrated adenoma. There is no evidence of invasive malignancy. The base is not clearly represented.\n\nDIAGNOSIS:\n(A) ASCENDING COLON, Ascending colon polyp, polypectomy - SESSILE SERRATED LESION / ADENOMA.\n(B) CECUM, caecal polyp 12 mm, polypectomy - SESSILE SERRATED LESION / ADENOMA WITH HIGH GRADE DYSPLASIA.\n(C) RECTUM, Rectum polyp, polypectomy - TRADITIONAL SERRATED ADENOMA WITH HIGH GRADE DYSPLASIA."
+  }
+}

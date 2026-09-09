@@ -1,0 +1,20 @@
+{
+  "name": "01-default-single-ta-lgd",
+  "description": "App default state: one sigmoid tubular adenoma LGD, header on, uppercase on.",
+  "input": {
+    "specimens": [
+      {
+        "site": "Sigmoid",
+        "type": "tubularAdenoma",
+        "dysplasia": "Low grade dysplasia",
+        "customSpecimen": "",
+        "comment": ""
+      }
+    ],
+    "includeHeader": true,
+    "uppercaseDx": true
+  },
+  "expected": {
+    "report": "SPECIMEN:\n(A) Sigmoid polyp\n\nMICROSCOPIC EXAMINATION:\n(A)  Sections show a polypoid piece of large intestinal mucosa featuring tubular crypts with low grade dysplasia. There is no evidence of invasive malignancy.\n\nDIAGNOSIS:\n(A) SIGMOID, Sigmoid polyp, polypectomy - TUBULAR ADENOMA WITH LOW GRADE DYSPLASIA."
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "04-hp-negative-lgd-marked-im",
+  "description": "H. pylori negative, inactive, marked incomplete IM, moderate atrophy, low grade dysplasia.",
+  "input": {
+    "caseTitle": "",
+    "parts": [
+      {
+        "label": "A",
+        "specimenName": "Incisura",
+        "siteType": "Pyloric type",
+        "activity": "Absent",
+        "chronic": "Moderate",
+        "follicles": "Absent",
+        "atrophy": "Moderate",
+        "ulcer": "Absent",
+        "imDegree": "Marked",
+        "imType": "Incomplete",
+        "dysplasia": "Low grade dysplasia",
+        "hp": "Absent",
+        "additionalNotes": ""
+      }
+    ]
+  },
+  "expected": {
+    "specimens": "(A) Incisura",
+    "microscopy": "(A)\n- Site: Pyloric type\n- Activity: Absent\n- Chronic inflammation: Moderate\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Moderate\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Marked (incomplete)\n- Dysplasia / malignancy: Low grade dysplasia\n- Helicobacter pylori: Absent",
+    "diagnosis": "(A) STOMACH, incisura, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative; marked INTESTINAL METAPLASIA (incomplete); moderate ATROPHY; LOW GRADE DYSPLASIA"
+  }
+}

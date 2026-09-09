@@ -1,0 +1,44 @@
+{
+  "name": "01-normal-antrum-body",
+  "description": "Two parts, everything Absent. Captures the legacy default wording for a negative biopsy.",
+  "input": {
+    "caseTitle": "",
+    "parts": [
+      {
+        "label": "A",
+        "specimenName": "Antrum",
+        "siteType": "Pyloric type",
+        "activity": "Absent",
+        "chronic": "Absent",
+        "follicles": "Absent",
+        "atrophy": "Absent",
+        "ulcer": "Absent",
+        "imDegree": "Absent",
+        "imType": "",
+        "dysplasia": "Absent",
+        "hp": "Absent",
+        "additionalNotes": ""
+      },
+      {
+        "label": "B",
+        "specimenName": "Body",
+        "siteType": "Body type",
+        "activity": "Absent",
+        "chronic": "Absent",
+        "follicles": "Absent",
+        "atrophy": "Absent",
+        "ulcer": "Absent",
+        "imDegree": "Absent",
+        "imType": "",
+        "dysplasia": "Absent",
+        "hp": "Absent",
+        "additionalNotes": ""
+      }
+    ]
+  },
+  "expected": {
+    "specimens": "(A) Antrum and (B) Body",
+    "microscopy": "(A)\n- Site: Pyloric type\n- Activity: Absent\n- Chronic inflammation: Absent\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Absent\n\n(B)\n- Site: Body type\n- Activity: Absent\n- Chronic inflammation: Absent\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Absent",
+    "diagnosis": "(A) STOMACH, antrum, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative\n(B) STOMACH, body, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative"
+  }
+}

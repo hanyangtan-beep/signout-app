@@ -1,0 +1,20 @@
+{
+  "name": "08-whitespace-trimming",
+  "description": "Padded custom specimen and comment strings are trimmed before use.",
+  "input": {
+    "specimens": [
+      {
+        "site": "Rectosigmoid",
+        "type": "tubularAdenoma",
+        "dysplasia": "High grade dysplasia",
+        "customSpecimen": "  rectosigmoid polyp 8 mm  ",
+        "comment": "  Margins are involved.  "
+      }
+    ],
+    "includeHeader": false,
+    "uppercaseDx": true
+  },
+  "expected": {
+    "report": "(A) rectosigmoid polyp 8 mm\n\n(A)  Sections show a polypoid piece of large intestinal mucosa featuring tubular crypts with high grade dysplasia. There is no evidence of invasive malignancy. Margins are involved.\n\n(A) RECTOSIGMOID, rectosigmoid polyp 8 mm, polypectomy - TUBULAR ADENOMA WITH HIGH GRADE DYSPLASIA."
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "03-hp-active-im-complete-atrophy",
+  "description": "Single antral part: H. pylori active gastritis with moderate complete IM and mild atrophy.",
+  "input": {
+    "caseTitle": "",
+    "parts": [
+      {
+        "label": "A",
+        "specimenName": "Antrum",
+        "siteType": "Pyloric type",
+        "activity": "Moderate",
+        "chronic": "Moderate",
+        "follicles": "Present",
+        "atrophy": "Mild",
+        "ulcer": "Absent",
+        "imDegree": "Moderate",
+        "imType": "Complete",
+        "dysplasia": "Absent",
+        "hp": "High density",
+        "additionalNotes": ""
+      }
+    ]
+  },
+  "expected": {
+    "specimens": "(A) Antrum",
+    "microscopy": "(A)\n- Site: Pyloric type\n- Activity: Moderate\n- Chronic inflammation: Moderate\n- Reactive lymphoid follicle(s): Present\n- Atrophy: Mild\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Moderate (complete)\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: High density",
+    "diagnosis": "(A) STOMACH, antrum, biopsy - HELICOBACTER ASSOCIATED CHRONIC ACTIVE GASTRITIS moderate INTESTINAL METAPLASIA (complete); mild ATROPHY"
+  }
+}

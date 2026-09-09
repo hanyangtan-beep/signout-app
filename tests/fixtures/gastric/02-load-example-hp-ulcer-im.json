@@ -1,0 +1,44 @@
+{
+  "name": "02-load-example-hp-ulcer-im",
+  "description": "The built-in Load example case: H. pylori body gastritis with ulcer and mild incomplete IM; case title supplies sites.",
+  "input": {
+    "caseTitle": "(A) Antrum and (B) Body",
+    "parts": [
+      {
+        "label": "A",
+        "specimenName": "Antrum",
+        "siteType": "Pyloric type",
+        "activity": "Absent",
+        "chronic": "Mild",
+        "follicles": "Absent",
+        "atrophy": "Absent",
+        "ulcer": "Absent",
+        "imDegree": "Absent",
+        "imType": "",
+        "dysplasia": "Absent",
+        "hp": "Absent",
+        "additionalNotes": ""
+      },
+      {
+        "label": "B",
+        "specimenName": "Body",
+        "siteType": "Body type",
+        "activity": "Mild",
+        "chronic": "Mild",
+        "follicles": "Present",
+        "atrophy": "Absent",
+        "ulcer": "Present",
+        "imDegree": "Mild",
+        "imType": "Incomplete",
+        "dysplasia": "Absent",
+        "hp": "Moderate density",
+        "additionalNotes": ""
+      }
+    ]
+  },
+  "expected": {
+    "specimens": "(A) Antrum and (B) Body",
+    "microscopy": "(A)\n- Site: Pyloric type\n- Activity: Absent\n- Chronic inflammation: Mild\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Absent\n\n(B)\n- Site: Body type\n- Activity: Mild\n- Chronic inflammation: Mild\n- Reactive lymphoid follicle(s): Present\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Present\n- Intestinal metaplasia: Mild (incomplete)\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Moderate density",
+    "diagnosis": "(A) STOMACH, antrum, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative\n(B) STOMACH, body, biopsy - HELICOBACTER ASSOCIATED CHRONIC ACTIVE GASTRITIS with ULCER; mild INTESTINAL METAPLASIA (incomplete)"
+  }
+}

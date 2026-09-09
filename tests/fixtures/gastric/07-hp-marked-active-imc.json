@@ -1,0 +1,29 @@
+{
+  "name": "07-hp-marked-active-imc",
+  "description": "H. pylori high density, marked activity, ulcer, intramucosal carcinoma: exercises extras ordering after HP diagnosis.",
+  "input": {
+    "caseTitle": "",
+    "parts": [
+      {
+        "label": "A",
+        "specimenName": "Antrum",
+        "siteType": "Pyloric type",
+        "activity": "Marked",
+        "chronic": "Marked",
+        "follicles": "Absent",
+        "atrophy": "Mild",
+        "ulcer": "Present",
+        "imDegree": "Mild",
+        "imType": "Incomplete",
+        "dysplasia": "Intramucosal carcinoma",
+        "hp": "High density",
+        "additionalNotes": ""
+      }
+    ]
+  },
+  "expected": {
+    "specimens": "(A) Antrum",
+    "microscopy": "(A)\n- Site: Pyloric type\n- Activity: Marked\n- Chronic inflammation: Marked\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Mild\n- Evidence of ulcer / erosion: Present\n- Intestinal metaplasia: Mild (incomplete)\n- Dysplasia / malignancy: Intramucosal carcinoma\n- Helicobacter pylori: High density",
+    "diagnosis": "(A) STOMACH, antrum, biopsy - HELICOBACTER ASSOCIATED CHRONIC ACTIVE GASTRITIS with ULCER; mild INTESTINAL METAPLASIA (incomplete); mild ATROPHY; INTRAMUCOSAL CARCINOMA"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "02-load-example-custom-specimen",
+  "description": "The built-in Load example: custom specimen line override.",
+  "input": {
+    "specimens": [
+      {
+        "site": "Sigmoid",
+        "type": "tubularAdenoma",
+        "dysplasia": "Low grade dysplasia",
+        "customSpecimen": "lower sigmoid polyp 18 cm",
+        "comment": ""
+      }
+    ],
+    "includeHeader": true,
+    "uppercaseDx": true
+  },
+  "expected": {
+    "report": "SPECIMEN:\n(A) lower sigmoid polyp 18 cm\n\nMICROSCOPIC EXAMINATION:\n(A)  Sections show a polypoid piece of large intestinal mucosa featuring tubular crypts with low grade dysplasia. There is no evidence of invasive malignancy.\n\nDIAGNOSIS:\n(A) SIGMOID, lower sigmoid polyp 18 cm, polypectomy - TUBULAR ADENOMA WITH LOW GRADE DYSPLASIA."
+  }
+}

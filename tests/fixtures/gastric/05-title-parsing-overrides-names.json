@@ -1,0 +1,59 @@
+{
+  "name": "05-title-parsing-overrides-names",
+  "description": "Case title sites override blank specimen names; trailing \"and\" and punctuation stripped.",
+  "input": {
+    "caseTitle": "(A) Antrum, (B) Body and (C) Incisura;",
+    "parts": [
+      {
+        "label": "A",
+        "specimenName": "",
+        "siteType": "Pyloric type",
+        "activity": "Absent",
+        "chronic": "Absent",
+        "follicles": "Absent",
+        "atrophy": "Absent",
+        "ulcer": "Absent",
+        "imDegree": "Absent",
+        "imType": "",
+        "dysplasia": "Absent",
+        "hp": "Absent",
+        "additionalNotes": ""
+      },
+      {
+        "label": "B",
+        "specimenName": "",
+        "siteType": "Body type",
+        "activity": "Mild",
+        "chronic": "Absent",
+        "follicles": "Absent",
+        "atrophy": "Absent",
+        "ulcer": "Absent",
+        "imDegree": "Absent",
+        "imType": "",
+        "dysplasia": "Absent",
+        "hp": "Low density",
+        "additionalNotes": ""
+      },
+      {
+        "label": "C",
+        "specimenName": "",
+        "siteType": "Body type",
+        "activity": "Absent",
+        "chronic": "Mild",
+        "follicles": "Absent",
+        "atrophy": "Absent",
+        "ulcer": "Absent",
+        "imDegree": "Absent",
+        "imType": "",
+        "dysplasia": "Absent",
+        "hp": "Absent",
+        "additionalNotes": ""
+      }
+    ]
+  },
+  "expected": {
+    "specimens": "(A) Antrum, (B) Body and (C) Incisura;",
+    "microscopy": "(A)\n- Site: Pyloric type\n- Activity: Absent\n- Chronic inflammation: Absent\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Absent\n\n(B)\n- Site: Body type\n- Activity: Mild\n- Chronic inflammation: Absent\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Low density\n\n(C)\n- Site: Body type\n- Activity: Absent\n- Chronic inflammation: Mild\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Absent",
+    "diagnosis": "(A) STOMACH, antrum, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative\n(B) STOMACH, body, biopsy - HELICOBACTER ASSOCIATED CHRONIC ACTIVE GASTRITIS\n(C) STOMACH, incisura, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative"
+  }
+}

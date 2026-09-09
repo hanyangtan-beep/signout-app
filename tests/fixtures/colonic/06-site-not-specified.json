@@ -1,0 +1,20 @@
+{
+  "name": "06-site-not-specified",
+  "description": "\"Colon, site not specified\" maps to COLON / Colon in diagnosis and specimen name.",
+  "input": {
+    "specimens": [
+      {
+        "site": "Colon, site not specified",
+        "type": "tubulovillousAdenoma",
+        "dysplasia": "High grade dysplasia",
+        "customSpecimen": "",
+        "comment": ""
+      }
+    ],
+    "includeHeader": true,
+    "uppercaseDx": true
+  },
+  "expected": {
+    "report": "SPECIMEN:\n(A) Colon polyp\n\nMICROSCOPIC EXAMINATION:\n(A)  Sections show a polypoid fragment of large intestinal mucosa with tubulovillous architecture and high grade dysplasia. There is no evidence of invasive malignancy.\n\nDIAGNOSIS:\n(A) COLON, Colon polyp, polypectomy - TUBULOVILLOUS ADENOMA WITH HIGH GRADE DYSPLASIA."
+  }
+}

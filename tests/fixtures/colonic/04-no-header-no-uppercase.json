@@ -1,0 +1,27 @@
+{
+  "name": "04-no-header-no-uppercase",
+  "description": "Header off and uppercase off: plain blocks with sentence-case diagnosis.",
+  "input": {
+    "specimens": [
+      {
+        "site": "Rectum",
+        "type": "hyperplasticPolyp",
+        "dysplasia": "Not applicable",
+        "customSpecimen": "",
+        "comment": ""
+      },
+      {
+        "site": "Sigmoid",
+        "type": "tubularAdenoma",
+        "dysplasia": "Low grade dysplasia",
+        "customSpecimen": "",
+        "comment": ""
+      }
+    ],
+    "includeHeader": false,
+    "uppercaseDx": false
+  },
+  "expected": {
+    "report": "(A) Rectum polyp\n(B) Sigmoid polyp\n\n(A)  Sections show a polypoid piece of large intestinal mucosa featuring hyperplastic crypts with stellate-shaped lumina, in keeping with hyperplastic polyp. There is no evidence of dysplasia or malignancy.\n\n(B)  Sections show a polypoid piece of large intestinal mucosa featuring tubular crypts with low grade dysplasia. There is no evidence of invasive malignancy.\n\n(A) Rectum, Rectum polyp, polypectomy - Hyperplastic polyp.\n(B) Sigmoid, Sigmoid polyp, polypectomy - Tubular adenoma with low grade dysplasia."
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "signout-app",
+  "version": "0.0.1",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node --test tests/",
+    "fixtures": "node tools/capture-fixtures.js",
+    "fixtures:force": "node tools/capture-fixtures.js --force"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Pathology sign-out app: schema-driven biopsy/synoptic reporting with Google Drive as the store",
+  "devDependencies": {
+    "jsdom": "^29.1.1"
+  },
+  "private": true
+}

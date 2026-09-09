@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Colonic Polyp Sign-Out</title>
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem;
+      --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem;
+      --space-12: 3rem; --space-16: 4rem;
+      --color-bg: #f7f6f2; --color-surface: #f9f8f5; --color-surface-2: #fbfbf9;
+      --color-surface-offset: #f3f0ec; --color-border: #d4d1ca; --color-divider: #dcd9d5;
+      --color-text: #28251d; --color-text-muted: #66645e; --color-text-faint: #9f9c95;
+      --color-text-inverse: #f9f8f4; --color-primary: #01696f; --color-primary-hover: #0c4e54;
+      --color-primary-highlight: #cedcd8; --color-success: #437a22; --color-error: #a12c7b;
+      --radius-sm: 0.375rem; --radius-md: 0.5rem; --radius-lg: 0.75rem; --radius-xl: 1rem;
+      --shadow-sm: 0 1px 2px rgba(40,37,29,.06); --shadow-md: 0 8px 24px rgba(40,37,29,.08);
+      --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+      --font-body: 'Satoshi', 'Inter', sans-serif;
+    }
+    [data-theme="dark"] {
+      --color-bg: #171614; --color-surface: #1c1b19; --color-surface-2: #201f1d;
+      --color-surface-offset: #1d1c1a; --color-border: #393836; --color-divider: #262523;
+      --color-text: #cdccca; --color-text-muted: #a4a29d; --color-text-faint: #797876;
+      --color-text-inverse: #2b2a28; --color-primary: #4f98a3; --color-primary-hover: #227f8b;
+      --color-primary-highlight: #313b3b; --color-success: #6daa45; --color-error: #d163a7;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.2); --shadow-md: 0 12px 32px rgba(0,0,0,.32);
+    }
+    *,:before,:after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-text-size-adjust:none;text-size-adjust:none;scroll-behavior:smooth}
+    body{min-height:100dvh;line-height:1.55;font-family:var(--font-body);font-size:var(--text-base);color:var(--color-text);background:var(--color-bg)}
+    input,button,textarea,select{font:inherit;color:inherit}
+    button{cursor:pointer;border:none;background:none}
+    a,button,input,textarea,select{transition:color var(--transition-interactive),background var(--transition-interactive),border-color var(--transition-interactive),box-shadow var(--transition-interactive)}
+    :focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;border-radius:var(--radius-sm)}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}
+    .app-shell{display:grid;grid-template-columns:minmax(300px,420px) 1fr;min-height:100dvh}
+    .panel{background:var(--color-surface);border-right:1px solid rgba(40,37,29,.12);padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6)}
+    .main{padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6)}
+    .card{background:var(--color-surface-2);border:1px solid rgba(40,37,29,.12);border-radius:var(--radius-xl);box-shadow:var(--shadow-sm)}
+    [data-theme="dark"] .card,[data-theme="dark"] .panel{border-color:rgba(255,255,255,.1)}
+    .card-pad{padding:var(--space-5)}
+    .header{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4)}
+    .brand{display:flex;align-items:center;gap:var(--space-3)}
+    .logo{width:36px;height:36px;color:var(--color-primary)}
+    .title{font-size:var(--text-xl);line-height:1.1;font-weight:700;letter-spacing:-.02em}
+    .muted{color:var(--color-text-muted)}
+    .tiny{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.12em;color:var(--color-text-muted);font-weight:700}
+    .top-actions,.toolbar,.output-actions,.checkbox-row{display:flex;gap:var(--space-2);flex-wrap:wrap}
+    .count-pill{display:inline-flex;align-items:center;gap:var(--space-2);padding:var(--space-2) var(--space-3);border-radius:999px;background:var(--color-primary-highlight);color:var(--color-primary);font-size:var(--text-sm);font-weight:700}
+    .btn{min-height:44px;padding:0 var(--space-4);border-radius:var(--radius-lg);border:1px solid rgba(40,37,29,.12);font-size:var(--text-sm);font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2)}
+    .btn-primary{background:var(--color-primary);color:var(--color-text-inverse);border-color:transparent}
+    .btn-primary:hover{background:var(--color-primary-hover)}
+    .btn-secondary{background:var(--color-surface);color:var(--color-text)}
+    .btn-chip{padding:0 var(--space-3);min-height:38px;border-radius:999px}
+    .specimen-grid{display:grid;gap:var(--space-4)}
+    .specimen{padding:var(--space-4);border:1px solid rgba(40,37,29,.12);border-radius:var(--radius-lg);background:var(--color-surface)}
+    .specimen-head{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);margin-bottom:var(--space-4)}
+    .specimen-title{font-size:var(--text-lg);font-weight:700}
+    .field-grid{display:grid;grid-template-columns:1.25fr .9fr .9fr auto;gap:var(--space-3);align-items:end}
+    .field{display:flex;flex-direction:column;gap:var(--space-2)}
+    label{font-size:var(--text-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-muted)}
+    input[type="text"], select, textarea{width:100%;border-radius:var(--radius-md);border:1px solid rgba(40,37,29,.14);background:var(--color-bg);padding:0.8rem 0.9rem}
+    textarea{min-height:180px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.95rem;line-height:1.5}
+    .check{display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-sm);color:var(--color-text)}
+    .check input{width:18px;height:18px;accent-color:var(--color-primary)}
+    .helper{font-size:var(--text-sm);color:var(--color-text-muted)}
+    .status{font-size:var(--text-sm);color:var(--color-success);font-weight:700;min-height:1.5em}
+    .footer-note{font-size:var(--text-sm);color:var(--color-text-muted)}
+    @media (max-width:1100px){.app-shell{grid-template-columns:1fr}.panel{border-right:none;border-bottom:1px solid rgba(40,37,29,.12)}.field-grid{grid-template-columns:1fr 1fr}}
+    @media (max-width:720px){.panel,.main{padding:var(--space-4)}.header,.specimen-head{flex-direction:column;align-items:flex-start}.field-grid{grid-template-columns:1fr}.btn{width:100%}.btn-chip{width:auto}}
+    @media (prefers-reduced-motion: reduce){*{transition-duration:.01ms !important;scroll-behavior:auto !important}}
+  </style>
+</head>
+<body>
+  <a href="#main" class="sr-only">Skip to content</a>
+  <div class="app-shell">
+    <aside class="panel">
+      <div class="header">
+        <div>
+          <div class="brand">
+            <svg class="logo" viewBox="0 0 48 48" fill="none" aria-label="Colonic Polyp Sign-Out logo">
+              <rect x="6" y="8" width="36" height="32" rx="10" stroke="currentColor" stroke-width="3"></rect>
+              <path d="M16 24h16M24 16v16" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+            </svg>
+            <div>
+              <div class="tiny">Pathology tool</div>
+              <h1 class="title">Colonic Polyp Sign-Out</h1>
+            </div>
+          </div>
+          <p class="muted" style="margin-top:var(--space-3);max-width:32ch;">Generate standardized text for common colorectal polyp specimens, with specimen labels carried through to the diagnosis line.</p>
+        </div>
+        <div class="top-actions">
+          <button class="btn btn-secondary" id="themeToggle" data-theme-toggle aria-label="Switch to dark mode">☾</button>
+        </div>
+      </div>
+
+      <section class="card"><div class="card-pad">
+        <div class="toolbar">
+          <button class="btn btn-primary" id="addSpecimen">Add specimen</button>
+          <button class="btn btn-secondary" id="removeSpecimen">Remove last</button>
+          <button class="btn btn-secondary" id="loadExample">Load example</button>
+          <button class="btn btn-secondary" id="clearAll">Clear all</button>
+        </div>
+        <div style="margin-top:var(--space-4);display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap;">
+          <span class="count-pill"><span id="specimenCount">1</span> specimen(s)</span>
+          <p class="helper">Labels run from (A) to (J).</p>
+        </div>
+      </div></section>
+
+      <section class="card"><div class="card-pad">
+        <div class="tiny">Formatting</div>
+        <div class="checkbox-row" style="margin-top:var(--space-4);">
+          <label class="check"><input type="checkbox" id="includeHeader" checked> Include section headers</label>
+          <label class="check"><input type="checkbox" id="uppercaseDx" checked> Capitalise site and final diagnosis only</label>
+        </div>
+        <p class="helper" style="margin-top:var(--space-3);">When enabled, the diagnosis line is formatted like: (B) SIGMOID, lower sigmoid polyp 18 cm, polypectomy - TUBULAR ADENOMA WITH LOW GRADE DYSPLASIA.</p>
+      </div></section>
+
+      <p class="footer-note">Designed for rapid draft generation before final professional review.</p>
+    </aside>
+
+    <main class="main" id="main">
+      <section class="card"><div class="card-pad">
+        <div class="tiny">Specimens</div>
+        <p class="helper" style="margin-top:var(--space-2);">Choose site, polyp type, and dysplasia grade for each specimen.</p>
+        <div id="specimenContainer" class="specimen-grid" style="margin-top:var(--space-5);"></div>
+      </div></section>
+
+      <section class="card"><div class="card-pad">
+        <div class="tiny">Generated report</div>
+        <p class="helper" style="margin-top:var(--space-2);">The text updates automatically as you edit the form.</p>
+        <textarea id="output" spellcheck="false" aria-label="Generated sign-out text" style="margin-top:var(--space-4);"></textarea>
+        <div class="output-actions" style="margin-top:var(--space-4);">
+          <button class="btn btn-primary" id="copyOutput">Copy text</button>
+          <button class="btn btn-secondary" id="downloadTxt">Download .txt</button>
+        </div>
+        <div class="status" id="status"></div>
+      </div></section>
+    </main>
+  </div>
+
+  <script>
+    const letters = 'ABCDEFGHIJ'.split('');
+    const sites = ['Cecum','Ascending colon','Hepatic flexure','Transverse colon','Splenic flexure','Descending colon','Sigmoid','Rectosigmoid','Rectum','Colon, site not specified'];
+    const templates = {
+      tubularAdenoma: {
+        label: 'Tubular adenoma',
+        dysplasia: ['Low grade dysplasia', 'High grade dysplasia'],
+        micro: {
+          'Low grade dysplasia': 'Sections show a polypoid piece of large intestinal mucosa featuring tubular crypts with low grade dysplasia. There is no evidence of invasive malignancy.',
+          'High grade dysplasia': 'Sections show a polypoid piece of large intestinal mucosa featuring tubular crypts with high grade dysplasia. There is no evidence of invasive malignancy.'
+        },
+        diagnosis: {
+          'Low grade dysplasia': 'TUBULAR ADENOMA WITH LOW GRADE DYSPLASIA',
+          'High grade dysplasia': 'TUBULAR ADENOMA WITH HIGH GRADE DYSPLASIA'
+        }
+      },
+      tubulovillousAdenoma: {
+        label: 'Tubulovillous adenoma',
+        dysplasia: ['Low grade dysplasia', 'High grade dysplasia'],
+        micro: {
+          'Low grade dysplasia': 'Sections show a polypoid fragment of large intestinal mucosa with tubulovillous architecture and low grade dysplasia. There is no evidence of invasive malignancy.',
+          'High grade dysplasia': 'Sections show a polypoid fragment of large intestinal mucosa with tubulovillous architecture and high grade dysplasia. There is no evidence of invasive malignancy.'
+        },
+        diagnosis: {
+          'Low grade dysplasia': 'TUBULOVILLOUS ADENOMA WITH LOW GRADE DYSPLASIA',
+          'High grade dysplasia': 'TUBULOVILLOUS ADENOMA WITH HIGH GRADE DYSPLASIA'
+        }
+      },
+      villousAdenoma: {
+        label: 'Villous adenoma',
+        dysplasia: ['Low grade dysplasia', 'High grade dysplasia'],
+        micro: {
+          'Low grade dysplasia': 'Sections show a polypoid fragment of large intestinal mucosa with predominant villous architecture and low grade dysplasia. There is no evidence of invasive malignancy.',
+          'High grade dysplasia': 'Sections show a polypoid fragment of large intestinal mucosa with predominant villous architecture and high grade dysplasia. There is no evidence of invasive malignancy.'
+        },
+        diagnosis: {
+          'Low grade dysplasia': 'VILLOUS ADENOMA WITH LOW GRADE DYSPLASIA',
+          'High grade dysplasia': 'VILLOUS ADENOMA WITH HIGH GRADE DYSPLASIA'
+        }
+      },
+      sessileSerrated: {
+        label: 'Sessile serrated lesion / adenoma',
+        dysplasia: ['No dysplasia', 'Low grade dysplasia', 'High grade dysplasia'],
+        micro: {
+          'No dysplasia': 'Sections show a serrated polyp with architectural features in keeping with a sessile serrated lesion / adenoma. No cytological dysplasia is identified. There is no evidence of invasive malignancy.',
+          'Low grade dysplasia': 'Sections show a sessile serrated lesion / adenoma with superimposed low grade dysplasia. There is no evidence of invasive malignancy.',
+          'High grade dysplasia': 'Sections show a sessile serrated lesion / adenoma with superimposed high grade dysplasia. There is no evidence of invasive malignancy.'
+        },
+        diagnosis: {
+          'No dysplasia': 'SESSILE SERRATED LESION / ADENOMA',
+          'Low grade dysplasia': 'SESSILE SERRATED LESION / ADENOMA WITH LOW GRADE DYSPLASIA',
+          'High grade dysplasia': 'SESSILE SERRATED LESION / ADENOMA WITH HIGH GRADE DYSPLASIA'
+        }
+      },
+      hyperplasticPolyp: {
+        label: 'Hyperplastic polyp',
+        dysplasia: ['Not applicable'],
+        micro: {
+          'Not applicable': 'Sections show a polypoid piece of large intestinal mucosa featuring hyperplastic crypts with stellate-shaped lumina, in keeping with hyperplastic polyp. There is no evidence of dysplasia or malignancy.'
+        },
+        diagnosis: {
+          'Not applicable': 'HYPERPLASTIC POLYP'
+        }
+      },
+      traditionalSerrated: {
+        label: 'Traditional serrated adenoma',
+        dysplasia: ['Low grade dysplasia', 'High grade dysplasia'],
+        micro: {
+          'Low grade dysplasia': 'Sections show a serrated polyp with ectopic crypt formation and conventional low grade dysplasia, in keeping with a traditional serrated adenoma. There is no evidence of invasive malignancy.',
+          'High grade dysplasia': 'Sections show a serrated polyp with ectopic crypt formation and high grade dysplasia, in keeping with a traditional serrated adenoma. There is no evidence of invasive malignancy.'
+        },
+        diagnosis: {
+          'Low grade dysplasia': 'TRADITIONAL SERRATED ADENOMA WITH LOW GRADE DYSPLASIA',
+          'High grade dysplasia': 'TRADITIONAL SERRATED ADENOMA WITH HIGH GRADE DYSPLASIA'
+        }
+      }
+    };
+
+    const defaultState = () => ({ site: 'Sigmoid', type: 'tubularAdenoma', dysplasia: 'Low grade dysplasia', customSpecimen: '', comment: '' });
+    let specimens = [defaultState()];
+
+    const specimenContainer = document.getElementById('specimenContainer');
+    const output = document.getElementById('output');
+    const status = document.getElementById('status');
+    const specimenCount = document.getElementById('specimenCount');
+    const includeHeader = document.getElementById('includeHeader');
+    const uppercaseDx = document.getElementById('uppercaseDx');
+
+    function titleCaseSite(site){ return site === 'Colon, site not specified' ? 'Colon' : site; }
+    function specimenName(s){ return s.customSpecimen.trim() || `${titleCaseSite(s.site)} polyp`; }
+    function sentenceCaseDiagnosis(text){ return text.charAt(0) + text.slice(1).toLowerCase(); }
+    function buildDxLine(s, idx){
+      const siteText = uppercaseDx.checked ? (s.site === 'Colon, site not specified' ? 'COLON' : s.site.toUpperCase()) : titleCaseSite(s.site);
+      const specimenText = specimenName(s);
+      const diagnosisText = uppercaseDx.checked ? templates[s.type].diagnosis[s.dysplasia] : sentenceCaseDiagnosis(templates[s.type].diagnosis[s.dysplasia]);
+      return `(${letters[idx]}) ${siteText}, ${specimenText}, polypectomy - ${diagnosisText}.`;
+    }
+    function makeSelect(options, value){ return options.map(opt => `<option value="${opt}" ${opt===value?'selected':''}>${opt}</option>`).join(''); }
+
+    function renderSpecimens(){
+      specimenContainer.innerHTML = '';
+      specimens.forEach((specimen, idx) => {
+        const key = letters[idx];
+        const template = templates[specimen.type];
+        if (!template.dysplasia.includes(specimen.dysplasia)) specimen.dysplasia = template.dysplasia[0];
+        const wrap = document.createElement('section');
+        wrap.className = 'specimen';
+        wrap.innerHTML = `
+          <div class="specimen-head">
+            <div>
+              <div class="tiny">Specimen (${key})</div>
+              <div class="specimen-title">${specimenName(specimen)}</div>
+            </div>
+            <button class="btn btn-secondary btn-chip" data-action="duplicate" data-index="${idx}">Duplicate</button>
+          </div>
+          <div class="field-grid">
+            <div class="field">
+              <label for="site-${idx}">Site</label>
+              <select id="site-${idx}" data-field="site" data-index="${idx}">${makeSelect(sites, specimen.site)}</select>
+            </div>
+            <div class="field">
+              <label for="type-${idx}">Polyp type</label>
+              <select id="type-${idx}" data-field="type" data-index="${idx}">${Object.entries(templates).map(([value, obj]) => `<option value="${value}" ${value===specimen.type?'selected':''}>${obj.label}</option>`).join('')}</select>
+            </div>
+            <div class="field">
+              <label for="dysplasia-${idx}">Dysplasia</label>
+              <select id="dysplasia-${idx}" data-field="dysplasia" data-index="${idx}">${makeSelect(template.dysplasia, specimen.dysplasia)}</select>
+            </div>
+            <div class="field">
+              <button class="btn btn-secondary" data-action="delete" data-index="${idx}" ${specimens.length===1?'disabled':''}>Delete</button>
+            </div>
+            <div class="field" style="grid-column:1 / -1;">
+              <label for="custom-${idx}">Specimen line override</label>
+              <input id="custom-${idx}" type="text" data-field="customSpecimen" data-index="${idx}" value="${specimen.customSpecimen.replace(/"/g,'&quot;')}" placeholder="e.g. lower sigmoid polyp 18 cm">
+            </div>
+            <div class="field" style="grid-column:1 / -1;">
+              <label for="comment-${idx}">Optional comment</label>
+              <input id="comment-${idx}" type="text" data-field="comment" data-index="${idx}" value="${specimen.comment.replace(/"/g,'&quot;')}" placeholder="Appends a final sentence to microscopic examination.">
+            </div>
+          </div>`;
+        specimenContainer.appendChild(wrap);
+      });
+      specimenCount.textContent = specimens.length;
+      bindSpecimenEvents();
+      updateOutput();
+    }
+
+    function bindSpecimenEvents(){
+      specimenContainer.querySelectorAll('[data-field]').forEach(el => { el.addEventListener('input', handleFieldChange); el.addEventListener('change', handleFieldChange); });
+      specimenContainer.querySelectorAll('[data-action]').forEach(el => el.addEventListener('click', handleAction));
+    }
+
+    function handleFieldChange(e){
+      const index = Number(e.target.dataset.index);
+      const field = e.target.dataset.field;
+      specimens[index][field] = e.target.value;
+      if (field === 'type') {
+        const allowed = templates[e.target.value].dysplasia;
+        if (!allowed.includes(specimens[index].dysplasia)) specimens[index].dysplasia = allowed[0];
+        renderSpecimens();
+        return;
+      }
+      updateOutput();
+      if (field === 'site' || field === 'customSpecimen') {
+        e.target.closest('.specimen').querySelector('.specimen-title').textContent = specimenName(specimens[index]);
+      }
+    }
+
+    function handleAction(e){
+      const index = Number(e.target.dataset.index);
+      const action = e.target.dataset.action;
+      if (action === 'delete' && specimens.length > 1) specimens.splice(index,1);
+      if (action === 'duplicate' && specimens.length < 10) specimens.splice(index + 1, 0, {...specimens[index]});
+      renderSpecimens();
+    }
+
+    function buildReport(){
+      const specimenBlock = specimens.map((s, idx) => `(${letters[idx]}) ${specimenName(s)}`).join('\n');
+      const microBlock = specimens.map((s, idx) => {
+        let text = templates[s.type].micro[s.dysplasia];
+        if (s.comment.trim()) text += ` ${s.comment.trim()}`;
+        return `(${letters[idx]})  ${text}`;
+      }).join('\n\n');
+      const dxBlock = specimens.map((s, idx) => buildDxLine(s, idx)).join('\n');
+      if (!includeHeader.checked) return `${specimenBlock}\n\n${microBlock}\n\n${dxBlock}`;
+      return `SPECIMEN:\n${specimenBlock}\n\nMICROSCOPIC EXAMINATION:\n${microBlock}\n\nDIAGNOSIS:\n${dxBlock}`;
+    }
+
+    function updateOutput(){ output.value = buildReport(); status.textContent = ''; }
+    document.getElementById('addSpecimen').addEventListener('click', () => { if (specimens.length >= 10) { status.textContent = 'Maximum of 10 specimens reached.'; return; } specimens.push(defaultState()); renderSpecimens(); });
+    document.getElementById('removeSpecimen').addEventListener('click', () => { if (specimens.length > 1) specimens.pop(); renderSpecimens(); });
+    document.getElementById('clearAll').addEventListener('click', () => { specimens = [defaultState()]; renderSpecimens(); });
+    document.getElementById('loadExample').addEventListener('click', () => {
+      specimens = [{ site: 'Sigmoid', type: 'tubularAdenoma', dysplasia: 'Low grade dysplasia', customSpecimen: 'lower sigmoid polyp 18 cm', comment: '' }];
+      includeHeader.checked = true; uppercaseDx.checked = true; renderSpecimens();
+    });
+    includeHeader.addEventListener('change', updateOutput);
+    uppercaseDx.addEventListener('change', updateOutput);
+    document.getElementById('copyOutput').addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(output.value); status.textContent = 'Copied to clipboard.'; }
+      catch { output.select(); document.execCommand('copy'); status.textContent = 'Copied to clipboard.'; }
+    });
+    document.getElementById('downloadTxt').addEventListener('click', () => {
+      const blob = new Blob([output.value], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'colonic-polyp-signout.txt'; a.click(); URL.revokeObjectURL(a.href); status.textContent = 'Text file downloaded.';
+    });
+    (function(){ const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement; let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'; r.setAttribute('data-theme',d); const setIcon=()=>{t.textContent=d==='dark'?'☀':'☾'; t.setAttribute('aria-label','Switch to '+(d==='dark'?'light':'dark')+' mode');}; setIcon(); t&&t.addEventListener('click',()=>{d=d==='dark'?'light':'dark'; r.setAttribute('data-theme',d); setIcon();}); })();
+    renderSpecimens();
+  </script>
+</body>
+</html>
