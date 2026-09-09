@@ -15,7 +15,9 @@ const KEY = 'signout.config.v1';
 export function loadConfig() {
   try {
     const raw = localStorage.getItem(KEY);
-    return { ...DEFAULTS, ...(raw ? JSON.parse(raw) : {}) };
+    const saved = raw ? JSON.parse(raw) : {};
+    for (const k of Object.keys(saved)) if (saved[k] === '' || saved[k] == null) delete saved[k]; // blanks never mask defaults
+    return { ...DEFAULTS, ...saved };
   } catch {
     return { ...DEFAULTS };
   }

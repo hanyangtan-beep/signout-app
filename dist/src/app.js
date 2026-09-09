@@ -1,14 +1,14 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadAll } from './registry.js';
+import { loadAll } from './registry.js?v=mtu7szsw';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generate
-} from './engine.js';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js';
-import { loadConfig, saveConfig } from './config.js';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js';
-import { normaliseAccession, phiWarnings } from './docformat.js';
+} from './engine.js?v=mtu7szsw';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtu7szsw';
+import { loadConfig, saveConfig } from './config.js?v=mtu7szsw';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtu7szsw';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtu7szsw';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtu7szsw';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
