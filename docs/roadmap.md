@@ -12,10 +12,10 @@ Companion to "Sign-out App — Design Suggestions". Phases are sequential; each 
 - Copy gastric-biopsy-signout-v8.html and colonic-polyp-signout.html into `legacy/`.
 - Capture golden fixtures: for each app, 5–8 input states (normal, H. pylori gastritis with IM, HGD adenoma, 10-part polyp case, etc.) → exact microscopy and diagnosis text output.
 - Node test runner (`node --test`) that will later assert the new engine reproduces these byte-for-byte.
-- Hosting: GitHub Pages (static app, no PHI in the code; all case data lives in Drive). Reachable from any browser, no Mac mini dependency.
-- Create the Google Cloud project and OAuth client now so Drive auth is not a blocker later.
+- Hosting: built and published inside Perplexity to a private `pplx.app` URL (static app, no PHI in the code; all case data lives in Drive). No GitHub, no Mac mini.
+- The Google Cloud OAuth client needs the final pplx.app origin, so it is created at the start of Phase 2, right after the first publish fixes the subdomain.
 
-**Done when:** `npm test` runs the fixtures against the legacy generator functions and passes.
+**Done when:** `npm test` runs the fixtures against the legacy generator functions and passes. ✅ Completed 2026-09-09 (16 fixtures, 18 tests, DOM cross-check).
 
 ---
 
@@ -28,7 +28,8 @@ Companion to "Sign-out App — Design Suggestions". Phases are sequential; each 
 - Port `buildMicroscopy()` / `buildDiagnosis()` into `generators/gastric.js` and `generators/colonic.js` as pure functions `(partValues, ctx) → string`.
 - Generic renderer: part tabs A–J, field groups, live preview, Generate / Copy diagnosis / Copy report / Clear / Load example.
 - Style layer: British spelling table, ASCII normalisation, capitalisation rules for diagnosis lines, paragraph joining.
-- `sessionStorage` cache of the in-progress case (refresh safety only).
+- In-memory case state with `sessionStorage` cache when available (the in-thread preview blocks storage; the published site allows it).
+- Deploy the in-thread preview for visual QA, then publish to `https://<subdomain>.pplx.app` (you pick the subdomain, e.g. `signout`). This fixes the origin needed for the OAuth client.
 
 **Done when:** all Phase 0 fixtures pass through the new engine unchanged, and you sign out a week of gastric/polyp cases in it without falling back to the old apps.
 
@@ -38,12 +39,13 @@ Companion to "Sign-out App — Design Suggestions". Phases are sequential; each 
 
 **Goal:** Drive is the only persistence layer from the first real case onward, so everything is readable from Perplexity in a browser.
 
-- Google Identity Services sign-in with `drive.file` + `spreadsheets` scopes.
+- One-time Google Cloud setup (10 minutes, guided): project, enable Drive/Sheets/Docs APIs, consent screen in Testing with you as test user, Web OAuth client with the pplx.app origin. Client ID goes into `src/config.js`.
+- Google Identity Services token flow in the browser with `drive.file` + `spreadsheets` + `documents` scopes.
 - `Sign-out cases` Google Sheet: one row per case (accession, date, status, templates, mode, Doc link, `case_json`). This is the app's case list.
 - `saveCase(case)`: upsert the Sheet row by normalised accession, and update-or-create the Google Doc in "Pathology reports" with headings Clinical history / Macroscopic / Block key / Microscopic / Diagnosis.
 - `openCase(accession)`: load `case_json` from the Sheet, re-render the form, regenerate output.
 - Accession-only guard (regex for names/HKID patterns) on free-text fields before save.
-- Fallback path documented: Apps Script web app bound to the same Sheet if OAuth setup stalls.
+- Drive layer is tested against the published URL (sign-in pop-ups do not work inside the preview iframe).
 
 **Done when:** the 09:00 TAT job scores an app-generated Doc as "complete" with no manual editing, a case reopened from the Sheet is identical to what was saved, and Perplexity can read both the Doc and the Sheet row when asked.
 
@@ -121,7 +123,8 @@ Each template ships with fixtures, a "Load example", and its snippet set (H. pyl
 ## Risks and mitigations
 
 - **Wording drift during refactor** → golden fixtures from Phase 0, run on every change.
-- **OAuth friction** → fall back to Apps Script web app if Google Cloud setup stalls; same Doc shape.
+- **OAuth friction** → the consent screen stays in Testing mode (single test user), avoiding verification; if `drive.file` cannot write into the existing folder, widen to the `drive` scope.
+- **Preview iframe limits** → sign-in and storage are exercised on the published pplx.app URL, not the in-thread preview; re-publish after each Drive-layer change.
 - **PHI on personal Drive** → accession-only guard on free text; no names or HKIDs ever entered.
 - **Drive/Sheets API quota or outage** → `sessionStorage` cache of the open case and a retry on save; Copy buttons always work as a manual fallback into the LIS.
 - **Staging rule errors** → unit tests per pT/pN boundary from the CAP protocol tables; edition stamped on output so errors are traceable.

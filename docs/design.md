@@ -88,7 +88,8 @@ Match the shape your TAT/completeness workflow already parses: a Google Doc name
   2. A row in a `Sign-out cases` Google Sheet: accession, date, status, templates, mode, Doc link, and a `case_json` column holding the full structured state. Sheets are searchable and readable through Perplexity, unlike Drive `appProperties` or hidden metadata, so avoid those.
 - **Reopen from Drive**: the app's case list is the Sheet; opening a case loads `case_json`, re-renders the form, and regenerates output. Editing is always against Drive state.
 - **Idempotent save**: search the folder by normalised accession → update Doc if present, else create; upsert the Sheet row by accession. Never duplicate.
-- **Auth**: Drive REST API + Google Identity Services in the browser with `drive.file` scope (only files the app created) plus `spreadsheets` for the case Sheet — no server. Fallback: a Google Apps Script web app bound to the Sheet, if OAuth setup stalls.
+- **Auth**: Google Identity Services token flow in the browser with `drive.file` (files the app creates), `spreadsheets` and `documents` scopes — no server anywhere. The OAuth consent screen stays in *Testing* with you as the only test user, so no Google verification is needed. If `drive.file` cannot place new Docs into the existing "Pathology reports" folder, widen to the full `drive` scope (acceptable for a single-user app).
+- **Hosting**: the published pplx.app site runs outside the preview iframe, so Google sign-in pop-ups and `sessionStorage` work there. Inside the in-thread preview they do not, so development testing of the Drive layer happens against the published URL.
 - **Transient cache only**: keep the in-progress case in `sessionStorage` so a refresh does not lose work; clear it on successful save. Any "pending save" indicator is a bug to fix, not a feature.
 - Keep "Copy diagnosis" and "Copy full report" for pasting into the LIS.
 
@@ -130,4 +131,6 @@ Data-governance note: only accession numbers and report text should reach a pers
 
 ## 9. Stack
 
-Single-page app, vanilla JS or Preact/Svelte, no build step required (keeps the single-file-HTML feel you already have). Host on GitHub Pages (like QMH) so it is reachable from any browser, including alongside Perplexity, with no Mac mini or Tailscale dependency. Schemas and snippets as plain JSON/Markdown files under version control; store a copy of the schema set in Drive too if you want Perplexity to reference field definitions. Node-based test runner for golden outputs.
+Single-page static app, vanilla JS, no build step (keeps the single-file-HTML feel you already have). Built and hosted entirely inside Perplexity: previewed with the in-thread app preview during development, then published to a permanent private `https://<subdomain>.pplx.app` URL. No GitHub, no Mac mini, no Tailscale. The project folder lives in the Perplexity workspace and is versioned with git there; a zip is shared after each phase.
+
+Because a published Perplexity app has no backend access to connectors, all Drive traffic goes browser → Google directly via Google Identity Services (token flow) and the Drive/Sheets/Docs REST APIs. The only external setup is a one-time OAuth client in Google Cloud, whose authorised origin is the pplx.app URL. Schemas and snippets ship as JSON/Markdown inside the static bundle; a copy of the schema set can also be saved to Drive so Perplexity can reference field definitions. Node-based test runner for golden outputs.

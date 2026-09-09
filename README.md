@@ -2,6 +2,8 @@
 
 Schema-driven pathology sign-out app. Small biopsies (gastric, colonic polyp, then prostate, IBD, …) and CAP/AJCC synoptic or hybrid resection reports, with Google Drive as the single source of truth so every case is readable from Perplexity in a browser.
 
+Built and hosted inside Perplexity: developed in the workspace, previewed in-thread, published to a private `pplx.app` URL. The browser talks to Google Drive directly via Google sign-in; there is no server and no GitHub.
+
 Design: `docs/design.md`. Roadmap: `docs/roadmap.md`.
 
 ## Status: Phase 0 complete
@@ -11,8 +13,7 @@ Design: `docs/design.md`. Roadmap: `docs/roadmap.md`.
 - [x] Legacy report logic extracted into pure Node functions (`legacy/*-legacy.js`)
 - [x] 16 golden fixtures (8 gastric, 8 colonic) captured from the **original HTML apps running in jsdom** and cross-checked against the extracted functions
 - [x] `npm test` — 18 passing
-- [ ] Google Cloud project + OAuth client (manual, see below)
-- [ ] GitHub repo + Pages enabled (manual, see below)
+- [ ] Google Cloud project + OAuth client (manual, done at start of Phase 2 once the pplx.app subdomain is fixed — see below)
 
 ## Commands
 
@@ -59,22 +60,18 @@ These are reproduced faithfully by the fixtures. Each is a candidate for a delib
 9. **"Colon, site not specified"** → `COLON` / `Colon`.
 10. **Cecum** is spelt the American way in the site list; user-entered text is not altered.
 
-## Manual setup (do once)
+## Manual setup (do once, at the start of Phase 2)
 
-### GitHub + Pages
-
-1. Create a private or public repo `signout-app` on GitHub; push this folder (`git init` already done, initial commit present).
-2. Settings → Pages → Source: *Deploy from a branch*, branch `main`, folder `/ (root)` (Phase 1 will add `src/index.html`; until then Pages serves nothing useful).
-3. Note the URL `https://<user>.github.io/signout-app/` — it is the OAuth redirect origin below.
-
-### Google Cloud project + OAuth client (for Phase 2)
+### Google Cloud project + OAuth client
 
 1. [console.cloud.google.com](https://console.cloud.google.com) → New project `signout-app`.
 2. APIs & Services → Library → enable **Google Drive API**, **Google Sheets API**, **Google Docs API**.
 3. APIs & Services → OAuth consent screen → External, app name `Sign-out`, your Gmail as support and developer contact. Scopes: `.../auth/drive.file`, `.../auth/spreadsheets`, `.../auth/documents`. Add yourself under Test users (the app can stay in *Testing*; no verification needed for a single user).
-4. Credentials → Create credentials → OAuth client ID → Web application. Authorised JavaScript origins: `https://<user>.github.io` and `http://localhost:8080` (for local dev). No redirect URIs needed for Google Identity Services token flow.
+4. Credentials → Create credentials → OAuth client ID → Web application. Authorised JavaScript origin: `https://<subdomain>.pplx.app` (the published app URL from Phase 1). No redirect URIs needed for the Google Identity Services token flow.
 5. Copy the Client ID into `src/config.js` in Phase 2 (it is public by design; there is no client secret in the token flow).
 6. In Drive, note the folder ID of **Pathology reports** (already known: `1IDOdz37IQJaYDX7PVFlqB7VFzyfiNXMM`) and create an empty Google Sheet **Sign-out cases**; its ID goes into the same config.
+
+Hosting is handled from the Perplexity thread: "deploy preview" for QA, "publish" for the permanent URL. Nothing else to configure.
 
 ## Data policy
 
