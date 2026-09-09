@@ -16,8 +16,13 @@ export function loadConfig() {
   try {
     const raw = localStorage.getItem(KEY);
     const saved = raw ? JSON.parse(raw) : {};
-    for (const k of Object.keys(saved)) if (saved[k] === '' || saved[k] == null) delete saved[k]; // blanks never mask defaults
-    return { ...DEFAULTS, ...saved };
+    for (const k of Object.keys(saved)) {
+      if (typeof saved[k] === 'string') saved[k] = saved[k].trim();
+      if (saved[k] === '' || saved[k] == null) delete saved[k]; // blanks never mask defaults
+    }
+    // A mistyped or truncated client id yields Google's "invalid_client"; fall back to the shipped one.
+    if (saved.clientId && !/^\d+-[a-z0-9]+\.apps\.googleusercontent\.com$/.test(saved.clientId)) delete saved.clientId;
+    return { ...DEFAULTS, ...saved };    return { ...DEFAULTS, ...saved };
   } catch {
     return { ...DEFAULTS };
   }
