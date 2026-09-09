@@ -104,7 +104,7 @@ Each template ships with fixtures, a "Load example", and its snippet set (H. pyl
 - Analytics over the `Sign-out cases` Sheet, run either in-app or by asking Perplexity: H. pylori rate, adenoma detection, Grade Group distribution, IM prevalence.
 - Perplexity workflows on top of Drive: review or rewrite a draft Doc in your style, check a synoptic against the CAP protocol, weekly summary of signed cases.
 - Diff-highlight in preview; dark mode; iPad layout; shared look with PathExam.
-- Optional: publish schemas (no PHI) to GitHub Pages for colleagues.
+- Optional: share the schema set (no PHI) with colleagues as a public pplx.app page.
 
 ---
 
