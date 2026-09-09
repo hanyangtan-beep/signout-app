@@ -49,6 +49,8 @@ Code complete 2026-09-09 (33 tests; save → update → open round-trip verified
 - [x] Case details on every template: accession (normalised on blur), status draft / ready / signed, clinical history, macroscopic, block key. Cmd/Ctrl+S saves; the status bar shows Saved / Edited since save with a link to the Doc; closing the tab with unsaved edits prompts.
 - [x] PHI guard (`src/docformat.js`): warns before saving on HKID-with-check-digit, honorific + name, phone number, or "DOB"; accession patterns and clinician names (Dr …) pass.
 - [x] Published 2026-09-09 at `https://han-signout.pplx.app` (site id 50c90ba7-8e5b-49c2-8462-5db64121e8d4).
+- [x] Google Cloud project `han-signout-app`: Drive + Sheets APIs, consent screen (External / Testing), test user, web client `Sign-out web` — done 2026-09-09.
+- [x] Sign-in switched from the GIS pop-up to the OAuth implicit redirect flow (pplx.app's COOP header kills pop-ups); action resumes after the round trip.
 - [ ] One-time Google Cloud set-up following `docs/google-setup.md` (project, Drive + Sheets APIs, consent screen in Testing with you as test user, Web OAuth client with the pplx.app origin, paste the client id into Settings).
 - [ ] First real save; if `drive.file` cannot place the Doc in the existing folder, switch Settings → Drive scope to `drive`.
 

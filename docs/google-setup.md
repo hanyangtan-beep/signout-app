@@ -23,7 +23,9 @@ The app signs into Google in your browser and writes straight to your Drive. Not
 1. APIs & Services → Credentials → Create credentials → **OAuth client ID**.
 2. Application type **Web application**, name `Sign-out web`.
 3. **Authorised JavaScript origins**: `https://han-signout.pplx.app` (exactly, no trailing slash). Add `http://localhost:3000` too if you ever run it locally.
-4. Leave redirect URIs empty (the token flow uses a pop-up, no redirect).
+4. **Authorised redirect URIs**: `https://han-signout.pplx.app/` (with the trailing slash; it must equal the page URL exactly). Add `http://localhost:3000/` too for local runs.
+
+   Why a redirect and not a pop-up: the pplx.app host sends `Cross-Origin-Opener-Policy: same-origin`, which breaks the Google Identity Services pop-up ("Popup window closed"). The app therefore uses the OAuth 2.0 implicit flow: Save or Open sends the whole tab to Google and back, the draft is kept in sessionStorage across the trip, and the interrupted action resumes automatically.
 5. Create and copy the client id (`…apps.googleusercontent.com`). There is no secret to keep.
 
 ## 4. In the app

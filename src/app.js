@@ -6,7 +6,7 @@ import {
 } from './engine.js';
 import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js';
 import { loadConfig, saveConfig } from './config.js';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut } from './gauth.js';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js';
 import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js';
 import { normaliseAccession, phiWarnings } from './docformat.js';
 
@@ -384,8 +384,9 @@ function renderAccount() {
   nodes.google.classList.toggle('signed', isSignedIn());
 }
 
-async function ensureSignedIn(interactive = true) {
-  const t = await getToken(state.config, { interactive });
+async function ensureSignedIn(interactive = true, action = 'signin') {
+  setActiveAction(action);
+  const t = await getToken(state.config, { interactive, action });
   if (!currentUser()) await fetchUserInfo(t).catch(() => null);
   renderAccount();
   return t;
@@ -399,7 +400,8 @@ async function doSave() {
   if (warnings.length && !window.confirm(`Possible patient identifiers:\n\n${warnings.join('\n')}\n\nOnly accession numbers and report text should go to Drive. Save anyway?`)) return;
   try {
     state.saving = true; renderSaveStatus();
-    await ensureSignedIn(true);
+    cacheCase(state.caseState); // survives the Google round trip if sign-in is needed
+    await ensureSignedIn(true, 'save');
     await driveSave(state.config, state.caseState, state.lastOut);
     state.dirty = false;
     cacheCase(state.caseState);
@@ -438,7 +440,7 @@ async function doOpen() {
   nodes.openSearch.value = '';
   nodes.dlgOpen.showModal();
   try {
-    await ensureSignedIn(true);
+    await ensureSignedIn(true, 'open');
     state.cases = await listCases(state.config);
     renderCaseList();
   } catch (err) {
@@ -470,7 +472,7 @@ function initDrive() {
   nodes.openSearch.addEventListener('input', (e) => renderCaseList(e.target.value));
   nodes.google.addEventListener('click', async () => {
     if (!state.config.clientId) { openSettings(); return toast('Paste the Google OAuth client id first'); }
-    try { await ensureSignedIn(true); toast(`Signed in as ${currentUser() || 'Google user'}`); } catch (err) { toast(err.message); }
+    try { await ensureSignedIn(true, 'signin'); toast(`Signed in as ${currentUser() || 'Google user'}`); } catch (err) { toast(err.message); }
   });
   nodes.settings.addEventListener('click', openSettings);
   nodes.settingsForm.addEventListener('submit', (e) => {
@@ -484,7 +486,8 @@ function initDrive() {
     toast('Settings saved');
   });
   nodes.signout.addEventListener('click', () => { signOut(); renderAccount(); nodes.dlgSettings.close(); toast('Signed out'); });
-  window.addEventListener('beforeunload', (e) => { if (state.dirty && state.caseState?.drive?.savedAt) { e.preventDefault(); e.returnValue = ''; } });
+  window.addEventListener('beforeunload', (e) => { if (state.dirty && !state.leaving && state.caseState?.drive?.savedAt) { e.preventDefault(); e.returnValue = ''; } });
+  document.addEventListener('signout:redirect', () => { state.leaving = true; cacheCase(state.caseState); });
   renderAccount();
 }
 
@@ -503,13 +506,19 @@ function initKeys() {
 // ---------- boot ----------
 async function boot() {
   initTheme();
+  const back = consumeRedirect(); // did Google just send us back here?
   state.templates = await loadAll();
   const saved = loadCase();
   initDrive();
   if (saved && state.templates[saved.schemaId]) setCase(saved, 0);
   else newCase(Object.keys(state.templates)[0]);
-  // Silent sign-in if a client id is configured (no pop-up unless consent is needed).
-  if (state.config.clientId) ensureSignedIn(false).catch(() => {});
+  if (isSignedIn() && !currentUser()) fetchUserInfo(await getToken(state.config, { interactive: false })).then(renderAccount).catch(() => {});
+  if (back?.error) toast(back.error === 'access_denied' ? 'Google sign-in was cancelled' : `Google sign-in failed: ${back.error}`);
+  else if (back?.token) {
+    if (back.action === 'save') { state.dirty = true; queueMicrotask(doSave); }
+    else if (back.action === 'open') queueMicrotask(doOpen);
+    else toast('Signed in');
+  }
 
   nodes.addPart.addEventListener('click', addPart);
   nodes.example.addEventListener('click', loadExample);
