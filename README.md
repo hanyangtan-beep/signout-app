@@ -66,19 +66,12 @@ These are reproduced faithfully by the fixtures. Each is a candidate for a delib
 9. **"Colon, site not specified"** → `COLON` / `Colon`.
 10. **Cecum** is spelt the American way in the site list; user-entered text is not altered.
 
-## Manual setup (do once, at the start of Phase 2)
+## Manual setup (do once, after publishing)
 
-### Google Cloud project + OAuth client
-
-1. [console.cloud.google.com](https://console.cloud.google.com) → New project `signout-app`.
-2. APIs & Services → Library → enable **Google Drive API**, **Google Sheets API**, **Google Docs API**.
-3. APIs & Services → OAuth consent screen → External, app name `Sign-out`, your Gmail as support and developer contact. Scopes: `.../auth/drive.file`, `.../auth/spreadsheets`, `.../auth/documents`. Add yourself under Test users (the app can stay in *Testing*; no verification needed for a single user).
-4. Credentials → Create credentials → OAuth client ID → Web application. Authorised JavaScript origin: `https://<subdomain>.pplx.app` (the published app URL from Phase 1). No redirect URIs needed for the Google Identity Services token flow.
-5. Copy the Client ID into `src/config.js` in Phase 2 (it is public by design; there is no client secret in the token flow).
-6. In Drive, note the folder ID of **Pathology reports** (already known: `1IDOdz37IQJaYDX7PVFlqB7VFzyfiNXMM`) and create an empty Google Sheet **Sign-out cases**; its ID goes into the same config.
+Follow `docs/google-setup.md`: Google Cloud project, enable Drive + Sheets APIs, consent screen in Testing with you as test user, Web OAuth client whose authorised JavaScript origin is `https://<subdomain>.pplx.app`, then paste the client id into the app's Settings (gear icon). The `Sign-out cases` Sheet is created automatically on first save; the "Pathology reports" folder id is preset.
 
 Hosting is handled from the Perplexity thread: "deploy preview" for QA, "publish" for the permanent URL. Nothing else to configure.
 
 ## Data policy
 
-Only accession numbers and report text are ever written to Drive. No patient names or HKIDs are entered anywhere in the app; Phase 2 adds a regex guard on free-text fields.
+Only accession numbers and report text are ever written to Drive. No patient names or HKIDs are entered anywhere in the app; a regex guard on free-text fields warns before a save that looks like it contains an HKID, a name, a phone number or a date of birth.
