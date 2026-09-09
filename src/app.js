@@ -4,7 +4,11 @@ import { loadAll } from './registry.js';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generate
 } from './engine.js';
-import { loadCase, saveCase, clearCase, copyText } from './store.js';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js';
+import { loadConfig, saveConfig } from './config.js';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut } from './gauth.js';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js';
+import { normaliseAccession, phiWarnings } from './docformat.js';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -21,10 +25,21 @@ const el = (tag, attrs = {}, ...children) => {
 
 const state = {
   templates: {},          // id -> { schema, generator }
-  caseState: null,        // { schemaId, caseTitle, options, parts }
+  caseState: null,        // { schemaId, caseTitle, options, parts, meta, drive }
   activePart: 0,
-  lastDx: ''
+  lastOut: null,
+  config: loadConfig(),
+  dirty: false,           // edited since last Drive save
+  saving: false,
+  cases: []               // last fetched Sheet rows for the Open dialog
 };
+
+const META_FIELDS = ['accession', 'status', 'clinical', 'macro', 'blockKey'];
+function ensureMeta(caseState) {
+  caseState.meta = { accession: '', status: 'draft', clinical: '', macro: '', blockKey: '', ...(caseState.meta || {}) };
+  caseState.drive = caseState.drive || null;
+  return caseState;
+}
 
 const nodes = {
   nav: $('#template-nav'),
@@ -39,6 +54,17 @@ const nodes = {
   example: $('#btn-example'),
   newCase: $('#btn-new'),
   theme: $('#theme-toggle'),
+  open: $('#btn-open'),
+  save: $('#btn-save'),
+  google: $('#btn-google'),
+  settings: $('#btn-settings'),
+  dlgOpen: $('#dlg-open'),
+  openSearch: $('#open-search'),
+  openList: $('#open-list'),
+  dlgSettings: $('#dlg-settings'),
+  settingsForm: $('#settings-form'),
+  signout: $('#btn-signout'),
+  meta: Object.fromEntries(META_FIELDS.map((k) => [k, $(`#meta-${k}`)])),
   statusTemplate: $('#status-template'),
   statusSave: $('#status-save'),
   toast: $('#toast')
@@ -72,7 +98,8 @@ function toast(msg) {
 
 // ---------- state changes ----------
 function setCase(caseState, activePart = 0) {
-  state.caseState = caseState;
+  state.caseState = ensureMeta(caseState);
+  state.dirty = false;
   state.activePart = Math.min(activePart, caseState.parts.length - 1);
   render();
 }
@@ -86,7 +113,8 @@ function loadExample() {
   const s = schema();
   if (!s.example) return toast('No example for this template');
   const ex = JSON.parse(JSON.stringify(s.example));
-  setCase({ schemaId: s.id, schemaVersion: s.version, caseTitle: ex.caseTitle || '', options: { ...ex.options }, parts: ex.parts }, 0);
+  const meta = state.caseState?.meta;
+  setCase({ schemaId: s.id, schemaVersion: s.version, caseTitle: ex.caseTitle || '', options: { ...ex.options }, parts: ex.parts, meta: { ...meta, accession: meta?.accession || '' } }, 0);
   toast('Example loaded');
 }
 
@@ -96,6 +124,7 @@ function switchTemplate(id) {
 }
 
 function addPart() {
+  markDirty();
   const s = schema();
   const parts = state.caseState.parts;
   if (parts.length >= (s.maxParts || 10)) return toast(`Maximum ${s.maxParts} parts`);
@@ -108,6 +137,7 @@ function addPart() {
 function removePart(i) {
   const parts = state.caseState.parts;
   if (parts.length === 1) return toast('A case needs at least one part');
+  markDirty();
   parts.splice(i, 1);
   relabel(parts);
   state.activePart = Math.max(0, Math.min(state.activePart, parts.length - 1));
@@ -115,6 +145,7 @@ function removePart(i) {
 }
 
 function resetPart(i) {
+  markDirty();
   const s = schema();
   state.caseState.parts[i] = createPart(s, i);
   render();
@@ -122,12 +153,16 @@ function resetPart(i) {
 
 function copyFromPrevious(i) {
   if (i === 0) return;
+  markDirty();
   const prev = state.caseState.parts[i - 1];
   state.caseState.parts[i].values = { ...prev.values };
   render();
 }
 
+function markDirty() { if (!state.dirty) { state.dirty = true; renderSaveStatus(); } }
+
 function setValue(fieldId, value) {
+  markDirty();
   const part = activePart();
   part.values[fieldId] = value;
   normalisePart(schema(), part);
@@ -143,8 +178,9 @@ function render() {
   renderOptions();
   renderReport();
   nodes.statusTemplate.textContent = `${schema().name} · v${schema().version} · ${state.caseState.parts.length} part${state.caseState.parts.length === 1 ? '' : 's'}`;
-  const ok = saveCase(state.caseState);
-  nodes.statusSave.textContent = ok ? 'Kept in this tab until closed. Drive storage arrives in Phase 2.' : 'Not saved in preview. Drive storage arrives in Phase 2.';
+  cacheCase(state.caseState);
+  renderMeta();
+  renderSaveStatus();
 }
 
 function renderNav() {
@@ -161,7 +197,7 @@ function renderCaseFields() {
     const id = `case-${f.id}`;
     const input = el('input', {
       class: 'input', id, type: 'text', placeholder: f.placeholder || '', value: state.caseState[f.id] || '',
-      oninput: (e) => { state.caseState[f.id] = e.target.value; renderReport(); saveCase(state.caseState); }
+      oninput: (e) => { markDirty(); state.caseState[f.id] = e.target.value; renderReport(); cacheCase(state.caseState); }
     });
     return el('div', { class: 'field' }, el('label', { for: id, text: f.label }), input,
       f.help ? el('div', { class: 'field-help', text: f.help }) : null);
@@ -192,7 +228,7 @@ function renderField(field, part, index) {
   if (field.type === 'text' || field.type === 'textarea') {
     const input = el(field.type === 'textarea' ? 'textarea' : 'input', {
       class: 'input', id, placeholder: field.placeholder || '', rows: field.type === 'textarea' ? 2 : undefined,
-      oninput: (e) => { part.values[field.id] = e.target.value; renderReport(); saveCase(state.caseState); }
+      oninput: (e) => { markDirty(); part.values[field.id] = e.target.value; renderReport(); cacheCase(state.caseState); }
     });
     if (field.type === 'text') input.type = 'text';
     input.value = value ?? '';
@@ -258,7 +294,7 @@ function renderPanel() {
 function renderOptions() {
   const opts = schema().options || [];
   nodes.options.replaceChildren(...opts.map((o) => {
-    const input = el('input', { type: 'checkbox', onchange: (e) => { state.caseState.options[o.id] = e.target.checked; renderReport(); saveCase(state.caseState); } });
+    const input = el('input', { type: 'checkbox', onchange: (e) => { markDirty(); state.caseState.options[o.id] = e.target.checked; renderReport(); cacheCase(state.caseState); } });
     input.checked = !!state.caseState.options[o.id];
     return el('label', {}, input, document.createTextNode(o.label));
   }));
@@ -309,11 +345,155 @@ async function doCopy(text, label) {
   toast(ok ? `${label} copied` : 'Copy failed');
 }
 
+
+// ---------- case meta + Drive ----------
+function renderMeta() {
+  const meta = state.caseState.meta;
+  for (const k of META_FIELDS) {
+    const node = nodes.meta[k];
+    if (node && node.value !== (meta[k] || '')) node.value = meta[k] || '';
+  }
+}
+
+function relTime(iso) {
+  if (!iso) return '';
+  const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return `${Math.round(diff / 60)} min ago`;
+  if (diff < 86400) return `${Math.round(diff / 3600)} h ago`;
+  return new Date(iso).toLocaleDateString();
+}
+
+function renderSaveStatus() {
+  const d = state.caseState?.drive;
+  let text;
+  if (state.saving) text = 'Saving to Drive…';
+  else if (d?.savedAt) text = `${state.dirty ? 'Edited since Drive save' : 'Saved to Drive'} · ${relTime(d.savedAt)}`;
+  else text = state.config.clientId ? 'Not saved to Drive.' : 'Not saved to Drive. Add the Google client id in Settings to enable saving.';
+  nodes.statusSave.replaceChildren(text);
+  if (d?.docUrl) nodes.statusSave.append(' · ', el('a', { href: d.docUrl, target: '_blank', rel: 'noopener', text: 'Open Doc' }));
+  nodes.save.textContent = state.saving ? 'Saving…' : 'Save';
+  nodes.save.disabled = state.saving;
+  nodes.save.classList.toggle('primary', state.dirty && !!state.caseState?.meta?.accession);
+}
+
+function renderAccount() {
+  const email = currentUser();
+  nodes.google.textContent = isSignedIn() && email ? email.split('@')[0] : (isSignedIn() ? 'Signed in' : 'Sign in');
+  nodes.google.title = email ? `Google: ${email}` : 'Sign in to Google';
+  nodes.google.classList.toggle('signed', isSignedIn());
+}
+
+async function ensureSignedIn(interactive = true) {
+  const t = await getToken(state.config, { interactive });
+  if (!currentUser()) await fetchUserInfo(t).catch(() => null);
+  renderAccount();
+  return t;
+}
+
+async function doSave() {
+  if (state.saving) return;
+  const meta = state.caseState.meta;
+  if (!normaliseAccession(meta.accession)) { nodes.meta.accession.focus(); return toast('Enter an accession number first'); }
+  const warnings = phiWarnings({ 'Clinical history': meta.clinical, Macroscopic: meta.macro, 'Block key': meta.blockKey, Report: state.lastOut?.report });
+  if (warnings.length && !window.confirm(`Possible patient identifiers:\n\n${warnings.join('\n')}\n\nOnly accession numbers and report text should go to Drive. Save anyway?`)) return;
+  try {
+    state.saving = true; renderSaveStatus();
+    await ensureSignedIn(true);
+    await driveSave(state.config, state.caseState, state.lastOut);
+    state.dirty = false;
+    cacheCase(state.caseState);
+    toast(`Saved ${normaliseAccession(meta.accession)} to Drive`);
+  } catch (err) {
+    toast(err.message || 'Save failed');
+  } finally {
+    state.saving = false; renderSaveStatus();
+  }
+}
+
+function renderCaseList(filter = '') {
+  const f = normaliseAccession(filter);
+  const rows = state.cases.filter((r) => !f || r.accession.includes(f))
+    .sort((a, b) => (b.updated || '').localeCompare(a.updated || ''));
+  if (!rows.length) return nodes.openList.replaceChildren(el('div', { class: 'empty', text: state.cases.length ? 'No matching cases' : 'No saved cases yet' }));
+  nodes.openList.replaceChildren(...rows.slice(0, 200).map((r) => el('button', {
+    type: 'button', class: 'case-row', role: 'listitem',
+    onclick: async () => {
+      try {
+        const cs = await driveOpen(state.config, r.accession);
+        if (!state.templates[cs.schemaId]) throw new Error(`Template ${cs.schemaId} is not installed`);
+        nodes.dlgOpen.close();
+        setCase(cs, 0);
+        toast(`Opened ${r.accession}`);
+      } catch (err) { toast(err.message); }
+    }
+  },
+  el('div', {}, el('div', { class: 'acc', text: r.accession }), el('div', { class: 'sub', text: `${state.templates[r.template]?.schema.name || r.template} · ${r.parts} part${r.parts === '1' ? '' : 's'}` })),
+  el('span', { class: `status ${r.status}`, text: r.status }),
+  el('span', { class: 'sub', text: relTime(r.updated) }))));
+}
+
+async function doOpen() {
+  nodes.openList.replaceChildren(el('div', { class: 'empty', text: 'Loading…' }));
+  nodes.openSearch.value = '';
+  nodes.dlgOpen.showModal();
+  try {
+    await ensureSignedIn(true);
+    state.cases = await listCases(state.config);
+    renderCaseList();
+  } catch (err) {
+    nodes.openList.replaceChildren(el('div', { class: 'empty', text: err.message }));
+  }
+}
+
+function openSettings() {
+  for (const k of ['clientId', 'folderId', 'sheetName', 'scopeMode']) $(`#cfg-${k}`).value = state.config[k] || '';
+  nodes.signout.hidden = !isSignedIn();
+  nodes.dlgSettings.showModal();
+}
+
+function initDrive() {
+  for (const k of META_FIELDS) {
+    nodes.meta[k].addEventListener('input', (e) => {
+      markDirty();
+      state.caseState.meta[k] = e.target.value;
+      cacheCase(state.caseState);
+      if (k === 'accession' || k === 'status') renderSaveStatus();
+    });
+  }
+  nodes.meta.accession.addEventListener('blur', (e) => {
+    const n = normaliseAccession(e.target.value);
+    if (n !== e.target.value) { e.target.value = n; state.caseState.meta.accession = n; cacheCase(state.caseState); }
+  });
+  nodes.save.addEventListener('click', doSave);
+  nodes.open.addEventListener('click', doOpen);
+  nodes.openSearch.addEventListener('input', (e) => renderCaseList(e.target.value));
+  nodes.google.addEventListener('click', async () => {
+    if (!state.config.clientId) { openSettings(); return toast('Paste the Google OAuth client id first'); }
+    try { await ensureSignedIn(true); toast(`Signed in as ${currentUser() || 'Google user'}`); } catch (err) { toast(err.message); }
+  });
+  nodes.settings.addEventListener('click', openSettings);
+  nodes.settingsForm.addEventListener('submit', (e) => {
+    if (e.submitter?.value !== 'save') return;
+    const patch = {};
+    for (const k of ['clientId', 'folderId', 'sheetName', 'scopeMode']) patch[k] = $(`#cfg-${k}`).value.trim();
+    if (patch.sheetName !== state.config.sheetName || patch.clientId !== state.config.clientId || patch.scopeMode !== state.config.scopeMode) patch.sheetId = '';
+    state.config = saveConfig(patch);
+    if (patch.clientId !== undefined) signOut();
+    renderAccount(); renderSaveStatus();
+    toast('Settings saved');
+  });
+  nodes.signout.addEventListener('click', () => { signOut(); renderAccount(); nodes.dlgSettings.close(); toast('Signed out'); });
+  window.addEventListener('beforeunload', (e) => { if (state.dirty && state.caseState?.drive?.savedAt) { e.preventDefault(); e.returnValue = ''; } });
+  renderAccount();
+}
+
 // ---------- keyboard ----------
 function initKeys() {
   document.addEventListener('keydown', (e) => {
     const mod = e.metaKey || e.ctrlKey;
     if (mod && e.shiftKey && (e.key === 'C' || e.key === 'c')) { e.preventDefault(); doCopy(state.lastOut.diagnosis, 'Diagnosis'); }
+    else if (mod && !e.shiftKey && (e.key === 's' || e.key === 'S')) { e.preventDefault(); doSave(); }
     else if (mod && e.key === 'Enter') { e.preventDefault(); doCopy(state.lastOut.report, 'Full report'); }
     else if (e.altKey && e.key === 'ArrowRight') { e.preventDefault(); state.activePart = Math.min(state.activePart + 1, state.caseState.parts.length - 1); render(); }
     else if (e.altKey && e.key === 'ArrowLeft') { e.preventDefault(); state.activePart = Math.max(0, state.activePart - 1); render(); }
@@ -325,12 +505,18 @@ async function boot() {
   initTheme();
   state.templates = await loadAll();
   const saved = loadCase();
+  initDrive();
   if (saved && state.templates[saved.schemaId]) setCase(saved, 0);
   else newCase(Object.keys(state.templates)[0]);
+  // Silent sign-in if a client id is configured (no pop-up unless consent is needed).
+  if (state.config.clientId) ensureSignedIn(false).catch(() => {});
 
   nodes.addPart.addEventListener('click', addPart);
   nodes.example.addEventListener('click', loadExample);
-  nodes.newCase.addEventListener('click', () => { clearCase(); newCase(state.caseState.schemaId); toast('New case'); });
+  nodes.newCase.addEventListener('click', () => {
+    if (state.dirty && !window.confirm('Discard unsaved changes to this case?')) return;
+    clearCase(); newCase(state.caseState.schemaId); toast('New case');
+  });
   nodes.copyDx.addEventListener('click', () => doCopy(state.lastOut.diagnosis, 'Diagnosis'));
   nodes.copyReport.addEventListener('click', () => doCopy(state.lastOut.report, 'Full report'));
   initKeys();

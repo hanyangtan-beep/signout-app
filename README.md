@@ -6,7 +6,7 @@ Built and hosted inside Perplexity: developed in the workspace, previewed in-thr
 
 Design: `docs/design.md`. Roadmap: `docs/roadmap.md`.
 
-## Status: Phase 1 complete (preview deployed)
+## Status: Phase 2 code complete (publish + Google OAuth client pending)
 
 - [x] Repo skeleton (`schemas/`, `generators/`, `snippets/`, `src/`, `tests/`, `tools/`, `legacy/`)
 - [x] Legacy apps frozen in `legacy/` (gastric v8, colonic polyp)
@@ -17,8 +17,9 @@ Design: `docs/design.md`. Roadmap: `docs/roadmap.md`.
 - [x] Phase 1 UI: template switcher, parts A–J (add / remove / same as previous / reset), chips with number-key selection, live Specimens / Microscopy / Diagnosis preview with per-block copy, Copy diagnosis (Cmd/Ctrl+Shift+C), Copy full report (Cmd/Ctrl+Enter), Load example, light/dark theme, mobile layout
 - [x] `npm run build` → `dist/`; in-thread preview deployed via Perplexity ("Sign-out")
 - [x] `docs/case-mix-analysis.md` — tally of 600 Drive drafts feeding roadmap Phase 4b (generic benign templates) and 4c (frozen sections)
+- [x] Phase 2: `src/gauth.js` (Google Identity Services token flow), `src/config.js` (Settings in localStorage), `src/docformat.js` (accession normalisation, PHI guard, Doc layout, Sheet row mapping), `src/drive.js` (Sheet upsert, Doc create/replace, open); case details (accession, status, clinical history, macroscopic, block key); Save (Cmd/Ctrl+S), Open, Settings dialogs; 33 tests
 - [ ] Publish to `https://<subdomain>.pplx.app` (you pick the subdomain)
-- [ ] Google Cloud project + OAuth client (manual, done at start of Phase 2 once the pplx.app subdomain is fixed — see below)
+- [ ] Google Cloud OAuth client — follow `docs/google-setup.md`, then paste the client id into the app's Settings
 
 ## Commands
 

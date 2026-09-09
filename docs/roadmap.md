@@ -39,13 +39,18 @@ Companion to "Sign-out App — Design Suggestions". Phases are sequential; each 
 
 **Goal:** Drive is the only persistence layer from the first real case onward, so everything is readable from Perplexity in a browser.
 
-- One-time Google Cloud setup (10 minutes, guided): project, enable Drive/Sheets/Docs APIs, consent screen in Testing with you as test user, Web OAuth client with the pplx.app origin. Client ID goes into `src/config.js`.
-- Google Identity Services token flow in the browser with `drive.file` + `spreadsheets` + `documents` scopes.
-- `Sign-out cases` Google Sheet: one row per case (accession, date, status, templates, mode, Doc link, `case_json`). This is the app's case list.
-- `saveCase(case)`: upsert the Sheet row by normalised accession, and update-or-create the Google Doc in "Pathology reports" with headings Clinical history / Macroscopic / Block key / Microscopic / Diagnosis.
-- `openCase(accession)`: load `case_json` from the Sheet, re-render the form, regenerate output.
-- Accession-only guard (regex for names/HKID patterns) on free-text fields before save.
-- Drive layer is tested against the published URL (sign-in pop-ups do not work inside the preview iframe).
+Code complete 2026-09-09 (33 tests; save → update → open round-trip verified against a mocked Google). Live use starts when the site is published and the OAuth client exists.
+
+- [x] Google Identity Services token flow in the browser (`src/gauth.js`): `drive.file` + `spreadsheets` scopes, silent refresh, one 401 retry. The Docs API is not needed: the Doc is created and rewritten by uploading `text/plain` through the Drive API, which Google converts to a Doc.
+- [x] Settings dialog (`src/config.js`): client id, folder id, sheet name and scope mode kept in localStorage, so the client id can be added after publishing without a rebuild.
+- [x] `Sign-out cases` Sheet, created on first save: accession, updated, status, template, parts, doc_url, doc_id, `case_json`.
+- [x] `saveCase` (`src/drive.js`): upsert the Sheet row by normalised accession; create or replace the Doc named by accession in "Pathology reports" with fixed headings CLINICAL HISTORY / SPECIMEN / MACROSCOPIC DESCRIPTION / BLOCK KEY / MICROSCOPIC EXAMINATION / DIAGNOSIS. If the Doc was deleted, it is recreated.
+- [x] `openCase`: Open dialog lists Sheet rows (search by accession, newest first) and restores `case_json`.
+- [x] Case details on every template: accession (normalised on blur), status draft / ready / signed, clinical history, macroscopic, block key. Cmd/Ctrl+S saves; the status bar shows Saved / Edited since save with a link to the Doc; closing the tab with unsaved edits prompts.
+- [x] PHI guard (`src/docformat.js`): warns before saving on HKID-with-check-digit, honorific + name, phone number, or "DOB"; accession patterns and clinician names (Dr …) pass.
+- [ ] Publish to `https://<subdomain>.pplx.app` (you choose the subdomain).
+- [ ] One-time Google Cloud set-up following `docs/google-setup.md` (project, Drive + Sheets APIs, consent screen in Testing with you as test user, Web OAuth client with the pplx.app origin, paste the client id into Settings).
+- [ ] First real save; if `drive.file` cannot place the Doc in the existing folder, switch Settings → Drive scope to `drive`.
 
 **Done when:** the 09:00 TAT job scores an app-generated Doc as "complete" with no manual editing, a case reopened from the Sheet is identical to what was saved, and Perplexity can read both the Doc and the Sheet row when asked.
 
@@ -161,7 +166,7 @@ Each template ships with a `macro` field group and block-key builder, fixtures c
 |---|---|---|
 | 0 | Repo, fixtures, tests | Week 1 |
 | 1 | Schema engine, parity with legacy apps ✅ | Weeks 2–4 |
-| 2 | Drive as the store: Sheet + Doc save/reopen | Weeks 5–6 |
+| 2 | Drive as the store: Sheet + Doc save/reopen ✅ code (publish + OAuth client pending) | Weeks 5–6 |
 | 3 | Case model, mixed parts, keyboard | Weeks 7–8 |
 | 4 | Prostate, IBD, duodenum, oesophagus, GYN ports | Weeks 9–12 |
 | 4b | Generic benign templates from your case mix (nodes, placenta, breast margins, thyroid, gallbladder, uterus, ovarian cyst, skin, appendix) | Weeks 13–16 |
