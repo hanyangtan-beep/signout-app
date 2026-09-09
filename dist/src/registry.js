@@ -1,8 +1,8 @@
 // Template registry: maps schema ids to their JSON file and generator module.
 // Works in the browser (fetch + dynamic import) and in Node (fs + import).
 
-import gastric from '../generators/gastric.js?v=mtu81wt7';
-import colonic from '../generators/colonic.js?v=mtu81wt7';
+import gastric from '../generators/gastric.js?v=mtu867k5';
+import colonic from '../generators/colonic.js?v=mtu867k5';
 
 export const GENERATORS = { gastric, colonic };
 
@@ -11,10 +11,10 @@ export const TEMPLATE_IDS = ['gastric_biopsy', 'colonic_polyp'];
 export async function loadSchema(id, baseUrl) {
   if (typeof window === 'undefined') {
     const { readFile } = await import('node:fs/promises');
-    const url = new URL(`../schemas/${id}.json?v=mtu81wt7`, import.meta.url);
+    const url = new URL(`../schemas/${id}.json?v=mtu867k5`, import.meta.url);
     return JSON.parse(await readFile(url, 'utf8'));
   }
-  const res = await fetch(new URL(`schemas/${id}.json?v=mtu81wt7`, baseUrl || document.baseURI));
+  const res = await fetch(new URL(`schemas/${id}.json?v=mtu867k5`, baseUrl || document.baseURI));
   if (!res.ok) throw new Error(`Cannot load schema ${id}: ${res.status}`);
   return res.json();
 }

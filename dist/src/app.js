@@ -1,14 +1,14 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadAll } from './registry.js?v=mtu81wt7';
+import { loadAll } from './registry.js?v=mtu867k5';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generate
-} from './engine.js?v=mtu81wt7';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtu81wt7';
-import { loadConfig, saveConfig } from './config.js?v=mtu81wt7';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtu81wt7';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtu81wt7';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtu81wt7';
+} from './engine.js?v=mtu867k5';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtu867k5';
+import { loadConfig, saveConfig } from './config.js?v=mtu867k5';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtu867k5';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtu867k5';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtu867k5';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -384,7 +384,16 @@ function renderAccount() {
   nodes.google.classList.toggle('signed', isSignedIn());
 }
 
+const CANONICAL = 'https://han-signout.pplx.app/';
+const AUTH_ORIGINS = ['https://han-signout.pplx.app', 'http://localhost:3000', 'http://127.0.0.1:3000'];
+
 async function ensureSignedIn(interactive = true, action = 'signin') {
+  if (interactive && !AUTH_ORIGINS.includes(location.origin)) {
+    // Google only accepts the registered address; previews and proxies are different origins.
+    const go = window.confirm(`Google sign-in only works when the app is opened at ${CANONICAL}\n\nThis copy is running at ${location.origin}. Open the app at the correct address now? (Your current draft stays in this tab.)`);
+    if (go) window.open(CANONICAL, '_blank', 'noopener');
+    throw new Error(`Open the app at ${CANONICAL} to sign in`);
+  }
   setActiveAction(action);
   const t = await getToken(state.config, { interactive, action });
   if (!currentUser()) await fetchUserInfo(t).catch(() => null);
