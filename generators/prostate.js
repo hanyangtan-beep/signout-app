@@ -69,10 +69,17 @@ export function microscopy(part) {
     lines.push(`- Lymphovascular invasion: ${s.lvi}`);
     lines.push(`- Adjacent high grade PIN: ${s.hgpinAdjacent}`);
   } else {
-    const label = { Benign: 'Benign prostatic tissue', HGPIN: 'High grade prostatic intraepithelial neoplasia', ASAP: 'Atypical small acinar proliferation' }[s.category] || s.category;
-    lines.push(`- Diagnosis: ${label}`);
-    lines.push(`- Inflammation: ${s.inflammation || 'Absent'}`);
-    lines.push(`- Other benign changes: ${s.atrophy || 'Absent'}`);
+    if (s.category === 'Benign') {
+      const coreText = total === 1 ? 'a core' : `${total} cores`;
+      lines.push(`Sections show ${coreText} of prostatic tissue containing prostatic glands within a fibromuscular stroma. They are lined by a layer of epithelial cells and basal cells. There is no evidence of high grade prostatic intraepithelial neoplasia or malignancy.`);
+      if (s.inflammation && s.inflammation !== 'Absent') lines.push(`- Inflammation: ${s.inflammation}`);
+      if (s.atrophy && s.atrophy !== 'Absent') lines.push(`- Other benign changes: ${s.atrophy}`);
+    } else {
+      const label = { HGPIN: 'High grade prostatic intraepithelial neoplasia', ASAP: 'Atypical small acinar proliferation' }[s.category] || s.category;
+      lines.push(`- Diagnosis: ${label}`);
+      lines.push(`- Inflammation: ${s.inflammation || 'Absent'}`);
+      lines.push(`- Other benign changes: ${s.atrophy || 'Absent'}`);
+    }
   }
   const note = (s.additionalNotes || '').trim();
   if (note !== '') lines.push(`- Additional notes: ${note}`);
@@ -91,7 +98,7 @@ export function diagnosis(part, ctx) {
   const site = low(specimenName(part));
   let line = `(${part.label}) ${ctx.schema.organ}, ${site}, ${ctx.schema.specimenNoun} - `;
   if (s.category === 'Benign') {
-    return line + `BENIGN PROSTATIC TISSUE${benignQualifier(s)}, no evidence of malignancy`;
+    return line + 'NO EVIDENCE OF MALIGNANCY';
   }
   if (s.category === 'HGPIN') {
     return line + `HIGH GRADE PROSTATIC INTRAEPITHELIAL NEOPLASIA${benignQualifier(s)}, no evidence of invasive malignancy`;

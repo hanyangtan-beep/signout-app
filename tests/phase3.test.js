@@ -73,12 +73,13 @@ test('ISUP grade groups', () => {
 test('prostate example: per-core lines and case summary', () => {
   const r = run(prostate, example(prostate));
   const dx = r.diagnosis.split('\n');
-  assert.equal(dx[0], '(A) PROSTATE, right base, needle core biopsy - BENIGN PROSTATIC TISSUE with chronic inflammation, no evidence of malignancy');
+  assert.equal(dx[0], '(A) PROSTATE, right base, needle core biopsy - NO EVIDENCE OF MALIGNANCY');
   assert.equal(dx[1], '(B) PROSTATE, right mid, needle core biopsy - ACINAR ADENOCARCINOMA, Gleason score 3+4=7 (Grade Group 2), pattern 4/5 20%, involving 1 of 2 cores, maximum linear extent 4 mm, 15% of tissue; adjacent high grade PIN');
   assert.equal(dx[2], '(C) PROSTATE, right apex, needle core biopsy - ACINAR ADENOCARCINOMA, Gleason score 4+3=7 (Grade Group 3), pattern 4/5 60%, involving 2 of 2 cores, maximum linear extent 9 mm, 45% of tissue; cribriform pattern present; perineural invasion present');
   assert.equal(dx[4], '(E) PROSTATE, left mid, needle core biopsy - ATYPICAL SMALL ACINAR PROLIFERATION, suspicious for but not diagnostic of adenocarcinoma');
   assert.equal(dx[5], '(F) PROSTATE, left apex, needle core biopsy - HIGH GRADE PROSTATIC INTRAEPITHELIAL NEOPLASIA, no evidence of invasive malignancy');
   assert.equal(dx[dx.length - 1], 'SUMMARY: Acinar adenocarcinoma in 3 of 12 cores (parts B, C); highest Gleason score 4+3=7 (Grade Group 3); cribriform pattern present; perineural invasion present; ASAP in part E; high grade PIN in part F.');
+  assert.ok(r.microscopy.includes('(A) Right base, 2 cores\nSections show 2 cores of prostatic tissue containing prostatic glands within a fibromuscular stroma. They are lined by a layer of epithelial cells and basal cells. There is no evidence of high grade prostatic intraepithelial neoplasia or malignancy.\n- Inflammation: Chronic'));
   assert.ok(r.microscopy.includes('(B) Right mid, 2 cores\n- Diagnosis: Acinar adenocarcinoma\n- Gleason score: 3+4=7 (Grade Group 2)\n- Pattern 4/5: 20%'));
 });
 
@@ -102,6 +103,13 @@ test('prostate: all-benign series summarises no malignancy', () => {
   const c = createCase(prostate.schema, 3);
   c.parts.forEach((p) => { p.values.coresTotal = '2'; });
   assert.ok(run(prostate, c).diagnosis.endsWith('SUMMARY: No evidence of malignancy in 6 cores.'));
+});
+
+test('prostate: a single benign core uses singular prose and the short diagnosis', () => {
+  const c = createCase(prostate.schema, 1);
+  const r = run(prostate, c);
+  assert.equal(r.microscopy, 'Right base, 1 core\nSections show a core of prostatic tissue containing prostatic glands within a fibromuscular stroma. They are lined by a layer of epithelial cells and basal cells. There is no evidence of high grade prostatic intraepithelial neoplasia or malignancy.');
+  assert.equal(r.diagnosis, 'PROSTATE, right base, needle core biopsy - NO EVIDENCE OF MALIGNANCY');
 });
 
 // ---------- IBD ----------
