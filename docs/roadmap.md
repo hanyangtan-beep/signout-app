@@ -82,6 +82,19 @@ Verify:     tests + browser (light)
 Ship:       with batch
 Spec:       card is the spec
 
+### GIST resection (synoptic, from the QMH template)      Size: L → split; build as three cards in one batch
+Why:        GIST is the next resection with a QMH page (`GI-GIST.html`) and its own risk stratification; no template covers it.
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/GI-GIST.html (page is JavaScript-rendered — save the loaded page as `docs/reference/GI-GIST.html` and run `tools/import-qmh.js` on it, as for colon). Page notes: additional protocols for GIST biopsy and biomarkers; syndromic associations (Carney triad, Carney–Stratakis, NF1, familial GIST); molecular hot-spot testing for KIT / PDGFRA / RAS / BRAF available in the AP molecular lab, SDHA–D / NF1 elsewhere, FGFR1 fusion not available.
+Split into:
+  (a) Staging + risk rules `src/staging/gist.js` (M): AJCC 8th GIST pT by size (≤2 / >2–5 / >5–10 / >10 cm), pN, pM; stage groups separately for gastric / omental and small-intestinal / oesophageal / colorectal / mesenteric / peritoneal primaries, each split by mitotic rate ≤5 vs >5 per 5 mm²; Miettinen / AFIP risk category (none / very low / low / moderate / high) from site × size × mitotic rate; boundary tests for every cell.
+  (b) Schema + generator (M): elements in the QMH printed order — procedure, tumour site, size (three dimensions), focality, histological type (spindle / epithelioid / mixed), mitotic rate per 5 mm² with the counted area, necrosis, tumour rupture, margins (involved / uninvolved with distance), treatment effect when neoadjuvant, regional nodes, pTNM with descriptors, risk category line, IHC (KIT, DOG1, CD34, SDHB loss, desmin / S100 / SMA as negatives), molecular line (KIT / PDGFRA exon or "to follow on block N"), syndromic comment when SDHB-deficient or multifocal; Checks: mitotic area recorded, size vs pT, SDHB-deficient → molecular comment, imatinib-naive vs treated wording.
+  (c) Fixtures + docs (S): element order asserted against the saved page (as `tests/colon_resection.test.js` does); gastric spindle-cell low-risk and jejunal high-risk fixtures; README bullet; card → Done.
+Untouched:  colon synoptic, staging module API (`deriveTNM(values, protocol)`), fixtures.
+Accept:     (a) all boundary tests pass; (b) synoptic block prints in QMH order with auto pT / stage / risk and Checks fire; (c) fixtures byte-stable and template visible under GI in the Resections browse.
+Verify:     (a) tests only; (b) tests + browser (light); (c) tests only
+Ship:       one batch, one publish
+Depends on: saved copy of the QMH GIST page (JS-rendered; cannot be fetched as static HTML)
+
 ### Gastric carcinoma resection (synoptic)              Size: L → split before building
 Why:        highest-volume cancer resection after colon.
 Split into: (a) save QMH page + importer draft + `src/staging/gastric.js` rules with boundary tests (M); (b) schema + generator + synoptic block + Checks (M); (c) fixtures against the QMH page element order + docs (S).
