@@ -44,7 +44,9 @@ test('schema examples generate without error and include every part', () => {
   for (const { schema, generator } of Object.values(registry)) {
     const ex = { schemaId: schema.id, ...schema.example };
     const out = generate(schema, generator, ex);
-    for (const p of ex.parts) assert.ok(out.diagnosis.includes(`(${p.label})`), `${schema.id} missing ${p.label}`);
+    // Single-part examples print without a letter; multi-part ones must keep every (A)/(B).
+    if (ex.parts.length > 1) for (const p of ex.parts) assert.ok(out.diagnosis.includes(`(${p.label})`), `${schema.id} missing ${p.label}`);
+    assert.ok(out.diagnosis.trim() !== '' && out.microscopy.trim() !== '', `${schema.id} example is empty`);
     assert.ok(out.report.length > 0);
   }
 });

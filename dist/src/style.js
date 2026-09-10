@@ -21,7 +21,7 @@ export const BRITISH = {
   tumor: 'tumour', tumors: 'tumours', color: 'colour', center: 'centre', fiber: 'fibre', fibers: 'fibres',
   esophagus: 'oesophagus', esophageal: 'oesophageal', edema: 'oedema', hemorrhage: 'haemorrhage',
   hemorrhagic: 'haemorrhagic', hematoxylin: 'haematoxylin', leukocyte: 'leucocyte', leukocytes: 'leucocytes',
-  cecum: 'caecum', cecal: 'caecal', anemia: 'anaemia', fetal: 'foetal', gynecologic: 'gynaecologic',
+  cecum: 'caecum', cecal: 'caecal', anemia: 'anaemia', gynecologic: 'gynaecologic',
   gynecological: 'gynaecological', pediatric: 'paediatric', diarrhea: 'diarrhoea', dyskeratosis: 'dyskeratosis',
   favorable: 'favourable', unfavorable: 'unfavourable', behavior: 'behaviour', characterized: 'characterised',
   organized: 'organised', localized: 'localised', generalized: 'generalised', vascularized: 'vascularised',

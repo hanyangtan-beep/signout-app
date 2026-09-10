@@ -70,8 +70,8 @@ test('resection strip: pins first, then recents, then rank-order fill, deduped, 
   assert.ok(!strip.some((t) => t.kind === 'biopsy'));
   assert.equal(new Set(strip.map((t) => t.id)).size, strip.length, 'no duplicates');
   // nothing pinned or recent → default set in rank order; a recent moves to the front, the rest still fill
-  assert.deepEqual(resectionStrip(manifest).map(labelOf), ['LEEP', 'Frozen']);
-  assert.deepEqual(resectionStrip(manifest, [], ['frozen_section']).map(labelOf), ['Frozen', 'LEEP']);
+  assert.deepEqual(resectionStrip(manifest).map(labelOf), ['Frozen', 'LEEP', 'Lymph node', 'Placenta', 'Gallbladder', 'Thyroid', 'Parathyroid', 'Appendix']);
+  assert.deepEqual(resectionStrip(manifest, [], ['cervical_excision']).map(labelOf).slice(0, 3), ['LEEP', 'Frozen', 'Lymph node']);
   assert.deepEqual(resectionStrip(all, [], ['r9']).map((t) => t.id), ['r9', 'r0', 'r1', 'r2', 'r3', 'r4', 'r5', 'r6']);
   assert.deepEqual(pushRecent(['a', 'b'], 'b'), ['b', 'a']);
   assert.deepEqual(togglePin(togglePin([], 'x'), 'x'), []);
@@ -107,11 +107,12 @@ test('palette ranking: exact shortName > alias > organ > keyword', () => {
 
 test('grouped browse and the part selector put Small biopsy first, systems in canonical order', () => {
   const groups = groupBySystem(manifest);
-  assert.deepEqual(groups.map((g) => g.system), ['GI', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Frozen']);
+  assert.deepEqual(groups.map((g) => g.system), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Lymphoid', 'Endocrine', 'Frozen']);
   const gyn = groups.find((g) => g.system === 'Gynae');
-  assert.deepEqual(gyn.items.map((t) => t.kind), ['biopsy', 'biopsy', 'benign resection'], 'ascending specimen size within a system');
+  assert.deepEqual(gyn.items.map((t) => t.kind), ['biopsy', 'biopsy', 'benign resection', 'benign resection'], 'ascending specimen size within a system');
+  assert.deepEqual(gyn.items.slice(2).map(labelOf), ['LEEP', 'Placenta'], 'rank order within a kind');
   const sel = selectorGroups(manifest);
   assert.equal(sel[0].label, 'Small biopsy');
   assert.equal(sel[0].items.length, 10);
-  assert.deepEqual(sel.slice(1).map((g) => g.label), ['Gynae', 'Frozen']);
+  assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'Gynae', 'Lymphoid', 'Endocrine', 'Frozen']);
 });

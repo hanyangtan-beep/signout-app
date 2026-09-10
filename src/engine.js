@@ -8,6 +8,7 @@ export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 export const HEADERS = {
   specimens: 'SPECIMEN:',
   macro: 'MACROSCOPIC DESCRIPTION:',
+  blockKey: 'BLOCK KEY:',
   intraop: 'INTRAOPERATIVE CONSULTATION:',
   microscopy: 'MICROSCOPIC EXAMINATION:',
   diagnosis: 'DIAGNOSIS:',
@@ -15,7 +16,7 @@ export const HEADERS = {
 };
 
 /** Block order in the assembled report. `macro` and `intraop` only appear for templates with those hooks; `comment` only when a snippet or free-text comment is active. */
-export const BLOCK_ORDER = ['specimens', 'macro', 'intraop', 'microscopy', 'diagnosis', 'comment'];
+export const BLOCK_ORDER = ['specimens', 'macro', 'blockKey', 'intraop', 'microscopy', 'diagnosis', 'comment'];
 
 /** Default values for one part. `index` is 0-based. */
 export function defaultValues(schema, index = 0) {
@@ -280,6 +281,9 @@ export function generateCase(templates, caseState) {
   // Optional per-part macroscopic description (frozen sections) and per-template intraoperative block.
   const macro = parts.filter((p) => ctxs[p.templateId].gen.macro)
     .map((p) => styled(p.templateId, ctxs[p.templateId].gen.macro(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n\n');
+  // Optional per-part block key (benign resections): "(A1) Cystic duct margin." lines.
+  const blockKey = parts.filter((p) => ctxs[p.templateId].gen.blockKey)
+    .map((p) => styled(p.templateId, ctxs[p.templateId].gen.blockKey(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n');
   const intraop = ids.filter((id) => ctxs[id].gen.intraop)
     .map((id) => styled(id, ctxs[id].gen.intraop(ctxs[id].parts, ctxs[id]))).filter((t) => t && t.trim() !== '').join('\n\n');
   const microscopy = parts.map((p) => styled(p.templateId, ctxs[p.templateId].gen.microscopy(p, ctxs[p.templateId]))).join('\n\n');
@@ -300,6 +304,7 @@ export function generateCase(templates, caseState) {
   const blocks = {
     specimens: tidy(letters(specimens)),
     macro: tidy(letters(macro)),
+    blockKey: tidy(letters(blockKey)),
     intraop: tidy(letters(intraop)),
     microscopy: tidy(letters(microscopy)),
     diagnosis: tidy(letters(diagnosis)),

@@ -1,15 +1,15 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadTemplate } from './registry.js?v=mtuz1kc4';
-import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtuz1kc4';
+import { loadManifest, loadTemplate } from './registry.js?v=mtuzpiwa';
+import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtuzpiwa';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mtuz1kc4';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtuz1kc4';
-import { loadConfig, saveConfig } from './config.js?v=mtuz1kc4';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtuz1kc4';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtuz1kc4';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtuz1kc4';
+} from './engine.js?v=mtuzpiwa';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtuzpiwa';
+import { loadConfig, saveConfig } from './config.js?v=mtuzpiwa';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtuzpiwa';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtuzpiwa';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtuzpiwa';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -473,6 +473,28 @@ function referencePanel(field, part) {
   return panel;
 }
 
+// Consecutive fields sharing a `group` render inside one collapsible fieldset
+// (e.g. "Macroscopy" on the benign resection templates). Ungrouped fields stay flat.
+function groupFields(fields, part, index) {
+  const out = [];
+  let current = null;
+  for (const f of fields) {
+    const node = renderField(f, part, index);
+    if (!f.group) { current = null; out.push(node); continue; }
+    if (!current || current.name !== f.group) {
+      const key = `signout.group.${f.group}`;
+      const details = el('details', { class: 'field-group', 'data-group': f.group },
+        el('summary', { text: f.group }));
+      details.open = localStorage.getItem(key) !== 'closed';
+      details.addEventListener('toggle', () => localStorage.setItem(key, details.open ? 'open' : 'closed'));
+      current = { name: f.group, node: details };
+      out.push(details);
+    }
+    current.node.append(node);
+  }
+  return out;
+}
+
 function renderField(field, part, index) {
   const visible = isVisible(field, part.values);
   const id = `f-${part.label}-${field.id}`;
@@ -573,8 +595,7 @@ function renderPanel() {
       el('button', { type: 'button', class: 'btn ghost small', text: 'Reset', onclick: () => resetPart(i) }),
       el('button', { type: 'button', class: 'btn ghost small danger', text: 'Remove', onclick: () => removePart(i) })
     ));
-  const fields = s.fields.map((f) => renderField(f, part, i));
-  nodes.panel.replaceChildren(head, ...fields);
+  nodes.panel.replaceChildren(head, ...groupFields(s.fields, part, i));
 }
 
 function renderOptions() {
@@ -640,6 +661,7 @@ function renderReport() {
   const blocks = [
     ['Specimens', out.specimens],
     ['Macroscopic description', out.macro],
+    ['Block key', out.blockKey],
     ['Intraoperative consultation', out.intraop],
     ['Microscopic examination', out.microscopy],
     ['Diagnosis', out.diagnosis],
