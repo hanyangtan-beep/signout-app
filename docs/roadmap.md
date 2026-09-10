@@ -92,18 +92,16 @@ Verify:     tests + browser (light)
 Ship:       with batch
 Spec:       card is the spec
 
-### Frozen section scenarios                             Size: L → split; five cards, two batches
-Why:        the frozen template covers generic margin / node / parathyroid / ovary / nodule; the recurring services in the case mix — breast sentinel nodes, bile duct and pancreatic duct margins, lung wedges, head-and-neck named margins, CNS biopsies — each need their own fields, phone-line wording and paraffin correlation. Past sign-outs supply house wording for SLN, bile duct, lung wedge and head-and-neck margins (`docs/reference/frozen-section-examples.md`, 10 scenarios with session references); none exists for CNS / meningioma, so that card is marked proposed.
+### Frozen section scenarios (unstaged)                  Size: L → split; three cards, one batch
+Why:        the frozen template covers generic margin / node / parathyroid / ovary / nodule; the recurring services — breast sentinel nodes, bile duct and pancreatic duct margins, head-and-neck named margins — need their own fields, phone-line wording and paraffin correlation. Past sign-outs supply house wording (`docs/reference/frozen-section-examples.md`, 10 scenarios with session references). Frozen specimens whose final report carries AJCC staging (lung wedge, and the resections the SLN / duct-margin results feed into) are planned as paired cards below, after the "Frozen → staged final" engine card.
 Split into:
-  (a) Breast sentinel lymph nodes (S): side, node labels, nodes found, fat stripped, macro / micro / ITC / deferred, metastasis size, post-neoadjuvant treatment effect; dx `LYMPH NODES, left SLN 1, excision x frozen section - NO EVIDENCE OF MALIGNANCY (0/2)`; node-arithmetic and size Checks.
-  (b) Bile duct and pancreatic duct margins (S): CBD / CHD / pancreatic neck, ring or shave, en face; negative / invasive / BilIN-3 or PanIN-3 / denuded cannot-assess; stent-atypia and peribiliary-gland caveats.
-  (c) Lung wedge / nodule (M): staple line trimmed, parenchymal margin inked, nodule size and distance, pleura; adenocarcinoma and variants, SCC, NSCC-NOS deferred, small cell, carcinoid, metastatic (primary named), necrotising / non-necrotising granulomatous inflammation, organising pneumonia, benign; margin Checks; subtype-on-paraffin snippets.
-  (d) CNS lesion (M, proposed wording): smear and/or frozen; meningioma, high- / low-grade glial neoplasm, metastasis, favour lymphoma (fresh tissue reserved), schwannoma, PitNET, reactive gliosis, nondiagnostic; WHO CNS5 deferred snippet.
+  (a) Breast sentinel lymph nodes (S): side, node labels, nodes found, fat stripped, macro / micro / ITC / deferred, metastasis size, post-neoadjuvant treatment effect; dx `LYMPH NODES, left SLN 1, excision x frozen section - NO EVIDENCE OF MALIGNANCY (0/2)`; node-arithmetic and size Checks. Emits a structured `nodeSummary` (examined / positive / largest focus / ENE) for the breast synoptic to consume.
+  (b) Bile duct and pancreatic duct margins (S): CBD / CHD / pancreatic neck, ring or shave, en face; negative / invasive / BilIN-3 or PanIN-3 / denuded cannot-assess; stent-atypia and peribiliary-gland caveats. Emits `marginSummary` for the pancreas / bile duct synoptics.
   (e) Named-margin presets and line form (S): oral tongue 5 / 6, oropharynx 7, nasal ala Rm A–D + deep, maxillectomy custom; grouped `(A)-(G) Negative for malignancy.`; diagnosis joiner ` x frozen section - ` (deliberate fixture change, logged).
 Untouched:  frozen–paraffin correlation model, LIS override, existing scenario wording except the joiner in (e); all other templates.
-Accept:     per-card fixtures reproduce the quoted house lines (SLN §2, bile duct §4, lung §10, tongue §6, nasal ala §5 of the examples file); CNS fixtures from the proposed wording; template still one entry ("Frozen") in the Resections row.
-Verify:     tests + browser (light) per batch
-Ship:       two batches — (a)+(b)+(e), then (c)+(d); one publish each
+Accept:     per-card fixtures reproduce the quoted house lines (SLN §2, bile duct §4, tongue §6, nasal ala §5 of the examples file); template still one entry ("Frozen") in the Resections row.
+Verify:     tests + browser (light)
+Ship:       one batch, one publish
 Spec:       `docs/specs/frozen-section-scenarios.md`
 
 ### Gastric carcinoma resection (synoptic)              Size: L → split before building
@@ -111,13 +109,50 @@ Why:        highest-volume cancer resection after colon.
 Split into: (a) save QMH page + importer draft + `src/staging/gastric.js` rules with boundary tests (M); (b) schema + generator + synoptic block + Checks (M); (c) fixtures against the QMH page element order + docs (S).
 Spec:       `docs/specs/synoptic-next-templates.md`
 
+### Frozen → staged final (linked synoptic)              Size: M
+Why:        some frozen specimens are the staging specimen — a lung wedge that turns out to be carcinoma is staged on the wedge and a later completion lobectomy adds nodes and residual-tumour findings; SLN frozen results feed pN in the breast resection; duct-margin frozens feed margin status in the pancreas / bile duct synoptics. Today the frozen template ends at the paraffin correlation and has no staging block, and a later specimen cannot reference an earlier one.
+Change:     (1) **Stage this part** on a frozen part whose paraffin result is malignant: adds a linked synoptic part with the same letter (e.g. B → B, "staging") using the paired cancer template, pre-filled from the frozen fields (laterality / lobe / site, tumour size, distance to margin, pleural involvement, node counts); the final report prints SPECIMENS, INTRAOPERATIVE CONSULTATION, MACRO, BLOCK KEY, MICROSCOPIC EXAMINATION (paraffin confirms …), SYNOPTIC REPORT, DIAGNOSIS, COMMENT, with one diagnosis line per letter carrying both the frozen suffix and the stage: `(B) LUNG, left lower lobe, wedge excision x frozen section - ADENOCARCINOMA, acinar predominant, 0.8 cm; parenchymal margin clear; pT1a pNX (AJCC 8th edition)`. (2) **Related prior specimen** case fields (accession, date, procedure, pT / pN / tumour type / size; optional one-Sheet-read lookup by accession from `Sign-out cases`) so a completion or definitive resection reports residual tumour and nodes and prints a combined stage line — `Pathological stage: pT1a (prior wedge resection S26-01234) pN0 (0/8, this lobectomy)` — with an auto comment: "Staging is based on the prior wedge resection (S26-01234) together with the lymph nodes from this completion lobectomy" (wording proposed; confirm). (3) Staging module accepts partial input (`pT` from prior, `pN` from current) and marks the origin of each category.
+Untouched:  existing frozen scenarios and fixtures; colon and GIST synoptics; save / open flow (the lookup is read-only).
+Accept:     unit tests for pre-fill mapping, combined-stage assembly and origin tags; a wedge → lobectomy fixture pair; browser: Stage this part appears only when the paraffin result is malignant and a paired template exists.
+Verify:     tests + browser (light)
+Ship:       with the Lung pair below (the first consumer)
+Depends on: Frozen section scenarios (unstaged); pairs consume it
+Spec:       `docs/specs/frozen-section-scenarios.md` (section "Staged frozen specimens")
+
+### Lung pair — wedge frozen + lung carcinoma synoptic    Size: L → split; build as one batch
+Why:        the user's worked example — staged wedge resections followed by completion lobectomy. Needs the frozen lung scenario and the QMH lung page together.
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/Thorax-Lung.html (JS-rendered; save as `docs/reference/Thorax-Lung.html`, run `tools/import-qmh.js`).
+Split into:
+  (a) Frozen lung wedge scenario (M): staple line trimmed, parenchymal margin inked, nodule size and distance, pleura; adenocarcinoma and variants, SCC, NSCC-NOS deferred, small cell, carcinoid, metastatic (primary named), necrotising / non-necrotising granulomatous inflammation, organising pneumonia, benign; margin Checks; subtype-on-paraffin snippets. House wording §10 of the examples file.
+  (b) `src/staging/lung.js` (M): AJCC 8th pT by invasive size (1 / 2 / 3 / 4 / 5 / 7 cm cut-offs, T1mi, AIS Tis), pleural invasion (PL1–2 → T2, PL3 → T3), separate nodules same lobe (T3) / different ipsilateral lobe (T4), main bronchus / atelectasis rules, pN by station, pM1a / b / c; stage groups; boundary tests. Lepidic-only size excluded from invasive size with a Check.
+  (c) Lung carcinoma resection schema + generator (L): CAP lung elements in the QMH printed order — procedure (wedge / segmentectomy / lobectomy / bilobectomy / pneumonectomy / completion lobectomy), site, size (total and invasive), histologic type WHO 5th with adenocarcinoma predominant pattern and percentages, grade (IASLC three-tier for non-mucinous adenocarcinoma), visceral pleura (PL0–3), STAS, LVI, margins (bronchial / vascular / parenchymal / pleural with distance), treatment effect, nodes by station with N1 / N2 split, pTNM + stage, ancillary (PD-L1, molecular requested); Checks; Related prior specimen support for completion lobectomy (residual tumour none / present, combined stage line).
+  (d) Fixtures + docs (S): element order asserted against the saved page; wedge-staged fixture, completion-lobectomy fixture with prior accession, lobectomy-primary fixture; README; card → Done.
+Untouched:  colon / GIST synoptics; frozen scenarios other than lung.
+Accept:     wedge frozen → Stage this part → synoptic prints pT with stage and the combined diagnosis line; completion lobectomy prints residual tumour, node counts and the combined stage line referencing the prior accession; boundary tests all pass.
+Verify:     tests + browser (light)
+Ship:       one batch with the engine card, one publish
+Depends on: Frozen → staged final
+
+### Breast pair — SLN frozen + breast carcinoma synoptic   Size: L → split; build as one batch
+Why:        SLN frozen results (card (a) above) feed pN; the breast biomarker block already exists in the breast core template and is reused.
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/BREAST-Cancers.html and BREAST-DCIS.html (save both; importer).
+Split into:  (a) `src/staging/breast.js` — pT by invasive size (T1mi / a / b / c, T2, T3, T4a–d), pN with ITC / micro / macro, ENE, N1mi, post-neoadjuvant yp, pM; anatomic stage groups (prognostic stage as a Later add); boundary tests (M). (b) schema + generator — invasive type, Nottingham grade with score arithmetic Check, size, DCIS extent and grade, LVI, margins per face with distance (reuse the breast excision margin walker), nodes (consumes `nodeSummary` from the SLN part or a Related prior SLN accession), treatment effect (RCB inputs), biomarkers via the existing block (L). (c) fixtures against the QMH order + docs (S).
+Untouched:  breast core template and its biomarker block; breast benign excision.
+Accept:     same-case SLN part fills pN automatically; prior-accession SLN fills pN with origin tag; Nottingham arithmetic Check fires on mismatched score.
+Verify:     tests + browser (light)
+Ship:       one batch, one publish
+Depends on: Frozen → staged final; Frozen section scenarios (a)
+
 ---
 
 ## Later
 
 One line each; card them before building.
 
-- Synoptic templates after stomach: prostate (radical) with Gleason arithmetic validation; breast with Nottingham validation; endometrium. (`docs/specs/synoptic-next-templates.md`)
+- Synoptic templates after stomach and the lung / breast pairs: prostate (radical) with Gleason arithmetic validation; endometrium. (`docs/specs/synoptic-next-templates.md`)
+- Pancreatobiliary pair: duct-margin frozen (Frozen section scenarios (b)) + Pancreas (`GI-Pancreas.html`), distal extrahepatic and perihilar bile duct synoptics (`GI-Distal Extrahepatic bile ducts.html`, `GI-Perhilar bile ducts.html`); frozen `marginSummary` feeds margin status; card after the lung pair proves the pattern.
+- Head-and-neck pair: named-margin presets (Frozen section scenarios (e)) + Lip and oral cavity synoptic (`HN-Lip and oral cavity.html`; DOI, WPOI, margins from the frozen parts) and nasal cavity / sinuses.
+- CNS pair: frozen / smear CNS scenario (meningioma, gliomas, metastasis, favour lymphoma, PitNET, reactive gliosis — proposed wording, no house example) + `CNS-Meningioma.html` and `CNS-Common_gliomas_and_ependymomas.html` (WHO CNS5 grade and integrated molecular diagnosis rather than AJCC staging).
 - "Upgrade part": benign template → matching cancer resection carrying macro, block key and shared fields (needs the target templates first).
 - Frozen section: time received / slides dispatched fields (only if wanted in the report rather than the LIS log).
 - Frozen section: discordance summary across cases (needs a Sheet query).

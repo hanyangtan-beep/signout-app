@@ -89,4 +89,23 @@ Accept: tongue 5-margin fixture reproduces §6 lines; nasal ala fixture reproduc
 
 ## Order and shipping
 
-Build order: (a) SLN, (b) duct margins, (e) presets and line form, (c) lung wedge, (d) CNS. Ship (a)+(b)+(e) as one batch, (c)+(d) as a second; one publish per batch.
+Build order: (a) SLN, (b) duct margins, (e) presets and line form as one unstaged batch; (c) lung wedge ships inside the Lung pair and (d) CNS inside the CNS pair (see "Staged frozen specimens" below).
+
+## Staged frozen specimens (pairs)
+
+Some frozen specimens are also the AJCC staging specimen, or their result feeds a category in a later synoptic. These are planned as pairs with the matching QMH resection template, after an engine card ("Frozen → staged final") that provides:
+
+1. **Stage this part** — a frozen part with a malignant paraffin result gains a linked synoptic part under the same letter, pre-filled from the frozen fields. Pre-fill map (frozen → synoptic): laterality / lobe / site → tumour site; largest nodule size → tumour size (invasive size still entered); distance to staple-line margin → parenchymal margin distance; pleural involvement grossly → visceral pleura prompt; nodes identified / positive / largest focus / ENE (`nodeSummary`) → regional lymph nodes; duct-margin result (`marginSummary`) → margin status line. Diagnosis line per letter: `(B) LUNG, left lower lobe, wedge excision x frozen section - ADENOCARCINOMA, acinar predominant, 0.8 cm; parenchymal margin clear; pT1a pNX (AJCC 8th edition)`.
+2. **Related prior specimen** — case-level fields: accession, date, procedure, tumour type, size, pT, pN (optional lookup by accession from the `Sign-out cases` Sheet, read-only). The staging module accepts a partial input and tags each category with its origin. Combined stage line: `Pathological stage: pT1a (prior wedge resection S26-01234) pN0 (0/8, this lobectomy)`. Auto comment (proposed): "Staging is based on the prior wedge resection (S26-01234) together with the lymph nodes from this completion lobectomy." Residual tumour in the completion specimen: `Residual carcinoma: not identified` / `present, N mm, at the previous staple line`.
+
+Pairs and their QMH pages (`https://awiloqmh.github.io/CancerReportingTemplate/`):
+
+| Frozen scenario | Feeds | Synoptic template (QMH page) | Roadmap |
+| --- | --- | --- | --- |
+| Lung wedge / nodule (c) | pT, margins, pleura; completion lobectomy adds pN and residual tumour | Lung carcinoma resection (`Thorax-Lung.html`) | Next — Lung pair |
+| Breast sentinel lymph nodes (a) | pN (ITC / micro / macro, ENE, count) | Breast carcinoma resection (`BREAST-Cancers.html`, `BREAST-DCIS.html`) | Next — Breast pair |
+| Bile duct / pancreatic duct margins (b) | margin status | Pancreas (`GI-Pancreas.html`), distal extrahepatic and perihilar bile ducts | Later — Pancreatobiliary pair |
+| Named margins (e) | margin status and distances | Lip and oral cavity (`HN-Lip and oral cavity.html`), nasal cavity / sinuses | Later — Head-and-neck pair |
+| CNS lesion (d) | WHO CNS5 grade / integrated diagnosis (no AJCC) | `CNS-Meningioma.html`, `CNS-Common_gliomas_and_ependymomas.html` | Later — CNS pair |
+
+Order: unstaged frozen batch (a)+(b)+(e) → engine card with the Lung pair → Breast pair → gastric synoptic as already planned → Later pairs.
