@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 35,
+  "count": 36,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -927,6 +927,40 @@
       "generator": "liverbenign",
       "generatorPath": "generators/liverbenign.js",
       "schemaPath": "schemas/liver_benign.json"
+    },
+    {
+      "id": "gist_resection",
+      "name": "Gastrointestinal stromal tumour resection",
+      "shortName": "GIST · cancer resection",
+      "label": "GIST",
+      "organ": "STOMACH",
+      "system": "GI",
+      "kind": "cancer resection",
+      "rank": 41,
+      "aliases": [
+        "GIST",
+        "gastrointestinal stromal tumour",
+        "stromal tumor",
+        "KIT",
+        "CD117",
+        "DOG1",
+        "PDGFRA",
+        "SDHB",
+        "Miettinen",
+        "mitotic count",
+        "wedge resection",
+        "imatinib",
+        "spindle cell",
+        "epithelioid",
+        "synoptic",
+        "CAP",
+        "AJCC",
+        "pTNM"
+      ],
+      "version": "2026.09",
+      "generator": "gist_resection",
+      "generatorPath": "generators/gist_resection.js",
+      "schemaPath": "schemas/gist_resection.json"
     },
     {
       "id": "jaw_cyst",

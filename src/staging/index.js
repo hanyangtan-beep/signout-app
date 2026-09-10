@@ -5,12 +5,15 @@
 //
 // Protocols live in src/staging/<protocol>.js and export
 //   { id, edition, T(values) -> {cat, note?}, N(values) -> {cat, note?}, M(values) -> {cat, note?},
-//     descriptors(values) -> ['m','r','y'], stageGroup(T, N, M) -> string|null }
+//     descriptors(values) -> ['m','r','y'], stageGroup(T, N, M, values) -> string|null }
+// stageGroup also receives the part values for protocols whose groups depend on more than TNM
+// (GIST: site and mitotic rate).
 // Categories are bare ('T3', 'N1b', 'M1a', 'Tis', 'TX', 'N0', 'M-') — the prefix is added here.
 
 import * as colorectal from './colorectal.js';
+import * as gist from './gist.js';
 
-export const PROTOCOLS = { colorectal };
+export const PROTOCOLS = { colorectal, gist };
 
 const OVERRIDE_RE = /\b(y?p?)T(is|X|0|1|2|3|4a|4b|4)\b.*?\b(?:y?p)?N(X|0|1a|1b|1c|1|2a|2b|2)\b(?:.*?\b(?:y?p)?M(1a|1b|1c|1|X)\b)?/i;
 
@@ -47,7 +50,7 @@ export function deriveTNM(values, protocol = 'colorectal') {
   const parts = [`${descriptors.includes('r') ? 'r' : ''}${prefix}${cats.T}${descriptors.includes('m') ? '(m)' : ''}`, `${prefix}${cats.N}`];
   if (cats.M !== 'M-') parts.push(`${prefix}${cats.M}`);
   const tnm = parts.join(' ');
-  const stage = P.stageGroup(cats.T, cats.N, cats.M);
+  const stage = P.stageGroup(cats.T, cats.N, cats.M, values);
   return { ...cats, descriptors, prefix, tnm, stage, edition: P.edition, notes, overridden, derived };
 }
 
