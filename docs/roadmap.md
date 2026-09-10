@@ -167,9 +167,20 @@ Each template ships with a `macro` field group and block-key builder, fixtures c
 - Rename `shortName` to "Organ · procedure" (Cervix · biopsy, Cervix · LEEP, Colon · resection) so ordering is self-evident. Header buttons keep the short organ label where unambiguous.
 - Per-schema `aliases` array for search ("TURBT", "chips", "Marsh", "coeliac", "LEEP", "Warthin", "pyogenic").
 
+**Small biopsies get their own always-visible section** (added 2026-09-10)
+
+Small biopsies are signed out daily, so they must never be more than one click away regardless of how many resection templates exist. The header carries a fixed **Small biopsy** section — every template with `kind: biopsy` (gastric, polyp, duodenum, oesophagus, IBD, prostate, breast core, cervix, endometrial, lung / bronchial, TURBT biopsy fragments, skin punch / shave) in one row, ordered by the daily TAT-list frequency, with the current template highlighted. This section is not subject to the pinned-strip cap and is shown by default even when the header is otherwise collapsed. Everything else (benign resections, synoptic cancer resections, frozen) sits behind a second **Resections** control that opens the grouped picker. Layout:
+
+```
+Small biopsy   Gastric  Polyp  Duodenum  Oesophagus  IBD  Prostate  Breast  Cervix  Endometrium  Lung
+Resections ▾   [pinned / recent ≤ 8]                                          ⌘K search
+```
+
+If the biopsy row itself outgrows one line (> ~12), it collapses to the top 8 by frequency plus a "more" overflow — still one click, never a search. The "New case" default template is the most-used small biopsy. The Part card selector keeps a "Small biopsy" optgroup at the top of the grouped list for mixed cases.
+
 **Three ways in, one picker component**
 
-1. Recent / pinned strip — the header keeps 6–8 buttons only, filled from saved-case frequency (Drive sheet `template` column; fall back to a default set), with manual pin / unpin (star in the picker). Preserves one-click access for the daily templates.
+1. Recent / pinned strip — applies to the Resections row only; keeps ≤ 8 buttons filled from saved-case frequency (Drive sheet `template` column; fall back to a default set), with manual pin / unpin (star in the picker). Small biopsies are already surfaced by the fixed row above and are excluded from this cap.
 2. Type-ahead palette — Cmd/Ctrl-K or `/` opens a search over name, organ, `aliases` and diagnosis keywords; Enter selects, ↑↓ move; 2–3 keystrokes reach any template. Primary route once the count is high.
 3. Grouped browse — the same palette with nothing typed shows the system × kind grid.
 
@@ -182,9 +193,9 @@ The Part card template selector reuses the same component (grouped by system) si
 - Settings → Templates: per-user visibility toggles (hide templates never reported) stored with the other settings; hidden templates stay searchable via the palette with a "hidden" tag and can be re-enabled in one click.
 - Recently used order and pins sync through the settings record on Drive so they follow the user between browsers.
 
-**Tests:** manifest builder round-trips every schema; palette ranking (exact shortName > alias > organ > keyword); pinned strip caps at 8 and dedupes; lazy-load resolves every manifest entry; upgrade-part preserves macro / block key and reports fields that could not be mapped.
+**Tests:** manifest builder round-trips every schema; small-biopsy row lists exactly the `kind: biopsy` templates in frequency order and survives the pinned cap; palette ranking (exact shortName > alias > organ > keyword); pinned strip caps at 8 and dedupes; lazy-load resolves every manifest entry; upgrade-part preserves macro / block key and reports fields that could not be mapped.
 
-**Done when:** with 40 fixture templates installed, any template is reachable in ≤ 3 keystrokes from the palette, the header shows only pinned / recent items, the part selector is grouped by system, and initial bundle size is unchanged from the Phase 4 build.
+**Done when:** with 40 fixture templates installed, every small-biopsy template is one click from the header, any other template is reachable in ≤ 3 keystrokes from the palette, the Resections row shows only pinned / recent items, the part selector is grouped by system, and initial bundle size is unchanged from the Phase 4 build.
 
 ---
 
