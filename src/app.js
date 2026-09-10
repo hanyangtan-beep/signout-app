@@ -128,7 +128,9 @@ function loadExample() {
   if (!s.example) return toast('No example for this template');
   const ex = JSON.parse(JSON.stringify(s.example));
   const meta = state.caseState?.meta;
-  setCase({ schemaId: s.id, schemaVersion: s.version, caseTitle: ex.caseTitle || '', options: { ...ex.options }, parts: ex.parts, meta: { ...meta, accession: meta?.accession || '' } }, 0);
+  const caseFields = {};
+  for (const f of s.caseFields || []) if (ex[f.id] !== undefined) caseFields[f.id] = ex[f.id];
+  setCase({ schemaId: s.id, schemaVersion: s.version, caseTitle: ex.caseTitle || '', ...caseFields, options: { ...ex.options }, parts: ex.parts, meta: { ...meta, accession: meta?.accession || '' } }, 0);
   toast('Example loaded');
 }
 
@@ -388,9 +390,11 @@ function renderReport() {
   state.lastOut = out;
   const blocks = [
     ['Specimens', out.specimens],
+    ['Macroscopic description', out.macro],
+    ['Intraoperative consultation', out.intraop],
     ['Microscopic examination', out.microscopy],
     ['Diagnosis', out.diagnosis]
-  ];
+  ].filter(([title, text]) => text || ['Specimens', 'Microscopic examination', 'Diagnosis'].includes(title));
   nodes.blocks.replaceChildren(...blocks.map(([title, text]) => {
     const pre = el('pre', {});
     pre.append(highlightParts(text));

@@ -122,20 +122,22 @@ Each template ships with a `macro` field group and block-key builder, fixtures c
 
 **Goal:** report intraoperative consultations in the same app and carry the result into the final report automatically. 28 of the 600 Docs mention frozen sections; the recurring paraffin sentence is "The paraffin sections confirm the frozen section diagnosis."
 
-- **Frozen section case mode**: parts FS1, FS2 … (separate lettering from the paraffin parts, then linked to them), each with specimen label as received, time received, time reported, reported to (surgeon / OT phone), and a frozen diagnosis line.
-- **Frozen diagnosis pick-lists by scenario**, each generating a one-line intraoperative diagnosis in your style:
-  - Margins (oral SCC, skin/BCC, others): negative / positive / close (mm) / atypical, defer to paraffin.
-  - Sentinel and other lymph nodes: negative / positive (macro-/micrometastasis) / defer.
-  - Parathyroid identification: parathyroid tissue confirmed (hypercellular / normocellular) / thyroid tissue / lymph node / adipose tissue.
-  - Ovarian or adnexal mass: benign / borderline / malignant (favour type) / defer.
-  - Lung, thyroid, and other nodules: benign / malignant (type if possible) / defer to paraffin.
+- [x] **Frozen section template** (`schemas/frozen_section.json`, `generators/frozen.js`, 2026-09-10): each frozen specimen is a normal lettered part (the department letters frozen specimens A, B, C … and converts every frozen block to paraffin, so the same letters carry through to the final report — no separate FS1/FS2 lettering needed). Case fields: reported by (printed in brackets, e.g. "(Prof. A Cheung / Dr. HY Tan)"), phone-reported time and date, reported to (optional). Mixes with paraffin templates in one case; only frozen parts feed the intraoperative block.
+- [x] **Frozen diagnosis pick-lists by scenario**, each generating a one-line intraoperative diagnosis; identical results are grouped "(A)-(D) No malignancy." as in the department's reports:
+  - Margins: No malignancy / carcinoma present at margin (tumour type) / close (mm) / dysplasia only (grade) / atypical, deferred.
+  - Lymph nodes: Negative for malignancy / macrometastasis / micrometastasis (size mm) / deferred.
+  - Parathyroid identification: hypercellular / normocellular parathyroid / thyroid tissue / lymph node / adipose / thymic tissue.
+  - Ovarian or adnexal mass: benign / borderline / malignant (favoured type) / deferred.
+  - Nodule or mass (lung, thyroid, other): benign / malignant (type) / deferred.
   - Free text for anything else.
-- **Block handling**: frozen block(s) converted to paraffin ("All embedded in 1 frozen block and subsequently converted to paraffin block"), with the frozen-section slides listed in the block key.
-- **Frozen–paraffin correlation** written into the final report: concordant (auto sentence above), discordant (reason: sampling / interpretation / deferred), or deferred; discordance summarised for QA.
-- **Output**: an INTRAOPERATIVE CONSULTATION block placed before the microscopy in the final report, plus a copy-ready frozen slip for the LIS at the time of the call.
-- Save to Drive the moment the frozen result is called, so the TAT job sees the case as opened the same day.
+- [x] **Block handling**: per-part macroscopic description generated from pieces, tissue, measurement, handling and block count ("Received in a fresh state is a piece of tan coloured tissue measuring 1 x 0.4 x 0.2 cm. All embedded in 1 frozen block and subsequently converted to paraffin block."); toggle off if the macro is typed elsewhere. Engine gained optional `macro` and `intraop` blocks (order: SPECIMEN → MACROSCOPIC → INTRAOPERATIVE CONSULTATION → MICROSCOPIC → DIAGNOSIS); the Google Doc merges the generated macro with any typed macro.
+- [x] **Frozen–paraffin correlation**: concordant → "(A) The paraffin section confirms the frozen section diagnosis. It shows … There is no evidence of dysplasia or malignancy."; discordant → reason (sampling / interpretation / technical) written into the microscopy and the paraffin diagnosis overrides the line; deferred → "The frozen section diagnosis was deferred. The paraffin section shows …".
+- [x] **Output**: INTRAOPERATIVE CONSULTATION block before the microscopy ("(Prof. A Cheung / Dr. HY Tan)" / grouped results / "The frozen section diagnosis was phone reported at 1321 on 13/05/2026 to Dr Lee (OT 3)."), copy-ready from its own Copy button at the time of the call; diagnosis lines in house format "(A) TONGUE, medial margin, frozen section - NO EVIDENCE OF MALIGNANCY".
+- [x] Save to Drive the moment the frozen result is called (existing Save; the Doc now carries the INTRAOPERATIVE CONSULTATION heading so the TAT job can see it).
+- [ ] Time received and slides-dispatched times (department FS log) — add only if you want them in the report rather than the LIS log.
+- [ ] Discordance summary for QA across cases (needs the Sheet query in Phase 5).
 
-**Done when:** a margin-frozen SCC case and a parathyroid frozen are reported live from the app, the frozen line appears unchanged in the final Doc, and the correlation sentence is generated without typing.
+**Done when:** a margin-frozen SCC case and a parathyroid frozen are reported live from the app, the frozen line appears unchanged in the final Doc, and the correlation sentence is generated without typing. (Template built and tested 2026-09-10; live acceptance pending.)
 
 ---
 

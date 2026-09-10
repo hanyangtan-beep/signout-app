@@ -23,6 +23,7 @@ Design: `docs/design.md`. Roadmap: `docs/roadmap.md`.
 - [x] Phase 3 (part 1): `schemas/prostate_biopsy.json` + `generators/prostate.js` (Gleason / Grade Group, cores, extent, cribriform, IDC-P, PNI, EPE, case summary) and `schemas/ibd_biopsy.json` + `generators/ibd.js` (chronicity / activity classification, Nancy index, distribution summary with UC vs Crohn's pattern); engine: single-part rule (no "(A)" for one-part cases), parts A–Z, `partDefaults`, `number` fields, `summary` hook; 55 tests
 - [x] Phase 3 (part 2): mixed-template cases — per-part `templateId`, part template picker, `engine.generateCase` assembling parts from different templates in case order with per-template summaries; Sheet/Doc record `gastric_biopsy+colonic_polyp`; 63 tests
 - [x] Phase 4 (part 1): oesophageal biopsy template — squamous (reflux pattern, eosinophil count with the 15/hpf threshold, Candida, squamous neoplasia) and columnar (intestinal metaplasia, Barrett's by endoscopic context, glandular dysplasia) findings combined into one line per level, multi-level SUMMARY; 74 tests
+- [x] Phase 4c: frozen section template — lettered frozen parts with scenario pick-lists (margin, lymph node, parathyroid, ovarian mass, nodule, free text), generated macroscopic description, INTRAOPERATIVE CONSULTATION block with grouped results and the phone-report sentence, paraffin correlation (concordant / discordant / deferred) and house diagnosis lines; engine gained optional `macro` and `intraop` blocks; 92 tests
 
 ## Commands
 

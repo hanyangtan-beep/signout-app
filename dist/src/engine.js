@@ -1,15 +1,20 @@
 // Generic schema engine: builds part defaults, evaluates visibility, and assembles
 // the report from a schema + generator module. Runs unchanged in the browser and in Node.
 
-import { applyStyle } from './style.js?v=mtuqsqoz';
+import { applyStyle } from './style.js?v=mtus5g9i';
 
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 export const HEADERS = {
   specimens: 'SPECIMEN:',
+  macro: 'MACROSCOPIC DESCRIPTION:',
+  intraop: 'INTRAOPERATIVE CONSULTATION:',
   microscopy: 'MICROSCOPIC EXAMINATION:',
   diagnosis: 'DIAGNOSIS:'
 };
+
+/** Block order in the assembled report. `macro` and `intraop` only appear for templates with those hooks. */
+export const BLOCK_ORDER = ['specimens', 'macro', 'intraop', 'microscopy', 'diagnosis'];
 
 /** Default values for one part. `index` is 0-based. */
 export function defaultValues(schema, index = 0) {
@@ -101,8 +106,7 @@ export function dropPartLetters(text, label = 'A') {
 }
 
 export function assemble(blocks, includeHeader) {
-  const order = ['specimens', 'microscopy', 'diagnosis'];
-  const present = order.filter((k) => blocks[k] && blocks[k].trim() !== '');
+  const present = BLOCK_ORDER.filter((k) => blocks[k] && blocks[k].trim() !== '');
   if (!includeHeader) return present.map((k) => blocks[k]).join('\n\n');
   return present.map((k) => `${HEADERS[k]}\n${blocks[k]}`).join('\n\n');
 }
@@ -169,6 +173,11 @@ export function generateCase(templates, caseState) {
   } else {
     specimens = parts.map((p) => styled(p.templateId, `(${p.label}) ${ctxs[p.templateId].gen.specimenName(p, ctxs[p.templateId])}`)).join('\n');
   }
+  // Optional per-part macroscopic description (frozen sections) and per-template intraoperative block.
+  const macro = parts.filter((p) => ctxs[p.templateId].gen.macro)
+    .map((p) => styled(p.templateId, ctxs[p.templateId].gen.macro(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n\n');
+  const intraop = ids.filter((id) => ctxs[id].gen.intraop)
+    .map((id) => styled(id, ctxs[id].gen.intraop(ctxs[id].parts, ctxs[id]))).filter((t) => t && t.trim() !== '').join('\n\n');
   const microscopy = parts.map((p) => styled(p.templateId, ctxs[p.templateId].gen.microscopy(p, ctxs[p.templateId]))).join('\n\n');
   let diagnosis = parts.map((p) => styled(p.templateId, ctxs[p.templateId].gen.diagnosis(p, ctxs[p.templateId]))).join('\n');
   for (const id of ids) {
@@ -182,6 +191,8 @@ export function generateCase(templates, caseState) {
   const letters = (text) => (single ? dropPartLetters(text, parts[0].label) : text);
   const blocks = {
     specimens: tidy(letters(specimens)),
+    macro: tidy(letters(macro)),
+    intraop: tidy(letters(intraop)),
     microscopy: tidy(letters(microscopy)),
     diagnosis: tidy(letters(diagnosis))
   };

@@ -36,11 +36,14 @@ export function phiWarnings(texts) {
 /** The Google Doc body. Headings are fixed so the TAT job and Perplexity can parse the draft. */
 export function buildDocText(caseState, out) {
   const meta = caseState.meta || {};
+  // Generated macro (frozen section parts) comes first, then whatever was typed in the case panel.
+  const macro = [out.macro, meta.macro].filter((t) => t && t.trim() !== '').join('\n\n');
   const sections = [
     ['CLINICAL HISTORY', meta.clinical],
     ['SPECIMEN', out.specimens],
-    ['MACROSCOPIC DESCRIPTION', meta.macro],
+    ['MACROSCOPIC DESCRIPTION', macro],
     ['BLOCK KEY', meta.blockKey],
+    ...(out.intraop && out.intraop.trim() !== '' ? [['INTRAOPERATIVE CONSULTATION', out.intraop]] : []),
     ['MICROSCOPIC EXAMINATION', out.microscopy],
     ['DIAGNOSIS', out.diagnosis]
   ];

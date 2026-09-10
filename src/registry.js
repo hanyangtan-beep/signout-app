@@ -6,10 +6,11 @@ import colonic from '../generators/colonic.js';
 import prostate from '../generators/prostate.js';
 import ibd from '../generators/ibd.js';
 import oesophageal from '../generators/oesophageal.js';
+import frozen from '../generators/frozen.js';
 
-export const GENERATORS = { gastric, colonic, prostate, ibd, oesophageal };
+export const GENERATORS = { gastric, colonic, prostate, ibd, oesophageal, frozen };
 
-export const TEMPLATE_IDS = ['gastric_biopsy', 'colonic_polyp', 'prostate_biopsy', 'ibd_biopsy', 'oesophageal_biopsy'];
+export const TEMPLATE_IDS = ['gastric_biopsy', 'colonic_polyp', 'prostate_biopsy', 'ibd_biopsy', 'oesophageal_biopsy', 'frozen_section'];
 
 export async function loadSchema(id, baseUrl) {
   if (typeof window === 'undefined') {

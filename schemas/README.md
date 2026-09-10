@@ -4,4 +4,4 @@ One JSON file per template. Keys: `id`, `version`, `name`, `shortName`, `organ`,
 
 Field types: `text`, `textarea`, `number` (`min`, `step`, `suffix`), `checkbox`, `select` / `grade` (`options`, `optionLabels`, `optionsByField`, `showIf`, `defaultForFirstPart`).
 
-Templates: `gastric_biopsy`, `colonic_polyp`, `prostate_biopsy`, `ibd_biopsy`, `oesophageal_biopsy`.
+Templates: `gastric_biopsy`, `colonic_polyp`, `prostate_biopsy`, `ibd_biopsy`, `oesophageal_biopsy`, `frozen_section`.
