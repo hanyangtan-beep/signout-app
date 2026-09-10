@@ -14,7 +14,8 @@ const run = (cs) => generate(schema, generator, cs);
 
 test('breast template is registered with the britishiser off (biomarker block must stay verbatim)', () => {
   assert.equal(schema.generator, 'breast');
-  assert.equal(schema.shortName, 'Breast');
+  assert.equal(schema.shortName, 'Breast · core biopsy');
+  assert.equal(schema.label, 'Breast');
   assert.equal(schema.style.british, false);
   assert.ok(schema.fields.some((f) => f.id === 'category'));
 });

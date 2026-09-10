@@ -162,16 +162,18 @@ Each template ships with a `macro` field group and block-key builder, fixtures c
 
 ---
 
-## Phase 4d — Template organisation (1 week; build before Phase 4b fills the list)
+## Phase 4d — Template organisation (1 week; build before Phase 4b fills the list) — **built 2026-09-10**
+
+**Status (2026-09-10):** done except the Phase 5 hooks below. `system` / `kind` / `rank` / `aliases` / `label` on every schema; `shortName` is "Organ · procedure"; `templates/manifest.json` (`scripts/build-manifest.mjs`, re-run by `npm run build`) drives a lazy registry (`src/registry.js` — schema + generator `import()`ed on first use, so boot fetches the manifest plus one template); header has the fixed **Small biopsy** row (rank order, collapses to top 8 + More above 12) and the **Resections ▾** row (pins → recents → rank-order fill, ≤ 8, pins / recents in localStorage); palette (`Cmd/Ctrl-K`, `/` outside a field, or Resections ▾) with grouped browse and ranked search (`src/picker.js`: exact shortName > alias > organ > keyword > subsequence), ↑↓ / Enter, star to pin; part-card selector grouped with a Small biopsy optgroup; default new case = highest-rank small biopsy; 8 tests in `tests/picker.test.js`. Not built (Phase 5 hooks): Upgrade part, Settings → Templates visibility toggles, pins / recents sync through Drive settings.
 
 **Why:** Phase 4 ends at about 12 small-biopsy templates, 4b adds ~20 benign resections and Phase 5 adds one synoptic template per cancer resection — 40–50 templates in total. The flat header row and the per-part `<select>` both stop working at about 10. Decided 2026-09-10.
 
 **Organise by organ system, then by specimen size**
 
-- Add `system` and `kind` metadata to every schema. `system` ∈ GI, Hepatobiliary, GU, Gynae, Breast, Thoracic, Head and neck, Skin, Cardiovascular, Lymphoid, Frozen. `kind` ∈ biopsy, benign resection, cancer resection (synoptic). The picker is a matrix: choose the system, templates appear in ascending specimen size (Colon: biopsy → polyp → IBD → resection). Phase 5 templates land in the third column of the same rows, not in a separate list.
-- Rename `shortName` to "Organ · procedure" (Cervix · biopsy, Cervix · LEEP, Colon · resection) so ordering is self-evident. Header buttons keep the short organ label where unambiguous.
+- [x] Add `system` and `kind` metadata to every schema. `system` ∈ GI, Hepatobiliary, GU, Gynae, Breast, Thoracic, Head and neck, Skin, Cardiovascular, Lymphoid, Frozen. `kind` ∈ biopsy, benign resection, cancer resection (synoptic). The picker is a matrix: choose the system, templates appear in ascending specimen size (Colon: biopsy → polyp → IBD → resection). Phase 5 templates land in the third column of the same rows, not in a separate list.
+- [x] Rename `shortName` to "Organ · procedure" (Cervix · biopsy, Cervix · LEEP, Colon · resection) so ordering is self-evident. Header buttons keep the short organ label where unambiguous.
 - [x] Rename the **Polyp** header button and `shortName` to **Colonic polyp** (added 2026-09-10; done 2026-09-10) — "Polyp" is ambiguous once endocervical, endometrial, nasal, gastric (fundic gland / hyperplastic) and skin polyps have their own templates or pick-lists; the same rule applies to any other bare procedure or lesion name (e.g. "Frozen" stays, but "Biopsy"-only labels are not allowed). Do this with the shortName change above and update the Small biopsy row layout (`Gastric  Colonic polyp  Duodenum …`).
-- Per-schema `aliases` array for search ("TURBT", "chips", "Marsh", "coeliac", "LEEP", "Warthin", "pyogenic").
+- [x] Per-schema `aliases` array for search ("TURBT", "chips", "Marsh", "coeliac", "LEEP", "Warthin", "pyogenic").
 
 **Small biopsies get their own always-visible section** (added 2026-09-10)
 

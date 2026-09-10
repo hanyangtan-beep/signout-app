@@ -2,11 +2,12 @@
   "id": "endometrial_biopsy",
   "version": "2026.09",
   "name": "Endometrial biopsy",
-  "shortName": "Endometrium",
+  "shortName": "Endometrium · biopsy",
+  "label": "Endometrium",
   "organ": "ENDOMETRIUM",
-  "specimenNoun": "curettings",
   "system": "Gynae",
   "kind": "biopsy",
+  "rank": 9,
   "aliases": [
     "pipelle",
     "curettings",
@@ -15,6 +16,7 @@
     "EIN",
     "PMB"
   ],
+  "specimenNoun": "curettings",
   "maxParts": 4,
   "defaultParts": 1,
   "generator": "endometrial",

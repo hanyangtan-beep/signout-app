@@ -16,7 +16,9 @@ function part(cs, i, values) { Object.assign(cs.parts[i].values, values); return
 
 test('frozen section template is registered', () => {
   assert.equal(schema.generator, 'frozen');
-  assert.equal(schema.shortName, 'Frozen');
+  assert.equal(schema.shortName, 'Frozen section');
+  assert.equal(schema.label, 'Frozen');
+  assert.equal(schema.kind, 'frozen');
   assert.ok(registry.frozen_section.generator.intraop && registry.frozen_section.generator.macro);
 });
 

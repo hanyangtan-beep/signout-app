@@ -2,65 +2,157 @@
   "id": "ibd_biopsy",
   "version": "2026.09",
   "name": "IBD biopsy series",
-  "shortName": "IBD",
+  "shortName": "Colon · IBD biopsy",
+  "label": "IBD",
   "organ": "COLON",
+  "system": "GI",
+  "kind": "biopsy",
+  "rank": 5,
+  "aliases": [
+    "ulcerative colitis",
+    "Crohn",
+    "colitis",
+    "chronic colitis",
+    "terminal ileum",
+    "ileum",
+    "surveillance",
+    "mapping",
+    "inflammatory bowel disease"
+  ],
   "specimenNoun": "biopsy",
   "maxParts": 12,
   "defaultParts": 1,
   "generator": "ibd",
-  "style": { "british": true },
+  "style": {
+    "british": true
+  },
   "caseFields": [],
   "options": [
-    { "id": "includeHeader", "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)", "type": "checkbox", "default": false },
-    { "id": "summary", "label": "Distribution summary and IBD pattern interpretation after the diagnosis", "type": "checkbox", "default": true },
-    { "id": "nancy", "label": "Nancy histological index per site", "type": "checkbox", "default": false }
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "summary",
+      "label": "Distribution summary and IBD pattern interpretation after the diagnosis",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "nancy",
+      "label": "Nancy histological index per site",
+      "type": "checkbox",
+      "default": false
+    }
   ],
   "partDefaults": [
-    { "site": "Terminal ileum" }, { "site": "Caecum" }, { "site": "Ascending colon" }, { "site": "Transverse colon" },
-    { "site": "Descending colon" }, { "site": "Sigmoid colon" }, { "site": "Rectum" }
+    {
+      "site": "Terminal ileum"
+    },
+    {
+      "site": "Caecum"
+    },
+    {
+      "site": "Ascending colon"
+    },
+    {
+      "site": "Transverse colon"
+    },
+    {
+      "site": "Descending colon"
+    },
+    {
+      "site": "Sigmoid colon"
+    },
+    {
+      "site": "Rectum"
+    }
   ],
   "fields": [
     {
       "id": "site",
       "label": "Site",
       "type": "select",
-      "options": ["Terminal ileum", "Ileocaecal valve", "Caecum", "Ascending colon", "Hepatic flexure", "Transverse colon", "Splenic flexure", "Descending colon", "Sigmoid colon", "Rectosigmoid", "Rectum", "Random colon"],
+      "options": [
+        "Terminal ileum",
+        "Ileocaecal valve",
+        "Caecum",
+        "Ascending colon",
+        "Hepatic flexure",
+        "Transverse colon",
+        "Splenic flexure",
+        "Descending colon",
+        "Sigmoid colon",
+        "Rectosigmoid",
+        "Rectum",
+        "Random colon"
+      ],
       "default": "Rectum"
     },
     {
       "id": "villi",
       "label": "Villous architecture",
       "type": "select",
-      "options": ["Preserved", "Blunted"],
+      "options": [
+        "Preserved",
+        "Blunted"
+      ],
       "default": "Preserved",
-      "showIf": { "field": "site", "is": ["Terminal ileum", "Ileocaecal valve"] }
+      "showIf": {
+        "field": "site",
+        "is": [
+          "Terminal ileum",
+          "Ileocaecal valve"
+        ]
+      }
     },
     {
       "id": "distortion",
       "label": "Crypt architectural distortion",
       "type": "grade",
-      "options": ["Absent", "Mild", "Moderate", "Marked"],
+      "options": [
+        "Absent",
+        "Mild",
+        "Moderate",
+        "Marked"
+      ],
       "default": "Absent"
     },
     {
       "id": "basalPlasma",
       "label": "Basal plasmacytosis",
       "type": "select",
-      "options": ["Absent", "Focal", "Diffuse"],
+      "options": [
+        "Absent",
+        "Focal",
+        "Diffuse"
+      ],
       "default": "Absent"
     },
     {
       "id": "chronic",
       "label": "Lamina propria chronic inflammation",
       "type": "grade",
-      "options": ["Normal", "Mild", "Moderate", "Marked"],
+      "options": [
+        "Normal",
+        "Mild",
+        "Moderate",
+        "Marked"
+      ],
       "default": "Normal"
     },
     {
       "id": "activity",
       "label": "Activity (neutrophils)",
       "type": "grade",
-      "options": ["Absent", "Mild", "Moderate", "Severe"],
+      "options": [
+        "Absent",
+        "Mild",
+        "Moderate",
+        "Severe"
+      ],
       "optionLabels": {
         "Mild": "Mild (cryptitis)",
         "Moderate": "Moderate (crypt abscesses)",
@@ -72,14 +164,23 @@
       "id": "granulomas",
       "label": "Granulomas",
       "type": "select",
-      "options": ["Absent", "Crypt-rupture associated", "Present, not crypt-associated"],
+      "options": [
+        "Absent",
+        "Crypt-rupture associated",
+        "Present, not crypt-associated"
+      ],
       "default": "Absent"
     },
     {
       "id": "metaplasia",
       "label": "Metaplasia",
       "type": "select",
-      "options": ["Absent", "Paneth cell metaplasia", "Pyloric gland metaplasia", "Both"],
+      "options": [
+        "Absent",
+        "Paneth cell metaplasia",
+        "Pyloric gland metaplasia",
+        "Both"
+      ],
       "default": "Absent",
       "help": "Paneth cells distal to the hepatic flexure and pyloric glands in the ileum or colon are chronicity markers."
     },
@@ -87,7 +188,12 @@
       "id": "dysplasia",
       "label": "Dysplasia",
       "type": "select",
-      "options": ["No dysplasia", "Indefinite for dysplasia", "Low grade dysplasia", "High grade dysplasia"],
+      "options": [
+        "No dysplasia",
+        "Indefinite for dysplasia",
+        "Low grade dysplasia",
+        "High grade dysplasia"
+      ],
       "default": "No dysplasia"
     },
     {
@@ -100,15 +206,117 @@
   ],
   "example": {
     "caseTitle": "",
-    "options": { "includeHeader": false, "summary": true, "nancy": true },
+    "options": {
+      "includeHeader": false,
+      "summary": true,
+      "nancy": true
+    },
     "parts": [
-      { "label": "A", "values": { "site": "Terminal ileum", "villi": "Preserved", "distortion": "Absent", "basalPlasma": "Absent", "chronic": "Normal", "activity": "Absent", "granulomas": "Absent", "metaplasia": "Absent", "dysplasia": "No dysplasia", "additionalNotes": "" } },
-      { "label": "B", "values": { "site": "Caecum", "villi": "Preserved", "distortion": "Absent", "basalPlasma": "Absent", "chronic": "Normal", "activity": "Absent", "granulomas": "Absent", "metaplasia": "Absent", "dysplasia": "No dysplasia", "additionalNotes": "" } },
-      { "label": "C", "values": { "site": "Ascending colon", "villi": "Preserved", "distortion": "Absent", "basalPlasma": "Absent", "chronic": "Normal", "activity": "Absent", "granulomas": "Absent", "metaplasia": "Absent", "dysplasia": "No dysplasia", "additionalNotes": "" } },
-      { "label": "D", "values": { "site": "Transverse colon", "villi": "Preserved", "distortion": "Mild", "basalPlasma": "Focal", "chronic": "Mild", "activity": "Absent", "granulomas": "Absent", "metaplasia": "Absent", "dysplasia": "No dysplasia", "additionalNotes": "" } },
-      { "label": "E", "values": { "site": "Descending colon", "villi": "Preserved", "distortion": "Moderate", "basalPlasma": "Diffuse", "chronic": "Moderate", "activity": "Mild", "granulomas": "Absent", "metaplasia": "Paneth cell metaplasia", "dysplasia": "No dysplasia", "additionalNotes": "" } },
-      { "label": "F", "values": { "site": "Sigmoid colon", "villi": "Preserved", "distortion": "Marked", "basalPlasma": "Diffuse", "chronic": "Marked", "activity": "Moderate", "granulomas": "Absent", "metaplasia": "Paneth cell metaplasia", "dysplasia": "No dysplasia", "additionalNotes": "" } },
-      { "label": "G", "values": { "site": "Rectum", "villi": "Preserved", "distortion": "Marked", "basalPlasma": "Diffuse", "chronic": "Marked", "activity": "Severe", "granulomas": "Absent", "metaplasia": "Paneth cell metaplasia", "dysplasia": "No dysplasia", "additionalNotes": "" } }
+      {
+        "label": "A",
+        "values": {
+          "site": "Terminal ileum",
+          "villi": "Preserved",
+          "distortion": "Absent",
+          "basalPlasma": "Absent",
+          "chronic": "Normal",
+          "activity": "Absent",
+          "granulomas": "Absent",
+          "metaplasia": "Absent",
+          "dysplasia": "No dysplasia",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "B",
+        "values": {
+          "site": "Caecum",
+          "villi": "Preserved",
+          "distortion": "Absent",
+          "basalPlasma": "Absent",
+          "chronic": "Normal",
+          "activity": "Absent",
+          "granulomas": "Absent",
+          "metaplasia": "Absent",
+          "dysplasia": "No dysplasia",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "C",
+        "values": {
+          "site": "Ascending colon",
+          "villi": "Preserved",
+          "distortion": "Absent",
+          "basalPlasma": "Absent",
+          "chronic": "Normal",
+          "activity": "Absent",
+          "granulomas": "Absent",
+          "metaplasia": "Absent",
+          "dysplasia": "No dysplasia",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "D",
+        "values": {
+          "site": "Transverse colon",
+          "villi": "Preserved",
+          "distortion": "Mild",
+          "basalPlasma": "Focal",
+          "chronic": "Mild",
+          "activity": "Absent",
+          "granulomas": "Absent",
+          "metaplasia": "Absent",
+          "dysplasia": "No dysplasia",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "E",
+        "values": {
+          "site": "Descending colon",
+          "villi": "Preserved",
+          "distortion": "Moderate",
+          "basalPlasma": "Diffuse",
+          "chronic": "Moderate",
+          "activity": "Mild",
+          "granulomas": "Absent",
+          "metaplasia": "Paneth cell metaplasia",
+          "dysplasia": "No dysplasia",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "F",
+        "values": {
+          "site": "Sigmoid colon",
+          "villi": "Preserved",
+          "distortion": "Marked",
+          "basalPlasma": "Diffuse",
+          "chronic": "Marked",
+          "activity": "Moderate",
+          "granulomas": "Absent",
+          "metaplasia": "Paneth cell metaplasia",
+          "dysplasia": "No dysplasia",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "G",
+        "values": {
+          "site": "Rectum",
+          "villi": "Preserved",
+          "distortion": "Marked",
+          "basalPlasma": "Diffuse",
+          "chronic": "Marked",
+          "activity": "Severe",
+          "granulomas": "Absent",
+          "metaplasia": "Paneth cell metaplasia",
+          "dysplasia": "No dysplasia",
+          "additionalNotes": ""
+        }
+      }
     ]
   }
 }

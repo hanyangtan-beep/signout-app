@@ -2,22 +2,65 @@
   "id": "frozen_section",
   "version": "2026.09",
   "name": "Frozen section",
-  "shortName": "Frozen",
+  "shortName": "Frozen section",
+  "label": "Frozen",
   "organ": "",
+  "system": "Frozen",
+  "kind": "frozen",
+  "rank": 30,
+  "aliases": [
+    "FS",
+    "intraoperative",
+    "margin",
+    "parathyroid",
+    "lymph node",
+    "ovarian mass",
+    "nodule"
+  ],
   "specimenNoun": "frozen section",
   "maxParts": 26,
   "defaultParts": 1,
   "generator": "frozen",
-  "style": { "british": true },
+  "style": {
+    "british": true
+  },
   "caseFields": [
-    { "id": "fsPathologists", "label": "Frozen section reported by", "placeholder": "Prof. A Cheung / Dr. HY Tan", "help": "Printed in brackets above the intraoperative diagnosis lines." },
-    { "id": "fsTime", "label": "Phone reported at (time)", "placeholder": "1321" },
-    { "id": "fsDate", "label": "Phone reported on (date)", "placeholder": "13/05/2026" },
-    { "id": "fsReportedTo", "label": "Reported to", "placeholder": "Dr Lee (OT 3)", "help": "Optional. Clinician names are allowed; never patient details." }
+    {
+      "id": "fsPathologists",
+      "label": "Frozen section reported by",
+      "placeholder": "Prof. A Cheung / Dr. HY Tan",
+      "help": "Printed in brackets above the intraoperative diagnosis lines."
+    },
+    {
+      "id": "fsTime",
+      "label": "Phone reported at (time)",
+      "placeholder": "1321"
+    },
+    {
+      "id": "fsDate",
+      "label": "Phone reported on (date)",
+      "placeholder": "13/05/2026"
+    },
+    {
+      "id": "fsReportedTo",
+      "label": "Reported to",
+      "placeholder": "Dr Lee (OT 3)",
+      "help": "Optional. Clinician names are allowed; never patient details."
+    }
   ],
   "options": [
-    { "id": "includeHeader", "label": "Section headers (SPECIMEN / MACROSCOPIC / INTRAOPERATIVE CONSULTATION / MICROSCOPIC / DIAGNOSIS)", "type": "checkbox", "default": false },
-    { "id": "macro", "label": "Generate the macroscopic description for each frozen part", "type": "checkbox", "default": true }
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MACROSCOPIC / INTRAOPERATIVE CONSULTATION / MICROSCOPIC / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description for each frozen part",
+      "type": "checkbox",
+      "default": true
+    }
   ],
   "fields": [
     {
@@ -31,8 +74,18 @@
       "id": "scenario",
       "label": "Scenario",
       "type": "select",
-      "options": ["Margin", "Lymph node", "Parathyroid", "Ovarian / adnexal mass", "Nodule / mass", "Other"],
-      "optionLabels": { "Nodule / mass": "Nodule or mass (lung, thyroid, other)", "Other": "Tissue identification / other (free text)" },
+      "options": [
+        "Margin",
+        "Lymph node",
+        "Parathyroid",
+        "Ovarian / adnexal mass",
+        "Nodule / mass",
+        "Other"
+      ],
+      "optionLabels": {
+        "Nodule / mass": "Nodule or mass (lung, thyroid, other)",
+        "Other": "Tissue identification / other (free text)"
+      },
       "default": "Margin"
     },
     {
@@ -46,7 +99,15 @@
       "id": "tissueDesc",
       "label": "Tissue as received",
       "type": "select",
-      "options": ["tan coloured tissue", "fibrofatty tissue", "skin", "lymph node", "mucosa", "greyish tissue", "other"],
+      "options": [
+        "tan coloured tissue",
+        "fibrofatty tissue",
+        "skin",
+        "lymph node",
+        "mucosa",
+        "greyish tissue",
+        "other"
+      ],
       "default": "tan coloured tissue"
     },
     {
@@ -55,7 +116,10 @@
       "type": "text",
       "placeholder": "brownish nodular tissue",
       "default": "",
-      "showIf": { "field": "tissueDesc", "is": "other" }
+      "showIf": {
+        "field": "tissueDesc",
+        "is": "other"
+      }
     },
     {
       "id": "size",
@@ -68,7 +132,12 @@
       "id": "handling",
       "label": "Handling",
       "type": "select",
-      "options": ["All embedded", "Bisected and all embedded", "Serially sectioned and all embedded", "Representative section taken"],
+      "options": [
+        "All embedded",
+        "Bisected and all embedded",
+        "Serially sectioned and all embedded",
+        "Representative section taken"
+      ],
       "default": "All embedded"
     },
     {
@@ -82,10 +151,25 @@
       "id": "marginResult",
       "label": "Frozen result",
       "type": "select",
-      "options": ["Negative", "Positive", "Close", "Dysplasia only", "Atypical, deferred"],
-      "optionLabels": { "Negative": "No malignancy", "Positive": "Carcinoma present at margin", "Close": "Negative, tumour close to margin", "Dysplasia only": "Dysplasia, no invasive malignancy", "Atypical, deferred": "Atypical cells, defer to paraffin" },
+      "options": [
+        "Negative",
+        "Positive",
+        "Close",
+        "Dysplasia only",
+        "Atypical, deferred"
+      ],
+      "optionLabels": {
+        "Negative": "No malignancy",
+        "Positive": "Carcinoma present at margin",
+        "Close": "Negative, tumour close to margin",
+        "Dysplasia only": "Dysplasia, no invasive malignancy",
+        "Atypical, deferred": "Atypical cells, defer to paraffin"
+      },
       "default": "Negative",
-      "showIf": { "field": "scenario", "is": "Margin" }
+      "showIf": {
+        "field": "scenario",
+        "is": "Margin"
+      }
     },
     {
       "id": "marginDistance",
@@ -93,24 +177,48 @@
       "type": "number",
       "default": "",
       "min": 0,
-      "showIf": { "field": "marginResult", "is": "Close" }
+      "showIf": {
+        "field": "marginResult",
+        "is": "Close"
+      }
     },
     {
       "id": "dysplasiaGrade",
       "label": "Dysplasia grade",
       "type": "select",
-      "options": ["Mild", "Moderate", "Severe", "High grade"],
+      "options": [
+        "Mild",
+        "Moderate",
+        "Severe",
+        "High grade"
+      ],
       "default": "Moderate",
-      "showIf": { "field": "marginResult", "is": "Dysplasia only" }
+      "showIf": {
+        "field": "marginResult",
+        "is": "Dysplasia only"
+      }
     },
     {
       "id": "nodeResult",
       "label": "Frozen result",
       "type": "select",
-      "options": ["Negative", "Macrometastasis", "Micrometastasis", "Deferred"],
-      "optionLabels": { "Negative": "Negative for malignancy", "Macrometastasis": "Metastatic carcinoma, macrometastasis (> 2 mm)", "Micrometastasis": "Metastatic carcinoma, micrometastasis (0.2–2 mm)", "Deferred": "Defer to paraffin" },
+      "options": [
+        "Negative",
+        "Macrometastasis",
+        "Micrometastasis",
+        "Deferred"
+      ],
+      "optionLabels": {
+        "Negative": "Negative for malignancy",
+        "Macrometastasis": "Metastatic carcinoma, macrometastasis (> 2 mm)",
+        "Micrometastasis": "Metastatic carcinoma, micrometastasis (0.2–2 mm)",
+        "Deferred": "Defer to paraffin"
+      },
       "default": "Negative",
-      "showIf": { "field": "scenario", "is": "Lymph node" }
+      "showIf": {
+        "field": "scenario",
+        "is": "Lymph node"
+      }
     },
     {
       "id": "metSize",
@@ -118,33 +226,68 @@
       "type": "number",
       "default": "",
       "min": 0,
-      "showIf": { "field": "nodeResult", "is": ["Macrometastasis", "Micrometastasis"] }
+      "showIf": {
+        "field": "nodeResult",
+        "is": [
+          "Macrometastasis",
+          "Micrometastasis"
+        ]
+      }
     },
     {
       "id": "parathyroidResult",
       "label": "Frozen result",
       "type": "select",
-      "options": ["Parathyroid, hypercellular", "Parathyroid, normocellular", "Thyroid tissue", "Lymph node", "Adipose tissue", "Thymic tissue"],
+      "options": [
+        "Parathyroid, hypercellular",
+        "Parathyroid, normocellular",
+        "Thyroid tissue",
+        "Lymph node",
+        "Adipose tissue",
+        "Thymic tissue"
+      ],
       "default": "Parathyroid, hypercellular",
-      "showIf": { "field": "scenario", "is": "Parathyroid" }
+      "showIf": {
+        "field": "scenario",
+        "is": "Parathyroid"
+      }
     },
     {
       "id": "ovaryResult",
       "label": "Frozen result",
       "type": "select",
-      "options": ["Benign", "Borderline", "Malignant", "Deferred"],
-      "optionLabels": { "Deferred": "Defer to paraffin" },
+      "options": [
+        "Benign",
+        "Borderline",
+        "Malignant",
+        "Deferred"
+      ],
+      "optionLabels": {
+        "Deferred": "Defer to paraffin"
+      },
       "default": "Benign",
-      "showIf": { "field": "scenario", "is": "Ovarian / adnexal mass" }
+      "showIf": {
+        "field": "scenario",
+        "is": "Ovarian / adnexal mass"
+      }
     },
     {
       "id": "noduleResult",
       "label": "Frozen result",
       "type": "select",
-      "options": ["Benign", "Malignant", "Deferred"],
-      "optionLabels": { "Deferred": "Defer to paraffin" },
+      "options": [
+        "Benign",
+        "Malignant",
+        "Deferred"
+      ],
+      "optionLabels": {
+        "Deferred": "Defer to paraffin"
+      },
       "default": "Benign",
-      "showIf": { "field": "scenario", "is": "Nodule / mass" }
+      "showIf": {
+        "field": "scenario",
+        "is": "Nodule / mass"
+      }
     },
     {
       "id": "tumourType",
@@ -152,7 +295,15 @@
       "type": "text",
       "placeholder": "squamous cell carcinoma / mucinous cystadenoma / favour adenocarcinoma",
       "default": "",
-      "showIf": { "field": "scenario", "is": ["Margin", "Lymph node", "Ovarian / adnexal mass", "Nodule / mass"] }
+      "showIf": {
+        "field": "scenario",
+        "is": [
+          "Margin",
+          "Lymph node",
+          "Ovarian / adnexal mass",
+          "Nodule / mass"
+        ]
+      }
     },
     {
       "id": "freeResult",
@@ -160,23 +311,41 @@
       "type": "text",
       "placeholder": "Fibrous tissue with chronic inflammation; no malignancy",
       "default": "",
-      "showIf": { "field": "scenario", "is": "Other" }
+      "showIf": {
+        "field": "scenario",
+        "is": "Other"
+      }
     },
     {
       "id": "correlation",
       "label": "Paraffin correlation",
       "type": "select",
-      "options": ["Concordant", "Discordant", "Deferred"],
-      "optionLabels": { "Concordant": "Paraffin confirms the frozen diagnosis", "Discordant": "Paraffin disagrees with the frozen diagnosis", "Deferred": "Diagnosis deferred at frozen section" },
+      "options": [
+        "Concordant",
+        "Discordant",
+        "Deferred"
+      ],
+      "optionLabels": {
+        "Concordant": "Paraffin confirms the frozen diagnosis",
+        "Discordant": "Paraffin disagrees with the frozen diagnosis",
+        "Deferred": "Diagnosis deferred at frozen section"
+      },
       "default": "Concordant"
     },
     {
       "id": "discordanceReason",
       "label": "Reason for discordance",
       "type": "select",
-      "options": ["Sampling", "Interpretation", "Technical"],
+      "options": [
+        "Sampling",
+        "Interpretation",
+        "Technical"
+      ],
       "default": "Sampling",
-      "showIf": { "field": "correlation", "is": "Discordant" }
+      "showIf": {
+        "field": "correlation",
+        "is": "Discordant"
+      }
     },
     {
       "id": "paraffinDx",
@@ -184,7 +353,13 @@
       "type": "text",
       "placeholder": "Squamous cell carcinoma involving the margin",
       "default": "",
-      "showIf": { "field": "correlation", "is": ["Discordant", "Deferred"] }
+      "showIf": {
+        "field": "correlation",
+        "is": [
+          "Discordant",
+          "Deferred"
+        ]
+      }
     },
     {
       "id": "tissue",
@@ -208,13 +383,151 @@
     "fsTime": "1321",
     "fsDate": "13/05/2026",
     "fsReportedTo": "",
-    "options": { "includeHeader": false, "macro": true },
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
     "parts": [
-      { "label": "A", "values": { "specimenName": "Tongue, medial margin", "scenario": "Margin", "pieces": "1", "tissueDesc": "tan coloured tissue", "tissueDescOther": "", "size": "1 x 0.4 x 0.2 cm", "handling": "All embedded", "blocks": "1", "marginResult": "Negative", "marginDistance": "", "dysplasiaGrade": "Moderate", "nodeResult": "Negative", "metSize": "", "parathyroidResult": "Parathyroid, hypercellular", "ovaryResult": "Benign", "noduleResult": "Benign", "tumourType": "squamous cell carcinoma", "freeResult": "", "correlation": "Concordant", "discordanceReason": "Sampling", "paraffinDx": "", "tissue": "", "additionalNotes": "" } },
-      { "label": "B", "values": { "specimenName": "Tongue, posterior margin", "scenario": "Margin", "pieces": "1", "tissueDesc": "tan coloured tissue", "tissueDescOther": "", "size": "1 x 0.4 x 0.2 cm", "handling": "All embedded", "blocks": "1", "marginResult": "Negative", "marginDistance": "", "dysplasiaGrade": "Moderate", "nodeResult": "Negative", "metSize": "", "parathyroidResult": "Parathyroid, hypercellular", "ovaryResult": "Benign", "noduleResult": "Benign", "tumourType": "squamous cell carcinoma", "freeResult": "", "correlation": "Concordant", "discordanceReason": "Sampling", "paraffinDx": "", "tissue": "squamous mucosa with underlying tonsillar crypts, mucous glands and lymphoid tissue", "additionalNotes": "" } },
-      { "label": "C", "values": { "specimenName": "Tongue, deep margin", "scenario": "Margin", "pieces": "2", "tissueDesc": "tan coloured tissue", "tissueDescOther": "", "size": "0.5 x 0.4 x 0.2 cm each", "handling": "All embedded", "blocks": "1", "marginResult": "Negative", "marginDistance": "", "dysplasiaGrade": "Moderate", "nodeResult": "Negative", "metSize": "", "parathyroidResult": "Parathyroid, hypercellular", "ovaryResult": "Benign", "noduleResult": "Benign", "tumourType": "squamous cell carcinoma", "freeResult": "", "correlation": "Concordant", "discordanceReason": "Sampling", "paraffinDx": "", "tissue": "skeletal muscle and adipose tissue", "additionalNotes": "" } },
-      { "label": "D", "values": { "specimenName": "Tongue, anterior margin", "scenario": "Margin", "pieces": "1", "tissueDesc": "tan coloured tissue", "tissueDescOther": "", "size": "1.2 x 0.3 x 0.2 cm", "handling": "All embedded", "blocks": "1", "marginResult": "Positive", "marginDistance": "", "dysplasiaGrade": "Moderate", "nodeResult": "Negative", "metSize": "", "parathyroidResult": "Parathyroid, hypercellular", "ovaryResult": "Benign", "noduleResult": "Benign", "tumourType": "squamous cell carcinoma", "freeResult": "", "correlation": "Concordant", "discordanceReason": "Sampling", "paraffinDx": "", "tissue": "", "additionalNotes": "" } },
-      { "label": "E", "values": { "specimenName": "Right level I lymph node", "scenario": "Lymph node", "pieces": "1", "tissueDesc": "lymph node", "tissueDescOther": "", "size": "1.5 x 1 x 0.6 cm", "handling": "Bisected and all embedded", "blocks": "1", "marginResult": "Negative", "marginDistance": "", "dysplasiaGrade": "Moderate", "nodeResult": "Negative", "metSize": "", "parathyroidResult": "Parathyroid, hypercellular", "ovaryResult": "Benign", "noduleResult": "Benign", "tumourType": "", "freeResult": "", "correlation": "Concordant", "discordanceReason": "Sampling", "paraffinDx": "", "tissue": "", "additionalNotes": "" } }
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "Tongue, medial margin",
+          "scenario": "Margin",
+          "pieces": "1",
+          "tissueDesc": "tan coloured tissue",
+          "tissueDescOther": "",
+          "size": "1 x 0.4 x 0.2 cm",
+          "handling": "All embedded",
+          "blocks": "1",
+          "marginResult": "Negative",
+          "marginDistance": "",
+          "dysplasiaGrade": "Moderate",
+          "nodeResult": "Negative",
+          "metSize": "",
+          "parathyroidResult": "Parathyroid, hypercellular",
+          "ovaryResult": "Benign",
+          "noduleResult": "Benign",
+          "tumourType": "squamous cell carcinoma",
+          "freeResult": "",
+          "correlation": "Concordant",
+          "discordanceReason": "Sampling",
+          "paraffinDx": "",
+          "tissue": "",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "B",
+        "values": {
+          "specimenName": "Tongue, posterior margin",
+          "scenario": "Margin",
+          "pieces": "1",
+          "tissueDesc": "tan coloured tissue",
+          "tissueDescOther": "",
+          "size": "1 x 0.4 x 0.2 cm",
+          "handling": "All embedded",
+          "blocks": "1",
+          "marginResult": "Negative",
+          "marginDistance": "",
+          "dysplasiaGrade": "Moderate",
+          "nodeResult": "Negative",
+          "metSize": "",
+          "parathyroidResult": "Parathyroid, hypercellular",
+          "ovaryResult": "Benign",
+          "noduleResult": "Benign",
+          "tumourType": "squamous cell carcinoma",
+          "freeResult": "",
+          "correlation": "Concordant",
+          "discordanceReason": "Sampling",
+          "paraffinDx": "",
+          "tissue": "squamous mucosa with underlying tonsillar crypts, mucous glands and lymphoid tissue",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "C",
+        "values": {
+          "specimenName": "Tongue, deep margin",
+          "scenario": "Margin",
+          "pieces": "2",
+          "tissueDesc": "tan coloured tissue",
+          "tissueDescOther": "",
+          "size": "0.5 x 0.4 x 0.2 cm each",
+          "handling": "All embedded",
+          "blocks": "1",
+          "marginResult": "Negative",
+          "marginDistance": "",
+          "dysplasiaGrade": "Moderate",
+          "nodeResult": "Negative",
+          "metSize": "",
+          "parathyroidResult": "Parathyroid, hypercellular",
+          "ovaryResult": "Benign",
+          "noduleResult": "Benign",
+          "tumourType": "squamous cell carcinoma",
+          "freeResult": "",
+          "correlation": "Concordant",
+          "discordanceReason": "Sampling",
+          "paraffinDx": "",
+          "tissue": "skeletal muscle and adipose tissue",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "D",
+        "values": {
+          "specimenName": "Tongue, anterior margin",
+          "scenario": "Margin",
+          "pieces": "1",
+          "tissueDesc": "tan coloured tissue",
+          "tissueDescOther": "",
+          "size": "1.2 x 0.3 x 0.2 cm",
+          "handling": "All embedded",
+          "blocks": "1",
+          "marginResult": "Positive",
+          "marginDistance": "",
+          "dysplasiaGrade": "Moderate",
+          "nodeResult": "Negative",
+          "metSize": "",
+          "parathyroidResult": "Parathyroid, hypercellular",
+          "ovaryResult": "Benign",
+          "noduleResult": "Benign",
+          "tumourType": "squamous cell carcinoma",
+          "freeResult": "",
+          "correlation": "Concordant",
+          "discordanceReason": "Sampling",
+          "paraffinDx": "",
+          "tissue": "",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "E",
+        "values": {
+          "specimenName": "Right level I lymph node",
+          "scenario": "Lymph node",
+          "pieces": "1",
+          "tissueDesc": "lymph node",
+          "tissueDescOther": "",
+          "size": "1.5 x 1 x 0.6 cm",
+          "handling": "Bisected and all embedded",
+          "blocks": "1",
+          "marginResult": "Negative",
+          "marginDistance": "",
+          "dysplasiaGrade": "Moderate",
+          "nodeResult": "Negative",
+          "metSize": "",
+          "parathyroidResult": "Parathyroid, hypercellular",
+          "ovaryResult": "Benign",
+          "noduleResult": "Benign",
+          "tumourType": "",
+          "freeResult": "",
+          "correlation": "Concordant",
+          "discordanceReason": "Sampling",
+          "paraffinDx": "",
+          "tissue": "",
+          "additionalNotes": ""
+        }
+      }
     ]
   }
 }

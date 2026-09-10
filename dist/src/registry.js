@@ -1,37 +1,76 @@
-// Template registry: maps schema ids to their JSON file and generator module.
-// Works in the browser (fetch + dynamic import) and in Node (fs + import).
+// Template registry. Boots from the metadata-only manifest (templates/manifest.json, built by
+// scripts/build-manifest.mjs) and lazy-loads each schema + generator with dynamic import() on
+// first use, so the initial download does not grow as templates are added.
+// Works in the browser (fetch + import) and in Node (fs + import).
 
-import gastric from '../generators/gastric.js?v=mtuxyygl';
-import colonic from '../generators/colonic.js?v=mtuxyygl';
-import prostate from '../generators/prostate.js?v=mtuxyygl';
-import ibd from '../generators/ibd.js?v=mtuxyygl';
-import oesophageal from '../generators/oesophageal.js?v=mtuxyygl';
-import frozen from '../generators/frozen.js?v=mtuxyygl';
-import breast from '../generators/breast.js?v=mtuxyygl';
-import duodenal from '../generators/duodenal.js?v=mtuxyygl';
-import cervical from '../generators/cervical.js?v=mtuxyygl';
-import endometrial from '../generators/endometrial.js?v=mtuxyygl';
-import leep from '../generators/leep.js?v=mtuxyygl';
-import lung from '../generators/lung.js?v=mtuxyygl';
+const BUILD = 'mtuz1kc4'; // tools/build.js stamps this with the build id for cache-busting
 
-export const GENERATORS = { gastric, colonic, prostate, ibd, oesophageal, frozen, breast, duodenal, cervical, endometrial, leep, lung };
+const isNode = typeof window === 'undefined';
+let manifestPromise = null;
+const templateCache = new Map(); // id -> Promise<{ schema, generator }>
 
-export const TEMPLATE_IDS = ['gastric_biopsy', 'colonic_polyp', 'prostate_biopsy', 'ibd_biopsy', 'oesophageal_biopsy', 'frozen_section', 'breast_biopsy', 'duodenal_biopsy', 'cervical_biopsy', 'endometrial_biopsy', 'cervical_excision', 'lung_biopsy'];
+function bust(url) {
+  if (!BUILD || isNode) return url;
+  const u = new URL(url);
+  u.searchParams.set('v', BUILD);
+  return u;
+}
 
-export async function loadSchema(id, baseUrl) {
-  if (typeof window === 'undefined') {
+async function readJson(relPath, baseUrl) {
+  if (isNode) {
     const { readFile } = await import('node:fs/promises');
-    const url = new URL(`../schemas/${id}.json?v=mtuxyygl`, import.meta.url);
-    return JSON.parse(await readFile(url, 'utf8'));
+    return JSON.parse(await readFile(new URL(`../${relPath}`, import.meta.url), 'utf8'));
   }
-  const res = await fetch(new URL(`schemas/${id}.json?v=mtuxyygl`, baseUrl || document.baseURI));
-  if (!res.ok) throw new Error(`Cannot load schema ${id}: ${res.status}`);
+  const res = await fetch(bust(new URL(relPath, baseUrl || document.baseURI)));
+  if (!res.ok) throw new Error(`Cannot load ${relPath}: ${res.status}`);
   return res.json();
 }
 
+/** The manifest's template list (cached after the first call). */
+export function loadManifest(baseUrl) {
+  if (!manifestPromise) {
+    manifestPromise = readJson('templates/manifest.json', baseUrl).then((m) => m.templates)
+      .catch((e) => { manifestPromise = null; throw e; });
+  }
+  return manifestPromise;
+}
+
+export async function loadSchema(id, baseUrl) {
+  return readJson(`schemas/${id}.json?v=mtuz1kc4`, baseUrl);
+}
+
+export async function loadGenerator(name) {
+  const url = new URL(`../generators/${name}.js`, import.meta.url);
+  const mod = await import(isNode ? url.href : bust(url).href);
+  return mod.default;
+}
+
+/** Schema + generator for one template id, loaded once and cached. */
+export function loadTemplate(id, baseUrl) {
+  if (!templateCache.has(id)) {
+    const p = (async () => {
+      const entries = await loadManifest(baseUrl);
+      const entry = entries.find((t) => t.id === id);
+      if (!entry) throw new Error(`Template ${id} is not installed`);
+      const [schema, generator] = await Promise.all([loadSchema(id, baseUrl), loadGenerator(entry.generator)]);
+      return { schema, generator };
+    })();
+    p.catch(() => templateCache.delete(id));
+    templateCache.set(id, p);
+  }
+  return templateCache.get(id);
+}
+
+/** Every template, keyed by id (tests and fixture tooling; the app loads lazily). */
 export async function loadAll(baseUrl) {
-  const list = await Promise.all(TEMPLATE_IDS.map((id) => loadSchema(id, baseUrl)));
+  const entries = await loadManifest(baseUrl);
+  const list = await Promise.all(entries.map((t) => loadTemplate(t.id, baseUrl)));
   const out = {};
-  for (const s of list) out[s.id] = { schema: s, generator: GENERATORS[s.generator] };
+  for (const t of list) out[t.schema.id] = t;
   return out;
+}
+
+/** Template ids in manifest order (most-used small biopsies first). */
+export async function templateIds(baseUrl) {
+  return (await loadManifest(baseUrl)).map((t) => t.id);
 }

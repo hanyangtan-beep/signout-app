@@ -2,30 +2,75 @@
   "id": "colonic_polyp",
   "version": "2026.09",
   "name": "Colonic polyp",
-  "shortName": "Colonic polyp",
+  "shortName": "Colon · polyp",
+  "label": "Colonic polyp",
   "organ": "COLON",
+  "system": "GI",
+  "kind": "biopsy",
+  "rank": 2,
+  "aliases": [
+    "polyp",
+    "polypectomy",
+    "adenoma",
+    "tubular",
+    "tubulovillous",
+    "serrated",
+    "SSL",
+    "hyperplastic polyp",
+    "colon",
+    "rectum",
+    "sigmoid"
+  ],
   "specimenNoun": "polypectomy",
   "maxParts": 10,
   "generator": "colonic",
   "source": "legacy/colonic-polyp-signout.html",
   "caseFields": [],
   "options": [
-    { "id": "includeHeader", "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)", "type": "checkbox", "default": false },
-    { "id": "uppercaseDx", "label": "Uppercase diagnosis lines", "type": "checkbox", "default": true }
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "uppercaseDx",
+      "label": "Uppercase diagnosis lines",
+      "type": "checkbox",
+      "default": true
+    }
   ],
   "fields": [
     {
       "id": "site",
       "label": "Site",
       "type": "select",
-      "options": ["Cecum", "Ascending colon", "Hepatic flexure", "Transverse colon", "Splenic flexure", "Descending colon", "Sigmoid", "Rectosigmoid", "Rectum", "Colon, site not specified"],
+      "options": [
+        "Cecum",
+        "Ascending colon",
+        "Hepatic flexure",
+        "Transverse colon",
+        "Splenic flexure",
+        "Descending colon",
+        "Sigmoid",
+        "Rectosigmoid",
+        "Rectum",
+        "Colon, site not specified"
+      ],
       "default": "Sigmoid"
     },
     {
       "id": "type",
       "label": "Polyp type",
       "type": "select",
-      "options": ["tubularAdenoma", "tubulovillousAdenoma", "villousAdenoma", "sessileSerrated", "hyperplasticPolyp", "traditionalSerrated"],
+      "options": [
+        "tubularAdenoma",
+        "tubulovillousAdenoma",
+        "villousAdenoma",
+        "sessileSerrated",
+        "hyperplasticPolyp",
+        "traditionalSerrated"
+      ],
       "optionLabels": {
         "tubularAdenoma": "Tubular adenoma",
         "tubulovillousAdenoma": "Tubulovillous adenoma",
@@ -40,17 +85,40 @@
       "id": "dysplasia",
       "label": "Dysplasia",
       "type": "grade",
-      "options": ["Not applicable", "No dysplasia", "Low grade dysplasia", "High grade dysplasia"],
+      "options": [
+        "Not applicable",
+        "No dysplasia",
+        "Low grade dysplasia",
+        "High grade dysplasia"
+      ],
       "default": "Low grade dysplasia",
       "optionsByField": {
         "field": "type",
         "map": {
-          "tubularAdenoma": ["Low grade dysplasia", "High grade dysplasia"],
-          "tubulovillousAdenoma": ["Low grade dysplasia", "High grade dysplasia"],
-          "villousAdenoma": ["Low grade dysplasia", "High grade dysplasia"],
-          "sessileSerrated": ["No dysplasia", "Low grade dysplasia", "High grade dysplasia"],
-          "hyperplasticPolyp": ["Not applicable"],
-          "traditionalSerrated": ["Low grade dysplasia", "High grade dysplasia"]
+          "tubularAdenoma": [
+            "Low grade dysplasia",
+            "High grade dysplasia"
+          ],
+          "tubulovillousAdenoma": [
+            "Low grade dysplasia",
+            "High grade dysplasia"
+          ],
+          "villousAdenoma": [
+            "Low grade dysplasia",
+            "High grade dysplasia"
+          ],
+          "sessileSerrated": [
+            "No dysplasia",
+            "Low grade dysplasia",
+            "High grade dysplasia"
+          ],
+          "hyperplasticPolyp": [
+            "Not applicable"
+          ],
+          "traditionalSerrated": [
+            "Low grade dysplasia",
+            "High grade dysplasia"
+          ]
         }
       }
     },
@@ -71,11 +139,41 @@
   ],
   "example": {
     "caseTitle": "",
-    "options": { "includeHeader": false, "uppercaseDx": true },
+    "options": {
+      "includeHeader": false,
+      "uppercaseDx": true
+    },
     "parts": [
-      { "label": "A", "values": { "site": "Cecum", "type": "sessileSerrated", "dysplasia": "No dysplasia", "customSpecimen": "", "comment": "" } },
-      { "label": "B", "values": { "site": "Transverse colon", "type": "tubularAdenoma", "dysplasia": "Low grade dysplasia", "customSpecimen": "Transverse colon polyps x2", "comment": "" } },
-      { "label": "C", "values": { "site": "Sigmoid", "type": "tubulovillousAdenoma", "dysplasia": "High grade dysplasia", "customSpecimen": "", "comment": "The lesion is completely excised in the sections examined." } }
+      {
+        "label": "A",
+        "values": {
+          "site": "Cecum",
+          "type": "sessileSerrated",
+          "dysplasia": "No dysplasia",
+          "customSpecimen": "",
+          "comment": ""
+        }
+      },
+      {
+        "label": "B",
+        "values": {
+          "site": "Transverse colon",
+          "type": "tubularAdenoma",
+          "dysplasia": "Low grade dysplasia",
+          "customSpecimen": "Transverse colon polyps x2",
+          "comment": ""
+        }
+      },
+      {
+        "label": "C",
+        "values": {
+          "site": "Sigmoid",
+          "type": "tubulovillousAdenoma",
+          "dysplasia": "High grade dysplasia",
+          "customSpecimen": "",
+          "comment": "The lesion is completely excised in the sections examined."
+        }
+      }
     ]
   }
 }

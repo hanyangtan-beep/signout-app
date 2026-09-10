@@ -7,7 +7,11 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
 await rm(dist, { recursive: true, force: true });
 await mkdir(dist, { recursive: true });
-for (const item of ['index.html', 'styles.css', 'favicon.svg', 'src', 'schemas', 'generators', 'snippets', 'assets']) {
+// The manifest is regenerated first so dist never ships a stale template list.
+const { buildManifest } = await import('../scripts/build-manifest.mjs');
+await mkdir(path.join(root, 'templates'), { recursive: true });
+await writeFile(path.join(root, 'templates', 'manifest.json'), JSON.stringify(await buildManifest(), null, 2) + '\n');
+for (const item of ['index.html', 'styles.css', 'favicon.svg', 'src', 'schemas', 'generators', 'snippets', 'assets', 'templates']) {
   try { await cp(path.join(root, item), path.join(dist, item), { recursive: true }); }
   catch (e) { if (e.code !== 'ENOENT') throw e; }
 }
@@ -24,6 +28,7 @@ async function stamp(dir) {
     txt = txt.replace(/((?:from|import)\s*['"])(\.{1,2}\/[^'"?]+\.js)(['"])/g, `$1$2?v=${build}$3`);
     txt = txt.replace(/(src=['"]|href=['"])((?:src|schemas|styles)[^'"?]*\.(?:js|css))(['"])/g, `$1$2?v=${build}$3`);
     txt = txt.replace(/(['"`])((?:\.\.\/|\.\/)?schemas\/[^'"`?]+\.json)(['"`])/g, `$1$2?v=${build}$3`);
+    txt = txt.replace(/const BUILD = '';/, `const BUILD = '${build}';`); // registry: lazy-loaded schemas, generators and the manifest
     await writeFile(p, txt);
   }
 }

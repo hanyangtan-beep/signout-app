@@ -167,12 +167,23 @@ export function microscopy(part) {
   return lines.join('\n');
 }
 
+/**
+ * A biopsy with no inflammation, activity, follicles, atrophy, ulcer, intestinal metaplasia,
+ * dysplasia or Helicobacter is reported as NO SIGNIFICANT ABNORMALITY rather than as an
+ * inactive chronic gastritis (changed 2026-09-10; fixtures 01, 05 and 06 re-captured).
+ */
+export function isNormal(s) {
+  return !present(s.chronic) && !present(s.activity) && !hpPresent(s.hp) && s.follicles !== 'Present'
+    && !present(s.atrophy) && s.ulcer !== 'Present' && !present(s.imDegree) && (s.dysplasia === 'Absent' || !s.dysplasia);
+}
+
 export function diagnosis(part, ctx) {
   const s = part.values;
   const parsed = ctx.prepared.sites;
   const verbatimSite = parsed[part.label] ? parsed[part.label] : (s.specimenName || mappedSite(s) || 'stomach');
   const site = low(verbatimSite);
   let line = `(${part.label}) ${ctx.schema.organ}, ${site}, ${ctx.schema.specimenNoun} - `;
+  if (isNormal(s)) return `${line}NO SIGNIFICANT ABNORMALITY, Helicobacter-negative`;
   if (hpPresent(s.hp)) {
     line += 'HELICOBACTER ASSOCIATED CHRONIC ' + (present(s.activity) ? 'ACTIVE ' : '') + 'GASTRITIS';
   } else if (present(s.activity)) {

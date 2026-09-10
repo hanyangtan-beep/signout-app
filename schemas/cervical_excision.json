@@ -2,11 +2,12 @@
   "id": "cervical_excision",
   "version": "2026.09",
   "name": "Cervical excision (LEEP / cone)",
-  "shortName": "LEEP",
+  "shortName": "Cervix · LEEP / cone",
+  "label": "LEEP",
   "organ": "CERVIX",
-  "specimenNoun": "LEEP",
   "system": "Gynae",
   "kind": "benign resection",
+  "rank": 20,
   "aliases": [
     "LLETZ",
     "cone",
@@ -15,6 +16,7 @@
     "CIN",
     "margins"
   ],
+  "specimenNoun": "LEEP",
   "maxParts": 3,
   "defaultParts": 1,
   "generator": "leep",

@@ -1,6 +1,7 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadAll } from './registry.js';
+import { loadManifest, loadTemplate } from './registry.js';
+import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
 } from './engine.js';
@@ -24,7 +25,10 @@ const el = (tag, attrs = {}, ...children) => {
 };
 
 const state = {
-  templates: {},          // id -> { schema, generator }
+  manifest: [],           // templates/manifest.json entries (metadata for every installed template)
+  templates: {},          // id -> { schema, generator } — lazy-loaded on first use
+  pins: [],               // template ids pinned to the Resections row
+  recents: [],            // non-biopsy template ids, most recent first
   caseState: null,        // { schemaId, caseTitle, options, parts, meta, drive }
   activePart: 0,
   lastOut: null,
@@ -42,7 +46,13 @@ function ensureMeta(caseState) {
 }
 
 const nodes = {
-  nav: $('#template-nav'),
+  biopsyRow: $('#biopsy-row'),
+  resectionRow: $('#resection-row'),
+  resections: $('#btn-resections'),
+  paletteBtn: $('#btn-palette'),
+  dlgPalette: $('#dlg-palette'),
+  paletteSearch: $('#palette-search'),
+  paletteList: $('#palette-list'),
   caseFields: $('#case-fields'),
   tabs: $('#part-tabs'),
   addPart: $('#btn-add-part'),
@@ -118,8 +128,46 @@ function setCase(caseState, activePart = 0) {
   render();
 }
 
-function newCase(schemaId) {
-  const s = state.templates[schemaId].schema;
+/** Manifest entry for a template id. */
+function entryOf(id) { return state.manifest.find((t) => t.id === id); }
+
+/** Load a template's schema + generator on first use (cached by the registry). */
+async function ensureTemplate(id) {
+  if (state.templates[id]) return state.templates[id];
+  if (!entryOf(id)) throw new Error(`Template ${id} is not installed`);
+  const t = await loadTemplate(id);
+  state.templates[id] = t;
+  return t;
+}
+async function ensureTemplates(ids) { return Promise.all([...new Set(ids)].map(ensureTemplate)); }
+
+/** Remember non-biopsy templates for the Resections row (biopsies have their own fixed row). */
+function noteUsed(id) {
+  const t = entryOf(id);
+  if (!t || isBiopsy(t)) return;
+  state.recents = pushRecent(state.recents, id);
+  persistPicker();
+}
+
+function loadPicker() {
+  try {
+    state.pins = JSON.parse(localStorage.getItem('signout.pins') || '[]');
+    state.recents = JSON.parse(localStorage.getItem('signout.recents') || '[]');
+  } catch { state.pins = []; state.recents = []; }
+  const known = new Set(state.manifest.map((t) => t.id));
+  state.pins = state.pins.filter((id) => known.has(id));
+  state.recents = state.recents.filter((id) => known.has(id));
+}
+function persistPicker() {
+  try {
+    localStorage.setItem('signout.pins', JSON.stringify(state.pins));
+    localStorage.setItem('signout.recents', JSON.stringify(state.recents));
+  } catch { /* preview iframe */ }
+}
+
+async function newCase(schemaId) {
+  const { schema: s } = await ensureTemplate(schemaId);
+  noteUsed(schemaId);
   setCase(createCase(s), 0);
 }
 
@@ -139,20 +187,21 @@ function loadExample() {
  * template; once the case has been edited they switch the *active part* to that
  * template, so a case can mix parts (A gastric, B gastric, C polyp).
  */
-function switchTemplate(id) {
+async function switchTemplate(id) {
   if (!state.dirty && !state.caseState.meta?.accession && !state.caseState.drive?.savedAt) {
-    if (id !== state.caseState.schemaId) newCase(id);
+    if (id !== state.caseState.schemaId) await newCase(id);
     return;
   }
-  setPartTemplate(state.activePart, id);
+  await setPartTemplate(state.activePart, id);
 }
 
 /** Change one part's template; its values are reset to that template's defaults. */
-function setPartTemplate(i, id) {
+async function setPartTemplate(i, id) {
   const parts = state.caseState.parts;
   if (templateIdOf(state.caseState, parts[i]) === id) return;
+  const { schema: s } = await ensureTemplate(id);
+  noteUsed(id);
   markDirty();
-  const s = state.templates[id].schema;
   const own = parts.filter((p, j) => j < i && templateIdOf(state.caseState, p) === id).length; // position within that template
   parts[i] = { ...createPart(s, own), label: parts[i].label, templateId: id };
   syncPrimary();
@@ -232,13 +281,110 @@ function render() {
   renderSaveStatus();
 }
 
+function navButton(t, current) {
+  return el('button', {
+    type: 'button', 'aria-pressed': String(t.id === current), text: labelOf(t), 'data-template': t.id,
+    title: state.dirty || state.caseState.meta?.accession ? `Use ${t.name} for part ${activePart().label}` : `New ${t.name} case`,
+    onclick: () => switchTemplate(t.id).catch((e) => toast(e.message))
+  });
+}
+
 function renderNav() {
-  nodes.nav.replaceChildren(...Object.values(state.templates).map(({ schema: s }) =>
-    el('button', {
-      type: 'button', 'aria-pressed': String(s.id === schema().id), text: s.shortName || s.name,
-      title: state.dirty || state.caseState.meta?.accession ? `Use ${s.name} for part ${activePart().label}` : `New ${s.name} case`,
-      onclick: () => switchTemplate(s.id)
-    })));
+  const current = schema().id;
+  const { shown, overflow } = biopsyRowLayout(state.manifest);
+  const biopsyButtons = shown.map((t) => navButton(t, current));
+  if (overflow.length) {
+    // the active template must stay one click away even when it falls in the overflow
+    const active = overflow.find((t) => t.id === current);
+    if (active) biopsyButtons.push(navButton(active, current));
+    biopsyButtons.push(el('button', { type: 'button', class: 'more', text: `More (${overflow.length}) ▾`, onclick: () => openPalette({ only: 'biopsy' }) }));
+  }
+  nodes.biopsyRow.replaceChildren(...biopsyButtons);
+  const strip = resectionStrip(state.manifest, state.pins, state.recents);
+  nodes.resectionRow.replaceChildren(...(strip.length ? strip.map((t) => navButton(t, current))
+    : [el('span', { class: 'empty', text: 'No resection templates yet' })]));
+}
+
+// ---------- template palette (Cmd/Ctrl-K, "/", Resections ▾) ----------
+const palette = { mode: {}, items: [], index: 0 };
+
+function paletteMatches(query) {
+  const exclude = palette.mode.only === 'biopsy' ? ['benign resection', 'cancer resection', 'frozen'] : palette.mode.exclude || [];
+  return rankTemplates(state.manifest, query, { exclude });
+}
+
+function openPalette(mode = {}) {
+  palette.mode = mode;
+  palette.index = 0;
+  nodes.paletteSearch.value = '';
+  nodes.paletteSearch.placeholder = mode.exclude?.includes('biopsy') ? 'Type a resection, organ or alias (e.g. LEEP, frozen, gallbladder)' : 'Type a template, organ or alias (e.g. LEEP, Marsh, pylori)';
+  renderPalette();
+  if (!nodes.dlgPalette.open) nodes.dlgPalette.showModal();
+  nodes.paletteSearch.focus();
+}
+
+function choosePaletteItem(t) {
+  nodes.dlgPalette.close();
+  switchTemplate(t.id).catch((e) => toast(e.message));
+}
+
+function paletteRow(t, i, current) {
+  const pinned = state.pins.includes(t.id);
+  const pin = el('button', {
+    type: 'button', class: 'pin', 'aria-pressed': String(pinned), text: pinned ? '★' : '☆',
+    title: pinned ? 'Unpin from the Resections row' : 'Pin to the Resections row', 'aria-label': `${pinned ? 'Unpin' : 'Pin'} ${t.name}`,
+    onclick: (e) => { e.stopPropagation(); e.preventDefault(); state.pins = togglePin(state.pins, t.id); persistPicker(); renderNav(); renderPalette(); }
+  });
+  const row = el('button', {
+    type: 'button', class: 'palette-item', role: 'option', 'aria-selected': String(i === palette.index), 'data-template': t.id,
+    onclick: () => choosePaletteItem(t), onmousemove: () => { if (palette.index !== i) { palette.index = i; markPaletteSelection(); } }
+  },
+  el('span', {}, el('span', { class: 'pi-name', text: t.shortName === labelOf(t) ? t.name : t.shortName }), el('span', { class: 'pi-sub', text: `${t.name}${t.id === current ? ' · current' : ''}${t.aliases?.length ? ' · ' + t.aliases.slice(0, 4).join(', ') : ''}` })),
+  el('span', { class: 'pi-kind', text: KIND_LABEL[t.kind] || t.kind }),
+  isBiopsy(t) ? el('span') : pin);
+  return row;
+}
+
+function renderPalette() {
+  const q = nodes.paletteSearch.value.trim();
+  const current = schema().id;
+  const children = [];
+  if (q) {
+    palette.items = paletteMatches(q);
+    palette.items.forEach((t, i) => children.push(paletteRow(t, i, current)));
+    if (!palette.items.length) children.push(el('div', { class: 'palette-empty', text: `No template matches "${q}"` }));
+  } else {
+    // grouped browse: system × kind
+    const exclude = palette.mode.only === 'biopsy' ? ['benign resection', 'cancer resection', 'frozen'] : palette.mode.exclude || [];
+    const groups = groupBySystem(state.manifest, { exclude });
+    palette.items = [];
+    for (const g of groups) {
+      children.push(el('div', { class: 'palette-group', text: g.system }));
+      for (const t of g.items) { children.push(paletteRow(t, palette.items.length, current)); palette.items.push(t); }
+    }
+    if (!palette.items.length) children.push(el('div', { class: 'palette-empty', text: 'No resection templates installed yet — Phase 4b adds them. Small biopsies are on the row above.' }));
+  }
+  palette.index = Math.min(palette.index, Math.max(0, palette.items.length - 1));
+  nodes.paletteList.replaceChildren(...children);
+  markPaletteSelection();
+}
+
+function markPaletteSelection() {
+  nodes.paletteList.querySelectorAll('.palette-item').forEach((n, i) => n.setAttribute('aria-selected', String(i === palette.index)));
+  const sel = nodes.paletteList.querySelectorAll('.palette-item')[palette.index];
+  sel?.scrollIntoView({ block: 'nearest' });
+}
+
+function initPalette() {
+  nodes.paletteBtn.addEventListener('click', () => openPalette());
+  nodes.resections.addEventListener('click', () => openPalette({ exclude: ['biopsy'] }));
+  nodes.paletteSearch.addEventListener('input', () => { palette.index = 0; renderPalette(); });
+  nodes.paletteSearch.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); palette.index = Math.min(palette.index + 1, palette.items.length - 1); markPaletteSelection(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); palette.index = Math.max(palette.index - 1, 0); markPaletteSelection(); }
+    else if (e.key === 'Enter') { e.preventDefault(); const t = palette.items[palette.index]; if (t) choosePaletteItem(t); }
+  });
+  nodes.dlgPalette.addEventListener('click', (e) => { if (e.target === nodes.dlgPalette) nodes.dlgPalette.close(); });
 }
 
 function renderCaseFields() {
@@ -413,12 +559,12 @@ function renderPanel() {
   const s = schemaOf(part);
   const picker = el('select', {
     class: 'input part-template', 'aria-label': `Template for part ${part.label}`,
-    onchange: (e) => setPartTemplate(i, e.target.value)
-  }, ...Object.values(state.templates).map(({ schema: t }) => {
+    onchange: (e) => setPartTemplate(i, e.target.value).catch((err) => { toast(err.message); render(); })
+  }, ...selectorGroups(state.manifest).map((g) => el('optgroup', { label: g.label }, ...g.items.map((t) => {
     const o = el('option', { value: t.id, text: t.name });
     if (t.id === s.id) o.selected = true;
     return o;
-  }));
+  }))));
   const head = el('div', { class: 'part-head' },
     el('h3', { text: `Part ${part.label}` }),
     picker,
@@ -601,14 +747,14 @@ function renderCaseList(filter = '') {
     onclick: async () => {
       try {
         const cs = await driveOpen(state.config, r.accession);
-        for (const id of templatesInUse(cs)) if (!state.templates[id]) throw new Error(`Template ${id} is not installed`);
+        await ensureTemplates(templatesInUse(cs));
         nodes.dlgOpen.close();
         setCase(cs, 0);
         toast(`Opened ${r.accession}`);
       } catch (err) { toast(err.message); }
     }
   },
-  el('div', {}, el('div', { class: 'acc', text: r.accession }), el('div', { class: 'sub', text: `${String(r.template).split('+').map((id) => state.templates[id]?.schema.shortName || id).join(' + ')} · ${r.parts} part${r.parts === '1' ? '' : 's'}` })),
+  el('div', {}, el('div', { class: 'acc', text: r.accession }), el('div', { class: 'sub', text: `${String(r.template).split('+').map((id) => entryOf(id)?.label || id).join(' + ')} · ${r.parts} part${r.parts === '1' ? '' : 's'}` })),
   el('span', { class: `status ${r.status}`, text: r.status }),
   el('span', { class: 'sub', text: relTime(r.updated) }))));
 }
@@ -673,6 +819,10 @@ function initDrive() {
 function initKeys() {
   document.addEventListener('keydown', (e) => {
     const mod = e.metaKey || e.ctrlKey;
+    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable || e.target.closest?.('.chips, dialog');
+    if (mod && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); if (nodes.dlgPalette.open) nodes.dlgPalette.close(); else openPalette(); return; }
+    if (e.key === '/' && !mod && !e.altKey && !typing) { e.preventDefault(); openPalette(); return; }
+    if (nodes.dlgPalette.open) return;
     if (mod && e.shiftKey && (e.key === 'C' || e.key === 'c')) { e.preventDefault(); doCopy(state.lastOut.diagnosis, 'Diagnosis'); }
     else if (mod && !e.shiftKey && (e.key === 's' || e.key === 'S')) { e.preventDefault(); doSave(); }
     else if (mod && e.key === 'Enter') { e.preventDefault(); doCopy(state.lastOut.report, 'Full report'); }
@@ -685,11 +835,16 @@ function initKeys() {
 async function boot() {
   initTheme();
   const back = consumeRedirect(); // did Google just send us back here?
-  state.templates = await loadAll();
+  state.manifest = await loadManifest();
+  loadPicker();
   const saved = loadCase();
   initDrive();
-  if (saved && templatesInUse(saved).every((id) => state.templates[id])) setCase(saved, 0);
-  else newCase(Object.keys(state.templates)[0]);
+  initPalette();
+  const defaultId = biopsyRowLayout(state.manifest).shown[0]?.id || state.manifest[0].id; // most-used small biopsy
+  if (saved && templatesInUse(saved).every((id) => entryOf(id))) {
+    await ensureTemplates(templatesInUse(saved));
+    setCase(saved, 0);
+  } else await newCase(defaultId);
   if (isSignedIn() && !currentUser()) fetchUserInfo(await getToken(state.config, { interactive: false })).then(renderAccount).catch(() => {});
   if (back?.error) toast(back.error === 'access_denied' ? 'Google sign-in was cancelled' : `Google sign-in failed: ${back.error}`);
   else if (back?.token) {
@@ -702,7 +857,7 @@ async function boot() {
   nodes.example.addEventListener('click', loadExample);
   nodes.newCase.addEventListener('click', () => {
     if (state.dirty && !window.confirm('Discard unsaved changes to this case?')) return;
-    clearCase(); newCase(state.caseState.schemaId); toast('New case');
+    clearCase(); newCase(state.caseState.schemaId).then(() => toast('New case'));
   });
   nodes.copyDx.addEventListener('click', () => doCopy(state.lastOut.diagnosis, 'Diagnosis'));
   nodes.copyReport.addEventListener('click', () => doCopy(state.lastOut.report, 'Full report'));

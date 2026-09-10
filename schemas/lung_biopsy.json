@@ -2,11 +2,12 @@
   "id": "lung_biopsy",
   "version": "2026.09",
   "name": "Lung / bronchial biopsy",
-  "shortName": "Lung",
+  "shortName": "Lung · biopsy",
+  "label": "Lung",
   "organ": "LUNG",
-  "specimenNoun": "biopsy",
   "system": "Thoracic",
   "kind": "biopsy",
+  "rank": 10,
   "aliases": [
     "bronchial",
     "transbronchial",
@@ -17,6 +18,7 @@
     "PD-L1",
     "granuloma"
   ],
+  "specimenNoun": "biopsy",
   "maxParts": 6,
   "defaultParts": 1,
   "generator": "lung",
