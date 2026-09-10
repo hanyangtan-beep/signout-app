@@ -109,13 +109,13 @@ Why:        highest-volume cancer resection after colon.
 Split into: (a) save QMH page + importer draft + `src/staging/gastric.js` rules with boundary tests (M); (b) schema + generator + synoptic block + Checks (M); (c) fixtures against the QMH page element order + docs (S).
 Spec:       `docs/specs/synoptic-next-templates.md`
 
-### Frozen → staged final (linked synoptic)              Size: M
+### Linked synoptic part (Stage / Upgrade this part)      Size: M
 Why:        some frozen specimens are the staging specimen — a lung wedge that turns out to be carcinoma is staged on the wedge and a later completion lobectomy adds nodes and residual-tumour findings; SLN frozen results feed pN in the breast resection; duct-margin frozens feed margin status in the pancreas / bile duct synoptics. Today the frozen template ends at the paraffin correlation and has no staging block, and a later specimen cannot reference an earlier one.
-Change:     (1) **Stage this part** on a frozen part whose paraffin result is malignant: adds a linked synoptic part with the same letter (e.g. B → B, "staging") using the paired cancer template, pre-filled from the frozen fields (laterality / lobe / site, tumour size, distance to margin, pleural involvement, node counts); the final report prints SPECIMENS, INTRAOPERATIVE CONSULTATION, MACRO, BLOCK KEY, MICROSCOPIC EXAMINATION (paraffin confirms …), SYNOPTIC REPORT, DIAGNOSIS, COMMENT, with one diagnosis line per letter carrying both the frozen suffix and the stage: `(B) LUNG, left lower lobe, wedge excision x frozen section - ADENOCARCINOMA, acinar predominant, 0.8 cm; parenchymal margin clear; pT1a pNX (AJCC 8th edition)`. (2) **Related prior specimen** case fields (accession, date, procedure, pT / pN / tumour type / size; optional one-Sheet-read lookup by accession from `Sign-out cases`) so a completion or definitive resection reports residual tumour and nodes and prints a combined stage line — `Pathological stage: pT1a (prior wedge resection S26-01234) pN0 (0/8, this lobectomy)` — with an auto comment: "Staging is based on the prior wedge resection (S26-01234) together with the lymph nodes from this completion lobectomy" (wording proposed; confirm). (3) Staging module accepts partial input (`pT` from prior, `pN` from current) and marks the origin of each category.
+Change:     (1) **Stage this part** on a frozen part whose paraffin result is malignant: adds a linked synoptic part with the same letter (e.g. B → B, "staging") using the paired cancer template, pre-filled from the frozen fields (laterality / lobe / site, tumour size, distance to margin, pleural involvement, node counts); the final report prints SPECIMENS, INTRAOPERATIVE CONSULTATION, MACRO, BLOCK KEY, MICROSCOPIC EXAMINATION (paraffin confirms …), SYNOPTIC REPORT, DIAGNOSIS, COMMENT, with one diagnosis line per letter carrying both the frozen suffix and the stage: `(B) LUNG, left lower lobe, wedge excision x frozen section - ADENOCARCINOMA, acinar predominant, 0.8 cm; parenchymal margin clear; pT1a pNX (AJCC 8th edition)`. (2) **Related prior specimen** case fields (accession, date, procedure, pT / pN / tumour type / size; optional one-Sheet-read lookup by accession from `Sign-out cases`) so a completion or definitive resection reports residual tumour and nodes and prints a combined stage line — `Pathological stage: pT1a (prior wedge resection S26-01234) pN0 (0/8, this lobectomy)` — with an auto comment: "Staging is based on the prior wedge resection (S26-01234) together with the lymph nodes from this completion lobectomy" (wording proposed; confirm). (3) Staging module accepts partial input (`pT` from prior, `pN` from current) and marks the origin of each category. (4) The same mechanism serves benign resections: **Upgrade this part** on a benign template whose `neoplasia` field is set to a carcinoma / neoplasm option adds the paired cancer synoptic under the same letter, carrying macro, block key and shared fields (size, margins, node) — first consumers appendix and gallbladder below; this absorbs the Later "Upgrade part" line.
 Untouched:  existing frozen scenarios and fixtures; colon and GIST synoptics; save / open flow (the lookup is read-only).
 Accept:     unit tests for pre-fill mapping, combined-stage assembly and origin tags; a wedge → lobectomy fixture pair; browser: Stage this part appears only when the paraffin result is malignant and a paired template exists.
 Verify:     tests + browser (light)
-Ship:       with the Lung pair below (the first consumer)
+Ship:       with the Lung pair below (the first consumer); the Upgrade path ships with the Appendix pair
 Depends on: Frozen section scenarios (unstaged); pairs consume it
 Spec:       `docs/specs/frozen-section-scenarios.md` (section "Staged frozen specimens")
 
@@ -143,6 +143,32 @@ Verify:     tests + browser (light)
 Ship:       one batch, one publish
 Depends on: Frozen → staged final; Frozen section scenarios (a)
 
+### Appendix pair — appendicectomy + appendix cancer synoptic   Size: L → split; build as one batch
+Why:        appendiceal neoplasms are found incidentally in appendicectomies reported on the benign template; its `neoplasia` field currently ends in "- see comment" with a placeholder snippet. The QMH appendix page gives the CAP element set.
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/GI-Appendix.html (JS-rendered; save as `docs/reference/GI-Appendix.html`, run `tools/import-qmh.js`). Neuroendocrine tumours use the separate `Endocrine-Appendix-NET.html` page (own card in Later).
+Split into:
+  (a) `src/staging/appendix.js` (M): AJCC 8th appendix carcinoma — pTis(LAMN) confined to muscularis propria (acellular mucin rules), pT3 into subserosa / mesoappendix, pT4a serosal or acellular mucin on serosa, pT4b adjacent organs; pN1a / 1b / 1c (tumour deposits), pM1a (intraperitoneal acellular mucin) / 1b (intraperitoneal cellular) / 1c (extraperitoneal); stage groups with the grade split (G1 vs G2–3) for stage IVA / IVB; boundary tests. Goblet cell adenocarcinoma staged as carcinoma with its three-tier grade.
+  (b) Schema + generator (M): elements in the QMH printed order — procedure (appendicectomy / right hemicolectomy / other), tumour site, size, histologic type (LAMN / HAMN / mucinous adenocarcinoma / adenocarcinoma NOS / goblet cell adenocarcinoma / signet-ring cell / other), grade (three-tier for mucinous with signet-ring rules; goblet cell Tang / WHO grade), extent including acellular vs cellular mucin location, perforation, margins (proximal / mesenteric / radial), LVI / PNI, nodes and deposits, treatment effect, pTNM + stage, MMR / molecular hook; Checks (mucin location vs pT, LAMN with invasive features → HAMN / carcinoma prompt, perforation wording). Upgrade this part from the appendicectomy template carries serosa, perforation, mesoappendix, margins and block key.
+  (c) Fixtures + docs (S): element order against the saved page; LAMN pTis(LAMN) fixture, LAMN with acellular mucin on serosa (pT4a, pM1a) fixture, goblet cell adenocarcinoma fixture, upgrade fixture from a benign appendicectomy; README; card → Done. Benign appendix fixtures unchanged; the `neoplasm_template` snippet retired in favour of the upgrade.
+Untouched:  benign appendicectomy wording; colon synoptic; staging API.
+Accept:     benign template → Upgrade this part → synoptic prefilled and stage derived; boundary tests pass; palette shows "Appendix · cancer resection" under GI.
+Verify:     tests + browser (light)
+Ship:       one batch, one publish
+Depends on: Linked synoptic part
+
+### Gallbladder pair — cholecystectomy + gallbladder cancer synoptic   Size: M → split; build as one batch
+Why:        gallbladder carcinoma is mostly incidental on cholecystectomy; the benign template's `neoplasia` field ("Adenocarcinoma – see comment", "High grade dysplasia (BilIN-3)", ICPN) has no staging follow-through.
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/GI-Gallbladder.html (JS-rendered; save as `docs/reference/GI-Gallbladder.html`, run `tools/import-qmh.js`).
+Split into:
+  (a) `src/staging/gallbladder.js` (S): AJCC 8th — pTis, pT1a lamina propria / pT1b muscular, pT2a peritoneal side / pT2b hepatic side, pT3 serosa or liver or one adjacent organ, pT4 portal vein / hepatic artery / two or more organs; pN1 (1–3) / pN2 (≥ 4); stage groups; boundary tests including the T2a / T2b side rule.
+  (b) Schema + generator (M): QMH order — procedure (simple / extended cholecystectomy with liver bed / with bile duct), tumour site (fundus / body / neck / cystic duct; hepatic vs peritoneal side), size, histologic type (adenocarcinoma NOS, biliary / intestinal / mucinous / signet-ring / adenosquamous / squamous / undifferentiated; ICPN with associated invasive carcinoma), grade, extent, LVI / PNI, margins (cystic duct, liver bed, other with distances), cystic duct node and other nodes, associated lesions (BilIN, ICPN, stones, chronic cholecystitis), pTNM + stage, Checks (hepatic-side pT2b needs liver bed margin; cystic duct margin involved → advise re-resection comment; incidental finding statement). Upgrade this part from the cholecystectomy template carries received state, stones, mucosa, cystic node and margin.
+  (c) Fixtures + docs (S): element order against the saved page; incidental pT1b fixture, pT2b hepatic-side fixture with cystic node, upgrade fixture from a benign cholecystectomy; README; card → Done. Benign gallbladder fixtures unchanged; `gallbladder_cancer_template` snippet retired.
+Untouched:  benign cholecystectomy wording; bile duct synoptics stay in the Later pancreatobiliary pair.
+Accept:     benign template → Upgrade this part → synoptic prefilled and stage derived; T2a / T2b boundary tests pass; palette shows "Gallbladder · cancer resection" under Hepatobiliary.
+Verify:     tests + browser (light)
+Ship:       one batch, one publish
+Depends on: Linked synoptic part
+
 ---
 
 ## Later
@@ -150,10 +176,10 @@ Depends on: Frozen → staged final; Frozen section scenarios (a)
 One line each; card them before building.
 
 - Synoptic templates after stomach and the lung / breast pairs: prostate (radical) with Gleason arithmetic validation; endometrium. (`docs/specs/synoptic-next-templates.md`)
+- Appendix NET (`Endocrine-Appendix-NET.html`) and other GI NET pages (stomach, duodenum / ampulla, jejunum–ileum, colon, pancreas) as a NET family sharing one staging module and the WHO grade (Ki-67 / mitotic) Check.
 - Pancreatobiliary pair: duct-margin frozen (Frozen section scenarios (b)) + Pancreas (`GI-Pancreas.html`), distal extrahepatic and perihilar bile duct synoptics (`GI-Distal Extrahepatic bile ducts.html`, `GI-Perhilar bile ducts.html`); frozen `marginSummary` feeds margin status; card after the lung pair proves the pattern.
 - Head-and-neck pair: named-margin presets (Frozen section scenarios (e)) + Lip and oral cavity synoptic (`HN-Lip and oral cavity.html`; DOI, WPOI, margins from the frozen parts) and nasal cavity / sinuses.
 - CNS pair: frozen / smear CNS scenario (meningioma, gliomas, metastasis, favour lymphoma, PitNET, reactive gliosis — proposed wording, no house example) + `CNS-Meningioma.html` and `CNS-Common_gliomas_and_ependymomas.html` (WHO CNS5 grade and integrated molecular diagnosis rather than AJCC staging).
-- "Upgrade part": benign template → matching cancer resection carrying macro, block key and shared fields (needs the target templates first).
 - Frozen section: time received / slides dispatched fields (only if wanted in the report rather than the LIS log).
 - Frozen section: discordance summary across cases (needs a Sheet query).
 - Settings → Templates: per-user hide / show toggles; pins and recents synced through Drive.
