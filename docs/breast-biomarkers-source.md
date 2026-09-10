@@ -347,3 +347,21 @@ function CopyToClipboard() {
   alert("Report copied to clipboard");
 }
 ```
+
+## Implementation mapping (2026-09-10)
+
+Implemented in `generators/breast_biomarkers.js` (`biomarkerReport(values)` = verbatim port of `updateDescription`; `biomarkerFields()` = the schema fields) and appended by `generators/breast.js` after the microscopy as "Biomarkers results are as follows:". Template ids → schema ids:
+
+| Template | Schema id | Template | Schema id |
+|---|---|---|---|
+| A01 | `er` | A09 | `her2Dish` |
+| A02 | `erIntensity` | A10 | `dishCells` |
+| A03 | `erNuclei` | A11 | `dishHer2` |
+| A04 | `pr` | A12 | `dishCep17` |
+| A05 | `prIntensity` | A13 | `dishRatio` |
+| A06 | `prNuclei` | A26 | `dishPctAmp` |
+| A07 | `her2Ihc` | A14 | `dishAneusomy` (checkbox) |
+| A08 | `her2Score` | A15 | `dishHeteroSignals` (checkbox) |
+| A25 | `her2Hetero` | A16 | `ki67` |
+| A28 | `coldIschemia` | A27 | `fixationTime` |
+| A29 | `testType` | A19 | `bmNotes` |
