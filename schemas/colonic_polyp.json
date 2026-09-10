@@ -19,7 +19,13 @@
     "hyperplastic polyp",
     "colon",
     "rectum",
-    "sigmoid"
+    "sigmoid",
+    "carcinoma",
+    "adenocarcinoma",
+    "malignant polyp",
+    "EMR",
+    "ESD",
+    "MMR"
   ],
   "specimenNoun": "polypectomy",
   "maxParts": 10,
@@ -89,7 +95,9 @@
         "Not applicable",
         "No dysplasia",
         "Low grade dysplasia",
-        "High grade dysplasia"
+        "High grade dysplasia",
+        "At least high grade dysplasia",
+        "Invasive adenocarcinoma"
       ],
       "default": "Low grade dysplasia",
       "optionsByField": {
@@ -97,30 +105,286 @@
         "map": {
           "tubularAdenoma": [
             "Low grade dysplasia",
-            "High grade dysplasia"
+            "High grade dysplasia",
+            "At least high grade dysplasia",
+            "Invasive adenocarcinoma"
           ],
           "tubulovillousAdenoma": [
             "Low grade dysplasia",
-            "High grade dysplasia"
+            "High grade dysplasia",
+            "At least high grade dysplasia",
+            "Invasive adenocarcinoma"
           ],
           "villousAdenoma": [
             "Low grade dysplasia",
-            "High grade dysplasia"
+            "High grade dysplasia",
+            "At least high grade dysplasia",
+            "Invasive adenocarcinoma"
           ],
           "sessileSerrated": [
             "No dysplasia",
             "Low grade dysplasia",
-            "High grade dysplasia"
+            "High grade dysplasia",
+            "At least high grade dysplasia",
+            "Invasive adenocarcinoma"
           ],
           "hyperplasticPolyp": [
             "Not applicable"
           ],
           "traditionalSerrated": [
             "Low grade dysplasia",
-            "High grade dysplasia"
+            "High grade dysplasia",
+            "At least high grade dysplasia",
+            "Invasive adenocarcinoma"
           ]
         }
+      },
+      "optionLabels": {
+        "At least high grade dysplasia": "At least HGD (invasion not excluded)",
+        "Invasive adenocarcinoma": "Invasive adenocarcinoma"
       }
+    },
+    {
+      "id": "hgdReason",
+      "label": "Reason invasion cannot be excluded",
+      "type": "select",
+      "options": [
+        "Not stated",
+        "Fragmented material",
+        "Superficial sampling",
+        "Cautery artefact",
+        "Tangential sectioning"
+      ],
+      "default": "Not stated",
+      "showIf": {
+        "field": "dysplasia",
+        "is": "At least high grade dysplasia"
+      }
+    },
+    {
+      "id": "caKind",
+      "label": "Specimen kind",
+      "type": "select",
+      "options": [
+        "Biopsy of mass",
+        "Polypectomy",
+        "EMR / ESD fragments"
+      ],
+      "default": "Biopsy of mass",
+      "showIf": {
+        "field": "dysplasia",
+        "is": "Invasive adenocarcinoma"
+      },
+      "group": "Carcinoma"
+    },
+    {
+      "id": "histType",
+      "label": "Histological type",
+      "type": "select",
+      "options": [
+        "Adenocarcinoma NOS",
+        "Mucinous adenocarcinoma",
+        "Signet-ring cell carcinoma",
+        "Medullary carcinoma",
+        "Other"
+      ],
+      "default": "Adenocarcinoma NOS",
+      "showIf": {
+        "field": "dysplasia",
+        "is": "Invasive adenocarcinoma"
+      },
+      "group": "Carcinoma"
+    },
+    {
+      "id": "histTypeOther",
+      "label": "Other type (free text)",
+      "type": "text",
+      "default": "",
+      "placeholder": "e.g. adenosquamous carcinoma",
+      "showIf": {
+        "field": "histType",
+        "is": "Other"
+      },
+      "group": "Carcinoma"
+    },
+    {
+      "id": "differentiation",
+      "label": "Differentiation",
+      "type": "select",
+      "options": [
+        "Well differentiated",
+        "Moderately differentiated",
+        "Poorly differentiated",
+        "Not assessable"
+      ],
+      "default": "Moderately differentiated",
+      "showIf": {
+        "field": "dysplasia",
+        "is": "Invasive adenocarcinoma"
+      },
+      "group": "Carcinoma"
+    },
+    {
+      "id": "backgroundAdenoma",
+      "label": "Background adenoma",
+      "type": "select",
+      "options": [
+        "Not identified",
+        "Present (polyp type above)"
+      ],
+      "default": "Not identified",
+      "showIf": {
+        "field": "dysplasia",
+        "is": "Invasive adenocarcinoma"
+      },
+      "group": "Carcinoma"
+    },
+    {
+      "id": "depth",
+      "label": "Depth of invasion",
+      "type": "select",
+      "options": [
+        "Not assessable",
+        "At least submucosa (biopsy)",
+        "Submucosa",
+        "Muscularis propria"
+      ],
+      "default": "Not assessable",
+      "showIf": {
+        "field": "dysplasia",
+        "is": "Invasive adenocarcinoma"
+      },
+      "group": "Carcinoma"
+    },
+    {
+      "id": "lvi",
+      "label": "Lymphovascular invasion",
+      "type": "select",
+      "options": [
+        "Not identified",
+        "Present",
+        "Indeterminate"
+      ],
+      "default": "Not identified",
+      "showIf": {
+        "field": "dysplasia",
+        "is": "Invasive adenocarcinoma"
+      },
+      "group": "Carcinoma"
+    },
+    {
+      "id": "budding",
+      "label": "Tumour budding",
+      "type": "select",
+      "options": [
+        "Not scorable",
+        "Low (Bd1, 0-4 buds)",
+        "Intermediate (Bd2, 5-9 buds)",
+        "High (Bd3, 10 or more buds)"
+      ],
+      "default": "Not scorable",
+      "showIf": {
+        "field": "dysplasia",
+        "is": "Invasive adenocarcinoma"
+      },
+      "group": "Carcinoma"
+    },
+    {
+      "id": "margin",
+      "label": "Polypectomy / EMR margin",
+      "type": "select",
+      "options": [
+        "Not applicable (biopsy)",
+        "Clear",
+        "Involved",
+        "Not assessable (piecemeal)"
+      ],
+      "default": "Not applicable (biopsy)",
+      "showIf": {
+        "field": "dysplasia",
+        "is": "Invasive adenocarcinoma"
+      },
+      "group": "Carcinoma"
+    },
+    {
+      "id": "marginDistance",
+      "label": "Margin clearance (mm)",
+      "type": "number",
+      "default": "",
+      "min": 0,
+      "step": 0.5,
+      "placeholder": "e.g. 2",
+      "showIf": {
+        "field": "margin",
+        "is": "Clear"
+      },
+      "group": "Carcinoma"
+    },
+    {
+      "id": "haggitt",
+      "label": "Haggitt level (pedunculated)",
+      "type": "select",
+      "options": [
+        "Not applicable",
+        "Level 1",
+        "Level 2",
+        "Level 3",
+        "Level 4"
+      ],
+      "default": "Not applicable",
+      "showIf": {
+        "field": "dysplasia",
+        "is": "Invasive adenocarcinoma"
+      },
+      "group": "Carcinoma"
+    },
+    {
+      "id": "kikuchi",
+      "label": "Kikuchi level (sessile)",
+      "type": "select",
+      "options": [
+        "Not applicable",
+        "sm1",
+        "sm2",
+        "sm3"
+      ],
+      "default": "Not applicable",
+      "showIf": {
+        "field": "dysplasia",
+        "is": "Invasive adenocarcinoma"
+      },
+      "group": "Carcinoma"
+    },
+    {
+      "id": "mmr",
+      "label": "MMR immunohistochemistry",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Retained (MLH1, PMS2, MSH2, MSH6)",
+        "Loss of MLH1 and PMS2",
+        "Loss of MSH2 and MSH6",
+        "Isolated loss of PMS2",
+        "Isolated loss of MSH6",
+        "Pending"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "dysplasia",
+        "is": "Invasive adenocarcinoma"
+      },
+      "group": "Carcinoma"
+    },
+    {
+      "id": "molecularPending",
+      "label": "Molecular testing (RAS / BRAF) to follow on this block",
+      "type": "checkbox",
+      "default": false,
+      "showIf": {
+        "field": "dysplasia",
+        "is": "Invasive adenocarcinoma"
+      },
+      "group": "Carcinoma"
     },
     {
       "id": "customSpecimen",
@@ -175,5 +439,72 @@
         }
       }
     ]
-  }
+  },
+  "snippets": [
+    {
+      "id": "colonic_at_least_hgd",
+      "label": "At least HGD — correlation advised",
+      "auto": {
+        "field": "dysplasia",
+        "is": "At least high grade dysplasia"
+      },
+      "text": "Correlation with endoscopic and radiological findings, with further sampling or resection as clinically indicated, is advised."
+    },
+    {
+      "id": "colonic_malignant_polyp_risk",
+      "label": "Malignant polyp — adverse features",
+      "auto": {
+        "flag": "malignantPolypRisk"
+      },
+      "text": "Adverse features for the adequacy of local excision (poor differentiation, lymphovascular invasion, high grade tumour budding, or a margin of less than 1 mm) are present. Discussion at the multidisciplinary meeting regarding the need for further resection is advised."
+    },
+    {
+      "id": "colonic_malignant_polyp_favourable",
+      "label": "Malignant polyp — no adverse features",
+      "auto": {
+        "flag": "malignantPolypFavourable"
+      },
+      "text": "No adverse features for local excision (poor differentiation, lymphovascular invasion, high grade tumour budding, or a margin of less than 1 mm) are identified. Correlation with endoscopic and radiological findings is advised."
+    },
+    {
+      "id": "colonic_mlh1_loss",
+      "label": "MLH1 / PMS2 loss — BRAF / methylation",
+      "auto": {
+        "field": "mmr",
+        "is": "Loss of MLH1 and PMS2"
+      },
+      "text": "Loss of MLH1 and PMS2 expression may reflect sporadic MLH1 promoter hypermethylation or Lynch syndrome. BRAF V600E mutation analysis and/or MLH1 promoter methylation testing is suggested, with referral for genetic counselling if both are negative."
+    },
+    {
+      "id": "colonic_lynch_pattern",
+      "label": "MSH2 / MSH6 / PMS2 loss — Lynch referral",
+      "auto": {
+        "field": "mmr",
+        "is": [
+          "Loss of MSH2 and MSH6",
+          "Isolated loss of PMS2",
+          "Isolated loss of MSH6"
+        ]
+      },
+      "text": "This pattern of mismatch repair protein loss raises the possibility of Lynch syndrome. Referral for genetic counselling and germline testing is suggested."
+    },
+    {
+      "id": "colonic_mmr_pending",
+      "label": "MMR pending",
+      "auto": {
+        "field": "mmr",
+        "is": "Pending"
+      },
+      "text": "Mismatch repair immunohistochemistry is in progress and will be issued as a supplementary report."
+    },
+    {
+      "id": "colonic_molecular_pending",
+      "label": "RAS / BRAF to follow",
+      "auto": {
+        "field": "molecularPending",
+        "truthy": true
+      },
+      "text": "Molecular testing (RAS / BRAF) will follow on this block as a supplementary report."
+    }
+  ]
 }

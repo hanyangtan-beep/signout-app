@@ -50,7 +50,13 @@
         "hyperplastic polyp",
         "colon",
         "rectum",
-        "sigmoid"
+        "sigmoid",
+        "carcinoma",
+        "adenocarcinoma",
+        "malignant polyp",
+        "EMR",
+        "ESD",
+        "MMR"
       ],
       "version": "2026.09",
       "generator": "colonic",
