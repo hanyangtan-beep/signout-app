@@ -345,8 +345,9 @@ function renderField(field, part, index) {
       type: 'button', class: 'chip', 'aria-pressed': String(opt === value), onclick: () => setValue(field.id, opt)
     }, el('span', { class: 'key', text: String(i + 1) }), document.createTextNode(labelFor(field, opt)))));
     wrap.append(el('div', { class: 'field-label', id: `${id}-label`, text: field.label }),
-      field.reference ? el('div', { class: 'field-control' }, group, referenceToggle(field, part)) : group,
-      referencePanel(field, part));
+      field.reference ? el('div', { class: 'field-control' }, group, referenceToggle(field, part)) : group);
+    const refPanel = referencePanel(field, part);
+    if (refPanel) wrap.append(refPanel);
     return wrap;
   }
 
@@ -357,8 +358,9 @@ function renderField(field, part, index) {
       return o;
     }));
   wrap.append(el('label', { for: id, text: field.label }),
-    field.reference ? el('div', { class: 'field-control' }, select, referenceToggle(field, part)) : select,
-    referencePanel(field, part));
+    field.reference ? el('div', { class: 'field-control' }, select, referenceToggle(field, part)) : select);
+  const refPanel = referencePanel(field, part);
+  if (refPanel) wrap.append(refPanel);
   return wrap;
 }
 

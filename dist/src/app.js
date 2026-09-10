@@ -1,14 +1,14 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadAll } from './registry.js?v=mtux2hgz';
+import { loadAll } from './registry.js?v=mtux8we2';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor
-} from './engine.js?v=mtux2hgz';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtux2hgz';
-import { loadConfig, saveConfig } from './config.js?v=mtux2hgz';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtux2hgz';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtux2hgz';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtux2hgz';
+} from './engine.js?v=mtux8we2';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtux8we2';
+import { loadConfig, saveConfig } from './config.js?v=mtux8we2';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtux8we2';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtux8we2';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtux8we2';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -345,8 +345,9 @@ function renderField(field, part, index) {
       type: 'button', class: 'chip', 'aria-pressed': String(opt === value), onclick: () => setValue(field.id, opt)
     }, el('span', { class: 'key', text: String(i + 1) }), document.createTextNode(labelFor(field, opt)))));
     wrap.append(el('div', { class: 'field-label', id: `${id}-label`, text: field.label }),
-      field.reference ? el('div', { class: 'field-control' }, group, referenceToggle(field, part)) : group,
-      referencePanel(field, part));
+      field.reference ? el('div', { class: 'field-control' }, group, referenceToggle(field, part)) : group);
+    const refPanel = referencePanel(field, part);
+    if (refPanel) wrap.append(refPanel);
     return wrap;
   }
 
@@ -357,8 +358,9 @@ function renderField(field, part, index) {
       return o;
     }));
   wrap.append(el('label', { for: id, text: field.label }),
-    field.reference ? el('div', { class: 'field-control' }, select, referenceToggle(field, part)) : select,
-    referencePanel(field, part));
+    field.reference ? el('div', { class: 'field-control' }, select, referenceToggle(field, part)) : select);
+  const refPanel = referencePanel(field, part);
+  if (refPanel) wrap.append(refPanel);
   return wrap;
 }
 
