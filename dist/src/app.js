@@ -1,15 +1,15 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadTemplate } from './registry.js?v=mtv0yr1r';
-import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtv0yr1r';
+import { loadManifest, loadTemplate } from './registry.js?v=mtv0zo6g';
+import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtv0zo6g';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mtv0yr1r';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtv0yr1r';
-import { loadConfig, saveConfig } from './config.js?v=mtv0yr1r';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtv0yr1r';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtv0yr1r';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtv0yr1r';
+} from './engine.js?v=mtv0zo6g';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtv0zo6g';
+import { loadConfig, saveConfig } from './config.js?v=mtv0zo6g';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtv0zo6g';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtv0zo6g';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtv0zo6g';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
