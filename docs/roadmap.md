@@ -167,6 +167,7 @@ Each template ships with a `macro` field group and block-key builder, fixtures c
 
 - Add `system` and `kind` metadata to every schema. `system` ∈ GI, Hepatobiliary, GU, Gynae, Breast, Thoracic, Head and neck, Skin, Cardiovascular, Lymphoid, Frozen. `kind` ∈ biopsy, benign resection, cancer resection (synoptic). The picker is a matrix: choose the system, templates appear in ascending specimen size (Colon: biopsy → polyp → IBD → resection). Phase 5 templates land in the third column of the same rows, not in a separate list.
 - Rename `shortName` to "Organ · procedure" (Cervix · biopsy, Cervix · LEEP, Colon · resection) so ordering is self-evident. Header buttons keep the short organ label where unambiguous.
+- Rename the **Polyp** header button and `shortName` to **Colonic polyp** (added 2026-09-10) — "Polyp" is ambiguous once endocervical, endometrial, nasal, gastric (fundic gland / hyperplastic) and skin polyps have their own templates or pick-lists; the same rule applies to any other bare procedure or lesion name (e.g. "Frozen" stays, but "Biopsy"-only labels are not allowed). Do this with the shortName change above and update the Small biopsy row layout (`Gastric  Colonic polyp  Duodenum …`).
 - Per-schema `aliases` array for search ("TURBT", "chips", "Marsh", "coeliac", "LEEP", "Warthin", "pyogenic").
 
 **Small biopsies get their own always-visible section** (added 2026-09-10)
@@ -174,7 +175,7 @@ Each template ships with a `macro` field group and block-key builder, fixtures c
 Small biopsies are signed out daily, so they must never be more than one click away regardless of how many resection templates exist. The header carries a fixed **Small biopsy** section — every template with `kind: biopsy` (gastric, polyp, duodenum, oesophagus, IBD, prostate, breast core, cervix, endometrial, lung / bronchial, TURBT biopsy fragments, skin punch / shave) in one row, ordered by the daily TAT-list frequency, with the current template highlighted. This section is not subject to the pinned-strip cap and is shown by default even when the header is otherwise collapsed. Everything else (benign resections, synoptic cancer resections, frozen) sits behind a second **Resections** control that opens the grouped picker. Layout:
 
 ```
-Small biopsy   Gastric  Polyp  Duodenum  Oesophagus  IBD  Prostate  Breast  Cervix  Endometrium  Lung
+Small biopsy   Gastric  Colonic polyp  Duodenum  Oesophagus  IBD  Prostate  Breast  Cervix  Endometrium  Lung
 Resections ▾   [pinned / recent ≤ 8]                                          ⌘K search
 ```
 
