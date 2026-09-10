@@ -40,7 +40,7 @@ test('single-part rule: one part drops "(A)" everywhere, two parts keep letters'
   const r1 = run(gastric, one);
   assert.equal(r1.specimens, 'Antrum');
   assert.ok(r1.microscopy.startsWith('- Site: Pyloric type'));
-  assert.equal(r1.diagnosis, 'STOMACH, antrum, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative');
+  assert.equal(r1.diagnosis, 'STOMACH, antrum, biopsy - NO SIGNIFICANT ABNORMALITY, Helicobacter-negative');
   assert.ok(!r1.report.includes('(A)'));
 
   const two = createCase(gastric.schema, 2);

@@ -2,7 +2,7 @@
 
 import { loadAll } from './registry.js';
 import {
-  createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor
+  createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
 } from './engine.js';
 import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js';
 import { loadConfig, saveConfig } from './config.js';
@@ -201,7 +201,7 @@ function copyFromPrevious(i) {
   const prev = state.caseState.parts[i - 1];
   const part = state.caseState.parts[i];
   part.templateId = templateIdOf(state.caseState, prev);
-  part.values = { ...prev.values };
+  part.values = JSON.parse(JSON.stringify(prev.values));
   syncPrimary();
   render();
 }
@@ -244,7 +244,12 @@ function renderNav() {
 function renderCaseFields() {
   const fields = [];
   for (const s of schemasInUse()) for (const f of s.caseFields || []) if (!fields.some((g) => g.id === f.id)) fields.push(f);
-  nodes.caseFields.replaceChildren(...fields.map((f) => {
+  const presets = (schema().presets || []).map((pr) => el('button', {
+    type: 'button', class: 'btn ghost small', text: pr.label, title: pr.help || `Replace the parts with the ${pr.label} set`,
+    onclick: () => applyCasePreset(pr)
+  }));
+  const presetRow = presets.length ? el('div', { class: 'field presets' }, el('div', { class: 'field-label', text: 'Presets' }), el('div', { class: 'preset-buttons' }, ...presets)) : null;
+  nodes.caseFields.replaceChildren(...[presetRow].filter(Boolean), ...fields.map((f) => {
     const id = `case-${f.id}`;
     const input = el('input', {
       class: 'input', id, type: 'text', placeholder: f.placeholder || '', value: state.caseState[f.id] || '',
@@ -253,7 +258,22 @@ function renderCaseFields() {
     return el('div', { class: 'field' }, el('label', { for: id, text: f.label }), input,
       f.help ? el('div', { class: 'field-help', text: f.help }) : null);
   }));
-  nodes.caseFields.hidden = fields.length === 0;
+  nodes.caseFields.hidden = fields.length === 0 && !presetRow;
+}
+
+/** Replace the case's parts with a schema preset (e.g. Sydney five-site gastric mapping). */
+function applyCasePreset(preset) {
+  const s = schema();
+  const fresh = applyPreset(s, preset);
+  const cs = state.caseState;
+  if (cs.parts.some((p) => p.templateId && p.templateId !== s.id)) {
+    if (!confirm('This case mixes templates. Replace all parts with the preset?')) return;
+  }
+  markDirty();
+  cs.parts = fresh.parts;
+  if (fresh.caseTitle) cs.caseTitle = fresh.caseTitle;
+  state.activePart = 0;
+  render();
 }
 
 function renderTabs() {
@@ -334,6 +354,22 @@ function renderField(field, part, index) {
   }
 
   const options = optionsFor(field, part.values);
+  if (field.type === 'multiselect') {
+    const chosen = Array.isArray(value) ? value : [];
+    const group = el('div', {
+      class: 'chips multi', role: 'group', 'aria-label': field.label, tabindex: '0', 'data-field': field.id,
+      onkeydown: (e) => {
+        const n = parseInt(e.key, 10);
+        if (n >= 1 && n <= options.length) { e.preventDefault(); setValue(field.id, toggleOption(field, chosen, options[n - 1])); focusField(field.id); }
+      }
+    }, ...options.map((opt, i) => el('button', {
+      type: 'button', class: 'chip', 'aria-pressed': String(chosen.includes(opt)), onclick: () => setValue(field.id, toggleOption(field, chosen, opt))
+    }, el('span', { class: 'key', text: String(i + 1) }), document.createTextNode(labelFor(field, opt)))));
+    wrap.append(el('div', { class: 'field-label', id: `${id}-label`, text: field.label },
+      el('span', { class: 'field-hint', text: ' (tick all that apply)' })), group);
+    if (field.help) wrap.append(el('div', { class: 'field-help', text: field.help }));
+    return wrap;
+  }
   if (options.length <= 6) {
     const group = el('div', {
       class: 'chips', role: 'radiogroup', 'aria-label': field.label, tabindex: '0', 'data-field': field.id,

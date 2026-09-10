@@ -244,10 +244,9 @@
     },
     {
       "id": "adenoPattern",
-      "label": "Adenocarcinoma pattern",
-      "type": "select",
+      "label": "Adenocarcinoma pattern(s)",
+      "type": "multiselect",
       "options": [
-        "Not specified",
         "Lepidic",
         "Acinar",
         "Papillary",
@@ -255,10 +254,32 @@
         "Solid",
         "Invasive mucinous"
       ],
-      "default": "Not specified",
+      "exclusive": [
+        "Invasive mucinous"
+      ],
+      "default": [],
+      "help": "Tick every pattern present; invasive mucinous adenocarcinoma is a distinct entity and clears the others.",
       "showIf": {
         "field": "neoplasia",
         "is": "Adenocarcinoma"
+      }
+    },
+    {
+      "id": "adenoPredominant",
+      "label": "Predominant pattern",
+      "type": "select",
+      "options": [
+        "Not specified",
+        "Lepidic",
+        "Acinar",
+        "Papillary",
+        "Micropapillary",
+        "Solid"
+      ],
+      "default": "Not specified",
+      "showIf": {
+        "field": "adenoPattern",
+        "min": 2
       }
     },
     {
@@ -564,8 +585,8 @@
       "id": "lung_small_biopsy",
       "label": "Small biopsy caveat (adenocarcinoma)",
       "auto": {
-        "field": "neoplasia",
-        "is": "Adenocarcinoma"
+        "field": "adenoPattern",
+        "is": "Lepidic"
       },
       "text": "In situ (lepidic) and invasive components cannot be reliably distinguished on a small biopsy; the predominant pattern is provisional and definitive subtyping requires the resection specimen."
     },
@@ -603,7 +624,10 @@
           "specialStains": "Not performed",
           "organisms": "None",
           "neoplasia": "Adenocarcinoma",
-          "adenoPattern": "Acinar",
+          "adenoPattern": [
+            "Lepidic",
+            "Acinar"
+          ],
           "sccType": "Non-keratinising",
           "carcinoidType": "Typical carcinoid",
           "metastasisPrimary": "",
@@ -621,7 +645,8 @@
           "ros1": "Negative",
           "molecular": "Requested on this block (EGFR, ALK, ROS1, BRAF, KRAS, MET, RET, NTRK); report to follow",
           "blockRef": "A1",
-          "additionalNotes": ""
+          "additionalNotes": "",
+          "adenoPredominant": "Acinar"
         }
       },
       {
@@ -639,7 +664,7 @@
           "specialStains": "Not performed",
           "organisms": "None",
           "neoplasia": "Adenocarcinoma",
-          "adenoPattern": "Not specified",
+          "adenoPattern": [],
           "sccType": "Non-keratinising",
           "carcinoidType": "Typical carcinoid",
           "metastasisPrimary": "",
@@ -657,7 +682,8 @@
           "ros1": "Not performed",
           "molecular": "Not requested",
           "blockRef": "",
-          "additionalNotes": ""
+          "additionalNotes": "",
+          "adenoPredominant": "Not specified"
         }
       }
     ]

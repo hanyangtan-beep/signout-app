@@ -1,7 +1,7 @@
 // Generic schema engine: builds part defaults, evaluates visibility, and assembles
 // the report from a schema + generator module. Runs unchanged in the browser and in Node.
 
-import { applyStyle } from './style.js?v=mtux8we2';
+import { applyStyle } from './style.js?v=mtuxyygl';
 
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -21,7 +21,8 @@ export const BLOCK_ORDER = ['specimens', 'macro', 'intraop', 'microscopy', 'diag
 export function defaultValues(schema, index = 0) {
   const values = {};
   for (const f of schema.fields) {
-    let v = f.default ?? (f.type === 'checkbox' ? false : '');
+    let v = f.default ?? (f.type === 'checkbox' ? false : f.type === 'multiselect' ? [] : '');
+    if (Array.isArray(v)) v = [...v];
     if (index === 0 && f.defaultForFirstPart !== undefined) v = f.defaultForFirstPart;
     values[f.id] = v;
   }
@@ -55,15 +56,66 @@ export function relabel(parts) {
   return parts;
 }
 
-/** Evaluate a `showIf` rule against the part values. */
+/**
+ * Evaluate a `showIf` rule against the part values. Rules: `is` / `not` (a value or a
+ * list of values), `truthy`, and for multiselect fields `min` / `max` (number of ticked
+ * options). When the referenced field is a multiselect (its value is an array), `is`
+ * means "contains any of" and `not` means "contains none of".
+ */
 export function isVisible(field, values) {
   const rule = field.showIf;
   if (!rule) return true;
   const v = values[rule.field];
+  if (Array.isArray(v)) {
+    const want = (x) => (Array.isArray(x) ? x : [x]);
+    if ('is' in rule && !want(rule.is).some((x) => v.includes(x))) return false;
+    if ('not' in rule && want(rule.not).some((x) => v.includes(x))) return false;
+    if ('truthy' in rule && (v.length > 0) !== !!rule.truthy) return false;
+    if ('min' in rule && v.length < rule.min) return false;
+    if ('max' in rule && v.length > rule.max) return false;
+    return true;
+  }
   if ('is' in rule) return Array.isArray(rule.is) ? rule.is.includes(v) : v === rule.is;
   if ('not' in rule) return Array.isArray(rule.not) ? !rule.not.includes(v) : v !== rule.not;
   if ('truthy' in rule) return !!v === !!rule.truthy;
   return true;
+}
+
+/**
+ * Toggle one option of a multiselect field and return the new array. Options listed in
+ * `field.exclusive` clear everything else when ticked and are cleared when anything
+ * else is ticked (e.g. "Invasive mucinous" among the lung adenocarcinoma patterns).
+ * Order follows the field's option list so generated prose is stable.
+ */
+export function toggleOption(field, current, option) {
+  const cur = Array.isArray(current) ? current : [];
+  const exclusive = field.exclusive || [];
+  let next;
+  if (cur.includes(option)) next = cur.filter((x) => x !== option);
+  else if (exclusive.includes(option)) next = [option];
+  else next = [...cur.filter((x) => !exclusive.includes(x)), option];
+  const order = field.options || [];
+  return next.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+}
+
+/** Human list: "lepidic and acinar", "lepidic, acinar and solid". */
+export function joinList(items, conj = 'and') {
+  const a = items.filter((x) => x !== undefined && x !== null && x !== '');
+  if (a.length === 0) return '';
+  if (a.length === 1) return a[0];
+  return `${a.slice(0, -1).join(', ')} ${conj} ${a[a.length - 1]}`;
+}
+
+/**
+ * Case presets (`schema.presets[]`): a named set of parts, e.g. the Sydney five-site
+ * gastric mapping. Returns a fresh case for the schema whose parts carry the preset's
+ * values over the defaults, with `caseTitle` set when the preset provides one.
+ */
+export function applyPreset(schema, preset) {
+  const c = createCase(schema, preset.parts.length);
+  preset.parts.forEach((pp, i) => { Object.assign(c.parts[i].values, pp.values || {}); });
+  if (preset.caseTitle) c.caseTitle = preset.caseTitle;
+  return c;
 }
 
 /** Evaluate a bare condition (`{field, is|not|truthy}`) against part values. */
@@ -88,10 +140,15 @@ export function snippetsFor(templates, caseState) {
   for (const id of templatesInUse(caseState)) {
     const t = templates[id];
     if (!t) continue;
-    const own = caseState.parts.filter((p) => templateIdOf(caseState, p) === id);
+    const own = caseState.parts.filter((p) => templateIdOf(caseState, p) === id)
+      .map((p) => normalisePart(t.schema, { label: p.label, templateId: id, values: { ...p.values } }));
+    // Case-level flags from the generator (e.g. an OLGA stage) drive `auto: {flag}` rules.
+    const flags = t.generator && t.generator.flags ? t.generator.flags(own, { schema: t.schema, case: caseState }) || [] : [];
     for (const sn of t.schema.snippets || []) {
       if (out.some((o) => o.id === sn.id)) continue;
-      const matched = sn.auto ? own.filter((p) => matches(sn.auto, normalisePart(t.schema, p).values)).map((p) => p.label) : [];
+      let matched = [];
+      if (sn.auto && 'flag' in sn.auto) matched = flags.includes(sn.auto.flag) ? own.map((p) => p.label) : [];
+      else if (sn.auto) matched = own.filter((p) => matches(sn.auto, p.values)).map((p) => p.label);
       const suggested = matched.length > 0;
       const active = chosen[sn.id] === true || (suggested && chosen[sn.id] !== false);
       out.push({ ...sn, templateId: id, suggested, matchedParts: matched, active });

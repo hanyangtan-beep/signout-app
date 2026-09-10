@@ -1,6 +1,6 @@
 {
   "id": "gastric_biopsy",
-  "version": "2026.09",
+  "version": "2026.09.2",
   "name": "Gastric biopsy",
   "shortName": "Gastric",
   "organ": "STOMACH",
@@ -17,7 +17,13 @@
       "help": "Sites in the title override the per-part specimen names in the diagnosis lines."
     }
   ],
-  "options": [],
+  "options": [
+    {
+      "id": "olga",
+      "label": "OLGA / OLGIM stage line (when antral and corpus sites are mapped)",
+      "default": true
+    }
+  ],
   "fields": [
     {
       "id": "specimenName",
@@ -25,6 +31,23 @@
       "type": "text",
       "placeholder": "Antrum",
       "default": ""
+    },
+    {
+      "id": "biopsySite",
+      "label": "Biopsy site (mapping)",
+      "type": "select",
+      "options": [
+        "Unspecified",
+        "Antrum, greater curvature",
+        "Antrum, lesser curvature",
+        "Incisura angularis",
+        "Body, greater curvature",
+        "Body, lesser curvature",
+        "Fundus",
+        "Cardia"
+      ],
+      "default": "Unspecified",
+      "help": "Anatomical site for OLGA / OLGIM compartments (antrum + incisura vs body + fundus). Used as the specimen name when that is blank."
     },
     {
       "id": "siteType",
@@ -207,6 +230,38 @@
       }
     },
     {
+      "id": "imExtent",
+      "label": "IM extent",
+      "type": "select",
+      "options": [
+        "Unspecified",
+        "Focal",
+        "Multifocal",
+        "Extensive"
+      ],
+      "default": "Unspecified",
+      "showIf": {
+        "field": "imDegree",
+        "not": "Absent"
+      }
+    },
+    {
+      "id": "imStain",
+      "label": "Mucin histochemistry",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "AB-PAS",
+        "HID-AB"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "imDegree",
+        "not": "Absent"
+      },
+      "help": "Adds a histochemistry line to the microscopy when performed."
+    },
+    {
       "id": "dysplasia",
       "label": "Dysplasia / malignancy",
       "type": "select",
@@ -242,7 +297,9 @@
   ],
   "example": {
     "caseTitle": "(A) Antrum and (B) Body",
-    "options": {},
+    "options": {
+      "olga": true
+    },
     "parts": [
       {
         "label": "A",
@@ -258,7 +315,10 @@
           "imType": "",
           "dysplasia": "Absent",
           "hp": "Absent",
-          "additionalNotes": ""
+          "additionalNotes": "",
+          "biopsySite": "Unspecified",
+          "imExtent": "Unspecified",
+          "imStain": "Not performed"
         }
       },
       {
@@ -275,9 +335,128 @@
           "imType": "Incomplete",
           "dysplasia": "Absent",
           "hp": "Moderate density",
-          "additionalNotes": ""
+          "additionalNotes": "",
+          "biopsySite": "Unspecified",
+          "imExtent": "Unspecified",
+          "imStain": "Not performed"
         }
       }
     ]
-  }
+  },
+  "presets": [
+    {
+      "id": "sydney5",
+      "label": "Sydney protocol (5 sites)",
+      "help": "A1 antrum GC, A2 antrum LC, A3 incisura, B1 body GC, B2 body LC — enables OLGA / OLGIM staging",
+      "caseTitle": "(A) Antrum, greater curvature; (B) Antrum, lesser curvature; (C) Incisura angularis; (D) Body, greater curvature and (E) Body, lesser curvature",
+      "parts": [
+        {
+          "values": {
+            "specimenName": "Antrum, greater curvature",
+            "biopsySite": "Antrum, greater curvature",
+            "siteType": "Pyloric type"
+          }
+        },
+        {
+          "values": {
+            "specimenName": "Antrum, lesser curvature",
+            "biopsySite": "Antrum, lesser curvature",
+            "siteType": "Pyloric type"
+          }
+        },
+        {
+          "values": {
+            "specimenName": "Incisura angularis",
+            "biopsySite": "Incisura angularis",
+            "siteType": "Pyloric type"
+          }
+        },
+        {
+          "values": {
+            "specimenName": "Body, greater curvature",
+            "biopsySite": "Body, greater curvature",
+            "siteType": "Body type"
+          }
+        },
+        {
+          "values": {
+            "specimenName": "Body, lesser curvature",
+            "biopsySite": "Body, lesser curvature",
+            "siteType": "Body type"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sydney3",
+      "label": "Antrum / incisura / body (pooled)",
+      "help": "Three pooled containers as the LIS usually labels them",
+      "caseTitle": "(A) Antrum, (B) Incisura and (C) Body",
+      "parts": [
+        {
+          "values": {
+            "specimenName": "Antrum",
+            "biopsySite": "Antrum, lesser curvature",
+            "siteType": "Pyloric type"
+          }
+        },
+        {
+          "values": {
+            "specimenName": "Incisura",
+            "biopsySite": "Incisura angularis",
+            "siteType": "Pyloric type"
+          }
+        },
+        {
+          "values": {
+            "specimenName": "Body",
+            "biopsySite": "Body, lesser curvature",
+            "siteType": "Body type"
+          }
+        }
+      ]
+    }
+  ],
+  "snippets": [
+    {
+      "id": "gastric_hp",
+      "label": "H. pylori — eradication",
+      "auto": {
+        "flag": "hpNoIm"
+      },
+      "text": "Helicobacter pylori organisms are identified. Eradication therapy and confirmation of clearance are suggested if not already undertaken."
+    },
+    {
+      "id": "gastric_hp_im",
+      "label": "H. pylori with intestinal metaplasia",
+      "auto": {
+        "flag": "hpWithIm"
+      },
+      "text": "Helicobacter pylori is present together with intestinal metaplasia. Eradication therapy with subsequent re-assessment of the metaplastic mucosa is suggested."
+    },
+    {
+      "id": "gastric_im_incomplete",
+      "label": "Incomplete IM — risk comment",
+      "auto": {
+        "flag": "imIncompleteAlone"
+      },
+      "text": "Incomplete-type intestinal metaplasia is a recognised risk factor for gastric adenocarcinoma. Assessment of its extent on mapping biopsies (Sydney protocol) is suggested if not already performed."
+    },
+    {
+      "id": "gastric_surveillance",
+      "label": "High-stage OLGA / OLGIM — surveillance",
+      "auto": {
+        "flag": "olgaHigh"
+      },
+      "text": "Extensive / high-stage atrophic gastritis and intestinal metaplasia are associated with an increased risk of gastric adenocarcinoma; endoscopic surveillance at three-yearly intervals (MAPS II / BSG 2019) is suggested in the appropriate clinical context."
+    },
+    {
+      "id": "gastric_mapping",
+      "label": "Incomplete mapping — repeat Sydney biopsies",
+      "auto": {
+        "flag": "imNeedsMapping"
+      },
+      "text": "Intestinal metaplasia is present but the biopsies do not allow OLGA / OLGIM staging. Mapping biopsies according to the updated Sydney protocol (antrum x2, incisura, body x2) are suggested if surveillance is being considered."
+    }
+  ]
 }

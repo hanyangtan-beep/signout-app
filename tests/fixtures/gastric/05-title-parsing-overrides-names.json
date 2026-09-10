@@ -1,6 +1,6 @@
 {
   "name": "05-title-parsing-overrides-names",
-  "description": "Case title sites override blank specimen names; trailing \"and\" and punctuation stripped.",
+  "description": "Case title sites override blank specimen names; trailing \"and\" and punctuation stripped. Re-captured 2026-09-10: parts with every finding Absent now read NO SIGNIFICANT ABNORMALITY instead of inactive chronic gastritis (user decision).",
   "input": {
     "caseTitle": "(A) Antrum, (B) Body and (C) Incisura;",
     "parts": [
@@ -54,6 +54,6 @@
   "expected": {
     "specimens": "(A) Antrum, (B) Body and (C) Incisura;",
     "microscopy": "(A)\n- Site: Pyloric type\n- Activity: Absent\n- Chronic inflammation: Absent\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Absent\n\n(B)\n- Site: Body type\n- Activity: Mild\n- Chronic inflammation: Absent\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Low density\n\n(C)\n- Site: Body type\n- Activity: Absent\n- Chronic inflammation: Mild\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Absent",
-    "diagnosis": "(A) STOMACH, antrum, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative\n(B) STOMACH, body, biopsy - HELICOBACTER ASSOCIATED CHRONIC ACTIVE GASTRITIS\n(C) STOMACH, incisura, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative"
+    "diagnosis": "(A) STOMACH, antrum, biopsy - NO SIGNIFICANT ABNORMALITY, Helicobacter-negative\n(B) STOMACH, body, biopsy - HELICOBACTER ASSOCIATED CHRONIC ACTIVE GASTRITIS\n(C) STOMACH, incisura, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative"
   }
 }

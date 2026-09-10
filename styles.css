@@ -319,3 +319,8 @@ textarea.input { min-height: 64px; resize: vertical; }
 .ref-credit { color: var(--color-text-faint); }
 .ref-credit a { color: inherit; text-decoration: underline dotted; }
 @media (max-width: 720px) { .ref-groups { grid-template-columns: 1fr; } .ref-panel { padding: var(--space-3); } }
+
+/* Multiselect chips and case presets */
+.chips.multi .chip[aria-pressed='true']::before { content: '\2713\00a0'; color: var(--color-primary); }
+.field-hint { font-weight: 400; color: var(--color-text-faint); font-size: var(--text-xs); }
+.field.presets .preset-buttons { display: flex; flex-wrap: wrap; gap: 6px; }

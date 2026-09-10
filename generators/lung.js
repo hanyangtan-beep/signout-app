@@ -6,6 +6,43 @@ const NP = 'Not performed';
 const has = (v) => v && v !== NP && v !== 'None' && v !== 'Absent';
 
 export const isNode = (v) => v.specimenType === 'EBUS lymph node core biopsy';
+
+const MUCINOUS = 'Invasive mucinous';
+const joinAnd = (a) => (a.length <= 1 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
+
+/** Ticked adenocarcinoma patterns as an array (older cases stored a single string). */
+export function adenoPatterns(v) {
+  const raw = v.adenoPattern;
+  const arr = Array.isArray(raw) ? raw : raw && raw !== 'Not specified' ? [raw] : [];
+  return arr.filter((x) => x && x !== 'Not specified');
+}
+
+/**
+ * Pattern phrase for the microscopy sentence: "with an acinar pattern",
+ * "with mixed lepidic and acinar patterns (acinar predominant)", or "" when none ticked.
+ * Micropapillary and solid components stay in the list even when minor because they
+ * carry prognostic weight. Invasive mucinous is an entity and is handled separately.
+ */
+export function patternPhrase(v) {
+  const pats = adenoPatterns(v).filter((x) => x !== MUCINOUS).map((x) => x.toLowerCase());
+  if (pats.length === 0) return '';
+  if (pats.length === 1) return ` with ${/^[aeiou]/.test(pats[0]) ? 'an' : 'a'} ${pats[0]} pattern`;
+  const pred = (v.adenoPredominant || '').toLowerCase();
+  const predTag = pred && pred !== 'not specified' && pats.includes(pred) ? ` (${pred} predominant)` : '';
+  return ` with mixed ${joinAnd(pats)} patterns${predTag}`;
+}
+
+/** Diagnosis-line qualifier: ", acinar pattern" / ", mixed lepidic and acinar patterns (acinar predominant)". */
+export function patternDx(v) {
+  const pats = adenoPatterns(v).filter((x) => x !== MUCINOUS).map((x) => x.toLowerCase());
+  if (pats.length === 0) return '';
+  if (pats.length === 1) return `, ${pats[0]} pattern`;
+  const pred = (v.adenoPredominant || '').toLowerCase();
+  const predTag = pred && pred !== 'not specified' && pats.includes(pred) ? ` (${pred} predominant)` : '';
+  return `, mixed ${joinAnd(pats)} patterns${predTag}`;
+}
+
+export const isMucinous = (v) => adenoPatterns(v).includes(MUCINOUS);
 export const isInadequate = (v) => (isNode(v) ? v.nodeTissue === 'Blood and scant lymphocytes only (inadequate)' : v.tissue === 'Blood, fibrin and crushed cells only (inadequate)');
 export const hasTumour = (v) => !isInadequate(v) && has(v.neoplasia) && v.neoplasia !== 'Atypical lymphoid infiltrate (lymphoma suspected)' && (!isNode(v) || v.nodeFinding === 'Metastatic carcinoma');
 export const isCarcinoma = (v) => hasTumour(v) && !/suspicious|Carcinoid/.test(v.neoplasia);
@@ -69,7 +106,9 @@ const ORGANISM = {
 };
 
 const TUMOUR = {
-  Adenocarcinoma: (v) => `The ${isNode(v) ? 'lymphoid tissue is infiltrated' : 'tissue is infiltrated'} by adenocarcinoma composed of atypical glandular cells${v.adenoPattern && v.adenoPattern !== 'Not specified' ? ` with a predominantly ${v.adenoPattern.toLowerCase()} pattern` : ''}, with enlarged hyperchromatic nuclei, prominent nucleoli and mitoses.`,
+  Adenocarcinoma: (v) => (isMucinous(v)
+    ? `The ${isNode(v) ? 'lymphoid tissue' : 'tissue'} is infiltrated by adenocarcinoma composed of tall columnar and goblet-like cells with abundant apical mucin and basally located, mildly atypical nuclei, growing along alveolar walls and in glands with extracellular mucin, in keeping with invasive mucinous adenocarcinoma.`
+    : `The ${isNode(v) ? 'lymphoid tissue is infiltrated' : 'tissue is infiltrated'} by adenocarcinoma composed of atypical glandular cells${patternPhrase(v)}, with enlarged hyperchromatic nuclei, prominent nucleoli and mitoses.`),
   'Squamous cell carcinoma': (v) => `The tissue is infiltrated by ${(v.sccType || 'non-keratinising').toLowerCase()} squamous cell carcinoma composed of nests of atypical polygonal cells with ${v.sccType === 'Keratinising' ? 'keratinisation, intercellular bridges' : 'dense eosinophilic cytoplasm'} and hyperchromatic nuclei.`,
   'Non-small cell carcinoma, favour adenocarcinoma': () => 'The tissue is infiltrated by non-small cell carcinoma composed of nests and cords of atypical cells with moderate cytoplasm, enlarged pleomorphic nuclei and mitoses, without definite glandular or squamous differentiation on morphology.',
   'Non-small cell carcinoma, favour squamous cell carcinoma': () => 'The tissue is infiltrated by non-small cell carcinoma composed of nests of atypical cells with moderate eosinophilic cytoplasm, enlarged pleomorphic nuclei and mitoses, without definite glandular or squamous differentiation on morphology.',
@@ -173,7 +212,7 @@ export function microscopy(part) {
 // ---------- diagnosis ----------
 
 const DX = {
-  Adenocarcinoma: (v) => `ADENOCARCINOMA${v.adenoPattern && v.adenoPattern !== 'Not specified' ? `, ${v.adenoPattern.toLowerCase()} predominant pattern` : ''}`,
+  Adenocarcinoma: (v) => (isMucinous(v) ? 'INVASIVE MUCINOUS ADENOCARCINOMA' : `ADENOCARCINOMA${patternDx(v)}`),
   'Squamous cell carcinoma': (v) => `SQUAMOUS CELL CARCINOMA, ${(v.sccType || 'non-keratinising').toLowerCase()} type`,
   'Non-small cell carcinoma, favour adenocarcinoma': (v) => `NON-SMALL CELL CARCINOMA, favour adenocarcinoma${ihcTag(v)}`,
   'Non-small cell carcinoma, favour squamous cell carcinoma': (v) => `NON-SMALL CELL CARCINOMA, favour squamous cell carcinoma${ihcTag(v)}`,

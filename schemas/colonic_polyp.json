@@ -2,7 +2,7 @@
   "id": "colonic_polyp",
   "version": "2026.09",
   "name": "Colonic polyp",
-  "shortName": "Polyp",
+  "shortName": "Colonic polyp",
   "organ": "COLON",
   "specimenNoun": "polypectomy",
   "maxParts": 10,

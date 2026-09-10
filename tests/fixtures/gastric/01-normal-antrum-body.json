@@ -1,6 +1,6 @@
 {
   "name": "01-normal-antrum-body",
-  "description": "Two parts, everything Absent. Captures the legacy default wording for a negative biopsy.",
+  "description": "Two parts, everything Absent. Captures the legacy default wording for a negative biopsy. Re-captured 2026-09-10: parts with every finding Absent now read NO SIGNIFICANT ABNORMALITY instead of inactive chronic gastritis (user decision).",
   "input": {
     "caseTitle": "",
     "parts": [
@@ -39,6 +39,6 @@
   "expected": {
     "specimens": "(A) Antrum and (B) Body",
     "microscopy": "(A)\n- Site: Pyloric type\n- Activity: Absent\n- Chronic inflammation: Absent\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Absent\n\n(B)\n- Site: Body type\n- Activity: Absent\n- Chronic inflammation: Absent\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Absent",
-    "diagnosis": "(A) STOMACH, antrum, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative\n(B) STOMACH, body, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative"
+    "diagnosis": "(A) STOMACH, antrum, biopsy - NO SIGNIFICANT ABNORMALITY, Helicobacter-negative\n(B) STOMACH, body, biopsy - NO SIGNIFICANT ABNORMALITY, Helicobacter-negative"
   }
 }
