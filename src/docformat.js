@@ -46,6 +46,7 @@ export function buildDocText(caseState, out) {
     ['BLOCK KEY', blockKey],
     ...(out.intraop && out.intraop.trim() !== '' ? [['INTRAOPERATIVE CONSULTATION', out.intraop]] : []),
     ['MICROSCOPIC EXAMINATION', out.microscopy],
+    ...(out.synoptic && out.synoptic.trim() !== '' ? [['SYNOPTIC REPORT', out.synoptic]] : []),
     ['DIAGNOSIS', out.diagnosis],
     ...(out.comment && out.comment.trim() !== '' ? [['COMMENT', out.comment]] : [])
   ];

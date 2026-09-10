@@ -1,15 +1,15 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadTemplate } from './registry.js?v=mtv0zo6g';
-import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtv0zo6g';
+import { loadManifest, loadTemplate } from './registry.js?v=mtv2rij0';
+import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtv2rij0';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mtv0zo6g';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtv0zo6g';
-import { loadConfig, saveConfig } from './config.js?v=mtv0zo6g';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtv0zo6g';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtv0zo6g';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtv0zo6g';
+} from './engine.js?v=mtv2rij0';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtv2rij0';
+import { loadConfig, saveConfig } from './config.js?v=mtv2rij0';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtv2rij0';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtv2rij0';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtv2rij0';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -664,10 +664,15 @@ function renderReport() {
     ['Block key', out.blockKey],
     ['Intraoperative consultation', out.intraop],
     ['Microscopic examination', out.microscopy],
+    ['Synoptic report', out.synoptic],
     ['Diagnosis', out.diagnosis],
     ['Comment', out.comment]
-  ].filter(([title, text]) => text || ['Specimens', 'Microscopic examination', 'Diagnosis'].includes(title));
-  nodes.blocks.replaceChildren(...blocks.map(([title, text]) => {
+  ].filter(([title, text]) => text || ['Specimens', 'Diagnosis'].includes(title) || (title === 'Microscopic examination' && !(out.synoptic && state.caseState.options.synopticOnly)));
+  const issues = out.issues || [];
+  const checks = issues.length ? [el('div', { class: `checks ${issues.some((i) => i.level === 'error') ? 'has-error' : 'has-warn'}` },
+    el('div', { class: 'checks-head' }, el('h3', { text: 'Checks' }), el('span', { class: 'muted', text: `${issues.filter((i) => i.level === 'error').length} to fix · ${issues.filter((i) => i.level !== 'error').length} to review` })),
+    el('ul', {}, ...issues.map((i) => el('li', { class: `issue ${i.level}`, text: `${state.caseState.parts.length > 1 ? `(${i.part}) ` : ''}${i.message}` }))))] : [];
+  nodes.blocks.replaceChildren(...checks, ...blocks.map(([title, text]) => {
     const pre = el('pre', {});
     pre.append(highlightParts(text));
     return el('div', { class: 'block' },

@@ -213,14 +213,18 @@ The Part card template selector reuses the same component (grouped by system) si
 
 **Goal:** replace the QMH pages for the resections you report most.
 
-- Write `tools/import-qmh.js`: parse a QMH HTML page → draft schema (element label, options from `value`, order from `updateDescription()`, CAP PDF link). Curate by hand.
-- Staging module: `deriveTNM(values, protocol)` with per-protocol rule tables and stage-group lookup; manual override with reason; edition stamped in output.
-- Validation: required CAP elements, node-count consistency, margin completeness, Gleason arithmetic.
-- Hybrid mode: narrative microscopy + core synoptic block + diagnosis line; synoptic-only mode for full CAP output.
-- Templates in order of your volume: colon/rectum → stomach → prostate (radical) → breast → endometrium → others as needed.
-- Template version pinning stored in each saved case.
+**Status (2026-09-10):** scaffold done and the first template shipped.
 
-**Done when:** a colectomy case produces a validated synoptic report with auto pTNM that matches the QMH page output element-for-element, plus stage group.
+- [x] `tools/import-qmh.js` — `node tools/import-qmh.js <saved QMH page.html> > draft.json` parses a CancerReportingTemplate page into `{source: {page, url, capProtocol}, fields: [{id, label, type, options, outLabel, sources}], notPrinted[], controls}`; element order and printed labels follow the page's `updateDescription()`, so a hand-curated schema can be checked element-for-element against the QMH output. Smoke-tested against a saved copy of the colon page (`tests/fixtures/qmh/`).
+- [x] Staging module `src/staging/` — `deriveTNM(values, protocol)` → `{T, N, M, descriptors, prefix, tnm, stage, edition, notes, overridden, derived}` with per-protocol rule tables (`colorectal.js`: extension → pT, node count / deposits → pN incl. N1c and NX, metastasis sites → pM1a/b/c, AJCC 8th stage-group table, `y` / `(m)` / `r` descriptors); `parseOverride('ypT2 pN1a')` for the pathologist override (reason required, derived categories printed beside it, derived M kept when the override omits M); `stageLine()` adds `Stage group (if cM0): IIIB` when no metastasis is in the specimen. Edition stamped on every result.
+- [x] Engine hybrid / synoptic mode — generator `synoptic(part, ctx)` prints a SYNOPTIC REPORT block between microscopy and diagnosis (also in the Google Doc); case option `synopticOnly` drops the narrative paragraph; generator `validate(part, ctx)` returns `{level: 'error' | 'warn', message}` issues shown in a **Checks** panel above the report; `showIf` gained numeric `min` / `max` on scalar fields.
+- [x] **Colon and rectum carcinoma resection** (`schemas/colon_resection.json`, `generators/colon_resection.js`, 62 fields) — CAP Colon and Rectum Resection 4.4.0.1 elements as printed by the QMH page (procedure, site, rectal location and mesorectum, size, perforation, WHO 2019 type, grade, multiple primaries, extension with pT1 depth / extent, LVI, PNI, ITBCC budding derived from the count, precursor polyp, deposits, modified Ryan treatment effect, proximal / distal / radial or circumferential / other margins with mm, non-invasive margin, regional and apical node counts with ENE and largest deposit, distant metastasis sites, additional findings, MMR IHC, ancillary tests); auto pTNM + stage group; validation (required elements, node arithmetic, fewer than 12 nodes, margin mm, rectal elements, MMR not recorded, override reason); auto comments (fewer than 12 nodes, MLH1 / PMS2 loss → BRAF / methylation, Lynch pattern referral, MMR pending, rectal CRM ≤ 1 mm, override note); house diagnosis line `ASCENDING COLON, right hemicolectomy - INVASIVE ADENOCARCINOMA, moderately differentiated (G2), invading through the muscularis propria into the pericolic tissue; lymphovascular invasion present; 2 of 22 lymph nodes involved; margins clear; pT3 pN1b (AJCC 8th edition), stage IIIB (if cM0); MMR proficient`. 29 new tests (498 total).
+- [x] Template version pinning — every saved case already records `schemaVersion`; the schema `source.capProtocol` stamps the CAP protocol version and `source.staging` the AJCC edition in the synoptic block.
+- [ ] Next templates in order of your volume: stomach → prostate (radical) → breast → endometrium → others as needed. Each one: save the QMH page, run the importer, curate the draft into a schema, write the generator against `src/staging/<protocol>.js`, add the QMH element-order test.
+- [ ] Gleason arithmetic validation (prostate), Nottingham score validation (breast) when those templates land.
+- [ ] "Upgrade part" (benign template → matching cancer resection, carrying macro / block key / shared fields) once the target templates exist.
+
+**Done when:** a colectomy case produces a validated synoptic report with auto pTNM that matches the QMH page output element-for-element, plus stage group. ✅ (colon / rectum, 2026-09-10; `tests/colon_resection.test.js` asserts the element order against the QMH labels.)
 
 ---
 
@@ -246,7 +250,7 @@ The Part card template selector reuses the same component (grouped by system) si
 | 4 | Prostate, IBD, duodenum, oesophagus, breast, cervix, lung, GYN ports; gastric OLGA / OLGIM | Weeks 9–12 |
 | 4b | Generic benign templates from your case mix (nodes, placenta, breast margins, thyroid, gallbladder, uterus, ovarian cyst, skin, appendix) | Weeks 13–16 |
 | 4c | Frozen section sign-out and paraffin correlation | Weeks 17–18 |
-| 5 | QMH import, staging, hybrid/synoptic | Weeks 19–24 |
+| 5 | QMH import, staging, hybrid/synoptic — scaffold + colon / rectum ✅; stomach, prostate, breast, endometrium next | Weeks 19–24 |
 | 6 | Polish, analytics | Ongoing |
 
 ## Risks and mitigations

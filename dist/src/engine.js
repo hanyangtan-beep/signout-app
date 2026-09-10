@@ -1,7 +1,7 @@
 // Generic schema engine: builds part defaults, evaluates visibility, and assembles
 // the report from a schema + generator module. Runs unchanged in the browser and in Node.
 
-import { applyStyle } from './style.js?v=mtv0zo6g';
+import { applyStyle } from './style.js?v=mtv2rij0';
 
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -11,12 +11,13 @@ export const HEADERS = {
   blockKey: 'BLOCK KEY:',
   intraop: 'INTRAOPERATIVE CONSULTATION:',
   microscopy: 'MICROSCOPIC EXAMINATION:',
+  synoptic: 'SYNOPTIC REPORT:',
   diagnosis: 'DIAGNOSIS:',
   comment: 'COMMENT:'
 };
 
-/** Block order in the assembled report. `macro` and `intraop` only appear for templates with those hooks; `comment` only when a snippet or free-text comment is active. */
-export const BLOCK_ORDER = ['specimens', 'macro', 'blockKey', 'intraop', 'microscopy', 'diagnosis', 'comment'];
+/** Block order in the assembled report. `macro`, `intraop` and `synoptic` only appear for templates with those hooks; `comment` only when a snippet or free-text comment is active. */
+export const BLOCK_ORDER = ['specimens', 'macro', 'blockKey', 'intraop', 'microscopy', 'synoptic', 'diagnosis', 'comment'];
 
 /** Default values for one part. `index` is 0-based. */
 export function defaultValues(schema, index = 0) {
@@ -79,6 +80,13 @@ export function isVisible(field, values) {
   if ('is' in rule) return Array.isArray(rule.is) ? rule.is.includes(v) : v === rule.is;
   if ('not' in rule) return Array.isArray(rule.not) ? !rule.not.includes(v) : v !== rule.not;
   if ('truthy' in rule) return !!v === !!rule.truthy;
+  // Numeric fields: `min` / `max` compare the typed value (blank never matches).
+  if ('min' in rule || 'max' in rule) {
+    const n = parseFloat(v);
+    if (!Number.isFinite(n)) return false;
+    if ('min' in rule && n < rule.min) return false;
+    if ('max' in rule && n > rule.max) return false;
+  }
   return true;
 }
 
@@ -286,7 +294,20 @@ export function generateCase(templates, caseState) {
     .map((p) => styled(p.templateId, ctxs[p.templateId].gen.blockKey(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n');
   const intraop = ids.filter((id) => ctxs[id].gen.intraop)
     .map((id) => styled(id, ctxs[id].gen.intraop(ctxs[id].parts, ctxs[id]))).filter((t) => t && t.trim() !== '').join('\n\n');
-  const microscopy = parts.map((p) => styled(p.templateId, ctxs[p.templateId].gen.microscopy(p, ctxs[p.templateId]))).join('\n\n');
+  // Narrative microscopy. Cancer templates with a `synoptic` hook may be switched to synoptic-only
+  // output (`options.synopticOnly`), in which case their narrative paragraph is omitted.
+  const microscopy = parts.filter((p) => !(options.synopticOnly && ctxs[p.templateId].gen.synoptic))
+    .map((p) => styled(p.templateId, ctxs[p.templateId].gen.microscopy(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n\n');
+  // Optional per-part synoptic (CAP-style element list) block for cancer resections.
+  const synoptic = parts.filter((p) => ctxs[p.templateId].gen.synoptic)
+    .map((p) => styled(p.templateId, ctxs[p.templateId].gen.synoptic(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n\n');
+  // Validation issues (`{level: 'error'|'warn', message}`) from templates with a `validate` hook.
+  const issues = [];
+  for (const p of parts) {
+    const g = ctxs[p.templateId].gen;
+    if (!g.validate) continue;
+    for (const it of g.validate(p, ctxs[p.templateId]) || []) issues.push({ ...it, part: p.label });
+  }
   let diagnosis = parts.map((p) => styled(p.templateId, ctxs[p.templateId].gen.diagnosis(p, ctxs[p.templateId]))).join('\n');
   for (const id of ids) {
     const ctx = ctxs[id];
@@ -307,10 +328,11 @@ export function generateCase(templates, caseState) {
     blockKey: tidy(letters(blockKey)),
     intraop: tidy(letters(intraop)),
     microscopy: tidy(letters(microscopy)),
+    synoptic: tidy(letters(synoptic)),
     diagnosis: tidy(letters(diagnosis)),
     comment: tidy(comment)
   };
-  return { ...blocks, report: assemble(blocks, !!options.includeHeader) };
+  return { ...blocks, issues, report: assemble(blocks, !!options.includeHeader) };
 }
 
 function tidy(text) { return applyStyle(text, {}); }

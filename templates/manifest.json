@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 34,
+  "count": 35,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -862,6 +862,42 @@
       "generator": "stoma",
       "generatorPath": "generators/stoma.js",
       "schemaPath": "schemas/stoma.json"
+    },
+    {
+      "id": "colon_resection",
+      "name": "Colon and rectum carcinoma resection",
+      "shortName": "Colon / rectum · cancer resection",
+      "label": "Colorectal Ca",
+      "organ": "COLON",
+      "system": "GI",
+      "kind": "cancer resection",
+      "rank": 40,
+      "aliases": [
+        "colectomy",
+        "hemicolectomy",
+        "anterior resection",
+        "LAR",
+        "APR",
+        "abdominoperineal",
+        "Hartmann",
+        "proctocolectomy",
+        "colorectal carcinoma",
+        "CRC",
+        "pTNM",
+        "AJCC",
+        "synoptic",
+        "CAP",
+        "tumour budding",
+        "tumour deposits",
+        "mesorectum",
+        "CRM",
+        "rectal cancer",
+        "colon cancer"
+      ],
+      "version": "2026.09",
+      "generator": "colon_resection",
+      "generatorPath": "generators/colon_resection.js",
+      "schemaPath": "schemas/colon_resection.json"
     },
     {
       "id": "liver_benign",

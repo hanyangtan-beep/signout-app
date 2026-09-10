@@ -664,10 +664,15 @@ function renderReport() {
     ['Block key', out.blockKey],
     ['Intraoperative consultation', out.intraop],
     ['Microscopic examination', out.microscopy],
+    ['Synoptic report', out.synoptic],
     ['Diagnosis', out.diagnosis],
     ['Comment', out.comment]
-  ].filter(([title, text]) => text || ['Specimens', 'Microscopic examination', 'Diagnosis'].includes(title));
-  nodes.blocks.replaceChildren(...blocks.map(([title, text]) => {
+  ].filter(([title, text]) => text || ['Specimens', 'Diagnosis'].includes(title) || (title === 'Microscopic examination' && !(out.synoptic && state.caseState.options.synopticOnly)));
+  const issues = out.issues || [];
+  const checks = issues.length ? [el('div', { class: `checks ${issues.some((i) => i.level === 'error') ? 'has-error' : 'has-warn'}` },
+    el('div', { class: 'checks-head' }, el('h3', { text: 'Checks' }), el('span', { class: 'muted', text: `${issues.filter((i) => i.level === 'error').length} to fix · ${issues.filter((i) => i.level !== 'error').length} to review` })),
+    el('ul', {}, ...issues.map((i) => el('li', { class: `issue ${i.level}`, text: `${state.caseState.parts.length > 1 ? `(${i.part}) ` : ''}${i.message}` }))))] : [];
+  nodes.blocks.replaceChildren(...checks, ...blocks.map(([title, text]) => {
     const pre = el('pre', {});
     pre.append(highlightParts(text));
     return el('div', { class: 'block' },

@@ -380,3 +380,16 @@ textarea.input { min-height: 64px; resize: vertical; }
 .field-group > summary::before { content: '\25B8'; display: inline-block; width: 1em; transition: transform 120ms; }
 .field-group[open] > summary::before { transform: rotate(90deg); }
 .field-group > .field:last-child { border-bottom: 0; }
+
+/* Validation checks (cancer resection templates) */
+.checks {
+  background: var(--color-surface); border: 1px solid var(--color-border); border-left: 4px solid #b9840a;
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); padding: var(--space-3) var(--space-4);
+}
+.checks.has-error { border-left-color: var(--color-alert); }
+.checks-head { display: flex; align-items: baseline; gap: var(--space-3); margin-bottom: var(--space-2); }
+.checks-head h3 { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-muted); font-weight: 600; }
+.checks-head .muted { font-size: var(--text-xs); color: var(--color-text-faint); }
+.checks ul { margin: 0; padding-left: 1.1em; font-size: 13px; line-height: 1.5; }
+.checks li.error { color: var(--color-alert); }
+.checks li.warn { color: #8a6208; }
