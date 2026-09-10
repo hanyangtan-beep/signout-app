@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=mtv2rij0" />
+  <link rel="stylesheet" href="styles.css?v=mtv9hzak" />
 </head>
 <body>
   <a class="skip" href="#case">Skip to case</a>
@@ -71,8 +71,22 @@
       <details class="meta-details" id="meta-details">
         <summary>Clinical history, macroscopic description, block key</summary>
         <div class="field"><label for="meta-clinical">Clinical history</label><textarea class="input" id="meta-clinical" rows="2"></textarea></div>
-        <div class="field"><label for="meta-macro">Macroscopic</label><textarea class="input" id="meta-macro" rows="4"></textarea></div>
-        <div class="field"><label for="meta-blockKey">Block key</label><textarea class="input" id="meta-blockKey" rows="2"></textarea></div>
+        <div class="field"><label for="meta-macro">Macroscopic</label><textarea class="input" id="meta-macro" rows="4" placeholder="Paste the LIS macroscopic description here"></textarea>
+          <div class="lis-row">
+            <label class="check"><input type="checkbox" id="meta-useLisMacro"> Use this text instead of the generated macro</label>
+            <button class="btn ghost small" id="btn-macro-generated" type="button" title="Copy the generated macroscopic description into this box for editing">Use generated</button>
+            <button class="btn ghost small" id="btn-macro-clear" type="button">Clear</button>
+            <span class="muted lis-status" id="lis-status-macro"></span>
+          </div>
+        </div>
+        <div class="field"><label for="meta-blockKey">Block key</label><textarea class="input" id="meta-blockKey" rows="2" placeholder="Paste the LIS block key here"></textarea>
+          <div class="lis-row">
+            <label class="check"><input type="checkbox" id="meta-useLisBlockKey"> Use this text instead of the generated block key</label>
+            <button class="btn ghost small" id="btn-blockKey-generated" type="button" title="Copy the generated block key into this box for editing">Use generated</button>
+            <button class="btn ghost small" id="btn-blockKey-clear" type="button">Clear</button>
+            <span class="muted lis-status" id="lis-status-blockKey"></span>
+          </div>
+        </div>
       </details>
       <div id="case-fields" class="case-fields"></div>
       <div class="parts-bar">
@@ -144,6 +158,6 @@
   </dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="src/app.js?v=mtv2rij0"></script>
+  <script type="module" src="src/app.js?v=mtv9hzak"></script>
 </body>
 </html>

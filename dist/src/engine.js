@@ -1,7 +1,7 @@
 // Generic schema engine: builds part defaults, evaluates visibility, and assembles
 // the report from a schema + generator module. Runs unchanged in the browser and in Node.
 
-import { applyStyle } from './style.js?v=mtv2rij0';
+import { applyStyle } from './style.js?v=mtv9hzak';
 
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -332,7 +332,30 @@ export function generateCase(templates, caseState) {
     diagnosis: tidy(letters(diagnosis)),
     comment: tidy(comment)
   };
-  return { ...blocks, issues, report: assemble(blocks, !!options.includeHeader) };
+  // Text pasted from the LIS (case meta) either replaces the generated macro / block key
+  // (explicit toggle) or is appended after it. Typed text is printed verbatim.
+  const source = {};
+  for (const [key, toggle, sep] of [['macro', 'useLisMacro', '\n\n'], ['blockKey', 'useLisBlockKey', '\n']]) {
+    const r = mergeLis(blocks[key], caseState.meta?.[key], !!caseState.meta?.[toggle], sep);
+    blocks[key] = r.text;
+    source[key] = r.source;
+  }
+  return { ...blocks, issues, source, report: assemble(blocks, !!options.includeHeader) };
+}
+
+/**
+ * Combine a generated block with text typed in the case panel.
+ * `source` says what is printing: `generated`, `typed` (nothing generated), `merged`
+ * (generated then typed, the legacy behaviour) or `lis` (typed replaces generated).
+ * The toggle with nothing typed falls back to the generated text.
+ */
+export function mergeLis(generated, typed, override, sep = '\n\n') {
+  const g = (generated || '').trim();
+  const t = (typed || '').trim();
+  if (!t) return { text: g, source: g ? 'generated' : 'none' };
+  if (override) return { text: t, source: 'lis' };
+  if (!g) return { text: t, source: 'typed' };
+  return { text: `${g}${sep}${t}`, source: 'merged' };
 }
 
 function tidy(text) { return applyStyle(text, {}); }

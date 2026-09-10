@@ -1,15 +1,15 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadTemplate } from './registry.js?v=mtv2rij0';
-import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtv2rij0';
+import { loadManifest, loadTemplate } from './registry.js?v=mtv9hzak';
+import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtv9hzak';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mtv2rij0';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtv2rij0';
-import { loadConfig, saveConfig } from './config.js?v=mtv2rij0';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtv2rij0';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtv2rij0';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtv2rij0';
+} from './engine.js?v=mtv9hzak';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtv9hzak';
+import { loadConfig, saveConfig } from './config.js?v=mtv9hzak';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtv9hzak';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtv9hzak';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtv9hzak';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -40,7 +40,7 @@ const state = {
 
 const META_FIELDS = ['accession', 'status', 'clinical', 'macro', 'blockKey'];
 function ensureMeta(caseState) {
-  caseState.meta = { accession: '', status: 'draft', clinical: '', macro: '', blockKey: '', ...(caseState.meta || {}) };
+  caseState.meta = { accession: '', status: 'draft', clinical: '', macro: '', blockKey: '', useLisMacro: false, useLisBlockKey: false, ...(caseState.meta || {}) };
   caseState.drive = caseState.drive || null;
   return caseState;
 }
@@ -75,6 +75,10 @@ const nodes = {
   settingsForm: $('#settings-form'),
   signout: $('#btn-signout'),
   meta: Object.fromEntries(META_FIELDS.map((k) => [k, $(`#meta-${k}`)])),
+  lis: {
+    macro: { toggle: $('#meta-useLisMacro'), generated: $('#btn-macro-generated'), clear: $('#btn-macro-clear'), status: $('#lis-status-macro') },
+    blockKey: { toggle: $('#meta-useLisBlockKey'), generated: $('#btn-blockKey-generated'), clear: $('#btn-blockKey-clear'), status: $('#lis-status-blockKey') }
+  },
   statusTemplate: $('#status-template'),
   statusSave: $('#status-save'),
   toast: $('#toast')
@@ -658,10 +662,11 @@ function renderReport() {
     return;
   }
   state.lastOut = out;
+  const fromLis = (key) => (out.source?.[key] === 'lis' ? ' · from LIS' : out.source?.[key] === 'merged' ? ' · + typed text' : '');
   const blocks = [
     ['Specimens', out.specimens],
-    ['Macroscopic description', out.macro],
-    ['Block key', out.blockKey],
+    [`Macroscopic description${fromLis('macro')}`, out.macro],
+    [`Block key${fromLis('blockKey')}`, out.blockKey],
     ['Intraoperative consultation', out.intraop],
     ['Microscopic examination', out.microscopy],
     ['Synoptic report', out.synoptic],
@@ -675,11 +680,77 @@ function renderReport() {
   nodes.blocks.replaceChildren(...checks, ...blocks.map(([title, text]) => {
     const pre = el('pre', {});
     pre.append(highlightParts(text));
+    const [name, tag] = title.split(' · ');
+    const h3 = el('h3', { text: name });
+    if (tag) h3.append(' ', el('span', { class: 'tag', text: tag }));
     return el('div', { class: 'block' },
-      el('div', { class: 'block-head' }, el('h3', { text: title }),
-        el('button', { type: 'button', class: 'btn ghost small', text: 'Copy', onclick: () => doCopy(text, title) })),
+      el('div', { class: 'block-head' }, h3,
+        el('button', { type: 'button', class: 'btn ghost small', text: 'Copy', onclick: () => doCopy(text, name) })),
       pre);
   }));
+  renderLisStatus(out);
+}
+
+// ---------- LIS macro / block key override ----------
+const LIS_KEYS = { macro: { toggle: 'useLisMacro', label: 'macro' }, blockKey: { toggle: 'useLisBlockKey', label: 'block key' } };
+
+/** Explain, under each pasted-text box, which text is printing in the report. */
+function renderLisStatus(out) {
+  const meta = state.caseState.meta;
+  for (const [key, { toggle, label }] of Object.entries(LIS_KEYS)) {
+    const ui = nodes.lis[key];
+    if (!ui.toggle) continue;
+    if (ui.toggle.checked !== !!meta[toggle]) ui.toggle.checked = !!meta[toggle];
+    const generated = generatedBlock(key);
+    ui.generated.disabled = !generated;
+    ui.clear.disabled = !(meta[key] || '').trim() && !meta[toggle];
+    const src = out?.source?.[key];
+    ui.status.textContent = {
+      lis: `Pasted text prints instead of the generated ${label}.`,
+      merged: `Generated ${label} prints, then the pasted text. Tick the box to replace it.`,
+      typed: `No generated ${label} for this template; the pasted text prints.`,
+      generated: meta[toggle] ? `Nothing pasted yet — the generated ${label} prints until you paste or Use generated.` : `Generated ${label} prints.`,
+      none: ''
+    }[src] || '';
+  }
+}
+
+/** The engine's own macro / block key for the current case, ignoring any pasted text. */
+function generatedBlock(key) {
+  try {
+    const cs = { ...state.caseState, meta: { ...state.caseState.meta, [key]: '', [LIS_KEYS[key].toggle]: false } };
+    return (generateCase(state.templates, cs)[key] || '').trim();
+  } catch { return ''; }
+}
+
+function initLis() {
+  for (const [key, { toggle, label }] of Object.entries(LIS_KEYS)) {
+    const ui = nodes.lis[key];
+    if (!ui.toggle) continue;
+    ui.toggle.addEventListener('change', (e) => {
+      markDirty(); state.caseState.meta[toggle] = e.target.checked; renderReport(); cacheCase(state.caseState);
+    });
+    ui.generated.addEventListener('click', () => {
+      const text = generatedBlock(key);
+      if (!text) return toast(`No generated ${label} for this case`);
+      const current = (state.caseState.meta[key] || '').trim();
+      if (current && current !== text && !window.confirm(`Replace the pasted ${label} with the generated text?`)) return;
+      markDirty();
+      state.caseState.meta[key] = text;
+      state.caseState.meta[toggle] = true;
+      nodes.meta[key].value = text;
+      renderReport(); cacheCase(state.caseState);
+      nodes.meta[key].focus();
+      toast(`Generated ${label} copied — edit it freely; it no longer follows the fields`);
+    });
+    ui.clear.addEventListener('click', () => {
+      markDirty();
+      state.caseState.meta[key] = '';
+      state.caseState.meta[toggle] = false;
+      nodes.meta[key].value = '';
+      renderReport(); cacheCase(state.caseState);
+    });
+  }
 }
 
 async function doCopy(text, label) {
@@ -812,8 +883,10 @@ function initDrive() {
       state.caseState.meta[k] = e.target.value;
       cacheCase(state.caseState);
       if (k === 'accession' || k === 'status') renderSaveStatus();
+      if (k === 'macro' || k === 'blockKey') renderReport();
     });
   }
+  initLis();
   nodes.meta.accession.addEventListener('blur', (e) => {
     const n = normaliseAccession(e.target.value);
     if (n !== e.target.value) { e.target.value = n; state.caseState.meta.accession = n; cacheCase(state.caseState); }

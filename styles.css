@@ -393,3 +393,11 @@ textarea.input { min-height: 64px; resize: vertical; }
 .checks ul { margin: 0; padding-left: 1.1em; font-size: 13px; line-height: 1.5; }
 .checks li.error { color: var(--color-alert); }
 .checks li.warn { color: #8a6208; }
+
+/* LIS macro / block key override controls (case details panel) */
+.lis-row { grid-column: 2; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); margin-top: var(--space-2); font-size: var(--text-sm); }
+.lis-row .check { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--color-text); cursor: pointer; font-size: var(--text-sm); }
+.lis-row .check input { margin: 0; accent-color: var(--color-primary); }
+.lis-row .lis-status { flex-basis: 100%; font-size: var(--text-xs); }
+.lis-row .btn.small { padding: 2px 8px; }
+.block-head h3 .tag { display: inline-block; margin-left: var(--space-2); padding: 1px 6px; border-radius: 999px; background: var(--color-primary-highlight); color: var(--color-primary); font-size: 10px; letter-spacing: 0.04em; text-transform: none; font-weight: 600; vertical-align: middle; }

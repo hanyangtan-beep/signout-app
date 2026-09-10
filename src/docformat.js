@@ -36,9 +36,11 @@ export function phiWarnings(texts) {
 /** The Google Doc body. Headings are fixed so the TAT job and Perplexity can parse the draft. */
 export function buildDocText(caseState, out) {
   const meta = caseState.meta || {};
-  // Generated macro (frozen section parts) comes first, then whatever was typed in the case panel.
-  const macro = [out.macro, meta.macro].filter((t) => t && t.trim() !== '').join('\n\n');
-  const blockKey = [out.blockKey, meta.blockKey].filter((t) => t && t.trim() !== '').join('\n');
+  // The engine already applies the LIS text (override or append) when it reports `source`;
+  // older callers without it get the legacy merge: generated first, then the typed text.
+  const merged = (key, sep) => (out.source ? out[key] : [out[key], meta[key]].filter((t) => t && t.trim() !== '').join(sep));
+  const macro = merged('macro', '\n\n');
+  const blockKey = merged('blockKey', '\n');
   const sections = [
     ['CLINICAL HISTORY', meta.clinical],
     ['SPECIMEN', out.specimens],
