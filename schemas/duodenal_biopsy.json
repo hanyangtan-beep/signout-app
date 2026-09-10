@@ -1,0 +1,292 @@
+{
+  "id": "duodenal_biopsy",
+  "version": "2026.09",
+  "name": "Duodenal biopsy",
+  "shortName": "Duodenum",
+  "organ": "DUODENUM",
+  "specimenNoun": "biopsy",
+  "maxParts": 6,
+  "defaultParts": 1,
+  "generator": "duodenal",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "summary",
+      "label": "Case summary line after the diagnosis (highest Marsh type, organisms, neoplasia)",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "coeliacComment",
+      "label": "Interpretive sentence for Marsh 1 / Marsh 3 patterns",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "partDefaults": [
+    {
+      "specimenName": "D2"
+    },
+    {
+      "specimenName": "Duodenal bulb"
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Site",
+      "type": "text",
+      "placeholder": "D2 / duodenal bulb / D1 / D3",
+      "default": ""
+    },
+    {
+      "id": "pieces",
+      "label": "Number of pieces",
+      "type": "number",
+      "placeholder": "2",
+      "default": ""
+    },
+    {
+      "id": "villi",
+      "label": "Villous architecture",
+      "type": "select",
+      "options": [
+        "Normal",
+        "Mild blunting",
+        "Marked blunting",
+        "Flat (absent villi)"
+      ],
+      "default": "Normal"
+    },
+    {
+      "id": "iel",
+      "label": "Intraepithelial lymphocytes",
+      "type": "select",
+      "options": [
+        "Not increased",
+        "Increased"
+      ],
+      "default": "Not increased",
+      "help": "Increased = 25 or more per 100 enterocytes, or tip-heavy distribution."
+    },
+    {
+      "id": "ielCount",
+      "label": "IEL per 100 enterocytes",
+      "type": "number",
+      "placeholder": "40",
+      "default": "",
+      "showIf": {
+        "field": "iel",
+        "is": "Increased"
+      }
+    },
+    {
+      "id": "cryptHyperplasia",
+      "label": "Crypt hyperplasia",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "lpInflammation",
+      "label": "Lamina propria inflammation",
+      "type": "select",
+      "options": [
+        "Normal",
+        "Increased chronic inflammation"
+      ],
+      "default": "Normal"
+    },
+    {
+      "id": "activity",
+      "label": "Activity",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Neutrophils",
+        "Erosion",
+        "Ulceration"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "eosinophils",
+      "label": "Eosinophils",
+      "type": "select",
+      "options": [
+        "Not increased",
+        "Increased"
+      ],
+      "default": "Not increased"
+    },
+    {
+      "id": "brunner",
+      "label": "Brunner glands",
+      "type": "select",
+      "options": [
+        "Not prominent",
+        "Brunner gland hyperplasia"
+      ],
+      "default": "Not prominent"
+    },
+    {
+      "id": "foveolar",
+      "label": "Gastric foveolar (surface) metaplasia",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "hpylori",
+      "label": "Helicobacter-like organisms",
+      "type": "select",
+      "options": [
+        "Not identified",
+        "Present"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "giardia",
+      "label": "Giardia",
+      "type": "select",
+      "options": [
+        "Not identified",
+        "Present"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "granuloma",
+      "label": "Granuloma",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "other",
+      "label": "Other finding",
+      "type": "select",
+      "options": [
+        "None",
+        "Lymphangiectasia",
+        "Foamy macrophages in the lamina propria",
+        "Amyloid deposition",
+        "Viral cytopathic change"
+      ],
+      "default": "None"
+    },
+    {
+      "id": "neoplasia",
+      "label": "Neoplasia",
+      "type": "select",
+      "options": [
+        "None",
+        "Adenoma, low grade dysplasia",
+        "Adenoma, high grade dysplasia",
+        "Adenocarcinoma",
+        "Neuroendocrine tumour",
+        "Atypical lymphoid infiltrate"
+      ],
+      "default": "None"
+    },
+    {
+      "id": "marshOverride",
+      "label": "Marsh–Oberhuber type",
+      "type": "select",
+      "options": [
+        "Auto",
+        "Not stated",
+        "0",
+        "1",
+        "2",
+        "3a",
+        "3b",
+        "3c"
+      ],
+      "default": "Auto",
+      "help": "Auto derives the type from villi, IEL and crypts."
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "summary": true,
+      "coeliacComment": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "Duodenal bulb",
+          "pieces": "2",
+          "villi": "Normal",
+          "iel": "Not increased",
+          "ielCount": "",
+          "cryptHyperplasia": "Absent",
+          "lpInflammation": "Increased chronic inflammation",
+          "activity": "Neutrophils",
+          "eosinophils": "Not increased",
+          "brunner": "Brunner gland hyperplasia",
+          "foveolar": "Present",
+          "hpylori": "Not identified",
+          "giardia": "Not identified",
+          "granuloma": "Absent",
+          "other": "None",
+          "neoplasia": "None",
+          "marshOverride": "Auto",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "B",
+        "values": {
+          "specimenName": "D2",
+          "pieces": "4",
+          "villi": "Marked blunting",
+          "iel": "Increased",
+          "ielCount": "45",
+          "cryptHyperplasia": "Present",
+          "lpInflammation": "Increased chronic inflammation",
+          "activity": "Absent",
+          "eosinophils": "Not increased",
+          "brunner": "Not prominent",
+          "foveolar": "Absent",
+          "hpylori": "Not identified",
+          "giardia": "Not identified",
+          "granuloma": "Absent",
+          "other": "None",
+          "neoplasia": "None",
+          "marshOverride": "Auto",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

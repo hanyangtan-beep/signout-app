@@ -8,10 +8,12 @@ import ibd from '../generators/ibd.js';
 import oesophageal from '../generators/oesophageal.js';
 import frozen from '../generators/frozen.js';
 import breast from '../generators/breast.js';
+import duodenal from '../generators/duodenal.js';
+import cervical from '../generators/cervical.js';
 
-export const GENERATORS = { gastric, colonic, prostate, ibd, oesophageal, frozen, breast };
+export const GENERATORS = { gastric, colonic, prostate, ibd, oesophageal, frozen, breast, duodenal, cervical };
 
-export const TEMPLATE_IDS = ['gastric_biopsy', 'colonic_polyp', 'prostate_biopsy', 'ibd_biopsy', 'oesophageal_biopsy', 'frozen_section', 'breast_biopsy'];
+export const TEMPLATE_IDS = ['gastric_biopsy', 'colonic_polyp', 'prostate_biopsy', 'ibd_biopsy', 'oesophageal_biopsy', 'frozen_section', 'breast_biopsy', 'duodenal_biopsy', 'cervical_biopsy'];
 
 export async function loadSchema(id, baseUrl) {
   if (typeof window === 'undefined') {

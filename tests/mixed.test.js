@@ -83,8 +83,8 @@ test('single-part rule still applies to a one-part case built through generateCa
 
 test('missing template is reported by name', () => {
   const c = createCase(gastric.schema, 1);
-  c.parts[0].templateId = 'duodenal_biopsy';
-  assert.throws(() => generateCase(registry, c), /duodenal_biopsy is not installed/);
+  c.parts[0].templateId = 'pancreas_biopsy';
+  assert.throws(() => generateCase(registry, c), /pancreas_biopsy is not installed/);
 });
 
 test('Sheet row and Doc footer record every template used', () => {
