@@ -92,6 +92,20 @@ Verify:     tests + browser (light)
 Ship:       with batch
 Spec:       card is the spec
 
+### Frozen section scenarios                             Size: L → split; five cards, two batches
+Why:        the frozen template covers generic margin / node / parathyroid / ovary / nodule; the recurring services in the case mix — breast sentinel nodes, bile duct and pancreatic duct margins, lung wedges, head-and-neck named margins, CNS biopsies — each need their own fields, phone-line wording and paraffin correlation. Past sign-outs supply house wording for SLN, bile duct, lung wedge and head-and-neck margins (`docs/reference/frozen-section-examples.md`, 10 scenarios with session references); none exists for CNS / meningioma, so that card is marked proposed.
+Split into:
+  (a) Breast sentinel lymph nodes (S): side, node labels, nodes found, fat stripped, macro / micro / ITC / deferred, metastasis size, post-neoadjuvant treatment effect; dx `LYMPH NODES, left SLN 1, excision x frozen section - NO EVIDENCE OF MALIGNANCY (0/2)`; node-arithmetic and size Checks.
+  (b) Bile duct and pancreatic duct margins (S): CBD / CHD / pancreatic neck, ring or shave, en face; negative / invasive / BilIN-3 or PanIN-3 / denuded cannot-assess; stent-atypia and peribiliary-gland caveats.
+  (c) Lung wedge / nodule (M): staple line trimmed, parenchymal margin inked, nodule size and distance, pleura; adenocarcinoma and variants, SCC, NSCC-NOS deferred, small cell, carcinoid, metastatic (primary named), necrotising / non-necrotising granulomatous inflammation, organising pneumonia, benign; margin Checks; subtype-on-paraffin snippets.
+  (d) CNS lesion (M, proposed wording): smear and/or frozen; meningioma, high- / low-grade glial neoplasm, metastasis, favour lymphoma (fresh tissue reserved), schwannoma, PitNET, reactive gliosis, nondiagnostic; WHO CNS5 deferred snippet.
+  (e) Named-margin presets and line form (S): oral tongue 5 / 6, oropharynx 7, nasal ala Rm A–D + deep, maxillectomy custom; grouped `(A)-(G) Negative for malignancy.`; diagnosis joiner ` x frozen section - ` (deliberate fixture change, logged).
+Untouched:  frozen–paraffin correlation model, LIS override, existing scenario wording except the joiner in (e); all other templates.
+Accept:     per-card fixtures reproduce the quoted house lines (SLN §2, bile duct §4, lung §10, tongue §6, nasal ala §5 of the examples file); CNS fixtures from the proposed wording; template still one entry ("Frozen") in the Resections row.
+Verify:     tests + browser (light) per batch
+Ship:       two batches — (a)+(b)+(e), then (c)+(d); one publish each
+Spec:       `docs/specs/frozen-section-scenarios.md`
+
 ### Gastric carcinoma resection (synoptic)              Size: L → split before building
 Why:        highest-volume cancer resection after colon.
 Split into: (a) save QMH page + importer draft + `src/staging/gastric.js` rules with boundary tests (M); (b) schema + generator + synoptic block + Checks (M); (c) fixtures against the QMH page element order + docs (S).
