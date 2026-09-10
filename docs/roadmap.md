@@ -73,6 +73,15 @@ Verify:     tests + browser (light)
 Ship:       with batch
 Spec:       `docs/specs/nasopharyngeal-biopsy.md`
 
+### Open Google Doc button                               Size: S
+Why:        the Doc link only appears as small text in the status bar after a save in this session; a saved case should be one click from its Doc at all times.
+Change:     an **Open Doc** button in the header actions (next to Save) that opens `caseState.drive.docUrl` in a new tab. Enabled as soon as the case has a Doc (saved now, or reopened from the Sheet, which already restores `drive.docId` / `docUrl`). When the accession is typed but the case has not been opened from the Sheet, the button looks the Doc up by normalised accession in `Sign-out cases` (one Sheet read) and opens it, or offers Save when no row exists. Tooltip shows "Saved HH:MM" / "Edited since save" so it is clear whether the Doc is current.
+Untouched:  save / open flow, Sheet columns, status bar link (kept).
+Accept:     button disabled on a new unsaved case; enabled after Save and after Open; `drive.js` lookup-by-accession unit test (row found → url; not found → null); browser: click opens a new tab on the doc URL.
+Verify:     tests + browser (light)
+Ship:       with batch
+Spec:       card is the spec
+
 ### Gastric carcinoma resection (synoptic)              Size: L → split before building
 Why:        highest-volume cancer resection after colon.
 Split into: (a) save QMH page + importer draft + `src/staging/gastric.js` rules with boundary tests (M); (b) schema + generator + synoptic block + Checks (M); (c) fixtures against the QMH page element order + docs (S).
