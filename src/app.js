@@ -2,7 +2,7 @@
 
 import { loadAll } from './registry.js';
 import {
-  createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse
+  createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor
 } from './engine.js';
 import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js';
 import { loadConfig, saveConfig } from './config.js';
@@ -272,10 +272,45 @@ function labelFor(field, value) {
   return value === '' ? '—' : value;
 }
 
+// Optional per-field visual reference (schema `field.reference`): a collapsible comparison panel of
+// annotated photomicrographs with morphological criteria and licence credits. Open state is kept per
+// field so it survives re-renders while the user works through the part.
+const openReferences = new Set();
+function referenceToggle(field, part) {
+  const ref = field.reference;
+  if (!ref) return null;
+  const key = `${part.label}:${field.id}`;
+  return el('button', {
+    type: 'button', class: 'ref-toggle', 'aria-expanded': String(openReferences.has(key)),
+    title: ref.title || 'Show reference images',
+    onclick: () => { openReferences.has(key) ? openReferences.delete(key) : openReferences.add(key); render(); }
+  }, el('span', { 'aria-hidden': 'true', text: '◧' }), document.createTextNode(openReferences.has(key) ? 'Hide photos' : 'Compare photos'));
+}
+function referencePanel(field, part) {
+  const ref = field.reference;
+  if (!ref || !openReferences.has(`${part.label}:${field.id}`)) return null;
+  const panel = el('div', { class: 'ref-panel', role: 'region', 'aria-label': ref.title || field.label });
+  if (ref.title) panel.append(el('div', { class: 'ref-title', text: ref.title }));
+  if (ref.intro) panel.append(el('p', { class: 'ref-intro', text: ref.intro }));
+  panel.append(el('div', { class: 'ref-groups', style: `--ref-cols:${(ref.groups || []).length || 1}` },
+    ...(ref.groups || []).map((g) => el('section', { class: 'ref-group' },
+      el('h4', { text: g.heading }),
+      g.points?.length ? el('ul', { class: 'ref-points' }, ...g.points.map((t) => el('li', { text: t }))) : null,
+      ...(g.images || []).map((im) => el('figure', { class: 'ref-figure' },
+        el('img', { src: im.src, alt: im.caption || g.heading, loading: 'lazy', decoding: 'async' }),
+        el('figcaption', {},
+          im.caption ? el('span', { class: 'ref-caption', text: im.caption }) : null,
+          im.credit ? el('span', { class: 'ref-credit' },
+            im.url ? el('a', { href: im.url, target: '_blank', rel: 'noopener', text: im.credit }) : document.createTextNode(im.credit),
+            im.license ? document.createTextNode(` · ${im.license}`) : null) : null)))))));
+  if (ref.note) panel.append(el('p', { class: 'ref-note', text: ref.note }));
+  return panel;
+}
+
 function renderField(field, part, index) {
   const visible = isVisible(field, part.values);
   const id = `f-${part.label}-${field.id}`;
-  const wrap = el('div', { class: `field${visible ? '' : ' hidden'}`, 'data-field': field.id });
+  const wrap = el('div', { class: `field${visible ? '' : ' hidden'}${field.reference ? ' has-ref' : ''}`, 'data-field': field.id });
   const value = part.values[field.id];
 
   if (field.type === 'text' || field.type === 'textarea' || field.type === 'number') {
@@ -309,7 +344,9 @@ function renderField(field, part, index) {
     }, ...options.map((opt, i) => el('button', {
       type: 'button', class: 'chip', 'aria-pressed': String(opt === value), onclick: () => setValue(field.id, opt)
     }, el('span', { class: 'key', text: String(i + 1) }), document.createTextNode(labelFor(field, opt)))));
-    wrap.append(el('div', { class: 'field-label', id: `${id}-label`, text: field.label }), group);
+    wrap.append(el('div', { class: 'field-label', id: `${id}-label`, text: field.label }),
+      field.reference ? el('div', { class: 'field-control' }, group, referenceToggle(field, part)) : group,
+      referencePanel(field, part));
     return wrap;
   }
 
@@ -319,7 +356,9 @@ function renderField(field, part, index) {
       if (opt === value) o.selected = true;
       return o;
     }));
-  wrap.append(el('label', { for: id, text: field.label }), select);
+  wrap.append(el('label', { for: id, text: field.label }),
+    field.reference ? el('div', { class: 'field-control' }, select, referenceToggle(field, part)) : select,
+    referencePanel(field, part));
   return wrap;
 }
 
@@ -357,12 +396,38 @@ function renderPanel() {
 function renderOptions() {
   const opts = [];
   for (const s of schemasInUse()) for (const o of s.options || []) if (!opts.some((p) => p.id === o.id)) opts.push(o);
-  nodes.options.replaceChildren(...opts.map((o) => {
+  const optionNodes = opts.map((o) => {
     const input = el('input', { type: 'checkbox', onchange: (e) => { markDirty(); state.caseState.options[o.id] = e.target.checked; renderReport(); cacheCase(state.caseState); } });
     input.checked = !!state.caseState.options[o.id];
     return el('label', {}, input, document.createTextNode(o.label));
-  }));
-  nodes.options.hidden = opts.length === 0;
+  });
+  const snippets = snippetsFor(state.templates, state.caseState);
+  const snippetNodes = snippets.map((sn) => {
+    const input = el('input', {
+      type: 'checkbox',
+      onchange: (e) => {
+        markDirty();
+        state.caseState.snippets = state.caseState.snippets || {};
+        // Store an explicit choice only when it differs from the suggestion, so auto-suggestion keeps working.
+        if (e.target.checked === sn.suggested) delete state.caseState.snippets[sn.id]; else state.caseState.snippets[sn.id] = e.target.checked;
+        renderReport(); cacheCase(state.caseState);
+      }
+    });
+    input.checked = sn.active;
+    return el('label', { class: sn.suggested ? 'snippet suggested' : 'snippet', title: sn.text },
+      input, document.createTextNode(sn.label), sn.suggested ? el('span', { class: 'tag', text: 'suggested' }) : null);
+  });
+  const comment = el('textarea', {
+    class: 'input', id: 'case-comment', rows: '2', placeholder: 'Additional comment (appears after the diagnosis)',
+    oninput: (e) => { markDirty(); state.caseState.comment = e.target.value; renderReport(); cacheCase(state.caseState); }
+  });
+  comment.value = state.caseState.comment || '';
+  nodes.options.replaceChildren(
+    optionNodes.length ? el('div', { class: 'option-row' }, ...optionNodes) : null,
+    snippetNodes.length ? el('div', { class: 'snippet-group' }, el('div', { class: 'group-title', text: 'Comments' }), el('div', { class: 'option-row' }, ...snippetNodes)) : null,
+    el('div', { class: 'field comment-field' }, el('label', { for: 'case-comment', text: 'Comment' }), comment)
+  );
+  nodes.options.hidden = false;
 }
 
 function highlightParts(text) {
@@ -393,7 +458,8 @@ function renderReport() {
     ['Macroscopic description', out.macro],
     ['Intraoperative consultation', out.intraop],
     ['Microscopic examination', out.microscopy],
-    ['Diagnosis', out.diagnosis]
+    ['Diagnosis', out.diagnosis],
+    ['Comment', out.comment]
   ].filter(([title, text]) => text || ['Specimens', 'Microscopic examination', 'Diagnosis'].includes(title));
   nodes.blocks.replaceChildren(...blocks.map(([title, text]) => {
     const pre = el('pre', {});

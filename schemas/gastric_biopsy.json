@@ -30,7 +30,13 @@
       "id": "siteType",
       "label": "Site (mucosa type)",
       "type": "select",
-      "options": ["Pyloric type", "Body type", "Cardiac type", "Superficial gastric mucosa", "Indeterminate"],
+      "options": [
+        "Pyloric type",
+        "Body type",
+        "Cardiac type",
+        "Superficial gastric mucosa",
+        "Indeterminate"
+      ],
       "default": "Body type",
       "defaultForFirstPart": "Pyloric type"
     },
@@ -38,65 +44,192 @@
       "id": "activity",
       "label": "Activity",
       "type": "grade",
-      "options": ["Absent", "Mild", "Moderate", "Marked"],
+      "options": [
+        "Absent",
+        "Mild",
+        "Moderate",
+        "Marked"
+      ],
       "default": "Absent"
     },
     {
       "id": "chronic",
       "label": "Chronic inflammation",
       "type": "grade",
-      "options": ["Absent", "Mild", "Moderate", "Marked"],
+      "options": [
+        "Absent",
+        "Mild",
+        "Moderate",
+        "Marked"
+      ],
       "default": "Absent"
     },
     {
       "id": "follicles",
       "label": "Reactive lymphoid follicle(s)",
       "type": "select",
-      "options": ["Absent", "Present"],
+      "options": [
+        "Absent",
+        "Present"
+      ],
       "default": "Absent"
     },
     {
       "id": "atrophy",
       "label": "Atrophy",
       "type": "grade",
-      "options": ["Absent", "Mild", "Moderate", "Marked"],
+      "options": [
+        "Absent",
+        "Mild",
+        "Moderate",
+        "Marked"
+      ],
       "default": "Absent"
     },
     {
       "id": "ulcer",
       "label": "Evidence of ulcer / erosion",
       "type": "select",
-      "options": ["Absent", "Present"],
+      "options": [
+        "Absent",
+        "Present"
+      ],
       "default": "Absent"
     },
     {
       "id": "imDegree",
       "label": "Intestinal metaplasia",
       "type": "grade",
-      "options": ["Absent", "Mild", "Moderate", "Marked"],
+      "options": [
+        "Absent",
+        "Mild",
+        "Moderate",
+        "Marked"
+      ],
       "default": "Absent"
     },
     {
       "id": "imType",
-      "label": "IM type",
+      "label": "IM subtype",
       "type": "select",
-      "options": ["", "Complete", "Incomplete"],
-      "optionLabels": { "": "Unspecified" },
+      "options": [
+        "",
+        "Complete",
+        "Incomplete"
+      ],
+      "optionLabels": {
+        "": "Unspecified",
+        "Complete": "Complete (type I)",
+        "Incomplete": "Incomplete (type II/III)"
+      },
       "default": "",
-      "showIf": { "field": "imDegree", "not": "Absent" }
+      "showIf": {
+        "field": "imDegree",
+        "not": "Absent"
+      },
+      "reference": {
+        "title": "Complete vs incomplete intestinal metaplasia",
+        "intro": "Subtype on H&E; use AB-PAS (± HID) when uncertain. Report the highest-risk subtype present when mixed.",
+        "groups": [
+          {
+            "heading": "Complete (type I)",
+            "points": [
+              "Small-bowel phenotype: goblet cells alternating with eosinophilic absorptive cells",
+              "Well-defined brush border (PAS-positive magenta line on AB-PAS)",
+              "Paneth cells often present at crypt bases",
+              "Goblet mucin is sialomucin (blue on AB-PAS); no mucin in the intervening columnar cells"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/gastric/im_complete_he.jpg",
+                "caption": "H&E: goblet cells between absorptive cells with a crisp luminal brush border; Paneth cells at crypt bases.",
+                "credit": "Aumpan et al., PLoS ONE 2020, Fig 4A (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://doi.org/10.1371/journal.pone.0239434"
+              },
+              {
+                "src": "assets/reference/gastric/im_complete_abpas.jpg",
+                "caption": "AB-PAS: blue goblet cells (white arrow) with a magenta brush border (black arrow) on the absorptive cells.",
+                "credit": "Tjandra et al., Cancers 2023, Fig 3 left (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://doi.org/10.3390/cancers15153913"
+              },
+              {
+                "src": "assets/reference/gastric/im_type1_abpas.jpg",
+                "caption": "AB-PAS, type I: magenta brush border between blue/purple goblet cells.",
+                "credit": "Livzan et al., Diagnostics 2023, Fig 2a (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://doi.org/10.3390/diagnostics13152478"
+              }
+            ]
+          },
+          {
+            "heading": "Incomplete (type II/III)",
+            "points": [
+              "Colonic phenotype: goblet cells of varying size among mucin-secreting columnar cells",
+              "No brush border; irregular, pale mucin droplets in the columnar cells",
+              "Paneth cells absent or sparse",
+              "Type II: columnar cells contain neutral mucin or sialomucin (magenta / blue on AB-PAS); type III: sulphomucin (brown-black on HID) — higher cancer risk"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/gastric/im_incomplete_he.jpg",
+                "caption": "H&E: goblet cells among columnar cells with apical mucin vacuoles of variable size; no brush border.",
+                "credit": "Aumpan et al., PLoS ONE 2020, Fig 4C (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://doi.org/10.1371/journal.pone.0239434"
+              },
+              {
+                "src": "assets/reference/gastric/im_incomplete_abpas.jpg",
+                "caption": "AB-PAS: acidic (blue) mucin in the columnar cells (yellow arrow); no brush border.",
+                "credit": "Tjandra et al., Cancers 2023, Fig 3 right (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://doi.org/10.3390/cancers15153913"
+              },
+              {
+                "src": "assets/reference/gastric/im_type2_abpas.jpg",
+                "caption": "AB-PAS, type II: mucus-producing columnar cells (neutral magenta or blue sialomucin) between goblet cells.",
+                "credit": "Livzan et al., Diagnostics 2023, Fig 2b (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://doi.org/10.3390/diagnostics13152478"
+              },
+              {
+                "src": "assets/reference/gastric/im_type3_hid.jpg",
+                "caption": "HID-AB, type III: brown-black sulphomucin in the columnar cells.",
+                "credit": "Livzan et al., Diagnostics 2023, Fig 2c (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://doi.org/10.3390/diagnostics13152478"
+              }
+            ]
+          }
+        ],
+        "note": "Images reproduced under Creative Commons Attribution 4.0; click a credit to open the source article."
+      }
     },
     {
       "id": "dysplasia",
       "label": "Dysplasia / malignancy",
       "type": "select",
-      "options": ["Absent", "Indefinite for dysplasia", "Low grade dysplasia", "High grade dysplasia", "Intramucosal carcinoma", "Malignancy present"],
+      "options": [
+        "Absent",
+        "Indefinite for dysplasia",
+        "Low grade dysplasia",
+        "High grade dysplasia",
+        "Intramucosal carcinoma",
+        "Malignancy present"
+      ],
       "default": "Absent"
     },
     {
       "id": "hp",
       "label": "Helicobacter pylori",
       "type": "grade",
-      "options": ["Absent", "Low density", "Moderate density", "High density"],
+      "options": [
+        "Absent",
+        "Low density",
+        "Moderate density",
+        "High density"
+      ],
       "default": "Absent"
     },
     {
@@ -114,17 +247,35 @@
       {
         "label": "A",
         "values": {
-          "specimenName": "Antrum", "siteType": "Pyloric type", "activity": "Absent", "chronic": "Mild",
-          "follicles": "Absent", "atrophy": "Absent", "ulcer": "Absent", "imDegree": "Absent", "imType": "",
-          "dysplasia": "Absent", "hp": "Absent", "additionalNotes": ""
+          "specimenName": "Antrum",
+          "siteType": "Pyloric type",
+          "activity": "Absent",
+          "chronic": "Mild",
+          "follicles": "Absent",
+          "atrophy": "Absent",
+          "ulcer": "Absent",
+          "imDegree": "Absent",
+          "imType": "",
+          "dysplasia": "Absent",
+          "hp": "Absent",
+          "additionalNotes": ""
         }
       },
       {
         "label": "B",
         "values": {
-          "specimenName": "Body", "siteType": "Body type", "activity": "Mild", "chronic": "Mild",
-          "follicles": "Present", "atrophy": "Absent", "ulcer": "Present", "imDegree": "Mild", "imType": "Incomplete",
-          "dysplasia": "Absent", "hp": "Moderate density", "additionalNotes": ""
+          "specimenName": "Body",
+          "siteType": "Body type",
+          "activity": "Mild",
+          "chronic": "Mild",
+          "follicles": "Present",
+          "atrophy": "Absent",
+          "ulcer": "Present",
+          "imDegree": "Mild",
+          "imType": "Incomplete",
+          "dysplasia": "Absent",
+          "hp": "Moderate density",
+          "additionalNotes": ""
         }
       }
     ]

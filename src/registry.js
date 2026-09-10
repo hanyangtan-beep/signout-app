@@ -10,10 +10,13 @@ import frozen from '../generators/frozen.js';
 import breast from '../generators/breast.js';
 import duodenal from '../generators/duodenal.js';
 import cervical from '../generators/cervical.js';
+import endometrial from '../generators/endometrial.js';
+import leep from '../generators/leep.js';
+import lung from '../generators/lung.js';
 
-export const GENERATORS = { gastric, colonic, prostate, ibd, oesophageal, frozen, breast, duodenal, cervical };
+export const GENERATORS = { gastric, colonic, prostate, ibd, oesophageal, frozen, breast, duodenal, cervical, endometrial, leep, lung };
 
-export const TEMPLATE_IDS = ['gastric_biopsy', 'colonic_polyp', 'prostate_biopsy', 'ibd_biopsy', 'oesophageal_biopsy', 'frozen_section', 'breast_biopsy', 'duodenal_biopsy', 'cervical_biopsy'];
+export const TEMPLATE_IDS = ['gastric_biopsy', 'colonic_polyp', 'prostate_biopsy', 'ibd_biopsy', 'oesophageal_biopsy', 'frozen_section', 'breast_biopsy', 'duodenal_biopsy', 'cervical_biopsy', 'endometrial_biopsy', 'cervical_excision', 'lung_biopsy'];
 
 export async function loadSchema(id, baseUrl) {
   if (typeof window === 'undefined') {

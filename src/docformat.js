@@ -45,7 +45,8 @@ export function buildDocText(caseState, out) {
     ['BLOCK KEY', meta.blockKey],
     ...(out.intraop && out.intraop.trim() !== '' ? [['INTRAOPERATIVE CONSULTATION', out.intraop]] : []),
     ['MICROSCOPIC EXAMINATION', out.microscopy],
-    ['DIAGNOSIS', out.diagnosis]
+    ['DIAGNOSIS', out.diagnosis],
+    ...(out.comment && out.comment.trim() !== '' ? [['COMMENT', out.comment]] : [])
   ];
   const lines = [normaliseAccession(meta.accession) || 'UNASSIGNED', ''];
   for (const [title, body] of sections) {

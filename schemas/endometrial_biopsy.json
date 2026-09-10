@@ -1,0 +1,465 @@
+{
+  "id": "endometrial_biopsy",
+  "version": "2026.09",
+  "name": "Endometrial biopsy",
+  "shortName": "Endometrium",
+  "organ": "ENDOMETRIUM",
+  "specimenNoun": "curettings",
+  "system": "Gynae",
+  "kind": "biopsy",
+  "aliases": [
+    "pipelle",
+    "curettings",
+    "D&C",
+    "hyperplasia",
+    "EIN",
+    "PMB"
+  ],
+  "maxParts": 4,
+  "defaultParts": 1,
+  "generator": "endometrial",
+  "style": {
+    "british": true
+  },
+  "caseFields": [
+    {
+      "id": "clinical",
+      "label": "Clinical indication",
+      "placeholder": "PMB; on tamoxifen",
+      "help": "Optional; used only in the hyperplasia / carcinoma comment snippets."
+    }
+  ],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "mmrLine",
+      "label": "Add the MMR / p53 interpretive line after the diagnosis when these stains are recorded",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "partDefaults": [
+    {
+      "specimenType": "Endometrial curettings"
+    },
+    {
+      "specimenType": "Endometrial polypectomy"
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenType",
+      "label": "Specimen",
+      "type": "select",
+      "options": [
+        "Endometrial curettings",
+        "Endometrial biopsy (Pipelle)",
+        "Hysteroscopic biopsy",
+        "Endometrial polypectomy"
+      ],
+      "default": "Endometrial curettings"
+    },
+    {
+      "id": "amount",
+      "label": "Amount of endometrium",
+      "type": "select",
+      "options": [
+        "Moderate",
+        "Abundant",
+        "Scanty (limited assessment)",
+        "Scanty (inadequate for assessment)",
+        "No endometrium (mucus, blood and cervical tissue only)"
+      ],
+      "default": "Moderate"
+    },
+    {
+      "id": "phase",
+      "label": "Background endometrium",
+      "type": "select",
+      "options": [
+        "Proliferative",
+        "Weakly proliferative",
+        "Disordered proliferative",
+        "Secretory",
+        "Menstrual / disintegrating",
+        "Inactive (atrophic)",
+        "Progestogen effect",
+        "Gestational (decidua and hypersecretory glands)",
+        "Not assessable (replaced by lesion)"
+      ],
+      "default": "Proliferative",
+      "showIf": {
+        "field": "amount",
+        "not": [
+          "Scanty (inadequate for assessment)",
+          "No endometrium (mucus, blood and cervical tissue only)"
+        ]
+      }
+    },
+    {
+      "id": "polyp",
+      "label": "Endometrial polyp",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present",
+        "Fragments suggestive of polyp"
+      ],
+      "default": "Absent",
+      "showIf": {
+        "field": "amount",
+        "not": [
+          "No endometrium (mucus, blood and cervical tissue only)"
+        ]
+      }
+    },
+    {
+      "id": "metaplasia",
+      "label": "Metaplasia / other change",
+      "type": "select",
+      "options": [
+        "None",
+        "Tubal (ciliated) metaplasia",
+        "Squamous metaplasia / morules",
+        "Mucinous metaplasia",
+        "Eosinophilic and papillary syncytial change",
+        "Stromal breakdown"
+      ],
+      "default": "None",
+      "showIf": {
+        "field": "amount",
+        "not": [
+          "No endometrium (mucus, blood and cervical tissue only)"
+        ]
+      }
+    },
+    {
+      "id": "endometritis",
+      "label": "Endometritis",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Chronic endometritis (plasma cells)",
+        "Acute endometritis"
+      ],
+      "default": "Absent",
+      "showIf": {
+        "field": "amount",
+        "not": [
+          "No endometrium (mucus, blood and cervical tissue only)"
+        ]
+      }
+    },
+    {
+      "id": "cd138",
+      "label": "CD138",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Confirms plasma cells",
+        "Negative"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "endometritis",
+        "is": "Chronic endometritis (plasma cells)"
+      }
+    },
+    {
+      "id": "hyperplasia",
+      "label": "Hyperplasia",
+      "type": "select",
+      "options": [
+        "None",
+        "Hyperplasia without atypia",
+        "Atypical hyperplasia / EIN"
+      ],
+      "default": "None",
+      "showIf": {
+        "field": "amount",
+        "not": [
+          "Scanty (inadequate for assessment)",
+          "No endometrium (mucus, blood and cervical tissue only)"
+        ]
+      }
+    },
+    {
+      "id": "hyperplasiaExtent",
+      "label": "Extent",
+      "type": "select",
+      "options": [
+        "Focal",
+        "Diffuse"
+      ],
+      "default": "Focal",
+      "showIf": {
+        "field": "hyperplasia",
+        "not": "None"
+      }
+    },
+    {
+      "id": "carcinoma",
+      "label": "Carcinoma",
+      "type": "select",
+      "options": [
+        "None",
+        "Endometrioid carcinoma",
+        "Serous carcinoma",
+        "Serous endometrial intraepithelial carcinoma (SEIC)",
+        "Clear cell carcinoma",
+        "Carcinosarcoma",
+        "Undifferentiated / dedifferentiated carcinoma",
+        "Other malignancy (specify in notes)"
+      ],
+      "default": "None",
+      "showIf": {
+        "field": "amount",
+        "not": [
+          "Scanty (inadequate for assessment)",
+          "No endometrium (mucus, blood and cervical tissue only)"
+        ]
+      }
+    },
+    {
+      "id": "figoGrade",
+      "label": "FIGO grade",
+      "type": "select",
+      "options": [
+        "1",
+        "2",
+        "3"
+      ],
+      "default": "1",
+      "showIf": {
+        "field": "carcinoma",
+        "is": "Endometrioid carcinoma"
+      }
+    },
+    {
+      "id": "mi",
+      "label": "Myometrial invasion on biopsy",
+      "type": "select",
+      "options": [
+        "Not assessable on biopsy",
+        "Not identified in the fragments",
+        "Present in fragments of myometrium"
+      ],
+      "default": "Not assessable on biopsy",
+      "showIf": {
+        "field": "carcinoma",
+        "not": "None"
+      }
+    },
+    {
+      "id": "p53",
+      "label": "p53",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Wild type",
+        "Aberrant (overexpression)",
+        "Aberrant (null)",
+        "Aberrant (cytoplasmic)"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "carcinoma",
+        "not": "None"
+      }
+    },
+    {
+      "id": "mmr",
+      "label": "Mismatch repair proteins",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Retained (MMR proficient)",
+        "Loss of MLH1 and PMS2",
+        "Loss of MSH2 and MSH6",
+        "Loss of MSH6",
+        "Loss of PMS2"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "carcinoma",
+        "not": "None"
+      }
+    },
+    {
+      "id": "er",
+      "label": "ER",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Positive",
+        "Patchy positive",
+        "Negative"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "carcinoma",
+        "not": "None"
+      }
+    },
+    {
+      "id": "pr",
+      "label": "PR",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Positive",
+        "Patchy positive",
+        "Negative"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "carcinoma",
+        "not": "None"
+      }
+    },
+    {
+      "id": "ihcOther",
+      "label": "Other IHC",
+      "type": "text",
+      "placeholder": "p16 diffuse; napsin A negative",
+      "default": "",
+      "showIf": {
+        "field": "carcinoma",
+        "not": "None"
+      }
+    },
+    {
+      "id": "poc",
+      "label": "Gestational tissue",
+      "type": "select",
+      "options": [
+        "None",
+        "Chorionic villi present",
+        "Decidua and hypersecretory endometrium without villi",
+        "Implantation-site trophoblast without villi"
+      ],
+      "default": "None",
+      "showIf": {
+        "field": "phase",
+        "is": "Gestational (decidua and hypersecretory glands)"
+      }
+    },
+    {
+      "id": "endocervix",
+      "label": "Endocervical tissue",
+      "type": "select",
+      "options": [
+        "Not represented",
+        "Unremarkable endocervical tissue also present",
+        "Fragments of endocervical polyp also present"
+      ],
+      "default": "Not represented"
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "",
+      "default": ""
+    }
+  ],
+  "snippets": [
+    {
+      "id": "endo_ah_comment",
+      "label": "Atypical hyperplasia / EIN comment",
+      "auto": {
+        "field": "hyperplasia",
+        "is": "Atypical hyperplasia / EIN"
+      },
+      "text": "Atypical hyperplasia / endometrioid intraepithelial neoplasia is associated with concurrent endometrioid carcinoma in a substantial proportion of subsequent hysterectomy specimens. Management in line with local gynaecological oncology guidelines is suggested."
+    },
+    {
+      "id": "endo_scanty_comment",
+      "label": "Scanty sample caveat",
+      "auto": {
+        "field": "amount",
+        "is": "Scanty (limited assessment)"
+      },
+      "text": "The sample is scanty and assessment of the endometrium is limited. Repeat sampling is suggested if clinically indicated."
+    },
+    {
+      "id": "endo_mmr_lynch",
+      "label": "MMR loss — Lynch follow-up",
+      "auto": {
+        "field": "mmr",
+        "is": [
+          "Loss of MLH1 and PMS2",
+          "Loss of MSH2 and MSH6",
+          "Loss of MSH6",
+          "Loss of PMS2"
+        ]
+      },
+      "text": "Loss of mismatch repair protein expression is identified. MLH1 promoter hypermethylation testing (for MLH1 / PMS2 loss) or referral for genetic counselling and germline testing (for other patterns) is suggested."
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "clinical": "Postmenopausal bleeding",
+    "options": {
+      "includeHeader": false,
+      "mmrLine": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenType": "Endometrial curettings",
+          "amount": "Moderate",
+          "phase": "Inactive (atrophic)",
+          "polyp": "Absent",
+          "metaplasia": "None",
+          "endometritis": "Absent",
+          "cd138": "Not performed",
+          "hyperplasia": "None",
+          "hyperplasiaExtent": "Focal",
+          "carcinoma": "Endometrioid carcinoma",
+          "figoGrade": "1",
+          "mi": "Not assessable on biopsy",
+          "p53": "Wild type",
+          "mmr": "Retained (MMR proficient)",
+          "er": "Positive",
+          "pr": "Positive",
+          "ihcOther": "",
+          "poc": "None",
+          "endocervix": "Not represented",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "B",
+        "values": {
+          "specimenType": "Endometrial polypectomy",
+          "amount": "Moderate",
+          "phase": "Inactive (atrophic)",
+          "polyp": "Present",
+          "metaplasia": "None",
+          "endometritis": "Absent",
+          "cd138": "Not performed",
+          "hyperplasia": "None",
+          "hyperplasiaExtent": "Focal",
+          "carcinoma": "None",
+          "figoGrade": "1",
+          "mi": "Not assessable on biopsy",
+          "p53": "Not performed",
+          "mmr": "Not performed",
+          "er": "Not performed",
+          "pr": "Not performed",
+          "ihcOther": "",
+          "poc": "None",
+          "endocervix": "Not represented",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}
