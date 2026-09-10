@@ -1,0 +1,320 @@
+{
+  "id": "stoma",
+  "version": "2026.09",
+  "name": "Stoma closure / revision",
+  "shortName": "Bowel · stoma closure",
+  "label": "Stoma",
+  "organ": "SMALL BOWEL",
+  "system": "GI",
+  "kind": "benign resection",
+  "rank": 39,
+  "aliases": [
+    "stoma",
+    "ileostomy",
+    "colostomy",
+    "stoma closure",
+    "stoma reversal",
+    "stoma revision",
+    "Hartmann reversal",
+    "parastomal hernia",
+    "mucosal prolapse",
+    "suture granuloma",
+    "loop ileostomy",
+    "end colostomy"
+  ],
+  "specimenNoun": "closure",
+  "maxParts": 3,
+  "defaultParts": 1,
+  "generator": "stoma",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen as received",
+      "type": "text",
+      "placeholder": "Small bowel, ileostomy, closure / Large bowel, colostomy, Hartmann reversal",
+      "default": ""
+    },
+    {
+      "id": "stomaType",
+      "label": "Stoma type",
+      "type": "select",
+      "options": [
+        "Ileostomy",
+        "Colostomy",
+        "Ileostomy, loop",
+        "Colostomy, end"
+      ],
+      "default": "Ileostomy"
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "options": [
+        "Closure",
+        "Revision",
+        "Reversal"
+      ],
+      "default": "Closure"
+    },
+    {
+      "id": "length",
+      "label": "Bowel length",
+      "type": "number",
+      "min": 0,
+      "step": 0.1,
+      "suffix": "cm",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "diameter",
+      "label": "Diameter (up to)",
+      "type": "number",
+      "min": 0,
+      "step": 0.1,
+      "suffix": "cm",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "skinIncluded",
+      "label": "Attached skin ellipse",
+      "type": "checkbox",
+      "default": true,
+      "group": "Macroscopy"
+    },
+    {
+      "id": "skinSize",
+      "label": "Skin ellipse size",
+      "type": "text",
+      "placeholder": "3 x 2",
+      "default": "",
+      "showIf": {
+        "field": "skinIncluded",
+        "truthy": true
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "mucosaMacro",
+      "label": "Mucosa",
+      "type": "select",
+      "options": [
+        "Unremarkable",
+        "Prolapsed, congested",
+        "Ulcerated"
+      ],
+      "default": "Unremarkable",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "serosaMacro",
+      "label": "Serosa",
+      "type": "select",
+      "options": [
+        "Unremarkable",
+        "Congested",
+        "Fibrous adhesions",
+        "Fibrinous exudate"
+      ],
+      "default": "Unremarkable",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "herniaSacMacro",
+      "label": "Parastomal hernia sac received",
+      "type": "checkbox",
+      "default": false,
+      "group": "Macroscopy"
+    },
+    {
+      "id": "sutureMacro",
+      "label": "Suture material / staples present",
+      "type": "checkbox",
+      "default": false,
+      "group": "Macroscopy"
+    },
+    {
+      "id": "blocks",
+      "label": "Number of blocks",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "default": "3",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "peristomalSkin",
+      "label": "Peristomal skin",
+      "type": "select",
+      "options": [
+        "Hyperkeratotic",
+        "Unremarkable",
+        "Ulcerated",
+        "Pseudoepitheliomatous hyperplasia"
+      ],
+      "default": "Hyperkeratotic",
+      "showIf": {
+        "field": "skinIncluded",
+        "truthy": true
+      }
+    },
+    {
+      "id": "prolapseChange",
+      "label": "Mucosal prolapse-type change (fibromuscular obliteration of lamina propria, crypt distortion, surface erosion)",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "ischaemia",
+      "label": "Ischaemic change",
+      "type": "select",
+      "options": [
+        "None",
+        "Superficial",
+        "Transmural"
+      ],
+      "default": "None"
+    },
+    {
+      "id": "sutureReaction",
+      "label": "Granulation tissue and foreign body giant cell reaction to suture material",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "stenosis",
+      "label": "Stenosis / fibrosis",
+      "type": "select",
+      "options": [
+        "None",
+        "Mural fibrosis",
+        "Stenosis with mural fibrosis"
+      ],
+      "default": "None"
+    },
+    {
+      "id": "herniaSac",
+      "label": "Parastomal hernia sac (fibrous tissue with mesothelial lining)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "ibdActivity",
+      "label": "Inflammatory bowel disease at the stoma",
+      "type": "select",
+      "options": [
+        "None",
+        "Inactive chronic",
+        "Active"
+      ],
+      "default": "None"
+    },
+    {
+      "id": "diverticula",
+      "label": "Diverticula",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "marginsViable",
+      "label": "Resection margins viable",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "neoplasia",
+      "label": "Dysplasia / malignancy",
+      "type": "select",
+      "options": [
+        "No dysplasia or malignancy",
+        "Dysplasia - see comment",
+        "Malignancy - see comment"
+      ],
+      "default": "No dysplasia or malignancy"
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "snippets": [
+    {
+      "id": "stoma_cancer_template",
+      "label": "Dysplasia / malignancy — use the QMH GI cancer template",
+      "auto": {
+        "field": "neoplasia",
+        "not": "No dysplasia or malignancy"
+      },
+      "text": "Dysplasia / malignancy is identified at the stoma site ({parts}). This benign template does not grade or stage the lesion; the QMH GI cancer template should be used for the final synoptic report."
+    },
+    {
+      "id": "stoma_ibd",
+      "label": "Inflammatory bowel disease at the stoma",
+      "auto": {
+        "field": "ibdActivity",
+        "not": "None"
+      },
+      "text": "Features of chronic inflammatory bowel disease are present at the stoma ({parts}). Correlation with the clinical history and previous biopsies is recommended."
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "",
+          "stomaType": "Ileostomy, loop",
+          "procedure": "Closure",
+          "length": "6",
+          "diameter": "3",
+          "skinIncluded": true,
+          "skinSize": "3 x 2",
+          "mucosaMacro": "Prolapsed, congested",
+          "serosaMacro": "Unremarkable",
+          "herniaSacMacro": false,
+          "sutureMacro": false,
+          "blocks": "3",
+          "peristomalSkin": "Hyperkeratotic",
+          "prolapseChange": true,
+          "ischaemia": "None",
+          "sutureReaction": true,
+          "stenosis": "None",
+          "herniaSac": false,
+          "ibdActivity": "None",
+          "diverticula": false,
+          "marginsViable": true,
+          "neoplasia": "No dysplasia or malignancy",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

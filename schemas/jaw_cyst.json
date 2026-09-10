@@ -1,0 +1,312 @@
+{
+  "id": "jaw_cyst",
+  "version": "2026.09",
+  "name": "Dental / jaw cyst",
+  "shortName": "Jaw · cyst enucleation",
+  "label": "Jaw cyst",
+  "organ": "MANDIBLE",
+  "system": "Head and neck",
+  "kind": "benign resection",
+  "rank": 41,
+  "aliases": [
+    "dental cyst",
+    "jaw cyst",
+    "radicular cyst",
+    "periapical",
+    "dentigerous",
+    "odontogenic keratocyst",
+    "OKC",
+    "keratocyst",
+    "odontogenic",
+    "ameloblastoma",
+    "tooth",
+    "apicectomy",
+    "enucleation",
+    "periapical granuloma"
+  ],
+  "specimenNoun": "enucleation",
+  "maxParts": 3,
+  "defaultParts": 1,
+  "generator": "jawcyst",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "partDefaults": [],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Region",
+      "type": "text",
+      "placeholder": "left posterior",
+      "default": ""
+    },
+    {
+      "id": "site",
+      "label": "Site",
+      "type": "select",
+      "options": [
+        "Mandible",
+        "Maxilla"
+      ],
+      "default": "Mandible"
+    },
+    {
+      "id": "toothNumber",
+      "label": "Tooth / region (FDI)",
+      "type": "text",
+      "placeholder": "36",
+      "default": ""
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "options": [
+        "Enucleation",
+        "Curettage",
+        "Marsupialisation",
+        "Apicectomy",
+        "Extraction with cyst"
+      ],
+      "default": "Enucleation"
+    },
+    {
+      "id": "fragments",
+      "label": "Fragments",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "multiple / 3",
+      "default": "multiple"
+    },
+    {
+      "id": "aggregateSize",
+      "label": "Aggregate size (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "1.5 x 1 x 0.3",
+      "default": ""
+    },
+    {
+      "id": "wallThickness",
+      "label": "Cyst wall thickness (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "0.2",
+      "default": ""
+    },
+    {
+      "id": "contents",
+      "label": "Contents",
+      "type": "multiselect",
+      "group": "Macroscopy",
+      "options": [
+        "Clear / straw fluid",
+        "Cheesy keratin",
+        "Purulent"
+      ],
+      "default": []
+    },
+    {
+      "id": "toothIncluded",
+      "label": "Tooth included",
+      "type": "checkbox",
+      "group": "Macroscopy",
+      "default": false
+    },
+    {
+      "id": "toothPart",
+      "label": "Tooth description",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Root",
+        "Apex",
+        "Crown",
+        "Whole tooth"
+      ],
+      "default": "Root",
+      "showIf": {
+        "field": "toothIncluded",
+        "truthy": true
+      }
+    },
+    {
+      "id": "blocks",
+      "label": "Blocks",
+      "type": "number",
+      "group": "Macroscopy",
+      "min": 1,
+      "step": 1,
+      "default": "1"
+    },
+    {
+      "id": "cystType",
+      "label": "Cyst type",
+      "type": "select",
+      "options": [
+        "Radicular (periapical) cyst",
+        "Residual cyst",
+        "Dentigerous cyst",
+        "Odontogenic keratocyst",
+        "Lateral periodontal cyst",
+        "Botryoid odontogenic cyst",
+        "Glandular odontogenic cyst",
+        "Nasopalatine duct cyst",
+        "Periapical granuloma (no lining)",
+        "Odontogenic tumour – see comment"
+      ],
+      "default": "Radicular (periapical) cyst"
+    },
+    {
+      "id": "tumourSubtype",
+      "label": "Odontogenic tumour subtype",
+      "type": "select",
+      "options": [
+        "Unicystic ameloblastoma",
+        "Conventional ameloblastoma",
+        "Odontoma",
+        "Other"
+      ],
+      "default": "Unicystic ameloblastoma",
+      "showIf": {
+        "field": "cystType",
+        "is": "Odontogenic tumour – see comment"
+      }
+    },
+    {
+      "id": "inflammation",
+      "label": "Inflammation",
+      "type": "select",
+      "options": [
+        "Moderate",
+        "None",
+        "Mild",
+        "Severe"
+      ],
+      "default": "Moderate"
+    },
+    {
+      "id": "cholesterolClefts",
+      "label": "Cholesterol clefts",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "rushtonBodies",
+      "label": "Rushton (hyaline) bodies",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "foamyMacrophages",
+      "label": "Foamy macrophages",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "satelliteCysts",
+      "label": "Satellite / daughter cysts",
+      "type": "checkbox",
+      "default": false,
+      "showIf": {
+        "field": "cystType",
+        "is": "Odontogenic keratocyst"
+      }
+    },
+    {
+      "id": "buddingBasal",
+      "label": "Budding of the basal layer",
+      "type": "checkbox",
+      "default": false,
+      "showIf": {
+        "field": "cystType",
+        "is": "Odontogenic keratocyst"
+      }
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "snippets": [
+    {
+      "id": "jaw_cyst_okc_followup",
+      "label": "Odontogenic keratocyst — recurrence / Gorlin sentence",
+      "auto": {
+        "field": "cystType",
+        "is": "Odontogenic keratocyst"
+      },
+      "text": "Odontogenic keratocysts have a recurrence risk and clinical and radiological follow-up is advised; if multiple, evaluation for Gorlin syndrome may be considered."
+    },
+    {
+      "id": "jaw_cyst_goc_recurrence",
+      "label": "Glandular odontogenic cyst — recurrence sentence",
+      "auto": {
+        "field": "cystType",
+        "is": "Glandular odontogenic cyst"
+      },
+      "text": "Glandular odontogenic cysts have a significant recurrence rate, particularly when multilocular or treated by curettage alone; clinical and radiological follow-up is advised."
+    },
+    {
+      "id": "jaw_cyst_tumour_template",
+      "label": "Odontogenic tumour — use the QMH head and neck template",
+      "auto": {
+        "field": "cystType",
+        "is": "Odontogenic tumour – see comment"
+      },
+      "text": "An odontogenic tumour is identified ({parts}). This benign cyst template does not classify or stage the lesion; the QMH head and neck template should be used for the final report, and correlation with the radiological extent of the lesion is recommended."
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "left posterior",
+          "site": "Mandible",
+          "toothNumber": "36",
+          "procedure": "Enucleation",
+          "fragments": "multiple",
+          "aggregateSize": "1.5 x 1 x 0.3",
+          "wallThickness": "",
+          "contents": [],
+          "toothIncluded": true,
+          "toothPart": "Root",
+          "blocks": "1",
+          "cystType": "Radicular (periapical) cyst",
+          "tumourSubtype": "Unicystic ameloblastoma",
+          "inflammation": "Moderate",
+          "cholesterolClefts": true,
+          "rushtonBodies": true,
+          "foamyMacrophages": true,
+          "satelliteCysts": false,
+          "buddingBasal": false,
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,432 @@
+{
+  "id": "salivary_benign",
+  "version": "2026.09",
+  "name": "Parotid / submandibular gland",
+  "shortName": "Salivary · parotidectomy / excision",
+  "label": "Salivary",
+  "organ": "PAROTID",
+  "system": "Head and neck",
+  "kind": "benign resection",
+  "rank": 42,
+  "aliases": [
+    "parotid",
+    "submandibular",
+    "salivary",
+    "pleomorphic adenoma",
+    "Warthin",
+    "sialadenitis",
+    "sialolithiasis",
+    "parotidectomy",
+    "oncocytoma",
+    "basal cell adenoma",
+    "mucocoele",
+    "ranula",
+    "Kuttner"
+  ],
+  "specimenNoun": "resection",
+  "maxParts": 3,
+  "defaultParts": 1,
+  "generator": "salivary",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen as labelled (optional override)",
+      "type": "text",
+      "placeholder": "Left parotid, superficial parotidectomy",
+      "default": ""
+    },
+    {
+      "id": "gland",
+      "label": "Gland",
+      "type": "select",
+      "options": [
+        "Parotid",
+        "Submandibular gland",
+        "Minor salivary gland, lip",
+        "Minor salivary gland, palate"
+      ],
+      "default": "Parotid"
+    },
+    {
+      "id": "laterality",
+      "label": "Laterality",
+      "type": "select",
+      "options": [
+        "Left",
+        "Right",
+        "Not stated"
+      ],
+      "default": "Left"
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "options": [
+        "Superficial parotidectomy",
+        "Total parotidectomy",
+        "Submandibular gland excision",
+        "Excision of lesion",
+        "Excision biopsy"
+      ],
+      "default": "Superficial parotidectomy"
+    },
+    {
+      "id": "dimensions",
+      "label": "Specimen size (cm)",
+      "type": "text",
+      "placeholder": "4.5 x 3.5 x 2",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "weight",
+      "label": "Weight",
+      "type": "number",
+      "min": 0,
+      "step": 0.1,
+      "suffix": "g",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "noduleDescription",
+      "label": "Nodule",
+      "type": "select",
+      "options": [
+        "Well-circumscribed, glistening",
+        "Cystic with brown fluid",
+        "Firm, tan",
+        "No discrete nodule"
+      ],
+      "default": "Well-circumscribed, glistening",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "noduleSize",
+      "label": "Nodule size (cm)",
+      "type": "text",
+      "placeholder": "2.5 or 2.5 x 2 x 1.8",
+      "default": "",
+      "group": "Macroscopy",
+      "showIf": {
+        "field": "noduleDescription",
+        "not": "No discrete nodule"
+      }
+    },
+    {
+      "id": "grossCapsule",
+      "label": "Capsule (gross)",
+      "type": "select",
+      "options": [
+        "Intact",
+        "Breached",
+        "Satellite nodule"
+      ],
+      "default": "Intact",
+      "group": "Macroscopy",
+      "showIf": {
+        "field": "noduleDescription",
+        "not": "No discrete nodule"
+      }
+    },
+    {
+      "id": "marginDistance",
+      "label": "Distance to closest inked margin",
+      "type": "number",
+      "min": 0,
+      "step": 0.5,
+      "suffix": "mm",
+      "default": "",
+      "group": "Macroscopy",
+      "showIf": {
+        "field": "noduleDescription",
+        "not": "No discrete nodule"
+      }
+    },
+    {
+      "id": "grossBackground",
+      "label": "Surrounding gland",
+      "type": "select",
+      "options": [
+        "Unremarkable",
+        "Firm, fibrotic",
+        "Atrophic"
+      ],
+      "default": "Unremarkable",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "stone",
+      "label": "Calculus present",
+      "type": "checkbox",
+      "default": false,
+      "group": "Macroscopy"
+    },
+    {
+      "id": "stoneSize",
+      "label": "Calculus size",
+      "type": "text",
+      "placeholder": "8 mm",
+      "default": "",
+      "group": "Macroscopy",
+      "showIf": {
+        "field": "stone",
+        "truthy": true
+      }
+    },
+    {
+      "id": "blocks",
+      "label": "Blocks",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "default": "5",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "lesion",
+      "label": "Lesion",
+      "type": "select",
+      "options": [
+        "Pleomorphic adenoma",
+        "Warthin tumour",
+        "Basal cell adenoma",
+        "Oncocytoma",
+        "Myoepithelioma",
+        "Lymphoepithelial cyst",
+        "Chronic sialadenitis",
+        "Küttner tumour (chronic sclerosing sialadenitis)",
+        "Intraparotid lymph node, reactive",
+        "Mucocoele / ranula",
+        "Malignant - see comment"
+      ],
+      "default": "Pleomorphic adenoma"
+    },
+    {
+      "id": "stroma",
+      "label": "Stroma",
+      "type": "select",
+      "options": [
+        "Chondromyxoid",
+        "Hyalinised"
+      ],
+      "default": "Chondromyxoid",
+      "showIf": {
+        "field": "lesion",
+        "is": "Pleomorphic adenoma"
+      }
+    },
+    {
+      "id": "microCapsule",
+      "label": "Capsule (microscopic)",
+      "type": "select",
+      "options": [
+        "Intact",
+        "Focally thin",
+        "Breached"
+      ],
+      "default": "Intact",
+      "showIf": {
+        "field": "lesion",
+        "is": "Pleomorphic adenoma"
+      }
+    },
+    {
+      "id": "satellites",
+      "label": "Satellite nodules",
+      "type": "checkbox",
+      "default": false,
+      "showIf": {
+        "field": "lesion",
+        "is": "Pleomorphic adenoma"
+      }
+    },
+    {
+      "id": "sialolithiasis",
+      "label": "Sialolithiasis",
+      "type": "checkbox",
+      "default": false,
+      "showIf": {
+        "field": "lesion",
+        "is": [
+          "Chronic sialadenitis",
+          "Küttner tumour (chronic sclerosing sialadenitis)"
+        ]
+      }
+    },
+    {
+      "id": "igg4",
+      "label": "IgG4-related pattern (storiform fibrosis, obliterative phlebitis, plasma cell-rich infiltrate)",
+      "type": "checkbox",
+      "default": false,
+      "showIf": {
+        "field": "lesion",
+        "is": [
+          "Chronic sialadenitis",
+          "Küttner tumour (chronic sclerosing sialadenitis)"
+        ]
+      }
+    },
+    {
+      "id": "whoType",
+      "label": "WHO tumour type",
+      "type": "text",
+      "placeholder": "Mucoepidermoid carcinoma",
+      "default": "",
+      "showIf": {
+        "field": "lesion",
+        "is": "Malignant - see comment"
+      }
+    },
+    {
+      "id": "margin",
+      "label": "Margin status",
+      "type": "select",
+      "options": [
+        "Completely excised",
+        "Tumour reaches inked margin",
+        "Capsule breached at margin"
+      ],
+      "default": "Completely excised",
+      "showIf": {
+        "field": "lesion",
+        "not": [
+          "Chronic sialadenitis",
+          "Küttner tumour (chronic sclerosing sialadenitis)",
+          "Intraparotid lymph node, reactive"
+        ]
+      }
+    },
+    {
+      "id": "lymphNodes",
+      "label": "Lymph node(s) included",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "nodePositive",
+      "label": "Nodes involved",
+      "type": "number",
+      "min": 0,
+      "step": 1,
+      "default": "0",
+      "showIf": {
+        "field": "lymphNodes",
+        "truthy": true
+      }
+    },
+    {
+      "id": "nodeTotal",
+      "label": "Nodes examined",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "default": "1",
+      "showIf": {
+        "field": "lymphNodes",
+        "truthy": true
+      }
+    },
+    {
+      "id": "facialNerve",
+      "label": "Facial nerve branch included",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "",
+          "gland": "Parotid",
+          "laterality": "Left",
+          "procedure": "Superficial parotidectomy",
+          "dimensions": "4.5 x 3.5 x 2",
+          "weight": "18",
+          "noduleDescription": "Well-circumscribed, glistening",
+          "noduleSize": "2.5",
+          "grossCapsule": "Intact",
+          "marginDistance": "2",
+          "grossBackground": "Unremarkable",
+          "stone": false,
+          "stoneSize": "",
+          "blocks": "5",
+          "lesion": "Pleomorphic adenoma",
+          "stroma": "Chondromyxoid",
+          "microCapsule": "Intact",
+          "satellites": false,
+          "sialolithiasis": false,
+          "igg4": false,
+          "whoType": "",
+          "margin": "Completely excised",
+          "lymphNodes": true,
+          "nodePositive": "0",
+          "nodeTotal": "1",
+          "facialNerve": false,
+          "additionalNotes": ""
+        }
+      }
+    ]
+  },
+  "snippets": [
+    {
+      "id": "salivary_pa_recurrence",
+      "label": "Pleomorphic adenoma with breached capsule / satellites - re-excision advice",
+      "auto": {
+        "flag": "paRecurrenceRisk"
+      },
+      "text": "Complete excision with an adequate cuff of normal tissue is advised as the risk of recurrence is increased."
+    },
+    {
+      "id": "salivary_igg4",
+      "label": "IgG4-related sialadenitis - recommend IgG4/IgG immunostains and serum IgG4",
+      "auto": {
+        "field": "igg4",
+        "truthy": true
+      },
+      "text": "The pattern of chronic sialadenitis ({parts}) raises the possibility of IgG4-related disease. IgG4 and IgG immunostains (IgG4-positive plasma cell count and IgG4/IgG ratio) and a serum IgG4 level are recommended for correlation."
+    },
+    {
+      "id": "salivary_cancer_template",
+      "label": "Malignant - report on the QMH salivary gland template",
+      "auto": {
+        "field": "lesion",
+        "is": "Malignant - see comment"
+      },
+      "text": "A malignant salivary gland neoplasm is identified ({parts}). This benign template does not grade or stage the tumour; please complete the report using the QMH salivary gland template (WHO 5th edition tumour type, grade, size, extraparenchymal extension, perineural and lymphovascular invasion, margins and lymph node status)."
+    }
+  ]
+}

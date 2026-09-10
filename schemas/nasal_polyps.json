@@ -1,0 +1,317 @@
+{
+  "id": "nasal_polyps",
+  "version": "2026.09",
+  "name": "Nasal polyps / sinonasal biopsy",
+  "shortName": "Nose · polypectomy / biopsy",
+  "label": "Nasal polyps",
+  "organ": "NASAL CAVITY",
+  "system": "Head and neck",
+  "kind": "benign resection",
+  "rank": 36,
+  "aliases": [
+    "nasal polyp",
+    "sinonasal",
+    "FESS",
+    "antrochoanal",
+    "sinus",
+    "ethmoid",
+    "maxillary",
+    "turbinate",
+    "inverted papilloma",
+    "fungal sinusitis",
+    "allergic mucin",
+    "Schneiderian"
+  ],
+  "specimenNoun": "polypectomy",
+  "maxParts": 4,
+  "defaultParts": 1,
+  "generator": "sinonasal",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen / site as received",
+      "type": "text",
+      "placeholder": "Right nasal polyps / Left ethmoid sinus contents / Right maxillary antrum",
+      "default": "Nasal polyps"
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "options": [
+        "Polypectomy",
+        "FESS",
+        "Biopsy",
+        "Turbinectomy"
+      ],
+      "default": "Polypectomy"
+    },
+    {
+      "id": "fragments",
+      "label": "Number of pieces",
+      "type": "select",
+      "options": [
+        "Multiple",
+        "One",
+        "Two",
+        "Three",
+        "Several"
+      ],
+      "default": "Multiple",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "aggregateSize",
+      "label": "Aggregate size (cm)",
+      "type": "text",
+      "placeholder": "3 x 2 x 1",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "appearance",
+      "label": "Appearance",
+      "type": "select",
+      "options": [
+        "Glistening translucent",
+        "Fleshy",
+        "Papillary",
+        "Firm tan",
+        "Mucoid / inspissated"
+      ],
+      "default": "Glistening translucent",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "allEmbedded",
+      "label": "All embedded",
+      "type": "select",
+      "options": [
+        "All embedded",
+        "Representative sections"
+      ],
+      "default": "All embedded",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "blocks",
+      "label": "Number of blocks",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "default": "2",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "lesion",
+      "label": "Lesion",
+      "type": "select",
+      "options": [
+        "Inflammatory polyp, oedematous",
+        "Inflammatory polyp, fibrous",
+        "Antrochoanal polyp",
+        "Respiratory epithelial adenomatoid hamartoma",
+        "Sinonasal papilloma, inverted",
+        "Sinonasal papilloma, exophytic",
+        "Granulomatous inflammation",
+        "Malignant - see comment (QMH head and neck template)"
+      ],
+      "default": "Inflammatory polyp, oedematous"
+    },
+    {
+      "id": "infiltrate",
+      "label": "Inflammatory infiltrate",
+      "type": "select",
+      "options": [
+        "Eosinophil-rich",
+        "Neutrophil-rich",
+        "Mixed",
+        "Sparse"
+      ],
+      "default": "Eosinophil-rich"
+    },
+    {
+      "id": "allergicMucin",
+      "label": "Allergic mucin with Charcot-Leyden crystals",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "fungus",
+      "label": "Fungal hyphae",
+      "type": "select",
+      "options": [
+        "None",
+        "Present on GMS, non-invasive - allergic fungal sinusitis",
+        "Fungal ball",
+        "Invasive, angioinvasion"
+      ],
+      "default": "None"
+    },
+    {
+      "id": "epithelium",
+      "label": "Surface epithelium",
+      "type": "select",
+      "options": [
+        "Respiratory",
+        "Squamous metaplasia",
+        "Ulcerated"
+      ],
+      "default": "Respiratory"
+    },
+    {
+      "id": "glandHyperplasia",
+      "label": "Seromucinous gland hyperplasia",
+      "type": "select",
+      "options": [
+        "Present",
+        "Absent"
+      ],
+      "default": "Present"
+    },
+    {
+      "id": "basementMembrane",
+      "label": "Basement membrane thickening",
+      "type": "select",
+      "options": [
+        "Present",
+        "Absent"
+      ],
+      "default": "Present"
+    },
+    {
+      "id": "dysplasia",
+      "label": "Dysplasia (papilloma)",
+      "type": "select",
+      "options": [
+        "None",
+        "Low grade",
+        "High grade"
+      ],
+      "default": "None",
+      "showIf": {
+        "field": "lesion",
+        "is": [
+          "Sinonasal papilloma, inverted",
+          "Sinonasal papilloma, exophytic"
+        ]
+      }
+    },
+    {
+      "id": "granulomaPattern",
+      "label": "Granuloma pattern",
+      "type": "select",
+      "options": [
+        "GPA-type necrotising",
+        "Sarcoid-type",
+        "TB - AFB"
+      ],
+      "default": "GPA-type necrotising",
+      "showIf": {
+        "field": "lesion",
+        "is": "Granulomatous inflammation"
+      }
+    },
+    {
+      "id": "lymphomaSuspicion",
+      "label": "Atypical lymphoid infiltrate - NK/T-cell lymphoma suspected",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "snippets": [
+    {
+      "id": "invasive_fungal",
+      "label": "Invasive fungal sinusitis: urgent clinical correlation",
+      "text": "Angioinvasive fungal hyphae are present in {parts}. Urgent clinical correlation advised.",
+      "auto": {
+        "field": "fungus",
+        "is": "Invasive, angioinvasion"
+      }
+    },
+    {
+      "id": "inverted_papilloma",
+      "label": "Inverted papilloma: recurrence / malignant transformation follow-up",
+      "text": "Inverted sinonasal papilloma is present in {parts}. Inverted papillomas carry a risk of local recurrence and of malignant transformation; complete excision and clinical follow-up are recommended.",
+      "auto": {
+        "field": "lesion",
+        "is": "Sinonasal papilloma, inverted"
+      }
+    },
+    {
+      "id": "nkt_lymphoma",
+      "label": "Atypical lymphoid infiltrate: EBER / lymphoma work-up",
+      "text": "The atypical lymphoid infiltrate in {parts} raises the possibility of an extranodal NK/T-cell lymphoma, nasal type. Immunohistochemistry (CD3, CD56, cytotoxic markers) and EBER in situ hybridisation are recommended; a supplementary report will follow.",
+      "auto": {
+        "field": "lymphomaSuspicion",
+        "truthy": true
+      }
+    },
+    {
+      "id": "malignant_template",
+      "label": "Malignancy: report on the QMH head and neck cancer template",
+      "text": "A malignant neoplasm is present in {parts}. Tumour type, grade, extent and margin status should be reported on the QMH head and neck cancer template; a supplementary synoptic report will follow.",
+      "auto": {
+        "field": "lesion",
+        "is": "Malignant - see comment (QMH head and neck template)"
+      }
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "Bilateral nasal polyps",
+          "procedure": "FESS",
+          "fragments": "Multiple",
+          "aggregateSize": "3 x 2 x 1",
+          "appearance": "Glistening translucent",
+          "allEmbedded": "All embedded",
+          "blocks": "2",
+          "lesion": "Inflammatory polyp, oedematous",
+          "infiltrate": "Eosinophil-rich",
+          "allergicMucin": false,
+          "fungus": "None",
+          "epithelium": "Respiratory",
+          "glandHyperplasia": "Present",
+          "basementMembrane": "Present",
+          "dysplasia": "None",
+          "granulomaPattern": "GPA-type necrotising",
+          "lymphomaSuspicion": false,
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

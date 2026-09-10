@@ -1,7 +1,7 @@
 // Generic schema engine: builds part defaults, evaluates visibility, and assembles
 // the report from a schema + generator module. Runs unchanged in the browser and in Node.
 
-import { applyStyle } from './style.js?v=mtv0dhml';
+import { applyStyle } from './style.js?v=mtv0yr1r';
 
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 

@@ -14,7 +14,10 @@ const ASCII_MAP = [
   [/\u00D7/g, 'x'],
   [/\u00B0/g, ' degrees'],
   [/\u00B2/g, '2'],
-  [/\u00B3/g, '3']
+  [/\u00B3/g, '3'],
+  [/\u03B2/g, 'beta'],
+  [/\u00FC/g, 'u'],
+  [/\u00E9/g, 'e']
 ];
 
 export const BRITISH = {
