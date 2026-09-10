@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=mtv9hzak" />
+  <link rel="stylesheet" href="styles.css?v=mtva87we" />
 </head>
 <body>
   <a class="skip" href="#case">Skip to case</a>
@@ -101,6 +101,7 @@
       <div class="report-head">
         <h2 id="report-heading">Report</h2>
         <div class="report-actions">
+          <button class="btn ghost" id="btn-revert-edits" type="button" hidden title="Discard manual edits and return to the generated text">Revert edits</button>
           <button class="btn primary" id="btn-copy-dx" type="button" title="Cmd/Ctrl + Shift + C">Copy diagnosis</button>
           <button class="btn" id="btn-copy-report" type="button" title="Cmd/Ctrl + Enter">Copy full report</button>
         </div>
@@ -158,6 +159,6 @@
   </dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="src/app.js?v=mtv9hzak"></script>
+  <script type="module" src="src/app.js?v=mtva87we"></script>
 </body>
 </html>

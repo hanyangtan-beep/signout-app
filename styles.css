@@ -401,3 +401,14 @@ textarea.input { min-height: 64px; resize: vertical; }
 .lis-row .lis-status { flex-basis: 100%; font-size: var(--text-xs); }
 .lis-row .btn.small { padding: 2px 8px; }
 .block-head h3 .tag { display: inline-block; margin-left: var(--space-2); padding: 1px 6px; border-radius: 999px; background: var(--color-primary-highlight); color: var(--color-primary); font-size: 10px; letter-spacing: 0.04em; text-transform: none; font-weight: 600; vertical-align: middle; }
+
+/* Editable report blocks */
+.block-head .block-actions { margin-left: auto; display: inline-flex; gap: var(--space-1); }
+.block-head .block-actions .btn { margin-left: 0; }
+.block.edited { border-color: var(--color-primary-ring); }
+.block-head h3 .tag.tag-edited { background: var(--color-primary); color: var(--color-text-inverse); }
+.block-body .block-editor { display: block; width: 100%; box-sizing: border-box; border: 0; border-radius: 0; resize: vertical; margin: 0; padding: var(--space-4); font-family: var(--font-mono); font-size: 13px; line-height: 1.55; min-height: 72px; background: var(--color-surface); color: var(--color-text); box-shadow: inset 0 0 0 2px var(--color-primary-ring); }
+.block-body .block-editor:focus { outline: none; box-shadow: inset 0 0 0 2px var(--color-primary); }
+.block-editor-bar { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-top: 1px solid var(--color-border); background: var(--color-surface-2); font-size: var(--text-xs); }
+.block-editor-bar .muted { margin-right: auto; }
+

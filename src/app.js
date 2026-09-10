@@ -31,6 +31,7 @@ const state = {
   recents: [],            // non-biopsy template ids, most recent first
   caseState: null,        // { schemaId, caseTitle, options, parts, meta, drive }
   activePart: 0,
+  editing: null,          // report block key currently open in the in-place editor
   lastOut: null,
   config: loadConfig(),
   dirty: false,           // edited since last Drive save
@@ -61,6 +62,7 @@ const nodes = {
   blocks: $('#report-blocks'),
   copyDx: $('#btn-copy-dx'),
   copyReport: $('#btn-copy-report'),
+  revertAll: $('#btn-revert-edits'),
   example: $('#btn-example'),
   newCase: $('#btn-new'),
   theme: $('#theme-toggle'),
@@ -126,6 +128,8 @@ function toast(msg) {
 // ---------- state changes ----------
 function setCase(caseState, activePart = 0) {
   state.caseState = ensureMeta(caseState);
+  state.caseState.edits = state.caseState.edits || {};
+  state.editing = null;
   syncPrimary();
   state.dirty = false;
   state.activePart = Math.min(activePart, caseState.parts.length - 1);
@@ -662,33 +666,94 @@ function renderReport() {
     return;
   }
   state.lastOut = out;
-  const fromLis = (key) => (out.source?.[key] === 'lis' ? ' · from LIS' : out.source?.[key] === 'merged' ? ' · + typed text' : '');
+  const tagFor = (key) => ({ lis: 'from LIS', merged: '+ typed text', edited: 'edited' }[out.source?.[key]] || '');
   const blocks = [
-    ['Specimens', out.specimens],
-    [`Macroscopic description${fromLis('macro')}`, out.macro],
-    [`Block key${fromLis('blockKey')}`, out.blockKey],
-    ['Intraoperative consultation', out.intraop],
-    ['Microscopic examination', out.microscopy],
-    ['Synoptic report', out.synoptic],
-    ['Diagnosis', out.diagnosis],
-    ['Comment', out.comment]
-  ].filter(([title, text]) => text || ['Specimens', 'Diagnosis'].includes(title) || (title === 'Microscopic examination' && !(out.synoptic && state.caseState.options.synopticOnly)));
+    ['specimens', 'Specimens', out.specimens],
+    ['macro', 'Macroscopic description', out.macro],
+    ['blockKey', 'Block key', out.blockKey],
+    ['intraop', 'Intraoperative consultation', out.intraop],
+    ['microscopy', 'Microscopic examination', out.microscopy],
+    ['synoptic', 'Synoptic report', out.synoptic],
+    ['diagnosis', 'Diagnosis', out.diagnosis],
+    ['comment', 'Comment', out.comment]
+  ].filter(([key, , text]) => text || out.edited?.[key] || ['specimens', 'diagnosis'].includes(key) || (key === 'microscopy' && !(out.synoptic && state.caseState.options.synopticOnly)));
   const issues = out.issues || [];
   const checks = issues.length ? [el('div', { class: `checks ${issues.some((i) => i.level === 'error') ? 'has-error' : 'has-warn'}` },
     el('div', { class: 'checks-head' }, el('h3', { text: 'Checks' }), el('span', { class: 'muted', text: `${issues.filter((i) => i.level === 'error').length} to fix · ${issues.filter((i) => i.level !== 'error').length} to review` })),
     el('ul', {}, ...issues.map((i) => el('li', { class: `issue ${i.level}`, text: `${state.caseState.parts.length > 1 ? `(${i.part}) ` : ''}${i.message}` }))))] : [];
-  nodes.blocks.replaceChildren(...checks, ...blocks.map(([title, text]) => {
+  nodes.blocks.replaceChildren(...checks, ...blocks.map(([key, name, text]) => renderBlock(key, name, text, tagFor(key), out)));
+  const edits = Object.keys(state.caseState.edits || {}).length;
+  nodes.revertAll.hidden = edits === 0;
+  nodes.revertAll.textContent = `Revert ${edits === 1 ? 'edit' : `${edits} edits`}`;
+  renderLisStatus(out);
+}
+
+/** One report block: heading with tags, Copy and Edit / Revert; the text or, while editing, a textarea. */
+function renderBlock(key, name, text, tag, out) {
+  const h3 = el('h3', { text: name });
+  if (tag) h3.append(' ', el('span', { class: `tag ${tag === 'edited' ? 'tag-edited' : ''}`, text: tag }));
+  const head = el('div', { class: 'block-head' }, h3);
+  const body = el('div', { class: 'block-body' });
+  const editing = state.editing === key;
+  if (editing) {
+    const ta = el('textarea', { class: 'input block-editor', 'aria-label': `Edit ${name.toLowerCase()}` });
+    ta.value = text;
+    const fit = () => { ta.style.height = 'auto'; ta.style.height = `${Math.max(72, ta.scrollHeight + 4)}px`; };
+    ta.addEventListener('input', fit);
+    ta.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); cancelEdit(); }
+      else if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); commitEdit(key, ta.value); }
+    });
+    body.append(ta, el('div', { class: 'block-editor-bar' },
+      el('span', { class: 'muted', text: 'Edited text prints verbatim and no longer follows the fields. Cmd/Ctrl+Enter to finish, Esc to cancel.' }),
+      el('button', { type: 'button', class: 'btn ghost small', text: 'Cancel', onclick: cancelEdit }),
+      el('button', { type: 'button', class: 'btn primary small', text: 'Done', onclick: () => commitEdit(key, ta.value) })));
+    queueMicrotask(() => { fit(); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); });
+    head.append(el('span', { class: 'block-actions' }));
+  } else {
     const pre = el('pre', {});
     pre.append(highlightParts(text));
-    const [name, tag] = title.split(' · ');
-    const h3 = el('h3', { text: name });
-    if (tag) h3.append(' ', el('span', { class: 'tag', text: tag }));
-    return el('div', { class: 'block' },
-      el('div', { class: 'block-head' }, h3,
-        el('button', { type: 'button', class: 'btn ghost small', text: 'Copy', onclick: () => doCopy(text, name) })),
-      pre);
-  }));
-  renderLisStatus(out);
+    body.append(pre);
+    const actions = el('span', { class: 'block-actions' });
+    if (out.edited?.[key]) actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Revert', title: 'Discard this edit and go back to the text generated from the fields', onclick: () => revertEdit(key) }));
+    if (out.edited?.[key]) h3.title = 'Edited by hand — this block no longer follows the fields. Revert to regenerate it.';
+    actions.append(
+      el('button', { type: 'button', class: 'btn ghost small', text: 'Edit', onclick: () => startEdit(key) }),
+      el('button', { type: 'button', class: 'btn ghost small', text: 'Copy', onclick: () => doCopy(text, name) }));
+    head.append(actions);
+  }
+  return el('div', { class: `block ${editing ? 'editing' : ''} ${out.edited?.[key] ? 'edited' : ''}` }, head, body);
+}
+
+// ---------- manual edits to the final report ----------
+function startEdit(key) { state.editing = key; renderReport(); }
+function cancelEdit() { state.editing = null; renderReport(); }
+
+/** Store the edited block; identical to the generated text means no edit. */
+function commitEdit(key, value) {
+  state.editing = null;
+  const generated = (state.lastOut?.generated?.[key] || '').trim();
+  const text = (value || '').replace(/\s+$/, '');
+  if (text.trim() === generated) delete state.caseState.edits?.[key];
+  else { state.caseState.edits = state.caseState.edits || {}; state.caseState.edits[key] = text; }
+  markDirty(); renderReport(); cacheCase(state.caseState);
+}
+
+function revertEdit(key) {
+  if (state.caseState.edits) delete state.caseState.edits[key];
+  state.editing = null;
+  markDirty(); renderReport(); cacheCase(state.caseState);
+  toast('Reverted to the generated text');
+}
+
+function revertAllEdits() {
+  const n = Object.keys(state.caseState.edits || {}).length;
+  if (!n) return;
+  if (!window.confirm(`Discard ${n === 1 ? 'the manual edit' : `all ${n} manual edits`} and return to the generated text?`)) return;
+  state.caseState.edits = {};
+  state.editing = null;
+  markDirty(); renderReport(); cacheCase(state.caseState);
+  toast('All edits reverted');
 }
 
 // ---------- LIS macro / block key override ----------
@@ -961,6 +1026,7 @@ async function boot() {
   });
   nodes.copyDx.addEventListener('click', () => doCopy(state.lastOut.diagnosis, 'Diagnosis'));
   nodes.copyReport.addEventListener('click', () => doCopy(state.lastOut.report, 'Full report'));
+  nodes.revertAll.addEventListener('click', revertAllEdits);
   initKeys();
 }
 

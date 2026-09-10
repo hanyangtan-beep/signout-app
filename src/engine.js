@@ -340,7 +340,18 @@ export function generateCase(templates, caseState) {
     blocks[key] = r.text;
     source[key] = r.source;
   }
-  return { ...blocks, issues, source, report: assemble(blocks, !!options.includeHeader) };
+  // Per-block manual edits made in the report preview (`caseState.edits[block] = text`)
+  // replace the generated (or LIS) text verbatim. `generated` keeps the pre-edit text for Revert.
+  const generated = { ...blocks };
+  const edited = {};
+  for (const key of BLOCK_ORDER) {
+    const e = caseState.edits?.[key];
+    if (typeof e !== 'string') continue;
+    blocks[key] = e.trim();
+    edited[key] = true;
+    source[key] = 'edited';
+  }
+  return { ...blocks, issues, source, edited, generated, report: assemble(blocks, !!options.includeHeader) };
 }
 
 /**
