@@ -186,7 +186,18 @@ One line each; card them before building.
 - Snippet library editable as Markdown; favourites and recently used.
 - Case queue joined to the TAT priority Sheet (due dates in the Open dialog).
 - Analytics over `Sign-out cases`: H. pylori rate, adenoma detection, Grade Group distribution, IM prevalence.
-- Perplexity workflows over Drive: rewrite a draft Doc in house style, check a synoptic against CAP, weekly signed-case summary.
+- Perplexity workflows over Drive: rewrite a draft Doc in house style, weekly signed-case summary (the synoptic-vs-CAP check is folded into the review card below).
+
+### Perplexity report review with readiness score       Size: L → carded early; build near the end
+Why:        once drafted, the final report should get an independent read before signing — every element present, macro / micro / synoptic / diagnosis not contradicting each other, staging appropriate, wording in house style — with a score that says whether it is fit to sign. Wait until most templates are populated and the Doc / Sheet layout is stable.
+Change:     Perplexity reads the saved case (Sheet `case_json` + Doc text) and runs seven checks — completeness, macro ↔ micro ↔ synoptic reconciliation, staging re-derivation via the app's own staging module (`node tools/restage.js`), diagnosis line ↔ body, ancillary follow-through, house style, redrafts that change structure not words — and writes a review Doc (`<accession> — review`: score, band, findings with quoted sentence and fix, reconciliation table) plus Sheet columns `review_score / review_band / review_at / review_url`; the app shows the badge in the Open dialog and beside Open Doc. Readiness score 0–100 with bands Ready to sign ≥ 90 / Minor edits / Reconcile before signing / Not ready, blocking findings cap the score at 49; rubric versioned in the spec. Triggers: on demand ("review S26-01234" or a Review with Perplexity button that opens a prefilled thread) and an optional evening sweep of `ready` cases.
+Untouched:  case Doc content (review never edits it; changes are applied in the app so they save with the case); PHI guard.
+Accept:     rubric run over 20 signed cases with weights adjusted before bands are shown; a seeded inconsistent case (macro 4.5 cm vs synoptic 2.5 cm; pT2 printed with 6 cm) is caught as blocking; a clean case scores ≥ 90; review Doc and Sheet columns written without altering existing columns.
+Verify:     tests for `tools/restage.js` and the Sheet-column append; three real cases reviewed by hand against the output
+Ship:       one publish for the badge; the review itself is a Perplexity workflow, not app code
+Depends on: most templates populated; staging modules for the templates in scope; Sheet layout frozen
+Spec:       `docs/specs/report-review.md`
+
 - Diff view for edited blocks (generated vs edited) using `out.generated`.
 - iPad layout; shared look with PathExam.
 - Optional public schema set (no PHI) for colleagues.
