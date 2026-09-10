@@ -157,6 +157,37 @@ Each template ships with a `macro` field group and block-key builder, fixtures c
 
 ---
 
+## Phase 4d — Template organisation (1 week; build before Phase 4b fills the list)
+
+**Why:** Phase 4 ends at about 12 small-biopsy templates, 4b adds ~20 benign resections and Phase 5 adds one synoptic template per cancer resection — 40–50 templates in total. The flat header row and the per-part `<select>` both stop working at about 10. Decided 2026-09-10.
+
+**Organise by organ system, then by specimen size**
+
+- Add `system` and `kind` metadata to every schema. `system` ∈ GI, Hepatobiliary, GU, Gynae, Breast, Thoracic, Head and neck, Skin, Cardiovascular, Lymphoid, Frozen. `kind` ∈ biopsy, benign resection, cancer resection (synoptic). The picker is a matrix: choose the system, templates appear in ascending specimen size (Colon: biopsy → polyp → IBD → resection). Phase 5 templates land in the third column of the same rows, not in a separate list.
+- Rename `shortName` to "Organ · procedure" (Cervix · biopsy, Cervix · LEEP, Colon · resection) so ordering is self-evident. Header buttons keep the short organ label where unambiguous.
+- Per-schema `aliases` array for search ("TURBT", "chips", "Marsh", "coeliac", "LEEP", "Warthin", "pyogenic").
+
+**Three ways in, one picker component**
+
+1. Recent / pinned strip — the header keeps 6–8 buttons only, filled from saved-case frequency (Drive sheet `template` column; fall back to a default set), with manual pin / unpin (star in the picker). Preserves one-click access for the daily templates.
+2. Type-ahead palette — Cmd/Ctrl-K or `/` opens a search over name, organ, `aliases` and diagnosis keywords; Enter selects, ↑↓ move; 2–3 keystrokes reach any template. Primary route once the count is high.
+3. Grouped browse — the same palette with nothing typed shows the system × kind grid.
+
+The Part card template selector reuses the same component (grouped by system) since mixed cases already choose templates per part. Keyboard shortcuts do not collide with the numeric option keys (palette only opens from outside a field or via Cmd/Ctrl-K).
+
+**Phase 5 hooks**
+
+- "Upgrade part" action: an unexpected carcinoma in a benign template (gallbladder, thyroid, uterus, appendix, tonsil) converts the part to the matching synoptic template, carrying over macro, site, block key and any shared fields by name; the original values are kept in the case history.
+- Registry becomes a metadata-only manifest (`templates/manifest.json` built by `scripts/build-manifest.mjs`: id, name, shortName, system, kind, aliases, version, generator path); generators and schemas are lazy-loaded with dynamic `import()` on first use so initial load does not grow per template. Version pinning per saved case as already planned.
+- Settings → Templates: per-user visibility toggles (hide templates never reported) stored with the other settings; hidden templates stay searchable via the palette with a "hidden" tag and can be re-enabled in one click.
+- Recently used order and pins sync through the settings record on Drive so they follow the user between browsers.
+
+**Tests:** manifest builder round-trips every schema; palette ranking (exact shortName > alias > organ > keyword); pinned strip caps at 8 and dedupes; lazy-load resolves every manifest entry; upgrade-part preserves macro / block key and reports fields that could not be mapped.
+
+**Done when:** with 40 fixture templates installed, any template is reachable in ≤ 3 keystrokes from the palette, the header shows only pinned / recent items, the part selector is grouped by system, and initial bundle size is unchanged from the Phase 4 build.
+
+---
+
 ## Phase 5 — Synoptic / hybrid resections with staging (4–6 weeks)
 
 **Goal:** replace the QMH pages for the resections you report most.
