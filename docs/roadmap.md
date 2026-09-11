@@ -44,14 +44,6 @@ Docs
 
 ## Now
 
-(empty)
-
----
-
-## Next
-
-Ordered. Each card is buildable as written; the spec file holds the full brief.
-
 ### Synoptic report layout — sections, nesting, tumour histology   Size: M
 Why:        the synoptic block is a flat list of 30-plus `- Element: value` lines and is hard to parse at sign-out (user request 2026-09-11). The QMH element order is sacred; only headings, blank lines and indentation may be added.
 Change:     all three synoptic templates (`endometrial_carcinoma`, `gist_resection`, `colon_resection`) in one batch. (1) Section headings in sentence case, one shared vocabulary mapped from the QMH legends (Specimen and tumour / Microscopic findings / Margins / Regional lymph nodes / Distant metastasis / Pathological stage (AJCC 8th edition) / Additional findings; endometrium uses Lymph nodes and has no stage section unless the pTNM option is on), one blank line between sections; no element crosses a section boundary, so the order tests stand. (2) Every element keeps its `- ` bullet; QMH sub-elements (depth / thickness / percentage under myometrial invasion; macro / micro / ITC counts, laterality, largest deposit, extranodal extension under a node group; cervical stromal depth / thickness) print as nested `  - ` lines. (3) Long values wrap at 80 characters with a two-space hanging indent (spaces only, no tabs). (4) **Tumour histology** element inserted directly after Histologic grade in all three templates (for GIST and colorectal this is a deliberate, user-approved departure from the QMH page, which prints its "Tumor histology and immunohistochemical studies" element first in the microscopic block; the order test carries this one exception): a bulleted element whose paragraph runs on the following lines at two-space indent and carries only what the synoptic lines do not — architecture, cytology, differentiation, necrosis, invasion pattern (GIST: cell type, mitoses context, necrosis; colorectal: type-specific features, tumour budding context) — while extent, LVSI, nodes and IHC are no longer repeated in prose. (5) The separate narrative MICROSCOPIC EXAMINATION paragraph is dropped for synoptic templates; the block heading becomes `MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT` (`engine.BLOCK_ORDER` / `docformat` / LIS heading map). No switch back to the old paragraph. (6) Additional findings one bullet each. (7) Diagnosis: specimen line, then one `- ` clause per line with hanging indent; `Copy diagnosis` copies the multi-line form. (8) Optional pTNM block prints as its own section after DISTANT METASTASIS.
@@ -61,6 +53,12 @@ Stop:       no reordering of any element to fit a heading (the Tumour histology 
 Verify:     tests + browser (report pane and Copy full report) + one Drive save to confirm the Doc headings
 Ship:       one deploy + publish
 Spec:       `docs/specs/synoptic-layout.md` (agreed endometrium example already recorded)
+
+---
+
+## Next
+
+Ordered. Each card is buildable as written; the spec file holds the full brief.
 
 ### iPhone-friendly version of the app                    Size: M
 Why:        the app is used from a phone between cases (user request 2026-09-11); today the layout only collapses to one column at 960 px, the two-row template bar, chip groups and the report pane were designed for a desktop width, and Google sign-in / Save have not been exercised on iOS Safari.
