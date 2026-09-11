@@ -29,7 +29,7 @@
     "AJCC"
   ],
   "specimenNoun": "resection",
-  "maxParts": 1,
+  "maxParts": 3,
   "defaultParts": 1,
   "generator": "endometrial_carcinoma",
   "style": {

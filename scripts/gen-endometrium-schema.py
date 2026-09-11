@@ -252,7 +252,7 @@ schema = {
     "aliases": ["endometrium", "endometrial carcinoma", "endometrial cancer", "hysterectomy for carcinoma", "TAHBSO", "serous", "carcinosarcoma",
                 "clear cell", "endometrioid", "ProMisE", "POLE", "MMR", "p53", "myometrial invasion", "LVSI", "synoptic", "CAP", "AJCC"],
     "specimenNoun": "resection",
-    "maxParts": 1,
+    "maxParts": 3,
     "defaultParts": 1,
     "generator": "endometrial_carcinoma",
     "style": {"british": True},

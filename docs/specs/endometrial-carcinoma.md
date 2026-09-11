@@ -10,7 +10,7 @@ The page displays the FIGO 2009 and FIGO 2023 tables and has an AJCC 8th pTNM bl
 
 ## Schema `endometrial_carcinoma` (kind synoptic cancer resection, rank after GIST)
 
-- name "Endometrial carcinoma resection", shortName "Uterus · cancer resection", organ Uterus, system Gynaecological, aliases endometrium, endometrial carcinoma, hysterectomy for carcinoma, serous, carcinosarcoma, TAHBSO. Header "Uterus". maxParts 1 with per-adnexa and node sub-entries (right / left tube and ovary, pelvic nodes by side, para-aortic nodes) as fields, not letters, matching QMH.
+- name "Endometrial carcinoma resection", shortName "Uterus · cancer resection", organ Uterus, system Gynaecological, aliases endometrium, endometrial carcinoma, hysterectomy for carcinoma, serous, carcinosarcoma, TAHBSO. Header "Uterus". maxParts 3 (raised from 1 on 2026-09-11 so separately submitted omentum, node packets or peritoneal biopsies can be added as lettered parts) with per-adnexa and node sub-entries (right / left tube and ovary, pelvic nodes by side, para-aortic nodes) as fields, not letters, matching QMH.
 - Fields in QMH order (option wording verbatim from the page; house spelling in generated prose only):
   1. procedure (Total hysterectomy and bilateral salpingo-oophorectomy … Peritoneal washing, Other) as multiselect; hysterectomyType (Abdominal … Not specified); specimenIntegrity (Intact / Opened / Morcellated / Other).
   2. tumourSite (Endometrium / Lower uterine segment / Endometrial polyp / Cannot be determined / Other); tumourSizeMm (greatest), tumourDims (mm x mm x mm), sizeCannot.
