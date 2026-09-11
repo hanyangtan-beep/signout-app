@@ -29,7 +29,7 @@
     "AJCC"
   ],
   "specimenNoun": "resection",
-  "maxParts": 3,
+  "maxParts": 10,
   "defaultParts": 1,
   "generator": "endometrial_carcinoma",
   "style": {
@@ -309,11 +309,160 @@
       }
     },
     {
+      "id": "architecture",
+      "label": "Architecture (endometrioid)",
+      "type": "multiselect",
+      "group": "Histology and molecular",
+      "options": [
+        "Glandular",
+        "Villoglandular",
+        "Cribriform",
+        "Papillary",
+        "Solid (non-squamous)",
+        "Microcystic"
+      ],
+      "default": [
+        "Glandular"
+      ],
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Endometrioid carcinoma",
+          "Mixed cell carcinoma (specify types and percentages)"
+        ]
+      }
+    },
+    {
+      "id": "solidPct",
+      "label": "Solid non-squamous growth (architectural grade)",
+      "type": "select",
+      "group": "Histology and molecular",
+      "options": [
+        "5% or less (architectural grade 1)",
+        "6-50% (architectural grade 2)",
+        "More than 50% (architectural grade 3)"
+      ],
+      "default": "5% or less (architectural grade 1)",
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Endometrioid carcinoma",
+          "Mixed cell carcinoma (specify types and percentages)"
+        ]
+      }
+    },
+    {
+      "id": "nuclearGrade",
+      "label": "Nuclear grade",
+      "type": "select",
+      "group": "Histology and molecular",
+      "options": [
+        "Nuclear grade 1-2 (mild to moderate atypia)",
+        "Nuclear grade 3 (marked atypia in the majority of the tumour)"
+      ],
+      "default": "Nuclear grade 1-2 (mild to moderate atypia)",
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Endometrioid carcinoma",
+          "Mixed cell carcinoma (specify types and percentages)"
+        ]
+      },
+      "help": "Grade 3 nuclei in the majority of the tumour raise the architectural grade by one (FIGO / WHO)."
+    },
+    {
+      "id": "differentiation",
+      "label": "Differentiation / variant features (endometrioid)",
+      "type": "multiselect",
+      "group": "Histology and molecular",
+      "options": [
+        "Squamous differentiation",
+        "Mucinous differentiation",
+        "Secretory change",
+        "Ciliated cells",
+        "Sex cord-like elements",
+        "Spindle cell (sarcomatoid) areas",
+        "Corded and hyalinised (CHEC) pattern"
+      ],
+      "default": [],
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Endometrioid carcinoma",
+          "Mixed cell carcinoma (specify types and percentages)"
+        ]
+      }
+    },
+    {
+      "id": "csCarcinomatous",
+      "label": "Carcinosarcoma: carcinomatous component(s)",
+      "type": "multiselect",
+      "group": "Histology and molecular",
+      "options": [
+        "Serous",
+        "Endometrioid",
+        "Clear cell",
+        "Undifferentiated"
+      ],
+      "default": [
+        "Serous"
+      ],
+      "showIf": {
+        "field": "histType",
+        "is": "Carcinosarcoma (malignant mixed Mullerian tumor)"
+      }
+    },
+    {
+      "id": "csSarcomatous",
+      "label": "Carcinosarcoma: sarcomatous component",
+      "type": "select",
+      "group": "Histology and molecular",
+      "options": [
+        "Homologous (high-grade spindle cell sarcoma, NOS)",
+        "Heterologous, rhabdomyosarcoma",
+        "Heterologous, chondrosarcoma",
+        "Heterologous, osteosarcoma",
+        "Heterologous, liposarcoma",
+        "Heterologous, other or mixed (specify)"
+      ],
+      "default": "Homologous (high-grade spindle cell sarcoma, NOS)",
+      "showIf": {
+        "field": "histType",
+        "is": "Carcinosarcoma (malignant mixed Mullerian tumor)"
+      }
+    },
+    {
+      "id": "csSarcomatousDetail",
+      "label": "Heterologous elements (specify)",
+      "type": "text",
+      "group": "Histology and molecular",
+      "showIf": {
+        "field": "csSarcomatous",
+        "is": "Heterologous, other or mixed (specify)"
+      }
+    },
+    {
+      "id": "ddLowGrade",
+      "label": "Dedifferentiated: differentiated component",
+      "type": "select",
+      "group": "Histology and molecular",
+      "options": [
+        "FIGO grade 1 endometrioid carcinoma",
+        "FIGO grade 2 endometrioid carcinoma"
+      ],
+      "default": "FIGO grade 1 endometrioid carcinoma",
+      "showIf": {
+        "field": "histType",
+        "is": "Dedifferentiated carcinoma"
+      }
+    },
+    {
       "id": "grade",
       "label": "Histologic grade",
       "type": "select",
       "group": "Histology and molecular",
       "options": [
+        "Derive from the histologic type (and architecture / nuclear grade for endometrioid carcinoma)",
         "FIGO grade 1 (endometrioid carcinoma)",
         "FIGO grade 2 (endometrioid carcinoma)",
         "FIGO grade 3 (endometrioid carcinoma)",
@@ -321,8 +470,8 @@
         "Other (specify)",
         "Cannot be assessed"
       ],
-      "default": "FIGO grade 1 (endometrioid carcinoma)",
-      "help": "FIGO grading applies to endometrioid carcinoma; other histotypes are high grade by definition."
+      "default": "Derive from the histologic type (and architecture / nuclear grade for endometrioid carcinoma)",
+      "help": "Left on Derive, endometrioid carcinoma is graded from the solid growth and nuclear grade above and every other histotype prints as high grade (non-endometrioid); pick a value only to override."
     },
     {
       "id": "gradeOther",
@@ -335,11 +484,43 @@
       }
     },
     {
+      "id": "tumourNecrosis",
+      "label": "Tumour necrosis",
+      "type": "select",
+      "group": "Histology and molecular",
+      "options": [
+        "Not identified",
+        "Present"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "invasionPattern",
+      "label": "Pattern of myometrial invasion",
+      "type": "select",
+      "group": "Histology and molecular",
+      "options": [
+        "Infiltrative glands with stromal response",
+        "Broad pushing (expansile) front",
+        "MELF (microcystic, elongated and fragmented) pattern",
+        "Adenomyosis-like (irregular islands without stromal response)",
+        "Diffusely infiltrative single cells and cords"
+      ],
+      "default": "Infiltrative glands with stromal response",
+      "showIf": {
+        "field": "myoInvasion",
+        "is": [
+          "Estimated less than 50% myometrial invasion",
+          "Estimated 50% or greater myometrial invasion"
+        ]
+      }
+    },
+    {
       "id": "microDescription",
-      "label": "Microscopy: additional description (optional)",
+      "label": "Microscopy: additional description (optional; printed after the histologic description)",
       "type": "textarea",
       "group": "Histology and molecular",
-      "placeholder": "e.g. squamous differentiation is present; a MELF pattern of invasion is noted"
+      "placeholder": "e.g. Focal mucinous differentiation is present"
     },
     {
       "id": "mmrIhc",
@@ -1057,9 +1238,25 @@
           "blockKeyText": "1-4 Tumour, posterior wall, full thickness\n5 Tumour, fundus\n6 Anterior wall, full thickness\n7 Lower uterine segment\n8-9 Cervix, anterior and posterior\n10 Right fallopian tube and ovary\n11 Left fallopian tube and ovary\n12-13 Right pelvic sentinel lymph nodes (2)\n14 Left pelvic sentinel lymph node (1)",
           "histType": "Endometrioid carcinoma",
           "histTypeOther": "",
-          "grade": "FIGO grade 1 (endometrioid carcinoma)",
+          "grade": "Derive from the histologic type (and architecture / nuclear grade for endometrioid carcinoma)",
           "gradeOther": "",
-          "microDescription": "focal squamous differentiation is present",
+          "architecture": [
+            "Glandular"
+          ],
+          "solidPct": "5% or less (architectural grade 1)",
+          "nuclearGrade": "Nuclear grade 1-2 (mild to moderate atypia)",
+          "differentiation": [
+            "Squamous differentiation"
+          ],
+          "csCarcinomatous": [
+            "Serous"
+          ],
+          "csSarcomatous": "Homologous (high-grade spindle cell sarcoma, NOS)",
+          "csSarcomatousDetail": "",
+          "ddLowGrade": "FIGO grade 1 endometrioid carcinoma",
+          "tumourNecrosis": "Not identified",
+          "invasionPattern": "Infiltrative glands with stromal response",
+          "microDescription": "",
           "mmrIhc": "Intact nuclear expression of MLH1, PMS2, MSH2 and MSH6",
           "mmrDetail": "",
           "msi": "Not performed",

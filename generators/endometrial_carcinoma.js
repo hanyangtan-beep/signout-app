@@ -72,9 +72,38 @@ export function histTypeName(v) {
   return v.histType || 'Endometrioid carcinoma';
 }
 
+// ---------- grade (derived by default) ----------
+
+export const GRADE_DERIVE = 'Derive from the histologic type (and architecture / nuclear grade for endometrioid carcinoma)';
+const HIGH_GRADE = 'High-grade (non-endometrioid carcinoma)';
+const ENDOMETRIOID_LIKE = (v) => v.histType === S.ENDOMETRIOID || /^Mixed cell/.test(v.histType || '');
+const solidGrade = (v) => (/^More than 50%/.test(v.solidPct || '') ? 3 : /^6-50%/.test(v.solidPct || '') ? 2 : 1);
+const nuclear3 = (v) => /^Nuclear grade 3/.test(v.nuclearGrade || '');
+
+/**
+ * Grade derived from the histotype: endometrioid carcinoma from the solid non-squamous
+ * proportion (architectural grade) raised by one for grade 3 nuclei; a mixed carcinoma and every
+ * non-endometrioid type print as high grade; 'Other (specify)' histotypes have no derived grade.
+ * Returns `{ grade, reason }`.
+ */
+export function derivedGrade(v) {
+  if (!v.histType || v.histType === 'Other (specify)') return { grade: 'Cannot be assessed', reason: 'no derived grade for an "Other" histotype; pick the grade explicitly' };
+  if (v.histType === S.ENDOMETRIOID) {
+    const a = solidGrade(v); const g = Math.min(3, a + (nuclear3(v) ? 1 : 0));
+    const solid = (v.solidPct || '5% or less').replace(/\s*\(.*\)$/, '').toLowerCase();
+    return { grade: S[`GRADE_${g}`], reason: `solid non-squamous growth ${solid} (architectural grade ${a})${nuclear3(v) ? ', raised by one for grade 3 nuclei' : ', nuclear grade 1-2'}` };
+  }
+  if (/^Mixed cell/.test(v.histType)) return { grade: HIGH_GRADE, reason: 'a mixed carcinoma is graded by its highest-grade component, which is a high-grade non-endometrioid type by definition' };
+  return { grade: HIGH_GRADE, reason: `${lc1(histTypeName(v))} is high grade by definition and is not FIGO graded` };
+}
+
+/** Grade used everywhere (picked value wins over the derived one). */
+export const resolvedGrade = (v) => (v.grade && v.grade !== GRADE_DERIVE ? v.grade : derivedGrade(v).grade);
+export const gradeIsDerived = (v) => !v.grade || v.grade === GRADE_DERIVE;
+
 /** Short grade for prose and diagnosis: 'FIGO grade 1' | 'high grade' | typed | ''. */
 export function gradeShort(v) {
-  const g = v.grade || '';
+  const g = resolvedGrade(v);
   const m = g.match(/^FIGO grade (\d)/);
   if (m) return `FIGO grade ${m[1]}`;
   if (/^High-grade/.test(g)) return 'high grade';
@@ -85,9 +114,78 @@ export function gradeShort(v) {
 
 /** Grade as printed in the synoptic (QMH wording). */
 export function gradeValue(v) {
-  if (v.grade === 'Other (specify)') return stripDot(v.gradeOther) || 'Other';
-  return v.grade || 'Cannot be assessed';
+  const g = resolvedGrade(v);
+  if (g === 'Other (specify)') return stripDot(v.gradeOther) || 'Other';
+  return g || 'Cannot be assessed';
 }
+
+// ---------- histologic description by type ----------
+
+const ARCH_WORD = {
+  Glandular: 'glandular', Villoglandular: 'villoglandular', Cribriform: 'cribriform', Papillary: 'papillary',
+  'Solid (non-squamous)': 'solid', Microcystic: 'microcystic'
+};
+const DIFF_PHRASE = {
+  'Squamous differentiation': 'squamous differentiation with morules and keratinising nests',
+  'Mucinous differentiation': 'mucinous differentiation with intracytoplasmic mucin',
+  'Secretory change': 'secretory change with subnuclear and supranuclear vacuoles',
+  'Ciliated cells': 'ciliated cells lining part of the glands',
+  'Sex cord-like elements': 'sex cord-like elements',
+  'Spindle cell (sarcomatoid) areas': 'low-grade spindle cell (sarcomatoid) areas merging with the glandular component',
+  'Corded and hyalinised (CHEC) pattern': 'a corded and hyalinised pattern with cords of epithelioid cells in a hyalinised stroma'
+};
+const TYPE_TEXT = {
+  'Serous carcinoma': 'The tumour shows complex papillary and glandular architecture with slit-like spaces, epithelial budding and tufting, lined by cells with marked nuclear pleomorphism, hyperchromasia and prominent nucleoli; hobnail cells are present and mitotic activity is brisk with atypical forms.',
+  'Clear cell carcinoma': 'The tumour shows an admixture of tubulocystic, papillary and solid patterns; the papillae have hyalinised cores and the tumour cells have clear to eosinophilic cytoplasm with hobnail nuclei showing moderate to marked atypia, with only modest mitotic activity.',
+  'Dedifferentiated carcinoma': null,
+  'Undifferentiated carcinoma': 'The tumour is composed of sheets of monotonous, discohesive small to intermediate-sized round to ovoid cells with vesicular nuclei and scant cytoplasm, without glandular, squamous or neuroendocrine differentiation; mitotic activity is brisk and there are areas of geographic necrosis. No low-grade endometrioid component is identified.',
+  'Mesonephric-like adenocarcinoma': 'The tumour shows an admixture of tubular, glandular, papillary, ductal and solid growth patterns; the tubules contain dense eosinophilic intraluminal secretions and are lined by cuboidal to columnar cells with vesicular chromatin, nuclear grooves and overlapping nuclei resembling those of papillary thyroid carcinoma. Squamous and mucinous differentiation are absent.',
+  'Squamous cell carcinoma, NOS': 'The tumour is composed of infiltrating nests and sheets of squamous cells with keratinisation and intercellular bridges, without any glandular, endometrioid or serous component.',
+  'Gastric (gastrointestinal)-type carcinoma': 'The tumour is composed of glands lined by cells with abundant pale, clear to eosinophilic cytoplasm, distinct cell borders and basally located nuclei, with intracytoplasmic mucin and a deceptively bland infiltrative growth pattern with limited stromal response.',
+  'Small cell neuroendocrine carcinoma': 'The tumour is composed of sheets, nests and trabeculae of small cells with scant cytoplasm, finely granular chromatin, inconspicuous nucleoli, nuclear moulding and crush artefact; mitotic activity is brisk with abundant apoptotic bodies and areas of necrosis.',
+  'Large cell neuroendocrine carcinoma': 'The tumour shows organoid nests, trabeculae and sheets with peripheral palisading and rosette-like structures, composed of large cells with moderate to abundant cytoplasm, vesicular chromatin and prominent nucleoli; mitotic activity is high and there is geographic necrosis.'
+};
+
+/** Type-specific histologic description (one or two sentences), '' for 'Other (specify)'. */
+export function histologyText(v) {
+  const type = v.histType || S.ENDOMETRIOID;
+  if (type === S.ENDOMETRIOID) {
+    const arch = arr(v.architecture).map((a) => ARCH_WORD[a]).filter(Boolean);
+    const archText = arch.length ? listJoin(arch) : 'glandular';
+    const solid = (v.solidPct || '5% or less').replace(/\s*\(.*\)$/, '').toLowerCase();
+    const nuclei = nuclear3(v) ? 'markedly pleomorphic, hyperchromatic nuclei with prominent nucleoli (nuclear grade 3)' : 'elongated, mildly to moderately atypical nuclei';
+    const s = [`The tumour shows a predominantly ${archText} architecture of confluent, back-to-back glands lined by stratified columnar cells with ${nuclei}, with solid non-squamous growth making up ${solid} of the tumour.`];
+    const diff = arr(v.differentiation).map((d) => DIFF_PHRASE[d]).filter(Boolean);
+    if (diff.length) s.push(`There is ${listJoin(diff)}.`);
+    return s.join(' ');
+  }
+  if (/^Carcinosarcoma/.test(type)) {
+    const carc = arr(v.csCarcinomatous).map(lc1);
+    const carcText = carc.length ? `a high-grade carcinomatous component with ${listJoin(carc)} features` : 'a high-grade carcinomatous component';
+    const sarc = v.csSarcomatous || 'Homologous (high-grade spindle cell sarcoma, NOS)';
+    let sarcText;
+    if (/^Homologous/.test(sarc)) sarcText = 'a homologous high-grade sarcomatous component of pleomorphic spindle cells';
+    else if (/other or mixed/.test(sarc)) sarcText = `a heterologous sarcomatous component${stripDot(v.csSarcomatousDetail) ? ` with ${lc1(stripDot(v.csSarcomatousDetail))}` : ''}`;
+    else sarcText = `a heterologous sarcomatous component with ${{ rhabdomyosarcoma: 'rhabdomyoblastic differentiation (rhabdomyosarcoma)', chondrosarcoma: 'malignant cartilage (chondrosarcoma)', osteosarcoma: 'malignant osteoid (osteosarcoma)', liposarcoma: 'lipoblastic differentiation (liposarcoma)' }[sarc.replace(/^Heterologous, /, '')]}`;
+    return `The tumour is biphasic, composed of ${carcText} and ${sarcText}, with an abrupt transition between the two components.`;
+  }
+  if (type === 'Dedifferentiated carcinoma') {
+    return `The tumour is biphasic: a ${v.ddLowGrade || 'FIGO grade 1 endometrioid carcinoma'} component is sharply juxtaposed with an undifferentiated component of sheets of monotonous, discohesive round to ovoid cells with vesicular nuclei, no glandular differentiation, brisk mitotic activity and necrosis.`;
+  }
+  if (/^Mixed cell/.test(type)) {
+    const arch = arr(v.architecture).map((a) => ARCH_WORD[a]).filter(Boolean);
+    return `The tumour is a mixed carcinoma of ${stripDot(v.histTypeOther) ? lc1(stripDot(v.histTypeOther)) : 'two distinct histotypes (specify)'}, each component showing the morphology characteristic of its type${arch.length ? `; the endometrioid component has a ${listJoin(arch)} architecture` : ''}.`;
+  }
+  return TYPE_TEXT[type] || '';
+}
+
+const INVASION_TEXT = {
+  'Infiltrative glands with stromal response': 'Myometrial invasion is by irregular infiltrative glands eliciting a stromal response',
+  'Broad pushing (expansile) front': 'The tumour invades the myometrium with a broad pushing (expansile) front',
+  'MELF (microcystic, elongated and fragmented) pattern': 'A MELF (microcystic, elongated and fragmented) pattern of invasion is present, with a fibromyxoid stromal reaction',
+  'Adenomyosis-like (irregular islands without stromal response)': 'The invasive glands form irregular islands within the myometrium without a stromal response, adenomyosis-like in appearance',
+  'Diffusely infiltrative single cells and cords': 'The tumour infiltrates the myometrium diffusely as single cells and cords'
+};
 
 // ---------- molecular ----------
 
@@ -122,7 +220,7 @@ const PROMISE_SHORT = {
 export const promiseShort = (v) => PROMISE_SHORT[resolvedPromise(v)] || null;
 
 /** Values handed to the staging module: the resolved ProMisE label replaces the raw picker value. */
-export const stagingValues = (v) => ({ ...v, promise: resolvedPromise(v) });
+export const stagingValues = (v) => ({ ...v, promise: resolvedPromise(v), grade: resolvedGrade(v) });
 
 export function ihcSentence(v) {
   const bits = []; const pend = [];
@@ -377,8 +475,13 @@ export function microscopy(part) {
   const site = v.tumourSite === 'Endometrial polyp' ? 'arising within an endometrial polyp' : v.tumourSite === 'Lower uterine segment' ? 'arising in the lower uterine segment' : v.tumourSite === 'Other (specify)' ? `arising in the ${lc1(stripDot(v.tumourSiteDetail)) || 'endometrium'}` : `arising in the endometrium${siteDetail ? ` (${lc1(siteDetail)})` : ''}`;
   const article = /^[AEIOU]/i.test(type) ? 'an' : 'a';
   const size = num(v.tumourSizeMm);
-  s.push(`Sections show ${article} ${lc1(type)}${grade ? `, ${grade},` : ''}${size !== null ? ` measuring ${fmt(size)} mm and` : ''} ${site}${stripDot(v.microDescription) ? `; ${lc1(stripDot(v.microDescription))}` : ''}.`);
+  s.push(`Sections show ${article} ${lc1(type)}${grade ? `, ${grade},` : ''}${size !== null ? ` measuring ${fmt(size)} mm and` : ''} ${site}.`);
+  const hist = histologyText(v);
+  if (hist) s.push(hist);
+  if (v.tumourNecrosis === 'Present') s.push('Tumour necrosis is present.');
+  if (stripDot(v.microDescription)) s.push(`${uc1(stripDot(v.microDescription))}.`);
   s.push(`${myoText(v)}.`);
+  if (S.anyMyoinvasion(v) && INVASION_TEXT[v.invasionPattern]) s.push(`${INVASION_TEXT[v.invasionPattern]}.`);
   s.push(`${lvsiText(v)}.`);
   if (v.pni === 'Present') s.push('Perineural invasion is present.');
   else if (v.pni === 'Cannot be determined') s.push('Perineural invasion cannot be determined.');
@@ -540,15 +643,24 @@ export function validate(part) {
   if (v.tumourSite === 'Endometrial polyp' && S.anyMyoinvasion(v)) warn('Tumour site is "Endometrial polyp" but myometrial invasion is recorded; the invasive component is not confined to the polyp.');
   if (/Mixed cell|Other \(specify\)/.test(v.histType || '') && !stripDot(v.histTypeOther)) err('Histologic type: specify the type(s) and percentages.');
   if (v.grade === 'Other (specify)' && !stripDot(v.gradeOther)) err('Histologic grade: specify.');
-  if (v.histType === S.ENDOMETRIOID && /^High-grade/.test(v.grade || '')) warn('Endometrioid carcinoma should carry a FIGO grade rather than "High-grade (non-endometrioid carcinoma)".');
-  if (v.histType && v.histType !== S.ENDOMETRIOID && !/Mixed cell|Other/.test(v.histType) && /^FIGO grade/.test(v.grade || '')) warn('FIGO grading applies to endometrioid carcinoma only; non-endometrioid carcinomas are high grade by definition.');
+  if (gradeIsDerived(v)) {
+    const dg = derivedGrade(v);
+    if (v.histType === 'Other (specify)') err('Histologic grade: no grade can be derived for an "Other" histotype; pick it explicitly.');
+    else info(`Histologic grade derived: ${dg.grade} - ${dg.reason}.`);
+  } else {
+    if (v.histType === S.ENDOMETRIOID && /^High-grade/.test(v.grade || '')) warn('Endometrioid carcinoma should carry a FIGO grade rather than "High-grade (non-endometrioid carcinoma)".');
+    if (v.histType && v.histType !== S.ENDOMETRIOID && !/Mixed cell|Other/.test(v.histType) && /^FIGO grade/.test(v.grade || '')) warn('FIGO grading applies to endometrioid carcinoma only; non-endometrioid carcinomas are high grade by definition.');
+    if (v.histType === S.ENDOMETRIOID && /^FIGO grade/.test(v.grade || '') && v.grade !== derivedGrade(v).grade) warn(`Histologic grade picked (${v.grade}) differs from the grade derived from the solid growth and nuclear grade (${derivedGrade(v).grade}); the picked value is used.`);
+  }
+  if (v.histType === S.ENDOMETRIOID && arr(v.architecture).includes('Solid (non-squamous)') && /^5% or less/.test(v.solidPct || '5% or less')) warn('Solid (non-squamous) architecture is ticked but solid growth is recorded as 5% or less.');
+  if (/^Carcinosarcoma/.test(v.histType || '') && /other or mixed/.test(v.csSarcomatous || '') && !stripDot(v.csSarcomatousDetail)) err('Carcinosarcoma: specify the heterologous elements.');
   if (v.cervix === 'Cervical stromal invasion' && num(v.cervixDepthMm) === null) warn('Cervical stromal invasion: record the depth and the stromal thickness in mm.');
   if (v.lvsi === 'Present, extent not specified') warn('LVSI is present but not quantified; focal (fewer than 5 vessels) versus substantial (5 or more) changes the FIGO 2023 reference stage.');
   const invRaw = arr(v.otherInvolvement);
   if (invRaw.length > 1 && invRaw.includes('Not identified')) warn('Other tissue / organ involvement: "Not identified" is ticked together with involved sites.');
   if (invRaw.some((s) => /Other organs|Cannot be determined/.test(s)) && !stripDot(v.otherInvolvementDetail)) warn('Other tissue / organ involvement: specify the site or explain.');
   if (v.ovarianSynchronous === true && !S.ovaryInvolved(v)) warn('Synchronous ovarian tumour ticked but no ovary is recorded as involved.');
-  if (v.ovarianSynchronous === true && S.histotypeClass(v) !== 'non-aggressive') warn('The synchronous uterine and ovarian pattern (IA3) applies to low-grade endometrioid carcinoma only.');
+  if (v.ovarianSynchronous === true && S.histotypeClass(stagingValues(v)) !== 'non-aggressive') warn('The synchronous uterine and ovarian pattern (IA3) applies to low-grade endometrioid carcinoma only.');
   for (const p of ['pelvic', 'pa']) {
     const n = S.nodes(v, p); const name = regionName[p];
     if (n.examined === null) { if (p === 'pelvic') err('Pelvic lymph nodes: number examined is required (enter 0 if none submitted).'); continue; }
@@ -559,7 +671,7 @@ export function validate(part) {
     if (n.examined === 0 && (int(v[`${p}Macro`]) || int(v[`${p}Micro`]) || int(v[`${p}Itc`]))) err(`${uc1(name)} lymph nodes: involved nodes recorded but none examined.`);
   }
   const anyNodes = (S.nodes(v, 'pelvic').examined || 0) + (S.nodes(v, 'pa').examined || 0);
-  if (!anyNodes && (S.substantialLvsi(v) || S.isAggressive(v))) info('No lymph nodes examined (pNX) in a case with substantial LVSI or an aggressive histotype.');
+  if (!anyNodes && (S.substantialLvsi(v) || S.isAggressive(stagingValues(v)))) info('No lymph nodes examined (pNX) in a case with substantial LVSI or an aggressive histotype.');
   const mets = arr(v.distantMets);
   if (mets.length > 1 && mets.includes('Not identified')) warn('Distant metastasis: "Not identified" is ticked together with metastatic sites.');
   if (mets.some((s) => /\(specify\)/.test(s)) && !stripDot(v.distantDetail)) warn('Distant metastasis: specify the site.');
@@ -577,7 +689,7 @@ export function validate(part) {
     const derived = derivedPromise(v);
     if (derived !== v.promise && derived !== 'Not classified (testing incomplete)') warn(`Molecular class picked (${v.promise}) differs from the derived class (${derived}); the picked value is used.`);
   }
-  if (p53Abnormal(v) && v.histType === S.ENDOMETRIOID && /^FIGO grade [12]/.test(v.grade || '')) warn('Abnormal p53 in a low-grade endometrioid carcinoma is unusual; review the staining pattern and consider a serous or high-grade component.');
+  if (p53Abnormal(v) && v.histType === S.ENDOMETRIOID && /^FIGO grade [12]/.test(resolvedGrade(v))) warn('Abnormal p53 in a low-grade endometrioid carcinoma is unusual; review the staining pattern and consider a serous or high-grade component.');
   if (resolvedPromise(v) === 'Not classified (testing incomplete)' && (pending(v.pole) || pending(v.mmrIhc) || pending(v.p53))) info('Molecular testing is pending; the FIGO 2023 reference stage may change once the class is confirmed.');
   if (v.peritonealFluid === 'Results pending') info('Peritoneal fluid cytology is pending; correlate with the separate cytology report.');
   if (v.vaginalMargin === 'Uninvolved by carcinoma' && num(v.vaginalMarginMm) === null && (v.cervix === 'Cervical stromal invasion' || /Radical/.test(v.procedure || ''))) warn('Cervical involvement or radical hysterectomy: record the distance to the vaginal cuff margin in mm.');

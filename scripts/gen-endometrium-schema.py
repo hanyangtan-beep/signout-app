@@ -58,10 +58,20 @@ HIST_TYPES = [
     "Mixed cell carcinoma (specify types and percentages)", "Small cell neuroendocrine carcinoma",
     "Large cell neuroendocrine carcinoma", "Other (specify)",
 ]
+GRADE_DERIVE = "Derive from the histologic type (and architecture / nuclear grade for endometrioid carcinoma)"
 GRADES = [
+    GRADE_DERIVE,
     "FIGO grade 1 (endometrioid carcinoma)", "FIGO grade 2 (endometrioid carcinoma)", "FIGO grade 3 (endometrioid carcinoma)",
     "High-grade (non-endometrioid carcinoma)", "Other (specify)", "Cannot be assessed",
 ]
+ENDOMETRIOID_LIKE = ["Endometrioid carcinoma", "Mixed cell carcinoma (specify types and percentages)"]
+CARCINOSARCOMA = "Carcinosarcoma (malignant mixed Mullerian tumor)"
+SOLID = ["5% or less (architectural grade 1)", "6-50% (architectural grade 2)", "More than 50% (architectural grade 3)"]
+NUCLEAR = ["Nuclear grade 1-2 (mild to moderate atypia)", "Nuclear grade 3 (marked atypia in the majority of the tumour)"]
+CS_SARC = ["Homologous (high-grade spindle cell sarcoma, NOS)", "Heterologous, rhabdomyosarcoma", "Heterologous, chondrosarcoma",
+           "Heterologous, osteosarcoma", "Heterologous, liposarcoma", "Heterologous, other or mixed (specify)"]
+INVASION = ["Infiltrative glands with stromal response", "Broad pushing (expansile) front", "MELF (microcystic, elongated and fragmented) pattern",
+            "Adenomyosis-like (irregular islands without stromal response)", "Diffusely infiltrative single cells and cords"]
 MMR = ["Not performed", "Intact nuclear expression of MLH1, PMS2, MSH2 and MSH6", "Loss of nuclear MMR protein expression (specify)",
        "Subclonal loss of nuclear MMR protein expression (specify)", "Requested; result to follow", "Cannot be assessed (explain)"]
 MSI = ["Not performed", "MSI-Stable (MSS)", "MSI-Low (MSI-L)", "MSI-High (MSI-H)", "Cannot be assessed (explain)"]
@@ -141,11 +151,32 @@ fields = [
     sel("histType", "Histologic type (WHO 5th edition)", HIST_TYPES, "Endometrioid carcinoma", HIST),
     txt("histTypeOther", "Histologic type (specify; types and percentages for a mixed carcinoma)", HIST,
         showIf={"field": "histType", "is": ["Mixed cell carcinoma (specify types and percentages)", "Other (specify)"]}),
-    sel("grade", "Histologic grade", GRADES, "FIGO grade 1 (endometrioid carcinoma)", HIST,
-        help="FIGO grading applies to endometrioid carcinoma; other histotypes are high grade by definition."),
+    multi("architecture", "Architecture (endometrioid)", ["Glandular", "Villoglandular", "Cribriform", "Papillary", "Solid (non-squamous)", "Microcystic"], ["Glandular"], HIST,
+          showIf={"field": "histType", "is": ENDOMETRIOID_LIKE}),
+    sel("solidPct", "Solid non-squamous growth (architectural grade)", SOLID, "5% or less (architectural grade 1)", HIST,
+        showIf={"field": "histType", "is": ENDOMETRIOID_LIKE}),
+    sel("nuclearGrade", "Nuclear grade", NUCLEAR, "Nuclear grade 1-2 (mild to moderate atypia)", HIST,
+        showIf={"field": "histType", "is": ENDOMETRIOID_LIKE},
+        help="Grade 3 nuclei in the majority of the tumour raise the architectural grade by one (FIGO / WHO)."),
+    multi("differentiation", "Differentiation / variant features (endometrioid)",
+          ["Squamous differentiation", "Mucinous differentiation", "Secretory change", "Ciliated cells", "Sex cord-like elements", "Spindle cell (sarcomatoid) areas", "Corded and hyalinised (CHEC) pattern"], [], HIST,
+          showIf={"field": "histType", "is": ENDOMETRIOID_LIKE}),
+    multi("csCarcinomatous", "Carcinosarcoma: carcinomatous component(s)", ["Serous", "Endometrioid", "Clear cell", "Undifferentiated"], ["Serous"], HIST,
+          showIf={"field": "histType", "is": CARCINOSARCOMA}),
+    sel("csSarcomatous", "Carcinosarcoma: sarcomatous component", CS_SARC, "Homologous (high-grade spindle cell sarcoma, NOS)", HIST,
+        showIf={"field": "histType", "is": CARCINOSARCOMA}),
+    txt("csSarcomatousDetail", "Heterologous elements (specify)", HIST,
+        showIf={"field": "csSarcomatous", "is": "Heterologous, other or mixed (specify)"}),
+    sel("ddLowGrade", "Dedifferentiated: differentiated component", ["FIGO grade 1 endometrioid carcinoma", "FIGO grade 2 endometrioid carcinoma"], "FIGO grade 1 endometrioid carcinoma", HIST,
+        showIf={"field": "histType", "is": "Dedifferentiated carcinoma"}),
+    sel("grade", "Histologic grade", GRADES, GRADE_DERIVE, HIST,
+        help="Left on Derive, endometrioid carcinoma is graded from the solid growth and nuclear grade above and every other histotype prints as high grade (non-endometrioid); pick a value only to override."),
     txt("gradeOther", "Grade (specify)", HIST, showIf={"field": "grade", "is": "Other (specify)"}),
-    area("microDescription", "Microscopy: additional description (optional)", HIST,
-         placeholder="e.g. squamous differentiation is present; a MELF pattern of invasion is noted"),
+    sel("tumourNecrosis", "Tumour necrosis", ["Not identified", "Present"], "Not identified", HIST),
+    sel("invasionPattern", "Pattern of myometrial invasion", INVASION, "Infiltrative glands with stromal response", HIST,
+        showIf={"field": "myoInvasion", "is": ["Estimated less than 50% myometrial invasion", "Estimated 50% or greater myometrial invasion"]}),
+    area("microDescription", "Microscopy: additional description (optional; printed after the histologic description)", HIST,
+         placeholder="e.g. Focal mucinous differentiation is present"),
     sel("mmrIhc", "Mismatch repair (MMR) IHC", MMR, "Not performed", HIST),
     txt("mmrDetail", "MMR IHC: proteins lost / explain", HIST,
         showIf={"field": "mmrIhc", "is": ["Loss of nuclear MMR protein expression (specify)", "Subclonal loss of nuclear MMR protein expression (specify)", "Cannot be assessed (explain)"]}),
@@ -222,8 +253,11 @@ EXAMPLE_VALUES = {
     "tumourSiteDetail": "posterior wall and fundus", "tumourGrowth": "Polypoid", "tumourSizeMm": "35", "tumourDims": "35 x 30 x 12", "sizeCannot": "",
     "macroDepthMm": "6", "macroMyoMm": "18", "cervixMacro": "", "adnexaMacro": "", "otherMacro": "",
     "blockKeyText": "1-4 Tumour, posterior wall, full thickness\n5 Tumour, fundus\n6 Anterior wall, full thickness\n7 Lower uterine segment\n8-9 Cervix, anterior and posterior\n10 Right fallopian tube and ovary\n11 Left fallopian tube and ovary\n12-13 Right pelvic sentinel lymph nodes (2)\n14 Left pelvic sentinel lymph node (1)",
-    "histType": "Endometrioid carcinoma", "histTypeOther": "", "grade": "FIGO grade 1 (endometrioid carcinoma)", "gradeOther": "",
-    "microDescription": "focal squamous differentiation is present",
+    "histType": "Endometrioid carcinoma", "histTypeOther": "", "grade": GRADE_DERIVE, "gradeOther": "",
+    "architecture": ["Glandular"], "solidPct": "5% or less (architectural grade 1)", "nuclearGrade": "Nuclear grade 1-2 (mild to moderate atypia)",
+    "differentiation": ["Squamous differentiation"], "csCarcinomatous": ["Serous"], "csSarcomatous": "Homologous (high-grade spindle cell sarcoma, NOS)", "csSarcomatousDetail": "",
+    "ddLowGrade": "FIGO grade 1 endometrioid carcinoma", "tumourNecrosis": "Not identified", "invasionPattern": "Infiltrative glands with stromal response",
+    "microDescription": "",
     "mmrIhc": "Intact nuclear expression of MLH1, PMS2, MSH2 and MSH6", "mmrDetail": "", "msi": "Not performed",
     "p53": "Normal (wild type) expression", "p53Detail": "", "pole": "Wild-type", "poleDetail": "",
     "promise": "Derive from the results above", "promiseDetail": "", "otherIhc": "ER and PR positive",
@@ -252,7 +286,7 @@ schema = {
     "aliases": ["endometrium", "endometrial carcinoma", "endometrial cancer", "hysterectomy for carcinoma", "TAHBSO", "serous", "carcinosarcoma",
                 "clear cell", "endometrioid", "ProMisE", "POLE", "MMR", "p53", "myometrial invasion", "LVSI", "synoptic", "CAP", "AJCC"],
     "specimenNoun": "resection",
-    "maxParts": 3,
+    "maxParts": 10,
     "defaultParts": 1,
     "generator": "endometrial_carcinoma",
     "style": {"british": True},

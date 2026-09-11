@@ -30,9 +30,9 @@ const NO_MOL = { mmrIhc: 'Not performed', p53: 'Not performed', pole: 'Not perfo
 // Fixture patches (spec: docs/specs/endometrial-carcinoma.md).
 const CASES = [
   ['01-endometrioid-ia2-nsmp', {}],
-  ['02-serous-iicm-p53abn', { histType: 'Serous carcinoma', grade: 'High-grade (non-endometrioid carcinoma)', p53: 'Abnormal, Overexpression (strong, diffuse nuclear expression)', lvsi: 'Present, substantial (5 or more vessels)', pelvicExamined: '12', pelvicMacro: '0', pelvicMicro: '0', pelvicSentinel: false, additionalProcedures: ['Pelvic lymphadenectomy', 'Omentectomy'], additionalFindings: [], microDescription: '', otherIhc: '', vaginalMarginMm: '15' }],
+  ['02-serous-iicm-p53abn', { histType: 'Serous carcinoma', p53: 'Abnormal, Overexpression (strong, diffuse nuclear expression)', lvsi: 'Present, substantial (5 or more vessels)', pelvicExamined: '12', pelvicMacro: '0', pelvicMicro: '0', pelvicSentinel: false, additionalProcedures: ['Pelvic lymphadenectomy', 'Omentectomy'], additionalFindings: [], microDescription: '', otherIhc: '', vaginalMarginMm: '15' }],
   ['03-polyp-polemut-iam', { tumourSite: 'Endometrial polyp', tumourSiteDetail: '', myoInvasion: 'Not identified', depthMm: '', myoThicknessMm: '', macroDepthMm: '', macroMyoMm: '', pole: 'Mutated (specify)', poleDetail: 'P286R', pelvicExamined: '0', pelvicMacro: '', pelvicMicro: '', pelvicItc: '', pelvicSentinel: false, additionalProcedures: [], additionalFindings: [], microDescription: '' }],
-  ['04-carcinosarcoma-iiic2ii-ivb', { histType: 'Carcinosarcoma (malignant mixed Mullerian tumor)', grade: 'High-grade (non-endometrioid carcinoma)', myoInvasion: 'Estimated 50% or greater myometrial invasion', depthMm: '14', myoThicknessMm: '18', paExamined: '6', paMacro: '1', paMicro: '0', paItc: '0', paEne: 'Present', paDepositMm: '9', pelvicExamined: '10', pelvicMacro: '2', pelvicMicro: '0', pelvicSentinel: false, pelvicEne: 'Not identified', pelvicDepositMm: '6', distantMets: ['Omentum'], additionalProcedures: ['Pelvic lymphadenectomy', 'Para-aortic lymphadenectomy', 'Omentectomy'], additionalFindings: [], microDescription: 'heterologous rhabdomyosarcomatous differentiation is present', ...NO_MOL }],
+  ['04-carcinosarcoma-iiic2ii-ivb', { histType: 'Carcinosarcoma (malignant mixed Mullerian tumor)', csSarcomatous: 'Heterologous, rhabdomyosarcoma', tumourNecrosis: 'Present', myoInvasion: 'Estimated 50% or greater myometrial invasion', depthMm: '14', myoThicknessMm: '18', paExamined: '6', paMacro: '1', paMicro: '0', paItc: '0', paEne: 'Present', paDepositMm: '9', pelvicExamined: '10', pelvicMacro: '2', pelvicMicro: '0', pelvicSentinel: false, pelvicEne: 'Not identified', pelvicDepositMm: '6', distantMets: ['Omentum'], additionalProcedures: ['Pelvic lymphadenectomy', 'Para-aortic lymphadenectomy', 'Omentectomy'], additionalFindings: [], microDescription: '', ...NO_MOL }],
   ['05-endometrioid-uterus-ovary-ia3', { otherInvolvement: ['Left ovary'], otherInvolvementDetail: '20 mm endometrioid carcinoma, FIGO grade 1, confined to the left ovary', ovarianSynchronous: true, adnexaMacro: 'The left ovary is enlarged (35 x 25 x 20 mm) by a solid tan tumour; the right adnexa and left tube are unremarkable', additionalFindings: [], microDescription: '', ...NO_MOL }],
   ['06-endocervical-glandular-only', { cervix: 'Endocervical glandular involvement only', mmrIhc: 'Requested; result to follow', p53: 'Requested; result to follow', pole: 'Not performed', otherIhc: '', additionalFindings: [], microDescription: '', peritonealFluid: 'Results pending' }]
 ];
@@ -106,7 +106,9 @@ test('serous p53abn: IICm reference stage and p53abn snippet', () => {
 
 test('POLEmut carcinoma confined to a polyp: IAm, no nodes', () => {
   const out = run(byName['03-polyp-polemut-iam']);
-  assert.ok(out.microscopy.includes('arising within an endometrial polyp. The carcinoma is confined to the polyp with no myometrial invasion.'));
+  assert.ok(out.microscopy.includes('arising within an endometrial polyp. The tumour shows a predominantly glandular architecture'));
+  assert.ok(out.microscopy.includes('The carcinoma is confined to the polyp with no myometrial invasion.'));
+  assert.ok(!out.microscopy.includes('Myometrial invasion is by'));
   assert.ok(out.microscopy.includes('POLE sequencing shows a pathogenic exonuclease domain mutation (P286R); the molecular class is POLE-mutated.'));
   assert.equal(rows(out)['POLE status'], 'Mutated (P286R)');
   assert.equal(rows(out)['Pelvic lymph nodes'], 'No lymph nodes submitted or found');
@@ -215,6 +217,31 @@ test('synoptic element order follows the saved QMH GYN-Endometrium page', () => 
     assert.ok(idx > cursor, `${MAP[label]} out of QMH order (index ${idx} after ${cursor})`);
     cursor = idx;
   }
+});
+
+test('grade derives from the histotype by default; explicit picks override', () => {
+  const g2 = run({ solidPct: '6-50% (architectural grade 2)' });
+  assert.ok(g2.microscopy.includes('endometrioid carcinoma, FIGO grade 2,'));
+  assert.ok(g2.microscopy.includes('solid non-squamous growth making up 6-50% of the tumour'));
+  assert.ok(g2.issues.some((i) => i.level === 'info' && /derived: FIGO grade 2 .*architectural grade 2\), nuclear grade 1-2/.test(i.message)));
+  const g3 = run({ solidPct: '6-50% (architectural grade 2)', nuclearGrade: 'Nuclear grade 3 (marked atypia in the majority of the tumour)' });
+  assert.ok(g3.microscopy.includes('FIGO grade 3,'));
+  assert.ok(g3.microscopy.includes('(nuclear grade 3)'));
+  assert.ok(g3.issues.some((i) => /raised by one for grade 3 nuclei/.test(i.message)));
+  const cc = run({ histType: 'Clear cell carcinoma' });
+  assert.equal(rows(cc)['Histologic grade'], 'High-grade (non-endometrioid carcinoma)');
+  assert.ok(cc.diagnosis.includes('CLEAR CELL CARCINOMA, high grade'));
+  assert.ok(cc.microscopy.includes('tubulocystic, papillary and solid patterns'));
+  assert.ok(cc.issues.some((i) => i.level === 'info' && /clear cell carcinoma is high grade by definition/.test(i.message)));
+  const other = run({ histType: 'Other (specify)', histTypeOther: 'Adenosquamous carcinoma' });
+  assert.equal(rows(other)['Histologic grade'], 'Cannot be assessed');
+  assert.ok(other.issues.some((i) => i.level === 'error' && /pick it explicitly/.test(i.message)));
+  const picked = run({ grade: 'FIGO grade 3 (endometrioid carcinoma)' });
+  assert.ok(picked.microscopy.includes('FIGO grade 3,'));
+  assert.ok(picked.issues.some((i) => i.level === 'warn' && /differs from the grade derived/.test(i.message)));
+  const dd = run({ histType: 'Dedifferentiated carcinoma', ddLowGrade: 'FIGO grade 2 endometrioid carcinoma' });
+  assert.ok(dd.microscopy.includes('a FIGO grade 2 endometrioid carcinoma component is sharply juxtaposed with an undifferentiated component'));
+  assert.equal(rows(dd)['Histologic grade'], 'High-grade (non-endometrioid carcinoma)');
 });
 
 test('golden fixtures reproduce byte-for-byte', () => {
