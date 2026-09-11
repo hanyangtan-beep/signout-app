@@ -1,0 +1,9 @@
+{
+  "templateId": "cervical_cytology",
+  "patch": {
+    "interpretation": "Atypical squamous cells of undetermined significance (ASC-US)",
+    "features": [],
+    "hpv": "Positive for other high-risk HPV types"
+  },
+  "report": "Cervix, liquid-based cytology\n\nReceived is one liquid-based cytology vial, processed as one slide.\n\nThe liquid-based preparation is satisfactory for evaluation, with an endocervical/transformation zone component present. HPV testing: positive for other high-risk HPV types. Atypical squamous cells of undetermined significance are present.\n\nCERVIX, liquid-based cytology - ATYPICAL SQUAMOUS CELLS OF UNDETERMINED SIGNIFICANCE (ASC-US)\n\nReflex high-risk HPV testing or repeat cytology in 6 to 12 months is advised according to the local screening guideline."
+}

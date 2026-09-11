@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 36,
+  "count": 42,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -1020,6 +1020,133 @@
       "generator": "salivary",
       "generatorPath": "generators/salivary.js",
       "schemaPath": "schemas/salivary_benign.json"
+    },
+    {
+      "id": "thyroid_fna",
+      "name": "Thyroid FNA (Bethesda 2023)",
+      "shortName": "Thyroid · FNA",
+      "label": "Thyroid FNA",
+      "organ": "Thyroid",
+      "system": "Cytology",
+      "kind": "cytology",
+      "rank": 610,
+      "aliases": [
+        "thyroid fna",
+        "bethesda",
+        "thyroid nodule aspirate"
+      ],
+      "version": 1,
+      "generator": "cytology",
+      "generatorPath": "generators/cytology.js",
+      "schemaPath": "schemas/thyroid_fna.json"
+    },
+    {
+      "id": "salivary_fna",
+      "name": "Salivary gland FNA (Milan)",
+      "shortName": "Salivary gland · FNA",
+      "label": "Salivary gland FNA",
+      "organ": "Salivary gland",
+      "system": "Cytology",
+      "kind": "cytology",
+      "rank": 620,
+      "aliases": [
+        "salivary fna",
+        "milan",
+        "parotid fna",
+        "submandibular fna"
+      ],
+      "version": 1,
+      "generator": "cytology",
+      "generatorPath": "generators/cytology.js",
+      "schemaPath": "schemas/salivary_fna.json"
+    },
+    {
+      "id": "lymph_node_fna",
+      "name": "Lymph node FNA / EBUS-TBNA (Sydney)",
+      "shortName": "Lymph node · FNA",
+      "label": "Lymph node FNA",
+      "organ": "Lymph node",
+      "system": "Cytology",
+      "kind": "cytology",
+      "rank": 630,
+      "aliases": [
+        "lymph node fna",
+        "ebus-tbna",
+        "tbna",
+        "eus fna",
+        "sydney system",
+        "mediastinal node"
+      ],
+      "version": 1,
+      "generator": "cytology",
+      "generatorPath": "generators/cytology.js",
+      "schemaPath": "schemas/lymph_node_fna.json"
+    },
+    {
+      "id": "effusion_cytology",
+      "name": "Effusion cytology (International System)",
+      "shortName": "Serous fluid · cytology",
+      "label": "Effusion",
+      "organ": "Serous fluid",
+      "system": "Cytology",
+      "kind": "cytology",
+      "rank": 640,
+      "aliases": [
+        "pleural fluid",
+        "ascitic fluid",
+        "peritoneal fluid",
+        "pericardial fluid",
+        "washing",
+        "effusion",
+        "tis"
+      ],
+      "version": 1,
+      "generator": "cytology",
+      "generatorPath": "generators/cytology.js",
+      "schemaPath": "schemas/effusion_cytology.json"
+    },
+    {
+      "id": "urine_cytology",
+      "name": "Urine cytology (Paris System 2.0)",
+      "shortName": "Urine · cytology",
+      "label": "Urine cytology",
+      "organ": "Urine",
+      "system": "Cytology",
+      "kind": "cytology",
+      "rank": 650,
+      "aliases": [
+        "urine",
+        "paris system",
+        "bladder washing",
+        "ureteric washing",
+        "voided urine"
+      ],
+      "version": 1,
+      "generator": "cytology",
+      "generatorPath": "generators/cytology.js",
+      "schemaPath": "schemas/urine_cytology.json"
+    },
+    {
+      "id": "cervical_cytology",
+      "name": "Cervical cytology (Bethesda 2014)",
+      "shortName": "Cervix · cytology",
+      "label": "Cervical smear",
+      "organ": "Cervix",
+      "system": "Cytology",
+      "kind": "cytology",
+      "rank": 660,
+      "aliases": [
+        "pap smear",
+        "cervical smear",
+        "lbc",
+        "thinprep",
+        "cervical cytology",
+        "nilm"
+      ],
+      "version": 1,
+      "generator": "cytology",
+      "generatorPath": "generators/cytology.js",
+      "schemaPath": "schemas/cervical_cytology.json"
     }
   ]
 }

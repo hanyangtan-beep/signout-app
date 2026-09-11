@@ -1,15 +1,15 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadTemplate } from './registry.js?v=mtvfgjkq';
-import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtvfgjkq';
+import { loadManifest, loadTemplate } from './registry.js?v=mtwig8fo';
+import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtwig8fo';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mtvfgjkq';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtvfgjkq';
-import { loadConfig, saveConfig } from './config.js?v=mtvfgjkq';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtvfgjkq';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtvfgjkq';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtvfgjkq';
+} from './engine.js?v=mtwig8fo';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtwig8fo';
+import { loadConfig, saveConfig } from './config.js?v=mtwig8fo';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtwig8fo';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtwig8fo';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtwig8fo';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -317,7 +317,7 @@ function renderNav() {
 const palette = { mode: {}, items: [], index: 0 };
 
 function paletteMatches(query) {
-  const exclude = palette.mode.only === 'biopsy' ? ['benign resection', 'cancer resection', 'frozen'] : palette.mode.exclude || [];
+  const exclude = palette.mode.only === 'biopsy' ? ['benign resection', 'cancer resection', 'frozen', 'cytology'] : palette.mode.exclude || [];
   return rankTemplates(state.manifest, query, { exclude });
 }
 
@@ -325,7 +325,7 @@ function openPalette(mode = {}) {
   palette.mode = mode;
   palette.index = 0;
   nodes.paletteSearch.value = '';
-  nodes.paletteSearch.placeholder = mode.exclude?.includes('biopsy') ? 'Type a resection, organ or alias (e.g. LEEP, frozen, gallbladder)' : 'Type a template, organ or alias (e.g. LEEP, Marsh, pylori)';
+  nodes.paletteSearch.placeholder = mode.exclude?.includes('biopsy') ? 'Type a resection, cytology or alias (e.g. LEEP, frozen, thyroid FNA)' : 'Type a template, organ or alias (e.g. LEEP, Marsh, pylori)';
   renderPalette();
   if (!nodes.dlgPalette.open) nodes.dlgPalette.showModal();
   nodes.paletteSearch.focus();
@@ -363,7 +363,7 @@ function renderPalette() {
     if (!palette.items.length) children.push(el('div', { class: 'palette-empty', text: `No template matches "${q}"` }));
   } else {
     // grouped browse: system × kind
-    const exclude = palette.mode.only === 'biopsy' ? ['benign resection', 'cancer resection', 'frozen'] : palette.mode.exclude || [];
+    const exclude = palette.mode.only === 'biopsy' ? ['benign resection', 'cancer resection', 'frozen', 'cytology'] : palette.mode.exclude || [];
     const groups = groupBySystem(state.manifest, { exclude });
     palette.items = [];
     for (const g of groups) {

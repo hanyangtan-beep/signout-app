@@ -1,0 +1,12 @@
+{
+  "templateId": "thyroid_fna",
+  "patch": {
+    "category": "IV. Follicular neoplasm",
+    "fnSubtype": "Oncocytic follicular neoplasm",
+    "features": [
+      "Scant colloid",
+      "Oncocytic (Hurthle) cells"
+    ]
+  },
+  "report": "Thyroid, right lobe nodule, ultrasound-guided fine needle aspiration\n\nReceived are two air-dried and two alcohol-fixed smears and a needle rinse (blood-stained), processed as cytospin (1 slide) and cell block (1 block).\n\nThe smears (4 slides), cytospin (1 slide) and cell block (1 slide) are adequate for evaluation and show scant colloid and oncocytic (Hurthle) cells. Features are those of an oncocytic follicular neoplasm.\n\nTHYROID, right lobe nodule, ultrasound-guided fine needle aspiration - ONCOCYTIC FOLLICULAR NEOPLASM (Bethesda IV: Follicular neoplasm)\n\nFollicular neoplasm (Bethesda IV) carries an estimated risk of malignancy of 30% (23-34%). Diagnostic lobectomy or molecular testing is suggested; distinction between follicular adenoma, follicular carcinoma and NIFTP requires histological examination of the excised nodule."
+}

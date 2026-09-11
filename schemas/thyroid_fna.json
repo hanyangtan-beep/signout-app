@@ -1,0 +1,365 @@
+{
+  "id": "thyroid_fna",
+  "version": 1,
+  "name": "Thyroid FNA (Bethesda 2023)",
+  "shortName": "Thyroid · FNA",
+  "label": "Thyroid FNA",
+  "organ": "Thyroid",
+  "system": "Cytology",
+  "kind": "cytology",
+  "rank": 610,
+  "aliases": [
+    "thyroid fna",
+    "bethesda",
+    "thyroid nodule aspirate"
+  ],
+  "specimenNoun": "aspirate",
+  "maxParts": 4,
+  "generator": "cytology",
+  "source": "Cytology suite. Classification systems: Bethesda 2023 (thyroid), Milan 2nd ed 2023 (salivary), Paris System 2.0 (urine), International System for Serous Fluid Cytopathology (effusions), Sydney System (lymph node), Bethesda 2014 (cervical). Adequacy is assessed on the final preparations only.",
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the preparations line (received / processed as)",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Site (after 'Thyroid,')",
+      "type": "text",
+      "default": "right lobe nodule",
+      "placeholder": "right lobe nodule / isthmic nodule / left lobe, 1.8 cm nodule"
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "options": [
+        "Fine needle aspiration",
+        "Ultrasound-guided fine needle aspiration"
+      ],
+      "default": "Fine needle aspiration"
+    },
+    {
+      "id": "smearsAir",
+      "label": "Air-dried smears",
+      "type": "number",
+      "default": 2,
+      "group": "Preparations"
+    },
+    {
+      "id": "smearsAlc",
+      "label": "Alcohol-fixed smears",
+      "type": "number",
+      "default": 2,
+      "group": "Preparations"
+    },
+    {
+      "id": "rinse",
+      "label": "Needle rinse",
+      "type": "select",
+      "options": [
+        "Blood-stained",
+        "Pink",
+        "Clear",
+        "Turbid",
+        "Brown (cyst fluid)",
+        "None"
+      ],
+      "default": "Blood-stained",
+      "group": "Preparations"
+    },
+    {
+      "id": "lbc",
+      "label": "Liquid-based slide",
+      "type": "checkbox",
+      "default": false,
+      "group": "Preparations"
+    },
+    {
+      "id": "cytospin",
+      "label": "Cytospin slides",
+      "type": "number",
+      "default": 1,
+      "group": "Preparations"
+    },
+    {
+      "id": "cellBlock",
+      "label": "Cell block slides",
+      "type": "number",
+      "default": 1,
+      "group": "Preparations"
+    },
+    {
+      "id": "adequacy",
+      "label": "Adequacy",
+      "type": "select",
+      "options": [
+        "Adequate",
+        "Adequate, limited by low cellularity",
+        "Inadequate"
+      ],
+      "default": "Adequate",
+      "group": "Adequacy"
+    },
+    {
+      "id": "inadequacyReason",
+      "label": "Reason for inadequacy",
+      "type": "select",
+      "options": [
+        "Cyst fluid only",
+        "Virtually acellular specimen",
+        "Obscuring blood",
+        "Poor preservation and air-drying artefact",
+        "Fewer than six groups of ten follicular cells"
+      ],
+      "default": "Cyst fluid only",
+      "group": "Adequacy",
+      "showIf": {
+        "field": "adequacy",
+        "is": "Inadequate"
+      }
+    },
+    {
+      "id": "category",
+      "label": "Bethesda category (2023)",
+      "type": "select",
+      "options": [
+        "I. Nondiagnostic",
+        "II. Benign",
+        "III. Atypia of undetermined significance",
+        "IV. Follicular neoplasm",
+        "V. Suspicious for malignancy",
+        "VI. Malignant"
+      ],
+      "default": "II. Benign",
+      "group": "Category"
+    },
+    {
+      "id": "benignDx",
+      "label": "Benign diagnosis",
+      "type": "select",
+      "options": [
+        "Benign follicular nodule",
+        "Colloid nodule",
+        "Benign follicular nodule with cystic change",
+        "Lymphocytic (Hashimoto) thyroiditis",
+        "Granulomatous (subacute) thyroiditis",
+        "Benign follicular nodule in a known multinodular goitre"
+      ],
+      "default": "Benign follicular nodule",
+      "group": "Category",
+      "showIf": {
+        "field": "category",
+        "is": "II. Benign"
+      }
+    },
+    {
+      "id": "ausSubtype",
+      "label": "AUS subtype",
+      "type": "select",
+      "options": [
+        "Nuclear atypia",
+        "Other (architectural atypia)",
+        "Other (oncocytic)",
+        "Other (atypical lymphoid cells)",
+        "Other (atypical cyst-lining cells)"
+      ],
+      "default": "Nuclear atypia",
+      "group": "Category",
+      "showIf": {
+        "field": "category",
+        "is": "III. Atypia of undetermined significance"
+      }
+    },
+    {
+      "id": "fnSubtype",
+      "label": "Follicular neoplasm subtype",
+      "type": "select",
+      "options": [
+        "Follicular neoplasm",
+        "Oncocytic follicular neoplasm",
+        "Follicular neoplasm with nuclear features suggestive of papillary carcinoma (NIFTP cannot be excluded)"
+      ],
+      "default": "Follicular neoplasm",
+      "group": "Category",
+      "showIf": {
+        "field": "category",
+        "is": "IV. Follicular neoplasm"
+      }
+    },
+    {
+      "id": "suspSubtype",
+      "label": "Suspicious for",
+      "type": "select",
+      "options": [
+        "Papillary thyroid carcinoma",
+        "Medullary thyroid carcinoma",
+        "Lymphoma",
+        "Metastatic carcinoma",
+        "Malignancy, type undetermined"
+      ],
+      "default": "Papillary thyroid carcinoma",
+      "group": "Category",
+      "showIf": {
+        "field": "category",
+        "is": "V. Suspicious for malignancy"
+      }
+    },
+    {
+      "id": "malignantDx",
+      "label": "Malignant diagnosis",
+      "type": "select",
+      "options": [
+        "Papillary thyroid carcinoma",
+        "Medullary thyroid carcinoma",
+        "Poorly differentiated thyroid carcinoma",
+        "Anaplastic thyroid carcinoma",
+        "Squamous cell carcinoma",
+        "Lymphoma",
+        "Metastatic carcinoma",
+        "Other malignancy"
+      ],
+      "default": "Papillary thyroid carcinoma",
+      "group": "Category",
+      "showIf": {
+        "field": "category",
+        "is": "VI. Malignant"
+      }
+    },
+    {
+      "id": "features",
+      "label": "Cytological features",
+      "type": "multiselect",
+      "options": [
+        "Abundant colloid",
+        "Scant colloid",
+        "Watery colloid",
+        "Follicular cells in flat sheets",
+        "Microfollicles",
+        "Oncocytic (Hurthle) cells",
+        "Lymphocytes",
+        "Haemosiderin-laden macrophages",
+        "Papillary architecture",
+        "Nuclear enlargement and pallor",
+        "Nuclear grooves",
+        "Intranuclear pseudoinclusions",
+        "Psammoma bodies",
+        "Multinucleated giant cells",
+        "Amyloid",
+        "Plasmacytoid cells with salt-and-pepper chromatin",
+        "Marked pleomorphism",
+        "Necrosis",
+        "Mitoses"
+      ],
+      "default": [
+        "Abundant colloid",
+        "Follicular cells in flat sheets",
+        "Haemosiderin-laden macrophages"
+      ],
+      "group": "Microscopy"
+    },
+    {
+      "id": "additionalFindings",
+      "label": "Additional findings (free text, appended to microscopy)",
+      "type": "textarea",
+      "default": "",
+      "group": "Microscopy",
+      "placeholder": "e.g. Occasional groups of ciliated respiratory epithelial cells are also present"
+    },
+    {
+      "id": "ancillary",
+      "label": "Ancillary studies (same paragraph)",
+      "type": "textarea",
+      "default": "",
+      "group": "Ancillary",
+      "placeholder": "e.g. Immunostaining on the cell block shows the cells to be positive for TTF-1 and negative for p40"
+    }
+  ],
+  "snippets": [
+    {
+      "id": "thyroid_rom_i",
+      "label": "Risk of malignancy: Nondiagnostic",
+      "auto": {
+        "field": "category",
+        "is": "I. Nondiagnostic"
+      },
+      "text": "A nondiagnostic result (Bethesda I) carries an estimated risk of malignancy of 13% (5-20%). Repeat ultrasound-guided aspiration is suggested."
+    },
+    {
+      "id": "thyroid_rom_iii",
+      "label": "Risk of malignancy: Atypia of undetermined significance",
+      "auto": {
+        "field": "category",
+        "is": "III. Atypia of undetermined significance"
+      },
+      "text": "Atypia of undetermined significance (Bethesda III) carries an estimated risk of malignancy of 22% (13-30%). Repeat aspiration, molecular testing or diagnostic lobectomy may be considered according to clinical and sonographic correlation."
+    },
+    {
+      "id": "thyroid_rom_iv",
+      "label": "Risk of malignancy: Follicular neoplasm",
+      "auto": {
+        "field": "category",
+        "is": "IV. Follicular neoplasm"
+      },
+      "text": "Follicular neoplasm (Bethesda IV) carries an estimated risk of malignancy of 30% (23-34%). Diagnostic lobectomy or molecular testing is suggested; distinction between follicular adenoma, follicular carcinoma and NIFTP requires histological examination of the excised nodule."
+    },
+    {
+      "id": "thyroid_rom_v",
+      "label": "Risk of malignancy: Suspicious for malignancy",
+      "auto": {
+        "field": "category",
+        "is": "V. Suspicious for malignancy"
+      },
+      "text": "Suspicious for malignancy (Bethesda V) carries an estimated risk of malignancy of 74% (67-83%). Surgical management is suggested."
+    },
+    {
+      "id": "thyroid_molecular",
+      "label": "Molecular testing available on cell block",
+      "text": "Molecular testing on the cell block can be arranged on request."
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "right lobe nodule",
+          "procedure": "Ultrasound-guided fine needle aspiration",
+          "smearsAir": "2",
+          "smearsAlc": "2",
+          "rinse": "Blood-stained",
+          "lbc": false,
+          "cytospin": "1",
+          "cellBlock": "1",
+          "adequacy": "Adequate",
+          "inadequacyReason": "Cyst fluid only",
+          "category": "II. Benign",
+          "benignDx": "Benign follicular nodule",
+          "features": [
+            "Abundant colloid",
+            "Follicular cells in flat sheets",
+            "Haemosiderin-laden macrophages"
+          ],
+          "additionalFindings": "",
+          "ancillary": ""
+        }
+      }
+    ]
+  }
+}

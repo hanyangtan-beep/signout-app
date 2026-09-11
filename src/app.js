@@ -317,7 +317,7 @@ function renderNav() {
 const palette = { mode: {}, items: [], index: 0 };
 
 function paletteMatches(query) {
-  const exclude = palette.mode.only === 'biopsy' ? ['benign resection', 'cancer resection', 'frozen'] : palette.mode.exclude || [];
+  const exclude = palette.mode.only === 'biopsy' ? ['benign resection', 'cancer resection', 'frozen', 'cytology'] : palette.mode.exclude || [];
   return rankTemplates(state.manifest, query, { exclude });
 }
 
@@ -325,7 +325,7 @@ function openPalette(mode = {}) {
   palette.mode = mode;
   palette.index = 0;
   nodes.paletteSearch.value = '';
-  nodes.paletteSearch.placeholder = mode.exclude?.includes('biopsy') ? 'Type a resection, organ or alias (e.g. LEEP, frozen, gallbladder)' : 'Type a template, organ or alias (e.g. LEEP, Marsh, pylori)';
+  nodes.paletteSearch.placeholder = mode.exclude?.includes('biopsy') ? 'Type a resection, cytology or alias (e.g. LEEP, frozen, thyroid FNA)' : 'Type a template, organ or alias (e.g. LEEP, Marsh, pylori)';
   renderPalette();
   if (!nodes.dlgPalette.open) nodes.dlgPalette.showModal();
   nodes.paletteSearch.focus();
@@ -363,7 +363,7 @@ function renderPalette() {
     if (!palette.items.length) children.push(el('div', { class: 'palette-empty', text: `No template matches "${q}"` }));
   } else {
     // grouped browse: system × kind
-    const exclude = palette.mode.only === 'biopsy' ? ['benign resection', 'cancer resection', 'frozen'] : palette.mode.exclude || [];
+    const exclude = palette.mode.only === 'biopsy' ? ['benign resection', 'cancer resection', 'frozen', 'cytology'] : palette.mode.exclude || [];
     const groups = groupBySystem(state.manifest, { exclude });
     palette.items = [];
     for (const g of groups) {

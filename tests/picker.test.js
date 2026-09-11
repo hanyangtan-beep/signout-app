@@ -91,7 +91,7 @@ test('palette ranking: exact shortName > alias > organ > keyword', () => {
   assert.equal(top('EBUS'), 'Lung');
   assert.equal(top('gstr'), 'Gastric');             // subsequence fallback
   // organ beats keyword: "cervix" ranks the two cervical templates, biopsy first by rank
-  assert.deepEqual(rankTemplates(manifest, 'cervix').map(labelOf), ['Cervix', 'LEEP', 'Uterus']);
+  assert.deepEqual(rankTemplates(manifest, 'cervix').map(labelOf), ['Cervix', 'LEEP', 'Cervical smear', 'Uterus']);
   // multi-token: every token must match
   assert.deepEqual(rankTemplates(manifest, 'cervix cone').map(labelOf), ['LEEP']);
   assert.deepEqual(rankTemplates(manifest, 'zzz'), []);
@@ -107,12 +107,12 @@ test('palette ranking: exact shortName > alias > organ > keyword', () => {
 
 test('grouped browse and the part selector put Small biopsy first, systems in canonical order', () => {
   const groups = groupBySystem(manifest);
-  assert.deepEqual(groups.map((g) => g.system), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen']);
+  assert.deepEqual(groups.map((g) => g.system), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology']);
   const gyn = groups.find((g) => g.system === 'Gynae');
   assert.deepEqual(gyn.items.map((t) => t.kind), ['biopsy', 'biopsy', 'benign resection', 'benign resection', 'benign resection', 'benign resection'], 'ascending specimen size within a system');
   assert.deepEqual(gyn.items.slice(2).map(labelOf), ['LEEP', 'Placenta', 'Uterus', 'Ovarian cyst'], 'rank order within a kind');
   const sel = selectorGroups(manifest);
   assert.equal(sel[0].label, 'Small biopsy');
   assert.equal(sel[0].items.length, 10);
-  assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen']);
+  assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology']);
 });
