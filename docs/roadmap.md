@@ -62,6 +62,17 @@ Verify:     tests + Playwright mobile profiles + manual iPhone check
 Ship:       one deploy + publish
 Spec:       `docs/specs/iphone-layout.md`
 
+### Prostate biopsy — Gleason pattern reference galleries   Size: M
+Why:        Gleason pattern 3 vs 4 (poorly formed / fused glands), pattern 4 vs 5, cribriform and intraductal carcinoma calls drive the Grade Group and are the commonest source of inter-observer disagreement; a picture beside the chip, as for endometrium, reduces mis-grading (user request 2026-09-11, citing Epstein).
+Change:     `field.reference` galleries (existing mechanism, lightbox) on `primary` / `secondary` (shared gallery: pattern 3 discrete glands incl. small / branching / atrophic glands; pattern 4 poorly formed, fused, glomeruloid, cribriform; pattern 5 single cells, cords, sheets, solid nests, comedonecrosis; borderline 3-vs-4 pitfalls — tangential sectioning, crushed glands, adenosis / partial atrophy), `tertiary5` (minor pattern 5 vs a true secondary; the < 5 % rule), `cribriform` (large vs small cribriform, cribriform vs glomeruloid, cribriform vs fused), `idcp` (IDC-P vs invasive cribriform: basal cells, dense cribriform / solid, marked atypia, comedonecrosis; vs HGPIN), `category` (ASAP / HGPIN / atypical adenomatous hyperplasia / benign mimics — seminal vesicle, Cowper glands, nephrogenic adenoma). Criteria bullets from the 2014 and 2019 ISUP consensus papers (Epstein et al., Am J Surg Pathol 2016;40:244; van Leenders et al., Am J Surg Pathol 2020;44:e87), Epstein's Modern Pathology / AJSP updates and WHO Urinary and Male Genital Tumours 5th ed., each cited by DOI in the spec. Images: open-access CC BY / CC BY-SA / CC0 only, legends checked, panel-cropped, ≤ 150 kB, credit + licence + URL under each, in `assets/reference/prostate/`. Grade Group table (1 = 3+3, 2 = 3+4, 3 = 4+3, 4 = 8, 5 = 9-10) shown once at the top of the gallery.
+Untouched:  report wording, Grade Group derivation, fixtures, other templates.
+Accept:     `tests/reference.test.js` covers the new entries (file, caption, credit, licence, URL; ≥ 2 illustrated groups per field); source table and gaps in the spec; each of the five fields shows Compare photos in the browser; galleries open one column on mobile if the iPhone card has shipped.
+Stop:       Epstein's own figures are almost all behind AJSP / Modern Pathology paywalls — they are the criteria source, not the image source; do not lift them. Use his open-access papers only where the licence is CC BY (check each on Europe PMC). If no licensed image exists for a pattern after a bounded search, ship criteria text and list it as a gap. No NC / ND; nothing AI-generated.
+Verify:     tests + browser
+Ship:       one deploy + publish
+Spec:       `docs/specs/prostate-gleason-galleries.md`
+Later:      the user's own photomicrographs from Drive (same card as endometrium).
+
 ### Prostate biopsy — inadequate core                    Size: S
 Why:        cores with fibromuscular tissue only have no finding today.
 Change:     per-part finding "Inadequate for diagnosis"; microscopy `Sections show a core of fibromuscular tissue only. No prostatic glandular tissue is present for assessment.`; dx `INADEQUATE FOR DIAGNOSIS - fibromuscular tissue only, no prostatic glands sampled`; excluded from cores-positive, listed in SUMMARY as "(C) inadequate"; optional repeat-sampling snippet.
