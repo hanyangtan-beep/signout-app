@@ -187,7 +187,7 @@ Depends on: Linked synoptic part
 
 One line each; card them before building.
 
-- Synoptic templates after stomach and the lung / breast pairs: prostate (radical) with Gleason arithmetic validation; endometrium. (`docs/specs/synoptic-next-templates.md`)
+- Synoptic templates after stomach and the lung / breast pairs: prostate (radical) with Gleason arithmetic validation; endometrial carcinoma (`GYN-Endometrium.html`) with AJCC pTNM in the report and a separate, derived FIGO 2009 + FIGO 2023 stage shown for reference only in the Checks panel — never printed, copied or written to the Doc, since FIGO is not formally reported at the centre. (`docs/specs/synoptic-next-templates.md`)
 - Appendix NET (`Endocrine-Appendix-NET.html`) and other GI NET pages (stomach, duodenum / ampulla, jejunum–ileum, colon, pancreas) as a NET family sharing one staging module and the WHO grade (Ki-67 / mitotic) Check.
 - Pancreatobiliary pair: duct-margin frozen (Frozen section scenarios (b)) + Pancreas (`GI-Pancreas.html`), distal extrahepatic and perihilar bile duct synoptics (`GI-Distal Extrahepatic bile ducts.html`, `GI-Perhilar bile ducts.html`); frozen `marginSummary` feeds margin status; card after the lung pair proves the pattern.
 - Head-and-neck pair: named-margin presets (Frozen section scenarios (e)) + Lip and oral cavity synoptic (`HN-Lip and oral cavity.html`; DOI, WPOI, margins from the frozen parts) and nasal cavity / sinuses.
