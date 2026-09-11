@@ -116,6 +116,19 @@ Verify:     tests + browser (light)
 Ship:       one batch, one publish
 Spec:       `docs/specs/frozen-section-scenarios.md`
 
+### Endometrial carcinoma resection (synoptic)          Size: L → split; build as one batch
+Why:        second gynaecological cancer resection after LEEP; the QMH page (`GYN-Endometrium.html`, CAP 5.1.0.0 Dec-2024) carries WHO 5e types, the molecular classifier and both FIGO tables, but prints no stage — its FIGO line and pTNM block are commented out — and the centre does not formally report FIGO.
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/GYN-Endometrium.html (saved as `docs/reference/GYN-Endometrium.html`; importer draft runs clean, 100 controls).
+Split into:
+  (a) `src/staging/endometrium.js` (M): FIGO 2023 rule order (IVC → … → IA1) with aggressive / non-aggressive histotype, LVSI focal vs substantial, IA3 ovarian exception, IAm / IICm molecular upgrades applied only when the class is confirmed; FIGO 2009; AJCC 8th pT / pN (ITC, micro, macro) / pM; one boundary test per substage.
+  (b) Schema + generator (M): `endometrial_carcinoma`, "Uterus · cancer resection", Gynaecological; fields in QMH order with QMH option wording (procedure, hysterectomy type, integrity, site, size, WHO 5e type, grade, MMR IHC / MSI / p53 / POLE with ProMisE auto-suggested by precedence, myoinvasion with depth / thickness / auto %, adenomyosis, serosa, LUS, cervix with stromal depth, other organ involvement, LVSI, PNI, peritoneal fluid, two margins, pelvic and para-aortic node blocks with macro / micro / ITC counts and ENE, distant metastasis, additional findings); macro + block key; one-paragraph microscopy with the IHC / molecular sentence; synoptic block in QMH order with **no stage line**; diagnosis `UTERUS WITH CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral salpingo-oophorectomy - ENDOMETRIOID CARCINOMA, FIGO grade 1, invading less than half of the myometrium; …; molecular class NSMP`; Checks panel prints `FIGO 2009 (reference, not reported): …` and `FIGO 2023 (reference, not reported): …` as info lines with a "would become IAm / IICm if …" clause when the class is unknown; case option `printPTNM` (default off) appends the AJCC 8th pTNM block; validators for depth vs percentage, polyp-confined with myoinvasion, double classifier, node arithmetic.
+  (c) Fixtures + docs (S): six fixtures (IA2 NSMP example, serous IICm, POLEmut IAm in a polyp, carcinosarcoma IIIC2ii + IVB, IA3 uterus + ovary, endocervical glandular only) against the saved page element order; README, `schemas/README.md`, picker test (Uterus ranking adds the cancer template after `uterus_benign`).
+Untouched:  `endometrial_biopsy`, `uterus_benign`, LEEP and cervical templates and fixtures; colon / GIST staging modules; no Upgrade-this-part hook yet (add under Linked synoptic part when that ships).
+Accept:     each fixture derives the expected FIGO 2023 and 2009 in Checks; `report`, Copy full report, Doc and Sheet row never contain "FIGO"; toggling `printPTNM` adds only the pTNM block; example loads in the browser and the palette shows "Uterus · cancer resection" under Gynaecological.
+Verify:     tests + browser (light)
+Ship:       one batch, one publish
+Spec:       `docs/specs/endometrial-carcinoma.md`
+
 ### Gastric carcinoma resection (synoptic)              Size: L → split before building
 Why:        highest-volume cancer resection after colon.
 Split into: (a) save QMH page + importer draft + `src/staging/gastric.js` rules with boundary tests (M); (b) schema + generator + synoptic block + Checks (M); (c) fixtures against the QMH page element order + docs (S).
@@ -187,7 +200,7 @@ Depends on: Linked synoptic part
 
 One line each; card them before building.
 
-- Synoptic templates after stomach and the lung / breast pairs: prostate (radical) with Gleason arithmetic validation; endometrial carcinoma (`GYN-Endometrium.html`) with AJCC pTNM in the report and a separate, derived FIGO 2009 + FIGO 2023 stage shown for reference only in the Checks panel — never printed, copied or written to the Doc, since FIGO is not formally reported at the centre. (`docs/specs/synoptic-next-templates.md`)
+- Synoptic templates after stomach and the lung / breast pairs: prostate (radical) with Gleason arithmetic validation. (`docs/specs/synoptic-next-templates.md`; endometrium carded in Next)
 - Appendix NET (`Endocrine-Appendix-NET.html`) and other GI NET pages (stomach, duodenum / ampulla, jejunum–ileum, colon, pancreas) as a NET family sharing one staging module and the WHO grade (Ki-67 / mitotic) Check.
 - Pancreatobiliary pair: duct-margin frozen (Frozen section scenarios (b)) + Pancreas (`GI-Pancreas.html`), distal extrahepatic and perihilar bile duct synoptics (`GI-Distal Extrahepatic bile ducts.html`, `GI-Perhilar bile ducts.html`); frozen `marginSummary` feeds margin status; card after the lung pair proves the pattern.
 - Head-and-neck pair: named-margin presets (Frozen section scenarios (e)) + Lip and oral cavity synoptic (`HN-Lip and oral cavity.html`; DOI, WPOI, margins from the frozen parts) and nasal cavity / sinuses.
