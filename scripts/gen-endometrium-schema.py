@@ -315,9 +315,36 @@ schema = {
 
 ids = [f["id"] for f in fields]
 assert len(ids) == len(set(ids)), "duplicate field ids"
+
+# Reference photo galleries: criteria text from endometrium_reference_text.py, images from the
+# credits manifest assets/reference/endometrium/images.json (field, group, src, caption, credit,
+# license, url). Every group heading must be an option of its field; every image must match a group.
+import copy, sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from endometrium_reference_text import REFERENCE_TEXT  # noqa: E402
+
+manifest_path = ROOT / "assets" / "reference" / "endometrium" / "images.json"
+manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else []
+by_id = {f["id"]: f for f in fields}
+n_images = 0
+for fid, ref in REFERENCE_TEXT.items():
+    f = by_id[fid]
+    ref = copy.deepcopy(ref)
+    headings = [g["heading"] for g in ref["groups"]]
+    unknown = [h for h in headings if h not in f["options"]]
+    assert not unknown, f"{fid}: reference groups not in options: {unknown}"
+    for im in [m for m in manifest if m["field"] == fid]:
+        assert im["group"] in headings, f"{fid}: image group {im['group']!r} unknown"
+        for k in ("src", "caption", "credit", "license", "url"):
+            assert im.get(k), f"{fid}: image {im.get('src')} lacks {k}"
+        assert (ROOT / im["src"]).exists(), f"missing image file {im['src']}"
+        g = next(g for g in ref["groups"] if g["heading"] == im["group"])
+        g.setdefault("images", []).append({k: im[k] for k in ("src", "caption", "credit", "license", "url")})
+        n_images += 1
+    f["reference"] = ref
 missing = [i for i in ids if i not in EXAMPLE_VALUES]
 assert not missing, f"example lacks values for {missing}"
 
 out = ROOT / "schemas" / "endometrial_carcinoma.json"
 out.write_text(json.dumps(schema, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-print(f"wrote {out.relative_to(ROOT)} ({len(fields)} fields, {len(snippets)} snippets)")
+print(f"wrote {out.relative_to(ROOT)} ({len(fields)} fields, {len(snippets)} snippets, {n_images} reference images)")

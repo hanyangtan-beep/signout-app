@@ -1,15 +1,15 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadTemplate } from './registry.js?v=mtwsl8uo';
-import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtwsl8uo';
+import { loadManifest, loadTemplate } from './registry.js?v=mtwuu17o';
+import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtwuu17o';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mtwsl8uo';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtwsl8uo';
-import { loadConfig, saveConfig } from './config.js?v=mtwsl8uo';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtwsl8uo';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtwsl8uo';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtwsl8uo';
+} from './engine.js?v=mtwuu17o';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtwuu17o';
+import { loadConfig, saveConfig } from './config.js?v=mtwuu17o';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtwuu17o';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtwuu17o';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtwuu17o';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -466,12 +466,14 @@ function referencePanel(field, part) {
   const panel = el('div', { class: 'ref-panel', role: 'region', 'aria-label': ref.title || field.label });
   if (ref.title) panel.append(el('div', { class: 'ref-title', text: ref.title }));
   if (ref.intro) panel.append(el('p', { class: 'ref-intro', text: ref.intro }));
-  panel.append(el('div', { class: 'ref-groups', style: `--ref-cols:${(ref.groups || []).length || 1}` },
+  panel.append(el('div', { class: 'ref-groups', style: `--ref-cols:${Math.min((ref.groups || []).length || 1, ref.columns || 3)}` },
     ...(ref.groups || []).map((g) => el('section', { class: 'ref-group' },
       el('h4', { text: g.heading }),
       g.points?.length ? el('ul', { class: 'ref-points' }, ...g.points.map((t) => el('li', { text: t }))) : null,
       ...(g.images || []).map((im) => el('figure', { class: 'ref-figure' },
-        el('img', { src: im.src, alt: im.caption || g.heading, loading: 'lazy', decoding: 'async' }),
+        el('img', { src: im.src, alt: im.caption || g.heading, loading: 'lazy', decoding: 'async', tabindex: '0', role: 'button',
+          title: 'Enlarge', onclick: () => openLightbox(im, g.heading),
+          onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(im, g.heading); } } }),
         el('figcaption', {},
           im.caption ? el('span', { class: 'ref-caption', text: im.caption }) : null,
           im.credit ? el('span', { class: 'ref-credit' },
@@ -479,6 +481,27 @@ function referencePanel(field, part) {
             im.license ? document.createTextNode(` · ${im.license}`) : null) : null)))))));
   if (ref.note) panel.append(el('p', { class: 'ref-note', text: ref.note }));
   return panel;
+}
+
+// Full-size view of a reference image; Esc, the close button or a click outside the figure dismisses it.
+function openLightbox(im, heading) {
+  let dlg = document.getElementById('ref-lightbox');
+  if (!dlg) {
+    dlg = el('dialog', { id: 'ref-lightbox', class: 'ref-lightbox', 'aria-label': 'Reference image' });
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    document.body.append(dlg);
+  }
+  dlg.replaceChildren(
+    el('button', { type: 'button', class: 'ref-lightbox-close', 'aria-label': 'Close', text: '\u00d7', onclick: () => dlg.close() }),
+    el('figure', {},
+      el('img', { src: im.src, alt: im.caption || heading }),
+      el('figcaption', {},
+        el('span', { class: 'ref-lightbox-heading', text: heading }),
+        im.caption ? el('span', { class: 'ref-caption', text: im.caption }) : null,
+        im.credit ? el('span', { class: 'ref-credit' },
+          im.url ? el('a', { href: im.url, target: '_blank', rel: 'noopener', text: im.credit }) : document.createTextNode(im.credit),
+          im.license ? document.createTextNode(` \u00b7 ${im.license}`) : null) : null)));
+  if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
 }
 
 // Consecutive fields sharing a `group` render inside one collapsible fieldset
@@ -542,8 +565,11 @@ function renderField(field, part, index) {
       type: 'button', class: 'chip', 'aria-pressed': String(chosen.includes(opt)), onclick: () => setValue(field.id, toggleOption(field, chosen, opt))
     }, el('span', { class: 'key', text: String(i + 1) }), document.createTextNode(labelFor(field, opt)))));
     wrap.append(el('div', { class: 'field-label', id: `${id}-label`, text: field.label },
-      el('span', { class: 'field-hint', text: ' (tick all that apply)' })), group);
+      el('span', { class: 'field-hint', text: ' (tick all that apply)' })),
+      field.reference ? el('div', { class: 'field-control' }, group, referenceToggle(field, part)) : group);
     if (field.help) wrap.append(el('div', { class: 'field-help', text: field.help }));
+    const refPanel = referencePanel(field, part);
+    if (refPanel) wrap.append(refPanel);
     return wrap;
   }
   if (options.length <= 6) {

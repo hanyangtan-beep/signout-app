@@ -38,21 +38,13 @@ Cytology (6)
 
 Docs
 - 2026-09-10 Design suggestions, Google Drive set-up guide, case-mix analysis, breast biomarker source spec, Phase 4b brief, parsimonious roadmap template.
+- 2026-09-11 Endometrial carcinoma — reference photo galleries: 77 CC BY / CC0 photomicrographs (24 open-access sources, legends checked, panel-cropped, ≤ 150 kB, credit + licence + URL under each) on `solidPct`, `nuclearGrade`, `histType`, `differentiation` and `invasionPattern`, with WHO-5th-ed criteria bullets per heading and a click-to-enlarge view; `tests/reference.test.js` extended (605 tests). Gaps (MELF vs LVSI mimic, LCNEC quality, G3 endometrioid vs serous side by side) listed in the spec; user's own Drive photos remain a Later card.
 
 ---
 
 ## Now
 
-### Endometrial carcinoma — reference photo galleries      Size: M
-Why:        grade, histotype, variant and invasion-pattern calls are made from memory; a picture next to the chip reduces mis-grading (user request 2026-09-11).
-Change:     `field.reference` galleries (existing gastric mechanism) on five fields of `endometrial_carcinoma`: `solidPct` (grade 1 / 2 / 3 architecture; squamous morules not counted), `nuclearGrade` (grade 1-2 vs 3 nuclei; serous pitfall), `histType` (serous, clear cell, dedifferentiated, undifferentiated, carcinosarcoma, mesonephric-like, gastric-type, NEC, mixed), `differentiation` (squamous, mucinous, secretory, ciliated, sex cord-like, CHEC, spindle), `invasionPattern` (infiltrative, pushing, MELF, adenomyosis-like, single cells; adenomyosis involved vs invasion). Each group: WHO 5th ed criteria bullets, a "distinguish from" line, one to three photomicrographs. Images: open-access CC BY / CC BY-SA / CC0 only (journal figures, Wikimedia Commons), legend checked, cropped to the relevant panel, ≤150 kB, lazy-loaded, credit + licence + URL under each; shipped in `assets/reference/endometrium/`. Gallery grid capped at three columns. Never AI-generated; never printed in the report.
-Untouched:  report wording, fixtures, staging; other templates.
-Accept:     `tests/reference.test.js` passes for every new entry (file exists, caption, credit, licence, URL); a source table in the spec; each of the five fields shows a Compare photos toggle in the browser; groups without a licensed image ship with criteria text only and are listed as gaps.
-Stop:       bounded search per entity; no image without a verified licence; no NC / ND licences.
-Verify:     tests + browser
-Ship:       one deploy + publish
-Spec:       `docs/specs/endometrial-carcinoma.md` (Reference galleries section)
-Later:      the user's own photomicrographs from a Drive folder (`Sign-out reference images/endometrium/...`), separate card.
+(empty)
 
 ---
 

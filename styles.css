@@ -361,7 +361,18 @@ textarea.input { min-height: 64px; resize: vertical; }
 .ref-group h4 { margin: 0 0 var(--space-2); font-size: var(--text-sm); font-weight: 600; color: var(--color-primary); }
 .ref-points { margin: 0 0 var(--space-3); padding-left: 1.1em; font-size: var(--text-xs); color: var(--color-text); display: grid; gap: 2px; }
 .ref-figure { margin: 0 0 var(--space-3); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
-.ref-figure img { display: block; width: 100%; height: auto; max-height: 340px; object-fit: cover; object-position: center; background: #f4f1f6; }
+.ref-figure img { display: block; width: 100%; height: auto; max-height: 340px; object-fit: cover; object-position: center; background: #f4f1f6; cursor: zoom-in; }
+.ref-figure img:focus-visible { outline: 2px solid var(--color-primary); outline-offset: -2px; }
+.ref-lightbox { border: 0; padding: 0; background: transparent; max-width: 96vw; max-height: 96vh; }
+.ref-lightbox::backdrop { background: rgba(20, 16, 24, 0.82); }
+.ref-lightbox figure { margin: 0; display: grid; gap: var(--space-2); justify-items: center; }
+.ref-lightbox img { max-width: 94vw; max-height: 82vh; width: auto; height: auto; object-fit: contain; border-radius: var(--radius-md); background: #f4f1f6; }
+.ref-lightbox figcaption { display: grid; gap: 2px; max-width: 94vw; padding: var(--space-2) var(--space-3); font-size: var(--text-sm); color: #fff; text-align: center; }
+.ref-lightbox .ref-caption { color: #fff; }
+.ref-lightbox .ref-credit, .ref-lightbox .ref-credit a { color: rgba(255, 255, 255, 0.75); }
+.ref-lightbox-heading { font-weight: 600; }
+.ref-lightbox-close { position: fixed; top: 12px; right: 16px; width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.15); color: #fff; font-size: 26px; line-height: 1; cursor: pointer; }
+.ref-lightbox-close:hover { background: rgba(255, 255, 255, 0.3); }
 .ref-figure figcaption { display: grid; gap: 2px; padding: var(--space-2) var(--space-3); font-size: var(--text-xs); }
 .ref-caption { color: var(--color-text); }
 .ref-credit { color: var(--color-text-faint); }

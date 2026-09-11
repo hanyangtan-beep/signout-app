@@ -33,3 +33,23 @@ test('gastric IM subtype carries a complete vs incomplete reference gallery', ()
   assert.deepEqual(f.reference.groups.map((g) => g.heading), ['Complete (type I)', 'Incomplete (type II/III)']);
   assert.ok(f.reference.groups.every((g) => g.images.length >= 2));
 });
+
+test('endometrial carcinoma carries illustrated galleries on the five grading, typing and invasion fields', () => {
+  const schema = registry.endometrial_carcinoma.schema;
+  const fields = new Map(schema.fields.map((f) => [f.id, f]));
+  let total = 0;
+  for (const id of ['solidPct', 'nuclearGrade', 'histType', 'differentiation', 'invasionPattern']) {
+    const f = fields.get(id);
+    assert.ok(f && f.reference, `${id} has a reference gallery`);
+    const withImages = f.reference.groups.filter((g) => (g.images || []).length > 0);
+    assert.ok(withImages.length >= 2, `${id} has at least two illustrated groups`);
+    for (const g of f.reference.groups) {
+      for (const im of g.images || []) {
+        assert.match(im.license, /^CC(0| BY| BY-SA)/, `${im.src} is CC BY / CC BY-SA / CC0`);
+        assert.ok(!/NC|ND/.test(im.license), `${im.src} is not NC/ND`);
+        total += 1;
+      }
+    }
+  }
+  assert.ok(total >= 60, `endometrial galleries hold ${total} images`);
+});
