@@ -2,7 +2,7 @@
 
 Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`.
 
-State on 2026-09-11: 42 templates (10 small biopsy, 23 benign resection incl. LEEP, 1 frozen section, 2 synoptic cancer resections, 6 cytology), 545 tests, published at `https://han-signout.pplx.app`.
+State on 2026-09-11: 43 templates (10 small biopsy, 23 benign resection incl. LEEP, 1 frozen section, 3 synoptic cancer resections, 6 cytology), 603 tests, published at `https://han-signout.pplx.app`.
 
 ---
 
@@ -28,9 +28,10 @@ Benign resection templates (23) and frozen section (1)
 - 2026-09-10 LEEP (from the legacy app), lymph node (reusable part), placenta, gallbladder, thyroid benign, parathyroid, appendix, uterus benign, ovarian cyst, skin cyst, skin excision with mm margins, breast excision / cavity shaves, TURP, TURBT, tonsils / adenoids, benign soft tissue, nasal polyps, skin small lesions, aortic valve / aorta (SCVP grading), stoma, liver benign, jaw cysts, salivary benign.
 - 2026-09-10 Frozen section: scenario pick-lists, grouped intraoperative lines, block handling, frozen–paraffin correlation, INTRAOPERATIVE CONSULTATION block.
 
-Synoptic cancer resections (2)
+Synoptic cancer resections (3)
 - 2026-09-10 Colon and rectum carcinoma resection (CAP 4.4.0.1, 62 fields, auto pTNM + stage, validation, auto comments; element order asserted against the QMH page).
 - 2026-09-10 GIST resection (CAP 4.3.0.0 via `docs/reference/GI-GIST.html`, 52 fields; `src/staging/gist.js` — pT by size, gastric vs non-gastric AJCC 8th stage groups split by mitotic rate, Miettinen and Lasota 2006 risk table with insufficient-data cells; KIT / DOG1 / CD34 / SDHB, molecular line, complete-response wording; Checks and six auto comments; element order asserted against the saved page; 532 tests).
+- 2026-09-11 Endometrial carcinoma resection (CAP 5.1.0.0 via `docs/reference/GYN-Endometrium.html`, 85 fields; `src/staging/endometrium.js` — AJCC 8th pT / pN / pM plus FIGO 2009 and FIGO 2023 with the IA3, IAm and IICm rules, shown only as `(reference, not reported)` info lines in Checks; pTNM block behind `printPTNM`; ProMisE class by precedence with override; six fixtures, element order against the saved page; 603 tests).
 
 Cytology (6)
 - 2026-09-11 Cytology suite: kind `cytology` / system Cytology, shared `generators/cytology.js`, schemas from `scripts/gen-cytology-schemas.py`. Thyroid FNA (Bethesda 2023, ROM per category), salivary gland FNA (Milan 2nd ed., ROM incl. IVa / IVb), lymph node FNA / EBUS-TBNA / EUS-FNA (Sydney L1–L5), serous effusions (TIS, ROM), urine (Paris 2.0, LGUN flag, no ROM line), cervical LBC / conventional (Bethesda 2014, HPV line). Preparations line (smears / cytospin / cell block / LBC) as the macro block; adequacy + findings + interpretation in one microscopy paragraph with cell-block IHC; house diagnosis line `ORGAN, site, procedure - DIAGNOSIS (System: category)`; auto ROM / management snippets; adequacy–category and feature–category Checks. No rapid on-site evaluation fields (not offered locally). 13 tests incl. 8 golden fixtures (`tests/fixtures/cytology/`). Spec: `docs/specs/cytology-suite.md`.
@@ -115,19 +116,6 @@ Accept:     per-card fixtures reproduce the quoted house lines (SLN §2, bile du
 Verify:     tests + browser (light)
 Ship:       one batch, one publish
 Spec:       `docs/specs/frozen-section-scenarios.md`
-
-### Endometrial carcinoma resection (synoptic)          Size: L → split; build as one batch
-Why:        second gynaecological cancer resection after LEEP; the QMH page (`GYN-Endometrium.html`, CAP 5.1.0.0 Dec-2024) carries WHO 5e types, the molecular classifier and both FIGO tables, but prints no stage — its FIGO line and pTNM block are commented out — and the centre does not formally report FIGO.
-Source:     https://awiloqmh.github.io/CancerReportingTemplate/GYN-Endometrium.html (saved as `docs/reference/GYN-Endometrium.html`; importer draft runs clean, 100 controls).
-Split into:
-  (a) `src/staging/endometrium.js` (M): FIGO 2023 rule order (IVC → … → IA1) with aggressive / non-aggressive histotype, LVSI focal vs substantial, IA3 ovarian exception, IAm / IICm molecular upgrades applied only when the class is confirmed; FIGO 2009; AJCC 8th pT / pN (ITC, micro, macro) / pM; one boundary test per substage.
-  (b) Schema + generator (M): `endometrial_carcinoma`, "Uterus · cancer resection", Gynaecological; fields in QMH order with QMH option wording (procedure, hysterectomy type, integrity, site, size, WHO 5e type, grade, MMR IHC / MSI / p53 / POLE with ProMisE auto-suggested by precedence, myoinvasion with depth / thickness / auto %, adenomyosis, serosa, LUS, cervix with stromal depth, other organ involvement, LVSI, PNI, peritoneal fluid, two margins, pelvic and para-aortic node blocks with macro / micro / ITC counts and ENE, distant metastasis, additional findings); macro + block key; one-paragraph microscopy with the IHC / molecular sentence; synoptic block in QMH order with **no stage line**; diagnosis `UTERUS WITH CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral salpingo-oophorectomy - ENDOMETRIOID CARCINOMA, FIGO grade 1, invading less than half of the myometrium; …; molecular class NSMP`; Checks panel prints `FIGO 2009 (reference, not reported): …` and `FIGO 2023 (reference, not reported): …` as info lines with a "would become IAm / IICm if …" clause when the class is unknown; case option `printPTNM` (default off) appends the AJCC 8th pTNM block; validators for depth vs percentage, polyp-confined with myoinvasion, double classifier, node arithmetic.
-  (c) Fixtures + docs (S): six fixtures (IA2 NSMP example, serous IICm, POLEmut IAm in a polyp, carcinosarcoma IIIC2ii + IVB, IA3 uterus + ovary, endocervical glandular only) against the saved page element order; README, `schemas/README.md`, picker test (Uterus ranking adds the cancer template after `uterus_benign`).
-Untouched:  `endometrial_biopsy`, `uterus_benign`, LEEP and cervical templates and fixtures; colon / GIST staging modules; no Upgrade-this-part hook yet (add under Linked synoptic part when that ships).
-Accept:     each fixture derives the expected FIGO 2023 and 2009 in Checks; `report`, Copy full report, Doc and Sheet row never contain "FIGO"; toggling `printPTNM` adds only the pTNM block; example loads in the browser and the palette shows "Uterus · cancer resection" under Gynaecological.
-Verify:     tests + browser (light)
-Ship:       one batch, one publish
-Spec:       `docs/specs/endometrial-carcinoma.md`
 
 ### Gastric carcinoma resection (synoptic)              Size: L → split before building
 Why:        highest-volume cancer resection after colon.

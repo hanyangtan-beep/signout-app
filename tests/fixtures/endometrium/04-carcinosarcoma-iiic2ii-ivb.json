@@ -1,0 +1,57 @@
+{
+  "templateId": "endometrial_carcinoma",
+  "patch": {
+    "histType": "Carcinosarcoma (malignant mixed Mullerian tumor)",
+    "grade": "High-grade (non-endometrioid carcinoma)",
+    "myoInvasion": "Estimated 50% or greater myometrial invasion",
+    "depthMm": "14",
+    "myoThicknessMm": "18",
+    "paExamined": "6",
+    "paMacro": "1",
+    "paMicro": "0",
+    "paItc": "0",
+    "paEne": "Present",
+    "paDepositMm": "9",
+    "pelvicExamined": "10",
+    "pelvicMacro": "2",
+    "pelvicMicro": "0",
+    "pelvicSentinel": false,
+    "pelvicEne": "Not identified",
+    "pelvicDepositMm": "6",
+    "distantMets": [
+      "Omentum"
+    ],
+    "additionalProcedures": [
+      "Pelvic lymphadenectomy",
+      "Para-aortic lymphadenectomy",
+      "Omentectomy"
+    ],
+    "additionalFindings": [],
+    "microDescription": "heterologous rhabdomyosarcomatous differentiation is present",
+    "mmrIhc": "Not performed",
+    "p53": "Not performed",
+    "pole": "Not performed",
+    "otherIhc": ""
+  },
+  "options": {
+    "synopticOnly": true
+  },
+  "report": "Uterus with cervix and bilateral adnexa, total hysterectomy and bilateral salpingo-oophorectomy with pelvic lymphadenectomy, para-aortic lymphadenectomy and omentectomy\n\nThe specimen consists of an intact uterus with cervix (165 g, 92 x 58 x 44 mm) with attached right and left fallopian tubes and ovaries from a laparoscopic, robotic-assisted total hysterectomy and bilateral salpingo-oophorectomy. The serosa is smooth and glistening. The endometrial cavity (45 mm in length) contains a polypoid tumour measuring 35 x 30 x 12 mm arising from the endometrium (posterior wall and fundus), with invasion to a depth of 6 mm on sectioning where the myometrium measures 18 mm. The lower uterine segment and cervix are unremarkable. The fallopian tubes and ovaries are unremarkable.\n\n(1-4) Tumour, posterior wall, full thickness.\n(5) Tumour, fundus.\n(6) Anterior wall, full thickness.\n(7) Lower uterine segment.\n(8-9) Cervix, anterior and posterior.\n(10) Right fallopian tube and ovary.\n(11) Left fallopian tube and ovary.\n(12-13) Right pelvic sentinel lymph nodes (2).\n(14) Left pelvic sentinel lymph node (1).\n\n- Procedure: Total hysterectomy and bilateral salpingo-oophorectomy; pelvic lymphadenectomy, para-aortic lymphadenectomy, omentectomy\n- Hysterectomy type: Laparoscopic, robotic-assisted\n- Specimen integrity: Intact\n- Tumour site: Endometrium (posterior wall and fundus)\n- Tumour size: 35 mm in greatest dimension (35 x 30 x 12 mm)\n- Histologic type: Carcinosarcoma\n- Histologic grade: High-grade (non-endometrioid carcinoma)\n- Mismatch repair (MMR) immunohistochemistry: Not performed\n- p53 immunohistochemistry: Not performed\n- POLE status: Not performed\n- Molecular classification: Not performed\n- Myometrial invasion: Estimated 50% or greater myometrial invasion\n- Depth of myometrial invasion: 14 mm\n- Myometrial thickness: 18 mm\n- Percentage of myometrial invasion: 78%\n- Adenomyosis: Not identified\n- Uterine serosa involvement: Not identified\n- Lower uterine segment involvement: Not identified\n- Cervical stromal involvement: Not identified\n- Other tissue / organ involvement: Not identified\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n- Peritoneal / ascitic fluid: Not submitted / unknown\n- Ectocervical / vaginal cuff margin: Uninvolved by carcinoma\n- Parametrial / paracervical margin: Not applicable\n- Pelvic lymph nodes: 10 examined; 2 involved; 2 with macrometastasis (more than 2 mm); largest metastatic deposit 6 mm; extranodal extension not identified\n- Para-aortic lymph nodes: 6 examined; 1 involved; 1 with macrometastasis (more than 2 mm); largest metastatic deposit 9 mm; extranodal extension present\n- Distant metastasis: Omentum\n- Additional pathologic findings: None\n\nUTERUS WITH CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral salpingo-oophorectomy with pelvic lymphadenectomy, para-aortic lymphadenectomy and omentectomy - CARCINOSARCOMA, high grade, invading half or more of the myometrium; no lymphovascular space invasion; cervix and adnexa uninvolved; 2 of 10 pelvic lymph nodes involved; 1 of 6 para-aortic lymph nodes involved; metastatic carcinoma in the omentum\n\nCarcinosarcoma is a biphasic tumour of metaplastic carcinoma and is staged and managed as a high-grade endometrial carcinoma; the carcinomatous and sarcomatous components, including any heterologous elements, are described above.",
+  "checks": [
+    {
+      "level": "warn",
+      "message": "MMR immunohistochemistry is not recorded; universal MMR testing is recommended for endometrial carcinoma.",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "FIGO 2009 (reference, not reported): IVB",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "FIGO 2023 (reference, not reported): IVB - abdominal peritoneal metastasis beyond the pelvis",
+      "part": "A"
+    }
+  ]
+}

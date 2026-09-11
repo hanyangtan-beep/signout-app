@@ -1,0 +1,1132 @@
+{
+  "id": "endometrial_carcinoma",
+  "version": "2026.09",
+  "name": "Endometrial carcinoma resection",
+  "shortName": "Uterus · cancer resection",
+  "label": "Endometrial Ca",
+  "organ": "UTERUS",
+  "system": "Gynae",
+  "kind": "cancer resection",
+  "rank": 42,
+  "aliases": [
+    "endometrium",
+    "endometrial carcinoma",
+    "endometrial cancer",
+    "hysterectomy for carcinoma",
+    "TAHBSO",
+    "serous",
+    "carcinosarcoma",
+    "clear cell",
+    "endometrioid",
+    "ProMisE",
+    "POLE",
+    "MMR",
+    "p53",
+    "myometrial invasion",
+    "LVSI",
+    "synoptic",
+    "CAP",
+    "AJCC"
+  ],
+  "specimenNoun": "resection",
+  "maxParts": 1,
+  "defaultParts": 1,
+  "generator": "endometrial_carcinoma",
+  "style": {
+    "british": true
+  },
+  "source": {
+    "template": "QMH Cancer Reporting Template - GYN-Endometrium",
+    "url": "https://awiloqmh.github.io/CancerReportingTemplate/GYN-Endometrium.html",
+    "capProtocol": "CAP Carcinoma and Carcinosarcoma of the Endometrium 5.1.0.0 (Dec-2024)",
+    "staging": "AJCC 8th edition pTNM printed only with the printPTNM option; FIGO 2009 and FIGO 2023 derived for the Checks panel and never printed",
+    "stagingProtocol": "endometrium",
+    "savedPage": "docs/reference/GYN-Endometrium.html",
+    "figo2023": "Berek JS et al. FIGO staging of endometrial cancer: 2023. Int J Gynecol Obstet 2023;162:383-394"
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / SYNOPTIC REPORT / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "synopticOnly",
+      "label": "Synoptic only (omit the narrative microscopy paragraph)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "printPTNM",
+      "label": "Print the AJCC 8th edition pTNM block (FIGO is never printed)",
+      "type": "checkbox",
+      "default": false
+    }
+  ],
+  "partDefaults": [],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen (blank = derived from the procedure)",
+      "type": "text",
+      "placeholder": "e.g. Uterus with cervix and bilateral adnexa, total hysterectomy and bilateral salpingo-oophorectomy"
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Total hysterectomy and bilateral salpingo-oophorectomy",
+        "Total hysterectomy",
+        "Radical hysterectomy and bilateral salpingo-oophorectomy",
+        "Radical hysterectomy",
+        "Supracervical hysterectomy",
+        "Other (specify)"
+      ],
+      "default": "Total hysterectomy and bilateral salpingo-oophorectomy"
+    },
+    {
+      "id": "procedureOther",
+      "label": "Procedure (specify)",
+      "type": "text",
+      "group": "Macroscopy",
+      "showIf": {
+        "field": "procedure",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "additionalProcedures",
+      "label": "Additional procedures",
+      "type": "multiselect",
+      "group": "Macroscopy",
+      "options": [
+        "Right salpingo-oophorectomy",
+        "Left salpingo-oophorectomy",
+        "Bilateral salpingectomy",
+        "Omentectomy",
+        "Peritoneal biopsies",
+        "Peritoneal washing",
+        "Pelvic lymphadenectomy",
+        "Para-aortic lymphadenectomy",
+        "Sentinel lymph node biopsy"
+      ],
+      "default": []
+    },
+    {
+      "id": "hysterectomyType",
+      "label": "Hysterectomy type",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Not specified",
+        "Abdominal",
+        "Vaginal",
+        "Vaginal, laparoscopic-assisted",
+        "Laparoscopic",
+        "Laparoscopic, robotic-assisted",
+        "Other (specify)"
+      ],
+      "default": "Not specified"
+    },
+    {
+      "id": "specimenIntegrity",
+      "label": "Specimen integrity",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Intact",
+        "Opened",
+        "Morcellated",
+        "Other (specify)"
+      ],
+      "default": "Intact"
+    },
+    {
+      "id": "weight",
+      "label": "Weight (g)",
+      "type": "number",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "dimensions",
+      "label": "Uterus dimensions (mm, e.g. 90 x 60 x 45)",
+      "type": "text",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cavityLengthMm",
+      "label": "Endometrial cavity length (mm)",
+      "type": "number",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "serosaMacro",
+      "label": "Serosa (macro)",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Smooth and glistening",
+        "Adhesions",
+        "Tumour nodules",
+        "Disrupted",
+        "Other (specify)"
+      ],
+      "default": "Smooth and glistening"
+    },
+    {
+      "id": "tumourSite",
+      "label": "Tumour site",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Endometrium",
+        "Lower uterine segment",
+        "Endometrial polyp",
+        "Cannot be determined",
+        "Other (specify)"
+      ],
+      "default": "Endometrium"
+    },
+    {
+      "id": "tumourSiteDetail",
+      "label": "Site detail (e.g. posterior wall and fundus)",
+      "type": "text",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "tumourGrowth",
+      "label": "Growth pattern (macro)",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Polypoid",
+        "Exophytic",
+        "Flat, infiltrative",
+        "Diffuse, filling the cavity",
+        "Not grossly visible",
+        "Cannot be determined"
+      ],
+      "default": "Polypoid"
+    },
+    {
+      "id": "tumourSizeMm",
+      "label": "Tumour size: greatest dimension (mm)",
+      "type": "number",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "tumourDims",
+      "label": "Tumour size: all dimensions (mm x mm x mm)",
+      "type": "text",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "sizeCannot",
+      "label": "Tumour size cannot be determined (explain)",
+      "type": "text",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "macroDepthMm",
+      "label": "Macro: depth of invasion (mm)",
+      "type": "number",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "macroMyoMm",
+      "label": "Macro: myometrial thickness at that point (mm)",
+      "type": "number",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cervixMacro",
+      "label": "Lower uterine segment and cervix (macro; blank = unremarkable)",
+      "type": "text",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "adnexaMacro",
+      "label": "Adnexa (macro; blank = unremarkable)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "e.g. right tube 50 x 5 mm and ovary 30 x 20 x 10 mm, left tube 48 x 5 mm and ovary 28 x 18 x 10 mm, all unremarkable"
+    },
+    {
+      "id": "otherMacro",
+      "label": "Other macroscopic findings",
+      "type": "text",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "blockKeyText",
+      "label": "Block key (one entry per line, e.g. \"1-4 Tumour, posterior wall, full thickness\")",
+      "type": "textarea",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "histType",
+      "label": "Histologic type (WHO 5th edition)",
+      "type": "select",
+      "group": "Histology and molecular",
+      "options": [
+        "Endometrioid carcinoma",
+        "Serous carcinoma",
+        "Clear cell carcinoma",
+        "Dedifferentiated carcinoma",
+        "Undifferentiated carcinoma",
+        "Carcinosarcoma (malignant mixed Mullerian tumor)",
+        "Mesonephric-like adenocarcinoma",
+        "Squamous cell carcinoma, NOS",
+        "Gastric (gastrointestinal)-type carcinoma",
+        "Mixed cell carcinoma (specify types and percentages)",
+        "Small cell neuroendocrine carcinoma",
+        "Large cell neuroendocrine carcinoma",
+        "Other (specify)"
+      ],
+      "default": "Endometrioid carcinoma"
+    },
+    {
+      "id": "histTypeOther",
+      "label": "Histologic type (specify; types and percentages for a mixed carcinoma)",
+      "type": "text",
+      "group": "Histology and molecular",
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Mixed cell carcinoma (specify types and percentages)",
+          "Other (specify)"
+        ]
+      }
+    },
+    {
+      "id": "grade",
+      "label": "Histologic grade",
+      "type": "select",
+      "group": "Histology and molecular",
+      "options": [
+        "FIGO grade 1 (endometrioid carcinoma)",
+        "FIGO grade 2 (endometrioid carcinoma)",
+        "FIGO grade 3 (endometrioid carcinoma)",
+        "High-grade (non-endometrioid carcinoma)",
+        "Other (specify)",
+        "Cannot be assessed"
+      ],
+      "default": "FIGO grade 1 (endometrioid carcinoma)",
+      "help": "FIGO grading applies to endometrioid carcinoma; other histotypes are high grade by definition."
+    },
+    {
+      "id": "gradeOther",
+      "label": "Grade (specify)",
+      "type": "text",
+      "group": "Histology and molecular",
+      "showIf": {
+        "field": "grade",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "microDescription",
+      "label": "Microscopy: additional description (optional)",
+      "type": "textarea",
+      "group": "Histology and molecular",
+      "placeholder": "e.g. squamous differentiation is present; a MELF pattern of invasion is noted"
+    },
+    {
+      "id": "mmrIhc",
+      "label": "Mismatch repair (MMR) IHC",
+      "type": "select",
+      "group": "Histology and molecular",
+      "options": [
+        "Not performed",
+        "Intact nuclear expression of MLH1, PMS2, MSH2 and MSH6",
+        "Loss of nuclear MMR protein expression (specify)",
+        "Subclonal loss of nuclear MMR protein expression (specify)",
+        "Requested; result to follow",
+        "Cannot be assessed (explain)"
+      ],
+      "default": "Not performed"
+    },
+    {
+      "id": "mmrDetail",
+      "label": "MMR IHC: proteins lost / explain",
+      "type": "text",
+      "group": "Histology and molecular",
+      "showIf": {
+        "field": "mmrIhc",
+        "is": [
+          "Loss of nuclear MMR protein expression (specify)",
+          "Subclonal loss of nuclear MMR protein expression (specify)",
+          "Cannot be assessed (explain)"
+        ]
+      }
+    },
+    {
+      "id": "msi",
+      "label": "Microsatellite instability (MSI)",
+      "type": "select",
+      "group": "Histology and molecular",
+      "options": [
+        "Not performed",
+        "MSI-Stable (MSS)",
+        "MSI-Low (MSI-L)",
+        "MSI-High (MSI-H)",
+        "Cannot be assessed (explain)"
+      ],
+      "default": "Not performed"
+    },
+    {
+      "id": "p53",
+      "label": "p53 IHC",
+      "type": "select",
+      "group": "Histology and molecular",
+      "options": [
+        "Not performed",
+        "Normal (wild type) expression",
+        "Abnormal, Overexpression (strong, diffuse nuclear expression)",
+        "Abnormal, Null (lack of nuclear or cytoplasmic expression, internal positive control present)",
+        "Abnormal, Cytoplasmic only (lacks nuclear expression)",
+        "Subclonal abnormal (mutated)",
+        "Requested; result to follow",
+        "Cannot be determined (explain)"
+      ],
+      "default": "Not performed"
+    },
+    {
+      "id": "p53Detail",
+      "label": "p53: explain / subclonal pattern",
+      "type": "text",
+      "group": "Histology and molecular",
+      "showIf": {
+        "field": "p53",
+        "is": [
+          "Subclonal abnormal (mutated)",
+          "Cannot be determined (explain)"
+        ]
+      }
+    },
+    {
+      "id": "pole",
+      "label": "POLE status",
+      "type": "select",
+      "group": "Histology and molecular",
+      "options": [
+        "Not performed",
+        "Wild-type",
+        "Mutated (specify)",
+        "Requested; result to follow",
+        "Cannot be assessed (explain)"
+      ],
+      "default": "Not performed"
+    },
+    {
+      "id": "poleDetail",
+      "label": "POLE: variant / explain",
+      "type": "text",
+      "group": "Histology and molecular",
+      "showIf": {
+        "field": "pole",
+        "is": [
+          "Mutated (specify)",
+          "Cannot be assessed (explain)"
+        ]
+      }
+    },
+    {
+      "id": "promise",
+      "label": "Molecular classification (ProMisE)",
+      "type": "select",
+      "group": "Histology and molecular",
+      "options": [
+        "Derive from the results above",
+        "POLE-mutated carcinoma",
+        "Mismatch repair-deficient carcinoma",
+        "p53-abnormal carcinoma",
+        "No specific molecular profile (NSMP)",
+        "Double classifier (explain)",
+        "Not classified (testing incomplete)"
+      ],
+      "default": "Derive from the results above",
+      "help": "Derived with the ProMisE precedence: POLE mutation, then MMR deficiency, then abnormal p53; NSMP when all three are normal."
+    },
+    {
+      "id": "promiseDetail",
+      "label": "Molecular classification: explain",
+      "type": "text",
+      "group": "Histology and molecular",
+      "showIf": {
+        "field": "promise",
+        "is": "Double classifier (explain)"
+      }
+    },
+    {
+      "id": "otherIhc",
+      "label": "Other immunohistochemistry (e.g. ER and PR positive)",
+      "type": "text",
+      "group": "Histology and molecular"
+    },
+    {
+      "id": "myoInvasion",
+      "label": "Myometrial invasion",
+      "type": "select",
+      "group": "Extent of disease",
+      "options": [
+        "Not identified",
+        "Estimated less than 50% myometrial invasion",
+        "Estimated 50% or greater myometrial invasion",
+        "Cannot be assessed (explain)"
+      ],
+      "default": "Estimated less than 50% myometrial invasion"
+    },
+    {
+      "id": "myoCannot",
+      "label": "Myometrial invasion cannot be assessed (explain)",
+      "type": "text",
+      "group": "Extent of disease",
+      "showIf": {
+        "field": "myoInvasion",
+        "is": "Cannot be assessed (explain)"
+      }
+    },
+    {
+      "id": "depthMm",
+      "label": "Depth of myometrial invasion (mm)",
+      "type": "number",
+      "group": "Extent of disease"
+    },
+    {
+      "id": "myoThicknessMm",
+      "label": "Myometrial thickness (mm)",
+      "type": "number",
+      "group": "Extent of disease"
+    },
+    {
+      "id": "myoPercent",
+      "label": "Percentage of myometrial invasion (blank = derived from depth and thickness)",
+      "type": "number",
+      "group": "Extent of disease"
+    },
+    {
+      "id": "adenomyosis",
+      "label": "Adenomyosis",
+      "type": "select",
+      "group": "Extent of disease",
+      "options": [
+        "Not identified",
+        "Present, uninvolved by tumour",
+        "Present, involved by tumour",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "serosa",
+      "label": "Uterine serosa involvement",
+      "type": "select",
+      "group": "Extent of disease",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "lus",
+      "label": "Lower uterine segment involvement",
+      "type": "select",
+      "group": "Extent of disease",
+      "options": [
+        "Not identified",
+        "Present, superficial (non-invasive)",
+        "Present, myoinvasion",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "cervix",
+      "label": "Cervical stromal involvement",
+      "type": "select",
+      "group": "Extent of disease",
+      "options": [
+        "Not identified",
+        "Cervical stromal invasion",
+        "Endocervical glandular involvement only",
+        "Cannot be determined",
+        "Not applicable (cervix not submitted)"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "cervixDepthMm",
+      "label": "Depth of cervical stromal invasion (mm)",
+      "type": "number",
+      "group": "Extent of disease",
+      "showIf": {
+        "field": "cervix",
+        "is": "Cervical stromal invasion"
+      }
+    },
+    {
+      "id": "cervixThicknessMm",
+      "label": "Cervical stromal thickness (mm)",
+      "type": "number",
+      "group": "Extent of disease",
+      "showIf": {
+        "field": "cervix",
+        "is": "Cervical stromal invasion"
+      }
+    },
+    {
+      "id": "otherInvolvement",
+      "label": "Other tissue / organ involvement",
+      "type": "multiselect",
+      "group": "Extent of disease",
+      "options": [
+        "Not identified",
+        "Right ovary",
+        "Left ovary",
+        "Ovary (side not specified)",
+        "Right fallopian tube",
+        "Left fallopian tube",
+        "Fallopian tube (side not specified)",
+        "Vagina",
+        "Right parametrium",
+        "Left parametrium",
+        "Parametrium (side not specified)",
+        "Pelvic wall",
+        "Bladder wall without mucosal involvement",
+        "Bladder wall with mucosal involvement",
+        "Bowel wall without mucosal involvement",
+        "Bowel wall with mucosal involvement",
+        "Omentum",
+        "Other organs/tissue (specify)",
+        "Cannot be determined (explain)"
+      ],
+      "default": [
+        "Not identified"
+      ]
+    },
+    {
+      "id": "otherInvolvementDetail",
+      "label": "Other tissue / organ involvement: specify / explain",
+      "type": "text",
+      "group": "Extent of disease"
+    },
+    {
+      "id": "ovarianSynchronous",
+      "label": "Ovarian tumour is low-grade endometrioid and disease is limited to the uterus and ovary (synchronous pattern)",
+      "type": "checkbox",
+      "group": "Extent of disease",
+      "default": false,
+      "help": "With a low-grade endometrioid uterine tumour and an involved ovary this meets FIGO 2023 IA3 (reference only)."
+    },
+    {
+      "id": "pelvicPeritoneum",
+      "label": "Pelvic peritoneum (biopsies / deposits)",
+      "type": "select",
+      "group": "Extent of disease",
+      "options": [
+        "Not submitted",
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not submitted"
+    },
+    {
+      "id": "lvsi",
+      "label": "Lymphovascular invasion",
+      "type": "select",
+      "group": "Extent of disease",
+      "options": [
+        "Not identified",
+        "Present, focal (less than 5 vessels)",
+        "Present, substantial (5 or more vessels)",
+        "Present, extent not specified",
+        "Equivocal (explain)",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "lvsiDetail",
+      "label": "LVSI: location / explain",
+      "type": "text",
+      "group": "Extent of disease"
+    },
+    {
+      "id": "pni",
+      "label": "Perineural invasion",
+      "type": "select",
+      "group": "Extent of disease",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "peritonealFluid",
+      "label": "Peritoneal / ascitic fluid",
+      "type": "select",
+      "group": "Extent of disease",
+      "options": [
+        "Not submitted / unknown",
+        "Negative for malignancy (NFM)",
+        "Atypia of undetermined significance (AUS)",
+        "Suspicious for malignancy (SFM)",
+        "Malignant (MAL)",
+        "Cannot be determined",
+        "Results pending"
+      ],
+      "default": "Not submitted / unknown"
+    },
+    {
+      "id": "vaginalMargin",
+      "label": "Ectocervical / vaginal cuff margin",
+      "type": "select",
+      "group": "Margins and lymph nodes",
+      "options": [
+        "Uninvolved by carcinoma",
+        "Involved by carcinoma",
+        "Cannot be assessed",
+        "Not applicable"
+      ],
+      "default": "Uninvolved by carcinoma"
+    },
+    {
+      "id": "vaginalMarginMm",
+      "label": "Ectocervical / vaginal cuff margin: closest distance (mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes",
+      "showIf": {
+        "field": "vaginalMargin",
+        "is": "Uninvolved by carcinoma"
+      }
+    },
+    {
+      "id": "parametrialMargin",
+      "label": "Parametrial / paracervical margin",
+      "type": "select",
+      "group": "Margins and lymph nodes",
+      "options": [
+        "Uninvolved by carcinoma",
+        "Involved by carcinoma",
+        "Cannot be assessed",
+        "Not applicable"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "parametrialMarginMm",
+      "label": "Parametrial / paracervical margin: closest distance (mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes",
+      "showIf": {
+        "field": "parametrialMargin",
+        "is": "Uninvolved by carcinoma"
+      }
+    },
+    {
+      "id": "pelvicExamined",
+      "label": "Pelvic lymph nodes: number examined (0 if none submitted)",
+      "type": "number",
+      "group": "Margins and lymph nodes"
+    },
+    {
+      "id": "pelvicMacro",
+      "label": "Pelvic: number with macrometastasis (more than 2 mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes"
+    },
+    {
+      "id": "pelvicMicro",
+      "label": "Pelvic: number with micrometastasis (more than 0.2 mm up to 2 mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes"
+    },
+    {
+      "id": "pelvicItc",
+      "label": "Pelvic: number with isolated tumour cells (0.2 mm or less)",
+      "type": "number",
+      "group": "Margins and lymph nodes"
+    },
+    {
+      "id": "pelvicLaterality",
+      "label": "Pelvic: laterality of involved nodes",
+      "type": "select",
+      "group": "Margins and lymph nodes",
+      "options": [
+        "Not applicable",
+        "Right",
+        "Left",
+        "Bilateral",
+        "Cannot be determined"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "pelvicDepositMm",
+      "label": "Pelvic: size of largest metastatic deposit (mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes"
+    },
+    {
+      "id": "pelvicNodeMm",
+      "label": "Pelvic: size of largest involved node (mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes"
+    },
+    {
+      "id": "pelvicEne",
+      "label": "Pelvic: extranodal extension",
+      "type": "select",
+      "group": "Margins and lymph nodes",
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "pelvicSentinel",
+      "label": "Pelvic: sentinel lymph node(s) included",
+      "type": "checkbox",
+      "group": "Margins and lymph nodes",
+      "default": false
+    },
+    {
+      "id": "paExamined",
+      "label": "Para-aortic lymph nodes: number examined (0 if none submitted)",
+      "type": "number",
+      "group": "Margins and lymph nodes"
+    },
+    {
+      "id": "paMacro",
+      "label": "Para-aortic: number with macrometastasis (more than 2 mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes"
+    },
+    {
+      "id": "paMicro",
+      "label": "Para-aortic: number with micrometastasis (more than 0.2 mm up to 2 mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes"
+    },
+    {
+      "id": "paItc",
+      "label": "Para-aortic: number with isolated tumour cells (0.2 mm or less)",
+      "type": "number",
+      "group": "Margins and lymph nodes"
+    },
+    {
+      "id": "paLaterality",
+      "label": "Para-aortic: laterality of involved nodes",
+      "type": "select",
+      "group": "Margins and lymph nodes",
+      "options": [
+        "Not applicable",
+        "Right",
+        "Left",
+        "Bilateral",
+        "Cannot be determined"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "paDepositMm",
+      "label": "Para-aortic: size of largest metastatic deposit (mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes"
+    },
+    {
+      "id": "paNodeMm",
+      "label": "Para-aortic: size of largest involved node (mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes"
+    },
+    {
+      "id": "paEne",
+      "label": "Para-aortic: extranodal extension",
+      "type": "select",
+      "group": "Margins and lymph nodes",
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "paSentinel",
+      "label": "Para-aortic: sentinel lymph node(s) included",
+      "type": "checkbox",
+      "group": "Margins and lymph nodes",
+      "default": false
+    },
+    {
+      "id": "distantMets",
+      "label": "Distant metastasis",
+      "type": "multiselect",
+      "group": "Metastasis and other findings",
+      "options": [
+        "Not identified",
+        "Inguinal lymph node(s)",
+        "Omentum",
+        "Extrapelvic peritoneum",
+        "Lung (specify)",
+        "Liver (specify)",
+        "Bone (specify)",
+        "Other (specify)",
+        "Cannot be determined"
+      ],
+      "default": [
+        "Not identified"
+      ]
+    },
+    {
+      "id": "distantDetail",
+      "label": "Distant metastasis: specify",
+      "type": "text",
+      "group": "Metastasis and other findings"
+    },
+    {
+      "id": "tnmOverride",
+      "label": "Override derived pTNM (e.g. \"pT1b pN0\") - leave blank to accept the derived stage",
+      "type": "text",
+      "group": "Metastasis and other findings"
+    },
+    {
+      "id": "tnmOverrideReason",
+      "label": "Reason for override",
+      "type": "text",
+      "group": "Metastasis and other findings",
+      "showIf": {
+        "field": "tnmOverride",
+        "truthy": true
+      }
+    },
+    {
+      "id": "additionalFindings",
+      "label": "Additional pathologic findings",
+      "type": "multiselect",
+      "group": "Metastasis and other findings",
+      "options": [
+        "Atypical hyperplasia / endometrial intraepithelial neoplasia (EIN)",
+        "Endometrial polyp",
+        "Leiomyomas",
+        "Adenomyosis",
+        "Endometriosis",
+        "Other (specify)"
+      ],
+      "default": []
+    },
+    {
+      "id": "additionalFindingsOther",
+      "label": "Additional findings: specify",
+      "type": "text",
+      "group": "Metastasis and other findings"
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional notes (appended to the microscopy)",
+      "type": "textarea",
+      "group": "Metastasis and other findings"
+    }
+  ],
+  "snippets": [
+    {
+      "id": "endometrium_mmrd_lynch",
+      "label": "MMR-deficient: methylation / Lynch work-up",
+      "auto": {
+        "flag": "mmrd"
+      },
+      "text": "The tumour shows loss of mismatch repair protein expression. Where MLH1 and PMS2 are lost, MLH1 promoter hypermethylation testing is recommended to distinguish sporadic from Lynch syndrome-associated deficiency; loss of MSH2, MSH6 or isolated PMS2, or unmethylated MLH1 loss, should prompt referral for genetic counselling and germline testing."
+    },
+    {
+      "id": "endometrium_p53abn",
+      "label": "p53-abnormal: high-risk molecular group",
+      "auto": {
+        "flag": "p53abn"
+      },
+      "text": "The tumour is p53-abnormal on immunohistochemistry and falls within the p53-abnormal (copy-number high) molecular group, which carries an adverse prognosis independent of histotype and stage; multidisciplinary discussion of adjuvant therapy is advised."
+    },
+    {
+      "id": "endometrium_pole_mut",
+      "label": "POLE-mutated: favourable prognosis",
+      "auto": {
+        "flag": "polemut"
+      },
+      "text": "The tumour harbours a pathogenic POLE exonuclease domain mutation and is classified as POLE-mutated (ultramutated), a group with an excellent prognosis irrespective of grade and histotype."
+    },
+    {
+      "id": "endometrium_molecular_pending",
+      "label": "Molecular testing pending: supplementary report",
+      "auto": {
+        "flag": "molecularPending"
+      },
+      "text": "Molecular testing is in progress; the final molecular classification will be issued as a supplementary report."
+    },
+    {
+      "id": "endometrium_double_classifier",
+      "label": "Multiple classifier: precedence explained",
+      "auto": {
+        "field": "promise",
+        "is": "Double classifier (explain)"
+      },
+      "text": "The tumour shows more than one molecular classifying feature (multiple classifier). By WHO and ProMisE convention a pathogenic POLE mutation takes precedence over mismatch repair deficiency, which in turn takes precedence over abnormal p53; the tumour is assigned to the group stated above."
+    },
+    {
+      "id": "endometrium_synchronous_ovary",
+      "label": "Uterine and ovarian tumours: synchronous low-grade endometrioid",
+      "auto": {
+        "field": "ovarianSynchronous",
+        "is": true
+      },
+      "text": "The uterine and ovarian tumours are both low-grade endometrioid carcinomas. With superficial or absent myometrial invasion, no lymphovascular space invasion and the ovarian tumour confined to the ovary, these are regarded as clonally related low-risk disease with a favourable outcome rather than as metastatic spread."
+    },
+    {
+      "id": "endometrium_fluid_pending",
+      "label": "Peritoneal fluid cytology reported separately",
+      "auto": {
+        "field": "peritonealFluid",
+        "is": "Results pending"
+      },
+      "text": "The peritoneal washing is reported separately; please correlate."
+    },
+    {
+      "id": "endometrium_carcinosarcoma",
+      "label": "Carcinosarcoma: staged as carcinoma",
+      "auto": {
+        "field": "histType",
+        "is": "Carcinosarcoma (malignant mixed Mullerian tumor)"
+      },
+      "text": "Carcinosarcoma is a biphasic tumour of metaplastic carcinoma and is staged and managed as a high-grade endometrial carcinoma; the carcinomatous and sarcomatous components, including any heterologous elements, are described above."
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true,
+      "synopticOnly": false,
+      "printPTNM": false
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "",
+          "procedure": "Total hysterectomy and bilateral salpingo-oophorectomy",
+          "procedureOther": "",
+          "additionalProcedures": [
+            "Sentinel lymph node biopsy"
+          ],
+          "hysterectomyType": "Laparoscopic, robotic-assisted",
+          "specimenIntegrity": "Intact",
+          "weight": "165",
+          "dimensions": "92 x 58 x 44",
+          "cavityLengthMm": "45",
+          "serosaMacro": "Smooth and glistening",
+          "tumourSite": "Endometrium",
+          "tumourSiteDetail": "posterior wall and fundus",
+          "tumourGrowth": "Polypoid",
+          "tumourSizeMm": "35",
+          "tumourDims": "35 x 30 x 12",
+          "sizeCannot": "",
+          "macroDepthMm": "6",
+          "macroMyoMm": "18",
+          "cervixMacro": "",
+          "adnexaMacro": "",
+          "otherMacro": "",
+          "blockKeyText": "1-4 Tumour, posterior wall, full thickness\n5 Tumour, fundus\n6 Anterior wall, full thickness\n7 Lower uterine segment\n8-9 Cervix, anterior and posterior\n10 Right fallopian tube and ovary\n11 Left fallopian tube and ovary\n12-13 Right pelvic sentinel lymph nodes (2)\n14 Left pelvic sentinel lymph node (1)",
+          "histType": "Endometrioid carcinoma",
+          "histTypeOther": "",
+          "grade": "FIGO grade 1 (endometrioid carcinoma)",
+          "gradeOther": "",
+          "microDescription": "focal squamous differentiation is present",
+          "mmrIhc": "Intact nuclear expression of MLH1, PMS2, MSH2 and MSH6",
+          "mmrDetail": "",
+          "msi": "Not performed",
+          "p53": "Normal (wild type) expression",
+          "p53Detail": "",
+          "pole": "Wild-type",
+          "poleDetail": "",
+          "promise": "Derive from the results above",
+          "promiseDetail": "",
+          "otherIhc": "ER and PR positive",
+          "myoInvasion": "Estimated less than 50% myometrial invasion",
+          "myoCannot": "",
+          "depthMm": "6",
+          "myoThicknessMm": "18",
+          "myoPercent": "",
+          "adenomyosis": "Not identified",
+          "serosa": "Not identified",
+          "lus": "Not identified",
+          "cervix": "Not identified",
+          "cervixDepthMm": "",
+          "cervixThicknessMm": "",
+          "otherInvolvement": [
+            "Not identified"
+          ],
+          "otherInvolvementDetail": "",
+          "ovarianSynchronous": false,
+          "pelvicPeritoneum": "Not submitted",
+          "lvsi": "Not identified",
+          "lvsiDetail": "",
+          "pni": "Not identified",
+          "peritonealFluid": "Not submitted / unknown",
+          "vaginalMargin": "Uninvolved by carcinoma",
+          "vaginalMarginMm": "",
+          "parametrialMargin": "Not applicable",
+          "parametrialMarginMm": "",
+          "pelvicExamined": "3",
+          "pelvicMacro": "0",
+          "pelvicMicro": "0",
+          "pelvicItc": "0",
+          "pelvicLaterality": "Not applicable",
+          "pelvicDepositMm": "",
+          "pelvicNodeMm": "",
+          "pelvicEne": "Not applicable",
+          "pelvicSentinel": true,
+          "paExamined": "0",
+          "paMacro": "",
+          "paMicro": "",
+          "paItc": "",
+          "paLaterality": "Not applicable",
+          "paDepositMm": "",
+          "paNodeMm": "",
+          "paEne": "Not applicable",
+          "paSentinel": false,
+          "distantMets": [
+            "Not identified"
+          ],
+          "distantDetail": "",
+          "tnmOverride": "",
+          "tnmOverrideReason": "",
+          "additionalFindings": [
+            "Atypical hyperplasia / endometrial intraepithelial neoplasia (EIN)",
+            "Leiomyomas"
+          ],
+          "additionalFindingsOther": "",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 42,
+  "count": 43,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -1020,6 +1020,40 @@
       "generator": "salivary",
       "generatorPath": "generators/salivary.js",
       "schemaPath": "schemas/salivary_benign.json"
+    },
+    {
+      "id": "endometrial_carcinoma",
+      "name": "Endometrial carcinoma resection",
+      "shortName": "Uterus · cancer resection",
+      "label": "Endometrial Ca",
+      "organ": "UTERUS",
+      "system": "Gynae",
+      "kind": "cancer resection",
+      "rank": 42,
+      "aliases": [
+        "endometrium",
+        "endometrial carcinoma",
+        "endometrial cancer",
+        "hysterectomy for carcinoma",
+        "TAHBSO",
+        "serous",
+        "carcinosarcoma",
+        "clear cell",
+        "endometrioid",
+        "ProMisE",
+        "POLE",
+        "MMR",
+        "p53",
+        "myometrial invasion",
+        "LVSI",
+        "synoptic",
+        "CAP",
+        "AJCC"
+      ],
+      "version": "2026.09",
+      "generator": "endometrial_carcinoma",
+      "generatorPath": "generators/endometrial_carcinoma.js",
+      "schemaPath": "schemas/endometrial_carcinoma.json"
     },
     {
       "id": "thyroid_fna",
