@@ -1,0 +1,1105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Lung cancers</title>
+<link rel="stylesheet" type="text/css" href="view.css" media="all">
+<script type="text/javascript" src="view.js"></script>
+<script>
+function updateDescription (frm) 
+{
+    var Template = "";
+	
+/*
+if (frm.A01.value !== ""){
+	Template += "- Procedure: " + "\n" + "   - " + frm.A01.value + "\n";
+}
+
+
+if (frm.A02.value !== ""){
+	Template += "- Laterality: " + "\n" + "   - " + frm.A02.value + "\n";
+}
+
+if (frm.A03.value !== ""){
+	Template += "- Tumor site: " + "\n" + "   - " + frm.A03.value + "\n";
+}
+
+if (frm.A04.value !== ""){
+	Template += "- Tumor size: " + "\n" + "  - "+ frm.A04.value + "\n";
+}
+
+if (frm.A05.value !== ""){
+	Template += "  - Total Tumor Size Inclusive of Invasive and Lepidic Components: " + "\n" + "    - "+ frm.A05.value + "\n";
+}
+
+if (frm.A06.value !== ""){
+	Template += "  - Invasive Tumor Size " + "\n" + "    - "+ frm.A06.value + "\n";
+}
+
+if (frm.A07.value !== ""){
+	Template += "- Tumor focality: " + "\n" + "  - "+ frm.A07.value + "\n";
+}
+*/
+
+if (frm.A08.value !== ""){
+	Template += "- Tumor histology and immunohistochemical studies: " + "\n" + "  - " + frm.A08.value + "\n";
+}
+
+if (frm.A09.value !== ""){
+	Template += "\n" + "- Histologic type: " + frm.A09.value + "\n";
+}
+
+if (frm.A10.value !== ""){
+	Template += "- Histologic grade: " + frm.A10.value + "\n";
+}
+
+if (frm.A11.value !== ""){
+	Template += "- Spread through air spaces (STAS): " + frm.A11.value + "\n";
+}
+
+if (frm.A12.value !== ""){
+	Template += "- Visceral pleura invasion: " + frm.A12.value + "\n" ;
+}
+
+if (frm.A13.value !== ""){
+	Template += "- Lymphatic and / or Vascular Invasion: " + frm.A13.value + "\n";
+}
+
+if (document.getElementById("A14").checked || document.getElementById("A15").checked || document.getElementById("A27").checked || document.getElementById("A28").checked || document.getElementById("A99").checked ||
+    document.getElementById("A100").checked || document.getElementById("A101").checked || document.getElementById("A102").checked || document.getElementById("A103").checked || document.getElementById("A104").checked ||
+ 	document.getElementById("A105").checked || document.getElementById("A106").checked || document.getElementById("A107").checked || document.getElementById("A108").checked || document.getElementById("A109").checked ||
+	document.getElementById("A110").checked || document.getElementById("A111").checked || document.getElementById("A112").checked || document.getElementById("A113").checked || document.getElementById("A114").checked ||
+	document.getElementById("A115").checked || document.getElementById("A116").checked || document.getElementById("A117").checked || document.getElementById("A118").checked || document.getElementById("A119").checked ||
+	document.getElementById("A120").checked || document.getElementById("A121").checked || document.getElementById("A122").checked || document.getElementById("A123").checked || document.getElementById("A124").checked ||
+	document.getElementById("A125").checked || document.getElementById("A126").checked || document.getElementById("A127").checked || document.getElementById("A128").checked || document.getElementById("A129").checked){
+	Template += "- Tumor extension: " + "\n";
+}
+
+if (document.getElementById("A14").checked){
+	Template += frm.A14.value + "\n";
+}
+
+if (document.getElementById("A15").checked){
+	Template += frm.A15.value + "\n";
+}
+
+if (document.getElementById("A27").checked){
+	Template += frm.A27.value + "\n";
+}
+
+if (document.getElementById("A28").checked){
+	Template += frm.A28.value + "\n";
+}
+
+if (document.getElementById("A99").checked){
+	Template += frm.A99.value + "\n";
+}
+
+if (document.getElementById("A100").checked){
+	Template += frm.A100.value + "\n";
+}
+
+if (document.getElementById("A101").checked){
+	Template += frm.A101.value + "\n";
+}
+
+if (document.getElementById("A102").checked){
+	Template += frm.A102.value + "\n";
+}
+
+if (document.getElementById("A103").checked){
+	Template += frm.A103.value + "\n";
+}
+
+if (document.getElementById("A104").checked){
+	Template += frm.A104.value + "\n";
+}
+
+if (document.getElementById("A105").checked){
+	Template += frm.A105.value + "\n";
+}
+
+if (document.getElementById("A106").checked){
+	Template += frm.A106.value + "\n";
+}
+
+if (document.getElementById("A107").checked){
+	Template += frm.A107.value + "\n";
+}
+
+if (document.getElementById("A108").checked){
+	Template += frm.A108.value + "\n";
+}
+
+if (document.getElementById("A109").checked){
+	Template += frm.A109.value + "\n";
+}
+
+if (document.getElementById("A110").checked){
+	Template += frm.A110.value + "\n";
+}
+
+if (document.getElementById("A111").checked){
+	Template += frm.A111.value + "\n";
+}
+
+if (document.getElementById("A112").checked){
+	Template += frm.A112.value + "\n";
+}
+
+if (document.getElementById("A113").checked){
+	Template += frm.A113.value + "\n";
+}
+
+if (document.getElementById("A114").checked){
+	Template += frm.A114.value + "\n";
+}
+
+if (document.getElementById("A115").checked){
+	Template += frm.A115.value + "\n";
+}
+
+if (document.getElementById("A116").checked){
+	Template += frm.A116.value + "\n";
+}
+
+if (document.getElementById("A117").checked){
+	Template += frm.A117.value + "\n";
+}
+
+if (document.getElementById("A118").checked){
+	Template += frm.A118.value + "\n";
+}
+
+if (document.getElementById("A119").checked){
+	Template += frm.A119.value + "\n";
+}
+
+if (document.getElementById("A120").checked){
+	Template += frm.A120.value + "\n";
+}
+
+if (document.getElementById("A121").checked){
+	Template += frm.A121.value + "\n";
+}
+
+if (document.getElementById("A122").checked){
+	Template += frm.A122.value + "\n";
+}
+
+if (document.getElementById("A123").checked){
+	Template += frm.A123.value + "\n";
+}
+
+if (document.getElementById("A124").checked){
+	Template += frm.A124.value + "\n";
+}
+
+if (document.getElementById("A125").checked){
+	Template += frm.A125.value + "\n";
+}
+
+if (document.getElementById("A126").checked){
+	Template += frm.A126.value + "\n";
+}
+
+if (document.getElementById("A127").checked){
+	Template += frm.A127.value + "\n";
+}
+
+if (document.getElementById("A128").checked){
+	Template += frm.A128.value + "\n";
+}
+
+if (document.getElementById("A129").checked){
+	Template += frm.A129.value + "\n";
+}
+
+if (frm.A29.value !== ""){
+	Template += "- Treatment effect: " + frm.A29.value + "\n";
+}
+
+if (document.getElementById("A30").checked || document.getElementById("A31").checked || document.getElementById("A32").checked || document.getElementById("A33").checked || document.getElementById("A34").checked || document.getElementById("A35").checked || frm.A36.value !== "" || document.getElementById("A37").checked || document.getElementById("A38").checked || document.getElementById("A39").checked || document.getElementById("A40").checked || document.getElementById("A41").checked || document.getElementById("A42").checked || document.getElementById("A43").checked || document.getElementById("A44").checked || frm.A45.value !== ""){
+	Template += "\n" + "- Resection margins: " +"\n" ;
+}
+
+if (document.getElementById("A30").checked || document.getElementById("A31").checked || document.getElementById("A32").checked || document.getElementById("A33").checked || document.getElementById("A34").checked || document.getElementById("A35").checked){
+	Template += "  - Bronchial margins: " + "\n";
+}
+
+if (document.getElementById("A30").checked){
+	Template += "  " +  frm.A30.value + "\n";
+}
+
+if (document.getElementById("A31").checked){
+	Template += "  " +  frm.A31.value + "\n";
+}
+
+if (document.getElementById("A32").checked){
+	Template += "  " +  frm.A32.value + "\n";
+}
+
+if (document.getElementById("A33").checked){
+	Template += "  " +  frm.A33.value + "\n";
+}
+
+if (document.getElementById("A34").checked){
+	Template += "  " +  frm.A34.value + "\n";
+}
+
+if (document.getElementById("A35").checked){
+	Template += "  " +  frm.A35.value + "\n";
+}
+
+if (frm.A36.value !== ""){
+	Template +=  "  - Vascular margin: "  +"\n" + "    - " +  frm.A36.value + "\n" ;
+}
+
+if (document.getElementById("A37").checked || document.getElementById("A38").checked || document.getElementById("A39").checked || document.getElementById("A40").checked || document.getElementById("A41").checked || document.getElementById("A42").checked || document.getElementById("A43").checked || document.getElementById("A44").checked){
+	Template += "  - Parenchymal margin: " + "\n";
+}
+
+if (document.getElementById("A37").checked){
+	Template += "  " +  frm.A37.value + "\n";
+}
+
+if (document.getElementById("A38").checked){
+	Template += "  " +  frm.A38.value + "\n";
+}
+
+if (document.getElementById("A39").checked){
+	Template += "  " +  frm.A39.value + "\n";
+}
+
+if (document.getElementById("A40").checked){
+	Template += "  " +  frm.A40.value + "\n";
+}
+
+if (document.getElementById("A41").checked){
+	Template += "  " +  frm.A41.value + "\n";
+}
+
+if (document.getElementById("A42").checked){
+	Template += "  " +  frm.A42.value + "\n";
+}
+
+if (document.getElementById("A43").checked){
+	Template += "  " +  frm.A43.value + "\n";
+}
+
+if (document.getElementById("A44").checked){
+	Template += "  " +  frm.A44.value + "\n";
+}
+
+if (frm.A45.value !== ""){
+	Template += "  - Other attached tissue margin(s) (specify: ): " +"\n" + "    - " + frm.A45.value + "\n";
+}
+
+if (frm.A46.value + frm.A47.value + frm.A48.value !== ""){
+	Template += "\n" + "- Regional lymph nodes: " + "\n";
+}	
+
+if (frm.A46.value !== ""){
+	Template += "  - Number of regional lymph nodes examined: " + frm.A46.value + "\n";
+}
+
+if (frm.A47.value !== ""){
+	Template += "  - Number of lymph nodes involved: " + frm.A47.value + "\n";
+}
+
+if (frm.A48.value !== ""){
+	Template += "  - Extranodal extension: " + frm.A48.value + "\n";
+}
+
+if (document.getElementById("A64").checked || document.getElementById("A65").checked ||
+	document.getElementById("A66").checked || document.getElementById("A67").checked ||
+	document.getElementById("A68").checked || document.getElementById("A69").checked ||
+	document.getElementById("A70").checked || document.getElementById("A71").checked ||
+    document.getElementById("A72").checked || document.getElementById("A73").checked ||
+	document.getElementById("A74").checked || document.getElementById("A75").checked ){
+	Template += "\n" + "- Distant metastasis:" + "\n";
+}
+
+if (document.getElementById("A64").checked){
+	Template += frm.A64.value + "\n";
+}
+
+if (document.getElementById("A65").checked){
+	Template += frm.A65.value + "\n";
+}
+
+if (document.getElementById("A66").checked){
+	Template += frm.A66.value + "\n";
+}
+
+if (document.getElementById("A67").checked){
+	Template += frm.A67.value + "\n";
+}
+
+if (document.getElementById("A68").checked){
+	Template += frm.A68.value + "\n";
+}
+
+if (document.getElementById("A69").checked){
+	Template += frm.A69.value + "\n";
+}
+
+if (document.getElementById("A70").checked){
+	Template += frm.A70.value + "\n";
+}
+
+if (document.getElementById("A71").checked){
+	Template += frm.A71.value + "\n";
+}
+
+if (document.getElementById("A72").checked){
+	Template += frm.A72.value + "\n";
+}
+
+if (document.getElementById("A73").checked){
+	Template += frm.A73.value + "\n";
+}
+
+if (document.getElementById("A74").checked){
+	Template += frm.A74.value + "\n";
+}
+
+if (document.getElementById("A75").checked){
+	Template += frm.A75.value + "\n";
+}
+
+if (document.getElementById("A49").checked || document.getElementById("A50").checked || document.getElementById("A51").checked ||
+	frm.A52.value + frm.A53.value + frm.A54.value !== ""){
+	Template += "\n" + "- Pathologic stage classification (pTNM, AJCC 9th edition):" + "\n";
+}
+
+if (document.getElementById("A49").checked || document.getElementById("A50").checked || document.getElementById("A51").checked){
+	Template += "  - TNM Descriptors:" + "\n";
+}
+
+if (document.getElementById("A49").checked){
+	Template += "    " + frm.A49.value + "\n";
+}
+
+if (document.getElementById("A50").checked){
+	Template += "    " + frm.A50.value + "\n";
+}
+
+if (document.getElementById("A51").checked){
+	Template += "    " +frm.A51.value + "\n";
+}
+
+if (frm.A52.value !== ""){
+	Template += "  - Primary tumor (pT): " + "\n" + "    - " + frm.A52.value + "\n";
+}
+
+if (frm.A53.value !== ""){
+	Template += "  - Regional lymph nodes (pN): " + "\n" + "    - " + frm.A53.value + "\n";
+}
+
+if (frm.A54.value !== ""){
+	Template += "  - Distant metastasis (required only if confirmed pathologically in this case): " + "\n" + "    - " + frm.A54.value + "\n";
+}
+
+if (document.getElementById("A56").checked || document.getElementById("A57").checked ||  document.getElementById("A58").checked ||  document.getElementById("A59").checked ||  document.getElementById("A60").checked ||  document.getElementById("A61").checked ||  document.getElementById("A130").checked ||  document.getElementById("A131").checked ||  document.getElementById("A132").checked ||  document.getElementById("A133").checked || frm.A62.value !==""){
+	Template += "\n" + "- Additional pathologic findings: " + "\n";
+}
+
+if (document.getElementById("A56").checked){
+	Template += "  - " +  frm.A56.value + "\n";
+}
+
+if (document.getElementById("A130").checked){
+	Template += "  - " +  frm.A130.value + "\n";
+}
+
+if (document.getElementById("A57").checked){
+	Template += "  - " +  frm.A57.value + "\n";
+}
+
+if (document.getElementById("A58").checked){
+	Template += "  - " +  frm.A58.value + "\n";
+}
+
+if (document.getElementById("A59").checked){
+	Template += "  - " +  frm.A59.value + "\n";
+}
+
+if (document.getElementById("A60").checked){
+	Template += "  - " +  frm.A60.value + "\n";
+}
+
+if (document.getElementById("A131").checked){
+	Template += "  - " +  frm.A131.value + "\n";
+}
+
+if (document.getElementById("A132").checked){
+	Template += "  - " +  frm.A132.value + "\n";
+}
+
+if (document.getElementById("A133").checked){
+	Template += "  - " +  frm.A133.value + "\n";
+}
+
+if (document.getElementById("A61").checked){
+	Template += "  - " +  frm.A61.value + "\n";
+}
+
+if (frm.A62.value !== ""){
+	Template += "  - Other (specify): " +  frm.A62.value + "\n";
+}
+
+if (frm.A63.value !== ""){
+	Template += "\n" + "- Additional notes: " + "\n" + "  - " +  frm.A63.value + "\n";
+}
+
+frm.holdtext.value = Template;
+}
+
+function CopyToClipboard() {
+  /* Get the text field */
+  var copyText = document.getElementById("holdtext");
+
+  /* Select the text field */
+  copyText.select();
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+
+  /* Alert the copied text */
+  alert("Report copied to clipboard");
+}
+</script>
+<style>
+table, th, td {
+  border: 1px solid silver;
+  border-collapse: collapse;
+  padding: 4px;
+}
+</style>
+</head>
+
+<body class="safari">
+<img id="top" src="top.png" alt="">
+	<div id="form_container">
+	<div class="form_description">
+		<h2><a href=".\cap\Cancer-Protocols-2025-09-Update\Thorax Protocol Folder\Lung_5.1.0.0.REL_CAPCP.pdf" target="_blank">
+		<div class="tooltip">Carcinomas of the lung
+		<span class="tooltiptext">click to access explanations in the original CAP template</span>
+		</div>
+		</a></h2>
+	</div>
+There is further reference to 
+		<a href=".\cap\Cancer-Protocols-2025-09-Update\Thorax Protocol Folder\Lung.Bmk_2.2.0.0.REL_CAPCP.pdf" target="_blank">
+		<div class="tooltip">CAP lung cancers biomarkers (2.2.0.0, Sep-2025)
+		<span class="tooltiptext">click to access further explanations in the original CAP template</span>
+		</div>
+		</a>
+,<a href=".\cap\alk-ros1_atlas_low-res.pdf" target="_blank"> IASLC atlas for ALK1 and ROS1 (2e, 2016)</a> 
+and updated <a href=".\cap\CAP-IASLC-AMP_Lung_Molec_Testing_Slides_APPROVED_20180209.pdf" target="_blank">2018 CAP-IASLC-AMP guidelines</a> for selection of tyrosine kinase inhibitors for NSCLC patients
+.
+<br>
+<br>	
+<form>
+<!--
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend><label class="description">Gross descriptions:</label></legend>
+
+<p>
+<table border="1">
+<col width="30%">
+
+<tr>
+<td>
+<label class="description">- Procedure:</label>
+</td>
+<td>
+<select class="element select large" ID="A01">
+	<option value=""></option>
+	<option value="Wedge resection">Wedge resection</option> 
+	<option value="Segmentectomy">Segmentectomy</option>
+	<option value="Lobectomy">Lobectomy</option>
+	<option value="Completion lobectomy">Completion lobectomy</option>
+	<option value="Sleeve lobectomy">Sleeve lobectomy</option>
+	<option value="Bilobectomy">Bilobectomy</option>
+	<option value="Pneumonectomy">Pneumonectomy</option>
+	<option value="Major airway resection (specify):">Major airway resection (specify):</option>
+	<option value="Other (specify):">Other (specify):</option>
+	<option value="Not specified">Not specified</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Laterality:</label> 
+</td>
+<td>
+<select class="element select large" ID="A02">
+	<option value=""></option>
+	<option value="Right">Right</option>
+	<option value="Left">Left</option>
+	<option value="Not specified">Cannot be determined (explain):</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Tumor site:</label> 
+</td>
+<td>
+<select class="element select large" ID="A03">
+	<option value=""></option>
+	<option value="Upper lobe of lung">Upper lobe of lung</option>
+	<option value="Middle lobe of lung">Middle lobe of lung</option>
+	<option value="Lower lobe of lung">Lower lobe of lung</option>
+	<option value="Bronchus, main">Bronchus, main</option>
+	<option value="Bronchus intermedius">Bronchus intermedius</option>
+	<option value="Bronchus, lobar (specify):">Bronchus, lobar (specify):</option>
+	<option value="Other (specified):">Other (specified):</option>
+	<option value="Not specified">Not specified</option>
+</select>
+</td>
+</tr>
+
+
+<tr>
+<td rowspan="3" valign="top">
+<label class="description">- Tumor size:</label> 
+</td>
+<td>
+<select class="element select large" ID="A04">
+	<option value=""></option>
+	<option value=" Greatest dimension (mm): ">Greatest dimension (mm): </option>
+	<option value=" All dimensions (mm x mm x mm): ">All dimensions (mm x mm x mm):</option>
+	<option value=" Cannot be determined (explain):">Cannot be determined (explain):</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label >- Total tumor size inclusive of invasive and lepidic components (applies only to invasive nonmucinous adenocarcinoma with a lepidic component):</label> <br>
+<select class="element select large" ID="A05">
+	<option value=""></option>
+	<option value=" Greatest dimension (mm): ">Greatest dimension (mm): </option>
+	<option value=" All dimensions (mm x mm x mm): ">All dimensions (mm x mm x mm):</option>
+	<option value=" Cannot be determined (explain):">Cannot be determined (explain):</option>
+</select>
+</td>
+</tr>
+
+
+<tr>
+<td>
+<label >- Invasive tumor size (applies only to invasive nonmucinous adenocarcinoma with a lepidic component) :</label><br> 
+<select class="element select large" ID="A06">
+	<option value=""></option>
+	<option value=" Greatest dimension (mm): ">Greatest dimension (mm): </option>
+	<option value=" All dimensions (mm x mm x mm): ">All dimensions (mm x mm x mm):</option>
+	<option value=" Cannot be determined (explain):">Cannot be determined (explain):</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Tumor focality:</label> 
+</td>
+<td>
+<select class="element select large" ID="A07">
+	<option value=""></option>
+	<option value="Single focus">Single focus</option>
+	<option value="Separate tumor nodules (metastases) in same lobe (pT3)">Separate tumor nodules (metastases) in same lobe (pT3), no. of intrapulmonary metastases::</option>
+	<option value="Separate tumor nodules (metastases) in different ipsilateral lobe (pT4), no. of intrapulmonary metastases:">Separate tumor nodules (metastases) in different ipsilateral lobe (pT4), no. of intrapulmonary metastases:</option>
+	<option value="Separate tumor nodules (metastases) in a contralateral lobe (pM1a), no. of intrapulmonary metastases:">Separate tumor nodules (metastases) in a contralateral lobe (pM1a), no. of intrapulmonary metastases:</option>
+	<option value="Multifocal ground-glass / lepidic nodules, no. of tumor nodules: ">Multifocal ground-glass / lepidic nodules, no. of tumor nodules: </option>
+	<option value="Pneumonic-type adenocarcinoma">Pneumonic-type adenocarcinoma</option>
+	<option value="Cannot be determined (explain):">Cannot be determined (explain):</option>
+</select>
+</td>
+</tr>
+</table>
+</p>
+
+</fieldset>
+</p>
+-->
+<p>
+</p><fieldset style="border-color:#e6e6ff;">
+	<legend><label class="description">Microscopic descriptions:</label></legend>
+<p><label class="description">- Tumor histology and immunohistochemical studies: </label>
+ <textarea id="A08" name="A08" class="element textarea medium"></textarea>
+</p>
+
+<p>
+</p><table border="1">
+<colgroup><col width="40%">
+
+</colgroup><tbody><tr>
+<td>
+<label class="description">- Histologic type:</label> specify % individual components/patterns if applicable 
+</td>
+<td>
+<select class="element select large" id="A09">
+	<option value=""></option>
+	<option value="Adenocarcinoma in situ (AIS), nonmucinous">Adenocarcinoma in situ (AIS), nonmucinous</option>
+	<option value="Adenocarcinoma in situ (AIS), mucinous">Adenocarcinoma in situ (AIS), mucinous</option>
+	<option value="Minimally invasive adenocarcinoma, nonmucinous">Minimally invasive adenocarcinoma, nonmucinous</option>	
+	<option value="Minimally invasive adenocarcinoma, mucinous">Minimally invasive adenocarcinoma, mucinous</option>
+	<option value="Invasive adenocarcinoma, lepidic predominant">Invasive adenocarcinoma, lepidic predominant</option>
+	<option value="Invasive adenocarcinoma, lepidic predominant + other subtypes (with %):">Invasive adenocarcinoma, lepidic predominant + other subtypes (with %):</option>
+	<option value="Invasive adenocarcinoma, acinar predominant">Invasive adenocarcinoma, acinar predominant</option>
+	<option value="Invasive adenocarcinoma, acinar predominant + other subtypes (with %):">Invasive adenocarcinoma, acinar predominant + other subtypes (with %):</option>
+	<option value="Invasive adenocarcinoma, papillary predominant">Invasive adenocarcinoma, papillary predominant</option>
+	<option value="Invasive adenocarcinoma, papillary predominant + other subtypes (with %):">Invasive adenocarcinoma, papillary predominant + other subtypes (with %):</option>	
+	<option value="Invasive adenocarcinoma, micropapillary predominant">Invasive adenocarcinoma, micropapillary predominant</option>
+	<option value="Invasive adenocarcinoma, micropapillary predominant + other subtypes (with %):">Invasive adenocarcinoma, micropapillary predominant + other subtypes (with %):</option>
+	<option value="Invasive adenocarcinoma, solid predominant">Invasive adenocarcinoma, solid predominant</option>
+	<option value="Invasive adenocarcinoma, solid predominant + other subtypes (with %):">Invasive adenocarcinoma, solid predominant + other subtypes (with %):</option>
+	<option value="Invasive adenocarcinoma, predominant subtype cannot be determined (explain):">Invasive adenocarcinoma, predominant subtype cannot be determined (explain):</option>
+	<option value="Invasive adenocarcinoma, predominant subtype cannot be determined (explain): + other subtypes (with %):">Invasive adenocarcinoma, predominant subtype cannot be determined (explain): + other subtypes (with %):</option>
+	<option value="Invasive mucinous adenocarcinoma">Invasive mucinous adenocarcinoma</option>	
+	<option value="Mixed invasive mucinous and nonmucinous adenocarcinoma">Mixed invasive mucinous and nonmucinous adenocarcinoma</option>
+	<option value="Colloid adenocarcinoma">Colloid adenocarcinoma</option>
+	<option value="Fetal adenocarcinoma">Fetal adenocarcinoma</option>
+	<option value="Enteric-type adenocarcinoma">Enteric-type adenocarcinoma</option>
+	<option value="Squamous cell carcinoma in situ (SCIS)">Squamous cell carcinoma in situ (SCIS)</option>
+	<option value="Invasive squamous cell carcinoma, keratinizing">Invasive squamous cell carcinoma, keratinizing</option>
+	<option value="Invasive squamous cell carcinoma, non-keratinizing">Invasive squamous cell carcinoma, non-keratinizing</option>	
+	<option value="Invasive squamous cell carcinoma, basaloid ">Invasive squamous cell carcinoma, basaloid </option>
+	<option value="Lymphoepithelial carcinoma">Lymphoepithelial carcinoma</option>
+	<option value="Large cell carcinoma">Large cell carcinoma</option>
+	<option value="Adenosquamous carcinoma">Adenosquamous carcinoma</option>
+	<option value="Pleomorphic carcinoma">Pleomorphic carcinoma</option>
+	<option value="Spindle cell carcinoma">Spindle cell carcinoma</option>
+	<option value="Giant cell carcinoma">Giant cell carcinoma</option>
+	<option value="Carcinosarcoma">Carcinosarcoma</option>
+	<option value="Pulmonary blastoma">Pulmonary blastoma</option>
+	<option value="NUT carcinoma">NUT carcinoma</option>
+	<option value="Thoracic SMARCA4-deficient undifferentiated tumor">Thoracic SMARCA4-deficient undifferentiated tumor</option>
+	<option value="Adenoid cystic carcinoma">Adenoid cystic carcinoma</option>
+	<option value="Epithelial-myoepithelial carcinoma">Epithelial-myoepithelial carcinoma</option>
+	<option value="Mucoepidermoid carcinoma">Mucoepidermoid carcinoma</option>
+	<option value="Combined small cell carcinoma (specify type of non-small cell carcinoma component):">Combined small cell carcinoma (specify type of non-small cell carcinoma component):</option>
+	<option value="Typical carcinoid / Neuroendocrine tumor, grade 1">Typical carcinoid / Neuroendocrine tumor, grade 1</option>
+	<option value="Atypical carcinoid / Neuroendocrine tumor, grade 2">Atypical carcinoid / Neuroendocrine tumor, grade 2</option>
+	<option value="Carcinoid tumor, NOS / Neuroendocrine tumor, NOS">Carcinoid tumor, NOS / Neuroendocrine tumor, NOS</option>
+	<option value="Small cell carcinoma">Small cell carcinoma</option>
+	<option value="Combined small cell carcinoma (small cell carcinoma and non-small cell component) (specify type of non-small cell component):">Combined small cell carcinoma (small cell carcinoma and non-small cell component) (specify type of non-small cell component):</option>
+	<option value="Large cell neuroendocrine carcinoma">Large cell neuroendocrine carcinoma</option>
+	<option value="Combined large cell neuroendocrine carcinoma (LCNEC and other non-small cell component) (specify other type of non-small cell component):">Combined large cell neuroendocrine carcinoma (LCNEC and other non-small cell component) (specify other type of non-small cell component):</option>
+	<option value="Carcinoma, type cannot be determined">Carcinoma, type cannot be determined</option>
+	<option value="Non-small cell carcinoma, subtype cannot be determined">Non-small cell carcinoma, subtype cannot be determined</option>
+	<option value="Other histologic type not listed (specify): ">Other histologic type not listed (specify): </option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="">+ Histologic grade:</label>
+</td>
+<td>
+<select class="element select large" id="A10">
+	<option value=""></option>
+	<option value="G1: Well differentiated">G1: Well differentiated</option>
+	<option value="G2: Moderately differentiated">G2: Moderately differentiated</option>
+	<option value="G3: Poorly differentiated">G3: Poorly differentiated</option>
+	<option value="G4: Undifferentiated">G4: Undifferentiated</option>
+	<option value="Other (specify):">Other (specify):</option>
+	<option value="GX: Cannot be assessed">GX: Cannot be assessed</option>	
+	<option value="Cannot be determined (explain):"> Cannot be determined (explain):</option> 
+	<option value="Not applicable"> Not applicable</option> 
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Spread through air spaces (STAS): </label>
+</td>
+<td>
+<select class="element select large" id="A11">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Visceral pleura invasion: </label>
+</td>
+<td>
+<select class="element select large" id="A12">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="PL0, elastic layer intact">PL0, elastic layer intact</option>
+	<option value="PL1, extension through elastic membrane">PL1, extension through elastic membrane</option>
+	<option value="PL2, extends on visceral pleura surface">PL2, extends on visceral pleura surface</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Lymphatic and / or Vascular Invasion: </label>
+</td>
+<td>
+<select class="element select large" id="A13">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Present, lymphatic">Present, lymphatic</option>
+	<option value="Present, arterial">Present, arterial</option>
+	<option value="Present, venous">Present, venous</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<label class="description">- Tumor extension:</label> 
+</td>
+<td>
+	<input class="element checkbox" type="checkbox" id="A14" value="  - Not applicable"><label class="choice">Not applicable</label>
+	<input class="element checkbox" type="checkbox" id="A15" value="  - Adjacent structures present but not involved"><label class="choice">Adjacent structures present but not involved</label>
+	<input class="element checkbox" type="checkbox" id="A99" value="  - Adjacent lobe of lung"><label class="choice">Adjacent lobe of lung</label>
+	<input class="element checkbox" type="checkbox" id="A100" value="  - Parietal pleura"><label class="choice">Parietal pleura</label>
+	<input class="element checkbox" type="checkbox" id="A101" value="  - Chest wall, fibroadipose tissue"><label class="choice">Chest wall, fibroadipose tissue</label>
+	<input class="element checkbox" type="checkbox" id="A102" value="  - Chest wall, skeletal muscle"><label class="choice">Chest wall, skeletal muscle</label>
+	<input class="element checkbox" type="checkbox" id="A103" value="  - Chest wall, rib(s)"><label class="choice">Chest wall, rib(s)</label>
+	<input class="element checkbox" type="checkbox" id="A104" value="  - Main bronchus (up to but not including the carina)"><label class="choice">Main bronchus (up to but not including the carina)</label>
+	<input class="element checkbox" type="checkbox" id="A105" value="  - Associated with atelectasis or obstructive pneumonitis extending to the hilar regions, involving either part of or all of the entire lung"><label class="choice">Associated with atelectasis or obstructive pneumonitis extending to the hilar regions, involving either part of or all of the entire lung</label>
+	<input class="element checkbox" type="checkbox" id="A106" value="  - Hilar soft tissues"><label class="choice">Hilar soft tissues</label>
+	<input class="element checkbox" type="checkbox" id="A107" value="  - Phrenic nerve"><label class="choice">Phrenic nerve</label>
+	<input class="element checkbox" type="checkbox" id="A108" value="  - Parietal pericardium"><label class="choice">Parietal pericardium</label>
+	<input class="element checkbox" type="checkbox" id="A109" value="  - Visceral pericardium (epicardium)"><label class="choice">Visceral pericardium (epicardium)</label>
+	<input class="element checkbox" type="checkbox" id="A110" value="  - Azygos vein"><label class="choice">Azygos vein</label>
+	<input class="element checkbox" type="checkbox" id="A111" value="  - Cervical nerve roots"><label class="choice">Cervical nerve roots</label>
+	<input class="element checkbox" type="checkbox" id="A112" value="  - Thoracic nerve roots"><label class="choice">Thoracic nerve roots</label>
+	<input class="element checkbox" type="checkbox" id="A113" value="  - Brachial plexus (trunks, divisions, cords, or terminal nerves)"><label class="choice">Brachial plexus (trunks, divisions, cords, or terminal nerves)</label>
+	<input class="element checkbox" type="checkbox" id="A114" value="  - Stellate ganglion"><label class="choice">Stellate ganglion</label>
+	<input class="element checkbox" type="checkbox" id="A115" value="  - Diaphragm"><label class="choice">Diaphragm</label>
+	<input class="element checkbox" type="checkbox" id="A116" value="  - Heart"><label class="choice">Heart</label>
+	<input class="element checkbox" type="checkbox" id="A117" value="  - Great vessels (aorta, superior / inferior vena cava, intrapericardial pulmonary arteries / veins)"><label class="choice">Great vessels (aorta, superior / inferior vena cava, intrapericardial pulmonary arteries / veins)</label>
+	<input class="element checkbox" type="checkbox" id="A118" value="  - Supra-aortic arteries"><label class="choice">Supra-aortic arteries</label>
+	<input class="element checkbox" type="checkbox" id="A119" value="  - Brachiocephalic vein"><label class="choice">Brachiocephalic vein</label>
+	<input class="element checkbox" type="checkbox" id="A120" value="  - Subclavian vessels"><label class="choice">Subclavian vessels</label>
+	<input class="element checkbox" type="checkbox" id="A121" value="  - Thymus"><label class="choice">Thymus</label>
+	<input class="element checkbox" type="checkbox" id="A122" value="  - Trachea"><label class="choice">Trachea</label>
+	<input class="element checkbox" type="checkbox" id="A123" value="  - Carina"><label class="choice">Carina</label>
+	<input class="element checkbox" type="checkbox" id="A124" value="  - Recurrent laryngeal nerve"><label class="choice">Recurrent laryngeal nerve</label>
+	<input class="element checkbox" type="checkbox" id="A125" value="  - Vagus nerve"><label class="choice">Vagus nerve</label>
+	<input class="element checkbox" type="checkbox" id="A126" value="  - Esophagus"><label class="choice">Esophagus</label>
+	<input class="element checkbox" type="checkbox" id="A127" value="  - Vertebral body"><label class="choice">Vertebral body</label>
+	<input class="element checkbox" type="checkbox" id="A128" value="  - Lamina"><label class="choice">Lamina</label>
+	<input class="element checkbox" type="checkbox" id="A129" value="  - Spinal canal"><label class="choice">Spinal canal</label>
+	<input class="element checkbox" type="checkbox" id="A27" value="  - Other (specify):"><label class="choice">Other (specify):</label>
+	<input class="element checkbox" type="checkbox" id="A28" value="  - Cannot be assessed (explain):"><label class="choice">Cannot be assessed (explain):</label>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Treatment effect: </label>
+</td>
+<td>
+<select class="element select large" id="A29">
+	<option value=""></option>
+	<option value="No known presurgical therapy">No known presurgical therapy</option>
+	<option value="Greater than 10% residual viable tumor">Greater than 10% residual viable tumor</option>
+	<option value="&lt; or equal to 10% residual viable tumor"> &lt; or equal to 10% residual viable tumor</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+</tbody></table>
+<p></p>
+
+</fieldset>
+<p></p>
+
+<p>
+</p><fieldset style="border-color:#e6e6ff;">
+
+<p>
+</p><table border="1">
+<colgroup><col width="37%">
+
+</colgroup><tbody><tr>
+<td valign="top">
+<label class="description">- Bronchial margin:</label>
+</td>
+<td>
+<input class="element checkbox" type="checkbox" id="A30" value="  - Not applicable"><label class="choice">Not applicable</label>
+<input class="element checkbox" type="checkbox" id="A31" value="  - Cannot be assessed"><label class="choice">Cannot be assessed</label>
+<input class="element checkbox" type="checkbox" id="A32" value="  - Uninvolved by invasive carcinoma"><label class="choice">Uninvolved by invasive carcinoma</label>
+<input class="element checkbox" type="checkbox" id="A33" value="  - Uninvolved by carcinoma in situ"><label class="choice">Uninvolved by carcinoma in situ</label>
+<input class="element checkbox" type="checkbox" id="A34" value="  - Involved by invasive carcinoma"><label class="choice">Involved by invasive carcinoma</label>
+<input class="element checkbox" type="checkbox" id="A35" value="  - Involved by carcinoma in situ"><label class="choice">Involved by carcinoma in situ</label>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Vascular margin:</label>
+</td>
+<td>
+<select class="element select large" id="A36">
+	<option value=""></option>
+	<option value="Not applicable">Not applicable</option>
+	<option value="Cannot be assessed">Cannot be assessed</option>
+	<option value="Uninvolved by carcinoma">Uninvolved by carcinoma</option>
+	<option value="Involved by carcinoma">Involved by carcinoma</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<label class="description">- Parenchymal margin:</label>
+</td>
+<td>
+<input class="element checkbox" type="checkbox" id="A37" value="  - Not applicable"><label class="choice">Not applicable</label>
+<input class="element checkbox" type="checkbox" id="A38" value="  - Cannot be assessed"><label class="choice">Cannot be assessed</label>
+<input class="element checkbox" type="checkbox" id="A39" value="  - Uninvolved by invasive carcinoma"><label class="choice">Uninvolved by invasive carcinoma</label>
+<input class="element checkbox" type="checkbox" id="A40" value="  - Uninvolved by lepidic component of invasive adenocarcinoma"><label class="choice">Uninvolved by lepidic component of invasive adenocarcinoma</label>
+<input class="element checkbox" type="checkbox" id="A41" value="  - Uninvolved by adenocarcinoma in situ"><label class="choice">Uninvolved by adenocarcinoma in situ</label>
+<input class="element checkbox" type="checkbox" id="A42" value="  - Involved by invasive carcinoma"><label class="choice">Involved by invasive carcinoma</label>
+<input class="element checkbox" type="checkbox" id="A43" value="  - Involved by lepidic component of invasive adenocarcinoma"><label class="choice">Involved by lepidic component of invasive adenocarcinoma</label>
+<input class="element checkbox" type="checkbox" id="A44" value="  - Involved by adenocarcinoma in situ"><label class="choice">Involved by adenocarcinoma in situ</label>
+</td>
+</tr>
+
+<tr>
+<td>
+<label>- Other tissue margin(s):</label>
+</td>
+<td>
+<select class="element select large" id="A45">
+	<option value=""></option>
+	<option value="Cannot be assessed">Cannot be assessed</option>
+	<option value="Uninvolved by invasive carcinoma">Uninvolved by invasive carcinoma</option>
+	<option value="Involved by invasive carcinoma">Involved by invasive carcinoma</option>
+</select>
+</td>
+</tr>
+</tbody></table>
+<p></p>
+
+</fieldset>
+<p></p>
+
+<p>
+</p><fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> Regional lymph nodes: </label></legend>
+Specify the locations of involved lymph nodes.
+<p>
+</p><table border="1">
+<colgroup><col width="75%">
+
+</colgroup><tbody><tr>
+<td>
+<label class="description">- Number of regional lymph nodes examined:</label>
+</td>
+<td>
+<input type="text" class="element text large" name="A46" id="A46" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Number of lymph nodes involved:</label>
+</td>
+<td>
+<input type="text" class="element text large" name="A47" id="A47" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="">+ Extranodal extension:</label>
+</td>
+<td>
+<select class="element select large" id="A48">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+</tbody></table>
+<p></p>
+
+</fieldset>
+<p></p>
+
+<p>
+</p><fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> Distant Metastasis: </label></legend>
+<input class="element checkbox" type="checkbox" id="A64" value="  - Not applicable"><label class="choice">Not applicable</label>
+<input class="element checkbox" type="checkbox" id="A65" value="  - Not identified"><label class="choice">Not identified</label>
+<input class="element checkbox" type="checkbox" id="A66" value="  - Single extrathoracic metastasis in one organ (includes a single non-regional lymph node) (specify):"><label class="choice">Single extrathoracic metastasis in one organ (includes a single non-regional lymph node) (specify):</label>
+<input class="element checkbox" type="checkbox" id="A67" value="  - Separate tumor nodule(s) in contralateral lobe (specify):"><label class="choice">Separate tumor nodule(s) in contralateral lobe (specify):</label>
+<input class="element checkbox" type="checkbox" id="A68" value="  - Pleural nodules (specify):"><label class="choice">Pleural nodules (specify):</label>
+<input class="element checkbox" type="checkbox" id="A69" value="  - Pericardial nodules (specify):"><label class="choice">Pericardial nodules (specify):</label>
+<input class="element checkbox" type="checkbox" id="A70" value="  - Malignant pleural effusion (specify):"><label class="choice">Malignant pleural effusion (specify):</label>
+<input class="element checkbox" type="checkbox" id="A71" value="  - Malignant pericardial effusion (specify):"><label class="choice">Malignant pericardial effusion (specify):</label>
+<input class="element checkbox" type="checkbox" id="A72" value="  - Multiple extrathoracic metastases in a single organ (specify):"><label class="choice">Multiple extrathoracic metastases in a single organ (specify):</label>
+<input class="element checkbox" type="checkbox" id="A73" value="  - Multiple extrathoracic metastasis in multiple organs (specify):"><label class="choice">Multiple extrathoracic metastasis in multiple organs (specify):</label>
+<input class="element checkbox" type="checkbox" id="A74" value="  - Other (specify):"><label class="choice">Other (specify):</label>
+<input class="element checkbox" type="checkbox" id="A75" value="  - Cannot be determined: "><label class="choice">Cannot be determined: </label> 
+</fieldset>
+<p></p>
+
+<p>
+</p><fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> Pathologic Stage Classification (AJCC 9e):</label></legend>	
+
+<p>
+</p><table border="1">
+<colgroup><col width="40%">
+
+</colgroup><tbody><tr>
+<td valign="top">
+<label class="description">- TNM Descriptors:</label>
+</td>
+<td>
+<input class="element checkbox" type="checkbox" id="A49" value="m (multiple primary tumors)"><label class="choice">m (multiple primary tumors)</label>
+<input class="element checkbox" type="checkbox" id="A50" value="r (recurrent)"><label class="choice">r (recurrent)</label>
+<input class="element checkbox" type="checkbox" id="A51" value="y (post treatment)"><label class="choice">y (post treatment)</label>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Primary tumor (pT):</label>
+</td>
+<td>
+<select class="element select large" id="A52">
+	<option value=""></option>
+	<option value="pT not assigned (cannot be determined based on available pathological information)">pT not assigned (cannot be determined based on available pathological information)</option>
+	<option value="pT0: No evidence of primary tumor">pT0: No evidence of primary tumor</option>
+	<option value="pTis: Carcinoma in situ; or Squamous cell carcinoma in situ (SCIS); or Adenocarcinoma in situ (AIS): adenocarcinoma with pure lepidic pattern, less than or equal to 3 cm in greatest dimension">pTis: Carcinoma in situ; or Squamous cell carcinoma in situ (SCIS); or Adenocarcinoma in situ (AIS): adenocarcinoma with pure lepidic pattern, less than or equal to 3 cm in greatest dimension</option>
+	<option value="pT1 (subgroup cannot be determined)">pT1 (subgroup cannot be determined)</option>
+	<option value="pT1mi: Minimally invasive adenocarcinoma: adenocarcinoma (less than or equal to 3 cm in greatest dimension) with a predominantly lepidic pattern and less than or equal to 5 mm invasion in greatest dimension">pT1mi: Minimally invasive adenocarcinoma: adenocarcinoma (less than or equal to 3 cm in greatest dimension) with a predominantly lepidic pattern and less than or equal to 5 mm invasion in greatest dimension</option>
+	<option value="pT1a: Tumor less than or equal to 1 cm in greatest dimension OR Tumor of any size whose invasive component is limited to the bronchial wall and may extend proximal to the main bronchus (this is an uncommon superficial, spreading tumor">pT1a: Tumor less than or equal to 1 cm in greatest dimension OR Tumor of any size whose invasive component is limited to the bronchial wall and may extend proximal to the main bronchus (this is an uncommon superficial, spreading tumor)</option>
+	<option value="pT1b: Tumor greater than 1 cm but less than or equal to 2 cm in greatest dimension">pT1b: Tumor greater than 1 cm but less than or equal to 2 cm in greatest dimension</option>
+	<option value="pT1c: Tumor greater than 2 cm but less than or equal to 3 cm in greatest dimension">pT1c: Tumor greater than 2 cm but less than or equal to 3 cm in greatest dimension</option>
+	<option value="pT2 (subgroup cannot be determined)">pT2 (subgroup cannot be determined)</option>
+	<option value="pT2a: Tumor greater than 3 cm but less than or equal to 4 cm in greatest dimension OR Tumor less than or equal to 4 cm in greatest dimension with one or more of the following features: Invades visceral pleura; or Invades an adjacent lobe; or Involves main bronchus (up to but not including the carina) or associated with atelectasis or obstructive pneumonitis, extending to the hilar regions, involving either part of or the entire lung">pT2a: Tumor greater than 3 cm but less than or equal to 4 cm in greatest dimension OR Tumor less than or equal to 4 cm in greatest dimension with one or more of the following features: Invades visceral pleura; or Invades an adjacent lobe; or Involves main bronchus (up to but not including the carina) or associated with atelectasis or obstructive pneumonitis, extending to the hilar regions, involving either part of or the entire lung</option>
+	<option value="pT2b: Tumor greater than 4 cm but less than or equal to 5 cm in greatest dimension with or without any of the following features: Invades visceral pleura; or Invades an adjacent lobe; or Involves main bronchus (up to but not including the carina) or associated with atelectasis or obstructive pneumonitis extending to the hilar regions, involving either part of or the entire lung">pT2b: Tumor greater than 4 cm but less than or equal to 5 cm in greatest dimension with or without any of the following features: Invades visceral pleura; or Invades an adjacent lobe; or Involves main bronchus (up to but not including the carina) or associated with atelectasis or obstructive pneumonitis extending to the hilar regions, involving either part of or the entire lung</option>
+	<option value="pT3: Tumor greater than 5 cm but less than or equal to 7 cm in greatest dimension OR Tumor less than or equal to 7 cm with one or more of the following features: Invades parietal pleura or chest wall; or Invades pericardium, phrenic nerve or azygos vein (although these structures lie within the mediastinum, the degree of mediastinal penetration by the tumor needed to invade these structures is not counted as T4); or Invades thoracic nerve roots (i.e., T1, T2) or stellate ganglion; or Separate tumor nodule(s) in the same lobe as the primary">pT3: Tumor greater than 5 cm but less than or equal to 7 cm in greatest dimension OR Tumor less than or equal to 7 cm with one or more of the following features: Invades parietal pleura or chest wall; or Invades pericardium, phrenic nerve or azygos vein (although these structures lie within the mediastinum, the degree of mediastinal penetration by the tumor needed to invade these structures is not counted as T4); or Invades thoracic nerve roots (i.e., T1, T2) or stellate ganglion; or Separate tumor nodule(s) in the same lobe as the primary</option>
+	<option value="pT4: Tumor greater than 7 cm in greatest dimension OR Tumor of any size with one or more of the following features: Invades mediastinum (except structures listed in T3), thymus, trachea, carina, recurrent laryngeal nerve, vagus nerve, esophagus or diaphragm; or Invades heart, great vessels (aorta, superior / inferior vena cava, intrapericardial pulmonary arteries / veins), supra-aortic arteries or brachiocephalic veins; or Invades subclavian vessels, vertebral body, lamina, spinal canal, cervical nerve roots or brachial plexus (i.e., trunks, divisions, cords or terminal nerves); or Separate tumor nodule(s) in a different ipsilateral lobe than that of the primary">pT4: Tumor greater than 7 cm in greatest dimension OR Tumor of any size with one or more of the following features: Invades mediastinum (except structures listed in T3), thymus, trachea, carina, recurrent laryngeal nerve, vagus nerve, esophagus or diaphragm; or Invades heart, great vessels (aorta, superior / inferior vena cava, intrapericardial pulmonary arteries / veins), supra-aortic arteries or brachiocephalic veins; or Invades subclavian vessels, vertebral body, lamina, spinal canal, cervical nerve roots or brachial plexus (i.e., trunks, divisions, cords or terminal nerves); or Separate tumor nodule(s) in a different ipsilateral lobe than that of the primary</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Regional lymph nodes (pN):</label>
+</td>
+<td>
+<select class="element select large" id="A53">
+	<option value=""></option>
+	<option value="pN not assigned (no nodes submitted or found)">pN not assigned (no nodes submitted or found)</option>
+	<option value="pN not assigned (cannot be determined based on available pathological information)">pN not assigned (cannot be determined based on available pathological information)</option>
+	<option value="pN0: No tumor involvement of regional lymph node(s)">pN0: No tumor involvement of regional lymph node(s)</option>
+	<option value="pN1: Tumor involvement of ipsilateral peribronchial and / or ipsilateral hilar and / or ipsilateral intrapulmonary lymph node station(s), including involvement by direct extension">pN1: Tumor involvement of ipsilateral peribronchial and / or ipsilateral hilar and / or ipsilateral intrapulmonary lymph node station(s), including involvement by direct extension</option>
+	<option value="pN2: (subgroup cannot be determined)">pN2: (subgroup cannot be determined)</option>
+	<option value="pN2a: Tumor involvement of a single ipsilateral mediastinal nodal station or of the subcarinal nodal station">pN2a: Tumor involvement of a single ipsilateral mediastinal nodal station or of the subcarinal nodal station</option>
+	<option value="pN2b: Tumor involvement of multiple ipsilateral mediastinal nodal stations with or without involvement of the subcarinal nodal station">pN2: Tumor involvement of multiple ipsilateral mediastinal nodal stations with or without involvement of the subcarinal nodal station</option>
+	<option value="pN3: Tumor involvement of contralateral mediastinal, contralateral hilar, ipsilateral / contralateral scalene, or ipsilateral / contralateral supraclavicular lymph node station(s)">pN3: Tumor involvement of contralateral mediastinal, contralateral hilar, ipsilateral / contralateral scalene, or ipsilateral / contralateral supraclavicular lymph node station(s)</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td rowspan="2" valign="top">
+<label class="description">- Distant metastasis (pM):</label>
+</td>
+<td>
+<select class="element select large" id="A54">
+	<option value=""></option>
+	<option value="Not applicable - pM cannot be determined from the submitted specimen(s)"> Not applicable - pM cannot be determined from the submitted specimen(s)</option>
+	<option value="pM1 (subgroup cannot be determined)"> pM1 (subgroup cannot be determined)</option>
+	<option value="pM1: Distant metastasis">pM1:Distant metastasis</option>
+	<option value="pM1a: Microscopic confirmation of metastasis in pleural or pericardial nodules, and / or malignant pleural or pericardial effusions, and / or separate tumor nodule(s) in a contralateral lobe">pM1a: Microscopic confirmation of metastasis in pleural or pericardial nodules, and / or malignant pleural or pericardial effusions, and / or separate tumor nodule(s) in a contralateral lobe</option>
+	<option value="pM1b: Microscopic confirmation of single extrathoracic metastasis in a single organ system (including involvement of a single non-regional node)">pM1b: Microscopic confirmation of single extrathoracic metastasis in a single organ system (including involvement of a single non-regional node)</option>
+	<option value="pM1c: (subgroup cannot be determined)">pM1c: (subgroup cannot be determined)</option>
+	<option value="pM1c1: Microscopic confirmation of multiple extrathoracic metastases in a single organ system (For example, the skeleton is considered one organ. Several metastases in a single bone or several metastases in several bones are classified as M1c1.)">pM1c1: Microscopic confirmation of multiple extrathoracic metastases in a single organ system (For example, the skeleton is considered one organ. Several metastases in a single bone or several metastases in several bones are classified as M1c1.)</option>
+	<option value="pM1c2: Microscopic confirmation of multiple extrathoracic metastases in multiple organ systems">pM1c2: Microscopic confirmation of multiple extrathoracic metastases in multiple organ systems</option>
+</select>
+</td>
+</tr>
+<!--
+<tr>
+<td>
+    - Specify site(s), if known:
+<input type="text" name="A55" class="element text medium" ID="A55" size="35">
+</td>
+</tr>
+-->
+</tbody></table>
+<p></p>
+</fieldset>
+<p></p>
+
+<p>
+</p><fieldset style="border-color:#e6e6ff;">
+	<legend> <label class=""> + Additional pathologic findings: </label></legend>
+<p>
+<input class="element checkbox" type="checkbox" id="A56" value="Atypical adenomatous hyperplasia"><label class="choice">Atypical adenomatous hyperplasia</label>
+<input class="element checkbox" type="checkbox" id="A130" value="Tumorlets:"><label class="choice">Tumorlets:</label>
+<input class="element checkbox" type="checkbox" id="A57" value="Squamous dysplasia"><label class="choice">Squamous dysplasia</label>
+<input class="element checkbox" type="checkbox" id="A58" value="Diffuse neuroendocrine hyperplasia"><label class="choice">Diffuse neuroendocrine hyperplasia</label>
+<input class="element checkbox" type="checkbox" id="A59" value="Biopsy site changes"><label class="choice">Biopsy site changes</label>
+<input class="element checkbox" type="checkbox" id="A60" value="Granulomatous inflammation, necrotizing"><label class="choice">Granulomatous inflammation, necrotizing</label>
+<input class="element checkbox" type="checkbox" id="A131" value="Granulomatous inflammation, non-necrotizing"><label class="choice">Granulomatous inflammation, non-necrotizing</label>
+<input class="element checkbox" type="checkbox" id="A132" value="Post-obstructive changes"><label class="choice">Post-obstructive changes</label>
+<input class="element checkbox" type="checkbox" id="A133" value="Fibrosis (specify pattern if discernable):"><label class="choice">Fibrosis (specify pattern if discernable):</label>
+<input class="element checkbox" type="checkbox" id="A61" value="Emphysema"><label class="choice">Emphysema</label>
+</p>
+<p>- Other (specify):
+<input type="text" name="A62" class="element text medium" id="A62" size="35">
+</p>
+<br>
+</fieldset>
+<p></p>
+
+<p>
+<label class="description">- Additional notes:</label>
+ <textarea id="A63" name="A63" class="element textarea medium" style="border-color:Grey;"></textarea> 
+</p>
+
+<br><br>
+<input type="button" name="copyform" value="Check your Report" onclick="updateDescription(this.form)">
+<br>
+<textarea id="holdtext" name="holdtext" class="textarea large" style="border-color:coral;"></textarea>
+
+<br><br>
+<!-- The button used to copy the text -->
+<button onclick="CopyToClipboard()">Copy text to Clipboard</button>
+
+<input type="reset" value="Reset Form" name="reset" style="float: right;">
+</form>
+<br>
+<br>
+
+<div id="footer">
+Last upated on 06-Oct-2025,<br>
+based on <a href="https://www.cap.org/protocols-and-guidelines/cancer-reporting-tools/cancer-protocol-templates" target="_blank">US CAP cancer protocol templates</a>,<br>
+Lung 5.1.0.0 (Sep-2025).<br>
+html form was created on <a href="https://www.phpform.org">pForm</a>, <a href="https://www.w3schools.com/">W3 School</a>, <a href="https://stackoverflow.com/">StackOverflow</a>, and <a href="https://icons8.com">Icons8</a>.<br><br>
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.
+</div>
+</div>
+<img id="bottom" src="bottom.png" alt="">
+
+</body></html>
