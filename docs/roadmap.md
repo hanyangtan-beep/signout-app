@@ -46,7 +46,17 @@ Docs
 
 ## Now
 
-(empty — pull the next card in)
+Pulled 2026-09-12 (user request): specimen intake (c).
+
+### Specimen intake (c) — subsite pre-fill from the specimen text   Size: S
+Why:        after the template match the part still opens on the default site (IBD series on Terminal ileum, polyp on Cecum) even though the LIS line names it ("Ascending colon, biopsy"); user request 2026-09-12.
+Change:     (1) `match.fill` becomes a list of `{field, from}` rules per schema; `from: "options"` matches a select field's option labels against the part text (all option words present, longest wins, ties and "unspecified"-type options skipped) with a spelling table (caecum / cecum, ileocaecal, GC / LC, TI, rectosigmoid junction, mandibular); `from: "detail"` / `"text"` copy the LIS middle field or the whole line into a text field. (2) Rules declared for the site selects — IBD series `site`, colonic polyp `site`, colorectal and GIST `tumourSite`, gastric `biopsySite`, parathyroid and jaw-cyst `site` — and for the free-text Site fields (duodenal, oesophageal, prostate, cervical, skin ×3, lung, liver segment, soft tissue, TURBT, thyroid / salivary / lymph-node FNA, effusion, breast core, nasal polyps). (3) Fixture `values` extended so every rule is exercised.
+Untouched:  matching scores and tiers, report wording, golden fixtures, generic template.
+Accept:     "Terminal ileum, biopsy" with IBD history → IBD series part on Terminal ileum; "Ascending colon, polypectomy" → colonic polyp on Ascending colon; "antrum" alone leaves gastric biopsy site Unspecified (curvature unknown); fixture `values` pass; 619+ tests, golden fixtures byte-for-byte unchanged.
+Stop:       no fuzzy / model matching; a site that is not an option is left at the default rather than forced to "Other".
+Verify:     tests + browser with the IBD and polyp lists
+Ship:       one deploy + publish
+Spec:       `docs/specs/specimen-intake.md` (section "Subsite pre-fill")
 
 ---
 
