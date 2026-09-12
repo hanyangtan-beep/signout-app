@@ -3,7 +3,7 @@
 // first use, so the initial download does not grow as templates are added.
 // Works in the browser (fetch + import) and in Node (fs + import).
 
-const BUILD = 'mtxoqqj6'; // tools/build.js stamps this with the build id for cache-busting
+const BUILD = 'mtxp1iyk'; // tools/build.js stamps this with the build id for cache-busting
 
 const isNode = typeof window === 'undefined';
 let manifestPromise = null;
@@ -36,7 +36,7 @@ export function loadManifest(baseUrl) {
 }
 
 export async function loadSchema(id, baseUrl) {
-  return readJson(`schemas/${id}.json?v=mtxoqqj6`, baseUrl);
+  return readJson(`schemas/${id}.json?v=mtxp1iyk`, baseUrl);
 }
 
 export async function loadGenerator(name) {

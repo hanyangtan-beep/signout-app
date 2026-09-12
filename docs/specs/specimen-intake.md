@@ -1,6 +1,6 @@
 # Specimen intake — paste the LIS specimen list, get the parts
 
-Status: planned 2026-09-12 (user request); two roadmap cards in Next, build as one batch. Not yet built.
+Status: **built 2026-09-12** (cards (a) + (b) shipped as one batch; see "As built" at the end). Planned the same day from the user's request and six LIS samples.
 
 ## Problem
 
@@ -46,7 +46,7 @@ Fields: specimen name, clinical note (optional), microscopy (free text, seeded "
 
 ## Data and Drive
 
-- `caseState.meta.specimenText` saved with the case (Drive record and Doc unchanged apart from the extra field; the Doc's SPECIMENS block already prints the part specimen names).
+- `caseState.meta.specimen` saved with the case (Drive record and Doc unchanged apart from the extra field; the Doc's SPECIMENS block already prints the part specimen names).
 - `caseTitle` becomes derived (`"(A) Cervix; (B) Endometrium; (C) Uterus"`) but remains user-editable; the gastric and IBD `parseSitesFromTitle` keep working.
 
 ## Tests
@@ -64,4 +64,16 @@ Fields: specimen name, clinical note (optional), microscopy (free text, seeded "
 ## Resolved 2026-09-12
 
 - Six house samples supplied; LIS uses letters only; no container counts or specimen codes, but numbered lymph node stations appear inside part text.
-- Remaining question: retire the **Case title / specimens** field in favour of the derived title (proposed yes), and whether fallopian tubes with a fibroid uterus should join the benign uterus template as adnexal parts or stay generic.
+- Case title / specimens field retired (user: "yes") — the title is derived from the specimen list; `gastric_biopsy` no longer declares the `caseTitle` case field.
+- Fallopian tubes with a fibroid uterus stay **generic** (no tube template exists; the benign uterus template has no adnexal parts). Revisit if a salpingectomy template is added.
+
+## As built 2026-09-12
+
+- `src/intake.js` — `parseIntake`, `matchParts`, `presetValues`, `deriveTitle`, `splitTriple`; `MAX_PARTS = 26`. The list is the text after the last `specimen` heading, else the block that holds the first `(A)` back to the previous blank line; everything before it is the history (heading lines dropped). Warnings: no lettered parts, letter gaps, more than 26.
+- Scoring (per part, per template with a `match.site` hit on prefix + text): `2 × procedure hits + 2 × min(1, clinical hits in history) − 4 × not hits + bias`; −3 for a biopsy / cytology template on a resected part and vice versa; +1 to cancer-resection templates when a cancer word appears and the part is not a biopsy. Tiers: confident when the best beats the runner-up by ≥ 2 (or a role rule fired); choose otherwise (below a score of 2 the generic form is preselected but the candidates are listed); none when nothing scores ≥ 0. Ties break on manifest `rank`.
+- Role rules: lymph node / LN / sentinel parts → `lymph_node` (station kept as specimen name, procedure Sentinel lymph node biopsy / Dissection / Resection / Excision); `… margin` parts of a breast case → `breast_excision` cavity shave margin with the named margin and the side of the main breast part.
+- `match` blocks on all 43 schemas (`site`, `procedure`, `clinical`, optional `not`, `bias`, `fill`); `MANIFEST_KEYS` now carries `match`; `KINDS` gains `generic`; `SYSTEMS` gains `General`. Skin templates match on skin words only (not body regions); `colonic_polyp` and `colon_resection` no longer match bare `polyp` / `carcinoma`; `endometrial_biopsy` no longer matches `curettings` alone; `gist_resection` needs `wedge` / `gastrectomy`.
+- Generic template: fields specimenName, macro (optional), microscopy ("Sections show "), diagnosis; validate warns on empty microscopy / diagnosis; diagnosis line `(A) OMENTUM, resection - …`.
+- UI: **Specimen** textarea under Accession; strip with one row per part (letter, text, dropdown Generic / Suggested / All templates, ✓ ? — mark), footer **Build parts** / **Replace parts** (confirm once when the case already has parts or edits) and parser warnings; collapses to "N parts built · Show list" after Build; re-scores when the specimen or clinical text changes; manual picks survive clinical edits and reset on a new list. Build fills Clinical history from the pasted history only when the field is empty. `meta.specimen` is saved with the case and checked by the PHI guard.
+- Tests: `tests/intake.test.js` (8 tests) over `tests/fixtures/intake/cases.json` — 18 cases, 88 parts (the six house samples + biopsy / resection / cytology lists reaching every template), all top-1 correct, zero confident-wrong. Deliberate non-golden test edits: `tests/picker.test.js` systems list gains `General`; `tests/jawcyst.test.js` key-order assertion includes `match`. Golden fixtures unchanged (619 tests).
+- Serous-carcinoma debulking (sample 3): omentum, spleen, peritoneal nodules and the sigmoid parts land on generic (`choose` for sigmoid — colon resection offered); the uterus is `choose` with generic preselected because "serous carcinoma" alone does not fix the primary.

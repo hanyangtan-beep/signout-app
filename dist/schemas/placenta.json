@@ -1,0 +1,449 @@
+{
+  "id": "placenta",
+  "version": "2026.09",
+  "name": "Placenta",
+  "shortName": "Placenta · delivery",
+  "label": "Placenta",
+  "organ": "PLACENTA",
+  "system": "Gynae",
+  "kind": "benign resection",
+  "rank": 22,
+  "aliases": [
+    "chorioamnionitis",
+    "funisitis",
+    "villitis",
+    "umbilical cord",
+    "membranes",
+    "twin",
+    "dichorionic",
+    "monochorionic",
+    "infarct",
+    "MVM",
+    "FVM",
+    "retroplacental haematoma",
+    "Amsterdam",
+    "meconium"
+  ],
+  "match": {
+    "site": [
+      "placenta",
+      "placental",
+      "cord",
+      "membranes"
+    ],
+    "procedure": [
+      "delivery",
+      "caesarean",
+      "vaginal"
+    ],
+    "clinical": [
+      "chorioamnionitis",
+      "preterm",
+      "IUGR",
+      "FGR",
+      "stillbirth",
+      "pre-eclampsia",
+      "preeclampsia",
+      "GDM",
+      "twin",
+      "PPROM",
+      "abruption"
+    ]
+  },
+  "specimenNoun": "delivery",
+  "maxParts": 2,
+  "defaultParts": 1,
+  "generator": "placenta",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen as received",
+      "type": "text",
+      "placeholder": "Placenta / Twin A placenta",
+      "default": ""
+    },
+    {
+      "id": "weight",
+      "label": "Weight",
+      "type": "number",
+      "min": 0,
+      "step": 1,
+      "suffix": "g",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "gestation",
+      "label": "Gestation",
+      "type": "select",
+      "options": [
+        "Third trimester",
+        "Second trimester",
+        "First trimester"
+      ],
+      "default": "Third trimester",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "plurality",
+      "label": "Plurality",
+      "type": "select",
+      "options": [
+        "Singleton",
+        "Twin - dichorionic diamniotic",
+        "Twin - monochorionic diamniotic",
+        "Twin - monochorionic monoamniotic"
+      ],
+      "default": "Singleton",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "discSize",
+      "label": "Placental disc dimensions (cm)",
+      "type": "text",
+      "placeholder": "18 x 16 x 2.5",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cordLength",
+      "label": "Cord length",
+      "type": "number",
+      "min": 0,
+      "step": 0.5,
+      "suffix": "cm",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cordDiameter",
+      "label": "Cord diameter",
+      "type": "number",
+      "min": 0,
+      "step": 0.1,
+      "suffix": "cm",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cordInsertion",
+      "label": "Cord insertion",
+      "type": "select",
+      "options": [
+        "Central",
+        "Eccentric",
+        "Marginal",
+        "Velamentous"
+      ],
+      "default": "Central",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cordVessels",
+      "label": "Cord vessels",
+      "type": "select",
+      "options": [
+        "Three",
+        "Two"
+      ],
+      "default": "Three",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cordFeatures",
+      "label": "Cord coiling / knots (optional)",
+      "type": "text",
+      "placeholder": "Hypercoiled / true knot / false knot",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "membranes",
+      "label": "Membranes",
+      "type": "select",
+      "options": [
+        "Complete",
+        "Incomplete"
+      ],
+      "default": "Complete",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "membraneColour",
+      "label": "Membrane colour",
+      "type": "select",
+      "options": [
+        "Translucent",
+        "Opaque",
+        "Green-stained"
+      ],
+      "default": "Translucent",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "membraneInsertion",
+      "label": "Membrane insertion",
+      "type": "select",
+      "options": [
+        "Marginal",
+        "Circummarginate",
+        "Circumvallate"
+      ],
+      "default": "Marginal",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cutSurface",
+      "label": "Cut surface",
+      "type": "select",
+      "options": [
+        "Unremarkable",
+        "Infarct(s)",
+        "Retroplacental haematoma",
+        "Intervillous thrombi",
+        "Other - describe"
+      ],
+      "default": "Unremarkable",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cutSurfaceInfarctPercent",
+      "label": "Infarct extent (% of disc)",
+      "type": "text",
+      "placeholder": "5",
+      "default": "",
+      "showIf": {
+        "field": "cutSurface",
+        "is": "Infarct(s)"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cutSurfaceOther",
+      "label": "Cut surface description",
+      "type": "text",
+      "placeholder": "a 2 cm pale firm area at the margin",
+      "default": "",
+      "showIf": {
+        "field": "cutSurface",
+        "is": "Other - describe"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "blocks",
+      "label": "Blocks",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "default": "4",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "villousMaturation",
+      "label": "Villous maturation",
+      "type": "select",
+      "options": [
+        "Appropriate for gestation",
+        "Accelerated",
+        "Delayed - distal villous immaturity"
+      ],
+      "default": "Appropriate for gestation"
+    },
+    {
+      "id": "chorioamnionitis",
+      "label": "Chorioamnionitis (maternal inflammatory response)",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Stage 1 - acute subchorionitis",
+        "Stage 2 - acute chorioamnionitis",
+        "Stage 3 - necrotising"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "fetalResponse",
+      "label": "Fetal inflammatory response",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Stage 1 - umbilical phlebitis or chorionic vasculitis",
+        "Stage 2 - umbilical arteritis",
+        "Stage 3 - necrotising funisitis"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "villitis",
+      "label": "Villitis",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Chronic villitis of unknown aetiology - low grade",
+        "Chronic villitis of unknown aetiology - high grade"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "infarcts",
+      "label": "Infarcts",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present - recent",
+        "Present - remote"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "infarctPercent",
+      "label": "Infarct extent (% of parenchyma)",
+      "type": "text",
+      "placeholder": "5",
+      "default": "",
+      "showIf": {
+        "field": "infarcts",
+        "not": "Absent"
+      }
+    },
+    {
+      "id": "retroplacentalHaematoma",
+      "label": "Retroplacental haematoma",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "mvm",
+      "label": "Maternal vascular malperfusion features",
+      "type": "multiselect",
+      "options": [
+        "None",
+        "Distal villous hypoplasia",
+        "Increased syncytial knots",
+        "Decidual arteriopathy",
+        "Accelerated villous maturation"
+      ],
+      "exclusive": [
+        "None"
+      ],
+      "default": [
+        "None"
+      ]
+    },
+    {
+      "id": "fvm",
+      "label": "Fetal vascular malperfusion features",
+      "type": "multiselect",
+      "options": [
+        "None",
+        "Avascular villi",
+        "Thrombosis of fetal vessels",
+        "Villous stromal-vascular karyorrhexis"
+      ],
+      "exclusive": [
+        "None"
+      ],
+      "default": [
+        "None"
+      ]
+    },
+    {
+      "id": "meconium",
+      "label": "Meconium",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present - membranes",
+        "Present - membranes and cord"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "intervillousThrombi",
+      "label": "Intervillous thrombi",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "Placenta, delivery",
+          "weight": "480",
+          "gestation": "Third trimester",
+          "plurality": "Singleton",
+          "discSize": "18 x 16 x 2.5",
+          "cordLength": "45",
+          "cordDiameter": "1.2",
+          "cordInsertion": "Central",
+          "cordVessels": "Three",
+          "cordFeatures": "",
+          "membranes": "Complete",
+          "membraneColour": "Translucent",
+          "membraneInsertion": "Marginal",
+          "cutSurface": "Unremarkable",
+          "cutSurfaceInfarctPercent": "",
+          "cutSurfaceOther": "",
+          "blocks": "4",
+          "villousMaturation": "Appropriate for gestation",
+          "chorioamnionitis": "Absent",
+          "fetalResponse": "Absent",
+          "villitis": "Absent",
+          "infarcts": "Absent",
+          "infarctPercent": "",
+          "retroplacentalHaematoma": "Absent",
+          "mvm": [
+            "None"
+          ],
+          "fvm": [
+            "None"
+          ],
+          "meconium": "Absent",
+          "intervillousThrombi": "Absent",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

@@ -429,3 +429,23 @@ textarea.input { min-height: 64px; resize: vertical; }
 .block-editor-bar { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-top: 1px solid var(--color-border); background: var(--color-surface-2); font-size: var(--text-xs); }
 .block-editor-bar .muted { margin-right: auto; }
 
+
+/* Specimen intake (LIS paste -> parts) */
+.specimen-field { grid-template-columns: 1fr; gap: var(--space-1); padding: 0; margin-bottom: var(--space-2); }
+.specimen-field > label { padding-top: 0; }
+.specimen-field .muted { font-weight: 400; }
+.intake-preview { border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); padding: var(--space-2) var(--space-3); margin-bottom: var(--space-4); font-size: var(--text-sm); }
+.intake-preview table { width: 100%; border-collapse: collapse; }
+.intake-preview td { padding: 3px var(--space-2) 3px 0; vertical-align: middle; border-top: 1px solid var(--color-border); }
+.intake-preview tr:first-child td { border-top: 0; }
+.intake-preview td.letter { width: 2.2em; font-family: var(--font-mono); color: var(--color-text-muted); }
+.intake-preview td.text { max-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.intake-preview td.pick { width: 15em; }
+.intake-preview td.pick select { width: 100%; min-height: 28px; padding: 2px var(--space-2); font-size: var(--text-sm); }
+.intake-preview td.tier { width: 1.4em; text-align: center; font-weight: 600; }
+.intake-preview .tier-confident { color: var(--color-success, #2a7f4f); }
+.intake-preview .tier-choose { color: var(--color-warning, #b7791f); }
+.intake-preview .tier-none { color: var(--color-text-muted); }
+.intake-preview .intake-foot { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; padding-top: var(--space-2); margin-top: var(--space-1); border-top: 1px solid var(--color-border); }
+.intake-preview .intake-foot.built { border-top: 0; padding-top: 0; margin-top: 0; justify-content: space-between; }
+.intake-preview .intake-warn { color: var(--color-warning, #b7791f); }

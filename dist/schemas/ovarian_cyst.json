@@ -1,0 +1,347 @@
+{
+  "id": "ovarian_cyst",
+  "version": "2026.09",
+  "name": "Ovarian cyst",
+  "shortName": "Ovary · cystectomy",
+  "label": "Ovarian cyst",
+  "organ": "OVARY",
+  "system": "Gynae",
+  "kind": "benign resection",
+  "rank": 28,
+  "aliases": [
+    "ovary",
+    "cyst",
+    "cystectomy",
+    "oophorectomy",
+    "salpingo-oophorectomy",
+    "adnexa",
+    "endometriotic",
+    "endometrioma",
+    "chocolate cyst",
+    "corpus luteum",
+    "follicular",
+    "serous cystadenoma",
+    "mucinous cystadenoma",
+    "dermoid",
+    "teratoma",
+    "paratubal",
+    "torsion",
+    "fibroma"
+  ],
+  "match": {
+    "site": [
+      "ovary",
+      "ovarian",
+      "adnexa",
+      "adnexal",
+      "appendages",
+      "salpingo-oophorectomy",
+      "oophorectomy",
+      "cystectomy"
+    ],
+    "procedure": [
+      "cystectomy",
+      "oophorectomy",
+      "salpingo-oophorectomy",
+      "excision",
+      "resection"
+    ],
+    "clinical": [
+      "ovarian cyst",
+      "endometrioma",
+      "endometriotic",
+      "endometriosis",
+      "dermoid",
+      "teratoma",
+      "chocolate cyst",
+      "cyst"
+    ]
+  },
+  "specimenNoun": "cystectomy",
+  "maxParts": 3,
+  "defaultParts": 1,
+  "generator": "ovary",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen as received (blank = built from side and procedure)",
+      "type": "text",
+      "placeholder": "Right ovarian cyst, cystectomy",
+      "default": ""
+    },
+    {
+      "id": "side",
+      "label": "Side",
+      "type": "select",
+      "options": [
+        "Right",
+        "Left",
+        "Not stated"
+      ],
+      "default": "Right"
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "options": [
+        "Cystectomy",
+        "Oophorectomy",
+        "Salpingo-oophorectomy",
+        "Cyst wall, excision"
+      ],
+      "default": "Cystectomy"
+    },
+    {
+      "id": "receivedState",
+      "label": "Specimen",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Intact",
+        "Ruptured"
+      ],
+      "default": "Intact"
+    },
+    {
+      "id": "dimensions",
+      "label": "Specimen dimensions (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "5 x 4.5 x 3",
+      "default": ""
+    },
+    {
+      "id": "cystSize",
+      "label": "Cyst size (cm, maximum dimension)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "5",
+      "default": ""
+    },
+    {
+      "id": "wallThickness",
+      "label": "Cyst wall thickness (mm or cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "0.2 cm / 2 mm",
+      "default": ""
+    },
+    {
+      "id": "contents",
+      "label": "Contents",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Chocolate-brown fluid",
+        "Serous fluid",
+        "Mucinous material",
+        "Sebaceous material and hair",
+        "Blood clot",
+        "Clear fluid"
+      ],
+      "default": "Chocolate-brown fluid"
+    },
+    {
+      "id": "lining",
+      "label": "Inner lining",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Smooth",
+        "Papillary excrescences – describe",
+        "Solid areas – describe"
+      ],
+      "default": "Smooth"
+    },
+    {
+      "id": "liningDescription",
+      "label": "Papillary / solid area description",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "a 0.5 cm cluster of papillary excrescences",
+      "default": "",
+      "showIf": {
+        "field": "lining",
+        "is": [
+          "Papillary excrescences – describe",
+          "Solid areas – describe"
+        ]
+      }
+    },
+    {
+      "id": "tube",
+      "label": "Fallopian tube",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Not included",
+        "Unremarkable",
+        "Hydrosalpinx",
+        "Paratubal cyst"
+      ],
+      "default": "Not included"
+    },
+    {
+      "id": "tubeLength",
+      "label": "Tube length (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "6",
+      "default": "",
+      "showIf": {
+        "field": "tube",
+        "not": "Not included"
+      }
+    },
+    {
+      "id": "blocks",
+      "label": "Blocks (cyst wall and ovary; the tube adds one)",
+      "type": "number",
+      "group": "Macroscopy",
+      "min": 1,
+      "step": 1,
+      "default": "4"
+    },
+    {
+      "id": "cystType",
+      "label": "Cyst / lesion type",
+      "type": "select",
+      "options": [
+        "Endometriotic cyst",
+        "Burnt-out endometriotic cyst (haemorrhagic cyst)",
+        "Haemorrhagic corpus luteum cyst",
+        "Follicular cyst",
+        "Simple cyst",
+        "Serous cystadenoma",
+        "Mucinous cystadenoma",
+        "Seromucinous cystadenoma",
+        "Mature cystic teratoma",
+        "Fibroma",
+        "Paratubal cyst",
+        "Borderline tumour – see comment",
+        "Carcinoma – see comment"
+      ],
+      "default": "Endometriotic cyst"
+    },
+    {
+      "id": "torsion",
+      "label": "Torsion / haemorrhagic infarction",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "endometriosisElsewhere",
+      "label": "Endometriosis elsewhere (ovarian surface / adjacent tissue)",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "ovarianStroma",
+      "label": "Ovarian stroma at periphery",
+      "type": "select",
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "default": "Yes"
+    },
+    {
+      "id": "tubeFindings",
+      "label": "Fallopian tube (microscopy)",
+      "type": "select",
+      "options": [
+        "Unremarkable",
+        "Hydrosalpinx",
+        "Paratubal cyst",
+        "Chronic salpingitis",
+        "Endometriosis"
+      ],
+      "default": "Unremarkable",
+      "showIf": {
+        "field": "tube",
+        "not": "Not included"
+      }
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "snippets": [
+    {
+      "id": "ovary_cancer_template",
+      "label": "Borderline / carcinoma — use the QMH ovarian cancer template",
+      "auto": {
+        "field": "cystType",
+        "is": [
+          "Borderline tumour – see comment",
+          "Carcinoma – see comment"
+        ]
+      },
+      "text": "A borderline or malignant epithelial tumour is identified in the ovary ({parts}). This benign template does not type, grade or stage the lesion; the QMH ovarian cancer template should be used for the final synoptic report."
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "",
+          "side": "Right",
+          "procedure": "Cystectomy",
+          "receivedState": "Intact",
+          "dimensions": "5 x 4.5 x 3",
+          "cystSize": "5",
+          "wallThickness": "0.2 cm",
+          "contents": "Chocolate-brown fluid",
+          "lining": "Smooth",
+          "liningDescription": "",
+          "tube": "Not included",
+          "tubeLength": "",
+          "blocks": "4",
+          "cystType": "Endometriotic cyst",
+          "torsion": "Absent",
+          "endometriosisElsewhere": "Absent",
+          "ovarianStroma": "Yes",
+          "tubeFindings": "Unremarkable",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,2314 @@
+{
+  "generated": "scripts/build-manifest.mjs",
+  "count": 44,
+  "templates": [
+    {
+      "id": "gastric_biopsy",
+      "name": "Gastric biopsy",
+      "shortName": "Stomach · biopsy",
+      "label": "Gastric",
+      "organ": "STOMACH",
+      "system": "GI",
+      "kind": "biopsy",
+      "rank": 1,
+      "aliases": [
+        "gastric",
+        "stomach",
+        "Helicobacter",
+        "H. pylori",
+        "Sydney",
+        "OLGA",
+        "OLGIM",
+        "intestinal metaplasia",
+        "gastritis",
+        "antrum",
+        "body",
+        "fundus"
+      ],
+      "match": {
+        "site": [
+          "stomach",
+          "gastric",
+          "antrum",
+          "antral",
+          "corpus",
+          "body",
+          "fundus",
+          "incisura",
+          "cardia",
+          "OGD"
+        ],
+        "procedure": [
+          "biopsy",
+          "biopsies",
+          "OGD"
+        ],
+        "clinical": [
+          "gastritis",
+          "Helicobacter",
+          "H. pylori",
+          "dyspepsia",
+          "epigastric",
+          "intestinal metaplasia",
+          "OLGA",
+          "ulcer"
+        ],
+        "fill": {
+          "field": "specimenName",
+          "from": "detail"
+        }
+      },
+      "version": "2026.09.2",
+      "generator": "gastric",
+      "generatorPath": "generators/gastric.js",
+      "schemaPath": "schemas/gastric_biopsy.json"
+    },
+    {
+      "id": "colonic_polyp",
+      "name": "Colonic polyp",
+      "shortName": "Colon · polyp",
+      "label": "Colonic polyp",
+      "organ": "COLON",
+      "system": "GI",
+      "kind": "biopsy",
+      "rank": 2,
+      "aliases": [
+        "polyp",
+        "polypectomy",
+        "adenoma",
+        "tubular",
+        "tubulovillous",
+        "serrated",
+        "SSL",
+        "hyperplastic polyp",
+        "colon",
+        "rectum",
+        "sigmoid",
+        "carcinoma",
+        "adenocarcinoma",
+        "malignant polyp",
+        "EMR",
+        "ESD",
+        "MMR"
+      ],
+      "match": {
+        "site": [
+          "colon",
+          "rectum",
+          "rectal",
+          "colonic",
+          "caecum",
+          "cecum",
+          "sigmoid",
+          "transverse",
+          "ascending",
+          "descending"
+        ],
+        "procedure": [
+          "polypectomy",
+          "biopsy",
+          "EMR",
+          "ESD",
+          "snare"
+        ],
+        "clinical": [
+          "polyp",
+          "adenoma",
+          "colonoscopy",
+          "screening"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "colonic",
+      "generatorPath": "generators/colonic.js",
+      "schemaPath": "schemas/colonic_polyp.json"
+    },
+    {
+      "id": "duodenal_biopsy",
+      "name": "Duodenal biopsy",
+      "shortName": "Duodenum · biopsy",
+      "label": "Duodenum",
+      "organ": "DUODENUM",
+      "system": "GI",
+      "kind": "biopsy",
+      "rank": 3,
+      "aliases": [
+        "coeliac",
+        "celiac",
+        "Marsh",
+        "villous atrophy",
+        "Giardia",
+        "Brunner",
+        "peptic duodenitis",
+        "D2",
+        "small bowel"
+      ],
+      "match": {
+        "site": [
+          "duodenum",
+          "duodenal",
+          "D2",
+          "small bowel"
+        ],
+        "procedure": [
+          "biopsy",
+          "biopsies"
+        ],
+        "clinical": [
+          "coeliac",
+          "celiac",
+          "anaemia",
+          "anemia",
+          "diarrhoea",
+          "malabsorption",
+          "TTG"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "duodenal",
+      "generatorPath": "generators/duodenal.js",
+      "schemaPath": "schemas/duodenal_biopsy.json"
+    },
+    {
+      "id": "oesophageal_biopsy",
+      "name": "Oesophageal biopsy",
+      "shortName": "Oesophagus · biopsy",
+      "label": "Oesophagus",
+      "organ": "OESOPHAGUS",
+      "system": "GI",
+      "kind": "biopsy",
+      "rank": 4,
+      "aliases": [
+        "esophagus",
+        "OGJ",
+        "GOJ",
+        "Barrett",
+        "reflux",
+        "eosinophilic oesophagitis",
+        "EoE",
+        "Candida",
+        "squamous"
+      ],
+      "match": {
+        "site": [
+          "oesophagus",
+          "oesophageal",
+          "esophagus",
+          "esophageal",
+          "OGJ",
+          "GOJ",
+          "gastro-oesophageal",
+          "gastroesophageal",
+          "distal oesophagus"
+        ],
+        "procedure": [
+          "biopsy",
+          "biopsies",
+          "OGD"
+        ],
+        "clinical": [
+          "Barrett",
+          "reflux",
+          "GERD",
+          "GORD",
+          "dysphagia",
+          "eosinophilic",
+          "oesophagitis",
+          "esophagitis",
+          "Candida"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "oesophageal",
+      "generatorPath": "generators/oesophageal.js",
+      "schemaPath": "schemas/oesophageal_biopsy.json"
+    },
+    {
+      "id": "ibd_biopsy",
+      "name": "IBD biopsy series",
+      "shortName": "Colon · IBD biopsy",
+      "label": "IBD",
+      "organ": "COLON",
+      "system": "GI",
+      "kind": "biopsy",
+      "rank": 5,
+      "aliases": [
+        "ulcerative colitis",
+        "Crohn",
+        "colitis",
+        "chronic colitis",
+        "terminal ileum",
+        "ileum",
+        "surveillance",
+        "mapping",
+        "inflammatory bowel disease"
+      ],
+      "match": {
+        "site": [
+          "colon",
+          "rectum",
+          "rectal",
+          "colonic",
+          "caecum",
+          "cecum",
+          "sigmoid",
+          "ileum",
+          "ileal",
+          "terminal ileum",
+          "transverse",
+          "ascending",
+          "descending",
+          "mapping",
+          "series"
+        ],
+        "procedure": [
+          "biopsy",
+          "biopsies",
+          "mapping",
+          "series",
+          "colonoscopy"
+        ],
+        "clinical": [
+          "ulcerative colitis",
+          "UC",
+          "Crohn",
+          "colitis",
+          "IBD",
+          "inflammatory bowel",
+          "surveillance",
+          "mapping",
+          "dysplasia surveillance"
+        ],
+        "not": [
+          "polyp"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "ibd",
+      "generatorPath": "generators/ibd.js",
+      "schemaPath": "schemas/ibd_biopsy.json"
+    },
+    {
+      "id": "prostate_biopsy",
+      "name": "Prostate biopsy",
+      "shortName": "Prostate · biopsy",
+      "label": "Prostate",
+      "organ": "PROSTATE",
+      "system": "GU",
+      "kind": "biopsy",
+      "rank": 6,
+      "aliases": [
+        "TRUS",
+        "transperineal",
+        "core",
+        "Gleason",
+        "ISUP",
+        "grade group",
+        "PIN",
+        "HGPIN",
+        "adenocarcinoma"
+      ],
+      "match": {
+        "site": [
+          "prostate",
+          "prostatic",
+          "TRUS",
+          "transperineal",
+          "sextant"
+        ],
+        "procedure": [
+          "biopsy",
+          "biopsies",
+          "core",
+          "cores",
+          "TRUS",
+          "transperineal",
+          "targeted",
+          "systematic"
+        ],
+        "clinical": [
+          "PSA",
+          "raised PSA",
+          "MRI",
+          "PIRADS",
+          "PI-RADS",
+          "nodule",
+          "adenocarcinoma"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "prostate",
+      "generatorPath": "generators/prostate.js",
+      "schemaPath": "schemas/prostate_biopsy.json"
+    },
+    {
+      "id": "breast_biopsy",
+      "name": "Breast core biopsy",
+      "shortName": "Breast · core biopsy",
+      "label": "Breast",
+      "organ": "BREAST",
+      "system": "Breast",
+      "kind": "biopsy",
+      "rank": 7,
+      "aliases": [
+        "core",
+        "B3",
+        "B5",
+        "DCIS",
+        "ER",
+        "PR",
+        "HER2",
+        "calcification",
+        "axillary node",
+        "fibroadenoma"
+      ],
+      "match": {
+        "site": [
+          "breast",
+          "axillary"
+        ],
+        "procedure": [
+          "core",
+          "biopsy",
+          "vacuum"
+        ],
+        "clinical": [
+          "mammogram",
+          "ultrasound",
+          "B3",
+          "B5",
+          "microcalcification"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "breast",
+      "generatorPath": "generators/breast.js",
+      "schemaPath": "schemas/breast_biopsy.json"
+    },
+    {
+      "id": "cervical_biopsy",
+      "name": "Cervical biopsy",
+      "shortName": "Cervix · biopsy",
+      "label": "Cervix",
+      "organ": "CERVIX",
+      "system": "Gynae",
+      "kind": "biopsy",
+      "rank": 8,
+      "aliases": [
+        "punch",
+        "colposcopy",
+        "CIN",
+        "HSIL",
+        "LSIL",
+        "ECC",
+        "endocervical curettings",
+        "p16",
+        "HPV"
+      ],
+      "match": {
+        "site": [
+          "cervix",
+          "cervical",
+          "endocervical",
+          "ECC"
+        ],
+        "procedure": [
+          "biopsy",
+          "punch",
+          "curettings",
+          "colposcopy"
+        ],
+        "clinical": [
+          "CIN",
+          "HSIL",
+          "LSIL",
+          "smear",
+          "HPV",
+          "colposcopy"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "cervical",
+      "generatorPath": "generators/cervical.js",
+      "schemaPath": "schemas/cervical_biopsy.json"
+    },
+    {
+      "id": "endometrial_biopsy",
+      "name": "Endometrial biopsy",
+      "shortName": "Endometrium · biopsy",
+      "label": "Endometrium",
+      "organ": "ENDOMETRIUM",
+      "system": "Gynae",
+      "kind": "biopsy",
+      "rank": 9,
+      "aliases": [
+        "pipelle",
+        "curettings",
+        "D&C",
+        "hyperplasia",
+        "EIN",
+        "PMB"
+      ],
+      "match": {
+        "site": [
+          "endometrium",
+          "endometrial",
+          "pipelle",
+          "uterine cavity"
+        ],
+        "procedure": [
+          "biopsy",
+          "curettings",
+          "pipelle",
+          "D&C",
+          "curettage",
+          "hysteroscopic",
+          "polypectomy"
+        ],
+        "clinical": [
+          "PMB",
+          "postmenopausal bleeding",
+          "menorrhagia",
+          "AUB",
+          "thickened endometrium",
+          "hyperplasia"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "endometrial",
+      "generatorPath": "generators/endometrial.js",
+      "schemaPath": "schemas/endometrial_biopsy.json"
+    },
+    {
+      "id": "lung_biopsy",
+      "name": "Lung / bronchial biopsy",
+      "shortName": "Lung · biopsy",
+      "label": "Lung",
+      "organ": "LUNG",
+      "system": "Thoracic",
+      "kind": "biopsy",
+      "rank": 10,
+      "aliases": [
+        "bronchial",
+        "transbronchial",
+        "EBUS",
+        "cryobiopsy",
+        "TTF-1",
+        "p40",
+        "PD-L1",
+        "granuloma"
+      ],
+      "match": {
+        "site": [
+          "lung",
+          "bronchus",
+          "bronchial",
+          "transbronchial",
+          "EBUS",
+          "lobe"
+        ],
+        "procedure": [
+          "biopsy",
+          "biopsies",
+          "cryobiopsy",
+          "transbronchial",
+          "endobronchial",
+          "CT-guided",
+          "core"
+        ],
+        "clinical": [
+          "lung mass",
+          "lung nodule",
+          "lung ca",
+          "lung cancer",
+          "opacity",
+          "consolidation",
+          "bronchoscopy",
+          "granuloma",
+          "TB",
+          "tuberculosis"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "lung",
+      "generatorPath": "generators/lung.js",
+      "schemaPath": "schemas/lung_biopsy.json"
+    },
+    {
+      "id": "frozen_section",
+      "name": "Frozen section",
+      "shortName": "Frozen section",
+      "label": "Frozen",
+      "organ": "",
+      "system": "Frozen",
+      "kind": "frozen",
+      "rank": 19,
+      "aliases": [
+        "FS",
+        "intraoperative",
+        "margin",
+        "parathyroid",
+        "lymph node",
+        "ovarian mass",
+        "nodule"
+      ],
+      "match": {
+        "site": [
+          "frozen",
+          "FS",
+          "intraoperative"
+        ],
+        "procedure": [
+          "frozen",
+          "FS",
+          "intraoperative"
+        ],
+        "clinical": []
+      },
+      "version": "2026.09",
+      "generator": "frozen",
+      "generatorPath": "generators/frozen.js",
+      "schemaPath": "schemas/frozen_section.json"
+    },
+    {
+      "id": "cervical_excision",
+      "name": "Cervical excision (LEEP / cone)",
+      "shortName": "Cervix · LEEP / cone",
+      "label": "LEEP",
+      "organ": "CERVIX",
+      "system": "Gynae",
+      "kind": "benign resection",
+      "rank": 20,
+      "aliases": [
+        "LLETZ",
+        "cone",
+        "loop",
+        "top hat",
+        "CIN",
+        "margins"
+      ],
+      "match": {
+        "site": [
+          "cervix",
+          "cervical",
+          "LEEP",
+          "LLETZ",
+          "cone"
+        ],
+        "procedure": [
+          "LEEP",
+          "LLETZ",
+          "cone",
+          "loop",
+          "excision"
+        ],
+        "clinical": [
+          "CIN",
+          "HSIL",
+          "LSIL",
+          "HPV",
+          "AIS",
+          "glandular"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "leep",
+      "generatorPath": "generators/leep.js",
+      "schemaPath": "schemas/cervical_excision.json"
+    },
+    {
+      "id": "lymph_node",
+      "name": "Lymph node excision",
+      "shortName": "Lymph node · excision",
+      "label": "Lymph node",
+      "organ": "LYMPH NODE",
+      "system": "Lymphoid",
+      "kind": "benign resection",
+      "rank": 21,
+      "aliases": [
+        "sentinel",
+        "SLN",
+        "sentinel lymph node biopsy",
+        "node dissection",
+        "lymphadenectomy",
+        "reactive",
+        "granulomatous",
+        "metastatic",
+        "x/y",
+        "MNF116",
+        "station",
+        "lymphoma"
+      ],
+      "match": {
+        "site": [
+          "lymph node",
+          "lymph nodes",
+          "LN",
+          "sentinel",
+          "SLN",
+          "node",
+          "nodes",
+          "lymphadenectomy"
+        ],
+        "procedure": [
+          "excision",
+          "sentinel",
+          "resection",
+          "dissection",
+          "sampling"
+        ],
+        "clinical": [
+          "lymphadenopathy",
+          "metastatic",
+          "staging",
+          "sentinel"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "lymphnode",
+      "generatorPath": "generators/lymphnode.js",
+      "schemaPath": "schemas/lymph_node.json"
+    },
+    {
+      "id": "placenta",
+      "name": "Placenta",
+      "shortName": "Placenta · delivery",
+      "label": "Placenta",
+      "organ": "PLACENTA",
+      "system": "Gynae",
+      "kind": "benign resection",
+      "rank": 22,
+      "aliases": [
+        "chorioamnionitis",
+        "funisitis",
+        "villitis",
+        "umbilical cord",
+        "membranes",
+        "twin",
+        "dichorionic",
+        "monochorionic",
+        "infarct",
+        "MVM",
+        "FVM",
+        "retroplacental haematoma",
+        "Amsterdam",
+        "meconium"
+      ],
+      "match": {
+        "site": [
+          "placenta",
+          "placental",
+          "cord",
+          "membranes"
+        ],
+        "procedure": [
+          "delivery",
+          "caesarean",
+          "vaginal"
+        ],
+        "clinical": [
+          "chorioamnionitis",
+          "preterm",
+          "IUGR",
+          "FGR",
+          "stillbirth",
+          "pre-eclampsia",
+          "preeclampsia",
+          "GDM",
+          "twin",
+          "PPROM",
+          "abruption"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "placenta",
+      "generatorPath": "generators/placenta.js",
+      "schemaPath": "schemas/placenta.json"
+    },
+    {
+      "id": "gallbladder",
+      "name": "Gallbladder",
+      "shortName": "Gallbladder · cholecystectomy",
+      "label": "Gallbladder",
+      "organ": "GALLBLADDER",
+      "system": "Hepatobiliary",
+      "kind": "benign resection",
+      "rank": 23,
+      "aliases": [
+        "cholecystectomy",
+        "cholecystitis",
+        "cholelithiasis",
+        "gallstones",
+        "Rokitansky-Aschoff",
+        "cholesterolosis",
+        "adenomyomatous",
+        "cystic duct",
+        "xanthogranulomatous",
+        "porcelain",
+        "GB"
+      ],
+      "match": {
+        "site": [
+          "gallbladder",
+          "gall bladder",
+          "cystic duct"
+        ],
+        "procedure": [
+          "cholecystectomy",
+          "resection"
+        ],
+        "clinical": [
+          "cholecystitis",
+          "cholelithiasis",
+          "gallstone",
+          "biliary colic"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "gallbladder",
+      "generatorPath": "generators/gallbladder.js",
+      "schemaPath": "schemas/gallbladder.json"
+    },
+    {
+      "id": "thyroid_benign",
+      "name": "Thyroid, benign resection",
+      "shortName": "Thyroid · hemithyroidectomy",
+      "label": "Thyroid",
+      "organ": "THYROID GLAND",
+      "system": "Endocrine",
+      "kind": "benign resection",
+      "rank": 24,
+      "aliases": [
+        "hemithyroidectomy",
+        "lobectomy",
+        "total thyroidectomy",
+        "nodular hyperplasia",
+        "multinodular goitre",
+        "goiter",
+        "follicular adenoma",
+        "Hashimoto",
+        "lymphocytic thyroiditis",
+        "Graves",
+        "isthmic margin",
+        "NIFTP"
+      ],
+      "match": {
+        "site": [
+          "thyroid",
+          "thyroid lobe",
+          "isthmus",
+          "hemithyroidectomy",
+          "thyroidectomy"
+        ],
+        "procedure": [
+          "hemithyroidectomy",
+          "thyroidectomy",
+          "lobectomy",
+          "isthmusectomy",
+          "resection"
+        ],
+        "clinical": [
+          "goitre",
+          "goiter",
+          "nodule",
+          "multinodular",
+          "MNG",
+          "Graves",
+          "Hashimoto",
+          "thyroiditis",
+          "Bethesda",
+          "follicular",
+          "thyroid nodule"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "thyroid",
+      "generatorPath": "generators/thyroid.js",
+      "schemaPath": "schemas/thyroid_benign.json"
+    },
+    {
+      "id": "parathyroid",
+      "name": "Parathyroid excision",
+      "shortName": "Parathyroid · excision",
+      "label": "Parathyroid",
+      "organ": "PARATHYROID",
+      "system": "Endocrine",
+      "kind": "benign resection",
+      "rank": 25,
+      "aliases": [
+        "parathyroidectomy",
+        "adenoma",
+        "hyperplasia",
+        "hyperparathyroidism",
+        "chief cell",
+        "oxyphil",
+        "rim",
+        "MEN1",
+        "frozen section correlation",
+        "PTH"
+      ],
+      "match": {
+        "site": [
+          "parathyroid"
+        ],
+        "procedure": [
+          "parathyroidectomy",
+          "excision",
+          "exploration"
+        ],
+        "clinical": [
+          "hyperparathyroidism",
+          "PTH",
+          "hypercalcaemia",
+          "hypercalcemia",
+          "adenoma",
+          "MEN"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "parathyroid",
+      "generatorPath": "generators/parathyroid.js",
+      "schemaPath": "schemas/parathyroid.json"
+    },
+    {
+      "id": "appendix",
+      "name": "Appendix",
+      "shortName": "Appendix · appendicectomy",
+      "label": "Appendix",
+      "organ": "APPENDIX",
+      "system": "GI",
+      "kind": "benign resection",
+      "rank": 26,
+      "aliases": [
+        "appendicectomy",
+        "appendectomy",
+        "appendicitis",
+        "periappendicitis",
+        "faecolith",
+        "fecalith",
+        "fibrous obliteration",
+        "perforation",
+        "LAMN",
+        "NET",
+        "carcinoid",
+        "mesoappendix",
+        "incidental"
+      ],
+      "match": {
+        "site": [
+          "appendix",
+          "appendiceal"
+        ],
+        "procedure": [
+          "appendicectomy",
+          "appendectomy",
+          "resection"
+        ],
+        "clinical": [
+          "appendicitis"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "appendix",
+      "generatorPath": "generators/appendix.js",
+      "schemaPath": "schemas/appendix.json"
+    },
+    {
+      "id": "uterus_benign",
+      "name": "Uterus (benign)",
+      "shortName": "Uterus · hysterectomy",
+      "label": "Uterus",
+      "organ": "UTERUS",
+      "system": "Gynae",
+      "kind": "benign resection",
+      "rank": 27,
+      "aliases": [
+        "hysterectomy",
+        "fibroid",
+        "leiomyoma",
+        "adenomyosis",
+        "myomectomy",
+        "TAH",
+        "BSO",
+        "salpingo-oophorectomy",
+        "endometrial polyp",
+        "cervix",
+        "fallopian tube",
+        "ovary"
+      ],
+      "match": {
+        "site": [
+          "uterus",
+          "uterine",
+          "hysterectomy",
+          "TAH",
+          "myomectomy",
+          "fibroid",
+          "leiomyoma",
+          "myoma"
+        ],
+        "procedure": [
+          "hysterectomy",
+          "TAH",
+          "TAHBSO",
+          "myomectomy",
+          "resection",
+          "subtotal"
+        ],
+        "clinical": [
+          "fibroid",
+          "fibroids",
+          "leiomyoma",
+          "leiomyomas",
+          "myoma",
+          "adenomyosis",
+          "menorrhagia",
+          "prolapse",
+          "uterine prolapse",
+          "AUB",
+          "HMB",
+          "endometrial polyp",
+          "bulky uterus"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "uterus",
+      "generatorPath": "generators/uterus.js",
+      "schemaPath": "schemas/uterus_benign.json"
+    },
+    {
+      "id": "ovarian_cyst",
+      "name": "Ovarian cyst",
+      "shortName": "Ovary · cystectomy",
+      "label": "Ovarian cyst",
+      "organ": "OVARY",
+      "system": "Gynae",
+      "kind": "benign resection",
+      "rank": 28,
+      "aliases": [
+        "ovary",
+        "cyst",
+        "cystectomy",
+        "oophorectomy",
+        "salpingo-oophorectomy",
+        "adnexa",
+        "endometriotic",
+        "endometrioma",
+        "chocolate cyst",
+        "corpus luteum",
+        "follicular",
+        "serous cystadenoma",
+        "mucinous cystadenoma",
+        "dermoid",
+        "teratoma",
+        "paratubal",
+        "torsion",
+        "fibroma"
+      ],
+      "match": {
+        "site": [
+          "ovary",
+          "ovarian",
+          "adnexa",
+          "adnexal",
+          "appendages",
+          "salpingo-oophorectomy",
+          "oophorectomy",
+          "cystectomy"
+        ],
+        "procedure": [
+          "cystectomy",
+          "oophorectomy",
+          "salpingo-oophorectomy",
+          "excision",
+          "resection"
+        ],
+        "clinical": [
+          "ovarian cyst",
+          "endometrioma",
+          "endometriotic",
+          "endometriosis",
+          "dermoid",
+          "teratoma",
+          "chocolate cyst",
+          "cyst"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "ovary",
+      "generatorPath": "generators/ovary.js",
+      "schemaPath": "schemas/ovarian_cyst.json"
+    },
+    {
+      "id": "skin_cyst",
+      "name": "Skin cyst",
+      "shortName": "Skin · cyst excision",
+      "label": "Skin cyst",
+      "organ": "SKIN",
+      "system": "Skin",
+      "kind": "benign resection",
+      "rank": 29,
+      "aliases": [
+        "sebaceous cyst",
+        "seb cyst",
+        "epidermal cyst",
+        "epidermoid",
+        "inclusion cyst",
+        "pilar cyst",
+        "trichilemmal",
+        "dermoid",
+        "ruptured cyst",
+        "keratin",
+        "steatocystoma",
+        "granulomatous reaction"
+      ],
+      "match": {
+        "site": [
+          "skin",
+          "scalp",
+          "face",
+          "ear",
+          "forehead",
+          "cheek"
+        ],
+        "procedure": [
+          "excision",
+          "excision biopsy",
+          "enucleation"
+        ],
+        "clinical": [
+          "sebaceous cyst",
+          "seb cyst",
+          "epidermal cyst",
+          "epidermoid cyst",
+          "inclusion cyst",
+          "pilar cyst",
+          "trichilemmal",
+          "dermoid",
+          "cyst",
+          "infected cyst"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "skincyst",
+      "generatorPath": "generators/skincyst.js",
+      "schemaPath": "schemas/skin_cyst.json"
+    },
+    {
+      "id": "skin_excision",
+      "name": "Skin lesion excision",
+      "shortName": "Skin · excision with margins",
+      "label": "Skin excision",
+      "organ": "SKIN",
+      "system": "Skin",
+      "kind": "benign resection",
+      "rank": 30,
+      "aliases": [
+        "BCC",
+        "basal cell carcinoma",
+        "keratoacanthoma",
+        "seborrhoeic keratosis",
+        "seborrheic keratosis",
+        "naevus",
+        "nevus",
+        "dermatofibroma",
+        "pyogenic granuloma",
+        "actinic keratosis",
+        "SCC in situ",
+        "Bowen",
+        "margins",
+        "ellipse",
+        "orientation suture"
+      ],
+      "match": {
+        "site": [
+          "skin",
+          "scalp",
+          "face",
+          "eyelid",
+          "ear",
+          "lip",
+          "nose"
+        ],
+        "procedure": [
+          "excision",
+          "excision biopsy",
+          "wide excision",
+          "re-excision",
+          "ellipse"
+        ],
+        "clinical": [
+          "BCC",
+          "basal cell",
+          "SCC",
+          "squamous cell",
+          "keratoacanthoma",
+          "naevus",
+          "nevus",
+          "melanoma",
+          "dermatofibroma",
+          "seborrhoeic",
+          "seborrheic",
+          "actinic",
+          "Bowen",
+          "skin lesion",
+          "skin tumour",
+          "skin tumor",
+          "pigmented"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "skinexcision",
+      "generatorPath": "generators/skinexcision.js",
+      "schemaPath": "schemas/skin_excision.json"
+    },
+    {
+      "id": "breast_excision",
+      "name": "Breast excision / margins",
+      "shortName": "Breast · excision and cavity shaves",
+      "label": "Breast excision",
+      "organ": "BREAST",
+      "system": "Breast",
+      "kind": "benign resection",
+      "rank": 31,
+      "aliases": [
+        "cavity shave",
+        "shave margin",
+        "margin",
+        "wide local excision",
+        "WLE",
+        "lumpectomy",
+        "fibroadenoma",
+        "papilloma",
+        "fat necrosis",
+        "fibrocystic",
+        "UDH",
+        "ADH",
+        "re-excision",
+        "mammary"
+      ],
+      "match": {
+        "site": [
+          "breast",
+          "cavity shave",
+          "shave"
+        ],
+        "procedure": [
+          "excision",
+          "wide local excision",
+          "WLE",
+          "lumpectomy",
+          "mastectomy"
+        ],
+        "clinical": [
+          "fibroadenoma",
+          "phyllodes",
+          "fibroepithelial",
+          "papilloma",
+          "breast mass",
+          "breast lump"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "breastbenign",
+      "generatorPath": "generators/breastbenign.js",
+      "schemaPath": "schemas/breast_excision.json"
+    },
+    {
+      "id": "turp",
+      "name": "Prostate chips (TURP)",
+      "shortName": "Prostate · TURP chips",
+      "label": "TURP",
+      "organ": "PROSTATE",
+      "system": "GU",
+      "kind": "benign resection",
+      "rank": 32,
+      "aliases": [
+        "TURP",
+        "transurethral resection",
+        "prostate chips",
+        "BPH",
+        "nodular hyperplasia",
+        "HoLEP",
+        "enucleation",
+        "prostatitis",
+        "infarct",
+        "incidental carcinoma",
+        "pT1a",
+        "pT1b"
+      ],
+      "match": {
+        "site": [
+          "prostate",
+          "prostatic",
+          "TURP",
+          "prostate chips",
+          "HoLEP"
+        ],
+        "procedure": [
+          "TURP",
+          "transurethral resection",
+          "HoLEP",
+          "enucleation",
+          "prostatectomy",
+          "chips"
+        ],
+        "clinical": [
+          "BPH",
+          "LUTS",
+          "retention",
+          "benign prostatic",
+          "hyperplasia",
+          "urinary retention",
+          "bladder outlet"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "turp",
+      "generatorPath": "generators/turp.js",
+      "schemaPath": "schemas/turp.json"
+    },
+    {
+      "id": "turbt",
+      "name": "Bladder TURBT / biopsy",
+      "shortName": "Bladder · TURBT",
+      "label": "TURBT",
+      "organ": "URINARY BLADDER",
+      "system": "GU",
+      "kind": "benign resection",
+      "rank": 33,
+      "aliases": [
+        "TURBT",
+        "bladder",
+        "urothelial",
+        "papillary",
+        "PUNLMP",
+        "CIS",
+        "carcinoma in situ",
+        "cystitis",
+        "muscularis propria",
+        "detrusor",
+        "lamina propria",
+        "pT1",
+        "pTa",
+        "BCG",
+        "nephrogenic adenoma",
+        "squamous metaplasia",
+        "random biopsies",
+        "chips"
+      ],
+      "match": {
+        "site": [
+          "bladder",
+          "urinary bladder",
+          "vesical",
+          "TURBT",
+          "urothelial",
+          "ureter",
+          "ureteric"
+        ],
+        "procedure": [
+          "TURBT",
+          "transurethral resection",
+          "biopsy",
+          "biopsies",
+          "resection"
+        ],
+        "clinical": [
+          "haematuria",
+          "hematuria",
+          "bladder tumour",
+          "bladder tumor",
+          "urothelial",
+          "papillary",
+          "bladder ca",
+          "bladder cancer",
+          "cystoscopy"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "turbt",
+      "generatorPath": "generators/turbt.js",
+      "schemaPath": "schemas/turbt.json"
+    },
+    {
+      "id": "tonsils",
+      "name": "Tonsils / adenoids",
+      "shortName": "Tonsils · tonsillectomy",
+      "label": "Tonsils",
+      "organ": "TONSILS",
+      "system": "Head and neck",
+      "kind": "benign resection",
+      "rank": 34,
+      "aliases": [
+        "tonsil",
+        "tonsillectomy",
+        "adenoids",
+        "adenoidectomy",
+        "adenotonsillectomy",
+        "palatine",
+        "lymphoid hyperplasia",
+        "actinomyces",
+        "tonsillitis",
+        "asymmetric tonsil",
+        "tonsil biopsy"
+      ],
+      "match": {
+        "site": [
+          "tonsil",
+          "tonsils",
+          "tonsillar",
+          "adenoid",
+          "adenoids",
+          "palatine"
+        ],
+        "procedure": [
+          "tonsillectomy",
+          "adenoidectomy",
+          "adenotonsillectomy",
+          "excision"
+        ],
+        "clinical": [
+          "tonsillitis",
+          "OSA",
+          "obstructive sleep apnoea",
+          "asymmetric",
+          "asymmetry",
+          "hypertrophy",
+          "snoring"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "tonsil",
+      "generatorPath": "generators/tonsil.js",
+      "schemaPath": "schemas/tonsils.json"
+    },
+    {
+      "id": "soft_tissue_benign",
+      "name": "Soft tissue (benign)",
+      "shortName": "Soft tissue · lipoma / benign lesion",
+      "label": "Lipoma",
+      "organ": "SOFT TISSUE",
+      "system": "Soft tissue",
+      "kind": "benign resection",
+      "rank": 35,
+      "aliases": [
+        "lipoma",
+        "angiolipoma",
+        "fibrolipoma",
+        "schwannoma",
+        "neurofibroma",
+        "ganglion",
+        "fibroma",
+        "nodular fasciitis",
+        "haemangioma",
+        "hemangioma",
+        "leiomyoma",
+        "myxoma",
+        "subcutaneous",
+        "mass",
+        "nodule",
+        "excision",
+        "fatty"
+      ],
+      "match": {
+        "site": [
+          "soft tissue",
+          "subcutaneous",
+          "subcutis",
+          "lipoma",
+          "ganglion",
+          "nerve",
+          "tendon",
+          "fascia",
+          "mass",
+          "lump",
+          "swelling"
+        ],
+        "procedure": [
+          "excision",
+          "resection",
+          "biopsy",
+          "enucleation"
+        ],
+        "clinical": [
+          "lipoma",
+          "schwannoma",
+          "neurofibroma",
+          "ganglion",
+          "fibroma",
+          "fasciitis",
+          "soft tissue mass",
+          "soft tissue swelling",
+          "subcutaneous mass",
+          "subcutaneous lump",
+          "haemangioma",
+          "hemangioma"
+        ],
+        "bias": -1
+      },
+      "version": "2026.09",
+      "generator": "softtissue",
+      "generatorPath": "generators/softtissue.js",
+      "schemaPath": "schemas/soft_tissue_benign.json"
+    },
+    {
+      "id": "nasal_polyps",
+      "name": "Nasal polyps / sinonasal biopsy",
+      "shortName": "Nose · polypectomy / biopsy",
+      "label": "Nasal polyps",
+      "organ": "NASAL CAVITY",
+      "system": "Head and neck",
+      "kind": "benign resection",
+      "rank": 36,
+      "aliases": [
+        "nasal polyp",
+        "sinonasal",
+        "FESS",
+        "antrochoanal",
+        "sinus",
+        "ethmoid",
+        "maxillary",
+        "turbinate",
+        "inverted papilloma",
+        "fungal sinusitis",
+        "allergic mucin",
+        "Schneiderian"
+      ],
+      "match": {
+        "site": [
+          "nasal",
+          "nose",
+          "sinonasal",
+          "sinus",
+          "ethmoid",
+          "maxillary sinus",
+          "turbinate",
+          "antrochoanal",
+          "FESS"
+        ],
+        "procedure": [
+          "polypectomy",
+          "FESS",
+          "biopsy",
+          "turbinectomy",
+          "excision"
+        ],
+        "clinical": [
+          "nasal polyp",
+          "sinusitis",
+          "rhinosinusitis",
+          "obstruction",
+          "CRS"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "sinonasal",
+      "generatorPath": "generators/sinonasal.js",
+      "schemaPath": "schemas/nasal_polyps.json"
+    },
+    {
+      "id": "skin_lesion",
+      "name": "Skin — small benign lesion",
+      "shortName": "Skin · shave / punch / small excision",
+      "label": "Skin lesion",
+      "organ": "SKIN",
+      "system": "Skin",
+      "kind": "benign resection",
+      "rank": 37,
+      "aliases": [
+        "skin tag",
+        "naevus",
+        "nevus",
+        "seborrhoeic keratosis",
+        "pyogenic granuloma",
+        "dermatofibroma",
+        "verruca",
+        "wart",
+        "molluscum",
+        "actinic keratosis",
+        "neurofibroma",
+        "haemangioma",
+        "keloid",
+        "xanthelasma",
+        "shave",
+        "punch",
+        "curettage"
+      ],
+      "match": {
+        "site": [
+          "skin",
+          "scalp",
+          "face",
+          "eyelid",
+          "ear",
+          "lip",
+          "nose"
+        ],
+        "procedure": [
+          "shave",
+          "punch",
+          "curettings",
+          "curettage",
+          "biopsy",
+          "snip"
+        ],
+        "clinical": [
+          "skin tag",
+          "naevus",
+          "nevus",
+          "seborrhoeic",
+          "seborrheic",
+          "wart",
+          "verruca",
+          "molluscum",
+          "pyogenic granuloma",
+          "actinic",
+          "skin lesion",
+          "papule"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "skinlesion",
+      "generatorPath": "generators/skinlesion.js",
+      "schemaPath": "schemas/skin_lesion.json"
+    },
+    {
+      "id": "aortic_valve_aorta",
+      "name": "Aortic valve / aorta",
+      "shortName": "Heart · valve / aorta",
+      "label": "Aortic valve",
+      "organ": "AORTIC VALVE",
+      "system": "Cardiovascular",
+      "kind": "benign resection",
+      "rank": 38,
+      "aliases": [
+        "valve",
+        "aortic valve",
+        "mitral valve",
+        "aorta",
+        "dissection",
+        "aneurysm",
+        "medial degeneration",
+        "endocarditis",
+        "bicuspid",
+        "prosthetic valve",
+        "aortitis",
+        "cardiac"
+      ],
+      "match": {
+        "site": [
+          "aortic valve",
+          "mitral valve",
+          "valve",
+          "aorta"
+        ],
+        "procedure": [
+          "replacement",
+          "explant",
+          "resection"
+        ],
+        "clinical": [
+          "stenosis",
+          "regurgitation",
+          "endocarditis",
+          "aneurysm",
+          "dissection",
+          "bicuspid"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "cardiovascular",
+      "generatorPath": "generators/cardiovascular.js",
+      "schemaPath": "schemas/aortic_valve_aorta.json"
+    },
+    {
+      "id": "stoma",
+      "name": "Stoma closure / revision",
+      "shortName": "Bowel · stoma closure",
+      "label": "Stoma",
+      "organ": "SMALL BOWEL",
+      "system": "GI",
+      "kind": "benign resection",
+      "rank": 39,
+      "aliases": [
+        "stoma",
+        "ileostomy",
+        "colostomy",
+        "stoma closure",
+        "stoma reversal",
+        "stoma revision",
+        "Hartmann reversal",
+        "parastomal hernia",
+        "mucosal prolapse",
+        "suture granuloma",
+        "loop ileostomy",
+        "end colostomy"
+      ],
+      "match": {
+        "site": [
+          "stoma",
+          "ileostomy",
+          "colostomy",
+          "stomal",
+          "parastomal"
+        ],
+        "procedure": [
+          "closure",
+          "reversal",
+          "revision",
+          "resection",
+          "excision"
+        ],
+        "clinical": [
+          "stoma closure",
+          "reversal",
+          "Hartmann",
+          "prolapse",
+          "parastomal hernia"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "stoma",
+      "generatorPath": "generators/stoma.js",
+      "schemaPath": "schemas/stoma.json"
+    },
+    {
+      "id": "colon_resection",
+      "name": "Colon and rectum carcinoma resection",
+      "shortName": "Colon / rectum · cancer resection",
+      "label": "Colorectal Ca",
+      "organ": "COLON",
+      "system": "GI",
+      "kind": "cancer resection",
+      "rank": 40,
+      "aliases": [
+        "colectomy",
+        "hemicolectomy",
+        "anterior resection",
+        "LAR",
+        "APR",
+        "abdominoperineal",
+        "Hartmann",
+        "proctocolectomy",
+        "colorectal carcinoma",
+        "CRC",
+        "pTNM",
+        "AJCC",
+        "synoptic",
+        "CAP",
+        "tumour budding",
+        "tumour deposits",
+        "mesorectum",
+        "CRM",
+        "rectal cancer",
+        "colon cancer"
+      ],
+      "match": {
+        "site": [
+          "colon",
+          "rectum",
+          "rectal",
+          "colonic",
+          "caecum",
+          "cecum",
+          "sigmoid",
+          "hemicolectomy",
+          "colectomy",
+          "bowel"
+        ],
+        "procedure": [
+          "hemicolectomy",
+          "colectomy",
+          "anterior resection",
+          "APR",
+          "abdominoperineal",
+          "Hartmann",
+          "proctocolectomy",
+          "resection"
+        ],
+        "clinical": [
+          "colorectal",
+          "CRC",
+          "colon ca",
+          "rectal ca",
+          "colonic ca",
+          "sigmoid ca",
+          "rectal carcinoma",
+          "colonic carcinoma",
+          "colorectal carcinoma",
+          "bowel ca",
+          "bowel cancer"
+        ],
+        "not": [
+          "polyp"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "colon_resection",
+      "generatorPath": "generators/colon_resection.js",
+      "schemaPath": "schemas/colon_resection.json"
+    },
+    {
+      "id": "liver_benign",
+      "name": "Liver — benign lesion / abscess",
+      "shortName": "Liver · wedge / partial hepatectomy",
+      "label": "Liver lesion",
+      "organ": "LIVER",
+      "system": "Hepatobiliary",
+      "kind": "benign resection",
+      "rank": 40,
+      "aliases": [
+        "liver",
+        "hepatectomy",
+        "haemangioma",
+        "hemangioma",
+        "liver abscess",
+        "FNH",
+        "focal nodular hyperplasia",
+        "hepatocellular adenoma",
+        "liver cyst",
+        "biliary cyst",
+        "hydatid",
+        "von Meyenburg",
+        "wedge"
+      ],
+      "match": {
+        "site": [
+          "liver",
+          "hepatic",
+          "hepatectomy",
+          "segment"
+        ],
+        "procedure": [
+          "hepatectomy",
+          "segmentectomy",
+          "wedge",
+          "resection",
+          "enucleation"
+        ],
+        "clinical": [
+          "haemangioma",
+          "hemangioma",
+          "FNH",
+          "focal nodular hyperplasia",
+          "adenoma",
+          "abscess",
+          "liver cyst",
+          "biliary cyst",
+          "hydatid"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "liverbenign",
+      "generatorPath": "generators/liverbenign.js",
+      "schemaPath": "schemas/liver_benign.json"
+    },
+    {
+      "id": "gist_resection",
+      "name": "Gastrointestinal stromal tumour resection",
+      "shortName": "GIST · cancer resection",
+      "label": "GIST",
+      "organ": "STOMACH",
+      "system": "GI",
+      "kind": "cancer resection",
+      "rank": 41,
+      "aliases": [
+        "GIST",
+        "gastrointestinal stromal tumour",
+        "stromal tumor",
+        "KIT",
+        "CD117",
+        "DOG1",
+        "PDGFRA",
+        "SDHB",
+        "Miettinen",
+        "mitotic count",
+        "wedge resection",
+        "imatinib",
+        "spindle cell",
+        "epithelioid",
+        "synoptic",
+        "CAP",
+        "AJCC",
+        "pTNM"
+      ],
+      "match": {
+        "site": [
+          "stomach",
+          "gastric",
+          "small bowel",
+          "jejunum",
+          "ileum",
+          "duodenum",
+          "GIST",
+          "stromal"
+        ],
+        "procedure": [
+          "wedge",
+          "gastrectomy",
+          "enterectomy",
+          "small bowel resection"
+        ],
+        "clinical": [
+          "GIST",
+          "stromal tumour",
+          "stromal tumor",
+          "KIT",
+          "DOG1",
+          "submucosal tumour",
+          "submucosal tumor",
+          "SMT"
+        ],
+        "bias": -2
+      },
+      "version": "2026.09",
+      "generator": "gist_resection",
+      "generatorPath": "generators/gist_resection.js",
+      "schemaPath": "schemas/gist_resection.json"
+    },
+    {
+      "id": "jaw_cyst",
+      "name": "Dental / jaw cyst",
+      "shortName": "Jaw · cyst enucleation",
+      "label": "Jaw cyst",
+      "organ": "MANDIBLE",
+      "system": "Head and neck",
+      "kind": "benign resection",
+      "rank": 41,
+      "aliases": [
+        "dental cyst",
+        "jaw cyst",
+        "radicular cyst",
+        "periapical",
+        "dentigerous",
+        "odontogenic keratocyst",
+        "OKC",
+        "keratocyst",
+        "odontogenic",
+        "ameloblastoma",
+        "tooth",
+        "apicectomy",
+        "enucleation",
+        "periapical granuloma"
+      ],
+      "match": {
+        "site": [
+          "mandible",
+          "mandibular",
+          "maxilla",
+          "maxillary",
+          "jaw",
+          "dental",
+          "tooth",
+          "periapical",
+          "odontogenic"
+        ],
+        "procedure": [
+          "enucleation",
+          "curettage",
+          "marsupialisation",
+          "apicectomy",
+          "excision"
+        ],
+        "clinical": [
+          "cyst",
+          "radicular",
+          "dentigerous",
+          "keratocyst",
+          "OKC",
+          "ameloblastoma",
+          "radiolucency"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "jawcyst",
+      "generatorPath": "generators/jawcyst.js",
+      "schemaPath": "schemas/jaw_cyst.json"
+    },
+    {
+      "id": "salivary_benign",
+      "name": "Parotid / submandibular gland",
+      "shortName": "Salivary · parotidectomy / excision",
+      "label": "Salivary",
+      "organ": "PAROTID",
+      "system": "Head and neck",
+      "kind": "benign resection",
+      "rank": 42,
+      "aliases": [
+        "parotid",
+        "submandibular",
+        "salivary",
+        "pleomorphic adenoma",
+        "Warthin",
+        "sialadenitis",
+        "sialolithiasis",
+        "parotidectomy",
+        "oncocytoma",
+        "basal cell adenoma",
+        "mucocoele",
+        "ranula",
+        "Kuttner"
+      ],
+      "match": {
+        "site": [
+          "parotid",
+          "submandibular",
+          "salivary",
+          "sublingual"
+        ],
+        "procedure": [
+          "parotidectomy",
+          "excision",
+          "resection"
+        ],
+        "clinical": [
+          "pleomorphic adenoma",
+          "Warthin",
+          "sialadenitis",
+          "sialolithiasis",
+          "parotid mass",
+          "submandibular mass",
+          "salivary mass"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "salivary",
+      "generatorPath": "generators/salivary.js",
+      "schemaPath": "schemas/salivary_benign.json"
+    },
+    {
+      "id": "endometrial_carcinoma",
+      "name": "Endometrial carcinoma resection",
+      "shortName": "Uterus · cancer resection",
+      "label": "Endometrial Ca",
+      "organ": "UTERUS",
+      "system": "Gynae",
+      "kind": "cancer resection",
+      "rank": 42,
+      "aliases": [
+        "endometrium",
+        "endometrial carcinoma",
+        "endometrial cancer",
+        "hysterectomy for carcinoma",
+        "TAHBSO",
+        "serous",
+        "carcinosarcoma",
+        "clear cell",
+        "endometrioid",
+        "ProMisE",
+        "POLE",
+        "MMR",
+        "p53",
+        "myometrial invasion",
+        "LVSI",
+        "synoptic",
+        "CAP",
+        "AJCC"
+      ],
+      "match": {
+        "site": [
+          "uterus",
+          "uterine",
+          "endometrium",
+          "endometrial",
+          "hysterectomy",
+          "TAHBSO"
+        ],
+        "procedure": [
+          "hysterectomy",
+          "TAHBSO",
+          "resection"
+        ],
+        "clinical": [
+          "endometrial",
+          "endometrium",
+          "corpus",
+          "endometrioid",
+          "uterine ca",
+          "uterine carcinoma",
+          "uterine cancer",
+          "EIN",
+          "atypical hyperplasia"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "endometrial_carcinoma",
+      "generatorPath": "generators/endometrial_carcinoma.js",
+      "schemaPath": "schemas/endometrial_carcinoma.json"
+    },
+    {
+      "id": "generic",
+      "name": "Generic (free text)",
+      "shortName": "Generic · free text",
+      "label": "Generic",
+      "organ": "",
+      "system": "General",
+      "kind": "generic",
+      "rank": 99,
+      "aliases": [
+        "generic",
+        "free text",
+        "other",
+        "blank",
+        "empty form",
+        "no template"
+      ],
+      "match": {
+        "site": [],
+        "procedure": [],
+        "clinical": []
+      },
+      "version": "1.0",
+      "generator": "generic",
+      "generatorPath": "generators/generic.js",
+      "schemaPath": "schemas/generic.json"
+    },
+    {
+      "id": "thyroid_fna",
+      "name": "Thyroid FNA (Bethesda 2023)",
+      "shortName": "Thyroid · FNA",
+      "label": "Thyroid FNA",
+      "organ": "Thyroid",
+      "system": "Cytology",
+      "kind": "cytology",
+      "rank": 610,
+      "aliases": [
+        "thyroid fna",
+        "bethesda",
+        "thyroid nodule aspirate"
+      ],
+      "match": {
+        "site": [
+          "thyroid",
+          "thyroid nodule",
+          "isthmus"
+        ],
+        "procedure": [
+          "FNA",
+          "aspirate",
+          "aspiration",
+          "USG-guided"
+        ],
+        "clinical": [
+          "thyroid nodule",
+          "goitre",
+          "goiter",
+          "TIRADS",
+          "nodule"
+        ]
+      },
+      "version": 1,
+      "generator": "cytology",
+      "generatorPath": "generators/cytology.js",
+      "schemaPath": "schemas/thyroid_fna.json"
+    },
+    {
+      "id": "salivary_fna",
+      "name": "Salivary gland FNA (Milan)",
+      "shortName": "Salivary gland · FNA",
+      "label": "Salivary gland FNA",
+      "organ": "Salivary gland",
+      "system": "Cytology",
+      "kind": "cytology",
+      "rank": 620,
+      "aliases": [
+        "salivary fna",
+        "milan",
+        "parotid fna",
+        "submandibular fna"
+      ],
+      "match": {
+        "site": [
+          "parotid",
+          "submandibular",
+          "salivary",
+          "sublingual"
+        ],
+        "procedure": [
+          "FNA",
+          "aspirate",
+          "aspiration"
+        ],
+        "clinical": [
+          "parotid mass",
+          "parotid swelling",
+          "salivary"
+        ]
+      },
+      "version": 1,
+      "generator": "cytology",
+      "generatorPath": "generators/cytology.js",
+      "schemaPath": "schemas/salivary_fna.json"
+    },
+    {
+      "id": "lymph_node_fna",
+      "name": "Lymph node FNA / EBUS-TBNA (Sydney)",
+      "shortName": "Lymph node · FNA",
+      "label": "Lymph node FNA",
+      "organ": "Lymph node",
+      "system": "Cytology",
+      "kind": "cytology",
+      "rank": 630,
+      "aliases": [
+        "lymph node fna",
+        "ebus-tbna",
+        "tbna",
+        "eus fna",
+        "sydney system",
+        "mediastinal node"
+      ],
+      "match": {
+        "site": [
+          "lymph node",
+          "LN",
+          "node",
+          "mediastinal",
+          "cervical node",
+          "EBUS"
+        ],
+        "procedure": [
+          "FNA",
+          "TBNA",
+          "EBUS-TBNA",
+          "EUS-FNA",
+          "aspirate",
+          "aspiration"
+        ],
+        "clinical": [
+          "lymphadenopathy",
+          "mediastinal"
+        ]
+      },
+      "version": 1,
+      "generator": "cytology",
+      "generatorPath": "generators/cytology.js",
+      "schemaPath": "schemas/lymph_node_fna.json"
+    },
+    {
+      "id": "effusion_cytology",
+      "name": "Effusion cytology (International System)",
+      "shortName": "Serous fluid · cytology",
+      "label": "Effusion",
+      "organ": "Serous fluid",
+      "system": "Cytology",
+      "kind": "cytology",
+      "rank": 640,
+      "aliases": [
+        "pleural fluid",
+        "ascitic fluid",
+        "peritoneal fluid",
+        "pericardial fluid",
+        "washing",
+        "effusion",
+        "tis"
+      ],
+      "match": {
+        "site": [
+          "pleural",
+          "ascitic",
+          "peritoneal",
+          "pericardial",
+          "effusion",
+          "ascites",
+          "fluid"
+        ],
+        "procedure": [
+          "fluid",
+          "washing",
+          "tap",
+          "aspiration"
+        ],
+        "clinical": [
+          "effusion",
+          "ascites"
+        ]
+      },
+      "version": 1,
+      "generator": "cytology",
+      "generatorPath": "generators/cytology.js",
+      "schemaPath": "schemas/effusion_cytology.json"
+    },
+    {
+      "id": "urine_cytology",
+      "name": "Urine cytology (Paris System 2.0)",
+      "shortName": "Urine · cytology",
+      "label": "Urine cytology",
+      "organ": "Urine",
+      "system": "Cytology",
+      "kind": "cytology",
+      "rank": 650,
+      "aliases": [
+        "urine",
+        "paris system",
+        "bladder washing",
+        "ureteric washing",
+        "voided urine"
+      ],
+      "match": {
+        "site": [
+          "urine",
+          "bladder washing",
+          "ureteric washing",
+          "voided",
+          "catheterised",
+          "catheterized"
+        ],
+        "procedure": [
+          "urine",
+          "washing",
+          "cytology"
+        ],
+        "clinical": [
+          "haematuria",
+          "hematuria",
+          "surveillance",
+          "urothelial"
+        ]
+      },
+      "version": 1,
+      "generator": "cytology",
+      "generatorPath": "generators/cytology.js",
+      "schemaPath": "schemas/urine_cytology.json"
+    },
+    {
+      "id": "cervical_cytology",
+      "name": "Cervical cytology (Bethesda 2014)",
+      "shortName": "Cervix · cytology",
+      "label": "Cervical smear",
+      "organ": "Cervix",
+      "system": "Cytology",
+      "kind": "cytology",
+      "rank": 660,
+      "aliases": [
+        "pap smear",
+        "cervical smear",
+        "lbc",
+        "thinprep",
+        "cervical cytology",
+        "nilm"
+      ],
+      "match": {
+        "site": [
+          "cervix",
+          "cervical",
+          "pap"
+        ],
+        "procedure": [
+          "smear",
+          "LBC",
+          "thinprep",
+          "cytology"
+        ],
+        "clinical": [
+          "screening",
+          "smear"
+        ]
+      },
+      "version": 1,
+      "generator": "cytology",
+      "generatorPath": "generators/cytology.js",
+      "schemaPath": "schemas/cervical_cytology.json"
+    }
+  ]
+}

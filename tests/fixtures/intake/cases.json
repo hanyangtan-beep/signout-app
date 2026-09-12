@@ -62,13 +62,15 @@
         },
         "B": {
           "partType": "Cavity shave margin",
-          "margin": "Anterior"
+          "margin": "Anterior",
+          "side": "Left"
         },
         "C": {
           "margin": "Medial"
         },
         "D": {
-          "margin": "Inferior"
+          "margin": "Inferior",
+          "side": "Left"
         }
       }
     },

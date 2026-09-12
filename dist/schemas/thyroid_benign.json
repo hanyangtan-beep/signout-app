@@ -1,0 +1,499 @@
+{
+  "id": "thyroid_benign",
+  "version": "2026.09",
+  "name": "Thyroid, benign resection",
+  "shortName": "Thyroid · hemithyroidectomy",
+  "label": "Thyroid",
+  "organ": "THYROID GLAND",
+  "system": "Endocrine",
+  "kind": "benign resection",
+  "rank": 24,
+  "aliases": [
+    "hemithyroidectomy",
+    "lobectomy",
+    "total thyroidectomy",
+    "nodular hyperplasia",
+    "multinodular goitre",
+    "goiter",
+    "follicular adenoma",
+    "Hashimoto",
+    "lymphocytic thyroiditis",
+    "Graves",
+    "isthmic margin",
+    "NIFTP"
+  ],
+  "match": {
+    "site": [
+      "thyroid",
+      "thyroid lobe",
+      "isthmus",
+      "hemithyroidectomy",
+      "thyroidectomy"
+    ],
+    "procedure": [
+      "hemithyroidectomy",
+      "thyroidectomy",
+      "lobectomy",
+      "isthmusectomy",
+      "resection"
+    ],
+    "clinical": [
+      "goitre",
+      "goiter",
+      "nodule",
+      "multinodular",
+      "MNG",
+      "Graves",
+      "Hashimoto",
+      "thyroiditis",
+      "Bethesda",
+      "follicular",
+      "thyroid nodule"
+    ]
+  },
+  "specimenNoun": "resection",
+  "maxParts": 3,
+  "defaultParts": 1,
+  "generator": "thyroid",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "partDefaults": [
+    {
+      "specimenName": "Right lobe"
+    },
+    {
+      "specimenName": "Left lobe"
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen / laterality",
+      "type": "select",
+      "options": [
+        "Right lobe",
+        "Left lobe",
+        "Right lobe and isthmus",
+        "Left lobe and isthmus",
+        "Total thyroid",
+        "Isthmus"
+      ],
+      "default": "Right lobe"
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "options": [
+        "Hemithyroidectomy",
+        "Total thyroidectomy",
+        "Isthmusectomy",
+        "Completion thyroidectomy"
+      ],
+      "default": "Hemithyroidectomy"
+    },
+    {
+      "id": "weight",
+      "label": "Weight",
+      "type": "number",
+      "min": 0,
+      "step": 0.1,
+      "suffix": "g",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "dimensions",
+      "label": "Dimensions (cm)",
+      "type": "text",
+      "placeholder": "5 x 3.5 x 2.5",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "capsule",
+      "label": "Capsule",
+      "type": "select",
+      "options": [
+        "Intact",
+        "Focally disrupted"
+      ],
+      "default": "Intact",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "noduleCount",
+      "label": "Number of nodules",
+      "type": "number",
+      "min": 0,
+      "step": 1,
+      "default": "1",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "noduleSize",
+      "label": "Dominant nodule size (cm)",
+      "type": "text",
+      "placeholder": "2.8 or 2.8 x 2 x 1.5",
+      "default": "",
+      "group": "Macroscopy",
+      "showIf": {
+        "field": "noduleCount",
+        "not": "0"
+      }
+    },
+    {
+      "id": "noduleSite",
+      "label": "Dominant nodule location",
+      "type": "text",
+      "placeholder": "mid lobe / upper pole / lower pole",
+      "default": "",
+      "group": "Macroscopy",
+      "showIf": {
+        "field": "noduleCount",
+        "not": "0"
+      }
+    },
+    {
+      "id": "noduleAppearance",
+      "label": "Dominant nodule appearance",
+      "type": "select",
+      "options": [
+        "Colloid, glistening",
+        "Solid tan",
+        "Cystic-haemorrhagic",
+        "Calcified",
+        "Encapsulated"
+      ],
+      "default": "Colloid, glistening",
+      "group": "Macroscopy",
+      "showIf": {
+        "field": "noduleCount",
+        "not": "0"
+      }
+    },
+    {
+      "id": "background",
+      "label": "Background parenchyma",
+      "type": "select",
+      "options": [
+        "Unremarkable",
+        "Nodular",
+        "Pale, firm (thyroiditis)"
+      ],
+      "default": "Unremarkable",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "grossIncidental",
+      "label": "Parathyroid or lymph node identified grossly",
+      "type": "select",
+      "options": [
+        "None",
+        "Parathyroid",
+        "Lymph node",
+        "Both"
+      ],
+      "default": "None",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "blocks",
+      "label": "Thyroid blocks",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "default": "8",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "isthmicMarginBlock",
+      "label": "Block 1 is the isthmic margin",
+      "type": "checkbox",
+      "default": true,
+      "group": "Macroscopy"
+    },
+    {
+      "id": "diagnosis",
+      "label": "Diagnosis",
+      "type": "select",
+      "options": [
+        "Nodular hyperplasia",
+        "Hyperplastic (adenomatoid) nodule",
+        "Follicular adenoma",
+        "Diffuse hyperplasia (Graves disease)",
+        "Lymphocytic (Hashimoto) thyroiditis",
+        "Non-invasive follicular thyroid neoplasm with papillary-like nuclear features (NIFTP)",
+        "Papillary thyroid carcinoma - see comment",
+        "Follicular carcinoma - see comment",
+        "Other - see comment"
+      ],
+      "default": "Nodular hyperplasia"
+    },
+    {
+      "id": "follicularPattern",
+      "label": "Follicular pattern",
+      "type": "select",
+      "options": [
+        "Macrofollicular with colloid",
+        "Microfollicular",
+        "Mixed"
+      ],
+      "default": "Macrofollicular with colloid",
+      "showIf": {
+        "field": "diagnosis",
+        "is": [
+          "Nodular hyperplasia",
+          "Hyperplastic (adenomatoid) nodule",
+          "Follicular adenoma",
+          "Non-invasive follicular thyroid neoplasm with papillary-like nuclear features (NIFTP)"
+        ]
+      }
+    },
+    {
+      "id": "sanderson",
+      "label": "Sanderson polsters",
+      "type": "select",
+      "options": [
+        "Present",
+        "Absent"
+      ],
+      "default": "Present",
+      "showIf": {
+        "field": "diagnosis",
+        "is": [
+          "Nodular hyperplasia",
+          "Hyperplastic (adenomatoid) nodule",
+          "Follicular adenoma"
+        ]
+      }
+    },
+    {
+      "id": "degenerative",
+      "label": "Degenerative change",
+      "type": "multiselect",
+      "options": [
+        "none",
+        "haemorrhage",
+        "hyalinised fibrosis",
+        "cystic change",
+        "dystrophic calcification",
+        "cholesterol clefts"
+      ],
+      "exclusive": [
+        "none"
+      ],
+      "default": [
+        "none"
+      ],
+      "showIf": {
+        "field": "diagnosis",
+        "not": [
+          "Papillary thyroid carcinoma - see comment",
+          "Follicular carcinoma - see comment",
+          "Other - see comment"
+        ]
+      }
+    },
+    {
+      "id": "noduleCapsule",
+      "label": "Capsule of dominant nodule",
+      "type": "select",
+      "options": [
+        "Not encapsulated",
+        "Thin intact capsule",
+        "Thick capsule - no capsular or vascular invasion"
+      ],
+      "default": "Not encapsulated",
+      "showIf": {
+        "field": "diagnosis",
+        "is": [
+          "Nodular hyperplasia",
+          "Hyperplastic (adenomatoid) nodule",
+          "Follicular adenoma",
+          "Non-invasive follicular thyroid neoplasm with papillary-like nuclear features (NIFTP)"
+        ]
+      }
+    },
+    {
+      "id": "ptcNuclear",
+      "label": "Nuclear features of papillary carcinoma",
+      "type": "select",
+      "options": [
+        "Not observed",
+        "Present"
+      ],
+      "default": "Not observed",
+      "showIf": {
+        "field": "diagnosis",
+        "not": [
+          "Non-invasive follicular thyroid neoplasm with papillary-like nuclear features (NIFTP)",
+          "Papillary thyroid carcinoma - see comment",
+          "Follicular carcinoma - see comment",
+          "Other - see comment"
+        ]
+      }
+    },
+    {
+      "id": "thyroiditis",
+      "label": "Lymphocytic thyroiditis",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Focal",
+        "Diffuse with germinal centres"
+      ],
+      "default": "Absent",
+      "showIf": {
+        "field": "diagnosis",
+        "not": [
+          "Lymphocytic (Hashimoto) thyroiditis",
+          "Papillary thyroid carcinoma - see comment",
+          "Follicular carcinoma - see comment",
+          "Other - see comment"
+        ]
+      }
+    },
+    {
+      "id": "cCell",
+      "label": "C-cell hyperplasia",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent",
+      "showIf": {
+        "field": "diagnosis",
+        "not": [
+          "Papillary thyroid carcinoma - see comment",
+          "Follicular carcinoma - see comment",
+          "Other - see comment"
+        ]
+      }
+    },
+    {
+      "id": "parathyroid",
+      "label": "Incidental parathyroid",
+      "type": "select",
+      "options": [
+        "Not seen",
+        "Normal",
+        "Nodular hyperplasia"
+      ],
+      "default": "Not seen"
+    },
+    {
+      "id": "parathyroidBlock",
+      "label": "Parathyroid block",
+      "type": "text",
+      "placeholder": "A4",
+      "default": "",
+      "showIf": {
+        "field": "parathyroid",
+        "not": "Not seen"
+      }
+    },
+    {
+      "id": "lymphNode",
+      "label": "Incidental lymph node",
+      "type": "select",
+      "options": [
+        "Not seen",
+        "Benign"
+      ],
+      "default": "Not seen"
+    },
+    {
+      "id": "margin",
+      "label": "Isthmic margin",
+      "type": "select",
+      "options": [
+        "Not applicable",
+        "Uninvolved"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "Right lobe",
+          "procedure": "Hemithyroidectomy",
+          "weight": "32",
+          "dimensions": "5 x 3.5 x 2.5",
+          "capsule": "Intact",
+          "noduleCount": "1",
+          "noduleSize": "2.8",
+          "noduleSite": "mid lobe",
+          "noduleAppearance": "Colloid, glistening",
+          "background": "Nodular",
+          "grossIncidental": "None",
+          "blocks": "8",
+          "isthmicMarginBlock": true,
+          "diagnosis": "Nodular hyperplasia",
+          "follicularPattern": "Macrofollicular with colloid",
+          "sanderson": "Present",
+          "degenerative": [
+            "haemorrhage",
+            "hyalinised fibrosis",
+            "dystrophic calcification"
+          ],
+          "noduleCapsule": "Not encapsulated",
+          "ptcNuclear": "Not observed",
+          "thyroiditis": "Absent",
+          "cCell": "Absent",
+          "parathyroid": "Nodular hyperplasia",
+          "parathyroidBlock": "A4",
+          "lymphNode": "Not seen",
+          "margin": "Not applicable",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  },
+  "snippets": [
+    {
+      "id": "thyroid_cancer_template",
+      "label": "Carcinoma - report on the QMH thyroid cancer template",
+      "text": "Carcinoma is identified in {parts}. This benign thyroid template does not stage tumours; please complete the report using the QMH thyroid cancer template (tumour type, size, extrathyroidal extension, margins, lymphovascular invasion and lymph node status).",
+      "auto": {
+        "field": "diagnosis",
+        "is": [
+          "Papillary thyroid carcinoma - see comment",
+          "Follicular carcinoma - see comment"
+        ]
+      }
+    }
+  ]
+}

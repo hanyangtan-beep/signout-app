@@ -153,7 +153,13 @@ function roleOf(part, ctx, manifest) {
   }
   if (ids.has('breast_excision') && MARGIN.test(text) && !/\bbreast\b/i.test(text)) {
     const breastCase = /\bbreast\b/i.test(ctx.casePrefix || '') || /\bbreast\b/i.test(ctx.history || '') || (ctx.parts || []).some((p) => /\bbreast\b/i.test(p.raw || p.text));
-    if (breastCase) return { role: 'breast_margin', templateId: 'breast_excision' };
+    if (breastCase) {
+      // Side comes from the main breast part ("Left 2-3H breast mass"), else the prefix / history.
+      const main = (ctx.parts || []).find((p) => /\bbreast\b/i.test(p.raw || p.text) && !MARGIN.test(p.raw || p.text));
+      const src = `${main ? main.raw || main.text : ''} ${ctx.casePrefix || ''} ${ctx.history || ''}`;
+      const caseSide = /\bleft\b/i.test(src) && !/\bright\b/i.test(src) ? 'Left' : /\bright\b/i.test(src) && !/\bleft\b/i.test(src) ? 'Right' : '';
+      return { role: 'breast_margin', templateId: 'breast_excision', caseSide };
+    }
   }
   return null;
 }
@@ -167,7 +173,7 @@ export function matchParts(parsed, history, manifest) {
   return parsed.parts.map((part) => {
     const role = roleOf(part, ctx, manifest);
     const candidates = scorePart(part, ctx, manifest);
-    if (role) return { ...part, templateId: role.templateId, tier: 'confident', role: role.role, candidates };
+    if (role) return { ...part, templateId: role.templateId, tier: 'confident', role: role.role, caseSide: role.caseSide || '', candidates };
     const best = candidates[0];
     const second = candidates[1];
     if (!best || best.score < 0) return { ...part, templateId: GENERIC_ID, tier: 'none', role: null, candidates };
@@ -195,6 +201,7 @@ export function presetValues(schema, part, match = {}) {
     return values;
   }
   if (match.role === 'breast_margin') {
+    if (!values.side && match.caseSide && field('side')?.options?.includes(match.caseSide)) values.side = match.caseSide;
     values.partType = 'Cavity shave margin';
     const named = BREAST_MARGINS.find((m) => new RegExp(`\\b${m}\\b`, 'i').test(text));
     if (named) values.margin = named;

@@ -1,0 +1,292 @@
+{
+  "id": "cervical_cytology",
+  "version": 1,
+  "name": "Cervical cytology (Bethesda 2014)",
+  "shortName": "Cervix · cytology",
+  "label": "Cervical smear",
+  "organ": "Cervix",
+  "system": "Cytology",
+  "kind": "cytology",
+  "rank": 660,
+  "aliases": [
+    "pap smear",
+    "cervical smear",
+    "lbc",
+    "thinprep",
+    "cervical cytology",
+    "nilm"
+  ],
+  "match": {
+    "site": [
+      "cervix",
+      "cervical",
+      "pap"
+    ],
+    "procedure": [
+      "smear",
+      "LBC",
+      "thinprep",
+      "cytology"
+    ],
+    "clinical": [
+      "screening",
+      "smear"
+    ]
+  },
+  "specimenNoun": "cervical sample",
+  "maxParts": 4,
+  "generator": "cytology",
+  "source": "Cytology suite. Classification systems: Bethesda 2023 (thyroid), Milan 2nd ed 2023 (salivary), Paris System 2.0 (urine), International System for Serous Fluid Cytopathology (effusions), Sydney System (lymph node), Bethesda 2014 (cervical). Adequacy is assessed on the final preparations only.",
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the preparations line (received / processed as)",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "fields": [
+    {
+      "id": "preparation",
+      "label": "Preparation",
+      "type": "select",
+      "options": [
+        "Liquid-based cytology",
+        "Conventional smear"
+      ],
+      "default": "Liquid-based cytology"
+    },
+    {
+      "id": "specimenName",
+      "label": "Further detail (optional)",
+      "type": "text",
+      "default": "",
+      "placeholder": "e.g. vault (post hysterectomy)"
+    },
+    {
+      "id": "adequacy",
+      "label": "Adequacy",
+      "type": "select",
+      "options": [
+        "Satisfactory",
+        "Satisfactory, transformation zone component absent",
+        "Satisfactory, partially obscured",
+        "Unsatisfactory"
+      ],
+      "default": "Satisfactory",
+      "group": "Adequacy"
+    },
+    {
+      "id": "obscuringFactor",
+      "label": "Obscured by",
+      "type": "select",
+      "options": [
+        "Inflammation",
+        "Blood",
+        "Inflammation and blood",
+        "Air-drying artefact"
+      ],
+      "default": "Inflammation",
+      "group": "Adequacy",
+      "showIf": {
+        "field": "adequacy",
+        "is": "Satisfactory, partially obscured"
+      }
+    },
+    {
+      "id": "inadequacyReason",
+      "label": "Reason",
+      "type": "select",
+      "options": [
+        "Scant squamous cellularity",
+        "Obscuring blood",
+        "Obscuring inflammation",
+        "Poor preservation",
+        "Specimen rejected (unlabelled / broken)"
+      ],
+      "default": "Scant squamous cellularity",
+      "group": "Adequacy",
+      "showIf": {
+        "field": "adequacy",
+        "is": "Unsatisfactory"
+      }
+    },
+    {
+      "id": "interpretation",
+      "label": "Interpretation (Bethesda 2014)",
+      "type": "select",
+      "options": [
+        "Negative for intraepithelial lesion or malignancy",
+        "Atypical squamous cells of undetermined significance (ASC-US)",
+        "Atypical squamous cells, cannot exclude HSIL (ASC-H)",
+        "Low grade squamous intraepithelial lesion (LSIL)",
+        "High grade squamous intraepithelial lesion (HSIL)",
+        "HSIL with features suspicious for invasion",
+        "Squamous cell carcinoma",
+        "Atypical glandular cells (AGC)",
+        "Atypical glandular cells, favour neoplastic",
+        "Endocervical adenocarcinoma in situ (AIS)",
+        "Adenocarcinoma",
+        "Other malignant neoplasm"
+      ],
+      "default": "Negative for intraepithelial lesion or malignancy",
+      "group": "Category"
+    },
+    {
+      "id": "glandularOrigin",
+      "label": "Glandular cell origin",
+      "type": "select",
+      "options": [
+        "Not otherwise specified",
+        "Endocervical",
+        "Endometrial",
+        "Extrauterine"
+      ],
+      "default": "Not otherwise specified",
+      "group": "Category",
+      "showIf": {
+        "field": "interpretation",
+        "is": [
+          "Atypical glandular cells (AGC)",
+          "Atypical glandular cells, favour neoplastic",
+          "Adenocarcinoma"
+        ]
+      }
+    },
+    {
+      "id": "features",
+      "label": "Organisms and non-neoplastic findings",
+      "type": "multiselect",
+      "options": [
+        "Trichomonas vaginalis",
+        "Fungal organisms consistent with Candida",
+        "Shift in flora suggestive of bacterial vaginosis",
+        "Actinomyces",
+        "Herpes simplex virus changes",
+        "Reactive changes (inflammation)",
+        "Reactive changes (repair)",
+        "Reactive changes (IUD)",
+        "Atrophy",
+        "Endometrial cells (45 or older)",
+        "Glandular cells post hysterectomy",
+        "Koilocytes"
+      ],
+      "default": [],
+      "group": "Microscopy"
+    },
+    {
+      "id": "hpv",
+      "label": "HPV test",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Negative for high-risk HPV",
+        "Positive for HPV 16",
+        "Positive for HPV 18",
+        "Positive for other high-risk HPV types",
+        "Positive for HPV 16 and other high-risk types",
+        "Pending"
+      ],
+      "default": "Not performed",
+      "group": "Ancillary"
+    },
+    {
+      "id": "additionalFindings",
+      "label": "Additional findings (free text, appended to microscopy)",
+      "type": "textarea",
+      "default": "",
+      "group": "Microscopy",
+      "placeholder": "e.g. Occasional groups of ciliated respiratory epithelial cells are also present"
+    },
+    {
+      "id": "ancillary",
+      "label": "Ancillary studies (same paragraph)",
+      "type": "textarea",
+      "default": "",
+      "group": "Ancillary",
+      "placeholder": "e.g. Immunostaining on the cell block shows the cells to be positive for TTF-1 and negative for p40"
+    }
+  ],
+  "snippets": [
+    {
+      "id": "cervical_colposcopy",
+      "label": "Colposcopy referral",
+      "auto": {
+        "field": "interpretation",
+        "is": [
+          "Atypical squamous cells, cannot exclude HSIL (ASC-H)",
+          "High grade squamous intraepithelial lesion (HSIL)",
+          "HSIL with features suspicious for invasion",
+          "Squamous cell carcinoma",
+          "Atypical glandular cells (AGC)",
+          "Atypical glandular cells, favour neoplastic",
+          "Endocervical adenocarcinoma in situ (AIS)",
+          "Adenocarcinoma",
+          "Other malignant neoplasm"
+        ]
+      },
+      "text": "Referral for colposcopy is advised."
+    },
+    {
+      "id": "cervical_ascus_hpv",
+      "label": "ASC-US: HPV triage",
+      "auto": {
+        "field": "interpretation",
+        "is": "Atypical squamous cells of undetermined significance (ASC-US)"
+      },
+      "text": "Reflex high-risk HPV testing or repeat cytology in 6 to 12 months is advised according to the local screening guideline."
+    },
+    {
+      "id": "cervical_tz_absent",
+      "label": "TZ absent: routine recall",
+      "auto": {
+        "field": "adequacy",
+        "is": "Satisfactory, transformation zone component absent"
+      },
+      "text": "The absence of a transformation zone component does not by itself warrant early repeat; routine recall is suggested."
+    },
+    {
+      "id": "cervical_endometrial_cells",
+      "label": "Endometrial cells 45+: correlation",
+      "auto": {
+        "field": "features",
+        "is": "Endometrial cells (45 or older)"
+      },
+      "text": "Benign-appearing endometrial cells in a woman aged 45 or older; clinical correlation with menstrual history and endometrial sampling as indicated is advised."
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "preparation": "Liquid-based cytology",
+          "specimenName": "",
+          "adequacy": "Satisfactory",
+          "obscuringFactor": "Inflammation",
+          "inadequacyReason": "Scant squamous cellularity",
+          "interpretation": "Negative for intraepithelial lesion or malignancy",
+          "glandularOrigin": "Not otherwise specified",
+          "features": [
+            "Reactive changes (inflammation)"
+          ],
+          "hpv": "Negative for high-risk HPV",
+          "additionalFindings": "",
+          "ancillary": ""
+        }
+      }
+    ]
+  }
+}

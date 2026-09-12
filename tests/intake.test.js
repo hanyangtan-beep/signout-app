@@ -111,9 +111,9 @@ test('presets: lymph node station, breast margins and generic specimen name', as
   assert.equal(presetValues(ln, s1[3], s1[3]).side, undefined);
   const breast = matchParts(parseIntake(fx.cases[1].text), '', manifest);
   assert.deepEqual(presetValues(br, breast[0], breast[0]), { side: 'Left', partType: 'Breast lesion excision', site: 'Left 2-3H breast mass' });
-  assert.deepEqual(presetValues(br, breast[1], breast[1]), { partType: 'Cavity shave margin', margin: 'Anterior' });
+  assert.deepEqual(presetValues(br, breast[1], breast[1]), { side: 'Left', partType: 'Cavity shave margin', margin: 'Anterior' }, 'margin side follows the main breast part');
   const odd = matchParts(parseIntake('Breast, excision: (A) Breast lump and (B) Superolateral margin'), '', manifest);
-  assert.deepEqual(presetValues(br, odd[1], odd[1]), { partType: 'Cavity shave margin', margin: 'Other', marginOther: 'superolateral' });
+  assert.deepEqual(presetValues(br, odd[1], odd[1]), { partType: 'Cavity shave margin', margin: 'Other', marginOther: 'superolateral' }, 'no side when the case does not say');
   const gastric = matchParts(parseIntake(fx.cases[6].text), '', manifest);
   assert.equal(presetValues(gb, gastric[0], gastric[0]).specimenName, 'antrum', 'match.fill from the LIS detail');
   // Fixture-declared values

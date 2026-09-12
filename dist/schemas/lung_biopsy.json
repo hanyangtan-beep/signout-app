@@ -1,0 +1,724 @@
+{
+  "id": "lung_biopsy",
+  "version": "2026.09",
+  "name": "Lung / bronchial biopsy",
+  "shortName": "Lung · biopsy",
+  "label": "Lung",
+  "organ": "LUNG",
+  "system": "Thoracic",
+  "kind": "biopsy",
+  "rank": 10,
+  "aliases": [
+    "bronchial",
+    "transbronchial",
+    "EBUS",
+    "cryobiopsy",
+    "TTF-1",
+    "p40",
+    "PD-L1",
+    "granuloma"
+  ],
+  "match": {
+    "site": [
+      "lung",
+      "bronchus",
+      "bronchial",
+      "transbronchial",
+      "EBUS",
+      "lobe"
+    ],
+    "procedure": [
+      "biopsy",
+      "biopsies",
+      "cryobiopsy",
+      "transbronchial",
+      "endobronchial",
+      "CT-guided",
+      "core"
+    ],
+    "clinical": [
+      "lung mass",
+      "lung nodule",
+      "lung ca",
+      "lung cancer",
+      "opacity",
+      "consolidation",
+      "bronchoscopy",
+      "granuloma",
+      "TB",
+      "tuberculosis"
+    ]
+  },
+  "specimenNoun": "biopsy",
+  "maxParts": 6,
+  "defaultParts": 1,
+  "generator": "lung",
+  "style": {
+    "british": true
+  },
+  "caseFields": [
+    {
+      "id": "imaging",
+      "label": "Imaging / clinical",
+      "placeholder": "RUL mass 3 cm; mediastinal nodes",
+      "help": "Optional; not printed."
+    }
+  ],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "summary",
+      "label": "Case summary line after the diagnosis (tumour type, nodes, ancillary tests)",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "molecularLine",
+      "label": "Print the PD-L1 / molecular testing lines under the diagnosis",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "partDefaults": [
+    {
+      "specimenType": "Transbronchial biopsy",
+      "site": ""
+    },
+    {
+      "specimenType": "Endobronchial biopsy",
+      "site": ""
+    },
+    {
+      "specimenType": "EBUS lymph node core biopsy",
+      "site": "station 7"
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenType",
+      "label": "Specimen",
+      "type": "select",
+      "options": [
+        "Transbronchial biopsy",
+        "Endobronchial biopsy",
+        "Transbronchial cryobiopsy",
+        "CT-guided core biopsy",
+        "EBUS-guided core biopsy (mass)",
+        "EBUS lymph node core biopsy"
+      ],
+      "default": "Transbronchial biopsy"
+    },
+    {
+      "id": "site",
+      "label": "Site",
+      "type": "text",
+      "placeholder": "right upper lobe",
+      "default": "",
+      "help": "Lobe / segment, or nodal station for EBUS nodes."
+    },
+    {
+      "id": "pieces",
+      "label": "Number of pieces / cores",
+      "type": "number",
+      "placeholder": "3",
+      "default": ""
+    },
+    {
+      "id": "tissue",
+      "label": "Tissue present",
+      "type": "select",
+      "options": [
+        "Bronchial mucosa",
+        "Bronchial mucosa and alveolated lung parenchyma",
+        "Alveolated lung parenchyma",
+        "Fibrous tissue and tumour",
+        "Blood, fibrin and crushed cells only (inadequate)"
+      ],
+      "default": "Bronchial mucosa",
+      "showIf": {
+        "field": "specimenType",
+        "not": "EBUS lymph node core biopsy"
+      }
+    },
+    {
+      "id": "nodeTissue",
+      "label": "Node tissue",
+      "type": "select",
+      "options": [
+        "Lymphoid tissue",
+        "Lymphoid tissue and bronchial mucosa",
+        "Blood and scant lymphocytes only (inadequate)"
+      ],
+      "default": "Lymphoid tissue",
+      "showIf": {
+        "field": "specimenType",
+        "is": "EBUS lymph node core biopsy"
+      }
+    },
+    {
+      "id": "nodeFinding",
+      "label": "Node finding",
+      "type": "select",
+      "options": [
+        "Negative for malignancy",
+        "Metastatic carcinoma",
+        "Granulomas",
+        "Anthracosis and reactive change",
+        "Atypical lymphoid infiltrate"
+      ],
+      "default": "Negative for malignancy",
+      "showIf": {
+        "field": "specimenType",
+        "is": "EBUS lymph node core biopsy"
+      }
+    },
+    {
+      "id": "benign",
+      "label": "Benign / inflammatory",
+      "type": "select",
+      "options": [
+        "None",
+        "Chronic bronchitis with goblet cell hyperplasia",
+        "Squamous metaplasia",
+        "Organising pneumonia",
+        "Acute lung injury with hyaline membranes",
+        "Eosinophilic infiltrate",
+        "Aspiration (foreign material with giant cell reaction)",
+        "Anthracosis",
+        "Interstitial fibrosis",
+        "Viral cytopathic change"
+      ],
+      "default": "None",
+      "showIf": {
+        "field": "specimenType",
+        "not": "EBUS lymph node core biopsy"
+      }
+    },
+    {
+      "id": "squamousDysplasia",
+      "label": "Squamous dysplasia",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Low grade",
+        "High grade / carcinoma in situ"
+      ],
+      "default": "Absent",
+      "showIf": {
+        "field": "benign",
+        "is": "Squamous metaplasia"
+      }
+    },
+    {
+      "id": "granuloma",
+      "label": "Granulomas",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Non-necrotising granulomas",
+        "Necrotising granulomas"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "specialStains",
+      "label": "Special stains (ZN / PASD / GMS)",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Negative for acid-fast bacilli and fungal elements",
+        "Acid-fast bacilli present",
+        "Fungal elements present"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "granuloma",
+        "not": "Absent"
+      }
+    },
+    {
+      "id": "organisms",
+      "label": "Organisms",
+      "type": "select",
+      "options": [
+        "None",
+        "Aspergillus-type septate hyphae",
+        "Pneumocystis",
+        "Cryptococcus",
+        "Mucorales-type hyphae",
+        "Other (specify in notes)"
+      ],
+      "default": "None"
+    },
+    {
+      "id": "neoplasia",
+      "label": "Neoplasia",
+      "type": "select",
+      "options": [
+        "None",
+        "Adenocarcinoma",
+        "Squamous cell carcinoma",
+        "Non-small cell carcinoma, favour adenocarcinoma",
+        "Non-small cell carcinoma, favour squamous cell carcinoma",
+        "Non-small cell carcinoma, not further classifiable",
+        "Small cell carcinoma",
+        "Large cell neuroendocrine carcinoma",
+        "Carcinoid / neuroendocrine tumour",
+        "Metastatic carcinoma",
+        "Atypical cells suspicious for carcinoma",
+        "Atypical lymphoid infiltrate (lymphoma suspected)"
+      ],
+      "default": "None"
+    },
+    {
+      "id": "adenoPattern",
+      "label": "Adenocarcinoma pattern(s)",
+      "type": "multiselect",
+      "options": [
+        "Lepidic",
+        "Acinar",
+        "Papillary",
+        "Micropapillary",
+        "Solid",
+        "Invasive mucinous"
+      ],
+      "exclusive": [
+        "Invasive mucinous"
+      ],
+      "default": [],
+      "help": "Tick every pattern present; invasive mucinous adenocarcinoma is a distinct entity and clears the others.",
+      "showIf": {
+        "field": "neoplasia",
+        "is": "Adenocarcinoma"
+      }
+    },
+    {
+      "id": "adenoPredominant",
+      "label": "Predominant pattern",
+      "type": "select",
+      "options": [
+        "Not specified",
+        "Lepidic",
+        "Acinar",
+        "Papillary",
+        "Micropapillary",
+        "Solid"
+      ],
+      "default": "Not specified",
+      "showIf": {
+        "field": "adenoPattern",
+        "min": 2
+      }
+    },
+    {
+      "id": "sccType",
+      "label": "SCC type",
+      "type": "select",
+      "options": [
+        "Non-keratinising",
+        "Keratinising",
+        "Basaloid"
+      ],
+      "default": "Non-keratinising",
+      "showIf": {
+        "field": "neoplasia",
+        "is": "Squamous cell carcinoma"
+      }
+    },
+    {
+      "id": "carcinoidType",
+      "label": "Neuroendocrine tumour type",
+      "type": "select",
+      "options": [
+        "Typical carcinoid",
+        "Atypical carcinoid",
+        "Not further classifiable on biopsy"
+      ],
+      "default": "Typical carcinoid",
+      "showIf": {
+        "field": "neoplasia",
+        "is": "Carcinoid / neuroendocrine tumour"
+      }
+    },
+    {
+      "id": "metastasisPrimary",
+      "label": "Favoured primary",
+      "type": "text",
+      "placeholder": "colorectal",
+      "default": "",
+      "showIf": {
+        "field": "neoplasia",
+        "is": "Metastatic carcinoma"
+      }
+    },
+    {
+      "id": "ttf1",
+      "label": "TTF-1",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Positive",
+        "Focal positive",
+        "Negative"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "neoplasia",
+        "not": [
+          "None",
+          "Atypical lymphoid infiltrate (lymphoma suspected)"
+        ]
+      }
+    },
+    {
+      "id": "napsin",
+      "label": "Napsin A",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Positive",
+        "Focal positive",
+        "Negative"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "neoplasia",
+        "not": [
+          "None",
+          "Atypical lymphoid infiltrate (lymphoma suspected)"
+        ]
+      }
+    },
+    {
+      "id": "p40",
+      "label": "p40",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Positive",
+        "Focal positive",
+        "Negative"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "neoplasia",
+        "not": [
+          "None",
+          "Atypical lymphoid infiltrate (lymphoma suspected)"
+        ]
+      }
+    },
+    {
+      "id": "ck56",
+      "label": "CK5/6",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Positive",
+        "Focal positive",
+        "Negative"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "neoplasia",
+        "not": [
+          "None",
+          "Atypical lymphoid infiltrate (lymphoma suspected)"
+        ]
+      }
+    },
+    {
+      "id": "neMarkers",
+      "label": "Neuroendocrine markers (synaptophysin / chromogranin / INSM1)",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Positive",
+        "Focal positive",
+        "Negative"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "neoplasia",
+        "not": [
+          "None",
+          "Atypical lymphoid infiltrate (lymphoma suspected)"
+        ]
+      }
+    },
+    {
+      "id": "ki67",
+      "label": "Ki-67 (%)",
+      "type": "number",
+      "placeholder": "80",
+      "default": "",
+      "showIf": {
+        "field": "neoplasia",
+        "not": [
+          "None",
+          "Atypical lymphoid infiltrate (lymphoma suspected)"
+        ]
+      }
+    },
+    {
+      "id": "ihcOther",
+      "label": "Other IHC",
+      "type": "text",
+      "placeholder": "CDX2 negative; GATA3 negative",
+      "default": "",
+      "showIf": {
+        "field": "neoplasia",
+        "not": [
+          "None",
+          "Atypical lymphoid infiltrate (lymphoma suspected)"
+        ]
+      }
+    },
+    {
+      "id": "pdl1",
+      "label": "PD-L1",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "TPS < 1%",
+        "TPS 1–49%",
+        "TPS ≥ 50%",
+        "Inadequate (< 100 tumour cells)"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "neoplasia",
+        "not": [
+          "None",
+          "Atypical lymphoid infiltrate (lymphoma suspected)"
+        ]
+      }
+    },
+    {
+      "id": "pdl1Clone",
+      "label": "PD-L1 clone",
+      "type": "select",
+      "options": [
+        "22C3",
+        "SP263",
+        "28-8"
+      ],
+      "default": "22C3",
+      "showIf": {
+        "field": "pdl1",
+        "not": "Not performed"
+      }
+    },
+    {
+      "id": "pdl1Tps",
+      "label": "TPS (%)",
+      "type": "number",
+      "placeholder": "60",
+      "default": "",
+      "showIf": {
+        "field": "pdl1",
+        "is": [
+          "TPS 1–49%",
+          "TPS ≥ 50%"
+        ]
+      }
+    },
+    {
+      "id": "alk",
+      "label": "ALK IHC",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Negative",
+        "Positive"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "neoplasia",
+        "not": [
+          "None",
+          "Atypical lymphoid infiltrate (lymphoma suspected)"
+        ]
+      }
+    },
+    {
+      "id": "ros1",
+      "label": "ROS1 IHC",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Negative",
+        "Positive"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "neoplasia",
+        "not": [
+          "None",
+          "Atypical lymphoid infiltrate (lymphoma suspected)"
+        ]
+      }
+    },
+    {
+      "id": "molecular",
+      "label": "Molecular testing",
+      "type": "select",
+      "options": [
+        "Not requested",
+        "Requested on this block (EGFR, ALK, ROS1, BRAF, KRAS, MET, RET, NTRK); report to follow",
+        "Insufficient tumour for molecular testing"
+      ],
+      "default": "Not requested",
+      "showIf": {
+        "field": "neoplasia",
+        "not": [
+          "None",
+          "Atypical lymphoid infiltrate (lymphoma suspected)"
+        ]
+      }
+    },
+    {
+      "id": "blockRef",
+      "label": "Block reference",
+      "type": "text",
+      "placeholder": "A1",
+      "default": "",
+      "showIf": {
+        "field": "molecular",
+        "not": "Not requested"
+      }
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "",
+      "default": ""
+    }
+  ],
+  "snippets": [
+    {
+      "id": "lung_granuloma",
+      "label": "Granuloma — culture correlation",
+      "auto": {
+        "field": "granuloma",
+        "is": [
+          "Necrotising granulomas",
+          "Non-necrotising granulomas"
+        ]
+      },
+      "text": "Granulomatous inflammation is present in {parts}. The differential includes mycobacterial and fungal infection and sarcoidosis; correlation with microbiological culture and the clinical and radiological findings is recommended."
+    },
+    {
+      "id": "lung_small_biopsy",
+      "label": "Small biopsy caveat (adenocarcinoma)",
+      "auto": {
+        "field": "adenoPattern",
+        "is": "Lepidic"
+      },
+      "text": "In situ (lepidic) and invasive components cannot be reliably distinguished on a small biopsy; the predominant pattern is provisional and definitive subtyping requires the resection specimen."
+    },
+    {
+      "id": "lung_nsclc_nos",
+      "label": "NSCC NOS — limited tissue",
+      "auto": {
+        "field": "neoplasia",
+        "is": "Non-small cell carcinoma, not further classifiable"
+      },
+      "text": "The tumour cannot be further classified on morphology and immunohistochemistry in the limited material available. Correlation with cytology or repeat sampling is suggested if subtyping will alter management."
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "imaging": "RUL mass 3.2 cm; subcarinal node 1.4 cm",
+    "options": {
+      "includeHeader": false,
+      "summary": true,
+      "molecularLine": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenType": "Transbronchial biopsy",
+          "site": "right upper lobe",
+          "pieces": "4",
+          "tissue": "Bronchial mucosa and alveolated lung parenchyma",
+          "nodeTissue": "Lymphoid tissue",
+          "nodeFinding": "Negative for malignancy",
+          "benign": "None",
+          "squamousDysplasia": "Absent",
+          "granuloma": "Absent",
+          "specialStains": "Not performed",
+          "organisms": "None",
+          "neoplasia": "Adenocarcinoma",
+          "adenoPattern": [
+            "Lepidic",
+            "Acinar"
+          ],
+          "sccType": "Non-keratinising",
+          "carcinoidType": "Typical carcinoid",
+          "metastasisPrimary": "",
+          "ttf1": "Positive",
+          "napsin": "Positive",
+          "p40": "Negative",
+          "ck56": "Not performed",
+          "neMarkers": "Not performed",
+          "ki67": "",
+          "ihcOther": "",
+          "pdl1": "TPS ≥ 50%",
+          "pdl1Clone": "22C3",
+          "pdl1Tps": "60",
+          "alk": "Negative",
+          "ros1": "Negative",
+          "molecular": "Requested on this block (EGFR, ALK, ROS1, BRAF, KRAS, MET, RET, NTRK); report to follow",
+          "blockRef": "A1",
+          "additionalNotes": "",
+          "adenoPredominant": "Acinar"
+        }
+      },
+      {
+        "label": "B",
+        "values": {
+          "specimenType": "EBUS lymph node core biopsy",
+          "site": "station 7",
+          "pieces": "3",
+          "tissue": "Bronchial mucosa",
+          "nodeTissue": "Lymphoid tissue",
+          "nodeFinding": "Metastatic carcinoma",
+          "benign": "None",
+          "squamousDysplasia": "Absent",
+          "granuloma": "Absent",
+          "specialStains": "Not performed",
+          "organisms": "None",
+          "neoplasia": "Adenocarcinoma",
+          "adenoPattern": [],
+          "sccType": "Non-keratinising",
+          "carcinoidType": "Typical carcinoid",
+          "metastasisPrimary": "",
+          "ttf1": "Positive",
+          "napsin": "Not performed",
+          "p40": "Negative",
+          "ck56": "Not performed",
+          "neMarkers": "Not performed",
+          "ki67": "",
+          "ihcOther": "",
+          "pdl1": "Not performed",
+          "pdl1Clone": "22C3",
+          "pdl1Tps": "",
+          "alk": "Not performed",
+          "ros1": "Not performed",
+          "molecular": "Not requested",
+          "blockRef": "",
+          "additionalNotes": "",
+          "adenoPredominant": "Not specified"
+        }
+      }
+    ]
+  }
+}

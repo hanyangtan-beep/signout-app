@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=mtxoqqj6" />
+  <link rel="stylesheet" href="styles.css?v=mtxp1iyk" />
 </head>
 <body>
   <a class="skip" href="#case">Skip to case</a>
@@ -68,6 +68,11 @@
           </select>
         </div>
       </div>
+      <div class="field specimen-field">
+        <label for="meta-specimen">Specimen <span class="muted">— paste the LIS specimen list; parts and templates are suggested below</span></label>
+        <textarea class="input mono" id="meta-specimen" rows="3" placeholder="History&#10;Fibroids&#10;&#10;Specimen&#10;(A) Right fallopian tube, resection, (B) Left fallopian tube, resection and (C) Uterus, resection" spellcheck="false"></textarea>
+      </div>
+      <div id="intake-preview" class="intake-preview" hidden></div>
       <details class="meta-details" id="meta-details">
         <summary>Clinical history, macroscopic description, block key</summary>
         <div class="field"><label for="meta-clinical">Clinical history</label><textarea class="input" id="meta-clinical" rows="2"></textarea></div>
@@ -159,6 +164,6 @@
   </dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="src/app.js?v=mtxoqqj6"></script>
+  <script type="module" src="src/app.js?v=mtxp1iyk"></script>
 </body>
 </html>

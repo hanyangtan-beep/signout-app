@@ -1,0 +1,394 @@
+{
+  "id": "tonsils",
+  "version": "2026.09",
+  "name": "Tonsils / adenoids",
+  "shortName": "Tonsils · tonsillectomy",
+  "label": "Tonsils",
+  "organ": "TONSILS",
+  "system": "Head and neck",
+  "kind": "benign resection",
+  "rank": 34,
+  "aliases": [
+    "tonsil",
+    "tonsillectomy",
+    "adenoids",
+    "adenoidectomy",
+    "adenotonsillectomy",
+    "palatine",
+    "lymphoid hyperplasia",
+    "actinomyces",
+    "tonsillitis",
+    "asymmetric tonsil",
+    "tonsil biopsy"
+  ],
+  "match": {
+    "site": [
+      "tonsil",
+      "tonsils",
+      "tonsillar",
+      "adenoid",
+      "adenoids",
+      "palatine"
+    ],
+    "procedure": [
+      "tonsillectomy",
+      "adenoidectomy",
+      "adenotonsillectomy",
+      "excision"
+    ],
+    "clinical": [
+      "tonsillitis",
+      "OSA",
+      "obstructive sleep apnoea",
+      "asymmetric",
+      "asymmetry",
+      "hypertrophy",
+      "snoring"
+    ]
+  },
+  "specimenNoun": "tonsillectomy",
+  "maxParts": 3,
+  "defaultParts": 1,
+  "generator": "tonsil",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen / laterality",
+      "type": "select",
+      "options": [
+        "Bilateral tonsils, tonsillectomy",
+        "Left tonsil, tonsillectomy",
+        "Right tonsil, tonsillectomy",
+        "Adenoids, adenoidectomy",
+        "Tonsil, biopsy"
+      ],
+      "default": "Bilateral tonsils, tonsillectomy"
+    },
+    {
+      "id": "biopsySite",
+      "label": "Biopsy site",
+      "type": "text",
+      "placeholder": "right tonsil",
+      "default": "",
+      "showIf": {
+        "field": "specimenName",
+        "is": "Tonsil, biopsy"
+      }
+    },
+    {
+      "id": "leftSize",
+      "label": "Left tonsil size (cm)",
+      "type": "text",
+      "placeholder": "2.5 x 2 x 1.5",
+      "default": "",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Bilateral tonsils, tonsillectomy",
+          "Left tonsil, tonsillectomy"
+        ]
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "leftWeight",
+      "label": "Left tonsil weight",
+      "type": "number",
+      "min": 0,
+      "step": 0.1,
+      "suffix": "g",
+      "default": "",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Bilateral tonsils, tonsillectomy",
+          "Left tonsil, tonsillectomy"
+        ]
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "rightSize",
+      "label": "Right tonsil size (cm)",
+      "type": "text",
+      "placeholder": "2.4 x 2 x 1.4",
+      "default": "",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Bilateral tonsils, tonsillectomy",
+          "Right tonsil, tonsillectomy"
+        ]
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "rightWeight",
+      "label": "Right tonsil weight",
+      "type": "number",
+      "min": 0,
+      "step": 0.1,
+      "suffix": "g",
+      "default": "",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Bilateral tonsils, tonsillectomy",
+          "Right tonsil, tonsillectomy"
+        ]
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "aggregateSize",
+      "label": "Aggregate size (cm)",
+      "type": "text",
+      "placeholder": "2 x 1.5 x 0.5",
+      "default": "",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Adenoids, adenoidectomy",
+          "Tonsil, biopsy"
+        ]
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "aggregateWeight",
+      "label": "Weight",
+      "type": "number",
+      "min": 0,
+      "step": 0.1,
+      "suffix": "g",
+      "default": "",
+      "showIf": {
+        "field": "specimenName",
+        "is": "Adenoids, adenoidectomy"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "surface",
+      "label": "Surface",
+      "type": "select",
+      "options": [
+        "Cryptic with debris",
+        "Unremarkable",
+        "Ulcerated",
+        "Asymmetric - larger side"
+      ],
+      "default": "Cryptic with debris",
+      "showIf": {
+        "field": "specimenName",
+        "not": "Tonsil, biopsy"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "largerSide",
+      "label": "Larger side",
+      "type": "select",
+      "options": [
+        "Left",
+        "Right"
+      ],
+      "default": "Left",
+      "showIf": {
+        "field": "surface",
+        "is": "Asymmetric - larger side"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cutSurface",
+      "label": "Cut surface",
+      "type": "select",
+      "options": [
+        "Unremarkable",
+        "Fibrotic",
+        "Nodular",
+        "Haemorrhagic",
+        "Mass - describe"
+      ],
+      "default": "Unremarkable",
+      "showIf": {
+        "field": "specimenName",
+        "not": "Tonsil, biopsy"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cutSurfaceMass",
+      "label": "Mass description",
+      "type": "text",
+      "placeholder": "1.5 cm firm white area in the left tonsil",
+      "default": "",
+      "showIf": {
+        "field": "cutSurface",
+        "is": "Mass - describe"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "blocks",
+      "label": "Number of blocks",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "default": "2",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "lymphoidHyperplasia",
+      "label": "Lymphoid tissue",
+      "type": "select",
+      "options": [
+        "Reactive follicular lymphoid hyperplasia",
+        "Unremarkable lymphoid tissue"
+      ],
+      "default": "Reactive follicular lymphoid hyperplasia"
+    },
+    {
+      "id": "cryptitis",
+      "label": "Cryptitis with debris",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "actinomyces",
+      "label": "Actinomyces colonies",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "fibrosis",
+      "label": "Fibrosis / chronic tonsillitis",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "epithelium",
+      "label": "Surface epithelium",
+      "type": "select",
+      "options": [
+        "Benign squamous",
+        "Benign respiratory (adenoids)",
+        "Ulcerated"
+      ],
+      "default": "Benign squamous"
+    },
+    {
+      "id": "atypicalInfiltrate",
+      "label": "Atypical lymphoid infiltrate",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present - see comment"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "neoplasia",
+      "label": "Dysplasia / malignancy",
+      "type": "select",
+      "options": [
+        "No evidence of dysplasia or malignancy",
+        "Squamous cell carcinoma - see comment (QMH head and neck template)"
+      ],
+      "default": "No evidence of dysplasia or malignancy"
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "snippets": [
+    {
+      "id": "asymmetry_workup",
+      "label": "Asymmetric tonsil: lymphoma / HPV work-up",
+      "text": "In view of the clinical asymmetry, immunohistochemistry is recommended to exclude lymphoma; p16 and EBER may be considered.",
+      "auto": {
+        "field": "atypicalInfiltrate",
+        "is": "Present - see comment"
+      }
+    },
+    {
+      "id": "scc_template",
+      "label": "Carcinoma: report on the QMH head and neck cancer template",
+      "text": "Squamous cell carcinoma is present in {parts}. Tumour size, depth of invasion, margin status, p16 status and staging should be reported on the QMH head and neck cancer template; a supplementary synoptic report will follow.",
+      "auto": {
+        "field": "neoplasia",
+        "is": "Squamous cell carcinoma - see comment (QMH head and neck template)"
+      }
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "Bilateral tonsils, tonsillectomy",
+          "biopsySite": "",
+          "leftSize": "2.5 x 2 x 1.5",
+          "leftWeight": "4",
+          "rightSize": "2.4 x 2 x 1.4",
+          "rightWeight": "4",
+          "aggregateSize": "",
+          "aggregateWeight": "",
+          "surface": "Cryptic with debris",
+          "largerSide": "Left",
+          "cutSurface": "Unremarkable",
+          "cutSurfaceMass": "",
+          "blocks": "2",
+          "lymphoidHyperplasia": "Reactive follicular lymphoid hyperplasia",
+          "cryptitis": "Present",
+          "actinomyces": "Present",
+          "fibrosis": "Absent",
+          "epithelium": "Benign squamous",
+          "atypicalInfiltrate": "Absent",
+          "neoplasia": "No evidence of dysplasia or malignancy",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

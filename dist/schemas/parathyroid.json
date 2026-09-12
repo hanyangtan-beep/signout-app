@@ -1,0 +1,356 @@
+{
+  "id": "parathyroid",
+  "version": "2026.09",
+  "name": "Parathyroid excision",
+  "shortName": "Parathyroid · excision",
+  "label": "Parathyroid",
+  "organ": "PARATHYROID",
+  "system": "Endocrine",
+  "kind": "benign resection",
+  "rank": 25,
+  "aliases": [
+    "parathyroidectomy",
+    "adenoma",
+    "hyperplasia",
+    "hyperparathyroidism",
+    "chief cell",
+    "oxyphil",
+    "rim",
+    "MEN1",
+    "frozen section correlation",
+    "PTH"
+  ],
+  "match": {
+    "site": [
+      "parathyroid"
+    ],
+    "procedure": [
+      "parathyroidectomy",
+      "excision",
+      "exploration"
+    ],
+    "clinical": [
+      "hyperparathyroidism",
+      "PTH",
+      "hypercalcaemia",
+      "hypercalcemia",
+      "adenoma",
+      "MEN"
+    ]
+  },
+  "specimenNoun": "excision",
+  "maxParts": 4,
+  "defaultParts": 1,
+  "generator": "parathyroid",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "partDefaults": [
+    {
+      "site": "Right superior"
+    },
+    {
+      "site": "Right inferior"
+    },
+    {
+      "site": "Left superior"
+    },
+    {
+      "site": "Left inferior"
+    }
+  ],
+  "fields": [
+    {
+      "id": "site",
+      "label": "Gland",
+      "type": "select",
+      "options": [
+        "Right superior",
+        "Right inferior",
+        "Left superior",
+        "Left inferior",
+        "Ectopic - specify",
+        "Not specified"
+      ],
+      "default": "Right superior"
+    },
+    {
+      "id": "siteOther",
+      "label": "Ectopic site",
+      "type": "text",
+      "placeholder": "intrathymic / retro-oesophageal",
+      "default": "",
+      "showIf": {
+        "field": "site",
+        "is": "Ectopic - specify"
+      }
+    },
+    {
+      "id": "weight",
+      "label": "Weight (mg or g)",
+      "type": "text",
+      "placeholder": "450 mg",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "dimensions",
+      "label": "Dimensions (cm)",
+      "type": "text",
+      "placeholder": "1.2 x 0.8 x 0.5",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "appearance",
+      "label": "Appearance",
+      "type": "select",
+      "options": [
+        "Tan, smooth, encapsulated",
+        "Lobulated",
+        "Cystic"
+      ],
+      "default": "Tan, smooth, encapsulated",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "blocks",
+      "label": "Blocks (all embedded)",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "default": "2",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "diagnosis",
+      "label": "Diagnosis",
+      "type": "select",
+      "options": [
+        "Adenoma",
+        "Hyperplasia",
+        "Normocellular parathyroid",
+        "Atypical parathyroid tumour - see comment",
+        "Parathyroid carcinoma - see comment",
+        "Not parathyroid - thyroid tissue",
+        "Not parathyroid - lymph node",
+        "Not parathyroid - thymic tissue"
+      ],
+      "default": "Adenoma"
+    },
+    {
+      "id": "cellType",
+      "label": "Predominant cell type",
+      "type": "select",
+      "options": [
+        "Chief cells",
+        "Oxyphil cells",
+        "Mixed",
+        "Water-clear cells"
+      ],
+      "default": "Chief cells",
+      "showIf": {
+        "field": "diagnosis",
+        "is": [
+          "Adenoma",
+          "Hyperplasia",
+          "Atypical parathyroid tumour - see comment",
+          "Parathyroid carcinoma - see comment"
+        ]
+      }
+    },
+    {
+      "id": "architecture",
+      "label": "Architecture",
+      "type": "multiselect",
+      "options": [
+        "solid sheets",
+        "nests",
+        "trabeculae",
+        "follicles"
+      ],
+      "default": [
+        "solid sheets",
+        "nests",
+        "trabeculae"
+      ],
+      "showIf": {
+        "field": "diagnosis",
+        "is": [
+          "Adenoma",
+          "Hyperplasia",
+          "Atypical parathyroid tumour - see comment",
+          "Parathyroid carcinoma - see comment"
+        ]
+      }
+    },
+    {
+      "id": "rim",
+      "label": "Rim of normal gland",
+      "type": "select",
+      "options": [
+        "Identified",
+        "Not identified"
+      ],
+      "default": "Identified",
+      "showIf": {
+        "field": "diagnosis",
+        "is": [
+          "Adenoma",
+          "Hyperplasia",
+          "Atypical parathyroid tumour - see comment",
+          "Parathyroid carcinoma - see comment"
+        ]
+      }
+    },
+    {
+      "id": "stromalFat",
+      "label": "Stromal fat",
+      "type": "select",
+      "options": [
+        "Markedly decreased",
+        "Decreased",
+        "Normal"
+      ],
+      "default": "Markedly decreased",
+      "showIf": {
+        "field": "diagnosis",
+        "is": [
+          "Adenoma",
+          "Hyperplasia",
+          "Atypical parathyroid tumour - see comment",
+          "Parathyroid carcinoma - see comment"
+        ]
+      }
+    },
+    {
+      "id": "invasion",
+      "label": "Capsular or vascular invasion",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent",
+      "showIf": {
+        "field": "diagnosis",
+        "is": [
+          "Adenoma",
+          "Hyperplasia",
+          "Atypical parathyroid tumour - see comment",
+          "Parathyroid carcinoma - see comment"
+        ]
+      }
+    },
+    {
+      "id": "mitoses",
+      "label": "Mitoses",
+      "type": "select",
+      "options": [
+        "Not increased",
+        "Increased"
+      ],
+      "default": "Not increased",
+      "showIf": {
+        "field": "diagnosis",
+        "is": [
+          "Adenoma",
+          "Hyperplasia",
+          "Atypical parathyroid tumour - see comment",
+          "Parathyroid carcinoma - see comment"
+        ]
+      }
+    },
+    {
+      "id": "frozen",
+      "label": "Intraoperative frozen section",
+      "type": "select",
+      "options": [
+        "No",
+        "Yes - confirmed parathyroid"
+      ],
+      "default": "No"
+    },
+    {
+      "id": "fsBlock",
+      "label": "Frozen section block",
+      "type": "text",
+      "placeholder": "A1",
+      "default": "",
+      "showIf": {
+        "field": "frozen",
+        "is": "Yes - confirmed parathyroid"
+      }
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "site": "Right superior",
+          "siteOther": "",
+          "weight": "450 mg",
+          "dimensions": "1.2 x 0.8 x 0.5",
+          "appearance": "Tan, smooth, encapsulated",
+          "blocks": "2",
+          "diagnosis": "Adenoma",
+          "cellType": "Chief cells",
+          "architecture": [
+            "solid sheets",
+            "nests",
+            "trabeculae"
+          ],
+          "rim": "Identified",
+          "stromalFat": "Markedly decreased",
+          "invasion": "Absent",
+          "mitoses": "Not increased",
+          "frozen": "No",
+          "fsBlock": "",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  },
+  "snippets": [
+    {
+      "id": "parathyroid_cancer_template",
+      "label": "Atypical tumour / carcinoma - report on the QMH cancer template",
+      "text": "An atypical parathyroid tumour or parathyroid carcinoma is identified in {parts}. This template does not stage parathyroid malignancy; please complete the report using the QMH parathyroid carcinoma template (invasion, mitotic count, necrosis, margins and immunohistochemistry including parafibromin).",
+      "auto": {
+        "field": "diagnosis",
+        "is": [
+          "Atypical parathyroid tumour - see comment",
+          "Parathyroid carcinoma - see comment"
+        ]
+      }
+    }
+  ]
+}

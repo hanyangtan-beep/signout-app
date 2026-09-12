@@ -1,0 +1,347 @@
+{
+  "id": "gallbladder",
+  "version": "2026.09",
+  "name": "Gallbladder",
+  "shortName": "Gallbladder · cholecystectomy",
+  "label": "Gallbladder",
+  "organ": "GALLBLADDER",
+  "system": "Hepatobiliary",
+  "kind": "benign resection",
+  "rank": 23,
+  "aliases": [
+    "cholecystectomy",
+    "cholecystitis",
+    "cholelithiasis",
+    "gallstones",
+    "Rokitansky-Aschoff",
+    "cholesterolosis",
+    "adenomyomatous",
+    "cystic duct",
+    "xanthogranulomatous",
+    "porcelain",
+    "GB"
+  ],
+  "match": {
+    "site": [
+      "gallbladder",
+      "gall bladder",
+      "cystic duct"
+    ],
+    "procedure": [
+      "cholecystectomy",
+      "resection"
+    ],
+    "clinical": [
+      "cholecystitis",
+      "cholelithiasis",
+      "gallstone",
+      "biliary colic"
+    ]
+  },
+  "specimenNoun": "cholecystectomy",
+  "maxParts": 2,
+  "defaultParts": 1,
+  "generator": "gallbladder",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "partDefaults": [
+    {
+      "specimenName": "Gallbladder, cholecystectomy"
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen as received",
+      "type": "text",
+      "placeholder": "Gallbladder, cholecystectomy",
+      "default": ""
+    },
+    {
+      "id": "receivedState",
+      "label": "Received",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Opened prior to submission",
+        "Intact"
+      ],
+      "default": "Opened prior to submission"
+    },
+    {
+      "id": "dimensions",
+      "label": "Dimensions (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "8 x 3 x 2.5",
+      "default": ""
+    },
+    {
+      "id": "wallThickness",
+      "label": "Wall thickness (mm or cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "0.3 cm / 3 mm",
+      "default": ""
+    },
+    {
+      "id": "serosa",
+      "label": "Serosa",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Smooth",
+        "Congested",
+        "Fibrinous exudate",
+        "Perforated"
+      ],
+      "default": "Smooth"
+    },
+    {
+      "id": "stones",
+      "label": "Stones",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Not received",
+        "Present – single",
+        "Present – multiple",
+        "Absent"
+      ],
+      "default": "Not received"
+    },
+    {
+      "id": "stoneSize",
+      "label": "Stone size (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "1.2 / up to 0.5",
+      "default": "",
+      "showIf": {
+        "field": "stones",
+        "is": [
+          "Present – single",
+          "Present – multiple"
+        ]
+      }
+    },
+    {
+      "id": "mucosa",
+      "label": "Mucosa",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Unremarkable",
+        "Velvety, bile-stained",
+        "Cholesterolosis (strawberry)",
+        "Ulcerated",
+        "Flattened, fibrotic",
+        "Mass – describe"
+      ],
+      "default": "Unremarkable"
+    },
+    {
+      "id": "mucosaMass",
+      "label": "Mass description",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "polypoid mass 1.5 cm at the fundus",
+      "default": "",
+      "showIf": {
+        "field": "mucosa",
+        "is": "Mass – describe"
+      }
+    },
+    {
+      "id": "cysticNode",
+      "label": "Cystic duct lymph node",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Not identified",
+        "Identified"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "blocks",
+      "label": "Blocks",
+      "type": "number",
+      "group": "Macroscopy",
+      "min": 1,
+      "step": 1,
+      "default": "3"
+    },
+    {
+      "id": "cholecystitis",
+      "label": "Cholecystitis",
+      "type": "select",
+      "options": [
+        "Chronic",
+        "Acute-on-chronic",
+        "Acute",
+        "Gangrenous",
+        "Xanthogranulomatous",
+        "Follicular",
+        "Eosinophilic",
+        "None – unremarkable"
+      ],
+      "default": "Chronic"
+    },
+    {
+      "id": "rasinuses",
+      "label": "Rokitansky-Aschoff sinuses",
+      "type": "select",
+      "options": [
+        "Present",
+        "Absent"
+      ],
+      "default": "Present"
+    },
+    {
+      "id": "cholesterolosis",
+      "label": "Cholesterolosis",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "adenomyomatous",
+      "label": "Adenomyomatous hyperplasia",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present – fundus",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "intestinalMetaplasia",
+      "label": "Intestinal metaplasia",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "pyloricMetaplasia",
+      "label": "Pyloric gland metaplasia",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "neoplasia",
+      "label": "Dysplasia / neoplasia",
+      "type": "select",
+      "options": [
+        "No dysplasia or malignancy",
+        "Low grade dysplasia",
+        "High grade dysplasia (BilIN-3)",
+        "Adenocarcinoma – see comment",
+        "Intracholecystic papillary neoplasm"
+      ],
+      "default": "No dysplasia or malignancy"
+    },
+    {
+      "id": "cysticMargin",
+      "label": "Cystic duct margin",
+      "type": "select",
+      "options": [
+        "Unremarkable",
+        "Inflamed",
+        "Involved by dysplasia"
+      ],
+      "default": "Unremarkable"
+    },
+    {
+      "id": "cysticNodeResult",
+      "label": "Cystic duct lymph node",
+      "type": "select",
+      "options": [
+        "Not sampled",
+        "Reactive",
+        "Metastatic"
+      ],
+      "default": "Not sampled"
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "snippets": [
+    {
+      "id": "gallbladder_cancer_template",
+      "label": "Dysplasia / carcinoma — use the QMH cancer template",
+      "auto": {
+        "field": "neoplasia",
+        "not": "No dysplasia or malignancy"
+      },
+      "text": "Dysplasia / neoplasia is identified in the gallbladder ({parts}). This benign template does not stage or grade the lesion; the QMH gallbladder cancer template should be used for the final synoptic report."
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "Gallbladder, cholecystectomy",
+          "receivedState": "Opened prior to submission",
+          "dimensions": "8 x 3 x 2.5",
+          "wallThickness": "0.3 cm",
+          "serosa": "Smooth",
+          "stones": "Not received",
+          "stoneSize": "",
+          "mucosa": "Cholesterolosis (strawberry)",
+          "mucosaMass": "",
+          "cysticNode": "Not identified",
+          "blocks": "3",
+          "cholecystitis": "Chronic",
+          "rasinuses": "Present",
+          "cholesterolosis": "Present",
+          "adenomyomatous": "Absent",
+          "intestinalMetaplasia": "Absent",
+          "pyloricMetaplasia": "Absent",
+          "neoplasia": "No dysplasia or malignancy",
+          "cysticMargin": "Unremarkable",
+          "cysticNodeResult": "Not sampled",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

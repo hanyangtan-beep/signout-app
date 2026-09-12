@@ -10,6 +10,7 @@ import { loadConfig, saveConfig } from './config.js';
 import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js';
 import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js';
 import { normaliseAccession, phiWarnings } from './docformat.js';
+import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -39,9 +40,9 @@ const state = {
   cases: []               // last fetched Sheet rows for the Open dialog
 };
 
-const META_FIELDS = ['accession', 'status', 'clinical', 'macro', 'blockKey'];
+const META_FIELDS = ['accession', 'status', 'specimen', 'clinical', 'macro', 'blockKey'];
 function ensureMeta(caseState) {
-  caseState.meta = { accession: '', status: 'draft', clinical: '', macro: '', blockKey: '', useLisMacro: false, useLisBlockKey: false, ...(caseState.meta || {}) };
+  caseState.meta = { accession: '', status: 'draft', specimen: '', clinical: '', macro: '', blockKey: '', useLisMacro: false, useLisBlockKey: false, ...(caseState.meta || {}) };
   caseState.drive = caseState.drive || null;
   return caseState;
 }
@@ -218,7 +219,7 @@ async function setPartTemplate(i, id) {
 }
 
 function maxPartsForCase() {
-  return Math.max(...schemasInUse().map((s) => s.maxParts || 10));
+  return Math.min(MAX_PARTS, Math.max(...schemasInUse().map((s) => s.maxParts || 10)));
 }
 
 function addPart() {
@@ -286,6 +287,7 @@ function render() {
   nodes.statusTemplate.textContent = `${label} · ${state.caseState.parts.length} part${state.caseState.parts.length === 1 ? '' : 's'}`;
   cacheCase(state.caseState);
   renderMeta();
+  renderIntake();
   renderSaveStatus();
 }
 
@@ -850,6 +852,113 @@ async function doCopy(text, label) {
 }
 
 
+// ---------- specimen intake (LIS paste -> parts) ----------
+// The Specimen box is parsed on every keystroke; the strip below it shows one row per lettered
+// part with the suggested template (dropdown: candidates first, then every template). "Build parts"
+// replaces the case's parts, pre-fills what the LIS line tells us and derives the case title.
+const intake = { key: '', raw: '', rows: [], picks: {}, userPicks: new Set(), built: false };   // picks: label -> template id in the strip; userPicks: labels the user changed; built: collapsed after Build
+
+function intakeNodes() { return { box: nodes.meta.specimen, strip: $('#intake-preview') }; }
+
+function renderIntake() {
+  const { strip } = intakeNodes();
+  if (!strip) return;
+  const meta = state.caseState?.meta || {};
+  const raw = meta.specimen || '';
+  if (!raw.trim()) { strip.hidden = true; strip.replaceChildren(); intake.key = ''; intake.raw = ''; intake.rows = []; intake.picks = {}; intake.userPicks = new Set(); intake.built = false; return; }
+  const key = `${raw}\u0000${meta.clinical || ''}`;
+  if (key !== intake.key) {
+    const parsed = parseIntake(raw);
+    const history = [parsed.history, meta.clinical || ''].filter(Boolean).join('\n');
+    intake.parsed = parsed;
+    intake.rows = matchParts(parsed, history, state.manifest);
+    if (raw !== intake.raw) { intake.userPicks = new Set(); intake.built = false; }   // a new list: forget manual picks and re-expand
+    intake.picks = Object.fromEntries(intake.rows.map((r) => [r.label, intake.userPicks.has(r.label) && entryOf(intake.picks[r.label]) ? intake.picks[r.label] : r.templateId]));
+    intake.key = key;
+    intake.raw = raw;
+  }
+  const { rows, parsed } = intake;
+  if (intake.built) {
+    strip.replaceChildren(el('div', { class: 'intake-foot built' },
+      el('span', { class: 'muted', text: `${rows.length} part${rows.length === 1 ? '' : 's'} built from the specimen list` }),
+      el('button', { type: 'button', class: 'btn ghost small', text: 'Show list', onclick: () => { intake.built = false; renderIntake(); } })));
+    strip.hidden = false;
+    return;
+  }
+  const TIER = { confident: ['✓', 'Confident match'], choose: ['?', 'Close call — check the template'], none: ['—', 'No matching template: generic free-text form'] };
+  const allOpts = state.manifest.filter((t) => t.id !== GENERIC_ID).slice().sort((a, b) => a.name.localeCompare(b.name));
+  const table = el('table', {}, ...rows.map((r) => {
+    const cands = r.candidates.filter((c) => c.score >= 0).map((c) => entryOf(c.id)).filter(Boolean);
+    const rest = allOpts.filter((t) => !cands.some((c) => c.id === t.id));
+    const sel = el('select', { class: 'input', 'aria-label': `Template for part ${r.label}`, onchange: (e) => { intake.picks[r.label] = e.target.value; intake.userPicks.add(r.label); renderIntake(); } },
+      el('option', { value: GENERIC_ID, text: 'Generic (free text)' }),
+      ...(cands.length ? [el('optgroup', { label: 'Suggested' }, ...cands.map((t) => el('option', { value: t.id, text: t.name })))] : []),
+      el('optgroup', { label: 'All templates' }, ...rest.map((t) => el('option', { value: t.id, text: t.name })))
+    );
+    sel.value = intake.picks[r.label] || GENERIC_ID;
+    const [mark, tip] = TIER[r.tier] || TIER.none;
+    return el('tr', {},
+      el('td', { class: 'letter', text: `(${r.label})` }),
+      el('td', { class: 'text', text: r.text, title: r.raw }),
+      el('td', { class: 'pick' }, sel),
+      el('td', { class: `tier tier-${r.tier}`, text: mark, title: tip }));
+  }));
+  const hasParts = rows.length > 0;
+  const replacing = partsTouched();
+  const build = el('button', { type: 'button', class: 'btn primary small', id: 'btn-build-parts', text: replacing ? 'Replace parts' : 'Build parts', disabled: !hasParts, onclick: () => buildPartsFromIntake().catch((e) => toast(e.message)) });
+  const summary = hasParts ? `${rows.length} part${rows.length === 1 ? '' : 's'} · ${rows.filter((r) => r.tier === 'confident').length} confident · ${rows.filter((r) => intake.picks[r.label] === GENERIC_ID).length} generic` : '';
+  const warns = [...(parsed?.warnings || [])];
+  const foot = el('div', { class: 'intake-foot' }, build, el('span', { class: 'muted', text: summary }),
+    ...warns.map((w) => el('span', { class: 'intake-warn', text: w })));
+  strip.replaceChildren(...(hasParts ? [table] : []), foot);
+  strip.hidden = false;
+}
+
+/** True when the case already has more than one part, or a part whose values differ from the template defaults. */
+function partsTouched() {
+  const cs = state.caseState;
+  if (!cs?.parts?.length) return false;
+  if (cs.parts.length > 1) return true;
+  return cs.parts.some((p) => state.templates[templateIdOf(cs, p)] && JSON.stringify(p.values) !== JSON.stringify(createPart(schemaOf(p), 0).values));
+}
+
+async function buildPartsFromIntake() {
+  const { rows, parsed } = intake;
+  if (!rows.length) return;
+  const cs = state.caseState;
+  if (partsTouched() && !confirm(`Replace the current ${cs.parts.length} part${cs.parts.length === 1 ? '' : 's'} with ${rows.length} from the specimen list?`)) return;
+  const ids = rows.map((r) => intake.picks[r.label] || GENERIC_ID);
+  await ensureTemplates(ids);
+  const counts = {};
+  const parts = rows.map((r, i) => {
+    const id = ids[i];
+    const { schema: s } = state.templates[id];
+    const own = counts[id] || 0; counts[id] = own + 1;
+    const part = { ...createPart(s, own), label: r.label, templateId: id, lis: r.raw };
+    const match = id === r.templateId ? r : { ...r, templateId: id, role: null };
+    Object.assign(part.values, presetValues(s, r, match));
+    normalisePart(s, part);
+    return part;
+  });
+  cs.parts = parts;
+  cs.caseTitle = deriveTitle(parsed.parts);
+  for (const id of new Set(ids)) noteUsed(id);
+  if (!(cs.meta.clinical || '').trim() && parsed.history) {
+    cs.meta.clinical = parsed.history;
+    const details = $('#meta-details'); if (details) details.open = true;
+  }
+  intake.built = true;
+  markDirty();
+  syncPrimary();
+  state.activePart = 0;
+  render();
+  toast(`${parts.length} part${parts.length === 1 ? '' : 's'} built from the specimen list`);
+}
+
+function initIntake() {
+  renderIntake();
+}
+
 // ---------- case meta + Drive ----------
 function renderMeta() {
   const meta = state.caseState.meta;
@@ -909,7 +1018,7 @@ async function doSave() {
   if (state.saving) return;
   const meta = state.caseState.meta;
   if (!normaliseAccession(meta.accession)) { nodes.meta.accession.focus(); return toast('Enter an accession number first'); }
-  const warnings = phiWarnings({ 'Clinical history': meta.clinical, Macroscopic: meta.macro, 'Block key': meta.blockKey, Report: state.lastOut?.report });
+  const warnings = phiWarnings({ Specimen: meta.specimen, 'Clinical history': meta.clinical, Macroscopic: meta.macro, 'Block key': meta.blockKey, Report: state.lastOut?.report });
   if (warnings.length && !window.confirm(`Possible patient identifiers:\n\n${warnings.join('\n')}\n\nOnly accession numbers and report text should go to Drive. Save anyway?`)) return;
   try {
     state.saving = true; renderSaveStatus();
@@ -975,9 +1084,11 @@ function initDrive() {
       cacheCase(state.caseState);
       if (k === 'accession' || k === 'status') renderSaveStatus();
       if (k === 'macro' || k === 'blockKey') renderReport();
+      if (k === 'specimen' || k === 'clinical') renderIntake();
     });
   }
   initLis();
+  initIntake();
   nodes.meta.accession.addEventListener('blur', (e) => {
     const n = normaliseAccession(e.target.value);
     if (n !== e.target.value) { e.target.value = n; state.caseState.meta.accession = n; cacheCase(state.caseState); }

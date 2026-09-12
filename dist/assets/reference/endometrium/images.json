@@ -1,0 +1,695 @@
+[
+ {
+  "field": "solidPct",
+  "group": "5% or less (architectural grade 1)",
+  "src": "assets/reference/endometrium/grade1_glands_40x.jpg",
+  "caption": "Grade 1: confluent glands resembling proliferative endometrium, no solid growth (40x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 2B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "solidPct",
+  "group": "5% or less (architectural grade 1)",
+  "src": "assets/reference/endometrium/grade1_glands_100x.jpg",
+  "caption": "Grade 1: back-to-back glands with low-grade nuclei (100x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 2A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "solidPct",
+  "group": "5% or less (architectural grade 1)",
+  "src": "assets/reference/endometrium/grade1_squamous_not_solid.jpg",
+  "caption": "Grade 1 with extensive squamous differentiation: squamous areas are not counted as solid",
+  "credit": "Soslow et al., Int J Gynecol Pathol 2019, Fig 1A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1097/PGP.0000000000000518"
+ },
+ {
+  "field": "solidPct",
+  "group": "6-50% (architectural grade 2)",
+  "src": "assets/reference/endometrium/grade2_40x.jpg",
+  "caption": "Grade 2: glands with intervening solid non-squamous nests (40x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 3B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "solidPct",
+  "group": "6-50% (architectural grade 2)",
+  "src": "assets/reference/endometrium/grade2_100x.jpg",
+  "caption": "Grade 2: solid non-squamous growth in 6-50% of the tumour (100x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 3C (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "solidPct",
+  "group": "6-50% (architectural grade 2)",
+  "src": "assets/reference/endometrium/grade2_under50_solid.jpg",
+  "caption": "Grade 2: <50% solid non-squamous growth",
+  "credit": "Soslow et al., Int J Gynecol Pathol 2019, Fig 1B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1097/PGP.0000000000000518"
+ },
+ {
+  "field": "solidPct",
+  "group": "More than 50% (architectural grade 3)",
+  "src": "assets/reference/endometrium/grade3_solid_40x.jpg",
+  "caption": "Grade 3: predominantly solid sheets (40x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 4A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "solidPct",
+  "group": "More than 50% (architectural grade 3)",
+  "src": "assets/reference/endometrium/grade3_solid_100x.jpg",
+  "caption": "Grade 3: solid growth >50% (100x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 4D (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "solidPct",
+  "group": "More than 50% (architectural grade 3)",
+  "src": "assets/reference/endometrium/grade3_microacinar.jpg",
+  "caption": "High-grade: microacinar pattern counts as solid, not glandular",
+  "credit": "Soslow et al., Int J Gynecol Pathol 2019, Fig 1D (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1097/PGP.0000000000000518"
+ },
+ {
+  "field": "nuclearGrade",
+  "group": "Nuclear grade 1-2 (mild to moderate atypia)",
+  "src": "assets/reference/endometrium/nuclear_grade2.jpg",
+  "caption": "Nuclear grade 2: moderate enlargement, even chromatin, small nucleoli",
+  "credit": "Mikael Häggström, Wikimedia Commons, single image",
+  "license": "CC0 1.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_endometrial_adenocarcinoma,_endometrioid_type.jpg"
+ },
+ {
+  "field": "nuclearGrade",
+  "group": "Nuclear grade 1-2 (mild to moderate atypia)",
+  "src": "assets/reference/endometrium/nuclear_lowgrade_columnar.jpg",
+  "caption": "Low-grade nuclei: uniform, columnar, perpendicular to the basement membrane (400x)",
+  "credit": "Saglam, Life 2024, Fig 3b (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/life14030387"
+ },
+ {
+  "field": "nuclearGrade",
+  "group": "Nuclear grade 3 (marked atypia in the majority of the tumour)",
+  "src": "assets/reference/endometrium/nuclear_grade3_glandular.jpg",
+  "caption": "Grade 3 nuclei in a glandular tumour: marked pleomorphism, prominent nucleoli (raises grade 1-2 architecture by one)",
+  "credit": "Murali et al., Int J Gynecol Pathol 2019, Fig 1B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1097/PGP.0000000000000491"
+ },
+ {
+  "field": "nuclearGrade",
+  "group": "Nuclear grade 3 (marked atypia in the majority of the tumour)",
+  "src": "assets/reference/endometrium/nuclear_grade3_clear_nuclei.jpg",
+  "caption": "Grade 3 tumour with optically clear, vesicular nuclei (100x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 4C (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "histType",
+  "group": "Endometrioid carcinoma",
+  "src": "assets/reference/endometrium/type_endometrioid_g1.jpg",
+  "caption": "Endometrioid: confluent glands, columnar cells, smooth luminal borders (40x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 2B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "histType",
+  "group": "Endometrioid carcinoma",
+  "src": "assets/reference/endometrium/type_endometrioid_villoglandular.jpg",
+  "caption": "Endometrioid with villoglandular pattern: slender papillae lined by low-grade columnar cells",
+  "credit": "Ali et al., Cureus 2024, Fig 1A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.7759/cureus.56861"
+ },
+ {
+  "field": "histType",
+  "group": "Serous carcinoma",
+  "src": "assets/reference/endometrium/type_serous_highpower.jpg",
+  "caption": "Serous: discohesive, budding tumour cells with marked pleomorphism around fibrovascular cores",
+  "credit": "Mikael Häggström, Wikimedia Commons, single image",
+  "license": "CC0 1.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_serous_carcinoma_of_uterus.jpg"
+ },
+ {
+  "field": "histType",
+  "group": "Serous carcinoma",
+  "src": "assets/reference/endometrium/type_serous_polyp.jpg",
+  "caption": "Serous carcinoma arising in an atrophic endometrial polyp",
+  "credit": "Mikael Häggström, Wikimedia Commons, single image",
+  "license": "CC0 1.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_Serous_carcinoma_arising_in_endometrial_polyp.jpg"
+ },
+ {
+  "field": "histType",
+  "group": "Serous carcinoma",
+  "src": "assets/reference/endometrium/type_serous_glandular.jpg",
+  "caption": "Glandular serous carcinoma: high N:C ratio and atypical nuclei without endometrioid features",
+  "credit": "Soslow et al., Int J Gynecol Pathol 2019, Fig 2",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1097/PGP.0000000000000518"
+ },
+ {
+  "field": "histType",
+  "group": "Serous carcinoma",
+  "src": "assets/reference/endometrium/type_serous_intraepithelial.jpg",
+  "caption": "Serous endometrial intraepithelial carcinoma replacing atrophic surface epithelium (100x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 5G (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "histType",
+  "group": "Clear cell carcinoma",
+  "src": "assets/reference/endometrium/type_clearcell_glandular_solid.jpg",
+  "caption": "Clear cell carcinoma with glandular and solid architecture (40x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 5H (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "histType",
+  "group": "Clear cell carcinoma",
+  "src": "assets/reference/endometrium/type_clearcell_he.jpg",
+  "caption": "Clear cell carcinoma: tubulocystic and papillary structures lined by clear and hobnail cells",
+  "credit": "Weiss et al., J Med Case Rep 2023, Fig 2 (H&E) (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1186/s13256-023-03994-y"
+ },
+ {
+  "field": "histType",
+  "group": "Dedifferentiated carcinoma",
+  "src": "assets/reference/endometrium/type_dediff_juxtaposed.jpg",
+  "caption": "Dedifferentiated: abrupt transition between low-grade endometrioid glands and undifferentiated sheets",
+  "credit": "Kani et al., Cureus 2024, Fig 1E (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.7759/cureus.56329"
+ },
+ {
+  "field": "histType",
+  "group": "Dedifferentiated carcinoma",
+  "src": "assets/reference/endometrium/type_dediff_saglam.jpg",
+  "caption": "Dedifferentiated: FIGO grade 1 endometrioid (left) beside small, uniform, dyscohesive undifferentiated cells (right) (200x)",
+  "credit": "Saglam, Life 2024, Fig 4c (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/life14030387"
+ },
+ {
+  "field": "histType",
+  "group": "Dedifferentiated carcinoma",
+  "src": "assets/reference/endometrium/type_dediff_rhabdoid.jpg",
+  "caption": "Dedifferentiated, rhabdoid variant: glandular component with adjacent rhabdoid undifferentiated cells (40x)",
+  "credit": "Giordano et al., Cancers 2023, Fig 2A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers15215155"
+ },
+ {
+  "field": "histType",
+  "group": "Undifferentiated carcinoma",
+  "src": "assets/reference/endometrium/type_undiff_sheets.jpg",
+  "caption": "Undifferentiated: diffuse sheets of monotonous discohesive cells without gland formation (10x)",
+  "credit": "Yang et al., Front Oncol 2025, Fig 3A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3389/fonc.2025.1510930"
+ },
+ {
+  "field": "histType",
+  "group": "Undifferentiated carcinoma",
+  "src": "assets/reference/endometrium/type_undiff_cytology.jpg",
+  "caption": "Undifferentiated: monomorphic round cells, SMARCA4-deficient tumour (40x)",
+  "credit": "Yang et al., Front Oncol 2025, Fig 3B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3389/fonc.2025.1510930"
+ },
+ {
+  "field": "histType",
+  "group": "Carcinosarcoma (malignant mixed Mullerian tumor)",
+  "src": "assets/reference/endometrium/type_cs_glands_pleomorphic.jpg",
+  "caption": "Carcinosarcoma: malignant glands with pleomorphic rhabdoid sarcomatous cells (100x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 5D (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "histType",
+  "group": "Carcinosarcoma (malignant mixed Mullerian tumor)",
+  "src": "assets/reference/endometrium/type_cs_homologous_spindle.jpg",
+  "caption": "Homologous sarcomatous component: malignant spindle cells (400x)",
+  "credit": "Efared et al., Medicine 2024, Fig 2",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1097/MD.0000000000039773"
+ },
+ {
+  "field": "histType",
+  "group": "Carcinosarcoma (malignant mixed Mullerian tumor)",
+  "src": "assets/reference/endometrium/type_cs_chondrosarcoma.jpg",
+  "caption": "Heterologous element: chondrosarcoma",
+  "credit": "Kostov et al., Medicina 2025, Fig 3A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/medicina61071156"
+ },
+ {
+  "field": "histType",
+  "group": "Carcinosarcoma (malignant mixed Mullerian tumor)",
+  "src": "assets/reference/endometrium/type_cs_rhabdomyosarcoma.jpg",
+  "caption": "Heterologous element: rhabdomyosarcoma",
+  "credit": "Kostov et al., Medicina 2025, Fig 3D (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/medicina61071156"
+ },
+ {
+  "field": "histType",
+  "group": "Carcinosarcoma (malignant mixed Mullerian tumor)",
+  "src": "assets/reference/endometrium/type_cs_rhabdomyoblasts.jpg",
+  "caption": "Heterologous rhabdomyoblasts with eccentric nuclei and eosinophilic cytoplasm (400x)",
+  "credit": "Efared et al., Medicine 2024, Fig 3",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1097/MD.0000000000039773"
+ },
+ {
+  "field": "histType",
+  "group": "Carcinosarcoma (malignant mixed Mullerian tumor)",
+  "src": "assets/reference/endometrium/type_cs_osteoid.jpg",
+  "caption": "Heterologous element: osteosarcoma with osteoid (40x)",
+  "credit": "Al Dallal et al., Front Oncol 2025, Fig 1B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3389/fonc.2025.1505504"
+ },
+ {
+  "field": "histType",
+  "group": "Mesonephric-like adenocarcinoma",
+  "src": "assets/reference/endometrium/type_mla_papillary.jpg",
+  "caption": "Mesonephric-like: papillae with delicate fibrovascular cores (200x)",
+  "credit": "Saglam, Life 2024, Fig 3c (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/life14030387"
+ },
+ {
+  "field": "histType",
+  "group": "Mesonephric-like adenocarcinoma",
+  "src": "assets/reference/endometrium/type_mla_nuclei.jpg",
+  "caption": "Mesonephric-like: overlapping nuclei with open chromatin and grooves, thyroid-like (400x)",
+  "credit": "Saglam, Life 2024, Fig 3d (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/life14030387"
+ },
+ {
+  "field": "histType",
+  "group": "Mesonephric-like adenocarcinoma",
+  "src": "assets/reference/endometrium/type_mla_glands.jpg",
+  "caption": "Mesonephric-like: irregular glands with microacinar foci (GATA3/TTF1 positive case)",
+  "credit": "Ogunmuyiwa et al., Case Rep Obstet Gynecol 2026, Fig 3A",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1155/crog/9935815"
+ },
+ {
+  "field": "histType",
+  "group": "Squamous cell carcinoma, NOS",
+  "src": "assets/reference/endometrium/type_scc_darre.jpg",
+  "caption": "Primary endometrial squamous cell carcinoma: keratinising nests (100x)",
+  "credit": "Darré et al., J Med Case Rep 2019, Fig 2",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1186/s13256-019-2098-4"
+ },
+ {
+  "field": "histType",
+  "group": "Squamous cell carcinoma, NOS",
+  "src": "assets/reference/endometrium/type_scc_cui.jpg",
+  "caption": "Primary endometrial squamous cell carcinoma infiltrating endometrium",
+  "credit": "Cui et al., Medicine 2025, Fig 2",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1097/MD.0000000000045920"
+ },
+ {
+  "field": "histType",
+  "group": "Gastric (gastrointestinal)-type carcinoma",
+  "src": "assets/reference/endometrium/type_gastric_lowpower.jpg",
+  "caption": "Gastric-type mucinous carcinoma: glands with abundant pale mucinous cytoplasm (4x)",
+  "credit": "Yang et al., Front Oncol 2025, Fig 2A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3389/fonc.2025.1510930"
+ },
+ {
+  "field": "histType",
+  "group": "Gastric (gastrointestinal)-type carcinoma",
+  "src": "assets/reference/endometrium/type_gastric_highpower.jpg",
+  "caption": "Gastric-type: columnar cells, basal nuclei, pale mucinous cytoplasm; CDX2/SATB2 positive (10x)",
+  "credit": "Yang et al., Front Oncol 2025, Fig 2B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3389/fonc.2025.1510930"
+ },
+ {
+  "field": "histType",
+  "group": "Mixed cell carcinoma (specify types and percentages)",
+  "src": "assets/reference/endometrium/type_mixed_clearcell_endometrioid.jpg",
+  "caption": "Mixed clear cell and endometrioid carcinoma: distinct cell shape, nuclei and growth pattern",
+  "credit": "Murali et al., Int J Gynecol Pathol 2019, Fig 7",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1097/PGP.0000000000000491"
+ },
+ {
+  "field": "histType",
+  "group": "Mixed cell carcinoma (specify types and percentages)",
+  "src": "assets/reference/endometrium/type_mixed_nec_endometrioid.jpg",
+  "caption": "Mixed neuroendocrine (left) and endometrioid (right) carcinoma with sharp demarcation (100x)",
+  "credit": "Saglam, Life 2024, Fig 4a (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/life14030387"
+ },
+ {
+  "field": "histType",
+  "group": "Small cell neuroendocrine carcinoma",
+  "src": "assets/reference/endometrium/type_scnec_cytology.jpg",
+  "caption": "Small cell NEC: scant cytoplasm, nuclear moulding, finely granular chromatin (400x)",
+  "credit": "Hou et al., Open Life Sci 2021, Fig 2e (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1515/biol-2021-0122"
+ },
+ {
+  "field": "histType",
+  "group": "Small cell neuroendocrine carcinoma",
+  "src": "assets/reference/endometrium/type_scnec_mixed.jpg",
+  "caption": "Small cell NEC (left) merging with endometrioid glands (right): moulding, hyperchromasia, apoptosis (400x)",
+  "credit": "Saglam, Life 2024, Fig 4b (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/life14030387"
+ },
+ {
+  "field": "histType",
+  "group": "Large cell neuroendocrine carcinoma",
+  "src": "assets/reference/endometrium/type_lcnec_abc.jpg",
+  "caption": "Large cell NEC: organoid nests of large cells with vesicular nuclei, prominent nucleoli, brisk mitoses and necrosis; Syn/CgA/CD56 positive (intramyometrial uterine case)",
+  "credit": "Yi et al., Front Oncol 2026, Fig 2A-C (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3389/fonc.2026.1783601"
+ },
+ {
+  "field": "differentiation",
+  "group": "Squamous differentiation",
+  "src": "assets/reference/endometrium/diff_squamous_keratin.jpg",
+  "caption": "Squamous differentiation with keratin granuloma beside endometrioid glands",
+  "credit": "Mikael Häggström, Wikimedia Commons, single image",
+  "license": "CC0 1.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Endometrial_endometrioid_carcinoma_with_squamous_differentiation_and_keratin_granulomas,_high_magnification.jpg"
+ },
+ {
+  "field": "differentiation",
+  "group": "Squamous differentiation",
+  "src": "assets/reference/endometrium/diff_squamous_extensive.jpg",
+  "caption": "Extensive squamous differentiation in a grade 1 tumour: excluded from the solid percentage",
+  "credit": "Soslow et al., Int J Gynecol Pathol 2019, Fig 1A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1097/PGP.0000000000000518"
+ },
+ {
+  "field": "differentiation",
+  "group": "Squamous differentiation",
+  "src": "assets/reference/endometrium/diff_squamous_morules.jpg",
+  "caption": "Grade 2 tumour with focal squamous metaplasia (40x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 3E (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "differentiation",
+  "group": "Mucinous differentiation",
+  "src": "assets/reference/endometrium/diff_mucinous_saglam.jpg",
+  "caption": "Mucinous differentiation: intracytoplasmic and extracellular mucin, low-grade nuclei (100x)",
+  "credit": "Saglam, Life 2024, Fig 2a (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/life14030387"
+ },
+ {
+  "field": "differentiation",
+  "group": "Mucinous differentiation",
+  "src": "assets/reference/endometrium/diff_mucinous_endocervical.jpg",
+  "caption": "Endocervical-type mucinous differentiation",
+  "credit": "Buell-Gutbrod et al., Diagn Pathol 2013, Fig 1A (cropped)",
+  "license": "CC BY 2.0",
+  "url": "https://doi.org/10.1186/1746-1596-8-128"
+ },
+ {
+  "field": "differentiation",
+  "group": "Mucinous differentiation",
+  "src": "assets/reference/endometrium/diff_mucinous_intestinal.jpg",
+  "caption": "Intestinal-type mucinous differentiation with goblet cells (left: conventional endometrioid)",
+  "credit": "Buell-Gutbrod et al., Diagn Pathol 2013, Fig 1B (cropped)",
+  "license": "CC BY 2.0",
+  "url": "https://doi.org/10.1186/1746-1596-8-128"
+ },
+ {
+  "field": "differentiation",
+  "group": "Mucinous differentiation",
+  "src": "assets/reference/endometrium/diff_mucinous_g1.jpg",
+  "caption": "Grade 1 endometrioid with mucinous differentiation (40x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 2C (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "differentiation",
+  "group": "Secretory change",
+  "src": "assets/reference/endometrium/diff_secretory_100x.jpg",
+  "caption": "Extensive secretory change: sub- and supranuclear vacuoles (100x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 2E (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "differentiation",
+  "group": "Secretory change",
+  "src": "assets/reference/endometrium/diff_secretory_40x.jpg",
+  "caption": "Secretory change in grade 1 endometrioid carcinoma (40x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 2F (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "differentiation",
+  "group": "Ciliated cells",
+  "src": "assets/reference/endometrium/diff_ciliated_glands.jpg",
+  "caption": "Well-differentiated endometrioid carcinoma with abundant cilia",
+  "credit": "Rashid & Akhtar, Cureus 2021, Fig 2",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.7759/cureus.16148"
+ },
+ {
+  "field": "differentiation",
+  "group": "Ciliated cells",
+  "src": "assets/reference/endometrium/diff_ciliated_highpower.jpg",
+  "caption": "Diffuse ciliation of tumour cells, high power",
+  "credit": "Rashid & Akhtar, Cureus 2021, Fig 4",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.7759/cureus.16148"
+ },
+ {
+  "field": "differentiation",
+  "group": "Sex cord-like elements",
+  "src": "assets/reference/endometrium/diff_sexcord_100x.jpg",
+  "caption": "Sex cord-like elements in endometrioid carcinoma (100x)",
+  "credit": "Jia et al., Diagn Pathol 2019, Fig 2e (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1186/s13000-019-0909-y"
+ },
+ {
+  "field": "differentiation",
+  "group": "Sex cord-like elements",
+  "src": "assets/reference/endometrium/diff_sexcord_200x.jpg",
+  "caption": "Sex cord-like cords and trabeculae (200x)",
+  "credit": "Jia et al., Diagn Pathol 2019, Fig 2f (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1186/s13000-019-0909-y"
+ },
+ {
+  "field": "differentiation",
+  "group": "Spindle cell (sarcomatoid) areas",
+  "src": "assets/reference/endometrium/diff_spindle.jpg",
+  "caption": "Spindle cell areas merging with glands; no significant atypia in either component (200x)",
+  "credit": "Saglam, Life 2024, Fig 1a (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/life14030387"
+ },
+ {
+  "field": "differentiation",
+  "group": "Spindle cell (sarcomatoid) areas",
+  "src": "assets/reference/endometrium/diff_spindle_vs_carcinosarcoma.jpg",
+  "caption": "Contrast: carcinosarcoma, with spatially distinct high-grade sarcomatous and carcinomatous elements (200x)",
+  "credit": "Saglam, Life 2024, Fig 1b (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/life14030387"
+ },
+ {
+  "field": "differentiation",
+  "group": "Corded and hyalinised (CHEC) pattern",
+  "src": "assets/reference/endometrium/diff_chec_cords.jpg",
+  "caption": "CHEC: cords and small clusters in hyalinised stroma, mild to moderate atypia (100x)",
+  "credit": "Liu et al., Front Oncol 2025, Fig 3A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3389/fonc.2025.1677355"
+ },
+ {
+  "field": "differentiation",
+  "group": "Corded and hyalinised (CHEC) pattern",
+  "src": "assets/reference/endometrium/diff_chec_biphasic.jpg",
+  "caption": "CHEC merging with low-grade endometrioid carcinoma (40x)",
+  "credit": "Liu et al., Front Oncol 2025, Fig 3B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3389/fonc.2025.1677355"
+ },
+ {
+  "field": "differentiation",
+  "group": "Corded and hyalinised (CHEC) pattern",
+  "src": "assets/reference/endometrium/diff_chec_nuclei.jpg",
+  "caption": "CHEC nuclei match the conventional component (lower right) (200x)",
+  "credit": "Saglam, Life 2024, Fig 1d (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/life14030387"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "Infiltrative glands with stromal response",
+  "src": "assets/reference/endometrium/inv_infiltrative_glands.jpg",
+  "caption": "Infiltrative glands: single or small groups of irregular glands scattered in myometrium",
+  "credit": "Ruz-Caracuel et al., Cancers 2019, Fig 1B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers11121845"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "Infiltrative glands with stromal response",
+  "src": "assets/reference/endometrium/inv_infiltrative_g1.jpg",
+  "caption": "Grade 1 tumour with infiltrative myoinvasion (40x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 6B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "Infiltrative glands with stromal response",
+  "src": "assets/reference/endometrium/inv_infiltrative_g3.jpg",
+  "caption": "Myoinvasive focus of grade 3 tumour with stromal response (100x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 6D (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "Broad pushing (expansile) front",
+  "src": "assets/reference/endometrium/inv_pushing_ruz.jpg",
+  "caption": "Broad front: linear limit between tumour and underlying myometrium",
+  "credit": "Ruz-Caracuel et al., Cancers 2019, Fig 1E (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers11121845"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "Broad pushing (expansile) front",
+  "src": "assets/reference/endometrium/inv_pushing_muraru.jpg",
+  "caption": "Grade 1 tumour with a broad pushing front (20x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 6A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "Broad pushing (expansile) front",
+  "src": "assets/reference/endometrium/inv_noninvasive_control.jpg",
+  "caption": "Comparison: tumour confined to endometrium, no myoinvasion",
+  "credit": "Ruz-Caracuel et al., Cancers 2019, Fig 1A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers11121845"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "MELF (microcystic, elongated and fragmented) pattern",
+  "src": "assets/reference/endometrium/inv_melf_40x.jpg",
+  "caption": "MELF: microcystic, elongated and fragmented glands at the invasive front (40x)",
+  "credit": "Saglam, Life 2024, Fig 6a (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/life14030387"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "MELF (microcystic, elongated and fragmented) pattern",
+  "src": "assets/reference/endometrium/inv_melf_200x.jpg",
+  "caption": "MELF: fibromyxoid stroma with inflammation around outpouching glands; flattened lining (200x)",
+  "credit": "Saglam, Life 2024, Fig 6b (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/life14030387"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "MELF (microcystic, elongated and fragmented) pattern",
+  "src": "assets/reference/endometrium/inv_melf_mateva.jpg",
+  "caption": "MELF pattern of myoinvasion (10x)",
+  "credit": "Mateva et al., Diagnostics 2021, Fig 3",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics11091707"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "MELF (microcystic, elongated and fragmented) pattern",
+  "src": "assets/reference/endometrium/inv_melf_stromal_response.jpg",
+  "caption": "MELF focus with stromal change and inflammatory response (100x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 6I (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "Adenomyosis-like (irregular islands without stromal response)",
+  "src": "assets/reference/endometrium/inv_adenomyosis_like_mateva.jpg",
+  "caption": "Adenomyosis-like invasion: groups of malignant glands in myometrium without surrounding stroma (10x)",
+  "credit": "Mateva et al., Diagnostics 2021, Fig 1",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics11091707"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "Adenomyosis-like (irregular islands without stromal response)",
+  "src": "assets/reference/endometrium/inv_adenomyosis_like_ruz.jpg",
+  "caption": "Adenomyosis-like: rounded groups of >5 glands simulating adenomyosis",
+  "credit": "Ruz-Caracuel et al., Cancers 2019, Fig 1D (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers11121845"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "Adenomyosis-like (irregular islands without stromal response)",
+  "src": "assets/reference/endometrium/inv_adenomyosis_involved.jpg",
+  "caption": "Mimic: adenomyosis involved by carcinoma, with residual endometrial stroma and a benign gland (top right) (10x)",
+  "credit": "Mateva et al., Diagnostics 2021, Fig 2",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics11091707"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "Diffusely infiltrative single cells and cords",
+  "src": "assets/reference/endometrium/inv_adenoma_malignum_ruz.jpg",
+  "caption": "Adenoma malignum-like: widely spaced, regular, low-grade glands deep in myometrium",
+  "credit": "Ruz-Caracuel et al., Cancers 2019, Fig 1F (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers11121845"
+ },
+ {
+  "field": "invasionPattern",
+  "group": "Diffusely infiltrative single cells and cords",
+  "src": "assets/reference/endometrium/inv_adenoma_malignum_muraru.jpg",
+  "caption": "Adenoma malignum-type invasion (20x)",
+  "credit": "Muraru et al., Diagnostics 2025, Scheme 6E (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/diagnostics15202645"
+ }
+]

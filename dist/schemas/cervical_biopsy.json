@@ -1,0 +1,413 @@
+{
+  "id": "cervical_biopsy",
+  "version": "2026.09",
+  "name": "Cervical biopsy",
+  "shortName": "Cervix · biopsy",
+  "label": "Cervix",
+  "organ": "CERVIX",
+  "system": "Gynae",
+  "kind": "biopsy",
+  "rank": 8,
+  "aliases": [
+    "punch",
+    "colposcopy",
+    "CIN",
+    "HSIL",
+    "LSIL",
+    "ECC",
+    "endocervical curettings",
+    "p16",
+    "HPV"
+  ],
+  "match": {
+    "site": [
+      "cervix",
+      "cervical",
+      "endocervical",
+      "ECC"
+    ],
+    "procedure": [
+      "biopsy",
+      "punch",
+      "curettings",
+      "colposcopy"
+    ],
+    "clinical": [
+      "CIN",
+      "HSIL",
+      "LSIL",
+      "smear",
+      "HPV",
+      "colposcopy"
+    ]
+  },
+  "specimenNoun": "biopsy",
+  "maxParts": 8,
+  "defaultParts": 1,
+  "generator": "cervical",
+  "style": {
+    "british": true
+  },
+  "caseFields": [
+    {
+      "id": "cytology",
+      "label": "Referral cytology / HPV",
+      "placeholder": "HSIL; HPV 16 positive",
+      "help": "Used in the discordance comment when a part is marked as not representing the cytology lesion."
+    }
+  ],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "summary",
+      "label": "Case summary line after the diagnosis (highest grade lesion and parts)",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "partDefaults": [
+    {
+      "specimenType": "Cervical biopsy"
+    },
+    {
+      "specimenType": "Cervical biopsy"
+    },
+    {
+      "specimenType": "Endocervical curettings"
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenType",
+      "label": "Specimen",
+      "type": "select",
+      "options": [
+        "Cervical biopsy",
+        "Endocervical curettings",
+        "Cervical polyp"
+      ],
+      "default": "Cervical biopsy"
+    },
+    {
+      "id": "specimenName",
+      "label": "Site",
+      "type": "text",
+      "placeholder": "12 o'clock / anterior lip / 3 and 9 o'clock",
+      "default": "",
+      "showIf": {
+        "field": "specimenType",
+        "is": [
+          "Cervical biopsy",
+          "Cervical polyp"
+        ]
+      }
+    },
+    {
+      "id": "pieces",
+      "label": "Number of pieces",
+      "type": "number",
+      "placeholder": "1",
+      "default": ""
+    },
+    {
+      "id": "tissue",
+      "label": "Tissue present",
+      "type": "select",
+      "options": [
+        "Transformation zone mucosa",
+        "Ectocervical mucosa",
+        "Endocervical mucosa",
+        "Ectocervical and endocervical mucosa",
+        "Detached squamous epithelium and endocervical fragments"
+      ],
+      "default": "Transformation zone mucosa",
+      "showIf": {
+        "field": "specimenType",
+        "is": [
+          "Cervical biopsy",
+          "Cervical polyp"
+        ]
+      }
+    },
+    {
+      "id": "eccContent",
+      "label": "Curettings contain",
+      "type": "select",
+      "options": [
+        "Endocervical mucosa and mucus",
+        "Endocervical mucosa with detached squamous fragments",
+        "Mucus and blood only (inadequate)"
+      ],
+      "default": "Endocervical mucosa and mucus",
+      "showIf": {
+        "field": "specimenType",
+        "is": "Endocervical curettings"
+      }
+    },
+    {
+      "id": "squamous",
+      "label": "Squamous epithelium",
+      "type": "select",
+      "options": [
+        "Negative",
+        "LSIL (CIN I)",
+        "HSIL (CIN II)",
+        "HSIL (CIN III)",
+        "Squamous cell carcinoma"
+      ],
+      "default": "Negative"
+    },
+    {
+      "id": "koilocytosis",
+      "label": "Koilocytosis",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent",
+      "showIf": {
+        "field": "squamous",
+        "is": [
+          "Negative",
+          "LSIL (CIN I)",
+          "HSIL (CIN II)",
+          "HSIL (CIN III)"
+        ]
+      }
+    },
+    {
+      "id": "glandInvolvement",
+      "label": "Endocervical gland involvement",
+      "type": "select",
+      "options": [
+        "Not involved",
+        "Involved"
+      ],
+      "default": "Not involved",
+      "showIf": {
+        "field": "squamous",
+        "is": [
+          "HSIL (CIN II)",
+          "HSIL (CIN III)"
+        ]
+      }
+    },
+    {
+      "id": "invasionSuspicious",
+      "label": "Early stromal invasion",
+      "type": "select",
+      "options": [
+        "Not suspected",
+        "Cannot be excluded"
+      ],
+      "default": "Not suspected",
+      "showIf": {
+        "field": "squamous",
+        "is": [
+          "HSIL (CIN II)",
+          "HSIL (CIN III)"
+        ]
+      }
+    },
+    {
+      "id": "sccType",
+      "label": "Squamous carcinoma type",
+      "type": "select",
+      "options": [
+        "Non-keratinising",
+        "Keratinising"
+      ],
+      "default": "Non-keratinising",
+      "showIf": {
+        "field": "squamous",
+        "is": "Squamous cell carcinoma"
+      }
+    },
+    {
+      "id": "invasionDepth",
+      "label": "Depth of invasion (at least, mm)",
+      "type": "number",
+      "placeholder": "3",
+      "default": "",
+      "showIf": {
+        "field": "squamous",
+        "is": "Squamous cell carcinoma"
+      }
+    },
+    {
+      "id": "p16",
+      "label": "p16",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Block positive",
+        "Negative",
+        "Patchy / focal"
+      ],
+      "default": "Not performed"
+    },
+    {
+      "id": "ki67",
+      "label": "Ki-67",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Confined to the basal and parabasal layers",
+        "Extends into the upper two-thirds"
+      ],
+      "default": "Not performed"
+    },
+    {
+      "id": "glandular",
+      "label": "Glandular epithelium",
+      "type": "select",
+      "options": [
+        "Negative",
+        "Adenocarcinoma in situ, HPV-associated",
+        "Adenocarcinoma in situ, HPV-independent (gastric type)",
+        "Adenocarcinoma, HPV-associated",
+        "Adenocarcinoma, HPV-independent (gastric type)"
+      ],
+      "default": "Negative"
+    },
+    {
+      "id": "lvi",
+      "label": "Lymphovascular invasion",
+      "type": "select",
+      "options": [
+        "Not identified",
+        "Present"
+      ],
+      "default": "Not identified",
+      "showIf": {
+        "field": "squamous",
+        "is": "Squamous cell carcinoma"
+      }
+    },
+    {
+      "id": "benign",
+      "label": "Benign / other finding",
+      "type": "select",
+      "options": [
+        "None",
+        "Chronic cervicitis",
+        "Follicular cervicitis",
+        "Immature squamous metaplasia",
+        "Atrophy",
+        "Endocervical polyp",
+        "Nabothian cysts",
+        "Condyloma acuminatum",
+        "Tuboendometrioid metaplasia",
+        "Microglandular hyperplasia",
+        "Endometriosis",
+        "Decidual change",
+        "Radiation change",
+        "Reactive / reparative change"
+      ],
+      "default": "None"
+    },
+    {
+      "id": "correlation",
+      "label": "Cytology correlation",
+      "type": "select",
+      "options": [
+        "Not stated",
+        "Lesion reported on cytology is not represented"
+      ],
+      "default": "Not stated",
+      "help": "Adds the discordance comment; uses the referral cytology field above."
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "cytology": "HSIL",
+    "options": {
+      "includeHeader": false,
+      "summary": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenType": "Cervical biopsy",
+          "specimenName": "12 o'clock",
+          "pieces": "1",
+          "tissue": "Transformation zone mucosa",
+          "eccContent": "Endocervical mucosa and mucus",
+          "squamous": "HSIL (CIN III)",
+          "koilocytosis": "Absent",
+          "glandInvolvement": "Involved",
+          "invasionSuspicious": "Not suspected",
+          "sccType": "Non-keratinising",
+          "invasionDepth": "",
+          "p16": "Block positive",
+          "ki67": "Extends into the upper two-thirds",
+          "glandular": "Negative",
+          "lvi": "Not identified",
+          "benign": "None",
+          "correlation": "Not stated",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "B",
+        "values": {
+          "specimenType": "Cervical biopsy",
+          "specimenName": "6 o'clock",
+          "pieces": "1",
+          "tissue": "Ectocervical mucosa",
+          "eccContent": "Endocervical mucosa and mucus",
+          "squamous": "LSIL (CIN I)",
+          "koilocytosis": "Present",
+          "glandInvolvement": "Not involved",
+          "invasionSuspicious": "Not suspected",
+          "sccType": "Non-keratinising",
+          "invasionDepth": "",
+          "p16": "Not performed",
+          "ki67": "Not performed",
+          "glandular": "Negative",
+          "lvi": "Not identified",
+          "benign": "None",
+          "correlation": "Not stated",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "C",
+        "values": {
+          "specimenType": "Endocervical curettings",
+          "specimenName": "",
+          "pieces": "",
+          "tissue": "Transformation zone mucosa",
+          "eccContent": "Endocervical mucosa and mucus",
+          "squamous": "Negative",
+          "koilocytosis": "Absent",
+          "glandInvolvement": "Not involved",
+          "invasionSuspicious": "Not suspected",
+          "sccType": "Non-keratinising",
+          "invasionDepth": "",
+          "p16": "Not performed",
+          "ki67": "Not performed",
+          "glandular": "Negative",
+          "lvi": "Not identified",
+          "benign": "None",
+          "correlation": "Not stated",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

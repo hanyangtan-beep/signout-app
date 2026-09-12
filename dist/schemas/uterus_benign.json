@@ -1,0 +1,613 @@
+{
+  "id": "uterus_benign",
+  "version": "2026.09",
+  "name": "Uterus (benign)",
+  "shortName": "Uterus · hysterectomy",
+  "label": "Uterus",
+  "organ": "UTERUS",
+  "system": "Gynae",
+  "kind": "benign resection",
+  "rank": 27,
+  "aliases": [
+    "hysterectomy",
+    "fibroid",
+    "leiomyoma",
+    "adenomyosis",
+    "myomectomy",
+    "TAH",
+    "BSO",
+    "salpingo-oophorectomy",
+    "endometrial polyp",
+    "cervix",
+    "fallopian tube",
+    "ovary"
+  ],
+  "match": {
+    "site": [
+      "uterus",
+      "uterine",
+      "hysterectomy",
+      "TAH",
+      "myomectomy",
+      "fibroid",
+      "leiomyoma",
+      "myoma"
+    ],
+    "procedure": [
+      "hysterectomy",
+      "TAH",
+      "TAHBSO",
+      "myomectomy",
+      "resection",
+      "subtotal"
+    ],
+    "clinical": [
+      "fibroid",
+      "fibroids",
+      "leiomyoma",
+      "leiomyomas",
+      "myoma",
+      "adenomyosis",
+      "menorrhagia",
+      "prolapse",
+      "uterine prolapse",
+      "AUB",
+      "HMB",
+      "endometrial polyp",
+      "bulky uterus"
+    ]
+  },
+  "specimenNoun": "hysterectomy",
+  "maxParts": 4,
+  "defaultParts": 1,
+  "generator": "uterus",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "partDefaults": [
+    {
+      "specimenName": "Uterus and cervix, total hysterectomy"
+    },
+    {
+      "specimenName": "Left tube and ovary",
+      "leiomyoma": "Absent"
+    },
+    {
+      "specimenName": "Right tube and ovary",
+      "leiomyoma": "Absent"
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen / procedure",
+      "type": "select",
+      "options": [
+        "Uterus and cervix, total hysterectomy",
+        "Uterus, cervix and bilateral adnexa",
+        "Uterus, subtotal",
+        "Myomectomy",
+        "Left tube and ovary",
+        "Right tube and ovary",
+        "Fallopian tube(s), sterilisation"
+      ],
+      "default": "Uterus and cervix, total hysterectomy"
+    },
+    {
+      "id": "weight",
+      "label": "Weight (g)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "180",
+      "default": "",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus and cervix, total hysterectomy",
+          "Uterus, cervix and bilateral adnexa",
+          "Uterus, subtotal",
+          "Myomectomy"
+        ]
+      }
+    },
+    {
+      "id": "dimensions",
+      "label": "Dimensions (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "9 x 6 x 4",
+      "default": "",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus and cervix, total hysterectomy",
+          "Uterus, cervix and bilateral adnexa",
+          "Uterus, subtotal",
+          "Myomectomy"
+        ]
+      }
+    },
+    {
+      "id": "serosa",
+      "label": "Serosa",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Smooth",
+        "Distorted by nodules",
+        "Fibrous adhesions"
+      ],
+      "default": "Smooth",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus and cervix, total hysterectomy",
+          "Uterus, cervix and bilateral adnexa",
+          "Uterus, subtotal"
+        ]
+      }
+    },
+    {
+      "id": "leiomyomaCount",
+      "label": "Leiomyomas: number (blank = not counted)",
+      "type": "number",
+      "group": "Macroscopy",
+      "min": 0,
+      "step": 1,
+      "default": "",
+      "showIf": {
+        "field": "leiomyoma",
+        "is": "Present"
+      }
+    },
+    {
+      "id": "leiomyomaLocation",
+      "label": "Leiomyomas: location",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Intramural",
+        "Subserosal",
+        "Submucosal",
+        "Multiple sites"
+      ],
+      "default": "Intramural",
+      "showIf": {
+        "field": "leiomyoma",
+        "is": "Present"
+      }
+    },
+    {
+      "id": "leiomyomaSize",
+      "label": "Leiomyomas: largest (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "4",
+      "default": "",
+      "showIf": {
+        "field": "leiomyoma",
+        "is": "Present"
+      }
+    },
+    {
+      "id": "cutSurface",
+      "label": "Leiomyomas: cut surface",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Whorled",
+        "Degenerate",
+        "Haemorrhagic",
+        "Calcified"
+      ],
+      "default": "Whorled",
+      "showIf": {
+        "field": "leiomyoma",
+        "is": "Present"
+      }
+    },
+    {
+      "id": "endometriumThickness",
+      "label": "Endometrium thickness (mm or cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "0.3 cm / 3 mm",
+      "default": "",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus and cervix, total hysterectomy",
+          "Uterus, cervix and bilateral adnexa",
+          "Uterus, subtotal"
+        ]
+      }
+    },
+    {
+      "id": "polypSize",
+      "label": "Endometrial polyp size (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "1.5",
+      "default": "",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus and cervix, total hysterectomy",
+          "Uterus, cervix and bilateral adnexa",
+          "Uterus, subtotal"
+        ]
+      }
+    },
+    {
+      "id": "myometrium",
+      "label": "Myometrium",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Unremarkable",
+        "Trabeculated",
+        "Trabeculated with pinpoint haemorrhages (adenomyosis)"
+      ],
+      "default": "Unremarkable",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus and cervix, total hysterectomy",
+          "Uterus, cervix and bilateral adnexa",
+          "Uterus, subtotal"
+        ]
+      }
+    },
+    {
+      "id": "cervixMacro",
+      "label": "Cervix (macro)",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Unremarkable",
+        "Nabothian cysts"
+      ],
+      "default": "Unremarkable",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus and cervix, total hysterectomy",
+          "Uterus, cervix and bilateral adnexa"
+        ]
+      }
+    },
+    {
+      "id": "tubeSize",
+      "label": "Fallopian tube (length x diameter, cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "5 x 0.6",
+      "default": "",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus, cervix and bilateral adnexa",
+          "Left tube and ovary",
+          "Right tube and ovary",
+          "Fallopian tube(s), sterilisation"
+        ]
+      }
+    },
+    {
+      "id": "ovarySize",
+      "label": "Ovary (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "3 x 2 x 1.5",
+      "default": "",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus, cervix and bilateral adnexa",
+          "Left tube and ovary",
+          "Right tube and ovary"
+        ]
+      }
+    },
+    {
+      "id": "cystSize",
+      "label": "Adnexal cyst size (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "1",
+      "default": "",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus, cervix and bilateral adnexa",
+          "Left tube and ovary",
+          "Right tube and ovary",
+          "Fallopian tube(s), sterilisation"
+        ]
+      }
+    },
+    {
+      "id": "blocks",
+      "label": "Blocks (blank = as in the block key)",
+      "type": "number",
+      "group": "Macroscopy",
+      "min": 1,
+      "step": 1,
+      "placeholder": "8",
+      "default": ""
+    },
+    {
+      "id": "blockKeyText",
+      "label": "Block key (optional; overrides the automatic key)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "(1-2) Anterior cervix and posterior cervix. (3-4) Anterior and posterior endomyometrium. (5-7) Leiomyomas. (8) Lower uterine segment.",
+      "default": ""
+    },
+    {
+      "id": "endometrium",
+      "label": "Endometrium",
+      "type": "select",
+      "options": [
+        "Proliferative",
+        "Secretory",
+        "Weakly proliferative",
+        "Inactive-atrophic",
+        "Disordered proliferative",
+        "Endometrial polyp",
+        "Hyperplasia without atypia – see comment",
+        "Atypical hyperplasia – see comment"
+      ],
+      "default": "Proliferative",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus and cervix, total hysterectomy",
+          "Uterus, cervix and bilateral adnexa",
+          "Uterus, subtotal"
+        ]
+      }
+    },
+    {
+      "id": "endometritis",
+      "label": "Chronic endometritis",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus and cervix, total hysterectomy",
+          "Uterus, cervix and bilateral adnexa",
+          "Uterus, subtotal"
+        ]
+      }
+    },
+    {
+      "id": "leiomyoma",
+      "label": "Leiomyoma",
+      "type": "select",
+      "options": [
+        "Present",
+        "Absent"
+      ],
+      "default": "Present",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus and cervix, total hysterectomy",
+          "Uterus, cervix and bilateral adnexa",
+          "Uterus, subtotal",
+          "Myomectomy"
+        ]
+      }
+    },
+    {
+      "id": "degeneration",
+      "label": "Leiomyoma degeneration",
+      "type": "select",
+      "options": [
+        "None",
+        "Hyaline",
+        "Cystic",
+        "Red",
+        "Calcific"
+      ],
+      "default": "None",
+      "showIf": {
+        "field": "leiomyoma",
+        "is": "Present"
+      }
+    },
+    {
+      "id": "adenomyosis",
+      "label": "Adenomyosis",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus and cervix, total hysterectomy",
+          "Uterus, cervix and bilateral adnexa",
+          "Uterus, subtotal"
+        ]
+      }
+    },
+    {
+      "id": "cervix",
+      "label": "Cervix",
+      "type": "select",
+      "options": [
+        "No SIL",
+        "Chronic cervicitis",
+        "Nabothian cysts",
+        "LSIL",
+        "HSIL – see comment"
+      ],
+      "default": "No SIL",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus and cervix, total hysterectomy",
+          "Uterus, cervix and bilateral adnexa"
+        ]
+      }
+    },
+    {
+      "id": "adnexaFindings",
+      "label": "Tube and ovary findings",
+      "type": "multiselect",
+      "options": [
+        "Unremarkable",
+        "Paratubal cyst",
+        "Cystic follicle",
+        "Corpus luteum",
+        "Corpus albicans",
+        "Endometriosis",
+        "Serous cystadenoma",
+        "Hydrosalpinx"
+      ],
+      "exclusive": [
+        "Unremarkable"
+      ],
+      "default": [
+        "Unremarkable"
+      ],
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus, cervix and bilateral adnexa",
+          "Left tube and ovary",
+          "Right tube and ovary",
+          "Fallopian tube(s), sterilisation"
+        ]
+      }
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "snippets": [
+    {
+      "id": "uterus_endometrial_template",
+      "label": "Endometrial hyperplasia — use the QMH endometrial cancer template",
+      "auto": {
+        "field": "endometrium",
+        "is": [
+          "Hyperplasia without atypia – see comment",
+          "Atypical hyperplasia – see comment"
+        ]
+      },
+      "text": "Endometrial hyperplasia is identified ({parts}). This benign template does not classify or stage endometrial neoplasia; the QMH endometrial cancer template should be used for the final synoptic report if carcinoma is identified on further sampling."
+    },
+    {
+      "id": "uterus_cervix_template",
+      "label": "HSIL — use the QMH cervix cancer template",
+      "auto": {
+        "field": "cervix",
+        "is": "HSIL – see comment"
+      },
+      "text": "A high grade squamous intraepithelial lesion is identified in the cervix ({parts}). This benign template does not report margins or invasion; the cervix should be entirely embedded and the QMH cervix cancer template used if invasive carcinoma is identified."
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "Uterus and cervix, total hysterectomy",
+          "weight": "180",
+          "dimensions": "9 x 6 x 4",
+          "serosa": "Smooth",
+          "leiomyomaCount": "3",
+          "leiomyomaLocation": "Multiple sites",
+          "leiomyomaSize": "4",
+          "cutSurface": "Whorled",
+          "endometriumThickness": "0.3 cm",
+          "polypSize": "1.5",
+          "myometrium": "Trabeculated with pinpoint haemorrhages (adenomyosis)",
+          "cervixMacro": "Unremarkable",
+          "tubeSize": "",
+          "ovarySize": "",
+          "cystSize": "",
+          "blocks": "",
+          "blockKeyText": "",
+          "endometrium": "Endometrial polyp",
+          "endometritis": "Absent",
+          "leiomyoma": "Present",
+          "degeneration": "None",
+          "adenomyosis": "Present",
+          "cervix": "No SIL",
+          "adnexaFindings": [
+            "Unremarkable"
+          ],
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "B",
+        "values": {
+          "specimenName": "Left tube and ovary",
+          "weight": "",
+          "dimensions": "",
+          "serosa": "Smooth",
+          "leiomyomaCount": "",
+          "leiomyomaLocation": "Intramural",
+          "leiomyomaSize": "",
+          "cutSurface": "Whorled",
+          "endometriumThickness": "",
+          "polypSize": "",
+          "myometrium": "Unremarkable",
+          "cervixMacro": "Unremarkable",
+          "tubeSize": "5 x 0.6",
+          "ovarySize": "3 x 2 x 1.5",
+          "cystSize": "1",
+          "blocks": "",
+          "blockKeyText": "",
+          "endometrium": "Proliferative",
+          "endometritis": "Absent",
+          "leiomyoma": "Absent",
+          "degeneration": "None",
+          "adenomyosis": "Absent",
+          "cervix": "No SIL",
+          "adnexaFindings": [
+            "Paratubal cyst",
+            "Cystic follicle"
+          ],
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}
