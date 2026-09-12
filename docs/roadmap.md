@@ -52,7 +52,34 @@ Docs
 
 ## Now
 
-(empty — pull the next card in)
+### Linked synoptic part (Stage / Upgrade this part)      Size: M
+Why:        some frozen specimens are the staging specimen — a lung wedge that turns out to be carcinoma is staged on the wedge and a later completion lobectomy adds nodes and residual-tumour findings; SLN frozen results feed pN in the breast resection; duct-margin frozens feed margin status in the pancreas / bile duct synoptics. Today the frozen template ends at the paraffin correlation and has no staging block, and a later specimen cannot reference an earlier one.
+Change:     (1) **Stage this part** on a frozen part whose paraffin result is malignant: adds a linked synoptic part with the same letter (e.g. B → B, "staging") using the paired cancer template, pre-filled from the frozen fields (laterality / lobe / site, tumour size, distance to margin, pleural involvement, node counts); the final report prints SPECIMENS, INTRAOPERATIVE CONSULTATION, MACRO, BLOCK KEY, MICROSCOPIC EXAMINATION (paraffin confirms …), SYNOPTIC REPORT, DIAGNOSIS, COMMENT, with one diagnosis line per letter carrying both the frozen suffix and the stage: `(B) LUNG, left lower lobe, wedge excision x frozen section - ADENOCARCINOMA, acinar predominant, 0.8 cm; parenchymal margin clear; pT1a pNX (AJCC 8th edition)`. (2) **Related prior specimen** case fields (accession, date, procedure, pT / pN / tumour type / size; optional one-Sheet-read lookup by accession from `Sign-out cases`) so a completion or definitive resection reports residual tumour and nodes and prints a combined stage line — `Pathological stage: pT1a (prior wedge resection S26-01234) pN0 (0/8, this lobectomy)` — with an auto comment: "Staging is based on the prior wedge resection (S26-01234) together with the lymph nodes from this completion lobectomy" (wording proposed; confirm). (3) Staging module accepts partial input (`pT` from prior, `pN` from current) and marks the origin of each category. (4) The same mechanism serves benign resections: **Upgrade this part** on a benign template whose `neoplasia` field is set to a carcinoma / neoplasm option adds the paired cancer synoptic under the same letter, carrying macro, block key and shared fields (size, margins, node) — first consumers appendix and gallbladder below; this absorbs the Later "Upgrade part" line.
+Untouched:  existing frozen scenarios and fixtures; colon and GIST synoptics; save / open flow (the lookup is read-only).
+Accept:     unit tests for pre-fill mapping, combined-stage assembly and origin tags; a wedge → lobectomy fixture pair; browser: Stage this part appears only when the paraffin result is malignant and a paired template exists.
+Verify:     tests + browser (light)
+Ship:       with the Lung pair (first consumer, same batch); the Upgrade path (4) stays in Next and ships with the Appendix pair
+Pulled:     2026-09-12 with the Lung pair — items (1)–(3) only; (4) Upgrade this part stays behind.
+Depends on: Frozen section scenarios (unstaged); pairs consume it
+Spec:       `docs/specs/frozen-section-scenarios.md` (section "Staged frozen specimens")
+
+
+### Lung pair — wedge frozen + lung carcinoma synoptic    Size: L → split; build as one batch
+Why:        the user's worked example — staged wedge resections followed by completion lobectomy. Needs the frozen lung scenario and the QMH lung page together.
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/Thorax-Lung.html (JS-rendered; save as `docs/reference/Thorax-Lung.html`, run `tools/import-qmh.js`).
+Split into:
+  (a) Frozen lung wedge scenario (M): staple line trimmed, parenchymal margin inked, nodule size and distance, pleura; adenocarcinoma and variants, SCC, NSCC-NOS deferred, small cell, carcinoid, metastatic (primary named), necrotising / non-necrotising granulomatous inflammation, organising pneumonia, benign; margin Checks; subtype-on-paraffin snippets. House wording §10 of the examples file.
+  (b) `src/staging/lung.js` (M): AJCC 8th pT by invasive size (1 / 2 / 3 / 4 / 5 / 7 cm cut-offs, T1mi, AIS Tis), pleural invasion (PL1–2 → T2, PL3 → T3), separate nodules same lobe (T3) / different ipsilateral lobe (T4), main bronchus / atelectasis rules, pN by station, pM1a / b / c; stage groups; boundary tests. Lepidic-only size excluded from invasive size with a Check.
+  (c) Lung carcinoma resection schema + generator (L): CAP lung elements in the QMH printed order — procedure (wedge / segmentectomy / lobectomy / bilobectomy / pneumonectomy / completion lobectomy), site, size (total and invasive), histologic type WHO 5th with adenocarcinoma predominant pattern and percentages, grade (IASLC three-tier for non-mucinous adenocarcinoma), visceral pleura (PL0–3), STAS, LVI, margins (bronchial / vascular / parenchymal / pleural with distance), treatment effect, nodes by station with N1 / N2 split, pTNM + stage, ancillary (PD-L1, molecular requested); Checks; Related prior specimen support for completion lobectomy (residual tumour none / present, combined stage line).
+  (d) Fixtures + docs (S): element order asserted against the saved page; wedge-staged fixture, completion-lobectomy fixture with prior accession, lobectomy-primary fixture; README; card → Done.
+Untouched:  colon / GIST synoptics; frozen scenarios other than lung.
+Accept:     wedge frozen → Stage this part → synoptic prints pT with stage and the combined diagnosis line; completion lobectomy prints residual tumour, node counts and the combined stage line referencing the prior accession; boundary tests all pass.
+Verify:     tests + browser (light)
+Ship:       one batch with the engine card, one publish
+Depends on: Linked synoptic part (Stage this part) — pulled into Now together, 2026-09-12; ships as one batch.
+Pulled:     2026-09-12 (user: "Pull the Lung pair card into Now"). Open points listed in the spec; build starts after confirmation.
+Spec:       `docs/specs/lung-pair.md`
+
 
 ## Next
 
@@ -149,30 +176,6 @@ Spec:       `docs/specs/frozen-section-scenarios.md`
 Why:        highest-volume cancer resection after colon.
 Split into: (a) save QMH page + importer draft + `src/staging/gastric.js` rules with boundary tests (M); (b) schema + generator + synoptic block + Checks (M); (c) fixtures against the QMH page element order + docs (S).
 Spec:       `docs/specs/synoptic-next-templates.md`
-
-### Linked synoptic part (Stage / Upgrade this part)      Size: M
-Why:        some frozen specimens are the staging specimen — a lung wedge that turns out to be carcinoma is staged on the wedge and a later completion lobectomy adds nodes and residual-tumour findings; SLN frozen results feed pN in the breast resection; duct-margin frozens feed margin status in the pancreas / bile duct synoptics. Today the frozen template ends at the paraffin correlation and has no staging block, and a later specimen cannot reference an earlier one.
-Change:     (1) **Stage this part** on a frozen part whose paraffin result is malignant: adds a linked synoptic part with the same letter (e.g. B → B, "staging") using the paired cancer template, pre-filled from the frozen fields (laterality / lobe / site, tumour size, distance to margin, pleural involvement, node counts); the final report prints SPECIMENS, INTRAOPERATIVE CONSULTATION, MACRO, BLOCK KEY, MICROSCOPIC EXAMINATION (paraffin confirms …), SYNOPTIC REPORT, DIAGNOSIS, COMMENT, with one diagnosis line per letter carrying both the frozen suffix and the stage: `(B) LUNG, left lower lobe, wedge excision x frozen section - ADENOCARCINOMA, acinar predominant, 0.8 cm; parenchymal margin clear; pT1a pNX (AJCC 8th edition)`. (2) **Related prior specimen** case fields (accession, date, procedure, pT / pN / tumour type / size; optional one-Sheet-read lookup by accession from `Sign-out cases`) so a completion or definitive resection reports residual tumour and nodes and prints a combined stage line — `Pathological stage: pT1a (prior wedge resection S26-01234) pN0 (0/8, this lobectomy)` — with an auto comment: "Staging is based on the prior wedge resection (S26-01234) together with the lymph nodes from this completion lobectomy" (wording proposed; confirm). (3) Staging module accepts partial input (`pT` from prior, `pN` from current) and marks the origin of each category. (4) The same mechanism serves benign resections: **Upgrade this part** on a benign template whose `neoplasia` field is set to a carcinoma / neoplasm option adds the paired cancer synoptic under the same letter, carrying macro, block key and shared fields (size, margins, node) — first consumers appendix and gallbladder below; this absorbs the Later "Upgrade part" line.
-Untouched:  existing frozen scenarios and fixtures; colon and GIST synoptics; save / open flow (the lookup is read-only).
-Accept:     unit tests for pre-fill mapping, combined-stage assembly and origin tags; a wedge → lobectomy fixture pair; browser: Stage this part appears only when the paraffin result is malignant and a paired template exists.
-Verify:     tests + browser (light)
-Ship:       with the Lung pair below (the first consumer); the Upgrade path ships with the Appendix pair
-Depends on: Frozen section scenarios (unstaged); pairs consume it
-Spec:       `docs/specs/frozen-section-scenarios.md` (section "Staged frozen specimens")
-
-### Lung pair — wedge frozen + lung carcinoma synoptic    Size: L → split; build as one batch
-Why:        the user's worked example — staged wedge resections followed by completion lobectomy. Needs the frozen lung scenario and the QMH lung page together.
-Source:     https://awiloqmh.github.io/CancerReportingTemplate/Thorax-Lung.html (JS-rendered; save as `docs/reference/Thorax-Lung.html`, run `tools/import-qmh.js`).
-Split into:
-  (a) Frozen lung wedge scenario (M): staple line trimmed, parenchymal margin inked, nodule size and distance, pleura; adenocarcinoma and variants, SCC, NSCC-NOS deferred, small cell, carcinoid, metastatic (primary named), necrotising / non-necrotising granulomatous inflammation, organising pneumonia, benign; margin Checks; subtype-on-paraffin snippets. House wording §10 of the examples file.
-  (b) `src/staging/lung.js` (M): AJCC 8th pT by invasive size (1 / 2 / 3 / 4 / 5 / 7 cm cut-offs, T1mi, AIS Tis), pleural invasion (PL1–2 → T2, PL3 → T3), separate nodules same lobe (T3) / different ipsilateral lobe (T4), main bronchus / atelectasis rules, pN by station, pM1a / b / c; stage groups; boundary tests. Lepidic-only size excluded from invasive size with a Check.
-  (c) Lung carcinoma resection schema + generator (L): CAP lung elements in the QMH printed order — procedure (wedge / segmentectomy / lobectomy / bilobectomy / pneumonectomy / completion lobectomy), site, size (total and invasive), histologic type WHO 5th with adenocarcinoma predominant pattern and percentages, grade (IASLC three-tier for non-mucinous adenocarcinoma), visceral pleura (PL0–3), STAS, LVI, margins (bronchial / vascular / parenchymal / pleural with distance), treatment effect, nodes by station with N1 / N2 split, pTNM + stage, ancillary (PD-L1, molecular requested); Checks; Related prior specimen support for completion lobectomy (residual tumour none / present, combined stage line).
-  (d) Fixtures + docs (S): element order asserted against the saved page; wedge-staged fixture, completion-lobectomy fixture with prior accession, lobectomy-primary fixture; README; card → Done.
-Untouched:  colon / GIST synoptics; frozen scenarios other than lung.
-Accept:     wedge frozen → Stage this part → synoptic prints pT with stage and the combined diagnosis line; completion lobectomy prints residual tumour, node counts and the combined stage line referencing the prior accession; boundary tests all pass.
-Verify:     tests + browser (light)
-Ship:       one batch with the engine card, one publish
-Depends on: Frozen → staged final
 
 ### Breast pair — SLN frozen + breast carcinoma synoptic   Size: L → split; build as one batch
 Why:        SLN frozen results (card (a) above) feed pN; the breast biomarker block already exists in the breast core template and is reused.
