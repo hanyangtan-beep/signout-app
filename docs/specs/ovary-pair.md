@@ -107,3 +107,21 @@ L → build as one batch with the engine card if it has not shipped, otherwise a
 3. Omentum / node / peritoneal-biopsy parts print their own diagnosis lines. **Yes.**
 
 Engine dependency: the "Linked synoptic part (Stage this part)" card has not shipped. Decision: build (a)–(d) now; the frozen → synoptic map is the pure exported function `prefillFromFrozen(frozenValues)` in `generators/ovary_ft_peritoneum.js` (tested by fixture 07); the button that adds the linked part stays with the engine card.
+
+## Built 2026-09-12
+
+Shipped as one batch (commits: frozen enrichment; `src/staging/ovary.js`; schema + generator + fixtures). Suite 632 → 659 tests; existing fixtures byte-identical.
+
+**CAP version check.** The QMH page is built on CAP Ovary, Fallopian Tube, or Peritoneum 1.5.0.0 (posted June 2024). CAP's current-protocols listing on 2026-09-12 still shows v1.5.0.0 as the current version for this protocol (https://www.cap.org/protocols-and-guidelines/cancer-protocols/current-cancer-protocols/ ; PDF https://www.cap.org/wp-content/uploads/protocols/Ovary_FT_Perit_1.5.0.0.REL_CAPCP.pdf). No difference to log; QMH order kept.
+
+**Frozen-section practice references** (category set, "at least borderline", mucinous caveat, deferral): Ratnavelu N et al., Intraoperative frozen section analysis for the diagnosis of early stage ovarian cancer in suspicious pelvic masses, Cochrane Database Syst Rev 2016, https://doi.org/10.1002/14651858.CD010360.pub2 (PMC: https://pmc.ncbi.nlm.nih.gov/articles/PMC6457848/); Aidos J et al., Frozen section in the management of ovarian and uterine tumors: the past 5 years in a tertiary centre, Rev Bras Ginecol Obstet 2018, https://doi.org/10.1055/s-0038-1668526 (PMC: https://pmc.ncbi.nlm.nih.gov/articles/PMC10316935/). Wording accepted by the user without a house example (Open point 1).
+
+**House additions beyond the QMH page** (all agreed 2026-09-12 or following existing conventions):
+- `otherParts` textarea — one line per other letter, `B) Omentum, omentectomy - metastatic, largest deposit 35 mm`; finding vocabulary: involved / metastatic[, largest deposit N mm] / nodes N/M[, largest deposit N mm] / negative / serosa / STIC / endometriosis / free text (printed upper-case). Parts listed in the SPECIMEN block through the generator `specimens` hook; per-letter diagnosis lines; a one-part case keeps "(A)" when other letters are typed (engine `hasExtraParts` hook).
+- `primarySite` (WHO 5th derivation with a mismatch warning), `neoadjuvant` (y prefix), `tubalMucosa` (SEE-FIM wording in the histology paragraph), `cutSurface` and macro fields, rupture-timing integrity options (preoperative or unknown → IC2; intraoperative / surgical spill → IC1), ovarian cystectomy procedures, British "tumour" in the histotype list, p53 as a synoptic row after LVI (endometrium convention), per-organ "Specimen integrity (right ovary)" rows (a parent row with an empty value drops its sub-rows), "; see synoptic report" appended to the first diagnosis clause.
+- Macro and block key carry the part letter ("(B) The specimen consists of…", "(B1-6)") when the case has other letters; the engine drops "(A) " again in one-part cases.
+- Frozen line in a case that also holds an `ovary_ft_peritoneum` part: `… x frozen section - HIGH-GRADE SEROUS CARCINOMA, see synoptic report`.
+- Borderline tumours are staged (CAP / FIGO): pTNM prints with `printPTNM` like every other type, FIGO reference line in Checks. "No stage printed" in the fixture list means the default options (printPTNM off).
+- Stage groups follow AJCC 8th including IC1 / IC2 / IC3; `pNX` when no nodes are examined.
+
+**Fixtures regenerated deliberately.** 2026-09-12: `tests/fixtures/ovary/01`–`07` created (new template). No existing fixture changed.
