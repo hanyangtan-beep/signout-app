@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createCase, generate, generateCase } from '../src/engine.js';
 import { loadAll } from '../src/registry.js';
-import { labelRange, frozenResult, ovSummary } from '../generators/frozen.js';
+import { labelRange, frozenResult, ovSummary, lungSummary, organPhrase, stageable, PAIRED_TEMPLATE } from '../generators/frozen.js';
 
 const registry = await loadAll();
 const { schema, generator } = registry.frozen_section;
@@ -250,4 +250,66 @@ test('ovSummary carries the frozen values the linked synoptic is pre-filled from
   assert.deepEqual(ovSummary(v), { side: 'Right', specimen: 'Salpingo-oophorectomy', received: 'Intact', sizeMm: 120, weightG: 350, surface: 'Smooth', result: 'Malignant', type: 'high-grade serous carcinoma', caveats: [] });
   assert.equal(ovSummary({ scenario: 'Margin' }), null);
   assert.equal(ovSummary({ scenario: 'Ovarian / adnexal mass', ovType: 'other (specify)', tumourType: 'Sertoli-Leydig cell tumour' }).type, 'Sertoli-Leydig cell tumour');
+});
+
+// ---------- Lung wedge / nodule scenario (spec: docs/specs/lung-pair.md, Part (a)) ----------
+const LUX = { scenario: 'Lung wedge / nodule', luSide: 'Left', luLobe: 'Lower lobe', luSize: '6 x 2 x 1.5', luStapleCm: '6', luNoduleCm: '0.8', luMarginCm: '0.5', luBlocks: '2', luPattern: 'acinar predominant' };
+const luRun = (values, caseFields) => generate(schema, generator, part(fsCase(1, caseFields), 0, { specimenName: 'Lung, left lower lobe wedge', ...values }));
+
+test('lung wedge: house §10 macro, intraoperative line, plural paraffin correlation and the organ phrase', () => {
+  const a = luRun(LUX);
+  assert.equal(a.macro, 'Received fresh, a wedge of lung tissue measuring 6 x 2 x 1.5 cm with a curvilinear staple line measuring 6 cm across. The staple line is trimmed off and submitted separately. The parenchymal margin is inked black. Sectioning reveals a firm tan-white nodule measuring 0.8 cm across, 0.5 cm from the staple-line margin. Representative sections of the nodule are embedded in 2 frozen blocks and subsequently converted to paraffin blocks; the remaining tissue is submitted for paraffin sections only.');
+  assert.equal(a.intraop, 'Adenocarcinoma; parenchymal margin clear (5 mm).');
+  assert.equal(a.microscopy, 'The paraffin sections confirm the frozen section diagnosis. They show adenocarcinoma, acinar predominant.');
+  assert.equal(a.diagnosis, 'LUNG, left lower lobe, wedge excision x frozen section - ADENOCARCINOMA, parenchymal margin clear (5 mm)');
+  assert.ok(a.issues.some((i) => i.level === 'info' && /Stage this part/.test(i.message)), 'malignant without a linked part -> info');
+  assert.ok(!a.issues.some((i) => /Close parenchymal margin/.test(i.message)));
+  const node = luRun({ ...LUX, luNode: true, luNodeResult: 'Involved, with extranodal extension' });
+  assert.ok(node.microscopy.endsWith('An intrapulmonary lymph node is identified, showing involvement by metastatic carcinoma with extranodal extension.'));
+  const two = luRun({ ...LUX, luNoduleCount: '2', luSecondCm: '0.2', luSecondDistCm: '2', luPleuraGross: 'Puckered', luMarginCm: '0.3' });
+  assert.ok(two.macro.includes('Sectioning reveals two firm tan-white nodules; the largest measures 0.8 cm across, 0.3 cm from the staple-line margin, and a second nodule measures 0.2 cm across, 2 cm from the main nodule. The overlying pleura is puckered.'), two.macro);
+  assert.ok(two.issues.some((i) => i.level === 'warn' && /Close parenchymal margin \(3 mm\)/.test(i.message)));
+  const close = luRun({ ...LUX, lungMargin: 'Close (< 5 mm)', luMarginCm: '0.3' });
+  assert.equal(close.intraop, 'Adenocarcinoma; parenchymal margin close (3 mm).');
+  assert.equal(close.diagnosis.split(' - ')[1], 'ADENOCARCINOMA, parenchymal margin close (3 mm)');
+  const inv = luRun({ ...LUX, lungMargin: 'Involved', lungResult: 'Squamous cell carcinoma' });
+  assert.equal(inv.intraop, 'Squamous cell carcinoma; parenchymal margin involved.');
+});
+
+test('lung wedge: every result line, benign closings and the deferred / lepidic paths', () => {
+  const line = (values) => luRun({ ...LUX, ...values }).intraop;
+  assert.equal(line({ lungResult: 'Adenocarcinoma, lepidic-predominant or in situ (extent deferred)' }), 'Adenocarcinoma with a lepidic pattern; the extent of invasion is deferred to paraffin sections; parenchymal margin clear (5 mm).');
+  assert.ok(luRun({ ...LUX, lungResult: 'Adenocarcinoma, lepidic-predominant or in situ (extent deferred)' }).issues.some((i) => /pTis \(AIS\), pT1mi/.test(i.message)));
+  assert.equal(line({ lungResult: 'Non-small cell carcinoma, not further classifiable on frozen', luFavour: 'adenocarcinoma', lungMargin: 'Not applicable' }), 'Non-small cell carcinoma, favour adenocarcinoma; subtyping on paraffin sections.');
+  assert.equal(line({ lungResult: 'Small cell carcinoma', lungMargin: 'Not applicable' }), 'Small cell carcinoma.');
+  assert.equal(line({ lungResult: 'Carcinoid tumour', lungMargin: 'Not applicable' }), 'Carcinoid tumour.');
+  assert.equal(line({ lungResult: 'Metastatic carcinoma', tumourType: 'adenocarcinoma', luPrimary: 'colorectal', lungMargin: 'Not applicable' }), 'Metastatic adenocarcinoma, consistent with the known colorectal primary.');
+  assert.equal(luRun({ ...LUX, lungResult: 'Metastatic carcinoma', tumourType: 'adenocarcinoma', luPrimary: 'colorectal' }).diagnosis.split(' - ')[1], 'METASTATIC ADENOCARCINOMA, consistent with colorectal primary');
+  assert.equal(line({ lungResult: 'Necrotising granulomatous inflammation' }), 'Necrotising granulomatous inflammation; no tumour identified.');
+  const gran = luRun({ ...LUX, lungResult: 'Necrotising granulomatous inflammation' });
+  assert.equal(gran.microscopy, 'The paraffin sections confirm the frozen section diagnosis. They show necrotising granulomatous inflammation. There is no evidence of malignancy.');
+  assert.equal(gran.diagnosis.split(' - ')[1], 'NECROTISING GRANULOMATOUS INFLAMMATION, no evidence of malignancy');
+  assert.ok(!gran.issues.some((i) => /Stage this part/.test(i.message)));
+  assert.equal(line({ lungResult: 'Organising pneumonia' }), 'Organising pneumonia; no tumour identified.');
+  assert.equal(line({ lungResult: 'Benign, no tumour identified', luNoduleCount: '0' }), 'No tumour identified in the tissue examined.');
+  assert.ok(luRun({ ...LUX, lungResult: 'Benign, no tumour identified', luNoduleCount: '0' }).macro.includes('Sectioning reveals no discrete lesion. Representative sections are embedded'));
+  const d = luRun({ ...LUX, lungResult: 'Deferred', paraffinDx: 'Invasive adenocarcinoma' });
+  assert.equal(d.intraop, 'Deferred to paraffin sections.');
+  assert.equal(d.microscopy, 'The frozen section diagnosis was deferred. The paraffin section shows the lesion described. The features are those of invasive adenocarcinoma.');
+  assert.equal(d.diagnosis.split(' - ')[1], 'INVASIVE ADENOCARCINOMA');
+});
+
+test('lung wedge: organ phrase per specimen type; lungSummary and stageable feed the linked synoptic', () => {
+  const p = (values) => ({ label: 'B', values: { ...LUX, ...values } });
+  assert.equal(organPhrase(p({})), 'LUNG, left lower lobe, wedge excision x frozen section');
+  assert.equal(organPhrase(p({ luSpecimen: 'Segmentectomy' })), 'LUNG, left lower lobe, segmentectomy x frozen section');
+  assert.equal(organPhrase(p({ luSpecimen: 'Pleural nodule, punch' })), 'PLEURA, left, punch biopsy x frozen section');
+  assert.equal(organPhrase(p({ luSide: '', luLobe: '' })), 'LUNG, wedge excision x frozen section');
+  assert.deepEqual(lungSummary({ ...LUX, luNode: true, luNodeResult: 'Involved' }), { side: 'Left', lobe: 'Lower lobe', specimen: 'Wedge excision', sizeCm: '6 x 2 x 1.5', nodules: '1', largestMm: 8, secondMm: null, marginMm: 5, pleura: 'Not involved grossly', node: true, nodeResult: 'Involved', result: 'Adenocarcinoma', favour: '', primary: '', pattern: 'acinar predominant', margin: 'Clear' });
+  assert.equal(lungSummary({ scenario: 'Margin' }), null);
+  assert.equal(stageable(p({})), true);
+  assert.equal(stageable(p({ lungResult: 'Organising pneumonia' })), false);
+  assert.equal(stageable({ label: 'A', values: { scenario: 'Ovarian / adnexal mass', ovaryResult: 'Malignant' } }), true);
+  assert.equal(stageable({ label: 'A', values: { scenario: 'Margin', marginResult: 'Positive' } }), false);
+  assert.equal(PAIRED_TEMPLATE['Lung wedge / nodule'], 'lung_carcinoma');
 });

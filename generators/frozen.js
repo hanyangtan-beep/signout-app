@@ -53,6 +53,7 @@ export function macro(part, ctx) {
   if (ctx.options.macro === false) return '';
   const v = part.values;
   if (ovForm(v)) return ovMacro(part);
+  if (isLung(v)) return luMacro(part);
   const n = Math.max(1, Math.round(num(v.pieces) ?? 1));
   const noun = tissueNoun(v);
   const size = sizePhrase(v);
@@ -81,6 +82,7 @@ const deferred = (v) => v.correlation === 'Deferred'
   || (v.scenario === 'Margin' && v.marginResult === 'Atypical, deferred')
   || (v.scenario === 'Lymph node' && v.nodeResult === 'Deferred')
   || (v.scenario === 'Ovarian / adnexal mass' && v.ovaryResult === 'Deferred')
+  || (v.scenario === LU && v.lungResult === 'Deferred')
   || (v.scenario === 'Nodule / mass' && v.noduleResult === 'Deferred');
 
 const tumour = (v, fallback) => stripDot(v.tumourType) || fallback;
@@ -181,6 +183,143 @@ export function ovSummary(v) {
   };
 }
 
+// ---------- lung wedge / nodule scenario (spec: docs/specs/lung-pair.md, Part (a); house wording docs/reference/frozen-section-examples.md §10) ----------
+
+const LU = 'Lung wedge / nodule';
+const isLung = (v) => v.scenario === LU;
+const LU_MALIGNANT = ['Adenocarcinoma', 'Adenocarcinoma, lepidic-predominant or in situ (extent deferred)', 'Squamous cell carcinoma', 'Non-small cell carcinoma, not further classifiable on frozen', 'Small cell carcinoma', 'Carcinoid tumour', 'Metastatic carcinoma'];
+const LU_NOUN = { 'Wedge excision': 'a wedge of lung tissue', 'Nodule excision': 'a nodule of lung tissue', 'Pleural nodule, punch': 'a punch of pleural tissue', Segmentectomy: 'a segmentectomy specimen of lung' };
+const LU_PROC = { 'Wedge excision': 'wedge excision', 'Nodule excision': 'excision of nodule', 'Pleural nodule, punch': 'punch biopsy', Segmentectomy: 'segmentectomy' };
+const cmToMm = (cm) => (cm === null ? null : Math.round(cm * 10));
+
+const luLobe = (v) => {
+  const side = String(v.luSide || '').trim().toLowerCase();
+  const lobe = String(v.luLobe || '').trim().toLowerCase();
+  return [side, lobe].filter(Boolean).join(' ');
+};
+
+/** Parenchymal margin distance in mm from the staple-line field (cm); null when blank. */
+const luMarginMm = (v) => cmToMm(num(v.luMarginCm));
+
+/** "parenchymal margin clear (5 mm)" / "parenchymal margin close (3 mm)" / "parenchymal margin involved" / '' */
+export function luMarginPhrase(v) {
+  const mm = luMarginMm(v);
+  switch (v.lungMargin || 'Clear') {
+    case 'Involved': return 'parenchymal margin involved';
+    case 'Close (< 5 mm)': return `parenchymal margin close${mm === null ? ' (less than 5 mm)' : ` (${fmt(mm)} mm)`}`;
+    case 'Not applicable': return '';
+    default: return `parenchymal margin clear${mm === null ? '' : ` (${fmt(mm)} mm)`}`;
+  }
+}
+
+function luMacro(part) {
+  const v = part.values;
+  const noun = LU_NOUN[v.luSpecimen] || LU_NOUN['Wedge excision'];
+  const size = sizePhrase({ size: v.luSize }).replace(/^ /, '');
+  const staple = num(v.luStapleCm);
+  const sents = [`(${part.label}) Received fresh, ${noun}${size ? ` ${size}` : ''}${staple !== null ? ` with a curvilinear staple line measuring ${fmt(staple)} cm across` : ''}.`];
+  if (staple !== null && v.luStapleTrimmed !== false) sents.push('The staple line is trimmed off and submitted separately.');
+  if (v.luInked !== false && v.luSpecimen !== 'Pleural nodule, punch') sents.push('The parenchymal margin is inked black.');
+  const count = String(v.luNoduleCount ?? '1');
+  const largest = num(v.luNoduleCm);
+  const marginCm = num(v.luMarginCm);
+  const distance = marginCm === null ? '' : `, ${fmt(marginCm)} cm from the staple-line margin`;
+  const measure = largest === null ? '' : ` measuring ${fmt(largest)} cm across`;
+  if (count === '0') sents.push('Sectioning reveals no discrete lesion.');
+  else if (count === '1') sents.push(`Sectioning reveals a firm tan-white nodule${measure}${distance}.`);
+  else {
+    const second = num(v.luSecondCm);
+    const secondDist = num(v.luSecondDistCm);
+    const lead = count === '2' ? 'two firm tan-white nodules' : 'multiple firm tan-white nodules';
+    let t = `Sectioning reveals ${lead}; the largest${largest === null ? ' lies' : ` measures ${fmt(largest)} cm across`}${distance}`;
+    if (second !== null) t += `, and a second nodule measures ${fmt(second)} cm across${secondDist !== null ? `, ${fmt(secondDist)} cm from the main nodule` : ''}`;
+    sents.push(`${t}.`);
+  }
+  if (v.luPleuraGross === 'Puckered') sents.push('The overlying pleura is puckered.');
+  else if (v.luPleuraGross === 'Involved grossly') sents.push('The nodule abuts the pleural surface.');
+  const blocks = Math.max(1, Math.round(num(v.luBlocks) ?? 1));
+  const what = count === '0' ? 'Representative sections' : count === '1' ? 'Representative sections of the nodule' : 'Representative sections of the nodules';
+  sents.push(`${what} are embedded in ${blocks} frozen block${blocks === 1 ? '' : 's'} and subsequently converted to paraffin block${blocks === 1 ? '' : 's'}${v.luRemainder !== false ? '; the remaining tissue is submitted for paraffin sections only' : ''}.`);
+  return sents.join(' ');
+}
+
+/** Values the linked lung synoptic is pre-filled from (engine card; see prefillFromFrozen in generators/lung_carcinoma.js). */
+export function lungSummary(v) {
+  if (!isLung(v)) return null;
+  return {
+    side: v.luSide || '', lobe: v.luLobe || '', specimen: v.luSpecimen || 'Wedge excision', sizeCm: v.luSize || '',
+    nodules: String(v.luNoduleCount ?? '1'), largestMm: cmToMm(num(v.luNoduleCm)), secondMm: cmToMm(num(v.luSecondCm)), marginMm: luMarginMm(v),
+    pleura: v.luPleuraGross || 'Not involved grossly', node: !!v.luNode, nodeResult: v.luNode ? (v.luNodeResult || 'Negative') : '',
+    result: v.lungResult || 'Adenocarcinoma', favour: v.luFavour || '', primary: v.luPrimary || '', pattern: stripDot(v.luPattern), margin: v.lungMargin || 'Clear'
+  };
+}
+
+function luResultLine(v) {
+  const m = luMarginPhrase(v);
+  const withMargin = (lead) => `${lead}${m ? `; ${m}` : ''}.`;
+  switch (v.lungResult || 'Adenocarcinoma') {
+    case 'Adenocarcinoma, lepidic-predominant or in situ (extent deferred)': return withMargin('Adenocarcinoma with a lepidic pattern; the extent of invasion is deferred to paraffin sections');
+    case 'Squamous cell carcinoma': return withMargin('Squamous cell carcinoma');
+    case 'Non-small cell carcinoma, not further classifiable on frozen': return withMargin(`Non-small cell carcinoma${v.luFavour ? `, favour ${v.luFavour}` : ''}; subtyping on paraffin sections`);
+    case 'Small cell carcinoma': return withMargin('Small cell carcinoma');
+    case 'Carcinoid tumour': return withMargin('Carcinoid tumour');
+    case 'Metastatic carcinoma': return withMargin(`Metastatic ${lc1(tumour(v, 'carcinoma'))}${v.luPrimary ? `, consistent with the known ${stripDot(v.luPrimary)} primary` : ''}`);
+    case 'Necrotising granulomatous inflammation': return 'Necrotising granulomatous inflammation; no tumour identified.';
+    case 'Non-necrotising granulomatous inflammation': return 'Non-necrotising granulomatous inflammation; no tumour identified.';
+    case 'Organising pneumonia': return 'Organising pneumonia; no tumour identified.';
+    case 'Benign, no tumour identified': return 'No tumour identified in the tissue examined.';
+    case 'Deferred': return 'Deferred to paraffin sections.';
+    default: return withMargin('Adenocarcinoma');
+  }
+}
+
+function luTissue(v) {
+  const pattern = stripDot(v.luPattern);
+  switch (v.lungResult || 'Adenocarcinoma') {
+    case 'Adenocarcinoma, lepidic-predominant or in situ (extent deferred)': return 'adenocarcinoma with a predominantly lepidic pattern';
+    case 'Squamous cell carcinoma': return 'squamous cell carcinoma';
+    case 'Non-small cell carcinoma, not further classifiable on frozen': return 'non-small cell carcinoma';
+    case 'Small cell carcinoma': return 'small cell carcinoma';
+    case 'Carcinoid tumour': return 'a carcinoid tumour';
+    case 'Metastatic carcinoma': return `metastatic ${lc1(tumour(v, 'carcinoma'))}${v.luPrimary ? ` consistent with the known ${stripDot(v.luPrimary)} primary` : ''}`;
+    case 'Necrotising granulomatous inflammation': return 'necrotising granulomatous inflammation';
+    case 'Non-necrotising granulomatous inflammation': return 'non-necrotising granulomatous inflammation';
+    case 'Organising pneumonia': return 'organising pneumonia';
+    case 'Benign, no tumour identified': return 'lung parenchyma with no tumour';
+    case 'Deferred': return 'the lesion described';
+    default: return `adenocarcinoma${pattern ? `, ${pattern}` : ''}`;
+  }
+}
+
+/** "An intrapulmonary lymph node is identified, showing involvement by metastatic carcinoma with extranodal extension." */
+function luNodeSentence(v) {
+  if (!isLung(v) || !v.luNode) return '';
+  switch (v.luNodeResult || 'Negative') {
+    case 'Involved': return 'An intrapulmonary lymph node is identified, showing involvement by metastatic carcinoma.';
+    case 'Involved, with extranodal extension': return 'An intrapulmonary lymph node is identified, showing involvement by metastatic carcinoma with extranodal extension.';
+    default: return 'An intrapulmonary lymph node is identified and is free of tumour.';
+  }
+}
+
+function luFinalDx(v) {
+  const m = luMarginPhrase(v);
+  const withMargin = (lead) => `${lead}${m ? `, ${m}` : ''}`;
+  switch (v.lungResult || 'Adenocarcinoma') {
+    case 'Adenocarcinoma, lepidic-predominant or in situ (extent deferred)': return withMargin('ADENOCARCINOMA WITH A LEPIDIC PATTERN');
+    case 'Squamous cell carcinoma': return withMargin('SQUAMOUS CELL CARCINOMA');
+    case 'Non-small cell carcinoma, not further classifiable on frozen': return `NON-SMALL CELL CARCINOMA${v.luFavour ? `, favour ${v.luFavour}` : ''}; see microscopic examination`;
+    case 'Small cell carcinoma': return withMargin('SMALL CELL CARCINOMA');
+    case 'Carcinoid tumour': return withMargin('CARCINOID TUMOUR');
+    case 'Metastatic carcinoma': return `METASTATIC ${tumour(v, 'carcinoma').toUpperCase()}${v.luPrimary ? `, consistent with ${stripDot(v.luPrimary)} primary` : ''}`;
+    case 'Necrotising granulomatous inflammation': return 'NECROTISING GRANULOMATOUS INFLAMMATION, no evidence of malignancy';
+    case 'Non-necrotising granulomatous inflammation': return 'NON-NECROTISING GRANULOMATOUS INFLAMMATION, no evidence of malignancy';
+    case 'Organising pneumonia': return 'ORGANISING PNEUMONIA, no evidence of malignancy';
+    case 'Benign, no tumour identified': return 'NO EVIDENCE OF MALIGNANCY';
+    case 'Deferred': return 'SEE MICROSCOPIC EXAMINATION';
+    default: return withMargin('ADENOCARCINOMA');
+  }
+}
+
 /** One sentence, as phoned to the surgeon. */
 export function frozenResult(part) {
   const v = part.values;
@@ -242,6 +381,7 @@ export function frozenResult(part) {
       const caveats = ovCaveats(v).map((c) => CAVEAT_TEXT[c]).filter(Boolean);
       return caveats.length ? `${line} ${caveats.join(' ')}` : line;
     }
+    case LU: return luResultLine(v);
     case 'Nodule / mass':
       switch (v.noduleResult) {
         case 'Malignant': return `Malignant${v.tumourType ? `; ${lc1(tumour(v))}` : ''}.`;
@@ -305,6 +445,8 @@ function defaultTissue(v) {
       }
     case 'Ovarian / adnexal mass':
       return ovType(v) ? `features of ${lc1(ovType(v))}` : 'ovarian stroma with the lesion described';
+    case LU:
+      return luTissue(v);
     case 'Nodule / mass':
       return v.tumourType ? `features of ${lc1(tumour(v))}` : 'the lesion described';
     default:
@@ -316,6 +458,7 @@ function malignant(v) {
   return (v.scenario === 'Margin' && v.marginResult === 'Positive')
     || (v.scenario === 'Lymph node' && ['Macrometastasis', 'Micrometastasis'].includes(v.nodeResult))
     || (v.scenario === 'Ovarian / adnexal mass' && ['Malignant', 'Malignant, favour metastatic'].includes(v.ovaryResult))
+    || (v.scenario === LU && LU_MALIGNANT.includes(v.lungResult || 'Adenocarcinoma'))
     || (v.scenario === 'Nodule / mass' && v.noduleResult === 'Malignant');
 }
 
@@ -346,19 +489,33 @@ export function microscopy(part) {
     const finalDx = stripDot(v.paraffinDx);
     s = `(${part.label}) The frozen section diagnosis was deferred. The paraffin section shows ${tissue}.`
       + (finalDx ? ` The features are those of ${lc1(finalDx)}.` : '');
+  } else if (isLung(v)) {
+    // House §10: plural "sections" for the lung wedge.
+    s = `(${part.label}) The paraffin sections confirm the frozen section diagnosis. They show ${tissue}.`;
+    const close = closingSentence(v);
+    if (close) s += ` ${close}`;
   } else {
     s = `(${part.label}) The paraffin section confirms the frozen section diagnosis. It shows ${tissue}.`;
     const close = closingSentence(v);
     if (close) s += ` ${close}`;
   }
+  const node = luNodeSentence(v);
+  if (node) s += ` ${node}`;
   if (notes) s += ` ${notes}`;
   return s;
 }
 
 // ---------- final diagnosis line ----------
 
-function organPhrase(part) {
+export function organPhrase(part) {
   const v = part.values;
+  if (isLung(v)) {
+    const side = String(v.luSide || '').trim().toLowerCase();
+    const proc = LU_PROC[v.luSpecimen] || LU_PROC['Wedge excision'];
+    if (v.luSpecimen === 'Pleural nodule, punch') return `PLEURA, ${side ? `${side}, ` : ''}${proc} x frozen section`;
+    const lobe = luLobe(v);
+    return `LUNG, ${lobe ? `${lobe}, ` : ''}${proc} x frozen section`;
+  }
   if (ovForm(v)) {
     const [organ, proc] = OV_ORGAN[v.ovSpecimen] || OV_ORGAN['Adnexal mass, NOS'];
     const side = String(v.ovSide || '').trim().toLowerCase();
@@ -422,6 +579,7 @@ export function finalDx(part) {
         default: return t ? t.toUpperCase() : 'BENIGN; no evidence of malignancy';
       }
     }
+    case LU: return luFinalDx(v);
     case 'Nodule / mass':
       switch (v.noduleResult) {
         case 'Malignant': return v.tumourType ? tumour(v).toUpperCase() : 'MALIGNANT TUMOUR, see microscopic examination';
@@ -433,21 +591,37 @@ export function finalDx(part) {
   }
 }
 
+/** Frozen scenario -> synoptic template that can be linked under the same letter (engine card "Stage this part"). */
+export const PAIRED_TEMPLATE = { 'Ovarian / adnexal mass': 'ovary_ft_peritoneum', 'Lung wedge / nodule': 'lung_carcinoma' };
+
+/** True when the frozen result is malignant and the scenario has a paired synoptic template. */
+export function stageable(part) {
+  return !!PAIRED_TEMPLATE[part.values.scenario] && malignant(part.values);
+}
+
 export function diagnosis(part, ctx) {
   const organ = organPhrase(part);
   // Ovarian frozen with a linked synoptic part in the same case: the synoptic carries the definitive line.
-  const linked = isOvary(part.values) && (ctx?.case?.parts || []).some((p) => p !== part && p.templateId === 'ovary_ft_peritoneum');
+  const pairId = PAIRED_TEMPLATE[part.values.scenario];
+  const linked = !!pairId && (ctx?.case?.parts || []).some((p) => p !== part && p.templateId === pairId);
   return `(${part.label}) ${organ}${organ.endsWith(' x frozen section') ? '' : ', frozen section'} - ${finalDx(part)}${linked ? ', see synoptic report' : ''}`;
 }
 
 // ---------- checks ----------
 
-export function validate(part) {
+export function validate(part, ctx) {
   const v = part.values;
   const out = [];
-  if (!isOvary(v)) return out;
   const info = (message) => out.push({ level: 'info', message });
   const warn = (message) => out.push({ level: 'warn', message });
+  if (isLung(v)) {
+    const mm = luMarginMm(v);
+    if (v.lungMargin === 'Close (< 5 mm)' || (mm !== null && mm < 5 && v.lungMargin !== 'Involved' && v.lungMargin !== 'Not applicable')) warn(`Close parenchymal margin${mm === null ? '' : ` (${fmt(mm)} mm)`}: state it in the intraoperative line.`);
+    if (v.lungResult === 'Adenocarcinoma, lepidic-predominant or in situ (extent deferred)') info('Lepidic pattern: the invasive size on paraffin decides pTis (AIS), pT1mi (MIA, invasion 5 mm or less) or pT1a.');
+    if (malignant(v) && !part.linked && !(ctx?.case?.parts || []).some((p) => p !== part && p.templateId === 'lung_carcinoma')) info('Malignant on frozen: "Stage this part" adds the lung carcinoma synoptic under the same letter.');
+    return out;
+  }
+  if (!isOvary(v)) return out;
   const t = ovType(v);
   const r = v.ovaryResult || 'Benign';
   if (r === 'Malignant' && /mucinous|Brenner|teratoma/i.test(t)) info('Malignant mucinous, Brenner or teratomatous tumour: consider a metastasis; the linked synoptic asks for the primary-site assignment.');
