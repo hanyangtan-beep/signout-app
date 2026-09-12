@@ -77,8 +77,8 @@ test('applyMacroToCase: fills defaults, keeps hand edits, follows re-paste, reve
   assert.equal(part.values.macroDepthMm, '4');
   assert.equal(part.values.macroMyoMm, '22');
   assert.equal(part.values.weight, '110');
-  assert.equal(n, 5);
-  assert.deepEqual(Object.keys(part.macroFill).sort(), ['macroDepthMm', 'macroMyoMm', 'tumourDims', 'tumourSizeMm', 'weight']);
+  assert.equal(n, 6);
+  assert.deepEqual(Object.keys(part.macroFill).sort(), ['adnexaMacro', 'macroDepthMm', 'macroMyoMm', 'tumourDims', 'tumourSizeMm', 'weight']);
 
   part.values.macroDepthMm = '5';                       // pathologist corrects the depth
   cs.meta.macro = cs.meta.macro.replace('110 g', '118 g');
@@ -110,4 +110,31 @@ test('applyMacroToCase: lettered paste goes to the matching part; unlettered pas
   applyMacroToCase(cs2, () => endo);
   assert.equal(two[0].values.weight, '120');
   assert.equal(two[1].values.weight, '', 'no letters: only part A is filled');
+});
+
+test('bilateral adnexa: clauses, sides, sided values and the uterus generator sentences', async () => {
+  const { clauses, sideOf } = await import('../src/macroparse.js');
+  const t = 'The right ovary measures 2 x 1.5 x 0.8 cm and the left ovary 2.5 x 1.5 x 1 cm.';
+  assert.equal(clauses(t).length, 2);
+  assert.equal(sideOf(clauses(t)[0], /ovar/i), 'right');
+  assert.equal(sideOf(clauses(t)[1], /ovar/i), 'left');
+  assert.equal(sideOf('Both ovaries measure 2 x 1 cm.', /ovar/i), 'both');
+  assert.equal(sideOf('The ovary measures 2 x 1 cm.', /ovar/i), null);
+  assert.equal(extractConcept({ concept: 'dims', unit: 'cm', near: 'ovar', sides: true }, t), 'right 2 x 1.5 x 0.8, left 2.5 x 1.5 x 1');
+  assert.equal(extractConcept({ concept: 'dims', unit: 'cm', near: 'ovar', sides: true }, 'The left ovary measures 2 x 3 x 2 cm.'), '2 x 3 x 2', 'one side → plain value');
+  assert.equal(extractConcept({ concept: 'lengthDiameter', unit: 'cm', near: 'tube', sides: true }, 'The left tube is 7 cm long and 0.6 cm in diameter, the right tube 5 cm long.'), 'right 5, left 7 x 0.6');
+
+  const { sidedSizes, macro } = await import('../generators/uterus.js');
+  assert.deepEqual(sidedSizes('right 5 x 0.6, left 4.5 x 0.5'), { right: '5 x 0.6 cm', left: '4.5 x 0.5 cm' });
+  assert.equal(sidedSizes('5 x 0.6'), null);
+  assert.equal(sidedSizes('right 5, right 6'), null);
+  const s = await schemaOf('uterus_benign');
+  const part = { ...createPart(s, 0), templateId: 'uterus_benign' };
+  part.values.specimenName = 'Uterus, cervix and bilateral adnexa';
+  part.values.tubeSize = 'right 5 x 0.6, left 4.5 x 0.5';
+  part.values.ovarySize = 'right 2 x 1.5 x 0.8, left 2.5 x 1.5 x 1';
+  const m = macro(part, {});
+  assert.match(m, /The right fallopian tube measures 5 x 0\.6 cm and the left fallopian tube 4\.5 x 0\.5 cm\. The right ovary measures 2 x 1\.5 x 0\.8 cm and the left ovary 2\.5 x 1\.5 x 1 cm\./);
+  part.values.tubeSize = '5 x 0.6'; part.values.ovarySize = '2.5 x 1.5 x 1';
+  assert.match(macro(part, {}), /The fallopian tubes measure up to 5 x 0\.6 cm\. The ovaries measure up to 2\.5 x 1\.5 x 1 cm\./, 'plain values keep the old sentences');
 });

@@ -229,6 +229,9 @@ const SITE_SPELLINGS = [
   [/\brandom colon(ic)?\b/g, 'random'], [/\bt\.?i\.?\b/g, 'terminal ileum'],
   [/\bincisura( angularis)?\b/g, 'incisura'], [/\bmandibular\b/g, 'mandible'], [/\bmaxillary\b/g, 'maxilla'], [/\bantral\b/g, 'antrum'],
   [/\ba\.?p\.?r\.?\b/g, 'abdominoperineal resection'], [/\blar\b/g, 'low anterior resection'],
+  // Uterus: LIS shorthand → the benign-uterus specimen options
+  [/\b(?:tlh|tah|lavh|th)\s*-?\s*bso\b/g, 'uterus cervix and bilateral adnexa'], [/\b(?:appendages|adnexae|bilateral tubes and ovaries|bilateral ovaries and tubes|bso)\b/g, 'bilateral adnexa'],
+  [/\b(?:tlh|tah|lavh)\b/g, 'uterus and cervix total hysterectomy'], [/\btubes?\(s\)/g, 'tube'], [/\btubes\b/g, 'tube'], [/\bsterili[sz]ation\b/g, 'sterilisation'],
 ];
 const UNSPECIFIC_OPTION = /unspecified|not (specified|otherwise|stated|applicable|identified)|cannot be|^other\b|specify/i;
 

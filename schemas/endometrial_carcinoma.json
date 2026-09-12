@@ -82,6 +82,10 @@
     "macroMyoMm": {
       "concept": "wallThickness",
       "unit": "mm"
+    },
+    "adnexaMacro": {
+      "concept": "adnexaSentence",
+      "unit": "mm"
     }
   },
   "specimenNoun": "resection",

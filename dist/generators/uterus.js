@@ -182,6 +182,18 @@ function leiomyomaMacro(v) {
   return `Sectioning shows ${leiomyomaNoun(v)}${size ? ` measuring ${single ? '' : 'up to '}${size}` : ''} with ${cut}.`;
 }
 
+/** "right 2 x 1.5 x 0.8, left 2.5 x 1.5 x 1" → { right, left } size phrases; null for a single value. */
+export function sidedSizes(raw) {
+  const m = /^\s*(right|left)\s+([^,;]+?)\s*[,;]\s*(right|left)\s+(.+?)\s*$/i.exec(String(raw || ''));
+  if (!m || m[1].toLowerCase() === m[3].toLowerCase()) return null;
+  const unit = /cm|mm/i.exec(m[4])?.[0] || '';
+  const withUnit = (t) => sizePhrase(/cm|mm/i.test(t) ? t : `${t}${unit ? ` ${unit}` : ''}`);
+  const out = {};
+  out[m[1].toLowerCase()] = withUnit(m[2]);
+  out[m[3].toLowerCase()] = withUnit(m[4]);
+  return out;
+}
+
 function adnexaMacro(v) {
   const s = [];
   const tube = sizePhrase(v.tubeSize);
@@ -189,8 +201,11 @@ function adnexaMacro(v) {
   const cyst = sizePhrase(v.cystSize);
   const findings = adnexaFindings(v);
   if (v.specimenName === TOTAL_BSO) {
-    if (tube) s.push(`The fallopian tubes measure up to ${tube}.`);
-    if (ovary) s.push(`The ovaries measure up to ${ovary}.`);
+    const t2 = sidedSizes(v.tubeSize), o2 = sidedSizes(v.ovarySize);
+    if (t2) s.push(`The right fallopian tube measures ${t2.right} and the left fallopian tube ${t2.left}.`);
+    else if (tube) s.push(`The fallopian tubes measure up to ${tube}.`);
+    if (o2) s.push(`The right ovary measures ${o2.right} and the left ovary ${o2.left}.`);
+    else if (ovary) s.push(`The ovaries measure up to ${ovary}.`);
   } else {
     if (tube) s.push(`The fallopian tube measures ${tube}.`);
     if (ovary) s.push(`The ovary measures ${ovary}${findings.length ? '' : ' with an unremarkable cut surface'}.`);

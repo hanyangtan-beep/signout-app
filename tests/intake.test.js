@@ -144,6 +144,13 @@ test('subsite pre-fill: option matching from the specimen text', async () => {
   assert.equal(matchOption(ibd, 'Rectum, biopsy'), 'Rectum', 'rectum does not match rectosigmoid');
   assert.equal(matchOption(ibd, 'Random colonic biopsies'), 'Random colon');
   assert.equal(matchOption(ibd, 'Colon, biopsy'), '', 'no site named → default kept');
+  const ut = ['Uterus and cervix, total hysterectomy', 'Uterus, cervix and bilateral adnexa', 'Uterus, subtotal', 'Myomectomy', 'Left tube and ovary', 'Right tube and ovary', 'Fallopian tube(s), sterilisation'];
+  assert.equal(matchOption(ut, 'Uterus and appendages, TLHBSO'), 'Uterus, cervix and bilateral adnexa', 'TLHBSO / appendages shorthand');
+  assert.equal(matchOption(ut, 'Uterus, cervix, bilateral tubes and ovaries, TAHBSO'), 'Uterus, cervix and bilateral adnexa');
+  assert.equal(matchOption(ut, 'Uterus, TAH'), 'Uterus and cervix, total hysterectomy', 'TAH shorthand');
+  assert.equal(matchOption(ut, 'Right ovary and tube, excision'), 'Right tube and ovary');
+  assert.equal(matchOption(ut, 'Bilateral fallopian tubes, sterilization'), 'Fallopian tube(s), sterilisation');
+  assert.equal(matchOption(ut, 'Uterus, hysterectomy'), '', 'bare hysterectomy keeps the default');
   const gastric = ['Unspecified', 'Antrum, greater curvature', 'Antrum, lesser curvature', 'Incisura angularis', 'Body, greater curvature', 'Body, lesser curvature', 'Fundus', 'Cardia'];
   assert.equal(matchOption(gastric, 'Stomach, antrum, biopsy'), '', 'curvature unknown → Unspecified');
   assert.equal(matchOption(gastric, 'Stomach, antrum GC, biopsy'), 'Antrum, greater curvature');

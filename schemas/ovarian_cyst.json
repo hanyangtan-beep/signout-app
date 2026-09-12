@@ -59,8 +59,9 @@
   },
   "macroExtract": {
     "dimensions": {
-      "concept": "specimenDims",
-      "unit": "cm"
+      "concept": "dims",
+      "unit": "cm",
+      "near": "specimen|cyst|ovar|mass"
     },
     "cystSize": {
       "concept": "size",
@@ -75,7 +76,7 @@
     "tubeLength": {
       "concept": "length",
       "unit": "cm",
-      "near": "tube"
+      "near": "tube|fallopian|salpin"
     },
     "blocks": {
       "concept": "blocks",

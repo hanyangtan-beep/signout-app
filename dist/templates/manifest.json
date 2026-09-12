@@ -1047,6 +1047,12 @@
           "HMB",
           "endometrial polyp",
           "bulky uterus"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "options"
+          }
         ]
       },
       "version": "2026.09",

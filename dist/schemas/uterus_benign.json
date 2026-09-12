@@ -55,6 +55,12 @@
       "HMB",
       "endometrial polyp",
       "bulky uterus"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "options"
+      }
     ]
   },
   "macroExtract": {
@@ -80,12 +86,14 @@
     "tubeSize": {
       "concept": "lengthDiameter",
       "unit": "cm",
-      "near": "tube"
+      "near": "tube|fallopian|salpin",
+      "sides": true
     },
     "ovarySize": {
       "concept": "dims",
       "unit": "cm",
-      "near": "ovar"
+      "near": "ovar",
+      "sides": true
     },
     "cystSize": {
       "concept": "size",
@@ -333,7 +341,7 @@
     },
     {
       "id": "tubeSize",
-      "label": "Fallopian tube (length x diameter, cm)",
+      "label": "Fallopian tube (length x diameter, cm; or 'right 5 x 0.6, left 4.5 x 0.5')",
       "type": "text",
       "group": "Macroscopy",
       "placeholder": "5 x 0.6",
@@ -350,7 +358,7 @@
     },
     {
       "id": "ovarySize",
-      "label": "Ovary (cm)",
+      "label": "Ovary (cm; or 'right 2 x 1.5 x 1, left 2.5 x 1.5 x 1')",
       "type": "text",
       "group": "Macroscopy",
       "placeholder": "3 x 2 x 1.5",

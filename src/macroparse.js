@@ -177,24 +177,103 @@ function size(text) { const r = findDims(text)[0]; return r ? r.max : null; }
 /** "N cm long and N cm in diameter" → [length, diameter]. */
 function lengthDiameter(text) { const l = length(text), d = diameter(text); return l !== null && d !== null ? [l, d] : l !== null ? [l] : null; }
 
-export const CONCEPTS = { weight, specimenDims, dims, size, tumourDims, tumourSizeMax, depthOfInvasion, wallThickness, cavityLength, length, diameter, lengthDiameter, specimenDims, tumourDims, tumourSizeMax, depthOfInvasion, wallThickness, cavityLength, length, diameter, blocks };
+export const CONCEPTS = { weight, specimenDims, dims, size, tumourDims, tumourSizeMax, depthOfInvasion, wallThickness, cavityLength, length, diameter, lengthDiameter, blocks };
+
+// ---- Sided adnexa ------------------------------------------------------------------------------
+// "The right ovary measures 2 x 1.5 x 0.8 cm and the left ovary 2.5 x 1.5 x 1 cm." Sentences are split into
+// clauses at "and / while the <right|left|both|ovary|tube…>" so a `near` rule reads only its own clause, and each
+// clause carries the side named before the organ word.
+const CLAUSE_SPLIT = /;\s*|,?\s+(?:and|while|whereas)\s+(?=(?:the\s+|a\s+|an\s+)?(?:right|left|both|bilateral|contralateral|other|ovary|ovaries|ovarian|fallopian|tubes?|uterus|cervix|endometri\w+|myometri\w+)\b)|,\s+(?=(?:the\s+)?(?:right|left|both|bilateral|contralateral|ovary|ovaries|fallopian|tubes?)\b)/i;
+export function clauses(text) { return sentences(text).flatMap((s) => s.split(CLAUSE_SPLIT)).map((c) => c.trim()).filter(Boolean); }
+
+const SIDE_RE = /\b(right|left|both|bilateral|rt\.?|lt\.?)\b/i;
+/** 'right' | 'left' | 'both' | null — the side named in the clause before the first `near` word. */
+export function sideOf(clause, near) {
+  const m = near ? near.exec(clause) : null;
+  const head = m ? clause.slice(0, m.index) : clause;
+  const sm = SIDE_RE.exec(head) || (m && /\b(?:ovaries|tubes)\b/i.test(clause) ? ['', 'both'] : null);
+  if (!sm) return null;
+  const w = sm[1].toLowerCase();
+  return /^r/.test(w) ? 'right' : /^l/.test(w) ? 'left' : 'both';
+}
+
+/** [{ side, value }] — `fn` run on every clause matching `near`, in text order; clauses without a value skipped. */
+function sidedValues(text, near, fn) {
+  const out = [];
+  for (const c of clauses(text)) {
+    if (near && !near.test(c)) continue;
+    const v = fn(c);
+    if (v === null || v === undefined) continue;
+    out.push({ side: sideOf(c, near), value: v });
+  }
+  return out;
+}
+const maxOf = (v) => (Array.isArray(v) ? Math.max(...v) : v);
+const fmtValue = (v, unit) => (Array.isArray(v) ? fmtDims(v, unit) : fmt(v, unit));
+
+/** Pick one value per side: the first right, the first left, else the largest unlabelled / both. */
+function bySide(vals) {
+  const right = vals.find((x) => x.side === 'right'), left = vals.find((x) => x.side === 'left');
+  const rest = vals.filter((x) => x.side !== 'right' && x.side !== 'left');
+  const largest = rest.length ? rest.reduce((a, b) => (maxOf(b.value) > maxOf(a.value) ? b : a)) : null;
+  return { right, left, largest };
+}
+
+/** Free-text adnexa sentence for templates with a single "Adnexa (macro)" field, e.g. "the right ovary measures
+ *  30 x 20 x 10 mm and the right fallopian tube 50 mm long and 6 mm in diameter; the left ovary measures …". */
+function adnexaSentence(text, unit) {
+  const ov = bySide(sidedValues(text, /\bovar/i, dims));
+  const tb = bySide(sidedValues(text, /\b(?:tubes?|fallopian|salpin\w+)\b/i, lengthDiameter));
+  const fD = (v) => `${fmtDims(v, unit)} ${unit}`, f1 = (v) => `${fmt(v, unit)} ${unit}`;
+  const tubePhrase = (v) => (v.length >= 2 ? `${f1(v[0])} long and ${f1(v[1])} in diameter` : `${f1(v[0])} long`);
+  const pieces = [];
+  for (const side of ['right', 'left']) {
+    const o = ov[side], t = tb[side];
+    if (!o && !t) continue;
+    const bits = [];
+    if (o) bits.push(`the ${side} ovary measures ${fD(o.value)}`);
+    if (t) bits.push(o ? `the ${side} fallopian tube ${tubePhrase(t.value)}` : `the ${side} fallopian tube measures ${tubePhrase(t.value)}`);
+    pieces.push(bits.join(' and '));
+  }
+  if (!pieces.length) {
+    const bits = [];
+    if (ov.largest) bits.push(`the ovaries measure up to ${fD(ov.largest.value)}`);
+    if (tb.largest) bits.push(`the fallopian tubes measure up to ${tubePhrase(tb.largest.value)}`);
+    if (bits.length) pieces.push(bits.join(' and '));
+  }
+  return pieces.length ? pieces.join('; ') : null;
+}
 
 /** Run one rule against text; returns the field value as a string, or null. */
 export function extractConcept(rule, text) {
+  if (!text) return null;
+  const unit = rule.unit || 'mm';
+  const label = rule.label ? ` ${unit}` : '';
+  if (rule.concept === 'adnexaSentence') return adnexaSentence(text, unit);
   const fn = CONCEPTS[rule.concept];
-  if (!fn || !text) return null;
+  if (!fn) return null;
+  const min = rule.min ?? (rule.concept === 'lengthDiameter' ? 1 : 2);   // a tube length alone is worth keeping
+  const ok = (v) => (Array.isArray(v) ? v.length >= min : true);
+  if (rule.sides) {
+    // Paired organs: "right …, left …" when both sides are measured, else the single / largest value.
+    const near = rule.near ? new RegExp(rule.near, 'i') : null;
+    const vals = sidedValues(text, near, fn).filter((x) => ok(x.value));
+    if (!vals.length) return null;
+    const { right, left, largest } = bySide(vals);
+    if (right && left) return `right ${fmtValue(right.value, unit)}, left ${fmtValue(left.value, unit)}${label}`;
+    const one = right || left || largest;
+    return fmtValue(one.value, unit) + label;
+  }
   let scope = text;
   if (rule.near) {
     const near = new RegExp(rule.near, 'i');
-    const hits = sentences(text).filter((s) => near.test(s));
+    const hits = clauses(text).filter((c) => near.test(c));
     if (!hits.length) return null;
     scope = hits.join(' ');
   }
   const v = fn(scope);
   if (v === null || v === undefined) return null;
-  const unit = rule.unit || 'mm';
-  const label = rule.label ? ` ${unit}` : '';
-  if (Array.isArray(v)) return v.length >= (rule.min ?? 2) ? fmtDims(v, unit) + label : null;
+  if (Array.isArray(v)) return ok(v) ? fmtDims(v, unit) + label : null;
   if (unit === 'g' || unit === 'count') return String(v);
   return fmt(v, unit) + label;
 }
