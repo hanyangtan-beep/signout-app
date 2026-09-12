@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=mty6ar7r" />
+  <link rel="stylesheet" href="styles.css?v=mty8294x" />
 </head>
 <body>
   <a class="skip" href="#case">Skip to case</a>
@@ -95,6 +95,11 @@
         </div>
       </details>
       <div id="case-fields" class="case-fields"></div>
+      <div id="macro-panel" class="part-panel macro-panel" hidden></div>
+    </section>
+
+    <section class="histo" id="histo" aria-labelledby="histo-heading">
+      <h2 id="histo-heading" class="sr-only">Parts and histology</h2>
       <div class="parts-bar">
         <div class="tabs" id="part-tabs" role="tablist" aria-label="Parts"></div>
         <button class="btn ghost small" id="btn-add-part" type="button">+ Part</button>
@@ -165,6 +170,6 @@
   </dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="src/app.js?v=mty6ar7r"></script>
+  <script type="module" src="src/app.js?v=mty8294x"></script>
 </body>
 </html>

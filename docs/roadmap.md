@@ -54,6 +54,7 @@ Docs
 - 2026-09-12 System menus, pending placeholders, Autopsy button (Now card, size M): header rows regrouped as Biopsy & cytology / Resection & frozen with system buttons opening compact menus (pins first; Medical, Thoracic, H&N, Skin / soft tissue merges); `templates/planned.json` (19 planned templates) shows greyed "pending build" placeholders that open Generic free text with the intended name; separate Autopsy placeholder button; flat pinned / recent strip retired. Fits two header lines at ≥ 1360 px. Spec `docs/specs/navigation.md`. Phase 8.
 - 2026-09-12 QMH coverage placeholders (user request, size S): every unbuilt page of the QMH cancer template site added to `templates/planned.json` (72 entries, `qmh` stem recorded; NET pages, stomach biomarker pages, phyllodes editions and distal/perihilar bile duct folded into one entry each); Endocrine gets its own resection button; Biomarkers group in the top row; menus scroll. Header still fits two lines at ≥ 1360 px. Phase 8b.
 - 2026-09-12 Breast pair + DCIS + phyllodes (three Now cards, one batch, Phase 9): frozen **Breast sentinel lymph node** scenario with `slnSummary`; `src/staging/breast.js` + `src/staging/phyllodes.js`; synoptics `breast_carcinoma`, `breast_dcis`, `phyllodes` in the QMH order (margin walker per face, node block fed by the SLN part via **Add breast synoptic** or a prior SLN accession, biomarker block, RCB inputs, WHO phyllodes grade check); mismatch check when the frozen part changes after pairing; three Breast placeholders removed from `templates/planned.json`; `tests/{staging_breast,frozen_sln,breast_carcinoma,breast_dcis,phyllodes}.test.js` with new golden dirs `tests/fixtures/{breast_ca,breast_dcis,phyllodes}/`; other fixtures untouched; 726 tests. Spec: `docs/specs/breast-pair.md` (Built section).
+- 2026-09-12 Three-column layout (user request, size S, Phase 9b): `case + macroscopy | histology | report` at ≥ 1400 px, two columns below, one below 960 px; `layout.macroGroups` / `layout.macroFields` schema opt-in, `breast_carcinoma` first; sticky report offset from the live header height (`--topbar-h`). Spec: `docs/specs/layout-3col.md`.
 
 ## Now
 
@@ -236,6 +237,7 @@ Spec:       `docs/specs/report-review.md`
 - Small fixes to verify and card: TURP `≤` rendering as `<=`; flag snippets marking every part rather than the triggering part; LAR example block key still using colon wording.
 
 ---
+- Three-column opt-in for the other synoptic and benign-resection templates (`layout` line per schema builder; see `docs/specs/layout-3col.md`).
 
 ## Parked
 

@@ -192,12 +192,30 @@ kbd { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; b
   flex: 1;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--space-6);
+  grid-template-areas: "case report" "histo report";
+  grid-template-rows: auto 1fr;
+  gap: 0 var(--space-6);
   padding: var(--space-6);
   max-width: 1440px; width: 100%; margin: 0 auto;
 }
-.case, .report { min-width: 0; }
-.report { position: sticky; top: calc(64px + var(--space-6)); align-self: start; max-height: calc(100vh - 64px - 2 * var(--space-6)); overflow: auto; scrollbar-width: thin; }
+.case, .histo, .report { min-width: 0; }
+.case { grid-area: case; }
+.histo { grid-area: histo; }
+.report { grid-area: report; }
+.macro-panel { margin-top: var(--space-4); }
+.macro-panel .part-head h3 { color: var(--color-text-muted); font-weight: 500; }
+/* Three columns (case + macroscopy | histology | report) once the viewport is wide enough; docs/specs/layout-3col.md */
+@media (min-width: 1400px) {
+  .workspace {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.2fr) minmax(0, 0.95fr);
+    grid-template-areas: "case histo report";
+    grid-template-rows: auto;
+    gap: var(--space-6);
+    max-width: 1960px;
+  }
+  .histo .parts-bar { margin-top: 0; }
+}
+.report { position: sticky; top: calc(var(--topbar-h, 64px) + var(--space-4)); align-self: start; max-height: calc(100vh - var(--topbar-h, 64px) - var(--space-4) - var(--space-6)); overflow: auto; scrollbar-width: thin; }
 
 .case-fields { display: grid; gap: var(--space-3); margin-bottom: var(--space-4); }
 .field {
@@ -340,7 +358,7 @@ textarea.input { min-height: 64px; resize: vertical; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
 
 @media (max-width: 960px) {
-  .workspace { grid-template-columns: 1fr; padding: var(--space-4); gap: var(--space-4); }
+  .workspace { grid-template-columns: 1fr; grid-template-areas: "case" "histo" "report"; grid-template-rows: auto; padding: var(--space-4); gap: var(--space-4); }
   .report { position: static; max-height: none; overflow: visible; }
   .topbar-actions { margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
   .meta-row { grid-template-columns: 1fr; }

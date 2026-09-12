@@ -72,6 +72,14 @@
     ],
     "bias": -1
   },
+  "layout": {
+    "macroGroups": [
+      "Specimen and tumour"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "macroExtract": {
     "weight": {
       "concept": "weight",

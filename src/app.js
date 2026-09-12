@@ -62,6 +62,7 @@ const nodes = {
   tabs: $('#part-tabs'),
   addPart: $('#btn-add-part'),
   panel: $('#part-panel'),
+  macroPanel: $('#macro-panel'),
   options: $('#case-options'),
   blocks: $('#report-blocks'),
   copyDx: $('#btn-copy-dx'),
@@ -739,7 +740,41 @@ function renderPanel() {
       el('button', { type: 'button', class: 'btn ghost small', text: 'Reset', onclick: () => resetPart(i) }),
       el('button', { type: 'button', class: 'btn ghost small danger', text: 'Remove', onclick: () => removePart(i) })
     ));
-  nodes.panel.replaceChildren(head, ...groupFields(s.fields, part, i));
+  // Three-column layout: schemas that declare `layout.macroGroups` render those groups (and `layout.macroFields`)
+  // in the case column under the LIS boxes, so macroscopy sits beside the report while histology fills the middle.
+  const split = splitFields(s, part);
+  if (split) {
+    nodes.macroPanel.hidden = false;
+    nodes.macroPanel.replaceChildren(
+      el('div', { class: 'part-head' }, el('h3', { text: `Part ${part.label} \u00b7 specimen and macroscopy` })),
+      ...groupFields(split.macro, part, i));
+    nodes.panel.replaceChildren(head, ...groupFields(split.histo, part, i));
+  } else {
+    nodes.macroPanel.hidden = true;
+    nodes.macroPanel.replaceChildren();
+    nodes.panel.replaceChildren(head, ...groupFields(s.fields, part, i));
+  }
+}
+
+// The sticky report sits under the (two-row, wrapping) header: publish its live height as --topbar-h.
+const topbar = document.querySelector('header');
+if (topbar) {
+  const setTopbarH = () => document.documentElement.style.setProperty('--topbar-h', `${topbar.offsetHeight}px`);
+  setTopbarH();
+  if (typeof ResizeObserver === 'function') new ResizeObserver(setTopbarH).observe(topbar);
+}
+
+const wideLayout = window.matchMedia('(min-width: 1400px)');
+wideLayout.addEventListener('change', () => { if (state.caseState) render(); });
+
+function splitFields(s) {
+  const lay = s.layout;
+  if (!lay || !wideLayout.matches) return null;
+  const groups = new Set(lay.macroGroups || []);
+  const ids = new Set(lay.macroFields || []);
+  const macro = s.fields.filter((f) => groups.has(f.group) || ids.has(f.id));
+  if (!macro.length) return null;
+  return { macro, histo: s.fields.filter((f) => !macro.includes(f)) };
 }
 
 function renderOptions() {

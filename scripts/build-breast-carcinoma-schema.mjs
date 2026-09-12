@@ -169,6 +169,8 @@ const schema = {
     // A breast excision without a cancer clue defaults to the benign excision template (intake matcher).
     bias: -1
   },
+  // Three-column layout: these render in the case column beside the LIS macroscopy boxes (src/app.js splitFields).
+  layout: { macroGroups: ['Specimen and tumour'], macroFields: ['specimenName'] },
   macroExtract: {
     weight: { concept: 'weight', unit: 'g' },
     specimenDims: { concept: 'specimenDims', unit: 'mm' },
