@@ -48,7 +48,14 @@ Docs
 
 ## Now
 
-(empty — pull the next card in)
+### Macro extraction (e) — pasted macro fills the macro fields   Size: M
+Why:        the pasted LIS macro replaces the generated text but the template's macro fields (weight, dimensions, tumour size, depth of invasion, myometrial thickness…) stay at their defaults, so the synoptic and the derived percentages are typed twice; direct request 2026-09-12.
+Change:     `src/macroparse.js` reads the pasted Macroscopic text: it is split into lettered chunks `(A)`, `(B)`… (unlettered text goes to part A) and each part's schema `macroExtract` map (field → concept + unit) pulls values out with shared concept extractors — weight, specimen dimensions (incl. "N cm from cervix to fundus…"), tumour / lesion size (greatest and all dimensions), depth of invasion + wall / myometrial thickness ("0.4 cm thick out of a myometrial thickness of 2.2 cm", "invades to a depth of 6 mm in a 15 mm myometrium", "6/15 mm"), cavity length, length x diameter, block count. Units convert to the field's unit (mm / cm / g). Only fields still at default or still holding the earlier auto-fill are written; a field the user edits is left alone (`part.macroFill` / `part.macroSkip`). Runs on macro paste, template change and Build parts. Status line under the box says how many fields were filled.
+Untouched:  what prints (LIS replace / merge toggle), golden fixtures, non-macro fields, intake matching.
+Accept:     endometrial CA: "The tumour measures approximately 0.4 cm thick out of a myometrial thickness of 2.2 cm" → Macro depth 4 mm, myometrial thickness 22 mm; weight / uterus dimensions / tumour size filled; user-edited depth survives a re-paste; clearing the paste reverts auto-filled fields. Fixture text cases in `tests/fixtures/macro/cases.json` for endometrium, colorectal, GIST, gallbladder, appendix, benign uterus, thyroid, ovary, placenta, breast.
+Verify:     tests + browser
+Ship:       one deploy + publish
+Spec:       `docs/specs/specimen-intake.md` § Macro extraction (card (e))
 
 ---
 
