@@ -19,10 +19,10 @@
 //   diagnosis                 the specimen line + "- " clauses, lowest margin distance
 // Wording is protected by tests/appendix.test.js — change it only deliberately.
 
-import { typeMorphology } from './appendix_morphology.js?v=mtyl22ar';
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtyl22ar';
-import * as S from '../src/staging/appendix.js?v=mtyl22ar';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtyl22ar';
+import { typeMorphology } from './appendix_morphology.js?v=mtz0q3xn';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz0q3xn';
+import * as S from '../src/staging/appendix.js?v=mtz0q3xn';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz0q3xn';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };

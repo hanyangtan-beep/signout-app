@@ -16,9 +16,10 @@
 //   comment    the completion-resection staging sentence when a prior accession is typed
 // Wording is protected by tests/lung_carcinoma.test.js and tests/fixtures/lung - change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtyl22ar';
-import * as S from '../src/staging/lung.js?v=mtyl22ar';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtyl22ar';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz0q3xn';
+import * as S from '../src/staging/lung.js?v=mtz0q3xn';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz0q3xn';
+import { typeMorphology, patternMorphology, STAS_SENTENCE, ADENO_CYTOLOGY } from './lung_morphology.js?v=mtz0q3xn';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const fmt = (n) => (Number.isInteger(n) ? String(n) : String(Math.round(n * 10) / 10));
@@ -230,9 +231,24 @@ export function histologyPara(v) {
     if (t === ADENO_NM) {
       const pats = patternsOf(v);
       s.push(pats.length ? `Sections show an invasive adenocarcinoma, ${predominant(pats)} predominant (${pats.map((p) => `${p.name} ${fmt(p.pct)} %`).join(', ')}).` : 'Sections show an invasive adenocarcinoma.');
+      // Morphology of the predominant pattern, and of any high-grade pattern reaching 20 % that
+      // is not itself predominant (the IASLC 2020 grade 3 trigger).
+      if (pats.length && !noResidual(v)) {
+        const pred = predominant(pats);
+        const lead = patternMorphology(pred);
+        if (lead) s.push(lead);
+        const hg = pats.filter((p) => HIGH_GRADE.test(p.name) && p.name !== pred);
+        if (hg.length && highGradePct(pats) >= 20) {
+          const extra = patternMorphology(hg[0].name);
+          if (extra) s.push(extra);
+        }
+        s.push(ADENO_CYTOLOGY);
+      }
     } else {
       const name = lc1(shortTypeName(v));
       s.push(`Sections show ${/^[aeiou]/.test(name) ? 'an' : 'a'} ${name}${stripDot(v.histTypeDetail) && /\(specify|Mixed|Adenosquamous/.test(t) ? ` (${stripDot(v.histTypeDetail)})` : ''}.`);
+      const morph = noResidual(v) ? '' : typeMorphology(t, v.grade || '');
+      if (morph) s.push(morph);
     }
     if (isCarcinoid(v) || /Large cell neuroendocrine|Small cell/.test(t)) {
       const mit = num(v.mitoses); const nec = v.necrosis || 'Not identified';
@@ -240,7 +256,7 @@ export function histologyPara(v) {
       if (bits.length) s.push(`There are ${bits.join(' and ')}.`);
     }
     if (S.MIA.test(t) && num(v.invasiveSizeMm) !== null) s.push(`The invasive component measures ${fmt(num(v.invasiveSizeMm))} mm within a predominantly lepidic tumour.`);
-    if (v.stas === 'Present') s.push('Spread through air spaces is present.');
+    if (v.stas === 'Present') s.push(STAS_SENTENCE);
     if (/^PL[12]/.test(v.pleuralInvasion || '')) s.push(`The tumour invades the visceral pleura (${v.pleuralInvasion.slice(0, 3)}${v.elasticStain === true ? ', confirmed on elastic stain' : ''}).`);
   }
   const ihc = stripDot(v.ihc);

@@ -3,16 +3,16 @@
 // Specimen and tumour section, the Tumour histology paragraph after the nuclear grade, and the margin walker
 // text. pTNM (pTis(DCIS) / pTis(Paget) with pN and pM) prints only with the printPTNM option.
 // Shared helpers: ./breast_shared.js; biomarker rendering: ./breast_carcinoma.js (biomarkerItems).
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtyl22ar';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtyl22ar';
-import { hasBiomarkerData } from './breast_biomarkers.js?v=mtyl22ar';
-import { biomarkerItems } from './breast_carcinoma.js?v=mtyl22ar';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz0q3xn';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz0q3xn';
+import { hasBiomarkerData } from './breast_biomarkers.js?v=mtz0q3xn';
+import { biomarkerItems } from './breast_carcinoma.js?v=mtz0q3xn';
 import {
   num, fmt, lc1, lcProse, uc1, countWords, stripDot, arr, listJoin, specify, plural, item,
   procedureText, siteText, specimenName, diagnosisHead, otherParts, hasExtraParts, otherSpecimenLines, specimens, findingText, lettered,
   specimenSentence, tumourSentence, blockKey, marginItems, marginsPhrase, closestMargin, closestWords, nodeItems, nodesPhrase, nodeCounts, nodesSubmitted,
   metastasisValue, metastasisPhrase, ptnmSection, sharedChecks, marginChecks
-} from './breast_shared.js?v=mtyl22ar';
+} from './breast_shared.js?v=mtz0q3xn';
 
 export { specimenName, specimens, otherSpecimenLines, hasExtraParts, blockKey };
 
