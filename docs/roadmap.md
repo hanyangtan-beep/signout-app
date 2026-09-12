@@ -50,7 +50,7 @@ Docs
 
 ## Now
 
-(empty — pull the next card in)
+- Endometrial carcinoma — FIGO 2023 extent fields (direct request 2026-09-12, size S). Dependent select `noInvasionExtent` (shown when Myometrial invasion = Not identified): confined to the endometrium / limited to an endometrial polyp / polyp and underlying endometrium / cannot be determined. `myoExtent()` reads it instead of the macro Tumour site; synoptic row prints "Not identified; tumour confined to the endometrium" (CAP wording) and the diagnosis clause "confined to the endometrium" / "confined to an endometrial polyp"; Checks cross-check macro site vs micro extent. No-invasion fixtures regenerated deliberately. FIGO 2023 stays Checks-only. Stop: tests green, browser check of a polyp-confined case, one deploy + publish.
 
 ---
 
