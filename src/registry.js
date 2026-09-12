@@ -35,6 +35,11 @@ export function loadManifest(baseUrl) {
   return manifestPromise;
 }
 
+/** Templates still to build (templates/planned.json) — header placeholders only; never instantiated. */
+export function loadPlanned(baseUrl) {
+  return readJson('templates/planned.json', baseUrl).then((m) => m.planned || []).catch(() => []);
+}
+
 export async function loadSchema(id, baseUrl) {
   return readJson(`schemas/${id}.json`, baseUrl);
 }

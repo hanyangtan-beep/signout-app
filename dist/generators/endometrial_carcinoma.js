@@ -15,9 +15,9 @@
 // There is no separate narrative microscopy paragraph. Wording is protected by
 // tests/endometrial_carcinoma.test.js and tests/fixtures/endometrium - change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtxy9px0';
-import * as S from '../src/staging/endometrium.js?v=mtxy9px0';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtxy9px0';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtxyz3op';
+import * as S from '../src/staging/endometrium.js?v=mtxyz3op';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtxyz3op';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };

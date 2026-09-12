@@ -1,12 +1,16 @@
 // Template picker logic (pure; no DOM). Feeds the header rows, the Cmd-K palette and the
 // per-part template selector. `manifest` is the array from templates/manifest.json.
 
-export const SYSTEM_ORDER = ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology'];
+export const SYSTEM_ORDER = ['GI', 'Hepatobiliary', 'GU', 'Renal', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Medical', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology', 'General'];
+/** Short header labels for the system buttons (default: the system name). */
+export const SYSTEM_SHORT = { Hepatobiliary: 'HPB', 'Head and neck': 'H&N', Cardiovascular: 'Cardiac', General: 'Free text' };
+/** Header rows: which template kinds each row holds (user 2026-09-12). */
+export const ROWS = {
+  top: { label: 'Small biopsy & cytology', kinds: ['biopsy', 'cytology'] },
+  bottom: { label: 'Resections & frozen', kinds: ['benign resection', 'cancer resection', 'frozen', 'generic'] }
+};
 export const KIND_ORDER = ['biopsy', 'benign resection', 'cancer resection', 'frozen', 'cytology'];
 export const KIND_LABEL = { biopsy: 'Small biopsy', 'benign resection': 'Benign resection', 'cancer resection': 'Cancer resection', frozen: 'Frozen section', cytology: 'Cytology', generic: 'Free text' };
-export const STRIP_CAP = 8;
-export const BIOPSY_ROW_MAX = 12; // beyond this the row collapses to the top BIOPSY_ROW_COLLAPSED + "More"
-export const BIOPSY_ROW_COLLAPSED = 8;
 
 const byRank = (a, b) => (a.rank ?? 100) - (b.rank ?? 100) || a.shortName.localeCompare(b.shortName);
 const kindIdx = (k) => { const i = KIND_ORDER.indexOf(k); return i < 0 ? KIND_ORDER.length : i; };
@@ -22,33 +26,6 @@ export function biopsyRow(manifest) {
   return manifest.filter(isBiopsy).sort(byRank);
 }
 
-/** The row as shown: `{ shown, overflow }` — collapses to the top 8 when it outgrows one line. */
-export function biopsyRowLayout(manifest, max = BIOPSY_ROW_MAX, collapsed = BIOPSY_ROW_COLLAPSED) {
-  const row = biopsyRow(manifest);
-  if (row.length <= max) return { shown: row, overflow: [] };
-  return { shown: row.slice(0, collapsed), overflow: row.slice(collapsed) };
-}
-
-/**
- * Resections strip: pinned ids first (in pin order), then recents (most recent first), deduped,
- * biopsies excluded (they have their own row), capped. Any slots left are filled with the other
- * non-biopsy templates in rank order, so a small install shows everything.
- */
-export function resectionStrip(manifest, pins = [], recents = [], cap = STRIP_CAP) {
-  const byId = new Map(manifest.map((t) => [t.id, t]));
-  const out = [];
-  const seen = new Set();
-  const push = (id) => {
-    const t = byId.get(id);
-    if (!t || isBiopsy(t) || seen.has(id) || out.length >= cap) return;
-    seen.add(id); out.push(t);
-  };
-  pins.forEach(push);
-  recents.forEach(push);
-  manifest.filter((t) => !isBiopsy(t)).sort(byRank).forEach((t) => push(t.id));
-  return out;
-}
-
 /** Prepend `id` to a recents list (most recent first), deduped and trimmed. */
 export function pushRecent(recents, id, keep = 24) {
   return [id, ...recents.filter((x) => x !== id)].slice(0, keep);
@@ -56,6 +33,50 @@ export function pushRecent(recents, id, keep = 24) {
 
 export function togglePin(pins, id) {
   return pins.includes(id) ? pins.filter((x) => x !== id) : [...pins, id];
+}
+
+/**
+ * Header row groups: `[{ system, label, items }]` for one row, systems in SYSTEM_ORDER (small systems merged per ROW_MERGE), each with the
+ * built templates of the row's kinds (pinned first, then rank) followed by the planned placeholders
+ * (`planned: true`, from templates/planned.json). Systems with nothing in this row are omitted.
+ * The Autopsy placeholder (kind `autopsy`) belongs to neither row — it has its own header button.
+ */
+/** Per-row merges of small systems into one button (key = the group shown; order = first member's SYSTEM_ORDER slot). */
+export const ROW_MERGE = {
+  top: { Renal: 'Medical', Hepatobiliary: 'Medical', Cardiovascular: 'Medical' },
+  bottom: { Cardiovascular: 'Thoracic', 'Soft tissue': 'Skin', Endocrine: 'Head and neck' }
+};
+const ROW_LABEL = {
+  top: { Medical: 'Medical' },
+  bottom: { Skin: 'Skin / soft tissue' }
+};
+
+export function rowGroups(manifest, planned = [], row = 'top', { pins = [] } = {}) {
+  const kinds = ROWS[row]?.kinds || [];
+  const merge = ROW_MERGE[row] || {};
+  const groups = new Map();
+  const add = (t) => {
+    const key = merge[t.system] || t.system;
+    if (!groups.has(key)) groups.set(key, { order: Infinity, built: [], planned: [] });
+    const g = groups.get(key);
+    g.order = Math.min(g.order, SYSTEM_ORDER.includes(key) ? systemIdx(key) : systemIdx(t.system));
+    g[t.planned ? 'planned' : 'built'].push(t);
+  };
+  manifest.filter((t) => kinds.includes(t.kind)).forEach(add);
+  planned.filter((t) => kinds.includes(t.kind)).forEach((t) => add({ ...t, planned: true }));
+  const pinIdx = (t) => { const i = pins.indexOf(t.id); return i < 0 ? pins.length : i; };
+  return [...groups.entries()]
+    .sort(([a, ga], [b, gb]) => ga.order - gb.order || a.localeCompare(b))
+    .map(([system, g]) => ({
+      system,
+      label: ROW_LABEL[row]?.[system] || SYSTEM_SHORT[system] || system,
+      items: [...g.built.sort((a, b) => pinIdx(a) - pinIdx(b) || kindIdx(a.kind) - kindIdx(b.kind) || byRank(a, b)), ...g.planned]
+    }));
+}
+
+/** Placeholders outside the rows (today: Autopsy). */
+export function standalonePlanned(planned = []) {
+  return planned.filter((t) => !ROWS.top.kinds.includes(t.kind) && !ROWS.bottom.kinds.includes(t.kind)).map((t) => ({ ...t, planned: true }));
 }
 
 /** Templates grouped by system for browsing: `[{ system, items }]`, items in kind then rank order. */

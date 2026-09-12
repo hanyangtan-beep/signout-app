@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=mtxy9px0" />
+  <link rel="stylesheet" href="styles.css?v=mtxyz3op" />
 </head>
 <body>
   <a class="skip" href="#case">Skip to case</a>
@@ -24,15 +24,16 @@
         <h1>Sign-out</h1>
       </div>
       <div class="template-row" id="template-nav">
-        <span class="row-label">Small biopsy</span>
-        <nav class="templates" aria-label="Small biopsy templates" id="biopsy-row"></nav>
+        <span class="row-label">Biopsy &amp; cytology</span>
+        <nav class="templates systems" aria-label="Small biopsy and cytology templates by system" id="top-row"></nav>
+        <nav class="templates systems" aria-label="Autopsy" id="autopsy-row"></nav>
+        <button class="palette-btn" id="btn-palette" type="button" title="Find a template (Cmd/Ctrl + K or /)" aria-haspopup="dialog">Search <kbd>&#8984;K</kbd></button>
       </div>
     </div>
     <div class="topbar-row">
       <div class="template-row">
-        <button class="row-label row-label-btn" id="btn-resections" type="button" title="Browse resection, frozen section and cytology templates" aria-haspopup="dialog">Resections &amp; cytology <span aria-hidden="true">&#9662;</span></button>
-        <nav class="templates" aria-label="Pinned and recent templates" id="resection-row"></nav>
-        <button class="palette-btn" id="btn-palette" type="button" title="Find a template (Cmd/Ctrl + K or /)" aria-haspopup="dialog">Search <kbd>&#8984;K</kbd></button>
+        <button class="row-label row-label-btn" id="btn-resections" type="button" title="Browse resection, frozen section and cytology templates" aria-haspopup="dialog">Resection &amp; frozen <span aria-hidden="true">&#9662;</span></button>
+        <nav class="templates systems" aria-label="Resection and frozen section templates by system" id="bottom-row"></nav>
       </div>
       <div class="topbar-actions">
         <button class="btn ghost" id="btn-example" type="button" title="Load example">Example</button>
@@ -164,6 +165,6 @@
   </dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="src/app.js?v=mtxy9px0"></script>
+  <script type="module" src="src/app.js?v=mtxyz3op"></script>
 </body>
 </html>

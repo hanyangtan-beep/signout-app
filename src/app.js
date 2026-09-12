@@ -1,7 +1,7 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadTemplate } from './registry.js';
-import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js';
+import { loadManifest, loadPlanned, loadTemplate } from './registry.js';
+import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
 } from './engine.js';
@@ -28,6 +28,7 @@ const el = (tag, attrs = {}, ...children) => {
 
 const state = {
   manifest: [],           // templates/manifest.json entries (metadata for every installed template)
+  planned: [],            // templates/planned.json — placeholders for templates still to build
   templates: {},          // id -> { schema, generator } — lazy-loaded on first use
   pins: [],               // template ids pinned to the Resections row
   recents: [],            // non-biopsy template ids, most recent first
@@ -49,8 +50,9 @@ function ensureMeta(caseState) {
 }
 
 const nodes = {
-  biopsyRow: $('#biopsy-row'),
-  resectionRow: $('#resection-row'),
+  topRow: $('#top-row'),
+  bottomRow: $('#bottom-row'),
+  autopsyRow: $('#autopsy-row'),
   resections: $('#btn-resections'),
   paletteBtn: $('#btn-palette'),
   dlgPalette: $('#dlg-palette'),
@@ -345,29 +347,72 @@ function render() {
   renderSaveStatus();
 }
 
-function navButton(t, current) {
+// ---------- header rows: system buttons opening a compact menu (docs/specs/navigation.md) ----------
+const sysmenu = { open: null }; // key of the open menu ("top:GI"), one at a time
+
+function closeSysmenu() {
+  if (!sysmenu.open) return;
+  sysmenu.open = null;
+  renderNav();
+}
+
+/** Placeholder click: load Generic free text carrying the intended template's name (user 2026-09-12). */
+async function openPlaceholder(t) {
+  await switchTemplate('generic');
+  const part = activePart();
+  if (part && templateIdOf(state.caseState, part) === 'generic') {
+    part.values.specimenName = t.name;
+    markDirty();
+    render();
+  }
+  toast(`${t.name}: pending build — Generic free text loaded (roadmap: ${t.roadmap || 'Later'})`);
+}
+
+function menuItem(t, current) {
+  if (t.planned) {
+    return el('button', {
+      type: 'button', role: 'menuitem', class: 'menu-item pending', 'data-planned': t.id,
+      title: `Not built yet (roadmap: ${t.roadmap || 'Later'}). Opens Generic free text with this name.`,
+      onclick: () => { sysmenu.open = null; openPlaceholder(t).catch((e) => toast(e.message)); }
+    }, el('span', { class: 'mi-name', text: t.name }), el('span', { class: 'mi-sub', text: 'pending build' }));
+  }
   return el('button', {
-    type: 'button', 'aria-pressed': String(t.id === current), text: labelOf(t), 'data-template': t.id,
+    type: 'button', role: 'menuitem', class: 'menu-item', 'aria-current': String(t.id === current), 'data-template': t.id,
     title: state.dirty || state.caseState.meta?.accession ? `Use ${t.name} for part ${activePart().label}` : `New ${t.name} case`,
-    onclick: () => switchTemplate(t.id).catch((e) => toast(e.message))
-  });
+    onclick: () => { sysmenu.open = null; switchTemplate(t.id).catch((e) => toast(e.message)); }
+  }, el('span', { class: 'mi-name', text: t.name }), el('span', { class: 'mi-sub', text: KIND_LABEL[t.kind] || t.kind }));
+}
+
+function systemButton(row, g, current) {
+  const key = `${row}:${g.system}`;
+  const holdsCurrent = g.items.some((t) => !t.planned && t.id === current);
+  const open = sysmenu.open === key;
+  const wrap = el('div', { class: 'sys' + (open ? ' open' : '') });
+  const btn = el('button', {
+    type: 'button', 'aria-pressed': String(holdsCurrent), 'aria-expanded': String(open), 'aria-haspopup': 'menu', 'data-system': g.system,
+    title: g.items.map((t) => t.planned ? `${t.name} (pending build)` : t.name).join('\n'),
+    onclick: (e) => { e.stopPropagation(); sysmenu.open = open ? null : key; renderNav(); }
+  }, el('span', { text: g.label }));
+  wrap.append(btn);
+  if (open) wrap.append(el('div', { class: 'sysmenu', role: 'menu', 'aria-label': `${g.system} templates` }, ...g.items.map((t) => menuItem(t, current))));
+  return wrap;
 }
 
 function renderNav() {
   const current = schema().id;
-  const { shown, overflow } = biopsyRowLayout(state.manifest);
-  const biopsyButtons = shown.map((t) => navButton(t, current));
-  if (overflow.length) {
-    // the active template must stay one click away even when it falls in the overflow
-    const active = overflow.find((t) => t.id === current);
-    if (active) biopsyButtons.push(navButton(active, current));
-    biopsyButtons.push(el('button', { type: 'button', class: 'more', text: `More (${overflow.length}) ▾`, onclick: () => openPalette({ only: 'biopsy' }) }));
+  for (const [row, node] of [['top', nodes.topRow], ['bottom', nodes.bottomRow]]) {
+    const groups = rowGroups(state.manifest, state.planned, row, { pins: state.pins });
+    node.replaceChildren(...groups.map((g) => systemButton(row, g, current)));
   }
-  nodes.biopsyRow.replaceChildren(...biopsyButtons);
-  const strip = resectionStrip(state.manifest, state.pins, state.recents);
-  nodes.resectionRow.replaceChildren(...(strip.length ? strip.map((t) => navButton(t, current))
-    : [el('span', { class: 'empty', text: 'No resection templates yet' })]));
+  // standalone placeholders (Autopsy): one button each, same pending behaviour
+  nodes.autopsyRow.replaceChildren(...standalonePlanned(state.planned).map((t) => el('button', {
+    type: 'button', class: 'pending', 'data-planned': t.id, title: `Not built yet (roadmap: ${t.roadmap || 'Later'}). Opens Generic free text.`,
+    onclick: () => openPlaceholder(t).catch((e) => toast(e.message))
+  }, el('span', { text: t.label || t.name }), el('span', { class: 'tag', text: 'pending build' }))));
 }
+
+document.addEventListener('click', (e) => { if (sysmenu.open && !e.target.closest('.sys')) closeSysmenu(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sysmenu.open) closeSysmenu(); });
 
 // ---------- template palette (Cmd/Ctrl-K, "/", Resections ▾) ----------
 const palette = { mode: {}, items: [], index: 0 };
@@ -396,7 +441,7 @@ function paletteRow(t, i, current) {
   const pinned = state.pins.includes(t.id);
   const pin = el('button', {
     type: 'button', class: 'pin', 'aria-pressed': String(pinned), text: pinned ? '★' : '☆',
-    title: pinned ? 'Unpin from the Resections row' : 'Pin to the Resections row', 'aria-label': `${pinned ? 'Unpin' : 'Pin'} ${t.name}`,
+    title: pinned ? 'Unpin (sorts by frequency again)' : 'Pin to the top of its system menu', 'aria-label': `${pinned ? 'Unpin' : 'Pin'} ${t.name}`,
     onclick: (e) => { e.stopPropagation(); e.preventDefault(); state.pins = togglePin(state.pins, t.id); persistPicker(); renderNav(); renderPalette(); }
   });
   const row = el('button', {
@@ -1196,11 +1241,12 @@ async function boot() {
   initTheme();
   const back = consumeRedirect(); // did Google just send us back here?
   state.manifest = await loadManifest();
+  state.planned = await loadPlanned();
   loadPicker();
   const saved = loadCase();
   initDrive();
   initPalette();
-  const defaultId = biopsyRowLayout(state.manifest).shown[0]?.id || state.manifest[0].id; // most-used small biopsy
+  const defaultId = biopsyRow(state.manifest)[0]?.id || state.manifest[0].id; // most-used small biopsy
   if (saved && templatesInUse(saved).every((id) => entryOf(id))) {
     await ensureTemplates(templatesInUse(saved));
     setCase(saved, 0);

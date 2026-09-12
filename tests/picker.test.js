@@ -5,8 +5,9 @@ import { readFile } from 'node:fs/promises';
 import { buildManifest, manifestEntry, KINDS } from '../scripts/build-manifest.mjs';
 import { loadManifest, loadTemplate, loadAll } from '../src/registry.js';
 import {
-  biopsyRow, biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, pushRecent, togglePin, STRIP_CAP
+  biopsyRow, rowGroups, standalonePlanned, groupBySystem, selectorGroups, rankTemplates, labelOf, pushRecent, togglePin, ROWS, SYSTEM_ORDER
 } from '../src/picker.js';
+import { loadPlanned } from '../src/registry.js';
 
 const committed = JSON.parse(await readFile(new URL('../templates/manifest.json', import.meta.url), 'utf8'));
 const manifest = committed.templates;
@@ -47,34 +48,63 @@ test('small-biopsy row lists exactly the kind: biopsy templates in frequency ord
   const row = biopsyRow(manifest).map(labelOf);
   assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix', 'Endometrium', 'Lung']);
   assert.ok(!row.includes('LEEP') && !row.includes('Frozen'));
-  const layout = biopsyRowLayout(manifest);
-  assert.equal(layout.overflow.length, 0, 'ten biopsies fit on one row');
-});
-
-test('small-biopsy row collapses to the top 8 plus overflow when it outgrows one line', () => {
-  const many = [...manifest, ...Array.from({ length: 6 }, (_, i) => ({ id: `b${i}`, name: `Biopsy ${i}`, shortName: `Organ${i} · biopsy`, label: `Organ${i}`, system: 'Skin', kind: 'biopsy', rank: 50 + i, aliases: [] }))];
-  const { shown, overflow } = biopsyRowLayout(many);
-  assert.equal(shown.length, 8);
-  assert.equal(shown[0].id, 'gastric_biopsy');
-  assert.equal(overflow.length, 16 - 8);
-  // the strip cap never touches the biopsy row
-  assert.equal(biopsyRow(many).length, 16);
-});
-
-test('resection strip: pins first, then recents, then rank-order fill, deduped, biopsies excluded, capped at 8', () => {
-  const fake = Array.from({ length: 12 }, (_, i) => ({ id: `r${i}`, name: `Res ${i}`, shortName: `Organ · r${i}`, system: 'GI', kind: 'benign resection', rank: i, aliases: [] }));
-  const all = [...manifest, ...fake];
-  const strip = resectionStrip(all, ['r3', 'gastric_biopsy', 'r1', 'r3'], ['r1', 'r9', 'lung_biopsy', 'r0', 'r2', 'r4', 'r5', 'r6', 'r7', 'r8']);
-  assert.equal(strip.length, STRIP_CAP);
-  assert.deepEqual(strip.slice(0, 2).map((t) => t.id), ['r3', 'r1']);
-  assert.ok(!strip.some((t) => t.kind === 'biopsy'));
-  assert.equal(new Set(strip.map((t) => t.id)).size, strip.length, 'no duplicates');
-  // nothing pinned or recent → default set in rank order; a recent moves to the front, the rest still fill
-  assert.deepEqual(resectionStrip(manifest).map(labelOf), ['Frozen', 'LEEP', 'Lymph node', 'Placenta', 'Gallbladder', 'Thyroid', 'Parathyroid', 'Appendix']);
-  assert.deepEqual(resectionStrip(manifest, [], ['cervical_excision']).map(labelOf).slice(0, 3), ['LEEP', 'Frozen', 'Lymph node']);
-  assert.deepEqual(resectionStrip(all, [], ['r9']).map((t) => t.id), ['r9', 'r0', 'r1', 'r2', 'r3', 'r4', 'r5', 'r6']);
   assert.deepEqual(pushRecent(['a', 'b'], 'b'), ['b', 'a']);
   assert.deepEqual(togglePin(togglePin([], 'x'), 'x'), []);
+});
+
+const planned = await loadPlanned();
+
+test('planned.json: unique ids that do not collide with built templates; known systems and row kinds', () => {
+  assert.ok(planned.length >= 10);
+  const ids = planned.map((t) => t.id);
+  assert.equal(new Set(ids).size, ids.length, 'unique ids');
+  const built = new Set(manifest.map((t) => t.id));
+  for (const t of planned) {
+    assert.ok(!built.has(t.id), `${t.id} is still planned but already built — remove it from planned.json`);
+    assert.ok(t.name && t.label && t.system && t.kind && t.roadmap, `${t.id} complete`);
+    assert.ok(SYSTEM_ORDER.includes(t.system) || t.kind === 'autopsy', `${t.id}: system ${t.system} is in SYSTEM_ORDER`);
+    assert.ok([...ROWS.top.kinds, ...ROWS.bottom.kinds, 'autopsy'].includes(t.kind), `${t.id}: kind ${t.kind} maps to a row`);
+  }
+});
+
+test('header rows: top = biopsy + cytology, bottom = resections + frozen + free text, grouped by system in order, planned appended', () => {
+  const top = rowGroups(manifest, planned, 'top');
+  const bottom = rowGroups(manifest, planned, 'bottom');
+  const kindsIn = (groups) => new Set(groups.flatMap((g) => g.items.map((t) => t.kind)));
+  assert.deepEqual([...kindsIn(top)].sort(), ['biopsy', 'cytology']);
+  assert.deepEqual([...kindsIn(bottom)].sort(), ['benign resection', 'cancer resection', 'frozen', 'generic']);
+  // system order and labels
+  assert.deepEqual(top.map((g) => g.system), ['GI', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Medical', 'Cytology']);
+  assert.deepEqual(bottom.map((g) => g.label), ['GI', 'HPB', 'GU', 'Gynae', 'Breast', 'Thoracic', 'H&N', 'CNS', 'Skin / soft tissue', 'Lymphoid', 'Frozen', 'Free text']);
+  assert.equal(top.find((g) => g.system === 'Head and neck').label, 'H&N');
+  // merges: medical biopsies share one top button; aortic valve sits with lung under Thoracic; soft tissue with skin; endocrine with H&N
+  assert.deepEqual(top.find((g) => g.system === 'Medical').items.map((t) => t.id), ['renal_biopsy', 'liver_biopsy', 'endomyocardial_biopsy']);
+  assert.ok(bottom.find((g) => g.system === 'Thoracic').items.some((t) => t.id === 'aortic_valve_aorta'));
+  assert.ok(bottom.find((g) => g.system === 'Skin').items.some((t) => t.id === 'soft_tissue_benign'));
+  assert.ok(bottom.find((g) => g.system === 'Head and neck').items.some((t) => t.id === 'thyroid_benign'), 'thyroid under H&N in the resection row');
+  assert.equal(bottom.find((g) => g.system === 'General').label, 'Free text');
+  assert.equal(bottom[bottom.length - 1].system, 'General', 'Free text last');
+  // built before planned within a group; planned carry the flag and open Generic in the app
+  const gi = top.find((g) => g.system === 'GI');
+  assert.deepEqual(gi.items.map(labelOf), ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Peritoneum']);
+  assert.equal(gi.items.at(-1).planned, true);
+  const giBottom = bottom.find((g) => g.system === 'GI').items;
+  assert.ok(giBottom.findIndex((t) => t.id === 'colon_resection') < giBottom.findIndex((t) => t.id === 'gastric_carcinoma'));
+  assert.ok(giBottom.some((t) => t.id === 'appendix_carcinoma' && t.planned) && giBottom.some((t) => t.id === 'gi_net' && t.planned));
+  // every built template appears exactly once across the two rows
+  const all = [...top, ...bottom].flatMap((g) => g.items).filter((t) => !t.planned).map((t) => t.id);
+  assert.deepEqual(all.sort(), manifest.map((t) => t.id).sort());
+  // pins sort first inside their menu, planned still last
+  const pinned = rowGroups(manifest, planned, 'top', { pins: ['ibd_biopsy'] }).find((g) => g.system === 'GI').items.map((t) => t.id);
+  assert.equal(pinned[0], 'ibd_biopsy');
+  assert.equal(pinned.at(-1), 'peritoneal_nodule');
+  // a group that only has planned entries still gets a button (Medical, CNS)
+  assert.deepEqual(bottom.find((g) => g.system === 'CNS').items.map((t) => t.id), ['cns_tumour']);
+  // Autopsy is in neither row; it is the standalone button
+  assert.ok(![...top, ...bottom].some((g) => g.items.some((t) => t.id === 'autopsy')));
+  assert.deepEqual(standalonePlanned(planned).map((t) => t.id), ['autopsy']);
+  // rows stay short
+  assert.ok(top.length <= 10 && bottom.length <= 12, `${top.length} / ${bottom.length} buttons`);
 });
 
 test('palette ranking: exact shortName > alias > organ > keyword', () => {

@@ -1,0 +1,26 @@
+{
+  "note": "Templates still to build (see signout_app_roadmap.md). Each shows in its system menu as a greyed 'pending build' placeholder that opens Generic free text. Remove the entry in the card that builds the template.",
+  "planned": [
+    { "id": "peritoneal_nodule", "name": "Peritoneal nodule biopsy", "label": "Peritoneum", "system": "GI", "kind": "biopsy", "roadmap": "Next" },
+    { "id": "nasopharyngeal_biopsy", "name": "Nasopharyngeal biopsy", "label": "Nasopharynx", "system": "Head and neck", "kind": "biopsy", "roadmap": "Next" },
+    { "id": "renal_biopsy", "name": "Renal biopsy (medical; Banff / MEST-C / ISN-RPS)", "label": "Renal", "system": "Renal", "kind": "biopsy", "roadmap": "Later" },
+    { "id": "liver_biopsy", "name": "Liver biopsy (medical; Ishak / METAVIR / NAS / RAI)", "label": "Liver", "system": "Hepatobiliary", "kind": "biopsy", "roadmap": "Later" },
+    { "id": "endomyocardial_biopsy", "name": "Endomyocardial biopsy (ISHLT)", "label": "Endomyocardial", "system": "Cardiovascular", "kind": "biopsy", "roadmap": "Later" },
+    { "id": "inflammatory_dermatoses", "name": "Inflammatory dermatoses", "label": "Dermatoses", "system": "Skin", "kind": "biopsy", "roadmap": "Later" },
+
+    { "id": "fallopian_tube_ectopic", "name": "Fallopian tube — ectopic pregnancy", "label": "Ectopic", "system": "Gynae", "kind": "benign resection", "roadmap": "Next" },
+    { "id": "gastric_carcinoma", "name": "Gastric carcinoma resection", "label": "Gastric Ca", "system": "GI", "kind": "cancer resection", "roadmap": "Next" },
+    { "id": "appendix_carcinoma", "name": "Appendix carcinoma resection", "label": "Appendix Ca", "system": "GI", "kind": "cancer resection", "roadmap": "Next" },
+    { "id": "gallbladder_carcinoma", "name": "Gallbladder carcinoma resection", "label": "Gallbladder Ca", "system": "Hepatobiliary", "kind": "cancer resection", "roadmap": "Next" },
+    { "id": "breast_carcinoma", "name": "Breast carcinoma resection", "label": "Breast Ca", "system": "Breast", "kind": "cancer resection", "roadmap": "Next" },
+    { "id": "prostate_radical", "name": "Radical prostatectomy", "label": "Prostatectomy", "system": "GU", "kind": "cancer resection", "roadmap": "Later" },
+    { "id": "gi_net", "name": "GI neuroendocrine tumour resection", "label": "GI NET", "system": "GI", "kind": "cancer resection", "roadmap": "Later" },
+    { "id": "pancreas_carcinoma", "name": "Pancreas carcinoma resection", "label": "Pancreas Ca", "system": "Hepatobiliary", "kind": "cancer resection", "roadmap": "Later" },
+    { "id": "bile_duct_carcinoma", "name": "Bile duct carcinoma resection (distal / perihilar)", "label": "Bile duct Ca", "system": "Hepatobiliary", "kind": "cancer resection", "roadmap": "Later" },
+    { "id": "oral_cavity_carcinoma", "name": "Lip and oral cavity carcinoma resection", "label": "Oral cavity Ca", "system": "Head and neck", "kind": "cancer resection", "roadmap": "Later" },
+    { "id": "cns_tumour", "name": "CNS tumour resection (WHO CNS5)", "label": "CNS tumour", "system": "CNS", "kind": "cancer resection", "roadmap": "Later" },
+    { "id": "lymphoma_node", "name": "Lymph node for lymphoma (WHO-HAEM5)", "label": "Lymphoma", "system": "Lymphoid", "kind": "cancer resection", "roadmap": "Later" },
+
+    { "id": "autopsy", "name": "Autopsy report", "label": "Autopsy", "system": "Autopsy", "kind": "autopsy", "roadmap": "Later" }
+  ]
+}
