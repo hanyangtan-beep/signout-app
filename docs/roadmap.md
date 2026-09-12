@@ -53,6 +53,28 @@ Docs
 
 Ordered. Each card is buildable as written; the spec file holds the full brief.
 
+### Specimen intake — paste the LIS specimen list, parts auto-populated   Size: L → split; two cards, build as one batch
+
+### Specimen intake (a) — parser, part builder, Generic template   Size: M
+Why:        multi-part cases are assembled by hand today: add a part, pick a template, type the specimen name, repeat (user request 2026-09-12). The LIS already lists the specimens.
+Change:     (1) **Specimen** box under Accession (multi-line paste) replacing the single-line Case title / specimens field; the case title is derived from it and stays editable. (2) `src/intake.js` parser: part markers `(A)` / `A)` / `A.` / `1.` / `(1)` / per-line lists, letters and numbers normalised to A, B, C; specimen text tidied, LIS codes and container counts moved to a note; single part prints without "(A)". (3) Preview strip under the box, one row per part: letter, specimen text, template dropdown, confidence mark. (4) **Build parts** creates the parts with label, `templateId` and specimen name; edited parts are replaced only after one confirmation. (5) **Generic (free text)** template (`schemas/generic.json`, `generators/generic.js`): specimen name, microscopy, diagnosis line and text, optional comment; joins multi-part reports like any template and is listed in the palette. (6) `meta.specimenText` saved with the case.
+Untouched:  report wording, existing schemas and generators, golden fixtures, Drive record apart from the new field; gastric / IBD site parsing (`parseSitesFromTitle`) still reads the derived title.
+Accept:     parser table in `tests/intake.test.js` (markers, numbers, single line, per-line lists, codes stripped); paste of a three-part list builds three parts with the right labels and names; a part with no match lands on Generic and prints a complete report; existing fixtures byte-for-byte unchanged.
+Stop:       no AI call, no macro parsing, no LIS / Navify integration; if the house LIS format is not known when the card starts, build the parser on the user's pasted samples only and stop at what they cover.
+Verify:     tests + browser (paste, preview, Build parts, Generic report, Copy full report) + one Drive save
+Ship:       one deploy + publish with card (b)
+Spec:       `docs/specs/specimen-intake.md`
+
+### Specimen intake (b) — template matching with clinical-history inference   Size: M
+Why:        the paste is only useful if each part lands on the right template; the specimen line gives organ and procedure, the clinical history breaks ties (e.g. "leiomyomas" → uterus benign, "endometrial carcinoma" → endometrial carcinoma synoptic).
+Change:     (1) `match` block per schema (`site`, `procedure`, `clinical`, `not` terms with weights; existing `aliases` seed `site`), compiled into `templates/manifest.json` by `scripts/build-manifest.mjs`. (2) Deterministic scorer in `src/intake.js`: site + procedure hits from the specimen text, clinical hits from the history counted only for templates whose site matched that part, `not` terms subtract; tiers **confident** / **choose** (top three in the dropdown) / **none** (Generic). (3) Clinical history re-scores the preview live. (4) Fixture set `tests/fixtures/intake/cases.json` of anonymised LIS specimen lists with clinical history and expected template per part, seeded from the user's samples and extended whenever a case mis-matches in use.
+Untouched:  everything in card (a) apart from the dropdown default; no template wording.
+Accept:     top-1 correct for ≥ 90% of parts in the fixture set; zero confident-wrong assignments (a wrong guess must surface as "choose"); every template reachable by at least one fixture part; the leiomyoma example from the request passes as written.
+Stop:       no model call in this card (Later: AI fallback for "none" / "choose", pending a PHI decision); no per-user learning of corrections beyond adding them to the fixture file.
+Verify:     tests + browser with the user's own pasted cases
+Ship:       one deploy + publish with card (a)
+Spec:       `docs/specs/specimen-intake.md`
+
 ### iPhone-friendly version of the app                    Size: M
 Why:        the app is used from a phone between cases (user request 2026-09-11); today the layout only collapses to one column at 960 px, the two-row template bar, chip groups and the report pane were designed for a desktop width, and Google sign-in / Save have not been exercised on iOS Safari.
 Change:     responsive pass at 390-430 px (iPhone 13-16 widths), no separate app: (1) sticky compact top bar with a single **Templates** sheet replacing the two button rows and the Search box; (2) form and report as two tabs (**Case** / **Report**) with a bottom action bar (Copy diagnosis, Copy full report, Save) instead of a side-by-side workspace; (3) chip groups wrap with 44 px touch targets, selects and inputs at 16 px to stop iOS zoom, part header actions collapse into a menu; (4) Compare photos panels one column, lightbox pinch-zoomable; (5) `viewport-fit=cover` + safe-area insets, `theme-color`, apple-touch-icon and a web-app manifest so **Add to Home Screen** opens full-screen; (6) Google sign-in and Drive Save / Open verified on iOS Safari (popup vs redirect flow — pick whichever works in standalone mode and record it in the spec); (7) clipboard copy verified on iOS (`navigator.clipboard.writeText` requires a user gesture).
@@ -209,6 +231,7 @@ Depends on: Linked synoptic part
 
 ## Later
 
+- Specimen intake — AI fallback: when the rule-based matcher returns "none" or "choose", offer a model suggestion from the specimen text and clinical history (S; needs a PHI decision first — the paste may contain identifiers); and macro-paste field extraction (sizes, counts, node numbers into schema fields) as a separate card.
 One line each; card them before building.
 
 - Synoptic templates after stomach and the lung / breast pairs: prostate (radical) with Gleason arithmetic validation. (`docs/specs/synoptic-next-templates.md`; endometrium carded in Next)
