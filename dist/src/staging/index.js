@@ -10,15 +10,16 @@
 // (GIST: site and mitotic rate).
 // Categories are bare ('T3', 'N1b', 'M1a', 'Tis', 'TX', 'N0', 'M-') — the prefix is added here.
 
-import * as colorectal from './colorectal.js?v=mtyeq6tr';
-import * as gist from './gist.js?v=mtyeq6tr';
-import * as endometrium from './endometrium.js?v=mtyeq6tr';
-import * as ovary from './ovary.js?v=mtyeq6tr';
-import * as lung from './lung.js?v=mtyeq6tr';
-import * as breast from './breast.js?v=mtyeq6tr';
-import * as phyllodes from './phyllodes.js?v=mtyeq6tr';
+import * as colorectal from './colorectal.js?v=mtyg1l03';
+import * as gist from './gist.js?v=mtyg1l03';
+import * as endometrium from './endometrium.js?v=mtyg1l03';
+import * as ovary from './ovary.js?v=mtyg1l03';
+import * as lung from './lung.js?v=mtyg1l03';
+import * as breast from './breast.js?v=mtyg1l03';
+import * as phyllodes from './phyllodes.js?v=mtyg1l03';
+import * as gastric from './gastric.js?v=mtyg1l03';
 
-export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes };
+export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes, gastric };
 
 // T, N and M alternatives are listed longest first (ovary: T1c1-3, T2a/b, T3a-c, N0(i+); lung: T1mi,
 // N2a/b, M1c1/c2; breast: Tis(DCIS), Tis(Paget), T4c/d, N0(mol+), N1mi, N3a-c and the optional (sn) / (f) node suffix); the negative look-aheads stand in for \b so "N0(i+)" and "T1c1 " both terminate cleanly.

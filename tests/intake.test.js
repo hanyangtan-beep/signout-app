@@ -80,7 +80,7 @@ test('matcher: biopsy templates never match resections; generic is the fallback'
   const kidney = matchParts(parseIntake('(A) Kidney, right, resection'), 'RCC', manifest)[0];
   assert.equal(kidney.templateId, GENERIC_ID, 'no resection template for the organ: generic');
   const gastric = matchParts(parseIntake('(A) Stomach, stomach, Resection'), 'Gastric Ca', manifest)[0];
-  assert.equal(gastric.templateId, GENERIC_ID);
+  assert.equal(gastric.templateId, 'gastric_carcinoma', 'the gastric carcinoma resection template (Phase 11) takes a gastric resection with a cancer history');
   assert.ok(gastric.candidates.some((cd) => cd.id === 'gastric_biopsy'), 'still offered in the dropdown');
   const unknown = matchParts(parseIntake('(A) Something odd'), '', manifest)[0];
   assert.equal(unknown.templateId, GENERIC_ID);

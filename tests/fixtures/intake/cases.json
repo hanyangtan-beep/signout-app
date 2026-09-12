@@ -221,8 +221,8 @@
       "expect": [
         {
           "label": "A",
-          "templateId": "generic",
-          "tier": "none"
+          "templateId": "gastric_carcinoma",
+          "tier": "confident"
         },
         {
           "label": "B",

@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 50,
+  "count": 51,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -2476,6 +2476,68 @@
       "generator": "breast_carcinoma",
       "generatorPath": "generators/breast_carcinoma.js",
       "schemaPath": "schemas/breast_carcinoma.json"
+    },
+    {
+      "id": "gastric_carcinoma",
+      "name": "Gastric carcinoma resection",
+      "shortName": "Stomach · cancer resection",
+      "label": "Gastric Ca",
+      "organ": "Stomach",
+      "system": "GI",
+      "kind": "cancer resection",
+      "rank": 45,
+      "aliases": [
+        "gastrectomy",
+        "stomach cancer",
+        "stomach resection",
+        "cardiotomy",
+        "gastric adenocarcinoma",
+        "esd",
+        "emr"
+      ],
+      "match": {
+        "site": [
+          "stomach",
+          "gastric",
+          "cardia",
+          "fundus",
+          "pylorus",
+          "antrum",
+          "gastrectomy"
+        ],
+        "procedure": [
+          "gastrectomy",
+          "sleeve",
+          "esd",
+          "emr",
+          "endoscopic submucosal dissection",
+          "endoscopic mucosal resection"
+        ],
+        "clinical": [
+          "gastric carcinoma",
+          "gastric adenocarcinoma",
+          "early gastric cancer",
+          "stomach tumour"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          },
+          {
+            "field": "procedure",
+            "from": "options"
+          },
+          {
+            "field": "tumourSite",
+            "from": "options"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "gastric_carcinoma",
+      "generatorPath": "generators/gastric_carcinoma.js",
+      "schemaPath": "schemas/gastric_carcinoma.json"
     },
     {
       "id": "breast_dcis",

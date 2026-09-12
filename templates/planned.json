@@ -50,14 +50,6 @@
       "roadmap": "Next"
     },
     {
-      "id": "gastric_carcinoma",
-      "name": "Gastric carcinoma resection",
-      "label": "Gastric Ca",
-      "system": "GI",
-      "kind": "cancer resection",
-      "roadmap": "Next"
-    },
-    {
       "id": "appendix_carcinoma",
       "name": "Appendix carcinoma resection",
       "label": "Appendix Ca",

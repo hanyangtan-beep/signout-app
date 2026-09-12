@@ -7,6 +7,7 @@ State on 2026-09-12: 45 templates (10 small biopsy, 23 benign resection incl. LE
 ---
 
 ## Done
+- Gastric carcinoma resection synoptic (Phase 11, 2026-09-12): `gastric_carcinoma` schema + generator against the saved QMH GI-Stomach page (element order pinned by `tests/gastric.test.js`; the single agreed exception is `- Tumour histology:` after the grade). AJCC 8th pTNM in `src/staging/gastric.js` (T read from the tumour-extension pick-list, N by the 1-2 / 3-6 / 7-15 / 16+ counts, N3a/N3b stage-table split, M1 sites force stage IV; y/m/r descriptors, typed override echoes the derived value). Endoscopic-resection variant swaps in HM/VM margins and the JCGC 7e eCura C score (3+1+1+1+1 points, strata and undetermined-element audit in Checks). Checks: node census rules, <16 examined warning, ENE audit on node-positive, margin distances, T4b structure prompt, CIS-with-nodes caution. Wired for LIS macro parsing (weight, dimensions, stomach length, duodenal cuff, omentum, tumour size / dims).
 - Nasopharyngeal biopsy template, Phase 10, 2026-09-12: `nasopharyngeal_biopsy` schema + generator (benign pick-list, WHO 5th NPC subtypes with IHC + EBER sentence, atypical lymphoid / granulomatous / post-RT wording, recurrence prefix), EBER-pending auto snippet gated off benign findings, EBV staging and lymphoma work-up snippets; planned NPC placeholder retired from the H&N picker row.
 
 Foundations and engine
@@ -64,11 +65,6 @@ Docs
 ## Next
 
 Build order (parsimonious, 2026-09-12; Breast pair shipped): the remaining cancer pairs first (each consumes the linked-part engine and retires a placeholder), then the three small-biopsy / benign templates as **one batch**, then the three S fixes as **one batch**, then iPhone layout and the Gleason galleries. Frozen scenario cards (b), (e) ship inside their pairs, not alone ((a) shipped with the Breast pair). Placeholders in the app menus (`templates/planned.json`) are removed by the card that builds the template.
-
-### Gastric carcinoma resection (synoptic)              Size: L → split before building
-Why:        highest-volume cancer resection after colon.
-Split into: (a) save QMH page + importer draft + `src/staging/gastric.js` rules with boundary tests (M); (b) schema + generator + synoptic block + Checks (M); (c) fixtures against the QMH page element order + docs (S).
-Spec:       `docs/specs/synoptic-next-templates.md`
 
 ### Appendix pair — appendicectomy + appendix cancer synoptic   Size: L → split; build as one batch
 Why:        appendiceal neoplasms are found incidentally in appendicectomies reported on the benign template; its `neoplasia` field currently ends in "- see comment" with a placeholder snippet. The QMH appendix page gives the CAP element set.
