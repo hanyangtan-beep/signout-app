@@ -9,6 +9,10 @@ Requested 2026-09-12: "arrange into 3 columns: accession and macroscopy on the l
 - Middle (`section.histo`): part tabs, the part head (template picker, Add breast synoptic / Stage this part, Reset, Remove), the remaining field groups, then report options and comment snippets.
 - Right (`section.report`): unchanged. The sticky offset now follows the real header height (`--topbar-h`, set by a ResizeObserver) instead of a fixed 64 px, so the Report heading is no longer clipped under the two-row header.
 
+## Column heads and the case card
+
+Each column starts with a `.col-head` row of the same height (42 px, 12 px gap below): "Case", the part tabs, and "Report" with its copy buttons. The accession / status / Specimen paste / LIS-text boxes / case-level fields sit in a bordered `.case-card` styled like the part panel, so the three cards begin on the same line.
+
 ## Which fields move left
 
 A schema opts in with
