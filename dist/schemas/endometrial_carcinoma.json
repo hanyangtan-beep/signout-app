@@ -7,6 +7,14 @@
   "organ": "UTERUS",
   "system": "Gynae",
   "kind": "cancer resection",
+  "layout": {
+    "macroGroups": [
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "rank": 42,
   "aliases": [
     "endometrium",

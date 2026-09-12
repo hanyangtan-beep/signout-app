@@ -7,6 +7,14 @@
   "organ": "GALLBLADDER",
   "system": "Hepatobiliary",
   "kind": "benign resection",
+  "layout": {
+    "macroGroups": [
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "rank": 23,
   "aliases": [
     "cholecystectomy",

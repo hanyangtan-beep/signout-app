@@ -7,6 +7,14 @@
   "organ": "BREAST",
   "system": "Breast",
   "kind": "cancer resection",
+  "layout": {
+    "macroGroups": [
+      "Specimen and tumour"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "rank": 47,
   "aliases": [
     "breast",

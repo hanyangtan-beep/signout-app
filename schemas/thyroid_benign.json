@@ -7,6 +7,14 @@
   "organ": "THYROID GLAND",
   "system": "Endocrine",
   "kind": "benign resection",
+  "layout": {
+    "macroGroups": [
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "rank": 24,
   "aliases": [
     "hemithyroidectomy",

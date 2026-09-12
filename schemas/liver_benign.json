@@ -7,6 +7,14 @@
   "organ": "LIVER",
   "system": "Hepatobiliary",
   "kind": "benign resection",
+  "layout": {
+    "macroGroups": [
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "rank": 40,
   "aliases": [
     "liver",

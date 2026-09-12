@@ -7,6 +7,14 @@
   "organ": "APPENDIX",
   "system": "GI",
   "kind": "benign resection",
+  "layout": {
+    "macroGroups": [
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "rank": 26,
   "aliases": [
     "appendicectomy",

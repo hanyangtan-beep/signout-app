@@ -7,6 +7,14 @@
   "organ": "STOMACH",
   "system": "GI",
   "kind": "cancer resection",
+  "layout": {
+    "macroGroups": [
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "rank": 41,
   "aliases": [
     "GIST",

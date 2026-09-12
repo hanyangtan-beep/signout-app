@@ -7,6 +7,14 @@
   "organ": "LUNG",
   "system": "Thoracic",
   "kind": "cancer resection",
+  "layout": {
+    "macroGroups": [
+      "Specimen and tumour"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "rank": 44,
   "aliases": [
     "lung",

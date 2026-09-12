@@ -7,6 +7,14 @@
   "organ": "COLON",
   "system": "GI",
   "kind": "cancer resection",
+  "layout": {
+    "macroGroups": [
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "rank": 40,
   "aliases": [
     "colectomy",

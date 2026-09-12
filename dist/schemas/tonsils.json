@@ -7,6 +7,14 @@
   "organ": "TONSILS",
   "system": "Head and neck",
   "kind": "benign resection",
+  "layout": {
+    "macroGroups": [
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "rank": 34,
   "aliases": [
     "tonsil",

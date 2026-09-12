@@ -7,6 +7,14 @@
   "organ": "PLACENTA",
   "system": "Gynae",
   "kind": "benign resection",
+  "layout": {
+    "macroGroups": [
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "rank": 22,
   "aliases": [
     "chorioamnionitis",

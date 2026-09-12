@@ -7,6 +7,14 @@
   "organ": "UTERUS",
   "system": "Gynae",
   "kind": "benign resection",
+  "layout": {
+    "macroGroups": [
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "rank": 27,
   "aliases": [
     "hysterectomy",

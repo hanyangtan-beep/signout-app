@@ -7,6 +7,14 @@
   "organ": "PAROTID",
   "system": "Head and neck",
   "kind": "benign resection",
+  "layout": {
+    "macroGroups": [
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "rank": 42,
   "aliases": [
     "parotid",

@@ -82,6 +82,8 @@ const schema = {
   organ: 'BREAST',
   system: 'Breast',
   kind: 'cancer resection',
+  // Three-column layout: these render in the case column beside the LIS macroscopy boxes (src/app.js splitFields).
+  layout: { macroGroups: ['Specimen and tumour'], macroFields: ['specimenName'] },
   rank: 46,
   aliases: ['breast', 'DCIS', 'ductal carcinoma in situ', 'in situ', 'Paget', 'encapsulated papillary', 'solid papillary', 'wide local excision', 'mastectomy', 'microcalcification', 'synoptic', 'CAP'],
   match: {

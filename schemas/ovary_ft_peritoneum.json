@@ -7,6 +7,14 @@
   "organ": "OVARY",
   "system": "Gynae",
   "kind": "cancer resection",
+  "layout": {
+    "macroGroups": [
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
   "rank": 43,
   "aliases": [
     "ovary",
