@@ -1,7 +1,7 @@
 // Generic schema engine: builds part defaults, evaluates visibility, and assembles
 // the report from a schema + generator module. Runs unchanged in the browser and in Node.
 
-import { applyStyle } from './style.js?v=mtxpn80l';
+import { applyStyle } from './style.js?v=mtxqgosf';
 
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -16,8 +16,14 @@ export const HEADERS = {
   comment: 'COMMENT:'
 };
 
-/** Block order in the assembled report. `macro`, `intraop` and `synoptic` only appear for templates with those hooks; `comment` only when a snippet or free-text comment is active. */
-export const BLOCK_ORDER = ['specimens', 'macro', 'blockKey', 'intraop', 'microscopy', 'synoptic', 'diagnosis', 'comment'];
+/**
+ * Block order in the assembled report. `macro` and `intraop` only appear for templates with
+ * those hooks; `comment` only when a snippet or free-text comment is active. Synoptic text is
+ * not a block of its own: it prints inside `microscopy`, part by part in case order, under the
+ * heading MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT whenever any part is synoptic
+ * (`out.microscopyHeading`). `out.synoptic` still exposes the synoptic text alone.
+ */
+export const BLOCK_ORDER = ['specimens', 'macro', 'blockKey', 'intraop', 'microscopy', 'diagnosis', 'comment'];
 
 /** Default values for one part. `index` is 0-based. */
 export function defaultValues(schema, index = 0) {
@@ -221,7 +227,8 @@ export function dropPartLetters(text, label = 'A') {
 export function assemble(blocks, includeHeader) {
   const present = BLOCK_ORDER.filter((k) => blocks[k] && blocks[k].trim() !== '');
   if (!includeHeader) return present.map((k) => blocks[k]).join('\n\n');
-  return present.map((k) => `${HEADERS[k]}\n${blocks[k]}`).join('\n\n');
+  const header = (k) => (k === 'microscopy' && blocks.microscopyHeading ? `${blocks.microscopyHeading}:` : HEADERS[k]);
+  return present.map((k) => `${header(k)}\n${blocks[k]}`).join('\n\n');
 }
 
 /** Template id of a part: its own `templateId`, else the case default. */
@@ -294,13 +301,13 @@ export function generateCase(templates, caseState) {
     .map((p) => styled(p.templateId, ctxs[p.templateId].gen.blockKey(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n');
   const intraop = ids.filter((id) => ctxs[id].gen.intraop)
     .map((id) => styled(id, ctxs[id].gen.intraop(ctxs[id].parts, ctxs[id]))).filter((t) => t && t.trim() !== '').join('\n\n');
-  // Narrative microscopy. Cancer templates with a `synoptic` hook print no narrative paragraph:
-  // their tumour histology lives inside the synoptic (docs/specs/synoptic-layout.md).
-  const microscopy = parts.filter((p) => !ctxs[p.templateId].gen.synoptic)
-    .map((p) => styled(p.templateId, ctxs[p.templateId].gen.microscopy(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n\n');
-  // Optional per-part synoptic block for cancer resections (sectioned QMH element list with the tumour histology).
-  const synoptic = parts.filter((p) => ctxs[p.templateId].gen.synoptic)
-    .map((p) => styled(p.templateId, ctxs[p.templateId].gen.synoptic(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n\n');
+  // One microscopy block, parts in case order. Cancer templates with a `synoptic` hook print
+  // their sectioned QMH element list (tumour histology included) in place of a narrative
+  // paragraph (docs/specs/synoptic-layout.md); the heading says so when any part is synoptic.
+  const perPart = (p) => { const c = ctxs[p.templateId]; return styled(p.templateId, c.gen.synoptic ? c.gen.synoptic(p, c) : c.gen.microscopy(p, c)); };
+  const microscopy = parts.map(perPart).filter((t) => t && t.trim() !== '').join('\n\n');
+  const hasSynoptic = parts.some((p) => ctxs[p.templateId].gen.synoptic);
+  const synoptic = parts.filter((p) => ctxs[p.templateId].gen.synoptic).map(perPart).filter((t) => t && t.trim() !== '').join('\n\n');
   // Validation issues (`{level: 'error'|'warn', message}`) from templates with a `validate` hook.
   const issues = [];
   for (const p of parts) {
@@ -330,9 +337,9 @@ export function generateCase(templates, caseState) {
     blockKey: tidy(letters(blockKey)),
     intraop: tidy(letters(intraop)),
     microscopy: tidy(letters(microscopy)),
-    synoptic: tidy(letters(synoptic)),
     diagnosis: tidy(letters(diagnosis)),
-    comment: tidy(comment)
+    comment: tidy(comment),
+    microscopyHeading: hasSynoptic ? HEADERS.synoptic.slice(0, -1) : HEADERS.microscopy.slice(0, -1)
   };
   // Text pasted from the LIS (case meta) either replaces the generated macro / block key
   // (explicit toggle) or is appended after it. Typed text is printed verbatim.
@@ -353,7 +360,7 @@ export function generateCase(templates, caseState) {
     edited[key] = true;
     source[key] = 'edited';
   }
-  return { ...blocks, issues, source, edited, generated, report: assemble(blocks, !!options.includeHeader) };
+  return { ...blocks, synoptic: tidy(letters(synoptic)), issues, source, edited, generated, report: assemble(blocks, !!options.includeHeader) };
 }
 
 /**

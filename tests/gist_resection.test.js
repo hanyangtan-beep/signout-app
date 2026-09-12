@@ -53,7 +53,7 @@ test('fixture: gastric spindle-cell very-low-risk GIST (example case)', () => {
   assert.equal(out.specimens, 'Stomach, wedge resection');
   assert.equal(out.macro, 'Received in formalin is a wedge resection specimen of stomach measuring 65 x 50 x 30 mm. There is a well-circumscribed intramural tumour in the greater curvature, body measuring 4.5 cm in greatest dimension (4.5 x 3.8 x 3.0 cm). The cut surface is tan-white, whorled and circumscribed. The overlying mucosa is intact. Tumour rupture is not identified. Representative sections are taken; see block key.');
   assert.equal(out.blockKey, '(1) Tumour with overlying mucosa. (2-4) Tumour, deepest point and serosal surface. (5) Tumour, closest resection margin. (6) Uninvolved stomach.');
-  assert.equal(out.microscopy, '', 'synoptic templates carry no narrative microscopy');
+  assert.equal(out.microscopy, out.synoptic, 'synoptic templates print the synoptic as the microscopy block');
   assert.equal(out.synoptic, [
     'Specimen and tumour',
     '- Procedure: Wedge resection',
@@ -114,7 +114,7 @@ test('fixture: jejunal high-risk, ruptured, KIT-negative, node-positive GIST wit
   assert.equal(out.specimens, 'Jejunum, segmental small bowel resection');
   assert.equal(out.macro, 'Received in formalin is a segmental small bowel resection specimen of jejunum measuring 120 mm length of small bowel. There is an exophytic tumour arising from the serosal aspect measuring 7.2 cm in greatest dimension. The cut surface is tan-white with necrosis. The overlying mucosa is ulcerated. There is tumour rupture (spontaneous / preoperative). Representative sections are taken; see block key.');
   assert.equal(out.blockKey, '(1-3) Tumour. (4) Mesenteric margin. (5) Lymph nodes. (6) Omental nodules.');
-  assert.equal(out.microscopy, '');
+  assert.equal(out.microscopy, out.synoptic);
   const r = rows(out);
   assert.equal(r['Tumour histology'], 'Sections show a gastrointestinal stromal tumour composed of epithelioid cells with rounded nuclei and eosinophilic to clear cytoplasm, arranged in nests and sheets. Necrosis is present (approximately 20% of the tumour). The overlying mucosa is ulcerated.');
   assert.equal(r['Histologic grade'], 'G2: High grade; mitotic rate more than 5 per 5 mm2');
@@ -221,7 +221,7 @@ test('checks: required fields, node arithmetic, KIT/DOG1 double negative, overri
 
 test('options: no macro, stage group off, section headers; multi-part headings; synopticOnly retired', () => {
   const a = run();
-  assert.equal(a.microscopy, '');
+  assert.equal(a.microscopy, a.synoptic);
   assert.ok(a.synoptic.startsWith('Specimen and tumour\n- Procedure'));
   assert.ok(!schema.options.some((o) => o.id === 'synopticOnly'));
   const b = run({}, { macro: false });
@@ -237,7 +237,7 @@ test('options: no macro, stage group off, section headers; multi-part headings; 
   assert.equal(e.specimens, '(A) Stomach, wedge resection\n(B) Omentum, excision of omental / mesenteric mass');
   assert.ok(e.synoptic.startsWith('(A) Stomach, wedge resection\nSpecimen and tumour\n- Procedure') && e.synoptic.includes('\n\n(B) Omentum, excision of omental / mesenteric mass\nSpecimen and tumour\n- Procedure'));
   assert.match(e.macro, /\(B\) Received in formalin is an excision of omental \/ mesenteric mass \(omentum\) measuring 20 x 15 x 10 mm\./);
-  assert.equal(e.microscopy, '');
+  assert.equal(e.microscopy, e.synoptic);
   assert.match(e.synoptic, /\(B\)[\s\S]*- Risk assessment \(Miettinen and Lasota 2006\): None \(omentum, 1\.5 cm, 0 mitoses\n  per 5 mm2\)/);
   assert.match(e.diagnosis, /\n\n\(B\) OMENTUM, excision of omental \/ mesenteric mass\n- GASTROINTESTINAL STROMAL TUMOUR, spindle cell type, 1\.5 cm, mitotic count\n  0 per 5 mm2\n- no appreciable risk \(Miettinen and Lasota 2006\); margins clear\n- pT1 pNX \(AJCC 8th edition\), stage IA \(if cM0\)/);
 });

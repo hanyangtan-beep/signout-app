@@ -700,11 +700,10 @@ function renderReport() {
     ['macro', 'Macroscopic description', out.macro],
     ['blockKey', 'Block key', out.blockKey],
     ['intraop', 'Intraoperative consultation', out.intraop],
-    ['microscopy', 'Microscopic examination', out.microscopy],
-    ['synoptic', 'Microscopic examination and synoptic report', out.synoptic],
+    ['microscopy', out.microscopyHeading ? out.microscopyHeading.charAt(0) + out.microscopyHeading.slice(1).toLowerCase() : 'Microscopic examination', out.microscopy],
     ['diagnosis', 'Diagnosis', out.diagnosis],
     ['comment', 'Comment', out.comment]
-  ].filter(([key, , text]) => text || out.edited?.[key] || ['specimens', 'diagnosis'].includes(key) || (key === 'microscopy' && !out.synoptic));
+  ].filter(([key, , text]) => text || out.edited?.[key] || ['specimens', 'microscopy', 'diagnosis'].includes(key));
   const issues = out.issues || [];
   const checks = issues.length ? [el('div', { class: `checks ${issues.some((i) => i.level === 'error') ? 'has-error' : issues.some((i) => i.level === 'warn') ? 'has-warn' : 'info-only'}` },
     el('div', { class: 'checks-head' }, el('h3', { text: 'Checks' }), el('span', { class: 'muted', text: [`${issues.filter((i) => i.level === 'error').length} to fix`, `${issues.filter((i) => i.level === 'warn').length} to review`, issues.some((i) => i.level === 'info') ? `${issues.filter((i) => i.level === 'info').length} for reference` : ''].filter(Boolean).join(' · ') })),

@@ -1,7 +1,7 @@
 // Pure helpers shared by the browser Drive layer and the Node tests:
 // accession normalisation, PHI guard, Doc text layout, Sheet row mapping.
 
-import { templateLabel } from './engine.js?v=mtxpn80l';
+import { templateLabel } from './engine.js?v=mtxqgosf';
 
 export const SHEET_HEADER = ['accession', 'updated', 'status', 'template', 'parts', 'doc_url', 'doc_id', 'case_json'];
 
@@ -47,11 +47,9 @@ export function buildDocText(caseState, out) {
     ['MACROSCOPIC DESCRIPTION', macro],
     ['BLOCK KEY', blockKey],
     ...(out.intraop && out.intraop.trim() !== '' ? [['INTRAOPERATIVE CONSULTATION', out.intraop]] : []),
-    // Synoptic templates carry their tumour histology inside the synoptic block, so a case with
-    // no narrative microscopy prints one combined heading; a mixed case prints both.
-    ...(out.synoptic && out.synoptic.trim() !== '' && !(out.microscopy && out.microscopy.trim() !== '')
-      ? [['MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT', out.synoptic]]
-      : [['MICROSCOPIC EXAMINATION', out.microscopy], ...(out.synoptic && out.synoptic.trim() !== '' ? [['MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT', out.synoptic]] : [])]),
+    // One microscopy section; synoptic parts print inside it and the heading says so
+    // (`out.microscopyHeading`). Older outputs without the heading fall back to the plain one.
+    [out.microscopyHeading || 'MICROSCOPIC EXAMINATION', out.microscopy],
     ['DIAGNOSIS', out.diagnosis],
     ...(out.comment && out.comment.trim() !== '' ? [['COMMENT', out.comment]] : [])
   ];

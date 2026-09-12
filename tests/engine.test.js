@@ -49,7 +49,7 @@ test('schema examples generate without error and include every part', () => {
     // Synoptic templates carry their microscopy inside the synoptic block instead of a narrative paragraph.
     const micro = generator.synoptic ? out.synoptic : out.microscopy;
     assert.ok(out.diagnosis.trim() !== '' && micro.trim() !== '', `${schema.id} example is empty`);
-    if (generator.synoptic) assert.equal(out.microscopy.trim(), '', `${schema.id} should have no narrative microscopy`);
+    if (generator.synoptic) assert.equal(out.microscopy, out.synoptic, `${schema.id} prints its synoptic as the microscopy block`);
     assert.ok(out.report.length > 0);
   }
 });

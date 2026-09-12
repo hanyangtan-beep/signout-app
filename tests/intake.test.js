@@ -124,7 +124,7 @@ test('presets: lymph node station, breast margins and generic specimen name', as
       const m = matched.find((x) => x.label === label);
       const schema = (await loadTemplate(m.templateId)).schema;
       const got = presetValues(schema, m, m);
-      for (const [k, v] of Object.entries(want)) assert.equal(got[k], v, `${c.name} (${label}).${k}`);
+      for (const [k, v] of Object.entries(want)) assert.equal(got[k] ?? '', v, `${c.name} (${label}).${k}`); // '' in the fixture = must stay unset
     }
   }
 });
@@ -133,6 +133,11 @@ test('subsite pre-fill: option matching from the specimen text', async () => {
   const ibd = ['Terminal ileum', 'Ileocaecal valve', 'Caecum', 'Ascending colon', 'Hepatic flexure', 'Transverse colon', 'Splenic flexure', 'Descending colon', 'Sigmoid colon', 'Rectosigmoid', 'Rectum', 'Random colon'];
   assert.equal(matchOption(ibd, 'Terminal ileum, biopsy'), 'Terminal ileum');
   assert.equal(matchOption(ibd, 'TI, biopsy'), 'Terminal ileum', 'TI shorthand');
+  const proc = ['Right hemicolectomy', 'Anterior resection', 'Low anterior resection', 'Abdominoperineal resection', 'Other'];
+  assert.equal(matchOption(proc, 'Sigmoid colon, anterior resection'), 'Anterior resection');
+  assert.equal(matchOption(proc, 'Rectum, low anterior resection'), 'Low anterior resection', 'longest option wins');
+  assert.equal(matchOption(proc, 'Rectum, APR'), 'Abdominoperineal resection', 'APR shorthand');
+  assert.equal(matchOption(proc, 'Rectum, LAR'), 'Low anterior resection', 'LAR shorthand');
   assert.equal(matchOption(ibd, 'Cecum, biopsy'), 'Caecum', 'spelling folded');
   assert.equal(matchOption(ibd, 'Ascending, biopsy'), 'Ascending colon', '"colon" optional in the option');
   assert.equal(matchOption(ibd, 'Rectosigmoid junction, biopsy'), 'Rectosigmoid');

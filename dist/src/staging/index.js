@@ -10,9 +10,9 @@
 // (GIST: site and mitotic rate).
 // Categories are bare ('T3', 'N1b', 'M1a', 'Tis', 'TX', 'N0', 'M-') — the prefix is added here.
 
-import * as colorectal from './colorectal.js?v=mtxpn80l';
-import * as gist from './gist.js?v=mtxpn80l';
-import * as endometrium from './endometrium.js?v=mtxpn80l';
+import * as colorectal from './colorectal.js?v=mtxqgosf';
+import * as gist from './gist.js?v=mtxqgosf';
+import * as endometrium from './endometrium.js?v=mtxqgosf';
 
 export const PROTOCOLS = { colorectal, gist, endometrium };
 

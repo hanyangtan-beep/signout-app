@@ -68,7 +68,7 @@ test('layout: bullets and hanging indents parse back to rows; Tumour histology i
     assert.ok(hist.value.startsWith('Sections show '), `${name}: histology paragraph starts "Sections show"`);
     assert.ok(!/FIGO(?! grade)/.test(out.synoptic + out.diagnosis), `${name}: no FIGO staging text`);
     // No narrative microscopy block; the combined heading carries the synoptic.
-    assert.equal(out.microscopy, '');
+    assert.equal(out.microscopy, out.synoptic);
     assert.ok(out.report.includes(out.synoptic));
   }
   assert.equal(HEADERS.synoptic, 'MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:');

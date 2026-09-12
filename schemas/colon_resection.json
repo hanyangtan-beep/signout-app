@@ -76,6 +76,10 @@
       {
         "field": "tumourSite",
         "from": "options"
+      },
+      {
+        "field": "procedure",
+        "from": "options"
       }
     ]
   },

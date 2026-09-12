@@ -70,7 +70,7 @@ test('example case: low-grade endometrioid IA2 NSMP', () => {
   const out = run();
   assert.equal(out.specimens, 'Uterus with cervix and bilateral adnexa, total hysterectomy and bilateral salpingo-oophorectomy with sentinel lymph node biopsy');
   assert.ok(out.macro.startsWith('The specimen consists of an intact uterus with cervix (165 g, 92 x 58 x 44 mm)'));
-  assert.equal(out.microscopy, '', 'no narrative microscopy for synoptic templates');
+  assert.equal(out.microscopy, out.synoptic, 'the synoptic is the microscopy block for synoptic templates');
   const r = rows(out);
   assert.equal(r['Tumour histology'], 'Sections show an endometrioid carcinoma with a predominantly glandular architecture of confluent, back-to-back glands lined by stratified columnar cells with elongated, mildly to moderately atypical nuclei; solid non-squamous growth makes up 5% or less of the tumour. There is squamous differentiation with morules and keratinising nests. Tumour necrosis is not seen. Myometrial invasion is by irregular infiltrative glands eliciting a stromal response.');
   assert.ok(out.synoptic.includes('- Myometrial invasion: Estimated less than 50% myometrial invasion\n  - Depth of myometrial invasion: 6 mm\n  - Myometrial thickness: 18 mm\n  - Percentage of myometrial invasion: 33%\n'));
@@ -219,7 +219,8 @@ test('macro option; the synoptic block replaces the narrative microscopy in the 
   const noMacro = run({}, { macro: false });
   assert.equal(noMacro.macro, ''); assert.equal(noMacro.blockKey, '');
   const out = run({}, { includeHeader: true });
-  assert.equal(out.microscopy, '');
+  assert.equal(out.microscopy, out.synoptic);
+  assert.equal(out.microscopyHeading, 'MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT');
   assert.ok(out.report.includes('MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:\nSpecimen and tumour\n- Procedure:'));
   assert.ok(!out.report.includes('MICROSCOPIC EXAMINATION:'));
   assert.ok(!schema.options.some((o) => o.id === 'synopticOnly'));

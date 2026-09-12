@@ -132,6 +132,11 @@
           {
             "field": "site",
             "from": "options"
+          },
+          {
+            "field": "customSpecimen",
+            "from": "detail",
+            "unless": "^(polyps?|biopsy|biopsies|tissue|fragments?|lesion|mass)$"
           }
         ]
       },
@@ -1858,6 +1863,10 @@
         "fill": [
           {
             "field": "tumourSite",
+            "from": "options"
+          },
+          {
+            "field": "procedure",
             "from": "options"
           }
         ]

@@ -332,7 +332,7 @@
     },
     {
       "name": "colonic polyps",
-      "text": "History\nColonoscopy, polyps\n\nSpecimen\n(A) Sigmoid colon, polypectomy and (B) Rectum, polyp, biopsy",
+      "text": "History\nColonoscopy, polyps\n\nSpecimen\n(A) Sigmoid colon, polypectomy, (B) Rectum, polyp, biopsy and (C) Transverse colon, T1 transverse colon polyp, polypectomy",
       "expect": [
         {
           "label": "A",
@@ -343,14 +343,25 @@
           "label": "B",
           "templateId": "colonic_polyp",
           "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "colonic_polyp",
+          "tier": "confident"
         }
       ],
       "values": {
         "A": {
-          "site": "Sigmoid"
+          "site": "Sigmoid",
+          "customSpecimen": ""
         },
         "B": {
-          "site": "Rectum"
+          "site": "Rectum",
+          "customSpecimen": ""
+        },
+        "C": {
+          "site": "Transverse colon",
+          "customSpecimen": "T1 transverse colon polyp"
         }
       }
     },
@@ -572,7 +583,13 @@
           "templateId": "soft_tissue_benign",
           "tier": "confident"
         }
-      ]
+      ],
+      "values": {
+        "A": {
+          "tumourSite": "Sigmoid colon",
+          "procedure": "Anterior resection"
+        }
+      }
     },
     {
       "name": "cytology and frozen",

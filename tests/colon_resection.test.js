@@ -33,7 +33,7 @@ test('schema metadata and the QMH source are recorded', () => {
 });
 
 test('engine exposes the synoptic block between microscopy and diagnosis', () => {
-  assert.deepEqual(BLOCK_ORDER, ['specimens', 'macro', 'blockKey', 'intraop', 'microscopy', 'synoptic', 'diagnosis', 'comment']);
+  assert.deepEqual(BLOCK_ORDER, ['specimens', 'macro', 'blockKey', 'intraop', 'microscopy', 'diagnosis', 'comment']);
   assert.equal(HEADERS.synoptic, 'MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:');
   const r = run({}, { includeHeader: true }).report;
   assert.ok(!r.includes('MICROSCOPIC EXAMINATION:'), 'no separate narrative microscopy block');
@@ -52,7 +52,7 @@ test('example case: specimen, macro, block key', () => {
 
 test('example case: tumour histology paragraph replaces the narrative microscopy', () => {
   const out = run();
-  assert.equal(out.microscopy, '');
+  assert.equal(out.microscopy, out.synoptic, 'the synoptic prints as the microscopy block');
   assert.equal(row(out, 'Tumour histology'), 'Sections show an invasive moderately differentiated adenocarcinoma arising in a tubulovillous adenoma, forming irregular glands with a desmoplastic stromal response and luminal dirty necrosis.');
   assert.ok(out.synoptic.includes('- Tumour histology:\n  Sections show an invasive moderately differentiated adenocarcinoma arising in\n  a tubulovillous adenoma, forming irregular glands with a desmoplastic stromal\n  response and luminal dirty necrosis.'));
   // Morphology picks drive the paragraph; free text is appended as its own sentence.
@@ -96,7 +96,7 @@ test('example case: diagnosis line', () => {
 
 test('no narrative paragraph: the synoptic opens with its first section and the schema has no synopticOnly option', () => {
   const out = run();
-  assert.equal(out.microscopy, '');
+  assert.equal(out.microscopy, out.synoptic);
   assert.match(out.synoptic, /^Specimen and tumour\n- Procedure: Right hemicolectomy\n/);
   assert.match(out.diagnosis, /^ASCENDING COLON/);
   assert.ok(!out.report.includes('Sections of the tumour'));
@@ -211,7 +211,7 @@ test('multi-part case: each part gets its own synoptic block with a labelled hea
   assert.match(out.diagnosis, /^\(A\) ASCENDING COLON, right hemicolectomy\n- INVASIVE[\s\S]*\n\n\(B\) SIGMOID COLON, sigmoid colectomy\n- INVASIVE ADENOCARCINOMA/);
 });
 
-test('mixed case with a colonic polyp part keeps the synoptic block for the resection only', () => {
+test('mixed case with a colonic polyp part prints one microscopy block: polyp paragraph then the resection synoptic', () => {
   const cs = {
     schemaId: 'colon_resection', caseTitle: '', options: { ...schema.example.options }, snippets: {}, comment: '',
     parts: [
@@ -222,9 +222,16 @@ test('mixed case with a colonic polyp part keeps the synoptic block for the rese
   const out = generateCase({ colonic_polyp: reg.colonic_polyp, colon_resection: reg.colon_resection }, cs);
   assert.match(out.synoptic, /^\(B\) Ascending colon, right hemicolectomy\nSpecimen and tumour\n- Procedure/);
   assert.ok(!out.synoptic.includes('(A)'));
-  // The polyp part keeps its narrative paragraph; the resection contributes none.
+  // One block in case order: the polyp paragraph, then the resection synoptic under the combined heading.
   assert.match(out.microscopy, /^\(A\) /);
-  assert.ok(!out.microscopy.includes('(B)'));
+  assert.ok(out.microscopy.includes('\n\n(B) Ascending colon, right hemicolectomy\nSpecimen and tumour'));
+  assert.ok(out.microscopy.indexOf('(A)') < out.microscopy.indexOf('(B)'));
+  assert.equal(out.microscopyHeading, 'MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT');
+  const doc = buildDocText({ ...cs, meta: { accession: 'S26-1' } }, out);
+  assert.equal((doc.match(/MICROSCOPIC EXAMINATION/g) || []).length, 1, 'one microscopy section in the Doc');
+  assert.ok(doc.includes('MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:\n(A) '));
+  const full = generateCase({ colonic_polyp: reg.colonic_polyp, colon_resection: reg.colon_resection }, { ...cs, options: { ...cs.options, includeHeader: true } }).report;
+  assert.equal((full.match(/MICROSCOPIC EXAMINATION/g) || []).length, 1, 'one heading in the full report');
   assert.equal(out.issues.length, 0);
 });
 

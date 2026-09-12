@@ -228,6 +228,7 @@ const SITE_SPELLINGS = [
   [/\brecto-?sigmoid( junction)?\b/g, 'rectosigmoid'], [/\bsigmoid colon\b/g, 'sigmoid'],
   [/\brandom colon(ic)?\b/g, 'random'], [/\bt\.?i\.?\b/g, 'terminal ileum'],
   [/\bincisura( angularis)?\b/g, 'incisura'], [/\bmandibular\b/g, 'mandible'], [/\bmaxillary\b/g, 'maxilla'], [/\bantral\b/g, 'antrum'],
+  [/\ba\.?p\.?r\.?\b/g, 'abdominoperineal resection'], [/\blar\b/g, 'low anterior resection'],
 ];
 const UNSPECIFIC_OPTION = /unspecified|not (specified|otherwise|stated|applicable|identified)|cannot be|^other\b|specify/i;
 
@@ -257,7 +258,7 @@ export function matchOption(options, text) {
   return tie ? '' : best;
 }
 
-/** `match.fill`: `{field, from: "detail" | "text" | "options"}` rules (a single object is accepted too). */
+/** `match.fill`: `{field, from: "detail" | "text" | "options", unless?}` rules (a single object is accepted too). */
 function applyFill(schema, part, values) {
   const rules = [].concat(schema?.match?.fill || []);
   const field = (id) => (schema?.fields || []).find((f) => f.id === id);
@@ -271,7 +272,8 @@ function applyFill(schema, part, values) {
       if (opt) values[rule.field] = opt;
     } else if (f.type === 'text') {
       const v = rule.from === 'detail' ? part.detail : part.text;
-      if (v) values[rule.field] = v;
+      // `unless` (regex source) skips a value that is only a generic word ("polyp", "biopsy").
+      if (v && !(rule.unless && new RegExp(rule.unless, 'i').test(v.trim()))) values[rule.field] = v;
     }
   }
 }
