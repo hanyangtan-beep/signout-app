@@ -47,7 +47,11 @@ Docs
 
 ## Now
 
-(empty — pull the next card in)
+### Report assembly (d) — one microscopy block; LIS labels flow into the polyp diagnosis line
+Size S · pulled in 2026-09-12 (direct request)
+- Multi-part cases mixing a synoptic template with narrative parts print one MICROSCOPIC EXAMINATION block (heading gains "AND SYNOPTIC REPORT" when any part is synoptic), parts in case order — no separate synoptic box.
+- A unique LIS label on a colonic polyp ("Transverse colon, T1 transverse colon polyp, polypectomy") flows into the specimen name and the diagnosis line: "TRANSVERSE COLON, T1 transverse colon polyp, polypectomy - TUBULAR ADENOMA…".
+- Stop: golden fixtures unchanged; one deploy + publish.
 
 ---
 
