@@ -57,3 +57,13 @@ site prefix; append site only when HK conventions are inferred (`(R)Proximal mar
 complete response, CIS warning, eCura strata, distal-metastasis M1 grouping, TNM override) and
 `tests/staging-gastric.test.js` (boundary bins T/N/M, N3a/N3b stage-table split, eCura scoring,
 override echo). Staging protocol id `gastric`.
+
+## Morphology sourcing (2026-09-12 deepen pass)
+
+Per-type sentences in `generators/gastric_morphology.js` follow WHO 5th ed digestive tumours
+as reflected in the expert-authored chapters (pathologyoutlines.com/topic/stomachcarcinomageneral.html,
+stomachWHOclassification.html, stomachlel.html, stomachneuroendocrine.html, stomachgastroblastoma.html),
+the Verona/WHO poorly cohesive carcinoma consensus (PMC9412924), fundic-gland-type carcinoma
+literature (PMC7585219), the WHO >50% extracellular-mucin criterion, MiNEN >30% rule and the
+WHO 2019 NEN mitotic / Ki-67 tiers. Wired into histologyPara in generators/gastric_carcinoma.js
+(skipped for carcinoma-in-situ and pT0). Pinned by tests/gastric-morphology.test.js.
