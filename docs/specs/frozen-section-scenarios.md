@@ -107,5 +107,6 @@ Pairs and their QMH pages (`https://awiloqmh.github.io/CancerReportingTemplate/`
 | Bile duct / pancreatic duct margins (b) | margin status | Pancreas (`GI-Pancreas.html`), distal extrahepatic and perihilar bile ducts | Later — Pancreatobiliary pair |
 | Named margins (e) | margin status and distances | Lip and oral cavity (`HN-Lip and oral cavity.html`), nasal cavity / sinuses | Later — Head-and-neck pair |
 | CNS lesion (d) | WHO CNS5 grade / integrated diagnosis (no AJCC) | `CNS-Meningioma.html`, `CNS-Common_gliomas_and_ependymomas.html` | Later — CNS pair |
+| Ovarian / adnexal mass (existing scenario, enriched) | histotype favoured, side, specimen integrity, size, surface | Ovary / fallopian tube / peritoneum (`GYN-Ovary.html`) — FIGO Checks-only | Next — Ovary pair (`docs/specs/ovary-pair.md`) |
 
 Order: unstaged frozen batch (a)+(b)+(e) → engine card with the Lung pair → Breast pair → gastric synoptic as already planned → Later pairs.
