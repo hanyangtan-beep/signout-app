@@ -43,7 +43,7 @@
     },
     {
       "id": "fallopian_tube_ectopic",
-      "name": "Fallopian tube \u2014 ectopic pregnancy",
+      "name": "Fallopian tube — ectopic pregnancy",
       "label": "Ectopic",
       "system": "Gynae",
       "kind": "benign resection",
@@ -75,7 +75,7 @@
     },
     {
       "id": "gi_net",
-      "name": "GI neuroendocrine tumour resection (stomach, duodenum / ampulla, jejunum\u2013ileum, appendix, colon)",
+      "name": "GI neuroendocrine tumour resection (stomach, duodenum / ampulla, jejunum–ileum, appendix, colon)",
       "label": "GI NET",
       "system": "GI",
       "kind": "cancer resection",
@@ -120,15 +120,6 @@
       "system": "Lymphoid",
       "kind": "cancer resection",
       "roadmap": "Later"
-    },
-    {
-      "id": "oesophageal_carcinoma",
-      "name": "Oesophageal carcinoma resection",
-      "label": "Oesophagus Ca",
-      "system": "GI",
-      "kind": "cancer resection",
-      "roadmap": "Later",
-      "qmh": "GI-Esophagus"
     },
     {
       "id": "small_intestine_carcinoma",

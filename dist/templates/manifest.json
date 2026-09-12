@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 51,
+  "count": 52,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -2001,6 +2001,80 @@
       "generator": "liverbenign",
       "generatorPath": "generators/liverbenign.js",
       "schemaPath": "schemas/liver_benign.json"
+    },
+    {
+      "id": "oesophageal_carcinoma",
+      "name": "Oesophageal carcinoma resection",
+      "shortName": "Oesophagus · cancer resection",
+      "label": "Oesophagus Ca",
+      "organ": "Oesophagus",
+      "system": "GI",
+      "kind": "cancer resection",
+      "rank": 40,
+      "aliases": [
+        "esophageal cancer",
+        "esophagectomy",
+        "oesophagectomy",
+        "oesophagogastrectomy",
+        "Ivor Lewis",
+        "McKeown",
+        "barett adenocarcinoma",
+        "barrett carcinoma"
+      ],
+      "match": {
+        "site": [
+          "oesophagus",
+          "oesophageal",
+          "esophagus",
+          "esophageal",
+          "OGJ",
+          "GOJ",
+          "gastro-oesophageal",
+          "gastroesophageal",
+          "oesophagogastric",
+          "esophagogastric",
+          "cardia"
+        ],
+        "procedure": [
+          "oesophagectomy",
+          "esophagectomy",
+          "oesophagogastrectomy",
+          "esophagogastrectomy",
+          "Ivor Lewis",
+          "McKeown",
+          "three-stage",
+          "two-stage",
+          "transhiatal",
+          "esd",
+          "emr",
+          "endoscopic submucosal dissection"
+        ],
+        "clinical": [
+          "oesophageal carcinoma",
+          "esophageal carcinoma",
+          "squamous cell carcinoma",
+          "barrett adenocarcinoma",
+          "barrett cancer"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          },
+          {
+            "field": "procedure",
+            "from": "options"
+          },
+          {
+            "field": "tumourSite",
+            "from": "options"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "oesophageal_carcinoma",
+      "generatorPath": "generators/oesophageal_carcinoma.js",
+      "schemaPath": "schemas/oesophageal_carcinoma.json"
     },
     {
       "id": "gist_resection",
