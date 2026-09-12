@@ -244,6 +244,7 @@ textarea.input { min-height: 64px; resize: vertical; }
 .block {
   background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm); overflow: hidden;
+  container-type: inline-size;
 }
 .block-head {
   display: flex; align-items: center; padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
@@ -254,6 +255,9 @@ textarea.input { min-height: 64px; resize: vertical; }
 .block pre {
   margin: 0; padding: var(--space-4); font-family: var(--font-mono); font-size: 13px; line-height: 1.55;
   white-space: pre-wrap; word-break: break-word; color: var(--color-text); min-height: 48px;
+  /* Synoptic blocks are wrapped at 80 columns with hanging indents; size the mono font so 80 characters
+     (about 0.6em each) fit the block width and the browser never soft-wraps a pre-wrapped line. */
+  font-size: clamp(11px, (100cqw - 2 * var(--space-4)) / 48, 13px);
 }
 .block pre .part-label { color: var(--color-primary); font-weight: 500; }
 .block pre .changed { background: var(--color-primary-highlight); border-radius: 2px; }

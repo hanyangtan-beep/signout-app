@@ -20,11 +20,13 @@
 // Wording is protected by tests/colon_resection.test.js — change it only deliberately.
 
 import { deriveTNM, stageLine } from '../src/staging/index.js';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
 const fmt = (n) => (Number.isInteger(n) ? String(n) : String(n).replace(/\.0+$/, ''));
 const lc1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : '');
+const uc1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : '');
 const listJoin = (items) => {
   const a = items.filter(Boolean);
   if (a.length <= 1) return a[0] || '';
@@ -97,35 +99,6 @@ export function extensionPhrase(v) {
   return t.replace('{peri}', periWord(v)).replace('{adjacent}', (v.adjacentStructure || '').trim() ? `the ${stripDot(v.adjacentStructure)}` : 'an adjacent structure');
 }
 
-const LVI_PHRASE = {
-  'Not identified': 'Lymphovascular invasion is not identified.',
-  'Small vessel': 'Small vessel lymphovascular invasion is present.',
-  'Large vessel (venous), intramural': 'Intramural large vessel (venous) invasion is present.',
-  'Large vessel (venous), extramural': 'Extramural venous invasion is present.',
-  'Present (not otherwise specified)': 'Lymphovascular invasion is present.',
-  'Cannot be determined': 'Lymphovascular invasion cannot be determined.'
-};
-const PNI_PHRASE = { 'Not identified': 'Perineural invasion is not identified.', Present: 'Perineural invasion is present.', 'Cannot be determined': 'Perineural invasion cannot be determined.' };
-
-const BUD_WORD = { 'Low score (Bd1, 0-4 buds)': 'low (Bd1)', 'Intermediate score (Bd2, 5-9 buds)': 'intermediate (Bd2)', 'High score (Bd3, 10 or more buds)': 'high (Bd3)' };
-
-export function buddingSentence(v) {
-  const score = buddingScore(v);
-  if (score === 'Not applicable') return '';
-  if (score === 'Cannot be determined') return 'Tumour budding cannot be determined.';
-  const n = int(v.buddingCount);
-  return `Tumour budding is ${BUD_WORD[score]}${n !== null ? `, with ${n} bud${n === 1 ? '' : 's'} in the hotspot field` : ''}.`;
-}
-
-const RYAN_PHRASE = {
-  'Complete response (score 0): no viable cancer cells': 'There is a complete pathological response to neoadjuvant therapy with no viable tumour cells (modified Ryan score 0).',
-  'Near complete response (score 1): single cells or rare small groups of cancer cells': 'Treatment effect is present with only single cells or rare small groups of tumour cells remaining (near complete response, modified Ryan score 1).',
-  'Partial response (score 2): residual cancer with evident tumour regression': 'Treatment effect is present with residual carcinoma showing evident regression (partial response, modified Ryan score 2).',
-  'Poor or no response (score 3): extensive residual cancer with no evident tumour regression': 'There is extensive residual carcinoma with no evident tumour regression (poor or no response, modified Ryan score 3).',
-  'Present (not otherwise specified)': 'Treatment effect is present.',
-  'Cannot be determined': 'Treatment effect cannot be determined.'
-};
-
 // ---------- margins ----------
 
 export function marginValue(status, mm) {
@@ -134,78 +107,10 @@ export function marginValue(status, mm) {
   return status;
 }
 
-export function marginsSentence(v) {
-  const margins = [
-    ['proximal', v.proximalMargin, v.proximalMarginMm],
-    ['distal', v.distalMargin, v.distalMarginMm],
-    [isRectal(v) ? 'circumferential' : 'radial', v.radialMargin, v.radialMarginMm],
-    [(v.otherMarginName || '').trim() || 'other', v.otherMargin, v.otherMarginMm]
-  ].filter(([, s]) => s && s !== 'Not applicable');
-  if (!margins.length) return '';
-  const involved = margins.filter(([, s]) => s === 'Involved by invasive carcinoma').map(([n]) => n);
-  const clear = margins.filter(([, s]) => s === 'Uninvolved by invasive carcinoma');
-  const cba = margins.filter(([, s]) => s === 'Cannot be assessed').map(([n]) => n);
-  const bits = [];
-  if (clear.length) {
-    const withMm = clear.filter(([, , mm]) => num(mm) !== null);
-    const nearest = withMm.length ? withMm.reduce((a, b) => (num(b[2]) < num(a[2]) ? b : a)) : null;
-    bits.push(`The ${listJoin(clear.map(([n]) => n))} margin${clear.length > 1 ? 's are' : ' is'} clear of carcinoma${nearest ? ` (${nearest[0]} margin clearance ${fmt(num(nearest[2]))} mm)` : ''}`);
-  }
-  if (involved.length) bits.push(`${bits.length ? 'the' : 'The'} ${listJoin(involved)} margin${involved.length > 1 ? 's are' : ' is'} involved by carcinoma`);
-  if (cba.length) bits.push(`${bits.length ? 'the' : 'The'} ${listJoin(cba)} margin${cba.length > 1 ? 's' : ''} cannot be assessed`);
-  return `${bits.join('; ')}.`;
-}
-
-export function nonInvasiveSentence(v) {
-  const s = v.nonInvasiveMargin;
-  if (!s || s === 'Not applicable') return '';
-  if (s === 'Uninvolved by non-invasive tumour') return 'The margins are free of adenoma and dysplasia.';
-  const where = (v.nonInvasiveMarginDetail || '').trim();
-  return `The ${where ? `${stripDot(where)} margin is` : 'margin is'} ${lc1(s)}.`;
-}
-
 // ---------- nodes ----------
-
-export function nodesSentence(v) {
-  const ex = int(v.nodesExamined); const pos = int(v.nodesPositive);
-  if (ex === null) return '';
-  if (ex === 0) return 'No lymph nodes are identified.';
-  const apEx = int(v.apicalExamined); const apPos = int(v.apicalPositive);
-  const apical = apEx ? ` including ${apEx} apical node${apEx === 1 ? '' : 's'}` : '';
-  if (pos === null) return `A total of ${ex} regional lymph node${ex === 1 ? ' is' : 's are'} identified${apical}.`;
-  if (pos === 0) return `A total of ${ex} regional lymph node${ex === 1 ? ' is' : 's are'} identified${apical}, all free of metastatic carcinoma (0/${ex}).`;
-  let s = `A total of ${ex} regional lymph node${ex === 1 ? ' is' : 's are'} identified${apical}, ${pos === 1 ? 'one of which contains' : `${pos} of which contain`} metastatic carcinoma (${pos}/${ex})`;
-  if (apPos) s += `, including ${apPos} apical node${apPos === 1 ? '' : 's'}`;
-  if (v.ene === 'Present') s += ', with extranodal extension';
-  else if (v.ene === 'Not identified') s += ', without extranodal extension';
-  const dep = num(v.largestDepositMm);
-  if (dep !== null) s += `; the largest metastatic deposit measures ${fmt(dep)} mm`;
-  return `${s}.`;
-}
-
-export function depositsSentence(v) {
-  if (v.tumourDeposits === 'Present') { const n = int(v.tumourDepositsCount); return `${n !== null ? (n === 1 ? 'One tumour deposit is' : `${n} tumour deposits are`) : 'Tumour deposits are'} present in the ${periWord(v)} fat.`; }
-  if (v.tumourDeposits === 'Cannot be determined') return 'Tumour deposits cannot be determined.';
-  return 'No tumour deposits are identified.';
-}
 
 export const metastasisSites = (v) => (Array.isArray(v.distantMetastasis) ? v.distantMetastasis.filter((s) => s !== 'Not applicable') : []);
 
-export function metastasisSentence(v) {
-  const sites = metastasisSites(v);
-  if (!sites.length) return '';
-  const detail = (v.metastasisDetail || '').trim();
-  return `Metastatic carcinoma is present in the ${listJoin(sites.map((s) => lc1(s)))}${detail ? ` (${stripDot(detail)})` : ''}.`;
-}
-
-const MMR_PHRASE = {
-  'Retained (MLH1, PMS2, MSH2, MSH6)': 'Immunohistochemistry shows retained nuclear expression of MLH1, PMS2, MSH2 and MSH6 in the tumour cells (mismatch repair proficient).',
-  'Loss of MLH1 and PMS2': 'Immunohistochemistry shows loss of MLH1 and PMS2 expression with retained MSH2 and MSH6 in the tumour cells (mismatch repair deficient).',
-  'Loss of MSH2 and MSH6': 'Immunohistochemistry shows loss of MSH2 and MSH6 expression with retained MLH1 and PMS2 in the tumour cells (mismatch repair deficient).',
-  'Isolated loss of PMS2': 'Immunohistochemistry shows isolated loss of PMS2 expression with retained MLH1, MSH2 and MSH6 in the tumour cells (mismatch repair deficient).',
-  'Isolated loss of MSH6': 'Immunohistochemistry shows isolated loss of MSH6 expression with retained MLH1, PMS2 and MSH2 in the tumour cells (mismatch repair deficient).',
-  Pending: 'Mismatch repair immunohistochemistry is pending.'
-};
 const MMR_DX = {
   'Retained (MLH1, PMS2, MSH2, MSH6)': 'MMR proficient',
   'Loss of MLH1 and PMS2': 'MMR deficient (loss of MLH1 / PMS2)',
@@ -265,52 +170,54 @@ export function blockKey(part, ctx) {
 
 // ---------- microscopy ----------
 
-export function microscopy(part) {
-  const v = part.values;
-  const p = [];
-  const noPrimary = NO_PRIMARY.includes(v.tumourExtension);
+const MORPH_GROWTH = {
+  'Irregular infiltrating glands': 'irregular glands',
+  'Cribriform glands': 'cribriform glands',
+  'Solid sheets': 'solid sheets',
+  'Extracellular mucin pools': 'pools of extracellular mucin',
+  'Signet-ring cells': 'signet-ring cells',
+  'Medullary growth with lymphocytic infiltrate': 'medullary sheets with a prominent lymphocytic infiltrate'
+};
+const MORPH_FEATURE = {
+  'Desmoplastic stromal response': 'a desmoplastic stromal response',
+  'Luminal dirty necrosis': 'luminal dirty necrosis'
+};
+
+/** "forming irregular glands with a desmoplastic stromal response and luminal dirty necrosis" */
+export function morphologyPhrase(v) {
+  const m = Array.isArray(v.tumourMorphology) ? v.tumourMorphology : [];
+  const growth = m.map((x) => MORPH_GROWTH[x]).filter(Boolean);
+  const feat = m.map((x) => MORPH_FEATURE[x]).filter(Boolean);
+  const bits = [];
+  if (growth.length) bits.push(`forming ${listJoin(growth)}`);
+  if (feat.length) bits.push(`with ${listJoin(feat)}`);
+  return bits.join(' ');
+}
+
+/**
+ * The "- Tumour histology:" paragraph: differentiation, precursor, architecture and stromal
+ * features only. Extent, LVI, budding, deposits, margins, nodes and MMR are elements of
+ * their own and are not repeated here.
+ */
+export function histologyPara(v) {
   const type = histTypeName(v);
   const gradeWord = GRADE_WORDS[v.grade];
+  const p = [];
   if (v.tumourExtension === 'No evidence of primary tumour') {
     p.push(`Sections of the ${lc1(siteName(v))} show ${v.treatmentEffect && v.treatmentEffect !== 'No known presurgical therapy' ? 'fibrosis and mucin pools consistent with treated tumour bed; ' : ''}no residual invasive carcinoma is identified.`);
   } else if (NON_INVASIVE.includes(v.tumourExtension)) {
     const precursor = v.precursorPolyp && v.precursorPolyp !== 'Not identified' ? ` within a ${lc1(v.precursorPolyp === 'Other' ? (v.precursorPolypOther || 'polyp') : v.precursorPolyp)}` : '';
     p.push(`Sections of the ${lc1(siteName(v))} show ${v.tumourExtension === 'No invasion (high grade dysplasia)' ? 'high grade dysplasia' : 'intramucosal adenocarcinoma'}${precursor}; the lesion ${extensionPhrase(v)} and there is no submucosal invasion.`);
   } else {
-    let first = `Sections of the tumour in the ${lc1(siteName(v))} show an invasive ${gradeWord ? `${gradeWord} ` : ''}${lc1(type)}`;
-    const precursor = v.precursorPolyp && v.precursorPolyp !== 'Not identified' ? ` arising in a ${lc1(v.precursorPolyp === 'Other' ? (v.precursorPolypOther || 'polyp') : v.precursorPolyp)}` : '';
-    first += precursor;
-    first += `. The tumour ${extensionPhrase(v)}`;
-    if (v.tumourExtension === 'Invades submucosa') {
-      const depth = v.submucosalDepth === 'Exact depth (mm)' && num(v.submucosalDepthMm) !== null ? `to a depth of ${fmt(num(v.submucosalDepthMm))} mm` : v.submucosalDepth && v.submucosalDepth !== 'Cannot be determined' ? `to a depth of ${lc1(v.submucosalDepth)}` : '';
-      const extent = v.submucosalExtent && v.submucosalExtent !== 'Cannot be determined' ? `into the ${lc1(v.submucosalExtent)}` : '';
-      const d = [depth, extent].filter(Boolean).join(', ');
-      if (d) first += ` ${d}`;
-    }
+    let first = `Sections show an invasive ${gradeWord ? `${gradeWord} ` : ''}${lc1(type)}`;
+    if (v.precursorPolyp && v.precursorPolyp !== 'Not identified') first += ` arising in a ${lc1(v.precursorPolyp === 'Other' ? (v.precursorPolypOther || 'polyp') : v.precursorPolyp)}`;
+    const morph = morphologyPhrase(v);
+    if (morph) first += `, ${morph}`;
     p.push(`${first}.`);
-    if (v.multiplePrimary === 'Present') p.push(`A separate primary tumour is present${(v.multiplePrimaryDetail || '').trim() ? ` (${stripDot(v.multiplePrimaryDetail)})` : ''}.`);
-    p.push(LVI_PHRASE[v.lvi] || '');
-    p.push(PNI_PHRASE[v.pni] || '');
-    p.push(buddingSentence(v));
-    p.push(depositsSentence(v));
-    if (v.macroPerforation === 'Present') p.push('Tumour perforation is confirmed histologically.');
   }
-  if (v.treatmentEffect && v.treatmentEffect !== 'No known presurgical therapy') p.push(RYAN_PHRASE[v.treatmentEffect] || '');
-  p.push(marginsSentence(v));
-  p.push(nonInvasiveSentence(v));
-  p.push(nodesSentence(v));
-  p.push(metastasisSentence(v));
-  const findings = Array.isArray(v.additionalFindings) ? v.additionalFindings : [];
-  if (findings.length) {
-    const detail = stripDot(v.additionalFindingsDetail);
-    p.push(`The background bowel shows ${listJoin(findings.map((f) => lc1(f)))}${detail ? ` (${detail})` : ''}.`);
-  }
-  if (v.mmr && v.mmr !== 'Not performed') p.push(MMR_PHRASE[v.mmr] || '');
-  const anc = stripDot(v.ancillary);
-  if (anc) p.push(`${anc.charAt(0).toUpperCase()}${anc.slice(1)}.`);
-  const notes = stripDot(v.additionalNotes);
-  if (notes) p.push(`${notes}.`);
-  return `(${part.label}) ${p.filter(Boolean).join(' ')}`;
+  const other = stripDot(v.morphologyOther);
+  if (other) p.push(`${uc1(other)}.`);
+  return p.join(' ');
 }
 
 // ---------- synoptic ----------
@@ -318,55 +225,71 @@ export function microscopy(part) {
 export function synoptic(part, ctx) {
   const v = part.values;
   const st = staging(part);
-  const line = (label, value) => (value !== '' && value !== null && value !== undefined ? `- ${label}: ${value}` : null);
+  const item = (label, value) => (value !== '' && value !== null && value !== undefined ? { label, value } : null);
   const size = num(v.tumourSize);
   const other = stripDot(v.tumourSizeOther);
   const sizeText = size !== null ? `${fmt(size)} mm in greatest dimension${other && !/cannot/i.test(other) ? ` (${other})` : ''}` : other || 'Cannot be determined';
   const ex = int(v.nodesExamined); const pos = int(v.nodesPositive); const apEx = int(v.apicalExamined); const apPos = int(v.apicalPositive);
-  const nodeBits = [];
-  if (ex !== null) nodeBits.push(`${ex} examined${apEx !== null ? ` (${apEx} apical)` : ''}`);
-  if (pos !== null) nodeBits.push(`${pos} involved${apPos !== null ? ` (${apPos} apical)` : ''}`);
-  if (pos && v.ene && v.ene !== 'Not applicable') nodeBits.push(`extranodal extension ${lc1(v.ene)}`);
-  if (pos && num(v.largestDepositMm) !== null) nodeBits.push(`largest metastatic deposit ${fmt(num(v.largestDepositMm))} mm`);
+  let nodes;
+  if (ex === null) nodes = { label: 'Regional lymph nodes', value: 'Not recorded' };
+  else if (ex === 0) nodes = { label: 'Regional lymph nodes', value: 'No regional lymph nodes submitted or found' };
+  else nodes = { label: 'Regional lymph nodes', value: pos !== null ? `${ex} examined; ${pos} involved` : `${ex} examined`, sub: [
+    apEx !== null ? item('Apical lymph nodes', apPos !== null ? `${apEx} examined; ${apPos} involved` : `${apEx} examined`) : null,
+    pos && v.ene && v.ene !== 'Not applicable' ? item('Extranodal extension', v.ene) : null,
+    pos && num(v.largestDepositMm) !== null ? item('Largest metastatic deposit', `${fmt(num(v.largestDepositMm))} mm`) : null
+  ] };
   const sites = metastasisSites(v);
   const bud = buddingScore(v);
   const budCount = int(v.buddingCount);
   const findings = Array.isArray(v.additionalFindings) ? v.additionalFindings : [];
-  const rows = [
-    line('Procedure', procedureName(v)),
-    line('Tumour site', v.tumourSite || 'Not specified'),
-    isRectal(v) ? line('Tumour location relative to anterior peritoneal reflection', v.rectalLocation) : null,
-    line('Tumour size', sizeText),
-    line('Macroscopic tumour perforation', v.macroPerforation || 'Cannot be determined'),
-    isRectal(v) ? line('Macroscopic intactness of mesorectum', v.mesorectum) : null,
-    line('Histologic type (WHO 2019)', histTypeName(v)),
-    line('Histologic grade', v.grade || 'GX: Cannot be assessed'),
-    line('Multiple primary tumours', v.multiplePrimary === 'Present' ? `Present${(v.multiplePrimaryDetail || '').trim() ? ` (${stripDot(v.multiplePrimaryDetail)})` : ''}` : v.multiplePrimary),
-    line('Tumour extension', `${v.tumourExtension || 'Cannot be assessed'}${v.tumourExtension === 'Directly invades or adheres to adjacent structure(s)' && (v.adjacentStructure || '').trim() ? ` (${stripDot(v.adjacentStructure)})` : ''}`),
-    v.tumourExtension === 'Invades submucosa' ? line('Depth of submucosal invasion (pT1)', v.submucosalDepth === 'Exact depth (mm)' && num(v.submucosalDepthMm) !== null ? `${fmt(num(v.submucosalDepthMm))} mm` : v.submucosalDepth) : null,
-    v.tumourExtension === 'Invades submucosa' ? line('Extent of submucosal invasion (pT1)', v.submucosalExtent) : null,
-    line('Lymphatic and / or vascular invasion', v.lvi || 'Cannot be determined'),
-    line('Perineural invasion', v.pni || 'Cannot be determined'),
-    line('Tumour budding (ITBCC 2016)', bud === 'Not applicable' ? 'Not applicable' : `${bud}${budCount !== null ? `; ${budCount} bud${budCount === 1 ? '' : 's'} in 1 hotspot field` : ''}`),
-    line('Type of polyp in which invasive carcinoma arose', v.precursorPolyp === 'Other' ? (v.precursorPolypOther || 'Other').trim() : v.precursorPolyp || 'Not identified'),
-    line('Tumour deposits', v.tumourDeposits === 'Present' ? `Present${int(v.tumourDepositsCount) !== null ? ` (${int(v.tumourDepositsCount)})` : ''}` : v.tumourDeposits || 'Not identified'),
-    line('Treatment effect (modified Ryan scheme, 2005)', v.treatmentEffect || 'No known presurgical therapy'),
-    line('Proximal margin', marginValue(v.proximalMargin, v.proximalMarginMm) || 'Cannot be assessed'),
-    line('Distal margin', marginValue(v.distalMargin, v.distalMarginMm) || 'Cannot be assessed'),
-    line(isRectal(v) ? 'Circumferential (radial) margin' : 'Radial or mesenteric margin', marginValue(v.radialMargin, v.radialMarginMm)),
-    v.otherMargin && v.otherMargin !== 'Not applicable' ? line(`Other margin (${(v.otherMarginName || 'specify').trim()})`, marginValue(v.otherMargin, v.otherMarginMm)) : null,
-    v.nonInvasiveMargin && v.nonInvasiveMargin !== 'Not applicable' ? line('Status of non-invasive tumour at margin(s)', `${v.nonInvasiveMargin}${(v.nonInvasiveMarginDetail || '').trim() ? ` (${stripDot(v.nonInvasiveMarginDetail)})` : ''}`) : null,
-    line('Regional lymph nodes', nodeBits.length ? nodeBits.join('; ') : 'Not recorded'),
-    line('Distant metastasis', sites.length ? `${listJoin(sites)}${(v.metastasisDetail || '').trim() ? ` (${stripDot(v.metastasisDetail)})` : ''}` : 'Not applicable'),
-    line(`Pathological stage classification (${st.edition})`, `${st.tnm}${st.overridden ? ` [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${(v.tnmOverrideReason || '').trim() ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : ''}`),
-    ctx?.options?.stageGroup === false ? null : (stageLine(st) ? `  - ${stageLine(st)}` : null),
-    findings.length ? line('Additional pathological findings', `${listJoin(findings)}${(v.additionalFindingsDetail || '').trim() ? ` (${stripDot(v.additionalFindingsDetail)})` : ''}`) : null,
-    v.mmr && v.mmr !== 'Not performed' ? line('Mismatch repair immunohistochemistry', v.mmr) : null,
-    stripDot(v.ancillary) ? line('Other ancillary studies', stripDot(v.ancillary)) : null
-  ].filter(Boolean);
+  const findingsDetail = stripDot(v.additionalFindingsDetail);
+  const sections = [
+    { heading: 'Specimen and tumour', items: [
+      item('Procedure', procedureName(v)),
+      item('Tumour site', v.tumourSite || 'Not specified'),
+      isRectal(v) ? item('Tumour location relative to anterior peritoneal reflection', v.rectalLocation) : null,
+      item('Tumour size', sizeText),
+      item('Macroscopic tumour perforation', v.macroPerforation || 'Cannot be determined'),
+      isRectal(v) ? item('Macroscopic intactness of mesorectum', v.mesorectum) : null
+    ] },
+    { heading: 'Microscopic findings', items: [
+      item('Histologic type (WHO 2019)', histTypeName(v)),
+      item('Histologic grade', v.grade || 'GX: Cannot be assessed'),
+      { label: 'Tumour histology', para: histologyPara(v) },
+      item('Multiple primary tumours', v.multiplePrimary === 'Present' ? `Present${(v.multiplePrimaryDetail || '').trim() ? ` (${stripDot(v.multiplePrimaryDetail)})` : ''}` : v.multiplePrimary),
+      item('Tumour extension', `${v.tumourExtension || 'Cannot be assessed'}${v.tumourExtension === 'Directly invades or adheres to adjacent structure(s)' && (v.adjacentStructure || '').trim() ? ` (${stripDot(v.adjacentStructure)})` : ''}`),
+      v.tumourExtension === 'Invades submucosa' ? item('Depth of submucosal invasion (pT1)', v.submucosalDepth === 'Exact depth (mm)' && num(v.submucosalDepthMm) !== null ? `${fmt(num(v.submucosalDepthMm))} mm` : v.submucosalDepth) : null,
+      v.tumourExtension === 'Invades submucosa' ? item('Extent of submucosal invasion (pT1)', v.submucosalExtent) : null,
+      item('Lymphatic and / or vascular invasion', v.lvi || 'Cannot be determined'),
+      item('Perineural invasion', v.pni || 'Cannot be determined'),
+      bud === 'Not applicable' ? item('Tumour budding (ITBCC 2016)', 'Not applicable') : { label: 'Tumour budding (ITBCC 2016)', value: bud, sub: [budCount !== null ? item('Hotspot count', `${budCount} bud${budCount === 1 ? '' : 's'} in 1 field`) : null] },
+      item('Type of polyp in which invasive carcinoma arose', v.precursorPolyp === 'Other' ? (v.precursorPolypOther || 'Other').trim() : v.precursorPolyp || 'Not identified'),
+      item('Tumour deposits', v.tumourDeposits === 'Present' ? `Present${int(v.tumourDepositsCount) !== null ? ` (${int(v.tumourDepositsCount)})` : ''}` : v.tumourDeposits || 'Not identified'),
+      item('Treatment effect (modified Ryan scheme, 2005)', v.treatmentEffect || 'No known presurgical therapy')
+    ] },
+    { heading: 'Margins', items: [
+      item('Proximal margin', marginValue(v.proximalMargin, v.proximalMarginMm) || 'Cannot be assessed'),
+      item('Distal margin', marginValue(v.distalMargin, v.distalMarginMm) || 'Cannot be assessed'),
+      item(isRectal(v) ? 'Circumferential (radial) margin' : 'Radial or mesenteric margin', marginValue(v.radialMargin, v.radialMarginMm)),
+      v.otherMargin && v.otherMargin !== 'Not applicable' ? item(`Other margin (${(v.otherMarginName || 'specify').trim()})`, marginValue(v.otherMargin, v.otherMarginMm)) : null,
+      v.nonInvasiveMargin && v.nonInvasiveMargin !== 'Not applicable' ? item('Status of non-invasive tumour at margin(s)', `${v.nonInvasiveMargin}${(v.nonInvasiveMarginDetail || '').trim() ? ` (${stripDot(v.nonInvasiveMarginDetail)})` : ''}`) : null
+    ] },
+    { heading: 'Regional lymph nodes', items: [nodes] },
+    { heading: 'Distant metastasis', items: [item('Distant metastasis', sites.length ? `${listJoin(sites)}${(v.metastasisDetail || '').trim() ? ` (${stripDot(v.metastasisDetail)})` : ''}` : 'Not applicable')] },
+    { heading: `Pathological stage (${st.edition})`, items: [
+      { label: 'pTNM', value: `${st.tnm}${st.overridden ? ` [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${(v.tnmOverrideReason || '').trim() ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : ''}`,
+        sub: ctx?.options?.stageGroup === false || !stageLine(st) ? [] : [{ label: stageLine(st).split(': ')[0], value: stageLine(st).split(': ').slice(1).join(': ') }] }
+    ] },
+    { heading: 'Additional findings', items: [
+      ...findings.map((f, i) => ({ text: i === findings.length - 1 && findingsDetail ? `${f} (${findingsDetail})` : f })),
+      v.mmr && v.mmr !== 'Not performed' ? item('Mismatch repair immunohistochemistry', v.mmr) : null,
+      stripDot(v.ancillary) ? item('Other ancillary studies', stripDot(v.ancillary)) : null,
+      stripDot(v.additionalNotes) ? item('Additional notes', stripDot(v.additionalNotes)) : null
+    ] }
+  ];
   // Multi-part cases get a labelled heading so the blocks can be told apart; the engine drops the letter otherwise.
-  const heading = ctx?.case?.parts && ctx.case.parts.length > 1 ? `(${part.label}) ${specimenName(part)}\n` : '';
-  return `${heading}${rows.join('\n')}`;
+  const heading = ctx?.case?.parts && ctx.case.parts.length > 1 ? `(${part.label}) ${specimenName(part)}` : '';
+  return renderSynoptic(sections, heading);
 }
 
 // ---------- diagnosis ----------
@@ -375,35 +298,35 @@ export function diagnosis(part, ctx) {
   const v = part.values;
   const st = staging(part);
   const organ = siteName(v).toUpperCase();
-  const head = `(${part.label}) ${organ}, ${lc1(procedureName(v))} - `;
-  const bits = [];
+  const head = `(${part.label}) ${organ}, ${lc1(procedureName(v))}`;
+  const tumour = [];
+  const local = [];
   if (v.tumourExtension === 'No evidence of primary tumour') {
-    bits.push(v.treatmentEffect && v.treatmentEffect !== 'No known presurgical therapy' ? 'NO RESIDUAL CARCINOMA (complete pathological response)' : 'NO EVIDENCE OF RESIDUAL CARCINOMA');
+    tumour.push(v.treatmentEffect && v.treatmentEffect !== 'No known presurgical therapy' ? 'NO RESIDUAL CARCINOMA (complete pathological response)' : 'NO EVIDENCE OF RESIDUAL CARCINOMA');
   } else if (NON_INVASIVE.includes(v.tumourExtension)) {
-    bits.push(v.tumourExtension === 'No invasion (high grade dysplasia)' ? 'HIGH GRADE DYSPLASIA, no invasive carcinoma' : 'INTRAMUCOSAL ADENOCARCINOMA, no submucosal invasion');
+    tumour.push(v.tumourExtension === 'No invasion (high grade dysplasia)' ? 'HIGH GRADE DYSPLASIA, no invasive carcinoma' : 'INTRAMUCOSAL ADENOCARCINOMA, no submucosal invasion');
   } else {
     const type = histTypeName(v);
     const gradeWord = GRADE_WORDS[v.grade];
     const g = GRADE_SHORT[v.grade];
     const ext = extensionPhrase(v).replace(/^invades/, 'invading').replace(/^directly invades/, 'directly invading').replace(/^is confined/, 'confined');
-    bits.push(`INVASIVE ${type.toUpperCase()}${gradeWord ? `, ${gradeWord} (${g})` : g ? ` (${g})` : ''}, ${ext}`);
-    if (v.lvi && v.lvi !== 'Not identified' && v.lvi !== 'Cannot be determined') bits.push(v.lvi.startsWith('Large vessel (venous), extramural') ? 'extramural venous invasion present' : 'lymphovascular invasion present');
-    if (v.pni === 'Present') bits.push('perineural invasion present');
-    if (v.tumourDeposits === 'Present') bits.push('tumour deposits present');
+    tumour.push(`INVASIVE ${type.toUpperCase()}${gradeWord ? `, ${gradeWord} (${g})` : g ? ` (${g})` : ''}, ${ext}`);
+    if (v.lvi && v.lvi !== 'Not identified' && v.lvi !== 'Cannot be determined') local.push(v.lvi.startsWith('Large vessel (venous), extramural') ? 'extramural venous invasion present' : 'lymphovascular invasion present');
+    if (v.pni === 'Present') local.push('perineural invasion present');
+    if (v.tumourDeposits === 'Present') local.push('tumour deposits present');
   }
   const ex = int(v.nodesExamined); const pos = int(v.nodesPositive);
-  if (ex !== null && ex > 0 && pos !== null) bits.push(pos === 0 ? `no lymph node metastasis (0/${ex})` : `${pos} of ${ex} lymph nodes involved`);
+  if (ex !== null && ex > 0 && pos !== null) local.push(pos === 0 ? `no lymph node metastasis (0/${ex})` : `${pos} of ${ex} lymph nodes involved`);
   const involved = [['proximal', v.proximalMargin], ['distal', v.distalMargin], [isRectal(v) ? 'circumferential' : 'radial', v.radialMargin], [(v.otherMarginName || 'other').trim(), v.otherMargin]].filter(([, s]) => s === 'Involved by invasive carcinoma').map(([n]) => n);
   const anyMargin = [v.proximalMargin, v.distalMargin, v.radialMargin, v.otherMargin].some((s) => s && s !== 'Not applicable');
-  if (involved.length) bits.push(`${listJoin(involved)} margin${involved.length > 1 ? 's' : ''} involved`);
-  else if (anyMargin && [v.proximalMargin, v.distalMargin, v.radialMargin, v.otherMargin].every((s) => !s || s === 'Not applicable' || s === 'Uninvolved by invasive carcinoma')) bits.push('margins clear');
+  if (involved.length) local.push(`${listJoin(involved)} margin${involved.length > 1 ? 's' : ''} involved`);
+  else if (anyMargin && [v.proximalMargin, v.distalMargin, v.radialMargin, v.otherMargin].every((s) => !s || s === 'Not applicable' || s === 'Uninvolved by invasive carcinoma')) local.push('margins clear');
   const sites = metastasisSites(v);
-  if (sites.length) bits.push(`metastatic carcinoma in ${listJoin(sites.map(lc1))}`);
+  if (sites.length) local.push(`metastatic carcinoma in ${listJoin(sites.map(lc1))}`);
   let stage = `${st.tnm} (${st.edition})`;
   if (ctx?.options?.stageGroup !== false && st.stage) stage += `, stage ${st.stage}${st.M === 'M-' ? ' (if cM0)' : ''}`;
-  bits.push(stage);
-  if (v.mmr && v.mmr !== 'Not performed') bits.push(MMR_DX[v.mmr]);
-  return `${head}${bits.filter(Boolean).join('; ')}`;
+  const mmr = v.mmr && v.mmr !== 'Not performed' ? [MMR_DX[v.mmr]] : [];
+  return renderDiagnosis(head, [tumour, local, [stage], mmr].map((g) => g.filter(Boolean).join('; ')));
 }
 
 // ---------- validation + flags ----------
@@ -462,4 +385,4 @@ export function flags(parts) {
   return [...f];
 }
 
-export default { specimenName, macro, blockKey, microscopy, synoptic, diagnosis, validate, flags, staging };
+export default { specimenName, macro, blockKey, synoptic, diagnosis, validate, flags, staging };

@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import { generate, snippetsFor } from '../src/engine.js';
 import { loadAll } from '../src/registry.js';
+import { parseSynoptic, synopticRows } from '../src/synoptic.js';
 
 const reg = await loadAll();
 const { schema, generator } = reg.gist_resection;
@@ -19,7 +20,9 @@ const snippets = (values) => snippetsFor({ gist_resection: reg.gist_resection },
   schemaId: 'gist_resection', parts: [{ label: 'A', templateId: 'gist_resection', values: { ...exampleValues, ...values } }], snippets: {}
 }).filter((s) => s.active).map((s) => s.id);
 const issues = (values) => run(values).issues.map((i) => `${i.level}: ${i.message}`);
-const rows = (out) => Object.fromEntries(out.synoptic.split('\n').filter((l) => l.startsWith('- ')).map((l) => { const i = l.indexOf(': '); return [l.slice(2, i), l.slice(i + 2)]; }));
+// Top-level "Label: value" rows (wrapped lines rejoined); `flat` folds the multi-line diagnosis back to one "; "-separated line.
+const rows = (out) => synopticRows(out.synoptic);
+const flat = (d) => d.replace(/\n {2,}/g, ' ').split('\n- ').join('; ');
 
 // Jejunal high-risk, ruptured, KIT-negative, node-positive, peritoneal metastasis, PDGFRA D842V.
 const JEJUNAL = {
@@ -50,15 +53,22 @@ test('fixture: gastric spindle-cell very-low-risk GIST (example case)', () => {
   assert.equal(out.specimens, 'Stomach, wedge resection');
   assert.equal(out.macro, 'Received in formalin is a wedge resection specimen of stomach measuring 65 x 50 x 30 mm. There is a well-circumscribed intramural tumour in the greater curvature, body measuring 4.5 cm in greatest dimension (4.5 x 3.8 x 3.0 cm). The cut surface is tan-white, whorled and circumscribed. The overlying mucosa is intact. Tumour rupture is not identified. Representative sections are taken; see block key.');
   assert.equal(out.blockKey, '(1) Tumour with overlying mucosa. (2-4) Tumour, deepest point and serosal surface. (5) Tumour, closest resection margin. (6) Uninvolved stomach.');
-  assert.equal(out.microscopy, 'Sections show a well-circumscribed gastrointestinal stromal tumour composed of spindle cells arranged in fascicles, with pale eosinophilic cytoplasm and uniform ovoid nuclei; the mitotic count is 2 per 5 mm2. Necrosis is not identified. Lymphovascular invasion is not identified. Perineural invasion is not identified. The tumour is 8 mm from the closest (gastric resection) margin. No lymph nodes are identified. Immunohistochemistry shows the tumour cells are positive for KIT (CD117) and DOG1; desmin, S100 and SOX10 negative. Mutation analysis for KIT and PDGFRA hot spots has been requested (block 3); the result will follow as a supplementary report. The tumour carries a very low risk of progressive disease (Miettinen and Lasota 2006; stomach, 4.5 cm, 2 mitoses per 5 mm2).');
+  assert.equal(out.microscopy, '', 'synoptic templates carry no narrative microscopy');
   assert.equal(out.synoptic, [
+    'Specimen and tumour',
     '- Procedure: Wedge resection',
     '- Tumour site: Stomach (greater curvature, body)',
     '- Tumour size: 4.5 cm in greatest dimension (4.5 x 3.8 x 3.0 cm)',
     '- Tumour focality: Unifocal',
     '- Tumour rupture: Not identified',
+    '',
+    'Microscopic findings',
     '- Histologic type: Gastrointestinal stromal tumour, spindle cell type',
     '- Histologic grade: G1: Low grade; mitotic rate 5 or fewer per 5 mm2',
+    '- Tumour histology:',
+    '  Sections show a well-circumscribed gastrointestinal stromal tumour composed of',
+    '  spindle cells arranged in fascicles, with pale eosinophilic cytoplasm and',
+    '  uniform ovoid nuclei. Necrosis is not identified.',
     '- Mitotic count: 2 per 5 mm2 (5 or fewer per 5 mm2)',
     '- Necrosis: Not identified',
     '- KIT (CD117) IHC: Positive',
@@ -67,17 +77,33 @@ test('fixture: gastric spindle-cell very-low-risk GIST (example case)', () => {
     '- Other immunohistochemistry: desmin, S100 and SOX10 negative',
     '- Lymphovascular invasion: Not identified',
     '- Perineural invasion: Not identified',
-    '- Risk assessment (Miettinen and Lasota 2006): Very low risk (stomach, 4.5 cm, 2 mitoses per 5 mm2)',
+    '- Risk assessment (Miettinen and Lasota 2006): Very low risk (stomach, 4.5 cm,',
+    '  2 mitoses per 5 mm2)',
     '- Presurgical treatment: No known presurgical therapy',
     '- Treatment effect: No known presurgical therapy',
     '- Molecular studies: Requested; result to follow (block 3)',
+    '',
+    'Margins',
     '- Surgical margins: Uninvolved by GIST (8 mm from the gastric resection margin)',
+    '',
+    'Regional lymph nodes',
     '- Regional lymph nodes: No regional lymph nodes submitted or found',
+    '',
+    'Distant metastasis',
     '- Distant metastasis: Not applicable',
-    '- Pathological stage classification (AJCC 8th edition): pT2 pNX',
+    '',
+    'Pathological stage (AJCC 8th edition)',
+    '- pTNM: pT2 pNX',
     '  - Stage group (if cM0): IA'
   ].join('\n'));
-  assert.equal(out.diagnosis, 'STOMACH, wedge resection - GASTROINTESTINAL STROMAL TUMOUR, spindle cell type, 4.5 cm, mitotic count 2 per 5 mm2; very low risk (Miettinen and Lasota 2006); margins clear; pT2 pNX (AJCC 8th edition), stage IA (if cM0); KIT and DOG1 positive; molecular studies to follow');
+  assert.equal(out.diagnosis, [
+    'STOMACH, wedge resection',
+    '- GASTROINTESTINAL STROMAL TUMOUR, spindle cell type, 4.5 cm, mitotic count',
+    '  2 per 5 mm2',
+    '- very low risk (Miettinen and Lasota 2006); margins clear',
+    '- pT2 pNX (AJCC 8th edition), stage IA (if cM0)',
+    '- KIT and DOG1 positive; molecular studies to follow'
+  ].join('\n'));
   assert.deepEqual(out.issues, []);
   assert.deepEqual(snippets({}), ['gist_resection_molecular_pending']);
   assert.ok(out.report.includes('supplementary report. The result guides tyrosine kinase inhibitor'));
@@ -88,19 +114,29 @@ test('fixture: jejunal high-risk, ruptured, KIT-negative, node-positive GIST wit
   assert.equal(out.specimens, 'Jejunum, segmental small bowel resection');
   assert.equal(out.macro, 'Received in formalin is a segmental small bowel resection specimen of jejunum measuring 120 mm length of small bowel. There is an exophytic tumour arising from the serosal aspect measuring 7.2 cm in greatest dimension. The cut surface is tan-white with necrosis. The overlying mucosa is ulcerated. There is tumour rupture (spontaneous / preoperative). Representative sections are taken; see block key.');
   assert.equal(out.blockKey, '(1-3) Tumour. (4) Mesenteric margin. (5) Lymph nodes. (6) Omental nodules.');
-  assert.equal(out.microscopy, 'Sections show a gastrointestinal stromal tumour composed of epithelioid cells with rounded nuclei and eosinophilic to clear cytoplasm, arranged in nests and sheets; the mitotic count is 12 per 5 mm2. Necrosis is present (approximately 20% of the tumour). The overlying mucosa is ulcerated. Lymphovascular invasion is present. Perineural invasion is not identified. The tumour involves the mesenteric margin. 3 regional lymph nodes are identified, one of which contains metastatic GIST (1/3), without extranodal extension; the largest deposit measures 4 mm. Metastatic GIST is present in the peritoneum (two omental nodules, 6 and 9 mm). Immunohistochemistry shows the tumour cells are positive for DOG1 and negative for KIT (CD117) and CD34; SDHB expression is retained. Molecular analysis shows a PDGFRA exon 18 D842V mutation (c.2525A>T p.(Asp842Val)). The tumour is overtly malignant (metastatic).');
+  assert.equal(out.microscopy, '');
   const r = rows(out);
+  assert.equal(r['Tumour histology'], 'Sections show a gastrointestinal stromal tumour composed of epithelioid cells with rounded nuclei and eosinophilic to clear cytoplasm, arranged in nests and sheets. Necrosis is present (approximately 20% of the tumour). The overlying mucosa is ulcerated.');
   assert.equal(r['Histologic grade'], 'G2: High grade; mitotic rate more than 5 per 5 mm2');
   assert.equal(r['Necrosis'], 'Present (20%)');
   assert.equal(r['CD34 IHC'], 'Negative');
   assert.equal(r['Risk assessment (Miettinen and Lasota 2006)'], 'Overtly malignant/metastatic');
   assert.equal(r['Molecular studies'], 'PDGFRA exon 18 D842V mutation (c.2525A>T p.(Asp842Val))');
   assert.equal(r['Surgical margins'], 'Involved by GIST (mesenteric margin)');
-  assert.equal(r['Regional lymph nodes'], '3 examined; 1 involved; extranodal extension not identified; largest metastatic deposit 4 mm');
+  assert.ok(out.synoptic.includes('Regional lymph nodes\n- Regional lymph nodes: 3 examined; 1 involved\n  - Extranodal extension: Not identified\n  - Largest metastatic deposit: 4 mm'));
   assert.equal(r['Distant metastasis'], 'Peritoneum (two omental nodules, 6 and 9 mm)');
-  assert.equal(r['Pathological stage classification (AJCC 8th edition)'], 'pT3 pN1 pM1');
-  assert.ok(out.synoptic.endsWith('  - Stage group: IV'));
-  assert.equal(out.diagnosis, 'JEJUNUM, segmental small bowel resection - GASTROINTESTINAL STROMAL TUMOUR, epithelioid type, 7.2 cm, mitotic count 12 per 5 mm2; overtly malignant / metastatic; tumour rupture present; mesenteric margin involved; 1 of 3 lymph nodes involved; metastatic GIST in peritoneum; pT3 pN1 pM1 (AJCC 8th edition), stage IV; DOG1 positive; KIT negative; PDGFRA exon 18 D842V mutation');
+  assert.equal(r['pTNM'], 'pT3 pN1 pM1');
+  assert.ok(out.synoptic.endsWith('- pTNM: pT3 pN1 pM1\n  - Stage group: IV'));
+  assert.equal(out.diagnosis, [
+    'JEJUNUM, segmental small bowel resection',
+    '- GASTROINTESTINAL STROMAL TUMOUR, epithelioid type, 7.2 cm, mitotic count',
+    '  12 per 5 mm2',
+    '- overtly malignant / metastatic; tumour rupture present; mesenteric margin',
+    '  involved',
+    '- 1 of 3 lymph nodes involved; metastatic GIST in peritoneum',
+    '- pT3 pN1 pM1 (AJCC 8th edition), stage IV',
+    '- DOG1 positive; KIT negative; PDGFRA exon 18 D842V mutation'
+  ].join('\n'));
   assert.deepEqual(out.issues, []);
   assert.deepEqual(snippets(JEJUNAL).sort(), ['gist_resection_kit_negative', 'gist_resection_pdgfra_d842v', 'gist_resection_rupture']);
 });
@@ -116,7 +152,7 @@ test('synoptic element order follows the saved QMH GI-GIST page', () => {
     'Histologic type': 'Histologic type', 'Histologic grade': 'Histologic grade', 'Mitotic count': 'Mitotic count', Necrosis: 'Necrosis',
     'KIT (CD117) IHC': 'KIT (CD117) IHC', 'DOG1 IHC': 'DOG1 IHC', 'SDHB IHC': 'SDHB IHC', 'Perineural invasion': 'Perineural invasion',
     'Risk assessment': 'Risk assessment (Miettinen and Lasota 2006)', 'Presurgical treatment': 'Presurgical treatment', 'Treatment effect': 'Treatment effect',
-    'Surgical margins': 'Surgical margins', 'Number of regional lymph nodes examined': 'Regional lymph nodes', 'Primary tumor (pT)': 'Pathological stage classification (AJCC 8th edition)'
+    'Surgical margins': 'Surgical margins', 'Number of regional lymph nodes examined': 'Regional lymph nodes', 'Primary tumor (pT)': 'pTNM'
   };
   const qmh = draft.fields.map((f) => (f.outLabel || f.label).trim()).filter((l) => MAP[l]);
   assert.ok(qmh.length >= 12, `mapped QMH elements: ${qmh.length}`);
@@ -130,18 +166,23 @@ test('synoptic element order follows the saved QMH GI-GIST page', () => {
   const idx = (l) => ours.indexOf(l);
   assert.ok(idx('Procedure') < idx('Tumour site') && idx('Tumour rupture') < idx('Histologic type'));
   assert.ok(idx('Lymphovascular invasion') < idx('Perineural invasion') && idx('Molecular studies') < idx('Surgical margins'));
-  assert.ok(idx('Regional lymph nodes') < idx('Distant metastasis') && idx('Distant metastasis') < idx('Pathological stage classification (AJCC 8th edition)'));
+  assert.ok(idx('Regional lymph nodes') < idx('Distant metastasis') && idx('Distant metastasis') < idx('pTNM'));
+  // The single agreed exception to the QMH order: Tumour histology sits directly after Histologic grade.
+  assert.equal(idx('Tumour histology'), idx('Histologic grade') + 1);
+  assert.equal(idx('Mitotic count'), idx('Tumour histology') + 1);
+  // Section grouping, in report order.
+  assert.deepEqual([...new Set(parseSynoptic(run(JEJUNAL).synoptic).map((r) => r.section))], ['Specimen and tumour', 'Microscopic findings', 'Margins', 'Regional lymph nodes', 'Distant metastasis', 'Pathological stage (AJCC 8th edition)']);
 });
 
 test('treated case with complete response: ypT0, tumour bed wording, risk not applicable', () => {
   const out = run({ residualTumour: 'No residual tumour (complete response)', presurgicalTreatment: 'Systemic therapy performed (imatinib or other tyrosine kinase inhibitor)', presurgicalDetail: 'imatinib 9 months', treatmentEffect: 'Present', viableTumourPercent: '0', mitoticStatus: 'Not applicable', molecular: 'Not performed', molecularDetail: '' });
-  assert.match(out.microscopy, /^Sections of the stomach show hyalinised fibrous tissue .* no residual viable gastrointestinal stromal tumour is identified\. The tumour bed is 8 mm from the closest \(gastric resection\) margin\. No lymph nodes are identified\.$/);
   const r = rows(out);
+  assert.match(r['Tumour histology'], /^Sections of the stomach show hyalinised fibrous tissue .* no residual viable gastrointestinal stromal tumour is identified\.$/);
   assert.equal(r['Risk assessment (Miettinen and Lasota 2006)'], 'Not applicable (complete response to treatment)');
   assert.equal(r['Treatment effect'], 'Present (0% viable tumour)');
   assert.equal(r['Presurgical treatment'], 'Systemic therapy performed (imatinib or other tyrosine kinase inhibitor) (imatinib 9 months)');
-  assert.equal(r['Pathological stage classification (AJCC 8th edition)'], 'ypT0 ypNX');
-  assert.equal(out.diagnosis, 'STOMACH, wedge resection - NO RESIDUAL GASTROINTESTINAL STROMAL TUMOUR (complete response to treatment); margins clear; ypT0 ypNX (AJCC 8th edition)');
+  assert.equal(r['pTNM'], 'ypT0 ypNX');
+  assert.equal(out.diagnosis, 'STOMACH, wedge resection\n- NO RESIDUAL GASTROINTESTINAL STROMAL TUMOUR (complete response to treatment)\n- margins clear\n- ypT0 ypNX (AJCC 8th edition)');
   assert.deepEqual(out.issues, []);
 });
 
@@ -150,10 +191,10 @@ test('SDHB-deficient, multifocal, pathologist override: descriptors, override ec
   const r = rows(out);
   assert.equal(r['Tumour focality'], 'Multifocal (3 nodules, 45, 12 and 8 mm)');
   assert.equal(r['SDHB IHC'], 'Deficient');
-  assert.equal(r['Pathological stage classification (AJCC 8th edition)'], 'pT3(m) pN0 [pathologist override; derived T2/NX - size 5.6 cm on the fresh specimen]');
+  assert.equal(r['pTNM'], 'pT3(m) pN0 [pathologist override; derived T2/NX - size 5.6 cm on the fresh specimen]');
   assert.ok(out.synoptic.endsWith('  - Stage group (if cM0): IB'));
-  assert.match(out.microscopy, /SDHB expression is lost \(SDH-deficient\)/);
-  assert.match(out.diagnosis, /mixed spindle and epithelioid type, 4\.5 cm.*SDHB-deficient$/);
+  assert.equal(out.synoptic.split('\n').find((l) => l.length > 80), undefined, 'override line wraps at 80 columns');
+  assert.match(flat(out.diagnosis), /mixed spindle and epithelioid type, 4\.5 cm.*SDHB-deficient$/);
   assert.match(out.macro, /The tumour is multifocal \(3 nodules, 45, 12 and 8 mm\)\./);
   assert.deepEqual(snippets({ sdhbIhc: 'Deficient', focality: 'Multifocal', molecular: 'Not performed' }).sort(), ['gist_resection_multifocal', 'gist_resection_sdhb_deficient']);
   assert.ok(issues({ sdhbIhc: 'Deficient', molecular: 'Not performed' }).some((m) => /SDHB-deficient GIST: germline SDHx/.test(m)));
@@ -178,21 +219,25 @@ test('checks: required fields, node arithmetic, KIT/DOG1 double negative, overri
   assert.ok(issues({ presurgicalTreatment: 'Therapy performed, type not specified' }).some((m) => /record the treatment effect/.test(m)));
 });
 
-test('options: synoptic only, no macro, stage group off, section headers; multi-part headings', () => {
-  const a = run({}, { synopticOnly: true });
+test('options: no macro, stage group off, section headers; multi-part headings; synopticOnly retired', () => {
+  const a = run();
   assert.equal(a.microscopy, '');
-  assert.ok(a.synoptic.startsWith('- Procedure'));
+  assert.ok(a.synoptic.startsWith('Specimen and tumour\n- Procedure'));
+  assert.ok(!schema.options.some((o) => o.id === 'synopticOnly'));
   const b = run({}, { macro: false });
   assert.equal(b.macro, ''); assert.equal(b.blockKey, '');
   const c = run({}, { stageGroup: false });
   assert.ok(!c.synoptic.includes('Stage group'));
-  assert.ok(c.diagnosis.endsWith('pT2 pNX (AJCC 8th edition); KIT and DOG1 positive; molecular studies to follow'));
+  assert.ok(c.synoptic.endsWith('- pTNM: pT2 pNX'));
+  assert.ok(c.diagnosis.endsWith('- pT2 pNX (AJCC 8th edition)\n- KIT and DOG1 positive; molecular studies to follow'));
   const d = run({}, { includeHeader: true }).report;
-  assert.ok(d.indexOf('MICROSCOPIC EXAMINATION:') < d.indexOf('SYNOPTIC REPORT:') && d.indexOf('SYNOPTIC REPORT:') < d.indexOf('DIAGNOSIS:'));
+  assert.ok(!d.includes('MICROSCOPIC EXAMINATION:'));
+  assert.ok(d.indexOf('BLOCK KEY:') < d.indexOf('MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:') && d.indexOf('SYNOPTIC REPORT:') < d.indexOf('DIAGNOSIS:'));
   const e = run({}, {}, [{ tumourSite: 'Omentum', procedure: 'Excision of omental / mesenteric mass', tumourSize: '1.5', mitoticCount: '0', tumourSiteDetail: '', specimenDimensions: '20 x 15 x 10 mm', blockKeyText: '1 Nodule' }]);
   assert.equal(e.specimens, '(A) Stomach, wedge resection\n(B) Omentum, excision of omental / mesenteric mass');
-  assert.ok(e.synoptic.startsWith('(A) Stomach, wedge resection\n- Procedure') && e.synoptic.includes('\n\n(B) Omentum, excision of omental / mesenteric mass\n- Procedure'));
+  assert.ok(e.synoptic.startsWith('(A) Stomach, wedge resection\nSpecimen and tumour\n- Procedure') && e.synoptic.includes('\n\n(B) Omentum, excision of omental / mesenteric mass\nSpecimen and tumour\n- Procedure'));
   assert.match(e.macro, /\(B\) Received in formalin is an excision of omental \/ mesenteric mass \(omentum\) measuring 20 x 15 x 10 mm\./);
-  assert.match(e.microscopy, /\(B\) .*The tumour carries no appreciable risk of progressive disease \(Miettinen and Lasota 2006; omentum, 1\.5 cm, 0 mitoses per 5 mm2\)\./);
-  assert.match(e.diagnosis, /\(B\) OMENTUM, excision of omental \/ mesenteric mass - GASTROINTESTINAL STROMAL TUMOUR, spindle cell type, 1\.5 cm, mitotic count 0 per 5 mm2; no appreciable risk \(Miettinen and Lasota 2006\); margins clear; pT1 pNX \(AJCC 8th edition\), stage IA \(if cM0\)/);
+  assert.equal(e.microscopy, '');
+  assert.match(e.synoptic, /\(B\)[\s\S]*- Risk assessment \(Miettinen and Lasota 2006\): None \(omentum, 1\.5 cm, 0 mitoses\n  per 5 mm2\)/);
+  assert.match(e.diagnosis, /\n\n\(B\) OMENTUM, excision of omental \/ mesenteric mass\n- GASTROINTESTINAL STROMAL TUMOUR, spindle cell type, 1\.5 cm, mitotic count\n  0 per 5 mm2\n- no appreciable risk \(Miettinen and Lasota 2006\); margins clear\n- pT1 pNX \(AJCC 8th edition\), stage IA \(if cM0\)/);
 });

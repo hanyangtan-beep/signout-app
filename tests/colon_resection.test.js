@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { generate, generateCase, snippetsFor, createCase, BLOCK_ORDER, HEADERS } from '../src/engine.js';
 import { loadAll } from '../src/registry.js';
 import { buildDocText } from '../src/docformat.js';
+import { parseSynoptic } from '../src/synoptic.js';
 import { readFileSync } from 'node:fs';
 
 const reg = await loadAll();
@@ -17,6 +18,9 @@ const snippets = (values) => snippetsFor({ colon_resection: reg.colon_resection 
   schemaId: 'colon_resection', parts: [{ label: 'A', templateId: 'colon_resection', values: { ...exampleValues, ...values } }], snippets: {}
 }).filter((s) => s.active).map((s) => s.id);
 const issues = (values) => run(values).issues.map((i) => `${i.level}: ${i.message}`);
+// Value of a synoptic element (wrapped lines rejoined); `flat` folds the multi-line diagnosis back to one "; "-separated line.
+const row = (out, label) => parseSynoptic(out.synoptic).find((r) => r.label === label)?.value;
+const flat = (d) => d.replace(/\n {2,}/g, ' ').split('\n- ').join('; ');
 
 test('schema metadata and the QMH source are recorded', () => {
   assert.equal(schema.kind, 'cancer resection');
@@ -30,9 +34,10 @@ test('schema metadata and the QMH source are recorded', () => {
 
 test('engine exposes the synoptic block between microscopy and diagnosis', () => {
   assert.deepEqual(BLOCK_ORDER, ['specimens', 'macro', 'blockKey', 'intraop', 'microscopy', 'synoptic', 'diagnosis', 'comment']);
-  assert.equal(HEADERS.synoptic, 'SYNOPTIC REPORT:');
+  assert.equal(HEADERS.synoptic, 'MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:');
   const r = run({}, { includeHeader: true }).report;
-  assert.ok(r.indexOf('MICROSCOPIC EXAMINATION:') < r.indexOf('SYNOPTIC REPORT:') && r.indexOf('SYNOPTIC REPORT:') < r.indexOf('DIAGNOSIS:'));
+  assert.ok(!r.includes('MICROSCOPIC EXAMINATION:'), 'no separate narrative microscopy block');
+  assert.ok(r.indexOf('BLOCK KEY:') < r.indexOf('MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:') && r.indexOf('SYNOPTIC REPORT:') < r.indexOf('DIAGNOSIS:'));
 });
 
 test('example case: specimen, macro, block key', () => {
@@ -45,38 +50,58 @@ test('example case: specimen, macro, block key', () => {
   assert.equal(run({ specimenName: 'Colon, right hemicolectomy' }).specimens, 'Colon, right hemicolectomy');
 });
 
-test('example case: narrative microscopy', () => {
-  assert.equal(run().microscopy, 'Sections of the tumour in the ascending colon show an invasive moderately differentiated adenocarcinoma arising in a tubulovillous adenoma. The tumour invades through the muscularis propria into the pericolic tissue. Small vessel lymphovascular invasion is present. Perineural invasion is not identified. Tumour budding is low (Bd1), with 3 buds in the hotspot field. No tumour deposits are identified. The proximal, distal and radial margins are clear of carcinoma (radial margin clearance 15 mm). A total of 22 regional lymph nodes are identified including 1 apical node, 2 of which contain metastatic carcinoma (2/22), without extranodal extension; the largest metastatic deposit measures 6 mm. The background bowel shows diverticulosis. Immunohistochemistry shows retained nuclear expression of MLH1, PMS2, MSH2 and MSH6 in the tumour cells (mismatch repair proficient).');
+test('example case: tumour histology paragraph replaces the narrative microscopy', () => {
+  const out = run();
+  assert.equal(out.microscopy, '');
+  assert.equal(row(out, 'Tumour histology'), 'Sections show an invasive moderately differentiated adenocarcinoma arising in a tubulovillous adenoma, forming irregular glands with a desmoplastic stromal response and luminal dirty necrosis.');
+  assert.ok(out.synoptic.includes('- Tumour histology:\n  Sections show an invasive moderately differentiated adenocarcinoma arising in\n  a tubulovillous adenoma, forming irregular glands with a desmoplastic stromal\n  response and luminal dirty necrosis.'));
+  // Morphology picks drive the paragraph; free text is appended as its own sentence.
+  assert.equal(row(run({ tumourMorphology: ['Extracellular mucin pools', 'Signet-ring cells'], morphologyOther: 'focal squamoid morules' }), 'Tumour histology'), 'Sections show an invasive moderately differentiated adenocarcinoma arising in a tubulovillous adenoma, forming pools of extracellular mucin and signet-ring cells. Focal squamoid morules.');
+  assert.equal(row(run({ tumourMorphology: [], precursorPolyp: 'Not identified' }), 'Tumour histology'), 'Sections show an invasive moderately differentiated adenocarcinoma.');
 });
 
 test('example case: synoptic block mirrors the QMH colon elements in order with derived pTNM and stage', () => {
-  const lines = run().synoptic.split('\n');
-  const labels = lines.filter((l) => l.startsWith('- ')).map((l) => l.slice(2).split(':')[0]);
-  assert.deepEqual(labels, [
-    'Procedure', 'Tumour site', 'Tumour size', 'Macroscopic tumour perforation', 'Histologic type (WHO 2019)', 'Histologic grade',
+  const out = run();
+  const lines = out.synoptic.split('\n');
+  const rows = parseSynoptic(out.synoptic);
+  // QMH order, with the single agreed exception: Tumour histology sits after Histologic grade.
+  assert.deepEqual(rows.filter((r) => r.depth === 0).map((r) => r.label || r.value), [
+    'Procedure', 'Tumour site', 'Tumour size', 'Macroscopic tumour perforation', 'Histologic type (WHO 2019)', 'Histologic grade', 'Tumour histology',
     'Multiple primary tumours', 'Tumour extension', 'Lymphatic and / or vascular invasion', 'Perineural invasion', 'Tumour budding (ITBCC 2016)',
     'Type of polyp in which invasive carcinoma arose', 'Tumour deposits', 'Treatment effect (modified Ryan scheme, 2005)', 'Proximal margin',
-    'Distal margin', 'Radial or mesenteric margin', 'Regional lymph nodes', 'Distant metastasis', 'Pathological stage classification (AJCC 8th edition)',
-    'Additional pathological findings', 'Mismatch repair immunohistochemistry'
+    'Distal margin', 'Radial or mesenteric margin', 'Regional lymph nodes', 'Distant metastasis', 'pTNM',
+    'Diverticulosis', 'Mismatch repair immunohistochemistry'
   ]);
-  assert.ok(lines.includes('- Pathological stage classification (AJCC 8th edition): pT3 pN1b'));
+  assert.deepEqual([...new Set(rows.map((r) => r.section))], ['Specimen and tumour', 'Microscopic findings', 'Margins', 'Regional lymph nodes', 'Distant metastasis', 'Pathological stage (AJCC 8th edition)', 'Additional findings']);
+  assert.ok(lines.includes('- pTNM: pT3 pN1b'));
   assert.ok(lines.includes('  - Stage group (if cM0): IIIB'));
-  assert.ok(lines.includes('- Regional lymph nodes: 22 examined (1 apical); 2 involved (0 apical); extranodal extension not identified; largest metastatic deposit 6 mm'));
-  assert.ok(lines.includes('- Tumour budding (ITBCC 2016): Low score (Bd1, 0-4 buds); 3 buds in 1 hotspot field'));
+  assert.ok(out.synoptic.includes('- Regional lymph nodes: 22 examined; 2 involved\n  - Apical lymph nodes: 1 examined; 0 involved\n  - Extranodal extension: Not identified\n  - Largest metastatic deposit: 6 mm'));
+  assert.ok(out.synoptic.includes('- Tumour budding (ITBCC 2016): Low score (Bd1, 0-4 buds)\n  - Hotspot count: 3 buds in 1 field'));
+  assert.ok(out.synoptic.includes('Additional findings\n- Diverticulosis\n- Mismatch repair immunohistochemistry: Retained (MLH1, PMS2, MSH2, MSH6)'));
+  assert.equal(out.synoptic.split('\n').find((l) => l.length > 80), undefined);
   assert.ok(!run({}, { stageGroup: false }).synoptic.includes('Stage group'));
 });
 
 test('example case: diagnosis line', () => {
-  assert.equal(run().diagnosis, 'ASCENDING COLON, right hemicolectomy - INVASIVE ADENOCARCINOMA, moderately differentiated (G2), invading through the muscularis propria into the pericolic tissue; lymphovascular invasion present; 2 of 22 lymph nodes involved; margins clear; pT3 pN1b (AJCC 8th edition), stage IIIB (if cM0); MMR proficient');
+  assert.equal(run().diagnosis, [
+    'ASCENDING COLON, right hemicolectomy',
+    '- INVASIVE ADENOCARCINOMA, moderately differentiated (G2), invading through the',
+    '  muscularis propria into the pericolic tissue',
+    '- lymphovascular invasion present; 2 of 22 lymph nodes involved; margins clear',
+    '- pT3 pN1b (AJCC 8th edition), stage IIIB (if cM0)',
+    '- MMR proficient'
+  ].join('\n'));
   assert.deepEqual(run().issues, []);
 });
 
-test('synoptic-only mode drops the narrative paragraph but keeps the synoptic and diagnosis', () => {
-  const out = run({}, { synopticOnly: true });
+test('no narrative paragraph: the synoptic opens with its first section and the schema has no synopticOnly option', () => {
+  const out = run();
   assert.equal(out.microscopy, '');
-  assert.match(out.synoptic, /^- Procedure: Right hemicolectomy/);
+  assert.match(out.synoptic, /^Specimen and tumour\n- Procedure: Right hemicolectomy\n/);
   assert.match(out.diagnosis, /^ASCENDING COLON/);
   assert.ok(!out.report.includes('Sections of the tumour'));
+  assert.ok(!schema.options.some((o) => o.id === 'synopticOnly'));
+  assert.ok(!('synopticOnly' in schema.example.options));
 });
 
 test('rectal tumour: rectal elements, circumferential margin wording and the CRM flag', () => {
@@ -85,8 +110,7 @@ test('rectal tumour: rectal elements, circumferential margin wording and the CRM
   assert.equal(out.specimens, 'Rectum, low anterior resection');
   assert.match(out.macro, /^Received in formalin is a low anterior resection specimen comprising a segment of colon and rectum measuring 18 cm in length/);
   assert.match(out.macro, /The mesorectum is complete\./);
-  assert.match(out.microscopy, /into the perirectal \/ mesorectal tissue\./);
-  assert.match(out.microscopy, /The proximal, distal and circumferential margins are clear of carcinoma \(circumferential margin clearance 1 mm\)\./);
+  assert.match(flat(out.diagnosis), /invading through the muscularis propria into the perirectal \/ mesorectal tissue; lymphovascular invasion present; 2 of 22 lymph nodes involved; margins clear;/);
   assert.ok(out.synoptic.includes('- Tumour location relative to anterior peritoneal reflection: Entirely below'));
   assert.ok(out.synoptic.includes('- Macroscopic intactness of mesorectum: Complete'));
   assert.ok(out.synoptic.includes('- Circumferential (radial) margin: Uninvolved by invasive carcinoma (1 mm)'));
@@ -97,42 +121,38 @@ test('rectal tumour: rectal elements, circumferential margin wording and the CRM
 
 test('pT1 with submucosal depth and extent; polyp origin; budding derived from count', () => {
   const out = run({ tumourExtension: 'Invades submucosa', submucosalDepth: 'Exact depth (mm)', submucosalDepthMm: '1.5', submucosalExtent: 'Upper third (sm1)', nodesPositive: '0', buddingCount: '12', buddingScore: 'Low score (Bd1, 0-4 buds)', ene: 'Not applicable', largestDepositMm: '' });
-  assert.match(out.microscopy, /The tumour invades the submucosa to a depth of 1\.5 mm, into the upper third \(sm1\)\./);
-  assert.match(out.microscopy, /Tumour budding is high \(Bd3\), with 12 buds in the hotspot field\./);
+  assert.match(row(out, 'Tumour histology'), /^Sections show an invasive moderately differentiated adenocarcinoma arising in a tubulovillous adenoma, forming irregular glands/);
+  assert.equal(row(out, 'Tumour budding (ITBCC 2016)'), 'High score (Bd3, 10 or more buds)');
+  assert.equal(row(out, 'Hotspot count'), '12 buds in 1 field');
   assert.ok(out.synoptic.includes('- Depth of submucosal invasion (pT1): 1.5 mm'));
   assert.ok(out.synoptic.includes('- Extent of submucosal invasion (pT1): Upper third (sm1)'));
-  assert.ok(out.synoptic.includes('- Pathological stage classification (AJCC 8th edition): pT1 pN0'));
-  assert.ok(out.synoptic.includes('  - Stage group (if cM0): I'));
-  assert.match(out.diagnosis, /invading the submucosa; lymphovascular invasion present; no lymph node metastasis \(0\/22\); margins clear; pT1 pN0 \(AJCC 8th edition\), stage I \(if cM0\)/);
+  assert.ok(out.synoptic.includes('- pTNM: pT1 pN0\n  - Stage group (if cM0): I'));
+  assert.match(flat(out.diagnosis), /invading the submucosa; lymphovascular invasion present; no lymph node metastasis \(0\/22\); margins clear; pT1 pN0 \(AJCC 8th edition\), stage I \(if cM0\)/);
   assert.ok(out.issues.some((i) => /budding score does not match the count/.test(i.message)));
 });
 
 test('pT4b with adjacent structure, tumour deposits (N1c), liver metastasis (M1a)', () => {
   const out = run({ tumourExtension: 'Directly invades or adheres to adjacent structure(s)', adjacentStructure: 'urinary bladder wall', nodesPositive: '0', tumourDeposits: 'Present', tumourDepositsCount: '2', distantMetastasis: ['Liver'], metastasisDetail: 'segment 6 wedge', ene: 'Not applicable', largestDepositMm: '' });
-  assert.match(out.microscopy, /The tumour directly invades the urinary bladder wall\./);
-  assert.match(out.microscopy, /2 tumour deposits are present in the pericolic fat\./);
-  assert.match(out.microscopy, /Metastatic carcinoma is present in the liver \(segment 6 wedge\)\./);
-  assert.ok(out.synoptic.includes('- Tumour extension: Directly invades or adheres to adjacent structure(s) (urinary bladder wall)'));
+  assert.equal(row(out, 'Tumour extension'), 'Directly invades or adheres to adjacent structure(s) (urinary bladder wall)');
   assert.ok(out.synoptic.includes('- Tumour deposits: Present (2)'));
   assert.ok(out.synoptic.includes('- Distant metastasis: Liver (segment 6 wedge)'));
-  assert.ok(out.synoptic.includes('- Pathological stage classification (AJCC 8th edition): pT4b pN1c pM1a'));
-  assert.ok(out.synoptic.includes('  - Stage group: IVA'));
-  assert.match(out.diagnosis, /tumour deposits present; no lymph node metastasis \(0\/22\); margins clear; metastatic carcinoma in liver; pT4b pN1c pM1a \(AJCC 8th edition\), stage IVA; MMR proficient$/);
+  assert.ok(out.synoptic.includes('- pTNM: pT4b pN1c pM1a\n  - Stage group: IVA'));
+  assert.match(flat(out.diagnosis), /directly invading the urinary bladder wall; lymphovascular invasion present; tumour deposits present; no lymph node metastasis \(0\/22\); margins clear; metastatic carcinoma in liver; pT4b pN1c pM1a \(AJCC 8th edition\), stage IVA; MMR proficient$/);
 });
 
 test('post-treatment cases carry the y prefix and the modified Ryan sentence; complete response wording', () => {
   const partial = run({ treatmentEffect: 'Partial response (score 2): residual cancer with evident tumour regression' });
-  assert.match(partial.microscopy, /Treatment effect is present with residual carcinoma showing evident regression \(partial response, modified Ryan score 2\)\./);
-  assert.ok(partial.synoptic.includes('- Pathological stage classification (AJCC 8th edition): ypT3 ypN1b'));
+  assert.equal(row(partial, 'Treatment effect (modified Ryan scheme, 2005)'), 'Partial response (score 2): residual cancer with evident tumour regression');
+  assert.ok(partial.synoptic.includes('- pTNM: ypT3 ypN1b'));
   const cr = run({ treatmentEffect: 'Complete response (score 0): no viable cancer cells', tumourExtension: 'No evidence of primary tumour', nodesPositive: '0', ene: 'Not applicable', largestDepositMm: '', lvi: 'Not identified', mmr: 'Not performed', additionalFindings: [] });
-  assert.match(cr.microscopy, /^Sections of the ascending colon show fibrosis and mucin pools consistent with treated tumour bed; no residual invasive carcinoma is identified\. There is a complete pathological response/);
-  assert.match(cr.diagnosis, /- NO RESIDUAL CARCINOMA \(complete pathological response\); no lymph node metastasis \(0\/22\); margins clear; ypT0 ypN0 \(AJCC 8th edition\)$/);
+  assert.equal(row(cr, 'Tumour histology'), 'Sections of the ascending colon show fibrosis and mucin pools consistent with treated tumour bed; no residual invasive carcinoma is identified.');
+  assert.match(flat(cr.diagnosis), /; NO RESIDUAL CARCINOMA \(complete pathological response\); no lymph node metastasis \(0\/22\); margins clear; ypT0 ypN0 \(AJCC 8th edition\)$/);
 });
 
-test('involved margins are named in the narrative and the diagnosis', () => {
+test('involved margins are named in the Margins section and the diagnosis', () => {
   const out = run({ radialMargin: 'Involved by invasive carcinoma', distalMargin: 'Cannot be assessed' });
-  assert.match(out.microscopy, /The proximal margin is clear of carcinoma \(proximal margin clearance 90 mm\); the radial margin is involved by carcinoma; the distal margin cannot be assessed\./);
-  assert.match(out.diagnosis, /radial margin involved;/);
+  assert.ok(out.synoptic.includes('Margins\n- Proximal margin: Uninvolved by invasive carcinoma (90 mm)\n- Distal margin: Cannot be assessed\n- Radial or mesenteric margin: Involved by invasive carcinoma'));
+  assert.match(flat(out.diagnosis), /radial margin involved;/);
   assert.ok(!out.diagnosis.includes('margins clear'));
 });
 
@@ -155,38 +175,40 @@ test('validation: required elements, node arithmetic, few nodes, override reason
 
 test('override prints the derived stage beside the pathologist stage and activates the comment', () => {
   const out = run({ tnmOverride: 'pT2 pN1a', tnmOverrideReason: 'deeper invasion on levels' });
-  assert.ok(out.synoptic.includes('- Pathological stage classification (AJCC 8th edition): pT2 pN1a [pathologist override; derived T3/N1b - deeper invasion on levels]'));
+  assert.equal(row(out, 'pTNM'), 'pT2 pN1a [pathologist override; derived T3/N1b - deeper invasion on levels]');
   assert.ok(out.synoptic.includes('  - Stage group (if cM0): IIIA'));
-  assert.match(out.diagnosis, /pT2 pN1a \(AJCC 8th edition\), stage IIIA \(if cM0\)/);
+  assert.equal(out.synoptic.split('\n').find((l) => l.length > 80), undefined);
+  assert.match(flat(out.diagnosis), /pT2 pN1a \(AJCC 8th edition\), stage IIIA \(if cM0\)/);
   assert.ok(snippets({ tnmOverride: 'pT2 pN1a' }).includes('colon_resection_override'));
 });
 
-test('MMR patterns: snippets, narrative and diagnosis wording', () => {
+test('MMR patterns: snippets, Additional findings element and diagnosis wording', () => {
   assert.ok(snippets({ mmr: 'Loss of MLH1 and PMS2' }).includes('colon_resection_mlh1_loss'));
   assert.ok(snippets({ mmr: 'Loss of MSH2 and MSH6' }).includes('colon_resection_lynch'));
   assert.ok(snippets({ mmr: 'Isolated loss of PMS2' }).includes('colon_resection_lynch'));
   assert.ok(snippets({ mmr: 'Pending' }).includes('colon_resection_mmr_pending'));
   assert.deepEqual(snippets({}), []);
   assert.match(run({ mmr: 'Loss of MLH1 and PMS2' }).diagnosis, /MMR deficient \(loss of MLH1 \/ PMS2\)$/);
-  assert.match(run({ mmr: 'Pending' }).microscopy, /Mismatch repair immunohistochemistry is pending\.$/);
+  const pending = parseSynoptic(run({ mmr: 'Pending' }).synoptic).find((r) => r.label === 'Mismatch repair immunohistochemistry');
+  assert.deepEqual([pending.section, pending.value], ['Additional findings', 'Pending']);
   assert.ok(!run({ mmr: 'Not performed' }).synoptic.includes('Mismatch repair'));
 });
 
 test('non-invasive lesions: high grade dysplasia and intramucosal carcinoma stage as pTis', () => {
   const hgd = run({ tumourExtension: 'No invasion (high grade dysplasia)', nodesPositive: '0', ene: 'Not applicable', largestDepositMm: '', lvi: 'Not identified', mmr: 'Not performed' });
-  assert.match(hgd.microscopy, /^Sections of the ascending colon show high grade dysplasia within a tubulovillous adenoma; the lesion shows high grade dysplasia without invasion and there is no submucosal invasion\./);
-  assert.match(hgd.diagnosis, /- HIGH GRADE DYSPLASIA, no invasive carcinoma; no lymph node metastasis \(0\/22\); margins clear; pTis pN0 \(AJCC 8th edition\), stage 0 \(if cM0\)$/);
+  assert.equal(row(hgd, 'Tumour histology'), 'Sections of the ascending colon show high grade dysplasia within a tubulovillous adenoma; the lesion shows high grade dysplasia without invasion and there is no submucosal invasion.');
+  assert.match(flat(hgd.diagnosis), /; HIGH GRADE DYSPLASIA, no invasive carcinoma; no lymph node metastasis \(0\/22\); margins clear; pTis pN0 \(AJCC 8th edition\), stage 0 \(if cM0\)$/);
   const imc = run({ tumourExtension: 'Invades lamina propria / muscularis mucosae (intramucosal carcinoma)', nodesPositive: '0', ene: 'Not applicable', largestDepositMm: '', mmr: 'Not performed' });
-  assert.match(imc.diagnosis, /INTRAMUCOSAL ADENOCARCINOMA, no submucosal invasion;.*pTis pN0/);
+  assert.match(flat(imc.diagnosis), /INTRAMUCOSAL ADENOCARCINOMA, no submucosal invasion;.*pTis pN0/);
 });
 
 test('multi-part case: each part gets its own synoptic block with a labelled heading', () => {
   const out = run({}, {}, [{ tumourSite: 'Sigmoid colon', procedure: 'Sigmoid colectomy', tumourExtension: 'Invades muscularis propria', nodesExamined: '14', nodesPositive: '0', apicalExamined: '', apicalPositive: '', ene: 'Not applicable', largestDepositMm: '' }]);
   assert.match(out.specimens, /^\(A\) Ascending colon, right hemicolectomy\n\(B\) Sigmoid colon, sigmoid colectomy$/);
-  assert.match(out.synoptic, /^\(A\) Ascending colon, right hemicolectomy\n- Procedure: Right hemicolectomy/);
-  assert.match(out.synoptic, /\n\n\(B\) Sigmoid colon, sigmoid colectomy\n- Procedure: Sigmoid colectomy/);
-  assert.match(out.synoptic, /\(B\)[\s\S]*pT2 pN0\n  - Stage group \(if cM0\): I/);
-  assert.match(out.diagnosis, /^\(A\) ASCENDING COLON[\s\S]*\n\(B\) SIGMOID COLON, sigmoid colectomy - INVASIVE ADENOCARCINOMA/);
+  assert.match(out.synoptic, /^\(A\) Ascending colon, right hemicolectomy\nSpecimen and tumour\n- Procedure: Right hemicolectomy/);
+  assert.match(out.synoptic, /\n\n\(B\) Sigmoid colon, sigmoid colectomy\nSpecimen and tumour\n- Procedure: Sigmoid colectomy/);
+  assert.match(out.synoptic, /\(B\)[\s\S]*- pTNM: pT2 pN0\n  - Stage group \(if cM0\): I/);
+  assert.match(out.diagnosis, /^\(A\) ASCENDING COLON, right hemicolectomy\n- INVASIVE[\s\S]*\n\n\(B\) SIGMOID COLON, sigmoid colectomy\n- INVASIVE ADENOCARCINOMA/);
 });
 
 test('mixed case with a colonic polyp part keeps the synoptic block for the resection only', () => {
@@ -198,17 +220,21 @@ test('mixed case with a colonic polyp part keeps the synoptic block for the rese
     ]
   };
   const out = generateCase({ colonic_polyp: reg.colonic_polyp, colon_resection: reg.colon_resection }, cs);
-  assert.match(out.synoptic, /^\(B\) Ascending colon, right hemicolectomy\n- Procedure/);
+  assert.match(out.synoptic, /^\(B\) Ascending colon, right hemicolectomy\nSpecimen and tumour\n- Procedure/);
   assert.ok(!out.synoptic.includes('(A)'));
+  // The polyp part keeps its narrative paragraph; the resection contributes none.
+  assert.match(out.microscopy, /^\(A\) /);
+  assert.ok(!out.microscopy.includes('(B)'));
   assert.equal(out.issues.length, 0);
 });
 
-test('Google Doc text carries a SYNOPTIC REPORT section only when present', () => {
+test('Google Doc text carries the combined MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT section only when present', () => {
   const cs = { ...createCase(schema), meta: { accession: 'S26-1234', status: 'draft' }, parts: [{ label: 'A', values: { ...exampleValues } }] };
   const out = generateCase({ colon_resection: reg.colon_resection }, cs);
   const doc = buildDocText(cs, out);
-  assert.ok(doc.includes('\nSYNOPTIC REPORT:\n- Procedure: Right hemicolectomy'));
-  assert.ok(doc.indexOf('SYNOPTIC REPORT:') > doc.indexOf('MICROSCOPIC EXAMINATION:') && doc.indexOf('SYNOPTIC REPORT:') < doc.indexOf('DIAGNOSIS:'));
+  assert.ok(doc.includes('\nMICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:\nSpecimen and tumour\n- Procedure: Right hemicolectomy'));
+  assert.ok(!doc.includes('\nMICROSCOPIC EXAMINATION:\n'), 'no empty narrative section for a synoptic-only case');
+  assert.ok(doc.indexOf('SYNOPTIC REPORT:') > doc.indexOf('BLOCK KEY:') && doc.indexOf('SYNOPTIC REPORT:') < doc.indexOf('DIAGNOSIS:'));
   const gb = reg.gallbladder;
   const gbOut = generate(gb.schema, gb.generator, { schemaId: 'gallbladder', ...gb.schema.example });
   assert.ok(!buildDocText({ ...createCase(gb.schema), meta: {} }, gbOut).includes('SYNOPTIC REPORT'));

@@ -1,7 +1,7 @@
 // Generic schema engine: builds part defaults, evaluates visibility, and assembles
 // the report from a schema + generator module. Runs unchanged in the browser and in Node.
 
-import { applyStyle } from './style.js?v=mtwuu17o';
+import { applyStyle } from './style.js?v=mtxmtz30';
 
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -11,7 +11,7 @@ export const HEADERS = {
   blockKey: 'BLOCK KEY:',
   intraop: 'INTRAOPERATIVE CONSULTATION:',
   microscopy: 'MICROSCOPIC EXAMINATION:',
-  synoptic: 'SYNOPTIC REPORT:',
+  synoptic: 'MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:',
   diagnosis: 'DIAGNOSIS:',
   comment: 'COMMENT:'
 };
@@ -294,11 +294,11 @@ export function generateCase(templates, caseState) {
     .map((p) => styled(p.templateId, ctxs[p.templateId].gen.blockKey(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n');
   const intraop = ids.filter((id) => ctxs[id].gen.intraop)
     .map((id) => styled(id, ctxs[id].gen.intraop(ctxs[id].parts, ctxs[id]))).filter((t) => t && t.trim() !== '').join('\n\n');
-  // Narrative microscopy. Cancer templates with a `synoptic` hook may be switched to synoptic-only
-  // output (`options.synopticOnly`), in which case their narrative paragraph is omitted.
-  const microscopy = parts.filter((p) => !(options.synopticOnly && ctxs[p.templateId].gen.synoptic))
+  // Narrative microscopy. Cancer templates with a `synoptic` hook print no narrative paragraph:
+  // their tumour histology lives inside the synoptic (docs/specs/synoptic-layout.md).
+  const microscopy = parts.filter((p) => !ctxs[p.templateId].gen.synoptic)
     .map((p) => styled(p.templateId, ctxs[p.templateId].gen.microscopy(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n\n');
-  // Optional per-part synoptic (CAP-style element list) block for cancer resections.
+  // Optional per-part synoptic block for cancer resections (sectioned QMH element list with the tumour histology).
   const synoptic = parts.filter((p) => ctxs[p.templateId].gen.synoptic)
     .map((p) => styled(p.templateId, ctxs[p.templateId].gen.synoptic(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n\n');
   // Validation issues (`{level: 'error'|'warn', message}`) from templates with a `validate` hook.
@@ -308,7 +308,9 @@ export function generateCase(templates, caseState) {
     if (!g.validate) continue;
     for (const it of g.validate(p, ctxs[p.templateId]) || []) issues.push({ ...it, part: p.label });
   }
-  let diagnosis = parts.map((p) => styled(p.templateId, ctxs[p.templateId].gen.diagnosis(p, ctxs[p.templateId]))).join('\n');
+  // Multi-line diagnoses (synoptic templates: specimen line + "- " clauses) get a blank line between parts.
+  const diagnoses = parts.map((p) => styled(p.templateId, ctxs[p.templateId].gen.diagnosis(p, ctxs[p.templateId])));
+  let diagnosis = diagnoses.join(diagnoses.some((d) => d.includes('\n')) ? '\n\n' : '\n');
   for (const id of ids) {
     const ctx = ctxs[id];
     if (!ctx.gen.summary) continue;

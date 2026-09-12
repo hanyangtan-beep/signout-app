@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { generate, snippetsFor } from '../src/engine.js';
 import { loadAll } from '../src/registry.js';
 import { derivedPromise, resolvedPromise } from '../generators/endometrial_carcinoma.js';
+import { parseSynoptic } from '../src/synoptic.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const FIX = path.join(here, 'fixtures', 'endometrium');
@@ -22,7 +23,18 @@ function run(patch = {}, options = {}) {
   const out = generate(schema, generator, cs);
   return { ...out, snippets: snippetsFor({ endometrial_carcinoma: registry.endometrial_carcinoma }, cs).filter((s) => s.active).map((s) => s.id).sort() };
 }
-const rows = (out) => Object.fromEntries(out.synoptic.split('\n').filter((l) => l.startsWith('- ')).map((l) => { const i = l.indexOf(': '); return [l.slice(2, i), l.slice(i + 2)]; }));
+// "Label: value" rows at every depth (myometrial depth / thickness / percentage are sub-items), wrapped lines rejoined.
+const rows = (out) => Object.fromEntries(parseSynoptic(out.synoptic).filter((r) => r.label).map((r) => [r.label, r.value]));
+// Fold the multi-line diagnosis (specimen line + "- " clauses, wrapped at 80 columns) back to the old one-line form.
+function flat(d) {
+  const clauses = [];
+  for (const line of d.split('\n')) {
+    if (line.startsWith('- ')) clauses.push(line.slice(2));
+    else if (clauses.length) clauses[clauses.length - 1] += ` ${line.trim()}`;
+    else clauses.push(line.trim()); // specimen line (may wrap without indent)
+  }
+  return clauses.length > 1 ? `${clauses[0]} - ${clauses.slice(1).join('; ')}` : clauses[0];
+}
 const info = (out) => out.issues.filter((i) => i.level === 'info').map((i) => i.message);
 const figo = (out, yr) => info(out).find((m) => m.startsWith(`FIGO ${yr} (reference, not reported): `))?.slice(`FIGO ${yr} (reference, not reported): `.length);
 const NO_MOL = { mmrIhc: 'Not performed', p53: 'Not performed', pole: 'Not performed', otherIhc: '' };
@@ -58,15 +70,30 @@ test('example case: low-grade endometrioid IA2 NSMP', () => {
   const out = run();
   assert.equal(out.specimens, 'Uterus with cervix and bilateral adnexa, total hysterectomy and bilateral salpingo-oophorectomy with sentinel lymph node biopsy');
   assert.ok(out.macro.startsWith('The specimen consists of an intact uterus with cervix (165 g, 92 x 58 x 44 mm)'));
-  assert.ok(out.microscopy.startsWith('Sections show an endometrioid carcinoma, FIGO grade 1, measuring 35 mm and arising in the endometrium (posterior wall and fundus)'));
-  assert.ok(out.microscopy.includes('The tumour invades less than half of the myometrium (6 mm of 18 mm, 33%).'));
-  assert.ok(out.microscopy.includes('Immunohistochemistry shows intact nuclear expression of MLH1, PMS2, MSH2 and MSH6, wild-type p53 staining and ER and PR positive; POLE sequencing shows no exonuclease domain mutation; the molecular class is no specific molecular profile (NSMP).'));
+  assert.equal(out.microscopy, '', 'no narrative microscopy for synoptic templates');
   const r = rows(out);
+  assert.equal(r['Tumour histology'], 'Sections show an endometrioid carcinoma with a predominantly glandular architecture of confluent, back-to-back glands lined by stratified columnar cells with elongated, mildly to moderately atypical nuclei; solid non-squamous growth makes up 5% or less of the tumour. There is squamous differentiation with morules and keratinising nests. Tumour necrosis is not seen. Myometrial invasion is by irregular infiltrative glands eliciting a stromal response.');
+  assert.ok(out.synoptic.includes('- Myometrial invasion: Estimated less than 50% myometrial invasion\n  - Depth of myometrial invasion: 6 mm\n  - Myometrial thickness: 18 mm\n  - Percentage of myometrial invasion: 33%\n'));
+  assert.equal(r['Mismatch repair (MMR) immunohistochemistry'], 'Intact nuclear expression of MLH1, PMS2, MSH2 and MSH6');
+  assert.equal(r['Other immunohistochemistry'], 'ER and PR positive');
+  assert.deepEqual([...new Set(parseSynoptic(out.synoptic).map((x) => x.section))], ['Specimen and tumour', 'Microscopic findings', 'Margins', 'Lymph nodes', 'Distant metastasis', 'Additional findings']);
+  assert.ok(out.synoptic.startsWith('Specimen and tumour\n- Procedure: Total hysterectomy and bilateral salpingo-oophorectomy; sentinel\n  lymph node biopsy\n'));
+  assert.ok(out.synoptic.includes('\n\nMicroscopic findings\n- Histologic type: Endometrioid carcinoma\n- Histologic grade: FIGO grade 1 (endometrioid carcinoma)\n- Tumour histology:\n  Sections show an endometrioid carcinoma with a predominantly glandular\n'));
+  assert.equal(out.synoptic.split('\n').find((l) => l.length > 80 || l.includes('\t')), undefined);
   assert.equal(r['Histologic grade'], 'FIGO grade 1 (endometrioid carcinoma)');
   assert.equal(r['Percentage of myometrial invasion'], '33%');
   assert.equal(r['Molecular classification'], 'No specific molecular profile (NSMP)');
   assert.equal(r['Pelvic lymph nodes'], '3 examined; 0 involved; includes sentinel lymph node(s)');
-  assert.equal(out.diagnosis, 'UTERUS WITH CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral salpingo-oophorectomy with sentinel lymph node biopsy - ENDOMETRIOID CARCINOMA, FIGO grade 1, invading less than half of the myometrium; no lymphovascular space invasion; cervix and adnexa uninvolved; 0 of 3 pelvic lymph nodes involved; molecular class NSMP');
+  assert.equal(out.diagnosis, [
+    'UTERUS WITH CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral',
+    'salpingo-oophorectomy with sentinel lymph node biopsy',
+    '- ENDOMETRIOID CARCINOMA, FIGO grade 1, invading less than half of the',
+    '  myometrium',
+    '- no lymphovascular space invasion; cervix and adnexa uninvolved',
+    '- 0 of 3 pelvic lymph nodes involved',
+    '- molecular class NSMP'
+  ].join('\n'));
+  assert.equal(flat(out.diagnosis), 'UTERUS WITH CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral salpingo-oophorectomy with sentinel lymph node biopsy - ENDOMETRIOID CARCINOMA, FIGO grade 1, invading less than half of the myometrium; no lymphovascular space invasion; cervix and adnexa uninvolved; 0 of 3 pelvic lymph nodes involved; molecular class NSMP');
   assert.equal(figo(out, 2009), 'IA');
   assert.equal(figo(out, 2023), 'IA2 - invasion of less than half of the myometrium, non-aggressive histotype');
   assert.deepEqual(out.issues.filter((i) => i.level !== 'info'), []);
@@ -75,7 +102,7 @@ test('example case: low-grade endometrioid IA2 NSMP', () => {
 
 test('FIGO stage never appears in the report; grade wording is the only FIGO mention', () => {
   for (const [, patch] of CASES) {
-    for (const opts of [{}, { printPTNM: true }, { synopticOnly: true }, { macro: false }]) {
+    for (const opts of [{}, { printPTNM: true }, { macro: false }]) {
       const out = run(patch, opts);
       const stripped = out.report.replace(/FIGO grade \d/g, '');
       assert.ok(!/FIGO/.test(stripped), `FIGO leaked into the report: ${stripped.match(/.{0,40}FIGO.{0,40}/)?.[0]}`);
@@ -88,17 +115,19 @@ test('printPTNM toggles the pTNM block and the diagnosis stage clause', () => {
   const off = run(byName['02-serous-iicm-p53abn']);
   assert.ok(!out2str(off).includes('AJCC'));
   const on = run(byName['02-serous-iicm-p53abn'], { printPTNM: true });
-  assert.equal(rows(on)['Pathological stage classification (AJCC 8th edition)'], 'pT1a pN0');
-  assert.ok(on.synoptic.endsWith('  - Stage group (if cM0): IA'));
-  assert.ok(on.diagnosis.endsWith('molecular class p53abn; pT1a pN0 (AJCC 8th edition), stage IA (if cM0)'));
+  assert.equal(rows(on)['pTNM'], 'pT1a pN0');
+  assert.ok(on.synoptic.includes('\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT1a pN0\n  - Stage group (if cM0): IA\n\nAdditional findings\n- None'));
+  assert.ok(!off.synoptic.includes('Pathological stage'));
+  assert.ok(on.diagnosis.endsWith('- molecular class p53abn\n- pT1a pN0 (AJCC 8th edition), stage IA (if cM0)'));
   function out2str(o) { return o.report; }
 });
 
 test('serous p53abn: IICm reference stage and p53abn snippet', () => {
   const out = run(byName['02-serous-iicm-p53abn']);
-  assert.ok(out.microscopy.includes('Substantial lymphovascular space invasion is present (5 or more vessels).'));
-  assert.ok(out.microscopy.includes('All 12 pelvic lymph nodes are negative for metastatic carcinoma (0/12).'));
-  assert.ok(out.diagnosis.includes('SEROUS CARCINOMA, high grade, invading less than half of the myometrium; substantial lymphovascular space invasion'));
+  assert.equal(rows(out)['Lymphovascular invasion'], 'Present, extensive / substantial (5 or more vessels)');
+  assert.equal(rows(out)['Pelvic lymph nodes'], '12 examined; 0 involved');
+  assert.equal(rows(out)['Tumour histology'].split('. ')[0], 'Sections show a serous carcinoma');
+  assert.ok(flat(out.diagnosis).includes('SEROUS CARCINOMA, high grade, invading less than half of the myometrium; substantial lymphovascular space invasion'));
   assert.equal(figo(out, 2009), 'IA');
   assert.equal(figo(out, 2023), 'IICm - p53abn with myometrial invasion (aggressive histotype)');
   assert.deepEqual(out.snippets, ['endometrium_p53abn']);
@@ -106,32 +135,32 @@ test('serous p53abn: IICm reference stage and p53abn snippet', () => {
 
 test('POLEmut carcinoma confined to a polyp: IAm, no nodes', () => {
   const out = run(byName['03-polyp-polemut-iam']);
-  assert.ok(out.microscopy.includes('arising within an endometrial polyp. The tumour shows a predominantly glandular architecture'));
-  assert.ok(out.microscopy.includes('The carcinoma is confined to the polyp with no myometrial invasion.'));
-  assert.ok(!out.microscopy.includes('Myometrial invasion is by'));
-  assert.ok(out.microscopy.includes('POLE sequencing shows a pathogenic exonuclease domain mutation (P286R); the molecular class is POLE-mutated.'));
+  assert.equal(rows(out)['Tumour site'], 'Endometrial polyp');
+  assert.equal(rows(out)['Myometrial invasion'], 'Not identified');
+  assert.ok(rows(out)['Tumour histology'].startsWith('Sections show an endometrioid carcinoma with a predominantly glandular architecture'));
+  assert.ok(!rows(out)['Tumour histology'].includes('Myometrial invasion is by'), 'no invasion-pattern sentence without myoinvasion');
   assert.equal(rows(out)['POLE status'], 'Mutated (P286R)');
+  assert.equal(rows(out)['Molecular classification'], 'POLE-mutated carcinoma');
   assert.equal(rows(out)['Pelvic lymph nodes'], 'No lymph nodes submitted or found');
-  assert.ok(out.diagnosis.includes('confined to an endometrial polyp; no lymphovascular space invasion; cervix and adnexa uninvolved; molecular class POLEmut'));
+  assert.ok(flat(out.diagnosis).includes('confined to an endometrial polyp; no lymphovascular space invasion; cervix and adnexa uninvolved; molecular class POLEmut'));
   assert.equal(figo(out, 2009), 'IA - nodes not assessed');
   assert.equal(figo(out, 2023), 'IAm - POLEmut confined to the corpus (non-aggressive histotype)');
   assert.deepEqual(out.snippets, ['endometrium_pole_mut']);
   const pt = run(byName['03-polyp-polemut-iam'], { printPTNM: true });
-  assert.equal(rows(pt)['Pathological stage classification (AJCC 8th edition)'], 'pT1a pNX');
+  assert.equal(rows(pt)['pTNM'], 'pT1a pNX');
 });
 
 test('carcinosarcoma with para-aortic macrometastasis and omental deposit: IVB, MMR warning', () => {
   const out = run(byName['04-carcinosarcoma-iiic2ii-ivb'], { printPTNM: true });
   const r = rows(out);
   assert.equal(r['Histologic type'], 'Carcinosarcoma');
-  assert.equal(r['Pelvic lymph nodes'], '10 examined; 2 involved; 2 with macrometastasis (more than 2 mm); largest metastatic deposit 6 mm; extranodal extension not identified');
-  assert.equal(r['Para-aortic lymph nodes'], '6 examined; 1 involved; 1 with macrometastasis (more than 2 mm); largest metastatic deposit 9 mm; extranodal extension present');
+  assert.ok(out.synoptic.includes('Lymph nodes\n- Pelvic lymph nodes: 10 examined; 2 involved\n  - Macrometastasis (more than 2 mm): 2\n  - Largest metastatic deposit: 6 mm\n  - Extranodal extension: Not identified\n- Para-aortic lymph nodes: 6 examined; 1 involved\n  - Macrometastasis (more than 2 mm): 1\n  - Largest metastatic deposit: 9 mm\n  - Extranodal extension: Present'));
   assert.equal(r['Distant metastasis'], 'Omentum');
   assert.equal(r['Molecular classification'], 'Not performed');
-  assert.equal(r['Pathological stage classification (AJCC 8th edition)'], 'pT1b pN2a pM1');
-  assert.ok(out.synoptic.endsWith('  - Stage group: IVB'));
-  assert.ok(out.diagnosis.includes('CARCINOSARCOMA, high grade, invading half or more of the myometrium'));
-  assert.ok(out.diagnosis.includes('2 of 10 pelvic lymph nodes involved; 1 of 6 para-aortic lymph nodes involved; metastatic carcinoma in the omentum; pT1b pN2a pM1 (AJCC 8th edition), stage IVB'));
+  assert.equal(r['pTNM'], 'pT1b pN2a pM1');
+  assert.ok(out.synoptic.includes('- pTNM: pT1b pN2a pM1\n  - Stage group: IVB'));
+  assert.ok(out.diagnosis.includes('\n- CARCINOSARCOMA, high grade, invading half or more of the myometrium\n'));
+  assert.ok(flat(out.diagnosis).includes('2 of 10 pelvic lymph nodes involved; 1 of 6 para-aortic lymph nodes involved; metastatic carcinoma in the omentum; pT1b pN2a pM1 (AJCC 8th edition), stage IVB'));
   assert.ok(!out.diagnosis.includes('molecular'));
   assert.ok(out.issues.some((i) => i.level === 'warn' && /MMR immunohistochemistry is not recorded/.test(i.message)));
   assert.equal(figo(out, 2009), 'IVB');
@@ -145,28 +174,27 @@ test('carcinosarcoma with para-aortic macrometastasis and omental deposit: IVB, 
 
 test('low-grade endometrioid limited to uterus and ovary: IA3 with synchronous-ovary snippet', () => {
   const out = run(byName['05-endometrioid-uterus-ovary-ia3']);
-  assert.ok(out.microscopy.includes('Carcinoma involves the left ovary (20 mm endometrioid carcinoma, FIGO grade 1, confined to the left ovary); the remaining adnexal tissue is uninvolved.'));
   assert.equal(rows(out)['Other tissue / organ involvement'], 'Left ovary (20 mm endometrioid carcinoma, FIGO grade 1, confined to the left ovary)');
-  assert.ok(out.diagnosis.includes('involving the left ovary; cervix uninvolved'));
+  assert.ok(flat(out.diagnosis).includes('involving the left ovary; cervix uninvolved'));
   assert.equal(figo(out, 2009), 'IIIA');
   assert.equal(figo(out, 2023), 'IA3 - low-grade endometrioid carcinoma limited to the uterus and ovary');
   assert.deepEqual(out.snippets, ['endometrium_synchronous_ovary']);
   const pt = run(byName['05-endometrioid-uterus-ovary-ia3'], { printPTNM: true });
-  assert.equal(rows(pt)['Pathological stage classification (AJCC 8th edition)'], 'pT3a pN0');
+  assert.equal(rows(pt)['pTNM'], 'pT3a pN0');
 });
 
 test('endocervical glandular involvement only stays stage I; pending molecular gives the conditional clause', () => {
   const out = run(byName['06-endocervical-glandular-only']);
-  assert.ok(out.microscopy.includes('The cervix shows endocervical glandular involvement only, without stromal invasion.'));
-  assert.ok(out.microscopy.includes('Mismatch repair and p53 immunohistochemistry have been requested (results to follow); the molecular classification awaits the outstanding results.'));
   assert.equal(rows(out)['Cervical stromal involvement'], 'Endocervical glandular involvement only');
+  assert.equal(rows(out)['Mismatch repair (MMR) immunohistochemistry'], 'Requested; result to follow');
+  assert.equal(rows(out)['p53 immunohistochemistry'], 'Requested; result to follow');
   assert.equal(rows(out)['Molecular classification'], 'Not classified (testing incomplete)');
-  assert.ok(out.diagnosis.includes('endocervical glandular involvement only; adnexa uninvolved; 0 of 3 pelvic lymph nodes involved; molecular classification to follow'));
+  assert.ok(flat(out.diagnosis).includes('endocervical glandular involvement only; adnexa uninvolved; 0 of 3 pelvic lymph nodes involved; molecular classification to follow'));
   assert.equal(figo(out, 2009), 'IA - endocervical glandular involvement only does not raise the stage');
   assert.equal(figo(out, 2023), 'IA2 - invasion of less than half of the myometrium, non-aggressive histotype; would become IICm if p53abn or IAm if POLEmut once the molecular class is confirmed');
   assert.deepEqual(out.snippets, ['endometrium_fluid_pending', 'endometrium_molecular_pending']);
   const pt = run(byName['06-endocervical-glandular-only'], { printPTNM: true });
-  assert.equal(rows(pt)['Pathological stage classification (AJCC 8th edition)'], 'pT1a pN0');
+  assert.equal(rows(pt)['pTNM'], 'pT1a pN0');
 });
 
 test('ProMisE derivation: POLE > MMR > p53; NSMP only when both intact and normal', () => {
@@ -180,18 +208,22 @@ test('ProMisE derivation: POLE > MMR > p53; NSMP only when both intact and norma
   assert.equal(derivedPromise({ mmrIhc: 'Not performed', p53: 'Not performed', pole: 'Not performed' }), 'Not performed');
   assert.equal(resolvedPromise({ ...base, promise: 'Double classifier (explain)' }), 'Double classifier (explain)');
   const mmrd = run({ mmrIhc: 'Loss of nuclear MMR protein expression (specify)', mmrDetail: 'MLH1 and PMS2', otherIhc: '' });
-  assert.ok(mmrd.microscopy.includes('Immunohistochemistry shows loss of nuclear expression of MLH1 and PMS2 with retained expression of the remaining mismatch repair proteins and wild-type p53 staining; POLE sequencing shows no exonuclease domain mutation; the molecular class is mismatch repair-deficient (MMRd).'));
-  assert.ok(mmrd.diagnosis.endsWith('molecular class MMRd'));
+  assert.equal(rows(mmrd)['Mismatch repair (MMR) immunohistochemistry'], 'Loss of nuclear MMR protein expression (MLH1 and PMS2)');
+  assert.equal(rows(mmrd)['Molecular classification'], 'Mismatch repair-deficient carcinoma');
+  assert.ok(mmrd.diagnosis.endsWith('\n- molecular class MMRd'));
   assert.deepEqual(mmrd.snippets, ['endometrium_mmrd_lynch']);
   assert.equal(figo(mmrd, 2023), 'IA2 - invasion of less than half of the myometrium, non-aggressive histotype');
 });
 
-test('macro and synopticOnly options', () => {
+test('macro option; the synoptic block replaces the narrative microscopy in the report', () => {
   const noMacro = run({}, { macro: false });
   assert.equal(noMacro.macro, ''); assert.equal(noMacro.blockKey, '');
-  const syn = run({}, { synopticOnly: true });
-  assert.equal(syn.microscopy, '');
-  assert.ok(syn.report.includes('- Procedure:'));
+  const out = run({}, { includeHeader: true });
+  assert.equal(out.microscopy, '');
+  assert.ok(out.report.includes('MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:\nSpecimen and tumour\n- Procedure:'));
+  assert.ok(!out.report.includes('MICROSCOPIC EXAMINATION:'));
+  assert.ok(!schema.options.some((o) => o.id === 'synopticOnly'));
+  assert.ok(!('synopticOnly' in schema.example.options));
 });
 
 test('synoptic element order follows the saved QMH GYN-Endometrium page', () => {
@@ -217,37 +249,43 @@ test('synoptic element order follows the saved QMH GYN-Endometrium page', () => 
     assert.ok(idx > cursor, `${MAP[label]} out of QMH order (index ${idx} after ${cursor})`);
     cursor = idx;
   }
+  // The single agreed exception: Tumour histology sits directly after Histologic grade, ahead of the MMR element.
+  assert.equal(ours.indexOf('Tumour histology'), ours.indexOf('Histologic grade') + 1);
+  assert.equal(ours.indexOf('Mismatch repair (MMR) immunohistochemistry'), ours.indexOf('Tumour histology') + 1);
 });
 
 test('grade derives from the histotype by default; explicit picks override', () => {
   const g2 = run({ solidPct: '6-50% (architectural grade 2)' });
-  assert.ok(g2.microscopy.includes('endometrioid carcinoma, FIGO grade 2,'));
-  assert.ok(g2.microscopy.includes('solid non-squamous growth making up 6-50% of the tumour'));
+  assert.equal(rows(g2)['Histologic grade'], 'FIGO grade 2 (endometrioid carcinoma)');
+  assert.ok(rows(g2)['Tumour histology'].includes('solid non-squamous growth makes up 6-50% of the tumour'));
+  assert.ok(flat(g2.diagnosis).includes('ENDOMETRIOID CARCINOMA, FIGO grade 2,'));
   assert.ok(g2.issues.some((i) => i.level === 'info' && /derived: FIGO grade 2 .*architectural grade 2\), nuclear grade 1-2/.test(i.message)));
   const g3 = run({ solidPct: '6-50% (architectural grade 2)', nuclearGrade: 'Nuclear grade 3 (marked atypia in the majority of the tumour)' });
-  assert.ok(g3.microscopy.includes('FIGO grade 3,'));
-  assert.ok(g3.microscopy.includes('(nuclear grade 3)'));
+  assert.equal(rows(g3)['Histologic grade'], 'FIGO grade 3 (endometrioid carcinoma)');
+  assert.ok(rows(g3)['Tumour histology'].includes('markedly pleomorphic, hyperchromatic nuclei with prominent nucleoli (nuclear grade 3)'));
   assert.ok(g3.issues.some((i) => /raised by one for grade 3 nuclei/.test(i.message)));
   const cc = run({ histType: 'Clear cell carcinoma' });
   assert.equal(rows(cc)['Histologic grade'], 'High-grade (non-endometrioid carcinoma)');
   assert.ok(cc.diagnosis.includes('CLEAR CELL CARCINOMA, high grade'));
-  assert.ok(cc.microscopy.includes('tubulocystic, papillary and solid patterns'));
+  assert.ok(rows(cc)['Tumour histology'].startsWith('Sections show a clear cell carcinoma. The tumour shows an admixture of tubulocystic, papillary and solid patterns'));
   assert.ok(cc.issues.some((i) => i.level === 'info' && /clear cell carcinoma is high grade by definition/.test(i.message)));
   const other = run({ histType: 'Other (specify)', histTypeOther: 'Adenosquamous carcinoma' });
   assert.equal(rows(other)['Histologic grade'], 'Cannot be assessed');
   assert.ok(other.issues.some((i) => i.level === 'error' && /pick it explicitly/.test(i.message)));
   const picked = run({ grade: 'FIGO grade 3 (endometrioid carcinoma)' });
-  assert.ok(picked.microscopy.includes('FIGO grade 3,'));
+  assert.equal(rows(picked)['Histologic grade'], 'FIGO grade 3 (endometrioid carcinoma)');
+  assert.ok(flat(picked.diagnosis).includes('FIGO grade 3,'));
   assert.ok(picked.issues.some((i) => i.level === 'warn' && /differs from the grade derived/.test(i.message)));
   const dd = run({ histType: 'Dedifferentiated carcinoma', ddLowGrade: 'FIGO grade 2 endometrioid carcinoma' });
-  assert.ok(dd.microscopy.includes('a FIGO grade 2 endometrioid carcinoma component is sharply juxtaposed with an undifferentiated component'));
+  assert.ok(rows(dd)['Tumour histology'].includes('a FIGO grade 2 endometrioid carcinoma component is sharply juxtaposed with an undifferentiated component'));
   assert.equal(rows(dd)['Histologic grade'], 'High-grade (non-endometrioid carcinoma)');
 });
 
 test('golden fixtures reproduce byte-for-byte', () => {
   fs.mkdirSync(FIX, { recursive: true });
   for (const [name, patch] of CASES) {
-    const opts = name.startsWith('02') ? { printPTNM: true } : name.startsWith('04') ? { synopticOnly: true } : {};
+    // 04 used to exercise the retired synopticOnly option; it now runs with defaults (synoptic layout, 2026-09).
+    const opts = name.startsWith('02') ? { printPTNM: true } : {};
     const out = run(patch, opts);
     const file = path.join(FIX, `${name}.json`);
     const current = { templateId: 'endometrial_carcinoma', patch, options: opts, report: out.report, checks: out.issues };

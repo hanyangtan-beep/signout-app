@@ -13,6 +13,7 @@
 // Wording is protected by tests/gist_resection.test.js — change it only deliberately.
 
 import { deriveTNM, stageLine } from '../src/staging/index.js';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { riskAssessment, gradeFromMitoses, mitoticClass, tFromSize, RISK_TABLE_SITES } from '../src/staging/gist.js';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
@@ -84,28 +85,6 @@ export function riskText(v) {
 
 // ---------- IHC and molecular ----------
 
-export function ihcSentence(v) {
-  const pos = []; const neg = []; const other = [];
-  for (const [name, val] of [['KIT (CD117)', v.kitIhc], ['DOG1', v.dog1Ihc], ['CD34', v.cd34Ihc]]) {
-    if (val === 'Positive') pos.push(name);
-    else if (val === 'Negative') neg.push(name);
-    else if (val === 'Cannot be determined') other.push(`${name} cannot be determined`);
-  }
-  const bits = [];
-  if (pos.length) bits.push(`the tumour cells are positive for ${listJoin(pos)}`);
-  if (neg.length) bits.push(`${bits.length ? '' : 'the tumour cells are '}negative for ${listJoin(neg)}`);
-  if (v.sdhbIhc === 'Intact') bits.push('SDHB expression is retained');
-  else if (v.sdhbIhc === 'Deficient') bits.push('SDHB expression is lost (SDH-deficient)');
-  else if (v.sdhbIhc === 'Cannot be determined') other.push('SDHB cannot be determined');
-  const extra = stripDot(v.otherIhc);
-  if (!bits.length && !extra && !other.length) return '';
-  let s = bits.length ? `Immunohistochemistry shows ${bits.join(pos.length && neg.length ? ' and ' : '; ')}` : 'Immunohistochemistry';
-  if (bits.length && neg.length && pos.length && v.sdhbIhc && v.sdhbIhc !== 'Not performed') s = `Immunohistochemistry shows ${bits[0]} and ${bits[1]}; ${bits.slice(2).join('; ')}`;
-  if (extra) s += `${bits.length ? '; ' : ' shows '}${lc1(extra)}`;
-  if (other.length) s += `; ${other.join('; ')}`;
-  return `${s}.`;
-}
-
 const MOLECULAR_PHRASE = {
   'Requested; result to follow': 'Mutation analysis for KIT and PDGFRA hot spots has been requested{detail}; the result will follow as a supplementary report.',
   'KIT exon 11 mutation': 'Molecular analysis shows a KIT exon 11 mutation{detail}.',
@@ -117,12 +96,6 @@ const MOLECULAR_PHRASE = {
   'KIT and PDGFRA wild type': 'Molecular analysis shows no mutation in the KIT and PDGFRA hot spots (wild type){detail}.',
   'Other (specify)': 'Molecular analysis{detail}.'
 };
-export function molecularSentence(v) {
-  const t = MOLECULAR_PHRASE[v.molecular];
-  if (!t) return '';
-  const d = stripDot(v.molecularDetail);
-  return t.replace('{detail}', d ? ` (${d})` : '');
-}
 export function molecularValue(v) {
   if (!v.molecular || v.molecular === 'Not performed') return 'Not performed';
   const d = stripDot(v.molecularDetail);
@@ -138,36 +111,7 @@ export function marginValue(v) {
   if (v.marginStatus === 'Involved by GIST') return `Involved by GIST${name ? ` (${name} margin)` : ''}`;
   return v.marginStatus || 'Cannot be assessed';
 }
-export function marginSentence(v) {
-  const name = stripDot(v.marginName);
-  if (v.marginStatus === 'Uninvolved by GIST') { const mm = num(v.marginMm); return mm !== null ? `The tumour is ${fmt(mm)} mm from the closest${name ? ` (${name})` : ''} margin.` : `The margins are clear of tumour${name ? ` (closest: ${name} margin)` : ''}.`; }
-  if (v.marginStatus === 'Involved by GIST') return `The tumour involves the ${name ? `${name} ` : ''}margin.`;
-  if (v.marginStatus === 'Cannot be assessed') return 'The margins cannot be assessed.';
-  return '';
-}
-
-export function nodesSentence(v) {
-  const ex = int(v.nodesExamined); const pos = int(v.nodesPositive);
-  if (ex === null) return '';
-  if (ex === 0) return 'No lymph nodes are identified.';
-  if (pos === null) return `${ex} regional lymph node${ex === 1 ? ' is' : 's are'} identified.`;
-  if (pos === 0) return `${ex} regional lymph node${ex === 1 ? ' is' : 's are'} identified, free of tumour (0/${ex}).`;
-  let s = `${ex} regional lymph node${ex === 1 ? ' is' : 's are'} identified, ${pos === 1 ? 'one of which contains' : `${pos} of which contain`} metastatic GIST (${pos}/${ex})`;
-  if (v.ene === 'Present') s += ', with extranodal extension';
-  else if (v.ene === 'Not identified') s += ', without extranodal extension';
-  const dep = num(v.largestDepositMm);
-  if (dep !== null) s += `; the largest deposit measures ${fmt(dep)} mm`;
-  return `${s}.`;
-}
-
 export const metastasisSites = (v) => (Array.isArray(v.distantMetastasis) ? v.distantMetastasis.filter((s) => s !== 'Not applicable') : []);
-export function metastasisSentence(v) {
-  const sites = metastasisSites(v);
-  if (!sites.length) return '';
-  const detail = stripDot(v.metastasisDetail);
-  return `Metastatic GIST is present in the ${listJoin(sites.map(lc1))}${detail ? ` (${detail})` : ''}.`;
-}
-
 // ---------- macro ----------
 
 const GROWTH_PHRASE = {
@@ -220,49 +164,27 @@ export function blockKey(part, ctx) {
 
 // ---------- microscopy ----------
 
-export function microscopy(part) {
-  const v = part.values;
-  const p = [];
-  const treated = v.treatmentEffect && v.treatmentEffect !== 'No known presurgical therapy';
+/**
+ * The "- Tumour histology:" paragraph: architecture, cytology and necrosis only (plus the
+ * treated tumour bed for a complete response). Counts, IHC, margins, nodes and risk are
+ * elements of their own and are not repeated here.
+ */
+export function histologyPara(v) {
   const cr = v.residualTumour === 'No residual tumour (complete response)';
-  if (cr) {
-    p.push(`Sections of the ${lc1(siteName(v))} show hyalinised fibrous tissue with scattered haemosiderin-laden macrophages consistent with treated tumour bed; no residual viable gastrointestinal stromal tumour is identified.`);
-  } else {
-    const desc = TYPE_MICRO[v.histType] || (v.histType === 'Other' && (v.histTypeOther || '').trim() ? `of ${lc1(stripDot(v.histTypeOther))}` : '');
-    let first = `Sections show a ${v.tumourGrowth === 'Intramural' ? 'well-circumscribed ' : ''}gastrointestinal stromal tumour${desc ? ` ${desc}` : ''}`;
-    if (v.mitoticStatus === 'Counted' && num(v.mitoticCount) !== null) first += `; the mitotic count is ${fmt(num(v.mitoticCount))} per 5 mm2`;
-    else if (v.mitoticStatus === 'Cannot be determined') first += `; the mitotic count cannot be determined${(v.mitoticDetail || '').trim() ? ` (${stripDot(v.mitoticDetail)})` : ''}`;
-    p.push(`${first}.`);
-    if (v.necrosis === 'Present') p.push(`Necrosis is present${num(v.necrosisPercent) !== null ? ` (approximately ${fmt(num(v.necrosisPercent))}% of the tumour)` : ''}.`);
-    else if (v.necrosis === 'Not identified') p.push('Necrosis is not identified.');
-    if (v.mucosalUlceration === 'Present') p.push('The overlying mucosa is ulcerated.');
-    if (v.lvi === 'Present') p.push('Lymphovascular invasion is present.');
-    else if (v.lvi === 'Not identified') p.push('Lymphovascular invasion is not identified.');
-    else if (v.lvi === 'Cannot be determined') p.push('Lymphovascular invasion cannot be determined.');
-    if (v.pni === 'Present') p.push('Perineural invasion is present.');
-    else if (v.pni === 'Not identified') p.push('Perineural invasion is not identified.');
-    if (treated) {
-      if (v.treatmentEffect === 'Present') p.push(`Treatment effect is present${num(v.viableTumourPercent) !== null ? `, with approximately ${fmt(num(v.viableTumourPercent))}% viable tumour` : ''}.`);
-      else if (v.treatmentEffect === 'Not identified') p.push('No treatment effect is identified.');
-      else if (v.treatmentEffect === 'Cannot be determined') p.push('Treatment effect cannot be determined.');
-    }
+  if (cr) return `Sections of the ${lc1(siteName(v))} show hyalinised fibrous tissue with scattered haemosiderin-laden macrophages consistent with treated tumour bed; no residual viable gastrointestinal stromal tumour is identified.`;
+  const p = [];
+  const desc = TYPE_MICRO[v.histType] || (v.histType === 'Other' && (v.histTypeOther || '').trim() ? `of ${lc1(stripDot(v.histTypeOther))}` : '');
+  p.push(`Sections show a ${v.tumourGrowth === 'Intramural' ? 'well-circumscribed ' : ''}gastrointestinal stromal tumour${desc ? ` ${desc}` : ''}.`);
+  if (v.necrosis === 'Present') p.push(`Necrosis is present${num(v.necrosisPercent) !== null ? ` (approximately ${fmt(num(v.necrosisPercent))}% of the tumour)` : ''}.`);
+  else if (v.necrosis === 'Not identified') p.push('Necrosis is not identified.');
+  if (v.mucosalUlceration === 'Present') p.push('The overlying mucosa is ulcerated.');
+  const treated = v.treatmentEffect && v.treatmentEffect !== 'No known presurgical therapy';
+  if (treated) {
+    if (v.treatmentEffect === 'Present') p.push(`Treatment effect is present${num(v.viableTumourPercent) !== null ? `, with approximately ${fmt(num(v.viableTumourPercent))}% viable tumour` : ''}.`);
+    else if (v.treatmentEffect === 'Not identified') p.push('No treatment effect is identified.');
+    else if (v.treatmentEffect === 'Cannot be determined') p.push('Treatment effect cannot be determined.');
   }
-  p.push(cr ? marginSentence(v).replace(/^The tumour (is|involves)/, 'The tumour bed $1') : marginSentence(v));
-  p.push(nodesSentence(v));
-  p.push(metastasisSentence(v));
-  if (!cr) p.push(ihcSentence(v));
-  p.push(molecularSentence(v));
-  if (!cr) {
-    const r = risk(v);
-    const word = RISK_LOWER[r.category];
-    if (word) p.push(`The tumour carries ${word === 'no' ? 'no appreciable' : `a ${word}`} risk of progressive disease (Miettinen and Lasota 2006; ${lc1(siteName(v))}, ${fmt(num(v.tumourSize))} cm, ${fmt(num(v.mitoticCount))} mitoses per 5 mm2).`);
-    else if (r.category === 'Overtly malignant/metastatic') p.push('The tumour is overtly malignant (metastatic).');
-  }
-  const af = stripDot(v.additionalFindings);
-  if (af) p.push(`${uc1(af)}.`);
-  const notes = stripDot(v.additionalNotes);
-  if (notes) p.push(`${notes}.`);
-  return `(${part.label}) ${p.filter(Boolean).join(' ')}`;
+  return p.join(' ');
 }
 
 // ---------- synoptic ----------
@@ -270,50 +192,62 @@ export function microscopy(part) {
 export function synoptic(part, ctx) {
   const v = part.values;
   const st = staging(part);
-  const line = (label, value) => (value !== '' && value !== null && value !== undefined ? `- ${label}: ${value}` : null);
+  const item = (label, value) => (value !== '' && value !== null && value !== undefined ? { label, value } : null);
   const size = num(v.tumourSize);
   const other = stripDot(v.tumourSizeOther);
   const sizeText = size !== null ? `${fmt(size)} cm in greatest dimension${other ? ` (${other})` : ''}` : other || 'Cannot be determined';
   const ex = int(v.nodesExamined); const pos = int(v.nodesPositive);
-  const nodeBits = [];
-  if (ex !== null) nodeBits.push(ex === 0 ? 'No regional lymph nodes submitted or found' : `${ex} examined`);
-  if (ex && pos !== null) nodeBits.push(`${pos} involved`);
-  if (pos && v.ene && v.ene !== 'Not applicable') nodeBits.push(`extranodal extension ${lc1(v.ene)}`);
-  if (pos && num(v.largestDepositMm) !== null) nodeBits.push(`largest metastatic deposit ${fmt(num(v.largestDepositMm))} mm`);
+  let nodes;
+  if (ex === null) nodes = { label: 'Regional lymph nodes', value: 'Not recorded' };
+  else if (ex === 0) nodes = { label: 'Regional lymph nodes', value: 'No regional lymph nodes submitted or found' };
+  else nodes = { label: 'Regional lymph nodes', value: pos !== null ? `${ex} examined; ${pos} involved` : `${ex} examined`, sub: [
+    pos && v.ene && v.ene !== 'Not applicable' ? item('Extranodal extension', v.ene) : null,
+    pos && num(v.largestDepositMm) !== null ? item('Largest metastatic deposit', `${fmt(num(v.largestDepositMm))} mm`) : null
+  ] };
   const sites = metastasisSites(v);
   const where = stripDot(v.tumourSiteDetail);
   const presurg = v.presurgicalTreatment || 'No known presurgical therapy';
   const presurgDetail = stripDot(v.presurgicalDetail);
-  const rows = [
-    line('Procedure', procedureName(v)),
-    line('Tumour site', `${v.tumourSite || 'Not specified'}${where ? ` (${where})` : ''}`),
-    line('Tumour size', sizeText),
-    line('Tumour focality', v.focality === 'Multifocal' ? `Multifocal${stripDot(v.focalityDetail) ? ` (${stripDot(v.focalityDetail)})` : ''}` : v.focality || 'Unifocal'),
-    line('Tumour rupture', v.tumourRupture || 'Not identified'),
-    line('Histologic type', histTypeName(v)),
-    line('Histologic grade', gradeFromMitoses(v)),
-    line('Mitotic count', mitoticText(v)),
-    line('Necrosis', v.necrosis === 'Present' ? `Present${num(v.necrosisPercent) !== null ? ` (${fmt(num(v.necrosisPercent))}%)` : ''}` : v.necrosis || 'Not identified'),
-    line('KIT (CD117) IHC', v.kitIhc || 'Not performed'),
-    line('DOG1 IHC', v.dog1Ihc || 'Not performed'),
-    v.cd34Ihc && v.cd34Ihc !== 'Not performed' ? line('CD34 IHC', v.cd34Ihc) : null,
-    line('SDHB IHC', v.sdhbIhc || 'Not performed'),
-    stripDot(v.otherIhc) ? line('Other immunohistochemistry', stripDot(v.otherIhc)) : null,
-    line('Lymphovascular invasion', v.lvi || 'Cannot be determined'),
-    line('Perineural invasion', v.pni || 'Cannot be determined'),
-    line('Risk assessment (Miettinen and Lasota 2006)', riskText(v)),
-    line('Presurgical treatment', `${presurg}${presurgDetail ? ` (${presurgDetail})` : ''}`),
-    line('Treatment effect', v.treatmentEffect === 'Present' ? `Present${num(v.viableTumourPercent) !== null ? ` (${fmt(num(v.viableTumourPercent))}% viable tumour)` : ''}` : v.treatmentEffect || 'No known presurgical therapy'),
-    line('Molecular studies', molecularValue(v)),
-    line('Surgical margins', marginValue(v)),
-    line('Regional lymph nodes', nodeBits.length ? nodeBits.join('; ') : 'Not recorded'),
-    line('Distant metastasis', sites.length ? `${listJoin(sites)}${stripDot(v.metastasisDetail) ? ` (${stripDot(v.metastasisDetail)})` : ''}` : 'Not applicable'),
-    line(`Pathological stage classification (${st.edition})`, `${st.tnm}${st.overridden ? ` [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${(v.tnmOverrideReason || '').trim() ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : ''}`),
-    ctx?.options?.stageGroup === false ? null : (stageLine(st) ? `  - ${stageLine(st)}` : null),
-    stripDot(v.additionalFindings) ? line('Additional pathological findings', stripDot(v.additionalFindings)) : null
-  ].filter(Boolean);
-  const heading = ctx?.case?.parts && ctx.case.parts.length > 1 ? `(${part.label}) ${specimenName(part)}\n` : '';
-  return `${heading}${rows.join('\n')}`;
+  const sections = [
+    { heading: 'Specimen and tumour', items: [
+      item('Procedure', procedureName(v)),
+      item('Tumour site', `${v.tumourSite || 'Not specified'}${where ? ` (${where})` : ''}`),
+      item('Tumour size', sizeText),
+      item('Tumour focality', v.focality === 'Multifocal' ? `Multifocal${stripDot(v.focalityDetail) ? ` (${stripDot(v.focalityDetail)})` : ''}` : v.focality || 'Unifocal'),
+      item('Tumour rupture', v.tumourRupture || 'Not identified')
+    ] },
+    { heading: 'Microscopic findings', items: [
+      item('Histologic type', histTypeName(v)),
+      item('Histologic grade', gradeFromMitoses(v)),
+      { label: 'Tumour histology', para: histologyPara(v) },
+      item('Mitotic count', mitoticText(v)),
+      item('Necrosis', v.necrosis === 'Present' ? `Present${num(v.necrosisPercent) !== null ? ` (${fmt(num(v.necrosisPercent))}%)` : ''}` : v.necrosis || 'Not identified'),
+      item('KIT (CD117) IHC', v.kitIhc || 'Not performed'),
+      item('DOG1 IHC', v.dog1Ihc || 'Not performed'),
+      v.cd34Ihc && v.cd34Ihc !== 'Not performed' ? item('CD34 IHC', v.cd34Ihc) : null,
+      item('SDHB IHC', v.sdhbIhc || 'Not performed'),
+      stripDot(v.otherIhc) ? item('Other immunohistochemistry', stripDot(v.otherIhc)) : null,
+      item('Lymphovascular invasion', v.lvi || 'Cannot be determined'),
+      item('Perineural invasion', v.pni || 'Cannot be determined'),
+      item('Risk assessment (Miettinen and Lasota 2006)', riskText(v)),
+      item('Presurgical treatment', `${presurg}${presurgDetail ? ` (${presurgDetail})` : ''}`),
+      item('Treatment effect', v.treatmentEffect === 'Present' ? `Present${num(v.viableTumourPercent) !== null ? ` (${fmt(num(v.viableTumourPercent))}% viable tumour)` : ''}` : v.treatmentEffect || 'No known presurgical therapy'),
+      item('Molecular studies', molecularValue(v))
+    ] },
+    { heading: 'Margins', items: [item('Surgical margins', marginValue(v))] },
+    { heading: 'Regional lymph nodes', items: [nodes] },
+    { heading: 'Distant metastasis', items: [item('Distant metastasis', sites.length ? `${listJoin(sites)}${stripDot(v.metastasisDetail) ? ` (${stripDot(v.metastasisDetail)})` : ''}` : 'Not applicable')] },
+    { heading: `Pathological stage (${st.edition})`, items: [
+      { label: 'pTNM', value: `${st.tnm}${st.overridden ? ` [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${(v.tnmOverrideReason || '').trim() ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : ''}`,
+        sub: ctx?.options?.stageGroup === false || !stageLine(st) ? [] : [{ label: stageLine(st).split(': ')[0], value: stageLine(st).split(': ').slice(1).join(': ') }] }
+    ] },
+    { heading: 'Additional findings', items: [
+      stripDot(v.additionalFindings) ? { text: uc1(stripDot(v.additionalFindings)) } : null,
+      stripDot(v.additionalNotes) ? item('Additional notes', stripDot(v.additionalNotes)) : null
+    ] }
+  ];
+  const heading = ctx?.case?.parts && ctx.case.parts.length > 1 ? `(${part.label}) ${specimenName(part)}` : '';
+  return renderSynoptic(sections, heading);
 }
 
 // ---------- diagnosis ----------
@@ -321,42 +255,44 @@ export function synoptic(part, ctx) {
 export function diagnosis(part, ctx) {
   const v = part.values;
   const st = staging(part);
-  const head = `(${part.label}) ${siteName(v).toUpperCase()}, ${lc1(procedureName(v))} - `;
-  const bits = [];
-  if (v.residualTumour === 'No residual tumour (complete response)') {
-    bits.push('NO RESIDUAL GASTROINTESTINAL STROMAL TUMOUR (complete response to treatment)');
+  const head = `(${part.label}) ${siteName(v).toUpperCase()}, ${lc1(procedureName(v))}`;
+  const cr = v.residualTumour === 'No residual tumour (complete response)';
+  const tumour = [];
+  const behaviour = [];
+  if (cr) {
+    tumour.push('NO RESIDUAL GASTROINTESTINAL STROMAL TUMOUR (complete response to treatment)');
   } else {
     const size = num(v.tumourSize);
     const ts = typeShort(v);
     let first = `GASTROINTESTINAL STROMAL TUMOUR${ts ? `, ${ts}` : ''}`;
     if (size !== null) first += `, ${fmt(size)} cm`;
     if (v.mitoticStatus === 'Counted' && num(v.mitoticCount) !== null) first += `, mitotic count ${fmt(num(v.mitoticCount))} per 5 mm2`;
-    bits.push(first);
+    tumour.push(first);
     const r = risk(v);
-    if (RISK_LOWER[r.category]) bits.push(`${r.category === 'None' ? 'no appreciable risk' : lc1(r.category)} (Miettinen and Lasota 2006)`);
-    else if (r.category === 'Overtly malignant/metastatic') bits.push('overtly malignant / metastatic');
-    if (/^Present/.test(v.tumourRupture || '')) bits.push('tumour rupture present');
-    if (v.treatmentEffect === 'Present') bits.push(`treatment effect present${num(v.viableTumourPercent) !== null ? ` (${fmt(num(v.viableTumourPercent))}% viable)` : ''}`);
+    if (RISK_LOWER[r.category]) behaviour.push(`${r.category === 'None' ? 'no appreciable risk' : lc1(r.category)} (Miettinen and Lasota 2006)`);
+    else if (r.category === 'Overtly malignant/metastatic') behaviour.push('overtly malignant / metastatic');
+    if (/^Present/.test(v.tumourRupture || '')) behaviour.push('tumour rupture present');
+    if (v.treatmentEffect === 'Present') behaviour.push(`treatment effect present${num(v.viableTumourPercent) !== null ? ` (${fmt(num(v.viableTumourPercent))}% viable)` : ''}`);
   }
-  if (v.marginStatus === 'Involved by GIST') bits.push(`${stripDot(v.marginName) ? `${stripDot(v.marginName)} ` : ''}margin involved`);
-  else if (v.marginStatus === 'Uninvolved by GIST') bits.push('margins clear');
+  if (v.marginStatus === 'Involved by GIST') behaviour.push(`${stripDot(v.marginName) ? `${stripDot(v.marginName)} ` : ''}margin involved`);
+  else if (v.marginStatus === 'Uninvolved by GIST') behaviour.push('margins clear');
+  const spread = [];
   const ex = int(v.nodesExamined); const pos = int(v.nodesPositive);
-  if (ex && pos !== null) bits.push(pos === 0 ? `no lymph node metastasis (0/${ex})` : `${pos} of ${ex} lymph nodes involved`);
+  if (ex && pos !== null) spread.push(pos === 0 ? `no lymph node metastasis (0/${ex})` : `${pos} of ${ex} lymph nodes involved`);
   const sites = metastasisSites(v);
-  if (sites.length) bits.push(`metastatic GIST in ${listJoin(sites.map(lc1))}`);
+  if (sites.length) spread.push(`metastatic GIST in ${listJoin(sites.map(lc1))}`);
   let stage = `${st.tnm} (${st.edition})`;
   if (ctx?.options?.stageGroup !== false && st.stage) stage += `, stage ${st.stage}${st.M === 'M-' ? ' (if cM0)' : ''}`;
-  bits.push(stage);
+  const ancillary = [];
   const ihc = [];
-  const cr = v.residualTumour === 'No residual tumour (complete response)';
   if (!cr && v.kitIhc === 'Positive') ihc.push('KIT');
   if (!cr && v.dog1Ihc === 'Positive') ihc.push('DOG1');
-  if (ihc.length) bits.push(`${listJoin(ihc)} positive`);
-  if (!cr && v.kitIhc === 'Negative') bits.push('KIT negative');
-  if (!cr && v.sdhbIhc === 'Deficient') bits.push('SDHB-deficient');
-  if (v.molecular === 'Requested; result to follow') bits.push('molecular studies to follow');
-  else if (v.molecular && v.molecular !== 'Not performed') bits.push(v.molecular === 'Other (specify)' ? stripDot(v.molecularDetail) || 'molecular studies performed' : v.molecular);
-  return `${head}${bits.filter(Boolean).join('; ')}`;
+  if (ihc.length) ancillary.push(`${listJoin(ihc)} positive`);
+  if (!cr && v.kitIhc === 'Negative') ancillary.push('KIT negative');
+  if (!cr && v.sdhbIhc === 'Deficient') ancillary.push('SDHB-deficient');
+  if (v.molecular === 'Requested; result to follow') ancillary.push('molecular studies to follow');
+  else if (v.molecular && v.molecular !== 'Not performed') ancillary.push(v.molecular === 'Other (specify)' ? stripDot(v.molecularDetail) || 'molecular studies performed' : v.molecular);
+  return renderDiagnosis(head, [tumour, behaviour, spread, [stage], ancillary].map((g) => g.filter(Boolean).join('; ')));
 }
 
 // ---------- validation + flags ----------
@@ -411,4 +347,4 @@ export function flags(parts) {
   return [...f];
 }
 
-export default { specimenName, macro, blockKey, microscopy, synoptic, diagnosis, validate, flags, staging };
+export default { specimenName, macro, blockKey, synoptic, diagnosis, validate, flags, staging };

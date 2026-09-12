@@ -46,7 +46,10 @@ test('schema examples generate without error and include every part', () => {
     const out = generate(schema, generator, ex);
     // Single-part examples print without a letter; multi-part ones must keep every (A)/(B).
     if (ex.parts.length > 1) for (const p of ex.parts) assert.ok(out.diagnosis.includes(`(${p.label})`), `${schema.id} missing ${p.label}`);
-    assert.ok(out.diagnosis.trim() !== '' && out.microscopy.trim() !== '', `${schema.id} example is empty`);
+    // Synoptic templates carry their microscopy inside the synoptic block instead of a narrative paragraph.
+    const micro = generator.synoptic ? out.synoptic : out.microscopy;
+    assert.ok(out.diagnosis.trim() !== '' && micro.trim() !== '', `${schema.id} example is empty`);
+    if (generator.synoptic) assert.equal(out.microscopy.trim(), '', `${schema.id} should have no narrative microscopy`);
     assert.ok(out.report.length > 0);
   }
 });

@@ -47,8 +47,11 @@ export function buildDocText(caseState, out) {
     ['MACROSCOPIC DESCRIPTION', macro],
     ['BLOCK KEY', blockKey],
     ...(out.intraop && out.intraop.trim() !== '' ? [['INTRAOPERATIVE CONSULTATION', out.intraop]] : []),
-    ['MICROSCOPIC EXAMINATION', out.microscopy],
-    ...(out.synoptic && out.synoptic.trim() !== '' ? [['SYNOPTIC REPORT', out.synoptic]] : []),
+    // Synoptic templates carry their tumour histology inside the synoptic block, so a case with
+    // no narrative microscopy prints one combined heading; a mixed case prints both.
+    ...(out.synoptic && out.synoptic.trim() !== '' && !(out.microscopy && out.microscopy.trim() !== '')
+      ? [['MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT', out.synoptic]]
+      : [['MICROSCOPIC EXAMINATION', out.microscopy], ...(out.synoptic && out.synoptic.trim() !== '' ? [['MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT', out.synoptic]] : [])]),
     ['DIAGNOSIS', out.diagnosis],
     ...(out.comment && out.comment.trim() !== '' ? [['COMMENT', out.comment]] : [])
   ];

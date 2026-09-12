@@ -5,17 +5,19 @@
 // are derived for the Checks panel (info level) and are never written into the report.
 // Pure functions: (part, ctx) -> string.
 //
-// Blocks produced (hybrid mode):
+// Blocks produced:
 //   specimens  "Uterus with cervix and bilateral adnexa, total hysterectomy and bilateral salpingo-oophorectomy"
 //   macro      "The specimen consists of an intact uterus with cervix (165 g, 92 x 58 x 44 mm) …"
 //   blockKey   the typed block key, one "(n) …" entry per line
-//   microscopy one "Sections show …" paragraph ending with the IHC / molecular sentence (omitted when `synopticOnly`)
-//   synoptic   CAP-style "- Element: value" list in QMH order, no stage unless `printPTNM`
-//   diagnosis  "UTERUS WITH CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral salpingo-oophorectomy - ENDOMETRIOID CARCINOMA, FIGO grade 1, …"
-// Wording is protected by tests/endometrial_carcinoma.test.js - change it only deliberately.
+//   synoptic   sectioned "- Element: value" list in QMH order (docs/specs/synoptic-layout.md) with the
+//              "- Tumour histology:" paragraph after the grade; no stage unless `printPTNM`
+//   diagnosis  specimen line, then one "- " clause per line
+// There is no separate narrative microscopy paragraph. Wording is protected by
+// tests/endometrial_carcinoma.test.js and tests/fixtures/endometrium - change it only deliberately.
 
 import { deriveTNM, stageLine } from '../src/staging/index.js';
 import * as S from '../src/staging/endometrium.js';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
@@ -146,7 +148,10 @@ const TYPE_TEXT = {
   'Large cell neuroendocrine carcinoma': 'The tumour shows organoid nests, trabeculae and sheets with peripheral palisading and rosette-like structures, composed of large cells with moderate to abundant cytoplasm, vesicular chromatin and prominent nucleoli; mitotic activity is high and there is geographic necrosis.'
 };
 
-/** Type-specific histologic description (one or two sentences), '' for 'Other (specify)'. */
+/**
+ * Type-specific histologic description, '' for 'Other (specify)'. For endometrioid-like types
+ * the text continues the opening sentence ("Sections show an endometrioid carcinoma with …").
+ */
 export function histologyText(v) {
   const type = v.histType || S.ENDOMETRIOID;
   if (type === S.ENDOMETRIOID) {
@@ -154,7 +159,7 @@ export function histologyText(v) {
     const archText = arch.length ? listJoin(arch) : 'glandular';
     const solid = (v.solidPct || '5% or less').replace(/\s*\(.*\)$/, '').toLowerCase();
     const nuclei = nuclear3(v) ? 'markedly pleomorphic, hyperchromatic nuclei with prominent nucleoli (nuclear grade 3)' : 'elongated, mildly to moderately atypical nuclei';
-    const s = [`The tumour shows a predominantly ${archText} architecture of confluent, back-to-back glands lined by stratified columnar cells with ${nuclei}, with solid non-squamous growth making up ${solid} of the tumour.`];
+    const s = [`with a predominantly ${archText} architecture of confluent, back-to-back glands lined by stratified columnar cells with ${nuclei}; solid non-squamous growth makes up ${solid} of the tumour.`];
     const diff = arr(v.differentiation).map((d) => DIFF_PHRASE[d]).filter(Boolean);
     if (diff.length) s.push(`There is ${listJoin(diff)}.`);
     return s.join(' ');
@@ -270,27 +275,6 @@ export function myoPercent(v) {
   return d !== null && t ? Math.round((d / t) * 100) : null;
 }
 
-export function myoText(v) {
-  const ext = S.myoExtent(v);
-  const d = num(v.depthMm); const t = num(v.myoThicknessMm); const pct = myoPercent(v);
-  const measure = d !== null ? ` (${fmt(d)} mm${t ? ` of ${fmt(t)} mm` : ''}${pct !== null ? `, ${fmt(pct)}%` : ''})` : '';
-  if (ext === 'polyp') return 'The carcinoma is confined to the polyp with no myometrial invasion';
-  if (ext === 'endometrium') return 'The carcinoma is confined to the endometrium with no myometrial invasion';
-  if (ext === 'lt-half') return `The tumour invades less than half of the myometrium${measure}`;
-  if (ext === 'ge-half') return `The tumour invades half or more of the myometrium${measure}`;
-  return `The depth of myometrial invasion cannot be assessed${stripDot(v.myoCannot) ? ` (${lc1(stripDot(v.myoCannot))})` : ''}`;
-}
-
-export function lvsiText(v) {
-  const l = v.lvsi || 'Not identified'; const d = stripDot(v.lvsiDetail);
-  if (l === 'Not identified') return 'Lymphovascular space invasion is not identified';
-  if (l === S.LVSI_FOCAL) return `Focal lymphovascular space invasion is present (fewer than 5 vessels${d ? `, ${lc1(d)}` : ''})`;
-  if (l === S.LVSI_SUBSTANTIAL) return `Substantial lymphovascular space invasion is present (5 or more vessels${d ? `, ${lc1(d)}` : ''})`;
-  if (/^Present/.test(l)) return `Lymphovascular space invasion is present${d ? ` (${lc1(d)})` : ''}`;
-  if (/^Equivocal/.test(l)) return `Lymphovascular space invasion is equivocal${d ? ` (${lc1(d)})` : ''}`;
-  return 'Lymphovascular space invasion cannot be determined';
-}
-
 /** Synoptic value for LVSI in QMH wording. */
 export function lvsiValue(v) {
   const l = v.lvsi || 'Not identified'; const d = stripDot(v.lvsiDetail);
@@ -300,98 +284,7 @@ export function lvsiValue(v) {
   return l;
 }
 
-export function cervixText(v) {
-  const c = v.cervix || 'Not identified';
-  const lusRaw = v.lus || 'Not identified';
-  const depth = num(v.cervixDepthMm); const thick = num(v.cervixThicknessMm);
-  let cx = '';
-  if (c === 'Cervical stromal invasion') cx = `cervical stromal invasion is present${depth !== null ? ` (${fmt(depth)} mm${thick ? ` of ${fmt(thick)} mm` : ''})` : ''}`;
-  else if (c === 'Endocervical glandular involvement only') cx = 'the cervix shows endocervical glandular involvement only, without stromal invasion';
-  else if (c === 'Cannot be determined') cx = 'cervical involvement cannot be determined';
-  else if (c === 'Not identified') cx = 'the cervix is uninvolved';
-  if (lusRaw === 'Not identified' && c === 'Not identified') return 'The lower uterine segment and cervix are uninvolved';
-  const bits = [];
-  if (/myoinvasion/.test(lusRaw)) bits.push('The lower uterine segment is involved with myoinvasion');
-  else if (/superficial/.test(lusRaw)) bits.push('The lower uterine segment shows superficial (non-invasive) involvement');
-  else if (/^Cannot/.test(lusRaw)) bits.push('Lower uterine segment involvement cannot be determined');
-  else bits.push('The lower uterine segment is uninvolved');
-  if (cx) bits.push(uc1(cx));
-  return bits.join('. ');
-}
-
-export function serosaAdnexaText(v) {
-  const inv = chosen(v.otherInvolvement);
-  const det = stripDot(v.otherInvolvementDetail);
-  const sentences = [];
-  if (v.serosa === 'Present') sentences.push('The uterine serosa is involved by carcinoma');
-  else if (v.serosa === 'Cannot be determined') sentences.push('Serosal involvement cannot be determined');
-  else sentences.push('The serosa is uninvolved');
-  if (v.adenomyosis === 'Present, involved by tumour') sentences.push('Adenomyosis is present and is involved by carcinoma');
-  else if (v.adenomyosis === 'Present, uninvolved by tumour') sentences.push('Adenomyosis is present and uninvolved by carcinoma');
-  const adn = adnexaPhrase(v);
-  const ovaryTube = inv.filter((s) => /ovary|fallopian tube/i.test(s));
-  const others = inv.filter((s) => !/ovary|fallopian tube/i.test(s));
-  if (ovaryTube.length) sentences.push(`Carcinoma involves the ${listJoin(ovaryTube.map(lc1))}${det && !others.length ? ` (${lc1(det)})` : ''}${adn ? '; the remaining adnexal tissue is uninvolved' : ''}`);
-  else if (adn) sentences.push(adn === 'bilateral adnexa' ? 'Both fallopian tubes and ovaries are uninvolved' : `The ${adn.replace('adnexa', 'fallopian tube and ovary')} ${/tubes/.test(adn) ? 'are' : 'is'} uninvolved`);
-  if (others.length) sentences.push(`Carcinoma ${ovaryTube.length ? 'also ' : ''}involves the ${listJoin(others.map((s) => lc1(specify(s))))}${det ? ` (${lc1(det)})` : ''}`);
-  else if (det && !ovaryTube.length) sentences.push(uc1(det));
-  if (v.pelvicPeritoneum === 'Present') sentences.push('The pelvic peritoneal biopsies show metastatic carcinoma');
-  else if (v.pelvicPeritoneum === 'Not identified') sentences.push('The pelvic peritoneal biopsies are negative for carcinoma');
-  return `${sentences.join('. ')}.`;
-}
-
-export function marginText(v) {
-  const bits = [];
-  const vm = v.vaginalMargin || 'Uninvolved by carcinoma'; const pm = v.parametrialMargin || 'Not applicable';
-  const vmm = num(v.vaginalMarginMm); const pmm = num(v.parametrialMarginMm);
-  if (vm === 'Involved by carcinoma') bits.push('the ectocervical / vaginal cuff margin is involved by carcinoma');
-  else if (vm === 'Uninvolved by carcinoma') bits.push(`the ectocervical / vaginal cuff margin is uninvolved${vmm !== null ? ` (closest distance ${fmt(vmm)} mm)` : ''}`);
-  else if (vm === 'Cannot be assessed') bits.push('the ectocervical / vaginal cuff margin cannot be assessed');
-  if (pm === 'Involved by carcinoma') bits.push('the parametrial margin is involved by carcinoma');
-  else if (pm === 'Uninvolved by carcinoma') bits.push(`the parametrial margin is uninvolved${pmm !== null ? ` (closest distance ${fmt(pmm)} mm)` : ''}`);
-  else if (pm === 'Cannot be assessed') bits.push('the parametrial margin cannot be assessed');
-  return bits.length ? `${uc1(bits.join('; '))}.` : '';
-}
-
 const regionName = { pelvic: 'pelvic', pa: 'para-aortic' };
-
-export function nodesSentence(v, prefix) {
-  const n = S.nodes(v, prefix); const name = regionName[prefix];
-  if (n.examined === null || n.examined === 0) return '';
-  const sentinel = v[`${prefix}Sentinel`] === true ? ' sentinel' : '';
-  if (!n.positive && !n.itc) return n.examined === 1 ? `The single ${name}${sentinel} lymph node is negative for metastatic carcinoma (0/1)` : `All ${n.examined} ${name}${sentinel} lymph nodes are negative for metastatic carcinoma (0/${n.examined})`;
-  const bits = [];
-  if (n.macro) bits.push(`${n.macro} with macrometastasis`);
-  if (n.micro) bits.push(`${n.micro} with micrometastasis`);
-  if (n.itc) bits.push(`${n.itc} with isolated tumour cells only`);
-  const dep = num(v[`${prefix}DepositMm`]); const ene = v[`${prefix}Ene`];
-  const extra = [];
-  if (dep !== null) extra.push(`largest deposit ${fmt(dep)} mm`);
-  if (ene === 'Present') extra.push('extranodal extension present');
-  else if (ene === 'Not identified' && n.positive) extra.push('no extranodal extension');
-  const lat = v[`${prefix}Laterality`];
-  if (lat && lat !== 'Not applicable' && lat !== 'Cannot be determined') extra.push(lc1(lat));
-  return `Metastatic carcinoma ${n.positive ? 'involves' : 'is not established in'} the ${name}${sentinel} lymph nodes (${n.positive}/${n.examined}; ${bits.join(', ')}${extra.length ? `; ${extra.join(', ')}` : ''})`;
-}
-
-export function nodesValue(v, prefix) {
-  const n = S.nodes(v, prefix);
-  if (n.examined === null) return 'Not recorded';
-  if (n.examined === 0) return 'No lymph nodes submitted or found';
-  const bits = [`${n.examined} examined`, `${n.positive} involved`];
-  if (n.macro) bits.push(`${n.macro} with macrometastasis (more than 2 mm)`);
-  if (n.micro) bits.push(`${n.micro} with micrometastasis (more than 0.2 mm up to 2 mm)`);
-  if (n.itc) bits.push(`${n.itc} with isolated tumour cells (0.2 mm or less)`);
-  if (v[`${prefix}Sentinel`] === true) bits.push('includes sentinel lymph node(s)');
-  const lat = v[`${prefix}Laterality`];
-  if ((n.positive || n.itc) && lat && lat !== 'Not applicable') bits.push(`laterality ${lc1(lat)}`);
-  const dep = num(v[`${prefix}DepositMm`]); const nd = num(v[`${prefix}NodeMm`]);
-  if (dep !== null) bits.push(`largest metastatic deposit ${fmt(dep)} mm`);
-  if (nd !== null) bits.push(`largest involved node ${fmt(nd)} mm`);
-  const ene = v[`${prefix}Ene`];
-  if ((n.positive) && ene && ene !== 'Not applicable') bits.push(`extranodal extension ${lc1(ene)}`);
-  return bits.join('; ');
-}
 
 export const metastasisSites = (v) => chosen(v.distantMets);
 export function metastasisValue(v) {
@@ -399,19 +292,6 @@ export function metastasisValue(v) {
   if (!sites.length) return arr(v.distantMets).includes('Cannot be determined') ? 'Cannot be determined' : 'Not identified';
   return `${listJoin(sites.map(specify))}${d ? ` (${d})` : ''}`;
 }
-
-export function additionalFindingsValue(v) {
-  const items = arr(v.additionalFindings).map((s) => (s === 'Other (specify)' ? stripDot(v.additionalFindingsOther) : s)).filter(Boolean);
-  return items.length ? items.join('; ') : 'None';
-}
-
-const FINDING_SENTENCE = {
-  'Atypical hyperplasia / endometrial intraepithelial neoplasia (EIN)': 'The background endometrium shows atypical hyperplasia / endometrial intraepithelial neoplasia',
-  'Endometrial polyp': 'A benign endometrial polyp is also present',
-  Leiomyomas: 'Leiomyomas are present',
-  Adenomyosis: 'Adenomyosis is present',
-  Endometriosis: 'Endometriosis is present'
-};
 
 // ---------- staging ----------
 
@@ -467,44 +347,21 @@ export function blockKey(part, ctx) {
 
 // ---------- microscopy ----------
 
-export function microscopy(part) {
-  const v = part.values;
-  const s = [];
-  const type = histTypeName(v); const grade = gradeShort(v);
-  const siteDetail = v.tumourSite !== 'Other (specify)' ? stripDot(v.tumourSiteDetail) : '';
-  const site = v.tumourSite === 'Endometrial polyp' ? 'arising within an endometrial polyp' : v.tumourSite === 'Lower uterine segment' ? 'arising in the lower uterine segment' : v.tumourSite === 'Other (specify)' ? `arising in the ${lc1(stripDot(v.tumourSiteDetail)) || 'endometrium'}` : `arising in the endometrium${siteDetail ? ` (${lc1(siteDetail)})` : ''}`;
+/**
+ * The "- Tumour histology:" paragraph: architecture, cytology, differentiation, necrosis and
+ * the pattern of myoinvasion only. Extent, LVSI, nodes, IHC, molecular and margins are
+ * elements of their own and are not repeated here.
+ */
+export function histologyPara(v) {
+  const type = histTypeName(v);
   const article = /^[AEIOU]/i.test(type) ? 'an' : 'a';
-  const size = num(v.tumourSizeMm);
-  s.push(`Sections show ${article} ${lc1(type)}${grade ? `, ${grade},` : ''}${size !== null ? ` measuring ${fmt(size)} mm and` : ''} ${site}.`);
   const hist = histologyText(v);
-  if (hist) s.push(hist);
-  if (v.tumourNecrosis === 'Present') s.push('Tumour necrosis is present.');
+  const s = [];
+  if (ENDOMETRIOID_LIKE(v) && v.histType !== undefined && /^Mixed cell/.test(v.histType || '') === false && hist) s.push(`Sections show ${article} ${lc1(type)} ${hist}`);
+  else { s.push(`Sections show ${article} ${lc1(type)}.`); if (hist) s.push(hist); }
   if (stripDot(v.microDescription)) s.push(`${uc1(stripDot(v.microDescription))}.`);
-  s.push(`${myoText(v)}.`);
+  s.push(v.tumourNecrosis === 'Present' ? 'Tumour necrosis is present.' : 'Tumour necrosis is not seen.');
   if (S.anyMyoinvasion(v) && INVASION_TEXT[v.invasionPattern]) s.push(`${INVASION_TEXT[v.invasionPattern]}.`);
-  s.push(`${lvsiText(v)}.`);
-  if (v.pni === 'Present') s.push('Perineural invasion is present.');
-  else if (v.pni === 'Cannot be determined') s.push('Perineural invasion cannot be determined.');
-  const cx = cervixText(v);
-  if (cx) s.push(`${cx}.`);
-  s.push(serosaAdnexaText(v));
-  const mg = marginText(v);
-  if (mg) s.push(mg);
-  for (const p of ['pelvic', 'pa']) { const t = nodesSentence(v, p); if (t) s.push(`${t}.`); }
-  const sites = metastasisSites(v);
-  if (sites.length) s.push(`Metastatic carcinoma is present in the ${listJoin(sites.map((x) => lc1(specify(x))))}${stripDot(v.distantDetail) ? ` (${lc1(stripDot(v.distantDetail))})` : ''}.`);
-  if (v.peritonealFluid && !/^Not submitted/.test(v.peritonealFluid)) {
-    const f = v.peritonealFluid;
-    s.push(/Negative/.test(f) ? 'The peritoneal fluid is negative for malignancy.' : /Malignant/.test(f) ? 'The peritoneal fluid contains malignant cells.' : /Suspicious/.test(f) ? 'The peritoneal fluid is suspicious for malignancy.' : /Atypia/.test(f) ? 'The peritoneal fluid shows atypia of undetermined significance.' : /pending/.test(f) ? 'The peritoneal fluid cytology result is pending.' : 'The peritoneal fluid cannot be assessed.');
-  }
-  const ihc = ihcSentence(v);
-  if (ihc) s.push(ihc);
-  for (const f of arr(v.additionalFindings)) {
-    if (f === 'Other (specify)') { if (stripDot(v.additionalFindingsOther)) s.push(`${uc1(stripDot(v.additionalFindingsOther))}.`); }
-    else if (f === 'Adenomyosis' && v.adenomyosis && v.adenomyosis !== 'Not identified') continue;
-    else if (FINDING_SENTENCE[f]) s.push(`${FINDING_SENTENCE[f]}.`);
-  }
-  if (stripDot(v.additionalNotes)) s.push(`${uc1(stripDot(v.additionalNotes))}.`);
   return s.join(' ');
 }
 
@@ -512,7 +369,7 @@ export function microscopy(part) {
 
 export function synoptic(part, ctx) {
   const v = part.values;
-  const line = (label, value) => (value !== '' && value !== null && value !== undefined ? `- ${label}: ${value}` : null);
+  const item = (label, value) => (value !== '' && value !== null && value !== undefined ? { label, value } : null);
   const extras = arr(v.additionalProcedures);
   const size = num(v.tumourSizeMm); const dimsT = stripDot(v.tumourDims);
   const sizeText = size !== null ? `${fmt(size)} mm in greatest dimension${dimsT ? ` (${dimsT} mm)` : ''}` : stripDot(v.sizeCannot) ? `Cannot be determined (${lc1(stripDot(v.sizeCannot))})` : 'Cannot be determined';
@@ -529,48 +386,81 @@ export function synoptic(part, ctx) {
   const mmr = v.mmrIhc && v.mmrIhc !== 'Not performed' ? `${specify(v.mmrIhc)}${stripDot(v.mmrDetail) ? ` (${stripDot(v.mmrDetail)})` : ''}` : 'Not performed';
   const p53 = v.p53 && v.p53 !== 'Not performed' ? `${specify(v.p53)}${stripDot(v.p53Detail) ? ` (${stripDot(v.p53Detail)})` : ''}` : 'Not performed';
   const cls = resolvedPromise(v);
-  const rows = [
-    line('Procedure', `${procedureName(v)}${extras.length ? `; ${extras.map(lc1).join(', ')}` : ''}`),
-    v.hysterectomyType && v.hysterectomyType !== 'Not specified' ? line('Hysterectomy type', v.hysterectomyType) : null,
-    line('Specimen integrity', v.specimenIntegrity || 'Intact'),
-    line('Tumour site', `${v.tumourSite === 'Other (specify)' ? siteDetail || 'Other' : v.tumourSite || 'Endometrium'}${v.tumourSite !== 'Other (specify)' && siteDetail ? ` (${siteDetail})` : ''}`),
-    line('Tumour size', sizeText),
-    line('Histologic type', `${histTypeName(v)}${/Mixed cell/.test(v.histType || '') ? ' (mixed cell carcinoma)' : ''}`),
-    line('Histologic grade', gradeValue(v)),
-    line('Mismatch repair (MMR) immunohistochemistry', mmr),
-    v.msi && v.msi !== 'Not performed' ? line('Microsatellite instability', specify(v.msi)) : null,
-    line('p53 immunohistochemistry', p53),
-    line('POLE status', pole),
-    line('Molecular classification', cls === 'Double classifier (explain)' ? `Multiple classifier${stripDot(v.promiseDetail) ? ` (${stripDot(v.promiseDetail)})` : ''}` : cls),
-    stripDot(v.otherIhc) ? line('Other immunohistochemistry', stripDot(v.otherIhc)) : null,
-    line('Myometrial invasion', `${specify(v.myoInvasion || 'Cannot be assessed')}${v.myoInvasion === 'Cannot be assessed (explain)' && stripDot(v.myoCannot) ? ` (${stripDot(v.myoCannot)})` : ''}`),
-    d !== null ? line('Depth of myometrial invasion', `${fmt(d)} mm`) : null,
-    t !== null ? line('Myometrial thickness', `${fmt(t)} mm`) : null,
-    pct !== null ? line('Percentage of myometrial invasion', `${fmt(pct)}%`) : null,
-    line('Adenomyosis', v.adenomyosis || 'Not identified'),
-    line('Uterine serosa involvement', v.serosa || 'Not identified'),
-    line('Lower uterine segment involvement', v.lus || 'Not identified'),
-    line('Cervical stromal involvement', specify(cx)),
-    cx === 'Cervical stromal invasion' && cd !== null ? line('Depth of cervical stromal invasion', `${fmt(cd)} mm${ct !== null ? ` of ${fmt(ct)} mm` : ''}`) : null,
-    line('Other tissue / organ involvement', inv.length ? `${inv.map(specify).join('; ')}${invDetail ? ` (${invDetail})` : ''}` : arr(v.otherInvolvement).some((s) => /^Cannot/.test(s)) ? `Cannot be determined${invDetail ? ` (${invDetail})` : ''}` : 'Not identified'),
-    v.pelvicPeritoneum && v.pelvicPeritoneum !== 'Not submitted' ? line('Pelvic peritoneum', v.pelvicPeritoneum) : null,
-    line('Lymphovascular invasion', lvsiValue(v)),
-    line('Perineural invasion', v.pni || 'Not identified'),
-    line('Peritoneal / ascitic fluid', v.peritonealFluid || 'Not submitted / unknown'),
-    line('Ectocervical / vaginal cuff margin', vm === 'Uninvolved by carcinoma' && vmm !== null ? `Uninvolved by carcinoma (closest distance ${fmt(vmm)} mm)` : vm),
-    line('Parametrial / paracervical margin', pm === 'Uninvolved by carcinoma' && pmm !== null ? `Uninvolved by carcinoma (closest distance ${fmt(pmm)} mm)` : pm),
-    line('Pelvic lymph nodes', nodesValue(v, 'pelvic')),
-    line('Para-aortic lymph nodes', nodesValue(v, 'pa')),
-    line('Distant metastasis', metastasisValue(v)),
-    line('Additional pathologic findings', additionalFindingsValue(v)),
-    stripDot(v.additionalNotes) ? line('Additional notes', stripDot(v.additionalNotes)) : null
+  const findings = arr(v.additionalFindings).map((s) => (s === 'Other (specify)' ? stripDot(v.additionalFindingsOther) : s)).filter(Boolean);
+  const sections = [
+    { heading: 'Specimen and tumour', items: [
+      item('Procedure', `${procedureName(v)}${extras.length ? `; ${extras.map(lc1).join(', ')}` : ''}`),
+      v.hysterectomyType && v.hysterectomyType !== 'Not specified' ? item('Hysterectomy type', v.hysterectomyType) : null,
+      item('Specimen integrity', v.specimenIntegrity || 'Intact'),
+      item('Tumour site', `${v.tumourSite === 'Other (specify)' ? siteDetail || 'Other' : v.tumourSite || 'Endometrium'}${v.tumourSite !== 'Other (specify)' && siteDetail ? ` (${siteDetail})` : ''}`),
+      item('Tumour size', sizeText)
+    ] },
+    { heading: 'Microscopic findings', items: [
+      item('Histologic type', `${histTypeName(v)}${/Mixed cell/.test(v.histType || '') ? ' (mixed cell carcinoma)' : ''}`),
+      item('Histologic grade', gradeValue(v)),
+      { label: 'Tumour histology', para: histologyPara(v) },
+      item('Mismatch repair (MMR) immunohistochemistry', mmr),
+      v.msi && v.msi !== 'Not performed' ? item('Microsatellite instability', specify(v.msi)) : null,
+      item('p53 immunohistochemistry', p53),
+      item('POLE status', pole),
+      item('Molecular classification', cls === 'Double classifier (explain)' ? `Multiple classifier${stripDot(v.promiseDetail) ? ` (${stripDot(v.promiseDetail)})` : ''}` : cls),
+      stripDot(v.otherIhc) ? item('Other immunohistochemistry', stripDot(v.otherIhc)) : null,
+      { ...item('Myometrial invasion', `${specify(v.myoInvasion || 'Cannot be assessed')}${v.myoInvasion === 'Cannot be assessed (explain)' && stripDot(v.myoCannot) ? ` (${stripDot(v.myoCannot)})` : ''}`), sub: [
+        d !== null ? item('Depth of myometrial invasion', `${fmt(d)} mm`) : null,
+        t !== null ? item('Myometrial thickness', `${fmt(t)} mm`) : null,
+        pct !== null ? item('Percentage of myometrial invasion', `${fmt(pct)}%`) : null
+      ] },
+      item('Adenomyosis', v.adenomyosis || 'Not identified'),
+      item('Uterine serosa involvement', v.serosa || 'Not identified'),
+      item('Lower uterine segment involvement', v.lus || 'Not identified'),
+      { ...item('Cervical stromal involvement', specify(cx)), sub: [
+        cx === 'Cervical stromal invasion' && cd !== null ? item('Depth of cervical stromal invasion', `${fmt(cd)} mm${ct !== null ? ` of ${fmt(ct)} mm` : ''}`) : null
+      ] },
+      item('Other tissue / organ involvement', inv.length ? `${inv.map(specify).join('; ')}${invDetail ? ` (${invDetail})` : ''}` : arr(v.otherInvolvement).some((s) => /^Cannot/.test(s)) ? `Cannot be determined${invDetail ? ` (${invDetail})` : ''}` : 'Not identified'),
+      v.pelvicPeritoneum && v.pelvicPeritoneum !== 'Not submitted' ? item('Pelvic peritoneum', v.pelvicPeritoneum) : null,
+      item('Lymphovascular invasion', lvsiValue(v)),
+      item('Perineural invasion', v.pni || 'Not identified'),
+      item('Peritoneal / ascitic fluid', v.peritonealFluid || 'Not submitted / unknown')
+    ] },
+    { heading: 'Margins', items: [
+      item('Ectocervical / vaginal cuff margin', vm === 'Uninvolved by carcinoma' && vmm !== null ? `Uninvolved by carcinoma (closest distance ${fmt(vmm)} mm)` : vm),
+      item('Parametrial / paracervical margin', pm === 'Uninvolved by carcinoma' && pmm !== null ? `Uninvolved by carcinoma (closest distance ${fmt(pmm)} mm)` : pm)
+    ] },
+    { heading: 'Lymph nodes', items: [nodesItem(v, 'pelvic'), nodesItem(v, 'pa')] },
+    { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] },
+    ctx?.options?.printPTNM ? { heading: `Pathological stage (${st.edition})`, items: [
+      { label: 'pTNM', value: `${st.tnm}${st.overridden ? ` [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${(v.tnmOverrideReason || '').trim() ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : ''}`,
+        sub: stageLine(st) ? [{ label: stageLine(st).split(': ')[0], value: stageLine(st).split(': ').slice(1).join(': ') }] : [] }
+    ] } : null,
+    { heading: 'Additional findings', items: [
+      ...(findings.length ? findings.map((f) => ({ text: f })) : [{ text: 'None' }]),
+      stripDot(v.additionalNotes) ? item('Additional notes', stripDot(v.additionalNotes)) : null
+    ] }
   ];
-  if (ctx?.options?.printPTNM) {
-    rows.push(line(`Pathological stage classification (${st.edition})`, `${st.tnm}${st.overridden ? ` [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${(v.tnmOverrideReason || '').trim() ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : ''}`));
-    if (stageLine(st)) rows.push(`  - ${stageLine(st)}`);
-  }
-  const heading = ctx?.case?.parts && ctx.case.parts.length > 1 ? `(${part.label}) ${specimenName(part)}\n` : '';
-  return `${heading}${rows.filter(Boolean).join('\n')}`;
+  const heading = ctx?.case?.parts && ctx.case.parts.length > 1 ? `(${part.label}) ${specimenName(part)}` : '';
+  return renderSynoptic(sections, heading);
+}
+
+/** Lymph node element: counts on the parent line, the QMH sub-elements nested under it. */
+export function nodesItem(v, prefix) {
+  const label = prefix === 'pelvic' ? 'Pelvic lymph nodes' : 'Para-aortic lymph nodes';
+  const n = S.nodes(v, prefix);
+  if (n.examined === null) return { label, value: 'Not recorded' };
+  if (n.examined === 0) return { label, value: 'No lymph nodes submitted or found' };
+  const bits = [`${n.examined} examined`, `${n.positive} involved`];
+  if (v[`${prefix}Sentinel`] === true) bits.push('includes sentinel lymph node(s)');
+  const sub = [];
+  if (n.macro) sub.push({ label: 'Macrometastasis (more than 2 mm)', value: String(n.macro) });
+  if (n.micro) sub.push({ label: 'Micrometastasis (more than 0.2 mm up to 2 mm)', value: String(n.micro) });
+  if (n.itc) sub.push({ label: 'Isolated tumour cells (0.2 mm or less)', value: String(n.itc) });
+  const lat = v[`${prefix}Laterality`];
+  if ((n.positive || n.itc) && lat && lat !== 'Not applicable') sub.push({ label: 'Laterality', value: lat });
+  const dep = num(v[`${prefix}DepositMm`]); const nd = num(v[`${prefix}NodeMm`]);
+  if (dep !== null) sub.push({ label: 'Largest metastatic deposit', value: `${fmt(dep)} mm` });
+  if (nd !== null) sub.push({ label: 'Largest involved node', value: `${fmt(nd)} mm` });
+  const ene = v[`${prefix}Ene`];
+  if (n.positive && ene && ene !== 'Not applicable') sub.push({ label: 'Extranodal extension', value: ene });
+  return { label, value: bits.join('; '), sub };
 }
 
 // ---------- diagnosis ----------
@@ -579,50 +469,56 @@ export function diagnosis(part, ctx) {
   const v = part.values;
   const name = specimenName(part);
   const comma = name.indexOf(', ');
-  const head = `(${part.label}) ${comma > 0 ? `${name.slice(0, comma).toUpperCase()}${name.slice(comma)}` : name.toUpperCase()} - `;
-  const bits = [];
+  const head = `(${part.label}) ${comma > 0 ? `${name.slice(0, comma).toUpperCase()}${name.slice(comma)}` : name.toUpperCase()}`;
   const grade = gradeShort(v);
   const ext = S.myoExtent(v);
   const extWord = ext === 'polyp' ? 'confined to an endometrial polyp' : ext === 'endometrium' ? 'confined to the endometrium' : ext === 'lt-half' ? 'invading less than half of the myometrium' : ext === 'ge-half' ? 'invading half or more of the myometrium' : 'depth of myometrial invasion cannot be assessed';
-  bits.push(`${histTypeName(v).toUpperCase()}${grade ? `, ${grade}` : ''}, ${extWord}`);
+  const tumour = [`${histTypeName(v).toUpperCase()}${grade ? `, ${grade}` : ''}, ${extWord}`];
+  // Local extent: LVSI, serosa, cervix, adnexa, other organs, peritoneum, margins.
+  const local = [];
   const l = v.lvsi || 'Not identified';
-  if (l === 'Not identified') bits.push('no lymphovascular space invasion');
-  else if (l === S.LVSI_FOCAL) bits.push('focal lymphovascular space invasion');
-  else if (l === S.LVSI_SUBSTANTIAL) bits.push('substantial lymphovascular space invasion');
-  else if (/^Present/.test(l)) bits.push('lymphovascular space invasion present');
-  else if (/^Equivocal/.test(l)) bits.push('equivocal lymphovascular space invasion');
+  if (l === 'Not identified') local.push('no lymphovascular space invasion');
+  else if (l === S.LVSI_FOCAL) local.push('focal lymphovascular space invasion');
+  else if (l === S.LVSI_SUBSTANTIAL) local.push('substantial lymphovascular space invasion');
+  else if (/^Present/.test(l)) local.push('lymphovascular space invasion present');
+  else if (/^Equivocal/.test(l)) local.push('equivocal lymphovascular space invasion');
   const cx = v.cervix || 'Not identified';
   const inv = chosen(v.otherInvolvement);
   const ovaryTube = inv.filter((s) => /ovary|fallopian tube/i.test(s));
   const adn = adnexaPhrase(v);
   const cxWord = cx === 'Cervical stromal invasion' ? 'cervical stromal invasion' : cx === 'Endocervical glandular involvement only' ? 'endocervical glandular involvement only' : cx === 'Not identified' && withCervix(v) ? 'cervix uninvolved' : '';
-  if (v.serosa === 'Present') bits.push('serosal involvement');
-  if (ovaryTube.length) bits.push(`involving the ${listJoin(ovaryTube.map(lc1))}`);
-  if (cxWord === 'cervix uninvolved' && adn && !ovaryTube.length) bits.push('cervix and adnexa uninvolved');
-  else { if (cxWord) bits.push(cxWord); if (adn && !ovaryTube.length) bits.push('adnexa uninvolved'); }
+  if (v.serosa === 'Present') local.push('serosal involvement');
+  if (ovaryTube.length) local.push(`involving the ${listJoin(ovaryTube.map(lc1))}`);
+  if (cxWord === 'cervix uninvolved' && adn && !ovaryTube.length) local.push('cervix and adnexa uninvolved');
+  else { if (cxWord) local.push(cxWord); if (adn && !ovaryTube.length) local.push('adnexa uninvolved'); }
   const others = inv.filter((s) => !/ovary|fallopian tube/i.test(s));
-  if (others.length) bits.push(`involving the ${listJoin(others.map((s) => lc1(specify(s))))}`);
-  if (v.pelvicPeritoneum === 'Present') bits.push('pelvic peritoneal metastasis');
-  if (v.vaginalMargin === 'Involved by carcinoma') bits.push('vaginal cuff margin involved');
-  if (v.parametrialMargin === 'Involved by carcinoma') bits.push('parametrial margin involved');
+  if (others.length) local.push(`involving the ${listJoin(others.map((s) => lc1(specify(s))))}`);
+  if (v.pelvicPeritoneum === 'Present') local.push('pelvic peritoneal metastasis');
+  if (v.vaginalMargin === 'Involved by carcinoma') local.push('vaginal cuff margin involved');
+  if (v.parametrialMargin === 'Involved by carcinoma') local.push('parametrial margin involved');
+  // Nodes and distant disease.
+  const spread = [];
   for (const p of ['pelvic', 'pa']) {
     const n = S.nodes(v, p);
-    if (n.examined) bits.push(`${n.positive} of ${n.examined} ${regionName[p]} lymph node${n.examined === 1 ? '' : 's'} involved${n.itc && !n.positive ? ' (isolated tumour cells only)' : ''}`);
+    if (n.examined) spread.push(`${n.positive} of ${n.examined} ${regionName[p]} lymph node${n.examined === 1 ? '' : 's'} involved${n.itc && !n.positive ? ' (isolated tumour cells only)' : ''}`);
   }
   const sites = metastasisSites(v);
-  if (sites.length) bits.push(`metastatic carcinoma in the ${listJoin(sites.map((x) => lc1(specify(x))))}`);
+  if (sites.length) spread.push(`metastatic carcinoma in the ${listJoin(sites.map((x) => lc1(specify(x))))}`);
+  // Molecular class, then the stage when printed.
+  const molecular = [];
   const short = promiseShort(v);
   const cls = resolvedPromise(v);
-  if (short) bits.push(`molecular class ${short}`);
-  else if (cls === 'Double classifier (explain)') bits.push('multiple classifier (see comment)');
-  else if (cls === 'Not classified (testing incomplete)') bits.push('molecular classification to follow');
+  if (short) molecular.push(`molecular class ${short}`);
+  else if (cls === 'Double classifier (explain)') molecular.push('multiple classifier (see comment)');
+  else if (cls === 'Not classified (testing incomplete)') molecular.push('molecular classification to follow');
+  const stage = [];
   if (ctx?.options?.printPTNM) {
     const st = staging(part);
-    let stage = `${st.tnm} (${st.edition})`;
-    if (st.stage) stage += `, stage ${st.stage}${st.M === 'M-' ? ' (if cM0)' : ''}`;
-    bits.push(stage);
+    let s = `${st.tnm} (${st.edition})`;
+    if (st.stage) s += `, stage ${st.stage}${st.M === 'M-' ? ' (if cM0)' : ''}`;
+    stage.push(s);
   }
-  return `${head}${bits.filter(Boolean).join('; ')}`;
+  return renderDiagnosis(head, [tumour, local, spread, molecular, stage].map((g) => g.filter(Boolean).join('; ')));
 }
 
 // ---------- validation + flags ----------
@@ -716,4 +612,4 @@ export function flags(parts) {
   return [...out];
 }
 
-export default { specimenName, macro, blockKey, microscopy, synoptic, diagnosis, validate, flags, staging };
+export default { specimenName, macro, blockKey, synoptic, diagnosis, validate, flags, staging };

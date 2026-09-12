@@ -1,6 +1,6 @@
 # Synoptic report layout (sections, nesting, tumour histology)
 
-Status: agreed with the user 2026-09-11; not yet built (roadmap card in Next).
+Status: agreed with the user 2026-09-11; built 2026-09-12 (`src/synoptic.js` renderer, all three synoptic templates, `tests/synoptic.test.js`). The example blocks below are regenerated from the engine and checked byte-for-byte by the tests.
 
 ## Rules
 
@@ -28,8 +28,7 @@ Status: agreed with the user 2026-09-11; not yet built (roadmap card in Next).
 ## Agreed example — endometrium fixture 01
 
 ```
-MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT
-
+MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:
 Specimen and tumour
 - Procedure: Total hysterectomy and bilateral salpingo-oophorectomy; sentinel
   lymph node biopsy
@@ -44,13 +43,12 @@ Microscopic findings
 - Tumour histology:
   Sections show an endometrioid carcinoma with a predominantly glandular
   architecture of confluent, back-to-back glands lined by stratified columnar
-  cells with elongated, mildly to moderately atypical nuclei; solid
-  non-squamous growth makes up 5% or less of the tumour. There is squamous
-  differentiation with morules and keratinising nests. Tumour necrosis is not
-  seen. Myometrial invasion is by irregular infiltrative glands eliciting a
-  stromal response.
-- Mismatch repair (MMR) immunohistochemistry: Intact nuclear expression of
-  MLH1, PMS2, MSH2 and MSH6
+  cells with elongated, mildly to moderately atypical nuclei; solid non-squamous
+  growth makes up 5% or less of the tumour. There is squamous differentiation
+  with morules and keratinising nests. Tumour necrosis is not seen. Myometrial
+  invasion is by irregular infiltrative glands eliciting a stromal response.
+- Mismatch repair (MMR) immunohistochemistry: Intact nuclear expression of MLH1,
+  PMS2, MSH2 and MSH6
 - p53 immunohistochemistry: Normal (wild type) expression
 - POLE status: Wild-type
 - Molecular classification: No specific molecular profile (NSMP)
@@ -83,7 +81,7 @@ Additional findings
 - Atypical hyperplasia / endometrial intraepithelial neoplasia (EIN)
 - Leiomyomas
 
-DIAGNOSIS
+DIAGNOSIS:
 UTERUS WITH CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral
 salpingo-oophorectomy with sentinel lymph node biopsy
 - ENDOMETRIOID CARCINOMA, FIGO grade 1, invading less than half of the
@@ -96,8 +94,7 @@ salpingo-oophorectomy with sentinel lymph node biopsy
 ## Agreed example — GIST (schema example, stomach wedge)
 
 ```
-MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT
-
+MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:
 Specimen and tumour
 - Procedure: Wedge resection
 - Tumour site: Stomach (greater curvature, body)
@@ -109,8 +106,8 @@ Microscopic findings
 - Histologic type: Gastrointestinal stromal tumour, spindle cell type
 - Histologic grade: G1: Low grade; mitotic rate 5 or fewer per 5 mm2
 - Tumour histology:
-  Sections show a well-circumscribed gastrointestinal stromal tumour composed
-  of spindle cells arranged in fascicles, with pale eosinophilic cytoplasm and
+  Sections show a well-circumscribed gastrointestinal stromal tumour composed of
+  spindle cells arranged in fascicles, with pale eosinophilic cytoplasm and
   uniform ovoid nuclei. Necrosis is not identified.
 - Mitotic count: 2 per 5 mm2 (5 or fewer per 5 mm2)
 - Necrosis: Not identified
@@ -139,7 +136,7 @@ Pathological stage (AJCC 8th edition)
 - pTNM: pT2 pNX
   - Stage group (if cM0): IA
 
-DIAGNOSIS
+DIAGNOSIS:
 STOMACH, wedge resection
 - GASTROINTESTINAL STROMAL TUMOUR, spindle cell type, 4.5 cm, mitotic count
   2 per 5 mm2
@@ -147,17 +144,14 @@ STOMACH, wedge resection
 - pT2 pNX (AJCC 8th edition), stage IA (if cM0)
 - KIT and DOG1 positive; molecular studies to follow
 
-COMMENT
-Mutation analysis for KIT and PDGFRA hot spots has been requested and will be
-issued as a supplementary report. The result guides tyrosine kinase inhibitor
-selection and dosing.
+COMMENT:
+Mutation analysis for KIT and PDGFRA hot spots has been requested and will be issued as a supplementary report. The result guides tyrosine kinase inhibitor selection and dosing.
 ```
 
 ## Agreed example — colorectal (schema example, right hemicolectomy)
 
 ```
-MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT
-
+MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:
 Specimen and tumour
 - Procedure: Right hemicolectomy
 - Tumour site: Ascending colon
@@ -168,9 +162,9 @@ Microscopic findings
 - Histologic type (WHO 2019): Adenocarcinoma
 - Histologic grade: G2: Moderately differentiated
 - Tumour histology:
-  Sections show an invasive moderately differentiated adenocarcinoma arising
-  in a tubulovillous adenoma, forming irregular glands with a desmoplastic
-  stromal response and luminal dirty necrosis.
+  Sections show an invasive moderately differentiated adenocarcinoma arising in
+  a tubulovillous adenoma, forming irregular glands with a desmoplastic stromal
+  response and luminal dirty necrosis.
 - Multiple primary tumours: Not applicable (no additional primary site)
 - Tumour extension: Invades through muscularis propria into pericolorectal
   tissue
@@ -204,12 +198,11 @@ Additional findings
 - Diverticulosis
 - Mismatch repair immunohistochemistry: Retained (MLH1, PMS2, MSH2, MSH6)
 
-DIAGNOSIS
+DIAGNOSIS:
 ASCENDING COLON, right hemicolectomy
-- INVASIVE ADENOCARCINOMA, moderately differentiated (G2), invading through
-  the muscularis propria into the pericolic tissue
-- lymphovascular invasion present; 2 of 22 lymph nodes involved; margins
-  clear
+- INVASIVE ADENOCARCINOMA, moderately differentiated (G2), invading through the
+  muscularis propria into the pericolic tissue
+- lymphovascular invasion present; 2 of 22 lymph nodes involved; margins clear
 - pT3 pN1b (AJCC 8th edition), stage IIIB (if cM0)
 - MMR proficient
 ```
@@ -220,4 +213,4 @@ SPECIMENS, MACROSCOPIC EXAMINATION and BLOCK KEY blocks are unchanged and preced
 
 ## Fixture log
 
-- (at build) all endometrium fixtures, GIST and colorectal expectations regenerated for the new layout; reason "synoptic layout".
+- 2026-09-12 synoptic layout: the six endometrium golden fixtures regenerated (`node tests/endometrial_carcinoma.test.js --update`; only the `report` text and the retired `synopticOnly` option in fixture 04 changed, checks unchanged); GIST and colorectal test expectations rewritten in `tests/gist_resection.test.js` / `tests/colon_resection.test.js`. Reason "synoptic layout".

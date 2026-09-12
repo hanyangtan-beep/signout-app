@@ -48,7 +48,7 @@
   "options": [
     {
       "id": "includeHeader",
-      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / SYNOPTIC REPORT / DIAGNOSIS)",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)",
       "type": "checkbox",
       "default": false
     },
@@ -57,12 +57,6 @@
       "label": "Generate the macroscopic description and block key",
       "type": "checkbox",
       "default": true
-    },
-    {
-      "id": "synopticOnly",
-      "label": "Synoptic only (omit the narrative microscopy paragraph)",
-      "type": "checkbox",
-      "default": false
     },
     {
       "id": "printPTNM",
@@ -2084,7 +2078,6 @@
     "options": {
       "includeHeader": false,
       "macro": true,
-      "synopticOnly": false,
       "printPTNM": false
     },
     "parts": [
