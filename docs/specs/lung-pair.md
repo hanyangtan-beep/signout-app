@@ -84,12 +84,12 @@ Fixtures `tests/fixtures/lung/`: 01 wedge frozen → linked synoptic, adenocarci
 
 L → one batch: (a) frozen scenario (M), (b) staging (M), (c) schema + generator + engine items 1–3 (L), (d) fixtures + docs (S). One deploy + publish. Stop conditions: QMH order kept if CAP 5.1.0.0 differs (none found); no PD-L1 / molecular derivation (typed only); no Upgrade-this-part; no cytology / effusion linking; galleries (pattern recognition, STAS, PL levels) → Later as one line. If the same-letter link needs more than the planned engine change, fall back to separate letters (as ovary 07 today) and log it.
 
-## Open points — please confirm
+## Open points — confirmed 2026-09-12 ("1 yes, 2 yes, 3 yes, 4 yes, 5 yes, 6 type-only for now, 7 yes")
 
 1. **Edition**: build staging on **AJCC 9th** (as the QMH page, CAP 5.1.0.0) rather than the 8th named on the roadmap card — N2a / N2b, M1c1 / M1c2, 9th stage groups. Print as `pT2a pN2a (AJCC 9th edition)`.
 2. **House "Specimen and tumour" section** (procedure, laterality, lobe, sizes, separate nodules, margins distances) added above the QMH microscopic elements, as in the other synoptics.
 3. **Grade**: IASLC three-tier for invasive non-mucinous adenocarcinoma (printed with the driving pattern and % high-grade), page G1–G4 for the other NSCC types, Not applicable for neuroendocrine / AIS / MIA.
 4. **Nodes as a station table** (`7: 2/3; 10R: 0/2`) deriving N1 / N2a / N2b / N3; ipsilateral assumed unless the station carries the opposite side letter or is marked contralateral.
 5. **Linked part shares the letter** (frozen and synoptic under one "(B)"), with the ovary fixture 07 retrofitted; diagnosis line keeps the "x frozen section" suffix and ends "see synoptic report" (pTNM only via `printPTNM`, as ovary).
-6. **Auto comment** for completion lobectomy: "Staging is based on the prior wedge resection (S26-01234) together with the lymph nodes from this completion lobectomy." and the read-only Sheet lookup by accession — include now or type-only for this batch.
+6. **Auto comment** for completion lobectomy: "Staging is based on the prior wedge resection (S26-01234) together with the lymph nodes from this completion lobectomy." — accepted. Prior-specimen fields are **type-only in this batch**; the read-only Sheet lookup by accession moves to Later as one line.
 7. **Intraoperative lines** above are proposals (no house example).

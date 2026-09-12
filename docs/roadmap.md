@@ -77,7 +77,8 @@ Accept:     wedge frozen → Stage this part → synoptic prints pT with stage a
 Verify:     tests + browser (light)
 Ship:       one batch with the engine card, one publish
 Depends on: Linked synoptic part (Stage this part) — pulled into Now together, 2026-09-12; ships as one batch.
-Pulled:     2026-09-12 (user: "Pull the Lung pair card into Now"). Open points listed in the spec; build starts after confirmation.
+Pulled:     2026-09-12 (user: "Pull the Lung pair card into Now").
+Confirmed:  2026-09-12 — (1) AJCC 9th per QMH / CAP 5.1.0.0; (2) house Specimen and tumour section; (3) IASLC three-tier grade for non-mucinous adenocarcinoma; (4) station-table nodes; (5) linked frozen + synoptic share one letter, ovary fixture 07 retrofitted; (6) prior specimen type-only (Sheet lookup → Later); (7) intraoperative wording proposals accepted.
 Spec:       `docs/specs/lung-pair.md`
 
 
@@ -214,6 +215,8 @@ Ship:       one batch, one publish
 Depends on: Linked synoptic part
 
 ## Later
+
+- Related prior specimen — read-only lookup by accession from the `Sign-out cases` Sheet (deferred from the Lung pair, 2026-09-12; fields are type-only).
 
 - Specimen intake — AI fallback: when the rule-based matcher returns "none" or "choose", offer a model suggestion from the specimen text and clinical history (S; needs a PHI decision first — the paste may contain identifiers); and macro-paste field extraction (sizes, counts, node numbers into schema fields) as a separate card.
 One line each; card them before building.
