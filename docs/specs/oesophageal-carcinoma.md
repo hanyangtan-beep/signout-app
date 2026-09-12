@@ -96,3 +96,17 @@ type.
 9 wording-pinned generator tests in `tests/oesophageal.test.js`) plus 19 detail tests in
 `tests/oesophageal-detail.test.js` covering the morphology table, structured fields, the IHC
 sentence and biopsy differentiation. Suite: 797.
+
+## Morphology sourcing (2026-09-12 deepen pass)
+
+The per-type sentences in `generators/oesophageal_morphology.js` follow the WHO Classification
+of Tumours: Digestive System Tumours, 5th ed (2019), as reflected in the expert-authored
+Pathology Outlines chapters (pathologyoutlines.com/topic/esophagusscc.html,
+esophagusbasaloidSCC.html, esophagussarcomatoid.html, esophagusverrucousscc.html,
+esophagusadenocarcinoma.html, esophagusadenosquamous.html, esophagusundiffcarcinoma.html,
+esophagusneuroendocrine.html), the WHO 2019 NEN grading table (NET G1 <2 mitoses/2 mm² and
+Ki-67 <3%; G2 2-20 and 3-20%; G3 >20; NEC poorly differentiated, Ki-67 typically >20%),
+the WHO >50% extracellular-mucin definition of mucinous adenocarcinoma, the WHO MiNEN rule
+(each component >30% of the tumour), and ITBCC consensus tumour budding (focus of <5 cells,
+hotspot field; Bd1 0-4, Bd2 5-9, Bd3 ≥10). Each comment in the module cites the source of
+its sentence. ExpertPath cross-check deferred (device bridge unavailable 2026-09-12).

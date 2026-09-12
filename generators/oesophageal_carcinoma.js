@@ -167,7 +167,7 @@ export function histologyPara(v) {
     const morph = typeMorphology(typeName, v.grade || '');
     if (morph) s += ` ${morph.replace(/\.$/, '')}.`;
     const budding = v.budding || '';
-    if (/^Bd\d/.test(budding)) s += ` Tumour budding is ${/Bd1/.test(budding) ? 'low (Bd1)' : /Bd2/.test(budding) ? 'intermediate (Bd2)' : 'high (Bd3)'}.`;
+    if (/^Bd\d/.test(budding)) s += ` Tumour budding, counted as discrete foci of fewer than five cells in the hottest field at the invasive front, is ${/Bd1/.test(budding) ? 'low grade (Bd1, 0-4 buds)' : /Bd2/.test(budding) ? 'intermediate grade (Bd2, 5-9 buds)' : 'high grade (Bd3, 10 or more buds)'}.`;
     if (v.retraction === 'Present') s += ' Retraction artefact is present around tumour nests.';
     if (v.barrett === 'Present') s += " Background Barrett-type columnar epithelium with intestinal metaplasia is present.";
     const ihc = ihcSentence(v);

@@ -16,17 +16,17 @@ const runP = (over, options = schema.example.options) => generate(schema, gen, {
 
 // The example case is an oesophagectomy for a moderately differentiated SCC invading the adventitia.
 const MORPH = {
-  'G1-pinned': { overrun: { grade: 'G1, well differentiated' }, s: 'keratin pearls and conspicuous intercellular bridges' },
-  'SCC G3': { overrun: { grade: 'G3, poorly differentiated / undifferentiated' }, s: 'solid sheets of pleomorphic squamoid cells without keratin pearls' },
-  'Basaloid SCC': { overrun: { histType: 'Basaloid squamous cell carcinoma' }, s: 'closely packed basaloid cells with peripheral palisading and comedo-type necrosis' },
-  'Spindle cell SCC': { overrun: { histType: 'Spindle cell squamous cell carcinoma' }, s: 'sarcomatoid change' },
-  'Verrucous SCC': { overrun: { histType: 'Verrucous squamous cell carcinoma' }, s: 'Broad pushing tongues of highly differentiated keratinising squamous epithelium' },
-  'Adenoca G1': { overrun: { histType: 'Adenocarcinoma', grade: 'G1, well differentiated' }, s: 'well-defined glands lined by atypical columnar epithelium' },
-  'Adenoca G3': { overrun: { histType: 'Adenocarcinoma', grade: 'G3, poorly differentiated / undifferentiated' }, s: 'poorly developed glands, fused architecture and solid sheets' },
-  'Mucinous adenoca': { overrun: { histType: 'Mucinous adenocarcinoma' }, s: 'Large lakes of extracellular mucin contain floating strips and nests' },
-  'Signet-ring': { overrun: { histType: 'Signet-ring cell carcinoma (poorly cohesive carcinoma)' }, s: 'Poorly cohesive signet-ring cells with intracytoplasmic mucin infiltrate singly' },
-  'Small cell NEC': { overrun: { histType: 'Small cell neuroendocrine carcinoma' }, s: 'nuclear moulding, crush artefact and a high mitotic rate' },
-  'NET G1': { overrun: { histType: 'G1: Well-differentiated neuroendocrine tumour' }, s: 'salt-and-pepper chromatin form nests and trabeculae' }
+  'G1-pinned': { overrun: { grade: 'G1, well differentiated' }, s: 'prominent keratinisation, keratin pearls and conspicuous intercellular bridges; the invasive front is broad and pushing' },
+  'SCC G3': { overrun: { grade: 'G3, poorly differentiated / undifferentiated' }, s: 'solid nests of basal-like cells with high nuclear to cytoplasmic ratios' },
+  'Basaloid SCC': { overrun: { histType: 'Basaloid squamous cell carcinoma' }, s: 'peripherally palisading nuclei and central comedo-type necrosis; microcystic spaces contain basophilic basement membrane-like material without true glandular lumina' },
+  'Spindle cell SCC': { overrun: { histType: 'Spindle cell squamous cell carcinoma' }, s: 'sarcomatoid metaplasia of the epithelial component' },
+  'Verrucous SCC': { overrun: { histType: 'Verrucous squamous cell carcinoma' }, s: 'blunt, bulbous rete projections that invade with a uniformly pushing front; cytological atypia is minimal' },
+  'Adenoca G1': { overrun: { histType: 'Adenocarcinoma', grade: 'G1, well differentiated' }, s: 'irregularly infiltrating tubular glands lined by a single layer of atypical columnar epithelium are set in desmoplastic stroma' },
+  'Adenoca G3': { overrun: { histType: 'Adenocarcinoma', grade: 'G3, poorly differentiated / undifferentiated' }, s: 'fused, abortive glands and solid sheets of high-grade atypical cells with only occasional lumen formation' },
+  'Mucinous adenoca': { overrun: { histType: 'Mucinous adenocarcinoma' }, s: 'Extracellular mucin pools occupy more than half of the tumour' },
+  'Signet-ring': { overrun: { histType: 'Signet-ring cell carcinoma (poorly cohesive carcinoma)' }, s: 'intracytoplasmic mucin displacing the nucleus infiltrate the wall singly' },
+  'Small cell NEC': { overrun: { histType: 'Small cell neuroendocrine carcinoma' }, s: 'marked nuclear moulding show crush artefact, extensive necrosis and numerous mitoses' },
+  'NET G1': { overrun: { histType: 'G1: Well-differentiated neuroendocrine tumour' }, s: 'salt-and-pepper chromatin form organoid nests and trabeculae, with sparse mitotic activity' }
 };
 
 for (const [name, { overrun, s }] of Object.entries(MORPH)) {
@@ -59,7 +59,7 @@ test('structured fields feed paragraph, items and diagnosis', () => {
     barrett: 'Present'
   });
   const f = flat(out.report);
-  assert.ok(f.includes('Tumour budding is high (Bd3).'));
+  assert.ok(f.includes('Tumour budding, counted as discrete foci of fewer than five cells'));
   assert.ok(f.includes('Retraction artefact is present around tumour nests.'));
   assert.ok(f.includes('Background Barrett-type columnar epithelium with intestinal metaplasia is present.'));
   assert.ok(out.report.includes('- Tumour budding: Bd3 (high, 10 or more buds)'));
