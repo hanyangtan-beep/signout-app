@@ -1,16 +1,16 @@
 // Template picker logic (pure; no DOM). Feeds the header rows, the Cmd-K palette and the
 // per-part template selector. `manifest` is the array from templates/manifest.json.
 
-export const SYSTEM_ORDER = ['GI', 'Hepatobiliary', 'GU', 'Renal', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Medical', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology', 'General'];
+export const SYSTEM_ORDER = ['GI', 'Hepatobiliary', 'GU', 'Renal', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Medical', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Biomarkers', 'Cytology', 'General'];
 /** Short header labels for the system buttons (default: the system name). */
-export const SYSTEM_SHORT = { Hepatobiliary: 'HPB', 'Head and neck': 'H&N', Cardiovascular: 'Cardiac', General: 'Free text' };
+export const SYSTEM_SHORT = { Hepatobiliary: 'HPB', 'Head and neck': 'H&N', Cardiovascular: 'Cardiac', General: 'Generic' };
 /** Header rows: which template kinds each row holds (user 2026-09-12). */
 export const ROWS = {
-  top: { label: 'Small biopsy & cytology', kinds: ['biopsy', 'cytology'] },
+  top: { label: 'Small biopsy & cytology', kinds: ['biopsy', 'biomarker', 'cytology'] },
   bottom: { label: 'Resections & frozen', kinds: ['benign resection', 'cancer resection', 'frozen', 'generic'] }
 };
 export const KIND_ORDER = ['biopsy', 'benign resection', 'cancer resection', 'frozen', 'cytology'];
-export const KIND_LABEL = { biopsy: 'Small biopsy', 'benign resection': 'Benign resection', 'cancer resection': 'Cancer resection', frozen: 'Frozen section', cytology: 'Cytology', generic: 'Free text' };
+export const KIND_LABEL = { biopsy: 'Small biopsy', 'benign resection': 'Benign resection', 'cancer resection': 'Cancer resection', frozen: 'Frozen section', cytology: 'Cytology', generic: 'Free text', biomarker: 'Biomarker / molecular report', autopsy: 'Autopsy' };
 
 const byRank = (a, b) => (a.rank ?? 100) - (b.rank ?? 100) || a.shortName.localeCompare(b.shortName);
 const kindIdx = (k) => { const i = KIND_ORDER.indexOf(k); return i < 0 ? KIND_ORDER.length : i; };
@@ -44,7 +44,7 @@ export function togglePin(pins, id) {
 /** Per-row merges of small systems into one button (key = the group shown; order = first member's SYSTEM_ORDER slot). */
 export const ROW_MERGE = {
   top: { Renal: 'Medical', Hepatobiliary: 'Medical', Cardiovascular: 'Medical' },
-  bottom: { Cardiovascular: 'Thoracic', 'Soft tissue': 'Skin', Endocrine: 'Head and neck' }
+  bottom: { Cardiovascular: 'Thoracic', 'Soft tissue': 'Skin' }
 };
 const ROW_LABEL = {
   top: { Medical: 'Medical' },

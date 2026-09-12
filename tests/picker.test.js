@@ -71,18 +71,21 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   const top = rowGroups(manifest, planned, 'top');
   const bottom = rowGroups(manifest, planned, 'bottom');
   const kindsIn = (groups) => new Set(groups.flatMap((g) => g.items.map((t) => t.kind)));
-  assert.deepEqual([...kindsIn(top)].sort(), ['biopsy', 'cytology']);
+  assert.deepEqual([...kindsIn(top)].sort(), ['biomarker', 'biopsy', 'cytology']);
   assert.deepEqual([...kindsIn(bottom)].sort(), ['benign resection', 'cancer resection', 'frozen', 'generic']);
   // system order and labels
-  assert.deepEqual(top.map((g) => g.system), ['GI', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Medical', 'Cytology']);
-  assert.deepEqual(bottom.map((g) => g.label), ['GI', 'HPB', 'GU', 'Gynae', 'Breast', 'Thoracic', 'H&N', 'CNS', 'Skin / soft tissue', 'Lymphoid', 'Frozen', 'Free text']);
+  assert.deepEqual(top.map((g) => g.system), ['GI', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Medical', 'Biomarkers', 'Cytology']);
+  assert.deepEqual(bottom.map((g) => g.label), ['GI', 'HPB', 'GU', 'Gynae', 'Breast', 'Thoracic', 'H&N', 'CNS', 'Skin / soft tissue', 'Lymphoid', 'Endocrine', 'Frozen', 'Generic']);
   assert.equal(top.find((g) => g.system === 'Head and neck').label, 'H&N');
-  // merges: medical biopsies share one top button; aortic valve sits with lung under Thoracic; soft tissue with skin; endocrine with H&N
+  // merges: medical biopsies share one top button; aortic valve sits with lung under Thoracic; soft tissue with skin
   assert.deepEqual(top.find((g) => g.system === 'Medical').items.map((t) => t.id), ['renal_biopsy', 'liver_biopsy', 'endomyocardial_biopsy']);
   assert.ok(bottom.find((g) => g.system === 'Thoracic').items.some((t) => t.id === 'aortic_valve_aorta'));
   assert.ok(bottom.find((g) => g.system === 'Skin').items.some((t) => t.id === 'soft_tissue_benign'));
-  assert.ok(bottom.find((g) => g.system === 'Head and neck').items.some((t) => t.id === 'thyroid_benign'), 'thyroid under H&N in the resection row');
-  assert.equal(bottom.find((g) => g.system === 'General').label, 'Free text');
+  assert.ok(bottom.find((g) => g.system === 'Endocrine').items.some((t) => t.id === 'thyroid_benign'));
+  // every QMH cancer page is either built or planned: entries carry the QMH page stem
+  assert.ok(planned.filter((t) => t.qmh).length >= 50);
+  assert.ok(top.find((g) => g.system === 'Biomarkers').items.every((t) => t.planned && t.kind === 'biomarker'));
+  assert.equal(bottom.find((g) => g.system === 'General').label, 'Generic');
   assert.equal(bottom[bottom.length - 1].system, 'General', 'Free text last');
   // built before planned within a group; planned carry the flag and open Generic in the app
   const gi = top.find((g) => g.system === 'GI');
@@ -99,12 +102,12 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   assert.equal(pinned[0], 'ibd_biopsy');
   assert.equal(pinned.at(-1), 'peritoneal_nodule');
   // a group that only has planned entries still gets a button (Medical, CNS)
-  assert.deepEqual(bottom.find((g) => g.system === 'CNS').items.map((t) => t.id), ['cns_tumour']);
+  assert.deepEqual(bottom.find((g) => g.system === 'CNS').items.map((t) => t.id), ['cns_tumour', 'meningioma']);
   // Autopsy is in neither row; it is the standalone button
   assert.ok(![...top, ...bottom].some((g) => g.items.some((t) => t.id === 'autopsy')));
   assert.deepEqual(standalonePlanned(planned).map((t) => t.id), ['autopsy']);
   // rows stay short
-  assert.ok(top.length <= 10 && bottom.length <= 12, `${top.length} / ${bottom.length} buttons`);
+  assert.ok(top.length <= 10 && bottom.length <= 13, `${top.length} / ${bottom.length} buttons`);
 });
 
 test('palette ranking: exact shortName > alias > organ > keyword', () => {
