@@ -51,7 +51,7 @@
     },
     {
       "id": "fallopian_tube_ectopic",
-      "name": "Fallopian tube — ectopic pregnancy",
+      "name": "Fallopian tube \u2014 ectopic pregnancy",
       "label": "Ectopic",
       "system": "Gynae",
       "kind": "benign resection",
@@ -82,14 +82,6 @@
       "roadmap": "Next"
     },
     {
-      "id": "breast_carcinoma",
-      "name": "Breast carcinoma resection",
-      "label": "Breast Ca",
-      "system": "Breast",
-      "kind": "cancer resection",
-      "roadmap": "Next"
-    },
-    {
       "id": "prostate_radical",
       "name": "Radical prostatectomy",
       "label": "Prostatectomy",
@@ -99,7 +91,7 @@
     },
     {
       "id": "gi_net",
-      "name": "GI neuroendocrine tumour resection (stomach, duodenum / ampulla, jejunum–ileum, appendix, colon)",
+      "name": "GI neuroendocrine tumour resection (stomach, duodenum / ampulla, jejunum\u2013ileum, appendix, colon)",
       "label": "GI NET",
       "system": "GI",
       "kind": "cancer resection",
@@ -144,24 +136,6 @@
       "system": "Lymphoid",
       "kind": "cancer resection",
       "roadmap": "Later"
-    },
-    {
-      "id": "breast_dcis",
-      "name": "Breast DCIS resection",
-      "label": "DCIS",
-      "system": "Breast",
-      "kind": "cancer resection",
-      "roadmap": "Later",
-      "qmh": "BREAST-DCIS"
-    },
-    {
-      "id": "phyllodes",
-      "name": "Phyllodes tumour resection",
-      "label": "Phyllodes",
-      "system": "Breast",
-      "kind": "cancer resection",
-      "roadmap": "Later",
-      "qmh": "BREAST-Phyllodes"
     },
     {
       "id": "oesophageal_carcinoma",

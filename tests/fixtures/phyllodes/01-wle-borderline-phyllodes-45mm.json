@@ -1,0 +1,16 @@
+{
+  "templateId": "phyllodes",
+  "patch": {},
+  "options": {
+    "printPTNM": true
+  },
+  "caseFields": {},
+  "report": "Breast, left, wide local excision\n\nThe specimen consists of a left wide local excision specimen (95 g, 70 x 55 x 40 mm). Sectioning reveals a firm, well-circumscribed, lobulated tumour measuring 45 mm in greatest dimension (45 x 40 x 35 mm) in the upper outer quadrant (2 o'clock), 3 mm from the anterior margin. The remaining breast tissue is fibrofatty and unremarkable.\n\n(1-6) tumour with the closest anterior margin.\n(7-10) posterior, superior, inferior and lateral margins.\n(11) medial margin.\n(12) background breast.\n\nSpecimen and tumour\n- Procedure: Excision (less than total mastectomy)\n- Specimen laterality: Left\n- Tumour site: Upper outer quadrant (2 o'clock)\n- Tumour size: Greatest dimension 45 mm (45 x 40 x 35 mm)\n\nMicroscopic findings\n- Histologic type: Phyllodes tumour, borderline\n- Tumour histology:\n  Sections show a fibroepithelial tumour measuring 45 mm with leaf-like fronds\n  lined by a bland bilayered epithelium and moderate stromal cellularity, mild\n  stromal atypia and no stromal overgrowth; mitoses number 6 per 10 high power\n  fields. The border is focally infiltrative into the surrounding breast. No\n  malignant heterologous element is seen. The features are those of a borderline\n  phyllodes tumour.\n- Stromal cellularity: Moderate (some overlapping stromal nuclei)\n- Stromal atypia: Mild (minimal variation in nuclear size, even chromatin, and\n  smooth nuclear contours)\n- Stromal overgrowth: Absent\n- Mitotic rate: 6 per 10 high power fields\n- Histologic tumour border: Infiltrative (permeative), focal\n- Malignant heterologous elements: Not identified\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n- Epithelial component: Bland bilayered epithelium\n\nSurgical margins\n- Anterior margin: Uninvolved by tumour, closest distance: 3 mm\n- Posterior margin: Uninvolved by tumour, closest distance: 8 mm\n- Superior margin: Uninvolved by tumour, closest distance: greater than 10 mm\n- Inferior margin: Uninvolved by tumour, closest distance: greater than 10 mm\n- Medial margin: Uninvolved by tumour, closest distance: greater than 10 mm\n- Lateral margin: Uninvolved by tumour, closest distance: greater than 10 mm\n\nRegional lymph nodes\n- Regional lymph nodes: No lymph nodes submitted or found\n\nDistant metastasis\n- Distant metastasis: Not applicable\n\nPathological stage (AJCC 8th edition)\n- pTNM: Not applicable (borderline phyllodes tumour; AJCC staging applies to\n  malignant phyllodes tumour only)\n\nAdditional findings\n- Additional pathologic findings: Not identified\n\nBREAST, left, wide local excision\n- BORDERLINE PHYLLODES TUMOUR, 45 mm; margins clear (closest 3 mm, anterior);\n  see synoptic report\n\nBorderline phyllodes tumours are usually excised with a clear margin of at least 10 mm; the 3 mm anterior margin is noted for the clinical team's consideration of re-excision.",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Borderline phyllodes tumour within 10 mm of the anterior and posterior margins (3 mm, 8 mm): a comment on re-excision is added.",
+      "part": "A"
+    }
+  ]
+}

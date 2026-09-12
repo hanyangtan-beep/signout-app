@@ -252,6 +252,8 @@ function applyMacro() {
 
 /** Frozen scenario -> paired synoptic template id (from the frozen generator when it is loaded). */
 function pairedTemplates() { return state.templates.frozen_section?.generator?.PAIRED_TEMPLATE || {}; }
+/** True when the paired synoptic is a separate specimen with its own letter (breast SLN -> breast resection). */
+function pairSeparate(scenario) { return !!(state.templates.frozen_section?.generator?.PAIR_SEPARATE || {})[scenario]; }
 
 /** True when part i is a frozen part whose paraffin result is malignant and has a paired synoptic template. */
 function canStage(i) {
@@ -259,7 +261,9 @@ function canStage(i) {
   const part = parts[i];
   if (!part || templateIdOf(state.caseState, part) !== 'frozen_section') return false;
   const g = state.templates.frozen_section?.generator;
-  return !!g && typeof g.stageable === 'function' && g.stageable(part) && !parts[i + 1]?.linked;
+  if (!g || typeof g.stageable !== 'function' || !g.stageable(part)) return false;
+  if (pairSeparate(part.values.scenario)) return !parts.some((p) => templateIdOf(state.caseState, p) === pairedTemplates()[part.values.scenario]);
+  return !parts[i + 1]?.linked;
 }
 
 /**
@@ -272,21 +276,25 @@ async function stageThisPart(i) {
   const part = parts[i];
   const pairId = pairedTemplates()[part.values.scenario];
   if (!pairId) return toast('No synoptic template is paired with this frozen scenario');
-  if (parts[i + 1]?.linked) { state.activePart = i + 1; render(); return toast(`Part ${part.label} already has its synoptic`); }
+  const separate = pairSeparate(part.values.scenario);
+  if (separate) {
+    const j = parts.findIndex((p) => templateIdOf(state.caseState, p) === pairId);
+    if (j >= 0) { state.activePart = j; render(); return toast(`Part ${parts[j].label} is already the breast synoptic`); }
+  } else if (parts[i + 1]?.linked) { state.activePart = i + 1; render(); return toast(`Part ${part.label} already has its synoptic`); }
   if (parts.length >= maxPartsForCase()) return toast(`Maximum ${maxPartsForCase()} parts`);
   const { schema: s, generator: g } = await ensureTemplate(pairId);
   noteUsed(pairId);
   markDirty();
   const own = parts.filter((p, j) => j <= i && templateIdOf(state.caseState, p) === pairId).length;
-  const np = { ...createPart(s, own), templateId: pairId, linked: true };
+  const np = { ...createPart(s, own), templateId: pairId, ...(separate ? {} : { linked: true }) };
   if (typeof g.prefillFromFrozen === 'function') Object.assign(np.values, g.prefillFromFrozen(part.values) || {});
-  parts.splice(i + 1, 0, np);
+  if (separate) parts.push(np); else parts.splice(i + 1, 0, np);
   relabel(parts);
   syncPrimary();
   applyMacro();
-  state.activePart = i + 1;
+  state.activePart = separate ? parts.length - 1 : i + 1;
   render();
-  toast(`Part ${np.label}: ${s.name} linked to the frozen section`);
+  toast(separate ? `Part ${np.label}: ${s.name} added; sentinel node counts from part ${part.label}` : `Part ${np.label}: ${s.name} linked to the frozen section`);
 }
 
 function removePart(i) {
@@ -726,7 +734,7 @@ function renderPanel() {
     el('h3', { text: part.linked ? `Part ${part.label} (synoptic, linked to the frozen section)` : `Part ${part.label}` }),
     picker,
     el('div', { class: 'part-actions' },
-      canStage(i) ? el('button', { type: 'button', class: 'btn small', text: 'Stage this part', title: 'Add the paired cancer synoptic under the same letter, pre-filled from the frozen section', onclick: () => stageThisPart(i).catch((err) => { toast(err.message); render(); }) }) : null,
+      canStage(i) ? el('button', { type: 'button', class: 'btn small', text: pairSeparate(part.values.scenario) ? 'Add breast synoptic' : 'Stage this part', title: pairSeparate(part.values.scenario) ? 'Add the breast carcinoma resection as the next part, with the sentinel node counts pre-filled' : 'Add the paired cancer synoptic under the same letter, pre-filled from the frozen section', onclick: () => stageThisPart(i).catch((err) => { toast(err.message); render(); }) }) : null,
       i > 0 && !part.linked ? el('button', { type: 'button', class: 'btn ghost small', text: 'Same as previous', onclick: () => copyFromPrevious(i) }) : null,
       el('button', { type: 'button', class: 'btn ghost small', text: 'Reset', onclick: () => resetPart(i) }),
       el('button', { type: 'button', class: 'btn ghost small danger', text: 'Remove', onclick: () => removePart(i) })

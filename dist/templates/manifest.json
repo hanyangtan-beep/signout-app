@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 46,
+  "count": 49,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -2339,6 +2339,192 @@
       "generator": "lung_carcinoma",
       "generatorPath": "generators/lung_carcinoma.js",
       "schemaPath": "schemas/lung_carcinoma.json"
+    },
+    {
+      "id": "breast_carcinoma",
+      "name": "Breast carcinoma resection",
+      "shortName": "Breast · cancer resection",
+      "label": "Breast Ca",
+      "organ": "BREAST",
+      "system": "Breast",
+      "kind": "cancer resection",
+      "rank": 45,
+      "aliases": [
+        "breast",
+        "mastectomy",
+        "wide local excision",
+        "WLE",
+        "lumpectomy",
+        "invasive carcinoma",
+        "IDC",
+        "ILC",
+        "lobular",
+        "NST",
+        "Nottingham",
+        "DCIS",
+        "sentinel",
+        "axillary",
+        "synoptic",
+        "CAP",
+        "AJCC",
+        "neoadjuvant",
+        "Miller-Payne",
+        "RCB"
+      ],
+      "match": {
+        "site": [
+          "breast",
+          "mammary",
+          "nipple",
+          "axilla",
+          "axillary"
+        ],
+        "procedure": [
+          "mastectomy",
+          "wide local excision",
+          "WLE",
+          "lumpectomy",
+          "excision",
+          "breast conserving",
+          "axillary dissection",
+          "axillary clearance",
+          "skin-sparing",
+          "nipple-sparing"
+        ],
+        "clinical": [
+          "breast ca",
+          "breast cancer",
+          "breast carcinoma",
+          "invasive ductal",
+          "invasive lobular",
+          "IDC",
+          "ILC",
+          "NST",
+          "DCIS",
+          "neoadjuvant",
+          "NACT",
+          "ER positive",
+          "HER2",
+          "triple negative",
+          "sentinel",
+          "SLN",
+          "mammogram",
+          "BIRADS"
+        ],
+        "bias": -1
+      },
+      "version": "2026.09",
+      "generator": "breast_carcinoma",
+      "generatorPath": "generators/breast_carcinoma.js",
+      "schemaPath": "schemas/breast_carcinoma.json"
+    },
+    {
+      "id": "breast_dcis",
+      "name": "Breast DCIS resection",
+      "shortName": "Breast · DCIS resection",
+      "label": "DCIS",
+      "organ": "BREAST",
+      "system": "Breast",
+      "kind": "cancer resection",
+      "rank": 46,
+      "aliases": [
+        "breast",
+        "DCIS",
+        "ductal carcinoma in situ",
+        "in situ",
+        "Paget",
+        "encapsulated papillary",
+        "solid papillary",
+        "wide local excision",
+        "mastectomy",
+        "microcalcification",
+        "synoptic",
+        "CAP"
+      ],
+      "match": {
+        "site": [
+          "breast",
+          "mammary",
+          "nipple"
+        ],
+        "procedure": [
+          "mastectomy",
+          "wide local excision",
+          "WLE",
+          "lumpectomy",
+          "excision",
+          "hookwire",
+          "wire-guided",
+          "wire guided",
+          "breast conserving"
+        ],
+        "clinical": [
+          "DCIS",
+          "ductal carcinoma in situ",
+          "in situ",
+          "Paget",
+          "microcalcification",
+          "calcification",
+          "mammogram",
+          "BIRADS"
+        ],
+        "bias": -1
+      },
+      "version": "2026.09",
+      "generator": "breast_dcis",
+      "generatorPath": "generators/breast_dcis.js",
+      "schemaPath": "schemas/breast_dcis.json"
+    },
+    {
+      "id": "phyllodes",
+      "name": "Breast phyllodes tumour resection",
+      "shortName": "Breast · phyllodes tumour",
+      "label": "Phyllodes",
+      "organ": "BREAST",
+      "system": "Breast",
+      "kind": "cancer resection",
+      "rank": 47,
+      "aliases": [
+        "breast",
+        "phyllodes",
+        "phylloides",
+        "cystosarcoma",
+        "fibroepithelial",
+        "stromal",
+        "wide local excision",
+        "mastectomy",
+        "synoptic",
+        "CAP"
+      ],
+      "match": {
+        "site": [
+          "breast",
+          "mammary"
+        ],
+        "procedure": [
+          "mastectomy",
+          "wide local excision",
+          "WLE",
+          "lumpectomy",
+          "excision",
+          "breast conserving"
+        ],
+        "clinical": [
+          "phyllodes tumour",
+          "phyllodes tumor",
+          "borderline phyllodes",
+          "malignant phyllodes",
+          "benign phyllodes",
+          "known phyllodes",
+          "recurrent phyllodes",
+          "cystosarcoma"
+        ],
+        "bias": -1
+      },
+      "version": "2026.09",
+      "generator": "phyllodes",
+      "generatorPath": "generators/phyllodes.js",
+      "schemaPath": "schemas/phyllodes.json"
     },
     {
       "id": "generic",

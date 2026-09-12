@@ -115,7 +115,7 @@ export function biomarkerReport(v) {
     T += '\n' + '- Given the suboptimal cold ischaemia time and/or suboptimal formalin fixation time, please interpret the above results with caution.' + '\n';
   }
 
-  if (A29 !== '') T += '- Test type : ' + A29 + '\n';
+  if (A29 !== '') T += (T.endsWith('\n') ? '' : '\n') + '- Test type : ' + A29 + '\n';
   if (A19 !== '') T += '\n' + '- Additional notes: ' + '\n' + '  - ' + A19 + '\n';
 
   if (A01 + A04 !== '') {

@@ -1,0 +1,51 @@
+{
+  "templateId": "phyllodes",
+  "patch": {
+    "histType": "Phyllodes tumor, malignant",
+    "stromalCellularity": "Marked (many overlapping stromal nuclei)",
+    "stromalAtypia": "Marked (marked nuclear pleomorphism, hyperchromasia, and irregular nuclear contours)",
+    "stromalOvergrowth": "Present",
+    "mitoticCount": "18",
+    "tumourBorder": "Infiltrative (permeative), extensive",
+    "procedure": "Total mastectomy (including nipple-sparing and skin-sparing mastectomy)",
+    "laterality": "Right",
+    "tumourSite": [
+      "Central"
+    ],
+    "sitePosition": "",
+    "specimenDims": "220 x 180 x 90",
+    "weight": "1450",
+    "skinEllipse": "200 x 90",
+    "sizeMm": "120",
+    "tumourDims": "120 x 100 x 85",
+    "cutSurface": [
+      "Fleshy",
+      "Lobulated",
+      "Leaf-like clefts",
+      "Haemorrhagic",
+      "Necrotic"
+    ],
+    "closestGrossMm": "8, posterior",
+    "otherMacro": "Gritty, bone-hard areas are present within the tumour.",
+    "blockKeyText": "1-12 tumour including the posterior margin\n13 nipple\n14-17 anterior, superior, inferior and lateral margins\n18 medial margin\n19-20 background breast\n21 sentinel lymph nodes (2 nodes)",
+    "heterologous": [
+      "Osteosarcoma"
+    ],
+    "margins": "Anterior: >10\nPosterior: 8\nSuperior: >10\nInferior: >10\nMedial: >10\nLateral: >10",
+    "nodeSampling": "Sentinel node biopsy only",
+    "nodesExamined": "2",
+    "nodesPositive": "0"
+  },
+  "options": {
+    "printPTNM": true
+  },
+  "caseFields": {},
+  "report": "Breast, right, total mastectomy\n\nThe specimen consists of a right total mastectomy specimen (1450 g, 220 x 180 x 90 mm) with an overlying skin ellipse (200 x 90 mm). Sectioning reveals a fleshy, lobulated, with leaf-like clefts, haemorrhagic, necrotic tumour measuring 120 mm in greatest dimension (120 x 100 x 85 mm) in the central breast, 8 mm from the posterior margin. Gritty, bone-hard areas are present within the tumour. Two lymph nodes are identified and entirely embedded.\n\n(1-12) tumour including the posterior margin.\n(13) nipple.\n(14-17) anterior, superior, inferior and lateral margins.\n(18) medial margin.\n(19-20) background breast.\n(21) sentinel lymph nodes (2 nodes).\n\nSpecimen and tumour\n- Procedure: Total mastectomy\n- Specimen laterality: Right\n- Tumour site: Central\n- Tumour size: Greatest dimension 120 mm (120 x 100 x 85 mm)\n\nMicroscopic findings\n- Histologic type: Phyllodes tumour, malignant\n- Tumour histology:\n  Sections show a fibroepithelial tumour measuring 120 mm with leaf-like fronds\n  lined by a bland bilayered epithelium and marked stromal cellularity, marked\n  stromal atypia and stromal overgrowth; mitoses number 18 per 10 high power\n  fields. The border is extensively infiltrative into the surrounding breast.\n  Malignant heterologous elements are present (osteosarcoma). The features are\n  those of a malignant phyllodes tumour.\n- Stromal cellularity: Marked (many overlapping stromal nuclei)\n- Stromal atypia: Marked (marked nuclear pleomorphism, hyperchromasia, and\n  irregular nuclear contours)\n- Stromal overgrowth: Present\n- Mitotic rate: 18 per 10 high power fields\n- Histologic tumour border: Infiltrative (permeative), extensive\n- Malignant heterologous elements: Osteosarcoma\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n- Epithelial component: Bland bilayered epithelium\n\nSurgical margins\n- Anterior margin: Uninvolved by tumour, closest distance: greater than 10 mm\n- Posterior margin: Uninvolved by tumour, closest distance: 8 mm\n- Superior margin: Uninvolved by tumour, closest distance: greater than 10 mm\n- Inferior margin: Uninvolved by tumour, closest distance: greater than 10 mm\n- Medial margin: Uninvolved by tumour, closest distance: greater than 10 mm\n- Lateral margin: Uninvolved by tumour, closest distance: greater than 10 mm\n\nRegional lymph nodes\n- Regional lymph nodes: Sentinel node biopsy only\n- Number of lymph nodes examined: 2 (sentinel)\n- Number of lymph nodes involved: 0\n\nDistant metastasis\n- Distant metastasis: Not applicable\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT3 pN0\n\nAdditional findings\n- Additional pathologic findings: Not identified\n\nBREAST, right, total mastectomy\n- MALIGNANT PHYLLODES TUMOUR with osteosarcoma, 120 mm; margins clear (closest\n  8 mm, posterior); see synoptic report\n- 0 of 2 sentinel lymph nodes involved\n- pT3 pN0 (AJCC 8th edition)\n\nMalignant phyllodes tumours are usually excised with a clear margin of at least 10 mm; the 8 mm posterior margin is noted for the clinical team's consideration of re-excision.",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Malignant phyllodes tumour within 10 mm of the posterior margin (8 mm): a comment on re-excision is added.",
+      "part": "A"
+    }
+  ]
+}

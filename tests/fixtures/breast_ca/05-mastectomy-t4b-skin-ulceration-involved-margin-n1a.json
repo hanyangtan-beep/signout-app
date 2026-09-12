@@ -1,0 +1,55 @@
+{
+  "templateId": "breast_carcinoma",
+  "patch": {
+    "histType": "Invasive carcinoma of no special type (ductal) with specific morphologic pattern",
+    "histTypeDetail": "medullary",
+    "sizeMm": "48",
+    "tumourDims": "48 x 40 x 35",
+    "closestGrossMm": "",
+    "otherMacro": "The tumour ulcerates the overlying skin over 15 mm and abuts the anterior margin.",
+    "blockKeyText": "1-6 tumour with the ulcerated skin and the anterior margin\n7 nipple\n8-11 posterior, superior, inferior and lateral margins\n12 medial margin\n13-14 background breast\n15-18 sentinel and axillary lymph nodes (12 nodes)",
+    "tubule": "Score 3",
+    "nuclear": "Score 3",
+    "mitotic": "Score 3",
+    "skin": "Carcinoma directly invades into the dermis or epidermis with macroscopic skin ulceration (classified as T4b)",
+    "dermalLvi": "Present",
+    "dcis": "Not identified",
+    "dcisSize": "",
+    "dcisBlocks": "",
+    "dcisGrade": "",
+    "dcisNecrosis": "",
+    "dcisPatterns": [],
+    "microcalcs": [
+      "Not identified"
+    ],
+    "biomarkers": "Requested; to be reported separately",
+    "priorBiomarkerAccession": "",
+    "priorBiomarkerSummary": "",
+    "marginsInvasive": "Anterior: involved\nPosterior: 8\nSuperior: >10\nInferior: >10\nMedial: >10\nLateral: >10",
+    "marginsDcis": "",
+    "nodeSampling": "Sentinel node biopsy and axillary dissection",
+    "nodesExamined": "12",
+    "nodesSentinel": "2",
+    "nodesMacro": "2",
+    "nodesMicro": "1",
+    "depositMm": "9",
+    "depositSite": "SLN 1"
+  },
+  "options": {
+    "printPTNM": true
+  },
+  "caseFields": {},
+  "report": "Breast, left, total mastectomy\n\nThe specimen consists of a left total mastectomy specimen (520 g, 190 x 160 x 45 mm) with an overlying skin ellipse (170 x 60 mm) bearing the nipple. Sectioning reveals a firm, grey-white, ill-defined, stellate tumour measuring 48 mm in greatest dimension (48 x 40 x 35 mm) in the upper outer quadrant (2 o'clock, 30 mm from the nipple). The skin and nipple are unremarkable. The tumour ulcerates the overlying skin over 15 mm and abuts the anterior margin. 12 lymph nodes are identified in the axillary tissue.\n\n(1-6) tumour with the ulcerated skin and the anterior margin.\n(7) nipple.\n(8-11) posterior, superior, inferior and lateral margins.\n(12) medial margin.\n(13-14) background breast.\n(15-18) sentinel and axillary lymph nodes (12 nodes).\n\nSpecimen and tumour\n- Procedure: Total mastectomy\n- Specimen laterality: Left\n- Tumour site: Upper outer quadrant (2 o'clock, 30 mm from the nipple)\n- Tumour size: Greatest dimension 48 mm (48 x 40 x 35 mm)\n\nMicroscopic findings\n- Histologic type: Invasive carcinoma of no special type (ductal) with specific\n  morphologic pattern (medullary)\n- Tumour focality: Single focus of invasive carcinoma\n- Histologic grade: Grade 3 (scores of 8 or 9); total score 9\n- Tubule formation: Score 3\n- Nuclear pleomorphism: Score 3\n- Mitotic rate: Score 3\n- Tumour histology:\n  Sections show an invasive carcinoma of no special type with medullary pattern,\n  Nottingham grade 3 (tubule formation 3, nuclear pleomorphism 3, mitotic count\n  3; total 9), measuring 48 mm in greatest dimension. There is no lymphovascular\n  invasion. The nipple is not involved. The carcinoma invades the dermis with\n  skin ulceration.\n- Tumour extension: Involves the skin with ulceration\n  - Nipple: Present and not involved\n  - Skin: Carcinoma directly invades into the dermis or epidermis with\n    macroscopic skin ulceration (classified as T4b)\n  - Skin satellite foci: Not identified\n  - Skeletal muscle: Not present in specimen\n- Lymphatic and/or vascular invasion: Not identified\n- Dermal lymphatic and/or vascular invasion: Present\n- Perineural invasion: Not identified\n- Breast treatment effect: No known presurgical therapy\n- Ductal carcinoma in situ: Not identified\n- Additional lesions: Not identified\n- Microcalcifications: Not identified\n\nAncillary studies\n- Biomarker studies: Requested; to be reported separately\n\nMargins (invasive carcinoma)\n- Anterior margin: Involved by invasive carcinoma\n- Posterior margin: Uninvolved by invasive carcinoma, closest distance: 8 mm\n- Superior margin: Uninvolved by invasive carcinoma, closest distance: greater\n  than 10 mm\n- Inferior margin: Uninvolved by invasive carcinoma, closest distance: greater\n  than 10 mm\n- Medial margin: Uninvolved by invasive carcinoma, closest distance: greater\n  than 10 mm\n- Lateral margin: Uninvolved by invasive carcinoma, closest distance: greater\n  than 10 mm\n\nRegional lymph nodes\n- Regional lymph nodes: Sentinel node biopsy and axillary dissection\n- Number of lymph nodes examined: 12 (2 sentinel)\n- Number of lymph nodes with macrometastasis (>2 mm): 2\n- Number of lymph nodes with micrometastasis (> 0.2 mm to 2 mm and/or >\n  200 cells): 1\n- Number of lymph nodes with isolated tumour cells (0.2 mm or less and 200 cells\n  or fewer): 0\n- Size of largest metastatic deposit: 9 mm (SLN 1)\n- Extranodal extension: Not identified\n\nDistant metastasis\n- Distant metastasis: Not applicable\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT4b pN1a\n  - Stage group (if cM0): IIIB\n\nAdditional findings\n- None\n\nBREAST, left, total mastectomy\n- INVASIVE CARCINOMA OF NO SPECIAL TYPE WITH MEDULLARY PATTERN, grade 3, 48 mm;\n  invading the skin (with ulceration); anterior margin involved; other margins\n  clear (closest 8 mm, posterior); see synoptic report\n- 3 of 12 lymph nodes involved (macrometastases in 2 and micrometastasis in 1;\n  largest deposit 9 mm)\n- pT4b pN1a (AJCC 8th edition), stage IIIB (if cM0)",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Invasive carcinoma at a margin of the mastectomy specimen: the involved margin is stated in the diagnosis; consider a comment for the clinical team.",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "AJCC 8th anatomic stage group (if cM0): IIIB. The prognostic stage group (grade, ER, PR, HER2) is not printed.",
+      "part": "A"
+    }
+  ]
+}

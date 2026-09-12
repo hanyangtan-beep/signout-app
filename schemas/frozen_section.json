@@ -93,13 +93,15 @@
         "Parathyroid",
         "Ovarian / adnexal mass",
         "Lung wedge / nodule",
+        "Breast sentinel lymph node",
         "Nodule / mass",
         "Other"
       ],
       "optionLabels": {
         "Nodule / mass": "Nodule or mass (lung, thyroid, other)",
         "Other": "Tissue identification / other (free text)",
-        "Lung wedge / nodule": "Lung wedge / nodule (staged pair)"
+        "Lung wedge / nodule": "Lung wedge / nodule (staged pair)",
+        "Breast sentinel lymph node": "Breast sentinel lymph node(s) (staged pair)"
       },
       "default": "Margin"
     },
@@ -822,6 +824,220 @@
       }
     },
     {
+      "id": "slnSide",
+      "label": "Side",
+      "type": "select",
+      "group": "Breast sentinel lymph node",
+      "options": [
+        "",
+        "Right",
+        "Left"
+      ],
+      "optionLabels": {
+        "": "Not stated"
+      },
+      "default": "",
+      "showIf": {
+        "field": "scenario",
+        "is": "Breast sentinel lymph node"
+      }
+    },
+    {
+      "id": "slnLabel",
+      "label": "Node label",
+      "type": "text",
+      "group": "Breast sentinel lymph node",
+      "placeholder": "SLN 1",
+      "default": "SLN 1",
+      "help": "Printed in the diagnosis line: LYMPH NODES, left SLN 1, excision x frozen section.",
+      "showIf": {
+        "field": "scenario",
+        "is": "Breast sentinel lymph node"
+      }
+    },
+    {
+      "id": "slnReceived",
+      "label": "Received as",
+      "type": "select",
+      "group": "Breast sentinel lymph node",
+      "options": [
+        "Fibroadipose tissue with nodes within",
+        "Lymph node(s) only"
+      ],
+      "default": "Fibroadipose tissue with nodes within",
+      "showIf": {
+        "field": "scenario",
+        "is": "Breast sentinel lymph node"
+      }
+    },
+    {
+      "id": "slnSize",
+      "label": "Specimen size (cm)",
+      "type": "text",
+      "group": "Breast sentinel lymph node",
+      "placeholder": "5 x 3 x 1",
+      "default": "",
+      "help": "Size of the fibroadipose tissue piece; blank when nodes only.",
+      "showIf": {
+        "field": "scenario",
+        "is": "Breast sentinel lymph node"
+      }
+    },
+    {
+      "id": "slnCount",
+      "label": "Lymph nodes identified",
+      "type": "number",
+      "group": "Breast sentinel lymph node",
+      "default": "1",
+      "min": 0,
+      "help": "0 with the result \"No nodal tissue identified\".",
+      "showIf": {
+        "field": "scenario",
+        "is": "Breast sentinel lymph node"
+      }
+    },
+    {
+      "id": "slnNodeSizes",
+      "label": "Node sizes (cm across)",
+      "type": "text",
+      "group": "Breast sentinel lymph node",
+      "placeholder": "1 and 0.5",
+      "default": "",
+      "help": "Comma- or \"and\"-separated, largest first: \"measuring approximately 1 cm and 0.5 cm across respectively\".",
+      "showIf": {
+        "field": "scenario",
+        "is": "Breast sentinel lymph node"
+      }
+    },
+    {
+      "id": "slnFatStripped",
+      "label": "Fatty tissue stripped off",
+      "type": "checkbox",
+      "group": "Breast sentinel lymph node",
+      "default": true,
+      "showIf": {
+        "field": "scenario",
+        "is": "Breast sentinel lymph node"
+      }
+    },
+    {
+      "id": "slnBlocks",
+      "label": "Frozen blocks",
+      "type": "number",
+      "group": "Breast sentinel lymph node",
+      "default": "1",
+      "min": 1,
+      "showIf": {
+        "field": "scenario",
+        "is": "Breast sentinel lymph node"
+      }
+    },
+    {
+      "id": "slnResult",
+      "label": "Frozen result",
+      "type": "select",
+      "group": "Breast sentinel lymph node",
+      "options": [
+        "Negative",
+        "Isolated tumour cells",
+        "Micrometastasis",
+        "Macrometastasis",
+        "No nodal tissue identified",
+        "Deferred"
+      ],
+      "optionLabels": {
+        "Isolated tumour cells": "Isolated tumour cells only (0.2 mm or less)",
+        "Micrometastasis": "Micrometastasis (more than 0.2 mm, up to 2 mm)",
+        "Macrometastasis": "Macrometastasis (more than 2 mm)"
+      },
+      "default": "Negative",
+      "showIf": {
+        "field": "scenario",
+        "is": "Breast sentinel lymph node"
+      }
+    },
+    {
+      "id": "slnPositive",
+      "label": "Nodes involved",
+      "type": "number",
+      "group": "Breast sentinel lymph node",
+      "default": "1",
+      "min": 0,
+      "showIf": {
+        "field": "slnResult",
+        "is": [
+          "Isolated tumour cells",
+          "Micrometastasis",
+          "Macrometastasis"
+        ]
+      }
+    },
+    {
+      "id": "slnMetMm",
+      "label": "Largest metastatic focus (mm)",
+      "type": "number",
+      "group": "Breast sentinel lymph node",
+      "default": "",
+      "min": 0,
+      "showIf": {
+        "field": "slnResult",
+        "is": [
+          "Isolated tumour cells",
+          "Micrometastasis",
+          "Macrometastasis"
+        ]
+      }
+    },
+    {
+      "id": "slnEne",
+      "label": "Extranodal extension",
+      "type": "select",
+      "group": "Breast sentinel lymph node",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be assessed"
+      ],
+      "default": "Not identified",
+      "showIf": {
+        "field": "slnResult",
+        "is": [
+          "Micrometastasis",
+          "Macrometastasis"
+        ]
+      }
+    },
+    {
+      "id": "slnTreatment",
+      "label": "Presurgical therapy",
+      "type": "select",
+      "group": "Breast sentinel lymph node",
+      "options": [
+        "No known presurgical therapy",
+        "Presurgical therapy, no definite response",
+        "Presurgical therapy, metastasis with treatment effect",
+        "Presurgical therapy, fibrous scarring and no metastasis"
+      ],
+      "default": "No known presurgical therapy",
+      "help": "Post-neoadjuvant nodes: the paraffin line names the treatment effect and the linked synoptic derives ypN.",
+      "showIf": {
+        "field": "scenario",
+        "is": "Breast sentinel lymph node"
+      }
+    },
+    {
+      "id": "slnMillerPayne",
+      "label": "Miller and Payne grade (nodal response, optional)",
+      "type": "text",
+      "group": "Breast sentinel lymph node",
+      "placeholder": "Grade 2",
+      "default": "",
+      "showIf": {
+        "field": "slnTreatment",
+        "is": "Presurgical therapy, metastasis with treatment effect"
+      }
+    },
+    {
       "id": "noduleResult",
       "label": "Frozen result",
       "type": "select",
@@ -963,7 +1179,21 @@
           "discordanceReason": "Sampling",
           "paraffinDx": "",
           "tissue": "",
-          "additionalNotes": ""
+          "additionalNotes": "",
+          "slnSide": "",
+          "slnLabel": "SLN 1",
+          "slnReceived": "Fibroadipose tissue with nodes within",
+          "slnSize": "",
+          "slnCount": "1",
+          "slnNodeSizes": "",
+          "slnFatStripped": true,
+          "slnBlocks": "1",
+          "slnResult": "Negative",
+          "slnPositive": "1",
+          "slnMetMm": "",
+          "slnEne": "Not identified",
+          "slnTreatment": "No known presurgical therapy",
+          "slnMillerPayne": ""
         }
       },
       {
@@ -991,7 +1221,21 @@
           "discordanceReason": "Sampling",
           "paraffinDx": "",
           "tissue": "squamous mucosa with underlying tonsillar crypts, mucous glands and lymphoid tissue",
-          "additionalNotes": ""
+          "additionalNotes": "",
+          "slnSide": "",
+          "slnLabel": "SLN 1",
+          "slnReceived": "Fibroadipose tissue with nodes within",
+          "slnSize": "",
+          "slnCount": "1",
+          "slnNodeSizes": "",
+          "slnFatStripped": true,
+          "slnBlocks": "1",
+          "slnResult": "Negative",
+          "slnPositive": "1",
+          "slnMetMm": "",
+          "slnEne": "Not identified",
+          "slnTreatment": "No known presurgical therapy",
+          "slnMillerPayne": ""
         }
       },
       {
@@ -1019,7 +1263,21 @@
           "discordanceReason": "Sampling",
           "paraffinDx": "",
           "tissue": "skeletal muscle and adipose tissue",
-          "additionalNotes": ""
+          "additionalNotes": "",
+          "slnSide": "",
+          "slnLabel": "SLN 1",
+          "slnReceived": "Fibroadipose tissue with nodes within",
+          "slnSize": "",
+          "slnCount": "1",
+          "slnNodeSizes": "",
+          "slnFatStripped": true,
+          "slnBlocks": "1",
+          "slnResult": "Negative",
+          "slnPositive": "1",
+          "slnMetMm": "",
+          "slnEne": "Not identified",
+          "slnTreatment": "No known presurgical therapy",
+          "slnMillerPayne": ""
         }
       },
       {
@@ -1047,7 +1305,21 @@
           "discordanceReason": "Sampling",
           "paraffinDx": "",
           "tissue": "",
-          "additionalNotes": ""
+          "additionalNotes": "",
+          "slnSide": "",
+          "slnLabel": "SLN 1",
+          "slnReceived": "Fibroadipose tissue with nodes within",
+          "slnSize": "",
+          "slnCount": "1",
+          "slnNodeSizes": "",
+          "slnFatStripped": true,
+          "slnBlocks": "1",
+          "slnResult": "Negative",
+          "slnPositive": "1",
+          "slnMetMm": "",
+          "slnEne": "Not identified",
+          "slnTreatment": "No known presurgical therapy",
+          "slnMillerPayne": ""
         }
       },
       {
@@ -1075,7 +1347,21 @@
           "discordanceReason": "Sampling",
           "paraffinDx": "",
           "tissue": "",
-          "additionalNotes": ""
+          "additionalNotes": "",
+          "slnSide": "",
+          "slnLabel": "SLN 1",
+          "slnReceived": "Fibroadipose tissue with nodes within",
+          "slnSize": "",
+          "slnCount": "1",
+          "slnNodeSizes": "",
+          "slnFatStripped": true,
+          "slnBlocks": "1",
+          "slnResult": "Negative",
+          "slnPositive": "1",
+          "slnMetMm": "",
+          "slnEne": "Not identified",
+          "slnTreatment": "No known presurgical therapy",
+          "slnMillerPayne": ""
         }
       }
     ]

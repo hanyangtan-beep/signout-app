@@ -54,6 +54,7 @@ export function macro(part, ctx) {
   const v = part.values;
   if (ovForm(v)) return ovMacro(part);
   if (isLung(v)) return luMacro(part);
+  if (isSln(v)) return slnMacro(part);
   const n = Math.max(1, Math.round(num(v.pieces) ?? 1));
   const noun = tissueNoun(v);
   const size = sizePhrase(v);
@@ -83,6 +84,7 @@ const deferred = (v) => v.correlation === 'Deferred'
   || (v.scenario === 'Lymph node' && v.nodeResult === 'Deferred')
   || (v.scenario === 'Ovarian / adnexal mass' && v.ovaryResult === 'Deferred')
   || (v.scenario === LU && v.lungResult === 'Deferred')
+  || (v.scenario === SLN && v.slnResult === 'Deferred')
   || (v.scenario === 'Nodule / mass' && v.noduleResult === 'Deferred');
 
 const tumour = (v, fallback) => stripDot(v.tumourType) || fallback;
@@ -320,6 +322,133 @@ function luFinalDx(v) {
   }
 }
 
+// ---------- breast sentinel lymph node scenario (spec: docs/specs/breast-pair.md, Part (a); house wording docs/reference/frozen-section-examples.md §1–2) ----------
+
+export const SLN = 'Breast sentinel lymph node';
+const isSln = (v) => v.scenario === SLN;
+const SLN_POSITIVE = ['Isolated tumour cells', 'Micrometastasis', 'Macrometastasis'];
+const slnCount = (v) => Math.max(0, Math.round(num(v.slnCount) ?? 1));
+const slnPositive = (v) => (SLN_POSITIVE.includes(v.slnResult) ? Math.min(slnCount(v), Math.max(1, Math.round(num(v.slnPositive) ?? 1))) : 0);
+const slnTreated = (v) => !!v.slnTreatment && v.slnTreatment !== 'No known presurgical therapy';
+
+/** "1 cm and 0.5 cm across respectively" from "1 and 0.5" / "1, 0.5" / "1 cm and 0.5 cm". */
+function slnNodeSizePhrase(v) {
+  const raw = String(v.slnNodeSizes || '').trim();
+  if (!raw) return '';
+  const sizes = raw.split(/\s*(?:,|and|&)\s*/i).map((s) => s.trim().replace(/\s*cm$/i, '')).filter(Boolean);
+  if (!sizes.length) return '';
+  const withUnit = sizes.map((s) => `${s} cm`);
+  return ` measuring approximately ${listJoin(withUnit)} across${withUnit.length > 1 ? ' respectively' : ''}`;
+}
+
+/** House §1 macro: fibroadipose tissue, nodes identified within, fat stripped, frozen blocks processed to paraffin. */
+function slnMacro(part) {
+  const v = part.values;
+  const n = slnCount(v);
+  const nodesOnly = v.slnReceived === 'Lymph node(s) only';
+  const blocks = Math.max(1, Math.round(num(v.slnBlocks) ?? 1));
+  const sizes = slnNodeSizePhrase(v);
+  const nodeNoun = n === 1 ? 'lymph node' : 'lymph nodes';
+  const sentences = [];
+  if (nodesOnly) {
+    sentences.push(n === 0
+      ? 'Received fresh, a piece of fibroadipose tissue. No definite lymph node is identified.'
+      : `Received fresh, ${word(n)} ${nodeNoun}${sizes}.`);
+  } else {
+    sentences.push(`Received fresh, a piece of fibroadipose tissue${sizePhrase({ size: v.slnSize })}.`);
+    sentences.push(n === 0
+      ? 'No definite lymph node is identified.'
+      : `${uc1(word(n))} ${nodeNoun} ${n === 1 ? 'is' : 'are'} identified within${sizes ? `,${sizes}` : ''}.`);
+    if (v.slnFatStripped !== false && n > 0) sentences.push('The fatty tissue is stripped off.');
+  }
+  sentences.push(`All embedded in ${blocks} frozen ${blocks === 1 ? 'block' : 'blocks'}, and subsequently processed to paraffin.`);
+  return `(${part.label}) ${sentences.join(' ')}`;
+}
+
+/** Intraoperative line: "Negative for malignancy." / "Metastatic carcinoma, >2 mm (1 of 2 lymph nodes)." */
+function slnResultLine(v) {
+  const n = slnCount(v);
+  const pos = slnPositive(v);
+  const of = n > 1 ? ` (${pos} of ${n} lymph nodes)` : '';
+  switch (v.slnResult || 'Negative') {
+    case 'Macrometastasis': return `Metastatic ${lc1(tumour(v, 'carcinoma'))}, >2 mm${of}.`;
+    case 'Micrometastasis': return `Metastatic ${lc1(tumour(v, 'carcinoma'))}, 0.2-2 mm (micrometastasis)${of}.`;
+    case 'Isolated tumour cells': return `Isolated tumour cells, 0.2 mm or less${of}; negative for macrometastasis.`;
+    case 'No nodal tissue identified': return 'No nodal tissue identified; negative for malignancy.';
+    case 'Deferred': return 'Deferred to paraffin sections.';
+    default: return 'Negative for malignancy.';
+  }
+}
+
+/** Paraffin microscopy body for the sentinel node part. */
+function slnTissue(v) {
+  const n = slnCount(v);
+  const pos = slnPositive(v);
+  const nodes = n === 0 ? 'no lymph node' : `${word(n)} ${n === 1 ? 'lymph node' : 'lymph nodes'}`;
+  const fat = v.slnReceived === 'Lymph node(s) only' ? '' : 'fibroadipose tissue and ';
+  if (v.slnResult === 'No nodal tissue identified' || n === 0) return 'fibroadipose tissue with no lymph node identified';
+  if (!SLN_POSITIVE.includes(v.slnResult)) {
+    return slnTreated(v) && v.slnTreatment === 'Presurgical therapy, fibrous scarring and no metastasis'
+      ? `${fat}${nodes} with fibrous scarring and no residual metastatic carcinoma`
+      : `${fat}${n === 1 ? 'a reactive lymph node' : `${word(n)} reactive lymph nodes`}`;
+  }
+  const mm = num(v.slnMetMm);
+  const kind = v.slnResult === 'Macrometastasis' ? 'macrometastasis' : v.slnResult === 'Micrometastasis' ? 'micrometastasis' : 'isolated tumour cells';
+  const focus = `${kind}${mm === null ? '' : `, ${fmt(mm)} mm`}`;
+  const which = n === 1 ? 'which is' : pos === n ? 'all of which are' : `${word(pos)} of which ${pos === 1 ? 'is' : 'are'}`;
+  let s = `${fat}${nodes}, ${which} involved by metastatic ${lc1(tumour(v, 'carcinoma'))} (${focus})`;
+  if (v.slnEne === 'Present') s += ' with extranodal extension';
+  if (v.slnTreatment === 'Presurgical therapy, metastasis with treatment effect') s += `, with treatment effect${v.slnMillerPayne ? ` (Miller-Payne ${stripDot(v.slnMillerPayne).replace(/^Miller[- ]Payne\s*/i, '')})` : ''}`;
+  return s;
+}
+
+/** "LYMPH NODES, left SLN 1, excision x frozen section" */
+function slnOrganPhrase(v) {
+  const n = slnCount(v);
+  const side = String(v.slnSide || '').trim().toLowerCase();
+  const label = stripDot(v.slnLabel) || 'sentinel lymph node';
+  return `${n === 1 ? 'LYMPH NODE' : 'LYMPH NODES'}, ${side ? `${side} ` : ''}${label}, excision x frozen section`;
+}
+
+function slnFinalDx(v) {
+  const n = slnCount(v);
+  const pos = slnPositive(v);
+  const count = ` (${pos}/${n})`;
+  const mm = num(v.slnMetMm);
+  const tx = v.slnTreatment === 'Presurgical therapy, metastasis with treatment effect' ? ', with treatment effect' : '';
+  const ene = v.slnEne === 'Present' ? ', with extranodal extension' : '';
+  switch (v.slnResult || 'Negative') {
+    case 'Macrometastasis': return `METASTATIC ${tumour(v, 'carcinoma').toUpperCase()}, macrometastasis${mm === null ? '' : ` ${fmt(mm)} mm`}${ene}${tx}${count}`;
+    case 'Micrometastasis': return `METASTATIC ${tumour(v, 'carcinoma').toUpperCase()}, micrometastasis${mm === null ? '' : ` ${fmt(mm)} mm`}${ene}${tx}${count}`;
+    case 'Isolated tumour cells': return `ISOLATED TUMOUR CELLS ONLY${count}`;
+    case 'No nodal tissue identified': return 'NO NODAL TISSUE IDENTIFIED; no evidence of malignancy';
+    case 'Deferred': return 'SEE MICROSCOPIC EXAMINATION';
+    default: return `NO EVIDENCE OF MALIGNANCY${count}`;
+  }
+}
+
+/**
+ * Structured node summary consumed by the breast carcinoma synoptic (prefillFromFrozen).
+ * `{examined, positive, macro, micro, itc, largestMm, ene, side, treatment}`.
+ */
+export function slnSummary(v) {
+  if (!isSln(v)) return null;
+  const n = slnCount(v);
+  const pos = slnPositive(v);
+  const r = v.slnResult || 'Negative';
+  return {
+    examined: n,
+    positive: pos,
+    macro: r === 'Macrometastasis' ? pos : 0,
+    micro: r === 'Micrometastasis' ? pos : 0,
+    itc: r === 'Isolated tumour cells' ? pos : 0,
+    largestMm: num(v.slnMetMm),
+    ene: v.slnEne || 'Not identified',
+    side: v.slnSide || '',
+    treatment: v.slnTreatment || 'No known presurgical therapy',
+  };
+}
+
 /** One sentence, as phoned to the surgeon. */
 export function frozenResult(part) {
   const v = part.values;
@@ -382,6 +511,7 @@ export function frozenResult(part) {
       return caveats.length ? `${line} ${caveats.join(' ')}` : line;
     }
     case LU: return luResultLine(v);
+    case SLN: return slnResultLine(v);
     case 'Nodule / mass':
       switch (v.noduleResult) {
         case 'Malignant': return `Malignant${v.tumourType ? `; ${lc1(tumour(v))}` : ''}.`;
@@ -447,6 +577,8 @@ function defaultTissue(v) {
       return ovType(v) ? `features of ${lc1(ovType(v))}` : 'ovarian stroma with the lesion described';
     case LU:
       return luTissue(v);
+    case SLN:
+      return slnTissue(v);
     case 'Nodule / mass':
       return v.tumourType ? `features of ${lc1(tumour(v))}` : 'the lesion described';
     default:
@@ -459,6 +591,7 @@ function malignant(v) {
     || (v.scenario === 'Lymph node' && ['Macrometastasis', 'Micrometastasis'].includes(v.nodeResult))
     || (v.scenario === 'Ovarian / adnexal mass' && ['Malignant', 'Malignant, favour metastatic'].includes(v.ovaryResult))
     || (v.scenario === LU && LU_MALIGNANT.includes(v.lungResult || 'Adenocarcinoma'))
+    || (v.scenario === SLN && SLN_POSITIVE.includes(v.slnResult))
     || (v.scenario === 'Nodule / mass' && v.noduleResult === 'Malignant');
 }
 
@@ -489,8 +622,8 @@ export function microscopy(part) {
     const finalDx = stripDot(v.paraffinDx);
     s = `(${part.label}) The frozen section diagnosis was deferred. The paraffin section shows ${tissue}.`
       + (finalDx ? ` The features are those of ${lc1(finalDx)}.` : '');
-  } else if (isLung(v)) {
-    // House §10: plural "sections" for the lung wedge.
+  } else if (isLung(v) || isSln(v)) {
+    // House §10 (lung) and §2 (sentinel nodes): plural "sections".
     s = `(${part.label}) The paraffin sections confirm the frozen section diagnosis. They show ${tissue}.`;
     const close = closingSentence(v);
     if (close) s += ` ${close}`;
@@ -509,6 +642,7 @@ export function microscopy(part) {
 
 export function organPhrase(part) {
   const v = part.values;
+  if (isSln(v)) return slnOrganPhrase(v);
   if (isLung(v)) {
     const side = String(v.luSide || '').trim().toLowerCase();
     const proc = LU_PROC[v.luSpecimen] || LU_PROC['Wedge excision'];
@@ -580,6 +714,7 @@ export function finalDx(part) {
       }
     }
     case LU: return luFinalDx(v);
+    case SLN: return slnFinalDx(v);
     case 'Nodule / mass':
       switch (v.noduleResult) {
         case 'Malignant': return v.tumourType ? tumour(v).toUpperCase() : 'MALIGNANT TUMOUR, see microscopic examination';
@@ -592,18 +727,24 @@ export function finalDx(part) {
 }
 
 /** Frozen scenario -> synoptic template that can be linked under the same letter (engine card "Stage this part"). */
-export const PAIRED_TEMPLATE = { 'Ovarian / adnexal mass': 'ovary_ft_peritoneum', 'Lung wedge / nodule': 'lung_carcinoma' };
+export const PAIRED_TEMPLATE = { 'Ovarian / adnexal mass': 'ovary_ft_peritoneum', 'Lung wedge / nodule': 'lung_carcinoma', [SLN]: 'breast_carcinoma' };
 
-/** True when the frozen result is malignant and the scenario has a paired synoptic template. */
+/** Scenarios whose synoptic is a separate specimen (own letter, not linked): the breast SLN pairs with the
+ *  breast resection, which is a different specimen, so the button reads "Add breast synoptic" and any SLN
+ *  result (negative included) can add it. */
+export const PAIR_SEPARATE = { [SLN]: true };
+
+/** True when the scenario has a paired synoptic template and (for same-letter pairs) the result is malignant. */
 export function stageable(part) {
-  return !!PAIRED_TEMPLATE[part.values.scenario] && malignant(part.values);
+  const sc = part.values.scenario;
+  return !!PAIRED_TEMPLATE[sc] && (!!PAIR_SEPARATE[sc] || malignant(part.values));
 }
 
 export function diagnosis(part, ctx) {
   const organ = organPhrase(part);
   // Ovarian frozen with a linked synoptic part in the same case: the synoptic carries the definitive line.
   const pairId = PAIRED_TEMPLATE[part.values.scenario];
-  const linked = !!pairId && (ctx?.case?.parts || []).some((p) => p !== part && p.templateId === pairId);
+  const linked = !!pairId && !PAIR_SEPARATE[part.values.scenario] && (ctx?.case?.parts || []).some((p) => p !== part && p.templateId === pairId);
   return `(${part.label}) ${organ}${organ.endsWith(' x frozen section') ? '' : ', frozen section'} - ${finalDx(part)}${linked ? ', see synoptic report' : ''}`;
 }
 
@@ -621,6 +762,20 @@ export function validate(part, ctx) {
     if (malignant(v) && !part.linked && !(ctx?.case?.parts || []).some((p) => p !== part && p.templateId === 'lung_carcinoma')) info('Malignant on frozen: "Stage this part" adds the lung carcinoma synoptic under the same letter.');
     return out;
   }
+  if (isSln(v)) {
+    const n = slnCount(v);
+    const pos = SLN_POSITIVE.includes(v.slnResult) ? Math.round(num(v.slnPositive) ?? 1) : 0;
+    const mm = num(v.slnMetMm);
+    if (pos > n) warn(`Nodes involved (${pos}) exceeds the nodes identified (${n}); the count is capped in the report.`);
+    if (pos && mm === null) info('Record the size of the largest metastatic focus (mm); it is carried into the breast synoptic.');
+    if (n === 0 && v.slnResult !== 'No nodal tissue identified' && v.slnResult !== 'Deferred') warn('No lymph node identified: pick the result "No nodal tissue identified" or enter the node count.');
+    if (v.slnResult === 'Macrometastasis' && mm !== null && mm <= 2) warn(`Macrometastasis with a largest focus of ${fmt(mm)} mm: a macrometastasis is more than 2 mm.`);
+    if (v.slnResult === 'Micrometastasis' && mm !== null && (mm > 2 || mm <= 0.2)) warn(`Micrometastasis with a largest focus of ${fmt(mm)} mm: a micrometastasis is more than 0.2 mm and up to 2 mm.`);
+    if (v.slnResult === 'Isolated tumour cells' && mm !== null && mm > 0.2) warn(`Isolated tumour cells with a largest focus of ${fmt(mm)} mm: isolated tumour cells measure 0.2 mm or less.`);
+    if (v.slnResult === 'Isolated tumour cells') info('Isolated tumour cells only: pN0(i+) in the linked synoptic; the intraoperative line reports negative for macrometastasis.');
+    if (v.slnResult && v.slnResult !== 'Deferred' && !(ctx?.case?.parts || []).some((p) => p !== part && p.templateId === 'breast_carcinoma')) info('"Add breast synoptic" adds the breast carcinoma resection as the next part with the sentinel node counts pre-filled.');
+    return out;
+  }
   if (!isOvary(v)) return out;
   const t = ovType(v);
   const r = v.ovaryResult || 'Benign';
@@ -632,4 +787,4 @@ export function validate(part, ctx) {
   return out;
 }
 
-export default { specimens, specimenName, macro, intraop, microscopy, diagnosis, validate, organPhrase, stageable, PAIRED_TEMPLATE };
+export default { specimens, specimenName, macro, intraop, microscopy, diagnosis, validate, organPhrase, stageable, PAIRED_TEMPLATE, PAIR_SEPARATE };
