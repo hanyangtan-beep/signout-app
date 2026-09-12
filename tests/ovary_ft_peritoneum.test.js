@@ -253,26 +253,31 @@ test('frozen link: prefillFromFrozen maps the ovarian scenario onto the synoptic
   assert.deepEqual(prefillFromFrozen(null), {});
 });
 
-test('07 frozen -> synoptic pair: one diagnosis line per letter; the frozen line defers to the synoptic', () => {
+test('07 frozen -> synoptic pair: one letter, one head line; the frozen line defers to the synoptic (Phase 7 linked-part retrofit)', () => {
   const fs_ = registry.frozen_section;
   const frozenValues = { ...Object.fromEntries(fs_.schema.fields.filter((f) => f.default !== undefined).map((f) => [f.id, f.default])), specimenName: 'Right ovary and fallopian tube', scenario: 'Ovarian / adnexal mass', ovSide: 'Right', ovSpecimen: 'Salpingo-oophorectomy', ovSizeMm: '120', ovWeightG: '350', ovSurface: 'Excrescences or papillary projections', ovCut: ['Solid areas', 'Necrosis'], ovaryResult: 'Malignant', ovType: 'high-grade serous carcinoma', ovBlocks: '2' };
   const patch = prefillFromFrozen(frozenValues);
   const synValues = { ...EX, ...SOLO, ...patch, tumourSite: 'Right tubo-ovarian', tumourDims: '', specimenDims: '', tubalMucosa: 'Involved by invasive carcinoma', otherParts: '', p53: 'Abnormal, Overexpression (strong, diffuse nuclear expression, more than 90%)', otherIhc: 'WT1 positive, PAX8 positive' };
+  // Same letter: the synoptic part is `linked` to the frozen part before it (engine `relabel` gives it the same label).
   const cs = { caseTitle: '', options: { includeHeader: false, macro: true, printPTNM: false }, parts: [
     { label: 'A', templateId: 'frozen_section', values: frozenValues },
-    { label: 'B', templateId: 'ovary_ft_peritoneum', values: synValues }
+    { label: 'A', templateId: 'ovary_ft_peritoneum', linked: true, values: synValues }
   ] };
   const out = generateCase({ frozen_section: fs_, ovary_ft_peritoneum: registry.ovary_ft_peritoneum }, cs);
-  const dxLines = out.diagnosis.split('\n').filter((l) => /^\([A-Z]\)/.test(l));
-  assert.equal(dxLines.length, 2, out.diagnosis);
-  assert.equal(dxLines[0], '(A) OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy x frozen section - HIGH-GRADE SEROUS CARCINOMA, see synoptic report');
-  assert.match(dxLines[1], /^\(B\) OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy$/);
-  assert.match(out.diagnosis.replace(/\s+/g, ' '), /\(B\) OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy - HIGH-GRADE SEROUS CARCINOMA, tubo-ovarian, 120 mm, ovarian surface involved; see synoptic report/);
-  assert.match(out.report, /\(B\) Right ovary and fallopian tube, salpingo-oophorectomy\nSpecimen and tumour/, 'synoptic heading carries the letter in a two-part case');
-  assert.match(out.report, /\n\(B\) The specimen consists of a right salpingo-oophorectomy specimen received intact \(350 g/, 'macro lettered');
-  assert.match(out.report, /\n\(B1-6\) /, 'block key lettered');
+  assert.ok(!/^\([A-Z]\)/m.test(out.report), 'one letter in the case: letters dropped everywhere');
+  const dx = out.diagnosis.split('\n');
+  assert.equal(dx[0], 'OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy x frozen section', 'the frozen organ phrase heads the single diagnosis');
+  assert.match(out.diagnosis.replace(/\s+/g, ' '), /^OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy x frozen section - HIGH-GRADE SEROUS CARCINOMA, tubo-ovarian, 120 mm, ovarian surface involved; see synoptic report - peritoneal fluid positive/);
+  assert.equal((out.diagnosis.match(/salpingo-oophorectomy/g) || []).length, 1, 'no second head line for the synoptic part');
+  assert.match(out.report, /paraffin blocks\. The fallopian tube is unremarkable\.\n\n\(1-6\) /, 'linked macro additions join the frozen paragraph; block key unlettered');
+  assert.match(out.report, /confirms the frozen section diagnosis[^\n]*\n\nSpecimen and tumour\n/, 'synoptic follows the paraffin correlation without a letter heading');
+  // Two letters (a separate node part) bring the letters back, with both A parts under one "(A)".
+  const two = generateCase({ frozen_section: fs_, ovary_ft_peritoneum: registry.ovary_ft_peritoneum }, { ...cs, parts: [...cs.parts, { label: 'B', templateId: 'frozen_section', values: { ...frozenValues, specimenName: 'Left pelvic lymph node', scenario: 'Lymph node', nodeResult: 'Negative' } }] });
+  assert.match(two.report, /\(A\) Right ovary and fallopian tube\n\(B\) Left pelvic lymph node/, 'specimen list: one line per letter');
+  assert.match(two.report, /\n\(A1-6\) /);
+  assert.match(two.diagnosis, /^\(A\) OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy x frozen section\n- HIGH-GRADE SEROUS CARCINOMA/);
   const file = path.join(FIX, '07-frozen-synoptic-pair.json');
-  const current = { templateIds: ['frozen_section', 'ovary_ft_peritoneum'], frozenValues, synopticPatch: { ...SOLO, ...patch, tumourSite: 'Right tubo-ovarian', tumourDims: '', specimenDims: '', tubalMucosa: 'Involved by invasive carcinoma', otherParts: '', p53: synValues.p53, otherIhc: synValues.otherIhc }, options: cs.options, report: out.report, checks: out.issues };
+  const current = { templateIds: ['frozen_section', 'ovary_ft_peritoneum'], linked: true, frozenValues, synopticPatch: { ...SOLO, ...patch, tumourSite: 'Right tubo-ovarian', tumourDims: '', specimenDims: '', tubalMucosa: 'Involved by invasive carcinoma', otherParts: '', p53: synValues.p53, otherIhc: synValues.otherIhc }, options: cs.options, report: out.report, checks: out.issues };
   fs.mkdirSync(FIX, { recursive: true });
   if (UPDATE || !fs.existsSync(file)) { fs.writeFileSync(file, JSON.stringify(current, null, 2) + '\n'); return; }
   const saved = JSON.parse(fs.readFileSync(file, 'utf8'));

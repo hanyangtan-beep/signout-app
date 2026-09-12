@@ -213,7 +213,9 @@ async function setPartTemplate(i, id) {
   noteUsed(id);
   markDirty();
   const own = parts.filter((p, j) => j < i && templateIdOf(state.caseState, p) === id).length; // position within that template
-  parts[i] = { ...createPart(s, own), label: parts[i].label, templateId: id };
+  const keepLink = !!parts[i].linked && Object.values(pairedTemplates()).includes(id);
+  parts[i] = { ...createPart(s, own), label: parts[i].label, templateId: id, ...(keepLink ? { linked: true } : {}) };
+  relabel(parts);
   syncPrimary();
   applyMacro();
   render();
@@ -246,10 +248,50 @@ function applyMacro() {
   return state.macroFilled;
 }
 
+/** Frozen scenario -> paired synoptic template id (from the frozen generator when it is loaded). */
+function pairedTemplates() { return state.templates.frozen_section?.generator?.PAIRED_TEMPLATE || {}; }
+
+/** True when part i is a frozen part whose paraffin result is malignant and has a paired synoptic template. */
+function canStage(i) {
+  const parts = state.caseState.parts;
+  const part = parts[i];
+  if (!part || templateIdOf(state.caseState, part) !== 'frozen_section') return false;
+  const g = state.templates.frozen_section?.generator;
+  return !!g && typeof g.stageable === 'function' && g.stageable(part) && !parts[i + 1]?.linked;
+}
+
+/**
+ * "Stage this part": add the paired synoptic template as a linked part directly after frozen part i.
+ * The new part shares the frozen part's letter (engine `relabel`) and is pre-filled from the frozen
+ * values through the synoptic generator's `prefillFromFrozen` (docs/specs/lung-pair.md, engine card).
+ */
+async function stageThisPart(i) {
+  const parts = state.caseState.parts;
+  const part = parts[i];
+  const pairId = pairedTemplates()[part.values.scenario];
+  if (!pairId) return toast('No synoptic template is paired with this frozen scenario');
+  if (parts[i + 1]?.linked) { state.activePart = i + 1; render(); return toast(`Part ${part.label} already has its synoptic`); }
+  if (parts.length >= maxPartsForCase()) return toast(`Maximum ${maxPartsForCase()} parts`);
+  const { schema: s, generator: g } = await ensureTemplate(pairId);
+  noteUsed(pairId);
+  markDirty();
+  const own = parts.filter((p, j) => j <= i && templateIdOf(state.caseState, p) === pairId).length;
+  const np = { ...createPart(s, own), templateId: pairId, linked: true };
+  if (typeof g.prefillFromFrozen === 'function') Object.assign(np.values, g.prefillFromFrozen(part.values) || {});
+  parts.splice(i + 1, 0, np);
+  relabel(parts);
+  syncPrimary();
+  applyMacro();
+  state.activePart = i + 1;
+  render();
+  toast(`Part ${np.label}: ${s.name} linked to the frozen section`);
+}
+
 function removePart(i) {
   const parts = state.caseState.parts;
   if (parts.length === 1) return toast('A case needs at least one part');
   markDirty();
+  if (parts[i + 1]?.linked && !parts[i].linked) parts[i + 1].linked = false; // the synoptic keeps its own letter
   parts.splice(i, 1);
   relabel(parts);
   syncPrimary();
@@ -447,8 +489,8 @@ function applyCasePreset(preset) {
 function renderTabs() {
   const parts = state.caseState.parts;
   nodes.tabs.replaceChildren(...parts.map((p, i) => el('button', {
-    type: 'button', role: 'tab', class: 'tab', 'aria-selected': String(i === state.activePart), text: p.label,
-    title: schemaOf(p).name,
+    type: 'button', role: 'tab', class: 'tab', 'aria-selected': String(i === state.activePart), text: p.linked ? `${p.label} syn` : p.label,
+    title: p.linked ? `${schemaOf(p).name} (linked to the frozen section under the same letter)` : schemaOf(p).name,
     onclick: () => { state.activePart = i; render(); }
   })));
   nodes.addPart.disabled = parts.length >= maxPartsForCase();
@@ -636,10 +678,11 @@ function renderPanel() {
     return o;
   }))));
   const head = el('div', { class: 'part-head' },
-    el('h3', { text: `Part ${part.label}` }),
+    el('h3', { text: part.linked ? `Part ${part.label} (synoptic, linked to the frozen section)` : `Part ${part.label}` }),
     picker,
     el('div', { class: 'part-actions' },
-      i > 0 ? el('button', { type: 'button', class: 'btn ghost small', text: 'Same as previous', onclick: () => copyFromPrevious(i) }) : null,
+      canStage(i) ? el('button', { type: 'button', class: 'btn small', text: 'Stage this part', title: 'Add the paired cancer synoptic under the same letter, pre-filled from the frozen section', onclick: () => stageThisPart(i).catch((err) => { toast(err.message); render(); }) }) : null,
+      i > 0 && !part.linked ? el('button', { type: 'button', class: 'btn ghost small', text: 'Same as previous', onclick: () => copyFromPrevious(i) }) : null,
       el('button', { type: 'button', class: 'btn ghost small', text: 'Reset', onclick: () => resetPart(i) }),
       el('button', { type: 'button', class: 'btn ghost small danger', text: 'Remove', onclick: () => removePart(i) })
     ));

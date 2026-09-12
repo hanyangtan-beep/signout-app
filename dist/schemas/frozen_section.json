@@ -92,12 +92,14 @@
         "Lymph node",
         "Parathyroid",
         "Ovarian / adnexal mass",
+        "Lung wedge / nodule",
         "Nodule / mass",
         "Other"
       ],
       "optionLabels": {
         "Nodule / mass": "Nodule or mass (lung, thyroid, other)",
-        "Other": "Tissue identification / other (free text)"
+        "Other": "Tissue identification / other (free text)",
+        "Lung wedge / nodule": "Lung wedge / nodule (staged pair)"
       },
       "default": "Margin"
     },
@@ -488,6 +490,335 @@
       "showIf": {
         "field": "scenario",
         "is": "Ovarian / adnexal mass"
+      }
+    },
+    {
+      "id": "luSide",
+      "label": "Side",
+      "type": "select",
+      "group": "Lung wedge / nodule",
+      "options": [
+        "",
+        "Right",
+        "Left"
+      ],
+      "optionLabels": {
+        "": "Not stated"
+      },
+      "default": "",
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luLobe",
+      "label": "Lobe",
+      "type": "select",
+      "group": "Lung wedge / nodule",
+      "options": [
+        "",
+        "Upper lobe",
+        "Middle lobe",
+        "Lower lobe",
+        "Lingula"
+      ],
+      "optionLabels": {
+        "": "Not stated"
+      },
+      "default": "",
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luSpecimen",
+      "label": "Specimen",
+      "type": "select",
+      "group": "Lung wedge / nodule",
+      "options": [
+        "Wedge excision",
+        "Nodule excision",
+        "Pleural nodule, punch",
+        "Segmentectomy"
+      ],
+      "default": "Wedge excision",
+      "help": "Switches the macro noun and the diagnosis-line organ phrase (LUNG … wedge excision x frozen section).",
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luSize",
+      "label": "Specimen size (cm)",
+      "type": "text",
+      "group": "Lung wedge / nodule",
+      "placeholder": "6 x 2 x 1.5",
+      "default": "",
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luStapleCm",
+      "label": "Staple line length (cm)",
+      "type": "number",
+      "group": "Lung wedge / nodule",
+      "default": "",
+      "min": 0,
+      "help": "Blank: no staple line sentence.",
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luStapleTrimmed",
+      "label": "Staple line trimmed off and submitted separately",
+      "type": "checkbox",
+      "group": "Lung wedge / nodule",
+      "default": true,
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luInked",
+      "label": "Parenchymal margin inked black",
+      "type": "checkbox",
+      "group": "Lung wedge / nodule",
+      "default": true,
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luNoduleCount",
+      "label": "Nodules",
+      "type": "select",
+      "group": "Lung wedge / nodule",
+      "options": [
+        "0",
+        "1",
+        "2",
+        "Multiple"
+      ],
+      "default": "1",
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luNoduleCm",
+      "label": "Largest nodule (cm)",
+      "type": "number",
+      "group": "Lung wedge / nodule",
+      "default": "",
+      "min": 0,
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luSecondCm",
+      "label": "Second nodule (cm)",
+      "type": "number",
+      "group": "Lung wedge / nodule",
+      "default": "",
+      "min": 0,
+      "help": "Used when two or more nodules are set.",
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luSecondDistCm",
+      "label": "Second nodule, distance from the main nodule (cm)",
+      "type": "number",
+      "group": "Lung wedge / nodule",
+      "default": "",
+      "min": 0,
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luMarginCm",
+      "label": "Distance to the staple-line margin (cm)",
+      "type": "number",
+      "group": "Lung wedge / nodule",
+      "default": "",
+      "min": 0,
+      "help": "Prints in the macro and, converted to mm, in the intraoperative and diagnosis lines.",
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luPleuraGross",
+      "label": "Pleura grossly",
+      "type": "select",
+      "group": "Lung wedge / nodule",
+      "options": [
+        "Not involved grossly",
+        "Puckered",
+        "Involved grossly",
+        "Not assessable"
+      ],
+      "default": "Not involved grossly",
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luBlocks",
+      "label": "Frozen blocks",
+      "type": "number",
+      "group": "Lung wedge / nodule",
+      "default": "1",
+      "min": 1,
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luRemainder",
+      "label": "Remaining tissue submitted for paraffin sections only",
+      "type": "checkbox",
+      "group": "Lung wedge / nodule",
+      "default": true,
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luNode",
+      "label": "Intrapulmonary lymph node identified (paraffin)",
+      "type": "checkbox",
+      "group": "Lung wedge / nodule",
+      "default": false,
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luNodeResult",
+      "label": "Intrapulmonary node",
+      "type": "select",
+      "group": "Lung wedge / nodule",
+      "options": [
+        "Negative",
+        "Involved",
+        "Involved, with extranodal extension"
+      ],
+      "default": "Negative",
+      "showIf": {
+        "field": "luNode",
+        "truthy": true
+      }
+    },
+    {
+      "id": "lungResult",
+      "label": "Frozen result",
+      "type": "select",
+      "group": "Lung wedge / nodule",
+      "options": [
+        "Adenocarcinoma",
+        "Adenocarcinoma, lepidic-predominant or in situ (extent deferred)",
+        "Squamous cell carcinoma",
+        "Non-small cell carcinoma, not further classifiable on frozen",
+        "Small cell carcinoma",
+        "Carcinoid tumour",
+        "Metastatic carcinoma",
+        "Necrotising granulomatous inflammation",
+        "Non-necrotising granulomatous inflammation",
+        "Organising pneumonia",
+        "Benign, no tumour identified",
+        "Deferred"
+      ],
+      "optionLabels": {
+        "Metastatic carcinoma": "Metastatic carcinoma (name the primary below)"
+      },
+      "default": "Adenocarcinoma",
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "luFavour",
+      "label": "Favoured subtype (non-small cell carcinoma)",
+      "type": "select",
+      "group": "Lung wedge / nodule",
+      "options": [
+        "",
+        "adenocarcinoma",
+        "squamous cell carcinoma"
+      ],
+      "optionLabels": {
+        "": "Not favoured"
+      },
+      "default": "",
+      "showIf": {
+        "field": "lungResult",
+        "is": "Non-small cell carcinoma, not further classifiable on frozen"
+      }
+    },
+    {
+      "id": "luPrimary",
+      "label": "Known primary (metastatic carcinoma)",
+      "type": "text",
+      "group": "Lung wedge / nodule",
+      "placeholder": "colorectal",
+      "default": "",
+      "showIf": {
+        "field": "lungResult",
+        "is": "Metastatic carcinoma"
+      }
+    },
+    {
+      "id": "luPattern",
+      "label": "Predominant pattern on paraffin (adenocarcinoma)",
+      "type": "text",
+      "group": "Lung wedge / nodule",
+      "placeholder": "acinar predominant",
+      "default": "",
+      "help": "Goes into the paraffin correlation sentence and pre-fills the linked synoptic.",
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
+      }
+    },
+    {
+      "id": "lungMargin",
+      "label": "Parenchymal margin at frozen",
+      "type": "select",
+      "group": "Lung wedge / nodule",
+      "options": [
+        "Clear",
+        "Close (< 5 mm)",
+        "Involved",
+        "Not applicable"
+      ],
+      "default": "Clear",
+      "help": "Distance comes from the staple-line field above.",
+      "showIf": {
+        "field": "scenario",
+        "is": "Lung wedge / nodule"
       }
     },
     {

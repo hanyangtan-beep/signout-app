@@ -632,4 +632,4 @@ export function validate(part, ctx) {
   return out;
 }
 
-export default { specimens, specimenName, macro, intraop, microscopy, diagnosis, validate };
+export default { specimens, specimenName, macro, intraop, microscopy, diagnosis, validate, organPhrase, stageable, PAIRED_TEMPLATE };

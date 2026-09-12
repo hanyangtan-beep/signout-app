@@ -102,7 +102,7 @@ Pairs and their QMH pages (`https://awiloqmh.github.io/CancerReportingTemplate/`
 
 | Frozen scenario | Feeds | Synoptic template (QMH page) | Roadmap |
 | --- | --- | --- | --- |
-| Lung wedge / nodule (c) | pT, margins, pleura; completion lobectomy adds pN and residual tumour | Lung carcinoma resection (`Thorax-Lung.html`) | Next — Lung pair |
+| Lung wedge / nodule (c) | pT, margins, pleura; completion lobectomy adds pN and residual tumour | Lung carcinoma resection (`Thorax-Lung.html`) | Done 2026-09-12 — Lung pair (`docs/specs/lung-pair.md`; Stage this part → same-letter linked synoptic part) |
 | Breast sentinel lymph nodes (a) | pN (ITC / micro / macro, ENE, count) | Breast carcinoma resection (`BREAST-Cancers.html`, `BREAST-DCIS.html`) | Next — Breast pair |
 | Bile duct / pancreatic duct margins (b) | margin status | Pancreas (`GI-Pancreas.html`), distal extrahepatic and perihilar bile ducts | Later — Pancreatobiliary pair |
 | Named margins (e) | margin status and distances | Lip and oral cavity (`HN-Lip and oral cavity.html`), nasal cavity / sinuses | Later — Head-and-neck pair |

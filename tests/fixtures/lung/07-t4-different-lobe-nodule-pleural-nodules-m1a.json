@@ -1,0 +1,54 @@
+{
+  "templateId": "lung_carcinoma",
+  "patch": {
+    "nodeStations": "11R: 0/2",
+    "nodeEne": "Not applicable",
+    "nodeDepositMm": "",
+    "ancillary": "",
+    "additionalFindings": [],
+    "otherParts": "B) Pleura, parietal, biopsy - metastatic adenocarcinoma",
+    "otherMacro": "",
+    "procedure": "Bilobectomy",
+    "laterality": "Right",
+    "lobes": [
+      "Middle lobe",
+      "Lower lobe"
+    ],
+    "specimenDims": "210 x 150 x 70",
+    "weight": "520",
+    "tumourSizeMm": "52",
+    "tumourDims": "52 x 45 x 40",
+    "pleuraGross": "Involved grossly",
+    "bronchialMarginMm": "25",
+    "separateNodules": "Different ipsilateral lobe",
+    "separateNodulesDetail": "a 12 mm nodule in the middle lobe with the same morphology",
+    "cutSurface": [
+      "Firm",
+      "Grey-white",
+      "Necrosis"
+    ],
+    "histType": "Invasive adenocarcinoma (non-mucinous; predominant pattern from the percentages)",
+    "patterns": "solid 60, acinar 40",
+    "ihc": "TTF-1 positive, napsin A positive",
+    "pleuralInvasion": "PL2, extends on visceral pleura surface",
+    "elasticStain": true,
+    "lvi": "Present",
+    "blockKeyText": "1-6 Lower lobe tumour with pleura\n7-8 Middle lobe nodule\n9 Bronchial margin, shave\n10 Vascular margin, shave\n11-12 Lymph nodes, station 11R\n13 Parietal pleural nodule (part B)",
+    "distantMets": [
+      "Pleural nodules"
+    ],
+    "distantDetail": "parietal pleural nodules, part B"
+  },
+  "options": {
+    "printPTNM": true
+  },
+  "caseFields": {},
+  "report": "(A) Lung, right middle and lower lobes, bilobectomy\n(B) Pleura, parietal, biopsy\n\n(A) The specimen consists of a right middle and lower lobes bilobectomy specimen (520 g, 210 x 150 x 70 mm). The visceral pleura is involved by tumour grossly. Sectioning reveals a firm, grey-white, necrotic tumour measuring 52 mm in greatest dimension (52 x 45 x 40 mm), subpleural, 25 mm from the bronchial margin. Separate tumour nodule(s) are present in the other lobe (a 12 mm nodule in the middle lobe with the same morphology). The remaining lung parenchyma is spongy and unremarkable.\n\n(A1-6) Lower lobe tumour with pleura.\n(A7-8) Middle lobe nodule.\n(A9) Bronchial margin, shave.\n(A10) Vascular margin, shave.\n(A11-12) Lymph nodes, station 11R.\n(A13) Parietal pleural nodule (part B).\n\n(A) Lung, right middle and lower lobes, bilobectomy\nSpecimen and tumour\n- Procedure: Bilobectomy\n- Laterality: Right\n- Lobe(s): Middle lobe, Lower lobe\n- Tumour site: Peripheral\n- Tumour size: 52 mm in greatest dimension (52 x 45 x 40 mm)\n- Invasive size (lepidic component excluded): 52 mm (no lepidic component)\n- Separate tumour nodule(s): Different ipsilateral lobe (a 12 mm nodule in the\n  middle lobe with the same morphology)\n- Pleural surface (gross): Involved grossly\n\nMicroscopic findings\n- Histologic type: Invasive adenocarcinoma, solid predominant (solid 60 %,\n  acinar 40 %)\n- Histologic grade: Grade 3 (IASLC 2020; solid predominant, 60 % high-grade\n  patterns)\n- Tumour histology:\n  Sections show an invasive adenocarcinoma, solid predominant (solid 60 %,\n  acinar 40 %). The tumour invades the visceral pleura (PL2, confirmed on\n  elastic stain). Immunohistochemistry: TTF-1 positive, napsin A positive.\n- Spread through air spaces (STAS): Not identified\n- Visceral pleura invasion: PL2, extends on visceral pleura surface (elastic\n  stain performed)\n- Lymphatic and / or vascular invasion: Present\n- Tumour extension: Not applicable\n- Treatment effect: No known presurgical therapy\n\nMargins\n- Bronchial margin: Uninvolved by invasive carcinoma (closest distance 25 mm)\n- Vascular margin: Uninvolved by carcinoma\n- Parenchymal margin: Not applicable\n\nLymph nodes\n- Regional lymph nodes: 2 examined; 0 involved\n  - Stations (involved/examined): 11R: 0/2\n  - Number examined: 2\n  - Number involved: 0\n\nDistant metastasis\n- Distant metastasis: Pleural nodules (parietal pleural nodules, part B)\n\nPathological stage (AJCC 9th edition)\n- pTNM: pT4 pN0 pM1a\n  - Stage group: IVA\n\nAdditional findings\n- None\n\n(A) LUNG, right middle and lower lobes, bilobectomy\n- INVASIVE ADENOCARCINOMA, solid predominant, 52 mm, visceral pleura invaded\n  (PL2); lymphovascular invasion present; separate tumour nodule(s) in the other\n  ipsilateral lobe; bronchial margin clear; see synoptic report\n- 0 of 2 regional lymph nodes involved\n- distant metastasis: pleural nodules\n- pT4 pN0 pM1a (AJCC 9th edition), stage IVA\n\n(B) PLEURA, parietal, biopsy - METASTATIC ADENOCARCINOMA",
+  "checks": [
+    {
+      "level": "info",
+      "message": "AJCC 9th stage group (pM recorded): IVA.",
+      "part": "A"
+    }
+  ]
+}

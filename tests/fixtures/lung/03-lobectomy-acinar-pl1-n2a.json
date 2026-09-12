@@ -1,0 +1,28 @@
+{
+  "templateId": "lung_carcinoma",
+  "patch": {
+    "nodeStations": "7: 1/2; 10R: 0/2; 11R: 0/1",
+    "nodeEne": "Not identified",
+    "nodeDepositMm": "6",
+    "ancillary": "PD-L1 (22C3) TPS 40 %; EGFR / ALK / ROS1 testing requested",
+    "additionalFindings": [
+      "Emphysema"
+    ],
+    "otherParts": "",
+    "otherMacro": "",
+    "tumourSizeMm": "23",
+    "tumourDims": "23 x 20 x 18"
+  },
+  "options": {
+    "printPTNM": true
+  },
+  "caseFields": {},
+  "report": "Lung, right upper lobe, lobectomy\n\nThe specimen consists of a right upper lobe lobectomy specimen (180 g, 150 x 110 x 45 mm). The visceral pleura is puckered over the tumour. Sectioning reveals a firm, tan-white, spiculated, anthracotic tumour measuring 23 mm in greatest dimension (23 x 20 x 18 mm), subpleural, 35 mm from the bronchial margin. The remaining lung parenchyma is spongy and unremarkable.\n\n(1-4) Tumour with overlying pleura.\n(5) Tumour with adjacent lung.\n(6) Bronchial margin, shave.\n(7) Vascular margin, shave.\n(8) Lymph node, station 11R.\n(9-10) Lymph nodes, station 10R.\n(11) Background lung.\n\nSpecimen and tumour\n- Procedure: Lobectomy\n- Laterality: Right\n- Lobe(s): Upper lobe\n- Tumour site: Peripheral\n- Tumour size: 23 mm in greatest dimension (23 x 20 x 18 mm)\n- Invasive size (lepidic component excluded): 23 mm (no lepidic component)\n- Separate tumour nodule(s): Not identified\n- Pleural surface (gross): Puckered\n\nMicroscopic findings\n- Histologic type: Invasive adenocarcinoma, acinar predominant (acinar 60 %,\n  papillary 25 %, solid 15 %)\n- Histologic grade: Grade 2 (IASLC 2020; acinar predominant, 15 % high-grade\n  patterns)\n- Tumour histology:\n  Sections show an invasive adenocarcinoma, acinar predominant (acinar 60 %,\n  papillary 25 %, solid 15 %). The tumour invades the visceral pleura (PL1,\n  confirmed on elastic stain). Immunohistochemistry: TTF-1 positive, napsin A\n  positive, p40 negative.\n- Spread through air spaces (STAS): Not identified\n- Visceral pleura invasion: PL1, extension through elastic membrane (elastic\n  stain performed)\n- Lymphatic and / or vascular invasion: Not identified\n- Tumour extension: Not applicable\n- Treatment effect: No known presurgical therapy\n\nMargins\n- Bronchial margin: Uninvolved by invasive carcinoma (closest distance 35 mm)\n- Vascular margin: Uninvolved by carcinoma\n- Parenchymal margin: Not applicable\n\nLymph nodes\n- Regional lymph nodes: 5 examined; 1 involved\n  - Stations (involved/examined): 7: 1/2; 10R: 0/2; 11R: 0/1\n  - Number examined: 5\n  - Number involved: 1 (station 7)\n  - Largest metastatic deposit: 6 mm\n  - Extranodal extension: Not identified\n\nDistant metastasis\n- Distant metastasis: Not applicable\n\nPathological stage (AJCC 9th edition)\n- pTNM: pT2a pN2a\n  - Stage group (if cM0): IIIA\n\nAdditional findings\n- Emphysema\n- Ancillary studies: PD-L1 (22C3) TPS 40 %; EGFR / ALK / ROS1 testing requested\n\nLUNG, right upper lobe, lobectomy\n- INVASIVE ADENOCARCINOMA, acinar predominant, 23 mm, visceral pleura invaded\n  (PL1); bronchial margin clear; see synoptic report\n- 1 of 5 regional lymph nodes involved (station 7)\n- pT2a pN2a (AJCC 9th edition), stage IIIA (if cM0)",
+  "checks": [
+    {
+      "level": "info",
+      "message": "AJCC 9th stage group (if cM0): IIIA.",
+      "part": "A"
+    }
+  ]
+}

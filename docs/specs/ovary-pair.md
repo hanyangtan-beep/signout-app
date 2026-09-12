@@ -125,3 +125,5 @@ Shipped as one batch (commits: frozen enrichment; `src/staging/ovary.js`; schema
 - Stage groups follow AJCC 8th including IC1 / IC2 / IC3; `pNX` when no nodes are examined.
 
 **Fixtures regenerated deliberately.** 2026-09-12: `tests/fixtures/ovary/01`–`07` created (new template). No existing fixture changed.
+
+**Retrofit 2026-09-12 (Lung pair batch).** Fixture 07 regenerated (`--update`) as a same-letter **linked** pair: frozen A + synoptic A (`linked: true`) instead of frozen A + synoptic B. One-letter case, so "(A)" is dropped everywhere; head line `OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy x frozen section`; the synoptic's macro additions (tube / uterus / other) append to the frozen macro paragraph; the test's two-letter variant restores `(A)` / `(B)` and `(A1-6)`. Generator: `lettered` now counts distinct labels; a linked part prints only its macro additions. See `lung-pair.md` (Linked synoptic part).

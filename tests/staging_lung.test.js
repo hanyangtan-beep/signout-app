@@ -21,18 +21,21 @@ test('T2 by visceral pleura / main bronchus / atelectasis / adjacent lobe; T3 an
   assert.equal(TS({ tumourSizeMm: '8', pleuralInvasion: 'PL1' }), 'T2a');
   assert.equal(TS({ tumourSizeMm: '8', pleuralInvasion: 'PL2' }), 'T2a');
   assert.equal(TS({ tumourSizeMm: '8', pleuralInvasion: 'PL0' }), 'T1a');
-  assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Main bronchus (regardless of distance from the carina, without carinal involvement)'] }), 'T2a');
-  assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Adjacent lobe (direct extension across the fissure)'] }), 'T2a');
+  assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Main bronchus (up to but not including the carina)'] }), 'T2a');
+  assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Adjacent lobe of lung'] }), 'T2a');
   assert.equal(TS({ tumourSizeMm: '45', pleuralInvasion: 'PL1' }), 'T2b', 'pleura does not upgrade beyond size');
-  assert.equal(TS({ tumourSizeMm: '8', pleuralInvasion: 'PL2', tumourExtension: ['Parietal pleura (PL3)'] }), 'T3');
-  assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Chest wall'] }), 'T3');
+  assert.equal(TS({ tumourSizeMm: '8', pleuralInvasion: 'PL2', tumourExtension: ['Parietal pleura'] }), 'T3');
+  assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Chest wall, rib(s)'] }), 'T3');
+  assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Hilar soft tissues'] }), 'T2a', 'CAP: hilar soft tissue alone is T2a');
+  assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Visceral pericardium (epicardium)'] }), 'T3');
   assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Phrenic nerve'] }), 'T3');
   assert.equal(TS({ tumourSizeMm: '8', separateNodules: 'Same lobe' }), 'T3');
   assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Diaphragm'] }), 'T4');
   assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Carina'] }), 'T4');
-  assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Mediastinum'] }), 'T4');
+  assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Trachea'] }), 'T4');
+  assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Adjacent structures present but not involved'] }), 'T1a');
   assert.equal(TS({ tumourSizeMm: '8', separateNodules: 'Different ipsilateral lobe' }), 'T4');
-  assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Chest wall', 'Vertebral body'] }), 'T4', 'highest wins');
+  assert.equal(TS({ tumourSizeMm: '8', tumourExtension: ['Chest wall, skeletal muscle', 'Vertebral body'] }), 'T4', 'highest wins');
 });
 
 test('Tis and T1mi: in-situ and minimally invasive rules with their 30 mm / 5 mm limits', () => {
@@ -78,15 +81,17 @@ test('station table -> N: N1 hilar / intrapulmonary, N2a single vs N2b multiple 
 
 test('M1a / M1b / M1c1 / M1c2 and the descriptors m, r, y', () => {
   assert.equal(st({ separateNodules: 'Contralateral lobe' }).M, 'M1a');
+  assert.equal(st({ distantMets: ['Separate tumour nodule(s) in contralateral lobe'] }).M, 'M1a');
   assert.equal(st({ distantMets: ['Malignant pleural effusion'] }).M, 'M1a');
   assert.equal(st({ distantMets: ['Pleural nodules'] }).M, 'M1a');
-  assert.equal(st({ distantMets: ['Single extrathoracic metastasis in one organ system'] }).M, 'M1b');
-  assert.equal(st({ distantMets: ['Multiple extrathoracic metastases in one organ system'] }).M, 'M1c1');
-  assert.equal(st({ distantMets: ['Multiple extrathoracic metastases in multiple organ systems'] }).M, 'M1c2');
+  assert.equal(st({ distantMets: ['Single extrathoracic metastasis in one organ (includes a single non-regional lymph node)'] }).M, 'M1b');
+  assert.equal(st({ distantMets: ['Multiple extrathoracic metastases in a single organ'] }).M, 'M1c1');
+  assert.equal(st({ distantMets: ['Multiple extrathoracic metastases in multiple organs'] }).M, 'M1c2');
   assert.equal(st({ distantMets: ['Cannot be determined'] }).M, 'M-');
   assert.equal(st({ multiplePrimaries: true }).tnm, 'pT1c(m) pN0');
   assert.equal(st({ recurrent: true }).tnm, 'rpT1c pN0');
-  assert.equal(st({ treatmentEffect: 'Present, 10 % or less residual viable tumour' }).tnm, 'ypT1c ypN0');
+  assert.equal(st({ treatmentEffect: '10 % or less residual viable tumour' }).tnm, 'ypT1c ypN0');
+  assert.equal(st({ treatmentEffect: 'Cannot be determined' }).tnm, 'ypT1c ypN0');
   assert.equal(parseOverride('pT2a pN2b pM1c2').M, 'M1c2');
 });
 

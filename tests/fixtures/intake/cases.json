@@ -153,8 +153,8 @@
       "expect": [
         {
           "label": "A",
-          "templateId": "generic",
-          "tier": "none"
+          "templateId": "lung_carcinoma",
+          "tier": "confident"
         },
         {
           "label": "B",

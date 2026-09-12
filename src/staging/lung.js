@@ -28,16 +28,17 @@ export const AIS = /^Adenocarcinoma in situ/;
 export const MIA = /^Minimally invasive adenocarcinoma/;
 export const SCIS = /^Squamous cell carcinoma in situ/;
 
-// Tumour extension entries by the T category they carry (page list, "Tumor extension").
-const EXT_T2 = /^(Main bronchus|Atelectasis or obstructive pneumonitis|Adjacent lobe)/;
-const EXT_T3 = /^(Parietal pleura|Chest wall|Pericardium|Phrenic nerve|Azygos vein|Thoracic nerve root|Stellate ganglion)/;
-const EXT_T4 = /^(Mediastinum|Thymus|Trachea|Carina|Recurrent laryngeal nerve|Vagus nerve|Oesophagus|Diaphragm|Heart|Great vessels|Supra-aortic|Brachiocephalic|Subclavian|Vertebral body|Lamina|Spinal canal|Cervical nerve root|Brachial plexus)/;
+// Tumour extension entries by the T category they carry (page list, "Tumor extension"; CAP 5.1.0.0 notes:
+// hilar soft-tissue invasion alone is T2a, pericardium (parietal or visceral) is T3, heart is T4).
+const EXT_T2 = /^(Adjacent lobe|Main bronchus|Atelectasis or obstructive pneumonitis|Hilar soft tissue)/;
+const EXT_T3 = /^(Parietal pleura|Chest wall|Phrenic nerve|Parietal pericardium|Visceral pericardium|Azygos vein|Thoracic nerve root|Stellate ganglion)/;
+const EXT_T4 = /^(Cervical nerve root|Brachial plexus|Diaphragm|Heart|Great vessels|Supra-aortic|Brachiocephalic|Subclavian|Thymus|Trachea|Carina|Recurrent laryngeal nerve|Vagus nerve|Oesophagus|Vertebral body|Lamina|Spinal canal)/;
 
 export const NODULES_SAME = 'Same lobe';
 export const NODULES_IPSI = 'Different ipsilateral lobe';
 export const NODULES_CONTRA = 'Contralateral lobe';
 
-export const TREATED = /^Present/;   // treatment effect recorded -> y prefix
+export const treated = (v) => Boolean((v.treatmentEffect || '').trim()) && !/^No known/.test(v.treatmentEffect);   // -> y prefix
 
 // ---------- size ----------
 
@@ -49,7 +50,7 @@ export function invasiveMm(v) {
 }
 
 export function extension(v) {
-  const ext = arr(v.tumourExtension).filter((s) => !/^(Not identified|Cannot be determined)/.test(s));
+  const ext = arr(v.tumourExtension).filter((s) => !/^(Not applicable|Not identified|Adjacent structures present|Cannot be|Other)/.test(s));
   return { t2: ext.some((s) => EXT_T2.test(s)), t3: ext.some((s) => EXT_T3.test(s)), t4: ext.some((s) => EXT_T4.test(s)) };
 }
 
@@ -163,7 +164,7 @@ export function N(v) {
 
 export function M(v) {
   const mets = arr(v.distantMets).filter((s) => !/^(Not identified|Not applicable|Cannot)/.test(s));
-  if (mets.some((s) => /multiple organ systems/i.test(s))) return { cat: 'M1c2' };
+  if (mets.some((s) => /multiple organ/i.test(s))) return { cat: 'M1c2' };
   if (mets.some((s) => /^Multiple extrathoracic/i.test(s))) return { cat: 'M1c1' };
   if (mets.some((s) => /^Single extrathoracic/i.test(s))) return { cat: 'M1b' };
   if (mets.some((s) => /^(Separate tumour nodule|Pleural nodule|Pericardial nodule|Malignant pleural|Malignant pericardial)/i.test(s)) || v.separateNodules === NODULES_CONTRA) return { cat: 'M1a' };
@@ -174,7 +175,7 @@ export function descriptors(v) {
   const d = [];
   if (v.multiplePrimaries === true) d.push('m');
   if (v.recurrent === true) d.push('r');
-  if (TREATED.test(v.treatmentEffect || '')) d.push('y');
+  if (treated(v)) d.push('y');
   return d;
 }
 

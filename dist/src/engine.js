@@ -1,7 +1,7 @@
 // Generic schema engine: builds part defaults, evaluates visibility, and assembles
 // the report from a schema + generator module. Runs unchanged in the browser and in Node.
 
-import { applyStyle } from './style.js?v=mtxvvl5m';
+import { applyStyle } from './style.js?v=mtxy9px0';
 
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -58,11 +58,22 @@ export function createCase(schema, n) {
   return { schemaId: schema.id, schemaVersion: schema.version, caseTitle: '', options: defaultOptions(schema), parts };
 }
 
-/** Re-letter parts A, B, C… after add/remove. */
+/**
+ * Re-letter parts A, B, C… after add/remove. A part flagged `linked: true` (a synoptic part added
+ * under a frozen part with "Stage this part") takes the letter of the part before it instead of
+ * advancing the sequence, so the frozen and the synoptic share one specimen letter.
+ */
 export function relabel(parts) {
-  parts.forEach((p, i) => { p.label = LETTERS[i]; });
+  let i = 0;
+  parts.forEach((p, k) => {
+    if (p.linked && k > 0) p.label = parts[k - 1].label;
+    else p.label = LETTERS[i++];
+  });
   return parts;
 }
+
+/** Number of distinct specimen letters in a case (linked pairs count once). */
+export const letterCount = (parts) => new Set(parts.map((p) => p.label)).size;
 
 /**
  * Evaluate a `showIf` rule against the part values. Rules: `is` / `not` (a value or a
@@ -271,9 +282,9 @@ export function generateCase(templates, caseState) {
   Object.assign(options, caseState.options || {});
 
   // Normalised parts in case order, each tagged with its template.
-  const parts = caseState.parts.map((p) => {
+  const parts = caseState.parts.map((p, k) => {
     const id = templateIdOf(caseState, p);
-    return normalisePart(templates[id].schema, { label: p.label, templateId: id, values: { ...p.values } });
+    return normalisePart(templates[id].schema, { label: p.label, templateId: id, linked: !!p.linked && k > 0, values: { ...p.values } });
   });
 
   // One context per template, holding only that template's parts.
@@ -291,11 +302,28 @@ export function generateCase(templates, caseState) {
   if (ids.length === 1 && ctxs[ids[0]].gen.specimens) {
     specimens = styled(ids[0], ctxs[ids[0]].gen.specimens(parts, ctxs[ids[0]]));
   } else {
-    specimens = parts.map((p) => styled(p.templateId, `(${p.label}) ${ctxs[p.templateId].gen.specimenName(p, ctxs[p.templateId])}`)).join('\n');
+    // A linked synoptic part shares its letter with the frozen part before it: the frozen part names
+    // the specimen; the synoptic only contributes the extra letters typed into its `otherParts`.
+    const lines = [];
+    for (const p of parts) {
+      const g = ctxs[p.templateId].gen;
+      if (p.linked) { if (typeof g.otherSpecimenLines === 'function') lines.push(...g.otherSpecimenLines(p, ctxs[p.templateId]).map((l) => styled(p.templateId, l))); continue; }
+      lines.push(styled(p.templateId, `(${p.label}) ${g.specimenName(p, ctxs[p.templateId])}`));
+    }
+    specimens = lines.join('\n');
   }
   // Optional per-part macroscopic description (frozen sections) and per-template intraoperative block.
-  const macro = parts.filter((p) => ctxs[p.templateId].gen.macro)
-    .map((p) => styled(p.templateId, ctxs[p.templateId].gen.macro(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n\n');
+  // A linked synoptic part's macro additions join the frozen part's paragraph (same letter, same specimen).
+  const macroParas = [];
+  for (const p of parts) {
+    const g = ctxs[p.templateId].gen;
+    if (!g.macro) continue;
+    const t = styled(p.templateId, g.macro(p, ctxs[p.templateId]));
+    if (!t || t.trim() === '') continue;
+    if (p.linked && macroParas.length) macroParas[macroParas.length - 1] += ` ${t.replace(new RegExp(`^\\(${p.label}\\)[ \\t]*`), '')}`;
+    else macroParas.push(t);
+  }
+  const macro = macroParas.join('\n\n');
   // Optional per-part block key (benign resections): "(A1) Cystic duct margin." lines.
   const blockKey = parts.filter((p) => ctxs[p.templateId].gen.blockKey)
     .map((p) => styled(p.templateId, ctxs[p.templateId].gen.blockKey(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n');
@@ -316,7 +344,19 @@ export function generateCase(templates, caseState) {
     for (const it of g.validate(p, ctxs[p.templateId]) || []) issues.push({ ...it, part: p.label });
   }
   // Multi-line diagnoses (synoptic templates: specimen line + "- " clauses) get a blank line between parts.
-  const diagnoses = parts.map((p) => styled(p.templateId, ctxs[p.templateId].gen.diagnosis(p, ctxs[p.templateId])));
+  // A linked pair prints one diagnosis for its letter: the synoptic's clauses under the frozen part's
+  // specimen phrase ("… x frozen section"), the frozen part's own line being dropped.
+  const diagnoses = [];
+  parts.forEach((p, k) => {
+    if (parts[k + 1]?.linked) return;
+    let text = styled(p.templateId, ctxs[p.templateId].gen.diagnosis(p, ctxs[p.templateId]));
+    if (p.linked) {
+      const prev = parts[k - 1];
+      const pg = ctxs[prev.templateId].gen;
+      if (typeof pg.organPhrase === 'function') text = text.replace(/^[^\n]*/, `(${p.label}) ${pg.organPhrase(prev, ctxs[prev.templateId])}`);
+    }
+    diagnoses.push(text);
+  });
   let diagnosis = diagnoses.join(diagnoses.some((d) => d.includes('\n')) ? '\n\n' : '\n');
   for (const id of ids) {
     const ctx = ctxs[id];
@@ -328,9 +368,13 @@ export function generateCase(templates, caseState) {
   // A generator may print its own extra per-letter lines (ovary: contralateral adnexa, omentum, nodes
   // typed into `otherParts`); the case then behaves as multi-part and keeps "(A)".
   const extraParts = parts.some((p) => typeof ctxs[p.templateId].gen.hasExtraParts === 'function' && ctxs[p.templateId].gen.hasExtraParts(p));
-  const single = parts.length === 1 && !extraParts && !templates[ids[0]].schema.alwaysLetter && !options.alwaysLetter;
+  const single = letterCount(parts) === 1 && !extraParts && !ids.some((id) => templates[id].schema.alwaysLetter) && !options.alwaysLetter;
   const letters = (text) => (single ? dropPartLetters(text, parts[0].label) : text);
+  // Generators may add a case-level comment (`comment(parts, ctx)`: e.g. the completion-resection
+  // staging sentence); it prints before the snippets and the typed comment.
+  const genComments = ids.map((id) => (ctxs[id].gen.comment ? styled(id, ctxs[id].gen.comment(ctxs[id].parts, ctxs[id]) || '') : ''));
   const comment = [
+    ...genComments,
     ...snippetsFor(templates, caseState).filter((sn) => sn.active).map((sn) => styled(sn.templateId, renderSnippet(sn, single))),
     (caseState.comment || '').trim()
   ].filter((t) => t && t.trim() !== '').join('\n\n');

@@ -75,8 +75,10 @@ test('matcher: every fixture part gets the expected template; >=90% top-1 and no
 
 test('matcher: biopsy templates never match resections; generic is the fallback', () => {
   const lung = matchParts(parseIntake('(A) Lung, right upper lobe, resection'), 'Lung Ca', manifest)[0];
-  assert.equal(lung.templateId, GENERIC_ID);
+  assert.equal(lung.templateId, 'lung_carcinoma', 'the lung carcinoma resection template (Phase 7) takes a lung resection with a cancer history');
   assert.ok(!lung.candidates.some((cd) => cd.id === 'lung_biopsy' && cd.score >= 0), 'lung_biopsy is penalised for a resection');
+  const kidney = matchParts(parseIntake('(A) Kidney, right, resection'), 'RCC', manifest)[0];
+  assert.equal(kidney.templateId, GENERIC_ID, 'no resection template for the organ: generic');
   const gastric = matchParts(parseIntake('(A) Stomach, stomach, Resection'), 'Gastric Ca', manifest)[0];
   assert.equal(gastric.templateId, GENERIC_ID);
   assert.ok(gastric.candidates.some((cd) => cd.id === 'gastric_biopsy'), 'still offered in the dropdown');

@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 45,
+  "count": 46,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -2267,6 +2267,78 @@
       "generator": "ovary_ft_peritoneum",
       "generatorPath": "generators/ovary_ft_peritoneum.js",
       "schemaPath": "schemas/ovary_ft_peritoneum.json"
+    },
+    {
+      "id": "lung_carcinoma",
+      "name": "Lung carcinoma resection",
+      "shortName": "Lung · cancer resection",
+      "label": "Lung Ca",
+      "organ": "LUNG",
+      "system": "Thoracic",
+      "kind": "cancer resection",
+      "rank": 44,
+      "aliases": [
+        "lung",
+        "pulmonary",
+        "lobectomy",
+        "wedge",
+        "segmentectomy",
+        "pneumonectomy",
+        "completion lobectomy",
+        "adenocarcinoma",
+        "squamous cell carcinoma",
+        "non-small cell",
+        "NSCLC",
+        "small cell",
+        "carcinoid",
+        "neuroendocrine",
+        "synoptic",
+        "CAP",
+        "AJCC",
+        "IASLC",
+        "STAS"
+      ],
+      "match": {
+        "site": [
+          "lung",
+          "pulmonary",
+          "lobe",
+          "lingula",
+          "bronchus"
+        ],
+        "procedure": [
+          "lobectomy",
+          "wedge",
+          "segmentectomy",
+          "pneumonectomy",
+          "bilobectomy",
+          "completion lobectomy",
+          "sleeve"
+        ],
+        "clinical": [
+          "lung ca",
+          "lung cancer",
+          "lung carcinoma",
+          "lung mass",
+          "lung nodule",
+          "pulmonary nodule",
+          "NSCLC",
+          "adenocarcinoma",
+          "squamous cell carcinoma",
+          "carcinoid",
+          "small cell",
+          "ground-glass",
+          "GGO",
+          "part-solid",
+          "VATS",
+          "EBUS",
+          "PET"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "lung_carcinoma",
+      "generatorPath": "generators/lung_carcinoma.js",
+      "schemaPath": "schemas/lung_carcinoma.json"
     },
     {
       "id": "generic",

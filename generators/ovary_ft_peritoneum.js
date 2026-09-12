@@ -236,6 +236,15 @@ export function macro(part, ctx) {
   const received = integ.some((s) => /Fragmented/.test(s)) ? 'received fragmented' : integ.some((s) => /preoperative or unknown/.test(s)) ? 'with a capsular defect present on receipt' : integ.some((s) => /intraoperative/.test(s)) ? 'received with an intraoperative capsular breach' : 'received intact';
   const morc = stripDot(v.morcellated);
   const s = [];
+  if (part.linked) {
+    // Linked to a frozen part under the same letter: the frozen macro already describes the specimen
+    // as received; only the tube / uterus / other additions print (docs/specs/lung-pair.md, engine card).
+    if (stripDot(v.tubeMacro)) s.push(`${uc1(stripDot(v.tubeMacro))}.`);
+    else if (/salpingo-oophorectomy|salpingectomy/.test(h.proc)) s.push(`The fallopian tube${h.side === 'bilateral' ? 's are' : ' is'} unremarkable.`);
+    if (/hysterectomy/.test(h.proc)) s.push(stripDot(v.uterusMacro) ? `${uc1(stripDot(v.uterusMacro))}.` : 'The uterus and cervix are unremarkable.');
+    if (stripDot(v.otherMacro)) s.push(`${uc1(stripDot(v.otherMacro))}.`);
+    return s.length ? `(${part.label}) ${s.join(' ')}` : '';
+  }
   const procPhrase = /hysterectomy/.test(h.proc) ? `an ${received === 'received intact' ? 'intact ' : ''}${lc1(h.organ)} from a ${h.proc}` : `a ${h.side && h.side !== 'bilateral' ? `${h.side} ` : h.side === 'bilateral' ? 'bilateral ' : ''}${h.proc} specimen${received === 'received intact' ? ' received intact' : ` ${received}`}`;
   s.push(`The specimen consists of ${procPhrase}${meas ? ` (${meas})` : ''}${morc ? `; the ${lc1(morc)} is morcellated` : ''}.`);
   const size = num(v.tumourSizeMm); const dimsT = stripDot(v.tumourDims);
@@ -258,7 +267,7 @@ export function macro(part, ctx) {
 }
 
 /** Part letter carried into the block numbers ("(B1-6)") when the case has other letters. */
-const lettered = (part, ctx) => (ctx?.case?.parts && ctx.case.parts.length > 1) || hasExtraParts(part);
+const lettered = (part, ctx) => new Set((ctx?.case?.parts || []).map((p) => p.label)).size > 1 || hasExtraParts(part);
 
 export function blockKey(part, ctx) {
   if (ctx?.options && ctx.options.macro === false) return '';
@@ -357,7 +366,7 @@ export function synoptic(part, ctx) {
       stripDot(v.additionalNotes) ? item('Additional notes', stripDot(v.additionalNotes)) : null
     ] }
   ].filter(Boolean);
-  const heading = (ctx?.case?.parts && ctx.case.parts.length > 1) || hasExtraParts(part) ? `(${part.label}) ${specimenName(part)}` : '';
+  const heading = lettered(part, ctx) ? `(${part.label}) ${specimenName(part)}` : '';
   return renderSynoptic(sections, heading);
 }
 
