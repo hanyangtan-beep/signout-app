@@ -2,7 +2,7 @@
 
 Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`.
 
-State on 2026-09-12: 44 templates (10 small biopsy, 23 benign resection incl. LEEP, 1 frozen section, 3 synoptic cancer resections, 6 cytology, 1 generic), 628 tests, published at `https://han-signout.pplx.app`.
+State on 2026-09-12: 44 templates (10 small biopsy, 23 benign resection incl. LEEP, 1 frozen section, 3 synoptic cancer resections, 6 cytology, 1 generic), 632 tests, published at `https://han-signout.pplx.app`.
 
 ---
 
@@ -46,13 +46,12 @@ Docs
 
 - 2026-09-12 Macro extraction (e) (Now card, size M): `src/macroparse.js` splits the pasted Macroscopic text into lettered chunks and fills each part's macro fields through the new schema `macroExtract` maps (23 schemas; concept + unit + label / min / near): weight, specimen dimensions incl. uterine axes, tumour size (greatest and all dimensions, "spanning" axes, ranges), depth of invasion + myometrial / wall thickness ("0.4 cm thick out of a myometrial thickness of 2.2 cm", "8 mm in a 20 mm thick myometrium", "7/16 mm"), cavity length, length x diameter, block count. Only default or previously auto-filled fields are written (`part.macroFill`); hand edits survive re-pastes; clearing the paste reverts. Runs on macro input, Build parts, Add part and template change; status line adds "N macro fields filled from the paste". `tests/macroparse.test.js` + `tests/fixtures/macro/cases.json` (15 texts); `tests/jawcyst.test.js` key order changed deliberately; golden fixtures untouched; 627 tests. Browser-checked: TLHBSO paste → weight 110, tumour 50 x 45, depth 4 / thickness 22; edited depth survives a re-paste; clear reverts.
 - 2026-09-12 Macro extraction (e) follow-up — bilateral adnexa (direct request, size S): `near` rules read clauses (split at "and / while the right|left|ovary|tube…"), `sideOf` reads right / left / both, `sides: true` rules give `right 2 x 1.5 x 0.8, left 2.5 x 1.5 x 1` (or the single / largest value); benign uterus `tubeSize` / `ovarySize` sided with matching generator sentences (`sidedSizes`), endometrial `adnexaMacro` filled by the new `adnexaSentence` concept, ovarian cyst rules scoped; `uterus_benign` `specimenName` filled from the LIS line (TAHBSO / TLHBSO / appendages / TAH / sterilisation folds) so the adnexa sentences print. 4 fixture texts + unit tests; golden fixtures untouched; 628 tests. Browser-checked: "Uterus and appendages, TAHBSO" + bilateral paste → TAHBSO specimen, two-sided tube and ovary sentences.
+- 2026-09-12 Endometrial carcinoma — FIGO 2023 extent fields (direct request, size S): dependent select `noInvasionExtent` (confined to the endometrium / limited to an endometrial polyp / polyp and underlying endometrium / cannot be determined) drives `myoExtent()` and the IA1 basis instead of the macro Tumour site; synoptic row "Not identified; tumour confined to the endometrium" (CAP wording), diagnosis clause per pick, macro-vs-micro cross-checks; fixture 03 regenerated deliberately (one row); IIIB1 / IVA options confirmed present. 632 tests.
 ---
 
 ## Now
 
-- Endometrial carcinoma — FIGO 2023 extent fields (direct request 2026-09-12, size S). Dependent select `noInvasionExtent` (shown when Myometrial invasion = Not identified): confined to the endometrium / limited to an endometrial polyp / polyp and underlying endometrium / cannot be determined. `myoExtent()` reads it instead of the macro Tumour site; synoptic row prints "Not identified; tumour confined to the endometrium" (CAP wording) and the diagnosis clause "confined to the endometrium" / "confined to an endometrial polyp"; Checks cross-check macro site vs micro extent. No-invasion fixtures regenerated deliberately. FIGO 2023 stays Checks-only. Stop: tests green, browser check of a polyp-confined case, one deploy + publish.
-
----
+(empty — pull the next card in)
 
 ## Next
 

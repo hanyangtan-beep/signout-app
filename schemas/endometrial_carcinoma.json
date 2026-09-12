@@ -1612,6 +1612,23 @@
       }
     },
     {
+      "id": "noInvasionExtent",
+      "label": "Extent without myometrial invasion (FIGO 2023 IA1 basis)",
+      "type": "select",
+      "group": "Extent of disease",
+      "options": [
+        "Tumour confined to the endometrium",
+        "Tumour limited to an endometrial polyp (underlying endometrium and myometrium uninvolved)",
+        "Tumour in an endometrial polyp and the underlying endometrium",
+        "Cannot be determined"
+      ],
+      "default": "Tumour confined to the endometrium",
+      "showIf": {
+        "field": "myoInvasion",
+        "is": "Not identified"
+      }
+    },
+    {
       "id": "depthMm",
       "label": "Depth of myometrial invasion (mm)",
       "type": "number",

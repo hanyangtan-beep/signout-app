@@ -27,7 +27,9 @@ test('histotype class', () => {
 // [name, overrides, expected T, N, M, AJCC/FIGO 2009 group, FIGO 2023]
 const TABLE = [
   ['confined to endometrium', { myoInvasion: E.MYO_NONE }, 'T1a', 'N0', 'M-', 'IA', 'IA1'],
-  ['confined to polyp', { myoInvasion: E.MYO_NONE, tumourSite: 'Endometrial polyp' }, 'T1a', 'N0', 'M-', 'IA', 'IA1'],
+  ['confined to polyp (legacy: macro site, no micro pick)', { myoInvasion: E.MYO_NONE, tumourSite: 'Endometrial polyp' }, 'T1a', 'N0', 'M-', 'IA', 'IA1'],
+  ['confined to polyp (micro pick)', { myoInvasion: E.MYO_NONE, noInvasionExtent: E.NOINV_POLYP }, 'T1a', 'N0', 'M-', 'IA', 'IA1'],
+  ['polyp and underlying endometrium', { myoInvasion: E.MYO_NONE, tumourSite: 'Endometrial polyp', noInvasionExtent: E.NOINV_POLYP_AND_ENDOMETRIUM }, 'T1a', 'N0', 'M-', 'IA', 'IA1'],
   ['< 50% myoinvasion', {}, 'T1a', 'N0', 'M-', 'IA', 'IA2'],
   ['< 50% with focal LVSI stays IA2', { lvsi: E.LVSI_FOCAL }, 'T1a', 'N0', 'M-', 'IA', 'IA2'],
   ['>= 50% myoinvasion', { myoInvasion: E.MYO_GE_HALF }, 'T1b', 'N0', 'M-', 'IB', 'IB'],
@@ -80,6 +82,14 @@ for (const [name, o, t, n, m, group, f23] of TABLE) {
     assert.equal(E.figo2023(x).stage, f23, 'FIGO 2023');
   });
 }
+
+test('myoExtent: the microscopic pick overrides the macro site once it exists', () => {
+  assert.equal(E.myoExtent(v({ myoInvasion: E.MYO_NONE, tumourSite: 'Endometrial polyp', noInvasionExtent: E.NOINV_ENDOMETRIUM })), 'endometrium');
+  assert.equal(E.myoExtent(v({ myoInvasion: E.MYO_NONE, tumourSite: 'Endometrium', noInvasionExtent: E.NOINV_POLYP })), 'polyp');
+  assert.equal(E.myoExtent(v({ myoInvasion: E.MYO_NONE, noInvasionExtent: E.NOINV_POLYP_AND_ENDOMETRIUM })), 'endometrium');
+  assert.equal(E.figo2023(v({ myoInvasion: E.MYO_NONE, noInvasionExtent: E.NOINV_POLYP })).basis, 'non-aggressive histotype limited to an endometrial polyp');
+  assert.equal(E.figo2023(v({ ...SEROUS, myoInvasion: E.MYO_NONE, noInvasionExtent: E.NOINV_POLYP })).basis, 'aggressive histotype limited to a polyp');
+});
 
 test('FIGO 2023 conditional note when the molecular class is unconfirmed', () => {
   const r = E.figo2023(v({ promise: 'Not classified (testing incomplete)' }));

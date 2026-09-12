@@ -40,11 +40,23 @@ export const MYO_NONE = 'Not identified';
 export const MYO_LT_HALF = 'Estimated less than 50% myometrial invasion';
 export const MYO_GE_HALF = 'Estimated 50% or greater myometrial invasion';
 
-/** 'polyp' | 'endometrium' | 'lt-half' | 'ge-half' | null (cannot be assessed or not recorded). */
+export const NOINV_ENDOMETRIUM = 'Tumour confined to the endometrium';
+export const NOINV_POLYP = 'Tumour limited to an endometrial polyp (underlying endometrium and myometrium uninvolved)';
+export const NOINV_POLYP_AND_ENDOMETRIUM = 'Tumour in an endometrial polyp and the underlying endometrium';
+
+/**
+ * 'polyp' | 'endometrium' | 'lt-half' | 'ge-half' | null (cannot be assessed or not recorded).
+ * Without myoinvasion the microscopic `noInvasionExtent` pick decides; only the strict
+ * "limited to an endometrial polyp" option gives 'polyp' (FIGO 2023 IA1 basis). Cases saved before
+ * the field existed fall back to the macro Tumour site.
+ */
 export function myoExtent(v) {
   if (v.myoInvasion === MYO_GE_HALF) return 'ge-half';
   if (v.myoInvasion === MYO_LT_HALF) return 'lt-half';
-  if (v.myoInvasion === MYO_NONE) return v.tumourSite === 'Endometrial polyp' ? 'polyp' : 'endometrium';
+  if (v.myoInvasion === MYO_NONE) {
+    if (v.noInvasionExtent === undefined || v.noInvasionExtent === null) return v.tumourSite === 'Endometrial polyp' ? 'polyp' : 'endometrium';
+    return v.noInvasionExtent === NOINV_POLYP ? 'polyp' : 'endometrium';
+  }
   return null;
 }
 export const anyMyoinvasion = (v) => ['lt-half', 'ge-half'].includes(myoExtent(v));

@@ -83,3 +83,14 @@ Gaps and caveats (criteria text only, or weak images): no licensed figure juxtap
 - FIGO 2023: Berek JS et al., FIGO staging of endometrial cancer: 2023, Int J Gynecol Obstet 2023;162:383–394 (confirm URL at build).
 - CAP Endometrium 5.1.0.0 (Dec 2024) as cited on the page.
 - WHO Female Genital Tumours 5th ed. (histotypes; ProMisE precedence).
+
+## FIGO 2023 extent fields (built 2026-09-12)
+
+- Gap. The IA1 basis ("limited to an endometrial polyp" vs "limited to the endometrium") was inferred from the macroscopic Tumour site plus Myometrial invasion = Not identified; the polyp/endometrium distinction is a microscopic judgement and a carcinoma in a polyp that also involves the underlying endometrium was mislabelled "polyp".
+- Field. `noInvasionExtent` (select, group Extent of disease, shown when `myoInvasion` = Not identified): "Tumour confined to the endometrium" (default) / "Tumour limited to an endometrial polyp (underlying endometrium and myometrium uninvolved)" / "Tumour in an endometrial polyp and the underlying endometrium" / "Cannot be determined". Constants `NOINV_*` in `src/staging/endometrium.js`.
+- Staging. `myoExtent()` reads the pick: only the strict polyp option gives 'polyp'; the mixed option stages as 'endometrium'. Cases saved before the field existed (value undefined) keep the old macro-site fallback. FIGO 2023 remains Checks-only.
+- Printing. Synoptic row "Myometrial invasion: Not identified; tumour confined to the endometrium" / "…; tumour limited to an endometrial polyp" / "…; tumour in an endometrial polyp and the underlying endometrium" / "…; extent cannot be determined" (CAP wording). Diagnosis clause "confined to the endometrium" / "confined to an endometrial polyp" / "confined to an endometrial polyp and the underlying endometrium" / "no myometrial invasion" (cannot be determined). The pick is ignored once myoinvasion is recorded.
+- Checks. Micro says polyp but macro Tumour site is not "Endometrial polyp" → warn; macro says polyp but micro says confined to the endometrium → info asking whether the underlying endometrium is involved; "Cannot be determined" → warn that the IA1 basis is open.
+- Fixtures. `03-polyp-polemut-iam` input gains `noInvasionExtent` = polyp option; regenerated deliberately (`node tests/endometrial_carcinoma.test.js --update`) — the only change is the Myometrial invasion row suffix. Other fixtures byte-identical. IIIB1 (parametrium, pelvic wall) and IVA (bladder / bowel mucosa) options were already present in `otherInvolvement`.
+- Tests. Generator test for all four picks, diagnosis wording, cross-checks and the hidden-pick case; staging table rows for the micro pick and the mixed option; `myoExtent` override test. 632 tests.
+

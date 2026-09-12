@@ -15,9 +15,9 @@
 // There is no separate narrative microscopy paragraph. Wording is protected by
 // tests/endometrial_carcinoma.test.js and tests/fixtures/endometrium - change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtxs8ep6';
-import * as S from '../src/staging/endometrium.js?v=mtxs8ep6';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtxs8ep6';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtxtpeg9';
+import * as S from '../src/staging/endometrium.js?v=mtxtpeg9';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtxtpeg9';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
@@ -102,6 +102,17 @@ export function derivedGrade(v) {
 /** Grade used everywhere (picked value wins over the derived one). */
 export const resolvedGrade = (v) => (v.grade && v.grade !== GRADE_DERIVE ? v.grade : derivedGrade(v).grade);
 export const gradeIsDerived = (v) => !v.grade || v.grade === GRADE_DERIVE;
+
+/** "; tumour confined to the endometrium" etc. after "Not identified" in the Myometrial invasion row (CAP wording). */
+function noInvasionSuffix(v) {
+  if (v.myoInvasion !== S.MYO_NONE) return '';
+  const e = v.noInvasionExtent;
+  if (e === undefined || e === null) return S.myoExtent(v) === 'polyp' ? '; tumour limited to an endometrial polyp' : '; tumour confined to the endometrium';
+  if (e === S.NOINV_POLYP) return '; tumour limited to an endometrial polyp';
+  if (e === S.NOINV_POLYP_AND_ENDOMETRIUM) return '; tumour in an endometrial polyp and the underlying endometrium';
+  if (e === 'Cannot be determined') return '; extent cannot be determined';
+  return '; tumour confined to the endometrium';
+}
 
 /** Short grade for prose and diagnosis: 'FIGO grade 1' | 'high grade' | typed | ''. */
 export function gradeShort(v) {
@@ -405,7 +416,7 @@ export function synoptic(part, ctx) {
       item('POLE status', pole),
       item('Molecular classification', cls === 'Double classifier (explain)' ? `Multiple classifier${stripDot(v.promiseDetail) ? ` (${stripDot(v.promiseDetail)})` : ''}` : cls),
       stripDot(v.otherIhc) ? item('Other immunohistochemistry', stripDot(v.otherIhc)) : null,
-      { ...item('Myometrial invasion', `${specify(v.myoInvasion || 'Cannot be assessed')}${v.myoInvasion === 'Cannot be assessed (explain)' && stripDot(v.myoCannot) ? ` (${stripDot(v.myoCannot)})` : ''}`), sub: [
+      { ...item('Myometrial invasion', `${specify(v.myoInvasion || 'Cannot be assessed')}${v.myoInvasion === 'Cannot be assessed (explain)' && stripDot(v.myoCannot) ? ` (${stripDot(v.myoCannot)})` : ''}${noInvasionSuffix(v)}`), sub: [
         d !== null ? item('Depth of myometrial invasion', `${fmt(d)} mm`) : null,
         t !== null ? item('Myometrial thickness', `${fmt(t)} mm`) : null,
         pct !== null ? item('Percentage of myometrial invasion', `${fmt(pct)}%`) : null
@@ -472,7 +483,7 @@ export function diagnosis(part, ctx) {
   const head = `(${part.label}) ${comma > 0 ? `${name.slice(0, comma).toUpperCase()}${name.slice(comma)}` : name.toUpperCase()}`;
   const grade = gradeShort(v);
   const ext = S.myoExtent(v);
-  const extWord = ext === 'polyp' ? 'confined to an endometrial polyp' : ext === 'endometrium' ? 'confined to the endometrium' : ext === 'lt-half' ? 'invading less than half of the myometrium' : ext === 'ge-half' ? 'invading half or more of the myometrium' : 'depth of myometrial invasion cannot be assessed';
+  const extWord = ext === 'polyp' ? 'confined to an endometrial polyp' : ext === 'endometrium' ? (v.noInvasionExtent === S.NOINV_POLYP_AND_ENDOMETRIUM ? 'confined to an endometrial polyp and the underlying endometrium' : v.noInvasionExtent === 'Cannot be determined' ? 'no myometrial invasion' : 'confined to the endometrium') : ext === 'lt-half' ? 'invading less than half of the myometrium' : ext === 'ge-half' ? 'invading half or more of the myometrium' : 'depth of myometrial invasion cannot be assessed';
   const tumour = [`${histTypeName(v).toUpperCase()}${grade ? `, ${grade}` : ''}, ${extWord}`];
   // Local extent: LVSI, serosa, cervix, adnexa, other organs, peritoneum, margins.
   const local = [];
@@ -531,6 +542,12 @@ export function validate(part) {
   const info = (m) => out.push({ level: 'info', message: m });
   if (!v.myoInvasion) err('Myometrial invasion is required.');
   if (v.myoInvasion === 'Cannot be assessed (explain)' && !stripDot(v.myoCannot)) warn('Myometrial invasion cannot be assessed: give the reason.');
+  if (v.myoInvasion === S.MYO_NONE) {
+    const polypMicro = v.noInvasionExtent === S.NOINV_POLYP || v.noInvasionExtent === S.NOINV_POLYP_AND_ENDOMETRIUM;
+    if (polypMicro && v.tumourSite !== 'Endometrial polyp') warn('Microscopy places the tumour in an endometrial polyp but the macroscopic Tumour site is not "Endometrial polyp".');
+    if (!polypMicro && v.tumourSite === 'Endometrial polyp' && v.noInvasionExtent !== 'Cannot be determined') info('Macroscopic Tumour site is "Endometrial polyp" but the tumour is recorded as confined to the endometrium; state whether the underlying endometrium is involved (FIGO 2023 IA1 basis).');
+    if (v.noInvasionExtent === 'Cannot be determined') warn('Extent without myometrial invasion cannot be determined; the FIGO 2023 IA1 basis is left open.');
+  }
   const d = num(v.depthMm); const t = num(v.myoThicknessMm); const pct = myoPercent(v);
   if (d !== null && t !== null && d > t) err('Depth of myometrial invasion exceeds the myometrial thickness.');
   if (pct !== null && v.myoInvasion === S.MYO_GE_HALF && pct < 50) warn(`"50% or greater" is ticked but the measurements give ${fmt(pct)}%.`);
