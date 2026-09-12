@@ -17,20 +17,20 @@ const types = schema.fields.find((f) => f.id === 'histType').options;
 const MORPH = {
   'Adenocarcinoma (G1)': { over: { histType: 'Adenocarcinoma', grade: 'G1, well differentiated' }, s: 'resembling colorectal adenocarcinoma' },
   'Adenocarcinoma (G3)': { over: { histType: 'Adenocarcinoma', grade: 'G3, poorly differentiated' }, s: 'less than half of the tumour forming glands' },
-  'Mucinous': { over: { histType: 'Mucinous adenocarcinoma' }, s: 'Extracellular mucin pools occupy more than half of the tumour' },
+  'Mucinous': { over: { histType: 'Mucinous adenocarcinoma' }, s: 'Pools of extracellular mucin predominate and contain irregular, jagged glands' },
   'LAMN': { over: { histType: 'Low-grade appendiceal mucinous neoplasm' }, s: 'effaces the muscularis mucosae with crypt loss and lymphoid atrophy' },
   'HAMN': { over: { histType: 'High-grade appendiceal mucinous neoplasm' }, s: 'cribriform or micropapillary areas, yet the growth remains pushing' },
-  'Signet-ring': { over: { histType: 'Signet-ring cell carcinoma (poorly cohesive carcinoma)' }, s: 'More than half of the tumour is composed of discohesive signet-ring cells' },
+  'Signet-ring': { over: { histType: 'Signet-ring cell carcinoma (poorly cohesive carcinoma)' }, s: 'The tumour is composed predominantly of discohesive signet-ring cells' },
   'Goblet A': { over: { histType: 'Goblet cell adenocarcinoma', gobletGrade: 'Tang / WHO group 1 (low grade)' }, s: 'concentric tubules of well-defined goblet cells infiltrate the wall with minimal atypia, minimal desmoplasia and little architectural distortion (Tang group A)' },
   'Goblet B': { over: { histType: 'Goblet cell adenocarcinoma', gobletGrade: 'Tang / WHO group 2 (intermediate grade)' }, s: 'single-file and single-cell infiltration with significant atypia and desmoplasia destroying the appendiceal wall (Tang group B)' },
   'Goblet C': { over: { histType: 'Goblet cell adenocarcinoma', gobletGrade: 'Tang / WHO group 3 (high grade)' }, s: 'only focal goblet-cell morphology (Tang group C)' },
-  'LCNEC': { over: { histType: 'Large cell neuroendocrine carcinoma' }, s: 'the mitotic rate exceeds 20 mitoses per 2 mm2' },
+  'LCNEC': { over: { histType: 'Large cell neuroendocrine carcinoma' }, s: 'show geographic necrosis and brisk mitotic activity' },
   'SCNEC': { over: { histType: 'Small cell neuroendocrine carcinoma' }, s: 'marked nuclear moulding show crush artefact, extensive necrosis and numerous mitoses' },
   'NEC NOS': { over: { histType: 'Neuroendocrine carcinoma (poorly differentiated)' }, s: 'unequivocal neuroendocrine immunophenotype' },
-  'MiNEN': { over: { histType: 'Mixed neuroendocrine-non-neuroendocrine neoplasm (Mixed adenoneuroendocrine carcinoma)' }, s: 'each constitute more than 30% of the tumour' },
-  'Medullary': { over: { histType: 'Medullary carcinoma' }, s: 'morphology commonly associated with mismatch-repair deficiency' },
-  'Adenosquamous': { over: { histType: 'Adenosquamous carcinoma' }, s: 'WHO does not prescribe a minimum proportion for either component' },
-  'Undifferentiated': { over: { histType: 'Undifferentiated carcinoma' }, s: 'no unequivocal line of differentiation; the diagnosis is reached after exclusion' }
+  'MiNEN': { over: { histType: 'Mixed neuroendocrine-non-neuroendocrine neoplasm (Mixed adenoneuroendocrine carcinoma)' }, s: 'are both present, each constituting more than 30% of the tumour (mixed neuroendocrine-non-neuroendocrine neoplasm)' },
+  'Medullary': { over: { histType: 'Medullary carcinoma' }, s: 'Syncytial sheets of large cells with vesicular nuclei and pushing borders carry a prominent lymphoplasmacytic infiltrate' },
+  'Adenosquamous': { over: { histType: 'Adenosquamous carcinoma' }, s: 'components coexist, sharply demarcated or merging gradually' },
+  'Undifferentiated': { over: { histType: 'Undifferentiated carcinoma' }, s: 'without glandular, squamous or neuroendocrine differentiation' }
 };
 
 for (const [name, { over, s }] of Object.entries(MORPH)) {

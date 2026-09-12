@@ -22,7 +22,7 @@ export const MORPHOLOGY = {
   // cells, strips and clusters float in the mucin; infiltrative rather than pushing growth;
   // often high-grade cytology (AJCC 8e tiered mucinous grading: G2 conventional; G3 when any
   // signet-ring component).
-  'Mucinous adenocarcinoma': () => 'Extracellular mucin pools occupy more than half of the tumour and contain irregular, jagged glands, strips, clusters and single cells of neoplastic columnar epithelium in an infiltrative, non-pushing pattern.',
+  'Mucinous adenocarcinoma': () => 'Pools of extracellular mucin predominate and contain irregular, jagged glands, strips, clusters and single cells of neoplastic columnar epithelium, infiltrating in a non-pushing pattern.',
   // LAMN (Pathology Outlines appendixmucinousneoplasm): villous or occasionally flat
   // proliferation of mucinous epithelium with abundant apical mucin, elongated nuclei and
   // low-grade atypia; by definition no infiltrative growth; effacement of the muscularis
@@ -34,7 +34,7 @@ export const MORPHOLOGY = {
   'High-grade appendiceal mucinous neoplasm': () => 'The mucinous epithelium shows high-grade cytological and architectural features, with nuclear stratification, complex convoluted glands and cribriform or micropapillary areas, yet the growth remains pushing without infiltrative invasion.',
   // Signet-ring cell carcinoma: WHO/Pathology Outlines threshold of more than 50% signet-ring
   // cells; singly discohesive infiltrate; worse prognosis note.
-  'Signet-ring cell carcinoma (poorly cohesive carcinoma)': () => 'More than half of the tumour is composed of discohesive signet-ring cells with intracytoplasmic mucin displacing the nucleus, infiltrating singly and in small clusters without gland formation.',
+  'Signet-ring cell carcinoma (poorly cohesive carcinoma)': () => 'The tumour is composed predominantly of discohesive signet-ring cells with intracytoplasmic mucin displacing the nucleus, infiltrating singly and in small clusters without gland formation.',
   // Goblet cell adenocarcinoma (formerly carcinoid), Tang groups A/B/C (PMC5801558):
   // A = typical: small concentric nests of well-defined goblet cells with minimal atypia,
   // minimal desmoplasia; B = signet-ring cell type: large irregular clusters of goblet or
@@ -50,22 +50,22 @@ export const MORPHOLOGY = {
     return 'Small nests arranged as concentric tubules of well-defined goblet cells infiltrate the wall with minimal atypia, minimal desmoplasia and little architectural distortion (Tang group A).';
   },
   // Poorly differentiated NECs: WHO 2019 morphology as for the oesophageal / gastric chapters.
-  'Large cell neuroendocrine carcinoma': () => 'Organoid nests and trabeculae of medium-to-large cells with coarse chromatin, prominent nucleoli and moderately abundant cytoplasm show geographic necrosis; the mitotic rate exceeds 20 mitoses per 2 mm².',
+  'Large cell neuroendocrine carcinoma': () => 'Organoid nests and trabeculae of medium-to-large cells with coarse chromatin, prominent nucleoli and moderately abundant cytoplasm show geographic necrosis and brisk mitotic activity.',
   'Small cell neuroendocrine carcinoma': () => 'Sheets of small, round-to-oval cells with scant cytoplasm, finely granular chromatin, absent or inconspicuous nucleoli and marked nuclear moulding show crush artefact, extensive necrosis and numerous mitoses.',
   'Neuroendocrine carcinoma (poorly differentiated)': () => 'Sheets and nests of markedly atypical cells with extensive necrosis and a high mitotic rate show an unequivocal neuroendocrine immunophenotype, in keeping with a poorly differentiated neuroendocrine carcinoma.',
   // MiNEN (WHO 2019): both a neuroendocrine and a non-neuroendocrine component, each
   // constituting more than 30% of the tumour.
-  'Mixed neuroendocrine-non-neuroendocrine neoplasm (Mixed adenoneuroendocrine carcinoma)': () => 'Invasive adenocarcinoma and neuroendocrine carcinoma components each constitute more than 30% of the tumour, meeting the WHO definition of a mixed neuroendocrine-non-neuroendocrine neoplasm (MiNEN).',
+  'Mixed neuroendocrine-non-neuroendocrine neoplasm (Mixed adenoneuroendocrine carcinoma)': () => 'Invasive adenocarcinoma and neuroendocrine carcinoma components are both present, each constituting more than 30% of the tumour (mixed neuroendocrine-non-neuroendocrine neoplasm).',
   // Medullary carcinoma (WHO 5th ed GI cancers): syncytial sheets of large vesicular cells
   // with pushing borders and a prominent tumour-infiltrating lymphocyte response; commonly
   // mismatch-repair deficient.
-  'Medullary carcinoma': () => 'Syncytial sheets of large cells with vesicular nuclei and pushing borders carry a prominent lymphoplasmacytic infiltrate, a morphology commonly associated with mismatch-repair deficiency.',
+  'Medullary carcinoma': () => 'Syncytial sheets of large cells with vesicular nuclei and pushing borders carry a prominent lymphoplasmacytic infiltrate.',
   // Adenosquamous carcinoma: biphasic glandular + squamous components; WHO prescribes no
   // minimum proportion for either (as oesophageal adenosquamous).
-  'Adenosquamous carcinoma': () => 'Invasive adenocarcinoma (tubular, mucin-producing glands) and squamous cell carcinoma (keratin pearls, intercellular bridges) components coexist, either sharply demarcated or merging gradually; WHO does not prescribe a minimum proportion for either component.',
+  'Adenosquamous carcinoma': () => 'Invasive adenocarcinoma (tubular, mucin-producing glands) and squamous carcinoma (keratin pearls and intercellular bridges) components coexist, sharply demarcated or merging gradually.',
   // Undifferentiated carcinoma: no identifiable line of differentiation; diagnosis of
   // exclusion (as the oesophageal WHO definition).
-  'Undifferentiated carcinoma': () => 'Sheets and nests of high-grade pleomorphic cells show no unequivocal line of differentiation; the diagnosis is reached after exclusion of glandular, squamous and neuroendocrine differentiation.'
+  'Undifferentiated carcinoma': () => 'The tumour grows in sheets and nests of high-grade pleomorphic cells without glandular, squamous or neuroendocrine differentiation.'
 };
 
 /**

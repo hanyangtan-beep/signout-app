@@ -23,10 +23,10 @@ const MORPH = {
   'Verrucous SCC': { overrun: { histType: 'Verrucous squamous cell carcinoma' }, s: 'blunt, bulbous rete projections that invade with a uniformly pushing front; cytological atypia is minimal' },
   'Adenoca G1': { overrun: { histType: 'Adenocarcinoma', grade: 'G1, well differentiated' }, s: 'irregularly infiltrating tubular glands lined by a single layer of atypical columnar epithelium are set in desmoplastic stroma' },
   'Adenoca G3': { overrun: { histType: 'Adenocarcinoma', grade: 'G3, poorly differentiated / undifferentiated' }, s: 'fused, abortive glands and solid sheets of high-grade atypical cells with only occasional lumen formation' },
-  'Mucinous adenoca': { overrun: { histType: 'Mucinous adenocarcinoma' }, s: 'Extracellular mucin pools occupy more than half of the tumour' },
+  'Mucinous adenoca': { overrun: { histType: 'Mucinous adenocarcinoma' }, s: 'Pools of extracellular mucin predominate and contain floating strips' },
   'Signet-ring': { overrun: { histType: 'Signet-ring cell carcinoma (poorly cohesive carcinoma)' }, s: 'intracytoplasmic mucin displacing the nucleus infiltrate the wall singly' },
   'Small cell NEC': { overrun: { histType: 'Small cell neuroendocrine carcinoma' }, s: 'marked nuclear moulding show crush artefact, extensive necrosis and numerous mitoses' },
-  'NET G1': { overrun: { histType: 'G1: Well-differentiated neuroendocrine tumour' }, s: 'salt-and-pepper chromatin form organoid nests and trabeculae, with sparse mitotic activity' }
+  'NET G1': { overrun: { histType: 'G1: Well-differentiated neuroendocrine tumour' }, s: 'salt-and-pepper chromatin form organoid nests and trabeculae, with low mitotic activity' }
 };
 
 for (const [name, { overrun, s }] of Object.entries(MORPH)) {

@@ -46,16 +46,16 @@ export const MORPHOLOGY = {
   ),
   // WHO 2019: >50% of the tumour composed of extracellular mucin containing floating glands,
   // strips or clusters of neoplastic epithelium.
-  'Mucinous adenocarcinoma': () => 'Extracellular mucin pools occupy more than half of the tumour and contain floating strips, glands and clusters of neoplastic columnar epithelium.',
+  'Mucinous adenocarcinoma': () => 'Pools of extracellular mucin predominate and contain floating strips, glands and clusters of neoplastic columnar epithelium.',
   // Poorly cohesive signet-ring cells with intracytoplasmic mucin displacing the nucleus
   // infiltrate singly and in small clusters; WHO assigns any carcinoma with signet-ring
   // morphology to grade 3.
-  'Signet-ring cell carcinoma (poorly cohesive carcinoma)': () => 'Poorly cohesive cells with intracytoplasmic mucin displacing the nucleus infiltrate the wall singly and in small clusters without gland formation; tumours of this morphology are high grade by definition.',
+  'Signet-ring cell carcinoma (poorly cohesive carcinoma)': () => 'Discohesive signet-ring cells with intracytoplasmic mucin displacing the nucleus infiltrate the wall singly and in small clusters without gland formation.',
   // Biphasic: adenocarcinoma and squamous carcinoma components with distinct boundaries or
   // gradual transition; squamous areas show keratin pearls and intercellular bridges,
   // glandular areas form mucin-producing tubules; WHO does not set a minimum proportion for
   // either component.
-  'Adenosquamous carcinoma': () => 'Invasive adenocarcinoma (tubular, mucin-producing glands) and squamous cell carcinoma (keratin pearls, intercellular bridges) components coexist, either sharply demarcated or merging gradually; WHO does not prescribe a minimum proportion for either component.',
+  'Adenosquamous carcinoma': () => 'Invasive adenocarcinoma (tubular, mucin-producing glands) and squamous carcinoma (keratin pearls and intercellular bridges) components coexist, sharply demarcated or merging gradually.',
   // Tight admixture of intermediate cells, mucin-producing cells and malignant squamoid cells.
   'Mucoepidermoid carcinoma': () => 'The tumour nests are composed of a tight admixture of intermediate-type cells, mucin-producing cells and malignant squamoid cells.',
   // Cribriform nests of basaloid ductal-type and myoepithelial cells; pseudolumina filled with
@@ -64,7 +64,7 @@ export const MORPHOLOGY = {
   // Sheets and nests of high-grade cells without identifiable differentiation; pancytokeratin
   // expression variable (diffuse to patchy or negative); diagnosis of exclusion after
   // glandular, squamous, neuroendocrine, melanocytic and lymphoid lines are tested.
-  'Undifferentiated carcinoma': () => 'Sheets and nests of high-grade pleomorphic cells, locally with rhabdoid features and geographic necrosis, show no unequivocal line of differentiation; the diagnosis is reached after exclusion of glandular, squamous and neuroendocrine differentiation.',
+  'Undifferentiated carcinoma': () => 'The tumour grows in sheets and nests of high-grade pleomorphic cells, locally with rhabdoid features and geographic necrosis, without glandular, squamous or neuroendocrine differentiation.',
   // WHO 2019: undifferentiated or poorly differentiated carcinoma in syncytial sheets of
   // large epithelioid cells with vesicular nuclei and prominent nucleoli, enveloped by a
   // dense, non-neoplastic lymphoplasmacytic infiltrate; EBV association in a subset.
@@ -72,7 +72,7 @@ export const MORPHOLOGY = {
   // Poorly differentiated NEC, large cell type: organoid nests and trabeculae of medium-to-
   // large cells with coarse chromatin, prominent nucleoli and moderately abundant cytoplasm;
   // geographic necrosis, numerous mitoses and Ki-67 typically >20% (often >60%).
-  'Large cell neuroendocrine carcinoma': () => 'Organoid nests and trabeculae of medium-to-large cells with coarse chromatin, prominent nucleoli and moderately abundant cytoplasm show geographic necrosis; the mitotic rate exceeds 20 mitoses per 2 mm².',
+  'Large cell neuroendocrine carcinoma': () => 'Organoid nests and trabeculae of medium-to-large cells with coarse chromatin, prominent nucleoli and moderately abundant cytoplasm show geographic necrosis and brisk mitotic activity.',
   // Poorly differentiated NEC, small cell type: sheets of small cells with scant cytoplasm,
   // finely granular chromatin, inconspicuous nucleoli and pronounced nuclear moulding;
   // extensive necrosis, crush artefact and numerous mitoses.
@@ -83,9 +83,9 @@ export const MORPHOLOGY = {
   'Neuroendocrine carcinoma (poorly differentiated)': () => 'Sheets and nests of markedly atypical cells with extensive necrosis and a high mitotic rate show an unequivocal neuroendocrine immunophenotype, in keeping with a poorly differentiated neuroendocrine carcinoma.',
   // MiNEN (WHO 2019): both a neuroendocrine and a non-neuroendocrine component each
   // constituting more than 30% of the tumour.
-  'Mixed squamous cell carcinoma-neuroendocrine carcinoma': () => 'Invasive squamous cell carcinoma and neuroendocrine carcinoma components each constitute more than 30% of the tumour, meeting the WHO definition of a mixed neuroendocrine-non-neuroendocrine neoplasm.',
-  'Mixed adenocarcinoma-neuroendocrine carcinoma': () => 'Invasive adenocarcinoma and neuroendocrine carcinoma components each constitute more than 30% of the tumour, meeting the WHO definition of a mixed neuroendocrine-non-neuroendocrine neoplasm (MiNEN).',
-  'Mixed adenocarcinoma-neuroendocrine tumour': () => 'Invasive adenocarcinoma and a well-differentiated neuroendocrine tumour component each constitute more than 30% of the tumour, meeting the WHO definition of a mixed neuroendocrine-non-neuroendocrine neoplasm (MiNEN).'
+  'Mixed squamous cell carcinoma-neuroendocrine carcinoma': () => 'Invasive squamous cell carcinoma and neuroendocrine carcinoma components are both present, each constituting more than 30% of the tumour (mixed neuroendocrine-non-neuroendocrine neoplasm).',
+  'Mixed adenocarcinoma-neuroendocrine carcinoma': () => 'Invasive adenocarcinoma and neuroendocrine carcinoma components are both present, each constituting more than 30% of the tumour (mixed neuroendocrine-non-neuroendocrine neoplasm).',
+  'Mixed adenocarcinoma-neuroendocrine tumour': () => 'Invasive adenocarcinoma and a well-differentiated neuroendocrine tumour component are both present, each constituting more than 30% of the tumour (mixed neuroendocrine-non-neuroendocrine neoplasm).'
 };
 
 /**
@@ -100,7 +100,7 @@ export function typeMorphology(typeName, grade) {
   if (fn) return fn(grade || '');
   const net = /^G(\d): Well-differentiated neuroendocrine tumour/.exec(typeName || '');
   if (!net) return '';
-  const activity = { 1: 'with sparse mitotic activity (fewer than 2 mitoses per 2 mm²)', 2: 'with moderate mitotic activity (2-20 mitoses per 2 mm²)', 3: 'with frequent mitoses (more than 20 mitoses per 2 mm²), yet retaining well-differentiated cytology' }[net[1]] || '';
+  const activity = { 1: 'with low mitotic activity', 2: 'with intermediate mitotic activity', 3: 'with brisk mitotic activity, yet retaining well-differentiated cytology' }[net[1]] || '';
   return `Uniform neuroendocrine cells with coarsely stippled salt-and-pepper chromatin form organoid nests and trabeculae, ${activity}.`;
 }
 
