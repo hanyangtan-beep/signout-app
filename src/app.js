@@ -298,6 +298,36 @@ async function stageThisPart(i) {
   toast(separate ? `Part ${np.label}: ${s.name} added; sentinel node counts from part ${part.label}` : `Part ${np.label}: ${s.name} linked to the frozen section`);
 }
 
+/**
+ * "Upgrade this part": a benign resection part whose generator exports `UPGRADE_TO` and owes
+ * its `when(values)` tick (e.g. an appendicectomy with a ticked LAMN / adenocarcinoma) becomes
+ * the paired synoptic template in place; `UPGRADE_TO.map(values)` seeds the synoptic fields.
+ */
+function canUpgrade(i) {
+  const part = state.caseState.parts[i];
+  if (!part || part.linked) return null;
+  const id = templateIdOf(state.caseState, part);
+  const g = state.templates[id]?.generator;
+  const up = g?.UPGRADE_TO;
+  return up && typeof up.when === 'function' && up.when(part.values || {}) ? { part, id, up, g } : null;
+}
+
+async function upgradeThisPart(i) {
+  const hit = canUpgrade(i);
+  if (!hit) return;
+  const { part, up } = hit;
+  const { schema: s, generator: g } = await ensureTemplate(up.to).catch((err) => { toast(err.message); return null; });
+  if (!s) return;
+  noteUsed(up.to);
+  markDirty();
+  const fresh = createPart(s, 0);
+  const values = { ...fresh.values, ...(typeof up.map === 'function' ? up.map(part.values) || {} : {}) };
+  state.caseState.parts[i] = { ...fresh, label: part.label, templateId: up.to, values };
+  syncPrimary();
+  render();
+  toast(`Part ${part.label}: upgraded to ${s.shortName || s.name}`);
+}
+
 function removePart(i) {
   const parts = state.caseState.parts;
   if (parts.length === 1) return toast('A case needs at least one part');
@@ -735,6 +765,7 @@ function renderPanel() {
     el('h3', { text: part.linked ? `Part ${part.label} (synoptic, linked to the frozen section)` : `Part ${part.label}` }),
     picker,
     el('div', { class: 'part-actions' },
+      canUpgrade(i) ? el('button', { type: 'button', class: 'btn small', text: 'Upgrade this part', title: 'Switch this part to the synoptic template for the ticked neoplasm, carrying over what the benign form already answered', onclick: () => upgradeThisPart(i).catch((err) => { toast(err.message); render(); }) }) : null,
       canStage(i) ? el('button', { type: 'button', class: 'btn small', text: pairSeparate(part.values.scenario) ? 'Add breast synoptic' : 'Stage this part', title: pairSeparate(part.values.scenario) ? 'Add the breast carcinoma resection as the next part, with the sentinel node counts pre-filled' : 'Add the paired cancer synoptic under the same letter, pre-filled from the frozen section', onclick: () => stageThisPart(i).catch((err) => { toast(err.message); render(); }) }) : null,
       i > 0 && !part.linked ? el('button', { type: 'button', class: 'btn ghost small', text: 'Same as previous', onclick: () => copyFromPrevious(i) }) : null,
       el('button', { type: 'button', class: 'btn ghost small', text: 'Reset', onclick: () => resetPart(i) }),

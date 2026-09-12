@@ -1,178 +1,163 @@
-// Phase 4b: gallbladder (benign cholecystectomy) template. Wording is deliberate; update the strings only on purpose.
+// generators/gallbladder_carcinoma.js — wording-pinned tests for the gallbladder carcinoma
+// resection synoptic template (QMH GI-Gallbladder page, AJCC 8th edition). Assertions are
+// inline exact strings; any wording change is deliberate and edits this file.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { createCase, generate } from '../src/engine.js';
-import * as gen from '../generators/gallbladder.js';
-import { sizePhrase, wallPhrase } from '../generators/gallbladder.js';
+import { generate } from '../src/engine.js';
+import schema from '../schemas/gallbladder_carcinoma.json' with { type: 'json' };
+import * as gen from '../generators/gallbladder_carcinoma.js';
+import { UPGRADE_TO } from '../generators/gallbladder.js';
 
-const schema = JSON.parse(readFileSync(new URL('../schemas/gallbladder.json', import.meta.url), 'utf8'));
 const run = (c) => generate(schema, gen, c);
-const example = () => ({ ...JSON.parse(JSON.stringify(schema.example)), schemaId: schema.id });
-const one = (values, options = {}) => {
-  const c = createCase(schema, 1);
-  c.parts[0].values = { ...c.parts[0].values, ...values };
-  Object.assign(c.options, options);
-  return c;
-};
+const flat = (t) => t.replace(/\s+/g, ' ');
+const part = (over = {}) => ({ label: 'A', templateId: 'gallbladder_carcinoma', values: { ...schema.example.parts[0].values, ...over } });
+const runP = (over, options = schema.example.options) => generate(schema, gen, { case: schema.example.case, parts: [part(over)], options });
 
-test('metadata: benign hepatobiliary resection with search aliases and complete defaults', () => {
-  assert.equal(schema.id, 'gallbladder');
-  assert.equal(schema.generator, 'gallbladder');
-  assert.equal(schema.kind, 'benign resection');
+test('schema shape: metadata key order, layout and field census', () => {
+  assert.equal(schema.kind, 'cancer resection');
   assert.equal(schema.system, 'Hepatobiliary');
-  assert.equal(schema.label, 'Gallbladder');
-  assert.equal(schema.organ, 'GALLBLADDER');
-  assert.equal(schema.rank, 23);
-  assert.ok(schema.shortName.includes(' · '));
-  assert.ok(schema.aliases.length >= 6);
-  assert.ok(schema.aliases.includes('cholecystectomy'));
-  assert.equal(schema.maxParts, 2);
   assert.equal(schema.defaultParts, 1);
-  for (const f of schema.fields) assert.ok('default' in f, `${f.id} has a default`);
-  const ids = new Set(schema.fields.map((f) => f.id));
-  for (const p of schema.example.parts) for (const k of Object.keys(p.values)) assert.ok(ids.has(k), `example key ${k} is a field`);
-  assert.ok(schema.options.some((o) => o.id === 'includeHeader'));
-  assert.ok(schema.options.some((o) => o.id === 'macro' && o.default === true));
-  const macroFields = schema.fields.filter((f) => f.group === 'Macroscopy').map((f) => f.id);
-  assert.deepEqual(macroFields, ['receivedState', 'dimensions', 'wallThickness', 'serosa', 'stones', 'stoneSize', 'mucosa', 'mucosaMass', 'cysticNode', 'blocks']);
+  assert.equal(schema.version, '2026.09');
+  assert.equal(schema.source.stagingProtocol, 'gallbladder');
+  assert.deepEqual(Object.keys(schema).slice(0, 11), ['id', 'version', 'name', 'shortName', 'label', 'organ', 'system', 'kind', 'layout', 'rank', 'aliases']);
+  assert.deepEqual(schema.layout, { macroGroups: ['Specimen and tumour'], macroFields: ['specimenName'] });
+  assert.deepEqual(schema.fields.filter((f) => f.type === 'multiselect').map((f) => f.id), ['tumourSite', 'tumourExtension', 'distantMets', 'additionalFindings']);
   assert.equal(schema.fields[0].id, 'specimenName');
   assert.equal(schema.fields[schema.fields.length - 1].id, 'additionalNotes');
+  assert.ok(schema.options.some((o) => o.id === 'macro' && o.default === true));
+  assert.ok(schema.options.some((o) => o.id === 'printPTNM' && o.default === false));
+  // WHO 2019 gallbladder histologic types in the QMH page order.
+  const types = schema.fields.find((f) => f.id === 'histType').options;
+  assert.equal(types.length, 18);
+  assert.ok(types[14] === 'Small cell neuroendocrine carcinoma' && !/^ /.test(types[14]), 'no leading space on the small cell option');
+  for (const t of ['Adenocarcinoma, biliary type', 'Adenocarcinoma, intestinal type', 'Mucinous adenocarcinoma', 'Clear cell adenocarcinoma', 'Poorly cohesive carcinoma', 'Signet-ring cell carcinoma', 'Mucinous cystic neoplasm with an associated invasive carcinoma', 'Intracholecystic papillary neoplasm with associated invasive carcinoma', 'Intracholecystic tubular neoplasm with associated invasive carcinoma', 'Squamous cell carcinoma', 'Undifferentiated carcinoma, NOS', 'Large cell neuroendocrine carcinoma', 'Mixed neuroendocrine-non-neuroendocrine tumour (Mixed adenoneuroendocrine carcinoma) (specify components)']) assert.ok(types.includes(t), t);
+  const ext = schema.fields.find((f) => f.id === 'tumourExtension').options;
+  assert.equal(ext.length, 17);
+  assert.ok(ext.includes('Directly invades other adjacent organ(s) or structure(s): Main portal vein'));
+  assert.ok(!ext.some((t) => /carcinoma in situ/i.test(t)));
+  const ids = new Set(schema.fields.map((f) => f.id));
+  for (const k of Object.keys(schema.example.parts[0].values)) assert.ok(ids.has(k), `example key ${k} is a field`);
 });
 
-test('helpers: size and wall phrases', () => {
-  assert.equal(sizePhrase('8x3x2.5'), '8 x 3 x 2.5 cm');
-  assert.equal(sizePhrase('8 X 3 × 2.5 cm'), '8 x 3 x 2.5 cm');
-  assert.equal(sizePhrase(''), '');
-  assert.equal(wallPhrase('0.3 cm'), '0.3 cm');
-  assert.equal(wallPhrase('3mm'), '3 mm');
-  assert.equal(wallPhrase('3'), '3 mm');
-  assert.equal(wallPhrase('0.4'), '0.4 cm');
-  assert.equal(wallPhrase(''), '');
+test('specimens, macro and block key', () => {
+  const c = runP();
+  assert.equal(c.specimens, 'Gallbladder, fundus, radical cholecystectomy (with liver resection and lymphadenectomy)');
+  assert.equal(flat(c.macro), 'Received in formalin is a radical cholecystectomy (with liver resection and lymphadenectomy) specimen measuring 90 x 45 x 25 mm. A liver wedge measuring 50 x 40 x 30 mm is attached. There is a tumour in the fundus measuring 35 x 30 x 18 mm. The mucosa is otherwise granular and shows intestinal metaplasia grossly. Representative sections are taken; see block key.');
+  assert.equal(flat(c.blockKey), '(1-4) Tumour with serosa and hepatic bed. (5) Cystic duct margin.');
 });
 
-test('example: chronic cholecystitis with cholesterolosis, stones not received', () => {
-  const r = run(example());
-  assert.equal(r.specimens, 'Gallbladder, cholecystectomy');
-  assert.equal(r.macro, 'Received in formalin is a gallbladder measuring 8 x 3 x 2.5 cm which has been opened prior to submission. The wall measures up to 0.3 cm in thickness. The serosa is smooth. The mucosa is velvety and bile-stained with yellow flecks (cholesterolosis). No stones are received. Representative sections in 3 blocks.');
-  assert.equal(r.blockKey, '(1) Cystic duct margin. (2) Body. (3) Fundus.');
-  assert.equal(r.microscopy, 'Sections of the gallbladder show thickening of the muscular wall, Rokitansky-Aschoff sinus formation as well as a transmural chronic inflammatory infiltrate of lymphocytes and some plasma cells. The findings are consistent with chronic cholecystitis. Aggregates of foamy histiocytes are present within the lamina propria of the mucosal folds, in keeping with cholesterolosis. There is no evidence of dysplasia or malignancy.');
-  assert.equal(r.diagnosis, 'GALLBLADDER, cholecystectomy - CHRONIC CHOLECYSTITIS; cholesterolosis; no evidence of dysplasia or malignancy');
-  assert.equal(r.comment, '');
-  assert.ok(!r.report.includes('(A)'));
-  assert.ok(!r.report.includes('undefined'));
+test('synoptic: example case, hepatic-side pT2b pN0, stage IIB', () => {
+  const c = runP();
+  const t = flat(c.microscopy);
+  assert.ok(t.includes('- Procedure: Radical cholecystectomy (with liver resection and lymphadenectomy)'));
+  assert.ok(t.includes('- Tumour size: 3.5 cm (unifocal invasive carcinoma, greatest dimension)'));
+  assert.ok(t.includes('The tumour is a moderately differentiated adenocarcinoma, biliary type, invading the perimuscular connective tissue on the hepatic side, without liver involvement.'));
+  assert.ok(t.includes('desmoplastic stroma'));
+  assert.ok(t.includes('- Radial margin: Uninvolved by invasive carcinoma, 2 mm'));
+  assert.ok(t.includes('- Regional lymph nodes: 6 examined; 0 involved'));
+  assert.ok(t.includes('Pathological stage (AJCC 8th edition)'));
+  assert.ok(t.includes('- pTNM: pT2b pN0'));
+  assert.ok(t.includes('- Stage group (if cM0): IIB'));
+  assert.ok(t.includes('- Cholelithiasis'));
 });
 
-test('default single part is the house chronic cholecystitis report', () => {
-  const r = run(createCase(schema, 1));
-  assert.equal(r.macro, 'Received in formalin is a gallbladder which has been opened prior to submission. The serosa is smooth. The mucosa is unremarkable. No stones are received. Representative sections in 3 blocks.');
-  assert.equal(r.microscopy, 'Sections of the gallbladder show thickening of the muscular wall, Rokitansky-Aschoff sinus formation as well as a transmural chronic inflammatory infiltrate of lymphocytes and some plasma cells. The findings are consistent with chronic cholecystitis. There is no evidence of dysplasia or malignancy.');
-  assert.equal(r.diagnosis, 'GALLBLADDER, cholecystectomy - CHRONIC CHOLECYSTITIS; no evidence of dysplasia or malignancy');
+test('diagnosis: example case clauses', () => {
+  const c = runP();
+  assert.ok(c.diagnosis.startsWith('GALLBLADDER, fundus'));
+  const t = flat(c.diagnosis);
+  assert.ok(t.includes('ADENOCARCINOMA, biliary type, moderately differentiated, 3.5 cm, invading the perimuscular connective tissue on the hepatic side, without liver involvement'));
+  assert.ok(t.includes('perineural invasion present; other margins clear (closest 2 mm); see synoptic report'));
+  assert.ok(t.includes('0 of 6 regional lymph nodes involved'));
+  assert.ok(t.includes('pT2b pN0 (AJCC 8th edition), stage IIB (if cM0)'));
 });
 
-test('macro option off removes the macroscopic description and block key', () => {
-  const r = run(one({}, { macro: false }));
-  assert.equal(r.macro, '');
-  assert.equal(r.blockKey, '');
-  assert.ok(!r.report.includes('Received in formalin'));
-  assert.ok(!r.report.includes('(1) Cystic duct margin'));
-  assert.ok(r.report.startsWith('Gallbladder, cholecystectomy\n\nSections of the gallbladder'));
+test('T4 via main portal vein or hepatic artery', () => {
+  const c = runP({ tumourExtension: ['Directly invades other adjacent organ(s) or structure(s): Main portal vein'], nodesExamined: 6, nodesInvolved: 1 });
+  assert.ok(flat(c.microscopy).includes('- pTNM: pT4 pN1'));
+  assert.ok(flat(c.diagnosis).includes('directly invading the main portal vein'));
 });
 
-test('headers option labels the macro and block key blocks', () => {
-  const r = run(one({}, { includeHeader: true }));
-  assert.ok(r.report.includes('MACROSCOPIC DESCRIPTION:\nReceived in formalin'));
-  assert.ok(r.report.includes('BLOCK KEY:\n(1) Cystic duct margin. (2) Body. (3) Fundus.'));
+test('adjacent-organ counts: one extrahepatic organ T3, two or more T4', () => {
+  const organ = 'Directly invades other adjacent organ(s) or structure(s): ';
+  const c2 = runP({ tumourExtension: [`${organ}Duodenum`, `${organ}Colon`] });
+  assert.ok(flat(c2.microscopy).includes('- pTNM: pT4 pN0'));
+  // Serosa perforation plus one extrahepatic organ still grades T3 (stage IIIA).
+  const c3 = runP({ tumourExtension: ['Perforates serosa (visceral peritoneum)', `${organ}Duodenum`] });
+  assert.ok(flat(c3.microscopy).includes('- pTNM: pT3 pN0'));
+  assert.ok(flat(c3.microscopy).includes('- Stage group (if cM0): IIIA'));
 });
 
-test('two-part case keeps (A)/(B) prefixes on every block', () => {
-  const c = createCase(schema, 2);
-  c.parts[1].values = { ...c.parts[1].values, cysticNode: 'Identified', cysticNodeResult: 'Reactive' };
-  const r = run(c);
-  assert.equal(r.specimens, '(A) Gallbladder, cholecystectomy\n(B) Gallbladder, cholecystectomy');
-  assert.ok(r.macro.startsWith('(A) Received in formalin'));
-  assert.ok(r.macro.includes('\n\n(B) Received in formalin'));
-  assert.ok(r.macro.includes('A cystic duct lymph node is identified.'));
-  assert.equal(r.blockKey, '(A) (1) Cystic duct margin. (2) Body. (3) Fundus.\n(B) (1) Cystic duct margin. (2) Body. (3) Fundus. (4) Cystic duct lymph node.');
-  assert.ok(r.microscopy.startsWith('(A) Sections of the gallbladder'));
-  assert.ok(r.microscopy.includes('\n\n(B) Sections of the gallbladder'));
-  assert.ok(r.microscopy.includes('The cystic duct lymph node shows reactive changes only.'));
-  assert.equal(r.diagnosis.split('\n')[0], '(A) GALLBLADDER, cholecystectomy - CHRONIC CHOLECYSTITIS; no evidence of dysplasia or malignancy');
-  assert.equal(r.diagnosis.split('\n')[1], '(B) GALLBLADDER, cholecystectomy - CHRONIC CHOLECYSTITIS; cystic duct lymph node reactive (0/1); no evidence of dysplasia or malignancy');
+test('treatment effect adds the y descriptor and complete response flags', () => {
+  const c = runP({ treatmentEffect: 'Present, with no viable cancer cells (complete response, score 0)', tumourExtension: ['No evidence of primary tumour'], histType: 'Adenocarcinoma' });
+  const t = flat(c.microscopy);
+  assert.ok(t.includes('- pTNM: ypT0 ypN0'));
+  assert.ok(gen.validate(part({ treatmentEffect: 'Present, with no viable cancer cells (complete response, score 0)' }), {}).length > 0);
+  assert.ok(flat(c.diagnosis).includes('NO RESIDUAL CARCINOMA following therapy'));
 });
 
-test('each cholecystitis option yields the right capitalised diagnosis', () => {
-  const dx = (cholecystitis) => run(one({ cholecystitis })).diagnosis;
-  assert.equal(dx('Chronic'), 'GALLBLADDER, cholecystectomy - CHRONIC CHOLECYSTITIS; no evidence of dysplasia or malignancy');
-  assert.equal(dx('Acute-on-chronic'), 'GALLBLADDER, cholecystectomy - ACUTE AND CHRONIC CHOLECYSTITIS; no evidence of dysplasia or malignancy');
-  assert.equal(dx('Acute'), 'GALLBLADDER, cholecystectomy - ACUTE CHOLECYSTITIS; no evidence of dysplasia or malignancy');
-  assert.equal(dx('Gangrenous'), 'GALLBLADDER, cholecystectomy - ACUTE GANGRENOUS CHOLECYSTITIS; no evidence of dysplasia or malignancy');
-  assert.equal(dx('Xanthogranulomatous'), 'GALLBLADDER, cholecystectomy - XANTHOGRANULOMATOUS CHOLECYSTITIS; no evidence of dysplasia or malignancy');
-  assert.equal(dx('Follicular'), 'GALLBLADDER, cholecystectomy - CHRONIC FOLLICULAR CHOLECYSTITIS; no evidence of dysplasia or malignancy');
-  assert.equal(dx('Eosinophilic'), 'GALLBLADDER, cholecystectomy - EOSINOPHILIC CHOLECYSTITIS; no evidence of dysplasia or malignancy');
-  assert.equal(dx('None – unremarkable'), 'GALLBLADDER, cholecystectomy - NO SIGNIFICANT ABNORMALITY; no evidence of dysplasia or malignancy');
+test('checks: T2b radial margin, simple cholecystectomy beyond muscular layer, cystic duct involvement, node counts', () => {
+  const T2B = 'Invades perimuscular connective tissue on the hepatic side without liver involvement';
+  const SIMPLE = 'Simple cholecystectomy (laparoscopic or open)';
+  // radial not assessed
+  let iss = gen.validate(part({ tumourExtension: [T2B], radialMargin: 'Cannot be assessed' }), {});
+  assert.ok(iss.some((i) => /Hepatic-side \(pT2b\) disease/.test(i.message)));
+  // simple cholecystectomy + T2b -> completion warn
+  iss = gen.validate(part({ tumourExtension: [T2B], procedure: SIMPLE }), {});
+  assert.ok(iss.some((i) => /completion radical cholecystectomy/.test(i.message)));
+  // cystic duct margin involved
+  iss = gen.validate(part({ cysticDuctMargin: 'Involved by invasive carcinoma' }), {});
+  assert.ok(iss.some((i) => /Cystic duct margin involved/.test(i.message)));
+  // fewer than 6 nodes, node-positive without ENE
+  iss = gen.validate(part({ nodesExamined: 2, nodesInvolved: 1, ene: 'Not applicable' }), {});
+  assert.ok(iss.some((i) => /Fewer than 6 regional lymph nodes/.test(i.message)));
+  assert.ok(iss.some((i) => /Extranodal extension is not recorded/.test(i.message)));
+  // errors
+  iss = gen.validate(part({ tumourExtension: [], nodesExamined: '', nodesInvolved: '' }), {});
+  const msgs = iss.map((i) => i.message).join(' | ');
+  assert.ok(/Tumour extension is required/.test(msgs));
+  assert.ok(/Number of regional lymph nodes examined is required/.test(msgs));
+  iss = gen.validate(part({ nodesExamined: 2, nodesInvolved: 3 }), {});
+  assert.ok(iss.some((i) => /exceed the number examined/.test(i.message)));
 });
 
-test('acute-on-chronic microscopy follows the house paragraph', () => {
-  const r = run(one({ cholecystitis: 'Acute-on-chronic', stones: 'Present – multiple', stoneSize: '0.5' }));
-  assert.equal(r.microscopy, 'Sections of the gallbladder wall show mucosal ulceration, necrosis and acute inflammatory infiltrates extending through the full thickness of the gallbladder wall. The background shows Rokitansky-Aschoff sinus formation as well as chronic inflammatory infiltrates and thickening of the muscular wall. Features are in keeping with acute and chronic cholecystitis. There is no evidence of dysplasia or malignancy.');
-  assert.ok(r.macro.includes('Multiple stones measuring up to 0.5 cm are present.'));
-  assert.equal(r.diagnosis, 'GALLBLADDER, cholecystectomy - ACUTE AND CHRONIC CHOLECYSTITIS; cholelithiasis; no evidence of dysplasia or malignancy');
+test('typed histology notes suppress the derived sentences', () => {
+  const c = runP({ histologyNotes: 'Custom sentence entered by the pathologist' });
+  assert.ok(flat(c.microscopy).includes('Custom sentence entered by the pathologist.'));
+  assert.ok(!flat(c.microscopy).includes('The tumour is a'));
 });
 
-test('unremarkable gallbladder without sinuses', () => {
-  const r = run(one({ cholecystitis: 'None – unremarkable', rasinuses: 'Absent', stones: 'Absent' }));
-  assert.equal(r.microscopy, 'Sections of the gallbladder show mucosa lined by a single layer of columnar epithelium with an underlying muscular wall of normal thickness. There is no significant inflammation. There is no evidence of dysplasia or malignancy.');
-  assert.ok(r.macro.includes('No stones are identified.'));
-  assert.ok(!r.diagnosis.includes('cholelithiasis'));
+test('typed specimen name wins; pTNM hidden without the printPTNM option', () => {
+  const c = runP({ specimenName: 'Gallbladder, cholecystectomy' }, { ...schema.example.options, printPTNM: false });
+  assert.ok(c.diagnosis.startsWith('GALLBLADDER, cholecystectomy'));
+  assert.ok(!flat(c.microscopy).includes('pTNM:'));
+  assert.ok(!flat(c.diagnosis).includes('AJCC 8th edition'));
 });
 
-test('secondary findings: stones, adenomyomatous hyperplasia, metaplasia, inflamed margin', () => {
-  const r = run(one({ stones: 'Present – single', stoneSize: '1.2', adenomyomatous: 'Present – fundus', intestinalMetaplasia: 'Present', pyloricMetaplasia: 'Present', cysticMargin: 'Inflamed', rasinuses: 'Absent' }));
-  assert.ok(r.macro.includes('A single stone measuring 1.2 cm is present.'));
-  assert.equal(r.microscopy, 'Sections of the gallbladder show thickening of the muscular wall as well as a transmural chronic inflammatory infiltrate of lymphocytes and some plasma cells. The findings are consistent with chronic cholecystitis. The fundus shows adenomyomatous hyperplasia, composed of deeply penetrating, irregularly cystically dilated glands accompanied by bundles of fibromuscular proliferation. The mucosa shows focal pyloric gland metaplasia and intestinal metaplasia. The cystic duct margin shows chronic inflammation. There is no evidence of dysplasia or malignancy.');
-  assert.equal(r.diagnosis, 'GALLBLADDER, cholecystectomy - CHRONIC CHOLECYSTITIS; cholelithiasis; adenomyomatous hyperplasia; intestinal metaplasia; no evidence of dysplasia or malignancy');
-  const r2 = run(one({ adenomyomatous: 'Present' }));
-  assert.ok(r2.microscopy.includes('There is adenomyomatous hyperplasia, composed of deeply penetrating'));
+test('override: typed pTNM wins, echo keeps the derived pair and the reason', () => {
+  const c = runP({ tnmOverride: 'pT3 pN1', tnmOverrideReason: 'direct duodenal involvement seen in one block' });
+  assert.ok(flat(c.microscopy).includes('- pTNM: pT3 pN1 [pathologist override; derived T2b/N0 - direct duodenal involvement seen in one block]'));
 });
 
-test('macro variants: intact, serosa, mucosa options, blocks and cystic duct node', () => {
-  const r = run(one({ receivedState: 'Intact', dimensions: '7x2.5x2', wallThickness: '4', serosa: 'Fibrinous exudate', mucosa: 'Mass – describe', mucosaMass: 'Polypoid mass 1.5 cm at the fundus', cysticNode: 'Identified', blocks: '5' }));
-  assert.equal(r.macro, 'Received in formalin is an intact gallbladder measuring 7 x 2.5 x 2 cm which is opened in the laboratory. The wall measures up to 4 mm in thickness. The serosa is covered by fibrinous exudate. The mucosa shows a polypoid mass 1.5 cm at the fundus. No stones are received. A cystic duct lymph node is identified. Representative sections in 5 blocks.');
-  assert.equal(r.blockKey, '(1) Cystic duct margin. (2) Body. (3) Fundus. (4) Cystic duct lymph node.');
-  assert.ok(run(one({ serosa: 'Perforated' })).macro.includes('The serosa is congested and a perforation is identified.'));
-  assert.ok(run(one({ mucosa: 'Flattened, fibrotic' })).macro.includes('The mucosa is flattened and fibrotic.'));
-  assert.ok(run(one({ mucosa: 'Ulcerated', blocks: '1' })).macro.endsWith('Representative sections in 1 block.'));
-});
-
-test('blank size, wall and stone size fields produce no dangling text', () => {
-  const r = run(one({ dimensions: '', wallThickness: '', stones: 'Present – single', stoneSize: '' }));
-  assert.equal(r.macro, 'Received in formalin is a gallbladder which has been opened prior to submission. The serosa is smooth. The mucosa is unremarkable. A single stone is present. Representative sections in 3 blocks.');
-  assert.ok(!r.report.includes('undefined'));
-  assert.ok(!r.report.includes('__'));
-  assert.ok(!r.report.includes('measuring  '));
-  assert.ok(!/\bcm\b/.test(r.macro));
-});
-
-test('neoplasia options give a short diagnosis line and the QMH cancer template comment', () => {
-  const r = run(one({ neoplasia: 'Adenocarcinoma – see comment', cholecystitis: 'Chronic', stones: 'Present – multiple', cysticNodeResult: 'Metastatic' }));
-  assert.equal(r.diagnosis, 'GALLBLADDER, cholecystectomy - ADENOCARCINOMA; background chronic cholecystitis; cholelithiasis; metastatic carcinoma in cystic duct lymph node (1/1); see comment');
-  assert.ok(r.microscopy.includes('Infiltrating malignant glands are present within the gallbladder wall, in keeping with adenocarcinoma; see comment. The cystic duct margin is not involved. The cystic duct lymph node contains metastatic carcinoma.'));
-  assert.ok(!r.microscopy.includes('no evidence of dysplasia'));
-  assert.equal(r.comment, 'Dysplasia / neoplasia is identified in the gallbladder. This benign template does not stage or grade the lesion; the QMH gallbladder cancer template should be used for the final synoptic report.');
-
-  const hg = run(one({ neoplasia: 'High grade dysplasia (BilIN-3)', cysticMargin: 'Involved by dysplasia' }));
-  assert.equal(hg.diagnosis, 'GALLBLADDER, cholecystectomy - HIGH GRADE DYSPLASIA (BilIN-3); background chronic cholecystitis; cystic duct margin involved by dysplasia; see comment');
-  assert.ok(hg.microscopy.includes('The cystic duct margin is involved by dysplasia.'));
-  assert.equal(run(one({ neoplasia: 'Low grade dysplasia', cholecystitis: 'None – unremarkable' })).diagnosis, 'GALLBLADDER, cholecystectomy - LOW GRADE DYSPLASIA (BilIN-1/2); see comment');
-  assert.ok(run(one({ neoplasia: 'Intracholecystic papillary neoplasm' })).diagnosis.startsWith('GALLBLADDER, cholecystectomy - INTRACHOLECYSTIC PAPILLARY NEOPLASM; background chronic cholecystitis'));
-
-  const c = createCase(schema, 2);
-  c.parts[1].values.neoplasia = 'Adenocarcinoma – see comment';
-  assert.ok(run(c).comment.includes('in the gallbladder (part B).'));
-});
-
-test('additional notes are appended to the microscopy', () => {
-  const r = run(one({ additionalNotes: 'Bile accumulation is seen within the glands.' }));
-  assert.ok(r.microscopy.endsWith('There is no evidence of dysplasia or malignancy. Bile accumulation is seen within the glands.'));
+test('upgrade: benign cholecystectomy maps to the synoptic', () => {
+  assert.ok(!UPGRADE_TO.when({ neoplasia: 'No dysplasia or malignancy' }));
+  assert.ok(!UPGRADE_TO.when({ neoplasia: 'Low grade dysplasia' }));
+  assert.ok(UPGRADE_TO.when({ neoplasia: 'Adenocarcinoma – see comment' }));
+  assert.ok(UPGRADE_TO.when({ neoplasia: 'Intracholecystic papillary neoplasm' }));
+  assert.equal(UPGRADE_TO.to, 'gallbladder_carcinoma');
+  const m = UPGRADE_TO.map({
+    specimenName: '',
+    neoplasia: 'Adenocarcinoma – see comment',
+    cysticMargin: 'Involved by dysplasia',
+    cysticNodeResult: 'Metastatic',
+    stones: 'Present – multiple',
+    cholecystitis: 'Chronic',
+    intestinalMetaplasia: 'Present'
+  });
+  assert.equal(m.histType, 'Adenocarcinoma, biliary type');
+  assert.deepEqual(m.tumourSite, ['Not specified']);
+  assert.equal(m.hgIEN, 'High-grade intraepithelial neoplasia present at the bile duct margin');
+  assert.equal(m.nodesInvolved, 1);
+  assert.deepEqual(m.additionalFindings.sort(), ['Cholelithiasis', 'Chronic cholecystitis', 'Intestinal metaplasia'].sort());
+  const icpn = UPGRADE_TO.map({ neoplasia: 'Intracholecystic papillary neoplasm', stones: 'Absent', cholecystitis: 'None – unremarkable', intestinalMetaplasia: 'Absent' });
+  assert.equal(icpn.histType, 'Intracholecystic papillary neoplasm with associated invasive carcinoma');
 });

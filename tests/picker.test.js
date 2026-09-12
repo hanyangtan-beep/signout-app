@@ -93,7 +93,7 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   assert.equal(gi.items.at(-1).planned, true);
   const giBottom = bottom.find((g) => g.system === 'GI').items;
   assert.ok(giBottom.findIndex((t) => t.id === 'colon_resection') < giBottom.findIndex((t) => t.id === 'gastric_carcinoma'));
-  assert.ok(giBottom.some((t) => t.id === 'appendix_carcinoma' && t.planned) && giBottom.some((t) => t.id === 'gi_net' && t.planned));
+  assert.ok(giBottom.some((t) => t.id === 'appendix_carcinoma' && !t.planned) && giBottom.some((t) => t.id === 'gi_net' && t.planned));
   // every built template appears exactly once across the two rows
   const all = [...top, ...bottom].flatMap((g) => g.items).filter((t) => !t.planned).map((t) => t.id);
   assert.deepEqual(all.sort(), manifest.map((t) => t.id).sort());

@@ -1,17 +1,17 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadPlanned, loadTemplate } from './registry.js?v=mtyjfzn1';
-import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtyjfzn1';
+import { loadManifest, loadPlanned, loadTemplate } from './registry.js?v=mtykl8g5';
+import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtykl8g5';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mtyjfzn1';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtyjfzn1';
-import { loadConfig, saveConfig } from './config.js?v=mtyjfzn1';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtyjfzn1';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtyjfzn1';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtyjfzn1';
-import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtyjfzn1';
-import { applyMacroToCase } from './macroparse.js?v=mtyjfzn1';
+} from './engine.js?v=mtykl8g5';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtykl8g5';
+import { loadConfig, saveConfig } from './config.js?v=mtykl8g5';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtykl8g5';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtykl8g5';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtykl8g5';
+import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtykl8g5';
+import { applyMacroToCase } from './macroparse.js?v=mtykl8g5';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -296,6 +296,36 @@ async function stageThisPart(i) {
   state.activePart = separate ? parts.length - 1 : i + 1;
   render();
   toast(separate ? `Part ${np.label}: ${s.name} added; sentinel node counts from part ${part.label}` : `Part ${np.label}: ${s.name} linked to the frozen section`);
+}
+
+/**
+ * "Upgrade this part": a benign resection part whose generator exports `UPGRADE_TO` and owes
+ * its `when(values)` tick (e.g. an appendicectomy with a ticked LAMN / adenocarcinoma) becomes
+ * the paired synoptic template in place; `UPGRADE_TO.map(values)` seeds the synoptic fields.
+ */
+function canUpgrade(i) {
+  const part = state.caseState.parts[i];
+  if (!part || part.linked) return null;
+  const id = templateIdOf(state.caseState, part);
+  const g = state.templates[id]?.generator;
+  const up = g?.UPGRADE_TO;
+  return up && typeof up.when === 'function' && up.when(part.values || {}) ? { part, id, up, g } : null;
+}
+
+async function upgradeThisPart(i) {
+  const hit = canUpgrade(i);
+  if (!hit) return;
+  const { part, up } = hit;
+  const { schema: s, generator: g } = await ensureTemplate(up.to).catch((err) => { toast(err.message); return null; });
+  if (!s) return;
+  noteUsed(up.to);
+  markDirty();
+  const fresh = createPart(s, 0);
+  const values = { ...fresh.values, ...(typeof up.map === 'function' ? up.map(part.values) || {} : {}) };
+  state.caseState.parts[i] = { ...fresh, label: part.label, templateId: up.to, values };
+  syncPrimary();
+  render();
+  toast(`Part ${part.label}: upgraded to ${s.shortName || s.name}`);
 }
 
 function removePart(i) {
@@ -735,6 +765,7 @@ function renderPanel() {
     el('h3', { text: part.linked ? `Part ${part.label} (synoptic, linked to the frozen section)` : `Part ${part.label}` }),
     picker,
     el('div', { class: 'part-actions' },
+      canUpgrade(i) ? el('button', { type: 'button', class: 'btn small', text: 'Upgrade this part', title: 'Switch this part to the synoptic template for the ticked neoplasm, carrying over what the benign form already answered', onclick: () => upgradeThisPart(i).catch((err) => { toast(err.message); render(); }) }) : null,
       canStage(i) ? el('button', { type: 'button', class: 'btn small', text: pairSeparate(part.values.scenario) ? 'Add breast synoptic' : 'Stage this part', title: pairSeparate(part.values.scenario) ? 'Add the breast carcinoma resection as the next part, with the sentinel node counts pre-filled' : 'Add the paired cancer synoptic under the same letter, pre-filled from the frozen section', onclick: () => stageThisPart(i).catch((err) => { toast(err.message); render(); }) }) : null,
       i > 0 && !part.linked ? el('button', { type: 'button', class: 'btn ghost small', text: 'Same as previous', onclick: () => copyFromPrevious(i) }) : null,
       el('button', { type: 'button', class: 'btn ghost small', text: 'Reset', onclick: () => resetPart(i) }),

@@ -243,4 +243,30 @@ export function diagnosis(part) {
   return `(${part.label}) GALLBLADDER, cholecystectomy - ${clauses.join('; ')}`;
 }
 
-export default { specimenName, macro, blockKey, microscopy, diagnosis };
+// Cross-template upgrade: when the case turned out malignant or preinvasive, offer
+// "Upgrade this part" into the gallbladder carcinoma synoptic (generators/gallbladder_carcinoma.js)
+// so the part keeps its label and macro while the synoptic fields are pre-filled.
+export const UPGRADE_TO = {
+  to: 'gallbladder_carcinoma',
+  label: 'Upgrade this part',
+  when: (v) => /^Adenocarcinoma|^Intracholecystic papillary neoplasm/.test(v.neoplasia || ''),
+  map: (v) => ({
+    specimenName: (v.specimenName || '').trim(),
+    procedure: 'Simple cholecystectomy (laparoscopic or open)',
+    tumourSite: ['Not specified'],
+    histType: /^Intracholecystic papillary neoplasm/.test(v.neoplasia || '')
+      ? 'Intracholecystic papillary neoplasm with associated invasive carcinoma'
+      : 'Adenocarcinoma, biliary type',
+    hgIEN: /^Involved by dysplasia/.test(v.cysticMargin || '') ? 'High-grade intraepithelial neoplasia present at the bile duct margin' : '',
+    nodesExamined: v.cysticNodeResult === 'Metastatic' ? 1 : '',
+    nodesInvolved: v.cysticNodeResult === 'Metastatic' ? 1 : '',
+    additionalFindings: [
+      v.intestinalMetaplasia === 'Present' ? 'Intestinal metaplasia' : '',
+      /^Present/.test(v.stones || '') ? 'Cholelithiasis' : '',
+      { 'Chronic': 'Chronic cholecystitis', 'Acute': 'Acute cholecystitis', 'Acute-on-chronic': 'Acute cholecystitis' }[v.cholecystitis || ''] || '',
+      v.mucosa === 'Flattened, fibrotic' && /porcelain/i.test(v.additionalNotes || '') ? 'Diffuse calcification (porcelain gallbladder)' : ''
+    ].filter(Boolean)
+  })
+};
+
+export default { specimenName, macro, blockKey, microscopy, diagnosis, UPGRADE_TO };

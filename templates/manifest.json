@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 52,
+  "count": 54,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -2614,6 +2614,66 @@
       "schemaPath": "schemas/gastric_carcinoma.json"
     },
     {
+      "id": "appendix_carcinoma",
+      "name": "Appendiceal tumour resection (adenocarcinoma, LAMN / HAMN, goblet cell adenocarcinoma)",
+      "shortName": "Appendix · cancer resection",
+      "label": "Appendix Ca",
+      "organ": "Appendix",
+      "system": "GI",
+      "kind": "cancer resection",
+      "rank": 46,
+      "aliases": [
+        "appendicectomy",
+        "appendectomy",
+        "appendix cancer",
+        "appendiceal adenocarcinoma",
+        "lamn",
+        "hamn",
+        "goblet cell",
+        "pseudomyxoma",
+        "right hemicolectomy appendix"
+      ],
+      "match": {
+        "site": [
+          "appendix",
+          "appendiceal",
+          "caecum base"
+        ],
+        "procedure": [
+          "appendicectomy",
+          "appendectomy",
+          "right hemicolectomy",
+          "right colectomy"
+        ],
+        "clinical": [
+          "appendiceal carcinoma",
+          "appendiceal adenocarcinoma",
+          "lamn",
+          "hamn",
+          "goblet cell adenocarcinoma",
+          "pseudomyxoma peritonei"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          },
+          {
+            "field": "procedure",
+            "from": "options"
+          },
+          {
+            "field": "tumourSite",
+            "from": "options"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "appendix_carcinoma",
+      "generatorPath": "generators/appendix_carcinoma.js",
+      "schemaPath": "schemas/appendix_carcinoma.json"
+    },
+    {
       "id": "breast_dcis",
       "name": "Breast DCIS resection",
       "shortName": "Breast · DCIS resection",
@@ -2720,6 +2780,57 @@
       "generator": "phyllodes",
       "generatorPath": "generators/phyllodes.js",
       "schemaPath": "schemas/phyllodes.json"
+    },
+    {
+      "id": "gallbladder_carcinoma",
+      "name": "Gallbladder carcinoma resection",
+      "shortName": "Gallbladder · cancer resection",
+      "label": "Gallbladder Ca",
+      "organ": "Gallbladder",
+      "system": "Hepatobiliary",
+      "kind": "cancer resection",
+      "rank": 47,
+      "aliases": [
+        "cholecystectomy",
+        "gallbladder cancer",
+        "icpn",
+        "gb carcinoma",
+        "radical cholecystectomy"
+      ],
+      "match": {
+        "site": [
+          "gallbladder",
+          "cystic duct",
+          "gall bladder"
+        ],
+        "procedure": [
+          "cholecystectomy"
+        ],
+        "clinical": [
+          "gallbladder carcinoma",
+          "intracholecystic papillary neoplasm",
+          "icpn",
+          "porcelain gallbladder"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          },
+          {
+            "field": "procedure",
+            "from": "options"
+          },
+          {
+            "field": "tumourSite",
+            "from": "options"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "gallbladder_carcinoma",
+      "generatorPath": "generators/gallbladder_carcinoma.js",
+      "schemaPath": "schemas/gallbladder_carcinoma.json"
     },
     {
       "id": "generic",

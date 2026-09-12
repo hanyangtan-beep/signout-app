@@ -252,4 +252,43 @@ export function diagnosis(part, ctx) {
   return `(${part.label}) ${organPhrase(part, ctx)} - ${clauses.join('; ')}`;
 }
 
-export default { specimenName, macro, blockKey, microscopy, diagnosis };
+/**
+ * "Upgrade this part": the benign appendicectomy hands off to the appendiceal tumour
+ * synoptic when a reportable neoplasm is ticked (LAMN, invasive adenocarcinoma or goblet
+ * cell adenocarcinoma; the well-differentiated NET and serrated lesion carry their own
+ * comments). Maps what the benign form can answer; staging items stay at the defaults.
+ */
+export const UPGRADE_TO = {
+  to: 'appendix_carcinoma',
+  when: (v) => /appendiceal mucinous neoplasm|Adenocarcinoma|Goblet cell adenocarcinoma/.test(v.neoplasia || ''),
+  map: (v) => {
+    const isLAMN = /^Low grade appendiceal mucinous neoplasm/.test(v.neoplasia || '');
+    const out = {};
+    if (isLAMN) out.histType = 'Low-grade appendiceal mucinous neoplasm';
+    else if (/^Goblet cell adenocarcinoma/.test(v.neoplasia || '')) out.histType = 'Goblet cell adenocarcinoma';
+    else out.histType = 'Adenocarcinoma';
+    if (isLAMN) out.grade = 'Not applicable';
+    const m = /^([0-9]+(?:\.[0-9]+)?)\s*(cm|mm)/i.exec(String(v.tumourSize || '').trim());
+    if (m) out.tumourSizeMm = /cm/i.test(m[2]) ? Math.round(parseFloat(m[1]) * 10) : parseFloat(m[1]);
+    if (isLAMN) {
+      if (v.mesoMargin === 'Involved') out.mesentericMargin = 'Involved by low-grade appendiceal mucinous neoplasm';
+      else if (v.mesoMargin === 'Uninvolved') out.mesentericMargin = 'Uninvolved by appendiceal mucinous neoplasm (specify distance)';
+      else if (v.mesoMargin === 'Not included') out.mesentericMargin = 'Cannot be assessed';
+      if (v.proximalMargin === 'Involved') out.proximalMargin = 'Involved by low-grade appendiceal mucinous neoplasm';
+      else if (v.proximalMargin && v.proximalMargin !== 'Involved') out.proximalMargin = 'Uninvolved by appendiceal mucinous neoplasm (specify distance)';
+    } else {
+      if (v.mesoMargin === 'Involved') out.mesentericMargin = 'Involved by invasive carcinoma';
+      else if (v.mesoMargin === 'Uninvolved') out.mesentericMargin = 'Uninvolved by invasive carcinoma (specify distance)';
+      else if (v.mesoMargin === 'Not included') out.mesentericMargin = 'Cannot be assessed';
+      if (v.proximalMargin === 'Involved') out.proximalMargin = 'Involved by invasive carcinoma';
+      else if (v.proximalMargin && v.proximalMargin !== 'Involved') out.proximalMargin = 'Uninvolved by invasive carcinoma (specify distance)';
+    }
+    const findings = [];
+    if (v.inflammation && v.inflammation !== 'No acute inflammation - unremarkable') findings.push('Appendicitis');
+    if (v.perforation === 'Present') findings.push('Perforation, not at the tumour');
+    if (findings.length) out.additionalFindings = findings;
+    return out;
+  }
+};
+
+export default { specimenName, macro, blockKey, microscopy, diagnosis, UPGRADE_TO };
