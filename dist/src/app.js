@@ -1,17 +1,17 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadTemplate } from './registry.js?v=mtxtpeg9';
-import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtxtpeg9';
+import { loadManifest, loadTemplate } from './registry.js?v=mtxvvl5m';
+import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtxvvl5m';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mtxtpeg9';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtxtpeg9';
-import { loadConfig, saveConfig } from './config.js?v=mtxtpeg9';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtxtpeg9';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtxtpeg9';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtxtpeg9';
-import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtxtpeg9';
-import { applyMacroToCase } from './macroparse.js?v=mtxtpeg9';
+} from './engine.js?v=mtxvvl5m';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtxvvl5m';
+import { loadConfig, saveConfig } from './config.js?v=mtxvvl5m';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtxvvl5m';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtxvvl5m';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtxvvl5m';
+import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtxvvl5m';
+import { applyMacroToCase } from './macroparse.js?v=mtxvvl5m';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {

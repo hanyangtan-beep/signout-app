@@ -266,19 +266,225 @@
       }
     },
     {
+      "id": "ovSide",
+      "label": "Side",
+      "type": "select",
+      "group": "Ovarian / adnexal mass",
+      "options": [
+        "",
+        "Right",
+        "Left",
+        "Bilateral"
+      ],
+      "optionLabels": {
+        "": "Not stated"
+      },
+      "default": "",
+      "help": "Two parts is the usual LIS pattern; Bilateral only when both adnexa arrive in one container.",
+      "showIf": {
+        "field": "scenario",
+        "is": "Ovarian / adnexal mass"
+      }
+    },
+    {
+      "id": "ovSpecimen",
+      "label": "Specimen",
+      "type": "select",
+      "group": "Ovarian / adnexal mass",
+      "options": [
+        "",
+        "Salpingo-oophorectomy",
+        "Oophorectomy",
+        "Ovarian cystectomy",
+        "Biopsy of ovarian mass",
+        "Adnexal mass, NOS"
+      ],
+      "optionLabels": {
+        "": "Generic (use the fields above)"
+      },
+      "default": "",
+      "help": "Picking a specimen switches the macro and the diagnosis line to the ovarian form; leave blank to keep the generic wording.",
+      "showIf": {
+        "field": "scenario",
+        "is": "Ovarian / adnexal mass"
+      }
+    },
+    {
+      "id": "ovReceived",
+      "label": "Received",
+      "type": "select",
+      "group": "Ovarian / adnexal mass",
+      "options": [
+        "Intact",
+        "Ruptured, capsule defect present on receipt",
+        "Fragmented (cystectomy or morcellated)",
+        "Opened by surgeon"
+      ],
+      "default": "Intact",
+      "showIf": {
+        "field": "scenario",
+        "is": "Ovarian / adnexal mass"
+      }
+    },
+    {
+      "id": "ovSizeMm",
+      "label": "Greatest dimension (mm)",
+      "type": "number",
+      "group": "Ovarian / adnexal mass",
+      "default": "",
+      "min": 0,
+      "showIf": {
+        "field": "scenario",
+        "is": "Ovarian / adnexal mass"
+      }
+    },
+    {
+      "id": "ovWeightG",
+      "label": "Weight (g)",
+      "type": "number",
+      "group": "Ovarian / adnexal mass",
+      "default": "",
+      "min": 0,
+      "showIf": {
+        "field": "scenario",
+        "is": "Ovarian / adnexal mass"
+      }
+    },
+    {
+      "id": "ovSurface",
+      "label": "Outer surface",
+      "type": "select",
+      "group": "Ovarian / adnexal mass",
+      "options": [
+        "Smooth",
+        "Excrescences or papillary projections",
+        "Adhesions",
+        "Not assessable"
+      ],
+      "default": "Smooth",
+      "showIf": {
+        "field": "scenario",
+        "is": "Ovarian / adnexal mass"
+      }
+    },
+    {
+      "id": "ovCut",
+      "label": "Cut surface",
+      "type": "multiselect",
+      "group": "Ovarian / adnexal mass",
+      "options": [
+        "Unilocular cyst",
+        "Multilocular cyst",
+        "Serous fluid",
+        "Mucinous contents",
+        "Sebaceous material and hair",
+        "Chocolate-brown fluid",
+        "Solid areas",
+        "Papillary excrescences (inner surface)",
+        "Necrosis",
+        "Haemorrhage",
+        "Torsion (haemorrhagic infarction)"
+      ],
+      "default": [],
+      "showIf": {
+        "field": "scenario",
+        "is": "Ovarian / adnexal mass"
+      }
+    },
+    {
+      "id": "ovBlocks",
+      "label": "Frozen blocks (ovarian form)",
+      "type": "number",
+      "group": "Ovarian / adnexal mass",
+      "default": "1",
+      "min": 1,
+      "showIf": {
+        "field": "ovSpecimen",
+        "truthy": true
+      }
+    },
+    {
       "id": "ovaryResult",
       "label": "Frozen result",
       "type": "select",
       "options": [
         "Benign",
+        "Non-neoplastic",
         "Borderline",
+        "Borderline, at least (invasion cannot be excluded)",
         "Malignant",
+        "Malignant, favour metastatic",
         "Deferred"
       ],
       "optionLabels": {
+        "Borderline, at least (invasion cannot be excluded)": "At least borderline (invasion cannot be excluded)",
         "Deferred": "Defer to paraffin"
       },
       "default": "Benign",
+      "showIf": {
+        "field": "scenario",
+        "is": "Ovarian / adnexal mass"
+      },
+      "group": "Ovarian / adnexal mass"
+    },
+    {
+      "id": "ovType",
+      "label": "Type / favoured diagnosis",
+      "type": "select",
+      "group": "Ovarian / adnexal mass",
+      "options": [
+        "",
+        "serous cystadenoma or adenofibroma",
+        "mucinous cystadenoma",
+        "mature cystic teratoma",
+        "endometriotic cyst",
+        "follicular or corpus luteum cyst",
+        "fibroma / thecoma",
+        "Brenner tumour",
+        "struma ovarii",
+        "serous borderline tumour",
+        "mucinous borderline tumour",
+        "seromucinous borderline tumour",
+        "high-grade serous carcinoma",
+        "low-grade serous carcinoma",
+        "endometrioid carcinoma",
+        "clear cell carcinoma",
+        "mucinous carcinoma",
+        "carcinosarcoma",
+        "adult granulosa cell tumour",
+        "dysgerminoma",
+        "yolk sac tumour",
+        "immature teratoma",
+        "metastatic adenocarcinoma, favour gastrointestinal / appendiceal",
+        "metastatic carcinoma, primary not determined",
+        "lymphoma, favour",
+        "other (specify)"
+      ],
+      "optionLabels": {
+        "": "Not stated (or type below)",
+        "other (specify)": "Other (type in the box below)"
+      },
+      "default": "",
+      "help": "Frozen favoured type. \"Other\" or blank falls back to the free-text tumour type below.",
+      "showIf": {
+        "field": "scenario",
+        "is": "Ovarian / adnexal mass"
+      }
+    },
+    {
+      "id": "ovCaveat",
+      "label": "Caveats",
+      "type": "multiselect",
+      "group": "Ovarian / adnexal mass",
+      "options": [
+        "Mucinous — heterogeneity and metastasis caveat",
+        "Borderline — invasion cannot be excluded on frozen",
+        "Necrotic / autolysed — limited assessment",
+        "Frozen artefact — deferred",
+        "None (suppress the automatic mucinous caveat)"
+      ],
+      "default": [],
+      "help": "The mucinous caveat is added automatically for mucinous types; tick None to suppress it.",
       "showIf": {
         "field": "scenario",
         "is": "Ovarian / adnexal mass"

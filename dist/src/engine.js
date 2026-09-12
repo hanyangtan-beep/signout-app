@@ -1,7 +1,7 @@
 // Generic schema engine: builds part defaults, evaluates visibility, and assembles
 // the report from a schema + generator module. Runs unchanged in the browser and in Node.
 
-import { applyStyle } from './style.js?v=mtxtpeg9';
+import { applyStyle } from './style.js?v=mtxvvl5m';
 
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -325,7 +325,10 @@ export function generateCase(templates, caseState) {
     if (summary && summary.trim() !== '') diagnosis += `\n\n${styled(id, summary)}`;
   }
 
-  const single = parts.length === 1 && !templates[ids[0]].schema.alwaysLetter && !options.alwaysLetter;
+  // A generator may print its own extra per-letter lines (ovary: contralateral adnexa, omentum, nodes
+  // typed into `otherParts`); the case then behaves as multi-part and keeps "(A)".
+  const extraParts = parts.some((p) => typeof ctxs[p.templateId].gen.hasExtraParts === 'function' && ctxs[p.templateId].gen.hasExtraParts(p));
+  const single = parts.length === 1 && !extraParts && !templates[ids[0]].schema.alwaysLetter && !options.alwaysLetter;
   const letters = (text) => (single ? dropPartLetters(text, parts[0].label) : text);
   const comment = [
     ...snippetsFor(templates, caseState).filter((sn) => sn.active).map((sn) => styled(sn.templateId, renderSnippet(sn, single))),
