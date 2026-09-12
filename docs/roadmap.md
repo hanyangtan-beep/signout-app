@@ -7,6 +7,7 @@ State on 2026-09-12: 45 templates (10 small biopsy, 23 benign resection incl. LE
 ---
 
 ## Done
+- Nasopharyngeal biopsy template, Phase 10, 2026-09-12: `nasopharyngeal_biopsy` schema + generator (benign pick-list, WHO 5th NPC subtypes with IHC + EBER sentence, atypical lymphoid / granulomatous / post-RT wording, recurrence prefix), EBER-pending auto snippet gated off benign findings, EBV staging and lymphoma work-up snippets; planned NPC placeholder retired from the H&N picker row.
 
 Foundations and engine
 - 2026-09-09 Repo, golden fixtures (16), `node --test` harness; legacy gastric + colonic polyp parity (27 tests).
@@ -60,7 +61,6 @@ Docs
 
 (empty — pull the next card explicitly)
 
-
 ## Next
 
 Build order (parsimonious, 2026-09-12; Breast pair shipped): the remaining cancer pairs first (each consumes the linked-part engine and retires a placeholder), then the three small-biopsy / benign templates as **one batch**, then the three S fixes as **one batch**, then iPhone layout and the Gleason galleries. Frozen scenario cards (b), (e) ship inside their pairs, not alone ((a) shipped with the Breast pair). Placeholders in the app menus (`templates/planned.json`) are removed by the card that builds the template.
@@ -96,15 +96,6 @@ Verify:     tests + browser (light)
 Ship:       one batch, one publish
 Depends on: Linked synoptic part — shipped 2026-09-12 (items 1–3); item (4) Upgrade this part still to build with the Appendix pair
 
-
-### Nasopharyngeal biopsy                                Size: M
-Why:        local NPC work-up has no template.
-Change:     new small-biopsy template `nasopharyngeal_biopsy` (header "NPC"): site / adequacy, benign pick-list with `NASOPHARYNX, biopsy - NO EVIDENCE OF MALIGNANCY`, WHO 5th NPC subtypes with IHC + EBER sentence, lymphoma / granulomatous / post-RT options, three snippets.
-Untouched:  Small biopsy row order for existing templates (NPC appended).
-Accept:     benign and non-keratinising undifferentiated fixtures; EBER-pending snippet auto-ticks when EBER is "pending"; visible in the Small biopsy row.
-Verify:     tests + browser (light)
-Ship:       with batch
-Spec:       `docs/specs/nasopharyngeal-biopsy.md`
 
 ### Peritoneal nodule biopsy                             Size: M
 Why:        peritoneal / omental nodules sampled at laparoscopy or laparotomy are a recurring small specimen with a short list of answers (reactive mesothelial hyperplasia, peritoneal loose body, metastatic carcinoma, endometriosis, granuloma) and no template; the diagnosis line and IHC sentence are formulaic.
@@ -182,7 +173,6 @@ Accept:     per-card fixtures reproduce the quoted house lines (bile duct §4, t
 Verify:     tests + browser (light)
 Ship:       one batch, one publish
 Spec:       `docs/specs/frozen-section-scenarios.md`
-
 
 ## Later
 

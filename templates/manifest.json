@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 49,
+  "count": 50,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -605,6 +605,65 @@
       "generator": "lung",
       "generatorPath": "generators/lung.js",
       "schemaPath": "schemas/lung_biopsy.json"
+    },
+    {
+      "id": "nasopharyngeal_biopsy",
+      "name": "Nasopharyngeal biopsy",
+      "shortName": "Nasopharynx · biopsy",
+      "label": "NPC",
+      "organ": "NASOPHARYNX",
+      "system": "Head and neck",
+      "kind": "biopsy",
+      "rank": 11,
+      "aliases": [
+        "nasopharynx",
+        "nasopharyngeal",
+        "NPC",
+        "post-nasal space",
+        "fossa of Rosenmüller",
+        "Rosenmuller",
+        "EBER",
+        "EBV",
+        "adenoid"
+      ],
+      "match": {
+        "site": [
+          "nasopharynx",
+          "nasopharyngeal",
+          "post-nasal space",
+          "postnasal space",
+          "fossa of Rosenmüller",
+          "Rosenmüller",
+          "Rosenmuller"
+        ],
+        "procedure": [
+          "biopsy",
+          "biopsies",
+          "endoscopic biopsy"
+        ],
+        "clinical": [
+          "nasopharyngeal carcinoma",
+          "NPC",
+          "EBV",
+          "EBER",
+          "plasma EBV DNA",
+          "neck mass",
+          "cervical lymphadenopathy",
+          "epistaxis",
+          "serous otitis media",
+          "previous radiotherapy"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "nasopharyngeal",
+      "generatorPath": "generators/nasopharyngeal.js",
+      "schemaPath": "schemas/nasopharyngeal_biopsy.json"
     },
     {
       "id": "frozen_section",

@@ -10,14 +10,6 @@
       "roadmap": "Next"
     },
     {
-      "id": "nasopharyngeal_biopsy",
-      "name": "Nasopharyngeal biopsy",
-      "label": "Nasopharynx",
-      "system": "Head and neck",
-      "kind": "biopsy",
-      "roadmap": "Next"
-    },
-    {
       "id": "renal_biopsy",
       "name": "Renal biopsy (medical; Banff / MEST-C / ISN-RPS)",
       "label": "Renal",
