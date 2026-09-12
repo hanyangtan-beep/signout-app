@@ -13,10 +13,13 @@
 import * as colorectal from './colorectal.js';
 import * as gist from './gist.js';
 import * as endometrium from './endometrium.js';
+import * as ovary from './ovary.js';
 
-export const PROTOCOLS = { colorectal, gist, endometrium };
+export const PROTOCOLS = { colorectal, gist, endometrium, ovary };
 
-const OVERRIDE_RE = /\b(y?p?)T(is|X|0|1|2|3|4a|4b|4)\b.*?\b(?:y?p)?N(X|0|1a|1b|1c|1|2a|2b|2)\b(?:.*?\b(?:y?p)?M(1a|1b|1c|1|X)\b)?/i;
+// T and N alternatives are listed longest first (ovary: T1c1-3, T2a/b, T3a-c, N0(i+)); the
+// negative look-aheads stand in for \b so "N0(i+)" and "T1c1 " both terminate cleanly.
+const OVERRIDE_RE = /\b(y?p?)T(is|X|0|1c1|1c2|1c3|1c|1a|1b|1|2a|2b|2|3a2|3a1|3a|3b|3c|3|4a|4b|4)(?!\w).*?\b(?:y?p)?N(X|0\(i\+\)|0|1a|1b|1c|1|2a|2b|2)(?!\w)(?:.*?\b(?:y?p)?M(1a|1b|1c|1|X)(?!\w))?/i;
 
 /** Parse a free-text override like "ypT3 pN1a pM1a" or "pT2 N0" into bare categories. */
 export function parseOverride(text) {
