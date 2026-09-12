@@ -22,6 +22,33 @@
     "steatocystoma",
     "granulomatous reaction"
   ],
+  "match": {
+    "site": [
+      "skin",
+      "scalp",
+      "face",
+      "ear",
+      "forehead",
+      "cheek"
+    ],
+    "procedure": [
+      "excision",
+      "excision biopsy",
+      "enucleation"
+    ],
+    "clinical": [
+      "sebaceous cyst",
+      "seb cyst",
+      "epidermal cyst",
+      "epidermoid cyst",
+      "inclusion cyst",
+      "pilar cyst",
+      "trichilemmal",
+      "dermoid",
+      "cyst",
+      "infected cyst"
+    ]
+  },
   "specimenNoun": "excision",
   "maxParts": 3,
   "defaultParts": 1,

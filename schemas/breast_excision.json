@@ -24,6 +24,28 @@
     "re-excision",
     "mammary"
   ],
+  "match": {
+    "site": [
+      "breast",
+      "cavity shave",
+      "shave"
+    ],
+    "procedure": [
+      "excision",
+      "wide local excision",
+      "WLE",
+      "lumpectomy",
+      "mastectomy"
+    ],
+    "clinical": [
+      "fibroadenoma",
+      "phyllodes",
+      "fibroepithelial",
+      "papilloma",
+      "breast mass",
+      "breast lump"
+    ]
+  },
   "specimenNoun": "resection",
   "maxParts": 8,
   "defaultParts": 1,
@@ -47,14 +69,30 @@
     }
   ],
   "partDefaults": [
-    { "margin": "Superior" },
-    { "margin": "Inferior" },
-    { "margin": "Medial" },
-    { "margin": "Lateral" },
-    { "margin": "Anterior" },
-    { "margin": "Posterior" },
-    { "margin": "Other" },
-    { "margin": "Other" }
+    {
+      "margin": "Superior"
+    },
+    {
+      "margin": "Inferior"
+    },
+    {
+      "margin": "Medial"
+    },
+    {
+      "margin": "Lateral"
+    },
+    {
+      "margin": "Anterior"
+    },
+    {
+      "margin": "Posterior"
+    },
+    {
+      "margin": "Other"
+    },
+    {
+      "margin": "Other"
+    }
   ],
   "fields": [
     {

@@ -27,6 +27,42 @@
     "excision",
     "fatty"
   ],
+  "match": {
+    "site": [
+      "soft tissue",
+      "subcutaneous",
+      "subcutis",
+      "lipoma",
+      "ganglion",
+      "nerve",
+      "tendon",
+      "fascia",
+      "mass",
+      "lump",
+      "swelling"
+    ],
+    "procedure": [
+      "excision",
+      "resection",
+      "biopsy",
+      "enucleation"
+    ],
+    "clinical": [
+      "lipoma",
+      "schwannoma",
+      "neurofibroma",
+      "ganglion",
+      "fibroma",
+      "fasciitis",
+      "soft tissue mass",
+      "soft tissue swelling",
+      "subcutaneous mass",
+      "subcutaneous lump",
+      "haemangioma",
+      "hemangioma"
+    ],
+    "bias": -1
+  },
   "specimenNoun": "excision",
   "maxParts": 3,
   "defaultParts": 1,

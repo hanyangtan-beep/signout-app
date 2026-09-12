@@ -19,6 +19,34 @@
     "HGPIN",
     "adenocarcinoma"
   ],
+  "match": {
+    "site": [
+      "prostate",
+      "prostatic",
+      "TRUS",
+      "transperineal",
+      "sextant"
+    ],
+    "procedure": [
+      "biopsy",
+      "biopsies",
+      "core",
+      "cores",
+      "TRUS",
+      "transperineal",
+      "targeted",
+      "systematic"
+    ],
+    "clinical": [
+      "PSA",
+      "raised PSA",
+      "MRI",
+      "PIRADS",
+      "PI-RADS",
+      "nodule",
+      "adenocarcinoma"
+    ]
+  },
   "specimenNoun": "needle core biopsy",
   "maxParts": 16,
   "defaultParts": 1,

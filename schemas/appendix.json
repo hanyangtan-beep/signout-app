@@ -23,6 +23,20 @@
     "mesoappendix",
     "incidental"
   ],
+  "match": {
+    "site": [
+      "appendix",
+      "appendiceal"
+    ],
+    "procedure": [
+      "appendicectomy",
+      "appendectomy",
+      "resection"
+    ],
+    "clinical": [
+      "appendicitis"
+    ]
+  },
   "specimenNoun": "appendicectomy",
   "maxParts": 2,
   "defaultParts": 1,

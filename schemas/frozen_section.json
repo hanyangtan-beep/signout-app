@@ -17,6 +17,19 @@
     "ovarian mass",
     "nodule"
   ],
+  "match": {
+    "site": [
+      "frozen",
+      "FS",
+      "intraoperative"
+    ],
+    "procedure": [
+      "frozen",
+      "FS",
+      "intraoperative"
+    ],
+    "clinical": []
+  },
   "specimenNoun": "frozen section",
   "maxParts": 26,
   "defaultParts": 1,

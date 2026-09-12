@@ -1,0 +1,162 @@
+// Specimen intake: LIS paste parser + template matcher (src/intake.js).
+// Fixture: tests/fixtures/intake/cases.json — six house samples plus lists that reach every template.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { parseIntake, matchParts, presetValues, deriveTitle, splitTriple, MAX_PARTS, GENERIC_ID } from '../src/intake.js';
+import { loadManifest, loadTemplate } from '../src/registry.js';
+import { parseSitesFromTitle } from '../generators/gastric.js';
+
+const fx = JSON.parse(readFileSync(new URL('./fixtures/intake/cases.json', import.meta.url), 'utf8'));
+const manifest = await loadManifest();
+
+test('parser: lettered markers only, LIS triples, prefix, history and one-per-line lists', () => {
+  const s1 = parseIntake(fx.cases[0].text);
+  assert.equal(s1.history, 'CA corpus');
+  assert.deepEqual(s1.parts.map((p) => p.label), ['A', 'B', 'C', 'D']);
+  assert.equal(s1.parts[0].text, 'Uterus and appendages, resection');
+  assert.equal(s1.parts[3].text, 'Para aortic sentinel lymph node', 'trailing "and" and commas stripped');
+  assert.deepEqual(s1.warnings, []);
+
+  const s2 = parseIntake(fx.cases[1].text);
+  assert.equal(s2.casePrefix, 'Breast, excision');
+  assert.equal(s2.parts[0].text, 'Left 2-3H breast mass');
+  assert.match(s2.history, /^Left breast mass \(fibroepithelial lesion, \?phyllodes\)\n/);
+  assert.match(s2.history, /Date of specimen immersed in formalin/, 'fixation lines stay in the history block');
+
+  const s3 = parseIntake(fx.cases[2].text);
+  assert.equal(s3.parts.length, 13, 'list after a blank line without a specimen heading');
+  assert.equal(s3.parts[12].text, 'Proximal margin of sigmoid');
+  assert.match(s3.history, /necrotic\ntumor was seen/, 'wrapped history line kept');
+
+  const s4 = parseIntake(fx.cases[3].text);
+  assert.deepEqual(splitTriple(s4.parts[1].raw), { site: 'Lymph node', detail: 'right paratracheal LN', procedure: 'resection' });
+  assert.equal(s4.parts[0].text, 'Lung, right upper lobe, resection');
+
+  const s6 = parseIntake(fx.cases[5].text);
+  assert.equal(s6.parts.length, 15, 'station numbers "(8a)" are not part markers');
+  assert.equal(s6.parts[9].detail, 'Com. Hepatic A LN (8a)');
+  assert.equal(s6.parts[0].text, 'Stomach, resection', 'duplicated site collapses');
+  assert.equal(s6.history, 'Gastric Ca');
+});
+
+test('parser: warnings for gaps, empty pastes and the 26-part cap', () => {
+  assert.deepEqual(parseIntake('').parts, []);
+  assert.deepEqual(parseIntake('').warnings, []);
+  assert.match(parseIntake('Just some history').warnings[0], /No lettered parts/);
+  const gap = parseIntake('(A) Skin, excision, (C) Skin, excision');
+  assert.match(gap.warnings[0], /labelled \(C\); expected \(B\)/);
+  const many = parseIntake(Array.from({ length: 27 }, (_, i) => `(${String.fromCharCode(65 + (i % 26))}) Part`).join(', '));
+  assert.ok(many.warnings.some((w) => w.includes(`at most ${MAX_PARTS}`)));
+});
+
+test('matcher: every fixture part gets the expected template; >=90% top-1 and no confident miss', () => {
+  let total = 0; let top1 = 0; const misses = []; const confidentWrong = [];
+  for (const c of fx.cases) {
+    const parsed = parseIntake(c.text);
+    if (c.casePrefix !== undefined) assert.equal(parsed.casePrefix, c.casePrefix, `${c.name}: prefix`);
+    if (c.history !== undefined) assert.equal(parsed.history, c.history, `${c.name}: history`);
+    const matched = matchParts(parsed, parsed.history, manifest);
+    assert.equal(matched.length, c.expect.length, `${c.name}: part count`);
+    matched.forEach((m, i) => {
+      const e = c.expect[i];
+      total++;
+      assert.equal(m.label, e.label, `${c.name}: label ${i}`);
+      const ok = m.templateId === e.templateId && m.tier === e.tier;
+      if (ok) top1++; else misses.push(`${c.name} (${m.label}) ${m.text}: got ${m.templateId}/${m.tier}, expected ${e.templateId}/${e.tier}`);
+      if (m.tier === 'confident' && m.templateId !== e.templateId) confidentWrong.push(`${c.name} (${m.label})`);
+      if (c.texts?.[m.label]) assert.equal(m.text, c.texts[m.label], `${c.name}: display text ${m.label}`);
+    });
+  }
+  assert.deepEqual(confidentWrong, [], 'confident tier must never be wrong');
+  assert.ok(top1 / total >= 0.9, `top-1 ${top1}/${total}\n${misses.join('\n')}`);
+  assert.deepEqual(misses, [], 'all fixture parts match (tighten deliberately if a template is added)');
+});
+
+test('matcher: biopsy templates never match resections; generic is the fallback', () => {
+  const lung = matchParts(parseIntake('(A) Lung, right upper lobe, resection'), 'Lung Ca', manifest)[0];
+  assert.equal(lung.templateId, GENERIC_ID);
+  assert.ok(!lung.candidates.some((cd) => cd.id === 'lung_biopsy' && cd.score >= 0), 'lung_biopsy is penalised for a resection');
+  const gastric = matchParts(parseIntake('(A) Stomach, stomach, Resection'), 'Gastric Ca', manifest)[0];
+  assert.equal(gastric.templateId, GENERIC_ID);
+  assert.ok(gastric.candidates.some((cd) => cd.id === 'gastric_biopsy'), 'still offered in the dropdown');
+  const unknown = matchParts(parseIntake('(A) Something odd'), '', manifest)[0];
+  assert.equal(unknown.templateId, GENERIC_ID);
+  assert.equal(unknown.tier, 'none');
+  assert.deepEqual(unknown.candidates, []);
+});
+
+test('matcher: clinical history decides between templates of the same organ', () => {
+  const list = '(A) Uterus, resection';
+  assert.equal(matchParts(parseIntake(list), 'Fibroids', manifest)[0].templateId, 'uterus_benign');
+  assert.equal(matchParts(parseIntake(list), 'CA corpus', manifest)[0].templateId, 'endometrial_carcinoma');
+  assert.equal(matchParts(parseIntake(list), 'Leiomyomas', manifest)[0].templateId, 'uterus_benign');
+  const serous = matchParts(parseIntake(list), 'Serous carcinoma', manifest)[0];
+  assert.equal(serous.tier, 'choose', 'a bare cancer word does not fix the primary');
+  const none = matchParts(parseIntake(list), '', manifest)[0];
+  assert.equal(none.tier, 'choose');
+});
+
+test('presets: lymph node station, breast margins and generic specimen name', async () => {
+  const ln = (await loadTemplate('lymph_node')).schema;
+  const br = (await loadTemplate('breast_excision')).schema;
+  const gen = (await loadTemplate(GENERIC_ID)).schema;
+  const gb = (await loadTemplate('gastric_biopsy')).schema;
+  const lung = matchParts(parseIntake(fx.cases[3].text), 'Lung Ca', manifest);
+  assert.deepEqual(presetValues(ln, lung[1], lung[1]), { specimenName: 'right paratracheal LN', procedure: 'Resection' });
+  assert.equal(presetValues(gen, lung[0], lung[0]).specimenName, 'Lung, right upper lobe, resection');
+  const s1 = matchParts(parseIntake(fx.cases[0].text), 'CA corpus', manifest);
+  assert.equal(presetValues(ln, s1[1], s1[1]).procedure, 'Sentinel lymph node biopsy');
+  assert.equal(presetValues(ln, s1[1], s1[1]).specimenName, 'Left sentinel pelvic lymph node');
+  assert.equal(presetValues(ln, s1[3], s1[3]).side, undefined);
+  const breast = matchParts(parseIntake(fx.cases[1].text), '', manifest);
+  assert.deepEqual(presetValues(br, breast[0], breast[0]), { side: 'Left', partType: 'Breast lesion excision', site: 'Left 2-3H breast mass' });
+  assert.deepEqual(presetValues(br, breast[1], breast[1]), { partType: 'Cavity shave margin', margin: 'Anterior' });
+  const odd = matchParts(parseIntake('Breast, excision: (A) Breast lump and (B) Superolateral margin'), '', manifest);
+  assert.deepEqual(presetValues(br, odd[1], odd[1]), { partType: 'Cavity shave margin', margin: 'Other', marginOther: 'superolateral' });
+  const gastric = matchParts(parseIntake(fx.cases[6].text), '', manifest);
+  assert.equal(presetValues(gb, gastric[0], gastric[0]).specimenName, 'antrum', 'match.fill from the LIS detail');
+  // Fixture-declared values
+  for (const c of fx.cases) {
+    if (!c.values) continue;
+    const matched = matchParts(parseIntake(c.text), parseIntake(c.text).history, manifest);
+    for (const [label, want] of Object.entries(c.values)) {
+      const m = matched.find((x) => x.label === label);
+      const schema = (await loadTemplate(m.templateId)).schema;
+      const got = presetValues(schema, m, m);
+      for (const [k, v] of Object.entries(want)) assert.equal(got[k], v, `${c.name} (${label}).${k}`);
+    }
+  }
+});
+
+test('derived title feeds the gastric site parser for every letter A–Z', () => {
+  const parsed = parseIntake(fx.cases[6].text);
+  const title = deriveTitle(parsed.parts);
+  assert.equal(title, fx.cases[6].title);
+  assert.deepEqual(parseSitesFromTitle(title), { A: 'antrum', B: 'body' });
+  const many = parseIntake(fx.cases[5].text);
+  const sites = parseSitesFromTitle(deriveTitle(many.parts));
+  assert.equal(Object.keys(sites).length, 15);
+  assert.equal(sites.O, 'Hepatoduodenal LN (12a)');
+  assert.equal(deriveTitle([]), '');
+  assert.equal(deriveTitle(parseIntake('(A) Omentum').parts), '(A) Omentum');
+});
+
+test('generic template prints free text in the house layout and warns when empty', async () => {
+  const { generateCase } = await import('../src/engine.js');
+  const t = await loadTemplate(GENERIC_ID);
+  const cs = {
+    schemaId: GENERIC_ID, caseTitle: '', options: { includeHeader: false }, meta: {},
+    parts: [
+      { label: 'A', templateId: GENERIC_ID, values: { specimenName: 'Omentum, resection', macro: '', microscopy: 'Sections show fibroadipose tissue. There is no evidence of malignancy.', diagnosis: 'NO EVIDENCE OF MALIGNANCY' } },
+      { label: 'B', templateId: GENERIC_ID, values: { specimenName: 'Spleen', macro: 'Received is a spleen weighing 120 g.', microscopy: 'Sections show ', diagnosis: '' } }
+    ]
+  };
+  const out = generateCase({ [GENERIC_ID]: t }, cs);
+  assert.equal(out.diagnosis, '(A) OMENTUM, resection - NO EVIDENCE OF MALIGNANCY\n(B) SPLEEN');
+  assert.equal(out.microscopy, '(A) Sections show fibroadipose tissue. There is no evidence of malignancy.');
+  assert.equal(out.macro, '(B) Received is a spleen weighing 120 g.');
+  assert.deepEqual(out.issues.map((i) => `${i.part}:${i.message}`), ['B:Generic part has no microscopy text.', 'B:Generic part has no diagnosis.']);
+  const single = generateCase({ [GENERIC_ID]: t }, { ...cs, parts: [cs.parts[0]] });
+  assert.equal(single.diagnosis, 'OMENTUM, resection - NO EVIDENCE OF MALIGNANCY', 'single part drops the letter');
+});

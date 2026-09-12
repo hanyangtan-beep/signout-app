@@ -22,6 +22,32 @@
     "pT1a",
     "pT1b"
   ],
+  "match": {
+    "site": [
+      "prostate",
+      "prostatic",
+      "TURP",
+      "prostate chips",
+      "HoLEP"
+    ],
+    "procedure": [
+      "TURP",
+      "transurethral resection",
+      "HoLEP",
+      "enucleation",
+      "prostatectomy",
+      "chips"
+    ],
+    "clinical": [
+      "BPH",
+      "LUTS",
+      "retention",
+      "benign prostatic",
+      "hyperplasia",
+      "urinary retention",
+      "bladder outlet"
+    ]
+  },
   "specimenNoun": "TURP",
   "maxParts": 2,
   "defaultParts": 1,

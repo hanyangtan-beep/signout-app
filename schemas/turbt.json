@@ -28,6 +28,35 @@
     "random biopsies",
     "chips"
   ],
+  "match": {
+    "site": [
+      "bladder",
+      "urinary bladder",
+      "vesical",
+      "TURBT",
+      "urothelial",
+      "ureter",
+      "ureteric"
+    ],
+    "procedure": [
+      "TURBT",
+      "transurethral resection",
+      "biopsy",
+      "biopsies",
+      "resection"
+    ],
+    "clinical": [
+      "haematuria",
+      "hematuria",
+      "bladder tumour",
+      "bladder tumor",
+      "urothelial",
+      "papillary",
+      "bladder ca",
+      "bladder cancer",
+      "cystoscopy"
+    ]
+  },
   "specimenNoun": "TURBT",
   "maxParts": 6,
   "defaultParts": 1,

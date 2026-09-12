@@ -23,6 +23,28 @@
     "ranula",
     "Kuttner"
   ],
+  "match": {
+    "site": [
+      "parotid",
+      "submandibular",
+      "salivary",
+      "sublingual"
+    ],
+    "procedure": [
+      "parotidectomy",
+      "excision",
+      "resection"
+    ],
+    "clinical": [
+      "pleomorphic adenoma",
+      "Warthin",
+      "sialadenitis",
+      "sialolithiasis",
+      "parotid mass",
+      "submandibular mass",
+      "salivary mass"
+    ]
+  },
   "specimenNoun": "resection",
   "maxParts": 3,
   "defaultParts": 1,

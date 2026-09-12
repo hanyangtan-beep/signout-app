@@ -24,6 +24,32 @@
     "Amsterdam",
     "meconium"
   ],
+  "match": {
+    "site": [
+      "placenta",
+      "placental",
+      "cord",
+      "membranes"
+    ],
+    "procedure": [
+      "delivery",
+      "caesarean",
+      "vaginal"
+    ],
+    "clinical": [
+      "chorioamnionitis",
+      "preterm",
+      "IUGR",
+      "FGR",
+      "stillbirth",
+      "pre-eclampsia",
+      "preeclampsia",
+      "GDM",
+      "twin",
+      "PPROM",
+      "abruption"
+    ]
+  },
   "specimenNoun": "delivery",
   "maxParts": 2,
   "defaultParts": 1,

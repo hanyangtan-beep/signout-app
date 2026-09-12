@@ -27,6 +27,33 @@
     "ESD",
     "MMR"
   ],
+  "match": {
+    "site": [
+      "colon",
+      "rectum",
+      "rectal",
+      "colonic",
+      "caecum",
+      "cecum",
+      "sigmoid",
+      "transverse",
+      "ascending",
+      "descending"
+    ],
+    "procedure": [
+      "polypectomy",
+      "biopsy",
+      "EMR",
+      "ESD",
+      "snare"
+    ],
+    "clinical": [
+      "polyp",
+      "adenoma",
+      "colonoscopy",
+      "screening"
+    ]
+  },
   "specimenNoun": "polypectomy",
   "maxParts": 10,
   "generator": "colonic",

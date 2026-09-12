@@ -19,6 +19,27 @@
     "D2",
     "small bowel"
   ],
+  "match": {
+    "site": [
+      "duodenum",
+      "duodenal",
+      "D2",
+      "small bowel"
+    ],
+    "procedure": [
+      "biopsy",
+      "biopsies"
+    ],
+    "clinical": [
+      "coeliac",
+      "celiac",
+      "anaemia",
+      "anemia",
+      "diarrhoea",
+      "malabsorption",
+      "TTG"
+    ]
+  },
   "specimenNoun": "biopsy",
   "maxParts": 6,
   "defaultParts": 1,

@@ -107,12 +107,12 @@ test('palette ranking: exact shortName > alias > organ > keyword', () => {
 
 test('grouped browse and the part selector put Small biopsy first, systems in canonical order', () => {
   const groups = groupBySystem(manifest);
-  assert.deepEqual(groups.map((g) => g.system), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology']);
+  assert.deepEqual(groups.map((g) => g.system), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology', 'General']);
   const gyn = groups.find((g) => g.system === 'Gynae');
   assert.deepEqual(gyn.items.map((t) => t.kind), ['biopsy', 'biopsy', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'cancer resection'], 'ascending specimen size within a system');
   assert.deepEqual(gyn.items.slice(2).map(labelOf), ['LEEP', 'Placenta', 'Uterus', 'Ovarian cyst', 'Endometrial Ca'], 'rank order within a kind');
   const sel = selectorGroups(manifest);
   assert.equal(sel[0].label, 'Small biopsy');
   assert.equal(sel[0].items.length, 10);
-  assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology']);
+  assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology', 'General']);
 });

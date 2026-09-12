@@ -21,6 +21,31 @@
     "asymmetric tonsil",
     "tonsil biopsy"
   ],
+  "match": {
+    "site": [
+      "tonsil",
+      "tonsils",
+      "tonsillar",
+      "adenoid",
+      "adenoids",
+      "palatine"
+    ],
+    "procedure": [
+      "tonsillectomy",
+      "adenoidectomy",
+      "adenotonsillectomy",
+      "excision"
+    ],
+    "clinical": [
+      "tonsillitis",
+      "OSA",
+      "obstructive sleep apnoea",
+      "asymmetric",
+      "asymmetry",
+      "hypertrophy",
+      "snoring"
+    ]
+  },
   "specimenNoun": "tonsillectomy",
   "maxParts": 3,
   "defaultParts": 1,

@@ -28,6 +28,35 @@
     "AJCC",
     "pTNM"
   ],
+  "match": {
+    "site": [
+      "stomach",
+      "gastric",
+      "small bowel",
+      "jejunum",
+      "ileum",
+      "duodenum",
+      "GIST",
+      "stromal"
+    ],
+    "procedure": [
+      "wedge",
+      "gastrectomy",
+      "enterectomy",
+      "small bowel resection"
+    ],
+    "clinical": [
+      "GIST",
+      "stromal tumour",
+      "stromal tumor",
+      "KIT",
+      "DOG1",
+      "submucosal tumour",
+      "submucosal tumor",
+      "SMT"
+    ],
+    "bias": -2
+  },
   "specimenNoun": "resection",
   "maxParts": 3,
   "defaultParts": 1,

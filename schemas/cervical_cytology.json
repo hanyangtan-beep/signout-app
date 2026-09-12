@@ -16,6 +16,23 @@
     "cervical cytology",
     "nilm"
   ],
+  "match": {
+    "site": [
+      "cervix",
+      "cervical",
+      "pap"
+    ],
+    "procedure": [
+      "smear",
+      "LBC",
+      "thinprep",
+      "cytology"
+    ],
+    "clinical": [
+      "screening",
+      "smear"
+    ]
+  },
   "specimenNoun": "cervical sample",
   "maxParts": 4,
   "generator": "cytology",

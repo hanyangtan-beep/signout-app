@@ -28,6 +28,35 @@
     "torsion",
     "fibroma"
   ],
+  "match": {
+    "site": [
+      "ovary",
+      "ovarian",
+      "adnexa",
+      "adnexal",
+      "appendages",
+      "salpingo-oophorectomy",
+      "oophorectomy",
+      "cystectomy"
+    ],
+    "procedure": [
+      "cystectomy",
+      "oophorectomy",
+      "salpingo-oophorectomy",
+      "excision",
+      "resection"
+    ],
+    "clinical": [
+      "ovarian cyst",
+      "endometrioma",
+      "endometriotic",
+      "endometriosis",
+      "dermoid",
+      "teratoma",
+      "chocolate cyst",
+      "cyst"
+    ]
+  },
   "specimenNoun": "cystectomy",
   "maxParts": 3,
   "defaultParts": 1,

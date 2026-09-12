@@ -20,6 +20,24 @@
     "axillary node",
     "fibroadenoma"
   ],
+  "match": {
+    "site": [
+      "breast",
+      "axillary"
+    ],
+    "procedure": [
+      "core",
+      "biopsy",
+      "vacuum"
+    ],
+    "clinical": [
+      "mammogram",
+      "ultrasound",
+      "B3",
+      "B5",
+      "microcalcification"
+    ]
+  },
   "specimenNoun": "core biopsy",
   "maxParts": 8,
   "defaultParts": 1,

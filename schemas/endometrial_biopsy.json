@@ -16,6 +16,31 @@
     "EIN",
     "PMB"
   ],
+  "match": {
+    "site": [
+      "endometrium",
+      "endometrial",
+      "pipelle",
+      "uterine cavity"
+    ],
+    "procedure": [
+      "biopsy",
+      "curettings",
+      "pipelle",
+      "D&C",
+      "curettage",
+      "hysteroscopic",
+      "polypectomy"
+    ],
+    "clinical": [
+      "PMB",
+      "postmenopausal bleeding",
+      "menorrhagia",
+      "AUB",
+      "thickened endometrium",
+      "hyperplasia"
+    ]
+  },
   "specimenNoun": "curettings",
   "maxParts": 4,
   "defaultParts": 1,

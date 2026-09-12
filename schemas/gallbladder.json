@@ -21,6 +21,23 @@
     "porcelain",
     "GB"
   ],
+  "match": {
+    "site": [
+      "gallbladder",
+      "gall bladder",
+      "cystic duct"
+    ],
+    "procedure": [
+      "cholecystectomy",
+      "resection"
+    ],
+    "clinical": [
+      "cholecystitis",
+      "cholelithiasis",
+      "gallstone",
+      "biliary colic"
+    ]
+  },
   "specimenNoun": "cholecystectomy",
   "maxParts": 2,
   "defaultParts": 1,

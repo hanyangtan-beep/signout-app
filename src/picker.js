@@ -3,7 +3,7 @@
 
 export const SYSTEM_ORDER = ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology'];
 export const KIND_ORDER = ['biopsy', 'benign resection', 'cancer resection', 'frozen', 'cytology'];
-export const KIND_LABEL = { biopsy: 'Small biopsy', 'benign resection': 'Benign resection', 'cancer resection': 'Cancer resection', frozen: 'Frozen section', cytology: 'Cytology' };
+export const KIND_LABEL = { biopsy: 'Small biopsy', 'benign resection': 'Benign resection', 'cancer resection': 'Cancer resection', frozen: 'Frozen section', cytology: 'Cytology', generic: 'Free text' };
 export const STRIP_CAP = 8;
 export const BIOPSY_ROW_MAX = 12; // beyond this the row collapses to the top BIOPSY_ROW_COLLAPSED + "More"
 export const BIOPSY_ROW_COLLAPSED = 8;

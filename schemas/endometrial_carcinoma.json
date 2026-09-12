@@ -28,6 +28,32 @@
     "CAP",
     "AJCC"
   ],
+  "match": {
+    "site": [
+      "uterus",
+      "uterine",
+      "endometrium",
+      "endometrial",
+      "hysterectomy",
+      "TAHBSO"
+    ],
+    "procedure": [
+      "hysterectomy",
+      "TAHBSO",
+      "resection"
+    ],
+    "clinical": [
+      "endometrial",
+      "endometrium",
+      "corpus",
+      "endometrioid",
+      "uterine ca",
+      "uterine carcinoma",
+      "uterine cancer",
+      "EIN",
+      "atypical hyperplasia"
+    ]
+  },
   "specimenNoun": "resection",
   "maxParts": 10,
   "defaultParts": 1,

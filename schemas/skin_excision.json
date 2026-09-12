@@ -25,6 +25,43 @@
     "ellipse",
     "orientation suture"
   ],
+  "match": {
+    "site": [
+      "skin",
+      "scalp",
+      "face",
+      "eyelid",
+      "ear",
+      "lip",
+      "nose"
+    ],
+    "procedure": [
+      "excision",
+      "excision biopsy",
+      "wide excision",
+      "re-excision",
+      "ellipse"
+    ],
+    "clinical": [
+      "BCC",
+      "basal cell",
+      "SCC",
+      "squamous cell",
+      "keratoacanthoma",
+      "naevus",
+      "nevus",
+      "melanoma",
+      "dermatofibroma",
+      "seborrhoeic",
+      "seborrheic",
+      "actinic",
+      "Bowen",
+      "skin lesion",
+      "skin tumour",
+      "skin tumor",
+      "pigmented"
+    ]
+  },
   "specimenNoun": "excision",
   "maxParts": 3,
   "defaultParts": 1,

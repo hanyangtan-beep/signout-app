@@ -24,6 +24,35 @@
     "enucleation",
     "periapical granuloma"
   ],
+  "match": {
+    "site": [
+      "mandible",
+      "mandibular",
+      "maxilla",
+      "maxillary",
+      "jaw",
+      "dental",
+      "tooth",
+      "periapical",
+      "odontogenic"
+    ],
+    "procedure": [
+      "enucleation",
+      "curettage",
+      "marsupialisation",
+      "apicectomy",
+      "excision"
+    ],
+    "clinical": [
+      "cyst",
+      "radicular",
+      "dentigerous",
+      "keratocyst",
+      "OKC",
+      "ameloblastoma",
+      "radiolucency"
+    ]
+  },
   "specimenNoun": "enucleation",
   "maxParts": 3,
   "defaultParts": 1,

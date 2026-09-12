@@ -22,6 +22,27 @@
     "aortitis",
     "cardiac"
   ],
+  "match": {
+    "site": [
+      "aortic valve",
+      "mitral valve",
+      "valve",
+      "aorta"
+    ],
+    "procedure": [
+      "replacement",
+      "explant",
+      "resection"
+    ],
+    "clinical": [
+      "stenosis",
+      "regurgitation",
+      "endocarditis",
+      "aneurysm",
+      "dissection",
+      "bicuspid"
+    ]
+  },
   "specimenNoun": "valve replacement",
   "maxParts": 4,
   "defaultParts": 1,

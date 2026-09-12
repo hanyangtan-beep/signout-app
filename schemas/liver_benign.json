@@ -23,6 +23,32 @@
     "von Meyenburg",
     "wedge"
   ],
+  "match": {
+    "site": [
+      "liver",
+      "hepatic",
+      "hepatectomy",
+      "segment"
+    ],
+    "procedure": [
+      "hepatectomy",
+      "segmentectomy",
+      "wedge",
+      "resection",
+      "enucleation"
+    ],
+    "clinical": [
+      "haemangioma",
+      "hemangioma",
+      "FNH",
+      "focal nodular hyperplasia",
+      "adenoma",
+      "abscess",
+      "liver cyst",
+      "biliary cyst",
+      "hydatid"
+    ]
+  },
   "specimenNoun": "liver resection",
   "maxParts": 3,
   "defaultParts": 1,

@@ -20,6 +20,24 @@
     "frozen section correlation",
     "PTH"
   ],
+  "match": {
+    "site": [
+      "parathyroid"
+    ],
+    "procedure": [
+      "parathyroidectomy",
+      "excision",
+      "exploration"
+    ],
+    "clinical": [
+      "hyperparathyroidism",
+      "PTH",
+      "hypercalcaemia",
+      "hypercalcemia",
+      "adenoma",
+      "MEN"
+    ]
+  },
   "specimenNoun": "excision",
   "maxParts": 4,
   "defaultParts": 1,

@@ -22,6 +22,33 @@
     "allergic mucin",
     "Schneiderian"
   ],
+  "match": {
+    "site": [
+      "nasal",
+      "nose",
+      "sinonasal",
+      "sinus",
+      "ethmoid",
+      "maxillary sinus",
+      "turbinate",
+      "antrochoanal",
+      "FESS"
+    ],
+    "procedure": [
+      "polypectomy",
+      "FESS",
+      "biopsy",
+      "turbinectomy",
+      "excision"
+    ],
+    "clinical": [
+      "nasal polyp",
+      "sinusitis",
+      "rhinosinusitis",
+      "obstruction",
+      "CRS"
+    ]
+  },
   "specimenNoun": "polypectomy",
   "maxParts": 4,
   "defaultParts": 1,

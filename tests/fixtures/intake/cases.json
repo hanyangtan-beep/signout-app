@@ -1,0 +1,603 @@
+{
+  "note": "Specimen intake fixtures: the six house LIS samples (docs/specs/samples/lis-specimen-lists.md) plus biopsy / resection / cytology lists so every template is reachable. Expected template + tier per part; `values` are pre-filled fields checked on Build parts. Edit deliberately (log in docs/specs/specimen-intake.md).",
+  "cases": [
+    {
+      "name": "endometrial carcinoma staging",
+      "text": "History\nCA corpus\n\nspecimen\n(A) Uterus and appendages, resection, (B) Left sentinel pelvic lymph node, (C) Right sentinel pelvic lymph node and (D) Para aortic sentinel lymph node",
+      "history": "CA corpus",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "endometrial_carcinoma",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "D",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        }
+      ]
+    },
+    {
+      "name": "breast excision with margins",
+      "text": "History\nLeft breast mass (fibroepithelial lesion, ?phyllodes)\nLeft 2-3H breast mass size ~4cm, another ~1cm lesion over medial-inferior aspect of the index lesion. En-bloc resection done. (superior -short; inferior-loop; lateral -long). Further Anterior, medial and inferior margin taken (stitch over tumor side)\nTime of specimen taken out of body (hh:mm): 0945\nDate of specimen taken out of body (dd/mm), if not today: 07/07/2026\nTime of specimen immersed in formalin (hh:mm): 0945\nDate of specimen immersed in formalin (dd/mm), if not today: 07/07/2026\n\nBreast, excision: (A) Left 2-3H breast mass, (B) Anterior margin, (C) Medial margin and (D) Inferior margin",
+      "casePrefix": "Breast, excision",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "breast_excision",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "breast_excision",
+          "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "breast_excision",
+          "tier": "confident"
+        },
+        {
+          "label": "D",
+          "templateId": "breast_excision",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "partType": "Breast lesion excision",
+          "side": "Left"
+        },
+        "B": {
+          "partType": "Cavity shave margin",
+          "margin": "Anterior"
+        },
+        "C": {
+          "margin": "Medial"
+        },
+        "D": {
+          "margin": "Inferior"
+        }
+      }
+    },
+    {
+      "name": "serous carcinoma debulking (13 parts)",
+      "text": "History\nSerous carcinoma\nThere was no ascites.\nA 1 cm thickening was noted at the right subdiaphragmatic surface but no gross tumors were seen.\nNo gross tumor was noted in the omentum.\nA few miliary whitish lesions were seen on the splenic capsule but not gross tumors were seen.\nA 0.5 x 0.5 x 1 cm lymph node was noted around the common bile duct and hepatic artery.\nA few miliary deposits were noted at bilateral paracolic gutters and pelvic peritoneum.\nA 0.5 x 0.5 x 1 cm thickening was seen at the right posterior abdominal peritoneum.\nA 2 cm tumor was seen attaching between the appendix and the proximal sigmoid colon.\nA few miliary deposits were seen on the rectal surface.\nThe bladder flap was thickened of around 0.5 x 0.5 x 1.5 cm.\nThe left ovary was slightly enlarged and the right looked normal.\nThree 0.2 cm necrotic tumors were noted at the right ovarian fossa and one 0.5 x 0.5 x 1 cm necrotic\ntumor was seen over the right uterosacral ligament.\nA 0.5 x 0.5 x 1 cm elongated LN was noted at right external iliac artery.\n\n(A) Omentum, (B) Spleen, (C) Lymph node at bile duct, (D) Mesenteric nodule, (E) Nodule near bile duct, (F) Nodule at diaphragm, (G) Left para-aortic gutter, (H) Left pelvic peritoneum, (I) Sigmoid, (J) Tumour on sigmoid, (K) Uterus and bilateral appendages, (L) Right pelvic lymph node and (M) Proximal margin of sigmoid",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "B",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "C",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "D",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "E",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "F",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "G",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "H",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "I",
+          "templateId": "generic",
+          "tier": "choose"
+        },
+        {
+          "label": "J",
+          "templateId": "generic",
+          "tier": "choose"
+        },
+        {
+          "label": "K",
+          "templateId": "generic",
+          "tier": "choose"
+        },
+        {
+          "label": "L",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "M",
+          "templateId": "generic",
+          "tier": "choose"
+        }
+      ]
+    },
+    {
+      "name": "lung carcinoma resection with stations",
+      "text": "History:\nLung Ca\n\nSpecimen\n(A) Lung, right upper lobe, resection, (B) Lymph node, right paratracheal LN, resection, (C) Lymph node, right parabronchial LN, resection, (D) Lymph node, right subcarinal LN, resection, (E) Lymph node, right lobar LN, resection and (F) Lymph node, right inferior pulmonary ligament LN, resection",
+      "history": "Lung Ca",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "B",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "D",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "E",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "F",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "B": {
+          "specimenName": "right paratracheal LN",
+          "procedure": "Resection"
+        },
+        "F": {
+          "specimenName": "right inferior pulmonary ligament LN"
+        }
+      }
+    },
+    {
+      "name": "fibroids",
+      "text": "history:\nFibroids\n\nspecimen\n(A) Right fallopian tube, resection, (B) Left fallopian tube, resection and (C) Uterus, resection",
+      "history": "Fibroids",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "B",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "C",
+          "templateId": "uterus_benign",
+          "tier": "confident"
+        }
+      ]
+    },
+    {
+      "name": "gastric carcinoma with numbered stations (15 parts)",
+      "text": "history:\nGastric Ca\n\nSpecimen:\n(A) Stomach, stomach, Resection\n(B) omentum, omentum, Resection\n(C) Lymph node, Right paracardial LN (1), Resection\n(D) Lymph node, Left paracardial LN (2), Resection\n(E) Lymph node, Lesser curve LN (3), Resection\n(F) Lymph node, Greater curve LN (4), Resection\n(G) Lymph node, Suprapyloric LN (5), Resection\n(H) Lymph node, Infrapyloric LN (6), Resection\n(I) Lymph node, Left gastric art LN (7), Resection\n(J) Lymph node, Com. Hepatic A LN (8a), Resection\n(K) Lymph node, Celiac LN (9), Resection\n(L) Lymph node, Splenic hilar LN (10), Resection\n(M) Lymph node, Proximal splenic A LN (11p), Resection\n(N) Lymph node, Distal splenic A LN (11d), Resection\n(O) Lymph node, Hepatoduodenal LN (12a), Resection",
+      "history": "Gastric Ca",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "B",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "C",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "D",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "E",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "F",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "G",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "H",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "I",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "J",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "K",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "L",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "M",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "N",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "O",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "J": {
+          "specimenName": "Com. Hepatic A LN (8a)"
+        },
+        "M": {
+          "specimenName": "Proximal splenic A LN (11p)"
+        }
+      },
+      "texts": {
+        "A": "Stomach, resection",
+        "B": "omentum, resection"
+      }
+    },
+    {
+      "name": "gastric mapping biopsies",
+      "text": "History\nDyspepsia, ?H. pylori\n\nSpecimen\n(A) Stomach, antrum, biopsy and (B) Stomach, body, biopsy",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "gastric_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "gastric_biopsy",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "specimenName": "antrum"
+        }
+      },
+      "title": "(A) antrum and (B) body"
+    },
+    {
+      "name": "colonic polyps",
+      "text": "History\nColonoscopy, polyps\n\nSpecimen\n(A) Sigmoid colon, polypectomy and (B) Rectum, polyp, biopsy",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "colonic_polyp",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "colonic_polyp",
+          "tier": "confident"
+        }
+      ]
+    },
+    {
+      "name": "IBD mapping series",
+      "text": "History\nUlcerative colitis, surveillance\n\nSpecimen\n(A) Terminal ileum, biopsy, (B) Ascending colon, biopsy and (C) Rectum, biopsy",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "ibd_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "ibd_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "ibd_biopsy",
+          "tier": "confident"
+        }
+      ]
+    },
+    {
+      "name": "oesophageal and duodenal biopsies",
+      "text": "History\nDysphagia, ?Barrett. Coeliac serology positive.\n\nSpecimen\n(A) Oesophagus, distal, biopsy and (B) Duodenum, D2, biopsies",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "oesophageal_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "duodenal_biopsy",
+          "tier": "confident"
+        }
+      ]
+    },
+    {
+      "name": "breast core and axillary node",
+      "text": "History\nRight breast mass, mammogram B5\n\nSpecimen\n(A) Right breast, 10 o'clock, core biopsy",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "breast_biopsy",
+          "tier": "confident"
+        }
+      ]
+    },
+    {
+      "name": "cervical biopsy and endometrial curettings",
+      "text": "History\nHSIL on smear; PMB\n\nSpecimen\n(A) Cervix, punch biopsy, (B) Endocervical curettings and (C) Endometrial curettings",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "cervical_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "cervical_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "endometrial_biopsy",
+          "tier": "confident"
+        }
+      ]
+    },
+    {
+      "name": "prostate cores and lung biopsy",
+      "text": "History\nRaised PSA. Lung mass on CT.\n\nSpecimen\n(A) Prostate, transperineal biopsy and (B) Lung, right lower lobe, transbronchial biopsy",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "prostate_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "lung_biopsy",
+          "tier": "confident"
+        }
+      ]
+    },
+    {
+      "name": "benign resections",
+      "text": "History\nAcute appendicitis; gallstones; sebaceous cyst back; skin BCC nose; nasal polyps\n\nSpecimen\n(A) Appendix, appendicectomy, (B) Gallbladder, cholecystectomy, (C) Skin, back, excision, (D) Skin, nose, excision and (E) Nasal polyps, polypectomy",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "appendix",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "gallbladder",
+          "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "skin_cyst",
+          "tier": "choose"
+        },
+        {
+          "label": "D",
+          "templateId": "skin_cyst",
+          "tier": "choose"
+        },
+        {
+          "label": "E",
+          "templateId": "nasal_polyps",
+          "tier": "confident"
+        }
+      ]
+    },
+    {
+      "name": "thyroid, parathyroid, tonsils, salivary",
+      "text": "History\nMultinodular goitre, Bethesda IV nodule. Hyperparathyroidism. Pleomorphic adenoma.\n\nSpecimen\n(A) Thyroid, right lobe, hemithyroidectomy, (B) Parathyroid, right inferior, excision, (C) Bilateral tonsils, tonsillectomy and (D) Parotid, superficial parotidectomy",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "thyroid_benign",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "parathyroid",
+          "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "tonsils",
+          "tier": "confident"
+        },
+        {
+          "label": "D",
+          "templateId": "salivary_benign",
+          "tier": "confident"
+        }
+      ]
+    },
+    {
+      "name": "urology and GI resections",
+      "text": "History\nHaematuria; BPH; stoma closure; GIST stomach\n\nSpecimen\n(A) Bladder, TURBT, (B) Prostate chips, TURP, (C) Ileostomy, closure and (D) Stomach, wedge resection",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "turbt",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "turp",
+          "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "stoma",
+          "tier": "confident"
+        },
+        {
+          "label": "D",
+          "templateId": "gist_resection",
+          "tier": "confident"
+        }
+      ]
+    },
+    {
+      "name": "colon carcinoma, liver, ovary, placenta, valve, jaw, soft tissue",
+      "text": "History\nSigmoid adenocarcinoma. Liver haemangioma. Left ovarian endometriotic cyst. Preterm delivery. Aortic stenosis. Dentigerous cyst. Lipoma back.\n\nSpecimen\n(A) Sigmoid colon, anterior resection, (B) Liver, segment 6, wedge resection, (C) Left ovary, cystectomy, (D) Placenta, (E) Aortic valve, replacement, (F) Mandible, cyst, enucleation and (G) Soft tissue, back, lipoma, excision",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "colon_resection",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "liver_benign",
+          "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "ovarian_cyst",
+          "tier": "confident"
+        },
+        {
+          "label": "D",
+          "templateId": "placenta",
+          "tier": "confident"
+        },
+        {
+          "label": "E",
+          "templateId": "aortic_valve_aorta",
+          "tier": "confident"
+        },
+        {
+          "label": "F",
+          "templateId": "jaw_cyst",
+          "tier": "confident"
+        },
+        {
+          "label": "G",
+          "templateId": "soft_tissue_benign",
+          "tier": "confident"
+        }
+      ]
+    },
+    {
+      "name": "cytology and frozen",
+      "text": "History\nThyroid nodule; pleural effusion; haematuria; cervical screening; parotid swelling; mediastinal lymphadenopathy; intraoperative margin\n\nSpecimen\n(A) Thyroid nodule, FNA, (B) Pleural fluid, (C) Urine, voided, cytology, (D) Cervix, LBC smear, (E) Parotid, FNA, (F) Lymph node, mediastinal, EBUS-TBNA, (G) Frozen section, margin and (H) Cervix, LLETZ",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "thyroid_fna",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "effusion_cytology",
+          "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "urine_cytology",
+          "tier": "confident"
+        },
+        {
+          "label": "D",
+          "templateId": "cervical_cytology",
+          "tier": "confident"
+        },
+        {
+          "label": "E",
+          "templateId": "salivary_fna",
+          "tier": "confident"
+        },
+        {
+          "label": "F",
+          "templateId": "lymph_node_fna",
+          "tier": "confident"
+        },
+        {
+          "label": "G",
+          "templateId": "frozen_section",
+          "tier": "confident"
+        },
+        {
+          "label": "H",
+          "templateId": "cervical_excision",
+          "tier": "confident"
+        }
+      ]
+    }
+  ]
+}

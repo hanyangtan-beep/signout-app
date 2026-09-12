@@ -17,6 +17,27 @@
     "effusion",
     "tis"
   ],
+  "match": {
+    "site": [
+      "pleural",
+      "ascitic",
+      "peritoneal",
+      "pericardial",
+      "effusion",
+      "ascites",
+      "fluid"
+    ],
+    "procedure": [
+      "fluid",
+      "washing",
+      "tap",
+      "aspiration"
+    ],
+    "clinical": [
+      "effusion",
+      "ascites"
+    ]
+  },
   "specimenNoun": "fluid specimen",
   "maxParts": 4,
   "generator": "cytology",

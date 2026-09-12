@@ -13,6 +13,26 @@
     "bethesda",
     "thyroid nodule aspirate"
   ],
+  "match": {
+    "site": [
+      "thyroid",
+      "thyroid nodule",
+      "isthmus"
+    ],
+    "procedure": [
+      "FNA",
+      "aspirate",
+      "aspiration",
+      "USG-guided"
+    ],
+    "clinical": [
+      "thyroid nodule",
+      "goitre",
+      "goiter",
+      "TIRADS",
+      "nodule"
+    ]
+  },
   "specimenNoun": "aspirate",
   "maxParts": 4,
   "generator": "cytology",

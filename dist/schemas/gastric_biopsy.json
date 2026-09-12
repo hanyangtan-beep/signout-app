@@ -22,19 +22,44 @@
     "body",
     "fundus"
   ],
+  "match": {
+    "site": [
+      "stomach",
+      "gastric",
+      "antrum",
+      "antral",
+      "corpus",
+      "body",
+      "fundus",
+      "incisura",
+      "cardia",
+      "OGD"
+    ],
+    "procedure": [
+      "biopsy",
+      "biopsies",
+      "OGD"
+    ],
+    "clinical": [
+      "gastritis",
+      "Helicobacter",
+      "H. pylori",
+      "dyspepsia",
+      "epigastric",
+      "intestinal metaplasia",
+      "OLGA",
+      "ulcer"
+    ],
+    "fill": {
+      "field": "specimenName",
+      "from": "detail"
+    }
+  },
   "specimenNoun": "biopsy",
   "maxParts": 10,
   "generator": "gastric",
   "source": "legacy/gastric-biopsy-signout-v8.html",
-  "caseFields": [
-    {
-      "id": "caseTitle",
-      "label": "Case title / specimens",
-      "type": "text",
-      "placeholder": "(A) Antrum and (B) Body",
-      "help": "Sites in the title override the per-part specimen names in the diagnosis lines."
-    }
-  ],
+  "caseFields": [],
   "options": [
     {
       "id": "olga",

@@ -14,6 +14,24 @@
     "parotid fna",
     "submandibular fna"
   ],
+  "match": {
+    "site": [
+      "parotid",
+      "submandibular",
+      "salivary",
+      "sublingual"
+    ],
+    "procedure": [
+      "FNA",
+      "aspirate",
+      "aspiration"
+    ],
+    "clinical": [
+      "parotid mass",
+      "parotid swelling",
+      "salivary"
+    ]
+  },
   "specimenNoun": "aspirate",
   "maxParts": 4,
   "generator": "cytology",

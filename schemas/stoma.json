@@ -22,6 +22,29 @@
     "loop ileostomy",
     "end colostomy"
   ],
+  "match": {
+    "site": [
+      "stoma",
+      "ileostomy",
+      "colostomy",
+      "stomal",
+      "parastomal"
+    ],
+    "procedure": [
+      "closure",
+      "reversal",
+      "revision",
+      "resection",
+      "excision"
+    ],
+    "clinical": [
+      "stoma closure",
+      "reversal",
+      "Hartmann",
+      "prolapse",
+      "parastomal hernia"
+    ]
+  },
   "specimenNoun": "closure",
   "maxParts": 3,
   "defaultParts": 1,

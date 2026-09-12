@@ -18,6 +18,37 @@
     "PD-L1",
     "granuloma"
   ],
+  "match": {
+    "site": [
+      "lung",
+      "bronchus",
+      "bronchial",
+      "transbronchial",
+      "EBUS",
+      "lobe"
+    ],
+    "procedure": [
+      "biopsy",
+      "biopsies",
+      "cryobiopsy",
+      "transbronchial",
+      "endobronchial",
+      "CT-guided",
+      "core"
+    ],
+    "clinical": [
+      "lung mass",
+      "lung nodule",
+      "lung ca",
+      "lung cancer",
+      "opacity",
+      "consolidation",
+      "bronchoscopy",
+      "granuloma",
+      "TB",
+      "tuberculosis"
+    ]
+  },
   "specimenNoun": "biopsy",
   "maxParts": 6,
   "defaultParts": 1,

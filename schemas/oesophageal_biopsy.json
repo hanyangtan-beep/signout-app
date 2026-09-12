@@ -19,6 +19,35 @@
     "Candida",
     "squamous"
   ],
+  "match": {
+    "site": [
+      "oesophagus",
+      "oesophageal",
+      "esophagus",
+      "esophageal",
+      "OGJ",
+      "GOJ",
+      "gastro-oesophageal",
+      "gastroesophageal",
+      "distal oesophagus"
+    ],
+    "procedure": [
+      "biopsy",
+      "biopsies",
+      "OGD"
+    ],
+    "clinical": [
+      "Barrett",
+      "reflux",
+      "GERD",
+      "GORD",
+      "dysphagia",
+      "eosinophilic",
+      "oesophagitis",
+      "esophagitis",
+      "Candida"
+    ]
+  },
   "specimenNoun": "biopsy",
   "maxParts": 8,
   "defaultParts": 1,

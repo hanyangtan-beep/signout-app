@@ -16,6 +16,30 @@
     "CIN",
     "margins"
   ],
+  "match": {
+    "site": [
+      "cervix",
+      "cervical",
+      "LEEP",
+      "LLETZ",
+      "cone"
+    ],
+    "procedure": [
+      "LEEP",
+      "LLETZ",
+      "cone",
+      "loop",
+      "excision"
+    ],
+    "clinical": [
+      "CIN",
+      "HSIL",
+      "LSIL",
+      "HPV",
+      "AIS",
+      "glandular"
+    ]
+  },
   "specimenNoun": "LEEP",
   "maxParts": 3,
   "defaultParts": 1,

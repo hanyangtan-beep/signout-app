@@ -15,6 +15,27 @@
     "ureteric washing",
     "voided urine"
   ],
+  "match": {
+    "site": [
+      "urine",
+      "bladder washing",
+      "ureteric washing",
+      "voided",
+      "catheterised",
+      "catheterized"
+    ],
+    "procedure": [
+      "urine",
+      "washing",
+      "cytology"
+    ],
+    "clinical": [
+      "haematuria",
+      "hematuria",
+      "surveillance",
+      "urothelial"
+    ]
+  },
   "specimenNoun": "fluid specimen",
   "maxParts": 4,
   "generator": "cytology",

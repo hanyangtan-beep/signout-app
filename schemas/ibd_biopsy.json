@@ -19,6 +19,46 @@
     "mapping",
     "inflammatory bowel disease"
   ],
+  "match": {
+    "site": [
+      "colon",
+      "rectum",
+      "rectal",
+      "colonic",
+      "caecum",
+      "cecum",
+      "sigmoid",
+      "ileum",
+      "ileal",
+      "terminal ileum",
+      "transverse",
+      "ascending",
+      "descending",
+      "mapping",
+      "series"
+    ],
+    "procedure": [
+      "biopsy",
+      "biopsies",
+      "mapping",
+      "series",
+      "colonoscopy"
+    ],
+    "clinical": [
+      "ulcerative colitis",
+      "UC",
+      "Crohn",
+      "colitis",
+      "IBD",
+      "inflammatory bowel",
+      "surveillance",
+      "mapping",
+      "dysplasia surveillance"
+    ],
+    "not": [
+      "polyp"
+    ]
+  },
   "specimenNoun": "biopsy",
   "maxParts": 12,
   "defaultParts": 1,

@@ -16,6 +16,28 @@
     "sydney system",
     "mediastinal node"
   ],
+  "match": {
+    "site": [
+      "lymph node",
+      "LN",
+      "node",
+      "mediastinal",
+      "cervical node",
+      "EBUS"
+    ],
+    "procedure": [
+      "FNA",
+      "TBNA",
+      "EBUS-TBNA",
+      "EUS-FNA",
+      "aspirate",
+      "aspiration"
+    ],
+    "clinical": [
+      "lymphadenopathy",
+      "mediastinal"
+    ]
+  },
   "specimenNoun": "aspirate",
   "maxParts": 4,
   "generator": "cytology",

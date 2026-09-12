@@ -6,10 +6,11 @@ const low = (v) => String(v || '').trim().toLowerCase();
 const present = (v) => v && v !== 'Absent';
 const hpPresent = (v) => v !== 'Absent';
 
-/** Parse "(A) Antrum and (B) Body" into { A: 'Antrum', B: 'Body' }. Labels A–J. */
+/** Parse "(A) Antrum and (B) Body" into { A: 'Antrum', B: 'Body' }. Labels A–Z (the title is derived from the LIS specimen list). */
 export function parseSitesFromTitle(text) {
   const out = {};
-  const re = /\(([A-J])\)\s*([^\(]+)/gi;
+  // A parenthesis not followed by a single capital letter ("(12a)" station numbers) belongs to the site.
+  const re = /\(([A-Z])\)\s*((?:[^(]|\((?![A-Z]\)))+)/g;
   let m;
   while ((m = re.exec(text || '')) !== null) {
     let site = (m[2] || '').trim();

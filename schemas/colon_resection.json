@@ -30,6 +30,46 @@
     "rectal cancer",
     "colon cancer"
   ],
+  "match": {
+    "site": [
+      "colon",
+      "rectum",
+      "rectal",
+      "colonic",
+      "caecum",
+      "cecum",
+      "sigmoid",
+      "hemicolectomy",
+      "colectomy",
+      "bowel"
+    ],
+    "procedure": [
+      "hemicolectomy",
+      "colectomy",
+      "anterior resection",
+      "APR",
+      "abdominoperineal",
+      "Hartmann",
+      "proctocolectomy",
+      "resection"
+    ],
+    "clinical": [
+      "colorectal",
+      "CRC",
+      "colon ca",
+      "rectal ca",
+      "colonic ca",
+      "sigmoid ca",
+      "rectal carcinoma",
+      "colonic carcinoma",
+      "colorectal carcinoma",
+      "bowel ca",
+      "bowel cancer"
+    ],
+    "not": [
+      "polyp"
+    ]
+  },
   "specimenNoun": "resection",
   "maxParts": 3,
   "defaultParts": 1,

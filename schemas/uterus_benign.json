@@ -22,6 +22,41 @@
     "fallopian tube",
     "ovary"
   ],
+  "match": {
+    "site": [
+      "uterus",
+      "uterine",
+      "hysterectomy",
+      "TAH",
+      "myomectomy",
+      "fibroid",
+      "leiomyoma",
+      "myoma"
+    ],
+    "procedure": [
+      "hysterectomy",
+      "TAH",
+      "TAHBSO",
+      "myomectomy",
+      "resection",
+      "subtotal"
+    ],
+    "clinical": [
+      "fibroid",
+      "fibroids",
+      "leiomyoma",
+      "leiomyomas",
+      "myoma",
+      "adenomyosis",
+      "menorrhagia",
+      "prolapse",
+      "uterine prolapse",
+      "AUB",
+      "HMB",
+      "endometrial polyp",
+      "bulky uterus"
+    ]
+  },
   "specimenNoun": "hysterectomy",
   "maxParts": 4,
   "defaultParts": 1,

@@ -27,6 +27,39 @@
     "punch",
     "curettage"
   ],
+  "match": {
+    "site": [
+      "skin",
+      "scalp",
+      "face",
+      "eyelid",
+      "ear",
+      "lip",
+      "nose"
+    ],
+    "procedure": [
+      "shave",
+      "punch",
+      "curettings",
+      "curettage",
+      "biopsy",
+      "snip"
+    ],
+    "clinical": [
+      "skin tag",
+      "naevus",
+      "nevus",
+      "seborrhoeic",
+      "seborrheic",
+      "wart",
+      "verruca",
+      "molluscum",
+      "pyogenic granuloma",
+      "actinic",
+      "skin lesion",
+      "papule"
+    ]
+  },
   "specimenNoun": "shave",
   "maxParts": 6,
   "defaultParts": 1,

@@ -9,9 +9,9 @@ import path from 'node:path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-export const MANIFEST_KEYS = ['id', 'name', 'shortName', 'label', 'organ', 'system', 'kind', 'rank', 'aliases', 'version', 'generator'];
-export const KINDS = ['biopsy', 'benign resection', 'cancer resection', 'frozen', 'cytology'];
-export const SYSTEMS = ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology'];
+export const MANIFEST_KEYS = ['id', 'name', 'shortName', 'label', 'organ', 'system', 'kind', 'rank', 'aliases', 'match', 'version', 'generator'];
+export const KINDS = ['biopsy', 'benign resection', 'cancer resection', 'frozen', 'cytology', 'generic'];
+export const SYSTEMS = ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology', 'General'];
 
 /** One manifest entry from a schema object; throws on missing / invalid metadata. */
 export function manifestEntry(schema) {

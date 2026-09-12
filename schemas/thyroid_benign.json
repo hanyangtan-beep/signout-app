@@ -22,6 +22,35 @@
     "isthmic margin",
     "NIFTP"
   ],
+  "match": {
+    "site": [
+      "thyroid",
+      "thyroid lobe",
+      "isthmus",
+      "hemithyroidectomy",
+      "thyroidectomy"
+    ],
+    "procedure": [
+      "hemithyroidectomy",
+      "thyroidectomy",
+      "lobectomy",
+      "isthmusectomy",
+      "resection"
+    ],
+    "clinical": [
+      "goitre",
+      "goiter",
+      "nodule",
+      "multinodular",
+      "MNG",
+      "Graves",
+      "Hashimoto",
+      "thyroiditis",
+      "Bethesda",
+      "follicular",
+      "thyroid nodule"
+    ]
+  },
   "specimenNoun": "resection",
   "maxParts": 3,
   "defaultParts": 1,
