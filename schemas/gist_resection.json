@@ -63,6 +63,22 @@
       }
     ]
   },
+  "macroExtract": {
+    "specimenDimensions": {
+      "concept": "specimenDims",
+      "unit": "mm",
+      "label": true
+    },
+    "tumourSize": {
+      "concept": "tumourSizeMax",
+      "unit": "cm"
+    },
+    "tumourSizeOther": {
+      "concept": "tumourDims",
+      "unit": "cm",
+      "label": true
+    }
+  },
   "specimenNoun": "resection",
   "maxParts": 3,
   "defaultParts": 1,

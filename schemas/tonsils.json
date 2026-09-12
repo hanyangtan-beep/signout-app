@@ -46,6 +46,12 @@
       "snoring"
     ]
   },
+  "macroExtract": {
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "tonsillectomy",
   "maxParts": 3,
   "defaultParts": 1,

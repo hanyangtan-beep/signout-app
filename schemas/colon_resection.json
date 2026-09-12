@@ -83,6 +83,22 @@
       }
     ]
   },
+  "macroExtract": {
+    "specimenLength": {
+      "concept": "length",
+      "unit": "cm",
+      "near": "colon|bowel|intestine|rectum|segment|specimen|length"
+    },
+    "tumourSize": {
+      "concept": "tumourSizeMax",
+      "unit": "mm"
+    },
+    "tumourSizeOther": {
+      "concept": "tumourDims",
+      "unit": "mm",
+      "label": true
+    }
+  },
   "specimenNoun": "resection",
   "maxParts": 3,
   "defaultParts": 1,

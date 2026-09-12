@@ -55,6 +55,16 @@
       }
     ]
   },
+  "macroExtract": {
+    "aggregateSize": {
+      "concept": "dims",
+      "unit": "cm"
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "polypectomy",
   "maxParts": 4,
   "defaultParts": 1,

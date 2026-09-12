@@ -38,6 +38,26 @@
       "biliary colic"
     ]
   },
+  "macroExtract": {
+    "dimensions": {
+      "concept": "specimenDims",
+      "unit": "cm"
+    },
+    "wallThickness": {
+      "concept": "wallThickness",
+      "unit": "mm",
+      "label": true
+    },
+    "stoneSize": {
+      "concept": "size",
+      "unit": "cm",
+      "near": "stone|calcul"
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "cholecystectomy",
   "maxParts": 2,
   "defaultParts": 1,

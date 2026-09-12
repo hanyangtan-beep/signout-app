@@ -46,6 +46,21 @@
       "breast lump"
     ]
   },
+  "macroExtract": {
+    "dimensions": {
+      "concept": "specimenDims",
+      "unit": "cm"
+    },
+    "lesionSize": {
+      "concept": "tumourDims",
+      "unit": "cm",
+      "min": 1
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "resection",
   "maxParts": 8,
   "defaultParts": 1,

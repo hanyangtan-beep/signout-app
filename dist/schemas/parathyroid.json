@@ -44,6 +44,20 @@
       }
     ]
   },
+  "macroExtract": {
+    "weight": {
+      "concept": "weight",
+      "unit": "g"
+    },
+    "dimensions": {
+      "concept": "specimenDims",
+      "unit": "cm"
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "excision",
   "maxParts": 4,
   "defaultParts": 1,

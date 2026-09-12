@@ -57,6 +57,46 @@
       "bulky uterus"
     ]
   },
+  "macroExtract": {
+    "weight": {
+      "concept": "weight",
+      "unit": "g"
+    },
+    "dimensions": {
+      "concept": "specimenDims",
+      "unit": "cm"
+    },
+    "leiomyomaSize": {
+      "concept": "tumourSizeMax",
+      "unit": "cm",
+      "near": "fibroid|leiomyoma|myoma"
+    },
+    "endometriumThickness": {
+      "concept": "wallThickness",
+      "unit": "mm",
+      "label": true,
+      "near": "endometri"
+    },
+    "tubeSize": {
+      "concept": "lengthDiameter",
+      "unit": "cm",
+      "near": "tube"
+    },
+    "ovarySize": {
+      "concept": "dims",
+      "unit": "cm",
+      "near": "ovar"
+    },
+    "cystSize": {
+      "concept": "size",
+      "unit": "cm",
+      "near": "cyst"
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "hysterectomy",
   "maxParts": 4,
   "defaultParts": 1,

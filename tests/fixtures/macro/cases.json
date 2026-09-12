@@ -1,0 +1,95 @@
+{
+  "note": "Macro extraction fixtures (card (e)). Each case: pasted Macroscopic text, template per part letter, expected field values ('' = must stay unset). House wording from real reports, anonymised.",
+  "cases": [
+    {
+      "name": "endometrial carcinoma — house prose, cm, spanning tumour, thick out of",
+      "templates": { "A": "endometrial_carcinoma" },
+      "text": "(A) 'Uterus and left appendage, TLHBSO'. Specimen weighs 110 g, consists of a uterus and left ovary and left fallopian tube. It has been incised on the anterior aspect prior to submission. Within the uterine fundus and extending close to the lower uterine segment, a polypoid tumour is seen spanning over an area of approximately 5 cm mediolaterally and 4.5 cm from fundus to the lower uterine segment. The left ovary measures 2 x 3 x 2 cm and the left fallopian tube measures 7 cm long and 0.6 cm in diameter.\nSectioning reveals the polypoid tumour invaded into the uterine cavity. The tumour measures approximately 0.4 cm thick out of a myometrial thickness of 2.2 cm. Partially embedded in 12 blocks.",
+      "expect": { "A": { "weight": "110", "dimensions": "", "tumourSizeMm": "50", "tumourDims": "50 x 45", "macroDepthMm": "4", "macroMyoMm": "22", "cavityLengthMm": "" } }
+    },
+    {
+      "name": "endometrial carcinoma — mm synoptic prose, depth of invasion in a thick myometrium",
+      "templates": { "A": "endometrial_carcinoma" },
+      "text": "Total hysterectomy and bilateral salpingo-oophorectomy specimen weighing 152 g. The uterus measures 95 x 60 x 45 mm. The endometrial cavity measures 40 mm in length. An exophytic tumour measuring 35 x 30 x 12 mm occupies the posterior wall and fundus. Depth of myometrial invasion is 8 mm in a 20 mm thick myometrium. The cervix is unremarkable. Right ovary 30 x 20 x 10 mm, right tube 50 mm long. 14 blocks.",
+      "expect": { "A": { "weight": "152", "dimensions": "95 x 60 x 45", "cavityLengthMm": "40", "tumourSizeMm": "35", "tumourDims": "35 x 30 x 12", "macroDepthMm": "8", "macroMyoMm": "20" } }
+    },
+    {
+      "name": "endometrial carcinoma — uterus axes, invades to a depth, slash notation ignored when prose present",
+      "templates": { "A": "endometrial_carcinoma" },
+      "text": "The uterus weighs 96 g and measures 8 cm from cervix to fundus, 5 cm from cornu to cornu and 3.5 cm anteroposteriorly. The endometrial cavity is 4.5 cm long. A friable tumour measuring 3 x 2.5 cm is seen on the posterior wall. The tumour invades to a depth of 6 mm; the myometrium at that point measures 18 mm. 11 blocks.",
+      "expect": { "A": { "weight": "96", "dimensions": "80 x 50 x 35", "cavityLengthMm": "45", "tumourSizeMm": "30", "tumourDims": "30 x 25", "macroDepthMm": "6", "macroMyoMm": "18" } }
+    },
+    {
+      "name": "endometrial carcinoma — slash notation",
+      "templates": { "A": "endometrial_carcinoma" },
+      "text": "Uterus 120 g, 90 x 55 x 40 mm. Polypoid tumour 25 x 20 mm in the fundus. Myometrial invasion 7/16 mm. 10 blocks.",
+      "expect": { "A": { "weight": "120", "dimensions": "90 x 55 x 40", "tumourSizeMm": "25", "tumourDims": "25 x 20", "macroDepthMm": "7", "macroMyoMm": "16" } }
+    },
+    {
+      "name": "colorectal carcinoma — length, tumour dims in cm to mm, margins skipped",
+      "templates": { "A": "colon_resection" },
+      "text": "A segment of colon measuring 25 cm long. An ulcerated tumour is seen 8 cm from the proximal margin and 12 cm from the distal margin, measuring 4.5 x 3.5 x 1.2 cm. It invades through the muscularis propria into the pericolic fat. 22 blocks.",
+      "expect": { "A": { "specimenLength": "25", "tumourSize": "45", "tumourSizeOther": "45 x 35 x 12 mm" } }
+    },
+    {
+      "name": "GIST — specimen dims labelled mm, tumour in cm",
+      "templates": { "A": "gist_resection" },
+      "text": "A wedge of stomach measuring 6.5 x 5 x 3 cm. There is a well circumscribed submucosal mass measuring 4.2 x 3.8 x 3 cm with a whorled cut surface. Partially embedded in 8 blocks.",
+      "expect": { "A": { "specimenDimensions": "65 x 50 x 30 mm", "tumourSize": "4.2", "tumourSizeOther": "4.2 x 3.8 x 3 cm" } }
+    },
+    {
+      "name": "gallbladder — thickened wall, stones",
+      "templates": { "A": "gallbladder" },
+      "text": "An enlarged and thickened gallbladder measures 4.5 x 2.5 x 2.5 cm. No definite cystic duct is seen. It has been incised prior to submission revealing areas of brownish discoloration within. The gallbladder wall is thickened up to 0.5 cm thick. Multiple black stones up to 1.2 cm across. Partially embedded in 3 blocks.",
+      "expect": { "A": { "dimensions": "4.5 x 2.5 x 2.5", "wallThickness": "5 mm", "stoneSize": "1.2", "blocks": "3" } }
+    },
+    {
+      "name": "appendix — length and diameter",
+      "templates": { "A": "appendix" },
+      "text": "Appendix measures 6.5 cm long and 0.8 cm in diameter. The serosa is congested. All embedded in 2 blocks.",
+      "expect": { "A": { "length": "6.5", "diameter": "0.8", "blocks": "2" } }
+    },
+    {
+      "name": "benign uterus — axes, fibroids, tube and ovary, lettered part B only",
+      "templates": { "A": "generic", "B": "uterus_benign" },
+      "text": "(A) 'Right ovary and tube for section'. It weighs 1137 g. A tubo-ovarian mass measuring 17.5 x 15 x 11 cm. Partially embedded in 18 blocks.\n(B) 'Uterus and left ovary and tube for section'. It weighs 81 g. The uterus measures 9 cm from cervix to fundus, 4.8 cm from cornu to cornu and 3.5 cm anteroposteriorly. The cervix measures 3 x 2.5 cm. No mucosal lesion is seen on the cervix. The ovary measures 2 x 1.5 x 0.8 cm. The left fallopian tube is 4.5 cm long and 1 cm in diameter. Serial sectioning of the uterus reveals the myometrium involved by multiple small fibroids ranging from 1 cm across to 0.3 cm across. The uterine cavity is unremarkable. Partially embedded in 9 blocks.",
+      "expect": { "B": { "weight": "81", "dimensions": "9 x 4.8 x 3.5", "leiomyomaSize": "1", "tubeSize": "4.5 x 1", "ovarySize": "2 x 1.5 x 0.8", "blocks": "9", "cystSize": "" } }
+    },
+    {
+      "name": "thyroid lobe — weight, dims, dominant nodule single dimension",
+      "templates": { "A": "thyroid_benign" },
+      "text": "Right hemithyroidectomy specimen weighing 28 g and measuring 5.5 x 3.5 x 2.5 cm. Sectioning shows a dominant well circumscribed nodule measuring 2.8 cm across with a glistening cut surface. Partially embedded in 7 blocks.",
+      "expect": { "A": { "weight": "28", "dimensions": "5.5 x 3.5 x 2.5", "noduleSize": "2.8", "blocks": "7" } }
+    },
+    {
+      "name": "ovarian cyst — cyst size, wall, tube length",
+      "templates": { "A": "ovarian_cyst" },
+      "text": "Left ovarian cyst with attached tube. The specimen measures 6 x 5.5 x 4 cm. The cyst measures 5.5 cm in maximum dimension with a smooth lining and a wall 0.2 cm thick. The tube measures 5 cm long and 0.6 cm in diameter. Partially embedded in 4 blocks.",
+      "expect": { "A": { "dimensions": "6 x 5.5 x 4", "cystSize": "5.5", "wallThickness": "2 mm", "tubeLength": "5", "blocks": "4" } }
+    },
+    {
+      "name": "placenta — weight, disc, cord",
+      "templates": { "A": "placenta" },
+      "text": "Placenta weighing 480 g. The placental disc measures 18 x 16 x 2.5 cm. The umbilical cord measures 35 cm long and 1.2 cm in diameter with three vessels, inserted eccentrically. Membranes are complete. Partially embedded in 5 blocks.",
+      "expect": { "A": { "weight": "480", "discSize": "18 x 16 x 2.5", "cordLength": "35", "cordDiameter": "1.2", "blocks": "5" } }
+    },
+    {
+      "name": "breast lumpectomy — margins ignored, lesion dims",
+      "templates": { "A": "breast_excision" },
+      "text": "(A) Left breast tumour. Specimen weighs 26 g. It consists of a lumpectomy specimen with surgical orientations given. The specimen measures 5.5 cm mediolaterally, 3.5 cm superoinferiorly and 4 cm from superficial to deep. Sectioning reveals a firm nodule measuring 2.2 x 1.8 x 1.5 cm. Grossly, the tumour comes to within 1.5 cm of the deep margin, 1 cm of the superior margin. Partially embedded in 10 blocks.",
+      "expect": { "A": { "dimensions": "5.5 x 3.5 x 4", "lesionSize": "2.2 x 1.8 x 1.5", "blocks": "10" } }
+    },
+    {
+      "name": "skin ellipse — ellipse and lesion",
+      "templates": { "A": "skin_excision" },
+      "text": "A skin ellipse measuring 2.5 x 1.2 cm to a depth of 0.6 cm. There is a pigmented lesion measuring 0.8 x 0.6 cm, 0.2 cm from the nearest margin. All embedded in 2 blocks.",
+      "expect": { "A": { "ellipseSize": "2.5 x 1.2", "lesionSize": "0.8 x 0.6", "blocks": "2" } }
+    },
+    {
+      "name": "no measurements — nothing filled",
+      "templates": { "A": "endometrial_carcinoma" },
+      "text": "Uterus received in formalin, previously opened. Tumour not grossly visible. Multiple blocks taken.",
+      "expect": { "A": { "weight": "", "dimensions": "", "tumourSizeMm": "", "macroDepthMm": "", "macroMyoMm": "" } }
+    }
+  ]
+}

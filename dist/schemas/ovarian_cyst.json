@@ -57,6 +57,31 @@
       "cyst"
     ]
   },
+  "macroExtract": {
+    "dimensions": {
+      "concept": "specimenDims",
+      "unit": "cm"
+    },
+    "cystSize": {
+      "concept": "size",
+      "unit": "cm",
+      "near": "cyst"
+    },
+    "wallThickness": {
+      "concept": "wallThickness",
+      "unit": "mm",
+      "label": true
+    },
+    "tubeLength": {
+      "concept": "length",
+      "unit": "cm",
+      "near": "tube"
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "cystectomy",
   "maxParts": 3,
   "defaultParts": 1,

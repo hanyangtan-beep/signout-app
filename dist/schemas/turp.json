@@ -48,6 +48,16 @@
       "bladder outlet"
     ]
   },
+  "macroExtract": {
+    "weight": {
+      "concept": "weight",
+      "unit": "g"
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "TURP",
   "maxParts": 2,
   "defaultParts": 1,

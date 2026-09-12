@@ -1,16 +1,17 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadTemplate } from './registry.js?v=mtxqgosf';
-import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtxqgosf';
+import { loadManifest, loadTemplate } from './registry.js?v=mtxrmjdf';
+import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtxrmjdf';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mtxqgosf';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtxqgosf';
-import { loadConfig, saveConfig } from './config.js?v=mtxqgosf';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtxqgosf';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtxqgosf';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtxqgosf';
-import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtxqgosf';
+} from './engine.js?v=mtxrmjdf';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtxrmjdf';
+import { loadConfig, saveConfig } from './config.js?v=mtxrmjdf';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtxrmjdf';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtxrmjdf';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtxrmjdf';
+import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtxrmjdf';
+import { applyMacroToCase } from './macroparse.js?v=mtxrmjdf';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -214,6 +215,7 @@ async function setPartTemplate(i, id) {
   const own = parts.filter((p, j) => j < i && templateIdOf(state.caseState, p) === id).length; // position within that template
   parts[i] = { ...createPart(s, own), label: parts[i].label, templateId: id };
   syncPrimary();
+  applyMacro();
   render();
   toast(`Part ${parts[i].label}: ${s.name}`);
 }
@@ -230,8 +232,18 @@ function addPart() {
   const own = parts.filter((p) => templateIdOf(state.caseState, p) === s.id).length;
   parts.push({ ...createPart(s, own), templateId: s.id });
   relabel(parts);
+  applyMacro();
   state.activePart = parts.length - 1;
   render();
+}
+
+/** Pre-fill macro fields from the pasted Macroscopic text (card (e)); remembers how many fields it filled. */
+function applyMacro() {
+  const cs = state.caseState;
+  try {
+    state.macroFilled = applyMacroToCase(cs, (part) => state.templates[templateIdOf(cs, part)]?.schema);
+  } catch (err) { console.error(err); state.macroFilled = 0; }
+  return state.macroFilled;
 }
 
 function removePart(i) {
@@ -804,6 +816,7 @@ function renderLisStatus(out) {
       generated: meta[toggle] ? `Nothing pasted yet — the generated ${label} prints until you paste or Use generated.` : `Generated ${label} prints.`,
       none: ''
     }[src] || '';
+    if (key === 'macro' && (meta.macro || '').trim() && state.macroFilled) ui.status.textContent += ` ${state.macroFilled} macro field${state.macroFilled === 1 ? '' : 's'} filled from the paste.`;
   }
 }
 
@@ -840,7 +853,8 @@ function initLis() {
       state.caseState.meta[key] = '';
       state.caseState.meta[toggle] = false;
       nodes.meta[key].value = '';
-      renderReport(); cacheCase(state.caseState);
+      if (key === 'macro') { applyMacro(); render(); } else renderReport();
+      cacheCase(state.caseState);
     });
   }
 }
@@ -941,6 +955,7 @@ async function buildPartsFromIntake() {
   });
   cs.parts = parts;
   cs.caseTitle = deriveTitle(parsed.parts);
+  applyMacro();
   for (const id of new Set(ids)) noteUsed(id);
   if (!(cs.meta.clinical || '').trim() && parsed.history) {
     cs.meta.clinical = parsed.history;
@@ -1082,7 +1097,8 @@ function initDrive() {
       state.caseState.meta[k] = e.target.value;
       cacheCase(state.caseState);
       if (k === 'accession' || k === 'status') renderSaveStatus();
-      if (k === 'macro' || k === 'blockKey') renderReport();
+      if (k === 'macro') { applyMacro(); render(); }
+      else if (k === 'blockKey') renderReport();
       if (k === 'specimen' || k === 'clinical') renderIntake();
     });
   }

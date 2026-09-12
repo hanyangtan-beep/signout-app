@@ -55,6 +55,21 @@
       }
     ]
   },
+  "macroExtract": {
+    "ellipseSize": {
+      "concept": "specimenDims",
+      "unit": "cm"
+    },
+    "noduleSize": {
+      "concept": "tumourDims",
+      "unit": "cm",
+      "min": 1
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "excision",
   "maxParts": 3,
   "defaultParts": 1,

@@ -50,6 +50,31 @@
       "abruption"
     ]
   },
+  "macroExtract": {
+    "weight": {
+      "concept": "weight",
+      "unit": "g"
+    },
+    "discSize": {
+      "concept": "dims",
+      "unit": "cm",
+      "near": "disc|placenta"
+    },
+    "cordLength": {
+      "concept": "length",
+      "unit": "cm",
+      "near": "cord"
+    },
+    "cordDiameter": {
+      "concept": "diameter",
+      "unit": "cm",
+      "near": "cord"
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "delivery",
   "maxParts": 2,
   "defaultParts": 1,

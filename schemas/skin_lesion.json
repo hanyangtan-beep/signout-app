@@ -66,6 +66,21 @@
       }
     ]
   },
+  "macroExtract": {
+    "specimenSize": {
+      "concept": "specimenDims",
+      "unit": "cm"
+    },
+    "lesionSize": {
+      "concept": "tumourDims",
+      "unit": "cm",
+      "min": 1
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "shave",
   "maxParts": 6,
   "defaultParts": 1,

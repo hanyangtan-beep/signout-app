@@ -37,6 +37,20 @@
       "appendicitis"
     ]
   },
+  "macroExtract": {
+    "length": {
+      "concept": "length",
+      "unit": "cm"
+    },
+    "diameter": {
+      "concept": "diameter",
+      "unit": "cm"
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "appendicectomy",
   "maxParts": 2,
   "defaultParts": 1,

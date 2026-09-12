@@ -45,6 +45,20 @@
       "parastomal hernia"
     ]
   },
+  "macroExtract": {
+    "length": {
+      "concept": "length",
+      "unit": "cm"
+    },
+    "diameter": {
+      "concept": "diameter",
+      "unit": "cm"
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "closure",
   "maxParts": 3,
   "defaultParts": 1,

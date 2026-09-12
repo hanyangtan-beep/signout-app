@@ -54,6 +54,36 @@
       "atypical hyperplasia"
     ]
   },
+  "macroExtract": {
+    "weight": {
+      "concept": "weight",
+      "unit": "g"
+    },
+    "dimensions": {
+      "concept": "specimenDims",
+      "unit": "mm"
+    },
+    "cavityLengthMm": {
+      "concept": "cavityLength",
+      "unit": "mm"
+    },
+    "tumourSizeMm": {
+      "concept": "tumourSizeMax",
+      "unit": "mm"
+    },
+    "tumourDims": {
+      "concept": "tumourDims",
+      "unit": "mm"
+    },
+    "macroDepthMm": {
+      "concept": "depthOfInvasion",
+      "unit": "mm"
+    },
+    "macroMyoMm": {
+      "concept": "wallThickness",
+      "unit": "mm"
+    }
+  },
   "specimenNoun": "resection",
   "maxParts": 10,
   "defaultParts": 1,

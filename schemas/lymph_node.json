@@ -47,6 +47,16 @@
       "sentinel"
     ]
   },
+  "macroExtract": {
+    "tissueSize": {
+      "concept": "dims",
+      "unit": "cm"
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "excision",
   "maxParts": 12,
   "defaultParts": 1,

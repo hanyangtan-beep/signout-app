@@ -63,6 +63,16 @@
       }
     ]
   },
+  "macroExtract": {
+    "aggregateSize": {
+      "concept": "dims",
+      "unit": "cm"
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
   "specimenNoun": "enucleation",
   "maxParts": 3,
   "defaultParts": 1,
