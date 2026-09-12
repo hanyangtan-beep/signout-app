@@ -17,9 +17,10 @@
 //   diagnosis                 the specimen line + "- " clauses, lowest margin distance and yp-prefix
 // Wording is protected by tests/gastric.test.js — change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtyi0pii';
-import * as S from '../src/staging/gastric.js?v=mtyi0pii';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtyi0pii';
+import { typeMorphology } from './gastric_morphology.js?v=mtyjfzn1';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtyjfzn1';
+import * as S from '../src/staging/gastric.js?v=mtyjfzn1';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtyjfzn1';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
@@ -187,6 +188,11 @@ export function histologyPara(v) {
   const ext = extensionPhrase(v);
   if (ext) s += `, ${ext}`;
   s += '.';
+  if (!isTis(v) && !isPT0(v)) {
+    const typeName = v.histType === 'Other' ? '' : v.histType || '';
+    const morph = typeMorphology(typeName, v.grade || '');
+    if (morph) s += ` ${morph.replace(/\.$/, '')}.`;
+  }
   return s;
 }
 

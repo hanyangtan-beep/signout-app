@@ -10,15 +10,15 @@
 // (GIST: site and mitotic rate).
 // Categories are bare ('T3', 'N1b', 'M1a', 'Tis', 'TX', 'N0', 'M-') — the prefix is added here.
 
-import * as colorectal from './colorectal.js?v=mtyi0pii';
-import * as gist from './gist.js?v=mtyi0pii';
-import * as endometrium from './endometrium.js?v=mtyi0pii';
-import * as ovary from './ovary.js?v=mtyi0pii';
-import * as lung from './lung.js?v=mtyi0pii';
-import * as breast from './breast.js?v=mtyi0pii';
-import * as phyllodes from './phyllodes.js?v=mtyi0pii';
-import * as gastric from './gastric.js?v=mtyi0pii';
-import * as oesophagus from './oesophagus.js?v=mtyi0pii';
+import * as colorectal from './colorectal.js?v=mtyjfzn1';
+import * as gist from './gist.js?v=mtyjfzn1';
+import * as endometrium from './endometrium.js?v=mtyjfzn1';
+import * as ovary from './ovary.js?v=mtyjfzn1';
+import * as lung from './lung.js?v=mtyjfzn1';
+import * as breast from './breast.js?v=mtyjfzn1';
+import * as phyllodes from './phyllodes.js?v=mtyjfzn1';
+import * as gastric from './gastric.js?v=mtyjfzn1';
+import * as oesophagus from './oesophagus.js?v=mtyjfzn1';
 
 export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes, gastric, oesophagus };
 
