@@ -2,7 +2,7 @@
 
 Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`.
 
-State on 2026-09-11: 43 templates (10 small biopsy, 23 benign resection incl. LEEP, 1 frozen section, 3 synoptic cancer resections, 6 cytology), 604 tests, published at `https://han-signout.pplx.app`.
+State on 2026-09-12: 44 templates (10 small biopsy, 23 benign resection incl. LEEP, 1 frozen section, 3 synoptic cancer resections, 6 cytology, 1 generic), 627 tests, published at `https://han-signout.pplx.app`.
 
 ---
 
