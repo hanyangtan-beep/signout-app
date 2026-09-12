@@ -1,6 +1,6 @@
 # Ovary pair — ovarian tumour frozen section + ovary / fallopian tube / peritoneum synoptic
 
-Brief for the "Ovary pair" card in `docs/roadmap.md` (Next). Planned 2026-09-12 at the user's request; not yet pulled into Now. Follows the pair pattern in `frozen-section-scenarios.md` § "Staged frozen specimens (pairs)": the frozen part carries the intraoperative category, the synoptic part carries the definitive classification and stage, and the linked-part engine ("Stage this part") pre-fills one from the other.
+Brief for the "Ovary pair" card in `docs/roadmap.md` (Next). Planned 2026-09-12 at the user's request; pulled into Now the same day. Follows the pair pattern in `frozen-section-scenarios.md` § "Staged frozen specimens (pairs)": the frozen part carries the intraoperative category, the synoptic part carries the definitive classification and stage, and the linked-part engine ("Stage this part") pre-fills one from the other.
 
 Staging rule, fixed by the user 2026-09-12: **FIGO stage is Checks-only, never printed** (same as endometrium). The "most recent" FIGO staging for ovary, fallopian tube and peritoneum is the 2014 classification; the FIGO Cancer Report 2025 reproduces it unchanged (Renz M, Friedlander M, Berek JS. Cancer of the ovary, fallopian tube, and peritoneum: 2025 update. Int J Gynecol Obstet 2025;171(Suppl 1):6-35. doi:10.1002/ijgo.70282, PMC12411830). AJCC 8th pTNM prints only with the existing `printPTNM` case option, exactly as the endometrial template does.
 
@@ -100,8 +100,10 @@ Docs: this file gains the built wording, the CAP version check, the frozen-secti
 
 L → build as one batch with the engine card if it has not shipped, otherwise as the second consumer after the Lung pair. Split: (a) frozen scenario enrichment (S), (b) `src/staging/ovary.js` + boundary tests (M), (c) schema + generator (L), (d) fixtures + docs (S). One deploy + publish. Stop conditions: if the QMH page order and the current CAP release disagree, the QMH order is kept and the difference logged; no printable FIGO line in this card; no cytology-accession linking; no reference galleries (Later, same mechanism as endometrium — candidates: serous borderline vs LGSC, mucinous expansile vs infiltrative, HGSC vs endometrioid, clear cell patterns, implants).
 
-## Open points for the user (confirm when pulling the card)
+## Open points — confirmed 2026-09-12
 
-1. Frozen wording has no house example — the intraoperative lines above are proposals.
-2. `primarySite` and `neoadjuvant` are house additions not on the QMH page; agree the diagnosis-line form (organ, side, procedure - TYPE, site assignment, size, surface; "see synoptic report").
-3. Whether omentum / node / peritoneal-biopsy parts should print their own diagnosis lines (proposed yes, as above) or fold into one line under the primary letter.
+1. Frozen wording has no house example — the intraoperative lines above are proposals. **Confirmed ("ok").**
+2. `primarySite` and `neoadjuvant` are house additions not on the QMH page; diagnosis-line form (organ, side, procedure - TYPE, site assignment, size, surface; "see synoptic report"). **Agreed.**
+3. Omentum / node / peritoneal-biopsy parts print their own diagnosis lines. **Yes.**
+
+Engine dependency: the "Linked synoptic part (Stage this part)" card has not shipped. Decision: build (a)–(d) now; the frozen → synoptic map is the pure exported function `prefillFromFrozen(frozenValues)` in `generators/ovary_ft_peritoneum.js` (tested by fixture 07); the button that adds the linked part stays with the engine card.

@@ -51,7 +51,23 @@ Docs
 
 ## Now
 
-(empty — pull the next card in)
+### Ovary pair — ovarian tumour frozen + ovary / fallopian tube / peritoneum synoptic   Size: L → split; build as one batch
+Why:        adnexal masses are a recurring frozen request and the definitive resection is a CAP synoptic with FIGO staging; today the frozen "Ovarian / adnexal mass" scenario has four results and a free tumour type, and there is no ovary synoptic (user request 2026-09-12).
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/GYN-Ovary.html (saved `docs/reference/GYN-Ovary.html`, CAP Ovary Fallopian Tube Peritoneum 1.5.0.0; importer mangles this page — order taken from a text dump). Staging: FIGO 2014 as reproduced unchanged in the FIGO Cancer Report 2025 (Renz, Friedlander, Berek, IJGO 2025;171 Suppl 1:6-35, doi:10.1002/ijgo.70282) — **Checks-only, never printed**, same rule as endometrium; AJCC 8th pTNM prints only with `printPTNM`.
+Split into:
+  (a) Frozen scenario enrichment (S): side, specimen, received intact / ruptured / fragmented, size, surface, cut surface, frozen blocks; results Benign / Non-neoplastic / Borderline / Borderline, at least / Malignant / Malignant, favour metastatic / Deferred; typed pick-list; mucinous heterogeneity-and-metastasis caveat sentence; IC1-vs-IC2 and deferral Checks; emits `ovSummary`. Existing frozen fixtures byte-identical. No house example — wording proposed.
+  (b) `src/staging/ovary.js` (M): pT1a–c3 / T2a–b / T3a2–c, pN0 / N0(i+) / N1a ≤ 10 mm / N1b > 10 mm, pM1a / M1b, liver-spleen capsule (T3c) vs parenchyma (M1b), primary peritoneal cannot be T1; `figo2014()` for the Checks line "FIGO 2014 (reference, not reported)"; boundary tests (10 mm deposit, 20 mm focus, positive washings with IIB, IIIA1 vs IIIA2, ITC-only nodes).
+  (c) Schema + generator `ovary_ft_peritoneum` (L): QMH order — procedure, hysterectomy type, specimen integrity per organ, tumour site, ovarian / tubal surface, size, WHO 5th histotype, grade system per type (WHO, FIGO for endometrioid reusing the endometrium logic, Silverberg / growth-pattern for mucinous, 2- / 3-tier for immature teratoma, not applicable for HGSC etc.), LVI, PNI (+), p53 (+, in the one microscopy-IHC paragraph), implants (borderline only; no "invasive implant" option), largest extrapelvic focus, peritoneal / pleural fluid, CRS after NACT, other organ involvement with part letters, hysterectomy margins, nodes with deposit sizes and ENE, distant metastasis, additional findings (STIC, endometriosis, endosalpingiosis), ancillary (BRCA / HRD / MMR / POLE). House additions: `primarySite` (ovary / tube / tubo-ovarian / peritoneum / undesignated, WHO-rule suggestion + Check), `neoadjuvant`. Per-letter diagnosis lines for contralateral adnexa, uterus, omentum, nodes, peritoneal biopsies; synoptic on the primary part only.
+  (d) Fixtures + docs (S): seven fixtures (HGSC IC3, post-NACT IIIC, serous borderline with non-invasive implants, expansile mucinous IA, endometrioid in endometriosis IC2, primary peritoneal, frozen → synoptic pair), element-order test against the saved page, golden byte-for-byte; README 44 → 45 templates; card → Done.
+Untouched:  other frozen scenarios and fixtures; endometrial and other synoptics; cytology templates (fluid results entered as text, no accession link).
+Accept:     frozen right SO "malignant, favour HGSC" → (engine card pending) the exported pre-fill map `prefillFromFrozen()` gives the synoptic values; a case with the frozen part and the synoptic part pre-filled (site, integrity, size, favoured type) prints one diagnosis line per letter, FIGO stage only in Checks, pTNM only with `printPTNM`; boundary tests pass; borderline fixture prints no stage.
+Stop:       no printable FIGO line; no cytology-accession linking; no reference galleries (Later); if the current CAP release differs from the QMH page, keep the QMH order and log the difference.
+Verify:     tests + browser (light)
+Ship:       one deploy + publish (with the engine card if it has not shipped, otherwise after the Lung pair)
+Depends on: Linked synoptic part (Stage this part) — NOT shipped; decision 2026-09-12: build (a)–(d) now with the frozen → synoptic pre-fill as a pure exported function (`prefillFromFrozen` in `generators/ovary_ft_peritoneum.js`, tested in fixture 07); the "Stage this part" button itself stays with the engine card, which will call this map as its second consumer. Frozen section scenarios (unstaged) for the shared conventions.
+Confirmed:  2026-09-12 — (1) proposed frozen wording accepted (no house example); (2) house additions `primarySite` + `neoadjuvant` and the diagnosis-line form agreed; (3) omentum / node / peritoneal-biopsy parts print their own per-letter diagnosis lines.
+Spec:       `docs/specs/ovary-pair.md`
+
 
 ## Next
 
@@ -208,24 +224,6 @@ Accept:     benign template → Upgrade this part → synoptic prefilled and sta
 Verify:     tests + browser (light)
 Ship:       one batch, one publish
 Depends on: Linked synoptic part
-
----
-
-### Ovary pair — ovarian tumour frozen + ovary / fallopian tube / peritoneum synoptic   Size: L → split; build as one batch
-Why:        adnexal masses are a recurring frozen request and the definitive resection is a CAP synoptic with FIGO staging; today the frozen "Ovarian / adnexal mass" scenario has four results and a free tumour type, and there is no ovary synoptic (user request 2026-09-12).
-Source:     https://awiloqmh.github.io/CancerReportingTemplate/GYN-Ovary.html (saved `docs/reference/GYN-Ovary.html`, CAP Ovary Fallopian Tube Peritoneum 1.5.0.0; importer mangles this page — order taken from a text dump). Staging: FIGO 2014 as reproduced unchanged in the FIGO Cancer Report 2025 (Renz, Friedlander, Berek, IJGO 2025;171 Suppl 1:6-35, doi:10.1002/ijgo.70282) — **Checks-only, never printed**, same rule as endometrium; AJCC 8th pTNM prints only with `printPTNM`.
-Split into:
-  (a) Frozen scenario enrichment (S): side, specimen, received intact / ruptured / fragmented, size, surface, cut surface, frozen blocks; results Benign / Non-neoplastic / Borderline / Borderline, at least / Malignant / Malignant, favour metastatic / Deferred; typed pick-list; mucinous heterogeneity-and-metastasis caveat sentence; IC1-vs-IC2 and deferral Checks; emits `ovSummary`. Existing frozen fixtures byte-identical. No house example — wording proposed.
-  (b) `src/staging/ovary.js` (M): pT1a–c3 / T2a–b / T3a2–c, pN0 / N0(i+) / N1a ≤ 10 mm / N1b > 10 mm, pM1a / M1b, liver-spleen capsule (T3c) vs parenchyma (M1b), primary peritoneal cannot be T1; `figo2014()` for the Checks line "FIGO 2014 (reference, not reported)"; boundary tests (10 mm deposit, 20 mm focus, positive washings with IIB, IIIA1 vs IIIA2, ITC-only nodes).
-  (c) Schema + generator `ovary_ft_peritoneum` (L): QMH order — procedure, hysterectomy type, specimen integrity per organ, tumour site, ovarian / tubal surface, size, WHO 5th histotype, grade system per type (WHO, FIGO for endometrioid reusing the endometrium logic, Silverberg / growth-pattern for mucinous, 2- / 3-tier for immature teratoma, not applicable for HGSC etc.), LVI, PNI (+), p53 (+, in the one microscopy-IHC paragraph), implants (borderline only; no "invasive implant" option), largest extrapelvic focus, peritoneal / pleural fluid, CRS after NACT, other organ involvement with part letters, hysterectomy margins, nodes with deposit sizes and ENE, distant metastasis, additional findings (STIC, endometriosis, endosalpingiosis), ancillary (BRCA / HRD / MMR / POLE). House additions: `primarySite` (ovary / tube / tubo-ovarian / peritoneum / undesignated, WHO-rule suggestion + Check), `neoadjuvant`. Per-letter diagnosis lines for contralateral adnexa, uterus, omentum, nodes, peritoneal biopsies; synoptic on the primary part only.
-  (d) Fixtures + docs (S): seven fixtures (HGSC IC3, post-NACT IIIC, serous borderline with non-invasive implants, expansile mucinous IA, endometrioid in endometriosis IC2, primary peritoneal, frozen → synoptic pair), element-order test against the saved page, golden byte-for-byte; README 44 → 45 templates; card → Done.
-Untouched:  other frozen scenarios and fixtures; endometrial and other synoptics; cytology templates (fluid results entered as text, no accession link).
-Accept:     frozen right SO "malignant, favour HGSC" → Stage this part → synoptic pre-filled (site, integrity, size, favoured type) prints one diagnosis line per letter, FIGO stage only in Checks, pTNM only with `printPTNM`; boundary tests pass; borderline fixture prints no stage.
-Stop:       no printable FIGO line; no cytology-accession linking; no reference galleries (Later); if the current CAP release differs from the QMH page, keep the QMH order and log the difference.
-Verify:     tests + browser (light)
-Ship:       one deploy + publish (with the engine card if it has not shipped, otherwise after the Lung pair)
-Depends on: Linked synoptic part (Stage this part); Frozen section scenarios (unstaged) for the shared conventions
-Spec:       `docs/specs/ovary-pair.md`
 
 ## Later
 
