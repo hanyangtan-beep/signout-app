@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createCase, generate, generateCase } from '../src/engine.js';
 import { loadAll } from '../src/registry.js';
-import { labelRange, frozenResult } from '../generators/frozen.js';
+import { labelRange, frozenResult, ovSummary } from '../generators/frozen.js';
 
 const registry = await loadAll();
 const { schema, generator } = registry.frozen_section;
@@ -181,4 +181,73 @@ test('Google Doc layout gains an INTRAOPERATIVE CONSULTATION section and merges 
   assert.deepEqual(heads, ['CLINICAL HISTORY:', 'SPECIMEN:', 'MACROSCOPIC DESCRIPTION:', 'BLOCK KEY:', 'INTRAOPERATIVE CONSULTATION:', 'MICROSCOPIC EXAMINATION:', 'DIAGNOSIS:']);
   assert.ok(text.includes('converted to paraffin block.\n\nSpecimen received in two containers.\n'));
   assert.ok(text.includes('INTRAOPERATIVE CONSULTATION:\nNo malignancy.\nThe frozen section diagnosis was phone reported at 1321 on 13/05/2026.\n'));
+});
+
+// ---------- Ovarian / adnexal mass scenario, enriched fields (spec: docs/specs/ovary-pair.md, Part 1) ----------
+
+const OVX = { scenario: 'Ovarian / adnexal mass', ovSide: 'Right', ovSpecimen: 'Salpingo-oophorectomy', ovSizeMm: '120', ovWeightG: '350', ovCut: ['Multilocular cyst', 'Mucinous contents', 'Solid areas'], ovBlocks: '2' };
+const ovRun = (values, caseFields) => generate(schema, generator, part(fsCase(1, caseFields), 0, { specimenName: 'Right ovary', ...values }));
+
+test('ovarian form macro, mucinous caveat and "x frozen section" diagnosis line', () => {
+  const out = ovRun({ ...OVX, ovType: 'mucinous cystadenoma' });
+  assert.equal(out.macro, 'Received in a fresh state is a right salpingo-oophorectomy specimen received intact. The ovarian mass measures 120 mm in greatest dimension and weighs 350 g. The outer surface is smooth. Cut surface shows a multilocular cyst, mucinous contents and solid areas. Representative sections of the solid and papillary areas are embedded in 2 frozen blocks and subsequently converted to paraffin blocks.');
+  assert.equal(out.intraop, 'Benign; mucinous cystadenoma. Mucinous tumours are heterogeneous; the frozen section cannot exclude a higher-grade or invasive component, or a metastasis from a gastrointestinal primary. Final classification awaits paraffin sections.');
+  assert.equal(out.diagnosis, 'OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy x frozen section - MUCINOUS CYSTADENOMA');
+  assert.equal(out.microscopy, 'The paraffin section confirms the frozen section diagnosis. It shows features of mucinous cystadenoma. There is no evidence of malignancy.');
+  const quiet = ovRun({ ...OVX, ovType: 'mucinous cystadenoma', ovCaveat: ['None (suppress the automatic mucinous caveat)'] });
+  assert.equal(quiet.intraop, 'Benign; mucinous cystadenoma.');
+  // Generic wording is untouched while the specimen pick is blank.
+  const generic = ovRun({ scenario: 'Ovarian / adnexal mass', ovType: 'mucinous cystadenoma', size: '5 cm' });
+  assert.equal(generic.macro, 'Received in a fresh state is a piece of tan coloured tissue measuring 5 cm. All embedded in 1 frozen block and subsequently converted to paraffin block.');
+  assert.equal(generic.diagnosis, 'RIGHT OVARY, frozen section - MUCINOUS CYSTADENOMA');
+});
+
+test('ovarian results: non-neoplastic, borderline, at least borderline, malignant, favour metastatic', () => {
+  const nn = ovRun({ ...OVX, ovSpecimen: 'Ovarian cystectomy', ovaryResult: 'Non-neoplastic', ovType: 'follicular or corpus luteum cyst', ovCut: ['Unilocular cyst', 'Serous fluid'], ovBlocks: '1' });
+  assert.equal(nn.intraop, 'Non-neoplastic; follicular or corpus luteum cyst.');
+  assert.equal(nn.diagnosis, 'OVARY, right, cystectomy x frozen section - FOLLICULAR OR CORPUS LUTEUM CYST');
+  assert.ok(nn.macro.includes('The cyst measures 120 mm in greatest dimension') && nn.macro.endsWith('Representative sections are embedded in 1 frozen block and subsequently converted to paraffin block.'));
+  const bl = ovRun({ ...OVX, ovaryResult: 'Borderline', ovType: 'serous borderline tumour' });
+  assert.equal(bl.intraop, 'Borderline tumour, serous type; no stromal invasion in the sections examined.');
+  assert.equal(bl.diagnosis, 'OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy x frozen section - SEROUS BORDERLINE TUMOUR');
+  assert.ok(bl.microscopy.endsWith('There is no evidence of stromal invasion.'));
+  const al = ovRun({ ...OVX, ovaryResult: 'Borderline, at least (invasion cannot be excluded)', ovType: 'mucinous borderline tumour', ovReceived: 'Ruptured, capsule defect present on receipt' });
+  assert.equal(al.intraop, 'At least borderline mucinous tumour; an invasive component cannot be excluded on frozen section. Mucinous tumours are heterogeneous; the frozen section cannot exclude a higher-grade or invasive component, or a metastasis from a gastrointestinal primary. Final classification awaits paraffin sections.');
+  assert.equal(al.microscopy, 'The paraffin sections show features of mucinous borderline tumour. The presence or absence of stromal invasion is assessed on the paraffin sections.');
+  assert.equal(al.diagnosis, 'OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy x frozen section - AT LEAST MUCINOUS BORDERLINE TUMOUR; see microscopic examination');
+  assert.ok(al.macro.includes('salpingo-oophorectomy specimen with a capsular defect present on receipt.'));
+  assert.ok(al.issues.some((i) => i.level === 'info' && /IC1 \(surgical spill\) versus IC2/.test(i.message)));
+  const alp = ovRun({ ...OVX, ovaryResult: 'Borderline, at least (invasion cannot be excluded)', ovType: 'mucinous borderline tumour', paraffinDx: 'Mucinous carcinoma, expansile pattern' });
+  assert.equal(alp.diagnosis, 'OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy x frozen section - MUCINOUS CARCINOMA, EXPANSILE PATTERN');
+  const m = ovRun({ ...OVX, ovaryResult: 'Malignant', ovType: 'high-grade serous carcinoma', ovSurface: 'Excrescences or papillary projections' });
+  assert.equal(m.intraop, 'Malignant; carcinoma, favour high-grade serous carcinoma.');
+  assert.equal(m.diagnosis, 'OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy x frozen section - HIGH-GRADE SEROUS CARCINOMA');
+  assert.equal(m.microscopy, 'The paraffin section confirms the frozen section diagnosis. It shows features of high-grade serous carcinoma.');
+  assert.ok(m.macro.includes('The outer surface bears papillary excrescences.'));
+  const g = ovRun({ ...OVX, ovaryResult: 'Malignant', ovType: 'adult granulosa cell tumour' });
+  assert.equal(g.intraop, 'Malignant; favour adult granulosa cell tumour.');
+  const mb = ovRun({ ...OVX, ovaryResult: 'Malignant', ovType: 'mucinous carcinoma' });
+  assert.ok(mb.issues.some((i) => /consider a metastasis/.test(i.message)));
+  const met = ovRun({ ...OVX, ovaryResult: 'Malignant, favour metastatic', ovType: 'metastatic adenocarcinoma, favour gastrointestinal / appendiceal' });
+  assert.equal(met.intraop, 'Malignant; adenocarcinoma, favour metastatic from a gastrointestinal primary.');
+  assert.equal(met.diagnosis, 'OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy x frozen section - METASTATIC ADENOCARCINOMA, favour a gastrointestinal or appendiceal primary');
+  assert.ok(!met.microscopy.includes('no evidence of malignancy'));
+  const met2 = ovRun({ ...OVX, ovaryResult: 'Malignant, favour metastatic', ovType: 'metastatic carcinoma, primary not determined' });
+  assert.equal(met2.intraop, 'Malignant; carcinoma, favour metastatic; primary site not determined on frozen section.');
+  assert.equal(met2.diagnosis.split(' - ')[1], 'METASTATIC CARCINOMA, primary site not determined');
+  const d = ovRun({ ...OVX, ovaryResult: 'Deferred' });
+  assert.equal(d.intraop, 'Deferred to paraffin sections.');
+  assert.ok(d.issues.some((i) => i.level === 'warn' && /reason for deferral/.test(i.message)));
+  const d2 = ovRun({ ...OVX, ovaryResult: 'Deferred', ovCaveat: ['Frozen artefact — deferred'] });
+  assert.equal(d2.intraop, 'Deferred to paraffin sections. Freezing artefact precludes a definitive interpretation.');
+  assert.ok(!d2.issues.some((i) => /reason for deferral/.test(i.message)));
+  const many = ovRun({ ...OVX, ovBlocks: '5' });
+  assert.ok(many.issues.some((i) => /5 frozen blocks/.test(i.message)));
+});
+
+test('ovSummary carries the frozen values the linked synoptic is pre-filled from', () => {
+  const v = { ...OVX, ovaryResult: 'Malignant', ovType: 'high-grade serous carcinoma' };
+  assert.deepEqual(ovSummary(v), { side: 'Right', specimen: 'Salpingo-oophorectomy', received: 'Intact', sizeMm: 120, weightG: 350, surface: 'Smooth', result: 'Malignant', type: 'high-grade serous carcinoma', caveats: [] });
+  assert.equal(ovSummary({ scenario: 'Margin' }), null);
+  assert.equal(ovSummary({ scenario: 'Ovarian / adnexal mass', ovType: 'other (specify)', tumourType: 'Sertoli-Leydig cell tumour' }).type, 'Sertoli-Leydig cell tumour');
 });
