@@ -1,0 +1,67 @@
+{
+  "templateId": "ovary_ft_peritoneum",
+  "patch": {
+    "otherParts": "B) Peritoneum, pelvic, biopsy - non-invasive epithelial implant",
+    "otherInvolvement": [
+      "Pelvic peritoneum"
+    ],
+    "extrapelvicFocus": "Not applicable",
+    "extrapelvicFocusMm": "",
+    "extrapelvicSite": "",
+    "nodesExamined": "",
+    "nodesSites": "",
+    "nodesMacro": "",
+    "nodesMicro": "",
+    "nodesItc": "",
+    "nodeDepositMm": "",
+    "nodeDepositSite": "",
+    "nodeMm": "",
+    "nodeSite": "",
+    "nodeEne": "Not applicable",
+    "blockKeyText": "1-5 Cyst wall with papillary areas\n6 Pelvic peritoneal biopsy",
+    "tubeMacro": "",
+    "ancillary": "",
+    "tubalMucosa": "Not applicable / tubes not submitted",
+    "additionalFindings": [],
+    "integrityRT": "Not applicable",
+    "procedures": [
+      "Left ovarian cystectomy",
+      "Peritoneal biopsies"
+    ],
+    "integrityRO": "Not applicable",
+    "integrityLO": "Fragmented",
+    "tumourSite": "Left ovary",
+    "ovarianSurface": "Not identified",
+    "tumourSizeMm": "60",
+    "tumourDims": "60 x 45 x 30",
+    "weight": "45",
+    "specimenDims": "70 x 50 x 30",
+    "cutSurface": [
+      "Unilocular cyst",
+      "Serous fluid",
+      "Papillary excrescences (inner surface)"
+    ],
+    "histType": "Serous borderline tumour",
+    "primarySite": "Derive from the tumour site, tubal mucosa and STIC",
+    "lvi": "Not identified",
+    "p53": "Not performed",
+    "otherIhc": "",
+    "implants": "Present, non-invasive epithelial (specify site)",
+    "implantsSite": "pelvic peritoneum",
+    "peritonealFluid": "Malignant cells not identified"
+  },
+  "options": {},
+  "report": "(A) Left ovary, cystectomy; peritoneal biopsies\n(B) Peritoneum, pelvic, biopsy\n\n(A) The specimen consists of a left cystectomy specimen received fragmented (45 g, 70 x 50 x 30 mm). The left ovary is replaced by a cystic mass measuring 60 mm in greatest dimension (60 x 45 x 30 mm). The outer surface is smooth. Cut surface shows a unilocular cyst, serous fluid and papillary excrescences on the inner surface.\n\n(A1-5) Cyst wall with papillary areas.\n(A6) Pelvic peritoneal biopsy.\n\n(A) Left ovary, cystectomy; peritoneal biopsies\nSpecimen and tumour\n- Procedure: Left ovarian cystectomy; peritoneal biopsies\n- Specimen integrity (left ovary): Fragmented\n- Tumour site: Left ovary\n- Ovarian surface involvement: Not identified\n- Fallopian tube surface involvement: Not identified\n- Tumour size: 60 mm in greatest dimension (60 x 45 x 30 mm)\n\nMicroscopic findings\n- Histologic type: Serous borderline tumour\n- Histologic grade: Not applicable (borderline tumour)\n- Tumour histology:\n  Sections show a serous borderline tumour.\n- Lymphovascular invasion: Not identified\n- p53 immunohistochemistry: Not performed\n- Implants: Present, non-invasive epithelial (pelvic peritoneum)\n- Largest extrapelvic peritoneal focus: Not applicable\n- Peritoneal / ascitic fluid: Malignant cells not identified\n- Other tissue / organ involvement: Pelvic peritoneum\n\nLymph nodes\n- Regional lymph nodes: Not submitted\n\nDistant metastasis\n- Distant metastasis: Not identified\n\nAdditional findings\n- None\n\n(A) OVARY, left, cystectomy\n- SEROUS BORDERLINE TUMOUR, 60 mm, received fragmented; see synoptic report\n- non-invasive epithelial implants, pelvic peritoneum; involving the pelvic\n  peritoneum\n\n(B) PERITONEUM, pelvic, biopsy - NON-INVASIVE EPITHELIAL IMPLANT",
+  "checks": [
+    {
+      "level": "info",
+      "message": "FIGO 2014 (reference, not reported; FIGO Cancer Report 2025 reproduces the 2014 table): IIB",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "AJCC 8th stage group (if cM0): IIB.",
+      "part": "A"
+    }
+  ]
+}

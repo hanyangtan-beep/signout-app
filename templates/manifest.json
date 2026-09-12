@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 44,
+  "count": 45,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -2191,6 +2191,82 @@
       "generator": "endometrial_carcinoma",
       "generatorPath": "generators/endometrial_carcinoma.js",
       "schemaPath": "schemas/endometrial_carcinoma.json"
+    },
+    {
+      "id": "ovary_ft_peritoneum",
+      "name": "Ovary, fallopian tube and peritoneum carcinoma resection",
+      "shortName": "Ovary · cancer resection",
+      "label": "Ovary / tube / peritoneum Ca",
+      "organ": "OVARY",
+      "system": "Gynae",
+      "kind": "cancer resection",
+      "rank": 43,
+      "aliases": [
+        "ovary",
+        "ovarian",
+        "fallopian tube",
+        "tubo-ovarian",
+        "primary peritoneal",
+        "adnexal mass",
+        "salpingo-oophorectomy",
+        "oophorectomy",
+        "cystectomy",
+        "high-grade serous",
+        "HGSC",
+        "low-grade serous",
+        "borderline",
+        "mucinous",
+        "endometrioid",
+        "clear cell",
+        "granulosa",
+        "teratoma",
+        "dysgerminoma",
+        "omentum",
+        "debulking",
+        "synoptic",
+        "CAP",
+        "AJCC",
+        "FIGO"
+      ],
+      "match": {
+        "site": [
+          "ovary",
+          "ovarian",
+          "tubo-ovarian",
+          "adnexa",
+          "adnexal",
+          "salpingo-oophorectomy"
+        ],
+        "procedure": [
+          "salpingo-oophorectomy",
+          "oophorectomy",
+          "debulking",
+          "staging laparotomy"
+        ],
+        "clinical": [
+          "ovarian ca",
+          "ovarian carcinoma",
+          "ovarian cancer",
+          "ovarian malignancy",
+          "ovarian tumour",
+          "ovarian tumor",
+          "adnexal mass",
+          "HGSC",
+          "high-grade serous",
+          "serous carcinoma",
+          "borderline",
+          "CA-125",
+          "CA125",
+          "debulking",
+          "interval debulking",
+          "neoadjuvant",
+          "BRCA"
+        ]
+      },
+      "version": "2026.09",
+      "generator": "ovary_ft_peritoneum",
+      "generatorPath": "generators/ovary_ft_peritoneum.js",
+      "schemaPath": "schemas/ovary_ft_peritoneum.json"
     },
     {
       "id": "generic",

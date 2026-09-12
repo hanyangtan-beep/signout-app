@@ -1,0 +1,1227 @@
+{
+  "id": "ovary_ft_peritoneum",
+  "version": "2026.09",
+  "name": "Ovary, fallopian tube and peritoneum carcinoma resection",
+  "shortName": "Ovary · cancer resection",
+  "label": "Ovary / tube / peritoneum Ca",
+  "organ": "OVARY",
+  "system": "Gynae",
+  "kind": "cancer resection",
+  "rank": 43,
+  "aliases": [
+    "ovary",
+    "ovarian",
+    "fallopian tube",
+    "tubo-ovarian",
+    "primary peritoneal",
+    "adnexal mass",
+    "salpingo-oophorectomy",
+    "oophorectomy",
+    "cystectomy",
+    "high-grade serous",
+    "HGSC",
+    "low-grade serous",
+    "borderline",
+    "mucinous",
+    "endometrioid",
+    "clear cell",
+    "granulosa",
+    "teratoma",
+    "dysgerminoma",
+    "omentum",
+    "debulking",
+    "synoptic",
+    "CAP",
+    "AJCC",
+    "FIGO"
+  ],
+  "match": {
+    "site": [
+      "ovary",
+      "ovarian",
+      "tubo-ovarian",
+      "adnexa",
+      "adnexal",
+      "salpingo-oophorectomy"
+    ],
+    "procedure": [
+      "salpingo-oophorectomy",
+      "oophorectomy",
+      "debulking",
+      "staging laparotomy"
+    ],
+    "clinical": [
+      "ovarian ca",
+      "ovarian carcinoma",
+      "ovarian cancer",
+      "ovarian malignancy",
+      "ovarian tumour",
+      "ovarian tumor",
+      "adnexal mass",
+      "HGSC",
+      "high-grade serous",
+      "serous carcinoma",
+      "borderline",
+      "CA-125",
+      "CA125",
+      "debulking",
+      "interval debulking",
+      "neoadjuvant",
+      "BRCA"
+    ]
+  },
+  "macroExtract": {
+    "weight": {
+      "concept": "weight",
+      "unit": "g"
+    },
+    "specimenDims": {
+      "concept": "specimenDims",
+      "unit": "mm"
+    },
+    "tumourSizeMm": {
+      "concept": "tumourSizeMax",
+      "unit": "mm"
+    },
+    "tumourDims": {
+      "concept": "tumourDims",
+      "unit": "mm"
+    },
+    "tubeMacro": {
+      "concept": "adnexaSentence",
+      "unit": "mm"
+    }
+  },
+  "specimenNoun": "resection",
+  "maxParts": 10,
+  "defaultParts": 1,
+  "generator": "ovary_ft_peritoneum",
+  "style": {
+    "british": true
+  },
+  "source": {
+    "template": "QMH Cancer Reporting Template - GYN-Ovary (Primary tumors of the ovary, fallopian tube and peritoneum)",
+    "url": "https://awiloqmh.github.io/CancerReportingTemplate/GYN-Ovary.html",
+    "capProtocol": "CAP Ovary, Fallopian Tube, or Peritoneum 1.5.0.0 (Jun 2023, as on the QMH page; CAP lists a Jun-2024 release)",
+    "staging": "AJCC 8th edition pTNM printed only with the printPTNM option; FIGO 2014 (reproduced unchanged in the FIGO Cancer Report 2025) derived for the Checks panel and never printed",
+    "stagingProtocol": "ovary",
+    "savedPage": "docs/reference/GYN-Ovary.html",
+    "figo": "Prat J, FIGO Committee on Gynecologic Oncology. Int J Gynaecol Obstet 2014;124:1-5; FIGO Cancer Report 2025, Int J Gynecol Obstet 2025;171 Suppl 1",
+    "houseAdditions": [
+      "primarySite",
+      "neoadjuvant",
+      "otherParts",
+      "tubalMucosa",
+      "cutSurface",
+      "integrity rupture timing options",
+      "ovarian cystectomy procedures"
+    ]
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "printPTNM",
+      "label": "Print the AJCC 8th edition pTNM block (FIGO is never printed)",
+      "type": "checkbox",
+      "default": false
+    }
+  ],
+  "partDefaults": [],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen (as received; blank derives it from the procedure)",
+      "type": "text",
+      "group": null
+    },
+    {
+      "id": "procedures",
+      "label": "Procedure (this part)",
+      "type": "multiselect",
+      "group": "Macroscopy",
+      "options": [
+        "Total hysterectomy and bilateral salpingo-oophorectomy",
+        "Radical hysterectomy",
+        "Simple hysterectomy",
+        "Supracervical hysterectomy",
+        "Bilateral salpingo-oophorectomy",
+        "Right salpingo-oophorectomy",
+        "Left salpingo-oophorectomy",
+        "Salpingo-oophorectomy, side not specified",
+        "Right oophorectomy",
+        "Left oophorectomy",
+        "Oophorectomy, side not specified",
+        "Right ovarian cystectomy",
+        "Left ovarian cystectomy",
+        "Bilateral salpingectomy",
+        "Right salpingectomy",
+        "Left salpingectomy",
+        "Salpingectomy, side not specified",
+        "Omentectomy",
+        "Peritoneal biopsies",
+        "Peritoneal tumour debulking",
+        "Peritoneal washing",
+        "Pleurocentesis (pleural fluid)",
+        "Other (specify)"
+      ],
+      "default": [
+        "Right salpingo-oophorectomy"
+      ]
+    },
+    {
+      "id": "procedureOther",
+      "label": "Other procedure (specify)",
+      "type": "text",
+      "group": "Macroscopy",
+      "showIf": {
+        "field": "procedures",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "hysterectomyType",
+      "label": "Hysterectomy type",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Not applicable",
+        "Not specified",
+        "Abdominal",
+        "Vaginal",
+        "Vaginal, laparoscopic-assisted",
+        "Laparoscopic",
+        "Laparoscopic, robotic-assisted",
+        "Other (specify)"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "integrityRO",
+      "label": "Specimen integrity, right ovary",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Not applicable",
+        "Capsule intact",
+        "Capsule ruptured, intraoperative (surgical spill)",
+        "Capsule ruptured, preoperative or unknown timing",
+        "Fragmented",
+        "Cannot be determined"
+      ],
+      "default": "Capsule intact"
+    },
+    {
+      "id": "integrityLO",
+      "label": "Specimen integrity, left ovary",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Not applicable",
+        "Capsule intact",
+        "Capsule ruptured, intraoperative (surgical spill)",
+        "Capsule ruptured, preoperative or unknown timing",
+        "Fragmented",
+        "Cannot be determined"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "integrityRT",
+      "label": "Specimen integrity, right fallopian tube",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Not applicable",
+        "Serosa intact",
+        "Serosa ruptured, intraoperative (surgical spill)",
+        "Serosa ruptured, preoperative or unknown timing",
+        "Fragmented",
+        "Cannot be determined"
+      ],
+      "default": "Serosa intact"
+    },
+    {
+      "id": "integrityLT",
+      "label": "Specimen integrity, left fallopian tube",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Not applicable",
+        "Serosa intact",
+        "Serosa ruptured, intraoperative (surgical spill)",
+        "Serosa ruptured, preoperative or unknown timing",
+        "Fragmented",
+        "Cannot be determined"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "morcellated",
+      "label": "Morcellated specimen (specify organ)",
+      "type": "text",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "tumourSite",
+      "label": "Tumour site",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Right ovary",
+        "Left ovary",
+        "Bilateral ovaries",
+        "Ovary, laterality cannot be determined",
+        "Right fallopian tube",
+        "Left fallopian tube",
+        "Bilateral fallopian tubes",
+        "Fallopian tube, laterality cannot be determined",
+        "Right tubo-ovarian",
+        "Left tubo-ovarian",
+        "Bilateral tubo-ovarian",
+        "Tubo-ovarian, laterality cannot be determined",
+        "Primary peritoneum",
+        "Other (specify)"
+      ],
+      "default": "Right ovary"
+    },
+    {
+      "id": "tumourSiteDetail",
+      "label": "Tumour site detail (specify / explain)",
+      "type": "text",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "ovarianSurface",
+      "label": "Ovarian surface involvement",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Not identified",
+        "Present, right",
+        "Present, left",
+        "Present, bilateral",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "tubalSurface",
+      "label": "Fallopian tube surface involvement",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Not identified",
+        "Present, right",
+        "Present, left",
+        "Present, bilateral",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "tumourSizeMm",
+      "label": "Tumour size, greatest dimension (mm)",
+      "type": "number",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "tumourDims",
+      "label": "Tumour dimensions (mm, e.g. 120 x 90 x 70)",
+      "type": "text",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "sizeCannot",
+      "label": "Tumour size cannot be determined (explain)",
+      "type": "text",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "weight",
+      "label": "Specimen weight (g)",
+      "type": "number",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "specimenDims",
+      "label": "Specimen dimensions (mm)",
+      "type": "text",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cutSurface",
+      "label": "Cut surface",
+      "type": "multiselect",
+      "group": "Macroscopy",
+      "options": [
+        "Unilocular cyst",
+        "Multilocular cyst",
+        "Serous fluid",
+        "Mucinous contents",
+        "Sebaceous material and hair",
+        "Chocolate-brown fluid",
+        "Solid areas",
+        "Papillary excrescences (inner surface)",
+        "Necrosis",
+        "Haemorrhage",
+        "Torsion (haemorrhagic infarction)"
+      ],
+      "default": []
+    },
+    {
+      "id": "tubeMacro",
+      "label": "Fallopian tube / contralateral adnexa (macro sentence)",
+      "type": "text",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "uterusMacro",
+      "label": "Uterus and cervix (macro sentence, hysterectomy specimens)",
+      "type": "text",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "otherMacro",
+      "label": "Other macroscopic findings",
+      "type": "text",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "blockKeyText",
+      "label": "Block key (one entry per line, e.g. \"1-6 Right ovarian tumour, solid and papillary areas\")",
+      "type": "textarea",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "otherParts",
+      "label": "Other parts of this case (one per line: letter) specimen - finding; finding = involved / metastatic[, detail] / nodes 2/9[, largest deposit 12 mm] / serosa / negative / free text)",
+      "type": "textarea",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "histType",
+      "label": "Histologic type (WHO 5th edition)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Serous borderline tumour",
+        "Serous borderline tumour, micropapillary / cribriform variant",
+        "Serous borderline tumour with microinvasion",
+        "Microinvasive low-grade serous carcinoma",
+        "Low-grade serous carcinoma",
+        "High-grade serous carcinoma",
+        "Mucinous borderline tumour",
+        "Mucinous borderline tumour with intraepithelial carcinoma",
+        "Mucinous borderline tumour with microinvasion",
+        "Mucinous adenocarcinoma",
+        "Endometrioid borderline tumour",
+        "Endometrioid carcinoma",
+        "Endometrioid carcinoma, seromucinous type",
+        "Seromucinous borderline tumour",
+        "Clear cell borderline tumour",
+        "Clear cell carcinoma",
+        "Borderline Brenner tumour",
+        "Malignant Brenner tumour",
+        "Mesonephric-like adenocarcinoma",
+        "Small cell carcinoma, hypercalcaemic type",
+        "Dedifferentiated carcinoma",
+        "Undifferentiated carcinoma, NOS",
+        "Carcinosarcoma (malignant mixed Mullerian tumour)",
+        "Carcinoma, subtype cannot be determined",
+        "Mixed epithelial borderline tumour (specify types and percentages)",
+        "Mixed carcinoma (specify types and percentages)",
+        "Endometrioid stromal sarcoma, low-grade",
+        "Endometrioid stromal sarcoma, high-grade",
+        "Adenosarcoma",
+        "Leiomyosarcoma",
+        "Fibrosarcoma",
+        "Granulosa cell tumour, adult type",
+        "Granulosa cell tumour, juvenile type",
+        "Steroid cell tumour, NOS",
+        "Steroid cell tumour, malignant",
+        "Sertoli-Leydig cell tumour",
+        "Other sex cord-stromal tumour (specify type)",
+        "Immature teratoma",
+        "Teratoma with malignant transformation (specify type)",
+        "Malignant struma ovarii (specify type)",
+        "Dysgerminoma",
+        "Yolk sac tumour",
+        "Embryonal carcinoma",
+        "Gonadoblastoma",
+        "Choriocarcinoma, non-gestational type",
+        "Mixed malignant germ cell tumour (specify types and percentages)",
+        "Gastrointestinal stromal tumour",
+        "Solitary fibrous tumour, malignant",
+        "Desmoplastic small round cell tumour",
+        "Other (specify)"
+      ],
+      "default": "High-grade serous carcinoma"
+    },
+    {
+      "id": "histTypeOther",
+      "label": "Histologic type detail (types and percentages / specify)",
+      "type": "text",
+      "group": "Histology and immunohistochemistry",
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Mixed epithelial borderline tumour (specify types and percentages)",
+          "Mixed carcinoma (specify types and percentages)",
+          "Other sex cord-stromal tumour (specify type)",
+          "Teratoma with malignant transformation (specify type)",
+          "Malignant struma ovarii (specify type)",
+          "Mixed malignant germ cell tumour (specify types and percentages)",
+          "Other (specify)"
+        ]
+      }
+    },
+    {
+      "id": "primarySite",
+      "label": "Primary site assignment (house; WHO 5th rule)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Derive from the tumour site, tubal mucosa and STIC",
+        "Ovary",
+        "Fallopian tube",
+        "Tubo-ovarian",
+        "Peritoneum",
+        "Undesignated"
+      ],
+      "default": "Derive from the tumour site, tubal mucosa and STIC"
+    },
+    {
+      "id": "gradeWho",
+      "label": "Histologic grade (WHO)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "GX: Cannot be assessed",
+        "G1: Well differentiated",
+        "G2: Moderately differentiated",
+        "G3: Poorly differentiated"
+      ],
+      "default": "GX: Cannot be assessed",
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Mesonephric-like adenocarcinoma",
+          "Sertoli-Leydig cell tumour",
+          "Other sex cord-stromal tumour (specify type)",
+          "Teratoma with malignant transformation (specify type)",
+          "Malignant struma ovarii (specify type)",
+          "Leiomyosarcoma",
+          "Fibrosarcoma",
+          "Adenosarcoma",
+          "Mixed carcinoma (specify types and percentages)",
+          "Carcinoma, subtype cannot be determined",
+          "Steroid cell tumour, malignant",
+          "Gastrointestinal stromal tumour",
+          "Solitary fibrous tumour, malignant",
+          "Other (specify)"
+        ]
+      }
+    },
+    {
+      "id": "solidPct",
+      "label": "Solid non-squamous growth (architectural grade)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "5% or less (architectural grade 1)",
+        "6-50% (architectural grade 2)",
+        "More than 50% (architectural grade 3)"
+      ],
+      "default": "5% or less (architectural grade 1)",
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Endometrioid carcinoma",
+          "Endometrioid carcinoma, seromucinous type"
+        ]
+      }
+    },
+    {
+      "id": "nuclearGrade",
+      "label": "Nuclear grade",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Nuclear grade 1-2 (mild to moderate atypia)",
+        "Nuclear grade 3 (marked atypia in the majority of the tumour)"
+      ],
+      "default": "Nuclear grade 1-2 (mild to moderate atypia)",
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Endometrioid carcinoma",
+          "Endometrioid carcinoma, seromucinous type"
+        ]
+      }
+    },
+    {
+      "id": "mucinousGrade",
+      "label": "Mucinous carcinoma grade",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Low-grade, growth pattern-based (expansile growth, or infiltrative growth in 10% or less)",
+        "High-grade, growth pattern-based (infiltrative growth in more than 10% of the tumour)",
+        "Silverberg grade 1 (scores 3-5)",
+        "Silverberg grade 2 (scores 6-7)",
+        "Silverberg grade 3 (scores 8-9)"
+      ],
+      "default": "Low-grade, growth pattern-based (expansile growth, or infiltrative growth in 10% or less)",
+      "showIf": {
+        "field": "histType",
+        "is": "Mucinous adenocarcinoma"
+      }
+    },
+    {
+      "id": "teratomaGrade",
+      "label": "Immature teratoma grade",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Low grade (grade 1)",
+        "High grade (grade 2)",
+        "High grade (grade 3)"
+      ],
+      "default": "Low grade (grade 1)",
+      "showIf": {
+        "field": "histType",
+        "is": "Immature teratoma"
+      }
+    },
+    {
+      "id": "microDescription",
+      "label": "Tumour histology (free text, appended to the paragraph)",
+      "type": "textarea",
+      "group": "Histology and immunohistochemistry"
+    },
+    {
+      "id": "tubalMucosa",
+      "label": "Fallopian tube mucosa",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not applicable / tubes not submitted",
+        "Not involved (tubes examined entirely, SEE-FIM)",
+        "Not involved (representative sections)",
+        "Involved by invasive carcinoma",
+        "Cannot be determined"
+      ],
+      "default": "Not involved (representative sections)"
+    },
+    {
+      "id": "lvi",
+      "label": "Lymphovascular invasion",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "pni",
+      "label": "Perineural invasion",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "p53",
+      "label": "p53 immunohistochemistry",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not performed",
+        "Normal (wild type)",
+        "Abnormal, Overexpression (strong, diffuse nuclear expression, more than 90%)",
+        "Abnormal, Null (lack of nuclear or cytoplasmic expression)",
+        "Abnormal, Cytoplasmic only (lacks nuclear expression)",
+        "Subclonal abnormal (specify)",
+        "Cannot be determined (explain)"
+      ],
+      "default": "Not performed"
+    },
+    {
+      "id": "p53Detail",
+      "label": "p53 detail",
+      "type": "text",
+      "group": "Histology and immunohistochemistry",
+      "showIf": {
+        "field": "p53",
+        "is": [
+          "Subclonal abnormal (specify)",
+          "Cannot be determined (explain)"
+        ]
+      }
+    },
+    {
+      "id": "otherIhc",
+      "label": "Other immunohistochemistry (e.g. WT1 positive, PAX8 positive, ER positive, Napsin A negative)",
+      "type": "text",
+      "group": "Histology and immunohistochemistry"
+    },
+    {
+      "id": "implants",
+      "label": "Implants (serous / seromucinous borderline tumours)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not applicable",
+        "Not sampled",
+        "Not identified",
+        "Present, non-invasive epithelial (specify site)",
+        "Present, non-invasive desmoplastic (specify site)",
+        "Indeterminate"
+      ],
+      "default": "Not sampled",
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Serous borderline tumour",
+          "Serous borderline tumour, micropapillary / cribriform variant",
+          "Serous borderline tumour with microinvasion",
+          "Seromucinous borderline tumour",
+          "Mixed epithelial borderline tumour (specify types and percentages)"
+        ]
+      }
+    },
+    {
+      "id": "implantsSite",
+      "label": "Implant site(s)",
+      "type": "text",
+      "group": "Histology and immunohistochemistry",
+      "showIf": {
+        "field": "implants",
+        "is": [
+          "Present, non-invasive epithelial (specify site)",
+          "Present, non-invasive desmoplastic (specify site)",
+          "Indeterminate"
+        ]
+      }
+    },
+    {
+      "id": "otherInvolvement",
+      "label": "Other tissue / organ involvement",
+      "type": "multiselect",
+      "group": "Extent of disease",
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Uterine serosa",
+        "Right ovary",
+        "Left ovary",
+        "Ovary (side not specified)",
+        "Right fallopian tube",
+        "Left fallopian tube",
+        "Fallopian tube (side not specified)",
+        "Vagina",
+        "Right parametrium",
+        "Left parametrium",
+        "Parametrium (side not specified)",
+        "Pelvic wall",
+        "Pelvic peritoneum",
+        "Bladder wall",
+        "Bladder mucosa",
+        "Rectal wall",
+        "Bowel mucosa",
+        "Omentum",
+        "Extrapelvic peritoneum",
+        "Small bowel serosa",
+        "Large bowel serosa",
+        "Mesentery",
+        "Diaphragm",
+        "Abdominal wall",
+        "Liver capsule",
+        "Splenic capsule",
+        "Other organs / tissue (specify)",
+        "Cannot be determined (explain)"
+      ],
+      "default": [
+        "Not identified"
+      ]
+    },
+    {
+      "id": "otherInvolvementDetail",
+      "label": "Involvement detail (specify / explain)",
+      "type": "text",
+      "group": "Extent of disease"
+    },
+    {
+      "id": "extrapelvicFocus",
+      "label": "Largest extrapelvic peritoneal focus",
+      "type": "select",
+      "group": "Extent of disease",
+      "options": [
+        "Not applicable",
+        "Microscopic",
+        "Macroscopic, 2 cm or less",
+        "Macroscopic, more than 2 cm",
+        "Cannot be determined"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "extrapelvicFocusMm",
+      "label": "Largest extrapelvic focus (mm)",
+      "type": "number",
+      "group": "Extent of disease",
+      "showIf": {
+        "field": "extrapelvicFocus",
+        "not": "Not applicable"
+      }
+    },
+    {
+      "id": "extrapelvicSite",
+      "label": "Largest extrapelvic focus, site",
+      "type": "text",
+      "group": "Extent of disease",
+      "showIf": {
+        "field": "extrapelvicFocus",
+        "not": "Not applicable"
+      }
+    },
+    {
+      "id": "peritonealFluid",
+      "label": "Peritoneal / ascitic fluid",
+      "type": "select",
+      "group": "Extent of disease",
+      "options": [
+        "Not submitted / unknown",
+        "Malignant cells not identified",
+        "Atypical (explain)",
+        "Atypical, borderline tumour cells",
+        "Atypical, not borderline tumour cells",
+        "Suspicious (explain)",
+        "Malignant cells present",
+        "Cannot be determined",
+        "Results pending"
+      ],
+      "default": "Not submitted / unknown"
+    },
+    {
+      "id": "peritonealFluidDetail",
+      "label": "Peritoneal fluid detail (explain / cytology accession)",
+      "type": "text",
+      "group": "Extent of disease"
+    },
+    {
+      "id": "pleuralFluid",
+      "label": "Pleural fluid",
+      "type": "select",
+      "group": "Extent of disease",
+      "options": [
+        "Not submitted / unknown",
+        "Negative for malignancy",
+        "Atypical and/or suspicious (explain)",
+        "Malignant (positive for malignancy)",
+        "Unsatisfactory / non-diagnostic (explain)",
+        "Results pending"
+      ],
+      "default": "Not submitted / unknown"
+    },
+    {
+      "id": "pleuralFluidDetail",
+      "label": "Pleural fluid detail",
+      "type": "text",
+      "group": "Extent of disease",
+      "showIf": {
+        "field": "pleuralFluid",
+        "is": [
+          "Atypical and/or suspicious (explain)",
+          "Unsatisfactory / non-diagnostic (explain)"
+        ]
+      }
+    },
+    {
+      "id": "neoadjuvant",
+      "label": "Neoadjuvant chemotherapy given (y prefix; chemotherapy response score)",
+      "type": "checkbox",
+      "group": "Extent of disease",
+      "default": false
+    },
+    {
+      "id": "crs",
+      "label": "Chemotherapy response score (high-grade serous carcinoma)",
+      "type": "select",
+      "group": "Extent of disease",
+      "options": [
+        "Cannot be determined",
+        "CRS1 (no definite or minimal response)",
+        "CRS2 (moderate response)",
+        "CRS3 (marked response with no or minimal residual cancer)"
+      ],
+      "default": "Cannot be determined",
+      "showIf": {
+        "field": "neoadjuvant",
+        "truthy": true
+      }
+    },
+    {
+      "id": "crsSite",
+      "label": "Chemotherapy response score, site scored",
+      "type": "text",
+      "group": "Extent of disease",
+      "default": "omentum",
+      "showIf": {
+        "field": "neoadjuvant",
+        "truthy": true
+      }
+    },
+    {
+      "id": "vaginalMargin",
+      "label": "Ectocervical / vaginal cuff margin (hysterectomy)",
+      "type": "select",
+      "group": "Margins and lymph nodes",
+      "options": [
+        "Not applicable",
+        "Uninvolved by carcinoma",
+        "Involved by carcinoma",
+        "Cannot be assessed"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "vaginalMarginMm",
+      "label": "Vaginal cuff margin, closest distance (mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes",
+      "showIf": {
+        "field": "vaginalMargin",
+        "is": "Uninvolved by carcinoma"
+      }
+    },
+    {
+      "id": "parametrialMargin",
+      "label": "Parametrial / paracervical margin (hysterectomy)",
+      "type": "select",
+      "group": "Margins and lymph nodes",
+      "options": [
+        "Not applicable",
+        "Uninvolved by carcinoma",
+        "Involved by carcinoma",
+        "Cannot be assessed"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "parametrialMarginMm",
+      "label": "Parametrial margin, closest distance (mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes",
+      "showIf": {
+        "field": "parametrialMargin",
+        "is": "Uninvolved by carcinoma"
+      }
+    },
+    {
+      "id": "nodesExamined",
+      "label": "Regional lymph nodes examined (number; blank = none submitted)",
+      "type": "number",
+      "group": "Margins and lymph nodes"
+    },
+    {
+      "id": "nodesSites",
+      "label": "Lymph node sites examined (e.g. right pelvic 6, left pelvic 5, para-aortic 3)",
+      "type": "text",
+      "group": "Margins and lymph nodes"
+    },
+    {
+      "id": "nodesMacro",
+      "label": "Nodes with metastasis more than 10 mm",
+      "type": "number",
+      "group": "Margins and lymph nodes",
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      }
+    },
+    {
+      "id": "nodesMicro",
+      "label": "Nodes with metastasis 10 mm or less (more than 0.2 mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes",
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      }
+    },
+    {
+      "id": "nodesItc",
+      "label": "Nodes with isolated tumour cells only (0.2 mm or less)",
+      "type": "number",
+      "group": "Margins and lymph nodes",
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      }
+    },
+    {
+      "id": "nodeDepositMm",
+      "label": "Largest metastatic deposit (mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes",
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      }
+    },
+    {
+      "id": "nodeDepositSite",
+      "label": "Largest metastatic deposit, site",
+      "type": "text",
+      "group": "Margins and lymph nodes",
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      }
+    },
+    {
+      "id": "nodeMm",
+      "label": "Largest involved lymph node (mm)",
+      "type": "number",
+      "group": "Margins and lymph nodes",
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      }
+    },
+    {
+      "id": "nodeSite",
+      "label": "Largest involved lymph node, site",
+      "type": "text",
+      "group": "Margins and lymph nodes",
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      }
+    },
+    {
+      "id": "nodeEne",
+      "label": "Extranodal extension",
+      "type": "select",
+      "group": "Margins and lymph nodes",
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not applicable",
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      }
+    },
+    {
+      "id": "distantMets",
+      "label": "Distant metastasis",
+      "type": "multiselect",
+      "group": "Metastasis and other findings",
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Pleural effusion with positive cytology",
+        "Liver parenchyma",
+        "Splenic parenchyma",
+        "Lung",
+        "Extra-abdominal organ(s) (specify)",
+        "Inguinal or extra-abdominal lymph node(s) (specify)",
+        "Transmural involvement of intestine",
+        "Other (specify)",
+        "Cannot be determined"
+      ],
+      "default": [
+        "Not identified"
+      ]
+    },
+    {
+      "id": "distantDetail",
+      "label": "Distant metastasis detail (site / specify)",
+      "type": "text",
+      "group": "Metastasis and other findings"
+    },
+    {
+      "id": "tnmOverride",
+      "label": "pTNM override (e.g. \"pT3a2 pN0(i+)\"; blank = derived)",
+      "type": "text",
+      "group": "Metastasis and other findings"
+    },
+    {
+      "id": "tnmOverrideReason",
+      "label": "Override reason",
+      "type": "text",
+      "group": "Metastasis and other findings",
+      "showIf": {
+        "field": "tnmOverride",
+        "truthy": true
+      }
+    },
+    {
+      "id": "additionalFindings",
+      "label": "Additional pathologic findings",
+      "type": "multiselect",
+      "group": "Metastasis and other findings",
+      "options": [
+        "Serous tubal intraepithelial carcinoma (STIC)",
+        "Endometriosis",
+        "Endosalpingiosis",
+        "Adenomyosis",
+        "Leiomyomas",
+        "Mature cystic teratoma component",
+        "Other (specify)"
+      ],
+      "default": []
+    },
+    {
+      "id": "additionalFindingsOther",
+      "label": "Other additional finding (specify)",
+      "type": "text",
+      "group": "Metastasis and other findings",
+      "showIf": {
+        "field": "additionalFindings",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "ancillary",
+      "label": "Ancillary studies (e.g. BRCA1/2 tumour testing requested; HRD; MMR)",
+      "type": "text",
+      "group": "Metastasis and other findings"
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional notes",
+      "type": "textarea",
+      "group": "Metastasis and other findings"
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true,
+      "printPTNM": false
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "",
+          "procedures": [
+            "Right salpingo-oophorectomy"
+          ],
+          "procedureOther": "",
+          "hysterectomyType": "Not applicable",
+          "integrityRO": "Capsule intact",
+          "integrityLO": "Not applicable",
+          "integrityRT": "Serosa intact",
+          "integrityLT": "Not applicable",
+          "morcellated": "",
+          "tumourSite": "Right tubo-ovarian",
+          "tumourSiteDetail": "",
+          "ovarianSurface": "Present, right",
+          "tubalSurface": "Not identified",
+          "tumourSizeMm": "95",
+          "tumourDims": "95 x 70 x 60",
+          "sizeCannot": "",
+          "weight": "210",
+          "specimenDims": "100 x 75 x 60",
+          "cutSurface": [
+            "Solid areas",
+            "Papillary excrescences (inner surface)",
+            "Necrosis"
+          ],
+          "tubeMacro": "The fallopian tube measures 55 mm in length and 8 mm in diameter; the fimbrial end is adherent to the mass",
+          "uterusMacro": "",
+          "otherMacro": "",
+          "blockKeyText": "1-6 Right ovarian tumour, solid and papillary areas, including surface\n7 Tumour with fallopian tube\n8-10 Fallopian tube, entirely embedded (SEE-FIM)",
+          "otherParts": "B) Ovary and fallopian tube, left, salpingo-oophorectomy - involved\nC) Omentum, omentectomy - metastatic, largest deposit 35 mm\nD) Lymph nodes, right pelvic, dissection - nodes 2/9, largest deposit 12 mm\nE) Peritoneum, biopsies - negative\nF) Uterus and cervix, total hysterectomy - serosa",
+          "histType": "High-grade serous carcinoma",
+          "histTypeOther": "",
+          "primarySite": "Derive from the tumour site, tubal mucosa and STIC",
+          "gradeWho": "GX: Cannot be assessed",
+          "solidPct": "5% or less (architectural grade 1)",
+          "nuclearGrade": "Nuclear grade 1-2 (mild to moderate atypia)",
+          "mucinousGrade": "Low-grade, growth pattern-based (expansile growth, or infiltrative growth in 10% or less)",
+          "teratomaGrade": "Low grade (grade 1)",
+          "microDescription": "",
+          "tubalMucosa": "Involved by invasive carcinoma",
+          "lvi": "Present",
+          "pni": "Not identified",
+          "p53": "Abnormal, Overexpression (strong, diffuse nuclear expression, more than 90%)",
+          "p53Detail": "",
+          "otherIhc": "WT1 positive, PAX8 positive, ER positive",
+          "implants": "Not sampled",
+          "implantsSite": "",
+          "otherInvolvement": [
+            "Left ovary",
+            "Left fallopian tube",
+            "Uterine serosa",
+            "Omentum"
+          ],
+          "otherInvolvementDetail": "",
+          "extrapelvicFocus": "Macroscopic, more than 2 cm",
+          "extrapelvicFocusMm": "35",
+          "extrapelvicSite": "omentum",
+          "peritonealFluid": "Malignant cells present",
+          "peritonealFluidDetail": "",
+          "pleuralFluid": "Not submitted / unknown",
+          "pleuralFluidDetail": "",
+          "neoadjuvant": false,
+          "crs": "Cannot be determined",
+          "crsSite": "omentum",
+          "vaginalMargin": "Not applicable",
+          "vaginalMarginMm": "",
+          "parametrialMargin": "Not applicable",
+          "parametrialMarginMm": "",
+          "nodesExamined": "9",
+          "nodesSites": "right pelvic 9",
+          "nodesMacro": "1",
+          "nodesMicro": "1",
+          "nodesItc": "",
+          "nodeDepositMm": "12",
+          "nodeDepositSite": "right external iliac",
+          "nodeMm": "15",
+          "nodeSite": "right external iliac",
+          "nodeEne": "Not identified",
+          "distantMets": [
+            "Not identified"
+          ],
+          "distantDetail": "",
+          "tnmOverride": "",
+          "tnmOverrideReason": "",
+          "additionalFindings": [
+            "Serous tubal intraepithelial carcinoma (STIC)"
+          ],
+          "additionalFindingsOther": "",
+          "ancillary": "BRCA1/2 tumour testing requested; result to follow",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

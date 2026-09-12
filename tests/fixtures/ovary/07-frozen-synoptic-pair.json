@@ -1,0 +1,105 @@
+{
+  "templateIds": [
+    "frozen_section",
+    "ovary_ft_peritoneum"
+  ],
+  "frozenValues": {
+    "specimenName": "Right ovary and fallopian tube",
+    "scenario": "Ovarian / adnexal mass",
+    "pieces": "1",
+    "tissueDesc": "tan coloured tissue",
+    "tissueDescOther": "",
+    "size": "",
+    "handling": "All embedded",
+    "blocks": "1",
+    "marginResult": "Negative",
+    "marginDistance": "",
+    "dysplasiaGrade": "Moderate",
+    "nodeResult": "Negative",
+    "metSize": "",
+    "parathyroidResult": "Parathyroid, hypercellular",
+    "ovSide": "Right",
+    "ovSpecimen": "Salpingo-oophorectomy",
+    "ovReceived": "Intact",
+    "ovSizeMm": "120",
+    "ovWeightG": "350",
+    "ovSurface": "Excrescences or papillary projections",
+    "ovCut": [
+      "Solid areas",
+      "Necrosis"
+    ],
+    "ovBlocks": "2",
+    "ovaryResult": "Malignant",
+    "ovType": "high-grade serous carcinoma",
+    "ovCaveat": [],
+    "noduleResult": "Benign",
+    "tumourType": "",
+    "freeResult": "",
+    "correlation": "Concordant",
+    "discordanceReason": "Sampling",
+    "paraffinDx": "",
+    "tissue": "",
+    "additionalNotes": ""
+  },
+  "synopticPatch": {
+    "otherParts": "",
+    "otherInvolvement": [
+      "Not identified"
+    ],
+    "extrapelvicFocus": "Not applicable",
+    "extrapelvicFocusMm": "",
+    "extrapelvicSite": "",
+    "nodesExamined": "",
+    "nodesSites": "",
+    "nodesMacro": "",
+    "nodesMicro": "",
+    "nodesItc": "",
+    "nodeDepositMm": "",
+    "nodeDepositSite": "",
+    "nodeMm": "",
+    "nodeSite": "",
+    "nodeEne": "Not applicable",
+    "blockKeyText": "1-6 Ovarian tumour, including surface\n7 Fallopian tube, entirely embedded (SEE-FIM)",
+    "tubeMacro": "",
+    "ancillary": "",
+    "procedures": [
+      "Right salpingo-oophorectomy"
+    ],
+    "tumourSite": "Right tubo-ovarian",
+    "integrityRO": "Capsule intact",
+    "integrityLO": "Not applicable",
+    "integrityRT": "Serosa intact",
+    "integrityLT": "Not applicable",
+    "tumourSizeMm": "120",
+    "weight": "350",
+    "ovarianSurface": "Present, right",
+    "cutSurface": [
+      "Solid areas",
+      "Necrosis"
+    ],
+    "histType": "High-grade serous carcinoma",
+    "tumourDims": "",
+    "specimenDims": "",
+    "tubalMucosa": "Involved by invasive carcinoma",
+    "p53": "Abnormal, Overexpression (strong, diffuse nuclear expression, more than 90%)",
+    "otherIhc": "WT1 positive, PAX8 positive"
+  },
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": false
+  },
+  "report": "(A) Right ovary and fallopian tube\n(B) Right ovary and fallopian tube, salpingo-oophorectomy\n\n(A) Received in a fresh state is a right salpingo-oophorectomy specimen received intact. The ovarian mass measures 120 mm in greatest dimension and weighs 350 g. The outer surface bears papillary excrescences. Cut surface shows solid areas and necrosis. Representative sections of the solid and papillary areas are embedded in 2 frozen blocks and subsequently converted to paraffin blocks.\n\n(B) The specimen consists of a right salpingo-oophorectomy specimen received intact (350 g). The right ovary and fallopian tube are replaced by a mass measuring 120 mm in greatest dimension. The outer surface bears papillary excrescences. Cut surface shows solid areas and necrosis. The fallopian tube is unremarkable.\n\n(B1-6) Ovarian tumour, including surface.\n(B7) Fallopian tube, entirely embedded (SEE-FIM).\n\n(A) Malignant; carcinoma, favour high-grade serous carcinoma.\n\n(A) The paraffin section confirms the frozen section diagnosis. It shows features of high-grade serous carcinoma.\n\n(B) Right ovary and fallopian tube, salpingo-oophorectomy\nSpecimen and tumour\n- Procedure: Right salpingo-oophorectomy\n- Specimen integrity (right ovary): Capsule intact\n- Specimen integrity (right fallopian tube): Serosa intact\n- Tumour site: Right tubo-ovarian\n- Ovarian surface involvement: Present, right\n- Fallopian tube surface involvement: Not identified\n- Tumour size: 120 mm in greatest dimension\n\nMicroscopic findings\n- Histologic type: High-grade serous carcinoma\n- Histologic grade: Not applicable (high grade by definition)\n- Tumour histology:\n  Sections show a high-grade serous carcinoma. The fallopian tube mucosa is\n  involved by invasive carcinoma. Serous tubal intraepithelial carcinoma is\n  present in the fimbria. Immunohistochemistry: p53 shows an abnormal pattern\n  (strong diffuse nuclear overexpression); WT1 positive, PAX8 positive.\n- Lymphovascular invasion: Present\n- p53 immunohistochemistry: Abnormal, Overexpression (strong, diffuse nuclear\n  expression, more than 90%)\n- Largest extrapelvic peritoneal focus: Not applicable\n- Peritoneal / ascitic fluid: Malignant cells present\n- Other tissue / organ involvement: Not identified\n\nLymph nodes\n- Regional lymph nodes: Not submitted\n\nDistant metastasis\n- Distant metastasis: Not identified\n\nAdditional findings\n- Serous tubal intraepithelial carcinoma (STIC)\n\n(A) OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy x frozen section - HIGH-GRADE SEROUS CARCINOMA, see synoptic report\n\n(B) OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy\n- HIGH-GRADE SEROUS CARCINOMA, tubo-ovarian, 120 mm, ovarian surface involved;\n  see synoptic report\n- peritoneal fluid positive for malignant cells; lymphovascular invasion present",
+  "checks": [
+    {
+      "level": "info",
+      "message": "FIGO 2014 (reference, not reported; FIGO Cancer Report 2025 reproduces the 2014 table): IC3",
+      "part": "B"
+    },
+    {
+      "level": "info",
+      "message": "AJCC 8th stage group (if cM0): IC3.",
+      "part": "B"
+    }
+  ]
+}

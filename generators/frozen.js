@@ -433,9 +433,11 @@ export function finalDx(part) {
   }
 }
 
-export function diagnosis(part) {
+export function diagnosis(part, ctx) {
   const organ = organPhrase(part);
-  return `(${part.label}) ${organ}${organ.endsWith(' x frozen section') ? '' : ', frozen section'} - ${finalDx(part)}`;
+  // Ovarian frozen with a linked synoptic part in the same case: the synoptic carries the definitive line.
+  const linked = isOvary(part.values) && (ctx?.case?.parts || []).some((p) => p !== part && p.templateId === 'ovary_ft_peritoneum');
+  return `(${part.label}) ${organ}${organ.endsWith(' x frozen section') ? '' : ', frozen section'} - ${finalDx(part)}${linked ? ', see synoptic report' : ''}`;
 }
 
 // ---------- checks ----------

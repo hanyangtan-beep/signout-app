@@ -1,0 +1,75 @@
+{
+  "templateId": "ovary_ft_peritoneum",
+  "patch": {
+    "otherParts": "",
+    "otherInvolvement": [
+      "Pelvic peritoneum",
+      "Rectal wall"
+    ],
+    "extrapelvicFocus": "Not applicable",
+    "extrapelvicFocusMm": "",
+    "extrapelvicSite": "",
+    "nodesExamined": "",
+    "nodesSites": "",
+    "nodesMacro": "",
+    "nodesMicro": "",
+    "nodesItc": "",
+    "nodeDepositMm": "",
+    "nodeDepositSite": "",
+    "nodeMm": "",
+    "nodeSite": "",
+    "nodeEne": "Not applicable",
+    "blockKeyText": "1 Cervix\n2-3 Endometrium and myometrium\n4-5 Right adnexa, tube entirely embedded\n6-7 Left adnexa, tube entirely embedded\n8-11 Peritoneal tumour",
+    "tubeMacro": "",
+    "ancillary": "",
+    "procedures": [
+      "Total hysterectomy and bilateral salpingo-oophorectomy",
+      "Peritoneal tumour debulking"
+    ],
+    "hysterectomyType": "Abdominal",
+    "integrityRO": "Capsule intact",
+    "integrityLO": "Capsule intact",
+    "integrityRT": "Serosa intact",
+    "integrityLT": "Serosa intact",
+    "tumourSite": "Primary peritoneum",
+    "ovarianSurface": "Not identified",
+    "tubalSurface": "Not identified",
+    "tumourSizeMm": "30",
+    "tumourDims": "",
+    "weight": "",
+    "specimenDims": "",
+    "cutSurface": [],
+    "uterusMacro": "The uterus with cervix (70 x 45 x 30 mm) and both adnexa are grossly unremarkable; the rectovaginal peritoneum bears a 30 mm tumour nodule",
+    "tubalMucosa": "Not involved (tubes examined entirely, SEE-FIM)",
+    "additionalFindings": [],
+    "peritonealFluid": "Malignant cells present",
+    "vaginalMargin": "Uninvolved by carcinoma",
+    "parametrialMargin": "Not applicable"
+  },
+  "options": {
+    "printPTNM": true
+  },
+  "report": "Uterus with cervix and bilateral adnexa, total hysterectomy and bilateral salpingo-oophorectomy; peritoneal tumour debulking\n\nThe specimen consists of an intact uterus with cervix and bilateral adnexa from a total hysterectomy and bilateral salpingo-oophorectomy. The ovaries and fallopian tubes are grossly unremarkable; the peritoneal tumour measures 30 mm in greatest dimension. The outer surface is smooth. The fallopian tube is unremarkable. The uterus with cervix (70 x 45 x 30 mm) and both adnexa are grossly unremarkable; the rectovaginal peritoneum bears a 30 mm tumour nodule.\n\n(1) Cervix.\n(2-3) Endometrium and myometrium.\n(4-5) Right adnexa, tube entirely embedded.\n(6-7) Left adnexa, tube entirely embedded.\n(8-11) Peritoneal tumour.\n\nSpecimen and tumour\n- Procedure: Total hysterectomy and bilateral salpingo-oophorectomy; peritoneal\n  tumour debulking\n- Hysterectomy type: Abdominal\n- Specimen integrity (right ovary): Capsule intact\n- Specimen integrity (left ovary): Capsule intact\n- Specimen integrity (right fallopian tube): Serosa intact\n- Specimen integrity (left fallopian tube): Serosa intact\n- Tumour site: Primary peritoneum\n- Ovarian surface involvement: Not identified\n- Fallopian tube surface involvement: Not identified\n- Tumour size: 30 mm in greatest dimension\n\nMicroscopic findings\n- Histologic type: High-grade serous carcinoma\n- Histologic grade: Not applicable (high grade by definition)\n- Tumour histology:\n  Sections show a high-grade serous carcinoma. The fallopian tubes are examined\n  entirely (SEE-FIM) and the mucosa is not involved. Immunohistochemistry: p53\n  shows an abnormal pattern (strong diffuse nuclear overexpression); WT1\n  positive, PAX8 positive, ER positive.\n- Lymphovascular invasion: Present\n- p53 immunohistochemistry: Abnormal, Overexpression (strong, diffuse nuclear\n  expression, more than 90%)\n- Largest extrapelvic peritoneal focus: Not applicable\n- Peritoneal / ascitic fluid: Malignant cells present\n- Other tissue / organ involvement: Pelvic peritoneum; Rectal wall\n\nMargins\n- Ectocervical / vaginal cuff margin: Uninvolved by carcinoma\n- Parametrial / paracervical margin: Not applicable\n\nLymph nodes\n- Regional lymph nodes: Not submitted\n\nDistant metastasis\n- Distant metastasis: Not identified\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT2b pNX\n  - Stage group (if cM0): IIB\n\nAdditional findings\n- None\n\nUTERUS WITH CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral\nsalpingo-oophorectomy\n- HIGH-GRADE SEROUS CARCINOMA, primary peritoneal, 30 mm; see synoptic report\n- involving the pelvic peritoneum and rectal wall; peritoneal fluid positive for\n  malignant cells; lymphovascular invasion present\n- pT2b pNX (AJCC 8th edition), stage IIB (if cM0)",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Primary peritoneal carcinoma: stage cannot be I; the ovaries and tubes must be grossly normal and microscopically free or minimally involved (WHO 5th).",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "Positive peritoneal fluid is recorded; it only sets the stage (pT1c3 / IC3) when the tumour is confined to the ovaries or tubes.",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "FIGO 2014 (reference, not reported; FIGO Cancer Report 2025 reproduces the 2014 table): IIB",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "AJCC 8th stage group (if cM0): IIB.",
+      "part": "A"
+    }
+  ]
+}

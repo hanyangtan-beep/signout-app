@@ -66,7 +66,7 @@ test('primary peritoneal carcinoma is never pT1; y descriptor after neoadjuvant 
 
 test('FIGO 2014 reference line and the extended override parser', () => {
   assert.deepEqual(O.referenceLines({ ...base, otherInvolvement: ['Omentum'], extrapelvicFocusMm: '30' }), ['FIGO 2014 (reference, not reported; FIGO Cancer Report 2025 reproduces the 2014 table): IIIC']);
-  assert.deepEqual(O.referenceLines({ ...base, histType: 'Serous borderline tumour' }), []);
+  assert.deepEqual(O.referenceLines({ ...base, histType: 'Serous borderline tumour', otherInvolvement: ['Pelvic peritoneum'] }), ['FIGO 2014 (reference, not reported; FIGO Cancer Report 2025 reproduces the 2014 table): IIB']);
   assert.deepEqual(parseOverride('pT1c2 pN0(i+)'), { T: 'T1c2', N: 'N0(i+)', M: 'M-' });
   assert.deepEqual(parseOverride('ypT3a2 ypN1a pM1a'), { T: 'T3a2', N: 'N1a', M: 'M1a' });
   assert.deepEqual(parseOverride('pT2b N1b'), { T: 'T2b', N: 'N1b', M: 'M-' });

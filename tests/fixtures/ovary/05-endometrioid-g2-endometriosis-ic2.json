@@ -1,0 +1,68 @@
+{
+  "templateId": "ovary_ft_peritoneum",
+  "patch": {
+    "otherParts": "",
+    "otherInvolvement": [
+      "Not identified"
+    ],
+    "extrapelvicFocus": "Not applicable",
+    "extrapelvicFocusMm": "",
+    "extrapelvicSite": "",
+    "nodesExamined": "",
+    "nodesSites": "",
+    "nodesMacro": "",
+    "nodesMicro": "",
+    "nodesItc": "",
+    "nodeDepositMm": "",
+    "nodeDepositSite": "",
+    "nodeMm": "",
+    "nodeSite": "",
+    "nodeEne": "Not applicable",
+    "blockKeyText": "1-6 Ovarian tumour, including surface\n7 Fallopian tube, entirely embedded (SEE-FIM)",
+    "tubeMacro": "",
+    "ancillary": "",
+    "tumourSite": "Left ovary",
+    "procedures": [
+      "Left salpingo-oophorectomy"
+    ],
+    "integrityRO": "Not applicable",
+    "integrityLO": "Capsule intact",
+    "integrityRT": "Not applicable",
+    "integrityLT": "Serosa intact",
+    "ovarianSurface": "Present, left",
+    "tumourSizeMm": "70",
+    "tumourDims": "70 x 55 x 50",
+    "weight": "160",
+    "specimenDims": "75 x 60 x 50",
+    "cutSurface": [
+      "Chocolate-brown fluid",
+      "Solid areas"
+    ],
+    "histType": "Endometrioid carcinoma",
+    "solidPct": "6-50% (architectural grade 2)",
+    "nuclearGrade": "Nuclear grade 1-2 (mild to moderate atypia)",
+    "microDescription": "The carcinoma arises in the wall of an endometriotic cyst with adjacent atypical endometriosis",
+    "tubalMucosa": "Not involved (representative sections)",
+    "lvi": "Not identified",
+    "p53": "Normal (wild type)",
+    "otherIhc": "ER positive, PR positive, WT1 negative, Napsin A negative; MMR proteins retained",
+    "additionalFindings": [
+      "Endometriosis"
+    ],
+    "peritonealFluid": "Malignant cells not identified"
+  },
+  "options": {},
+  "report": "Left ovary and fallopian tube, salpingo-oophorectomy\n\nThe specimen consists of a left salpingo-oophorectomy specimen received intact (160 g, 75 x 60 x 50 mm). The left ovary is replaced by a mass measuring 70 mm in greatest dimension (70 x 55 x 50 mm). The outer surface bears papillary excrescences. Cut surface shows chocolate-brown fluid and solid areas. The fallopian tube is unremarkable.\n\n(1-6) Ovarian tumour, including surface.\n(7) Fallopian tube, entirely embedded (SEE-FIM).\n\nSpecimen and tumour\n- Procedure: Left salpingo-oophorectomy\n- Specimen integrity (left ovary): Capsule intact\n- Specimen integrity (left fallopian tube): Serosa intact\n- Tumour site: Left ovary\n- Ovarian surface involvement: Present, left\n- Fallopian tube surface involvement: Not identified\n- Tumour size: 70 mm in greatest dimension (70 x 55 x 50 mm)\n\nMicroscopic findings\n- Histologic type: Endometrioid carcinoma\n- Histologic grade: FIGO grade 2 (endometrioid carcinoma)\n- Tumour histology:\n  Sections show an endometrioid carcinoma. Solid non-squamous growth is 6-50%\n  with mild to moderate nuclear atypia. The carcinoma arises in the wall of an\n  endometriotic cyst with adjacent atypical endometriosis. Immunohistochemistry:\n  p53 shows a wild-type pattern; ER positive, PR positive, WT1 negative, Napsin\n  A negative; MMR proteins retained.\n- Lymphovascular invasion: Not identified\n- p53 immunohistochemistry: Normal (wild type)\n- Largest extrapelvic peritoneal focus: Not applicable\n- Peritoneal / ascitic fluid: Malignant cells not identified\n- Other tissue / organ involvement: Not identified\n\nLymph nodes\n- Regional lymph nodes: Not submitted\n\nDistant metastasis\n- Distant metastasis: Not identified\n\nAdditional findings\n- Endometriosis\n\nOVARY AND FALLOPIAN TUBE, left, salpingo-oophorectomy\n- ENDOMETRIOID CARCINOMA, FIGO grade 2, 70 mm, ovarian surface involved; see\n  synoptic report",
+  "checks": [
+    {
+      "level": "info",
+      "message": "FIGO 2014 (reference, not reported; FIGO Cancer Report 2025 reproduces the 2014 table): IC2",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "AJCC 8th stage group (if cM0): IC2.",
+      "part": "A"
+    }
+  ]
+}

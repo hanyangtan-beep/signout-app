@@ -128,8 +128,9 @@ export function N(v) {
 
 export function M(v) {
   const mets = arr(v.distantMets).filter((s) => !/^(Not identified|Not applicable|Cannot)/.test(s));
-  if (mets.length || involvement(v).m1b) return { cat: 'M1b' };
-  if (v.pleuralFluid === PLEURAL_MALIGNANT) return { cat: 'M1a' };
+  const pleural = mets.some((s) => /^Pleural effusion/.test(s));
+  if (mets.some((s) => !/^Pleural effusion/.test(s)) || involvement(v).m1b) return { cat: 'M1b' };
+  if (pleural || v.pleuralFluid === PLEURAL_MALIGNANT) return { cat: 'M1a' };
   return { cat: 'M-' };
 }
 
@@ -163,11 +164,8 @@ export function figo2014(v) {
   return stageGroup(T(v).cat, N(v).cat, M(v).cat);
 }
 
-const BORDERLINE = /borderline/i;
-
-/** Info lines for the Checks panel. */
+/** Info lines for the Checks panel. Borderline tumours are staged too (CAP / FIGO), so they get the line. */
 export function referenceLines(v) {
-  if (BORDERLINE.test(v.histType || '')) return [];
   const f = figo2014(v);
   return [`FIGO 2014 (reference, not reported; FIGO Cancer Report 2025 reproduces the 2014 table): ${f || 'not derived'}`];
 }

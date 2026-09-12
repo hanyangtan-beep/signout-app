@@ -1,0 +1,63 @@
+{
+  "templateId": "ovary_ft_peritoneum",
+  "patch": {
+    "otherParts": "",
+    "otherInvolvement": [
+      "Not identified"
+    ],
+    "extrapelvicFocus": "Not applicable",
+    "extrapelvicFocusMm": "",
+    "extrapelvicSite": "",
+    "nodesExamined": "",
+    "nodesSites": "",
+    "nodesMacro": "",
+    "nodesMicro": "",
+    "nodesItc": "",
+    "nodeDepositMm": "",
+    "nodeDepositSite": "",
+    "nodeMm": "",
+    "nodeSite": "",
+    "nodeEne": "Not applicable",
+    "blockKeyText": "1-6 Ovarian tumour, including surface\n7 Fallopian tube, entirely embedded (SEE-FIM)",
+    "tubeMacro": "",
+    "ancillary": "",
+    "tumourSite": "Right ovary",
+    "ovarianSurface": "Not identified",
+    "tumourSizeMm": "180",
+    "tumourDims": "180 x 150 x 110",
+    "weight": "1450",
+    "specimenDims": "185 x 155 x 110",
+    "cutSurface": [
+      "Multilocular cyst",
+      "Mucinous contents",
+      "Solid areas"
+    ],
+    "histType": "Mucinous adenocarcinoma",
+    "mucinousGrade": "Low-grade, growth pattern-based (expansile growth, or infiltrative growth in 10% or less)",
+    "tubalMucosa": "Not involved (representative sections)",
+    "lvi": "Not identified",
+    "p53": "Not performed",
+    "otherIhc": "CK7 positive, CK20 focally positive, CDX2 negative, SATB2 negative, PAX8 negative",
+    "additionalFindings": [],
+    "peritonealFluid": "Malignant cells not identified"
+  },
+  "options": {},
+  "report": "Right ovary and fallopian tube, salpingo-oophorectomy\n\nThe specimen consists of a right salpingo-oophorectomy specimen received intact (1450 g, 185 x 155 x 110 mm). The right ovary is replaced by a mass measuring 180 mm in greatest dimension (180 x 150 x 110 mm). The outer surface is smooth. Cut surface shows a multilocular cyst, mucinous contents and solid areas. The fallopian tube is unremarkable.\n\n(1-6) Ovarian tumour, including surface.\n(7) Fallopian tube, entirely embedded (SEE-FIM).\n\nSpecimen and tumour\n- Procedure: Right salpingo-oophorectomy\n- Specimen integrity (right ovary): Capsule intact\n- Specimen integrity (right fallopian tube): Serosa intact\n- Tumour site: Right ovary\n- Ovarian surface involvement: Not identified\n- Fallopian tube surface involvement: Not identified\n- Tumour size: 180 mm in greatest dimension (180 x 150 x 110 mm)\n\nMicroscopic findings\n- Histologic type: Mucinous adenocarcinoma\n- Histologic grade: Low grade, growth pattern-based (expansile growth or\n  infiltrative growth in 10% or less)\n- Tumour histology:\n  Sections show a mucinous adenocarcinoma. Invasion is expansile (confluent),\n  with infiltrative growth in 10% or less of the tumour. Immunohistochemistry:\n  CK7 positive, CK20 focally positive, CDX2 negative, SATB2 negative, PAX8\n  negative.\n- Lymphovascular invasion: Not identified\n- p53 immunohistochemistry: Not performed\n- Largest extrapelvic peritoneal focus: Not applicable\n- Peritoneal / ascitic fluid: Malignant cells not identified\n- Other tissue / organ involvement: Not identified\n\nLymph nodes\n- Regional lymph nodes: Not submitted\n\nDistant metastasis\n- Distant metastasis: Not identified\n\nAdditional findings\n- None\n\nOVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy\n- MUCINOUS ADENOCARCINOMA, low grade, 180 mm, capsule intact; see synoptic\n  report",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Mucinous carcinoma: exclude a metastasis (bilateral, less than 100 mm, surface involvement, nodular or infiltrative growth favour metastasis; consider CK7, CK20, CDX2, SATB2, PAX8).",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "FIGO 2014 (reference, not reported; FIGO Cancer Report 2025 reproduces the 2014 table): IA",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "AJCC 8th stage group (if cM0): IA.",
+      "part": "A"
+    }
+  ]
+}
