@@ -46,6 +46,12 @@
       "oesophagitis",
       "esophagitis",
       "Candida"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "biopsy",

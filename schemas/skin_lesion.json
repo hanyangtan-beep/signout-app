@@ -58,6 +58,12 @@
       "actinic",
       "skin lesion",
       "papule"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "shave",

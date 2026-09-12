@@ -30,6 +30,12 @@
       "parotid mass",
       "parotid swelling",
       "salivary"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "aspirate",

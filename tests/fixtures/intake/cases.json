@@ -344,7 +344,15 @@
           "templateId": "colonic_polyp",
           "tier": "confident"
         }
-      ]
+      ],
+      "values": {
+        "A": {
+          "site": "Sigmoid"
+        },
+        "B": {
+          "site": "Rectum"
+        }
+      }
     },
     {
       "name": "IBD mapping series",
@@ -365,7 +373,18 @@
           "templateId": "ibd_biopsy",
           "tier": "confident"
         }
-      ]
+      ],
+      "values": {
+        "A": {
+          "site": "Terminal ileum"
+        },
+        "B": {
+          "site": "Ascending colon"
+        },
+        "C": {
+          "site": "Rectum"
+        }
+      }
     },
     {
       "name": "oesophageal and duodenal biopsies",
@@ -600,6 +619,79 @@
           "tier": "confident"
         }
       ]
+    },
+    {
+      "name": "subsite pre-fill mix",
+      "text": "History\nCrohn's disease, surveillance; dyspepsia\n\nSpecimen\n(A) TI, biopsy, (B) Caecum, biopsy, (C) Hepatic flexure, polypectomy, (D) Rectosigmoid junction, biopsy, (E) Stomach, antrum GC, biopsy, (F) Stomach, body, biopsy, (G) Duodenum, D2, biopsy and (H) Skin, left cheek, excision",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "ibd_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "ibd_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "colonic_polyp",
+          "tier": "confident"
+        },
+        {
+          "label": "D",
+          "templateId": "ibd_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "E",
+          "templateId": "gastric_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "F",
+          "templateId": "gastric_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "G",
+          "templateId": "duodenal_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "H",
+          "templateId": "skin_cyst",
+          "tier": "choose"
+        }
+      ],
+      "values": {
+        "A": {
+          "site": "Terminal ileum"
+        },
+        "B": {
+          "site": "Caecum"
+        },
+        "C": {
+          "site": "Hepatic flexure"
+        },
+        "D": {
+          "site": "Rectosigmoid"
+        },
+        "E": {
+          "specimenName": "antrum GC",
+          "biopsySite": "Antrum, greater curvature"
+        },
+        "F": {
+          "specimenName": "body"
+        },
+        "G": {
+          "specimenName": "D2"
+        },
+        "H": {
+          "specimenName": "left cheek"
+        }
+      }
     }
   ]
 }

@@ -36,6 +36,12 @@
     "clinical": [
       "effusion",
       "ascites"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "fluid specimen",

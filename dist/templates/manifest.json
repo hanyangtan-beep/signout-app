@@ -53,10 +53,16 @@
           "OLGA",
           "ulcer"
         ],
-        "fill": {
-          "field": "specimenName",
-          "from": "detail"
-        }
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          },
+          {
+            "field": "biopsySite",
+            "from": "options"
+          }
+        ]
       },
       "version": "2026.09.2",
       "generator": "gastric",
@@ -102,7 +108,12 @@
           "sigmoid",
           "transverse",
           "ascending",
-          "descending"
+          "descending",
+          "hepatic flexure",
+          "splenic flexure",
+          "flexure",
+          "rectosigmoid",
+          "ileocaecal"
         ],
         "procedure": [
           "polypectomy",
@@ -116,6 +127,12 @@
           "adenoma",
           "colonoscopy",
           "screening"
+        ],
+        "fill": [
+          {
+            "field": "site",
+            "from": "options"
+          }
         ]
       },
       "version": "2026.09",
@@ -162,6 +179,12 @@
           "diarrhoea",
           "malabsorption",
           "TTG"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
         ]
       },
       "version": "2026.09",
@@ -216,6 +239,12 @@
           "oesophagitis",
           "esophagitis",
           "Candida"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
         ]
       },
       "version": "2026.09",
@@ -259,7 +288,14 @@
           "ascending",
           "descending",
           "mapping",
-          "series"
+          "series",
+          "hepatic flexure",
+          "splenic flexure",
+          "flexure",
+          "rectosigmoid",
+          "ileocaecal",
+          "TI",
+          "random colon"
         ],
         "procedure": [
           "biopsy",
@@ -280,7 +316,14 @@
           "dysplasia surveillance"
         ],
         "not": [
-          "polyp"
+          "polyp",
+          "polypectomy"
+        ],
+        "fill": [
+          {
+            "field": "site",
+            "from": "options"
+          }
         ]
       },
       "version": "2026.09",
@@ -334,6 +377,12 @@
           "PI-RADS",
           "nodule",
           "adenocarcinoma"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
         ]
       },
       "version": "2026.09",
@@ -378,6 +427,12 @@
           "B3",
           "B5",
           "microcalcification"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
         ]
       },
       "version": "2026.09",
@@ -425,6 +480,12 @@
           "smear",
           "HPV",
           "colposcopy"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
         ]
       },
       "version": "2026.09",
@@ -527,6 +588,12 @@
           "granuloma",
           "TB",
           "tuberculosis"
+        ],
+        "fill": [
+          {
+            "field": "site",
+            "from": "detail"
+          }
         ]
       },
       "version": "2026.09",
@@ -863,6 +930,12 @@
           "hypercalcemia",
           "adenoma",
           "MEN"
+        ],
+        "fill": [
+          {
+            "field": "site",
+            "from": "options"
+          }
         ]
       },
       "version": "2026.09",
@@ -1087,6 +1160,12 @@
           "dermoid",
           "cyst",
           "infected cyst"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
         ]
       },
       "version": "2026.09",
@@ -1155,6 +1234,12 @@
           "skin tumour",
           "skin tumor",
           "pigmented"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
         ]
       },
       "version": "2026.09",
@@ -1324,6 +1409,12 @@
           "bladder ca",
           "bladder cancer",
           "cystoscopy"
+        ],
+        "fill": [
+          {
+            "field": "site",
+            "from": "detail"
+          }
         ]
       },
       "version": "2026.09",
@@ -1445,7 +1536,13 @@
           "haemangioma",
           "hemangioma"
         ],
-        "bias": -1
+        "bias": -1,
+        "fill": [
+          {
+            "field": "site",
+            "from": "detail"
+          }
+        ]
       },
       "version": "2026.09",
       "generator": "softtissue",
@@ -1500,6 +1597,12 @@
           "rhinosinusitis",
           "obstruction",
           "CRS"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "text"
+          }
         ]
       },
       "version": "2026.09",
@@ -1566,6 +1669,12 @@
           "actinic",
           "skin lesion",
           "papule"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
         ]
       },
       "version": "2026.09",
@@ -1715,7 +1824,10 @@
           "sigmoid",
           "hemicolectomy",
           "colectomy",
-          "bowel"
+          "bowel",
+          "hepatic flexure",
+          "splenic flexure",
+          "rectosigmoid"
         ],
         "procedure": [
           "hemicolectomy",
@@ -1742,6 +1854,12 @@
         ],
         "not": [
           "polyp"
+        ],
+        "fill": [
+          {
+            "field": "tumourSite",
+            "from": "options"
+          }
         ]
       },
       "version": "2026.09",
@@ -1797,6 +1915,12 @@
           "liver cyst",
           "biliary cyst",
           "hydatid"
+        ],
+        "fill": [
+          {
+            "field": "segment",
+            "from": "detail"
+          }
         ]
       },
       "version": "2026.09",
@@ -1860,7 +1984,13 @@
           "submucosal tumor",
           "SMT"
         ],
-        "bias": -2
+        "bias": -2,
+        "fill": [
+          {
+            "field": "tumourSite",
+            "from": "options"
+          }
+        ]
       },
       "version": "2026.09",
       "generator": "gist_resection",
@@ -1919,6 +2049,16 @@
           "OKC",
           "ameloblastoma",
           "radiolucency"
+        ],
+        "fill": [
+          {
+            "field": "site",
+            "from": "options"
+          },
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
         ]
       },
       "version": "2026.09",
@@ -2096,6 +2236,12 @@
           "goiter",
           "TIRADS",
           "nodule"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
         ]
       },
       "version": 1,
@@ -2134,6 +2280,12 @@
           "parotid mass",
           "parotid swelling",
           "salivary"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
         ]
       },
       "version": 1,
@@ -2178,6 +2330,12 @@
         "clinical": [
           "lymphadenopathy",
           "mediastinal"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
         ]
       },
       "version": 1,
@@ -2222,6 +2380,12 @@
         "clinical": [
           "effusion",
           "ascites"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
         ]
       },
       "version": 1,

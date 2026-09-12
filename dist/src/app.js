@@ -1,16 +1,16 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadTemplate } from './registry.js?v=mtxp1iyk';
-import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtxp1iyk';
+import { loadManifest, loadTemplate } from './registry.js?v=mtxpn80l';
+import { biopsyRowLayout, resectionStrip, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtxpn80l';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mtxp1iyk';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtxp1iyk';
-import { loadConfig, saveConfig } from './config.js?v=mtxp1iyk';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtxp1iyk';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtxp1iyk';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtxp1iyk';
-import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtxp1iyk';
+} from './engine.js?v=mtxpn80l';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtxpn80l';
+import { loadConfig, saveConfig } from './config.js?v=mtxpn80l';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtxpn80l';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtxpn80l';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtxpn80l';
+import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtxpn80l';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {

@@ -36,6 +36,12 @@
       "hypercalcemia",
       "adenoma",
       "MEN"
+    ],
+    "fill": [
+      {
+        "field": "site",
+        "from": "options"
+      }
     ]
   },
   "specimenNoun": "excision",

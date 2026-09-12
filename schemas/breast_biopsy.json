@@ -36,6 +36,12 @@
       "B3",
       "B5",
       "microcalcification"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "core biopsy",

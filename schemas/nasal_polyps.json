@@ -47,6 +47,12 @@
       "rhinosinusitis",
       "obstruction",
       "CRS"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "text"
+      }
     ]
   },
   "specimenNoun": "polypectomy",

@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { parseIntake, matchParts, presetValues, deriveTitle, splitTriple, MAX_PARTS, GENERIC_ID } from '../src/intake.js';
+import { parseIntake, matchParts, presetValues, deriveTitle, splitTriple, MAX_PARTS, GENERIC_ID, matchOption } from '../src/intake.js';
 import { loadManifest, loadTemplate } from '../src/registry.js';
 import { parseSitesFromTitle } from '../generators/gastric.js';
 
@@ -127,6 +127,32 @@ test('presets: lymph node station, breast margins and generic specimen name', as
       for (const [k, v] of Object.entries(want)) assert.equal(got[k], v, `${c.name} (${label}).${k}`);
     }
   }
+});
+
+test('subsite pre-fill: option matching from the specimen text', async () => {
+  const ibd = ['Terminal ileum', 'Ileocaecal valve', 'Caecum', 'Ascending colon', 'Hepatic flexure', 'Transverse colon', 'Splenic flexure', 'Descending colon', 'Sigmoid colon', 'Rectosigmoid', 'Rectum', 'Random colon'];
+  assert.equal(matchOption(ibd, 'Terminal ileum, biopsy'), 'Terminal ileum');
+  assert.equal(matchOption(ibd, 'TI, biopsy'), 'Terminal ileum', 'TI shorthand');
+  assert.equal(matchOption(ibd, 'Cecum, biopsy'), 'Caecum', 'spelling folded');
+  assert.equal(matchOption(ibd, 'Ascending, biopsy'), 'Ascending colon', '"colon" optional in the option');
+  assert.equal(matchOption(ibd, 'Rectosigmoid junction, biopsy'), 'Rectosigmoid');
+  assert.equal(matchOption(ibd, 'Rectum, biopsy'), 'Rectum', 'rectum does not match rectosigmoid');
+  assert.equal(matchOption(ibd, 'Random colonic biopsies'), 'Random colon');
+  assert.equal(matchOption(ibd, 'Colon, biopsy'), '', 'no site named → default kept');
+  const gastric = ['Unspecified', 'Antrum, greater curvature', 'Antrum, lesser curvature', 'Incisura angularis', 'Body, greater curvature', 'Body, lesser curvature', 'Fundus', 'Cardia'];
+  assert.equal(matchOption(gastric, 'Stomach, antrum, biopsy'), '', 'curvature unknown → Unspecified');
+  assert.equal(matchOption(gastric, 'Stomach, antrum GC, biopsy'), 'Antrum, greater curvature');
+  assert.equal(matchOption(gastric, 'Stomach, incisura, biopsy'), 'Incisura angularis');
+  assert.equal(matchOption(['Mandible', 'Maxilla'], 'Left mandibular cyst, enucleation'), 'Mandible');
+  assert.equal(matchOption(['Colon, not otherwise specified', 'Sigmoid colon', 'Rectum'], 'Colon, right hemicolectomy'), '', 'unspecific options never chosen');
+  // through presetValues on the real schemas
+  const ibdSchema = (await loadTemplate('ibd_biopsy')).schema;
+  const rows = matchParts(parseIntake(fx.cases[8].text), parseIntake(fx.cases[8].text).history, manifest);
+  assert.equal(presetValues(ibdSchema, rows[1], rows[1]).site, 'Ascending colon');
+  const polyp = (await loadTemplate('colonic_polyp')).schema;
+  const prow = matchParts(parseIntake('(A) Ascending colon, polypectomy'), 'polyp', manifest)[0];
+  assert.equal(prow.templateId, 'colonic_polyp');
+  assert.equal(presetValues(polyp, prow, prow).site, 'Ascending colon');
 });
 
 test('derived title feeds the gastric site parser for every letter A–Z', () => {

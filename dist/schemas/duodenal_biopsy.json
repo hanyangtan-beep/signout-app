@@ -38,6 +38,12 @@
       "diarrhoea",
       "malabsorption",
       "TTG"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "biopsy",

@@ -55,6 +55,12 @@
       "bladder ca",
       "bladder cancer",
       "cystoscopy"
+    ],
+    "fill": [
+      {
+        "field": "site",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "TURBT",

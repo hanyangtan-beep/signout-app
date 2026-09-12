@@ -41,7 +41,10 @@
       "sigmoid",
       "hemicolectomy",
       "colectomy",
-      "bowel"
+      "bowel",
+      "hepatic flexure",
+      "splenic flexure",
+      "rectosigmoid"
     ],
     "procedure": [
       "hemicolectomy",
@@ -68,6 +71,12 @@
     ],
     "not": [
       "polyp"
+    ],
+    "fill": [
+      {
+        "field": "tumourSite",
+        "from": "options"
+      }
     ]
   },
   "specimenNoun": "resection",

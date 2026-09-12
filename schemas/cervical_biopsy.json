@@ -39,6 +39,12 @@
       "smear",
       "HPV",
       "colposcopy"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "biopsy",

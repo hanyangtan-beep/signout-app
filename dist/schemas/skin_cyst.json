@@ -47,6 +47,12 @@
       "dermoid",
       "cyst",
       "infected cyst"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "excision",

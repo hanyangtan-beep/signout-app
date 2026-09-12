@@ -60,6 +60,12 @@
       "skin tumour",
       "skin tumor",
       "pigmented"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "excision",

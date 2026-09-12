@@ -36,6 +36,12 @@
     "clinical": [
       "lymphadenopathy",
       "mediastinal"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "aspirate",

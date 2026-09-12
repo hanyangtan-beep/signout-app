@@ -50,10 +50,16 @@
       "OLGA",
       "ulcer"
     ],
-    "fill": {
-      "field": "specimenName",
-      "from": "detail"
-    }
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      },
+      {
+        "field": "biopsySite",
+        "from": "options"
+      }
+    ]
   },
   "specimenNoun": "biopsy",
   "maxParts": 10,

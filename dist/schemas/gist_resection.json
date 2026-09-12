@@ -55,7 +55,13 @@
       "submucosal tumor",
       "SMT"
     ],
-    "bias": -2
+    "bias": -2,
+    "fill": [
+      {
+        "field": "tumourSite",
+        "from": "options"
+      }
+    ]
   },
   "specimenNoun": "resection",
   "maxParts": 3,

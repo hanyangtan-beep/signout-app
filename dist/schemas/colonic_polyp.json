@@ -38,7 +38,12 @@
       "sigmoid",
       "transverse",
       "ascending",
-      "descending"
+      "descending",
+      "hepatic flexure",
+      "splenic flexure",
+      "flexure",
+      "rectosigmoid",
+      "ileocaecal"
     ],
     "procedure": [
       "polypectomy",
@@ -52,6 +57,12 @@
       "adenoma",
       "colonoscopy",
       "screening"
+    ],
+    "fill": [
+      {
+        "field": "site",
+        "from": "options"
+      }
     ]
   },
   "specimenNoun": "polypectomy",

@@ -47,6 +47,12 @@
       "granuloma",
       "TB",
       "tuberculosis"
+    ],
+    "fill": [
+      {
+        "field": "site",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "biopsy",

@@ -51,6 +51,16 @@
       "OKC",
       "ameloblastoma",
       "radiolucency"
+    ],
+    "fill": [
+      {
+        "field": "site",
+        "from": "options"
+      },
+      {
+        "field": "specimenName",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "enucleation",

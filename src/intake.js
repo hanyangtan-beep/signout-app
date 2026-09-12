@@ -217,12 +217,63 @@ export function presetValues(schema, part, match = {}) {
     values.specimenName = part.text;
     return values;
   }
-  const fill = schema?.match?.fill;
-  if (fill && fieldIds.has(fill.field) && field(fill.field)?.type === 'text') {
-    const v = fill.from === 'detail' ? part.detail : part.text;
-    if (v) values[fill.field] = v;
-  }
+  applyFill(schema, part, values);
   return values;
+}
+
+/** Spelling variants folded before option matching (applied to option labels and part text alike). */
+const SITE_SPELLINGS = [
+  [/\bcaec/g, 'cec'], [/\bileo-?caec/g, 'ileocec'], [/\boesophag/g, 'esophag'],
+  [/\bgreater curv(ature)?\b/g, 'gc'], [/\blesser curv(ature)?\b/g, 'lc'],
+  [/\brecto-?sigmoid( junction)?\b/g, 'rectosigmoid'], [/\bsigmoid colon\b/g, 'sigmoid'],
+  [/\brandom colon(ic)?\b/g, 'random'], [/\bt\.?i\.?\b/g, 'terminal ileum'],
+  [/\bincisura( angularis)?\b/g, 'incisura'], [/\bmandibular\b/g, 'mandible'], [/\bmaxillary\b/g, 'maxilla'], [/\bantral\b/g, 'antrum'],
+];
+const UNSPECIFIC_OPTION = /unspecified|not (specified|otherwise|stated|applicable|identified)|cannot be|^other\b|specify/i;
+
+function siteTokens(s) {
+  let x = String(s || '').toLowerCase();
+  for (const [re, to] of SITE_SPELLINGS) x = x.replace(re, to);
+  return x.split(/[^a-z0-9]+/).filter(Boolean);
+}
+
+/**
+ * The option whose words all appear in the part text; the longest wins, a tie or an
+ * "unspecified"-type option gives nothing. "Ascending colon, biopsy" → "Ascending colon";
+ * "antrum" alone → nothing for ["Antrum, greater curvature", "Antrum, lesser curvature"].
+ */
+export function matchOption(options, text) {
+  const have = new Set(siteTokens(text));
+  if (!have.size) return '';
+  let best = ''; let bestN = 0; let tie = false;
+  for (const opt of options || []) {
+    if (UNSPECIFIC_OPTION.test(opt)) continue;
+    let toks = siteTokens(opt);
+    if (toks.length > 1) toks = toks.filter((w) => w !== 'colon');   // "Ascending colon" also matches "ascending, biopsy"
+    if (!toks.length || !toks.every((w) => have.has(w))) continue;
+    if (toks.length > bestN) { best = opt; bestN = toks.length; tie = false; }
+    else if (toks.length === bestN && opt !== best) tie = true;
+  }
+  return tie ? '' : best;
+}
+
+/** `match.fill`: `{field, from: "detail" | "text" | "options"}` rules (a single object is accepted too). */
+function applyFill(schema, part, values) {
+  const rules = [].concat(schema?.match?.fill || []);
+  const field = (id) => (schema?.fields || []).find((f) => f.id === id);
+  const text = part.raw || part.text || '';
+  for (const rule of rules) {
+    const f = field(rule.field);
+    if (!f || values[rule.field]) continue;
+    if (rule.from === 'options') {
+      if (!Array.isArray(f.options)) continue;
+      const opt = matchOption(f.options, text);
+      if (opt) values[rule.field] = opt;
+    } else if (f.type === 'text') {
+      const v = rule.from === 'detail' ? part.detail : part.text;
+      if (v) values[rule.field] = v;
+    }
+  }
 }
 
 /** "(A) antrum and (B) body" — site per part, so the gastric title parser keeps working. */

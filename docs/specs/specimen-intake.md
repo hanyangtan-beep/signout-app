@@ -1,6 +1,6 @@
 # Specimen intake — paste the LIS specimen list, get the parts
 
-Status: **built 2026-09-12** (cards (a) + (b) shipped as one batch; see "As built" at the end). Planned the same day from the user's request and six LIS samples.
+Status: **built 2026-09-12** (cards (a) + (b) shipped as one batch, card (c) subsite pre-fill the same day; see "As built" and "Subsite pre-fill" at the end). Planned the same day from the user's request and six LIS samples.
 
 ## Problem
 
@@ -77,3 +77,10 @@ Fields: specimen name, clinical note (optional), microscopy (free text, seeded "
 - UI: **Specimen** textarea under Accession; strip with one row per part (letter, text, dropdown Generic / Suggested / All templates, ✓ ? — mark), footer **Build parts** / **Replace parts** (confirm once when the case already has parts or edits) and parser warnings; collapses to "N parts built · Show list" after Build; re-scores when the specimen or clinical text changes; manual picks survive clinical edits and reset on a new list. Build fills Clinical history from the pasted history only when the field is empty. `meta.specimen` is saved with the case and checked by the PHI guard.
 - Tests: `tests/intake.test.js` (8 tests) over `tests/fixtures/intake/cases.json` — 18 cases, 88 parts (the six house samples + biopsy / resection / cytology lists reaching every template), all top-1 correct, zero confident-wrong. Deliberate non-golden test edits: `tests/picker.test.js` systems list gains `General`; `tests/jawcyst.test.js` key-order assertion includes `match`. Golden fixtures unchanged (619 tests).
 - Serous-carcinoma debulking (sample 3): omentum, spleen, peritoneal nodules and the sigmoid parts land on generic (`choose` for sigmoid — colon resection offered); the uterus is `choose` with generic preselected because "serous carcinoma" alone does not fix the primary.
+
+## Subsite pre-fill (card (c), built 2026-09-12)
+
+- `match.fill` is a list of `{field, from}` rules (a single object still works). `from: "options"` picks a select option from the part text: option labels and text are folded through a spelling table (caecum → cecum, ileocaecal, oesophag → esophag, greater / lesser curvature → GC / LC, rectosigmoid junction → rectosigmoid, sigmoid colon → sigmoid, random colon(ic) → random, TI → terminal ileum, incisura angularis → incisura, mandibular / maxillary, antral → antrum), tokenised, and an option qualifies when all its words are present ("colon" is optional in multi-word options). Longest qualifying option wins; a tie or an option matching /unspecified|not specified|cannot be|other|specify/ gives nothing, so the field keeps its default. `from: "detail"` / `"text"` copy the LIS middle field or whole line into a text field (existing behaviour, now per rule).
+- Rules: IBD series `site`, colonic polyp `site`, colorectal and GIST `tumourSite`, gastric `biopsySite` (needs a curvature: "antrum" alone stays Unspecified) + `specimenName` from detail, parathyroid `site`, jaw cyst `site` + region; text Site fields from the LIS detail for duodenal, oesophageal, prostate, cervical, skin ×3, lung, liver segment, soft tissue, TURBT, thyroid / salivary / lymph-node FNA, effusion and breast core; nasal polyps take the whole line.
+- Vocabulary added to `match.site` for the colon templates: hepatic / splenic flexure, rectosigmoid, ileocaecal, TI, random colon; IBD `not` gains `polypectomy`.
+- Tests: `matchOption` table in `tests/intake.test.js`; fixture `values` on the polyp and IBD cases plus a new "subsite pre-fill mix" case (19 cases, 96 parts); 620 tests.

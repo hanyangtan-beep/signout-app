@@ -45,6 +45,12 @@
       "PI-RADS",
       "nodule",
       "adenocarcinoma"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "needle core biopsy",

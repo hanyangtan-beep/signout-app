@@ -31,6 +31,12 @@
       "goiter",
       "TIRADS",
       "nodule"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      }
     ]
   },
   "specimenNoun": "aspirate",

@@ -35,7 +35,14 @@
       "ascending",
       "descending",
       "mapping",
-      "series"
+      "series",
+      "hepatic flexure",
+      "splenic flexure",
+      "flexure",
+      "rectosigmoid",
+      "ileocaecal",
+      "TI",
+      "random colon"
     ],
     "procedure": [
       "biopsy",
@@ -56,7 +63,14 @@
       "dysplasia surveillance"
     ],
     "not": [
-      "polyp"
+      "polyp",
+      "polypectomy"
+    ],
+    "fill": [
+      {
+        "field": "site",
+        "from": "options"
+      }
     ]
   },
   "specimenNoun": "biopsy",

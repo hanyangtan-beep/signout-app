@@ -61,7 +61,13 @@
       "haemangioma",
       "hemangioma"
     ],
-    "bias": -1
+    "bias": -1,
+    "fill": [
+      {
+        "field": "site",
+        "from": "detail"
+      }
+    ]
   },
   "specimenNoun": "excision",
   "maxParts": 3,
