@@ -280,6 +280,8 @@
         "Adenocarcinoma",
         "Adenoid cystic carcinoma",
         "Mucoepidermoid carcinoma",
+        "Mucinous adenocarcinoma",
+        "Signet-ring cell carcinoma (poorly cohesive carcinoma)",
         "Adenosquamous carcinoma",
         "Squamous cell carcinoma",
         "Basaloid squamous cell carcinoma",
@@ -439,6 +441,52 @@
       "group": "Microscopic findings"
     },
     {
+      "id": "budding",
+      "type": "select",
+      "label": "Tumour budding (ITBCC tiers)",
+      "options": [
+        "Not assessed",
+        "Bd1 (low, 0-4 buds)",
+        "Bd2 (intermediate, 5-9 buds)",
+        "Bd3 (high, 10 or more buds)",
+        "Cannot be assessed"
+      ],
+      "group": "Microscopic findings",
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Adenocarcinoma",
+          "Mucinous adenocarcinoma",
+          "Signet-ring cell carcinoma (poorly cohesive carcinoma)",
+          "Adenosquamous carcinoma",
+          "Mixed adenocarcinoma-neuroendocrine carcinoma",
+          "Mixed adenocarcinoma-neuroendocrine tumour"
+        ]
+      }
+    },
+    {
+      "id": "retraction",
+      "type": "select",
+      "label": "Retraction artefact",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be assessed"
+      ],
+      "group": "Microscopic findings"
+    },
+    {
+      "id": "barrett",
+      "type": "select",
+      "label": "Background Barrett mucosa",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be assessed"
+      ],
+      "group": "Microscopic findings"
+    },
+    {
       "id": "treatmentEffect",
       "type": "select",
       "label": "Treatment effect (chemotherapy / radiotherapy)",
@@ -472,6 +520,43 @@
           "Cannot be assessed (regression present but the type cannot be determined)"
         ]
       },
+      "group": "Microscopic findings"
+    },
+    {
+      "id": "her2",
+      "type": "select",
+      "label": "HER2 status",
+      "options": [
+        "Not performed",
+        "Negative (IHC 0 / 1+)",
+        "Equivocal (IHC 2+, reflex ISH pending)",
+        "Equivocal (IHC 2+, ISH not amplified)",
+        "Positive (IHC 2+, ISH amplified)",
+        "Positive (IHC 3+)"
+      ],
+      "group": "Microscopic findings"
+    },
+    {
+      "id": "pdl1Cps",
+      "type": "number",
+      "label": "PD-L1 combined positive score (CPS)",
+      "group": "Microscopic findings"
+    },
+    {
+      "id": "mmr",
+      "type": "select",
+      "label": "Mismatch repair (MMR) immunohistochemistry",
+      "options": [
+        "Not performed",
+        "Retained nuclear expression (proficient mismatch repair)",
+        "Loss of MLH1 and PMS2",
+        "Loss of MSH2 and MSH6",
+        "Loss of MLH1 (PMS2 retained)",
+        "Loss of PMS2 (MLH1 retained)",
+        "Loss of MSH6 (MSH2 retained)",
+        "Other pattern (specify in additional notes)",
+        "Cannot be interpreted"
+      ],
       "group": "Microscopic findings"
     },
     {
@@ -828,8 +913,14 @@
           "ly": "Present",
           "v": "Not identified",
           "pni": "Present",
+          "budding": "",
+          "retraction": "Not identified",
+          "barrett": "Not identified",
           "treatmentEffect": "No known presurgical therapy",
           "trg": "",
+          "her2": "Not performed",
+          "pdl1Cps": "",
+          "mmr": "Not performed",
           "proximalMargin": "Uninvolved by invasive carcinoma and uninvolved by dysplasia (specify distance)",
           "proximalMarginMm": "65",
           "distalMargin": "Uninvolved by invasive carcinoma and uninvolved by dysplasia (specify distance)",

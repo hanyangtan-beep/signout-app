@@ -57,6 +57,25 @@ Placeholder retired from `templates/planned.json` and the GI picker row.
 - House name / diagnosis style: head "OESOPHAGUS, middle thoracic, oesophagectomy", "- " bullets,
   pTNM only with `printPTNM`, stamped (AJCC 8th edition), stage "(if cM0)" when pM is not
   recorded.
+- **Histological detail (user-requested enrichment, house departures from the page).**
+  - The `- Tumour histology:` paragraph gains a per-type morphology sentence after the opener
+    (`generators/oesophageal_morphology.js`): grade-varying for SCC and adenocarcinoma (keratin
+    pearls / intercellular bridges / gland development in desmoplastic stroma) and fixed
+    sentences for basaloid, spindle cell and verrucous SCC, mucinous adenocarcinoma, signet-ring,
+    adenosquamous, mucoepidermoid, adenoid cystic, undifferentiated, lymphoepithelioma-like, the
+    neuroendocrine carcinomas, NETs and the mixed types. High-grade dysplasia / pT0 stay at the
+    opener alone. Types with nothing truthful to say (Other / cannot be determined) skip the
+    sentence rather than fabricate one. Mucinous adenocarcinoma and signet-ring (poorly cohesive)
+    were added to the histologic-type list.
+  - Structured extras after `trg`: tumour budding (ITBCC Bd1-3, `showIf` an adenocarcinoma
+    type), retraction artefact, background Barrett mucosa (adds "arising in Barrett mucosa"
+    to the diagnosis for adenocarcinoma), HER2 (IHC 0-3+ / ISH results), PD-L1 CPS, and MMR
+    immunohistochemistry (retained / per-protein loss patterns). Recorded values print as
+    items and combine into an "Immunohistochemistry: …" sentence inside the same paragraph
+    (house style: microscopy and IHC in one paragraph).
+  - The biopsy pair gains differentiation-graded sentences: `squamousDiff` and `adenocaDiff`
+    selects (gated on the carcinoma options) turn the one-line cancer sentences into
+    well / moderately / poorly differentiated variants; blank keeps the original sentence.
 
 ## Checks (validate())
 
@@ -66,7 +85,14 @@ distance prompts; T4 adjacent-structures prompt naming the T4a / T4b set; CIS-wi
 caution; score-0-therapy-without-ypT0 caution; TRG prompt on treated cases; EGJ-relationship
 prompt on distal / EGJ / cardia sites.
 
+### Checks (added with the enrichment)
+
+Budding recorded on a non-adenocarcinoma type; Barrett mucosa recorded on a non-adenocarcinoma
+type.
+
 ## Tests
 
-18 oesophagus-pinned tests: 9 staging boundary / table tests (`tests/staging-oesophagus.test.js`)
-and 9 wording-pinned generator tests (`tests/oesophageal.test.js`). Suite: 765.
+18 oesophagus-pinned tests (9 staging boundary / table tests in `tests/staging-oesophagus.test.js`,
+9 wording-pinned generator tests in `tests/oesophageal.test.js`) plus 19 detail tests in
+`tests/oesophageal-detail.test.js` covering the morphology table, structured fields, the IHC
+sentence and biopsy differentiation. Suite: 797.

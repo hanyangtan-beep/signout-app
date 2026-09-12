@@ -270,6 +270,25 @@
       }
     },
     {
+      "id": "squamousDiff",
+      "label": "Squamous differentiation",
+      "type": "select",
+      "options": [
+        "Well differentiated",
+        "Moderately differentiated",
+        "Poorly differentiated",
+        "Cannot be assessed"
+      ],
+      "default": "",
+      "showIf": {
+        "field": "squamousNeoplasia",
+        "is": [
+          "SCC (invasive)",
+          "SCC (superficial sampling)"
+        ]
+      }
+    },
+    {
       "id": "columnarType",
       "label": "Columnar mucosa",
       "type": "select",
@@ -337,6 +356,25 @@
       }
     },
     {
+      "id": "adenocaDiff",
+      "label": "Adenocarcinoma differentiation",
+      "type": "select",
+      "options": [
+        "Well differentiated",
+        "Moderately differentiated",
+        "Poorly differentiated",
+        "Cannot be assessed"
+      ],
+      "default": "",
+      "showIf": {
+        "field": "glandularDysplasia",
+        "is": [
+          "Intramucosal adenocarcinoma",
+          "Invasive adenocarcinoma"
+        ]
+      }
+    },
+    {
       "id": "hpylori",
       "label": "Helicobacter-like organisms",
       "type": "select",
@@ -387,7 +425,9 @@
           "endoscopy": "Barrett's segment",
           "glandularDysplasia": "Low grade",
           "hpylori": "Absent",
-          "additionalNotes": ""
+          "additionalNotes": "",
+          "squamousDiff": "",
+          "adenocaDiff": ""
         }
       },
       {
@@ -409,7 +449,9 @@
           "endoscopy": "Barrett's segment",
           "glandularDysplasia": "Negative",
           "hpylori": "Absent",
-          "additionalNotes": ""
+          "additionalNotes": "",
+          "squamousDiff": "",
+          "adenocaDiff": ""
         }
       },
       {
@@ -431,7 +473,9 @@
           "endoscopy": "Not stated",
           "glandularDysplasia": "Negative",
           "hpylori": "Absent",
-          "additionalNotes": ""
+          "additionalNotes": "",
+          "squamousDiff": "",
+          "adenocaDiff": ""
         }
       }
     ]

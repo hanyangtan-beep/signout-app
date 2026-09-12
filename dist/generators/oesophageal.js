@@ -105,7 +105,13 @@ export function microscopy(part) {
     const g = v.squamousNeoplasia;
     if (g === 'Low grade dysplasia') sentences.push('There is low grade squamous dysplasia, with cytological atypia confined to the lower half of the epithelium.');
     else if (g === 'High grade dysplasia') sentences.push('There is high grade squamous dysplasia, with full-thickness cytological atypia and loss of maturation.');
-    else if (g === 'SCC (invasive)') sentences.push('Nests of malignant squamous cells with keratinisation and intercellular bridges infiltrate the lamina propria, in keeping with invasive squamous cell carcinoma.');
+    else if (g === 'SCC (invasive)') {
+      const dfx = v.squamousDiff;
+      if (dfx === 'Well differentiated') sentences.push('Invasive nests and cords of malignant squamous epithelium with prominent keratinisation, keratin pearls and conspicuous intercellular bridges infiltrate the lamina propria.');
+      else if (dfx === 'Moderately differentiated') sentences.push('Invasive nests of malignant squamous epithelium with focal keratinisation and identifiable intercellular bridges infiltrate the lamina propria.');
+      else if (dfx === 'Poorly differentiated') sentences.push('Sheets of malignant squamoid cells without keratin pearls or overt intercellular bridges infiltrate the lamina propria; squamous differentiation is confirmed by focal individual cell keratinisation.');
+      else sentences.push('Nests of malignant squamous cells with keratinisation and intercellular bridges infiltrate the lamina propria, in keeping with invasive squamous cell carcinoma.');
+    }
     else if (g === 'SCC (superficial sampling)') sentences.push('Malignant squamous cells are present; the biopsy is superficial and stromal invasion cannot be assessed.');
   }
 
@@ -122,8 +128,20 @@ export function microscopy(part) {
     if (d === 'Indefinite') sentences.push('There is nuclear enlargement and stratification in the setting of active inflammation, indefinite for dysplasia.');
     else if (d === 'Low grade') sentences.push('There is low grade dysplasia, with nuclear stratification and hyperchromasia extending to the surface epithelium.');
     else if (d === 'High grade') sentences.push('There is high grade dysplasia, with marked nuclear pleomorphism, loss of polarity and architectural complexity.');
-    else if (d === 'Intramucosal adenocarcinoma') sentences.push('Neoplastic glands infiltrate the lamina propria, in keeping with intramucosal adenocarcinoma.');
-    else if (d === 'Invasive adenocarcinoma') sentences.push('Infiltrating malignant glands are present, in keeping with invasive adenocarcinoma.');
+    else if (d === 'Intramucosal adenocarcinoma') {
+      const dfx = v.adenocaDiff;
+      const desc = dfx === 'Well differentiated' ? 'composed of well-formed neoplastic glands lined by atypical columnar epithelium'
+        : dfx === 'Moderately differentiated' ? 'composed of moderately developed glands with focal cribriform architecture'
+        : dfx === 'Poorly differentiated' ? 'forming poorly developed glands and solid sheets of atypical epithelium' : '';
+      sentences.push(`Neoplastic glands infiltrate the lamina propria${desc ? `, ${desc}` : ''}, in keeping with intramucosal adenocarcinoma.`);
+    }
+    else if (d === 'Invasive adenocarcinoma') {
+      const dfx = v.adenocaDiff;
+      const desc = dfx === 'Well differentiated' ? 'composed of well-formed infiltrating glands within desmoplastic stroma'
+        : dfx === 'Moderately differentiated' ? 'composed of moderately developed glands with focal cribriform architecture within desmoplastic stroma'
+        : dfx === 'Poorly differentiated' ? 'forming poorly developed glands and solid sheets within desmoplastic stroma' : '';
+      sentences.push(`Infiltrating malignant glands are present${desc ? `, ${desc}` : ''}, in keeping with invasive adenocarcinoma.`);
+    }
     if (v.hpylori === 'Present') sentences.push('Helicobacter-like organisms are identified.');
   }
 

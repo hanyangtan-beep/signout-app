@@ -11,6 +11,7 @@
 
 import { deriveTNM, stageLine } from '../src/staging/index.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
+import { typeMorphology, ihcSentence } from './oesophageal_morphology.js';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
@@ -24,6 +25,9 @@ const listJoin = (items) => {
   if (a.length <= 1) return a.join('');
   return `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`;
 };
+/** WHO types treated as glandular-lineage for budding and background Barrett mucosa. */
+const ADENO = /adenocarcinoma|signet-ring|adenosquamous/i;
+
 const isER = (v) => (v.procedure || '') === 'Endoscopic resection';
 const listAnd = listJoin;
 const chosen = (list) => arr(list).filter((s) => !/^Not (identified|applicable|specified)|^Cannot/.test(s));
@@ -143,7 +147,12 @@ export function extensionPhrase(v) {
   return '';
 }
 
-/** Derived "- Tumour histology:" paragraph; the typed notes win when entered. */
+/**
+ * Derived "- Tumour histology:" paragraph; the typed notes win when entered. The opener names
+ * type, grade and depth; per-type morphology from oesophageal_morphology.js follows, then
+ * budding / retraction / Barrett sentences when recorded, with IHC in the same paragraph
+ * (house style).
+ */
 export function histologyPara(v) {
   if (stripDot(v.histologyNotes)) return stripDot(v.histologyNotes) + '.';
   if (isPT0(v)) return 'No viable tumour cells are identified.';
@@ -153,6 +162,17 @@ export function histologyPara(v) {
   const ext = extensionPhrase(v);
   if (ext) s += `, ${ext}`;
   s += '.';
+  if (!isTis(v)) {
+    const typeName = v.histType === 'Other' ? '' : v.histType || '';
+    const morph = typeMorphology(typeName, v.grade || '');
+    if (morph) s += ` ${morph.replace(/\.$/, '')}.`;
+    const budding = v.budding || '';
+    if (/^Bd\d/.test(budding)) s += ` Tumour budding is ${/Bd1/.test(budding) ? 'low (Bd1)' : /Bd2/.test(budding) ? 'intermediate (Bd2)' : 'high (Bd3)'}.`;
+    if (v.retraction === 'Present') s += ' Retraction artefact is present around tumour nests.';
+    if (v.barrett === 'Present') s += " Background Barrett-type columnar epithelium with intestinal metaplasia is present.";
+    const ihc = ihcSentence(v);
+    if (ihc) s += ` ${ihc}`;
+  }
   return s;
 }
 
@@ -239,8 +259,14 @@ export function synoptic(part, ctx) {
       item('Lymphatic invasion (Ly)', v.ly || 'Not identified'),
       item('Venous invasion (V)', v.v || 'Not identified'),
       item('Perineural invasion', v.pni || 'Not identified'),
+      /^Bd\d/.test(v.budding || '') ? item('Tumour budding', v.budding) : null,
+      v.retraction === 'Present' ? item('Retraction artefact', 'Present') : null,
+      v.barrett === 'Present' ? item('Background Barrett mucosa', 'Present') : null,
       item('Treatment effect', treatmentText(v)),
-      v.trg && v.trg !== 'Not assessed' ? item('Tumour regression grade (Mandard)', v.trg) : null
+      v.trg && v.trg !== 'Not assessed' ? item('Tumour regression grade (Mandard)', v.trg) : null,
+      v.her2 && v.her2 !== 'Not performed' ? item('HER2 status', v.her2) : null,
+      num(v.pdl1Cps) !== null ? item('PD-L1 combined positive score', String(fmt(num(v.pdl1Cps)))) : null,
+      v.mmr && v.mmr !== 'Not performed' ? item('Mismatch repair (MMR) immunohistochemistry', v.mmr) : null
     ] },
     isER(v)
       ? { heading: 'Margins', items: [
@@ -316,7 +342,8 @@ export function diagnosis(part, ctx) {
     first.push('HIGH-GRADE DYSPLASIA / CARCINOMA IN SITU');
   } else {
     const g = gradeShort(v);
-    const type = [upperHead(histTypeName(v).replace(/^G\d: /, '')), g].filter(Boolean).join(', ');
+    let type = [upperHead(histTypeName(v).replace(/^G\d: /, '')), g].filter(Boolean).join(', ');
+    if (ADENO.test(v.histType || '') && v.barrett === 'Present') type += ', arising in Barrett mucosa';
     let clause = type;
     const size = num(v.tumourSizeMm);
     if (size !== null) clause += `, ${fmt(size)} mm`;
@@ -384,6 +411,8 @@ export function validate(part, ctx) {
   if (/^Present, with no viable/.test(v.treatmentEffect || '') && !isPT0(v)) warn('Complete pathological response (score 0) recorded but Tumour extension is not "No evidence of primary tumour".');
   if (!/^No known|^Cannot/.test(v.treatmentEffect || '') && !cr && (!v.trg || v.trg === 'Not assessed')) warn('Neoadjuvant therapy given: record the Mandard tumour regression grade (TRG).');
   if (/Oesophagogastric junction|^Distal oesophagus|cardia/.test(v.tumourSite || '') && !v.egjRelationship) warn('Distal oesophagus / EGJ tumour: record the relationship to the oesophagogastric junction (WHO / AJCC EGJ rule).');
+  if (/^Bd\d/.test(v.budding || '') && !ADENO.test(v.histType || '')) warn('Tumour budding is recorded but the histologic type is not adenocarcinoma; the Bd grading tiers are standardised for adenocarcinoma.');
+  if (v.barrett === 'Present' && !ADENO.test(v.histType || '') && !isTis(v) && !isPT0(v)) warn('Background Barrett mucosa is recorded but the histologic type is not adenocarcinoma.');
   return out;
 }
 
