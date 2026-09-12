@@ -45,13 +45,7 @@ Docs
 
 ## Now
 
-(empty — pull the next card in explicitly)
-
----
-
-## Next
-
-Ordered. Each card is buildable as written; the spec file holds the full brief.
+Pulled 2026-09-12: specimen intake (a) + (b), one batch.
 
 ### Specimen intake — paste the LIS specimen list, parts auto-populated   Size: L → split; two cards, build as one batch
 
@@ -74,6 +68,13 @@ Stop:       no model call in this card (Later: AI fallback for "none" / "choose"
 Verify:     tests + browser with the user's own pasted cases
 Ship:       one deploy + publish with card (a)
 Spec:       `docs/specs/specimen-intake.md`
+
+
+---
+
+## Next
+
+Ordered. Each card is buildable as written; the spec file holds the full brief.
 
 ### iPhone-friendly version of the app                    Size: M
 Why:        the app is used from a phone between cases (user request 2026-09-11); today the layout only collapses to one column at 960 px, the two-row template bar, chip groups and the report pane were designed for a desktop width, and Google sign-in / Save have not been exercised on iOS Safari.
