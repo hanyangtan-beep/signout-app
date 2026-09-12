@@ -1,0 +1,1887 @@
+{
+  "id": "breast_carcinoma",
+  "version": "2026.09",
+  "name": "Breast carcinoma resection",
+  "shortName": "Breast · cancer resection",
+  "label": "Breast Ca",
+  "organ": "BREAST",
+  "system": "Breast",
+  "kind": "cancer resection",
+  "rank": 45,
+  "aliases": [
+    "breast",
+    "mastectomy",
+    "wide local excision",
+    "WLE",
+    "lumpectomy",
+    "invasive carcinoma",
+    "IDC",
+    "ILC",
+    "lobular",
+    "NST",
+    "Nottingham",
+    "DCIS",
+    "sentinel",
+    "axillary",
+    "synoptic",
+    "CAP",
+    "AJCC",
+    "neoadjuvant",
+    "Miller-Payne",
+    "RCB"
+  ],
+  "match": {
+    "site": [
+      "breast",
+      "mammary",
+      "nipple",
+      "axilla",
+      "axillary"
+    ],
+    "procedure": [
+      "mastectomy",
+      "wide local excision",
+      "WLE",
+      "lumpectomy",
+      "excision",
+      "breast conserving",
+      "axillary dissection",
+      "axillary clearance",
+      "skin-sparing",
+      "nipple-sparing"
+    ],
+    "clinical": [
+      "breast ca",
+      "breast cancer",
+      "breast carcinoma",
+      "invasive ductal",
+      "invasive lobular",
+      "IDC",
+      "ILC",
+      "NST",
+      "DCIS",
+      "neoadjuvant",
+      "NACT",
+      "ER positive",
+      "HER2",
+      "triple negative",
+      "sentinel",
+      "SLN",
+      "mammogram",
+      "BIRADS"
+    ],
+    "bias": -1
+  },
+  "layout": {
+    "macroGroups": [
+      "Specimen and tumour"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
+  "macroExtract": {
+    "weight": {
+      "concept": "weight",
+      "unit": "g"
+    },
+    "specimenDims": {
+      "concept": "specimenDims",
+      "unit": "mm"
+    },
+    "sizeMm": {
+      "concept": "tumourSizeMax",
+      "unit": "mm"
+    },
+    "tumourDims": {
+      "concept": "tumourDims",
+      "unit": "mm"
+    }
+  },
+  "specimenNoun": "resection",
+  "maxParts": 6,
+  "defaultParts": 1,
+  "generator": "breast_carcinoma",
+  "style": {
+    "british": true
+  },
+  "source": {
+    "template": "QMH Cancer Reporting Template - BREAST-Cancers (Invasive carcinoma of the breast)",
+    "url": "https://awiloqmh.github.io/CancerReportingTemplate/BREAST-Cancers.html",
+    "capProtocol": "CAP Breast Invasive Resection 4.11.0.0 (Jun 2026), as on the QMH page (last updated 27-Jul-2026)",
+    "staging": "AJCC 8th edition anatomic pTNM and stage group, printed only with the printPTNM option, stamped (AJCC 8th edition); prognostic stage groups not printed",
+    "stagingProtocol": "breast",
+    "grading": "Nottingham (Elston-Ellis) grade from the tubule / nuclear / mitotic scores as on the QMH page",
+    "biomarkers": "generators/breast_biomarkers.js (QMH Breast-markers page, verbatim)",
+    "savedPage": "docs/reference/BREAST-Cancers.html",
+    "houseAdditions": [
+      "Specimen and tumour section (procedure, laterality, site, size, macro fields)",
+      "cutSurface",
+      "otherParts",
+      "margin walker text (7 faces)",
+      "nodeSampling with (sn) rule",
+      "sentinel node counts from a same-case frozen SLN part or a prior SLN accession",
+      "prior core biopsy biomarker summary",
+      "Nottingham score-sum Check"
+    ]
+  },
+  "partDefaults": [],
+  "caseFields": [
+    {
+      "id": "priorAccession",
+      "label": "Prior core biopsy: accession (e.g. S26-01234)",
+      "placeholder": "S26-01234",
+      "help": "Printed with the biomarker line when the results were reported on the core."
+    },
+    {
+      "id": "priorSlnAccession",
+      "label": "Prior sentinel node specimen: accession",
+      "placeholder": "S26-01200",
+      "help": "When the sentinel nodes were reported earlier: the node counts typed here print with this accession as their origin."
+    },
+    {
+      "id": "priorSlnSummary",
+      "label": "Prior sentinel node specimen: result",
+      "placeholder": "0/2; or 1/2, macrometastasis 4 mm"
+    }
+  ],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "printPTNM",
+      "label": "Print the AJCC 8th edition pTNM block",
+      "type": "checkbox",
+      "default": false
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen as received (blank = automatic, e.g. Left breast, total mastectomy)",
+      "type": "text",
+      "placeholder": "Left breast and axillary contents, modified radical mastectomy",
+      "default": ""
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "options": [
+        "Excision (less than total mastectomy)",
+        "Total mastectomy (including nipple-sparing and skin-sparing mastectomy)",
+        "Other (specify)",
+        "Not specified"
+      ],
+      "default": "Total mastectomy (including nipple-sparing and skin-sparing mastectomy)"
+    },
+    {
+      "id": "procedureOther",
+      "label": "Procedure (specify)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "modified radical mastectomy",
+      "default": "",
+      "showIf": {
+        "field": "procedure",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "laterality",
+      "label": "Specimen laterality",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "options": [
+        "Right",
+        "Left",
+        "Not specified"
+      ],
+      "default": "Left"
+    },
+    {
+      "id": "tumourSite",
+      "label": "Tumour site",
+      "type": "multiselect",
+      "group": "Specimen and tumour",
+      "options": [
+        "Upper outer quadrant",
+        "Lower outer quadrant",
+        "Upper inner quadrant",
+        "Lower inner quadrant",
+        "Central",
+        "Nipple",
+        "Position (specify)",
+        "Other (specify)",
+        "Not specified"
+      ],
+      "default": [
+        "Upper outer quadrant"
+      ]
+    },
+    {
+      "id": "sitePosition",
+      "label": "Position (o'clock, distance from nipple)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "2 o'clock, 3 cm from the nipple",
+      "default": ""
+    },
+    {
+      "id": "specimenDims",
+      "label": "Specimen size (mm x mm x mm)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "190 x 160 x 45",
+      "default": ""
+    },
+    {
+      "id": "weight",
+      "label": "Specimen weight (g)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "placeholder": "520",
+      "default": ""
+    },
+    {
+      "id": "skinEllipse",
+      "label": "Skin ellipse (mm x mm)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "170 x 60",
+      "default": ""
+    },
+    {
+      "id": "sizeMode",
+      "label": "Tumour size",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "options": [
+        "Greatest dimension",
+        "Microinvasion only",
+        "No residual carcinoma",
+        "Cannot be determined"
+      ],
+      "optionLabels": {
+        "Greatest dimension": "Greatest dimension (mm)",
+        "Microinvasion only": "Microinvasion only (< or = 1 mm)",
+        "Cannot be determined": "Cannot be determined (explain)"
+      },
+      "default": "Greatest dimension",
+      "help": "Largest contiguous invasive focus; DCIS and satellites more than 5 mm apart are excluded. Drives pT."
+    },
+    {
+      "id": "sizeMm",
+      "label": "Greatest dimension of the invasive carcinoma (mm)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "placeholder": "23",
+      "default": "",
+      "showIf": {
+        "field": "sizeMode",
+        "is": [
+          "Greatest dimension",
+          "Microinvasion only"
+        ]
+      }
+    },
+    {
+      "id": "tumourDims",
+      "label": "All dimensions (mm x mm x mm)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "23 x 20 x 18",
+      "default": "",
+      "showIf": {
+        "field": "sizeMode",
+        "is": "Greatest dimension"
+      }
+    },
+    {
+      "id": "sizeCannot",
+      "label": "Size cannot be determined (explain)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "default": "",
+      "showIf": {
+        "field": "sizeMode",
+        "is": "Cannot be determined"
+      }
+    },
+    {
+      "id": "cutSurface",
+      "label": "Cut surface (macro)",
+      "type": "multiselect",
+      "group": "Specimen and tumour",
+      "options": [
+        "Firm",
+        "Grey-white",
+        "Tan",
+        "Ill-defined / stellate",
+        "Well-circumscribed",
+        "Gritty",
+        "Necrosis",
+        "Haemorrhage",
+        "Mucoid"
+      ],
+      "default": [
+        "Firm",
+        "Grey-white",
+        "Ill-defined / stellate"
+      ]
+    },
+    {
+      "id": "closestGrossMm",
+      "label": "Closest gross margin (mm) and face",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "5, posterior",
+      "default": ""
+    },
+    {
+      "id": "otherMacro",
+      "label": "Other macroscopic findings",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "A previous biopsy cavity is present 10 mm from the tumour",
+      "default": ""
+    },
+    {
+      "id": "blockKeyText",
+      "label": "Block key (one block or range per line)",
+      "type": "textarea",
+      "group": "Specimen and tumour",
+      "placeholder": "1-4 tumour with closest posterior margin\n5 nipple\n6-9 anterior, superior, inferior, medial and lateral margins\n10-11 background breast",
+      "default": ""
+    },
+    {
+      "id": "otherParts",
+      "label": "Other parts (one per line: \"C) Axillary contents, dissection - negative 0/12\")",
+      "type": "textarea",
+      "group": "Specimen and tumour",
+      "placeholder": "C) Axillary lymph nodes, dissection - metastatic 2/14",
+      "default": "",
+      "help": "Nodes from a separately labelled axillary dissection are still counted in the Regional lymph nodes block; type the counts there too."
+    },
+    {
+      "id": "microDescription",
+      "label": "Tumour histology (paragraph; blank = automatic from the type and grade)",
+      "type": "textarea",
+      "group": "Histology and grade",
+      "default": "",
+      "placeholder": "Sections show an invasive carcinoma of no special type arranged in cords and nests within a desmoplastic stroma …"
+    },
+    {
+      "id": "ihc",
+      "label": "Immunohistochemistry (typed; appended to the histology paragraph)",
+      "type": "text",
+      "group": "Histology and grade",
+      "placeholder": "E-cadherin retained; myoepithelial markers (p63, SMMHC) absent around the invasive nests",
+      "default": ""
+    },
+    {
+      "id": "histType",
+      "label": "Histologic type (2026, WHO 5e)",
+      "type": "select",
+      "group": "Histology and grade",
+      "options": [
+        "No residual invasive carcinoma",
+        "Invasive carcinoma of no special type (ductal)",
+        "Invasive carcinoma of no special type (ductal) with specific morphologic pattern",
+        "Invasive lobular carcinoma, classic",
+        "Invasive lobular carcinoma, variant pattern",
+        "Mixed histologic types (specify types and percentages)",
+        "Tubular carcinoma, pure or greater than 90%",
+        "Invasive cribriform carcinoma, pure or greater than 90%",
+        "Mucinous carcinoma, pure or greater than 90%",
+        "Invasive micropapillary carcinoma, pure or greater than 90%",
+        "Invasive apocrine carcinoma",
+        "Metaplastic carcinoma, spindle cell",
+        "Metaplastic carcinoma, with heterologous differentiation / matrix production",
+        "Metaplastic carcinoma, squamous cell",
+        "Metaplastic carcinoma, mixed (specify types and percentages)",
+        "Metaplastic carcinoma, favorable type, low-grade adenosquamous",
+        "Metaplastic carcinoma, favorable type, low-grade fibromatosis-like",
+        "Metaplastic carcinoma, other type (specify)",
+        "Invasive solid papillary carcinoma",
+        "Adenoid cystic carcinoma, classic",
+        "Secretory carcinoma",
+        "Adenoid cystic carcinoma",
+        "Invasive carcinoma, type cannot be determined",
+        "Other (specify)"
+      ],
+      "default": "Invasive carcinoma of no special type (ductal)"
+    },
+    {
+      "id": "histTypeDetail",
+      "label": "Histologic type (specify / types and percentages)",
+      "type": "text",
+      "group": "Histology and grade",
+      "default": "",
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Mixed histologic types (specify types and percentages)",
+          "Metaplastic carcinoma, mixed (specify types and percentages)",
+          "Metaplastic carcinoma, other type (specify)",
+          "Other (specify)",
+          "Invasive carcinoma of no special type (ductal) with specific morphologic pattern",
+          "Invasive lobular carcinoma, variant pattern"
+        ]
+      }
+    },
+    {
+      "id": "focality",
+      "label": "Tumour focality",
+      "type": "select",
+      "group": "Histology and grade",
+      "options": [
+        "Single focus of invasive carcinoma",
+        "Multiple foci of invasive carcinoma",
+        "Cannot be determined"
+      ],
+      "optionLabels": {
+        "Multiple foci of invasive carcinoma": "Multiple foci of invasive carcinoma, specify no. and sizes"
+      },
+      "default": "Single focus of invasive carcinoma"
+    },
+    {
+      "id": "focalityDetail",
+      "label": "Multiple foci: number and sizes",
+      "type": "text",
+      "group": "Histology and grade",
+      "placeholder": "2 foci, 23 mm and 8 mm, 15 mm apart",
+      "default": "",
+      "showIf": {
+        "field": "focality",
+        "is": "Multiple foci of invasive carcinoma"
+      }
+    },
+    {
+      "id": "tubule",
+      "label": "Tubule formation",
+      "type": "select",
+      "group": "Histology and grade",
+      "default": "Score 3",
+      "options": [
+        "Score 1",
+        "Score 2",
+        "Score 3",
+        "Only microinvasion present (not graded)",
+        "Score cannot be determined"
+      ],
+      "optionLabels": {
+        "Score 1": "Score 1 (greater than 75% of tumor area forming glandular / tubular structures)",
+        "Score 2": "Score 2 (10% to 75% of tumor area forming glandular/tubular structures)",
+        "Score 3": "Score 3 (less than 10% of tumor area forming glandular / tubular structures)"
+      }
+    },
+    {
+      "id": "nuclear",
+      "label": "Nuclear pleomorphism",
+      "type": "select",
+      "group": "Histology and grade",
+      "default": "Score 2",
+      "options": [
+        "Score 1",
+        "Score 2",
+        "Score 3",
+        "Only microinvasion present (not graded)",
+        "Score cannot be determined"
+      ],
+      "optionLabels": {
+        "Score 1": "Score 1 (similar / less than 1.5 times the size of benign epithelial cell nuclei, minimal pleomorphism)",
+        "Score 2": "Score 2 (larger / 1.5-2 times the size of benign epithelial cell nuclei, mild to moderate pleomorphism)",
+        "Score 3": "Score 3 (larger / greater than 2 times the size of benign epithelial cell nuclei, marked variation, often prominent nucleoli)"
+      }
+    },
+    {
+      "id": "mitotic",
+      "label": "Mitotic rate (22 mm eyepiece, 40x)",
+      "type": "select",
+      "group": "Histology and grade",
+      "default": "Score 1",
+      "options": [
+        "Score 1",
+        "Score 2",
+        "Score 3",
+        "Only microinvasion present (not graded)",
+        "Score cannot be determined"
+      ],
+      "optionLabels": {
+        "Score 1": "Score 1 (< or = 8 mitoses per 10 hpf)",
+        "Score 2": "Score 2 (9-17 mitoses per 10 hpf)",
+        "Score 3": "Score 3 (> or = 18 mitoses per 10 hpf)"
+      }
+    },
+    {
+      "id": "mitoticCount",
+      "label": "Mitoses per 10 hpf (optional)",
+      "type": "number",
+      "group": "Histology and grade",
+      "placeholder": "6",
+      "default": ""
+    },
+    {
+      "id": "grade",
+      "label": "Histologic grade (Nottingham)",
+      "type": "select",
+      "group": "Histology and grade",
+      "options": [
+        "Derive from the scores",
+        "Grade 1 (scores of 3, 4, or 5)",
+        "Grade 2 (scores of 6 or 7)",
+        "Grade 3 (scores of 8 or 9)",
+        "Only microinvasion present (not graded)",
+        "Score cannot be determined"
+      ],
+      "default": "Derive from the scores",
+      "help": "Derive sums the three scores; a typed grade that disagrees with the scores raises a Check."
+    },
+    {
+      "id": "nipple",
+      "label": "Nipple status",
+      "type": "select",
+      "group": "Extent and invasion",
+      "options": [
+        "Not present in specimen",
+        "Present and not involved",
+        "Paget's disease present",
+        "Involved by invasive carcinoma",
+        "DCIS in major lactiferous ducts present",
+        "Other (specify)",
+        "Cannot be determined (explain)"
+      ],
+      "default": "Present and not involved"
+    },
+    {
+      "id": "nippleDetail",
+      "label": "Nipple (specify / explain)",
+      "type": "text",
+      "group": "Extent and invasion",
+      "default": "",
+      "showIf": {
+        "field": "nipple",
+        "is": [
+          "Other (specify)",
+          "Cannot be determined (explain)"
+        ]
+      }
+    },
+    {
+      "id": "skin",
+      "label": "Skin status",
+      "type": "select",
+      "group": "Extent and invasion",
+      "options": [
+        "Not present in specimen",
+        "Present and not involved",
+        "Carcinoma directly invades into the dermis or epidermis without macroscopic skin ulceration (this does not change the T classification)",
+        "Carcinoma directly invades into the dermis or epidermis with macroscopic skin ulceration (classified as T4b)",
+        "Other (specify)",
+        "Cannot be determined (explain)"
+      ],
+      "default": "Present and not involved"
+    },
+    {
+      "id": "skinDetail",
+      "label": "Skin (specify / explain)",
+      "type": "text",
+      "group": "Extent and invasion",
+      "default": "",
+      "showIf": {
+        "field": "skin",
+        "is": [
+          "Other (specify)",
+          "Cannot be determined (explain)"
+        ]
+      }
+    },
+    {
+      "id": "satellite",
+      "label": "Skin satellite foci",
+      "type": "select",
+      "group": "Extent and invasion",
+      "options": [
+        "Not identified",
+        "Macroscopic Foci Present (T4b)",
+        "Cannot be determined (explain)"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "skinOedema",
+      "label": "Skin oedema (including peau d'orange) not meeting inflammatory carcinoma (T4b)",
+      "type": "checkbox",
+      "group": "Extent and invasion",
+      "default": false
+    },
+    {
+      "id": "inflammatory",
+      "label": "Inflammatory carcinoma (clinical diagnosis; T4d)",
+      "type": "checkbox",
+      "group": "Extent and invasion",
+      "default": false
+    },
+    {
+      "id": "skeletalMuscle",
+      "label": "Skeletal muscle",
+      "type": "select",
+      "group": "Extent and invasion",
+      "options": [
+        "Not present in specimen",
+        "Present and not involved",
+        "Carcinoma invades skeletal muscle",
+        "Carcinoma invades into the chest wall deep to pectoralis muscle (classified as T4a)",
+        "Other (specify)",
+        "Cannot be determined (explain)"
+      ],
+      "default": "Not present in specimen"
+    },
+    {
+      "id": "skeletalMuscleDetail",
+      "label": "Skeletal muscle (specify / explain)",
+      "type": "text",
+      "group": "Extent and invasion",
+      "default": "",
+      "showIf": {
+        "field": "skeletalMuscle",
+        "is": [
+          "Other (specify)",
+          "Cannot be determined (explain)"
+        ]
+      }
+    },
+    {
+      "id": "lvi",
+      "label": "Lymphatic and/or vascular invasion",
+      "type": "select",
+      "group": "Extent and invasion",
+      "options": [
+        "Not identified",
+        "Present",
+        "Present, focal (limited to one to two vessels in one block)",
+        "Present, extensive (greater than two vessels in one block or present in two or more blocks)",
+        "Other (specify)",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "lviDetail",
+      "label": "LVI (specify)",
+      "type": "text",
+      "group": "Extent and invasion",
+      "default": "",
+      "showIf": {
+        "field": "lvi",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "dermalLvi",
+      "label": "Dermal lymphatic and/or vascular invasion",
+      "type": "select",
+      "group": "Extent and invasion",
+      "options": [
+        "Not applicable (no skin present)",
+        "Not identified",
+        "Present",
+        "Other (specify)",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "pni",
+      "label": "Perineural invasion",
+      "type": "select",
+      "group": "Extent and invasion",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "treatmentEffect",
+      "label": "Breast treatment effect",
+      "type": "select",
+      "group": "Extent and invasion",
+      "options": [
+        "No known presurgical therapy",
+        "No definite response to presurgical therapy in the invasive carcinoma",
+        "Probable or definite response to presurgical therapy in the invasive carcinoma",
+        "No residual invasive carcinoma is present in the breast after presurgical therapy"
+      ],
+      "default": "No known presurgical therapy",
+      "help": "Anything other than \"No known presurgical therapy\" adds the y descriptor."
+    },
+    {
+      "id": "lnTreatmentEffect",
+      "label": "LN treatment effect",
+      "type": "select",
+      "group": "Extent and invasion",
+      "options": [
+        "Not applicable",
+        "No known presurgical therapy",
+        "No definite response to presurgical therapy in metastatic carcinoma",
+        "Metastatic carcinoma present with evidence of response to presurgical therapy",
+        "No lymph node metastases. Fibrous scarring or histiocytic aggregates, possibly related to prior lymph node metastases with pathologic complete response",
+        "No lymph node metastases and no fibrous scarring or histiocytic aggregates in the nodes"
+      ],
+      "default": "Not applicable",
+      "showIf": {
+        "field": "treatmentEffect",
+        "is": [
+          "No definite response to presurgical therapy in the invasive carcinoma",
+          "Probable or definite response to presurgical therapy in the invasive carcinoma",
+          "No residual invasive carcinoma is present in the breast after presurgical therapy"
+        ]
+      }
+    },
+    {
+      "id": "millerPayne",
+      "label": "Grading of treatment effects (Miller and Payne system)",
+      "type": "select",
+      "group": "Extent and invasion",
+      "options": [
+        "",
+        "Grade 1",
+        "Grade 2",
+        "Grade 3",
+        "Grade 4",
+        "Grade 5"
+      ],
+      "optionLabels": {
+        "": "Not graded",
+        "Grade 1": "Grade 1: No change or some alteration to individual malignant cells but no reduction in overall cellularity.",
+        "Grade 2": "Grade 2: A minor loss of tumour cells but overall cellularity still high; up to 30% loss.",
+        "Grade 3": "Grade 3: Between an estimated 30% and 90% reduction in tumour cells.",
+        "Grade 4": "Grade 4: A marked disappearance of tumour cells such that only small clusters or widely dispersed individual cells remain; more than 90% loss of tumour cells.",
+        "Grade 5": "Grade 5: No malignant cells identifiable in sections from the site of the tumour; only vascular fibroelastotic stroma remains often containing macrophages. However, ductal carcinoma in situ (DCIS) may be present."
+      },
+      "default": "",
+      "showIf": {
+        "field": "treatmentEffect",
+        "is": [
+          "No definite response to presurgical therapy in the invasive carcinoma",
+          "Probable or definite response to presurgical therapy in the invasive carcinoma",
+          "No residual invasive carcinoma is present in the breast after presurgical therapy"
+        ]
+      }
+    },
+    {
+      "id": "dcis",
+      "label": "Ductal carcinoma in situ",
+      "type": "select",
+      "group": "DCIS and other lesions",
+      "options": [
+        "Not identified",
+        "Present",
+        "Present, Negative for extensive intraductal component (EIC)",
+        "Present, Positive for extensive intraductal component (EIC)",
+        "Present, Only DCIS is present after presurgical (neoadjuvant) therapy"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "dcisSize",
+      "label": "Size of DCIS (mm x mm x mm)",
+      "type": "text",
+      "group": "DCIS and other lesions",
+      "placeholder": "30 x 20 x 15",
+      "default": "",
+      "showIf": {
+        "field": "dcis",
+        "is": [
+          "Present",
+          "Present, Negative for extensive intraductal component (EIC)",
+          "Present, Positive for extensive intraductal component (EIC)",
+          "Present, Only DCIS is present after presurgical (neoadjuvant) therapy"
+        ]
+      }
+    },
+    {
+      "id": "dcisBlocks",
+      "label": "Number of blocks with DCIS",
+      "type": "number",
+      "group": "DCIS and other lesions",
+      "default": "",
+      "showIf": {
+        "field": "dcis",
+        "is": [
+          "Present",
+          "Present, Negative for extensive intraductal component (EIC)",
+          "Present, Positive for extensive intraductal component (EIC)",
+          "Present, Only DCIS is present after presurgical (neoadjuvant) therapy"
+        ]
+      }
+    },
+    {
+      "id": "blocksExamined",
+      "label": "Number of blocks examined",
+      "type": "number",
+      "group": "DCIS and other lesions",
+      "default": ""
+    },
+    {
+      "id": "dcisGrade",
+      "label": "DCIS nuclear grade",
+      "type": "select",
+      "group": "DCIS and other lesions",
+      "options": [
+        "",
+        "Grade I (low)",
+        "Grade II (intermediate)",
+        "Grade III (high)"
+      ],
+      "optionLabels": {
+        "": "Not stated"
+      },
+      "default": "",
+      "showIf": {
+        "field": "dcis",
+        "is": [
+          "Present",
+          "Present, Negative for extensive intraductal component (EIC)",
+          "Present, Positive for extensive intraductal component (EIC)",
+          "Present, Only DCIS is present after presurgical (neoadjuvant) therapy"
+        ]
+      }
+    },
+    {
+      "id": "dcisNecrosis",
+      "label": "DCIS necrosis",
+      "type": "select",
+      "group": "DCIS and other lesions",
+      "options": [
+        "Not identified",
+        "Present, focal (small foci or single cell necrosis)",
+        "Present, central (expansive \"comedo\" necrosis)"
+      ],
+      "default": "Not identified",
+      "showIf": {
+        "field": "dcis",
+        "is": [
+          "Present",
+          "Present, Negative for extensive intraductal component (EIC)",
+          "Present, Positive for extensive intraductal component (EIC)",
+          "Present, Only DCIS is present after presurgical (neoadjuvant) therapy"
+        ]
+      }
+    },
+    {
+      "id": "dcisPatterns",
+      "label": "Architectural patterns of DCIS",
+      "type": "multiselect",
+      "group": "DCIS and other lesions",
+      "options": [
+        "Comedo",
+        "Cribriform",
+        "Micropapillary",
+        "Papillary",
+        "Solid",
+        "Solid papillary carcinoma in situ",
+        "Encapsulated papillary carcinoma in situ",
+        "Paget disease",
+        "Other (specify)"
+      ],
+      "default": [],
+      "showIf": {
+        "field": "dcis",
+        "is": [
+          "Present",
+          "Present, Negative for extensive intraductal component (EIC)",
+          "Present, Positive for extensive intraductal component (EIC)",
+          "Present, Only DCIS is present after presurgical (neoadjuvant) therapy"
+        ]
+      }
+    },
+    {
+      "id": "dcisPatternOther",
+      "label": "DCIS pattern (specify)",
+      "type": "text",
+      "group": "DCIS and other lesions",
+      "default": "",
+      "showIf": {
+        "field": "dcisPatterns",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "additionalLesions",
+      "label": "Additional lesions",
+      "type": "multiselect",
+      "group": "DCIS and other lesions",
+      "options": [
+        "Not identified",
+        "Lobular carcinoma in situ, classic",
+        "Lobular carcinoma in situ, pleomorphic",
+        "Lobular carcinoma in situ (specify)",
+        "Atypical lobular hyperplasia",
+        "Flat epithelial atypia",
+        "Atypical ductal hyperplasia",
+        "Fibrocystic change",
+        "Usual ductal hyperplasia",
+        "Columnar cell change",
+        "Sclerosing adenosis",
+        "Fibroadenoma",
+        "Radial scar / complex sclerosing lesion",
+        "Intraduct papilloma",
+        "Biopsy site changes",
+        "Other (specify)"
+      ],
+      "default": [
+        "Not identified"
+      ]
+    },
+    {
+      "id": "additionalLesionsDetail",
+      "label": "Additional lesions (specify)",
+      "type": "text",
+      "group": "DCIS and other lesions",
+      "default": ""
+    },
+    {
+      "id": "microcalcs",
+      "label": "Microcalcifications",
+      "type": "multiselect",
+      "group": "DCIS and other lesions",
+      "options": [
+        "Not identified",
+        "Present in DCIS",
+        "Present in invasive carcinoma",
+        "Present in non-neoplastic tissue",
+        "Other (specify)"
+      ],
+      "default": [
+        "Not identified"
+      ]
+    },
+    {
+      "id": "microcalcsDetail",
+      "label": "Microcalcifications (specify)",
+      "type": "text",
+      "group": "DCIS and other lesions",
+      "default": "",
+      "showIf": {
+        "field": "microcalcs",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "biomarkers",
+      "label": "Biomarker studies",
+      "type": "select",
+      "group": "Biomarkers",
+      "options": [
+        "Reported on the prior core biopsy",
+        "Performed",
+        "Requested; to be reported separately",
+        "Not performed"
+      ],
+      "default": "Reported on the prior core biopsy"
+    },
+    {
+      "id": "priorBiomarkerAccession",
+      "label": "Prior core biopsy accession",
+      "type": "text",
+      "group": "Biomarkers",
+      "placeholder": "S26-01234",
+      "default": "",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Reported on the prior core biopsy"
+      }
+    },
+    {
+      "id": "priorBiomarkerSummary",
+      "label": "Prior biomarker summary",
+      "type": "text",
+      "group": "Biomarkers",
+      "placeholder": "ER positive (90%, strong), PR positive (60%, moderate), HER2 negative (score 1+), Ki-67 20%",
+      "default": "",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Reported on the prior core biopsy"
+      }
+    },
+    {
+      "id": "er",
+      "label": "Estrogen receptor (ER) IHC",
+      "type": "select",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "options": [
+        "",
+        "Cannot be determined",
+        "Negative",
+        "Positive (Allred score >2)",
+        "Negative, Internal control cells present and stain as expected",
+        "Negative, Internal control cells absent",
+        "Negative, other (specify):",
+        "Positive (>10% positive nuclei)",
+        "Low Positive (1-10% positive nuclei)"
+      ],
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "erIntensity",
+      "label": "ER - Intensity",
+      "type": "select",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "options": [
+        "",
+        "Negative (0)",
+        "Weak staining (1)",
+        "Moderate staining (2)",
+        "Strong staining (3)"
+      ],
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "erNuclei",
+      "label": "ER - Positive nuclei (%)",
+      "type": "select",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "options": [
+        "",
+        "None (0)",
+        "< 1% (1)",
+        "1-10% (2)",
+        "11-33% (3)",
+        "34-65% (4)",
+        "66-100% (5)"
+      ],
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "pr",
+      "label": "Progesterone receptor (PR) IHC",
+      "type": "select",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "options": [
+        "",
+        "Cannot be determined",
+        "Negative",
+        "Positive (Allred score >2)",
+        "Negative, Internal control cells present and stain as expected",
+        "Negative, Internal control cells absent",
+        "Negative, other (specify):",
+        "Positive (>10% positive nuclei)"
+      ],
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "prIntensity",
+      "label": "PR - Intensity",
+      "type": "select",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "options": [
+        "",
+        "Negative (0)",
+        "Weak staining (1)",
+        "Moderate staining (2)",
+        "Strong staining (3)"
+      ],
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "prNuclei",
+      "label": "PR - Positive nuclei (%)",
+      "type": "select",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "options": [
+        "",
+        "None (0)",
+        "< 1% (1)",
+        "1-10% (2)",
+        "11-33% (3)",
+        "34-65% (4)",
+        "66-100% (5)"
+      ],
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "ki67",
+      "label": "Ki67 Proliferation index %",
+      "type": "text",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "default": "",
+      "placeholder": "e.g. 20",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "her2Ihc",
+      "label": "HER2/neu oncoprotein IHC",
+      "type": "select",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "options": [
+        "",
+        "Cannot be determined",
+        "Negative for over-expression",
+        "Equivocal for over-expression",
+        "Positive for over-expression",
+        "HER2-low (IHC 1+ or IHC 2+ & DISH-)",
+        "HER2-ultra-low (faint/barely perceptible and incomplete staining in <10% of tumor cells without amplification on FISH)"
+      ],
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "her2Score",
+      "label": "HER2 IHC - Score",
+      "type": "select",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "options": [
+        "",
+        "No membrane staining detected (0 / absent membrane staining)",
+        "Membrane staining that is incomplete and is faint / barely perceptible and in less than or equal to 10% of tumor cells (0+ / with membrane staining)",
+        "Incomplete membrane staining that is faint / barely perceptible and in greater than 10% of tumor cells (Score 1+)",
+        "Weak to moderate complete membrane staining observed in greater than 10% of tumor cells (Score 2+)",
+        "Less than or equal to 10% of the cancer has circumferential staining that is complete and intense (3+) (heterogeneous, but very limited in extent; consider results of additional samples) (Score 2+)",
+        "Abundant cytoplasmic staining present, obscuring evaluation of membrane stain intensity (Score 2+)",
+        "Circumferential membrane staining that is complete, intense, and in greater than 10% of tumor cells (Score 3+)"
+      ],
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "her2Hetero",
+      "label": "HER2 IHC - Clustered Heterogeneity",
+      "type": "text",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "default": "",
+      "placeholder": "e.g. Absent",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "her2Dish",
+      "label": "HER2/neu oncoprotein DISH",
+      "type": "select",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "options": [
+        "",
+        "Cannot be determined",
+        "Negative (HER2 gene is not amplified)",
+        "Positive (HER2 gene is amplified)",
+        "Negative (not amplified, Group 5 result)",
+        "Negative, Group 2 ISH result (with IHC 0-2+)",
+        "Negative, Group 3 ISH result (with IHC 0-1+)",
+        "Negative, Group 4 ISH result (with IHC 0-2+)",
+        "Positive (amplified, Group 1 result in greater than 10% of cell population)",
+        "Positive, Group 2 ISH result (with IHC 3+)",
+        "Positive, Group 3 ISH result (with IHC 2-3+)",
+        "Positive, Group 4 ISH result (with IHC 3+)"
+      ],
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "dishCells",
+      "label": "DISH - Number of tumor cells counted",
+      "type": "text",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "dishHer2",
+      "label": "DISH - Average HER2 signals (black) per cell",
+      "type": "text",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "dishCep17",
+      "label": "DISH - Average CEP17 signals (red) per cell",
+      "type": "text",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "dishRatio",
+      "label": "DISH - HER2/CEP17 ratio",
+      "type": "text",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "dishPctAmp",
+      "label": "DISH - Cells with Amplified Signals (%)",
+      "type": "text",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "dishAneusomy",
+      "label": "Other ISH abnormalities: Aneusomy",
+      "type": "checkbox",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "default": false,
+      "group": "Biomarkers"
+    },
+    {
+      "id": "dishHeteroSignals",
+      "label": "Other ISH abnormalities: Heterogeneous signals",
+      "type": "checkbox",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "default": false,
+      "group": "Biomarkers"
+    },
+    {
+      "id": "coldIschemia",
+      "label": "Cold ischemia time (min)",
+      "type": "text",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "default": "",
+      "placeholder": "blank = uncertain",
+      "help": "Optimal <= 60 min; > 60 min prolonged. Leave blank if unknown.",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "fixationTime",
+      "label": "Fixation time in buffered formalin (hours)",
+      "type": "text",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "default": "",
+      "placeholder": "blank = uncertain",
+      "help": "Inadequate < 6 h; optimal 6-72 h; > 72 h prolonged. Leave blank if unknown.",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "testType",
+      "label": "Test type",
+      "type": "select",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "options": [
+        "",
+        "Laboratory-developed test (QMH, HK).",
+        "Food and Drug Administration (FDA) cleared (specify test / vendor):",
+        "Laboratory-developed test (Non-U.S.-based health systems).",
+        "Laboratory-developed test (Health Canada Approved (specify test / vendor:).",
+        "Other (specify):"
+      ],
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "bmNotes",
+      "label": "Biomarker additional notes",
+      "type": "textarea",
+      "showIf": {
+        "field": "biomarkers",
+        "is": "Performed"
+      },
+      "default": "",
+      "group": "Biomarkers"
+    },
+    {
+      "id": "marginsInvasive",
+      "label": "Surgical margins for invasive tumour",
+      "type": "textarea",
+      "group": "Margins",
+      "default": "Anterior: \nPosterior: \nSuperior: \nInferior: \nMedial: \nLateral: ",
+      "help": "One face per line, \"Face: value\". Value = distance in mm (uninvolved, closest distance), \"involved\", \"cannot\" (cannot be assessed) or \">10\" (uninvolved, greater than 10 mm). \"All: >5\" fills the six faces. Faces: Anterior, Posterior, Superior, Inferior, Medial, Lateral, Other (name)."
+    },
+    {
+      "id": "marginsDcis",
+      "label": "Surgical margins for DCIS",
+      "type": "textarea",
+      "group": "Margins",
+      "default": "Anterior: \nPosterior: \nSuperior: \nInferior: \nMedial: \nLateral: ",
+      "help": "Same format. Margins with DCIS closer than 2 mm raise a Check (management differs for involved, < 2 mm and >= 2 mm margins).",
+      "showIf": {
+        "field": "dcis",
+        "is": [
+          "Present",
+          "Present, Negative for extensive intraductal component (EIC)",
+          "Present, Positive for extensive intraductal component (EIC)",
+          "Present, Only DCIS is present after presurgical (neoadjuvant) therapy"
+        ]
+      }
+    },
+    {
+      "id": "nodeSampling",
+      "label": "Regional lymph nodes",
+      "type": "select",
+      "group": "Lymph nodes and metastasis",
+      "options": [
+        "No nodes submitted",
+        "Sentinel node biopsy only",
+        "Axillary dissection",
+        "Sentinel node biopsy and axillary dissection"
+      ],
+      "default": "Sentinel node biopsy only",
+      "help": "\"Sentinel node biopsy only\" with 5 or fewer nodes examined adds the (sn) modifier."
+    },
+    {
+      "id": "nodesExamined",
+      "label": "Number of regional lymph nodes examined",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "min": 0,
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "nodesSentinel",
+      "label": "Number of sentinel lymph nodes examined",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "min": 0,
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "nodesMacro",
+      "label": "Number of lymph nodes with macrometastasis (>2 mm)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "0",
+      "min": 0,
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "nodesMicro",
+      "label": "Number of lymph nodes with micrometastasis (> 0.2 to 2 mm and/or > 200 cells)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "0",
+      "min": 0,
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "nodesItc",
+      "label": "Number of lymph nodes with isolated tumour cells (0.2 mm or less and 200 cells or fewer)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "0",
+      "min": 0,
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "nodeMolPos",
+      "label": "Positive molecular findings (RT-PCR) with no ITCs detected (pN0(mol+))",
+      "type": "checkbox",
+      "group": "Lymph nodes and metastasis",
+      "default": false,
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "depositMm",
+      "label": "Size of largest metastatic deposit (mm)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "depositSite",
+      "label": "Largest deposit: site",
+      "type": "text",
+      "group": "Lymph nodes and metastasis",
+      "placeholder": "sentinel lymph node 1",
+      "default": "",
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "largestNodeMm",
+      "label": "Size of largest lymph node involved (mm)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "largestNodeSite",
+      "label": "Largest involved node: site",
+      "type": "text",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "ene",
+      "label": "Extranodal extension",
+      "type": "select",
+      "group": "Lymph nodes and metastasis",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified",
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "eneExtent",
+      "label": "ENE extent (number 2 mm or less, number greater than 2 mm)",
+      "type": "text",
+      "group": "Lymph nodes and metastasis",
+      "placeholder": "1 node, greater than 2 mm",
+      "default": "",
+      "showIf": {
+        "field": "ene",
+        "is": "Present"
+      }
+    },
+    {
+      "id": "imNodes",
+      "label": "Internal mammary nodes",
+      "type": "select",
+      "group": "Lymph nodes and metastasis",
+      "options": [
+        "Not submitted",
+        "Negative",
+        "Positive (sentinel, microscopic)",
+        "Positive (clinically detected)"
+      ],
+      "default": "Not submitted"
+    },
+    {
+      "id": "infraclavicular",
+      "label": "Infraclavicular (level III) node metastasis",
+      "type": "checkbox",
+      "group": "Lymph nodes and metastasis",
+      "default": false
+    },
+    {
+      "id": "supraclavicular",
+      "label": "Ipsilateral supraclavicular node metastasis",
+      "type": "checkbox",
+      "group": "Lymph nodes and metastasis",
+      "default": false
+    },
+    {
+      "id": "distantMets",
+      "label": "Distant metastasis",
+      "type": "select",
+      "group": "Lymph nodes and metastasis",
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "distantSites",
+      "label": "Distant metastasis: site(s)",
+      "type": "multiselect",
+      "group": "Lymph nodes and metastasis",
+      "options": [
+        "Non-regional lymph node(s)",
+        "Lung",
+        "Liver",
+        "Bone",
+        "Brain",
+        "Other (specify)"
+      ],
+      "default": [],
+      "showIf": {
+        "field": "distantMets",
+        "is": "Present"
+      }
+    },
+    {
+      "id": "distantDetail",
+      "label": "Distant metastasis (specify / case number)",
+      "type": "text",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "distantMets",
+        "is": [
+          "Present",
+          "Cannot be determined"
+        ]
+      }
+    },
+    {
+      "id": "recurrent",
+      "label": "Recurrent tumour (r descriptor)",
+      "type": "checkbox",
+      "group": "Stage and other findings",
+      "default": false
+    },
+    {
+      "id": "tnmOverride",
+      "label": "pTNM override (blank = derived)",
+      "type": "text",
+      "group": "Stage and other findings",
+      "placeholder": "pT2 pN1a",
+      "default": "",
+      "help": "Type the categories to print instead of the derived ones; the derived values stay visible in brackets."
+    },
+    {
+      "id": "tnmOverrideReason",
+      "label": "Override reason",
+      "type": "text",
+      "group": "Stage and other findings",
+      "default": "",
+      "showIf": {
+        "field": "tnmOverride",
+        "truthy": true
+      }
+    },
+    {
+      "id": "rcbClass",
+      "label": "Residual Cancer Burden class (non-essential)",
+      "type": "select",
+      "group": "Stage and other findings",
+      "options": [
+        "",
+        "RCB-0 (pCR)",
+        "RCB-I",
+        "RCB-II",
+        "RCB-III"
+      ],
+      "optionLabels": {
+        "": "Not calculated"
+      },
+      "default": "",
+      "showIf": {
+        "field": "treatmentEffect",
+        "is": [
+          "No definite response to presurgical therapy in the invasive carcinoma",
+          "Probable or definite response to presurgical therapy in the invasive carcinoma",
+          "No residual invasive carcinoma is present in the breast after presurgical therapy"
+        ]
+      }
+    },
+    {
+      "id": "rcbDetail",
+      "label": "RCB inputs (tumour bed mm x mm; cellularity %; in situ %; positive nodes; largest metastasis mm)",
+      "type": "text",
+      "group": "Stage and other findings",
+      "placeholder": "35 x 20; 30 %; 10 %; 1; 4",
+      "default": "",
+      "showIf": {
+        "field": "rcbClass",
+        "is": [
+          "RCB-0 (pCR)",
+          "RCB-I",
+          "RCB-II",
+          "RCB-III"
+        ]
+      }
+    },
+    {
+      "id": "ancillary",
+      "label": "Ancillary studies (other)",
+      "type": "text",
+      "group": "Stage and other findings",
+      "placeholder": "PD-L1 (E1L3N) requested",
+      "default": ""
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional notes",
+      "type": "textarea",
+      "group": "Stage and other findings",
+      "default": ""
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true,
+      "printPTNM": true
+    },
+    "priorAccession": "S26-01234",
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "",
+          "procedure": "Total mastectomy (including nipple-sparing and skin-sparing mastectomy)",
+          "procedureOther": "",
+          "laterality": "Left",
+          "tumourSite": [
+            "Upper outer quadrant"
+          ],
+          "sitePosition": "2 o'clock, 30 mm from the nipple",
+          "specimenDims": "190 x 160 x 45",
+          "weight": "520",
+          "skinEllipse": "170 x 60",
+          "sizeMode": "Greatest dimension",
+          "sizeMm": "23",
+          "tumourDims": "23 x 20 x 18",
+          "sizeCannot": "",
+          "cutSurface": [
+            "Firm",
+            "Grey-white",
+            "Ill-defined / stellate"
+          ],
+          "closestGrossMm": "5, posterior",
+          "otherMacro": "",
+          "blockKeyText": "1-4 tumour with the closest posterior margin\n5 nipple\n6-9 anterior, superior, inferior and lateral margins\n10 medial margin\n11-12 background breast",
+          "otherParts": "",
+          "microDescription": "",
+          "ihc": "",
+          "histType": "Invasive carcinoma of no special type (ductal)",
+          "histTypeDetail": "",
+          "focality": "Single focus of invasive carcinoma",
+          "focalityDetail": "",
+          "tubule": "Score 3",
+          "nuclear": "Score 2",
+          "mitotic": "Score 1",
+          "mitoticCount": "",
+          "grade": "Derive from the scores",
+          "nipple": "Present and not involved",
+          "nippleDetail": "",
+          "skin": "Present and not involved",
+          "skinDetail": "",
+          "satellite": "Not identified",
+          "skinOedema": false,
+          "inflammatory": false,
+          "skeletalMuscle": "Not present in specimen",
+          "skeletalMuscleDetail": "",
+          "lvi": "Not identified",
+          "lviDetail": "",
+          "dermalLvi": "Not identified",
+          "pni": "Not identified",
+          "treatmentEffect": "No known presurgical therapy",
+          "lnTreatmentEffect": "Not applicable",
+          "millerPayne": "",
+          "dcis": "Present, Negative for extensive intraductal component (EIC)",
+          "dcisSize": "15",
+          "dcisBlocks": "3",
+          "blocksExamined": "12",
+          "dcisGrade": "Grade II (intermediate)",
+          "dcisNecrosis": "Not identified",
+          "dcisPatterns": [
+            "Cribriform",
+            "Solid"
+          ],
+          "dcisPatternOther": "",
+          "additionalLesions": [
+            "Not identified"
+          ],
+          "additionalLesionsDetail": "",
+          "microcalcs": [
+            "Present in DCIS"
+          ],
+          "microcalcsDetail": "",
+          "biomarkers": "Reported on the prior core biopsy",
+          "priorBiomarkerAccession": "S26-01234",
+          "priorBiomarkerSummary": "ER positive (90%, strong), PR positive (60%, moderate), HER2 negative (score 1+), Ki-67 15%",
+          "er": "",
+          "erIntensity": "",
+          "erNuclei": "",
+          "pr": "",
+          "prIntensity": "",
+          "prNuclei": "",
+          "ki67": "",
+          "her2Ihc": "",
+          "her2Score": "",
+          "her2Hetero": "",
+          "her2Dish": "",
+          "dishCells": "",
+          "dishHer2": "",
+          "dishCep17": "",
+          "dishRatio": "",
+          "dishPctAmp": "",
+          "dishAneusomy": false,
+          "dishHeteroSignals": false,
+          "coldIschemia": "",
+          "fixationTime": "",
+          "testType": "",
+          "bmNotes": "",
+          "marginsInvasive": "Anterior: 12\nPosterior: 5\nSuperior: >10\nInferior: >10\nMedial: >10\nLateral: >10",
+          "marginsDcis": "Anterior: 8\nPosterior: 4\nSuperior: >10\nInferior: >10\nMedial: >10\nLateral: >10",
+          "nodeSampling": "Sentinel node biopsy only",
+          "nodesExamined": "2",
+          "nodesSentinel": "2",
+          "nodesMacro": "0",
+          "nodesMicro": "0",
+          "nodesItc": "0",
+          "nodeMolPos": false,
+          "depositMm": "",
+          "depositSite": "",
+          "largestNodeMm": "",
+          "largestNodeSite": "",
+          "ene": "Not identified",
+          "eneExtent": "",
+          "imNodes": "Not submitted",
+          "infraclavicular": false,
+          "supraclavicular": false,
+          "distantMets": "Not applicable",
+          "distantSites": [],
+          "distantDetail": "",
+          "recurrent": false,
+          "tnmOverride": "",
+          "tnmOverrideReason": "",
+          "rcbClass": "",
+          "rcbDetail": "",
+          "ancillary": "",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

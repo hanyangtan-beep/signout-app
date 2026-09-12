@@ -1,0 +1,843 @@
+{
+  "id": "phyllodes",
+  "version": "2026.09",
+  "name": "Breast phyllodes tumour resection",
+  "shortName": "Breast · phyllodes tumour",
+  "label": "Phyllodes",
+  "organ": "BREAST",
+  "system": "Breast",
+  "kind": "cancer resection",
+  "layout": {
+    "macroGroups": [
+      "Specimen and tumour"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
+  "rank": 47,
+  "aliases": [
+    "breast",
+    "phyllodes",
+    "phylloides",
+    "cystosarcoma",
+    "fibroepithelial",
+    "stromal",
+    "wide local excision",
+    "mastectomy",
+    "synoptic",
+    "CAP"
+  ],
+  "match": {
+    "site": [
+      "breast",
+      "mammary"
+    ],
+    "procedure": [
+      "mastectomy",
+      "wide local excision",
+      "WLE",
+      "lumpectomy",
+      "excision",
+      "breast conserving"
+    ],
+    "clinical": [
+      "phyllodes tumour",
+      "phyllodes tumor",
+      "borderline phyllodes",
+      "malignant phyllodes",
+      "benign phyllodes",
+      "known phyllodes",
+      "recurrent phyllodes",
+      "cystosarcoma"
+    ],
+    "bias": -1
+  },
+  "macroExtract": {
+    "weight": {
+      "concept": "weight",
+      "unit": "g"
+    },
+    "specimenDims": {
+      "concept": "specimenDims",
+      "unit": "mm"
+    },
+    "sizeMm": {
+      "concept": "tumourSizeMax",
+      "unit": "mm"
+    },
+    "tumourDims": {
+      "concept": "tumourDims",
+      "unit": "mm"
+    }
+  },
+  "specimenNoun": "resection",
+  "maxParts": 6,
+  "defaultParts": 1,
+  "generator": "phyllodes",
+  "style": {
+    "british": true
+  },
+  "source": {
+    "template": "QMH Cancer Reporting Template - BREAST-Phyllodes (Phyllodes tumor of the breast)",
+    "url": "https://awiloqmh.github.io/CancerReportingTemplate/BREAST-Phyllodes.html",
+    "capProtocol": "CAP Phyllodes Tumor of the Breast 4.1.0.0, as on the QMH page (last updated 27-Jul-2026)",
+    "staging": "AJCC 8th edition pT (5 / 10 / 15 cm), pN0 / pN1, pM1 as listed on the page; no stage group is defined; printed only with the printPTNM option",
+    "stagingProtocol": "phyllodes",
+    "grading": "WHO 5th edition benign / borderline / malignant from stromal cellularity, atypia, overgrowth, mitoses, border and heterologous elements (Checks compare the elements with the selected type)",
+    "savedPage": "docs/reference/BREAST-Phyllodes.html",
+    "houseAdditions": [
+      "Specimen and tumour section (procedure, laterality, site, size, macro fields)",
+      "epithelial component",
+      "margin walker text (7 faces)",
+      "Tumour histology paragraph after the histologic type"
+    ]
+  },
+  "partDefaults": [],
+  "caseFields": [
+    {
+      "id": "priorAccession",
+      "label": "Prior core biopsy: accession (e.g. S26-01234)",
+      "placeholder": "S26-01234",
+      "help": "Mentioned in the Additional notes when typed."
+    }
+  ],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "printPTNM",
+      "label": "Print the AJCC 8th edition pTNM block",
+      "type": "checkbox",
+      "default": false
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen as received (blank = automatic, e.g. Left breast, wide local excision)",
+      "type": "text",
+      "placeholder": "Left breast, wide local excision",
+      "default": ""
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "options": [
+        "Excision (less than total mastectomy)",
+        "Total mastectomy (including nipple-sparing and skin-sparing mastectomy)",
+        "Other (specify)",
+        "Not specified"
+      ],
+      "default": "Total mastectomy (including nipple-sparing and skin-sparing mastectomy)"
+    },
+    {
+      "id": "procedureOther",
+      "label": "Procedure (specify)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "modified radical mastectomy",
+      "default": "",
+      "showIf": {
+        "field": "procedure",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "laterality",
+      "label": "Specimen laterality",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "options": [
+        "Right",
+        "Left",
+        "Not specified"
+      ],
+      "default": "Left"
+    },
+    {
+      "id": "tumourSite",
+      "label": "Tumour site",
+      "type": "multiselect",
+      "group": "Specimen and tumour",
+      "options": [
+        "Upper outer quadrant",
+        "Lower outer quadrant",
+        "Upper inner quadrant",
+        "Lower inner quadrant",
+        "Central",
+        "Nipple",
+        "Position (specify)",
+        "Other (specify)",
+        "Not specified"
+      ],
+      "default": [
+        "Upper outer quadrant"
+      ]
+    },
+    {
+      "id": "sitePosition",
+      "label": "Position (o'clock, distance from nipple)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "2 o'clock, 3 cm from the nipple",
+      "default": ""
+    },
+    {
+      "id": "specimenDims",
+      "label": "Specimen size (mm x mm x mm)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "190 x 160 x 45",
+      "default": ""
+    },
+    {
+      "id": "weight",
+      "label": "Specimen weight (g)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "placeholder": "520",
+      "default": ""
+    },
+    {
+      "id": "skinEllipse",
+      "label": "Skin ellipse (mm x mm)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "170 x 60",
+      "default": ""
+    },
+    {
+      "id": "sizeMode",
+      "label": "Tumour size",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "options": [
+        "Greatest dimension",
+        "No residual tumour",
+        "Cannot be determined"
+      ],
+      "optionLabels": {
+        "Greatest dimension": "Greatest dimension (mm)",
+        "Cannot be determined": "Cannot be determined (explain)",
+        "No residual tumour": "No residual tumour (re-excision)"
+      },
+      "default": "Greatest dimension",
+      "help": "Greatest dimension in mm. pT uses the 5 / 10 / 15 cm cut-offs (pT1 to pT4)."
+    },
+    {
+      "id": "sizeMm",
+      "label": "Greatest dimension of the tumour (mm)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "placeholder": "23",
+      "default": "",
+      "showIf": {
+        "field": "sizeMode",
+        "is": "Greatest dimension"
+      }
+    },
+    {
+      "id": "tumourDims",
+      "label": "All dimensions (mm x mm x mm)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "23 x 20 x 18",
+      "default": "",
+      "showIf": {
+        "field": "sizeMode",
+        "is": "Greatest dimension"
+      }
+    },
+    {
+      "id": "sizeCannot",
+      "label": "Size cannot be determined (explain)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "default": "",
+      "showIf": {
+        "field": "sizeMode",
+        "is": "Cannot be determined"
+      }
+    },
+    {
+      "id": "cutSurface",
+      "label": "Cut surface (macro)",
+      "type": "multiselect",
+      "group": "Specimen and tumour",
+      "options": [
+        "Firm",
+        "Fleshy",
+        "Grey-white",
+        "Tan",
+        "Well-circumscribed",
+        "Lobulated",
+        "Leaf-like clefts",
+        "Cystic",
+        "Haemorrhagic",
+        "Necrotic",
+        "Ill-defined / stellate"
+      ],
+      "default": [
+        "Firm",
+        "Well-circumscribed",
+        "Lobulated"
+      ]
+    },
+    {
+      "id": "closestGrossMm",
+      "label": "Closest gross margin (mm) and face",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "3, anterior",
+      "default": ""
+    },
+    {
+      "id": "otherMacro",
+      "label": "Other macroscopic findings",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "A previous biopsy cavity is present 10 mm from the tumour",
+      "default": ""
+    },
+    {
+      "id": "blockKeyText",
+      "label": "Block key (one block or range per line)",
+      "type": "textarea",
+      "group": "Specimen and tumour",
+      "placeholder": "1-6 tumour with the closest anterior margin\n7-10 posterior, superior, inferior and lateral margins\n11 medial margin\n12 background breast",
+      "default": ""
+    },
+    {
+      "id": "otherParts",
+      "label": "Other parts (one per line: \"C) Axillary contents, dissection - negative 0/12\")",
+      "type": "textarea",
+      "group": "Specimen and tumour",
+      "placeholder": "C) Axillary lymph nodes, dissection - metastatic 2/14",
+      "default": "",
+      "help": "Nodes from a separately labelled axillary dissection are still counted in the Regional lymph nodes block; type the counts there too."
+    },
+    {
+      "id": "microDescription",
+      "label": "Tumour histology (paragraph; blank = automatic from the elements)",
+      "type": "textarea",
+      "group": "Histology and grade",
+      "default": "",
+      "placeholder": "Sections show a fibroepithelial tumour with leaf-like fronds and a cellular stroma …"
+    },
+    {
+      "id": "ihc",
+      "label": "Immunohistochemistry (typed; appended to the histology paragraph)",
+      "type": "text",
+      "group": "Histology and grade",
+      "placeholder": "CD34 is retained in the stroma; Ki-67 index is 5%",
+      "default": ""
+    },
+    {
+      "id": "histType",
+      "label": "Histologic type",
+      "type": "select",
+      "group": "Histology and grade",
+      "options": [
+        "Phyllodes tumor, benign",
+        "Phyllodes tumor, borderline",
+        "Phyllodes tumor, malignant",
+        "No tumor"
+      ],
+      "default": "Phyllodes tumor, benign"
+    },
+    {
+      "id": "stromalCellularity",
+      "label": "Stromal cellularity",
+      "type": "select",
+      "group": "Histology and grade",
+      "options": [
+        "Mild (stromal nuclei are non-overlapping)",
+        "Moderate (some overlapping stromal nuclei)",
+        "Marked (many overlapping stromal nuclei)"
+      ],
+      "default": "Mild (stromal nuclei are non-overlapping)"
+    },
+    {
+      "id": "stromalAtypia",
+      "label": "Stromal atypia",
+      "type": "select",
+      "group": "Histology and grade",
+      "options": [
+        "None",
+        "Mild (minimal variation in nuclear size, even chromatin, and smooth nuclear contours)",
+        "Moderate (more variation in nuclear size and irregular nuclear membranes)",
+        "Marked (marked nuclear pleomorphism, hyperchromasia, and irregular nuclear contours)"
+      ],
+      "default": "Mild (minimal variation in nuclear size, even chromatin, and smooth nuclear contours)"
+    },
+    {
+      "id": "stromalOvergrowth",
+      "label": "Stromal overgrowth (a 40x field without epithelium)",
+      "type": "select",
+      "group": "Histology and grade",
+      "options": [
+        "Absent",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "mitoticMode",
+      "label": "Mitotic rate",
+      "type": "select",
+      "group": "Histology and grade",
+      "options": [
+        "None identified",
+        "Mitoses per 10 high power fields",
+        "Mitoses per square millimeter (mm2)",
+        "Cannot be determined"
+      ],
+      "default": "Mitoses per 10 high power fields"
+    },
+    {
+      "id": "mitoticCount",
+      "label": "Mitotic count (number)",
+      "type": "number",
+      "group": "Histology and grade",
+      "default": "",
+      "min": 0,
+      "showIf": {
+        "field": "mitoticMode",
+        "is": [
+          "Mitoses per 10 high power fields",
+          "Mitoses per square millimeter (mm2)"
+        ]
+      },
+      "help": "WHO: benign < 5 per 10 hpf, borderline 5-9, malignant 10 or more (about 2.5 / 5 per mm2). The Check compares the count with the selected type."
+    },
+    {
+      "id": "tumourBorder",
+      "label": "Histologic tumour border",
+      "type": "select",
+      "group": "Histology and grade",
+      "options": [
+        "Circumscribed (well-defined; pushing)",
+        "Infiltrative (permeative), focal",
+        "Infiltrative (permeative), extensive",
+        "Cannot be determined"
+      ],
+      "default": "Circumscribed (well-defined; pushing)"
+    },
+    {
+      "id": "heterologous",
+      "label": "Malignant heterologous elements",
+      "type": "multiselect",
+      "group": "Histology and grade",
+      "options": [
+        "Not identified",
+        "Liposarcoma (excluding well-differentiated liposarcoma)",
+        "Osteosarcoma",
+        "Chondrosarcoma",
+        "Other (specify)"
+      ],
+      "default": [
+        "Not identified"
+      ]
+    },
+    {
+      "id": "heterologousDetail",
+      "label": "Heterologous element (specify)",
+      "type": "text",
+      "group": "Histology and grade",
+      "default": "",
+      "showIf": {
+        "field": "heterologous",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "lvi",
+      "label": "Lymphovascular invasion (non-essential)",
+      "type": "select",
+      "group": "Histology and grade",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "pni",
+      "label": "Perineural invasion (non-essential)",
+      "type": "select",
+      "group": "Histology and grade",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "epithelium",
+      "label": "Epithelial component (house)",
+      "type": "multiselect",
+      "group": "Histology and grade",
+      "options": [
+        "Bland bilayered epithelium",
+        "Usual ductal hyperplasia",
+        "Apocrine metaplasia",
+        "Squamous metaplasia",
+        "Atypical ductal hyperplasia",
+        "Atypical lobular hyperplasia",
+        "Ductal carcinoma in situ (specify)",
+        "Lobular carcinoma in situ (specify)",
+        "Other (specify)"
+      ],
+      "default": [
+        "Bland bilayered epithelium"
+      ]
+    },
+    {
+      "id": "epitheliumDetail",
+      "label": "Epithelial component (specify)",
+      "type": "text",
+      "group": "Histology and grade",
+      "default": ""
+    },
+    {
+      "id": "additionalFindings",
+      "label": "Additional pathologic findings",
+      "type": "multiselect",
+      "group": "Histology and grade",
+      "options": [
+        "Not identified",
+        "Fibroepithelial proliferation (coexisting fibroadenoma or fibroadenomatoid change in the tissue surrounding the phyllodes tumor)",
+        "Atypical ductal hyperplasia",
+        "Atypical lobular hyperplasia",
+        "Other (specify)"
+      ],
+      "default": [
+        "Not identified"
+      ]
+    },
+    {
+      "id": "additionalFindingsDetail",
+      "label": "Additional findings (specify)",
+      "type": "text",
+      "group": "Histology and grade",
+      "default": "",
+      "showIf": {
+        "field": "additionalFindings",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "margins",
+      "label": "Surgical margins",
+      "type": "textarea",
+      "group": "Margins",
+      "default": "Anterior: \nPosterior: \nSuperior: \nInferior: \nMedial: \nLateral: ",
+      "help": "One face per line, \"Face: value\". Value = distance in mm (uninvolved, closest distance), \"involved\", \"cannot\" (cannot be assessed) or \">10\" (uninvolved, greater than 10 mm). \"All: >5\" fills the six faces. Faces: Anterior, Posterior, Superior, Inferior, Medial, Lateral, Other (name). Margins under 10 mm for borderline or malignant tumours raise a Check (re-excision is usually considered)."
+    },
+    {
+      "id": "nodeSampling",
+      "label": "Regional lymph nodes",
+      "type": "select",
+      "group": "Lymph nodes and metastasis",
+      "options": [
+        "No nodes submitted",
+        "Sentinel node biopsy only",
+        "Axillary dissection",
+        "Sentinel node biopsy and axillary dissection"
+      ],
+      "default": "No nodes submitted",
+      "help": "Nodal metastasis is rare in phyllodes tumours; nodes are usually not sampled."
+    },
+    {
+      "id": "nodesExamined",
+      "label": "Number of regional lymph nodes examined",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "min": 0,
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "nodesPositive",
+      "label": "Number of involved lymph nodes",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "0",
+      "min": 0,
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "depositMm",
+      "label": "Size of largest metastatic deposit (mm)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "depositSite",
+      "label": "Largest deposit: site",
+      "type": "text",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "largestNodeMm",
+      "label": "Size of largest lymph node involved (mm)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "ene",
+      "label": "Extranodal extension",
+      "type": "select",
+      "group": "Lymph nodes and metastasis",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified",
+      "showIf": {
+        "field": "nodeSampling",
+        "is": [
+          "Sentinel node biopsy only",
+          "Axillary dissection",
+          "Sentinel node biopsy and axillary dissection"
+        ]
+      }
+    },
+    {
+      "id": "eneExtent",
+      "label": "ENE extent (number 2 mm or less, number greater than 2 mm)",
+      "type": "text",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "ene",
+        "is": "Present"
+      }
+    },
+    {
+      "id": "distantMets",
+      "label": "Distant metastasis",
+      "type": "select",
+      "group": "Lymph nodes and metastasis",
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "distantSites",
+      "label": "Distant metastasis: site(s)",
+      "type": "multiselect",
+      "group": "Lymph nodes and metastasis",
+      "options": [
+        "Lung",
+        "Bone",
+        "Liver",
+        "Brain",
+        "Non-regional lymph node(s)",
+        "Other (specify)"
+      ],
+      "default": [],
+      "showIf": {
+        "field": "distantMets",
+        "is": "Present"
+      }
+    },
+    {
+      "id": "distantDetail",
+      "label": "Distant metastasis (specify / case number)",
+      "type": "text",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "distantMets",
+        "is": [
+          "Present",
+          "Cannot be determined"
+        ]
+      }
+    },
+    {
+      "id": "recurrent",
+      "label": "Recurrent tumour (r descriptor)",
+      "type": "checkbox",
+      "group": "Stage and other findings",
+      "default": false
+    },
+    {
+      "id": "tnmOverride",
+      "label": "pTNM override (blank = derived)",
+      "type": "text",
+      "group": "Stage and other findings",
+      "placeholder": "pT2 pNX",
+      "default": "",
+      "help": "Type the categories to print instead of the derived ones; the derived values stay visible in brackets."
+    },
+    {
+      "id": "tnmOverrideReason",
+      "label": "Override reason",
+      "type": "text",
+      "group": "Stage and other findings",
+      "default": "",
+      "showIf": {
+        "field": "tnmOverride",
+        "truthy": true
+      }
+    },
+    {
+      "id": "ancillary",
+      "label": "Ancillary studies",
+      "type": "text",
+      "group": "Stage and other findings",
+      "placeholder": "MED12 / TERT not tested",
+      "default": ""
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional notes",
+      "type": "textarea",
+      "group": "Stage and other findings",
+      "default": ""
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true,
+      "printPTNM": false
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "",
+          "procedure": "Excision (less than total mastectomy)",
+          "procedureOther": "",
+          "laterality": "Left",
+          "tumourSite": [
+            "Upper outer quadrant"
+          ],
+          "sitePosition": "2 o'clock",
+          "specimenDims": "70 x 55 x 40",
+          "weight": "95",
+          "skinEllipse": "",
+          "sizeMode": "Greatest dimension",
+          "sizeMm": "45",
+          "tumourDims": "45 x 40 x 35",
+          "sizeCannot": "",
+          "cutSurface": [
+            "Firm",
+            "Well-circumscribed",
+            "Lobulated"
+          ],
+          "closestGrossMm": "3, anterior",
+          "otherMacro": "",
+          "blockKeyText": "1-6 tumour with the closest anterior margin\n7-10 posterior, superior, inferior and lateral margins\n11 medial margin\n12 background breast",
+          "otherParts": "",
+          "microDescription": "",
+          "ihc": "",
+          "histType": "Phyllodes tumor, borderline",
+          "stromalCellularity": "Moderate (some overlapping stromal nuclei)",
+          "stromalAtypia": "Mild (minimal variation in nuclear size, even chromatin, and smooth nuclear contours)",
+          "stromalOvergrowth": "Absent",
+          "mitoticMode": "Mitoses per 10 high power fields",
+          "mitoticCount": "6",
+          "tumourBorder": "Infiltrative (permeative), focal",
+          "heterologous": [
+            "Not identified"
+          ],
+          "heterologousDetail": "",
+          "lvi": "Not identified",
+          "pni": "Not identified",
+          "epithelium": [
+            "Bland bilayered epithelium"
+          ],
+          "epitheliumDetail": "",
+          "additionalFindings": [
+            "Not identified"
+          ],
+          "additionalFindingsDetail": "",
+          "margins": "Anterior: 3\nPosterior: 8\nSuperior: >10\nInferior: >10\nMedial: >10\nLateral: >10",
+          "nodeSampling": "No nodes submitted",
+          "nodesExamined": "",
+          "nodesPositive": "0",
+          "depositMm": "",
+          "depositSite": "",
+          "largestNodeMm": "",
+          "ene": "Not identified",
+          "eneExtent": "",
+          "distantMets": "Not applicable",
+          "distantSites": [],
+          "distantDetail": "",
+          "recurrent": false,
+          "tnmOverride": "",
+          "tnmOverrideReason": "",
+          "ancillary": "",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

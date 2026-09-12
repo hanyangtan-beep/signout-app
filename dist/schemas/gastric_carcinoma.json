@@ -1,0 +1,1072 @@
+{
+  "id": "gastric_carcinoma",
+  "version": "2026.09",
+  "name": "Gastric carcinoma resection",
+  "shortName": "Stomach \u00b7 cancer resection",
+  "label": "Gastric Ca",
+  "organ": "Stomach",
+  "system": "GI",
+  "kind": "cancer resection",
+  "layout": {
+    "macroGroups": [
+      "Specimen and tumour"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
+  "rank": 45,
+  "aliases": [
+    "gastrectomy",
+    "stomach cancer",
+    "stomach resection",
+    "cardiotomy",
+    "gastric adenocarcinoma",
+    "esd",
+    "emr"
+  ],
+  "match": {
+    "site": [
+      "stomach",
+      "gastric",
+      "cardia",
+      "fundus",
+      "pylorus",
+      "antrum",
+      "gastrectomy"
+    ],
+    "procedure": [
+      "gastrectomy",
+      "sleeve",
+      "esd",
+      "emr",
+      "endoscopic submucosal dissection",
+      "endoscopic mucosal resection"
+    ],
+    "clinical": [
+      "gastric carcinoma",
+      "gastric adenocarcinoma",
+      "early gastric cancer",
+      "stomach tumour"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      },
+      {
+        "field": "procedure",
+        "from": "options"
+      },
+      {
+        "field": "tumourSite",
+        "from": "options"
+      }
+    ]
+  },
+  "macroExtract": {
+    "weight": {
+      "concept": "weight",
+      "unit": "g"
+    },
+    "specimenDims": {
+      "concept": "specimenDims",
+      "unit": "mm",
+      "label": true
+    },
+    "stomachLen": {
+      "concept": "size",
+      "unit": "mm",
+      "near": "stomach|greater curvature"
+    },
+    "duodenumLen": {
+      "concept": "size",
+      "unit": "mm",
+      "near": "duodenum|duodenal"
+    },
+    "omentumDims": {
+      "concept": "dims",
+      "unit": "mm",
+      "near": "omentum"
+    },
+    "tumourSizeMm": {
+      "concept": "tumourSizeMax",
+      "unit": "mm"
+    },
+    "tumourDims": {
+      "concept": "tumourDims",
+      "unit": "mm"
+    }
+  },
+  "specimenNoun": "resection",
+  "maxParts": 6,
+  "defaultParts": 1,
+  "generator": "gastric_carcinoma",
+  "style": {
+    "british": true
+  },
+  "source": {
+    "template": "QMH Cancer Reporting Template - GI-Stomach (Gastric carcinoma)",
+    "url": "https://awiloqmh.github.io/CancerReportingTemplate/GI-Stomach.html",
+    "staging": "AJCC 8th edition pTNM (N3a / N3b from the involved-node count) printed only with the printPTNM option, stamped (AJCC 8th edition); AJCC 8th gastric pTNM is derived from the tumour extension pick-list, the nodal counts and the distant-metastasis options; N3a (7-15) and N3b (16+) follow the involved-node count. Cycling the extension options wipes the override. pTNM is printed only with the printPTNM option, stamped (AJCC 8th edition); the stage-group line also prints there. Endoscopic resections get the eCura score (JCGC 7e) in the synoptic, and it surfaces in Checks as a warning.",
+    "stagingProtocol": "gastric",
+    "grading": "WHO 2019 digestive tumours histologic type; Lauren classification; JCGC 15e differentiated / undifferentiated; JCGC 7th edition eCura C scoring for endoscopic resections"
+  },
+  "partDefaults": [],
+  "options": [
+    {
+      "id": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "printPTNM",
+      "label": "Print the AJCC 8th edition pTNM block",
+      "type": "checkbox",
+      "default": false
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen (as received: e.g. stomach and duodenum, distal partial gastrectomy)",
+      "type": "text"
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "options": [
+        "Endoscopic resection",
+        "Partial gastrectomy, proximal",
+        "Partial gastrectomy, distal",
+        "Partial gastrectomy, other",
+        "Total gastrectomy",
+        "Other",
+        "Not specified"
+      ],
+      "default": "Partial gastrectomy, distal"
+    },
+    {
+      "id": "procedureOther",
+      "label": "Procedure (specify)",
+      "type": "text",
+      "showIf": {
+        "field": "procedure",
+        "is": [
+          "Partial gastrectomy, other",
+          "Other"
+        ]
+      }
+    },
+    {
+      "id": "tumourSite",
+      "label": "Tumour site",
+      "type": "multiselect",
+      "group": "Specimen and tumour",
+      "options": [
+        "Cardia",
+        "Fundus",
+        "Fundus, anterior wall",
+        "Fundus, posterior wall",
+        "Body",
+        "Body, anterior wall",
+        "Body, posterior wall",
+        "Body, lesser curvature",
+        "Body, greater curvature",
+        "Antrum",
+        "Antrum, anterior wall",
+        "Antrum, posterior wall",
+        "Antrum, lesser curvature",
+        "Antrum, greater curvature",
+        "Pylorus",
+        "Other (specify)",
+        "Not specified"
+      ],
+      "exclusive": [
+        "Not specified"
+      ],
+      "default": [
+        "Not specified"
+      ]
+    },
+    {
+      "id": "tumourSiteOther",
+      "label": "Tumour site (specify)",
+      "type": "text",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "grossDetails",
+      "label": "Tumour gross appearance, ulceration and adjacent mucosa (macro)",
+      "type": "text",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "blockKeyText",
+      "label": "Block key (one line per block: e.g. 1-4 Tumour with overlying mucosa)",
+      "type": "textarea",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "weight",
+      "label": "Weight (g)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "min": 0
+    },
+    {
+      "id": "specimenDims",
+      "label": "Specimen dimensions (mm)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "210 x 110 x 25"
+    },
+    {
+      "id": "stomachLen",
+      "label": "Stomach length along the greater curvature (mm)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "min": 0
+    },
+    {
+      "id": "duodenumLen",
+      "label": "Attached duodenal cuff (mm)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "min": 0
+    },
+    {
+      "id": "omentumDims",
+      "label": "Greater / lesser omentum (mm)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "250 x 80 x 15"
+    },
+    {
+      "id": "tumourSizeMm",
+      "label": "Tumour size, greatest dimension (mm)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "min": 0
+    },
+    {
+      "id": "tumourDims",
+      "label": "Tumour dimensions (mm x mm x mm)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "35 x 30 x 8"
+    },
+    {
+      "id": "sizeCannot",
+      "label": "Tumour size cannot be determined (explain)",
+      "type": "text",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "proximalDistance",
+      "label": "Distance to the proximal margin (mm, macro)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "min": 0
+    },
+    {
+      "id": "distalDistance",
+      "label": "Distance to the distal margin (mm, macro)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "min": 0
+    },
+    {
+      "id": "histologyNotes",
+      "label": "Tumour histology and immunohistochemical studies (free text; blank derives the descriptive sentence)",
+      "type": "textarea",
+      "group": "Histology and immunohistochemistry"
+    },
+    {
+      "id": "histType",
+      "label": "Histologic type (WHO 2019 digestive tumours, as on the QMH page)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Tubular adenocarcinoma",
+        "Poorly cohesive carcinoma (including signet-ring cell carcinoma and other variants)",
+        "Mucinous adenocarcinoma",
+        "Papillary adenocarcinoma",
+        "Mixed carcinoma (mixture of discrete glandular and signet-ring / poorly cohesive components)",
+        "Hepatoid adenocarcinoma",
+        "Carcinoma with lymphoid stroma",
+        "Adenocarcinoma of fundic-gland type",
+        "Micropapillary adenocarcinoma",
+        "Squamous cell carcinoma",
+        "Adenosquamous carcinoma",
+        "Undifferentiated carcinoma",
+        "Neuroendocrine tumour",
+        "Gastroblastoma",
+        "Large cell neuroendocrine carcinoma",
+        "Small cell neuroendocrine carcinoma",
+        "Neuroendocrine carcinoma (poorly differentiated)",
+        "Mixed adenocarcinoma-neuroendocrine carcinoma",
+        "Mixed adenocarcinoma-neuroendocrine tumour",
+        "Other"
+      ],
+      "default": "Tubular adenocarcinoma"
+    },
+    {
+      "id": "histTypeOther",
+      "label": "Histologic type (specify)",
+      "type": "text",
+      "showIf": {
+        "field": "histType",
+        "is": "Other"
+      }
+    },
+    {
+      "id": "lauren",
+      "label": "Histologic type (Lauren)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Intestinal type",
+        "Diffuse type",
+        "Mixed (approximately equal intestinal and diffuse)",
+        "Not applicable (not an adenocarcinoma)"
+      ],
+      "default": "Intestinal type"
+    },
+    {
+      "id": "grade",
+      "label": "Histologic grade",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "G1, well differentiated",
+        "G2, moderately differentiated",
+        "G3, poorly differentiated",
+        "GX, cannot be assessed",
+        "Not applicable",
+        "Other"
+      ],
+      "default": "G2, moderately differentiated"
+    },
+    {
+      "id": "gradeOther",
+      "label": "Grade (specify)",
+      "type": "text",
+      "showIf": {
+        "field": "grade",
+        "is": "Other"
+      }
+    },
+    {
+      "id": "jcgcGrade",
+      "label": "Histologic grade (JCGC 15e)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not assessed",
+        "Differentiated type",
+        "Undifferentiated type"
+      ],
+      "default": "Not assessed"
+    },
+    {
+      "id": "tumourExtension",
+      "label": "Tumour extension",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Tumour invades the lamina propria",
+        "Tumour invades the muscularis mucosae",
+        "Tumour invades the submucosa",
+        "Tumour invades the muscularis propria",
+        "Tumour penetrates the subserosal connective tissue without invasion of the visceral peritoneum or adjacent structures",
+        "Tumour invades the serosa (visceral peritoneum)",
+        "Tumour directly invades adjacent structures (specify)",
+        "Carcinoma in situ: intraepithelial tumour without invasion of the lamina propria (high-grade dysplasia)",
+        "Cannot be assessed",
+        "No evidence of primary tumour"
+      ],
+      "default": "Tumour invades the submucosa"
+    },
+    {
+      "id": "extensionDetail",
+      "label": "Adjacent structures (specify)",
+      "type": "text",
+      "group": "Histology and immunohistochemistry",
+      "showIf": {
+        "field": "tumourExtension",
+        "is": "Tumour directly invades adjacent structures (specify)"
+      }
+    },
+    {
+      "id": "smDepth",
+      "label": "Depth of submucosal invasion (pT1 cases)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not assessed",
+        "Less than 0.5 mm",
+        "0.5 mm or more but less than 1 mm",
+        "More than 1 mm but less than 2 mm",
+        "More than 2 mm",
+        "Exact",
+        "Cannot be determined"
+      ],
+      "default": "Not assessed",
+      "showIf": {
+        "field": "tumourExtension",
+        "is": [
+          "Tumour invades the lamina propria",
+          "Tumour invades the muscularis mucosae",
+          "Tumour invades the submucosa"
+        ]
+      }
+    },
+    {
+      "id": "smDepthExact",
+      "label": "Submucosal invasion, exact depth (mm)",
+      "type": "number",
+      "group": "Histology and immunohistochemistry",
+      "min": 0,
+      "showIf": {
+        "field": "smDepth",
+        "is": "Exact"
+      }
+    },
+    {
+      "id": "smExtent",
+      "label": "Extent of submucosal invasion (pT1 cases)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not assessed",
+        "SM1 (less than 30 % of the submucosal layer)",
+        "SM2 (middle third of the submucosal layer)",
+        "SM3 (more than two thirds of the submucosal layer)",
+        "Cannot be determined"
+      ],
+      "default": "Not assessed",
+      "showIf": {
+        "field": "tumourExtension",
+        "is": [
+          "Tumour invades the lamina propria",
+          "Tumour invades the muscularis mucosae",
+          "Tumour invades the submucosa"
+        ]
+      }
+    },
+    {
+      "id": "ulceration",
+      "label": "Ulceration (UL) (pT1 cases)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not assessed",
+        "Not identified (UL0)",
+        "Present (UL1)",
+        "Cannot be determined"
+      ],
+      "default": "Not assessed",
+      "showIf": {
+        "field": "tumourExtension",
+        "is": [
+          "Tumour invades the lamina propria",
+          "Tumour invades the muscularis mucosae",
+          "Tumour invades the submucosa"
+        ]
+      }
+    },
+    {
+      "id": "ly",
+      "label": "Lymphatic invasion (Ly)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "v",
+      "label": "Venous invasion (V)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "pni",
+      "label": "Perineural invasion",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "treatmentEffect",
+      "label": "Treatment effect",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "No known presurgical therapy",
+        "Present, with no viable cancer cells (complete response, score 0)",
+        "Present, with single cells or rare small groups of cancer cells (near complete response, score 1)",
+        "Present, with residual cancer showing evident tumour regression but more than single cells or rare small groups of cancer cells (partial response, score 2)",
+        "Present (not otherwise specified)",
+        "Absent (poor or no response, score 3)",
+        "Cannot be determined"
+      ],
+      "default": "No known presurgical therapy"
+    },
+    {
+      "id": "ecuraLy",
+      "label": "eCura: lymphatic invasion (3 points)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified",
+      "showIf": {
+        "field": "procedure",
+        "is": "Endoscopic resection"
+      }
+    },
+    {
+      "id": "ecuraSize",
+      "label": "eCura: tumour size more than 30 mm (1 point)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified",
+      "showIf": {
+        "field": "procedure",
+        "is": "Endoscopic resection"
+      }
+    },
+    {
+      "id": "ecuraVm",
+      "label": "eCura: positive vertical margin (1 point)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified",
+      "showIf": {
+        "field": "procedure",
+        "is": "Endoscopic resection"
+      }
+    },
+    {
+      "id": "ecuraV",
+      "label": "eCura: venous invasion (1 point)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified",
+      "showIf": {
+        "field": "procedure",
+        "is": "Endoscopic resection"
+      }
+    },
+    {
+      "id": "ecuraSm",
+      "label": "eCura: submucosal invasion 500 um or more (SM2) (1 point)",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified",
+      "showIf": {
+        "field": "procedure",
+        "is": "Endoscopic resection"
+      }
+    },
+    {
+      "id": "proximalMargin",
+      "label": "Proximal margin",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Cannot be assessed",
+        "Involved by invasive carcinoma",
+        "Uninvolved by invasive carcinoma (specify distance)",
+        "Uninvolved by invasive carcinoma and uninvolved by dysplasia (specify distance)",
+        "Uninvolved by invasive carcinoma, involved by carcinoma in situ (high-grade dysplasia)",
+        "Uninvolved by invasive carcinoma, involved by low-grade dysplasia",
+        "Not applicable"
+      ],
+      "default": "Uninvolved by invasive carcinoma (specify distance)",
+      "showIf": {
+        "field": "procedure",
+        "is": [
+          "Partial gastrectomy, proximal",
+          "Partial gastrectomy, distal",
+          "Partial gastrectomy, other",
+          "Total gastrectomy",
+          "Other",
+          "Not specified"
+        ]
+      }
+    },
+    {
+      "id": "proximalMarginMm",
+      "label": "Proximal margin: distance (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "field": "procedure",
+        "is": [
+          "Partial gastrectomy, proximal",
+          "Partial gastrectomy, distal",
+          "Partial gastrectomy, other",
+          "Total gastrectomy",
+          "Other",
+          "Not specified"
+        ]
+      }
+    },
+    {
+      "id": "distalMargin",
+      "label": "Distal margin",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Cannot be assessed",
+        "Involved by invasive carcinoma",
+        "Uninvolved by invasive carcinoma (specify distance)",
+        "Uninvolved by invasive carcinoma and uninvolved by dysplasia (specify distance)",
+        "Uninvolved by invasive carcinoma, involved by carcinoma in situ (high-grade dysplasia)",
+        "Uninvolved by invasive carcinoma, involved by low-grade dysplasia",
+        "Not applicable"
+      ],
+      "default": "Uninvolved by invasive carcinoma (specify distance)",
+      "showIf": {
+        "field": "procedure",
+        "is": [
+          "Partial gastrectomy, proximal",
+          "Partial gastrectomy, distal",
+          "Partial gastrectomy, other",
+          "Total gastrectomy",
+          "Other",
+          "Not specified"
+        ]
+      }
+    },
+    {
+      "id": "distalMarginMm",
+      "label": "Distal margin: distance (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "field": "procedure",
+        "is": [
+          "Partial gastrectomy, proximal",
+          "Partial gastrectomy, distal",
+          "Partial gastrectomy, other",
+          "Total gastrectomy",
+          "Other",
+          "Not specified"
+        ]
+      }
+    },
+    {
+      "id": "omentalMargin",
+      "label": "Omental margin",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Not applicable",
+        "Cannot be assessed",
+        "Uninvolved (specify distance)",
+        "Involved by tumour, greater omental margin",
+        "Involved by tumour, lesser omental margin"
+      ],
+      "default": "Not applicable",
+      "showIf": {
+        "field": "procedure",
+        "is": [
+          "Partial gastrectomy, proximal",
+          "Partial gastrectomy, distal",
+          "Partial gastrectomy, other",
+          "Total gastrectomy",
+          "Other",
+          "Not specified"
+        ]
+      }
+    },
+    {
+      "id": "omentalMarginMm",
+      "label": "Omental margin: distance (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "field": "omentalMargin",
+        "is": "Uninvolved (specify distance)"
+      }
+    },
+    {
+      "id": "hmMargin",
+      "label": "Mucosal (horizontal) margins (HM)",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Cannot be assessed",
+        "Involved by invasive carcinoma",
+        "Uninvolved by invasive carcinoma and uninvolved by dysplasia",
+        "Uninvolved by invasive carcinoma, involved by carcinoma in situ (high-grade dysplasia) (specify location)",
+        "Uninvolved by invasive carcinoma, involved by low-grade dysplasia (specify location)",
+        "Uninvolved by invasive carcinoma, involved by high-grade dysplasia (specify location)"
+      ],
+      "default": "Uninvolved by invasive carcinoma and uninvolved by dysplasia",
+      "showIf": {
+        "field": "procedure",
+        "is": "Endoscopic resection"
+      }
+    },
+    {
+      "id": "hmMarginDetail",
+      "label": "Mucosal margins: location",
+      "type": "text",
+      "group": "Margins",
+      "showIf": {
+        "field": "hmMargin",
+        "is": [
+          "Uninvolved by invasive carcinoma, involved by carcinoma in situ (high-grade dysplasia) (specify location)",
+          "Uninvolved by invasive carcinoma, involved by low-grade dysplasia (specify location)",
+          "Uninvolved by invasive carcinoma, involved by high-grade dysplasia (specify location)"
+        ]
+      }
+    },
+    {
+      "id": "vmMargin",
+      "label": "Deep (vertical) margin (VM)",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Cannot be assessed",
+        "Uninvolved (specify distance)",
+        "Involved by invasive carcinoma"
+      ],
+      "default": "Uninvolved (specify distance)",
+      "showIf": {
+        "field": "procedure",
+        "is": "Endoscopic resection"
+      }
+    },
+    {
+      "id": "vmMarginMm",
+      "label": "Vertical margin: distance (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "field": "vmMargin",
+        "is": "Uninvolved (specify distance)"
+      }
+    },
+    {
+      "id": "otherMargin",
+      "label": "Other margins",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Not applicable",
+        "Cannot be assessed",
+        "Uninvolved (specify margin and distance)",
+        "Involved (specify margin)"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "otherMarginDetail",
+      "label": "Other margins (specify margin and any distance)",
+      "type": "text",
+      "group": "Margins",
+      "showIf": {
+        "field": "otherMargin",
+        "is": [
+          "Uninvolved (specify margin and distance)",
+          "Involved (specify margin)"
+        ]
+      }
+    },
+    {
+      "id": "nodesExamined",
+      "label": "Number of regional lymph nodes examined",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0,
+      "step": 1
+    },
+    {
+      "id": "nodesInvolved",
+      "label": "Number of regional lymph nodes involved",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0,
+      "step": 1
+    },
+    {
+      "id": "ene",
+      "label": "Extranodal extension (node-positive cases)",
+      "type": "select",
+      "group": "Lymph nodes and metastasis",
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "largestDepositMm",
+      "label": "Size of the largest metastatic deposit (mm)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0
+    },
+    {
+      "id": "largestNodeMm",
+      "label": "Size of the largest lymph node involved (mm)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0
+    },
+    {
+      "id": "largestNodeSite",
+      "label": "Largest metastatic deposit: site / station",
+      "type": "text",
+      "group": "Lymph nodes and metastasis"
+    },
+    {
+      "id": "distantMets",
+      "label": "Distant metastasis",
+      "type": "multiselect",
+      "group": "Lymph nodes and metastasis",
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Non-regional lymph node(s)",
+        "Liver",
+        "Other",
+        "Cannot be determined"
+      ],
+      "exclusive": [
+        "Not applicable",
+        "Cannot be determined"
+      ],
+      "default": [
+        "Not applicable"
+      ]
+    },
+    {
+      "id": "distantDetail",
+      "label": "Distant metastasis (specify)",
+      "type": "text",
+      "group": "Lymph nodes and metastasis"
+    },
+    {
+      "id": "multiplePrimaries",
+      "label": "Multiple synchronous primary tumours (m descriptor)",
+      "type": "checkbox",
+      "group": "Stage and other findings",
+      "default": false
+    },
+    {
+      "id": "recurrent",
+      "label": "Recurrent tumour (r descriptor)",
+      "type": "checkbox",
+      "group": "Stage and other findings",
+      "default": false
+    },
+    {
+      "id": "tnmOverride",
+      "label": "Override derived pTNM (type e.g. pT3 pN2 pM1)",
+      "type": "text",
+      "group": "Stage and other findings"
+    },
+    {
+      "id": "tnmOverrideReason",
+      "label": "Override reason (printed in Checks)",
+      "type": "text",
+      "group": "Stage and other findings"
+    },
+    {
+      "id": "additionalFindings",
+      "label": "Additional pathologic findings",
+      "type": "multiselect",
+      "group": "Stage and other findings",
+      "options": [
+        "Intestinal metaplasia",
+        "Low-grade dysplasia",
+        "High-grade dysplasia",
+        "Helicobacter pylori-type gastritis",
+        "Autoimmune atrophic chronic gastritis",
+        "Other polyps",
+        "Other (specify)",
+        "None identified"
+      ],
+      "exclusive": [
+        "None identified"
+      ],
+      "default": [
+        "None identified"
+      ]
+    },
+    {
+      "id": "additionalFindingsDetail",
+      "label": "Additional findings (specify type / sites)",
+      "type": "text",
+      "group": "Stage and other findings",
+      "showIf": {
+        "field": "additionalFindings",
+        "includes": [
+          "Other polyps",
+          "Other (specify)"
+        ]
+      }
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional notes (any)",
+      "type": "textarea",
+      "group": "Stage and other findings"
+    }
+  ],
+  "example": {
+    "case": {
+      "accession": "S26-21001",
+      "prefix": "S",
+      "patientName": "",
+      "biopsyLab": "HK",
+      "biopsySpecimen": "Stomach, distal partial gastrectomy",
+      "clinical": "Gastric adenocarcinoma on biopsy",
+      "macro": "Received in formalin is a distal partial gastrectomy specimen. The stomach measures 145 mm along the lesser curvature and 230 mm along the greater curvature, and weighs 280 g; a 15 mm cuff of duodenum is attached. There is a 35 x 30 x 8 mm ulcerated tumour in the antrum, 40 mm from the distal margin and 55 mm from the proximal margin."
+    },
+    "options": {
+      "includeHeader": false,
+      "macro": true,
+      "printPTNM": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "",
+          "procedure": "Partial gastrectomy, distal",
+          "procedureOther": "",
+          "tumourSite": [
+            "Antrum, lesser curvature"
+          ],
+          "tumourSiteOther": "",
+          "grossDetails": "",
+          "blockKeyText": "1 Tumour with overlying mucosa and serosa\n2-3 Tumour, additional sections\n4 Proximal margin, shave\n5 Distal margin, shave\n6-29 Lymph nodes\n30 Uninvolved stomach",
+          "weight": "280",
+          "specimenDims": "",
+          "stomachLen": "230",
+          "duodenumLen": "15",
+          "omentumDims": "",
+          "tumourSizeMm": "35",
+          "tumourDims": "35 x 30 x 8",
+          "sizeCannot": "",
+          "proximalDistance": "55",
+          "distalDistance": "40",
+          "histologyNotes": "",
+          "histType": "Tubular adenocarcinoma",
+          "histTypeOther": "",
+          "lauren": "Intestinal type",
+          "grade": "G2, moderately differentiated",
+          "gradeOther": "",
+          "jcgcGrade": "Differentiated type",
+          "tumourExtension": "Tumour invades the submucosa",
+          "extensionDetail": "",
+          "smDepth": "More than 2 mm",
+          "smDepthExact": "",
+          "smExtent": "SM2 (middle third of the submucosal layer)",
+          "ulceration": "Present (UL1)",
+          "ly": "Not identified",
+          "v": "Not identified",
+          "pni": "Present",
+          "treatmentEffect": "No known presurgical therapy",
+          "ecuraLy": "Not identified",
+          "ecuraSize": "Not identified",
+          "ecuraVm": "Not identified",
+          "ecuraV": "Not identified",
+          "ecuraSm": "Not identified",
+          "proximalMargin": "Uninvolved by invasive carcinoma and uninvolved by dysplasia (specify distance)",
+          "proximalMarginMm": "52",
+          "distalMargin": "Uninvolved by invasive carcinoma and uninvolved by dysplasia (specify distance)",
+          "distalMarginMm": "38",
+          "omentalMargin": "Uninvolved (specify distance)",
+          "omentalMarginMm": "60",
+          "hmMargin": "Uninvolved by invasive carcinoma and uninvolved by dysplasia",
+          "hmMarginDetail": "",
+          "vmMargin": "Uninvolved (specify distance)",
+          "vmMarginMm": "12",
+          "otherMargin": "Not applicable",
+          "otherMarginDetail": "",
+          "nodesExamined": "24",
+          "nodesInvolved": "4",
+          "ene": "Present",
+          "largestDepositMm": "18",
+          "largestNodeMm": "22",
+          "largestNodeSite": "lesser curvature",
+          "distantMets": [
+            "Not identified"
+          ],
+          "distantDetail": "",
+          "multiplePrimaries": false,
+          "recurrent": false,
+          "tnmOverride": "",
+          "tnmOverrideReason": "",
+          "additionalFindings": [
+            "Intestinal metaplasia",
+            "Helicobacter pylori-type gastritis"
+          ],
+          "additionalFindingsDetail": "",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}
