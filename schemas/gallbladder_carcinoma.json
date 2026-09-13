@@ -7,7 +7,7 @@
   "organ": "Gallbladder",
   "system": "Hepatobiliary",
   "kind": "cancer resection",
-  "layout": { "macroGroups": ["Specimen and tumour"], "macroFields": ["specimenName"] },
+  "layout": { "macroGroups": ["Specimen and tumour"], "macroFields": ["specimenName"], "pack": true },
   "rank": 47,
   "aliases": ["cholecystectomy", "gallbladder cancer", "icpn", "gb carcinoma", "radical cholecystectomy"],
   "match": {

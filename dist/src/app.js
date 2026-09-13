@@ -1,18 +1,18 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadPlanned, loadTemplate } from './registry.js?v=mtz3fp24';
-import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtz3fp24';
+import { loadManifest, loadPlanned, loadTemplate } from './registry.js?v=mtz3x3k4';
+import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtz3x3k4';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mtz3fp24';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtz3fp24';
-import { loadConfig, saveConfig } from './config.js?v=mtz3fp24';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtz3fp24';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtz3fp24';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtz3fp24';
-import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtz3fp24';
-import { applyMacroToCase } from './macroparse.js?v=mtz3fp24';
-import { spanFull, groupProgress as progressOf } from './formlayout.js?v=mtz3fp24';
+} from './engine.js?v=mtz3x3k4';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtz3x3k4';
+import { loadConfig, saveConfig } from './config.js?v=mtz3x3k4';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtz3x3k4';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtz3x3k4';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtz3x3k4';
+import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtz3x3k4';
+import { applyMacroToCase } from './macroparse.js?v=mtz3x3k4';
+import { spanFull, groupProgress as progressOf } from './formlayout.js?v=mtz3x3k4';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -670,7 +670,14 @@ function groupFields(fields, part, index, pack = false) {
       const count = f.type === 'select' || f.type === 'multiselect' ? optionsFor(f, part.values).length : 0;
       if (spanFull(f, count)) node.classList.add('span-full');
     }
-    if (!f.group) { current = null; out.push(node); continue; }
+    if (!f.group) {
+      // Ungrouped runs pack too - several resections (colon, the benign organ templates) have no groups
+      // in the histology column at all, and one field per row is exactly what wastes the width there.
+      if (!pack) { current = null; out.push(node); continue; }
+      if (!current || current.name !== null) { current = { name: null, node: el('div', { class: 'field-grid loose' }) }; out.push(current.node); }
+      current.node.append(node);
+      continue;
+    }
     if (!current || current.name !== f.group) {
       const key = `signout.group.${f.group}`;
       const stored = localStorage.getItem(key);

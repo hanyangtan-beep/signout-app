@@ -42,9 +42,18 @@ test('an empty string, an empty list and a missing value all count as unanswered
   assert.equal(groupProgress(fields, { a: 'x', b: ['y'], c: false }, isVisible).filled, 3);
 });
 
-test('the packed layout is still scoped to the ovary pilot template', () => {
+test('every template that splits its macroscopy also packs its form', () => {
+  const split = schemas.filter(([, s]) => s.layout?.macroGroups).map(([f]) => f);
   const packed = schemas.filter(([, s]) => s.layout?.pack).map(([f]) => f);
-  assert.deepEqual(packed, ['ovary_ft_peritoneum.json']);
+  assert.deepEqual(packed.sort(), split.sort());
+  assert.equal(packed.length, 22);
+});
+
+test('the small templates stay one field per row', () => {
+  for (const [file, s] of schemas) {
+    if (s.layout?.pack) continue;
+    assert.equal(s.layout ?? null, null, `${file} carries a layout without pack`);
+  }
 });
 
 test('every schema span override is a value the packed grid understands', () => {

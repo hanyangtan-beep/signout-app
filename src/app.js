@@ -670,7 +670,14 @@ function groupFields(fields, part, index, pack = false) {
       const count = f.type === 'select' || f.type === 'multiselect' ? optionsFor(f, part.values).length : 0;
       if (spanFull(f, count)) node.classList.add('span-full');
     }
-    if (!f.group) { current = null; out.push(node); continue; }
+    if (!f.group) {
+      // Ungrouped runs pack too - several resections (colon, the benign organ templates) have no groups
+      // in the histology column at all, and one field per row is exactly what wastes the width there.
+      if (!pack) { current = null; out.push(node); continue; }
+      if (!current || current.name !== null) { current = { name: null, node: el('div', { class: 'field-grid loose' }) }; out.push(current.node); }
+      current.node.append(node);
+      continue;
+    }
     if (!current || current.name !== f.group) {
       const key = `signout.group.${f.group}`;
       const stored = localStorage.getItem(key);

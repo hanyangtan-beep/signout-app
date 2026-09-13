@@ -7,7 +7,7 @@
   "organ": "Appendix",
   "system": "GI",
   "kind": "cancer resection",
-  "layout": { "macroGroups": ["Specimen and tumour"], "macroFields": ["specimenName"] },
+  "layout": { "macroGroups": ["Specimen and tumour"], "macroFields": ["specimenName"], "pack": true },
   "rank": 46,
   "aliases": ["appendicectomy", "appendectomy", "appendix cancer", "appendiceal adenocarcinoma", "lamn", "hamn", "goblet cell", "pseudomyxoma", "right hemicolectomy appendix"],
   "match": {

@@ -12,9 +12,9 @@
 //   diagnosis  "(A) STOMACH, wedge resection - GASTROINTESTINAL STROMAL TUMOUR, spindle cell type, 4.5 cm, …"
 // Wording is protected by tests/gist_resection.test.js — change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz3fp24';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz3fp24';
-import { riskAssessment, gradeFromMitoses, mitoticClass, tFromSize, RISK_TABLE_SITES } from '../src/staging/gist.js?v=mtz3fp24';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz3x3k4';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz3x3k4';
+import { riskAssessment, gradeFromMitoses, mitoticClass, tFromSize, RISK_TABLE_SITES } from '../src/staging/gist.js?v=mtz3x3k4';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };

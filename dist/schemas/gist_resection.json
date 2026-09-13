@@ -8,6 +8,7 @@
   "system": "GI",
   "kind": "cancer resection",
   "layout": {
+    "pack": true,
     "macroGroups": [
       "Macroscopy"
     ],

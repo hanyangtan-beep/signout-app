@@ -73,6 +73,7 @@
     "bias": -1
   },
   "layout": {
+    "pack": true,
     "macroGroups": [
       "Specimen and tumour"
     ],

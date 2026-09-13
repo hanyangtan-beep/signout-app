@@ -8,6 +8,7 @@
   "system": "Breast",
   "kind": "cancer resection",
   "layout": {
+    "pack": true,
     "macroGroups": [
       "Specimen and tumour"
     ],

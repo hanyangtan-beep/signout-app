@@ -34,7 +34,7 @@ test('metadata: benign hepatobiliary resection with search aliases and complete 
   assert.equal(schema.defaultParts, 1);
   assert.equal(schema.version, '2026.09');
   assert.deepEqual(Object.keys(schema).slice(0, 11), ['id', 'version', 'name', 'shortName', 'label', 'organ', 'system', 'kind', 'layout', 'rank', 'aliases']);
-  assert.deepEqual(schema.layout, { macroGroups: ['Macroscopy'], macroFields: ['specimenName'] });
+  assert.deepEqual(schema.layout, { macroGroups: ['Macroscopy'], macroFields: ['specimenName'], pack: true });
   for (const f of schema.fields) assert.ok('default' in f, `${f.id} has a default`);
   const ids = new Set(schema.fields.map((f) => f.id));
   for (const p of schema.example.parts) for (const k of Object.keys(p.values)) assert.ok(ids.has(k), `example key ${k} is a field`);

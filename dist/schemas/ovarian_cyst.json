@@ -8,6 +8,7 @@
   "system": "Gynae",
   "kind": "benign resection",
   "layout": {
+    "pack": true,
     "macroGroups": [
       "Macroscopy"
     ],

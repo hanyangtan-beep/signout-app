@@ -5,17 +5,17 @@
 // Sentinel nodes: a frozen "Breast sentinel lymph node" part in the same case pre-fills the node counts
 // ("Add breast synoptic" in the app; `prefillFromFrozen`) and the Regional lymph nodes line names it as
 // the origin; a prior sentinel node accession typed in the case fields prints the same way.
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz3fp24';
-import * as S from '../src/staging/breast.js?v=mtz3fp24';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz3fp24';
-import { biomarkerReport, hasBiomarkerData } from './breast_biomarkers.js?v=mtz3fp24';
-import { slnSummary } from './frozen.js?v=mtz3fp24';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz3x3k4';
+import * as S from '../src/staging/breast.js?v=mtz3x3k4';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz3x3k4';
+import { biomarkerReport, hasBiomarkerData } from './breast_biomarkers.js?v=mtz3x3k4';
+import { slnSummary } from './frozen.js?v=mtz3x3k4';
 import {
   num, fmt, lc1, uc1, countWords, stripDot, arr, listJoin, specify, plural, item,
   procedureText, siteText, headParts, specimenName, diagnosisHead, otherParts, hasExtraParts, otherSpecimenLines, specimens, findingText, lettered,
   specimenSentence, tumourSentence, blockKey, marginItems, marginsPhrase, closestMargin, parseMargins, nodeItems, nodesPhrase, nodeCounts, nodesSubmitted,
   metastasisValue, metastasisPhrase, ptnmSection, sharedChecks, marginChecks
-} from './breast_shared.js?v=mtz3fp24';
+} from './breast_shared.js?v=mtz3x3k4';
 
 export { specimenName, specimens, otherSpecimenLines, hasExtraParts, blockKey };
 

@@ -52,4 +52,8 @@ Per-template opt in:
 - each group summary carries a `filled/shown` count (a tick when complete) and a finished group starts collapsed, unless the user has toggled that group before;
 - a `.section-rail` of group pills sits above the form; each pill shows how many visible fields are still empty and scrolls to the group.
 
-Pilot template: `ovary_ft_peritoneum` only, asserted by `tests/formlayout.test.js`. Measured at 1920 px the ovarian resection form went from 6713 px to 4397 px of scroll height (3940 px in compact), with the same report output. Roll the flag out template by template once the pilot has been used on real cases.
+Rolled out on 2026-09-13 to every template that already splits its macroscopy - all 12 cancer resections (`breast_carcinoma`, `breast_dcis`, `phyllodes`, `lung_carcinoma`, `ovary_ft_peritoneum`, `endometrial_carcinoma`, `colon_resection`, `gist_resection`, `gastric_carcinoma`, `oesophageal_carcinoma`, `gallbladder_carcinoma`, `appendix_carcinoma`) and the 10 benign organ resections (`uterus_benign`, `placenta`, `aortic_valve_aorta`, `appendix`, `gallbladder`, `liver_benign`, `ovarian_cyst`, `salivary_benign`, `thyroid_benign`, `tonsils`). `tests/formlayout.test.js` asserts that the packed set and the macro-split set are the same 22 schemas, and that no other schema carries a `layout`. Biopsies, cytology, frozen section and the small excisions stay one field per row.
+
+Templates with no field groups in the histology column (colon resection and the benign organ templates) pack as a single `.field-grid.loose` run with a slightly larger row gap, since there are no group summaries to break the form up. They get no section rail: the rail needs at least two groups.
+
+Measured at 1920 px: the ovarian resection form went from 6713 px to 4397 px of scroll height (3940 px in compact) and the breast carcinoma resection to 4917 px, with identical report output.

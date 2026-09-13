@@ -574,6 +574,9 @@ textarea.input { min-height: 64px; resize: vertical; }
 .part-panel.pack .field-grid > .field .field-help { grid-column: 1; }
 /* Prose stays at a readable measure even when the cell is much wider. */
 .part-panel.pack .field-grid > .field textarea.input { max-width: 72ch; }
+/* Templates with no field groups (colon resection, the benign organ templates) pack as one long
+   grid; without group summaries to break it up the rows need a little more air. */
+.part-panel.pack .field-grid.loose { gap: var(--space-3) var(--space-5); }
 /* Group borders come off: the summary and the spacing already delimit sections,
    and a border around a grid fights the columns. */
 .part-panel.pack .field-group { border: 0; border-radius: 0; padding: 0; margin: 0; }

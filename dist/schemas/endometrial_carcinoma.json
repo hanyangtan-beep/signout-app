@@ -8,6 +8,7 @@
   "system": "Gynae",
   "kind": "cancer resection",
   "layout": {
+    "pack": true,
     "macroGroups": [
       "Macroscopy"
     ],
