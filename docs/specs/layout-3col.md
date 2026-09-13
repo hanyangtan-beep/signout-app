@@ -28,3 +28,28 @@ A schema opts in with
 - 2026-09-12 (Phase 9b): `breast_carcinoma`, then the same batch extended to every large resection template — cancer resections `breast_dcis`, `phyllodes`, `lung_carcinoma` (group "Specimen and tumour"), `ovary_ft_peritoneum`, `endometrial_carcinoma`, `colon_resection`, `gist_resection` (group "Macroscopy"), and the organ-level benign resections `uterus_benign`, `placenta`, `aortic_valve_aorta`, `appendix`, `gallbladder`, `liver_benign`, `ovarian_cyst`, `salivary_benign`, `thyroid_benign`, `tonsils` (group "Macroscopy"); `specimenName` moves left in all of them.
 - Not opted in (small excisions; all fields stay in the middle column): `breast_excision`, `skin_excision`, `skin_lesion`, `skin_cyst`, `soft_tissue_benign`, `nasal_polyps`, `parathyroid`, `jaw_cyst`, `lymph_node`, `stoma`, `turbt`, `turp`, biopsies, cytology, frozen section. Any of these can opt in with the same `layout` line.
 - The breast trio and the JSON-edited schemas carry the key after `kind`; `tests/liverbenign.test.js` asserts the key order and the layout value. `scripts/gen-endometrium-schema.py` is stale (it no longer reproduces `schemas/endometrial_carcinoma.json`), so that schema was edited directly.
+
+## Packed forms (widescreen pilot, 2026-09-13)
+
+Global changes (every template):
+
+- `.workspace` max width `min(2400px, 100%)` at or above 1400 px; at or above 2000 px the columns rebalance to `0.8fr / 1.35fr / 1fr` with a wider gap, so the extra width goes to the form rather than to margins.
+- Report blocks use a larger monospace clamp (`… / 46, 14.5 px`), `line-height: 1.6` and `font-variant-numeric: tabular-nums`.
+- Checks is a `details` element with the count line as its `summary`, sticky at the top of the report column; the open state persists in `localStorage` key `signout.checks`. An issue that carries a `field` id renders as `li.issue.jump` and focuses that field when clicked.
+- Settings gains **Form density** (comfortable / compact). Compact tightens the field and group spacing only; it is a display preference stored in `localStorage` key `signout.density`, never in the Drive config. About 10 % more form per screen.
+- Alt+Down / Alt+Up jump to the next / previous visible field that still has no value, wrapping at the ends. Alt+Left / Alt+Right keep switching parts.
+
+Per-template opt in:
+
+```json
+"layout": { "macroGroups": ["Macroscopy"], "macroFields": ["specimenName"], "pack": true }
+```
+
+`pack` applies only when the viewport is at least 1500 px (`packLayout` in `src/app.js`), below which the single-column form is still the right shape. When packing:
+
+- each group's fields render in a `.field-grid` (`repeat(auto-fit, minmax(320px, 1fr))`), so a field that needs the width takes the row and the short ones pair up;
+- `spanFull` in `src/formlayout.js` decides: textarea and multiselect always full, a select with more than 12 options full, a field with a `reference` gallery full, and an explicit `"span": "full" | "half"` on the schema field always wins;
+- each group summary carries a `filled/shown` count (a tick when complete) and a finished group starts collapsed, unless the user has toggled that group before;
+- a `.section-rail` of group pills sits above the form; each pill shows how many visible fields are still empty and scrolls to the group.
+
+Pilot template: `ovary_ft_peritoneum` only, asserted by `tests/formlayout.test.js`. Measured at 1920 px the ovarian resection form went from 6713 px to 4397 px of scroll height (3940 px in compact), with the same report output. Roll the flag out template by template once the pilot has been used on real cases.

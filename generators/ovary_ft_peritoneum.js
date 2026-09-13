@@ -471,12 +471,15 @@ export function prefillFromFrozen(fv) {
 export function validate(part) {
   const v = part.values;
   const out = [];
-  const err = (m) => out.push({ level: 'error', message: m });
-  const warn = (m) => out.push({ level: 'warn', message: m });
-  const info = (m) => out.push({ level: 'info', message: m });
+  // The optional second argument names the field a check refers to; the report column turns those
+  // checks into a click that focuses the field. Checks without an obvious single field omit it.
+  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
+  const err = (m, field) => at('error', m, field);
+  const warn = (m, field) => at('warn', m, field);
+  const info = (m, field) => at('info', m, field);
   const t = v.histType || '';
-  if (/\(specify/.test(t) && !stripDot(v.histTypeOther)) err('Histologic type needs the types / percentages or the specified type.');
-  if (num(v.tumourSizeMm) === null && !stripDot(v.tumourDims) && !stripDot(v.sizeCannot)) warn('Tumour size not recorded.');
+  if (/\(specify/.test(t) && !stripDot(v.histTypeOther)) err('Histologic type needs the types / percentages or the specified type.', 'histTypeOther');
+  if (num(v.tumourSizeMm) === null && !stripDot(v.tumourDims) && !stripDot(v.sizeCannot)) warn('Tumour size not recorded.', 'tumourSizeMm');
   const st = staging(part);
   for (const n of st.notes) if (!/overridden/.test(n)) warn(n);
   if (v.tumourSite === S.SITE_PERITONEUM || v.primarySite === 'Peritoneum') info('Primary peritoneal carcinoma: stage cannot be I; the ovaries and tubes must be grossly normal and microscopically free or minimally involved (WHO 5th).');
@@ -489,27 +492,27 @@ export function validate(part) {
   if (/preoperative or unknown timing/.test([v.integrityRO, v.integrityLO, v.integrityRT, v.integrityLT].join('|'))) info('Capsule rupture of unknown timing is staged pT1c2 / IC2; if the operative note records rupture at surgery, choose the intraoperative option (pT1c1 / IC1).');
   if (S.capsule(v).fluid && !/^T1/.test(st.T)) info('Positive peritoneal fluid is recorded; it only sets the stage (pT1c3 / IC3) when the tumour is confined to the ovaries or tubes.');
   if (S.capsule(v).fluid && BORDERLINE(v)) info('Borderline tumour with positive fluid: IC3 applies only when malignant cells are stated; report atypical or borderline tumour cells if that is what is seen.');
-  if (/^Present/.test(v.implants || '') && !BORDERLINE(v)) err('Implants are recorded but the histologic type is not a serous / seromucinous borderline tumour.');
-  if (/^CRS[123]/.test(v.crs || '') && v.neoadjuvant !== true) warn('A chemotherapy response score is entered but the neoadjuvant box is unticked (y prefix and CRS row).');
-  if (num(v.nodeDepositMm) !== null && num(v.nodeMm) !== null && num(v.nodeDepositMm) > num(v.nodeMm)) err('Lymph nodes: the largest deposit is larger than the largest involved node.');
-  if (S.involvement(v).extrapelvic && (na(v.extrapelvicFocus) || !v.extrapelvicFocus) && num(v.extrapelvicFocusMm) === null) warn('Extrapelvic peritoneal involvement is recorded but the size of the largest focus is not: pT3a/b/c cannot be assigned.');
+  if (/^Present/.test(v.implants || '') && !BORDERLINE(v)) err('Implants are recorded but the histologic type is not a serous / seromucinous borderline tumour.', 'histType');
+  if (/^CRS[123]/.test(v.crs || '') && v.neoadjuvant !== true) warn('A chemotherapy response score is entered but the neoadjuvant box is unticked (y prefix and CRS row).', 'neoadjuvant');
+  if (num(v.nodeDepositMm) !== null && num(v.nodeMm) !== null && num(v.nodeDepositMm) > num(v.nodeMm)) err('Lymph nodes: the largest deposit is larger than the largest involved node.', 'nodeDepositMm');
+  if (S.involvement(v).extrapelvic && (na(v.extrapelvicFocus) || !v.extrapelvicFocus) && num(v.extrapelvicFocusMm) === null) warn('Extrapelvic peritoneal involvement is recorded but the size of the largest focus is not: pT3a/b/c cannot be assigned.', 'extrapelvicFocusMm');
   if (S.involvement(v).capsuleT3c && chosen(v.distantMets).some((s) => /parenchyma/.test(s))) info('Liver / splenic capsule involvement alone is pT3c (IIIC); parenchymal metastasis is pM1b (IVB). Both are ticked - confirm the parenchymal deposit.');
   if (BORDERLINE(v)) {
-    if (/^Present, invasive/i.test(v.implants || '')) err('"Invasive implant" is low-grade serous carcinoma by WHO 5th; reclassify the histologic type.');
+    if (/^Present, invasive/i.test(v.implants || '')) err('"Invasive implant" is low-grade serous carcinoma by WHO 5th; reclassify the histologic type.', 'histType');
     if (/Serous borderline|Seromucinous/.test(t) && (!v.implants || v.implants === 'Not sampled')) info('Borderline tumour: peritoneal biopsies / omentum not sampled - implants cannot be assessed.');
   }
   if (v.neoadjuvant === true && !/^High-grade serous/.test(t)) info('Chemotherapy response score is validated for high-grade serous carcinoma only.');
   if (v.neoadjuvant !== true && /^High-grade serous/.test(t) && /interval|neoadjuvant|NACT/i.test(String(v.additionalNotes || ''))) warn('Notes mention neoadjuvant therapy / interval debulking but the neoadjuvant box is unticked (y prefix and CRS).');
   const n = S.nodes(v);
-  if (n.examined !== null && n.positive + n.itc > n.examined) err('Lymph nodes: involved plus ITC nodes exceed the number examined.');
-  if (n.positive && num(v.nodeDepositMm) === null) warn('Lymph nodes: record the largest metastatic deposit (10 mm boundary decides pN1a versus pN1b).');
-  if (num(v.nodeDepositMm) !== null && num(v.nodeDepositMm) <= 0.2 && n.positive) warn('A largest deposit of 0.2 mm or less is isolated tumour cells (pN0(i+)), not a positive node.');
+  if (n.examined !== null && n.positive + n.itc > n.examined) err('Lymph nodes: involved plus ITC nodes exceed the number examined.', 'nodesExamined');
+  if (n.positive && num(v.nodeDepositMm) === null) warn('Lymph nodes: record the largest metastatic deposit (10 mm boundary decides pN1a versus pN1b).', 'nodeDepositMm');
+  if (num(v.nodeDepositMm) !== null && num(v.nodeDepositMm) <= 0.2 && n.positive) warn('A largest deposit of 0.2 mm or less is isolated tumour cells (pN0(i+)), not a positive node.', 'nodeDepositMm');
   if (/hysterectomy/.test(headParts(v).proc) && na(v.vaginalMargin) && na(v.parametrialMargin)) info('Hysterectomy specimen: margins are recorded as not applicable.');
   for (const p of otherParts(v)) if (!p.finding) warn(`Part ${p.label}: no finding given - the diagnosis line prints "SEE SYNOPTIC REPORT".`);
   const labels = otherParts(v).map((p) => p.label);
   if (labels.includes(part.label)) err(`Other parts: letter ${part.label} is this part.`);
   if (new Set(labels).size !== labels.length) err('Other parts: a letter is repeated.');
-  if (stripDot(v.tnmOverride) && !st.overridden) err(`pTNM override "${stripDot(v.tnmOverride)}" could not be parsed.`);
+  if (stripDot(v.tnmOverride) && !st.overridden) err(`pTNM override "${stripDot(v.tnmOverride)}" could not be parsed.`, 'tnmOverride');
   for (const line of S.referenceLines(v)) info(line);
   if (st.stage) info(`AJCC 8th stage group (${st.M === 'M-' ? 'if cM0' : 'pM recorded'}): ${st.stage}${st.overridden ? ' (from the override)' : ''}.`);
   return out;

@@ -12,6 +12,7 @@ import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive
 import { normaliseAccession, phiWarnings } from './docformat.js';
 import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js';
 import { applyMacroToCase } from './macroparse.js';
+import { spanFull, groupProgress as progressOf } from './formlayout.js';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -119,6 +120,17 @@ function initTheme() {
     document.documentElement.dataset.theme = next;
     try { localStorage.setItem('signout.theme', next); } catch { /* ignore */ }
   });
+}
+
+// Form density is a display preference, so it lives in localStorage rather than in the Drive config.
+function initDensity() {
+  let saved = null;
+  try { saved = localStorage.getItem('signout.density'); } catch { /* preview iframe */ }
+  document.documentElement.dataset.density = saved === 'compact' ? 'compact' : 'comfortable';
+}
+function setDensity(value) {
+  document.documentElement.dataset.density = value === 'compact' ? 'compact' : 'comfortable';
+  try { localStorage.setItem('signout.density', document.documentElement.dataset.density); } catch { /* ignore */ }
 }
 
 // ---------- toast ----------
@@ -646,24 +658,96 @@ function openLightbox(im, heading) {
 
 // Consecutive fields sharing a `group` render inside one collapsible fieldset
 // (e.g. "Macroscopy" on the benign resection templates). Ungrouped fields stay flat.
-function groupFields(fields, part, index) {
+// With `pack`, each group's fields go into an auto-fitting grid instead of a single column,
+// the summary carries a filled/total count, and a group that is finished collapses itself
+// (only until the user touches it - an explicit toggle is remembered and wins).
+function groupFields(fields, part, index, pack = false) {
   const out = [];
   let current = null;
   for (const f of fields) {
     const node = renderField(f, part, index);
+    if (pack) {
+      const count = f.type === 'select' || f.type === 'multiselect' ? optionsFor(f, part.values).length : 0;
+      if (spanFull(f, count)) node.classList.add('span-full');
+    }
     if (!f.group) { current = null; out.push(node); continue; }
     if (!current || current.name !== f.group) {
       const key = `signout.group.${f.group}`;
-      const details = el('details', { class: 'field-group', 'data-group': f.group },
-        el('summary', { text: f.group }));
-      details.open = localStorage.getItem(key) !== 'closed';
+      const stored = localStorage.getItem(key);
+      const members = fields.filter((x) => x.group === f.group);
+      const progress = progressOf(members, part.values, isVisible);
+      const summary = el('summary', { text: f.group });
+      if (pack && progress.shown) {
+        summary.append(el('span', { class: 'group-count', text: progress.complete ? `\u2713 ${progress.shown}` : `${progress.filled}/${progress.shown}` }));
+      }
+      const details = el('details', { class: `field-group${pack && progress.complete ? ' complete' : ''}`, 'data-group': f.group }, summary);
+      details.open = stored ? stored !== 'closed' : !(pack && progress.complete);
       details.addEventListener('toggle', () => localStorage.setItem(key, details.open ? 'open' : 'closed'));
-      current = { name: f.group, node: details };
+      const body = pack ? el('div', { class: 'field-grid' }) : details;
+      if (pack) details.append(body);
+      current = { name: f.group, node: body };
       out.push(details);
     }
     current.node.append(node);
   }
   return out;
+}
+
+// The group index above a packed form: one pill per group, showing how many of its visible fields are
+// still empty. Clicking opens that group and scrolls to it, which beats scrolling a 75-field column.
+function sectionRail(fields, part) {
+  const names = [];
+  for (const f of fields) if (f.group && !names.includes(f.group)) names.push(f.group);
+  if (names.length < 2) return null;
+  const rail = el('nav', { class: 'section-rail', 'aria-label': 'Form sections' });
+  for (const name of names) {
+    const progress = progressOf(fields.filter((f) => f.group === name), part.values, isVisible);
+    rail.append(el('button', {
+      type: 'button', class: progress.complete ? 'complete' : '', title: `Go to ${name}`,
+      onclick: () => {
+        const details = nodes.panel.querySelector(`.field-group[data-group="${CSS.escape(name)}"]`);
+        if (!details) return;
+        details.open = true;
+        localStorage.setItem(`signout.group.${name}`, 'open');
+        details.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, document.createTextNode(name),
+      el('span', { class: 'n', text: progress.complete ? '\u2713' : `${progress.shown - progress.filled}` })));
+  }
+  return rail;
+}
+
+// Alt+Down / Alt+Up move to the next or previous field that still has no value, skipping hidden ones.
+// Sign-out then runs as: answer, jump, answer - without reaching for the mouse to find the next gap.
+function jumpToUnset(direction) {
+  const part = state.caseState?.parts?.[state.activePart];
+  if (!part) return false;
+  const fields = [...nodes.panel.querySelectorAll('.field[data-field]'), ...nodes.macroPanel.querySelectorAll('.field[data-field]')]
+    .filter((n) => !n.classList.contains('hidden'));
+  const empty = fields.filter((n) => {
+    const v = part.values[n.dataset.field];
+    return Array.isArray(v) ? !v.length : v === undefined || v === null || v === '';
+  });
+  if (!empty.length) { toast('Every visible field has a value'); return true; }
+  // Move relative to where the cursor is, whether or not that field is itself empty; wrap round the ends.
+  const active = document.activeElement?.closest?.('.field[data-field]');
+  const from = active ? fields.indexOf(active) : -1;
+  const at = (n) => fields.indexOf(n);
+  const next = direction > 0
+    ? (empty.find((n) => at(n) > from) || empty[0])
+    : ([...empty].reverse().find((n) => at(n) < from) || empty[empty.length - 1]);
+  focusFieldNode(next);
+  return true;
+}
+
+function focusFieldNode(node) {
+  if (!node) return;
+  node.closest('details')?.setAttribute('open', '');
+  node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const target = node.querySelector('input, textarea, select, .chips');
+  target?.focus?.();
+  node.classList.add('flash');
+  setTimeout(() => node.classList.remove('flash'), 900);
 }
 
 function renderField(field, part, index) {
@@ -774,16 +858,21 @@ function renderPanel() {
   // Three-column layout: schemas that declare `layout.macroGroups` render those groups (and `layout.macroFields`)
   // in the case column under the LIS boxes, so macroscopy sits beside the report while histology fills the middle.
   const split = splitFields(s, part);
+  // Packed forms are opt-in per template (`layout.pack`) and only once there is room for two cells;
+  // below that the single-column layout is still the right one. docs/specs/layout-3col.md
+  const pack = !!s.layout?.pack && packLayout.matches;
+  nodes.panel.classList.toggle('pack', pack);
+  nodes.macroPanel.classList.toggle('pack', pack);
   if (split) {
     nodes.macroPanel.hidden = false;
     nodes.macroPanel.replaceChildren(
       el('div', { class: 'part-head' }, el('h3', { text: `Part ${part.label} \u00b7 specimen and macroscopy` })),
-      ...groupFields(split.macro, part, i));
-    nodes.panel.replaceChildren(head, ...groupFields(split.histo, part, i));
+      ...groupFields(split.macro, part, i, pack));
+    nodes.panel.replaceChildren(head, ...[pack ? sectionRail(split.histo, part) : null].filter(Boolean), ...groupFields(split.histo, part, i, pack));
   } else {
     nodes.macroPanel.hidden = true;
     nodes.macroPanel.replaceChildren();
-    nodes.panel.replaceChildren(head, ...groupFields(s.fields, part, i));
+    nodes.panel.replaceChildren(head, ...[pack ? sectionRail(s.fields, part) : null].filter(Boolean), ...groupFields(s.fields, part, i, pack));
   }
 }
 
@@ -797,6 +886,10 @@ if (topbar) {
 
 const wideLayout = window.matchMedia('(min-width: 1400px)');
 wideLayout.addEventListener('change', () => { if (state.caseState) render(); });
+// Two 320px cells plus the gap need roughly a 700px column, which the histology column reaches at
+// about 1500px of viewport in three-column mode.
+const packLayout = window.matchMedia('(min-width: 1500px)');
+packLayout.addEventListener('change', () => { if (state.caseState) render(); });
 
 function splitFields(s) {
   const lay = s.layout;
@@ -879,9 +972,22 @@ function renderReport() {
     ['comment', 'Comment', out.comment]
   ].filter(([key, , text]) => text || out.edited?.[key] || ['specimens', 'microscopy', 'diagnosis'].includes(key));
   const issues = out.issues || [];
-  const checks = issues.length ? [el('div', { class: `checks ${issues.some((i) => i.level === 'error') ? 'has-error' : issues.some((i) => i.level === 'warn') ? 'has-warn' : 'info-only'}` },
-    el('div', { class: 'checks-head' }, el('h3', { text: 'Checks' }), el('span', { class: 'muted', text: [`${issues.filter((i) => i.level === 'error').length} to fix`, `${issues.filter((i) => i.level === 'warn').length} to review`, issues.some((i) => i.level === 'info') ? `${issues.filter((i) => i.level === 'info').length} for reference` : ''].filter(Boolean).join(' · ') })),
-    el('ul', {}, ...issues.map((i) => el('li', { class: `issue ${i.level}`, text: `${state.caseState.parts.length > 1 ? `(${i.part}) ` : ''}${i.message}` }))))] : [];
+  // Checks collapse to their one-line count so the report starts at the top of the column; an issue that
+  // names a field is clickable and focuses it. The open state is remembered between cases.
+  const checksBox = issues.length ? el('details', { class: `checks ${issues.some((i) => i.level === 'error') ? 'has-error' : issues.some((i) => i.level === 'warn') ? 'has-warn' : 'info-only'}` },
+    el('summary', {},
+      el('div', { class: 'checks-head' }, el('h3', { text: 'Checks' }), el('span', { class: 'muted', text: [`${issues.filter((i) => i.level === 'error').length} to fix`, `${issues.filter((i) => i.level === 'warn').length} to review`, issues.some((i) => i.level === 'info') ? `${issues.filter((i) => i.level === 'info').length} for reference` : ''].filter(Boolean).join(' \u00b7 ') }))),
+    el('ul', {}, ...issues.map((i) => el('li', {
+      class: `issue ${i.level}${i.field ? ' jump' : ''}`,
+      title: i.field ? 'Go to the field this refers to' : undefined,
+      onclick: i.field ? () => focusFieldNode(nodes.panel.querySelector(`.field[data-field="${CSS.escape(i.field)}"]`) || nodes.macroPanel.querySelector(`.field[data-field="${CSS.escape(i.field)}"]`)) : undefined,
+      text: `${state.caseState.parts.length > 1 ? `(${i.part}) ` : ''}${i.message}`
+    })))) : null;
+  if (checksBox) {
+    checksBox.open = localStorage.getItem('signout.checks') !== 'closed';
+    checksBox.addEventListener('toggle', () => localStorage.setItem('signout.checks', checksBox.open ? 'open' : 'closed'));
+  }
+  const checks = checksBox ? [checksBox] : [];
   nodes.blocks.replaceChildren(...checks, ...blocks.map(([key, name, text]) => renderBlock(key, name, text, tagFor(key), out)));
   const edits = Object.keys(state.caseState.edits || {}).length;
   nodes.revertAll.hidden = edits === 0;
@@ -1248,6 +1354,7 @@ async function doOpen() {
 
 function openSettings() {
   for (const k of ['clientId', 'folderId', 'sheetName', 'scopeMode']) $(`#cfg-${k}`).value = state.config[k] || '';
+  $('#cfg-density').value = document.documentElement.dataset.density || 'comfortable';
   nodes.signout.hidden = !isSignedIn();
   nodes.dlgSettings.showModal();
 }
@@ -1280,6 +1387,7 @@ function initDrive() {
   nodes.settings.addEventListener('click', openSettings);
   nodes.settingsForm.addEventListener('submit', (e) => {
     if (e.submitter?.value !== 'save') return;
+    setDensity($('#cfg-density').value);
     const patch = {};
     for (const k of ['clientId', 'folderId', 'sheetName', 'scopeMode']) patch[k] = $(`#cfg-${k}`).value.trim();
     if (patch.sheetName !== state.config.sheetName || patch.clientId !== state.config.clientId || patch.scopeMode !== state.config.scopeMode) patch.sheetId = '';
@@ -1307,12 +1415,15 @@ function initKeys() {
     else if (mod && e.key === 'Enter') { e.preventDefault(); doCopy(state.lastOut.report, 'Full report'); }
     else if (e.altKey && e.key === 'ArrowRight') { e.preventDefault(); state.activePart = Math.min(state.activePart + 1, state.caseState.parts.length - 1); render(); }
     else if (e.altKey && e.key === 'ArrowLeft') { e.preventDefault(); state.activePart = Math.max(0, state.activePart - 1); render(); }
+    else if (e.altKey && e.key === 'ArrowDown') { e.preventDefault(); jumpToUnset(1); }
+    else if (e.altKey && e.key === 'ArrowUp') { e.preventDefault(); jumpToUnset(-1); }
   });
 }
 
 // ---------- boot ----------
 async function boot() {
   initTheme();
+  initDensity();
   const back = consumeRedirect(); // did Google just send us back here?
   state.manifest = await loadManifest();
   state.planned = await loadPlanned();

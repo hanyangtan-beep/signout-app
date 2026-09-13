@@ -13,7 +13,8 @@
     ],
     "macroFields": [
       "specimenName"
-    ]
+    ],
+    "pack": true
   },
   "rank": 43,
   "aliases": [

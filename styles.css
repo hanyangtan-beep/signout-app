@@ -211,9 +211,19 @@ kbd { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; b
     grid-template-areas: "case histo report";
     grid-template-rows: auto;
     gap: var(--space-6);
-    max-width: 1960px;
+    max-width: min(2400px, 100%);
   }
   .histo .parts-bar { margin-top: 0; }
+}
+/* Ultrawide: the extra width goes to the histology column, which is where a third card column lands.
+   Capped at 2400px on purpose - beyond that the eye travel from the form to the report costs more
+   than the width gains. docs/specs/layout-3col.md */
+@media (min-width: 2000px) {
+  .workspace {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: var(--space-8);
+    padding: var(--space-6) var(--space-8);
+  }
 }
 .report { position: sticky; top: calc(var(--topbar-h, 64px) + var(--space-4)); align-self: start; max-height: calc(100vh - var(--topbar-h, 64px) - var(--space-4) - var(--space-6)); overflow: auto; scrollbar-width: thin; }
 
@@ -306,7 +316,9 @@ textarea.input { min-height: 64px; resize: vertical; }
   white-space: pre-wrap; word-break: break-word; color: var(--color-text); min-height: 48px;
   /* Synoptic blocks are wrapped at 80 columns with hanging indents; size the mono font so 80 characters
      (about 0.6em each) fit the block width and the browser never soft-wraps a pre-wrapped line. */
-  font-size: clamp(11px, (100cqw - 2 * var(--space-4)) / 48, 13px);
+  font-size: clamp(11px, (100cqw - 2 * var(--space-4)) / 46, 14.5px);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.6;
 }
 .block pre .part-label { color: var(--color-primary); font-weight: 500; }
 .block pre .changed { background: var(--color-primary-highlight); border-radius: 2px; }
@@ -448,11 +460,25 @@ textarea.input { min-height: 64px; resize: vertical; }
 .field-group[open] > summary::before { transform: rotate(90deg); }
 .field-group > .field:last-child { border-bottom: 0; }
 
-/* Validation checks (cancer resection templates) */
+/* Validation checks (cancer resection templates).
+   A collapsible <details> pinned to the top of the report column so the report itself starts at the
+   top of the viewport instead of being pushed down by a long check list. */
 .checks {
   background: var(--color-surface); border: 1px solid var(--color-border); border-left: 4px solid #b9840a;
   border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); padding: var(--space-3) var(--space-4);
+  position: sticky; top: 0; z-index: 4;
 }
+.checks > summary { list-style: none; cursor: pointer; }
+.checks > summary::-webkit-details-marker { display: none; }
+.checks > summary .checks-head { margin-bottom: 0; }
+.checks[open] > summary .checks-head { margin-bottom: var(--space-2); }
+.checks-head::after {
+  content: '\25B8'; margin-left: auto; color: var(--color-text-faint); font-size: var(--text-xs);
+  transition: transform 120ms ease;
+}
+.checks[open] .checks-head::after { transform: rotate(90deg); }
+.checks li.jump { cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
+.checks li.jump:hover { text-decoration-style: solid; }
 .checks.has-error { border-left-color: var(--color-alert); }
 .checks.info-only { border-left-color: var(--color-border); }
 .checks-head { display: flex; align-items: baseline; gap: var(--space-3); margin-bottom: var(--space-2); }
@@ -501,3 +527,77 @@ textarea.input { min-height: 64px; resize: vertical; }
 .intake-preview .intake-foot { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; padding-top: var(--space-2); margin-top: var(--space-1); border-top: 1px solid var(--color-border); }
 .intake-preview .intake-foot.built { border-top: 0; padding-top: 0; margin-top: 0; justify-content: space-between; }
 .intake-preview .intake-warn { color: var(--color-warning, #b7791f); }
+
+/* ---------------------------------------------------------------------------
+   Density (global preference, Settings -> Form density). Compact trims the
+   control height and the vertical rhythm without touching type size, fitting
+   roughly a fifth more fields on screen. Stored as signout.density.
+   --------------------------------------------------------------------------- */
+:root[data-density='compact'] .input,
+:root[data-density='compact'] textarea.input,
+:root[data-density='compact'] select.input { min-height: 34px; padding: var(--space-1) var(--space-2); }
+:root[data-density='compact'] textarea.input { min-height: 54px; }
+:root[data-density='compact'] .chip { min-height: 32px; padding: 0 var(--space-2); }
+:root[data-density='compact'] .field { padding: var(--space-1) 0; gap: var(--space-1) var(--space-3); }
+:root[data-density='compact'] .field > label,
+:root[data-density='compact'] .field > .field-label { padding-top: 6px; }
+:root[data-density='compact'] .case-fields { gap: var(--space-2); }
+:root[data-density='compact'] .field-group { margin: var(--space-2) 0; }
+:root[data-density='compact'] .part-panel { padding: var(--space-3) var(--space-4); }
+
+/* ---------------------------------------------------------------------------
+   Packed forms (pilot: ovary/fallopian tube/peritoneum resection).
+   Opt in per template with "layout": { "pack": true }; the panel then carries
+   .pack and each group's fields become an auto-fitting grid. Cells stack the
+   label over the control so a 320px cell is not squashed, and wide controls
+   (textarea, multiselect, long selects, anything with "span": "full") take the
+   whole row. docs/specs/layout-3col.md
+   --------------------------------------------------------------------------- */
+.part-panel.pack .field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-2) var(--space-5);
+  align-items: start;
+  padding-bottom: var(--space-2);
+}
+.part-panel.pack .field-grid > .field {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-1);
+  padding: var(--space-2) 0;
+  border-top: 0;
+  align-content: start;
+}
+.part-panel.pack .field-grid > .field > label,
+.part-panel.pack .field-grid > .field > .field-label { padding-top: 0; }
+.part-panel.pack .field-grid > .field.span-full { grid-column: 1 / -1; }
+.part-panel.pack .field-grid > .field.has-ref { grid-column: 1 / -1; }
+.part-panel.pack .field-grid > .field .field-help { grid-column: 1; }
+/* Prose stays at a readable measure even when the cell is much wider. */
+.part-panel.pack .field-grid > .field textarea.input { max-width: 72ch; }
+/* Group borders come off: the summary and the spacing already delimit sections,
+   and a border around a grid fights the columns. */
+.part-panel.pack .field-group { border: 0; border-radius: 0; padding: 0; margin: 0; }
+.part-panel.pack .field-group + .field-group { border-top: 1px solid var(--color-border); }
+.part-panel.pack .field-group > summary {
+  padding: var(--space-3) 0 var(--space-2); font-size: var(--text-xs); letter-spacing: 0.08em;
+  display: flex; align-items: baseline; gap: var(--space-2);
+}
+.part-panel.pack .field-group > summary .group-count {
+  margin-left: auto; font-weight: 400; letter-spacing: 0; text-transform: none;
+  color: var(--color-text-faint); font-size: var(--text-xs);
+}
+.part-panel.pack .field-group.complete > summary .group-count { color: var(--color-primary); }
+/* Ungrouped fields keep the classic label-left layout so the top of the form still reads as a list. */
+.part-panel.pack > .field + .field { border-top: 1px solid var(--color-border); }
+
+/* Section rail: the group index at the top of a packed panel. */
+.section-rail { display: flex; flex-wrap: wrap; gap: var(--space-1); margin: var(--space-2) 0 var(--space-3); }
+.section-rail button {
+  border: 1px solid var(--color-border); background: var(--color-surface-2); color: var(--color-text-muted);
+  border-radius: 999px; padding: 3px var(--space-3); font-size: var(--text-xs); cursor: pointer;
+  display: inline-flex; align-items: center; gap: var(--space-2);
+}
+.section-rail button:hover { color: var(--color-text); border-color: var(--color-border-strong); }
+.section-rail button .n { font-family: var(--font-mono); color: var(--color-text-faint); }
+.section-rail button.complete .n { color: var(--color-primary); }
+.field.flash > .input, .field.flash .chips { box-shadow: 0 0 0 3px var(--color-primary-ring); border-radius: var(--radius-md); }

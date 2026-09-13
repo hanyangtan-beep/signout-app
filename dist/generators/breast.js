@@ -8,7 +8,7 @@
 // British spelling is written directly (schema style.british is off). Wording is protected by
 // tests/breast.test.js — change it only deliberately.
 
-import { biomarkerReport, hasBiomarkerData } from './breast_biomarkers.js?v=mtz2q7zn';
+import { biomarkerReport, hasBiomarkerData } from './breast_biomarkers.js?v=mtz3fp24';
 
 const num = (v) => {
   const n = parseFloat(String(v ?? '').trim());
