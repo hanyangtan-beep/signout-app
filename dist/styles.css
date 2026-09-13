@@ -87,7 +87,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
    The kind switch replaces the old two rows so each system name appears once (docs/specs/navigation.md). */
 .topbar {
   display: flex; flex-direction: column; gap: var(--space-2);
-  padding: var(--space-2) var(--space-5);
+  padding: 10px var(--space-5);
   border-bottom: 1px solid var(--color-border);
   background: var(--color-surface);
   position: sticky; top: 0; z-index: 5;
@@ -95,15 +95,16 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .topbar.scrolled { box-shadow: 0 4px 14px oklch(0.2 0.02 250 / 0.08); }
 [data-theme='dark'] .topbar.scrolled { box-shadow: 0 4px 16px oklch(0 0 0 / 0.5); }
-.topbar-row { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; min-height: 44px; }
-.brand { display: flex; align-items: center; gap: var(--space-3); color: var(--color-primary); flex: none; margin-right: var(--space-2); }
-.brand h1 { font-size: var(--text-lg); color: var(--color-text); letter-spacing: -0.01em; white-space: nowrap; }
+/* every control in the bar is 36 px tall, so the row is one clean band */
+.topbar-row { display: flex; align-items: center; column-gap: var(--space-2); row-gap: 6px; flex-wrap: wrap; min-height: 36px; }
+.brand { display: flex; align-items: center; gap: var(--space-2); color: var(--color-primary); flex: none; margin-right: var(--space-1); }
+.brand h1 { font-size: 1.125rem; color: var(--color-text); letter-spacing: -0.01em; white-space: nowrap; }
 
 /* Kind switch (Biopsy / Resection) */
 .mode-switch { display: inline-flex; gap: 2px; padding: 3px; background: var(--color-surface-2); border-radius: var(--radius-md); flex: none; }
 .mode-btn {
   border: 0; background: transparent; color: var(--color-text-muted); cursor: pointer; white-space: nowrap;
-  font-size: 13px; font-weight: 600; padding: 6px 10px; min-height: 32px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600; padding: 0 10px; height: 30px; display: inline-flex; align-items: center; border-radius: var(--radius-sm);
 }
 .mode-btn:hover { color: var(--color-text); }
 .mode-btn[aria-pressed='true'] { background: var(--color-surface); color: var(--color-text); box-shadow: var(--shadow-sm); }
@@ -118,8 +119,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .templates button.more { color: var(--color-primary); }
 /* system menus (the header row) */
 .templates.systems { gap: 1px; padding: 3px; }
-.templates.systems > button, .sys > button { font-size: 13px; padding: 6px 7px; min-height: 32px; }
-.sys { position: relative; }
+.templates.systems > button, .sys > button { font-size: 13px; padding: 0 7px; height: 30px; min-height: 0; display: inline-flex; align-items: center; }
+.sys { position: relative; display: flex; align-items: center; }
 .sys.open > button { color: var(--color-text); background: var(--color-surface); box-shadow: var(--shadow-sm); }
 /* the system holding the open template: a filled pill, legible in both themes */
 .templates button[aria-pressed='true'], .sys.open > button[aria-pressed='true'] {
@@ -150,7 +151,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .palette-btn {
   display: inline-flex; align-items: center; gap: var(--space-2); flex: none; min-width: 150px;
   border: 1px solid var(--color-border); background: var(--color-surface-2); color: var(--color-text-muted);
-  border-radius: var(--radius-md); padding: 0 var(--space-3); min-height: 34px; font-size: var(--text-sm); cursor: pointer; white-space: nowrap;
+  border-radius: var(--radius-md); padding: 0 var(--space-3); min-height: 36px; font-size: var(--text-sm); cursor: pointer; white-space: nowrap; margin-left: var(--space-1);
 }
 .palette-btn > span { flex: 1 1 auto; text-align: left; }
 .palette-btn:hover { color: var(--color-text); border-color: var(--color-border-strong); background: var(--color-surface); }
@@ -158,7 +159,7 @@ kbd { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; b
 
 /* Case identity — accession, status and Drive state stay visible while the case panel scrolls */
 .case-id {
-  display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0;
+  display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; height: 36px;
   border: 0; background: transparent; cursor: pointer; padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm);
 }
 .case-id:hover { background: var(--color-surface-2); }
@@ -167,15 +168,17 @@ kbd { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; b
 .ci-status { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--color-surface-2); color: var(--color-text-muted); white-space: nowrap; }
 .ci-status[data-status='ready'] { background: var(--color-primary-highlight); color: var(--color-primary); }
 .ci-status[data-status='signed'] { background: oklch(0.52 0.11 155 / 0.14); color: var(--color-ok); }
-.ci-save { display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-xs); color: var(--color-text-muted); white-space: nowrap; }
+.ci-save { display: inline-flex; align-items: center; gap: 5px; font-size: var(--text-xs); color: var(--color-text-muted); white-space: nowrap; }
 .ci-save .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-border-strong); flex: none; }
 .ci-save.unsaved .dot { background: var(--color-warn); }
 .ci-save.saved .dot { background: var(--color-ok); }
 
-.topbar-right { margin-left: auto; display: flex; align-items: center; gap: var(--space-2); flex: none; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: var(--space-3); flex: none; }
 .topbar-actions { display: flex; gap: var(--space-1); align-items: center; flex: none; }
-.topbar-actions .btn { white-space: nowrap; padding-inline: var(--space-2); min-height: 36px; }
+.topbar-actions .btn { white-space: nowrap; padding-inline: var(--space-2); height: 36px; min-height: 0; padding-block: 0; }
 .topbar-actions .icon-btn { width: 36px; height: 36px; }
+.topbar-actions .save-btn { margin-left: var(--space-1); }
+.topbar-actions .account { margin-left: var(--space-2); }
 .case-inline { display: inline-flex; gap: var(--space-1); align-items: center; }
 .case-menu { position: relative; display: none; }
 .casemenu {
@@ -436,9 +439,9 @@ textarea.input { min-height: 64px; resize: vertical; }
   .case-menu { display: block; }
   .palette-btn > span { display: none; }
   .palette-btn { min-width: 0; padding-inline: var(--space-2); }
-}
-@media (max-width: 1450px) {            /* wordmark to the logo alone, save state to its dot */
   .brand h1 { display: none; }
+}
+@media (max-width: 1450px) {            /* save state to its dot alone */
   .ci-save > span:last-child { display: none; }
   .templates.systems > button, .sys > button { padding: 6px 6px; }
 }
