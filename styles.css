@@ -673,3 +673,21 @@ textarea.input { min-height: 64px; resize: vertical; }
 .section-rail button .n { font-family: var(--font-mono); color: var(--color-text-faint); }
 .section-rail button.complete .n { color: var(--color-primary); }
 .field.flash > .input, .field.flash .chips { box-shadow: 0 0 0 3px var(--color-primary-ring); border-radius: var(--radius-md); }
+
+/* Organ glyphs (assets/icons/organ-icons-sprite.svg, injected at boot by src/organicons.js) */
+.organ-icon { width: 1.5em; height: 1.5em; flex: 0 0 1.5em; fill: currentColor; color: var(--color-text-muted); }
+.organ-icon--generic { fill: none; stroke: currentColor; stroke-width: 56; opacity: .5; }
+.sysmenu .menu-item { flex-direction: row; align-items: center; gap: var(--space-3); }
+.sysmenu .menu-item .mi-text { display: flex; flex-direction: column; }
+.sysmenu .menu-item:hover .organ-icon { color: var(--color-text); }
+.sysmenu .menu-item[aria-current='true'] .organ-icon { color: var(--color-primary); }
+.pending .organ-icon { opacity: .35; }
+.palette-item { grid-template-columns: auto 1fr auto auto; }
+
+/* case-level: part tabs and part headings */
+.tab { display: inline-flex; flex-direction: row; align-items: center; justify-content: center; gap: var(--space-2); }
+.tab .organ-icon { width: 1em; height: 1em; color: inherit; opacity: .6; }
+.tab[aria-selected='true'] .organ-icon { opacity: 1; }
+.tab .tab-label { font-size: var(--text-sm); }
+.part-head h3 { display: flex; align-items: center; gap: var(--space-2); }
+.part-head h3 .organ-icon { width: 1.3em; height: 1.3em; color: var(--color-text-muted); }

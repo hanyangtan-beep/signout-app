@@ -18,10 +18,10 @@
 //   diagnosis                 the specimen line + "- " clauses, lowest margin distance
 // Wording is protected by tests/gallbladder.test.js — change it only deliberately.
 
-import { typeMorphology } from './gallbladder_morphology.js?v=mtz8gsu2';
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz8gsu2';
-import * as S from '../src/staging/gallbladder.js?v=mtz8gsu2';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz8gsu2';
+import { typeMorphology } from './gallbladder_morphology.js?v=mtzkl2i9';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtzkl2i9';
+import * as S from '../src/staging/gallbladder.js?v=mtzkl2i9';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtzkl2i9';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };

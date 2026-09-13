@@ -1,18 +1,19 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadPlanned, loadTemplate } from './registry.js?v=mtz8gsu2';
-import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, rowOfKind, KIND_LABEL } from './picker.js?v=mtz8gsu2';
+import { loadManifest, loadPlanned, loadTemplate } from './registry.js?v=mtzkl2i9';
+import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, rowOfKind, KIND_LABEL } from './picker.js?v=mtzkl2i9';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mtz8gsu2';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtz8gsu2';
-import { loadConfig, saveConfig } from './config.js?v=mtz8gsu2';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtz8gsu2';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtz8gsu2';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtz8gsu2';
-import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtz8gsu2';
-import { applyMacroToCase } from './macroparse.js?v=mtz8gsu2';
-import { spanFull, groupProgress as progressOf } from './formlayout.js?v=mtz8gsu2';
+} from './engine.js?v=mtzkl2i9';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtzkl2i9';
+import { loadConfig, saveConfig } from './config.js?v=mtzkl2i9';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtzkl2i9';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtzkl2i9';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtzkl2i9';
+import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtzkl2i9';
+import { applyMacroToCase } from './macroparse.js?v=mtzkl2i9';
+import { spanFull, groupProgress as progressOf } from './formlayout.js?v=mtzkl2i9';
+import { organIcon, mountOrganSprite } from './organicons.js?v=mtzkl2i9';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -160,6 +161,12 @@ function setCase(caseState, activePart = 0) {
 
 /** Manifest entry for a template id. */
 function entryOf(id) { return state.manifest.find((t) => t.id === id); }
+
+function iconForPart(part) {
+  const id = templateIdOf(state.caseState, part);
+  const entry = entryOf(id) || { name: state.templates[id]?.schema?.name || '' };
+  return organIcon(entry, { label: entry.organ || entry.name || '' });
+}
 
 /** Load a template's schema + generator on first use (cached by the registry). */
 async function ensureTemplate(id) {
@@ -430,13 +437,13 @@ function menuItem(t, current) {
       type: 'button', role: 'menuitem', class: 'menu-item pending', 'data-planned': t.id,
       title: `Not built yet (roadmap: ${t.roadmap || 'Later'}). Opens Generic free text with this name.`,
       onclick: () => { sysmenu.open = null; openPlaceholder(t).catch((e) => toast(e.message)); }
-    }, el('span', { class: 'mi-name', text: t.name }), el('span', { class: 'mi-sub', text: 'pending build' }));
+    }, organIcon(t), el('span', { class: 'mi-text' }, el('span', { class: 'mi-name', text: t.name }), el('span', { class: 'mi-sub', text: 'pending build' })));
   }
   return el('button', {
     type: 'button', role: 'menuitem', class: 'menu-item', 'aria-current': String(t.id === current), 'data-template': t.id,
     title: state.dirty || state.caseState.meta?.accession ? `Use ${t.name} for part ${activePart().label}` : `New ${t.name} case`,
     onclick: () => { sysmenu.open = null; switchTemplate(t.id).catch((e) => toast(e.message)); }
-  }, el('span', { class: 'mi-name', text: t.name }), el('span', { class: 'mi-sub', text: KIND_LABEL[t.kind] || t.kind }));
+  }, organIcon(t), el('span', { class: 'mi-text' }, el('span', { class: 'mi-name', text: t.name }), el('span', { class: 'mi-sub', text: KIND_LABEL[t.kind] || t.kind })));
 }
 
 function systemButton(row, g, current) {
@@ -576,6 +583,7 @@ function paletteRow(t, i, current) {
     type: 'button', class: 'palette-item', role: 'option', 'aria-selected': String(i === palette.index), 'data-template': t.id,
     onclick: () => choosePaletteItem(t), onmousemove: () => { if (palette.index !== i) { palette.index = i; markPaletteSelection(); } }
   },
+  organIcon(t),
   el('span', {}, el('span', { class: 'pi-name', text: t.shortName === labelOf(t) ? t.name : t.shortName }), el('span', { class: 'pi-sub', text: `${t.name}${t.id === current ? ' · current' : ''}${t.aliases?.length ? ' · ' + t.aliases.slice(0, 4).join(', ') : ''}` })),
   el('span', { class: 'pi-kind', text: KIND_LABEL[t.kind] || t.kind }),
   isBiopsy(t) ? el('span') : pin);
@@ -661,10 +669,10 @@ function applyCasePreset(preset) {
 function renderTabs() {
   const parts = state.caseState.parts;
   nodes.tabs.replaceChildren(...parts.map((p, i) => el('button', {
-    type: 'button', role: 'tab', class: 'tab', 'aria-selected': String(i === state.activePart), text: p.linked ? `${p.label} syn` : p.label,
+    type: 'button', role: 'tab', class: 'tab', 'aria-selected': String(i === state.activePart),
     title: p.linked ? `${schemaOf(p).name} (linked to the frozen section under the same letter)` : schemaOf(p).name,
     onclick: () => { state.activePart = i; render(); }
-  })));
+  }, iconForPart(p), el('span', { class: 'tab-label', text: p.linked ? `${p.label} syn` : p.label }))));
   nodes.addPart.disabled = parts.length >= maxPartsForCase();
   nodes.addPart.title = `Add part ${LETTERS_NEXT(parts.length)} (${schema().name})`;
 }
@@ -929,7 +937,7 @@ function renderPanel() {
     return o;
   }))));
   const head = el('div', { class: 'part-head' },
-    el('h3', { text: part.linked ? `Part ${part.label} (synoptic, linked to the frozen section)` : `Part ${part.label}` }),
+    el('h3', {}, iconForPart(part), el('span', { text: part.linked ? `Part ${part.label} (synoptic, linked to the frozen section)` : `Part ${part.label}` })),
     picker,
     el('div', { class: 'part-actions' },
       canUpgrade(i) ? el('button', { type: 'button', class: 'btn small', text: 'Upgrade this part', title: 'Switch this part to the synoptic template for the ticked neoplasm, carrying over what the benign form already answered', onclick: () => upgradeThisPart(i).catch((err) => { toast(err.message); render(); }) }) : null,
@@ -949,7 +957,7 @@ function renderPanel() {
   if (split) {
     nodes.macroPanel.hidden = false;
     nodes.macroPanel.replaceChildren(
-      el('div', { class: 'part-head' }, el('h3', { text: `Part ${part.label} \u00b7 specimen and macroscopy` })),
+      el('div', { class: 'part-head' }, el('h3', {}, iconForPart(part), el('span', { text: `Part ${part.label} \u00b7 specimen and macroscopy` }))),
       ...groupFields(split.macro, part, i, pack));
     nodes.panel.replaceChildren(head, ...[pack ? sectionRail(split.histo, part) : null].filter(Boolean), ...groupFields(split.histo, part, i, pack));
   } else {
@@ -1519,6 +1527,7 @@ function initKeys() {
 async function boot() {
   initTheme();
   initDensity();
+  mountOrganSprite(); // organ glyphs; non-blocking, falls back to a neutral glyph
   const back = consumeRedirect(); // did Google just send us back here?
   state.manifest = await loadManifest();
   state.planned = await loadPlanned();
