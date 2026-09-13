@@ -8,6 +8,8 @@ State on 2026-09-12: 54 templates (10 small biopsy, 23 benign resection incl. LE
 
 ## Done
 
+- [x] Breast resection histology enrichment (2026-09-13): `generators/breast_morphology.js` gives every breast_carcinoma histologic type a sourced microscopic sentence (Nottingham-grade aware for NST), named NST patterns and ILC variant patterns their own clause (the medullary pattern replaces the generic sentence), DCIS its architectural and nuclear-grade prose, and phyllodes a per-grade stromal sentence; sources in `docs/reference/breast-morphology-sources.md`, pinned by `tests/breast-morphology.test.js`.
+
 - [x] Organ icon layer (2026-09-13): 32-symbol sprite in `assets/icons/`, `src/organicons.js` resolves manifest `organ` (then the template name for planned rows) to a glyph, rendered in the system menus, the palette, the part tabs and the part headings; organ-less templates fall back to a neutral document glyph. Report text unchanged.
 
 - [x] Header spacing pass (2026-09-13, Phase 17b): every control on one 36 px band, bar down to 57 px, grouped gaps (brand / switch + menus / search / case zone / actions), one row at 1600 px on both sides of the switch and 1440 px on the biopsy side, 99 px when it must wrap.
