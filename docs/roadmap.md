@@ -8,6 +8,8 @@ State on 2026-09-12: 54 templates (10 small biopsy, 23 benign resection incl. LE
 
 ## Done
 
+- [x] Header spacing pass (2026-09-13, Phase 17b): every control on one 36 px band, bar down to 57 px, grouped gaps (brand / switch + menus / search / case zone / actions), one row at 1600 px on both sides of the switch and 1440 px on the biopsy side, 99 px when it must wrap.
+
 - [x] Top bar rebuilt (2026-09-13, Phase 17): one row with a Biopsy / Resection switch replacing the two stacked rows, filled active system pill, larger chips, dot placeholders, wider search, case accession + status + save state in the bar, Save dirty/saved dot, account avatar, Case menu and progressive collapse below 1600/1450 px, shadow on scroll. 875 tests.
 
 - Check-to-field jumping across the board: validation checks in the 12 cancer resections, the shared breast helpers and the frozen section now carry the id of the field they name, so clicking a check jumps and focuses it (~230 checks tagged; summary and stage-group notes stay untagged). Six golden fixtures regenerated deliberately - added `field` keys only. 2026-09-13
