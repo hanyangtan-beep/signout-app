@@ -194,6 +194,7 @@ Spec:       `docs/specs/frozen-section-scenarios.md`
 - Related prior specimen — read-only Sheet lookup by accession (fills date, procedure, type, size, pT, pN from the saved case's staging summary); deferred from the Lung pair ("6 type-only for now").
 - Lung reference galleries (adenocarcinoma patterns for the IASLC grade, STAS, PL0–PL3 elastic-stain levels), openly licensed with credit; deferred from the Lung pair.
 - Specimen intake — AI fallback: when the rule-based matcher returns "none" or "choose", offer a model suggestion from the specimen text and clinical history (S; needs a PHI decision first — the paste may contain identifiers); and macro-paste field extraction (sizes, counts, node numbers into schema fields) as a separate card.
+- Access control — gate the published app behind Google sign-in (the same OAuth client already used for Drive): an allow-list of permitted Google accounts, sign-in required before any case or template loads, everything else unchanged; static hosting means the gate is client-side (hides the UI from casual visitors, does not protect the bundle itself) unless a small backend is added.
 One line each; card them before building.
 
 - Synoptic templates after stomach and the lung / breast pairs: prostate (radical) with Gleason arithmetic validation. (`docs/specs/synoptic-next-templates.md`; endometrium carded in Next)
