@@ -2,14 +2,15 @@
 // Element order follows the QMH BREAST-Phyllodes page (CAP Phyllodes Tumor 4.1.0.0); house exceptions: a
 // Specimen and tumour section, the Tumour histology paragraph after the histologic type, the epithelial
 // component and the margin walker text. pTNM prints only with the printPTNM option, and only for malignant phyllodes tumour (AJCC staging does not apply to benign or borderline tumours).
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtzkl2i9';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtzkl2i9';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtzspr4o';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtzspr4o';
+import { phyllodesMorphology } from './breast_morphology.js?v=mtzspr4o';
 import {
   num, int, fmt, lc1, uc1, countWords, stripDot, arr, listJoin, specify, plural, item,
   procedureText, siteText, specimenName, diagnosisHead, otherParts, hasExtraParts, otherSpecimenLines, specimens, findingText, lettered,
   specimenSentence, tumourSentence, blockKey, marginItems, marginsPhrase, closestMargin, closestWords, nodeItems, nodesPhrase, nodeCounts, nodesSubmitted,
   metastasisValue, metastasisPhrase, ptnmSection, sharedChecks, marginChecks
-} from './breast_shared.js?v=mtzkl2i9';
+} from './breast_shared.js?v=mtzspr4o';
 
 export { specimenName, specimens, otherSpecimenLines, hasExtraParts, blockKey };
 
@@ -93,6 +94,8 @@ export function histologyPara(v) {
       v.stromalOvergrowth === 'Present' ? 'stromal overgrowth' : 'no stromal overgrowth'
     ];
     s.push(`Sections show a fibroepithelial tumour${size !== null ? ` measuring ${fmt(size)} mm` : ''} with leaf-like fronds lined by a bland bilayered epithelium and ${listJoin(stroma)}${mit ? `; ${mit}` : ''}.`);
+    const morph = phyllodesMorphology(v.histType || '');
+    if (morph) s.push(morph);
     const border = v.tumourBorder || '';
     if (/^Circumscribed/.test(border)) s.push('The border is circumscribed and pushing.');
     else if (/Infiltrative/.test(border)) s.push(`The border is ${/extensive/.test(border) ? 'extensively' : 'focally'} infiltrative into the surrounding breast.`);

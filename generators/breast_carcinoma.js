@@ -10,6 +10,7 @@ import * as S from '../src/staging/breast.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { biomarkerReport, hasBiomarkerData } from './breast_biomarkers.js';
 import { slnSummary } from './frozen.js';
+import { typeMorphology, detailMorphology, detailReplacesType } from './breast_morphology.js';
 import {
   num, fmt, lc1, uc1, countWords, stripDot, arr, listJoin, specify, plural, item,
   procedureText, siteText, headParts, specimenName, diagnosisHead, otherParts, hasExtraParts, otherSpecimenLines, specimens, findingText, lettered,
@@ -100,6 +101,14 @@ export function histologyPara(v) {
     const size = num(v.sizeMm);
     const scores = g.sum !== null ? ` (tubule formation ${scoreNum(v.tubule)}, nuclear pleomorphism ${scoreNum(v.nuclear)}, mitotic count ${scoreNum(v.mitotic)}${num(v.mitoticCount) !== null ? `, ${fmt(num(v.mitoticCount))} per 10 hpf` : ''}; total ${g.sum})` : '';
     s.push(`Sections show ${/^[aeiou]/.test(type) ? 'an' : 'a'} ${type}${g.short && /^grade/.test(g.short) ? `, Nottingham ${g.short}${scores}` : microinvasion(v) ? ' (microinvasion only, not graded)' : ''}${size !== null ? `, measuring ${fmt(size)} mm in greatest dimension` : ''}${/^Multiple/.test(v.focality || '') ? ` as multiple foci${stripDot(v.focalityDetail) ? ` (${stripDot(v.focalityDetail)})` : ''}` : ''}.`);
+    // Microinvasion only: the opener already says all that can be seen, so no type morphology.
+    // A recognised named pattern (medullary, pleomorphic, tubulolobular ...) describes the growth
+    // itself, so it replaces the generic type sentence rather than sitting beside it.
+    const variant = microinvasion(v) ? '' : detailMorphology(v.histType || NST, patternDetail(v));
+    const replaces = variant && detailReplacesType(v.histType || NST, patternDetail(v));
+    const morph = microinvasion(v) || replaces ? '' : typeMorphology(v.histType || NST, g.short);
+    if (morph) s.push(morph);
+    if (variant) s.push(variant);
     if (treated(v)) s.push(`There is ${/^No definite/.test(v.treatmentEffect) ? 'no definite' : 'a'} response to presurgical therapy${v.millerPayne ? ` (Miller-Payne ${lc1(v.millerPayne)})` : ''}.`);
   }
   const d = dcisText(v);

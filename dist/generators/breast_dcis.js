@@ -3,16 +3,17 @@
 // Specimen and tumour section, the Tumour histology paragraph after the nuclear grade, and the margin walker
 // text. pTNM (pTis(DCIS) / pTis(Paget) with pN and pM) prints only with the printPTNM option.
 // Shared helpers: ./breast_shared.js; biomarker rendering: ./breast_carcinoma.js (biomarkerItems).
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtzkl2i9';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtzkl2i9';
-import { hasBiomarkerData } from './breast_biomarkers.js?v=mtzkl2i9';
-import { biomarkerItems } from './breast_carcinoma.js?v=mtzkl2i9';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtzspr4o';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtzspr4o';
+import { hasBiomarkerData } from './breast_biomarkers.js?v=mtzspr4o';
+import { biomarkerItems } from './breast_carcinoma.js?v=mtzspr4o';
+import { dcisCytology, dcisPatternMorphology, dcisTypeMorphology } from './breast_morphology.js?v=mtzspr4o';
 import {
   num, fmt, lc1, lcProse, uc1, countWords, stripDot, arr, listJoin, specify, plural, item,
   procedureText, siteText, specimenName, diagnosisHead, otherParts, hasExtraParts, otherSpecimenLines, specimens, findingText, lettered,
   specimenSentence, tumourSentence, blockKey, marginItems, marginsPhrase, closestMargin, closestWords, nodeItems, nodesPhrase, nodeCounts, nodesSubmitted,
   metastasisValue, metastasisPhrase, ptnmSection, sharedChecks, marginChecks
-} from './breast_shared.js?v=mtzkl2i9';
+} from './breast_shared.js?v=mtzspr4o';
 
 export { specimenName, specimens, otherSpecimenLines, hasExtraParts, blockKey };
 
@@ -103,10 +104,20 @@ export function histologyPara(v) {
   const calc = arr(v.microcalcs).includes('Present in DCIS');
   if (isPaget(v)) {
     s.push(`Sections of the nipple show large pale malignant cells singly and in clusters within the epidermis, in keeping with Paget's disease${size !== null ? `, over ${fmt(size)} mm` : ''}.`);
+    const pagetMorph = dcisTypeMorphology('Paget disease');
+    if (pagetMorph) s.push(pagetMorph);
     if (/lactiferous/.test(v.nipple || '')) s.push('DCIS involves the underlying lactiferous ducts.');
   } else {
     const noun = histTypeName(v) === DCIS ? 'ductal carcinoma in situ' : lc1(histTypeName(v));
     s.push(`Sections show ${noun}${grade ? ` of ${grade}` : ''}${patterns ? ` with ${patterns} architecture` : ''}${nec ? `, with ${nec}` : ''}${calc ? ' and associated microcalcification' : ''}${size !== null ? `, spanning ${fmt(size)} mm` : ''}${blocksValue(v) ? ` (${blocksValue(v)})` : ''}.`);
+    // Type morphology for the papillary in situ types; otherwise the recorded architectural patterns.
+    const typeMorph = dcisTypeMorphology(histTypeName(v));
+    // The comedo clause repeats the necrosis already printed in the opener, so it is dropped there.
+    const archMorph = typeMorph ? '' : dcisPatternMorphology(arr(v.dcisPatterns).filter((p) => !(nec && /^Comedo/i.test(p))));
+    if (typeMorph) s.push(typeMorph);
+    if (archMorph) s.push(archMorph);
+    const cyto = dcisCytology((gradeText(v) || '').replace(/ grade$/, ''));
+    if (cyto) s.push(cyto);
   }
   s.push('No invasive carcinoma is identified.');
   if (v.nipple === 'Present and not involved') s.push('The nipple is not involved.');

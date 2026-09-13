@@ -9,9 +9,9 @@
 // `options.printPTNM`, stamped (AJCC 8th edition). Pure functions: (part, ctx) -> string.
 // Wording is protected by tests/oesophageal.test.js — change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtzkl2i9';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtzkl2i9';
-import { typeMorphology, ihcSentence } from './oesophageal_morphology.js?v=mtzkl2i9';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtzspr4o';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtzspr4o';
+import { typeMorphology, ihcSentence } from './oesophageal_morphology.js?v=mtzspr4o';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };

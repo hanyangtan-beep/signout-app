@@ -4,6 +4,7 @@
 // component and the margin walker text. pTNM prints only with the printPTNM option, and only for malignant phyllodes tumour (AJCC staging does not apply to benign or borderline tumours).
 import { deriveTNM, stageLine } from '../src/staging/index.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
+import { phyllodesMorphology } from './breast_morphology.js';
 import {
   num, int, fmt, lc1, uc1, countWords, stripDot, arr, listJoin, specify, plural, item,
   procedureText, siteText, specimenName, diagnosisHead, otherParts, hasExtraParts, otherSpecimenLines, specimens, findingText, lettered,
@@ -93,6 +94,8 @@ export function histologyPara(v) {
       v.stromalOvergrowth === 'Present' ? 'stromal overgrowth' : 'no stromal overgrowth'
     ];
     s.push(`Sections show a fibroepithelial tumour${size !== null ? ` measuring ${fmt(size)} mm` : ''} with leaf-like fronds lined by a bland bilayered epithelium and ${listJoin(stroma)}${mit ? `; ${mit}` : ''}.`);
+    const morph = phyllodesMorphology(v.histType || '');
+    if (morph) s.push(morph);
     const border = v.tumourBorder || '';
     if (/^Circumscribed/.test(border)) s.push('The border is circumscribed and pushing.');
     else if (/Infiltrative/.test(border)) s.push(`The border is ${/extensive/.test(border) ? 'extensively' : 'focally'} infiltrative into the surrounding breast.`);

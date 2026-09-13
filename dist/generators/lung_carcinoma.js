@@ -16,10 +16,10 @@
 //   comment    the completion-resection staging sentence when a prior accession is typed
 // Wording is protected by tests/lung_carcinoma.test.js and tests/fixtures/lung - change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtzkl2i9';
-import * as S from '../src/staging/lung.js?v=mtzkl2i9';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtzkl2i9';
-import { typeMorphology, patternMorphology, STAS_SENTENCE, ADENO_CYTOLOGY } from './lung_morphology.js?v=mtzkl2i9';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtzspr4o';
+import * as S from '../src/staging/lung.js?v=mtzspr4o';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtzspr4o';
+import { typeMorphology, patternMorphology, STAS_SENTENCE, ADENO_CYTOLOGY } from './lung_morphology.js?v=mtzspr4o';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const fmt = (n) => (Number.isInteger(n) ? String(n) : String(Math.round(n * 10) / 10));

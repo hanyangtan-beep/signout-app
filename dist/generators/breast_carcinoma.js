@@ -5,17 +5,18 @@
 // Sentinel nodes: a frozen "Breast sentinel lymph node" part in the same case pre-fills the node counts
 // ("Add breast synoptic" in the app; `prefillFromFrozen`) and the Regional lymph nodes line names it as
 // the origin; a prior sentinel node accession typed in the case fields prints the same way.
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtzkl2i9';
-import * as S from '../src/staging/breast.js?v=mtzkl2i9';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtzkl2i9';
-import { biomarkerReport, hasBiomarkerData } from './breast_biomarkers.js?v=mtzkl2i9';
-import { slnSummary } from './frozen.js?v=mtzkl2i9';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtzspr4o';
+import * as S from '../src/staging/breast.js?v=mtzspr4o';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtzspr4o';
+import { biomarkerReport, hasBiomarkerData } from './breast_biomarkers.js?v=mtzspr4o';
+import { slnSummary } from './frozen.js?v=mtzspr4o';
+import { typeMorphology, detailMorphology, detailReplacesType } from './breast_morphology.js?v=mtzspr4o';
 import {
   num, fmt, lc1, uc1, countWords, stripDot, arr, listJoin, specify, plural, item,
   procedureText, siteText, headParts, specimenName, diagnosisHead, otherParts, hasExtraParts, otherSpecimenLines, specimens, findingText, lettered,
   specimenSentence, tumourSentence, blockKey, marginItems, marginsPhrase, closestMargin, parseMargins, nodeItems, nodesPhrase, nodeCounts, nodesSubmitted,
   metastasisValue, metastasisPhrase, ptnmSection, sharedChecks, marginChecks
-} from './breast_shared.js?v=mtzkl2i9';
+} from './breast_shared.js?v=mtzspr4o';
 
 export { specimenName, specimens, otherSpecimenLines, hasExtraParts, blockKey };
 
@@ -100,6 +101,14 @@ export function histologyPara(v) {
     const size = num(v.sizeMm);
     const scores = g.sum !== null ? ` (tubule formation ${scoreNum(v.tubule)}, nuclear pleomorphism ${scoreNum(v.nuclear)}, mitotic count ${scoreNum(v.mitotic)}${num(v.mitoticCount) !== null ? `, ${fmt(num(v.mitoticCount))} per 10 hpf` : ''}; total ${g.sum})` : '';
     s.push(`Sections show ${/^[aeiou]/.test(type) ? 'an' : 'a'} ${type}${g.short && /^grade/.test(g.short) ? `, Nottingham ${g.short}${scores}` : microinvasion(v) ? ' (microinvasion only, not graded)' : ''}${size !== null ? `, measuring ${fmt(size)} mm in greatest dimension` : ''}${/^Multiple/.test(v.focality || '') ? ` as multiple foci${stripDot(v.focalityDetail) ? ` (${stripDot(v.focalityDetail)})` : ''}` : ''}.`);
+    // Microinvasion only: the opener already says all that can be seen, so no type morphology.
+    // A recognised named pattern (medullary, pleomorphic, tubulolobular ...) describes the growth
+    // itself, so it replaces the generic type sentence rather than sitting beside it.
+    const variant = microinvasion(v) ? '' : detailMorphology(v.histType || NST, patternDetail(v));
+    const replaces = variant && detailReplacesType(v.histType || NST, patternDetail(v));
+    const morph = microinvasion(v) || replaces ? '' : typeMorphology(v.histType || NST, g.short);
+    if (morph) s.push(morph);
+    if (variant) s.push(variant);
     if (treated(v)) s.push(`There is ${/^No definite/.test(v.treatmentEffect) ? 'no definite' : 'a'} response to presurgical therapy${v.millerPayne ? ` (Miller-Payne ${lc1(v.millerPayne)})` : ''}.`);
   }
   const d = dcisText(v);
