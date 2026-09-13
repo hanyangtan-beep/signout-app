@@ -12,9 +12,9 @@
 //   diagnosis  "(A) STOMACH, wedge resection - GASTROINTESTINAL STROMAL TUMOUR, spindle cell type, 4.5 cm, …"
 // Wording is protected by tests/gist_resection.test.js — change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz3x3k4';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz3x3k4';
-import { riskAssessment, gradeFromMitoses, mitoticClass, tFromSize, RISK_TABLE_SITES } from '../src/staging/gist.js?v=mtz3x3k4';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz4g8e1';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz4g8e1';
+import { riskAssessment, gradeFromMitoses, mitoticClass, tFromSize, RISK_TABLE_SITES } from '../src/staging/gist.js?v=mtz4g8e1';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
@@ -300,36 +300,39 @@ export function diagnosis(part, ctx) {
 export function validate(part) {
   const v = part.values;
   const out = [];
-  const err = (m) => out.push({ level: 'error', message: m });
-  const warn = (m) => out.push({ level: 'warn', message: m });
+  // The optional second argument is the id of the field the check is about; the Checks panel
+  // uses it to jump to that field. Omit it when a check does not point at one field.
+  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
+  const err = (m, field) => at('error', m, field);
+  const warn = (m, field) => at('warn', m, field);
   const cr = v.residualTumour === 'No residual tumour (complete response)';
   const size = num(v.tumourSize);
-  if (size === null && !cr) err('Tumour size (cm) is required to assign pT and the risk category.');
-  if (!cr && v.mitoticStatus === 'Counted' && num(v.mitoticCount) === null) err('Mitotic count per 5 mm2 is required (enter 0 if none seen).');
-  if (!cr && v.mitoticStatus === 'Cannot be determined' && !(v.mitoticDetail || '').trim()) warn('Mitotic count cannot be determined: give the reason.');
+  if (size === null && !cr) err('Tumour size (cm) is required to assign pT and the risk category.', 'tumourSize');
+  if (!cr && v.mitoticStatus === 'Counted' && num(v.mitoticCount) === null) err('Mitotic count per 5 mm2 is required (enter 0 if none seen).', 'mitoticCount');
+  if (!cr && v.mitoticStatus === 'Cannot be determined' && !(v.mitoticDetail || '').trim()) warn('Mitotic count cannot be determined: give the reason.', 'mitoticDetail');
   const ex = int(v.nodesExamined); const pos = int(v.nodesPositive);
-  if (ex === null) err('Number of regional lymph nodes examined is required (enter 0 if none submitted).');
-  else if (ex > 0 && pos === null) err('Number of involved lymph nodes is required (enter 0 if none).');
-  if (ex !== null && pos !== null && pos > ex) err('Involved lymph nodes exceed the number examined.');
-  if (pos && (!v.ene || v.ene === 'Not applicable')) warn('Extranodal extension is not recorded for a node-positive case.');
-  if (!v.marginStatus) err('Surgical margin status is required.');
-  else if (v.marginStatus === 'Uninvolved by GIST' && num(v.marginMm) === null) warn('Margins uninvolved: record the distance to the closest margin in mm.');
-  if (v.kitIhc === 'Negative' && v.dog1Ihc === 'Negative') warn('Both KIT and DOG1 are negative - reconsider the diagnosis of GIST or confirm with molecular testing.');
-  if (v.sdhbIhc === 'Deficient' && (!v.molecular || v.molecular === 'Not performed')) warn('SDHB-deficient GIST: germline SDHx testing and genetic counselling are advised; record the referral in the comment.');
-  if (v.kitIhc === 'Negative' && (!v.molecular || v.molecular === 'Not performed')) warn('KIT-negative GIST: molecular testing for PDGFRA is recommended.');
-  if (v.treatmentEffect && v.treatmentEffect !== 'No known presurgical therapy' && (!v.presurgicalTreatment || v.presurgicalTreatment === 'No known presurgical therapy')) warn('Treatment effect recorded but presurgical treatment is "No known presurgical therapy".');
-  if (v.presurgicalTreatment && /Systemic therapy|type not specified/.test(v.presurgicalTreatment) && (!v.treatmentEffect || v.treatmentEffect === 'No known presurgical therapy')) warn('Presurgical systemic therapy given: record the treatment effect.');
-  if (cr && v.treatmentEffect !== 'Present') warn('Complete response recorded: treatment effect should be "Present".');
+  if (ex === null) err('Number of regional lymph nodes examined is required (enter 0 if none submitted).', 'nodesExamined');
+  else if (ex > 0 && pos === null) err('Number of involved lymph nodes is required (enter 0 if none).', 'nodesPositive');
+  if (ex !== null && pos !== null && pos > ex) err('Involved lymph nodes exceed the number examined.', 'nodesPositive');
+  if (pos && (!v.ene || v.ene === 'Not applicable')) warn('Extranodal extension is not recorded for a node-positive case.', 'ene');
+  if (!v.marginStatus) err('Surgical margin status is required.', 'marginStatus');
+  else if (v.marginStatus === 'Uninvolved by GIST' && num(v.marginMm) === null) warn('Margins uninvolved: record the distance to the closest margin in mm.', 'marginMm');
+  if (v.kitIhc === 'Negative' && v.dog1Ihc === 'Negative') warn('Both KIT and DOG1 are negative - reconsider the diagnosis of GIST or confirm with molecular testing.', 'kitIhc');
+  if (v.sdhbIhc === 'Deficient' && (!v.molecular || v.molecular === 'Not performed')) warn('SDHB-deficient GIST: germline SDHx testing and genetic counselling are advised; record the referral in the comment.', 'molecular');
+  if (v.kitIhc === 'Negative' && (!v.molecular || v.molecular === 'Not performed')) warn('KIT-negative GIST: molecular testing for PDGFRA is recommended.', 'molecular');
+  if (v.treatmentEffect && v.treatmentEffect !== 'No known presurgical therapy' && (!v.presurgicalTreatment || v.presurgicalTreatment === 'No known presurgical therapy')) warn('Treatment effect recorded but presurgical treatment is "No known presurgical therapy".', 'presurgicalTreatment');
+  if (v.presurgicalTreatment && /Systemic therapy|type not specified/.test(v.presurgicalTreatment) && (!v.treatmentEffect || v.treatmentEffect === 'No known presurgical therapy')) warn('Presurgical systemic therapy given: record the treatment effect.', 'treatmentEffect');
+  if (cr && v.treatmentEffect !== 'Present') warn('Complete response recorded: treatment effect should be "Present".', 'treatmentEffect');
   if (v.riskAssessment && v.riskAssessment !== 'Derive from site, size and mitotic count') {
     const derived = riskAssessment({ ...v, riskAssessment: '' });
-    if (derived.category !== v.riskAssessment && derived.category !== 'Cannot be determined') warn(`Risk category picked (${v.riskAssessment}) differs from the derived category (${derived.category}); the picked value is used.`);
+    if (derived.category !== v.riskAssessment && derived.category !== 'Cannot be determined') warn(`Risk category picked (${v.riskAssessment}) differs from the derived category (${derived.category}); the picked value is used.`, 'riskAssessment');
   }
   if ((v.tnmOverride || '').trim()) {
     const st = staging(part);
-    if (!st.overridden) err(`Override "${v.tnmOverride.trim()}" could not be parsed (use e.g. "pT3 pN0" or "ypT2 pN0 pM1").`);
+    if (!st.overridden) err(`Override "${v.tnmOverride.trim()}" could not be parsed (use e.g. "pT3 pN0" or "ypT2 pN0 pM1").`, 'tnmOverride');
     else {
-      if (!(v.tnmOverrideReason || '').trim()) err('Give a reason for overriding the derived pTNM.');
-      if (size !== null && st.T !== tFromSize(size) && st.T !== 'T0') warn(`Override ${st.T} does not match the size-derived category (${tFromSize(size)} for ${fmt(size)} cm).`);
+      if (!(v.tnmOverrideReason || '').trim()) err('Give a reason for overriding the derived pTNM.', 'tnmOverrideReason');
+      if (size !== null && st.T !== tFromSize(size) && st.T !== 'T0') warn(`Override ${st.T} does not match the size-derived category (${tFromSize(size)} for ${fmt(size)} cm).`, 'tnmOverride');
     }
   }
   if (!cr && size !== null && mitoticClass(v) && !RISK_TABLE_SITES.includes(v.tumourSite || '')) warn(`Risk category for a ${lc1(siteName(v))} GIST uses the small-intestinal criteria (limited site-specific data).`);

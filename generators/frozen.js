@@ -768,10 +768,10 @@ export function validate(part, ctx) {
     const mm = num(v.slnMetMm);
     if (pos > n) warn(`Nodes involved (${pos}) exceeds the nodes identified (${n}); the count is capped in the report.`);
     if (pos && mm === null) info('Record the size of the largest metastatic focus (mm); it is carried into the breast synoptic.');
-    if (n === 0 && v.slnResult !== 'No nodal tissue identified' && v.slnResult !== 'Deferred') warn('No lymph node identified: pick the result "No nodal tissue identified" or enter the node count.');
-    if (v.slnResult === 'Macrometastasis' && mm !== null && mm <= 2) warn(`Macrometastasis with a largest focus of ${fmt(mm)} mm: a macrometastasis is more than 2 mm.`);
-    if (v.slnResult === 'Micrometastasis' && mm !== null && (mm > 2 || mm <= 0.2)) warn(`Micrometastasis with a largest focus of ${fmt(mm)} mm: a micrometastasis is more than 0.2 mm and up to 2 mm.`);
-    if (v.slnResult === 'Isolated tumour cells' && mm !== null && mm > 0.2) warn(`Isolated tumour cells with a largest focus of ${fmt(mm)} mm: isolated tumour cells measure 0.2 mm or less.`);
+    if (n === 0 && v.slnResult !== 'No nodal tissue identified' && v.slnResult !== 'Deferred') warn('No lymph node identified: pick the result "No nodal tissue identified" or enter the node count.', 'slnCount');
+    if (v.slnResult === 'Macrometastasis' && mm !== null && mm <= 2) warn(`Macrometastasis with a largest focus of ${fmt(mm)} mm: a macrometastasis is more than 2 mm.`, 'slnMetMm');
+    if (v.slnResult === 'Micrometastasis' && mm !== null && (mm > 2 || mm <= 0.2)) warn(`Micrometastasis with a largest focus of ${fmt(mm)} mm: a micrometastasis is more than 0.2 mm and up to 2 mm.`, 'slnMetMm');
+    if (v.slnResult === 'Isolated tumour cells' && mm !== null && mm > 0.2) warn(`Isolated tumour cells with a largest focus of ${fmt(mm)} mm: isolated tumour cells measure 0.2 mm or less.`, 'slnMetMm');
     if (v.slnResult === 'Isolated tumour cells') info('Isolated tumour cells only: pN0(i+) in the linked synoptic; the intraoperative line reports negative for macrometastasis.');
     if (v.slnResult && v.slnResult !== 'Deferred' && !(ctx?.case?.parts || []).some((p) => p !== part && p.templateId === 'breast_carcinoma')) info('"Add breast synoptic" adds the breast carcinoma resection as the next part with the sentinel node counts pre-filled.');
     return out;
@@ -781,9 +781,9 @@ export function validate(part, ctx) {
   const r = v.ovaryResult || 'Benign';
   if (r === 'Malignant' && /mucinous|Brenner|teratoma/i.test(t)) info('Malignant mucinous, Brenner or teratomatous tumour: consider a metastasis; the linked synoptic asks for the primary-site assignment.');
   if (/^Ruptured/.test(v.ovReceived || '') && /Malignant|Borderline/.test(r)) info('Capsule defect on receipt: IC1 (surgical spill) versus IC2 (rupture before surgery) is decided by the operative note; the synoptic asks.');
-  if ((num(v.ovBlocks) ?? 0) > 3) info(`${fmt(num(v.ovBlocks))} frozen blocks: more than three blocks is unusual for an intraoperative consultation.`);
-  if (r === 'Deferred' && ovCaveats(v).length === 0) warn('Deferred: state the reason for deferral (tick a caveat).');
-  if (r === 'Malignant, favour metastatic' && !t) info('Favour metastatic: name the favoured primary or pick "metastatic carcinoma, primary not determined".');
+  if ((num(v.ovBlocks) ?? 0) > 3) info(`${fmt(num(v.ovBlocks))} frozen blocks: more than three blocks is unusual for an intraoperative consultation.`, 'ovBlocks');
+  if (r === 'Deferred' && ovCaveats(v).length === 0) warn('Deferred: state the reason for deferral (tick a caveat).', 'ovCaveat');
+  if (r === 'Malignant, favour metastatic' && !t) info('Favour metastatic: name the favoured primary or pick "metastatic carcinoma, primary not determined".', 'ovType');
   return out;
 }
 

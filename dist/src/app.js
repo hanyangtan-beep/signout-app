@@ -1,18 +1,18 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadPlanned, loadTemplate } from './registry.js?v=mtz3x3k4';
-import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtz3x3k4';
+import { loadManifest, loadPlanned, loadTemplate } from './registry.js?v=mtz4g8e1';
+import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtz4g8e1';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mtz3x3k4';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtz3x3k4';
-import { loadConfig, saveConfig } from './config.js?v=mtz3x3k4';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtz3x3k4';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtz3x3k4';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtz3x3k4';
-import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtz3x3k4';
-import { applyMacroToCase } from './macroparse.js?v=mtz3x3k4';
-import { spanFull, groupProgress as progressOf } from './formlayout.js?v=mtz3x3k4';
+} from './engine.js?v=mtz4g8e1';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtz4g8e1';
+import { loadConfig, saveConfig } from './config.js?v=mtz4g8e1';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtz4g8e1';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtz4g8e1';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtz4g8e1';
+import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtz4g8e1';
+import { applyMacroToCase } from './macroparse.js?v=mtz4g8e1';
+import { spanFull, groupProgress as progressOf } from './formlayout.js?v=mtz4g8e1';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {

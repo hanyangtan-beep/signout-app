@@ -16,10 +16,10 @@
 // There is no separate narrative microscopy paragraph. Wording is protected by
 // tests/ovary_ft_peritoneum.test.js and tests/fixtures/ovary - change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz3x3k4';
-import * as S from '../src/staging/ovary.js?v=mtz3x3k4';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz3x3k4';
-import { typeMorphology, implantMorphology, STIC_SENTENCE } from './ovary_morphology.js?v=mtz3x3k4';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz4g8e1';
+import * as S from '../src/staging/ovary.js?v=mtz4g8e1';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz4g8e1';
+import { typeMorphology, implantMorphology, STIC_SENTENCE } from './ovary_morphology.js?v=mtz4g8e1';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };

@@ -5,17 +5,17 @@
 // Sentinel nodes: a frozen "Breast sentinel lymph node" part in the same case pre-fills the node counts
 // ("Add breast synoptic" in the app; `prefillFromFrozen`) and the Regional lymph nodes line names it as
 // the origin; a prior sentinel node accession typed in the case fields prints the same way.
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz3x3k4';
-import * as S from '../src/staging/breast.js?v=mtz3x3k4';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz3x3k4';
-import { biomarkerReport, hasBiomarkerData } from './breast_biomarkers.js?v=mtz3x3k4';
-import { slnSummary } from './frozen.js?v=mtz3x3k4';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz4g8e1';
+import * as S from '../src/staging/breast.js?v=mtz4g8e1';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz4g8e1';
+import { biomarkerReport, hasBiomarkerData } from './breast_biomarkers.js?v=mtz4g8e1';
+import { slnSummary } from './frozen.js?v=mtz4g8e1';
 import {
   num, fmt, lc1, uc1, countWords, stripDot, arr, listJoin, specify, plural, item,
   procedureText, siteText, headParts, specimenName, diagnosisHead, otherParts, hasExtraParts, otherSpecimenLines, specimens, findingText, lettered,
   specimenSentence, tumourSentence, blockKey, marginItems, marginsPhrase, closestMargin, parseMargins, nodeItems, nodesPhrase, nodeCounts, nodesSubmitted,
   metastasisValue, metastasisPhrase, ptnmSection, sharedChecks, marginChecks
-} from './breast_shared.js?v=mtz3x3k4';
+} from './breast_shared.js?v=mtz4g8e1';
 
 export { specimenName, specimens, otherSpecimenLines, hasExtraParts, blockKey };
 
@@ -363,53 +363,56 @@ export function prefillFromFrozen(fv) {
 export function validate(part, ctx) {
   const v = part.values;
   const out = [];
-  const err = (m) => out.push({ level: 'error', message: m });
-  const warn = (m) => out.push({ level: 'warn', message: m });
-  const info = (m) => out.push({ level: 'info', message: m });
+  // The optional second argument is the id of the field the check is about; the Checks panel
+  // uses it to jump to that field. Omit it when a check does not point at one field.
+  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
+  const err = (m, field) => at('error', m, field);
+  const warn = (m, field) => at('warn', m, field);
+  const info = (m, field) => at('info', m, field);
   const size = num(v.sizeMm);
-  if (/^Reported on the prior/.test(v.biomarkers || '') && !stripDot(v.priorBiomarkerAccession) && !stripDot(ctx?.case?.priorAccession)) warn('Biomarkers reported on the prior core biopsy: record its accession number.');
+  if (/^Reported on the prior/.test(v.biomarkers || '') && !stripDot(v.priorBiomarkerAccession) && !stripDot(ctx?.case?.priorAccession)) warn('Biomarkers reported on the prior core biopsy: record its accession number.', 'priorBiomarkerAccession');
   const t = v.histType || NST;
-  if (!noResidual(v) && v.sizeMode !== 'Cannot be determined' && size === null) warn('Tumour size not recorded: pT cannot be derived.');
-  if (microinvasion(v) && size !== null && size > 1) err('Microinvasion only is selected but the size is more than 1 mm.');
-  if (/\(specify/.test(t) && !stripDot(v.histTypeDetail)) err('Histologic type needs the specified types / percentages.');
-  if (/^Multiple/.test(v.focality || '') && !stripDot(v.focalityDetail)) warn('Multiple foci: record the number and sizes; pT uses the largest focus.');
+  if (!noResidual(v) && v.sizeMode !== 'Cannot be determined' && size === null) warn('Tumour size not recorded: pT cannot be derived.', 'sizeMm');
+  if (microinvasion(v) && size !== null && size > 1) err('Microinvasion only is selected but the size is more than 1 mm.', 'sizeMm');
+  if (/\(specify/.test(t) && !stripDot(v.histTypeDetail)) err('Histologic type needs the specified types / percentages.', 'histTypeDetail');
+  if (/^Multiple/.test(v.focality || '') && !stripDot(v.focalityDetail)) warn('Multiple foci: record the number and sizes; pT uses the largest focus.', 'focalityDetail');
   const g = gradeOf(v);
-  if (g.mismatch) err(`Histologic grade: the scores total ${g.sum} (${GRADE_TEXT[g.derived]}) but ${g.typed.replace(/ \(.*$/, '')} is selected.`);
-  if (!noResidual(v) && !microinvasion(v) && g.sum === null && !/cannot/.test(v.grade || '')) warn('Nottingham grade: pick all three scores (or "Score cannot be determined").');
-  if (treated(v) && (!v.lnTreatmentEffect || v.lnTreatmentEffect === 'Not applicable') && nodesSubmitted(v)) info('Presurgical therapy with nodes submitted: state the LN treatment effect.');
-  if (!treated(v) && v.millerPayne) warn('Miller-Payne grade is recorded without presurgical therapy.');
+  if (g.mismatch) err(`Histologic grade: the scores total ${g.sum} (${GRADE_TEXT[g.derived]}) but ${g.typed.replace(/ \(.*$/, '')} is selected.`, 'grade');
+  if (!noResidual(v) && !microinvasion(v) && g.sum === null && !/cannot/.test(v.grade || '')) warn('Nottingham grade: pick all three scores (or "Score cannot be determined").', 'tubule');
+  if (treated(v) && (!v.lnTreatmentEffect || v.lnTreatmentEffect === 'Not applicable') && nodesSubmitted(v)) info('Presurgical therapy with nodes submitted: state the LN treatment effect.', 'lnTreatmentEffect');
+  if (!treated(v) && v.millerPayne) warn('Miller-Payne grade is recorded without presurgical therapy.', 'millerPayne');
   if (noResidual(v) && !treated(v) && !dcisPresent(v)) info('No residual invasive carcinoma without presurgical therapy: the carcinoma from the prior biopsy governs the stage (pT0 in this specimen).');
   if (dcisPresent(v)) {
-    if (!v.dcisGrade) warn('DCIS present: record the nuclear grade.');
-    if (!stripDot(v.dcisSize)) warn('DCIS present: record the size (extent).');
-    const pd = marginChecks(v.marginsDcis, 'DCIS', out);
+    if (!v.dcisGrade) warn('DCIS present: record the nuclear grade.', 'dcisGrade');
+    if (!stripDot(v.dcisSize)) warn('DCIS present: record the size (extent).', 'dcisSize');
+    const pd = marginChecks(v.marginsDcis, 'DCIS', out, { field: 'marginsDcis' });
     const close = pd.faces.filter((f) => f.status === 'uninvolved' && !f.gt && f.mm < 2);
-    if (close.length) warn(`DCIS within 2 mm of the ${listJoin(close.map((f) => lc1(f.face)))} margin${close.length > 1 ? 's' : ''} (${close.map((f) => `${fmt(f.mm)} mm`).join(', ')}): 2 mm is the adequate margin for DCIS.`);
+    if (close.length) warn(`DCIS within 2 mm of the ${listJoin(close.map((f) => lc1(f.face)))} margin${close.length > 1 ? 's' : ''} (${close.map((f) => `${fmt(f.mm)} mm`).join(', ')}): 2 mm is the adequate margin for DCIS.`, 'marginsDcis');
   }
   if (!noResidual(v)) {
-    const pi = marginChecks(v.marginsInvasive, 'invasive carcinoma', out);
-    if (pi.faces.some((f) => f.status === 'involved')) info(/^Total mastectomy/.test(v.procedure || '') ? 'Invasive carcinoma at a margin of the mastectomy specimen: the involved margin is stated in the diagnosis; consider a comment for the clinical team.' : 'Invasive carcinoma at a margin: "no ink on tumour" is the adequate margin for invasive carcinoma after breast-conserving surgery.');
+    const pi = marginChecks(v.marginsInvasive, 'invasive carcinoma', out, { field: 'marginsInvasive' });
+    if (pi.faces.some((f) => f.status === 'involved')) info(/^Total mastectomy/.test(v.procedure || '') ? 'Invasive carcinoma at a margin of the mastectomy specimen: the involved margin is stated in the diagnosis; consider a comment for the clinical team.' : 'Invasive carcinoma at a margin: "no ink on tumour" is the adequate margin for invasive carcinoma after breast-conserving surgery.', 'marginsInvasive');
   }
   const st = staging(part);
   const c = nodeCounts(v);
   if (nodesSubmitted(v)) {
-    if (c.positive + c.itc > c.examined) err(`Lymph nodes: ${c.positive + c.itc} involved but only ${c.examined} examined.`);
-    if (c.sentinel > c.examined) err('Lymph nodes: more sentinel nodes than nodes examined.');
-    if (/^Sentinel node biopsy only/.test(v.nodeSampling) && c.examined > 5) info(`${c.examined} sentinel nodes examined: (sn) is not appended above 5 nodes.`);
-    if (c.positive && num(v.depositMm) === null) info('Lymph nodes involved: record the size of the largest metastatic deposit.');
-    if (c.macro && num(v.depositMm) !== null && num(v.depositMm) <= 2) warn('A macrometastasis is more than 2 mm, but the largest deposit is 2 mm or less.');
-    if (!c.macro && c.micro && num(v.depositMm) !== null && num(v.depositMm) > 2) warn('Micrometastasis only, but the largest deposit is more than 2 mm.');
+    if (c.positive + c.itc > c.examined) err(`Lymph nodes: ${c.positive + c.itc} involved but only ${c.examined} examined.`, 'nodesExamined');
+    if (c.sentinel > c.examined) err('Lymph nodes: more sentinel nodes than nodes examined.', 'nodesSentinel');
+    if (/^Sentinel node biopsy only/.test(v.nodeSampling) && c.examined > 5) info(`${c.examined} sentinel nodes examined: (sn) is not appended above 5 nodes.`, 'nodesExamined');
+    if (c.positive && num(v.depositMm) === null) info('Lymph nodes involved: record the size of the largest metastatic deposit.', 'depositMm');
+    if (c.macro && num(v.depositMm) !== null && num(v.depositMm) <= 2) warn('A macrometastasis is more than 2 mm, but the largest deposit is 2 mm or less.', 'depositMm');
+    if (!c.macro && c.micro && num(v.depositMm) !== null && num(v.depositMm) > 2) warn('Micrometastasis only, but the largest deposit is more than 2 mm.', 'depositMm');
   }
   for (const sp of slnParts(part, ctx)) {
     const s = sp.summary;
-    if (!nodesSubmitted(v) || c.examined < s.examined || c.macro < s.macro || c.micro < s.micro || c.itc < s.itc) warn(`Part ${sp.label} (frozen sentinel nodes: ${s.positive}/${s.examined}${s.macro ? ', macrometastasis' : s.micro ? ', micrometastasis' : s.itc ? ', isolated tumour cells' : ''}) is not reflected in the node counts here.`);
-    if (s.side && v.laterality && s.side !== v.laterality) warn(`Part ${sp.label} sentinel nodes are ${lc1(s.side)}; this specimen is ${lc1(v.laterality)}.`);
+    if (!nodesSubmitted(v) || c.examined < s.examined || c.macro < s.macro || c.micro < s.micro || c.itc < s.itc) warn(`Part ${sp.label} (frozen sentinel nodes: ${s.positive}/${s.examined}${s.macro ? ', macrometastasis' : s.micro ? ', micrometastasis' : s.itc ? ', isolated tumour cells' : ''}) is not reflected in the node counts here.`, 'nodesExamined');
+    if (s.side && v.laterality && s.side !== v.laterality) warn(`Part ${sp.label} sentinel nodes are ${lc1(s.side)}; this specimen is ${lc1(v.laterality)}.`, 'laterality');
   }
-  if (stripDot(ctx?.case?.priorSlnAccession) && !nodesSubmitted(v)) warn(`Prior sentinel node accession ${stripDot(ctx.case.priorSlnAccession)} is typed but no nodes are entered: enter its counts under Regional lymph nodes.`);
-  if (v.distantMets === 'Present' && !arr(v.distantSites).length) warn('Distant metastasis present: select the site(s).');
-  if (v.biomarkers === 'Performed' && !hasBiomarkerData(v)) warn('Biomarker studies "Performed" but no results are entered.');
-  if (/^Reported on the prior/.test(v.biomarkers || '') && !stripDot(v.priorBiomarkerSummary)) info('Biomarkers reported on the prior core: type the summary so it prints with the synoptic.');
-  if (v.biomarkers === 'Performed' && /\(Score 2\+\)$/.test(v.her2Score || '') && !v.her2Dish) warn('HER2 IHC 2+ is equivocal: reflex in situ hybridisation is expected.');
+  if (stripDot(ctx?.case?.priorSlnAccession) && !nodesSubmitted(v)) warn(`Prior sentinel node accession ${stripDot(ctx.case.priorSlnAccession)} is typed but no nodes are entered: enter its counts under Regional lymph nodes.`, 'nodesExamined');
+  if (v.distantMets === 'Present' && !arr(v.distantSites).length) warn('Distant metastasis present: select the site(s).', 'distantSites');
+  if (v.biomarkers === 'Performed' && !hasBiomarkerData(v)) warn('Biomarker studies "Performed" but no results are entered.', 'er');
+  if (/^Reported on the prior/.test(v.biomarkers || '') && !stripDot(v.priorBiomarkerSummary)) info('Biomarkers reported on the prior core: type the summary so it prints with the synoptic.', 'priorBiomarkerSummary');
+  if (v.biomarkers === 'Performed' && /\(Score 2\+\)$/.test(v.her2Score || '') && !v.her2Dish) warn('HER2 IHC 2+ is equivocal: reflex in situ hybridisation is expected.', 'her2Dish');
   sharedChecks(part, st, out);
   if (st.stage) info(`AJCC 8th anatomic stage group (${st.M === 'M-' ? 'if cM0' : 'pM recorded'}): ${st.stage}${st.overridden ? ' (from the override)' : ''}. The prognostic stage group (grade, ER, PR, HER2) is not printed.`);
   return out;

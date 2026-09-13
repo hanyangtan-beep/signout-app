@@ -49,6 +49,7 @@
     {
       "level": "error",
       "message": "Pattern percentages sum to 0 %, not 100 %.",
+      "field": "patterns",
       "part": "A"
     },
     {

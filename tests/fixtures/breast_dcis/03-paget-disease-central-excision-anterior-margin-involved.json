@@ -43,11 +43,13 @@
     {
       "level": "info",
       "message": "Paget's disease at a margin: re-excision is usually recommended after breast-conserving surgery.",
+      "field": "marginsDcis",
       "part": "A"
     },
     {
       "level": "info",
       "message": "ER (and PR) are requested for DCIS to guide endocrine therapy (QMH: use the Breast IHC/DISH template).",
+      "field": "biomarkers",
       "part": "A"
     }
   ]

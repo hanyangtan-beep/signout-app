@@ -45,6 +45,7 @@
     {
       "level": "info",
       "message": "Malignant phyllodes tumour within 10 mm of the posterior margin (8 mm): a comment on re-excision is added.",
+      "field": "margins",
       "part": "A"
     }
   ]

@@ -19,8 +19,8 @@
 //               MMR proficient"
 // Wording is protected by tests/colon_resection.test.js — change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz3x3k4';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz3x3k4';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz4g8e1';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz4g8e1';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
@@ -334,41 +334,44 @@ export function diagnosis(part, ctx) {
 export function validate(part) {
   const v = part.values;
   const out = [];
-  const err = (m) => out.push({ level: 'error', message: m });
-  const warn = (m) => out.push({ level: 'warn', message: m });
+  // The optional second argument is the id of the field the check is about; the Checks panel
+  // uses it to jump to that field. Omit it when a check does not point at one field.
+  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
+  const err = (m, field) => at('error', m, field);
+  const warn = (m, field) => at('warn', m, field);
   const invasive = v.tumourExtension && !NO_PRIMARY.includes(v.tumourExtension) && !NON_INVASIVE.includes(v.tumourExtension);
-  if (!v.tumourExtension) err('Tumour extension is required to assign pT.');
-  if (invasive && (!v.grade || v.grade === 'Not applicable')) warn('Histologic grade is not recorded for an invasive carcinoma.');
-  if (v.tumourExtension === 'Invades submucosa' && (!v.submucosalDepth || v.submucosalDepth === 'Cannot be determined')) warn('pT1 tumour: depth of submucosal invasion is not recorded.');
-  if (v.tumourExtension === 'Directly invades or adheres to adjacent structure(s)' && !(v.adjacentStructure || '').trim()) warn('pT4b: specify the adjacent structure invaded.');
+  if (!v.tumourExtension) err('Tumour extension is required to assign pT.', 'tumourExtension');
+  if (invasive && (!v.grade || v.grade === 'Not applicable')) warn('Histologic grade is not recorded for an invasive carcinoma.', 'grade');
+  if (v.tumourExtension === 'Invades submucosa' && (!v.submucosalDepth || v.submucosalDepth === 'Cannot be determined')) warn('pT1 tumour: depth of submucosal invasion is not recorded.', 'submucosalDepth');
+  if (v.tumourExtension === 'Directly invades or adheres to adjacent structure(s)' && !(v.adjacentStructure || '').trim()) warn('pT4b: specify the adjacent structure invaded.', 'adjacentStructure');
   const ex = int(v.nodesExamined); const pos = int(v.nodesPositive); const apEx = int(v.apicalExamined); const apPos = int(v.apicalPositive);
-  if (ex === null) err('Number of regional lymph nodes examined is required (enter 0 if none found).');
-  else if (pos === null) err('Number of involved lymph nodes is required (enter 0 if none).');
-  if (ex !== null && pos !== null && pos > ex) err('Involved lymph nodes exceed the number examined.');
-  if (apEx !== null && ex !== null && apEx > ex) err('Apical nodes examined exceed the total nodes examined.');
-  if (apPos !== null && apEx !== null && apPos > apEx) err('Apical nodes involved exceed the apical nodes examined.');
-  if (apPos !== null && pos !== null && apPos > pos) err('Apical nodes involved exceed the total nodes involved.');
-  if (ex !== null && ex > 0 && ex < 12 && invasive && (!v.treatmentEffect || v.treatmentEffect === 'No known presurgical therapy')) warn(`Only ${ex} lymph nodes examined (12 or more recommended); consider further sampling of the mesentery.`);
-  if (pos && (!v.ene || v.ene === 'Not applicable')) warn('Extranodal extension is not recorded for a node-positive case.');
-  if (v.tumourDeposits === 'Present' && int(v.tumourDepositsCount) === null) warn('Tumour deposits present: record the number.');
+  if (ex === null) err('Number of regional lymph nodes examined is required (enter 0 if none found).', 'nodesExamined');
+  else if (pos === null) err('Number of involved lymph nodes is required (enter 0 if none).', 'nodesPositive');
+  if (ex !== null && pos !== null && pos > ex) err('Involved lymph nodes exceed the number examined.', 'nodesPositive');
+  if (apEx !== null && ex !== null && apEx > ex) err('Apical nodes examined exceed the total nodes examined.', 'apicalExamined');
+  if (apPos !== null && apEx !== null && apPos > apEx) err('Apical nodes involved exceed the apical nodes examined.', 'apicalPositive');
+  if (apPos !== null && pos !== null && apPos > pos) err('Apical nodes involved exceed the total nodes involved.', 'apicalPositive');
+  if (ex !== null && ex > 0 && ex < 12 && invasive && (!v.treatmentEffect || v.treatmentEffect === 'No known presurgical therapy')) warn(`Only ${ex} lymph nodes examined (12 or more recommended); consider further sampling of the mesentery.`, 'nodesExamined');
+  if (pos && (!v.ene || v.ene === 'Not applicable')) warn('Extranodal extension is not recorded for a node-positive case.', 'ene');
+  if (v.tumourDeposits === 'Present' && int(v.tumourDepositsCount) === null) warn('Tumour deposits present: record the number.', 'tumourDepositsCount');
   if (invasive) {
-    for (const [name, s, mm] of [['Proximal', v.proximalMargin, v.proximalMarginMm], ['Distal', v.distalMargin, v.distalMarginMm], ['Radial / mesenteric', v.radialMargin, v.radialMarginMm]]) {
-      if (!s) err(`${name} margin status is required.`);
-      else if (s === 'Uninvolved by invasive carcinoma' && num(mm) === null) warn(`${name} margin: record the clearance in mm.`);
+    for (const [name, s, mm, statusField, mmField] of [['Proximal', v.proximalMargin, v.proximalMarginMm, 'proximalMargin', 'proximalMarginMm'], ['Distal', v.distalMargin, v.distalMarginMm, 'distalMargin', 'distalMarginMm'], ['Radial / mesenteric', v.radialMargin, v.radialMarginMm, 'radialMargin', 'radialMarginMm']]) {
+      if (!s) err(`${name} margin status is required.`, statusField);
+      else if (s === 'Uninvolved by invasive carcinoma' && num(mm) === null) warn(`${name} margin: record the clearance in mm.`, mmField);
     }
-    if (isRectal(v) && v.radialMargin === 'Uninvolved by invasive carcinoma' && num(v.radialMarginMm) !== null && num(v.radialMarginMm) <= 1) warn('Circumferential margin clearance is 1 mm or less - regarded as involved for rectal carcinoma.');
-    if (isRectal(v) && (!v.mesorectum || v.mesorectum === 'Not applicable')) warn('Rectal tumour: record the macroscopic intactness of the mesorectum.');
-    if (isRectal(v) && (!v.rectalLocation || v.rectalLocation === 'Not applicable')) warn('Rectal tumour: record the location relative to the anterior peritoneal reflection.');
+    if (isRectal(v) && v.radialMargin === 'Uninvolved by invasive carcinoma' && num(v.radialMarginMm) !== null && num(v.radialMarginMm) <= 1) warn('Circumferential margin clearance is 1 mm or less - regarded as involved for rectal carcinoma.', 'radialMarginMm');
+    if (isRectal(v) && (!v.mesorectum || v.mesorectum === 'Not applicable')) warn('Rectal tumour: record the macroscopic intactness of the mesorectum.', 'mesorectum');
+    if (isRectal(v) && (!v.rectalLocation || v.rectalLocation === 'Not applicable')) warn('Rectal tumour: record the location relative to the anterior peritoneal reflection.', 'rectalLocation');
   }
   const bc = int(v.buddingCount);
-  if (bc !== null && v.buddingScore && v.buddingScore !== 'Cannot be determined' && v.buddingScore !== buddingScore(v)) warn(`Tumour budding score does not match the count (${bc} buds = ${buddingScore(v)}); the count is used.`);
+  if (bc !== null && v.buddingScore && v.buddingScore !== 'Cannot be determined' && v.buddingScore !== buddingScore(v)) warn(`Tumour budding score does not match the count (${bc} buds = ${buddingScore(v)}); the count is used.`, 'buddingScore');
   if ((v.tnmOverride || '').trim()) {
     const st = staging(part);
-    if (!st.overridden) err(`Override "${v.tnmOverride.trim()}" could not be parsed (use e.g. "pT2 pN1a" or "ypT3 pN0 pM1a").`);
-    else if (!(v.tnmOverrideReason || '').trim()) err('Give a reason for overriding the derived pTNM.');
+    if (!st.overridden) err(`Override "${v.tnmOverride.trim()}" could not be parsed (use e.g. "pT2 pN1a" or "ypT3 pN0 pM1a").`, 'tnmOverride');
+    else if (!(v.tnmOverrideReason || '').trim()) err('Give a reason for overriding the derived pTNM.', 'tnmOverrideReason');
   }
-  if (v.treatmentEffect && v.treatmentEffect !== 'No known presurgical therapy' && v.treatmentEffect !== 'Cannot be determined' && v.tumourExtension === 'No evidence of primary tumour' && pos) warn('Complete response in the primary with positive nodes: check the treatment effect score.');
-  if (v.mmr === 'Not performed' && invasive) warn('Mismatch repair immunohistochemistry not recorded (recommended for all colorectal carcinomas).');
+  if (v.treatmentEffect && v.treatmentEffect !== 'No known presurgical therapy' && v.treatmentEffect !== 'Cannot be determined' && v.tumourExtension === 'No evidence of primary tumour' && pos) warn('Complete response in the primary with positive nodes: check the treatment effect score.', 'treatmentEffect');
+  if (v.mmr === 'Not performed' && invasive) warn('Mismatch repair immunohistochemistry not recorded (recommended for all colorectal carcinomas).', 'mmr');
   return out;
 }
 

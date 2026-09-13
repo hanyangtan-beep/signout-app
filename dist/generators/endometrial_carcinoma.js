@@ -15,9 +15,9 @@
 // There is no separate narrative microscopy paragraph. Wording is protected by
 // tests/endometrial_carcinoma.test.js and tests/fixtures/endometrium - change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz3x3k4';
-import * as S from '../src/staging/endometrium.js?v=mtz3x3k4';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz3x3k4';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz4g8e1';
+import * as S from '../src/staging/endometrium.js?v=mtz4g8e1';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz4g8e1';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
@@ -537,80 +537,83 @@ export function diagnosis(part, ctx) {
 export function validate(part) {
   const v = part.values;
   const out = [];
-  const err = (m) => out.push({ level: 'error', message: m });
-  const warn = (m) => out.push({ level: 'warn', message: m });
-  const info = (m) => out.push({ level: 'info', message: m });
-  if (!v.myoInvasion) err('Myometrial invasion is required.');
-  if (v.myoInvasion === 'Cannot be assessed (explain)' && !stripDot(v.myoCannot)) warn('Myometrial invasion cannot be assessed: give the reason.');
+  // The optional second argument is the id of the field the check is about; the Checks panel
+  // uses it to jump to that field. Omit it when a check does not point at one field.
+  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
+  const err = (m, field) => at('error', m, field);
+  const warn = (m, field) => at('warn', m, field);
+  const info = (m, field) => at('info', m, field);
+  if (!v.myoInvasion) err('Myometrial invasion is required.', 'myoInvasion');
+  if (v.myoInvasion === 'Cannot be assessed (explain)' && !stripDot(v.myoCannot)) warn('Myometrial invasion cannot be assessed: give the reason.', 'myoCannot');
   if (v.myoInvasion === S.MYO_NONE) {
     const polypMicro = v.noInvasionExtent === S.NOINV_POLYP || v.noInvasionExtent === S.NOINV_POLYP_AND_ENDOMETRIUM;
-    if (polypMicro && v.tumourSite !== 'Endometrial polyp') warn('Microscopy places the tumour in an endometrial polyp but the macroscopic Tumour site is not "Endometrial polyp".');
-    if (!polypMicro && v.tumourSite === 'Endometrial polyp' && v.noInvasionExtent !== 'Cannot be determined') info('Macroscopic Tumour site is "Endometrial polyp" but the tumour is recorded as confined to the endometrium; state whether the underlying endometrium is involved (FIGO 2023 IA1 basis).');
-    if (v.noInvasionExtent === 'Cannot be determined') warn('Extent without myometrial invasion cannot be determined; the FIGO 2023 IA1 basis is left open.');
+    if (polypMicro && v.tumourSite !== 'Endometrial polyp') warn('Microscopy places the tumour in an endometrial polyp but the macroscopic Tumour site is not "Endometrial polyp".', 'tumourSite');
+    if (!polypMicro && v.tumourSite === 'Endometrial polyp' && v.noInvasionExtent !== 'Cannot be determined') info('Macroscopic Tumour site is "Endometrial polyp" but the tumour is recorded as confined to the endometrium; state whether the underlying endometrium is involved (FIGO 2023 IA1 basis).', 'noInvasionExtent');
+    if (v.noInvasionExtent === 'Cannot be determined') warn('Extent without myometrial invasion cannot be determined; the FIGO 2023 IA1 basis is left open.', 'noInvasionExtent');
   }
   const d = num(v.depthMm); const t = num(v.myoThicknessMm); const pct = myoPercent(v);
-  if (d !== null && t !== null && d > t) err('Depth of myometrial invasion exceeds the myometrial thickness.');
-  if (pct !== null && v.myoInvasion === S.MYO_GE_HALF && pct < 50) warn(`"50% or greater" is ticked but the measurements give ${fmt(pct)}%.`);
-  if (pct !== null && v.myoInvasion === S.MYO_LT_HALF && pct >= 50) warn(`"Less than 50%" is ticked but the measurements give ${fmt(pct)}%.`);
-  if (S.anyMyoinvasion(v) && (d === null || t === null)) warn('Myoinvasive tumour: record the depth of invasion and the myometrial thickness in mm.');
-  if (v.tumourSite === 'Endometrial polyp' && S.anyMyoinvasion(v)) warn('Tumour site is "Endometrial polyp" but myometrial invasion is recorded; the invasive component is not confined to the polyp.');
-  if (/Mixed cell|Other \(specify\)/.test(v.histType || '') && !stripDot(v.histTypeOther)) err('Histologic type: specify the type(s) and percentages.');
-  if (v.grade === 'Other (specify)' && !stripDot(v.gradeOther)) err('Histologic grade: specify.');
+  if (d !== null && t !== null && d > t) err('Depth of myometrial invasion exceeds the myometrial thickness.', 'depthMm');
+  if (pct !== null && v.myoInvasion === S.MYO_GE_HALF && pct < 50) warn(`"50% or greater" is ticked but the measurements give ${fmt(pct)}%.`, 'myoInvasion');
+  if (pct !== null && v.myoInvasion === S.MYO_LT_HALF && pct >= 50) warn(`"Less than 50%" is ticked but the measurements give ${fmt(pct)}%.`, 'myoInvasion');
+  if (S.anyMyoinvasion(v) && (d === null || t === null)) warn('Myoinvasive tumour: record the depth of invasion and the myometrial thickness in mm.', 'depthMm');
+  if (v.tumourSite === 'Endometrial polyp' && S.anyMyoinvasion(v)) warn('Tumour site is "Endometrial polyp" but myometrial invasion is recorded; the invasive component is not confined to the polyp.', 'tumourSite');
+  if (/Mixed cell|Other \(specify\)/.test(v.histType || '') && !stripDot(v.histTypeOther)) err('Histologic type: specify the type(s) and percentages.', 'histTypeOther');
+  if (v.grade === 'Other (specify)' && !stripDot(v.gradeOther)) err('Histologic grade: specify.', 'gradeOther');
   if (gradeIsDerived(v)) {
     const dg = derivedGrade(v);
-    if (v.histType === 'Other (specify)') err('Histologic grade: no grade can be derived for an "Other" histotype; pick it explicitly.');
+    if (v.histType === 'Other (specify)') err('Histologic grade: no grade can be derived for an "Other" histotype; pick it explicitly.', 'grade');
     else info(`Histologic grade derived: ${dg.grade} - ${dg.reason}.`);
   } else {
-    if (v.histType === S.ENDOMETRIOID && /^High-grade/.test(v.grade || '')) warn('Endometrioid carcinoma should carry a FIGO grade rather than "High-grade (non-endometrioid carcinoma)".');
-    if (v.histType && v.histType !== S.ENDOMETRIOID && !/Mixed cell|Other/.test(v.histType) && /^FIGO grade/.test(v.grade || '')) warn('FIGO grading applies to endometrioid carcinoma only; non-endometrioid carcinomas are high grade by definition.');
-    if (v.histType === S.ENDOMETRIOID && /^FIGO grade/.test(v.grade || '') && v.grade !== derivedGrade(v).grade) warn(`Histologic grade picked (${v.grade}) differs from the grade derived from the solid growth and nuclear grade (${derivedGrade(v).grade}); the picked value is used.`);
+    if (v.histType === S.ENDOMETRIOID && /^High-grade/.test(v.grade || '')) warn('Endometrioid carcinoma should carry a FIGO grade rather than "High-grade (non-endometrioid carcinoma)".', 'grade');
+    if (v.histType && v.histType !== S.ENDOMETRIOID && !/Mixed cell|Other/.test(v.histType) && /^FIGO grade/.test(v.grade || '')) warn('FIGO grading applies to endometrioid carcinoma only; non-endometrioid carcinomas are high grade by definition.', 'grade');
+    if (v.histType === S.ENDOMETRIOID && /^FIGO grade/.test(v.grade || '') && v.grade !== derivedGrade(v).grade) warn(`Histologic grade picked (${v.grade}) differs from the grade derived from the solid growth and nuclear grade (${derivedGrade(v).grade}); the picked value is used.`, 'grade');
   }
-  if (v.histType === S.ENDOMETRIOID && arr(v.architecture).includes('Solid (non-squamous)') && /^5% or less/.test(v.solidPct || '5% or less')) warn('Solid (non-squamous) architecture is ticked but solid growth is recorded as 5% or less.');
-  if (/^Carcinosarcoma/.test(v.histType || '') && /other or mixed/.test(v.csSarcomatous || '') && !stripDot(v.csSarcomatousDetail)) err('Carcinosarcoma: specify the heterologous elements.');
-  if (v.cervix === 'Cervical stromal invasion' && num(v.cervixDepthMm) === null) warn('Cervical stromal invasion: record the depth and the stromal thickness in mm.');
-  if (v.lvsi === 'Present, extent not specified') warn('LVSI is present but not quantified; focal (fewer than 5 vessels) versus substantial (5 or more) changes the FIGO 2023 reference stage.');
+  if (v.histType === S.ENDOMETRIOID && arr(v.architecture).includes('Solid (non-squamous)') && /^5% or less/.test(v.solidPct || '5% or less')) warn('Solid (non-squamous) architecture is ticked but solid growth is recorded as 5% or less.', 'architecture');
+  if (/^Carcinosarcoma/.test(v.histType || '') && /other or mixed/.test(v.csSarcomatous || '') && !stripDot(v.csSarcomatousDetail)) err('Carcinosarcoma: specify the heterologous elements.', 'csSarcomatousDetail');
+  if (v.cervix === 'Cervical stromal invasion' && num(v.cervixDepthMm) === null) warn('Cervical stromal invasion: record the depth and the stromal thickness in mm.', 'cervixDepthMm');
+  if (v.lvsi === 'Present, extent not specified') warn('LVSI is present but not quantified; focal (fewer than 5 vessels) versus substantial (5 or more) changes the FIGO 2023 reference stage.', 'lvsi');
   const invRaw = arr(v.otherInvolvement);
-  if (invRaw.length > 1 && invRaw.includes('Not identified')) warn('Other tissue / organ involvement: "Not identified" is ticked together with involved sites.');
-  if (invRaw.some((s) => /Other organs|Cannot be determined/.test(s)) && !stripDot(v.otherInvolvementDetail)) warn('Other tissue / organ involvement: specify the site or explain.');
-  if (v.ovarianSynchronous === true && !S.ovaryInvolved(v)) warn('Synchronous ovarian tumour ticked but no ovary is recorded as involved.');
-  if (v.ovarianSynchronous === true && S.histotypeClass(stagingValues(v)) !== 'non-aggressive') warn('The synchronous uterine and ovarian pattern (IA3) applies to low-grade endometrioid carcinoma only.');
+  if (invRaw.length > 1 && invRaw.includes('Not identified')) warn('Other tissue / organ involvement: "Not identified" is ticked together with involved sites.', 'otherInvolvement');
+  if (invRaw.some((s) => /Other organs|Cannot be determined/.test(s)) && !stripDot(v.otherInvolvementDetail)) warn('Other tissue / organ involvement: specify the site or explain.', 'otherInvolvementDetail');
+  if (v.ovarianSynchronous === true && !S.ovaryInvolved(v)) warn('Synchronous ovarian tumour ticked but no ovary is recorded as involved.', 'ovarianSynchronous');
+  if (v.ovarianSynchronous === true && S.histotypeClass(stagingValues(v)) !== 'non-aggressive') warn('The synchronous uterine and ovarian pattern (IA3) applies to low-grade endometrioid carcinoma only.', 'ovarianSynchronous');
   for (const p of ['pelvic', 'pa']) {
     const n = S.nodes(v, p); const name = regionName[p];
-    if (n.examined === null) { if (p === 'pelvic') err('Pelvic lymph nodes: number examined is required (enter 0 if none submitted).'); continue; }
-    if (n.examined > 0 && int(v[`${p}Macro`]) === null && int(v[`${p}Micro`]) === null) err(`${uc1(name)} lymph nodes: record the numbers with macrometastasis and micrometastasis (enter 0 if none).`);
-    if (n.positive + n.itc > n.examined) err(`${uc1(name)} lymph nodes: involved nodes exceed the number examined.`);
-    if (n.positive && (!v[`${p}Ene`] || v[`${p}Ene`] === 'Not applicable')) warn(`${uc1(name)} lymph nodes: extranodal extension is not recorded for a node-positive region.`);
-    if (n.positive && num(v[`${p}DepositMm`]) === null) warn(`${uc1(name)} lymph nodes: record the size of the largest metastatic deposit in mm.`);
-    if (n.examined === 0 && (int(v[`${p}Macro`]) || int(v[`${p}Micro`]) || int(v[`${p}Itc`]))) err(`${uc1(name)} lymph nodes: involved nodes recorded but none examined.`);
+    if (n.examined === null) { if (p === 'pelvic') err('Pelvic lymph nodes: number examined is required (enter 0 if none submitted).', 'pelvicExamined'); continue; }
+    if (n.examined > 0 && int(v[`${p}Macro`]) === null && int(v[`${p}Micro`]) === null) err(`${uc1(name)} lymph nodes: record the numbers with macrometastasis and micrometastasis (enter 0 if none).`, `${p}Macro`);
+    if (n.positive + n.itc > n.examined) err(`${uc1(name)} lymph nodes: involved nodes exceed the number examined.`, `${p}Examined`);
+    if (n.positive && (!v[`${p}Ene`] || v[`${p}Ene`] === 'Not applicable')) warn(`${uc1(name)} lymph nodes: extranodal extension is not recorded for a node-positive region.`, `${p}Ene`);
+    if (n.positive && num(v[`${p}DepositMm`]) === null) warn(`${uc1(name)} lymph nodes: record the size of the largest metastatic deposit in mm.`, `${p}DepositMm`);
+    if (n.examined === 0 && (int(v[`${p}Macro`]) || int(v[`${p}Micro`]) || int(v[`${p}Itc`]))) err(`${uc1(name)} lymph nodes: involved nodes recorded but none examined.`, `${p}Examined`);
   }
   const anyNodes = (S.nodes(v, 'pelvic').examined || 0) + (S.nodes(v, 'pa').examined || 0);
   if (!anyNodes && (S.substantialLvsi(v) || S.isAggressive(stagingValues(v)))) info('No lymph nodes examined (pNX) in a case with substantial LVSI or an aggressive histotype.');
   const mets = arr(v.distantMets);
-  if (mets.length > 1 && mets.includes('Not identified')) warn('Distant metastasis: "Not identified" is ticked together with metastatic sites.');
-  if (mets.some((s) => /\(specify\)/.test(s)) && !stripDot(v.distantDetail)) warn('Distant metastasis: specify the site.');
-  if (mmrLost(v) && !stripDot(v.mmrDetail)) err('MMR loss: name the protein(s) lost.');
-  if (poleMutated(v) && !stripDot(v.poleDetail)) warn('POLE mutated: record the variant.');
-  if (!v.mmrIhc || v.mmrIhc === 'Not performed') warn('MMR immunohistochemistry is not recorded; universal MMR testing is recommended for endometrial carcinoma.');
+  if (mets.length > 1 && mets.includes('Not identified')) warn('Distant metastasis: "Not identified" is ticked together with metastatic sites.', 'distantMets');
+  if (mets.some((s) => /\(specify\)/.test(s)) && !stripDot(v.distantDetail)) warn('Distant metastasis: specify the site.', 'distantDetail');
+  if (mmrLost(v) && !stripDot(v.mmrDetail)) err('MMR loss: name the protein(s) lost.', 'mmrDetail');
+  if (poleMutated(v) && !stripDot(v.poleDetail)) warn('POLE mutated: record the variant.', 'poleDetail');
+  if (!v.mmrIhc || v.mmrIhc === 'Not performed') warn('MMR immunohistochemistry is not recorded; universal MMR testing is recommended for endometrial carcinoma.', 'mmrIhc');
   if (poleMutated(v) && (mmrLost(v) || p53Abnormal(v)) && v.promise !== 'Double classifier (explain)' && v.promise !== 'POLE-mutated carcinoma') {
-    warn('POLE mutation with MMR loss or abnormal p53: pick "Double classifier (explain)" or confirm POLE-mutated; POLE takes precedence.');
+    warn('POLE mutation with MMR loss or abnormal p53: pick "Double classifier (explain)" or confirm POLE-mutated; POLE takes precedence.', 'promise');
   }
   if (mmrLost(v) && p53Abnormal(v) && !poleMutated(v) && v.promise !== 'Double classifier (explain)' && v.promise !== 'Mismatch repair-deficient carcinoma') {
-    warn('MMR loss with abnormal p53: pick "Double classifier (explain)" or confirm MMR-deficient; MMRd takes precedence over p53abn.');
+    warn('MMR loss with abnormal p53: pick "Double classifier (explain)" or confirm MMR-deficient; MMRd takes precedence over p53abn.', 'promise');
   }
-  if (v.promise === 'Double classifier (explain)' && !stripDot(v.promiseDetail)) err('Double classifier: explain the combination and the class assigned.');
+  if (v.promise === 'Double classifier (explain)' && !stripDot(v.promiseDetail)) err('Double classifier: explain the combination and the class assigned.', 'promiseDetail');
   if (v.promise && v.promise !== 'Derive from the results above' && v.promise !== 'Double classifier (explain)') {
     const derived = derivedPromise(v);
-    if (derived !== v.promise && derived !== 'Not classified (testing incomplete)') warn(`Molecular class picked (${v.promise}) differs from the derived class (${derived}); the picked value is used.`);
+    if (derived !== v.promise && derived !== 'Not classified (testing incomplete)') warn(`Molecular class picked (${v.promise}) differs from the derived class (${derived}); the picked value is used.`, 'promise');
   }
-  if (p53Abnormal(v) && v.histType === S.ENDOMETRIOID && /^FIGO grade [12]/.test(resolvedGrade(v))) warn('Abnormal p53 in a low-grade endometrioid carcinoma is unusual; review the staining pattern and consider a serous or high-grade component.');
+  if (p53Abnormal(v) && v.histType === S.ENDOMETRIOID && /^FIGO grade [12]/.test(resolvedGrade(v))) warn('Abnormal p53 in a low-grade endometrioid carcinoma is unusual; review the staining pattern and consider a serous or high-grade component.', 'p53');
   if (resolvedPromise(v) === 'Not classified (testing incomplete)' && (pending(v.pole) || pending(v.mmrIhc) || pending(v.p53))) info('Molecular testing is pending; the FIGO 2023 reference stage may change once the class is confirmed.');
   if (v.peritonealFluid === 'Results pending') info('Peritoneal fluid cytology is pending; correlate with the separate cytology report.');
-  if (v.vaginalMargin === 'Uninvolved by carcinoma' && num(v.vaginalMarginMm) === null && (v.cervix === 'Cervical stromal invasion' || /Radical/.test(v.procedure || ''))) warn('Cervical involvement or radical hysterectomy: record the distance to the vaginal cuff margin in mm.');
-  if (/Radical/.test(v.procedure || '') && (!v.parametrialMargin || v.parametrialMargin === 'Not applicable')) warn('Radical hysterectomy: report the parametrial margin.');
+  if (v.vaginalMargin === 'Uninvolved by carcinoma' && num(v.vaginalMarginMm) === null && (v.cervix === 'Cervical stromal invasion' || /Radical/.test(v.procedure || ''))) warn('Cervical involvement or radical hysterectomy: record the distance to the vaginal cuff margin in mm.', 'vaginalMarginMm');
+  if (/Radical/.test(v.procedure || '') && (!v.parametrialMargin || v.parametrialMargin === 'Not applicable')) warn('Radical hysterectomy: report the parametrial margin.', 'parametrialMargin');
   if ((v.tnmOverride || '').trim()) {
     const st = staging(part);
-    if (!st.overridden) err(`Override "${v.tnmOverride.trim()}" could not be parsed (use e.g. "pT1b pN0").`);
-    else if (!(v.tnmOverrideReason || '').trim()) err('Give a reason for overriding the derived pTNM.');
+    if (!st.overridden) err(`Override "${v.tnmOverride.trim()}" could not be parsed (use e.g. "pT1b pN0").`, 'tnmOverride');
+    else if (!(v.tnmOverrideReason || '').trim()) err('Give a reason for overriding the derived pTNM.', 'tnmOverrideReason');
   }
   for (const l of S.referenceLines(stagingValues(v))) info(l);
   return out;

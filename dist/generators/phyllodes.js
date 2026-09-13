@@ -2,14 +2,14 @@
 // Element order follows the QMH BREAST-Phyllodes page (CAP Phyllodes Tumor 4.1.0.0); house exceptions: a
 // Specimen and tumour section, the Tumour histology paragraph after the histologic type, the epithelial
 // component and the margin walker text. pTNM prints only with the printPTNM option, and only for malignant phyllodes tumour (AJCC staging does not apply to benign or borderline tumours).
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz3x3k4';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz3x3k4';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz4g8e1';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz4g8e1';
 import {
   num, int, fmt, lc1, uc1, countWords, stripDot, arr, listJoin, specify, plural, item,
   procedureText, siteText, specimenName, diagnosisHead, otherParts, hasExtraParts, otherSpecimenLines, specimens, findingText, lettered,
   specimenSentence, tumourSentence, blockKey, marginItems, marginsPhrase, closestMargin, closestWords, nodeItems, nodesPhrase, nodeCounts, nodesSubmitted,
   metastasisValue, metastasisPhrase, ptnmSection, sharedChecks, marginChecks
-} from './breast_shared.js?v=mtz3x3k4';
+} from './breast_shared.js?v=mtz4g8e1';
 
 export { specimenName, specimens, otherSpecimenLines, hasExtraParts, blockKey };
 
@@ -207,37 +207,40 @@ export function comment(parts) {
 export function validate(part, ctx) {
   const v = part.values;
   const out = [];
-  const err = (m) => out.push({ level: 'error', message: m });
-  const warn = (m) => out.push({ level: 'warn', message: m });
-  const info = (m) => out.push({ level: 'info', message: m });
+  // The optional second argument is the id of the field the check is about; the Checks panel
+  // uses it to jump to that field. Omit it when a check does not point at one field.
+  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
+  const err = (m, field) => at('error', m, field);
+  const warn = (m, field) => at('warn', m, field);
+  const info = (m, field) => at('info', m, field);
   const size = num(v.sizeMm);
   const g = gradeOf(v);
   if (!noTumour(v)) {
-    if (v.sizeMode !== 'Cannot be determined' && size === null) warn('Tumour size not recorded: pT cannot be derived.');
-    if (/^Mitoses per/.test(v.mitoticMode || '') && num(v.mitoticCount) === null) warn('Mitotic rate: enter the count.');
+    if (v.sizeMode !== 'Cannot be determined' && size === null) warn('Tumour size not recorded: pT cannot be derived.', 'sizeMm');
+    if (/^Mitoses per/.test(v.mitoticMode || '') && num(v.mitoticCount) === null) warn('Mitotic rate: enter the count.', 'mitoticCount');
     const sg = suggestedGrade(v);
     if (g && sg !== g) {
-      if (sg === 'malignant' && arr(v.heterologous).some((h) => h !== 'Not identified')) err('A malignant heterologous element makes the tumour malignant regardless of the other features.');
-      else warn(`Histologic type is ${g} but the WHO elements entered suggest ${sg}: review the cellularity, atypia, overgrowth, mitoses and border.`);
+      if (sg === 'malignant' && arr(v.heterologous).some((h) => h !== 'Not identified')) err('A malignant heterologous element makes the tumour malignant regardless of the other features.', 'histType');
+      else warn(`Histologic type is ${g} but the WHO elements entered suggest ${sg}: review the cellularity, atypia, overgrowth, mitoses and border.`, 'histType');
     }
-    if (arr(v.heterologous).includes('Other (specify)') && !stripDot(v.heterologousDetail)) warn('Heterologous element "Other" needs the specified type.');
-    if (arr(v.epithelium).some((e) => /\(specify\)$/.test(e)) && !stripDot(v.epitheliumDetail)) warn('Epithelial component needs the specified lesion.');
+    if (arr(v.heterologous).includes('Other (specify)') && !stripDot(v.heterologousDetail)) warn('Heterologous element "Other" needs the specified type.', 'heterologousDetail');
+    if (arr(v.epithelium).some((e) => /\(specify\)$/.test(e)) && !stripDot(v.epitheliumDetail)) warn('Epithelial component needs the specified lesion.', 'epitheliumDetail');
     if (arr(v.epithelium).some((e) => /carcinoma in situ/.test(e))) info('In situ carcinoma within a phyllodes tumour: consider the DCIS template or a separate diagnosis line.');
-    const pm = marginChecks(v.margins, 'tumour', out);
+    const pm = marginChecks(v.margins, 'tumour', out, { field: 'margins' });
     if (g && g !== 'benign') {
       const close = pm.faces.filter((f) => f.status === 'uninvolved' && !f.gt && f.mm < 10);
-      if (close.length) info(`${uc1(g)} phyllodes tumour within 10 mm of the ${listJoin(close.map((f) => lc1(f.face)))} margin${close.length > 1 ? 's' : ''} (${close.map((f) => `${fmt(f.mm)} mm`).join(', ')}): a comment on re-excision is added.`);
+      if (close.length) info(`${uc1(g)} phyllodes tumour within 10 mm of the ${listJoin(close.map((f) => lc1(f.face)))} margin${close.length > 1 ? 's' : ''} (${close.map((f) => `${fmt(f.mm)} mm`).join(', ')}): a comment on re-excision is added.`, 'margins');
     }
-    if (pm.faces.some((f) => f.status === 'involved')) warn('Tumour at a margin: re-excision is usually recommended for phyllodes tumours of any grade.');
+    if (pm.faces.some((f) => f.status === 'involved')) warn('Tumour at a margin: re-excision is usually recommended for phyllodes tumours of any grade.', 'margins');
   }
   const st = staging(part);
   if (nodesSubmitted(v)) {
     const ex = int(v.nodesExamined); const pos = int(v.nodesPositive);
-    if (pos > ex) err(`Lymph nodes: ${pos} involved but only ${ex} examined.`);
-    if (pos > 0 && g !== 'malignant') warn('Nodal metastasis is essentially confined to malignant phyllodes tumours: review the grade.');
-    if (pos > 0 && num(v.depositMm) === null) info('Lymph nodes involved: record the size of the largest metastatic deposit.');
+    if (pos > ex) err(`Lymph nodes: ${pos} involved but only ${ex} examined.`, 'nodesExamined');
+    if (pos > 0 && g !== 'malignant') warn('Nodal metastasis is essentially confined to malignant phyllodes tumours: review the grade.', 'histType');
+    if (pos > 0 && num(v.depositMm) === null) info('Lymph nodes involved: record the size of the largest metastatic deposit.', 'depositMm');
   }
-  if (v.distantMets === 'Present' && !arr(v.distantSites).length) warn('Distant metastasis present: select the site(s).');
+  if (v.distantMets === 'Present' && !arr(v.distantSites).length) warn('Distant metastasis present: select the site(s).', 'distantSites');
   sharedChecks(part, st, out);
   return nodesSubmitted(v) ? out : out.filter((i) => !/^pNX/.test(i.message));
 }

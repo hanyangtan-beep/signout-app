@@ -16,10 +16,10 @@
 //   comment    the completion-resection staging sentence when a prior accession is typed
 // Wording is protected by tests/lung_carcinoma.test.js and tests/fixtures/lung - change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz3x3k4';
-import * as S from '../src/staging/lung.js?v=mtz3x3k4';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz3x3k4';
-import { typeMorphology, patternMorphology, STAS_SENTENCE, ADENO_CYTOLOGY } from './lung_morphology.js?v=mtz3x3k4';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz4g8e1';
+import * as S from '../src/staging/lung.js?v=mtz4g8e1';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz4g8e1';
+import { typeMorphology, patternMorphology, STAS_SENTENCE, ADENO_CYTOLOGY } from './lung_morphology.js?v=mtz4g8e1';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const fmt = (n) => (Number.isInteger(n) ? String(n) : String(Math.round(n * 10) / 10));
@@ -589,61 +589,64 @@ export function prefillFromFrozen(fv) {
 export function validate(part, ctx) {
   const v = part.values;
   const out = [];
-  const err = (m) => out.push({ level: 'error', message: m });
-  const warn = (m) => out.push({ level: 'warn', message: m });
-  const info = (m) => out.push({ level: 'info', message: m });
+  // The optional second argument is the id of the field the check is about; the Checks panel
+  // uses it to jump to that field. Omit it when a check does not point at one field.
+  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
+  const err = (m, field) => at('error', m, field);
+  const warn = (m, field) => at('warn', m, field);
+  const info = (m, field) => at('info', m, field);
   const t = v.histType || ADENO_NM;
   const size = num(v.tumourSizeMm); const inv = num(v.invasiveSizeMm);
-  if (size === null && !stripDot(v.tumourDims) && !stripDot(v.sizeCannot) && !(isCompletion(v) && v.residualTumour !== 'Present')) warn('Tumour size not recorded.');
-  if (inv !== null && size !== null && inv > size) err('Invasive size is larger than the total tumour size.');
+  if (size === null && !stripDot(v.tumourDims) && !stripDot(v.sizeCannot) && !(isCompletion(v) && v.residualTumour !== 'Present')) warn('Tumour size not recorded.', 'tumourSizeMm');
+  if (inv !== null && size !== null && inv > size) err('Invasive size is larger than the total tumour size.', 'invasiveSizeMm');
   if (isInvasiveNonMucinous(v)) {
     const pats = patternsOf(v);
-    if (!pats.length && !noResidual(v)) warn('Adenocarcinoma patterns with percentages not recorded: the predominant pattern and the IASLC grade cannot be derived.');
+    if (!pats.length && !noResidual(v)) warn('Adenocarcinoma patterns with percentages not recorded: the predominant pattern and the IASLC grade cannot be derived.', 'patterns');
     else {
       const sum = pats.reduce((s, p) => s + p.pct, 0);
-      if (Math.abs(sum - 100) > 0.5) err(`Pattern percentages sum to ${fmt(sum)} %, not 100 %.`);
-      if (predominant(pats) === 'lepidic' && inv !== null && inv <= 5 && size !== null && size <= 30) info('Lepidic-predominant tumour with 5 mm or less invasion: consider minimally invasive adenocarcinoma (pT1mi).');
-      if (predominant(pats) === 'lepidic' && inv === null && size !== null) warn('Lepidic-predominant adenocarcinoma: record the invasive size (lepidic component excluded) - it decides pT.');
+      if (Math.abs(sum - 100) > 0.5) err(`Pattern percentages sum to ${fmt(sum)} %, not 100 %.`, 'patterns');
+      if (predominant(pats) === 'lepidic' && inv !== null && inv <= 5 && size !== null && size <= 30) info('Lepidic-predominant tumour with 5 mm or less invasion: consider minimally invasive adenocarcinoma (pT1mi).', 'histType');
+      if (predominant(pats) === 'lepidic' && inv === null && size !== null) warn('Lepidic-predominant adenocarcinoma: record the invasive size (lepidic component excluded) - it decides pT.', 'invasiveSizeMm');
     }
   }
-  if (S.MIA.test(t) && inv !== null && inv > 5) err('Minimally invasive adenocarcinoma with more than 5 mm invasion: reclassify as invasive adenocarcinoma (pT1a or higher).');
-  if (S.MIA.test(t) && inv === null) warn('Minimally invasive adenocarcinoma: record the invasive size (5 mm or less).');
-  if (/\(specify/.test(t) && !stripDot(v.histTypeDetail)) err('Histologic type needs the specified component / type.');
-  if (isCarcinoid(v) && /NOS/.test(t)) info('Carcinoid tumour, NOS: mitoses per 2 mm2 and necrosis separate typical (< 2, no necrosis) from atypical (2-10 or necrosis) carcinoid.');
+  if (S.MIA.test(t) && inv !== null && inv > 5) err('Minimally invasive adenocarcinoma with more than 5 mm invasion: reclassify as invasive adenocarcinoma (pT1a or higher).', 'histType');
+  if (S.MIA.test(t) && inv === null) warn('Minimally invasive adenocarcinoma: record the invasive size (5 mm or less).', 'invasiveSizeMm');
+  if (/\(specify/.test(t) && !stripDot(v.histTypeDetail)) err('Histologic type needs the specified component / type.', 'histTypeDetail');
+  if (isCarcinoid(v) && /NOS/.test(t)) info('Carcinoid tumour, NOS: mitoses per 2 mm2 and necrosis separate typical (< 2, no necrosis) from atypical (2-10 or necrosis) carcinoid.', 'mitoses');
   if (isCarcinoid(v) && num(v.mitoses) !== null) {
     const mit = num(v.mitoses); const nec = /^Present/.test(v.necrosis || '');
-    if (/^Typical/.test(t) && (mit >= 2 || nec)) warn('Typical carcinoid with 2 or more mitoses per 2 mm2 or necrosis: the WHO criteria give atypical carcinoid.');
-    if (/^Atypical/.test(t) && mit < 2 && !nec) warn('Atypical carcinoid needs 2-10 mitoses per 2 mm2 or necrosis; neither is recorded.');
+    if (/^Typical/.test(t) && (mit >= 2 || nec)) warn('Typical carcinoid with 2 or more mitoses per 2 mm2 or necrosis: the WHO criteria give atypical carcinoid.', 'histType');
+    if (/^Atypical/.test(t) && mit < 2 && !nec) warn('Atypical carcinoid needs 2-10 mitoses per 2 mm2 or necrosis; neither is recorded.', 'histType');
   }
   const g = gradeOf(v);
-  if (g.source === 'derived' && /^GX/.test(g.value)) warn('Histologic grade: pick G1-G4 for this carcinoma type (IASLC grading applies to invasive non-mucinous adenocarcinoma only).');
-  if (/^PL[12]/.test(v.pleuralInvasion || '') && v.elasticStain !== true) info('Visceral pleura invasion PL1 / PL2 recorded without an elastic stain: note the stain when performed.');
+  if (g.source === 'derived' && /^GX/.test(g.value)) warn('Histologic grade: pick G1-G4 for this carcinoma type (IASLC grading applies to invasive non-mucinous adenocarcinoma only).', 'grade');
+  if (/^PL[12]/.test(v.pleuralInvasion || '') && v.elasticStain !== true) info('Visceral pleura invasion PL1 / PL2 recorded without an elastic stain: note the stain when performed.', 'elasticStain');
   if (v.stas === 'Present' && isSublobar(v)) info('STAS with a sublobar resection: associated with locoregional recurrence in the literature (reference note; no action derived).');
   const te = v.treatmentEffect || 'No known presurgical therapy';
   if (!/^No known/.test(te) && num(v.viablePct) !== null) {
     const pct = num(v.viablePct);
-    if (/Greater than 10/.test(te) && pct <= 10) err('Treatment effect: 10 % or less viable tumour is typed but "Greater than 10 %" is selected.');
-    if (/10 % or less/.test(te) && pct > 10) err('Treatment effect: more than 10 % viable tumour is typed but "10 % or less" is selected.');
+    if (/Greater than 10/.test(te) && pct <= 10) err('Treatment effect: 10 % or less viable tumour is typed but "Greater than 10 %" is selected.', 'viablePct');
+    if (/10 % or less/.test(te) && pct > 10) err('Treatment effect: more than 10 % viable tumour is typed but "10 % or less" is selected.', 'viablePct');
   }
   const st = staging(part, ctx);
   for (const n of st.notes) if (!/overridden/.test(n)) warn(n);
   const nd = S.nodes(v);
-  if (nd.bad.length) err(`Lymph node stations not understood: ${nd.bad.join('; ')}. Use "7: 2/3; 10R: 0/2".`);
-  if (nd.involved && num(v.nodeDepositMm) === null) info('Lymph nodes: the largest metastatic deposit is not recorded.');
-  if (nd.involved && (!v.nodeEne || na(v.nodeEne))) info('Lymph nodes involved: state the extranodal extension.');
+  if (nd.bad.length) err(`Lymph node stations not understood: ${nd.bad.join('; ')}. Use "7: 2/3; 10R: 0/2".`, 'nodeStations');
+  if (nd.involved && num(v.nodeDepositMm) === null) info('Lymph nodes: the largest metastatic deposit is not recorded.', 'nodeDepositMm');
+  if (nd.involved && (!v.nodeEne || na(v.nodeEne))) info('Lymph nodes involved: state the extranodal extension.', 'nodeEne');
   if (isCompletion(v)) {
     const prior = priorOf(ctx);
     if (!prior || !prior.accession) warn('Completion resection without a related prior specimen accession: the combined stage and the staging comment are not printed.');
-    if (v.residualTumour === 'Not applicable') warn('Completion resection: state whether residual tumour is present at the previous staple line.');
+    if (v.residualTumour === 'Not applicable') warn('Completion resection: state whether residual tumour is present at the previous staple line.', 'residualTumour');
   }
   const prior = priorOf(ctx);
   if (prior && prior.T && size !== null && !(isCompletion(v) && v.residualTumour !== 'Present')) info(`Prior pT (${prior.T}) and a tumour size in this specimen are both recorded: the higher T category governs; the origin prints with the pTNM.`);
   if (prior && !isCompletion(v)) info('A related prior specimen is typed: its pT / pN combine with this specimen for the printed stage.');
-  for (const p of otherParts(v)) if (!p.finding) warn(`Part ${p.label}: no finding given - the diagnosis line prints "SEE SYNOPTIC REPORT".`);
+  for (const p of otherParts(v)) if (!p.finding) warn(`Part ${p.label}: no finding given - the diagnosis line prints "SEE SYNOPTIC REPORT".`, 'otherParts');
   const labels = otherParts(v).map((p) => p.label);
-  if (labels.includes(part.label)) err(`Other parts: letter ${part.label} is this part.`);
-  if (new Set(labels).size !== labels.length) err('Other parts: a letter is repeated.');
-  if (stripDot(v.tnmOverride) && !st.overridden) err(`pTNM override "${stripDot(v.tnmOverride)}" could not be parsed.`);
+  if (labels.includes(part.label)) err(`Other parts: letter ${part.label} is this part.`, 'otherParts');
+  if (new Set(labels).size !== labels.length) err('Other parts: a letter is repeated.', 'otherParts');
+  if (stripDot(v.tnmOverride) && !st.overridden) err(`pTNM override "${stripDot(v.tnmOverride)}" could not be parsed.`, 'tnmOverride');
   if (st.stage) info(`AJCC 9th stage group (${st.M === 'M-' ? 'if cM0' : 'pM recorded'}): ${st.stage}${st.overridden ? ' (from the override)' : ''}.`);
   return out;
 }

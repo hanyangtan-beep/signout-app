@@ -444,36 +444,39 @@ export function diagnosis(part, ctx) {
 export function validate(part, ctx) {
   const v = part.values;
   const out = [];
-  const err = (m) => out.push({ level: 'error', message: m });
-  const warn = (m) => out.push({ level: 'warn', message: m });
+  // The optional second argument is the id of the field the check is about; the Checks panel
+  // uses it to jump to that field. Omit it when a check does not point at one field.
+  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
+  const err = (m, field) => at('error', m, field);
+  const warn = (m, field) => at('warn', m, field);
   const cr = isPT0(v);
-  if (!cr && num(v.tumourSizeMm) === null && !stripDot(v.sizeCannot) && !isTisLike(v)) warn('Tumour size is not recorded.');
-  if (!v.histType) err('Histologic type is required.');
-  if (!arr(v.tumourExtension).length && !cr) err('Tumour extension is required to assign pT.');
+  if (!cr && num(v.tumourSizeMm) === null && !stripDot(v.sizeCannot) && !isTisLike(v)) warn('Tumour size is not recorded.', 'tumourSizeMm');
+  if (!v.histType) err('Histologic type is required.', 'histType');
+  if (!arr(v.tumourExtension).length && !cr) err('Tumour extension is required to assign pT.', 'tumourExtension');
   const elongTicks = arr(v.tumourExtension);
-  if (elongTicks.includes(EXTENSION.t4b) && !stripDot(v.extensionDetail)) warn('Tumour directly invades adjacent organs or structures: specify them.');
+  if (elongTicks.includes(EXTENSION.t4b) && !stripDot(v.extensionDetail)) warn('Tumour directly invades adjacent organs or structures: specify them.', 'extensionDetail');
   // LAMN / HAMN push against the wall; true infiltrative growth upgrades the diagnosis.
   if ((isLAMN(v) || isHAMN(v)) && elongTicks.some((s) => /^Tumour invades (submucosa|muscularis propria)|^Tumour invades through|^Tumour invades the visceral|^Tumour directly/.test(s))) {
-    warn(`An appendiceal mucinous neoplasm with infiltrative invasion is staged and graded as an invasive mucinous adenocarcinoma rather than a ${isLAMN(v) ? 'LAMN' : 'HAMN'}; review the histologic type.`);
+    warn(`An appendiceal mucinous neoplasm with infiltrative invasion is staged and graded as an invasive mucinous adenocarcinoma rather than a ${isLAMN(v) ? 'LAMN' : 'HAMN'}; review the histologic type.`, 'histType');
   }
   // Acellular-mucin extension rows sit naturally with LAMN / HAMN or mucinous adenocarcinoma.
   if (elongTicks.some((s) => /^Acellular mucin/.test(s)) && !(isLAMN(v) || isHAMN(v) || v.histType === 'Mucinous adenocarcinoma')) {
-    warn('An acellular-mucin extension row is ticked but the type is not a mucinous neoplasm or mucinous adenocarcinoma; review.' );
+    warn('An acellular-mucin extension row is ticked but the type is not a mucinous neoplasm or mucinous adenocarcinoma; review.', 'tumourExtension');
   }
-  if (isGoblet(v) && !/group/.test(String(v.gobletGrade || ''))) warn('Goblet cell adenocarcinoma: record the Tang / WHO group; it governs the stage III / IV split.');
+  if (isGoblet(v) && !/group/.test(String(v.gobletGrade || ''))) warn('Goblet cell adenocarcinoma: record the Tang / WHO group; it governs the stage III / IV split.', 'gobletGrade');
   const ex = int(v.nodesExamined); const pos = int(v.nodesInvolved);
-  if (ex === null) err('Number of regional lymph nodes examined is required (enter 0 if none submitted).');
-  else if (ex > 0 && pos === null) err('Number of involved lymph nodes is required (enter 0 if none).');
-  if (ex !== null && pos !== null && pos > ex) err('Involved nodes exceed the number examined.');
-  if (pos && pos > 0 && (!v.ene || /^Not applicable/.test(v.ene))) warn('Extranodal extension is not recorded for a node-positive case.');
-  if (/^Present/.test(v.tumourDeposits || '') && int(v.tumourDepositsN) === null) warn('Tumour deposits present: record the number (nodal staging needs it for pN1c).');
+  if (ex === null) err('Number of regional lymph nodes examined is required (enter 0 if none submitted).', 'nodesExamined');
+  else if (ex > 0 && pos === null) err('Number of involved lymph nodes is required (enter 0 if none).', 'nodesInvolved');
+  if (ex !== null && pos !== null && pos > ex) err('Involved nodes exceed the number examined.', 'nodesInvolved');
+  if (pos && pos > 0 && (!v.ene || /^Not applicable/.test(v.ene))) warn('Extranodal extension is not recorded for a node-positive case.', 'ene');
+  if (/^Present/.test(v.tumourDeposits || '') && int(v.tumourDepositsN) === null) warn('Tumour deposits present: record the number (nodal staging needs it for pN1c).', 'tumourDepositsN');
   if (!cr) {
-    if (!v.proximalMargin) err('Proximal margin status is required.');
+    if (!v.proximalMargin) err('Proximal margin status is required.', 'proximalMargin');
     if (v.histType && !/^Carcinoma, type cannot/.test(v.histType)) {
-      if (/^Uninvolved/.test(v.proximalMargin || '') && /distance/i.test(v.proximalMargin) && num(v.proximalMarginMm) === null) warn('Proximal margin uninvolved: record the distance.');
-      if (/^Uninvolved/.test(v.mesentericMargin || '') && /distance/i.test(v.mesentericMargin) && num(v.mesentericMarginMm) === null) warn('Mesenteric margin uninvolved: record the distance.');
+      if (/^Uninvolved/.test(v.proximalMargin || '') && /distance/i.test(v.proximalMargin) && num(v.proximalMarginMm) === null) warn('Proximal margin uninvolved: record the distance.', 'proximalMarginMm');
+      if (/^Uninvolved/.test(v.mesentericMargin || '') && /distance/i.test(v.mesentericMargin) && num(v.mesentericMarginMm) === null) warn('Mesenteric margin uninvolved: record the distance.', 'mesentericMarginMm');
     }
-    if (/^Involved by (low-grade|high-grade) appendiceal mucinous neoplasm/.test(v.proximalMargin || '')) warn('Proximal margin involved by a mucinous neoplasm: consider whether further surgery is needed to clear the base.');
+    if (/^Involved by (low-grade|high-grade) appendiceal mucinous neoplasm/.test(v.proximalMargin || '')) warn('Proximal margin involved by a mucinous neoplasm: consider whether further surgery is needed to clear the base.', 'proximalMargin');
   }
   return out;
 }

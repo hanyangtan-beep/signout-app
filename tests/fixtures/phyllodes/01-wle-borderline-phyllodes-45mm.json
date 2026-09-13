@@ -10,6 +10,7 @@
     {
       "level": "info",
       "message": "Borderline phyllodes tumour within 10 mm of the anterior and posterior margins (3 mm, 8 mm): a comment on re-excision is added.",
+      "field": "margins",
       "part": "A"
     }
   ]

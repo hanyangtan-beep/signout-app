@@ -44,6 +44,7 @@
     {
       "level": "info",
       "message": "Invasive carcinoma at a margin of the mastectomy specimen: the involved margin is stated in the diagnosis; consider a comment for the clinical team.",
+      "field": "marginsInvasive",
       "part": "A"
     },
     {

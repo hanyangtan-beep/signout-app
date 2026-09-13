@@ -201,34 +201,37 @@ export function comment() { return ''; }
 export function validate(part, ctx) {
   const v = part.values;
   const out = [];
-  const err = (m) => out.push({ level: 'error', message: m });
-  const warn = (m) => out.push({ level: 'warn', message: m });
-  const info = (m) => out.push({ level: 'info', message: m });
+  // The optional second argument is the id of the field the check is about; the Checks panel
+  // uses it to jump to that field. Omit it when a check does not point at one field.
+  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
+  const err = (m, field) => at('error', m, field);
+  const warn = (m, field) => at('warn', m, field);
+  const info = (m, field) => at('info', m, field);
   const size = num(v.sizeMm);
-  if (v.sizeMode !== 'Cannot be determined' && size === null) warn('Extent of DCIS not recorded: the size prints as "Cannot be determined".');
-  if (/^(Other|Cannot)/.test(v.dcisGrade || '') && !stripDot(v.dcisGradeDetail)) warn('Nuclear grade "Other / Cannot be determined" needs the explanation.');
-  if (!isPaget(v) && !arr(v.dcisPatterns).length) info('No architectural pattern selected.');
-  if (arr(v.dcisPatterns).includes('Other (specify)') && !stripDot(v.dcisPatternOther)) warn('Architectural pattern "Other" needs the specified pattern.');
-  if (num(v.dcisBlocks) !== null && num(v.blocksExamined) !== null && num(v.dcisBlocks) > num(v.blocksExamined)) err('More blocks with DCIS than blocks examined.');
-  if (num(v.dcisBlocks) === null && !isPaget(v)) info('Record the number of blocks with DCIS out of the total (QMH element).');
-  if (isPaget(v) && v.nipple && !/Paget|Not present/.test(v.nipple)) warn('Histologic type is Paget disease but the nipple field does not record Paget disease.');
+  if (v.sizeMode !== 'Cannot be determined' && size === null) warn('Extent of DCIS not recorded: the size prints as "Cannot be determined".', 'sizeMm');
+  if (/^(Other|Cannot)/.test(v.dcisGrade || '') && !stripDot(v.dcisGradeDetail)) warn('Nuclear grade "Other / Cannot be determined" needs the explanation.', 'dcisGradeDetail');
+  if (!isPaget(v) && !arr(v.dcisPatterns).length) info('No architectural pattern selected.', 'dcisPatterns');
+  if (arr(v.dcisPatterns).includes('Other (specify)') && !stripDot(v.dcisPatternOther)) warn('Architectural pattern "Other" needs the specified pattern.', 'dcisPatternOther');
+  if (num(v.dcisBlocks) !== null && num(v.blocksExamined) !== null && num(v.dcisBlocks) > num(v.blocksExamined)) err('More blocks with DCIS than blocks examined.', 'dcisBlocks');
+  if (num(v.dcisBlocks) === null && !isPaget(v)) info('Record the number of blocks with DCIS out of the total (QMH element).', 'dcisBlocks');
+  if (isPaget(v) && v.nipple && !/Paget|Not present/.test(v.nipple)) warn('Histologic type is Paget disease but the nipple field does not record Paget disease.', 'nipple');
   if (/^Ductal carcinoma in situ|papillary/.test(v.histType || '') && pagetNipple(v)) info('DCIS with Paget disease of the nipple: pTis(DCIS) (Paget disease with underlying DCIS is staged by the DCIS).');
-  const pd = marginChecks(v.marginsDcis, 'DCIS', out);
-  if (pd.faces.some((f) => f.status === 'involved')) info(`${uc1(marginWord(v))} at a margin: re-excision is usually recommended after breast-conserving surgery.`);
+  const pd = marginChecks(v.marginsDcis, 'DCIS', out, { field: 'marginsDcis' });
+  if (pd.faces.some((f) => f.status === 'involved')) info(`${uc1(marginWord(v))} at a margin: re-excision is usually recommended after breast-conserving surgery.`, 'marginsDcis');
   const close = pd.faces.filter((f) => f.status === 'uninvolved' && !f.gt && f.mm < 2);
-  if (close.length) warn(`DCIS within 2 mm of the ${listJoin(close.map((f) => lc1(f.face)))} margin${close.length > 1 ? 's' : ''} (${close.map((f) => `${fmt(f.mm)} mm`).join(', ')}): 2 mm is the adequate margin for DCIS treated with breast-conserving surgery and radiotherapy.`);
+  if (close.length) warn(`DCIS within 2 mm of the ${listJoin(close.map((f) => lc1(f.face)))} margin${close.length > 1 ? 's' : ''} (${close.map((f) => `${fmt(f.mm)} mm`).join(', ')}): 2 mm is the adequate margin for DCIS treated with breast-conserving surgery and radiotherapy.`, 'marginsDcis');
   const st = staging(part);
   const c = nodeCounts(v);
   if (nodesSubmitted(v)) {
-    if (c.positive + c.itc > c.examined) err(`Lymph nodes: ${c.positive + c.itc} involved but only ${c.examined} examined.`);
-    if (c.sentinel > c.examined) err('Lymph nodes: more sentinel nodes than nodes examined.');
-    if (c.positive) warn('Nodal metastasis with pure DCIS: exclude an unsampled invasive component (further levels / blocks) before signing out as in situ.');
-    if (c.positive && num(v.depositMm) === null) info('Lymph nodes involved: record the size of the largest metastatic deposit.');
+    if (c.positive + c.itc > c.examined) err(`Lymph nodes: ${c.positive + c.itc} involved but only ${c.examined} examined.`, 'nodesExamined');
+    if (c.sentinel > c.examined) err('Lymph nodes: more sentinel nodes than nodes examined.', 'nodesSentinel');
+    if (c.positive) warn('Nodal metastasis with pure DCIS: exclude an unsampled invasive component (further levels / blocks) before signing out as in situ.', 'histType');
+    if (c.positive && num(v.depositMm) === null) info('Lymph nodes involved: record the size of the largest metastatic deposit.', 'depositMm');
   }
-  if (v.distantMets === 'Present' && !arr(v.distantSites).length) warn('Distant metastasis present: select the site(s).');
-  if (v.biomarkers === 'Performed' && !hasBiomarkerData(v)) warn('Biomarker studies "Performed" but no results are entered.');
-  if (/^Reported on the prior/.test(v.biomarkers || '') && !stripDot(v.priorBiomarkerSummary)) info('Biomarkers reported on the prior core: type the summary so it prints with the synoptic.');
-  if (/^Not performed/.test(v.biomarkers || '')) info('ER (and PR) are requested for DCIS to guide endocrine therapy (QMH: use the Breast IHC/DISH template).');
+  if (v.distantMets === 'Present' && !arr(v.distantSites).length) warn('Distant metastasis present: select the site(s).', 'distantSites');
+  if (v.biomarkers === 'Performed' && !hasBiomarkerData(v)) warn('Biomarker studies "Performed" but no results are entered.', 'er');
+  if (/^Reported on the prior/.test(v.biomarkers || '') && !stripDot(v.priorBiomarkerSummary)) info('Biomarkers reported on the prior core: type the summary so it prints with the synoptic.', 'priorBiomarkerSummary');
+  if (/^Not performed/.test(v.biomarkers || '')) info('ER (and PR) are requested for DCIS to guide endocrine therapy (QMH: use the Breast IHC/DISH template).', 'biomarkers');
   sharedChecks(part, st, out);
   // Nodes are not routinely sampled for pure DCIS: pNX is expected, not a warning.
   const kept = nodesSubmitted(v) ? out : out.filter((i) => !/^pNX/.test(i.message));

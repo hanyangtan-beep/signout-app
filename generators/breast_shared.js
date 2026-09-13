@@ -361,17 +361,18 @@ export function sharedChecks(part, st, out) {
   const warn = (m) => out.push({ level: 'warn', message: m });
   for (const p of otherParts(v)) if (!p.finding) warn(`Part ${p.label}: no finding given - the diagnosis line prints "SEE SYNOPTIC REPORT".`);
   const labels = otherParts(v).map((p) => p.label);
-  if (labels.includes(part.label)) err(`Other parts: letter ${part.label} is this part.`);
-  if (new Set(labels).size !== labels.length) err('Other parts: a letter is repeated.');
+  if (labels.includes(part.label)) err(`Other parts: letter ${part.label} is this part.`, 'otherParts');
+  if (new Set(labels).size !== labels.length) err('Other parts: a letter is repeated.', 'otherParts');
   if (st && stripDot(v.tnmOverride) && !st.overridden) err(`pTNM override "${stripDot(v.tnmOverride)}" could not be parsed.`);
   if (st) for (const n of st.notes) if (!/overridden/.test(n)) warn(n);
 }
 
 /** Margin walker checks: unreadable lines, blank faces. */
-export function marginChecks(text, what, out, { required = true } = {}) {
+export function marginChecks(text, what, out, { required = true, field } = {}) {
+  const push = (level, message) => out.push(field ? { level, message, field } : { level, message });
   const p = parseMargins(text);
-  if (p.bad.length) out.push({ level: 'error', message: `Margins (${what}): lines not understood: ${p.bad.join('; ')}. Use "Face: 5", "Face: involved", "Face: cannot" or "All: >10".` });
-  if (required && p.blank.length && p.blank.length < FACES.length) out.push({ level: 'warn', message: `Margins (${what}): ${listJoin(p.blank.map(lc1))} not recorded.` });
-  if (required && p.blank.length === FACES.length && !p.faces.some((f) => f.status !== 'blank')) out.push({ level: 'warn', message: `Margins (${what}) not recorded.` });
+  if (p.bad.length) push('error', `Margins (${what}): lines not understood: ${p.bad.join('; ')}. Use "Face: 5", "Face: involved", "Face: cannot" or "All: >10".`);
+  if (required && p.blank.length && p.blank.length < FACES.length) push('warn', `Margins (${what}): ${listJoin(p.blank.map(lc1))} not recorded.`);
+  if (required && p.blank.length === FACES.length && !p.faces.some((f) => f.status !== 'blank')) push('warn', `Margins (${what}) not recorded.`);
   return p;
 }

@@ -63,6 +63,7 @@
     {
       "level": "warn",
       "message": "DCIS within 2 mm of the superior margin (1 mm): 2 mm is the adequate margin for DCIS.",
+      "field": "marginsDcis",
       "part": "A"
     },
     {

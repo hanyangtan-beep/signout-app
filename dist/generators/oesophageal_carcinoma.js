@@ -9,9 +9,9 @@
 // `options.printPTNM`, stamped (AJCC 8th edition). Pure functions: (part, ctx) -> string.
 // Wording is protected by tests/oesophageal.test.js — change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz3x3k4';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz3x3k4';
-import { typeMorphology, ihcSentence } from './oesophageal_morphology.js?v=mtz3x3k4';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz4g8e1';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz4g8e1';
+import { typeMorphology, ihcSentence } from './oesophageal_morphology.js?v=mtz4g8e1';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
@@ -385,34 +385,37 @@ export function diagnosis(part, ctx) {
 export function validate(part, ctx) {
   const v = part.values;
   const out = [];
-  const err = (m) => out.push({ level: 'error', message: m });
-  const warn = (m) => out.push({ level: 'warn', message: m });
+  // The optional second argument is the id of the field the check is about; the Checks panel
+  // uses it to jump to that field. Omit it when a check does not point at one field.
+  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
+  const err = (m, field) => at('error', m, field);
+  const warn = (m, field) => at('warn', m, field);
   const cr = isPT0(v);
-  if (!cr && num(v.tumourSizeMm) === null && !stripDot(v.sizeCannot) && !isTis(v)) warn('Tumour size is not recorded.');
-  if (!v.histType) err('Histologic type is required.');
-  if (!v.tumourExtension) err('Tumour extension is required to assign pT.');
-  if (/adjacent structures/.test(v.tumourExtension || '') && !stripDot(v.extensionDetail)) warn('Tumour directly invades adjacent structures: specify the structures (pleura, pericardium, azygos vein, diaphragm or peritoneum are pT4a; aorta, vertebral body and airway are pT4b).');
+  if (!cr && num(v.tumourSizeMm) === null && !stripDot(v.sizeCannot) && !isTis(v)) warn('Tumour size is not recorded.', 'tumourSizeMm');
+  if (!v.histType) err('Histologic type is required.', 'histType');
+  if (!v.tumourExtension) err('Tumour extension is required to assign pT.', 'tumourExtension');
+  if (/adjacent structures/.test(v.tumourExtension || '') && !stripDot(v.extensionDetail)) warn('Tumour directly invades adjacent structures: specify the structures (pleura, pericardium, azygos vein, diaphragm or peritoneum are pT4a; aorta, vertebral body and airway are pT4b).', 'extensionDetail');
   const ex = int(v.nodesExamined); const pos = int(v.nodesInvolved);
-  if (ex === null) err('Number of regional lymph nodes examined is required (enter 0 if none submitted).');
-  else if (ex > 0 && pos === null) err('Number of involved lymph nodes is required (enter 0 if none).');
-  if (ex !== null && pos !== null && pos > ex) err('Involved nodes exceed the number examined.');
-  if (pos && pos > 0 && (!v.ene || /^Not applicable/.test(v.ene))) warn('Extracapsular spread is not recorded for a node-positive case.');
+  if (ex === null) err('Number of regional lymph nodes examined is required (enter 0 if none submitted).', 'nodesExamined');
+  else if (ex > 0 && pos === null) err('Number of involved lymph nodes is required (enter 0 if none).', 'nodesInvolved');
+  if (ex !== null && pos !== null && pos > ex) err('Involved nodes exceed the number examined.', 'nodesInvolved');
+  if (pos && pos > 0 && (!v.ene || /^Not applicable/.test(v.ene))) warn('Extracapsular spread is not recorded for a node-positive case.', 'ene');
   if (!cr && !isER(v)) {
-    if (!v.proximalMargin) err('Proximal margin status is required.');
-    if (!v.distalMargin) err('Distal margin status is required.');
-    if (!v.radialMargin) err('Radial margin status is required.');
-    if (/^Uninvolved/.test(v.proximalMargin || '') && /distance/i.test(v.proximalMargin) && num(v.proximalMarginMm) === null) warn('Proximal margin uninvolved: record the distance.');
-    if (/^Uninvolved/.test(v.distalMargin || '') && /distance/i.test(v.distalMargin) && num(v.distalMarginMm) === null) warn('Distal margin uninvolved: record the distance.');
-    if (/^Uninvolved/.test(v.radialMargin || '') && /distance/i.test(v.radialMargin) && num(v.radialMarginMm) === null) warn('Radial margin uninvolved: record the distance.');
+    if (!v.proximalMargin) err('Proximal margin status is required.', 'proximalMargin');
+    if (!v.distalMargin) err('Distal margin status is required.', 'distalMargin');
+    if (!v.radialMargin) err('Radial margin status is required.', 'radialMargin');
+    if (/^Uninvolved/.test(v.proximalMargin || '') && /distance/i.test(v.proximalMargin) && num(v.proximalMarginMm) === null) warn('Proximal margin uninvolved: record the distance.', 'proximalMarginMm');
+    if (/^Uninvolved/.test(v.distalMargin || '') && /distance/i.test(v.distalMargin) && num(v.distalMarginMm) === null) warn('Distal margin uninvolved: record the distance.', 'distalMarginMm');
+    if (/^Uninvolved/.test(v.radialMargin || '') && /distance/i.test(v.radialMargin) && num(v.radialMarginMm) === null) warn('Radial margin uninvolved: record the distance.', 'radialMarginMm');
   }
-  if (isER(v) && !v.hmMargin && !cr) err('Mucosal margin status is required.');
-  if (isER(v) && !v.vmMargin && !cr) err('Deep margin status is required.');
-  if (isTis(v) && pos && pos > 0) warn('Carcinoma in situ does not metastasise; review the nodal count.');
-  if (/^Present, with no viable/.test(v.treatmentEffect || '') && !isPT0(v)) warn('Complete pathological response (score 0) recorded but Tumour extension is not "No evidence of primary tumour".');
-  if (!/^No known|^Cannot/.test(v.treatmentEffect || '') && !cr && (!v.trg || v.trg === 'Not assessed')) warn('Neoadjuvant therapy given: record the Mandard tumour regression grade (TRG).');
-  if (/Oesophagogastric junction|^Distal oesophagus|cardia/.test(v.tumourSite || '') && !v.egjRelationship) warn('Distal oesophagus / EGJ tumour: record the relationship to the oesophagogastric junction (WHO / AJCC EGJ rule).');
-  if (/^Bd\d/.test(v.budding || '') && !ADENO.test(v.histType || '')) warn('Tumour budding is recorded but the histologic type is not adenocarcinoma; the Bd grading tiers are standardised for adenocarcinoma.');
-  if (v.barrett === 'Present' && !ADENO.test(v.histType || '') && !isTis(v) && !isPT0(v)) warn('Background Barrett mucosa is recorded but the histologic type is not adenocarcinoma.');
+  if (isER(v) && !v.hmMargin && !cr) err('Mucosal margin status is required.', 'hmMargin');
+  if (isER(v) && !v.vmMargin && !cr) err('Deep margin status is required.', 'vmMargin');
+  if (isTis(v) && pos && pos > 0) warn('Carcinoma in situ does not metastasise; review the nodal count.', 'nodesInvolved');
+  if (/^Present, with no viable/.test(v.treatmentEffect || '') && !isPT0(v)) warn('Complete pathological response (score 0) recorded but Tumour extension is not "No evidence of primary tumour".', 'tumourExtension');
+  if (!/^No known|^Cannot/.test(v.treatmentEffect || '') && !cr && (!v.trg || v.trg === 'Not assessed')) warn('Neoadjuvant therapy given: record the Mandard tumour regression grade (TRG).', 'trg');
+  if (/Oesophagogastric junction|^Distal oesophagus|cardia/.test(v.tumourSite || '') && !v.egjRelationship) warn('Distal oesophagus / EGJ tumour: record the relationship to the oesophagogastric junction (WHO / AJCC EGJ rule).', 'egjRelationship');
+  if (/^Bd\d/.test(v.budding || '') && !ADENO.test(v.histType || '')) warn('Tumour budding is recorded but the histologic type is not adenocarcinoma; the Bd grading tiers are standardised for adenocarcinoma.', 'budding');
+  if (v.barrett === 'Present' && !ADENO.test(v.histType || '') && !isTis(v) && !isPT0(v)) warn('Background Barrett mucosa is recorded but the histologic type is not adenocarcinoma.', 'barrett');
   return out;
 }
 

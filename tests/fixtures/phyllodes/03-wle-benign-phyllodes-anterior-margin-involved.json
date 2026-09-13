@@ -29,6 +29,7 @@
     {
       "level": "warn",
       "message": "Tumour at a margin: re-excision is usually recommended for phyllodes tumours of any grade.",
+      "field": "margins",
       "part": "A"
     }
   ]

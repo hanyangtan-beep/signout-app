@@ -390,34 +390,37 @@ export function diagnosis(part, ctx) {
 export function validate(part, ctx) {
   const v = part.values;
   const out = [];
-  const err = (m) => out.push({ level: 'error', message: m });
-  const warn = (m) => out.push({ level: 'warn', message: m });
+  // The optional second argument is the id of the field the check is about; the Checks panel
+  // uses it to jump to that field. Omit it when a check does not point at one field.
+  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
+  const err = (m, field) => at('error', m, field);
+  const warn = (m, field) => at('warn', m, field);
   const cr = isPT0(v);
-  if (!cr && num(v.tumourSizeCm) === null && !/^Not applicable/.test(v.sizeMode || '') && !/^Cannot be assessed/.test(v.sizeMode || '')) warn('Tumour size is not recorded.');
-  if (!v.histType) err('Histologic type is required.');
-  if (!arr(v.tumourExtension).length && !cr) err('Tumour extension is required to assign pT.');
+  if (!cr && num(v.tumourSizeCm) === null && !/^Not applicable/.test(v.sizeMode || '') && !/^Cannot be assessed/.test(v.sizeMode || '')) warn('Tumour size is not recorded.', 'tumourSizeCm');
+  if (!v.histType) err('Histologic type is required.', 'histType');
+  if (!arr(v.tumourExtension).length && !cr) err('Tumour extension is required to assign pT.', 'tumourExtension');
   const ticks = arr(v.tumourExtension);
-  if (ticks.includes(EXTENSION.other) && !stripDot(v.extensionDetail)) warn('Tumour directly invades an other adjacent organ or structure: specify it.');
+  if (ticks.includes(EXTENSION.other) && !stripDot(v.extensionDetail)) warn('Tumour directly invades an other adjacent organ or structure: specify it.', 'extensionDetail');
   // Hepatic-side (pT2b) disease: the radial (hepatic-bed) margin is the decisive one.
   const t2b = ticks.includes(EXTENSION.t2b);
-  if (t2b && !v.radialMargin) err('Radial (hepatic bed) margin status is required for hepatic-side (pT2b) disease.');
-  if (t2b && /^Cannot be assessed/.test(v.radialMargin || '')) warn('Hepatic-side (pT2b) disease: the radial margin should be assessed and sampled rather than left "cannot be assessed".');
+  if (t2b && !v.radialMargin) err('Radial (hepatic bed) margin status is required for hepatic-side (pT2b) disease.', 'radialMargin');
+  if (t2b && /^Cannot be assessed/.test(v.radialMargin || '')) warn('Hepatic-side (pT2b) disease: the radial margin should be assessed and sampled rather than left "cannot be assessed".', 'radialMargin');
   // Incidental carcinoma in a simple cholecystectomy beyond the muscular layer needs completion.
   if (/^Simple cholecystectomy/.test(v.procedure || '') && ticks.some((s) => s !== EXTENSION.t1a && s !== EXTENSION.t1b && s !== EXTENSION.t0 && s !== EXTENSION.tx)) {
-    warn('Simple cholecystectomy with invasion beyond the muscular layer (pT2 or higher): consider completion radical cholecystectomy with bile-duct excision (incidental carcinoma pathway).');
+    warn('Simple cholecystectomy with invasion beyond the muscular layer (pT2 or higher): consider completion radical cholecystectomy with bile-duct excision (incidental carcinoma pathway).', 'procedure');
   }
-  if (/^Involved/.test(v.cysticDuctMargin || '')) warn('Cystic duct margin involved: consider re-resection of the cystic duct stump / extrahepatic bile duct.');
-  if (/^Radical cholecystectomy/.test(v.procedure || '') && /^Not applicable/.test(v.hepaticMargin || '')) warn('A radical cholecystectomy includes a liver wedge; the hepatic parenchymal margin should be assessable.');
+  if (/^Involved/.test(v.cysticDuctMargin || '')) warn('Cystic duct margin involved: consider re-resection of the cystic duct stump / extrahepatic bile duct.', 'cysticDuctMargin');
+  if (/^Radical cholecystectomy/.test(v.procedure || '') && /^Not applicable/.test(v.hepaticMargin || '')) warn('A radical cholecystectomy includes a liver wedge; the hepatic parenchymal margin should be assessable.', 'hepaticMargin');
   const ex = int(v.nodesExamined); const pos = int(v.nodesInvolved);
-  if (ex === null) err('Number of regional lymph nodes examined is required (enter 0 if none submitted).');
-  else if (ex > 0 && pos === null) err('Number of involved lymph nodes is required (enter 0 if none).');
-  if (ex !== null && pos !== null && pos > ex) err('Involved nodes exceed the number examined.');
-  if (ex !== null && ex > 0 && ex < 6) warn('Fewer than 6 regional lymph nodes examined; AJCC 8th edition recommends at least 6 for reliable nodal staging.');
-  if (pos && pos > 0 && (!v.ene || /^Not applicable/.test(v.ene))) warn('Extranodal extension is not recorded for a node-positive case.');
-  if (/^Present, with no viable/.test(v.treatmentEffect || '') && !cr) warn('Complete pathological response (score 0) recorded but Tumour extension is not "No evidence of primary tumour".');
+  if (ex === null) err('Number of regional lymph nodes examined is required (enter 0 if none submitted).', 'nodesExamined');
+  else if (ex > 0 && pos === null) err('Number of involved lymph nodes is required (enter 0 if none).', 'nodesInvolved');
+  if (ex !== null && pos !== null && pos > ex) err('Involved nodes exceed the number examined.', 'nodesInvolved');
+  if (ex !== null && ex > 0 && ex < 6) warn('Fewer than 6 regional lymph nodes examined; AJCC 8th edition recommends at least 6 for reliable nodal staging.', 'nodesExamined');
+  if (pos && pos > 0 && (!v.ene || /^Not applicable/.test(v.ene))) warn('Extranodal extension is not recorded for a node-positive case.', 'ene');
+  if (/^Present, with no viable/.test(v.treatmentEffect || '') && !cr) warn('Complete pathological response (score 0) recorded but Tumour extension is not "No evidence of primary tumour".', 'treatmentEffect');
   if (!cr) {
-    for (const [label, sel, mm] of [['Cystic duct margin', v.cysticDuctMargin, v.cysticDuctMarginMm], ['Hepatic parenchymal margin', v.hepaticMargin, v.hepaticMarginMm], ['Radial margin', v.radialMargin, v.radialMarginMm]]) {
-      if (/^Uninvolved/.test(sel || '') && /distance/i.test(sel) && num(mm) === null) warn(`${label} uninvolved: record the distance.`);
+    for (const [label, sel, mm, field] of [['Cystic duct margin', v.cysticDuctMargin, v.cysticDuctMarginMm, 'cysticDuctMarginMm'], ['Hepatic parenchymal margin', v.hepaticMargin, v.hepaticMarginMm, 'hepaticMarginMm'], ['Radial margin', v.radialMargin, v.radialMarginMm, 'radialMarginMm']]) {
+      if (/^Uninvolved/.test(sel || '') && /distance/i.test(sel) && num(mm) === null) warn(`${label} uninvolved: record the distance.`, field);
     }
   }
   return out;

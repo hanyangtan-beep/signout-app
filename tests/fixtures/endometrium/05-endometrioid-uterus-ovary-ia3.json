@@ -25,6 +25,7 @@
     {
       "level": "warn",
       "message": "MMR immunohistochemistry is not recorded; universal MMR testing is recommended for endometrial carcinoma.",
+      "field": "mmrIhc",
       "part": "A"
     },
     {

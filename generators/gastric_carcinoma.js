@@ -407,29 +407,32 @@ export function diagnosis(part, ctx) {
 export function validate(part, ctx) {
   const v = part.values;
   const out = [];
-  const err = (m) => out.push({ level: 'error', message: m });
-  const warn = (m) => out.push({ level: 'warn', message: m });
+  // The optional second argument is the id of the field the check is about; the Checks panel
+  // uses it to jump to that field. Omit it when a check does not point at one field.
+  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
+  const err = (m, field) => at('error', m, field);
+  const warn = (m, field) => at('warn', m, field);
   const cr = isPT0(v);
-  if (!cr && num(v.tumourSizeMm) === null && !stripDot(v.sizeCannot) && !isTis(v)) warn('Tumour size is not recorded.');
-  if (!v.histType) err('Histologic type is required.');
-  if (!v.tumourExtension) err('Tumour extension is required to assign pT.');
-  if ((v.tumourExtension || '') === EXTENSION.t4b && !stripDot(v.extensionDetail)) warn('Tumour directly invades adjacent structures: specify the structures.');
+  if (!cr && num(v.tumourSizeMm) === null && !stripDot(v.sizeCannot) && !isTis(v)) warn('Tumour size is not recorded.', 'tumourSizeMm');
+  if (!v.histType) err('Histologic type is required.', 'histType');
+  if (!v.tumourExtension) err('Tumour extension is required to assign pT.', 'tumourExtension');
+  if ((v.tumourExtension || '') === EXTENSION.t4b && !stripDot(v.extensionDetail)) warn('Tumour directly invades adjacent structures: specify the structures.', 'extensionDetail');
   const ex = int(v.nodesExamined); const pos = int(v.nodesInvolved);
-  if (ex === null) err('Number of regional lymph nodes examined is required (enter 0 if none submitted).');
-  else if (ex > 0 && pos === null) err('Number of involved lymph nodes is required (enter 0 if none).');
-  if (ex !== null && pos !== null && pos > ex) err('Involved nodes exceed the number examined.');
-  if (!isER(v) && ex !== null && ex > 0 && ex < 16) warn('Fewer than 16 regional lymph nodes examined; AJCC 8th edition recommends at least 16 for reliable nodal staging.');
-  if (pos && pos > 0 && (!v.ene || /^Not applicable/.test(v.ene))) warn('Extranodal extension is not recorded for a node-positive case.');
+  if (ex === null) err('Number of regional lymph nodes examined is required (enter 0 if none submitted).', 'nodesExamined');
+  else if (ex > 0 && pos === null) err('Number of involved lymph nodes is required (enter 0 if none).', 'nodesInvolved');
+  if (ex !== null && pos !== null && pos > ex) err('Involved nodes exceed the number examined.', 'nodesInvolved');
+  if (!isER(v) && ex !== null && ex > 0 && ex < 16) warn('Fewer than 16 regional lymph nodes examined; AJCC 8th edition recommends at least 16 for reliable nodal staging.', 'nodesExamined');
+  if (pos && pos > 0 && (!v.ene || /^Not applicable/.test(v.ene))) warn('Extranodal extension is not recorded for a node-positive case.', 'ene');
   if (!cr && !isER(v)) {
-    if (!v.proximalMargin) err('Proximal margin status is required.');
-    if (!v.distalMargin) err('Distal margin status is required.');
-    if (/^Uninvolved/.test(v.proximalMargin || '') && /distance/i.test(v.proximalMargin) && num(v.proximalMarginMm) === null) warn('Proximal margin uninvolved: record the distance.');
-    if (/^Uninvolved/.test(v.distalMargin || '') && /distance/i.test(v.distalMargin) && num(v.distalMarginMm) === null) warn('Distal margin uninvolved: record the distance.');
+    if (!v.proximalMargin) err('Proximal margin status is required.', 'proximalMargin');
+    if (!v.distalMargin) err('Distal margin status is required.', 'distalMargin');
+    if (/^Uninvolved/.test(v.proximalMargin || '') && /distance/i.test(v.proximalMargin) && num(v.proximalMarginMm) === null) warn('Proximal margin uninvolved: record the distance.', 'proximalMarginMm');
+    if (/^Uninvolved/.test(v.distalMargin || '') && /distance/i.test(v.distalMargin) && num(v.distalMarginMm) === null) warn('Distal margin uninvolved: record the distance.', 'distalMarginMm');
   }
-  if (isER(v) && !v.hmMargin) err('Mucosal (horizontal) margin status is required.');
-  if (isER(v) && !v.vmMargin) err('Deep (vertical) margin status is required.');
-  if (isTis(v) && pos && pos > 0) warn('Carcinoma in situ does not metastasise; review the nodal count.');
-  if (/^Present, with no viable/.test(v.treatmentEffect || '') && !isPT0(v)) warn('Complete pathological response (score 0) recorded but Tumour extension is not "No evidence of primary tumour".');
+  if (isER(v) && !v.hmMargin) err('Mucosal (horizontal) margin status is required.', 'hmMargin');
+  if (isER(v) && !v.vmMargin) err('Deep (vertical) margin status is required.', 'vmMargin');
+  if (isTis(v) && pos && pos > 0) warn('Carcinoma in situ does not metastasise; review the nodal count.', 'nodesInvolved');
+  if (/^Present, with no viable/.test(v.treatmentEffect || '') && !isPT0(v)) warn('Complete pathological response (score 0) recorded but Tumour extension is not "No evidence of primary tumour".', 'tumourExtension');
   if (isER(v)) {
     const e = S.ecura(v);
     if (e.score <= 2 && !e.undetermined.length && !isPT0(v)) warn(`eCura low-risk stratum (${e.score} points, about 2.5 % lymph-node metastasis risk): endoscopic follow-up is acceptable if margins are clear.`);
