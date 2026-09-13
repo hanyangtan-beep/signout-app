@@ -21,6 +21,13 @@ export function labelOf(t) { return t.label || t.shortName || t.name; }
 
 export function isBiopsy(t) { return t.kind === 'biopsy'; }
 
+/** Which header row (= mode-switch side) a kind belongs to; null for kinds outside both (autopsy). */
+export function rowOfKind(kind) {
+  if (ROWS.top.kinds.includes(kind)) return 'top';
+  if (ROWS.bottom.kinds.includes(kind)) return 'bottom';
+  return null;
+}
+
 /** Fixed Small biopsy row: every `kind: biopsy` template in frequency (rank) order. */
 export function biopsyRow(manifest) {
   return manifest.filter(isBiopsy).sort(byRank);

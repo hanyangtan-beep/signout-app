@@ -32,6 +32,8 @@
 
   --color-alert: oklch(0.55 0.16 10);
   --color-alert-highlight: oklch(0.55 0.16 10 / 0.1);
+  --color-ok: oklch(0.52 0.11 155);
+  --color-warn: oklch(0.55 0.12 70);
 
   --shadow-sm: 0 1px 2px oklch(0.2 0.02 250 / 0.06), 0 1px 1px oklch(0.2 0.02 250 / 0.04);
   color-scheme: light;
@@ -55,6 +57,8 @@
 
   --color-alert: oklch(0.74 0.13 10);
   --color-alert-highlight: oklch(0.74 0.13 10 / 0.14);
+  --color-ok: oklch(0.76 0.11 155);
+  --color-warn: oklch(0.78 0.11 75);
   --shadow-sm: none;
   color-scheme: dark;
 }
@@ -79,41 +83,49 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .skip { position: absolute; left: var(--space-4); top: -100px; background: var(--color-primary); color: var(--color-text-inverse); padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); z-index: 10; }
 .skip:focus { top: var(--space-2); }
 
-/* Top bar: row 1 brand + fixed Small biopsy row; row 2 Resections (pinned / recent) + actions */
+/* Top bar: one row — brand, kind switch, system menus, search, case identity, actions.
+   The kind switch replaces the old two rows so each system name appears once (docs/specs/navigation.md). */
 .topbar {
   display: flex; flex-direction: column; gap: var(--space-2);
-  padding: var(--space-2) var(--space-5) var(--space-3);
+  padding: var(--space-2) var(--space-5);
   border-bottom: 1px solid var(--color-border);
   background: var(--color-surface);
   position: sticky; top: 0; z-index: 5;
+  transition: box-shadow 140ms ease;
 }
-.topbar-row { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; min-height: 40px; }
-.brand { display: flex; align-items: center; gap: var(--space-3); color: var(--color-primary); }
+.topbar.scrolled { box-shadow: 0 4px 14px oklch(0.2 0.02 250 / 0.08); }
+[data-theme='dark'] .topbar.scrolled { box-shadow: 0 4px 16px oklch(0 0 0 / 0.5); }
+.topbar-row { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; min-height: 44px; }
+.brand { display: flex; align-items: center; gap: var(--space-3); color: var(--color-primary); flex: none; margin-right: var(--space-2); }
 .brand h1 { font-size: var(--text-lg); color: var(--color-text); letter-spacing: -0.01em; white-space: nowrap; }
-.template-row { display: flex; align-items: center; gap: 6px; flex: 1 1 auto; min-width: 0; }
-.row-label {
-  font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase;
-  color: var(--color-text-muted); white-space: nowrap; min-width: 96px; flex-shrink: 0;
+
+/* Kind switch (Biopsy / Resection) */
+.mode-switch { display: inline-flex; gap: 2px; padding: 3px; background: var(--color-surface-2); border-radius: var(--radius-md); flex: none; }
+.mode-btn {
+  border: 0; background: transparent; color: var(--color-text-muted); cursor: pointer; white-space: nowrap;
+  font-size: 13px; font-weight: 600; padding: 6px 10px; min-height: 32px; border-radius: var(--radius-sm);
 }
-.row-label-btn {
-  border: 0; background: transparent; cursor: pointer; padding: var(--space-2) 0; text-align: left;
-  border-radius: var(--radius-sm); font: inherit; font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase;
-}
-.row-label-btn:hover { color: var(--color-primary); }
+.mode-btn:hover { color: var(--color-text); }
+.mode-btn[aria-pressed='true'] { background: var(--color-surface); color: var(--color-text); box-shadow: var(--shadow-sm); }
+
 .templates { display: flex; gap: var(--space-1); padding: var(--space-1); background: var(--color-surface-2); border-radius: var(--radius-md); flex-wrap: wrap; min-width: 0; }
 .templates button {
   border: 0; background: transparent; padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm); font-size: var(--text-sm); font-weight: 500;
   color: var(--color-text-muted); cursor: pointer; min-height: 34px; white-space: nowrap;
 }
-.templates button:hover { color: var(--color-text); }
-.templates button[aria-pressed='true'] { background: var(--color-surface); color: var(--color-text); box-shadow: var(--shadow-sm); }
+.templates button:hover { color: var(--color-text); background: var(--color-surface); }
 .templates button.more { color: var(--color-primary); }
-/* system menus (header rows) */
-.templates.systems { gap: 0; padding: 2px; }
-.templates.systems > button, .sys > button { font-size: 13px; padding: 6px 4px; min-height: 30px; }
+/* system menus (the header row) */
+.templates.systems { gap: 1px; padding: 3px; }
+.templates.systems > button, .sys > button { font-size: 13px; padding: 6px 7px; min-height: 32px; }
 .sys { position: relative; }
-.sys.open > button { color: var(--color-text); background: var(--color-surface); }
+.sys.open > button { color: var(--color-text); background: var(--color-surface); box-shadow: var(--shadow-sm); }
+/* the system holding the open template: a filled pill, legible in both themes */
+.templates button[aria-pressed='true'], .sys.open > button[aria-pressed='true'] {
+  background: var(--color-primary); color: var(--color-text-inverse); box-shadow: none; font-weight: 600;
+}
+.templates button[aria-pressed='true']:hover { background: var(--color-primary-hover); color: var(--color-text-inverse); }
 .sysmenu { max-height: calc(100vh - 130px); overflow: auto;
   position: absolute; top: calc(100% + 4px); left: 0; z-index: 30; min-width: 300px; max-width: 380px;
   background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md);
@@ -129,19 +141,57 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .sysmenu .menu-item[aria-current='true'] { background: var(--color-primary-soft, var(--color-surface-2)); }
 .sysmenu .menu-item[aria-current='true'] .mi-name::after { content: ' · current'; color: var(--color-text-muted); font-weight: 400; }
 .sysmenu .menu-item.pending .mi-name { color: var(--color-text-muted); font-style: normal; }
-.sysmenu .menu-item.pending .mi-sub { color: var(--color-warning, #b7791f); }
-.templates > button.pending { color: var(--color-text-muted); display: inline-flex; align-items: center; gap: var(--space-2); }
-.templates > button.pending .tag { font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; border: 1px dashed var(--color-border-strong); border-radius: 999px; padding: 1px 6px; color: var(--color-text-muted); }
+.sysmenu .menu-item.pending .mi-sub { color: var(--color-warn); }
+/* placeholders: a dot, not a caps tag competing with the real destinations */
+.templates > button.pending { color: var(--color-text-muted); display: inline-flex; align-items: center; gap: 6px; }
+.templates > button.pending .pending-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-warn); flex: none; }
 .templates .empty { font-size: var(--text-sm); color: var(--color-text-muted); padding: var(--space-2) var(--space-3); }
+
 .palette-btn {
-  display: inline-flex; align-items: center; gap: var(--space-2); margin-left: var(--space-1);
-  border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text-muted);
-  border-radius: var(--radius-sm); padding: var(--space-1) var(--space-3); min-height: 34px; font-size: var(--text-sm); cursor: pointer; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: var(--space-2); flex: none; min-width: 150px;
+  border: 1px solid var(--color-border); background: var(--color-surface-2); color: var(--color-text-muted);
+  border-radius: var(--radius-md); padding: 0 var(--space-3); min-height: 34px; font-size: var(--text-sm); cursor: pointer; white-space: nowrap;
 }
-.palette-btn:hover { color: var(--color-text); border-color: var(--color-border-strong); }
+.palette-btn > span { flex: 1 1 auto; text-align: left; }
+.palette-btn:hover { color: var(--color-text); border-color: var(--color-border-strong); background: var(--color-surface); }
 kbd { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; border: 1px solid var(--color-border); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--color-surface-2); color: var(--color-text-muted); }
-.topbar-actions { margin-left: auto; display: flex; gap: var(--space-1); align-items: center; }
-.topbar-actions .btn { white-space: nowrap; padding-inline: var(--space-3); }
+
+/* Case identity — accession, status and Drive state stay visible while the case panel scrolls */
+.case-id {
+  display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0;
+  border: 0; background: transparent; cursor: pointer; padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm);
+}
+.case-id:hover { background: var(--color-surface-2); }
+.ci-acc { font-size: var(--text-sm); font-weight: 600; font-variant-numeric: tabular-nums; color: var(--color-text); white-space: nowrap; }
+.ci-acc.none { color: var(--color-text-faint); font-weight: 500; }
+.ci-status { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--color-surface-2); color: var(--color-text-muted); white-space: nowrap; }
+.ci-status[data-status='ready'] { background: var(--color-primary-highlight); color: var(--color-primary); }
+.ci-status[data-status='signed'] { background: oklch(0.52 0.11 155 / 0.14); color: var(--color-ok); }
+.ci-save { display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-xs); color: var(--color-text-muted); white-space: nowrap; }
+.ci-save .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-border-strong); flex: none; }
+.ci-save.unsaved .dot { background: var(--color-warn); }
+.ci-save.saved .dot { background: var(--color-ok); }
+
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: var(--space-2); flex: none; }
+.topbar-actions { display: flex; gap: var(--space-1); align-items: center; flex: none; }
+.topbar-actions .btn { white-space: nowrap; padding-inline: var(--space-2); min-height: 36px; }
+.topbar-actions .icon-btn { width: 36px; height: 36px; }
+.case-inline { display: inline-flex; gap: var(--space-1); align-items: center; }
+.case-menu { position: relative; display: none; }
+.casemenu {
+  position: absolute; top: calc(100% + 4px); right: 0; z-index: 30; min-width: 190px;
+  background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg, 0 8px 24px rgba(0,0,0,0.14)); padding: var(--space-1); display: flex; flex-direction: column; gap: 1px;
+}
+.casemenu[hidden] { display: none; }
+.casemenu .menu-item { border: 0; background: transparent; text-align: left; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); font-size: var(--text-sm); color: var(--color-text); cursor: pointer; }
+.casemenu .menu-item:hover { background: var(--color-surface-2); }
+/* Save carries its own state: a dot for unsaved edits, "Saved" once Drive is in step */
+.save-btn { display: inline-flex; align-items: center; gap: 7px; }
+.save-btn .save-dot { width: 7px; height: 7px; border-radius: 50%; background: transparent; flex: none; }
+.save-btn.is-dirty .save-dot { background: var(--color-warn); }
+.save-btn.is-saved .save-dot { background: var(--color-ok); }
+.save-btn.primary .save-dot { background: var(--color-text-inverse); }
 
 /* Template palette (Cmd/Ctrl-K) */
 .palette { width: min(640px, calc(100vw - 2 * var(--space-4))); }
@@ -335,8 +385,13 @@ textarea.input { min-height: 64px; resize: vertical; }
 .meta-details summary::-webkit-details-marker { display: none; }
 .meta-details .field { padding: var(--space-2) 0 var(--space-3); }
 .input.mono { font-family: var(--font-mono); font-size: 13px; }
-.account { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.account.signed { color: var(--color-primary); }
+/* Account is an avatar at the end of the bar, not a text button beside Save */
+.icon-btn.account { position: relative; }
+.icon-btn.account .initial { font-size: 13px; font-weight: 700; line-height: 1; }
+.icon-btn.account:not(.signed) .initial { display: none; }
+.icon-btn.account.signed { color: var(--color-text-inverse); background: var(--color-primary); border-color: var(--color-primary); }
+.icon-btn.account.signed:hover { background: var(--color-primary-hover); color: var(--color-text-inverse); }
+.icon-btn.account.signed .anon { display: none; }
 
 /* Dialogs */
 .dialog { border: 1px solid var(--color-border-strong); border-radius: var(--radius-lg); padding: 0; background: var(--color-surface); color: var(--color-text); width: min(560px, calc(100vw - 2 * var(--space-4))); box-shadow: 0 16px 48px oklch(0.2 0.02 250 / 0.25); }
@@ -375,24 +430,35 @@ textarea.input { min-height: 64px; resize: vertical; }
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+/* The bar sheds width in steps so it stays one row for as long as it can */
+@media (max-width: 1600px) {            /* case buttons collapse into one menu, search loses its label */
+  .case-inline { display: none; }
+  .case-menu { display: block; }
+  .palette-btn > span { display: none; }
+  .palette-btn { min-width: 0; padding-inline: var(--space-2); }
+}
+@media (max-width: 1450px) {            /* wordmark to the logo alone, save state to its dot */
+  .brand h1 { display: none; }
+  .ci-save > span:last-child { display: none; }
+  .templates.systems > button, .sys > button { padding: 6px 6px; }
+}
+
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
 
 @media (max-width: 960px) {
   .workspace { grid-template-columns: 1fr; grid-template-areas: "case" "histo" "report"; grid-template-rows: auto; padding: var(--space-4); gap: var(--space-4); }
   .report { position: static; max-height: none; overflow: visible; }
   .topbar-actions { margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
+  .topbar-right { margin-left: auto; }
   .meta-row { grid-template-columns: 1fr; }
-  .account { max-width: 140px; }
   .part-actions { width: 100%; margin-left: 0; justify-content: flex-start; }
   .part-actions .btn { padding-left: 0; }
   .toast { bottom: auto; top: var(--space-4); transform: translate(-50%, -8px); }
   .toast.show { transform: translate(-50%, 0); }
   .topbar { gap: var(--space-2); padding: var(--space-2) var(--space-4) var(--space-3); }
   .topbar-row { gap: var(--space-2); }
-  .template-row { flex-basis: 100%; flex-wrap: wrap; }
-  .row-label { min-width: 0; flex-basis: 100%; padding-top: var(--space-1); }
   .templates { flex: 1 1 auto; }
-  .palette-btn { margin-left: 0; }
+  .palette-btn { min-width: 0; flex: 1 1 140px; }
   .templates button { flex: 1; }
   .sys { flex: 1; }
   .sys > button { width: 100%; justify-content: center; }

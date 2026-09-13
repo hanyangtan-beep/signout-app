@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 import { buildManifest, manifestEntry, KINDS } from '../scripts/build-manifest.mjs';
 import { loadManifest, loadTemplate, loadAll } from '../src/registry.js';
 import {
-  biopsyRow, rowGroups, standalonePlanned, groupBySystem, selectorGroups, rankTemplates, labelOf, pushRecent, togglePin, ROWS, SYSTEM_ORDER
+  biopsyRow, rowGroups, standalonePlanned, rowOfKind, groupBySystem, selectorGroups, rankTemplates, labelOf, pushRecent, togglePin, ROWS, SYSTEM_ORDER
 } from '../src/picker.js';
 import { loadPlanned } from '../src/registry.js';
 
@@ -65,6 +65,18 @@ test('planned.json: unique ids that do not collide with built templates; known s
     assert.ok(SYSTEM_ORDER.includes(t.system) || t.kind === 'autopsy', `${t.id}: system ${t.system} is in SYSTEM_ORDER`);
     assert.ok([...ROWS.top.kinds, ...ROWS.bottom.kinds, 'autopsy'].includes(t.kind), `${t.id}: kind ${t.kind} maps to a row`);
   }
+});
+
+test('rowOfKind maps every manifest kind to the side of the header switch that lists it', () => {
+  assert.equal(rowOfKind('biopsy'), 'top');
+  assert.equal(rowOfKind('cytology'), 'top');
+  assert.equal(rowOfKind('biomarker'), 'top');
+  assert.equal(rowOfKind('cancer resection'), 'bottom');
+  assert.equal(rowOfKind('benign resection'), 'bottom');
+  assert.equal(rowOfKind('frozen'), 'bottom');
+  assert.equal(rowOfKind('generic'), 'bottom');
+  assert.equal(rowOfKind('autopsy'), null); // its own placeholder button, not a row
+  for (const t of manifest) assert.ok(rowOfKind(t.kind), `${t.id}: kind ${t.kind} has a header side`);
 });
 
 test('header rows: top = biopsy + cytology, bottom = resections + frozen + free text, grouped by system in order, planned appended', () => {

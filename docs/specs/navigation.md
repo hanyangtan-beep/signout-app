@@ -2,7 +2,15 @@
 
 Built 2026-09-12 (Phase 8). User: "the top menu is getting too unwieldy to use"; chose **grouped by system** rows and placeholders that **open Generic free text**.
 
-## Rows
+## One row + a kind switch (2026-09-13, Phase 17)
+
+The two stacked rows repeated the same system vocabulary (GI, GU, Gynae, Breast, Thoracic, H&N appeared in both) with different behaviour, and the header ran 111 px at 1920 and 164 px at 1280. The header is now **one row**: brand → **Biopsy / Resection** segmented switch (`#mode-top` / `#mode-bottom`) → system menus (`#system-row`) → Search → case identity → actions. The switch picks which row's groups the system menus show; `rowOfKind(kind)` in `src/picker.js` maps a template kind to its side, and `state.navMode` follows the open template unless the user picks the other side for that same template (`state.navModeFor`). The old "Resection & frozen ▾" browse dialog is retired — Cmd-K search covers whole-catalogue browsing.
+
+Other changes: the system holding the open template is a filled primary pill (was a faint tint, near-invisible in dark); chips are 13 px with 6 px × 7 px padding and a 32 px hit target; placeholders carry a dot (`.pending-dot`) instead of a "PENDING BUILD" caps tag; Search is a wider field with its ⌘K hint; the case accession, status and Drive save state sit at the right of the bar (`#case-id`, click to focus the accession field); Save carries its own dot — amber unsaved, green saved; the account button is an avatar (initial when signed in).
+
+Fit: one 61 px row at ≥ 1900 px; below that it sheds width in steps — ≤ 1600 px Example / New / Open collapse into a **Case ▾** menu (`#btn-case-menu`, whose items click the inline buttons so they stay the single source of truth) and Search drops to its icon; ≤ 1450 px the wordmark and the save-state text drop. Below roughly 1440 px the bar wraps to two compact lines (105 px) with the right-hand group right-aligned. The header gains a shadow once the page scrolls (`.topbar.scrolled`).
+
+## Rows (both sides of the switch)
 
 | Row | Label | Kinds | Buttons (system groups, `SYSTEM_ORDER`) |
 | --- | --- | --- | --- |

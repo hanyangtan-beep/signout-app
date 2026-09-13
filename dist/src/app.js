@@ -1,18 +1,18 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadPlanned, loadTemplate } from './registry.js?v=mtz4g8e1';
-import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, KIND_LABEL } from './picker.js?v=mtz4g8e1';
+import { loadManifest, loadPlanned, loadTemplate } from './registry.js?v=mtz58idn';
+import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, rowOfKind, KIND_LABEL } from './picker.js?v=mtz58idn';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mtz4g8e1';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtz4g8e1';
-import { loadConfig, saveConfig } from './config.js?v=mtz4g8e1';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtz4g8e1';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtz4g8e1';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mtz4g8e1';
-import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtz4g8e1';
-import { applyMacroToCase } from './macroparse.js?v=mtz4g8e1';
-import { spanFull, groupProgress as progressOf } from './formlayout.js?v=mtz4g8e1';
+} from './engine.js?v=mtz58idn';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mtz58idn';
+import { loadConfig, saveConfig } from './config.js?v=mtz58idn';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mtz58idn';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mtz58idn';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mtz58idn';
+import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mtz58idn';
+import { applyMacroToCase } from './macroparse.js?v=mtz58idn';
+import { spanFull, groupProgress as progressOf } from './formlayout.js?v=mtz58idn';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -40,6 +40,8 @@ const state = {
   config: loadConfig(),
   dirty: false,           // edited since last Drive save
   saving: false,
+  navMode: 'top',         // which side of the header mode switch is showing ('top' = biopsy)
+  navModeFor: null,       // the template the mode was chosen against; a new template re-follows its own kind
   cases: []               // last fetched Sheet rows for the Open dialog
 };
 
@@ -51,10 +53,13 @@ function ensureMeta(caseState) {
 }
 
 const nodes = {
-  topRow: $('#top-row'),
-  bottomRow: $('#bottom-row'),
-  autopsyRow: $('#autopsy-row'),
-  resections: $('#btn-resections'),
+  header: document.querySelector('header.topbar'),
+  systemRow: $('#system-row'),
+  modeTop: $('#mode-top'),
+  modeBottom: $('#mode-bottom'),
+  caseId: $('#case-id'),
+  caseMenuBtn: $('#btn-case-menu'),
+  caseMenuList: $('#case-menu-list'),
   paletteBtn: $('#btn-palette'),
   dlgPalette: $('#dlg-palette'),
   paletteSearch: $('#palette-search'),
@@ -449,17 +454,89 @@ function systemButton(row, g, current) {
   return wrap;
 }
 
+/** The mode switch follows the open template, until the user picks the other side for that template. */
+function syncNavMode(current) {
+  if (state.navModeFor === current) return;
+  state.navMode = rowOfKind(entryOf(current)?.kind) || state.navMode;
+  state.navModeFor = current;
+}
+
 function renderNav() {
   const current = schema().id;
-  for (const [row, node] of [['top', nodes.topRow], ['bottom', nodes.bottomRow]]) {
-    const groups = rowGroups(state.manifest, state.planned, row, { pins: state.pins });
-    node.replaceChildren(...groups.map((g) => systemButton(row, g, current)));
+  syncNavMode(current);
+  const row = state.navMode;
+  nodes.modeTop.setAttribute('aria-pressed', String(row === 'top'));
+  nodes.modeBottom.setAttribute('aria-pressed', String(row === 'bottom'));
+  const groups = rowGroups(state.manifest, state.planned, row, { pins: state.pins });
+  const children = groups.map((g) => systemButton(row, g, current));
+  // standalone placeholders (Autopsy) ride with the biopsy side; a dot marks them as pending
+  if (row === 'top') {
+    for (const t of standalonePlanned(state.planned)) {
+      children.push(el('button', {
+        type: 'button', class: 'pending', 'data-planned': t.id, title: `${t.name} — not built yet (roadmap: ${t.roadmap || 'Later'}). Opens Generic free text.`,
+        onclick: () => openPlaceholder(t).catch((e) => toast(e.message))
+      }, el('span', { class: 'pending-dot', 'aria-hidden': 'true' }), el('span', { text: t.label || t.name })));
+    }
   }
-  // standalone placeholders (Autopsy): one button each, same pending behaviour
-  nodes.autopsyRow.replaceChildren(...standalonePlanned(state.planned).map((t) => el('button', {
-    type: 'button', class: 'pending', 'data-planned': t.id, title: `Not built yet (roadmap: ${t.roadmap || 'Later'}). Opens Generic free text.`,
-    onclick: () => openPlaceholder(t).catch((e) => toast(e.message))
-  }, el('span', { text: t.label || t.name }), el('span', { class: 'tag', text: 'pending build' }))));
+  nodes.systemRow.replaceChildren(...children);
+}
+
+function initModeSwitch() {
+  for (const [row, btn] of [['top', nodes.modeTop], ['bottom', nodes.modeBottom]]) {
+    btn.addEventListener('click', () => {
+      closeSysmenu();
+      state.navMode = row;
+      state.navModeFor = schema().id;
+      renderNav();
+    });
+  }
+}
+
+/** Accession, status and Drive state, kept in the bar because the case panel scrolls away. */
+function renderCaseId() {
+  const meta = state.caseState?.meta || {};
+  const acc = meta.accession?.trim();
+  const status = { draft: 'Draft', ready: 'Ready', signed: 'Signed' }[meta.status] || 'Draft';
+  const d = state.caseState?.drive;
+  let saveText = 'Unsaved';
+  let saveClass = 'unsaved';
+  if (state.saving) { saveText = 'Saving…'; saveClass = 'saving'; }
+  else if (d?.savedAt && !state.dirty) { saveText = `Saved ${relTime(d.savedAt)}`; saveClass = 'saved'; }
+  else if (d?.savedAt) { saveText = `Edited ${relTime(d.savedAt)}`; saveClass = 'unsaved'; }
+  nodes.caseId.replaceChildren(
+    el('span', { class: 'ci-acc' + (acc ? '' : ' none'), text: acc || 'New case' }),
+    el('span', { class: 'ci-status', 'data-status': meta.status || 'draft', text: status }),
+    el('span', { class: `ci-save ${saveClass}` }, el('span', { class: 'dot', 'aria-hidden': 'true' }), el('span', { text: saveText }))
+  );
+  nodes.caseId.title = acc ? `${acc} · ${status} · ${saveText} — go to the accession field` : 'No accession yet — go to the accession field';
+}
+
+/** Example / New / Open collapse into this menu on narrower screens; the inline buttons stay the source of truth. */
+function initCaseMenu() {
+  const items = [['Example', () => nodes.example.click()], ['New case', () => nodes.newCase.click()], ['Open…', () => nodes.open.click()]];
+  nodes.caseMenuList.replaceChildren(...items.map(([label, run]) => el('button', {
+    type: 'button', role: 'menuitem', class: 'menu-item', text: label,
+    onclick: () => { closeCaseMenu(); run(); }
+  })));
+  nodes.caseMenuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = !nodes.caseMenuList.hidden;
+    open ? closeCaseMenu() : (nodes.caseMenuList.hidden = false, nodes.caseMenuBtn.setAttribute('aria-expanded', 'true'));
+  });
+  document.addEventListener('click', (e) => { if (!nodes.caseMenuList.hidden && !e.target.closest('.case-menu')) closeCaseMenu(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCaseMenu(); });
+}
+
+function closeCaseMenu() {
+  nodes.caseMenuList.hidden = true;
+  nodes.caseMenuBtn.setAttribute('aria-expanded', 'false');
+}
+
+/** The sticky bar gains a shadow once the page scrolls, so it sits above the content instead of floating in it. */
+function initHeaderElevation() {
+  const onScroll = () => nodes.header?.classList.toggle('scrolled', window.scrollY > 4);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
 }
 
 document.addEventListener('click', (e) => { if (sysmenu.open && !e.target.closest('.sys')) closeSysmenu(); });
@@ -537,7 +614,6 @@ function markPaletteSelection() {
 
 function initPalette() {
   nodes.paletteBtn.addEventListener('click', () => openPalette());
-  nodes.resections.addEventListener('click', () => openPalette({ exclude: ['biopsy'] }));
   nodes.paletteSearch.addEventListener('input', () => { palette.index = 0; renderPalette(); });
   nodes.paletteSearch.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowDown') { e.preventDefault(); palette.index = Math.min(palette.index + 1, palette.items.length - 1); markPaletteSelection(); }
@@ -1274,16 +1350,28 @@ function renderSaveStatus() {
   else text = state.config.clientId ? 'Not saved to Drive.' : 'Not saved to Drive. Add the Google client id in Settings to enable saving.';
   nodes.statusSave.replaceChildren(text);
   if (d?.docUrl) nodes.statusSave.append(' · ', el('a', { href: d.docUrl, target: '_blank', rel: 'noopener', text: 'Open Doc' }));
-  nodes.save.textContent = state.saving ? 'Saving…' : 'Save';
+  nodes.save.replaceChildren(
+    el('span', { class: 'save-dot', 'aria-hidden': 'true' }),
+    el('span', { text: state.saving ? 'Saving…' : (d?.savedAt && !state.dirty ? 'Saved' : 'Save') })
+  );
   nodes.save.disabled = state.saving;
   nodes.save.classList.toggle('primary', state.dirty && !!state.caseState?.meta?.accession);
+  nodes.save.classList.toggle('is-dirty', state.dirty);
+  nodes.save.classList.toggle('is-saved', !state.dirty && !!d?.savedAt);
+  nodes.save.title = text;
+  renderCaseId();
 }
 
 function renderAccount() {
   const email = currentUser();
-  nodes.google.textContent = isSignedIn() && email ? email.split('@')[0] : (isSignedIn() ? 'Signed in' : 'Sign in');
-  nodes.google.title = email ? `Google: ${email}` : 'Sign in to Google';
-  nodes.google.classList.toggle('signed', isSignedIn());
+  const signed = isSignedIn();
+  // Account state is an avatar at the end of the bar, not a text button beside Save, so it does not
+  // read as a case action.
+  nodes.google.querySelector('.initial').textContent = signed && email ? email.trim()[0].toUpperCase() : '';
+  nodes.google.classList.toggle('signed', signed);
+  const label = email ? `Google: ${email}` : (signed ? 'Signed in to Google' : 'Sign in to Google');
+  nodes.google.title = label;
+  nodes.google.setAttribute('aria-label', label);
 }
 
 const CANONICAL = 'https://han-signout.pplx.app/';
@@ -1438,6 +1526,10 @@ async function boot() {
   const saved = loadCase();
   initDrive();
   initPalette();
+  initModeSwitch();
+  initCaseMenu();
+  initHeaderElevation();
+  nodes.caseId.addEventListener('click', () => { nodes.meta.accession.focus(); nodes.meta.accession.select?.(); });
   const defaultId = biopsyRow(state.manifest)[0]?.id || state.manifest[0].id; // most-used small biopsy
   if (saved && templatesInUse(saved).every((id) => entryOf(id))) {
     await ensureTemplates(templatesInUse(saved));
