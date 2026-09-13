@@ -16,9 +16,10 @@
 // There is no separate narrative microscopy paragraph. Wording is protected by
 // tests/ovary_ft_peritoneum.test.js and tests/fixtures/ovary - change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz0q3xn';
-import * as S from '../src/staging/ovary.js?v=mtz0q3xn';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz0q3xn';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz2q7zn';
+import * as S from '../src/staging/ovary.js?v=mtz2q7zn';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz2q7zn';
+import { typeMorphology, implantMorphology, STIC_SENTENCE } from './ovary_morphology.js?v=mtz2q7zn';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
@@ -172,6 +173,13 @@ export function histologyPara(v) {
   const type = histTypeName(v);
   const article = /^[AEIOU]/i.test(type) ? 'an' : 'a';
   const s = [`Sections show ${article} ${lc1(type)}.`];
+  // Morphology is suppressed when the pathologist has typed a microscopic description
+  // (typed notes win) and after neoadjuvant chemotherapy with no or minimal residual cancer.
+  const minimalResidual = v.neoadjuvant === true && /^CRS3/.test(v.crs || '');
+  if (!stripDot(v.microDescription) && !minimalResidual) {
+    const morph = typeMorphology(v.histType || '', v.gradeWho || '');
+    if (morph) s.push(morph);
+  }
   if (ENDO(v)) s.push(`Solid non-squamous growth is ${lc1(specify(v.solidPct || '5% or less (architectural grade 1)')).replace(/\s*\(architectural.*$/, '')} with ${/^Nuclear grade 3/.test(v.nuclearGrade || '') ? 'marked nuclear atypia in the majority of the tumour' : 'mild to moderate nuclear atypia'}.`);
   if (MUCINOUS_CA(v)) s.push(/^High-grade/.test(v.mucinousGrade || '') ? 'Infiltrative (destructive) stromal invasion is present in more than 10% of the tumour.' : /^Low-grade/.test(v.mucinousGrade || '') ? 'Invasion is expansile (confluent), with infiltrative growth in 10% or less of the tumour.' : '');
   if (stripDot(v.microDescription)) s.push(`${uc1(stripDot(v.microDescription))}.`);
@@ -179,7 +187,11 @@ export function histologyPara(v) {
   if (/^Involved/.test(tm)) s.push('The fallopian tube mucosa is involved by invasive carcinoma.');
   else if (/entirely/.test(tm)) s.push('The fallopian tubes are examined entirely (SEE-FIM) and the mucosa is not involved.');
   const stic = arr(v.additionalFindings).some((f) => /STIC/.test(f));
-  if (stic) s.push('Serous tubal intraepithelial carcinoma is present in the fimbria.');
+  if (stic) s.push(stripDot(v.microDescription) ? 'Serous tubal intraepithelial carcinoma is present in the fimbria.' : STIC_SENTENCE);
+  if (BORDERLINE(v) && !stripDot(v.microDescription)) {
+    const im = implantMorphology(v.implants || '');
+    if (im) s.push(im);
+  }
   const ihc = [];
   if (v.p53 && v.p53 !== 'Not performed') ihc.push(`p53 shows ${p53Phrase(v)}`);
   if (stripDot(v.otherIhc)) ihc.push(stripDot(v.otherIhc));

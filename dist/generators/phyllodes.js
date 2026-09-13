@@ -2,14 +2,14 @@
 // Element order follows the QMH BREAST-Phyllodes page (CAP Phyllodes Tumor 4.1.0.0); house exceptions: a
 // Specimen and tumour section, the Tumour histology paragraph after the histologic type, the epithelial
 // component and the margin walker text. pTNM prints only with the printPTNM option, and only for malignant phyllodes tumour (AJCC staging does not apply to benign or borderline tumours).
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz0q3xn';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz0q3xn';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz2q7zn';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz2q7zn';
 import {
   num, int, fmt, lc1, uc1, countWords, stripDot, arr, listJoin, specify, plural, item,
   procedureText, siteText, specimenName, diagnosisHead, otherParts, hasExtraParts, otherSpecimenLines, specimens, findingText, lettered,
   specimenSentence, tumourSentence, blockKey, marginItems, marginsPhrase, closestMargin, closestWords, nodeItems, nodesPhrase, nodeCounts, nodesSubmitted,
   metastasisValue, metastasisPhrase, ptnmSection, sharedChecks, marginChecks
-} from './breast_shared.js?v=mtz0q3xn';
+} from './breast_shared.js?v=mtz2q7zn';
 
 export { specimenName, specimens, otherSpecimenLines, hasExtraParts, blockKey };
 

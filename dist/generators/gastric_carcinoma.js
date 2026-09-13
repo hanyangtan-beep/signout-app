@@ -17,10 +17,10 @@
 //   diagnosis                 the specimen line + "- " clauses, lowest margin distance and yp-prefix
 // Wording is protected by tests/gastric.test.js — change it only deliberately.
 
-import { typeMorphology } from './gastric_morphology.js?v=mtz0q3xn';
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz0q3xn';
-import * as S from '../src/staging/gastric.js?v=mtz0q3xn';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz0q3xn';
+import { typeMorphology } from './gastric_morphology.js?v=mtz2q7zn';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz2q7zn';
+import * as S from '../src/staging/gastric.js?v=mtz2q7zn';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz2q7zn';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };

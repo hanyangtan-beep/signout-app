@@ -19,8 +19,8 @@
 //               MMR proficient"
 // Wording is protected by tests/colon_resection.test.js — change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz0q3xn';
-import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz0q3xn';
+import { deriveTNM, stageLine } from '../src/staging/index.js?v=mtz2q7zn';
+import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js?v=mtz2q7zn';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
