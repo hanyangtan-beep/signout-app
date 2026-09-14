@@ -200,3 +200,32 @@ test('generic template prints free text in the house layout and warns when empty
   const single = generateCase({ [GENERIC_ID]: t }, { ...cs, parts: [cs.parts[0]] });
   assert.equal(single.diagnosis, 'OMENTUM, resection - NO EVIDENCE OF MALIGNANCY', 'single part drops the letter');
 });
+
+test('pasted prostate specimen copies into Site and flows into the diagnosis line', async () => {
+  const { schema } = await loadTemplate('prostate_biopsy');
+  const site = (text) => {
+    const row = matchParts(parseIntake(`Specimen\n${text}`), '', manifest)[0];
+    assert.equal(row.templateId, 'prostate_biopsy', text);
+    return presetValues(schema, row, row).specimenName || '';
+  };
+  // The LIS triple parses: the middle bit is the site.
+  assert.equal(site('(A) Prostate, right base, biopsy'), 'right base');
+  assert.equal(site('(A) Prostate, systematic core, right lateral base, biopsy'), 'right lateral base');
+  // No trailing procedure word, so no triple — the whole pasted part is copied and tidied.
+  assert.equal(site('(A) Prostate biopsy, left apex'), 'left apex');
+  assert.equal(site('(A) TRUS guided prostate biopsy, right mid'), 'right mid');
+  assert.equal(site('(A) Left apex prostatic cores'), 'Left apex');
+  assert.equal(site('(A) Prostate, target 1 (left anterior), biopsy'), 'target 1 (left anterior)');
+  // Nothing but the organ and the procedure: Site stays empty rather than inventing one.
+  assert.equal(site('(A) Prostate, transperineal biopsy'), '');
+
+  const { generateCase } = await import('../src/engine.js');
+  const t = await loadTemplate('prostate_biopsy');
+  const build = (specimenName) => generateCase({ prostate_biopsy: t }, {
+    schemaId: 'prostate_biopsy', caseTitle: '', options: { includeHeader: false, summary: false }, meta: {},
+    parts: [{ label: 'A', templateId: 'prostate_biopsy', values: { specimenName, coresTotal: 2, category: 'Benign' } },
+      { label: 'B', templateId: 'prostate_biopsy', values: { specimenName: 'Right base', coresTotal: 2, category: 'Benign' } }]
+  }).diagnosis.split('\n')[0];
+  assert.equal(build('Left apex'), '(A) PROSTATE, left apex, needle core biopsy - NO EVIDENCE OF MALIGNANCY');
+  assert.equal(build(''), '(A) PROSTATE, needle core biopsy - NO EVIDENCE OF MALIGNANCY', 'no site, no "part a"');
+});

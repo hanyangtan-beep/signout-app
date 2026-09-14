@@ -33,6 +33,16 @@ export function specimenName(part) {
   return part.values.specimenName || `Part ${part.label}`;
 }
 
+/**
+ * The site as the diagnosis line says it. A pasted specimen with no laterality or zone
+ * ("Prostate, transperineal biopsy") leaves Site empty; the line then reads
+ * "(A) PROSTATE, needle core biopsy - …" rather than naming the part twice.
+ */
+function siteClause(part) {
+  const site = String(part.values.specimenName || '').trim();
+  return site ? `${low(site)}, ` : '';
+}
+
 const isCa = (part) => part.values.category === 'Adenocarcinoma';
 
 function coreCount(part) {
@@ -95,8 +105,7 @@ function benignQualifier(s) {
 
 export function diagnosis(part, ctx) {
   const s = part.values;
-  const site = low(specimenName(part));
-  let line = `(${part.label}) ${ctx.schema.organ}, ${site}, ${ctx.schema.specimenNoun} - `;
+  let line = `(${part.label}) ${ctx.schema.organ}, ${siteClause(part)}${ctx.schema.specimenNoun} - `;
   if (s.category === 'Benign') {
     return line + 'NO EVIDENCE OF MALIGNANCY';
   }

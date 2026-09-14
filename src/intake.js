@@ -261,7 +261,22 @@ export function matchOption(options, text) {
   return tie ? '' : best;
 }
 
-/** `match.fill`: `{field, from: "detail" | "text" | "options", unless?}` rules (a single object is accepted too). */
+/**
+ * Drop the words `strip` matches from a copied specimen value, comma-part by comma-part, so a
+ * pasted "Prostate biopsy, left apex" reaches a Site field as "left apex" — the organ and the
+ * procedure are already printed by the diagnosis line and would otherwise be said twice.
+ * A comma-part left with no letters or digits is dropped whole.
+ */
+export function stripWords(value, strip) {
+  const re = new RegExp(strip, 'gi');
+  return String(value || '')
+    .split(/\s*,\s*/)
+    .map((bit) => bit.replace(re, ' ').replace(/\s*\(\s*\)\s*/g, ' ').replace(/\s+/g, ' ').replace(/^[\s-]+|[\s,;:.-]+$/g, '').trim())
+    .filter((bit) => /[a-z0-9]/i.test(bit))
+    .join(', ');
+}
+
+/** `match.fill`: `{field, from: "detail" | "text" | "options", fallback?, strip?, unless?}` rules (a single object is accepted too). */
 function applyFill(schema, part, values) {
   const rules = [].concat(schema?.match?.fill || []);
   const field = (id) => (schema?.fields || []).find((f) => f.id === id);
@@ -274,7 +289,12 @@ function applyFill(schema, part, values) {
       const opt = matchOption(f.options, text);
       if (opt) values[rule.field] = opt;
     } else if (f.type === 'text') {
-      const v = rule.from === 'detail' ? part.detail : part.text;
+      let v = rule.from === 'detail' ? part.detail : part.text;
+      // `fallback` — the LIS triple did not parse ("Prostate biopsy, left apex" has no trailing
+      // procedure word), so copy the pasted part itself rather than leaving the field empty.
+      if (!v && rule.fallback) v = rule.fallback === 'detail' ? part.detail : part.text;
+      // `strip` (regex source) removes the organ and procedure words from the copied text.
+      if (v && rule.strip) v = stripWords(v, rule.strip);
       // `unless` (regex source) skips a value that is only a generic word ("polyp", "biopsy").
       if (v && !(rule.unless && new RegExp(rule.unless, 'i').test(v.trim()))) values[rule.field] = v;
     }

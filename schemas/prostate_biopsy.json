@@ -49,7 +49,9 @@
     "fill": [
       {
         "field": "specimenName",
-        "from": "detail"
+        "from": "detail",
+        "fallback": "text",
+        "strip": "\\b(prostate|prostatic|gland|needle|cores?|biops(?:y|ies)|bx|trus|transrectal|transperineal|ultrasound|us|guided|systematic|sextant|specimen)\\b"
       }
     ]
   },

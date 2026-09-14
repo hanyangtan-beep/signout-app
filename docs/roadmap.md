@@ -77,7 +77,13 @@ Docs
 
 ## Now
 
-(empty — pull the next card explicitly)
+### Prostate intake — pasted specimen fills Site   Size: S
+Why:        pasting a prostate biopsy list matches `prostate_biopsy` but leaves Site empty, because the only fill rule reads the LIS triple's middle bit and the triple only parses when the last comma-separated bit is a bare procedure word. "(A) Prostate, transperineal biopsy" and "(A) Prostate biopsy, left apex" both yield no detail, so `specimenName` falls back to "Part A" and the diagnosis line prints "(A) PROSTATE, part a, needle core biopsy - …".
+Change:     extend the `match.fill` rules in `src/intake.js` with `fallback` (use the whole part text when `from` is empty) and `strip` (drop organ and procedure words from the copied value), then point `schemas/prostate_biopsy.json` at them so the pasted specimen lands in Site as the laterality / zone that remains ("left apex", "right base", "target 1"). When nothing survives the strip, leave Site unset and have `generators/prostate.js` omit the site segment from the diagnosis line rather than printing "part a".
+Untouched:  the matcher and its tiers; every other template's fill rules; prostate report wording when Site is filled; the lymph node and generic preset branches.
+Accept:     "(A) Prostate, right base, biopsy" → Site "right base"; "(A) Prostate biopsy, left apex" → Site "left apex"; "(A) Prostate, transperineal biopsy" → Site empty and the line reads "(A) PROSTATE, needle core biopsy - …"; no "prostate, prostate" or "biopsy, biopsy" duplication in any diagnosis line; existing fixtures unchanged except the prostate ones deliberately regenerated.
+Verify:     tests + browser (paste a six-part prostate list)
+Ship:       one batch, one publish
 
 ## Next
 
