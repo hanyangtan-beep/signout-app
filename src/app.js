@@ -1308,7 +1308,15 @@ async function buildPartsFromIntake() {
     const own = counts[id] || 0; counts[id] = own + 1;
     const part = { ...createPart(s, own), label: r.label, templateId: id, lis: r.raw };
     const match = id === r.templateId ? r : { ...r, templateId: id, role: null };
-    Object.assign(part.values, presetValues(s, r, match));
+    const preset = presetValues(s, r, match);
+    // A part built from a pasted list takes its site from the paste. Where the paste names no site,
+    // drop the positional default (the prostate sextant map, the IBD site series) rather than let a
+    // guessed site reach the diagnosis line; a value the pathologist typed is never touched here.
+    const positional = (s.partDefaults || [])[own] || {};
+    for (const rule of [].concat(s.match?.fill || [])) {
+      if (preset[rule.field] === undefined && positional[rule.field] !== undefined && part.values[rule.field] === positional[rule.field]) part.values[rule.field] = '';
+    }
+    Object.assign(part.values, preset);
     normalisePart(s, part);
     return part;
   });

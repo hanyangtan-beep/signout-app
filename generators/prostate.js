@@ -60,7 +60,8 @@ function coresPositive(part) {
 export function microscopy(part) {
   const s = part.values;
   const total = coreCount(part);
-  const head = `(${part.label}) ${specimenName(part)}, ${total} ${total === 1 ? 'core' : 'cores'}`;
+  const named = String(s.specimenName || '').trim();
+  const head = `(${part.label}) ${named ? `${named}, ` : ''}${total} ${total === 1 ? 'core' : 'cores'}`;
   const lines = [head];
   if (isCa(part)) {
     lines.push('- Diagnosis: Acinar adenocarcinoma');

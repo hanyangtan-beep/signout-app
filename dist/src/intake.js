@@ -293,8 +293,9 @@ function applyFill(schema, part, values) {
       // `fallback` — the LIS triple did not parse ("Prostate biopsy, left apex" has no trailing
       // procedure word), so copy the pasted part itself rather than leaving the field empty.
       if (!v && rule.fallback) v = rule.fallback === 'detail' ? part.detail : part.text;
-      // `strip` (regex source) removes the organ and procedure words from the copied text.
-      if (v && rule.strip) v = stripWords(v, rule.strip);
+      // `strip` (regex source) removes the organ and procedure words, then the remainder opens with a
+      // capital so the microscopy heading reads "Left apex, 2 cores" whatever the LIS casing was.
+      if (v && rule.strip) v = stripWords(v, rule.strip).replace(/^[a-z]/, (c) => c.toUpperCase());
       // `unless` (regex source) skips a value that is only a generic word ("polyp", "biopsy").
       if (v && !(rule.unless && new RegExp(rule.unless, 'i').test(v.trim()))) values[rule.field] = v;
     }

@@ -1,19 +1,19 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadPlanned, loadTemplate } from './registry.js?v=mu10pyeq';
-import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, rowOfKind, KIND_LABEL } from './picker.js?v=mu10pyeq';
+import { loadManifest, loadPlanned, loadTemplate } from './registry.js?v=mu10vpvt';
+import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, rowOfKind, KIND_LABEL } from './picker.js?v=mu10vpvt';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mu10pyeq';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mu10pyeq';
-import { loadConfig, saveConfig } from './config.js?v=mu10pyeq';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mu10pyeq';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mu10pyeq';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mu10pyeq';
-import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mu10pyeq';
-import { applyMacroToCase } from './macroparse.js?v=mu10pyeq';
-import { spanFull, groupProgress as progressOf } from './formlayout.js?v=mu10pyeq';
-import { organIcon, mountOrganSprite } from './organicons.js?v=mu10pyeq';
+} from './engine.js?v=mu10vpvt';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mu10vpvt';
+import { loadConfig, saveConfig } from './config.js?v=mu10vpvt';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mu10vpvt';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mu10vpvt';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mu10vpvt';
+import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mu10vpvt';
+import { applyMacroToCase } from './macroparse.js?v=mu10vpvt';
+import { spanFull, groupProgress as progressOf } from './formlayout.js?v=mu10vpvt';
+import { organIcon, mountOrganSprite } from './organicons.js?v=mu10vpvt';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -1308,7 +1308,15 @@ async function buildPartsFromIntake() {
     const own = counts[id] || 0; counts[id] = own + 1;
     const part = { ...createPart(s, own), label: r.label, templateId: id, lis: r.raw };
     const match = id === r.templateId ? r : { ...r, templateId: id, role: null };
-    Object.assign(part.values, presetValues(s, r, match));
+    const preset = presetValues(s, r, match);
+    // A part built from a pasted list takes its site from the paste. Where the paste names no site,
+    // drop the positional default (the prostate sextant map, the IBD site series) rather than let a
+    // guessed site reach the diagnosis line; a value the pathologist typed is never touched here.
+    const positional = (s.partDefaults || [])[own] || {};
+    for (const rule of [].concat(s.match?.fill || [])) {
+      if (preset[rule.field] === undefined && positional[rule.field] !== undefined && part.values[rule.field] === positional[rule.field]) part.values[rule.field] = '';
+    }
+    Object.assign(part.values, preset);
     normalisePart(s, part);
     return part;
   });

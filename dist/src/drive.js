@@ -1,9 +1,9 @@
 // Google Drive / Sheets persistence. Drive is the only store: one Google Doc per case in the
 // "Pathology reports" folder and one row per case in the "Sign-out cases" Sheet (case_json).
 
-import { gfetch } from './gauth.js?v=mu10pyeq';
-import { saveConfig } from './config.js?v=mu10pyeq';
-import { SHEET_HEADER, normaliseAccession, buildDocText, toSheetRow, fromSheetRow, docUrlFor } from './docformat.js?v=mu10pyeq';
+import { gfetch } from './gauth.js?v=mu10vpvt';
+import { saveConfig } from './config.js?v=mu10vpvt';
+import { SHEET_HEADER, normaliseAccession, buildDocText, toSheetRow, fromSheetRow, docUrlFor } from './docformat.js?v=mu10vpvt';
 
 const DRIVE = 'https://www.googleapis.com/drive/v3';
 const UPLOAD = 'https://www.googleapis.com/upload/drive/v3';

@@ -209,13 +209,13 @@ test('pasted prostate specimen copies into Site and flows into the diagnosis lin
     return presetValues(schema, row, row).specimenName || '';
   };
   // The LIS triple parses: the middle bit is the site.
-  assert.equal(site('(A) Prostate, right base, biopsy'), 'right base');
-  assert.equal(site('(A) Prostate, systematic core, right lateral base, biopsy'), 'right lateral base');
+  assert.equal(site('(A) Prostate, right base, biopsy'), 'Right base');
+  assert.equal(site('(A) Prostate, systematic core, right lateral base, biopsy'), 'Right lateral base');
   // No trailing procedure word, so no triple — the whole pasted part is copied and tidied.
-  assert.equal(site('(A) Prostate biopsy, left apex'), 'left apex');
-  assert.equal(site('(A) TRUS guided prostate biopsy, right mid'), 'right mid');
+  assert.equal(site('(A) Prostate biopsy, left apex'), 'Left apex');
+  assert.equal(site('(A) TRUS guided prostate biopsy, right mid'), 'Right mid');
   assert.equal(site('(A) Left apex prostatic cores'), 'Left apex');
-  assert.equal(site('(A) Prostate, target 1 (left anterior), biopsy'), 'target 1 (left anterior)');
+  assert.equal(site('(A) Prostate, target 1 (left anterior), biopsy'), 'Target 1 (left anterior)');
   // Nothing but the organ and the procedure: Site stays empty rather than inventing one.
   assert.equal(site('(A) Prostate, transperineal biopsy'), '');
 
@@ -228,4 +228,12 @@ test('pasted prostate specimen copies into Site and flows into the diagnosis lin
   }).diagnosis.split('\n')[0];
   assert.equal(build('Left apex'), '(A) PROSTATE, left apex, needle core biopsy - NO EVIDENCE OF MALIGNANCY');
   assert.equal(build(''), '(A) PROSTATE, needle core biopsy - NO EVIDENCE OF MALIGNANCY', 'no site, no "part a"');
+
+  // The microscopy heading drops the site the same way, so a part with none reads "2 cores".
+  const micro = (specimenName) => generateCase({ prostate_biopsy: t }, {
+    schemaId: 'prostate_biopsy', caseTitle: '', options: { includeHeader: false, summary: false }, meta: {},
+    parts: [{ label: 'A', templateId: 'prostate_biopsy', values: { specimenName, coresTotal: 2, category: 'Benign' } }]
+  }).microscopy.split('\n')[0];
+  assert.equal(micro('Left apex'), 'Left apex, 2 cores', 'single part drops the letter');
+  assert.equal(micro(''), '2 cores');
 });
