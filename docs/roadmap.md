@@ -8,6 +8,8 @@ State on 2026-09-12: 54 templates (10 small biopsy, 23 benign resection incl. LE
 
 ## Done
 
+- [x] Prostate biopsy — Gleason pattern reference galleries (2026-09-14, user request): `field.reference` galleries on Diagnosis, primary and secondary Gleason pattern (shared), minor pattern 5, cribriform and IDC-P — 94 CC BY / CC BY-SA / CC0 photomicrographs in `assets/reference/prostate/` under ISUP 2014/2019 and WHO 2022 criteria bullets, each with caption, credit, licence and URL, Grade Group key once at the top; spec `docs/specs/prostate-gleason-galleries.md`.
+
 - [x] Prostate intake — pasted specimen fills Site (2026-09-14, user request): `match.fill` rules gained `fallback` (copy the whole part when the LIS triple does not parse) and `strip` (drop organ and procedure words), so "(A) Prostate biopsy, left apex" and "(A) TRUS guided prostate biopsy, right mid" both reach Site as the zone; parts built from a pasted list no longer keep the schema's positional sextant default, and where the paste names no site the diagnosis line, the microscopy heading and the specimen block omit it instead of printing "Part D".
 
 - [x] Breast resection histology enrichment (2026-09-13): `generators/breast_morphology.js` gives every breast_carcinoma histologic type a sourced microscopic sentence (Nottingham-grade aware for NST), named NST patterns and ILC variant patterns their own clause (the medullary pattern replaces the generic sentence), DCIS its architectural and nuclear-grade prose, and phyllodes a per-grade stromal sentence; sources in `docs/reference/breast-morphology-sources.md`, pinned by `tests/breast-morphology.test.js`.
@@ -166,17 +168,6 @@ Stop:       no native app, no framework change, no service worker / offline cach
 Verify:     tests + Playwright mobile profiles + manual iPhone check
 Ship:       one deploy + publish
 Spec:       `docs/specs/iphone-layout.md`
-
-### Prostate biopsy — Gleason pattern reference galleries   Size: M
-Why:        Gleason pattern 3 vs 4 (poorly formed / fused glands), pattern 4 vs 5, cribriform and intraductal carcinoma calls drive the Grade Group and are the commonest source of inter-observer disagreement; a picture beside the chip, as for endometrium, reduces mis-grading (user request 2026-09-11, citing Epstein).
-Change:     `field.reference` galleries (existing mechanism, lightbox) on `primary` / `secondary` (shared gallery: pattern 3 discrete glands incl. small / branching / atrophic glands; pattern 4 poorly formed, fused, glomeruloid, cribriform; pattern 5 single cells, cords, sheets, solid nests, comedonecrosis; borderline 3-vs-4 pitfalls — tangential sectioning, crushed glands, adenosis / partial atrophy), `tertiary5` (minor pattern 5 vs a true secondary; the < 5 % rule), `cribriform` (large vs small cribriform, cribriform vs glomeruloid, cribriform vs fused), `idcp` (IDC-P vs invasive cribriform: basal cells, dense cribriform / solid, marked atypia, comedonecrosis; vs HGPIN), `category` (ASAP / HGPIN / atypical adenomatous hyperplasia / benign mimics — seminal vesicle, Cowper glands, nephrogenic adenoma). Criteria bullets from the 2014 and 2019 ISUP consensus papers (Epstein et al., Am J Surg Pathol 2016;40:244; van Leenders et al., Am J Surg Pathol 2020;44:e87), Epstein's Modern Pathology / AJSP updates and WHO Urinary and Male Genital Tumours 5th ed., each cited by DOI in the spec. Images: open-access CC BY / CC BY-SA / CC0 only, legends checked, panel-cropped, ≤ 150 kB, credit + licence + URL under each, in `assets/reference/prostate/`. Grade Group table (1 = 3+3, 2 = 3+4, 3 = 4+3, 4 = 8, 5 = 9-10) shown once at the top of the gallery.
-Untouched:  report wording, Grade Group derivation, fixtures, other templates.
-Accept:     `tests/reference.test.js` covers the new entries (file, caption, credit, licence, URL; ≥ 2 illustrated groups per field); source table and gaps in the spec; each of the five fields shows Compare photos in the browser; galleries open one column on mobile if the iPhone card has shipped.
-Stop:       Epstein's own figures are almost all behind AJSP / Modern Pathology paywalls — they are the criteria source, not the image source; do not lift them. Use his open-access papers only where the licence is CC BY (check each on Europe PMC). If no licensed image exists for a pattern after a bounded search, ship criteria text and list it as a gap. No NC / ND; nothing AI-generated.
-Verify:     tests + browser
-Ship:       one deploy + publish
-Spec:       `docs/specs/prostate-gleason-galleries.md`
-Later:      the user's own photomicrographs from Drive (same card as endometrium).
 
 ### Frozen section scenarios (unstaged)                  Size: L → split; two cards, one batch
 Why:        the frozen template covers generic margin / node / parathyroid / ovary / nodule; the recurring services — bile duct and pancreatic duct margins, head-and-neck named margins — need their own fields, phone-line wording and paraffin correlation. Past sign-outs supply house wording (`docs/reference/frozen-section-examples.md`, 10 scenarios with session references). Frozen specimens whose final report carries AJCC staging (lung wedge, and the resections the SLN / duct-margin results feed into) are planned as paired cards below, after the "Frozen → staged final" engine card.
