@@ -1,0 +1,848 @@
+[
+ {
+  "field": "primary",
+  "group": "Pattern 3 - discrete, separate glands",
+  "src": "assets/reference/prostate/primary_p3_discrete.jpg",
+  "caption": "Gleason score 3+3=6: discrete, separate, variably sized glands, each with its own lumen",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2a",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_6_(3%2B3).jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 3 - discrete, separate glands",
+  "src": "assets/reference/prostate/secondary_p3_discrete.jpg",
+  "caption": "Gleason score 3+3=6: discrete, separate, variably sized glands, each with its own lumen",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2a",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_6_(3%2B3).jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Pattern 3 - discrete, separate glands",
+  "src": "assets/reference/prostate/primary_p3_pni.jpg",
+  "caption": "Discrete pattern 3 glands encircling a nerve (circumferential perineural invasion)",
+  "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+  "license": "CC0 1.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_prostatic_adenocarcinoma_with_circumferential_perineural_invasion.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 3 - discrete, separate glands",
+  "src": "assets/reference/prostate/secondary_p3_pni.jpg",
+  "caption": "Discrete pattern 3 glands encircling a nerve (circumferential perineural invasion)",
+  "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+  "license": "CC0 1.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_prostatic_adenocarcinoma_with_circumferential_perineural_invasion.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Pattern 3 - discrete, separate glands",
+  "src": "assets/reference/prostate/primary_p3_mucin.jpg",
+  "caption": "Small separate acini with blue-tinged luminal mucin (arrow) (H&E, 200x)",
+  "credit": "Cruz et al., J Bras Patol Med Lab 2016, via Wikimedia Commons, panel A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_histopathological_criteria_for_prostate_cancer.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 3 - discrete, separate glands",
+  "src": "assets/reference/prostate/secondary_p3_mucin.jpg",
+  "caption": "Small separate acini with blue-tinged luminal mucin (arrow) (H&E, 200x)",
+  "credit": "Cruz et al., J Bras Patol Med Lab 2016, via Wikimedia Commons, panel A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_histopathological_criteria_for_prostate_cancer.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Pattern 4 - poorly formed, fused, cribriform or glomeruloid",
+  "src": "assets/reference/prostate/primary_p4_poorly_formed.jpg",
+  "caption": "Poorly formed glands with incomplete or absent lumina (Gleason score 4+4=8)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2f",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_poorly-formed_glands.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 4 - poorly formed, fused, cribriform or glomeruloid",
+  "src": "assets/reference/prostate/secondary_p4_poorly_formed.jpg",
+  "caption": "Poorly formed glands with incomplete or absent lumina (Gleason score 4+4=8)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2f",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_poorly-formed_glands.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Pattern 4 - poorly formed, fused, cribriform or glomeruloid",
+  "src": "assets/reference/prostate/primary_p4_fused.jpg",
+  "caption": "Fused glands sharing a common wall; cytoplasmic vacuoles present (Gleason score 4+4=8)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2d",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_fused_glands_with_cytoplasmic_vacuoles.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 4 - poorly formed, fused, cribriform or glomeruloid",
+  "src": "assets/reference/prostate/secondary_p4_fused.jpg",
+  "caption": "Fused glands sharing a common wall; cytoplasmic vacuoles present (Gleason score 4+4=8)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2d",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_fused_glands_with_cytoplasmic_vacuoles.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Pattern 4 - poorly formed, fused, cribriform or glomeruloid",
+  "src": "assets/reference/prostate/primary_p4_glomeruloid.jpg",
+  "caption": "Glomeruloid glands: intraluminal cribriform tufts attached at one edge (Gleason score 4+4=8)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2e",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_glomeruloid_glands.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 4 - poorly formed, fused, cribriform or glomeruloid",
+  "src": "assets/reference/prostate/secondary_p4_glomeruloid.jpg",
+  "caption": "Glomeruloid glands: intraluminal cribriform tufts attached at one edge (Gleason score 4+4=8)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2e",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_glomeruloid_glands.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Pattern 4 - poorly formed, fused, cribriform or glomeruloid",
+  "src": "assets/reference/prostate/primary_p4_cribriform.jpg",
+  "caption": "Irregular cribriform glands (Gleason score 4+4=8)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2c",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_irregular_cribriform_glands.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 4 - poorly formed, fused, cribriform or glomeruloid",
+  "src": "assets/reference/prostate/secondary_p4_cribriform.jpg",
+  "caption": "Irregular cribriform glands (Gleason score 4+4=8)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2c",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_irregular_cribriform_glands.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Pattern 4 - poorly formed, fused, cribriform or glomeruloid",
+  "src": "assets/reference/prostate/primary_p4_minor_cribriform.jpg",
+  "caption": "Gleason score 3+4=7: discrete pattern 3 glands with a minor cribriform component",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2b",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_7_(3%2B4)_with_minor_component_of_cribriform_glands.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 4 - poorly formed, fused, cribriform or glomeruloid",
+  "src": "assets/reference/prostate/secondary_p4_minor_cribriform.jpg",
+  "caption": "Gleason score 3+4=7: discrete pattern 3 glands with a minor cribriform component",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2b",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_7_(3%2B4)_with_minor_component_of_cribriform_glands.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Pattern 4 - poorly formed, fused, cribriform or glomeruloid",
+  "src": "assets/reference/prostate/primary_p4_core_low.jpg",
+  "caption": "Pattern 4 across a needle core at low power",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Prostate_cancer_with_Gleason_pattern_4_low_mag.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 4 - poorly formed, fused, cribriform or glomeruloid",
+  "src": "assets/reference/prostate/secondary_p4_core_low.jpg",
+  "caption": "Pattern 4 across a needle core at low power",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Prostate_cancer_with_Gleason_pattern_4_low_mag.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Pattern 4 - poorly formed, fused, cribriform or glomeruloid",
+  "src": "assets/reference/prostate/primary_p4_intermed.jpg",
+  "caption": "Pattern 4: crowded, poorly delimited and partly fused glands",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Prostatic_carcinoma_-_Gleason_pattern_4_--_intermed_mag.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 4 - poorly formed, fused, cribriform or glomeruloid",
+  "src": "assets/reference/prostate/secondary_p4_intermed.jpg",
+  "caption": "Pattern 4: crowded, poorly delimited and partly fused glands",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Prostatic_carcinoma_-_Gleason_pattern_4_--_intermed_mag.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Pattern 5 - sheets, cords, single cells, comedonecrosis",
+  "src": "assets/reference/prostate/primary_p5_sheets.jpg",
+  "caption": "Solid sheets of tumour cells without gland formation (Gleason score 5+5=10)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 3a",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_10_(5%2B5)_with_solid_sheets_of_cells.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 5 - sheets, cords, single cells, comedonecrosis",
+  "src": "assets/reference/prostate/secondary_p5_sheets.jpg",
+  "caption": "Solid sheets of tumour cells without gland formation (Gleason score 5+5=10)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 3a",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_10_(5%2B5)_with_solid_sheets_of_cells.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Pattern 5 - sheets, cords, single cells, comedonecrosis",
+  "src": "assets/reference/prostate/primary_p5_cords.jpg",
+  "caption": "Cords of tumour cells (Gleason score 5+5=10)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 3b",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_10_(5%2B5)_with_cords_of_cells.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 5 - sheets, cords, single cells, comedonecrosis",
+  "src": "assets/reference/prostate/secondary_p5_cords.jpg",
+  "caption": "Cords of tumour cells (Gleason score 5+5=10)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 3b",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_10_(5%2B5)_with_cords_of_cells.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Pattern 5 - sheets, cords, single cells, comedonecrosis",
+  "src": "assets/reference/prostate/primary_p5_single_cells.jpg",
+  "caption": "Individually infiltrating tumour cells (Gleason score 5+5=10)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 3c",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_10_(5%2B5)_with_individual_cells.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 5 - sheets, cords, single cells, comedonecrosis",
+  "src": "assets/reference/prostate/secondary_p5_single_cells.jpg",
+  "caption": "Individually infiltrating tumour cells (Gleason score 5+5=10)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 3c",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_10_(5%2B5)_with_individual_cells.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Pattern 5 - sheets, cords, single cells, comedonecrosis",
+  "src": "assets/reference/prostate/primary_p5_comedonecrosis.jpg",
+  "caption": "Cribriform glands, some with central comedonecrosis (Gleason score 4+5=9)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 3d",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_9_(4%2B5)_with_cribriform_glands,_some_with_necrosis.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 5 - sheets, cords, single cells, comedonecrosis",
+  "src": "assets/reference/prostate/secondary_p5_comedonecrosis.jpg",
+  "caption": "Cribriform glands, some with central comedonecrosis (Gleason score 4+5=9)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 3d",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_9_(4%2B5)_with_cribriform_glands,_some_with_necrosis.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Pattern 5 - sheets, cords, single cells, comedonecrosis",
+  "src": "assets/reference/prostate/primary_p5_with_p4.jpg",
+  "caption": "Pattern 5 sheets and single cells adjacent to a pattern 4 component",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Gleason_4_and_5_intermed_mag.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Pattern 5 - sheets, cords, single cells, comedonecrosis",
+  "src": "assets/reference/prostate/secondary_p5_with_p4.jpg",
+  "caption": "Pattern 5 sheets and single cells adjacent to a pattern 4 component",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Gleason_4_and_5_intermed_mag.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Borderline 3 vs 4 - favour the lower grade",
+  "src": "assets/reference/prostate/primary_borderline_tangential_a.jpg",
+  "caption": "Bordering 3+3=6 with tangential cuts against 3+4=7 with poorly formed glands; the ISUP panel favoured 3+3=6 (H&E, x20 objective)",
+  "credit": "Egevad et al., Virchows Arch 2020, Fig 3a (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1007/s00428-020-02858-w"
+ },
+ {
+  "field": "secondary",
+  "group": "Borderline 3 vs 4 - favour the lower grade",
+  "src": "assets/reference/prostate/secondary_borderline_tangential_a.jpg",
+  "caption": "Bordering 3+3=6 with tangential cuts against 3+4=7 with poorly formed glands; the ISUP panel favoured 3+3=6 (H&E, x20 objective)",
+  "credit": "Egevad et al., Virchows Arch 2020, Fig 3a (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1007/s00428-020-02858-w"
+ },
+ {
+  "field": "primary",
+  "group": "Borderline 3 vs 4 - favour the lower grade",
+  "src": "assets/reference/prostate/primary_borderline_fused_c.jpg",
+  "caption": "Same differential with more convincingly fused glands; the panel favoured 3+4=7 (H&E, x20 objective)",
+  "credit": "Egevad et al., Virchows Arch 2020, Fig 3c (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1007/s00428-020-02858-w"
+ },
+ {
+  "field": "secondary",
+  "group": "Borderline 3 vs 4 - favour the lower grade",
+  "src": "assets/reference/prostate/secondary_borderline_fused_c.jpg",
+  "caption": "Same differential with more convincingly fused glands; the panel favoured 3+4=7 (H&E, x20 objective)",
+  "credit": "Egevad et al., Virchows Arch 2020, Fig 3c (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1007/s00428-020-02858-w"
+ },
+ {
+  "field": "primary",
+  "group": "Borderline 3 vs 4 - favour the lower grade",
+  "src": "assets/reference/prostate/primary_borderline_34_vs_43.jpg",
+  "caption": "Bordering 3+4=7 against 4+3=7 (H&E, x20 objective)",
+  "credit": "Egevad et al., Virchows Arch 2020, Fig 4a (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1007/s00428-020-02858-w"
+ },
+ {
+  "field": "secondary",
+  "group": "Borderline 3 vs 4 - favour the lower grade",
+  "src": "assets/reference/prostate/secondary_borderline_34_vs_43.jpg",
+  "caption": "Bordering 3+4=7 against 4+3=7 (H&E, x20 objective)",
+  "credit": "Egevad et al., Virchows Arch 2020, Fig 4a (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1007/s00428-020-02858-w"
+ },
+ {
+  "field": "primary",
+  "group": "Borderline 3 vs 4 - favour the lower grade",
+  "src": "assets/reference/prostate/primary_borderline_43_vs_44.jpg",
+  "caption": "Mostly cribriform and glomeruloid glands with occasional separate glands: bordering 4+3=7 against 4+4=8 (H&E, x20 objective)",
+  "credit": "Egevad et al., Virchows Arch 2020, Fig 4d (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1007/s00428-020-02858-w"
+ },
+ {
+  "field": "secondary",
+  "group": "Borderline 3 vs 4 - favour the lower grade",
+  "src": "assets/reference/prostate/secondary_borderline_43_vs_44.jpg",
+  "caption": "Mostly cribriform and glomeruloid glands with occasional separate glands: bordering 4+3=7 against 4+4=8 (H&E, x20 objective)",
+  "credit": "Egevad et al., Virchows Arch 2020, Fig 4d (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1007/s00428-020-02858-w"
+ },
+ {
+  "field": "primary",
+  "group": "Borderline 3 vs 4 - favour the lower grade",
+  "src": "assets/reference/prostate/primary_borderline_atrophy.jpg",
+  "caption": "Mimic: atrophic benign glands are small and angulated but retain a basal layer and lack nucleolar atypia",
+  "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+  "license": "CC0 1.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Histology_of_prostate_atrophy.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Borderline 3 vs 4 - favour the lower grade",
+  "src": "assets/reference/prostate/secondary_borderline_atrophy.jpg",
+  "caption": "Mimic: atrophic benign glands are small and angulated but retain a basal layer and lack nucleolar atypia",
+  "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+  "license": "CC0 1.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Histology_of_prostate_atrophy.jpg"
+ },
+ {
+  "field": "primary",
+  "group": "Borderline 3 vs 4 - favour the lower grade",
+  "src": "assets/reference/prostate/primary_borderline_adenosis.jpg",
+  "caption": "Mimic: adenosis, a crowded lobular proliferation of small bland glands",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Adenosis_of_prostate_--_high_mag.jpg"
+ },
+ {
+  "field": "secondary",
+  "group": "Borderline 3 vs 4 - favour the lower grade",
+  "src": "assets/reference/prostate/secondary_borderline_adenosis.jpg",
+  "caption": "Mimic: adenosis, a crowded lobular proliferation of small bland glands",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Adenosis_of_prostate_--_high_mag.jpg"
+ },
+ {
+  "field": "tertiary5",
+  "group": "Minor pattern 5 on needle biopsy",
+  "src": "assets/reference/prostate/t5_minor_focus.jpg",
+  "caption": "A small pattern 5 component (sheets and single cells) beside pattern 4 glands",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Gleason_4_and_5_intermed_mag.jpg"
+ },
+ {
+  "field": "tertiary5",
+  "group": "Minor pattern 5 on needle biopsy",
+  "src": "assets/reference/prostate/t5_dispersed_cells.jpg",
+  "caption": "Predominantly cribriform tumour with an area of seemingly dispersed cells and strands; crush artefact was considered and the panel split between 4+4=8 and 9 (H&E, x20 objective)",
+  "credit": "Egevad et al., Virchows Arch 2020, Fig 5b (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1007/s00428-020-02858-w"
+ },
+ {
+  "field": "tertiary5",
+  "group": "Pattern 5 as a true secondary grade",
+  "src": "assets/reference/prostate/t5_strands.jpg",
+  "caption": "Pale cells forming gland-like nests together with strands and single cells (H&E, x20 objective)",
+  "credit": "Egevad et al., Virchows Arch 2020, Fig 5c (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1007/s00428-020-02858-w"
+ },
+ {
+  "field": "tertiary5",
+  "group": "Pattern 5 as a true secondary grade",
+  "src": "assets/reference/prostate/t5_tadpole.jpg",
+  "caption": "Poorly formed, tapered tadpole-like structures merging into strands (H&E, x20 objective)",
+  "credit": "Egevad et al., Virchows Arch 2020, Fig 5d (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1007/s00428-020-02858-w"
+ },
+ {
+  "field": "tertiary5",
+  "group": "Pattern 5 as a true secondary grade",
+  "src": "assets/reference/prostate/t5_comedonecrosis.jpg",
+  "caption": "Comedonecrosis within cribriform glands, sufficient on its own for pattern 5 (Gleason score 4+5=9)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 3d",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_9_(4%2B5)_with_cribriform_glands,_some_with_necrosis.jpg"
+ },
+ {
+  "field": "tertiary5",
+  "group": "Pattern 5 as a true secondary grade",
+  "src": "assets/reference/prostate/t5_sheets.jpg",
+  "caption": "Solid sheets: pattern 5 as a secondary grade when it sits beside pattern 4",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 3a",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_10_(5%2B5)_with_solid_sheets_of_cells.jpg"
+ },
+ {
+  "field": "cribriform",
+  "group": "Cribriform: the ISUP definition",
+  "src": "assets/reference/prostate/crib_definition.jpg",
+  "caption": "Confluent sheets of tumour cells forming cohesive trabeculae with punched-out lumina and no intervening stroma (H&E, 100x)",
+  "credit": "Compérat et al., Cancers 2024, Fig 2",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers16112002"
+ },
+ {
+  "field": "cribriform",
+  "group": "Cribriform: the ISUP definition",
+  "src": "assets/reference/prostate/crib_irregular.jpg",
+  "caption": "Irregular cribriform glands (Gleason score 4+4=8)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2c",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_irregular_cribriform_glands.jpg"
+ },
+ {
+  "field": "cribriform",
+  "group": "Large vs small cribriform",
+  "src": "assets/reference/prostate/crib_large_complex.jpg",
+  "caption": "Large, complex cribriform structure invading periprostatic adipose tissue (x100)",
+  "credit": "Destouni et al., Cancers 2022, Fig 4b (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers14133041"
+ },
+ {
+  "field": "cribriform",
+  "group": "Large vs small cribriform",
+  "src": "assets/reference/prostate/crib_small_focus.jpg",
+  "caption": "A small cribriform focus arising among discrete pattern 3 glands (Gleason score 3+4=7)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2b",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_7_(3%2B4)_with_minor_component_of_cribriform_glands.jpg"
+ },
+ {
+  "field": "cribriform",
+  "group": "Not cribriform",
+  "src": "assets/reference/prostate/crib_not_glomeruloid.jpg",
+  "caption": "Glomeruloid glands: the intraluminal tuft stays attached at one edge, so this is not cribriform",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2e",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_glomeruloid_glands.jpg"
+ },
+ {
+  "field": "cribriform",
+  "group": "Not cribriform",
+  "src": "assets/reference/prostate/crib_not_benign_tufting.jpg",
+  "caption": "Benign glands with luminal tufting and pseudostratification producing a cribriform-like pattern; basal cells retained and no atypia (x100)",
+  "credit": "Destouni et al., Cancers 2022, Fig 1a (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers14133041"
+ },
+ {
+  "field": "cribriform",
+  "group": "Not cribriform",
+  "src": "assets/reference/prostate/crib_not_bch.jpg",
+  "caption": "Basal cell hyperplasia with a cribriform pattern (x100)",
+  "credit": "Destouni et al., Cancers 2022, Fig 1b (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers14133041"
+ },
+ {
+  "field": "cribriform",
+  "group": "Not cribriform",
+  "src": "assets/reference/prostate/crib_not_clear_cell.jpg",
+  "caption": "Clear cell cribriform hyperplasia with bland monotonous nuclei (x200)",
+  "credit": "Destouni et al., Cancers 2022, Fig 1d (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers14133041"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P: essential criteria",
+  "src": "assets/reference/prostate/idcp_dense_cribriform.jpg",
+  "caption": "Expanded duct filled by a dense cribriform proliferation of atypical cells (H&E, x100)",
+  "credit": "Destouni et al., Cancers 2022, Fig 3a (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers14133041"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P: essential criteria",
+  "src": "assets/reference/prostate/idcp_confluent.jpg",
+  "caption": "Confluent intraductal proliferation occupying the duct lumen (H&E, x100)",
+  "credit": "Destouni et al., Cancers 2022, Fig 3b (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers14133041"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P: essential criteria",
+  "src": "assets/reference/prostate/idcp_34be12.jpg",
+  "caption": "34betaE12 highlights the retained peripheral basal cell layer (x100)",
+  "credit": "Destouni et al., Cancers 2022, Fig 3c (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers14133041"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P: essential criteria",
+  "src": "assets/reference/prostate/idcp_erg.jpg",
+  "caption": "ERG expression in the intraductal lesional cells (x100)",
+  "credit": "Destouni et al., Cancers 2022, Fig 3d (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers14133041"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P: essential criteria",
+  "src": "assets/reference/prostate/idcp_he.jpg",
+  "caption": "Intraductal carcinoma of the prostate (H&E, 100x)",
+  "credit": "Compérat et al., Cancers 2024, Fig 1A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers16112002"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P: essential criteria",
+  "src": "assets/reference/prostate/idcp_amacr_p63.jpg",
+  "caption": "AMACR (brown) with p63 (pink) double stain: strong cytoplasmic AMACR with a preserved p63-positive basal layer",
+  "credit": "Compérat et al., Cancers 2024, Fig 1B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers16112002"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P: essential criteria",
+  "src": "assets/reference/prostate/idcp_intermed.jpg",
+  "caption": "Intraductal carcinoma expanding and distorting a duct",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Intraductal_carcinoma_of_prostate_--_intermed_mag.jpg"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P vs invasive cribriform carcinoma",
+  "src": "assets/reference/prostate/idcp_vs_inv_he.jpg",
+  "caption": "IDC-P glands with cribriform morphology surrounded by invasive carcinoma glands",
+  "credit": "Surintrspanont & Zhou, Cancers 2023, Fig 2A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers15225319"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P vs invasive cribriform carcinoma",
+  "src": "assets/reference/prostate/idcp_vs_inv_p63.jpg",
+  "caption": "p63 (brown): the intraductal glands retain basal cells while the invasive glands lack them",
+  "credit": "Surintrspanont & Zhou, Cancers 2023, Fig 2B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers15225319"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P vs invasive cribriform carcinoma",
+  "src": "assets/reference/prostate/idcp_vs_inv_merging.jpg",
+  "caption": "Invasive cribriform carcinoma: the cribriform structure merges with clearly invasive carcinoma (x100)",
+  "credit": "Destouni et al., Cancers 2022, Fig 4a (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers14133041"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P vs invasive cribriform carcinoma",
+  "src": "assets/reference/prostate/idcp_vs_inv_34be12.jpg",
+  "caption": "Absent 34betaE12 staining confirms the invasive nature of these cribriform structures (x100)",
+  "credit": "Destouni et al., Cancers 2022, Fig 4c (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers14133041"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P vs invasive cribriform carcinoma",
+  "src": "assets/reference/prostate/idcp_patchy_basal_he.jpg",
+  "caption": "Intraductal carcinoma with very patchy basal cells (H&E)",
+  "credit": "Varma et al., Virchows Arch 2019, Fig 3a (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1007/s00428-019-02544-6"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P vs invasive cribriform carcinoma",
+  "src": "assets/reference/prostate/idcp_patchy_basal_ck56.jpg",
+  "caption": "CK5/6: basal cells are present in only some glands of the same focus",
+  "credit": "Varma et al., Virchows Arch 2019, Fig 3b (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.1007/s00428-019-02544-6"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P vs invasive cribriform carcinoma",
+  "src": "assets/reference/prostate/idcp_inv_low.jpg",
+  "caption": "Intraductal carcinoma at low power, with the duct outlines preserved",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Intraductal_carcinoma_of_prostate_-_2_--_low_mag.jpg"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P vs high grade PIN",
+  "src": "assets/reference/prostate/idcp_vs_pin_florid.jpg",
+  "caption": "Three tangentially sectioned acini of florid HGPIN: dense and complex enough to raise an atypical intraductal proliferation (40x)",
+  "credit": "Smith & Wobker, Cancers 2024, Fig 3A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers16061097"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P vs high grade PIN",
+  "src": "assets/reference/prostate/idcp_vs_pin_p63.jpg",
+  "caption": "p63/HMWCK (brown) with AMACR (red) confirms the intraductal nature of the same three acini (40x)",
+  "credit": "Smith & Wobker, Cancers 2024, Fig 3B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers16061097"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P vs high grade PIN",
+  "src": "assets/reference/prostate/idcp_vs_pin_pten.jpg",
+  "caption": "Retained PTEN favours florid HGPIN over an atypical intraductal proliferation (40x)",
+  "credit": "Smith & Wobker, Cancers 2024, Fig 3C (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers16061097"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P vs high grade PIN",
+  "src": "assets/reference/prostate/idcp_vs_pin_pten_loss.jpg",
+  "caption": "A dense lumen-spanning focus with PTEN loss, benign ducts retaining expression (200x)",
+  "credit": "Smith & Wobker, Cancers 2024, Fig 3D (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers16061097"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P vs high grade PIN",
+  "src": "assets/reference/prostate/idcp_vs_bch.jpg",
+  "caption": "Mimic: basal cell hyperplasia with urothelial metaplasia may simulate solid IDC-P; nuclei stay uniform (200x)",
+  "credit": "Smith & Wobker, Cancers 2024, Fig 6B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers16061097"
+ },
+ {
+  "field": "idcp",
+  "group": "IDC-P vs high grade PIN",
+  "src": "assets/reference/prostate/idcp_vs_clear_cell.jpg",
+  "caption": "Mimic: clear cell cribriform hyperplasia with arching Roman-bridge architecture and only very mild atypia (200x)",
+  "credit": "Smith & Wobker, Cancers 2024, Fig 6A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers16061097"
+ },
+ {
+  "field": "category",
+  "group": "Benign",
+  "src": "assets/reference/prostate/cat_normal.jpg",
+  "caption": "Normal prostatic glands: undulating luminal borders, pale cytoplasm and a basal cell layer",
+  "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+  "license": "CC0 1.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Histology_of_normal_prostate.jpg"
+ },
+ {
+  "field": "category",
+  "group": "Benign",
+  "src": "assets/reference/prostate/cat_benign_hyperplastic.jpg",
+  "caption": "Hyperplastic gland with pale to clear cytoplasm matching the adjacent benign acini (x200)",
+  "credit": "Destouni et al., Cancers 2022, Fig 1c (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers14133041"
+ },
+ {
+  "field": "category",
+  "group": "HGPIN",
+  "src": "assets/reference/prostate/cat_hgpin.jpg",
+  "caption": "High grade PIN: enlarged hyperchromatic nuclei with nucleoli in a pre-existing gland",
+  "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+  "license": "CC0 1.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_high-grade_prostatic_intraepithelial_neoplasia_(HGPIN),_original.jpg"
+ },
+ {
+  "field": "category",
+  "group": "HGPIN",
+  "src": "assets/reference/prostate/cat_hgpin_tufted.jpg",
+  "caption": "Tufted HGPIN with pseudostratified columnar cells, nucleomegaly, hyperchromasia and nucleoli (200x)",
+  "credit": "Smith & Wobker, Cancers 2024, Fig 1A (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers16061097"
+ },
+ {
+  "field": "category",
+  "group": "HGPIN",
+  "src": "assets/reference/prostate/cat_hgpin_flat.jpg",
+  "caption": "Flat HGPIN: lower cuboidal atypical epithelium, a pattern that can simulate invasive carcinoma (400x)",
+  "credit": "Smith & Wobker, Cancers 2024, Fig 1C (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers16061097"
+ },
+ {
+  "field": "category",
+  "group": "HGPIN",
+  "src": "assets/reference/prostate/cat_hgpin_ihc.jpg",
+  "caption": "HGPIN immunophenotype: retained p63/HMWCK basal cells (brown) with AMACR overexpression (red) (100x)",
+  "credit": "Smith & Wobker, Cancers 2024, Fig 2B (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://doi.org/10.3390/cancers16061097"
+ },
+ {
+  "field": "category",
+  "group": "ASAP",
+  "src": "assets/reference/prostate/cat_asap_intermed.jpg",
+  "caption": "Atypical small acinar proliferation: a small focus of crowded atypical glands at the edge of the core",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Atypical_small_acinar_proliferation_--_intermed_mag.jpg"
+ },
+ {
+  "field": "category",
+  "group": "ASAP",
+  "src": "assets/reference/prostate/cat_asap_high.jpg",
+  "caption": "The same focus at higher power: too few glands and too little atypia to call carcinoma outright",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Atypical_small_acinar_proliferation_--_high_mag.jpg"
+ },
+ {
+  "field": "category",
+  "group": "Adenocarcinoma",
+  "src": "assets/reference/prostate/cat_adenocarcinoma.jpg",
+  "caption": "Acinar adenocarcinoma: discrete infiltrating glands lacking a basal cell layer (Gleason score 3+3=6)",
+  "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2a",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_6_(3%2B3).jpg"
+ },
+ {
+  "field": "category",
+  "group": "Adenocarcinoma",
+  "src": "assets/reference/prostate/cat_nucleoli.jpg",
+  "caption": "Double and marginated nucleoli in acinar adenocarcinoma (arrows) (H&E, 400x)",
+  "credit": "Cruz et al., J Bras Patol Med Lab 2016, via Wikimedia Commons, panel D (cropped)",
+  "license": "CC BY 4.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_histopathological_criteria_for_prostate_cancer.jpg"
+ },
+ {
+  "field": "category",
+  "group": "Adenocarcinoma",
+  "src": "assets/reference/prostate/cat_crystalloid.jpg",
+  "caption": "Intraluminal crystalloid: an eosinophilic, sharply angulated luminal crystal",
+  "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+  "license": "CC0 1.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_prostatic_intraluminal_crystalloid.jpg"
+ },
+ {
+  "field": "category",
+  "group": "Adenocarcinoma",
+  "src": "assets/reference/prostate/cat_pni.jpg",
+  "caption": "Circumferential perineural invasion by adenocarcinoma",
+  "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+  "license": "CC0 1.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_prostatic_adenocarcinoma_with_circumferential_perineural_invasion.jpg"
+ },
+ {
+  "field": "category",
+  "group": "Benign mimics of carcinoma",
+  "src": "assets/reference/prostate/cat_mimic_adenosis.jpg",
+  "caption": "Adenosis: a circumscribed lobular cluster of small glands merging with larger benign glands",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Adenosis_of_prostate_--_intermed_mag.jpg"
+ },
+ {
+  "field": "category",
+  "group": "Benign mimics of carcinoma",
+  "src": "assets/reference/prostate/cat_mimic_atrophy.jpg",
+  "caption": "Atrophy: small angulated glands lined by attenuated cells with scant cytoplasm",
+  "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+  "license": "CC0 1.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Histology_of_prostate_atrophy.jpg"
+ },
+ {
+  "field": "category",
+  "group": "Benign mimics of carcinoma",
+  "src": "assets/reference/prostate/cat_mimic_seminal_vesicle.jpg",
+  "caption": "Seminal vesicle epithelium: degenerative nuclear atypia with golden lipofuscin pigment",
+  "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+  "license": "CC0 1.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Histology_of_seminal_vesicle_glands_on_H%26E_stain.jpg"
+ },
+ {
+  "field": "category",
+  "group": "Benign mimics of carcinoma",
+  "src": "assets/reference/prostate/cat_mimic_cowper.jpg",
+  "caption": "Cowper (bulbourethral) glands: lobules of bland mucinous acini",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Bulbourethral_gland_--_high_mag.jpg"
+ },
+ {
+  "field": "category",
+  "group": "Benign mimics of carcinoma",
+  "src": "assets/reference/prostate/cat_mimic_nephrogenic.jpg",
+  "caption": "Nephrogenic adenoma: small tubules with hobnail cells and a hyaline rim",
+  "credit": "Nephron, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Nephrogenic_adenoma_-_high_mag.jpg"
+ },
+ {
+  "field": "category",
+  "group": "Benign mimics of carcinoma",
+  "src": "assets/reference/prostate/cat_mimic_bch.jpg",
+  "caption": "Basal cell hyperplasia: small solid and glandular nests of uniform basal cells",
+  "credit": "Librepath, Wikimedia Commons, full figure",
+  "license": "CC BY-SA 3.0",
+  "url": "https://commons.wikimedia.org/wiki/File:Basal_cell_hyperplasia_of_prostate_-_intermed_mag.jpg"
+ }
+]

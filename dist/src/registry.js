@@ -3,7 +3,7 @@
 // first use, so the initial download does not grow as templates are added.
 // Works in the browser (fetch + import) and in Node (fs + import).
 
-const BUILD = 'mu10wmri'; // tools/build.js stamps this with the build id for cache-busting
+const BUILD = 'mu17n9h5'; // tools/build.js stamps this with the build id for cache-busting
 
 const isNode = typeof window === 'undefined';
 let manifestPromise = null;
@@ -41,7 +41,7 @@ export function loadPlanned(baseUrl) {
 }
 
 export async function loadSchema(id, baseUrl) {
-  return readJson(`schemas/${id}.json?v=mu10wmri`, baseUrl);
+  return readJson(`schemas/${id}.json?v=mu17n9h5`, baseUrl);
 }
 
 export async function loadGenerator(name) {

@@ -702,6 +702,8 @@ function referencePanel(field, part) {
   const panel = el('div', { class: 'ref-panel', role: 'region', 'aria-label': ref.title || field.label });
   if (ref.title) panel.append(el('div', { class: 'ref-title', text: ref.title }));
   if (ref.intro) panel.append(el('p', { class: 'ref-intro', text: ref.intro }));
+  // `noteTop` is for a summary the reader needs before the criteria (the Gleason Grade Group key); `note` stays a footnote.
+  if (ref.noteTop) panel.append(el('p', { class: 'ref-note ref-note-top', text: ref.noteTop }));
   panel.append(el('div', { class: 'ref-groups', style: `--ref-cols:${Math.min((ref.groups || []).length || 1, ref.columns || 3)}` },
     ...(ref.groups || []).map((g) => el('section', { class: 'ref-group' },
       el('h4', { text: g.heading }),
@@ -1021,11 +1023,12 @@ function renderOptions() {
     oninput: (e) => { markDirty(); state.caseState.comment = e.target.value; renderReport(); cacheCase(state.caseState); }
   });
   comment.value = state.caseState.comment || '';
-  nodes.options.replaceChildren(
+  // replaceChildren stringifies null, so empty groups have to be filtered out rather than passed through.
+  nodes.options.replaceChildren(...[
     optionNodes.length ? el('div', { class: 'option-row' }, ...optionNodes) : null,
     snippetNodes.length ? el('div', { class: 'snippet-group' }, el('div', { class: 'group-title', text: 'Comments' }), el('div', { class: 'option-row' }, ...snippetNodes)) : null,
     el('div', { class: 'field comment-field' }, el('label', { for: 'case-comment', text: 'Comment' }), comment)
-  );
+  ].filter(Boolean));
   nodes.options.hidden = false;
 }
 
