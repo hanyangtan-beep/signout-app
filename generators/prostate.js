@@ -29,8 +29,18 @@ export function gleasonText(primary, secondary) {
   return `${primary}+${secondary}=${parseInt(primary, 10) + parseInt(secondary, 10)} (Grade Group ${gg})`;
 }
 
-export function specimenName(part) {
-  return part.values.specimenName || `Part ${part.label}`;
+/**
+ * The specimen block line. A pasted part with no laterality or zone ("Prostate, transperineal
+ * biopsy") has no Site, so the line names the specimen itself rather than reading "Part D".
+ */
+export function specimenName(part, ctx) {
+  const named = String(part.values.specimenName || '').trim();
+  if (named) return named;
+  if (ctx?.schema?.organ) {
+    const organ = low(ctx.schema.organ).replace(/^[a-z]/, (c) => c.toUpperCase());
+    return `${organ}, ${ctx.schema.specimenNoun}`;
+  }
+  return `Part ${part.label}`;
 }
 
 /**

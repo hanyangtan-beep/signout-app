@@ -1,19 +1,19 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
-import { loadManifest, loadPlanned, loadTemplate } from './registry.js?v=mu10vpvt';
-import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, rowOfKind, KIND_LABEL } from './picker.js?v=mu10vpvt';
+import { loadManifest, loadPlanned, loadTemplate } from './registry.js?v=mu10wmri';
+import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, rowOfKind, KIND_LABEL } from './picker.js?v=mu10wmri';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
-} from './engine.js?v=mu10vpvt';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mu10vpvt';
-import { loadConfig, saveConfig } from './config.js?v=mu10vpvt';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mu10vpvt';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mu10vpvt';
-import { normaliseAccession, phiWarnings } from './docformat.js?v=mu10vpvt';
-import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mu10vpvt';
-import { applyMacroToCase } from './macroparse.js?v=mu10vpvt';
-import { spanFull, groupProgress as progressOf } from './formlayout.js?v=mu10vpvt';
-import { organIcon, mountOrganSprite } from './organicons.js?v=mu10vpvt';
+} from './engine.js?v=mu10wmri';
+import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js?v=mu10wmri';
+import { loadConfig, saveConfig } from './config.js?v=mu10wmri';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js?v=mu10wmri';
+import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js?v=mu10wmri';
+import { normaliseAccession, phiWarnings } from './docformat.js?v=mu10wmri';
+import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js?v=mu10wmri';
+import { applyMacroToCase } from './macroparse.js?v=mu10wmri';
+import { spanFull, groupProgress as progressOf } from './formlayout.js?v=mu10wmri';
+import { organIcon, mountOrganSprite } from './organicons.js?v=mu10wmri';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {

@@ -7,7 +7,7 @@
 // regardless of that header. The case being edited is cached in sessionStorage before we leave and
 // restored when Google sends us back; the interrupted action (save / open) is resumed automatically.
 
-import { scopesFor } from './config.js?v=mu10vpvt';
+import { scopesFor } from './config.js?v=mu10wmri';
 
 const AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 const REVOKE_URL = 'https://oauth2.googleapis.com/revoke';
