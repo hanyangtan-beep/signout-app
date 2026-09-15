@@ -1,5 +1,7 @@
 # schemas
 
+**Starting a new template?** Run `npm run new-template -- <id> --system <S> --kind <K> --name "<Name>" --label <Label> --organ <ORGAN>`. It writes the schema, generator, test and fixture directory with every required key already in place and rebuilds the manifest, then leaves a `TODO` at each decision it cannot make. The scaffold, the paired research brief and the curation rules are in `docs/new-template-brief.md`. Do not hand-write the boilerplate below from scratch.
+
 One JSON file per template. Keys: `id`, `version`, `name`, `shortName`, `organ`, `specimenNoun`, `maxParts`, `defaultParts`, `generator`, `style`, `caseFields`, `options`, `partDefaults`, `fields`, `example`.
 
 Field types: `text`, `textarea`, `number` (`min`, `step`, `suffix`), `checkbox`, `select` / `grade` (`options`, `optionLabels`, `optionsByField`, `showIf`, `defaultForFirstPart`), `multiselect` (array value; `options`, `exclusive: [option]` clears the others when ticked, `default: []`).

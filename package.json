@@ -12,7 +12,8 @@
     "fixtures:force": "node tools/capture-fixtures.cjs --force",
     "build": "node tools/build.js",
     "qa": "node tools/qa-browser.js",
-    "release": "node tools/release.js"
+    "release": "node tools/release.js",
+    "new-template": "node scripts/new-template.mjs"
   },
   "keywords": [],
   "author": "",

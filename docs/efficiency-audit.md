@@ -291,3 +291,58 @@ The tests had to follow: 28 test files read `schemas/x.json` straight off disk, 
 **And one real bug found on the way.** The existing `blocks` extractor only read digits, so "Four blocks are submitted" — the way house macros actually spell small counts — extracted nothing, in every template that already had a blocks rule. Word numbers up to twelve now count.
 
 17 fixture cases added to `tests/fixtures/macro/cases.json` (19 → 36), one per new rule group. That file is a golden fixture, so the addition is deliberate and recorded here: **cases were added, none changed.** 896 tests pass, all seven release gates green.
+
+## B — template factory scaffold (shipped)
+
+**`scripts/new-template.mjs`, also `npm run new-template`.** One command writes the schema, the
+generator, the test file, the fixture directory and the manifest entry for a new template, with
+every key `scripts/build-manifest.mjs` demands already present.
+
+```
+npm run new-template -- pancreatic_biopsy --system GI --kind biopsy \
+  --name "Pancreatic biopsy" --label Pancreas --organ PANCREAS --rank 40 \
+  --aliases "EUS-FNB,IPMN,PanIN"
+```
+
+The `--kind` drives the shape:
+
+- **biopsy** — schema, generator with `specimenName` / `microscopy` / `diagnosis`, four tests.
+- **benign resection** — adds the Macroscopy field group, the `macro` and `blockKey` exports
+  wired to the shared `letteredBlockKey` from C, the `macro` case option, and a `blocks`
+  `macroExtract` rule from D.
+- **cancer resection** — adds the `source` block, the `synopticOnly` / `printPTNM` /
+  `stageGroup` options, and `synoptic` / `validate` stubs using the shared `checks()` from C.
+
+All three kinds scaffold to a template that loads, renders and passes its own generated tests
+before a single line is edited. That is the point: the boilerplate is no longer a place errors
+can hide.
+
+**Three engine contracts the scaffold now encodes**, each of which cost a debugging cycle to
+rediscover and each of which a hand-written template gets wrong the same way:
+
+1. The registry loads a generator's **default export**. A generator with named exports only is
+   silently not wired in — `loadAll()` returns `generator: false` and every call throws a
+   `TypeError` from deep inside `generateCase`.
+2. `specimens(parts, ctx)` takes the **whole array of parts**, not one part. A generator that
+   exports a per-part `specimens` prints `(undefined)`. Most templates should not export it at
+   all — the engine builds the SPECIMEN block from `specimenName` and letters it. The scaffold
+   omits it and says why in a comment.
+3. When a generator exports `synoptic`, the engine calls it **instead of** `microscopy`, under
+   a SYNOPTIC REPORT heading. A cancer template whose narrative lives in `microscopy` prints no
+   narrative at all. The scaffold puts the narrative inside `synoptic`, above the element list,
+   behind the `synopticOnly` switch.
+
+**Guardrails.** It refuses to overwrite an existing schema, generator or test without
+`--force`; it rejects a `--system` or `--kind` outside the allowed sets, a non-snake_case id,
+and a missing `--name` / `--label` / `--organ`. Every decision it cannot make is left as a
+`TODO` rather than guessed.
+
+**The research half.** `docs/new-template-brief.md` holds the paste-ready subagent brief that
+pairs with the scaffold — authoritative sources only, a URL on every morphological statement,
+"n.a." rather than a filled-in guess, and no code. Its output lands in
+`docs/reference/<id>-morphology.md` as the grounding record. The report-register rule is
+restated in the brief and in the scaffold's own generator comments, so the constraint travels
+with the work instead of living only in conversation.
+
+`schemas/README.md` now opens by pointing at the scaffold, so the hand-written route is no
+longer the first thing a reader finds.
