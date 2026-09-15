@@ -171,8 +171,8 @@ E → F → C → D → B, with A running in the background from the start.
 
 E and F are small and make everything after them safer and quieter. C must precede B or the factory multiplies the duplication. D is the biggest user-facing win and should not wait for B. A is a cron — start it now and let the first two runs land before the next roadmap re-plan.
 
-## Open questions for you
+## Answered 2026-09-15
 
-1. Should the roadmap actually follow measured volume, or are appendix and gallbladder in Next for a clinical reason the case mix cannot see?
-2. Is a macro-only grossing mode something you want, or do you always carry a case through to diagnosis in one sitting?
-3. For `specimenName`, are "Site" and "Specimen as received" two different questions that should have two ids, or one question with an inconsistent label?
+1. **Build order follows measured volume.** Superseded by the LIS export of 4547 cases (`docs/case-mix-2026-09.md`), which is a better basis than the Drive document folder. Next has been reordered against it. The appendix and gallbladder question fell away — both pairs had already shipped in Phase 12 and 13 and their cards were stale entries in Next; they have been removed.
+2. **No macro-only grossing mode.** Section 2's second proposal is withdrawn. The `macroExtract` sweep across the 22 templates without it stands on its own and remains the recommendation.
+3. **`specimenName` is one question with an inconsistent label.** Resolve to a single label in the shared field library (workflow C, step 3) rather than splitting the id. "Site" (7 templates) and "Specimen as received" (6) collapse to one definition; the 13 affected templates change label text only, so no fixture should move. If any does, the field was carrying more than a label difference and the merge needs re-examining.

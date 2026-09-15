@@ -85,34 +85,52 @@ Docs
 
 ## Next
 
-Build order (parsimonious, 2026-09-12; Breast pair shipped): the remaining cancer pairs first (each consumes the linked-part engine and retires a placeholder), then the three small-biopsy / benign templates as **one batch**, then the three S fixes as **one batch**, then iPhone layout and the Gleason galleries. Frozen scenario cards (b), (e) ship inside their pairs, not alone ((a) shipped with the Breast pair). Placeholders in the app menus (`templates/planned.json`) are removed by the card that builds the template.
+Build order (2026-09-15) is set by the LIS export of 4547 cases, 2024 to 2026-09 — `docs/case-mix-2026-09.md`. Built templates cover 79.2 per cent of that caseload; the four cards above the rule take it to 89.9 per cent. Cards below the rule are carried over and are ordered by the same measure. Placeholders in the app menus (`templates/planned.json`) are removed by the card that builds the template.
 
-### Appendix pair — appendicectomy + appendix cancer synoptic   Size: L → split; build as one batch
-Why:        appendiceal neoplasms are found incidentally in appendicectomies reported on the benign template; its `neoplasia` field currently ends in "- see comment" with a placeholder snippet. The QMH appendix page gives the CAP element set.
-Source:     https://awiloqmh.github.io/CancerReportingTemplate/GI-Appendix.html (JS-rendered; save as `docs/reference/GI-Appendix.html`, run `tools/import-qmh.js`). Neuroendocrine tumours use the separate `Endocrine-Appendix-NET.html` page (own card in Later).
+### Respiratory cytology                                 Size: M
+Why:        **228 cases, 5.0 per cent of the export — the largest uncovered category in the whole caseload, and the only one above 2 per cent.** Sputum ~132, bronchial aspirate / trap / lavage ~35, bronchial washing ~16. The cytology suite has urine, serous effusions, cervical and the three FNA templates but nothing for respiratory specimens, so every one of these is typed free-hand.
+Change:     new template `respiratory_cytology` (Cytology, kind cytology, header "Respiratory"; aliases sputum, bronchial washing, bronchial aspirate, trap, lavage, BAL, brushing) on the shared `generators/cytology.js`: specimen pick-list (sputum — spontaneous / induced, bronchial washing, bronchial aspirate / trap, bronchoalveolar lavage, bronchial brushing) with a lobe / segment field that takes the RUL / RML / RLL / LUL / LLL / RB3-style tags already used in the export; preparations line (smears, cytospin, cell block, LBC); adequacy on the respiratory rule (alveolar macrophages required for a lower-respiratory sputum — "squamous cells only, no alveolar macrophages: not representative of the lower respiratory tract"); findings group (benign bronchial epithelium, ciliocytophthoria, goblet-cell hyperplasia, squamous metaplasia, reactive / reparative atypia, Curschmann spirals, Charcot-Leyden crystals, Creola bodies, ferruginous bodies, haemosiderin-laden macrophages, eosinophils, acute inflammation, granuloma, fungal elements, *Pneumocystis*, viral cytopathic effect); malignant categories (squamous cell carcinoma, adenocarcinoma, small cell carcinoma, non-small cell carcinoma NOS, metastatic carcinoma, other) with the cell-block IHC row (TTF-1, p40, napsin A, synaptophysin, chromogranin, INSM1, CK7 / CK20) printed in the same microscopy paragraph as the house style requires; category line on the **Papanicolaou Society of Cytopathology** respiratory system (Non-diagnostic / Negative for malignancy / Atypical / Neoplasm / Suspicious for malignancy / Malignant) with its ROM snippet; auto snippets for stains pending, GMS / ZN pending on granuloma or fungal elements, molecular / PD-L1 referral on a malignant NSCC, and the sampling caveat on a non-diagnostic sputum. House diagnosis line in the existing cytology form.
+Untouched:  the five built cytology templates and their fixtures; `generators/cytology.js` shared wording.
+Accept:     golden fixtures for a benign sputum, a non-diagnostic squamous-only sputum, a bronchial washing positive for squamous cell carcinoma with cell-block IHC, and a BAL with *Pneumocystis*; intake maps "Sputum", "Bronchial aspirate/trap/lavage, LLL" and "Bronchial washing" to this template top-1; appears under Cytology in the menus.
+Verify:     tests + browser (light)
+Ship:       with batch
+Spec:       card is the spec
+
+### Oral cavity and oropharynx — biopsy + resection pair  Size: L → split; build as one batch
+Why:        **106 cases, 2.3 per cent** — the largest uncovered histology category. The export shows both ends: plain oral-cavity and mandible biopsies, and full resections (mandibulectomy with neck dissection, maxillectomy with revised margins, wide local excision of alveolus, buccal mucosa with named margins). Two H&N placeholders are already in the menus.
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/HN-Lip%20and%20oral%20cavity.html (JS-rendered; save as `docs/reference/HN-Lip-and-oral-cavity.html`, run `tools/import-qmh.js`).
 Split into:
-  (a) `src/staging/appendix.js` (M): AJCC 8th appendix carcinoma — pTis(LAMN) confined to muscularis propria (acellular mucin rules), pT3 into subserosa / mesoappendix, pT4a serosal or acellular mucin on serosa, pT4b adjacent organs; pN1a / 1b / 1c (tumour deposits), pM1a (intraperitoneal acellular mucin) / 1b (intraperitoneal cellular) / 1c (extraperitoneal); stage groups with the grade split (G1 vs G2–3) for stage IVA / IVB; boundary tests. Goblet cell adenocarcinoma staged as carcinoma with its three-tier grade.
-  (b) Schema + generator (M): elements in the QMH printed order — procedure (appendicectomy / right hemicolectomy / other), tumour site, size, histologic type (LAMN / HAMN / mucinous adenocarcinoma / adenocarcinoma NOS / goblet cell adenocarcinoma / signet-ring cell / other), grade (three-tier for mucinous with signet-ring rules; goblet cell Tang / WHO grade), extent including acellular vs cellular mucin location, perforation, margins (proximal / mesenteric / radial), LVI / PNI, nodes and deposits, treatment effect, pTNM + stage, MMR / molecular hook; Checks (mucin location vs pT, LAMN with invasive features → HAMN / carcinoma prompt, perforation wording). Upgrade this part from the appendicectomy template carries serosa, perforation, mesoappendix, margins and block key.
-  (c) Fixtures + docs (S): element order against the saved page; LAMN pTis(LAMN) fixture, LAMN with acellular mucin on serosa (pT4a, pM1a) fixture, goblet cell adenocarcinoma fixture, upgrade fixture from a benign appendicectomy; README; card → Done. Benign appendix fixtures unchanged; the `neoplasm_template` snippet retired in favour of the upgrade.
-Untouched:  benign appendicectomy wording; colon synoptic; staging API.
-Accept:     benign template → Upgrade this part → synoptic prefilled and stage derived; boundary tests pass; palette shows "Appendix · cancer resection" under GI.
+  (a) `oral_biopsy` (M): incisional / punch biopsy of oral mucosa — site pick-list (buccal mucosa, tongue — anterior two thirds, floor of mouth, alveolus / gingiva, retromolar trigone, hard palate, lip, oropharynx / tonsil, base of tongue), benign entities (fibroepithelial polyp, pyogenic granuloma, lichen planus, frictional keratosis, candidosis, granular cell tumour, mucocele), dysplasia on the **WHO 5th ed. two-tier** grade with the binary and three-tier options recorded, proliferative verrucous leucoplakia, carcinoma in situ, invasive squamous cell carcinoma with a depth caveat when the biopsy is superficial, p16 and HPV wording reserved for oropharyngeal sites, reference gallery on the dysplasia field.
+  (b) `src/staging/oral.js` (M): AJCC 8th lip and oral cavity — T by size **and depth of invasion** (the 5 mm and 10 mm DOI cut-offs), T4a bone / inferior alveolar nerve / floor of mouth / skin, T4b masticator space / pterygoid plates / skull base / carotid; N with **extranodal extension** driving N2a / N3b and the ENE(+) rule; separate HPV-mediated oropharyngeal p16+ table (pN by node count) as its own branch; boundary tests on the DOI cut-offs and on ENE.
+  (c) `oral_carcinoma` synoptic (L): QMH element order — procedure, site, laterality, tumour size, histologic type and grade, **depth of invasion in mm**, worst pattern of invasion, extent into named structures, bone invasion (cortical vs medullary), LVI, PNI (intra- vs extratumoural, named nerve), margins per named face in mm with the frozen-section margins carried over, nodes by level with size of the largest deposit and ENE, treatment effect, p16 / EBER where the site warrants, pTNM + stage; Checks for DOI-vs-T mismatch, margin < 5 mm → close-margin comment, ENE audit, bone-invasion wording, p16 tested at a non-oropharyngeal site.
+  (d) Frozen named-margin presets (S): the Head-and-neck frozen scenario with named margin presets feeding `marginSummary` into (c) — this is the deferred Frozen section scenario (e).
+Untouched:  nasopharyngeal biopsy and nasal polyps templates; jaw cyst template (odontogenic cysts stay there).
+Accept:     element order against the saved page; fixtures for a dysplasia biopsy, a pT2 tongue SCC with DOI 8 mm, a pT4a mandibulectomy with bone invasion and ENE-positive level I node; DOI boundary tests; two H&N placeholders retired.
 Verify:     tests + browser (light)
 Ship:       one batch, one publish
-Depends on: Linked synoptic part — shipped 2026-09-12 (items 1–3); item (4) Upgrade this part still to build with the Appendix pair
+Depends on: nothing outstanding
 
-### Gallbladder pair — cholecystectomy + gallbladder cancer synoptic   Size: M → split; build as one batch
-Why:        gallbladder carcinoma is mostly incidental on cholecystectomy; the benign template's `neoplasia` field ("Adenocarcinoma – see comment", "High grade dysplasia (BilIN-3)", ICPN) has no staging follow-through.
-Source:     https://awiloqmh.github.io/CancerReportingTemplate/GI-Gallbladder.html (JS-rendered; save as `docs/reference/GI-Gallbladder.html`, run `tools/import-qmh.js`).
-Split into:
-  (a) `src/staging/gallbladder.js` (S): AJCC 8th — pTis, pT1a lamina propria / pT1b muscular, pT2a peritoneal side / pT2b hepatic side, pT3 serosa or liver or one adjacent organ, pT4 portal vein / hepatic artery / two or more organs; pN1 (1–3) / pN2 (≥ 4); stage groups; boundary tests including the T2a / T2b side rule.
-  (b) Schema + generator (M): QMH order — procedure (simple / extended cholecystectomy with liver bed / with bile duct), tumour site (fundus / body / neck / cystic duct; hepatic vs peritoneal side), size, histologic type (adenocarcinoma NOS, biliary / intestinal / mucinous / signet-ring / adenosquamous / squamous / undifferentiated; ICPN with associated invasive carcinoma), grade, extent, LVI / PNI, margins (cystic duct, liver bed, other with distances), cystic duct node and other nodes, associated lesions (BilIN, ICPN, stones, chronic cholecystitis), pTNM + stage, Checks (hepatic-side pT2b needs liver bed margin; cystic duct margin involved → advise re-resection comment; incidental finding statement). Upgrade this part from the cholecystectomy template carries received state, stones, mucosa, cystic node and margin.
-  (c) Fixtures + docs (S): element order against the saved page; incidental pT1b fixture, pT2b hepatic-side fixture with cystic node, upgrade fixture from a benign cholecystectomy; README; card → Done. Benign gallbladder fixtures unchanged; `gallbladder_cancer_template` snippet retired.
-Untouched:  benign cholecystectomy wording; bile duct synoptics stay in the Later pancreatobiliary pair.
-Accept:     benign template → Upgrade this part → synoptic prefilled and stage derived; T2a / T2b boundary tests pass; palette shows "Gallbladder · cancer resection" under Hepatobiliary.
+### Brain and CNS — biopsy + smear                       Size: M
+Why:        **66 cases, 1.5 per cent** — brain 21, brain tumour 14, plus parietal / occipital / periventricular / CPA / suprasellar lesions and sphenoidal-ridge meningiomas. No template; all free text today.
+Change:     new template `cns_biopsy` (CNS, kind biopsy, header "Brain"): site pick-list matching the export vocabulary (frontal / parietal / temporal / occipital lobe, periventricular, suprasellar, sellar, cerebellopontine angle, posterior fossa, spinal), specimen (stereotactic core, open biopsy, debulking, smear / squash preparation), and a diagnosis list on **WHO CNS5** — meningioma with grade and subtype, diffuse glioma with the integrated-diagnosis structure (IDH, 1p/19q, ATRX, H3), pituitary neuroendocrine tumour, schwannoma, metastatic carcinoma with the site-of-origin panel, lymphoma, abscess / demyelination / gliosis as the non-neoplastic answers; IHC group (GFAP, OLIG2, IDH1 R132H, ATRX, p53, Ki-67, EMA, SSTR2A, progesterone receptor, synaptophysin, CK, CD20, CD3) printed in one paragraph with the microscopy; molecular hooks as pending-result snippets rather than result fields; smear-preparation wording as its own short block when the specimen is a squash. **Grading is WHO CNS5, not AJCC — no staging module.**
+Untouched:  frozen section template (the CNS frozen / smear scenario is card (d) below and ships separately).
+Accept:     fixtures for a WHO grade 1 meningioma, an IDH-wildtype glioblastoma with the integrated diagnosis line, and a metastatic adenocarcinoma with TTF-1 positive; CNS appears as its own system in the menus; the CNS-Meningioma placeholder retired.
 Verify:     tests + browser (light)
-Ship:       one batch, one publish
-Depends on: Linked synoptic part — shipped 2026-09-12 (items 1–3); item (4) Upgrade this part still to build with the Appendix pair
+Ship:       with batch
+Spec:       card is the spec
 
+### Joint fluid and CSF cytology                         Size: S; one card, two templates
+Why:        **84 cases together, 1.8 per cent** — joint fluid 44 (knee 34, plus elbow, hip, shoulder) and CSF 40 (lumbar puncture and ventricular). Both are short, highly formulaic reports and both are typed by hand today.
+Change:     two templates on the shared `generators/cytology.js`. `joint_fluid_cytology` — joint pick-list (knee, hip, elbow, shoulder, wrist, ankle) with side, volume, appearance (clear / turbid / blood-stained / purulent), total and differential cell counts as optional numbers, **crystal examination under polarised light** as a first-class field (none seen, monosodium urate — negatively birefringent needles, calcium pyrophosphate — positively birefringent rhomboids, both, not assessed) with the house sentence per result, findings (acute inflammation, histiocytes, synovial lining cells, no malignant cells), interpretation line; auto snippet for "crystals were sought under polarised light" and for a culture-correlation comment on a purulent aspirate. `csf_cytology` — specimen (lumbar puncture, ventricular, cisternal, shunt), volume, cytocentrifuge preparation line, cell count, findings (lymphocytes, neutrophils, monocytes / macrophages, no malignant cells, atypical cells, malignant cells), malignant categories (metastatic carcinoma, lymphoma / leukaemic infiltrate, primary CNS tumour) with the cell-block or flow-cytometry correlation sentence, and an explicit **low-volume sampling caveat** when volume is below the adequacy threshold. Neither carries a reporting-system category line (there is no house system in use for either).
+Untouched:  the six built cytology templates.
+Accept:     fixtures for a CPPD-positive knee aspirate, a negative knee aspirate, a CSF negative for malignancy, and a CSF with metastatic carcinoma; intake maps "Joint fluid, right knee" and "CSF, LP" top-1.
+Verify:     tests + browser (light)
+Ship:       with batch
+Spec:       card is the spec
+
+---
+
+Carried over from the previous ordering, now ranked by the same case-mix measure.
 
 ### Peritoneal nodule biopsy                             Size: M
 Why:        peritoneal / omental nodules sampled at laparoscopy or laparotomy are a recurring small specimen with a short list of answers (reactive mesothelial hyperplasia, peritoneal loose body, metastatic carcinoma, endometriosis, granuloma) and no template; the diagnosis line and IHC sentence are formulaic.
@@ -194,6 +212,18 @@ Spec:       `docs/specs/frozen-section-scenarios.md`
 
 One line each; card them before building.
 
+Added from the 2024–2026 LIS export (`docs/case-mix-2026-09.md`), in volume order:
+
+- Soft tissue — 129 cases (2.8 per cent). `soft_tissue_benign` covers lipoma, fibroepithelial polyp and the simple excisions; the export also carries thigh / back / neck soft-tissue tumours and mesenteric nodules that need a sarcoma path and a site-of-origin panel. Card as an upgrade to the benign template, not a new one.
+- Bile duct and pancreas — 25 histology cases plus ~18 cytology (brushings, EUS-FNA) = 0.9 per cent. Note that pancreatic, bile-duct and pancreatic-duct **margins** arrive as separate lettered parts, so whatever is built must take a margin-only part. Folds into the existing Pancreatobiliary pair card.
+- Liver — neoplastic. 29 cases (0.6 per cent) in the export, all segment tumours, lobe resections and suspected metastases. The detailed card is already in Later (user request 2026-09-14); volume now confirms it.
+- Abscess and granulation tissue — 27 cases (0.6 per cent). Abscess wall, acetabular and pelvic granulation tissue, antral ulcer. Short template, fixed wording, currently Generic.
+- Bone and joint — 24 cases (0.5 per cent). Synovium (knee, wrist, elbow), femoral head, femur reaming material, iliac bone biopsy, intervertebral disc. Mostly formulaic non-neoplastic reports.
+- Vulva and vagina — 21 cases (0.5 per cent). The two detailed cards are already in Later (user request 2026-09-14); volume now confirms them.
+- Haemorrhoidectomy — 15 cases (0.3 per cent). Moved out of Parked; single-diagnosis template.
+- Kidney — 9 cases (0.2 per cent). Much lower than the earlier Drive-based estimate; stays low in Later.
+
+
 - Synoptic templates after stomach and the lung / breast pairs: prostate (radical) with Gleason arithmetic validation. (`docs/specs/synoptic-next-templates.md`; endometrium carded in Next)
 - Appendix NET (`Endocrine-Appendix-NET.html`) and other GI NET pages (stomach, duodenum / ampulla, jejunum–ileum, colon, pancreas) as a NET family sharing one staging module and the WHO grade (Ki-67 / mitotic) Check.
 - Pancreatobiliary pair: duct-margin frozen (Frozen section scenarios (b)) + Pancreas (`GI-Pancreas.html`), distal extrahepatic and perihilar bile duct synoptics (`GI-Distal Extrahepatic bile ducts.html`, `GI-Perhilar bile ducts.html`); frozen `marginSummary` feeds margin status; card after the lung pair proves the pattern.
@@ -242,7 +272,7 @@ Spec:       `docs/specs/report-review.md`
 ## Parked
 
 - Phase 2 leftovers "one-time Google Cloud set-up" and "first real save" — superseded; both verified 2026-09-09.
-- Hernia sac, haemorrhoids, products of conception templates — 0–3 documents in the case mix; add only if they appear on the TAT list.
+- Hernia sac and products-of-conception templates — 1 and ~0 cases in the 2024–2026 export; add only if they appear on the TAT list. **Haemorrhoidectomy is no longer parked: the export shows 15 cases (0.3 per cent) — it moves to Later as a one-line card.**
 
 ---
 
