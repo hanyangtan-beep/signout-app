@@ -346,3 +346,61 @@ with the work instead of living only in conversation.
 
 `schemas/README.md` now opens by pointing at the scaffold, so the hand-written route is no
 longer the first thing a reader finds.
+
+## A — case-mix re-ranking cron (shipped)
+
+**`scripts/case-mix-cron.mjs`, scheduled monthly on the 2nd at 07:00 HKT** (cron `0 23 1 * *`
+UTC, id `46bec51d`). It writes `docs/case-mix/<YYYY-MM>.md`, proposes an ordering, and edits no
+roadmap — which card gets pulled stays a human decision.
+
+**Two sources, neither needing anything from you.**
+
+1. The app's own **"Sign-out cases" sheet** in Drive. Which templates are actually used, and
+   which were built and never touched. A multi-template case logs as `a+b+c`; the script splits
+   on `+` so "unused" means genuinely untouched rather than only-ever-used-alongside-something.
+2. The **newest LIS case export CSV in Drive**, if one is there. Specimen-type volume over the
+   trailing 12 months. Optional: with no export the run degrades to source 1 and says so in a
+   notes section rather than failing.
+
+`tools/classify-case-export.py` was hard-wired to one uploaded file path. It now takes a path
+argument, a `--since YYYY-MM-DD` window that finds the date column itself, and `--json` for the
+machine-readable tally. `--csv` on the cron script runs the same classification against a local
+export, which is how the first report below was produced.
+
+**PHI handling.** The export downloads to a temp directory inside the workspace, is classified
+into category totals, and is removed in a `finally` block. No accession, site text or patient
+field reaches the report — only counts. The temp directory is inside the repo rather than
+`/tmp` because `gws` refuses output paths outside the workspace; that cost one debugging cycle.
+
+**The coverage map is by hand and has to be.** All 47 categories the classifier emits are
+mapped to the template ids a case in that category would actually be signed out on. It is a
+clinical judgement, not a string match — `Breast` reaches five templates, `Skin` five, and an
+uncovered category gets an empty array rather than being quietly pointed at `generic`. The
+first version guessed the keys and wrongly reported skin, uterus, bladder, thyroid and tonsil
+as uncovered when templates exist. Worth knowing: the map needs a line adding whenever a
+category or a template is added, and nothing will fail loudly if it is forgotten.
+
+### What the first run says
+
+The audit asked whether oral cavity, liver and kidney are really the top three gaps, or whether
+the six-year corpus was skewing them. On the trailing 12 months — 1,787 cases, 4.8%
+unclassified — they are not.
+
+1. **Respiratory cytology — 81 cases, 4.5%.** The seventh most common specimen type in the
+   window has no template and is not in `planned.json` either. Sputum, bronchial washings and
+   BAL are being reported without one. This is the clearest finding in the run.
+2. Soft tissue — 53 cases, 3.0%, missing `soft_tissue_sarcoma`.
+3. Lymph node histology — 47 cases, 2.6%, missing `lymphoma_node`.
+4. Oral cavity / oropharynx — 47 cases, 2.6%, missing both carcinoma templates.
+5. Skin — 45 cases, 2.5%, missing `melanoma` and `skin_scc`.
+
+Liver is 10 cases and kidney 3 in the window, against their standing on the six-year corpus —
+so the skew was real and the old ordering was reading history rather than current practice.
+
+Genuinely uncovered, and small: Other FNA (30), CSF cytology (21), joint fluid cytology (20),
+ear / temporal bone (2). CSF and joint fluid together are 41 cases against one absent template
+pair, which is worth more than their individual rows suggest.
+
+Of 54 built templates, 47 have no logged case in the window — but only 24 cases have been
+signed out through the app so far, so that number measures adoption, not waste. It becomes
+meaningful once the log has a few hundred rows.
