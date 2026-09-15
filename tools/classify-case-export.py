@@ -1,6 +1,44 @@
-import csv,collections,re,json
-F='uploaded_attachments/05e3584d3b6246a4be21f1abeba0cf04/export-cases-2024-to-current.csv'
+"""Classify an LIS case export into house specimen categories.
+
+    python3 tools/classify-case-export.py <export.csv> [--since YYYY-MM-DD] [--json out.json]
+
+Reads the CSV, buckets each row by Site and Test with the ordered rules below, and prints the
+tally. Rows are matched first-rule-wins, so rule order is the classification. --since keeps only
+rows whose date column is on or after that date, which is how the trailing-12-month view is
+taken. --json writes the tally for scripts/case-mix-cron.mjs.
+
+The export is PHI. Keep it in the sandbox; only the aggregate tally leaves this script.
+"""
+import csv,collections,re,json,sys,os
+
+args=sys.argv[1:]
+def flag(name, default=None):
+    if name in args:
+        i=args.index(name)
+        return args[i+1] if i+1 < len(args) else default
+    return default
+SINCE=flag('--since'); OUT=flag('--json')
+positional=[a for i,a in enumerate(args) if not a.startswith('--') and (i==0 or args[i-1] not in ('--since','--json'))]
+F=positional[0] if positional else 'uploaded_attachments/05e3584d3b6246a4be21f1abeba0cf04/export-cases-2024-to-current.csv'
+if not os.path.exists(F):
+    sys.exit(f'no such export: {F}')
 rows=[r for r in csv.DictReader(open(F,encoding='utf-8-sig'))]
+
+if SINCE:
+    datecol=next((c for c in (rows[0].keys() if rows else []) if re.search(r'date|received|collected', c, re.I)), None)
+    if datecol:
+        def iso(v):
+            m=re.search(r'(\d{4})[-/](\d{2})[-/](\d{2})', v or '')
+            if m: return f'{m.group(1)}-{m.group(2)}-{m.group(3)}'
+            m=re.search(r'(\d{2})[-/](\d{2})[-/](\d{4})', v or '')
+            return f'{m.group(3)}-{m.group(2)}-{m.group(1)}' if m else ''
+        before=len(rows)
+        rows=[r for r in rows if iso(r.get(datecol)) >= SINCE]
+        print(f'--since {SINCE} on column "{datecol}": {len(rows)} of {before} rows kept\n')
+    else:
+        print(f'--since ignored: no date-like column in {list(rows[0].keys()) if rows else []}\n')
+if not rows:
+    sys.exit('no rows to classify')
 
 CYTO={'YNP','YFC','YGP'}
 MOLE={'NGSLG','FISH0','ISH'}
@@ -88,4 +126,5 @@ for c,v in out.most_common():
     print(f'{v:5d}  {100*v/n:5.1f}%  {c:28s} [{k}]')
 print('\n--- top unclassified ---')
 for k,v in unc.most_common(30): print(f'{v:4d}  {k}')
-json.dump({c:v for c,v in out.items()}, open('/home/user/workspace/case_tally.json','w'), indent=1)
+if OUT:
+    json.dump({'total': n, 'since': SINCE, 'tally': {c: v for c, v in out.items()}}, open(OUT, 'w'), indent=1)
