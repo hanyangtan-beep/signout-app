@@ -29,7 +29,6 @@ export const isNPC = (v) => NPC_TYPES.includes(v.finding);
 export const isCarcinoma = (v) => CARCINOMAS.includes(v.finding);
 export const isAtypicalLymphoid = (v) => v.finding === LYMPHOID;
 const isGranulomatous = (v) => v.finding === NEC_GRAN || v.finding === NONNEC_GRAN;
-const isBenign = (v) => !isCarcinoma(v) && !isAtypicalLymphoid(v) && !isGranulomatous(v);
 // Site proper nouns keep their capitals: "Right fossa of Rosenmüller" -> "right fossa of Rosenmüller".
 const lcFirst = (x) => x.charAt(0).toLowerCase() + x.slice(1);
 const isSuboptimal = (v) => v.adequacy === 'Crushed / scant fragments only (suboptimal)';

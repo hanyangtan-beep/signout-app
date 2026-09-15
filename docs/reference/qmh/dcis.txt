@@ -1,0 +1,177 @@
+﻿
+DCIS
+ Ductal carcinoma in situ of the breast
+ click to access explanations in the original CAP template
+There is different protocol for biopsy specimen
+Non-essential elements are identified by "+" sign.
+ Gross descriptions:
+- Procedure:
+ * 
+ * Excision (less than total mastectomy) 
+ * Total mastectomy (including nipple-sparing and skin-sparing mastectomy)
+ * Other (specify):
+ * Not specified
+- Specimen laterality:
+ * 
+ * Right 
+ * Left
+ * Not specified
+- Tumor site:
+Upper outer quadrant
+Lower outer quadrant
+Upper inner quadrant
+Lower inner quadrant
+Central
+Nipple
+Position (specify): o’clock
+Other (specify):
+Not specified
+- Tumor size:
+ * 
+ * Greatest dimension (mm): 
+ * All dimensions (mm x mm x mm):
+ * Cannot be determined (explain):
+- Number of blocks with DCIS out of total:
+-->
+ Microscopic descriptions:
+- Tumor histology and immunohistochemical studies: 
+- Histologic type (WHO 6e):
+Ductal carcinoma in situ (DCIS)
+Paget disease
+Encapsulated papillary carcinoma in situ
+Solid papillary carcinoma in situ
+Other, specify:
+- Sizes (Extent) of DCIS:
+Size (mm x mm x mm) :
+DCIS blocks :
+Total blocks :
++ Architectural patterns:
+Comedo
+Cribriform
+Micropapillary
+Papillary
+Solid
+Solid papillary carcinoma in situ
+Encapsulated papillary carcinoma in situ
+Paget disease (DCIS involving nipple skin)
+Other, specify:
+- Nuclear grade:
+Grade I (low)
+Grade II (intermediate)
+Grade III (high)
+Other (specify):
+Cannot be determined (explain):
+- Necrosis: 
+ * 
+ * Not identified
+ * Present, focal (small foci or single cell necrosis)
+ * Present, central (expansive “comedo” necrosis)
+ * Other (specify):
+ * Cannot be determined (explain):
++ Microcalcifications:
+ Not identified
+ Present in DCIS
+ Present in non-neoplastic tissue
+ Other (specify):
+Please use the Breast IHC/DISH template for reporting ER and PR.
+Specify Prior Biomarkers on Additional Foci of Invasion (if relevant; i.e., if foci differ in histologic type, grade, or biomarker status; specify tumor identifier for each; may repeat up to 10x).
+Surgical margins (distance of the closest margin is required): 
+* Please try to measure all relevant margins. There are differences in management between margins that are directly involved, = 2mm.
+- Anterior margin:
+ * 
+ * Cannot be assessed
+ * Uninvolved by DCIS, closest distance:
+ * Involved by DCIS, closest distance:
+- Posterior margin:
+ * 
+ * Cannot be assessed
+ * Uninvolved by DCIS, closest distance:
+ * Involved by DCIS, closest distance:
+- Superior margin:
+ * 
+ * Cannot be assessed
+ * Uninvolved by DCIS, closest distance:
+ * Involved by DCIS, closest distance:
+- Inferior margin:
+ * 
+ * Cannot be assessed
+ * Uninvolved by DCIS, closest distance:
+ * Involved by DCIS, closest distance:
+- Medial margin:
+ * 
+ * Cannot be assessed
+ * Uninvolved by DCIS, closest distance:
+ * Involved by DCIS, closest distance:
+- Lateral margin:
+ * 
+ * Cannot be assessed
+ * Uninvolved by DCIS, closest distance:
+ * Involved by DCIS, closest distance:
+- Other margins (specify):
+ * 
+ * Cannot be assessed
+ * Uninvolved by DCIS, closest distance:
+ * Involved by DCIS, closest distance:
+ Regional lymph nodes: 
+- Number of regional lymph nodes examined:
+- Number of sentinel lymph nodes examined:
+- Number of lymph nodes with macrometastasis (>2 mm):
+- Number of lymph nodes with micrometastasis 
+(> 0.2 to 2 mm and/or > 200 cells):
+- Number of lymph nodes with isolated tumor cells 
+(0.2 mm or less and 
+- Size of largest metastatic deposit (mm), specify site:
+- Size of largest lymph node involved (mm), specify site:
+- Extranodal extension:
+ * 
+ * Not identified
+ * 2 mm">Present, extent of ENE, number less than or equal 2 mm, number greater than 2 mm
+ * Cannot be determined
+ Distant Metastasis: 
+Not applicable
+Not identified
+Non-regional lymph node(s) (specify):
+Lung (specify):
+Liver (specify):
+Bone (specify):
+Brain (specify):
+Other (specify):
+Cannot be determined: 
+ Pathologic Stage Classification (AJCC 8e):
+- TNM Descriptors:
+r (recurrent)
+y (post treatment)
+m (multiple primary synchronous tumors in a single organ)
+- Primary tumor (pT):
+ * 
+ * pTis(DCIS): Ductal carcinoma in situ
+ * pTis (Paget): Paget disease of the nipple not associated with invasive carcinoma and/or DCIS in the underlying breast parenchyma
+- Regional lymph nodes modifier: 
+sn Sentinel node(s) evaluated (f Nodal metastasis confirmed by FNA or biopsy
+- Regional lymph nodes (pN): 
+ * 
+ * pN not assigned (no nodes submitted or found)
+ * pN not assigned (cannot be determined based on available pathological information)
+ * pN0: No regional lymph node metastasis or ITCs only
+ * pN0(i+): ITCs only (malignant cell clusters no larger than 0.2 mm) in regional lymph node(s)
+ * pN0(mol+): Positive molecular findings (RT-PCR), but no ITCs detected
+ * pN1mi: Micrometastases (approximately 200 cells, larger than 0.2 mm, but none larger than 2.0 mm)
+ * pN1a: Metastases in 1-3 axillary lymph nodes, at least one metastasis larger than 2.0 mm
+ * pN1b: Metastases in ipsilateral internal mammary sentinel nodes, excluding ITCs
+ * pN1c: pN1a and pN1b combined
+ * pN2a: Metastases in 4-9 axillary lymph nodes (at least one tumor deposit larger than 2.0 mm)
+ * pN2b: Metastases in clinically detected internal mammary lymph nodes with or without microscopic confirmation; with pathologically negative axillary nodes
+ * pN3a: Metastases in 10 or more axillary lymph nodes (at least one tumor deposit larger than 2.0 mm); or metastases to the infraclavicular (Level III axillary lymph) nodes
+ * pN3b: pN1a or pN2a in the presence of cN2b (positive internal mammary nodes by imaging); or pN2a in the presence of pN1b
+ * pN3c: Metastases in ipsilateral supraclavicular lymph nodes
+- Distant metastasis (pM): 
+ * 
+ * Not applicable - pM cannot be determined from the submitted specimen(s)
+ * pM1: Histologically proven metastases larger than 0.2 mm, specify Case Number(s) with Metastasis (if from a previous procedure):
+- Additional notes:
+Copy text to Clipboard
+Last upated on 27-Jul-2026,
+based on US CAP cancer protocol templates.
+Breast DCIS Resection 4.5.0.1 (June 2026).
+html form was created on pForm, W3 School, StackOverflow, and Icons8.
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.

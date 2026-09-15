@@ -340,7 +340,7 @@ async function upgradeThisPart(i) {
   const hit = canUpgrade(i);
   if (!hit) return;
   const { part, up } = hit;
-  const { schema: s, generator: g } = await ensureTemplate(up.to).catch((err) => { toast(err.message); return null; });
+  const { schema: s } = await ensureTemplate(up.to).catch((err) => { toast(err.message); return null; });
   if (!s) return;
   noteUsed(up.to);
   markDirty();

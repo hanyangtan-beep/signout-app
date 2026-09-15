@@ -208,7 +208,7 @@ test('macro option off removes the macro and block key; heading option prints th
 });
 
 test('synoptic element order follows the QMH GYN-Ovary page (text-dump order; the importer cannot parse this page)', () => {
-  // Element headings from analysis/qmh/ovary.txt in page order, mapped to our row labels.
+  // Element headings from docs/reference/qmh/ovary.txt in page order, mapped to our row labels.
   const QMH = ['Procedure', 'Hysterectomy type', 'Specimen integrity (right ovary)', 'Specimen integrity (left ovary)', 'Specimen integrity (right fallopian tube)', 'Specimen integrity (left fallopian tube)', 'Tumour site', 'Ovarian surface involvement', 'Fallopian tube surface involvement', 'Tumour size',
     'Histologic type', 'Histologic grade', 'Lymphovascular invasion', 'Largest extrapelvic peritoneal focus', 'Peritoneal / ascitic fluid', 'Chemotherapy response score', 'Other tissue / organ involvement',
     'Ectocervical / vaginal cuff margin', 'Parametrial / paracervical margin', 'Number examined', 'With metastasis more than 10 mm', 'With metastasis 10 mm or less', 'With isolated tumour cells only (0.2 mm or less)', 'Largest metastatic deposit', 'Largest involved lymph node', 'Extranodal extension',

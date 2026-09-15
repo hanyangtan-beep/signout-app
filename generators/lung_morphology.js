@@ -12,7 +12,6 @@
 // British spelling throughout ("fetal" by house exception). Sentences slot after the derived
 // opener in the "Tumour histology" paragraph.
 
-const lowGrade = (g) => /^(G1|Low)/i.test(String(g || ''));
 const highGrade = (g) => /^(G3|G4|High)/i.test(String(g || ''));
 
 /** Growth-pattern descriptors for invasive non-mucinous adenocarcinoma (WHO five patterns). */

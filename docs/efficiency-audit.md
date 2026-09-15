@@ -176,3 +176,61 @@ E and F are small and make everything after them safer and quieter. C must prece
 1. **Build order follows measured volume.** Superseded by the LIS export of 4547 cases (`docs/case-mix-2026-09.md`), which is a better basis than the Drive document folder. Next has been reordered against it. The appendix and gallbladder question fell away — both pairs had already shipped in Phase 12 and 13 and their cards were stale entries in Next; they have been removed.
 2. **No macro-only grossing mode.** Section 2's second proposal is withdrawn. The `macroExtract` sweep across the 22 templates without it stands on its own and remains the recommendation.
 3. **`specimenName` is one question with an inconsistent label.** Resolve to a single label in the shared field library (workflow C, step 3) rather than splitting the id. "Site" (7 templates) and "Specimen as received" (6) collapse to one definition; the 13 affected templates change label text only, so no fixture should move. If any does, the field was carrying more than a label difference and the merge needs re-examining.
+
+---
+
+# Implementation log
+
+Worked in the order recommended above: E → F → C → D → B, with A last.
+
+## E — Release workflow (done, 2026-09-15)
+
+**Untracked the build artefacts.** `node_modules/`, `dist/` and `analysis/` were listed in `.gitignore` but had been committed before it was written, so all three stayed tracked. `git rm -r --cached` on the three of them took the repo from **3211 tracked files to 549**. The source archive is now 3.4 MB against the 33.7 MB the phase zips were carrying.
+
+One thing had to be rescued first. The element-order tests in the synoptic suites name `analysis/qmh/*.txt` as the page they check against, and `analysis/` is ignored — so the provenance for "the QMH order is sacred" lived only on this machine and a fresh clone could not verify the claim. The five text dumps (`breast`, `dcis`, `phyllodes`, `lung`, `ovary`) moved to **`docs/reference/qmh/`** and are tracked, with a README explaining what they are. Every reference in the specs, tests and `tools/import-qmh.js` now points there. The draft JSON that `import-qmh.js` emits stays in `analysis/` — it is genuinely scratch.
+
+**Added `npm run release`** (`tools/release.js`). Seven gates, each one runs even when an earlier one fails so a single run tells you everything that is wrong:
+
+| Gate | Checks |
+|---|---|
+| lint | `eslint .`, fails on errors, passes on warnings |
+| tests | `node --test tests/`, fails on any failure |
+| fixtures clean | **`git diff tests/fixtures` must be empty** — an uncommitted golden-fixture change stops the release |
+| browser QA | `tools/qa-browser.js`, 12 checks in real Chromium |
+| build | `tools/build.js` |
+| artefacts untracked | `git ls-files node_modules dist analysis` must be empty, so this cannot silently regress |
+| source archive | `git archive HEAD` → `analysis/signout-app-<sha>.zip`, reports size and file count |
+
+The archive uses `git archive`, not the working directory, so it can only ever contain tracked files. That is what made the phase zips 6× too big.
+
+## F — Verification harness (done, 2026-09-15)
+
+**A linter, finally.** ESLint 9 flat config (`eslint.config.js`), correctness rules only — no formatting rules at all, so a lint run never rewrites a line and never touches a diff. It covers `src/`, `generators/`, `templates/`, `tools/`, `tests/` and `legacy/`: 177 files.
+
+First run found **29 real problems that 896 passing tests could not see**:
+
+- **`src/config.js:25` — the duplicated `return`.** `return { ...DEFAULTS, ...saved };    return { ...DEFAULTS, ...saved };` on one line. Harmless, but it had survived every phase.
+- **17 dead declarations**, all removed: `listJoin` (appendix, ovary), `fmt` (breastbenign, lymphnode), `isTis` (appendix_carcinoma, gallbladder_carcinoma), `na` and `isCisOrNone` (gastric_carcinoma), `lowGrade` (lung_morphology), `isBenign` (nasopharyngeal), `int` (ovary_ft_peritoneum), `num` (staging/gastric, staging/oesophagus), `T_DEFAULT` (staging/gastric), and `plural` / `headParts` / `parseMargins` imported but never used (breast_carcinoma, breast_dcis, phyllodes).
+- **`tFromExtension` in `src/staging/gastric.js` ended `return o ? null : null;`** — a ternary returning the same value on both branches. Simplified to `return null;`. No behaviour change, but it reads as though a case was meant to go there.
+- 11 `(m = s.match(/re/)) ? … : …` captures inside template literals. All read, all deliberate; the rule is a warning with that noted in the config so a genuine `if (x = 1)` typo would still show.
+
+**Finding, not fixed — GIST molecular sentences are written but never printed.** `generators/gist_resection.js` carried an eleven-entry `MOLECULAR_PHRASE` table of full sentences ("Molecular analysis shows a KIT exon 11 mutation."). Nothing referenced it. What the template actually prints is `molecularValue()`, a bare value in the synoptic row — so a GIST report states the mutation as a row entry but the microscopy paragraph carries no molecular sentence, against the house rule that IHC and molecular belong in that paragraph. The dead table is removed; **wiring the sentence in would change released wording, so it is left for you to decide.**
+
+**Committed browser QA** (`tools/qa-browser.js`, `npm run qa`). Headless Chromium over a local static server, 12 assertions — not screenshots to eyeball:
+
+1. app boots with no module or runtime error
+2. palette opens and lists 54 templates
+3. palette search narrows to a known template
+4. choosing a template renders its fields
+5. the example case produces a report with all of SPECIMENS / MICROSCOPIC EXAMINATION / DIAGNOSIS
+6. house wording: no "color", no "tumor", no `undefined` / `NaN` / `[object Object]` in the output
+7. LIS specimen paste → intake preview → 3 rows, 3 confident matches → **Build parts** → tabs A B C
+8. prose microscopy opens with "Sections show"
+9. settings dialog holds all four Drive fields
+10. theme toggle flips the document theme
+11. **Copy full report** puts plain text on the clipboard with no HTML markup
+12. no console error accumulated across the whole run
+
+Writing it turned up two things about the app worth recording, both of which had been rediscovered by hand every QA session: **Example / New case / Open are inside the Case dropdown**, not clickable inline (the inline buttons are 0×0 at desktop width), and **multi-part specimen text does not auto-build parts** — it fills the intake preview and waits for `#btn-build-parts`. A newly written test that assumed otherwise failed correctly.
+
+`npm run qa` needs `npx playwright install chromium --only-shell` once on a fresh checkout.

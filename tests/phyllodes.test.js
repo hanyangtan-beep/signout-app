@@ -124,7 +124,7 @@ test('report options: macro off, header on, single part without letters, other p
   assert.match(multi.diagnosis, /^\(A\) BREAST, left, wide local excision\n/);
 });
 
-test('synoptic element order follows the QMH BREAST-Phyllodes page (analysis/qmh/phyllodes.txt)', () => {
+test('synoptic element order follows the QMH BREAST-Phyllodes page (docs/reference/qmh/phyllodes.txt)', () => {
   const QMH = ['Histologic type', 'Stromal cellularity', 'Stromal atypia', 'Stromal overgrowth', 'Mitotic rate', 'Histologic tumour border', 'Malignant heterologous elements', 'Anterior margin', 'Regional lymph nodes', 'pTNM'];
   const ours = Object.keys(rows(run(byName['02-mastectomy-malignant-phyllodes-osteosarcoma-sln'].patch, { printPTNM: true })));
   let cursor = -1;

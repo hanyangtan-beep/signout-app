@@ -20,11 +20,6 @@ const num = (v) => {
   return Number.isFinite(n) ? n : null;
 };
 const fmt = (n) => (Number.isInteger(n) ? String(n) : String(n).replace(/\.0+$/, ''));
-const listJoin = (items) => {
-  const a = items.filter(Boolean);
-  if (a.length <= 1) return a[0] || '';
-  return `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`;
-};
 const lc1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : '');
 const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 /** Normalise the typographic dash in option strings so "–" and "-" variants match. */

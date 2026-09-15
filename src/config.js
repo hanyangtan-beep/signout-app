@@ -22,7 +22,7 @@ export function loadConfig() {
     }
     // A mistyped or truncated client id yields Google's "invalid_client"; fall back to the shipped one.
     if (saved.clientId && !/^\d+-[a-z0-9]+\.apps\.googleusercontent\.com$/.test(saved.clientId)) delete saved.clientId;
-    return { ...DEFAULTS, ...saved };    return { ...DEFAULTS, ...saved };
+    return { ...DEFAULTS, ...saved };
   } catch {
     return { ...DEFAULTS };
   }

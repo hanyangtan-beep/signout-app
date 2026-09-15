@@ -7,16 +7,21 @@
   },
   "scripts": {
     "test": "node --test tests/",
+    "lint": "eslint .",
     "fixtures": "node tools/capture-fixtures.cjs",
     "fixtures:force": "node tools/capture-fixtures.cjs --force",
-    "build": "node tools/build.js"
+    "build": "node tools/build.js",
+    "qa": "node tools/qa-browser.js",
+    "release": "node tools/release.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "Pathology sign-out app: schema-driven biopsy/synoptic reporting with Google Drive as the store",
   "devDependencies": {
-    "jsdom": "^29.1.1"
+    "eslint": "^9.39.5",
+    "jsdom": "^29.1.1",
+    "playwright": "^1.63.0"
   },
   "private": true,
   "type": "module"

@@ -13,11 +13,6 @@ const num = (v) => {
   return Number.isFinite(n) ? n : null;
 };
 const fmt = (n) => (Number.isInteger(n) ? String(n) : String(n).replace(/\.0+$/, ''));
-const listJoin = (items) => {
-  const a = items.filter(Boolean);
-  if (a.length <= 1) return a[0] || '';
-  return `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`;
-};
 
 export const NEGATIVE = 'No dysplasia or malignancy';
 export const hasNeoplasm = (v) => !!v.neoplasia && v.neoplasia !== NEGATIVE;

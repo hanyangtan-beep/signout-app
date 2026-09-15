@@ -12,9 +12,9 @@ import { biomarkerReport, hasBiomarkerData } from './breast_biomarkers.js';
 import { slnSummary } from './frozen.js';
 import { typeMorphology, detailMorphology, detailReplacesType } from './breast_morphology.js';
 import {
-  num, fmt, lc1, uc1, countWords, stripDot, arr, listJoin, specify, plural, item,
-  procedureText, siteText, headParts, specimenName, diagnosisHead, otherParts, hasExtraParts, otherSpecimenLines, specimens, findingText, lettered,
-  specimenSentence, tumourSentence, blockKey, marginItems, marginsPhrase, closestMargin, parseMargins, nodeItems, nodesPhrase, nodeCounts, nodesSubmitted,
+  num, fmt, lc1, uc1, countWords, stripDot, arr, listJoin, specify, item,
+  procedureText, siteText, specimenName, diagnosisHead, otherParts, hasExtraParts, otherSpecimenLines, specimens, findingText, lettered,
+  specimenSentence, tumourSentence, blockKey, marginItems, marginsPhrase, closestMargin, nodeItems, nodesPhrase, nodeCounts, nodesSubmitted,
   metastasisValue, metastasisPhrase, ptnmSection, sharedChecks, marginChecks
 } from './breast_shared.js';
 

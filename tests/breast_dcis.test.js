@@ -140,7 +140,7 @@ test('report options: macro off, header on, single part without letters, other p
   assert.match(multi.diagnosis, /^\(A\) BREAST, right, wide local excision\n/);
 });
 
-test('synoptic element order follows the QMH BREAST-DCIS page (analysis/qmh/dcis.txt)', () => {
+test('synoptic element order follows the QMH BREAST-DCIS page (docs/reference/qmh/dcis.txt)', () => {
   const QMH = ['Procedure', 'Specimen laterality', 'Tumour site', 'Number of blocks with DCIS out of total', 'Histologic type', 'Size (extent) of DCIS', 'Nuclear grade', 'Necrosis', 'Anterior margin', 'Regional lymph nodes', 'pTNM'];
   const ours = Object.keys(rows(run(byName['02-mastectomy-high-grade-dcis-with-paget-biomarkers-performed'].patch, { printPTNM: true })));
   let cursor = -1;

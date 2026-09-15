@@ -36,7 +36,6 @@ const listJoin = (items) => {
 };
 const isER = (v) => (v.procedure || '') === 'Endoscopic resection';
 const listAnd = listJoin;
-const na = (s) => !s || /^Not (applicable|specified)/.test(s);
 const chosen = (list) => arr(list).filter((s) => !/^Not (identified|applicable|specified)|^Cannot/.test(s));
 const specify = (s) => String(s || '').replace(/\s*\((specify)[^)]*\)\s*:?$/i, '').trim();
 
@@ -246,7 +245,6 @@ export function synoptic(part, ctx) {
   const st = staging(part, ctx);
   const size = num(v.tumourSizeMm);
   const sites = chosen(v.tumourSite);
-  const isCisOrNone = isTis(v) || isPT0(v);
   const sizeText = isPT0(v)
     ? 'Not applicable (no residual tumour)'
     : size !== null

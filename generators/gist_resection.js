@@ -85,17 +85,6 @@ export function riskText(v) {
 
 // ---------- IHC and molecular ----------
 
-const MOLECULAR_PHRASE = {
-  'Requested; result to follow': 'Mutation analysis for KIT and PDGFRA hot spots has been requested{detail}; the result will follow as a supplementary report.',
-  'KIT exon 11 mutation': 'Molecular analysis shows a KIT exon 11 mutation{detail}.',
-  'KIT exon 9 mutation': 'Molecular analysis shows a KIT exon 9 mutation{detail}.',
-  'KIT exon 13 mutation': 'Molecular analysis shows a KIT exon 13 mutation{detail}.',
-  'KIT exon 17 mutation': 'Molecular analysis shows a KIT exon 17 mutation{detail}.',
-  'PDGFRA exon 18 D842V mutation': 'Molecular analysis shows a PDGFRA exon 18 D842V mutation{detail}.',
-  'PDGFRA mutation (other)': 'Molecular analysis shows a PDGFRA mutation{detail}.',
-  'KIT and PDGFRA wild type': 'Molecular analysis shows no mutation in the KIT and PDGFRA hot spots (wild type){detail}.',
-  'Other (specify)': 'Molecular analysis{detail}.'
-};
 export function molecularValue(v) {
   if (!v.molecular || v.molecular === 'Not performed') return 'Not performed';
   const d = stripDot(v.molecularDetail);

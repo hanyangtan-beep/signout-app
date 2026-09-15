@@ -5,7 +5,7 @@ Pulled into Now 2026-09-12 ("Build the breast pair and the rest of the breast re
 
 ## Sources
 
-- QMH pages (rendered copies in `docs/reference/`, text dumps in `analysis/qmh/*.txt`, gitignored):
+- QMH pages (rendered copies in `docs/reference/`, text dumps in `docs/reference/qmh/*.txt`):
   - `https://awiloqmh.github.io/CancerReportingTemplate/BREAST-Cancers.html` — "Invasive carcinoma of the breast", CAP Breast Invasive Resection 4.11.0.0 (Jun 2026), AJCC 8th edition, WHO 5th edition → `docs/reference/BREAST-Cancers.html`.
   - `https://awiloqmh.github.io/CancerReportingTemplate/BREAST-DCIS.html` — CAP DCIS Resection 4.5.0.1 → `docs/reference/BREAST-DCIS.html`.
   - `https://awiloqmh.github.io/CancerReportingTemplate/BREAST-Phyllodes.html` — phyllodes tumour, AJCC 8th pT1–pT4 by 5 / 10 / 15 cm, pN0 / pN1 → `docs/reference/BREAST-Phyllodes.html`.
@@ -15,17 +15,17 @@ Pulled into Now 2026-09-12 ("Build the breast pair and the rest of the breast re
 
 ## QMH element order (sacred)
 
-### Invasive carcinoma (`analysis/qmh/breast.txt`)
+### Invasive carcinoma (`docs/reference/qmh/breast.txt`)
 
 Gross: Procedure · Laterality · Tumor site · Tumor size. Micro: Tumor histology and IHC · Histologic type (WHO 5e) · Tumor focality · Histologic grade (Nottingham; tubule / nuclear / mitotic scores) · Tumor size · Tumor extension (Nipple, Skin, Skin satellite foci, Skeletal muscle) · LVI · Dermal LVI · +PNI · Breast Treatment Effect · LN Treatment Effect · +Miller and Payne · DCIS (+ size, blocks, nuclear grade, necrosis, architecture) · +Additional lesions · +Microcalcifications · Ancillary (biomarker block) · Margins invasive (Anterior, Posterior, Superior, Inferior, Medial, Lateral, Other) · Margins DCIS (same faces) · Regional LN (examined, sentinel, macro, micro, ITC, largest deposit, largest node, ENE) · Distant metastasis · Stage (AJCC 8e; descriptors m / r / y; pT; sn / f; pN; pM) · Additional notes · NON ESSENTIAL: Residual Cancer Burden.
 
 House layout (as lung / ovary): a "Specimen and tumour" section first (procedure, laterality, site, size), then the microscopic elements in the order above; Tumour histology paragraph printed after Histologic grade (house exception); pTNM printed only via the `printPTNM` option; stage group in Checks and as `Stage group (if cM0)` sub-line.
 
-### DCIS (`analysis/qmh/dcis.txt`)
+### DCIS (`docs/reference/qmh/dcis.txt`)
 
 Procedure · Laterality · Tumor site · Tumor size · Blocks with DCIS / total · Histologic type (DCIS / Paget / Encapsulated papillary CIS / Solid papillary CIS / Other) · Extent · +Architecture · Nuclear grade · Necrosis · +Microcalcifications · ER / PR (biomarker block) · Margins (7 faces, ≥ 2 mm threshold) · Regional LN · Distant metastasis · Stage (pTis(DCIS) / pTis(Paget); pN; pM) · Additional notes.
 
-### Phyllodes (`analysis/qmh/phyllodes.txt`)
+### Phyllodes (`docs/reference/qmh/phyllodes.txt`)
 
 Procedure · Laterality · Tumor site · Tumor size · Histologic type (benign / borderline / malignant) · Stromal cellularity · Stromal atypia · Stromal overgrowth · Mitotic rate · Tumor border · Malignant heterologous elements · +LVI · +PNI · Margins (7 faces) · Regional LN · Distant metastasis · Stage (pT1–4; pN0 / pN1; pM) · +Additional pathologic findings · Additional notes. No AJCC stage group is defined on the page → none printed.
 

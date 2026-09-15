@@ -6,7 +6,7 @@ import { deriveTNM, stageLine } from '../src/staging/index.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { phyllodesMorphology } from './breast_morphology.js';
 import {
-  num, int, fmt, lc1, uc1, countWords, stripDot, arr, listJoin, specify, plural, item,
+  num, int, fmt, lc1, uc1, countWords, stripDot, arr, listJoin, specify, item,
   procedureText, siteText, specimenName, diagnosisHead, otherParts, hasExtraParts, otherSpecimenLines, specimens, findingText, lettered,
   specimenSentence, tumourSentence, blockKey, marginItems, marginsPhrase, closestMargin, closestWords, nodeItems, nodesPhrase, nodeCounts, nodesSubmitted,
   metastasisValue, metastasisPhrase, ptnmSection, sharedChecks, marginChecks

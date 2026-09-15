@@ -290,7 +290,6 @@ export function synoptic(part, ctx) {
   const st = staging(part, ctx);
   const size = num(v.tumourSizeMm);
   const sites = arr(v.tumourSite);
-  const isTis = isTisLike(v);
   const sizeText = isPT0(v)
     ? 'Not applicable (no residual tumour)'
     : size !== null

@@ -1,0 +1,288 @@
+Carcinomas of the lung
+There is further reference to CAP lung cancers biomarkers (2.2.0.0, Sep-2025) , IASLC atlas for ALK1 and ROS1 (2e, 2016) and updated 2018 CAP-IASLC-AMP guidelines for selection of tyrosine kinase inhibitors for NSCLC patients .
+
+
+
+Microscopic descriptions:
+
+- Tumor histology and immunohistochemical studies:
+
+- Histologic type:
+specify % individual components/patterns if applicable	
+Adenocarcinoma in situ (AIS), nonmucinous
+Adenocarcinoma in situ (AIS), mucinous
+Minimally invasive adenocarcinoma, nonmucinous
+Minimally invasive adenocarcinoma, mucinous
+Invasive adenocarcinoma, lepidic predominant
+Invasive adenocarcinoma, lepidic predominant + other subtypes (with %):
+Invasive adenocarcinoma, acinar predominant
+Invasive adenocarcinoma, acinar predominant + other subtypes (with %):
+Invasive adenocarcinoma, papillary predominant
+Invasive adenocarcinoma, papillary predominant + other subtypes (with %):
+Invasive adenocarcinoma, micropapillary predominant
+Invasive adenocarcinoma, micropapillary predominant + other subtypes (with %):
+Invasive adenocarcinoma, solid predominant
+Invasive adenocarcinoma, solid predominant + other subtypes (with %):
+Invasive adenocarcinoma, predominant subtype cannot be determined (explain):
+Invasive adenocarcinoma, predominant subtype cannot be determined (explain): + other subtypes (with %):
+Invasive mucinous adenocarcinoma
+Mixed invasive mucinous and nonmucinous adenocarcinoma
+Colloid adenocarcinoma
+Fetal adenocarcinoma
+Enteric-type adenocarcinoma
+Squamous cell carcinoma in situ (SCIS)
+Invasive squamous cell carcinoma, keratinizing
+Invasive squamous cell carcinoma, non-keratinizing
+Invasive squamous cell carcinoma, basaloid
+Lymphoepithelial carcinoma
+Large cell carcinoma
+Adenosquamous carcinoma
+Pleomorphic carcinoma
+Spindle cell carcinoma
+Giant cell carcinoma
+Carcinosarcoma
+Pulmonary blastoma
+NUT carcinoma
+Thoracic SMARCA4-deficient undifferentiated tumor
+Adenoid cystic carcinoma
+Epithelial-myoepithelial carcinoma
+Mucoepidermoid carcinoma
+Combined small cell carcinoma (specify type of non-small cell carcinoma component):
+Typical carcinoid / Neuroendocrine tumor, grade 1
+Atypical carcinoid / Neuroendocrine tumor, grade 2
+Carcinoid tumor, NOS / Neuroendocrine tumor, NOS
+Small cell carcinoma
+Combined small cell carcinoma (small cell carcinoma and non-small cell component) (specify type of non-small cell component):
+Large cell neuroendocrine carcinoma
+Combined large cell neuroendocrine carcinoma (LCNEC and other non-small cell component) (specify other type of non-small cell component):
+Carcinoma, type cannot be determined
+Non-small cell carcinoma, subtype cannot be determined
+Other histologic type not listed (specify):
+
++ Histologic grade:	
+G1: Well differentiated
+G2: Moderately differentiated
+G3: Poorly differentiated
+G4: Undifferentiated
+Other (specify):
+GX: Cannot be assessed
+Cannot be determined (explain):
+Not applicable
+
+
+- Spread through air spaces (STAS):
+	
+Not identified
+Present
+
+
+- Visceral pleura invasion:
+	
+Not identified
+PL0, elastic layer intact
+PL1, extension through elastic membrane
+PL2, extends on visceral pleura surface
+Cannot be determined
+
+
+- Lymphatic and / or Vascular Invasion:
+	
+Not identified
+Present
+Present, lymphatic
+Present, arterial
+Present, venous
+Cannot be determined
+
+
+- Tumor extension:
+	
+Not applicable
+Adjacent structures present but not involved
+Adjacent lobe of lung
+Parietal pleura
+Chest wall, fibroadipose tissue
+Chest wall, skeletal muscle
+Chest wall, rib(s)
+Main bronchus (up to but not including the carina)
+Associated with atelectasis or obstructive pneumonitis extending to the hilar regions, involving either part of or all of the entire lung
+Hilar soft tissues
+Phrenic nerve
+Parietal pericardium
+Visceral pericardium (epicardium)
+Azygos vein
+Cervical nerve roots
+Thoracic nerve roots
+Brachial plexus (trunks, divisions, cords, or terminal nerves)
+Stellate ganglion
+Diaphragm
+Heart
+Great vessels (aorta, superior / inferior vena cava, intrapericardial pulmonary arteries / veins)
+Supra-aortic arteries
+Brachiocephalic vein
+Subclavian vessels
+Thymus
+Trachea
+Carina
+Recurrent laryngeal nerve
+Vagus nerve
+Esophagus
+Vertebral body
+Lamina
+Spinal canal
+Other (specify):
+Cannot be assessed (explain):
+
+
+- Treatment effect:
+	
+No known presurgical therapy
+Greater than 10% residual viable tumor
+< or equal to 10% residual viable tumor
+Cannot be determined
+
+- Bronchial margin:
+	
+Not applicable
+Cannot be assessed
+Uninvolved by invasive carcinoma
+Uninvolved by carcinoma in situ
+Involved by invasive carcinoma
+Involved by carcinoma in situ
+
+
+- Vascular margin:
+	
+Not applicable
+Cannot be assessed
+Uninvolved by carcinoma
+Involved by carcinoma
+
+
+- Parenchymal margin:
+	
+Not applicable
+Cannot be assessed
+Uninvolved by invasive carcinoma
+Uninvolved by lepidic component of invasive adenocarcinoma
+Uninvolved by adenocarcinoma in situ
+Involved by invasive carcinoma
+Involved by lepidic component of invasive adenocarcinoma
+Involved by adenocarcinoma in situ
+
+- Other tissue margin(s):	
+Cannot be assessed
+Uninvolved by invasive carcinoma
+Involved by invasive carcinoma
+
+Regional lymph nodes:
+Specify the locations of involved lymph nodes.
+
+- Number of regional lymph nodes examined:
+	
+
+- Number of lymph nodes involved:
+	
++ Extranodal extension:	
+Not identified
+Present
+Cannot be determined
+
+Distant Metastasis:
+Not applicable
+Not identified
+Single extrathoracic metastasis in one organ (includes a single non-regional lymph node) (specify):
+Separate tumor nodule(s) in contralateral lobe (specify):
+Pleural nodules (specify):
+Pericardial nodules (specify):
+Malignant pleural effusion (specify):
+Malignant pericardial effusion (specify):
+Multiple extrathoracic metastases in a single organ (specify):
+Multiple extrathoracic metastasis in multiple organs (specify):
+Other (specify):
+Cannot be determined:
+
+Pathologic Stage Classification (AJCC 9e):
+
+- TNM Descriptors:
+	
+m (multiple primary tumors)
+r (recurrent)
+y (post treatment)
+
+
+- Primary tumor (pT):
+	
+pT not assigned (cannot be determined based on available pathological information)
+pT0: No evidence of primary tumor
+pTis: Carcinoma in situ; or Squamous cell carcinoma in situ (SCIS); or Adenocarcinoma in situ (AIS): adenocarcinoma with pure lepidic pattern, less than or equal to 3 cm in greatest dimension
+pT1 (subgroup cannot be determined)
+pT1mi: Minimally invasive adenocarcinoma: adenocarcinoma (less than or equal to 3 cm in greatest dimension) with a predominantly lepidic pattern and less than or equal to 5 mm invasion in greatest dimension
+pT1a: Tumor less than or equal to 1 cm in greatest dimension OR Tumor of any size whose invasive component is limited to the bronchial wall and may extend proximal to the main bronchus (this is an uncommon superficial, spreading tumor)
+pT1b: Tumor greater than 1 cm but less than or equal to 2 cm in greatest dimension
+pT1c: Tumor greater than 2 cm but less than or equal to 3 cm in greatest dimension
+pT2 (subgroup cannot be determined)
+pT2a: Tumor greater than 3 cm but less than or equal to 4 cm in greatest dimension OR Tumor less than or equal to 4 cm in greatest dimension with one or more of the following features: Invades visceral pleura; or Invades an adjacent lobe; or Involves main bronchus (up to but not including the carina) or associated with atelectasis or obstructive pneumonitis, extending to the hilar regions, involving either part of or the entire lung
+pT2b: Tumor greater than 4 cm but less than or equal to 5 cm in greatest dimension with or without any of the following features: Invades visceral pleura; or Invades an adjacent lobe; or Involves main bronchus (up to but not including the carina) or associated with atelectasis or obstructive pneumonitis extending to the hilar regions, involving either part of or the entire lung
+pT3: Tumor greater than 5 cm but less than or equal to 7 cm in greatest dimension OR Tumor less than or equal to 7 cm with one or more of the following features: Invades parietal pleura or chest wall; or Invades pericardium, phrenic nerve or azygos vein (although these structures lie within the mediastinum, the degree of mediastinal penetration by the tumor needed to invade these structures is not counted as T4); or Invades thoracic nerve roots (i.e., T1, T2) or stellate ganglion; or Separate tumor nodule(s) in the same lobe as the primary
+pT4: Tumor greater than 7 cm in greatest dimension OR Tumor of any size with one or more of the following features: Invades mediastinum (except structures listed in T3), thymus, trachea, carina, recurrent laryngeal nerve, vagus nerve, esophagus or diaphragm; or Invades heart, great vessels (aorta, superior / inferior vena cava, intrapericardial pulmonary arteries / veins), supra-aortic arteries or brachiocephalic veins; or Invades subclavian vessels, vertebral body, lamina, spinal canal, cervical nerve roots or brachial plexus (i.e., trunks, divisions, cords or terminal nerves); or Separate tumor nodule(s) in a different ipsilateral lobe than that of the primary
+
+
+- Regional lymph nodes (pN):
+	
+pN not assigned (no nodes submitted or found)
+pN not assigned (cannot be determined based on available pathological information)
+pN0: No tumor involvement of regional lymph node(s)
+pN1: Tumor involvement of ipsilateral peribronchial and / or ipsilateral hilar and / or ipsilateral intrapulmonary lymph node station(s), including involvement by direct extension
+pN2: (subgroup cannot be determined)
+pN2a: Tumor involvement of a single ipsilateral mediastinal nodal station or of the subcarinal nodal station
+pN2: Tumor involvement of multiple ipsilateral mediastinal nodal stations with or without involvement of the subcarinal nodal station
+pN3: Tumor involvement of contralateral mediastinal, contralateral hilar, ipsilateral / contralateral scalene, or ipsilateral / contralateral supraclavicular lymph node station(s)
+
+
+- Distant metastasis (pM):
+	
+Not applicable - pM cannot be determined from the submitted specimen(s)
+pM1 (subgroup cannot be determined)
+pM1:Distant metastasis
+pM1a: Microscopic confirmation of metastasis in pleural or pericardial nodules, and / or malignant pleural or pericardial effusions, and / or separate tumor nodule(s) in a contralateral lobe
+pM1b: Microscopic confirmation of single extrathoracic metastasis in a single organ system (including involvement of a single non-regional node)
+pM1c: (subgroup cannot be determined)
+pM1c1: Microscopic confirmation of multiple extrathoracic metastases in a single organ system (For example, the skeleton is considered one organ. Several metastases in a single bone or several metastases in several bones are classified as M1c1.)
+pM1c2: Microscopic confirmation of multiple extrathoracic metastases in multiple organ systems
+
++ Additional pathologic findings:
+
+Atypical adenomatous hyperplasia
+Tumorlets:
+Squamous dysplasia
+Diffuse neuroendocrine hyperplasia
+Biopsy site changes
+Granulomatous inflammation, necrotizing
+Granulomatous inflammation, non-necrotizing
+Post-obstructive changes
+Fibrosis (specify pattern if discernable):
+Emphysema
+
+- Other (specify): 
+
+
+
+
+- Additional notes:
+
+
+
+
+
+
+Copy text to Clipboard
+
+
+
+Last upated on 06-Oct-2025,
+based on US CAP cancer protocol templates,
+Lung 5.1.0.0 (Sep-2025).
+html form was created on pForm, W3 School, StackOverflow, and Icons8.
+
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.

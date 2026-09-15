@@ -2,7 +2,9 @@
 // Draft-schema importer for the QMH Cancer Reporting Template pages
 // (https://awiloqmh.github.io/CancerReportingTemplate/). Point it at a saved page:
 //
-//   node tools/import-qmh.js analysis/qmh/GI-Colon-and-rectum.html > analysis/qmh/colon.draft.json
+//   node tools/import-qmh.js docs/reference/GI-Colon-and-rectum.html > analysis/colon.draft.json
+// Rendered source pages live in docs/reference/ (tracked); draft JSON output is scratch and
+// belongs in analysis/, which is gitignored.
 //
 // It reads every <select>/<input>/<textarea> (name Axx), the option values, the on-page
 // label preceding each control, and the output label + order that the page's

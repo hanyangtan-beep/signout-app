@@ -12,7 +12,6 @@
 export const id = 'gastric';
 export const edition = 'AJCC 8th edition';
 
-const num = (x) => { const n = parseFloat(String(x ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (x) => { const n = parseInt(String(x ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
 const arr = (x) => (Array.isArray(x) ? x : x ? [x] : []);
 
@@ -35,10 +34,8 @@ export const EXTENSION_T = [
 export function tFromExtension(option) {
   const o = String(option || '');
   for (const [re, cat] of EXTENSION_T) if (re.test(o)) return cat;
-  return o ? null : null;
+  return null;
 }
-
-const T_DEFAULT = 'Tumour invades submucosa';
 
 export function T(v) {
   const opt = v.tumourExtension || '';

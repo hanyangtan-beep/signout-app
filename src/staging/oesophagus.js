@@ -14,7 +14,6 @@
 export const id = 'oesophagus';
 export const edition = 'AJCC 8th edition';
 
-const num = (x) => { const n = parseFloat(String(x ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (x) => { const n = parseInt(String(x ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
 const arr = (x) => (Array.isArray(x) ? x : x ? [x] : []);
 

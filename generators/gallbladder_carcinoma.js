@@ -70,7 +70,6 @@ function deepestExtension(v) {
 }
 
 const isPT0 = (v) => arr(v.tumourExtension).some((s) => /no evidence of primary/i.test(s));
-const isTis = () => false; // the QMH gallbladder page has no Tis option
 
 // ---------- specimen ----------
 

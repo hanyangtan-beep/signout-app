@@ -190,7 +190,7 @@ test('report options: macro off, header on, single part has no letters; a typed 
   assert.match(multi.diagnosis, /\n\n\(B\) SKIN, left chest wall, biopsy - /);
 });
 
-test('synoptic element order follows the QMH BREAST-Cancers page (analysis/qmh/breast.txt), house exceptions noted', () => {
+test('synoptic element order follows the QMH BREAST-Cancers page (docs/reference/qmh/breast.txt), house exceptions noted', () => {
   const QMH = ['Procedure', 'Specimen laterality', 'Tumour site', 'Tumour size', 'Histologic type', 'Tumour focality', 'Histologic grade', 'Tubule formation', 'Nuclear pleomorphism', 'Mitotic rate',
     'Tumour extension', 'Lymphatic and/or vascular invasion', 'Dermal lymphatic and/or vascular invasion', 'Breast treatment effect', 'Ductal carcinoma in situ', 'Anterior margin', 'Regional lymph nodes', 'Extranodal extension', 'Distant metastasis', 'pTNM'];
   const ours = Object.keys(rows(run(byName['03-mastectomy-lobular-multifocal-axillary-n2a-ene'].patch, { printPTNM: true })));

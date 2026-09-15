@@ -13,7 +13,6 @@ const num = (v) => {
   const n = parseFloat(String(v ?? '').trim());
   return Number.isFinite(n) ? n : null;
 };
-const fmt = (n) => (Number.isInteger(n) ? String(n) : String(n).replace(/\.0+$/, ''));
 const listJoin = (items) => {
   const a = items.filter(Boolean);
   if (a.length <= 1) return a[0] || '';

@@ -160,8 +160,8 @@ test('macro option off removes the macro and block key; heading option prints th
   assert.match(hdr.report, /MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:/);
 });
 
-test('synoptic element order follows the QMH Thorax-Lung page (analysis/qmh/lung.txt), house exceptions noted', () => {
-  // Element headings from analysis/qmh/lung.txt in page order, mapped to our row labels.
+test('synoptic element order follows the QMH Thorax-Lung page (docs/reference/qmh/lung.txt), house exceptions noted', () => {
+  // Element headings from docs/reference/qmh/lung.txt in page order, mapped to our row labels.
   const QMH = ['Histologic type', 'Histologic grade', 'Spread through air spaces (STAS)', 'Visceral pleura invasion', 'Lymphatic and / or vascular invasion', 'Tumour extension', 'Treatment effect',
     'Bronchial margin', 'Vascular margin', 'Parenchymal margin', 'Regional lymph nodes', 'Distant metastasis', 'pTNM'];
   const ours = Object.keys(rows(run(byName['07-t4-different-lobe-nodule-pleural-nodules-m1a'].patch, { printPTNM: true })));

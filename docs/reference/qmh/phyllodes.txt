@@ -1,0 +1,180 @@
+﻿
+Breast Phyllodes Tumor
+ Phyllodes Tumor of the breast
+ click to access explanations in the original CAP template
+ Gross descriptions:
+- Procedure:
+ * 
+ * Excision (less than total mastectomy) 
+ * Total mastectomy (including nipple-sparing and skin-sparing mastectomy)
+ * Other (specify):
+ * Not specified
+- Specimen laterality:
+ * 
+ * Right 
+ * Left
+ * Not specified
+- Tumor site:
+ Upper outer quadrant
+ Lower outer quadrant
+ Upper inner quadrant
+ Lower inner quadrant
+ Central
+ Nipple
+ Position (specify): o’clock
+ Other (specify):
+ Not specified
+- Tumor size:
+ * 
+ * Microinvasion only (
+ * Greatest dimension (mm): 
+ * All dimensions (mm x mm x mm):
+ * No residual carcinoma
+ * Cannot be determined (explain):
+-->
+ Microscopic descriptions:
+- Tumor histology and immunohistochemical studies: 
+- Histologic type:
+ * 
+ * No tumor
+ * Phyllodes tumor, benign
+ * Phyllodes tumor, borderline
+ * Phyllodes tumor, malignant
+ - Stromal Cellularity:
+ * 
+ * Mild (stromal nuclei are non-overlapping) 
+ * Moderate (some overlapping stromal nuclei)
+ * Marked (many overlapping stromal nuclei)
+ - Stromal Atypia:
+ * 
+ * None
+ * Mild (minimal variation in nuclear size, even chromatin, and smooth nuclear contours) 
+ * Moderate (more variation in nuclear size and irregular nuclear membranes)
+ * Marked (marked nuclear pleomorphism, hyperchromasia, and irregular nuclear contours)
+ - Stromal Overgrowth:
+ * 
+ * Absent 
+ * Present
+ * Cannot be determined
+ - Mitotic Rate:
+ * 
+ * None identified: 
+ * Mitoses per 10 high power fields
+ * Mitoses per square Millimeter (mm)
+ * Cannot be determined
+ - Histologic Tumor Border:
+ * 
+ * Circumscribed (well-defined; pushing) 
+ * Infiltrative (permeative), Focal
+ * Infiltrative (permeative), Extensive
+ * Cannot be determined
+ - Malignant Heterologous Elements:
+ * 
+ * Not identified 
+ * Liposarcoma (excluding well-differentiated liposarcoma)
+ * Osteosarcoma
+ * Chondrosarcoma
+ * Other (specify):
++ Lymphovascular invasion: 
+ * 
+ * Not identified
+ * Present
+ * Cannot be determined
++ Perineural invasion: 
+ * 
+ * Not identified
+ * Present
+ * Cannot be determined
+Surgical margins: 
+- Anterior margin:
+ * 
+ * Cannot be assessed
+ * Uninvolved by tumor, closest distance:
+ * Involved by tumor
+- Posterior margin:
+ * 
+ * Cannot be assessed
+ * Uninvolved by tumor, closest distance:
+ * Involved by tumor
+- Superior margin:
+ * 
+ * Cannot be assessed
+ * Uninvolved by tumor, closest distance:
+ * Involved by tumor
+- Inferior margin:
+ * 
+ * Cannot be assessed
+ * Uninvolved by tumor, closest distance:
+ * Involved by tumor
+- Medial margin:
+ * 
+ * Cannot be assessed
+ * Uninvolved by tumor, closest distance:
+ * Involved by tumor
+- Lateral margin:
+ * 
+ * Cannot be assessed
+ * Uninvolved by tumor, closest distance:
+ * Involved by tumor
+- Other margins (specify):
+ * 
+ * Cannot be assessed
+ * Uninvolved by tumor, closest distance:
+ * Involved by tumor
+ Regional lymph nodes: 
+- Number of regional lymph nodes examined:
+- Number of involved lymph nodes:
+- Size of largest metastatic deposit (mm), specify site:
+- Size of largest lymph node involved (mm), specify site:
+- Extranodal extension:
+ * 
+ * Not identified
+ * Present
+ * 2 mm">Present, extent of ENE, no. 2 mm
+ * Cannot be determined
+ Distant Metastasis: 
+Not applicable
+Not identified
+Other (specify):
+Cannot be determined: 
+ Pathologic Stage Classification (AJCC 8e):
+- TNM Descriptors:
+m (multiple foci of invasive carcinoma)
+r (recurrent)
+y (post treatment)
+- Primary tumor (pT):
+ * 
+ * pT not assigned (cannot be determined based on available pathological information)
+ * pT0: No evidence of primary tumor
+ * pT1: Tumor 5 cm or less in greatest dimension
+ * pT2: Tumor more than 5 cm but not more than 10 cm
+ * pT3: Tumor more than 10 cm but not more than 15 cm
+ * pT4: Tumor more than 15 cm in greatest dimension
+ - Regional lymph nodes (pN): 
+ * 
+ * pN not assigned (no nodes submitted or found)
+ * pN not assigned (cannot be determined based on available pathological information)
+ * pN0: No regional lymph node metastasis
+ * pN1: Regional lymph node metastasis
+- Distant metastasis (pM): 
+ * 
+ * Not applicable - pM cannot be determined from the submitted specimen(s)
+ * pM1: Distant metastasis
+ - Specify site(s), if known:
+-->
+ + Additional pathologic findings: 
+Fibroepithelial proliferation (coexisting fibroadenoma or fibroadenomatoid change in the tissue surrounding the phyllodes tumor)
+Atypical ductal hyperplasia
+Atypical lobular hyperplasia
+- Other (specify):
+- Additional notes:
+Copy text to Clipboard
+Last upated on 23-Sep-2022,
+based on US CAP cancer protocol templates,
+Phyllodes Tumor of the Breast Resection 1.2.0.1 (Sep 2022).
+html form was created on 
+pForm, 
+W3 School, 
+StackOverflow,
+ and Icons8.
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.

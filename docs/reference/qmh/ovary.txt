@@ -1,0 +1,396 @@
+Primary tumors of the ovary, fallopian tube and peritoneum
+click to access explanations in the original CAP template
+Gross descriptions:
+- Procedure:
+Total hysterectomy and bilateral salpingo-oophorectomy
+Radical hysterectomy
+Simple hysterectomy
+Supracervical hysterectomy
+Bilateral salpingo-oophorectomy
+Right salpingo-oophorectomy
+Left salpingo-oophorectomy
+Salpingo-oophorectomy, side not specified
+Right oophorectomy
+Left oophorectomy
+Oophorectomy, side not specified
+Bilateral salpingectomy
+Right salpingectomy
+Left salpingectomy
+Salpingectomy, side not specified
+Omentectomy
+Peritoneal biopsies
+Peritoneal tumor debulking
+Peritoneal washing
+Pleurocentesis (pleural fluid)
+Other (specify):
+- Hysterectomy type:
+·
+· Abdominal
+· Vaginal
+· Vaginal, laparoscopic-assisted
+· Laparoscopic
+· Laparoscopic, robotic-assisted
+· Other (specify):
+· Not specified
+Specimen integrity:
+- Specimen integrity, right ovary:
+·
+· Capsule intact
+· Capsule ruptured
+· Fragmented
+· Other (specify):
+- Specimen integrity, left ovary:
+·
+· Capsule intact
+· Capsule ruptured
+· Fragmented
+· Other (specify):
+- Specimen integrity, right fallopian tube:
+·
+· Serosa intact
+· Serosa ruptured
+· Fragmented
+· Other (specify):
+- Specimen integrity, left fallopian tube:
+·
+· Serosa intact
+· Serosa ruptured
+· Fragmented
+· Other (specify):
+- Morcellated specimen (specify organ):
+- Tumor site:
+Right ovary
+Left ovary
+Bilateral ovaries
+Ovary, laterality cannot be determined (explain):
+Right fallopian tube
+Left fallopian tube
+Fallopian tube, laterality cannot be determined (explain):
+Right tubo-ovarian
+Left tubo-ovarian
+Bilateral tubo-ovarian
+Tubo-ovarian, laterality cannot be determined (explain):
+Primary peritoneum
+Other (specify):
+- Ovarian surface involvement:
+·
+· Not identified
+· Present, specify laterality:
+· Cannot be determined (explain):
+- Fallopian tube surface involvement:
+·
+· Not identified
+· Present, specify laterality:
+· Cannot be determined (explain):
+- Tumor size:
+·
+· Greatest dimension (mm):
+· All dimensions (mm x mm x mm):
+· Cannot be determined (explain):
+-->
+Microscopic descriptions:
+- Tumor histology and immunohistochemical studies:
+- Histologic type:
+Serous borderline tumor
+Serous borderline tumor, micropapillary / cribriform variant
+Serous borderline tumor with microinvasion
+Microinvasive low-grade serous carcinomaa
+Low-grade Serous carcinoma
+High-grade Serous carcinoma
+Mucinous borderline tumor
+Mucinous borderline tumor with intraepithelial carcinoma
+Mucinous borderline tumor with microinvasion
+Mucinous adenocarcinoma
+Endometrioid borderline tumor
+Endometrioid carcinoma
+Endometrioid carcinoma, seromucinous type
+Seromucinous borderline tumor
+Clear cell borderline tumor
+Clear cell carcinoma
+Borderline Brenner tumor
+Malignant Brenner tumor, malignant
+Mesonephric-like adenocarcinoma
+Small cell carcinoma, hypercalcemic type
+Dedifferentiated carcinomae
+Undifferentiated carcinoma, NOS
+Carcinosarcoma (malignant mixed Mullerian tumor)
+Carcinoma, subtype cannot be determined
+Mixed epithelial borderline tumor (specify types and percentages):
+Mixed carcinoma (specify types and percentages):
+Endometrioid stromal sarcoma, low-grade
+Endometrioid stromal sarcoma, high-grade
+Adenosarcoma
+Leiomyosarcoma
+Fibrosarcoma
+Granulosa cell tumor, adult type
+Granulosa cell tumor, juvenile type
+Steroid cell tumor, NOS
+Steroid cell tumor, malignant
+Sertoli-Leydig cell tumor
+Other sex cord-stromal tumor (specify type):
+Immature teratoma
+Teratoma with malignant transformation (specify type):
+Malignant struma ovarii, specify type:
+Dysgerminoma
+Yolk sac tumor
+Embryonal carcinoma
+Gonadoblastoma
+Choriocarcinoma, non-gestational type
+Mixed malignant germ cell tumor (specify types and percentages):
+Gastrointestinal stromal tumor
+Solitary fibrous tumor, malignant
+Desmoplastic small round cell tumor
+Other (specify):
+- Histologic grade (WHO):
+·
+· G1: Well differentiated
+· G2: Moderately differentiated
+· G3: Poorly differentiated
+· GX: Cannot be assessed
+- FIGO grade:
+·
+· FIGO Grade 1 (5% or less of non-squamous solid growth)
+· FIGO Grade 2 (6% to 50% of non-squamous solid growth)
+· FIGO Grade 3 (more than 50% of non-squamous solid growth)
+- Silverberg grade:
+·
+· Silverberg Grade 1 (scores 3-5)
+· Silverberg Grade 2 (scores 6-7)
+· Silverberg Grade 3 (scores 8-9)
+- Growth Pattern-based grade:
+·
+· Low-grade, growth pattern-based (confluent / expansile growth, or less than or equal to 10% infiltrative growth)
+· High-grade, growth pattern-based (infiltrative growth in greater than 10% of tumor)
+· Other growth pattern-based grading (specify):
+- 2-Tier grade:
+·
+· Low grade
+· High grade
+- 3-Tier grade:
+·
+· Grade 1 (low-grade)
+· Grade 2 (high-grade)
+· Grade 3 (high-grade)
+- Lymphatic and/or vascular invasion:
+·
+· Not identified
+· Present
+· Cannot be determined
++ Perineural invasion:
+·
+· Not identified
+· Present
+· Cannot be determined
++ p53 IHC:
+·
+· Normal (wild type)
+· Abnormal (mutated)
+· Abnormal, Overexpression (strong, diffuse basilar nuclear expression, >90%)
+· Abnormal, Null (lack of nuclear or cytoplasmic expression)
+· Abnormal, Cytoplasmic only (lacks nuclear expression)
+· Subclonal abnormal (mutated)
+· Subclonal abnormal, Overexpression (strong, diffuse basilar nuclear expression, >90%)
+· Subclonal abnormal, Null (lack of nuclear or cytoplasmic expression)
+· Subclonal abnormal, Cytoplasmic only (lacks nuclear expression)
+- Implants (for advanced stage serous / seromucinous borderline tumors only)):
+·
+· Not applicable
+· Not sampled
+· Not identified
+· Present, specify site:
+· Indeterminate
+- Largest extrapelvic peritoneal focus:
+·
+· Microscopic
+· Macroscopic (
+·  2 cm)">Macroscopic (> 2 cm)
+· Cannot be determined
+- Peritoneal/ascitic fluid:
+·
+· Not submitted/ unknown
+· Malignant cells not identified
+· Atypical (explain):
+· Atypical, borderline tumor cells
+· Atypical, not borderline tumor cells
+· Suspicious (explain):
+· Malignant cells present
+· Cannot be determined:
+· Results pending
++ Pleural fluid:
+·
+· Not submitted/ unknown
+· Negative for malignancy (normal/benign)
+· Atypical and/or suspicious (explain):
+· Malignant (positive for malignancy)
+· Unsatisfactory/nondiagnostic (explain):
+· Results pending
+-->
+- Treatment effect for high grade serous CA,
+Chemotherapy Response Score:
+·
+· No known presurgical therapy
+· CRS1 (no definite or minimal response)
+· CRS2 (moderate response)
+· CRS3 (marked response with no or minimal residual cancer)
+· Cannot be determined
+Endometrioid carcinomas are graded via a 3-tier FIGO system identical to their endometrial counterparts. Mucinous carcinomas are graded via Silverberg, FIGO or growth pattern-based systems. Immature teratomas can be graded using either a 2-tier or 3-tier system. Sertoli-Leydig cell tumors are graded via a 3-tier grading system based on the degree of tubular differentiation of the Sertoli component, the quantity of gonadal stroma, and the number of Leydig cells. For mixed tumors, report the highest grade tumor and comment on all others.
+FIGO Grading System (recommended for endometrioid carcinomas and may also be used for mucinous carcinomas; when severe nuclear atypia is present in the majority of the tumor cells in grade 1 or 2 tumors (grade 3 nuclei), the FIGO grade is increased by one)
+Silverberg Grading System (recommended for mucinous carcinomas and may also be used for endometrioid carcinomas)
+Growth Pattern-based Grading (recommended for mucinous carcinomas only)
+2-Tier Grading System (recommended for immature teratomas only)
+3-Tier Grading System (recommended for immature teratomas only)
+- Other tissue/ organ involvement:
+Not applicable
+Not identified
+Right ovary
+Left ovary
+Ovary (side not specified)
+Right fallopian tube
+Left fallopian tube
+Fallopian tube (side not specified)
+Vagina
+Right parametrium
+Left parametrium
+Parametrium (side not specified)
+Pelvic wall
+Bladder wall
+Bladder mucosa
+Rectal wall
+Bowel mucosa
+Omentum
+Other organs/tissue (specify):
+Cannot be determined (explain):
++ Ancillary studies include BRCA1 and BRCA2 mutation testing, POLE hot spot mutations and DNA mismatch repair status (+/- other IHC tests).
+Surgical margins of excision specimen:
+- Ectocervical/vaginal cuff margin:
+·
+· Cannot be assessed
+· Uninvolved by invasive carcinoma, specify location and closest distance:
+· Involved by carcinioma
+- Parametrial/paracervical margin:
+·
+· Cannot be assessed
+· Uninvolved by invasive carcinoma, specify location and closest distance:
+· Involved by carcinioma
+Regional lymph nodes:
+- Number of lymph nodes examined:
+- Number of lymph nodes with metastasis > 10 mm:
+- Number of lymph nodes with metastasis
+- Number of lymph nodes with isolated tumor cells (
+- Size of largest metastatic deposit (mm), specify site:
+- Size of largest lymph node involved (mm), specify site:
+- Extranodal extension:
+·
+· Not identified
+· Present
+· Cannot be determined
+Distant Metastasis:
+Not applicable
+Not identified
+Pleural effusion with positive cytology
+Liver parenchyma:
+Splenic parenchyma:
+Extra-abdominal organ(s):
+Inguinal or retroperitoneal lymph node(s) and lymph node(s) outside the abdominal cavity:
+Transmural involvement of intestine:
+Other (specify):
+Cannot be determined:
+FIGO stage (2021 Cancer Report):
+Click the table for the original reference.
+-->
+I: Tumor confined to ovaries or fallopian tube(s)
+IA: Tumor limited to one ovary (capsule intact) or fallopian tube; no tumor on ovarian or fallopian tube surface; no malignant cells in ascites or peritoneal washings
+IB: Tumor limited to both ovaries (capsules intact) or fallopian tubes; no tumor on ovarian or fallopian tube surface; no malignant cells in the ascites or peritoneal washings
+IC: Tumor limited to one or both ovaries or fallopian tubes, with any of the following:
+IC1: Surgical spill
+IC2: Capsule ruptured before surgery or tumor on ovarian or fallopian tube surface
+IC3: Malignant cells in the ascites or peritoneal washings
+IC: Tumor limited to one or both ovaries or fallopian tubes, not otherwise specified
+II: Tumor involves one or both ovaries or fallopian tubes with pelvic extension (below pelvic brim) or peritoneal cancer
+IIA: Extension and / or implants on uterus and / or fallopian tubes and / or ovaries
+IIB: Extension to other pelvic intraperitoneal tissues
+III: Tumor involves one or both ovaries or fallopian tubes, or peritoneal cancer, with cytologically or histologically confirmed spread to the peritoneum outside the pelvis and / or metastasis to the retroperitoneal lymph nodes
+IIIA1: Positive retroperitoneal lymph nodes only (cytologically or histologically proven)
+IIIA1(i): Metastasis up to 10 mm in greatest dimension
+IIIA1(ii): Metastasis more than 10 mm in greatest dimension
+IIIA2: Microscopic extrapelvic (above the pelvic brim) peritoneal involvement with or without positive retroperitoneal lymph nodes
+IIIB: Macroscopic peritoneal metastases beyond the pelvis up to 2 cm in greatest dimension, with or without metastasis to the retroperitoneal lymph nodes
+IIIC: Macroscopic peritoneal metastasis beyond the pelvis more than 2 cm in greatest dimension, with or without metastasis to the retroperitoneal lymph nodes (includes extension of tumor to capsule of liver and spleen without parenchymal involvement of either organ)
+IV: Distant metastasis excluding peritoneal metastases
+IVA: Pleural effusion with positive cytology
+IVB: Parenchymal metastases and metastases to extra-abdominal organs (including inguinal lymph nodes and lymph nodes outside of the abdominal cavity)
+·
+· I: Tumor confined to ovaries or fallopian tube(s)
+· IA: Tumor limited to 1 ovary (capsule intact) or fallopian tube; no tumor on ovarian or fallopian tube surface; no malignant cells in the ascites or peritoneal washings
+· IB: Tumor limited to both ovaries (capsules intact) or fallopian tubes; no tumor on ovarian or fallopian tube surface; no malignant cells in the ascites or peritoneal washings
+· IC: Tumor limited to 1 or both ovaries or fallopian tubes, with any of the following:
+· IC1: Surgical spill intraoperatively
+· IC2: Capsule ruptured before surgery or tumor on ovarian or fallopian tube surface
+· IC3: Malignant cells present in the ascites or peritoneal washings
+· II: Tumor involves 1 or both ovaries or fallopian tubes with pelvic extension (below pelvic brim) or peritoneal cancer
+· IIA: Extension and/or implants on the uterus and/or fallopian tubes and/or ovaries
+· IIB: Extension to other pelvic intraperitoneal tissues
+· III: Tumor involves 1 or both ovaries, or fallopian tubes, or primary peritoneal cancer, with cytologically or histologically confirmed spread to the peritoneum outside the pelvis and/or metastasis to the retroperitoneal lymph nodes
+· IIIA: Metastasis to the retroperitoneal lymph nodes with or without microscopic peritoneal involvement beyond the pelvis
+· IIIA1: Positive retroperitoneal lymph nodes only (cytologically or histologically proven)
+· IIIA1(i): Metastasis
+·  10 mm in greatest dimension">IIIA1(ii): Metastasis > 10 mm in greatest dimension
+· IIIA2: Microscopic extrapelvic (above the pelvic brim) peritoneal involvement with or without positive retroperitoneal lymph nodes
+· IIIB: Macroscopic peritoneal metastases beyond the pelvic brim
+·  2 cm in greatest dimension, with or without metastases to the retroperitoneal nodes">IIIC: Macroscopic peritoneal metastases beyond the pelvic brim > 2 cm in greatest dimension, with or without metastases to the retroperitoneal nodes
+· IV: Distant metastasis excluding peritoneal metastases
+· IVA: Pleural effusion with positive cytology
+· IVB: Metastases to extra-abdominal organs (including inguinal lymph nodes and lymph nodes outside of abdominal cavity)
+-->
+Pathologic Stage Classification (AJCC 8e):
+- TNM Descriptors:
+m (multiple primary tumors)
+r (recurrent)
+y (post treatment)
+- Primary tumor:
+·
+· pTX: Primary tumor cannot be assessed
+· pT0: No evidence of primary tumor
+· pT1: Tumor limited to ovaries (one or both) or fallopian tube(s)
+· pT1a: Tumor limited to one ovary (capsule intact) or fallopian tube, no tumor on ovarian or fallopian tube surface; no malignant cells in ascites or peritoneal washings
+· pT1b: Tumor limited to both ovaries (capsules intact) or fallopian tubes; no tumor on ovarian or fallopian tube surface; no malignant cells in ascites or peritoneal washings
+· pT1c: Tumor limited to one or both ovaries or fallopian tubes with any of the following:
+· pT1c1: Surgical spill
+· pT1c2: Capsule ruptured before surgery or tumor on ovarian or fallopian tube surface
+· pT1c3: Malignant cells in ascites or peritoneal washings
+· pT2: Tumor involves one or both ovaries or fallopian tubes with pelvic extension below pelvic brim or primary peritoneal cancer
+· pT2a: Extension and/or implants on uterus and/or fallopian tube(s) and/or ovaries
+· pT2b: Extension to and/or implants on other pelvic tissues
+· pT3: Tumor involves one or both ovaries or fallopian tubes, or primary peritoneal cancer, with microscopically confirmed peritoneal metastasis outside the pelvis and/or metastasis to retroperitoneal (pelvic and/or para-aortic) lymph nodes
+· pT3a: Microscopic extra-pelvic (above the pelvic brim) peritoneal involvement with or without positive retroperitoneal lymph nodes
+· pT3b: Macroscopic peritoneal metastasis beyond pelvis 2 cm or less in greatest dimension with or without metastasis to retroperitoneal lymph nodes
+· pT3c: Macroscopic peritoneal metastasis beyond pelvis more than 2 cm in greatest dimension with or without metastasis to the retroperitoneal lymph nodes (includes extension of tumor to capsule of liver and spleen without parenchymal involvement of either organ)
+- Lymph node descriptors:
+sn (sentinel)
+- Regional lymph nodes (pN):
+·
+· pNX: Regional lymph nodes cannot be assessed
+· pN0: No regional lymph node metastasis
+· pN0(i+): Isolated tumor cells in regional lymph node(s)
+· pN1: Positive retroperitoneal lymph nodes only (histologically confirmed)
+· pN1a: Metastasis up to and including 10 mm in greatest dimension
+·  10 mm in greatest dimension">pN1b: Metastasis > 10 mm in greatest dimension
+- Distant metastasis (pM):
+·
+· pM1: Distant metastasis, including pleural effusion with positive cytology; liver or splenic parenchymal metastasis; metastasis to extra-abdominal organs (including inguinal lymph nodes and lymph nodes outside the abdominal cavity); and transmural involvement of intestine
+· pM1a: Pleural effusion with positive cytology
+· pM1b: Liver or splenic parenchymal metastases; metastases to extra-abdominal organs (including inguinal lymph nodes and lymph nodes outside the abdominal cavity); transmural involvement of intestine
+- Specify site(s), if known:
+-->
++ Additional pathologic findings:
+Serous tubal intraepithelial carcinoma (STIC)
+Endometriosis
+Endosalpingiosis
+- Other (specify):
+- Additional notes:
+Copy text to Clipboard
+Last upated on 14-Aug-2024,
+based on US CAP cancer protocol templates,
+Ovary Fallopian 1.5.0.0 (Jun 2023),
+html form was created on pForm, W3 School, StackOverflow, and Icons8.
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.

@@ -9,7 +9,7 @@ import { hasBiomarkerData } from './breast_biomarkers.js';
 import { biomarkerItems } from './breast_carcinoma.js';
 import { dcisCytology, dcisPatternMorphology, dcisTypeMorphology } from './breast_morphology.js';
 import {
-  num, fmt, lc1, lcProse, uc1, countWords, stripDot, arr, listJoin, specify, plural, item,
+  num, fmt, lc1, lcProse, uc1, countWords, stripDot, arr, listJoin, specify, item,
   procedureText, siteText, specimenName, diagnosisHead, otherParts, hasExtraParts, otherSpecimenLines, specimens, findingText, lettered,
   specimenSentence, tumourSentence, blockKey, marginItems, marginsPhrase, closestMargin, closestWords, nodeItems, nodesPhrase, nodeCounts, nodesSubmitted,
   metastasisValue, metastasisPhrase, ptnmSection, sharedChecks, marginChecks
