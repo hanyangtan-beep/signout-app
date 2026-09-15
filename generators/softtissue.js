@@ -1,3 +1,4 @@
+import { stripDot } from './_house.js';
 // Soft tissue (benign lesion: lipoma and friends) generator. Pure functions: (part, ctx) -> string.
 // Blocks produced:
 //   specimens  "Right thigh lipoma, excision"
@@ -22,7 +23,6 @@ const num = (v) => {
 };
 const fmt = (n) => (Number.isInteger(n) ? String(n) : String(n).replace(/\.0+$/, ''));
 const lc1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : '');
-const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 /** Normalise "–" / "-" variants of an option so either spelling matches. */
 const norm = (s) => String(s || '').replace(/\s*[–—-]\s*/g, ' - ').trim();
 

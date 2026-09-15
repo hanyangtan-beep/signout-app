@@ -1,526 +1,523 @@
 {
-  "id": "cervical_excision",
-  "version": "2026.09",
-  "name": "Cervical excision (LEEP / cone)",
-  "shortName": "Cervix · LEEP / cone",
-  "label": "LEEP",
-  "organ": "CERVIX",
-  "system": "Gynae",
-  "kind": "benign resection",
-  "rank": 20,
-  "aliases": [
-    "LLETZ",
-    "cone",
-    "loop",
-    "top hat",
-    "CIN",
-    "margins"
+ "id": "cervical_excision",
+ "version": "2026.09",
+ "name": "Cervical excision (LEEP / cone)",
+ "shortName": "Cervix · LEEP / cone",
+ "label": "LEEP",
+ "organ": "CERVIX",
+ "system": "Gynae",
+ "kind": "benign resection",
+ "rank": 20,
+ "aliases": [
+  "LLETZ",
+  "cone",
+  "loop",
+  "top hat",
+  "CIN",
+  "margins"
+ ],
+ "match": {
+  "site": [
+   "cervix",
+   "cervical",
+   "LEEP",
+   "LLETZ",
+   "cone"
   ],
-  "match": {
-    "site": [
-      "cervix",
-      "cervical",
-      "LEEP",
-      "LLETZ",
-      "cone"
-    ],
-    "procedure": [
-      "LEEP",
-      "LLETZ",
-      "cone",
-      "loop",
-      "excision"
-    ],
-    "clinical": [
-      "CIN",
-      "HSIL",
-      "LSIL",
-      "HPV",
-      "AIS",
-      "glandular"
-    ]
-  },
-  "specimenNoun": "LEEP",
-  "maxParts": 3,
-  "defaultParts": 1,
-  "generator": "leep",
-  "style": {
-    "british": true
-  },
-  "caseFields": [
-    {
-      "id": "cytology",
-      "label": "Referral cytology / HPV / biopsy",
-      "placeholder": "HSIL on biopsy; HPV 16 positive"
-    }
+  "procedure": [
+   "LEEP",
+   "LLETZ",
+   "cone",
+   "loop",
+   "excision"
   ],
-  "options": [
-    {
-      "id": "includeHeader",
-      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
-      "type": "checkbox",
-      "default": false
-    },
-    {
-      "id": "summary",
-      "label": "Case summary line after the diagnosis (lesion, margins, curettings)",
-      "type": "checkbox",
-      "default": true
-    }
-  ],
-  "partDefaults": [
-    {
-      "specimenType": "LEEP"
-    },
-    {
-      "specimenType": "Top-hat endocervical excision"
-    },
-    {
-      "specimenType": "Endocervical curettings"
-    }
-  ],
-  "fields": [
-    {
-      "id": "specimenType",
-      "label": "Specimen",
-      "type": "select",
-      "options": [
-        "LEEP",
-        "Cone biopsy",
-        "Top-hat endocervical excision",
-        "Endocervical curettings"
-      ],
-      "default": "LEEP"
-    },
-    {
-      "id": "orientation",
-      "label": "Orientation",
-      "type": "text",
-      "placeholder": "cut at 12 o'clock",
-      "default": "",
-      "showIf": {
-        "field": "specimenType",
-        "not": "Endocervical curettings"
-      }
-    },
-    {
-      "id": "blocks",
-      "label": "Number of blocks",
-      "type": "number",
-      "placeholder": "12",
-      "default": "",
-      "showIf": {
-        "field": "specimenType",
-        "not": "Endocervical curettings"
-      }
-    },
-    {
-      "id": "eccContent",
-      "label": "Curettings contain",
-      "type": "select",
-      "options": [
-        "Endocervical mucosa and mucus",
-        "Endocervical mucosa with detached squamous fragments",
-        "Mucus and blood only (inadequate)"
-      ],
-      "default": "Endocervical mucosa and mucus",
-      "showIf": {
-        "field": "specimenType",
-        "is": "Endocervical curettings"
-      }
-    },
-    {
-      "id": "squamous",
-      "label": "Squamous epithelium",
-      "type": "select",
-      "options": [
-        "Negative",
-        "LSIL (CIN I)",
-        "HSIL (CIN II)",
-        "HSIL (CIN III)",
-        "Squamous cell carcinoma"
-      ],
-      "default": "Negative"
-    },
-    {
-      "id": "positions",
-      "label": "Lesion position(s)",
-      "type": "text",
-      "placeholder": "4, 7 and 8 o'clock",
-      "default": "",
-      "showIf": {
-        "field": "squamous",
-        "not": "Negative"
-      }
-    },
-    {
-      "id": "glandInvolvement",
-      "label": "Endocervical gland involvement",
-      "type": "select",
-      "options": [
-        "Not involved",
-        "Involved"
-      ],
-      "default": "Not involved",
-      "showIf": {
-        "field": "squamous",
-        "is": [
-          "HSIL (CIN II)",
-          "HSIL (CIN III)"
-        ]
-      }
-    },
-    {
-      "id": "lsilBackground",
-      "label": "Background LSIL / koilocytosis",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present"
-      ],
-      "default": "Absent",
-      "showIf": {
-        "field": "squamous",
-        "not": [
-          "Negative",
-          "LSIL (CIN I)"
-        ]
-      }
-    },
-    {
-      "id": "koilocytosis",
-      "label": "Koilocytosis",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present"
-      ],
-      "default": "Absent",
-      "showIf": {
-        "field": "squamous",
-        "is": [
-          "Negative",
-          "LSIL (CIN I)"
-        ]
-      }
-    },
-    {
-      "id": "p16",
-      "label": "p16",
-      "type": "select",
-      "options": [
-        "Not performed",
-        "Block positive",
-        "Negative",
-        "Patchy / focal"
-      ],
-      "default": "Not performed",
-      "showIf": {
-        "field": "squamous",
-        "not": "Negative"
-      }
-    },
-    {
-      "id": "sccType",
-      "label": "SCC type",
-      "type": "select",
-      "options": [
-        "Non-keratinising",
-        "Keratinising",
-        "Basaloid"
-      ],
-      "default": "Non-keratinising",
-      "showIf": {
-        "field": "squamous",
-        "is": "Squamous cell carcinoma"
-      }
-    },
-    {
-      "id": "invasionDepth",
-      "label": "Depth of invasion (mm)",
-      "type": "number",
-      "placeholder": "2",
-      "default": "",
-      "showIf": {
-        "field": "squamous",
-        "is": "Squamous cell carcinoma"
-      }
-    },
-    {
-      "id": "horizontalExtent",
-      "label": "Horizontal extent (mm)",
-      "type": "number",
-      "placeholder": "5",
-      "default": "",
-      "showIf": {
-        "field": "squamous",
-        "is": "Squamous cell carcinoma"
-      }
-    },
-    {
-      "id": "lvi",
-      "label": "Lymphovascular invasion",
-      "type": "select",
-      "options": [
-        "Not identified",
-        "Present"
-      ],
-      "default": "Not identified",
-      "showIf": {
-        "field": "squamous",
-        "is": "Squamous cell carcinoma"
-      }
-    },
-    {
-      "id": "glandular",
-      "label": "Glandular epithelium",
-      "type": "select",
-      "options": [
-        "Negative",
-        "Adenocarcinoma in situ, HPV-associated",
-        "Adenocarcinoma in situ, HPV-independent (gastric type)",
-        "Adenocarcinoma, HPV-associated",
-        "Adenocarcinoma, HPV-independent (gastric type)"
-      ],
-      "default": "Negative"
-    },
-    {
-      "id": "ectoMargin",
-      "label": "Ectocervical margin",
-      "type": "select",
-      "options": [
-        "Clear",
-        "Involved by HSIL",
-        "Involved by LSIL",
-        "Not assessable (denuded / cautery artefact)"
-      ],
-      "default": "Clear",
-      "showIf": {
-        "field": "specimenType",
-        "not": "Endocervical curettings"
-      }
-    },
-    {
-      "id": "ectoPositions",
-      "label": "Ectocervical margin position(s)",
-      "type": "text",
-      "placeholder": "8 o'clock",
-      "default": "",
-      "showIf": {
-        "field": "ectoMargin",
-        "is": [
-          "Involved by HSIL",
-          "Involved by LSIL"
-        ]
-      }
-    },
-    {
-      "id": "endoMargin",
-      "label": "Endocervical margin",
-      "type": "select",
-      "options": [
-        "Clear",
-        "Involved by HSIL",
-        "Involved by LSIL",
-        "Not assessable (denuded / cautery artefact)",
-        "Involved by AIS"
-      ],
-      "default": "Clear",
-      "showIf": {
-        "field": "specimenType",
-        "not": "Endocervical curettings"
-      }
-    },
-    {
-      "id": "endoPositions",
-      "label": "Endocervical margin position(s)",
-      "type": "text",
-      "placeholder": "10 and 2 o'clock",
-      "default": "",
-      "showIf": {
-        "field": "endoMargin",
-        "is": [
-          "Involved by HSIL",
-          "Involved by LSIL",
-          "Involved by AIS"
-        ]
-      }
-    },
-    {
-      "id": "deepMargin",
-      "label": "Deep stromal margin",
-      "type": "select",
-      "options": [
-        "Clear",
-        "Involved",
-        "Not assessable (cautery artefact)"
-      ],
-      "default": "Clear",
-      "showIf": {
-        "field": "specimenType",
-        "not": "Endocervical curettings"
-      }
-    },
-    {
-      "id": "clearance",
-      "label": "Closest clearance (mm)",
-      "type": "number",
-      "placeholder": "1.5",
-      "default": "",
-      "showIf": {
-        "field": "specimenType",
-        "not": "Endocervical curettings"
-      }
-    },
-    {
-      "id": "clearanceMargin",
-      "label": "Closest margin",
-      "type": "select",
-      "options": [
-        "Endocervical",
-        "Ectocervical",
-        "Deep stromal"
-      ],
-      "default": "Endocervical",
-      "showIf": {
-        "field": "specimenType",
-        "not": "Endocervical curettings"
-      }
-    },
-    {
-      "id": "artefact",
-      "label": "Artefact",
-      "type": "select",
-      "options": [
-        "None significant",
-        "Cautery artefact",
-        "Denudation of the epithelium",
-        "Denudation and cautery artefact"
-      ],
-      "default": "None significant",
-      "showIf": {
-        "field": "specimenType",
-        "not": "Endocervical curettings"
-      }
-    },
-    {
-      "id": "benign",
-      "label": "Other findings",
-      "type": "select",
-      "options": [
-        "None",
-        "Chronic cervicitis",
-        "Nabothian cysts",
-        "Immature squamous metaplasia",
-        "Endocervical polyp",
-        "Tuboendometrioid metaplasia",
-        "Endometriosis"
-      ],
-      "default": "None"
-    },
-    {
-      "id": "additionalNotes",
-      "label": "Additional microscopy",
-      "type": "textarea",
-      "placeholder": "",
-      "default": ""
-    }
-  ],
-  "snippets": [
-    {
-      "id": "leep_margin_followup",
-      "label": "Involved margin — follow-up",
-      "auto": {
-        "field": "endoMargin",
-        "is": [
-          "Involved by HSIL",
-          "Involved by AIS"
-        ]
-      },
-      "text": "The endocervical margin is involved. Follow-up with cytology and HPV testing (test of cure) or further excision, in line with local guidelines and the clinical context, is suggested."
-    },
-    {
-      "id": "leep_artefact",
-      "label": "Margin assessment limited",
-      "auto": {
-        "field": "artefact",
-        "is": [
-          "Cautery artefact",
-          "Denudation of the epithelium",
-          "Denudation and cautery artefact"
-        ]
-      },
-      "text": "Assessment of the resection margins is limited by denudation of the epithelium and cautery artefact in {parts}; involvement cannot be entirely excluded."
-    }
-  ],
-  "example": {
-    "caseTitle": "",
-    "cytology": "HSIL (CIN III) on biopsy",
-    "options": {
-      "includeHeader": false,
-      "summary": true
-    },
-    "parts": [
-      {
-        "label": "A",
-        "values": {
-          "specimenType": "LEEP",
-          "orientation": "cut at 12 o'clock",
-          "blocks": "12",
-          "eccContent": "Endocervical mucosa and mucus",
-          "squamous": "HSIL (CIN III)",
-          "positions": "4, 7 and 8 o'clock",
-          "glandInvolvement": "Involved",
-          "lsilBackground": "Present",
-          "koilocytosis": "Absent",
-          "p16": "Block positive",
-          "sccType": "Non-keratinising",
-          "invasionDepth": "",
-          "horizontalExtent": "",
-          "lvi": "Not identified",
-          "glandular": "Negative",
-          "ectoMargin": "Involved by HSIL",
-          "ectoPositions": "8 o'clock",
-          "endoMargin": "Clear",
-          "endoPositions": "",
-          "deepMargin": "Clear",
-          "clearance": "",
-          "clearanceMargin": "Endocervical",
-          "artefact": "None significant",
-          "benign": "Chronic cervicitis",
-          "additionalNotes": ""
-        }
-      },
-      {
-        "label": "B",
-        "values": {
-          "specimenType": "Endocervical curettings",
-          "orientation": "",
-          "blocks": "",
-          "eccContent": "Endocervical mucosa and mucus",
-          "squamous": "Negative",
-          "positions": "",
-          "glandInvolvement": "Not involved",
-          "lsilBackground": "Absent",
-          "koilocytosis": "Absent",
-          "p16": "Not performed",
-          "sccType": "Non-keratinising",
-          "invasionDepth": "",
-          "horizontalExtent": "",
-          "lvi": "Not identified",
-          "glandular": "Negative",
-          "ectoMargin": "Clear",
-          "ectoPositions": "",
-          "endoMargin": "Clear",
-          "endoPositions": "",
-          "deepMargin": "Clear",
-          "clearance": "",
-          "clearanceMargin": "Endocervical",
-          "artefact": "None significant",
-          "benign": "None",
-          "additionalNotes": ""
-        }
-      }
-    ]
+  "clinical": [
+   "CIN",
+   "HSIL",
+   "LSIL",
+   "HPV",
+   "AIS",
+   "glandular"
+  ]
+ },
+ "specimenNoun": "LEEP",
+ "maxParts": 3,
+ "defaultParts": 1,
+ "generator": "leep",
+ "style": {
+  "british": true
+ },
+ "caseFields": [
+  {
+   "id": "cytology",
+   "label": "Referral cytology / HPV / biopsy",
+   "placeholder": "HSIL on biopsy; HPV 16 positive"
   }
+ ],
+ "options": [
+  {
+   "$use": "includeHeader"
+  },
+  {
+   "id": "summary",
+   "label": "Case summary line after the diagnosis (lesion, margins, curettings)",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "partDefaults": [
+  {
+   "specimenType": "LEEP"
+  },
+  {
+   "specimenType": "Top-hat endocervical excision"
+  },
+  {
+   "specimenType": "Endocervical curettings"
+  }
+ ],
+ "fields": [
+  {
+   "id": "specimenType",
+   "label": "Specimen",
+   "type": "select",
+   "options": [
+    "LEEP",
+    "Cone biopsy",
+    "Top-hat endocervical excision",
+    "Endocervical curettings"
+   ],
+   "default": "LEEP"
+  },
+  {
+   "id": "orientation",
+   "label": "Orientation",
+   "type": "text",
+   "placeholder": "cut at 12 o'clock",
+   "default": "",
+   "showIf": {
+    "field": "specimenType",
+    "not": "Endocervical curettings"
+   }
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "type": "number",
+   "placeholder": "12",
+   "default": "",
+   "showIf": {
+    "field": "specimenType",
+    "not": "Endocervical curettings"
+   }
+  },
+  {
+   "id": "eccContent",
+   "label": "Curettings contain",
+   "type": "select",
+   "options": [
+    "Endocervical mucosa and mucus",
+    "Endocervical mucosa with detached squamous fragments",
+    "Mucus and blood only (inadequate)"
+   ],
+   "default": "Endocervical mucosa and mucus",
+   "showIf": {
+    "field": "specimenType",
+    "is": "Endocervical curettings"
+   }
+  },
+  {
+   "id": "squamous",
+   "label": "Squamous epithelium",
+   "type": "select",
+   "options": [
+    "Negative",
+    "LSIL (CIN I)",
+    "HSIL (CIN II)",
+    "HSIL (CIN III)",
+    "Squamous cell carcinoma"
+   ],
+   "default": "Negative"
+  },
+  {
+   "id": "positions",
+   "label": "Lesion position(s)",
+   "type": "text",
+   "placeholder": "4, 7 and 8 o'clock",
+   "default": "",
+   "showIf": {
+    "field": "squamous",
+    "not": "Negative"
+   }
+  },
+  {
+   "id": "glandInvolvement",
+   "label": "Endocervical gland involvement",
+   "type": "select",
+   "options": [
+    "Not involved",
+    "Involved"
+   ],
+   "default": "Not involved",
+   "showIf": {
+    "field": "squamous",
+    "is": [
+     "HSIL (CIN II)",
+     "HSIL (CIN III)"
+    ]
+   }
+  },
+  {
+   "id": "lsilBackground",
+   "label": "Background LSIL / koilocytosis",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "squamous",
+    "not": [
+     "Negative",
+     "LSIL (CIN I)"
+    ]
+   }
+  },
+  {
+   "id": "koilocytosis",
+   "label": "Koilocytosis",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "squamous",
+    "is": [
+     "Negative",
+     "LSIL (CIN I)"
+    ]
+   }
+  },
+  {
+   "id": "p16",
+   "label": "p16",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "Block positive",
+    "Negative",
+    "Patchy / focal"
+   ],
+   "default": "Not performed",
+   "showIf": {
+    "field": "squamous",
+    "not": "Negative"
+   }
+  },
+  {
+   "id": "sccType",
+   "label": "SCC type",
+   "type": "select",
+   "options": [
+    "Non-keratinising",
+    "Keratinising",
+    "Basaloid"
+   ],
+   "default": "Non-keratinising",
+   "showIf": {
+    "field": "squamous",
+    "is": "Squamous cell carcinoma"
+   }
+  },
+  {
+   "id": "invasionDepth",
+   "label": "Depth of invasion (mm)",
+   "type": "number",
+   "placeholder": "2",
+   "default": "",
+   "showIf": {
+    "field": "squamous",
+    "is": "Squamous cell carcinoma"
+   }
+  },
+  {
+   "id": "horizontalExtent",
+   "label": "Horizontal extent (mm)",
+   "type": "number",
+   "placeholder": "5",
+   "default": "",
+   "showIf": {
+    "field": "squamous",
+    "is": "Squamous cell carcinoma"
+   }
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "type": "select",
+   "options": [
+    "Not identified",
+    "Present"
+   ],
+   "default": "Not identified",
+   "showIf": {
+    "field": "squamous",
+    "is": "Squamous cell carcinoma"
+   }
+  },
+  {
+   "id": "glandular",
+   "label": "Glandular epithelium",
+   "type": "select",
+   "options": [
+    "Negative",
+    "Adenocarcinoma in situ, HPV-associated",
+    "Adenocarcinoma in situ, HPV-independent (gastric type)",
+    "Adenocarcinoma, HPV-associated",
+    "Adenocarcinoma, HPV-independent (gastric type)"
+   ],
+   "default": "Negative"
+  },
+  {
+   "id": "ectoMargin",
+   "label": "Ectocervical margin",
+   "type": "select",
+   "options": [
+    "Clear",
+    "Involved by HSIL",
+    "Involved by LSIL",
+    "Not assessable (denuded / cautery artefact)"
+   ],
+   "default": "Clear",
+   "showIf": {
+    "field": "specimenType",
+    "not": "Endocervical curettings"
+   }
+  },
+  {
+   "id": "ectoPositions",
+   "label": "Ectocervical margin position(s)",
+   "type": "text",
+   "placeholder": "8 o'clock",
+   "default": "",
+   "showIf": {
+    "field": "ectoMargin",
+    "is": [
+     "Involved by HSIL",
+     "Involved by LSIL"
+    ]
+   }
+  },
+  {
+   "id": "endoMargin",
+   "label": "Endocervical margin",
+   "type": "select",
+   "options": [
+    "Clear",
+    "Involved by HSIL",
+    "Involved by LSIL",
+    "Not assessable (denuded / cautery artefact)",
+    "Involved by AIS"
+   ],
+   "default": "Clear",
+   "showIf": {
+    "field": "specimenType",
+    "not": "Endocervical curettings"
+   }
+  },
+  {
+   "id": "endoPositions",
+   "label": "Endocervical margin position(s)",
+   "type": "text",
+   "placeholder": "10 and 2 o'clock",
+   "default": "",
+   "showIf": {
+    "field": "endoMargin",
+    "is": [
+     "Involved by HSIL",
+     "Involved by LSIL",
+     "Involved by AIS"
+    ]
+   }
+  },
+  {
+   "id": "deepMargin",
+   "label": "Deep stromal margin",
+   "type": "select",
+   "options": [
+    "Clear",
+    "Involved",
+    "Not assessable (cautery artefact)"
+   ],
+   "default": "Clear",
+   "showIf": {
+    "field": "specimenType",
+    "not": "Endocervical curettings"
+   }
+  },
+  {
+   "id": "clearance",
+   "label": "Closest clearance (mm)",
+   "type": "number",
+   "placeholder": "1.5",
+   "default": "",
+   "showIf": {
+    "field": "specimenType",
+    "not": "Endocervical curettings"
+   }
+  },
+  {
+   "id": "clearanceMargin",
+   "label": "Closest margin",
+   "type": "select",
+   "options": [
+    "Endocervical",
+    "Ectocervical",
+    "Deep stromal"
+   ],
+   "default": "Endocervical",
+   "showIf": {
+    "field": "specimenType",
+    "not": "Endocervical curettings"
+   }
+  },
+  {
+   "id": "artefact",
+   "label": "Artefact",
+   "type": "select",
+   "options": [
+    "None significant",
+    "Cautery artefact",
+    "Denudation of the epithelium",
+    "Denudation and cautery artefact"
+   ],
+   "default": "None significant",
+   "showIf": {
+    "field": "specimenType",
+    "not": "Endocervical curettings"
+   }
+  },
+  {
+   "id": "benign",
+   "label": "Other findings",
+   "type": "select",
+   "options": [
+    "None",
+    "Chronic cervicitis",
+    "Nabothian cysts",
+    "Immature squamous metaplasia",
+    "Endocervical polyp",
+    "Tuboendometrioid metaplasia",
+    "Endometriosis"
+   ],
+   "default": "None"
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "leep_margin_followup",
+   "label": "Involved margin — follow-up",
+   "auto": {
+    "field": "endoMargin",
+    "is": [
+     "Involved by HSIL",
+     "Involved by AIS"
+    ]
+   },
+   "text": "The endocervical margin is involved. Follow-up with cytology and HPV testing (test of cure) or further excision, in line with local guidelines and the clinical context, is suggested."
+  },
+  {
+   "id": "leep_artefact",
+   "label": "Margin assessment limited",
+   "auto": {
+    "field": "artefact",
+    "is": [
+     "Cautery artefact",
+     "Denudation of the epithelium",
+     "Denudation and cautery artefact"
+    ]
+   },
+   "text": "Assessment of the resection margins is limited by denudation of the epithelium and cautery artefact in {parts}; involvement cannot be entirely excluded."
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "cytology": "HSIL (CIN III) on biopsy",
+  "options": {
+   "includeHeader": false,
+   "summary": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenType": "LEEP",
+     "orientation": "cut at 12 o'clock",
+     "blocks": "12",
+     "eccContent": "Endocervical mucosa and mucus",
+     "squamous": "HSIL (CIN III)",
+     "positions": "4, 7 and 8 o'clock",
+     "glandInvolvement": "Involved",
+     "lsilBackground": "Present",
+     "koilocytosis": "Absent",
+     "p16": "Block positive",
+     "sccType": "Non-keratinising",
+     "invasionDepth": "",
+     "horizontalExtent": "",
+     "lvi": "Not identified",
+     "glandular": "Negative",
+     "ectoMargin": "Involved by HSIL",
+     "ectoPositions": "8 o'clock",
+     "endoMargin": "Clear",
+     "endoPositions": "",
+     "deepMargin": "Clear",
+     "clearance": "",
+     "clearanceMargin": "Endocervical",
+     "artefact": "None significant",
+     "benign": "Chronic cervicitis",
+     "additionalNotes": ""
+    }
+   },
+   {
+    "label": "B",
+    "values": {
+     "specimenType": "Endocervical curettings",
+     "orientation": "",
+     "blocks": "",
+     "eccContent": "Endocervical mucosa and mucus",
+     "squamous": "Negative",
+     "positions": "",
+     "glandInvolvement": "Not involved",
+     "lsilBackground": "Absent",
+     "koilocytosis": "Absent",
+     "p16": "Not performed",
+     "sccType": "Non-keratinising",
+     "invasionDepth": "",
+     "horizontalExtent": "",
+     "lvi": "Not identified",
+     "glandular": "Negative",
+     "ectoMargin": "Clear",
+     "ectoPositions": "",
+     "endoMargin": "Clear",
+     "endoPositions": "",
+     "deepMargin": "Clear",
+     "clearance": "",
+     "clearanceMargin": "Endocervical",
+     "artefact": "None significant",
+     "benign": "None",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
 }

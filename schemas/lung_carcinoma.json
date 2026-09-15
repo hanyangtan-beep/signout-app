@@ -1,954 +1,950 @@
 {
-  "id": "lung_carcinoma",
-  "version": "2026.09",
-  "name": "Lung carcinoma resection",
-  "shortName": "Lung · cancer resection",
-  "label": "Lung Ca",
-  "organ": "LUNG",
-  "system": "Thoracic",
-  "kind": "cancer resection",
-  "layout": {
-    "pack": true,
-    "macroGroups": [
-      "Specimen and tumour"
-    ],
-    "macroFields": [
-      "specimenName"
-    ]
-  },
-  "rank": 44,
-  "aliases": [
-    "lung",
-    "pulmonary",
-    "lobectomy",
-    "wedge",
-    "segmentectomy",
-    "pneumonectomy",
-    "completion lobectomy",
-    "adenocarcinoma",
-    "squamous cell carcinoma",
-    "non-small cell",
-    "NSCLC",
-    "small cell",
-    "carcinoid",
-    "neuroendocrine",
-    "synoptic",
-    "CAP",
-    "AJCC",
-    "IASLC",
-    "STAS"
+ "id": "lung_carcinoma",
+ "version": "2026.09",
+ "name": "Lung carcinoma resection",
+ "shortName": "Lung · cancer resection",
+ "label": "Lung Ca",
+ "organ": "LUNG",
+ "system": "Thoracic",
+ "kind": "cancer resection",
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen and tumour"
   ],
-  "match": {
-    "site": [
-      "lung",
-      "pulmonary",
-      "lobe",
-      "lingula",
-      "bronchus"
-    ],
-    "procedure": [
-      "lobectomy",
-      "wedge",
-      "segmentectomy",
-      "pneumonectomy",
-      "bilobectomy",
-      "completion lobectomy",
-      "sleeve"
-    ],
-    "clinical": [
-      "lung ca",
-      "lung cancer",
-      "lung carcinoma",
-      "lung mass",
-      "lung nodule",
-      "pulmonary nodule",
-      "NSCLC",
-      "adenocarcinoma",
-      "squamous cell carcinoma",
-      "carcinoid",
-      "small cell",
-      "ground-glass",
-      "GGO",
-      "part-solid",
-      "VATS",
-      "EBUS",
-      "PET"
-    ]
-  },
-  "macroExtract": {
-    "weight": {
-      "concept": "weight",
-      "unit": "g"
-    },
-    "specimenDims": {
-      "concept": "specimenDims",
-      "unit": "mm"
-    },
-    "tumourSizeMm": {
-      "concept": "tumourSizeMax",
-      "unit": "mm"
-    },
-    "tumourDims": {
-      "concept": "tumourDims",
-      "unit": "mm"
-    }
-  },
-  "specimenNoun": "resection",
-  "maxParts": 6,
-  "defaultParts": 1,
-  "generator": "lung_carcinoma",
-  "style": {
-    "british": true
-  },
-  "source": {
-    "template": "QMH Cancer Reporting Template - Thorax-Lung (Carcinomas of the lung)",
-    "url": "https://awiloqmh.github.io/CancerReportingTemplate/Thorax-Lung.html",
-    "capProtocol": "CAP Lung, Resection 5.1.0.0 (Sep-2025), as on the QMH page (last updated 06-Oct-2025)",
-    "staging": "AJCC 9th edition pTNM (N2a/N2b, M1c1/M1c2) printed only with the printPTNM option, stamped (AJCC 9th edition)",
-    "stagingProtocol": "lung",
-    "grading": "IASLC 2020 three-tier grade for invasive non-mucinous adenocarcinoma (Moreira et al., J Thorac Oncol 2020, https://pmc.ncbi.nlm.nih.gov/articles/PMC8362286/); page G1-G4 for other non-small cell carcinomas; Not applicable for in situ, minimally invasive and neuroendocrine tumours",
-    "savedPage": "docs/reference/Thorax-Lung.html",
-    "houseAdditions": [
-      "Specimen and tumour section (procedure, laterality, lobes, sizes, invasive size, separate nodules, pleural surface, margin distances, residual tumour)",
-      "cutSurface",
-      "otherParts",
-      "station-table lymph nodes",
-      "prior specimen case fields (type-only)",
-      "IASLC grade",
-      "PD-L1 / molecular typed only"
-    ]
-  },
-  "partDefaults": [],
-  "caseFields": [
-    {
-      "id": "priorAccession",
-      "label": "Related prior specimen: accession (e.g. S26-01234)",
-      "placeholder": "S26-01234",
-      "help": "Type-only in this version; the Sheet lookup comes later. Printed in the completion-resection comment."
-    },
-    {
-      "id": "priorDate",
-      "label": "Prior specimen: date",
-      "placeholder": "03/09/2026"
-    },
-    {
-      "id": "priorProcedure",
-      "label": "Prior specimen: procedure",
-      "placeholder": "wedge resection"
-    },
-    {
-      "id": "priorType",
-      "label": "Prior specimen: histologic type",
-      "placeholder": "invasive adenocarcinoma, acinar predominant"
-    },
-    {
-      "id": "priorSizeMm",
-      "label": "Prior specimen: invasive size (mm)",
-      "placeholder": "8"
-    },
-    {
-      "id": "priorPT",
-      "label": "Prior specimen: pT",
-      "placeholder": "pT1a",
-      "help": "Combined with this specimen: the higher category governs; the origin is printed with the pTNM."
-    },
-    {
-      "id": "priorPN",
-      "label": "Prior specimen: pN",
-      "placeholder": "pNX"
-    }
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "rank": 44,
+ "aliases": [
+  "lung",
+  "pulmonary",
+  "lobectomy",
+  "wedge",
+  "segmentectomy",
+  "pneumonectomy",
+  "completion lobectomy",
+  "adenocarcinoma",
+  "squamous cell carcinoma",
+  "non-small cell",
+  "NSCLC",
+  "small cell",
+  "carcinoid",
+  "neuroendocrine",
+  "synoptic",
+  "CAP",
+  "AJCC",
+  "IASLC",
+  "STAS"
+ ],
+ "match": {
+  "site": [
+   "lung",
+   "pulmonary",
+   "lobe",
+   "lingula",
+   "bronchus"
   ],
-  "options": [
-    {
-      "id": "includeHeader",
-      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)",
-      "type": "checkbox",
-      "default": false
-    },
-    {
-      "id": "macro",
-      "label": "Generate the macroscopic description and block key",
-      "type": "checkbox",
-      "default": true
-    },
-    {
-      "id": "printPTNM",
-      "label": "Print the AJCC 9th edition pTNM block",
-      "type": "checkbox",
-      "default": false
-    }
+  "procedure": [
+   "lobectomy",
+   "wedge",
+   "segmentectomy",
+   "pneumonectomy",
+   "bilobectomy",
+   "completion lobectomy",
+   "sleeve"
   ],
-  "fields": [
-    {
-      "id": "specimenName",
-      "label": "Specimen (as received; blank derives it from the procedure)",
-      "type": "text",
-      "group": null
-    },
-    {
-      "id": "procedure",
-      "label": "Procedure",
-      "type": "select",
-      "group": "Specimen and tumour",
-      "options": [
-        "Wedge resection",
-        "Segmentectomy",
-        "Lobectomy",
-        "Bilobectomy",
-        "Pneumonectomy",
-        "Completion lobectomy",
-        "Sleeve lobectomy",
-        "Other (specify)"
-      ],
-      "default": "Lobectomy"
-    },
-    {
-      "id": "procedureOther",
-      "label": "Other procedure (specify)",
-      "type": "text",
-      "group": "Specimen and tumour",
-      "showIf": {
-        "field": "procedure",
-        "is": "Other (specify)"
-      }
-    },
-    {
-      "id": "laterality",
-      "label": "Laterality",
-      "type": "select",
-      "group": "Specimen and tumour",
-      "options": [
-        "Right",
-        "Left",
-        "Not specified"
-      ],
-      "default": "Right"
-    },
-    {
-      "id": "lobes",
-      "label": "Lobe(s)",
-      "type": "multiselect",
-      "group": "Specimen and tumour",
-      "options": [
-        "Upper lobe",
-        "Middle lobe",
-        "Lower lobe",
-        "Lingula",
-        "Whole lung"
-      ],
-      "default": [
-        "Upper lobe"
-      ]
-    },
-    {
-      "id": "specimenDims",
-      "label": "Specimen dimensions (mm)",
-      "type": "text",
-      "group": "Specimen and tumour"
-    },
-    {
-      "id": "weight",
-      "label": "Specimen weight (g)",
-      "type": "number",
-      "group": "Specimen and tumour"
-    },
-    {
-      "id": "tumourSite",
-      "label": "Tumour site",
-      "type": "select",
-      "group": "Specimen and tumour",
-      "options": [
-        "Peripheral",
-        "Central (involving a lobar or segmental bronchus)",
-        "Central (involving the main bronchus)",
-        "Not specified"
-      ],
-      "default": "Peripheral"
-    },
-    {
-      "id": "tumourSizeMm",
-      "label": "Tumour size, greatest dimension (mm; total, including any lepidic component)",
-      "type": "number",
-      "group": "Specimen and tumour"
-    },
-    {
-      "id": "tumourDims",
-      "label": "Tumour dimensions (mm, e.g. 23 x 20 x 18)",
-      "type": "text",
-      "group": "Specimen and tumour"
-    },
-    {
-      "id": "invasiveSizeMm",
-      "label": "Invasive size (mm; lepidic component excluded — blank = same as total)",
-      "type": "number",
-      "group": "Specimen and tumour"
-    },
-    {
-      "id": "sizeCannot",
-      "label": "Tumour size cannot be determined (explain)",
-      "type": "text",
-      "group": "Specimen and tumour"
-    },
-    {
-      "id": "separateNodules",
-      "label": "Separate tumour nodule(s)",
-      "type": "select",
-      "group": "Specimen and tumour",
-      "options": [
-        "Not identified",
-        "Same lobe",
-        "Different ipsilateral lobe",
-        "Contralateral lobe",
-        "Cannot be determined"
-      ],
-      "default": "Not identified"
-    },
-    {
-      "id": "separateNodulesDetail",
-      "label": "Separate nodules: number and sizes (mm)",
-      "type": "text",
-      "group": "Specimen and tumour",
-      "showIf": {
-        "field": "separateNodules",
-        "is": [
-          "Same lobe",
-          "Different ipsilateral lobe",
-          "Contralateral lobe"
-        ]
-      }
-    },
-    {
-      "id": "pleuraGross",
-      "label": "Pleural surface (gross)",
-      "type": "select",
-      "group": "Specimen and tumour",
-      "options": [
-        "Unremarkable",
-        "Puckered",
-        "Involved grossly",
-        "Not applicable"
-      ],
-      "default": "Unremarkable"
-    },
-    {
-      "id": "bronchialMarginMm",
-      "label": "Bronchial margin, tumour distance (mm)",
-      "type": "number",
-      "group": "Specimen and tumour"
-    },
-    {
-      "id": "parenchymalMarginMm",
-      "label": "Parenchymal (staple-line) margin, tumour distance (mm)",
-      "type": "number",
-      "group": "Specimen and tumour"
-    },
-    {
-      "id": "cutSurface",
-      "label": "Cut surface",
-      "type": "multiselect",
-      "group": "Specimen and tumour",
-      "options": [
-        "Firm",
-        "Tan-white",
-        "Grey-white",
-        "Ill-defined",
-        "Well-circumscribed",
-        "Spiculated",
-        "Necrosis",
-        "Haemorrhage",
-        "Anthracotic pigment",
-        "Cavitation",
-        "Mucoid"
-      ],
-      "default": [
-        "Firm",
-        "Tan-white"
-      ]
-    },
-    {
-      "id": "residualTumour",
-      "label": "Residual tumour (completion resection after a prior excision)",
-      "type": "select",
-      "group": "Specimen and tumour",
-      "options": [
-        "Not applicable",
-        "Not identified",
-        "Present"
-      ],
-      "default": "Not applicable"
-    },
-    {
-      "id": "residualTumourMm",
-      "label": "Residual tumour size (mm)",
-      "type": "number",
-      "group": "Specimen and tumour",
-      "showIf": {
-        "field": "residualTumour",
-        "is": "Present"
-      }
-    },
-    {
-      "id": "otherMacro",
-      "label": "Other macroscopic findings",
-      "type": "text",
-      "group": "Specimen and tumour"
-    },
-    {
-      "id": "blockKeyText",
-      "label": "Block key (one entry per line, e.g. \"1-4 Tumour with closest pleura\")",
-      "type": "textarea",
-      "group": "Specimen and tumour"
-    },
-    {
-      "id": "otherParts",
-      "label": "Other parts of this case (one per line: letter) specimen - finding; finding = metastatic, 1/1 / negative, 0/2 / involved / negative)",
-      "type": "textarea",
-      "group": "Specimen and tumour",
-      "placeholder": "C) Lymph node, station 7, excision - metastatic, 1/1\nD) Lymph node, station 4R, excision - negative, 0/2"
-    },
-    {
-      "id": "microDescription",
-      "label": "Tumour histology (free text; blank derives \"Sections show …\" from the fields)",
-      "type": "textarea",
-      "group": "Histology and immunohistochemistry"
-    },
-    {
-      "id": "ihc",
-      "label": "Immunohistochemistry (e.g. TTF-1 positive, napsin A positive, p40 negative)",
-      "type": "text",
-      "group": "Histology and immunohistochemistry"
-    },
-    {
-      "id": "histType",
-      "label": "Histologic type (WHO 5th edition, as on the QMH page)",
-      "type": "select",
-      "group": "Histology and immunohistochemistry",
-      "options": [
-        "Adenocarcinoma in situ (AIS), non-mucinous",
-        "Adenocarcinoma in situ (AIS), mucinous",
-        "Minimally invasive adenocarcinoma, non-mucinous",
-        "Minimally invasive adenocarcinoma, mucinous",
-        "Invasive adenocarcinoma (non-mucinous; predominant pattern from the percentages)",
-        "Invasive mucinous adenocarcinoma",
-        "Mixed invasive mucinous and non-mucinous adenocarcinoma",
-        "Colloid adenocarcinoma",
-        "Fetal adenocarcinoma",
-        "Enteric-type adenocarcinoma",
-        "Squamous cell carcinoma in situ (SCIS)",
-        "Invasive squamous cell carcinoma, keratinising",
-        "Invasive squamous cell carcinoma, non-keratinising",
-        "Invasive squamous cell carcinoma, basaloid",
-        "Lymphoepithelial carcinoma",
-        "Large cell carcinoma",
-        "Adenosquamous carcinoma",
-        "Pleomorphic carcinoma",
-        "Spindle cell carcinoma",
-        "Giant cell carcinoma",
-        "Carcinosarcoma",
-        "Pulmonary blastoma",
-        "NUT carcinoma",
-        "Thoracic SMARCA4-deficient undifferentiated tumour",
-        "Adenoid cystic carcinoma",
-        "Epithelial-myoepithelial carcinoma",
-        "Mucoepidermoid carcinoma",
-        "Typical carcinoid / neuroendocrine tumour, grade 1",
-        "Atypical carcinoid / neuroendocrine tumour, grade 2",
-        "Carcinoid tumour, NOS / neuroendocrine tumour, NOS",
-        "Small cell carcinoma",
-        "Combined small cell carcinoma (specify the non-small cell component)",
-        "Large cell neuroendocrine carcinoma",
-        "Combined large cell neuroendocrine carcinoma (specify the other component)",
-        "Carcinoma, type cannot be determined",
-        "Non-small cell carcinoma, subtype cannot be determined",
-        "Other histologic type not listed (specify)"
-      ],
-      "default": "Invasive adenocarcinoma (non-mucinous; predominant pattern from the percentages)"
-    },
-    {
-      "id": "histTypeDetail",
-      "label": "Histologic type detail (component / specify)",
-      "type": "text",
-      "group": "Histology and immunohistochemistry",
-      "showIf": {
-        "field": "histType",
-        "is": [
-          "Combined small cell carcinoma (specify the non-small cell component)",
-          "Combined large cell neuroendocrine carcinoma (specify the other component)",
-          "Other histologic type not listed (specify)",
-          "Mixed invasive mucinous and non-mucinous adenocarcinoma",
-          "Adenosquamous carcinoma"
-        ]
-      }
-    },
-    {
-      "id": "patterns",
-      "label": "Adenocarcinoma patterns with % (e.g. acinar 60, papillary 25, solid 15; must sum to 100)",
-      "type": "text",
-      "group": "Histology and immunohistochemistry",
-      "showIf": {
-        "field": "histType",
-        "is": [
-          "Invasive adenocarcinoma (non-mucinous; predominant pattern from the percentages)",
-          "Minimally invasive adenocarcinoma, non-mucinous",
-          "Mixed invasive mucinous and non-mucinous adenocarcinoma"
-        ]
-      },
-      "placeholder": "acinar 60, papillary 25, solid 15"
-    },
-    {
-      "id": "grade",
-      "label": "Histologic grade",
-      "type": "select",
-      "group": "Histology and immunohistochemistry",
-      "options": [
-        "Derive (IASLC 2020 for invasive non-mucinous adenocarcinoma; Not applicable for in situ / minimally invasive / neuroendocrine)",
-        "G1: Well differentiated",
-        "G2: Moderately differentiated",
-        "G3: Poorly differentiated",
-        "G4: Undifferentiated",
-        "GX: Cannot be assessed",
-        "Cannot be determined (explain)",
-        "Not applicable",
-        "Other (specify)"
-      ],
-      "default": "Derive (IASLC 2020 for invasive non-mucinous adenocarcinoma; Not applicable for in situ / minimally invasive / neuroendocrine)"
-    },
-    {
-      "id": "gradeDetail",
-      "label": "Grade detail (explain / specify)",
-      "type": "text",
-      "group": "Histology and immunohistochemistry",
-      "showIf": {
-        "field": "grade",
-        "is": [
-          "Cannot be determined (explain)",
-          "Other (specify)"
-        ]
-      }
-    },
-    {
-      "id": "mitoses",
-      "label": "Mitoses per 2 mm² (carcinoid / neuroendocrine)",
-      "type": "number",
-      "group": "Histology and immunohistochemistry",
-      "showIf": {
-        "field": "histType",
-        "is": [
-          "Typical carcinoid / neuroendocrine tumour, grade 1",
-          "Atypical carcinoid / neuroendocrine tumour, grade 2",
-          "Carcinoid tumour, NOS / neuroendocrine tumour, NOS",
-          "Large cell neuroendocrine carcinoma",
-          "Small cell carcinoma"
-        ]
-      }
-    },
-    {
-      "id": "necrosis",
-      "label": "Necrosis (carcinoid / neuroendocrine)",
-      "type": "select",
-      "group": "Histology and immunohistochemistry",
-      "options": [
-        "Not identified",
-        "Present, punctate",
-        "Present, extensive"
-      ],
-      "default": "Not identified",
-      "showIf": {
-        "field": "histType",
-        "is": [
-          "Typical carcinoid / neuroendocrine tumour, grade 1",
-          "Atypical carcinoid / neuroendocrine tumour, grade 2",
-          "Carcinoid tumour, NOS / neuroendocrine tumour, NOS",
-          "Large cell neuroendocrine carcinoma",
-          "Small cell carcinoma"
-        ]
-      }
-    },
-    {
-      "id": "stas",
-      "label": "Spread through air spaces (STAS)",
-      "type": "select",
-      "group": "Histology and immunohistochemistry",
-      "options": [
-        "Not identified",
-        "Present",
-        "Cannot be determined"
-      ],
-      "default": "Not identified"
-    },
-    {
-      "id": "pleuralInvasion",
-      "label": "Visceral pleura invasion",
-      "type": "select",
-      "group": "Extent, pleura and margins",
-      "options": [
-        "Not identified",
-        "PL0, elastic layer intact",
-        "PL1, extension through elastic membrane",
-        "PL2, extends on visceral pleura surface",
-        "Cannot be determined"
-      ],
-      "default": "Not identified"
-    },
-    {
-      "id": "elasticStain",
-      "label": "Elastic stain performed for the pleura",
-      "type": "checkbox",
-      "group": "Extent, pleura and margins",
-      "default": false
-    },
-    {
-      "id": "lvi",
-      "label": "Lymphatic and / or vascular invasion",
-      "type": "select",
-      "group": "Extent, pleura and margins",
-      "options": [
-        "Not identified",
-        "Present",
-        "Present, lymphatic",
-        "Present, arterial",
-        "Present, venous",
-        "Cannot be determined"
-      ],
-      "default": "Not identified"
-    },
-    {
-      "id": "tumourExtension",
-      "label": "Tumour extension",
-      "type": "multiselect",
-      "group": "Extent, pleura and margins",
-      "options": [
-        "Not applicable",
-        "Adjacent structures present but not involved",
-        "Adjacent lobe of lung",
-        "Parietal pleura",
-        "Chest wall, fibroadipose tissue",
-        "Chest wall, skeletal muscle",
-        "Chest wall, rib(s)",
-        "Main bronchus (up to but not including the carina)",
-        "Atelectasis or obstructive pneumonitis extending to the hilar region",
-        "Hilar soft tissues",
-        "Phrenic nerve",
-        "Parietal pericardium",
-        "Visceral pericardium (epicardium)",
-        "Azygos vein",
-        "Cervical nerve roots",
-        "Thoracic nerve roots",
-        "Brachial plexus",
-        "Stellate ganglion",
-        "Diaphragm",
-        "Heart",
-        "Great vessels",
-        "Supra-aortic arteries",
-        "Brachiocephalic vein",
-        "Subclavian vessels",
-        "Thymus",
-        "Trachea",
-        "Carina",
-        "Recurrent laryngeal nerve",
-        "Vagus nerve",
-        "Oesophagus",
-        "Vertebral body",
-        "Lamina",
-        "Spinal canal",
-        "Other (specify)",
-        "Cannot be assessed (explain)"
-      ],
-      "default": [
-        "Not applicable"
-      ]
-    },
-    {
-      "id": "tumourExtensionDetail",
-      "label": "Tumour extension detail (specify / explain)",
-      "type": "text",
-      "group": "Extent, pleura and margins"
-    },
-    {
-      "id": "treatmentEffect",
-      "label": "Treatment effect",
-      "type": "select",
-      "group": "Extent, pleura and margins",
-      "options": [
-        "No known presurgical therapy",
-        "Greater than 10 % residual viable tumour",
-        "10 % or less residual viable tumour",
-        "Cannot be determined"
-      ],
-      "default": "No known presurgical therapy"
-    },
-    {
-      "id": "viablePct",
-      "label": "Residual viable tumour (%)",
-      "type": "number",
-      "group": "Extent, pleura and margins",
-      "showIf": {
-        "field": "treatmentEffect",
-        "is": [
-          "Greater than 10 % residual viable tumour",
-          "10 % or less residual viable tumour"
-        ]
-      }
-    },
-    {
-      "id": "bronchialMargin",
-      "label": "Bronchial margin",
-      "type": "select",
-      "group": "Extent, pleura and margins",
-      "options": [
-        "Not applicable",
-        "Cannot be assessed",
-        "Uninvolved by invasive carcinoma",
-        "Uninvolved by carcinoma in situ",
-        "Involved by invasive carcinoma",
-        "Involved by carcinoma in situ"
-      ],
-      "default": "Uninvolved by invasive carcinoma"
-    },
-    {
-      "id": "vascularMargin",
-      "label": "Vascular margin",
-      "type": "select",
-      "group": "Extent, pleura and margins",
-      "options": [
-        "Not applicable",
-        "Cannot be assessed",
-        "Uninvolved by carcinoma",
-        "Involved by carcinoma"
-      ],
-      "default": "Uninvolved by carcinoma"
-    },
-    {
-      "id": "parenchymalMargin",
-      "label": "Parenchymal margin",
-      "type": "select",
-      "group": "Extent, pleura and margins",
-      "options": [
-        "Not applicable",
-        "Cannot be assessed",
-        "Uninvolved by invasive carcinoma",
-        "Uninvolved by lepidic component of invasive adenocarcinoma",
-        "Uninvolved by adenocarcinoma in situ",
-        "Involved by invasive carcinoma",
-        "Involved by lepidic component of invasive adenocarcinoma",
-        "Involved by adenocarcinoma in situ"
-      ],
-      "default": "Not applicable"
-    },
-    {
-      "id": "otherMargin",
-      "label": "Other tissue margin(s)",
-      "type": "select",
-      "group": "Extent, pleura and margins",
-      "options": [
-        "Not applicable",
-        "Cannot be assessed",
-        "Uninvolved by invasive carcinoma",
-        "Involved by invasive carcinoma"
-      ],
-      "default": "Not applicable"
-    },
-    {
-      "id": "otherMarginDetail",
-      "label": "Other margin(s): which and distance",
-      "type": "text",
-      "group": "Extent, pleura and margins",
-      "showIf": {
-        "field": "otherMargin",
-        "not": "Not applicable"
-      }
-    },
-    {
-      "id": "nodeStations",
-      "label": "Regional lymph nodes by station (involved/examined; e.g. 7: 2/3; 10R: 0/2; 11R: 1/1 — blank = none submitted)",
-      "type": "textarea",
-      "group": "Lymph nodes and metastasis",
-      "placeholder": "7: 0/3; 10R: 0/2; 11R: 0/1"
-    },
-    {
-      "id": "nodeDirectExtension",
-      "label": "Direct extension of the primary tumour into a hilar / intrapulmonary node",
-      "type": "checkbox",
-      "group": "Lymph nodes and metastasis",
-      "default": false
-    },
-    {
-      "id": "nodeEne",
-      "label": "Extranodal extension",
-      "type": "select",
-      "group": "Lymph nodes and metastasis",
-      "options": [
-        "Not applicable",
-        "Not identified",
-        "Present",
-        "Cannot be determined"
-      ],
-      "default": "Not applicable"
-    },
-    {
-      "id": "nodeDepositMm",
-      "label": "Largest metastatic deposit (mm)",
-      "type": "number",
-      "group": "Lymph nodes and metastasis"
-    },
-    {
-      "id": "distantMets",
-      "label": "Distant metastasis",
-      "type": "multiselect",
-      "group": "Lymph nodes and metastasis",
-      "options": [
-        "Not applicable",
-        "Not identified",
-        "Single extrathoracic metastasis in one organ (includes a single non-regional lymph node)",
-        "Separate tumour nodule(s) in contralateral lobe",
-        "Pleural nodules",
-        "Pericardial nodules",
-        "Malignant pleural effusion",
-        "Malignant pericardial effusion",
-        "Multiple extrathoracic metastases in a single organ",
-        "Multiple extrathoracic metastases in multiple organs",
-        "Other (specify)",
-        "Cannot be determined"
-      ],
-      "default": [
-        "Not applicable"
-      ]
-    },
-    {
-      "id": "distantDetail",
-      "label": "Distant metastasis detail (site / specify)",
-      "type": "text",
-      "group": "Lymph nodes and metastasis"
-    },
-    {
-      "id": "multiplePrimaries",
-      "label": "Multiple synchronous primary tumours (m descriptor)",
-      "type": "checkbox",
-      "group": "Stage and other findings",
-      "default": false
-    },
-    {
-      "id": "recurrent",
-      "label": "Recurrent tumour (r descriptor)",
-      "type": "checkbox",
-      "group": "Stage and other findings",
-      "default": false
-    },
-    {
-      "id": "tnmOverride",
-      "label": "pTNM override (e.g. \"pT1mi pN0\"; blank = derived)",
-      "type": "text",
-      "group": "Stage and other findings"
-    },
-    {
-      "id": "tnmOverrideReason",
-      "label": "Override reason",
-      "type": "text",
-      "group": "Stage and other findings",
-      "showIf": {
-        "field": "tnmOverride",
-        "truthy": true
-      }
-    },
-    {
-      "id": "additionalFindings",
-      "label": "Additional pathologic findings",
-      "type": "multiselect",
-      "group": "Stage and other findings",
-      "options": [
-        "Atypical adenomatous hyperplasia",
-        "Tumourlets",
-        "Squamous dysplasia",
-        "Diffuse idiopathic pulmonary neuroendocrine cell hyperplasia",
-        "Biopsy site changes",
-        "Granulomatous inflammation, necrotising",
-        "Granulomatous inflammation, non-necrotising",
-        "Post-obstructive changes",
-        "Fibrosis",
-        "Emphysema",
-        "Other (specify)"
-      ],
-      "default": []
-    },
-    {
-      "id": "additionalFindingsDetail",
-      "label": "Additional findings detail (fibrosis pattern / specify)",
-      "type": "text",
-      "group": "Stage and other findings"
-    },
-    {
-      "id": "ancillary",
-      "label": "Ancillary studies (e.g. PD-L1 TPS 40 % (22C3); EGFR / ALK / ROS1 testing requested)",
-      "type": "text",
-      "group": "Stage and other findings"
-    },
-    {
-      "id": "additionalNotes",
-      "label": "Additional notes",
-      "type": "textarea",
-      "group": "Stage and other findings"
-    }
-  ],
-  "example": {
-    "caseTitle": "",
-    "options": {
-      "includeHeader": false,
-      "macro": true,
-      "printPTNM": true
-    },
-    "parts": [
-      {
-        "label": "A",
-        "values": {
-          "procedure": "Lobectomy",
-          "laterality": "Right",
-          "lobes": [
-            "Upper lobe"
-          ],
-          "specimenDims": "150 x 110 x 45",
-          "weight": "180",
-          "tumourSite": "Peripheral",
-          "tumourSizeMm": "23",
-          "tumourDims": "23 x 20 x 18",
-          "invasiveSizeMm": "",
-          "separateNodules": "Not identified",
-          "pleuraGross": "Puckered",
-          "bronchialMarginMm": "35",
-          "parenchymalMarginMm": "",
-          "cutSurface": [
-            "Firm",
-            "Tan-white",
-            "Spiculated",
-            "Anthracotic pigment"
-          ],
-          "residualTumour": "Not applicable",
-          "blockKeyText": "1-4 Tumour with overlying pleura\n5 Tumour with adjacent lung\n6 Bronchial margin, shave\n7 Vascular margin, shave\n8 Lymph node, station 11R\n9-10 Lymph nodes, station 10R\n11 Background lung",
-          "ihc": "TTF-1 positive, napsin A positive, p40 negative",
-          "patterns": "acinar 60, papillary 25, solid 15",
-          "stas": "Not identified",
-          "pleuralInvasion": "PL1, extension through elastic membrane",
-          "elasticStain": true,
-          "lvi": "Not identified",
-          "tumourExtension": [
-            "Not applicable"
-          ],
-          "treatmentEffect": "No known presurgical therapy",
-          "bronchialMargin": "Uninvolved by invasive carcinoma",
-          "vascularMargin": "Uninvolved by carcinoma",
-          "parenchymalMargin": "Not applicable",
-          "otherMargin": "Not applicable",
-          "nodeStations": "7: 1/2; 10R: 0/2; 11R: 0/1",
-          "nodeEne": "Not identified",
-          "nodeDepositMm": "6",
-          "distantMets": [
-            "Not applicable"
-          ],
-          "additionalFindings": [
-            "Emphysema"
-          ],
-          "ancillary": "PD-L1 (22C3) TPS 40 %; EGFR / ALK / ROS1 testing requested"
-        }
-      }
-    ]
+  "clinical": [
+   "lung ca",
+   "lung cancer",
+   "lung carcinoma",
+   "lung mass",
+   "lung nodule",
+   "pulmonary nodule",
+   "NSCLC",
+   "adenocarcinoma",
+   "squamous cell carcinoma",
+   "carcinoid",
+   "small cell",
+   "ground-glass",
+   "GGO",
+   "part-solid",
+   "VATS",
+   "EBUS",
+   "PET"
+  ]
+ },
+ "macroExtract": {
+  "weight": {
+   "concept": "weight",
+   "unit": "g"
+  },
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "mm"
+  },
+  "tumourSizeMm": {
+   "concept": "tumourSizeMax",
+   "unit": "mm"
+  },
+  "tumourDims": {
+   "concept": "tumourDims",
+   "unit": "mm"
   }
+ },
+ "specimenNoun": "resection",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "lung_carcinoma",
+ "style": {
+  "british": true
+ },
+ "source": {
+  "template": "QMH Cancer Reporting Template - Thorax-Lung (Carcinomas of the lung)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Thorax-Lung.html",
+  "capProtocol": "CAP Lung, Resection 5.1.0.0 (Sep-2025), as on the QMH page (last updated 06-Oct-2025)",
+  "staging": "AJCC 9th edition pTNM (N2a/N2b, M1c1/M1c2) printed only with the printPTNM option, stamped (AJCC 9th edition)",
+  "stagingProtocol": "lung",
+  "grading": "IASLC 2020 three-tier grade for invasive non-mucinous adenocarcinoma (Moreira et al., J Thorac Oncol 2020, https://pmc.ncbi.nlm.nih.gov/articles/PMC8362286/); page G1-G4 for other non-small cell carcinomas; Not applicable for in situ, minimally invasive and neuroendocrine tumours",
+  "savedPage": "docs/reference/Thorax-Lung.html",
+  "houseAdditions": [
+   "Specimen and tumour section (procedure, laterality, lobes, sizes, invasive size, separate nodules, pleural surface, margin distances, residual tumour)",
+   "cutSurface",
+   "otherParts",
+   "station-table lymph nodes",
+   "prior specimen case fields (type-only)",
+   "IASLC grade",
+   "PD-L1 / molecular typed only"
+  ]
+ },
+ "partDefaults": [],
+ "caseFields": [
+  {
+   "id": "priorAccession",
+   "label": "Related prior specimen: accession (e.g. S26-01234)",
+   "placeholder": "S26-01234",
+   "help": "Type-only in this version; the Sheet lookup comes later. Printed in the completion-resection comment."
+  },
+  {
+   "id": "priorDate",
+   "label": "Prior specimen: date",
+   "placeholder": "03/09/2026"
+  },
+  {
+   "id": "priorProcedure",
+   "label": "Prior specimen: procedure",
+   "placeholder": "wedge resection"
+  },
+  {
+   "id": "priorType",
+   "label": "Prior specimen: histologic type",
+   "placeholder": "invasive adenocarcinoma, acinar predominant"
+  },
+  {
+   "id": "priorSizeMm",
+   "label": "Prior specimen: invasive size (mm)",
+   "placeholder": "8"
+  },
+  {
+   "id": "priorPT",
+   "label": "Prior specimen: pT",
+   "placeholder": "pT1a",
+   "help": "Combined with this specimen: the higher category governs; the origin is printed with the pTNM."
+  },
+  {
+   "id": "priorPN",
+   "label": "Prior specimen: pN",
+   "placeholder": "pNX"
+  }
+ ],
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the AJCC 9th edition pTNM block"
+  }
+ ],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "text",
+   "group": null
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "options": [
+    "Wedge resection",
+    "Segmentectomy",
+    "Lobectomy",
+    "Bilobectomy",
+    "Pneumonectomy",
+    "Completion lobectomy",
+    "Sleeve lobectomy",
+    "Other (specify)"
+   ],
+   "default": "Lobectomy"
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "laterality",
+   "label": "Laterality",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "options": [
+    "Right",
+    "Left",
+    "Not specified"
+   ],
+   "default": "Right"
+  },
+  {
+   "id": "lobes",
+   "label": "Lobe(s)",
+   "type": "multiselect",
+   "group": "Specimen and tumour",
+   "options": [
+    "Upper lobe",
+    "Middle lobe",
+    "Lower lobe",
+    "Lingula",
+    "Whole lung"
+   ],
+   "default": [
+    "Upper lobe"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (mm)",
+   "type": "text",
+   "group": "Specimen and tumour"
+  },
+  {
+   "id": "weight",
+   "label": "Specimen weight (g)",
+   "type": "number",
+   "group": "Specimen and tumour"
+  },
+  {
+   "id": "tumourSite",
+   "label": "Tumour site",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "options": [
+    "Peripheral",
+    "Central (involving a lobar or segmental bronchus)",
+    "Central (involving the main bronchus)",
+    "Not specified"
+   ],
+   "default": "Peripheral"
+  },
+  {
+   "id": "tumourSizeMm",
+   "label": "Tumour size, greatest dimension (mm; total, including any lepidic component)",
+   "type": "number",
+   "group": "Specimen and tumour"
+  },
+  {
+   "id": "tumourDims",
+   "label": "Tumour dimensions (mm, e.g. 23 x 20 x 18)",
+   "type": "text",
+   "group": "Specimen and tumour"
+  },
+  {
+   "id": "invasiveSizeMm",
+   "label": "Invasive size (mm; lepidic component excluded — blank = same as total)",
+   "type": "number",
+   "group": "Specimen and tumour"
+  },
+  {
+   "id": "sizeCannot",
+   "label": "Tumour size cannot be determined (explain)",
+   "type": "text",
+   "group": "Specimen and tumour"
+  },
+  {
+   "id": "separateNodules",
+   "label": "Separate tumour nodule(s)",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "options": [
+    "Not identified",
+    "Same lobe",
+    "Different ipsilateral lobe",
+    "Contralateral lobe",
+    "Cannot be determined"
+   ],
+   "default": "Not identified"
+  },
+  {
+   "id": "separateNodulesDetail",
+   "label": "Separate nodules: number and sizes (mm)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "showIf": {
+    "field": "separateNodules",
+    "is": [
+     "Same lobe",
+     "Different ipsilateral lobe",
+     "Contralateral lobe"
+    ]
+   }
+  },
+  {
+   "id": "pleuraGross",
+   "label": "Pleural surface (gross)",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "options": [
+    "Unremarkable",
+    "Puckered",
+    "Involved grossly",
+    "Not applicable"
+   ],
+   "default": "Unremarkable"
+  },
+  {
+   "id": "bronchialMarginMm",
+   "label": "Bronchial margin, tumour distance (mm)",
+   "type": "number",
+   "group": "Specimen and tumour"
+  },
+  {
+   "id": "parenchymalMarginMm",
+   "label": "Parenchymal (staple-line) margin, tumour distance (mm)",
+   "type": "number",
+   "group": "Specimen and tumour"
+  },
+  {
+   "id": "cutSurface",
+   "label": "Cut surface",
+   "type": "multiselect",
+   "group": "Specimen and tumour",
+   "options": [
+    "Firm",
+    "Tan-white",
+    "Grey-white",
+    "Ill-defined",
+    "Well-circumscribed",
+    "Spiculated",
+    "Necrosis",
+    "Haemorrhage",
+    "Anthracotic pigment",
+    "Cavitation",
+    "Mucoid"
+   ],
+   "default": [
+    "Firm",
+    "Tan-white"
+   ]
+  },
+  {
+   "id": "residualTumour",
+   "label": "Residual tumour (completion resection after a prior excision)",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Present"
+   ],
+   "default": "Not applicable"
+  },
+  {
+   "id": "residualTumourMm",
+   "label": "Residual tumour size (mm)",
+   "type": "number",
+   "group": "Specimen and tumour",
+   "showIf": {
+    "field": "residualTumour",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "otherMacro",
+   "label": "Other macroscopic findings",
+   "type": "text",
+   "group": "Specimen and tumour"
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key (one entry per line, e.g. \"1-4 Tumour with closest pleura\")",
+   "type": "textarea",
+   "group": "Specimen and tumour"
+  },
+  {
+   "id": "otherParts",
+   "label": "Other parts of this case (one per line: letter) specimen - finding; finding = metastatic, 1/1 / negative, 0/2 / involved / negative)",
+   "type": "textarea",
+   "group": "Specimen and tumour",
+   "placeholder": "C) Lymph node, station 7, excision - metastatic, 1/1\nD) Lymph node, station 4R, excision - negative, 0/2"
+  },
+  {
+   "id": "microDescription",
+   "label": "Tumour histology (free text; blank derives \"Sections show …\" from the fields)",
+   "type": "textarea",
+   "group": "Histology and immunohistochemistry"
+  },
+  {
+   "id": "ihc",
+   "label": "Immunohistochemistry (e.g. TTF-1 positive, napsin A positive, p40 negative)",
+   "type": "text",
+   "group": "Histology and immunohistochemistry"
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th edition, as on the QMH page)",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "Adenocarcinoma in situ (AIS), non-mucinous",
+    "Adenocarcinoma in situ (AIS), mucinous",
+    "Minimally invasive adenocarcinoma, non-mucinous",
+    "Minimally invasive adenocarcinoma, mucinous",
+    "Invasive adenocarcinoma (non-mucinous; predominant pattern from the percentages)",
+    "Invasive mucinous adenocarcinoma",
+    "Mixed invasive mucinous and non-mucinous adenocarcinoma",
+    "Colloid adenocarcinoma",
+    "Fetal adenocarcinoma",
+    "Enteric-type adenocarcinoma",
+    "Squamous cell carcinoma in situ (SCIS)",
+    "Invasive squamous cell carcinoma, keratinising",
+    "Invasive squamous cell carcinoma, non-keratinising",
+    "Invasive squamous cell carcinoma, basaloid",
+    "Lymphoepithelial carcinoma",
+    "Large cell carcinoma",
+    "Adenosquamous carcinoma",
+    "Pleomorphic carcinoma",
+    "Spindle cell carcinoma",
+    "Giant cell carcinoma",
+    "Carcinosarcoma",
+    "Pulmonary blastoma",
+    "NUT carcinoma",
+    "Thoracic SMARCA4-deficient undifferentiated tumour",
+    "Adenoid cystic carcinoma",
+    "Epithelial-myoepithelial carcinoma",
+    "Mucoepidermoid carcinoma",
+    "Typical carcinoid / neuroendocrine tumour, grade 1",
+    "Atypical carcinoid / neuroendocrine tumour, grade 2",
+    "Carcinoid tumour, NOS / neuroendocrine tumour, NOS",
+    "Small cell carcinoma",
+    "Combined small cell carcinoma (specify the non-small cell component)",
+    "Large cell neuroendocrine carcinoma",
+    "Combined large cell neuroendocrine carcinoma (specify the other component)",
+    "Carcinoma, type cannot be determined",
+    "Non-small cell carcinoma, subtype cannot be determined",
+    "Other histologic type not listed (specify)"
+   ],
+   "default": "Invasive adenocarcinoma (non-mucinous; predominant pattern from the percentages)"
+  },
+  {
+   "id": "histTypeDetail",
+   "label": "Histologic type detail (component / specify)",
+   "type": "text",
+   "group": "Histology and immunohistochemistry",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Combined small cell carcinoma (specify the non-small cell component)",
+     "Combined large cell neuroendocrine carcinoma (specify the other component)",
+     "Other histologic type not listed (specify)",
+     "Mixed invasive mucinous and non-mucinous adenocarcinoma",
+     "Adenosquamous carcinoma"
+    ]
+   }
+  },
+  {
+   "id": "patterns",
+   "label": "Adenocarcinoma patterns with % (e.g. acinar 60, papillary 25, solid 15; must sum to 100)",
+   "type": "text",
+   "group": "Histology and immunohistochemistry",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Invasive adenocarcinoma (non-mucinous; predominant pattern from the percentages)",
+     "Minimally invasive adenocarcinoma, non-mucinous",
+     "Mixed invasive mucinous and non-mucinous adenocarcinoma"
+    ]
+   },
+   "placeholder": "acinar 60, papillary 25, solid 15"
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "Derive (IASLC 2020 for invasive non-mucinous adenocarcinoma; Not applicable for in situ / minimally invasive / neuroendocrine)",
+    "G1: Well differentiated",
+    "G2: Moderately differentiated",
+    "G3: Poorly differentiated",
+    "G4: Undifferentiated",
+    "GX: Cannot be assessed",
+    "Cannot be determined (explain)",
+    "Not applicable",
+    "Other (specify)"
+   ],
+   "default": "Derive (IASLC 2020 for invasive non-mucinous adenocarcinoma; Not applicable for in situ / minimally invasive / neuroendocrine)"
+  },
+  {
+   "id": "gradeDetail",
+   "label": "Grade detail (explain / specify)",
+   "type": "text",
+   "group": "Histology and immunohistochemistry",
+   "showIf": {
+    "field": "grade",
+    "is": [
+     "Cannot be determined (explain)",
+     "Other (specify)"
+    ]
+   }
+  },
+  {
+   "id": "mitoses",
+   "label": "Mitoses per 2 mm² (carcinoid / neuroendocrine)",
+   "type": "number",
+   "group": "Histology and immunohistochemistry",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Typical carcinoid / neuroendocrine tumour, grade 1",
+     "Atypical carcinoid / neuroendocrine tumour, grade 2",
+     "Carcinoid tumour, NOS / neuroendocrine tumour, NOS",
+     "Large cell neuroendocrine carcinoma",
+     "Small cell carcinoma"
+    ]
+   }
+  },
+  {
+   "id": "necrosis",
+   "label": "Necrosis (carcinoid / neuroendocrine)",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "Not identified",
+    "Present, punctate",
+    "Present, extensive"
+   ],
+   "default": "Not identified",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Typical carcinoid / neuroendocrine tumour, grade 1",
+     "Atypical carcinoid / neuroendocrine tumour, grade 2",
+     "Carcinoid tumour, NOS / neuroendocrine tumour, NOS",
+     "Large cell neuroendocrine carcinoma",
+     "Small cell carcinoma"
+    ]
+   }
+  },
+  {
+   "id": "stas",
+   "label": "Spread through air spaces (STAS)",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": "Not identified"
+  },
+  {
+   "id": "pleuralInvasion",
+   "label": "Visceral pleura invasion",
+   "type": "select",
+   "group": "Extent, pleura and margins",
+   "options": [
+    "Not identified",
+    "PL0, elastic layer intact",
+    "PL1, extension through elastic membrane",
+    "PL2, extends on visceral pleura surface",
+    "Cannot be determined"
+   ],
+   "default": "Not identified"
+  },
+  {
+   "id": "elasticStain",
+   "label": "Elastic stain performed for the pleura",
+   "type": "checkbox",
+   "group": "Extent, pleura and margins",
+   "default": false
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphatic and / or vascular invasion",
+   "type": "select",
+   "group": "Extent, pleura and margins",
+   "options": [
+    "Not identified",
+    "Present",
+    "Present, lymphatic",
+    "Present, arterial",
+    "Present, venous",
+    "Cannot be determined"
+   ],
+   "default": "Not identified"
+  },
+  {
+   "id": "tumourExtension",
+   "label": "Tumour extension",
+   "type": "multiselect",
+   "group": "Extent, pleura and margins",
+   "options": [
+    "Not applicable",
+    "Adjacent structures present but not involved",
+    "Adjacent lobe of lung",
+    "Parietal pleura",
+    "Chest wall, fibroadipose tissue",
+    "Chest wall, skeletal muscle",
+    "Chest wall, rib(s)",
+    "Main bronchus (up to but not including the carina)",
+    "Atelectasis or obstructive pneumonitis extending to the hilar region",
+    "Hilar soft tissues",
+    "Phrenic nerve",
+    "Parietal pericardium",
+    "Visceral pericardium (epicardium)",
+    "Azygos vein",
+    "Cervical nerve roots",
+    "Thoracic nerve roots",
+    "Brachial plexus",
+    "Stellate ganglion",
+    "Diaphragm",
+    "Heart",
+    "Great vessels",
+    "Supra-aortic arteries",
+    "Brachiocephalic vein",
+    "Subclavian vessels",
+    "Thymus",
+    "Trachea",
+    "Carina",
+    "Recurrent laryngeal nerve",
+    "Vagus nerve",
+    "Oesophagus",
+    "Vertebral body",
+    "Lamina",
+    "Spinal canal",
+    "Other (specify)",
+    "Cannot be assessed (explain)"
+   ],
+   "default": [
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "tumourExtensionDetail",
+   "label": "Tumour extension detail (specify / explain)",
+   "type": "text",
+   "group": "Extent, pleura and margins"
+  },
+  {
+   "id": "treatmentEffect",
+   "label": "Treatment effect",
+   "type": "select",
+   "group": "Extent, pleura and margins",
+   "options": [
+    "No known presurgical therapy",
+    "Greater than 10 % residual viable tumour",
+    "10 % or less residual viable tumour",
+    "Cannot be determined"
+   ],
+   "default": "No known presurgical therapy"
+  },
+  {
+   "id": "viablePct",
+   "label": "Residual viable tumour (%)",
+   "type": "number",
+   "group": "Extent, pleura and margins",
+   "showIf": {
+    "field": "treatmentEffect",
+    "is": [
+     "Greater than 10 % residual viable tumour",
+     "10 % or less residual viable tumour"
+    ]
+   }
+  },
+  {
+   "id": "bronchialMargin",
+   "label": "Bronchial margin",
+   "type": "select",
+   "group": "Extent, pleura and margins",
+   "options": [
+    "Not applicable",
+    "Cannot be assessed",
+    "Uninvolved by invasive carcinoma",
+    "Uninvolved by carcinoma in situ",
+    "Involved by invasive carcinoma",
+    "Involved by carcinoma in situ"
+   ],
+   "default": "Uninvolved by invasive carcinoma"
+  },
+  {
+   "id": "vascularMargin",
+   "label": "Vascular margin",
+   "type": "select",
+   "group": "Extent, pleura and margins",
+   "options": [
+    "Not applicable",
+    "Cannot be assessed",
+    "Uninvolved by carcinoma",
+    "Involved by carcinoma"
+   ],
+   "default": "Uninvolved by carcinoma"
+  },
+  {
+   "id": "parenchymalMargin",
+   "label": "Parenchymal margin",
+   "type": "select",
+   "group": "Extent, pleura and margins",
+   "options": [
+    "Not applicable",
+    "Cannot be assessed",
+    "Uninvolved by invasive carcinoma",
+    "Uninvolved by lepidic component of invasive adenocarcinoma",
+    "Uninvolved by adenocarcinoma in situ",
+    "Involved by invasive carcinoma",
+    "Involved by lepidic component of invasive adenocarcinoma",
+    "Involved by adenocarcinoma in situ"
+   ],
+   "default": "Not applicable"
+  },
+  {
+   "id": "otherMargin",
+   "label": "Other tissue margin(s)",
+   "type": "select",
+   "group": "Extent, pleura and margins",
+   "options": [
+    "Not applicable",
+    "Cannot be assessed",
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma"
+   ],
+   "default": "Not applicable"
+  },
+  {
+   "id": "otherMarginDetail",
+   "label": "Other margin(s): which and distance",
+   "type": "text",
+   "group": "Extent, pleura and margins",
+   "showIf": {
+    "field": "otherMargin",
+    "not": "Not applicable"
+   }
+  },
+  {
+   "id": "nodeStations",
+   "label": "Regional lymph nodes by station (involved/examined; e.g. 7: 2/3; 10R: 0/2; 11R: 1/1 — blank = none submitted)",
+   "type": "textarea",
+   "group": "Lymph nodes and metastasis",
+   "placeholder": "7: 0/3; 10R: 0/2; 11R: 0/1"
+  },
+  {
+   "id": "nodeDirectExtension",
+   "label": "Direct extension of the primary tumour into a hilar / intrapulmonary node",
+   "type": "checkbox",
+   "group": "Lymph nodes and metastasis",
+   "default": false
+  },
+  {
+   "id": "nodeEne",
+   "label": "Extranodal extension",
+   "type": "select",
+   "group": "Lymph nodes and metastasis",
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": "Not applicable"
+  },
+  {
+   "id": "nodeDepositMm",
+   "label": "Largest metastatic deposit (mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis"
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis",
+   "type": "multiselect",
+   "group": "Lymph nodes and metastasis",
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Single extrathoracic metastasis in one organ (includes a single non-regional lymph node)",
+    "Separate tumour nodule(s) in contralateral lobe",
+    "Pleural nodules",
+    "Pericardial nodules",
+    "Malignant pleural effusion",
+    "Malignant pericardial effusion",
+    "Multiple extrathoracic metastases in a single organ",
+    "Multiple extrathoracic metastases in multiple organs",
+    "Other (specify)",
+    "Cannot be determined"
+   ],
+   "default": [
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "distantDetail",
+   "label": "Distant metastasis detail (site / specify)",
+   "type": "text",
+   "group": "Lymph nodes and metastasis"
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple synchronous primary tumours (m descriptor)",
+   "type": "checkbox",
+   "group": "Stage and other findings",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r descriptor)",
+   "type": "checkbox",
+   "group": "Stage and other findings",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override (e.g. \"pT1mi pN0\"; blank = derived)",
+   "type": "text",
+   "group": "Stage and other findings"
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "type": "text",
+   "group": "Stage and other findings",
+   "showIf": {
+    "field": "tnmOverride",
+    "truthy": true
+   }
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "type": "multiselect",
+   "group": "Stage and other findings",
+   "options": [
+    "Atypical adenomatous hyperplasia",
+    "Tumourlets",
+    "Squamous dysplasia",
+    "Diffuse idiopathic pulmonary neuroendocrine cell hyperplasia",
+    "Biopsy site changes",
+    "Granulomatous inflammation, necrotising",
+    "Granulomatous inflammation, non-necrotising",
+    "Post-obstructive changes",
+    "Fibrosis",
+    "Emphysema",
+    "Other (specify)"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalFindingsDetail",
+   "label": "Additional findings detail (fibrosis pattern / specify)",
+   "type": "text",
+   "group": "Stage and other findings"
+  },
+  {
+   "id": "ancillary",
+   "label": "Ancillary studies (e.g. PD-L1 TPS 40 % (22C3); EGFR / ALK / ROS1 testing requested)",
+   "type": "text",
+   "group": "Stage and other findings"
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "type": "textarea",
+   "group": "Stage and other findings"
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Lobectomy",
+     "laterality": "Right",
+     "lobes": [
+      "Upper lobe"
+     ],
+     "specimenDims": "150 x 110 x 45",
+     "weight": "180",
+     "tumourSite": "Peripheral",
+     "tumourSizeMm": "23",
+     "tumourDims": "23 x 20 x 18",
+     "invasiveSizeMm": "",
+     "separateNodules": "Not identified",
+     "pleuraGross": "Puckered",
+     "bronchialMarginMm": "35",
+     "parenchymalMarginMm": "",
+     "cutSurface": [
+      "Firm",
+      "Tan-white",
+      "Spiculated",
+      "Anthracotic pigment"
+     ],
+     "residualTumour": "Not applicable",
+     "blockKeyText": "1-4 Tumour with overlying pleura\n5 Tumour with adjacent lung\n6 Bronchial margin, shave\n7 Vascular margin, shave\n8 Lymph node, station 11R\n9-10 Lymph nodes, station 10R\n11 Background lung",
+     "ihc": "TTF-1 positive, napsin A positive, p40 negative",
+     "patterns": "acinar 60, papillary 25, solid 15",
+     "stas": "Not identified",
+     "pleuralInvasion": "PL1, extension through elastic membrane",
+     "elasticStain": true,
+     "lvi": "Not identified",
+     "tumourExtension": [
+      "Not applicable"
+     ],
+     "treatmentEffect": "No known presurgical therapy",
+     "bronchialMargin": "Uninvolved by invasive carcinoma",
+     "vascularMargin": "Uninvolved by carcinoma",
+     "parenchymalMargin": "Not applicable",
+     "otherMargin": "Not applicable",
+     "nodeStations": "7: 1/2; 10R: 0/2; 11R: 0/1",
+     "nodeEne": "Not identified",
+     "nodeDepositMm": "6",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "additionalFindings": [
+      "Emphysema"
+     ],
+     "ancillary": "PD-L1 (22C3) TPS 40 %; EGFR / ALK / ROS1 testing requested"
+    }
+   }
+  ]
+ }
 }

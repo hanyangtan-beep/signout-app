@@ -234,3 +234,31 @@ First run found **29 real problems that 896 passing tests could not see**:
 Writing it turned up two things about the app worth recording, both of which had been rediscovered by hand every QA session: **Example / New case / Open are inside the Case dropdown**, not clickable inline (the inline buttons are 0×0 at desktop width), and **multi-part specimen text does not auto-build parts** — it fills the intake preview and waits for `#btn-build-parts`. A newly written test that assumed otherwise failed correctly.
 
 `npm run qa` needs `npx playwright install chromium --only-shell` once on a fresh checkout.
+
+## C — Shared field library (done, 2026-09-15)
+
+**The real numbers.** The audit estimated "371 redundant field definitions of 1,739". Measured properly across the 54 schemas: **2,043 field definitions, 1,094 distinct ids, 949 redundant copies**. Of those 949, only **362 are identical once the label is set aside** — the other 587 share an id but genuinely differ in options or type, so they are per-template questions, not duplicates, and were left alone.
+
+**`schemas/_shared.json` + `$use`.** Ten ids whose every copy was structurally identical now live in one place. A template writes `{"$use": "includeHeader"}`; `src/registry.js` expands it at load, and any key written alongside `$use` overrides the shared one, so a template can narrow a label without copying the field. **90 copies collapsed**, `includeHeader` alone accounting for 52.
+
+Labels are UI-only — the synoptic row names are built by the generators, not read from the schema — so none of this can move a golden fixture, and none did.
+
+The tests had to follow: 28 test files read `schemas/x.json` straight off disk, so they were asserting on the authoring form rather than what the app sees. They now go through **`tests/_schema.js`** (`schemaSync(id)`), which applies the same expansion. `scripts/build-manifest.mjs` and `tests/formlayout.test.js` skip `_`-prefixed files so the shared partial is not mistaken for a template.
+
+**`specimenName` — one question, 31 labels.** 26 of them were variations on "Specimen as received (blank = automatic, e.g. Left breast, total mastectomy)", where the worked example was already sitting in the field's own placeholder. All 26 now read **"Specimen as received"**.
+
+16 were left alone, because they are not the same question. In those templates the generator prefixes a fixed organ word and the field supplies only the fragment — "Site (after 'Lymph node,')", "Site (after 'Thyroid,')", "Site (after 'Salivary gland,')", plus seven plain "Site" fields in the FNA and small-biopsy templates whose placeholders are things like "left cheek" and "right base". Unifying those to "Specimen as received" would have made you type the organ twice.
+
+**`generators/_house.js` — the helpers the generators kept re-declaring.**
+
+- **`stripDot` existed in 27 generators in four different forms.** 20 used the house `/[.;\s]+$/`; four cancer templates (appendix, gallbladder, gastric, oesophageal) also strip a trailing colon; `turbt` also strips a comma; `cytology` strips a trailing full stop only. **Same helper name, different behaviour, depending on which template you were in.** The 21 matching the house form now import it. The six divergent ones keep their local copy with a comment pointing at `_house.js` — **changing them would move released wording, so they are yours to decide.**
+- **`blockKey` was written out 32 times**, of which seven bodies were character-for-character identical (appendix_carcinoma, breast_shared, gallbladder_carcinoma, gastric_carcinoma, oesophageal_carcinoma, lung_carcinoma, ovary_ft_peritoneum). They now call `letteredBlockKey(part, ctx, { lettered, strip })`. The strip function is passed in rather than imported, so the four with the colon-stripping variant keep exactly their current output.
+- **The validator preamble was copied into 11 generators** — the same seven lines declaring `out`, `at`, `err` and `warn` with the same comment about the field id. Now `const { out, err, warn } = checks();`.
+
+896 tests pass, zero fixture drift, lint clean, all seven release gates green.
+
+### Still open for you
+
+1. **The four divergent `stripDot` variants.** Should a trailing colon (appendix / gallbladder / gastric / oesophageal), comma (turbt) or a lone full stop (cytology) be trimmed the same way everywhere? Unifying changes report text in those templates.
+2. **`additionalNotes`** is labelled "Additional microscopy" in 30 templates and "Additional notes" in 12. Whether those are one question or two depends on whether the typed text is appended to the microscopy paragraph in both, which differs by generator — worth one decision rather than 42.
+3. **`blocks`** is "Blocks" in 13 and "Number of blocks" in 5, with six one-off variants that do carry real information ("Blocks (cyst wall and ovary; the tube adds one)"). Same question: one label with the hints demoted to placeholders?

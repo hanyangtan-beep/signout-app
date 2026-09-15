@@ -1,3 +1,4 @@
+import { stripDot } from './_house.js';
 // Dental / jaw cyst (enucleation / curettage / apicectomy) generator. Pure functions: (part, ctx) -> string.
 // Blocks produced:
 //   specimens  "Mandible, left posterior, 36 region, enucleation"
@@ -24,7 +25,6 @@ const listJoin = (items) => {
   return `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`;
 };
 const lc1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : '');
-const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 const dash = (s) => String(s || '').replace(/[\u2013\u2014]/g, '-');
 
 export const TUMOUR = 'Odontogenic tumour - see comment';

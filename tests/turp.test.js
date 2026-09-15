@@ -1,12 +1,12 @@
 // Phase 4b: prostate chips (TURP) template. Wording is deliberate; update the strings only on purpose.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import { createCase, generate } from '../src/engine.js';
 import * as gen from '../generators/turp.js';
 import { sizePhrase, weightPhrase, gradeGroup, gleasonText, stage, suggestedBlocks } from '../generators/turp.js';
+import { schemaSync } from './_schema.js';
 
-const schema = JSON.parse(readFileSync(new URL('../schemas/turp.json', import.meta.url), 'utf8'));
+const schema = schemaSync('turp');
 const run = (c) => generate(schema, gen, c);
 const example = () => ({ ...JSON.parse(JSON.stringify(schema.example)), schemaId: schema.id });
 const one = (values, options = {}) => {

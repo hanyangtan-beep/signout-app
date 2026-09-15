@@ -1,12 +1,12 @@
 // Phase 4b: placenta template (roadmap item 2). Wording is deliberate; update the strings only on purpose.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import { createCase, generate } from '../src/engine.js';
 import { applyStyle } from '../src/style.js';
 import gen, { pluralityPhrase, gestationPhrase, chorionicity, blockKey } from '../generators/placenta.js';
+import { schemaSync } from './_schema.js';
 
-const schema = JSON.parse(readFileSync(new URL('../schemas/placenta.json', import.meta.url), 'utf8'));
+const schema = schemaSync('placenta');
 const run = (c) => generate(schema, gen, c);
 const example = () => ({ ...JSON.parse(JSON.stringify(schema.example)), schemaId: schema.id });
 const one = (values, options = {}) => {

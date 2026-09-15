@@ -12,7 +12,9 @@ export const lcProse = (s) => (/^(Paget|Nottingham|Miller|Bloom|Allred|HER2|ER|P
 export const uc1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : '');
 /** "Two lymph nodes" - counts one to ten as words so a sentence never starts with a numeral. */
 export const countWords = (n, noun) => plural(n, noun).replace(/^\d+/, (d) => ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'][parseInt(d, 10) - 1] || d);
-export const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
+export { stripDot } from './_house.js';
+import { stripDot } from './_house.js';
+import { letteredBlockKey } from './_house.js';
 export const arr = (x) => (Array.isArray(x) ? x : x ? [x] : []);
 export const listJoin = (items) => {
   const a = items.filter(Boolean);
@@ -161,14 +163,7 @@ export function tumourSentence(v, { noun = 'tumour', size = num(v.sizeMm), dims 
   return `Sectioning reveals ${/^[aeiou]/i.test(lead) ? 'an' : 'a'} ${cut.length ? `${cut.join(', ')} ` : ''}${noun}${sizeText ? ` measuring ${sizeText}` : ''}${site && site !== 'Not specified' ? ` in the ${site}` : ''}${closeText}.`;
 }
 
-export function blockKey(part, ctx) {
-  if (ctx?.options && ctx.options.macro === false) return '';
-  const lines = String(part.values.blockKeyText || '').split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-  return lines.map((l) => {
-    const m = l.match(/^\(?([\dA-Za-z]+(?:\s*[-–,]\s*[\dA-Za-z]+)*)\)?[\s.:)-]+(.*)$/);
-    return m ? `(${lettered(part, ctx) ? part.label : ''}${m[1].replace(/\s+/g, '')}) ${stripDot(m[2])}.` : `${stripDot(l)}.`;
-  }).join('\n');
-}
+export const blockKey = (part, ctx) => letteredBlockKey(part, ctx, { lettered, strip: stripDot });
 
 // ---------- margin walker ----------
 

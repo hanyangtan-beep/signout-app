@@ -1,1369 +1,1367 @@
 {
-  "id": "frozen_section",
-  "version": "2026.09",
-  "name": "Frozen section",
-  "shortName": "Frozen section",
-  "label": "Frozen",
-  "organ": "",
-  "system": "Frozen",
-  "kind": "frozen",
-  "rank": 19,
-  "aliases": [
-    "FS",
-    "intraoperative",
-    "margin",
-    "parathyroid",
-    "lymph node",
-    "ovarian mass",
-    "nodule"
+ "id": "frozen_section",
+ "version": "2026.09",
+ "name": "Frozen section",
+ "shortName": "Frozen section",
+ "label": "Frozen",
+ "organ": "",
+ "system": "Frozen",
+ "kind": "frozen",
+ "rank": 19,
+ "aliases": [
+  "FS",
+  "intraoperative",
+  "margin",
+  "parathyroid",
+  "lymph node",
+  "ovarian mass",
+  "nodule"
+ ],
+ "match": {
+  "site": [
+   "frozen",
+   "FS",
+   "intraoperative"
   ],
-  "match": {
-    "site": [
-      "frozen",
-      "FS",
-      "intraoperative"
-    ],
-    "procedure": [
-      "frozen",
-      "FS",
-      "intraoperative"
-    ],
-    "clinical": []
+  "procedure": [
+   "frozen",
+   "FS",
+   "intraoperative"
+  ],
+  "clinical": []
+ },
+ "specimenNoun": "frozen section",
+ "maxParts": 26,
+ "defaultParts": 1,
+ "generator": "frozen",
+ "style": {
+  "british": true
+ },
+ "caseFields": [
+  {
+   "id": "fsPathologists",
+   "label": "Frozen section reported by",
+   "placeholder": "Prof. A Cheung / Dr. HY Tan",
+   "help": "Printed in brackets above the intraoperative diagnosis lines."
   },
-  "specimenNoun": "frozen section",
-  "maxParts": 26,
-  "defaultParts": 1,
-  "generator": "frozen",
-  "style": {
-    "british": true
+  {
+   "id": "fsTime",
+   "label": "Phone reported at (time)",
+   "placeholder": "1321"
   },
-  "caseFields": [
-    {
-      "id": "fsPathologists",
-      "label": "Frozen section reported by",
-      "placeholder": "Prof. A Cheung / Dr. HY Tan",
-      "help": "Printed in brackets above the intraoperative diagnosis lines."
-    },
-    {
-      "id": "fsTime",
-      "label": "Phone reported at (time)",
-      "placeholder": "1321"
-    },
-    {
-      "id": "fsDate",
-      "label": "Phone reported on (date)",
-      "placeholder": "13/05/2026"
-    },
-    {
-      "id": "fsReportedTo",
-      "label": "Reported to",
-      "placeholder": "Dr Lee (OT 3)",
-      "help": "Optional. Clinician names are allowed; never patient details."
-    }
-  ],
-  "options": [
-    {
-      "id": "includeHeader",
-      "label": "Section headers (SPECIMEN / MACROSCOPIC / INTRAOPERATIVE CONSULTATION / MICROSCOPIC / DIAGNOSIS)",
-      "type": "checkbox",
-      "default": false
-    },
-    {
-      "id": "macro",
-      "label": "Generate the macroscopic description for each frozen part",
-      "type": "checkbox",
-      "default": true
-    }
-  ],
-  "fields": [
-    {
-      "id": "specimenName",
-      "label": "Specimen label as received",
-      "type": "text",
-      "placeholder": "Tongue, medial margin",
-      "default": ""
-    },
-    {
-      "id": "scenario",
-      "label": "Scenario",
-      "type": "select",
-      "options": [
-        "Margin",
-        "Lymph node",
-        "Parathyroid",
-        "Ovarian / adnexal mass",
-        "Lung wedge / nodule",
-        "Breast sentinel lymph node",
-        "Nodule / mass",
-        "Other"
-      ],
-      "optionLabels": {
-        "Nodule / mass": "Nodule or mass (lung, thyroid, other)",
-        "Other": "Tissue identification / other (free text)",
-        "Lung wedge / nodule": "Lung wedge / nodule (staged pair)",
-        "Breast sentinel lymph node": "Breast sentinel lymph node(s) (staged pair)"
-      },
-      "default": "Margin"
-    },
-    {
-      "id": "pieces",
-      "label": "Number of pieces",
-      "type": "number",
-      "default": "1",
-      "min": 1
-    },
-    {
-      "id": "tissueDesc",
-      "label": "Tissue as received",
-      "type": "select",
-      "options": [
-        "tan coloured tissue",
-        "fibrofatty tissue",
-        "skin",
-        "lymph node",
-        "mucosa",
-        "greyish tissue",
-        "other"
-      ],
-      "default": "tan coloured tissue"
-    },
-    {
-      "id": "tissueDescOther",
-      "label": "Describe tissue",
-      "type": "text",
-      "placeholder": "brownish nodular tissue",
-      "default": "",
-      "showIf": {
-        "field": "tissueDesc",
-        "is": "other"
-      }
-    },
-    {
-      "id": "size",
-      "label": "Measurement",
-      "type": "text",
-      "placeholder": "1 x 0.4 x 0.2 cm",
-      "default": ""
-    },
-    {
-      "id": "handling",
-      "label": "Handling",
-      "type": "select",
-      "options": [
-        "All embedded",
-        "Bisected and all embedded",
-        "Serially sectioned and all embedded",
-        "Representative section taken"
-      ],
-      "default": "All embedded"
-    },
-    {
-      "id": "blocks",
-      "label": "Frozen blocks",
-      "type": "number",
-      "default": "1",
-      "min": 1
-    },
-    {
-      "id": "marginResult",
-      "label": "Frozen result",
-      "type": "select",
-      "options": [
-        "Negative",
-        "Positive",
-        "Close",
-        "Dysplasia only",
-        "Atypical, deferred"
-      ],
-      "optionLabels": {
-        "Negative": "No malignancy",
-        "Positive": "Carcinoma present at margin",
-        "Close": "Negative, tumour close to margin",
-        "Dysplasia only": "Dysplasia, no invasive malignancy",
-        "Atypical, deferred": "Atypical cells, defer to paraffin"
-      },
-      "default": "Negative",
-      "showIf": {
-        "field": "scenario",
-        "is": "Margin"
-      }
-    },
-    {
-      "id": "marginDistance",
-      "label": "Distance to margin (mm)",
-      "type": "number",
-      "default": "",
-      "min": 0,
-      "showIf": {
-        "field": "marginResult",
-        "is": "Close"
-      }
-    },
-    {
-      "id": "dysplasiaGrade",
-      "label": "Dysplasia grade",
-      "type": "select",
-      "options": [
-        "Mild",
-        "Moderate",
-        "Severe",
-        "High grade"
-      ],
-      "default": "Moderate",
-      "showIf": {
-        "field": "marginResult",
-        "is": "Dysplasia only"
-      }
-    },
-    {
-      "id": "nodeResult",
-      "label": "Frozen result",
-      "type": "select",
-      "options": [
-        "Negative",
-        "Macrometastasis",
-        "Micrometastasis",
-        "Deferred"
-      ],
-      "optionLabels": {
-        "Negative": "Negative for malignancy",
-        "Macrometastasis": "Metastatic carcinoma, macrometastasis (> 2 mm)",
-        "Micrometastasis": "Metastatic carcinoma, micrometastasis (0.2–2 mm)",
-        "Deferred": "Defer to paraffin"
-      },
-      "default": "Negative",
-      "showIf": {
-        "field": "scenario",
-        "is": "Lymph node"
-      }
-    },
-    {
-      "id": "metSize",
-      "label": "Largest metastatic focus (mm)",
-      "type": "number",
-      "default": "",
-      "min": 0,
-      "showIf": {
-        "field": "nodeResult",
-        "is": [
-          "Macrometastasis",
-          "Micrometastasis"
-        ]
-      }
-    },
-    {
-      "id": "parathyroidResult",
-      "label": "Frozen result",
-      "type": "select",
-      "options": [
-        "Parathyroid, hypercellular",
-        "Parathyroid, normocellular",
-        "Thyroid tissue",
-        "Lymph node",
-        "Adipose tissue",
-        "Thymic tissue"
-      ],
-      "default": "Parathyroid, hypercellular",
-      "showIf": {
-        "field": "scenario",
-        "is": "Parathyroid"
-      }
-    },
-    {
-      "id": "ovSide",
-      "label": "Side",
-      "type": "select",
-      "group": "Ovarian / adnexal mass",
-      "options": [
-        "",
-        "Right",
-        "Left",
-        "Bilateral"
-      ],
-      "optionLabels": {
-        "": "Not stated"
-      },
-      "default": "",
-      "help": "Two parts is the usual LIS pattern; Bilateral only when both adnexa arrive in one container.",
-      "showIf": {
-        "field": "scenario",
-        "is": "Ovarian / adnexal mass"
-      }
-    },
-    {
-      "id": "ovSpecimen",
-      "label": "Specimen",
-      "type": "select",
-      "group": "Ovarian / adnexal mass",
-      "options": [
-        "",
-        "Salpingo-oophorectomy",
-        "Oophorectomy",
-        "Ovarian cystectomy",
-        "Biopsy of ovarian mass",
-        "Adnexal mass, NOS"
-      ],
-      "optionLabels": {
-        "": "Generic (use the fields above)"
-      },
-      "default": "",
-      "help": "Picking a specimen switches the macro and the diagnosis line to the ovarian form; leave blank to keep the generic wording.",
-      "showIf": {
-        "field": "scenario",
-        "is": "Ovarian / adnexal mass"
-      }
-    },
-    {
-      "id": "ovReceived",
-      "label": "Received",
-      "type": "select",
-      "group": "Ovarian / adnexal mass",
-      "options": [
-        "Intact",
-        "Ruptured, capsule defect present on receipt",
-        "Fragmented (cystectomy or morcellated)",
-        "Opened by surgeon"
-      ],
-      "default": "Intact",
-      "showIf": {
-        "field": "scenario",
-        "is": "Ovarian / adnexal mass"
-      }
-    },
-    {
-      "id": "ovSizeMm",
-      "label": "Greatest dimension (mm)",
-      "type": "number",
-      "group": "Ovarian / adnexal mass",
-      "default": "",
-      "min": 0,
-      "showIf": {
-        "field": "scenario",
-        "is": "Ovarian / adnexal mass"
-      }
-    },
-    {
-      "id": "ovWeightG",
-      "label": "Weight (g)",
-      "type": "number",
-      "group": "Ovarian / adnexal mass",
-      "default": "",
-      "min": 0,
-      "showIf": {
-        "field": "scenario",
-        "is": "Ovarian / adnexal mass"
-      }
-    },
-    {
-      "id": "ovSurface",
-      "label": "Outer surface",
-      "type": "select",
-      "group": "Ovarian / adnexal mass",
-      "options": [
-        "Smooth",
-        "Excrescences or papillary projections",
-        "Adhesions",
-        "Not assessable"
-      ],
-      "default": "Smooth",
-      "showIf": {
-        "field": "scenario",
-        "is": "Ovarian / adnexal mass"
-      }
-    },
-    {
-      "id": "ovCut",
-      "label": "Cut surface",
-      "type": "multiselect",
-      "group": "Ovarian / adnexal mass",
-      "options": [
-        "Unilocular cyst",
-        "Multilocular cyst",
-        "Serous fluid",
-        "Mucinous contents",
-        "Sebaceous material and hair",
-        "Chocolate-brown fluid",
-        "Solid areas",
-        "Papillary excrescences (inner surface)",
-        "Necrosis",
-        "Haemorrhage",
-        "Torsion (haemorrhagic infarction)"
-      ],
-      "default": [],
-      "showIf": {
-        "field": "scenario",
-        "is": "Ovarian / adnexal mass"
-      }
-    },
-    {
-      "id": "ovBlocks",
-      "label": "Frozen blocks (ovarian form)",
-      "type": "number",
-      "group": "Ovarian / adnexal mass",
-      "default": "1",
-      "min": 1,
-      "showIf": {
-        "field": "ovSpecimen",
-        "truthy": true
-      }
-    },
-    {
-      "id": "ovaryResult",
-      "label": "Frozen result",
-      "type": "select",
-      "options": [
-        "Benign",
-        "Non-neoplastic",
-        "Borderline",
-        "Borderline, at least (invasion cannot be excluded)",
-        "Malignant",
-        "Malignant, favour metastatic",
-        "Deferred"
-      ],
-      "optionLabels": {
-        "Borderline, at least (invasion cannot be excluded)": "At least borderline (invasion cannot be excluded)",
-        "Deferred": "Defer to paraffin"
-      },
-      "default": "Benign",
-      "showIf": {
-        "field": "scenario",
-        "is": "Ovarian / adnexal mass"
-      },
-      "group": "Ovarian / adnexal mass"
-    },
-    {
-      "id": "ovType",
-      "label": "Type / favoured diagnosis",
-      "type": "select",
-      "group": "Ovarian / adnexal mass",
-      "options": [
-        "",
-        "serous cystadenoma or adenofibroma",
-        "mucinous cystadenoma",
-        "mature cystic teratoma",
-        "endometriotic cyst",
-        "follicular or corpus luteum cyst",
-        "fibroma / thecoma",
-        "Brenner tumour",
-        "struma ovarii",
-        "serous borderline tumour",
-        "mucinous borderline tumour",
-        "seromucinous borderline tumour",
-        "high-grade serous carcinoma",
-        "low-grade serous carcinoma",
-        "endometrioid carcinoma",
-        "clear cell carcinoma",
-        "mucinous carcinoma",
-        "carcinosarcoma",
-        "adult granulosa cell tumour",
-        "dysgerminoma",
-        "yolk sac tumour",
-        "immature teratoma",
-        "metastatic adenocarcinoma, favour gastrointestinal / appendiceal",
-        "metastatic carcinoma, primary not determined",
-        "lymphoma, favour",
-        "other (specify)"
-      ],
-      "optionLabels": {
-        "": "Not stated (or type below)",
-        "other (specify)": "Other (type in the box below)"
-      },
-      "default": "",
-      "help": "Frozen favoured type. \"Other\" or blank falls back to the free-text tumour type below.",
-      "showIf": {
-        "field": "scenario",
-        "is": "Ovarian / adnexal mass"
-      }
-    },
-    {
-      "id": "ovCaveat",
-      "label": "Caveats",
-      "type": "multiselect",
-      "group": "Ovarian / adnexal mass",
-      "options": [
-        "Mucinous — heterogeneity and metastasis caveat",
-        "Borderline — invasion cannot be excluded on frozen",
-        "Necrotic / autolysed — limited assessment",
-        "Frozen artefact — deferred",
-        "None (suppress the automatic mucinous caveat)"
-      ],
-      "default": [],
-      "help": "The mucinous caveat is added automatically for mucinous types; tick None to suppress it.",
-      "showIf": {
-        "field": "scenario",
-        "is": "Ovarian / adnexal mass"
-      }
-    },
-    {
-      "id": "luSide",
-      "label": "Side",
-      "type": "select",
-      "group": "Lung wedge / nodule",
-      "options": [
-        "",
-        "Right",
-        "Left"
-      ],
-      "optionLabels": {
-        "": "Not stated"
-      },
-      "default": "",
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luLobe",
-      "label": "Lobe",
-      "type": "select",
-      "group": "Lung wedge / nodule",
-      "options": [
-        "",
-        "Upper lobe",
-        "Middle lobe",
-        "Lower lobe",
-        "Lingula"
-      ],
-      "optionLabels": {
-        "": "Not stated"
-      },
-      "default": "",
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luSpecimen",
-      "label": "Specimen",
-      "type": "select",
-      "group": "Lung wedge / nodule",
-      "options": [
-        "Wedge excision",
-        "Nodule excision",
-        "Pleural nodule, punch",
-        "Segmentectomy"
-      ],
-      "default": "Wedge excision",
-      "help": "Switches the macro noun and the diagnosis-line organ phrase (LUNG … wedge excision x frozen section).",
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luSize",
-      "label": "Specimen size (cm)",
-      "type": "text",
-      "group": "Lung wedge / nodule",
-      "placeholder": "6 x 2 x 1.5",
-      "default": "",
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luStapleCm",
-      "label": "Staple line length (cm)",
-      "type": "number",
-      "group": "Lung wedge / nodule",
-      "default": "",
-      "min": 0,
-      "help": "Blank: no staple line sentence.",
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luStapleTrimmed",
-      "label": "Staple line trimmed off and submitted separately",
-      "type": "checkbox",
-      "group": "Lung wedge / nodule",
-      "default": true,
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luInked",
-      "label": "Parenchymal margin inked black",
-      "type": "checkbox",
-      "group": "Lung wedge / nodule",
-      "default": true,
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luNoduleCount",
-      "label": "Nodules",
-      "type": "select",
-      "group": "Lung wedge / nodule",
-      "options": [
-        "0",
-        "1",
-        "2",
-        "Multiple"
-      ],
-      "default": "1",
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luNoduleCm",
-      "label": "Largest nodule (cm)",
-      "type": "number",
-      "group": "Lung wedge / nodule",
-      "default": "",
-      "min": 0,
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luSecondCm",
-      "label": "Second nodule (cm)",
-      "type": "number",
-      "group": "Lung wedge / nodule",
-      "default": "",
-      "min": 0,
-      "help": "Used when two or more nodules are set.",
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luSecondDistCm",
-      "label": "Second nodule, distance from the main nodule (cm)",
-      "type": "number",
-      "group": "Lung wedge / nodule",
-      "default": "",
-      "min": 0,
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luMarginCm",
-      "label": "Distance to the staple-line margin (cm)",
-      "type": "number",
-      "group": "Lung wedge / nodule",
-      "default": "",
-      "min": 0,
-      "help": "Prints in the macro and, converted to mm, in the intraoperative and diagnosis lines.",
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luPleuraGross",
-      "label": "Pleura grossly",
-      "type": "select",
-      "group": "Lung wedge / nodule",
-      "options": [
-        "Not involved grossly",
-        "Puckered",
-        "Involved grossly",
-        "Not assessable"
-      ],
-      "default": "Not involved grossly",
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luBlocks",
-      "label": "Frozen blocks",
-      "type": "number",
-      "group": "Lung wedge / nodule",
-      "default": "1",
-      "min": 1,
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luRemainder",
-      "label": "Remaining tissue submitted for paraffin sections only",
-      "type": "checkbox",
-      "group": "Lung wedge / nodule",
-      "default": true,
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luNode",
-      "label": "Intrapulmonary lymph node identified (paraffin)",
-      "type": "checkbox",
-      "group": "Lung wedge / nodule",
-      "default": false,
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luNodeResult",
-      "label": "Intrapulmonary node",
-      "type": "select",
-      "group": "Lung wedge / nodule",
-      "options": [
-        "Negative",
-        "Involved",
-        "Involved, with extranodal extension"
-      ],
-      "default": "Negative",
-      "showIf": {
-        "field": "luNode",
-        "truthy": true
-      }
-    },
-    {
-      "id": "lungResult",
-      "label": "Frozen result",
-      "type": "select",
-      "group": "Lung wedge / nodule",
-      "options": [
-        "Adenocarcinoma",
-        "Adenocarcinoma, lepidic-predominant or in situ (extent deferred)",
-        "Squamous cell carcinoma",
-        "Non-small cell carcinoma, not further classifiable on frozen",
-        "Small cell carcinoma",
-        "Carcinoid tumour",
-        "Metastatic carcinoma",
-        "Necrotising granulomatous inflammation",
-        "Non-necrotising granulomatous inflammation",
-        "Organising pneumonia",
-        "Benign, no tumour identified",
-        "Deferred"
-      ],
-      "optionLabels": {
-        "Metastatic carcinoma": "Metastatic carcinoma (name the primary below)"
-      },
-      "default": "Adenocarcinoma",
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "luFavour",
-      "label": "Favoured subtype (non-small cell carcinoma)",
-      "type": "select",
-      "group": "Lung wedge / nodule",
-      "options": [
-        "",
-        "adenocarcinoma",
-        "squamous cell carcinoma"
-      ],
-      "optionLabels": {
-        "": "Not favoured"
-      },
-      "default": "",
-      "showIf": {
-        "field": "lungResult",
-        "is": "Non-small cell carcinoma, not further classifiable on frozen"
-      }
-    },
-    {
-      "id": "luPrimary",
-      "label": "Known primary (metastatic carcinoma)",
-      "type": "text",
-      "group": "Lung wedge / nodule",
-      "placeholder": "colorectal",
-      "default": "",
-      "showIf": {
-        "field": "lungResult",
-        "is": "Metastatic carcinoma"
-      }
-    },
-    {
-      "id": "luPattern",
-      "label": "Predominant pattern on paraffin (adenocarcinoma)",
-      "type": "text",
-      "group": "Lung wedge / nodule",
-      "placeholder": "acinar predominant",
-      "default": "",
-      "help": "Goes into the paraffin correlation sentence and pre-fills the linked synoptic.",
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "lungMargin",
-      "label": "Parenchymal margin at frozen",
-      "type": "select",
-      "group": "Lung wedge / nodule",
-      "options": [
-        "Clear",
-        "Close (< 5 mm)",
-        "Involved",
-        "Not applicable"
-      ],
-      "default": "Clear",
-      "help": "Distance comes from the staple-line field above.",
-      "showIf": {
-        "field": "scenario",
-        "is": "Lung wedge / nodule"
-      }
-    },
-    {
-      "id": "slnSide",
-      "label": "Side",
-      "type": "select",
-      "group": "Breast sentinel lymph node",
-      "options": [
-        "",
-        "Right",
-        "Left"
-      ],
-      "optionLabels": {
-        "": "Not stated"
-      },
-      "default": "",
-      "showIf": {
-        "field": "scenario",
-        "is": "Breast sentinel lymph node"
-      }
-    },
-    {
-      "id": "slnLabel",
-      "label": "Node label",
-      "type": "text",
-      "group": "Breast sentinel lymph node",
-      "placeholder": "SLN 1",
-      "default": "SLN 1",
-      "help": "Printed in the diagnosis line: LYMPH NODES, left SLN 1, excision x frozen section.",
-      "showIf": {
-        "field": "scenario",
-        "is": "Breast sentinel lymph node"
-      }
-    },
-    {
-      "id": "slnReceived",
-      "label": "Received as",
-      "type": "select",
-      "group": "Breast sentinel lymph node",
-      "options": [
-        "Fibroadipose tissue with nodes within",
-        "Lymph node(s) only"
-      ],
-      "default": "Fibroadipose tissue with nodes within",
-      "showIf": {
-        "field": "scenario",
-        "is": "Breast sentinel lymph node"
-      }
-    },
-    {
-      "id": "slnSize",
-      "label": "Specimen size (cm)",
-      "type": "text",
-      "group": "Breast sentinel lymph node",
-      "placeholder": "5 x 3 x 1",
-      "default": "",
-      "help": "Size of the fibroadipose tissue piece; blank when nodes only.",
-      "showIf": {
-        "field": "scenario",
-        "is": "Breast sentinel lymph node"
-      }
-    },
-    {
-      "id": "slnCount",
-      "label": "Lymph nodes identified",
-      "type": "number",
-      "group": "Breast sentinel lymph node",
-      "default": "1",
-      "min": 0,
-      "help": "0 with the result \"No nodal tissue identified\".",
-      "showIf": {
-        "field": "scenario",
-        "is": "Breast sentinel lymph node"
-      }
-    },
-    {
-      "id": "slnNodeSizes",
-      "label": "Node sizes (cm across)",
-      "type": "text",
-      "group": "Breast sentinel lymph node",
-      "placeholder": "1 and 0.5",
-      "default": "",
-      "help": "Comma- or \"and\"-separated, largest first: \"measuring approximately 1 cm and 0.5 cm across respectively\".",
-      "showIf": {
-        "field": "scenario",
-        "is": "Breast sentinel lymph node"
-      }
-    },
-    {
-      "id": "slnFatStripped",
-      "label": "Fatty tissue stripped off",
-      "type": "checkbox",
-      "group": "Breast sentinel lymph node",
-      "default": true,
-      "showIf": {
-        "field": "scenario",
-        "is": "Breast sentinel lymph node"
-      }
-    },
-    {
-      "id": "slnBlocks",
-      "label": "Frozen blocks",
-      "type": "number",
-      "group": "Breast sentinel lymph node",
-      "default": "1",
-      "min": 1,
-      "showIf": {
-        "field": "scenario",
-        "is": "Breast sentinel lymph node"
-      }
-    },
-    {
-      "id": "slnResult",
-      "label": "Frozen result",
-      "type": "select",
-      "group": "Breast sentinel lymph node",
-      "options": [
-        "Negative",
-        "Isolated tumour cells",
-        "Micrometastasis",
-        "Macrometastasis",
-        "No nodal tissue identified",
-        "Deferred"
-      ],
-      "optionLabels": {
-        "Isolated tumour cells": "Isolated tumour cells only (0.2 mm or less)",
-        "Micrometastasis": "Micrometastasis (more than 0.2 mm, up to 2 mm)",
-        "Macrometastasis": "Macrometastasis (more than 2 mm)"
-      },
-      "default": "Negative",
-      "showIf": {
-        "field": "scenario",
-        "is": "Breast sentinel lymph node"
-      }
-    },
-    {
-      "id": "slnPositive",
-      "label": "Nodes involved",
-      "type": "number",
-      "group": "Breast sentinel lymph node",
-      "default": "1",
-      "min": 0,
-      "showIf": {
-        "field": "slnResult",
-        "is": [
-          "Isolated tumour cells",
-          "Micrometastasis",
-          "Macrometastasis"
-        ]
-      }
-    },
-    {
-      "id": "slnMetMm",
-      "label": "Largest metastatic focus (mm)",
-      "type": "number",
-      "group": "Breast sentinel lymph node",
-      "default": "",
-      "min": 0,
-      "showIf": {
-        "field": "slnResult",
-        "is": [
-          "Isolated tumour cells",
-          "Micrometastasis",
-          "Macrometastasis"
-        ]
-      }
-    },
-    {
-      "id": "slnEne",
-      "label": "Extranodal extension",
-      "type": "select",
-      "group": "Breast sentinel lymph node",
-      "options": [
-        "Not identified",
-        "Present",
-        "Cannot be assessed"
-      ],
-      "default": "Not identified",
-      "showIf": {
-        "field": "slnResult",
-        "is": [
-          "Micrometastasis",
-          "Macrometastasis"
-        ]
-      }
-    },
-    {
-      "id": "slnTreatment",
-      "label": "Presurgical therapy",
-      "type": "select",
-      "group": "Breast sentinel lymph node",
-      "options": [
-        "No known presurgical therapy",
-        "Presurgical therapy, no definite response",
-        "Presurgical therapy, metastasis with treatment effect",
-        "Presurgical therapy, fibrous scarring and no metastasis"
-      ],
-      "default": "No known presurgical therapy",
-      "help": "Post-neoadjuvant nodes: the paraffin line names the treatment effect and the linked synoptic derives ypN.",
-      "showIf": {
-        "field": "scenario",
-        "is": "Breast sentinel lymph node"
-      }
-    },
-    {
-      "id": "slnMillerPayne",
-      "label": "Miller and Payne grade (nodal response, optional)",
-      "type": "text",
-      "group": "Breast sentinel lymph node",
-      "placeholder": "Grade 2",
-      "default": "",
-      "showIf": {
-        "field": "slnTreatment",
-        "is": "Presurgical therapy, metastasis with treatment effect"
-      }
-    },
-    {
-      "id": "noduleResult",
-      "label": "Frozen result",
-      "type": "select",
-      "options": [
-        "Benign",
-        "Malignant",
-        "Deferred"
-      ],
-      "optionLabels": {
-        "Deferred": "Defer to paraffin"
-      },
-      "default": "Benign",
-      "showIf": {
-        "field": "scenario",
-        "is": "Nodule / mass"
-      }
-    },
-    {
-      "id": "tumourType",
-      "label": "Tumour type / favoured diagnosis",
-      "type": "text",
-      "placeholder": "squamous cell carcinoma / mucinous cystadenoma / favour adenocarcinoma",
-      "default": "",
-      "showIf": {
-        "field": "scenario",
-        "is": [
-          "Margin",
-          "Lymph node",
-          "Ovarian / adnexal mass",
-          "Nodule / mass"
-        ]
-      }
-    },
-    {
-      "id": "freeResult",
-      "label": "Frozen diagnosis (free text)",
-      "type": "text",
-      "placeholder": "Fibrous tissue with chronic inflammation; no malignancy",
-      "default": "",
-      "showIf": {
-        "field": "scenario",
-        "is": "Other"
-      }
-    },
-    {
-      "id": "correlation",
-      "label": "Paraffin correlation",
-      "type": "select",
-      "options": [
-        "Concordant",
-        "Discordant",
-        "Deferred"
-      ],
-      "optionLabels": {
-        "Concordant": "Paraffin confirms the frozen diagnosis",
-        "Discordant": "Paraffin disagrees with the frozen diagnosis",
-        "Deferred": "Diagnosis deferred at frozen section"
-      },
-      "default": "Concordant"
-    },
-    {
-      "id": "discordanceReason",
-      "label": "Reason for discordance",
-      "type": "select",
-      "options": [
-        "Sampling",
-        "Interpretation",
-        "Technical"
-      ],
-      "default": "Sampling",
-      "showIf": {
-        "field": "correlation",
-        "is": "Discordant"
-      }
-    },
-    {
-      "id": "paraffinDx",
-      "label": "Final (paraffin) diagnosis",
-      "type": "text",
-      "placeholder": "Squamous cell carcinoma involving the margin",
-      "default": "",
-      "showIf": {
-        "field": "correlation",
-        "is": [
-          "Discordant",
-          "Deferred"
-        ]
-      }
-    },
-    {
-      "id": "tissue",
-      "label": "Paraffin microscopy: tissue seen",
-      "type": "text",
-      "placeholder": "squamous mucosa with underlying skeletal muscle",
-      "default": "",
-      "help": "Leave blank for the scenario default."
-    },
-    {
-      "id": "additionalNotes",
-      "label": "Additional microscopy",
-      "type": "textarea",
-      "placeholder": "Free text appended to the paraffin microscopy for this part",
-      "default": ""
-    }
-  ],
-  "example": {
-    "caseTitle": "",
-    "fsPathologists": "Prof. A Cheung / Dr. HY Tan",
-    "fsTime": "1321",
-    "fsDate": "13/05/2026",
-    "fsReportedTo": "",
-    "options": {
-      "includeHeader": false,
-      "macro": true
-    },
-    "parts": [
-      {
-        "label": "A",
-        "values": {
-          "specimenName": "Tongue, medial margin",
-          "scenario": "Margin",
-          "pieces": "1",
-          "tissueDesc": "tan coloured tissue",
-          "tissueDescOther": "",
-          "size": "1 x 0.4 x 0.2 cm",
-          "handling": "All embedded",
-          "blocks": "1",
-          "marginResult": "Negative",
-          "marginDistance": "",
-          "dysplasiaGrade": "Moderate",
-          "nodeResult": "Negative",
-          "metSize": "",
-          "parathyroidResult": "Parathyroid, hypercellular",
-          "ovaryResult": "Benign",
-          "noduleResult": "Benign",
-          "tumourType": "squamous cell carcinoma",
-          "freeResult": "",
-          "correlation": "Concordant",
-          "discordanceReason": "Sampling",
-          "paraffinDx": "",
-          "tissue": "",
-          "additionalNotes": "",
-          "slnSide": "",
-          "slnLabel": "SLN 1",
-          "slnReceived": "Fibroadipose tissue with nodes within",
-          "slnSize": "",
-          "slnCount": "1",
-          "slnNodeSizes": "",
-          "slnFatStripped": true,
-          "slnBlocks": "1",
-          "slnResult": "Negative",
-          "slnPositive": "1",
-          "slnMetMm": "",
-          "slnEne": "Not identified",
-          "slnTreatment": "No known presurgical therapy",
-          "slnMillerPayne": ""
-        }
-      },
-      {
-        "label": "B",
-        "values": {
-          "specimenName": "Tongue, posterior margin",
-          "scenario": "Margin",
-          "pieces": "1",
-          "tissueDesc": "tan coloured tissue",
-          "tissueDescOther": "",
-          "size": "1 x 0.4 x 0.2 cm",
-          "handling": "All embedded",
-          "blocks": "1",
-          "marginResult": "Negative",
-          "marginDistance": "",
-          "dysplasiaGrade": "Moderate",
-          "nodeResult": "Negative",
-          "metSize": "",
-          "parathyroidResult": "Parathyroid, hypercellular",
-          "ovaryResult": "Benign",
-          "noduleResult": "Benign",
-          "tumourType": "squamous cell carcinoma",
-          "freeResult": "",
-          "correlation": "Concordant",
-          "discordanceReason": "Sampling",
-          "paraffinDx": "",
-          "tissue": "squamous mucosa with underlying tonsillar crypts, mucous glands and lymphoid tissue",
-          "additionalNotes": "",
-          "slnSide": "",
-          "slnLabel": "SLN 1",
-          "slnReceived": "Fibroadipose tissue with nodes within",
-          "slnSize": "",
-          "slnCount": "1",
-          "slnNodeSizes": "",
-          "slnFatStripped": true,
-          "slnBlocks": "1",
-          "slnResult": "Negative",
-          "slnPositive": "1",
-          "slnMetMm": "",
-          "slnEne": "Not identified",
-          "slnTreatment": "No known presurgical therapy",
-          "slnMillerPayne": ""
-        }
-      },
-      {
-        "label": "C",
-        "values": {
-          "specimenName": "Tongue, deep margin",
-          "scenario": "Margin",
-          "pieces": "2",
-          "tissueDesc": "tan coloured tissue",
-          "tissueDescOther": "",
-          "size": "0.5 x 0.4 x 0.2 cm each",
-          "handling": "All embedded",
-          "blocks": "1",
-          "marginResult": "Negative",
-          "marginDistance": "",
-          "dysplasiaGrade": "Moderate",
-          "nodeResult": "Negative",
-          "metSize": "",
-          "parathyroidResult": "Parathyroid, hypercellular",
-          "ovaryResult": "Benign",
-          "noduleResult": "Benign",
-          "tumourType": "squamous cell carcinoma",
-          "freeResult": "",
-          "correlation": "Concordant",
-          "discordanceReason": "Sampling",
-          "paraffinDx": "",
-          "tissue": "skeletal muscle and adipose tissue",
-          "additionalNotes": "",
-          "slnSide": "",
-          "slnLabel": "SLN 1",
-          "slnReceived": "Fibroadipose tissue with nodes within",
-          "slnSize": "",
-          "slnCount": "1",
-          "slnNodeSizes": "",
-          "slnFatStripped": true,
-          "slnBlocks": "1",
-          "slnResult": "Negative",
-          "slnPositive": "1",
-          "slnMetMm": "",
-          "slnEne": "Not identified",
-          "slnTreatment": "No known presurgical therapy",
-          "slnMillerPayne": ""
-        }
-      },
-      {
-        "label": "D",
-        "values": {
-          "specimenName": "Tongue, anterior margin",
-          "scenario": "Margin",
-          "pieces": "1",
-          "tissueDesc": "tan coloured tissue",
-          "tissueDescOther": "",
-          "size": "1.2 x 0.3 x 0.2 cm",
-          "handling": "All embedded",
-          "blocks": "1",
-          "marginResult": "Positive",
-          "marginDistance": "",
-          "dysplasiaGrade": "Moderate",
-          "nodeResult": "Negative",
-          "metSize": "",
-          "parathyroidResult": "Parathyroid, hypercellular",
-          "ovaryResult": "Benign",
-          "noduleResult": "Benign",
-          "tumourType": "squamous cell carcinoma",
-          "freeResult": "",
-          "correlation": "Concordant",
-          "discordanceReason": "Sampling",
-          "paraffinDx": "",
-          "tissue": "",
-          "additionalNotes": "",
-          "slnSide": "",
-          "slnLabel": "SLN 1",
-          "slnReceived": "Fibroadipose tissue with nodes within",
-          "slnSize": "",
-          "slnCount": "1",
-          "slnNodeSizes": "",
-          "slnFatStripped": true,
-          "slnBlocks": "1",
-          "slnResult": "Negative",
-          "slnPositive": "1",
-          "slnMetMm": "",
-          "slnEne": "Not identified",
-          "slnTreatment": "No known presurgical therapy",
-          "slnMillerPayne": ""
-        }
-      },
-      {
-        "label": "E",
-        "values": {
-          "specimenName": "Right level I lymph node",
-          "scenario": "Lymph node",
-          "pieces": "1",
-          "tissueDesc": "lymph node",
-          "tissueDescOther": "",
-          "size": "1.5 x 1 x 0.6 cm",
-          "handling": "Bisected and all embedded",
-          "blocks": "1",
-          "marginResult": "Negative",
-          "marginDistance": "",
-          "dysplasiaGrade": "Moderate",
-          "nodeResult": "Negative",
-          "metSize": "",
-          "parathyroidResult": "Parathyroid, hypercellular",
-          "ovaryResult": "Benign",
-          "noduleResult": "Benign",
-          "tumourType": "",
-          "freeResult": "",
-          "correlation": "Concordant",
-          "discordanceReason": "Sampling",
-          "paraffinDx": "",
-          "tissue": "",
-          "additionalNotes": "",
-          "slnSide": "",
-          "slnLabel": "SLN 1",
-          "slnReceived": "Fibroadipose tissue with nodes within",
-          "slnSize": "",
-          "slnCount": "1",
-          "slnNodeSizes": "",
-          "slnFatStripped": true,
-          "slnBlocks": "1",
-          "slnResult": "Negative",
-          "slnPositive": "1",
-          "slnMetMm": "",
-          "slnEne": "Not identified",
-          "slnTreatment": "No known presurgical therapy",
-          "slnMillerPayne": ""
-        }
-      }
-    ]
+  {
+   "id": "fsDate",
+   "label": "Phone reported on (date)",
+   "placeholder": "13/05/2026"
+  },
+  {
+   "id": "fsReportedTo",
+   "label": "Reported to",
+   "placeholder": "Dr Lee (OT 3)",
+   "help": "Optional. Clinician names are allowed; never patient details."
   }
+ ],
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MACROSCOPIC / INTRAOPERATIVE CONSULTATION / MICROSCOPIC / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description for each frozen part",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "text",
+   "placeholder": "Tongue, medial margin",
+   "default": ""
+  },
+  {
+   "id": "scenario",
+   "label": "Scenario",
+   "type": "select",
+   "options": [
+    "Margin",
+    "Lymph node",
+    "Parathyroid",
+    "Ovarian / adnexal mass",
+    "Lung wedge / nodule",
+    "Breast sentinel lymph node",
+    "Nodule / mass",
+    "Other"
+   ],
+   "optionLabels": {
+    "Nodule / mass": "Nodule or mass (lung, thyroid, other)",
+    "Other": "Tissue identification / other (free text)",
+    "Lung wedge / nodule": "Lung wedge / nodule (staged pair)",
+    "Breast sentinel lymph node": "Breast sentinel lymph node(s) (staged pair)"
+   },
+   "default": "Margin"
+  },
+  {
+   "id": "pieces",
+   "label": "Number of pieces",
+   "type": "number",
+   "default": "1",
+   "min": 1
+  },
+  {
+   "id": "tissueDesc",
+   "label": "Tissue as received",
+   "type": "select",
+   "options": [
+    "tan coloured tissue",
+    "fibrofatty tissue",
+    "skin",
+    "lymph node",
+    "mucosa",
+    "greyish tissue",
+    "other"
+   ],
+   "default": "tan coloured tissue"
+  },
+  {
+   "id": "tissueDescOther",
+   "label": "Describe tissue",
+   "type": "text",
+   "placeholder": "brownish nodular tissue",
+   "default": "",
+   "showIf": {
+    "field": "tissueDesc",
+    "is": "other"
+   }
+  },
+  {
+   "id": "size",
+   "label": "Measurement",
+   "type": "text",
+   "placeholder": "1 x 0.4 x 0.2 cm",
+   "default": ""
+  },
+  {
+   "id": "handling",
+   "label": "Handling",
+   "type": "select",
+   "options": [
+    "All embedded",
+    "Bisected and all embedded",
+    "Serially sectioned and all embedded",
+    "Representative section taken"
+   ],
+   "default": "All embedded"
+  },
+  {
+   "id": "blocks",
+   "label": "Frozen blocks",
+   "type": "number",
+   "default": "1",
+   "min": 1
+  },
+  {
+   "id": "marginResult",
+   "label": "Frozen result",
+   "type": "select",
+   "options": [
+    "Negative",
+    "Positive",
+    "Close",
+    "Dysplasia only",
+    "Atypical, deferred"
+   ],
+   "optionLabels": {
+    "Negative": "No malignancy",
+    "Positive": "Carcinoma present at margin",
+    "Close": "Negative, tumour close to margin",
+    "Dysplasia only": "Dysplasia, no invasive malignancy",
+    "Atypical, deferred": "Atypical cells, defer to paraffin"
+   },
+   "default": "Negative",
+   "showIf": {
+    "field": "scenario",
+    "is": "Margin"
+   }
+  },
+  {
+   "id": "marginDistance",
+   "label": "Distance to margin (mm)",
+   "type": "number",
+   "default": "",
+   "min": 0,
+   "showIf": {
+    "field": "marginResult",
+    "is": "Close"
+   }
+  },
+  {
+   "id": "dysplasiaGrade",
+   "label": "Dysplasia grade",
+   "type": "select",
+   "options": [
+    "Mild",
+    "Moderate",
+    "Severe",
+    "High grade"
+   ],
+   "default": "Moderate",
+   "showIf": {
+    "field": "marginResult",
+    "is": "Dysplasia only"
+   }
+  },
+  {
+   "id": "nodeResult",
+   "label": "Frozen result",
+   "type": "select",
+   "options": [
+    "Negative",
+    "Macrometastasis",
+    "Micrometastasis",
+    "Deferred"
+   ],
+   "optionLabels": {
+    "Negative": "Negative for malignancy",
+    "Macrometastasis": "Metastatic carcinoma, macrometastasis (> 2 mm)",
+    "Micrometastasis": "Metastatic carcinoma, micrometastasis (0.2–2 mm)",
+    "Deferred": "Defer to paraffin"
+   },
+   "default": "Negative",
+   "showIf": {
+    "field": "scenario",
+    "is": "Lymph node"
+   }
+  },
+  {
+   "id": "metSize",
+   "label": "Largest metastatic focus (mm)",
+   "type": "number",
+   "default": "",
+   "min": 0,
+   "showIf": {
+    "field": "nodeResult",
+    "is": [
+     "Macrometastasis",
+     "Micrometastasis"
+    ]
+   }
+  },
+  {
+   "id": "parathyroidResult",
+   "label": "Frozen result",
+   "type": "select",
+   "options": [
+    "Parathyroid, hypercellular",
+    "Parathyroid, normocellular",
+    "Thyroid tissue",
+    "Lymph node",
+    "Adipose tissue",
+    "Thymic tissue"
+   ],
+   "default": "Parathyroid, hypercellular",
+   "showIf": {
+    "field": "scenario",
+    "is": "Parathyroid"
+   }
+  },
+  {
+   "id": "ovSide",
+   "label": "Side",
+   "type": "select",
+   "group": "Ovarian / adnexal mass",
+   "options": [
+    "",
+    "Right",
+    "Left",
+    "Bilateral"
+   ],
+   "optionLabels": {
+    "": "Not stated"
+   },
+   "default": "",
+   "help": "Two parts is the usual LIS pattern; Bilateral only when both adnexa arrive in one container.",
+   "showIf": {
+    "field": "scenario",
+    "is": "Ovarian / adnexal mass"
+   }
+  },
+  {
+   "id": "ovSpecimen",
+   "label": "Specimen",
+   "type": "select",
+   "group": "Ovarian / adnexal mass",
+   "options": [
+    "",
+    "Salpingo-oophorectomy",
+    "Oophorectomy",
+    "Ovarian cystectomy",
+    "Biopsy of ovarian mass",
+    "Adnexal mass, NOS"
+   ],
+   "optionLabels": {
+    "": "Generic (use the fields above)"
+   },
+   "default": "",
+   "help": "Picking a specimen switches the macro and the diagnosis line to the ovarian form; leave blank to keep the generic wording.",
+   "showIf": {
+    "field": "scenario",
+    "is": "Ovarian / adnexal mass"
+   }
+  },
+  {
+   "id": "ovReceived",
+   "label": "Received",
+   "type": "select",
+   "group": "Ovarian / adnexal mass",
+   "options": [
+    "Intact",
+    "Ruptured, capsule defect present on receipt",
+    "Fragmented (cystectomy or morcellated)",
+    "Opened by surgeon"
+   ],
+   "default": "Intact",
+   "showIf": {
+    "field": "scenario",
+    "is": "Ovarian / adnexal mass"
+   }
+  },
+  {
+   "id": "ovSizeMm",
+   "label": "Greatest dimension (mm)",
+   "type": "number",
+   "group": "Ovarian / adnexal mass",
+   "default": "",
+   "min": 0,
+   "showIf": {
+    "field": "scenario",
+    "is": "Ovarian / adnexal mass"
+   }
+  },
+  {
+   "id": "ovWeightG",
+   "label": "Weight (g)",
+   "type": "number",
+   "group": "Ovarian / adnexal mass",
+   "default": "",
+   "min": 0,
+   "showIf": {
+    "field": "scenario",
+    "is": "Ovarian / adnexal mass"
+   }
+  },
+  {
+   "id": "ovSurface",
+   "label": "Outer surface",
+   "type": "select",
+   "group": "Ovarian / adnexal mass",
+   "options": [
+    "Smooth",
+    "Excrescences or papillary projections",
+    "Adhesions",
+    "Not assessable"
+   ],
+   "default": "Smooth",
+   "showIf": {
+    "field": "scenario",
+    "is": "Ovarian / adnexal mass"
+   }
+  },
+  {
+   "id": "ovCut",
+   "label": "Cut surface",
+   "type": "multiselect",
+   "group": "Ovarian / adnexal mass",
+   "options": [
+    "Unilocular cyst",
+    "Multilocular cyst",
+    "Serous fluid",
+    "Mucinous contents",
+    "Sebaceous material and hair",
+    "Chocolate-brown fluid",
+    "Solid areas",
+    "Papillary excrescences (inner surface)",
+    "Necrosis",
+    "Haemorrhage",
+    "Torsion (haemorrhagic infarction)"
+   ],
+   "default": [],
+   "showIf": {
+    "field": "scenario",
+    "is": "Ovarian / adnexal mass"
+   }
+  },
+  {
+   "id": "ovBlocks",
+   "label": "Frozen blocks (ovarian form)",
+   "type": "number",
+   "group": "Ovarian / adnexal mass",
+   "default": "1",
+   "min": 1,
+   "showIf": {
+    "field": "ovSpecimen",
+    "truthy": true
+   }
+  },
+  {
+   "id": "ovaryResult",
+   "label": "Frozen result",
+   "type": "select",
+   "options": [
+    "Benign",
+    "Non-neoplastic",
+    "Borderline",
+    "Borderline, at least (invasion cannot be excluded)",
+    "Malignant",
+    "Malignant, favour metastatic",
+    "Deferred"
+   ],
+   "optionLabels": {
+    "Borderline, at least (invasion cannot be excluded)": "At least borderline (invasion cannot be excluded)",
+    "Deferred": "Defer to paraffin"
+   },
+   "default": "Benign",
+   "showIf": {
+    "field": "scenario",
+    "is": "Ovarian / adnexal mass"
+   },
+   "group": "Ovarian / adnexal mass"
+  },
+  {
+   "id": "ovType",
+   "label": "Type / favoured diagnosis",
+   "type": "select",
+   "group": "Ovarian / adnexal mass",
+   "options": [
+    "",
+    "serous cystadenoma or adenofibroma",
+    "mucinous cystadenoma",
+    "mature cystic teratoma",
+    "endometriotic cyst",
+    "follicular or corpus luteum cyst",
+    "fibroma / thecoma",
+    "Brenner tumour",
+    "struma ovarii",
+    "serous borderline tumour",
+    "mucinous borderline tumour",
+    "seromucinous borderline tumour",
+    "high-grade serous carcinoma",
+    "low-grade serous carcinoma",
+    "endometrioid carcinoma",
+    "clear cell carcinoma",
+    "mucinous carcinoma",
+    "carcinosarcoma",
+    "adult granulosa cell tumour",
+    "dysgerminoma",
+    "yolk sac tumour",
+    "immature teratoma",
+    "metastatic adenocarcinoma, favour gastrointestinal / appendiceal",
+    "metastatic carcinoma, primary not determined",
+    "lymphoma, favour",
+    "other (specify)"
+   ],
+   "optionLabels": {
+    "": "Not stated (or type below)",
+    "other (specify)": "Other (type in the box below)"
+   },
+   "default": "",
+   "help": "Frozen favoured type. \"Other\" or blank falls back to the free-text tumour type below.",
+   "showIf": {
+    "field": "scenario",
+    "is": "Ovarian / adnexal mass"
+   }
+  },
+  {
+   "id": "ovCaveat",
+   "label": "Caveats",
+   "type": "multiselect",
+   "group": "Ovarian / adnexal mass",
+   "options": [
+    "Mucinous — heterogeneity and metastasis caveat",
+    "Borderline — invasion cannot be excluded on frozen",
+    "Necrotic / autolysed — limited assessment",
+    "Frozen artefact — deferred",
+    "None (suppress the automatic mucinous caveat)"
+   ],
+   "default": [],
+   "help": "The mucinous caveat is added automatically for mucinous types; tick None to suppress it.",
+   "showIf": {
+    "field": "scenario",
+    "is": "Ovarian / adnexal mass"
+   }
+  },
+  {
+   "id": "luSide",
+   "label": "Side",
+   "type": "select",
+   "group": "Lung wedge / nodule",
+   "options": [
+    "",
+    "Right",
+    "Left"
+   ],
+   "optionLabels": {
+    "": "Not stated"
+   },
+   "default": "",
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luLobe",
+   "label": "Lobe",
+   "type": "select",
+   "group": "Lung wedge / nodule",
+   "options": [
+    "",
+    "Upper lobe",
+    "Middle lobe",
+    "Lower lobe",
+    "Lingula"
+   ],
+   "optionLabels": {
+    "": "Not stated"
+   },
+   "default": "",
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luSpecimen",
+   "label": "Specimen",
+   "type": "select",
+   "group": "Lung wedge / nodule",
+   "options": [
+    "Wedge excision",
+    "Nodule excision",
+    "Pleural nodule, punch",
+    "Segmentectomy"
+   ],
+   "default": "Wedge excision",
+   "help": "Switches the macro noun and the diagnosis-line organ phrase (LUNG … wedge excision x frozen section).",
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luSize",
+   "label": "Specimen size (cm)",
+   "type": "text",
+   "group": "Lung wedge / nodule",
+   "placeholder": "6 x 2 x 1.5",
+   "default": "",
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luStapleCm",
+   "label": "Staple line length (cm)",
+   "type": "number",
+   "group": "Lung wedge / nodule",
+   "default": "",
+   "min": 0,
+   "help": "Blank: no staple line sentence.",
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luStapleTrimmed",
+   "label": "Staple line trimmed off and submitted separately",
+   "type": "checkbox",
+   "group": "Lung wedge / nodule",
+   "default": true,
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luInked",
+   "label": "Parenchymal margin inked black",
+   "type": "checkbox",
+   "group": "Lung wedge / nodule",
+   "default": true,
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luNoduleCount",
+   "label": "Nodules",
+   "type": "select",
+   "group": "Lung wedge / nodule",
+   "options": [
+    "0",
+    "1",
+    "2",
+    "Multiple"
+   ],
+   "default": "1",
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luNoduleCm",
+   "label": "Largest nodule (cm)",
+   "type": "number",
+   "group": "Lung wedge / nodule",
+   "default": "",
+   "min": 0,
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luSecondCm",
+   "label": "Second nodule (cm)",
+   "type": "number",
+   "group": "Lung wedge / nodule",
+   "default": "",
+   "min": 0,
+   "help": "Used when two or more nodules are set.",
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luSecondDistCm",
+   "label": "Second nodule, distance from the main nodule (cm)",
+   "type": "number",
+   "group": "Lung wedge / nodule",
+   "default": "",
+   "min": 0,
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luMarginCm",
+   "label": "Distance to the staple-line margin (cm)",
+   "type": "number",
+   "group": "Lung wedge / nodule",
+   "default": "",
+   "min": 0,
+   "help": "Prints in the macro and, converted to mm, in the intraoperative and diagnosis lines.",
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luPleuraGross",
+   "label": "Pleura grossly",
+   "type": "select",
+   "group": "Lung wedge / nodule",
+   "options": [
+    "Not involved grossly",
+    "Puckered",
+    "Involved grossly",
+    "Not assessable"
+   ],
+   "default": "Not involved grossly",
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luBlocks",
+   "label": "Frozen blocks",
+   "type": "number",
+   "group": "Lung wedge / nodule",
+   "default": "1",
+   "min": 1,
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luRemainder",
+   "label": "Remaining tissue submitted for paraffin sections only",
+   "type": "checkbox",
+   "group": "Lung wedge / nodule",
+   "default": true,
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luNode",
+   "label": "Intrapulmonary lymph node identified (paraffin)",
+   "type": "checkbox",
+   "group": "Lung wedge / nodule",
+   "default": false,
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luNodeResult",
+   "label": "Intrapulmonary node",
+   "type": "select",
+   "group": "Lung wedge / nodule",
+   "options": [
+    "Negative",
+    "Involved",
+    "Involved, with extranodal extension"
+   ],
+   "default": "Negative",
+   "showIf": {
+    "field": "luNode",
+    "truthy": true
+   }
+  },
+  {
+   "id": "lungResult",
+   "label": "Frozen result",
+   "type": "select",
+   "group": "Lung wedge / nodule",
+   "options": [
+    "Adenocarcinoma",
+    "Adenocarcinoma, lepidic-predominant or in situ (extent deferred)",
+    "Squamous cell carcinoma",
+    "Non-small cell carcinoma, not further classifiable on frozen",
+    "Small cell carcinoma",
+    "Carcinoid tumour",
+    "Metastatic carcinoma",
+    "Necrotising granulomatous inflammation",
+    "Non-necrotising granulomatous inflammation",
+    "Organising pneumonia",
+    "Benign, no tumour identified",
+    "Deferred"
+   ],
+   "optionLabels": {
+    "Metastatic carcinoma": "Metastatic carcinoma (name the primary below)"
+   },
+   "default": "Adenocarcinoma",
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "luFavour",
+   "label": "Favoured subtype (non-small cell carcinoma)",
+   "type": "select",
+   "group": "Lung wedge / nodule",
+   "options": [
+    "",
+    "adenocarcinoma",
+    "squamous cell carcinoma"
+   ],
+   "optionLabels": {
+    "": "Not favoured"
+   },
+   "default": "",
+   "showIf": {
+    "field": "lungResult",
+    "is": "Non-small cell carcinoma, not further classifiable on frozen"
+   }
+  },
+  {
+   "id": "luPrimary",
+   "label": "Known primary (metastatic carcinoma)",
+   "type": "text",
+   "group": "Lung wedge / nodule",
+   "placeholder": "colorectal",
+   "default": "",
+   "showIf": {
+    "field": "lungResult",
+    "is": "Metastatic carcinoma"
+   }
+  },
+  {
+   "id": "luPattern",
+   "label": "Predominant pattern on paraffin (adenocarcinoma)",
+   "type": "text",
+   "group": "Lung wedge / nodule",
+   "placeholder": "acinar predominant",
+   "default": "",
+   "help": "Goes into the paraffin correlation sentence and pre-fills the linked synoptic.",
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "lungMargin",
+   "label": "Parenchymal margin at frozen",
+   "type": "select",
+   "group": "Lung wedge / nodule",
+   "options": [
+    "Clear",
+    "Close (< 5 mm)",
+    "Involved",
+    "Not applicable"
+   ],
+   "default": "Clear",
+   "help": "Distance comes from the staple-line field above.",
+   "showIf": {
+    "field": "scenario",
+    "is": "Lung wedge / nodule"
+   }
+  },
+  {
+   "id": "slnSide",
+   "label": "Side",
+   "type": "select",
+   "group": "Breast sentinel lymph node",
+   "options": [
+    "",
+    "Right",
+    "Left"
+   ],
+   "optionLabels": {
+    "": "Not stated"
+   },
+   "default": "",
+   "showIf": {
+    "field": "scenario",
+    "is": "Breast sentinel lymph node"
+   }
+  },
+  {
+   "id": "slnLabel",
+   "label": "Node label",
+   "type": "text",
+   "group": "Breast sentinel lymph node",
+   "placeholder": "SLN 1",
+   "default": "SLN 1",
+   "help": "Printed in the diagnosis line: LYMPH NODES, left SLN 1, excision x frozen section.",
+   "showIf": {
+    "field": "scenario",
+    "is": "Breast sentinel lymph node"
+   }
+  },
+  {
+   "id": "slnReceived",
+   "label": "Received as",
+   "type": "select",
+   "group": "Breast sentinel lymph node",
+   "options": [
+    "Fibroadipose tissue with nodes within",
+    "Lymph node(s) only"
+   ],
+   "default": "Fibroadipose tissue with nodes within",
+   "showIf": {
+    "field": "scenario",
+    "is": "Breast sentinel lymph node"
+   }
+  },
+  {
+   "id": "slnSize",
+   "label": "Specimen size (cm)",
+   "type": "text",
+   "group": "Breast sentinel lymph node",
+   "placeholder": "5 x 3 x 1",
+   "default": "",
+   "help": "Size of the fibroadipose tissue piece; blank when nodes only.",
+   "showIf": {
+    "field": "scenario",
+    "is": "Breast sentinel lymph node"
+   }
+  },
+  {
+   "id": "slnCount",
+   "label": "Lymph nodes identified",
+   "type": "number",
+   "group": "Breast sentinel lymph node",
+   "default": "1",
+   "min": 0,
+   "help": "0 with the result \"No nodal tissue identified\".",
+   "showIf": {
+    "field": "scenario",
+    "is": "Breast sentinel lymph node"
+   }
+  },
+  {
+   "id": "slnNodeSizes",
+   "label": "Node sizes (cm across)",
+   "type": "text",
+   "group": "Breast sentinel lymph node",
+   "placeholder": "1 and 0.5",
+   "default": "",
+   "help": "Comma- or \"and\"-separated, largest first: \"measuring approximately 1 cm and 0.5 cm across respectively\".",
+   "showIf": {
+    "field": "scenario",
+    "is": "Breast sentinel lymph node"
+   }
+  },
+  {
+   "id": "slnFatStripped",
+   "label": "Fatty tissue stripped off",
+   "type": "checkbox",
+   "group": "Breast sentinel lymph node",
+   "default": true,
+   "showIf": {
+    "field": "scenario",
+    "is": "Breast sentinel lymph node"
+   }
+  },
+  {
+   "id": "slnBlocks",
+   "label": "Frozen blocks",
+   "type": "number",
+   "group": "Breast sentinel lymph node",
+   "default": "1",
+   "min": 1,
+   "showIf": {
+    "field": "scenario",
+    "is": "Breast sentinel lymph node"
+   }
+  },
+  {
+   "id": "slnResult",
+   "label": "Frozen result",
+   "type": "select",
+   "group": "Breast sentinel lymph node",
+   "options": [
+    "Negative",
+    "Isolated tumour cells",
+    "Micrometastasis",
+    "Macrometastasis",
+    "No nodal tissue identified",
+    "Deferred"
+   ],
+   "optionLabels": {
+    "Isolated tumour cells": "Isolated tumour cells only (0.2 mm or less)",
+    "Micrometastasis": "Micrometastasis (more than 0.2 mm, up to 2 mm)",
+    "Macrometastasis": "Macrometastasis (more than 2 mm)"
+   },
+   "default": "Negative",
+   "showIf": {
+    "field": "scenario",
+    "is": "Breast sentinel lymph node"
+   }
+  },
+  {
+   "id": "slnPositive",
+   "label": "Nodes involved",
+   "type": "number",
+   "group": "Breast sentinel lymph node",
+   "default": "1",
+   "min": 0,
+   "showIf": {
+    "field": "slnResult",
+    "is": [
+     "Isolated tumour cells",
+     "Micrometastasis",
+     "Macrometastasis"
+    ]
+   }
+  },
+  {
+   "id": "slnMetMm",
+   "label": "Largest metastatic focus (mm)",
+   "type": "number",
+   "group": "Breast sentinel lymph node",
+   "default": "",
+   "min": 0,
+   "showIf": {
+    "field": "slnResult",
+    "is": [
+     "Isolated tumour cells",
+     "Micrometastasis",
+     "Macrometastasis"
+    ]
+   }
+  },
+  {
+   "id": "slnEne",
+   "label": "Extranodal extension",
+   "type": "select",
+   "group": "Breast sentinel lymph node",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be assessed"
+   ],
+   "default": "Not identified",
+   "showIf": {
+    "field": "slnResult",
+    "is": [
+     "Micrometastasis",
+     "Macrometastasis"
+    ]
+   }
+  },
+  {
+   "id": "slnTreatment",
+   "label": "Presurgical therapy",
+   "type": "select",
+   "group": "Breast sentinel lymph node",
+   "options": [
+    "No known presurgical therapy",
+    "Presurgical therapy, no definite response",
+    "Presurgical therapy, metastasis with treatment effect",
+    "Presurgical therapy, fibrous scarring and no metastasis"
+   ],
+   "default": "No known presurgical therapy",
+   "help": "Post-neoadjuvant nodes: the paraffin line names the treatment effect and the linked synoptic derives ypN.",
+   "showIf": {
+    "field": "scenario",
+    "is": "Breast sentinel lymph node"
+   }
+  },
+  {
+   "id": "slnMillerPayne",
+   "label": "Miller and Payne grade (nodal response, optional)",
+   "type": "text",
+   "group": "Breast sentinel lymph node",
+   "placeholder": "Grade 2",
+   "default": "",
+   "showIf": {
+    "field": "slnTreatment",
+    "is": "Presurgical therapy, metastasis with treatment effect"
+   }
+  },
+  {
+   "id": "noduleResult",
+   "label": "Frozen result",
+   "type": "select",
+   "options": [
+    "Benign",
+    "Malignant",
+    "Deferred"
+   ],
+   "optionLabels": {
+    "Deferred": "Defer to paraffin"
+   },
+   "default": "Benign",
+   "showIf": {
+    "field": "scenario",
+    "is": "Nodule / mass"
+   }
+  },
+  {
+   "id": "tumourType",
+   "label": "Tumour type / favoured diagnosis",
+   "type": "text",
+   "placeholder": "squamous cell carcinoma / mucinous cystadenoma / favour adenocarcinoma",
+   "default": "",
+   "showIf": {
+    "field": "scenario",
+    "is": [
+     "Margin",
+     "Lymph node",
+     "Ovarian / adnexal mass",
+     "Nodule / mass"
+    ]
+   }
+  },
+  {
+   "id": "freeResult",
+   "label": "Frozen diagnosis (free text)",
+   "type": "text",
+   "placeholder": "Fibrous tissue with chronic inflammation; no malignancy",
+   "default": "",
+   "showIf": {
+    "field": "scenario",
+    "is": "Other"
+   }
+  },
+  {
+   "id": "correlation",
+   "label": "Paraffin correlation",
+   "type": "select",
+   "options": [
+    "Concordant",
+    "Discordant",
+    "Deferred"
+   ],
+   "optionLabels": {
+    "Concordant": "Paraffin confirms the frozen diagnosis",
+    "Discordant": "Paraffin disagrees with the frozen diagnosis",
+    "Deferred": "Diagnosis deferred at frozen section"
+   },
+   "default": "Concordant"
+  },
+  {
+   "id": "discordanceReason",
+   "label": "Reason for discordance",
+   "type": "select",
+   "options": [
+    "Sampling",
+    "Interpretation",
+    "Technical"
+   ],
+   "default": "Sampling",
+   "showIf": {
+    "field": "correlation",
+    "is": "Discordant"
+   }
+  },
+  {
+   "id": "paraffinDx",
+   "label": "Final (paraffin) diagnosis",
+   "type": "text",
+   "placeholder": "Squamous cell carcinoma involving the margin",
+   "default": "",
+   "showIf": {
+    "field": "correlation",
+    "is": [
+     "Discordant",
+     "Deferred"
+    ]
+   }
+  },
+  {
+   "id": "tissue",
+   "label": "Paraffin microscopy: tissue seen",
+   "type": "text",
+   "placeholder": "squamous mucosa with underlying skeletal muscle",
+   "default": "",
+   "help": "Leave blank for the scenario default."
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "Free text appended to the paraffin microscopy for this part",
+   "default": ""
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "fsPathologists": "Prof. A Cheung / Dr. HY Tan",
+  "fsTime": "1321",
+  "fsDate": "13/05/2026",
+  "fsReportedTo": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "Tongue, medial margin",
+     "scenario": "Margin",
+     "pieces": "1",
+     "tissueDesc": "tan coloured tissue",
+     "tissueDescOther": "",
+     "size": "1 x 0.4 x 0.2 cm",
+     "handling": "All embedded",
+     "blocks": "1",
+     "marginResult": "Negative",
+     "marginDistance": "",
+     "dysplasiaGrade": "Moderate",
+     "nodeResult": "Negative",
+     "metSize": "",
+     "parathyroidResult": "Parathyroid, hypercellular",
+     "ovaryResult": "Benign",
+     "noduleResult": "Benign",
+     "tumourType": "squamous cell carcinoma",
+     "freeResult": "",
+     "correlation": "Concordant",
+     "discordanceReason": "Sampling",
+     "paraffinDx": "",
+     "tissue": "",
+     "additionalNotes": "",
+     "slnSide": "",
+     "slnLabel": "SLN 1",
+     "slnReceived": "Fibroadipose tissue with nodes within",
+     "slnSize": "",
+     "slnCount": "1",
+     "slnNodeSizes": "",
+     "slnFatStripped": true,
+     "slnBlocks": "1",
+     "slnResult": "Negative",
+     "slnPositive": "1",
+     "slnMetMm": "",
+     "slnEne": "Not identified",
+     "slnTreatment": "No known presurgical therapy",
+     "slnMillerPayne": ""
+    }
+   },
+   {
+    "label": "B",
+    "values": {
+     "specimenName": "Tongue, posterior margin",
+     "scenario": "Margin",
+     "pieces": "1",
+     "tissueDesc": "tan coloured tissue",
+     "tissueDescOther": "",
+     "size": "1 x 0.4 x 0.2 cm",
+     "handling": "All embedded",
+     "blocks": "1",
+     "marginResult": "Negative",
+     "marginDistance": "",
+     "dysplasiaGrade": "Moderate",
+     "nodeResult": "Negative",
+     "metSize": "",
+     "parathyroidResult": "Parathyroid, hypercellular",
+     "ovaryResult": "Benign",
+     "noduleResult": "Benign",
+     "tumourType": "squamous cell carcinoma",
+     "freeResult": "",
+     "correlation": "Concordant",
+     "discordanceReason": "Sampling",
+     "paraffinDx": "",
+     "tissue": "squamous mucosa with underlying tonsillar crypts, mucous glands and lymphoid tissue",
+     "additionalNotes": "",
+     "slnSide": "",
+     "slnLabel": "SLN 1",
+     "slnReceived": "Fibroadipose tissue with nodes within",
+     "slnSize": "",
+     "slnCount": "1",
+     "slnNodeSizes": "",
+     "slnFatStripped": true,
+     "slnBlocks": "1",
+     "slnResult": "Negative",
+     "slnPositive": "1",
+     "slnMetMm": "",
+     "slnEne": "Not identified",
+     "slnTreatment": "No known presurgical therapy",
+     "slnMillerPayne": ""
+    }
+   },
+   {
+    "label": "C",
+    "values": {
+     "specimenName": "Tongue, deep margin",
+     "scenario": "Margin",
+     "pieces": "2",
+     "tissueDesc": "tan coloured tissue",
+     "tissueDescOther": "",
+     "size": "0.5 x 0.4 x 0.2 cm each",
+     "handling": "All embedded",
+     "blocks": "1",
+     "marginResult": "Negative",
+     "marginDistance": "",
+     "dysplasiaGrade": "Moderate",
+     "nodeResult": "Negative",
+     "metSize": "",
+     "parathyroidResult": "Parathyroid, hypercellular",
+     "ovaryResult": "Benign",
+     "noduleResult": "Benign",
+     "tumourType": "squamous cell carcinoma",
+     "freeResult": "",
+     "correlation": "Concordant",
+     "discordanceReason": "Sampling",
+     "paraffinDx": "",
+     "tissue": "skeletal muscle and adipose tissue",
+     "additionalNotes": "",
+     "slnSide": "",
+     "slnLabel": "SLN 1",
+     "slnReceived": "Fibroadipose tissue with nodes within",
+     "slnSize": "",
+     "slnCount": "1",
+     "slnNodeSizes": "",
+     "slnFatStripped": true,
+     "slnBlocks": "1",
+     "slnResult": "Negative",
+     "slnPositive": "1",
+     "slnMetMm": "",
+     "slnEne": "Not identified",
+     "slnTreatment": "No known presurgical therapy",
+     "slnMillerPayne": ""
+    }
+   },
+   {
+    "label": "D",
+    "values": {
+     "specimenName": "Tongue, anterior margin",
+     "scenario": "Margin",
+     "pieces": "1",
+     "tissueDesc": "tan coloured tissue",
+     "tissueDescOther": "",
+     "size": "1.2 x 0.3 x 0.2 cm",
+     "handling": "All embedded",
+     "blocks": "1",
+     "marginResult": "Positive",
+     "marginDistance": "",
+     "dysplasiaGrade": "Moderate",
+     "nodeResult": "Negative",
+     "metSize": "",
+     "parathyroidResult": "Parathyroid, hypercellular",
+     "ovaryResult": "Benign",
+     "noduleResult": "Benign",
+     "tumourType": "squamous cell carcinoma",
+     "freeResult": "",
+     "correlation": "Concordant",
+     "discordanceReason": "Sampling",
+     "paraffinDx": "",
+     "tissue": "",
+     "additionalNotes": "",
+     "slnSide": "",
+     "slnLabel": "SLN 1",
+     "slnReceived": "Fibroadipose tissue with nodes within",
+     "slnSize": "",
+     "slnCount": "1",
+     "slnNodeSizes": "",
+     "slnFatStripped": true,
+     "slnBlocks": "1",
+     "slnResult": "Negative",
+     "slnPositive": "1",
+     "slnMetMm": "",
+     "slnEne": "Not identified",
+     "slnTreatment": "No known presurgical therapy",
+     "slnMillerPayne": ""
+    }
+   },
+   {
+    "label": "E",
+    "values": {
+     "specimenName": "Right level I lymph node",
+     "scenario": "Lymph node",
+     "pieces": "1",
+     "tissueDesc": "lymph node",
+     "tissueDescOther": "",
+     "size": "1.5 x 1 x 0.6 cm",
+     "handling": "Bisected and all embedded",
+     "blocks": "1",
+     "marginResult": "Negative",
+     "marginDistance": "",
+     "dysplasiaGrade": "Moderate",
+     "nodeResult": "Negative",
+     "metSize": "",
+     "parathyroidResult": "Parathyroid, hypercellular",
+     "ovaryResult": "Benign",
+     "noduleResult": "Benign",
+     "tumourType": "",
+     "freeResult": "",
+     "correlation": "Concordant",
+     "discordanceReason": "Sampling",
+     "paraffinDx": "",
+     "tissue": "",
+     "additionalNotes": "",
+     "slnSide": "",
+     "slnLabel": "SLN 1",
+     "slnReceived": "Fibroadipose tissue with nodes within",
+     "slnSize": "",
+     "slnCount": "1",
+     "slnNodeSizes": "",
+     "slnFatStripped": true,
+     "slnBlocks": "1",
+     "slnResult": "Negative",
+     "slnPositive": "1",
+     "slnMetMm": "",
+     "slnEne": "Not identified",
+     "slnTreatment": "No known presurgical therapy",
+     "slnMillerPayne": ""
+    }
+   }
+  ]
+ }
 }

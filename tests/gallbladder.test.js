@@ -4,9 +4,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generate } from '../src/engine.js';
-import schema from '../schemas/gallbladder_carcinoma.json' with { type: 'json' };
+const schema = schemaSync('gallbladder_carcinoma');
 import * as gen from '../generators/gallbladder_carcinoma.js';
 import { UPGRADE_TO } from '../generators/gallbladder.js';
+import { schemaSync } from './_schema.js';
 
 const run = (c) => generate(schema, gen, c);
 const flat = (t) => t.replace(/\s+/g, ' ');

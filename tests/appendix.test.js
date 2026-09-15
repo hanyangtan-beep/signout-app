@@ -4,8 +4,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generate } from '../src/engine.js';
-import schema from '../schemas/appendix_carcinoma.json' with { type: 'json' };
+const schema = schemaSync('appendix_carcinoma');
 import * as gen from '../generators/appendix_carcinoma.js';
+import { schemaSync } from './_schema.js';
 
 const run = (c) => generate(schema, gen, c);
 const flat = (t) => t.replace(/\s+/g, ' ');

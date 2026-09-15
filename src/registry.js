@@ -40,8 +40,39 @@ export function loadPlanned(baseUrl) {
   return readJson('templates/planned.json', baseUrl).then((m) => m.planned || []).catch(() => []);
 }
 
+let sharedPromise = null;
+
+/** schemas/_shared.json — canonical definitions for fields that many templates ask identically. */
+function loadShared(baseUrl) {
+  if (!sharedPromise) {
+    sharedPromise = readJson('schemas/_shared.json', baseUrl).then((m) => m.fields || {})
+      .catch((e) => { sharedPromise = null; throw e; });
+  }
+  return sharedPromise;
+}
+
+// Replace every { "$use": "<id>" } with the shared definition. Keys written alongside $use win,
+// so a template can narrow the label without copying the whole field.
+function expandShared(node, shared) {
+  if (Array.isArray(node)) return node.map((n) => expandShared(n, shared));
+  if (!node || typeof node !== 'object') return node;
+  if (typeof node.$use === 'string') {
+    const base = shared[node.$use];
+    if (!base) throw new Error(`Unknown shared field "${node.$use}"`);
+    const { $use: _ignored, ...overrides } = node;
+    return { ...base, ...overrides };
+  }
+  const out = {};
+  for (const [k, v] of Object.entries(node)) out[k] = expandShared(v, shared);
+  return out;
+}
+
 export async function loadSchema(id, baseUrl) {
-  return readJson(`schemas/${id}.json`, baseUrl);
+  const [schema, shared] = await Promise.all([
+    readJson(`schemas/${id}.json`, baseUrl),
+    loadShared(baseUrl)
+  ]);
+  return expandShared(schema, shared);
 }
 
 export async function loadGenerator(name) {

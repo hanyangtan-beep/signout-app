@@ -1,199 +1,724 @@
 {
-  "id": "gallbladder_carcinoma",
-  "version": "2026.09",
-  "name": "Gallbladder carcinoma resection",
-  "shortName": "Gallbladder · cancer resection",
-  "label": "Gallbladder Ca",
-  "organ": "Gallbladder",
-  "system": "Hepatobiliary",
-  "kind": "cancer resection",
-  "layout": { "macroGroups": ["Specimen and tumour"], "macroFields": ["specimenName"], "pack": true },
-  "rank": 47,
-  "aliases": ["cholecystectomy", "gallbladder cancer", "icpn", "gb carcinoma", "radical cholecystectomy"],
-  "match": {
-    "site": ["gallbladder", "cystic duct", "gall bladder"],
-    "procedure": ["cholecystectomy"],
-    "clinical": ["gallbladder carcinoma", "intracholecystic papillary neoplasm", "icpn", "porcelain gallbladder"],
-    "fill": [
-      { "field": "specimenName", "from": "detail" },
-      { "field": "procedure", "from": "options" },
-      { "field": "tumourSite", "from": "options" }
-    ]
-  },
-  "macroExtract": {
-    "specimenDims": { "concept": "specimenDims", "unit": "mm", "label": true },
-    "gallbladderDims": { "concept": "dims", "unit": "mm", "near": "gallbladder" },
-    "liverDims": { "concept": "dims", "unit": "mm", "near": "liver|hepatic" },
-    "tumourDims": { "concept": "tumourDims", "unit": "mm" }
-  },
-  "specimenNoun": "resection",
-  "maxParts": 6,
-  "defaultParts": 1,
-  "generator": "gallbladder_carcinoma",
-  "style": { "british": true },
-  "source": {
-    "template": "QMH Cancer Reporting Template - GI-Gallbladder (Gallbladder carcinoma)",
-    "url": "https://awiloqmh.github.io/CancerReportingTemplate/GI-Gallbladder.html",
-    "staging": "AJCC 8th edition pTNM derived from the tumour-extension ticks (hepatic-side pT2b versus peritoneal-side pT2a preserved, and the T3 organ rule — liver plus at most one extrahepatic organ — checked against the T4 threshold of two or more extrahepatic organs or the portal vein / hepatic artery), the nodal counts and the distant-metastasis options. Cycling the extension options wipes the override. pTNM prints only with the printPTNM option, stamped (AJCC 8th edition); the stage-group line also prints there. Treatment effect maps to the y descriptor automatically.",
-    "stagingProtocol": "gallbladder",
-    "grading": "WHO 2019 digestive tumours histologic type and grade; tumour size is in cm as on the QMH page (aggregate size of all invasive foci)."
-  },
-  "partDefaults": [],
-  "options": [
-    { "id": "includeHeader", "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)", "type": "checkbox", "default": false },
-    { "id": "macro", "label": "Generate the macroscopic description and block key", "type": "checkbox", "default": true },
-    { "id": "printPTNM", "label": "Print the AJCC 8th edition pTNM block", "type": "checkbox", "default": false }
+ "id": "gallbladder_carcinoma",
+ "version": "2026.09",
+ "name": "Gallbladder carcinoma resection",
+ "shortName": "Gallbladder · cancer resection",
+ "label": "Gallbladder Ca",
+ "organ": "Gallbladder",
+ "system": "Hepatobiliary",
+ "kind": "cancer resection",
+ "layout": {
+  "macroGroups": [
+   "Specimen and tumour"
   ],
-  "fields": [
-    { "id": "specimenName", "label": "Specimen (as received: e.g. gallbladder, cholecystectomy)", "type": "text" },
-    { "id": "procedure", "label": "Procedure", "type": "select", "group": "Specimen and tumour", "options": ["Simple cholecystectomy (laparoscopic or open)", "Radical cholecystectomy (with liver resection and lymphadenectomy)", "Other", "Not specified"], "default": "Simple cholecystectomy (laparoscopic or open)" },
-    { "id": "procedureOther", "label": "Procedure (specify)", "type": "text", "showIf": { "field": "procedure", "is": "Other" } },
-    { "id": "tumourSite", "label": "Tumour site", "type": "multiselect", "group": "Specimen and tumour", "options": ["Fundus", "Body", "Cystic duct", "Other (specify)", "Cannot be determined", "Not specified"], "exclusive": ["Cannot be determined", "Not specified"], "default": ["Not specified"] },
-    { "id": "tumourSiteOther", "label": "Tumour site (specify)", "type": "text", "group": "Specimen and tumour" },
-    { "id": "grossDetails", "label": "Tumour gross appearance, stones and adjacent mucosa (macro)", "type": "text", "group": "Specimen and tumour" },
-    { "id": "blockKeyText", "label": "Block key (one line per block: e.g. 1-4 Tumour with serosa)", "type": "textarea", "group": "Specimen and tumour" },
-    { "id": "specimenDims", "label": "Specimen dimensions (mm)", "type": "text", "group": "Specimen and tumour", "placeholder": "90 x 45 x 25" },
-    { "id": "gallbladderDims", "label": "Gallbladder dimensions (mm)", "type": "text", "group": "Specimen and tumour", "placeholder": "90 x 45 x 25" },
-    { "id": "liverDims", "label": "Attached liver wedge (mm, radical resections)", "type": "text", "group": "Specimen and tumour", "placeholder": "50 x 40 x 30" },
-    { "id": "tumourSizeCm", "label": "Tumour size (cm)", "type": "number", "group": "Specimen and tumour", "min": 0, "step": 0.1 },
-    { "id": "sizeMode", "label": "Tumour size descriptor", "type": "select", "group": "Specimen and tumour", "options": ["Unifocal invasive carcinoma, greatest dimension (cm)", "Multifocal invasive carcinoma in association with an intraductal neoplasm, largest focus (cm)", "Cannot be assessed", "Not applicable"], "default": "Unifocal invasive carcinoma, greatest dimension (cm)" },
-    { "id": "sizeCannot", "label": "Tumour size cannot be assessed (explain)", "type": "text", "group": "Specimen and tumour", "showIf": { "field": "sizeMode", "is": "Cannot be assessed" } },
-    { "id": "tumourDims", "label": "Tumour dimensions (mm x mm x mm, macro)", "type": "text", "group": "Specimen and tumour" },
-
-    { "id": "histologyNotes", "label": "Tumour histology and immunohistochemical studies (free text; blank derives the descriptive sentence)", "type": "textarea", "group": "Histology and immunohistochemistry" },
-    { "id": "histType", "label": "Histologic type (WHO 2019, as on the QMH page)", "type": "select", "group": "Histology and immunohistochemistry", "options": [
-      "Adenocarcinoma",
-      "Adenocarcinoma, biliary type",
-      "Adenocarcinoma, intestinal type",
-      "Mucinous adenocarcinoma",
-      "Clear cell adenocarcinoma",
-      "Poorly cohesive carcinoma",
-      "Signet-ring cell carcinoma",
-      "Adenosquamous carcinoma",
-      "Mucinous cystic neoplasm with an associated invasive carcinoma",
-      "Intracholecystic papillary neoplasm with associated invasive carcinoma",
-      "Intracholecystic tubular neoplasm with associated invasive carcinoma",
-      "Squamous cell carcinoma",
-      "Undifferentiated carcinoma, NOS",
-      "Large cell neuroendocrine carcinoma",
-      "Small cell neuroendocrine carcinoma",
-      "Mixed neuroendocrine-non-neuroendocrine tumour (Mixed adenoneuroendocrine carcinoma) (specify components)",
-      "Other (specify)",
-      "Carcinoma, type cannot be determined"
-    ], "default": "Adenocarcinoma, biliary type" },
-    { "id": "histTypeOther", "label": "Histologic type (specify / MiNEN components)", "type": "text", "showIf": { "field": "histType", "is": ["Other (specify)", "Mixed neuroendocrine-non-neuroendocrine tumour (Mixed adenoneuroendocrine carcinoma) (specify components)"] } },
-    { "id": "grade", "label": "Histologic grade", "type": "select", "group": "Histology and immunohistochemistry", "options": ["G1, well differentiated", "G2, moderately differentiated", "G3, poorly differentiated", "GX, cannot be assessed", "Not applicable", "Other"], "default": "G2, moderately differentiated" },
-    { "id": "gradeOther", "label": "Grade (specify)", "type": "text", "showIf": { "field": "grade", "is": "Other" } },
-    { "id": "tumourExtension", "label": "Tumour extension (tick every applicable row; the deepest governs pT)", "type": "multiselect", "group": "Histology and immunohistochemistry", "options": [
-      "No evidence of primary tumour",
-      "Invades lamina propria",
-      "Invades muscular layer",
-      "Invades perimuscular connective tissue on the peritoneal side without serosal involvement",
-      "Invades perimuscular connective tissue on the hepatic side without liver involvement",
-      "Perforates serosa (visceral peritoneum)",
-      "Directly invades liver",
-      "Directly invades other adjacent organ(s) or structure(s): Stomach",
-      "Directly invades other adjacent organ(s) or structure(s): Duodenum",
-      "Directly invades other adjacent organ(s) or structure(s): Colon",
-      "Directly invades other adjacent organ(s) or structure(s): Pancreas",
-      "Directly invades other adjacent organ(s) or structure(s): Extrahepatic bile ducts",
-      "Directly invades other adjacent organ(s) or structure(s): Omentum",
-      "Directly invades other adjacent organ(s) or structure(s): Main portal vein",
-      "Directly invades other adjacent organ(s) or structure(s): Hepatic artery",
-      "Directly invades other adjacent organ(s) or structure(s): Other (specify)",
-      "Cannot be assessed"
-    ], "exclusive": ["No evidence of primary tumour", "Cannot be assessed"], "default": ["Invades muscular layer"] },
-    { "id": "extensionDetail", "label": "Other adjacent organ(s) / structure(s) (specify)", "type": "text", "group": "Histology and immunohistochemistry", "showIf": { "field": "tumourExtension", "includes": "Directly invades other adjacent organ(s) or structure(s): Other (specify)" } },
-    { "id": "lvi", "label": "Lymphovascular invasion", "type": "select", "group": "Histology and immunohistochemistry", "options": ["Not identified", "Present", "Cannot be determined"], "default": "Not identified" },
-    { "id": "pni", "label": "Perineural invasion", "type": "select", "group": "Histology and immunohistochemistry", "options": ["Not identified", "Present", "Cannot be determined"], "default": "Not identified" },
-    { "id": "treatmentEffect", "label": "Treatment effect", "type": "select", "group": "Histology and immunohistochemistry", "options": ["No known presurgical therapy", "Present, with no viable cancer cells (complete response, score 0)", "Present, with single cells or rare small groups of cancer cells (near complete response, score 1)", "Present, with residual cancer showing evident tumour regression but more than single cells or rare small groups of cancer cells (partial response, score 2)", "Present (not otherwise specified)", "Absent (poor or no response, score 3)", "Cannot be determined"], "default": "No known presurgical therapy" },
-
-    { "id": "cysticDuctMargin", "label": "Cystic duct margin", "type": "select", "group": "Margins", "options": ["Cannot be assessed", "Uninvolved by invasive carcinoma (specify distance)", "Involved by invasive carcinoma"], "default": "Uninvolved by invasive carcinoma (specify distance)" },
-    { "id": "cysticDuctMarginMm", "label": "Cystic duct margin: distance (mm)", "type": "number", "group": "Margins", "min": 0, "showIf": { "field": "cysticDuctMargin", "is": "Uninvolved by invasive carcinoma (specify distance)" } },
-    { "id": "hepaticMargin", "label": "Hepatic parenchymal margin", "type": "select", "group": "Margins", "options": ["Cannot be assessed", "Uninvolved by invasive carcinoma (specify distance)", "Involved by invasive carcinoma", "Not applicable (no hepatic resection)"], "default": "Uninvolved by invasive carcinoma (specify distance)" },
-    { "id": "hepaticMarginMm", "label": "Hepatic parenchymal margin: distance (mm)", "type": "number", "group": "Margins", "min": 0, "showIf": { "field": "hepaticMargin", "is": "Uninvolved by invasive carcinoma (specify distance)" } },
-    { "id": "radialMargin", "label": "Radial margin", "type": "select", "group": "Margins", "options": ["Cannot be assessed", "Uninvolved by invasive carcinoma (specify distance)", "Involved by invasive carcinoma"], "default": "Uninvolved by invasive carcinoma (specify distance)" },
-    { "id": "radialMarginMm", "label": "Radial margin: distance (mm)", "type": "number", "group": "Margins", "min": 0, "showIf": { "field": "radialMargin", "is": "Uninvolved by invasive carcinoma (specify distance)" } },
-    { "id": "hgIEN", "label": "High-grade intraepithelial neoplasia at the margins", "type": "select", "group": "Margins", "options": ["All margins negative for high-grade intraepithelial neoplasia", "High-grade intraepithelial neoplasia present at the bile duct margin", "Other (specify)", "Cannot be assessed", "Not applicable"], "default": "All margins negative for high-grade intraepithelial neoplasia" },
-    { "id": "hgIENDetail", "label": "High-grade intraepithelial neoplasia (specify)", "type": "text", "group": "Margins", "showIf": { "field": "hgIEN", "is": "Other (specify)" } },
-    { "id": "otherMargin", "label": "Other margin(s)", "type": "select", "group": "Margins", "options": ["Not applicable", "Cannot be assessed", "Uninvolved by invasive carcinoma", "Involved by invasive carcinoma"], "default": "Not applicable" },
-    { "id": "otherMarginDetail", "label": "Other margin (specify site)", "type": "text", "group": "Margins", "showIf": { "field": "otherMargin", "is": ["Cannot be assessed", "Uninvolved by invasive carcinoma", "Involved by invasive carcinoma"] } },
-
-    { "id": "nodesExamined", "label": "Number of regional lymph nodes examined", "type": "number", "group": "Lymph nodes and metastasis", "min": 0, "step": 1 },
-    { "id": "nodesInvolved", "label": "Number of lymph nodes involved", "type": "number", "group": "Lymph nodes and metastasis", "min": 0, "step": 1 },
-    { "id": "ene", "label": "Extranodal extension (ENE)", "type": "select", "group": "Lymph nodes and metastasis", "options": ["Not applicable", "Not identified", "Present", "Cannot be determined"], "default": "Not applicable" },
-    { "id": "largestDepositMm", "label": "Size of the largest metastatic deposit (mm)", "type": "number", "group": "Lymph nodes and metastasis", "min": 0 },
-    { "id": "largestNodeMm", "label": "Size of the largest lymph node involved (mm)", "type": "number", "group": "Lymph nodes and metastasis", "min": 0 },
-    { "id": "largestNodeSite", "label": "Largest deposit / node: site", "type": "text", "group": "Lymph nodes and metastasis" },
-    { "id": "distantMets", "label": "Distant metastasis", "type": "multiselect", "group": "Lymph nodes and metastasis", "options": ["Not applicable", "Not identified", "Non-regional lymph node(s) (specify)", "Liver (specify)", "Other (specify)", "Cannot be determined"], "exclusive": ["Not applicable", "Not identified", "Cannot be determined"], "default": ["Not applicable"] },
-    { "id": "distantDetail", "label": "Distant metastasis (specify)", "type": "text", "group": "Lymph nodes and metastasis" },
-
-    { "id": "multiplePrimaries", "label": "Multiple synchronous primary tumours (m descriptor)", "type": "checkbox", "group": "Stage and other findings", "default": false },
-    { "id": "recurrent", "label": "Recurrent tumour (r descriptor)", "type": "checkbox", "group": "Stage and other findings", "default": false },
-    { "id": "tnmOverride", "label": "Override derived pTNM (type e.g. pT2b pN1 pM0)", "type": "text", "group": "Stage and other findings" },
-    { "id": "tnmOverrideReason", "label": "Override reason (printed in Checks)", "type": "text", "group": "Stage and other findings" },
-    { "id": "additionalFindings", "label": "Additional pathologic findings", "type": "multiselect", "group": "Stage and other findings", "options": ["Dysplasia / adenoma", "Cholelithiasis", "Chronic cholecystitis", "Acute cholecystitis", "Intestinal metaplasia", "Diffuse calcification (porcelain gallbladder)", "Primary sclerosing cholangitis", "Other (specify)", "None identified"], "exclusive": ["None identified"], "default": ["None identified"] },
-    { "id": "additionalFindingsDetail", "label": "Additional findings (specify)", "type": "text", "group": "Stage and other findings", "showIf": { "field": "additionalFindings", "includes": "Other (specify)" } },
-    { "id": "additionalNotes", "label": "Additional notes (any)", "type": "textarea", "group": "Stage and other findings" }
+  "macroFields": [
+   "specimenName"
   ],
-  "example": {
-    "case": { "accession": "S26-00421", "status": "Draft" },
-    "options": { "includeHeader": false, "macro": true, "printPTNM": true },
-    "parts": [
-      {
-        "label": "A",
-        "values": {
-          "specimenName": "",
-          "procedure": "Radical cholecystectomy (with liver resection and lymphadenectomy)",
-          "procedureOther": "",
-          "tumourSite": ["Fundus"],
-          "tumourSiteOther": "",
-          "grossDetails": "The mucosa is otherwise granular and shows intestinal metaplasia grossly",
-          "blockKeyText": "1-4 Tumour with serosa and hepatic bed\n5 Cystic duct margin",
-          "specimenDims": "90 x 45 x 25",
-          "gallbladderDims": "90 x 45 x 25",
-          "liverDims": "50 x 40 x 30",
-          "tumourSizeCm": 3.5,
-          "sizeMode": "Unifocal invasive carcinoma, greatest dimension (cm)",
-          "sizeCannot": "",
-          "tumourDims": "35 x 30 x 18",
-          "histologyNotes": "",
-          "histType": "Adenocarcinoma, biliary type",
-          "histTypeOther": "",
-          "grade": "G2, moderately differentiated",
-          "gradeOther": "",
-          "tumourExtension": ["Invades perimuscular connective tissue on the hepatic side without liver involvement"],
-          "extensionDetail": "",
-          "lvi": "Not identified",
-          "pni": "Present",
-          "treatmentEffect": "No known presurgical therapy",
-          "cysticDuctMargin": "Uninvolved by invasive carcinoma (specify distance)",
-          "cysticDuctMarginMm": 12,
-          "hepaticMargin": "Uninvolved by invasive carcinoma (specify distance)",
-          "hepaticMarginMm": 4,
-          "radialMargin": "Uninvolved by invasive carcinoma (specify distance)",
-          "radialMarginMm": 2,
-          "hgIEN": "All margins negative for high-grade intraepithelial neoplasia",
-          "hgIENDetail": "",
-          "otherMargin": "Not applicable",
-          "otherMarginDetail": "",
-          "nodesExamined": 6,
-          "nodesInvolved": 0,
-          "ene": "Not applicable",
-          "largestDepositMm": "",
-          "largestNodeMm": "",
-          "largestNodeSite": "",
-          "distantMets": ["Not applicable"],
-          "distantDetail": "",
-          "multiplePrimaries": false,
-          "recurrent": false,
-          "tnmOverride": "",
-          "tnmOverrideReason": "",
-          "additionalFindings": ["Cholelithiasis", "Chronic cholecystitis"],
-          "additionalFindingsDetail": "",
-          "additionalNotes": ""
-        }
-      }
-    ]
+  "pack": true
+ },
+ "rank": 47,
+ "aliases": [
+  "cholecystectomy",
+  "gallbladder cancer",
+  "icpn",
+  "gb carcinoma",
+  "radical cholecystectomy"
+ ],
+ "match": {
+  "site": [
+   "gallbladder",
+   "cystic duct",
+   "gall bladder"
+  ],
+  "procedure": [
+   "cholecystectomy"
+  ],
+  "clinical": [
+   "gallbladder carcinoma",
+   "intracholecystic papillary neoplasm",
+   "icpn",
+   "porcelain gallbladder"
+  ],
+  "fill": [
+   {
+    "field": "specimenName",
+    "from": "detail"
+   },
+   {
+    "field": "procedure",
+    "from": "options"
+   },
+   {
+    "field": "tumourSite",
+    "from": "options"
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "mm",
+   "label": true
+  },
+  "gallbladderDims": {
+   "concept": "dims",
+   "unit": "mm",
+   "near": "gallbladder"
+  },
+  "liverDims": {
+   "concept": "dims",
+   "unit": "mm",
+   "near": "liver|hepatic"
+  },
+  "tumourDims": {
+   "concept": "tumourDims",
+   "unit": "mm"
   }
+ },
+ "specimenNoun": "resection",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "gallbladder_carcinoma",
+ "style": {
+  "british": true
+ },
+ "source": {
+  "template": "QMH Cancer Reporting Template - GI-Gallbladder (Gallbladder carcinoma)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/GI-Gallbladder.html",
+  "staging": "AJCC 8th edition pTNM derived from the tumour-extension ticks (hepatic-side pT2b versus peritoneal-side pT2a preserved, and the T3 organ rule — liver plus at most one extrahepatic organ — checked against the T4 threshold of two or more extrahepatic organs or the portal vein / hepatic artery), the nodal counts and the distant-metastasis options. Cycling the extension options wipes the override. pTNM prints only with the printPTNM option, stamped (AJCC 8th edition); the stage-group line also prints there. Treatment effect maps to the y descriptor automatically.",
+  "stagingProtocol": "gallbladder",
+  "grading": "WHO 2019 digestive tumours histologic type and grade; tumour size is in cm as on the QMH page (aggregate size of all invasive foci)."
+ },
+ "partDefaults": [],
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM"
+  }
+ ],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "text"
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "options": [
+    "Simple cholecystectomy (laparoscopic or open)",
+    "Radical cholecystectomy (with liver resection and lymphadenectomy)",
+    "Other",
+    "Not specified"
+   ],
+   "default": "Simple cholecystectomy (laparoscopic or open)"
+  },
+  {
+   "id": "procedureOther",
+   "label": "Procedure (specify)",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other"
+   }
+  },
+  {
+   "id": "tumourSite",
+   "label": "Tumour site",
+   "type": "multiselect",
+   "group": "Specimen and tumour",
+   "options": [
+    "Fundus",
+    "Body",
+    "Cystic duct",
+    "Other (specify)",
+    "Cannot be determined",
+    "Not specified"
+   ],
+   "exclusive": [
+    "Cannot be determined",
+    "Not specified"
+   ],
+   "default": [
+    "Not specified"
+   ]
+  },
+  {
+   "id": "tumourSiteOther",
+   "label": "Tumour site (specify)",
+   "type": "text",
+   "group": "Specimen and tumour"
+  },
+  {
+   "id": "grossDetails",
+   "label": "Tumour gross appearance, stones and adjacent mucosa (macro)",
+   "type": "text",
+   "group": "Specimen and tumour"
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key (one line per block: e.g. 1-4 Tumour with serosa)",
+   "type": "textarea",
+   "group": "Specimen and tumour"
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (mm)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "placeholder": "90 x 45 x 25"
+  },
+  {
+   "id": "gallbladderDims",
+   "label": "Gallbladder dimensions (mm)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "placeholder": "90 x 45 x 25"
+  },
+  {
+   "id": "liverDims",
+   "label": "Attached liver wedge (mm, radical resections)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "placeholder": "50 x 40 x 30"
+  },
+  {
+   "id": "tumourSizeCm",
+   "label": "Tumour size (cm)",
+   "type": "number",
+   "group": "Specimen and tumour",
+   "min": 0,
+   "step": 0.1
+  },
+  {
+   "id": "sizeMode",
+   "label": "Tumour size descriptor",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "options": [
+    "Unifocal invasive carcinoma, greatest dimension (cm)",
+    "Multifocal invasive carcinoma in association with an intraductal neoplasm, largest focus (cm)",
+    "Cannot be assessed",
+    "Not applicable"
+   ],
+   "default": "Unifocal invasive carcinoma, greatest dimension (cm)"
+  },
+  {
+   "id": "sizeCannot",
+   "label": "Tumour size cannot be assessed (explain)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "showIf": {
+    "field": "sizeMode",
+    "is": "Cannot be assessed"
+   }
+  },
+  {
+   "id": "tumourDims",
+   "label": "Tumour dimensions (mm x mm x mm, macro)",
+   "type": "text",
+   "group": "Specimen and tumour"
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Tumour histology and immunohistochemical studies (free text; blank derives the descriptive sentence)",
+   "type": "textarea",
+   "group": "Histology and immunohistochemistry"
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 2019, as on the QMH page)",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "Adenocarcinoma",
+    "Adenocarcinoma, biliary type",
+    "Adenocarcinoma, intestinal type",
+    "Mucinous adenocarcinoma",
+    "Clear cell adenocarcinoma",
+    "Poorly cohesive carcinoma",
+    "Signet-ring cell carcinoma",
+    "Adenosquamous carcinoma",
+    "Mucinous cystic neoplasm with an associated invasive carcinoma",
+    "Intracholecystic papillary neoplasm with associated invasive carcinoma",
+    "Intracholecystic tubular neoplasm with associated invasive carcinoma",
+    "Squamous cell carcinoma",
+    "Undifferentiated carcinoma, NOS",
+    "Large cell neuroendocrine carcinoma",
+    "Small cell neuroendocrine carcinoma",
+    "Mixed neuroendocrine-non-neuroendocrine tumour (Mixed adenoneuroendocrine carcinoma) (specify components)",
+    "Other (specify)",
+    "Carcinoma, type cannot be determined"
+   ],
+   "default": "Adenocarcinoma, biliary type"
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Histologic type (specify / MiNEN components)",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Other (specify)",
+     "Mixed neuroendocrine-non-neuroendocrine tumour (Mixed adenoneuroendocrine carcinoma) (specify components)"
+    ]
+   }
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "G1, well differentiated",
+    "G2, moderately differentiated",
+    "G3, poorly differentiated",
+    "GX, cannot be assessed",
+    "Not applicable",
+    "Other"
+   ],
+   "default": "G2, moderately differentiated"
+  },
+  {
+   "id": "gradeOther",
+   "label": "Grade (specify)",
+   "type": "text",
+   "showIf": {
+    "field": "grade",
+    "is": "Other"
+   }
+  },
+  {
+   "id": "tumourExtension",
+   "label": "Tumour extension (tick every applicable row; the deepest governs pT)",
+   "type": "multiselect",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "No evidence of primary tumour",
+    "Invades lamina propria",
+    "Invades muscular layer",
+    "Invades perimuscular connective tissue on the peritoneal side without serosal involvement",
+    "Invades perimuscular connective tissue on the hepatic side without liver involvement",
+    "Perforates serosa (visceral peritoneum)",
+    "Directly invades liver",
+    "Directly invades other adjacent organ(s) or structure(s): Stomach",
+    "Directly invades other adjacent organ(s) or structure(s): Duodenum",
+    "Directly invades other adjacent organ(s) or structure(s): Colon",
+    "Directly invades other adjacent organ(s) or structure(s): Pancreas",
+    "Directly invades other adjacent organ(s) or structure(s): Extrahepatic bile ducts",
+    "Directly invades other adjacent organ(s) or structure(s): Omentum",
+    "Directly invades other adjacent organ(s) or structure(s): Main portal vein",
+    "Directly invades other adjacent organ(s) or structure(s): Hepatic artery",
+    "Directly invades other adjacent organ(s) or structure(s): Other (specify)",
+    "Cannot be assessed"
+   ],
+   "exclusive": [
+    "No evidence of primary tumour",
+    "Cannot be assessed"
+   ],
+   "default": [
+    "Invades muscular layer"
+   ]
+  },
+  {
+   "id": "extensionDetail",
+   "label": "Other adjacent organ(s) / structure(s) (specify)",
+   "type": "text",
+   "group": "Histology and immunohistochemistry",
+   "showIf": {
+    "field": "tumourExtension",
+    "includes": "Directly invades other adjacent organ(s) or structure(s): Other (specify)"
+   }
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": "Not identified"
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": "Not identified"
+  },
+  {
+   "id": "treatmentEffect",
+   "label": "Treatment effect",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "No known presurgical therapy",
+    "Present, with no viable cancer cells (complete response, score 0)",
+    "Present, with single cells or rare small groups of cancer cells (near complete response, score 1)",
+    "Present, with residual cancer showing evident tumour regression but more than single cells or rare small groups of cancer cells (partial response, score 2)",
+    "Present (not otherwise specified)",
+    "Absent (poor or no response, score 3)",
+    "Cannot be determined"
+   ],
+   "default": "No known presurgical therapy"
+  },
+  {
+   "id": "cysticDuctMargin",
+   "label": "Cystic duct margin",
+   "type": "select",
+   "group": "Margins",
+   "options": [
+    "Cannot be assessed",
+    "Uninvolved by invasive carcinoma (specify distance)",
+    "Involved by invasive carcinoma"
+   ],
+   "default": "Uninvolved by invasive carcinoma (specify distance)"
+  },
+  {
+   "id": "cysticDuctMarginMm",
+   "label": "Cystic duct margin: distance (mm)",
+   "type": "number",
+   "group": "Margins",
+   "min": 0,
+   "showIf": {
+    "field": "cysticDuctMargin",
+    "is": "Uninvolved by invasive carcinoma (specify distance)"
+   }
+  },
+  {
+   "id": "hepaticMargin",
+   "label": "Hepatic parenchymal margin",
+   "type": "select",
+   "group": "Margins",
+   "options": [
+    "Cannot be assessed",
+    "Uninvolved by invasive carcinoma (specify distance)",
+    "Involved by invasive carcinoma",
+    "Not applicable (no hepatic resection)"
+   ],
+   "default": "Uninvolved by invasive carcinoma (specify distance)"
+  },
+  {
+   "id": "hepaticMarginMm",
+   "label": "Hepatic parenchymal margin: distance (mm)",
+   "type": "number",
+   "group": "Margins",
+   "min": 0,
+   "showIf": {
+    "field": "hepaticMargin",
+    "is": "Uninvolved by invasive carcinoma (specify distance)"
+   }
+  },
+  {
+   "id": "radialMargin",
+   "label": "Radial margin",
+   "type": "select",
+   "group": "Margins",
+   "options": [
+    "Cannot be assessed",
+    "Uninvolved by invasive carcinoma (specify distance)",
+    "Involved by invasive carcinoma"
+   ],
+   "default": "Uninvolved by invasive carcinoma (specify distance)"
+  },
+  {
+   "id": "radialMarginMm",
+   "label": "Radial margin: distance (mm)",
+   "type": "number",
+   "group": "Margins",
+   "min": 0,
+   "showIf": {
+    "field": "radialMargin",
+    "is": "Uninvolved by invasive carcinoma (specify distance)"
+   }
+  },
+  {
+   "id": "hgIEN",
+   "label": "High-grade intraepithelial neoplasia at the margins",
+   "type": "select",
+   "group": "Margins",
+   "options": [
+    "All margins negative for high-grade intraepithelial neoplasia",
+    "High-grade intraepithelial neoplasia present at the bile duct margin",
+    "Other (specify)",
+    "Cannot be assessed",
+    "Not applicable"
+   ],
+   "default": "All margins negative for high-grade intraepithelial neoplasia"
+  },
+  {
+   "id": "hgIENDetail",
+   "label": "High-grade intraepithelial neoplasia (specify)",
+   "type": "text",
+   "group": "Margins",
+   "showIf": {
+    "field": "hgIEN",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "otherMargin",
+   "label": "Other margin(s)",
+   "type": "select",
+   "group": "Margins",
+   "options": [
+    "Not applicable",
+    "Cannot be assessed",
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma"
+   ],
+   "default": "Not applicable"
+  },
+  {
+   "id": "otherMarginDetail",
+   "label": "Other margin (specify site)",
+   "type": "text",
+   "group": "Margins",
+   "showIf": {
+    "field": "otherMargin",
+    "is": [
+     "Cannot be assessed",
+     "Uninvolved by invasive carcinoma",
+     "Involved by invasive carcinoma"
+    ]
+   }
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Number of regional lymph nodes examined",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "min": 0,
+   "step": 1
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Number of lymph nodes involved",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "min": 0,
+   "step": 1
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "type": "select",
+   "group": "Lymph nodes and metastasis",
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": "Not applicable"
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Size of the largest metastatic deposit (mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "min": 0
+  },
+  {
+   "id": "largestNodeMm",
+   "label": "Size of the largest lymph node involved (mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "min": 0
+  },
+  {
+   "id": "largestNodeSite",
+   "label": "Largest deposit / node: site",
+   "type": "text",
+   "group": "Lymph nodes and metastasis"
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis",
+   "type": "multiselect",
+   "group": "Lymph nodes and metastasis",
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s) (specify)",
+    "Liver (specify)",
+    "Other (specify)",
+    "Cannot be determined"
+   ],
+   "exclusive": [
+    "Not applicable",
+    "Not identified",
+    "Cannot be determined"
+   ],
+   "default": [
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "distantDetail",
+   "label": "Distant metastasis (specify)",
+   "type": "text",
+   "group": "Lymph nodes and metastasis"
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple synchronous primary tumours (m descriptor)",
+   "type": "checkbox",
+   "group": "Stage and other findings",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r descriptor)",
+   "type": "checkbox",
+   "group": "Stage and other findings",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "Override derived pTNM (type e.g. pT2b pN1 pM0)",
+   "type": "text",
+   "group": "Stage and other findings"
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason (printed in Checks)",
+   "type": "text",
+   "group": "Stage and other findings"
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "type": "multiselect",
+   "group": "Stage and other findings",
+   "options": [
+    "Dysplasia / adenoma",
+    "Cholelithiasis",
+    "Chronic cholecystitis",
+    "Acute cholecystitis",
+    "Intestinal metaplasia",
+    "Diffuse calcification (porcelain gallbladder)",
+    "Primary sclerosing cholangitis",
+    "Other (specify)",
+    "None identified"
+   ],
+   "exclusive": [
+    "None identified"
+   ],
+   "default": [
+    "None identified"
+   ]
+  },
+  {
+   "id": "additionalFindingsDetail",
+   "label": "Additional findings (specify)",
+   "type": "text",
+   "group": "Stage and other findings",
+   "showIf": {
+    "field": "additionalFindings",
+    "includes": "Other (specify)"
+   }
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes (any)",
+   "type": "textarea",
+   "group": "Stage and other findings"
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-00421",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "",
+     "procedure": "Radical cholecystectomy (with liver resection and lymphadenectomy)",
+     "procedureOther": "",
+     "tumourSite": [
+      "Fundus"
+     ],
+     "tumourSiteOther": "",
+     "grossDetails": "The mucosa is otherwise granular and shows intestinal metaplasia grossly",
+     "blockKeyText": "1-4 Tumour with serosa and hepatic bed\n5 Cystic duct margin",
+     "specimenDims": "90 x 45 x 25",
+     "gallbladderDims": "90 x 45 x 25",
+     "liverDims": "50 x 40 x 30",
+     "tumourSizeCm": 3.5,
+     "sizeMode": "Unifocal invasive carcinoma, greatest dimension (cm)",
+     "sizeCannot": "",
+     "tumourDims": "35 x 30 x 18",
+     "histologyNotes": "",
+     "histType": "Adenocarcinoma, biliary type",
+     "histTypeOther": "",
+     "grade": "G2, moderately differentiated",
+     "gradeOther": "",
+     "tumourExtension": [
+      "Invades perimuscular connective tissue on the hepatic side without liver involvement"
+     ],
+     "extensionDetail": "",
+     "lvi": "Not identified",
+     "pni": "Present",
+     "treatmentEffect": "No known presurgical therapy",
+     "cysticDuctMargin": "Uninvolved by invasive carcinoma (specify distance)",
+     "cysticDuctMarginMm": 12,
+     "hepaticMargin": "Uninvolved by invasive carcinoma (specify distance)",
+     "hepaticMarginMm": 4,
+     "radialMargin": "Uninvolved by invasive carcinoma (specify distance)",
+     "radialMarginMm": 2,
+     "hgIEN": "All margins negative for high-grade intraepithelial neoplasia",
+     "hgIENDetail": "",
+     "otherMargin": "Not applicable",
+     "otherMarginDetail": "",
+     "nodesExamined": 6,
+     "nodesInvolved": 0,
+     "ene": "Not applicable",
+     "largestDepositMm": "",
+     "largestNodeMm": "",
+     "largestNodeSite": "",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "distantDetail": "",
+     "multiplePrimaries": false,
+     "recurrent": false,
+     "tnmOverride": "",
+     "tnmOverrideReason": "",
+     "additionalFindings": [
+      "Cholelithiasis",
+      "Chronic cholecystitis"
+     ],
+     "additionalFindingsDetail": "",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
 }

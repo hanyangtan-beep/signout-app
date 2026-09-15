@@ -1,88 +1,85 @@
 {
-  "id": "generic",
-  "name": "Generic (free text)",
-  "shortName": "Generic · free text",
-  "label": "Generic",
-  "organ": "",
-  "system": "General",
-  "kind": "generic",
-  "rank": 99,
-  "version": "1.0",
-  "aliases": [
-    "generic",
-    "free text",
-    "other",
-    "blank",
-    "empty form",
-    "no template"
-  ],
-  "match": {
-    "site": [],
-    "procedure": [],
-    "clinical": []
-  },
-  "specimenNoun": "",
-  "maxParts": 26,
-  "defaultParts": 1,
-  "generator": "generic",
-  "style": {
-    "british": true
-  },
-  "caseFields": [],
-  "options": [
-    {
-      "id": "includeHeader",
-      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
-      "type": "checkbox",
-      "default": false
-    }
-  ],
-  "fields": [
-    {
-      "id": "specimenName",
-      "label": "Specimen as labelled",
-      "type": "text",
-      "placeholder": "Omentum / Lung, right upper lobe, resection",
-      "default": ""
-    },
-    {
-      "id": "macro",
-      "label": "Macroscopic description (optional)",
-      "type": "textarea",
-      "placeholder": "Received in formalin is …",
-      "default": ""
-    },
-    {
-      "id": "microscopy",
-      "label": "Microscopy",
-      "type": "textarea",
-      "placeholder": "Sections show …",
-      "default": "Sections show "
-    },
-    {
-      "id": "diagnosis",
-      "label": "Diagnosis",
-      "type": "textarea",
-      "placeholder": "NO EVIDENCE OF MALIGNANCY",
-      "default": ""
-    }
-  ],
-  "presets": [],
-  "example": {
-    "caseTitle": "",
-    "options": {
-      "includeHeader": false
-    },
-    "parts": [
-      {
-        "label": "A",
-        "values": {
-          "specimenName": "Omentum, resection",
-          "macro": "",
-          "microscopy": "Sections show fibroadipose tissue with a focal foreign body giant cell reaction. There is no evidence of malignancy.",
-          "diagnosis": "NO EVIDENCE OF MALIGNANCY"
-        }
-      }
-    ]
+ "id": "generic",
+ "name": "Generic (free text)",
+ "shortName": "Generic · free text",
+ "label": "Generic",
+ "organ": "",
+ "system": "General",
+ "kind": "generic",
+ "rank": 99,
+ "version": "1.0",
+ "aliases": [
+  "generic",
+  "free text",
+  "other",
+  "blank",
+  "empty form",
+  "no template"
+ ],
+ "match": {
+  "site": [],
+  "procedure": [],
+  "clinical": []
+ },
+ "specimenNoun": "",
+ "maxParts": 26,
+ "defaultParts": 1,
+ "generator": "generic",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
   }
+ ],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "text",
+   "placeholder": "Omentum / Lung, right upper lobe, resection",
+   "default": ""
+  },
+  {
+   "id": "macro",
+   "label": "Macroscopic description (optional)",
+   "type": "textarea",
+   "placeholder": "Received in formalin is …",
+   "default": ""
+  },
+  {
+   "id": "microscopy",
+   "label": "Microscopy",
+   "type": "textarea",
+   "placeholder": "Sections show …",
+   "default": "Sections show "
+  },
+  {
+   "id": "diagnosis",
+   "label": "Diagnosis",
+   "type": "textarea",
+   "placeholder": "NO EVIDENCE OF MALIGNANCY",
+   "default": ""
+  }
+ ],
+ "presets": [],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "Omentum, resection",
+     "macro": "",
+     "microscopy": "Sections show fibroadipose tissue with a focal foreign body giant cell reaction. There is no evidence of malignancy.",
+     "diagnosis": "NO EVIDENCE OF MALIGNANCY"
+    }
+   }
+  ]
+ }
 }

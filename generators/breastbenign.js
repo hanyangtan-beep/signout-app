@@ -1,3 +1,4 @@
+import { stripDot } from './_house.js';
 // Breast benign excision and cavity shave margins generator. Pure functions: (part, ctx) -> string.
 // Each part is either a cavity shave margin (side + margin name) or a breast lesion excision
 // (side + site text + procedure), so a WLE case can carry the lesion and up to seven shaves.
@@ -28,7 +29,6 @@ const listJoin = (items) => {
 };
 const uc1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : '');
 const lc1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : '');
-const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 
 export const NEGATIVE = 'No evidence of malignancy (benign breast tissue)';
 const FEA = 'Flat epithelial atypia – see comment';

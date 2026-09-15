@@ -21,6 +21,7 @@
 
 import { deriveTNM, stageLine } from '../src/staging/index.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
+import { stripDot, checks } from './_house.js';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
@@ -32,7 +33,6 @@ const listJoin = (items) => {
   if (a.length <= 1) return a[0] || '';
   return `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`;
 };
-const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 
 export const RECTAL_SITES = ['Rectosigmoid junction', 'Rectum'];
 export const isRectal = (v) => RECTAL_SITES.includes(v.tumourSite);
@@ -333,12 +333,7 @@ export function diagnosis(part, ctx) {
 
 export function validate(part) {
   const v = part.values;
-  const out = [];
-  // The optional second argument is the id of the field the check is about; the Checks panel
-  // uses it to jump to that field. Omit it when a check does not point at one field.
-  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
-  const err = (m, field) => at('error', m, field);
-  const warn = (m, field) => at('warn', m, field);
+  const { out, err, warn } = checks();
   const invasive = v.tumourExtension && !NO_PRIMARY.includes(v.tumourExtension) && !NON_INVASIVE.includes(v.tumourExtension);
   if (!v.tumourExtension) err('Tumour extension is required to assign pT.', 'tumourExtension');
   if (invasive && (!v.grade || v.grade === 'Not applicable')) warn('Histologic grade is not recorded for an invasive carcinoma.', 'grade');

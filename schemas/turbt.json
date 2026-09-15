@@ -1,401 +1,398 @@
 {
-  "id": "turbt",
-  "version": "2026.09",
-  "name": "Bladder TURBT / biopsy",
-  "shortName": "Bladder · TURBT",
-  "label": "TURBT",
-  "organ": "URINARY BLADDER",
-  "system": "GU",
-  "kind": "benign resection",
-  "rank": 33,
-  "aliases": [
-    "TURBT",
-    "bladder",
-    "urothelial",
-    "papillary",
-    "PUNLMP",
-    "CIS",
-    "carcinoma in situ",
-    "cystitis",
-    "muscularis propria",
-    "detrusor",
-    "lamina propria",
-    "pT1",
-    "pTa",
-    "BCG",
-    "nephrogenic adenoma",
-    "squamous metaplasia",
-    "random biopsies",
-    "chips"
+ "id": "turbt",
+ "version": "2026.09",
+ "name": "Bladder TURBT / biopsy",
+ "shortName": "Bladder · TURBT",
+ "label": "TURBT",
+ "organ": "URINARY BLADDER",
+ "system": "GU",
+ "kind": "benign resection",
+ "rank": 33,
+ "aliases": [
+  "TURBT",
+  "bladder",
+  "urothelial",
+  "papillary",
+  "PUNLMP",
+  "CIS",
+  "carcinoma in situ",
+  "cystitis",
+  "muscularis propria",
+  "detrusor",
+  "lamina propria",
+  "pT1",
+  "pTa",
+  "BCG",
+  "nephrogenic adenoma",
+  "squamous metaplasia",
+  "random biopsies",
+  "chips"
+ ],
+ "match": {
+  "site": [
+   "bladder",
+   "urinary bladder",
+   "vesical",
+   "TURBT",
+   "urothelial",
+   "ureter",
+   "ureteric"
   ],
-  "match": {
-    "site": [
-      "bladder",
-      "urinary bladder",
-      "vesical",
-      "TURBT",
-      "urothelial",
-      "ureter",
-      "ureteric"
-    ],
-    "procedure": [
-      "TURBT",
-      "transurethral resection",
-      "biopsy",
-      "biopsies",
-      "resection"
-    ],
-    "clinical": [
-      "haematuria",
-      "hematuria",
-      "bladder tumour",
-      "bladder tumor",
-      "urothelial",
-      "papillary",
-      "bladder ca",
-      "bladder cancer",
-      "cystoscopy"
-    ],
-    "fill": [
-      {
-        "field": "site",
-        "from": "detail"
-      }
-    ]
+  "procedure": [
+   "TURBT",
+   "transurethral resection",
+   "biopsy",
+   "biopsies",
+   "resection"
+  ],
+  "clinical": [
+   "haematuria",
+   "hematuria",
+   "bladder tumour",
+   "bladder tumor",
+   "urothelial",
+   "papillary",
+   "bladder ca",
+   "bladder cancer",
+   "cystoscopy"
+  ],
+  "fill": [
+   {
+    "field": "site",
+    "from": "detail"
+   }
+  ]
+ },
+ "specimenNoun": "TURBT",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "turbt",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
   },
-  "specimenNoun": "TURBT",
-  "maxParts": 6,
-  "defaultParts": 1,
-  "generator": "turbt",
-  "style": {
-    "british": true
-  },
-  "caseFields": [],
-  "options": [
-    {
-      "id": "includeHeader",
-      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
-      "type": "checkbox",
-      "default": false
-    },
-    {
-      "id": "macro",
-      "label": "Generate the macroscopic description and block key",
-      "type": "checkbox",
-      "default": true
-    }
-  ],
-  "fields": [
-    {
-      "id": "specimenName",
-      "label": "Specimen as received (overrides site)",
-      "type": "text",
-      "placeholder": "Urinary bladder, left lateral wall tumour, TURBT",
-      "default": ""
-    },
-    {
-      "id": "siteType",
-      "label": "Specimen",
-      "type": "select",
-      "options": [
-        "Bladder tumour, TURBT",
-        "Tumour base, resection",
-        "Random bladder biopsies",
-        "Prostatic urethra, biopsy",
-        "Bladder, cold-cup biopsy"
-      ],
-      "default": "Bladder tumour, TURBT"
-    },
-    {
-      "id": "site",
-      "label": "Site",
-      "type": "text",
-      "placeholder": "left lateral wall / dome / trigone",
-      "default": ""
-    },
-    {
-      "id": "fragments",
-      "label": "Number of fragments",
-      "type": "text",
-      "group": "Macroscopy",
-      "placeholder": "multiple / 3",
-      "default": "multiple"
-    },
-    {
-      "id": "appearance",
-      "label": "Appearance",
-      "type": "select",
-      "group": "Macroscopy",
-      "options": [
-        "Tan friable chips",
-        "Tan-brown mucosal fragments",
-        "Papillary fragments",
-        "Grey-white firm chips",
-        "Haemorrhagic fragments"
-      ],
-      "default": "Tan friable chips"
-    },
-    {
-      "id": "aggregateSize",
-      "label": "Aggregate size (cm)",
-      "type": "text",
-      "group": "Macroscopy",
-      "placeholder": "3 x 2 x 0.5",
-      "default": ""
-    },
-    {
-      "id": "aggregateWeight",
-      "label": "Aggregate weight (g)",
-      "type": "text",
-      "group": "Macroscopy",
-      "placeholder": "4",
-      "default": ""
-    },
-    {
-      "id": "blocks",
-      "label": "Blocks",
-      "type": "number",
-      "group": "Macroscopy",
-      "min": 1,
-      "step": 1,
-      "default": "1"
-    },
-    {
-      "id": "urothelium",
-      "label": "Background urothelium",
-      "type": "select",
-      "options": [
-        "Normal",
-        "Reactive atypia",
-        "Denuded"
-      ],
-      "default": "Normal"
-    },
-    {
-      "id": "neoplasm",
-      "label": "Urothelial neoplasm",
-      "type": "select",
-      "options": [
-        "None",
-        "Urothelial papilloma",
-        "PUNLMP",
-        "Low grade papillary urothelial carcinoma",
-        "High grade papillary urothelial carcinoma",
-        "Urothelial carcinoma in situ",
-        "Invasive urothelial carcinoma, non-papillary"
-      ],
-      "default": "None"
-    },
-    {
-      "id": "cis",
-      "label": "Associated carcinoma in situ",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present"
-      ],
-      "default": "Absent",
-      "showIf": {
-        "field": "neoplasm",
-        "is": [
-          "Low grade papillary urothelial carcinoma",
-          "High grade papillary urothelial carcinoma",
-          "Invasive urothelial carcinoma, non-papillary"
-        ]
-      }
-    },
-    {
-      "id": "invasion",
-      "label": "Invasion",
-      "type": "select",
-      "options": [
-        "No invasion (pTa)",
-        "Lamina propria invasion (pT1)",
-        "Muscularis propria invasion (pT2 at least)"
-      ],
-      "default": "No invasion (pTa)",
-      "showIf": {
-        "field": "neoplasm",
-        "is": [
-          "Low grade papillary urothelial carcinoma",
-          "High grade papillary urothelial carcinoma",
-          "Invasive urothelial carcinoma, non-papillary"
-        ]
-      }
-    },
-    {
-      "id": "muscularisPropria",
-      "label": "Muscularis propria",
-      "type": "select",
-      "options": [
-        "Present and uninvolved",
-        "Not represented",
-        "Present and involved"
-      ],
-      "default": "Present and uninvolved"
-    },
-    {
-      "id": "variant",
-      "label": "Divergent differentiation / subtype",
-      "type": "multiselect",
-      "options": [
-        "Squamous",
-        "Glandular",
-        "Micropapillary",
-        "Nested",
-        "Plasmacytoid",
-        "Sarcomatoid",
-        "Small cell"
-      ],
-      "default": [],
-      "showIf": {
-        "field": "neoplasm",
-        "is": [
-          "Low grade papillary urothelial carcinoma",
-          "High grade papillary urothelial carcinoma",
-          "Invasive urothelial carcinoma, non-papillary"
-        ]
-      }
-    },
-    {
-      "id": "lvi",
-      "label": "Lymphovascular invasion",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present",
-        "Indeterminate"
-      ],
-      "default": "Absent",
-      "showIf": {
-        "field": "neoplasm",
-        "is": [
-          "Low grade papillary urothelial carcinoma",
-          "High grade papillary urothelial carcinoma",
-          "Urothelial carcinoma in situ",
-          "Invasive urothelial carcinoma, non-papillary"
-        ]
-      }
-    },
-    {
-      "id": "cystitis",
-      "label": "Cystitis pattern",
-      "type": "select",
-      "options": [
-        "None",
-        "Cystitis cystica et glandularis",
-        "Follicular cystitis",
-        "Eosinophilic cystitis",
-        "BCG-related granulomatous cystitis",
-        "Radiation or chemotherapy change",
-        "Polypoid cystitis"
-      ],
-      "default": "None"
-    },
-    {
-      "id": "squamousMetaplasia",
-      "label": "Squamous metaplasia",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present, keratinising",
-        "Present, non-keratinising"
-      ],
-      "default": "Absent"
-    },
-    {
-      "id": "nephrogenicAdenoma",
-      "label": "Nephrogenic adenoma",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present"
-      ],
-      "default": "Absent"
-    },
-    {
-      "id": "additionalNotes",
-      "label": "Additional microscopy",
-      "type": "textarea",
-      "placeholder": "Free text appended to the microscopy for this part",
-      "default": ""
-    }
-  ],
-  "snippets": [
-    {
-      "id": "bladder_cancer_template",
-      "label": "Muscularis propria invasion — use the QMH bladder cancer template",
-      "auto": {
-        "field": "invasion",
-        "is": "Muscularis propria invasion (pT2 at least)"
-      },
-      "text": "Invasion of the muscularis propria is identified in the TURBT material ({parts}). The depth of invasion cannot be fully staged on transurethral resection specimens; the QMH bladder cancer template should be used for the cystectomy synoptic report."
-    },
-    {
-      "id": "denuded_urothelium",
-      "label": "Denuded urothelium — carcinoma in situ cannot be excluded",
-      "auto": {
-        "field": "urothelium",
-        "is": "Denuded"
-      },
-      "text": "The urothelium is extensively denuded ({parts}), which limits the assessment for flat urothelial lesions; carcinoma in situ cannot be excluded on this material. Correlation with cytology and cystoscopic findings is recommended."
-    }
-  ],
-  "example": {
-    "caseTitle": "",
-    "options": {
-      "includeHeader": false,
-      "macro": true
-    },
-    "parts": [
-      {
-        "label": "A",
-        "values": {
-          "specimenName": "",
-          "siteType": "Bladder tumour, TURBT",
-          "site": "left lateral wall",
-          "fragments": "multiple",
-          "appearance": "Tan friable chips",
-          "aggregateSize": "3 x 2 x 0.5",
-          "aggregateWeight": "4",
-          "blocks": "2",
-          "urothelium": "Normal",
-          "neoplasm": "High grade papillary urothelial carcinoma",
-          "cis": "Absent",
-          "invasion": "Lamina propria invasion (pT1)",
-          "muscularisPropria": "Present and uninvolved",
-          "variant": [],
-          "lvi": "Absent",
-          "cystitis": "None",
-          "squamousMetaplasia": "Absent",
-          "nephrogenicAdenoma": "Absent",
-          "additionalNotes": ""
-        }
-      },
-      {
-        "label": "B",
-        "values": {
-          "specimenName": "",
-          "siteType": "Random bladder biopsies",
-          "site": "",
-          "fragments": "4",
-          "appearance": "Tan-brown mucosal fragments",
-          "aggregateSize": "0.5 x 0.4 x 0.2",
-          "aggregateWeight": "",
-          "blocks": "1",
-          "urothelium": "Normal",
-          "neoplasm": "None",
-          "cis": "Absent",
-          "invasion": "No invasion (pTa)",
-          "muscularisPropria": "Present and uninvolved",
-          "variant": [],
-          "lvi": "Absent",
-          "cystitis": "None",
-          "squamousMetaplasia": "Absent",
-          "nephrogenicAdenoma": "Absent",
-          "additionalNotes": ""
-        }
-      }
-    ]
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
   }
+ ],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "text",
+   "placeholder": "Urinary bladder, left lateral wall tumour, TURBT",
+   "default": ""
+  },
+  {
+   "id": "siteType",
+   "label": "Specimen",
+   "type": "select",
+   "options": [
+    "Bladder tumour, TURBT",
+    "Tumour base, resection",
+    "Random bladder biopsies",
+    "Prostatic urethra, biopsy",
+    "Bladder, cold-cup biopsy"
+   ],
+   "default": "Bladder tumour, TURBT"
+  },
+  {
+   "id": "site",
+   "label": "Site",
+   "type": "text",
+   "placeholder": "left lateral wall / dome / trigone",
+   "default": ""
+  },
+  {
+   "id": "fragments",
+   "label": "Number of fragments",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "multiple / 3",
+   "default": "multiple"
+  },
+  {
+   "id": "appearance",
+   "label": "Appearance",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Tan friable chips",
+    "Tan-brown mucosal fragments",
+    "Papillary fragments",
+    "Grey-white firm chips",
+    "Haemorrhagic fragments"
+   ],
+   "default": "Tan friable chips"
+  },
+  {
+   "id": "aggregateSize",
+   "label": "Aggregate size (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "3 x 2 x 0.5",
+   "default": ""
+  },
+  {
+   "id": "aggregateWeight",
+   "label": "Aggregate weight (g)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "4",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": "1"
+  },
+  {
+   "id": "urothelium",
+   "label": "Background urothelium",
+   "type": "select",
+   "options": [
+    "Normal",
+    "Reactive atypia",
+    "Denuded"
+   ],
+   "default": "Normal"
+  },
+  {
+   "id": "neoplasm",
+   "label": "Urothelial neoplasm",
+   "type": "select",
+   "options": [
+    "None",
+    "Urothelial papilloma",
+    "PUNLMP",
+    "Low grade papillary urothelial carcinoma",
+    "High grade papillary urothelial carcinoma",
+    "Urothelial carcinoma in situ",
+    "Invasive urothelial carcinoma, non-papillary"
+   ],
+   "default": "None"
+  },
+  {
+   "id": "cis",
+   "label": "Associated carcinoma in situ",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "neoplasm",
+    "is": [
+     "Low grade papillary urothelial carcinoma",
+     "High grade papillary urothelial carcinoma",
+     "Invasive urothelial carcinoma, non-papillary"
+    ]
+   }
+  },
+  {
+   "id": "invasion",
+   "label": "Invasion",
+   "type": "select",
+   "options": [
+    "No invasion (pTa)",
+    "Lamina propria invasion (pT1)",
+    "Muscularis propria invasion (pT2 at least)"
+   ],
+   "default": "No invasion (pTa)",
+   "showIf": {
+    "field": "neoplasm",
+    "is": [
+     "Low grade papillary urothelial carcinoma",
+     "High grade papillary urothelial carcinoma",
+     "Invasive urothelial carcinoma, non-papillary"
+    ]
+   }
+  },
+  {
+   "id": "muscularisPropria",
+   "label": "Muscularis propria",
+   "type": "select",
+   "options": [
+    "Present and uninvolved",
+    "Not represented",
+    "Present and involved"
+   ],
+   "default": "Present and uninvolved"
+  },
+  {
+   "id": "variant",
+   "label": "Divergent differentiation / subtype",
+   "type": "multiselect",
+   "options": [
+    "Squamous",
+    "Glandular",
+    "Micropapillary",
+    "Nested",
+    "Plasmacytoid",
+    "Sarcomatoid",
+    "Small cell"
+   ],
+   "default": [],
+   "showIf": {
+    "field": "neoplasm",
+    "is": [
+     "Low grade papillary urothelial carcinoma",
+     "High grade papillary urothelial carcinoma",
+     "Invasive urothelial carcinoma, non-papillary"
+    ]
+   }
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present",
+    "Indeterminate"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "neoplasm",
+    "is": [
+     "Low grade papillary urothelial carcinoma",
+     "High grade papillary urothelial carcinoma",
+     "Urothelial carcinoma in situ",
+     "Invasive urothelial carcinoma, non-papillary"
+    ]
+   }
+  },
+  {
+   "id": "cystitis",
+   "label": "Cystitis pattern",
+   "type": "select",
+   "options": [
+    "None",
+    "Cystitis cystica et glandularis",
+    "Follicular cystitis",
+    "Eosinophilic cystitis",
+    "BCG-related granulomatous cystitis",
+    "Radiation or chemotherapy change",
+    "Polypoid cystitis"
+   ],
+   "default": "None"
+  },
+  {
+   "id": "squamousMetaplasia",
+   "label": "Squamous metaplasia",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present, keratinising",
+    "Present, non-keratinising"
+   ],
+   "default": "Absent"
+  },
+  {
+   "id": "nephrogenicAdenoma",
+   "label": "Nephrogenic adenoma",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent"
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "Free text appended to the microscopy for this part",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "bladder_cancer_template",
+   "label": "Muscularis propria invasion — use the QMH bladder cancer template",
+   "auto": {
+    "field": "invasion",
+    "is": "Muscularis propria invasion (pT2 at least)"
+   },
+   "text": "Invasion of the muscularis propria is identified in the TURBT material ({parts}). The depth of invasion cannot be fully staged on transurethral resection specimens; the QMH bladder cancer template should be used for the cystectomy synoptic report."
+  },
+  {
+   "id": "denuded_urothelium",
+   "label": "Denuded urothelium — carcinoma in situ cannot be excluded",
+   "auto": {
+    "field": "urothelium",
+    "is": "Denuded"
+   },
+   "text": "The urothelium is extensively denuded ({parts}), which limits the assessment for flat urothelial lesions; carcinoma in situ cannot be excluded on this material. Correlation with cytology and cystoscopic findings is recommended."
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "",
+     "siteType": "Bladder tumour, TURBT",
+     "site": "left lateral wall",
+     "fragments": "multiple",
+     "appearance": "Tan friable chips",
+     "aggregateSize": "3 x 2 x 0.5",
+     "aggregateWeight": "4",
+     "blocks": "2",
+     "urothelium": "Normal",
+     "neoplasm": "High grade papillary urothelial carcinoma",
+     "cis": "Absent",
+     "invasion": "Lamina propria invasion (pT1)",
+     "muscularisPropria": "Present and uninvolved",
+     "variant": [],
+     "lvi": "Absent",
+     "cystitis": "None",
+     "squamousMetaplasia": "Absent",
+     "nephrogenicAdenoma": "Absent",
+     "additionalNotes": ""
+    }
+   },
+   {
+    "label": "B",
+    "values": {
+     "specimenName": "",
+     "siteType": "Random bladder biopsies",
+     "site": "",
+     "fragments": "4",
+     "appearance": "Tan-brown mucosal fragments",
+     "aggregateSize": "0.5 x 0.4 x 0.2",
+     "aggregateWeight": "",
+     "blocks": "1",
+     "urothelium": "Normal",
+     "neoplasm": "None",
+     "cis": "Absent",
+     "invasion": "No invasion (pTa)",
+     "muscularisPropria": "Present and uninvolved",
+     "variant": [],
+     "lvi": "Absent",
+     "cystitis": "None",
+     "squamousMetaplasia": "Absent",
+     "nephrogenicAdenoma": "Absent",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
 }

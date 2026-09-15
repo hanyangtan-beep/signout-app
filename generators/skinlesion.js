@@ -1,3 +1,4 @@
+import { stripDot } from './_house.js';
 // Skin — small benign lesion (shave / punch / small ellipse / curettings) generator.
 // Pure functions: (part, ctx) -> string.
 // Blocks produced:
@@ -22,7 +23,6 @@ const num = (v) => {
   return Number.isFinite(n) ? n : null;
 };
 const fmt = (n) => (Number.isInteger(n) ? String(n) : String(n).replace(/\.0+$/, ''));
-const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 const dash = (s) => String(s || '').replace(/[\u2013\u2014]/g, '-');
 
 export const MALIGNANT = 'Malignant / atypical - see comment';

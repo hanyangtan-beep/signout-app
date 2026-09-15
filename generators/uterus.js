@@ -1,3 +1,4 @@
+import { stripDot } from './_house.js';
 // Uterus (benign hysterectomy / myomectomy +/- adnexa) generator. Pure functions: (part, ctx) -> string.
 // One part per specimen container; the `specimenName` select decides the part type:
 //   uterus     "Uterus and cervix, total hysterectomy" / "Uterus, cervix and bilateral adnexa" / "Uterus, subtotal"
@@ -35,7 +36,6 @@ const listJoin = (items) => {
   return `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`;
 };
 const uc1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : '');
-const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 /** Option strings may carry an en dash ("HSIL – see comment") or a hyphen; compare on the hyphen form. */
 const key = (s) => String(s || '').replace(/[\u2013\u2014]/g, '-').replace(/\s+/g, ' ').trim();
 const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];

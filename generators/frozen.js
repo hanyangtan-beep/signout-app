@@ -1,3 +1,4 @@
+import { stripDot } from './_house.js';
 // Frozen section generator. Pure functions: (part, ctx) -> string.
 // Each part is one frozen specimen (the department letters frozen specimens A, B, C … and
 // converts every frozen block to paraffin, so the same letters carry through to the final report).
@@ -18,7 +19,6 @@ const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'e
 const word = (n) => (n >= 0 && n <= 10 ? WORDS[n] : String(n));
 const lc1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : '');
 const uc1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : '');
-const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 const listJoin = (items) => {
   const a = items.filter(Boolean);
   if (a.length <= 1) return a[0] || '';

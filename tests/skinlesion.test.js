@@ -1,12 +1,12 @@
 // Phase 4b item 14: skin — small benign lesion (shave / punch / small excision / curettings). Wording is deliberate; update the strings only on purpose.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import { createCase, generate } from '../src/engine.js';
 import * as gen from '../generators/skinlesion.js';
 import { sizePhrase, mmPhrase, lesionPhrase, marginSentence, marginClause, flags, NAEVUS_BLAND } from '../generators/skinlesion.js';
+import { schemaSync } from './_schema.js';
 
-const schema = JSON.parse(readFileSync(new URL('../schemas/skin_lesion.json', import.meta.url), 'utf8'));
+const schema = schemaSync('skin_lesion');
 const run = (c) => generate(schema, gen, c);
 const example = () => ({ ...JSON.parse(JSON.stringify(schema.example)), schemaId: schema.id });
 const one = (values, options = {}) => {

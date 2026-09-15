@@ -5,6 +5,7 @@
 // diagnosis line = "(A) ORGAN, site, procedure - DIAGNOSIS (System category)".
 
 const lower1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : s);
+// stripDot here diverges from the house form (full stop only); see generators/_house.js.
 const stripDot = (s) => String(s || '').trim().replace(/\.$/, '');
 const num = (x) => { const n = Number(x); return Number.isFinite(n) && String(x).trim() !== '' ? n : null; };
 const plural = (n, one, many) => (n === 1 ? one : many || `${one}s`);

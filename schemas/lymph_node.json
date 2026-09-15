@@ -1,389 +1,386 @@
 {
-  "id": "lymph_node",
-  "version": "2026.09",
-  "name": "Lymph node excision",
-  "shortName": "Lymph node · excision",
-  "label": "Lymph node",
-  "organ": "LYMPH NODE",
-  "system": "Lymphoid",
-  "kind": "benign resection",
-  "rank": 21,
-  "aliases": [
-    "sentinel",
-    "SLN",
-    "sentinel lymph node biopsy",
-    "node dissection",
-    "lymphadenectomy",
-    "reactive",
-    "granulomatous",
-    "metastatic",
-    "x/y",
-    "MNF116",
-    "station",
-    "lymphoma"
+ "id": "lymph_node",
+ "version": "2026.09",
+ "name": "Lymph node excision",
+ "shortName": "Lymph node · excision",
+ "label": "Lymph node",
+ "organ": "LYMPH NODE",
+ "system": "Lymphoid",
+ "kind": "benign resection",
+ "rank": 21,
+ "aliases": [
+  "sentinel",
+  "SLN",
+  "sentinel lymph node biopsy",
+  "node dissection",
+  "lymphadenectomy",
+  "reactive",
+  "granulomatous",
+  "metastatic",
+  "x/y",
+  "MNF116",
+  "station",
+  "lymphoma"
+ ],
+ "match": {
+  "site": [
+   "lymph node",
+   "lymph nodes",
+   "LN",
+   "sentinel",
+   "SLN",
+   "node",
+   "nodes",
+   "lymphadenectomy"
   ],
-  "match": {
-    "site": [
-      "lymph node",
-      "lymph nodes",
-      "LN",
-      "sentinel",
-      "SLN",
-      "node",
-      "nodes",
-      "lymphadenectomy"
-    ],
-    "procedure": [
-      "excision",
-      "sentinel",
-      "resection",
-      "dissection",
-      "sampling"
-    ],
-    "clinical": [
-      "lymphadenopathy",
-      "metastatic",
-      "staging",
-      "sentinel"
-    ]
+  "procedure": [
+   "excision",
+   "sentinel",
+   "resection",
+   "dissection",
+   "sampling"
+  ],
+  "clinical": [
+   "lymphadenopathy",
+   "metastatic",
+   "staging",
+   "sentinel"
+  ]
+ },
+ "macroExtract": {
+  "tissueSize": {
+   "concept": "dims",
+   "unit": "cm"
   },
-  "macroExtract": {
-    "tissueSize": {
-      "concept": "dims",
-      "unit": "cm"
-    },
-    "blocks": {
-      "concept": "blocks",
-      "unit": "count"
-    }
-  },
-  "specimenNoun": "excision",
-  "maxParts": 12,
-  "defaultParts": 1,
-  "generator": "lymphnode",
-  "style": {
-    "british": true
-  },
-  "caseFields": [],
-  "options": [
-    {
-      "id": "includeHeader",
-      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
-      "type": "checkbox",
-      "default": false
-    },
-    {
-      "id": "macro",
-      "label": "Generate the macroscopic description and block key",
-      "type": "checkbox",
-      "default": true
-    }
-  ],
-  "fields": [
-    {
-      "id": "specimenName",
-      "label": "Site / station",
-      "type": "text",
-      "placeholder": "right SLN2 / left external iliac / station 7",
-      "default": ""
-    },
-    {
-      "id": "procedure",
-      "label": "Procedure",
-      "type": "select",
-      "options": [
-        "Excision",
-        "Sentinel lymph node biopsy",
-        "Resection",
-        "Dissection",
-        "Sampling"
-      ],
-      "default": "Excision"
-    },
-    {
-      "id": "nodesReceived",
-      "label": "Number of lymph nodes received",
-      "type": "number",
-      "min": 0,
-      "step": 1,
-      "default": "1",
-      "group": "Macroscopy"
-    },
-    {
-      "id": "tissue",
-      "label": "Specimen as received",
-      "type": "select",
-      "options": [
-        "Fibroadipose tissue with node(s)",
-        "Lymph node(s) only"
-      ],
-      "default": "Fibroadipose tissue with node(s)",
-      "group": "Macroscopy"
-    },
-    {
-      "id": "tissueSize",
-      "label": "Fibroadipose tissue size (cm)",
-      "type": "text",
-      "placeholder": "3 x 2 x 1",
-      "default": "",
-      "showIf": {
-        "field": "tissue",
-        "is": "Fibroadipose tissue with node(s)"
-      },
-      "group": "Macroscopy"
-    },
-    {
-      "id": "largestNode",
-      "label": "Largest lymph node (cm)",
-      "type": "text",
-      "placeholder": "1.2",
-      "default": "",
-      "group": "Macroscopy"
-    },
-    {
-      "id": "blocks",
-      "label": "Blocks",
-      "type": "number",
-      "min": 1,
-      "step": 1,
-      "default": "1",
-      "group": "Macroscopy"
-    },
-    {
-      "id": "blockKeyText",
-      "label": "Block key (optional; overrides the automatic key)",
-      "type": "text",
-      "placeholder": "(1) Largest node, bisected. (2) Remaining nodes.",
-      "default": "",
-      "group": "Macroscopy"
-    },
-    {
-      "id": "nodesTotal",
-      "label": "Total nodes on microscopy (blank = as received)",
-      "type": "number",
-      "min": 0,
-      "step": 1,
-      "default": ""
-    },
-    {
-      "id": "result",
-      "label": "Result",
-      "type": "select",
-      "options": [
-        "Negative - reactive",
-        "Negative - unremarkable",
-        "Granulomatous inflammation",
-        "Metastatic carcinoma",
-        "Metastatic malignant melanoma",
-        "Other metastatic tumour",
-        "Lymphoma - see comment"
-      ],
-      "default": "Negative - reactive"
-    },
-    {
-      "id": "positiveNodes",
-      "label": "Positive nodes",
-      "type": "number",
-      "min": 0,
-      "step": 1,
-      "default": "1",
-      "showIf": {
-        "field": "result",
-        "is": [
-          "Metastatic carcinoma",
-          "Metastatic malignant melanoma",
-          "Other metastatic tumour"
-        ]
-      }
-    },
-    {
-      "id": "largestDeposit",
-      "label": "Largest deposit (mm)",
-      "type": "text",
-      "placeholder": "8",
-      "default": "",
-      "showIf": {
-        "field": "result",
-        "is": [
-          "Metastatic carcinoma",
-          "Metastatic malignant melanoma",
-          "Other metastatic tumour"
-        ]
-      }
-    },
-    {
-      "id": "extranodal",
-      "label": "Extranodal extension",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present"
-      ],
-      "default": "Absent",
-      "showIf": {
-        "field": "result",
-        "is": [
-          "Metastatic carcinoma",
-          "Metastatic malignant melanoma",
-          "Other metastatic tumour"
-        ]
-      }
-    },
-    {
-      "id": "tumourType",
-      "label": "Tumour type / primary (optional)",
-      "type": "text",
-      "placeholder": "adenocarcinoma, consistent with breast primary",
-      "default": "",
-      "showIf": {
-        "field": "result",
-        "is": [
-          "Metastatic carcinoma",
-          "Metastatic malignant melanoma",
-          "Other metastatic tumour"
-        ]
-      }
-    },
-    {
-      "id": "granulomaType",
-      "label": "Granulomas",
-      "type": "select",
-      "options": [
-        "Non-necrotising",
-        "Necrotising"
-      ],
-      "default": "Non-necrotising",
-      "showIf": {
-        "field": "result",
-        "is": "Granulomatous inflammation"
-      }
-    },
-    {
-      "id": "specialStains",
-      "label": "Special stains",
-      "type": "select",
-      "options": [
-        "Not performed",
-        "ZN and GMS negative",
-        "Organisms identified - see notes"
-      ],
-      "default": "Not performed",
-      "showIf": {
-        "field": "result",
-        "is": "Granulomatous inflammation"
-      }
-    },
-    {
-      "id": "ihc",
-      "label": "Immunohistochemistry",
-      "type": "multiselect",
-      "options": [
-        "None",
-        "MNF116",
-        "AE1/AE3",
-        "CK7",
-        "TTF-1",
-        "GATA3",
-        "S100/SOX10/Melan-A",
-        "Other"
-      ],
-      "exclusive": [
-        "None"
-      ],
-      "default": [
-        "None"
-      ]
-    },
-    {
-      "id": "ihcResult",
-      "label": "IHC result (free text, replaces the automatic sentence)",
-      "type": "text",
-      "placeholder": "The tumour cells are positive for GATA3, in keeping with a breast primary.",
-      "default": "",
-      "showIf": {
-        "field": "ihc",
-        "not": "None",
-        "min": 1
-      }
-    },
-    {
-      "id": "additionalNotes",
-      "label": "Additional microscopy",
-      "type": "textarea",
-      "placeholder": "Free text appended to the microscopy for this part",
-      "default": ""
-    }
-  ],
-  "snippets": [
-    {
-      "id": "lymphoma_workup",
-      "label": "Lymphoma: classification to follow",
-      "text": "The features in {parts} are those of a lymphoproliferative disorder. Immunohistochemistry and ancillary studies are in progress; the classification will be issued in a supplementary report.",
-      "auto": {
-        "field": "result",
-        "is": "Lymphoma - see comment"
-      }
-    }
-  ],
-  "example": {
-    "caseTitle": "",
-    "options": {
-      "includeHeader": false,
-      "macro": true
-    },
-    "parts": [
-      {
-        "label": "A",
-        "values": {
-          "specimenName": "right SLN1",
-          "procedure": "Excision",
-          "nodesReceived": "1",
-          "tissue": "Fibroadipose tissue with node(s)",
-          "tissueSize": "2.5 x 1.5 x 1",
-          "largestNode": "1.2",
-          "blocks": "1",
-          "blockKeyText": "",
-          "nodesTotal": "",
-          "result": "Negative - reactive",
-          "positiveNodes": "1",
-          "largestDeposit": "",
-          "extranodal": "Absent",
-          "tumourType": "",
-          "granulomaType": "Non-necrotising",
-          "specialStains": "Not performed",
-          "ihc": [
-            "MNF116"
-          ],
-          "ihcResult": "",
-          "additionalNotes": ""
-        }
-      },
-      {
-        "label": "B",
-        "values": {
-          "specimenName": "right axillary",
-          "procedure": "Sampling",
-          "nodesReceived": "3",
-          "tissue": "Fibroadipose tissue with node(s)",
-          "tissueSize": "4 x 3 x 1.5",
-          "largestNode": "1.5",
-          "blocks": "2",
-          "blockKeyText": "",
-          "nodesTotal": "",
-          "result": "Negative - reactive",
-          "positiveNodes": "1",
-          "largestDeposit": "",
-          "extranodal": "Absent",
-          "tumourType": "",
-          "granulomaType": "Non-necrotising",
-          "specialStains": "Not performed",
-          "ihc": [
-            "None"
-          ],
-          "ihcResult": "",
-          "additionalNotes": ""
-        }
-      }
-    ]
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
   }
+ },
+ "specimenNoun": "excision",
+ "maxParts": 12,
+ "defaultParts": 1,
+ "generator": "lymphnode",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Site / station",
+   "type": "text",
+   "placeholder": "right SLN2 / left external iliac / station 7",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "options": [
+    "Excision",
+    "Sentinel lymph node biopsy",
+    "Resection",
+    "Dissection",
+    "Sampling"
+   ],
+   "default": "Excision"
+  },
+  {
+   "id": "nodesReceived",
+   "label": "Number of lymph nodes received",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "default": "1",
+   "group": "Macroscopy"
+  },
+  {
+   "id": "tissue",
+   "label": "Specimen as received",
+   "type": "select",
+   "options": [
+    "Fibroadipose tissue with node(s)",
+    "Lymph node(s) only"
+   ],
+   "default": "Fibroadipose tissue with node(s)",
+   "group": "Macroscopy"
+  },
+  {
+   "id": "tissueSize",
+   "label": "Fibroadipose tissue size (cm)",
+   "type": "text",
+   "placeholder": "3 x 2 x 1",
+   "default": "",
+   "showIf": {
+    "field": "tissue",
+    "is": "Fibroadipose tissue with node(s)"
+   },
+   "group": "Macroscopy"
+  },
+  {
+   "id": "largestNode",
+   "label": "Largest lymph node (cm)",
+   "type": "text",
+   "placeholder": "1.2",
+   "default": "",
+   "group": "Macroscopy"
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "min": 1,
+   "step": 1,
+   "default": "1",
+   "group": "Macroscopy"
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key (optional; overrides the automatic key)",
+   "type": "text",
+   "placeholder": "(1) Largest node, bisected. (2) Remaining nodes.",
+   "default": "",
+   "group": "Macroscopy"
+  },
+  {
+   "id": "nodesTotal",
+   "label": "Total nodes on microscopy (blank = as received)",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "default": ""
+  },
+  {
+   "id": "result",
+   "label": "Result",
+   "type": "select",
+   "options": [
+    "Negative - reactive",
+    "Negative - unremarkable",
+    "Granulomatous inflammation",
+    "Metastatic carcinoma",
+    "Metastatic malignant melanoma",
+    "Other metastatic tumour",
+    "Lymphoma - see comment"
+   ],
+   "default": "Negative - reactive"
+  },
+  {
+   "id": "positiveNodes",
+   "label": "Positive nodes",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "default": "1",
+   "showIf": {
+    "field": "result",
+    "is": [
+     "Metastatic carcinoma",
+     "Metastatic malignant melanoma",
+     "Other metastatic tumour"
+    ]
+   }
+  },
+  {
+   "id": "largestDeposit",
+   "label": "Largest deposit (mm)",
+   "type": "text",
+   "placeholder": "8",
+   "default": "",
+   "showIf": {
+    "field": "result",
+    "is": [
+     "Metastatic carcinoma",
+     "Metastatic malignant melanoma",
+     "Other metastatic tumour"
+    ]
+   }
+  },
+  {
+   "id": "extranodal",
+   "label": "Extranodal extension",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "result",
+    "is": [
+     "Metastatic carcinoma",
+     "Metastatic malignant melanoma",
+     "Other metastatic tumour"
+    ]
+   }
+  },
+  {
+   "id": "tumourType",
+   "label": "Tumour type / primary (optional)",
+   "type": "text",
+   "placeholder": "adenocarcinoma, consistent with breast primary",
+   "default": "",
+   "showIf": {
+    "field": "result",
+    "is": [
+     "Metastatic carcinoma",
+     "Metastatic malignant melanoma",
+     "Other metastatic tumour"
+    ]
+   }
+  },
+  {
+   "id": "granulomaType",
+   "label": "Granulomas",
+   "type": "select",
+   "options": [
+    "Non-necrotising",
+    "Necrotising"
+   ],
+   "default": "Non-necrotising",
+   "showIf": {
+    "field": "result",
+    "is": "Granulomatous inflammation"
+   }
+  },
+  {
+   "id": "specialStains",
+   "label": "Special stains",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "ZN and GMS negative",
+    "Organisms identified - see notes"
+   ],
+   "default": "Not performed",
+   "showIf": {
+    "field": "result",
+    "is": "Granulomatous inflammation"
+   }
+  },
+  {
+   "id": "ihc",
+   "label": "Immunohistochemistry",
+   "type": "multiselect",
+   "options": [
+    "None",
+    "MNF116",
+    "AE1/AE3",
+    "CK7",
+    "TTF-1",
+    "GATA3",
+    "S100/SOX10/Melan-A",
+    "Other"
+   ],
+   "exclusive": [
+    "None"
+   ],
+   "default": [
+    "None"
+   ]
+  },
+  {
+   "id": "ihcResult",
+   "label": "IHC result (free text, replaces the automatic sentence)",
+   "type": "text",
+   "placeholder": "The tumour cells are positive for GATA3, in keeping with a breast primary.",
+   "default": "",
+   "showIf": {
+    "field": "ihc",
+    "not": "None",
+    "min": 1
+   }
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "Free text appended to the microscopy for this part",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "lymphoma_workup",
+   "label": "Lymphoma: classification to follow",
+   "text": "The features in {parts} are those of a lymphoproliferative disorder. Immunohistochemistry and ancillary studies are in progress; the classification will be issued in a supplementary report.",
+   "auto": {
+    "field": "result",
+    "is": "Lymphoma - see comment"
+   }
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "right SLN1",
+     "procedure": "Excision",
+     "nodesReceived": "1",
+     "tissue": "Fibroadipose tissue with node(s)",
+     "tissueSize": "2.5 x 1.5 x 1",
+     "largestNode": "1.2",
+     "blocks": "1",
+     "blockKeyText": "",
+     "nodesTotal": "",
+     "result": "Negative - reactive",
+     "positiveNodes": "1",
+     "largestDeposit": "",
+     "extranodal": "Absent",
+     "tumourType": "",
+     "granulomaType": "Non-necrotising",
+     "specialStains": "Not performed",
+     "ihc": [
+      "MNF116"
+     ],
+     "ihcResult": "",
+     "additionalNotes": ""
+    }
+   },
+   {
+    "label": "B",
+    "values": {
+     "specimenName": "right axillary",
+     "procedure": "Sampling",
+     "nodesReceived": "3",
+     "tissue": "Fibroadipose tissue with node(s)",
+     "tissueSize": "4 x 3 x 1.5",
+     "largestNode": "1.5",
+     "blocks": "2",
+     "blockKeyText": "",
+     "nodesTotal": "",
+     "result": "Negative - reactive",
+     "positiveNodes": "1",
+     "largestDeposit": "",
+     "extranodal": "Absent",
+     "tumourType": "",
+     "granulomaType": "Non-necrotising",
+     "specialStains": "Not performed",
+     "ihc": [
+      "None"
+     ],
+     "ihcResult": "",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
 }

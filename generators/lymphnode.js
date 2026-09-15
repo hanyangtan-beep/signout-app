@@ -1,3 +1,4 @@
+import { stripDot } from './_house.js';
 // Lymph node excision / sentinel node / dissection generator. Pure functions: (part, ctx) -> string.
 // Each part is one node specimen (site or station) so any case can add node parts.
 // Blocks produced:
@@ -22,7 +23,6 @@ const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'e
 /** Words for 0-9, digits from 10. */
 export const word = (n) => (n >= 0 && n <= 9 ? WORDS[n] : String(n));
 const uc1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : '');
-const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 /** Lower-case the first letter unless the first word is an acronym / station code ("SLN2", "L4"). */
 const lcSite = (s) => {
   const t = String(s || '').trim();

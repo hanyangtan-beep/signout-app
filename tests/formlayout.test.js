@@ -5,7 +5,7 @@ import { spanFull, groupProgress } from '../src/formlayout.js';
 import { isVisible } from '../src/engine.js';
 
 const schemaDir = new URL('../schemas/', import.meta.url);
-const schemas = readdirSync(schemaDir).filter((f) => f.endsWith('.json'))
+const schemas = readdirSync(schemaDir).filter((f) => f.endsWith('.json') && !f.startsWith('_'))
   .map((f) => [f, JSON.parse(readFileSync(new URL(f, schemaDir), 'utf8'))]);
 
 test('textareas and chip sets take the full width of a packed row', () => {

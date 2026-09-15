@@ -31,7 +31,8 @@ export function manifestEntry(schema) {
 }
 
 export async function buildManifest(schemasDir = path.join(root, 'schemas')) {
-  const files = (await readdir(schemasDir)).filter((f) => f.endsWith('.json')).sort();
+  // `_`-prefixed files are shared partials (schemas/_shared.json), not templates.
+  const files = (await readdir(schemasDir)).filter((f) => f.endsWith('.json') && !f.startsWith('_')).sort();
   const entries = [];
   for (const f of files) entries.push(manifestEntry(JSON.parse(await readFile(path.join(schemasDir, f), 'utf8'))));
   entries.sort((a, b) => a.rank - b.rank || a.shortName.localeCompare(b.shortName));

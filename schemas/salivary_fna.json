@@ -1,400 +1,369 @@
 {
-  "id": "salivary_fna",
-  "version": 1,
-  "name": "Salivary gland FNA (Milan)",
-  "shortName": "Salivary gland · FNA",
-  "label": "Salivary gland FNA",
-  "organ": "Salivary gland",
-  "system": "Cytology",
-  "kind": "cytology",
-  "rank": 620,
-  "aliases": [
-    "salivary fna",
-    "milan",
-    "parotid fna",
-    "submandibular fna"
+ "id": "salivary_fna",
+ "version": 1,
+ "name": "Salivary gland FNA (Milan)",
+ "shortName": "Salivary gland · FNA",
+ "label": "Salivary gland FNA",
+ "organ": "Salivary gland",
+ "system": "Cytology",
+ "kind": "cytology",
+ "rank": 620,
+ "aliases": [
+  "salivary fna",
+  "milan",
+  "parotid fna",
+  "submandibular fna"
+ ],
+ "match": {
+  "site": [
+   "parotid",
+   "submandibular",
+   "salivary",
+   "sublingual"
   ],
-  "match": {
-    "site": [
-      "parotid",
-      "submandibular",
-      "salivary",
-      "sublingual"
-    ],
-    "procedure": [
-      "FNA",
-      "aspirate",
-      "aspiration"
-    ],
-    "clinical": [
-      "parotid mass",
-      "parotid swelling",
-      "salivary"
-    ],
-    "fill": [
-      {
-        "field": "specimenName",
-        "from": "detail"
-      }
-    ]
+  "procedure": [
+   "FNA",
+   "aspirate",
+   "aspiration"
+  ],
+  "clinical": [
+   "parotid mass",
+   "parotid swelling",
+   "salivary"
+  ],
+  "fill": [
+   {
+    "field": "specimenName",
+    "from": "detail"
+   }
+  ]
+ },
+ "specimenNoun": "aspirate",
+ "maxParts": 4,
+ "generator": "cytology",
+ "source": "Cytology suite. Classification systems: Bethesda 2023 (thyroid), Milan 2nd ed 2023 (salivary), Paris System 2.0 (urine), International System for Serous Fluid Cytopathology (effusions), Sydney System (lymph node), Bethesda 2014 (cervical). Adequacy is assessed on the final preparations only.",
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
   },
-  "specimenNoun": "aspirate",
-  "maxParts": 4,
-  "generator": "cytology",
-  "source": "Cytology suite. Classification systems: Bethesda 2023 (thyroid), Milan 2nd ed 2023 (salivary), Paris System 2.0 (urine), International System for Serous Fluid Cytopathology (effusions), Sydney System (lymph node), Bethesda 2014 (cervical). Adequacy is assessed on the final preparations only.",
-  "caseFields": [],
-  "options": [
-    {
-      "id": "includeHeader",
-      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
-      "type": "checkbox",
-      "default": false
-    },
-    {
-      "id": "macro",
-      "label": "Generate the preparations line (received / processed as)",
-      "type": "checkbox",
-      "default": true
-    }
-  ],
-  "fields": [
-    {
-      "id": "specimenName",
-      "label": "Site (after 'Salivary gland,')",
-      "type": "text",
-      "default": "left parotid",
-      "placeholder": "left parotid / right submandibular / left parotid tail nodule"
-    },
-    {
-      "id": "procedure",
-      "label": "Procedure",
-      "type": "select",
-      "options": [
-        "Fine needle aspiration",
-        "Ultrasound-guided fine needle aspiration"
-      ],
-      "default": "Fine needle aspiration"
-    },
-    {
-      "id": "smearsAir",
-      "label": "Air-dried smears",
-      "type": "number",
-      "default": 2,
-      "group": "Preparations"
-    },
-    {
-      "id": "smearsAlc",
-      "label": "Alcohol-fixed smears",
-      "type": "number",
-      "default": 2,
-      "group": "Preparations"
-    },
-    {
-      "id": "rinse",
-      "label": "Needle rinse",
-      "type": "select",
-      "options": [
-        "Blood-stained",
-        "Pink",
-        "Clear",
-        "Turbid",
-        "Brown (cyst fluid)",
-        "None"
-      ],
-      "default": "Blood-stained",
-      "group": "Preparations"
-    },
-    {
-      "id": "lbc",
-      "label": "Liquid-based slide",
-      "type": "checkbox",
-      "default": false,
-      "group": "Preparations"
-    },
-    {
-      "id": "cytospin",
-      "label": "Cytospin slides",
-      "type": "number",
-      "default": 1,
-      "group": "Preparations"
-    },
-    {
-      "id": "cellBlock",
-      "label": "Cell block slides",
-      "type": "number",
-      "default": 1,
-      "group": "Preparations"
-    },
-    {
-      "id": "adequacy",
-      "label": "Adequacy",
-      "type": "select",
-      "options": [
-        "Adequate",
-        "Adequate, limited by low cellularity",
-        "Inadequate"
-      ],
-      "default": "Adequate",
-      "group": "Adequacy"
-    },
-    {
-      "id": "inadequacyReason",
-      "label": "Reason for inadequacy",
-      "type": "select",
-      "options": [
-        "Virtually acellular specimen",
-        "Obscuring blood",
-        "Non-mucinous cyst contents only",
-        "Normal salivary tissue only in a clinically discrete mass",
-        "Poor preservation"
-      ],
-      "default": "Virtually acellular specimen",
-      "group": "Adequacy",
-      "showIf": {
-        "field": "adequacy",
-        "is": "Inadequate"
-      }
-    },
-    {
-      "id": "category",
-      "label": "Milan category (2nd edition)",
-      "type": "select",
-      "options": [
-        "I. Non-diagnostic",
-        "II. Non-neoplastic",
-        "III. Atypia of undetermined significance",
-        "IVa. Benign neoplasm",
-        "IVb. Salivary gland neoplasm of uncertain malignant potential",
-        "V. Suspicious for malignancy",
-        "VI. Malignant"
-      ],
-      "default": "IVa. Benign neoplasm",
-      "group": "Category"
-    },
-    {
-      "id": "nonNeoplasticDx",
-      "label": "Non-neoplastic diagnosis",
-      "type": "select",
-      "options": [
-        "Chronic sialadenitis",
-        "Acute sialadenitis",
-        "Granulomatous sialadenitis",
-        "Lymphoepithelial cyst",
-        "Reactive intraparotid lymph node",
-        "Mucocele / mucus retention cyst",
-        "Normal salivary gland tissue"
-      ],
-      "default": "Chronic sialadenitis",
-      "group": "Category",
-      "showIf": {
-        "field": "category",
-        "is": "II. Non-neoplastic"
-      }
-    },
-    {
-      "id": "benignNeoplasmDx",
-      "label": "Benign neoplasm",
-      "type": "select",
-      "options": [
-        "Pleomorphic adenoma",
-        "Warthin tumour",
-        "Basal cell adenoma",
-        "Oncocytoma",
-        "Lipoma",
-        "Schwannoma",
-        "Benign neoplasm, not further classifiable"
-      ],
-      "default": "Pleomorphic adenoma",
-      "group": "Category",
-      "showIf": {
-        "field": "category",
-        "is": "IVa. Benign neoplasm"
-      }
-    },
-    {
-      "id": "sumpDx",
-      "label": "SUMP subgroup",
-      "type": "select",
-      "options": [
-        "Cellular basaloid neoplasm",
-        "Cellular oncocytic / oncocytoid neoplasm",
-        "Cellular neoplasm with clear cell features",
-        "Cellular neoplasm with myoepithelial differentiation",
-        "Low grade mucinous neoplasm",
-        "Epithelial neoplasm, not further classifiable"
-      ],
-      "default": "Cellular basaloid neoplasm",
-      "group": "Category",
-      "showIf": {
-        "field": "category",
-        "is": "IVb. Salivary gland neoplasm of uncertain malignant potential"
-      }
-    },
-    {
-      "id": "suspDx",
-      "label": "Suspicious for",
-      "type": "select",
-      "options": [
-        "Carcinoma",
-        "Lymphoma",
-        "Metastatic carcinoma",
-        "Malignancy, type undetermined"
-      ],
-      "default": "Carcinoma",
-      "group": "Category",
-      "showIf": {
-        "field": "category",
-        "is": "V. Suspicious for malignancy"
-      }
-    },
-    {
-      "id": "malignantDx",
-      "label": "Malignant diagnosis",
-      "type": "select",
-      "options": [
-        "Mucoepidermoid carcinoma, low grade",
-        "Mucoepidermoid carcinoma, high grade",
-        "Adenoid cystic carcinoma",
-        "Acinic cell carcinoma",
-        "Secretory carcinoma",
-        "Salivary duct carcinoma",
-        "Carcinoma ex pleomorphic adenoma",
-        "Carcinoma, not further classifiable",
-        "Lymphoma",
-        "Metastatic squamous cell carcinoma",
-        "Metastatic melanoma",
-        "Other malignancy"
-      ],
-      "default": "Mucoepidermoid carcinoma, low grade",
-      "group": "Category",
-      "showIf": {
-        "field": "category",
-        "is": "VI. Malignant"
-      }
-    },
-    {
-      "id": "features",
-      "label": "Cytological features",
-      "type": "multiselect",
-      "options": [
-        "Chondromyxoid fibrillary matrix",
-        "Myoepithelial cells",
-        "Plasmacytoid cells",
-        "Oncocytic cells in flat sheets",
-        "Polymorphous lymphoid background",
-        "Mucinous background",
-        "Basaloid cells with hyaline globules",
-        "Acinar cells",
-        "Squamous and intermediate cells",
-        "Mucous cells",
-        "Cystic debris",
-        "Lymphocytes",
-        "Marked pleomorphism",
-        "Necrosis",
-        "Mitoses"
-      ],
-      "default": [
-        "Chondromyxoid fibrillary matrix",
-        "Myoepithelial cells",
-        "Plasmacytoid cells"
-      ],
-      "group": "Microscopy"
-    },
-    {
-      "id": "additionalFindings",
-      "label": "Additional findings (free text, appended to microscopy)",
-      "type": "textarea",
-      "default": "",
-      "group": "Microscopy",
-      "placeholder": "e.g. Occasional groups of ciliated respiratory epithelial cells are also present"
-    },
-    {
-      "id": "ancillary",
-      "label": "Ancillary studies (same paragraph)",
-      "type": "textarea",
-      "default": "",
-      "group": "Ancillary",
-      "placeholder": "e.g. Immunostaining on the cell block shows the cells to be positive for TTF-1 and negative for p40"
-    }
-  ],
-  "snippets": [
-    {
-      "id": "salivary_rom_i",
-      "label": "Risk of malignancy: Non-diagnostic",
-      "auto": {
-        "field": "category",
-        "is": "I. Non-diagnostic"
-      },
-      "text": "A non-diagnostic result (Milan I) carries an estimated risk of malignancy of 15%. Repeat ultrasound-guided aspiration is suggested."
-    },
-    {
-      "id": "salivary_rom_iii",
-      "label": "Risk of malignancy: Atypia of undetermined significance",
-      "auto": {
-        "field": "category",
-        "is": "III. Atypia of undetermined significance"
-      },
-      "text": "Atypia of undetermined significance (Milan III) carries an estimated risk of malignancy of 30%. Repeat aspiration or excision is suggested according to clinical and radiological correlation."
-    },
-    {
-      "id": "salivary_rom_ivb",
-      "label": "Risk of malignancy: Salivary gland neoplasm of uncertain mal",
-      "auto": {
-        "field": "category",
-        "is": "IVb. Salivary gland neoplasm of uncertain malignant potential"
-      },
-      "text": "A salivary gland neoplasm of uncertain malignant potential (Milan IVb) carries an estimated risk of malignancy of 35%. Excision is suggested for definitive classification."
-    },
-    {
-      "id": "salivary_rom_v",
-      "label": "Risk of malignancy: Suspicious for malignancy",
-      "auto": {
-        "field": "category",
-        "is": "V. Suspicious for malignancy"
-      },
-      "text": "Suspicious for malignancy (Milan V) carries an estimated risk of malignancy of 83%. Surgical management is suggested."
-    },
-    {
-      "id": "salivary_excision",
-      "label": "Suggest excisional biopsy",
-      "auto": {
-        "field": "suspDx",
-        "is": "Lymphoma"
-      },
-      "text": "Suggest excisional biopsy for definitive diagnosis."
-    }
-  ],
-  "example": {
-    "caseTitle": "",
-    "options": {
-      "includeHeader": false,
-      "macro": true
-    },
-    "parts": [
-      {
-        "label": "A",
-        "values": {
-          "specimenName": "left parotid",
-          "procedure": "Ultrasound-guided fine needle aspiration",
-          "smearsAir": "2",
-          "smearsAlc": "2",
-          "rinse": "Blood-stained",
-          "lbc": false,
-          "cytospin": "1",
-          "cellBlock": "1",
-          "adequacy": "Adequate",
-          "inadequacyReason": "Virtually acellular specimen",
-          "category": "IVa. Benign neoplasm",
-          "benignNeoplasmDx": "Pleomorphic adenoma",
-          "features": [
-            "Chondromyxoid fibrillary matrix",
-            "Myoepithelial cells",
-            "Plasmacytoid cells"
-          ],
-          "additionalFindings": "",
-          "ancillary": ""
-        }
-      }
-    ]
+  {
+   "id": "macro",
+   "label": "Generate the preparations line (received / processed as)",
+   "type": "checkbox",
+   "default": true
   }
+ ],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Site (after 'Salivary gland,')",
+   "type": "text",
+   "default": "left parotid",
+   "placeholder": "left parotid / right submandibular / left parotid tail nodule"
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "options": [
+    "Fine needle aspiration",
+    "Ultrasound-guided fine needle aspiration"
+   ],
+   "default": "Fine needle aspiration"
+  },
+  {
+   "$use": "smearsAir"
+  },
+  {
+   "$use": "smearsAlc"
+  },
+  {
+   "$use": "rinse"
+  },
+  {
+   "$use": "lbc"
+  },
+  {
+   "id": "cytospin",
+   "label": "Cytospin slides",
+   "type": "number",
+   "default": 1,
+   "group": "Preparations"
+  },
+  {
+   "$use": "cellBlock"
+  },
+  {
+   "id": "adequacy",
+   "label": "Adequacy",
+   "type": "select",
+   "options": [
+    "Adequate",
+    "Adequate, limited by low cellularity",
+    "Inadequate"
+   ],
+   "default": "Adequate",
+   "group": "Adequacy"
+  },
+  {
+   "id": "inadequacyReason",
+   "label": "Reason for inadequacy",
+   "type": "select",
+   "options": [
+    "Virtually acellular specimen",
+    "Obscuring blood",
+    "Non-mucinous cyst contents only",
+    "Normal salivary tissue only in a clinically discrete mass",
+    "Poor preservation"
+   ],
+   "default": "Virtually acellular specimen",
+   "group": "Adequacy",
+   "showIf": {
+    "field": "adequacy",
+    "is": "Inadequate"
+   }
+  },
+  {
+   "id": "category",
+   "label": "Milan category (2nd edition)",
+   "type": "select",
+   "options": [
+    "I. Non-diagnostic",
+    "II. Non-neoplastic",
+    "III. Atypia of undetermined significance",
+    "IVa. Benign neoplasm",
+    "IVb. Salivary gland neoplasm of uncertain malignant potential",
+    "V. Suspicious for malignancy",
+    "VI. Malignant"
+   ],
+   "default": "IVa. Benign neoplasm",
+   "group": "Category"
+  },
+  {
+   "id": "nonNeoplasticDx",
+   "label": "Non-neoplastic diagnosis",
+   "type": "select",
+   "options": [
+    "Chronic sialadenitis",
+    "Acute sialadenitis",
+    "Granulomatous sialadenitis",
+    "Lymphoepithelial cyst",
+    "Reactive intraparotid lymph node",
+    "Mucocele / mucus retention cyst",
+    "Normal salivary gland tissue"
+   ],
+   "default": "Chronic sialadenitis",
+   "group": "Category",
+   "showIf": {
+    "field": "category",
+    "is": "II. Non-neoplastic"
+   }
+  },
+  {
+   "id": "benignNeoplasmDx",
+   "label": "Benign neoplasm",
+   "type": "select",
+   "options": [
+    "Pleomorphic adenoma",
+    "Warthin tumour",
+    "Basal cell adenoma",
+    "Oncocytoma",
+    "Lipoma",
+    "Schwannoma",
+    "Benign neoplasm, not further classifiable"
+   ],
+   "default": "Pleomorphic adenoma",
+   "group": "Category",
+   "showIf": {
+    "field": "category",
+    "is": "IVa. Benign neoplasm"
+   }
+  },
+  {
+   "id": "sumpDx",
+   "label": "SUMP subgroup",
+   "type": "select",
+   "options": [
+    "Cellular basaloid neoplasm",
+    "Cellular oncocytic / oncocytoid neoplasm",
+    "Cellular neoplasm with clear cell features",
+    "Cellular neoplasm with myoepithelial differentiation",
+    "Low grade mucinous neoplasm",
+    "Epithelial neoplasm, not further classifiable"
+   ],
+   "default": "Cellular basaloid neoplasm",
+   "group": "Category",
+   "showIf": {
+    "field": "category",
+    "is": "IVb. Salivary gland neoplasm of uncertain malignant potential"
+   }
+  },
+  {
+   "id": "suspDx",
+   "label": "Suspicious for",
+   "type": "select",
+   "options": [
+    "Carcinoma",
+    "Lymphoma",
+    "Metastatic carcinoma",
+    "Malignancy, type undetermined"
+   ],
+   "default": "Carcinoma",
+   "group": "Category",
+   "showIf": {
+    "field": "category",
+    "is": "V. Suspicious for malignancy"
+   }
+  },
+  {
+   "id": "malignantDx",
+   "label": "Malignant diagnosis",
+   "type": "select",
+   "options": [
+    "Mucoepidermoid carcinoma, low grade",
+    "Mucoepidermoid carcinoma, high grade",
+    "Adenoid cystic carcinoma",
+    "Acinic cell carcinoma",
+    "Secretory carcinoma",
+    "Salivary duct carcinoma",
+    "Carcinoma ex pleomorphic adenoma",
+    "Carcinoma, not further classifiable",
+    "Lymphoma",
+    "Metastatic squamous cell carcinoma",
+    "Metastatic melanoma",
+    "Other malignancy"
+   ],
+   "default": "Mucoepidermoid carcinoma, low grade",
+   "group": "Category",
+   "showIf": {
+    "field": "category",
+    "is": "VI. Malignant"
+   }
+  },
+  {
+   "id": "features",
+   "label": "Cytological features",
+   "type": "multiselect",
+   "options": [
+    "Chondromyxoid fibrillary matrix",
+    "Myoepithelial cells",
+    "Plasmacytoid cells",
+    "Oncocytic cells in flat sheets",
+    "Polymorphous lymphoid background",
+    "Mucinous background",
+    "Basaloid cells with hyaline globules",
+    "Acinar cells",
+    "Squamous and intermediate cells",
+    "Mucous cells",
+    "Cystic debris",
+    "Lymphocytes",
+    "Marked pleomorphism",
+    "Necrosis",
+    "Mitoses"
+   ],
+   "default": [
+    "Chondromyxoid fibrillary matrix",
+    "Myoepithelial cells",
+    "Plasmacytoid cells"
+   ],
+   "group": "Microscopy"
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional findings (free text, appended to microscopy)",
+   "type": "textarea",
+   "default": "",
+   "group": "Microscopy",
+   "placeholder": "e.g. Occasional groups of ciliated respiratory epithelial cells are also present"
+  },
+  {
+   "id": "ancillary",
+   "label": "Ancillary studies (same paragraph)",
+   "type": "textarea",
+   "default": "",
+   "group": "Ancillary",
+   "placeholder": "e.g. Immunostaining on the cell block shows the cells to be positive for TTF-1 and negative for p40"
+  }
+ ],
+ "snippets": [
+  {
+   "id": "salivary_rom_i",
+   "label": "Risk of malignancy: Non-diagnostic",
+   "auto": {
+    "field": "category",
+    "is": "I. Non-diagnostic"
+   },
+   "text": "A non-diagnostic result (Milan I) carries an estimated risk of malignancy of 15%. Repeat ultrasound-guided aspiration is suggested."
+  },
+  {
+   "id": "salivary_rom_iii",
+   "label": "Risk of malignancy: Atypia of undetermined significance",
+   "auto": {
+    "field": "category",
+    "is": "III. Atypia of undetermined significance"
+   },
+   "text": "Atypia of undetermined significance (Milan III) carries an estimated risk of malignancy of 30%. Repeat aspiration or excision is suggested according to clinical and radiological correlation."
+  },
+  {
+   "id": "salivary_rom_ivb",
+   "label": "Risk of malignancy: Salivary gland neoplasm of uncertain mal",
+   "auto": {
+    "field": "category",
+    "is": "IVb. Salivary gland neoplasm of uncertain malignant potential"
+   },
+   "text": "A salivary gland neoplasm of uncertain malignant potential (Milan IVb) carries an estimated risk of malignancy of 35%. Excision is suggested for definitive classification."
+  },
+  {
+   "id": "salivary_rom_v",
+   "label": "Risk of malignancy: Suspicious for malignancy",
+   "auto": {
+    "field": "category",
+    "is": "V. Suspicious for malignancy"
+   },
+   "text": "Suspicious for malignancy (Milan V) carries an estimated risk of malignancy of 83%. Surgical management is suggested."
+  },
+  {
+   "id": "salivary_excision",
+   "label": "Suggest excisional biopsy",
+   "auto": {
+    "field": "suspDx",
+    "is": "Lymphoma"
+   },
+   "text": "Suggest excisional biopsy for definitive diagnosis."
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "left parotid",
+     "procedure": "Ultrasound-guided fine needle aspiration",
+     "smearsAir": "2",
+     "smearsAlc": "2",
+     "rinse": "Blood-stained",
+     "lbc": false,
+     "cytospin": "1",
+     "cellBlock": "1",
+     "adequacy": "Adequate",
+     "inadequacyReason": "Virtually acellular specimen",
+     "category": "IVa. Benign neoplasm",
+     "benignNeoplasmDx": "Pleomorphic adenoma",
+     "features": [
+      "Chondromyxoid fibrillary matrix",
+      "Myoepithelial cells",
+      "Plasmacytoid cells"
+     ],
+     "additionalFindings": "",
+     "ancillary": ""
+    }
+   }
+  ]
+ }
 }

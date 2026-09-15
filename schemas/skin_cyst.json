@@ -1,285 +1,282 @@
 {
-  "id": "skin_cyst",
-  "version": "2026.09",
-  "name": "Skin cyst",
-  "shortName": "Skin · cyst excision",
-  "label": "Skin cyst",
-  "organ": "SKIN",
-  "system": "Skin",
-  "kind": "benign resection",
-  "rank": 29,
-  "aliases": [
-    "sebaceous cyst",
-    "seb cyst",
-    "epidermal cyst",
-    "epidermoid",
-    "inclusion cyst",
-    "pilar cyst",
-    "trichilemmal",
-    "dermoid",
-    "ruptured cyst",
-    "keratin",
-    "steatocystoma",
-    "granulomatous reaction"
+ "id": "skin_cyst",
+ "version": "2026.09",
+ "name": "Skin cyst",
+ "shortName": "Skin · cyst excision",
+ "label": "Skin cyst",
+ "organ": "SKIN",
+ "system": "Skin",
+ "kind": "benign resection",
+ "rank": 29,
+ "aliases": [
+  "sebaceous cyst",
+  "seb cyst",
+  "epidermal cyst",
+  "epidermoid",
+  "inclusion cyst",
+  "pilar cyst",
+  "trichilemmal",
+  "dermoid",
+  "ruptured cyst",
+  "keratin",
+  "steatocystoma",
+  "granulomatous reaction"
+ ],
+ "match": {
+  "site": [
+   "skin",
+   "scalp",
+   "face",
+   "ear",
+   "forehead",
+   "cheek"
   ],
-  "match": {
-    "site": [
-      "skin",
-      "scalp",
-      "face",
-      "ear",
-      "forehead",
-      "cheek"
-    ],
-    "procedure": [
-      "excision",
-      "excision biopsy",
-      "enucleation"
-    ],
-    "clinical": [
-      "sebaceous cyst",
-      "seb cyst",
-      "epidermal cyst",
-      "epidermoid cyst",
-      "inclusion cyst",
-      "pilar cyst",
-      "trichilemmal",
-      "dermoid",
-      "cyst",
-      "infected cyst"
-    ],
-    "fill": [
-      {
-        "field": "specimenName",
-        "from": "detail"
-      }
-    ]
+  "procedure": [
+   "excision",
+   "excision biopsy",
+   "enucleation"
+  ],
+  "clinical": [
+   "sebaceous cyst",
+   "seb cyst",
+   "epidermal cyst",
+   "epidermoid cyst",
+   "inclusion cyst",
+   "pilar cyst",
+   "trichilemmal",
+   "dermoid",
+   "cyst",
+   "infected cyst"
+  ],
+  "fill": [
+   {
+    "field": "specimenName",
+    "from": "detail"
+   }
+  ]
+ },
+ "macroExtract": {
+  "ellipseSize": {
+   "concept": "specimenDims",
+   "unit": "cm"
   },
-  "macroExtract": {
-    "ellipseSize": {
-      "concept": "specimenDims",
-      "unit": "cm"
-    },
-    "noduleSize": {
-      "concept": "tumourDims",
-      "unit": "cm",
-      "min": 1
-    },
-    "blocks": {
-      "concept": "blocks",
-      "unit": "count"
-    }
+  "noduleSize": {
+   "concept": "tumourDims",
+   "unit": "cm",
+   "min": 1
   },
-  "specimenNoun": "excision",
-  "maxParts": 3,
-  "defaultParts": 1,
-  "generator": "skincyst",
-  "style": {
-    "british": true
-  },
-  "caseFields": [],
-  "options": [
-    {
-      "id": "includeHeader",
-      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
-      "type": "checkbox",
-      "default": false
-    },
-    {
-      "id": "macro",
-      "label": "Generate the macroscopic description and block key",
-      "type": "checkbox",
-      "default": true
-    }
-  ],
-  "partDefaults": [],
-  "fields": [
-    {
-      "id": "specimenName",
-      "label": "Site",
-      "type": "text",
-      "placeholder": "right axilla",
-      "default": ""
-    },
-    {
-      "id": "clinicalLabel",
-      "label": "Clinical label",
-      "type": "text",
-      "placeholder": "seb cyst",
-      "default": "seb cyst"
-    },
-    {
-      "id": "ellipseSize",
-      "label": "Ellipse of skin (cm)",
-      "type": "text",
-      "group": "Macroscopy",
-      "placeholder": "3 x 1.5",
-      "default": ""
-    },
-    {
-      "id": "noduleSize",
-      "label": "Nodule (cm)",
-      "type": "text",
-      "group": "Macroscopy",
-      "placeholder": "1.5",
-      "default": ""
-    },
-    {
-      "id": "deepInked",
-      "label": "Deep surface",
-      "type": "select",
-      "group": "Macroscopy",
-      "options": [
-        "Inked",
-        "Not inked"
-      ],
-      "default": "Inked"
-    },
-    {
-      "id": "cystContents",
-      "label": "Cyst contents",
-      "type": "select",
-      "group": "Macroscopy",
-      "options": [
-        "Cheesy keratinous material",
-        "Hair and sebaceous material",
-        "Ruptured"
-      ],
-      "default": "Cheesy keratinous material"
-    },
-    {
-      "id": "blocks",
-      "label": "Blocks",
-      "type": "number",
-      "group": "Macroscopy",
-      "min": 1,
-      "step": 1,
-      "default": "2"
-    },
-    {
-      "id": "blockScheme",
-      "label": "Sampling",
-      "type": "select",
-      "group": "Macroscopy",
-      "options": [
-        "All embedded",
-        "Representative sections"
-      ],
-      "default": "All embedded"
-    },
-    {
-      "id": "cystType",
-      "label": "Cyst type",
-      "type": "select",
-      "options": [
-        "Epidermal cyst",
-        "Pilar (trichilemmal) cyst",
-        "Dermoid cyst",
-        "Hybrid cyst",
-        "Ruptured cyst with no residual lining",
-        "Steatocystoma"
-      ],
-      "default": "Epidermal cyst"
-    },
-    {
-      "id": "rupture",
-      "label": "Rupture with granulomatous reaction",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present"
-      ],
-      "default": "Absent"
-    },
-    {
-      "id": "giantCells",
-      "label": "Foreign body giant cells",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present"
-      ],
-      "default": "Absent"
-    },
-    {
-      "id": "acuteInflammation",
-      "label": "Acute inflammation / abscess",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present",
-        "Abscess formation"
-      ],
-      "default": "Absent"
-    },
-    {
-      "id": "neoplasia",
-      "label": "Neoplasia",
-      "type": "select",
-      "options": [
-        "No evidence of malignancy",
-        "Proliferating trichilemmal tumour – see comment",
-        "Malignancy – see comment"
-      ],
-      "default": "No evidence of malignancy"
-    },
-    {
-      "id": "excision",
-      "label": "Excision",
-      "type": "select",
-      "options": [
-        "Complete",
-        "Incomplete",
-        "Not assessable"
-      ],
-      "default": "Complete"
-    },
-    {
-      "id": "additionalNotes",
-      "label": "Additional microscopy",
-      "type": "textarea",
-      "placeholder": "Free text appended to the microscopy for this part",
-      "default": ""
-    }
-  ],
-  "snippets": [
-    {
-      "id": "skin_cyst_cancer_template",
-      "label": "Neoplasia in cyst — use the QMH skin cancer template",
-      "auto": {
-        "field": "neoplasia",
-        "not": "No evidence of malignancy"
-      },
-      "text": "A neoplastic proliferation is identified in the cyst ({parts}). This benign template does not grade or stage the lesion; the QMH skin cancer template should be used for the final synoptic report."
-    }
-  ],
-  "example": {
-    "caseTitle": "",
-    "options": {
-      "includeHeader": false,
-      "macro": true
-    },
-    "parts": [
-      {
-        "label": "A",
-        "values": {
-          "specimenName": "right axilla",
-          "clinicalLabel": "seb cyst",
-          "ellipseSize": "3 x 1.5",
-          "noduleSize": "1.5",
-          "deepInked": "Inked",
-          "cystContents": "Cheesy keratinous material",
-          "blocks": "2",
-          "blockScheme": "All embedded",
-          "cystType": "Epidermal cyst",
-          "rupture": "Absent",
-          "giantCells": "Absent",
-          "acuteInflammation": "Absent",
-          "neoplasia": "No evidence of malignancy",
-          "excision": "Complete",
-          "additionalNotes": ""
-        }
-      }
-    ]
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
   }
+ },
+ "specimenNoun": "excision",
+ "maxParts": 3,
+ "defaultParts": 1,
+ "generator": "skincyst",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "partDefaults": [],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Site",
+   "type": "text",
+   "placeholder": "right axilla",
+   "default": ""
+  },
+  {
+   "id": "clinicalLabel",
+   "label": "Clinical label",
+   "type": "text",
+   "placeholder": "seb cyst",
+   "default": "seb cyst"
+  },
+  {
+   "id": "ellipseSize",
+   "label": "Ellipse of skin (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "3 x 1.5",
+   "default": ""
+  },
+  {
+   "id": "noduleSize",
+   "label": "Nodule (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "1.5",
+   "default": ""
+  },
+  {
+   "id": "deepInked",
+   "label": "Deep surface",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Inked",
+    "Not inked"
+   ],
+   "default": "Inked"
+  },
+  {
+   "id": "cystContents",
+   "label": "Cyst contents",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Cheesy keratinous material",
+    "Hair and sebaceous material",
+    "Ruptured"
+   ],
+   "default": "Cheesy keratinous material"
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": "2"
+  },
+  {
+   "id": "blockScheme",
+   "label": "Sampling",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "All embedded",
+    "Representative sections"
+   ],
+   "default": "All embedded"
+  },
+  {
+   "id": "cystType",
+   "label": "Cyst type",
+   "type": "select",
+   "options": [
+    "Epidermal cyst",
+    "Pilar (trichilemmal) cyst",
+    "Dermoid cyst",
+    "Hybrid cyst",
+    "Ruptured cyst with no residual lining",
+    "Steatocystoma"
+   ],
+   "default": "Epidermal cyst"
+  },
+  {
+   "id": "rupture",
+   "label": "Rupture with granulomatous reaction",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent"
+  },
+  {
+   "id": "giantCells",
+   "label": "Foreign body giant cells",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent"
+  },
+  {
+   "id": "acuteInflammation",
+   "label": "Acute inflammation / abscess",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present",
+    "Abscess formation"
+   ],
+   "default": "Absent"
+  },
+  {
+   "id": "neoplasia",
+   "label": "Neoplasia",
+   "type": "select",
+   "options": [
+    "No evidence of malignancy",
+    "Proliferating trichilemmal tumour – see comment",
+    "Malignancy – see comment"
+   ],
+   "default": "No evidence of malignancy"
+  },
+  {
+   "id": "excision",
+   "label": "Excision",
+   "type": "select",
+   "options": [
+    "Complete",
+    "Incomplete",
+    "Not assessable"
+   ],
+   "default": "Complete"
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "Free text appended to the microscopy for this part",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "skin_cyst_cancer_template",
+   "label": "Neoplasia in cyst — use the QMH skin cancer template",
+   "auto": {
+    "field": "neoplasia",
+    "not": "No evidence of malignancy"
+   },
+   "text": "A neoplastic proliferation is identified in the cyst ({parts}). This benign template does not grade or stage the lesion; the QMH skin cancer template should be used for the final synoptic report."
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "right axilla",
+     "clinicalLabel": "seb cyst",
+     "ellipseSize": "3 x 1.5",
+     "noduleSize": "1.5",
+     "deepInked": "Inked",
+     "cystContents": "Cheesy keratinous material",
+     "blocks": "2",
+     "blockScheme": "All embedded",
+     "cystType": "Epidermal cyst",
+     "rupture": "Absent",
+     "giantCells": "Absent",
+     "acuteInflammation": "Absent",
+     "neoplasia": "No evidence of malignancy",
+     "excision": "Complete",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
 }

@@ -1,399 +1,396 @@
 {
-  "id": "turp",
-  "version": "2026.09",
-  "name": "Prostate chips (TURP)",
-  "shortName": "Prostate · TURP chips",
-  "label": "TURP",
-  "organ": "PROSTATE",
-  "system": "GU",
-  "kind": "benign resection",
-  "rank": 32,
-  "aliases": [
-    "TURP",
-    "transurethral resection",
-    "prostate chips",
-    "BPH",
-    "nodular hyperplasia",
-    "HoLEP",
-    "enucleation",
-    "prostatitis",
-    "infarct",
-    "incidental carcinoma",
-    "pT1a",
-    "pT1b"
+ "id": "turp",
+ "version": "2026.09",
+ "name": "Prostate chips (TURP)",
+ "shortName": "Prostate · TURP chips",
+ "label": "TURP",
+ "organ": "PROSTATE",
+ "system": "GU",
+ "kind": "benign resection",
+ "rank": 32,
+ "aliases": [
+  "TURP",
+  "transurethral resection",
+  "prostate chips",
+  "BPH",
+  "nodular hyperplasia",
+  "HoLEP",
+  "enucleation",
+  "prostatitis",
+  "infarct",
+  "incidental carcinoma",
+  "pT1a",
+  "pT1b"
+ ],
+ "match": {
+  "site": [
+   "prostate",
+   "prostatic",
+   "TURP",
+   "prostate chips",
+   "HoLEP"
   ],
-  "match": {
-    "site": [
-      "prostate",
-      "prostatic",
-      "TURP",
-      "prostate chips",
-      "HoLEP"
-    ],
-    "procedure": [
-      "TURP",
-      "transurethral resection",
-      "HoLEP",
-      "enucleation",
-      "prostatectomy",
-      "chips"
-    ],
-    "clinical": [
-      "BPH",
-      "LUTS",
-      "retention",
-      "benign prostatic",
-      "hyperplasia",
-      "urinary retention",
-      "bladder outlet"
-    ]
+  "procedure": [
+   "TURP",
+   "transurethral resection",
+   "HoLEP",
+   "enucleation",
+   "prostatectomy",
+   "chips"
+  ],
+  "clinical": [
+   "BPH",
+   "LUTS",
+   "retention",
+   "benign prostatic",
+   "hyperplasia",
+   "urinary retention",
+   "bladder outlet"
+  ]
+ },
+ "macroExtract": {
+  "weight": {
+   "concept": "weight",
+   "unit": "g"
   },
-  "macroExtract": {
-    "weight": {
-      "concept": "weight",
-      "unit": "g"
-    },
-    "blocks": {
-      "concept": "blocks",
-      "unit": "count"
-    }
-  },
-  "specimenNoun": "TURP",
-  "maxParts": 2,
-  "defaultParts": 1,
-  "generator": "turp",
-  "style": {
-    "british": true
-  },
-  "caseFields": [],
-  "options": [
-    {
-      "id": "includeHeader",
-      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
-      "type": "checkbox",
-      "default": false
-    },
-    {
-      "id": "macro",
-      "label": "Generate the macroscopic description and block key",
-      "type": "checkbox",
-      "default": true
-    }
-  ],
-  "partDefaults": [
-    {
-      "specimenName": "Prostate, chips, TURP"
-    }
-  ],
-  "fields": [
-    {
-      "id": "specimenName",
-      "label": "Specimen as received",
-      "type": "text",
-      "placeholder": "Prostate, chips, TURP",
-      "default": ""
-    },
-    {
-      "id": "procedure",
-      "label": "Procedure",
-      "type": "select",
-      "options": [
-        "TURP",
-        "HoLEP",
-        "Simple prostatectomy (enucleation)"
-      ],
-      "default": "TURP"
-    },
-    {
-      "id": "weight",
-      "label": "Total weight (g)",
-      "type": "number",
-      "group": "Macroscopy",
-      "min": 0,
-      "step": 0.1,
-      "suffix": "g",
-      "placeholder": "25",
-      "default": ""
-    },
-    {
-      "id": "dimensions",
-      "label": "Aggregate dimensions (cm)",
-      "type": "text",
-      "group": "Macroscopy",
-      "placeholder": "6 x 5 x 2",
-      "default": ""
-    },
-    {
-      "id": "chipsDescription",
-      "label": "Tissue received",
-      "type": "select",
-      "group": "Macroscopy",
-      "options": [
-        "Multiple chips of prostatic tissue",
-        "Multiple tan-grey chips of prostatic tissue",
-        "Multiple chips of prostatic tissue with fragments of urothelium",
-        "Multiple morcellated fragments of prostatic tissue",
-        "Enucleated nodular prostatic tissue"
-      ],
-      "default": "Multiple chips of prostatic tissue"
-    },
-    {
-      "id": "sampling",
-      "label": "Sampling",
-      "type": "select",
-      "group": "Macroscopy",
-      "options": [
-        "All embedded",
-        "Representative"
-      ],
-      "default": "All embedded",
-      "help": "House rule: up to 12 g all embedded; then one extra block per 5 g."
-    },
-    {
-      "id": "blocks",
-      "label": "Blocks",
-      "type": "number",
-      "group": "Macroscopy",
-      "min": 1,
-      "step": 1,
-      "default": "8"
-    },
-    {
-      "id": "hyperplasia",
-      "label": "Nodular hyperplasia",
-      "type": "select",
-      "options": [
-        "Glandular and stromal",
-        "Predominantly stromal",
-        "Predominantly glandular"
-      ],
-      "default": "Glandular and stromal"
-    },
-    {
-      "id": "inflammation",
-      "label": "Inflammation",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Chronic prostatitis",
-        "Acute and chronic prostatitis",
-        "Granulomatous prostatitis – see comment",
-        "Post-BCG granulomatous prostatitis"
-      ],
-      "default": "Absent"
-    },
-    {
-      "id": "infarction",
-      "label": "Infarction",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present with squamous metaplasia"
-      ],
-      "default": "Absent"
-    },
-    {
-      "id": "basalCellHyperplasia",
-      "label": "Basal cell hyperplasia",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present"
-      ],
-      "default": "Absent"
-    },
-    {
-      "id": "urothelialMetaplasia",
-      "label": "Transitional (urothelial) metaplasia",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present"
-      ],
-      "default": "Absent"
-    },
-    {
-      "id": "treatmentEffect",
-      "label": "Treatment effect",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Hormonal / 5-alpha reductase inhibitor effect",
-        "Radiotherapy effect"
-      ],
-      "default": "Absent"
-    },
-    {
-      "id": "hgpin",
-      "label": "High grade PIN",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present, focal"
-      ],
-      "default": "Absent"
-    },
-    {
-      "id": "carcinoma",
-      "label": "Carcinoma",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present – incidental adenocarcinoma"
-      ],
-      "default": "Absent"
-    },
-    {
-      "id": "primary",
-      "label": "Gleason primary pattern",
-      "type": "select",
-      "options": [
-        "3",
-        "4",
-        "5"
-      ],
-      "default": "3",
-      "showIf": {
-        "field": "carcinoma",
-        "is": "Present – incidental adenocarcinoma"
-      }
-    },
-    {
-      "id": "secondary",
-      "label": "Gleason secondary pattern",
-      "type": "select",
-      "options": [
-        "3",
-        "4",
-        "5"
-      ],
-      "default": "3",
-      "help": "Grade Group is derived automatically from the two patterns.",
-      "showIf": {
-        "field": "carcinoma",
-        "is": "Present – incidental adenocarcinoma"
-      }
-    },
-    {
-      "id": "pctInvolved",
-      "label": "Percentage of tissue involved (%)",
-      "type": "number",
-      "min": 0,
-      "step": 1,
-      "suffix": "%",
-      "placeholder": "3",
-      "default": "",
-      "help": "5% or less = pT1a; more than 5% = pT1b.",
-      "showIf": {
-        "field": "carcinoma",
-        "is": "Present – incidental adenocarcinoma"
-      }
-    },
-    {
-      "id": "chipsInvolved",
-      "label": "Chips involved",
-      "type": "number",
-      "min": 0,
-      "step": 1,
-      "placeholder": "2",
-      "default": "",
-      "showIf": {
-        "field": "carcinoma",
-        "is": "Present – incidental adenocarcinoma"
-      }
-    },
-    {
-      "id": "chipsTotal",
-      "label": "Total chips",
-      "type": "number",
-      "min": 1,
-      "step": 1,
-      "placeholder": "40",
-      "default": "",
-      "showIf": {
-        "field": "carcinoma",
-        "is": "Present – incidental adenocarcinoma"
-      }
-    },
-    {
-      "id": "pni",
-      "label": "Perineural invasion",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present"
-      ],
-      "default": "Absent",
-      "showIf": {
-        "field": "carcinoma",
-        "is": "Present – incidental adenocarcinoma"
-      }
-    },
-    {
-      "id": "extent",
-      "label": "Extent / distribution",
-      "type": "text",
-      "placeholder": "confined to two adjacent chips",
-      "default": "",
-      "showIf": {
-        "field": "carcinoma",
-        "is": "Present – incidental adenocarcinoma"
-      }
-    },
-    {
-      "id": "additionalNotes",
-      "label": "Additional microscopy",
-      "type": "textarea",
-      "placeholder": "Free text appended to the microscopy for this part",
-      "default": ""
-    }
-  ],
-  "snippets": [
-    {
-      "id": "granulomatous_prostatitis",
-      "label": "Granulomatous prostatitis comment",
-      "auto": {
-        "field": "inflammation",
-        "is": "Granulomatous prostatitis – see comment"
-      },
-      "text": "Granulomatous prostatitis is present ({parts}). Ziehl-Neelsen and GMS stains show no organisms. The features are those of non-specific granulomatous prostatitis; correlation with any history of intravesical BCG therapy or prior instrumentation is suggested."
-    }
-  ],
-  "example": {
-    "caseTitle": "",
-    "options": {
-      "includeHeader": false,
-      "macro": true
-    },
-    "parts": [
-      {
-        "label": "A",
-        "values": {
-          "specimenName": "Prostate, chips, TURP",
-          "procedure": "TURP",
-          "weight": "25",
-          "dimensions": "6 x 5 x 2",
-          "chipsDescription": "Multiple chips of prostatic tissue",
-          "sampling": "All embedded",
-          "blocks": "8",
-          "hyperplasia": "Glandular and stromal",
-          "inflammation": "Chronic prostatitis",
-          "infarction": "Absent",
-          "basalCellHyperplasia": "Absent",
-          "urothelialMetaplasia": "Absent",
-          "treatmentEffect": "Absent",
-          "hgpin": "Absent",
-          "carcinoma": "Absent",
-          "primary": "3",
-          "secondary": "3",
-          "pctInvolved": "",
-          "chipsInvolved": "",
-          "chipsTotal": "",
-          "pni": "Absent",
-          "extent": "",
-          "additionalNotes": ""
-        }
-      }
-    ]
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
   }
+ },
+ "specimenNoun": "TURP",
+ "maxParts": 2,
+ "defaultParts": 1,
+ "generator": "turp",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "partDefaults": [
+  {
+   "specimenName": "Prostate, chips, TURP"
+  }
+ ],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "text",
+   "placeholder": "Prostate, chips, TURP",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "options": [
+    "TURP",
+    "HoLEP",
+    "Simple prostatectomy (enucleation)"
+   ],
+   "default": "TURP"
+  },
+  {
+   "id": "weight",
+   "label": "Total weight (g)",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 0,
+   "step": 0.1,
+   "suffix": "g",
+   "placeholder": "25",
+   "default": ""
+  },
+  {
+   "id": "dimensions",
+   "label": "Aggregate dimensions (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "6 x 5 x 2",
+   "default": ""
+  },
+  {
+   "id": "chipsDescription",
+   "label": "Tissue received",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Multiple chips of prostatic tissue",
+    "Multiple tan-grey chips of prostatic tissue",
+    "Multiple chips of prostatic tissue with fragments of urothelium",
+    "Multiple morcellated fragments of prostatic tissue",
+    "Enucleated nodular prostatic tissue"
+   ],
+   "default": "Multiple chips of prostatic tissue"
+  },
+  {
+   "id": "sampling",
+   "label": "Sampling",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "All embedded",
+    "Representative"
+   ],
+   "default": "All embedded",
+   "help": "House rule: up to 12 g all embedded; then one extra block per 5 g."
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": "8"
+  },
+  {
+   "id": "hyperplasia",
+   "label": "Nodular hyperplasia",
+   "type": "select",
+   "options": [
+    "Glandular and stromal",
+    "Predominantly stromal",
+    "Predominantly glandular"
+   ],
+   "default": "Glandular and stromal"
+  },
+  {
+   "id": "inflammation",
+   "label": "Inflammation",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Chronic prostatitis",
+    "Acute and chronic prostatitis",
+    "Granulomatous prostatitis – see comment",
+    "Post-BCG granulomatous prostatitis"
+   ],
+   "default": "Absent"
+  },
+  {
+   "id": "infarction",
+   "label": "Infarction",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present with squamous metaplasia"
+   ],
+   "default": "Absent"
+  },
+  {
+   "id": "basalCellHyperplasia",
+   "label": "Basal cell hyperplasia",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent"
+  },
+  {
+   "id": "urothelialMetaplasia",
+   "label": "Transitional (urothelial) metaplasia",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent"
+  },
+  {
+   "id": "treatmentEffect",
+   "label": "Treatment effect",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Hormonal / 5-alpha reductase inhibitor effect",
+    "Radiotherapy effect"
+   ],
+   "default": "Absent"
+  },
+  {
+   "id": "hgpin",
+   "label": "High grade PIN",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present, focal"
+   ],
+   "default": "Absent"
+  },
+  {
+   "id": "carcinoma",
+   "label": "Carcinoma",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present – incidental adenocarcinoma"
+   ],
+   "default": "Absent"
+  },
+  {
+   "id": "primary",
+   "label": "Gleason primary pattern",
+   "type": "select",
+   "options": [
+    "3",
+    "4",
+    "5"
+   ],
+   "default": "3",
+   "showIf": {
+    "field": "carcinoma",
+    "is": "Present – incidental adenocarcinoma"
+   }
+  },
+  {
+   "id": "secondary",
+   "label": "Gleason secondary pattern",
+   "type": "select",
+   "options": [
+    "3",
+    "4",
+    "5"
+   ],
+   "default": "3",
+   "help": "Grade Group is derived automatically from the two patterns.",
+   "showIf": {
+    "field": "carcinoma",
+    "is": "Present – incidental adenocarcinoma"
+   }
+  },
+  {
+   "id": "pctInvolved",
+   "label": "Percentage of tissue involved (%)",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "suffix": "%",
+   "placeholder": "3",
+   "default": "",
+   "help": "5% or less = pT1a; more than 5% = pT1b.",
+   "showIf": {
+    "field": "carcinoma",
+    "is": "Present – incidental adenocarcinoma"
+   }
+  },
+  {
+   "id": "chipsInvolved",
+   "label": "Chips involved",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "placeholder": "2",
+   "default": "",
+   "showIf": {
+    "field": "carcinoma",
+    "is": "Present – incidental adenocarcinoma"
+   }
+  },
+  {
+   "id": "chipsTotal",
+   "label": "Total chips",
+   "type": "number",
+   "min": 1,
+   "step": 1,
+   "placeholder": "40",
+   "default": "",
+   "showIf": {
+    "field": "carcinoma",
+    "is": "Present – incidental adenocarcinoma"
+   }
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "carcinoma",
+    "is": "Present – incidental adenocarcinoma"
+   }
+  },
+  {
+   "id": "extent",
+   "label": "Extent / distribution",
+   "type": "text",
+   "placeholder": "confined to two adjacent chips",
+   "default": "",
+   "showIf": {
+    "field": "carcinoma",
+    "is": "Present – incidental adenocarcinoma"
+   }
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "Free text appended to the microscopy for this part",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "granulomatous_prostatitis",
+   "label": "Granulomatous prostatitis comment",
+   "auto": {
+    "field": "inflammation",
+    "is": "Granulomatous prostatitis – see comment"
+   },
+   "text": "Granulomatous prostatitis is present ({parts}). Ziehl-Neelsen and GMS stains show no organisms. The features are those of non-specific granulomatous prostatitis; correlation with any history of intravesical BCG therapy or prior instrumentation is suggested."
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "Prostate, chips, TURP",
+     "procedure": "TURP",
+     "weight": "25",
+     "dimensions": "6 x 5 x 2",
+     "chipsDescription": "Multiple chips of prostatic tissue",
+     "sampling": "All embedded",
+     "blocks": "8",
+     "hyperplasia": "Glandular and stromal",
+     "inflammation": "Chronic prostatitis",
+     "infarction": "Absent",
+     "basalCellHyperplasia": "Absent",
+     "urothelialMetaplasia": "Absent",
+     "treatmentEffect": "Absent",
+     "hgpin": "Absent",
+     "carcinoma": "Absent",
+     "primary": "3",
+     "secondary": "3",
+     "pctInvolved": "",
+     "chipsInvolved": "",
+     "chipsTotal": "",
+     "pni": "Absent",
+     "extent": "",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
 }

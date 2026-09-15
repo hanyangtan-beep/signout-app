@@ -1,11 +1,11 @@
 // Phase 4b: salivary gland benign resection template. Wording is deliberate; update the strings only on purpose.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import { createCase, generate } from '../src/engine.js';
 import * as gen from '../generators/salivary.js';
+import { schemaSync } from './_schema.js';
 
-const schema = JSON.parse(readFileSync(new URL('../schemas/salivary_benign.json', import.meta.url), 'utf8'));
+const schema = schemaSync('salivary_benign');
 const run = (c) => generate(schema, gen, c);
 const example = () => ({ ...JSON.parse(JSON.stringify(schema.example)), schemaId: schema.id });
 const one = (values, options = {}) => {

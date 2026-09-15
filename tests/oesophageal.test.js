@@ -9,8 +9,9 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { generate } from '../src/engine.js';
 import { parseSynoptic, synopticRows } from '../src/synoptic.js';
-import schema from '../schemas/oesophageal_carcinoma.json' with { type: 'json' };
+const schema = schemaSync('oesophageal_carcinoma');
 import * as gen from '../generators/oesophageal_carcinoma.js';
+import { schemaSync } from './_schema.js';
 
 const run = (c) => generate(schema, gen, c);
 const flat = (t) => t.replace(/\s+/g, ' ');

@@ -4,8 +4,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generate } from '../src/engine.js';
-import schema from '../schemas/gastric_carcinoma.json' with { type: 'json' };
+const schema = schemaSync('gastric_carcinoma');
 import * as gen from '../generators/gastric_carcinoma.js';
+import { schemaSync } from './_schema.js';
 
 const flat = (t) => t.replace(/\s+/g, ' ');
 const part = (over = {}) => ({ label: 'A', templateId: 'gastric_carcinoma', values: { ...schema.example.parts[0].values, ...over } });

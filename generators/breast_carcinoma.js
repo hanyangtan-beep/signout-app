@@ -17,6 +17,7 @@ import {
   specimenSentence, tumourSentence, blockKey, marginItems, marginsPhrase, closestMargin, nodeItems, nodesPhrase, nodeCounts, nodesSubmitted,
   metastasisValue, metastasisPhrase, ptnmSection, sharedChecks, marginChecks
 } from './breast_shared.js';
+import { checks } from './_house.js';
 
 export { specimenName, specimens, otherSpecimenLines, hasExtraParts, blockKey };
 
@@ -371,12 +372,7 @@ export function prefillFromFrozen(fv) {
 
 export function validate(part, ctx) {
   const v = part.values;
-  const out = [];
-  // The optional second argument is the id of the field the check is about; the Checks panel
-  // uses it to jump to that field. Omit it when a check does not point at one field.
-  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
-  const err = (m, field) => at('error', m, field);
-  const warn = (m, field) => at('warn', m, field);
+  const { out, at, err, warn } = checks();
   const info = (m, field) => at('info', m, field);
   const size = num(v.sizeMm);
   if (/^Reported on the prior/.test(v.biomarkers || '') && !stripDot(v.priorBiomarkerAccession) && !stripDot(ctx?.case?.priorAccession)) warn('Biomarkers reported on the prior core biopsy: record its accession number.', 'priorBiomarkerAccession');

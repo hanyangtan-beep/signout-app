@@ -11,6 +11,7 @@ import {
   specimenSentence, tumourSentence, blockKey, marginItems, marginsPhrase, closestMargin, closestWords, nodeItems, nodesPhrase, nodeCounts, nodesSubmitted,
   metastasisValue, metastasisPhrase, ptnmSection, sharedChecks, marginChecks
 } from './breast_shared.js';
+import { checks } from './_house.js';
 
 export { specimenName, specimens, otherSpecimenLines, hasExtraParts, blockKey };
 
@@ -209,12 +210,7 @@ export function comment(parts) {
 
 export function validate(part, ctx) {
   const v = part.values;
-  const out = [];
-  // The optional second argument is the id of the field the check is about; the Checks panel
-  // uses it to jump to that field. Omit it when a check does not point at one field.
-  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
-  const err = (m, field) => at('error', m, field);
-  const warn = (m, field) => at('warn', m, field);
+  const { out, at, err, warn } = checks();
   const info = (m, field) => at('info', m, field);
   const size = num(v.sizeMm);
   const g = gradeOf(v);

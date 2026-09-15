@@ -1,12 +1,12 @@
 // Phase 4b: aortic valve / aorta (cardiovascular) template. Wording is deliberate; update the strings only on purpose.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import { createCase, generate } from '../src/engine.js';
 import * as gen from '../generators/cardiovascular.js';
 import { sizePhrase, lengthPhrase, kindOf } from '../generators/cardiovascular.js';
+import { schemaSync } from './_schema.js';
 
-const schema = JSON.parse(readFileSync(new URL('../schemas/aortic_valve_aorta.json', import.meta.url), 'utf8'));
+const schema = schemaSync('aortic_valve_aorta');
 const run = (c) => generate(schema, gen, c);
 const example = () => ({ ...JSON.parse(JSON.stringify(schema.example)), schemaId: schema.id });
 const one = (values, options = {}) => {

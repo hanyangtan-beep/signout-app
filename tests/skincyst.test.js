@@ -1,12 +1,12 @@
 // Phase 4b: skin cyst (epidermal / pilar / dermoid) excision template. Wording is deliberate; update the strings only on purpose.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import { createCase, generate } from '../src/engine.js';
 import * as gen from '../generators/skincyst.js';
 import { sizePhrase, sitePhrase } from '../generators/skincyst.js';
+import { schemaSync } from './_schema.js';
 
-const schema = JSON.parse(readFileSync(new URL('../schemas/skin_cyst.json', import.meta.url), 'utf8'));
+const schema = schemaSync('skin_cyst');
 const run = (c) => generate(schema, gen, c);
 const example = () => ({ ...JSON.parse(JSON.stringify(schema.example)), schemaId: schema.id });
 const one = (values, options = {}) => {

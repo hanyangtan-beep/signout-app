@@ -20,12 +20,13 @@ import { deriveTNM, stageLine } from '../src/staging/index.js';
 import * as S from '../src/staging/ovary.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { typeMorphology, implantMorphology, STIC_SENTENCE } from './ovary_morphology.js';
+import { stripDot } from './_house.js';
+import { letteredBlockKey } from './_house.js';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const fmt = (n) => (Number.isInteger(n) ? String(n) : String(Math.round(n * 10) / 10));
 const lc1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : '');
 const uc1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : '');
-const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 const arr = (x) => (Array.isArray(x) ? x : x ? [x] : []);
 const listJoin = (items) => {
   const a = items.filter(Boolean);
@@ -280,14 +281,7 @@ export function macro(part, ctx) {
 /** Part letter carried into the block numbers ("(B1-6)") when the case has other letters. */
 const lettered = (part, ctx) => new Set((ctx?.case?.parts || []).map((p) => p.label)).size > 1 || hasExtraParts(part);
 
-export function blockKey(part, ctx) {
-  if (ctx?.options && ctx.options.macro === false) return '';
-  const lines = String(part.values.blockKeyText || '').split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-  return lines.map((l) => {
-    const m = l.match(/^\(?([\dA-Za-z]+(?:\s*[-–,]\s*[\dA-Za-z]+)*)\)?[\s.:)-]+(.*)$/);
-    return m ? `(${lettered(part, ctx) ? part.label : ''}${m[1].replace(/\s+/g, '')}) ${stripDot(m[2])}.` : `${stripDot(l)}.`;
-  }).join('\n');
-}
+export const blockKey = (part, ctx) => letteredBlockKey(part, ctx, { lettered, strip: stripDot });
 
 // ---------- synoptic ----------
 

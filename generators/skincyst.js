@@ -1,3 +1,4 @@
+import { stripDot } from './_house.js';
 // Skin cyst (epidermal / pilar / dermoid cyst excision) generator. Pure functions: (part, ctx) -> string.
 // Blocks produced:
 //   specimens  "Skin, right axilla seb cyst, excision"
@@ -19,7 +20,6 @@ const num = (v) => {
   return Number.isFinite(n) ? n : null;
 };
 const lc1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : '');
-const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 const dash = (s) => String(s || '').replace(/[\u2013\u2014]/g, '-');
 
 export const NEGATIVE = 'No evidence of malignancy';

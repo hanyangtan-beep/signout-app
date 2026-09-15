@@ -1,3 +1,4 @@
+import { stripDot } from './_house.js';
 // Placenta generator (Phase 4b, roadmap item 2). Pure functions: (part, ctx) -> string.
 // Blocks produced:
 //   specimenName "Placenta, delivery" / "Twin placenta, delivery"
@@ -20,7 +21,6 @@ const listJoin = (items) => {
 };
 const lc1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : '');
 const uc1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : '');
-const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 const sentence = (s) => (stripDot(s) ? `${uc1(stripDot(s))}.` : '');
 
 export const isTwin = (v) => /^Twin/i.test(String(v.plurality || ''));

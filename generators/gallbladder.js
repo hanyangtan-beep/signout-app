@@ -1,3 +1,4 @@
+import { stripDot } from './_house.js';
 // Gallbladder (benign cholecystectomy) generator. Pure functions: (part, ctx) -> string.
 // Blocks produced:
 //   specimens  "Gallbladder, cholecystectomy"
@@ -25,7 +26,6 @@ const listJoin = (items) => {
   return `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`;
 };
 const lc1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : '');
-const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 
 export const NEGATIVE = 'No dysplasia or malignancy';
 export const hasNeoplasia = (v) => !!v.neoplasia && v.neoplasia !== NEGATIVE;

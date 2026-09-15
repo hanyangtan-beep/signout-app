@@ -1,0 +1,91 @@
+{
+ "$comment": "Shared field definitions. A template field written as {\"$use\":\"<id>\"} is replaced by the entry below at load time (src/registry.js). Add \"label\" alongside \"$use\" to override the shared label where a template genuinely asks a narrower question; any other key overrides too. Labels are UI-only and never reach the report, so changing one here cannot move a golden fixture.",
+ "fields": {
+  "includeHeader": {
+   "id": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
+   "type": "checkbox",
+   "default": false
+  },
+  "printPTNM": {
+   "id": "printPTNM",
+   "label": "Print the AJCC 8th edition pTNM block",
+   "type": "checkbox",
+   "default": false
+  },
+  "lbc": {
+   "id": "lbc",
+   "label": "Liquid-based slide",
+   "type": "checkbox",
+   "default": false,
+   "group": "Preparations"
+  },
+  "cellBlock": {
+   "id": "cellBlock",
+   "label": "Cell block slides",
+   "type": "number",
+   "default": 1,
+   "group": "Preparations"
+  },
+  "sitePosition": {
+   "id": "sitePosition",
+   "label": "Position (o'clock, distance from nipple)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "placeholder": "2 o'clock, 3 cm from the nipple",
+   "default": ""
+  },
+  "skinEllipse": {
+   "id": "skinEllipse",
+   "label": "Skin ellipse (mm x mm)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "placeholder": "170 x 60",
+   "default": ""
+  },
+  "depositMm": {
+   "id": "depositMm",
+   "label": "Size of largest metastatic deposit (mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "nodeSampling",
+    "is": [
+     "Sentinel node biopsy only",
+     "Axillary dissection",
+     "Sentinel node biopsy and axillary dissection"
+    ]
+   }
+  },
+  "smearsAir": {
+   "id": "smearsAir",
+   "label": "Air-dried smears",
+   "type": "number",
+   "default": 2,
+   "group": "Preparations"
+  },
+  "smearsAlc": {
+   "id": "smearsAlc",
+   "label": "Alcohol-fixed smears",
+   "type": "number",
+   "default": 2,
+   "group": "Preparations"
+  },
+  "rinse": {
+   "id": "rinse",
+   "label": "Needle rinse",
+   "type": "select",
+   "options": [
+    "Blood-stained",
+    "Pink",
+    "Clear",
+    "Turbid",
+    "Brown (cyst fluid)",
+    "None"
+   ],
+   "default": "Blood-stained",
+   "group": "Preparations"
+  }
+ }
+}

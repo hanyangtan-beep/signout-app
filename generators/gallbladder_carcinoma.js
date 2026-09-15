@@ -22,12 +22,14 @@ import { typeMorphology } from './gallbladder_morphology.js';
 import { deriveTNM, stageLine } from '../src/staging/index.js';
 import * as S from '../src/staging/gallbladder.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
+import { letteredBlockKey, checks } from './_house.js';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
 const fmt = (n) => (Number.isInteger(n) ? String(n) : String(Math.round(n * 10) / 10));
 const lc1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : '');
 const uc1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : '');
+// stripDot here also strips a trailing colon; see generators/_house.js for why it is not shared.
 const stripDot = (s) => String(s || '').trim().replace(/[.;:\s]+$/, '');
 const arr = (x) => (Array.isArray(x) ? x : x ? [x] : []);
 const listJoin = (items) => {
@@ -144,14 +146,7 @@ export function macro(part, ctx) {
 
 const lettered = (part, ctx) => new Set((ctx?.case?.parts || []).map((p) => p.label)).size > 1;
 
-export function blockKey(part, ctx) {
-  if (ctx?.options && ctx.options.macro === false) return '';
-  const lines = String(part.values.blockKeyText || '').split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-  return lines.map((l) => {
-    const m = l.match(/^\(?([\dA-Za-z]+(?:\s*[-–,]\s*[\dA-Za-z]+)*)\)?[\s.:)-]+(.*)$/);
-    return m ? `(${lettered(part, ctx) ? part.label : ''}${m[1].replace(/\s+/g, '')}) ${stripDot(m[2])}.` : `${stripDot(l)}.`;
-  }).join('\n');
-}
+export const blockKey = (part, ctx) => letteredBlockKey(part, ctx, { lettered, strip: stripDot });
 
 // ---------- values shared by synoptic and diagnosis ----------
 
@@ -388,12 +383,7 @@ export function diagnosis(part, ctx) {
 
 export function validate(part, ctx) {
   const v = part.values;
-  const out = [];
-  // The optional second argument is the id of the field the check is about; the Checks panel
-  // uses it to jump to that field. Omit it when a check does not point at one field.
-  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
-  const err = (m, field) => at('error', m, field);
-  const warn = (m, field) => at('warn', m, field);
+  const { out, err, warn } = checks();
   const cr = isPT0(v);
   if (!cr && num(v.tumourSizeCm) === null && !/^Not applicable/.test(v.sizeMode || '') && !/^Cannot be assessed/.test(v.sizeMode || '')) warn('Tumour size is not recorded.', 'tumourSizeCm');
   if (!v.histType) err('Histologic type is required.', 'histType');

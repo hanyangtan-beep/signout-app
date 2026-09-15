@@ -5,10 +5,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generate } from '../src/engine.js';
-import schema from '../schemas/oesophageal_carcinoma.json' with { type: 'json' };
+const schema = schemaSync('oesophageal_carcinoma');
 import * as gen from '../generators/oesophageal_carcinoma.js';
-import bxSchema from '../schemas/oesophageal_biopsy.json' with { type: 'json' };
+const bxSchema = schemaSync('oesophageal_biopsy');
 import * as bxGen from '../generators/oesophageal.js';
+import { schemaSync } from './_schema.js';
 
 const flat = (t) => t.replace(/\s+/g, ' ');
 const part = (over = {}) => ({ label: 'A', templateId: 'oesophageal_carcinoma', values: { ...schema.example.parts[0].values, ...over } });

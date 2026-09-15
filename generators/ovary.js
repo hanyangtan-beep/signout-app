@@ -1,3 +1,4 @@
+import { stripDot } from './_house.js';
 // Ovarian cyst / cystectomy / benign adnexa generator. Pure functions: (part, ctx) -> string.
 // Blocks produced (example: right ovarian cystectomy, endometriotic cyst, 5 cm, intact):
 //   specimens  "Right ovarian cyst, cystectomy"
@@ -21,7 +22,6 @@ const num = (v) => {
 };
 const fmt = (n) => (Number.isInteger(n) ? String(n) : String(n).replace(/\.0+$/, ''));
 const lc1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : '');
-const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 /** Normalise the typographic dash in option strings so "–" and "-" variants match. */
 const norm = (s) => String(s || '').replace(/[\u2013\u2014]/g, '-').trim();
 

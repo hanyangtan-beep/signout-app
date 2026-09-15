@@ -18,13 +18,13 @@
 import { deriveTNM, stageLine } from '../src/staging/index.js';
 import * as S from '../src/staging/endometrium.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
+import { stripDot, checks } from './_house.js';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
 const fmt = (n) => (Number.isInteger(n) ? String(n) : String(Math.round(n * 10) / 10));
 const lc1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : '');
 const uc1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : '');
-const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
 const arr = (x) => (Array.isArray(x) ? x : x ? [x] : []);
 const listJoin = (items) => {
   const a = items.filter(Boolean);
@@ -536,12 +536,7 @@ export function diagnosis(part, ctx) {
 
 export function validate(part) {
   const v = part.values;
-  const out = [];
-  // The optional second argument is the id of the field the check is about; the Checks panel
-  // uses it to jump to that field. Omit it when a check does not point at one field.
-  const at = (level, m, field) => out.push(field ? { level, message: m, field } : { level, message: m });
-  const err = (m, field) => at('error', m, field);
-  const warn = (m, field) => at('warn', m, field);
+  const { out, at, err, warn } = checks();
   const info = (m, field) => at('info', m, field);
   if (!v.myoInvasion) err('Myometrial invasion is required.', 'myoInvasion');
   if (v.myoInvasion === 'Cannot be assessed (explain)' && !stripDot(v.myoCannot)) warn('Myometrial invasion cannot be assessed: give the reason.', 'myoCannot');

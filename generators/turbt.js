@@ -30,6 +30,7 @@ const listJoin = (items) => {
   return `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`;
 };
 const lc1 = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : '');
+// stripDot here diverges from the house form (comma); see generators/_house.js.
 const stripDot = (s) => String(s || '').trim().replace(/[.;,\s]+$/, '');
 const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
 /** Words for 0-9, digits from 10. */

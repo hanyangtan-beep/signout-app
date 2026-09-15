@@ -4,9 +4,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generate } from '../src/engine.js';
-import schema from '../schemas/appendix_carcinoma.json' with { type: 'json' };
+const schema = schemaSync('appendix_carcinoma');
 import * as gen from '../generators/appendix_carcinoma.js';
 import { MORPHOLOGY, typeMorphology } from '../generators/appendix_morphology.js';
+import { schemaSync } from './_schema.js';
 
 const flat = (t) => t.replace(/\s+/g, ' ');
 const part = (over = {}) => ({ label: 'A', templateId: 'appendix_carcinoma', values: { ...schema.example.parts[0].values, ...over } });

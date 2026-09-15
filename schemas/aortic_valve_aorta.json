@@ -1,746 +1,743 @@
 {
-  "id": "aortic_valve_aorta",
-  "version": "2026.09",
-  "name": "Aortic valve / aorta",
-  "shortName": "Heart · valve / aorta",
-  "label": "Aortic valve",
-  "organ": "AORTIC VALVE",
-  "system": "Cardiovascular",
-  "kind": "benign resection",
-  "layout": {
-    "pack": true,
-    "macroGroups": [
-      "Macroscopy"
-    ],
-    "macroFields": [
-      "specimenName"
-    ]
+ "id": "aortic_valve_aorta",
+ "version": "2026.09",
+ "name": "Aortic valve / aorta",
+ "shortName": "Heart · valve / aorta",
+ "label": "Aortic valve",
+ "organ": "AORTIC VALVE",
+ "system": "Cardiovascular",
+ "kind": "benign resection",
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Macroscopy"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "rank": 38,
+ "aliases": [
+  "valve",
+  "aortic valve",
+  "mitral valve",
+  "aorta",
+  "dissection",
+  "aneurysm",
+  "medial degeneration",
+  "endocarditis",
+  "bicuspid",
+  "prosthetic valve",
+  "aortitis",
+  "cardiac"
+ ],
+ "match": {
+  "site": [
+   "aortic valve",
+   "mitral valve",
+   "valve",
+   "aorta"
+  ],
+  "procedure": [
+   "replacement",
+   "explant",
+   "resection"
+  ],
+  "clinical": [
+   "stenosis",
+   "regurgitation",
+   "endocarditis",
+   "aneurysm",
+   "dissection",
+   "bicuspid"
+  ]
+ },
+ "specimenNoun": "valve replacement",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "cardiovascular",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
   },
-  "rank": 38,
-  "aliases": [
-    "valve",
-    "aortic valve",
-    "mitral valve",
-    "aorta",
-    "dissection",
-    "aneurysm",
-    "medial degeneration",
-    "endocarditis",
-    "bicuspid",
-    "prosthetic valve",
-    "aortitis",
-    "cardiac"
-  ],
-  "match": {
-    "site": [
-      "aortic valve",
-      "mitral valve",
-      "valve",
-      "aorta"
-    ],
-    "procedure": [
-      "replacement",
-      "explant",
-      "resection"
-    ],
-    "clinical": [
-      "stenosis",
-      "regurgitation",
-      "endocarditis",
-      "aneurysm",
-      "dissection",
-      "bicuspid"
-    ]
-  },
-  "specimenNoun": "valve replacement",
-  "maxParts": 4,
-  "defaultParts": 1,
-  "generator": "cardiovascular",
-  "style": {
-    "british": true
-  },
-  "caseFields": [],
-  "options": [
-    {
-      "id": "includeHeader",
-      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
-      "type": "checkbox",
-      "default": false
-    },
-    {
-      "id": "macro",
-      "label": "Generate the macroscopic description and block key",
-      "type": "checkbox",
-      "default": true
-    }
-  ],
-  "partDefaults": [
-    {
-      "specimenName": "Aortic valve, replacement"
-    },
-    {
-      "specimenName": "Ascending aorta, resection"
-    }
-  ],
-  "fields": [
-    {
-      "id": "specimenName",
-      "label": "Specimen / procedure",
-      "type": "select",
-      "options": [
-        "Aortic valve, replacement",
-        "Mitral valve, replacement",
-        "Prosthetic valve, explant",
-        "Ascending aorta, resection",
-        "Aortic root, resection"
-      ],
-      "default": "Aortic valve, replacement"
-    },
-    {
-      "id": "cuspCount",
-      "label": "Number of cusps / fragments",
-      "type": "number",
-      "group": "Macroscopy",
-      "min": 1,
-      "step": 1,
-      "default": "3",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Aortic valve, replacement",
-          "Mitral valve, replacement"
-        ]
-      }
-    },
-    {
-      "id": "cuspMorphology",
-      "label": "Cusp morphology",
-      "type": "select",
-      "group": "Macroscopy",
-      "options": [
-        "Tricuspid",
-        "Bicuspid",
-        "Fragments, morphology cannot be assessed"
-      ],
-      "default": "Tricuspid",
-      "showIf": {
-        "field": "specimenName",
-        "is": "Aortic valve, replacement"
-      }
-    },
-    {
-      "id": "valveSize",
-      "label": "Largest cusp / fragment (cm)",
-      "type": "text",
-      "group": "Macroscopy",
-      "placeholder": "2.5 x 1.5 x 0.5",
-      "default": "",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Aortic valve, replacement",
-          "Mitral valve, replacement"
-        ]
-      }
-    },
-    {
-      "id": "valveMacro",
-      "label": "Cusp appearance",
-      "type": "select",
-      "group": "Macroscopy",
-      "options": [
-        "Nodular calcification, aortic aspect",
-        "Nodular calcification",
-        "Thickened and fibrotic",
-        "Thickened, myxoid and redundant",
-        "Unremarkable"
-      ],
-      "default": "Nodular calcification, aortic aspect",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Aortic valve, replacement",
-          "Mitral valve, replacement"
-        ]
-      }
-    },
-    {
-      "id": "prosthesisType",
-      "label": "Prosthesis type / size",
-      "type": "text",
-      "group": "Macroscopy",
-      "placeholder": "bioprosthetic valve, 23 mm",
-      "default": "",
-      "showIf": {
-        "field": "specimenName",
-        "is": "Prosthetic valve, explant"
-      }
-    },
-    {
-      "id": "prosthesisDiameter",
-      "label": "Prosthesis diameter (cm)",
-      "type": "text",
-      "group": "Macroscopy",
-      "placeholder": "2.5",
-      "default": "",
-      "showIf": {
-        "field": "specimenName",
-        "is": "Prosthetic valve, explant"
-      }
-    },
-    {
-      "id": "decalcified",
-      "label": "Decalcified",
-      "type": "checkbox",
-      "group": "Macroscopy",
-      "default": true,
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Aortic valve, replacement",
-          "Mitral valve, replacement",
-          "Prosthetic valve, explant"
-        ]
-      }
-    },
-    {
-      "id": "valveBlocks",
-      "label": "Blocks",
-      "type": "number",
-      "group": "Macroscopy",
-      "min": 1,
-      "step": 1,
-      "default": "2",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Aortic valve, replacement",
-          "Mitral valve, replacement",
-          "Prosthetic valve, explant"
-        ]
-      }
-    },
-    {
-      "id": "aortaLength",
-      "label": "Length (cm)",
-      "type": "text",
-      "group": "Macroscopy",
-      "placeholder": "5",
-      "default": "",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Ascending aorta, resection",
-          "Aortic root, resection"
-        ]
-      }
-    },
-    {
-      "id": "aortaDiameter",
-      "label": "Diameter (cm)",
-      "type": "text",
-      "group": "Macroscopy",
-      "placeholder": "3.5",
-      "default": "",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Ascending aorta, resection",
-          "Aortic root, resection"
-        ]
-      }
-    },
-    {
-      "id": "aortaWall",
-      "label": "Wall thickness (cm)",
-      "type": "text",
-      "group": "Macroscopy",
-      "placeholder": "0.3",
-      "default": "",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Ascending aorta, resection",
-          "Aortic root, resection"
-        ]
-      }
-    },
-    {
-      "id": "intimaMacro",
-      "label": "Intima",
-      "type": "select",
-      "group": "Macroscopy",
-      "options": [
-        "Intimal tear with false lumen",
-        "Intimal tear",
-        "Atheromatous plaques",
-        "Smooth",
-        "Aneurysmal dilatation"
-      ],
-      "default": "Intimal tear with false lumen",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Ascending aorta, resection",
-          "Aortic root, resection"
-        ]
-      }
-    },
-    {
-      "id": "tearSize",
-      "label": "Intimal tear length (cm)",
-      "type": "text",
-      "group": "Macroscopy",
-      "placeholder": "1.5",
-      "default": "",
-      "showIf": {
-        "field": "intimaMacro",
-        "is": [
-          "Intimal tear with false lumen",
-          "Intimal tear"
-        ]
-      }
-    },
-    {
-      "id": "aortaBlocks",
-      "label": "Blocks",
-      "type": "number",
-      "group": "Macroscopy",
-      "min": 1,
-      "step": 1,
-      "default": "4",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Ascending aorta, resection",
-          "Aortic root, resection"
-        ]
-      }
-    },
-    {
-      "id": "calcific",
-      "label": "Calcific degeneration",
-      "type": "select",
-      "options": [
-        "None",
-        "Mild",
-        "Moderate",
-        "Severe"
-      ],
-      "default": "Moderate",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Aortic valve, replacement",
-          "Mitral valve, replacement"
-        ]
-      }
-    },
-    {
-      "id": "myxoid",
-      "label": "Myxoid degeneration",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present"
-      ],
-      "default": "Absent",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Aortic valve, replacement",
-          "Mitral valve, replacement"
-        ]
-      }
-    },
-    {
-      "id": "commissuralFusion",
-      "label": "Commissural fusion",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present"
-      ],
-      "default": "Absent",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Aortic valve, replacement",
-          "Mitral valve, replacement"
-        ]
-      }
-    },
-    {
-      "id": "rheumatic",
-      "label": "Rheumatic-type fibrosis with neovascularisation",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present"
-      ],
-      "default": "Absent",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Aortic valve, replacement",
-          "Mitral valve, replacement"
-        ]
-      }
-    },
-    {
-      "id": "vegetations",
-      "label": "Vegetations (endocarditis)",
-      "type": "checkbox",
-      "default": false,
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Aortic valve, replacement",
-          "Mitral valve, replacement",
-          "Prosthetic valve, explant"
-        ]
-      }
-    },
-    {
-      "id": "organisms",
-      "label": "Gram / GMS result",
-      "type": "select",
-      "options": [
-        "Negative",
-        "Gram-positive cocci",
-        "Fungal hyphae"
-      ],
-      "default": "Negative",
-      "showIf": {
-        "field": "vegetations",
-        "truthy": true
-      }
-    },
-    {
-      "id": "prostheticFindings",
-      "label": "Prosthetic valve findings",
-      "type": "multiselect",
-      "options": [
-        "Pannus",
-        "Thrombus",
-        "Cuspal degeneration"
-      ],
-      "default": [],
-      "showIf": {
-        "field": "specimenName",
-        "is": "Prosthetic valve, explant"
-      }
-    },
-    {
-      "id": "dissection",
-      "label": "Dissection",
-      "type": "select",
-      "options": [
-        "None",
-        "Acute",
-        "Subacute",
-        "Chronic, healed"
-      ],
-      "default": "Acute",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Ascending aorta, resection",
-          "Aortic root, resection"
-        ]
-      }
-    },
-    {
-      "id": "intimalTear",
-      "label": "Intimal tear",
-      "type": "select",
-      "options": [
-        "Identified",
-        "Not identified"
-      ],
-      "default": "Identified",
-      "showIf": {
-        "field": "dissection",
-        "not": "None"
-      }
-    },
-    {
-      "id": "falseLumen",
-      "label": "False lumen / outer-media haemorrhage",
-      "type": "select",
-      "options": [
-        "False lumen with outer-media haemorrhage",
-        "Outer-media haemorrhage only"
-      ],
-      "default": "False lumen with outer-media haemorrhage",
-      "showIf": {
-        "field": "dissection",
-        "not": "None"
-      }
-    },
-    {
-      "id": "mecm",
-      "label": "Mucoid extracellular matrix accumulation",
-      "type": "select",
-      "options": [
-        "None",
-        "Mild",
-        "Moderate",
-        "Severe"
-      ],
-      "default": "Moderate",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Ascending aorta, resection",
-          "Aortic root, resection"
-        ]
-      }
-    },
-    {
-      "id": "elastic",
-      "label": "Elastic fibre fragmentation and loss",
-      "type": "select",
-      "options": [
-        "None",
-        "Mild",
-        "Moderate",
-        "Severe"
-      ],
-      "default": "Moderate",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Ascending aorta, resection",
-          "Aortic root, resection"
-        ]
-      }
-    },
-    {
-      "id": "smcLoss",
-      "label": "Smooth muscle nuclei loss",
-      "type": "select",
-      "options": [
-        "None",
-        "Mild",
-        "Moderate",
-        "Severe"
-      ],
-      "default": "Mild",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Ascending aorta, resection",
-          "Aortic root, resection"
-        ]
-      }
-    },
-    {
-      "id": "laminarCollapse",
-      "label": "Laminar medial collapse",
-      "type": "select",
-      "options": [
-        "Absent",
-        "Present"
-      ],
-      "default": "Absent",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Ascending aorta, resection",
-          "Aortic root, resection"
-        ]
-      }
-    },
-    {
-      "id": "medialGrade",
-      "label": "Overall medial degeneration",
-      "type": "select",
-      "options": [
-        "Mild",
-        "Moderate",
-        "Severe"
-      ],
-      "default": "Moderate",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Ascending aorta, resection",
-          "Aortic root, resection"
-        ]
-      }
-    },
-    {
-      "id": "atherosclerosis",
-      "label": "Atherosclerosis",
-      "type": "select",
-      "options": [
-        "None",
-        "Mild",
-        "Moderate",
-        "Severe"
-      ],
-      "default": "Mild",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Ascending aorta, resection",
-          "Aortic root, resection"
-        ]
-      }
-    },
-    {
-      "id": "aortitis",
-      "label": "Aortitis",
-      "type": "select",
-      "options": [
-        "None",
-        "Giant cell",
-        "Lymphoplasmacytic",
-        "IgG4-pattern",
-        "Infectious"
-      ],
-      "default": "None",
-      "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Ascending aorta, resection",
-          "Aortic root, resection"
-        ]
-      }
-    },
-    {
-      "id": "neoplasia",
-      "label": "Neoplasia",
-      "type": "select",
-      "options": [
-        "No evidence of malignancy",
-        "Malignant tumour – see comment"
-      ],
-      "default": "No evidence of malignancy"
-    },
-    {
-      "id": "additionalNotes",
-      "label": "Additional microscopy",
-      "type": "textarea",
-      "placeholder": "Free text appended to the microscopy for this part",
-      "default": ""
-    }
-  ],
-  "snippets": [
-    {
-      "id": "endocarditis_blood_culture",
-      "label": "Endocarditis — correlate with blood cultures",
-      "auto": {
-        "field": "vegetations",
-        "truthy": true
-      },
-      "text": "Correlation with blood culture results is advised."
-    },
-    {
-      "id": "aortitis_vasculitis",
-      "label": "Aortitis — large vessel vasculitis correlation",
-      "auto": {
-        "field": "aortitis",
-        "not": "None"
-      },
-      "text": "Clinical correlation for large vessel vasculitis is advised."
-    },
-    {
-      "id": "cardiovascular_cancer_template",
-      "label": "Malignancy — use the QMH cancer template",
-      "auto": {
-        "field": "neoplasia",
-        "not": "No evidence of malignancy"
-      },
-      "text": "A malignant tumour is identified ({parts}). This benign template does not classify or stage the tumour; the appropriate QMH cancer template should be used for the final synoptic report."
-    }
-  ],
-  "example": {
-    "caseTitle": "",
-    "options": {
-      "includeHeader": false,
-      "macro": true
-    },
-    "parts": [
-      {
-        "label": "A",
-        "values": {
-          "specimenName": "Aortic valve, replacement",
-          "cuspCount": "3",
-          "cuspMorphology": "Tricuspid",
-          "valveSize": "2.5 x 1.5 x 0.5",
-          "valveMacro": "Nodular calcification, aortic aspect",
-          "prosthesisType": "",
-          "prosthesisDiameter": "",
-          "decalcified": true,
-          "valveBlocks": "2",
-          "aortaLength": "",
-          "aortaDiameter": "",
-          "aortaWall": "",
-          "intimaMacro": "Intimal tear with false lumen",
-          "tearSize": "",
-          "aortaBlocks": "4",
-          "calcific": "Moderate",
-          "myxoid": "Absent",
-          "commissuralFusion": "Absent",
-          "rheumatic": "Absent",
-          "vegetations": false,
-          "organisms": "Negative",
-          "prostheticFindings": [],
-          "dissection": "Acute",
-          "intimalTear": "Identified",
-          "falseLumen": "False lumen with outer-media haemorrhage",
-          "mecm": "Moderate",
-          "elastic": "Moderate",
-          "smcLoss": "Mild",
-          "laminarCollapse": "Absent",
-          "medialGrade": "Moderate",
-          "atherosclerosis": "Mild",
-          "aortitis": "None",
-          "neoplasia": "No evidence of malignancy",
-          "additionalNotes": ""
-        }
-      },
-      {
-        "label": "B",
-        "values": {
-          "specimenName": "Ascending aorta, resection",
-          "cuspCount": "3",
-          "cuspMorphology": "Tricuspid",
-          "valveSize": "",
-          "valveMacro": "Nodular calcification, aortic aspect",
-          "prosthesisType": "",
-          "prosthesisDiameter": "",
-          "decalcified": true,
-          "valveBlocks": "2",
-          "aortaLength": "5",
-          "aortaDiameter": "3.5",
-          "aortaWall": "0.3",
-          "intimaMacro": "Intimal tear with false lumen",
-          "tearSize": "1.5",
-          "aortaBlocks": "4",
-          "calcific": "Moderate",
-          "myxoid": "Absent",
-          "commissuralFusion": "Absent",
-          "rheumatic": "Absent",
-          "vegetations": false,
-          "organisms": "Negative",
-          "prostheticFindings": [],
-          "dissection": "Acute",
-          "intimalTear": "Identified",
-          "falseLumen": "False lumen with outer-media haemorrhage",
-          "mecm": "Moderate",
-          "elastic": "Moderate",
-          "smcLoss": "Mild",
-          "laminarCollapse": "Absent",
-          "medialGrade": "Moderate",
-          "atherosclerosis": "Mild",
-          "aortitis": "None",
-          "neoplasia": "No evidence of malignancy",
-          "additionalNotes": ""
-        }
-      }
-    ]
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
   }
+ ],
+ "partDefaults": [
+  {
+   "specimenName": "Aortic valve, replacement"
+  },
+  {
+   "specimenName": "Ascending aorta, resection"
+  }
+ ],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "select",
+   "options": [
+    "Aortic valve, replacement",
+    "Mitral valve, replacement",
+    "Prosthetic valve, explant",
+    "Ascending aorta, resection",
+    "Aortic root, resection"
+   ],
+   "default": "Aortic valve, replacement"
+  },
+  {
+   "id": "cuspCount",
+   "label": "Number of cusps / fragments",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": "3",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Aortic valve, replacement",
+     "Mitral valve, replacement"
+    ]
+   }
+  },
+  {
+   "id": "cuspMorphology",
+   "label": "Cusp morphology",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Tricuspid",
+    "Bicuspid",
+    "Fragments, morphology cannot be assessed"
+   ],
+   "default": "Tricuspid",
+   "showIf": {
+    "field": "specimenName",
+    "is": "Aortic valve, replacement"
+   }
+  },
+  {
+   "id": "valveSize",
+   "label": "Largest cusp / fragment (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "2.5 x 1.5 x 0.5",
+   "default": "",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Aortic valve, replacement",
+     "Mitral valve, replacement"
+    ]
+   }
+  },
+  {
+   "id": "valveMacro",
+   "label": "Cusp appearance",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Nodular calcification, aortic aspect",
+    "Nodular calcification",
+    "Thickened and fibrotic",
+    "Thickened, myxoid and redundant",
+    "Unremarkable"
+   ],
+   "default": "Nodular calcification, aortic aspect",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Aortic valve, replacement",
+     "Mitral valve, replacement"
+    ]
+   }
+  },
+  {
+   "id": "prosthesisType",
+   "label": "Prosthesis type / size",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "bioprosthetic valve, 23 mm",
+   "default": "",
+   "showIf": {
+    "field": "specimenName",
+    "is": "Prosthetic valve, explant"
+   }
+  },
+  {
+   "id": "prosthesisDiameter",
+   "label": "Prosthesis diameter (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "2.5",
+   "default": "",
+   "showIf": {
+    "field": "specimenName",
+    "is": "Prosthetic valve, explant"
+   }
+  },
+  {
+   "id": "decalcified",
+   "label": "Decalcified",
+   "type": "checkbox",
+   "group": "Macroscopy",
+   "default": true,
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Aortic valve, replacement",
+     "Mitral valve, replacement",
+     "Prosthetic valve, explant"
+    ]
+   }
+  },
+  {
+   "id": "valveBlocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": "2",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Aortic valve, replacement",
+     "Mitral valve, replacement",
+     "Prosthetic valve, explant"
+    ]
+   }
+  },
+  {
+   "id": "aortaLength",
+   "label": "Length (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "5",
+   "default": "",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Ascending aorta, resection",
+     "Aortic root, resection"
+    ]
+   }
+  },
+  {
+   "id": "aortaDiameter",
+   "label": "Diameter (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "3.5",
+   "default": "",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Ascending aorta, resection",
+     "Aortic root, resection"
+    ]
+   }
+  },
+  {
+   "id": "aortaWall",
+   "label": "Wall thickness (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "0.3",
+   "default": "",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Ascending aorta, resection",
+     "Aortic root, resection"
+    ]
+   }
+  },
+  {
+   "id": "intimaMacro",
+   "label": "Intima",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Intimal tear with false lumen",
+    "Intimal tear",
+    "Atheromatous plaques",
+    "Smooth",
+    "Aneurysmal dilatation"
+   ],
+   "default": "Intimal tear with false lumen",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Ascending aorta, resection",
+     "Aortic root, resection"
+    ]
+   }
+  },
+  {
+   "id": "tearSize",
+   "label": "Intimal tear length (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "1.5",
+   "default": "",
+   "showIf": {
+    "field": "intimaMacro",
+    "is": [
+     "Intimal tear with false lumen",
+     "Intimal tear"
+    ]
+   }
+  },
+  {
+   "id": "aortaBlocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": "4",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Ascending aorta, resection",
+     "Aortic root, resection"
+    ]
+   }
+  },
+  {
+   "id": "calcific",
+   "label": "Calcific degeneration",
+   "type": "select",
+   "options": [
+    "None",
+    "Mild",
+    "Moderate",
+    "Severe"
+   ],
+   "default": "Moderate",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Aortic valve, replacement",
+     "Mitral valve, replacement"
+    ]
+   }
+  },
+  {
+   "id": "myxoid",
+   "label": "Myxoid degeneration",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Aortic valve, replacement",
+     "Mitral valve, replacement"
+    ]
+   }
+  },
+  {
+   "id": "commissuralFusion",
+   "label": "Commissural fusion",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Aortic valve, replacement",
+     "Mitral valve, replacement"
+    ]
+   }
+  },
+  {
+   "id": "rheumatic",
+   "label": "Rheumatic-type fibrosis with neovascularisation",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Aortic valve, replacement",
+     "Mitral valve, replacement"
+    ]
+   }
+  },
+  {
+   "id": "vegetations",
+   "label": "Vegetations (endocarditis)",
+   "type": "checkbox",
+   "default": false,
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Aortic valve, replacement",
+     "Mitral valve, replacement",
+     "Prosthetic valve, explant"
+    ]
+   }
+  },
+  {
+   "id": "organisms",
+   "label": "Gram / GMS result",
+   "type": "select",
+   "options": [
+    "Negative",
+    "Gram-positive cocci",
+    "Fungal hyphae"
+   ],
+   "default": "Negative",
+   "showIf": {
+    "field": "vegetations",
+    "truthy": true
+   }
+  },
+  {
+   "id": "prostheticFindings",
+   "label": "Prosthetic valve findings",
+   "type": "multiselect",
+   "options": [
+    "Pannus",
+    "Thrombus",
+    "Cuspal degeneration"
+   ],
+   "default": [],
+   "showIf": {
+    "field": "specimenName",
+    "is": "Prosthetic valve, explant"
+   }
+  },
+  {
+   "id": "dissection",
+   "label": "Dissection",
+   "type": "select",
+   "options": [
+    "None",
+    "Acute",
+    "Subacute",
+    "Chronic, healed"
+   ],
+   "default": "Acute",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Ascending aorta, resection",
+     "Aortic root, resection"
+    ]
+   }
+  },
+  {
+   "id": "intimalTear",
+   "label": "Intimal tear",
+   "type": "select",
+   "options": [
+    "Identified",
+    "Not identified"
+   ],
+   "default": "Identified",
+   "showIf": {
+    "field": "dissection",
+    "not": "None"
+   }
+  },
+  {
+   "id": "falseLumen",
+   "label": "False lumen / outer-media haemorrhage",
+   "type": "select",
+   "options": [
+    "False lumen with outer-media haemorrhage",
+    "Outer-media haemorrhage only"
+   ],
+   "default": "False lumen with outer-media haemorrhage",
+   "showIf": {
+    "field": "dissection",
+    "not": "None"
+   }
+  },
+  {
+   "id": "mecm",
+   "label": "Mucoid extracellular matrix accumulation",
+   "type": "select",
+   "options": [
+    "None",
+    "Mild",
+    "Moderate",
+    "Severe"
+   ],
+   "default": "Moderate",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Ascending aorta, resection",
+     "Aortic root, resection"
+    ]
+   }
+  },
+  {
+   "id": "elastic",
+   "label": "Elastic fibre fragmentation and loss",
+   "type": "select",
+   "options": [
+    "None",
+    "Mild",
+    "Moderate",
+    "Severe"
+   ],
+   "default": "Moderate",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Ascending aorta, resection",
+     "Aortic root, resection"
+    ]
+   }
+  },
+  {
+   "id": "smcLoss",
+   "label": "Smooth muscle nuclei loss",
+   "type": "select",
+   "options": [
+    "None",
+    "Mild",
+    "Moderate",
+    "Severe"
+   ],
+   "default": "Mild",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Ascending aorta, resection",
+     "Aortic root, resection"
+    ]
+   }
+  },
+  {
+   "id": "laminarCollapse",
+   "label": "Laminar medial collapse",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Ascending aorta, resection",
+     "Aortic root, resection"
+    ]
+   }
+  },
+  {
+   "id": "medialGrade",
+   "label": "Overall medial degeneration",
+   "type": "select",
+   "options": [
+    "Mild",
+    "Moderate",
+    "Severe"
+   ],
+   "default": "Moderate",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Ascending aorta, resection",
+     "Aortic root, resection"
+    ]
+   }
+  },
+  {
+   "id": "atherosclerosis",
+   "label": "Atherosclerosis",
+   "type": "select",
+   "options": [
+    "None",
+    "Mild",
+    "Moderate",
+    "Severe"
+   ],
+   "default": "Mild",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Ascending aorta, resection",
+     "Aortic root, resection"
+    ]
+   }
+  },
+  {
+   "id": "aortitis",
+   "label": "Aortitis",
+   "type": "select",
+   "options": [
+    "None",
+    "Giant cell",
+    "Lymphoplasmacytic",
+    "IgG4-pattern",
+    "Infectious"
+   ],
+   "default": "None",
+   "showIf": {
+    "field": "specimenName",
+    "is": [
+     "Ascending aorta, resection",
+     "Aortic root, resection"
+    ]
+   }
+  },
+  {
+   "id": "neoplasia",
+   "label": "Neoplasia",
+   "type": "select",
+   "options": [
+    "No evidence of malignancy",
+    "Malignant tumour – see comment"
+   ],
+   "default": "No evidence of malignancy"
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "Free text appended to the microscopy for this part",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "endocarditis_blood_culture",
+   "label": "Endocarditis — correlate with blood cultures",
+   "auto": {
+    "field": "vegetations",
+    "truthy": true
+   },
+   "text": "Correlation with blood culture results is advised."
+  },
+  {
+   "id": "aortitis_vasculitis",
+   "label": "Aortitis — large vessel vasculitis correlation",
+   "auto": {
+    "field": "aortitis",
+    "not": "None"
+   },
+   "text": "Clinical correlation for large vessel vasculitis is advised."
+  },
+  {
+   "id": "cardiovascular_cancer_template",
+   "label": "Malignancy — use the QMH cancer template",
+   "auto": {
+    "field": "neoplasia",
+    "not": "No evidence of malignancy"
+   },
+   "text": "A malignant tumour is identified ({parts}). This benign template does not classify or stage the tumour; the appropriate QMH cancer template should be used for the final synoptic report."
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "Aortic valve, replacement",
+     "cuspCount": "3",
+     "cuspMorphology": "Tricuspid",
+     "valveSize": "2.5 x 1.5 x 0.5",
+     "valveMacro": "Nodular calcification, aortic aspect",
+     "prosthesisType": "",
+     "prosthesisDiameter": "",
+     "decalcified": true,
+     "valveBlocks": "2",
+     "aortaLength": "",
+     "aortaDiameter": "",
+     "aortaWall": "",
+     "intimaMacro": "Intimal tear with false lumen",
+     "tearSize": "",
+     "aortaBlocks": "4",
+     "calcific": "Moderate",
+     "myxoid": "Absent",
+     "commissuralFusion": "Absent",
+     "rheumatic": "Absent",
+     "vegetations": false,
+     "organisms": "Negative",
+     "prostheticFindings": [],
+     "dissection": "Acute",
+     "intimalTear": "Identified",
+     "falseLumen": "False lumen with outer-media haemorrhage",
+     "mecm": "Moderate",
+     "elastic": "Moderate",
+     "smcLoss": "Mild",
+     "laminarCollapse": "Absent",
+     "medialGrade": "Moderate",
+     "atherosclerosis": "Mild",
+     "aortitis": "None",
+     "neoplasia": "No evidence of malignancy",
+     "additionalNotes": ""
+    }
+   },
+   {
+    "label": "B",
+    "values": {
+     "specimenName": "Ascending aorta, resection",
+     "cuspCount": "3",
+     "cuspMorphology": "Tricuspid",
+     "valveSize": "",
+     "valveMacro": "Nodular calcification, aortic aspect",
+     "prosthesisType": "",
+     "prosthesisDiameter": "",
+     "decalcified": true,
+     "valveBlocks": "2",
+     "aortaLength": "5",
+     "aortaDiameter": "3.5",
+     "aortaWall": "0.3",
+     "intimaMacro": "Intimal tear with false lumen",
+     "tearSize": "1.5",
+     "aortaBlocks": "4",
+     "calcific": "Moderate",
+     "myxoid": "Absent",
+     "commissuralFusion": "Absent",
+     "rheumatic": "Absent",
+     "vegetations": false,
+     "organisms": "Negative",
+     "prostheticFindings": [],
+     "dissection": "Acute",
+     "intimalTear": "Identified",
+     "falseLumen": "False lumen with outer-media haemorrhage",
+     "mecm": "Moderate",
+     "elastic": "Moderate",
+     "smcLoss": "Mild",
+     "laminarCollapse": "Absent",
+     "medialGrade": "Moderate",
+     "atherosclerosis": "Mild",
+     "aortitis": "None",
+     "neoplasia": "No evidence of malignancy",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
 }

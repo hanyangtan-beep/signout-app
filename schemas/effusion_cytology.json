@@ -1,329 +1,318 @@
 {
-  "id": "effusion_cytology",
-  "version": 1,
-  "name": "Effusion cytology (International System)",
-  "shortName": "Serous fluid · cytology",
-  "label": "Effusion",
-  "organ": "Serous fluid",
-  "system": "Cytology",
-  "kind": "cytology",
-  "rank": 640,
-  "aliases": [
-    "pleural fluid",
-    "ascitic fluid",
-    "peritoneal fluid",
-    "pericardial fluid",
-    "washing",
-    "effusion",
-    "tis"
+ "id": "effusion_cytology",
+ "version": 1,
+ "name": "Effusion cytology (International System)",
+ "shortName": "Serous fluid · cytology",
+ "label": "Effusion",
+ "organ": "Serous fluid",
+ "system": "Cytology",
+ "kind": "cytology",
+ "rank": 640,
+ "aliases": [
+  "pleural fluid",
+  "ascitic fluid",
+  "peritoneal fluid",
+  "pericardial fluid",
+  "washing",
+  "effusion",
+  "tis"
+ ],
+ "match": {
+  "site": [
+   "pleural",
+   "ascitic",
+   "peritoneal",
+   "pericardial",
+   "effusion",
+   "ascites",
+   "fluid"
   ],
-  "match": {
-    "site": [
-      "pleural",
-      "ascitic",
-      "peritoneal",
-      "pericardial",
-      "effusion",
-      "ascites",
-      "fluid"
-    ],
-    "procedure": [
-      "fluid",
-      "washing",
-      "tap",
-      "aspiration"
-    ],
-    "clinical": [
-      "effusion",
-      "ascites"
-    ],
-    "fill": [
-      {
-        "field": "specimenName",
-        "from": "detail"
-      }
-    ]
+  "procedure": [
+   "fluid",
+   "washing",
+   "tap",
+   "aspiration"
+  ],
+  "clinical": [
+   "effusion",
+   "ascites"
+  ],
+  "fill": [
+   {
+    "field": "specimenName",
+    "from": "detail"
+   }
+  ]
+ },
+ "specimenNoun": "fluid specimen",
+ "maxParts": 4,
+ "generator": "cytology",
+ "source": "Cytology suite. Classification systems: Bethesda 2023 (thyroid), Milan 2nd ed 2023 (salivary), Paris System 2.0 (urine), International System for Serous Fluid Cytopathology (effusions), Sydney System (lymph node), Bethesda 2014 (cervical). Adequacy is assessed on the final preparations only.",
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
   },
-  "specimenNoun": "fluid specimen",
-  "maxParts": 4,
-  "generator": "cytology",
-  "source": "Cytology suite. Classification systems: Bethesda 2023 (thyroid), Milan 2nd ed 2023 (salivary), Paris System 2.0 (urine), International System for Serous Fluid Cytopathology (effusions), Sydney System (lymph node), Bethesda 2014 (cervical). Adequacy is assessed on the final preparations only.",
-  "caseFields": [],
-  "options": [
-    {
-      "id": "includeHeader",
-      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION / DIAGNOSIS)",
-      "type": "checkbox",
-      "default": false
-    },
-    {
-      "id": "macro",
-      "label": "Generate the preparations line (received / processed as)",
-      "type": "checkbox",
-      "default": true
-    }
-  ],
-  "fields": [
-    {
-      "id": "specimenType",
-      "label": "Specimen",
-      "type": "select",
-      "options": [
-        "Pleural fluid",
-        "Peritoneal (ascitic) fluid",
-        "Pericardial fluid",
-        "Peritoneal washing",
-        "Pelvic washing"
-      ],
-      "default": "Pleural fluid"
-    },
-    {
-      "id": "specimenName",
-      "label": "Side / site",
-      "type": "text",
-      "default": "right",
-      "placeholder": "right / left / Douglas pouch"
-    },
-    {
-      "id": "volume",
-      "label": "Volume (ml)",
-      "type": "text",
-      "default": "50",
-      "group": "Preparations",
-      "placeholder": "25"
-    },
-    {
-      "id": "appearance",
-      "label": "Appearance",
-      "type": "select",
-      "options": [
-        "Clear yellow",
-        "Turbid yellow",
-        "Blood-stained",
-        "Haemorrhagic",
-        "Pink",
-        "Chylous",
-        "Purulent",
-        "Brown"
-      ],
-      "default": "Clear yellow",
-      "group": "Preparations"
-    },
-    {
-      "id": "lbc",
-      "label": "Liquid-based slide",
-      "type": "checkbox",
-      "default": false,
-      "group": "Preparations"
-    },
-    {
-      "id": "cytospin",
-      "label": "Cytospin slides",
-      "type": "number",
-      "default": 2,
-      "group": "Preparations"
-    },
-    {
-      "id": "cellBlock",
-      "label": "Cell block slides",
-      "type": "number",
-      "default": 1,
-      "group": "Preparations"
-    },
-    {
-      "id": "adequacy",
-      "label": "Adequacy",
-      "type": "select",
-      "options": [
-        "Adequate",
-        "Adequate, limited by low cellularity",
-        "Inadequate"
-      ],
-      "default": "Adequate",
-      "group": "Adequacy"
-    },
-    {
-      "id": "inadequacyReason",
-      "label": "Reason for inadequacy",
-      "type": "select",
-      "options": [
-        "Virtually acellular specimen",
-        "Fewer than ten cells",
-        "Degenerate cells only",
-        "Obscuring blood"
-      ],
-      "default": "Virtually acellular specimen",
-      "group": "Adequacy",
-      "showIf": {
-        "field": "adequacy",
-        "is": "Inadequate"
-      }
-    },
-    {
-      "id": "category",
-      "label": "International System category",
-      "type": "select",
-      "options": [
-        "Non-diagnostic",
-        "Negative for malignancy",
-        "Atypia of undetermined significance",
-        "Suspicious for malignancy",
-        "Malignant"
-      ],
-      "default": "Negative for malignancy",
-      "group": "Category"
-    },
-    {
-      "id": "malignantType",
-      "label": "Type of malignancy",
-      "type": "select",
-      "options": [
-        "Metastatic adenocarcinoma",
-        "Metastatic squamous cell carcinoma",
-        "Metastatic small cell neuroendocrine carcinoma",
-        "Metastatic carcinoma, type undetermined",
-        "Mesothelioma",
-        "Lymphoma",
-        "Metastatic melanoma",
-        "Metastatic sarcoma",
-        "Malignancy, type undetermined"
-      ],
-      "default": "Metastatic adenocarcinoma",
-      "group": "Category",
-      "showIf": {
-        "field": "category",
-        "is": [
-          "Suspicious for malignancy",
-          "Malignant"
-        ]
-      }
-    },
-    {
-      "id": "favourPrimary",
-      "label": "Favoured primary",
-      "type": "select",
-      "options": [
-        "Not stated",
-        "Consistent with lung primary",
-        "Consistent with breast primary",
-        "Consistent with ovarian / tubal serous carcinoma",
-        "Consistent with gastric primary",
-        "Consistent with colorectal primary",
-        "Consistent with pancreaticobiliary primary",
-        "Consistent with the known primary",
-        "Primary site undetermined"
-      ],
-      "default": "Not stated",
-      "group": "Category",
-      "showIf": {
-        "field": "category",
-        "is": "Malignant"
-      }
-    },
-    {
-      "id": "features",
-      "label": "Cytological features",
-      "type": "multiselect",
-      "options": [
-        "Reactive mesothelial cells",
-        "Lymphocyte-predominant",
-        "Neutrophils",
-        "Macrophages",
-        "Eosinophils",
-        "Blood",
-        "Three-dimensional clusters",
-        "Papillary clusters",
-        "Foreign cell population",
-        "Signet-ring cells",
-        "Vacuolated cytoplasm",
-        "Mucin",
-        "Prominent nucleoli",
-        "Psammoma bodies",
-        "Necrosis",
-        "Mitoses"
-      ],
-      "default": [
-        "Reactive mesothelial cells",
-        "Lymphocyte-predominant",
-        "Macrophages"
-      ],
-      "group": "Microscopy"
-    },
-    {
-      "id": "additionalFindings",
-      "label": "Additional findings (free text, appended to microscopy)",
-      "type": "textarea",
-      "default": "",
-      "group": "Microscopy",
-      "placeholder": "e.g. Occasional groups of ciliated respiratory epithelial cells are also present"
-    },
-    {
-      "id": "ancillary",
-      "label": "Ancillary studies (same paragraph)",
-      "type": "textarea",
-      "default": "",
-      "group": "Ancillary",
-      "placeholder": "e.g. Immunostaining on the cell block shows the cells to be positive for TTF-1 and negative for p40"
-    }
-  ],
-  "snippets": [
-    {
-      "id": "effusion_rom_aus",
-      "label": "AUS: risk and repeat sampling",
-      "auto": {
-        "field": "category",
-        "is": "Atypia of undetermined significance"
-      },
-      "text": "Atypia of undetermined significance carries an estimated risk of malignancy of approximately 66% in the International System for Serous Fluid Cytopathology. Repeat sampling with cell block for immunocytochemistry is suggested if the effusion reaccumulates."
-    },
-    {
-      "id": "effusion_nfm_history",
-      "label": "Negative with known malignancy",
-      "text": "A negative result does not exclude malignancy; repeat sampling is suggested if clinically indicated."
-    },
-    {
-      "id": "effusion_meso_caveat",
-      "label": "Mesothelioma: tissue confirmation",
-      "auto": {
-        "field": "malignantType",
-        "is": "Mesothelioma"
-      },
-      "text": "Tissue biopsy is advised for confirmation of mesothelioma and assessment of invasion."
-    }
-  ],
-  "example": {
-    "caseTitle": "",
-    "options": {
-      "includeHeader": false,
-      "macro": true
-    },
-    "parts": [
-      {
-        "label": "A",
-        "values": {
-          "specimenType": "Pleural fluid",
-          "specimenName": "right",
-          "volume": "50",
-          "appearance": "Blood-stained",
-          "lbc": false,
-          "cytospin": "2",
-          "cellBlock": "1",
-          "adequacy": "Adequate",
-          "inadequacyReason": "Virtually acellular specimen",
-          "category": "Malignant",
-          "malignantType": "Metastatic adenocarcinoma",
-          "favourPrimary": "Consistent with lung primary",
-          "features": [
-            "Reactive mesothelial cells",
-            "Foreign cell population",
-            "Three-dimensional clusters",
-            "Vacuolated cytoplasm",
-            "Prominent nucleoli"
-          ],
-          "additionalFindings": "",
-          "ancillary": "Immunostaining on the cell block shows the malignant cells to be positive for TTF-1, napsin A and BerEP4 and negative for calretinin and WT1, while the mesothelial cells show the converse pattern"
-        }
-      }
-    ]
+  {
+   "id": "macro",
+   "label": "Generate the preparations line (received / processed as)",
+   "type": "checkbox",
+   "default": true
   }
+ ],
+ "fields": [
+  {
+   "id": "specimenType",
+   "label": "Specimen",
+   "type": "select",
+   "options": [
+    "Pleural fluid",
+    "Peritoneal (ascitic) fluid",
+    "Pericardial fluid",
+    "Peritoneal washing",
+    "Pelvic washing"
+   ],
+   "default": "Pleural fluid"
+  },
+  {
+   "id": "specimenName",
+   "label": "Side / site",
+   "type": "text",
+   "default": "right",
+   "placeholder": "right / left / Douglas pouch"
+  },
+  {
+   "id": "volume",
+   "label": "Volume (ml)",
+   "type": "text",
+   "default": "50",
+   "group": "Preparations",
+   "placeholder": "25"
+  },
+  {
+   "id": "appearance",
+   "label": "Appearance",
+   "type": "select",
+   "options": [
+    "Clear yellow",
+    "Turbid yellow",
+    "Blood-stained",
+    "Haemorrhagic",
+    "Pink",
+    "Chylous",
+    "Purulent",
+    "Brown"
+   ],
+   "default": "Clear yellow",
+   "group": "Preparations"
+  },
+  {
+   "$use": "lbc"
+  },
+  {
+   "id": "cytospin",
+   "label": "Cytospin slides",
+   "type": "number",
+   "default": 2,
+   "group": "Preparations"
+  },
+  {
+   "$use": "cellBlock"
+  },
+  {
+   "id": "adequacy",
+   "label": "Adequacy",
+   "type": "select",
+   "options": [
+    "Adequate",
+    "Adequate, limited by low cellularity",
+    "Inadequate"
+   ],
+   "default": "Adequate",
+   "group": "Adequacy"
+  },
+  {
+   "id": "inadequacyReason",
+   "label": "Reason for inadequacy",
+   "type": "select",
+   "options": [
+    "Virtually acellular specimen",
+    "Fewer than ten cells",
+    "Degenerate cells only",
+    "Obscuring blood"
+   ],
+   "default": "Virtually acellular specimen",
+   "group": "Adequacy",
+   "showIf": {
+    "field": "adequacy",
+    "is": "Inadequate"
+   }
+  },
+  {
+   "id": "category",
+   "label": "International System category",
+   "type": "select",
+   "options": [
+    "Non-diagnostic",
+    "Negative for malignancy",
+    "Atypia of undetermined significance",
+    "Suspicious for malignancy",
+    "Malignant"
+   ],
+   "default": "Negative for malignancy",
+   "group": "Category"
+  },
+  {
+   "id": "malignantType",
+   "label": "Type of malignancy",
+   "type": "select",
+   "options": [
+    "Metastatic adenocarcinoma",
+    "Metastatic squamous cell carcinoma",
+    "Metastatic small cell neuroendocrine carcinoma",
+    "Metastatic carcinoma, type undetermined",
+    "Mesothelioma",
+    "Lymphoma",
+    "Metastatic melanoma",
+    "Metastatic sarcoma",
+    "Malignancy, type undetermined"
+   ],
+   "default": "Metastatic adenocarcinoma",
+   "group": "Category",
+   "showIf": {
+    "field": "category",
+    "is": [
+     "Suspicious for malignancy",
+     "Malignant"
+    ]
+   }
+  },
+  {
+   "id": "favourPrimary",
+   "label": "Favoured primary",
+   "type": "select",
+   "options": [
+    "Not stated",
+    "Consistent with lung primary",
+    "Consistent with breast primary",
+    "Consistent with ovarian / tubal serous carcinoma",
+    "Consistent with gastric primary",
+    "Consistent with colorectal primary",
+    "Consistent with pancreaticobiliary primary",
+    "Consistent with the known primary",
+    "Primary site undetermined"
+   ],
+   "default": "Not stated",
+   "group": "Category",
+   "showIf": {
+    "field": "category",
+    "is": "Malignant"
+   }
+  },
+  {
+   "id": "features",
+   "label": "Cytological features",
+   "type": "multiselect",
+   "options": [
+    "Reactive mesothelial cells",
+    "Lymphocyte-predominant",
+    "Neutrophils",
+    "Macrophages",
+    "Eosinophils",
+    "Blood",
+    "Three-dimensional clusters",
+    "Papillary clusters",
+    "Foreign cell population",
+    "Signet-ring cells",
+    "Vacuolated cytoplasm",
+    "Mucin",
+    "Prominent nucleoli",
+    "Psammoma bodies",
+    "Necrosis",
+    "Mitoses"
+   ],
+   "default": [
+    "Reactive mesothelial cells",
+    "Lymphocyte-predominant",
+    "Macrophages"
+   ],
+   "group": "Microscopy"
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional findings (free text, appended to microscopy)",
+   "type": "textarea",
+   "default": "",
+   "group": "Microscopy",
+   "placeholder": "e.g. Occasional groups of ciliated respiratory epithelial cells are also present"
+  },
+  {
+   "id": "ancillary",
+   "label": "Ancillary studies (same paragraph)",
+   "type": "textarea",
+   "default": "",
+   "group": "Ancillary",
+   "placeholder": "e.g. Immunostaining on the cell block shows the cells to be positive for TTF-1 and negative for p40"
+  }
+ ],
+ "snippets": [
+  {
+   "id": "effusion_rom_aus",
+   "label": "AUS: risk and repeat sampling",
+   "auto": {
+    "field": "category",
+    "is": "Atypia of undetermined significance"
+   },
+   "text": "Atypia of undetermined significance carries an estimated risk of malignancy of approximately 66% in the International System for Serous Fluid Cytopathology. Repeat sampling with cell block for immunocytochemistry is suggested if the effusion reaccumulates."
+  },
+  {
+   "id": "effusion_nfm_history",
+   "label": "Negative with known malignancy",
+   "text": "A negative result does not exclude malignancy; repeat sampling is suggested if clinically indicated."
+  },
+  {
+   "id": "effusion_meso_caveat",
+   "label": "Mesothelioma: tissue confirmation",
+   "auto": {
+    "field": "malignantType",
+    "is": "Mesothelioma"
+   },
+   "text": "Tissue biopsy is advised for confirmation of mesothelioma and assessment of invasion."
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenType": "Pleural fluid",
+     "specimenName": "right",
+     "volume": "50",
+     "appearance": "Blood-stained",
+     "lbc": false,
+     "cytospin": "2",
+     "cellBlock": "1",
+     "adequacy": "Adequate",
+     "inadequacyReason": "Virtually acellular specimen",
+     "category": "Malignant",
+     "malignantType": "Metastatic adenocarcinoma",
+     "favourPrimary": "Consistent with lung primary",
+     "features": [
+      "Reactive mesothelial cells",
+      "Foreign cell population",
+      "Three-dimensional clusters",
+      "Vacuolated cytoplasm",
+      "Prominent nucleoli"
+     ],
+     "additionalFindings": "",
+     "ancillary": "Immunostaining on the cell block shows the malignant cells to be positive for TTF-1, napsin A and BerEP4 and negative for calretinin and WT1, while the mesothelial cells show the converse pattern"
+    }
+   }
+  ]
+ }
 }
