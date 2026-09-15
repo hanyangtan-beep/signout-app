@@ -294,5 +294,11 @@
     }
    }
   ]
+ },
+ "macroExtract": {
+  "volume": {
+   "concept": "volume",
+   "unit": "ml"
+  }
  }
 }

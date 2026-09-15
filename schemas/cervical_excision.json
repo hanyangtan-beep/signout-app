@@ -519,5 +519,15 @@
     }
    }
   ]
+ },
+ "macroExtract": {
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  },
+  "invasionDepth": {
+   "concept": "depthOfInvasion",
+   "unit": "mm"
+  }
  }
 }

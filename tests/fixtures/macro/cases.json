@@ -301,6 +301,225 @@
           "blocks": "4"
         }
       }
+    },
+    {
+      "name": "frozen section — pieces, aggregate size, spelled block count",
+      "templates": {
+        "A": "frozen_section"
+      },
+      "text": "The specimen consists of three pieces of pale tan tissue measuring 1.2 x 0.8 x 0.4 cm in aggregate. Two blocks are submitted.",
+      "expect": {
+        "A": {
+          "pieces": "3",
+          "size": "1.2 x 0.8 x 0.4 cm",
+          "blocks": "2"
+        }
+      }
+    },
+    {
+      "name": "frozen section — ovarian form, greatest dimension and weight",
+      "templates": {
+        "A": "frozen_section"
+      },
+      "text": "The right ovary measures 65 mm in greatest dimension and weighs 120 g. Three blocks are submitted.",
+      "expect": {
+        "A": {
+          "ovSizeMm": "65",
+          "ovWeightG": "120",
+          "blocks": "3"
+        }
+      }
+    },
+    {
+      "name": "frozen section — sentinel node form, node count",
+      "templates": {
+        "A": "frozen_section"
+      },
+      "text": "The axillary sentinel node specimen measures 5 x 3 x 1 cm and contains two lymph nodes.",
+      "expect": {
+        "A": {
+          "slnSize": "5 x 3 x 1",
+          "slnCount": "2"
+        }
+      }
+    },
+    {
+      "name": "frozen section — lung wedge with staple line",
+      "templates": {
+        "A": "frozen_section"
+      },
+      "text": "The lung wedge measures 6 x 2 x 1.5 cm with a staple line 5.5 cm in length.",
+      "expect": {
+        "A": {
+          "luSize": "6 x 2 x 1.5",
+          "luStapleCm": "5.5"
+        }
+      }
+    },
+    {
+      "name": "frozen section — metastatic deposit size",
+      "templates": {
+        "A": "frozen_section"
+      },
+      "text": "A metastatic deposit measuring 8 mm is identified.",
+      "expect": {
+        "A": {
+          "metSize": "8"
+        }
+      }
+    },
+    {
+      "name": "breast biopsy — needle core count",
+      "templates": {
+        "A": "breast_biopsy"
+      },
+      "text": "The specimen consists of four needle core biopsies measuring up to 1.5 cm in length.",
+      "expect": {
+        "A": {
+          "coresTotal": "4"
+        }
+      }
+    },
+    {
+      "name": "lung biopsy — piece count",
+      "templates": {
+        "A": "lung_biopsy"
+      },
+      "text": "The specimen consists of five pieces of grey tissue, each up to 0.3 cm.",
+      "expect": {
+        "A": {
+          "pieces": "5"
+        }
+      }
+    },
+    {
+      "name": "aortic valve — cusp count, largest cusp, blocks",
+      "templates": {
+        "A": "aortic_valve_aorta"
+      },
+      "text": "The specimen consists of three calcified cusps, the largest measuring 2.4 x 1.4 x 0.5 cm. Two blocks are submitted.",
+      "expect": {
+        "A": {
+          "cuspCount": "3",
+          "valveSize": "2.4 x 1.4 x 0.5",
+          "valveBlocks": "2"
+        }
+      }
+    },
+    {
+      "name": "aorta — length, diameter, wall thickness, intimal tear",
+      "templates": {
+        "A": "aortic_valve_aorta"
+      },
+      "text": "The aorta is 5.2 cm in length and 3.6 cm in diameter, with a wall thickness of 0.3 cm. An intimal tear 1.4 cm long is present.",
+      "expect": {
+        "A": {
+          "aortaLength": "5.2",
+          "aortaDiameter": "3.6",
+          "aortaWall": "0.3",
+          "tearSize": "1.4"
+        }
+      }
+    },
+    {
+      "name": "cervical excision — depth of invasion and blocks",
+      "templates": {
+        "A": "cervical_excision"
+      },
+      "text": "The cone measures 2.5 x 2 x 1.2 cm. The depth of invasion is 3.2 mm. Twelve blocks are submitted.",
+      "expect": {
+        "A": {
+          "invasionDepth": "3.2",
+          "blocks": "12"
+        }
+      }
+    },
+    {
+      "name": "TURBT — aggregate size and weight",
+      "templates": {
+        "A": "turbt"
+      },
+      "text": "The specimen consists of multiple fragments of tan tissue, 3.5 x 2 x 0.6 cm in aggregate, weighing 4.2 g. Four blocks are submitted.",
+      "expect": {
+        "A": {
+          "aggregateSize": "3.5 x 2 x 0.6",
+          "aggregateWeight": "4.2",
+          "blocks": "4"
+        }
+      }
+    },
+    {
+      "name": "prostate biopsy — core count spelled out",
+      "templates": {
+        "A": "prostate_biopsy"
+      },
+      "text": "The specimen consists of twelve needle cores, up to 1.8 cm long.",
+      "expect": {
+        "A": {
+          "coresTotal": "12"
+        }
+      }
+    },
+    {
+      "name": "duodenal biopsy — piece count",
+      "templates": {
+        "A": "duodenal_biopsy"
+      },
+      "text": "The specimen consists of two pieces of tan mucosa, up to 0.3 cm.",
+      "expect": {
+        "A": {
+          "pieces": "2"
+        }
+      }
+    },
+    {
+      "name": "cervical biopsy — piece count and depth",
+      "templates": {
+        "A": "cervical_biopsy"
+      },
+      "text": "The specimen consists of one piece of tissue measuring 0.5 x 0.4 x 0.3 cm. Depth of invasion 2.8 mm.",
+      "expect": {
+        "A": {
+          "pieces": "1",
+          "invasionDepth": "2.8"
+        }
+      }
+    },
+    {
+      "name": "nasopharyngeal biopsy — piece count",
+      "templates": {
+        "A": "nasopharyngeal_biopsy"
+      },
+      "text": "The specimen consists of three pieces of grey tissue up to 0.4 cm.",
+      "expect": {
+        "A": {
+          "pieces": "3"
+        }
+      }
+    },
+    {
+      "name": "urine cytology — volume in ml",
+      "templates": {
+        "A": "urine_cytology"
+      },
+      "text": "Received 45 ml of yellow turbid urine.",
+      "expect": {
+        "A": {
+          "volume": "45"
+        }
+      }
+    },
+    {
+      "name": "effusion cytology — volume in ml",
+      "templates": {
+        "A": "effusion_cytology"
+      },
+      "text": "Received 250 ml of straw-coloured pleural fluid.",
+      "expect": {
+        "A": {
+          "volume": "250"
+        }
+      }
     }
   ]
 }

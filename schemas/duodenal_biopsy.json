@@ -327,5 +327,12 @@
     }
    }
   ]
+ },
+ "macroExtract": {
+  "pieces": {
+   "concept": "count",
+   "unit": "count",
+   "of": "pieces?|fragments?|cores?|bits?|portions?|specimens?|tissue"
+  }
  }
 }

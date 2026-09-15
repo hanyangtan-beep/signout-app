@@ -394,5 +394,25 @@
     }
    }
   ]
+ },
+ "macroExtract": {
+  "fragments": {
+   "concept": "count",
+   "unit": "count",
+   "of": "fragments?|chips?|pieces?"
+  },
+  "aggregateSize": {
+   "concept": "specimenDims",
+   "unit": "cm",
+   "min": 1
+  },
+  "aggregateWeight": {
+   "concept": "weight",
+   "unit": "g"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
  }
 }

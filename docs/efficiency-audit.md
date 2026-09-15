@@ -262,3 +262,32 @@ The tests had to follow: 28 test files read `schemas/x.json` straight off disk, 
 1. **The four divergent `stripDot` variants.** Should a trailing colon (appendix / gallbladder / gastric / oesophageal), comma (turbt) or a lone full stop (cytology) be trimmed the same way everywhere? Unifying changes report text in those templates.
 2. **`additionalNotes`** is labelled "Additional microscopy" in 30 templates and "Additional notes" in 12. Whether those are one question or two depends on whether the typed text is appended to the microscopy paragraph in both, which differs by generator — worth one decision rather than 42.
 3. **`blocks`** is "Blocks" in 13 and "Number of blocks" in 5, with six one-off variants that do carry real information ("Blocks (cyst wall and ovary; the tube adds one)"). Same question: one label with the hints demoted to placeholders?
+
+## D — Macro extraction sweep (done, 2026-09-15)
+
+22 of the 54 templates had no `macroExtract` map, so pasting the LIS macroscopic description pre-filled nothing and every measurement had to be retyped.
+
+**12 now extract; 10 have nothing to extract.** That split is the finding. `endometrial_biopsy`, `gastric_biopsy`, `oesophageal_biopsy`, `ibd_biopsy`, `colonic_polyp`, `salivary_fna`, `lymph_node_fna`, `thyroid_fna`, `cervical_cytology` and `generic` have no numeric macro field at all — their forms ask for findings, not measurements. Adding rules there would have been rules with nothing to write to.
+
+**34 rules added** across the other 12:
+
+| Template | Extracts |
+| --- | --- |
+| `frozen_section` | piece count, aggregate size, blocks, metastatic focus, ovarian size and weight, lung wedge size, staple line, node specimen size, node count |
+| `aortic_valve_aorta` | cusp count, largest cusp, prosthesis diameter, aortic length / diameter / wall thickness, intimal tear, blocks |
+| `turbt` | fragment count, aggregate size, aggregate weight, blocks |
+| `cervical_excision` | depth of invasion, blocks |
+| `cervical_biopsy` | piece count, depth of invasion |
+| `breast_biopsy` | core count, maximum extent |
+| `prostate_biopsy` | core count |
+| `lung_biopsy`, `duodenal_biopsy`, `nasopharyngeal_biopsy` | piece count |
+| `urine_cytology`, `effusion_cytology` | volume in ml |
+
+**Two new concepts in `src/macroparse.js`.**
+
+- **`count`** — how many of a named thing, with the noun given as `of`: "three cores", "2 tissue fragments", "a single piece". Up to two adjectives may sit between the number and the noun, so "3 needle core biopsies" counts. The last count in the scope wins, which is what a macro that revises itself means.
+- **`volume`** — millilitres for the fluid cytologies.
+
+**And one real bug found on the way.** The existing `blocks` extractor only read digits, so "Four blocks are submitted" — the way house macros actually spell small counts — extracted nothing, in every template that already had a blocks rule. Word numbers up to twelve now count.
+
+17 fixture cases added to `tests/fixtures/macro/cases.json` (19 → 36), one per new rule group. That file is a golden fixture, so the addition is deliberate and recorded here: **cases were added, none changed.** 896 tests pass, all seven release gates green.

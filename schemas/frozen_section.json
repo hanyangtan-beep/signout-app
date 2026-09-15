@@ -1363,5 +1363,58 @@
     }
    }
   ]
+ },
+ "macroExtract": {
+  "pieces": {
+   "concept": "count",
+   "unit": "count",
+   "of": "pieces?|fragments?|cores?|bits?|portions?|specimens?|tissue"
+  },
+  "size": {
+   "concept": "specimenDims",
+   "unit": "cm",
+   "label": true,
+   "min": 1
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  },
+  "metSize": {
+   "concept": "size",
+   "unit": "mm",
+   "near": "metasta|deposit|focus|foci|tumour|tumor"
+  },
+  "ovSizeMm": {
+   "concept": "size",
+   "unit": "mm",
+   "near": "ovar"
+  },
+  "ovWeightG": {
+   "concept": "weight",
+   "unit": "g",
+   "near": "ovar"
+  },
+  "luSize": {
+   "concept": "specimenDims",
+   "unit": "cm",
+   "near": "lung|wedge|lobe"
+  },
+  "luStapleCm": {
+   "concept": "length",
+   "unit": "cm",
+   "near": "staple"
+  },
+  "slnSize": {
+   "concept": "specimenDims",
+   "unit": "cm",
+   "near": "node|axilla|sentinel"
+  },
+  "slnCount": {
+   "concept": "count",
+   "unit": "count",
+   "of": "lymph nodes?|nodes?",
+   "near": "node"
+  }
  }
 }

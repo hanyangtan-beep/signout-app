@@ -918,5 +918,16 @@
     }
    }
   ]
+ },
+ "macroExtract": {
+  "coresTotal": {
+   "concept": "count",
+   "unit": "count",
+   "of": "cores?|core biops(?:y|ies)|needle cores?"
+  },
+  "invExtentMm": {
+   "concept": "tumourSizeMax",
+   "unit": "mm"
+  }
  }
 }

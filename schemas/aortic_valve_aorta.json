@@ -739,5 +739,47 @@
     }
    }
   ]
+ },
+ "macroExtract": {
+  "cuspCount": {
+   "concept": "count",
+   "unit": "count",
+   "of": "cusps?|leaflets?|fragments?"
+  },
+  "valveSize": {
+   "concept": "specimenDims",
+   "unit": "cm",
+   "near": "cusp|leaflet|valve",
+   "min": 1
+  },
+  "prosthesisDiameter": {
+   "concept": "diameter",
+   "unit": "cm",
+   "near": "prosthe|ring|valve"
+  },
+  "aortaLength": {
+   "concept": "length",
+   "unit": "cm",
+   "near": "aorta|aortic"
+  },
+  "aortaDiameter": {
+   "concept": "diameter",
+   "unit": "cm",
+   "near": "aorta|aortic"
+  },
+  "aortaWall": {
+   "concept": "wallThickness",
+   "unit": "cm",
+   "near": "aorta|aortic|wall"
+  },
+  "tearSize": {
+   "concept": "length",
+   "unit": "cm",
+   "near": "tear|intimal"
+  },
+  "valveBlocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
  }
 }

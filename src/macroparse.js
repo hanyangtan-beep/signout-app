@@ -164,9 +164,14 @@ function diameter(text) {
 
 function blocks(text) {
   let last = null, m;
-  const re = /\b(\d+)\s*(?:representative\s+)?blocks?\b/gi;
-  while ((m = re.exec(text))) last = Number(m[1]);
-  if (last === null && /\b(?:one|a single|1)\s+block\b/i.test(text)) last = 1;
+  // House macros spell small counts out ("Four blocks are submitted"), so words count too.
+  const re = /\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s*(?:representative\s+)?blocks?\b/gi;
+  while ((m = re.exec(text))) {
+    const w = m[1].toLowerCase();
+    const n = /^\d/.test(w) ? Number(w) : WORD_NUMBER[w];
+    if (Number.isFinite(n)) last = n;
+  }
+  if (last === null && /\ba single\s+block\b/i.test(text)) last = 1;
   return last;
 }
 
@@ -177,7 +182,35 @@ function size(text) { const r = findDims(text)[0]; return r ? r.max : null; }
 /** "N cm long and N cm in diameter" → [length, diameter]. */
 function lengthDiameter(text) { const l = length(text), d = diameter(text); return l !== null && d !== null ? [l, d] : l !== null ? [l] : null; }
 
-export const CONCEPTS = { weight, specimenDims, dims, size, tumourDims, tumourSizeMax, depthOfInvasion, wallThickness, cavityLength, length, diameter, lengthDiameter, blocks };
+/** Fluid volume in millilitres: "25 ml of straw-coloured fluid", "volume 120 mL". */
+function volume(text) {
+  const m = /\bvolume\s*(?:of|is|:)?\s*(\d+(?:\.\d+)?)\s*(?:ml|mls|cc|millilit(?:er|re)s?)\b/i.exec(text)
+    || /\b(\d+(?:\.\d+)?)\s*(?:ml|mls|cc|millilit(?:er|re)s?)\b/i.exec(text);
+  return m ? Number(m[1]) : null;
+}
+
+const WORD_NUMBER = {
+  one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
+  eleven: 11, twelve: 12, a: 1, an: 1, single: 1
+};
+/**
+ * How many of a named thing: "three cores", "2 tissue fragments", "a single piece".
+ * `noun` is a regex source for the thing being counted; up to two adjectives may sit between
+ * the number and the noun ("3 needle core biopsies"). The last count in the scope wins, which
+ * is what a macro that revises itself ("…submitted; 4 fragments in total") means.
+ */
+function countOf(text, noun) {
+  const re = new RegExp(String.raw`\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|a|an|single)\s+(?:[a-z-]+\s+){0,2}(?:${noun})`, 'gi');
+  let last = null, m;
+  while ((m = re.exec(text))) {
+    const w = m[1].toLowerCase();
+    const n = /^\d/.test(w) ? Number(w) : WORD_NUMBER[w];
+    if (Number.isFinite(n)) last = n;
+  }
+  return last;
+}
+
+export const CONCEPTS = { weight, specimenDims, dims, size, tumourDims, tumourSizeMax, depthOfInvasion, wallThickness, cavityLength, length, diameter, lengthDiameter, blocks, volume };
 
 // ---- Sided adnexa ------------------------------------------------------------------------------
 // "The right ovary measures 2 x 1.5 x 0.8 cm and the left ovary 2.5 x 1.5 x 1 cm." Sentences are split into
@@ -250,6 +283,18 @@ export function extractConcept(rule, text) {
   const unit = rule.unit || 'mm';
   const label = rule.label ? ` ${unit}` : '';
   if (rule.concept === 'adnexaSentence') return adnexaSentence(text, unit);
+  if (rule.concept === 'count') {
+    // `of` names the thing counted; `near` (if given) still restricts which clauses are read.
+    let scope = text;
+    if (rule.near) {
+      const near = new RegExp(rule.near, 'i');
+      const hits = clauses(text).filter((c) => near.test(c));
+      if (!hits.length) return null;
+      scope = hits.join(' ');
+    }
+    const n = countOf(scope, rule.of || rule.near || 'pieces?|fragments?');
+    return n === null ? null : String(n);
+  }
   const fn = CONCEPTS[rule.concept];
   if (!fn) return null;
   const min = rule.min ?? (rule.concept === 'lengthDiameter' ? 1 : 2);   // a tube length alone is worth keeping

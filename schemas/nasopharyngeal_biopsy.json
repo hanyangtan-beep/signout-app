@@ -328,5 +328,12 @@
    "label": "Negative biopsy — clinical correlation",
    "text": "In a patient with a clinically or endoscopically suspicious lesion or a raised plasma EBV DNA level, a negative nasopharyngeal biopsy does not exclude carcinoma; clinical, endoscopic and radiological correlation, with repeat biopsy where indicated, is recommended."
   }
- ]
+ ],
+ "macroExtract": {
+  "pieces": {
+   "concept": "count",
+   "unit": "count",
+   "of": "pieces?|fragments?|cores?|bits?|portions?|specimens?|tissue"
+  }
+ }
 }
