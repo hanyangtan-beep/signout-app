@@ -140,6 +140,55 @@ Spec:       card is the spec
 
 Carried over from the previous ordering, now ranked by the same case-mix measure.
 
+### Sign-in gate on the published app                     Size: S
+Why:        user request (2026-09-16). `han-signout.pplx.app` is a public URL, so anyone with the
+            link gets the working app. Google sign-in already exists in `src/gauth.js` but it is
+            lazy — it only fires on Save or Open, so the whole form and report workspace is usable
+            without ever meeting it. The ask is to make the account the front door.
+            **What this can and cannot do.** The gate hides the interface; it does not make the
+            files unreachable, because a published static bundle is served to whoever asks for it
+            and any client-side check can be stepped over in devtools. It is a lock on the door of
+            an empty room, and the room being empty is the point: the bundle holds templates and
+            code, no patient data. Cases live in your Drive, and that is guarded by Google
+            server-side, where the token is checked rather than trusted — an intruder who got past
+            the gate would find an app with nothing in it and no way to open your files. So this
+            card is worth building for what the user asked for, which is that a stranger with the
+            link cannot use the app, and it should not be described in the repo as protecting PHI.
+            The real access control is the platform visibility setting on the `/computer/a` asset,
+            which is enforced by the host; set that to private and the link stops resolving for
+            everyone else. **Do both — that one is a settings change, not a card, and should be
+            done first.**
+Change:     (1) gate the boot in `src/app.js`: run `consumeRedirect()` first, then if
+            `isSignedIn()` is false render a sign-in screen instead of the workspace — app name,
+            one **Sign in with Google** button, and the Settings dialog reachable so the client id
+            can still be fixed from a locked app. (2) `fetchUserInfo` already resolves the verified
+            email; compare it against `allowedEmails` in `src/config.js` — an array, empty by
+            default meaning *any Google account*, overridable in Settings so the list changes
+            without a rebuild. A signed-in address that is not on the list gets a refusal naming
+            the address and a Sign out button, and no workspace. (3) the header account control
+            shows the signed-in address and its Sign out returns to the gate rather than leaving an
+            unauthenticated workspace behind. (4) idle re-lock: `sessionStorage` already drops the
+            token when the tab closes, so add only a visible **Lock** item in the case menu for
+            walking away from a shared reporting station mid-list.
+            **The gate must not break the release gate.** `npm run qa` drives
+            `http://localhost:PORT/index.html` with no Google session, so an unconditional boot
+            gate turns browser QA and the `qa` step of `npm run release` red. Bypass on
+            `location.hostname` being `localhost` / `127.0.0.1` only — a host check, never a query
+            parameter or a storage flag, both of which would travel to the published site.
+Untouched:  report wording, schemas, generators, fixtures — no printed text changes. `drive.file`
+            scope stays as it is; the allow-list is a UI check and must not be used to argue for a
+            wider scope. Save / Open and the Sheet columns unchanged.
+Accept:     unit tests for the allow-list decision (empty list → any signed-in address; listed
+            address → in; unlisted → refused and named; case and whitespace folded); browser QA at
+            localhost still passes all existing checks; a Playwright run with the bypass disabled
+            reaches the sign-in screen and finds no `#part-panel` and no report text in the DOM;
+            Settings opens from the gate; sign out from inside the app returns to the gate.
+Stop:       no password of our own, no second credential store, no attempt to encrypt the bundle —
+            if it starts turning into real auth it needs a backend and that is a different card.
+Verify:     tests + browser QA (both gated and bypassed)
+Ship:       with batch
+Spec:       card is the spec
+
 ### Peritoneal nodule biopsy                             Size: M
 Why:        peritoneal / omental nodules sampled at laparoscopy or laparotomy are a recurring small specimen with a short list of answers (reactive mesothelial hyperplasia, peritoneal loose body, metastatic carcinoma, endometriosis, granuloma) and no template; the diagnosis line and IHC sentence are formulaic.
 Change:     new template `peritoneal_nodule` (GI, kind biopsy, header "Peritoneum"; aliases omentum, peritoneal nodule, loose body, mesothelial, deposit, implant): specimen builder (site pick-list — parietal peritoneum, omentum, mesentery, pelvic peritoneum, pouch of Douglas, diaphragm, serosa of named organ — plus procedure biopsy / excision; multi-part for several nodules); diagnosis pick-list with fixed narrative and dx lines — **reactive mesothelial hyperplasia** (florid / papillary variant, no invasion sentence), **peritoneal loose body** (laminated hyalinised fibrous tissue ± central fat necrosis / calcification, "consistent with an infarcted and detached appendix epiploica"), **metastatic carcinoma** (adenocarcinoma / serous / mucinous / signet-ring / squamous / other, with IHC sentence and a favoured-primary statement; "metastatic carcinoma, see comment" when primary uncertain), **endometriosis** (glands + stroma ± haemosiderin), **endosalpingiosis**, **fat necrosis**, **fibrous adhesion / fibrosis**, **granulomatous inflammation** (foreign-body / suture, keratin, necrotising with AFB / fungal stains pending), **splenosis**, **deciduosis**, **well-differentiated papillary mesothelial tumour**, **mesothelioma** (points to a Comment recommending full work-up); IHC field group with mesothelial (calretinin, WT1, D2-40, CK5/6) vs epithelial (BerEP4, MOC31, claudin-4) markers and site markers (CK7 / CK20, CDX2, SATB2, PAX8, GATA3, TTF-1, ER / PR) printed in one paragraph with microscopy; mesothelioma work-up extras BAP1 / MTAP; snippets for "no evidence of malignancy in this sample; sampling caveat", "correlate with imaging and clinical findings for the primary site", "stains pending", and "reactive mesothelial proliferation — features favouring reactive over neoplastic".
