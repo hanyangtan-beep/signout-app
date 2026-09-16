@@ -8,6 +8,7 @@ import {
 import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js';
 import { loadConfig, saveConfig } from './config.js';
 import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js';
+import { gateEnabled, gateState, parseAllowList, formatAllowList } from './gate.js';
 import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js';
 import { normaliseAccession, phiWarnings } from './docformat.js';
 import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js';
@@ -521,6 +522,8 @@ function renderCaseId() {
 /** Example / New / Open collapse into this menu on narrower screens; the inline buttons stay the source of truth. */
 function initCaseMenu() {
   const items = [['Example', () => nodes.example.click()], ['New case', () => nodes.newCase.click()], ['Open…', () => nodes.open.click()]];
+  // Walking away from a shared reporting station mid-list: drop the token and return to the gate.
+  if (gateEnabled(location.hostname)) items.push(['Lock', () => lockApp()]);
   nodes.caseMenuList.replaceChildren(...items.map(([label, run]) => el('button', {
     type: 'button', role: 'menuitem', class: 'menu-item', text: label,
     onclick: () => { closeCaseMenu(); run(); }
@@ -1393,6 +1396,43 @@ function renderAccount() {
   nodes.google.setAttribute('aria-label', label);
 }
 
+/**
+ * Show the gate instead of the workspace. `mode` is 'signin' (no Google account yet) or
+ * 'refused' (signed in, but not on the allow-list).
+ */
+function showGate(mode) {
+  const gate = $('#gate');
+  const who = currentUser();
+  document.documentElement.dataset.gate = mode;
+  gate.hidden = false;
+  $('#gate-title').textContent = mode === 'refused' ? 'No access' : 'Sign-out';
+  $('#gate-note').textContent = mode === 'refused'
+    ? `${who || 'That account'} is not on the allowed list for this app. Sign in with a different Google account, or add the address in Settings.`
+    : 'Sign in with Google to open the reporting workspace.';
+  $('#gate-signin').hidden = mode === 'refused';
+  $('#gate-signout').hidden = mode !== 'refused';
+  $('#gate-signin').addEventListener('click', async () => {
+    if (!state.config.clientId) { openSettings(); return toast('Paste the Google OAuth client id first'); }
+    try { await ensureSignedIn(true, 'signin'); } catch (err) { toast(err.message); }
+  });
+  $('#gate-signout').addEventListener('click', () => { signOut(); location.reload(); });
+  $('#gate-settings').addEventListener('click', openSettings);
+  nodes.settingsForm.addEventListener('submit', (e) => {
+    if (e.submitter?.value !== 'save') return;
+    if (applySettingsForm().clientIdChanged) signOut();
+    location.reload(); // re-run the gate against the settings that were just saved
+  });
+  $('#gate-signin').focus();
+}
+
+/** Drop the Google token and come back to the gate, leaving the cached draft where it is. */
+function lockApp() {
+  state.leaving = true;
+  cacheCase(state.caseState);
+  signOut();
+  location.reload();
+}
+
 const CANONICAL = 'https://han-signout.pplx.app/';
 const AUTH_ORIGINS = ['https://han-signout.pplx.app', 'http://localhost:3000', 'http://127.0.0.1:3000'];
 
@@ -1466,8 +1506,25 @@ async function doOpen() {
   }
 }
 
+/**
+ * Read the Settings form back into the stored config. Shared by the workspace and the gate, which
+ * has no `initDrive` to hang a submit handler on but must still be able to fix a wrong client id
+ * or add an address to the allow-list.
+ */
+function applySettingsForm() {
+  setDensity($('#cfg-density').value);
+  const patch = {};
+  for (const k of ['clientId', 'folderId', 'sheetName', 'scopeMode']) patch[k] = $(`#cfg-${k}`).value.trim();
+  patch.allowedEmails = parseAllowList($('#cfg-allowedEmails').value);
+  if (patch.sheetName !== state.config.sheetName || patch.clientId !== state.config.clientId || patch.scopeMode !== state.config.scopeMode) patch.sheetId = '';
+  const hadClientId = state.config.clientId;
+  state.config = saveConfig(patch);
+  return { clientIdChanged: patch.clientId !== hadClientId };
+}
+
 function openSettings() {
   for (const k of ['clientId', 'folderId', 'sheetName', 'scopeMode']) $(`#cfg-${k}`).value = state.config[k] || '';
+  $('#cfg-allowedEmails').value = formatAllowList(state.config.allowedEmails);
   $('#cfg-density').value = document.documentElement.dataset.density || 'comfortable';
   nodes.signout.hidden = !isSignedIn();
   nodes.dlgSettings.showModal();
@@ -1501,12 +1558,8 @@ function initDrive() {
   nodes.settings.addEventListener('click', openSettings);
   nodes.settingsForm.addEventListener('submit', (e) => {
     if (e.submitter?.value !== 'save') return;
-    setDensity($('#cfg-density').value);
-    const patch = {};
-    for (const k of ['clientId', 'folderId', 'sheetName', 'scopeMode']) patch[k] = $(`#cfg-${k}`).value.trim();
-    if (patch.sheetName !== state.config.sheetName || patch.clientId !== state.config.clientId || patch.scopeMode !== state.config.scopeMode) patch.sheetId = '';
-    state.config = saveConfig(patch);
-    if (patch.clientId !== undefined) signOut();
+    // A new client id invalidates the token issued by the old one, so the session has to go.
+    if (applySettingsForm().clientIdChanged) signOut();
     renderAccount(); renderSaveStatus();
     toast('Settings saved');
   });
@@ -1540,6 +1593,21 @@ async function boot() {
   initDensity();
   mountOrganSprite(); // organ glyphs; non-blocking, falls back to a neutral glyph
   const back = consumeRedirect(); // did Google just send us back here?
+  // The gate runs before any case is built, so a refused visitor gets an empty page rather than a
+  // hidden-but-present workspace. Off on localhost so `npm run qa` drives the app without a
+  // Google session — keyed on hostname only, never a flag a visitor could set.
+  if (gateEnabled(location.hostname)) {
+    if (isSignedIn() && !currentUser()) {
+      await getToken(state.config, { interactive: false }).then((t) => fetchUserInfo(t)).catch(() => null);
+    }
+    const decision = gateState({
+      enabled: true, signedIn: isSignedIn(), email: currentUser(), allowed: state.config.allowedEmails
+    });
+    if (decision !== 'open') {
+      if (back?.error) toast(back.error === 'access_denied' ? 'Google sign-in was cancelled' : `Google sign-in failed: ${back.error}`);
+      return showGate(decision);
+    }
+  }
   state.manifest = await loadManifest();
   state.planned = await loadPlanned();
   loadPicker();

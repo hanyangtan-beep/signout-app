@@ -7,7 +7,8 @@ export const DEFAULTS = {
   folderId: '1IDOdz37IQJaYDX7PVFlqB7VFzyfiNXMM',       // "Pathology reports" folder
   sheetName: 'Sign-out cases',
   sheetId: '',                                        // filled in once the Sheet is created/found
-  scopeMode: 'file'                                   // 'file' = drive.file (least privilege); 'full' = drive (if the folder is not writable)
+  scopeMode: 'file',                                  // 'file' = drive.file (least privilege); 'full' = drive (if the folder is not writable)
+  allowedEmails: []                                   // [] = any Google account may sign in; add addresses to restrict (see src/gate.js)
 };
 
 const KEY = 'signout.config.v1';
@@ -20,6 +21,9 @@ export function loadConfig() {
       if (typeof saved[k] === 'string') saved[k] = saved[k].trim();
       if (saved[k] === '' || saved[k] == null) delete saved[k]; // blanks never mask defaults
     }
+    // The allow-list is the one array here; a corrupted value must not become a truthy non-list
+    // that later code treats as a restriction nobody can satisfy.
+    if ('allowedEmails' in saved && !Array.isArray(saved.allowedEmails)) delete saved.allowedEmails;
     // A mistyped or truncated client id yields Google's "invalid_client"; fall back to the shipped one.
     if (saved.clientId && !/^\d+-[a-z0-9]+\.apps\.googleusercontent\.com$/.test(saved.clientId)) delete saved.clientId;
     return { ...DEFAULTS, ...saved };

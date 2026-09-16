@@ -8,6 +8,8 @@ State on 2026-09-12: 54 templates (10 small biopsy, 23 benign resection incl. LE
 
 ## Done
 
+- [x] **Sign-in gate on the published app** (2026-09-16, user request: "pull it into now"): boot in `src/app.js` now renders a sign-in screen instead of the workspace on the published host; `src/gate.js` holds the decision as pure functions, `allowedEmails` in Settings restricts which Google accounts get in (empty = any), Sign out and a new **Lock** case-menu item return to the gate. Bypassed on `localhost` by hostname only so browser QA still runs; two committed QA checks assert the gate closes on a non-local host and stays out of the way on localhost. It is interface-level only, not access control — the platform visibility setting is the real lever, and on 2026-09-16 an anonymous fetch of the published URL still returned the whole app after that setting was restricted.
+
 - [x] Efficiency audit findings A–F (2026-09-15, user request: "work on the efficiency findings in your suggested order"): shipped in order E, F, C, D, B, A. Write-ups in `docs/efficiency-audit.md` under "Implementation log".
 
   - **E — build artefacts untracked, F — release gate.** `dist/` and the source archive out of git; `npm run release` runs seven gates (lint, tests, fixtures clean, browser QA, build, artefacts untracked, source archive) and is the only thing that says "safe to deploy and publish". ESLint added; browser QA committed.
@@ -139,55 +141,6 @@ Spec:       card is the spec
 ---
 
 Carried over from the previous ordering, now ranked by the same case-mix measure.
-
-### Sign-in gate on the published app                     Size: S
-Why:        user request (2026-09-16). `han-signout.pplx.app` is a public URL, so anyone with the
-            link gets the working app. Google sign-in already exists in `src/gauth.js` but it is
-            lazy — it only fires on Save or Open, so the whole form and report workspace is usable
-            without ever meeting it. The ask is to make the account the front door.
-            **What this can and cannot do.** The gate hides the interface; it does not make the
-            files unreachable, because a published static bundle is served to whoever asks for it
-            and any client-side check can be stepped over in devtools. It is a lock on the door of
-            an empty room, and the room being empty is the point: the bundle holds templates and
-            code, no patient data. Cases live in your Drive, and that is guarded by Google
-            server-side, where the token is checked rather than trusted — an intruder who got past
-            the gate would find an app with nothing in it and no way to open your files. So this
-            card is worth building for what the user asked for, which is that a stranger with the
-            link cannot use the app, and it should not be described in the repo as protecting PHI.
-            The real access control is the platform visibility setting on the `/computer/a` asset,
-            which is enforced by the host; set that to private and the link stops resolving for
-            everyone else. **Do both — that one is a settings change, not a card, and should be
-            done first.**
-Change:     (1) gate the boot in `src/app.js`: run `consumeRedirect()` first, then if
-            `isSignedIn()` is false render a sign-in screen instead of the workspace — app name,
-            one **Sign in with Google** button, and the Settings dialog reachable so the client id
-            can still be fixed from a locked app. (2) `fetchUserInfo` already resolves the verified
-            email; compare it against `allowedEmails` in `src/config.js` — an array, empty by
-            default meaning *any Google account*, overridable in Settings so the list changes
-            without a rebuild. A signed-in address that is not on the list gets a refusal naming
-            the address and a Sign out button, and no workspace. (3) the header account control
-            shows the signed-in address and its Sign out returns to the gate rather than leaving an
-            unauthenticated workspace behind. (4) idle re-lock: `sessionStorage` already drops the
-            token when the tab closes, so add only a visible **Lock** item in the case menu for
-            walking away from a shared reporting station mid-list.
-            **The gate must not break the release gate.** `npm run qa` drives
-            `http://localhost:PORT/index.html` with no Google session, so an unconditional boot
-            gate turns browser QA and the `qa` step of `npm run release` red. Bypass on
-            `location.hostname` being `localhost` / `127.0.0.1` only — a host check, never a query
-            parameter or a storage flag, both of which would travel to the published site.
-Untouched:  report wording, schemas, generators, fixtures — no printed text changes. `drive.file`
-            scope stays as it is; the allow-list is a UI check and must not be used to argue for a
-            wider scope. Save / Open and the Sheet columns unchanged.
-Accept:     unit tests for the allow-list decision (empty list → any signed-in address; listed
-            address → in; unlisted → refused and named; case and whitespace folded); browser QA at
-            localhost still passes all existing checks; a Playwright run with the bypass disabled
-            reaches the sign-in screen and finds no `#part-panel` and no report text in the DOM;
-            Settings opens from the gate; sign out from inside the app returns to the gate.
-Stop:       no password of our own, no second credential store, no attempt to encrypt the bundle —
-            if it starts turning into real auth it needs a backend and that is a different card.
-Verify:     tests + browser QA (both gated and bypassed)
-Ship:       with batch
-Spec:       card is the spec
 
 ### Peritoneal nodule biopsy                             Size: M
 Why:        peritoneal / omental nodules sampled at laparoscopy or laparotomy are a recurring small specimen with a short list of answers (reactive mesothelial hyperplasia, peritoneal loose body, metastatic carcinoma, endometriosis, granuloma) and no template; the diagnosis line and IHC sentence are formulaic.

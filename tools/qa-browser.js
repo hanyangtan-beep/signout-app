@@ -238,6 +238,44 @@ await check('copy buttons are wired and yield report text', async () => {
   return `${text.trim().length} plain-text chars`;
 });
 
+// The sign-in gate is off on localhost so every check above can drive the app without a Google
+// session. That bypass is the whole risk: if it ever widened, the published app would be open to
+// anyone. So load the same files over an address the bypass does NOT cover (hostname '0.0.0.0'
+// rather than 'localhost') and assert the gate actually closes there.
+await check('the sign-in gate closes on a non-local host', async () => {
+  const gated = await new Promise((resolve) => {
+    const s = createServer(async (req, res) => {
+      let p = decodeURIComponent((req.url || '/').split('?')[0]);
+      if (p === '/') p = '/index.html';
+      const file = join(ROOT, normalize(p).replace(/^(\.\.[/\\])+/, ''));
+      try {
+        res.writeHead(200, { 'content-type': MIME[extname(file)] || 'application/octet-stream' }).end(await readFile(file));
+      } catch { res.writeHead(404).end('not found'); }
+    });
+    s.listen(PORT + 1, '0.0.0.0', () => resolve(s));
+  });
+  const visitor = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  try {
+    await visitor.goto(`http://0.0.0.0:${PORT + 1}/index.html`, { waitUntil: 'networkidle' });
+    assert(await visitor.locator('#gate').isVisible(), 'gate did not appear on a non-local host');
+    assert(!(await visitor.locator('#report-blocks').isVisible().catch(() => false)), 'workspace rendered behind the gate');
+    // Nothing patient-shaped should exist in the DOM of a page a stranger can load. The gate runs
+    // before any case is built, so this is absence, not CSS hiding.
+    const html = await visitor.content();
+    assert(!/Sections show/.test(html), 'report prose reached the DOM before sign-in');
+    return 'gate shown, workspace absent';
+  } finally {
+    await visitor.close();
+    gated.close();
+  }
+});
+
+await check('the gate stays out of the way on localhost', async () => {
+  assert(await page.locator('#part-panel').isVisible(), 'workspace not visible on localhost');
+  assert(!(await page.locator('#gate').isVisible()), 'gate appeared on localhost and would block QA');
+  return 'bypass intact';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

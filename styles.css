@@ -692,3 +692,61 @@ textarea.input { min-height: 64px; resize: vertical; }
 .tab .tab-label { font-size: var(--text-sm); }
 .part-head h3 { display: flex; align-items: center; gap: var(--space-2); }
 .part-head h3 .organ-icon { width: 1.3em; height: 1.3em; color: var(--color-text-muted); }
+
+/* ---------- sign-in gate ---------- */
+/* Shown instead of the workspace on the published host until a Google account is present.
+   `html[data-gate]` hides the app chrome so the gate is the only thing on screen. */
+html[data-gate] body > *:not(#gate):not(#toast):not(#dlg-settings) { display: none !important; }
+
+/* `display: grid` would otherwise beat the UA rule for [hidden], leaving an invisible full-screen
+   overlay that swallows every click in the workspace. */
+.gate[hidden] { display: none; }
+
+.gate {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--color-bg);
+  z-index: 60;
+}
+
+.gate-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  max-width: 380px;
+  padding: 36px 32px;
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md, var(--shadow-sm));
+}
+
+.gate-card .logo { color: var(--color-primary); }
+
+.gate-card h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+.gate-card p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.gate-card .mono { word-break: break-all; }
+
+.gate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+}

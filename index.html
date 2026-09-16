@@ -13,6 +13,22 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Sign-in gate. Hidden until boot decides the workspace must not render; see src/gate.js. -->
+  <div id="gate" class="gate" hidden>
+    <div class="gate-card">
+      <svg class="logo" viewBox="0 0 32 32" width="34" height="34" aria-hidden="true" fill="none">
+        <rect x="3" y="3" width="26" height="26" rx="3" stroke="currentColor" stroke-width="2" />
+        <path d="M9 16.5l4 4 10-10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <h1 id="gate-title">Sign-out</h1>
+      <p id="gate-note">Sign in with Google to open the reporting workspace.</p>
+      <div class="gate-actions">
+        <button class="btn primary" id="gate-signin" type="button">Sign in with Google</button>
+        <button class="btn ghost small" id="gate-signout" type="button" hidden>Sign out</button>
+        <button class="btn ghost small" id="gate-settings" type="button">Settings</button>
+      </div>
+    </div>
+  </div>
   <a class="skip" href="#case">Skip to case</a>
   <header class="topbar">
     <div class="topbar-row">
@@ -178,6 +194,7 @@
           <option value="compact">Compact — about a fifth more fields per screen</option>
         </select>
       </div>
+      <div class="field"><label for="cfg-allowedEmails">Allowed Google accounts</label><textarea class="input mono" id="cfg-allowedEmails" rows="3" placeholder="one address per line — leave empty to allow any Google account" autocomplete="off" spellcheck="false"></textarea></div>
       <div class="field"><label for="cfg-scopeMode">Drive scope</label>
         <select class="input" id="cfg-scopeMode">
           <option value="file">drive.file — only files this app creates (recommended)</option>
