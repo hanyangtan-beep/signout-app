@@ -85,7 +85,8 @@ const deferred = (v) => v.correlation === 'Deferred'
   || (v.scenario === 'Ovarian / adnexal mass' && v.ovaryResult === 'Deferred')
   || (v.scenario === LU && v.lungResult === 'Deferred')
   || (v.scenario === SLN && v.slnResult === 'Deferred')
-  || (v.scenario === 'Nodule / mass' && v.noduleResult === 'Deferred');
+  || (v.scenario === 'Nodule / mass' && v.noduleResult === 'Deferred')
+  || (v.scenario === PD && v.pdResult === 'Atypical, deferred');
 
 const tumour = (v, fallback) => stripDot(v.tumourType) || fallback;
 
@@ -322,6 +323,85 @@ function luFinalDx(v) {
   }
 }
 
+// ---------- pancreatic / bile duct margin scenario (Whipple card, split (g)) ----------
+// The intraoperative neck, bile duct and uncinate shavings sent during a pancreaticoduodenectomy.
+// The generic macro path already describes a shaving, so this scenario adds only the named margin,
+// the result wording and the summary the paraffin synoptic is pre-filled from.
+
+export const PD = 'Pancreatic / bile duct margin';
+const isPd = (v) => v.scenario === PD;
+
+/** Margin name -> the noun the report prints, and the paraffin field it pre-fills. */
+export const PD_SITES = {
+  'Pancreatic neck (transection)': { noun: 'pancreatic neck margin', field: 'neckMargin', mm: 'neckMarginMm' },
+  'Bile duct': { noun: 'bile duct margin', field: 'bileDuctMargin', mm: 'bileDuctMarginMm' },
+  'Uncinate (superior mesenteric artery)': { noun: 'uncinate margin', field: 'uncinateMargin', mm: 'uncinateMarginMm' },
+  'Pancreatic duct': { noun: 'pancreatic duct margin', field: 'pancDuctMargin', mm: 'pancDuctMarginMm' },
+  'Proximal (gastric or duodenal)': { noun: 'proximal margin', field: 'proximalMargin', mm: 'proximalMarginMm' },
+  'Distal (duodenal or jejunal)': { noun: 'distal margin', field: 'distalMargin', mm: 'distalMarginMm' },
+};
+const PD_ORIGIN_TEMPLATE = { Pancreatic: 'pancreas_carcinoma', Ampullary: 'ampulla_carcinoma', 'Distal bile duct': 'pancreas_carcinoma' };
+const PD_MALIGNANT = ['Carcinoma present at margin', 'Carcinoma close to margin'];
+const pdSite = (v) => PD_SITES[v.pdSite] || PD_SITES['Pancreatic neck (transection)'];
+const pdResult = (v) => v.pdResult || 'Negative';
+
+function pdResultLine(v) {
+  const noun = pdSite(v).noun;
+  const d = num(v.pdDistanceMm);
+  switch (pdResult(v)) {
+    case 'Carcinoma present at margin': return `${uc1(tumour(v, 'carcinoma'))} present at the ${noun}.`;
+    case 'Carcinoma close to margin': return `No carcinoma at the ${noun}; ${lc1(tumour(v, 'carcinoma'))} approaches to within ${d === null ? 'less than 1' : fmt(d)} mm.`;
+    case 'High-grade dysplasia only': return `High-grade dysplasia at the ${noun}; no invasive carcinoma.`;
+    case 'Low-grade dysplasia only': return `Low-grade dysplasia at the ${noun}; no invasive carcinoma.`;
+    case 'Atypical, deferred': return `Atypical epithelium at the ${noun}; deferred to paraffin sections.`;
+    case 'No epithelium identified': return `No ductal epithelium is identified in the ${noun}.`;
+    default: return `No carcinoma or dysplasia at the ${noun}.`;
+  }
+}
+
+function pdFinalDx(v) {
+  const noun = pdSite(v).noun;
+  const d = num(v.pdDistanceMm);
+  switch (pdResult(v)) {
+    case 'Carcinoma present at margin': return `INVOLVED BY ${tumour(v, 'carcinoma').toUpperCase()}`;
+    case 'Carcinoma close to margin': return `NO EVIDENCE OF MALIGNANCY; ${lc1(tumour(v, 'carcinoma'))} within ${d === null ? '1' : fmt(d)} mm of the ${noun}`;
+    case 'High-grade dysplasia only': return 'HIGH-GRADE DYSPLASIA; no evidence of invasive carcinoma';
+    case 'Low-grade dysplasia only': return 'LOW-GRADE DYSPLASIA; no evidence of invasive carcinoma';
+    case 'Atypical, deferred': return 'SEE MICROSCOPIC EXAMINATION';
+    case 'No epithelium identified': return 'NO DUCTAL EPITHELIUM IDENTIFIED';
+    default: return 'NO EVIDENCE OF MALIGNANCY';
+  }
+}
+
+function pdTissue(v) {
+  switch (pdResult(v)) {
+    case 'Carcinoma present at margin': return `infiltrating ${lc1(tumour(v, 'carcinoma'))} involving the ${pdSite(v).noun}`;
+    case 'Carcinoma close to margin': return `infiltrating ${lc1(tumour(v, 'carcinoma'))} lying close to the inked ${pdSite(v).noun}`;
+    case 'High-grade dysplasia only': return 'ductal epithelium with high-grade dysplasia';
+    case 'Low-grade dysplasia only': return 'ductal epithelium with low-grade dysplasia';
+    case 'No epithelium identified': return 'pancreatic parenchyma and fibrous tissue without ductal epithelium';
+    default: return 'pancreatic parenchyma and ducts lined by bland cuboidal epithelium';
+  }
+}
+
+/**
+ * Structured margin summary consumed by the pancreas and ampulla synoptics (prefillFromFrozen).
+ * `{site, field, mmField, result, distanceMm, origin, involved}`.
+ */
+export function marginSummary(v) {
+  if (!isPd(v)) return null;
+  const site = pdSite(v);
+  return {
+    site: v.pdSite || 'Pancreatic neck (transection)',
+    field: site.field,
+    mmField: site.mm,
+    result: pdResult(v),
+    distanceMm: num(v.pdDistanceMm),
+    origin: v.pdOrigin || 'Pancreatic',
+    involved: pdResult(v) === 'Carcinoma present at margin',
+  };
+}
+
 // ---------- breast sentinel lymph node scenario (spec: docs/specs/breast-pair.md, Part (a); house wording docs/reference/frozen-section-examples.md §1–2) ----------
 
 export const SLN = 'Breast sentinel lymph node';
@@ -453,6 +533,8 @@ export function slnSummary(v) {
 export function frozenResult(part) {
   const v = part.values;
   switch (v.scenario) {
+    case PD:
+      return pdResultLine(v);
     case 'Margin':
       switch (v.marginResult) {
         case 'Positive': return `${uc1(tumour(v, 'carcinoma'))} present at the margin.`;
@@ -556,6 +638,8 @@ export function intraop(parts, ctx) {
 
 function defaultTissue(v) {
   switch (v.scenario) {
+    case PD:
+      return pdTissue(v);
     case 'Margin':
       return v.marginResult === 'Positive'
         ? `infiltrating ${lc1(tumour(v, 'carcinoma'))} involving the margin`
@@ -588,6 +672,7 @@ function defaultTissue(v) {
 
 function malignant(v) {
   return (v.scenario === 'Margin' && v.marginResult === 'Positive')
+    || (v.scenario === PD && PD_MALIGNANT.includes(pdResult(v)))
     || (v.scenario === 'Lymph node' && ['Macrometastasis', 'Micrometastasis'].includes(v.nodeResult))
     || (v.scenario === 'Ovarian / adnexal mass' && ['Malignant', 'Malignant, favour metastatic'].includes(v.ovaryResult))
     || (v.scenario === LU && LU_MALIGNANT.includes(v.lungResult || 'Adenocarcinoma'))
@@ -597,6 +682,8 @@ function malignant(v) {
 
 function closingSentence(v) {
   if (malignant(v) || v.scenario === 'Parathyroid') return '';
+  if (isPd(v) && /dysplasia only$/i.test(pdResult(v))) return 'There is no evidence of invasive carcinoma.';
+  if (isPd(v)) return 'There is no evidence of dysplasia or malignancy.';
   if (v.scenario === 'Margin' && v.marginResult === 'Dysplasia only') return 'There is no evidence of invasive malignancy.';
   if (v.scenario === 'Margin') return 'There is no evidence of dysplasia or malignancy.';
   if (v.scenario === 'Ovarian / adnexal mass' && v.ovaryResult === 'Borderline') return 'There is no evidence of stromal invasion.';
@@ -667,6 +754,8 @@ export function finalDx(part) {
   const override = stripDot(v.paraffinDx);
   if (override && (v.correlation === 'Discordant' || deferred(v))) return override.toUpperCase();
   switch (v.scenario) {
+    case PD:
+      return pdFinalDx(v);
     case 'Margin':
       switch (v.marginResult) {
         case 'Positive': return `INVOLVED BY ${tumour(v, 'carcinoma').toUpperCase()}`;
@@ -727,17 +816,27 @@ export function finalDx(part) {
 }
 
 /** Frozen scenario -> synoptic template that can be linked under the same letter (engine card "Stage this part"). */
-export const PAIRED_TEMPLATE = { 'Ovarian / adnexal mass': 'ovary_ft_peritoneum', 'Lung wedge / nodule': 'lung_carcinoma', [SLN]: 'breast_carcinoma' };
+export const PAIRED_TEMPLATE = { 'Ovarian / adnexal mass': 'ovary_ft_peritoneum', 'Lung wedge / nodule': 'lung_carcinoma', [SLN]: 'breast_carcinoma', [PD]: 'pancreas_carcinoma' };
+
+/**
+ * The paired template for one frozen part. Most scenarios map straight off PAIRED_TEMPLATE; the
+ * pancreatobiliary margin picks pancreas or ampulla from the stated origin, because the same neck
+ * shaving is sent for both operations. The app prefers this over the static map.
+ */
+export function pairTemplate(values) {
+  if (values?.scenario === PD) return PD_ORIGIN_TEMPLATE[values.pdOrigin] || 'pancreas_carcinoma';
+  return PAIRED_TEMPLATE[values?.scenario] || '';
+}
 
 /** Scenarios whose synoptic is a separate specimen (own letter, not linked): the breast SLN pairs with the
  *  breast resection, which is a different specimen, so the button reads "Add breast synoptic" and any SLN
  *  result (negative included) can add it. */
-export const PAIR_SEPARATE = { [SLN]: true };
+export const PAIR_SEPARATE = { [SLN]: true, [PD]: true };
 
 /** True when the scenario has a paired synoptic template and (for same-letter pairs) the result is malignant. */
 export function stageable(part) {
   const sc = part.values.scenario;
-  return !!PAIRED_TEMPLATE[sc] && (!!PAIR_SEPARATE[sc] || malignant(part.values));
+  return !!pairTemplate(part.values) && (!!PAIR_SEPARATE[sc] || malignant(part.values));
 }
 
 export function diagnosis(part, ctx) {
@@ -755,6 +854,13 @@ export function validate(part, ctx) {
   const out = [];
   const info = (message) => out.push({ level: 'info', message });
   const warn = (message) => out.push({ level: 'warn', message });
+  if (isPd(v)) {
+    const d = num(v.pdDistanceMm);
+    if (pdResult(v) === 'Carcinoma close to margin' && d !== null && d <= 1) warn(`${uc1(pdSite(v).noun)} clearance of ${fmt(d)} mm: at 1 mm or less the paraffin report gives this as a positive margin (R1).`, 'pdDistanceMm');
+    if (pdResult(v) === 'Carcinoma close to margin' && d === null) info('Record the clearance in mm: the distance is printed in the intraoperative line and carried into the paraffin synoptic.', 'pdDistanceMm');
+    if (pdResult(v) === 'No epithelium identified' && /neck|duct/i.test(v.pdSite || 'Pancreatic neck (transection)')) info('No ductal epithelium in the shaving: say so in the intraoperative line rather than reporting the margin as negative.', 'pdResult');
+    if (pdResult(v) === 'High-grade dysplasia only') info('High-grade dysplasia at the margin is recorded separately in the paraffin synoptic; it does not make the margin positive for invasive carcinoma.', 'pdResult');
+  }
   if (isLung(v)) {
     const mm = luMarginMm(v);
     if (v.lungMargin === 'Close (< 5 mm)' || (mm !== null && mm < 5 && v.lungMargin !== 'Involved' && v.lungMargin !== 'Not applicable')) warn(`Close parenchymal margin${mm === null ? '' : ` (${fmt(mm)} mm)`}: state it in the intraoperative line.`);
@@ -787,4 +893,4 @@ export function validate(part, ctx) {
   return out;
 }
 
-export default { specimens, specimenName, macro, intraop, microscopy, diagnosis, validate, organPhrase, stageable, PAIRED_TEMPLATE, PAIR_SEPARATE };
+export default { specimens, specimenName, macro, intraop, microscopy, diagnosis, validate, organPhrase, stageable, PAIRED_TEMPLATE, PAIR_SEPARATE, pairTemplate, marginSummary, PD, PD_SITES };

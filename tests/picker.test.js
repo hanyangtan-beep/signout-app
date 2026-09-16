@@ -94,8 +94,9 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   assert.ok(bottom.find((g) => g.system === 'Thoracic').items.some((t) => t.id === 'aortic_valve_aorta'));
   assert.ok(bottom.find((g) => g.system === 'Skin').items.some((t) => t.id === 'soft_tissue_benign'));
   assert.ok(bottom.find((g) => g.system === 'Endocrine').items.some((t) => t.id === 'thyroid_benign'));
-  // every QMH cancer page is either built or planned: entries carry the QMH page stem
-  assert.ok(planned.filter((t) => t.qmh).length >= 50);
+  // every QMH cancer page is either built or planned: entries carry the QMH page stem.
+  // The floor drops by one each time a QMH-stemmed placeholder ships (ampulla_carcinoma, Phase 22).
+  assert.ok(planned.filter((t) => t.qmh).length >= 49);
   assert.ok(top.find((g) => g.system === 'Biomarkers').items.every((t) => t.planned && t.kind === 'biomarker'));
   assert.equal(bottom.find((g) => g.system === 'General').label, 'Generic');
   assert.equal(bottom[bottom.length - 1].system, 'General', 'Free text last');

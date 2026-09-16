@@ -92,6 +92,7 @@
     "Ovarian / adnexal mass",
     "Lung wedge / nodule",
     "Breast sentinel lymph node",
+    "Pancreatic / bile duct margin",
     "Nodule / mass",
     "Other"
    ],
@@ -214,6 +215,78 @@
    }
   },
   {
+   "id": "pdSite",
+   "label": "Margin submitted",
+   "type": "select",
+   "options": [
+    "Pancreatic neck (transection)",
+    "Bile duct",
+    "Uncinate (superior mesenteric artery)",
+    "Pancreatic duct",
+    "Proximal (gastric or duodenal)",
+    "Distal (duodenal or jejunal)"
+   ],
+   "default": "Pancreatic neck (transection)",
+   "showIf": {
+    "field": "scenario",
+    "is": "Pancreatic / bile duct margin"
+   }
+  },
+  {
+   "id": "pdOrigin",
+   "label": "Tumour being resected",
+   "type": "select",
+   "options": [
+    "Pancreatic",
+    "Ampullary",
+    "Distal bile duct"
+   ],
+   "default": "Pancreatic",
+   "showIf": {
+    "field": "scenario",
+    "is": "Pancreatic / bile duct margin"
+   }
+  },
+  {
+   "id": "pdResult",
+   "label": "Frozen result",
+   "type": "select",
+   "options": [
+    "Negative",
+    "Carcinoma present at margin",
+    "Carcinoma close to margin",
+    "High-grade dysplasia only",
+    "Low-grade dysplasia only",
+    "Atypical, deferred",
+    "No epithelium identified"
+   ],
+   "optionLabels": {
+    "Negative": "No carcinoma or dysplasia",
+    "Carcinoma present at margin": "Carcinoma at margin",
+    "Carcinoma close to margin": "Negative, carcinoma close",
+    "High-grade dysplasia only": "High-grade dysplasia, no invasion",
+    "Low-grade dysplasia only": "Low-grade dysplasia, no invasion",
+    "Atypical, deferred": "Atypical, defer to paraffin",
+    "No epithelium identified": "No ductal epithelium"
+   },
+   "default": "Negative",
+   "showIf": {
+    "field": "scenario",
+    "is": "Pancreatic / bile duct margin"
+   }
+  },
+  {
+   "id": "pdDistanceMm",
+   "label": "Distance to margin (mm)",
+   "type": "number",
+   "default": "",
+   "min": 0,
+   "showIf": {
+    "field": "pdResult",
+    "is": "Carcinoma close to margin"
+   }
+  },
+  {
    "id": "nodeResult",
    "label": "Frozen result",
    "type": "select",
@@ -226,7 +299,7 @@
    "optionLabels": {
     "Negative": "Negative for malignancy",
     "Macrometastasis": "Metastatic carcinoma, macrometastasis (> 2 mm)",
-    "Micrometastasis": "Metastatic carcinoma, micrometastasis (0.2–2 mm)",
+    "Micrometastasis": "Metastatic carcinoma, micrometastasis (0.2\u20132 mm)",
     "Deferred": "Defer to paraffin"
    },
    "default": "Negative",
@@ -479,10 +552,10 @@
    "type": "multiselect",
    "group": "Ovarian / adnexal mass",
    "options": [
-    "Mucinous — heterogeneity and metastasis caveat",
-    "Borderline — invasion cannot be excluded on frozen",
-    "Necrotic / autolysed — limited assessment",
-    "Frozen artefact — deferred",
+    "Mucinous \u2014 heterogeneity and metastasis caveat",
+    "Borderline \u2014 invasion cannot be excluded on frozen",
+    "Necrotic / autolysed \u2014 limited assessment",
+    "Frozen artefact \u2014 deferred",
     "None (suppress the automatic mucinous caveat)"
    ],
    "default": [],
@@ -544,7 +617,7 @@
     "Segmentectomy"
    ],
    "default": "Wedge excision",
-   "help": "Switches the macro noun and the diagnosis-line organ phrase (LUNG … wedge excision x frozen section).",
+   "help": "Switches the macro noun and the diagnosis-line organ phrase (LUNG \u2026 wedge excision x frozen section).",
    "showIf": {
     "field": "scenario",
     "is": "Lung wedge / nodule"

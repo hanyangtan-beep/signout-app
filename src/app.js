@@ -278,6 +278,13 @@ function applyMacro() {
 
 /** Frozen scenario -> paired synoptic template id (from the frozen generator when it is loaded). */
 function pairedTemplates() { return state.templates.frozen_section?.generator?.PAIRED_TEMPLATE || {}; }
+/** Paired synoptic id for one frozen part: the generator's `pairTemplate` when it has one (the
+ *  pancreatobiliary margin picks pancreas or ampulla from the origin), else the static map. */
+function pairIdFor(part) {
+  const g = state.templates.frozen_section?.generator;
+  if (typeof g?.pairTemplate === 'function') return g.pairTemplate(part.values) || '';
+  return pairedTemplates()[part.values.scenario] || '';
+}
 /** True when the paired synoptic is a separate specimen with its own letter (breast SLN -> breast resection). */
 function pairSeparate(scenario) { return !!(state.templates.frozen_section?.generator?.PAIR_SEPARATE || {})[scenario]; }
 
@@ -288,7 +295,7 @@ function canStage(i) {
   if (!part || templateIdOf(state.caseState, part) !== 'frozen_section') return false;
   const g = state.templates.frozen_section?.generator;
   if (!g || typeof g.stageable !== 'function' || !g.stageable(part)) return false;
-  if (pairSeparate(part.values.scenario)) return !parts.some((p) => templateIdOf(state.caseState, p) === pairedTemplates()[part.values.scenario]);
+  if (pairSeparate(part.values.scenario)) return !parts.some((p) => templateIdOf(state.caseState, p) === pairIdFor(part));
   return !parts[i + 1]?.linked;
 }
 
@@ -300,12 +307,12 @@ function canStage(i) {
 async function stageThisPart(i) {
   const parts = state.caseState.parts;
   const part = parts[i];
-  const pairId = pairedTemplates()[part.values.scenario];
+  const pairId = pairIdFor(part);
   if (!pairId) return toast('No synoptic template is paired with this frozen scenario');
   const separate = pairSeparate(part.values.scenario);
   if (separate) {
     const j = parts.findIndex((p) => templateIdOf(state.caseState, p) === pairId);
-    if (j >= 0) { state.activePart = j; render(); return toast(`Part ${parts[j].label} is already the breast synoptic`); }
+    if (j >= 0) { state.activePart = j; render(); return toast(`Part ${parts[j].label} is already the linked synoptic`); }
   } else if (parts[i + 1]?.linked) { state.activePart = i + 1; render(); return toast(`Part ${part.label} already has its synoptic`); }
   if (parts.length >= maxPartsForCase()) return toast(`Maximum ${maxPartsForCase()} parts`);
   const { schema: s, generator: g } = await ensureTemplate(pairId);
@@ -320,7 +327,7 @@ async function stageThisPart(i) {
   applyMacro();
   state.activePart = separate ? parts.length - 1 : i + 1;
   render();
-  toast(separate ? `Part ${np.label}: ${s.name} added; sentinel node counts from part ${part.label}` : `Part ${np.label}: ${s.name} linked to the frozen section`);
+  toast(separate ? `Part ${np.label}: ${s.name} added from part ${part.label}` : `Part ${np.label}: ${s.name} linked to the frozen section`);
 }
 
 /**

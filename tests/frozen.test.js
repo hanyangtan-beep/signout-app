@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createCase, generate, generateCase } from '../src/engine.js';
 import { loadAll } from '../src/registry.js';
-import { labelRange, frozenResult, ovSummary, lungSummary, organPhrase, stageable, PAIRED_TEMPLATE } from '../generators/frozen.js';
+import { labelRange, frozenResult, ovSummary, lungSummary, organPhrase, stageable, PAIRED_TEMPLATE, PAIR_SEPARATE, pairTemplate, marginSummary, PD, PD_SITES } from '../generators/frozen.js';
 
 const registry = await loadAll();
 const { schema, generator } = registry.frozen_section;
@@ -312,4 +312,34 @@ test('lung wedge: organ phrase per specimen type; lungSummary and stageable feed
   assert.equal(stageable({ label: 'A', values: { scenario: 'Ovarian / adnexal mass', ovaryResult: 'Malignant' } }), true);
   assert.equal(stageable({ label: 'A', values: { scenario: 'Margin', marginResult: 'Positive' } }), false);
   assert.equal(PAIRED_TEMPLATE['Lung wedge / nodule'], 'lung_carcinoma');
+});
+
+// ---- pancreatic / bile duct margin (Whipple pair, split g) -------------------------------------
+
+test('pancreatic / bile duct margin: result line, final diagnosis and the site table', () => {
+  const v = (extra) => ({ specimenName: 'Pancreatic neck margin', scenario: PD, pdSite: 'Pancreatic neck (transection)', pdOrigin: 'Pancreatic', pdResult: 'Negative', ...extra });
+  const line = (extra) => frozenResult({ label: 'A', values: v(extra) });
+  assert.equal(PD, 'Pancreatic / bile duct margin');
+  assert.deepEqual(Object.keys(PD_SITES), ['Pancreatic neck (transection)', 'Bile duct', 'Uncinate (superior mesenteric artery)', 'Pancreatic duct', 'Proximal (gastric or duodenal)', 'Distal (duodenal or jejunal)']);
+  assert.equal(line(), 'No carcinoma or dysplasia at the pancreatic neck margin.');
+  assert.equal(line({ pdResult: 'Carcinoma present at margin' }), 'Carcinoma present at the pancreatic neck margin.');
+  assert.equal(line({ pdResult: 'Carcinoma close to margin', pdDistanceMm: '0.6' }), 'No carcinoma at the pancreatic neck margin; carcinoma approaches to within 0.6 mm.');
+  assert.equal(line({ pdSite: 'Bile duct', pdResult: 'High-grade dysplasia only' }), 'High-grade dysplasia at the bile duct margin; no invasive carcinoma.');
+  assert.equal(line({ pdResult: 'Atypical, deferred' }), 'Atypical epithelium at the pancreatic neck margin; deferred to paraffin sections.');
+});
+
+test('pancreatic / bile duct margin: pairing, margin summary and checks', () => {
+  const base = { specimenName: 'Bile duct margin', scenario: PD, pdSite: 'Bile duct', pdOrigin: 'Ampullary', pdResult: 'Carcinoma close to margin', pdDistanceMm: '0.6' };
+  // The shaving is a separate specimen, so the synoptic takes its own letter.
+  assert.equal(PAIR_SEPARATE[PD], true);
+  assert.equal(pairTemplate(base), 'ampulla_carcinoma');
+  assert.equal(pairTemplate({ ...base, pdOrigin: 'Pancreatic' }), 'pancreas_carcinoma');
+  assert.equal(pairTemplate({ ...base, pdOrigin: 'Distal bile duct' }), 'pancreas_carcinoma');
+  assert.equal(stageable({ label: 'A', values: base }), true, 'a negative margin can still add the resection');
+  assert.deepEqual(marginSummary(base), { site: 'Bile duct', field: 'bileDuctMargin', mmField: 'bileDuctMarginMm', result: 'Carcinoma close to margin', distanceMm: 0.6, origin: 'Ampullary', involved: false });
+  assert.equal(marginSummary({ scenario: 'Margin' }), null);
+  const check = (values) => generator.validate({ label: 'A', values: { ...base, ...values } }, {}).map((i) => i.message);
+  assert.ok(check({}).some((m) => /0\.6 mm/.test(m) && /R1/.test(m)), 'a clearance of 1 mm or less warns');
+  assert.ok(!check({ pdDistanceMm: '4' }).some((m) => /R1/.test(m)));
+  assert.ok(check({ pdResult: 'Carcinoma close to margin', pdDistanceMm: '' }).some((m) => /distance/i.test(m)));
 });

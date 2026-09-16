@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 54,
+  "count": 56,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -2833,6 +2833,126 @@
       "generator": "gallbladder_carcinoma",
       "generatorPath": "generators/gallbladder_carcinoma.js",
       "schemaPath": "schemas/gallbladder_carcinoma.json"
+    },
+    {
+      "id": "pancreas_carcinoma",
+      "name": "Pancreatic carcinoma resection (Whipple)",
+      "shortName": "Pancreas · carcinoma resection",
+      "label": "Pancreas Ca",
+      "organ": "Pancreas",
+      "system": "Hepatobiliary",
+      "kind": "cancer resection",
+      "rank": 48,
+      "aliases": [
+        "whipple",
+        "pancreaticoduodenectomy",
+        "pancreatic cancer",
+        "pdac",
+        "ductal adenocarcinoma pancreas",
+        "pancreatic head carcinoma",
+        "ppppd"
+      ],
+      "match": {
+        "site": [
+          "pancreas",
+          "pancreatic head",
+          "uncinate process",
+          "pancreatic body",
+          "pancreatic tail",
+          "pancreaticoduodenectomy",
+          "whipple"
+        ],
+        "procedure": [
+          "whipple",
+          "pancreaticoduodenectomy",
+          "pancreatectomy"
+        ],
+        "clinical": [
+          "pancreatic carcinoma",
+          "pancreatic cancer",
+          "pdac",
+          "ca pancreas",
+          "ductal adenocarcinoma",
+          "ipmn with invasion"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          },
+          {
+            "field": "procedure",
+            "from": "options"
+          },
+          {
+            "field": "tumourSite",
+            "from": "options"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "pancreas_carcinoma",
+      "generatorPath": "generators/pancreas_carcinoma.js",
+      "schemaPath": "schemas/pancreas_carcinoma.json"
+    },
+    {
+      "id": "ampulla_carcinoma",
+      "name": "Ampullary carcinoma resection (Whipple)",
+      "shortName": "Ampulla of Vater · carcinoma resection",
+      "label": "Ampulla Ca",
+      "organ": "Ampulla of Vater",
+      "system": "GI",
+      "kind": "cancer resection",
+      "rank": 49,
+      "aliases": [
+        "ampulla",
+        "ampullary carcinoma",
+        "periampullary",
+        "iapn",
+        "whipple ampulla",
+        "ampullectomy",
+        "ca ampulla"
+      ],
+      "match": {
+        "site": [
+          "ampulla",
+          "ampullary",
+          "ampulla of vater",
+          "periampullary",
+          "papilla of vater"
+        ],
+        "procedure": [
+          "whipple",
+          "pancreaticoduodenectomy",
+          "ampullectomy"
+        ],
+        "clinical": [
+          "ampullary carcinoma",
+          "ca ampulla",
+          "periampullary carcinoma",
+          "intra-ampullary papillary-tubular neoplasm",
+          "iapn"
+        ],
+        "bias": 2,
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          },
+          {
+            "field": "procedure",
+            "from": "options"
+          },
+          {
+            "field": "tumourSite",
+            "from": "options"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "ampulla_carcinoma",
+      "generatorPath": "generators/ampulla_carcinoma.js",
+      "schemaPath": "schemas/ampulla_carcinoma.json"
     },
     {
       "id": "generic",

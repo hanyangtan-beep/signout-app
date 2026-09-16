@@ -237,3 +237,27 @@ test('pasted prostate specimen copies into Site and flows into the diagnosis lin
   assert.equal(micro('Left apex'), 'Left apex, 2 cores', 'single part drops the letter');
   assert.equal(micro(''), '2 cores');
 });
+
+test('matcher: Whipple phrasings route to the pancreas and ampulla synoptics', () => {
+  const one = (text, history) => matchParts(parseIntake(`(A) ${text}`), history, manifest)[0];
+  const panc = [
+    ['Pancreas and duodenum, pancreaticoduodenectomy', 'CA pancreas'],
+    ['Whipple resection', 'Pancreatic head mass'],
+    ['Pancreas, head, Whipple', 'Pancreatic ductal adenocarcinoma'],
+  ];
+  for (const [text, history] of panc) {
+    const m = one(text, history);
+    assert.equal(m.templateId, 'pancreas_carcinoma', `${text}: ${m.templateId}`);
+    assert.equal(m.tier, 'confident', `${text}: ${m.tier}`);
+  }
+  const amp = [
+    ['Ampulla of Vater, pancreaticoduodenectomy', 'CA ampulla'],
+    ['Ampullary carcinoma, Whipple resection', 'Ampullary carcinoma'],
+    ['Periampullary tumour, Whipple', 'CA ampulla'],
+  ];
+  for (const [text, history] of amp) {
+    const m = one(text, history);
+    assert.equal(m.templateId, 'ampulla_carcinoma', `${text}: ${m.templateId}`);
+    assert.equal(m.tier, 'confident', `${text}: ${m.tier}`);
+  }
+});
