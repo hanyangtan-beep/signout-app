@@ -1,427 +1,440 @@
 {
- "id": "appendix",
- "version": "2026.09",
- "name": "Appendix",
- "shortName": "Appendix · appendicectomy",
- "label": "Appendix",
- "organ": "APPENDIX",
- "system": "GI",
- "kind": "benign resection",
- "layout": {
-  "pack": true,
-  "macroGroups": [
-   "Macroscopy"
+  "id": "appendix",
+  "version": "2026.09",
+  "name": "Appendix",
+  "shortName": "Appendix · appendicectomy",
+  "label": "Appendix",
+  "organ": "APPENDIX",
+  "system": "GI",
+  "kind": "benign resection",
+  "layout": {
+    "pack": true,
+    "macroGroups": [
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
+  "rank": 26,
+  "aliases": [
+    "appendicectomy",
+    "appendectomy",
+    "appendicitis",
+    "periappendicitis",
+    "faecolith",
+    "fecalith",
+    "fibrous obliteration",
+    "perforation",
+    "LAMN",
+    "NET",
+    "carcinoid",
+    "mesoappendix",
+    "incidental"
   ],
-  "macroFields": [
-   "specimenName"
-  ]
- },
- "rank": 26,
- "aliases": [
-  "appendicectomy",
-  "appendectomy",
-  "appendicitis",
-  "periappendicitis",
-  "faecolith",
-  "fecalith",
-  "fibrous obliteration",
-  "perforation",
-  "LAMN",
-  "NET",
-  "carcinoid",
-  "mesoappendix",
-  "incidental"
- ],
- "match": {
-  "site": [
-   "appendix",
-   "appendiceal"
-  ],
-  "procedure": [
-   "appendicectomy",
-   "appendectomy",
-   "resection"
-  ],
-  "clinical": [
-   "appendicitis"
-  ]
- },
- "macroExtract": {
-  "length": {
-   "concept": "length",
-   "unit": "cm"
+  "match": {
+    "site": [
+      "appendix",
+      "appendiceal"
+    ],
+    "procedure": [
+      "appendicectomy",
+      "appendectomy",
+      "resection"
+    ],
+    "clinical": [
+      "appendicitis"
+    ]
   },
-  "diameter": {
-   "concept": "diameter",
-   "unit": "cm"
-  },
-  "blocks": {
-   "concept": "blocks",
-   "unit": "count"
-  }
- },
- "specimenNoun": "appendicectomy",
- "maxParts": 2,
- "defaultParts": 1,
- "generator": "appendix",
- "style": {
-  "british": true
- },
- "caseFields": [],
- "options": [
-  {
-   "$use": "includeHeader"
-  },
-  {
-   "id": "macro",
-   "label": "Generate the macroscopic description and block key",
-   "type": "checkbox",
-   "default": true
-  }
- ],
- "partDefaults": [
-  {
-   "specimenName": "Appendix"
-  },
-  {
-   "specimenName": "Appendix, incidental"
-  }
- ],
- "fields": [
-  {
-   "id": "specimenName",
-   "label": "Specimen as received",
-   "type": "text",
-   "placeholder": "Appendix / Appendix, incidental / Appendix, interval",
-   "default": ""
-  },
-  {
-   "id": "length",
-   "label": "Length",
-   "type": "number",
-   "min": 0,
-   "step": 0.1,
-   "suffix": "cm",
-   "default": "",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "diameter",
-   "label": "Diameter",
-   "type": "number",
-   "min": 0,
-   "step": 0.1,
-   "suffix": "cm",
-   "default": "",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "serosa",
-   "label": "Serosal surface",
-   "type": "select",
-   "options": [
-    "Congested and discoloured",
-    "Smooth, glistening",
-    "Fibrinopurulent exudate",
-    "Perforated - site"
-   ],
-   "default": "Congested and discoloured",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "perforationSite",
-   "label": "Perforation site / size",
-   "type": "text",
-   "placeholder": "0.3 cm defect at the tip",
-   "default": "",
-   "showIf": {
-    "field": "serosa",
-    "is": "Perforated - site"
-   },
-   "group": "Macroscopy"
-  },
-  {
-   "id": "lumen",
-   "label": "Lumen contents",
-   "type": "select",
-   "options": [
-    "Faecal material",
-    "Faecolith",
-    "Mucus",
-    "Empty",
-    "Pus"
-   ],
-   "default": "Faecal material",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "wall",
-   "label": "Wall",
-   "type": "select",
-   "options": [
-    "Unremarkable",
-    "Thickened",
-    "Necrotic"
-   ],
-   "default": "Unremarkable",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "mesoappendix",
-   "label": "Mesoappendix",
-   "type": "select",
-   "options": [
-    "Included",
-    "Not included"
-   ],
-   "default": "Included",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "tip",
-   "label": "Tip",
-   "type": "select",
-   "options": [
-    "Unremarkable",
-    "Dilated",
-    "Mass - describe"
-   ],
-   "default": "Unremarkable",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "tipMass",
-   "label": "Tip mass description",
-   "type": "text",
-   "placeholder": "1.2 cm firm yellow nodule at the tip",
-   "default": "",
-   "showIf": {
-    "field": "tip",
-    "is": "Mass - describe"
-   },
-   "group": "Macroscopy"
-  },
-  {
-   "id": "blocks",
-   "label": "Number of blocks",
-   "type": "number",
-   "min": 1,
-   "step": 1,
-   "default": "3",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "blockHandling",
-   "label": "Sampling",
-   "type": "select",
-   "options": [
-    "All embedded",
-    "Representative sections"
-   ],
-   "default": "All embedded",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "inflammation",
-   "label": "Inflammation",
-   "type": "select",
-   "options": [
-    "Acute suppurative appendicitis",
-    "Acute appendicitis with periappendicitis",
-    "Gangrenous appendicitis",
-    "Periappendicitis only",
-    "Chronic / interval appendicitis",
-    "Fibrous obliteration of the lumen",
-    "No acute inflammation - unremarkable"
-   ],
-   "default": "Acute suppurative appendicitis"
-  },
-  {
-   "id": "perforation",
-   "label": "Perforation",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Present"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "serositis",
-   "label": "Serositis",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Neutrophilic fibrinous exudate"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "faecolith",
-   "label": "Faecolith",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Present"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "lymphoidHyperplasia",
-   "label": "Lymphoid hyperplasia",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Present"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "enterobius",
-   "label": "Enterobius vermicularis",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Present"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "granulomas",
-   "label": "Granulomas",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Present - see comment"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "diverticulum",
-   "label": "Diverticulum",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Present"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "neoplasia",
-   "label": "Neoplasia",
-   "type": "select",
-   "options": [
-    "No dysplasia or malignancy",
-    "Low grade appendiceal mucinous neoplasm (LAMN) - see comment",
-    "Well differentiated neuroendocrine tumour - see comment",
-    "Sessile serrated lesion",
-    "Adenocarcinoma - see comment",
-    "Goblet cell adenocarcinoma - see comment"
-   ],
-   "default": "No dysplasia or malignancy"
-  },
-  {
-   "id": "tumourSize",
-   "label": "Tumour size",
-   "type": "text",
-   "placeholder": "1.2 cm",
-   "default": "",
-   "showIf": {
-    "field": "neoplasia",
-    "not": "No dysplasia or malignancy"
-   }
-  },
-  {
-   "id": "mesoMargin",
-   "label": "Mesoappendiceal margin",
-   "type": "select",
-   "options": [
-    "Uninvolved",
-    "Involved",
-    "Not included"
-   ],
-   "default": "Uninvolved",
-   "showIf": {
-    "field": "neoplasia",
-    "not": "No dysplasia or malignancy"
-   }
-  },
-  {
-   "id": "proximalMargin",
-   "label": "Proximal resection margin",
-   "type": "select",
-   "options": [
-    "Unremarkable",
-    "Inflamed",
-    "Involved"
-   ],
-   "default": "Unremarkable"
-  },
-  {
-   "id": "additionalNotes",
-   "label": "Additional microscopy",
-   "type": "textarea",
-   "placeholder": "Free text appended to the microscopy for this part",
-   "default": ""
-  }
- ],
- "snippets": [
-  {
-   "id": "neoplasm_template",
-   "label": "Neoplasm: report on the QMH appendix cancer template",
-   "text": "An appendiceal neoplasm is present in {parts}. Grading, depth of invasion, margin status and staging should be reported on the QMH appendix cancer template; a supplementary synoptic report will follow.",
-   "auto": {
-    "field": "neoplasia",
-    "not": "No dysplasia or malignancy"
-   }
-  },
-  {
-   "id": "granulomas",
-   "label": "Granulomas: differential",
-   "text": "Granulomas are present in {parts}. The differential includes interval appendicitis, Crohn's disease, infection (including Yersinia and mycobacteria) and sarcoidosis; correlation with the clinical history and, where indicated, special stains for organisms is recommended.",
-   "auto": {
-    "field": "granulomas",
-    "is": "Present - see comment"
-   }
-  }
- ],
- "example": {
-  "caseTitle": "",
-  "options": {
-   "includeHeader": false,
-   "macro": true
-  },
-  "parts": [
-   {
-    "label": "A",
-    "values": {
-     "specimenName": "Appendix",
-     "length": "6",
-     "diameter": "0.8",
-     "serosa": "Congested and discoloured",
-     "perforationSite": "",
-     "lumen": "Faecolith",
-     "wall": "Unremarkable",
-     "mesoappendix": "Included",
-     "tip": "Unremarkable",
-     "tipMass": "",
-     "blocks": "3",
-     "blockHandling": "All embedded",
-     "inflammation": "Acute suppurative appendicitis",
-     "perforation": "Absent",
-     "serositis": "Neutrophilic fibrinous exudate",
-     "faecolith": "Present",
-     "lymphoidHyperplasia": "Absent",
-     "enterobius": "Absent",
-     "granulomas": "Absent",
-     "diverticulum": "Absent",
-     "neoplasia": "No dysplasia or malignancy",
-     "tumourSize": "",
-     "mesoMargin": "Uninvolved",
-     "proximalMargin": "Unremarkable",
-     "additionalNotes": ""
+  "macroExtract": {
+    "length": {
+      "concept": "length",
+      "unit": "cm"
+    },
+    "diameter": {
+      "concept": "diameter",
+      "unit": "cm"
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    },
+    "blockHandling": {
+      "concept": "choice",
+      "map": [
+        [
+          "\\ball\\s+(?:the\\s+tissue\\s+)?(?:is\\s+|are\\s+|been\\s+)?embedded",
+          "All embedded"
+        ],
+        [
+          "representative\\s+(?:sections?|blocks?)|partially\\s+embedded",
+          "Representative sections"
+        ]
+      ]
     }
-   }
-  ]
- }
+  },
+  "specimenNoun": "appendicectomy",
+  "maxParts": 2,
+  "defaultParts": 1,
+  "generator": "appendix",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "$use": "includeHeader"
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "partDefaults": [
+    {
+      "specimenName": "Appendix"
+    },
+    {
+      "specimenName": "Appendix, incidental"
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen as received",
+      "type": "text",
+      "placeholder": "Appendix / Appendix, incidental / Appendix, interval",
+      "default": ""
+    },
+    {
+      "id": "length",
+      "label": "Length",
+      "type": "number",
+      "min": 0,
+      "step": 0.1,
+      "suffix": "cm",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "diameter",
+      "label": "Diameter",
+      "type": "number",
+      "min": 0,
+      "step": 0.1,
+      "suffix": "cm",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "serosa",
+      "label": "Serosal surface",
+      "type": "select",
+      "options": [
+        "Congested and discoloured",
+        "Smooth, glistening",
+        "Fibrinopurulent exudate",
+        "Perforated - site"
+      ],
+      "default": "Congested and discoloured",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "perforationSite",
+      "label": "Perforation site / size",
+      "type": "text",
+      "placeholder": "0.3 cm defect at the tip",
+      "default": "",
+      "showIf": {
+        "field": "serosa",
+        "is": "Perforated - site"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "lumen",
+      "label": "Lumen contents",
+      "type": "select",
+      "options": [
+        "Faecal material",
+        "Faecolith",
+        "Mucus",
+        "Empty",
+        "Pus"
+      ],
+      "default": "Faecal material",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "wall",
+      "label": "Wall",
+      "type": "select",
+      "options": [
+        "Unremarkable",
+        "Thickened",
+        "Necrotic"
+      ],
+      "default": "Unremarkable",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "mesoappendix",
+      "label": "Mesoappendix",
+      "type": "select",
+      "options": [
+        "Included",
+        "Not included"
+      ],
+      "default": "Included",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "tip",
+      "label": "Tip",
+      "type": "select",
+      "options": [
+        "Unremarkable",
+        "Dilated",
+        "Mass - describe"
+      ],
+      "default": "Unremarkable",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "tipMass",
+      "label": "Tip mass description",
+      "type": "text",
+      "placeholder": "1.2 cm firm yellow nodule at the tip",
+      "default": "",
+      "showIf": {
+        "field": "tip",
+        "is": "Mass - describe"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "blocks",
+      "label": "Number of blocks",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "default": "3",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "blockHandling",
+      "label": "Sampling",
+      "type": "select",
+      "options": [
+        "All embedded",
+        "Representative sections"
+      ],
+      "default": "All embedded",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "inflammation",
+      "label": "Inflammation",
+      "type": "select",
+      "options": [
+        "Acute suppurative appendicitis",
+        "Acute appendicitis with periappendicitis",
+        "Gangrenous appendicitis",
+        "Periappendicitis only",
+        "Chronic / interval appendicitis",
+        "Fibrous obliteration of the lumen",
+        "No acute inflammation - unremarkable"
+      ],
+      "default": "Acute suppurative appendicitis"
+    },
+    {
+      "id": "perforation",
+      "label": "Perforation",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "serositis",
+      "label": "Serositis",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Neutrophilic fibrinous exudate"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "faecolith",
+      "label": "Faecolith",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "lymphoidHyperplasia",
+      "label": "Lymphoid hyperplasia",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "enterobius",
+      "label": "Enterobius vermicularis",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "granulomas",
+      "label": "Granulomas",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present - see comment"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "diverticulum",
+      "label": "Diverticulum",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "neoplasia",
+      "label": "Neoplasia",
+      "type": "select",
+      "options": [
+        "No dysplasia or malignancy",
+        "Low grade appendiceal mucinous neoplasm (LAMN) - see comment",
+        "Well differentiated neuroendocrine tumour - see comment",
+        "Sessile serrated lesion",
+        "Adenocarcinoma - see comment",
+        "Goblet cell adenocarcinoma - see comment"
+      ],
+      "default": "No dysplasia or malignancy"
+    },
+    {
+      "id": "tumourSize",
+      "label": "Tumour size",
+      "type": "text",
+      "placeholder": "1.2 cm",
+      "default": "",
+      "showIf": {
+        "field": "neoplasia",
+        "not": "No dysplasia or malignancy"
+      }
+    },
+    {
+      "id": "mesoMargin",
+      "label": "Mesoappendiceal margin",
+      "type": "select",
+      "options": [
+        "Uninvolved",
+        "Involved",
+        "Not included"
+      ],
+      "default": "Uninvolved",
+      "showIf": {
+        "field": "neoplasia",
+        "not": "No dysplasia or malignancy"
+      }
+    },
+    {
+      "id": "proximalMargin",
+      "label": "Proximal resection margin",
+      "type": "select",
+      "options": [
+        "Unremarkable",
+        "Inflamed",
+        "Involved"
+      ],
+      "default": "Unremarkable"
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "snippets": [
+    {
+      "id": "neoplasm_template",
+      "label": "Neoplasm: report on the QMH appendix cancer template",
+      "text": "An appendiceal neoplasm is present in {parts}. Grading, depth of invasion, margin status and staging should be reported on the QMH appendix cancer template; a supplementary synoptic report will follow.",
+      "auto": {
+        "field": "neoplasia",
+        "not": "No dysplasia or malignancy"
+      }
+    },
+    {
+      "id": "granulomas",
+      "label": "Granulomas: differential",
+      "text": "Granulomas are present in {parts}. The differential includes interval appendicitis, Crohn's disease, infection (including Yersinia and mycobacteria) and sarcoidosis; correlation with the clinical history and, where indicated, special stains for organisms is recommended.",
+      "auto": {
+        "field": "granulomas",
+        "is": "Present - see comment"
+      }
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "Appendix",
+          "length": "6",
+          "diameter": "0.8",
+          "serosa": "Congested and discoloured",
+          "perforationSite": "",
+          "lumen": "Faecolith",
+          "wall": "Unremarkable",
+          "mesoappendix": "Included",
+          "tip": "Unremarkable",
+          "tipMass": "",
+          "blocks": "3",
+          "blockHandling": "All embedded",
+          "inflammation": "Acute suppurative appendicitis",
+          "perforation": "Absent",
+          "serositis": "Neutrophilic fibrinous exudate",
+          "faecolith": "Present",
+          "lymphoidHyperplasia": "Absent",
+          "enterobius": "Absent",
+          "granulomas": "Absent",
+          "diverticulum": "Absent",
+          "neoplasia": "No dysplasia or malignancy",
+          "tumourSize": "",
+          "mesoMargin": "Uninvolved",
+          "proximalMargin": "Unremarkable",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
 }

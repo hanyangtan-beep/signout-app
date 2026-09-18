@@ -165,14 +165,54 @@ function diameter(text) {
 function blocks(text) {
   let last = null, m;
   // House macros spell small counts out ("Four blocks are submitted"), so words count too.
-  const re = /\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s*(?:representative\s+)?blocks?\b/gi;
+  // The terse biopsy dialect says "cassette" where the narrative one says "block" ("1 cassette, tan, soft.").
+  const re = /\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s*(?:representative\s+)?(?:blocks?|cassettes?)\b/gi;
   while ((m = re.exec(text))) {
     const w = m[1].toLowerCase();
     const n = /^\d/.test(w) ? Number(w) : WORD_NUMBER[w];
     if (Number.isFinite(n)) last = n;
   }
-  if (last === null && /\ba single\s+block\b/i.test(text)) last = 1;
+  if (last === null && /\ba single\s+(?:block|cassette)\b/i.test(text)) last = 1;
   return last;
+}
+
+const NODE_WORD = String.raw`lymph\s*nodes?`;
+
+/**
+ * Lymph nodes received: "two lymph nodes", "3 lymph nodes", "a lymph node". Vague counts
+ * ("several", "multiple") stay null so the field is typed rather than guessed.
+ */
+function nodeCount(text) {
+  let best = null, m;
+  const re = new RegExp(String.raw`\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|a|an|single)\s+(?:enlarged\s+|discrete\s+|separate\s+)?${NODE_WORD}\b`, 'gi');
+  while ((m = re.exec(text))) {
+    const w = m[1].toLowerCase();
+    const n = /^\d/.test(w) ? Number(w) : (/^(?:a|an|single)$/.test(w) ? 1 : WORD_NUMBER[w]);
+    if (Number.isFinite(n) && (best === null || n > best)) best = n;
+  }
+  return best;
+}
+
+/**
+ * Largest node measurement: "The larger of which measures 1.8 cm across", "Two lymph nodes are
+ * seen measuring 1 cm across and 1.5 cm across". Only sentences naming a node are read, and a
+ * three-axis run is the surrounding tissue rather than the node itself.
+ */
+function nodeSize(text) {
+  const node = new RegExp(String.raw`${NODE_WORD}|larger\s+of\s+which|largest`, 'i');
+  // The run belongs to the node when a node word — not the surrounding fat — leads it.
+  const NODE_LEAD = new RegExp(String.raw`(?:${NODE_WORD}|nodes?|larger\s+of\s+which|largest)\s*(?:\w+\s+){0,3}?(?:is|are|which)?\s*(?:measur\w*|of)?\s*(?:approximately|approx\.?|about|up\s+to)?\s*$`, 'i');
+  let best = null;
+  for (const s of sentences(text)) {
+    if (!node.test(s)) continue;
+    for (const d of findDims(s)) {
+      const lead = NODE_LEAD.test(s.slice(0, d.index));
+      if (d.mms.length > 2 && !lead) continue;   // a three-axis run with no node lead is the surrounding tissue
+      if (!lead && /\b(?:fibro)?fatty\s+tissue\b/i.test(s.slice(0, d.index))) continue;
+      if (best === null || d.max > best) best = d.max;
+    }
+  }
+  return best;
 }
 
 /** First measurement run with two or more numbers in the scope, no context filtering (use with `near`). */
@@ -310,7 +350,7 @@ function tissuePhrase(text) {
   return /^(?:the|a|an|and|it)?$/i.test(phrase) ? null : phrase.toLowerCase();
 }
 
-export const CONCEPTS = { weight, specimenDims, dims, size, tumourDims, tumourSizeMax, depthOfInvasion, wallThickness, cavityLength, length, diameter, lengthDiameter, blocks, volume, frozenPieces, frozenBlocks, frozenSize, tissuePhrase };
+export const CONCEPTS = { weight, specimenDims, dims, size, tumourDims, tumourSizeMax, depthOfInvasion, wallThickness, cavityLength, length, diameter, lengthDiameter, blocks, volume, frozenPieces, frozenBlocks, frozenSize, tissuePhrase, nodeCount, nodeSize };
 
 // ---- Sided adnexa ------------------------------------------------------------------------------
 // "The right ovary measures 2 x 1.5 x 0.8 cm and the left ovary 2.5 x 1.5 x 1 cm." Sentences are split into
