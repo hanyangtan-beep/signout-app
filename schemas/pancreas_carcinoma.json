@@ -1,932 +1,935 @@
 {
- "id": "pancreas_carcinoma",
- "version": "2026.09",
- "name": "Pancreatic carcinoma resection (Whipple)",
- "shortName": "Pancreas \u00b7 carcinoma resection",
- "label": "Pancreas Ca",
- "organ": "Pancreas",
- "system": "Hepatobiliary",
- "kind": "cancer resection",
- "layout": {
-  "macroGroups": [
-   "Specimen and tumour"
+  "id": "pancreas_carcinoma",
+  "version": "2026.09",
+  "name": "Pancreatic carcinoma resection (Whipple)",
+  "shortName": "Pancreas · carcinoma resection",
+  "label": "Pancreas Ca",
+  "organ": "Pancreas",
+  "system": "Hepatobiliary",
+  "kind": "cancer resection",
+  "layout": {
+    "macroGroups": [
+      "Specimen and tumour"
+    ],
+    "macroFields": [
+      "specimenName"
+    ],
+    "pack": true
+  },
+  "rank": 48,
+  "aliases": [
+    "whipple",
+    "pancreaticoduodenectomy",
+    "pancreatic cancer",
+    "pdac",
+    "ductal adenocarcinoma pancreas",
+    "pancreatic head carcinoma",
+    "ppppd"
   ],
-  "macroFields": [
-   "specimenName"
-  ],
-  "pack": true
- },
- "rank": 48,
- "aliases": [
-  "whipple",
-  "pancreaticoduodenectomy",
-  "pancreatic cancer",
-  "pdac",
-  "ductal adenocarcinoma pancreas",
-  "pancreatic head carcinoma",
-  "ppppd"
- ],
- "match": {
-  "site": [
-   "pancreas",
-   "pancreatic head",
-   "uncinate process",
-   "pancreatic body",
-   "pancreatic tail",
-   "pancreaticoduodenectomy",
-   "whipple"
-  ],
-  "procedure": [
-   "whipple",
-   "pancreaticoduodenectomy",
-   "pancreatectomy"
-  ],
-  "clinical": [
-   "pancreatic carcinoma",
-   "pancreatic cancer",
-   "pdac",
-   "ca pancreas",
-   "ductal adenocarcinoma",
-   "ipmn with invasion"
-  ],
-  "fill": [
-   {
-    "field": "specimenName",
-    "from": "detail"
-   },
-   {
-    "field": "procedure",
-    "from": "options"
-   },
-   {
-    "field": "tumourSite",
-    "from": "options"
-   }
-  ]
- },
- "macroExtract": {
-  "specimenDims": {
-   "concept": "specimenDims",
-   "unit": "mm",
-   "label": true
-  },
-  "pancreasDims": {
-   "concept": "dims",
-   "unit": "mm",
-   "near": "pancreas|pancreatic head"
-  },
-  "duodenumLengthMm": {
-   "concept": "length",
-   "unit": "mm",
-   "near": "duodenum"
-  },
-  "bileDuctLengthMm": {
-   "concept": "length",
-   "unit": "mm",
-   "near": "bile duct|CBD"
-  },
-  "stomachLengthMm": {
-   "concept": "length",
-   "unit": "mm",
-   "near": "stomach|gastric"
-  },
-  "tumourDims": {
-   "concept": "tumourDims",
-   "unit": "mm"
-  }
- },
- "specimenNoun": "resection",
- "maxParts": 6,
- "defaultParts": 1,
- "generator": "pancreas_carcinoma",
- "style": {
-  "british": true
- },
- "source": {
-  "template": "CAP Pancreas (Exocrine) protocol v4.3.0.0, June 2025 (required use March 2026)",
-  "url": "https://documents.cap.org/documents/New-Cancer-Protocols-June-2025/Panc.Exo_4.3.0.0.REL_CAPCP.pdf",
-  "staging": "AJCC 8th edition pTNM derived by src/staging/pancreas.js. pT1-pT3 are assigned on tumour size alone (T1a 0.5 cm or less, T1b over 0.5 up to 1 cm, T1c over 1 up to 2 cm, T2 over 2 up to 4 cm, T3 over 4 cm); extrapancreatic extension is recorded but does not raise pT. pT4 is arterial involvement only (coeliac axis, superior mesenteric artery or common hepatic artery) - venous involvement is not pT4 in this edition. pN1 is 1 to 3 involved nodes, pN2 is 4 or more. pTNM prints only with the printPTNM option, stamped (AJCC 8th edition). Treatment effect maps to the y descriptor automatically.",
-  "stagingProtocol": "pancreas",
-  "grading": "WHO 2019 digestive tumours histologic type and grade. Tumour size is in cm as in the CAP protocol; margin distances are in mm. Margins at 1 mm or less are reported as positive (R1) as is standard for pancreatobiliary resections.",
-  "staging_reference": "https://digital.nhs.uk/ndrs/data/cancer-data-training-materials/staging-sheets/pancreas"
- },
- "partDefaults": [],
- "options": [
-  {
-   "$use": "includeHeader",
-   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
-  },
-  {
-   "id": "macro",
-   "label": "Generate the macroscopic description and block key",
-   "type": "checkbox",
-   "default": true
-  },
-  {
-   "$use": "printPTNM"
-  }
- ],
- "fields": [
-  {
-   "id": "specimenName",
-   "label": "Specimen as received",
-   "type": "text"
-  },
-  {
-   "id": "procedure",
-   "label": "Procedure",
-   "type": "select",
-   "group": "Specimen and tumour",
-   "options": [
-    "Pancreaticoduodenectomy (Whipple resection)",
-    "Pylorus-preserving pancreaticoduodenectomy",
-    "Total pancreatectomy",
-    "Partial pancreatectomy, pancreatic body",
-    "Partial pancreatectomy, pancreatic tail",
-    "Other",
-    "Not specified"
-   ],
-   "default": "Pancreaticoduodenectomy (Whipple resection)"
-  },
-  {
-   "id": "procedureOther",
-   "label": "Procedure (specify)",
-   "type": "text",
-   "group": "Specimen and tumour",
-   "showIf": {
-    "field": "procedure",
-    "is": "Other"
-   }
-  },
-  {
-   "id": "origin",
-   "label": "Origin of the periampullary carcinoma",
-   "type": "select",
-   "group": "Specimen and tumour",
-   "options": [
-    "Pancreatic (ductal adenocarcinoma centred in the pancreatic head or uncinate process)",
-    "Ampullary (centred on the ampulla of Vater, including intra-ampullary and periampullary-duodenal)",
-    "Distal common bile duct",
-    "Duodenal",
-    "Cannot be determined"
-   ],
-   "default": "Pancreatic (ductal adenocarcinoma centred in the pancreatic head or uncinate process)"
-  },
-  {
-   "id": "originOther",
-   "label": "Origin (specify)",
-   "type": "text",
-   "group": "Specimen and tumour"
-  },
-  {
-   "id": "tumourSite",
-   "label": "Tumour site",
-   "type": "multiselect",
-   "group": "Specimen and tumour",
-   "options": [
-    "Head of pancreas",
-    "Uncinate process",
-    "Body of pancreas",
-    "Tail of pancreas",
-    "Other (specify)",
-    "Cannot be determined",
-    "Not specified"
-   ],
-   "exclusive": [
-    "Cannot be determined",
-    "Not specified"
-   ],
-   "default": [
-    "Head of pancreas"
-   ]
-  },
-  {
-   "id": "tumourSiteOther",
-   "label": "Tumour site (specify)",
-   "type": "text",
-   "group": "Specimen and tumour"
-  },
-  {
-   "id": "tumourSizeCm",
-   "label": "Tumour size, greatest dimension (cm)",
-   "type": "number",
-   "group": "Specimen and tumour",
-   "min": 0,
-   "step": 0.1
-  },
-  {
-   "id": "sizeMode",
-   "label": "Tumour size descriptor",
-   "type": "select",
-   "group": "Specimen and tumour",
-   "options": [
-    "Unifocal invasive carcinoma, greatest dimension (cm)",
-    "Multifocal invasive carcinoma, largest focus (cm)",
-    "Cannot be determined",
-    "Not applicable"
-   ],
-   "default": "Unifocal invasive carcinoma, greatest dimension (cm)"
-  },
-  {
-   "id": "aggregateSizeCm",
-   "label": "Aggregate size of all invasive foci (cm)",
-   "type": "number",
-   "group": "Specimen and tumour",
-   "min": 0,
-   "step": 0.1,
-   "showIf": {
-    "field": "sizeMode",
-    "is": "Multifocal invasive carcinoma, largest focus (cm)"
-   }
-  },
-  {
-   "id": "sizeCannot",
-   "label": "Size cannot be determined (reason)",
-   "type": "text",
-   "group": "Specimen and tumour"
-  },
-  {
-   "id": "tumourDims",
-   "label": "Tumour dimensions (mm, macro)",
-   "type": "text",
-   "group": "Specimen and tumour",
-   "placeholder": "32 x 28 x 20"
-  },
-  {
-   "id": "specimenDims",
-   "label": "Specimen dimensions (mm)",
-   "type": "text",
-   "group": "Specimen and tumour",
-   "placeholder": "150 x 90 x 60"
-  },
-  {
-   "id": "pancreasDims",
-   "label": "Pancreatic head dimensions (mm)",
-   "type": "text",
-   "group": "Specimen and tumour",
-   "placeholder": "55 x 45 x 35"
-  },
-  {
-   "id": "duodenumLengthMm",
-   "label": "Duodenum length (mm)",
-   "type": "text",
-   "group": "Specimen and tumour"
-  },
-  {
-   "id": "bileDuctLengthMm",
-   "label": "Common bile duct length (mm)",
-   "type": "text",
-   "group": "Specimen and tumour"
-  },
-  {
-   "id": "stomachLengthMm",
-   "label": "Gastric cuff length (mm)",
-   "type": "text",
-   "group": "Specimen and tumour"
-  },
-  {
-   "id": "pancDuctDilatation",
-   "label": "Pancreatic duct calibre upstream (mm)",
-   "type": "text",
-   "group": "Specimen and tumour"
-  },
-  {
-   "id": "bileDuctDilatation",
-   "label": "Common bile duct calibre (mm)",
-   "type": "text",
-   "group": "Specimen and tumour"
-  },
-  {
-   "id": "ductFindings",
-   "label": "Duct and ampullary findings (macro)",
-   "type": "text",
-   "group": "Specimen and tumour"
-  },
-  {
-   "id": "grossDetails",
-   "label": "Other gross findings (macro)",
-   "type": "text",
-   "group": "Specimen and tumour"
-  },
-  {
-   "id": "blockKeyText",
-   "label": "Block key (one line per block: e.g. 1-4 Tumour with neck margin)",
-   "type": "textarea",
-   "group": "Specimen and tumour"
-  },
-  {
-   "id": "histType",
-   "label": "Histologic type",
-   "type": "select",
-   "group": "Histology and immunohistochemistry",
-   "options": [
-    "Ductal adenocarcinoma, NOS",
-    "Colloid carcinoma (mucinous carcinoma)",
-    "Poorly cohesive carcinoma",
-    "Signet-ring carcinoma",
-    "Intraductal papillary mucinous neoplasm with associated invasive carcinoma",
-    "Intraductal oncocytic papillary neoplasm with associated invasive carcinoma",
-    "Intraductal tubulopapillary neoplasm with associated invasive carcinoma",
-    "Mucinous cystic neoplasm with associated invasive carcinoma",
-    "Medullary carcinoma",
-    "Adenosquamous carcinoma",
-    "Hepatoid carcinoma",
-    "Large cell carcinoma with rhabdoid phenotype",
-    "Undifferentiated carcinoma, NOS",
-    "Undifferentiated carcinoma with osteoclast-like giant cells",
-    "Acinar cell carcinoma",
-    "Acinar cell cystadenocarcinoma",
-    "Mixed acinar-ductal carcinoma",
-    "Pancreatoblastoma",
-    "Solid-pseudopapillary neoplasm",
-    "Solid-pseudopapillary neoplasm with high grade carcinoma",
-    "Large cell neuroendocrine carcinoma",
-    "Small cell neuroendocrine carcinoma",
-    "Mixed neuroendocrine-non-neuroendocrine neoplasm (MiNEN) (specify components)",
-    "Other histologic type not listed (specify)"
-   ],
-   "default": "Ductal adenocarcinoma, NOS"
-  },
-  {
-   "id": "histTypeOther",
-   "label": "Histologic type (specify)",
-   "type": "text",
-   "group": "Histology and immunohistochemistry"
-  },
-  {
-   "id": "grade",
-   "label": "Histologic grade",
-   "type": "select",
-   "group": "Histology and immunohistochemistry",
-   "options": [
-    "G1, well differentiated",
-    "G2, moderately differentiated",
-    "G3, poorly differentiated",
-    "GX, cannot be assessed",
-    "Not applicable",
-    "Other"
-   ],
-   "default": "G2, moderately differentiated"
-  },
-  {
-   "id": "gradeOther",
-   "label": "Histologic grade (specify)",
-   "type": "text",
-   "group": "Histology and immunohistochemistry"
-  },
-  {
-   "id": "histologyNotes",
-   "label": "Tumour histology paragraph (overrides the generated text)",
-   "type": "textarea",
-   "group": "Histology and immunohistochemistry"
-  },
-  {
-   "id": "tumourExtension",
-   "label": "Sites involved by direct tumour extension",
-   "type": "multiselect",
-   "group": "Histology and immunohistochemistry",
-   "options": [
-    "No evidence of primary tumour",
-    "No invasion identified (carcinoma in situ / high-grade dysplasia only)",
-    "Confined to pancreas",
-    "Duodenal wall",
-    "Ampulla of Vater",
-    "Common bile duct",
-    "Peripancreatic soft tissue",
-    "Retroperitoneal soft tissue",
-    "Mesenteric adipose tissue",
-    "Mesocolon",
-    "Stomach",
-    "Spleen",
-    "Adrenal gland",
-    "Colon",
-    "Superior mesenteric vein or portal vein",
-    "Coeliac axis",
-    "Superior mesenteric artery",
-    "Common hepatic artery",
-    "Other peripancreatic soft tissue (specify)",
-    "Other adjacent organ(s) or structure(s) (specify)",
-    "Cannot be determined"
-   ],
-   "exclusive": [
-    "No evidence of primary tumour",
-    "No invasion identified (carcinoma in situ / high-grade dysplasia only)",
-    "Confined to pancreas",
-    "Cannot be determined"
-   ],
-   "default": [
-    "Confined to pancreas"
-   ]
-  },
-  {
-   "id": "extensionDetail",
-   "label": "Direct extension (specify)",
-   "type": "text",
-   "group": "Histology and immunohistochemistry"
-  },
-  {
-   "id": "surfaceInvolvement",
-   "label": "Pancreatic surface involvement",
-   "type": "select",
-   "group": "Histology and immunohistochemistry",
-   "options": [
-    "Not applicable",
-    "Not identified",
-    "Anterior surface involved",
-    "Posterior surface involved",
-    "Vascular groove involved",
-    "Cannot be determined"
-   ],
-   "default": "Not applicable"
-  },
-  {
-   "id": "ihc",
-   "label": "Immunohistochemistry",
-   "type": "multiselect",
-   "group": "Histology and immunohistochemistry",
-   "options": [
-    "CK7 positive",
-    "CK20 positive",
-    "CDX2 positive",
-    "MUC1 positive",
-    "MUC2 positive",
-    "MUC5AC positive",
-    "SMAD4 (DPC4) retained",
-    "SMAD4 (DPC4) lost",
-    "Trypsin positive",
-    "BCL10 positive",
-    "Chromogranin positive",
-    "Synaptophysin positive",
-    "Beta-catenin nuclear"
-   ],
-   "default": []
-  },
-  {
-   "id": "ihcOther",
-   "label": "Immunohistochemistry (other results)",
-   "type": "text",
-   "group": "Histology and immunohistochemistry"
-  },
-  {
-   "id": "lvi",
-   "label": "Lymphovascular invasion",
-   "type": "select",
-   "group": "Histology and immunohistochemistry",
-   "options": [
-    "Not identified",
-    "Present",
-    "Cannot be determined"
-   ],
-   "default": "Not identified"
-  },
-  {
-   "id": "pni",
-   "label": "Perineural invasion",
-   "type": "select",
-   "group": "Histology and immunohistochemistry",
-   "options": [
-    "Not identified",
-    "Present",
-    "Cannot be determined"
-   ],
-   "default": "Not identified"
-  },
-  {
-   "id": "treatmentEffect",
-   "label": "Treatment effect",
-   "type": "select",
-   "group": "Histology and immunohistochemistry",
-   "options": [
-    "No known presurgical therapy",
-    "Present, with no viable cancer cells (complete response, score 0)",
-    "Present, with single cells or rare small groups of cancer cells (near complete response, score 1)",
-    "Present, with residual cancer showing evident tumour regression but more than single cells or rare small groups of cancer cells (partial response, score 2)",
-    "Present (not otherwise specified)",
-    "Absent, with extensive residual cancer and no evident tumour regression (poor or no response, score 3)",
-    "Cannot be determined"
-   ],
-   "default": "No known presurgical therapy"
-  },
-  {
-   "id": "precursor",
-   "label": "Precursor lesion",
-   "type": "multiselect",
-   "group": "Histology and immunohistochemistry",
-   "options": [
-    "Pancreatic intraepithelial neoplasia, low grade (PanIN)",
-    "Pancreatic intraepithelial neoplasia, high grade (PanIN)",
-    "Intraductal papillary mucinous neoplasm (IPMN), low-grade dysplasia",
-    "Intraductal papillary mucinous neoplasm (IPMN), high-grade dysplasia",
-    "Intraductal oncocytic papillary neoplasm (IOPN)",
-    "Intraductal tubulopapillary neoplasm (ITPN)",
-    "Mucinous cystic neoplasm (MCN)",
-    "Intra-ampullary papillary-tubular neoplasm (IAPN)",
-    "Ampullary adenoma (tubular, tubulovillous or villous)",
-    "Biliary intraepithelial neoplasia (BilIN), high grade",
-    "Other (specify)",
-    "None identified"
-   ],
-   "exclusive": [
-    "None identified"
-   ],
-   "default": [
-    "None identified"
-   ]
-  },
-  {
-   "id": "precursorOther",
-   "label": "Precursor lesion (specify)",
-   "type": "text",
-   "group": "Histology and immunohistochemistry"
-  },
-  {
-   "id": "neckMargin",
-   "label": "Pancreatic neck (transection) margin",
-   "type": "select",
-   "group": "Margins",
-   "options": [
-    "Cannot be assessed",
-    "Uninvolved by invasive carcinoma (specify distance)",
-    "Involved by invasive carcinoma",
-    "Not applicable"
-   ],
-   "default": "Uninvolved by invasive carcinoma (specify distance)"
-  },
-  {
-   "id": "neckMarginMm",
-   "label": "Pancreatic neck (transection) margin - distance to carcinoma (mm)",
-   "type": "number",
-   "group": "Margins",
-   "min": 0,
-   "showIf": {
-    "field": "neckMargin",
-    "is": "Uninvolved by invasive carcinoma (specify distance)"
-   }
-  },
-  {
-   "id": "bileDuctMargin",
-   "label": "Bile duct margin",
-   "type": "select",
-   "group": "Margins",
-   "options": [
-    "Cannot be assessed",
-    "Uninvolved by invasive carcinoma (specify distance)",
-    "Involved by invasive carcinoma",
-    "Not applicable"
-   ],
-   "default": "Uninvolved by invasive carcinoma (specify distance)"
-  },
-  {
-   "id": "bileDuctMarginMm",
-   "label": "Bile duct margin - distance to carcinoma (mm)",
-   "type": "number",
-   "group": "Margins",
-   "min": 0,
-   "showIf": {
-    "field": "bileDuctMargin",
-    "is": "Uninvolved by invasive carcinoma (specify distance)"
-   }
-  },
-  {
-   "id": "uncinateMargin",
-   "label": "Uncinate (retroperitoneal / superior mesenteric artery) margin",
-   "type": "select",
-   "group": "Margins",
-   "options": [
-    "Cannot be assessed",
-    "Uninvolved by invasive carcinoma (specify distance)",
-    "Involved by invasive carcinoma",
-    "Not applicable"
-   ],
-   "default": "Uninvolved by invasive carcinoma (specify distance)"
-  },
-  {
-   "id": "uncinateMarginMm",
-   "label": "Uncinate (retroperitoneal / superior mesenteric artery) margin - distance to carcinoma (mm)",
-   "type": "number",
-   "group": "Margins",
-   "min": 0,
-   "showIf": {
-    "field": "uncinateMargin",
-    "is": "Uninvolved by invasive carcinoma (specify distance)"
-   }
-  },
-  {
-   "id": "posteriorMargin",
-   "label": "Posterior surface",
-   "type": "select",
-   "group": "Margins",
-   "options": [
-    "Cannot be assessed",
-    "Uninvolved by invasive carcinoma (specify distance)",
-    "Involved by invasive carcinoma",
-    "Not applicable"
-   ],
-   "default": "Uninvolved by invasive carcinoma (specify distance)"
-  },
-  {
-   "id": "posteriorMarginMm",
-   "label": "Posterior surface - distance to carcinoma (mm)",
-   "type": "number",
-   "group": "Margins",
-   "min": 0,
-   "showIf": {
-    "field": "posteriorMargin",
-    "is": "Uninvolved by invasive carcinoma (specify distance)"
-   }
-  },
-  {
-   "id": "proximalMargin",
-   "label": "Proximal (gastric or duodenal) margin",
-   "type": "select",
-   "group": "Margins",
-   "options": [
-    "Cannot be assessed",
-    "Uninvolved by invasive carcinoma (specify distance)",
-    "Involved by invasive carcinoma",
-    "Not applicable"
-   ],
-   "default": "Uninvolved by invasive carcinoma (specify distance)"
-  },
-  {
-   "id": "proximalMarginMm",
-   "label": "Proximal (gastric or duodenal) margin - distance to carcinoma (mm)",
-   "type": "number",
-   "group": "Margins",
-   "min": 0,
-   "showIf": {
-    "field": "proximalMargin",
-    "is": "Uninvolved by invasive carcinoma (specify distance)"
-   }
-  },
-  {
-   "id": "distalMargin",
-   "label": "Distal (duodenal or jejunal) margin",
-   "type": "select",
-   "group": "Margins",
-   "options": [
-    "Cannot be assessed",
-    "Uninvolved by invasive carcinoma (specify distance)",
-    "Involved by invasive carcinoma",
-    "Not applicable"
-   ],
-   "default": "Uninvolved by invasive carcinoma (specify distance)"
-  },
-  {
-   "id": "distalMarginMm",
-   "label": "Distal (duodenal or jejunal) margin - distance to carcinoma (mm)",
-   "type": "number",
-   "group": "Margins",
-   "min": 0,
-   "showIf": {
-    "field": "distalMargin",
-    "is": "Uninvolved by invasive carcinoma (specify distance)"
-   }
-  },
-  {
-   "id": "hgDysplasia",
-   "label": "High-grade dysplasia at the margins",
-   "type": "select",
-   "group": "Margins",
-   "options": [
-    "Not applicable",
-    "Not identified",
-    "Present at the bile duct margin",
-    "Present at the pancreatic neck margin",
-    "Other (specify)"
-   ],
-   "default": "Not applicable"
-  },
-  {
-   "id": "hgDysplasiaDetail",
-   "label": "High-grade dysplasia at the margins (specify)",
-   "type": "text",
-   "group": "Margins"
-  },
-  {
-   "id": "nodesExamined",
-   "label": "Number of regional lymph nodes examined",
-   "type": "number",
-   "group": "Lymph nodes and metastasis",
-   "min": 0
-  },
-  {
-   "id": "nodesInvolved",
-   "label": "Number of regional lymph nodes involved",
-   "type": "number",
-   "group": "Lymph nodes and metastasis",
-   "min": 0
-  },
-  {
-   "id": "station8",
-   "label": "Station 8 (common hepatic artery) - nodes involved",
-   "type": "number",
-   "group": "Lymph nodes and metastasis",
-   "min": 0
-  },
-  {
-   "id": "station12",
-   "label": "Station 12 (hepatoduodenal ligament) - nodes involved",
-   "type": "number",
-   "group": "Lymph nodes and metastasis",
-   "min": 0
-  },
-  {
-   "id": "station13",
-   "label": "Station 13 (posterior pancreaticoduodenal) - nodes involved",
-   "type": "number",
-   "group": "Lymph nodes and metastasis",
-   "min": 0
-  },
-  {
-   "id": "station14",
-   "label": "Station 14 (superior mesenteric artery) - nodes involved",
-   "type": "number",
-   "group": "Lymph nodes and metastasis",
-   "min": 0
-  },
-  {
-   "id": "station17",
-   "label": "Station 17 (anterior pancreaticoduodenal) - nodes involved",
-   "type": "number",
-   "group": "Lymph nodes and metastasis",
-   "min": 0
-  },
-  {
-   "id": "ene",
-   "label": "Extranodal extension (ENE)",
-   "type": "select",
-   "group": "Lymph nodes and metastasis",
-   "options": [
-    "Not applicable",
-    "Not identified",
-    "Present",
-    "Cannot be determined"
-   ],
-   "default": "Not applicable"
-  },
-  {
-   "id": "largestDepositMm",
-   "label": "Size of the largest metastatic deposit (mm)",
-   "type": "number",
-   "group": "Lymph nodes and metastasis",
-   "min": 0
-  },
-  {
-   "id": "largestNodeSite",
-   "label": "Station of the largest metastatic deposit",
-   "type": "text",
-   "group": "Lymph nodes and metastasis"
-  },
-  {
-   "id": "distantMets",
-   "label": "Distant metastasis",
-   "type": "multiselect",
-   "group": "Lymph nodes and metastasis",
-   "options": [
-    "Not applicable",
-    "Not identified",
-    "Non-regional lymph node(s) (specify)",
-    "Liver (specify)",
-    "Other (specify)",
-    "Cannot be determined"
-   ],
-   "exclusive": [
-    "Not applicable",
-    "Not identified",
-    "Cannot be determined"
-   ],
-   "default": [
-    "Not applicable"
-   ]
-  },
-  {
-   "id": "distantDetail",
-   "label": "Distant metastasis (specify)",
-   "type": "text",
-   "group": "Lymph nodes and metastasis"
-  },
-  {
-   "id": "tnmOverride",
-   "label": "Override derived pTNM (type e.g. pT2 pN1 pM0)",
-   "type": "text",
-   "group": "Stage and other findings"
-  },
-  {
-   "id": "tnmOverrideReason",
-   "label": "Override reason (printed in Checks)",
-   "type": "text",
-   "group": "Stage and other findings"
-  },
-  {
-   "id": "additionalFindings",
-   "label": "Additional pathologic findings",
-   "type": "multiselect",
-   "group": "Stage and other findings",
-   "options": [
-    "Chronic pancreatitis",
-    "Autoimmune pancreatitis",
-    "Acute pancreatitis",
-    "Pancreatic intraepithelial neoplasia, low grade",
-    "Islet cell hyperplasia",
-    "Fatty replacement",
-    "Other (specify)",
-    "None identified"
-   ],
-   "exclusive": [
-    "None identified"
-   ],
-   "default": [
-    "None identified"
-   ]
-  },
-  {
-   "id": "additionalFindingsDetail",
-   "label": "Additional pathologic findings (specify)",
-   "type": "text",
-   "group": "Stage and other findings"
-  },
-  {
-   "id": "additionalNotes",
-   "label": "Additional notes (any)",
-   "type": "textarea",
-   "group": "Stage and other findings"
-  }
- ],
- "example": {
-  "case": {
-   "accession": "S26-00932",
-   "status": "Draft"
-  },
-  "options": {
-   "includeHeader": false,
-   "macro": true,
-   "printPTNM": true
-  },
-  "parts": [
-   {
-    "label": "A",
-    "values": {
-     "specimenName": "",
-     "procedure": "Pancreaticoduodenectomy (Whipple resection)",
-     "origin": "Pancreatic (ductal adenocarcinoma centred in the pancreatic head or uncinate process)",
-     "tumourSite": [
-      "Head of pancreas"
-     ],
-     "tumourSizeCm": 3.2,
-     "sizeMode": "Unifocal invasive carcinoma, greatest dimension (cm)",
-     "tumourDims": "32 x 28 x 20",
-     "specimenDims": "150 x 90 x 60",
-     "pancreasDims": "55 x 45 x 35",
-     "duodenumLengthMm": "160",
-     "bileDuctLengthMm": "35",
-     "pancDuctDilatation": "6",
-     "bileDuctDilatation": "14",
-     "blockKeyText": "1-4 Tumour with posterior surface\n5 Pancreatic neck margin, en face\n6 Bile duct margin, en face",
-     "histType": "Ductal adenocarcinoma, NOS",
-     "grade": "G2, moderately differentiated",
-     "tumourExtension": [
-      "Peripancreatic soft tissue",
-      "Duodenal wall"
-     ],
-     "surfaceInvolvement": "Posterior surface involved",
-     "ihc": [
-      "CK7 positive",
-      "SMAD4 (DPC4) lost"
-     ],
-     "lvi": "Present",
-     "pni": "Present",
-     "treatmentEffect": "No known presurgical therapy",
-     "precursor": [
-      "Pancreatic intraepithelial neoplasia, high grade (PanIN)"
-     ],
-     "neckMargin": "Uninvolved by invasive carcinoma (specify distance)",
-     "neckMarginMm": 8,
-     "bileDuctMargin": "Uninvolved by invasive carcinoma (specify distance)",
-     "bileDuctMarginMm": 12,
-     "uncinateMargin": "Uninvolved by invasive carcinoma (specify distance)",
-     "uncinateMarginMm": 0.8,
-     "posteriorMargin": "Involved by invasive carcinoma",
-     "proximalMargin": "Uninvolved by invasive carcinoma (specify distance)",
-     "proximalMarginMm": 45,
-     "distalMargin": "Uninvolved by invasive carcinoma (specify distance)",
-     "distalMarginMm": 60,
-     "hgDysplasia": "Not identified",
-     "nodesExamined": 18,
-     "nodesInvolved": 3,
-     "station13": 2,
-     "station17": 1,
-     "ene": "Not identified",
-     "largestDepositMm": 6,
-     "largestNodeSite": "station 13",
-     "distantMets": [
-      "Not identified"
-     ],
-     "additionalFindings": [
-      "Chronic pancreatitis"
-     ]
+  "match": {
+    "site": [
+      "pancreas",
+      "pancreatic head",
+      "uncinate process",
+      "pancreatic body",
+      "pancreatic tail",
+      "pancreaticoduodenectomy",
+      "whipple"
+    ],
+    "procedure": [
+      "whipple",
+      "pancreaticoduodenectomy",
+      "pancreatectomy"
+    ],
+    "clinical": [
+      "pancreatic carcinoma",
+      "pancreatic cancer",
+      "pdac",
+      "ca pancreas",
+      "ductal adenocarcinoma",
+      "ipmn with invasion"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail"
+      },
+      {
+        "field": "procedure",
+        "from": "options"
+      },
+      {
+        "field": "tumourSite",
+        "from": "options"
+      }
+    ]
+  },
+  "macroExtract": {
+    "specimenDims": {
+      "concept": "specimenDims",
+      "unit": "mm",
+      "label": true
+    },
+    "pancreasDims": {
+      "concept": "dims",
+      "unit": "mm",
+      "near": "pancreas|pancreatic head"
+    },
+    "duodenumLengthMm": {
+      "concept": "length",
+      "unit": "mm",
+      "near": "duodenum"
+    },
+    "bileDuctLengthMm": {
+      "concept": "length",
+      "unit": "mm",
+      "near": "bile duct|CBD"
+    },
+    "stomachLengthMm": {
+      "concept": "length",
+      "unit": "mm",
+      "near": "stomach|gastric"
+    },
+    "tumourDims": {
+      "concept": "tumourDims",
+      "unit": "mm"
+    },
+    "blockKeyText": {
+      "concept": "blockKey"
     }
-   }
-  ]
- }
+  },
+  "specimenNoun": "resection",
+  "maxParts": 6,
+  "defaultParts": 1,
+  "generator": "pancreas_carcinoma",
+  "style": {
+    "british": true
+  },
+  "source": {
+    "template": "CAP Pancreas (Exocrine) protocol v4.3.0.0, June 2025 (required use March 2026)",
+    "url": "https://documents.cap.org/documents/New-Cancer-Protocols-June-2025/Panc.Exo_4.3.0.0.REL_CAPCP.pdf",
+    "staging": "AJCC 8th edition pTNM derived by src/staging/pancreas.js. pT1-pT3 are assigned on tumour size alone (T1a 0.5 cm or less, T1b over 0.5 up to 1 cm, T1c over 1 up to 2 cm, T2 over 2 up to 4 cm, T3 over 4 cm); extrapancreatic extension is recorded but does not raise pT. pT4 is arterial involvement only (coeliac axis, superior mesenteric artery or common hepatic artery) - venous involvement is not pT4 in this edition. pN1 is 1 to 3 involved nodes, pN2 is 4 or more. pTNM prints only with the printPTNM option, stamped (AJCC 8th edition). Treatment effect maps to the y descriptor automatically.",
+    "stagingProtocol": "pancreas",
+    "grading": "WHO 2019 digestive tumours histologic type and grade. Tumour size is in cm as in the CAP protocol; margin distances are in mm. Margins at 1 mm or less are reported as positive (R1) as is standard for pancreatobiliary resections.",
+    "staging_reference": "https://digital.nhs.uk/ndrs/data/cancer-data-training-materials/staging-sheets/pancreas"
+  },
+  "partDefaults": [],
+  "options": [
+    {
+      "$use": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "$use": "printPTNM"
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen as received",
+      "type": "text"
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "options": [
+        "Pancreaticoduodenectomy (Whipple resection)",
+        "Pylorus-preserving pancreaticoduodenectomy",
+        "Total pancreatectomy",
+        "Partial pancreatectomy, pancreatic body",
+        "Partial pancreatectomy, pancreatic tail",
+        "Other",
+        "Not specified"
+      ],
+      "default": "Pancreaticoduodenectomy (Whipple resection)"
+    },
+    {
+      "id": "procedureOther",
+      "label": "Procedure (specify)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "showIf": {
+        "field": "procedure",
+        "is": "Other"
+      }
+    },
+    {
+      "id": "origin",
+      "label": "Origin of the periampullary carcinoma",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "options": [
+        "Pancreatic (ductal adenocarcinoma centred in the pancreatic head or uncinate process)",
+        "Ampullary (centred on the ampulla of Vater, including intra-ampullary and periampullary-duodenal)",
+        "Distal common bile duct",
+        "Duodenal",
+        "Cannot be determined"
+      ],
+      "default": "Pancreatic (ductal adenocarcinoma centred in the pancreatic head or uncinate process)"
+    },
+    {
+      "id": "originOther",
+      "label": "Origin (specify)",
+      "type": "text",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "tumourSite",
+      "label": "Tumour site",
+      "type": "multiselect",
+      "group": "Specimen and tumour",
+      "options": [
+        "Head of pancreas",
+        "Uncinate process",
+        "Body of pancreas",
+        "Tail of pancreas",
+        "Other (specify)",
+        "Cannot be determined",
+        "Not specified"
+      ],
+      "exclusive": [
+        "Cannot be determined",
+        "Not specified"
+      ],
+      "default": [
+        "Head of pancreas"
+      ]
+    },
+    {
+      "id": "tumourSiteOther",
+      "label": "Tumour site (specify)",
+      "type": "text",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "tumourSizeCm",
+      "label": "Tumour size, greatest dimension (cm)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "min": 0,
+      "step": 0.1
+    },
+    {
+      "id": "sizeMode",
+      "label": "Tumour size descriptor",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "options": [
+        "Unifocal invasive carcinoma, greatest dimension (cm)",
+        "Multifocal invasive carcinoma, largest focus (cm)",
+        "Cannot be determined",
+        "Not applicable"
+      ],
+      "default": "Unifocal invasive carcinoma, greatest dimension (cm)"
+    },
+    {
+      "id": "aggregateSizeCm",
+      "label": "Aggregate size of all invasive foci (cm)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "min": 0,
+      "step": 0.1,
+      "showIf": {
+        "field": "sizeMode",
+        "is": "Multifocal invasive carcinoma, largest focus (cm)"
+      }
+    },
+    {
+      "id": "sizeCannot",
+      "label": "Size cannot be determined (reason)",
+      "type": "text",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "tumourDims",
+      "label": "Tumour dimensions (mm, macro)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "32 x 28 x 20"
+    },
+    {
+      "id": "specimenDims",
+      "label": "Specimen dimensions (mm)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "150 x 90 x 60"
+    },
+    {
+      "id": "pancreasDims",
+      "label": "Pancreatic head dimensions (mm)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "55 x 45 x 35"
+    },
+    {
+      "id": "duodenumLengthMm",
+      "label": "Duodenum length (mm)",
+      "type": "text",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "bileDuctLengthMm",
+      "label": "Common bile duct length (mm)",
+      "type": "text",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "stomachLengthMm",
+      "label": "Gastric cuff length (mm)",
+      "type": "text",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "pancDuctDilatation",
+      "label": "Pancreatic duct calibre upstream (mm)",
+      "type": "text",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "bileDuctDilatation",
+      "label": "Common bile duct calibre (mm)",
+      "type": "text",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "ductFindings",
+      "label": "Duct and ampullary findings (macro)",
+      "type": "text",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "grossDetails",
+      "label": "Other gross findings (macro)",
+      "type": "text",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "blockKeyText",
+      "label": "Block key (one line per block: e.g. 1-4 Tumour with neck margin)",
+      "type": "textarea",
+      "group": "Specimen and tumour"
+    },
+    {
+      "id": "histType",
+      "label": "Histologic type",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Ductal adenocarcinoma, NOS",
+        "Colloid carcinoma (mucinous carcinoma)",
+        "Poorly cohesive carcinoma",
+        "Signet-ring carcinoma",
+        "Intraductal papillary mucinous neoplasm with associated invasive carcinoma",
+        "Intraductal oncocytic papillary neoplasm with associated invasive carcinoma",
+        "Intraductal tubulopapillary neoplasm with associated invasive carcinoma",
+        "Mucinous cystic neoplasm with associated invasive carcinoma",
+        "Medullary carcinoma",
+        "Adenosquamous carcinoma",
+        "Hepatoid carcinoma",
+        "Large cell carcinoma with rhabdoid phenotype",
+        "Undifferentiated carcinoma, NOS",
+        "Undifferentiated carcinoma with osteoclast-like giant cells",
+        "Acinar cell carcinoma",
+        "Acinar cell cystadenocarcinoma",
+        "Mixed acinar-ductal carcinoma",
+        "Pancreatoblastoma",
+        "Solid-pseudopapillary neoplasm",
+        "Solid-pseudopapillary neoplasm with high grade carcinoma",
+        "Large cell neuroendocrine carcinoma",
+        "Small cell neuroendocrine carcinoma",
+        "Mixed neuroendocrine-non-neuroendocrine neoplasm (MiNEN) (specify components)",
+        "Other histologic type not listed (specify)"
+      ],
+      "default": "Ductal adenocarcinoma, NOS"
+    },
+    {
+      "id": "histTypeOther",
+      "label": "Histologic type (specify)",
+      "type": "text",
+      "group": "Histology and immunohistochemistry"
+    },
+    {
+      "id": "grade",
+      "label": "Histologic grade",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "G1, well differentiated",
+        "G2, moderately differentiated",
+        "G3, poorly differentiated",
+        "GX, cannot be assessed",
+        "Not applicable",
+        "Other"
+      ],
+      "default": "G2, moderately differentiated"
+    },
+    {
+      "id": "gradeOther",
+      "label": "Histologic grade (specify)",
+      "type": "text",
+      "group": "Histology and immunohistochemistry"
+    },
+    {
+      "id": "histologyNotes",
+      "label": "Tumour histology paragraph (overrides the generated text)",
+      "type": "textarea",
+      "group": "Histology and immunohistochemistry"
+    },
+    {
+      "id": "tumourExtension",
+      "label": "Sites involved by direct tumour extension",
+      "type": "multiselect",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "No evidence of primary tumour",
+        "No invasion identified (carcinoma in situ / high-grade dysplasia only)",
+        "Confined to pancreas",
+        "Duodenal wall",
+        "Ampulla of Vater",
+        "Common bile duct",
+        "Peripancreatic soft tissue",
+        "Retroperitoneal soft tissue",
+        "Mesenteric adipose tissue",
+        "Mesocolon",
+        "Stomach",
+        "Spleen",
+        "Adrenal gland",
+        "Colon",
+        "Superior mesenteric vein or portal vein",
+        "Coeliac axis",
+        "Superior mesenteric artery",
+        "Common hepatic artery",
+        "Other peripancreatic soft tissue (specify)",
+        "Other adjacent organ(s) or structure(s) (specify)",
+        "Cannot be determined"
+      ],
+      "exclusive": [
+        "No evidence of primary tumour",
+        "No invasion identified (carcinoma in situ / high-grade dysplasia only)",
+        "Confined to pancreas",
+        "Cannot be determined"
+      ],
+      "default": [
+        "Confined to pancreas"
+      ]
+    },
+    {
+      "id": "extensionDetail",
+      "label": "Direct extension (specify)",
+      "type": "text",
+      "group": "Histology and immunohistochemistry"
+    },
+    {
+      "id": "surfaceInvolvement",
+      "label": "Pancreatic surface involvement",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Anterior surface involved",
+        "Posterior surface involved",
+        "Vascular groove involved",
+        "Cannot be determined"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "ihc",
+      "label": "Immunohistochemistry",
+      "type": "multiselect",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "CK7 positive",
+        "CK20 positive",
+        "CDX2 positive",
+        "MUC1 positive",
+        "MUC2 positive",
+        "MUC5AC positive",
+        "SMAD4 (DPC4) retained",
+        "SMAD4 (DPC4) lost",
+        "Trypsin positive",
+        "BCL10 positive",
+        "Chromogranin positive",
+        "Synaptophysin positive",
+        "Beta-catenin nuclear"
+      ],
+      "default": []
+    },
+    {
+      "id": "ihcOther",
+      "label": "Immunohistochemistry (other results)",
+      "type": "text",
+      "group": "Histology and immunohistochemistry"
+    },
+    {
+      "id": "lvi",
+      "label": "Lymphovascular invasion",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "pni",
+      "label": "Perineural invasion",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not identified"
+    },
+    {
+      "id": "treatmentEffect",
+      "label": "Treatment effect",
+      "type": "select",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "No known presurgical therapy",
+        "Present, with no viable cancer cells (complete response, score 0)",
+        "Present, with single cells or rare small groups of cancer cells (near complete response, score 1)",
+        "Present, with residual cancer showing evident tumour regression but more than single cells or rare small groups of cancer cells (partial response, score 2)",
+        "Present (not otherwise specified)",
+        "Absent, with extensive residual cancer and no evident tumour regression (poor or no response, score 3)",
+        "Cannot be determined"
+      ],
+      "default": "No known presurgical therapy"
+    },
+    {
+      "id": "precursor",
+      "label": "Precursor lesion",
+      "type": "multiselect",
+      "group": "Histology and immunohistochemistry",
+      "options": [
+        "Pancreatic intraepithelial neoplasia, low grade (PanIN)",
+        "Pancreatic intraepithelial neoplasia, high grade (PanIN)",
+        "Intraductal papillary mucinous neoplasm (IPMN), low-grade dysplasia",
+        "Intraductal papillary mucinous neoplasm (IPMN), high-grade dysplasia",
+        "Intraductal oncocytic papillary neoplasm (IOPN)",
+        "Intraductal tubulopapillary neoplasm (ITPN)",
+        "Mucinous cystic neoplasm (MCN)",
+        "Intra-ampullary papillary-tubular neoplasm (IAPN)",
+        "Ampullary adenoma (tubular, tubulovillous or villous)",
+        "Biliary intraepithelial neoplasia (BilIN), high grade",
+        "Other (specify)",
+        "None identified"
+      ],
+      "exclusive": [
+        "None identified"
+      ],
+      "default": [
+        "None identified"
+      ]
+    },
+    {
+      "id": "precursorOther",
+      "label": "Precursor lesion (specify)",
+      "type": "text",
+      "group": "Histology and immunohistochemistry"
+    },
+    {
+      "id": "neckMargin",
+      "label": "Pancreatic neck (transection) margin",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Cannot be assessed",
+        "Uninvolved by invasive carcinoma (specify distance)",
+        "Involved by invasive carcinoma",
+        "Not applicable"
+      ],
+      "default": "Uninvolved by invasive carcinoma (specify distance)"
+    },
+    {
+      "id": "neckMarginMm",
+      "label": "Pancreatic neck (transection) margin - distance to carcinoma (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "field": "neckMargin",
+        "is": "Uninvolved by invasive carcinoma (specify distance)"
+      }
+    },
+    {
+      "id": "bileDuctMargin",
+      "label": "Bile duct margin",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Cannot be assessed",
+        "Uninvolved by invasive carcinoma (specify distance)",
+        "Involved by invasive carcinoma",
+        "Not applicable"
+      ],
+      "default": "Uninvolved by invasive carcinoma (specify distance)"
+    },
+    {
+      "id": "bileDuctMarginMm",
+      "label": "Bile duct margin - distance to carcinoma (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "field": "bileDuctMargin",
+        "is": "Uninvolved by invasive carcinoma (specify distance)"
+      }
+    },
+    {
+      "id": "uncinateMargin",
+      "label": "Uncinate (retroperitoneal / superior mesenteric artery) margin",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Cannot be assessed",
+        "Uninvolved by invasive carcinoma (specify distance)",
+        "Involved by invasive carcinoma",
+        "Not applicable"
+      ],
+      "default": "Uninvolved by invasive carcinoma (specify distance)"
+    },
+    {
+      "id": "uncinateMarginMm",
+      "label": "Uncinate (retroperitoneal / superior mesenteric artery) margin - distance to carcinoma (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "field": "uncinateMargin",
+        "is": "Uninvolved by invasive carcinoma (specify distance)"
+      }
+    },
+    {
+      "id": "posteriorMargin",
+      "label": "Posterior surface",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Cannot be assessed",
+        "Uninvolved by invasive carcinoma (specify distance)",
+        "Involved by invasive carcinoma",
+        "Not applicable"
+      ],
+      "default": "Uninvolved by invasive carcinoma (specify distance)"
+    },
+    {
+      "id": "posteriorMarginMm",
+      "label": "Posterior surface - distance to carcinoma (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "field": "posteriorMargin",
+        "is": "Uninvolved by invasive carcinoma (specify distance)"
+      }
+    },
+    {
+      "id": "proximalMargin",
+      "label": "Proximal (gastric or duodenal) margin",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Cannot be assessed",
+        "Uninvolved by invasive carcinoma (specify distance)",
+        "Involved by invasive carcinoma",
+        "Not applicable"
+      ],
+      "default": "Uninvolved by invasive carcinoma (specify distance)"
+    },
+    {
+      "id": "proximalMarginMm",
+      "label": "Proximal (gastric or duodenal) margin - distance to carcinoma (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "field": "proximalMargin",
+        "is": "Uninvolved by invasive carcinoma (specify distance)"
+      }
+    },
+    {
+      "id": "distalMargin",
+      "label": "Distal (duodenal or jejunal) margin",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Cannot be assessed",
+        "Uninvolved by invasive carcinoma (specify distance)",
+        "Involved by invasive carcinoma",
+        "Not applicable"
+      ],
+      "default": "Uninvolved by invasive carcinoma (specify distance)"
+    },
+    {
+      "id": "distalMarginMm",
+      "label": "Distal (duodenal or jejunal) margin - distance to carcinoma (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "field": "distalMargin",
+        "is": "Uninvolved by invasive carcinoma (specify distance)"
+      }
+    },
+    {
+      "id": "hgDysplasia",
+      "label": "High-grade dysplasia at the margins",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Present at the bile duct margin",
+        "Present at the pancreatic neck margin",
+        "Other (specify)"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "hgDysplasiaDetail",
+      "label": "High-grade dysplasia at the margins (specify)",
+      "type": "text",
+      "group": "Margins"
+    },
+    {
+      "id": "nodesExamined",
+      "label": "Number of regional lymph nodes examined",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0
+    },
+    {
+      "id": "nodesInvolved",
+      "label": "Number of regional lymph nodes involved",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0
+    },
+    {
+      "id": "station8",
+      "label": "Station 8 (common hepatic artery) - nodes involved",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0
+    },
+    {
+      "id": "station12",
+      "label": "Station 12 (hepatoduodenal ligament) - nodes involved",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0
+    },
+    {
+      "id": "station13",
+      "label": "Station 13 (posterior pancreaticoduodenal) - nodes involved",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0
+    },
+    {
+      "id": "station14",
+      "label": "Station 14 (superior mesenteric artery) - nodes involved",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0
+    },
+    {
+      "id": "station17",
+      "label": "Station 17 (anterior pancreaticoduodenal) - nodes involved",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0
+    },
+    {
+      "id": "ene",
+      "label": "Extranodal extension (ENE)",
+      "type": "select",
+      "group": "Lymph nodes and metastasis",
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "largestDepositMm",
+      "label": "Size of the largest metastatic deposit (mm)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0
+    },
+    {
+      "id": "largestNodeSite",
+      "label": "Station of the largest metastatic deposit",
+      "type": "text",
+      "group": "Lymph nodes and metastasis"
+    },
+    {
+      "id": "distantMets",
+      "label": "Distant metastasis",
+      "type": "multiselect",
+      "group": "Lymph nodes and metastasis",
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Non-regional lymph node(s) (specify)",
+        "Liver (specify)",
+        "Other (specify)",
+        "Cannot be determined"
+      ],
+      "exclusive": [
+        "Not applicable",
+        "Not identified",
+        "Cannot be determined"
+      ],
+      "default": [
+        "Not applicable"
+      ]
+    },
+    {
+      "id": "distantDetail",
+      "label": "Distant metastasis (specify)",
+      "type": "text",
+      "group": "Lymph nodes and metastasis"
+    },
+    {
+      "id": "tnmOverride",
+      "label": "Override derived pTNM (type e.g. pT2 pN1 pM0)",
+      "type": "text",
+      "group": "Stage and other findings"
+    },
+    {
+      "id": "tnmOverrideReason",
+      "label": "Override reason (printed in Checks)",
+      "type": "text",
+      "group": "Stage and other findings"
+    },
+    {
+      "id": "additionalFindings",
+      "label": "Additional pathologic findings",
+      "type": "multiselect",
+      "group": "Stage and other findings",
+      "options": [
+        "Chronic pancreatitis",
+        "Autoimmune pancreatitis",
+        "Acute pancreatitis",
+        "Pancreatic intraepithelial neoplasia, low grade",
+        "Islet cell hyperplasia",
+        "Fatty replacement",
+        "Other (specify)",
+        "None identified"
+      ],
+      "exclusive": [
+        "None identified"
+      ],
+      "default": [
+        "None identified"
+      ]
+    },
+    {
+      "id": "additionalFindingsDetail",
+      "label": "Additional pathologic findings (specify)",
+      "type": "text",
+      "group": "Stage and other findings"
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional notes (any)",
+      "type": "textarea",
+      "group": "Stage and other findings"
+    }
+  ],
+  "example": {
+    "case": {
+      "accession": "S26-00932",
+      "status": "Draft"
+    },
+    "options": {
+      "includeHeader": false,
+      "macro": true,
+      "printPTNM": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "",
+          "procedure": "Pancreaticoduodenectomy (Whipple resection)",
+          "origin": "Pancreatic (ductal adenocarcinoma centred in the pancreatic head or uncinate process)",
+          "tumourSite": [
+            "Head of pancreas"
+          ],
+          "tumourSizeCm": 3.2,
+          "sizeMode": "Unifocal invasive carcinoma, greatest dimension (cm)",
+          "tumourDims": "32 x 28 x 20",
+          "specimenDims": "150 x 90 x 60",
+          "pancreasDims": "55 x 45 x 35",
+          "duodenumLengthMm": "160",
+          "bileDuctLengthMm": "35",
+          "pancDuctDilatation": "6",
+          "bileDuctDilatation": "14",
+          "blockKeyText": "1-4 Tumour with posterior surface\n5 Pancreatic neck margin, en face\n6 Bile duct margin, en face",
+          "histType": "Ductal adenocarcinoma, NOS",
+          "grade": "G2, moderately differentiated",
+          "tumourExtension": [
+            "Peripancreatic soft tissue",
+            "Duodenal wall"
+          ],
+          "surfaceInvolvement": "Posterior surface involved",
+          "ihc": [
+            "CK7 positive",
+            "SMAD4 (DPC4) lost"
+          ],
+          "lvi": "Present",
+          "pni": "Present",
+          "treatmentEffect": "No known presurgical therapy",
+          "precursor": [
+            "Pancreatic intraepithelial neoplasia, high grade (PanIN)"
+          ],
+          "neckMargin": "Uninvolved by invasive carcinoma (specify distance)",
+          "neckMarginMm": 8,
+          "bileDuctMargin": "Uninvolved by invasive carcinoma (specify distance)",
+          "bileDuctMarginMm": 12,
+          "uncinateMargin": "Uninvolved by invasive carcinoma (specify distance)",
+          "uncinateMarginMm": 0.8,
+          "posteriorMargin": "Involved by invasive carcinoma",
+          "proximalMargin": "Uninvolved by invasive carcinoma (specify distance)",
+          "proximalMarginMm": 45,
+          "distalMargin": "Uninvolved by invasive carcinoma (specify distance)",
+          "distalMarginMm": 60,
+          "hgDysplasia": "Not identified",
+          "nodesExamined": 18,
+          "nodesInvolved": 3,
+          "station13": 2,
+          "station17": 1,
+          "ene": "Not identified",
+          "largestDepositMm": 6,
+          "largestNodeSite": "station 13",
+          "distantMets": [
+            "Not identified"
+          ],
+          "additionalFindings": [
+            "Chronic pancreatitis"
+          ]
+        }
+      }
+    ]
+  }
 }

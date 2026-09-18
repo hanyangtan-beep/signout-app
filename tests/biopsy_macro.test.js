@@ -18,6 +18,7 @@ const app = schemaSync('appendix');
 const jaw = schemaSync('jaw_cyst');
 const nasal = schemaSync('nasal_polyps');
 const turp = schemaSync('turp');
+const colon = schemaSync('colon_resection');
 
 test('the terse dialect counts cassettes as blocks', () => {
   const out = extractMacro(node, 'All embedded, 3 pieces, 1 x 3 mm to 1 x 4 mm. 1 cassette, tan, soft.');
@@ -55,6 +56,22 @@ test('fragment counts read the receiving phrase', () => {
   assert.equal(extractMacro(jaw, 'Multiple pieces of bone measuring 2.5 cm across in aggregate. Decalcified and all embedded in 1 block.').fragments, 'multiple');
   assert.equal(extractMacro(jaw, 'Two fragments of cyst wall measuring 1.5 x 1 x 0.3 cm in aggregate.').fragments, '2');
   assert.equal(extractMacro(nasal, 'Multiple fragments of polypoid tissue measuring 3 cm across in aggregate. All embedded in 2 cassettes.').fragments, 'Multiple');
+});
+
+test('the numbered block key at the end of the gross fills the typed field', () => {
+  const out = extractMacro(colon, 'Partially embedded in 7 blocks. (1) Proximal margin, shaved section. '
+    + '(2) Distal margin, shaved section. (3)-(5) Tumour. (6)&(7) Pericolic lymph nodes.');
+  assert.equal(out.blockKeyText, '1 Proximal margin, shaved section\n2 Distal margin, shaved section\n3-5 Tumour\n6,7 Pericolic lymph nodes');
+});
+
+test('the part letter is dropped and the written grouping kept', () => {
+  const out = extractMacro(colon, 'All embedded in 20 blocks. (A1) Proximal margin. (A5)-(A7) Apical vascular pedicle. '
+    + '(A8)-(A12), (A14)-(A20) Pericolic lymph nodes.');
+  assert.equal(out.blockKeyText, '1 Proximal margin\n5-7 Apical vascular pedicle\n8-12,14-20 Pericolic lymph nodes');
+});
+
+test('a single bracketed number in prose is not a block key', () => {
+  assert.equal(extractMacro(colon, 'A polyp is seen 3 cm from the distal margin (1) and the mucosa is otherwise unremarkable.').blockKeyText, undefined);
 });
 
 test('chips are measured in aggregate', () => {

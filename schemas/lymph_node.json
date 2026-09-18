@@ -63,6 +63,9 @@
     "largestNode": {
       "concept": "nodeSize",
       "unit": "cm"
+    },
+    "blockKeyText": {
+      "concept": "blockKey"
     }
   },
   "specimenNoun": "excision",

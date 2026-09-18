@@ -1,458 +1,461 @@
 {
- "id": "breast_excision",
- "version": "2026.09",
- "name": "Breast excision / margins",
- "shortName": "Breast · excision and cavity shaves",
- "label": "Breast excision",
- "organ": "BREAST",
- "system": "Breast",
- "kind": "benign resection",
- "rank": 31,
- "aliases": [
-  "cavity shave",
-  "shave margin",
-  "margin",
-  "wide local excision",
-  "WLE",
-  "lumpectomy",
-  "fibroadenoma",
-  "papilloma",
-  "fat necrosis",
-  "fibrocystic",
-  "UDH",
-  "ADH",
-  "re-excision",
-  "mammary"
- ],
- "match": {
-  "site": [
-   "breast",
-   "cavity shave",
-   "shave"
+  "id": "breast_excision",
+  "version": "2026.09",
+  "name": "Breast excision / margins",
+  "shortName": "Breast · excision and cavity shaves",
+  "label": "Breast excision",
+  "organ": "BREAST",
+  "system": "Breast",
+  "kind": "benign resection",
+  "rank": 31,
+  "aliases": [
+    "cavity shave",
+    "shave margin",
+    "margin",
+    "wide local excision",
+    "WLE",
+    "lumpectomy",
+    "fibroadenoma",
+    "papilloma",
+    "fat necrosis",
+    "fibrocystic",
+    "UDH",
+    "ADH",
+    "re-excision",
+    "mammary"
   ],
-  "procedure": [
-   "excision",
-   "wide local excision",
-   "WLE",
-   "lumpectomy",
-   "mastectomy"
-  ],
-  "clinical": [
-   "fibroadenoma",
-   "phyllodes",
-   "fibroepithelial",
-   "papilloma",
-   "breast mass",
-   "breast lump"
-  ]
- },
- "macroExtract": {
-  "dimensions": {
-   "concept": "specimenDims",
-   "unit": "cm"
-  },
-  "lesionSize": {
-   "concept": "tumourDims",
-   "unit": "cm",
-   "min": 1
-  },
-  "blocks": {
-   "concept": "blocks",
-   "unit": "count"
-  }
- },
- "specimenNoun": "resection",
- "maxParts": 8,
- "defaultParts": 1,
- "generator": "breastbenign",
- "style": {
-  "british": true
- },
- "caseFields": [],
- "options": [
-  {
-   "$use": "includeHeader"
-  },
-  {
-   "id": "macro",
-   "label": "Generate the macroscopic description and block key",
-   "type": "checkbox",
-   "default": true
-  }
- ],
- "partDefaults": [
-  {
-   "margin": "Superior"
-  },
-  {
-   "margin": "Inferior"
-  },
-  {
-   "margin": "Medial"
-  },
-  {
-   "margin": "Lateral"
-  },
-  {
-   "margin": "Anterior"
-  },
-  {
-   "margin": "Posterior"
-  },
-  {
-   "margin": "Other"
-  },
-  {
-   "margin": "Other"
-  }
- ],
- "fields": [
-  {
-   "id": "specimenName",
-   "label": "Specimen as received",
-   "type": "text",
-   "placeholder": "Right breast superior margin, resection",
-   "default": ""
-  },
-  {
-   "id": "partType",
-   "label": "Part type",
-   "type": "select",
-   "options": [
-    "Cavity shave margin",
-    "Breast lesion excision"
-   ],
-   "default": "Cavity shave margin"
-  },
-  {
-   "id": "side",
-   "label": "Side",
-   "type": "select",
-   "options": [
-    "Right",
-    "Left",
-    "Not stated"
-   ],
-   "default": "Right"
-  },
-  {
-   "id": "margin",
-   "label": "Margin",
-   "type": "select",
-   "options": [
-    "Superior",
-    "Inferior",
-    "Medial",
-    "Lateral",
-    "Anterior",
-    "Posterior",
-    "Other"
-   ],
-   "default": "Superior",
-   "showIf": {
-    "field": "partType",
-    "is": "Cavity shave margin"
-   }
-  },
-  {
-   "id": "marginOther",
-   "label": "Other margin name",
-   "type": "text",
-   "placeholder": "superolateral / deep / nipple",
-   "default": "",
-   "showIf": {
-    "field": "margin",
-    "is": "Other"
-   }
-  },
-  {
-   "id": "site",
-   "label": "Site / lesion as labelled",
-   "type": "text",
-   "placeholder": "L3H breast mass",
-   "default": "",
-   "showIf": {
-    "field": "partType",
-    "is": "Breast lesion excision"
-   }
-  },
-  {
-   "id": "procedure",
-   "label": "Procedure",
-   "type": "select",
-   "options": [
-    "Excision",
-    "Wide local excision",
-    "Re-excision"
-   ],
-   "default": "Excision",
-   "showIf": {
-    "field": "partType",
-    "is": "Breast lesion excision"
-   }
-  },
-  {
-   "id": "dimensions",
-   "label": "Dimensions (cm)",
-   "type": "text",
-   "group": "Macroscopy",
-   "placeholder": "4 x 3 x 1",
-   "default": ""
-  },
-  {
-   "id": "orientation",
-   "label": "Orientation",
-   "type": "select",
-   "group": "Macroscopy",
-   "options": [
-    "Suture marks new margin",
-    "Inked",
-    "None"
-   ],
-   "default": "Suture marks new margin"
-  },
-  {
-   "id": "lesion",
-   "label": "Lesion on sectioning",
-   "type": "select",
-   "group": "Macroscopy",
-   "options": [
-    "None seen",
-    "Firm nodule",
-    "Cavity wall"
-   ],
-   "default": "None seen"
-  },
-  {
-   "id": "lesionSize",
-   "label": "Nodule size (cm)",
-   "type": "text",
-   "group": "Macroscopy",
-   "placeholder": "2",
-   "default": "",
-   "showIf": {
-    "field": "lesion",
-    "is": "Firm nodule"
-   }
-  },
-  {
-   "id": "blocks",
-   "label": "Blocks",
-   "type": "number",
-   "group": "Macroscopy",
-   "min": 1,
-   "step": 1,
-   "default": "3"
-  },
-  {
-   "id": "blockKeyText",
-   "label": "Block key (optional; overrides the automatic key)",
-   "type": "text",
-   "group": "Macroscopy",
-   "placeholder": "(1-3) Serial slices, all embedded, new margin inked black.",
-   "default": ""
-  },
-  {
-   "id": "result",
-   "label": "Result",
-   "type": "select",
-   "options": [
-    "No evidence of malignancy (benign breast tissue)",
-    "Fat necrosis",
-    "Fibrocystic change",
-    "Usual ductal hyperplasia",
-    "Columnar cell change",
-    "Sclerosing adenosis",
-    "Intraductal papilloma",
-    "Fibroadenoma",
-    "Radial scar",
-    "Flat epithelial atypia – see comment",
-    "Atypical ductal hyperplasia – see comment",
-    "DCIS – see comment",
-    "Invasive carcinoma – see comment"
-   ],
-   "default": "No evidence of malignancy (benign breast tissue)"
-  },
-  {
-   "id": "secondary",
-   "label": "Background / secondary findings",
-   "type": "multiselect",
-   "options": [
-    "None",
-    "Usual ductal hyperplasia",
-    "Fibrocystic change",
-    "Columnar cell change",
-    "Sclerosing adenosis",
-    "Apocrine metaplasia",
-    "Fat necrosis",
-    "Duct ectasia"
-   ],
-   "exclusive": [
-    "None"
-   ],
-   "default": [
-    "None"
-   ]
-  },
-  {
-   "id": "calcification",
-   "label": "Calcification",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Present, benign",
-    "Present, in DCIS"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "biopsySite",
-   "label": "Biopsy site changes",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Present"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "margins",
-   "label": "Margins",
-   "type": "select",
-   "options": [
-    "Clear",
-    "Involved – which",
-    "Close < 1 mm"
-   ],
-   "default": "Clear",
-   "showIf": {
-    "field": "partType",
-    "is": "Breast lesion excision"
-   }
-  },
-  {
-   "id": "marginInvolved",
-   "label": "Involved margin(s)",
-   "type": "text",
-   "placeholder": "medial",
-   "default": "",
-   "showIf": {
-    "field": "margins",
-    "is": "Involved – which"
-   }
-  },
-  {
-   "id": "additionalNotes",
-   "label": "Additional microscopy",
-   "type": "textarea",
-   "placeholder": "Free text appended to the microscopy for this part",
-   "default": ""
-  }
- ],
- "snippets": [
-  {
-   "id": "breast_cancer_template",
-   "label": "Atypia / carcinoma — use the QMH breast cancer template",
-   "auto": {
-    "field": "result",
-    "is": [
-     "Flat epithelial atypia – see comment",
-     "Atypical ductal hyperplasia – see comment",
-     "DCIS – see comment",
-     "Invasive carcinoma – see comment"
+  "match": {
+    "site": [
+      "breast",
+      "cavity shave",
+      "shave"
+    ],
+    "procedure": [
+      "excision",
+      "wide local excision",
+      "WLE",
+      "lumpectomy",
+      "mastectomy"
+    ],
+    "clinical": [
+      "fibroadenoma",
+      "phyllodes",
+      "fibroepithelial",
+      "papilloma",
+      "breast mass",
+      "breast lump"
     ]
-   },
-   "text": "Atypical epithelial proliferation / carcinoma is identified in the breast ({parts}). This benign template does not grade, measure or stage the lesion; the QMH breast cancer template should be used for the final synoptic report."
-  }
- ],
- "example": {
-  "caseTitle": "",
-  "options": {
-   "includeHeader": false,
-   "macro": true
   },
-  "parts": [
-   {
-    "label": "A",
-    "values": {
-     "specimenName": "",
-     "partType": "Cavity shave margin",
-     "side": "Right",
-     "margin": "Superior",
-     "marginOther": "",
-     "site": "",
-     "procedure": "Excision",
-     "dimensions": "4 x 3 x 1",
-     "orientation": "Suture marks new margin",
-     "lesion": "None seen",
-     "lesionSize": "",
-     "blocks": "4",
-     "blockKeyText": "",
-     "result": "No evidence of malignancy (benign breast tissue)",
-     "secondary": [
-      "None"
-     ],
-     "calcification": "Absent",
-     "biopsySite": "Absent",
-     "margins": "Clear",
-     "marginInvolved": "",
-     "additionalNotes": ""
+  "macroExtract": {
+    "dimensions": {
+      "concept": "specimenDims",
+      "unit": "cm"
+    },
+    "lesionSize": {
+      "concept": "tumourDims",
+      "unit": "cm",
+      "min": 1
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    },
+    "blockKeyText": {
+      "concept": "blockKey"
     }
-   },
-   {
-    "label": "B",
-    "values": {
-     "specimenName": "",
-     "partType": "Cavity shave margin",
-     "side": "Right",
-     "margin": "Inferior",
-     "marginOther": "",
-     "site": "",
-     "procedure": "Excision",
-     "dimensions": "5 x 3 x 1.5",
-     "orientation": "Suture marks new margin",
-     "lesion": "Cavity wall",
-     "lesionSize": "",
-     "blocks": "5",
-     "blockKeyText": "",
-     "result": "Fat necrosis",
-     "secondary": [
-      "None"
-     ],
-     "calcification": "Absent",
-     "biopsySite": "Absent",
-     "margins": "Clear",
-     "marginInvolved": "",
-     "additionalNotes": ""
+  },
+  "specimenNoun": "resection",
+  "maxParts": 8,
+  "defaultParts": 1,
+  "generator": "breastbenign",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "$use": "includeHeader"
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
     }
-   },
-   {
-    "label": "C",
-    "values": {
-     "specimenName": "",
-     "partType": "Breast lesion excision",
-     "side": "Right",
-     "margin": "Superior",
-     "marginOther": "",
-     "site": "R2H breast mass",
-     "procedure": "Excision",
-     "dimensions": "3 x 2.5 x 2",
-     "orientation": "Inked",
-     "lesion": "Firm nodule",
-     "lesionSize": "2",
-     "blocks": "4",
-     "blockKeyText": "",
-     "result": "Fibroadenoma",
-     "secondary": [
-      "None"
-     ],
-     "calcification": "Absent",
-     "biopsySite": "Absent",
-     "margins": "Clear",
-     "marginInvolved": "",
-     "additionalNotes": ""
+  ],
+  "partDefaults": [
+    {
+      "margin": "Superior"
+    },
+    {
+      "margin": "Inferior"
+    },
+    {
+      "margin": "Medial"
+    },
+    {
+      "margin": "Lateral"
+    },
+    {
+      "margin": "Anterior"
+    },
+    {
+      "margin": "Posterior"
+    },
+    {
+      "margin": "Other"
+    },
+    {
+      "margin": "Other"
     }
-   }
-  ]
- }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen as received",
+      "type": "text",
+      "placeholder": "Right breast superior margin, resection",
+      "default": ""
+    },
+    {
+      "id": "partType",
+      "label": "Part type",
+      "type": "select",
+      "options": [
+        "Cavity shave margin",
+        "Breast lesion excision"
+      ],
+      "default": "Cavity shave margin"
+    },
+    {
+      "id": "side",
+      "label": "Side",
+      "type": "select",
+      "options": [
+        "Right",
+        "Left",
+        "Not stated"
+      ],
+      "default": "Right"
+    },
+    {
+      "id": "margin",
+      "label": "Margin",
+      "type": "select",
+      "options": [
+        "Superior",
+        "Inferior",
+        "Medial",
+        "Lateral",
+        "Anterior",
+        "Posterior",
+        "Other"
+      ],
+      "default": "Superior",
+      "showIf": {
+        "field": "partType",
+        "is": "Cavity shave margin"
+      }
+    },
+    {
+      "id": "marginOther",
+      "label": "Other margin name",
+      "type": "text",
+      "placeholder": "superolateral / deep / nipple",
+      "default": "",
+      "showIf": {
+        "field": "margin",
+        "is": "Other"
+      }
+    },
+    {
+      "id": "site",
+      "label": "Site / lesion as labelled",
+      "type": "text",
+      "placeholder": "L3H breast mass",
+      "default": "",
+      "showIf": {
+        "field": "partType",
+        "is": "Breast lesion excision"
+      }
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "options": [
+        "Excision",
+        "Wide local excision",
+        "Re-excision"
+      ],
+      "default": "Excision",
+      "showIf": {
+        "field": "partType",
+        "is": "Breast lesion excision"
+      }
+    },
+    {
+      "id": "dimensions",
+      "label": "Dimensions (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "4 x 3 x 1",
+      "default": ""
+    },
+    {
+      "id": "orientation",
+      "label": "Orientation",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Suture marks new margin",
+        "Inked",
+        "None"
+      ],
+      "default": "Suture marks new margin"
+    },
+    {
+      "id": "lesion",
+      "label": "Lesion on sectioning",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "None seen",
+        "Firm nodule",
+        "Cavity wall"
+      ],
+      "default": "None seen"
+    },
+    {
+      "id": "lesionSize",
+      "label": "Nodule size (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "2",
+      "default": "",
+      "showIf": {
+        "field": "lesion",
+        "is": "Firm nodule"
+      }
+    },
+    {
+      "id": "blocks",
+      "label": "Blocks",
+      "type": "number",
+      "group": "Macroscopy",
+      "min": 1,
+      "step": 1,
+      "default": "3"
+    },
+    {
+      "id": "blockKeyText",
+      "label": "Block key (optional; overrides the automatic key)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "(1-3) Serial slices, all embedded, new margin inked black.",
+      "default": ""
+    },
+    {
+      "id": "result",
+      "label": "Result",
+      "type": "select",
+      "options": [
+        "No evidence of malignancy (benign breast tissue)",
+        "Fat necrosis",
+        "Fibrocystic change",
+        "Usual ductal hyperplasia",
+        "Columnar cell change",
+        "Sclerosing adenosis",
+        "Intraductal papilloma",
+        "Fibroadenoma",
+        "Radial scar",
+        "Flat epithelial atypia – see comment",
+        "Atypical ductal hyperplasia – see comment",
+        "DCIS – see comment",
+        "Invasive carcinoma – see comment"
+      ],
+      "default": "No evidence of malignancy (benign breast tissue)"
+    },
+    {
+      "id": "secondary",
+      "label": "Background / secondary findings",
+      "type": "multiselect",
+      "options": [
+        "None",
+        "Usual ductal hyperplasia",
+        "Fibrocystic change",
+        "Columnar cell change",
+        "Sclerosing adenosis",
+        "Apocrine metaplasia",
+        "Fat necrosis",
+        "Duct ectasia"
+      ],
+      "exclusive": [
+        "None"
+      ],
+      "default": [
+        "None"
+      ]
+    },
+    {
+      "id": "calcification",
+      "label": "Calcification",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present, benign",
+        "Present, in DCIS"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "biopsySite",
+      "label": "Biopsy site changes",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "margins",
+      "label": "Margins",
+      "type": "select",
+      "options": [
+        "Clear",
+        "Involved – which",
+        "Close < 1 mm"
+      ],
+      "default": "Clear",
+      "showIf": {
+        "field": "partType",
+        "is": "Breast lesion excision"
+      }
+    },
+    {
+      "id": "marginInvolved",
+      "label": "Involved margin(s)",
+      "type": "text",
+      "placeholder": "medial",
+      "default": "",
+      "showIf": {
+        "field": "margins",
+        "is": "Involved – which"
+      }
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "snippets": [
+    {
+      "id": "breast_cancer_template",
+      "label": "Atypia / carcinoma — use the QMH breast cancer template",
+      "auto": {
+        "field": "result",
+        "is": [
+          "Flat epithelial atypia – see comment",
+          "Atypical ductal hyperplasia – see comment",
+          "DCIS – see comment",
+          "Invasive carcinoma – see comment"
+        ]
+      },
+      "text": "Atypical epithelial proliferation / carcinoma is identified in the breast ({parts}). This benign template does not grade, measure or stage the lesion; the QMH breast cancer template should be used for the final synoptic report."
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "",
+          "partType": "Cavity shave margin",
+          "side": "Right",
+          "margin": "Superior",
+          "marginOther": "",
+          "site": "",
+          "procedure": "Excision",
+          "dimensions": "4 x 3 x 1",
+          "orientation": "Suture marks new margin",
+          "lesion": "None seen",
+          "lesionSize": "",
+          "blocks": "4",
+          "blockKeyText": "",
+          "result": "No evidence of malignancy (benign breast tissue)",
+          "secondary": [
+            "None"
+          ],
+          "calcification": "Absent",
+          "biopsySite": "Absent",
+          "margins": "Clear",
+          "marginInvolved": "",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "B",
+        "values": {
+          "specimenName": "",
+          "partType": "Cavity shave margin",
+          "side": "Right",
+          "margin": "Inferior",
+          "marginOther": "",
+          "site": "",
+          "procedure": "Excision",
+          "dimensions": "5 x 3 x 1.5",
+          "orientation": "Suture marks new margin",
+          "lesion": "Cavity wall",
+          "lesionSize": "",
+          "blocks": "5",
+          "blockKeyText": "",
+          "result": "Fat necrosis",
+          "secondary": [
+            "None"
+          ],
+          "calcification": "Absent",
+          "biopsySite": "Absent",
+          "margins": "Clear",
+          "marginInvolved": "",
+          "additionalNotes": ""
+        }
+      },
+      {
+        "label": "C",
+        "values": {
+          "specimenName": "",
+          "partType": "Breast lesion excision",
+          "side": "Right",
+          "margin": "Superior",
+          "marginOther": "",
+          "site": "R2H breast mass",
+          "procedure": "Excision",
+          "dimensions": "3 x 2.5 x 2",
+          "orientation": "Inked",
+          "lesion": "Firm nodule",
+          "lesionSize": "2",
+          "blocks": "4",
+          "blockKeyText": "",
+          "result": "Fibroadenoma",
+          "secondary": [
+            "None"
+          ],
+          "calcification": "Absent",
+          "biopsySite": "Absent",
+          "margins": "Clear",
+          "marginInvolved": "",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
 }

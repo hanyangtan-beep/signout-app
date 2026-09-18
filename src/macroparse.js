@@ -350,7 +350,49 @@ function tissuePhrase(text) {
   return /^(?:the|a|an|and|it)?$/i.test(phrase) ? null : phrase.toLowerCase();
 }
 
-export const CONCEPTS = { weight, specimenDims, dims, size, tumourDims, tumourSizeMax, depthOfInvasion, wallThickness, cavityLength, length, diameter, lengthDiameter, blocks, volume, frozenPieces, frozenBlocks, frozenSize, tissuePhrase, nodeCount, nodeSize };
+// ---- Block key ---------------------------------------------------------------------------------
+// House grosses end with the numbered key: "(A1) Colonic margin, shaved section. (A2)&(A3) One
+// continuous slab across the stoma. (A4)-(A6) Pericolic fat." or the unlettered "(1) … (2) …".
+// 1918 of 9023 grosses in the five-year file carry one. The typed field holds one entry per line
+// without the part letter, because the generator re-prints the letter from the part itself.
+const KEY_MARK = /\((?:[A-Za-z]?\d{1,2})\)(?:\s*[&,+]\s*\(?[A-Za-z]?\d{1,2}\)?|\s*[-\u2013]\s*\(?[A-Za-z]?\d{1,2}\)?)*/g;
+const KEY_TOKENS = /([A-Za-z]?\d{1,2})\)?\s*([&,+]|[-\u2013])?/g;
+
+/**
+ * The grouping the gross wrote, kept as written: "(A5)-(A7)" → "5-7", "(A2)&(A3)" → "2,3",
+ * "(8)-(12), (14)-(20)" → "8-12,14-20". The dash is a run, the ampersand a list.
+ */
+function keyLabel(mark) {
+  let out = '';
+  KEY_TOKENS.lastIndex = 0;
+  let m;
+  while ((m = KEY_TOKENS.exec(mark))) {
+    out += String(Number(m[1].replace(/^[A-Za-z]/, '')));
+    if (m[2]) out += /[-\u2013]/.test(m[2]) ? '-' : ',';
+  }
+  return out.replace(/[-,]+$/, '');
+}
+
+/**
+ * The numbered block key at the end of a gross, as typed lines ("1 Colonic margin, shaved section").
+ * Needs at least two entries, so a stray "(1)" in prose is not read as a key.
+ */
+function blockKey(text) {
+  const t = String(text || '').replace(/\s+/g, ' ');
+  const marks = [];
+  KEY_MARK.lastIndex = 0;
+  let m;
+  while ((m = KEY_MARK.exec(t))) marks.push({ mark: m[0], index: m.index, end: m.index + m[0].length });
+  if (marks.length < 2) return null;
+  const lines = marks.map((mk, i) => {
+    const body = t.slice(mk.end, marks[i + 1]?.index ?? t.length).trim().replace(/^[\s.:)\-\u2013]+/, '');
+    return { label: keyLabel(mk.mark), body: body.replace(/[.\s]+$/, '') };
+  }).filter((l) => l.body);
+  if (lines.length < 2) return null;
+  return lines.map((l) => `${l.label} ${l.body}`).join('\n');
+}
+
+export const CONCEPTS = { weight, specimenDims, dims, size, tumourDims, tumourSizeMax, depthOfInvasion, wallThickness, cavityLength, length, diameter, lengthDiameter, blocks, volume, frozenPieces, frozenBlocks, frozenSize, tissuePhrase, nodeCount, nodeSize, blockKey };
 
 // ---- Sided adnexa ------------------------------------------------------------------------------
 // "The right ovary measures 2 x 1.5 x 0.8 cm and the left ovary 2.5 x 1.5 x 1 cm." Sentences are split into
