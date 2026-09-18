@@ -109,6 +109,34 @@ Follows batch 1. From the same measurement, `docs/case-mix/frozen-2021-2026.md`.
       Three phrasings of the same negative answer carry 275 of roughly 400 intraoperative lines;
       pick one default per scenario and keep the others reachable.
 
+### Fixture capture drift — `npm run fixtures:force` reverts shipped decisions   Size: S
+Tooling, not a template, so it sits outside the caseload ordering below.
+Found 2026-09-18 while regenerating the frozen fixtures for batch 1.
+
+Symptom:   `npm run fixtures:force` rewrote three gastric fixtures back to
+           `CHRONIC GASTRITIS, inactive, Helicobacter-negative` and deleted the
+           `description` line recording the 2026-09-10 decision, in
+           `gastric/01-normal-antrum-body.json`, `05-title-parsing-overrides-names.json`
+           and `06-four-parts-superficial-notes.json`. Reverted by hand; nothing shipped.
+Cause:     `tools/capture-fixtures.cjs` does not capture from the generators. It drives the
+           frozen legacy HTML app in `legacy/gastric-biopsy-signout-v8.html` inside jsdom and
+           writes whatever that app produces. The legacy app predates the decision that a part
+           with every finding Absent reads `NO SIGNIFICANT ABNORMALITY`, so the tool and the
+           engine now disagree — and the tool wins, silently, over a committed fixture.
+           `tests/legacy.test.js` compares the same fixtures against the current engine and
+           passes, so the divergence is invisible until someone runs the capture tool.
+Fix:       decide which of the two the tool is for and make it say so.
+  (a) If it is still a legacy-parity harness, it must refuse to overwrite a fixture whose
+      expected text the current engine reproduces but the legacy app does not — that is a
+      deliberate divergence, not a stale capture — and it must preserve `description`.
+  (b) If it is a fixture generator, capture from the engine and keep the legacy app as a
+      separate one-way parity check that reports differences instead of writing them.
+Also:      `--force` should print what it is about to change and require the diff to be
+           reviewed, the way the release gate already refuses uncommitted fixture edits.
+Accept:    running `npm run fixtures:force` on a clean tree changes no file; the three gastric
+           fixtures keep their 2026-09-10 wording and their `description`; a genuinely stale
+           fixture is still regenerable.
+
 ### Frozen macro parsing from a pasted gross                    Size: M
 `src/macroparse.js` has no frozen vocabulary. 586 real frozen gross texts in the five-year file share
 one opener (`Received in a fresh state is/are …`) and one closing block sentence, so dimensions, piece
