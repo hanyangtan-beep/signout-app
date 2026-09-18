@@ -739,7 +739,7 @@
           }
         ]
       },
-      "version": "2026.09c",
+      "version": "2026.09d",
       "generator": "frozen",
       "generatorPath": "generators/frozen.js",
       "schemaPath": "schemas/frozen_section.json"

@@ -1,6 +1,6 @@
 {
   "id": "frozen_section",
-  "version": "2026.09c",
+  "version": "2026.09d",
   "name": "Frozen section",
   "shortName": "Frozen section",
   "label": "Frozen",
@@ -1899,19 +1899,89 @@
   },
   "macroExtract": {
     "pieces": {
-      "concept": "count",
-      "unit": "count",
-      "of": "pieces?|fragments?|cores?|bits?|portions?|specimens?|tissue"
+      "concept": "frozenPieces",
+      "unit": "count"
+    },
+    "tissueDesc": {
+      "concept": "choice",
+      "map": [
+        [
+          "lymph\\s+node",
+          "lymph node"
+        ],
+        [
+          "fibrofatty|fibroadipose|adipose|fatty",
+          "fibrofatty tissue"
+        ],
+        [
+          "mucosa|mucosal",
+          "mucosa"
+        ],
+        [
+          "skin|epiderm|dermal",
+          "skin"
+        ],
+        [
+          "grey|gray",
+          "greyish tissue"
+        ],
+        [
+          "tan\\b|tan-|brown",
+          "tan coloured tissue"
+        ]
+      ],
+      "fallback": "other"
+    },
+    "tissueDescOther": {
+      "concept": "tissuePhrase",
+      "when": {
+        "tissueDesc": "other"
+      }
     },
     "size": {
-      "concept": "specimenDims",
+      "concept": "frozenSize",
       "unit": "cm",
       "label": true,
       "min": 1
     },
+    "handling": {
+      "concept": "choice",
+      "map": [
+        [
+          "serially\\s+section",
+          "Serially sectioned and all embedded"
+        ],
+        [
+          "bisect",
+          "Bisected and all embedded"
+        ],
+        [
+          "representative\\s+(?:section|block)",
+          "Representative section taken"
+        ],
+        [
+          "all\\s+embedded|entirely\\s+submitted",
+          "All embedded"
+        ]
+      ]
+    },
     "blocks": {
-      "concept": "blocks",
+      "concept": "frozenBlocks",
       "unit": "count"
+    },
+    "converted": {
+      "concept": "choice",
+      "boolean": true,
+      "map": [
+        [
+          "kept\\s+frozen|not\\s+converted",
+          "false"
+        ],
+        [
+          "converted\\s+to\\s+paraffin",
+          "true"
+        ]
+      ]
     },
     "metSize": {
       "concept": "size",

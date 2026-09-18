@@ -210,7 +210,107 @@ function countOf(text, noun) {
   return last;
 }
 
-export const CONCEPTS = { weight, specimenDims, dims, size, tumourDims, tumourSizeMax, depthOfInvasion, wallThickness, cavityLength, length, diameter, lengthDiameter, blocks, volume };
+// ---- Frozen-section vocabulary -----------------------------------------------------------------
+// The frozen grosses are written to a narrow house pattern that the general concepts above read
+// badly: the count and the block count are adjectives apart from their noun ("1 frozen block",
+// "2 blocks for frozen section"), the specimen is often a strip or a wedge rather than a piece, and
+// a small specimen is measured in one dimension ("0.6 cm across", "ranging from 0.6 cm to 0.2 cm").
+// Measured against the five-year frozen file rather than invented; the shared concepts are left
+// alone so the resection templates keep their captured behaviour.
+
+const RECEIPT = /\b(?:received|submitted|consists?\s+of|comprises?)\b/i;
+const PIECE_NOUN = String.raw`pieces?|fragments?|strips?|wedges?|cores?|portions?|bits?|nodules?|specimens?|lymph\s+nodes?|tubular\s+structures?|tubal\s+structures?`;
+const VAGUE_COUNT = /\b(?:multiple|several|numerous|many|few|a\s+number\s+of)\s+(?:[a-z-]+\s+){0,2}(?:pieces?|fragments?|bits?|portions?)/i;
+
+/** The sentence the specimen is received in and the `n - 1` that follow it — the description can run on past the receipt line. */
+function receiptScope(text, n) {
+  const ss = sentences(text);
+  const i = ss.findIndex((s) => RECEIPT.test(s));
+  return ss.slice(Math.max(0, i)).slice(0, n);
+}
+
+/**
+ * How many pieces were received. Read from the receiving sentence only, because later sentences
+ * count blocks and sections. "Multiple pieces" is not a number and returns null, leaving the field
+ * at its default rather than inventing a count.
+ */
+function frozenPieces(text) {
+  const re = new RegExp(String.raw`\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|a|an|single)\s+(?:[a-z-]+\s+){0,3}?(?:${PIECE_NOUN})\b`, 'i');
+  // Two sentences, because a designation line can precede the description ("Specimen designated
+  // …, received fresh. It consists of a piece of tissue measuring ….").
+  for (const s of receiptScope(text, 2)) {
+    if (VAGUE_COUNT.test(s)) return null;
+    const m = re.exec(s);
+    if (!m) continue;
+    const w = m[1].toLowerCase();
+    const n = /^\d/.test(w) ? Number(w) : WORD_NUMBER[w];
+    if (Number.isFinite(n)) return n;
+  }
+  return null;
+}
+
+/**
+ * Frozen block count. The count wanted is the one tied to the frozen blocks, never the paraffin
+ * total that a lung or nodule macro adds afterwards ("… 2 representative blocks are taken for
+ * frozen section examination. 4 representative blocks in total." is two, not four).
+ */
+const BLOCK_NUM = String.raw`(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|a|an|single)`;
+function frozenBlocks(text) {
+  const pats = [
+    new RegExp(String.raw`${BLOCK_NUM}\s+(?:[a-z-]+\s+){0,2}?frozen\s+(?:section\s+)?blocks?`, 'i'),
+    new RegExp(String.raw`${BLOCK_NUM}\s+(?:[a-z-]+\s+){0,2}?blocks?\b[^.;]{0,30}?\bfor\s+frozen`, 'i'),
+    new RegExp(String.raw`embedded\s+in\s+${BLOCK_NUM}\s+(?:[a-z-]+\s+){0,2}?blocks?`, 'i')
+  ];
+  // "One representative block is taken from each piece" is a count per piece, not a total.
+  if (/from\s+each\s+(?:piece|fragment|nodule|specimen)/i.test(text)) return null;
+  for (const re of pats) {
+    const m = re.exec(text);
+    if (!m) continue;
+    const w = m[1].toLowerCase();
+    const n = /^\d/.test(w) ? Number(w) : WORD_NUMBER[w];
+    if (Number.isFinite(n)) return n;
+  }
+  // Nothing said "frozen": a plain block count still counts, as long as the sentence is not the
+  // paraffin total the macro adds at the end.
+  const plain = sentences(text).filter((s) => !/paraffin|in\s+total|additional/i.test(s));
+  return plain.length ? blocks(plain.join(' ')) : null;
+}
+
+/**
+ * Specimen measurement. Two or three dimensions when the macro gives them; otherwise the single
+ * "x cm across" figure, and the largest of a range ("ranging from 0.6 cm to 0.2 cm across"), which
+ * is how the house measures multiple small pieces.
+ */
+const NAMED_AXIS = /o'?clock|superficial\s+to\s+deep|in\s+length|\blong\b|\bwide\b|in\s+width|in\s+thickness|\bthick\b|in\s+diameter/i;
+// "to 6 o'clock" is an axis, not a range: a range runs from one measurement to another.
+const RANGE = new RegExp(String.raw`\brang\w+|\bbetween\b|\bup\s+to\b|\bto\s+${NUM}\s*${UNIT}`, 'i');
+function frozenSize(text) {
+  for (const s of receiptScope(text, 3)) {
+    const runs = findDims(s);
+    const full = runs.find((d) => d.mms.length >= 2);
+    if (full) return full.mms;
+    const singles = runs.filter((d) => d.mms.length === 1);
+    if (!singles.length) continue;
+    // Dimensions given one axis at a time ("0.5 cm from 12 to 6 o'clock, 0.2 cm from 3 to 9 …")
+    // are one measurement; a range across several pieces is not, and the largest stands for it.
+    if (singles.length >= 2 && NAMED_AXIS.test(s) && !RANGE.test(s)) return singles.slice(0, 3).map((d) => d.max);
+    return [Math.max(...singles.map((d) => d.max))];
+  }
+  return null;
+}
+
+/** The tissue phrase the macro uses: "a piece of soft tan coloured tissue measuring …" → "soft tan coloured tissue". */
+function tissuePhrase(text) {
+  const re = new RegExp(String.raw`\b(?:of|is|are|consists?\s+of)\s+((?:[a-z][a-z-]*\s+){0,4}?(?:tissue|material|mucosa|skin|fat|lymph\s+nodes?))\b`, 'i');
+  const m = receiptScope(text, 2).map((s) => re.exec(s)).find(Boolean);
+  if (!m) return null;
+  const phrase = m[1].trim().replace(/\s+/g, ' ')
+    .replace(new RegExp(String.raw`^(?:the|a|an|\d+|one|two|three|four|five|six|multiple|several)\s+(?:(?:${PIECE_NOUN})\s+of\s+)?`, 'i'), '')
+    .replace(new RegExp(String.raw`^(?:${PIECE_NOUN})\s+of\s+`, 'i'), '');
+  return /^(?:the|a|an|and|it)?$/i.test(phrase) ? null : phrase.toLowerCase();
+}
+
+export const CONCEPTS = { weight, specimenDims, dims, size, tumourDims, tumourSizeMax, depthOfInvasion, wallThickness, cavityLength, length, diameter, lengthDiameter, blocks, volume, frozenPieces, frozenBlocks, frozenSize, tissuePhrase };
 
 // ---- Sided adnexa ------------------------------------------------------------------------------
 // "The right ovary measures 2 x 1.5 x 0.8 cm and the left ovary 2.5 x 1.5 x 1 cm." Sentences are split into
@@ -283,6 +383,13 @@ export function extractConcept(rule, text) {
   const unit = rule.unit || 'mm';
   const label = rule.label ? ` ${unit}` : '';
   if (rule.concept === 'adnexaSentence') return adnexaSentence(text, unit);
+  if (rule.concept === 'choice') {
+    // First matching pattern wins, so the schema lists the specific before the general.
+    for (const [pattern, value] of rule.map || []) {
+      if (new RegExp(pattern, 'i').test(text)) return rule.boolean ? value === 'true' : value;
+    }
+    return rule.fallback === undefined ? null : (rule.boolean ? rule.fallback === 'true' : rule.fallback);
+  }
   if (rule.concept === 'count') {
     // `of` names the thing counted; `near` (if given) still restricts which clauses are read.
     let scope = text;
@@ -319,6 +426,7 @@ export function extractConcept(rule, text) {
   const v = fn(scope);
   if (v === null || v === undefined) return null;
   if (Array.isArray(v)) return ok(v) ? fmtDims(v, unit) + label : null;
+  if (typeof v === 'string') return v;          // phrase concepts carry their own text
   if (unit === 'g' || unit === 'count') return String(v);
   return fmt(v, unit) + label;
 }
@@ -327,6 +435,9 @@ export function extractConcept(rule, text) {
 export function extractMacro(schema, text) {
   const out = {};
   for (const [field, rule] of Object.entries(schema?.macroExtract || {})) {
+    // `when` gates a rule on a field extracted above it, so a free-text "other" box is filled
+    // only when the select it belongs to actually landed on "other".
+    if (rule.when && Object.entries(rule.when).some(([f, v]) => out[f] !== v)) continue;
     const v = extractConcept(rule, text || '');
     if (v !== null && v !== '') out[field] = v;
   }

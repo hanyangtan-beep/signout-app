@@ -8,6 +8,7 @@ State on 2026-09-12: 54 templates (10 small biopsy, 23 benign resection incl. LE
 
 ## Done
 
+- 2026-09-18 — Frozen macro parsing: a pasted frozen gross now fills the intake (pieces, tissue, measurement, handling, frozen blocks, paraffin conversion). Frozen vocabulary added to `src/macroparse.js` — `frozenPieces`, `frozenBlocks`, `frozenSize`, `tissuePhrase` and a data-driven `choice` rule — measured on the five-year frozen file: pieces 95.6 per cent, measurement 99.7, blocks 99.1, tissue 100, handling 99.2, and no wrong value where the wording states the answer.
 - 2026-09-18 — Gastric: a biopsy with chronic inflammation Absent no longer asserts "CHRONIC GASTRITIS, inactive". The findings actually present lead the line (e.g. "MILD INTESTINAL METAPLASIA, Helicobacter-negative"). Fixtures 06 and 08 and the Sydney preset test re-captured deliberately.
 - 2026-09-18 — Frozen retune batch 2: CNS / pituitary scenario (site, side, procedure, smear preparation, nine measured results, deferral not staging) and the result-line vocabulary (`fsNegative` case setting over the three measured negative phrasings; three non-committal nodule answers). 960 tests, no existing fixture changed.
 
@@ -96,17 +97,11 @@ Docs
 
 ## Now
 
-_Empty. Frozen retune batch 2 shipped 2026-09-18._
+_Empty. Frozen macro parsing shipped 2026-09-18._
 
 ## Next
 
 Build order (2026-09-15) is set by the LIS export of 4547 cases, 2024 to 2026-09 — `docs/case-mix-2026-09.md`. Built templates cover 79.2 per cent of that caseload; the four cards above the rule take it to 89.9 per cent. Cards below the rule are carried over and are ordered by the same measure. Placeholders in the app menus (`templates/planned.json`) are removed by the card that builds the template.
-
-### Frozen macro parsing from a pasted gross                    Size: M
-`src/macroparse.js` has no frozen vocabulary. 586 real frozen gross texts in the five-year file share
-one opener (`Received in a fresh state is/are …`) and one closing block sentence, so dimensions, piece
-count and block count are extractable into the frozen fields the way the resection templates already do.
-Separated from the frozen retune batches deliberately: different module, different failure mode.
 
 ### Respiratory cytology                                 Size: M
 Why:        **228 cases, 5.0 per cent of the export — the largest uncovered category in the whole caseload, and the only one above 2 per cent.** Sputum ~132, bronchial aspirate / trap / lavage ~35, bronchial washing ~16. The cytology suite has urine, serous effusions, cervical and the three FNA templates but nothing for respiratory specimens, so every one of these is typed free-hand.
