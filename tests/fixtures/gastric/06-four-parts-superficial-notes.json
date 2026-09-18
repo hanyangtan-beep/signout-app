@@ -1,6 +1,6 @@
 {
   "name": "06-four-parts-superficial-notes",
-  "description": "Four parts including superficial gastric mucosa and indeterminate site types with additional notes. Re-captured 2026-09-10: parts with every finding Absent now read NO SIGNIFICANT ABNORMALITY instead of inactive chronic gastritis (user decision).",
+  "description": "Four parts including superficial gastric mucosa and indeterminate site types with additional notes. Re-captured 2026-09-10: parts with every finding Absent now read NO SIGNIFICANT ABNORMALITY instead of inactive chronic gastritis (user decision). Re-captured 2026-09-18: a part with chronic inflammation Absent no longer asserts a chronic gastritis; the findings actually present lead the line (user decision).",
   "input": {
     "caseTitle": "",
     "parts": [
@@ -69,6 +69,6 @@
   "expected": {
     "specimens": "(A) Antrum and (B) Body and (C) Cardia and (D) Incisura",
     "microscopy": "(A)\n- Site: Superficial gastric mucosa\n- Activity: Absent\n- Chronic inflammation: Absent\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Absent\n- Additional notes: Superficial fragments only; deep glands not represented.\n\n(B)\n- Site: Indeterminate\n- Activity: Absent\n- Chronic inflammation: Mild\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Absent\n\n(C)\n- Site: Cardiac type\n- Activity: Absent\n- Chronic inflammation: Mild\n- Reactive lymphoid follicle(s): Present\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Absent\n\n(D)\n- Site: Pyloric type\n- Activity: Absent\n- Chronic inflammation: Absent\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Mild\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Absent",
-    "diagnosis": "(A) STOMACH, antrum, biopsy - NO SIGNIFICANT ABNORMALITY, Helicobacter-negative\n(B) STOMACH, body, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative\n(C) STOMACH, cardia, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative\n(D) STOMACH, incisura, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative; mild INTESTINAL METAPLASIA"
+    "diagnosis": "(A) STOMACH, antrum, biopsy - NO SIGNIFICANT ABNORMALITY, Helicobacter-negative\n(B) STOMACH, body, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative\n(C) STOMACH, cardia, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative\n(D) STOMACH, incisura, biopsy - MILD INTESTINAL METAPLASIA, Helicobacter-negative"
   }
 }

@@ -178,6 +178,15 @@ export function isNormal(s) {
     && !present(s.atrophy) && s.ulcer !== 'Present' && !present(s.imDegree) && (s.dysplasia === 'Absent' || !s.dysplasia);
 }
 
+/**
+ * No chronic inflammation, no activity and no Helicobacter: the line must not assert a gastritis.
+ * The findings that are actually present lead the line instead (changed 2026-09-18, user decision;
+ * fixtures 06 and 08 re-captured). Before this, a biopsy showing only intestinal metaplasia read
+ * "CHRONIC GASTRITIS, inactive, Helicobacter-negative; mild INTESTINAL METAPLASIA" even though
+ * chronic inflammation was recorded as Absent.
+ */
+const noGastritis = (s) => !present(s.chronic) && !present(s.activity) && !hpPresent(s.hp);
+
 export function diagnosis(part, ctx) {
   const s = part.values;
   const parsed = ctx.prepared.sites;
@@ -185,6 +194,16 @@ export function diagnosis(part, ctx) {
   const site = low(verbatimSite);
   let line = `(${part.label}) ${ctx.schema.organ}, ${site}, ${ctx.schema.specimenNoun} - `;
   if (isNormal(s)) return `${line}NO SIGNIFICANT ABNORMALITY, Helicobacter-negative`;
+  if (noGastritis(s)) {
+    const items = [];
+    if (s.ulcer === 'Present') items.push('ULCER');
+    if (present(s.imDegree)) items.push(`${String(s.imDegree).toUpperCase()} INTESTINAL METAPLASIA${imQualifier(s)}`);
+    if (present(s.atrophy)) items.push(`${String(s.atrophy).toUpperCase()} ATROPHY`);
+    if (s.dysplasia && s.dysplasia !== 'Absent') items.push(s.dysplasia.toUpperCase());
+    // Lymphoid follicles without any inflammation: the only remaining positive finding.
+    if (!items.length) items.push('REACTIVE LYMPHOID FOLLICLE(S)');
+    return `${line}${items.join('; ')}, Helicobacter-negative`;
+  }
   if (hpPresent(s.hp)) {
     line += 'HELICOBACTER ASSOCIATED CHRONIC ' + (present(s.activity) ? 'ACTIVE ' : '') + 'GASTRITIS';
   } else if (present(s.activity)) {

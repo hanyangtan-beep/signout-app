@@ -1,6 +1,6 @@
 {
   "name": "08-blank-names-fallback",
-  "description": "No case title and blank specimen names: diagnosis falls back to \"stomach\"; specimen line uses Part labels.",
+  "description": "No case title and blank specimen names: diagnosis falls back to \"stomach\"; specimen line uses Part labels. Re-captured 2026-09-18: a part with chronic inflammation Absent no longer asserts a chronic gastritis; the findings actually present lead the line (user decision).",
   "input": {
     "caseTitle": "",
     "parts": [
@@ -39,6 +39,6 @@
   "expected": {
     "specimens": "(A) Part A and (B) Part B",
     "microscopy": "(A)\n- Site: Pyloric type\n- Activity: Mild\n- Chronic inflammation: Absent\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Absent\n- Helicobacter pylori: Absent\n\n(B)\n- Site: Body type\n- Activity: Absent\n- Chronic inflammation: Absent\n- Reactive lymphoid follicle(s): Absent\n- Atrophy: Absent\n- Evidence of ulcer / erosion: Absent\n- Intestinal metaplasia: Absent\n- Dysplasia / malignancy: Indefinite for dysplasia\n- Helicobacter pylori: Absent",
-    "diagnosis": "(A) STOMACH, stomach, biopsy - CHRONIC ACTIVE GASTRITIS\n(B) STOMACH, stomach, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative; INDEFINITE FOR DYSPLASIA"
+    "diagnosis": "(A) STOMACH, stomach, biopsy - CHRONIC ACTIVE GASTRITIS\n(B) STOMACH, stomach, biopsy - INDEFINITE FOR DYSPLASIA, Helicobacter-negative"
   }
 }

@@ -56,7 +56,10 @@ test('Sydney preset builds five mapped parts and a complete mapping prints witho
   c.parts[4].values.imDegree = 'Moderate';
   const out = generate(schema, generator, c);
   assert.match(out.diagnosis, /\n\nOLGA stage IV; OLGIM stage II\.$/); // antrum 0, corpus 2 -> II
-  assert.match(out.diagnosis, /\(E\) STOMACH, body, lesser curvature, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative; moderate INTESTINAL METAPLASIA; marked ATROPHY/);
+  // Atrophy and intestinal metaplasia without chronic inflammation: the line states the findings
+  // and does not assert a gastritis (changed 2026-09-18, user decision).
+  assert.match(out.diagnosis, /\(E\) STOMACH, body, lesser curvature, biopsy - MODERATE INTESTINAL METAPLASIA; MARKED ATROPHY, Helicobacter-negative/);
+  assert.match(out.diagnosis, /\(A\) STOMACH, antrum, greater curvature, biopsy - MARKED ATROPHY, Helicobacter-negative/);
   assert.match(out.specimens, /^\(A\) Antrum, greater curvature; \(B\)/);
 });
 
@@ -113,4 +116,27 @@ test('legacy two-part case without mapping produces no comment or stage line', (
   const out = generate(schema, generator, c);
   assert.equal(out.comment, '');
   assert.doesNotMatch(out.diagnosis, /OLGA/);
+});
+
+// Chronic inflammation Absent must not produce a chronic gastritis line (changed 2026-09-18).
+test('a biopsy with no chronic inflammation states the findings instead of a gastritis', () => {
+  const base = {
+    biopsySite: 'Antrum', siteType: 'Pyloric type', activity: 'Absent', chronic: 'Absent',
+    follicles: 'Absent', atrophy: 'Absent', ulcer: 'Absent', imDegree: 'Absent', dysplasia: 'Absent', hp: 'Absent',
+  };
+  const dx = (over) => generate(schema, generator, {
+    schemaId: 'gastric_biopsy', caseTitle: '', options: {},
+    parts: [{ label: 'A', values: { ...base, ...over } }],
+  }).diagnosis;
+  assert.equal(dx({ imDegree: 'Mild' }), 'STOMACH, antrum, biopsy - MILD INTESTINAL METAPLASIA, Helicobacter-negative');
+  assert.equal(dx({ atrophy: 'Marked', imDegree: 'Moderate', imType: 'Incomplete' }),
+    'STOMACH, antrum, biopsy - MODERATE INTESTINAL METAPLASIA (incomplete); MARKED ATROPHY, Helicobacter-negative');
+  assert.equal(dx({ ulcer: 'Present' }), 'STOMACH, antrum, biopsy - ULCER, Helicobacter-negative');
+  assert.equal(dx({ follicles: 'Present' }), 'STOMACH, antrum, biopsy - REACTIVE LYMPHOID FOLLICLE(S), Helicobacter-negative');
+  // Everything absent is still the normal line; inflammation still reads as a gastritis.
+  assert.equal(dx({}), 'STOMACH, antrum, biopsy - NO SIGNIFICANT ABNORMALITY, Helicobacter-negative');
+  assert.equal(dx({ chronic: 'Mild', imDegree: 'Mild' }),
+    'STOMACH, antrum, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative; mild INTESTINAL METAPLASIA');
+  assert.equal(dx({ imDegree: 'Mild', hp: 'Present' }),
+    'STOMACH, antrum, biopsy - HELICOBACTER ASSOCIATED CHRONIC GASTRITIS mild INTESTINAL METAPLASIA');
 });
