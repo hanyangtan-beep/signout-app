@@ -293,6 +293,8 @@ export function stripWords(value, strip) {
  */
 export function frozenScenario(text) {
   const t = String(text || '').toLowerCase();
+  // CNS first: "frontal lobe" would otherwise be caught by the lung test on "lobe".
+  if (/\bbrain\b|cerebell|cerebral|pituitar|sellar|craniotomy|burr hole|meningioma|glioma|schwannoma|intracranial|cerebellopontine|\bcpa\b|(?:frontal|temporal|parietal|occipital)\s+lobe/.test(t)) return 'CNS / pituitary';
   if (/\bsln\b|sentinel/.test(t)) return 'Sentinel lymph node';
   if (/parathyroid/.test(t)) return 'Parathyroid';
   if (/lymph\s*nodes?\b|\blevel\s+[i1-5]\b|\bnodal\b/.test(t)) return 'Lymph node';

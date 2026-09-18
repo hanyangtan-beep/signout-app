@@ -1,6 +1,6 @@
 {
   "id": "frozen_section",
-  "version": "2026.09b",
+  "version": "2026.09c",
   "name": "Frozen section",
   "shortName": "Frozen section",
   "label": "Frozen",
@@ -31,7 +31,14 @@
     "pituitary",
     "ureter",
     "bile duct",
-    "pancreatic neck"
+    "pancreatic neck",
+    "sellar",
+    "suprasellar",
+    "craniotomy",
+    "cerebellopontine angle",
+    "meningioma",
+    "smear",
+    "squash"
   ],
   "match": {
     "site": [
@@ -56,6 +63,10 @@
       },
       {
         "field": "slnSite",
+        "from": "options"
+      },
+      {
+        "field": "cnsSite",
         "from": "options"
       }
     ]
@@ -100,6 +111,19 @@
       ],
       "default": "Uppercase",
       "help": "House style is uppercase. Sentence case is the minority register in the measured file and stays available."
+    },
+    {
+      "id": "fsNegative",
+      "label": "Negative result reads",
+      "type": "select",
+      "options": [
+        "House default",
+        "No malignancy",
+        "Negative for malignancy",
+        "No evidence of malignancy"
+      ],
+      "default": "House default",
+      "help": "The three measured phrasings of the negative answer carry 275 of roughly 400 intraoperative lines. House default keeps each scenario’s own wording."
     }
   ],
   "options": [
@@ -134,6 +158,7 @@
         "Lung wedge / nodule",
         "Sentinel lymph node",
         "Pancreatic / bile duct margin",
+        "CNS / pituitary",
         "Nodule / mass",
         "Other"
       ],
@@ -141,7 +166,8 @@
         "Nodule / mass": "Nodule or mass (lung, thyroid, other)",
         "Other": "Tissue identification / other (free text)",
         "Lung wedge / nodule": "Lung wedge / nodule (staged pair)",
-        "Breast sentinel lymph node": "Breast sentinel lymph node(s) (staged pair)"
+        "Breast sentinel lymph node": "Breast sentinel lymph node(s) (staged pair)",
+        "CNS / pituitary": "CNS / pituitary (smear or squash)"
       },
       "default": "Margin"
     },
@@ -533,6 +559,164 @@
         "field": "scenario",
         "is": "Parathyroid"
       }
+    },
+    {
+      "id": "cnsSite",
+      "label": "Site",
+      "type": "select",
+      "options": [
+        "Brain",
+        "Frontal lobe",
+        "Temporal lobe",
+        "Parietal lobe",
+        "Occipital lobe",
+        "Cerebellum",
+        "Cerebellopontine angle",
+        "Sellar / suprasellar",
+        "Pituitary",
+        "Dura",
+        "Skull base",
+        "Spinal cord",
+        "Other"
+      ],
+      "default": "Brain",
+      "showIf": {
+        "field": "scenario",
+        "is": "CNS / pituitary"
+      },
+      "group": "CNS / pituitary"
+    },
+    {
+      "id": "cnsSiteOther",
+      "label": "Site (other)",
+      "type": "text",
+      "default": "",
+      "showIf": {
+        "field": "cnsSite",
+        "is": "Other"
+      },
+      "group": "CNS / pituitary"
+    },
+    {
+      "id": "cnsSide",
+      "label": "Side",
+      "type": "select",
+      "options": [
+        "",
+        "right",
+        "left",
+        "midline"
+      ],
+      "default": "",
+      "showIf": {
+        "field": "scenario",
+        "is": "CNS / pituitary"
+      },
+      "group": "CNS / pituitary"
+    },
+    {
+      "id": "cnsProcedure",
+      "label": "Procedure",
+      "type": "select",
+      "options": [
+        "biopsy",
+        "stereotactic biopsy",
+        "excision",
+        "debulking",
+        "craniotomy and excision",
+        "transsphenoidal excision"
+      ],
+      "default": "biopsy",
+      "showIf": {
+        "field": "scenario",
+        "is": "CNS / pituitary"
+      },
+      "group": "CNS / pituitary"
+    },
+    {
+      "id": "cnsPrep",
+      "label": "Preparation",
+      "type": "select",
+      "options": [
+        "Smear and frozen section",
+        "Smear only",
+        "Frozen section only"
+      ],
+      "default": "Smear and frozen section",
+      "showIf": {
+        "field": "scenario",
+        "is": "CNS / pituitary"
+      },
+      "group": "CNS / pituitary",
+      "help": "Smears are the usual intraoperative preparation for CNS tissue; the macro records how many were made."
+    },
+    {
+      "id": "cnsSmears",
+      "label": "Smears prepared",
+      "type": "number",
+      "default": "2",
+      "min": 1,
+      "showIf": {
+        "field": "cnsPrep",
+        "is": [
+          "Smear and frozen section",
+          "Smear only"
+        ]
+      },
+      "group": "CNS / pituitary"
+    },
+    {
+      "id": "cnsResult",
+      "label": "Frozen result",
+      "type": "select",
+      "options": [
+        "No malignancy",
+        "Meningioma",
+        "Pituitary adenoma",
+        "High-grade glioma",
+        "Schwannoma",
+        "Epidermoid cyst",
+        "Infarcted tissue with adjacent brain",
+        "Metastatic carcinoma",
+        "Inadequate for diagnosis",
+        "Deferred",
+        "Other"
+      ],
+      "optionLabels": {
+        "Deferred": "Defer to paraffin",
+        "Other": "Other (free text)",
+        "Inadequate for diagnosis": "Inadequate for diagnosis (non-diagnostic)"
+      },
+      "default": "No malignancy",
+      "showIf": {
+        "field": "scenario",
+        "is": "CNS / pituitary"
+      },
+      "group": "CNS / pituitary"
+    },
+    {
+      "id": "cnsOther",
+      "label": "Frozen result (free text)",
+      "type": "text",
+      "default": "",
+      "placeholder": "Lymphoid infiltrate, favour lymphoma",
+      "showIf": {
+        "field": "cnsResult",
+        "is": "Other"
+      },
+      "group": "CNS / pituitary"
+    },
+    {
+      "id": "cnsPrimary",
+      "label": "Favoured primary",
+      "type": "text",
+      "default": "",
+      "placeholder": "lung",
+      "showIf": {
+        "field": "cnsResult",
+        "is": "Metastatic carcinoma"
+      },
+      "group": "CNS / pituitary"
     },
     {
       "id": "ovSide",
@@ -1385,10 +1569,16 @@
       "options": [
         "Benign",
         "Malignant",
+        "Atypical cells present",
+        "Suspicious cells present",
+        "Inadequate for diagnosis",
         "Deferred"
       ],
       "optionLabels": {
-        "Deferred": "Defer to paraffin"
+        "Deferred": "Defer to paraffin",
+        "Atypical cells present": "Atypical cells present, immunostains required",
+        "Suspicious cells present": "Scanty suspicious cells present",
+        "Inadequate for diagnosis": "Inadequate for diagnosis (non-diagnostic)"
       },
       "default": "Benign",
       "showIf": {

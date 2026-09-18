@@ -107,7 +107,10 @@ export function macro(part, ctx) {
   const handling = v.handling === 'Representative section taken'
     ? `Representative section taken and embedded ${blockPhrase}. The remainder is formalin fixed.`
     : `${v.handling || 'All embedded'} ${blockPhrase}.`;
-  return `(${part.label}) Received in a fresh state ${received}. ${handling}`;
+  // CNS: the smear is the intraoperative preparation and is recorded before the blocks.
+  const smear = isCns(v) ? cnsSmearSentence(v) : '';
+  const tail = v.cnsPrep === 'Smear only' ? '' : ` ${handling}`;
+  return `(${part.label}) Received in a fresh state ${received}.${smear ? ` ${smear}` : ''}${tail}`;
 }
 
 // ---------- frozen (intraoperative) diagnosis ----------
@@ -118,7 +121,8 @@ const deferred = (v) => v.correlation === 'Deferred'
   || (v.scenario === 'Ovarian / adnexal mass' && v.ovaryResult === 'Deferred')
   || (v.scenario === LU && v.lungResult === 'Deferred')
   || (v.scenario === SLN && v.slnResult === 'Deferred')
-  || (v.scenario === 'Nodule / mass' && v.noduleResult === 'Deferred')
+  || (v.scenario === 'Nodule / mass' && ['Deferred', 'Inadequate for diagnosis', 'Atypical cells present'].includes(v.noduleResult))
+  || (v.scenario === CNS && ['Deferred', 'Inadequate for diagnosis'].includes(v.cnsResult))
   || (v.scenario === PD && v.pdResult === 'Atypical, deferred');
 
 const tumour = (v, fallback) => stripDot(v.tumourType) || fallback;
@@ -525,7 +529,7 @@ function slnMacro(part) {
 }
 
 /** Intraoperative line: "Negative for malignancy." / "Metastatic carcinoma, >2 mm (1 of 2 lymph nodes)." */
-function slnResultLine(v) {
+function slnResultLine(v, ctx) {
   const n = slnCount(v);
   const pos = slnPositive(v);
   const of = n > 1 ? ` (${pos} of ${n} lymph nodes)` : '';
@@ -535,7 +539,7 @@ function slnResultLine(v) {
     case 'Isolated tumour cells': return `Isolated tumour cells, 0.2 mm or less${of}; negative for macrometastasis.`;
     case 'No nodal tissue identified': return 'No nodal tissue identified; negative for malignancy.';
     case 'Deferred': return 'Deferred to paraffin sections.';
-    default: return 'Negative for malignancy.';
+    default: return negative(ctx, 'Negative for malignancy');
   }
 }
 
@@ -608,10 +612,133 @@ export function slnSummary(v) {
   };
 }
 
+// ---------- CNS / pituitary scenario ----------
+
+/**
+ * 48 parts in the five-year file — 3.7 per cent of parts, 8.0 per cent of cases — and the largest
+ * measured category with no scenario at all. The answer list is short and formulaic and is taken
+ * from the file: meningioma (11 printed lines), pituitary adenoma, high-grade glioma, schwannoma,
+ * epidermoid cyst, infarcted tissue with adjacent brain, no malignancy. Metastatic carcinoma and
+ * inadequate for diagnosis come from the file-wide result vocabulary. Smears are the intraoperative
+ * preparation the macro has never had words for. No synoptic pairs with it: CNS grading is WHO CNS5
+ * and belongs to the `cns_biopsy` template, not to a staging path off the frozen section.
+ *
+ * Paraffin morphology below is released-report prose. Knowledge grounding, comments only:
+ *   meningioma     https://www.pathologyoutlines.com/topic/cnstumormeningiomageneral.html
+ *   pituitary      https://clinicalpub.com/histologic-features-of-pituitary-adenomas-and-sellar-region-masses/
+ *   high-grade glioma  https://www.ncbi.nlm.nih.gov/books/NBK558954/
+ *   schwannoma     https://pmc.ncbi.nlm.nih.gov/articles/PMC7884141/
+ *   epidermoid cyst    https://pmc.ncbi.nlm.nih.gov/articles/PMC10832492/
+ */
+export const CNS = 'CNS / pituitary';
+const isCns = (v) => v.scenario === CNS;
+const cnsSite = (v) => (v.cnsSite === 'Other' ? (String(v.cnsSiteOther || '').trim() || 'Brain') : (v.cnsSite || 'Brain'));
+const cnsResult = (v) => v.cnsResult || 'No malignancy';
+const CNS_MALIGNANT = ['High-grade glioma', 'Metastatic carcinoma'];
+const cnsSmears = (v) => Math.max(1, Math.round(num(v.cnsSmears) ?? 2));
+
+/** "Two smears are prepared." — the squash/smear sentence, inserted before the block sentence. */
+function cnsSmearSentence(v) {
+  const prep = v.cnsPrep || 'Smear and frozen section';
+  if (prep === 'Frozen section only') return '';
+  const n = cnsSmears(v);
+  return `${uc1(word(n))} smear${n === 1 ? ' is' : 's are'} prepared from the tissue.`;
+}
+
+function cnsResultLine(v, ctx) {
+  switch (cnsResult(v)) {
+    case 'Meningioma': return 'Meningioma.';
+    case 'Pituitary adenoma': return 'Pituitary adenoma.';
+    case 'High-grade glioma': return 'High-grade glioma.';
+    case 'Schwannoma': return 'Schwannoma.';
+    case 'Epidermoid cyst': return 'Epidermoid cyst.';
+    case 'Infarcted tissue with adjacent brain': return 'Infarcted tissue with adjacent brain.';
+    case 'Metastatic carcinoma': {
+      const p = stripDot(v.cnsPrimary);
+      return `Metastatic carcinoma${p ? `, consistent with the known ${lc1(p)} primary` : ''}.`;
+    }
+    case 'Inadequate for diagnosis': return 'Inadequate for diagnosis.';
+    case 'Deferred': return 'Deferred to paraffin sections.';
+    case 'Other': return v.cnsOther ? `${uc1(stripDot(v.cnsOther))}.` : negative(ctx);
+    default: return negative(ctx);
+  }
+}
+
+function cnsTissue(v) {
+  switch (cnsResult(v)) {
+    case 'Meningioma':
+      return 'a meningothelial neoplasm arranged in lobules and whorls, the cells syncytial with indistinct borders, eosinophilic cytoplasm and round nuclei containing intranuclear pseudoinclusions, with scattered psammoma bodies';
+    case 'Pituitary adenoma':
+      return 'a monotonous population of epithelial cells arranged in sheets and nests around a delicate vascular network, without the acinar architecture of the surrounding anterior pituitary';
+    case 'High-grade glioma':
+      return 'a hypercellular astrocytic neoplasm with nuclear pleomorphism and brisk mitotic activity, together with microvascular proliferation and foci of necrosis rimmed by pseudopalisading tumour cells';
+    case 'Schwannoma':
+      return 'a spindle cell neoplasm with alternating compact and loose areas, nuclear palisading forming Verocay bodies, and thick-walled hyalinised vessels';
+    case 'Epidermoid cyst':
+      return 'a cyst lined by keratinising squamous epithelium with a granular layer, the lumen filled with lamellated anucleate keratin, and no adnexal structures in the wall';
+    case 'Infarcted tissue with adjacent brain':
+      return 'infarcted tissue with adjacent brain parenchyma showing reactive astrocytosis and a macrophage infiltrate';
+    case 'Metastatic carcinoma': {
+      const p = stripDot(v.cnsPrimary);
+      return `brain parenchyma infiltrated by metastatic carcinoma forming discrete nests with a sharp interface against surrounding gliotic brain${p ? `, consistent with the known ${lc1(p)} primary` : ''}`;
+    }
+    case 'Inadequate for diagnosis':
+      return 'scanty fragments of brain parenchyma with crush artefact';
+    case 'Other':
+      return v.cnsOther ? lc1(stripDot(v.cnsOther)) : 'the tissue described';
+    default:
+      return 'brain parenchyma with reactive astrocytosis';
+  }
+}
+
+function cnsFinalDx(v) {
+  switch (cnsResult(v)) {
+    case 'Meningioma': return 'MENINGIOMA';
+    case 'Pituitary adenoma': return 'PITUITARY ADENOMA';
+    case 'High-grade glioma': return 'HIGH-GRADE GLIOMA';
+    case 'Schwannoma': return 'SCHWANNOMA';
+    case 'Epidermoid cyst': return 'EPIDERMOID CYST';
+    case 'Infarcted tissue with adjacent brain': return 'INFARCTED TISSUE WITH ADJACENT BRAIN';
+    case 'Metastatic carcinoma': {
+      const p = stripDot(v.cnsPrimary);
+      return `METASTATIC CARCINOMA${p ? `, consistent with a ${lc1(p)} primary` : ''}`;
+    }
+    case 'Inadequate for diagnosis':
+    case 'Deferred': return 'SEE MICROSCOPIC EXAMINATION';
+    case 'Other': return v.cnsOther ? stripDot(v.cnsOther).toUpperCase() : 'NO EVIDENCE OF MALIGNANCY';
+    default: return 'NO EVIDENCE OF MALIGNANCY';
+  }
+}
+
+function cnsOrganPhrase(v) {
+  const site = cnsSite(v).toUpperCase();
+  const side = String(v.cnsSide || '').trim().toLowerCase();
+  const proc = String(v.cnsProcedure || 'biopsy').trim().toLowerCase();
+  return `${site}, ${side ? `${side}, ` : ''}${proc} x frozen section`;
+}
+
+// ---------- the negative answer ----------
+
+/**
+ * Three phrasings of the same negative answer — `No malignancy` (138), `Negative for malignancy`
+ * (122), `No evidence of malignancy` (15) — carry 275 of roughly 400 intraoperative result lines in
+ * the five-year file. Each scenario keeps the phrasing it already generated as its house default,
+ * so nothing that exists changes; the case setting picks one phrasing for the whole report instead
+ * of leaving it to whatever was typed last. Compound negatives ("No carcinoma at the pancreatic
+ * neck margin", "No tumour identified in the tissue examined") are not one of the three and are
+ * left alone.
+ */
+function negative(ctx, houseDefault = 'No malignancy') {
+  const choice = String(ctx?.case?.fsNegative || 'House default');
+  return `${choice === 'House default' ? houseDefault : choice}.`;
+}
+
 /** One sentence, as phoned to the surgeon. */
-export function frozenResult(part) {
+export function frozenResult(part, ctx) {
   const v = part.values;
   switch (v.scenario) {
+    case CNS:
+      return cnsResultLine(v, ctx);
     case PD:
       return pdResultLine(v);
     case 'Margin':
@@ -623,7 +750,7 @@ export function frozenResult(part) {
         }
         case 'Dysplasia only': return `${v.dysplasiaGrade || 'Moderate'} dysplasia; no invasive malignancy.`;
         case 'Atypical, deferred': return 'Atypical cells present; deferred to paraffin sections.';
-        default: return 'No malignancy.';
+        default: return negative(ctx, 'No malignancy');
       }
     case 'Lymph node':
       switch (v.nodeResult) {
@@ -634,7 +761,7 @@ export function frozenResult(part) {
           return `Metastatic ${lc1(tumour(v, 'carcinoma'))} present (${kind}${d === null ? '' : `, ${fmt(d)} mm`}).`;
         }
         case 'Deferred': return 'Deferred to paraffin sections.';
-        default: return 'Negative for malignancy.';
+        default: return negative(ctx, 'Negative for malignancy');
       }
     case 'Parathyroid':
       switch (v.parathyroidResult) {
@@ -673,15 +800,20 @@ export function frozenResult(part) {
     }
     case LU: return luResultLine(v);
     case SLN:
-    case SLN_LEGACY: return slnResultLine(v);
+    case SLN_LEGACY: return slnResultLine(v, ctx);
     case 'Nodule / mass':
       switch (v.noduleResult) {
         case 'Malignant': return `Malignant${v.tumourType ? `; ${lc1(tumour(v))}` : ''}.`;
+        // Measured non-committal answers: "Atypical cells present - need immunostain to confirm",
+        // "Scanty suspicious cells present", "Inadequate for diagnosis".
+        case 'Atypical cells present': return 'Atypical cells present; immunostaining is required for confirmation.';
+        case 'Suspicious cells present': return 'Scanty suspicious cells present.';
+        case 'Inadequate for diagnosis': return 'Inadequate for diagnosis.';
         case 'Deferred': return 'Deferred to paraffin sections.';
         default: return `Benign${v.tumourType ? `; ${lc1(tumour(v))}` : ''}.`;
       }
     default:
-      return v.freeResult ? `${uc1(stripDot(v.freeResult))}.` : 'No malignancy.';
+      return v.freeResult ? `${uc1(stripDot(v.freeResult))}.` : negative(ctx, 'No malignancy');
   }
 }
 
@@ -697,7 +829,7 @@ export function labelRange(labels) {
 export function intraop(parts, ctx) {
   const groups = [];
   for (const p of parts) {
-    const text = frozenResult(p);
+    const text = frozenResult(p, ctx);
     const g = groups.find((x) => x.text === text);
     if (g) g.labels.push(p.label); else groups.push({ text, labels: [p.label] });
   }
@@ -719,6 +851,8 @@ export function intraop(parts, ctx) {
 
 function defaultTissue(v) {
   switch (v.scenario) {
+    case CNS:
+      return cnsTissue(v);
     case PD:
       return pdTissue(v);
     case 'Margin':
@@ -759,6 +893,7 @@ function malignant(v) {
     || (v.scenario === 'Ovarian / adnexal mass' && ['Malignant', 'Malignant, favour metastatic'].includes(v.ovaryResult))
     || (v.scenario === LU && LU_MALIGNANT.includes(v.lungResult || 'Adenocarcinoma'))
     || (v.scenario === SLN && SLN_POSITIVE.includes(v.slnResult))
+    || (v.scenario === CNS && CNS_MALIGNANT.includes(cnsResult(v)))
     || (v.scenario === 'Nodule / mass' && v.noduleResult === 'Malignant');
 }
 
@@ -772,7 +907,7 @@ function closingSentence(v) {
   return 'There is no evidence of malignancy.';
 }
 
-export function microscopy(part) {
+export function microscopy(part, ctx) {
   const v = part.values;
   const tissue = stripDot(v.tissue) || defaultTissue(v);
   const notes = String(v.additionalNotes || '').trim();
@@ -782,7 +917,7 @@ export function microscopy(part) {
     const finalDx = stripDot(v.paraffinDx);
     s = `(${part.label}) The paraffin section shows ${tissue}.`
       + (finalDx ? ` The features are those of ${lc1(finalDx)}.` : '')
-      + ` This is discordant with the frozen section diagnosis (${lc1(stripDot(frozenResult(part)))}); the discrepancy is attributed to ${reason}.`;
+      + ` This is discordant with the frozen section diagnosis (${lc1(stripDot(frozenResult(part, ctx)))}); the discrepancy is attributed to ${reason}.`;
   } else if (isOvary(v) && v.ovaryResult === 'Borderline, at least (invasion cannot be excluded)') {
     const finalDx = stripDot(v.paraffinDx);
     s = `(${part.label}) The paraffin sections show ${tissue}.`
@@ -811,6 +946,7 @@ export function microscopy(part) {
 
 export function organPhrase(part) {
   const v = part.values;
+  if (isCns(v)) return cnsOrganPhrase(v);
   if (isSln(v)) return slnOrganPhrase(v);
   if (isLung(v)) {
     const side = String(v.luSide || '').trim().toLowerCase();
@@ -836,6 +972,8 @@ export function finalDx(part) {
   const override = stripDot(v.paraffinDx);
   if (override && (v.correlation === 'Discordant' || deferred(v))) return override.toUpperCase();
   switch (v.scenario) {
+    case CNS:
+      return cnsFinalDx(v);
     case PD:
       return pdFinalDx(v);
     case 'Margin':
@@ -892,6 +1030,9 @@ export function finalDx(part) {
     case 'Nodule / mass':
       switch (v.noduleResult) {
         case 'Malignant': return v.tumourType ? tumour(v).toUpperCase() : 'MALIGNANT TUMOUR, see microscopic examination';
+        case 'Atypical cells present':
+        case 'Suspicious cells present':
+        case 'Inadequate for diagnosis':
         case 'Deferred': return 'SEE MICROSCOPIC EXAMINATION';
         default: return v.tumourType ? tumour(v).toUpperCase() : 'BENIGN; no evidence of malignancy';
       }
@@ -982,4 +1123,4 @@ export function validate(part, ctx) {
   return out;
 }
 
-export default { specimens, specimenName, marginName, blockClause, macro, intraop, microscopy, diagnosis, validate, organPhrase, stageable, applyRegister, PAIRED_TEMPLATE, PAIR_SEPARATE, pairTemplate, marginSummary, PD, PD_SITES, SLN, SLN_LEGACY };
+export default { specimens, specimenName, marginName, blockClause, macro, intraop, microscopy, diagnosis, validate, organPhrase, stageable, applyRegister, PAIRED_TEMPLATE, PAIR_SEPARATE, pairTemplate, marginSummary, PD, PD_SITES, SLN, SLN_LEGACY, CNS };

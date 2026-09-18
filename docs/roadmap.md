@@ -8,6 +8,8 @@ State on 2026-09-12: 54 templates (10 small biopsy, 23 benign resection incl. LE
 
 ## Done
 
+- 2026-09-18 — Frozen retune batch 2: CNS / pituitary scenario (site, side, procedure, smear preparation, nine measured results, deferral not staging) and the result-line vocabulary (`fsNegative` case setting over the three measured negative phrasings; three non-committal nodule answers). 960 tests, no existing fixture changed.
+
 - [x] **Frozen template retune, batch 1 — splits (a)–(e)** (2026-09-18, user request: "pull splits (a)-(d) into now"): the frozen template rebuilt on the five-year measurement in `docs/case-mix/frozen-2021-2026.md` (598 cases, 1291 parts). Named **margin pick-lists** (`mgOrgan`, `mgDescriptor`, `mgProcedure`, 27 measured organs and 27 descriptors with an "other" escape on each) generate the head line `TONGUE, anterior margin, excision x frozen section`, so the 40.4 per cent of parts that are margins no longer need a typed specimen name. The sentinel scenario is **generalised** from `Breast sentinel lymph node` to `Sentinel lymph node` with an `slnSite` (236 sentinel parts against 25 breast parts in the whole file); the old value still loads, still pre-fills the breast synoptic and still suppresses the duplicate node count in the mastectomy macro, while Miller-Payne and treatment effect stay breast-only and a non-breast sentinel node pairs with nothing. The **node count** `(0/1)` is generated from the node fields, never typed, and a case saved before the fields existed prints exactly as it did. The **block sentence** collapses from six measured variants plus four hand-written copies in the generator to one `blockClause()`, in the house form — digit numeral, serial comma — with the 32-case unconverted form behind a `converted` checkbox; the **phone sentence** becomes the measured "The frozen section result was phone reported to Dr X at HHMM on DD/MM/YYYY.". Split **(e), added in answer to the user's question**, teaches the request-text matcher the frozen vocabulary: 23 measured aliases replace seven guessed ones, a `frozen` role sets the scenario from the request line, and `match.fill` prefills the new pick-lists, so a pasted "(A) Tongue, anterior margin x frozen section" arrives on the Margin scenario with the organ and descriptor already chosen. **The uppercase register is house** and the default; sentence case is a case setting that folds capital runs without touching pTNM. 84-field schema (`2026.09b`), 948 tests. Five golden fixtures regenerated deliberately for the block, phone and scenario-name wording.
 - [x] **Whipple pair — pancreas + ampulla carcinoma** (2026-09-17, user request: "pull into now"): splits (a)–(g) shipped as one batch — shared Whipple specimen base in `generators/_whipple.js`, `src/staging/pancreas.js` (T by size alone, T4 arteries only, N1 1–3 / N2 ≥4) and `src/staging/ampulla.js` (T1a/T1b/T2/T3a/T3b/T4 by extent, T3 split at 0.5 cm of pancreatic invasion), the `pancreas_carcinoma` (68 fields, Hepatobiliary) and `ampulla_carcinoma` (72 fields, GI) synoptics with enriched histology and the CK7/CK20/CDX2/MUC1/MUC2 subtype panel printed in the microscopy paragraph, a shared origin field that flags a case sitting on the wrong template, and a **Pancreatic / bile duct margin** frozen scenario whose six named margins prefill the paraffin synoptic through `prefillFromFrozen` (a separate letter, like the breast sentinel node). Intake now routes "Whipple", "Pancreaticoduodenectomy", "Ampullary" and "Periampullary" top-1 confident. Both placeholders retired; 934 tests green.
 - [x] **Sign-in gate on the published app** (2026-09-16, user request: "pull it into now"): boot in `src/app.js` now renders a sign-in screen instead of the workspace on the published host; `src/gate.js` holds the decision as pure functions, `allowedEmails` in Settings restricts which Google accounts get in (empty = any), Sign out and a new **Lock** case-menu item return to the gate. Bypassed on `localhost` by hostname only so browser QA still runs; two committed QA checks assert the gate closes on a non-local host and stays out of the way on localhost. It is interface-level only, not access control — the platform visibility setting is the real lever, and on 2026-09-16 an anonymous fetch of the published URL still returned the whole app after that setting was restricted.
@@ -93,21 +95,11 @@ Docs
 
 ## Now
 
-_Empty. The frozen retune batch 1 shipped 2026-09-18; batch 2 is at the head of Next._
+_Empty. Frozen retune batch 2 shipped 2026-09-18._
 
 ## Next
 
 Build order (2026-09-15) is set by the LIS export of 4547 cases, 2024 to 2026-09 — `docs/case-mix-2026-09.md`. Built templates cover 79.2 per cent of that caseload; the four cards above the rule take it to 89.9 per cent. Cards below the rule are carried over and are ordered by the same measure. Placeholders in the app menus (`templates/planned.json`) are removed by the card that builds the template.
-
-### Frozen template retune, batch 2 — CNS scenario and result vocabulary   Size: M
-Follows batch 1. From the same measurement, `docs/case-mix/frozen-2021-2026.md`.
-  (a) CNS / pituitary scenario — 48 parts, 8.0 per cent of cases, entirely uncovered and the largest
-      gap in the scenario list. Measured answer list: meningioma, pituitary adenoma, high-grade
-      glioma, schwannoma, epidermoid cyst, infarcted tissue with adjacent brain, no malignancy.
-      Needs squash and smear vocabulary in the macro and a deferral path, not a staging path.
-  (b) Result-line vocabulary per scenario — replace the guessed options with the measured ones.
-      Three phrasings of the same negative answer carry 275 of roughly 400 intraoperative lines;
-      pick one default per scenario and keep the others reachable.
 
 ### Fixture capture drift — `npm run fixtures:force` reverts shipped decisions   Size: S
 Tooling, not a template, so it sits outside the caseload ordering below.
