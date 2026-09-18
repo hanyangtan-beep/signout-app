@@ -4,7 +4,7 @@ import { stripDot } from './_house.js';
 // converts every frozen block to paraffin, so the same letters carry through to the final report).
 // Blocks produced:
 //   specimens  "Frozen section: (A) Tongue, medial margin, (B) …"
-//   macro      "(A) Received in a fresh state is a piece of tan coloured tissue measuring … All embedded in 1 frozen block and subsequently converted to paraffin block."
+//   macro      "(A) Received in a fresh state is a piece of tan coloured tissue measuring … All embedded in 1 frozen block, and subsequently converted to paraffin block."
 //   intraop    "(Prof. A Cheung / Dr. HY Tan)" + grouped frozen diagnoses + the phone-report sentence
 //   microscopy "(A) The paraffin section confirms the frozen section diagnosis. It shows … There is no evidence of malignancy."
 //   diagnosis  "(A) TONGUE, medial margin, frozen section - NO EVIDENCE OF MALIGNANCY"
@@ -25,8 +25,40 @@ const listJoin = (items) => {
   return `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`;
 };
 
+/**
+ * Margin head line from the pick-lists: "TONGUE, anterior margin, excision". Margins are 40.4 per
+ * cent of all frozen parts in the five-year measurement and the descriptor vocabulary is small and
+ * repeating, so it is chosen rather than typed. A typed specimen name still wins.
+ */
+export function marginName(v) {
+  const organ = (v.mgOrgan === 'Other' ? String(v.mgOrganOther || '').trim() : String(v.mgOrgan || '').trim());
+  if (!organ) return '';
+  const desc = (v.mgDescriptor === 'Other' ? String(v.mgDescriptorOther || '').trim() : String(v.mgDescriptor || '').trim());
+  const proc = String(v.mgProcedure ?? 'excision').trim();
+  const bits = [organ.toUpperCase(), desc ? `${desc.toLowerCase()} margin` : 'margin'];
+  // The measured head line ends "excision x frozen section", the same shape the sentinel and
+  // pancreatic scenarios already use, so the generic ", frozen section" suffix is not added again.
+  return `${bits.join(', ')}${proc ? `, ${proc.toLowerCase()}` : ''} x frozen section`;
+}
+
+/**
+ * The one block sentence. The five-year file carries six variants across roughly 900 occurrences
+ * that differ only in digit-versus-word and one serial comma, plus four scenario-specific hand
+ * written copies in this generator. House form is the digit and the comma (774 of the 900).
+ * `converted: false` is the minority form, 32 measured cases, where the block is not converted.
+ */
+export function blockClause(n, converted = true) {
+  const b = Math.max(1, Math.round(n || 1));
+  const noun = b === 1 ? 'block' : 'blocks';
+  if (!converted) return `in ${b} ${noun} for frozen section`;
+  return `in ${b} frozen ${noun}, and subsequently converted to paraffin ${noun}`;
+}
+
 export function specimenName(part) {
-  return part.values.specimenName || `Part ${part.label}`;
+  const v = part.values;
+  if (v.specimenName) return v.specimenName;
+  if (v.scenario === 'Margin') { const m = marginName(v); if (m) return m; }
+  return `Part ${part.label}`;
 }
 
 /** "Frozen section: (A) Tongue, medial margin, (B) Tongue, posterior margin and (C) Right level I lymph node" */
@@ -67,10 +99,11 @@ export function macro(part, ctx) {
     const agg = size && !/each|aggregate/i.test(size) ? ' in aggregate' : '';
     received = `are ${word(n)} pieces of ${noun}${size}${agg}`;
   }
+  // One generated block sentence. The measured file carries six variants across ~900 occurrences
+  // that differ only in digit-versus-word and one serial comma; the house form is the digit and the
+  // comma (774 of them). 32 cases do not convert the block, which is the `converted` flag.
   const blocks = Math.max(1, Math.round(num(v.blocks) ?? 1));
-  const blockPhrase = blocks === 1
-    ? 'in 1 frozen block and subsequently converted to paraffin block'
-    : `in ${blocks} frozen blocks and subsequently converted to paraffin blocks`;
+  const blockPhrase = blockClause(blocks, v.converted !== false);
   const handling = v.handling === 'Representative section taken'
     ? `Representative section taken and embedded ${blockPhrase}. The remainder is formalin fixed.`
     : `${v.handling || 'All embedded'} ${blockPhrase}.`;
@@ -89,6 +122,38 @@ const deferred = (v) => v.correlation === 'Deferred'
   || (v.scenario === PD && v.pdResult === 'Atypical, deferred');
 
 const tumour = (v, fallback) => stripDot(v.tumourType) || fallback;
+
+/**
+ * " (0/1)" — the involved-over-examined count appended to a node diagnosis line. 102 of the 598
+ * measured cases print it. Generated only when the examined count is recorded, so a case saved
+ * before the field existed prints exactly as it did.
+ */
+function nodeCount(v) {
+  const n = num(v.lnExamined);
+  if (n === null) return '';
+  const examined = Math.max(0, Math.round(n));
+  const positive = ['Macrometastasis', 'Micrometastasis'].includes(v.nodeResult)
+    ? Math.min(examined, Math.max(1, Math.round(num(v.lnPositive) ?? 1)))
+    : 0;
+  return ` (${positive}/${examined})`;
+}
+
+/**
+ * The report register. Uppercase is house and the default; sentence case is the minority register
+ * measured in the five-year file and is kept reachable as a case setting rather than left to
+ * whatever was typed last. Only runs of two or more capitals are folded, so pTNM stays pTNM and an
+ * abbreviation the pathologist typed in a free-text result is not quietly lowercased.
+ */
+export function applyRegister(text, register) {
+  if (register !== 'Sentence case') return text;
+  let first = true;
+  return String(text).replace(/\b[A-Z]{2,}(?:[ -][A-Z]{2,})*\b/g, (run) => {
+    const folded = run.toLowerCase();
+    const out = first ? uc1(folded) : folded;
+    first = false;
+    return out;
+  });
+}
 
 // ---------- ovarian / adnexal mass scenario (spec: docs/specs/ovary-pair.md, Part 1) ----------
 
@@ -173,7 +238,7 @@ function ovMacro(part) {
   if (cut.length) sents.push(`Cut surface shows ${listJoin(cut)}.`);
   const blocks = Math.max(1, Math.round(num(v.ovBlocks) ?? num(v.blocks) ?? 1));
   const areas = asList(v.ovCut).some((c) => /Solid|Papillary/.test(c)) ? 'Representative sections of the solid and papillary areas' : 'Representative sections';
-  sents.push(`${areas} are embedded in ${blocks} frozen block${blocks === 1 ? '' : 's'} and subsequently converted to paraffin block${blocks === 1 ? '' : 's'}.`);
+  sents.push(`${areas} are embedded ${blockClause(blocks, v.converted !== false)}.`);
   return sents.join(' ');
 }
 
@@ -242,7 +307,7 @@ function luMacro(part) {
   else if (v.luPleuraGross === 'Involved grossly') sents.push('The nodule abuts the pleural surface.');
   const blocks = Math.max(1, Math.round(num(v.luBlocks) ?? 1));
   const what = count === '0' ? 'Representative sections' : count === '1' ? 'Representative sections of the nodule' : 'Representative sections of the nodules';
-  sents.push(`${what} are embedded in ${blocks} frozen block${blocks === 1 ? '' : 's'} and subsequently converted to paraffin block${blocks === 1 ? '' : 's'}${v.luRemainder !== false ? '; the remaining tissue is submitted for paraffin sections only' : ''}.`);
+  sents.push(`${what} are embedded ${blockClause(blocks, v.converted !== false)}${v.luRemainder !== false ? '; the remaining tissue is submitted for paraffin sections only' : ''}.`);
   return sents.join(' ');
 }
 
@@ -404,12 +469,26 @@ export function marginSummary(v) {
 
 // ---------- breast sentinel lymph node scenario (spec: docs/specs/breast-pair.md, Part (a); house wording docs/reference/frozen-section-examples.md §1–2) ----------
 
-export const SLN = 'Breast sentinel lymph node';
-const isSln = (v) => v.scenario === SLN;
+export const SLN = 'Sentinel lymph node';
+/** The scenario was breast-only until the five-year measurement (236 sentinel parts, 25 breast parts);
+ *  saved cases and fixtures still carry the old value, so both are accepted forever. */
+export const SLN_LEGACY = 'Breast sentinel lymph node';
+const isSln = (v) => v.scenario === SLN || v.scenario === SLN_LEGACY;
+/** Sentinel site, defaulting to breast so cases saved before the site field existed read the same. */
+const slnSite = (v) => (v.slnSite === 'Other' ? (String(v.slnSiteOther || '').trim() || 'Breast') : (v.slnSite || 'Breast'));
+const slnIsBreast = (v) => slnSite(v) === 'Breast';
 const SLN_POSITIVE = ['Isolated tumour cells', 'Micrometastasis', 'Macrometastasis'];
 const slnCount = (v) => Math.max(0, Math.round(num(v.slnCount) ?? 1));
 const slnPositive = (v) => (SLN_POSITIVE.includes(v.slnResult) ? Math.min(slnCount(v), Math.max(1, Math.round(num(v.slnPositive) ?? 1))) : 0);
-const slnTreated = (v) => !!v.slnTreatment && v.slnTreatment !== 'No known presurgical therapy';
+const slnTreated = (v) => slnIsBreast(v) && !!v.slnTreatment && v.slnTreatment !== 'No known presurgical therapy';
+
+/** House label: side plus an auto number — "right SLN1", "left SLN 2" as measured. A typed label wins. */
+function slnNodeLabel(v) {
+  const typed = stripDot(v.slnLabel);
+  if (typed) return typed;
+  const n = num(v.slnNumber);
+  return n === null ? 'sentinel lymph node' : `SLN${fmt(Math.max(1, Math.round(n)))}`;
+}
 
 /** "1 cm and 0.5 cm across respectively" from "1 and 0.5" / "1, 0.5" / "1 cm and 0.5 cm". */
 function slnNodeSizePhrase(v) {
@@ -441,7 +520,7 @@ function slnMacro(part) {
       : `${uc1(word(n))} ${nodeNoun} ${n === 1 ? 'is' : 'are'} identified within${sizes ? `,${sizes}` : ''}.`);
     if (v.slnFatStripped !== false && n > 0) sentences.push('The fatty tissue is stripped off.');
   }
-  sentences.push(`All embedded in ${blocks} frozen ${blocks === 1 ? 'block' : 'blocks'}, and subsequently processed to paraffin.`);
+  sentences.push(`All embedded ${blockClause(blocks, v.converted !== false)}.`);
   return `(${part.label}) ${sentences.join(' ')}`;
 }
 
@@ -478,7 +557,7 @@ function slnTissue(v) {
   const which = n === 1 ? 'which is' : pos === n ? 'all of which are' : `${word(pos)} of which ${pos === 1 ? 'is' : 'are'}`;
   let s = `${fat}${nodes}, ${which} involved by metastatic ${lc1(tumour(v, 'carcinoma'))} (${focus})`;
   if (v.slnEne === 'Present') s += ' with extranodal extension';
-  if (v.slnTreatment === 'Presurgical therapy, metastasis with treatment effect') s += `, with treatment effect${v.slnMillerPayne ? ` (Miller-Payne ${stripDot(v.slnMillerPayne).replace(/^Miller[- ]Payne\s*/i, '')})` : ''}`;
+  if (slnIsBreast(v) && v.slnTreatment === 'Presurgical therapy, metastasis with treatment effect') s += `, with treatment effect${v.slnMillerPayne ? ` (Miller-Payne ${stripDot(v.slnMillerPayne).replace(/^Miller[- ]Payne\s*/i, '')})` : ''}`;
   return s;
 }
 
@@ -486,7 +565,7 @@ function slnTissue(v) {
 function slnOrganPhrase(v) {
   const n = slnCount(v);
   const side = String(v.slnSide || '').trim().toLowerCase();
-  const label = stripDot(v.slnLabel) || 'sentinel lymph node';
+  const label = slnNodeLabel(v);
   return `${n === 1 ? 'LYMPH NODE' : 'LYMPH NODES'}, ${side ? `${side} ` : ''}${label}, excision x frozen section`;
 }
 
@@ -495,7 +574,7 @@ function slnFinalDx(v) {
   const pos = slnPositive(v);
   const count = ` (${pos}/${n})`;
   const mm = num(v.slnMetMm);
-  const tx = v.slnTreatment === 'Presurgical therapy, metastasis with treatment effect' ? ', with treatment effect' : '';
+  const tx = slnIsBreast(v) && v.slnTreatment === 'Presurgical therapy, metastasis with treatment effect' ? ', with treatment effect' : '';
   const ene = v.slnEne === 'Present' ? ', with extranodal extension' : '';
   switch (v.slnResult || 'Negative') {
     case 'Macrometastasis': return `METASTATIC ${tumour(v, 'carcinoma').toUpperCase()}, macrometastasis${mm === null ? '' : ` ${fmt(mm)} mm`}${ene}${tx}${count}`;
@@ -512,7 +591,7 @@ function slnFinalDx(v) {
  * `{examined, positive, macro, micro, itc, largestMm, ene, side, treatment}`.
  */
 export function slnSummary(v) {
-  if (!isSln(v)) return null;
+  if (!isSln(v) || !slnIsBreast(v)) return null;
   const n = slnCount(v);
   const pos = slnPositive(v);
   const r = v.slnResult || 'Negative';
@@ -593,7 +672,8 @@ export function frozenResult(part) {
       return caveats.length ? `${line} ${caveats.join(' ')}` : line;
     }
     case LU: return luResultLine(v);
-    case SLN: return slnResultLine(v);
+    case SLN:
+    case SLN_LEGACY: return slnResultLine(v);
     case 'Nodule / mass':
       switch (v.noduleResult) {
         case 'Malignant': return `Malignant${v.tumourType ? `; ${lc1(tumour(v))}` : ''}.`;
@@ -628,8 +708,9 @@ export function intraop(parts, ctx) {
   const time = String(ctx.case.fsTime || '').trim();
   const date = String(ctx.case.fsDate || '').trim();
   const to = String(ctx.case.fsReportedTo || '').trim();
+  // House sentence, measured across 515 of 598 cases: "result", and the recipient before the time.
   if (time || date || to) {
-    lines.push(`The frozen section diagnosis was phone reported${time ? ` at ${time}` : ''}${date ? ` on ${date}` : ''}${to ? ` to ${to}` : ''}.`);
+    lines.push(`The frozen section result was phone reported${to ? ` to ${to}` : ''}${time ? ` at ${time}` : ''}${date ? ` on ${date}` : ''}.`);
   }
   return lines.join('\n');
 }
@@ -662,6 +743,7 @@ function defaultTissue(v) {
     case LU:
       return luTissue(v);
     case SLN:
+    case SLN_LEGACY:
       return slnTissue(v);
     case 'Nodule / mass':
       return v.tumourType ? `features of ${lc1(tumour(v))}` : 'the lesion described';
@@ -767,17 +849,19 @@ export function finalDx(part) {
         case 'Atypical, deferred': return 'SEE MICROSCOPIC EXAMINATION';
         default: return 'NO EVIDENCE OF MALIGNANCY';
       }
-    case 'Lymph node':
+    case 'Lymph node': {
+      const count = nodeCount(v);
       switch (v.nodeResult) {
         case 'Macrometastasis':
         case 'Micrometastasis': {
           const d = num(v.metSize);
           const kind = v.nodeResult === 'Macrometastasis' ? 'macrometastasis' : 'micrometastasis';
-          return `METASTATIC ${tumour(v, 'carcinoma').toUpperCase()} (${kind}${d === null ? '' : `, ${fmt(d)} mm`})`;
+          return `METASTATIC ${tumour(v, 'carcinoma').toUpperCase()} (${kind}${d === null ? '' : `, ${fmt(d)} mm`})${count}`;
         }
         case 'Deferred': return 'SEE MICROSCOPIC EXAMINATION';
-        default: return 'NO EVIDENCE OF MALIGNANCY';
+        default: return `NO EVIDENCE OF MALIGNANCY${count}`;
       }
+    }
     case 'Parathyroid':
       switch (v.parathyroidResult) {
         case 'Parathyroid, normocellular': return 'NORMOCELLULAR PARATHYROID TISSUE';
@@ -803,7 +887,8 @@ export function finalDx(part) {
       }
     }
     case LU: return luFinalDx(v);
-    case SLN: return slnFinalDx(v);
+    case SLN:
+    case SLN_LEGACY: return slnFinalDx(v);
     case 'Nodule / mass':
       switch (v.noduleResult) {
         case 'Malignant': return v.tumourType ? tumour(v).toUpperCase() : 'MALIGNANT TUMOUR, see microscopic examination';
@@ -816,7 +901,7 @@ export function finalDx(part) {
 }
 
 /** Frozen scenario -> synoptic template that can be linked under the same letter (engine card "Stage this part"). */
-export const PAIRED_TEMPLATE = { 'Ovarian / adnexal mass': 'ovary_ft_peritoneum', 'Lung wedge / nodule': 'lung_carcinoma', [SLN]: 'breast_carcinoma', [PD]: 'pancreas_carcinoma' };
+export const PAIRED_TEMPLATE = { 'Ovarian / adnexal mass': 'ovary_ft_peritoneum', 'Lung wedge / nodule': 'lung_carcinoma', [SLN]: 'breast_carcinoma', [SLN_LEGACY]: 'breast_carcinoma', [PD]: 'pancreas_carcinoma' };
 
 /**
  * The paired template for one frozen part. Most scenarios map straight off PAIRED_TEMPLATE; the
@@ -825,13 +910,16 @@ export const PAIRED_TEMPLATE = { 'Ovarian / adnexal mass': 'ovary_ft_peritoneum'
  */
 export function pairTemplate(values) {
   if (values?.scenario === PD) return PD_ORIGIN_TEMPLATE[values.pdOrigin] || 'pancreas_carcinoma';
+  // The sentinel scenario is no longer breast-only: only a breast sentinel node has a breast
+  // synoptic to link to. A vulval or oral sentinel node pairs with nothing yet.
+  if (isSln(values || {}) && !slnIsBreast(values || {})) return '';
   return PAIRED_TEMPLATE[values?.scenario] || '';
 }
 
 /** Scenarios whose synoptic is a separate specimen (own letter, not linked): the breast SLN pairs with the
  *  breast resection, which is a different specimen, so the button reads "Add breast synoptic" and any SLN
  *  result (negative included) can add it. */
-export const PAIR_SEPARATE = { [SLN]: true, [PD]: true };
+export const PAIR_SEPARATE = { [SLN]: true, [SLN_LEGACY]: true, [PD]: true };
 
 /** True when the scenario has a paired synoptic template and (for same-letter pairs) the result is malignant. */
 export function stageable(part) {
@@ -844,7 +932,8 @@ export function diagnosis(part, ctx) {
   // Ovarian frozen with a linked synoptic part in the same case: the synoptic carries the definitive line.
   const pairId = PAIRED_TEMPLATE[part.values.scenario];
   const linked = !!pairId && !PAIR_SEPARATE[part.values.scenario] && (ctx?.case?.parts || []).some((p) => p !== part && p.templateId === pairId);
-  return `(${part.label}) ${organ}${organ.endsWith(' x frozen section') ? '' : ', frozen section'} - ${finalDx(part)}${linked ? ', see synoptic report' : ''}`;
+  const line = `${organ}${organ.endsWith(' x frozen section') ? '' : ', frozen section'} - ${finalDx(part)}${linked ? ', see synoptic report' : ''}`;
+  return `(${part.label}) ${applyRegister(line, ctx?.case?.register)}`;
 }
 
 // ---------- checks ----------
@@ -893,4 +982,4 @@ export function validate(part, ctx) {
   return out;
 }
 
-export default { specimens, specimenName, macro, intraop, microscopy, diagnosis, validate, organPhrase, stageable, PAIRED_TEMPLATE, PAIR_SEPARATE, pairTemplate, marginSummary, PD, PD_SITES };
+export default { specimens, specimenName, marginName, blockClause, macro, intraop, microscopy, diagnosis, validate, organPhrase, stageable, applyRegister, PAIRED_TEMPLATE, PAIR_SEPARATE, pairTemplate, marginSummary, PD, PD_SITES, SLN, SLN_LEGACY };

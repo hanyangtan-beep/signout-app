@@ -217,6 +217,15 @@ export function presetValues(schema, part, match = {}) {
     values.specimenName = part.text;
     return values;
   }
+  if (schema?.id === 'frozen_section') {
+    const sc = frozenScenario(text);
+    if (sc && field('scenario')?.options?.includes(sc)) values.scenario = sc;
+    applyFill(schema, part, values);
+    // The margin pick-lists carry the organ, so the typed specimen name would say it twice.
+    if (values.scenario === 'Margin' && values.mgOrgan) delete values.specimenName;
+    else if (!values.specimenName && fieldIds.has('specimenName')) values.specimenName = part.detail || part.text;
+    return values;
+  }
   applyFill(schema, part, values);
   return values;
 }
@@ -274,6 +283,25 @@ export function stripWords(value, strip) {
     .map((bit) => bit.replace(re, ' ').replace(/\s*\(\s*\)\s*/g, ' ').replace(/\s+/g, ' ').replace(/^[\s-]+|[\s,;:.-]+$/g, '').trim())
     .filter((bit) => /[a-z0-9]/i.test(bit))
     .join(', ');
+}
+
+/**
+ * The frozen scenario read off the request line. The order is the measured one: the sentinel and
+ * node words are checked before "margin" because "sentinel node, level II margin" is a node, and
+ * the organ-specific scenarios are checked before the generic margin for the same reason.
+ * Ranking and vocabulary from `docs/case-mix/frozen-2021-2026.md` (598 cases, 1291 parts).
+ */
+export function frozenScenario(text) {
+  const t = String(text || '').toLowerCase();
+  if (/\bsln\b|sentinel/.test(t)) return 'Sentinel lymph node';
+  if (/parathyroid/.test(t)) return 'Parathyroid';
+  if (/lymph\s*nodes?\b|\blevel\s+[i1-5]\b|\bnodal\b/.test(t)) return 'Lymph node';
+  if (/pancrea|bile duct|cystic duct|ampull/.test(t)) return 'Pancreatic / bile duct margin';
+  if (/\blung\b|pleura|wedge|lobe/.test(t)) return 'Lung wedge / nodule';
+  if (/ovar|adnex|fallopian|omentum|omental|peritone/.test(t)) return 'Ovarian / adnexal mass';
+  if (/margin|\bstump\b|staple line|transection|resection margin/.test(t)) return 'Margin';
+  if (/nodule|\bmass\b|tumou?r|lesion/.test(t)) return 'Nodule / mass';
+  return '';
 }
 
 /** `match.fill`: `{field, from: "detail" | "text" | "options", fallback?, strip?, unless?}` rules (a single object is accepted too). */

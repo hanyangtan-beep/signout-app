@@ -27,8 +27,8 @@ test('benign tongue margin: macro, intraoperative record, paraffin confirmation 
   part(cs, 0, { specimenName: 'Tongue, medial margin', size: '1 x 0.4 x 0.2 cm' });
   const out = generate(schema, generator, cs);
   assert.equal(out.specimens, 'Frozen section: Tongue, medial margin');
-  assert.equal(out.macro, 'Received in a fresh state is a piece of tan coloured tissue measuring 1 x 0.4 x 0.2 cm. All embedded in 1 frozen block and subsequently converted to paraffin block.');
-  assert.equal(out.intraop, '(Prof. A Cheung / Dr. HY Tan)\nNo malignancy.\nThe frozen section diagnosis was phone reported at 1321 on 13/05/2026.');
+  assert.equal(out.macro, 'Received in a fresh state is a piece of tan coloured tissue measuring 1 x 0.4 x 0.2 cm. All embedded in 1 frozen block, and subsequently converted to paraffin block.');
+  assert.equal(out.intraop, '(Prof. A Cheung / Dr. HY Tan)\nNo malignancy.\nThe frozen section result was phone reported at 1321 on 13/05/2026.');
   assert.equal(out.microscopy, 'The paraffin section confirms the frozen section diagnosis. It shows squamous mucosa with underlying skeletal muscle. There is no evidence of dysplasia or malignancy.');
   assert.equal(out.diagnosis, 'TONGUE, medial margin, frozen section - NO EVIDENCE OF MALIGNANCY');
   assert.ok(!out.report.includes('(A)'), 'single part drops the letter');
@@ -89,9 +89,9 @@ test('close margin and dysplasia-only wording', () => {
 test('sentinel node with macrometastasis', () => {
   const cs = part(fsCase(1), 0, { specimenName: 'Right SLN1', scenario: 'Lymph node', tissueDesc: 'lymph node', handling: 'Serially sectioned and all embedded', blocks: '2', size: '2 x 1.5 x 1 cm', nodeResult: 'Macrometastasis', metSize: '4', tumourType: 'carcinoma' });
   const out = generate(schema, generator, cs);
-  assert.equal(out.macro, 'Received in a fresh state is a lymph node measuring 2 x 1.5 x 1 cm. Serially sectioned and all embedded in 2 frozen blocks and subsequently converted to paraffin blocks.');
+  assert.equal(out.macro, 'Received in a fresh state is a lymph node measuring 2 x 1.5 x 1 cm. Serially sectioned and all embedded in 2 frozen blocks, and subsequently converted to paraffin blocks.');
   assert.equal(out.intraop, 'Metastatic carcinoma present (macrometastasis, 4 mm).');
-  assert.equal(out.diagnosis, 'RIGHT SLN1, frozen section - METASTATIC CARCINOMA (macrometastasis, 4 mm)');
+  assert.equal(out.diagnosis, 'RIGHT SLN1, frozen section - METASTATIC CARCINOMA (macrometastasis, 4 mm) (1/1)');
   assert.ok(!out.microscopy.includes('no evidence of malignancy'));
 });
 
@@ -146,7 +146,7 @@ test('free-text scenario and additional microscopy', () => {
 
 test('multiple pieces: aggregate wording and representative sampling', () => {
   const cs = part(fsCase(1), 0, { pieces: '3', size: '2.3 x 0.5 x 0.3 cm', handling: 'Representative section taken', blocks: '2' });
-  assert.equal(generate(schema, generator, cs).macro, 'Received in a fresh state are three pieces of tan coloured tissue measuring 2.3 x 0.5 x 0.3 cm in aggregate. Representative section taken and embedded in 2 frozen blocks and subsequently converted to paraffin blocks. The remainder is formalin fixed.');
+  assert.equal(generate(schema, generator, cs).macro, 'Received in a fresh state are three pieces of tan coloured tissue measuring 2.3 x 0.5 x 0.3 cm in aggregate. Representative section taken and embedded in 2 frozen blocks, and subsequently converted to paraffin blocks. The remainder is formalin fixed.');
 });
 
 test('mixed case: frozen parts sit alongside a paraffin biopsy template and only frozen parts feed the intraoperative block', () => {
@@ -156,7 +156,7 @@ test('mixed case: frozen parts sit alongside a paraffin biopsy template and only
   const pcase = createCase(prostate, 1);
   cs.parts[1] = { label: 'B', templateId: 'prostate_biopsy', values: pcase.parts[0].values };
   const out = generateCase(registry, cs);
-  assert.equal(out.intraop, '(A) No malignancy.\nThe frozen section diagnosis was phone reported at 1134 on 10/09/2026 to Dr Lee (OT 3).');
+  assert.equal(out.intraop, '(A) No malignancy.\nThe frozen section result was phone reported to Dr Lee (OT 3) at 1134 on 10/09/2026.');
   assert.ok(out.macro.startsWith('(A) Received in a fresh state'));
   assert.ok(out.diagnosis.startsWith('(A) TONGUE, medial margin, frozen section - NO EVIDENCE OF MALIGNANCY\n(B) '));
 });
@@ -180,7 +180,7 @@ test('Google Doc layout gains an INTRAOPERATIVE CONSULTATION section and merges 
   const heads = text.split('\n').filter((l) => /^[A-Z ]+:$/.test(l));
   assert.deepEqual(heads, ['CLINICAL HISTORY:', 'SPECIMEN:', 'MACROSCOPIC DESCRIPTION:', 'BLOCK KEY:', 'INTRAOPERATIVE CONSULTATION:', 'MICROSCOPIC EXAMINATION:', 'DIAGNOSIS:']);
   assert.ok(text.includes('converted to paraffin block.\n\nSpecimen received in two containers.\n'));
-  assert.ok(text.includes('INTRAOPERATIVE CONSULTATION:\nNo malignancy.\nThe frozen section diagnosis was phone reported at 1321 on 13/05/2026.\n'));
+  assert.ok(text.includes('INTRAOPERATIVE CONSULTATION:\nNo malignancy.\nThe frozen section result was phone reported at 1321 on 13/05/2026.\n'));
 });
 
 // ---------- Ovarian / adnexal mass scenario, enriched fields (spec: docs/specs/ovary-pair.md, Part 1) ----------
@@ -190,7 +190,7 @@ const ovRun = (values, caseFields) => generate(schema, generator, part(fsCase(1,
 
 test('ovarian form macro, mucinous caveat and "x frozen section" diagnosis line', () => {
   const out = ovRun({ ...OVX, ovType: 'mucinous cystadenoma' });
-  assert.equal(out.macro, 'Received in a fresh state is a right salpingo-oophorectomy specimen received intact. The ovarian mass measures 120 mm in greatest dimension and weighs 350 g. The outer surface is smooth. Cut surface shows a multilocular cyst, mucinous contents and solid areas. Representative sections of the solid and papillary areas are embedded in 2 frozen blocks and subsequently converted to paraffin blocks.');
+  assert.equal(out.macro, 'Received in a fresh state is a right salpingo-oophorectomy specimen received intact. The ovarian mass measures 120 mm in greatest dimension and weighs 350 g. The outer surface is smooth. Cut surface shows a multilocular cyst, mucinous contents and solid areas. Representative sections of the solid and papillary areas are embedded in 2 frozen blocks, and subsequently converted to paraffin blocks.');
   assert.equal(out.intraop, 'Benign; mucinous cystadenoma. Mucinous tumours are heterogeneous; the frozen section cannot exclude a higher-grade or invasive component, or a metastasis from a gastrointestinal primary. Final classification awaits paraffin sections.');
   assert.equal(out.diagnosis, 'OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy x frozen section - MUCINOUS CYSTADENOMA');
   assert.equal(out.microscopy, 'The paraffin section confirms the frozen section diagnosis. It shows features of mucinous cystadenoma. There is no evidence of malignancy.');
@@ -198,7 +198,7 @@ test('ovarian form macro, mucinous caveat and "x frozen section" diagnosis line'
   assert.equal(quiet.intraop, 'Benign; mucinous cystadenoma.');
   // Generic wording is untouched while the specimen pick is blank.
   const generic = ovRun({ scenario: 'Ovarian / adnexal mass', ovType: 'mucinous cystadenoma', size: '5 cm' });
-  assert.equal(generic.macro, 'Received in a fresh state is a piece of tan coloured tissue measuring 5 cm. All embedded in 1 frozen block and subsequently converted to paraffin block.');
+  assert.equal(generic.macro, 'Received in a fresh state is a piece of tan coloured tissue measuring 5 cm. All embedded in 1 frozen block, and subsequently converted to paraffin block.');
   assert.equal(generic.diagnosis, 'RIGHT OVARY, frozen section - MUCINOUS CYSTADENOMA');
 });
 
@@ -206,7 +206,7 @@ test('ovarian results: non-neoplastic, borderline, at least borderline, malignan
   const nn = ovRun({ ...OVX, ovSpecimen: 'Ovarian cystectomy', ovaryResult: 'Non-neoplastic', ovType: 'follicular or corpus luteum cyst', ovCut: ['Unilocular cyst', 'Serous fluid'], ovBlocks: '1' });
   assert.equal(nn.intraop, 'Non-neoplastic; follicular or corpus luteum cyst.');
   assert.equal(nn.diagnosis, 'OVARY, right, cystectomy x frozen section - FOLLICULAR OR CORPUS LUTEUM CYST');
-  assert.ok(nn.macro.includes('The cyst measures 120 mm in greatest dimension') && nn.macro.endsWith('Representative sections are embedded in 1 frozen block and subsequently converted to paraffin block.'));
+  assert.ok(nn.macro.includes('The cyst measures 120 mm in greatest dimension') && nn.macro.endsWith('Representative sections are embedded in 1 frozen block, and subsequently converted to paraffin block.'));
   const bl = ovRun({ ...OVX, ovaryResult: 'Borderline', ovType: 'serous borderline tumour' });
   assert.equal(bl.intraop, 'Borderline tumour, serous type; no stromal invasion in the sections examined.');
   assert.equal(bl.diagnosis, 'OVARY AND FALLOPIAN TUBE, right, salpingo-oophorectomy x frozen section - SEROUS BORDERLINE TUMOUR');
@@ -258,7 +258,7 @@ const luRun = (values, caseFields) => generate(schema, generator, part(fsCase(1,
 
 test('lung wedge: house §10 macro, intraoperative line, plural paraffin correlation and the organ phrase', () => {
   const a = luRun(LUX);
-  assert.equal(a.macro, 'Received fresh, a wedge of lung tissue measuring 6 x 2 x 1.5 cm with a curvilinear staple line measuring 6 cm across. The staple line is trimmed off and submitted separately. The parenchymal margin is inked black. Sectioning reveals a firm tan-white nodule measuring 0.8 cm across, 0.5 cm from the staple-line margin. Representative sections of the nodule are embedded in 2 frozen blocks and subsequently converted to paraffin blocks; the remaining tissue is submitted for paraffin sections only.');
+  assert.equal(a.macro, 'Received fresh, a wedge of lung tissue measuring 6 x 2 x 1.5 cm with a curvilinear staple line measuring 6 cm across. The staple line is trimmed off and submitted separately. The parenchymal margin is inked black. Sectioning reveals a firm tan-white nodule measuring 0.8 cm across, 0.5 cm from the staple-line margin. Representative sections of the nodule are embedded in 2 frozen blocks, and subsequently converted to paraffin blocks; the remaining tissue is submitted for paraffin sections only.');
   assert.equal(a.intraop, 'Adenocarcinoma; parenchymal margin clear (5 mm).');
   assert.equal(a.microscopy, 'The paraffin sections confirm the frozen section diagnosis. They show adenocarcinoma, acinar predominant.');
   assert.equal(a.diagnosis, 'LUNG, left lower lobe, wedge excision x frozen section - ADENOCARCINOMA, parenchymal margin clear (5 mm)');

@@ -2,7 +2,7 @@
 // Invasive Resection 4.11.0.0, AJCC 8th edition), house layout: the "- " bullets, the Tumour histology
 // paragraph after the grade, pTNM only when printPTNM (docs/specs/breast-pair.md).
 //
-// Sentinel nodes: a frozen "Breast sentinel lymph node" part in the same case pre-fills the node counts
+// Sentinel nodes: a frozen sentinel lymph node part in the same case pre-fills the node counts
 // ("Add breast synoptic" in the app; `prefillFromFrozen`) and the Regional lymph nodes line names it as
 // the origin; a prior sentinel node accession typed in the case fields prints the same way.
 import { deriveTNM, stageLine } from '../src/staging/index.js';
@@ -21,7 +21,12 @@ import { checks } from './_house.js';
 
 export { specimenName, specimens, otherSpecimenLines, hasExtraParts, blockKey };
 
-const SLN_SCENARIO = 'Breast sentinel lymph node';
+// The frozen sentinel scenario is no longer breast-only, so both the current and the legacy value
+// are recognised here; a case saved before the rename still pre-fills and still suppresses the
+// duplicate node count in the mastectomy macro.
+const SLN_SCENARIO = 'Sentinel lymph node';
+const SLN_SCENARIO_LEGACY = 'Breast sentinel lymph node';
+const isSlnScenario = (sc) => sc === SLN_SCENARIO || sc === SLN_SCENARIO_LEGACY;
 const NST = 'Invasive carcinoma of no special type (ductal)';
 const dcisPresent = (v) => /^Present/.test(v.dcis || '');
 const treated = (v) => S.treated(v);
@@ -138,7 +143,7 @@ export function histologyPara(v) {
 
 /** Same-case frozen SLN parts: [{label, summary}] for the nodes-origin line and the count Checks. */
 export function slnParts(part, ctx) {
-  return (ctx?.case?.parts || []).filter((p) => p !== part && p.templateId === 'frozen_section' && p.values?.scenario === SLN_SCENARIO)
+  return (ctx?.case?.parts || []).filter((p) => p !== part && p.templateId === 'frozen_section' && isSlnScenario(p.values?.scenario))
     .map((p) => ({ label: p.label, summary: slnSummary(p.values) })).filter((x) => x.summary);
 }
 
@@ -356,7 +361,7 @@ export function comment() { return ''; }
 
 // ---------- frozen link ----------
 
-/** Pre-fill from a frozen "Breast sentinel lymph node" part (app "Add breast synoptic"). */
+/** Pre-fill from a frozen sentinel lymph node part (app "Add breast synoptic"). */
 export function prefillFromFrozen(fv) {
   const s = fv ? slnSummary(fv) : null;
   if (!s) return {};

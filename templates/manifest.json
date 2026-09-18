@@ -679,11 +679,27 @@
       "aliases": [
         "FS",
         "intraoperative",
+        "frozen",
         "margin",
+        "sentinel",
+        "SLN",
         "parathyroid",
         "lymph node",
         "ovarian mass",
-        "nodule"
+        "nodule",
+        "wedge",
+        "tongue",
+        "oral cavity",
+        "soft tissue",
+        "skin",
+        "larynx",
+        "nasopharynx",
+        "pharynx",
+        "brain",
+        "pituitary",
+        "ureter",
+        "bile duct",
+        "pancreatic neck"
       ],
       "match": {
         "site": [
@@ -696,9 +712,23 @@
           "FS",
           "intraoperative"
         ],
-        "clinical": []
+        "clinical": [],
+        "fill": [
+          {
+            "field": "mgOrgan",
+            "from": "options"
+          },
+          {
+            "field": "mgDescriptor",
+            "from": "options"
+          },
+          {
+            "field": "slnSite",
+            "from": "options"
+          }
+        ]
       },
-      "version": "2026.09",
+      "version": "2026.09b",
       "generator": "frozen",
       "generatorPath": "generators/frozen.js",
       "schemaPath": "schemas/frozen_section.json"

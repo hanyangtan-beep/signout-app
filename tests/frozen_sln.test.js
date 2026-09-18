@@ -5,7 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createCase, generate } from '../src/engine.js';
 import { loadAll } from '../src/registry.js';
-import { SLN, slnSummary, stageable, PAIRED_TEMPLATE, PAIR_SEPARATE } from '../generators/frozen.js';
+import { SLN_LEGACY, SLN, slnSummary, stageable, PAIRED_TEMPLATE, PAIR_SEPARATE } from '../generators/frozen.js';
 
 const registry = await loadAll();
 const { schema, generator } = registry.frozen_section;
@@ -19,7 +19,8 @@ function run(values, caseFields = { fsTime: '1015', fsDate: '12/09/2026', fsPath
 }
 
 test('scenario is registered with its fields and pairs with breast_carcinoma as a separate letter', () => {
-  assert.equal(SLN, 'Breast sentinel lymph node');
+  assert.equal(SLN, 'Sentinel lymph node');
+  assert.equal(SLN_LEGACY, 'Breast sentinel lymph node');   // saved cases keep working
   const scen = schema.fields.find((f) => f.id === 'scenario');
   assert.ok(scen.options.includes(SLN));
   for (const id of ['slnSide', 'slnLabel', 'slnReceived', 'slnSize', 'slnCount', 'slnNodeSizes', 'slnFatStripped', 'slnBlocks', 'slnResult', 'slnPositive', 'slnMetMm', 'slnEne', 'slnTreatment', 'slnMillerPayne']) {
@@ -34,8 +35,8 @@ test('scenario is registered with its fields and pairs with breast_carcinoma as 
 test('negative sentinel nodes: macro, intraoperative record, paraffin confirmation and diagnosis line', () => {
   const { out } = run({ slnResult: 'Negative' });
   assert.equal(out.specimens, 'Frozen section: Left SLN 1');
-  assert.equal(out.macro, 'Received fresh, a piece of fibroadipose tissue measuring 3 x 2 x 1 cm. Two lymph nodes are identified within, measuring approximately 1.2 cm and 0.8 cm across respectively. The fatty tissue is stripped off. All embedded in 2 frozen blocks, and subsequently processed to paraffin.');
-  assert.equal(out.intraop, '(Dr. HY Tan)\nNegative for malignancy.\nThe frozen section diagnosis was phone reported at 1015 on 12/09/2026.');
+  assert.equal(out.macro, 'Received fresh, a piece of fibroadipose tissue measuring 3 x 2 x 1 cm. Two lymph nodes are identified within, measuring approximately 1.2 cm and 0.8 cm across respectively. The fatty tissue is stripped off. All embedded in 2 frozen blocks, and subsequently converted to paraffin blocks.');
+  assert.equal(out.intraop, '(Dr. HY Tan)\nNegative for malignancy.\nThe frozen section result was phone reported at 1015 on 12/09/2026.');
   assert.equal(out.microscopy, 'The paraffin sections confirm the frozen section diagnosis. They show fibroadipose tissue and two reactive lymph nodes. There is no evidence of malignancy.');
   assert.equal(out.diagnosis, 'LYMPH NODES, left SLN 1, excision x frozen section - NO EVIDENCE OF MALIGNANCY (0/2)');
   assert.ok(out.issues.some((i) => i.level === 'info' && /Add breast synoptic/.test(i.message)));
@@ -75,7 +76,7 @@ test('deferred and no-nodal-tissue results', () => {
 
 test('single node received bare, with extranodal extension and treatment effect', () => {
   const { out } = run({ slnReceived: 'Lymph node(s) only', slnCount: '1', slnNodeSizes: '1.5', slnResult: 'Macrometastasis', slnPositive: '1', slnMetMm: '6', slnEne: 'Present', slnTreatment: 'Presurgical therapy, metastasis with treatment effect' });
-  assert.equal(out.macro, 'Received fresh, one lymph node measuring approximately 1.5 cm across. All embedded in 2 frozen blocks, and subsequently processed to paraffin.');
+  assert.equal(out.macro, 'Received fresh, one lymph node measuring approximately 1.5 cm across. All embedded in 2 frozen blocks, and subsequently converted to paraffin blocks.');
   assert.equal(out.intraop.split('\n')[1], 'Metastatic carcinoma, >2 mm.', 'single node: no "x of y"');
   assert.equal(out.microscopy, 'The paraffin sections confirm the frozen section diagnosis. They show one lymph node, which is involved by metastatic carcinoma (macrometastasis, 6 mm) with extranodal extension, with treatment effect.');
   assert.equal(out.diagnosis, 'LYMPH NODE, left SLN 1, excision x frozen section - METASTATIC CARCINOMA, macrometastasis 6 mm, with extranodal extension, with treatment effect (1/1)');

@@ -651,10 +651,14 @@ function renderCaseFields() {
   const presetRow = presets.length ? el('div', { class: 'field presets' }, el('div', { class: 'field-label', text: 'Presets' }), el('div', { class: 'preset-buttons' }, ...presets)) : null;
   nodes.caseFields.replaceChildren(...[presetRow].filter(Boolean), ...fields.map((f) => {
     const id = `case-${f.id}`;
-    const input = el('input', {
-      class: 'input', id, type: 'text', placeholder: f.placeholder || '', value: state.caseState[f.id] || '',
-      oninput: (e) => { markDirty(); state.caseState[f.id] = e.target.value; renderReport(); cacheCase(state.caseState); }
-    });
+    const commit = (e) => { markDirty(); state.caseState[f.id] = e.target.value; renderReport(); cacheCase(state.caseState); };
+    const input = f.type === 'select'
+      ? el('select', { class: 'input', id, onchange: commit },
+        ...(f.options || []).map((o) => el('option', { value: o, text: o, selected: (state.caseState[f.id] || f.default || '') === o })))
+      : el('input', {
+        class: 'input', id, type: 'text', placeholder: f.placeholder || '', value: state.caseState[f.id] || '',
+        oninput: commit
+      });
     return el('div', { class: 'field' }, el('label', { for: id, text: f.label }), input,
       f.help ? el('div', { class: 'field-help', text: f.help }) : null);
   }));
