@@ -298,6 +298,7 @@ Spec:       `docs/specs/report-review.md`
 ## Parked
 
 - Phase 2 leftovers "one-time Google Cloud set-up" and "first real save" — superseded; both verified 2026-09-09.
+- Optgroup subgrouping of the 14-entity `dxGlioneuronal` picklist (glioneuronal entities, then neuronal) — offered 2026-09-20, declined by the user. The list stays one flat WHO CNS5 family. Do not propose again.
 - Hernia sac and products-of-conception templates — 1 and ~0 cases in the 2024–2026 export; add only if they appear on the TAT list. **Haemorrhoidectomy is no longer parked: the export shows 15 cases (0.3 per cent) — it moves to Later as a one-line card.**
 
 ---
