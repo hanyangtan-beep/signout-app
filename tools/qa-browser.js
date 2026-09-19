@@ -318,24 +318,39 @@ await check('the CNS pathway drawer opens read-only and writes nothing', async (
   const title = (await page.locator('#part-panel .pw .pw-head strong').innerText()).trim();
   assert(title.length > 3, `pathway title reads "${title}"`);
   assert((await page.locator('#part-panel .pw .pw-stage').count()) >= 2, 'the drawer showed fewer than two stages');
-  assert((await page.locator('#part-panel .pw .pw-node').count()) >= 6, 'the drawer showed too few nodes');
   assert(await page.locator('#part-panel .pw .pw-next').count(), 'the drawer named no next test and said nothing about it');
   // Read-only: no field appeared or vanished, and the report did not move.
   assert((await page.locator('#part-panel [data-field]').count()) === fieldsBefore, 'the pathway drawer changed the form');
   assert((await page.locator('#report-blocks').innerText()) === reportBefore, 'the pathway drawer changed the report');
-  // The map above the list: one row per stage, a junction row, and a row that scrolls its stage in.
-  const mapRows = await page.locator('#part-panel .pw .pw-map .pw-mrow').count();
-  const stages = await page.locator('#part-panel .pw .pw-stage').count();
-  assert(mapRows === stages + 1, `map showed ${mapRows} rows for ${stages} stages`);
-  assert(await page.locator('#part-panel .pw .pw-map .pw-mrow.is-junction').count() === 1, 'no junction row on the map');
-  assert(await page.locator('#part-panel .pw .pw-map .pw-mdot').count() >= 6, 'the map carried too few node dots');
-  const mapText = (await page.locator('#part-panel .pw .pw-map').innerText()).trim();
-  assert(mapText.length > 10 && !/undefined|NaN/.test(mapText), `map text reads "${mapText}"`);
+  // The flowchart: one stage row per stage, exactly one junction, a dot on every stage row, and a
+  // detail panel carrying the node the case is waiting on. Expanding a stage and picking a node
+  // moves neither the form nor the report.
+  const flowStages = await page.locator('#part-panel .pw .pw-flow .pw-stage').count();
+  const modelStages = await page.locator('#part-panel .pw .pw-stage').count();
+  assert(flowStages === modelStages, `flow showed ${flowStages} stage rows for ${modelStages} stages`);
+  assert(await page.locator('#part-panel .pw .pw-flow .pw-fjunction').count() === 1, 'no junction row on the flowchart');
+  assert(await page.locator('#part-panel .pw .pw-flow .pw-mdot').count() === flowStages, 'a stage row carried no state dot');
+  assert(await page.locator('#part-panel .pw .pw-panel').count() === 1, 'the drawer showed no detail panel');
+  const flowText = (await page.locator('#part-panel .pw .pw-flow').innerText()).trim();
+  assert(flowText.length > 10 && !/undefined|NaN/.test(flowText), `flow text reads "${flowText}"`);
+  const panelFirst = (await page.locator('#part-panel .pw .pw-panel').innerText()).trim();
+  assert(panelFirst.length > 10 && !/undefined|NaN/.test(panelFirst), `panel text reads "${panelFirst}"`);
   await shot('cns-pathway');
-  await page.locator('#part-panel .pw .pw-map .pw-mrow:not(.is-junction)').last().click();
-  await page.waitForTimeout(300);
-  assert((await page.locator('#part-panel [data-field]').count()) === fieldsBefore, 'the map changed the form');
-  assert((await page.locator('#report-blocks').innerText()) === reportBefore, 'the map changed the report');
+  // A collapsed stage opens, and a chip in it becomes the selected node.
+  const collapsed = page.locator('#part-panel .pw .pw-stage:not(.is-open) .pw-fhead').first();
+  if (await collapsed.count()) {
+    await collapsed.click();
+    await page.waitForTimeout(250);
+  }
+  const chips = await page.locator('#part-panel .pw .pw-chip').count();
+  assert(chips >= 6, `the flowchart showed only ${chips} node chips`);
+  await page.locator('#part-panel .pw .pw-chip').first().click();
+  await page.waitForTimeout(250);
+  assert(await page.locator('#part-panel .pw .pw-chip.is-on').count() === 1, 'picking a chip selected no single node');
+  const panelAfter = (await page.locator('#part-panel .pw .pw-panel').innerText()).trim();
+  assert(panelAfter.length > 10, 'the panel emptied after picking a node');
+  assert((await page.locator('#part-panel [data-field]').count()) === fieldsBefore, 'the flowchart changed the form');
+  assert((await page.locator('#report-blocks').innerText()) === reportBefore, 'the flowchart changed the report');
   await page.locator('#part-panel .part-actions button', { hasText: 'Close pathway' }).first().click();
   await page.waitForTimeout(200);
   assert(!(await page.locator('#part-panel .pw').count()), 'the drawer stayed open after Close');

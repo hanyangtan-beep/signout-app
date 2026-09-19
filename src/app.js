@@ -1019,7 +1019,7 @@ function wizardCard(s, part, i) {
 // the reference-gallery criteria are. Open state is per part and per session; nothing about the
 // drawer is saved with the case.
 
-const pathways = { open: {} };
+const pathways = { open: {}, stages: {}, sel: {} };
 
 function pathwayOpen(i) { return !!pathways.open[i]; }
 function togglePathway(i) { pathways.open[i] = !pathways.open[i]; }
@@ -1030,46 +1030,103 @@ const PW_STATE = {
   na: { icon: '\u2014', label: 'not applicable' },
 };
 
-function pathwayNode(n) {
-  const mark = PW_STATE[n.state] || PW_STATE.na;
-  return el('li', { class: `pw-node is-${n.state}` },
-    el('span', { class: 'pw-dot', 'aria-hidden': 'true', text: mark.icon }),
-    el('div', { class: 'pw-node-body' },
-      el('div', { class: 'pw-node-head' },
-        el('strong', { text: n.label }),
-        el('span', { class: 'pw-state', text: mark.label })),
-      el('p', { class: 'pw-detail', text: n.detail }),
-      n.note ? el('p', { class: 'pw-note', text: n.note }) : null,
-      n.state === 'outstanding' && n.test ? el('p', { class: 'pw-test', text: `Next: ${n.test}` }) : null,
-      n.source ? el('a', { class: 'pw-src', href: n.source.url, target: '_blank', rel: 'noopener', text: n.source.label }) : null));
+// The drawer is the flowchart. One row per stage in the published order, a dashed junction where
+// the case leaves the common funnel, and a stage's criteria drawn as chips side by side when they
+// are alternatives rather than a checklist. A finished stage collapses to its count so the whole
+// pathway fits the column; a stage still carrying work opens. Clicking a node selects it, and its
+// criterion, next test and source appear in the panel at the foot - one node at a time, which is
+// what keeps the drawer readable at the width the middle column actually has.
+//
+// It reads pathway() and pathwayMap() and nothing else. No field is set and no line is printed.
+
+function stageShown(i, row) {
+  const k = `${i}:${row.id}`;
+  return k in pathways.stages ? pathways.stages[k] : row.state === 'outstanding';
 }
 
-// The map: the pathway collapsed to one row per stage, drawn above the list. It is the one thing a
-// list cannot show - the shape. A junction row marks where the case left the common funnel, and an
-// "any one" tag marks a stage whose criteria are alternatives rather than a checklist. Clicking a
-// row scrolls its stage into view. It reads pathwayMap() only; it sets nothing and prints nothing.
-function pathwayMapView(p) {
+function toggleStage(i, row) { pathways.stages[`${i}:${row.id}`] = !stageShown(i, row); }
+
+// On opening, the panel starts on the first node still outstanding - the one the case is waiting
+// on. Once the pathologist has picked something the choice is theirs, including picking nothing.
+function selectedKey(p, i) {
+  if (i in pathways.sel) return pathways.sel[i];
+  for (const st of p.stages) {
+    for (const n of st.nodes) if (n.state === 'outstanding') return `${st.id}:${n.id}`;
+  }
+  return null;
+}
+
+function selectedNode(p, i) {
+  const key = selectedKey(p, i);
+  if (!key) return null;
+  for (const st of p.stages) {
+    for (const n of st.nodes) if (`${st.id}:${n.id}` === key) return n;
+  }
+  return null;
+}
+
+function pathwayChip(n, active, onpick) {
+  const mark = PW_STATE[n.state] || PW_STATE.na;
+  return el('button', {
+    type: 'button',
+    class: `pw-chip is-${n.state}${active ? ' is-on' : ''}`,
+    'aria-pressed': String(active),
+    'aria-label': `${n.label}: ${mark.label}`,
+    title: n.label,
+    onclick: onpick,
+  },
+  el('span', { class: 'pw-cdot', 'aria-hidden': 'true', text: mark.icon }),
+  el('span', { class: 'pw-clabel', text: n.label }));
+}
+
+function pathwayStage(st, row, i, sel) {
+  if (!st) return null;
+  const open = stageShown(i, row);
+  return el('section', { class: `pw-stage is-${row.state}${open ? ' is-open' : ''}`, 'data-stage': st.id },
+    el('button', {
+      type: 'button',
+      class: 'pw-fhead',
+      'aria-expanded': String(open),
+      onclick: () => { toggleStage(i, row); render(); },
+    },
+    el('span', { class: `pw-mdot is-${row.state}`, 'aria-hidden': 'true' }),
+    el('span', { class: 'pw-mlabel', text: st.label }),
+    row.anyOf ? el('span', { class: 'pw-many', text: 'any one' }) : null,
+    el('span', { class: 'pw-fcount', text: open ? 'collapse' : `${row.counts.satisfied} of ${row.dots.length} \u00b7 expand` })),
+    open ? el('div', { class: 'pw-chips' }, ...st.nodes.map((n) => {
+      const key = `${st.id}:${n.id}`;
+      return pathwayChip(n, sel === key, () => { pathways.sel[i] = sel === key ? null : key; render(); });
+    })) : null,
+    open && row.anyOf ? el('p', { class: 'pw-any-note', text: 'One is enough. What is recorded is shown.' }) : null);
+}
+
+function pathwayFlowView(p, i) {
   const rows = pathwayMap(p).rows;
   if (!rows.length) return null;
-  const jump = (id) => {
-    const target = document.querySelector(`.pw-stage[data-stage="${CSS.escape(id)}"]`);
-    if (target) target.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-  };
-  return el('div', { class: 'pw-map', role: 'group', 'aria-label': 'Pathway map' },
+  const byId = new Map(p.stages.map((st) => [st.id, st]));
+  const sel = selectedKey(p, i);
+  return el('div', { class: 'pw-flow', role: 'group', 'aria-label': 'Pathway flowchart' },
     ...rows.map((r) => (r.shape === 'junction'
-      ? el('div', { class: `pw-mrow is-junction is-${r.state}` },
+      ? el('div', { class: `pw-fjunction is-${r.state}` },
         el('span', { class: 'pw-mdiamond', 'aria-hidden': 'true' }),
         el('span', { class: 'pw-mlabel', text: r.label }))
-      : el('button', {
-        type: 'button',
-        class: `pw-mrow is-${r.state}`,
-        title: r.label,
-        'aria-label': `${r.label}: ${r.counts.outstanding} outstanding of ${r.dots.length}`,
-        onclick: () => jump(r.id),
-      },
-      el('span', { class: 'pw-mlabel', text: r.label }),
-      el('span', { class: 'pw-mdots', 'aria-hidden': 'true' }, ...r.dots.map((s) => el('i', { class: `pw-mdot is-${s}` }))),
-      r.anyOf ? el('span', { class: 'pw-many', text: 'any one' }) : null))));
+      : pathwayStage(byId.get(r.id), r, i, sel))));
+}
+
+function pathwayPanel(n) {
+  if (!n) {
+    return el('div', { class: 'pw-panel is-empty' },
+      el('p', { class: 'pw-detail', text: 'Pick a node to read its criterion.' }));
+  }
+  const mark = PW_STATE[n.state] || PW_STATE.na;
+  return el('div', { class: `pw-panel is-${n.state}`, role: 'region', 'aria-live': 'polite', 'aria-label': 'Selected node' },
+    el('div', { class: 'pw-node-head' },
+      el('strong', { text: n.label }),
+      el('span', { class: 'pw-state', text: mark.label })),
+    el('p', { class: 'pw-detail', text: n.detail }),
+    n.note ? el('p', { class: 'pw-note', text: n.note }) : null,
+    n.state === 'outstanding' && n.test ? el('p', { class: 'pw-test', text: `Next: ${n.test}` }) : null,
+    n.source ? el('a', { class: 'pw-src', href: n.source.url, target: '_blank', rel: 'noopener', text: n.source.label }) : null);
 }
 
 function pathwayCard(part, i) {
@@ -1084,10 +1141,8 @@ function pathwayCard(part, i) {
     p.nextTest
       ? el('p', { class: 'pw-next', text: `Next test: ${p.nextTest}` })
       : el('p', { class: 'pw-next is-clear', text: 'Nothing outstanding on the pathway.' }),
-    pathwayMapView(p),
-    ...p.stages.map((st) => el('section', { class: 'pw-stage', 'data-stage': st.id },
-      el('h4', { class: 'pw-stage-h', text: st.label }),
-      el('ul', { class: 'pw-nodes' }, ...st.nodes.map(pathwayNode)))),
+    pathwayFlowView(p, i),
+    pathwayPanel(selectedNode(p, i)),
     el('p', { class: 'pw-foot', text: 'Read-only. This panel sets no field and prints nothing.' }));
 }
 
