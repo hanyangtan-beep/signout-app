@@ -62,9 +62,9 @@ Wording:
 
 Accept: fixture reproduces §10 macro elements (staple line trimmed, margin inked, nodule distance) and the paraffin opener; SCC, metastatic and granulomatous fixtures; multi-part case (pleural punch + wedge) prints the pleural part with `morphologically similar to the tumour in (B)`.
 
-## (d) CNS lesion (stereotactic / open biopsy, smear + frozen) — Size M, *no house example*
+## (d) CNS lesion (stereotactic / open biopsy, smear + frozen) — Size M — **BUILT 2026-09-19**
 
-The user asked for brain meningioma; past sessions hold no frozen-section report for CNS. Wording below is *proposed* — confirm before fixtures are frozen.
+Built in two passes: the scenario itself (site, side, procedure, smear preparation, nine results) shipped 2026-09-18; the six remaining results, the two tissue checkboxes, the three checks and the two comments shipped 2026-09-19 with the `cns_biopsy` template. Printed wording follows the generator, not the proposals below; the paraffin report is written by `cns_biopsy`, so grade and molecular lines are not repeated on the frozen. Original proposal kept for the record.
 
 Fields (scenario "CNS lesion"): site (frontal / temporal / parietal / occipital / cerebellar / convexity dura / falx / sphenoid wing / sellar / spinal / other), preparation (smear only / frozen only / smear and frozen), pieces and size; result: Meningioma (favour WHO grade 1; grading deferred) / Glial neoplasm, high grade (favour glioblastoma) / Glial neoplasm, low grade / Glial neoplasm, grade deferred / Metastatic carcinoma (± consistent with known primary) / Lymphoma, favour (advise flow / fresh tissue) / Schwannoma / Pituitary adenoma (PitNET) / Reactive gliosis, no tumour / Necrotic tissue only, nondiagnostic / Lesional tissue present, classification deferred / Deferred; lesional tissue adequate for paraffin (checkbox); tissue reserved fresh for molecular / flow (checkbox).
 
