@@ -112,6 +112,17 @@ Docs
 
 ## Now
 
+### iPhone-friendly version of the app                    Size: M; pulled into Now by the user 2026-09-19
+Why:        the app is used from a phone between cases (user request 2026-09-11); today the layout only collapses to one column at 960 px, the two-row template bar, chip groups and the report pane were designed for a desktop width, and Google sign-in / Save have not been exercised on iOS Safari.
+Change:     responsive pass at 390-466 px (iPhone 13-16 widths, and the iPhone Duo outer display at the derived 466 px — see the Duo card in Later), no separate app: (1) sticky compact top bar with a single **Templates** sheet replacing the two button rows and the Search box; (2) form and report as two tabs (**Case** / **Report**) with a bottom action bar (Copy diagnosis, Copy full report, Save) instead of a side-by-side workspace; (3) chip groups wrap with 44 px touch targets, selects and inputs at 16 px to stop iOS zoom, part header actions collapse into a menu; (4) Compare photos panels one column, lightbox pinch-zoomable; (5) `viewport-fit=cover` + safe-area insets, `theme-color`, apple-touch-icon and a web-app manifest so **Add to Home Screen** opens full-screen; (6) Google sign-in and Drive Save / Open verified on iOS Safari (popup vs redirect flow — pick whichever works in standalone mode and record it in the spec); (7) clipboard copy verified on iOS (`navigator.clipboard.writeText` requires a user gesture).
+Untouched:  report wording, schemas, generators, fixtures; desktop layout above 960 px unchanged.
+Accept:     Playwright at 390x844 (iPhone 14 device profile) and 430x932: no horizontal scroll on any template; every chip / button ≥ 44 px tall; Case / Report tabs switch and the bottom bar copies the diagnosis; galleries open one column; existing desktop screenshots at 1300 px unchanged; manual check on the user's iPhone for sign-in, Save, Open and Copy, results recorded in the spec.
+Stop:       no native app, no framework change, no service worker / offline cache in this card (Later if wanted); if iOS standalone mode breaks Google sign-in after two approaches, ship browser-tab mode and note it.
+Verify:     tests + Playwright mobile profiles + manual iPhone check
+Ship:       one deploy + publish
+Spec:       `docs/specs/iphone-layout.md`
+
+
 ## Next
 
 The CNS pathways spec is now built out: the grading rules, the guided intake and the read-only pathway drawer are all in Done. The case-mix ordering below is unchanged.
@@ -186,16 +197,6 @@ Accept:     button disabled on a new unsaved case; enabled after Save and after 
 Verify:     tests + browser (light)
 Ship:       with batch
 Spec:       card is the spec
-
-### iPhone-friendly version of the app                    Size: M
-Why:        the app is used from a phone between cases (user request 2026-09-11); today the layout only collapses to one column at 960 px, the two-row template bar, chip groups and the report pane were designed for a desktop width, and Google sign-in / Save have not been exercised on iOS Safari.
-Change:     responsive pass at 390-466 px (iPhone 13-16 widths, and the iPhone Duo outer display at the derived 466 px — see the Duo card in Later), no separate app: (1) sticky compact top bar with a single **Templates** sheet replacing the two button rows and the Search box; (2) form and report as two tabs (**Case** / **Report**) with a bottom action bar (Copy diagnosis, Copy full report, Save) instead of a side-by-side workspace; (3) chip groups wrap with 44 px touch targets, selects and inputs at 16 px to stop iOS zoom, part header actions collapse into a menu; (4) Compare photos panels one column, lightbox pinch-zoomable; (5) `viewport-fit=cover` + safe-area insets, `theme-color`, apple-touch-icon and a web-app manifest so **Add to Home Screen** opens full-screen; (6) Google sign-in and Drive Save / Open verified on iOS Safari (popup vs redirect flow — pick whichever works in standalone mode and record it in the spec); (7) clipboard copy verified on iOS (`navigator.clipboard.writeText` requires a user gesture).
-Untouched:  report wording, schemas, generators, fixtures; desktop layout above 960 px unchanged.
-Accept:     Playwright at 390x844 (iPhone 14 device profile) and 430x932: no horizontal scroll on any template; every chip / button ≥ 44 px tall; Case / Report tabs switch and the bottom bar copies the diagnosis; galleries open one column; existing desktop screenshots at 1300 px unchanged; manual check on the user's iPhone for sign-in, Save, Open and Copy, results recorded in the spec.
-Stop:       no native app, no framework change, no service worker / offline cache in this card (Later if wanted); if iOS standalone mode breaks Google sign-in after two approaches, ship browser-tab mode and note it.
-Verify:     tests + Playwright mobile profiles + manual iPhone check
-Ship:       one deploy + publish
-Spec:       `docs/specs/iphone-layout.md`
 
 ### Frozen section scenarios (unstaged)                  Size: L → split; two cards, one batch
 Why:        the frozen template covers generic margin / node / parathyroid / ovary / nodule; the recurring services — bile duct and pancreatic duct margins, head-and-neck named margins — need their own fields, phone-line wording and paraffin correlation. Past sign-outs supply house wording (`docs/reference/frozen-section-examples.md`, 10 scenarios with session references). Frozen specimens whose final report carries AJCC staging (lung wedge, and the resections the SLN / duct-margin results feed into) are planned as paired cards below, after the "Frozen → staged final" engine card.
