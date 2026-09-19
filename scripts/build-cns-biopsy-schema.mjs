@@ -73,22 +73,11 @@ const fields = [
   { id: 'findingOther', label: 'Diagnosis (free text)', type: 'text', default: '', showIf: isFinding('Other (free text)') },
 
   // ----- meningioma -----
-  { id: 'mgSubtype', label: 'Subtype', type: 'select', group: 'Meningioma', default: 'Meningothelial', showIf: isFinding('Meningioma'), options: [
-    'Meningothelial', 'Fibrous', 'Transitional', 'Psammomatous', 'Angiomatous', 'Microcystic', 'Secretory',
-    'Lymphoplasmacyte-rich', 'Metaplastic', 'Chordoid', 'Clear cell', 'Atypical', 'Papillary', 'Rhabdoid' ] },
-  { id: 'mgMitoses', label: 'Mitoses (per 1.6 mm², 10 high-power fields)', type: 'number', default: '', group: 'Meningioma', showIf: isFinding('Meningioma') },
-  { id: 'mgAtypical', label: 'Atypical features', type: 'multiselect', default: [], group: 'Meningioma', showIf: isFinding('Meningioma'), options: [
-    'High cellularity', 'Small cell change', 'Prominent nucleoli', 'Sheet-like growth', 'Spontaneous necrosis' ] },
-  { id: 'mgBrain', label: 'Brain invasion', type: 'select', group: 'Meningioma', default: 'No adjacent brain in the specimen', showIf: isFinding('Meningioma'), options: [
-    'Not identified', 'Present', 'No adjacent brain in the specimen' ] },
-  { id: 'mgBone', label: 'Bone or dural involvement', type: 'select', group: 'Meningioma', default: 'Not applicable', showIf: isFinding('Meningioma'), options: [
-    'Not applicable', 'Dura involved', 'Bone involved' ] },
-  { id: 'mgIhc', label: 'Immunohistochemistry', type: 'multiselect', default: [], group: 'Meningioma', showIf: isFinding('Meningioma'), options: [
-    'EMA positive', 'SSTR2A positive', 'Progesterone receptor positive', 'EMA negative', 'SSTR2A negative', 'STAT6 negative' ] },
-  { id: 'mgMolecular', label: 'Molecular result', type: 'multiselect', default: [], group: 'Meningioma', showIf: isFinding('Meningioma'), options: [
-    'TERT promoter mutation detected', 'CDKN2A/B homozygous deletion detected', '1p deletion detected',
-    '22q deletion detected', 'NF2 pathogenic variant detected', 'TERT promoter wild-type',
-    'No CDKN2A/B homozygous deletion', 'No 1p deletion', 'No 22q deletion', 'NF2 wild-type' ] },
+  // The criteria block is shared with the resection template; see scripts/build-cns-layers.py.
+  // WHO CNS5 grades a meningioma on criteria that are independent of the subtype, so the same
+  // block serves a stereotactic core and a craniotomy. Gated on the finding here, on family plus
+  // entity on the resection form.
+  ...LAYERS.meningioma.map((f) => ({ ...f, group: 'Meningioma', showIf: isFinding('Meningioma') })),
 
   // ----- gliomas: the shared CNS diagnosis core, behind a glioma finding -----
   // Field-level gates are kept and combined with the finding gate through `all`, so Layer 4 still

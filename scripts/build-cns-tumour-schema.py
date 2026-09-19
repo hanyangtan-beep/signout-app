@@ -45,6 +45,18 @@ use('ihc')
 f(id='histologyNotes', label='Tumour histology (typed; overrides the generated paragraph)', type='textarea', group='Microscopic findings', default='')
 use('treatment', 'layer4')
 
+# ---------------- meningioma ----------------
+# A meningioma named in Layer 1 is graded on its own criteria, not on the glioma items: the mitotic
+# count in 1.6 mm2, the five soft criteria, brain invasion, frank anaplasia, and the TERT / CDKN2A/B
+# markers. Without this block the form could name a meningioma and then had nothing to grade it on.
+# The same group serves the biopsy template; see scripts/build-cns-layers.py.
+MENINGIOMA_GATE = [{'field': 'dxFamily', 'is': 'Mesenchymal tumours involving the CNS'},
+                   {'field': 'dxMesenchymal', 'is': 'Meningioma'}]
+for item in LAYERS['meningioma']:
+    item = dict(item)
+    item['showIf'] = {'all': MENINGIOMA_GATE + ([item['showIf']] if 'showIf' in item else [])}
+    F.append(item)
+
 # ---------------- additional findings ----------------
 GA = 'Additional findings'
 f(id='additionalFindings', label='Additional findings', type='multiselect', group=GA, default=[], options=[

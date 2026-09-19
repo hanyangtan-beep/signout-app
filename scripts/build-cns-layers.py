@@ -20,6 +20,7 @@ Groups:
   ihc        immunohistochemistry (house extra)
   treatment  treatment effect, with the necrotic tumour percentage
   layer4     molecular information, branched into an IDH-mutant and an IDH-wildtype panel
+  meningioma meningioma subtype and the CNS WHO grading criteria (not on the QMH glioma page)
 
 Re-run after editing, then re-run both template builders and scripts/build-manifest.mjs.
 """
@@ -409,6 +410,53 @@ f(id='methQc', label='Quality control', type='select', group=GMETH, default='', 
     '', 'Passed', 'Passed with reservations (specify)', 'Failed (specify)'], showIf=METH)
 f(id='methQcDetail', label='Quality control (specify)', type='text', group=GMETH, default='',
   showIf={'field': 'methQc', 'is': ['Passed with reservations (specify)', 'Failed (specify)']})
+
+# ---------------- meningioma ----------------
+# A separate group, not part of the QMH glioma page. Meningioma grading is subtype-independent in
+# WHO CNS5 - "the criteria defining atypical or anaplastic (ie, grade 2 and 3) meningioma should be
+# applied regardless of the underlying subtype"
+# (https://pmc.ncbi.nlm.nih.gov/articles/PMC8328013/) - so one block of criteria serves every
+# subtype, on a stereotactic core and on a craniotomy alike. Each template applies its own
+# visibility gate: the biopsy on its `finding` select, the resection on family plus entity.
+g('meningioma')
+GM = 'Meningioma'
+f(id='mgSubtype', label='Subtype', type='select', group=GM, default='Meningothelial', options=[
+    'Meningothelial', 'Fibrous', 'Transitional', 'Psammomatous', 'Angiomatous', 'Microcystic',
+    'Secretory', 'Lymphoplasmacyte-rich', 'Metaplastic', 'Chordoid', 'Clear cell', 'Papillary',
+    'Rhabdoid', 'Atypical', 'Anaplastic'],
+  help='Chordoid and clear cell carry CNS WHO grade 2. Papillary and rhabdoid no longer grade on '
+       'the morphology alone; they take the grade the criteria give.')
+f(id='mgMitoses', label='Mitoses (per 1.6 mm\u00b2, 10 high-power fields)', type='number', group=GM, default='',
+  help='4 to 19 is grade 2, 20 or more is grade 3. The full 1.6 mm\u00b2 must be examined; a count '
+       'extrapolated from a smaller area cannot carry the grade.')
+# The five "soft" criteria, worded as the sources word them. `generators/cns_biopsy.js` maps each
+# to its printed phrase, so the option strings can read as criteria without changing the report.
+f(id='mgAtypical', label='Atypical features', type='multiselect', group=GM, default=[], options=[
+    'High cellularity', 'Small cell change', 'Prominent nucleoli', 'Sheet-like growth',
+    'Spontaneous necrosis'],
+  help='Three or more of the five carry CNS WHO grade 2. Necrosis counts only when spontaneous; '
+       'necrosis after embolisation or radiation does not.')
+f(id='mgAnaplasia', label='Frank anaplasia', type='select', group=GM, default='Not identified', options=[
+    'Not identified', 'Present', CBD],
+  help='Overtly malignant cytology resembling carcinoma, high-grade sarcoma or melanoma. An '
+       'independent CNS WHO grade 3 criterion.')
+f(id='mgBrain', label='Brain invasion', type='select', group=GM, default='No adjacent brain in the specimen',
+  options=['Not identified', 'Present', 'No adjacent brain in the specimen'],
+  help='Tumour through the leptomeninges into the subjacent parenchyma. Extension along '
+       'Virchow-Robin spaces does not qualify; the pia is intact.')
+f(id='mgBone', label='Bone or dural involvement', type='select', group=GM, default='Not applicable', options=[
+    'Not applicable', 'Dura involved', 'Bone involved'])
+f(id='mgIhc', label='Immunohistochemistry', type='multiselect', group=GM, default=[], options=[
+    'EMA positive', 'SSTR2A positive', 'Progesterone receptor positive', 'EMA negative',
+    'SSTR2A negative', 'STAT6 negative', 'H3 K27me3 retained', 'H3 K27me3 loss of nuclear expression',
+    'BAP1 retained', 'BAP1 loss of nuclear expression', 'SMARCE1 retained',
+    'SMARCE1 loss of nuclear expression'])
+f(id='mgMolecular', label='Molecular result', type='multiselect', group=GM, default=[], options=[
+    'TERT promoter mutation detected', 'CDKN2A/B homozygous deletion detected',
+    'CDKN2A/B hemizygous deletion detected', '1p deletion detected', '22q deletion detected',
+    'NF2 pathogenic variant detected', 'SMARCE1 alteration detected', 'BAP1 alteration detected',
+    'PBRM1 alteration detected', 'TERT promoter wild-type', 'No CDKN2A/B homozygous deletion',
+    'No 1p deletion', 'No 22q deletion', 'NF2 wild-type'])
 
 fragment = collections.OrderedDict()
 fragment['note'] = ('Shared CNS diagnosis core: the four layers of the QMH Brain > "WHO 2021" form plus '

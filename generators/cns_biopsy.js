@@ -31,7 +31,7 @@ import { stripDot } from './_house.js';
 import {
   grade as layerGrade, proposedGrade, gradeText, gradeClause, upperEntity,
   histClassText, featureClause, mitoticClause, ihcClause, molecularClause, molecularBits,
-  treatmentClause, NP, pathwayChecks
+  treatmentClause, NP, pathwayChecks, meningiomaGrade, meningiomaName, meningiomaChecks
 } from './cns_layers.js';
 import {
   uc1, lc1, num, arr, word, list,
@@ -280,22 +280,11 @@ export function microscopy(part) {
 
 // ---------- grading ----------
 
-const GRADE3_SUBTYPE = ['Papillary', 'Rhabdoid'];
-const GRADE2_SUBTYPE = ['Chordoid', 'Clear cell', 'Atypical'];
-
-/** WHO CNS5 meningioma grade from the recorded findings. */
-export function meningiomaGrade(v) {
-  const mitoses = num(v.mgMitoses);
-  const mol = arr(v.mgMolecular);
-  if (mitoses !== null && mitoses >= 20) return 3;
-  if (GRADE3_SUBTYPE.includes(v.mgSubtype)) return 3;
-  if (mol.includes('TERT promoter mutation detected') || mol.includes('CDKN2A/B homozygous deletion detected')) return 3;
-  if (mitoses !== null && mitoses >= 4) return 2;
-  if (arr(v.mgAtypical).length >= 3) return 2;
-  if (v.mgBrain === 'Present') return 2;
-  if (GRADE2_SUBTYPE.includes(v.mgSubtype)) return 2;
-  return 1;
-}
+// The meningioma criteria live in generators/cns_layers.js so that the biopsy and the resection
+// template grade the same tumour identically. They are subtype-independent in WHO CNS5, and
+// papillary and rhabdoid morphology no longer grade on their own - this module used to return grade
+// 3 for both, which cIMPACT-NOW update 8 withdrew.
+export { meningiomaGrade, meningiomaGrading, meningiomaChecks } from './cns_layers.js';
 
 /**
  * WHO CNS5 grade for the glioma families the template covers. The shared core does the work: the
@@ -316,13 +305,9 @@ export function grade(v) {
 // ---------- diagnosis ----------
 
 function meningiomaDx(v) {
-  const g = meningiomaGrade(v);
-  if (g === 3) return `ANAPLASTIC MENINGIOMA, CNS WHO grade 3`;
-  if (g === 2) {
-    const sub = GRADE2_SUBTYPE.includes(v.mgSubtype) && v.mgSubtype !== 'Atypical' ? `${lc1(v.mgSubtype)} type, ` : '';
-    return `ATYPICAL MENINGIOMA, ${sub}CNS WHO grade 2`;
-  }
-  return `MENINGIOMA, ${lc1(v.mgSubtype || 'Meningothelial')} type, CNS WHO grade 1`;
+  // The name and the grade both come from the shared core, so a meningioma reads identically on a
+  // stereotactic core and on a craniotomy.
+  return `${upperEntity(meningiomaName(v))}, CNS WHO grade ${meningiomaGrade(v)}`;
 }
 
 function metastasisDx(v) {
@@ -471,29 +456,7 @@ export function validate(part) {
   if (smearOnly(v) && !noTissue(v)) {
     info('Smear preparation only: the paraffin sentence refers to the residual tissue. Check that paraffin sections were in fact examined.', 'prep');
   }
-  if (isMeningioma(v)) {
-    const mitoses = num(v.mgMitoses);
-    const atypical = arr(v.mgAtypical).length;
-    const mol = arr(v.mgMolecular);
-    // cIMPACT-NOW update 8 proposes grade 2 for grade 1 morphology carrying 1p deletion with 22q
-    // deletion and/or an NF2 variant. It is a proposal, not WHO, so it warns beside the form and
-    // never moves the printed grade.  https://pubmed.ncbi.nlm.nih.gov/39212325/
-    if (meningiomaGrade(v) === 1 && mol.includes('1p deletion detected')
-      && (mol.includes('22q deletion detected') || mol.includes('NF2 pathogenic variant detected'))) {
-      warn('Grade 1 morphology with 1p deletion and 22q deletion or an NF2 variant: this combination is proposed as grade 2 and carries a higher recurrence risk than the morphology alone suggests.', 'mgMolecular');
-    }
-    if (v.mgBrain === 'Present') {
-      info('Brain invasion recorded. It is read as tumour nests within brain parenchyma without intervening leptomeninges on a section carrying adjacent brain; a smooth pushing interface and entrapped perivascular tumour are not brain invasion.', 'mgBrain');
-    }
-    if (mitoses === null) info('Record the mitotic count per 1.6 mm² (10 high-power fields); it carries the meningioma grade.', 'mgMitoses');
-    if (atypical === 2 && !arr(v.mgMolecular).length) {
-      info('Two atypical features: this sits at the grade 1 / grade 2 border, where TERT promoter and CDKN2A/B testing settles the grade.', 'mgAtypical');
-    }
-    if (v.mgBrain === 'No adjacent brain in the specimen' && meningiomaGrade(v) === 1) {
-      info('No adjacent brain in the specimen: the grade rests on the tissue examined and brain invasion cannot be assessed.', 'mgBrain');
-    }
-    if (meningiomaGrade(v) >= 2) info(`Meningioma graded CNS WHO grade ${meningiomaGrade(v)} on the recorded findings.`, 'finding');
-  }
+  if (isMeningioma(v)) meningiomaChecks(v, warn, info);
   if (isGlioma(v)) {
     pathwayChecks(v, warn, (level, message, field) => out.push({ level, message, field }), finding(v));
     // Layer 3 is a free choice: the grade the findings support is proposed and disagreement is

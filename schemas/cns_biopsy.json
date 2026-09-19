@@ -251,10 +251,6 @@
       "type": "select",
       "group": "Meningioma",
       "default": "Meningothelial",
-      "showIf": {
-        "field": "finding",
-        "is": "Meningioma"
-      },
       "options": [
         "Meningothelial",
         "Fibrous",
@@ -267,17 +263,24 @@
         "Metaplastic",
         "Chordoid",
         "Clear cell",
-        "Atypical",
         "Papillary",
-        "Rhabdoid"
-      ]
+        "Rhabdoid",
+        "Atypical",
+        "Anaplastic"
+      ],
+      "help": "Chordoid and clear cell carry CNS WHO grade 2. Papillary and rhabdoid no longer grade on the morphology alone; they take the grade the criteria give.",
+      "showIf": {
+        "field": "finding",
+        "is": "Meningioma"
+      }
     },
     {
       "id": "mgMitoses",
       "label": "Mitoses (per 1.6 mm², 10 high-power fields)",
       "type": "number",
-      "default": "",
       "group": "Meningioma",
+      "default": "",
+      "help": "4 to 19 is grade 2, 20 or more is grade 3. The full 1.6 mm² must be examined; a count extrapolated from a smaller area cannot carry the grade.",
       "showIf": {
         "field": "finding",
         "is": "Meningioma"
@@ -287,19 +290,37 @@
       "id": "mgAtypical",
       "label": "Atypical features",
       "type": "multiselect",
-      "default": [],
       "group": "Meningioma",
-      "showIf": {
-        "field": "finding",
-        "is": "Meningioma"
-      },
+      "default": [],
       "options": [
         "High cellularity",
         "Small cell change",
         "Prominent nucleoli",
         "Sheet-like growth",
         "Spontaneous necrosis"
-      ]
+      ],
+      "help": "Three or more of the five carry CNS WHO grade 2. Necrosis counts only when spontaneous; necrosis after embolisation or radiation does not.",
+      "showIf": {
+        "field": "finding",
+        "is": "Meningioma"
+      }
+    },
+    {
+      "id": "mgAnaplasia",
+      "label": "Frank anaplasia",
+      "type": "select",
+      "group": "Meningioma",
+      "default": "Not identified",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "help": "Overtly malignant cytology resembling carcinoma, high-grade sarcoma or melanoma. An independent CNS WHO grade 3 criterion.",
+      "showIf": {
+        "field": "finding",
+        "is": "Meningioma"
+      }
     },
     {
       "id": "mgBrain",
@@ -307,15 +328,16 @@
       "type": "select",
       "group": "Meningioma",
       "default": "No adjacent brain in the specimen",
-      "showIf": {
-        "field": "finding",
-        "is": "Meningioma"
-      },
       "options": [
         "Not identified",
         "Present",
         "No adjacent brain in the specimen"
-      ]
+      ],
+      "help": "Tumour through the leptomeninges into the subjacent parenchyma. Extension along Virchow-Robin spaces does not qualify; the pia is intact.",
+      "showIf": {
+        "field": "finding",
+        "is": "Meningioma"
+      }
     },
     {
       "id": "mgBone",
@@ -323,57 +345,67 @@
       "type": "select",
       "group": "Meningioma",
       "default": "Not applicable",
-      "showIf": {
-        "field": "finding",
-        "is": "Meningioma"
-      },
       "options": [
         "Not applicable",
         "Dura involved",
         "Bone involved"
-      ]
+      ],
+      "showIf": {
+        "field": "finding",
+        "is": "Meningioma"
+      }
     },
     {
       "id": "mgIhc",
       "label": "Immunohistochemistry",
       "type": "multiselect",
-      "default": [],
       "group": "Meningioma",
-      "showIf": {
-        "field": "finding",
-        "is": "Meningioma"
-      },
+      "default": [],
       "options": [
         "EMA positive",
         "SSTR2A positive",
         "Progesterone receptor positive",
         "EMA negative",
         "SSTR2A negative",
-        "STAT6 negative"
-      ]
+        "STAT6 negative",
+        "H3 K27me3 retained",
+        "H3 K27me3 loss of nuclear expression",
+        "BAP1 retained",
+        "BAP1 loss of nuclear expression",
+        "SMARCE1 retained",
+        "SMARCE1 loss of nuclear expression"
+      ],
+      "showIf": {
+        "field": "finding",
+        "is": "Meningioma"
+      }
     },
     {
       "id": "mgMolecular",
       "label": "Molecular result",
       "type": "multiselect",
-      "default": [],
       "group": "Meningioma",
-      "showIf": {
-        "field": "finding",
-        "is": "Meningioma"
-      },
+      "default": [],
       "options": [
         "TERT promoter mutation detected",
         "CDKN2A/B homozygous deletion detected",
+        "CDKN2A/B hemizygous deletion detected",
         "1p deletion detected",
         "22q deletion detected",
         "NF2 pathogenic variant detected",
+        "SMARCE1 alteration detected",
+        "BAP1 alteration detected",
+        "PBRM1 alteration detected",
         "TERT promoter wild-type",
         "No CDKN2A/B homozygous deletion",
         "No 1p deletion",
         "No 22q deletion",
         "NF2 wild-type"
-      ]
+      ],
+      "showIf": {
+        "field": "finding",
+        "is": "Meningioma"
+      }
     },
     {
       "id": "dxQualifier",

@@ -36,7 +36,7 @@ import { stripDot, letteredBlockKey, checks } from './_house.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import {
   NP, isEpendymoma, entity, integratedDiagnosis, histClassText, proposedGrade, grade, gradeValue, gradeText,
-  gradeClause, upperEntity, featureClause, mitoticClause, ihcClause, ki67Clause, treatmentClause,
+  gradeClause, upperEntity, meningiomaName, meningiomaChecks, featureClause, mitoticClause, ihcClause, ki67Clause, treatmentClause,
   treatmentValue, molecularClause, molecularBits, pathwayChecks
 } from './cns_layers.js';
 import {
@@ -210,7 +210,10 @@ export function synoptic(part, ctx) {
 export function diagnosis(part, ctx) {
   const v = part.values;
   const head = `(${part.label}) ${organPhrase(part)}`;
-  const first = [`${upperEntity(entity(v))}${gradeClause(v) ? `, ${gradeClause(v)}` : ''}`];
+  // A meningioma is named from its subtype and grade, as it is in Layer 1; everything else prints
+  // the Layer 1 entity as chosen.
+  const named = entity(v) === 'Meningioma' ? meningiomaName(v) : entity(v);
+  const first = [`${upperEntity(named)}${gradeClause(v) ? `, ${gradeClause(v)}` : ''}`];
   if ((v.treatmentEffect || '') === 'Present') first.push('treatment effect present');
   if (v.molStatus === 'Sent, result pending') first.push('molecular studies pending');
   const clauses = [`${first.join('; ')}; see synoptic report`];
@@ -273,6 +276,8 @@ export function validate(part) {
   if (num(v.ki67) !== null && /astrocytoma, IDH-mutant|oligodendroglioma/i.test(e)) {
     at('info', 'The Ki-67 index is recorded. It is not a grading criterion in an IDH-mutant glioma; the mitotic count in the most active area carries the grade.', 'ki67');
   }
+  // A meningioma named in Layer 1 is graded on its own criteria; the same prompts serve the biopsy.
+  if (e === 'Meningioma') meningiomaChecks(v, warn, (m, f) => at('info', m, f));
   pathwayChecks(v, warn, at, e);
   return out;
 }

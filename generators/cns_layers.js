@@ -32,7 +32,7 @@
 // the same tumour in its flat `finding` select and passes that through.
 
 import { stripDot } from './_house.js';
-import { lc1, num, arr, list, ASTRO, OLIGO, GBM, DMG, PILOCYTIC, SCHWANNOMA, FEATURE_PHRASE } from './cns_morphology.js';
+import { uc1, lc1, num, arr, list, ASTRO, OLIGO, GBM, DMG, PILOCYTIC, SCHWANNOMA, FEATURE_PHRASE } from './cns_morphology.js';
 
 export const NP = 'Not performed';
 export const CBD = 'Cannot be determined';
@@ -73,7 +73,9 @@ export function entity(v) {
 /** Layer 1 as printed: the entity, then the grade, then any NOS / NEC / pending qualifier. */
 export function integratedDiagnosis(v, e = entity(v)) {
   const q = v.dxQualifier || '';
-  let s = e;
+  // A meningioma is named from its subtype and its grade, so Layer 1 reads "Atypical meningioma,
+  // CNS WHO grade 2" rather than the bare family entity with a grade bolted on.
+  let s = e === 'Meningioma' ? meningiomaName(v) : e;
   const g = grade(v, e);
   if (g) s += `, CNS WHO grade ${g}`;
   if (/^NOS/.test(q)) s += ', NOS';
@@ -221,8 +223,179 @@ export function proposedGrade(v, e = entity(v)) {
   if (e === OLIGO) return high || (mit !== null && mit >= 6) ? 3 : 2;
   if (e === 'Pleomorphic xanthoastrocytoma') return (mit !== null && mit >= 5) || high ? 3 : 2;
   if (isEpendymoma(e)) return high || (mit !== null && mit >= 5) ? 3 : 2;
+  // A meningioma is graded on its own criteria, which are independent of the subtype; see
+  // meningiomaGrading below. Without this arm the resection form named a meningioma and then had
+  // no grade to propose, so it raised "CNS WHO grade is required" whatever was recorded.
+  if (e === 'Meningioma') return meningiomaGrade(v);
   return null;
 }
+
+// ---------- meningioma grading ----------
+//
+// WHO CNS5 grades a meningioma on criteria that are applied "regardless of the underlying subtype"
+// (https://pmc.ncbi.nlm.nih.gov/articles/PMC8328013/), so this is one gate set for all fifteen
+// subtypes, shared by the biopsy and the resection template.
+//
+//   grade 3, any one of:  >= 20 mitoses per 1.6 mm2 (>= 12.5/mm2); frank anaplasia resembling
+//     carcinoma, high-grade sarcoma or melanoma; a TERT promoter oncogenic variant; CDKN2A/B
+//     homozygous deletion. The last two are independent diagnostic criteria in CNS5
+//     (https://academic.oup.com/neuro-oncology/article/27/2/319/7745776). Hemizygous CDKN2A/B loss
+//     is explicitly not usable for grading.
+//   grade 2, any one of:  4-19 mitoses per 1.6 mm2 (>= 2.5/mm2); unequivocal brain invasion, which
+//     is tumour through the leptomeninges into the subjacent parenchyma and not extension along
+//     Virchow-Robin spaces; at least three of the five soft criteria (sheeting, hypercellularity,
+//     small cell change, macronucleoli, spontaneous non-iatrogenic necrosis); chordoid or clear
+//     cell subtype; or 1p deletion with 22q deletion and/or an NF2 oncogenic variant, which is the
+//     cIMPACT-NOW update 8 proposal.
+//   grade 1 otherwise.
+//
+// Papillary and rhabdoid morphology no longer grade on their own: update 8 records that the grading
+// of those tumours "was amended from assignment to CNS WHO grade 3 on the basis of rhabdoid or
+// papillary histology alone towards stratification into CNS WHO grade 1, 2, or 3 based on the
+// presence or absence of histological criteria". H3 K27me3 loss "offers prognostic information but
+// does not currently inform grading", and Ki-67 carries no threshold.
+
+/** The two subtypes CNS5 assigns to grade 2 on the morphology alone. */
+export const MENINGIOMA_GRADE2_SUBTYPE = ['Chordoid', 'Clear cell'];
+/** Names that are grades rather than morphological subtypes, and so cannot support themselves. */
+export const MENINGIOMA_GRADE_NAME = { Atypical: 2, Anaplastic: 3 };
+
+const MG_TERT = 'TERT promoter mutation detected';
+const MG_CDKN2A = 'CDKN2A/B homozygous deletion detected';
+const MG_1P = '1p deletion detected';
+const MG_22Q = '22q deletion detected';
+const MG_NF2 = 'NF2 pathogenic variant detected';
+
+/**
+ * The CNS WHO grade the recorded meningioma findings support, with the criteria that carried it.
+ *
+ * Returns `{ grade, grade3, grade2, biob, borderline }`. `grade3` and `grade2` name the criteria
+ * met, in prose, for the pathway panel and the checks - never for the printed report. `biob` marks
+ * a brain-invasive but otherwise benign tumour, `borderline` a case sitting on the grade 1 / 2 line
+ * where the molecular tests decide it.
+ */
+export function meningiomaGrading(v) {
+  const mit = num(v.mgMitoses);
+  const soft = arr(v.mgAtypical);
+  const mol = arr(v.mgMolecular);
+  const sub = v.mgSubtype || '';
+  const g3 = [];
+  const g2 = [];
+
+  if (mit !== null && mit >= 20) g3.push(`${mit} mitoses per 1.6 mm\u00b2`);
+  if (v.mgAnaplasia === 'Present') g3.push('frank anaplasia');
+  if (mol.includes(MG_TERT)) g3.push('a TERT promoter mutation');
+  if (mol.includes(MG_CDKN2A)) g3.push('CDKN2A/B homozygous deletion');
+
+  if (mit !== null && mit >= 4 && mit < 20) g2.push(`${mit} mitoses per 1.6 mm\u00b2`);
+  if (v.mgBrain === 'Present') g2.push('brain invasion');
+  if (soft.length >= 3) g2.push(`${soft.length} of the five atypical features`);
+  if (MENINGIOMA_GRADE2_SUBTYPE.includes(sub)) g2.push(`${lc1(sub)} morphology`);
+  if (mol.includes(MG_1P) && (mol.includes(MG_22Q) || mol.includes(MG_NF2))) {
+    g2.push(`1p deletion with ${mol.includes(MG_22Q) ? '22q deletion' : 'an NF2 variant'}`);
+  }
+
+  const grade = g3.length ? 3 : g2.length ? 2 : 1;
+  const tested = mol.some((m) => /^TERT promoter|^CDKN2A\/B/.test(m));
+  return {
+    grade,
+    grade3: g3,
+    grade2: g2,
+    // Brain invasion standing alone, with nothing else atypical and no grade 3 marker looked for.
+    biob: !g3.length && g2.length === 1 && v.mgBrain === 'Present' && !tested,
+    // Two soft criteria, or a mitotic count of three, is the grade 1 / grade 2 border.
+    borderline: grade === 1 && !tested && (soft.length === 2 || mit === 3),
+    tested,
+  };
+}
+
+/** Subtypes WHO names in their own right; they lead the diagnosis and take the grade the criteria give. */
+const MENINGIOMA_NAMED_SUBTYPE = ['Chordoid', 'Clear cell', 'Papillary', 'Rhabdoid'];
+
+/**
+ * The meningioma as named in Layer 1, without its grade.
+ *
+ * A subtype WHO names in its own right leads the line - "Clear cell meningioma" - because calling
+ * that an atypical meningioma of clear cell type reads as two diagnoses. Atypical and anaplastic are
+ * grade designations rather than subtypes, so they replace the head word and are never repeated as a
+ * type. Everything else is a grade 1 morphological variant and is named after the noun.
+ */
+export function meningiomaName(v) {
+  const sub = v.mgSubtype || '';
+  const g = meningiomaGrade(v);
+  if (MENINGIOMA_NAMED_SUBTYPE.includes(sub)) return `${uc1(lc1(sub))} meningioma`;
+  if (g === 3) return 'Anaplastic meningioma';
+  if (g === 2) return 'Atypical meningioma';
+  return sub && !(sub in MENINGIOMA_GRADE_NAME) ? `Meningioma, ${lc1(sub)} type` : 'Meningioma';
+}
+
+/** The meningioma grade as a bare number, for the diagnosis line and the synoptic row. */
+export const meningiomaGrade = (v) => meningiomaGrading(v).grade;
+
+/**
+ * Prompts around the meningioma grade. The grade itself comes off the criteria; these say which
+ * criterion carried it, and which recorded result cannot carry a grade however suggestive it looks.
+ */
+export function meningiomaChecks(v, warn, info) {
+  const g = meningiomaGrading(v);
+  const mol = arr(v.mgMolecular);
+  const soft = arr(v.mgAtypical);
+  const sub = v.mgSubtype || '';
+
+  if (g.grade3.length) info(`CNS WHO grade 3 on ${list(g.grade3)}.`, 'finding');
+  else if (g.grade2.length) info(`CNS WHO grade 2 on ${list(g.grade2)}.`, 'finding');
+
+  // TERT and CDKN2A/B homozygous deletion are independent grade 3 criteria: they carry the grade
+  // whatever the morphology shows.  https://academic.oup.com/neuro-oncology/article/27/2/319/7745776
+  if (mol.includes('TERT promoter mutation detected') || mol.includes('CDKN2A/B homozygous deletion detected')) {
+    info('A grade 3 molecular criterion is recorded; it carries CNS WHO grade 3 independently of the morphology.', 'mgMolecular');
+  }
+  // Update 8 withdrew the automatic grade 3 for these two morphologies.
+  if (sub === 'Papillary' || sub === 'Rhabdoid') {
+    info(`${sub} morphology no longer grades on its own; the grade shown comes off the mitotic count, the atypical features, brain invasion and the molecular result.`, 'mgSubtype');
+  }
+  if (sub === 'Clear cell' && !mol.includes('SMARCE1 alteration detected')
+    && !arr(v.mgIhc).includes('SMARCE1 loss of nuclear expression')) {
+    info('Clear cell meningioma is CNS WHO grade 2 on the morphology; SMARCE1 loss or the corresponding methylation class supports it.', 'mgSubtype');
+  }
+  // Atypical and anaplastic are grade names. Choosing one without a supporting criterion asks the
+  // report to print a grade the findings do not carry.
+  if (sub in MENINGIOMA_GRADE_NAME && g.grade < MENINGIOMA_GRADE_NAME[sub]) {
+    warn(`Subtype recorded as ${lc1(sub)} but the findings support CNS WHO grade ${g.grade}: ${lc1(sub)} meningioma is the grade ${MENINGIOMA_GRADE_NAME[sub]} designation, so record the criterion that supports it or change the subtype.`, 'mgSubtype');
+  }
+  // cIMPACT-NOW update 8 asks that a brain-invasive but otherwise benign meningioma not be graded
+  // until molecular data are in. The printed grade follows CNS5, where brain invasion alone is
+  // sufficient for grade 2, and this warns instead of withholding the grade.
+  if (g.biob) {
+    warn('Brain invasion is the only atypical finding. It carries CNS WHO grade 2 under WHO CNS5, but cIMPACT-NOW update 8 asks that such a tumour not be graded before TERT promoter and CDKN2A/B testing; send both.', 'mgBrain');
+  }
+  if (v.mgBrain === 'Present') {
+    info('Brain invasion recorded. It is read as tumour nests within brain parenchyma without intervening leptomeninges on a section carrying adjacent brain; a smooth pushing interface and entrapped perivascular tumour are not brain invasion.', 'mgBrain');
+  }
+  if (num(v.mgMitoses) === null) {
+    info('Record the mitotic count per 1.6 mm² (10 high-power fields); it carries the meningioma grade. The full area must be examined, not extrapolated from a smaller one.', 'mgMitoses');
+  }
+  if (g.borderline) {
+    info(`${soft.length === 2 ? 'Two atypical features' : 'Three mitoses per 1.6 mm²'}: this sits on the grade 1 / grade 2 border, where TERT promoter, CDKN2A/B and the 1p / 22q / NF2 results settle the grade.`, soft.length === 2 ? 'mgAtypical' : 'mgMitoses');
+  }
+  if (g.grade >= 2 && !g.tested) {
+    info('TERT promoter and CDKN2A/B testing is recommended at CNS WHO grade 2 and 3; either result would raise the grade to 3.', 'mgMolecular');
+  }
+  // Results that look like grading criteria and are not.
+  if (mol.includes('CDKN2A/B hemizygous deletion detected')) {
+    info('Hemizygous CDKN2A/B deletion does not grade; only homozygous deletion carries CNS WHO grade 3.', 'mgMolecular');
+  }
+  if (arr(v.mgIhc).includes('H3 K27me3 loss of nuclear expression')) {
+    info('H3 K27me3 loss is prognostic and does not inform the CNS WHO grade.', 'mgIhc');
+  }
+  if (v.mgBrain === 'No adjacent brain in the specimen' && g.grade === 1) {
+    info('No adjacent brain in the specimen: the grade rests on the tissue examined and brain invasion cannot be assessed.', 'mgBrain');
+  }
+  if (soft.includes('Spontaneous necrosis')) {
+    info('Necrosis counts towards atypia only when spontaneous; necrosis following embolisation, radiation or previous surgery does not.', 'mgAtypical');
+  }
+}
+
 
 const SELECTED_GRADE = {
   'CNS WHO grade 1': 1, 'CNS WHO grade 2': 2, 'CNS WHO grade 3': 3, 'CNS WHO grade 4': 4

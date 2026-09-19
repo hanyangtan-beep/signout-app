@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { generate } from '../src/engine.js';
 import { loadAll } from '../src/registry.js';
-import { meningiomaGrade, gliomaGrade, smearBlock, organPhrase, diagnosisText } from '../generators/cns_biopsy.js';
+import { meningiomaGrade, gliomaGrade, smearBlock, organPhrase, diagnosisText, validate } from '../generators/cns_biopsy.js';
 import { isVisible } from '../src/engine.js';
 import * as resection from '../generators/cns_tumour.js';
 import { upperEntity, gradeClause } from '../generators/cns_layers.js';
@@ -98,9 +98,43 @@ test('meningioma grading follows WHO CNS5', () => {
   assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgAtypical: ['High cellularity', 'Sheet-like growth', 'Prominent nucleoli'] })), 2);
   assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgBrain: 'Present' })), 2);
   assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgSubtype: 'Chordoid' })), 2);
-  assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgSubtype: 'Rhabdoid' })), 3);
+  assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgSubtype: 'Clear cell' })), 2);
   assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgMolecular: ['TERT promoter mutation detected'] })), 3);
   assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgMolecular: ['CDKN2A/B homozygous deletion detected'] })), 3);
+  assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgAnaplasia: 'Present' })), 3);
+  // cIMPACT-NOW update 8 withdrew the automatic grade 3 for rhabdoid and papillary morphology;
+  // both now take the grade the criteria give.
+  assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgSubtype: 'Rhabdoid' })), 1);
+  assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgSubtype: 'Papillary' })), 1);
+  assert.equal(meningiomaGrade(v({ mgMitoses: 25, mgSubtype: 'Papillary' })), 3);
+  // Hemizygous CDKN2A/B loss, 1p alone and K27me3 loss do not grade; 1p with a partner does.
+  assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgMolecular: ['CDKN2A/B hemizygous deletion detected'] })), 1);
+  assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgMolecular: ['1p deletion detected'] })), 1);
+  assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgMolecular: ['1p deletion detected', '22q deletion detected'] })), 2);
+  assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgMolecular: ['1p deletion detected', 'NF2 pathogenic variant detected'] })), 2);
+  assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgIhc: ['H3 K27me3 loss of nuclear expression'] })), 1);
+});
+
+test('the meningioma diagnosis line names the subtype without doubling the grade word', () => {
+  const dx = (p) => diagnosisText({ label: 'A', values: { ...defaults(schema), ...EX, finding: 'Meningioma', ...p } });
+  assert.equal(dx({ mgSubtype: 'Clear cell' }), 'CLEAR CELL MENINGIOMA, CNS WHO grade 2');
+  assert.equal(dx({ mgSubtype: 'Rhabdoid', mgMitoses: 25 }), 'RHABDOID MENINGIOMA, CNS WHO grade 3');
+  assert.equal(dx({ mgSubtype: 'Meningothelial', mgMitoses: 6 }), 'ATYPICAL MENINGIOMA, CNS WHO grade 2');
+  assert.equal(dx({ mgSubtype: 'Meningothelial', mgAnaplasia: 'Present' }), 'ANAPLASTIC MENINGIOMA, CNS WHO grade 3');
+  assert.equal(dx({ mgSubtype: 'Transitional' }), 'MENINGIOMA, transitional type, CNS WHO grade 1');
+});
+
+test('the meningioma checks name the criterion and refuse the ones that do not grade', () => {
+  const issues = (p) => validate({ label: 'A', values: { ...defaults(schema), ...EX, finding: 'Meningioma', ...p } });
+  const msgs = (p, level) => issues(p).filter((i) => i.level === level).map((i) => i.message);
+  assert.ok(msgs({ mgMitoses: 6 }, 'info').some((m) => /grade 2 on 6 mitoses/.test(m)));
+  // Brain invasion standing alone: graded 2 per CNS5, with the update 8 proposal raised beside it.
+  assert.ok(msgs({ mgBrain: 'Present' }, 'warn').some((m) => /cIMPACT-NOW update 8/.test(m)));
+  // Choosing a grade name the findings do not support.
+  assert.ok(msgs({ mgSubtype: 'Anaplastic' }, 'warn').some((m) => /support CNS WHO grade 1/.test(m)));
+  assert.ok(msgs({ mgMolecular: ['CDKN2A/B hemizygous deletion detected'] }, 'info').some((m) => /Hemizygous CDKN2A\/B/.test(m)));
+  assert.ok(msgs({ mgIhc: ['H3 K27me3 loss of nuclear expression'] }, 'info').some((m) => /prognostic/.test(m)));
+  assert.ok(msgs({ mgSubtype: 'Papillary' }, 'info').some((m) => /no longer grades on its own/.test(m)));
 });
 
 test('glioma grading follows the current IDH-mutant grading rules', () => {
