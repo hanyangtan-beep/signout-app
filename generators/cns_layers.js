@@ -452,11 +452,31 @@ export function mitoticClause(v) {
     : `Mitoses number ${n} per 10 high-power fields.`;
 }
 
+/**
+ * The mismatch repair result as a fragment for the immunohistochemistry sentence. Retained
+ * expression is printed because it is a recorded negative that the clinician acts on, the same way
+ * the panel's own negatives are printed.
+ */
+function mmrClause(v) {
+  const m = v.mmr;
+  if (!m || m === 'Not performed') return '';
+  if (m === CBD) {
+    const detail = stripDot(v.mmrDetail);
+    return detail ? lc1(detail) : '';
+  }
+  if (m === 'Retained (MMR proficient)') return 'retained nuclear expression of MLH1, PMS2, MSH2 and MSH6';
+  // 'Loss of MLH1 and PMS2' -> 'loss of nuclear expression of MLH1 and PMS2'
+  return m.replace(/^Loss of /, 'loss of nuclear expression of ');
+}
+
 /** Immunohistochemistry, printed inside the microscopy paragraph as the house style requires. */
 export function ihcClause(v) {
   const values = arr(v.ihc);
   const extra = stripDot(v.ihcOther);
-  if (!values.length && !extra) return '';
+  // Mismatch repair alone is enough to earn the sentence: it can be the only stain done on a case
+  // whose panel was recorded elsewhere.
+  const mmrBit = mmrClause(v);
+  if (!values.length && !extra && !mmrBit) return '';
   const pos = [];
   const neg = [];
   const other = [];
@@ -470,7 +490,10 @@ export function ihcClause(v) {
   if (neg.length) clauses.push(`negative for ${list(neg.map(lc1))}`);
   let sentence = '';
   if (clauses.length) sentence = `On immunohistochemistry, the tumour cells are ${list(clauses)}`;
-  const tailBits = [...other.map((o) => lc1(o)), ...(extra ? [lc1(extra)] : [])];
+  // Mismatch repair rides in the same paragraph as the rest of the immunohistochemistry, which is
+  // what the house style asks for. Only what the stains show is printed; what a loss pattern might
+  // mean for the patient or the family belongs in the checks, not in the morphology.
+  const tailBits = [...other.map((o) => lc1(o)), ...(extra ? [lc1(extra)] : []), ...(mmrBit ? [mmrBit] : [])];
   if (tailBits.length) {
     const tail = list(tailBits);
     sentence = sentence ? `${sentence}, with ${tail}` : `On immunohistochemistry, there is ${tail}`;
@@ -815,11 +838,22 @@ export function pathwayChecks(v, warn, at, e = entity(v)) {
     if (age !== null && age < 40 && e === GBM) {
       at('info', 'Under 40, hold open diffuse paediatric-type high-grade glioma H3-wildtype and IDH-wildtype, diffuse hemispheric glioma H3 G34-mutant, pleomorphic xanthoastrocytoma and FGFR3::TACC3 fusion-positive glioma.', 'dxAdult');
     }
-    if (age !== null && age < 18) {
-      at('info', 'Under 18, consider mismatch-repair immunohistochemistry on an H3-wildtype high-grade glioma.', 'patientAge');
-    } else if (age !== null && age >= 18 && age <= 40 && e !== GBM && /glioma|astrocytoma/i.test(e)) {
-      at('info', 'Between 18 and 40, consider mismatch-repair immunohistochemistry where an H3- and IDH-wildtype high-grade glioma does not meet the glioblastoma criteria.', 'patientAge');
+    // Only prompted while the panel is genuinely outstanding. Once a result is recorded, either way,
+    // the prompt has been answered and repeating it is noise.
+    const mmrOutstanding = !v.mmr || v.mmr === 'Not performed';
+    if (age !== null && age < 18 && mmrOutstanding) {
+      at('info', 'Under 18, consider mismatch-repair immunohistochemistry on an H3-wildtype high-grade glioma.', 'mmr');
+    } else if (age !== null && age >= 18 && age <= 40 && e !== GBM && /glioma|astrocytoma/i.test(e) && mmrOutstanding) {
+      at('info', 'Between 18 and 40, consider mismatch-repair immunohistochemistry where an H3- and IDH-wildtype high-grade glioma does not meet the glioblastoma criteria.', 'mmr');
     }
+  }
+
+  // Loss of a mismatch repair protein carries consequences beyond this tumour, for the patient and
+  // for the family, so it is raised wherever it is recorded rather than only inside branch B2.
+  // Update 11 asks for molecular analysis to pinpoint the underlying defect.
+  // https://onlinelibrary.wiley.com/doi/10.1111/bpa.70035
+  if (/^Loss of /.test(v.mmr || '')) {
+    warn(`Mismatch repair immunohistochemistry shows ${v.mmr.replace(/^Loss of /, 'loss of ')}. Molecular analysis to pinpoint the underlying defect is advised, and the finding carries implications for the patient and the family.`, 'mmr');
   }
 
   if (reported && /midline/i.test(v.site || '') && /glioma|astrocytoma/i.test(e) && v.h3k27me3 === NP && v.h3seq === NP) {

@@ -492,12 +492,17 @@ function branchBH3(c) {
       source: SRC.u11,
     }));
 
-  const mmr = age !== null && age < 18 ? 'outstanding' : (age !== null && age <= 40 && !c.gbm ? 'outstanding' : 'na');
+  // Age decides whether the panel is asked for; the recorded result decides whether it is done.
+  const mmrDone = !!v.mmr && v.mmr !== 'Not performed';
+  const mmrAsked = age !== null && (age < 18 || (age <= 40 && !c.gbm));
+  const mmr = mmrDone ? 'satisfied' : (mmrAsked ? 'outstanding' : 'na');
   nodes.push(node('mmr', 'Mismatch-repair immunohistochemistry', mmr,
     age !== null && age < 18
-      ? `Considered under 18 with an H3-wildtype high-grade glioma, including an IDH-mutant astrocytoma. The patient is ${age}.`
+      // The age sits in parentheses so the recorded result, which shown() appends after a colon,
+      // does not land against a bare number.
+      ? shown(`Considered under 18 with an H3-wildtype high-grade glioma, including an IDH-mutant astrocytoma (the patient is ${age})`, mmrDone ? v.mmr : null)
       : (age !== null && age <= 40 && !c.gbm
-        ? `Considered at 18 to 40 where an H3- and IDH-wildtype high-grade glioma does not meet the glioblastoma criteria. The patient is ${age}.`
+        ? shown(`Considered at 18 to 40 where an H3- and IDH-wildtype high-grade glioma does not meet the glioblastoma criteria (the patient is ${age})`, mmrDone ? v.mmr : null)
         : 'Considered in the young, and at 18 to 40 where the glioblastoma criteria are not met.'),
     { test: 'MLH1, PMS2, MSH2, MSH6', source: SRC.u11 }));
 

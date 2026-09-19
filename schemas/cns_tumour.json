@@ -864,6 +864,35 @@
    "placeholder": "H3 K27M positive; L1CAM positive"
   },
   {
+   "id": "mmr",
+   "label": "Mismatch repair proteins",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Retained (MMR proficient)",
+    "Loss of MLH1 and PMS2",
+    "Loss of MSH2 and MSH6",
+    "Loss of MSH6",
+    "Loss of PMS2",
+    "Cannot be determined"
+   ],
+   "help": "MSH2, MSH6, MLH1 and PMS2. Considered under 18 with an H3-wildtype high-grade glioma, and at 18 to 40 where an H3- and IDH-wildtype high-grade glioma does not meet the glioblastoma criteria."
+  },
+  {
+   "id": "mmrDetail",
+   "label": "Mismatch repair (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "subclonal loss of MSH6",
+   "showIf": {
+    "field": "mmr",
+    "is": "Cannot be determined"
+   }
+  },
+  {
    "id": "histologyNotes",
    "label": "Tumour histology (typed; overrides the generated paragraph)",
    "type": "textarea",
@@ -1910,6 +1939,8 @@
       "OLIG2 positive"
      ],
      "ihcOther": "",
+     "mmr": "Not performed",
+     "mmrDetail": "",
      "histologyNotes": "",
      "treatmentEffect": "No known presurgical therapy",
      "necroticPct": "",

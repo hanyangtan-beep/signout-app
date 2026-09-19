@@ -679,7 +679,8 @@ export function cautions(step, values) {
       out.push('Hemizygous CDKN2A/B loss does not grade; only homozygous deletion does. 1p deletion grades only alongside 22q deletion or an NF2 variant.');
       break;
     case 'grade':
-      if (age !== null && age < 18 && ctx.wildtype(v)) out.push('Under 18 with an H3-wildtype high-grade glioma, consider mismatch-repair immunohistochemistry before signing out.');
+      // Dropped once a result is recorded, so the prompt does not outlive the panel answering it.
+      if (age !== null && age < 18 && ctx.wildtype(v) && (!v.mmr || v.mmr === 'Not performed')) out.push('Under 18 with an H3-wildtype high-grade glioma, consider mismatch-repair immunohistochemistry before signing out.');
       if (ctx.meningioma(v) && num(v.mgMitoses) === null) out.push('No mitotic count is recorded. It is the criterion that most often carries the meningioma grade, so the proposal below is provisional until it is.');
       break;
     default:

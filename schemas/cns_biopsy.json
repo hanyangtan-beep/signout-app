@@ -704,6 +704,61 @@
       }
     },
     {
+      "id": "mmr",
+      "label": "Mismatch repair proteins",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "Retained (MMR proficient)",
+        "Loss of MLH1 and PMS2",
+        "Loss of MSH2 and MSH6",
+        "Loss of MSH6",
+        "Loss of PMS2",
+        "Cannot be determined"
+      ],
+      "help": "MSH2, MSH6, MLH1 and PMS2. Considered under 18 with an H3-wildtype high-grade glioma, and at 18 to 40 where an H3- and IDH-wildtype high-grade glioma does not meet the glioblastoma criteria.",
+      "showIf": {
+        "field": "finding",
+        "is": [
+          "Astrocytoma, IDH-mutant",
+          "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+          "Glioblastoma, IDH-wildtype",
+          "Diffuse midline glioma, H3 K27-altered",
+          "Pilocytic astrocytoma",
+          "Ependymoma"
+        ]
+      }
+    },
+    {
+      "id": "mmrDetail",
+      "label": "Mismatch repair (specify)",
+      "type": "text",
+      "group": "Glioma",
+      "default": "",
+      "placeholder": "subclonal loss of MSH6",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "mmr",
+            "is": "Cannot be determined"
+          }
+        ]
+      }
+    },
+    {
       "id": "treatmentEffect",
       "label": "Treatment effect",
       "type": "select",

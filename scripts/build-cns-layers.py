@@ -248,6 +248,21 @@ f(id='ihc', label='Immunohistochemistry', type='multiselect', group=GM, default=
     'CD20 positive', 'CD3 positive', 'Pan-cytokeratin positive', 'TTF-1 positive', 'Melan-A positive'])
 f(id='ihcOther', label='Further immunohistochemistry', type='text', group=GM, default='',
   placeholder='H3 K27M positive; L1CAM positive')
+# The four proteins are read as two pairs, so the loss patterns are the pairs and the isolated
+# secondary partners. Same option set as the endometrial templates, which is the house convention.
+# cIMPACT-NOW update 11 asks for MSH2, MSH6, MLH1 and PMS2 where replication-repair deficiency is
+# suspected, and considers it under 18 with an H3-wildtype high-grade glioma including an IDH-mutant
+# astrocytoma, and at 18 to 40 where an H3- and IDH-wildtype high-grade glioma falls short of the
+# glioblastoma criteria. https://onlinelibrary.wiley.com/doi/10.1111/bpa.70035
+f(id='mmr', label='Mismatch repair proteins', type='select', group=GM, default='Not performed', options=[
+    'Not performed', 'Retained (MMR proficient)', 'Loss of MLH1 and PMS2', 'Loss of MSH2 and MSH6',
+    'Loss of MSH6', 'Loss of PMS2', CBD],
+  help='MSH2, MSH6, MLH1 and PMS2. Considered under 18 with an H3-wildtype high-grade glioma, and '
+       'at 18 to 40 where an H3- and IDH-wildtype high-grade glioma does not meet the glioblastoma '
+       'criteria.')
+f(id='mmrDetail', label='Mismatch repair (specify)', type='text', group=GM, default='',
+  placeholder='subclonal loss of MSH6',
+  showIf={'field': 'mmr', 'is': CBD})
 
 g('treatment')
 f(id='treatmentEffect', label='Treatment effect', type='select', group=GM, default='No known presurgical therapy', options=[

@@ -56,7 +56,7 @@ export const NODE_FIELDS = {
   'b2:midline': ['site', 'h3k27me3'],
   'b2:k27loss': ['h3k27me3', 'h3seq', 'h3seqDetail', 'ezhip'],
   'b2:differential': ['h3g34w', 'h3seq', 'braf', 'methylation'],
-  'b2:mmr': ['ihc', 'ihcOther'],
+  'b2:mmr': ['mmr', 'mmrDetail'],
 
   // ----- ependymal -----
   'ep:morph': [...['dxFamily', 'dxEpendymal', 'finding'], 'ihc'],

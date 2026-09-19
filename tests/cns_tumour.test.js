@@ -318,3 +318,34 @@ test('printed prose stays in the released-report register', () => {
     }
   }
 });
+
+// The MMR node used to open the generic glial panel, which held no MMR protein. These lock the
+// dedicated field to the four proteins, and keep the printed sentence in the released-report
+// register: what the stains show, never what a loss pattern implies for the family.
+test('mismatch repair is its own field, offering the house loss patterns', () => {
+  const f = schema.fields.find((x) => x.id === 'mmr');
+  assert.ok(f, 'cns_tumour carries an mmr field');
+  assert.equal(f.type, 'select');
+  for (const opt of ['Not performed', 'Retained (MMR proficient)', 'Loss of MLH1 and PMS2',
+    'Loss of MSH2 and MSH6', 'Loss of MSH6', 'Loss of PMS2']) {
+    assert.ok(f.options.includes(opt), `mmr offers ${opt}`);
+  }
+  for (const p of ['MLH1', 'PMS2', 'MSH2', 'MSH6']) {
+    assert.match(f.help, new RegExp(p), `the help names ${p}`);
+  }
+});
+
+test('a recorded mismatch repair result prints in the microscopy paragraph', () => {
+  const para = (patch) => {
+    const report = run(patch).report;
+    return report.split('Microscopic findings')[1].split('Integrated diagnosis')[0];
+  };
+  assert.ok(!/mismatch|MLH1/i.test(para({ mmr: 'Not performed' })), 'nothing printed when not performed');
+  assert.match(para({ mmr: 'Retained (MMR proficient)' }), /retained nuclear expression of MLH1, PMS2, MSH2 and MSH6/);
+  assert.match(para({ mmr: 'Loss of MLH1 and PMS2' }), /loss of nuclear expression of MLH1 and PMS2/);
+  // The register rule: the printed sentence says what is seen and stops there.
+  const lossReport = run({ mmr: 'Loss of MSH2 and MSH6' }).report;
+  for (const banned of [/Lynch/i, /germline/i, /syndrome/i, /counselling/i, /hypermutat/i, /proficient/i]) {
+    assert.ok(!banned.test(lossReport), `${banned} must not reach the printed report`);
+  }
+});
