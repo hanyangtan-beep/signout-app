@@ -100,9 +100,18 @@ export const NODE_FIELDS = {
   'mapk:meth': ['methylation', 'methClassifier', 'methFamily', 'methClass'],
 
   // ----- meningioma -----
-  'mg:morph': ['mgSubtype', 'mgMitoses', 'mgAtypical', 'mgBrain', 'mgBone'],
-  'mg:g3': ['mgMolecular'],
+  // One node, one criterion, so the chart asks the grading questions one at a time rather than
+  // putting the whole block behind the morphology node.
+  'mg:morph': ['mgIhc', 'mgSubtype', 'finding'],
+  'mg:subtype': ['mgSubtype'],
+  'mg:mitoses': ['mgMitoses'],
+  'mg:soft': ['mgAtypical'],
+  'mg:anaplasia': ['mgAnaplasia'],
+  'mg:brain': ['mgBrain', 'mgBone'],
+  'mg:g3': ['mgMolecular', 'molStatus'],
   'mg:g2': ['mgMolecular'],
+  'mg:prognostic': ['mgIhc', 'ki67'],
+  'mg:grade': ['grade'],
 
   // ----- methylation reporting -----
   'meth:layered': ['methylation', 'methClassifier', 'methFamily', 'methClass'],

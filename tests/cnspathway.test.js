@@ -601,3 +601,81 @@ test('an ependymoma leaves the funnel at IDH rather than being asked for it', ()
   assert.match(idh.detail, /site and the molecular group/);
   assert.doesNotMatch(p.nextTest || '', /IDH/);
 });
+
+// ----- meningioma -----
+// The complaint that opened this work: atypical features recorded and no grade coming back. The
+// stage now walks the WHO CNS5 criteria in order and states the grade they give.
+
+const MENING = { dxFamily: 'Mesenchymal tumours involving the CNS', dxMesenchymal: 'Meningioma' };
+
+test('a resection meningioma reaches the meningioma branch', () => {
+  // It did not before: FAMILY_FIELD named a family called "Meningioma", which does not exist, so
+  // the entity was never read and the case fell through to the glioma funnel.
+  const p = pathway(base({ ...MENING, mgSubtype: 'Meningothelial' }));
+  assert.equal(p.branch, 'meningioma');
+  assert.ok(stageIds(p).includes('mg'));
+});
+
+test('three atypical features carry grade 2 in the pathway', () => {
+  const p = pathway(base({
+    ...MENING, mgSubtype: 'Meningothelial', mgMitoses: '2',
+    mgAtypical: ['Sheeting architecture', 'High cellularity', 'Prominent nucleoli'],
+  }));
+  const soft = find(p, 'soft');
+  assert.equal(soft.state, 'satisfied');
+  assert.match(soft.detail, /3 of five/);
+  assert.equal(find(p, 'grade').label, 'CNS WHO grade 2');
+});
+
+test('twenty mitoses carry grade 3 and four carry grade 2', () => {
+  const hi = pathway(base({ ...MENING, mgSubtype: 'Meningothelial', mgMitoses: '20' }));
+  assert.equal(find(hi, 'grade').label, 'CNS WHO grade 3');
+  const mid = pathway(base({ ...MENING, mgSubtype: 'Meningothelial', mgMitoses: '4' }));
+  assert.equal(find(mid, 'grade').label, 'CNS WHO grade 2');
+  const lo = pathway(base({ ...MENING, mgSubtype: 'Meningothelial', mgMitoses: '3' }));
+  assert.equal(find(lo, 'grade').label, 'CNS WHO grade 1');
+});
+
+test('papillary morphology no longer carries grade 3 on its own', () => {
+  // cIMPACT-NOW update 8 withdrew automatic grade 3 for papillary and rhabdoid morphology.
+  const p = pathway(base({ ...MENING, mgSubtype: 'Papillary', mgMitoses: '1' }));
+  assert.equal(find(p, 'grade').label, 'CNS WHO grade 1');
+  assert.match(find(p, 'subtype').detail, /no longer carries CNS WHO grade 3/);
+});
+
+test('a wild-type molecular result does not satisfy the grade 3 node', () => {
+  // The node was satisfied by any recorded molecular result at all, so "TERT promoter wild-type"
+  // read as a grade 3 marker found.
+  const wt = pathway(base({
+    ...MENING, mgSubtype: 'Meningothelial', mgMitoses: '1', molStatus: 'Reported',
+    mgMolecular: ['TERT promoter wild-type', 'No CDKN2A/B homozygous deletion'],
+  }));
+  assert.equal(find(wt, 'g3').state, 'na');
+  assert.equal(find(wt, 'grade').label, 'CNS WHO grade 1');
+
+  const mut = pathway(base({
+    ...MENING, mgSubtype: 'Meningothelial', mgMitoses: '1', molStatus: 'Reported',
+    mgMolecular: ['TERT promoter mutation detected'],
+  }));
+  assert.equal(find(mut, 'g3').state, 'satisfied');
+  assert.equal(find(mut, 'grade').label, 'CNS WHO grade 3');
+});
+
+test('brain invasion alone carries grade 2 and says what update 8 proposes', () => {
+  const p = pathway(base({ ...MENING, mgSubtype: 'Meningothelial', mgMitoses: '1', mgBrain: 'Present' }));
+  assert.equal(find(p, 'grade').label, 'CNS WHO grade 2');
+  assert.match(find(p, 'grade').note, /[Uu]pdate 8/);
+});
+
+test('results that carry no grade are named as such', () => {
+  const p = pathway(base({
+    ...MENING, mgSubtype: 'Meningothelial', mgMitoses: '1', molStatus: 'Reported',
+    mgMolecular: ['1p deletion detected', 'CDKN2A/B hemizygous deletion detected'],
+    mgIhc: ['H3 K27me3 loss of nuclear expression'],
+  }));
+  const n = find(p, 'prognostic');
+  assert.equal(n.state, 'na');
+  assert.match(n.detail, /H3 K27me3 loss/);
+  assert.match(n.detail, /hemizygous/);
+  assert.equal(find(p, 'grade').label, 'CNS WHO grade 1');
+});

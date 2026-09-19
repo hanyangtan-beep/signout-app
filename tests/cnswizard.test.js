@@ -241,3 +241,59 @@ test('the cautions on the compartment questions name what the answer does not se
   assert.match(say('epIhc'), /L1CAM|surrogate/i);
   assert.match(say('mycn', { ...v, site: 'Spinal cord', dxEpendymal: 'Spinal ependymoma' }), /FISH|amplif/i);
 });
+
+// ----- meningioma -----
+
+const MENING = { dxFamily: 'Mesenchymal tumours involving the CNS', dxMesenchymal: 'Meningioma' };
+
+test('a meningioma is asked the grading criteria', () => {
+  // It was asked none of them: the family table named a family called "Meningioma", which does not
+  // exist, so no meningioma step ever applied.
+  const v = base({ patientAge: 58, site: 'Frontal lobe', ...MENING });
+  const ids = visibleSteps(steps, v).map((s) => s.id);
+  for (const id of ['mgSubtype', 'mgMitoses', 'mgAtypical', 'mgAnaplasia', 'mgBrain', 'mgIhc', 'grade']) {
+    assert.ok(ids.includes(id), `expected the funnel to ask ${id}`);
+  }
+});
+
+test('the meningioma molecular question waits for a reported result', () => {
+  const pending = base({ patientAge: 58, ...MENING, molStatus: 'Sent, result pending' });
+  assert.equal(visibleSteps(steps, pending).map((s) => s.id).includes('mgMolecular'), false);
+  const reported = base({ patientAge: 58, ...MENING, molStatus: 'Reported' });
+  assert.ok(visibleSteps(steps, reported).map((s) => s.id).includes('mgMolecular'));
+});
+
+test('a glioma is not asked the meningioma questions', () => {
+  const v = base({ patientAge: 58, dxFamily: 'Adult-type diffuse gliomas', dxAdult: 'Glioblastoma, IDH-wildtype' });
+  const ids = visibleSteps(steps, v).map((s) => s.id);
+  for (const id of ['mgSubtype', 'mgMitoses', 'mgBrain']) assert.equal(ids.includes(id), false, id);
+});
+
+test('the subtype caution says what a subtype does and does not carry', () => {
+  const step = steps.find((s) => s.id === 'mgSubtype');
+  assert.match(cautions(step, base({ ...MENING, mgSubtype: 'Papillary' }))[0], /no longer carries CNS WHO grade 3/);
+  assert.match(cautions(step, base({ ...MENING, mgSubtype: 'Clear cell' }))[0], /grade 2 on the morphology/);
+  // Atypical and anaplastic are grade designations, so choosing one does not grade the tumour.
+  assert.match(cautions(step, base({ ...MENING, mgSubtype: 'Atypical' }))[0], /grade designation rather than a subtype/);
+  assert.deepEqual(cautions(step, base({ ...MENING, mgSubtype: 'Meningothelial' })), []);
+});
+
+test('two atypical features are flagged as the border case', () => {
+  const step = steps.find((s) => s.id === 'mgAtypical');
+  const two = cautions(step, base({ ...MENING, mgAtypical: ['High cellularity', 'Prominent nucleoli'] }));
+  assert.match(two.join(' '), /border/);
+  const three = cautions(step, base({ ...MENING, mgAtypical: ['High cellularity', 'Prominent nucleoli', 'Sheeting architecture'] }));
+  assert.doesNotMatch(three.join(' '), /border/);
+});
+
+test('necrosis raises the iatrogenic caveat', () => {
+  const step = steps.find((s) => s.id === 'mgAtypical');
+  const out = cautions(step, base({ ...MENING, mgAtypical: ['Spontaneous necrosis'] }));
+  assert.match(out.join(' '), /embolisation/);
+});
+
+test('the grade step says the proposal is provisional without a mitotic count', () => {
+  const step = steps.find((s) => s.id === 'grade');
+  assert.match(cautions(step, base({ ...MENING, mgMitoses: '' })).join(' '), /provisional/);
+  assert.doesNotMatch(cautions(step, base({ ...MENING, mgMitoses: '2' })).join(' '), /provisional/);
+});

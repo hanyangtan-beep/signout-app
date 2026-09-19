@@ -226,7 +226,9 @@ export function proposedGrade(v, e = entity(v)) {
   // A meningioma is graded on its own criteria, which are independent of the subtype; see
   // meningiomaGrading below. Without this arm the resection form named a meningioma and then had
   // no grade to propose, so it raised "CNS WHO grade is required" whatever was recorded.
-  if (e === 'Meningioma') return meningiomaGrade(v);
+  // The biopsy form records the morphology in `finding` rather than in the Layer 1 entity selects,
+  // so both routes to a meningioma are read; otherwise the biopsy foot showed no proposed grade.
+  if (e === 'Meningioma' || /^Meningioma/.test(v.finding || '')) return meningiomaGrade(v);
   return null;
 }
 
@@ -898,7 +900,9 @@ export function pathwayChecks(v, warn, at, e = entity(v)) {
     if (/^Failed/.test(v.methQc || '')) warn('Methylation quality control failed; the classifier output should not be read as a match.', 'methQc');
   }
 
-  if (age === null && (e === GBM || (reported && v.idhBranch === 'IDH-wildtype'))) {
+  // Gated on the diffuse gliomas: the age prompts exist for the IDH-wildtype rules, and raising one
+  // on a meningioma, whose branch never reaches IDH at all, is noise on the foot.
+  if (age === null && diffuseGlioma && (e === GBM || (reported && v.idhBranch === 'IDH-wildtype'))) {
     at('info', 'No patient age is recorded; the age-dependent prompts for an IDH-wildtype glioma stay silent without it.', 'patientAge');
   }
   if (age !== null && age > 55 && reported && v.idh1R132H === 'Negative' && v.idhSeq === NP && e === GBM) {

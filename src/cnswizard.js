@@ -348,20 +348,85 @@ const STEPS = [
     applies: (v) => v.methylation === 'Reported',
   },
 
+  // ----- meningioma: the grading criteria, in the order they are applied -----
+  // WHO CNS5 grades a meningioma on criteria that hold whatever the subtype
+  // (https://pmc.ncbi.nlm.nih.gov/articles/PMC8328013/), so the subtype is asked for the name and
+  // the criteria are then asked one at a time. cIMPACT-NOW update 8
+  // (https://academic.oup.com/neuro-oncology/article/27/2/319/7745776) withdrew automatic grade 3
+  // for papillary and rhabdoid morphology and added the two molecular gates.
+  {
+    id: 'mgSubtype',
+    field: 'mgSubtype',
+    question: 'Which meningioma subtype is this?',
+    why: 'The subtype names the tumour. Only chordoid and clear cell carry a grade of their own; papillary and rhabdoid morphology no longer grade on their own, and every other subtype takes the grade the criteria give.',
+    applies: (v, ctx) => ctx.meningioma(v),
+  },
+  {
+    id: 'mgMitoses',
+    field: 'mgMitoses',
+    question: 'How many mitoses per 1.6 mm² in the most active area?',
+    why: 'The single heaviest grading criterion: 4 to 19 carries grade 2 and 20 or more carries grade 3. 1.6 mm² is 10 high-power fields of 0.16 mm², or about 7 fields on a wider modern eyepiece; the full area has to be examined rather than extrapolated.',
+    applies: (v, ctx) => ctx.meningioma(v),
+    answered: (v) => num(v.mgMitoses) !== null,
+  },
+  {
+    id: 'mgAtypical',
+    field: 'mgAtypical',
+    question: 'Which of the five atypical features are present?',
+    why: 'Sheeting architecture, hypercellularity, small cell change, macronucleoli and spontaneous necrosis. Three or more carry grade 2 on their own. Necrosis counts only where it is spontaneous; embolisation or radiotherapy necrosis does not.',
+    applies: (v, ctx) => ctx.meningioma(v),
+    answered: (v) => has(v, 'mgAtypical'),
+    optional: true,
+  },
+  {
+    id: 'mgAnaplasia',
+    field: 'mgAnaplasia',
+    question: 'Is there frank anaplasia?',
+    why: 'Overtly malignant cytology - resembling carcinoma, high-grade sarcoma or melanoma - carries grade 3 by itself, without reference to the mitotic count.',
+    applies: (v, ctx) => ctx.meningioma(v),
+    answered: (v) => has(v, 'mgAnaplasia'),
+  },
+  {
+    id: 'mgBrain',
+    field: 'mgBrain',
+    question: 'Is brain invasion present?',
+    why: 'Tumour nests within parenchyma with no intervening leptomeninges carries grade 2. Extension along Virchow-Robin spaces does not qualify, because the pia stays intact. Say so plainly when there is no adjacent brain in the specimen: the grade then rests on the tissue examined.',
+    applies: (v, ctx) => ctx.meningioma(v),
+    answered: (v) => has(v, 'mgBrain'),
+  },
+  {
+    id: 'mgMolecular',
+    field: 'mgMolecular',
+    question: 'What do the meningioma molecular studies show?',
+    why: 'A TERT promoter mutation or CDKN2A/B homozygous deletion carries grade 3 whatever the histology shows, and 1p deletion with 22q deletion or an NF2 variant carries grade 2. Hemizygous CDKN2A/B loss and 1p on its own do not grade.',
+    applies: (v, ctx) => ctx.meningioma(v) && ctx.reported(v),
+    answered: (v) => has(v, 'mgMolecular'),
+    optional: true,
+  },
+  {
+    id: 'mgIhc',
+    field: 'mgIhc',
+    question: 'Which meningioma markers are recorded?',
+    why: 'EMA and SSTR2A support the diagnosis and a negative STAT6 keeps solitary fibrous tumour out of it. H3 K27me3 loss carries prognostic weight and does not enter the grade.',
+    applies: (v, ctx) => ctx.meningioma(v),
+    answered: (v) => has(v, 'mgIhc'),
+    optional: true,
+  },
+
   // ----- close -----
   {
     id: 'grade',
     field: 'grade',
     question: 'Which CNS WHO grade goes in the report?',
     why: 'The proposal from the recorded findings is offered as the default. It is a proposal - the grade in the report is yours, and a disagreement is flagged beside the form rather than overruled.',
-    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v) || ctx.circumscribed(v),
+    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v) || ctx.circumscribed(v) || ctx.meningioma(v),
   },
   {
     id: 'histClass',
     field: 'histClass',
     question: 'How does Layer 2 read?',
     why: 'The histopathological classification is the morphological line of the layered report, kept separate from the integrated diagnosis above it.',
-    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v) || ctx.circumscribed(v),
+    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v) || ctx.circumscribed(v) || ctx.meningioma(v),
     optional: true,
   },
 ];
@@ -372,10 +437,13 @@ const STEPS = [
 // src/cnspathway.js.
 const FAMILY_FIELD = [
   [/^Adult-type diffuse gliomas/i, 'dxAdult'],
-  [/^Paediatric-type diffuse/i, 'dxPaediatric'],
+  [/^Paediatric-type diffuse low-grade/i, 'dxPaedLow'],
+  [/^Paediatric-type diffuse high-grade/i, 'dxPaedHigh'],
   [/^Circumscribed astrocytic/i, 'dxCircumscribed'],
   [/^Ependymal tumours/i, 'dxEpendymal'],
-  [/^Meningioma/i, 'mgSubtype'],
+  // A meningioma on the resection form sits in the mesenchymal family, under dxMesenchymal. The
+  // old entry named a family that does not exist, so the wizard never asked a meningioma anything.
+  [/^Mesenchymal tumours/i, 'dxMesenchymal'],
 ];
 
 /** Predicates the steps share, kept in one place so the funnel reads as one thing. */
@@ -394,6 +462,7 @@ function context() {
   const glioma = (v) => !circumscribed(v)
     && /glioma|astrocytoma|oligodendroglioma|glioblastoma/i.test(`${v.dxFamily || ''} ${named(v)}`);
   const ependymal = (v) => /ependymal|ependymoma/i.test(`${v.dxFamily || ''} ${named(v)}`);
+  const meningioma = (v) => /meningioma/i.test(`${v.dxFamily || ''} ${named(v)}`);
   // The compartment, off the site entry first and the entity name only as a fallback. Spinal is
   // tested before infratentorial and infratentorial before supratentorial, so a cauda equina or
   // fourth ventricle entry is never swallowed by a looser term. Mirrors `compartmentOf` in
@@ -421,6 +490,7 @@ function context() {
     circumscribed,
     pxaOrPiloid,
     ependymal,
+    meningioma,
     compartment,
     morphDefined,
     supratentorial: (v) => compartment(v) === 'Supratentorial' && !morphDefined(v),
@@ -586,8 +656,31 @@ export function cautions(step, values) {
         out.push('The calibrated score is below your laboratory threshold. A subthreshold match may contribute where the other findings support it, but it cannot carry the class on its own.');
       }
       break;
+    case 'mgSubtype':
+      if (/^(Papillary|Rhabdoid)$/.test(v.mgSubtype || '')) {
+        out.push(`${v.mgSubtype} morphology no longer carries CNS WHO grade 3 on its own. It is graded on the criteria that follow, and the morphology still deserves a mention because it carries prognostic weight.`);
+      } else if (/^(Atypical|Anaplastic)$/.test(v.mgSubtype || '')) {
+        out.push(`${v.mgSubtype} is a grade designation rather than a subtype. Record the criteria that make it so and the grade follows; a subtype chosen here will not carry a grade on its own.`);
+      } else if (/^(Chordoid|Clear cell)$/.test(v.mgSubtype || '')) {
+        out.push(`${v.mgSubtype} meningioma is CNS WHO grade 2 on the morphology alone.`);
+      }
+      break;
+    case 'mgMitoses':
+      out.push('1.6 mm² is 10 fields of 0.16 mm², or about 7 fields at 0.23 to 0.24 mm². If your own high-power field is wider, count fewer fields rather than counting ten and reporting the number as if it were per 1.6 mm2.');
+      break;
+    case 'mgAtypical':
+      if (arr(v.mgAtypical).length === 2) out.push('Two of the five features sits on the grade 1 / grade 2 border. Where TERT and CDKN2A/B are available they settle it.');
+      if (arr(v.mgAtypical).some((f) => /necrosis/i.test(f))) out.push('Necrosis counts only where it is spontaneous. Necrosis following embolisation, radiosurgery or radiotherapy does not.');
+      break;
+    case 'mgBrain':
+      out.push('Brain invasion is read on a section that actually contains brain. Where none is present, record that rather than "not identified": the grade then plainly rests on the tissue examined.');
+      break;
+    case 'mgMolecular':
+      out.push('Hemizygous CDKN2A/B loss does not grade; only homozygous deletion does. 1p deletion grades only alongside 22q deletion or an NF2 variant.');
+      break;
     case 'grade':
       if (age !== null && age < 18 && ctx.wildtype(v)) out.push('Under 18 with an H3-wildtype high-grade glioma, consider mismatch-repair immunohistochemistry before signing out.');
+      if (ctx.meningioma(v) && num(v.mgMitoses) === null) out.push('No mitotic count is recorded. It is the criterion that most often carries the meningioma grade, so the proposal below is provisional until it is.');
       break;
     default:
       break;

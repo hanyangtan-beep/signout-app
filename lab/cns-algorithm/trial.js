@@ -23,7 +23,7 @@
 import { defaultValues, isVisible, toggleOption, optionsFor } from '../../src/engine.js';
 import { pathway, pathwayChart, pathwaySupported } from '../../src/cnspathway.js';
 import { wizardSteps, cautions } from '../../src/cnswizard.js';
-import { integratedDiagnosis, proposedGrade, pathwayChecks, entity } from '../../generators/cns_layers.js';
+import { integratedDiagnosis, proposedGrade, pathwayChecks, meningiomaChecks, meningiomaName, entity } from '../../generators/cns_layers.js';
 import { nodeFields } from './nodefields.js';
 
 // ---------- state ----------
@@ -126,7 +126,32 @@ const SCENARIOS = {
     {
       id: 'mening',
       label: 'Convexity meningioma',
-      values: { site: 'Frontal lobe', finding: 'Meningioma', mgSubtype: 'Meningothelial', mgMitoses: 1 },
+      values: { site: 'Frontal lobe', finding: 'Meningioma', mgSubtype: 'Meningothelial', mgMitoses: 1, mgBrain: 'Not identified', mgAnaplasia: 'Not identified' },
+    },
+    {
+      // The case behind the complaint: several atypical features recorded and the grade not moving.
+      // Three of the five carry grade 2 on their own, and the mitotic count is the question the chart
+      // should be putting next.
+      id: 'mgatyp',
+      label: 'Meningioma, atypical features',
+      values: {
+        site: 'Parietal lobe', finding: 'Meningioma', mgSubtype: 'Meningothelial',
+        mgAtypical: ['Sheeting architecture', 'High cellularity', 'Prominent nucleoli'],
+        mgBrain: 'No adjacent brain in the specimen', mgAnaplasia: 'Not identified',
+        mgIhc: ['EMA positive', 'SSTR2A positive'],
+      },
+    },
+    {
+      // Update 8 in one case: papillary morphology, which used to carry grade 3 by itself, alongside
+      // a TERT promoter mutation, which now does carry it whatever the morphology shows.
+      id: 'mgtert',
+      label: 'Papillary meningioma, TERT mutant',
+      values: {
+        site: 'Frontal lobe', finding: 'Meningioma', mgSubtype: 'Papillary', mgMitoses: 6,
+        mgBrain: 'Present', mgAnaplasia: 'Not identified', molStatus: 'Reported',
+        mgMolecular: ['TERT promoter mutation detected', 'CDKN2A/B hemizygous deletion detected'],
+        mgIhc: ['EMA positive', 'SSTR2A positive'],
+      },
     },
     {
       id: 'wtbx',
@@ -410,7 +435,14 @@ function footer(result, all) {
   const e = entity(v);
   const checks = [];
   try {
-    pathwayChecks(v, (m, field) => checks.push({ level: 'warn', message: m, field }), (level, message, field) => checks.push({ level, message, field }), e);
+    const warn = (m, field) => checks.push({ level: 'warn', message: m, field });
+    const at = (level, message, field) => checks.push({ level, message, field });
+    pathwayChecks(v, warn, at, e);
+    // A meningioma is graded on its own criteria, so it raises its own prompts; the foot showed
+    // none of them because only the glioma checks were run here.
+    if (e === 'Meningioma' || /^Meningioma/.test(v.finding || '')) {
+      meningiomaChecks(v, warn, (m, field) => at('info', m, field));
+    }
   } catch { /* the biopsy form carries a different finding field; a check that cannot run is not shown */ }
 
   // Every check a case raises is shown, not just the first, and each one leads back to the node that
@@ -427,8 +459,14 @@ function footer(result, all) {
     });
   };
 
-  const dx = state.schemaId === 'cns_tumour' ? integratedDiagnosis(v) : (v.finding || '');
-  const grade = state.touched && state.schemaId === 'cns_tumour' ? proposedGrade(v) : null;
+  // The biopsy form records the morphology in `finding`; a meningioma is named from its subtype and
+  // grade either way, so the foot reads the same on both templates.
+  const dx = state.schemaId === 'cns_tumour'
+    ? integratedDiagnosis(v)
+    : (/^Meningioma/.test(v.finding || '') ? meningiomaName(v) : (v.finding || ''));
+  // The proposed grade is read off the recorded findings, which both templates carry; the biopsy
+  // form was excluded here for no reason, so a graded biopsy showed an em dash in the foot.
+  const grade = state.touched ? proposedGrade(v) : null;
 
   return el('div', { class: 'foot' },
     el('div', { class: 'foot-cell' },

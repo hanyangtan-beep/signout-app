@@ -71,11 +71,49 @@ const node = (id, label, state, detail, extra = {}) => ({ id, label, state, deta
  */
 const FAMILY_FIELD = [
   [/^Adult-type diffuse gliomas/i, 'dxAdult'],
-  [/^Paediatric-type diffuse/i, 'dxPaediatric'],
+  [/^Paediatric-type diffuse low-grade/i, 'dxPaedLow'],
+  [/^Paediatric-type diffuse high-grade/i, 'dxPaedHigh'],
   [/^Circumscribed astrocytic/i, 'dxCircumscribed'],
   [/^Ependymal tumours/i, 'dxEpendymal'],
-  [/^Meningioma/i, 'mgSubtype'],
+  // A meningioma on the resection form sits in the mesenchymal family; the entity field is
+  // dxMesenchymal. The old entry matched a family named "Meningioma", which does not exist, so a
+  // resection meningioma never reached the meningioma branch at all.
+  [/^Mesenchymal tumours/i, 'dxMesenchymal'],
 ];
+
+// The CNS WHO grade the recorded meningioma findings support, and the criteria that carried it.
+// Mirrors `meningiomaGrading` in generators/cns_layers.js, which is the version the report uses;
+// this module holds no imports, so the rules are duplicated here deliberately. Keep the two in step.
+function meningiomaGrading(v) {
+  const mit = num(v.mgMitoses);
+  const soft = arr(v.mgAtypical);
+  const mol = arr(v.mgMolecular);
+  const sub = v.mgSubtype || '';
+  const g3 = [];
+  const g2 = [];
+  if (mit !== null && mit >= 20) g3.push(`${mit} mitoses per 1.6 mm\u00b2`);
+  if (v.mgAnaplasia === 'Present') g3.push('frank anaplasia');
+  if (mol.includes('TERT promoter mutation detected')) g3.push('a TERT promoter mutation');
+  if (mol.includes('CDKN2A/B homozygous deletion detected')) g3.push('CDKN2A/B homozygous deletion');
+  if (mit !== null && mit >= 4 && mit < 20) g2.push(`${mit} mitoses per 1.6 mm\u00b2`);
+  if (v.mgBrain === 'Present') g2.push('brain invasion');
+  if (soft.length >= 3) g2.push(`${soft.length} of the five atypical features`);
+  if (sub === 'Chordoid' || sub === 'Clear cell') g2.push(`${sub.toLowerCase()} morphology`);
+  if (mol.includes('1p deletion detected')
+    && (mol.includes('22q deletion detected') || mol.includes('NF2 pathogenic variant detected'))) {
+    g2.push(`1p deletion with ${mol.includes('22q deletion detected') ? '22q deletion' : 'an NF2 variant'}`);
+  }
+  const grade = g3.length ? 3 : g2.length ? 2 : 1;
+  const tested = mol.some((m) => /^TERT promoter|^CDKN2A\/B/.test(m));
+  return {
+    grade,
+    grade3: g3,
+    grade2: g2,
+    biob: !g3.length && g2.length === 1 && v.mgBrain === 'Present' && !tested,
+    borderline: grade === 1 && !tested && (soft.length === 2 || mit === 3),
+    tested,
+  };
+}
 
 // True where a fusion select records a fusion that was found. The bare test `/fusion detected/`
 // also matches "No fusion detected", which is the opposite answer, so the negative is excluded
@@ -738,25 +776,110 @@ function mapkStage(c) {
 }
 
 /** Meningioma, update 8. */
+/**
+ * Meningioma grading, in the order the criteria are applied.
+ *
+ * WHO CNS5 grades a meningioma on criteria that hold "regardless of the underlying subtype"
+ * (https://pmc.ncbi.nlm.nih.gov/articles/PMC8328013/), so the stage walks the criteria rather than
+ * the morphology: the subtype names the tumour, the mitotic count, the soft criteria, anaplasia,
+ * brain invasion and the two molecular gates decide the grade, and the last node states the grade
+ * those criteria give. It previously carried no grading node at all, which is why the foot showed
+ * no grade however many atypical features were recorded.
+ */
 function meningiomaStage(c) {
   const { v } = c;
+  const g = meningiomaGrading(v);
   const mol = arr(v.mgMolecular);
+  const soft = arr(v.mgAtypical);
+  const mit = num(v.mgMitoses);
   const oneP = mol.some((m) => /^1p deletion detected/i.test(m));
-  const partner = mol.some((m) => /^22q deletion detected|NF2 pathogenic variant detected/i.test(m));
+  const partner = mol.some((m) => /^22q deletion detected|^NF2 pathogenic variant detected/i.test(m));
+  const tert = mol.some((m) => /^TERT promoter mutation detected/i.test(m));
+  const cdkn = mol.some((m) => /^CDKN2A\/B homozygous deletion detected/i.test(m));
   const nodes = [];
 
-  nodes.push(node('morph', 'Standardised morphological assessment', has(v, 'mgSubtype') || has(v, 'finding') ? 'satisfied' : 'outstanding',
-    'Most prominently brain invasion, which is tumour nests within GFAP-positive parenchyma without intervening leptomeninges.', { source: SRC.u8 }));
+  nodes.push(node('morph', 'Meningioma confirmed', has(v, 'mgSubtype') || has(v, 'finding') ? 'satisfied' : 'outstanding',
+    shown('EMA and SSTR2A support the diagnosis; STAT6 is negative, which excludes solitary fibrous tumour', arr(v.mgIhc).join(', ')),
+    { test: 'EMA, SSTR2A, STAT6', source: SRC.cns5 }));
 
-  nodes.push(node('g3', 'Grade 3 markers', mol.length ? 'satisfied' : 'outstanding',
-    shown('TERT promoter variants and CDKN2A/B homozygous deletion are confirmed CNS WHO grade 3 markers', mol.join(', ')),
+  // The subtype names the tumour. Only chordoid and clear cell carry a grade of their own, and
+  // papillary and rhabdoid morphology no longer grade at all.
+  nodes.push(node('subtype', 'Subtype recorded', has(v, 'mgSubtype') ? 'satisfied' : 'outstanding',
+    /^(Papillary|Rhabdoid)$/.test(v.mgSubtype || '')
+      ? `${v.mgSubtype} morphology no longer carries CNS WHO grade 3 on its own; it takes the grade the criteria below give.`
+      : /^(Chordoid|Clear cell)$/.test(v.mgSubtype || '')
+        ? `${v.mgSubtype} meningioma is CNS WHO grade 2 on the morphology.`
+        : shown('The subtype names the tumour; the grade comes off the criteria below', v.mgSubtype || ''),
+    { source: SRC.u8 }));
+
+  nodes.push(node('mitoses', 'Mitotic count on 1.6 mm²', mit !== null ? 'satisfied' : 'outstanding',
+    mit === null
+      ? 'Counted over 1.6 mm², which is 10 high-power fields of 0.16 mm² or about 7 fields of 0.23 to 0.24 mm². The full area is required; a count extrapolated from a smaller area cannot carry the grade.'
+      : mit >= 20 ? `${mit} per 1.6 mm²: CNS WHO grade 3 at 20 or more.`
+        : mit >= 4 ? `${mit} per 1.6 mm²: CNS WHO grade 2 at 4 to 19.`
+          : `${mit} per 1.6 mm², below the grade 2 threshold of 4.`,
+    { test: 'Count the most mitotically active area', source: SRC.u8 }));
+
+  nodes.push(node('soft', 'Atypical features, three of five', soft.length >= 3 ? 'satisfied' : soft.length ? 'outstanding' : 'na',
+    soft.length
+      ? `${soft.length} of five recorded (${soft.map((x) => x.toLowerCase()).join(', ')})${soft.length >= 3 ? ': CNS WHO grade 2.' : soft.length === 2 ? '. Two sits on the grade 1 / grade 2 border, where the molecular results settle it.' : '.'}`
+      : 'Sheeting architecture, hypercellularity, small cell change, macronucleoli and spontaneous necrosis. Three or more carry CNS WHO grade 2; necrosis counts only when it is not iatrogenic.',
+    { source: SRC.u8 }));
+
+  nodes.push(node('anaplasia', 'Frank anaplasia', v.mgAnaplasia === 'Present' ? 'satisfied' : 'na',
+    v.mgAnaplasia === 'Present'
+      ? 'Overtly malignant cytology: CNS WHO grade 3 on its own.'
+      : 'Cytology resembling carcinoma, high-grade sarcoma or melanoma. An independent CNS WHO grade 3 criterion.',
+    { source: SRC.cns5 }));
+
+  nodes.push(node('brain', 'Brain invasion', v.mgBrain === 'Present' ? 'satisfied' : has(v, 'mgBrain') ? 'na' : 'outstanding',
+    v.mgBrain === 'Present'
+      ? 'Tumour through the leptomeninges into the subjacent parenchyma: CNS WHO grade 2.'
+      : v.mgBrain === 'No adjacent brain in the specimen'
+        ? 'No adjacent brain in the specimen, so brain invasion cannot be assessed and the grade rests on the tissue examined.'
+        : 'Infiltration through the leptomeninges into brain parenchyma. Extension along Virchow-Robin spaces does not qualify, because the pia is intact.',
+    { source: SRC.u8 }));
+
+  // The two molecular gates. Each is satisfied only by the positive result: a recorded wild-type or
+  // "no deletion" answer is the opposite answer and must not read as a marker found.
+  nodes.push(node('g3', 'Grade 3 molecular markers', tert || cdkn ? 'satisfied' : mol.length ? 'na' : 'outstanding',
+    tert || cdkn
+      ? `${[tert && 'a TERT promoter mutation', cdkn && 'CDKN2A/B homozygous deletion'].filter(Boolean).join(' and ')}: CNS WHO grade 3, whatever the morphology shows.`
+      : 'A TERT promoter oncogenic variant or CDKN2A/B homozygous deletion carries CNS WHO grade 3 independently of the histology. Hemizygous CDKN2A/B loss does not grade.',
     { test: 'TERT promoter, CDKN2A/B copy number', source: SRC.u8 }));
 
-  nodes.push(node('g2', 'Grade 2 on 1p with 22q or NF2', oneP && partner ? 'outstanding' : 'na',
+  nodes.push(node('g2', 'Grade 2 on 1p with 22q or NF2', oneP && partner ? 'satisfied' : 'na',
     oneP && partner
-      ? 'Grade 1 morphology carrying 1p deletion together with 22q deletion or an NF2 oncogenic variant: update 8 proposes grade 2.'
-      : 'Applies to grade 1 morphology carrying 1p deletion with 22q deletion or an NF2 variant.',
+      ? 'Histologically low-grade or borderline morphology carrying 1p deletion with 22q deletion or an NF2 variant: CNS WHO grade 2, unless a grade 3 marker is present.'
+      : '1p deletion together with 22q deletion and/or an NF2 oncogenic variant. 1p, 22q or NF2 alone does not grade.',
     { test: '1p, 22q and NF2', source: SRC.u8 }));
+
+  // Results that read like grading criteria and are not.
+  const notGrading = [
+    arr(v.mgIhc).includes('H3 K27me3 loss of nuclear expression') && 'H3 K27me3 loss',
+    mol.includes('CDKN2A/B hemizygous deletion detected') && 'hemizygous CDKN2A/B deletion',
+    oneP && !partner && '1p deletion without a partner',
+    num(v.ki67) !== null && 'the Ki-67 index',
+  ].filter(Boolean);
+  if (notGrading.length) {
+    nodes.push(node('prognostic', 'Recorded, but not grading', 'na',
+      `${notGrading.join(', ')} ${notGrading.length > 1 ? 'carry' : 'carries'} prognostic weight and ${notGrading.length > 1 ? 'do' : 'does'} not inform the CNS WHO grade.`,
+      { source: SRC.u8 }));
+  }
+
+  nodes.push(node('grade', `CNS WHO grade ${g.grade}`, g.grade3.length || g.grade2.length ? 'satisfied' : mit === null ? 'outstanding' : 'satisfied',
+    g.grade3.length ? `Grade 3 on ${g.grade3.join(', ')}.`
+      : g.grade2.length ? `Grade 2 on ${g.grade2.join(', ')}.`
+        : mit === null ? 'Grade 1 on the findings so far, but the mitotic count has not been recorded and it carries the grade.'
+          : 'No grade 2 or grade 3 criterion is met.',
+    {
+      note: g.biob
+        ? 'Brain invasion is the only criterion met. Update 8 asks that such a tumour not be graded before TERT and CDKN2A/B are known; the grade shown follows WHO CNS5, where brain invasion alone is sufficient for grade 2.'
+        : g.borderline
+          ? 'This sits on the grade 1 / grade 2 border, where the molecular results settle it.'
+          : undefined,
+      source: SRC.u8,
+    }));
 
   return { id: 'mg', label: 'Meningioma', nodes };
 }
@@ -825,7 +948,7 @@ export function pathway(values) {
   } else if (c.meningioma) {
     branch = 'meningioma';
     title = 'Meningioma';
-    lede = 'Morphological assessment and the update 8 molecular markers.';
+    lede = 'The grading criteria in the order they are applied; the subtype names the tumour, the criteria carry the grade.';
   } else if (c.mutant) {
     branch = 'A';
     title = 'Branch A - IDH-mutant';
