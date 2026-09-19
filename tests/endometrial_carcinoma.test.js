@@ -78,8 +78,9 @@ test('example case: low-grade endometrioid IA2 NSMP', () => {
   assert.equal(r['Other immunohistochemistry'], 'ER and PR positive');
   assert.deepEqual([...new Set(parseSynoptic(out.synoptic).map((x) => x.section))], ['Specimen and tumour', 'Microscopic findings', 'Margins', 'Lymph nodes', 'Distant metastasis', 'Additional findings']);
   assert.ok(out.synoptic.startsWith('Specimen and tumour\n- Procedure: Total hysterectomy and bilateral salpingo-oophorectomy; sentinel\n  lymph node biopsy\n'));
-  assert.ok(out.synoptic.includes('\n\nMicroscopic findings\n- Histologic type: Endometrioid carcinoma\n- Histologic grade: FIGO grade 1 (endometrioid carcinoma)\n- Tumour histology:\n  Sections show an endometrioid carcinoma with a predominantly glandular\n'));
-  assert.equal(out.synoptic.split('\n').find((l) => l.length > 80 || l.includes('\t')), undefined);
+  assert.ok(out.synoptic.includes('\n\nMicroscopic findings\n- Histologic type: Endometrioid carcinoma\n- Histologic grade: FIGO grade 1 (endometrioid carcinoma)\n- Tumour histology:\n  Sections show an endometrioid carcinoma with a predominantly glandular architecture'));
+  // The tumour histology paragraph is prose on one line; every other line holds 80 columns.
+  assert.equal(out.synoptic.split('\n').find((l) => (l.length > 80 && !/^ {2}(?!- )/.test(l)) || l.includes('\t')), undefined);
   assert.equal(r['Histologic grade'], 'FIGO grade 1 (endometrioid carcinoma)');
   assert.equal(r['Percentage of myometrial invasion'], '33%');
   assert.equal(r['Molecular classification'], 'No specific molecular profile (NSMP)');

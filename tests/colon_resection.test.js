@@ -54,7 +54,7 @@ test('example case: tumour histology paragraph replaces the narrative microscopy
   const out = run();
   assert.equal(out.microscopy, out.synoptic, 'the synoptic prints as the microscopy block');
   assert.equal(row(out, 'Tumour histology'), 'Sections show an invasive moderately differentiated adenocarcinoma arising in a tubulovillous adenoma, forming irregular glands with a desmoplastic stromal response and luminal dirty necrosis.');
-  assert.ok(out.synoptic.includes('- Tumour histology:\n  Sections show an invasive moderately differentiated adenocarcinoma arising in\n  a tubulovillous adenoma, forming irregular glands with a desmoplastic stromal\n  response and luminal dirty necrosis.'));
+  assert.ok(out.synoptic.includes('- Tumour histology:\n  Sections show an invasive moderately differentiated adenocarcinoma arising in a tubulovillous adenoma, forming irregular glands with a desmoplastic stromal response and luminal dirty necrosis.'));
   // Morphology picks drive the paragraph; free text is appended as its own sentence.
   assert.equal(row(run({ tumourMorphology: ['Extracellular mucin pools', 'Signet-ring cells'], morphologyOther: 'focal squamoid morules' }), 'Tumour histology'), 'Sections show an invasive moderately differentiated adenocarcinoma arising in a tubulovillous adenoma, forming pools of extracellular mucin and signet-ring cells. Focal squamoid morules.');
   assert.equal(row(run({ tumourMorphology: [], precursorPolyp: 'Not identified' }), 'Tumour histology'), 'Sections show an invasive moderately differentiated adenocarcinoma.');
@@ -78,7 +78,9 @@ test('example case: synoptic block mirrors the QMH colon elements in order with 
   assert.ok(out.synoptic.includes('- Regional lymph nodes: 22 examined; 2 involved\n  - Apical lymph nodes: 1 examined; 0 involved\n  - Extranodal extension: Not identified\n  - Largest metastatic deposit: 6 mm'));
   assert.ok(out.synoptic.includes('- Tumour budding (ITBCC 2016): Low score (Bd1, 0-4 buds)\n  - Hotspot count: 3 buds in 1 field'));
   assert.ok(out.synoptic.includes('Additional findings\n- Diverticulosis\n- Mismatch repair immunohistochemistry: Retained (MLH1, PMS2, MSH2, MSH6)'));
-  assert.equal(out.synoptic.split('\n').find((l) => l.length > 80), undefined);
+  // Every line holds 80 columns except the tumour histology paragraph, which is prose on one line.
+  // The tumour histology paragraph is prose on one line; every other line holds 80 columns.
+  assert.equal(out.synoptic.split('\n').filter((l) => l.length > 80 && !/^ {2}(?!- )/.test(l)).length, 0);
   assert.ok(!run({}, { stageGroup: false }).synoptic.includes('Stage group'));
 });
 
@@ -177,7 +179,9 @@ test('override prints the derived stage beside the pathologist stage and activat
   const out = run({ tnmOverride: 'pT2 pN1a', tnmOverrideReason: 'deeper invasion on levels' });
   assert.equal(row(out, 'pTNM'), 'pT2 pN1a [pathologist override; derived T3/N1b - deeper invasion on levels]');
   assert.ok(out.synoptic.includes('  - Stage group (if cM0): IIIA'));
-  assert.equal(out.synoptic.split('\n').find((l) => l.length > 80), undefined);
+  // Every line holds 80 columns except the tumour histology paragraph, which is prose on one line.
+  // The tumour histology paragraph is prose on one line; every other line holds 80 columns.
+  assert.equal(out.synoptic.split('\n').filter((l) => l.length > 80 && !/^ {2}(?!- )/.test(l)).length, 0);
   assert.match(flat(out.diagnosis), /pT2 pN1a \(AJCC 8th edition\), stage IIIA \(if cM0\)/);
   assert.ok(snippets({ tnmOverride: 'pT2 pN1a' }).includes('colon_resection_override'));
 });

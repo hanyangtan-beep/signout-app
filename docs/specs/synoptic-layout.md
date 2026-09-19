@@ -19,8 +19,8 @@ Status: agreed with the user 2026-09-11; built 2026-09-12 (`src/synoptic.js` ren
 
    Endometrium's Microscopic findings block is long (type through fluid); no sub-heading is inserted because the QMH page has none there.
 3. Every element keeps its `- ` bullet. QMH sub-elements print as nested `  - ` lines under their parent (depth / thickness / percentage of myoinvasion; cervical stromal depth / thickness; node macro / micro / ITC counts, apical counts, laterality, largest deposit, extranodal extension; budding hotspot count; stage group under pTNM).
-4. Values wrap at 80 characters with a two-space hanging indent; spaces only, never tabs.
-5. `- Tumour histology:` follows Histologic grade in all three templates. For GIST and colorectal this is a deliberate, user-approved departure from the QMH page, whose "Tumor histology and immunohistochemical studies" element opens the microscopic block; the element-order tests carry this single exception. The paragraph runs on the following lines at two-space indent and carries only architecture, cytology, differentiation, necrosis and invasion pattern (GIST: cell type, arrangement, cytoplasm, nuclei, necrosis; colorectal: gland pattern, mucinous / signet-ring component, necrosis — a new `tumourMorphology` field set, since the template has none today). Extent, LVSI, nodes, IHC, molecular, margins and risk are not repeated in prose.
+4. Values wrap at 80 characters with a two-space hanging indent; spaces only, never tabs. The one exception is the `- Tumour histology:` paragraph, which is prose: it prints on a single unbroken line at two-space indent so the LIS re-flows it to its own width instead of inheriting our hard breaks (changed 2026-09-19 on the user's report of line breaks inside the paragraph).
+5. `- Tumour histology:` follows Histologic grade in all three templates. For GIST and colorectal this is a deliberate, user-approved departure from the QMH page, whose "Tumor histology and immunohistochemical studies" element opens the microscopic block; the element-order tests carry this single exception. The paragraph runs on the following line at two-space indent, unwrapped and carries only architecture, cytology, differentiation, necrosis and invasion pattern (GIST: cell type, arrangement, cytoplasm, nuclei, necrosis; colorectal: gland pattern, mucinous / signet-ring component, necrosis — a new `tumourMorphology` field set, since the template has none today). Extent, LVSI, nodes, IHC, molecular, margins and risk are not repeated in prose.
 6. The separate narrative microscopy paragraph is dropped for synoptic templates; the block heading is `MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT` (block headings stay in capitals like the other LIS block headings; only the section headings inside are sentence case). No switch back.
 7. Additional findings print one bullet each.
 8. Diagnosis: specimen line, then one `- ` clause per line with hanging indent. `Copy diagnosis` copies the multi-line form. COMMENT block unchanged.
@@ -41,12 +41,7 @@ Microscopic findings
 - Histologic type: Endometrioid carcinoma
 - Histologic grade: FIGO grade 1 (endometrioid carcinoma)
 - Tumour histology:
-  Sections show an endometrioid carcinoma with a predominantly glandular
-  architecture of confluent, back-to-back glands lined by stratified columnar
-  cells with elongated, mildly to moderately atypical nuclei; solid non-squamous
-  growth makes up 5% or less of the tumour. There is squamous differentiation
-  with morules and keratinising nests. Tumour necrosis is not seen. Myometrial
-  invasion is by irregular infiltrative glands eliciting a stromal response.
+  Sections show an endometrioid carcinoma with a predominantly glandular architecture of confluent, back-to-back glands lined by stratified columnar cells with elongated, mildly to moderately atypical nuclei; solid non-squamous growth makes up 5% or less of the tumour. There is squamous differentiation with morules and keratinising nests. Tumour necrosis is not seen. Myometrial invasion is by irregular infiltrative glands eliciting a stromal response.
 - Mismatch repair (MMR) immunohistochemistry: Intact nuclear expression of MLH1,
   PMS2, MSH2 and MSH6
 - p53 immunohistochemistry: Normal (wild type) expression
@@ -106,9 +101,7 @@ Microscopic findings
 - Histologic type: Gastrointestinal stromal tumour, spindle cell type
 - Histologic grade: G1: Low grade; mitotic rate 5 or fewer per 5 mm2
 - Tumour histology:
-  Sections show a well-circumscribed gastrointestinal stromal tumour composed of
-  spindle cells arranged in fascicles, with pale eosinophilic cytoplasm and
-  uniform ovoid nuclei. Necrosis is not identified.
+  Sections show a well-circumscribed gastrointestinal stromal tumour composed of spindle cells arranged in fascicles, with pale eosinophilic cytoplasm and uniform ovoid nuclei. Necrosis is not identified.
 - Mitotic count: 2 per 5 mm2 (5 or fewer per 5 mm2)
 - Necrosis: Not identified
 - KIT (CD117) IHC: Positive
@@ -162,9 +155,7 @@ Microscopic findings
 - Histologic type (WHO 2019): Adenocarcinoma
 - Histologic grade: G2: Moderately differentiated
 - Tumour histology:
-  Sections show an invasive moderately differentiated adenocarcinoma arising in
-  a tubulovillous adenoma, forming irregular glands with a desmoplastic stromal
-  response and luminal dirty necrosis.
+  Sections show an invasive moderately differentiated adenocarcinoma arising in a tubulovillous adenoma, forming irregular glands with a desmoplastic stromal response and luminal dirty necrosis.
 - Multiple primary tumours: Not applicable (no additional primary site)
 - Tumour extension: Invades through muscularis propria into pericolorectal
   tissue

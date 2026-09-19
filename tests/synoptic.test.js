@@ -29,11 +29,15 @@ function allCases() {
 test('layout: 80-column wrap, spaces only, no trailing whitespace', () => {
   for (const [name, out] of allCases()) {
     for (const block of ['synoptic', 'diagnosis']) {
-      for (const line of out[block].split('\n')) {
-        assert.ok(line.length <= 80, `${name} ${block}: >80 chars: ${line}`);
+      const lines = out[block].split('\n');
+      lines.forEach((line, i) => {
+        // The tumour histology paragraph is prose on one unbroken line so the LIS re-flows it to
+        // its own width; every other line still holds the 80-column rule.
+        const isPara = i > 0 && /^ +/.test(line) && /^- .*:$/.test(lines[i - 1].trim());
+        assert.ok(isPara || line.length <= 80, `${name} ${block}: >80 chars: ${line}`);
         assert.ok(!line.includes('\t'), `${name} ${block}: tab in line`);
         assert.equal(line, line.trimEnd(), `${name} ${block}: trailing whitespace`);
-      }
+      });
     }
   }
 });

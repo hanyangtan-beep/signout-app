@@ -4,10 +4,13 @@
 // Every item keeps its leading "- " bullet. Item shapes:
 //   { label, value }                 "- Label: value"
 //   { label, value, sub: [items] }   parent line, then "  - Sub label: value" lines
-//   { label, para }                  "- Label:" then the paragraph on the next lines, two-space indent
+//   { label, para }                  "- Label:" then the paragraph on ONE line, two-space indent
 //   { text }                         "- text" (additional findings, one bullet each)
-// Values wrap at WIDTH characters with a hanging indent that lines the continuation up
-// under the first word of the text (spaces only, never tabs). Empty sections are skipped.
+// Short "- Label: value" items wrap at WIDTH characters with a hanging indent that lines the
+// continuation up under the first word of the text (spaces only, never tabs). A `para` item is
+// prose - the tumour histology paragraph - and is printed on a single unbroken line so that the
+// LIS re-flows it to its own width instead of inheriting our hard breaks. Empty sections are
+// skipped.
 
 export const WIDTH = 80;
 
@@ -54,8 +57,7 @@ export function renderItem(item, depth = 0) {
   if (item.para !== undefined) {
     if (!present(item.para) || clean(item.para) === '') return [];
     out.push(`${' '.repeat(depth * 2)}- ${item.label}:`);
-    const indent = depth * 2 + 2;
-    out.push(wrap(item.para, indent, WIDTH, indent));
+    out.push(`${' '.repeat(depth * 2 + 2)}${clean(item.para)}`);
   } else if (item.text !== undefined) {
     if (!present(item.text) || clean(item.text) === '') return [];
     out.push(bullet('- ', clean(item.text), depth));

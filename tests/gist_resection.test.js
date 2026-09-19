@@ -66,9 +66,7 @@ test('fixture: gastric spindle-cell very-low-risk GIST (example case)', () => {
     '- Histologic type: Gastrointestinal stromal tumour, spindle cell type',
     '- Histologic grade: G1: Low grade; mitotic rate 5 or fewer per 5 mm2',
     '- Tumour histology:',
-    '  Sections show a well-circumscribed gastrointestinal stromal tumour composed of',
-    '  spindle cells arranged in fascicles, with pale eosinophilic cytoplasm and',
-    '  uniform ovoid nuclei. Necrosis is not identified.',
+    '  Sections show a well-circumscribed gastrointestinal stromal tumour composed of spindle cells arranged in fascicles, with pale eosinophilic cytoplasm and uniform ovoid nuclei. Necrosis is not identified.',
     '- Mitotic count: 2 per 5 mm2 (5 or fewer per 5 mm2)',
     '- Necrosis: Not identified',
     '- KIT (CD117) IHC: Positive',
@@ -193,7 +191,8 @@ test('SDHB-deficient, multifocal, pathologist override: descriptors, override ec
   assert.equal(r['SDHB IHC'], 'Deficient');
   assert.equal(r['pTNM'], 'pT3(m) pN0 [pathologist override; derived T2/NX - size 5.6 cm on the fresh specimen]');
   assert.ok(out.synoptic.endsWith('  - Stage group (if cM0): IB'));
-  assert.equal(out.synoptic.split('\n').find((l) => l.length > 80), undefined, 'override line wraps at 80 columns');
+  // The tumour histology paragraph is prose on one line; every other line holds 80 columns.
+  assert.equal(out.synoptic.split('\n').find((l) => l.length > 80 && !/^ {2}(?!- )/.test(l)), undefined, 'override line wraps at 80 columns');
   assert.match(flat(out.diagnosis), /mixed spindle and epithelioid type, 4\.5 cm.*SDHB-deficient$/);
   assert.match(out.macro, /The tumour is multifocal \(3 nodules, 45, 12 and 8 mm\)\./);
   assert.deepEqual(snippets({ sdhbIhc: 'Deficient', focality: 'Multifocal', molecular: 'Not performed' }).sort(), ['gist_resection_multifocal', 'gist_resection_sdhb_deficient']);

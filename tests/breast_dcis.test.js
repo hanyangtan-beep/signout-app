@@ -75,7 +75,7 @@ test('example case: WLE, intermediate-grade DCIS 22 mm, no nodes -> pTis(DCIS) p
   assert.equal(flatDx(out), 'BREAST, right, wide local excision - DUCTAL CARCINOMA IN SITU, intermediate grade, 22 mm; margins clear (closest 3 mm, anterior); no invasive carcinoma identified; see synoptic report - pTis(DCIS) pNX (AJCC 8th edition)');
   assert.ok(!out.issues.some((i) => /^pNX/.test(i.message)), 'pNX is expected for pure DCIS without nodes');
   assert.ok(!/pTNM/.test(run({}).report), 'pTNM prints only with printPTNM');
-  assert.match(out.report, /Sections show ductal carcinoma in situ of intermediate grade with cribriform\n  and solid architecture, with focal necrosis and associated microcalcification,\n  spanning 22 mm \(5 of 14 blocks\)\. The cribriform areas show rigid punched-out/);
+  assert.match(out.report, /Sections show ductal carcinoma in situ of intermediate grade with cribriform and solid architecture, with focal necrosis and associated microcalcification, spanning 22 mm \(5 of 14 blocks\)\. The cribriform areas show rigid punched-out/);
   assert.match(out.report.replace(/\n\s+/g, ' '), /The nuclei show mild to moderate variation in size with variably coarse chromatin and occasional nucleoli, and mitoses are infrequent\. No invasive carcinoma is identified\./);
 });
 
