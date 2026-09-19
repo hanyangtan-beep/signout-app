@@ -103,12 +103,17 @@ test('meningioma grading follows WHO CNS5', () => {
   assert.equal(meningiomaGrade(v({ mgMitoses: 1, mgMolecular: ['CDKN2A/B homozygous deletion detected'] })), 3);
 });
 
-test('glioma grading follows WHO CNS5', () => {
+test('glioma grading follows the current IDH-mutant grading rules', () => {
   const v = (p) => ({ features: [], molStatus: 'Reported', grade: 'From the findings', ...p });
   assert.equal(gliomaGrade(v({ finding: 'Glioblastoma, IDH-wildtype' })), 4);
   assert.equal(gliomaGrade(v({ finding: 'Diffuse midline glioma, H3 K27-altered' })), 4);
   assert.equal(gliomaGrade(v({ finding: 'Astrocytoma, IDH-mutant' })), 2);
-  assert.equal(gliomaGrade(v({ finding: 'Astrocytoma, IDH-mutant', features: ['Mitoses'] })), 3);
+  // Three or more mitoses per 2.4 mm2, or a higher-risk alteration, carries grade 3; the mitoses
+  // chip on its own no longer does.
+  assert.equal(gliomaGrade(v({ finding: 'Astrocytoma, IDH-mutant', features: ['Mitoses'] })), 2);
+  assert.equal(gliomaGrade(v({ finding: 'Astrocytoma, IDH-mutant', mitoses: '4' })), 3);
+  assert.equal(gliomaGrade(v({ finding: 'Astrocytoma, IDH-mutant', molHigher: ['EGFR amplification'] })), 3);
+  assert.equal(gliomaGrade(v({ finding: 'Astrocytoma, IDH-mutant', pdgfra: 'Amplified' })), 4);
   assert.equal(gliomaGrade(v({ finding: 'Astrocytoma, IDH-mutant', features: ['Microvascular proliferation'] })), 4);
   assert.equal(gliomaGrade(v({ finding: 'Astrocytoma, IDH-mutant', cdkn2a: 'Homozygous deletion detected' })), 4);
   assert.equal(gliomaGrade(v({ finding: 'Oligodendroglioma, IDH-mutant and 1p/19q-codeleted' })), 2);

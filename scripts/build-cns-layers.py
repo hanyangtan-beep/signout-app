@@ -196,6 +196,10 @@ f(id='dxQualifier', label='Diagnostic qualifier', type='select', group=G1, defau
     '', 'NOS (not otherwise specified)', 'NEC (not elsewhere classified)', CBD, 'Pending further studies'])
 f(id='dxQualifierDetail', label='Qualifier (specify)', type='text', group=G1, default='',
   showIf={'field': 'dxQualifier', 'is': [CBD, 'Pending further studies']})
+f(id='patientAge', label='Patient age (years)', type='number', group=G1, default='', span='half',
+  help='Optional; never printed. Several diagnostic rules turn on age - a solitary EGFR '
+       'amplification or +7/-10 under 40, the over-55 shortcuts, mismatch-repair testing in the '
+       'young - and the pathway prompts stay silent without it.')
 
 # ---------------- layer 2: histopathological classification ----------------
 g('layer2')
@@ -230,7 +234,10 @@ f(id='features', label='Histological features', type='multiselect', group=GM, de
     'Perivascular pseudorosettes', 'True ependymal rosettes', 'Biphasic pattern with Rosenthal fibres',
     'Eosinophilic granular bodies', 'Gemistocytic change', 'Multinucleated giant cells',
     'Sarcomatous spindle cell component', 'Infiltration of adjacent cortex', 'Secondary structures of Scherer'])
-f(id='mitoses', label='Mitoses (per 10 high-power fields)', type='number', group=GM, default='')
+f(id='mitoses', label='Mitoses (per 10 high-power fields)', type='number', group=GM, default='',
+  help='Counted in the most mitotically active area. Ten fields of 0.24 mm2 are 2.4 mm2, the area '
+       'the glioma grading threshold is stated over; the meningioma threshold is stated over ten '
+       'fields of 0.16 mm2. Both are read here as counts per ten high-power fields.')
 
 g('ihc')
 f(id='ihc', label='Immunohistochemistry', type='multiselect', group=GM, default=['GFAP positive', 'OLIG2 positive'], options=[
@@ -277,6 +284,16 @@ f(id='codelDetail', label='1p/19q (specify)', type='text', group=G4, default='',
   showIf={'field': 'codel', 'is': ['Polysomy (specify)', 'Other (specify)']})
 f(id='cdkn2a', label='CDKN2A / CDKN2B (FISH or copy number)', type='select', group=G4, default=NP,
   options=[NP, 'No homozygous deletion detected', 'Homozygous deletion detected', 'Hemizygous loss detected', CBD], showIf=MUT)
+f(id='pdgfra', label='PDGFRA amplification', type='select', group=G4, default=NP,
+  options=[NP, 'Not amplified', 'Amplified', CBD], showIf=MUT)
+f(id='molHigher', label='Other higher-grade alterations', type='multiselect', group=G4, default=[], options=[
+    'CDK4 amplification', 'CDK6 amplification', 'CCND2 amplification', 'EGFR amplification',
+    'MYCN amplification', 'RB1 homozygous deletion', 'RB1 pathogenic mutation',
+    'CDKN2A pathogenic mutation', 'PIK3CA pathogenic mutation', 'PIK3R1 pathogenic mutation',
+    'G-CIMP-low methylation signature', 'A_IDH_HG methylation signature'], showIf=MUT,
+  help='Alterations that mark an IDH-mutant astrocytoma out as higher risk at the grade 2 / 3 '
+       'interface. Any one of them carries the proposal to grade 3 where microvascular '
+       'proliferation, necrosis, CDKN2A/B homozygous deletion and PDGFRA amplification are absent.')
 # IDH-wildtype branch
 WT = {'field': 'idhBranch', 'is': 'IDH-wildtype'}
 f(id='h3k27me3', label='H3 trimethylated K27 (immunohistochemistry)', type='select', group=G4, default=NP,
@@ -293,6 +310,11 @@ f(id='chr710', label='Chromosome 7 / 10 (FISH)', type='select', group=G4, defaul
     'Loss of chromosome 10 only', CBD], showIf=WT)
 f(id='egfr', label='EGFR amplification', type='select', group=G4, default=NP,
   options=[NP, 'Not amplified', 'Amplified', CBD], showIf=WT)
+f(id='ezhip', label='EZHIP (immunohistochemistry)', type='select', group=G4, default=NP,
+  options=[NP, 'Negative', 'Overexpressed (strong diffuse nuclear staining)', CBD],
+  showIf={'field': 'molStatus', 'is': 'Reported'},
+  help='Supports a posterior fossa group A ependymoma where H3 K27me3 staining is ambiguous and '
+       'methylation profiling is unavailable.')
 # both branches
 f(id='tert', label='TERT promoter', type='select', group=G4, default=NP,
   options=[NP, 'No mutation detected', 'Mutation detected (specify)', CBD], showIf={'field': 'molStatus', 'is': 'Reported'})
@@ -300,6 +322,25 @@ f(id='tertDetail', label='TERT promoter mutation (specify)', type='text', group=
   showIf={'field': 'tert', 'is': 'Mutation detected (specify)'})
 f(id='molOthers', label='Other molecular studies', type='text', group=G4, default='',
   placeholder='MGMT promoter methylated', showIf={'field': 'molStatus', 'is': 'Reported'})
+GMETH = 'Layer 4 - DNA methylation profiling'
+f(id='methylation', label='DNA methylation profiling', type='select', group=GMETH, default=NP,
+  options=[NP, 'Sent, result pending', 'Reported'])
+METH = {'field': 'methylation', 'is': 'Reported'}
+f(id='methClassifier', label='Classifier and version', type='text', group=GMETH, default='',
+  placeholder='DKFZ / Heidelberg brain tumour classifier v12.8', showIf=METH)
+f(id='methFamily', label='Methylation class family', type='text', group=GMETH, default='',
+  placeholder='glioblastoma, IDH-wildtype', showIf=METH)
+f(id='methClass', label='Methylation class', type='text', group=GMETH, default='',
+  placeholder='glioblastoma, IDH-wildtype, subclass RTK II', showIf=METH)
+f(id='methScore', label='Calibrated score', type='number', group=GMETH, default='', span='half',
+  showIf=METH, help='0 to 1. A score below the laboratory threshold may still contribute where the '
+                    'other findings support the class; it cannot carry the class on its own.')
+f(id='methThreshold', label='Laboratory threshold', type='number', group=GMETH, default='', span='half',
+  showIf=METH)
+f(id='methQc', label='Quality control', type='select', group=GMETH, default='', options=[
+    '', 'Passed', 'Passed with reservations (specify)', 'Failed (specify)'], showIf=METH)
+f(id='methQcDetail', label='Quality control (specify)', type='text', group=GMETH, default='',
+  showIf={'field': 'methQc', 'is': ['Passed with reservations (specify)', 'Failed (specify)']})
 
 fragment = collections.OrderedDict()
 fragment['note'] = ('Shared CNS diagnosis core: the four layers of the QMH Brain > "WHO 2021" form plus '

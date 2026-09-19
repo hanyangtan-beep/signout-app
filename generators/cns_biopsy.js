@@ -31,7 +31,7 @@ import { stripDot } from './_house.js';
 import {
   grade as layerGrade, proposedGrade, gradeText, gradeClause, upperEntity,
   histClassText, featureClause, mitoticClause, ihcClause, molecularClause, molecularBits,
-  treatmentClause, NP
+  treatmentClause, NP, pathwayChecks
 } from './cns_layers.js';
 import {
   uc1, lc1, num, arr, word, list,
@@ -474,6 +474,17 @@ export function validate(part) {
   if (isMeningioma(v)) {
     const mitoses = num(v.mgMitoses);
     const atypical = arr(v.mgAtypical).length;
+    const mol = arr(v.mgMolecular);
+    // cIMPACT-NOW update 8 proposes grade 2 for grade 1 morphology carrying 1p deletion with 22q
+    // deletion and/or an NF2 variant. It is a proposal, not WHO, so it warns beside the form and
+    // never moves the printed grade.  https://pubmed.ncbi.nlm.nih.gov/39212325/
+    if (meningiomaGrade(v) === 1 && mol.includes('1p deletion detected')
+      && (mol.includes('22q deletion detected') || mol.includes('NF2 pathogenic variant detected'))) {
+      warn('Grade 1 morphology with 1p deletion and 22q deletion or an NF2 variant: this combination is proposed as grade 2 and carries a higher recurrence risk than the morphology alone suggests.', 'mgMolecular');
+    }
+    if (v.mgBrain === 'Present') {
+      info('Brain invasion recorded. It is read as tumour nests within brain parenchyma without intervening leptomeninges on a section carrying adjacent brain; a smooth pushing interface and entrapped perivascular tumour are not brain invasion.', 'mgBrain');
+    }
     if (mitoses === null) info('Record the mitotic count per 1.6 mm² (10 high-power fields); it carries the meningioma grade.', 'mgMitoses');
     if (atypical === 2 && !arr(v.mgMolecular).length) {
       info('Two atypical features: this sits at the grade 1 / grade 2 border, where TERT promoter and CDKN2A/B testing settles the grade.', 'mgAtypical');
@@ -484,6 +495,7 @@ export function validate(part) {
     if (meningiomaGrade(v) >= 2) info(`Meningioma graded CNS WHO grade ${meningiomaGrade(v)} on the recorded findings.`, 'finding');
   }
   if (isGlioma(v)) {
+    pathwayChecks(v, warn, (level, message, field) => out.push({ level, message, field }), finding(v));
     // Layer 3 is a free choice: the grade the findings support is proposed and disagreement is
     // flagged, never silently overruled. Mirrors the checks in generators/cns_tumour.js.
     const g = gliomaGrade(v);
@@ -524,6 +536,9 @@ export function validate(part) {
   }
   if (finding(v) === ASTRO && gliomaGrade(v) === 4 && v.cdkn2a === 'Homozygous deletion detected') {
     info('CDKN2A/B homozygous deletion sets CNS WHO grade 4 in an IDH-mutant astrocytoma.', 'cdkn2a');
+  }
+  if (finding(v) === ASTRO && gliomaGrade(v) === 4 && v.pdgfra === 'Amplified') {
+    info('PDGFRA amplification carries CNS WHO grade 4 in an IDH-mutant astrocytoma on its own.', 'pdgfra');
   }
   if (isGlioma(v) && v.molStatus === 'Not performed' && /IDH-mutant|IDH-wildtype|codeleted|H3 /.test(finding(v))) {
     info('The diagnosis names a molecular alteration but no molecular studies are recorded.', 'molStatus');

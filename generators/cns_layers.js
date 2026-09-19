@@ -150,6 +150,40 @@ export const FIXED_GRADE = {
 export const HIGH_GRADE_FEATURES = ['Microvascular proliferation', 'Necrosis with pseudopalisading', 'Necrosis without pseudopalisading'];
 export const isEpendymoma = (e) => /ependymoma/i.test(e) && !/^Subependymoma|^Myxopapillary/.test(e);
 
+/**
+ * The mitotic threshold that sends an IDH-mutant astrocytoma from grade 2 to grade 3: three or more
+ * in 2.4 mm2, which is ten high-power fields of 0.24 mm2, counted in the most active area. The
+ * field records the count over ten fields, so the two read as the same number here. Before this,
+ * a single mitosis was enough, which is the WHO CNS5 reading the update replaces.
+ */
+export const ASTRO_MITOTIC_THRESHOLD = 3;
+
+/** Grade 4 by molecular criterion in an IDH-mutant astrocytoma: the two copy-number findings. */
+export function grade4Molecular(v) {
+  const out = [];
+  if (v.cdkn2a === 'Homozygous deletion detected') out.push('homozygous deletion of CDKN2A/B');
+  if (v.pdgfra === 'Amplified') out.push('amplification of PDGFRA');
+  return out;
+}
+
+/** Grade 3 by molecular criterion in an IDH-mutant astrocytoma: the higher-risk alteration set. */
+export function grade3Molecular(v) {
+  return arr(v.molHigher);
+}
+
+/** One higher-grade alteration in prose: "amplification of CDK4", "a pathogenic PIK3CA mutation". */
+export function higherPhrase(entry) {
+  const amp = /^(\w+) amplification$/.exec(entry);
+  if (amp) return `amplification of ${amp[1]}`;
+  const hom = /^(\w+) homozygous deletion$/.exec(entry);
+  if (hom) return `homozygous deletion of ${hom[1]}`;
+  const mut = /^(\w+) pathogenic mutation$/.exec(entry);
+  if (mut) return `a pathogenic ${mut[1]} mutation`;
+  const sig = /^(.+) methylation signature$/.exec(entry);
+  if (sig) return `a ${sig[1]} methylation signature`;
+  return lc1(entry);
+}
+
 /** The grade the recorded findings support, or null when the entity does not carry a settled grade. */
 export function proposedGrade(v, e = entity(v)) {
   const feats = arr(v.features);
@@ -157,8 +191,9 @@ export function proposedGrade(v, e = entity(v)) {
   const high = feats.some((x) => HIGH_GRADE_FEATURES.includes(x));
   if (FIXED_GRADE[e]) return FIXED_GRADE[e];
   if (e === ASTRO) {
-    if (high || v.cdkn2a === 'Homozygous deletion detected') return 4;
-    return feats.includes('Mitoses') || (mit !== null && mit > 0) ? 3 : 2;
+    if (high || grade4Molecular(v).length) return 4;
+    if (grade3Molecular(v).length) return 3;
+    return mit !== null && mit >= ASTRO_MITOTIC_THRESHOLD ? 3 : 2;
   }
   if (e === OLIGO) return high || (mit !== null && mit >= 6) ? 3 : 2;
   if (e === 'Pleomorphic xanthoastrocytoma') return (mit !== null && mit >= 5) || high ? 3 : 2;
@@ -315,6 +350,10 @@ export function molecularBits(v) {
       v.cdkn2a === 'Homozygous deletion detected' ? 'there is homozygous deletion of CDKN2A/B'
         : v.cdkn2a === 'No homozygous deletion detected' ? 'there is no homozygous deletion of CDKN2A/B'
           : v.cdkn2a === 'Hemizygous loss detected' ? 'there is hemizygous loss of CDKN2A/B' : 'CDKN2A/B copy number cannot be interpreted');
+    add('PDGFRA amplification', v.pdgfra,
+      v.pdgfra === 'Amplified' ? 'PDGFRA is amplified' : v.pdgfra === 'Not amplified' ? 'PDGFRA is not amplified' : 'PDGFRA copy number cannot be interpreted');
+    const higher = grade3Molecular(v);
+    if (higher.length) out.push({ label: 'Other higher-grade alterations', value: higher.join('; '), prose: `there is ${list(higher.map(higherPhrase))}` });
   }
   if (v.idhBranch === 'IDH-wildtype') {
     add('H3 trimethylated K27 (immunohistochemistry)', v.h3k27me3,
@@ -343,9 +382,167 @@ export function molecularBits(v) {
       /^Mutation detected/.test(val) ? `a TERT promoter mutation is detected${stripDot(v.tertDetail) ? ` (${stripDot(v.tertDetail)})` : ''}`
         : v.tert === 'No mutation detected' ? 'the TERT promoter is wild-type' : 'TERT promoter testing cannot be interpreted');
   }
+  add('EZHIP (immunohistochemistry)', v.ezhip,
+    v.ezhip === 'Overexpressed (strong diffuse nuclear staining)' ? 'EZHIP is overexpressed, with strong diffuse nuclear staining'
+      : v.ezhip === 'Negative' ? 'EZHIP is not expressed' : 'EZHIP immunohistochemistry cannot be interpreted');
   const others = stripDot(v.molOthers);
   if (others) out.push({ label: 'Other molecular studies', value: others, prose: lc1(others) });
+  out.push(...methylationBits(v));
   return out;
+}
+
+/**
+ * DNA methylation profiling in the layered form: the classifier and its version, the family and
+ * class matched, the calibrated score against the laboratory threshold, and the quality control.
+ */
+export function methylationBits(v) {
+  if (v.methylation === 'Sent, result pending') {
+    return [{ label: 'DNA methylation profiling', value: 'Requested, result pending', prose: 'DNA methylation profiling has been requested and the result is pending' }];
+  }
+  if (v.methylation !== 'Reported') return [];
+  const out = [];
+  const classifier = stripDot(v.methClassifier);
+  const family = stripDot(v.methFamily);
+  const cls = stripDot(v.methClass);
+  const score = num(v.methScore);
+  const threshold = num(v.methThreshold);
+  const qcDetail = stripDot(v.methQcDetail);
+  const scoreText = score === null ? '' : `${score}${threshold === null ? '' : ` (laboratory threshold ${threshold})`}`;
+  if (classifier) out.push({ label: 'Classifier', value: classifier, prose: '' });
+  if (family) out.push({ label: 'Methylation class family', value: family, prose: '' });
+  if (cls) out.push({ label: 'Methylation class', value: cls, prose: '' });
+  if (scoreText) out.push({ label: 'Calibrated score', value: scoreText, prose: '' });
+  if (v.methQc) {
+    out.push({ label: 'Quality control', value: `${String(v.methQc).replace(/ \(specify\)$/, '')}${qcDetail ? ` (${qcDetail})` : ''}`, prose: '' });
+  }
+  const named = cls || family;
+  if (named) {
+    out[0].prose = `DNA methylation profiling${classifier ? ` (${classifier})` : ''} matches ${named}${scoreText ? `, calibrated score ${scoreText}` : ''}`;
+  } else if (out.length) {
+    out[0].prose = `DNA methylation profiling${classifier ? ` (${classifier})` : ''} has been performed${scoreText ? `, calibrated score ${scoreText}` : ''}`;
+  }
+  return out;
+}
+
+/**
+ * The pathway prompts the two CNS templates share: the cIMPACT-NOW criteria that bear on a case
+ * once the findings are in. Every one of them is a panel warning. None of them is printed, and none
+ * overwrites a chosen grade - cIMPACT-NOW is explicitly not official WHO, so the printed register
+ * stays WHO CNS5 and the guidance stays beside the form.
+ *
+ * Knowledge grounding, comments only (never printed):
+ *   Update 12 (2026), IDH-mutant glioma grading - grade 3 at 3 or more mitoses per 2.4 mm2 (10
+ *     fields of 0.24 mm2) or a higher-risk alteration, with microvascular proliferation, necrosis,
+ *     CDKN2A/B homozygous deletion and PDGFRA amplification absent; grade 4 adds PDGFRA
+ *     amplification to CDKN2A/B homozygous deletion; CDKN2A/B hemizygous loss is not a criterion;
+ *     oligodendroglioma grading unchanged, CDKN2A/B homozygous deletion there prompting
+ *     reconsideration of grade 2 rather than a grade of its own; Ki-67 not a grading criterion
+ *     https://academic.oup.com/neuro-oncology/advance-article/doi/10.1093/neuonc/noag108/8687120
+ *   Update 11 (2025), IDH- and H3-wildtype diffuse high-grade gliomas and posterior fossa
+ *     ependymal tumours - a TERT promoter mutation is not a solitary defining factor in a
+ *     histologically low-grade tumour; EGFR amplification and +7/-10 are not solitary defining
+ *     factors under 40; a midline diffuse astrocytic glioma gets H3 K27 assessment at any age;
+ *     retained K27me3 without EZHIP overexpression and without methylation is NOS; mismatch-repair
+ *     testing under 18 and in an 18-40 adult not meeting the glioblastoma criteria
+ *     https://onlinelibrary.wiley.com/doi/10.1111/bpa.70035
+ *   Update 9 (2025), methylation profiling reported in a layered form with the classifier, family,
+ *     class, calibrated score, threshold and quality control
+ *     https://academic.oup.com/noa/article/7/1/vdae228/7942502
+ *   Update 8 (2025), meningioma - 1p deletion with 22q deletion and/or an NF2 variant on grade 1
+ *     morphology proposed as grade 2   https://pubmed.ncbi.nlm.nih.gov/39212325/
+ *   Full reading, with the gap list this was built from: docs/specs/cns-cimpact-pathways.md
+ *
+ * @param {object} v the part's values
+ * @param {(message: string, field?: string) => void} warn panel warning sink
+ * @param {(level: string, message: string, field?: string) => void} at panel note sink
+ */
+export function pathwayChecks(v, warn, at, e = entity(v)) {
+  const age = num(v.patientAge);
+  const feats = arr(v.features);
+  const mit = num(v.mitoses);
+  const high = feats.some((x) => HIGH_GRADE_FEATURES.includes(x));
+  const reported = v.molStatus === 'Reported';
+  const noMethylation = v.methylation !== 'Reported';
+
+  if (e === ASTRO && reported) {
+    if (v.cdkn2a === 'Hemizygous loss detected') {
+      at('info', 'Hemizygous loss of CDKN2A/B is recorded. Hemizygous loss is not a grading criterion; only homozygous deletion is.', 'cdkn2a');
+    }
+    if (grade3Molecular(v).length && (high || grade4Molecular(v).length)) {
+      at('info', `A higher-grade alteration is recorded alongside ${list([...high ? ['microvascular proliferation or necrosis'] : [], ...grade4Molecular(v)])}, which carries the higher grade.`, 'molHigher');
+    }
+    if (mit !== null && mit > 0 && mit < ASTRO_MITOTIC_THRESHOLD && !high && !grade4Molecular(v).length && !grade3Molecular(v).length) {
+      at('info', `Mitoses number ${mit} per 10 high-power fields, below the threshold of ${ASTRO_MITOTIC_THRESHOLD} per 2.4 mm2 that separates grade 3 from grade 2. Count in the most mitotically active area.`, 'mitoses');
+    }
+    if (mit === null && !high) at('info', 'No mitotic count is recorded; the count separates grade 2 from grade 3.', 'mitoses');
+    if (v.pdgfra === NP && (mit !== null && mit >= ASTRO_MITOTIC_THRESHOLD)) {
+      at('info', 'PDGFRA amplification is not recorded. It carries grade 4 on its own in an IDH-mutant astrocytoma.', 'pdgfra');
+    }
+  }
+
+  if (e === OLIGO && v.cdkn2a === 'Homozygous deletion detected' && proposedGrade(v, e) === 2) {
+    warn('Homozygous deletion of CDKN2A/B is recorded in an oligodendroglioma. It has not been reported in a grade 2 tumour; reconsider the grade 2 designation. It is not by itself a criterion for grade 3 or grade 4.', 'cdkn2a');
+  }
+
+  if (reported && v.idhBranch === 'IDH-wildtype') {
+    const tertOnly = /^Mutation detected/.test(v.tert || '') && !high
+      && v.egfr !== 'Amplified' && v.chr710 !== 'Combined gain of chromosome 7 and loss of chromosome 10';
+    if (tertOnly) {
+      warn('A TERT promoter mutation is the only feature recorded in a histologically low-grade IDH-wildtype diffuse astrocytic tumour. It should not carry a diagnosis of glioblastoma on its own.', 'tert');
+    }
+    const soleCopyNumber = !high && !/^Mutation detected/.test(v.tert || '')
+      && (v.egfr === 'Amplified') !== (v.chr710 === 'Combined gain of chromosome 7 and loss of chromosome 10')
+      && (v.egfr === 'Amplified' || v.chr710 === 'Combined gain of chromosome 7 and loss of chromosome 10');
+    if (soleCopyNumber && age !== null && age < 40) {
+      warn(`${v.egfr === 'Amplified' ? 'EGFR amplification' : 'Combined +7/-10'} is the only molecular feature recorded in a patient of ${age}. It should not define glioblastoma on its own under 40; add TERT promoter status, exclude BRAF, or profile by methylation.`, v.egfr === 'Amplified' ? 'egfr' : 'chr710');
+    }
+    if (age !== null && age < 40 && e === GBM) {
+      at('info', 'Under 40, hold open diffuse paediatric-type high-grade glioma H3-wildtype and IDH-wildtype, diffuse hemispheric glioma H3 G34-mutant, pleomorphic xanthoastrocytoma and FGFR3::TACC3 fusion-positive glioma.', 'dxAdult');
+    }
+    if (age !== null && age < 18) {
+      at('info', 'Under 18, consider mismatch-repair immunohistochemistry on an H3-wildtype high-grade glioma.', 'patientAge');
+    } else if (age !== null && age >= 18 && age <= 40 && e !== GBM && /glioma|astrocytoma/i.test(e)) {
+      at('info', 'Between 18 and 40, consider mismatch-repair immunohistochemistry where an H3- and IDH-wildtype high-grade glioma does not meet the glioblastoma criteria.', 'patientAge');
+    }
+  }
+
+  if (reported && /midline/i.test(v.site || '') && /glioma|astrocytoma/i.test(e) && v.h3k27me3 === NP && v.h3seq === NP) {
+    warn('A midline diffuse astrocytic glioma is recorded with no H3 K27 assessment. H3 K27 status should be assessed at any age in a midline tumour.', 'h3k27me3');
+  }
+  if (v.h3k27me3 === 'Loss of nuclear expression' && v.h3seq === NP && e !== DMG) {
+    at('info', 'Loss of H3 K27 trimethylation does not by itself establish an H3 K27M mutation; confirm by H3 K27M immunohistochemistry or sequencing.', 'h3seq');
+  }
+
+  if (isEpendymoma(e) && /posterior fossa/i.test(`${e} ${v.site || ''}`)) {
+    if (v.h3k27me3 === 'Retained nuclear expression' && v.ezhip !== 'Overexpressed (strong diffuse nuclear staining)' && noMethylation) {
+      warn('A posterior fossa ependymoma with retained H3 K27 trimethylation and no EZHIP overexpression cannot be assigned to group A or group B without methylation profiling; it is reported as posterior fossa ependymoma, NOS.', 'methylation');
+    }
+    if (v.h3k27me3 === CBD && v.ezhip === NP && noMethylation) {
+      at('info', 'Where H3 K27me3 staining is ambiguous and methylation profiling is unavailable, EZHIP immunohistochemistry supports group A.', 'ezhip');
+    }
+  }
+
+  if (v.methylation === 'Reported') {
+    const score = num(v.methScore);
+    const threshold = num(v.methThreshold);
+    if (score !== null && threshold !== null && score < threshold) {
+      at('info', `The calibrated score of ${score} is below the laboratory threshold of ${threshold}. A subthreshold match may still contribute where the other findings support the class, but it cannot carry the class on its own.`, 'methScore');
+    }
+    if (/^Failed/.test(v.methQc || '')) warn('Methylation quality control failed; the classifier output should not be read as a match.', 'methQc');
+  }
+
+  if (age === null && (e === GBM || (reported && v.idhBranch === 'IDH-wildtype'))) {
+    at('info', 'No patient age is recorded; the age-dependent prompts for an IDH-wildtype glioma stay silent without it.', 'patientAge');
+  }
+  if (age !== null && age > 55 && reported && v.idh1R132H === 'Negative' && v.idhSeq === NP && e === GBM) {
+    at('info', `At ${age}, with classic histology and no pre-existing lower-grade glioma, IDH1 R132H immunonegativity is taken as sufficient for IDH-wildtype; sequencing is not required.`, 'idhSeq');
+  }
+  if (age !== null && age < 55 && reported && v.idh1R132H === 'Negative' && v.idhSeq === NP && e === GBM) {
+    warn(`IDH1 R132H is negative and no IDH1/IDH2 sequencing is recorded in a patient of ${age}. Sequencing is required under 55 before glioblastoma, IDH-wildtype.`, 'idhSeq');
+  }
+  if (reported && v.idhBranch === 'IDH-mutant' && v.idh1R132H === 'Negative' && v.idhSeq === NP) {
+    warn('An IDH-mutant tumour is recorded with negative IDH1 R132H immunohistochemistry and no sequencing. A non-canonical IDH1 or an IDH2 mutation is not detected by R132H immunohistochemistry.', 'idhSeq');
+  }
 }
 
 /** The molecular results in prose, for the microscopy paragraph. */

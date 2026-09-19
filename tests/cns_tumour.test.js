@@ -104,13 +104,25 @@ test('the entity comes from the family field, and free text fills the gaps', () 
   assert.equal(entity({ ...v, dxFamily: 'Pineal tumours', dxPineal: 'Other entity in this family (specify)', dxOther: 'Pineal cyst' }), 'Pineal cyst');
 });
 
-test('the grade proposal follows WHO CNS5', () => {
+test('the grade proposal follows the current IDH-mutant grading rules', () => {
   const v = (p) => ({ ...defaults(schema), features: [], mitoses: '', grade: 'From the findings', ...p });
   assert.equal(proposedGrade(v({ dxAdult: 'Glioblastoma, IDH-wildtype' })), 4);
   assert.equal(proposedGrade(v({ dxAdult: 'Astrocytoma, IDH-mutant' })), 2);
-  assert.equal(proposedGrade(v({ dxAdult: 'Astrocytoma, IDH-mutant', features: ['Mitoses'] })), 3);
+  // The mitotic count carries grade 2 against grade 3, at three or more per 2.4 mm2 (10 fields of
+  // 0.24 mm2). Ticking the mitoses chip without a count no longer reaches grade 3 on its own.
+  assert.equal(proposedGrade(v({ dxAdult: 'Astrocytoma, IDH-mutant', features: ['Mitoses'] })), 2);
+  assert.equal(proposedGrade(v({ dxAdult: 'Astrocytoma, IDH-mutant', mitoses: '2' })), 2);
+  assert.equal(proposedGrade(v({ dxAdult: 'Astrocytoma, IDH-mutant', mitoses: '3' })), 3);
+  assert.equal(proposedGrade(v({ dxAdult: 'Astrocytoma, IDH-mutant', molHigher: ['CDK4 amplification'] })), 3);
   assert.equal(proposedGrade(v({ dxAdult: 'Astrocytoma, IDH-mutant', features: ['Microvascular proliferation'] })), 4);
   assert.equal(proposedGrade(v({ dxAdult: 'Astrocytoma, IDH-mutant', cdkn2a: 'Homozygous deletion detected' })), 4);
+  assert.equal(proposedGrade(v({ dxAdult: 'Astrocytoma, IDH-mutant', pdgfra: 'Amplified' })), 4);
+  // Hemizygous loss is not a criterion, and a grade 4 finding outranks a grade 3 alteration.
+  assert.equal(proposedGrade(v({ dxAdult: 'Astrocytoma, IDH-mutant', cdkn2a: 'Hemizygous loss detected' })), 2);
+  assert.equal(proposedGrade(v({ dxAdult: 'Astrocytoma, IDH-mutant', molHigher: ['MYCN amplification'], pdgfra: 'Amplified' })), 4);
+  // Oligodendroglioma grading is unchanged; CDKN2A/B homozygous deletion prompts reconsideration
+  // of a grade 2 designation but is not itself a grading criterion there.
+  assert.equal(proposedGrade(v({ dxAdult: 'Oligodendroglioma, IDH-mutant and 1p/19q-codeleted', cdkn2a: 'Homozygous deletion detected' })), 2);
   assert.equal(proposedGrade(v({ dxAdult: 'Oligodendroglioma, IDH-mutant and 1p/19q-codeleted' })), 2);
   assert.equal(proposedGrade(v({ dxAdult: 'Oligodendroglioma, IDH-mutant and 1p/19q-codeleted', features: ['Necrosis without pseudopalisading'] })), 3);
   assert.equal(proposedGrade(v({ dxFamily: 'Ependymal tumours', dxEpendymal: 'Supratentorial ependymoma' })), 2);

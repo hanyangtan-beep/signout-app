@@ -37,7 +37,7 @@ import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import {
   NP, isEpendymoma, entity, integratedDiagnosis, histClassText, proposedGrade, grade, gradeValue, gradeText,
   gradeClause, upperEntity, featureClause, mitoticClause, ihcClause, ki67Clause, treatmentClause,
-  treatmentValue, molecularClause, molecularBits
+  treatmentValue, molecularClause, molecularBits, pathwayChecks
 } from './cns_layers.js';
 import {
   uc1, lc1, num, arr,
@@ -270,6 +270,10 @@ export function validate(part) {
     at('info', 'A gross total resection is stated but the specimen was received fragmented; the extent of resection is a radiological and operative judgement, not a pathological one.', 'extent');
   }
   if (num(v.ki67) !== null && num(v.ki67) > 100) err('The Ki-67 index cannot exceed 100 per cent.', 'ki67');
+  if (num(v.ki67) !== null && /astrocytoma, IDH-mutant|oligodendroglioma/i.test(e)) {
+    at('info', 'The Ki-67 index is recorded. It is not a grading criterion in an IDH-mutant glioma; the mitotic count in the most active area carries the grade.', 'ki67');
+  }
+  pathwayChecks(v, warn, at, e);
   return out;
 }
 

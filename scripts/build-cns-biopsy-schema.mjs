@@ -86,7 +86,9 @@ const fields = [
   { id: 'mgIhc', label: 'Immunohistochemistry', type: 'multiselect', default: [], group: 'Meningioma', showIf: isFinding('Meningioma'), options: [
     'EMA positive', 'SSTR2A positive', 'Progesterone receptor positive', 'EMA negative', 'SSTR2A negative', 'STAT6 negative' ] },
   { id: 'mgMolecular', label: 'Molecular result', type: 'multiselect', default: [], group: 'Meningioma', showIf: isFinding('Meningioma'), options: [
-    'TERT promoter mutation detected', 'CDKN2A/B homozygous deletion detected', 'TERT promoter wild-type', 'No CDKN2A/B homozygous deletion' ] },
+    'TERT promoter mutation detected', 'CDKN2A/B homozygous deletion detected', '1p deletion detected',
+    '22q deletion detected', 'NF2 pathogenic variant detected', 'TERT promoter wild-type',
+    'No CDKN2A/B homozygous deletion', 'No 1p deletion', 'No 22q deletion', 'NF2 wild-type' ] },
 
   // ----- gliomas: the shared CNS diagnosis core, behind a glioma finding -----
   // Field-level gates are kept and combined with the finding gate through `all`, so Layer 4 still
