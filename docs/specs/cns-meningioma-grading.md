@@ -74,10 +74,15 @@ Update 8 proposes that a brain-invasive but otherwise morphologically benign men
 be graded before molecular data are obtained", and that where no testing is possible it be called
 "meningioma, not otherwise specified" with the grade left off.
 
-**House decision: the printed grade follows CNS5, which makes brain invasion alone sufficient for
-grade 2.** Update 8 is a proposal set, not the classification the LIS reports against. So a BIOB
-case prints grade 2 and raises a warning naming the proposal and asking for *TERT* and *CDKN2A/B*.
-Leaving a grade off a released report on the strength of a proposal is the wrong default.
+**House decision, confirmed by the user 2026-09-20: the printed grade follows CNS5, which makes
+brain invasion alone sufficient for grade 2.** Update 8 is a proposal set, not the classification the
+LIS reports against. So a BIOB case prints grade 2 and raises a warning naming the proposal and
+asking for *TERT* and *CDKN2A/B*. Leaving a grade off a released report on the strength of a proposal
+is the wrong default.
+
+This is settled, not provisional. Do not change the BIOB grade to withheld, to grade 1, or to
+"meningioma, not otherwise specified" on the strength of update 8 alone; it takes a further
+instruction from the user, or the proposal being adopted into a published classification.
 
 ## The algorithm
 
