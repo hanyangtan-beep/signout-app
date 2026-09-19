@@ -70,18 +70,25 @@ const STEPS = [
     applies: (v) => v.dxFamily === 'Ependymal tumours',
   },
   {
+    id: 'caEntity',
+    field: 'dxCircumscribed',
+    question: 'Which circumscribed astrocytic glioma, on morphology alone for now?',
+    why: 'This family is defined by a MAPK pathway alteration rather than by IDH, so the working entity sets which alteration is looked for first: KIAA1549::BRAF in a pilocytic astrocytoma, BRAF p.V600E with CDKN2A/B in a pleomorphic xanthoastrocytoma.',
+    applies: (v) => v.dxFamily === 'Circumscribed astrocytic gliomas',
+  },
+  {
     id: 'site',
     field: 'site',
     question: 'Where is the tumour?',
     why: 'A midline diffuse astrocytic glioma gets H3 K27 assessment at any age, so the site decides whether that branch opens. An ependymal tumour is classified on the compartment itself: supratentorial, posterior fossa or spinal.',
-    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v),
+    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v) || ctx.circumscribed(v),
   },
   {
     id: 'basicIhc',
     field: 'ihc',
     question: 'Which immunohistochemistry has been done so far?',
     why: 'The first panel frames the differential before any molecular test is sent: GFAP, OLIG2 and Ki-67 on a glioma, GFAP with EMA on an ependymal tumour, where dot-like or ring-like staining supports ependymal differentiation. Ki-67 is a proliferation guide rather than a grading criterion in either.',
-    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v),
+    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v) || ctx.circumscribed(v),
     answered: (v) => has(v, 'ihc') || has(v, 'ihcOther'),
     optional: true,
   },
@@ -90,7 +97,7 @@ const STEPS = [
     field: 'molStatus',
     question: 'Where do the molecular studies stand?',
     why: 'Layer 4 only opens once there is something to record. Until then the diagnosis stays at what the morphology supports, with the molecular work named as pending.',
-    applies: (v, ctx) => ctx.glioma(v),
+    applies: (v, ctx) => ctx.glioma(v) || ctx.circumscribed(v),
   },
   {
     id: 'idh1R132H',
@@ -159,8 +166,8 @@ const STEPS = [
     id: 'cdkn2a',
     field: 'cdkn2a',
     question: 'What does CDKN2A / CDKN2B copy number show?',
-    why: 'Homozygous deletion carries grade 4 in an IDH-mutant astrocytoma. Hemizygous loss is not a criterion, and p16 or MTAP immunohistochemistry is a surrogate, not the test.',
-    applies: (v, ctx) => ctx.mutant(v),
+    why: 'Homozygous deletion carries grade 4 in an IDH-mutant astrocytoma, and it is read together with the MAPK alteration in pleomorphic xanthoastrocytoma and in high-grade astrocytoma with piloid features. Hemizygous loss is not a criterion, and p16 or MTAP immunohistochemistry is a surrogate, not the test.',
+    applies: (v, ctx) => ctx.mutant(v) || ctx.pxaOrPiloid(v),
     answered: (v) => answeredSelect(v, 'cdkn2a'),
   },
   {
@@ -237,13 +244,43 @@ const STEPS = [
     optional: true,
   },
 
+  // ----- circumscribed astrocytic gliomas: the MAPK pathway -----
+  // Asked of this family instead of the IDH branch questions, because a MAPK pathway alteration is
+  // the essential molecular criterion here and IDH is not a criterion at all (ICCR CNS molecular
+  // information 2nd ed,
+  // https://www.iccr-cancer.org/wp-content/uploads/2026/03/ICCR-CNS-Molecular-information-2nd-ed-v2.1-bookmark-1.pdf).
+  {
+    id: 'brafFusion',
+    field: 'brafFusion',
+    question: 'What does BRAF fusion testing show?',
+    why: 'It is the first test to send in this family, and a tandem duplication and fusion on a low-grade piloid astrocytic neoplasm carries the diagnosis.',
+    applies: (v, ctx) => ctx.reported(v) && ctx.circumscribed(v),
+    answered: (v) => answeredSelect(v, 'brafFusion'),
+  },
+  {
+    id: 'braf',
+    field: 'braf',
+    question: 'What does BRAF p.V600E testing show?',
+    why: 'The alteration of pleomorphic xanthoastrocytoma, and the one with a targeted therapy behind it. A VE1 stain is a screen rather than the test, and a negative result does not exclude the fusion or the other MAPK alterations.',
+    applies: (v, ctx) => ctx.reported(v) && (ctx.circumscribed(v) || ctx.wildtype(v)),
+    answered: (v) => answeredSelect(v, 'braf'),
+  },
+  {
+    id: 'mapkOther',
+    field: 'mapkOther',
+    question: 'Any other MAPK pathway alteration?',
+    why: 'NF1, FGFR1, NTRK1/2/3 and RAF1 carry the pathway in the minority of cases where BRAF is negative. Where none of them is found, a methylation profile is the fallback.',
+    applies: (v, ctx) => ctx.reported(v) && ctx.circumscribed(v),
+    optional: true,
+  },
+
   // ----- methylation -----
   {
     id: 'methylation',
     field: 'methylation',
     question: 'Has DNA methylation profiling been done?',
     why: 'It settles the cases the panel cannot: a posterior fossa ependymoma group, an under-25 high-grade glioma, a discordant molecular set. Report it in layers - classifier, family, class, calibrated score against the laboratory threshold - not as a bare class name.',
-    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v),
+    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v) || ctx.circumscribed(v),
     answered: (v) => answeredSelect(v, 'methylation'),
     optional: true,
   },
@@ -261,14 +298,14 @@ const STEPS = [
     field: 'grade',
     question: 'Which CNS WHO grade goes in the report?',
     why: 'The proposal from the recorded findings is offered as the default. It is a proposal - the grade in the report is yours, and a disagreement is flagged beside the form rather than overruled.',
-    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v),
+    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v) || ctx.circumscribed(v),
   },
   {
     id: 'histClass',
     field: 'histClass',
     question: 'How does Layer 2 read?',
     why: 'The histopathological classification is the morphological line of the layered report, kept separate from the integrated diagnosis above it.',
-    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v),
+    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v) || ctx.circumscribed(v),
     optional: true,
   },
 ];
@@ -291,8 +328,17 @@ function context() {
     const field = (FAMILY_FIELD.find(([re]) => re.test(`${v.dxFamily || ''}`)) || [])[1];
     return `${(field && v[field]) || ''} ${v.finding || ''}`.trim();
   };
-  const glioma = (v) => /glioma|astrocytoma|oligodendroglioma|glioblastoma/i.test(`${v.dxFamily || ''} ${named(v)}`);
+  // A circumscribed astrocytic glioma is not on the IDH funnel: it is defined by a MAPK pathway
+  // alteration, most often KIAA1549::BRAF, and IDH is only ever run on it to clear an adult diffuse
+  // astrocytoma out of the differential. So `glioma` here means the diffuse gliomas the funnel was
+  // built for, and the branch A and branch B questions cannot reach this family. Mirrors
+  // `circumscribed` in src/cnspathway.js.
+  const circumscribed = (v) => /^Circumscribed astrocytic/i.test(`${v.dxFamily || ''}`)
+    || /pilocytic|pilomyxoid|xanthoastrocytoma|piloid features|astroblastoma|subependymal giant cell|chordoid glioma/i.test(named(v));
+  const glioma = (v) => !circumscribed(v)
+    && /glioma|astrocytoma|oligodendroglioma|glioblastoma/i.test(`${v.dxFamily || ''} ${named(v)}`);
   const ependymal = (v) => /ependymal|ependymoma/i.test(`${v.dxFamily || ''} ${named(v)}`);
+  const pxaOrPiloid = (v) => /xanthoastrocytoma|piloid features/i.test(named(v));
   const reported = (v) => v.molStatus === 'Reported';
   // The IDH branch exists for the diffuse gliomas only, so both branch predicates carry that
   // condition rather than leaving each step to remember it. An ependymal tumour is never mutant or
@@ -301,6 +347,8 @@ function context() {
   const wildtype = (v) => reported(v) && v.idhBranch === 'IDH-wildtype' && glioma(v);
   return {
     glioma,
+    circumscribed,
+    pxaOrPiloid,
     ependymal,
     reported,
     mutant,

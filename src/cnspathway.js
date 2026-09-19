@@ -40,6 +40,8 @@ const SRC = {
   u12: { label: 'cIMPACT-NOW update 12', url: 'https://academic.oup.com/neuro-oncology/advance-article/doi/10.1093/neuonc/noag108/8687120' },
   u2: { label: 'cIMPACT-NOW update 2', url: 'https://pubmed.ncbi.nlm.nih.gov/29497819/' },
   u7: { label: 'cIMPACT-NOW update 7', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC8018155/' },
+  iccr: { label: 'ICCR CNS molecular information', url: 'https://www.iccr-cancer.org/wp-content/uploads/2026/03/ICCR-CNS-Molecular-information-2nd-ed-v2.1-bookmark-1.pdf' },
+  mapk: { label: 'WHO CNS5 molecular work-up review', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC9427889/' },
 };
 
 const arr = (x) => (Array.isArray(x) ? x : x === undefined || x === null || x === '' ? [] : [x]);
@@ -80,12 +82,25 @@ function read(values) {
   const family = `${v.dxFamily || ''}`;
   const entityField = (FAMILY_FIELD.find(([re]) => re.test(family)) || [])[1];
   const named = `${(entityField && v[entityField]) || ''} ${v.finding || ''}`.trim();
+  // A circumscribed astrocytic glioma is a glioma by name and nothing like one by algorithm: it is
+  // defined by a MAPK pathway alteration, most often KIAA1549::BRAF in pilocytic astrocytoma and
+  // BRAF p.V600E in pleomorphic xanthoastrocytoma, and IDH is no part of its criteria
+  // (ICCR CNS molecular information 2nd ed,
+  // https://www.iccr-cancer.org/wp-content/uploads/2026/03/ICCR-CNS-Molecular-information-2nd-ed-v2.1-bookmark-1.pdf).
+  // So it comes off the IDH funnel exactly as the ependymal tumours do, and `glioma` here means the
+  // diffuse gliomas the funnel was built for.
+  const circumscribed = /^Circumscribed astrocytic/i.test(family)
+    || /pilocytic|pilomyxoid|xanthoastrocytoma|piloid features|astroblastoma|subependymal giant cell|chordoid glioma/i.test(named);
   return {
     v,
     named,
     family,
     age: num(v.patientAge),
-    glioma: /glioma|astrocytoma|oligodendroglioma|glioblastoma/i.test(`${family} ${named}`),
+    circumscribed,
+    // Pleomorphic xanthoastrocytoma and high-grade astrocytoma with piloid features are the two in
+    // this family read with CDKN2A/B alongside the MAPK alteration.
+    pxaOrPiloid: /xanthoastrocytoma|piloid features/i.test(named),
+    glioma: !circumscribed && /glioma|astrocytoma|oligodendroglioma|glioblastoma/i.test(`${family} ${named}`),
     ependymal: /ependymal|ependymoma/i.test(`${family} ${named}`),
     meningioma: /meningioma/i.test(`${family} ${named}`),
     posteriorFossa: /posterior fossa|fourth ventricle|cerebell/i.test(`${v.site || ''} ${named}`),
@@ -121,6 +136,13 @@ function ihcPanel(c) {
       test: 'GFAP and EMA at least',
     };
   }
+  if (c.circumscribed) {
+    return {
+      markers: 'GFAP, OLIG2, CD34, BRAF VE1, Ki-67',
+      note: 'CD34 is common in pleomorphic xanthoastrocytoma and in ganglioglioma. A VE1 stain reads only p.V600E and does not exclude the other MAPK alterations.',
+      test: 'GFAP and OLIG2 at least, with CD34 and VE1 where the morphology raises them',
+    };
+  }
   if (!c.glioma) {
     return {
       markers: 'A panel directed by the morphology',
@@ -154,6 +176,18 @@ function funnelStage(c) {
   nodes.push(node('ihc', 'Basic immunohistochemistry', has(v, 'ihc') || has(v, 'ihcOther') || has(v, 'mgIhc') ? 'satisfied' : 'outstanding',
     panel.markers,
     { note: panel.note, test: panel.test, source: SRC.funnel }));
+
+  // A circumscribed astrocytic glioma is the one case that still uses IDH, and uses it backwards:
+  // not as a branch point but as the test that clears an adult diffuse astrocytoma out of the
+  // differential. A wildtype result does not put it on branch B. It goes to the MAPK stage, where
+  // its own essential criterion lives.
+  if (c.circumscribed) {
+    nodes.push(node('idh', 'IDH status', done(v, 'idh1R132H') || done(v, 'idhSeq') ? 'satisfied' : 'outstanding',
+      shown('An exclusion here rather than a branch point: a wildtype result clears an adult diffuse astrocytoma, and IDH is no part of the criteria for this family',
+        [done(v, 'idh1R132H') ? v.idh1R132H : null, done(v, 'idhSeq') ? v.idhSeq : null].filter(Boolean).join('; ')),
+      { note: 'Worth doing in an adult. In a child with classic piloid morphology it adds nothing.', test: 'IDH1 R132H immunohistochemistry', source: SRC.iccr }));
+    return { id: 'funnel', label: 'The funnel', nodes };
+  }
 
   // The IDH funnel is a diffuse glioma funnel. Ependymal tumours are classified on anatomical site
   // with the molecular group of that compartment - supratentorial ZFTA or YAP1, posterior fossa A or
@@ -439,6 +473,61 @@ function ependymomaStage(c) {
   return { id: 'ep', label: 'Posterior fossa ependymoma', nodes };
 }
 
+/**
+ * The circumscribed astrocytic gliomas: morphology, then a MAPK pathway alteration.
+ *
+ * A MAPK pathway alteration is an essential criterion for pilocytic astrocytoma - "MAPK pathway
+ * alteration, such as BRAF, most frequent KIAA1549::BRAF" - and for pleomorphic xanthoastrocytoma
+ * it is the MAPK alteration "combined with CDKN2A/B" homozygous deletion, per the ICCR CNS
+ * molecular information dataset
+ * (https://www.iccr-cancer.org/wp-content/uploads/2026/03/ICCR-CNS-Molecular-information-2nd-ed-v2.1-bookmark-1.pdf).
+ * KIAA1549::BRAF is not specific on its own: it is also seen in pilomyxoid astrocytoma,
+ * ganglioglioma and diffuse leptomeningeal glioneuronal tumour, so it is read with the morphology.
+ */
+function mapkStage(c) {
+  const { v } = c;
+  const nodes = [];
+  const fusion = v.brafFusion === 'KIAA1549::BRAF fusion detected' || /fusion detected/i.test(v.brafFusion || '');
+  const v600 = v.braf === 'Detected';
+  const other = has(v, 'mapkOther');
+  const anyMapk = fusion || v600 || other;
+  const tested = done(v, 'brafFusion') || done(v, 'braf') || other;
+
+  nodes.push(node('morph', 'A circumscribed astrocytic glioma on the sections', c.circumscribed ? 'satisfied' : 'outstanding',
+    shown('Piloid or compact circumscribed growth rather than diffuse infiltration: Rosenthal fibres and eosinophilic granular bodies in a pilocytic astrocytoma, pleomorphic and lipidised cells with a reticulin network in a pleomorphic xanthoastrocytoma', c.named || ''),
+    { source: SRC.cns5 }));
+
+  nodes.push(node('mapk', 'A MAPK pathway alteration', anyMapk ? 'satisfied' : 'outstanding',
+    shown('The essential molecular criterion for this family', [
+      fusion ? v.brafFusion : null,
+      v600 ? 'BRAF V600E detected' : null,
+      other ? String(v.mapkOther) : null,
+    ].filter(Boolean).join('; ')),
+    {
+      note: tested && !anyMapk
+        ? 'BRAF is negative on what is recorded. NF1, FGFR1 and NTRK1/2/3 carry the pathway in a minority, and a methylation profile is the fallback where none of them is found.'
+        : 'KIAA1549::BRAF is the commonest and is not specific: pilomyxoid astrocytoma, ganglioglioma and diffuse leptomeningeal glioneuronal tumour carry it too, so it is read with the morphology.',
+      test: 'KIAA1549::BRAF fusion testing, BRAF p.V600E, then NF1, FGFR1 and NTRK1/2/3 where the first two are negative',
+      source: SRC.iccr,
+    }));
+
+  nodes.push(node('v600', 'BRAF p.V600E', done(v, 'braf') ? 'satisfied' : 'outstanding',
+    shown('The alteration of pleomorphic xanthoastrocytoma, and the one with a targeted therapy behind it', done(v, 'braf') ? v.braf : ''),
+    { note: 'A VE1 stain is a screen. Sequencing settles it, and it does not exclude the fusion and the other MAPK alterations.', test: 'BRAF p.V600E', source: SRC.iccr }));
+
+  nodes.push(node('cdkn', 'CDKN2A / CDKN2B', c.pxaOrPiloid ? (done(v, 'cdkn2a') ? 'satisfied' : 'outstanding') : 'na',
+    c.pxaOrPiloid
+      ? shown('Read together with the MAPK alteration in pleomorphic xanthoastrocytoma and in high-grade astrocytoma with piloid features', done(v, 'cdkn2a') ? v.cdkn2a : '')
+      : 'Applies to pleomorphic xanthoastrocytoma and to high-grade astrocytoma with piloid features rather than to the family as a whole.',
+    { test: 'CDKN2A/B copy number', source: SRC.iccr }));
+
+  nodes.push(node('meth', 'Methylation profile', v.methylation === 'Reported' ? 'satisfied' : 'outstanding',
+    shown('The separation of high-grade astrocytoma with piloid features from a pilocytic astrocytoma rests on the methylation class', v.methylation === 'Reported' ? [v.methFamily, v.methClass].filter(Boolean).join(' / ') : ''),
+    { test: 'DNA methylation profiling', source: SRC.mapk }));
+
+  return { id: 'mapk', label: 'MAPK pathway', nodes };
+}
+
 /** Meningioma, update 8. */
 function meningiomaStage(c) {
   const { v } = c;
@@ -513,7 +602,12 @@ export function pathway(values) {
   let title = 'CNS pathway';
   let lede = 'The published order, lit by what is on the form. Nothing here is printed.';
 
-  if (c.ependymal) {
+  if (c.circumscribed) {
+    branch = 'mapk';
+    title = 'Circumscribed astrocytic glioma';
+    lede = 'IDH clears the diffuse gliomas out of the way; the diagnosis then rests on a MAPK pathway alteration.';
+    stages.push(mapkStage(c));
+  } else if (c.ependymal) {
     branch = 'ependymoma';
     title = 'Ependymoma';
     lede = 'The posterior fossa group question, as update 11 sets it out.';

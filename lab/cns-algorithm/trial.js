@@ -83,6 +83,14 @@ const SCENARIOS = {
       },
     },
     {
+      id: 'pilo',
+      label: 'Cerebellar pilocytic astrocytoma',
+      values: {
+        patientAge: 9, site: 'Cerebellum', dxFamily: 'Circumscribed astrocytic gliomas',
+        dxCircumscribed: 'Pilocytic astrocytoma', molStatus: 'Reported', features: [],
+      },
+    },
+    {
       id: 'pf',
       label: 'Posterior fossa ependymoma',
       values: { patientAge: 7, site: 'Cerebellum', dxFamily: 'Ependymal tumours', dxEpendymal: 'Posterior fossa ependymoma, group PFA', features: [] },

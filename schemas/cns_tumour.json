@@ -1068,8 +1068,8 @@
     "Cannot be determined"
    ],
    "showIf": {
-    "field": "idhBranch",
-    "is": "IDH-mutant"
+    "field": "molStatus",
+    "is": "Reported"
    }
   },
   {
@@ -1192,9 +1192,51 @@
     "Cannot be determined"
    ],
    "showIf": {
-    "field": "idhBranch",
-    "is": "IDH-wildtype"
+    "field": "molStatus",
+    "is": "Reported"
    }
+  },
+  {
+   "id": "brafFusion",
+   "label": "BRAF fusion",
+   "type": "select",
+   "group": "Layer 4 - Molecular information",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "No fusion detected",
+    "KIAA1549::BRAF fusion detected",
+    "Other BRAF fusion (specify)",
+    "Cannot be determined"
+   ],
+   "showIf": {
+    "field": "molStatus",
+    "is": "Reported"
+   },
+   "help": "KIAA1549::BRAF is the commonest MAPK pathway alteration in pilocytic astrocytoma. It is also seen in pilomyxoid astrocytoma, ganglioglioma and diffuse leptomeningeal glioneuronal tumour, so it is read with the morphology rather than on its own."
+  },
+  {
+   "id": "brafFusionDetail",
+   "label": "BRAF fusion (specify)",
+   "type": "text",
+   "group": "Layer 4 - Molecular information",
+   "default": "",
+   "showIf": {
+    "field": "brafFusion",
+    "is": "Other BRAF fusion (specify)"
+   }
+  },
+  {
+   "id": "mapkOther",
+   "label": "Other MAPK pathway alteration",
+   "type": "text",
+   "group": "Layer 4 - Molecular information",
+   "default": "",
+   "showIf": {
+    "field": "molStatus",
+    "is": "Reported"
+   },
+   "help": "NF1, FGFR1, NTRK1/2/3, RAF1 and the rest, where they have been tested."
   },
   {
    "id": "chr710",
@@ -1540,6 +1582,9 @@
      "h3seq": "Not performed",
      "h3seqDetail": "",
      "braf": "Not performed",
+     "brafFusion": "Not performed",
+     "brafFusionDetail": "",
+     "mapkOther": "",
      "chr710": "Combined gain of chromosome 7 and loss of chromosome 10",
      "egfr": "Amplified",
      "ezhip": "Not performed",

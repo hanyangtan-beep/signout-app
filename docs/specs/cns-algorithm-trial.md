@@ -173,3 +173,46 @@ Three separate faults sat behind one symptom:
 
 The ependymal question set is asserted whole in `tests/cnswizard.test.js`, so a step gated on the
 wrong predicate cannot quietly reappear on it. No fixture changed.
+
+## Correction: a pilocytic astrocytoma is not a branch B tumour
+
+Raised on the trial: BRAF testing sat on the IDH-wildtype branch as an afterthought in the
+high-grade differential, so a pilocytic astrocytoma was carried down the IDH funnel, declared
+IDH-wildtype, and then asked for TERT, EGFR and chromosome 7/10 — the glioblastoma questions. That
+inverts the criteria. A MAPK pathway alteration is an *essential* criterion for pilocytic
+astrocytoma ("MAPK pathway alteration, such as BRAF, most frequent KIAA1549::BRAF" — bold in the
+[ICCR CNS molecular information dataset, 2nd ed](https://www.iccr-cancer.org/wp-content/uploads/2026/03/ICCR-CNS-Molecular-information-2nd-ed-v2.1-bookmark-1.pdf)),
+and for pleomorphic xanthoastrocytoma it is the MAPK alteration "combined with CDKN2A/B" homozygous
+deletion. IDH has no part in defining this family at all; it is only ever run to clear an adult
+diffuse astrocytoma out of the differential. The
+[WHO CNS5 molecular work-up review](https://pmc.ncbi.nlm.nih.gov/articles/PMC9427889/) puts it the
+same way round: where the signature is not that of a glioblastoma, BRAF alterations, histone
+mutations and methylation profiling are what to test.
+
+What changed:
+
+- **Schema.** `braf` was gated on the IDH-wildtype branch and was never reachable for this family;
+  it is now gated on molecular studies being reported. New `brafFusion` (with a free-text detail for
+  a non-KIAA1549 partner) and `mapkOther` for NF1, FGFR1, NTRK1/2/3 and RAF1. `cdkn2a` moved off the
+  IDH-mutant gate for the same reason — it is a criterion in pleomorphic xanthoastrocytoma and in
+  high-grade astrocytoma with piloid features, not only in an IDH-mutant astrocytoma.
+- **`generators/cns_layers.js`.** The BRAF sentence moved out of the IDH-wildtype block into a
+  shared MAPK block, with the fusion and the other-alteration sentences beside it. The wildtype
+  ordering is unchanged. A `circumscribed` predicate now also keeps the branch B checks off this
+  family, and two information checks were added: molecular results recorded with no MAPK alteration,
+  and a pleomorphic xanthoastrocytoma or piloid-features case with no CDKN2A/B result.
+- **`src/cnspathway.js`.** The family leaves the funnel at IDH, as the ependymal tumours do, with the
+  node stating that IDH is an exclusion here rather than a branch point. A new `mapk` stage runs
+  morphology, the MAPK alteration, BRAF p.V600E, CDKN2A/B (not applicable outside pleomorphic
+  xanthoastrocytoma and piloid features) and the methylation profile, which is what separates
+  high-grade astrocytoma with piloid features from a pilocytic astrocytoma. The `glioma` predicate
+  now excludes the circumscribed family, so branch A and branch B are unreachable from it.
+- **`src/cnswizard.js`.** A `circumscribed` predicate mirroring the pathway one, an entity question
+  for the family, the BRAF fusion, p.V600E and other-MAPK questions gated on it, and CDKN2A/B
+  extended to pleomorphic xanthoastrocytoma and piloid features.
+- **`lab/cns-algorithm/nodefields.js`.** The five MAPK nodes name their fields, so the alteration
+  node asks for the fusion rather than showing the consequence-only message.
+
+The circumscribed question set is asserted whole in `tests/cnswizard.test.js` alongside the
+ependymal one. Trial starting point: `pilo`, a nine-year-old cerebellar pilocytic astrocytoma. No
+fixture changed.

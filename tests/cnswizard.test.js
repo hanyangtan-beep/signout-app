@@ -129,6 +129,52 @@ test('ATRX loss drops the 1p/19q question, and it comes back for an oligodendrog
   assert.ok(visibleSteps(steps, oligo).some((s) => s.id === 'codel'));
 });
 
+// The same family-leak class of fault as the ependymoma one: a circumscribed astrocytic glioma must
+// not be pulled onto the IDH branch by whatever `dxAdult` and `idhBranch` happen to be holding.
+test('a pilocytic astrocytoma is asked the MAPK questions and none of the IDH branch questions', () => {
+  const v = base({
+    dxFamily: 'Circumscribed astrocytic gliomas', dxCircumscribed: 'Pilocytic astrocytoma',
+    patientAge: 9, site: 'Cerebellum', molStatus: 'Not performed',
+  });
+  const ids = visibleSteps(steps, v).map((s) => s.id);
+  for (const id of ['idh1R132H', 'idhSeq', 'idhBranch', 'atrx', 'codel', 'tert', 'egfr', 'chr710', 'h3k27me3']) {
+    assert.ok(!ids.includes(id), `${id} asked of a pilocytic astrocytoma: ${ids.join(' ')}`);
+  }
+  assert.deepEqual(ids, ['age', 'family', 'caEntity', 'site', 'basicIhc', 'molStatus', 'methylation', 'grade', 'histClass']);
+});
+
+test('the MAPK questions open once molecular results are recorded', () => {
+  const v = base({
+    dxFamily: 'Circumscribed astrocytic gliomas', dxCircumscribed: 'Pilocytic astrocytoma',
+    patientAge: 9, site: 'Cerebellum', molStatus: 'Reported',
+  });
+  const ids = visibleSteps(steps, v).map((s) => s.id);
+  assert.deepEqual(ids, ['age', 'family', 'caEntity', 'site', 'basicIhc', 'molStatus', 'brafFusion', 'braf', 'mapkOther', 'methylation', 'grade', 'histClass']);
+  assert.ok(!ids.includes('cdkn2a'), `CDKN2A asked of a pilocytic astrocytoma: ${ids.join(' ')}`);
+});
+
+test('a pleomorphic xanthoastrocytoma adds CDKN2A/B to the MAPK questions', () => {
+  const v = base({
+    dxFamily: 'Circumscribed astrocytic gliomas', dxCircumscribed: 'Pleomorphic xanthoastrocytoma',
+    patientAge: 24, site: 'Temporal lobe', molStatus: 'Reported',
+  });
+  const ids = visibleSteps(steps, v).map((s) => s.id);
+  assert.ok(ids.includes('cdkn2a'), `CDKN2A missing: ${ids.join(' ')}`);
+  assert.ok(ids.includes('braf'));
+});
+
+test('a circumscribed astrocytic glioma with no MAPK alteration recorded is noted, not passed', () => {
+  const v = base({
+    dxFamily: 'Circumscribed astrocytic gliomas', dxCircumscribed: 'Pilocytic astrocytoma',
+    patientAge: 9, site: 'Cerebellum', molStatus: 'Reported',
+  });
+  const notes = [];
+  pathwayChecks(v, (m) => notes.push(m), (_l, m) => notes.push(m));
+  assert.ok(notes.some((m) => /No MAPK pathway alteration is recorded/.test(m)), notes.join(' | '));
+  // And the glioblastoma-branch prompts must not fire on it.
+  assert.ok(!notes.some((m) => /mismatch-repair|MLH1/i.test(m)), notes.join(' | '));
+});
+
 test('an ependymoma is asked K27me3 without ever reaching the IDH branch', () => {
   const v = base({
     dxFamily: 'Ependymal tumours', dxEpendymal: 'Posterior fossa ependymoma, group PFA',

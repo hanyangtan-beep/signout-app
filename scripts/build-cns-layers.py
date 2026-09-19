@@ -282,8 +282,12 @@ f(id='codel', label='1p/19q (FISH)', type='select', group=G4, default=NP, option
     'Polysomy (specify)', 'Other (specify)', CBD], showIf=MUT)
 f(id='codelDetail', label='1p/19q (specify)', type='text', group=G4, default='',
   showIf={'field': 'codel', 'is': ['Polysomy (specify)', 'Other (specify)']})
+# CDKN2A/B is the IDH-mutant grading criterion, but it is also read with a MAPK alteration in
+# pleomorphic xanthoastrocytoma and in high-grade astrocytoma with piloid features, so it is shown
+# wherever molecular results are recorded.
 f(id='cdkn2a', label='CDKN2A / CDKN2B (FISH or copy number)', type='select', group=G4, default=NP,
-  options=[NP, 'No homozygous deletion detected', 'Homozygous deletion detected', 'Hemizygous loss detected', CBD], showIf=MUT)
+  options=[NP, 'No homozygous deletion detected', 'Homozygous deletion detected', 'Hemizygous loss detected', CBD],
+  showIf={'field': 'molStatus', 'is': 'Reported'})
 f(id='pdgfra', label='PDGFRA amplification', type='select', group=G4, default=NP,
   options=[NP, 'Not amplified', 'Amplified', CBD], showIf=MUT)
 f(id='molHigher', label='Other higher-grade alterations', type='multiselect', group=G4, default=[], options=[
@@ -303,8 +307,24 @@ f(id='h3seq', label='H3 mutation (sequencing)', type='select', group=G4, default
     NP, 'No mutation detected', 'H3 K27M detected', 'H3 G34R/V detected', 'Other mutation (specify)', CBD], showIf=WT)
 f(id='h3seqDetail', label='H3 mutation (specify)', type='text', group=G4, default='',
   showIf={'field': 'h3seq', 'is': 'Other mutation (specify)'})
+# The MAPK block. A BRAF alteration is not a branch B question: it is the diagnostic test for the
+# circumscribed astrocytic gliomas - a MAPK pathway alteration is an essential criterion for
+# pilocytic astrocytoma and for pleomorphic xanthoastrocytoma - and it is also what an IDH-wildtype
+# tumour whose molecular signature does not reach glioblastoma is tested for next. So it is shown
+# whenever molecular results are recorded, not only on the wildtype branch.
 f(id='braf', label='BRAF V600E', type='select', group=G4, default=NP,
-  options=[NP, 'Not detected', 'Detected', CBD], showIf=WT)
+  options=[NP, 'Not detected', 'Detected', CBD], showIf={'field': 'molStatus', 'is': 'Reported'})
+f(id='brafFusion', label='BRAF fusion', type='select', group=G4, default=NP, options=[
+    NP, 'No fusion detected', 'KIAA1549::BRAF fusion detected', 'Other BRAF fusion (specify)', CBD],
+  showIf={'field': 'molStatus', 'is': 'Reported'},
+  help='KIAA1549::BRAF is the commonest MAPK pathway alteration in pilocytic astrocytoma. It is '
+       'also seen in pilomyxoid astrocytoma, ganglioglioma and diffuse leptomeningeal glioneuronal '
+       'tumour, so it is read with the morphology rather than on its own.')
+f(id='brafFusionDetail', label='BRAF fusion (specify)', type='text', group=G4, default='',
+  showIf={'field': 'brafFusion', 'is': 'Other BRAF fusion (specify)'})
+f(id='mapkOther', label='Other MAPK pathway alteration', type='text', group=G4, default='',
+  showIf={'field': 'molStatus', 'is': 'Reported'},
+  help='NF1, FGFR1, NTRK1/2/3, RAF1 and the rest, where they have been tested.')
 f(id='chr710', label='Chromosome 7 / 10 (FISH)', type='select', group=G4, default=NP, options=[
     NP, 'No change detected', 'Combined gain of chromosome 7 and loss of chromosome 10', 'Gain of chromosome 7 only',
     'Loss of chromosome 10 only', CBD], showIf=WT)

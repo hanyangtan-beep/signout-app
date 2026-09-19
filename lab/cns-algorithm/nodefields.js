@@ -66,6 +66,15 @@ export const NODE_FIELDS = {
   'ep:meth': ['methylation', 'methClass', 'methScore', 'methThreshold'],
   'ep:nos': ['dxQualifier', 'dxQualifierDetail'],
 
+  // ----- circumscribed astrocytic gliomas: the MAPK pathway -----
+  'mapk:morph': entityFields,
+  // BRAF fusion first, so the node asks its own question rather than the molecular-status one it is
+  // gated behind; the status control stays on the node so it can be opened from here.
+  'mapk:mapk': ['brafFusion', 'brafFusionDetail', 'braf', 'mapkOther', 'molStatus'],
+  'mapk:v600': ['braf'],
+  'mapk:cdkn': ['cdkn2a'],
+  'mapk:meth': ['methylation', 'methClassifier', 'methFamily', 'methClass'],
+
   // ----- meningioma -----
   'mg:morph': ['mgSubtype', 'mgMitoses', 'mgAtypical', 'mgBrain', 'mgBone'],
   'mg:g3': ['mgMolecular'],

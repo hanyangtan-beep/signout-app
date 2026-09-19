@@ -463,6 +463,51 @@ test('an empty pathway draws an empty chart rather than throwing', () => {
   assert.deepEqual(c.links, []);
 });
 
+// A circumscribed astrocytic glioma is defined by a MAPK pathway alteration, not by IDH: the family
+// carries its own stage and IDH survives only as an exclusion (ICCR CNS molecular information 2nd
+// ed, https://www.iccr-cancer.org/wp-content/uploads/2026/03/ICCR-CNS-Molecular-information-2nd-ed-v2.1-bookmark-1.pdf).
+test('a pilocytic astrocytoma runs the MAPK stage rather than an IDH branch', () => {
+  const p = pathway(base({
+    dxFamily: 'Circumscribed astrocytic gliomas', dxCircumscribed: 'Pilocytic astrocytoma',
+    patientAge: 9, site: 'Cerebellum',
+  }));
+  assert.equal(p.branch, 'mapk');
+  const funnel = p.stages.find((s) => s.id === 'funnel').nodes.map((n) => n.id);
+  assert.deepEqual(funnel, ['context', 'morphology', 'ihc', 'idh']);
+  // No branch point, no R132H-then-sequencing chain: IDH is the last funnel node and it is an
+  // exclusion, so a wildtype result does not carry the case onto branch B.
+  for (const id of ['r132h', 'seq', 'branch']) assert.ok(!funnel.includes(id), `${id} asked: ${funnel.join(' ')}`);
+  const idh = find(p, 'idh');
+  assert.match(idh.detail, /exclusion here rather than a branch point/);
+  const mapk = p.stages.find((s) => s.id === 'mapk');
+  assert.deepEqual(mapk.nodes.map((n) => n.id), ['morph', 'mapk', 'v600', 'cdkn', 'meth']);
+  assert.equal(find(p, 'mapk').state, 'outstanding');
+  assert.match(find(p, 'mapk').test, /KIAA1549::BRAF/);
+  // CDKN2A/B belongs to pleomorphic xanthoastrocytoma and to piloid features, not to this entity.
+  assert.equal(find(p, 'cdkn').state, 'na');
+});
+
+test('a recorded KIAA1549::BRAF fusion satisfies the MAPK criterion', () => {
+  const p = pathway(base({
+    dxFamily: 'Circumscribed astrocytic gliomas', dxCircumscribed: 'Pilocytic astrocytoma',
+    patientAge: 9, site: 'Cerebellum', molStatus: 'Reported',
+    brafFusion: 'KIAA1549::BRAF fusion detected',
+  }));
+  assert.equal(find(p, 'mapk').state, 'satisfied');
+  assert.match(find(p, 'mapk').detail, /KIAA1549::BRAF fusion detected/);
+});
+
+test('a pleomorphic xanthoastrocytoma is asked CDKN2A/B alongside the MAPK alteration', () => {
+  const p = pathway(base({
+    dxFamily: 'Circumscribed astrocytic gliomas', dxCircumscribed: 'Pleomorphic xanthoastrocytoma',
+    patientAge: 24, site: 'Temporal lobe', molStatus: 'Reported', braf: 'Detected',
+  }));
+  assert.equal(p.branch, 'mapk');
+  assert.equal(find(p, 'mapk').state, 'satisfied');
+  assert.equal(find(p, 'cdkn').state, 'outstanding');
+  assert.match(find(p, 'cdkn').test, /CDKN2A\/B/);
+});
+
 test('an ependymoma leaves the funnel at IDH rather than being asked for it', () => {
   const p = pathway(base({
     dxFamily: 'Ependymal tumours', dxEpendymal: 'Posterior fossa ependymoma, group PFA',

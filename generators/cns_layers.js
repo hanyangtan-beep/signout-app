@@ -367,8 +367,23 @@ export function molecularBits(v) {
           : v.h3seq === 'H3 G34R/V detected' ? 'an H3 G34R/V mutation is detected'
             : v.h3seq === 'No mutation detected' ? 'no H3 mutation is detected' : `H3 sequencing shows ${lc1(val)}`);
     }
-    add('BRAF V600E', v.braf,
-      v.braf === 'Detected' ? 'a BRAF V600E mutation is detected' : v.braf === 'Not detected' ? 'no BRAF V600E mutation is detected' : 'BRAF testing cannot be interpreted');
+  }
+  // The MAPK block sits between the H3 items and the copy-number items so the wildtype order is
+  // unchanged, but it runs for every case: a BRAF alteration is the diagnostic test in the
+  // circumscribed astrocytic gliomas, not a branch B afterthought.
+  add('BRAF V600E', v.braf,
+    v.braf === 'Detected' ? 'a BRAF V600E mutation is detected' : v.braf === 'Not detected' ? 'no BRAF V600E mutation is detected' : 'BRAF testing cannot be interpreted');
+  if (PLAIN(v.brafFusion)) {
+    const val = spec(v.brafFusion, v.brafFusionDetail, 'Other BRAF fusion');
+    add('BRAF fusion', val,
+      v.brafFusion === 'KIAA1549::BRAF fusion detected' ? 'a KIAA1549::BRAF fusion is detected'
+        : v.brafFusion === 'No fusion detected' ? 'no BRAF fusion is detected'
+          : v.brafFusion === CBD ? 'BRAF fusion testing cannot be interpreted' : `there is ${lc1(val)}`);
+  }
+  if (stripDot(v.mapkOther)) {
+    add('Other MAPK pathway alteration', stripDot(v.mapkOther), `${lc1(stripDot(v.mapkOther))} is detected`);
+  }
+  if (v.idhBranch === 'IDH-wildtype') {
     add('Chromosome 7 / 10 (FISH)', v.chr710,
       v.chr710 === 'Combined gain of chromosome 7 and loss of chromosome 10' ? 'there is combined gain of chromosome 7 and loss of chromosome 10'
         : v.chr710 === 'No change detected' ? 'chromosomes 7 and 10 show no copy-number change'
@@ -488,8 +503,28 @@ export function pathwayChecks(v, warn, at, e = entity(v)) {
   // routes, the paediatric differential and the mismatch-repair prompt. An ependymal tumour is not
   // on that branch at all - it is classified on site and the molecular group of that compartment -
   // so the branch field it is carrying must not let these fire on it.
+  // A circumscribed astrocytic glioma is not on that branch either: it is defined by a MAPK pathway
+  // alteration and IDH is run on it only to clear an adult diffuse astrocytoma out of the
+  // differential (ICCR CNS molecular information 2nd ed,
+  // https://www.iccr-cancer.org/wp-content/uploads/2026/03/ICCR-CNS-Molecular-information-2nd-ed-v2.1-bookmark-1.pdf).
+  const circumscribed = /^Circumscribed astrocytic/i.test(`${v.dxFamily || ''}`)
+    || /pilocytic|pilomyxoid|xanthoastrocytoma|piloid features|astroblastoma|subependymal giant cell|chordoid glioma/i.test(e);
   const diffuseGlioma = /glioma|astrocytoma|oligodendroglioma|glioblastoma/i.test(e)
+    && !circumscribed
     && !/ependymoma|ependymal/i.test(`${e} ${v.dxFamily || ''}`);
+
+  // The MAPK criterion. An alteration is essential for pilocytic astrocytoma and, with CDKN2A/B,
+  // for pleomorphic xanthoastrocytoma, so molecular results recorded without one are worth a note.
+  if (circumscribed && reported) {
+    const mapk = v.brafFusion === 'KIAA1549::BRAF fusion detected' || /fusion detected/i.test(v.brafFusion || '')
+      || v.braf === 'Detected' || `${v.mapkOther || ''}`.trim() !== '';
+    if (!mapk) {
+      at('info', 'No MAPK pathway alteration is recorded. It is an essential criterion in this family: KIAA1549::BRAF is the commonest, then BRAF p.V600E, then NF1, FGFR1 and NTRK1/2/3.', 'brafFusion');
+    }
+    if (/xanthoastrocytoma|piloid features/i.test(e) && v.cdkn2a === NP) {
+      at('info', 'CDKN2A/B copy number is not recorded. It is read together with the MAPK alteration in this entity.', 'cdkn2a');
+    }
+  }
 
   if (reported && v.idhBranch === 'IDH-wildtype' && diffuseGlioma) {
     const tertOnly = /^Mutation detected/.test(v.tert || '') && !high
