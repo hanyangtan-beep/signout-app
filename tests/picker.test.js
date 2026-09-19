@@ -161,6 +161,6 @@ test('grouped browse and the part selector put Small biopsy first, systems in ca
   const sel = selectorGroups(manifest);
   assert.equal(sel[0].label, 'Small biopsy');
   assert.equal(sel[0].items.length, 12);
-  // CNS has only the biopsy template, which sits in the Small biopsy group, so no CNS system group remains.
-  assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology', 'General']);
+  // The CNS biopsy sits in the Small biopsy group; the CNS system group holds the resection.
+  assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology', 'General']);
 });

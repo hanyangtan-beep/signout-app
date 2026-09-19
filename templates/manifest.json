@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 57,
+  "count": 58,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -3070,6 +3070,83 @@
       "generator": "cns_biopsy",
       "generatorPath": "generators/cns_biopsy.js",
       "schemaPath": "schemas/cns_biopsy.json"
+    },
+    {
+      "id": "cns_tumour",
+      "name": "Gliomas and ependymomas (WHO CNS5) resection",
+      "shortName": "Brain · cancer resection",
+      "label": "Glioma",
+      "organ": "BRAIN",
+      "system": "CNS",
+      "kind": "cancer resection",
+      "rank": 61,
+      "aliases": [
+        "glioma resection",
+        "glioblastoma",
+        "GBM",
+        "astrocytoma",
+        "oligodendroglioma",
+        "ependymoma",
+        "craniotomy",
+        "debulking",
+        "IDH",
+        "CNS WHO",
+        "integrated diagnosis",
+        "medulloblastoma"
+      ],
+      "match": {
+        "site": [
+          "brain",
+          "cerebral",
+          "cerebellum",
+          "frontal lobe",
+          "parietal lobe",
+          "temporal lobe",
+          "occipital lobe",
+          "thalamus",
+          "brainstem",
+          "fourth ventricle",
+          "lateral ventricle",
+          "pineal",
+          "spinal cord",
+          "cauda equina"
+        ],
+        "procedure": [
+          "craniotomy",
+          "excision",
+          "resection",
+          "debulking",
+          "craniectomy",
+          "laminectomy"
+        ],
+        "clinical": [
+          "glioma",
+          "glioblastoma",
+          "astrocytoma",
+          "oligodendroglioma",
+          "ependymoma",
+          "medulloblastoma",
+          "brain tumour resection"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          },
+          {
+            "field": "procedure",
+            "from": "options"
+          },
+          {
+            "field": "site",
+            "from": "options"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "cns_tumour",
+      "generatorPath": "generators/cns_tumour.js",
+      "schemaPath": "schemas/cns_tumour.json"
     },
     {
       "id": "generic",

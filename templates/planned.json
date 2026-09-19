@@ -82,14 +82,6 @@
    "roadmap": "Later"
   },
   {
-   "id": "cns_tumour",
-   "name": "Gliomas and ependymomas (WHO CNS5)",
-   "label": "Glioma",
-   "system": "CNS",
-   "kind": "cancer resection",
-   "roadmap": "Later"
-  },
-  {
    "id": "lymphoma_node",
    "name": "Lymph node for lymphoma (WHO-HAEM5)",
    "label": "Lymphoma",
