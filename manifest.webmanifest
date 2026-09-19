@@ -1,0 +1,15 @@
+{
+  "name": "Sign-out",
+  "short_name": "Sign-out",
+  "description": "Schema-driven pathology sign-out: small biopsy and synoptic reporting.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

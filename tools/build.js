@@ -11,7 +11,7 @@ await mkdir(dist, { recursive: true });
 const { buildManifest } = await import('../scripts/build-manifest.mjs');
 await mkdir(path.join(root, 'templates'), { recursive: true });
 await writeFile(path.join(root, 'templates', 'manifest.json'), JSON.stringify(await buildManifest(), null, 2) + '\n');
-for (const item of ['index.html', 'styles.css', 'favicon.svg', 'src', 'schemas', 'generators', 'snippets', 'assets', 'templates']) {
+for (const item of ['index.html', 'styles.css', 'favicon.svg', 'src', 'schemas', 'generators', 'snippets', 'assets', 'templates', 'manifest.webmanifest']) {
   try { await cp(path.join(root, item), path.join(dist, item), { recursive: true }); }
   catch (e) { if (e.code !== 'ENOENT') throw e; }
 }

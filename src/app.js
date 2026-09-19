@@ -1263,6 +1263,24 @@ if (topbar) {
   if (typeof ResizeObserver === 'function') new ResizeObserver(setTopbarH).observe(topbar);
 }
 
+// Compact layout (phones): the form and the report are two tabs, and three actions sit in a bar at
+// the bottom edge. Both elements exist at every width and are shown only by the 700px media query,
+// so nothing here runs differently on a desktop. docs/specs/iphone-layout.md
+function setCompactView(view) {
+  document.body.dataset.mview = view === 'report' ? 'report' : 'case';
+  for (const [name, btn] of [['case', $('#mview-case')], ['report', $('#mview-report')]]) {
+    if (btn) btn.setAttribute('aria-selected', String(document.body.dataset.mview === name));
+  }
+}
+setCompactView('case');
+$('#mview-case')?.addEventListener('click', () => setCompactView('case'));
+$('#mview-report')?.addEventListener('click', () => setCompactView('report'));
+// Forward the tap to the button that already owns the action rather than re-implementing it: one
+// copy path, one save state, and the clipboard write stays inside the user gesture iOS requires.
+for (const [id, target] of [['#m-copy-dx', nodes.copyDx], ['#m-copy-report', nodes.copyReport], ['#m-save', nodes.save]]) {
+  $(id)?.addEventListener('click', () => target?.click());
+}
+
 const wideLayout = window.matchMedia('(min-width: 1400px)');
 wideLayout.addEventListener('change', () => { if (state.caseState) render(); });
 // Two 320px cells plus the gap need roughly a 700px column, which the histology column reaches at

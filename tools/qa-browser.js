@@ -373,6 +373,59 @@ await check('the gate stays out of the way on localhost', async () => {
   return 'bypass intact';
 });
 
+// ---- compact layout (phones) -----------------------------------------------------
+// Runs last and at the end of the desktop journey, so a failure here is unambiguous: the desktop
+// checks above have already passed at 1440px. docs/specs/iphone-layout.md
+await check('the compact layout fits an iPhone and keeps its targets', async () => {
+  const notes = [];
+  for (const [w, h, label] of [[390, 844, 'iPhone 14'], [430, 932, 'Pro Max']]) {
+    await page.setViewportSize({ width: w, height: h });
+    await page.waitForTimeout(350);
+    assert(await page.locator('#mviews').isVisible(), `${label}: the Case / Report tabs did not appear`);
+    assert(await page.locator('#actionbar').isVisible(), `${label}: the bottom action bar did not appear`);
+    assert(!(await page.locator('#system-row').isVisible()), `${label}: the system row still takes a band`);
+    // Nothing scrolls sideways: the commonest phone-layout failure and the hardest to see.
+    const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    assert(over <= 1, `${label}: the page scrolls ${over}px sideways`);
+    // Case tab shows the form and not the report; Report tab the reverse.
+    assert(await page.locator('#case').isVisible(), `${label}: the form is hidden on the Case tab`);
+    assert(!(await page.locator('#report-blocks').isVisible()), `${label}: the report shows on the Case tab`);
+    await page.click('#mview-report');
+    await page.waitForTimeout(200);
+    assert(await page.locator('#report-blocks').isVisible(), `${label}: the report is hidden on the Report tab`);
+    assert(!(await page.locator('#case').isVisible()), `${label}: the form shows on the Report tab`);
+    assert(await page.locator('#mview-report[aria-selected="true"]').count() === 1, `${label}: the tab did not mark itself selected`);
+    await page.click('#mview-case');
+    await page.waitForTimeout(200);
+    // Apple's minimum. Measured on what is actually on screen, not on the rule.
+    // A checkbox is small by nature; what must reach 44px is the area a thumb can hit, which for a
+    // checkbox is its enclosing label.
+    const small = await page.evaluate(() => [...document.querySelectorAll('button, .chip, input, select, textarea')]
+      .map((el) => (/^(checkbox|radio)$/.test(el.type) && el.closest('label')) || el)
+      .filter((el) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.height < 44; })
+      .map((el) => (el.id || el.className || el.tagName) + ' ' + Math.round(el.getBoundingClientRect().height))
+      .slice(0, 6));
+    assert(small.length === 0, `${label}: targets under 44px — ${small.join(', ')}`);
+    // 16px inputs, or iOS Safari zooms on focus and leaves the page zoomed.
+    const tiny = await page.evaluate(() => [...document.querySelectorAll('input, select, textarea')]
+      .filter((el) => el.offsetParent !== null && parseFloat(window.getComputedStyle(el).fontSize) < 16).length);
+    assert(tiny === 0, `${label}: ${tiny} inputs below 16px would zoom iOS`);
+    notes.push(`${w}x${h} clean`);
+  }
+  // The bottom bar copies the diagnosis through the button that already owns the action.
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.click('#m-copy-dx');
+  await page.waitForTimeout(350);
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  assert(copied && copied.trim().length > 10, `the bottom bar copied "${String(copied).slice(0, 30)}"`);
+  await shot('compact-390');
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.waitForTimeout(300);
+  assert(!(await page.locator('#mviews').isVisible()), 'the phone tabs leaked into the desktop layout');
+  assert(!(await page.locator('#actionbar').isVisible()), 'the phone action bar leaked into the desktop layout');
+  return notes.join(', ') + ', desktop unaffected';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

@@ -2,10 +2,18 @@
 <html lang="en-GB">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- viewport-fit=cover so the safe-area insets below have something to report; the lightbox needs
+       pinch-zoom, so maximum-scale is deliberately not set. docs/specs/iphone-layout.md -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Sign-out</title>
   <meta name="description" content="Schema-driven pathology sign-out: small biopsy and synoptic reporting." />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#15131a" media="(prefers-color-scheme: dark)" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Sign-out" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" rel="stylesheet" />
@@ -83,6 +91,13 @@
     </div>
   </header>
 
+  <!-- Compact layout only (<= 700 px): the form and the report as two tabs, since side by side does
+       not fit a phone and stacked means the report is never seen. docs/specs/iphone-layout.md -->
+  <nav class="mviews" id="mviews" role="tablist" aria-label="View">
+    <button class="mview-btn" id="mview-case" type="button" role="tab" aria-selected="true" aria-controls="case">Case</button>
+    <button class="mview-btn" id="mview-report" type="button" role="tab" aria-selected="false" aria-controls="report-blocks">Report</button>
+  </nav>
+
   <main class="workspace">
     <section class="case" id="case" aria-labelledby="case-heading">
       <div class="col-head case-head"><h2 id="case-heading">Case</h2></div>
@@ -154,6 +169,15 @@
     </section>
   </main>
 
+  <!-- Compact layout only: the three things the app is opened on a phone to do. Each forwards the tap
+       to the button that already owns the action, so the copy path and the save state are one code
+       path, and the clipboard write stays inside the user gesture. docs/specs/iphone-layout.md -->
+  <div class="actionbar" id="actionbar">
+    <button class="btn primary" id="m-copy-dx" type="button">Copy diagnosis</button>
+    <button class="btn" id="m-copy-report" type="button">Copy report</button>
+    <button class="btn" id="m-save" type="button">Save</button>
+  </div>
+
   <footer class="statusbar">
     <span id="status-template"></span>
     <span class="hint">Number keys pick options in the focused field. Cmd/Ctrl+Shift+C copies the diagnosis, Cmd/Ctrl+Enter the full report.</span>
@@ -176,6 +200,8 @@
       <input class="input" id="palette-search" type="search" placeholder="Type a template, organ or alias (e.g. LEEP, Marsh, pylori)" autocomplete="off" spellcheck="false" aria-controls="palette-list" aria-expanded="true" role="combobox" />
       <div id="palette-list" class="palette-list" role="listbox" aria-label="Templates"></div>
       <div class="palette-foot"><span><kbd>&uarr;</kbd><kbd>&darr;</kbd> move</span><span><kbd>Enter</kbd> select</span><span><kbd>Esc</kbd> close</span><span>&#9733; pin to the Resections row</span></div>
+      <!-- Compact layout only: a phone has no Esc key and the keyboard hints above are dead weight. -->
+      <button class="btn ghost palette-close" id="palette-close" value="cancel" type="submit">Close</button>
     </form>
   </dialog>
 

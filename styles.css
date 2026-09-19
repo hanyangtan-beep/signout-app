@@ -941,3 +941,85 @@ html[data-gate] body > *:not(#gate):not(#toast):not(#dlg-settings) { display: no
 .pwc-phead { display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; }
 .pwc-phead strong { font-size: var(--text-sm); }
 .pwc-panel.is-outstanding .pw-state { color: var(--color-warning, #b45309); }
+
+/* ---------------------------------------------------------------------------------------------
+   Compact layout: phones. One breakpoint at 700px; everything above it is untouched.
+   docs/specs/iphone-layout.md
+   The tab strip and the bottom action bar exist in the markup at every width and are shown only
+   here, so the desktop DOM carries two hidden elements rather than the layout being rebuilt in JS.
+   --------------------------------------------------------------------------------------------- */
+.mviews, .actionbar, .palette-close { display: none; }
+
+@media (max-width: 700px) {
+  /* The two header rows cost a third of a phone screen. The palette searches every template by name
+     and alias, which the rows cannot do at this width, so it becomes the one way in. */
+  .mode-switch, #system-row, .case-inline, .case-id { display: none; }
+  .topbar { padding: 8px var(--space-3) 10px; padding-top: calc(8px + env(safe-area-inset-top)); }
+  /* The 1600px rule hides this button's label; at phone width it is the only way to a template, so
+     it gets its name back — and the name is Templates, since it replaces the hidden system row. */
+  .palette-btn { flex: 1 1 auto; justify-content: center; min-height: 44px; gap: var(--space-2); }
+  .palette-btn > span { display: none; }
+  .palette-btn::after { content: 'Templates'; font-weight: 500; }
+  .topbar { gap: 6px; }
+  /* Row two starts at the left edge instead of hugging the right with dead space beside it. */
+  .topbar-right { margin-left: 0; width: 100%; gap: var(--space-2); }
+  .topbar-actions { flex: 1 1 auto; }
+  .topbar-actions .save-btn { margin-right: auto; }
+  .brand h1 { font-size: var(--text-base); }
+  .topbar-actions .btn, .topbar-actions .icon-btn { min-height: 44px; height: 44px; }
+  .topbar-actions .icon-btn { width: 44px; }
+
+  /* Form and report as two tabs. Stacked, the report sits below a long form and is never seen. */
+  .mviews {
+    display: grid; grid-template-columns: 1fr 1fr;
+    position: sticky; top: var(--topbar-h, 64px); z-index: 4;
+    background: var(--color-surface); border-bottom: 1px solid var(--color-border);
+  }
+  .mview-btn {
+    min-height: 44px; border: 0; background: transparent; color: var(--color-text-muted);
+    font-size: var(--text-sm); font-weight: 500; cursor: pointer;
+  }
+  .mview-btn[aria-selected='true'] { color: var(--color-primary); box-shadow: inset 0 -2px 0 var(--color-primary); }
+  body[data-mview='case'] .report { display: none; }
+  body[data-mview='report'] .case, body[data-mview='report'] .histo { display: none; }
+
+  /* The three things the app is opened on a phone to do, always within thumb reach. */
+  .actionbar {
+    display: grid; grid-template-columns: 1.2fr 1fr auto; gap: var(--space-2);
+    position: fixed; inset: auto 0 0 0; z-index: 6;
+    padding: var(--space-2) var(--space-3);
+    padding-bottom: calc(var(--space-2) + env(safe-area-inset-bottom));
+    background: var(--color-surface); border-top: 1px solid var(--color-border);
+  }
+  .actionbar .btn { min-height: 44px; justify-content: center; }
+  /* The bar owns these two now; the pair in the report head would be the same action twice. */
+  .report-head #btn-copy-dx, .report-head #btn-copy-report { display: none; }
+  .workspace { padding: var(--space-3) var(--space-3) 84px; }
+  .statusbar { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+
+  /* 44px targets, and 16px inputs: below 16px iOS Safari zooms the page on focus and stays zoomed. */
+  .btn, .chip, .mode-btn, .ref-toggle, .btn.small { min-height: 44px; }
+  /* A 13px checkbox cannot be hit with a thumb. The box grows, and its label becomes the target. */
+  .check { min-height: 44px; display: flex; align-items: center; gap: var(--space-2); }
+  .check input[type='checkbox'], .check input[type='radio'] { width: 22px; height: 22px; flex: none; }
+  /* Only labels that ARE the target (they wrap a checkbox) grow; a field caption is not tappable and
+     a 44px caption just opens a gap above its input. */
+  .tab, .snippet, label.check, .case-options label { min-height: 44px; }
+  .icon-btn { width: 44px; height: 44px; }
+  /* Every text control, not only .input ones: iOS zooms on any focused field under 16px. */
+  input, select, textarea, .input.mono, .part-head .part-template { font-size: 16px; }
+  .input, textarea.input, select.input { font-size: 16px; min-height: 44px; }
+  textarea.input { min-height: 104px; }
+  /* width:auto sizes this select to its longest template name — 670px, well past a phone. */
+  .part-head .part-template { max-width: 100%; }
+  .part-head { flex-wrap: wrap; }
+
+  /* Overlays against the viewport rather than a desktop assumption. The pathway chart keeps its
+     1200px drawing box and pans, because shrinking it to 390px makes it unreadable. */
+  .dialog { width: 100vw; max-width: 100vw; max-height: 92vh; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .dialog-body { padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom)); }
+  .pwc-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .palette-foot span:has(kbd) { display: none; }
+  .palette-close { display: block; width: 100%; min-height: 44px; margin-top: var(--space-2); }
+  .ref-lightbox img { max-width: 100vw; max-height: 72vh; }
+}
