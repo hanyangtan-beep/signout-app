@@ -798,10 +798,35 @@ html[data-gate] body > *:not(#gate):not(#toast):not(#dlg-settings) { display: no
 }
 .pw-next.is-clear { color: var(--color-text-muted); border-style: solid; }
 .pw-stage { margin-top: var(--space-3); }
+.pw-headbtns { display: flex; gap: 4px; flex: 0 0 auto; }
+.pw-stage-h {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+.pw-nodes { list-style: none; margin: 0; padding: 0; }
+.pw-node { display: flex; gap: var(--space-2); position: relative; padding-bottom: var(--space-3); }
+.pw-node::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 16px;
+  bottom: 2px;
+  border-left: 1px solid var(--color-border);
+}
+.pw-node:last-child { padding-bottom: 0; }
+.pw-node:last-child::before { display: none; }
+.pw-dot { flex: 0 0 13px; line-height: 1.4; font-size: 11px; text-align: center; color: var(--color-text-muted); }
+.pw-node.is-satisfied .pw-dot { color: var(--color-accent, var(--color-text)); }
+.pw-node.is-outstanding .pw-dot { color: var(--color-warning, #b45309); }
+.pw-node.is-na { opacity: 0.6; }
+.pw-node-body { min-width: 0; }
 .pw-node-head { display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; }
 .pw-node-head strong { font-size: var(--text-sm); }
 .pw-state { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-muted); }
-.pw-panel.is-outstanding .pw-state { color: var(--color-warning, #b45309); }
+.pw-node.is-outstanding .pw-state { color: var(--color-warning, #b45309); }
 .pw-detail, .pw-note, .pw-test { margin: 2px 0 0; font-size: var(--text-xs); max-width: 74ch; }
 .pw-detail { color: var(--color-text); }
 .pw-note { color: var(--color-text-muted); }
@@ -809,65 +834,110 @@ html[data-gate] body > *:not(#gate):not(#toast):not(#dlg-settings) { display: no
 .pw-src { display: inline-block; margin-top: 3px; font-size: 10px; color: var(--color-text-muted); }
 .pw-foot { margin: var(--space-3) 0 0; padding-top: var(--space-2); border-top: 1px solid var(--color-border); font-size: 10px; color: var(--color-text-muted); }
 
-/* Pathway flowchart: the drawer itself. One row per stage, a dashed junction where the case left
-   the common funnel, criteria as chips, and one detail panel at the foot. */
-.pw-flow { margin-top: var(--space-3); display: flex; flex-direction: column; gap: 3px; }
-.pw-flow .pw-stage { margin: 0; position: relative; }
-.pw-flow > *:not(:first-child)::before {
-  content: ''; position: absolute; left: 14px; top: -4px; height: 4px;
-  border-left: 1px solid var(--color-border);
-}
-.pw-fhead {
-  display: flex; align-items: center; gap: var(--space-2);
-  width: 100%; text-align: left; padding: 6px var(--space-2);
-  background: var(--color-surface); border: 1px solid var(--color-border);
-  border-radius: 4px; cursor: pointer; font: inherit; color: var(--color-text);
-}
-.pw-fhead:hover { border-color: var(--color-text-muted); }
-.pw-stage.is-outstanding > .pw-fhead { border-left: 2px solid var(--color-warning, #b45309); }
-.pw-stage.is-satisfied > .pw-fhead { border-left: 2px solid var(--color-accent, var(--color-text)); }
-.pw-stage.is-na { opacity: 0.65; }
-.pw-fcount { flex: 0 0 auto; font-size: 10px; color: var(--color-text-muted); }
-.pw-fjunction {
-  position: relative; display: flex; align-items: center; gap: var(--space-2);
-  padding: 5px var(--space-2); border: 1px dashed var(--color-border); border-radius: 4px;
-}
-.pw-mdiamond {
-  flex: 0 0 9px; width: 9px; height: 9px; transform: rotate(45deg);
-  border: 1px solid var(--color-text-muted);
-}
-.pw-fjunction.is-satisfied .pw-mdiamond { background: var(--color-accent, var(--color-text)); border-color: transparent; }
-.pw-mlabel {
-  font-size: var(--text-xs); flex: 1 1 auto; min-width: 0;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.pw-mdot { flex: 0 0 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--color-border); }
-.pw-mdot.is-satisfied { background: var(--color-accent, var(--color-text)); }
-.pw-mdot.is-outstanding { background: var(--color-warning, #b45309); }
-.pw-mdot.is-na { background: transparent; box-shadow: inset 0 0 0 1px var(--color-border); }
-.pw-chips { display: flex; flex-wrap: wrap; gap: 4px; padding: 5px 0 0 var(--space-3); }
-.pw-chip {
-  display: inline-flex; align-items: center; gap: 5px; max-width: 100%;
-  padding: 4px 8px; border: 1px solid var(--color-border); border-radius: 3px;
-  background: var(--color-bg); font: inherit; font-size: 11px; color: var(--color-text);
-  cursor: pointer;
-}
-.pw-chip:hover { border-color: var(--color-text-muted); }
-.pw-chip.is-on { border-color: var(--color-accent, var(--color-text)); box-shadow: inset 0 0 0 1px var(--color-accent, var(--color-text)); }
-.pw-chip.is-na { opacity: 0.6; }
-.pw-cdot { flex: 0 0 auto; font-size: 9px; color: var(--color-text-muted); }
-.pw-chip.is-satisfied .pw-cdot { color: var(--color-accent, var(--color-text)); }
-.pw-chip.is-outstanding .pw-cdot { color: var(--color-warning, #b45309); }
-.pw-clabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pw-any-note { margin: 4px 0 0 var(--space-3); font-size: 10px; color: var(--color-text-muted); }
-.pw-many {
-  flex: 0 0 auto; font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em;
+/* The flowchart overlay. Boxes are positioned HTML so labels wrap; only the connectors are SVG. */
+.dialog.chart { width: min(1280px, calc(100vw - 2 * var(--space-4))); max-height: 92vh; }
+.dialog.chart .dialog-body { max-height: 92vh; overflow: auto; }
+.pwc-lede { margin: 0; font-size: var(--text-xs); color: var(--color-text-muted); max-width: 90ch; }
+.pwc-scroll { overflow-x: auto; padding-bottom: var(--space-2); }
+.pwc { position: relative; margin: 0 auto; }
+.pwc-links { position: absolute; inset: 0; pointer-events: none; }
+.pwc-link { fill: none; stroke: var(--color-border-strong); stroke-width: 1.25; }
+.pwc-link.is-stub { stroke-dasharray: 4 4; stroke: var(--color-border); }
+.pwc-rail-label {
+  position: absolute;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: var(--color-text-muted);
 }
-.pw-panel {
-  margin-top: var(--space-3); padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-border); border-radius: var(--radius-sm);
-  background: var(--color-bg); min-height: 62px;
+.pwc-node, .pwc-fork, .pwc-stub, .pwc-stage, .pwc-srow { position: absolute; box-sizing: border-box; }
+.pwc-node, .pwc-fork {
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
 }
-.pw-panel.is-outstanding { border-color: var(--color-warning, #b45309); }
-.pw-panel.is-empty { color: var(--color-text-muted); display: flex; align-items: center; }
+.pwc-node.is-satisfied { border-left: 3px solid var(--color-accent, var(--color-text)); }
+.pwc-node.is-outstanding { border-left: 3px solid var(--color-warning, #b45309); }
+.pwc-node.is-na { opacity: 0.55; }
+.pwc-hit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  font: inherit;
+  font-size: var(--text-xs);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.pwc-hit:hover { background: var(--color-bg); }
+.pwc-hit[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--color-accent, var(--color-text)); }
+.pwc-dot { flex: 0 0 auto; font-size: 9px; color: var(--color-text-muted); }
+.is-satisfied > .pwc-hit .pwc-dot, .pwc-key.is-satisfied .pwc-dot { color: var(--color-accent, var(--color-text)); }
+.is-outstanding > .pwc-hit .pwc-dot, .pwc-key.is-outstanding .pwc-dot { color: var(--color-warning, #b45309); }
+.pwc-label { min-width: 0; line-height: 1.25; }
+.pwc-fork {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-radius: var(--radius-lg);
+  border-style: dashed;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+.pwc-fork.is-satisfied { border-style: solid; border-color: var(--color-accent, var(--color-text)); }
+.pwc-diamond { flex: 0 0 auto; font-size: 11px; color: var(--color-text-muted); }
+.pwc-stub {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+.pwc-stage {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+}
+.pwc-stage.is-outstanding { border-top: 2px solid var(--color-warning, #b45309); }
+.pwc-stage.is-satisfied { border-top: 2px solid var(--color-accent, var(--color-text)); }
+.pwc-stage.is-na { opacity: 0.6; }
+.pwc-shead { display: flex; align-items: baseline; gap: 8px; padding: 8px 10px 0; }
+.pwc-stitle { font-size: var(--text-xs); font-weight: 600; }
+.pwc-any {
+  flex: 0 0 auto;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 0 6px;
+}
+.pwc-srow { border-radius: var(--radius-sm); }
+.pwc-srow.is-na { opacity: 0.55; }
+.pwc-srow .pwc-hit { padding: 2px 6px; }
+.pwc-legend { display: flex; flex-wrap: wrap; gap: var(--space-3); font-size: 10px; color: var(--color-text-muted); }
+.pwc-key { display: inline-flex; align-items: center; gap: 4px; }
+.pwc-panel {
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  min-height: 84px;
+}
+.pwc-panel.is-outstanding { border-left-color: var(--color-warning, #b45309); }
+.pwc-panel.is-satisfied { border-left-color: var(--color-accent, var(--color-text)); }
+.pwc-panel.is-empty { color: var(--color-text-muted); display: flex; align-items: center; }
+.pwc-panel.is-empty p { margin: 0; font-size: var(--text-xs); }
+.pwc-phead { display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; }
+.pwc-phead strong { font-size: var(--text-sm); }
+.pwc-panel.is-outstanding .pw-state { color: var(--color-warning, #b45309); }

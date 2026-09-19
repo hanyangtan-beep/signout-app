@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { loadAll } from '../src/registry.js';
-import { pathway, pathwaySupported, pathwayMap } from '../src/cnspathway.js';
+import { pathway, pathwaySupported, pathwayChart } from '../src/cnspathway.js';
 
 const registry = await loadAll();
 const tumour = registry.cns_tumour.schema;
@@ -288,110 +288,136 @@ test('no node text reads like report prose: the register stays in the panel', ()
   }
 });
 
-// ---------- the map ----------
+// ---------- the flowchart layout ----------
 //
-// The map is the drawer's stages collapsed to one row each, drawn above the list so the shape of the
-// pathway is visible at a glance. It is derived from pathway() alone and adds no knowledge of its own.
+// pathwayChart() is the geometry for the full-width overlay: the funnel as a left-to-right chain, the
+// fork where the case leaves it, a stub for the branch not taken, and the branch stages as boxes on a
+// second rail. It is derived from pathway() alone and adds no knowledge of its own.
 
-test('the map carries one row per stage, plus a junction row once a branch exists', () => {
-  const p = pathway(base({
-    ...GLIOMA, patientAge: 62, dxAdult: 'Glioblastoma, IDH-wildtype',
-    molStatus: 'Reported', idhBranch: 'IDH-wildtype',
-  }));
-  const { rows } = pathwayMap(p);
-  const steps = rows.filter((r) => r.shape === 'step');
-  assert.equal(steps.length, p.stages.length);
-  assert.deepEqual(steps.map((r) => r.id), p.stages.map((s) => s.id));
-  assert.deepEqual(steps.map((r) => r.label), p.stages.map((s) => s.label));
+const WT = {
+  ...GLIOMA, patientAge: 62, dxAdult: 'Glioblastoma, IDH-wildtype',
+  molStatus: 'Reported', idhBranch: 'IDH-wildtype',
+};
 
-  const junctions = rows.filter((r) => r.shape === 'junction');
-  assert.equal(junctions.length, 1);
-  assert.equal(rows[1].shape === 'junction', true, 'the junction follows the funnel');
-  assert.equal(junctions[0].label, 'IDH-wildtype', 'the junction names the branch, not the drawer title');
-});
-
-test('a map row has one dot per node, in stage order', () => {
-  const p = pathway(base({
-    ...GLIOMA, patientAge: 44, dxAdult: 'Astrocytoma, IDH-mutant',
-    molStatus: 'Reported', idhBranch: 'IDH-mutant', mitoses: 4,
-  }));
-  const { rows } = pathwayMap(p);
-  for (const st of p.stages) {
-    const row = rows.find((r) => r.shape === 'step' && r.id === st.id);
-    assert.deepEqual(row.dots, st.nodes.map((n) => n.state));
-    assert.equal(row.counts.satisfied + row.counts.outstanding + row.counts.na, st.nodes.length);
+test('the chain carries one box per funnel node, in order and left to right', () => {
+  const p = pathway(base(WT));
+  const c = pathwayChart(p);
+  const funnel = p.stages[0];
+  assert.equal(c.funnel.id, 'funnel');
+  assert.equal(c.funnel.nodes.length, funnel.nodes.length);
+  assert.deepEqual(c.funnel.nodes.map((n) => n.node.label), funnel.nodes.map((n) => n.label));
+  for (let k = 1; k < c.funnel.nodes.length; k += 1) {
+    const prev = c.funnel.nodes[k - 1];
+    const box = c.funnel.nodes[k];
+    assert.equal(box.y, prev.y, 'the chain stays on one row');
+    assert.ok(box.x >= prev.x + prev.w, 'boxes do not overlap');
   }
 });
 
-test('a row is outstanding when any node in its stage is outstanding', () => {
+test('the branch stages sit on a lower rail, one box per stage, and do not overlap', () => {
+  const p = pathway(base(WT));
+  const c = pathwayChart(p);
+  assert.deepEqual(c.stages.map((s) => s.id), p.stages.slice(1).map((s) => s.id));
+  assert.deepEqual(c.stages.map((s) => s.label), p.stages.slice(1).map((s) => s.label));
+  for (const s of c.stages) {
+    assert.ok(s.y > c.funnel.nodes[0].y + c.funnel.nodes[0].h, 'below the funnel');
+    assert.equal(s.nodes.length, p.stages.find((x) => x.id === s.id).nodes.length);
+    for (const n of s.nodes) {
+      assert.ok(n.x >= s.x && n.x + n.w <= s.x + s.w, 'a criterion row stays inside its box');
+      assert.ok(n.y >= s.y && n.y + n.h <= s.y + s.h);
+    }
+  }
+  for (let k = 1; k < c.stages.length; k += 1) {
+    assert.ok(c.stages[k].x >= c.stages[k - 1].x + c.stages[k - 1].w, 'stage boxes do not overlap');
+  }
+});
+
+test('everything drawn fits the box', () => {
+  const p = pathway(base(WT));
+  const c = pathwayChart(p);
+  const boxes = [...c.funnel.nodes, ...c.stages, ...c.stages.flatMap((s) => s.nodes), c.fork, c.stub];
+  for (const b of boxes) {
+    assert.ok(b.x >= 0 && b.x + b.w <= c.width, `${b.w} wide at ${b.x} is inside ${c.width}`);
+    assert.ok(b.y >= 0 && b.y + b.h <= c.height);
+  }
+});
+
+test('the fork names the branch taken and the stub names the one that was not', () => {
+  const c = pathwayChart(pathway(base(WT)));
+  assert.equal(c.fork.label, 'IDH-wildtype', 'the fork names the branch, not the drawer title');
+  assert.equal(c.fork.state, 'satisfied');
+  assert.equal(c.stub.label, 'branch A, not this case');
+  assert.equal(c.links.some((l) => l.kind === 'stub'), true, 'the stub is reached by a dashed line');
+});
+
+test('before the branch point there is a fork, no stub and no stage boxes', () => {
+  const p = pathway(base({ ...GLIOMA, patientAge: 50 }));
+  assert.equal(p.branch, 'pending');
+  const c = pathwayChart(p);
+  assert.equal(c.fork.label, 'Branch point');
+  assert.equal(c.fork.state, 'outstanding');
+  assert.equal(c.stub, null);
+  assert.deepEqual(c.stages, []);
+});
+
+test('a case off the IDH funnel forks to its own branch with no stub', () => {
+  const p = pathway(base({ dxFamily: 'Meningioma', mgSubtype: 'Meningothelial meningioma' }));
+  const c = pathwayChart(p);
+  assert.equal(c.fork.label, p.title, 'a non-glioma branch has no prefix to strip');
+  assert.equal(c.stub, null);
+});
+
+test('the any-one tag marks the alternative-criteria stages and nothing else', () => {
+  const gbm = pathwayChart(pathway(base(WT)));
+  assert.equal(gbm.stages.find((s) => s.id === 'b1').anyOf, true);
+
+  const astro = pathwayChart(pathway(base({
+    ...GLIOMA, patientAge: 44, dxAdult: 'Astrocytoma, IDH-mutant',
+    molStatus: 'Reported', idhBranch: 'IDH-mutant', mitoses: 4,
+  })));
+  assert.equal(astro.stages.find((s) => s.id === 'a2').anyOf, true, 'the grade 4 criteria are alternatives');
+  assert.equal(astro.stages.find((s) => s.id === 'a1').anyOf, false);
+});
+
+test('a stage box is outstanding when any criterion in it is', () => {
   const p = pathway(base({
     ...GLIOMA, patientAge: 44, dxAdult: 'Astrocytoma, IDH-mutant',
     molStatus: 'Reported', idhBranch: 'IDH-mutant',
   }));
-  const { rows } = pathwayMap(p);
-  for (const st of p.stages) {
-    const row = rows.find((r) => r.shape === 'step' && r.id === st.id);
+  const c = pathwayChart(p);
+  for (const s of c.stages) {
+    const st = p.stages.find((x) => x.id === s.id);
     const expected = st.nodes.some((n) => n.state === 'outstanding')
       ? 'outstanding'
       : (st.nodes.some((n) => n.state === 'satisfied') ? 'satisfied' : 'na');
-    assert.equal(row.state, expected);
+    assert.equal(s.state, expected);
+    assert.equal(s.counts.satisfied + s.counts.outstanding + s.counts.na, st.nodes.length);
   }
 });
 
-test('the any-one tag marks the alternative-criteria stages and nothing else', () => {
-  const gbm = pathwayMap(pathway(base({
-    ...GLIOMA, patientAge: 62, dxAdult: 'Glioblastoma, IDH-wildtype',
-    molStatus: 'Reported', idhBranch: 'IDH-wildtype',
-  })));
-  assert.equal(gbm.rows.find((r) => r.id === 'b1').anyOf, true);
-  assert.equal(gbm.rows.find((r) => r.id === 'funnel').anyOf, false);
-
-  const astro = pathwayMap(pathway(base({
-    ...GLIOMA, patientAge: 44, dxAdult: 'Astrocytoma, IDH-mutant',
-    molStatus: 'Reported', idhBranch: 'IDH-mutant', mitoses: 4,
-  })));
-  assert.equal(astro.rows.find((r) => r.id === 'a2').anyOf, true, 'the grade 4 criteria are alternatives');
-  assert.equal(astro.rows.find((r) => r.id === 'a1').anyOf, false);
-});
-
-test('before the branch point the map shows the funnel and an unresolved junction', () => {
-  const p = pathway(base({ ...GLIOMA, patientAge: 50 }));
-  assert.equal(p.branch, 'pending');
-  const { rows } = pathwayMap(p);
-  assert.equal(rows.length, 2);
-  assert.equal(rows[1].label, 'Branch point');
-  assert.equal(rows[1].state, 'outstanding');
-  assert.deepEqual(rows[1].dots, []);
-});
-
-test('a case off the IDH funnel gets a map with no junction', () => {
-  const p = pathway(base({ dxFamily: 'Meningioma', mgSubtype: 'Meningothelial meningioma' }));
-  const { rows } = pathwayMap(p);
-  assert.equal(rows.some((r) => r.shape === 'junction'), true);
-  assert.equal(rows[1].label, p.title, 'a non-glioma branch has no prefix to strip');
-});
-
-test('the map invents nothing: every row state and dot comes from a node', () => {
-  const p = pathway(base({
-    ...GLIOMA, patientAge: 32, dxAdult: 'Glioblastoma, IDH-wildtype',
-    molStatus: 'Reported', idhBranch: 'IDH-wildtype', egfr: 'Amplified',
-  }));
-  const states = new Set(['satisfied', 'outstanding', 'na']);
-  for (const r of pathwayMap(p).rows) {
-    assert.equal(states.has(r.state), true);
-    for (const d of r.dots) assert.equal(states.has(d), true);
-    assert.equal(typeof r.label, 'string');
-    assert.notEqual(r.label, '');
+test('the chart invents nothing: every box carries a node from the pathway', () => {
+  const p = pathway(base({ ...WT, patientAge: 32, egfr: 'Amplified' }));
+  const c = pathwayChart(p);
+  const known = new Set(p.stages.flatMap((s) => s.nodes.map((n) => `${s.id}:${n.id}`)));
+  for (const e of [...c.funnel.nodes, ...c.stages.flatMap((s) => s.nodes)]) {
+    assert.equal(known.has(e.key), true, `${e.key} comes from a stage node`);
+    assert.equal(typeof e.node.label, 'string');
+    assert.notEqual(e.node.label, '');
   }
 });
 
-test('the map mutates nothing', () => {
-  const v = base({
-    ...GLIOMA, patientAge: 62, dxAdult: 'Glioblastoma, IDH-wildtype',
-    molStatus: 'Reported', idhBranch: 'IDH-wildtype',
-  });
+test('the chart mutates nothing', () => {
+  const v = base(WT);
   const p = pathway(v);
   const before = JSON.stringify([v, p]);
-  pathwayMap(p);
+  pathwayChart(p);
   assert.equal(JSON.stringify([v, p]), before);
+});
+
+test('an empty pathway draws an empty chart rather than throwing', () => {
+  const c = pathwayChart({ stages: [] });
+  assert.equal(c.funnel, null);
+  assert.equal(c.fork, null);
+  assert.deepEqual(c.stages, []);
+  assert.deepEqual(c.links, []);
 });

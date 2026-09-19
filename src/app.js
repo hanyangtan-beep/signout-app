@@ -16,7 +16,7 @@ import { applyMacroToCase } from './macroparse.js';
 import { spanFull, groupProgress as progressOf } from './formlayout.js';
 import { organIcon, mountOrganSprite } from './organicons.js';
 import { wizardSteps, wizardSupported, wizardProgress, visibleSteps, stepAnswered, atDefault, cautions } from './cnswizard.js';
-import { pathway, pathwaySupported, pathwayMap } from './cnspathway.js';
+import { pathway, pathwaySupported, pathwayChart } from './cnspathway.js';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -89,6 +89,7 @@ const nodes = {
   openSearch: $('#open-search'),
   openList: $('#open-list'),
   dlgSettings: $('#dlg-settings'),
+  dlgPathway: $('#dlg-pathway'),
   settingsForm: $('#settings-form'),
   signout: $('#btn-signout'),
   meta: Object.fromEntries(META_FIELDS.map((k) => [k, $(`#meta-${k}`)])),
@@ -1019,7 +1020,7 @@ function wizardCard(s, part, i) {
 // the reference-gallery criteria are. Open state is per part and per session; nothing about the
 // drawer is saved with the case.
 
-const pathways = { open: {}, stages: {}, sel: {} };
+const pathways = { open: {}, sel: {} };
 
 function pathwayOpen(i) { return !!pathways.open[i]; }
 function togglePathway(i) { pathways.open[i] = !pathways.open[i]; }
@@ -1030,103 +1031,24 @@ const PW_STATE = {
   na: { icon: '\u2014', label: 'not applicable' },
 };
 
-// The drawer is the flowchart. One row per stage in the published order, a dashed junction where
-// the case leaves the common funnel, and a stage's criteria drawn as chips side by side when they
-// are alternatives rather than a checklist. A finished stage collapses to its count so the whole
-// pathway fits the column; a stage still carrying work opens. Clicking a node selects it, and its
-// criterion, next test and source appear in the panel at the foot - one node at a time, which is
-// what keeps the drawer readable at the width the middle column actually has.
+// The drawer beside the form is a list: stage headings in the published order, each criterion with
+// its state, its caveat, the test that would settle it and its source. A 460px column cannot show a
+// branch, so nothing here pretends to be a flowchart.
 //
-// It reads pathway() and pathwayMap() and nothing else. No field is set and no line is printed.
+// The picture lives behind the Map button, in a full-width overlay - see pathwayChartDialog below.
 
-function stageShown(i, row) {
-  const k = `${i}:${row.id}`;
-  return k in pathways.stages ? pathways.stages[k] : row.state === 'outstanding';
-}
-
-function toggleStage(i, row) { pathways.stages[`${i}:${row.id}`] = !stageShown(i, row); }
-
-// On opening, the panel starts on the first node still outstanding - the one the case is waiting
-// on. Once the pathologist has picked something the choice is theirs, including picking nothing.
-function selectedKey(p, i) {
-  if (i in pathways.sel) return pathways.sel[i];
-  for (const st of p.stages) {
-    for (const n of st.nodes) if (n.state === 'outstanding') return `${st.id}:${n.id}`;
-  }
-  return null;
-}
-
-function selectedNode(p, i) {
-  const key = selectedKey(p, i);
-  if (!key) return null;
-  for (const st of p.stages) {
-    for (const n of st.nodes) if (`${st.id}:${n.id}` === key) return n;
-  }
-  return null;
-}
-
-function pathwayChip(n, active, onpick) {
+function pathwayNode(n) {
   const mark = PW_STATE[n.state] || PW_STATE.na;
-  return el('button', {
-    type: 'button',
-    class: `pw-chip is-${n.state}${active ? ' is-on' : ''}`,
-    'aria-pressed': String(active),
-    'aria-label': `${n.label}: ${mark.label}`,
-    title: n.label,
-    onclick: onpick,
-  },
-  el('span', { class: 'pw-cdot', 'aria-hidden': 'true', text: mark.icon }),
-  el('span', { class: 'pw-clabel', text: n.label }));
-}
-
-function pathwayStage(st, row, i, sel) {
-  if (!st) return null;
-  const open = stageShown(i, row);
-  return el('section', { class: `pw-stage is-${row.state}${open ? ' is-open' : ''}`, 'data-stage': st.id },
-    el('button', {
-      type: 'button',
-      class: 'pw-fhead',
-      'aria-expanded': String(open),
-      onclick: () => { toggleStage(i, row); render(); },
-    },
-    el('span', { class: `pw-mdot is-${row.state}`, 'aria-hidden': 'true' }),
-    el('span', { class: 'pw-mlabel', text: st.label }),
-    row.anyOf ? el('span', { class: 'pw-many', text: 'any one' }) : null,
-    el('span', { class: 'pw-fcount', text: open ? 'collapse' : `${row.counts.satisfied} of ${row.dots.length} \u00b7 expand` })),
-    open ? el('div', { class: 'pw-chips' }, ...st.nodes.map((n) => {
-      const key = `${st.id}:${n.id}`;
-      return pathwayChip(n, sel === key, () => { pathways.sel[i] = sel === key ? null : key; render(); });
-    })) : null,
-    open && row.anyOf ? el('p', { class: 'pw-any-note', text: 'One is enough. What is recorded is shown.' }) : null);
-}
-
-function pathwayFlowView(p, i) {
-  const rows = pathwayMap(p).rows;
-  if (!rows.length) return null;
-  const byId = new Map(p.stages.map((st) => [st.id, st]));
-  const sel = selectedKey(p, i);
-  return el('div', { class: 'pw-flow', role: 'group', 'aria-label': 'Pathway flowchart' },
-    ...rows.map((r) => (r.shape === 'junction'
-      ? el('div', { class: `pw-fjunction is-${r.state}` },
-        el('span', { class: 'pw-mdiamond', 'aria-hidden': 'true' }),
-        el('span', { class: 'pw-mlabel', text: r.label }))
-      : pathwayStage(byId.get(r.id), r, i, sel))));
-}
-
-function pathwayPanel(n) {
-  if (!n) {
-    return el('div', { class: 'pw-panel is-empty' },
-      el('p', { class: 'pw-detail', text: 'Pick a node to read its criterion.' }));
-  }
-  const mark = PW_STATE[n.state] || PW_STATE.na;
-  return el('div', { class: `pw-panel is-${n.state}`, role: 'region', 'aria-live': 'polite', 'aria-label': 'Selected node' },
-    el('div', { class: 'pw-node-head' },
-      el('strong', { text: n.label }),
-      el('span', { class: 'pw-state', text: mark.label })),
-    el('p', { class: 'pw-detail', text: n.detail }),
-    n.note ? el('p', { class: 'pw-note', text: n.note }) : null,
-    n.state === 'outstanding' && n.test ? el('p', { class: 'pw-test', text: `Next: ${n.test}` }) : null,
-    n.source ? el('a', { class: 'pw-src', href: n.source.url, target: '_blank', rel: 'noopener', text: n.source.label }) : null);
+  return el('li', { class: `pw-node is-${n.state}` },
+    el('span', { class: 'pw-dot', 'aria-hidden': 'true', text: mark.icon }),
+    el('div', { class: 'pw-node-body' },
+      el('div', { class: 'pw-node-head' },
+        el('strong', { text: n.label }),
+        el('span', { class: 'pw-state', text: mark.label })),
+      el('p', { class: 'pw-detail', text: n.detail }),
+      n.note ? el('p', { class: 'pw-note', text: n.note }) : null,
+      n.state === 'outstanding' && n.test ? el('p', { class: 'pw-test', text: `Next: ${n.test}` }) : null,
+      n.source ? el('a', { class: 'pw-src', href: n.source.url, target: '_blank', rel: 'noopener', text: n.source.label }) : null));
 }
 
 function pathwayCard(part, i) {
@@ -1137,13 +1059,139 @@ function pathwayCard(part, i) {
       el('div', {},
         el('strong', { text: p.title }),
         el('p', { class: 'pw-lede', text: p.lede })),
-      el('button', { type: 'button', class: 'btn ghost small', text: 'Close', onclick: () => { togglePathway(i); render(); } })),
+      el('div', { class: 'pw-headbtns' },
+        el('button', { type: 'button', class: 'btn ghost small', text: 'Map', title: 'Draw the pathway as a flowchart', onclick: () => openPathwayChart(i) }),
+        el('button', { type: 'button', class: 'btn ghost small', text: 'Close', onclick: () => { togglePathway(i); render(); } }))),
     p.nextTest
       ? el('p', { class: 'pw-next', text: `Next test: ${p.nextTest}` })
       : el('p', { class: 'pw-next is-clear', text: 'Nothing outstanding on the pathway.' }),
-    pathwayFlowView(p, i),
-    pathwayPanel(selectedNode(p, i)),
+    ...p.stages.map((st) => el('section', { class: 'pw-stage' },
+      el('h4', { class: 'pw-stage-h', text: st.label }),
+      el('ul', { class: 'pw-nodes' }, ...st.nodes.map(pathwayNode)))),
     el('p', { class: 'pw-foot', text: 'Read-only. This panel sets no field and prints nothing.' }));
+}
+
+// ---------- the flowchart, in a full-width overlay ----------
+//
+// The geometry comes from pathwayChart() in src/cnspathway.js, which is pure and tested: a 1200-wide
+// drawing box with the funnel as a left-to-right chain, the fork where the case leaves it, a greyed
+// stub for the branch not taken, and the branch stages as boxes along a second rail. Here the boxes
+// are positioned HTML so labels wrap, and only the connectors are SVG. Clicking a box shows that
+// criterion in the panel at the foot, one at a time.
+//
+// Read-only like the drawer: no field is set, no line is printed.
+
+const PWC_LEGEND = [
+  ['satisfied', 'recorded'],
+  ['outstanding', 'still outstanding'],
+  ['na', 'does not apply here'],
+];
+
+function pwcBox(cls, geom, ...children) {
+  return el('div', {
+    class: cls,
+    style: `left:${geom.x}px;top:${geom.y}px;width:${geom.w}px;height:${geom.h}px`,
+  }, ...children);
+}
+
+function pwcLinks(chart) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('class', 'pwc-links');
+  svg.style.color = 'var(--color-border-strong)';
+  svg.setAttribute('viewBox', `0 0 ${chart.width} ${chart.height}`);
+  svg.setAttribute('width', chart.width);
+  svg.setAttribute('height', chart.height);
+  svg.setAttribute('aria-hidden', 'true');
+  // One arrowhead, shared: a flowchart without direction is just boxes.
+  svg.insertAdjacentHTML('afterbegin', '<defs><marker id="pwc-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 2L8 5L2 8z" fill="currentColor"/></marker></defs>');
+  for (const link of chart.links) {
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('class', `pwc-link is-${link.kind}`);
+    path.setAttribute('d', link.points.map(([x, y], k) => `${k ? 'L' : 'M'}${x} ${y}`).join(' '));
+    if (link.kind === 'flow') path.setAttribute('marker-end', 'url(#pwc-arrow)');
+    svg.append(path);
+  }
+  return svg;
+}
+
+function pwcNodeButton(cls, entry, onpick) {
+  const n = entry.node;
+  return pwcBox(`${cls} is-${n.state}`, entry,
+    el('button', {
+      type: 'button', class: 'pwc-hit', 'data-key': entry.key,
+      'aria-pressed': String(pathways.sel.key === entry.key),
+      onclick: () => onpick(entry),
+    },
+      el('span', { class: 'pwc-dot', 'aria-hidden': 'true', text: (PW_STATE[n.state] || PW_STATE.na).icon }),
+      el('span', { class: 'pwc-label', text: n.label })));
+}
+
+function pwcPanel(n) {
+  if (!n) {
+    return el('div', { class: 'pwc-panel is-empty', 'aria-live': 'polite' },
+      el('p', { text: 'Click any box to read its criterion.' }));
+  }
+  const mark = PW_STATE[n.state] || PW_STATE.na;
+  return el('div', { class: `pwc-panel is-${n.state}`, 'aria-live': 'polite' },
+    el('div', { class: 'pwc-phead' },
+      el('strong', { text: n.label }),
+      el('span', { class: 'pw-state', text: mark.label })),
+    el('p', { class: 'pw-detail', text: n.detail }),
+    n.note ? el('p', { class: 'pw-note', text: n.note }) : null,
+    n.state === 'outstanding' && n.test ? el('p', { class: 'pw-test', text: `Next: ${n.test}` }) : null,
+    n.source ? el('a', { class: 'pw-src', href: n.source.url, target: '_blank', rel: 'noopener', text: n.source.label }) : null);
+}
+
+function pathwayChartView(p) {
+  const chart = pathwayChart(p);
+  const entries = [...(chart.funnel ? chart.funnel.nodes : []), ...chart.stages.flatMap((s) => s.nodes)];
+  // The panel opens on whatever the case is waiting on, so the overlay answers that with no click.
+  if (!entries.some((e) => e.key === pathways.sel.key)) {
+    const firstOut = entries.find((e) => e.node.state === 'outstanding') || entries[0];
+    pathways.sel.key = firstOut ? firstOut.key : null;
+  }
+  const selected = entries.find((e) => e.key === pathways.sel.key);
+
+  const pick = (entry) => {
+    pathways.sel.key = entry.key;
+    const host = nodes.dlgPathway.querySelector('.pwc-body');
+    host.replaceChildren(pathwayChartView(p));
+  };
+
+  const stage = chart.funnel;
+  return el('div', { class: 'pwc-wrap' },
+    el('p', { class: 'pwc-lede', text: 'Follow the arrows. The top row is the funnel every CNS case runs; at the fork the case leaves it - the dashed branch is the one it did not take - and the boxes on the lower rail are the stages that follow.' }),
+    el('div', { class: 'pwc-scroll' },
+      el('div', { class: 'pwc', style: `width:${chart.width}px;height:${chart.height}px` },
+        pwcLinks(chart),
+        stage ? el('span', { class: 'pwc-rail-label', style: `left:${chart.stages.length ? 28 : 28}px;top:${Math.max(0, stage.nodes[0].y - 26)}px`, text: stage.label }) : null,
+        ...(stage ? stage.nodes.map((e) => pwcNodeButton('pwc-node', e, pick)) : []),
+        chart.stub ? pwcBox('pwc-stub', chart.stub, el('span', { class: 'pwc-label', text: chart.stub.label })) : null,
+        chart.fork ? pwcBox(`pwc-fork is-${chart.fork.state}`, chart.fork,
+          el('span', { class: 'pwc-diamond', 'aria-hidden': 'true', text: '\u25c6' }),
+          el('span', { class: 'pwc-label', text: chart.fork.label })) : null,
+        ...chart.stages.flatMap((st) => [
+          pwcBox(`pwc-stage is-${st.state}`, st,
+            el('div', { class: 'pwc-shead' },
+              el('span', { class: 'pwc-stitle', text: st.label }),
+              st.anyOf ? el('span', { class: 'pwc-any', text: 'any one' }) : null)),
+          ...st.nodes.map((e) => pwcNodeButton('pwc-srow', e, pick)),
+        ]))),
+    el('div', { class: 'pwc-legend' },
+      ...PWC_LEGEND.map(([s, label]) => el('span', { class: `pwc-key is-${s}` },
+        el('span', { class: 'pwc-dot', 'aria-hidden': 'true', text: PW_STATE[s].icon }),
+        el('span', { text: label }))),
+      el('span', { class: 'pwc-key' }, el('span', { text: 'a dashed line is the branch this case did not take' }))),
+    pwcPanel(selected ? selected.node : null),
+    el('p', { class: 'pw-foot', text: 'Read-only. This overlay sets no field and prints nothing.' }));
+}
+
+function openPathwayChart(i) {
+  const part = state.caseState.parts[i];
+  const p = pathway(part.values);
+  nodes.dlgPathway.querySelector('#pathway-title').textContent = p.title;
+  nodes.dlgPathway.querySelector('.pwc-body').replaceChildren(pathwayChartView(p));
+  nodes.dlgPathway.showModal();
 }
 
 function renderPanel() {

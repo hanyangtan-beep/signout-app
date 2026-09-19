@@ -322,33 +322,43 @@ await check('the CNS pathway drawer opens read-only and writes nothing', async (
   // Read-only: no field appeared or vanished, and the report did not move.
   assert((await page.locator('#part-panel [data-field]').count()) === fieldsBefore, 'the pathway drawer changed the form');
   assert((await page.locator('#report-blocks').innerText()) === reportBefore, 'the pathway drawer changed the report');
-  // The flowchart: one stage row per stage, exactly one junction, a dot on every stage row, and a
-  // detail panel carrying the node the case is waiting on. Expanding a stage and picking a node
-  // moves neither the form nor the report.
-  const flowStages = await page.locator('#part-panel .pw .pw-flow .pw-stage').count();
-  const modelStages = await page.locator('#part-panel .pw .pw-stage').count();
-  assert(flowStages === modelStages, `flow showed ${flowStages} stage rows for ${modelStages} stages`);
-  assert(await page.locator('#part-panel .pw .pw-flow .pw-fjunction').count() === 1, 'no junction row on the flowchart');
-  assert(await page.locator('#part-panel .pw .pw-flow .pw-mdot').count() === flowStages, 'a stage row carried no state dot');
-  assert(await page.locator('#part-panel .pw .pw-panel').count() === 1, 'the drawer showed no detail panel');
-  const flowText = (await page.locator('#part-panel .pw .pw-flow').innerText()).trim();
-  assert(flowText.length > 10 && !/undefined|NaN/.test(flowText), `flow text reads "${flowText}"`);
-  const panelFirst = (await page.locator('#part-panel .pw .pw-panel').innerText()).trim();
-  assert(panelFirst.length > 10 && !/undefined|NaN/.test(panelFirst), `panel text reads "${panelFirst}"`);
+  // The list drawer: a stage heading per stage, criteria spelled out, nothing cryptic.
+  const nodeCount = await page.locator('#part-panel .pw .pw-node').count();
+  assert(nodeCount >= 6, `the drawer listed only ${nodeCount} criteria`);
+  const drawerText = (await page.locator('#part-panel .pw').innerText()).trim();
+  assert(!/undefined|NaN/.test(drawerText), 'the drawer printed undefined or NaN');
   await shot('cns-pathway');
-  // A collapsed stage opens, and a chip in it becomes the selected node.
-  const collapsed = page.locator('#part-panel .pw .pw-stage:not(.is-open) .pw-fhead').first();
-  if (await collapsed.count()) {
-    await collapsed.click();
-    await page.waitForTimeout(250);
-  }
-  const chips = await page.locator('#part-panel .pw .pw-chip').count();
-  assert(chips >= 6, `the flowchart showed only ${chips} node chips`);
-  await page.locator('#part-panel .pw .pw-chip').first().click();
+  // The Map button opens the full-width flowchart overlay: the funnel chain, a fork, connectors, and
+  // a detail panel that follows the box you click. It writes nothing either.
+  await page.locator('#part-panel .pw .pw-headbtns button', { hasText: 'Map' }).first().click();
+  await page.waitForSelector('#dlg-pathway[open]', { timeout: 5000 });
+  const funnelBoxes = await page.locator('#dlg-pathway .pwc-node').count();
+  assert(funnelBoxes >= 4, `the chart drew only ${funnelBoxes} funnel boxes`);
+  assert(await page.locator('#dlg-pathway .pwc-fork').count() === 1, 'the chart drew no fork');
+  const stageBoxes = await page.locator('#dlg-pathway .pwc-stage').count();
+  assert(stageBoxes >= 1, 'the chart drew no branch stage boxes');
+  assert(await page.locator('#dlg-pathway .pwc-link').count() >= stageBoxes, 'the chart drew no connectors');
+  const chartText = (await page.locator('#dlg-pathway .pwc-body').innerText()).trim();
+  assert(chartText.length > 40 && !/undefined|NaN/.test(chartText), `chart text reads "${chartText.slice(0, 60)}"`);
+  assert(await page.locator('#dlg-pathway .pwc-panel').count() === 1, 'the overlay showed no detail panel');
+  const panelFirst = (await page.locator('#dlg-pathway .pwc-panel').innerText()).trim();
+  assert(panelFirst.length > 10, 'the overlay opened on an empty panel');
+  // Nothing spills out of the drawing box.
+  const spill = await page.evaluate(() => {
+    const box = document.querySelector('#dlg-pathway .pwc').getBoundingClientRect();
+    return [...document.querySelectorAll('#dlg-pathway .pwc-node, #dlg-pathway .pwc-stage, #dlg-pathway .pwc-fork, #dlg-pathway .pwc-stub')]
+      .filter((n) => { const r = n.getBoundingClientRect(); return r.left < box.left - 1 || r.right > box.right + 1 || r.bottom > box.bottom + 1; }).length;
+  });
+  assert(spill === 0, `${spill} boxes fell outside the chart`);
+  await shot('cns-pathway-chart');
+  await page.locator('#dlg-pathway .pwc-srow .pwc-hit').first().click();
   await page.waitForTimeout(250);
-  assert(await page.locator('#part-panel .pw .pw-chip.is-on').count() === 1, 'picking a chip selected no single node');
-  const panelAfter = (await page.locator('#part-panel .pw .pw-panel').innerText()).trim();
-  assert(panelAfter.length > 10, 'the panel emptied after picking a node');
+  assert(await page.locator('#dlg-pathway .pwc-hit[aria-pressed="true"]').count() === 1, 'picking a box selected no single criterion');
+  const panelAfter = (await page.locator('#dlg-pathway .pwc-panel').innerText()).trim();
+  assert(panelAfter.length > 10 && panelAfter !== panelFirst, 'the panel did not follow the box that was clicked');
+  await page.locator('#dlg-pathway .dialog-head button').first().click();
+  await page.waitForTimeout(250);
+  assert(!(await page.locator('#dlg-pathway[open]').count()), 'the chart overlay stayed open after Close');
   assert((await page.locator('#part-panel [data-field]').count()) === fieldsBefore, 'the flowchart changed the form');
   assert((await page.locator('#report-blocks').innerText()) === reportBefore, 'the flowchart changed the report');
   await page.locator('#part-panel .part-actions button', { hasText: 'Close pathway' }).first().click();

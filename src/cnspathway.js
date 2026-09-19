@@ -483,55 +483,111 @@ export function pathway(values) {
 }
 
 /**
- * The same pathway, collapsed to a map: one row per stage, with a junction row marking where the
- * branch was taken. It is drawn above the list so the shape of the pathway is visible at a glance -
- * which stages are done, which stage the case is standing in, and, at a junction, that the criteria
- * below are alternatives rather than a list of things that must all be done.
+ * The same pathway, laid out as a flowchart for the full-width overlay.
  *
- * It derives everything from `pathway()`; it reads no values of its own and holds no state.
+ * The drawer beside the form stays a list - a column 460px wide cannot show a branch. This gives
+ * the overlay a geometry to draw: the common funnel as a left-to-right chain, a fork where the
+ * case leaves it, a greyed stub for the branch not taken, and the branch stages as boxes along a
+ * second rail. Coordinates are plain numbers in a 1200-wide space; the view scales them.
  *
- * Rows carry:
- *   id       the stage id, so the row can scroll its stage into view
- *   label    the stage label, or the branch title on the junction row
- *   shape    'step' | 'junction'
- *   state    'outstanding' if any node is outstanding, else 'satisfied' if any is, else 'na'
- *   dots     one state per node, in stage order
- *   counts   { satisfied, outstanding, na }
- *   anyOf    true where the nodes are alternatives, not a checklist
+ * Pure. It derives everything from `pathway()`, reads no values of its own and holds no state.
+ *
+ * Returns:
+ *   width, height   the drawing box
+ *   funnel          { id, label, nodes: [{ key, node, x, y, w, h }] }
+ *   fork            { x, y, w, h, label, state } or null when the case never branches
+ *   stub            { x, y, w, h, label } for the branch not taken, or null
+ *   stages          the branch stages, each { id, label, anyOf, state, counts, x, y, w, h, nodes }
+ *   links           [{ kind: 'flow' | 'stub', points: [[x, y], ...] }]
  */
-export function pathwayMap(result) {
+const CHART = {
+  W: 1200, M: 28, GAP: 18, SGAP: 26,
+  FY: 74, FH: 50,
+  FORK_W: 168, FORK_H: 52, FORK_GAP: 40,
+  RAIL: 26, HEAD: 34, ROW: 26, PAD: 12, FOOT: 14,
+};
+
+export function pathwayChart(result) {
   const p = result || { stages: [] };
   const stages = p.stages || [];
-  const rows = [];
+  if (!stages.length) return { width: CHART.W, height: 140, funnel: null, fork: null, stub: null, stages: [], links: [] };
 
   const rollUp = (nodes) => {
     const counts = { satisfied: 0, outstanding: 0, na: 0 };
     nodes.forEach((n) => { if (counts[n.state] !== undefined) counts[n.state] += 1; });
-    const state = counts.outstanding ? 'outstanding' : (counts.satisfied ? 'satisfied' : 'na');
-    return { counts, state, dots: nodes.map((n) => n.state) };
+    return { counts, state: counts.outstanding ? 'outstanding' : (counts.satisfied ? 'satisfied' : 'na') };
   };
 
-  stages.forEach((st, idx) => {
-    rows.push({ id: st.id, label: st.label, shape: 'step', anyOf: st.nodes.some((n) => n.id === 'oneof' || n.id === 'g4'), ...rollUp(st.nodes) });
-    // The junction sits after the funnel, where the branch point is answered and the case leaves
-    // the common path. A branch that has not opened yet still shows the junction, unresolved.
-    if (idx === 0 && p.branch && p.branch !== 'none') {
-      const branchNode = st.nodes.find((n) => n.id === 'branch');
-      rows.push({
-        id: 'junction',
-        // The drawer title already reads "Branch B - ..." two lines above; the junction says only
-        // which way the case went.
-        label: p.branch === 'pending' ? 'Branch point' : p.title.replace(/^Branch [AB] - /, ''),
-        shape: 'junction',
-        anyOf: false,
-        state: p.branch === 'pending' ? 'outstanding' : (branchNode ? branchNode.state : 'satisfied'),
-        dots: [],
-        counts: { satisfied: 0, outstanding: 0, na: 0 },
-      });
-    }
-  });
+  const links = [];
+  const cx = CHART.W / 2;
+  const [first, ...rest] = stages;
 
-  return { rows };
+  // The funnel: every case runs it, so it reads left to right as one chain.
+  const n = first.nodes.length || 1;
+  const w = Math.min(190, Math.floor((CHART.W - 2 * CHART.M - (n - 1) * CHART.GAP) / n));
+  const x0 = Math.round((CHART.W - (n * w + (n - 1) * CHART.GAP)) / 2);
+  const mid = CHART.FY + CHART.FH / 2;
+  const funnelNodes = first.nodes.map((nd, k) => {
+    const x = x0 + k * (w + CHART.GAP);
+    if (k) links.push({ kind: 'flow', points: [[x - CHART.GAP, mid], [x, mid]] });
+    return { key: `${first.id}:${nd.id}`, node: nd, x, y: CHART.FY, w, h: CHART.FH };
+  });
+  const funnel = { id: first.id, label: first.label, nodes: funnelNodes, ...rollUp(first.nodes) };
+
+  // The fork, where the branch point is answered and the case leaves the common path. It sits
+  // directly under the last funnel box so the line into it is a straight drop, and the branch not
+  // taken hangs off it on a dashed line.
+  const branched = !!p.branch && p.branch !== 'none';
+  let fork = null;
+  let stub = null;
+  let top = CHART.FY + CHART.FH + CHART.FORK_GAP;
+  if (branched) {
+    const last = funnelNodes[funnelNodes.length - 1];
+    const branchNode = first.nodes.find((nd) => nd.id === 'branch');
+    const fx = Math.min(CHART.W - CHART.M - CHART.FORK_W, Math.max(CHART.M, Math.round(last.x + last.w / 2 - CHART.FORK_W / 2)));
+    fork = {
+      x: fx, y: top, w: CHART.FORK_W, h: CHART.FORK_H,
+      label: p.branch === 'pending' ? 'Branch point' : String(p.title || '').replace(/^Branch [AB] - /, ''),
+      state: p.branch === 'pending' ? 'outstanding' : (branchNode ? branchNode.state : 'satisfied'),
+    };
+    const drop = fx + CHART.FORK_W / 2;
+    links.push({ kind: 'flow', points: [[drop, CHART.FY + CHART.FH], [drop, top]] });
+    if (p.branch === 'A' || p.branch === 'B') {
+      const sw = 210;
+      stub = { x: CHART.M, y: top + 4, w: sw, h: CHART.FORK_H - 8, label: `branch ${p.branch === 'A' ? 'B' : 'A'}, not this case` };
+      links.push({ kind: 'stub', points: [[fx, top + CHART.FORK_H / 2], [stub.x + sw, top + CHART.FORK_H / 2]] });
+    }
+    top += CHART.FORK_H + CHART.FORK_GAP;
+  }
+
+  // The branch stages, along one rail, each box holding its criteria as rows.
+  const m = rest.length;
+  const outStages = [];
+  if (m) {
+    const sw = Math.floor((CHART.W - 2 * CHART.M - (m - 1) * CHART.SGAP) / m);
+    const sx0 = Math.round((CHART.W - (m * sw + (m - 1) * CHART.SGAP)) / 2);
+    rest.forEach((st, k) => {
+      const x = sx0 + k * (sw + CHART.SGAP);
+      const nodes = st.nodes.map((nd, j) => ({
+        key: `${st.id}:${nd.id}`, node: nd,
+        x: x + CHART.PAD, y: top + CHART.HEAD + j * CHART.ROW, w: sw - 2 * CHART.PAD, h: CHART.ROW - 5,
+      }));
+      outStages.push({
+        id: st.id, label: st.label,
+        anyOf: st.nodes.some((nd) => nd.id === 'oneof' || nd.id === 'g4'),
+        ...rollUp(st.nodes),
+        x, y: top, w: sw, h: CHART.HEAD + st.nodes.length * CHART.ROW + CHART.FOOT, nodes,
+      });
+      if (k) links.push({ kind: 'flow', points: [[x - CHART.SGAP, top + CHART.HEAD / 2], [x, top + CHART.HEAD / 2]] });
+    });
+    const firstBox = outStages[0];
+    const from = branched ? fork.x + fork.w / 2 : cx;
+    const entry = branched ? fork.y + fork.h : CHART.FY + CHART.FH;
+    links.push({ kind: 'flow', points: [[from, entry], [from, top - CHART.RAIL], [firstBox.x + firstBox.w / 2, top - CHART.RAIL], [firstBox.x + firstBox.w / 2, top]] });
+  }
+
+  const height = (outStages.length ? Math.max(...outStages.map((s) => s.y + s.h)) : top) + 32;
+  return { width: CHART.W, height, funnel, fork, stub, stages: outStages, links };
 }
 
-export default { pathway, pathwaySupported, pathwayMap };
+export default { pathway, pathwaySupported, pathwayChart };
