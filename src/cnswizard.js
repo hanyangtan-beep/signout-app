@@ -63,18 +63,25 @@ const STEPS = [
     applies: (v) => v.dxFamily === 'Adult-type diffuse gliomas',
   },
   {
+    id: 'epEntity',
+    field: 'dxEpendymal',
+    question: 'Which ependymal tumour, on morphology and site?',
+    why: 'The ependymal types are defined by the compartment they sit in and the molecular group of that compartment, so the working entity and the site are one question in two parts.',
+    applies: (v) => v.dxFamily === 'Ependymal tumours',
+  },
+  {
     id: 'site',
     field: 'site',
     question: 'Where is the tumour?',
-    why: 'A midline diffuse astrocytic glioma gets H3 K27 assessment at any age, so the site decides whether that branch opens.',
-    applies: (v, ctx) => ctx.glioma(v),
+    why: 'A midline diffuse astrocytic glioma gets H3 K27 assessment at any age, so the site decides whether that branch opens. An ependymal tumour is classified on the compartment itself: supratentorial, posterior fossa or spinal.',
+    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v),
   },
   {
     id: 'basicIhc',
     field: 'ihc',
     question: 'Which immunohistochemistry has been done so far?',
-    why: 'The first panel confirms glial lineage and frames the differential before any molecular test is sent: GFAP, OLIG2, and Ki-67 as a proliferation guide rather than a grading criterion.',
-    applies: (v, ctx) => ctx.glioma(v),
+    why: 'The first panel frames the differential before any molecular test is sent: GFAP, OLIG2 and Ki-67 on a glioma, GFAP with EMA on an ependymal tumour, where dot-like or ring-like staining supports ependymal differentiation. Ki-67 is a proliferation guide rather than a grading criterion in either.',
+    applies: (v, ctx) => ctx.glioma(v) || ctx.ependymal(v),
     answered: (v) => has(v, 'ihc') || has(v, 'ihcOther'),
     optional: true,
   },
@@ -178,8 +185,11 @@ const STEPS = [
     id: 'h3k27me3',
     field: 'h3k27me3',
     question: 'What does H3 K27 trimethylation show?',
-    why: 'A midline diffuse astrocytic glioma is assessed for H3 K27 at any age. Loss of trimethylation is not the same as an H3 K27M mutation; EZHIP overexpression and several other tumours also lose it.',
-    applies: (v, ctx) => ctx.wildtype(v) && (ctx.midline(v) || ctx.ependymal(v)),
+    why: 'A midline diffuse astrocytic glioma is assessed for H3 K27 at any age, and in a posterior fossa ependymoma loss of trimethylation defines group A alongside the morphology. Loss of trimethylation is not the same as an H3 K27M mutation; EZHIP overexpression and several other tumours also lose it.',
+    // An ependymal tumour never reaches the IDH branch - it is not on the IDH funnel at all - so it
+    // cannot be gated on the wildtype branch the way a midline diffuse glioma is. K27me3 is asked of
+    // it on the site, which is what its own classification turns on.
+    applies: (v, ctx) => (ctx.wildtype(v) && ctx.midline(v)) || ctx.ependymal(v),
     answered: (v) => answeredSelect(v, 'h3k27me3'),
   },
   {
@@ -263,14 +273,32 @@ const STEPS = [
   },
 ];
 
+// Which entity field the chosen family actually reads. The resection form carries one select per
+// family and they all hold a value at once, so reading them all together made an ependymoma look
+// like a glioma through whatever `dxAdult` happened to be sitting at. Mirrors `FAMILY_FIELD` in
+// src/cnspathway.js.
+const FAMILY_FIELD = [
+  [/^Adult-type diffuse gliomas/i, 'dxAdult'],
+  [/^Paediatric-type diffuse/i, 'dxPaediatric'],
+  [/^Circumscribed astrocytic/i, 'dxCircumscribed'],
+  [/^Ependymal tumours/i, 'dxEpendymal'],
+  [/^Meningioma/i, 'mgSubtype'],
+];
+
 /** Predicates the steps share, kept in one place so the funnel reads as one thing. */
 function context() {
-  const glioma = (v) => /glioma|astrocytoma|oligodendroglioma|glioblastoma/i.test(`${v.dxFamily || ''} ${v.dxAdult || ''} ${v.dxPaediatric || ''} ${v.dxCircumscribed || ''} ${v.finding || ''}`);
-  const ependymal = (v) => /ependymal|ependymoma/i.test(`${v.dxFamily || ''} ${v.dxEpendymal || ''} ${v.finding || ''}`);
+  const named = (v) => {
+    const field = (FAMILY_FIELD.find(([re]) => re.test(`${v.dxFamily || ''}`)) || [])[1];
+    return `${(field && v[field]) || ''} ${v.finding || ''}`.trim();
+  };
+  const glioma = (v) => /glioma|astrocytoma|oligodendroglioma|glioblastoma/i.test(`${v.dxFamily || ''} ${named(v)}`);
+  const ependymal = (v) => /ependymal|ependymoma/i.test(`${v.dxFamily || ''} ${named(v)}`);
   const reported = (v) => v.molStatus === 'Reported';
-  const mutant = (v) => reported(v) && v.idhBranch === 'IDH-mutant';
-  const wildtype = (v) => reported(v) && v.idhBranch === 'IDH-wildtype';
-  const named = (v) => `${v.dxAdult || ''} ${v.finding || ''}`;
+  // The IDH branch exists for the diffuse gliomas only, so both branch predicates carry that
+  // condition rather than leaving each step to remember it. An ependymal tumour is never mutant or
+  // wildtype here, whatever the branch field happens to hold.
+  const mutant = (v) => reported(v) && v.idhBranch === 'IDH-mutant' && glioma(v);
+  const wildtype = (v) => reported(v) && v.idhBranch === 'IDH-wildtype' && glioma(v);
   return {
     glioma,
     ependymal,

@@ -145,3 +145,31 @@ Changed in `src/`, not only in the trial, since both surfaces had the order wron
 
 Five tests cover it: the order itself, the drop on ATRX loss, and the oligodendroglioma exemption,
 on both surfaces. No fixture changed — no printed line moves, because none of this reaches a report.
+
+## Correction: an ependymoma is not on the IDH funnel
+
+Raised on review: the funnel asked an ependymal tumour for IDH1 R132H, sequencing and a branch
+point. It should not. CNS5 classifies ependymal tumours on anatomical compartment together with the
+molecular group of that compartment — supratentorial ZFTA- or YAP1-fusion, posterior fossa group A
+or B, spinal MYCN-amplified — and IDH has no part in it
+([CNS5 ependymal overview](https://pmc.ncbi.nlm.nih.gov/articles/PMC11543070/),
+[cIMPACT-NOW update 7](https://pmc.ncbi.nlm.nih.gov/articles/PMC8018155/)).
+
+Three separate faults sat behind one symptom:
+
+- `src/cnspathway.js` — the funnel let ependymal cases through to the IDH nodes. They now leave the
+  funnel at a not-applicable IDH node, sourced to update 7, and run only their own stage.
+- `src/cnswizard.js` — the glioma predicate read every family's entity select at once, and the
+  resection form holds a value in all of them, so an ependymoma looked like a glioma through whatever
+  `dxAdult` happened to be sitting at. It now reads only the select belonging to the chosen family,
+  mirroring `FAMILY_FIELD` in the pathway module. The branch predicates carry the glioma condition
+  themselves, so nothing on the IDH-wildtype branch can fire on an ependymoma. The ependymal family
+  gained a working-entity question of its own, the site question now applies to it because the
+  compartment is what its classification turns on, and K27me3 is asked on the family rather than on a
+  branch it never reaches.
+- `generators/cns_layers.js` — the IDH-wildtype check block fired on a leaked branch value, which is
+  why a seven-year-old ependymoma was being offered mismatch-repair immunohistochemistry for an
+  H3-wildtype high-grade glioma. The block is now gated on the case actually being a diffuse glioma.
+
+The ependymal question set is asserted whole in `tests/cnswizard.test.js`, so a step gated on the
+wrong predicate cannot quietly reappear on it. No fixture changed.

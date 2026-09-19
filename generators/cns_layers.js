@@ -484,7 +484,14 @@ export function pathwayChecks(v, warn, at, e = entity(v)) {
     warn('Homozygous deletion of CDKN2A/B is recorded in an oligodendroglioma. It has not been reported in a grade 2 tumour; reconsider the grade 2 designation. It is not by itself a criterion for grade 3 or grade 4.', 'cdkn2a');
   }
 
-  if (reported && v.idhBranch === 'IDH-wildtype') {
+  // Every check below belongs to the IDH-wildtype diffuse glioma branch: the glioblastoma molecular
+  // routes, the paediatric differential and the mismatch-repair prompt. An ependymal tumour is not
+  // on that branch at all - it is classified on site and the molecular group of that compartment -
+  // so the branch field it is carrying must not let these fire on it.
+  const diffuseGlioma = /glioma|astrocytoma|oligodendroglioma|glioblastoma/i.test(e)
+    && !/ependymoma|ependymal/i.test(`${e} ${v.dxFamily || ''}`);
+
+  if (reported && v.idhBranch === 'IDH-wildtype' && diffuseGlioma) {
     const tertOnly = /^Mutation detected/.test(v.tert || '') && !high
       && v.egfr !== 'Amplified' && v.chr710 !== 'Combined gain of chromosome 7 and loss of chromosome 10';
     if (tertOnly) {

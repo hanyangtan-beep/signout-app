@@ -39,6 +39,7 @@ const SRC = {
   u11: { label: 'cIMPACT-NOW update 11', url: 'https://onlinelibrary.wiley.com/doi/10.1111/bpa.70035' },
   u12: { label: 'cIMPACT-NOW update 12', url: 'https://academic.oup.com/neuro-oncology/advance-article/doi/10.1093/neuonc/noag108/8687120' },
   u2: { label: 'cIMPACT-NOW update 2', url: 'https://pubmed.ncbi.nlm.nih.gov/29497819/' },
+  u7: { label: 'cIMPACT-NOW update 7', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC8018155/' },
 };
 
 const arr = (x) => (Array.isArray(x) ? x : x === undefined || x === null || x === '' ? [] : [x]);
@@ -154,8 +155,18 @@ function funnelStage(c) {
     panel.markers,
     { note: panel.note, test: panel.test, source: SRC.funnel }));
 
-  if (!c.glioma && !c.ependymal) {
-    nodes.push(node('idh', 'IDH status', 'na', 'The IDH funnel runs for the diffuse gliomas. This case is not on it.', { source: SRC.cns5 }));
+  // The IDH funnel is a diffuse glioma funnel. Ependymal tumours are classified on anatomical site
+  // with the molecular group of that compartment - supratentorial ZFTA or YAP1, posterior fossa A or
+  // B, spinal MYCN - and IDH has no part in it
+  // (https://pmc.ncbi.nlm.nih.gov/articles/PMC11543070/, cIMPACT-NOW update 7
+  // https://pmc.ncbi.nlm.nih.gov/articles/PMC8018155/). They leave the funnel here for their own
+  // stage rather than being asked for a stain and a branch that mean nothing on them.
+  if (!c.glioma) {
+    nodes.push(node('idh', 'IDH status', 'na',
+      c.ependymal
+        ? 'Ependymal tumours are classified on site and the molecular group of that compartment. The IDH funnel is a diffuse glioma funnel and does not run here.'
+        : 'The IDH funnel runs for the diffuse gliomas. This case is not on it.',
+      { source: c.ependymal ? SRC.u7 : SRC.cns5 }));
     return { id: 'funnel', label: 'The funnel', nodes };
   }
 

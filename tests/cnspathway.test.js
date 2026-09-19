@@ -462,3 +462,17 @@ test('an empty pathway draws an empty chart rather than throwing', () => {
   assert.deepEqual(c.stages, []);
   assert.deepEqual(c.links, []);
 });
+
+test('an ependymoma leaves the funnel at IDH rather than being asked for it', () => {
+  const p = pathway(base({
+    dxFamily: 'Ependymal tumours', dxEpendymal: 'Posterior fossa ependymoma, group PFA',
+    patientAge: 7, site: 'Cerebellum',
+  }));
+  assert.equal(p.branch, 'ependymoma');
+  const funnel = p.stages.find((s) => s.id === 'funnel').nodes.map((n) => n.id);
+  assert.deepEqual(funnel, ['context', 'morphology', 'ihc', 'idh']);
+  const idh = find(p, 'idh');
+  assert.equal(idh.state, 'na');
+  assert.match(idh.detail, /site and the molecular group/);
+  assert.doesNotMatch(p.nextTest || '', /IDH/);
+});

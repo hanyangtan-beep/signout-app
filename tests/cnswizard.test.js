@@ -33,7 +33,9 @@ test('the funnel opens on age and morphology before any molecular question', () 
   // A field still sitting on its schema default is asked rather than assumed, so the family step
   // only clears once the family has actually been chosen.
   assert.equal(idOf(base({ patientAge: 62, dxFamily: 'Adult-type diffuse gliomas' })), 'family');
-  assert.equal(idOf(base({ patientAge: 62, dxFamily: 'Ependymal tumours' })), 'site');
+  // The ependymal family has a working-entity question of its own now, in the same place the
+  // adult-glioma family has one, so it comes before the site rather than the site coming first.
+  assert.equal(idOf(base({ patientAge: 62, dxFamily: 'Ependymal tumours' })), 'epEntity');
   assert.equal(idOf(base({ patientAge: 62, dxFamily: 'Adult-type diffuse gliomas', dxAdult: 'Glioblastoma, IDH-wildtype' }), ['family']), 'site');
 });
 
@@ -125,4 +127,28 @@ test('ATRX loss drops the 1p/19q question, and it comes back for an oligodendrog
   assert.ok(!visibleSteps(steps, v).some((s) => s.id === 'codel'));
   const oligo = { ...v, dxAdult: 'Oligodendroglioma, IDH-mutant and 1p/19q-codeleted' };
   assert.ok(visibleSteps(steps, oligo).some((s) => s.id === 'codel'));
+});
+
+test('an ependymoma is asked K27me3 without ever reaching the IDH branch', () => {
+  const v = base({
+    dxFamily: 'Ependymal tumours', dxEpendymal: 'Posterior fossa ependymoma, group PFA',
+    patientAge: 7, site: 'Cerebellum',
+  });
+  const ids = visibleSteps(steps, v).map((s) => s.id);
+  assert.ok(!ids.includes('idh1R132H'), `IDH asked: ${ids.join(' ')}`);
+  assert.ok(!ids.includes('idhBranch'));
+  assert.ok(ids.includes('h3k27me3'), `K27me3 missing: ${ids.join(' ')}`);
+  assert.ok(ids.includes('ezhip'));
+});
+
+test('an ependymoma is asked none of the glioblastoma molecular questions', () => {
+  const v = base({
+    dxFamily: 'Ependymal tumours', dxEpendymal: 'Posterior fossa ependymoma, group PFA',
+    patientAge: 7, site: 'Cerebellum',
+  });
+  const ids = visibleSteps(steps, v).map((s) => s.id);
+  for (const id of ['molStatus', 'idh1R132H', 'idhSeq', 'idhBranch', 'tert', 'egfr', 'chr710']) {
+    assert.ok(!ids.includes(id), `${id} asked of an ependymoma: ${ids.join(' ')}`);
+  }
+  assert.deepEqual(ids, ['age', 'family', 'epEntity', 'site', 'basicIhc', 'h3k27me3', 'ezhip', 'methylation', 'grade', 'histClass']);
 });
