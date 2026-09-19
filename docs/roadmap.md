@@ -100,7 +100,14 @@ Docs
 
 ## Now
 
-_Empty. Frozen macro parsing shipped 2026-09-18._
+### Brain and CNS — biopsy + smear                       Size: M
+Why:        **66 cases, 1.5 per cent** — brain 21, brain tumour 14, plus parietal / occipital / periventricular / CPA / suprasellar lesions and sphenoidal-ridge meningiomas. No template; all free text today.
+Change:     new template `cns_biopsy` (CNS, kind biopsy, header "Brain"): site pick-list matching the export vocabulary (frontal / parietal / temporal / occipital lobe, periventricular, suprasellar, sellar, cerebellopontine angle, posterior fossa, spinal), specimen (stereotactic core, open biopsy, debulking, smear / squash preparation), and a diagnosis list on **WHO CNS5** — meningioma with grade and subtype, diffuse glioma with the integrated-diagnosis structure (IDH, 1p/19q, ATRX, H3), pituitary neuroendocrine tumour, schwannoma, metastatic carcinoma with the site-of-origin panel, lymphoma, abscess / demyelination / gliosis as the non-neoplastic answers; IHC group (GFAP, OLIG2, IDH1 R132H, ATRX, p53, Ki-67, EMA, SSTR2A, progesterone receptor, synaptophysin, CK, CD20, CD3) printed in one paragraph with the microscopy; molecular hooks as pending-result snippets rather than result fields; smear-preparation wording as its own short block when the specimen is a squash. **Grading is WHO CNS5, not AJCC — no staging module.**
+Untouched:  frozen section template (the CNS frozen / smear scenario is card (d) below and ships separately).
+Accept:     fixtures for a WHO grade 1 meningioma, an IDH-wildtype glioblastoma with the integrated diagnosis line, and a metastatic adenocarcinoma with TTF-1 positive; CNS appears as its own system in the menus; the CNS-Meningioma placeholder retired.
+Verify:     tests + browser (light)
+Ship:       with batch
+Spec:       card is the spec
 
 ## Next
 
@@ -128,15 +135,6 @@ Accept:     element order against the saved page; fixtures for a dysplasia biops
 Verify:     tests + browser (light)
 Ship:       one batch, one publish
 Depends on: nothing outstanding
-
-### Brain and CNS — biopsy + smear                       Size: M
-Why:        **66 cases, 1.5 per cent** — brain 21, brain tumour 14, plus parietal / occipital / periventricular / CPA / suprasellar lesions and sphenoidal-ridge meningiomas. No template; all free text today.
-Change:     new template `cns_biopsy` (CNS, kind biopsy, header "Brain"): site pick-list matching the export vocabulary (frontal / parietal / temporal / occipital lobe, periventricular, suprasellar, sellar, cerebellopontine angle, posterior fossa, spinal), specimen (stereotactic core, open biopsy, debulking, smear / squash preparation), and a diagnosis list on **WHO CNS5** — meningioma with grade and subtype, diffuse glioma with the integrated-diagnosis structure (IDH, 1p/19q, ATRX, H3), pituitary neuroendocrine tumour, schwannoma, metastatic carcinoma with the site-of-origin panel, lymphoma, abscess / demyelination / gliosis as the non-neoplastic answers; IHC group (GFAP, OLIG2, IDH1 R132H, ATRX, p53, Ki-67, EMA, SSTR2A, progesterone receptor, synaptophysin, CK, CD20, CD3) printed in one paragraph with the microscopy; molecular hooks as pending-result snippets rather than result fields; smear-preparation wording as its own short block when the specimen is a squash. **Grading is WHO CNS5, not AJCC — no staging module.**
-Untouched:  frozen section template (the CNS frozen / smear scenario is card (d) below and ships separately).
-Accept:     fixtures for a WHO grade 1 meningioma, an IDH-wildtype glioblastoma with the integrated diagnosis line, and a metastatic adenocarcinoma with TTF-1 positive; CNS appears as its own system in the menus; the CNS-Meningioma placeholder retired.
-Verify:     tests + browser (light)
-Ship:       with batch
-Spec:       card is the spec
 
 ### Joint fluid and CSF cytology                         Size: S; one card, two templates
 Why:        **84 cases together, 1.8 per cent** — joint fluid 44 (knee 34, plus elbow, hip, shoulder) and CSF 40 (lumbar puncture and ventricular). Both are short, highly formulaic reports and both are typed by hand today.
