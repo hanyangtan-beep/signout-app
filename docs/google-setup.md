@@ -34,6 +34,23 @@ The app signs into Google in your browser and writes straight to your Drive. Not
 2. Click **Sign in**, choose your account, accept the two permissions.
 3. Enter an accession, draft a case, press **Save** (Cmd/Ctrl+S). The first save creates the `Sign-out cases` Sheet and the case Doc in the "Pathology reports" folder.
 
+## 5. Letting colleagues in
+
+Each signed-in account works in its own Drive: the folder id in Settings is probed on first save, and an account that cannot write to it gets a folder of its own called "Pathology reports" with its own `Sign-out cases` Sheet inside it. Nobody sees anybody else's cases, and nothing needs to be shared.
+
+What has to change is the Google project, because the app is in *Testing* and only listed test users may sign in.
+
+1. [console.cloud.google.com](https://console.cloud.google.com/) → project `signout-app` → **Google Auth Platform → Audience**.
+2. Under **Test users**, click **Add users**, paste one Gmail address per line, Save. The address must be the exact account the colleague signs in with.
+3. Tell them the address `https://han-signout.pplx.app`, and that Google will show an "unverified app" warning on first sign-in: **Advanced → Go to Sign-out (unsafe)**. That wording is Google's, not a fault in the app.
+
+Limits worth knowing before you add anybody:
+
+- Testing is capped at **100 test users**, and a test user consumes the quota once added ([Google Cloud console help](https://support.google.com/cloud/answer/15549945?hl=en)).
+- A test user's authorisation **expires seven days after consent**, so each colleague re-approves the app weekly ([same page](https://support.google.com/cloud/answer/15549945?hl=en)). The exemption for identity-only scopes does not apply here because the app requests Drive and Sheets.
+- Publishing the project **In production** removes the allowlist, so any Gmail account can sign in without being added — but an unverified project requesting the sensitive `spreadsheets` scope is capped at **100 users over the lifetime of the project, and the cap cannot be reset** ([OAuth app state overview](https://developers.google.com/identity/protocols/oauth2/production-readiness/overview)). Google states a personal-use app under 100 users need not be verified and that users may click through the warning ([when verification is not needed](https://support.google.com/cloud/answer/13464323?hl=en)).
+- The cap and the warning both come from the scope mix. `spreadsheets` is **sensitive**; `drive.file` is **non-sensitive**; full `drive` is **restricted** ([Sheets API scopes](https://developers.google.com/workspace/sheets/api/scopes)). An app requesting only non-sensitive scopes has no cap and no warning screen.
+
 ## Notes
 
 - **drive.file scope** lets the app see only files it created. If the first save fails with `File not found` on the folder, Drive is refusing to place an app-created file into a folder the app cannot see. Switch *Drive scope* in Settings to `drive` (full access to your Drive, still only your own account) and sign in again.
