@@ -120,3 +120,28 @@ form's own meningioma panel field. Two tests cover it, one per fault. No fixture
   `a1 a2 meth`.
 - **The footer shows every check, not the first.** A case can raise several at once — the mitoses-at-threshold
   starting point raises two — and showing one silently hid the rest.
+
+## Correction: ATRX before 1p/19q
+
+The chart asked 1p/19q before ATRX. It was raised on review and it was wrong, in two ways. The
+bench runs the cheap stains first, and the guidance allows the diagnosis to stop there: cIMPACT-NOW
+update 2 holds that a diffuse astrocytic glioma with an IDH mutation plus loss of ATRX nuclear
+expression and/or strong, diffuse p53 immunopositivity can be diagnosed as astrocytoma, IDH-mutant
+"in the absence of 1p/19q testing"
+([cIMPACT-NOW round 1 summary](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8028562/),
+[update 2](https://pubmed.ncbi.nlm.nih.gov/29497819/)). FISH belongs where those stains leave the
+case open — oligodendroglial morphology with ATRX retained. The ledger in
+`docs/specs/cns-cimpact-pathways.md` already recorded update 2; the chart simply did not follow it.
+
+Changed in `src/`, not only in the trial, since both surfaces had the order wrong:
+
+- `src/cnspathway.js` — stage A1 now runs infiltrating, IDH, ATRX, p53, 1p/19q. With ATRX lost or
+  p53 abnormal the 1p/19q node reads not applicable, drops its named test, and carries a note saying
+  the diagnosis can be made without it and when to test anyway. A named oligodendroglioma is exempt:
+  codeletion is an essential criterion there and no stain stands in for it.
+- `src/cnswizard.js` — the ATRX question comes before the 1p/19q question, and the 1p/19q question is
+  skipped entirely on the same condition, through a shared `astroByIhc` predicate that mirrors the
+  pathway's, so the chart and the step list cannot disagree about whether FISH is still wanted.
+
+Five tests cover it: the order itself, the drop on ATRX loss, and the oligodendroglioma exemption,
+on both surfaces. No fixture changed — no printed line moves, because none of this reaches a report.

@@ -110,14 +110,11 @@ const STEPS = [
   },
 
   // ----- branch A: IDH-mutant -----
-  {
-    id: 'codel',
-    field: 'codel',
-    question: 'What does 1p/19q testing show?',
-    why: 'Codeletion separates oligodendroglioma from astrocytoma on the IDH-mutant branch, and the two are graded by different rules from here on.',
-    applies: (v, ctx) => ctx.mutant(v),
-    answered: (v) => answeredSelect(v, 'codel'),
-  },
+  // ATRX and p53 are asked before 1p/19q, and 1p/19q is then asked only of the cases they leave
+  // open. cIMPACT-NOW update 2 (https://pubmed.ncbi.nlm.nih.gov/29497819/) allows astrocytoma,
+  // IDH-mutant to be diagnosed on IDH mutation with ATRX loss and/or strong diffuse p53 "in the
+  // absence of 1p/19q testing" (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8028562/), and it is
+  // also the cheaper stain-first order the bench runs.
   {
     id: 'atrx',
     field: 'atrx',
@@ -126,6 +123,14 @@ const STEPS = [
     applies: (v, ctx) => ctx.mutant(v),
     answered: (v) => answeredSelect(v, 'atrx'),
     optional: true,
+  },
+  {
+    id: 'codel',
+    field: 'codel',
+    question: 'What does 1p/19q testing show?',
+    why: 'Codeletion separates oligodendroglioma from astrocytoma on the IDH-mutant branch, and the two are graded by different rules from here on.',
+    applies: (v, ctx) => ctx.mutant(v) && (ctx.oligo(v) || !ctx.astroByIhc(v)),
+    answered: (v) => answeredSelect(v, 'codel'),
   },
   {
     id: 'features',
@@ -281,6 +286,11 @@ function context() {
     // absence of a prior lower-grade glioma is the reader's to know: neither CNS form records it.
     classicGbm: (v) => /glioblastoma/i.test(named(v))
       && (Array.isArray(v.features) ? v.features : []).some((f) => /Microvascular|Necrosis/i.test(String(f))),
+    // The update 2 surrogate: on the IDH-mutant branch, ATRX loss and/or strong diffuse p53 settles
+    // astrocytoma without 1p/19q testing. Mirrors `astroSettled` in src/cnspathway.js so the step
+    // list and the chart cannot disagree about whether FISH is still wanted.
+    astroByIhc: (v) => mutant(v)
+      && (v.atrx === 'Loss of nuclear expression' || /Abnormal/.test(v.p53 || '')),
   };
 }
 

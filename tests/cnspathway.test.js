@@ -88,19 +88,45 @@ test('a negative R132H stain makes sequencing outstanding, and names it', () => 
   assert.match(p.nextTest, /sequencing/i);
 });
 
-test('an IDH-mutant astrocytoma with no 1p/19q result shows that node outstanding and names the test', () => {
+test('with no ATRX and no 1p/19q result, ATRX is asked before 1p/19q and both are outstanding', () => {
+  const p = pathway(base({
+    ...GLIOMA, patientAge: 38, site: 'Frontal lobe',
+    dxAdult: 'Astrocytoma, IDH-mutant',
+    idh1R132H: 'Positive', molStatus: 'Reported', idhBranch: 'IDH-mutant',
+  }));
+  assert.equal(p.branch, 'A');
+  assert.deepEqual(stageIds(p), ['funnel', 'a1', 'a2']);
+  const a1 = p.stages.find((s) => s.id === 'a1').nodes.map((n) => n.id);
+  assert.ok(a1.indexOf('atrx') < a1.indexOf('codel'), 'ATRX comes before 1p/19q');
+  const codel = find(p, 'codel');
+  assert.equal(codel.state, 'outstanding');
+  assert.match(codel.test, /1p\/19q/);
+  assert.equal(find(p, 'atrx').state, 'outstanding');
+});
+
+test('ATRX loss settles astrocytoma, so 1p/19q stops being asked for', () => {
   const p = pathway(base({
     ...GLIOMA, patientAge: 38, site: 'Frontal lobe',
     dxAdult: 'Astrocytoma, IDH-mutant',
     idh1R132H: 'Positive', molStatus: 'Reported', idhBranch: 'IDH-mutant',
     atrx: 'Loss of nuclear expression',
   }));
-  assert.equal(p.branch, 'A');
-  assert.deepEqual(stageIds(p), ['funnel', 'a1', 'a2']);
   const codel = find(p, 'codel');
-  assert.equal(codel.state, 'outstanding');
-  assert.match(codel.test, /1p\/19q/);
+  assert.equal(codel.state, 'na');
+  assert.equal(codel.test, undefined);
+  assert.match(codel.note, /without 1p\/19q testing/);
   assert.equal(find(p, 'atrx').state, 'satisfied');
+  assert.doesNotMatch(p.nextTest || '', /1p\/19q/);
+});
+
+test('a named oligodendroglioma still wants 1p/19q whatever the stains show', () => {
+  const p = pathway(base({
+    ...GLIOMA, patientAge: 45, site: 'Frontal lobe',
+    dxAdult: 'Oligodendroglioma, IDH-mutant and 1p/19q-codeleted',
+    idh1R132H: 'Positive', molStatus: 'Reported', idhBranch: 'IDH-mutant',
+    atrx: 'Loss of nuclear expression',
+  }));
+  assert.equal(find(p, 'codel').state, 'outstanding');
 });
 
 test('the astrocytoma grading ladder reads the update 12 criteria', () => {

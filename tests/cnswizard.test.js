@@ -105,3 +105,24 @@ test('the wizard never writes a diagnosis - the same ground is covered by the pa
   assert.ok(out.some((c) => c.level === 'warn' && /under 40/.test(c.message)), 'the solitary EGFR caveat is a panel warning too');
   assert.ok(out.every((c) => c.level === 'warn' || c.level === 'info'), 'pathway checks never raise an error that blocks the report');
 });
+
+test('the guided intake asks ATRX before 1p/19q on the IDH-mutant branch', () => {
+  const v = base({
+    dxFamily: 'Adult-type diffuse gliomas', dxAdult: 'Astrocytoma, IDH-mutant',
+    patientAge: 38, site: 'Frontal lobe', idh1R132H: 'Positive',
+    molStatus: 'Reported', idhBranch: 'IDH-mutant',
+  });
+  const ids = visibleSteps(steps, v).map((s) => s.id);
+  assert.ok(ids.indexOf('atrx') < ids.indexOf('codel'), `order was ${ids.join(' ')}`);
+});
+
+test('ATRX loss drops the 1p/19q question, and it comes back for an oligodendroglioma', () => {
+  const v = base({
+    dxFamily: 'Adult-type diffuse gliomas', dxAdult: 'Astrocytoma, IDH-mutant',
+    patientAge: 38, site: 'Frontal lobe', idh1R132H: 'Positive',
+    molStatus: 'Reported', idhBranch: 'IDH-mutant', atrx: 'Loss of nuclear expression',
+  });
+  assert.ok(!visibleSteps(steps, v).some((s) => s.id === 'codel'));
+  const oligo = { ...v, dxAdult: 'Oligodendroglioma, IDH-mutant and 1p/19q-codeleted' };
+  assert.ok(visibleSteps(steps, oligo).some((s) => s.id === 'codel'));
+});

@@ -38,6 +38,7 @@ const SRC = {
   u9: { label: 'cIMPACT-NOW update 9', url: 'https://academic.oup.com/noa/article/7/1/vdae228/7942502' },
   u11: { label: 'cIMPACT-NOW update 11', url: 'https://onlinelibrary.wiley.com/doi/10.1111/bpa.70035' },
   u12: { label: 'cIMPACT-NOW update 12', url: 'https://academic.oup.com/neuro-oncology/advance-article/doi/10.1093/neuonc/noag108/8687120' },
+  u2: { label: 'cIMPACT-NOW update 2', url: 'https://pubmed.ncbi.nlm.nih.gov/29497819/' },
 };
 
 const arr = (x) => (Array.isArray(x) ? x : x === undefined || x === null || x === '' ? [] : [x]);
@@ -204,9 +205,16 @@ function branchAEntity(c) {
     shown('The second essential criterion for both', v.idh1R132H === 'Positive' ? 'R132H positive' : (done(v, 'idhSeq') ? v.idhSeq : '')),
     { source: SRC.cns5 }));
 
-  nodes.push(node('codel', 'Combined whole-arm 1p/19q deletion', codelDone ? 'satisfied' : 'outstanding',
-    shown('Present defines oligodendroglioma; excluded, with ATRX loss or an ATRX mutation, defines astrocytoma', codelDone ? v.codel : ''),
-    { test: '1p/19q testing', source: SRC.cns5 }));
+  // ATRX and p53 come before 1p/19q, which is the order the bench actually runs and the order the
+  // guidance allows: cIMPACT-NOW update 2 (https://pubmed.ncbi.nlm.nih.gov/29497819/) holds that a
+  // diffuse astrocytic glioma with an IDH mutation plus ATRX loss and/or strong diffuse p53 can be
+  // diagnosed as astrocytoma, IDH-mutant "in the absence of 1p/19q testing"
+  // (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8028562/). FISH is therefore reserved for the
+  // cases those stains leave open - morphologically oligodendroglial with ATRX retained.
+  const p53Abnormal = /Abnormal/.test(v.p53 || '');
+  // Not where oligodendroglioma is the named diagnosis: there codeletion is an essential criterion
+  // and no stain stands in for it.
+  const astroSettled = (atrxLost || p53Abnormal) && !c.oligo;
 
   nodes.push(node('atrx', 'ATRX', done(v, 'atrx') ? 'satisfied' : 'outstanding',
     shown('Loss supports astrocytoma; retained nuclear staining is desirable in oligodendroglioma', done(v, 'atrx') ? v.atrx : ''),
@@ -221,6 +229,17 @@ function branchAEntity(c) {
   nodes.push(node('p53', 'TP53 or p53', done(v, 'p53') ? 'satisfied' : 'na',
     shown('Desirable, not essential. Strong nuclear staining above 10 per cent of tumour cells; above 40 per cent reads more reliably in practice, and negative staining does not exclude a mutation', done(v, 'p53') ? v.p53 : ''),
     { source: SRC.funnel }));
+
+  nodes.push(node('codel', 'Combined whole-arm 1p/19q deletion',
+    codelDone ? 'satisfied' : (astroSettled ? 'na' : 'outstanding'),
+    shown('Present defines oligodendroglioma; excluded, with ATRX loss or an ATRX mutation, defines astrocytoma', codelDone ? v.codel : ''),
+    {
+      note: astroSettled && !codelDone
+        ? `Astrocytoma can be diagnosed without 1p/19q testing on ${atrxLost && p53Abnormal ? 'ATRX loss with strong diffuse p53' : atrxLost ? 'ATRX loss' : 'strong diffuse p53'} in an IDH-mutant diffuse astrocytic glioma. Test where the morphology is oligodendroglial and ATRX is retained.`
+        : undefined,
+      test: astroSettled ? undefined : '1p/19q testing',
+      source: astroSettled ? SRC.u2 : SRC.cns5,
+    }));
 
   if (codeleted && (atrxLost || /Abnormal/.test(v.p53 || ''))) {
     nodes.push(node('dual', 'Dual-genotype IDH-mutant glioma', 'outstanding',
