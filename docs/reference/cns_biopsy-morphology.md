@@ -1,0 +1,63 @@
+# Brain and CNS biopsy — morphology and grading grounding record
+
+Sources behind `schemas/cns_biopsy.json` and `generators/cns_biopsy.js`. None of this text is printed:
+the report register carries only what is seen down the microscope. Grading logic is tested in
+`tests/cns_biopsy.test.js`.
+
+## Classification and layered reporting
+
+- WHO CNS5 keeps the layered integrated report: integrated diagnosis with the CNS WHO grade, then
+  the histological appearance, then the molecular parameters. The generator writes the head line and
+  the `- Histological appearance` / `- Immunohistochemistry` / `- Molecular parameters` /
+  `- CNS WHO grade` layers underneath, and the `layered` option switches the layers off for a case
+  that does not need them. [ICCR CNS integrated diagnosis dataset, 2nd ed v2.1](https://www.iccr-cancer.org/wp-content/uploads/2026/03/ICCR-CNS-Integrated-diagnosis-2nd-ed-v2.1-bookmark-1.pdf)
+- Grading is within tumour type and written "CNS WHO grade N" in arabic numerals. There is no AJCC
+  staging module for primary CNS tumours. [WHO CNS5 summary, Louis et al., Neuro-Oncology 2021](https://pmc.ncbi.nlm.nih.gov/articles/PMC8328017/)
+- UK dataset practice for the report structure and the minimum molecular set.
+  [RCPath G069 dataset for tumours of the CNS in adults](https://www.rcpath.org/resourceLibrary/g069-dataset-for-histopathological-reporting-of-tumours-of-central-nervous-system-in-adults-including-the-pituitary-gland.html)
+
+## Diffuse gliomas
+
+- An adult-type IDH-wildtype diffuse astrocytic glioma is diagnosed as glioblastoma, CNS WHO grade 4,
+  when it shows microvascular proliferation or necrosis, **or** any of: TERT promoter mutation, EGFR
+  amplification, combined gain of chromosome 7 and loss of chromosome 10. The template warns when a
+  glioblastoma is selected with none of these recorded. [WHO CNS5 summary](https://pmc.ncbi.nlm.nih.gov/articles/PMC8328017/)
+- All IDH-mutant diffuse astrocytic tumours are one entity, astrocytoma IDH-mutant, graded 2, 3 or 4.
+  Homozygous deletion of CDKN2A/B makes it grade 4 even without microvascular proliferation or
+  necrosis — the generator applies this in `gliomaGrade`. [WHO CNS5 summary](https://pmc.ncbi.nlm.nih.gov/articles/PMC8328017/)
+- Oligodendroglioma requires an IDH mutation together with 1p/19q codeletion; the template warns when
+  the codeletion is absent from a reported molecular set. Grade 3 on microvascular proliferation,
+  necrosis or brisk mitoses. [WHO CNS5 summary](https://pmc.ncbi.nlm.nih.gov/articles/PMC8328017/)
+- Diffuse midline glioma, H3 K27-altered is CNS WHO grade 4 irrespective of the histological
+  appearance. [WHO CNS5 summary](https://pmc.ncbi.nlm.nih.gov/articles/PMC8328017/)
+
+## Meningioma grading
+
+- CNS WHO grade 2 on any of: 4–19 mitoses per 10 high-power fields (1.6 mm2); three or more of the
+  five atypical features (high cellularity, small cell change, prominent nucleoli, sheet-like growth,
+  spontaneous necrosis); brain invasion; chordoid or clear cell morphology.
+- CNS WHO grade 3 on any of: 20 or more mitoses per 10 high-power fields; anaplastic cytology;
+  papillary or rhabdoid morphology; TERT promoter mutation (C228T/C250T); homozygous deletion of
+  CDKN2A and/or CDKN2B.
+- Brain invasion means tumour extending through the leptomeninges into brain parenchyma; extension
+  along Virchow–Robin spaces does not count. The template records "no adjacent brain parenchyma is
+  present" separately from "not identified", and notes in Checks that grading then rests on the
+  tissue examined.
+  [Brain invasion in meningioma, Neuro-Oncology 2022](https://academic.oup.com/neuro-oncology/article/24/9/1524/6525422) ·
+  [PMC9435498](https://pmc.ncbi.nlm.nih.gov/articles/PMC9435498/) ·
+  [cIMPACT-NOW update 8, Neuro-Oncology 2025](https://academic.oup.com/neuro-oncology/article/27/2/319/7745776)
+- Two atypical features sit on the grade 1 / grade 2 border; the template raises an info check and
+  offers the molecular snippet rather than pushing the grade either way.
+
+## Smear and squash preparations
+
+The smear block is written before the paraffin sentence and carries its own morphology per finding
+(fibrillary glial background for gliomas, cohesive whorls for meningioma, discohesive large cells for
+lymphoma, cohesive epithelioid clusters for metastasis). With "Smear preparation only" the paraffin
+sentence is phrased as the residual tissue, and Checks asks whether paraffin sections were examined.
+
+## Local case mix
+
+The roadmap card was sized on the five-year local corpus: 66 cases, 1.5 per cent — brain 21, brain
+tumour 14, with parietal, occipital, periventricular, cerebellopontine angle and suprasellar lesions
+and sphenoidal-ridge meningiomas. The site list and the procedure list follow that distribution.

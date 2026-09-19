@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 56,
+  "count": 57,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -2994,6 +2994,82 @@
       "generator": "ampulla_carcinoma",
       "generatorPath": "generators/ampulla_carcinoma.js",
       "schemaPath": "schemas/ampulla_carcinoma.json"
+    },
+    {
+      "id": "cns_biopsy",
+      "name": "Brain and CNS biopsy",
+      "shortName": "Brain · biopsy / smear",
+      "label": "Brain",
+      "organ": "BRAIN",
+      "system": "CNS",
+      "kind": "biopsy",
+      "rank": 60,
+      "aliases": [
+        "CNS",
+        "glioma",
+        "glioblastoma",
+        "meningioma",
+        "smear",
+        "squash",
+        "stereotactic",
+        "craniotomy",
+        "GBM",
+        "IDH",
+        "pituitary",
+        "schwannoma",
+        "metastasis"
+      ],
+      "match": {
+        "site": [
+          "brain",
+          "brain tumour",
+          "cerebral",
+          "cerebellum",
+          "dura",
+          "meninges",
+          "frontal lobe",
+          "parietal lobe",
+          "temporal lobe",
+          "occipital lobe",
+          "periventricular",
+          "suprasellar",
+          "sellar",
+          "cerebellopontine angle",
+          "posterior fossa",
+          "spinal cord",
+          "sphenoidal ridge",
+          "sphenoid wing"
+        ],
+        "procedure": [
+          "biopsy",
+          "stereotactic biopsy",
+          "craniotomy",
+          "excision",
+          "debulking",
+          "smear",
+          "squash"
+        ],
+        "clinical": [
+          "glioma",
+          "glioblastoma",
+          "meningioma",
+          "brain tumour",
+          "space-occupying lesion",
+          "metastasis",
+          "pituitary adenoma",
+          "lymphoma"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "cns_biopsy",
+      "generatorPath": "generators/cns_biopsy.js",
+      "schemaPath": "schemas/cns_biopsy.json"
     },
     {
       "id": "generic",

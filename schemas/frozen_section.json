@@ -678,6 +678,12 @@
         "Epidermoid cyst",
         "Infarcted tissue with adjacent brain",
         "Metastatic carcinoma",
+        "Low-grade glial neoplasm",
+        "Glial neoplasm, grade deferred",
+        "Lymphoid infiltrate, favour lymphoma",
+        "Necrotic tissue only, non-diagnostic",
+        "Lesional tissue present, classification deferred",
+        "Reactive gliosis, no tumour",
         "Inadequate for diagnosis",
         "Deferred",
         "Other"
@@ -685,7 +691,9 @@
       "optionLabels": {
         "Deferred": "Defer to paraffin",
         "Other": "Other (free text)",
-        "Inadequate for diagnosis": "Inadequate for diagnosis (non-diagnostic)"
+        "Inadequate for diagnosis": "Inadequate for diagnosis (non-diagnostic)",
+        "Necrotic tissue only, non-diagnostic": "Necrotic tissue only (non-diagnostic)",
+        "Lesional tissue present, classification deferred": "Lesional tissue present, classification deferred"
       },
       "default": "No malignancy",
       "showIf": {
@@ -717,6 +725,30 @@
         "is": "Metastatic carcinoma"
       },
       "group": "CNS / pituitary"
+    },
+    {
+      "id": "cnsAdequate",
+      "label": "Lesional tissue adequate for paraffin",
+      "type": "checkbox",
+      "default": false,
+      "showIf": {
+        "field": "scenario",
+        "is": "CNS / pituitary"
+      },
+      "group": "CNS / pituitary",
+      "help": "Prints that lesional tissue remains for paraffin sections after the frozen and the smears."
+    },
+    {
+      "id": "cnsFresh",
+      "label": "Tissue reserved fresh for molecular / flow cytometry",
+      "type": "checkbox",
+      "default": false,
+      "showIf": {
+        "field": "scenario",
+        "is": "CNS / pituitary"
+      },
+      "group": "CNS / pituitary",
+      "help": "Fresh tissue cannot be taken later; flow cytometry on a suspected lymphoma depends on it."
     },
     {
       "id": "ovSide",
@@ -2019,5 +2051,17 @@
       "of": "lymph nodes?|nodes?",
       "near": "node"
     }
-  }
+  },
+  "snippets": [
+    {
+      "id": "cns_integrated_to_follow",
+      "label": "CNS — integrated diagnosis to follow",
+      "text": "WHO CNS5 integrated diagnosis to follow (IDH, 1p/19q, MGMT as indicated)."
+    },
+    {
+      "id": "cns_meningioma_grade_deferred",
+      "label": "CNS — meningioma grading deferred",
+      "text": "Grading of the meningioma is deferred to paraffin sections."
+    }
+  ]
 }

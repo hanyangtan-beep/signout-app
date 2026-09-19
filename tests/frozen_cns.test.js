@@ -145,3 +145,81 @@ test('intake routes CNS wording to the CNS scenario, before the lung test on "lo
   }
   assert.equal(frozenScenario('Right upper lobe wedge'), 'Lung wedge / nodule');
 });
+
+// ---------- scenario card (d): the answers the frozen room actually gives ----------
+
+test('the six added CNS answers each print their own result line', () => {
+  const expect = {
+    'Low-grade glial neoplasm': 'Low-grade glial neoplasm.',
+    'Glial neoplasm, grade deferred': 'Glial neoplasm; grading deferred to paraffin sections.',
+    'Lymphoid infiltrate, favour lymphoma': 'Atypical lymphoid infiltrate, favour lymphoma.',
+    'Necrotic tissue only, non-diagnostic': 'Necrotic tissue only; non-diagnostic.',
+    'Lesional tissue present, classification deferred': 'Lesional tissue present; classification deferred to paraffin sections.',
+    'Reactive gliosis, no tumour': 'Reactive gliosis; no tumour identified.',
+  };
+  const opts = schema.fields.find((f) => f.id === 'cnsResult').options;
+  for (const [result, line] of Object.entries(expect)) {
+    assert.ok(opts.includes(result), `missing option ${result}`);
+    const cs = fsCase(1);
+    part(cs, 0, { scenario: CNS, cnsResult: result });
+    assert.equal(generate(schema, generator, cs).intraop, line, result);
+  }
+});
+
+test('grade-deferred and non-diagnostic answers take the deferral paragraph', () => {
+  for (const r of ['Glial neoplasm, grade deferred', 'Necrotic tissue only, non-diagnostic', 'Lesional tissue present, classification deferred']) {
+    const cs = fsCase(1);
+    part(cs, 0, { scenario: CNS, cnsResult: r });
+    const out = generate(schema, generator, cs);
+    assert.match(out.microscopy, /^The frozen section diagnosis was deferred\./, r);
+    assert.match(out.diagnosis, /SEE MICROSCOPIC EXAMINATION$/, r);
+  }
+});
+
+test('a glial neoplasm does not close with "no evidence of malignancy"', () => {
+  for (const r of ['Low-grade glial neoplasm', 'Glial neoplasm, grade deferred']) {
+    const cs = fsCase(1);
+    part(cs, 0, { scenario: CNS, cnsResult: r });
+    assert.ok(!/no evidence of malignancy/i.test(generate(schema, generator, cs).microscopy), r);
+  }
+});
+
+test('favour lymphoma is a malignant answer and carries the vascular pattern', () => {
+  const cs = fsCase(1);
+  part(cs, 0, { scenario: CNS, cnsResult: 'Lymphoid infiltrate, favour lymphoma', cnsFresh: true });
+  const out = generate(schema, generator, cs);
+  assert.match(out.microscopy, /disposed around and within vessel walls/);
+  assert.ok(!/no evidence of malignancy/i.test(out.microscopy));
+  assert.equal(out.diagnosis, 'BRAIN, biopsy x frozen section - ATYPICAL LYMPHOID INFILTRATE, FAVOUR LYMPHOMA');
+});
+
+test('the two tissue checkboxes add their sentences to the macro, in order', () => {
+  const cs = fsCase(1);
+  part(cs, 0, { scenario: CNS, cnsResult: 'High-grade glioma', cnsAdequate: true, cnsFresh: true });
+  const out = generate(schema, generator, cs);
+  assert.match(out.macro, /Lesional tissue remains for paraffin sections\. Tissue is reserved fresh for ancillary studies\.$/);
+  const bare = fsCase(1);
+  part(bare, 0, { scenario: CNS, cnsResult: 'High-grade glioma' });
+  assert.ok(!/reserved fresh/.test(generate(schema, generator, bare).macro));
+});
+
+test('checks: smear-only answer, unreserved lymphoma, non-diagnostic sampling', () => {
+  const check = (values) => {
+    const cs = fsCase(1);
+    part(cs, 0, { scenario: CNS, ...values });
+    return (generator.validate(cs.parts[0], { case: cs }) || []);
+  };
+  const smear = check({ cnsPrep: 'Smear only', cnsResult: 'Necrotic tissue only, non-diagnostic' });
+  assert.ok(smear.some((c) => c.level === 'warn' && /smear does not show/i.test(c.message)));
+  const lymphoma = check({ cnsResult: 'Lymphoid infiltrate, favour lymphoma' });
+  assert.ok(lymphoma.some((c) => c.level === 'warn' && /flow cytometry/i.test(c.message)));
+  assert.equal(check({ cnsResult: 'Lymphoid infiltrate, favour lymphoma', cnsFresh: true })
+    .some((c) => /flow cytometry/i.test(c.message)), false);
+  assert.ok(check({ cnsResult: 'Inadequate for diagnosis' }).some((c) => /further sampling/i.test(c.message)));
+});
+
+test('CNS comments are available as snippets', () => {
+  const ids = (schema.snippets || []).map((s) => s.id);
+  assert.ok(ids.includes('cns_integrated_to_follow'));
+  assert.ok(ids.includes('cns_meningioma_grade_deferred'));
+});

@@ -110,7 +110,8 @@ export function macro(part, ctx) {
   // CNS: the smear is the intraoperative preparation and is recorded before the blocks.
   const smear = isCns(v) ? cnsSmearSentence(v) : '';
   const tail = v.cnsPrep === 'Smear only' ? '' : ` ${handling}`;
-  return `(${part.label}) Received in a fresh state ${received}.${smear ? ` ${smear}` : ''}${tail}`;
+  const reserved = isCns(v) ? cnsTissueSentences(v) : '';
+  return `(${part.label}) Received in a fresh state ${received}.${smear ? ` ${smear}` : ''}${tail}${reserved}`;
 }
 
 // ---------- frozen (intraoperative) diagnosis ----------
@@ -122,7 +123,7 @@ const deferred = (v) => v.correlation === 'Deferred'
   || (v.scenario === LU && v.lungResult === 'Deferred')
   || (v.scenario === SLN && v.slnResult === 'Deferred')
   || (v.scenario === 'Nodule / mass' && ['Deferred', 'Inadequate for diagnosis', 'Atypical cells present'].includes(v.noduleResult))
-  || (v.scenario === CNS && ['Deferred', 'Inadequate for diagnosis'].includes(v.cnsResult))
+  || (v.scenario === CNS && CNS_DEFERRED.includes(v.cnsResult))
   || (v.scenario === PD && v.pdResult === 'Atypical, deferred');
 
 const tumour = (v, fallback) => stripDot(v.tumourType) || fallback;
@@ -634,7 +635,12 @@ export const CNS = 'CNS / pituitary';
 const isCns = (v) => v.scenario === CNS;
 const cnsSite = (v) => (v.cnsSite === 'Other' ? (String(v.cnsSiteOther || '').trim() || 'Brain') : (v.cnsSite || 'Brain'));
 const cnsResult = (v) => v.cnsResult || 'No malignancy';
-const CNS_MALIGNANT = ['High-grade glioma', 'Metastatic carcinoma'];
+const CNS_MALIGNANT = ['High-grade glioma', 'Metastatic carcinoma', 'Lymphoid infiltrate, favour lymphoma'];
+// Results that make the frozen answer a deferral rather than a diagnosis.
+const CNS_DEFERRED = ['Deferred', 'Inadequate for diagnosis', 'Glial neoplasm, grade deferred',
+  'Necrotic tissue only, non-diagnostic', 'Lesional tissue present, classification deferred'];
+// Answers that only a frozen section can give; a smear alone does not support them.
+const CNS_FROZEN_ONLY = ['Epidermoid cyst', 'Infarcted tissue with adjacent brain', 'Necrotic tissue only, non-diagnostic'];
 const cnsSmears = (v) => Math.max(1, Math.round(num(v.cnsSmears) ?? 2));
 
 /** "Two smears are prepared." — the squash/smear sentence, inserted before the block sentence. */
@@ -645,8 +651,22 @@ function cnsSmearSentence(v) {
   return `${uc1(word(n))} smear${n === 1 ? ' is' : 's are'} prepared from the tissue.`;
 }
 
+/** "Lesional tissue remains for paraffin sections. Tissue is reserved fresh for ancillary studies." */
+function cnsTissueSentences(v) {
+  const s = [];
+  if (v.cnsAdequate) s.push('Lesional tissue remains for paraffin sections.');
+  if (v.cnsFresh) s.push('Tissue is reserved fresh for ancillary studies.');
+  return s.length ? ` ${s.join(' ')}` : '';
+}
+
 function cnsResultLine(v, ctx) {
   switch (cnsResult(v)) {
+    case 'Low-grade glial neoplasm': return 'Low-grade glial neoplasm.';
+    case 'Glial neoplasm, grade deferred': return 'Glial neoplasm; grading deferred to paraffin sections.';
+    case 'Lymphoid infiltrate, favour lymphoma': return 'Atypical lymphoid infiltrate, favour lymphoma.';
+    case 'Necrotic tissue only, non-diagnostic': return 'Necrotic tissue only; non-diagnostic.';
+    case 'Lesional tissue present, classification deferred': return 'Lesional tissue present; classification deferred to paraffin sections.';
+    case 'Reactive gliosis, no tumour': return 'Reactive gliosis; no tumour identified.';
     case 'Meningioma': return 'Meningioma.';
     case 'Pituitary adenoma': return 'Pituitary adenoma.';
     case 'High-grade glioma': return 'High-grade glioma.';
@@ -666,6 +686,18 @@ function cnsResultLine(v, ctx) {
 
 function cnsTissue(v) {
   switch (cnsResult(v)) {
+    case 'Low-grade glial neoplasm':
+      return 'a mildly hypercellular glial proliferation with elongated bland nuclei in a fibrillary background, without microvascular proliferation or necrosis';
+    case 'Glial neoplasm, grade deferred':
+      return 'a hypercellular glial proliferation with nuclear atypia in a fibrillary background';
+    case 'Lymphoid infiltrate, favour lymphoma':
+      return 'sheets of large atypical lymphoid cells with vesicular nuclei and prominent nucleoli, disposed around and within vessel walls';
+    case 'Necrotic tissue only, non-diagnostic':
+      return 'necrotic tissue and fibrin without viable lesional tissue';
+    case 'Lesional tissue present, classification deferred':
+      return 'the lesional tissue described';
+    case 'Reactive gliosis, no tumour':
+      return 'brain parenchyma with reactive astrocytosis and a scattered macrophage infiltrate';
     case 'Meningioma':
       return 'a meningothelial neoplasm arranged in lobules and whorls, the cells syncytial with indistinct borders, eosinophilic cytoplasm and round nuclei containing intranuclear pseudoinclusions, with scattered psammoma bodies';
     case 'Pituitary adenoma':
@@ -693,6 +725,12 @@ function cnsTissue(v) {
 
 function cnsFinalDx(v) {
   switch (cnsResult(v)) {
+    case 'Low-grade glial neoplasm': return 'LOW-GRADE GLIAL NEOPLASM';
+    case 'Lymphoid infiltrate, favour lymphoma': return 'ATYPICAL LYMPHOID INFILTRATE, FAVOUR LYMPHOMA';
+    case 'Reactive gliosis, no tumour': return 'REACTIVE GLIOSIS; NO TUMOUR IDENTIFIED';
+    case 'Glial neoplasm, grade deferred':
+    case 'Necrotic tissue only, non-diagnostic':
+    case 'Lesional tissue present, classification deferred': return 'SEE MICROSCOPIC EXAMINATION';
     case 'Meningioma': return 'MENINGIOMA';
     case 'Pituitary adenoma': return 'PITUITARY ADENOMA';
     case 'High-grade glioma': return 'HIGH-GRADE GLIOMA';
@@ -897,8 +935,13 @@ function malignant(v) {
     || (v.scenario === 'Nodule / mass' && v.noduleResult === 'Malignant');
 }
 
+// Glial answers that are neoplastic but not graded on the frozen: "no evidence of malignancy"
+// would contradict the neoplasm just reported, so the closing sentence is dropped.
+const CNS_NO_CLOSING = ['Low-grade glial neoplasm', 'Glial neoplasm, grade deferred'];
+
 function closingSentence(v) {
   if (malignant(v) || v.scenario === 'Parathyroid') return '';
+  if (isCns(v) && CNS_NO_CLOSING.includes(cnsResult(v))) return '';
   if (isPd(v) && /dysplasia only$/i.test(pdResult(v))) return 'There is no evidence of invasive carcinoma.';
   if (isPd(v)) return 'There is no evidence of dysplasia or malignancy.';
   if (v.scenario === 'Margin' && v.marginResult === 'Dysplasia only') return 'There is no evidence of invasive malignancy.';
@@ -1110,6 +1153,26 @@ export function validate(part, ctx) {
     if (v.slnResult === 'Isolated tumour cells' && mm !== null && mm > 0.2) warn(`Isolated tumour cells with a largest focus of ${fmt(mm)} mm: isolated tumour cells measure 0.2 mm or less.`, 'slnMetMm');
     if (v.slnResult === 'Isolated tumour cells') info('Isolated tumour cells only: pN0(i+) in the linked synoptic; the intraoperative line reports negative for macrometastasis.');
     if (v.slnResult && v.slnResult !== 'Deferred' && !(ctx?.case?.parts || []).some((p) => p !== part && p.templateId === 'breast_carcinoma')) info('"Add breast synoptic" adds the breast carcinoma resection as the next part with the sentinel node counts pre-filled.');
+    return out;
+  }
+  if (isCns(v)) {
+    const r = cnsResult(v);
+    if (v.cnsPrep === 'Smear only' && CNS_FROZEN_ONLY.includes(r)) {
+      warn('Smear only: this answer rests on architecture that the smear does not show. Take a frozen section or soften the answer.', 'cnsPrep');
+    }
+    if (r === 'Lymphoid infiltrate, favour lymphoma' && !v.cnsFresh) {
+      warn('Favour lymphoma with no fresh tissue reserved: flow cytometry cannot be added later from the paraffin block.', 'cnsFresh');
+    }
+    if (['Inadequate for diagnosis', 'Necrotic tissue only, non-diagnostic'].includes(r)) {
+      info('Non-diagnostic: say that further sampling is advised in the intraoperative answer given to the surgeon.', 'cnsResult');
+    }
+    if (r === 'Meningioma') info('"Grading of the meningioma is deferred to paraffin sections" is available as a comment.', 'cnsResult');
+    if (['High-grade glioma', 'Low-grade glial neoplasm', 'Glial neoplasm, grade deferred'].includes(r)) {
+      info('"WHO CNS5 integrated diagnosis to follow" is available as a comment; the CNS biopsy template writes the paraffin report.', 'cnsResult');
+    }
+    if (!v.cnsAdequate && !CNS_DEFERRED.includes(r) && r !== 'No malignancy') {
+      info('Record whether lesional tissue remains for paraffin sections; the surgeon asks at the time.', 'cnsAdequate');
+    }
     return out;
   }
   if (!isOvary(v)) return out;

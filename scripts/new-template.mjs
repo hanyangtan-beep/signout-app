@@ -22,7 +22,7 @@ import { dirname, join } from 'node:path';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 const SYSTEMS = ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck',
-  'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology'];
+  'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'CNS', 'Frozen', 'Cytology'];
 const KINDS = ['biopsy', 'benign resection', 'cancer resection', 'frozen', 'cytology'];
 
 function parseArgs(argv) {

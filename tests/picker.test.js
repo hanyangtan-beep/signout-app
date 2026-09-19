@@ -46,7 +46,7 @@ test('lazy registry resolves every manifest entry and matches loadAll', async ()
 
 test('small-biopsy row lists exactly the kind: biopsy templates in frequency order', () => {
   const row = biopsyRow(manifest).map(labelOf);
-  assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix', 'Endometrium', 'Lung', 'NPC']);
+  assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix', 'Endometrium', 'Lung', 'NPC', 'Brain']);
   assert.ok(!row.includes('LEEP') && !row.includes('Frozen'));
   assert.deepEqual(pushRecent(['a', 'b'], 'b'), ['b', 'a']);
   assert.deepEqual(togglePin(togglePin([], 'x'), 'x'), []);
@@ -86,7 +86,7 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   assert.deepEqual([...kindsIn(top)].sort(), ['biomarker', 'biopsy', 'cytology']);
   assert.deepEqual([...kindsIn(bottom)].sort(), ['benign resection', 'cancer resection', 'frozen', 'generic']);
   // system order and labels
-  assert.deepEqual(top.map((g) => g.system), ['GI', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Medical', 'Biomarkers', 'Cytology']);
+  assert.deepEqual(top.map((g) => g.system), ['GI', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Medical', 'Biomarkers', 'Cytology']);
   assert.deepEqual(bottom.map((g) => g.label), ['GI', 'HPB', 'GU', 'Gynae', 'Breast', 'Thoracic', 'H&N', 'CNS', 'Skin / soft tissue', 'Lymphoid', 'Endocrine', 'Frozen', 'Generic']);
   assert.equal(top.find((g) => g.system === 'Head and neck').label, 'H&N');
   // merges: medical biopsies share one top button; aortic valve sits with lung under Thoracic; soft tissue with skin
@@ -120,7 +120,8 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   assert.ok(![...top, ...bottom].some((g) => g.items.some((t) => t.id === 'autopsy')));
   assert.deepEqual(standalonePlanned(planned).map((t) => t.id), ['autopsy']);
   // rows stay short
-  assert.ok(top.length <= 10 && bottom.length <= 13, `${top.length} / ${bottom.length} buttons`);
+  // CNS joined the top row with the brain biopsy template (Phase 23), taking it to 11 buttons.
+  assert.ok(top.length <= 11 && bottom.length <= 13, `${top.length} / ${bottom.length} buttons`);
 });
 
 test('palette ranking: exact shortName > alias > organ > keyword', () => {
@@ -153,12 +154,13 @@ test('palette ranking: exact shortName > alias > organ > keyword', () => {
 
 test('grouped browse and the part selector put Small biopsy first, systems in canonical order', () => {
   const groups = groupBySystem(manifest);
-  assert.deepEqual(groups.map((g) => g.system), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology', 'General']);
+  assert.deepEqual(groups.map((g) => g.system), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology', 'General']);
   const gyn = groups.find((g) => g.system === 'Gynae');
   assert.deepEqual(gyn.items.map((t) => t.kind), ['biopsy', 'biopsy', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'cancer resection', 'cancer resection'], 'ascending specimen size within a system');
   assert.deepEqual(gyn.items.slice(2).map(labelOf), ['LEEP', 'Placenta', 'Uterus', 'Ovarian cyst', 'Endometrial Ca', 'Ovary / tube / peritoneum Ca'], 'rank order within a kind');
   const sel = selectorGroups(manifest);
   assert.equal(sel[0].label, 'Small biopsy');
-  assert.equal(sel[0].items.length, 11);
+  assert.equal(sel[0].items.length, 12);
+  // CNS has only the biopsy template, which sits in the Small biopsy group, so no CNS system group remains.
   assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology', 'General']);
 });
