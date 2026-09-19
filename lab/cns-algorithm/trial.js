@@ -328,10 +328,10 @@ function drawChart(chart) {
 
 // ---------- the question, opened on the node ----------
 
-function setValue(id, value) {
+function setValue(id, value, keepCard = false) {
   state.values[id] = value;
   state.touched = true;
-  render();
+  render({ keepCard });
 }
 
 function fieldControl(field) {
@@ -361,7 +361,16 @@ function fieldControl(field) {
     const cb = el('input', { type: 'checkbox', id: `f_${field.id}`, class: 'q-check', checked: v ? 'checked' : null, onchange: (e) => setValue(field.id, e.target.checked) });
     wrapDiv.append(cb);
   } else if (field.type === 'textarea') {
-    wrapDiv.append(el('textarea', { id: `f_${field.id}`, class: 'q-input', rows: '3', oninput: (e) => setValue(field.id, e.target.value) , text: v || '' }));
+    // Typed input keeps its own card: rebuilding it under the caret is what made the surface jump.
+    // On blur the card is rebuilt once, so its cautions and next-test line catch up with the value.
+    wrapDiv.append(el('textarea', {
+      id: `f_${field.id}`,
+      class: 'q-input',
+      rows: '3',
+      oninput: (e) => setValue(field.id, e.target.value, true),
+      onchange: (e) => setValue(field.id, e.target.value),
+      text: v || '',
+    }));
   } else {
     wrapDiv.append(el('input', {
       id: `f_${field.id}`,
@@ -369,7 +378,8 @@ function fieldControl(field) {
       type: field.type === 'number' ? 'number' : 'text',
       value: v === undefined || v === null ? '' : v,
       placeholder: field.placeholder || '',
-      oninput: (e) => setValue(field.id, e.target.value),
+      oninput: (e) => setValue(field.id, e.target.value, true),
+      onchange: (e) => setValue(field.id, e.target.value),
     }));
   }
   return wrapDiv;
@@ -425,6 +435,7 @@ function questionCard(laid, scale, all) {
   // Tied to the node that asks it: the card sits under the chart, aligned on the node's centre with
   // a caret pointing back up at it, rather than floating over the boxes the question is about.
   card.dataset.anchorX = String((x + w / 2) * scale);
+  card.dataset.key = key;
   return card;
 }
 
@@ -487,7 +498,53 @@ function footer(result, all) {
 
 // ---------- render ----------
 
-function render() {
+/** Where the caret is, so a render can put it back. Null when focus is not in a field. */
+function caretNow() {
+  const a = document.activeElement;
+  if (!a || !a.id || !a.id.startsWith('f_')) return null;
+  const text = typeof a.selectionStart === 'number';
+  return { id: a.id, start: text ? a.selectionStart : null, end: text ? a.selectionEnd : null };
+}
+
+function caretBack(c) {
+  if (!c) return;
+  const n = document.getElementById(c.id);
+  if (!n || n === document.activeElement) return;
+  n.focus();
+  if (c.start !== null && typeof n.setSelectionRange === 'function') {
+    try { n.setSelectionRange(c.start, c.end); } catch { /* unsupported input type */ }
+  }
+}
+
+/** Put the open card under the node that asks it, with the caret pointing back up at the box. */
+function placeCard(card, frame, anchor) {
+  const inner = frame.clientWidth - 2 * 16;
+  const cw = card.offsetWidth;
+  const left = Math.max(0, Math.min(inner - cw, anchor - cw / 2));
+  card.style.marginLeft = `${left}px`;
+  card.style.setProperty('--caret-x', `${Math.max(14, Math.min(cw - 14, anchor - left))}px`);
+}
+
+// `keepCard` reuses the open card's DOM rather than rebuilding it. Every keystroke re-renders, so a
+// rebuild destroys the input being typed in: focus is lost, the caret jumps to the end, and the page
+// reflows. The chart and the foot still redraw, so the grade and the checks stay live as you type.
+let rendering = false;
+
+function render({ keepCard = false } = {}) {
+  // Removing a focused node blurs it, and a blur fires `change`, which calls back in here. A nested
+  // pass would rebuild the DOM the outer one is still holding references to.
+  if (rendering) return;
+  rendering = true;
+  try { renderNow(keepCard); } finally { rendering = false; }
+}
+
+function renderNow(keepCard) {
+  const caret = caretNow();
+  // Anchored on the card, not on window.scrollY: the chart above it changes height as nodes resolve,
+  // so holding the scroll offset still slides the question out from under the pointer. Holding the
+  // card's own position on screen keeps the thing being read and typed into exactly where it was.
+  const heldCard = $('#chart').querySelector('.q-card');
+  const anchorTop = heldCard ? heldCard.getBoundingClientRect().top : null;
   const result = pathway(state.values);
   const chart = pathwayChart(result);
   const all = [...(chart.funnel ? chart.funnel.nodes : []), ...chart.stages.flatMap((s) => s.nodes)];
@@ -499,22 +556,35 @@ function render() {
   }
 
   const frame = $('#chart');
-  frame.replaceChildren();
-  const svg = drawChart(chart);
-  frame.append(svg);
-
   const open = all.find((n) => n.key === state.open);
+
+  // The held card is never detached while it is being typed in. Taking it out of the document blurs
+  // the input, the blur fires `change`, and that re-enters render() underneath this one.
+  const held = frame.querySelector('.q-card');
+  const reuse = keepCard && open && held && held.dataset.key === state.open ? held : null;
+
+  const svg = drawChart(chart);
+  const oldSvg = frame.querySelector('svg');
+  if (reuse && oldSvg) oldSvg.replaceWith(svg);
+  else {
+    if (reuse) reuse.remove();
+    frame.replaceChildren(svg);
+    if (reuse) frame.append(reuse);
+  }
+
   if (open) {
     const scale = svg.clientWidth / chart.width;
-    const card = questionCard(open, scale, all);
-    frame.append(card);
-    const inner = frame.clientWidth - 2 * 16;
-    const cw = card.offsetWidth;
-    const anchor = Number(card.dataset.anchorX);
-    const left = Math.max(0, Math.min(inner - cw, anchor - cw / 2));
-    card.style.marginLeft = `${left}px`;
-    card.style.setProperty('--caret-x', `${Math.max(14, Math.min(cw - 14, anchor - left))}px`);
-  }
+    let card = reuse;
+    if (!card) {
+      card = questionCard(open, scale, all);
+      frame.append(card);
+    } else {
+      // The node may have moved as its state changed, so the anchor is taken from this layout.
+      card.dataset.anchorX = String((open.x + open.w / 2) * scale);
+      card.className = `q-card is-${open.node.state}`;
+    }
+    placeCard(card, frame, Number(card.dataset.anchorX));
+  } else if (held && !reuse) held.remove();
 
   $('#branch').textContent = result.title;
   $('#lede').textContent = result.lede;
@@ -524,6 +594,13 @@ function render() {
 
   const foot = $('#foot');
   foot.replaceChildren(footer(result, all));
+
+  const nowCard = frame.querySelector('.q-card');
+  if (anchorTop !== null && nowCard) {
+    const drift = nowCard.getBoundingClientRect().top - anchorTop;
+    if (Math.abs(drift) > 0.5) window.scrollBy({ top: drift, behavior: 'instant' });
+  }
+  caretBack(caret);
 }
 
 // ---------- boot ----------

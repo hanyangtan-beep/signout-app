@@ -3,10 +3,16 @@
 
 .trial-body {
   margin: 0;
-  padding: 0 var(--space-6) var(--space-6);
+  /* The tail of padding is scroll room. The card changes height as answers land, and at the very
+     bottom of the document there is nothing below it to give the page back, so the browser clamps
+     the scroll and the card slides up the screen. Room underneath means it can always be held. */
+  padding: 0 var(--space-6) 60vh;
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
+  /* Anchoring is done explicitly around each render; leaving the browser's own on invites it to
+     fight that correction and double-count the shift. */
+  overflow-anchor: none;
 }
 
 .trial-top {
