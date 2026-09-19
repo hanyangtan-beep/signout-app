@@ -35,6 +35,10 @@ const has = (v, id) => {
 };
 /** A select that has been moved off "Not performed" counts as answered; the default does not. */
 const answeredSelect = (v, id, notPerformed = 'Not performed') => has(v, id) && v[id] !== notPerformed;
+// A fusion select records a found fusion. The bare test `/fusion detected/` also matches
+// "No fusion detected", the opposite answer, so the negative is excluded explicitly. Mirrors
+// `fusionFound` in generators/cns_layers.js.
+const fusionFound = (x) => /fusion detected/i.test(x || '') && !/^No\b/i.test(x || '');
 
 /**
  * The funnel. Each step names the field it writes, the question in the pathologist's words, why the
@@ -97,7 +101,7 @@ const STEPS = [
     field: 'molStatus',
     question: 'Where do the molecular studies stand?',
     why: 'Layer 4 only opens once there is something to record. Until then the diagnosis stays at what the morphology supports, with the molecular work named as pending.',
-    applies: (v, ctx) => ctx.glioma(v) || ctx.circumscribed(v),
+    applies: (v, ctx) => ctx.glioma(v) || ctx.circumscribed(v) || ctx.ependymal(v),
   },
   {
     id: 'idh1R132H',
@@ -196,7 +200,11 @@ const STEPS = [
     // An ependymal tumour never reaches the IDH branch - it is not on the IDH funnel at all - so it
     // cannot be gated on the wildtype branch the way a midline diffuse glioma is. K27me3 is asked of
     // it on the site, which is what its own classification turns on.
-    applies: (v, ctx) => (ctx.wildtype(v) && ctx.midline(v)) || ctx.ependymal(v),
+    // In an ependymal tumour it is a posterior fossa question, where loss classifies group A, and a
+    // spinal one, where loss with OLIG2 negativity raises a drop metastasis from a posterior fossa
+    // group A tumour. It is not asked of a supratentorial ependymoma.
+    applies: (v, ctx) => (ctx.wildtype(v) && ctx.midline(v))
+      || (ctx.ependymal(v) && !ctx.morphDefined(v) && (ctx.posteriorFossa(v) || ctx.spinal(v) || !ctx.compartment(v))),
     answered: (v) => answeredSelect(v, 'h3k27me3'),
   },
   {
@@ -233,14 +241,62 @@ const STEPS = [
     answered: (v) => answeredSelect(v, 'chr710'),
   },
 
-  // ----- ependymal -----
+  // ----- ependymal: the compartment decides which test is asked -----
+  // WHO CNS5 classifies these tumours by anatomical site first and then by the molecular group or
+  // alteration of that compartment, so the questions below are gated on the compartment rather than
+  // asked of every ependymoma (cIMPACT-NOW update 7,
+  // https://pmc.ncbi.nlm.nih.gov/articles/PMC8018155/). Subependymoma and myxopapillary ependymoma
+  // are made on morphology at any site and are asked none of them.
+  {
+    id: 'epIhc',
+    field: 'epIhc',
+    question: 'Which ependymal surrogate markers are recorded?',
+    why: 'Where fusion testing and methylation are out of reach, immunohistochemistry stands in: L1CAM and nuclear p65 for a supratentorial ZFTA fusion, MYCN in a spinal tumour, HOXB13 to separate a myxopapillary ependymoma from a spinal ependymoma. The posterior fossa is settled on K27me3 and EZHIP instead, so it is not asked there.',
+    applies: (v, ctx) => ctx.ependymal(v) && ctx.reported(v) && (ctx.supratentorial(v) || ctx.spinal(v) || ctx.morphDefined(v)),
+    answered: (v) => has(v, 'epIhc'),
+    optional: true,
+  },
+  {
+    id: 'zfta',
+    field: 'zfta',
+    question: 'What does ZFTA fusion testing show?',
+    why: 'A ZFTA fusion is the defining alteration of the commonest supratentorial ependymoma, and RELA is its commonest partner. It is a supratentorial question: a fusion found in the posterior fossa is reported NEC.',
+    applies: (v, ctx) => ctx.ependymal(v) && ctx.reported(v) && ctx.supratentorial(v),
+    answered: (v) => answeredSelect(v, 'zfta'),
+  },
+  {
+    id: 'yap1',
+    field: 'yap1',
+    question: 'What does YAP1 fusion testing show?',
+    why: 'Asked of a supratentorial ependymoma once no ZFTA fusion is found. YAP1::MAMLD1 is the usual partner, and these tumours are negative for L1CAM and p65.',
+    applies: (v, ctx) => ctx.ependymal(v) && ctx.reported(v) && ctx.supratentorial(v)
+      && !fusionFound(v.zfta),
+    answered: (v) => answeredSelect(v, 'yap1'),
+  },
   {
     id: 'ezhip',
     field: 'ezhip',
     question: 'What does EZHIP immunohistochemistry show?',
     why: 'In a posterior fossa ependymoma, EZHIP overexpression supports group A where the K27me3 stain is ambiguous and methylation profiling is out of reach.',
-    applies: (v, ctx) => ctx.ependymal(v) && v.h3k27me3 !== 'Loss of nuclear expression',
+    applies: (v, ctx) => ctx.ependymal(v) && ctx.posteriorFossa(v) && v.h3k27me3 !== 'Loss of nuclear expression',
     answered: (v) => answeredSelect(v, 'ezhip'),
+    optional: true,
+  },
+  {
+    id: 'mycn',
+    field: 'mycn',
+    question: 'What does MYCN testing show?',
+    why: 'MYCN amplification defines a distinct spinal ependymoma with a poor outcome. Worth sending on high-grade histology or aggressive radiology, because the histology is not always high-grade.',
+    applies: (v, ctx) => ctx.ependymal(v) && ctx.reported(v) && ctx.spinal(v),
+    answered: (v) => answeredSelect(v, 'mycn'),
+  },
+  {
+    id: 'epCnv',
+    field: 'epCnv',
+    question: 'What does copy number show?',
+    why: '22q loss supports a spinal ependymoma; 1q gain and 6q loss carry prognostic weight in group A; chromosomal instability is characteristic of group B and a stable genome of group A.',
+    applies: (v, ctx) => ctx.ependymal(v) && ctx.reported(v) && !ctx.morphDefined(v),
+    answered: (v) => has(v, 'epCnv'),
     optional: true,
   },
 
@@ -338,6 +394,21 @@ function context() {
   const glioma = (v) => !circumscribed(v)
     && /glioma|astrocytoma|oligodendroglioma|glioblastoma/i.test(`${v.dxFamily || ''} ${named(v)}`);
   const ependymal = (v) => /ependymal|ependymoma/i.test(`${v.dxFamily || ''} ${named(v)}`);
+  // The compartment, off the site entry first and the entity name only as a fallback. Spinal is
+  // tested before infratentorial and infratentorial before supratentorial, so a cauda equina or
+  // fourth ventricle entry is never swallowed by a looser term. Mirrors `compartmentOf` in
+  // src/cnspathway.js.
+  const compartmentOf = (text) => {
+    const t = String(text || '');
+    if (/spinal|cauda equina|filum|conus|intramedullary|intradural/i.test(t)) return 'Spinal';
+    if (/posterior fossa|infratentorial|cerebell|fourth ventricle|brainstem|brain stem|pons|medulla/i.test(t)) return 'Posterior fossa';
+    if (/supratentorial|frontal|parietal|temporal|occipital|insula|corpus callosum|basal ganglia|thalam|lateral ventricle|third ventricle|pineal|hemisphere/i.test(t)) return 'Supratentorial';
+    return '';
+  };
+  const compartment = (v) => compartmentOf(v.site) || compartmentOf(named(v));
+  // Subependymoma and myxopapillary ependymoma are made on morphological criteria at any site, so
+  // the compartment questions are never put to them.
+  const morphDefined = (v) => /subependymoma|myxopapillary/i.test(named(v));
   const pxaOrPiloid = (v) => /xanthoastrocytoma|piloid features/i.test(named(v));
   const reported = (v) => v.molStatus === 'Reported';
   // The IDH branch exists for the diffuse gliomas only, so both branch predicates carry that
@@ -350,6 +421,11 @@ function context() {
     circumscribed,
     pxaOrPiloid,
     ependymal,
+    compartment,
+    morphDefined,
+    supratentorial: (v) => compartment(v) === 'Supratentorial' && !morphDefined(v),
+    posteriorFossa: (v) => compartment(v) === 'Posterior fossa' && !morphDefined(v),
+    spinal: (v) => compartment(v) === 'Spinal' && !morphDefined(v),
     reported,
     mutant,
     wildtype,
@@ -486,6 +562,21 @@ export function cautions(step, values) {
       break;
     case 'tert':
       out.push('A TERT promoter mutation will not carry glioblastoma in a tumour whose histology is low-grade.');
+      break;
+    case 'zfta':
+      if (ctx.ependymal(v) && ctx.posteriorFossa(v)) out.push('A ZFTA fusion in the posterior fossa is outside the WHO CNS5 list, which names this entity supratentorially only. Such a case is reported NEC.');
+      else out.push('L1CAM and nuclear p65 are sensitive surrogates but neither is specific on its own, so a fusion result outranks them where it can be had.');
+      break;
+    case 'yap1':
+      out.push('YAP1-fused ependymomas are negative for L1CAM and p65, so a negative surrogate panel is what brings this test into play rather than ruling it out.');
+      break;
+    case 'mycn':
+      if (v.h3k27me3 === 'Loss of nuclear expression') out.push('K27me3 is lost here. Before a spinal MYCN-amplified ependymoma is settled, exclude a drop metastasis from a posterior fossa group A tumour on the imaging, and a diffuse midline glioma, H3 K27-altered, which can itself carry MYCN amplification.');
+      else out.push('No CNS WHO grade is assigned to spinal ependymoma, MYCN-amplified. The entity itself carries the prognosis.');
+      break;
+    case 'epIhc':
+      if (ctx.spinal(v)) out.push('In a spinal tumour, HOXB13 separates a myxopapillary ependymoma from a spinal ependymoma where the morphology overlaps.');
+      else if (ctx.supratentorial(v)) out.push('L1CAM positivity is sensitive for a ZFTA fusion but is expressed in many other tumours; read it with nuclear p65.');
       break;
     case 'h3k27me3':
       out.push('Loss of trimethylation is not an H3 K27M mutation. EZHIP overexpression and several other tumours lose it too.');

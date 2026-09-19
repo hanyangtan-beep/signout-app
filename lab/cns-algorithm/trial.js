@@ -95,6 +95,31 @@ const SCENARIOS = {
       label: 'Posterior fossa ependymoma',
       values: { patientAge: 7, site: 'Cerebellum', dxFamily: 'Ependymal tumours', dxEpendymal: 'Posterior fossa ependymoma, group PFA', features: [] },
     },
+    {
+      // The supratentorial compartment, which is the one that turns on fusion testing. It arrives
+      // with the surrogate stains done and the fusion not yet back, so ZFTA is the open question and
+      // YAP1 is waiting behind it.
+      id: 'epst',
+      label: 'Supratentorial ependymoma, 31 years',
+      values: {
+        patientAge: 31, site: 'Frontal lobe', dxFamily: 'Ependymal tumours',
+        dxEpendymal: 'Supratentorial ependymoma', histClass: 'Ependymoma',
+        molStatus: 'Reported', epIhc: ['L1CAM positive (strong diffuse)', 'p65 nuclear expression'],
+        features: [],
+      },
+    },
+    {
+      // The spinal compartment: high-grade histology is what brings MYCN into the frame, and an
+      // amplified result takes the grade question off the table altogether.
+      id: 'epsp',
+      label: 'Spinal ependymoma, high grade',
+      values: {
+        patientAge: 46, site: 'Spinal cord', dxFamily: 'Ependymal tumours',
+        dxEpendymal: 'Spinal ependymoma', histClass: 'Ependymoma', molStatus: 'Reported',
+        features: ['Increased cellularity', 'Nuclear atypia', 'Mitoses', 'Necrosis without pseudopalisading'],
+        mitoses: '8',
+      },
+    },
   ],
   cns_biopsy: [
     { id: 'blank', label: 'Empty form', values: {} },

@@ -151,6 +151,29 @@ export const HIGH_GRADE_FEATURES = ['Microvascular proliferation', 'Necrosis wit
 export const isEpendymoma = (e) => /ependymoma/i.test(e) && !/^Subependymoma|^Myxopapillary/.test(e);
 
 /**
+ * The anatomical compartment, which in the ependymal family is asked before any molecular test:
+ * WHO CNS5 classifies these tumours by anatomical site and then by the molecular group or
+ * alteration of that site (cIMPACT-NOW update 7, https://pmc.ncbi.nlm.nih.gov/articles/PMC8018155/).
+ * Spinal is tested before infratentorial and infratentorial before supratentorial, so a cauda
+ * equina or fourth ventricle entry is never swallowed by a looser term. Mirrors `compartmentOf` in
+ * src/cnspathway.js and the predicate of the same name in src/cnswizard.js.
+ */
+/**
+ * True where a fusion select records a fusion that was found. The bare test `/fusion detected/`
+ * also matches "No fusion detected", which is the opposite answer, so the negative is excluded
+ * explicitly. Shared with src/cnspathway.js and src/cnswizard.js.
+ */
+export const fusionFound = (x) => /fusion detected/i.test(x || '') && !/^No\b/i.test(x || '');
+
+export const compartmentOf = (text) => {
+  const t = String(text || '');
+  if (/spinal|cauda equina|filum|conus|intramedullary|intradural/i.test(t)) return 'Spinal';
+  if (/posterior fossa|infratentorial|cerebell|fourth ventricle|brainstem|brain stem|pons|medulla/i.test(t)) return 'Posterior fossa';
+  if (/supratentorial|frontal|parietal|temporal|occipital|insula|corpus callosum|basal ganglia|thalam|lateral ventricle|third ventricle|pineal|hemisphere/i.test(t)) return 'Supratentorial';
+  return '';
+};
+
+/**
  * The mitotic threshold that sends an IDH-mutant astrocytoma from grade 2 to grade 3: three or more
  * in 2.4 mm2, which is ten high-power fields of 0.24 mm2, counted in the most active area. The
  * field records the count over ten fields, so the two read as the same number here. Before this,
@@ -315,6 +338,11 @@ export function treatmentValue(v) {
 
 const PLAIN = (s) => (s && s !== NP ? s : '');
 
+/** A "(specify)" option printed with its free-text detail in place of the bracket. */
+const spec = (value, detail, base) => (/\(specify\)$/.test(value || '')
+  ? `${base}${stripDot(detail) ? ` (${stripDot(detail)})` : ''}`
+  : value);
+
 /**
  * Every Layer 4 item that was actually performed, each with its synoptic label, printed value and
  * the prose form used inside the microscopy paragraph. The branch follows the QMH page: the
@@ -323,9 +351,6 @@ const PLAIN = (s) => (s && s !== NP ? s : '');
 export function molecularBits(v) {
   const out = [];
   const add = (label, value, prose) => { if (PLAIN(value)) out.push({ label, value, prose }); };
-  const spec = (value, detail, base) => (/\(specify\)$/.test(value || '')
-    ? `${base}${stripDot(detail) ? ` (${stripDot(detail)})` : ''}`
-    : value);
 
   add('IDH1 R132H (immunohistochemistry)', v.idh1R132H,
     v.idh1R132H === 'Positive' ? 'IDH1 R132H is expressed' : v.idh1R132H === 'Negative' ? 'IDH1 R132H is not expressed' : 'IDH1 R132H immunohistochemistry cannot be interpreted');
@@ -355,9 +380,12 @@ export function molecularBits(v) {
     const higher = grade3Molecular(v);
     if (higher.length) out.push({ label: 'Other higher-grade alterations', value: higher.join('; '), prose: `there is ${list(higher.map(higherPhrase))}` });
   }
+  // H3 K27me3 runs for every case, not only branch B: loss of nuclear expression is the essential
+  // criterion for a posterior fossa group A ependymoma, and a spinal ependymoma is stained to
+  // exclude a drop metastasis from one. Neither case sets idhBranch.
+  add('H3 trimethylated K27 (immunohistochemistry)', v.h3k27me3,
+    v.h3k27me3 === 'Loss of nuclear expression' ? 'there is loss of nuclear H3 K27 trimethylation' : v.h3k27me3 === 'Retained nuclear expression' ? 'nuclear H3 K27 trimethylation is retained' : 'H3 K27 trimethylation cannot be interpreted');
   if (v.idhBranch === 'IDH-wildtype') {
-    add('H3 trimethylated K27 (immunohistochemistry)', v.h3k27me3,
-      v.h3k27me3 === 'Loss of nuclear expression' ? 'there is loss of nuclear H3 K27 trimethylation' : v.h3k27me3 === 'Retained nuclear expression' ? 'nuclear H3 K27 trimethylation is retained' : 'H3 K27 trimethylation cannot be interpreted');
     add('H3 G34W (immunohistochemistry)', v.h3g34w,
       v.h3g34w === 'Positive' ? 'H3 G34W is expressed' : v.h3g34w === 'Negative' ? 'H3 G34W is not expressed' : 'H3 G34W immunohistochemistry cannot be interpreted');
     if (PLAIN(v.h3seq)) {
@@ -400,10 +428,81 @@ export function molecularBits(v) {
   add('EZHIP (immunohistochemistry)', v.ezhip,
     v.ezhip === 'Overexpressed (strong diffuse nuclear staining)' ? 'EZHIP is overexpressed, with strong diffuse nuclear staining'
       : v.ezhip === 'Negative' ? 'EZHIP is not expressed' : 'EZHIP immunohistochemistry cannot be interpreted');
+  out.push(...ependymalBits(v));
   const others = stripDot(v.molOthers);
   if (others) out.push({ label: 'Other molecular studies', value: others, prose: lc1(others) });
   out.push(...methylationBits(v));
   return out;
+}
+
+/**
+ * The compartment-specific ependymal molecular items. Which of these is the right test is settled
+ * by anatomical compartment, not the other way round: ZFTA and YAP1 supratentorially, H3 K27me3 /
+ * EZHIP / methylation in the posterior fossa, MYCN in the spine (cIMPACT-NOW update 7,
+ * https://pmc.ncbi.nlm.nih.gov/articles/PMC8018155/). The surrogate immunostains stand in for the
+ * molecular test where that test is unavailable (AOSNP-ADAPTR,
+ * https://onlinelibrary.wiley.com/doi/full/10.1111/bpa.70114). Only what was seen is printed; the
+ * survival associations of 1q gain and 6q loss stay in the checks panel.
+ */
+export function ependymalBits(v) {
+  const out = [];
+  const add = (label, value, prose) => { if (PLAIN(value)) out.push({ label, value, prose }); };
+  if (PLAIN(v.zfta)) {
+    const val = spec(v.zfta, v.zftaDetail, 'ZFTA fusion detected, other partner');
+    add('ZFTA fusion', val,
+      v.zfta === 'ZFTA::RELA fusion detected' ? 'a ZFTA::RELA fusion is detected'
+        : v.zfta === 'No fusion detected' ? 'no ZFTA fusion is detected'
+          : v.zfta === CBD ? 'ZFTA fusion testing cannot be interpreted'
+            : `a ZFTA fusion is detected${stripDot(v.zftaDetail) ? ` (${stripDot(v.zftaDetail)})` : ''}`);
+  }
+  if (PLAIN(v.yap1)) {
+    const val = spec(v.yap1, v.yap1Detail, 'YAP1 fusion detected, other partner');
+    add('YAP1 fusion', val,
+      v.yap1 === 'YAP1::MAMLD1 fusion detected' ? 'a YAP1::MAMLD1 fusion is detected'
+        : v.yap1 === 'No fusion detected' ? 'no YAP1 fusion is detected'
+          : v.yap1 === CBD ? 'YAP1 fusion testing cannot be interpreted'
+            : `a YAP1 fusion is detected${stripDot(v.yap1Detail) ? ` (${stripDot(v.yap1Detail)})` : ''}`);
+  }
+  add('MYCN amplification', v.mycn,
+    v.mycn === 'Amplified' ? 'MYCN is amplified' : v.mycn === 'Not amplified' ? 'MYCN is not amplified' : 'MYCN copy number cannot be interpreted');
+  const ihc = arr(v.epIhc).filter(Boolean);
+  if (ihc.length) {
+    out.push({ label: 'Ependymal surrogate immunohistochemistry', value: ihc.join('; '), prose: list(ihc.map(epIhcPhrase)) });
+  }
+  const cnv = arr(v.epCnv).filter(Boolean);
+  if (cnv.length) {
+    out.push({ label: 'Copy number (ependymal)', value: cnv.join('; '), prose: list(cnv.map(epCnvPhrase)) });
+  }
+  return out;
+}
+
+/** Released-report wording for one ependymal surrogate immunostain. */
+function epIhcPhrase(x) {
+  const map = {
+    'L1CAM positive (strong diffuse)': 'L1CAM shows strong diffuse staining',
+    'L1CAM negative': 'L1CAM is not expressed',
+    'p65 nuclear expression': 'p65 shows nuclear expression',
+    'p65 negative': 'p65 is not expressed',
+    'MYCN positive': 'MYCN is expressed',
+    'MYCN negative': 'MYCN is not expressed',
+    'HOXB13 positive': 'HOXB13 is expressed',
+    'HOXB13 negative': 'HOXB13 is not expressed',
+  };
+  return map[x] || lc1(String(x));
+}
+
+/** Released-report wording for one ependymal copy-number finding. */
+function epCnvPhrase(x) {
+  const map = {
+    'Gain of 1q': 'there is gain of 1q',
+    'Loss of 6q': 'there is loss of 6q',
+    'Loss of chromosome 6': 'there is loss of chromosome 6',
+    'Loss of 22q': 'there is loss of 22q',
+    'Homozygous deletion of CDKN2A/B': 'there is homozygous deletion of CDKN2A/B',
+    'Stable genome': 'the genome is copy-number stable',
+    'Chromosomal instability and aneuploidy': 'there is chromosomal instability with aneuploidy',
+  };
+  return map[x] || lc1(String(x));
 }
 
 /**
@@ -516,7 +615,7 @@ export function pathwayChecks(v, warn, at, e = entity(v)) {
   // The MAPK criterion. An alteration is essential for pilocytic astrocytoma and, with CDKN2A/B,
   // for pleomorphic xanthoastrocytoma, so molecular results recorded without one are worth a note.
   if (circumscribed && reported) {
-    const mapk = v.brafFusion === 'KIAA1549::BRAF fusion detected' || /fusion detected/i.test(v.brafFusion || '')
+    const mapk = fusionFound(v.brafFusion)
       || v.braf === 'Detected' || `${v.mapkOther || ''}`.trim() !== '';
     if (!mapk) {
       at('info', 'No MAPK pathway alteration is recorded. It is an essential criterion in this family: KIAA1549::BRAF is the commonest, then BRAF p.V600E, then NF1, FGFR1 and NTRK1/2/3.', 'brafFusion');
@@ -555,12 +654,65 @@ export function pathwayChecks(v, warn, at, e = entity(v)) {
     at('info', 'Loss of H3 K27 trimethylation does not by itself establish an H3 K27M mutation; confirm by H3 K27M immunohistochemistry or sequencing.', 'h3seq');
   }
 
-  if (isEpendymoma(e) && /posterior fossa/i.test(`${e} ${v.site || ''}`)) {
-    if (v.h3k27me3 === 'Retained nuclear expression' && v.ezhip !== 'Overexpressed (strong diffuse nuclear staining)' && noMethylation) {
-      warn('A posterior fossa ependymoma with retained H3 K27 trimethylation and no EZHIP overexpression cannot be assigned to group A or group B without methylation profiling; it is reported as posterior fossa ependymoma, NOS.', 'methylation');
+  // ----- the ependymal family, compartment first -----
+  // The compartment settles which molecular test is the right one, so every check below is gated on
+  // it rather than on the entity name alone (cIMPACT-NOW update 7,
+  // https://pmc.ncbi.nlm.nih.gov/articles/PMC8018155/; AOSNP-ADAPTR,
+  // https://onlinelibrary.wiley.com/doi/full/10.1111/bpa.70114).
+  if (/ependymoma/i.test(e)) {
+    const siteCompartment = compartmentOf(v.site);
+    const namedCompartment = compartmentOf(e);
+    const compartment = siteCompartment || namedCompartment;
+    const zftaFusion = fusionFound(v.zfta);
+    const epIhc = arr(v.epIhc);
+    const tested = (x) => !!x && x !== NP && x !== CBD;
+
+    if (siteCompartment && namedCompartment && siteCompartment !== namedCompartment) {
+      warn(`The diagnosis names a ${namedCompartment.toLowerCase()} tumour but the site is recorded as ${v.site}. The compartment decides which molecular test applies, so the two should agree.`, 'site');
     }
-    if (v.h3k27me3 === CBD && v.ezhip === NP && noMethylation) {
-      at('info', 'Where H3 K27me3 staining is ambiguous and methylation profiling is unavailable, EZHIP immunohistochemistry supports group A.', 'ezhip');
+
+    if (compartment === 'Supratentorial' && isEpendymoma(e)) {
+      if (reported && v.zfta === NP && v.yap1 === NP && !epIhc.length) {
+        at('info', 'A supratentorial ependymoma is classified on ZFTA and, where no ZFTA fusion is found, YAP1. Where fusion testing is out of reach, L1CAM and p65 immunohistochemistry stand in.', 'zfta');
+      }
+      if (reported && tested(v.zfta) && tested(v.yap1) && !zftaFusion && !fusionFound(v.yap1) && !/NEC|NOS/i.test(v.dxQualifier || '')) {
+        at('info', 'Fusion testing is recorded with neither a ZFTA nor a YAP1 fusion detected. A supratentorial ependymoma tested and not placed in a molecular type is reported NEC.', 'dxQualifier');
+      }
+    }
+
+    if (compartment === 'Posterior fossa') {
+      if (isEpendymoma(e) && v.h3k27me3 === 'Retained nuclear expression' && v.ezhip !== 'Overexpressed (strong diffuse nuclear staining)' && noMethylation) {
+        warn('A posterior fossa ependymoma with retained H3 K27 trimethylation and no EZHIP overexpression cannot be assigned to group A or group B without methylation profiling; it is reported as posterior fossa ependymoma, NOS.', 'methylation');
+      }
+      if (v.h3k27me3 === CBD && v.ezhip === NP && noMethylation) {
+        at('info', 'Where H3 K27me3 staining is ambiguous and methylation profiling is unavailable, EZHIP immunohistochemistry supports group A.', 'ezhip');
+      }
+      if (/group PFB/i.test(e) && noMethylation) {
+        warn('Group PFB is recorded with no methylation result. Methylation profiling is the essential criterion for group PFB; retained H3 K27 trimethylation alone does not establish it.', 'methylation');
+      }
+      if (/group PFA/i.test(e) && v.h3k27me3 === 'Retained nuclear expression' && noMethylation) {
+        warn('Group PFA is recorded with retained H3 K27 trimethylation and no methylation result. Loss of trimethylation, EZHIP overexpression or a methylation class is needed to support the group.', 'h3k27me3');
+      }
+      if (zftaFusion) {
+        at('info', 'A ZFTA fusion is recorded in a posterior fossa tumour. The WHO CNS5 entity is supratentorial, so such a case is reported as posterior fossa ependymoma, ZFTA fusion-positive, NEC.', 'zfta');
+      }
+    }
+
+    if (compartment === 'Spinal') {
+      if (isEpendymoma(e) && (high || (mit !== null && mit >= 5)) && v.mycn === NP && !epIhc.some((x) => /^MYCN/.test(x))) {
+        at('info', 'High-grade histology is recorded in a spinal ependymoma with no MYCN result. MYCN immunohistochemistry, confirmed by FISH, identifies spinal ependymoma, MYCN-amplified.', 'mycn');
+      }
+      if (v.mycn === 'Amplified' && /grade/i.test(v.grade || '')) {
+        at('info', 'No CNS WHO grade is assigned to spinal ependymoma, MYCN-amplified.', 'grade');
+      }
+      if (v.h3k27me3 === 'Loss of nuclear expression' && isEpendymoma(e)) {
+        at('info', 'H3 K27 trimethylation is lost in a spinal ependymal tumour. Correlate with the imaging to exclude a drop metastasis from a posterior fossa group A ependymoma, and consider diffuse midline glioma, H3 K27-altered.', 'h3k27me3');
+      }
+    }
+
+    if (/^Myxopapillary/.test(e) && !/conus|filum|cauda equina/i.test(v.site || '')
+      && !epIhc.some((x) => /^HOXB13/.test(x))) {
+      at('info', 'Myxopapillary ependymoma is recorded away from the conus, filum terminale or cauda equina with no HOXB13 result. HOXB13 separates it from a spinal ependymoma where the morphology overlaps.', 'epIhc');
     }
   }
 

@@ -155,6 +155,118 @@ test('Layer 4 branches: the IDH-mutant panel and the IDH-wildtype panel are diff
   assert.ok(!mut.includes('EGFR amplification'));
 });
 
+test('the ependymal molecular items print as released-report prose', () => {
+  const base = {
+    ...defaults(schema), ...EX, ...NOWT, dxFamily: 'Ependymal tumours',
+    dxEpendymal: 'Supratentorial ependymoma, ZFTA fusion-positive', site: 'Frontal lobe',
+    molStatus: 'Reported',
+  };
+  const bits = (patch) => molecularBits({ ...base, ...patch });
+  const by = (patch, label) => bits(patch).find((b) => b.label === label);
+
+  const zfta = by({ zfta: 'ZFTA::RELA fusion detected' }, 'ZFTA fusion');
+  assert.equal(zfta.value, 'ZFTA::RELA fusion detected');
+  assert.match(zfta.prose, /a ZFTA::RELA fusion is detected/);
+
+  const other = by({ zfta: 'ZFTA fusion detected, other partner (specify)', zftaDetail: 'ZFTA::MAML2' }, 'ZFTA fusion');
+  assert.match(other.value, /ZFTA::MAML2/);
+  assert.match(other.prose, /a ZFTA fusion is detected \(ZFTA::MAML2\)/);
+
+  const yap1 = by({ zfta: 'No fusion detected', yap1: 'YAP1::MAMLD1 fusion detected' }, 'YAP1 fusion');
+  assert.match(yap1.prose, /a YAP1::MAMLD1 fusion is detected/);
+
+  const mycn = by({ mycn: 'Amplified' }, 'MYCN amplification');
+  assert.match(mycn.prose, /MYCN is amplified/);
+
+  const ihc = by({ epIhc: ['L1CAM positive (strong diffuse)', 'p65 nuclear expression'] }, 'Ependymal surrogate immunohistochemistry');
+  assert.match(ihc.prose, /L1CAM shows strong diffuse staining/);
+  assert.match(ihc.prose, /p65 shows nuclear expression/);
+
+  const cnv = by({ epCnv: ['Gain of 1q', 'Loss of 6q'] }, 'Copy number (ependymal)');
+  assert.match(cnv.prose, /there is gain of 1q/);
+  assert.match(cnv.prose, /there is loss of 6q/);
+
+  // Nothing is printed for a test that was not done, and nothing about prognosis or survival reaches
+  // the report: the associations of 1q gain and 6q loss are panel text only.
+  const none = bits({}).map((b) => b.label);
+  assert.ok(!none.includes('ZFTA fusion') && !none.includes('YAP1 fusion') && !none.includes('MYCN amplification'));
+  const printed = bits({ epCnv: ['Gain of 1q'], zfta: 'ZFTA::RELA fusion detected' }).map((b) => `${b.value} ${b.prose}`).join(' ');
+  assert.doesNotMatch(printed, /survival|prognos|worse outcome|WHO|by definition/i);
+});
+
+test('H3 K27me3 prints without the case ever reaching the IDH branch', () => {
+  const out = run({
+    ...NOWT, dxFamily: 'Ependymal tumours', dxEpendymal: 'Posterior fossa ependymoma, group PFA',
+    site: 'Fourth ventricle', patientAge: '7', histClass: 'Ependymoma',
+    ihc: ['GFAP positive'], molStatus: 'Reported', idhBranch: 'Not applicable',
+    h3k27me3: 'Loss of nuclear expression', grade: 'CNS WHO grade 2',
+  });
+  const labels = molecularBits({
+    ...defaults(schema), ...EX, ...NOWT, dxFamily: 'Ependymal tumours',
+    dxEpendymal: 'Posterior fossa ependymoma, group PFA', molStatus: 'Reported',
+    idhBranch: 'Not applicable', h3k27me3: 'Loss of nuclear expression',
+  }).map((b) => b.label);
+  assert.ok(labels.some((l) => /trimethylated K27/i.test(l)), labels.join(' | '));
+  assert.ok(!errs(out).length, errs(out).join(' | '));
+});
+
+test('the ependymal checks fire on the compartment, not the entity name alone', () => {
+  const ep = (patch) => run({
+    ...NOWT, dxFamily: 'Ependymal tumours', histClass: 'Ependymoma', ihc: ['GFAP positive'],
+    idhBranch: 'Not applicable', mitoses: '2', ki67: '6', grade: 'CNS WHO grade 2',
+    features: ['True ependymal rosettes'], ...patch,
+  });
+
+  // Supratentorial, nothing sent: the prompt names ZFTA and the surrogate stains.
+  assert.ok(infos(ep({
+    dxEpendymal: 'Supratentorial ependymoma', site: 'Frontal lobe', molStatus: 'Reported',
+  })).some((m) => /classified on ZFTA/.test(m)));
+
+  // Both fusions tested and neither found: NEC.
+  assert.ok(infos(ep({
+    dxEpendymal: 'Supratentorial ependymoma', site: 'Frontal lobe', molStatus: 'Reported',
+    zfta: 'No fusion detected', yap1: 'No fusion detected',
+  })).some((m) => /reported NEC/.test(m)));
+
+  // PFB without methylation.
+  assert.ok(warns(ep({
+    dxEpendymal: 'Posterior fossa ependymoma, group PFB', site: 'Fourth ventricle',
+    molStatus: 'Reported', h3k27me3: 'Retained nuclear expression',
+  })).some((m) => /essential criterion for group PFB/.test(m)));
+
+  // A ZFTA fusion in the posterior fossa is NEC, not the supratentorial entity.
+  assert.ok(infos(ep({
+    dxEpendymal: 'Posterior fossa ependymoma', site: 'Cerebellum', molStatus: 'Reported',
+    zfta: 'ZFTA::RELA fusion detected',
+  })).some((m) => /ZFTA fusion-positive, NEC/.test(m)));
+
+  // Spinal, high-grade histology, MYCN not sent.
+  assert.ok(infos(ep({
+    dxEpendymal: 'Spinal ependymoma', site: 'Spinal cord', molStatus: 'Reported',
+    features: ['True ependymal rosettes', 'Microvascular proliferation'], mitoses: '6', grade: 'CNS WHO grade 3',
+  })).some((m) => /no MYCN result/.test(m)));
+
+  // Spinal with K27me3 loss: exclude a drop metastasis.
+  assert.ok(infos(ep({
+    dxEpendymal: 'Spinal ependymoma', site: 'Spinal cord', molStatus: 'Reported',
+    h3k27me3: 'Loss of nuclear expression',
+  })).some((m) => /drop metastasis/.test(m)));
+
+  // The compartment named and the compartment recorded disagree.
+  assert.ok(warns(ep({
+    dxEpendymal: 'Supratentorial ependymoma', site: 'Fourth ventricle', molStatus: 'Reported',
+  })).some((m) => /the site is recorded as/.test(m)));
+
+  // Myxopapillary away from the filum with no HOXB13.
+  assert.ok(infos(ep({
+    dxEpendymal: 'Myxopapillary ependymoma', site: 'Spinal cord', molStatus: 'Reported', grade: 'CNS WHO grade 2',
+  })).some((m) => /HOXB13 separates it/.test(m)));
+
+  // None of the posterior fossa checks reach a supratentorial tumour.
+  const st = ep({ dxEpendymal: 'Supratentorial ependymoma', site: 'Parietal lobe', molStatus: 'Reported', h3k27me3: 'Retained nuclear expression' });
+  assert.ok(!warns(st).some((m) => /group A or group B/.test(m)));
+});
+
 test('an oligodendroglioma without codeletion warns', () => {
   const out = run({ ...NOWT, dxAdult: 'Oligodendroglioma, IDH-mutant and 1p/19q-codeleted', histClass: 'Oligodendroglioma', idhBranch: 'IDH-mutant', codel: 'No deletion detected' });
   assert.ok(warns(out).some((m) => /1p\/19q codeletion is not recorded/.test(m)));

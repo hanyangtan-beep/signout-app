@@ -1128,8 +1128,8 @@
     "Cannot be determined"
    ],
    "showIf": {
-    "field": "idhBranch",
-    "is": "IDH-wildtype"
+    "field": "molStatus",
+    "is": "Reported"
    }
   },
   {
@@ -1291,6 +1291,129 @@
     "is": "Reported"
    },
    "help": "Supports a posterior fossa group A ependymoma where H3 K27me3 staining is ambiguous and methylation profiling is unavailable."
+  },
+  {
+   "id": "zfta",
+   "label": "ZFTA fusion",
+   "type": "select",
+   "group": "Layer 4 - Molecular information",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "No fusion detected",
+    "ZFTA::RELA fusion detected",
+    "ZFTA fusion detected, other partner (specify)",
+    "Cannot be determined"
+   ],
+   "showIf": {
+    "field": "molStatus",
+    "is": "Reported"
+   },
+   "help": "A ZFTA fusion with supratentorial localisation is the essential criterion for supratentorial ependymoma, ZFTA fusion-positive. RELA is the commonest partner; MAML2, MAML3, NCOA1, NCOA2, MN1 and CTNNA2 are also reported. Rare posterior fossa cases carry a ZFTA fusion and are designated NEC."
+  },
+  {
+   "id": "zftaDetail",
+   "label": "ZFTA fusion partner (specify)",
+   "type": "text",
+   "group": "Layer 4 - Molecular information",
+   "default": "",
+   "placeholder": "ZFTA::MAML2",
+   "showIf": {
+    "field": "zfta",
+    "is": "ZFTA fusion detected, other partner (specify)"
+   }
+  },
+  {
+   "id": "yap1",
+   "label": "YAP1 fusion",
+   "type": "select",
+   "group": "Layer 4 - Molecular information",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "No fusion detected",
+    "YAP1::MAMLD1 fusion detected",
+    "YAP1 fusion detected, other partner (specify)",
+    "Cannot be determined"
+   ],
+   "showIf": {
+    "field": "molStatus",
+    "is": "Reported"
+   },
+   "help": "A YAP1 fusion with supratentorial localisation is the essential criterion for supratentorial ependymoma, YAP1 fusion-positive. YAP1::MAMLD1 is typical, YAP1::FAM118B less so."
+  },
+  {
+   "id": "yap1Detail",
+   "label": "YAP1 fusion partner (specify)",
+   "type": "text",
+   "group": "Layer 4 - Molecular information",
+   "default": "",
+   "placeholder": "YAP1::FAM118B",
+   "showIf": {
+    "field": "yap1",
+    "is": "YAP1 fusion detected, other partner (specify)"
+   }
+  },
+  {
+   "id": "mycn",
+   "label": "MYCN amplification",
+   "type": "select",
+   "group": "Layer 4 - Molecular information",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Not amplified",
+    "Amplified",
+    "Cannot be determined"
+   ],
+   "showIf": {
+    "field": "molStatus",
+    "is": "Reported"
+   },
+   "help": "Amplification with spinal localisation is the essential criterion for spinal ependymoma, MYCN-amplified. Worth ordering where a spinal ependymoma is high grade or the radiology is aggressive, because high-grade histology is not always present. Diffuse midline glioma, H3 K27-altered can also be MYCN-amplified."
+  },
+  {
+   "id": "epIhc",
+   "label": "Ependymal surrogate immunohistochemistry",
+   "type": "multiselect",
+   "group": "Layer 4 - Molecular information",
+   "default": [],
+   "options": [
+    "L1CAM positive (strong diffuse)",
+    "L1CAM negative",
+    "p65 nuclear expression",
+    "p65 negative",
+    "MYCN positive",
+    "MYCN negative",
+    "HOXB13 positive",
+    "HOXB13 negative"
+   ],
+   "showIf": {
+    "field": "molStatus",
+    "is": "Reported"
+   },
+   "help": "Surrogates for the compartment-specific molecular test where that test is unavailable. L1CAM with nuclear p65 supports a ZFTA fusion supratentorially; both negative points to YAP1 or to NEC. HOXB13 separates myxopapillary ependymoma from spinal ependymoma."
+  },
+  {
+   "id": "epCnv",
+   "label": "Copy number (ependymal)",
+   "type": "multiselect",
+   "group": "Layer 4 - Molecular information",
+   "default": [],
+   "options": [
+    "Gain of 1q",
+    "Loss of 6q",
+    "Loss of chromosome 6",
+    "Loss of 22q",
+    "Homozygous deletion of CDKN2A/B",
+    "Stable genome",
+    "Chromosomal instability and aneuploidy"
+   ],
+   "showIf": {
+    "field": "molStatus",
+    "is": "Reported"
+   },
+   "help": "Additional molecular information rather than type-defining. 1q gain and 6q loss carry a worse outcome in PFA; 22q loss supports spinal ependymoma; a stable genome fits PFA and aneuploidy fits PFB."
   },
   {
    "id": "tert",
@@ -1588,6 +1711,13 @@
      "chr710": "Combined gain of chromosome 7 and loss of chromosome 10",
      "egfr": "Amplified",
      "ezhip": "Not performed",
+     "zfta": "Not performed",
+     "zftaDetail": "",
+     "yap1": "Not performed",
+     "yap1Detail": "",
+     "mycn": "Not performed",
+     "epIhc": [],
+     "epCnv": [],
      "tert": "Mutation detected (specify)",
      "tertDetail": "C228T",
      "molOthers": "",

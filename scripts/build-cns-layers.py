@@ -300,8 +300,13 @@ f(id='molHigher', label='Other higher-grade alterations', type='multiselect', gr
        'proliferation, necrosis, CDKN2A/B homozygous deletion and PDGFRA amplification are absent.')
 # IDH-wildtype branch
 WT = {'field': 'idhBranch', 'is': 'IDH-wildtype'}
+# H3 K27me3 is not a branch B question. Loss of nuclear expression is the essential criterion for a
+# posterior fossa group A ependymoma (cIMPACT-NOW update 11), and it is read in a spinal tumour to
+# exclude a drop metastasis from PFA, neither of which sets idhBranch. Shown whenever molecular or
+# surrogate immunohistochemical results are recorded.
 f(id='h3k27me3', label='H3 trimethylated K27 (immunohistochemistry)', type='select', group=G4, default=NP,
-  options=[NP, 'Retained nuclear expression', 'Loss of nuclear expression', CBD], showIf=WT)
+  options=[NP, 'Retained nuclear expression', 'Loss of nuclear expression', CBD],
+  showIf={'field': 'molStatus', 'is': 'Reported'})
 f(id='h3g34w', label='H3 G34W (immunohistochemistry)', type='select', group=G4, default=NP, options=POSNEG, showIf=WT)
 f(id='h3seq', label='H3 mutation (sequencing)', type='select', group=G4, default=NP, options=[
     NP, 'No mutation detected', 'H3 K27M detected', 'H3 G34R/V detected', 'Other mutation (specify)', CBD], showIf=WT)
@@ -335,6 +340,49 @@ f(id='ezhip', label='EZHIP (immunohistochemistry)', type='select', group=G4, def
   showIf={'field': 'molStatus', 'is': 'Reported'},
   help='Supports a posterior fossa group A ependymoma where H3 K27me3 staining is ambiguous and '
        'methylation profiling is unavailable.')
+# The ependymal molecular block. Compartment comes first in this family: a supratentorial tumour is
+# tested for ZFTA and YAP1 fusions, a posterior fossa tumour for K27me3 / EZHIP / methylation, a
+# spinal tumour for MYCN. Surrogate immunostains stand in for the fusion test where it is
+# unavailable (AOSNP-ADAPTR resource levels, https://onlinelibrary.wiley.com/doi/full/10.1111/bpa.70114).
+f(id='zfta', label='ZFTA fusion', type='select', group=G4, default=NP, options=[
+    NP, 'No fusion detected', 'ZFTA::RELA fusion detected',
+    'ZFTA fusion detected, other partner (specify)', CBD],
+  showIf={'field': 'molStatus', 'is': 'Reported'},
+  help='A ZFTA fusion with supratentorial localisation is the essential criterion for '
+       'supratentorial ependymoma, ZFTA fusion-positive. RELA is the commonest partner; MAML2, '
+       'MAML3, NCOA1, NCOA2, MN1 and CTNNA2 are also reported. Rare posterior fossa cases carry a '
+       'ZFTA fusion and are designated NEC.')
+f(id='zftaDetail', label='ZFTA fusion partner (specify)', type='text', group=G4, default='', placeholder='ZFTA::MAML2',
+  showIf={'field': 'zfta', 'is': 'ZFTA fusion detected, other partner (specify)'})
+f(id='yap1', label='YAP1 fusion', type='select', group=G4, default=NP, options=[
+    NP, 'No fusion detected', 'YAP1::MAMLD1 fusion detected',
+    'YAP1 fusion detected, other partner (specify)', CBD],
+  showIf={'field': 'molStatus', 'is': 'Reported'},
+  help='A YAP1 fusion with supratentorial localisation is the essential criterion for '
+       'supratentorial ependymoma, YAP1 fusion-positive. YAP1::MAMLD1 is typical, YAP1::FAM118B '
+       'less so.')
+f(id='yap1Detail', label='YAP1 fusion partner (specify)', type='text', group=G4, default='', placeholder='YAP1::FAM118B',
+  showIf={'field': 'yap1', 'is': 'YAP1 fusion detected, other partner (specify)'})
+f(id='mycn', label='MYCN amplification', type='select', group=G4, default=NP,
+  options=[NP, 'Not amplified', 'Amplified', CBD], showIf={'field': 'molStatus', 'is': 'Reported'},
+  help='Amplification with spinal localisation is the essential criterion for spinal ependymoma, '
+       'MYCN-amplified. Worth ordering where a spinal ependymoma is high grade or the radiology is '
+       'aggressive, because high-grade histology is not always present. Diffuse midline glioma, H3 '
+       'K27-altered can also be MYCN-amplified.')
+f(id='epIhc', label='Ependymal surrogate immunohistochemistry', type='multiselect', group=G4, default=[], options=[
+    'L1CAM positive (strong diffuse)', 'L1CAM negative', 'p65 nuclear expression', 'p65 negative',
+    'MYCN positive', 'MYCN negative', 'HOXB13 positive', 'HOXB13 negative'],
+  showIf={'field': 'molStatus', 'is': 'Reported'},
+  help='Surrogates for the compartment-specific molecular test where that test is unavailable. '
+       'L1CAM with nuclear p65 supports a ZFTA fusion supratentorially; both negative points to '
+       'YAP1 or to NEC. HOXB13 separates myxopapillary ependymoma from spinal ependymoma.')
+f(id='epCnv', label='Copy number (ependymal)', type='multiselect', group=G4, default=[], options=[
+    'Gain of 1q', 'Loss of 6q', 'Loss of chromosome 6', 'Loss of 22q',
+    'Homozygous deletion of CDKN2A/B', 'Stable genome', 'Chromosomal instability and aneuploidy'],
+  showIf={'field': 'molStatus', 'is': 'Reported'},
+  help='Additional molecular information rather than type-defining. 1q gain and 6q loss carry a '
+       'worse outcome in PFA; 22q loss supports spinal ependymoma; a stable genome fits PFA and '
+       'aneuploidy fits PFB.')
 # both branches
 f(id='tert', label='TERT promoter', type='select', group=G4, default=NP,
   options=[NP, 'No mutation detected', 'Mutation detected (specify)', CBD], showIf={'field': 'molStatus', 'is': 'Reported'})

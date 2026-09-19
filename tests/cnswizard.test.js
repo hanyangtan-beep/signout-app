@@ -193,8 +193,51 @@ test('an ependymoma is asked none of the glioblastoma molecular questions', () =
     patientAge: 7, site: 'Cerebellum',
   });
   const ids = visibleSteps(steps, v).map((s) => s.id);
-  for (const id of ['molStatus', 'idh1R132H', 'idhSeq', 'idhBranch', 'tert', 'egfr', 'chr710']) {
+  // molStatus is now asked of this family: every Layer 4 ependymal field - ZFTA, YAP1, MYCN, the
+  // surrogate panel, copy number - is gated on it, so leaving it out left them permanently hidden.
+  // The IDH branch questions and the glioblastoma molecular set still cannot reach the family.
+  for (const id of ['idh1R132H', 'idhSeq', 'idhBranch', 'tert', 'egfr', 'chr710']) {
     assert.ok(!ids.includes(id), `${id} asked of an ependymoma: ${ids.join(' ')}`);
   }
-  assert.deepEqual(ids, ['age', 'family', 'epEntity', 'site', 'basicIhc', 'h3k27me3', 'ezhip', 'methylation', 'grade', 'histClass']);
+  assert.deepEqual(ids, ['age', 'family', 'epEntity', 'site', 'basicIhc', 'molStatus', 'h3k27me3', 'ezhip', 'epCnv', 'methylation', 'grade', 'histClass']);
+});
+
+test('the guided intake asks the molecular question of the compartment it is in', () => {
+  const ep = (extra) => visibleSteps(steps, base({ dxFamily: 'Ependymal tumours', molStatus: 'Reported', ...extra })).map((s) => s.id);
+
+  const st = ep({ dxEpendymal: 'Supratentorial ependymoma', site: 'Frontal lobe', patientAge: 30 });
+  assert.ok(st.includes('zfta') && st.includes('yap1'), `supratentorial set: ${st.join(' ')}`);
+  assert.ok(!st.includes('ezhip') && !st.includes('h3k27me3'), `posterior fossa question asked supratentorially: ${st.join(' ')}`);
+  assert.ok(!st.includes('mycn'));
+
+  const sp = ep({ dxEpendymal: 'Spinal ependymoma', site: 'Spinal cord', patientAge: 40 });
+  assert.ok(sp.includes('mycn'), `MYCN missing: ${sp.join(' ')}`);
+  assert.ok(!sp.includes('zfta') && !sp.includes('yap1') && !sp.includes('ezhip'));
+
+  const pf = ep({ dxEpendymal: 'Posterior fossa ependymoma', site: 'Fourth ventricle', patientAge: 6 });
+  assert.ok(pf.includes('h3k27me3') && pf.includes('ezhip'), `posterior fossa set: ${pf.join(' ')}`);
+  assert.ok(!pf.includes('zfta') && !pf.includes('mycn'));
+
+  // YAP1 is asked only once ZFTA has come back without a fusion, and drops away when one is found.
+  const found = ep({ dxEpendymal: 'Supratentorial ependymoma', site: 'Frontal lobe', zfta: 'ZFTA::RELA fusion detected' });
+  assert.ok(!found.includes('yap1'), 'YAP1 still asked after a ZFTA fusion was found');
+
+  // The two morphologically defined types are not asked a compartment molecular question at all.
+  const mpe = ep({ dxEpendymal: 'Myxopapillary ependymoma', site: 'Cauda equina' });
+  for (const id of ['zfta', 'yap1', 'mycn', 'h3k27me3', 'ezhip', 'epCnv']) {
+    assert.ok(!mpe.includes(id), `${id} asked of a myxopapillary ependymoma: ${mpe.join(' ')}`);
+  }
+});
+
+test('the cautions on the compartment questions name what the answer does not settle', () => {
+  const v = base({
+    dxFamily: 'Ependymal tumours', dxEpendymal: 'Supratentorial ependymoma', site: 'Frontal lobe',
+    molStatus: 'Reported',
+  });
+  const say = (id, values = v) => cautions(steps.find((s) => s.id === id), values).join(' ');
+  assert.match(say('zfta'), /L1CAM and nuclear p65/);
+  assert.match(say('zfta', { ...v, site: 'Cerebellum', dxEpendymal: 'Posterior fossa ependymoma' }), /reported NEC/);
+  assert.match(say('yap1'), /L1CAM|p65/);
+  assert.match(say('epIhc'), /L1CAM|surrogate/i);
+  assert.match(say('mycn', { ...v, site: 'Spinal cord', dxEpendymal: 'Spinal ependymoma' }), /FISH|amplif/i);
 });

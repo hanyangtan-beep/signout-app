@@ -60,11 +60,35 @@ export const NODE_FIELDS = {
 
   // ----- ependymal -----
   'ep:morph': [...['dxFamily', 'dxEpendymal', 'finding'], 'ihc'],
+  'ep:pattern': ['dxEpendymal', 'finding'],
   'ep:site': ['site', 'siteOther'],
-  'ep:k27me3': ['h3k27me3'],
-  'ep:ezhip': ['ezhip'],
-  'ep:meth': ['methylation', 'methClass', 'methScore', 'methThreshold'],
-  'ep:nos': ['dxQualifier', 'dxQualifierDetail'],
+
+  // The morphologically defined pair: subependymoma and myxopapillary ependymoma.
+  'epm:morph': ['dxEpendymal', 'finding'],
+  'epm:gfap': ['ihc', 'ihcOther'],
+  'epm:hoxb13': ['epIhc'],
+  'epm:meth': ['methylation', 'methFamily', 'methClass', 'methScore', 'methThreshold'],
+  'epm:grade': ['grade'],
+
+  // Supratentorial: ZFTA, then YAP1.
+  'epst:surrogate': ['epIhc'],
+  'epst:zfta': ['zfta', 'zftaDetail'],
+  'epst:yap1': ['yap1', 'yap1Detail'],
+  'epst:nec': ['dxQualifier', 'dxQualifierDetail'],
+  'epst:grade': ['grade'],
+
+  // Posterior fossa: K27me3, EZHIP, methylation.
+  'eppf:k27me3': ['h3k27me3'],
+  'eppf:ezhip': ['ezhip'],
+  'eppf:meth': ['methylation', 'methFamily', 'methClass', 'methScore', 'methThreshold'],
+  'eppf:nos': ['dxQualifier', 'dxQualifierDetail'],
+  'eppf:grade': ['grade'],
+
+  // Spinal: the mimics, then MYCN, then copy number.
+  'epsp:mimic': ['h3k27me3', 'h3seq', 'epIhc'],
+  'epsp:mycn': ['mycn', 'epIhc'],
+  'epsp:cnv': ['epCnv'],
+  'epsp:grade': ['grade'],
 
   // ----- circumscribed astrocytic gliomas: the MAPK pathway -----
   'mapk:morph': entityFields,

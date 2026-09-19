@@ -240,6 +240,86 @@ test('a midline glioma opens H3 K27 assessment at any age', () => {
   assert.equal(find(pathway(v), 'k27loss').state, 'satisfied');
 });
 
+test('the ependymal compartment is asked before any molecular test', () => {
+  const ep = (patch) => pathway(base({ dxFamily: 'Ependymal tumours', ...patch }));
+
+  // Supratentorial: ZFTA, then YAP1, with the surrogate stains standing in.
+  const st = ep({ dxEpendymal: 'Supratentorial ependymoma', site: 'Frontal lobe', patientAge: 30 });
+  assert.deepEqual(stageIds(st), ['funnel', 'ep', 'epst']);
+  assert.equal(find(st, 'site').state, 'satisfied');
+  assert.match(find(st, 'site').detail, /Supratentorial/);
+  assert.equal(find(st, 'zfta').state, 'outstanding');
+  assert.ok(find(st, 'yap1') && find(st, 'surrogate'));
+  assert.ok(!find(st, 'k27me3'), 'K27me3 asked of a supratentorial ependymoma');
+
+  // Posterior fossa: K27me3, EZHIP, methylation - and no fusion question.
+  const pf = ep({ dxEpendymal: 'Posterior fossa ependymoma', site: 'Fourth ventricle', patientAge: 6 });
+  assert.deepEqual(stageIds(pf), ['funnel', 'ep', 'eppf']);
+  assert.ok(find(pf, 'k27me3') && find(pf, 'ezhip') && find(pf, 'meth'));
+  assert.ok(!find(pf, 'zfta') && !find(pf, 'yap1'), 'a fusion question reached the posterior fossa');
+
+  // Spinal: the mimics, then MYCN.
+  const sp = ep({ dxEpendymal: 'Spinal ependymoma', site: 'Spinal cord', patientAge: 40 });
+  assert.deepEqual(stageIds(sp), ['funnel', 'ep', 'epsp']);
+  assert.ok(find(sp, 'mimic') && find(sp, 'mycn') && find(sp, 'cnv'));
+  assert.ok(!find(sp, 'k27me3') && !find(sp, 'zfta'));
+
+  // No site recorded: the compartment node is the outstanding one and no compartment stage opens.
+  const none = ep({ dxEpendymal: 'Ependymoma, NOS', site: '' });
+  assert.deepEqual(stageIds(none), ['funnel', 'ep']);
+  assert.equal(find(none, 'site').state, 'outstanding');
+  assert.equal(find(none, 'site').test, 'Record the site');
+});
+
+test('the two morphologically defined ependymal types leave before the compartment', () => {
+  const se = pathway(base({ dxFamily: 'Ependymal tumours', dxEpendymal: 'Subependymoma', site: 'Fourth ventricle' }));
+  assert.deepEqual(stageIds(se), ['funnel', 'ep', 'epm']);
+  assert.equal(find(se, 'pattern').state, 'satisfied');
+  assert.equal(find(se, 'site').state, 'na');
+  assert.equal(find(se, 'hoxb13').state, 'na');
+  assert.match(find(se, 'grade').detail, /grade 1/);
+
+  const mpe = pathway(base({ dxFamily: 'Ependymal tumours', dxEpendymal: 'Myxopapillary ependymoma', site: 'Cauda equina' }));
+  assert.deepEqual(stageIds(mpe), ['funnel', 'ep', 'epm']);
+  assert.equal(find(mpe, 'hoxb13').state, 'outstanding');
+  assert.match(find(mpe, 'grade').detail, /grade 2/);
+  assert.ok(!find(mpe, 'mycn'), 'a spinal molecular question reached a myxopapillary ependymoma');
+});
+
+test('a posterior fossa ZFTA fusion is designated NEC, and MYCN amplification is not graded', () => {
+  const pf = pathway(base({
+    dxFamily: 'Ependymal tumours', dxEpendymal: 'Posterior fossa ependymoma', site: 'Cerebellum',
+    molStatus: 'Reported', zfta: 'ZFTA::RELA fusion detected',
+  }));
+  const nec = find(pf, 'nos');
+  assert.match(nec.label, /NEC/);
+  assert.equal(nec.state, 'outstanding');
+
+  const sp = pathway(base({
+    dxFamily: 'Ependymal tumours', dxEpendymal: 'Spinal ependymoma, MYCN-amplified', site: 'Spinal cord',
+    molStatus: 'Reported', mycn: 'Amplified',
+  }));
+  assert.equal(find(sp, 'mycn').state, 'satisfied');
+  assert.equal(find(sp, 'grade').state, 'na');
+  assert.match(find(sp, 'grade').detail, /No CNS WHO grade/);
+});
+
+test('"No fusion detected" is not read as a fusion', () => {
+  // The bare test /fusion detected/ matches the negative option as well; every fusion select in the
+  // pathway is read through a predicate that excludes it.
+  const st = pathway(base({
+    dxFamily: 'Ependymal tumours', dxEpendymal: 'Supratentorial ependymoma', site: 'Frontal lobe',
+    molStatus: 'Reported', zfta: 'No fusion detected',
+  }));
+  assert.equal(find(st, 'yap1').state, 'outstanding', 'YAP1 was closed off by a negative ZFTA result');
+
+  const pilo = pathway(base({
+    dxFamily: 'Circumscribed astrocytic gliomas', dxCircumscribed: 'Pilocytic astrocytoma',
+    site: 'Cerebellum', patientAge: 9, molStatus: 'Reported', brafFusion: 'No fusion detected',
+  }));
+  assert.equal(find(pilo, 'mapk').state, 'outstanding', 'a negative BRAF fusion satisfied the MAPK criterion');
+});
+
 test('a posterior fossa ependymoma runs the group question', () => {
   const v = base({
     dxFamily: 'Ependymal tumours', dxEpendymal: 'Posterior fossa ependymoma',
