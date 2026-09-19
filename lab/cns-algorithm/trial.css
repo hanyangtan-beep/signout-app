@@ -60,7 +60,8 @@
 
 .chart-svg { display: block; width: 100%; height: auto; }
 
-.chart-frame {
+/* On the body rather than the frame, so the legend outside the chart reads the same three colours. */
+.trial-body {
   --pwc-satisfied: var(--color-primary-highlight);
   --pwc-outstanding: oklch(0.55 0.12 70 / 0.14);
   --pwc-na: var(--color-surface-2);
@@ -193,7 +194,8 @@
 .q-opt.is-on { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-text-inverse); }
 .q-check { width: 16px; height: 16px; }
 
-.q-close {
+.q-acts { display: flex; align-items: center; gap: var(--space-2); flex: 0 0 auto; }
+.q-close, .q-next {
   flex: 0 0 auto;
   font: inherit;
   font-size: var(--text-xs);
@@ -204,6 +206,17 @@
   color: var(--color-text);
   cursor: pointer;
 }
+.q-next { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-text-inverse); }
+.q-done { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-text-muted); }
+
+/* ---------- the legend ---------- */
+
+.trial-branch .chart-legend { display: flex; align-items: center; gap: var(--space-4); margin: var(--space-3) 0 0; }
+.leg { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-muted); }
+.leg i { width: 18px; height: 10px; border-radius: 3px; border: 1px solid var(--color-border-strong); }
+.leg.is-satisfied i { background: var(--pwc-satisfied); }
+.leg.is-outstanding i { background: var(--pwc-outstanding); border-color: var(--color-warning, #b45309); }
+.leg.is-na i { background: var(--pwc-na); opacity: 0.6; }
 
 /* ---------- the foot ---------- */
 
@@ -220,6 +233,21 @@
 .foot-cell { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .foot-k { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); }
 .foot-v { font-size: var(--text-xs); line-height: 1.4; }
+.foot-checks { display: flex; flex-direction: column; gap: 5px; }
+.foot-check {
+  font: inherit;
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  text-align: left;
+  padding: 0 0 0 9px;
+  border: 0;
+  border-left: 2px solid var(--color-border-strong);
+  background: none;
+  color: var(--color-text);
+}
+.foot-check.is-warn { border-left-color: var(--color-warning, #b45309); }
+.foot-check.is-linked { cursor: pointer; }
+.foot-check.is-linked:hover { color: var(--color-primary); }
 
 @media (max-width: 900px) {
   .foot { grid-template-columns: 1fr 1fr; }

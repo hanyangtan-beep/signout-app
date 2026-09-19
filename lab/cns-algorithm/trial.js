@@ -70,6 +70,19 @@ const SCENARIOS = {
       },
     },
     {
+      // A case that raises more than one check at once, which is what the foot has to cope with:
+      // a hemizygous CDKN2A loss, which is not a grading criterion, and an unrecorded PDGFRA in a
+      // tumour whose mitotic count has already reached grade 3.
+      id: 'twochecks',
+      label: 'Frontal glioma, mitoses at threshold',
+      values: {
+        patientAge: 44, site: 'Frontal lobe', dxFamily: 'Adult-type diffuse gliomas', dxAdult: 'Astrocytoma, IDH-mutant',
+        molStatus: 'Reported', idhBranch: 'IDH-mutant', idh1R132H: 'Positive', atrx: 'Loss of nuclear expression',
+        codeletion: 'Not detected', cdkn2a: 'Hemizygous loss detected',
+        features: ['Increased cellularity', 'Nuclear atypia', 'Mitoses'], mitoses: '3',
+      },
+    },
+    {
       id: 'pf',
       label: 'Posterior fossa ependymoma',
       values: { patientAge: 7, site: 'Cerebellum', dxFamily: 'Ependymal tumours', dxEpendymal: 'Posterior fossa ependymoma, group PFA', features: [] },
@@ -313,7 +326,14 @@ function stepFor(fields) {
   return null;
 }
 
-function questionCard(laid, scale) {
+/** The node after `key` in chart order that is still outstanding, wrapping round. */
+function nextOutstanding(all, key) {
+  const i = all.findIndex((n) => n.key === key);
+  const order = i < 0 ? all : [...all.slice(i + 1), ...all.slice(0, i)];
+  return order.find((n) => n.node.state === 'outstanding') || null;
+}
+
+function questionCard(laid, scale, all) {
   const { node, key, x, w } = laid;
   const fields = nodeFields(key, state.values, state.schema).filter((f) => isVisible(f, state.values));
   const step = stepFor(fields);
@@ -332,9 +352,17 @@ function questionCard(laid, scale) {
   else card.append(el('p', { class: 'q-empty', text: 'Nothing to record here on this form: this node is a consequence of the answers above, not a question of its own.' }));
 
   if (node.state === 'outstanding' && node.test) card.append(el('p', { class: 'q-test', text: `Next: ${node.test}` }));
+
+  // The chart is walkable: once a node is answered the next unanswered one is a button away, so the
+  // case can be worked down the algorithm without hunting for what is still amber.
+  const next = nextOutstanding(all, key);
   card.append(el('div', { class: 'q-foot' },
     node.source ? el('a', { class: 'q-src', href: node.source.url, target: '_blank', rel: 'noopener', text: node.source.label }) : el('span'),
-    el('button', { type: 'button', class: 'q-close', text: 'Close', onclick: () => { state.open = null; render(); } })));
+    el('div', { class: 'q-acts' },
+      el('button', { type: 'button', class: 'q-close', text: 'Close', onclick: () => { state.open = null; render(); } }),
+      next
+        ? el('button', { type: 'button', class: 'q-next', text: 'Next question', onclick: () => { state.open = next.key; render(); } })
+        : el('span', { class: 'q-done', text: 'Nothing outstanding' }))));
 
   // Tied to the node that asks it: the card sits under the chart, aligned on the node's centre with
   // a caret pointing back up at it, rather than floating over the boxes the question is about.
@@ -344,13 +372,27 @@ function questionCard(laid, scale) {
 
 // ---------- the foot: what the answers have produced ----------
 
-function footer(result) {
+function footer(result, all) {
   const v = state.values;
   const e = entity(v);
   const checks = [];
   try {
-    pathwayChecks(v, (m) => checks.push({ level: 'warn', message: m }), (level, message) => checks.push({ level, message }), e);
+    pathwayChecks(v, (m, field) => checks.push({ level: 'warn', message: m, field }), (level, message, field) => checks.push({ level, message, field }), e);
   } catch { /* the biopsy form carries a different finding field; a check that cannot run is not shown */ }
+
+  // Every check a case raises is shown, not just the first, and each one leads back to the node that
+  // owns the field it is about: a check nobody can act on from where it is written is not much use.
+  const checkLine = (c) => {
+    const owner = c.field ? all.find((n) => nodeFields(n.key, v, state.schema).some((f) => f.id === c.field)) : null;
+    const text = `${c.message}`;
+    if (!owner) return el('span', { class: `foot-check is-${c.level}`, text });
+    return el('button', {
+      type: 'button',
+      class: `foot-check is-${c.level} is-linked`,
+      text,
+      onclick: () => { state.open = owner.key; render(); },
+    });
+  };
 
   const dx = state.schemaId === 'cns_tumour' ? integratedDiagnosis(v) : (v.finding || '');
   const grade = state.touched && state.schemaId === 'cns_tumour' ? proposedGrade(v) : null;
@@ -366,8 +408,10 @@ function footer(result) {
       el('span', { class: 'foot-k', text: 'Next test' }),
       el('span', { class: 'foot-v', text: result.nextTest || 'Nothing outstanding' })),
     el('div', { class: 'foot-cell' },
-      el('span', { class: 'foot-k', text: 'Checks' }),
-      el('span', { class: 'foot-v', text: checks.length ? checks[0].message : 'None raised' })));
+      el('span', { class: 'foot-k', text: checks.length > 1 ? `Checks \u00b7 ${checks.length}` : 'Checks' }),
+      checks.length
+        ? el('div', { class: 'foot-checks' }, ...checks.map(checkLine))
+        : el('span', { class: 'foot-v', text: 'None raised' })));
 }
 
 // ---------- render ----------
@@ -391,7 +435,7 @@ function render() {
   const open = all.find((n) => n.key === state.open);
   if (open) {
     const scale = svg.clientWidth / chart.width;
-    const card = questionCard(open, scale);
+    const card = questionCard(open, scale, all);
     frame.append(card);
     const inner = frame.clientWidth - 2 * 16;
     const cw = card.offsetWidth;
@@ -408,7 +452,7 @@ function render() {
   $('#progress').textContent = `${done} recorded, ${out} outstanding`;
 
   const foot = $('#foot');
-  foot.replaceChildren(footer(result));
+  foot.replaceChildren(footer(result, all));
 }
 
 // ---------- boot ----------

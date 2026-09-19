@@ -28,10 +28,17 @@ file disappears. Kept out of `src/` for now so no shipped module moves while the
 - The question card sits under the chart, horizontally aligned on the node that asks it, with a caret
   pointing back at that node. It deliberately does not float over the boxes: an anchored popover covered the
   stage rows the question was about.
-- Node state carries colour: satisfied, outstanding, not applicable. A node with no field on the current form
-  says so rather than showing an empty card — several nodes are consequences of answers above, not questions.
-- The footer shows the integrated diagnosis as it stands, the proposed grade, the next test, and the first
-  check, all recomputed on every keystroke.
+- Node state carries colour: satisfied, outstanding, not applicable, with a three-swatch legend above the
+  chart, since the colours are the only thing saying which nodes still want an answer. A node with no field on
+  the current form says so rather than showing an empty card — several nodes are consequences of answers
+  above, not questions.
+- Each card carries a "Next question" button that moves to the next node still outstanding in chart order,
+  wrapping round, so a case can be worked down the algorithm without hunting for what is still amber. With
+  nothing left it reads "Nothing outstanding" instead.
+- The footer shows the integrated diagnosis as it stands, the proposed grade, the next test, and every check
+  the case raises, all recomputed on every keystroke. A check whose field belongs to a node is a button that
+  opens that node: a check nobody can act on from where it is written is not much use. Warnings carry a
+  coloured rule, information a plain one.
 
 ## Scope
 
@@ -43,7 +50,7 @@ Starting points are built in so the surface can be opened at a branch without ty
 
 | Form | Starting points |
 | --- | --- |
-| Gliomas and ependymomas resection | Empty form; frontal glioma 38 years (IDH-mutant astrocytoma); temporal glioma 67 years (glioblastoma, IDH-wildtype); posterior fossa ependymoma |
+| Gliomas and ependymomas resection | Empty form; frontal glioma 38 years (IDH-mutant astrocytoma); temporal glioma 67 years (glioblastoma, IDH-wildtype); frontal glioma with mitoses at the grade 3 threshold, which raises two checks at once; posterior fossa ependymoma |
 | Brain and CNS biopsy | Empty form; convexity meningioma; thalamic glioma biopsy |
 
 The astrocytoma and ependymoma starting points clear `features` on purpose. The resection schema pre-ticks a
@@ -72,8 +79,8 @@ Nothing here prints. The report-register rule is untouched: the criteria and cav
 
 ## Verification
 
-`node analysis/shots-cns-trial.mjs` serves the repo on port 8736 and writes four screenshots to
-`analysis/qa/` — astro, GBM, revisit (a satisfied node reopened), meningioma — and reports console and page
+`node analysis/shots-cns-trial.mjs` serves the repo on port 8736 and writes six screenshots to
+`analysis/qa/` — astro, the walk to the next outstanding node, a case raising two checks, GBM, revisit (a satisfied node reopened), meningioma — and reports console and page
 errors. The glioblastoma shot opens the sequencing node by hand, since that case has nothing outstanding and
 that node is the one that used to disagree with the caution beneath it. Last run: no errors. `npm run lint`
 clean at 0 errors, `npm test` 1073 pass 0 fail.
@@ -99,5 +106,17 @@ form's own meningioma panel field. Two tests cover it, one per fault. No fixture
 
 ## Open questions for the next pass
 
-- Whether the layered methylation stage belongs on the chart at all or behind a disclosure.
-- Whether the footer should show every check or only the first.
+- Nothing on the chart tells the reader which nodes are ahead of the one they are on rather than behind it;
+  chart order is the only cue and it is not obvious on the two-column stages.
+- Whether the shipped pathway panel should gain the same walkable "Next question" step, or stay read-only
+  with the guided intake keeping that job.
+
+## Questions settled in this pass
+
+- **The layered methylation stage stays on the chart.** It is already conditional: `methylationStage()` returns
+  nothing unless `methylation` is reported or pending, so it appears only on cases where profiling was
+  actually sent, and hiding it behind a disclosure on those cases would bury a stage that is then part of the
+  diagnosis. Verified against the module: no methylation value gives `a1 a2`, pending or reported gives
+  `a1 a2 meth`.
+- **The footer shows every check, not the first.** A case can raise several at once — the mitoses-at-threshold
+  starting point raises two — and showing one silently hid the rest.
