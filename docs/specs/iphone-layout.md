@@ -44,28 +44,26 @@ design, so it scroll-pans horizontally rather than shrinking to illegibility.
 `theme-color` for both colour schemes, an apple-touch-icon, and `manifest.webmanifest` with
 `display: standalone`, so Add to Home Screen opens without browser chrome.
 
-## What is not decided here
+## Settled on the device
 
-**Google sign-in in standalone mode.** The Drive flow uses the Google Identity Services popup. In an
-iOS home-screen app a popup may open in a detached browser view and never return the token, in which
-case the redirect flow is needed instead. This cannot be settled in headless Chromium. Until it is
-checked on the device, the app is used from a Safari tab, where the popup flow is known to work.
-Record the result here.
+**Google sign-in in standalone mode — works.** Confirmed by the user on 2026-09-19 from an iPhone.
+The Google Identity Services popup returns its token, so the popup flow is kept and no redirect
+fallback is needed. If a future iOS release breaks it, the fallback is the redirect flow.
 
-**Clipboard.** `navigator.clipboard.writeText` on iOS requires the write to happen inside the user
-gesture. The bottom-bar buttons forward the tap synchronously to the existing button, which keeps the
-gesture, but iOS is stricter than Chromium about what counts. Record the result here.
+**Clipboard — works.** Confirmed by the user on 2026-09-19: the bottom bar's Copy buttons put the
+report on the iOS clipboard, pasted back in full. Forwarding the tap to the button that already owns
+the action keeps the write inside the user gesture iOS requires, so that forwarding must stay
+synchronous — an await between the tap and `writeText` would break it.
 
-## Measurements to take on the device
+## Device record
 
 | | Expected | Measured |
 |---|---|---|
 | iPhone 14 / 15 / 16 portrait CSS width | 390 px | |
 | iPhone Pro Max portrait CSS width | 430 px | |
-| Safari visual viewport height with the bar showing | ~745 px at 390 wide | |
-| Sign-in in a Safari tab | popup returns | |
-| Sign-in from Add to Home Screen | unknown | |
-| Copy diagnosis | clipboard set | |
+| Sign-in in a Safari tab | popup returns | works (2026-09-19) |
+| Sign-in from Add to Home Screen | popup returns | works (2026-09-19) |
+| Copy diagnosis / Copy report | clipboard set | works (2026-09-19) |
 | Save to Drive | file written | |
 | Open a saved case | list loads | |
 
