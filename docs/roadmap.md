@@ -113,7 +113,7 @@ Docs
 
 ## Now
 
-Empty. The iPhone card shipped on 2026-09-19; pull the next card from Next.
+- **CNS algorithmic diagnosis — trial.** Merge the guided intake and the CNS pathway into one surface where the flowchart is the screen and each node is answered in place. Trial only: it lives in `lab/cns-algorithm/`, imports `src/cnswizard.js`, `src/cnspathway.js` and `generators/cns_layers.js` unchanged so it cannot drift, and is not wired into `index.html` until the design is settled. Scope: adult diffuse glioma, meningioma and posterior fossa ependymoma, i.e. the three branches the pathway module already carries. Grounding in `analysis/cns-algorithm-research.md`: no openly licensed interactive tool of this kind exists, and every published figure predates cIMPACT-NOW updates 11 and 12, so the node text is re-implemented from the criteria rather than copied from any figure.
 
 ## Next
 

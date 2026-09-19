@@ -1,0 +1,227 @@
+/* CNS algorithmic diagnosis - trial. Uses the app's tokens from ../../styles.css so the trial looks
+   like the app it would be folded into; everything here is scoped to this page. */
+
+.trial-body {
+  margin: 0;
+  padding: 0 var(--space-6) var(--space-6);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+.trial-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  padding: var(--space-5) 0 var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.trial-id h1 { margin: 0; font-size: var(--text-lg); font-weight: 600; letter-spacing: -0.01em; }
+.trial-sub { margin: 4px 0 0; font-size: var(--text-xs); color: var(--color-text-muted); max-width: 78ch; }
+
+.trial-ctl { display: flex; align-items: flex-end; gap: var(--space-3); }
+.ctl { display: flex; flex-direction: column; gap: 3px; }
+.ctl span { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-text-muted); }
+.ctl select, .ctl-btn {
+  font: inherit;
+  font-size: var(--text-xs);
+  padding: 6px 10px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+.ctl-btn { cursor: pointer; }
+.ctl-btn:hover { background: var(--color-surface-2); }
+
+.trial-branch { padding: var(--space-4) 0 var(--space-2); }
+.trial-branch strong { font-size: var(--text-base); }
+.branch-progress {
+  margin-left: var(--space-3);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-text-muted);
+}
+.trial-branch p { margin: 3px 0 0; font-size: var(--text-xs); color: var(--color-text-muted); max-width: 90ch; }
+
+/* ---------- the chart ---------- */
+
+.chart-frame {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  padding: var(--space-4);
+  overflow: visible;
+}
+
+.chart-svg { display: block; width: 100%; height: auto; }
+
+.chart-frame {
+  --pwc-satisfied: var(--color-primary-highlight);
+  --pwc-outstanding: oklch(0.55 0.12 70 / 0.14);
+  --pwc-na: var(--color-surface-2);
+}
+
+.chart-link { fill: none; stroke: var(--color-border-strong); stroke-width: 1.2; }
+.chart-link.is-stub { stroke-dasharray: 4 4; opacity: 0.6; }
+
+.chart-node, .chart-row { cursor: pointer; }
+.chart-node:focus, .chart-row:focus { outline: none; }
+.chart-box { stroke: var(--color-border-strong); stroke-width: 0.8; transition: stroke 0.12s ease; }
+.chart-rowbox { stroke: var(--color-border); stroke-width: 0.6; }
+.chart-label { fill: var(--color-text); font-family: var(--font-body); }
+.chart-node.is-na .chart-label, .chart-row.is-na .chart-label { fill: var(--color-text-faint); }
+
+.chart-node.is-outstanding .chart-box, .chart-row.is-outstanding .chart-rowbox { stroke: var(--color-warn); }
+.chart-node.is-open .chart-box, .chart-row.is-open .chart-rowbox { stroke: var(--color-primary); stroke-width: 2; }
+.chart-node:hover .chart-box, .chart-row:hover .chart-rowbox { stroke: var(--color-primary); }
+.chart-node:focus-visible .chart-box, .chart-row:focus-visible .chart-rowbox { stroke: var(--color-primary); stroke-width: 2; }
+
+.chart-dot { fill: var(--color-text-faint); }
+.chart-row.is-satisfied .chart-dot { fill: var(--color-primary); }
+.chart-row.is-outstanding .chart-dot { fill: var(--color-warn); }
+.chart-row.is-na .chart-dot { fill: var(--color-text-faint); opacity: 0.5; }
+
+.chart-stage { fill: var(--color-surface-2); stroke: var(--color-border); stroke-width: 0.8; }
+.chart-stage.is-outstanding { stroke: var(--color-warn); stroke-opacity: 0.55; }
+.chart-stage-h { fill: var(--color-text); font-weight: 600; font-family: var(--font-body); }
+.chart-stage-label {
+  fill: var(--color-text-muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+}
+
+.chart-fork { fill: var(--color-surface); stroke: var(--color-primary); stroke-width: 1.4; }
+.chart-fork.is-outstanding { stroke: var(--color-warn); }
+.chart-fork-label { fill: var(--color-text); font-weight: 600; font-family: var(--font-body); }
+.chart-stub { fill: none; stroke: var(--color-border-strong); stroke-width: 0.8; stroke-dasharray: 4 4; opacity: 0.7; }
+.chart-stub-label { fill: var(--color-text-faint); font-family: var(--font-body); }
+
+/* ---------- the question, opened on its node ---------- */
+
+.q-card {
+  position: relative;
+  width: min(460px, 100%);
+  margin-top: var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+}
+.q-card.is-outstanding { border-color: var(--color-warn); }
+
+/* The caret points back up at the node that is asking, so the card reads as belonging to it. */
+.q-card::before,
+.q-card::after {
+  content: '';
+  position: absolute;
+  left: var(--caret-x, 24px);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+}
+.q-card::before {
+  top: -9px;
+  border-bottom: 9px solid var(--color-border-strong);
+}
+.q-card.is-outstanding::before { border-bottom-color: var(--color-warn); }
+.q-card::after {
+  top: -8px;
+  border-bottom: 9px solid var(--color-surface);
+}
+
+.q-head { display: flex; flex-direction: column; gap: 4px; }
+.q-state { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-text-muted); }
+.q-state.is-outstanding { color: var(--color-warn); }
+.q-state.is-satisfied { color: var(--color-primary); }
+.q-title { font-size: var(--text-sm); line-height: 1.35; }
+
+.q-detail, .q-note, .q-why, .q-caution, .q-test, .q-empty { margin: var(--space-2) 0 0; font-size: var(--text-xs); line-height: 1.45; }
+.q-detail { color: var(--color-text); }
+.q-note, .q-why, .q-empty { color: var(--color-text-muted); }
+.q-caution {
+  color: var(--color-text);
+  background: var(--color-alert-highlight);
+  border-left: 2px solid var(--color-alert);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.q-test { font-weight: 600; }
+.q-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+.q-src { font-size: 10px; color: var(--color-text-muted); }
+
+.q-field { margin-top: var(--space-3); }
+.q-label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-muted); margin-bottom: 3px; }
+.q-input {
+  width: 100%;
+  font: inherit;
+  font-size: var(--text-xs);
+  padding: 6px 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-sizing: border-box;
+}
+.q-opts { display: flex; flex-wrap: wrap; gap: 4px; }
+.q-opt {
+  font: inherit;
+  font-size: 11px;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+.q-opt.is-on { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-text-inverse); }
+.q-check { width: 16px; height: 16px; }
+
+.q-close {
+  flex: 0 0 auto;
+  font: inherit;
+  font-size: var(--text-xs);
+  padding: 5px 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+/* ---------- the foot ---------- */
+
+.foot-wrap { margin-top: var(--space-4); }
+.foot {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  padding: var(--space-4);
+}
+.foot-cell { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.foot-k { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); }
+.foot-v { font-size: var(--text-xs); line-height: 1.4; }
+
+@media (max-width: 900px) {
+  .foot { grid-template-columns: 1fr 1fr; }
+  .trial-ctl { width: 100%; }
+}

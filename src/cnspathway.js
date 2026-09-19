@@ -98,6 +98,41 @@ function read(values) {
   };
 }
 
+/**
+ * The basic panel, by the family the morphology settled on. Markers only: what they show, and what
+ * that means, belongs to the stage the case then runs.
+ *
+ * @param {{glioma: boolean, ependymal: boolean, meningioma: boolean}} c
+ */
+function ihcPanel(c) {
+  if (c.meningioma) {
+    return {
+      markers: 'EMA, SSTR2A, progesterone receptor, Ki-67',
+      note: 'Ki-67 is ancillary. It carries no grading threshold of its own in a meningioma.',
+      test: 'EMA and SSTR2A at least',
+    };
+  }
+  if (c.ependymal) {
+    return {
+      markers: 'GFAP, EMA, S100, Ki-67',
+      note: 'Dot-like or ring-like EMA supports ependymal differentiation. Ki-67 is ancillary and has no established cut-off.',
+      test: 'GFAP and EMA at least',
+    };
+  }
+  if (!c.glioma) {
+    return {
+      markers: 'A panel directed by the morphology',
+      note: 'The panel follows the differential raised on the sections rather than a fixed list.',
+      test: 'A panel directed by the morphology',
+    };
+  }
+  return {
+    markers: 'GFAP, OLIG2, S100, Ki-67',
+    note: 'Ki-67 is ancillary. It is not a grading criterion in an IDH-mutant glioma and has no established cut-off.',
+    test: 'GFAP and OLIG2 at least',
+  };
+}
+
 /** Stage 1: the funnel every CNS case runs, whatever it turns out to be. */
 function funnelStage(c) {
   const { v, age } = c;
@@ -111,9 +146,12 @@ function funnelStage(c) {
     shown('Astrocytic against oligodendroglial morphology, mitoses, microvascular proliferation, necrosis', v.dxFamily || v.finding || ''),
     { test: 'Settle the family on the sections', source: SRC.funnel }));
 
-  nodes.push(node('ihc', 'Basic immunohistochemistry', has(v, 'ihc') || has(v, 'ihcOther') ? 'satisfied' : 'outstanding',
-    'GFAP, OLIG2, S100, Ki-67',
-    { note: 'Ki-67 is ancillary. It is not a grading criterion in an IDH-mutant glioma and has no established cut-off.', test: 'GFAP and OLIG2 at least', source: SRC.funnel }));
+  // The panel follows the family settled on the sections. A meningioma or a metastasis reaching this
+  // node should not be asked for the glial panel, and should not be read the IDH-mutant glioma note.
+  const panel = ihcPanel(c);
+  nodes.push(node('ihc', 'Basic immunohistochemistry', has(v, 'ihc') || has(v, 'ihcOther') || has(v, 'mgIhc') ? 'satisfied' : 'outstanding',
+    panel.markers,
+    { note: panel.note, test: panel.test, source: SRC.funnel }));
 
   if (!c.glioma && !c.ependymal) {
     nodes.push(node('idh', 'IDH status', 'na', 'The IDH funnel runs for the diffuse gliomas. This case is not on it.', { source: SRC.cns5 }));

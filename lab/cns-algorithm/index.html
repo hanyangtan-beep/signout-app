@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CNS algorithmic diagnosis — trial</title>
+  <meta name="description" content="Trial surface: the CNS pathway flowchart asking its own questions. Not part of the sign-out app." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../styles.css" />
+  <link rel="stylesheet" href="trial.css" />
+</head>
+<body class="trial-body">
+  <header class="trial-top">
+    <div class="trial-id">
+      <h1>CNS algorithmic diagnosis</h1>
+      <p class="trial-sub">Trial surface. The chart asks the questions; answers go into the ordinary form fields. Nothing is saved and nothing is printed.</p>
+    </div>
+    <div class="trial-ctl">
+      <label class="ctl">
+        <span>Template</span>
+        <select id="tmpl">
+          <option value="cns_tumour">Gliomas and ependymomas resection</option>
+          <option value="cns_biopsy">Brain and CNS biopsy</option>
+        </select>
+      </label>
+      <label class="ctl">
+        <span>Starting point</span>
+        <select id="scenario"></select>
+      </label>
+      <button type="button" id="reset" class="ctl-btn">Clear</button>
+    </div>
+  </header>
+
+  <section class="trial-branch">
+    <strong id="branch">CNS pathway</strong>
+    <span id="progress" class="branch-progress"></span>
+    <p id="lede"></p>
+  </section>
+
+  <main id="chart" class="chart-frame"></main>
+
+  <footer id="foot" class="foot-wrap"></footer>
+
+  <script type="module" src="trial.js"></script>
+</body>
+</html>

@@ -367,6 +367,21 @@ test('a case off the IDH funnel forks to its own branch with no stub', () => {
   assert.equal(c.stub, null);
 });
 
+test('the basic panel follows the family, so a meningioma is not asked for the glial markers', () => {
+  const glial = find(pathway(base({ ...GLIOMA, patientAge: 44 })), 'ihc');
+  assert.match(glial.detail, /GFAP, OLIG2/);
+  assert.match(glial.test, /GFAP and OLIG2/);
+
+  const mg = find(pathway(base({ dxFamily: 'Meningioma', mgSubtype: 'Meningothelial meningioma' })), 'ihc');
+  assert.match(mg.detail, /EMA, SSTR2A/);
+  assert.match(mg.test, /EMA and SSTR2A/);
+  assert.doesNotMatch(`${mg.detail} ${mg.note} ${mg.test}`, /GFAP|OLIG2|IDH-mutant glioma/);
+
+  const ep = find(pathway(base({ dxFamily: 'Ependymal tumours', dxEpendymal: 'Posterior fossa ependymoma, group PFA' })), 'ihc');
+  assert.match(ep.detail, /GFAP, EMA/);
+  assert.doesNotMatch(ep.note, /IDH-mutant glioma/);
+});
+
 test('the any-one tag marks the alternative-criteria stages and nothing else', () => {
   const gbm = pathwayChart(pathway(base(WT)));
   assert.equal(gbm.stages.find((s) => s.id === 'b1').anyOf, true);

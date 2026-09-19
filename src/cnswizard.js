@@ -275,6 +275,12 @@ function context() {
     mutantAstro: (v) => mutant(v) && /^Astrocytoma, IDH-mutant/.test(named(v).trim()),
     oligo: (v) => mutant(v) && /Oligodendroglioma/i.test(named(v)),
     midline: (v) => /midline|thalam|pons|brainstem|brain stem|spinal|hypothalam/i.test(`${v.site || ''} ${named(v)}`),
+    // Classic glioblastoma histology as the update 11 shortcut means it: a named glioblastoma with
+    // microvascular proliferation or necrosis actually recorded. Mirrors `lowGradeHistology` in
+    // src/cnspathway.js so the caution and the pathway node cannot disagree on the same case. The
+    // absence of a prior lower-grade glioma is the reader's to know: neither CNS form records it.
+    classicGbm: (v) => /glioblastoma/i.test(named(v))
+      && (Array.isArray(v.features) ? v.features : []).some((f) => /Microvascular|Necrosis/i.test(String(f))),
   };
 }
 
@@ -368,8 +374,12 @@ export function cautions(step, values) {
   if (!step) return out;
   switch (step.id) {
     case 'idhSeq':
+      // The over-55 shortcut carries a histological condition, so the caution must not assert classic
+      // histology the case has not recorded. With neither microvascular proliferation nor necrosis on
+      // the form the shortcut does not apply, and the pathway keeps the sequencing node outstanding.
       if (age !== null && age < 55) out.push(`At ${age}, a negative R132H stain is not enough: IDH1 and IDH2 should be sequenced before an IDH-wildtype diagnosis.`);
-      else if (age !== null && age > 55) out.push(`At ${age}, with classic histology and no known lower-grade glioma, a negative R132H stain is taken as sufficient and sequencing is not required.`);
+      else if (age !== null && age > 55 && ctx.classicGbm(v)) out.push(`At ${age}, with classic glioblastoma histology recorded and no known lower-grade glioma, a negative R132H stain is taken as sufficient and sequencing is not required.`);
+      else if (age !== null && age > 55) out.push(`At ${age}, the shortcut past sequencing needs classic glioblastoma histology. With none recorded, sequence before an IDH-wildtype diagnosis is made.`);
       break;
     case 'mitoses':
       if (ctx.oligo(v)) out.push('Oligodendroglioma grading is unchanged: the count is read against the established threshold for that entity, not the astrocytoma line.');

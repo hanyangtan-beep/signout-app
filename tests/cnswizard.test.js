@@ -77,7 +77,14 @@ test('a default value is offered for confirmation rather than assumed', () => {
 test('the cautions carry the age rules and the copy-number caveats', () => {
   const seq = steps.find((s) => s.id === 'idhSeq');
   assert.match(cautions(seq, base({ patientAge: 40 }))[0], /sequenced/);
-  assert.match(cautions(seq, base({ patientAge: 70 }))[0], /sufficient/);
+  // Over 55 the shortcut past sequencing is conditional on classic glioblastoma histology being
+  // recorded, not on the age alone: with nothing recorded the caution must not claim sufficiency.
+  assert.match(cautions(seq, base({ patientAge: 70 }))[0], /needs classic glioblastoma histology/);
+  const classic = base({
+    patientAge: 70, dxFamily: 'Adult-type diffuse gliomas', dxAdult: 'Glioblastoma, IDH-wildtype',
+    features: ['Nuclear atypia', 'Microvascular proliferation', 'Necrosis with pseudopalisading'],
+  });
+  assert.match(cautions(seq, classic)[0], /sufficient/);
 
   const egfr = steps.find((s) => s.id === 'egfr');
   assert.match(cautions(egfr, base({ patientAge: 32 }))[0], /defines glioblastoma on its own/);

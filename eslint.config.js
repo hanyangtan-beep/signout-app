@@ -8,7 +8,7 @@
 
 export default [
   {
-    files: ['src/**/*.js', 'generators/**/*.js', 'templates/**/*.js', 'tools/**/*.js', 'tests/**/*.js', 'legacy/**/*.js'],
+    files: ['src/**/*.js', 'generators/**/*.js', 'templates/**/*.js', 'tools/**/*.js', 'tests/**/*.js', 'legacy/**/*.js', 'lab/**/*.js'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
