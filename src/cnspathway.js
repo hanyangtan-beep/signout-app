@@ -482,4 +482,56 @@ export function pathway(values) {
   return { branch, title, lede, stages, nextTest: first ? first.test : null, sources };
 }
 
-export default { pathway, pathwaySupported };
+/**
+ * The same pathway, collapsed to a map: one row per stage, with a junction row marking where the
+ * branch was taken. It is drawn above the list so the shape of the pathway is visible at a glance -
+ * which stages are done, which stage the case is standing in, and, at a junction, that the criteria
+ * below are alternatives rather than a list of things that must all be done.
+ *
+ * It derives everything from `pathway()`; it reads no values of its own and holds no state.
+ *
+ * Rows carry:
+ *   id       the stage id, so the row can scroll its stage into view
+ *   label    the stage label, or the branch title on the junction row
+ *   shape    'step' | 'junction'
+ *   state    'outstanding' if any node is outstanding, else 'satisfied' if any is, else 'na'
+ *   dots     one state per node, in stage order
+ *   counts   { satisfied, outstanding, na }
+ *   anyOf    true where the nodes are alternatives, not a checklist
+ */
+export function pathwayMap(result) {
+  const p = result || { stages: [] };
+  const stages = p.stages || [];
+  const rows = [];
+
+  const rollUp = (nodes) => {
+    const counts = { satisfied: 0, outstanding: 0, na: 0 };
+    nodes.forEach((n) => { if (counts[n.state] !== undefined) counts[n.state] += 1; });
+    const state = counts.outstanding ? 'outstanding' : (counts.satisfied ? 'satisfied' : 'na');
+    return { counts, state, dots: nodes.map((n) => n.state) };
+  };
+
+  stages.forEach((st, idx) => {
+    rows.push({ id: st.id, label: st.label, shape: 'step', anyOf: st.nodes.some((n) => n.id === 'oneof' || n.id === 'g4'), ...rollUp(st.nodes) });
+    // The junction sits after the funnel, where the branch point is answered and the case leaves
+    // the common path. A branch that has not opened yet still shows the junction, unresolved.
+    if (idx === 0 && p.branch && p.branch !== 'none') {
+      const branchNode = st.nodes.find((n) => n.id === 'branch');
+      rows.push({
+        id: 'junction',
+        // The drawer title already reads "Branch B - ..." two lines above; the junction says only
+        // which way the case went.
+        label: p.branch === 'pending' ? 'Branch point' : p.title.replace(/^Branch [AB] - /, ''),
+        shape: 'junction',
+        anyOf: false,
+        state: p.branch === 'pending' ? 'outstanding' : (branchNode ? branchNode.state : 'satisfied'),
+        dots: [],
+        counts: { satisfied: 0, outstanding: 0, na: 0 },
+      });
+    }
+  });
+
+  return { rows };
+}
+
+export default { pathway, pathwaySupported, pathwayMap };

@@ -16,7 +16,7 @@ import { applyMacroToCase } from './macroparse.js';
 import { spanFull, groupProgress as progressOf } from './formlayout.js';
 import { organIcon, mountOrganSprite } from './organicons.js';
 import { wizardSteps, wizardSupported, wizardProgress, visibleSteps, stepAnswered, atDefault, cautions } from './cnswizard.js';
-import { pathway, pathwaySupported } from './cnspathway.js';
+import { pathway, pathwaySupported, pathwayMap } from './cnspathway.js';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -1044,6 +1044,34 @@ function pathwayNode(n) {
       n.source ? el('a', { class: 'pw-src', href: n.source.url, target: '_blank', rel: 'noopener', text: n.source.label }) : null));
 }
 
+// The map: the pathway collapsed to one row per stage, drawn above the list. It is the one thing a
+// list cannot show - the shape. A junction row marks where the case left the common funnel, and an
+// "any one" tag marks a stage whose criteria are alternatives rather than a checklist. Clicking a
+// row scrolls its stage into view. It reads pathwayMap() only; it sets nothing and prints nothing.
+function pathwayMapView(p) {
+  const rows = pathwayMap(p).rows;
+  if (!rows.length) return null;
+  const jump = (id) => {
+    const target = document.querySelector(`.pw-stage[data-stage="${CSS.escape(id)}"]`);
+    if (target) target.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  };
+  return el('div', { class: 'pw-map', role: 'group', 'aria-label': 'Pathway map' },
+    ...rows.map((r) => (r.shape === 'junction'
+      ? el('div', { class: `pw-mrow is-junction is-${r.state}` },
+        el('span', { class: 'pw-mdiamond', 'aria-hidden': 'true' }),
+        el('span', { class: 'pw-mlabel', text: r.label }))
+      : el('button', {
+        type: 'button',
+        class: `pw-mrow is-${r.state}`,
+        title: r.label,
+        'aria-label': `${r.label}: ${r.counts.outstanding} outstanding of ${r.dots.length}`,
+        onclick: () => jump(r.id),
+      },
+      el('span', { class: 'pw-mlabel', text: r.label }),
+      el('span', { class: 'pw-mdots', 'aria-hidden': 'true' }, ...r.dots.map((s) => el('i', { class: `pw-mdot is-${s}` }))),
+      r.anyOf ? el('span', { class: 'pw-many', text: 'any one' }) : null))));
+}
+
 function pathwayCard(part, i) {
   if (!pathwayOpen(i)) return null;
   const p = pathway(part.values);
@@ -1056,7 +1084,8 @@ function pathwayCard(part, i) {
     p.nextTest
       ? el('p', { class: 'pw-next', text: `Next test: ${p.nextTest}` })
       : el('p', { class: 'pw-next is-clear', text: 'Nothing outstanding on the pathway.' }),
-    ...p.stages.map((st) => el('section', { class: 'pw-stage' },
+    pathwayMapView(p),
+    ...p.stages.map((st) => el('section', { class: 'pw-stage', 'data-stage': st.id },
       el('h4', { class: 'pw-stage-h', text: st.label }),
       el('ul', { class: 'pw-nodes' }, ...st.nodes.map(pathwayNode)))),
     el('p', { class: 'pw-foot', text: 'Read-only. This panel sets no field and prints nothing.' }));

@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { loadAll } from '../src/registry.js';
-import { pathway, pathwaySupported } from '../src/cnspathway.js';
+import { pathway, pathwaySupported, pathwayMap } from '../src/cnspathway.js';
 
 const registry = await loadAll();
 const tumour = registry.cns_tumour.schema;
@@ -286,4 +286,112 @@ test('no node text reads like report prose: the register stays in the panel', ()
     assert.equal(/^Sections show/.test(n.detail), false, `${n.id} reads as microscopy prose`);
     if (n.source) assert.match(n.source.url, /^https:\/\//);
   }
+});
+
+// ---------- the map ----------
+//
+// The map is the drawer's stages collapsed to one row each, drawn above the list so the shape of the
+// pathway is visible at a glance. It is derived from pathway() alone and adds no knowledge of its own.
+
+test('the map carries one row per stage, plus a junction row once a branch exists', () => {
+  const p = pathway(base({
+    ...GLIOMA, patientAge: 62, dxAdult: 'Glioblastoma, IDH-wildtype',
+    molStatus: 'Reported', idhBranch: 'IDH-wildtype',
+  }));
+  const { rows } = pathwayMap(p);
+  const steps = rows.filter((r) => r.shape === 'step');
+  assert.equal(steps.length, p.stages.length);
+  assert.deepEqual(steps.map((r) => r.id), p.stages.map((s) => s.id));
+  assert.deepEqual(steps.map((r) => r.label), p.stages.map((s) => s.label));
+
+  const junctions = rows.filter((r) => r.shape === 'junction');
+  assert.equal(junctions.length, 1);
+  assert.equal(rows[1].shape === 'junction', true, 'the junction follows the funnel');
+  assert.equal(junctions[0].label, 'IDH-wildtype', 'the junction names the branch, not the drawer title');
+});
+
+test('a map row has one dot per node, in stage order', () => {
+  const p = pathway(base({
+    ...GLIOMA, patientAge: 44, dxAdult: 'Astrocytoma, IDH-mutant',
+    molStatus: 'Reported', idhBranch: 'IDH-mutant', mitoses: 4,
+  }));
+  const { rows } = pathwayMap(p);
+  for (const st of p.stages) {
+    const row = rows.find((r) => r.shape === 'step' && r.id === st.id);
+    assert.deepEqual(row.dots, st.nodes.map((n) => n.state));
+    assert.equal(row.counts.satisfied + row.counts.outstanding + row.counts.na, st.nodes.length);
+  }
+});
+
+test('a row is outstanding when any node in its stage is outstanding', () => {
+  const p = pathway(base({
+    ...GLIOMA, patientAge: 44, dxAdult: 'Astrocytoma, IDH-mutant',
+    molStatus: 'Reported', idhBranch: 'IDH-mutant',
+  }));
+  const { rows } = pathwayMap(p);
+  for (const st of p.stages) {
+    const row = rows.find((r) => r.shape === 'step' && r.id === st.id);
+    const expected = st.nodes.some((n) => n.state === 'outstanding')
+      ? 'outstanding'
+      : (st.nodes.some((n) => n.state === 'satisfied') ? 'satisfied' : 'na');
+    assert.equal(row.state, expected);
+  }
+});
+
+test('the any-one tag marks the alternative-criteria stages and nothing else', () => {
+  const gbm = pathwayMap(pathway(base({
+    ...GLIOMA, patientAge: 62, dxAdult: 'Glioblastoma, IDH-wildtype',
+    molStatus: 'Reported', idhBranch: 'IDH-wildtype',
+  })));
+  assert.equal(gbm.rows.find((r) => r.id === 'b1').anyOf, true);
+  assert.equal(gbm.rows.find((r) => r.id === 'funnel').anyOf, false);
+
+  const astro = pathwayMap(pathway(base({
+    ...GLIOMA, patientAge: 44, dxAdult: 'Astrocytoma, IDH-mutant',
+    molStatus: 'Reported', idhBranch: 'IDH-mutant', mitoses: 4,
+  })));
+  assert.equal(astro.rows.find((r) => r.id === 'a2').anyOf, true, 'the grade 4 criteria are alternatives');
+  assert.equal(astro.rows.find((r) => r.id === 'a1').anyOf, false);
+});
+
+test('before the branch point the map shows the funnel and an unresolved junction', () => {
+  const p = pathway(base({ ...GLIOMA, patientAge: 50 }));
+  assert.equal(p.branch, 'pending');
+  const { rows } = pathwayMap(p);
+  assert.equal(rows.length, 2);
+  assert.equal(rows[1].label, 'Branch point');
+  assert.equal(rows[1].state, 'outstanding');
+  assert.deepEqual(rows[1].dots, []);
+});
+
+test('a case off the IDH funnel gets a map with no junction', () => {
+  const p = pathway(base({ dxFamily: 'Meningioma', mgSubtype: 'Meningothelial meningioma' }));
+  const { rows } = pathwayMap(p);
+  assert.equal(rows.some((r) => r.shape === 'junction'), true);
+  assert.equal(rows[1].label, p.title, 'a non-glioma branch has no prefix to strip');
+});
+
+test('the map invents nothing: every row state and dot comes from a node', () => {
+  const p = pathway(base({
+    ...GLIOMA, patientAge: 32, dxAdult: 'Glioblastoma, IDH-wildtype',
+    molStatus: 'Reported', idhBranch: 'IDH-wildtype', egfr: 'Amplified',
+  }));
+  const states = new Set(['satisfied', 'outstanding', 'na']);
+  for (const r of pathwayMap(p).rows) {
+    assert.equal(states.has(r.state), true);
+    for (const d of r.dots) assert.equal(states.has(d), true);
+    assert.equal(typeof r.label, 'string');
+    assert.notEqual(r.label, '');
+  }
+});
+
+test('the map mutates nothing', () => {
+  const v = base({
+    ...GLIOMA, patientAge: 62, dxAdult: 'Glioblastoma, IDH-wildtype',
+    molStatus: 'Reported', idhBranch: 'IDH-wildtype',
+  });
+  const p = pathway(v);
+  const before = JSON.stringify([v, p]);
+  pathwayMap(p);
+  assert.equal(JSON.stringify([v, p]), before);
 });

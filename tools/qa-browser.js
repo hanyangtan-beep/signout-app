@@ -323,7 +323,19 @@ await check('the CNS pathway drawer opens read-only and writes nothing', async (
   // Read-only: no field appeared or vanished, and the report did not move.
   assert((await page.locator('#part-panel [data-field]').count()) === fieldsBefore, 'the pathway drawer changed the form');
   assert((await page.locator('#report-blocks').innerText()) === reportBefore, 'the pathway drawer changed the report');
+  // The map above the list: one row per stage, a junction row, and a row that scrolls its stage in.
+  const mapRows = await page.locator('#part-panel .pw .pw-map .pw-mrow').count();
+  const stages = await page.locator('#part-panel .pw .pw-stage').count();
+  assert(mapRows === stages + 1, `map showed ${mapRows} rows for ${stages} stages`);
+  assert(await page.locator('#part-panel .pw .pw-map .pw-mrow.is-junction').count() === 1, 'no junction row on the map');
+  assert(await page.locator('#part-panel .pw .pw-map .pw-mdot').count() >= 6, 'the map carried too few node dots');
+  const mapText = (await page.locator('#part-panel .pw .pw-map').innerText()).trim();
+  assert(mapText.length > 10 && !/undefined|NaN/.test(mapText), `map text reads "${mapText}"`);
   await shot('cns-pathway');
+  await page.locator('#part-panel .pw .pw-map .pw-mrow:not(.is-junction)').last().click();
+  await page.waitForTimeout(300);
+  assert((await page.locator('#part-panel [data-field]').count()) === fieldsBefore, 'the map changed the form');
+  assert((await page.locator('#report-blocks').innerText()) === reportBefore, 'the map changed the report');
   await page.locator('#part-panel .part-actions button', { hasText: 'Close pathway' }).first().click();
   await page.waitForTimeout(200);
   assert(!(await page.locator('#part-panel .pw').count()), 'the drawer stayed open after Close');
