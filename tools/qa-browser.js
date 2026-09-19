@@ -299,6 +299,37 @@ await check('the guided intake opens, asks, and leaves the form intact', async (
   return question.slice(0, 48);
 });
 
+// CNS pathway drawer: opens read-only beside the form, shows the branch with lit nodes and a named
+// next test, sets nothing, and prints nothing.
+await check('the CNS pathway drawer opens read-only and writes nothing', async () => {
+  await caseMenu(page, 'New case');
+  await page.click('#btn-palette');
+  await page.waitForSelector('#dlg-palette[open]', { timeout: 5000 });
+  await page.fill('#palette-search', 'glioma');
+  await page.waitForTimeout(200);
+  await page.locator('#palette-list [data-template="cns_tumour"]').first().click();
+  await page.waitForTimeout(400);
+  const fieldsBefore = await page.locator('#part-panel [data-field]').count();
+  const reportBefore = await page.locator('#report-blocks').innerText();
+  const btn = page.locator('#part-panel .part-actions button', { hasText: 'Pathway' });
+  assert(await btn.count(), 'no pathway button on the CNS template');
+  await btn.first().click();
+  await page.waitForSelector('#part-panel .pw', { timeout: 5000 });
+  const title = (await page.locator('#part-panel .pw .pw-head strong').innerText()).trim();
+  assert(title.length > 3, `pathway title reads "${title}"`);
+  assert((await page.locator('#part-panel .pw .pw-stage').count()) >= 2, 'the drawer showed fewer than two stages');
+  assert((await page.locator('#part-panel .pw .pw-node').count()) >= 6, 'the drawer showed too few nodes');
+  assert(await page.locator('#part-panel .pw .pw-next').count(), 'the drawer named no next test and said nothing about it');
+  // Read-only: no field appeared or vanished, and the report did not move.
+  assert((await page.locator('#part-panel [data-field]').count()) === fieldsBefore, 'the pathway drawer changed the form');
+  assert((await page.locator('#report-blocks').innerText()) === reportBefore, 'the pathway drawer changed the report');
+  await shot('cns-pathway');
+  await page.locator('#part-panel .part-actions button', { hasText: 'Close pathway' }).first().click();
+  await page.waitForTimeout(200);
+  assert(!(await page.locator('#part-panel .pw').count()), 'the drawer stayed open after Close');
+  return title.slice(0, 48);
+});
+
 await check('the gate stays out of the way on localhost', async () => {
   assert(await page.locator('#part-panel').isVisible(), 'workspace not visible on localhost');
   assert(!(await page.locator('#gate').isVisible()), 'gate appeared on localhost and would block QA');

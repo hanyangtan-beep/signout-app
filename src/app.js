@@ -16,6 +16,7 @@ import { applyMacroToCase } from './macroparse.js';
 import { spanFull, groupProgress as progressOf } from './formlayout.js';
 import { organIcon, mountOrganSprite } from './organicons.js';
 import { wizardSteps, wizardSupported, wizardProgress, visibleSteps, stepAnswered, atDefault, cautions } from './cnswizard.js';
+import { pathway, pathwaySupported } from './cnspathway.js';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -1008,6 +1009,59 @@ function wizardCard(s, part, i) {
       el('span', { class: 'wiz-hint', text: 'The form below is live throughout; answer here or there.' })));
 }
 
+// ---------- CNS pathway drawer (src/cnspathway.js) ----------
+//
+// A read-only flowchart of the published order, lit by the values already on the form. It writes
+// nothing: no field is set, no line is printed, no grade is proposed. The grade proposal and the
+// warnings live in generators/cns_layers.js and appear beside the report as they always have.
+//
+// Criterion text and source links here are panel text, exempt from the printed register in the way
+// the reference-gallery criteria are. Open state is per part and per session; nothing about the
+// drawer is saved with the case.
+
+const pathways = { open: {} };
+
+function pathwayOpen(i) { return !!pathways.open[i]; }
+function togglePathway(i) { pathways.open[i] = !pathways.open[i]; }
+
+const PW_STATE = {
+  satisfied: { icon: '\u25cf', label: 'satisfied' },
+  outstanding: { icon: '\u25cb', label: 'outstanding' },
+  na: { icon: '\u2014', label: 'not applicable' },
+};
+
+function pathwayNode(n) {
+  const mark = PW_STATE[n.state] || PW_STATE.na;
+  return el('li', { class: `pw-node is-${n.state}` },
+    el('span', { class: 'pw-dot', 'aria-hidden': 'true', text: mark.icon }),
+    el('div', { class: 'pw-node-body' },
+      el('div', { class: 'pw-node-head' },
+        el('strong', { text: n.label }),
+        el('span', { class: 'pw-state', text: mark.label })),
+      el('p', { class: 'pw-detail', text: n.detail }),
+      n.note ? el('p', { class: 'pw-note', text: n.note }) : null,
+      n.state === 'outstanding' && n.test ? el('p', { class: 'pw-test', text: `Next: ${n.test}` }) : null,
+      n.source ? el('a', { class: 'pw-src', href: n.source.url, target: '_blank', rel: 'noopener', text: n.source.label }) : null));
+}
+
+function pathwayCard(part, i) {
+  if (!pathwayOpen(i)) return null;
+  const p = pathway(part.values);
+  return el('aside', { class: 'pw', 'aria-label': 'CNS pathway' },
+    el('div', { class: 'pw-head' },
+      el('div', {},
+        el('strong', { text: p.title }),
+        el('p', { class: 'pw-lede', text: p.lede })),
+      el('button', { type: 'button', class: 'btn ghost small', text: 'Close', onclick: () => { togglePathway(i); render(); } })),
+    p.nextTest
+      ? el('p', { class: 'pw-next', text: `Next test: ${p.nextTest}` })
+      : el('p', { class: 'pw-next is-clear', text: 'Nothing outstanding on the pathway.' }),
+    ...p.stages.map((st) => el('section', { class: 'pw-stage' },
+      el('h4', { class: 'pw-stage-h', text: st.label }),
+      el('ul', { class: 'pw-nodes' }, ...st.nodes.map(pathwayNode)))),
+    el('p', { class: 'pw-foot', text: 'Read-only. This panel sets no field and prints nothing.' }));
+}
+
 function renderPanel() {
   const i = state.activePart;
   const part = state.caseState.parts[i];
@@ -1021,6 +1075,7 @@ function renderPanel() {
     return o;
   }))));
   const wiz = wizardSupported(s) ? wizardCard(s, part, i) : null;
+  const pw = pathwaySupported(s) ? pathwayCard(part, i) : null;
   const head = el('div', { class: 'part-head' },
     el('h3', {}, iconForPart(part), el('span', { text: part.linked ? `Part ${part.label} (synoptic, linked to the frozen section)` : `Part ${part.label}` })),
     picker,
@@ -1035,6 +1090,14 @@ function renderPanel() {
           ? 'Close the guided intake. Everything it recorded stays on the form.'
           : 'Walk the diagnostic funnel one question at a time. It writes the ordinary fields, and the form below stays exactly where it is.',
         onclick: () => { toggleWizard(i); render(); }
+      }) : null,
+      pathwaySupported(s) ? el('button', {
+        type: 'button', class: `btn small${pathwayOpen(i) ? '' : ' ghost'}`,
+        text: pathwayOpen(i) ? 'Close pathway' : 'Pathway',
+        title: pathwayOpen(i)
+          ? 'Close the pathway drawer.'
+          : 'See the integrated-diagnosis pathway for this case: which criteria are satisfied, which are outstanding, and what the next test would be. It reads the form and changes nothing.',
+        onclick: () => { togglePathway(i); render(); }
       }) : null,
       el('button', { type: 'button', class: 'btn ghost small', text: 'Reset', onclick: () => resetPart(i) }),
       el('button', { type: 'button', class: 'btn ghost small danger', text: 'Remove', onclick: () => removePart(i) })
@@ -1052,11 +1115,11 @@ function renderPanel() {
     nodes.macroPanel.replaceChildren(
       el('div', { class: 'part-head' }, el('h3', {}, iconForPart(part), el('span', { text: `Part ${part.label} \u00b7 specimen and macroscopy` }))),
       ...groupFields(split.macro, part, i, pack));
-    nodes.panel.replaceChildren(head, ...[wiz, pack ? sectionRail(split.histo, part) : null].filter(Boolean), ...groupFields(split.histo, part, i, pack));
+    nodes.panel.replaceChildren(head, ...[wiz, pw, pack ? sectionRail(split.histo, part) : null].filter(Boolean), ...groupFields(split.histo, part, i, pack));
   } else {
     nodes.macroPanel.hidden = true;
     nodes.macroPanel.replaceChildren();
-    nodes.panel.replaceChildren(head, ...[wiz, pack ? sectionRail(s.fields, part) : null].filter(Boolean), ...groupFields(s.fields, part, i, pack));
+    nodes.panel.replaceChildren(head, ...[wiz, pw, pack ? sectionRail(s.fields, part) : null].filter(Boolean), ...groupFields(s.fields, part, i, pack));
   }
 }
 
