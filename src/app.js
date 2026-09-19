@@ -15,6 +15,7 @@ import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_
 import { applyMacroToCase } from './macroparse.js';
 import { spanFull, groupProgress as progressOf } from './formlayout.js';
 import { organIcon, mountOrganSprite } from './organicons.js';
+import { wizardSteps, wizardSupported, wizardProgress, visibleSteps, stepAnswered, atDefault, cautions } from './cnswizard.js';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -940,6 +941,73 @@ function focusField(fieldId) {
   });
 }
 
+// ---------- guided intake (src/cnswizard.js) ----------
+//
+// An option beside the form, never instead of it. The card asks one question at a time in the order
+// the diagnostic funnel runs, renders the ordinary field for that step, and explains why the step is
+// there. Closing it leaves every answer on the form. Open state and skipped steps are per part and
+// per session only - nothing about the wizard is saved with the case or printed.
+
+const wizard = { open: {}, skipped: {} };
+
+function wizardOpen(i) { return !!wizard.open[i]; }
+function toggleWizard(i) { wizard.open[i] = !wizard.open[i]; if (!wizard.open[i]) wizard.skipped[i] = []; }
+
+function wizardCard(s, part, i) {
+  if (!wizardOpen(i)) return null;
+  const steps = wizardSteps(s);
+  const skipped = wizard.skipped[i] || (wizard.skipped[i] = []);
+  const { answered, total, step } = wizardProgress(steps, part.values, skipped);
+  const bar = el('div', { class: 'wiz-bar' }, el('div', { class: 'wiz-bar-fill', style: `width:${total ? Math.round((answered / total) * 100) : 0}%` }));
+  const headRow = el('div', { class: 'wiz-head' },
+    el('strong', { text: 'Guided intake' }),
+    el('span', { class: 'wiz-count', text: `${answered} of ${total} answered` }));
+
+  if (!step) {
+    const remaining = visibleSteps(steps, part.values).filter((x) => !stepAnswered(x, part.values));
+    return el('section', { class: 'wiz', 'aria-label': 'Guided intake' }, headRow, bar,
+      el('p', { class: 'wiz-done', text: remaining.length
+        ? `The funnel is walked as far as it goes; ${remaining.length} step${remaining.length === 1 ? ' was' : 's were'} skipped. Check the panel beside the report for anything the recorded findings raise.`
+        : 'The funnel is walked. Check the panel beside the report for anything the recorded findings raise, then read the report through before signing out.' }),
+      skipped.length ? el('button', { type: 'button', class: 'btn ghost small', text: 'Go back over the skipped steps', onclick: () => { wizard.skipped[i] = []; render(); } }) : null);
+  }
+
+  const field = (s.fields || []).find((f) => f.id === step.field);
+  const body = field ? renderField(field, part, i) : el('p', { class: 'wiz-why', text: 'This step has no field on the current template.' });
+  body.classList.add('wiz-field');
+  const notes = cautions(step, part.values);
+  const done = visibleSteps(steps, part.values).filter((x) => stepAnswered(x, part.values));
+
+  return el('section', { class: 'wiz', 'aria-label': 'Guided intake' }, headRow, bar,
+    el('h4', { class: 'wiz-q', text: step.question }),
+    el('p', { class: 'wiz-why', text: step.why }),
+    ...notes.map((n) => el('p', { class: 'wiz-caution', text: n })),
+    body,
+    el('div', { class: 'wiz-foot' },
+      // A field sitting on the value the schema gave it is asked rather than assumed: the wizard
+      // exists so that each step is looked at. Confirming the default clears the step without
+      // touching the value.
+      atDefault(step, part.values) ? el('button', {
+        type: 'button', class: 'btn small', text: 'That is right - continue',
+        title: 'Keep the value already in the field and move to the next question.',
+        onclick: () => { skipped.push(step.id); render(); }
+      }) : el('button', {
+        type: 'button', class: 'btn ghost small', text: step.optional ? 'Not done - move on' : 'Skip this step',
+        title: 'Leave the field as it stands and move to the next question. The form keeps the field either way.',
+        onclick: () => { skipped.push(step.id); render(); }
+      }),
+      done.length ? el('button', {
+        type: 'button', class: 'btn ghost small', text: 'Back',
+        title: `Reopen ${done[done.length - 1].question}`,
+        onclick: () => {
+          const last = done[done.length - 1];
+          const node = nodes.panel.querySelector(`.field[data-field="${CSS.escape(last.field)}"]:not(.wiz-field)`);
+          focusFieldNode(node);
+        }
+      }) : null,
+      el('span', { class: 'wiz-hint', text: 'The form below is live throughout; answer here or there.' })));
+}
+
 function renderPanel() {
   const i = state.activePart;
   const part = state.caseState.parts[i];
@@ -952,6 +1020,7 @@ function renderPanel() {
     if (t.id === s.id) o.selected = true;
     return o;
   }))));
+  const wiz = wizardSupported(s) ? wizardCard(s, part, i) : null;
   const head = el('div', { class: 'part-head' },
     el('h3', {}, iconForPart(part), el('span', { text: part.linked ? `Part ${part.label} (synoptic, linked to the frozen section)` : `Part ${part.label}` })),
     picker,
@@ -959,6 +1028,14 @@ function renderPanel() {
       canUpgrade(i) ? el('button', { type: 'button', class: 'btn small', text: 'Upgrade this part', title: 'Switch this part to the synoptic template for the ticked neoplasm, carrying over what the benign form already answered', onclick: () => upgradeThisPart(i).catch((err) => { toast(err.message); render(); }) }) : null,
       canStage(i) ? el('button', { type: 'button', class: 'btn small', text: pairSeparate(part.values.scenario) ? 'Add breast synoptic' : 'Stage this part', title: pairSeparate(part.values.scenario) ? 'Add the breast carcinoma resection as the next part, with the sentinel node counts pre-filled' : 'Add the paired cancer synoptic under the same letter, pre-filled from the frozen section', onclick: () => stageThisPart(i).catch((err) => { toast(err.message); render(); }) }) : null,
       i > 0 && !part.linked ? el('button', { type: 'button', class: 'btn ghost small', text: 'Same as previous', onclick: () => copyFromPrevious(i) }) : null,
+      wizardSupported(s) ? el('button', {
+        type: 'button', class: `btn small${wizardOpen(i) ? '' : ' ghost'}`,
+        text: wizardOpen(i) ? 'Close guided intake' : 'Guided intake',
+        title: wizardOpen(i)
+          ? 'Close the guided intake. Everything it recorded stays on the form.'
+          : 'Walk the diagnostic funnel one question at a time. It writes the ordinary fields, and the form below stays exactly where it is.',
+        onclick: () => { toggleWizard(i); render(); }
+      }) : null,
       el('button', { type: 'button', class: 'btn ghost small', text: 'Reset', onclick: () => resetPart(i) }),
       el('button', { type: 'button', class: 'btn ghost small danger', text: 'Remove', onclick: () => removePart(i) })
     ));
@@ -975,11 +1052,11 @@ function renderPanel() {
     nodes.macroPanel.replaceChildren(
       el('div', { class: 'part-head' }, el('h3', {}, iconForPart(part), el('span', { text: `Part ${part.label} \u00b7 specimen and macroscopy` }))),
       ...groupFields(split.macro, part, i, pack));
-    nodes.panel.replaceChildren(head, ...[pack ? sectionRail(split.histo, part) : null].filter(Boolean), ...groupFields(split.histo, part, i, pack));
+    nodes.panel.replaceChildren(head, ...[wiz, pack ? sectionRail(split.histo, part) : null].filter(Boolean), ...groupFields(split.histo, part, i, pack));
   } else {
     nodes.macroPanel.hidden = true;
     nodes.macroPanel.replaceChildren();
-    nodes.panel.replaceChildren(head, ...[pack ? sectionRail(s.fields, part) : null].filter(Boolean), ...groupFields(s.fields, part, i, pack));
+    nodes.panel.replaceChildren(head, ...[wiz, pack ? sectionRail(s.fields, part) : null].filter(Boolean), ...groupFields(s.fields, part, i, pack));
   }
 }
 

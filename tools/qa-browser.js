@@ -270,6 +270,35 @@ await check('the sign-in gate closes on a non-local host', async () => {
   }
 });
 
+// Guided intake: opens from the part header on a CNS template, asks one question with its field,
+// leaves the ordinary form intact underneath, and closes without touching what it recorded.
+await check('the guided intake opens, asks, and leaves the form intact', async () => {
+  await caseMenu(page, 'New case');
+  await page.click('#btn-palette');
+  await page.waitForSelector('#dlg-palette[open]', { timeout: 5000 });
+  await page.fill('#palette-search', 'glioma');
+  await page.waitForTimeout(200);
+  await page.locator('#palette-list [data-template="cns_tumour"]').first().click();
+  await page.waitForTimeout(400);
+  const before = await page.locator('#part-panel [data-field]').count();
+  assert(before > 20, `only ${before} fields on the CNS form before the wizard`);
+  const btn = page.locator('#part-panel .part-actions button', { hasText: 'Guided intake' });
+  assert(await btn.count(), 'no guided intake button on the CNS template');
+  await btn.first().click();
+  await page.waitForSelector('#part-panel .wiz', { timeout: 5000 });
+  const question = (await page.locator('#part-panel .wiz .wiz-q').innerText()).trim();
+  assert(question.length > 10, `wizard question reads "${question}"`);
+  assert((await page.locator('#part-panel .wiz .wiz-field').count()) === 1, 'the wizard did not render its field');
+  const during = await page.locator('#part-panel [data-field]').count();
+  assert(during === before + 1, `the form lost fields while the wizard was open (${before} -> ${during})`);
+  await shot('guided-intake');
+  await page.locator('#part-panel .part-actions button', { hasText: 'Close guided intake' }).first().click();
+  await page.waitForTimeout(200);
+  assert(!(await page.locator('#part-panel .wiz').count()), 'the wizard stayed open after Close');
+  assert((await page.locator('#part-panel [data-field]').count()) === before, 'the form did not come back whole');
+  return question.slice(0, 48);
+});
+
 await check('the gate stays out of the way on localhost', async () => {
   assert(await page.locator('#part-panel').isVisible(), 'workspace not visible on localhost');
   assert(!(await page.locator('#gate').isVisible()), 'gate appeared on localhost and would block QA');

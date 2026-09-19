@@ -750,3 +750,28 @@ html[data-gate] body > *:not(#gate):not(#toast):not(#dlg-settings) { display: no
   gap: 8px;
   margin-top: 6px;
 }
+
+/* ---------------------------------------------------------------------------
+   Guided intake (src/cnswizard.js): the diagnostic funnel asked one question at
+   a time, sitting above the ordinary form rather than replacing it. Opt-in per
+   part from the part header.
+   --------------------------------------------------------------------------- */
+.wiz {
+  border: 1px solid var(--color-accent, var(--color-border));
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  padding: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.wiz-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.06em; }
+.wiz-count { color: var(--color-text-muted); }
+.wiz-bar { height: 3px; border-radius: 2px; background: var(--color-border); margin: var(--space-2) 0 var(--space-3); overflow: hidden; }
+.wiz-bar-fill { height: 100%; background: var(--color-accent, var(--color-text-muted)); transition: width 160ms; }
+.wiz-q { margin: 0 0 var(--space-1); font-size: var(--text-base); line-height: 1.35; }
+.wiz-why { margin: 0 0 var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
+.wiz-caution { margin: 0 0 var(--space-2); font-size: var(--text-sm); padding-left: var(--space-3); border-left: 2px solid var(--color-warning, #b7791f); color: var(--color-warning, #b7791f); }
+.wiz-done { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+.wiz .field.wiz-field { border-bottom: 0; padding-top: 0; }
+.wiz-foot { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; padding-top: var(--space-2); border-top: 1px solid var(--color-border); }
+.wiz-hint { font-size: var(--text-xs); color: var(--color-text-muted); margin-left: auto; }
+.wiz .field.wiz-field.span-full { grid-column: auto; }
