@@ -108,6 +108,29 @@ Docs
 
 ## Next
 
+User-requested CNS cards sit at the head of the list; the case-mix ordering below them is unchanged.
+
+### CNS grading and criteria — bring the rules up to cIMPACT-NOW  Size: M
+Why:        five cIMPACT-NOW updates now post-date WHO CNS5 and three of them change what the two CNS templates should propose. Update 12 (May 2026) rewrites the grading of astrocytoma, IDH-mutant — a numeric mitotic threshold of 3 per 2.4 mm2, eight molecular grade 3 criteria, and PDGFRA amplification as a grade 4 criterion on its own. `proposedGrade` currently sends an astrocytoma to grade 3 on a single mitosis and knows only CDKN2A/B for grade 4. An independent cohort moved 12.5 per cent of CNS5 grade 2/3 astrocytomas under the new criteria, so this is a live mismatch, not a nicety.
+Source:     `docs/specs/cns-cimpact-pathways.md` (the twelve-gap table at the foot of it is the work list).
+Change:     `generators/cns_layers.js` `proposedGrade` rewritten against update 12: grade 3 at 3 or more mitoses per 2.4 mm2 or a grade 3 molecular criterion, with microvascular proliferation, necrosis and both grade 4 molecular criteria absent; grade 4 on microvascular proliferation, necrosis, CDKN2A/B homozygous deletion or PDGFRA amplification. Layer 4 gains PDGFRA, the grade 3 molecular set (CDK4, CDK6, CCND2, EGFR, MYCN amplification; RB1 homozygous deletion or pathogenic mutation; pathogenic CDKN2A mutation; PIK3CA or PIK3R1 mutation; G-CIMP-low or A_IDH_HG signature), a hemizygous option on `cdkn2a`, EZHIP, and the update 9 methylation block (classifier, family, class, calibrated score, threshold). A patient age field, so the update 11 age rules can fire. The mitotic field states its area. New Checks, all warnings, never overwriting a chosen grade: TERT-promoter-only in a histologically low-grade IDH-wildtype tumour; EGFR amplification or +7/-10 as the sole molecular feature under 40; CDKN2A/B homozygous deletion in an oligodendroglioma (reconsider grade 2, not an automatic grade 3); a posterior fossa ependymoma with retained K27me3 and no methylation, which is NOS; a midline diffuse astrocytic glioma without H3 K27 assessment; meningioma with 1p and 22q/NF2 on grade 1 morphology (update 8 grade 2 proposal). Grounding and source URLs in code comments only.
+Keeps:      grade as a free pathologist choice — propose and warn, never overwrite. The printed register stays WHO CNS5: cIMPACT-NOW is explicitly not official WHO and nothing from it is printed.
+Untouched:  Layer 1 to Layer 3 print order, the QMH element order, the meningioma morphology rules, every non-glioma family.
+Accept:     the seven `cns_tumour` and three glioma `cns_biopsy` fixtures each re-checked one by one — any that move, move deliberately with the reason recorded in the fixture description; new fixtures for a grade 3 astrocytoma on a molecular criterion alone, a grade 4 astrocytoma on PDGFRA amplification, and an under-40 IDH-wildtype glioma whose only feature is +7/-10.
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: settling the mitotic-area question — the meningioma rule already coded reads 10 HPF as 1.6 mm2, update 12 reads it as 2.4 mm2
+
+### CNS pathway drawer — step-wise integrated diagnosis  Size: M
+Why:        the flowchart the user asked for: a read-only guide beside Layer 4 that walks the published order — clinical and radiological context, H&E, basic immunohistochemistry, IDH1 R132H, then sequencing if negative — to the IDH branch point, and then down the mutant or wildtype arm, highlighting the step the case has reached from the values already entered and naming the next recommended test.
+Source:     `docs/specs/cns-cimpact-pathways.md`, branches A and B.
+Change:     a drawer in the CNS templates rendering the current branch as a flowchart. It reads the form and writes nothing: no field is set, no line is printed. Branch A shows the astrocytoma-versus-oligodendroglioma split and then the update 12 grading ladder; branch B shows the glioblastoma criteria with the three update 11 caveats and the differential to hold open in a younger patient. Node states: satisfied, outstanding, not applicable. Each node carries its criterion text and its source link — panel text only, exempt from the printed register exactly as the reference-gallery criteria are.
+Untouched:  intake, the printed report, every other template.
+Accept:     entering a case step by step lights the nodes in order; a fully entered glioblastoma shows branch B complete; an IDH-mutant astrocytoma with no 1p/19q result shows that node outstanding and names the test.
+Verify:     tests + browser (full)
+Ship:       with batch
+Depends on: the grading card above — the drawer is only worth having once the rules behind it are current
+
 Build order (2026-09-15) is set by the LIS export of 4547 cases, 2024 to 2026-09 — `docs/case-mix-2026-09.md`. Built templates cover 79.2 per cent of that caseload; the four cards above the rule take it to 89.9 per cent. Cards below the rule are carried over and are ordered by the same measure. Placeholders in the app menus (`templates/planned.json`) are removed by the card that builds the template.
 
 ### Oral cavity and oropharynx — biopsy + resection pair  Size: L → split; build as one batch
