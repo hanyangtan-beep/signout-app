@@ -1,5 +1,11 @@
 // Builds schemas/cns_biopsy.json. Re-run after editing; the JSON is the artefact.
-import { writeFileSync } from 'node:fs';
+//
+// The glioma path takes its fields from schemas/_cns_layers.json (scripts/build-cns-layers.py),
+// the shared CNS diagnosis core, so that a glioma named on a stereotactic core is recorded in the
+// same four layers as one named on a resection. Re-run that builder first if it has been edited.
+import { readFileSync, writeFileSync } from 'node:fs';
+
+const LAYERS = JSON.parse(readFileSync(new URL('../schemas/_cns_layers.json', import.meta.url), 'utf8')).groups;
 
 const isFinding = (...vals) => ({ field: 'finding', is: vals.length === 1 ? vals[0] : vals });
 
@@ -24,6 +30,28 @@ const FINDINGS = [
   'Other (free text)'
 ];
 const TUMOURS = [...FINDINGS.filter((f) => !/Abscess|Demyelinating|Gliosis|Other/.test(f))];
+
+// Defaults differ from the resection: a biopsy starts empty and is filled from what is on the
+// slide, so the microscopy and molecular fields open blank or "Not performed" rather than carrying
+// the resection form's worked example.
+const BIOPSY_DEFAULT = {
+  histClass: '', features: [], ihc: [], molStatus: 'Not performed', idh1R132H: 'Not performed'
+};
+
+function gliomaLayers() {
+  const gate = { field: 'finding', is: GLIOMAS };
+  const keep = new Set(['dxQualifier', 'dxQualifierDetail']);
+  const groups = [
+    LAYERS.layer1.filter((f) => keep.has(f.id)),
+    LAYERS.layer2, LAYERS.layer3, LAYERS.features, LAYERS.ihc, LAYERS.treatment, LAYERS.layer4
+  ];
+  return groups.flat().map((f) => ({
+    ...f,
+    group: 'Glioma',
+    default: f.id in BIOPSY_DEFAULT ? BIOPSY_DEFAULT[f.id] : f.default,
+    showIf: f.showIf ? { all: [gate, f.showIf] } : gate
+  }));
+}
 
 const fields = [
   { id: 'specimenName', label: 'Specimen as received', type: 'text', placeholder: 'Brain, right frontal lesion', default: '' },
@@ -60,24 +88,10 @@ const fields = [
   { id: 'mgMolecular', label: 'Molecular result', type: 'multiselect', default: [], group: 'Meningioma', showIf: isFinding('Meningioma'), options: [
     'TERT promoter mutation detected', 'CDKN2A/B homozygous deletion detected', 'TERT promoter wild-type', 'No CDKN2A/B homozygous deletion' ] },
 
-  // ----- gliomas -----
-  { id: 'glFeatures', label: 'Histological features', type: 'multiselect', default: [], group: 'Glioma', showIf: isFinding(...GLIOMAS), options: [
-    'Increased cellularity', 'Nuclear atypia', 'Mitoses', 'Microvascular proliferation', 'Necrosis with pseudopalisading',
-    'Necrosis without pseudopalisading', 'Infiltration of cortex with perineuronal satellitosis', 'Rounded nuclei with perinuclear haloes',
-    'Delicate branching capillary network', 'Microcalcification', 'Perivascular pseudorosettes', 'Biphasic pattern with Rosenthal fibres and eosinophilic granular bodies' ] },
-  { id: 'glMitoses', label: 'Mitoses (per 10 high-power fields)', type: 'number', default: '', group: 'Glioma', showIf: isFinding(...GLIOMAS) },
-  { id: 'glIhc', label: 'Immunohistochemistry', type: 'multiselect', default: [], group: 'Glioma', showIf: isFinding(...GLIOMAS), options: [
-    'GFAP positive', 'OLIG2 positive', 'IDH1 R132H positive', 'IDH1 R132H negative', 'ATRX retained', 'ATRX loss',
-    'p53 strong diffuse nuclear staining', 'p53 wild-type pattern', 'H3 K27M positive', 'H3K27me3 loss of nuclear staining',
-    'synaptophysin positive', 'EMA dot-like positive', 'CK negative' ] },
-  { id: 'glMolecular', label: 'Molecular result', type: 'multiselect', default: [], group: 'Glioma', showIf: isFinding(...GLIOMAS), options: [
-    'IDH1 or IDH2 mutation detected', 'IDH wild-type', '1p/19q codeletion', '1p/19q retained', 'CDKN2A/B homozygous deletion detected',
-    'TERT promoter mutation detected', 'EGFR amplification detected', 'Combined gain of chromosome 7 and loss of chromosome 10',
-    'H3 K27M mutation detected', 'MGMT promoter methylated', 'MGMT promoter unmethylated', 'BRAF fusion detected' ] },
-  { id: 'glMolecularStatus', label: 'Molecular studies', type: 'select', default: 'Not performed', group: 'Glioma', showIf: isFinding(...GLIOMAS), options: [
-    'Not performed', 'Sent, result pending', 'Reported' ] },
-  { id: 'glGrade', label: 'CNS WHO grade', type: 'select', default: 'From the findings', group: 'Glioma', showIf: isFinding(...GLIOMAS), options: [
-    'From the findings', 'CNS WHO grade 1', 'CNS WHO grade 2', 'CNS WHO grade 3', 'CNS WHO grade 4' ] },
+  // ----- gliomas: the shared CNS diagnosis core, behind a glioma finding -----
+  // Field-level gates are kept and combined with the finding gate through `all`, so Layer 4 still
+  // branches on the IDH result exactly as it does on the resection form.
+  ...gliomaLayers(),
 
   // ----- PitNET -----
   { id: 'pitIhc', label: 'Immunohistochemistry', type: 'multiselect', default: [], group: 'PitNET', showIf: isFinding('Pituitary neuroendocrine tumour (PitNET)'), options: [
@@ -168,10 +182,12 @@ const schema = {
       site: 'Frontal lobe', siteOther: '', side: 'right', procedure: 'stereotactic biopsy',
       prep: 'Smear and paraffin sections', smears: '2', pieces: '3', adequacy: 'Lesional tissue well represented',
       finding: 'Glioblastoma, IDH-wildtype', findingOther: '',
-      glFeatures: ['Increased cellularity', 'Nuclear atypia', 'Mitoses', 'Microvascular proliferation', 'Necrosis with pseudopalisading'],
-      glMitoses: '8',
-      glIhc: ['GFAP positive', 'OLIG2 positive', 'IDH1 R132H negative', 'ATRX retained'],
-      glMolecular: ['TERT promoter mutation detected'], glMolecularStatus: 'Reported', glGrade: 'From the findings',
+      histClass: 'Glioblastoma', grade: 'From the findings',
+      features: ['Increased cellularity', 'Nuclear atypia', 'Mitoses', 'Microvascular proliferation', 'Necrosis with pseudopalisading'],
+      mitoses: '8',
+      ihc: ['GFAP positive', 'OLIG2 positive'], ihcOther: '',
+      molStatus: 'Reported', idhBranch: 'IDH-wildtype', idh1R132H: 'Negative', atrx: 'Intact nuclear expression',
+      tert: 'Mutation detected (specify)', tertDetail: 'C228T',
       ki67: '25', additionalNotes: ''
     } }]
   }

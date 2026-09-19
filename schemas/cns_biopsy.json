@@ -370,43 +370,18 @@
       ]
     },
     {
-      "id": "glFeatures",
-      "label": "Histological features",
-      "type": "multiselect",
-      "default": [],
+      "id": "dxQualifier",
+      "label": "Diagnostic qualifier",
+      "type": "select",
       "group": "Glioma",
-      "showIf": {
-        "field": "finding",
-        "is": [
-          "Astrocytoma, IDH-mutant",
-          "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
-          "Glioblastoma, IDH-wildtype",
-          "Diffuse midline glioma, H3 K27-altered",
-          "Pilocytic astrocytoma",
-          "Ependymoma"
-        ]
-      },
-      "options": [
-        "Increased cellularity",
-        "Nuclear atypia",
-        "Mitoses",
-        "Microvascular proliferation",
-        "Necrosis with pseudopalisading",
-        "Necrosis without pseudopalisading",
-        "Infiltration of cortex with perineuronal satellitosis",
-        "Rounded nuclei with perinuclear haloes",
-        "Delicate branching capillary network",
-        "Microcalcification",
-        "Perivascular pseudorosettes",
-        "Biphasic pattern with Rosenthal fibres and eosinophilic granular bodies"
-      ]
-    },
-    {
-      "id": "glMitoses",
-      "label": "Mitoses (per 10 high-power fields)",
-      "type": "number",
       "default": "",
-      "group": "Glioma",
+      "options": [
+        "",
+        "NOS (not otherwise specified)",
+        "NEC (not elsewhere classified)",
+        "Cannot be determined",
+        "Pending further studies"
+      ],
       "showIf": {
         "field": "finding",
         "is": [
@@ -420,76 +395,65 @@
       }
     },
     {
-      "id": "glIhc",
-      "label": "Immunohistochemistry",
-      "type": "multiselect",
-      "default": [],
+      "id": "dxQualifierDetail",
+      "label": "Qualifier (specify)",
+      "type": "text",
       "group": "Glioma",
+      "default": "",
       "showIf": {
-        "field": "finding",
-        "is": [
-          "Astrocytoma, IDH-mutant",
-          "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
-          "Glioblastoma, IDH-wildtype",
-          "Diffuse midline glioma, H3 K27-altered",
-          "Pilocytic astrocytoma",
-          "Ependymoma"
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "dxQualifier",
+            "is": [
+              "Cannot be determined",
+              "Pending further studies"
+            ]
+          }
         ]
-      },
-      "options": [
-        "GFAP positive",
-        "OLIG2 positive",
-        "IDH1 R132H positive",
-        "IDH1 R132H negative",
-        "ATRX retained",
-        "ATRX loss",
-        "p53 strong diffuse nuclear staining",
-        "p53 wild-type pattern",
-        "H3 K27M positive",
-        "H3K27me3 loss of nuclear staining",
-        "synaptophysin positive",
-        "EMA dot-like positive",
-        "CK negative"
-      ]
+      }
     },
     {
-      "id": "glMolecular",
-      "label": "Molecular result",
-      "type": "multiselect",
-      "default": [],
-      "group": "Glioma",
-      "showIf": {
-        "field": "finding",
-        "is": [
-          "Astrocytoma, IDH-mutant",
-          "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
-          "Glioblastoma, IDH-wildtype",
-          "Diffuse midline glioma, H3 K27-altered",
-          "Pilocytic astrocytoma",
-          "Ependymoma"
-        ]
-      },
-      "options": [
-        "IDH1 or IDH2 mutation detected",
-        "IDH wild-type",
-        "1p/19q codeletion",
-        "1p/19q retained",
-        "CDKN2A/B homozygous deletion detected",
-        "TERT promoter mutation detected",
-        "EGFR amplification detected",
-        "Combined gain of chromosome 7 and loss of chromosome 10",
-        "H3 K27M mutation detected",
-        "MGMT promoter methylated",
-        "MGMT promoter unmethylated",
-        "BRAF fusion detected"
-      ]
-    },
-    {
-      "id": "glMolecularStatus",
-      "label": "Molecular studies",
+      "id": "histClass",
+      "label": "Histopathological classification",
       "type": "select",
-      "default": "Not performed",
       "group": "Glioma",
+      "default": "",
+      "options": [
+        "",
+        "Diffuse astrocytoma",
+        "Gemistocytic astrocytoma",
+        "Anaplastic astrocytoma",
+        "Glioblastoma",
+        "Giant cell glioblastoma",
+        "Gliosarcoma",
+        "Epithelioid glioblastoma",
+        "Oligodendroglioma",
+        "Anaplastic oligodendroglioma",
+        "Oligoastrocytoma",
+        "Anaplastic oligoastrocytoma",
+        "Pilocytic astrocytoma",
+        "Pilomyxoid astrocytoma",
+        "Pleomorphic xanthoastrocytoma",
+        "Anaplastic pleomorphic xanthoastrocytoma",
+        "Ependymoma",
+        "Papillary ependymoma",
+        "Clear cell ependymoma",
+        "Tanycytic ependymoma",
+        "Anaplastic ependymoma",
+        "Not applicable",
+        "Other (specify)"
+      ],
       "showIf": {
         "field": "finding",
         "is": [
@@ -500,37 +464,902 @@
           "Pilocytic astrocytoma",
           "Ependymoma"
         ]
-      },
-      "options": [
-        "Not performed",
-        "Sent, result pending",
-        "Reported"
-      ]
+      }
     },
     {
-      "id": "glGrade",
+      "id": "histClassOther",
+      "label": "Histopathological classification (specify)",
+      "type": "text",
+      "group": "Glioma",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "histClass",
+            "is": "Other (specify)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "grade",
       "label": "CNS WHO grade",
       "type": "select",
-      "default": "From the findings",
       "group": "Glioma",
-      "showIf": {
-        "field": "finding",
-        "is": [
-          "Astrocytoma, IDH-mutant",
-          "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
-          "Glioblastoma, IDH-wildtype",
-          "Diffuse midline glioma, H3 K27-altered",
-          "Pilocytic astrocytoma",
-          "Ependymoma"
-        ]
-      },
+      "default": "From the findings",
       "options": [
         "From the findings",
         "CNS WHO grade 1",
         "CNS WHO grade 2",
         "CNS WHO grade 3",
-        "CNS WHO grade 4"
-      ]
+        "CNS WHO grade 4",
+        "Pending",
+        "Not applicable",
+        "Cannot be determined",
+        "Other (specify)"
+      ],
+      "showIf": {
+        "field": "finding",
+        "is": [
+          "Astrocytoma, IDH-mutant",
+          "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+          "Glioblastoma, IDH-wildtype",
+          "Diffuse midline glioma, H3 K27-altered",
+          "Pilocytic astrocytoma",
+          "Ependymoma"
+        ]
+      }
+    },
+    {
+      "id": "gradeOther",
+      "label": "CNS WHO grade (specify)",
+      "type": "text",
+      "group": "Glioma",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "grade",
+            "is": [
+              "Other (specify)",
+              "Cannot be determined"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "features",
+      "label": "Histological features",
+      "type": "multiselect",
+      "group": "Glioma",
+      "default": [],
+      "options": [
+        "Increased cellularity",
+        "Nuclear atypia",
+        "Mitoses",
+        "Microvascular proliferation",
+        "Necrosis with pseudopalisading",
+        "Necrosis without pseudopalisading",
+        "Rounded nuclei with perinuclear haloes",
+        "Delicate branching capillary network",
+        "Microcalcification",
+        "Perivascular pseudorosettes",
+        "True ependymal rosettes",
+        "Biphasic pattern with Rosenthal fibres",
+        "Eosinophilic granular bodies",
+        "Gemistocytic change",
+        "Multinucleated giant cells",
+        "Sarcomatous spindle cell component",
+        "Infiltration of adjacent cortex",
+        "Secondary structures of Scherer"
+      ],
+      "showIf": {
+        "field": "finding",
+        "is": [
+          "Astrocytoma, IDH-mutant",
+          "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+          "Glioblastoma, IDH-wildtype",
+          "Diffuse midline glioma, H3 K27-altered",
+          "Pilocytic astrocytoma",
+          "Ependymoma"
+        ]
+      }
+    },
+    {
+      "id": "mitoses",
+      "label": "Mitoses (per 10 high-power fields)",
+      "type": "number",
+      "group": "Glioma",
+      "default": "",
+      "showIf": {
+        "field": "finding",
+        "is": [
+          "Astrocytoma, IDH-mutant",
+          "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+          "Glioblastoma, IDH-wildtype",
+          "Diffuse midline glioma, H3 K27-altered",
+          "Pilocytic astrocytoma",
+          "Ependymoma"
+        ]
+      }
+    },
+    {
+      "id": "ihc",
+      "label": "Immunohistochemistry",
+      "type": "multiselect",
+      "group": "Glioma",
+      "default": [],
+      "options": [
+        "GFAP positive",
+        "GFAP negative",
+        "OLIG2 positive",
+        "OLIG2 negative",
+        "SOX10 positive",
+        "Synaptophysin positive",
+        "Synaptophysin negative",
+        "NeuN positive",
+        "EMA positive with dot-like staining",
+        "S100 positive",
+        "CD34 positive",
+        "INI1 retained",
+        "INI1 lost",
+        "Neurofilament highlights entrapped axons",
+        "CD20 positive",
+        "CD3 positive",
+        "Pan-cytokeratin positive",
+        "TTF-1 positive",
+        "Melan-A positive"
+      ],
+      "showIf": {
+        "field": "finding",
+        "is": [
+          "Astrocytoma, IDH-mutant",
+          "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+          "Glioblastoma, IDH-wildtype",
+          "Diffuse midline glioma, H3 K27-altered",
+          "Pilocytic astrocytoma",
+          "Ependymoma"
+        ]
+      }
+    },
+    {
+      "id": "ihcOther",
+      "label": "Further immunohistochemistry",
+      "type": "text",
+      "group": "Glioma",
+      "default": "",
+      "placeholder": "H3 K27M positive; L1CAM positive",
+      "showIf": {
+        "field": "finding",
+        "is": [
+          "Astrocytoma, IDH-mutant",
+          "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+          "Glioblastoma, IDH-wildtype",
+          "Diffuse midline glioma, H3 K27-altered",
+          "Pilocytic astrocytoma",
+          "Ependymoma"
+        ]
+      }
+    },
+    {
+      "id": "treatmentEffect",
+      "label": "Treatment effect",
+      "type": "select",
+      "group": "Glioma",
+      "default": "No known presurgical therapy",
+      "options": [
+        "No known presurgical therapy",
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "field": "finding",
+        "is": [
+          "Astrocytoma, IDH-mutant",
+          "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+          "Glioblastoma, IDH-wildtype",
+          "Diffuse midline glioma, H3 K27-altered",
+          "Pilocytic astrocytoma",
+          "Ependymoma"
+        ]
+      }
+    },
+    {
+      "id": "necroticPct",
+      "label": "Necrotic tumour (%)",
+      "type": "number",
+      "group": "Glioma",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "treatmentEffect",
+            "is": "Present"
+          }
+        ]
+      }
+    },
+    {
+      "id": "treatmentDetail",
+      "label": "Treatment effect (specify)",
+      "type": "text",
+      "group": "Glioma",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "treatmentEffect",
+            "is": [
+              "Present",
+              "Cannot be determined"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "molStatus",
+      "label": "Molecular studies",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Reported",
+        "Sent, result pending",
+        "Not performed"
+      ],
+      "showIf": {
+        "field": "finding",
+        "is": [
+          "Astrocytoma, IDH-mutant",
+          "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+          "Glioblastoma, IDH-wildtype",
+          "Diffuse midline glioma, H3 K27-altered",
+          "Pilocytic astrocytoma",
+          "Ependymoma"
+        ]
+      }
+    },
+    {
+      "id": "idhBranch",
+      "label": "IDH status",
+      "type": "select",
+      "group": "Glioma",
+      "default": "IDH-wildtype",
+      "options": [
+        "IDH-mutant",
+        "IDH-wildtype",
+        "Not applicable"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "molStatus",
+            "is": "Reported"
+          }
+        ]
+      }
+    },
+    {
+      "id": "idh1R132H",
+      "label": "IDH1 R132H (immunohistochemistry)",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "Negative",
+        "Positive",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "molStatus",
+            "is": "Reported"
+          }
+        ]
+      }
+    },
+    {
+      "id": "idhSeq",
+      "label": "IDH1 / IDH2 sequencing",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "No mutation detected",
+        "Mutation detected (specify)",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "molStatus",
+            "is": "Reported"
+          }
+        ]
+      }
+    },
+    {
+      "id": "idhSeqDetail",
+      "label": "IDH mutation (specify)",
+      "type": "text",
+      "group": "Glioma",
+      "default": "",
+      "placeholder": "IDH1 p.R132C",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "idhSeq",
+            "is": "Mutation detected (specify)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "atrx",
+      "label": "ATRX (immunohistochemistry)",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "Intact nuclear expression",
+        "Loss of nuclear expression",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "idhBranch",
+            "is": "IDH-mutant"
+          }
+        ]
+      }
+    },
+    {
+      "id": "p53",
+      "label": "p53 (immunohistochemistry)",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "Normal (wild-type pattern)",
+        "Abnormal (mutated pattern)",
+        "Abnormal, overexpression in over 90% of nuclei",
+        "Abnormal, null pattern",
+        "Abnormal, cytoplasmic staining only",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "idhBranch",
+            "is": "IDH-mutant"
+          }
+        ]
+      }
+    },
+    {
+      "id": "codel",
+      "label": "1p/19q (FISH)",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "No deletion detected",
+        "1p/19q codeletion detected",
+        "1p deletion only",
+        "19q deletion only",
+        "Polysomy (specify)",
+        "Other (specify)",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "idhBranch",
+            "is": "IDH-mutant"
+          }
+        ]
+      }
+    },
+    {
+      "id": "codelDetail",
+      "label": "1p/19q (specify)",
+      "type": "text",
+      "group": "Glioma",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "codel",
+            "is": [
+              "Polysomy (specify)",
+              "Other (specify)"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cdkn2a",
+      "label": "CDKN2A / CDKN2B (FISH or copy number)",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "No homozygous deletion detected",
+        "Homozygous deletion detected",
+        "Hemizygous loss detected",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "idhBranch",
+            "is": "IDH-mutant"
+          }
+        ]
+      }
+    },
+    {
+      "id": "h3k27me3",
+      "label": "H3 trimethylated K27 (immunohistochemistry)",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "Retained nuclear expression",
+        "Loss of nuclear expression",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "idhBranch",
+            "is": "IDH-wildtype"
+          }
+        ]
+      }
+    },
+    {
+      "id": "h3g34w",
+      "label": "H3 G34W (immunohistochemistry)",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "Negative",
+        "Positive",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "idhBranch",
+            "is": "IDH-wildtype"
+          }
+        ]
+      }
+    },
+    {
+      "id": "h3seq",
+      "label": "H3 mutation (sequencing)",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "No mutation detected",
+        "H3 K27M detected",
+        "H3 G34R/V detected",
+        "Other mutation (specify)",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "idhBranch",
+            "is": "IDH-wildtype"
+          }
+        ]
+      }
+    },
+    {
+      "id": "h3seqDetail",
+      "label": "H3 mutation (specify)",
+      "type": "text",
+      "group": "Glioma",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "h3seq",
+            "is": "Other mutation (specify)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "braf",
+      "label": "BRAF V600E",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "Not detected",
+        "Detected",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "idhBranch",
+            "is": "IDH-wildtype"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chr710",
+      "label": "Chromosome 7 / 10 (FISH)",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "No change detected",
+        "Combined gain of chromosome 7 and loss of chromosome 10",
+        "Gain of chromosome 7 only",
+        "Loss of chromosome 10 only",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "idhBranch",
+            "is": "IDH-wildtype"
+          }
+        ]
+      }
+    },
+    {
+      "id": "egfr",
+      "label": "EGFR amplification",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "Not amplified",
+        "Amplified",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "idhBranch",
+            "is": "IDH-wildtype"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tert",
+      "label": "TERT promoter",
+      "type": "select",
+      "group": "Glioma",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "No mutation detected",
+        "Mutation detected (specify)",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "molStatus",
+            "is": "Reported"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tertDetail",
+      "label": "TERT promoter mutation (specify)",
+      "type": "text",
+      "group": "Glioma",
+      "default": "",
+      "placeholder": "C228T",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "tert",
+            "is": "Mutation detected (specify)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "molOthers",
+      "label": "Other molecular studies",
+      "type": "text",
+      "group": "Glioma",
+      "default": "",
+      "placeholder": "MGMT promoter methylated",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": [
+              "Astrocytoma, IDH-mutant",
+              "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+              "Glioblastoma, IDH-wildtype",
+              "Diffuse midline glioma, H3 K27-altered",
+              "Pilocytic astrocytoma",
+              "Ependymoma"
+            ]
+          },
+          {
+            "field": "molStatus",
+            "is": "Reported"
+          }
+        ]
+      }
     },
     {
       "id": "pitIhc",
@@ -808,25 +1637,27 @@
           "adequacy": "Lesional tissue well represented",
           "finding": "Glioblastoma, IDH-wildtype",
           "findingOther": "",
-          "glFeatures": [
+          "histClass": "Glioblastoma",
+          "grade": "From the findings",
+          "features": [
             "Increased cellularity",
             "Nuclear atypia",
             "Mitoses",
             "Microvascular proliferation",
             "Necrosis with pseudopalisading"
           ],
-          "glMitoses": "8",
-          "glIhc": [
+          "mitoses": "8",
+          "ihc": [
             "GFAP positive",
-            "OLIG2 positive",
-            "IDH1 R132H negative",
-            "ATRX retained"
+            "OLIG2 positive"
           ],
-          "glMolecular": [
-            "TERT promoter mutation detected"
-          ],
-          "glMolecularStatus": "Reported",
-          "glGrade": "From the findings",
+          "ihcOther": "",
+          "molStatus": "Reported",
+          "idhBranch": "IDH-wildtype",
+          "idh1R132H": "Negative",
+          "atrx": "Intact nuclear expression",
+          "tert": "Mutation detected (specify)",
+          "tertDetail": "C228T",
           "ki67": "25",
           "additionalNotes": ""
         }

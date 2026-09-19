@@ -84,6 +84,10 @@ export const letterCount = (parts) => new Set(parts.map((p) => p.label)).size;
 export function isVisible(field, values) {
   const rule = field.showIf;
   if (!rule) return true;
+  // `all: [rule, ...]` gates a field on several fields at once - every rule must pass. Each member
+  // is an ordinary single-field rule, so nothing else in this function changes. Used by the CNS
+  // templates, where a Layer 4 item needs both a glioma finding and a reported IDH branch.
+  if (Array.isArray(rule.all)) return rule.all.every((r) => isVisible({ showIf: r }, values));
   const v = values[rule.field];
   if (Array.isArray(v)) {
     const want = (x) => (Array.isArray(x) ? x : [x]);

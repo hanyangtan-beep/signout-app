@@ -26,6 +26,13 @@
 // Wording is protected by tests/cns_biopsy.test.js — change it only deliberately.
 
 import { stripDot } from './_house.js';
+// The glioma path shares the four-layer diagnosis core with the resection template, so a
+// glioblastoma named on a stereotactic core reads exactly as it does on a craniotomy.
+import {
+  grade as layerGrade, proposedGrade, gradeText, gradeClause, upperEntity,
+  histClassText, featureClause, mitoticClause, ihcClause, molecularClause, molecularBits,
+  treatmentClause, NP
+} from './cns_layers.js';
 import {
   uc1, lc1, num, arr, word, list,
   MENINGIOMA, ASTRO, OLIGO, GBM, DMG, PILOCYTIC, EPENDYMOMA, PITNET, SCHWANNOMA, METASTASIS, LYMPHOMA,
@@ -115,11 +122,6 @@ function morphologySentence(v) {
   return BASE_MORPHOLOGY[finding(v)] || 'brain parenchyma with reactive astrocytosis';
 }
 
-function featureSentence(v) {
-  const feats = arr(v.glFeatures).map((f) => FEATURE_PHRASE[f] || lc1(f));
-  if (!feats.length) return '';
-  return `The tumour shows ${list(feats)}.`;
-}
 
 function mitoticSentence(v) {
   if (isMeningioma(v)) {
@@ -129,11 +131,7 @@ function mitoticSentence(v) {
       ? 'Mitoses are not identified in 1.6 mm2 (10 high-power fields).'
       : `Mitoses number ${n} per 1.6 mm2 (10 high-power fields).`;
   }
-  const n = num(v.glMitoses);
-  if (n === null) return '';
-  return n === 0
-    ? 'Mitoses are not identified in 10 high-power fields.'
-    : `Mitoses number ${n} per 10 high-power fields.`;
+  return mitoticClause(v);
 }
 
 function meningiomaSentences(v) {
@@ -161,13 +159,14 @@ const IHC_FIELD = {
 };
 
 function ihcValues(v) {
-  if (isGlioma(v)) return arr(v.glIhc);
+  if (isGlioma(v)) return arr(v.ihc);
   const key = IHC_FIELD[finding(v)];
   return key ? arr(v[key]) : [];
 }
 
 /** "On immunohistochemistry, the tumour cells are positive for GFAP and OLIG2, and negative for IDH1 R132H; ATRX is retained." */
 function ihcSentence(v) {
+  if (isGlioma(v)) return ihcClause(v);
   const values = ihcValues(v);
   if (!values.length) return '';
   const pos = [];
@@ -215,16 +214,13 @@ function stainSentence(v) {
 
 // ---------- molecular ----------
 
-const molecularOn = (v) => v.glMolecularStatus === 'Reported' || isMeningioma(v);
-const molecularResults = (v) => (isMeningioma(v) ? arr(v.mgMolecular) : molecularOn(v) ? arr(v.glMolecular) : []);
+const molecularResults = (v) => (isMeningioma(v) ? arr(v.mgMolecular) : []);
 
 function molecularSentence(v) {
+  if (isGlioma(v)) return molecularClause(v);
   const results = molecularResults(v);
   if (results.length) {
     return `On molecular testing, ${list(results.map((r) => MOLECULAR_PHRASE[r] || lc1(r)))}.`;
-  }
-  if (isGlioma(v) && v.glMolecularStatus === 'Sent, result pending') {
-    return 'Molecular studies have been requested; the result will be issued in a supplementary report.';
   }
   return '';
 }
@@ -251,9 +247,9 @@ export function microscopy(part) {
 
   if (isMeningioma(v)) s.push(...meningiomaSentences(v));
   else if (isGlioma(v)) {
-    const f = featureSentence(v);
+    const f = featureClause(v);
     if (f) s.push(f);
-    const m = mitoticSentence(v);
+    const m = mitoticClause(v);
     if (m) s.push(m);
   }
   if (finding(v) === PITNET) s.push('The lesion is well demarcated from the compressed adjacent anterior pituitary.');
@@ -265,6 +261,8 @@ export function microscopy(part) {
   if (ki) s.push(ki);
   const st = stainSentence(v);
   if (st) s.push(st);
+  const te = isGlioma(v) ? treatmentClause(v) : '';
+  if (te) s.push(te);
   const mol = molecularSentence(v);
   if (mol) s.push(mol);
 
@@ -299,30 +297,13 @@ export function meningiomaGrade(v) {
   return 1;
 }
 
-/** WHO CNS5 grade for the glioma families the template covers. */
+/**
+ * WHO CNS5 grade for the glioma families the template covers. The shared core does the work: the
+ * chosen grade prints whenever one is made, otherwise the grade the recorded findings support.
+ * The `finding` select is the biopsy's Layer 1, so it is passed as the entity.
+ */
 export function gliomaGrade(v) {
-  if (v.glGrade && v.glGrade !== 'From the findings') return Number(v.glGrade.replace(/\D/g, ''));
-  const feats = arr(v.glFeatures);
-  const mol = molecularOn(v) ? arr(v.glMolecular) : [];
-  const mitoses = num(v.glMitoses);
-  const brisk = feats.includes('Mitoses') || (mitoses !== null && mitoses > 0);
-  const highGrade = feats.includes('Microvascular proliferation') || feats.some((f) => f.startsWith('Necrosis'));
-  switch (finding(v)) {
-    case GBM:
-    case DMG:
-      return 4;
-    case ASTRO:
-      if (highGrade || mol.includes('CDKN2A/B homozygous deletion detected')) return 4;
-      return brisk ? 3 : 2;
-    case OLIGO:
-      return highGrade || brisk ? 3 : 2;
-    case PILOCYTIC:
-      return 1;
-    case EPENDYMOMA:
-      return 2;
-    default:
-      return null;
-  }
+  return layerGrade(v, finding(v));
 }
 
 export function grade(v) {
@@ -360,15 +341,18 @@ function metastasisDx(v) {
 export function diagnosisText(part) {
   const v = part.values;
   if (noTissue(v)) return 'NO LESIONAL TISSUE IDENTIFIED; brain parenchyma with reactive gliosis only';
-  const g = grade(v);
   switch (finding(v)) {
     case MENINGIOMA: return meningiomaDx(v);
-    case ASTRO: return `ASTROCYTOMA, IDH-mutant, CNS WHO grade ${g}`;
-    case OLIGO: return `OLIGODENDROGLIOMA, IDH-mutant and 1p/19q-codeleted, CNS WHO grade ${g}`;
-    case GBM: return 'GLIOBLASTOMA, IDH-wildtype, CNS WHO grade 4';
-    case DMG: return 'DIFFUSE MIDLINE GLIOMA, H3 K27-altered, CNS WHO grade 4';
-    case PILOCYTIC: return 'PILOCYTIC ASTROCYTOMA, CNS WHO grade 1';
-    case EPENDYMOMA: return `EPENDYMOMA, CNS WHO grade ${g}`;
+    case ASTRO:
+    case OLIGO:
+    case GBM:
+    case DMG:
+    case PILOCYTIC:
+    case EPENDYMOMA: {
+      // Layer 1 in the house diagnosis-line case, exactly as generators/cns_tumour.js prints it.
+      const clause = gradeClause(v, finding(v));
+      return `${upperEntity(finding(v))}${clause ? `, ${clause}` : ''}`;
+    }
     case PITNET: return 'PITUITARY NEUROENDOCRINE TUMOUR (PitNET)';
     case SCHWANNOMA: return 'SCHWANNOMA, CNS WHO grade 1';
     case METASTASIS: return metastasisDx(v);
@@ -393,21 +377,39 @@ const HISTOLOGY_LAYER = {
   [MENINGIOMA]: 'meningothelial neoplasm'
 };
 
-/** The second and third layers of the integrated diagnosis. */
+/**
+ * The layers printed under the diagnosis line. A glioma prints the shared four-layer set - the
+ * histological appearance, Layer 2, immunohistochemistry, Layer 4 and the CNS WHO grade - so that
+ * the biopsy and the resection read alike. The other findings keep their own two-line form.
+ */
 export function layers(part) {
   const v = part.values;
   const out = [];
   const base = HISTOLOGY_LAYER[finding(v)];
   if (!base) return out;
-  const feats = isMeningioma(v)
-    ? arr(v.mgAtypical).map((f) => lc1(ATYPICAL_PHRASE[f] || f))
-    : arr(v.glFeatures).map((f) => FEATURE_PHRASE[f] || lc1(f));
+  if (isGlioma(v)) {
+    const feats = arr(v.features).map((f) => FEATURE_PHRASE[f] || lc1(f));
+    out.push(`- Histological appearance: ${base}${feats.length ? `, showing ${list(feats)}` : ''}`);
+    const hist = histClassText(v);
+    if (hist) out.push(`- Histopathological classification: ${lc1(hist)}`);
+    const ihcBits = [...arr(v.ihc).map((x) => lc1(x)), ...(stripDot(v.ihcOther) ? [lc1(stripDot(v.ihcOther))] : [])];
+    if (ihcBits.length) out.push(`- Immunohistochemistry: ${ihcBits.join('; ')}`);
+    if (v.molStatus === 'Reported') {
+      const bits = molecularBits(v).map((b) => `${b.label} ${lc1(b.value)}`);
+      if (bits.length) out.push(`- Molecular parameters: ${bits.join('; ')}`);
+    } else if (v.molStatus === 'Sent, result pending') {
+      out.push('- Molecular parameters: requested, result pending');
+    }
+    const t = gradeText(v, finding(v));
+    if (t && t !== 'Not applicable') out.push(`- ${/^CNS WHO grade/.test(t) ? t : `CNS WHO grade: ${lc1(t)}`}`);
+    return out;
+  }
+  const feats = arr(v.mgAtypical).map((f) => lc1(ATYPICAL_PHRASE[f] || f));
   out.push(`- Histological appearance: ${base}${feats.length ? `, showing ${list(feats)}` : ''}`);
   const ihcBits = ihcValues(v).map((x) => lc1(x));
   const molBits = molecularResults(v).map((x) => lc1(x));
   if (ihcBits.length) out.push(`- Immunohistochemistry: ${ihcBits.join('; ')}`);
   if (molBits.length) out.push(`- Molecular parameters: ${molBits.join('; ')}`);
-  if (!molBits.length && isGlioma(v) && v.glMolecularStatus === 'Sent, result pending') out.push('- Molecular parameters: requested, result pending');
   const g = grade(v);
   if (g) out.push(`- CNS WHO grade ${g}`);
   return out;
@@ -445,7 +447,7 @@ export function flags(parts) {
   const out = [];
   for (const p of parts) {
     const v = p.values;
-    if (isGlioma(v) && v.glMolecularStatus === 'Sent, result pending') out.push('molecularPending');
+    if (isGlioma(v) && (v.molStatus === 'Sent, result pending' || (v.grade || '') === 'Pending')) out.push('molecularPending');
     if ([GBM, DMG].includes(finding(v)) || (finding(v) === ASTRO && gliomaGrade(v) === 4)) out.push('highGradeGlioma');
     if (isMeningioma(v) && arr(v.mgAtypical).length === 2 && !arr(v.mgMolecular).length) out.push('meningiomaBorderline');
     if (finding(v) === LYMPHOMA) out.push('lymphoma');
@@ -481,27 +483,50 @@ export function validate(part) {
     }
     if (meningiomaGrade(v) >= 2) info(`Meningioma graded CNS WHO grade ${meningiomaGrade(v)} on the recorded findings.`, 'finding');
   }
-  if (finding(v) === GBM) {
-    const feats = arr(v.glFeatures);
-    const mol = molecularOn(v) ? arr(v.glMolecular) : [];
-    const histology = feats.includes('Microvascular proliferation') || feats.some((f) => f.startsWith('Necrosis'));
-    const molecular = mol.includes('TERT promoter mutation detected') || mol.includes('EGFR amplification detected') || mol.includes('Combined gain of chromosome 7 and loss of chromosome 10');
-    if (!histology && !molecular) {
-      warn('Glioblastoma, IDH-wildtype: record microvascular proliferation or necrosis, or a TERT promoter mutation, EGFR amplification or combined +7/-10.', 'glFeatures');
+  if (isGlioma(v)) {
+    // Layer 3 is a free choice: the grade the findings support is proposed and disagreement is
+    // flagged, never silently overruled. Mirrors the checks in generators/cns_tumour.js.
+    const g = gliomaGrade(v);
+    const prop = proposedGrade(v, finding(v));
+    if (g && prop && g !== prop) {
+      warn(`CNS WHO grade ${g} is recorded but the entity and the recorded findings support grade ${prop}.`, 'grade');
     }
-    if (arr(v.glIhc).includes('IDH1 R132H positive')) warn('IDH1 R132H positive with a diagnosis of glioblastoma, IDH-wildtype: an IDH-mutant astrocytoma is the alternative.', 'glIhc');
+    if (!histClassText(v)) info('Histopathological classification (Layer 2) is not recorded.', 'histClass');
   }
-  if (finding(v) === ASTRO && molecularOn(v) && arr(v.glMolecular).includes('IDH wild-type')) {
-    warn('IDH wild-type recorded with a diagnosis of astrocytoma, IDH-mutant.', 'glMolecular');
+  if (finding(v) === GBM) {
+    const feats = arr(v.features);
+    const histology = feats.includes('Microvascular proliferation') || feats.some((f) => f.startsWith('Necrosis'));
+    const molecular = /^Mutation detected/.test(v.tert || '') || v.egfr === 'Amplified'
+      || v.chr710 === 'Combined gain of chromosome 7 and loss of chromosome 10';
+    if (!histology && !molecular) {
+      warn('Glioblastoma, IDH-wildtype: record microvascular proliferation or necrosis, or a TERT promoter mutation, EGFR amplification or combined +7/-10.', 'features');
+    }
+    if (v.idh1R132H === 'Positive') warn('IDH1 R132H is positive; this is not compatible with glioblastoma, IDH-wildtype.', 'idh1R132H');
+    if (v.molStatus === 'Reported' && v.idhBranch !== 'IDH-wildtype') warn('Glioblastoma, IDH-wildtype is recorded but the molecular branch is not IDH-wildtype.', 'idhBranch');
+    if (v.molStatus === 'Reported' && v.tert === NP && v.egfr === NP && v.chr710 === NP) {
+      info('No TERT promoter, EGFR or chromosome 7/10 result is recorded for an IDH-wildtype glioblastoma.', 'tert');
+    }
   }
-  if (finding(v) === OLIGO && v.glMolecularStatus === 'Reported' && !arr(v.glMolecular).includes('1p/19q codeletion')) {
-    warn('Oligodendroglioma requires an IDH mutation with codeletion of 1p and 19q; the codeletion is not recorded.', 'glMolecular');
+  if ((finding(v) === ASTRO || finding(v) === OLIGO) && v.molStatus === 'Reported' && v.idhBranch !== 'IDH-mutant') {
+    warn(`${finding(v)} is recorded but the molecular branch is not IDH-mutant.`, 'idhBranch');
   }
-  if (finding(v) === DMG && !arr(v.glIhc).some((x) => /H3/.test(x)) && !arr(v.glMolecular).includes('H3 K27M mutation detected')) {
-    info('Diffuse midline glioma: record H3 K27M staining or loss of H3K27me3, or the molecular result.', 'glIhc');
+  if (finding(v) === OLIGO && v.molStatus === 'Reported' && v.codel !== '1p/19q codeletion detected') {
+    warn('Oligodendroglioma requires an IDH mutation with codeletion of 1p and 19q; the codeletion is not recorded.', 'codel');
   }
-  if (finding(v) === ASTRO && gliomaGrade(v) === 4 && arr(v.glMolecular).includes('CDKN2A/B homozygous deletion detected')) {
-    info('CDKN2A/B homozygous deletion sets CNS WHO grade 4 in an IDH-mutant astrocytoma.', 'glMolecular');
+  if (finding(v) === ASTRO && v.codel === '1p/19q codeletion detected') {
+    warn('1p/19q codeletion is recorded with a diagnosis of astrocytoma, IDH-mutant.', 'codel');
+  }
+  if (finding(v) === DMG && v.h3k27me3 === 'Retained nuclear expression') {
+    warn('Diffuse midline glioma, H3 K27-altered is recorded but H3 K27 trimethylation is retained.', 'h3k27me3');
+  }
+  if (finding(v) === DMG && v.h3k27me3 === NP && v.h3seq !== 'H3 K27M detected') {
+    info('Diffuse midline glioma: record H3 K27M sequencing or loss of nuclear H3 K27 trimethylation.', 'h3seq');
+  }
+  if (finding(v) === ASTRO && gliomaGrade(v) === 4 && v.cdkn2a === 'Homozygous deletion detected') {
+    info('CDKN2A/B homozygous deletion sets CNS WHO grade 4 in an IDH-mutant astrocytoma.', 'cdkn2a');
+  }
+  if (isGlioma(v) && v.molStatus === 'Not performed' && /IDH-mutant|IDH-wildtype|codeleted|H3 /.test(finding(v))) {
+    info('The diagnosis names a molecular alteration but no molecular studies are recorded.', 'molStatus');
   }
   if (finding(v) === LYMPHOMA && !v.lyFresh) {
     info('No fresh tissue reserved: flow cytometry cannot be added later from the paraffin block.', 'lyFresh');

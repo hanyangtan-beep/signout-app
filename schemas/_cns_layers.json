@@ -1,0 +1,972 @@
+{
+ "note": "Shared CNS diagnosis core: the four layers of the QMH Brain > \"WHO 2021\" form plus treatment effect and the two house extras (histological features with the mitotic count, and immunohistochemistry). Spliced into schemas/cns_tumour.json and schemas/cns_biopsy.json. Edit scripts/build-cns-layers.py, never this file.",
+ "source": {
+  "template": "QMH Cancer Reporting Template - CNS (Common gliomas and ependymomas)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/CNS-Common_gliomas_and_ependymomas.html",
+  "name": "WHO Classification of Tumours of the Central Nervous System, 5th edition (2021); CAP Tumors of the Brain and Spinal Cord 1.0.0.1"
+ },
+ "groups": {
+  "layer1": [
+   {
+    "id": "dxFamily",
+    "label": "Tumour family",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Adult-type diffuse gliomas",
+    "options": [
+     "Adult-type diffuse gliomas",
+     "Paediatric-type diffuse low-grade gliomas",
+     "Paediatric-type diffuse high-grade gliomas",
+     "Circumscribed astrocytic gliomas",
+     "Glioneuronal and neuronal tumours",
+     "Ependymal tumours",
+     "Choroid plexus tumours",
+     "Medulloblastomas, molecularly defined",
+     "Medulloblastomas, histologically defined",
+     "Other CNS embryonal tumours",
+     "Pineal tumours",
+     "Cranial and paraspinal nerve tumours",
+     "Mesenchymal tumours involving the CNS",
+     "Melanocytic tumours",
+     "Haematolymphoid tumours involving the CNS",
+     "Germ cell tumours",
+     "Tumours of the sellar region",
+     "Metastatic tumour",
+     "Other / not listed"
+    ]
+   },
+   {
+    "id": "dxAdult",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Astrocytoma, IDH-mutant",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Adult-type diffuse gliomas"
+    },
+    "options": [
+     "Astrocytoma, IDH-mutant",
+     "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
+     "Glioblastoma, IDH-wildtype",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxPaedLow",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Diffuse astrocytoma, MYB- or MYBL1-altered",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Paediatric-type diffuse low-grade gliomas"
+    },
+    "options": [
+     "Diffuse astrocytoma, MYB- or MYBL1-altered",
+     "Angiocentric glioma",
+     "Polymorphous low-grade neuroepithelial tumour of the young",
+     "Diffuse low-grade glioma, MAPK pathway-altered",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxPaedHigh",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Diffuse midline glioma, H3 K27-altered",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Paediatric-type diffuse high-grade gliomas"
+    },
+    "options": [
+     "Diffuse midline glioma, H3 K27-altered",
+     "Diffuse hemispheric glioma, H3 G34-mutant",
+     "Diffuse paediatric-type high-grade glioma, H3-wildtype and IDH-wildtype",
+     "Infant-type hemispheric glioma",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxCircumscribed",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Pilocytic astrocytoma",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Circumscribed astrocytic gliomas"
+    },
+    "options": [
+     "Pilocytic astrocytoma",
+     "High-grade astrocytoma with piloid features",
+     "Pleomorphic xanthoastrocytoma",
+     "Subependymal giant cell astrocytoma",
+     "Chordoid glioma",
+     "Astroblastoma, MN1-altered",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxGlioneuronal",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Ganglioglioma",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Glioneuronal and neuronal tumours"
+    },
+    "options": [
+     "Ganglioglioma",
+     "Gangliocytoma",
+     "Desmoplastic infantile ganglioglioma / desmoplastic infantile astrocytoma",
+     "Dysembryoplastic neuroepithelial tumour",
+     "Diffuse glioneuronal tumour with oligodendroglioma-like features and nuclear clusters",
+     "Papillary glioneuronal tumour",
+     "Rosette-forming glioneuronal tumour",
+     "Myxoid glioneuronal tumour",
+     "Diffuse leptomeningeal glioneuronal tumour",
+     "Multinodular and vacuolating neuronal tumour",
+     "Dysplastic cerebellar gangliocytoma (Lhermitte-Duclos disease)",
+     "Central neurocytoma",
+     "Extraventricular neurocytoma",
+     "Cerebellar liponeurocytoma",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxEpendymal",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Supratentorial ependymoma",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Ependymal tumours"
+    },
+    "options": [
+     "Supratentorial ependymoma",
+     "Supratentorial ependymoma, ZFTA fusion-positive",
+     "Supratentorial ependymoma, YAP1 fusion-positive",
+     "Posterior fossa ependymoma",
+     "Posterior fossa ependymoma, group PFA",
+     "Posterior fossa ependymoma, group PFB",
+     "Spinal ependymoma",
+     "Spinal ependymoma, MYCN-amplified",
+     "Myxopapillary ependymoma",
+     "Subependymoma",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxChoroid",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Choroid plexus papilloma",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Choroid plexus tumours"
+    },
+    "options": [
+     "Choroid plexus papilloma",
+     "Atypical choroid plexus papilloma",
+     "Choroid plexus carcinoma",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxMedMol",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Medulloblastoma, WNT-activated",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Medulloblastomas, molecularly defined"
+    },
+    "options": [
+     "Medulloblastoma, WNT-activated",
+     "Medulloblastoma, SHH-activated and TP53-wildtype",
+     "Medulloblastoma, SHH-activated and TP53-mutant",
+     "Medulloblastoma, non-WNT/non-SHH",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxMedHist",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Medulloblastoma, classic",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Medulloblastomas, histologically defined"
+    },
+    "options": [
+     "Medulloblastoma, classic",
+     "Medulloblastoma, desmoplastic/nodular",
+     "Medulloblastoma with extensive nodularity",
+     "Medulloblastoma, large cell / anaplastic",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxEmbryonal",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Atypical teratoid/rhabdoid tumour",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Other CNS embryonal tumours"
+    },
+    "options": [
+     "Atypical teratoid/rhabdoid tumour",
+     "Cribriform neuroepithelial tumour",
+     "Embryonal tumour with multilayered rosettes",
+     "CNS neuroblastoma, FOXR2-activated",
+     "CNS tumour with BCOR internal tandem duplication",
+     "CNS embryonal tumour",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxPineal",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Pineocytoma",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Pineal tumours"
+    },
+    "options": [
+     "Pineocytoma",
+     "Pineal parenchymal tumour of intermediate differentiation",
+     "Pineoblastoma",
+     "Papillary tumour of the pineal region",
+     "Desmoplastic myxoid tumour of the pineal region, SMARCB1-mutant",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxNerve",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Schwannoma",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Cranial and paraspinal nerve tumours"
+    },
+    "options": [
+     "Schwannoma",
+     "Neurofibroma",
+     "Perineurioma",
+     "Hybrid nerve sheath tumour",
+     "Malignant melanotic nerve sheath tumour",
+     "Malignant peripheral nerve sheath tumour",
+     "Paraganglioma of the cauda equina",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxMesenchymal",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Solitary fibrous tumour",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Mesenchymal tumours involving the CNS"
+    },
+    "options": [
+     "Solitary fibrous tumour",
+     "Meningioma",
+     "Haemangioblastoma",
+     "Haemangioma / vascular malformation",
+     "Chordoma",
+     "Chondrosarcoma",
+     "Osteosarcoma",
+     "Ewing sarcoma",
+     "Intracranial mesenchymal tumour, FET-CREB fusion-positive",
+     "CIC-rearranged sarcoma",
+     "Primary intracranial sarcoma, DICER1-mutant",
+     "Other mesenchymal tumour",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxMelanocytic",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Meningeal melanocytosis",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Melanocytic tumours"
+    },
+    "options": [
+     "Meningeal melanocytosis",
+     "Meningeal melanocytoma",
+     "Meningeal melanoma",
+     "Meningeal melanomatosis",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxHaem",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Primary diffuse large B-cell lymphoma of the CNS",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Haematolymphoid tumours involving the CNS"
+    },
+    "options": [
+     "Primary diffuse large B-cell lymphoma of the CNS",
+     "Immunodeficiency-associated CNS lymphoma",
+     "Lymphomatoid granulomatosis",
+     "Intravascular large B-cell lymphoma",
+     "MALT lymphoma of the dura",
+     "Other low-grade B-cell lymphoma of the CNS",
+     "Anaplastic large cell lymphoma",
+     "T-cell and NK/T-cell lymphoma",
+     "Erdheim-Chester disease",
+     "Rosai-Dorfman disease",
+     "Juvenile xanthogranuloma",
+     "Langerhans cell histiocytosis",
+     "Histiocytic sarcoma",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxGerm",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Germinoma",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Germ cell tumours"
+    },
+    "options": [
+     "Germinoma",
+     "Embryonal carcinoma",
+     "Yolk sac tumour",
+     "Choriocarcinoma",
+     "Teratoma, mature",
+     "Teratoma, immature",
+     "Teratoma with somatic-type malignancy",
+     "Mixed germ cell tumour",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxSellar",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Adamantinomatous craniopharyngioma",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Tumours of the sellar region"
+    },
+    "options": [
+     "Adamantinomatous craniopharyngioma",
+     "Papillary craniopharyngioma",
+     "Pituicytoma",
+     "Granular cell tumour of the sellar region",
+     "Spindle cell oncocytoma",
+     "Pituitary neuroendocrine tumour (PitNET)",
+     "Pituitary blastoma",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxMetastatic",
+    "label": "Entity",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "Metastatic carcinoma",
+    "showIf": {
+     "field": "dxFamily",
+     "is": "Metastatic tumour"
+    },
+    "options": [
+     "Metastatic carcinoma",
+     "Metastatic melanoma",
+     "Metastatic sarcoma",
+     "Metastatic tumour, type as specified",
+     "Other entity in this family (specify)"
+    ]
+   },
+   {
+    "id": "dxOther",
+    "label": "Integrated diagnosis (specify)",
+    "type": "text",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "",
+    "help": "Used when the entity is not on the family list, or when the family is \"Other / not listed\"."
+   },
+   {
+    "id": "dxQualifier",
+    "label": "Diagnostic qualifier",
+    "type": "select",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "",
+    "options": [
+     "",
+     "NOS (not otherwise specified)",
+     "NEC (not elsewhere classified)",
+     "Cannot be determined",
+     "Pending further studies"
+    ]
+   },
+   {
+    "id": "dxQualifierDetail",
+    "label": "Qualifier (specify)",
+    "type": "text",
+    "group": "Layer 1 - Integrated diagnosis",
+    "default": "",
+    "showIf": {
+     "field": "dxQualifier",
+     "is": [
+      "Cannot be determined",
+      "Pending further studies"
+     ]
+    }
+   }
+  ],
+  "layer2": [
+   {
+    "id": "histClass",
+    "label": "Histopathological classification",
+    "type": "select",
+    "group": "Layer 2 - Histopathological classification",
+    "default": "Glioblastoma",
+    "options": [
+     "",
+     "Diffuse astrocytoma",
+     "Gemistocytic astrocytoma",
+     "Anaplastic astrocytoma",
+     "Glioblastoma",
+     "Giant cell glioblastoma",
+     "Gliosarcoma",
+     "Epithelioid glioblastoma",
+     "Oligodendroglioma",
+     "Anaplastic oligodendroglioma",
+     "Oligoastrocytoma",
+     "Anaplastic oligoastrocytoma",
+     "Pilocytic astrocytoma",
+     "Pilomyxoid astrocytoma",
+     "Pleomorphic xanthoastrocytoma",
+     "Anaplastic pleomorphic xanthoastrocytoma",
+     "Ependymoma",
+     "Papillary ependymoma",
+     "Clear cell ependymoma",
+     "Tanycytic ependymoma",
+     "Anaplastic ependymoma",
+     "Not applicable",
+     "Other (specify)"
+    ]
+   },
+   {
+    "id": "histClassOther",
+    "label": "Histopathological classification (specify)",
+    "type": "text",
+    "group": "Layer 2 - Histopathological classification",
+    "default": "",
+    "showIf": {
+     "field": "histClass",
+     "is": "Other (specify)"
+    }
+   }
+  ],
+  "layer3": [
+   {
+    "id": "grade",
+    "label": "CNS WHO grade",
+    "type": "select",
+    "group": "Layer 3 - CNS WHO grade",
+    "default": "From the findings",
+    "options": [
+     "From the findings",
+     "CNS WHO grade 1",
+     "CNS WHO grade 2",
+     "CNS WHO grade 3",
+     "CNS WHO grade 4",
+     "Pending",
+     "Not applicable",
+     "Cannot be determined",
+     "Other (specify)"
+    ]
+   },
+   {
+    "id": "gradeOther",
+    "label": "CNS WHO grade (specify)",
+    "type": "text",
+    "group": "Layer 3 - CNS WHO grade",
+    "default": "",
+    "showIf": {
+     "field": "grade",
+     "is": [
+      "Other (specify)",
+      "Cannot be determined"
+     ]
+    }
+   }
+  ],
+  "features": [
+   {
+    "id": "features",
+    "label": "Histological features",
+    "type": "multiselect",
+    "group": "Microscopic findings",
+    "default": [
+     "Increased cellularity",
+     "Nuclear atypia",
+     "Mitoses",
+     "Microvascular proliferation",
+     "Necrosis with pseudopalisading"
+    ],
+    "options": [
+     "Increased cellularity",
+     "Nuclear atypia",
+     "Mitoses",
+     "Microvascular proliferation",
+     "Necrosis with pseudopalisading",
+     "Necrosis without pseudopalisading",
+     "Rounded nuclei with perinuclear haloes",
+     "Delicate branching capillary network",
+     "Microcalcification",
+     "Perivascular pseudorosettes",
+     "True ependymal rosettes",
+     "Biphasic pattern with Rosenthal fibres",
+     "Eosinophilic granular bodies",
+     "Gemistocytic change",
+     "Multinucleated giant cells",
+     "Sarcomatous spindle cell component",
+     "Infiltration of adjacent cortex",
+     "Secondary structures of Scherer"
+    ]
+   },
+   {
+    "id": "mitoses",
+    "label": "Mitoses (per 10 high-power fields)",
+    "type": "number",
+    "group": "Microscopic findings",
+    "default": ""
+   }
+  ],
+  "ihc": [
+   {
+    "id": "ihc",
+    "label": "Immunohistochemistry",
+    "type": "multiselect",
+    "group": "Microscopic findings",
+    "default": [
+     "GFAP positive",
+     "OLIG2 positive"
+    ],
+    "options": [
+     "GFAP positive",
+     "GFAP negative",
+     "OLIG2 positive",
+     "OLIG2 negative",
+     "SOX10 positive",
+     "Synaptophysin positive",
+     "Synaptophysin negative",
+     "NeuN positive",
+     "EMA positive with dot-like staining",
+     "S100 positive",
+     "CD34 positive",
+     "INI1 retained",
+     "INI1 lost",
+     "Neurofilament highlights entrapped axons",
+     "CD20 positive",
+     "CD3 positive",
+     "Pan-cytokeratin positive",
+     "TTF-1 positive",
+     "Melan-A positive"
+    ]
+   },
+   {
+    "id": "ihcOther",
+    "label": "Further immunohistochemistry",
+    "type": "text",
+    "group": "Microscopic findings",
+    "default": "",
+    "placeholder": "H3 K27M positive; L1CAM positive"
+   }
+  ],
+  "treatment": [
+   {
+    "id": "treatmentEffect",
+    "label": "Treatment effect",
+    "type": "select",
+    "group": "Microscopic findings",
+    "default": "No known presurgical therapy",
+    "options": [
+     "No known presurgical therapy",
+     "Not identified",
+     "Present",
+     "Cannot be determined"
+    ]
+   },
+   {
+    "id": "necroticPct",
+    "label": "Necrotic tumour (%)",
+    "type": "number",
+    "group": "Microscopic findings",
+    "default": "",
+    "showIf": {
+     "field": "treatmentEffect",
+     "is": "Present"
+    }
+   },
+   {
+    "id": "treatmentDetail",
+    "label": "Treatment effect (specify)",
+    "type": "text",
+    "group": "Microscopic findings",
+    "default": "",
+    "showIf": {
+     "field": "treatmentEffect",
+     "is": [
+      "Present",
+      "Cannot be determined"
+     ]
+    }
+   }
+  ],
+  "layer4": [
+   {
+    "id": "molStatus",
+    "label": "Molecular studies",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "Reported",
+    "options": [
+     "Reported",
+     "Sent, result pending",
+     "Not performed"
+    ]
+   },
+   {
+    "id": "idhBranch",
+    "label": "IDH status",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "IDH-wildtype",
+    "options": [
+     "IDH-mutant",
+     "IDH-wildtype",
+     "Not applicable"
+    ],
+    "showIf": {
+     "field": "molStatus",
+     "is": "Reported"
+    }
+   },
+   {
+    "id": "idh1R132H",
+    "label": "IDH1 R132H (immunohistochemistry)",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "Negative",
+    "options": [
+     "Not performed",
+     "Negative",
+     "Positive",
+     "Cannot be determined"
+    ],
+    "showIf": {
+     "field": "molStatus",
+     "is": "Reported"
+    }
+   },
+   {
+    "id": "idhSeq",
+    "label": "IDH1 / IDH2 sequencing",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "Not performed",
+    "options": [
+     "Not performed",
+     "No mutation detected",
+     "Mutation detected (specify)",
+     "Cannot be determined"
+    ],
+    "showIf": {
+     "field": "molStatus",
+     "is": "Reported"
+    }
+   },
+   {
+    "id": "idhSeqDetail",
+    "label": "IDH mutation (specify)",
+    "type": "text",
+    "group": "Layer 4 - Molecular information",
+    "default": "",
+    "placeholder": "IDH1 p.R132C",
+    "showIf": {
+     "field": "idhSeq",
+     "is": "Mutation detected (specify)"
+    }
+   },
+   {
+    "id": "atrx",
+    "label": "ATRX (immunohistochemistry)",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "Not performed",
+    "options": [
+     "Not performed",
+     "Intact nuclear expression",
+     "Loss of nuclear expression",
+     "Cannot be determined"
+    ],
+    "showIf": {
+     "field": "idhBranch",
+     "is": "IDH-mutant"
+    }
+   },
+   {
+    "id": "p53",
+    "label": "p53 (immunohistochemistry)",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "Not performed",
+    "options": [
+     "Not performed",
+     "Normal (wild-type pattern)",
+     "Abnormal (mutated pattern)",
+     "Abnormal, overexpression in over 90% of nuclei",
+     "Abnormal, null pattern",
+     "Abnormal, cytoplasmic staining only",
+     "Cannot be determined"
+    ],
+    "showIf": {
+     "field": "idhBranch",
+     "is": "IDH-mutant"
+    }
+   },
+   {
+    "id": "codel",
+    "label": "1p/19q (FISH)",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "Not performed",
+    "options": [
+     "Not performed",
+     "No deletion detected",
+     "1p/19q codeletion detected",
+     "1p deletion only",
+     "19q deletion only",
+     "Polysomy (specify)",
+     "Other (specify)",
+     "Cannot be determined"
+    ],
+    "showIf": {
+     "field": "idhBranch",
+     "is": "IDH-mutant"
+    }
+   },
+   {
+    "id": "codelDetail",
+    "label": "1p/19q (specify)",
+    "type": "text",
+    "group": "Layer 4 - Molecular information",
+    "default": "",
+    "showIf": {
+     "field": "codel",
+     "is": [
+      "Polysomy (specify)",
+      "Other (specify)"
+     ]
+    }
+   },
+   {
+    "id": "cdkn2a",
+    "label": "CDKN2A / CDKN2B (FISH or copy number)",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "Not performed",
+    "options": [
+     "Not performed",
+     "No homozygous deletion detected",
+     "Homozygous deletion detected",
+     "Hemizygous loss detected",
+     "Cannot be determined"
+    ],
+    "showIf": {
+     "field": "idhBranch",
+     "is": "IDH-mutant"
+    }
+   },
+   {
+    "id": "h3k27me3",
+    "label": "H3 trimethylated K27 (immunohistochemistry)",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "Not performed",
+    "options": [
+     "Not performed",
+     "Retained nuclear expression",
+     "Loss of nuclear expression",
+     "Cannot be determined"
+    ],
+    "showIf": {
+     "field": "idhBranch",
+     "is": "IDH-wildtype"
+    }
+   },
+   {
+    "id": "h3g34w",
+    "label": "H3 G34W (immunohistochemistry)",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "Not performed",
+    "options": [
+     "Not performed",
+     "Negative",
+     "Positive",
+     "Cannot be determined"
+    ],
+    "showIf": {
+     "field": "idhBranch",
+     "is": "IDH-wildtype"
+    }
+   },
+   {
+    "id": "h3seq",
+    "label": "H3 mutation (sequencing)",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "Not performed",
+    "options": [
+     "Not performed",
+     "No mutation detected",
+     "H3 K27M detected",
+     "H3 G34R/V detected",
+     "Other mutation (specify)",
+     "Cannot be determined"
+    ],
+    "showIf": {
+     "field": "idhBranch",
+     "is": "IDH-wildtype"
+    }
+   },
+   {
+    "id": "h3seqDetail",
+    "label": "H3 mutation (specify)",
+    "type": "text",
+    "group": "Layer 4 - Molecular information",
+    "default": "",
+    "showIf": {
+     "field": "h3seq",
+     "is": "Other mutation (specify)"
+    }
+   },
+   {
+    "id": "braf",
+    "label": "BRAF V600E",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "Not performed",
+    "options": [
+     "Not performed",
+     "Not detected",
+     "Detected",
+     "Cannot be determined"
+    ],
+    "showIf": {
+     "field": "idhBranch",
+     "is": "IDH-wildtype"
+    }
+   },
+   {
+    "id": "chr710",
+    "label": "Chromosome 7 / 10 (FISH)",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "Not performed",
+    "options": [
+     "Not performed",
+     "No change detected",
+     "Combined gain of chromosome 7 and loss of chromosome 10",
+     "Gain of chromosome 7 only",
+     "Loss of chromosome 10 only",
+     "Cannot be determined"
+    ],
+    "showIf": {
+     "field": "idhBranch",
+     "is": "IDH-wildtype"
+    }
+   },
+   {
+    "id": "egfr",
+    "label": "EGFR amplification",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "Not performed",
+    "options": [
+     "Not performed",
+     "Not amplified",
+     "Amplified",
+     "Cannot be determined"
+    ],
+    "showIf": {
+     "field": "idhBranch",
+     "is": "IDH-wildtype"
+    }
+   },
+   {
+    "id": "tert",
+    "label": "TERT promoter",
+    "type": "select",
+    "group": "Layer 4 - Molecular information",
+    "default": "Not performed",
+    "options": [
+     "Not performed",
+     "No mutation detected",
+     "Mutation detected (specify)",
+     "Cannot be determined"
+    ],
+    "showIf": {
+     "field": "molStatus",
+     "is": "Reported"
+    }
+   },
+   {
+    "id": "tertDetail",
+    "label": "TERT promoter mutation (specify)",
+    "type": "text",
+    "group": "Layer 4 - Molecular information",
+    "default": "",
+    "placeholder": "C228T",
+    "showIf": {
+     "field": "tert",
+     "is": "Mutation detected (specify)"
+    }
+   },
+   {
+    "id": "molOthers",
+    "label": "Other molecular studies",
+    "type": "text",
+    "group": "Layer 4 - Molecular information",
+    "default": "",
+    "placeholder": "MGMT promoter methylated",
+    "showIf": {
+     "field": "molStatus",
+     "is": "Reported"
+    }
+   }
+  ]
+ }
+}

@@ -66,3 +66,18 @@ staging module for primary CNS tumours.
 
 The report structure and the minimum molecular set for adult CNS tumours.
 [RCPath G069 dataset for tumours of the CNS in adults](https://www.rcpath.org/resourceLibrary/g069-dataset-for-histopathological-reporting-of-tumours-of-central-nervous-system-in-adults-including-the-pituitary-gland.html)
+
+## The shared core (2026-09-19)
+
+The four layers are held once, in `schemas/_cns_layers.json` (built by `scripts/build-cns-layers.py`)
+for the fields and in `generators/cns_layers.js` for the printed prose, and both the resection
+(`cns_tumour`) and the biopsy (`cns_biopsy`) splice them in. Layer 1 is the QMH family and entity
+pick-list, Layer 2 the histopathological classification, Layer 3 the free grade select with the
+proposal logic above, Layer 4 the IDH-branched molecular panel. The biopsy gates every shared field
+on a glioma or ependymoma finding and keeps its own paths for the findings the house form does not
+carry - meningioma, PitNET, schwannoma, metastasis, lymphoma, abscess, demyelination and gliosis.
+The consequence is that the same tumour prints the same Layer 1 to Layer 4 wording whether it
+arrived as a stereotactic core or as a craniotomy, and one entity list is maintained instead of two.
+Ependymoma now takes grade 2 or 3 from the recorded mitotic activity on the biopsy as it already did
+on the resection, which is why the three glioma biopsy fixtures were regenerated.
+
