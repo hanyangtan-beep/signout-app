@@ -65,6 +65,39 @@ const SRC = {
     label: 'cIMPACT-NOW update 11',
     url: 'https://onlinelibrary.wiley.com/doi/10.1111/bpa.70035',
   },
+  iccr: {
+    label: 'ICCR CNS integrated diagnosis dataset',
+    url: 'https://www.iccr-cancer.org/wp-content/uploads/2026/03/ICCR-CNS-Integrated-diagnosis-2nd-ed-v2.1-bookmark-1.pdf',
+  },
+  crinet: {
+    label: 'Cribriform neuroepithelial tumour - molecular characterisation',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC8028967/',
+  },
+  etmr: {
+    label: 'Embryonal tumour with multilayered rosettes',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10506690/',
+  },
+  foxr2: {
+    label: 'CNS neuroblastoma, FOXR2-activated and its mimics',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10012567/',
+  },
+  atrt: {
+    label: 'ATRT with SMARCA4 mutation',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC7847432/',
+  },
+  bcor: {
+    label: 'CNS tumour with BCOR internal tandem duplication - a case with review',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10796265/',
+  },
+  /**
+   * Cited for one sentence the reporting datasets state only as "n/a": "A CNS WHO grade has not
+   * been assigned to this tumour due to insufficient data regarding prognosis", of the BCOR
+   * internal tandem duplication tumour. Linked, never reproduced.
+   */
+  rsna: {
+    label: "A radiologist's guide to the 2021 CNS classification",
+    url: 'https://pubs.rsna.org/doi/full/10.1148/radiol.221885',
+  },
 };
 
 /**
@@ -331,7 +364,163 @@ const PAED_HIGH = {
   sources: [SRC.phgg, SRC.g34, SRC.u11, SRC.paedFront],
 };
 
-const PLATES = { [PAED_LOW.family]: PAED_LOW, [PAED_HIGH.family]: PAED_HIGH };
+/**
+ * Other CNS embryonal tumours.
+ *
+ * Why this family needed a plate more than most. The picklist is a flat six, and the separation is
+ * almost entirely immunohistochemical surrogate plus methylation - morphology alone does not do it.
+ * Worse, the flat list hides a real trap: cribriform neuroepithelial tumour loses SMARCB1 exactly
+ * as ATRT does, clusters with the ATRT-TYR subgroup on methylation profiling, and yet is a
+ * different tumour with a markedly better outcome - mean overall survival 125 months (95% CI
+ * 100-151) against 53 (33-74) for ATRT-TYR. What separates them at the bench is the absence of
+ * rhabdoid cells and the cribriform strands and ribbons, plus cytoplasmic tyrosinase, positive in
+ * 10 of 10 cases (https://pmc.ncbi.nlm.nih.gov/articles/PMC8028967/). So the fork here is SMARCB1
+ * status, which deliberately puts those two side by side on one rail.
+ *
+ * Grade, which this family gets wrong more easily than any other. The WHO CNS5 summary review says
+ * embryonal tumours "are all grade 4" (https://pmc.ncbi.nlm.nih.gov/articles/PMC9427889/). Per
+ * entity that is not so: the ICCR integrated diagnosis dataset gives grade 4 for ATRT, ETMR and
+ * FOXR2-activated CNS neuroblastoma and "n/a" - no grade in the tumour definition - for cribriform
+ * neuroepithelial tumour, CNS tumour with BCOR internal tandem duplication, and the NEC/NOS bucket
+ * (https://www.iccr-cancer.org/wp-content/uploads/2026/03/ICCR-CNS-Integrated-diagnosis-2nd-ed-v2.1-bookmark-1.pdf).
+ * For the BCOR tumour the reason is stated outright: "A CNS WHO grade has not been assigned to this
+ * tumour due to insufficient data regarding prognosis"
+ * (https://pubs.rsna.org/doi/full/10.1148/radiol.221885). Building this plate is what found that
+ * `FIXED_GRADE` was giving the BCOR tumour grade 4 and printing it, and that CRINET and the NEC/NOS
+ * bucket were demanding a grade neither has; all three are now in `UNGRADED`.
+ *
+ * Two surrogates that look decisive and are not, both on the plate as discriminators. SMARCA4/BRG1
+ * loss defines the rare ATRT in which SMARCB1 is retained, so a retained INI1 does not exclude
+ * ATRT (https://pmc.ncbi.nlm.nih.gov/articles/PMC7847432/). And LIN28A, the stain reached for in
+ * ETMR, "is neither sufficient nor specific, because it is also observed in other high-grade
+ * tumours, including atypical teratoid/rhabdoid tumours and high-grade gliomas"
+ * (https://pmc.ncbi.nlm.nih.gov/articles/PMC10506690/) - C19MC at 19q13.42 is what carries it.
+ *
+ * The family has no criteria fields in the schema at all - no INI1, no LIN28A, no BCOR select. A
+ * plate is panel-only, so it works regardless; it is read, not filled in.
+ */
+const EMBRYONAL = {
+  family: 'Other CNS embryonal tumours',
+  entityField: 'dxEmbryonal',
+  title: 'Other CNS embryonal tumours',
+  lede: 'Medulloblastoma is classified apart from these. SMARCB1 splits the family in two, and on the retained side the defining alteration names the tumour. Three are grade 4; three carry no grade at all.',
+  gate: {
+    label: 'Before the family applies',
+    nodes: [
+      {
+        key: 'g1',
+        label: 'Embryonal morphology',
+        detail: 'A poorly differentiated tumour of primitive cells with a high nuclear-to-cytoplasmic ratio and brisk mitoses. That appearance is the entry to the family and no further than that: it is shared across all six members and separates none of them.',
+        source: SRC.who5,
+      },
+      {
+        key: 'g2',
+        label: 'Not a medulloblastoma',
+        detail: 'Medulloblastoma sits in its own section of CNS5 with its own molecular groups and histological types, reported as an integrated diagnosis of both. A cerebellar or fourth-ventricular embryonal tumour belongs there, not here.',
+        source: SRC.review22,
+      },
+      {
+        key: 'g3',
+        label: 'Usually the first years of life',
+        detail: 'Predominantly infants and young children. ETMR is commonest under three years, and FOXR2-activated CNS neuroblastoma is paediatric with rare young adults. Age supports the family rather than deciding a member of it.',
+        source: SRC.etmr,
+      },
+      {
+        key: 'g4',
+        label: 'Methylation profiling settles it',
+        detail: 'Morphology alone does not separate these entities, and for the BCOR tumour the alteration must be demonstrated. Where the defining alteration cannot be shown, or no material is left to test, the diagnosis is CNS embryonal tumour NEC or NOS.',
+        source: SRC.iccr,
+      },
+    ],
+  },
+  fork: { label: 'Is SMARCB1 (INI1) retained?' },
+  rails: [
+    {
+      key: 'smarcb1lost',
+      label: 'SMARCB1 lost',
+      note: 'Loss alone does not separate these two. Rhabdoid cells and architecture do.',
+      nodes: [
+        {
+          key: 'atrt',
+          label: 'Atypical teratoid/rhabdoid tumour',
+          grade: 'CNS WHO grade 4',
+          key_line: 'SMARCB1 lost, or SMARCA4 lost - rhabdoid cells',
+          detail: 'An embryonal tumour with rhabdoid cells - eosinophilic cytoplasm, eccentric nuclei and prominent nucleoli - although the rhabdoid component may be focal and the rest primitive or mesenchymal. Inactivating biallelic alteration of SMARCB1 in the great majority, SMARCA4 in about 0.5 to 2 per cent.',
+          note: 'Three methylation subgroups carry different behaviour: ATRT-TYR, ATRT-SHH and ATRT-MYC. In the SMARCA4 form SMARCB1 is retained and BRG1 is lost instead, so a retained INI1 does not exclude ATRT. A missense SMARCA4 mutation may leave the protein detectable, in which case neither stain is lost and only sequencing finds it.',
+          source: SRC.atrt,
+        },
+        {
+          key: 'crinet',
+          label: 'Cribriform neuroepithelial tumour',
+          grade: 'No CNS WHO grade assigned',
+          key_line: 'Cribriform strands and ribbons - no rhabdoid cells - tyrosinase positive',
+          detail: 'A non-rhabdoid tumour of cribriform strands and ribbons, typically around the ventricular system, with loss of nuclear SMARCB1 and no rhabdoid tumour cells. Cytoplasmic tyrosinase is heterogeneous but present in all cases examined. Large heterozygous 22q deletions across SMARCB1 in nine of ten cases.',
+          note: 'A provisional type in CNS5, which is why no grade is carried. On methylation profiling it falls inside the ATRT-TYR subgroup, so profiling does not separate it from ATRT - the architecture and the absent rhabdoid cells do. Its outcome is considerably better: mean overall survival 125 months against 53 for ATRT-TYR. Germline SMARCB1 alteration occurs, so it is worth raising.',
+          source: SRC.crinet,
+        },
+      ],
+    },
+    {
+      key: 'smarcb1kept',
+      label: 'SMARCB1 retained',
+      note: 'The defining alteration names the tumour. LIN28A and OLIG2 point the way, neither proves it.',
+      nodes: [
+        {
+          key: 'etmr',
+          label: 'Embryonal tumour with multilayered rosettes',
+          grade: 'CNS WHO grade 4',
+          key_line: 'C19MC amplified at 19q13.42 - LIN28A high - INI1 retained',
+          detail: 'Multilayered, pseudostratified rosettes set in large areas of abundant neuropil, with embryonal cells of pleomorphic hyperchromatic nuclei and scant cytoplasm in nodules and sheets. Mostly supratentorial and mostly under three years, though the posterior fossa and rarely the spine occur. C19MC amplification in about 90 per cent, DICER1 in a minority.',
+          note: 'LIN28A is the stain reached for and is not sufficient on its own: it is also positive in ATRT and in high-grade gliomas, so a LIN28A-positive embryonal tumour is not thereby an ETMR. C19MC is the discriminator. CNS5 dropped the genetic modifier from the name so that both the C19MC and DICER1 routes sit under one type. BAF47 is retained.',
+          source: SRC.etmr,
+        },
+        {
+          key: 'foxr2',
+          label: 'CNS neuroblastoma, FOXR2-activated',
+          grade: 'CNS WHO grade 4',
+          key_line: 'FOXR2 activation - OLIG2 with synaptophysin - LIN28A negative',
+          detail: 'An embryonal tumour with foci of neuroblastic or neuronal differentiation, supratentorial and predominantly paediatric, carrying FOXR2 activation by complex structural rearrangement or a methylation profile aligned with the diagnosis. Morphology alone does not reach it, because the mimics are glial, glioneuronal and embryonal alike.',
+          note: 'Co-expression of OLIG2 and synaptophysin is the signature and is required; SOX10 adds to it and vimentin is absent. LIN28A is negative in all cases studied, which separates it from ETMR, and INI1 and BRG1 are both retained. FISH showing 1q gain rounds out the panel. The methylation classifier supported only 37 per cent of cases at a calibrated score above 0.9, so a low score does not exclude it.',
+          source: SRC.foxr2,
+        },
+        {
+          key: 'bcor',
+          label: 'CNS tumour with BCOR internal tandem duplication',
+          grade: 'No CNS WHO grade assigned',
+          key_line: 'BCOR exon 15 ITD - strong diffuse nuclear BCOR',
+          detail: 'A relatively well-demarcated tumour of compact spindled to oval cells with branching capillaries and a microcystic background, showing ependymoma-like perivascular pseudorosettes with an anuclear fibrillary zone, and palisading necrosis. The internal tandem duplication in BCOR exon 15 defines it and genetic analysis is needed to make the diagnosis.',
+          note: 'No CNS WHO grade is assigned, on insufficient prognostic data, so the grade line is left unset rather than read off the high-grade histology. The pseudorosettes make ependymoma the trap: BCOR is strongly and diffusely nuclear, OLIG2 is positive, and GFAP, synaptophysin and EMA are negative or no more than scattered. Whether these tumours are neuroectodermal at all is unsettled.',
+          source: SRC.bcor,
+        },
+        {
+          key: 'nec',
+          label: 'CNS embryonal tumour',
+          grade: 'No CNS WHO grade assigned',
+          key_line: 'Embryonal histology, no classifying alteration found',
+          detail: 'Embryonal histology and immunophenotype with neuronal markers and absent glial markers, in which no alteration placing it among the molecularly defined members can be detected, or which for any reason cannot be tested. NEC where testing was done and was uninformative, NOS where it was not done.',
+          note: 'The residual category, so no grade is carried in the definition. Layer 3 remains a free choice on the form, so a grade can still be recorded by hand where the findings support one - what the app no longer does is demand one. Reaching this node is a statement about the testing as much as about the tumour, and it is worth saying which of the two applies.',
+          source: SRC.iccr,
+        },
+      ],
+    },
+  ],
+  discriminators: [
+    ['SMARCB1 / INI1', 'Lost in ATRT and in cribriform neuroepithelial tumour both, so loss opens the fork and decides nothing inside it. Rhabdoid cells against cribriform strands and ribbons is what separates them.'],
+    ['SMARCA4 / BRG1', 'Lost in the rare ATRT that retains SMARCB1. A retained INI1 therefore does not exclude ATRT, and a missense mutation may leave both proteins detectable.'],
+    ['LIN28A', 'High in ETMR but not specific - also positive in ATRT and in high-grade gliomas. Supportive only; C19MC amplification at 19q13.42 is the discriminator.'],
+    ['OLIG2 with synaptophysin', 'Co-expression is the FOXR2-activated signature, with SOX10 positive, vimentin absent and LIN28A negative. Neither stain alone carries it.'],
+    ['BCOR', 'Strong diffuse nuclear staining with ependymoma-like perivascular pseudorosettes. The pseudorosettes are the trap; GFAP, synaptophysin and EMA are negative or scattered.'],
+  ],
+  figures: [
+    { label: 'Simplified WHO CNS5 diagnostic algorithm (Fig 1)', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC9427889/figure/Fig1/', cite: 'WHO 2021 CNS classification review, CC BY 4.0' },
+    { label: 'CRINET against ATRT - methylation clustering and survival', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC8028967/', cite: 'Cribriform neuroepithelial tumour molecular characterisation' },
+    { label: 'FOXR2-activated CNS neuroblastoma and its mimics', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10012567/', cite: 'CNS neuroblastoma, FOXR2-activated and its mimics' },
+    { label: 'Newly recognised CNS tumours, with the grades that were not assigned', url: 'https://pubs.rsna.org/doi/full/10.1148/radiol.221885', cite: "A radiologist's guide to the 2021 CNS classification" },
+  ],
+  sources: [SRC.who5, SRC.review22, SRC.iccr, SRC.rsna, SRC.atrt, SRC.crinet, SRC.etmr, SRC.foxr2, SRC.bcor],
+};
+
+const PLATES = { [PAED_LOW.family]: PAED_LOW, [PAED_HIGH.family]: PAED_HIGH, [EMBRYONAL.family]: EMBRYONAL };
 
 /** Families that have a plate, for the button to test against. */
 export const PLATE_FAMILIES = Object.keys(PLATES);

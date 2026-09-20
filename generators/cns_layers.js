@@ -110,10 +110,36 @@ export const histClassText = (v) => (v.histClass === 'Other (specify)'
  *   the grade column blank; the paediatric review states these tumours "are believed to have a
  *   favourable outcome even if a CNS WHO grade has yet to be assigned"
  *   (https://pmc.ncbi.nlm.nih.gov/articles/PMC9763978/).
+ *
+ * The three embryonal members below come from the ICCR CNS integrated diagnosis dataset, the same
+ * document generators/cns_biopsy.js already builds against, whose tumour table gives the grade as
+ * "n/a" for each under the footnote "CNS WHO grades marked 'n/a' do not have grade included in the
+ * tumour definition"
+ * (https://www.iccr-cancer.org/wp-content/uploads/2026/03/ICCR-CNS-Integrated-diagnosis-2nd-ed-v2.1-bookmark-1.pdf).
+ * Checked against the preceding v2.0 edition, which reads the same for all six members of the
+ * family. Note that the WHO CNS5 summary review states flatly that embryonal tumours "are all
+ * grade 4" (https://pmc.ncbi.nlm.nih.gov/articles/PMC9427889/). That is a simplification: the
+ * per-entity reporting dataset is preferred over it here, and ATRT, ETMR and FOXR2-activated CNS
+ * neuroblastoma are grade 4 there too, so the disagreement is confined to these three.
+ *
+ * - Cribriform neuroepithelial tumour: a provisional type in CNS5, so no grade is carried in the
+ *   definition (https://pmc.ncbi.nlm.nih.gov/articles/PMC8328013/). Its outcome is in fact better
+ *   than the ATRT-TYR subgroup it resembles molecularly - mean overall survival 125 months
+ *   (95% CI 100-151) against 53 (33-74) - so a grade 4 default would have been wrong in substance
+ *   as well as in form (https://pmc.ncbi.nlm.nih.gov/articles/PMC8028967/).
+ * - CNS tumour with BCOR internal tandem duplication: "A CNS WHO grade has not been assigned to
+ *   this tumour due to insufficient data regarding prognosis"
+ *   (https://pubs.rsna.org/doi/full/10.1148/radiol.221885).
+ * - CNS embryonal tumour: the NEC/NOS residual bucket, which by construction has no defined grade.
+ *   Layer 3 stays a free choice, so a grade can still be recorded by hand where the findings
+ *   support one; what changes is only that the form no longer demands one.
  */
 export const UNGRADED = new Set([
   'Infant-type hemispheric glioma',
   'Diffuse low-grade glioma, MAPK pathway-altered',
+  'Cribriform neuroepithelial tumour',
+  'CNS tumour with BCOR internal tandem duplication',
+  'CNS embryonal tumour',
 ]);
 
 export const FIXED_GRADE = {
@@ -165,8 +191,9 @@ export const FIXED_GRADE = {
   'Medulloblastoma, large cell / anaplastic': 4,
   'Atypical teratoid/rhabdoid tumour': 4,
   'Embryonal tumour with multilayered rosettes': 4,
+  // ATRT, ETMR and FOXR2-activated CNS neuroblastoma are each grade 4 in the ICCR dataset Table 1;
+  // the other three members of the family carry no grade and are listed in UNGRADED above.
   'CNS neuroblastoma, FOXR2-activated': 4,
-  'CNS tumour with BCOR internal tandem duplication': 4,
   Pineocytoma: 1,
   Pineoblastoma: 4,
   [SCHWANNOMA]: 1,

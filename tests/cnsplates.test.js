@@ -71,6 +71,41 @@ test('the paediatric high-grade plate carries all four WHO entities and their gr
 });
 
 /**
+ * The embryonal family is where reading a grade across from a neighbour does the most damage. The
+ * WHO CNS5 summary review says these tumours "are all grade 4"; the ICCR integrated diagnosis
+ * dataset gives three of the six as "n/a", meaning no grade in the tumour definition. Building the
+ * plate found FIXED_GRADE printing grade 4 on the BCOR tumour, and CRINET and the NEC/NOS bucket
+ * demanding a grade neither carries. These assertions hold the per-entity reading in place.
+ */
+test('the embryonal plate grades three entities and leaves three ungraded', () => {
+  const p = plateFor('Other CNS embryonal tumours');
+  const nodes = p.rails.flatMap((r) => r.nodes);
+  assert.equal(nodes.length, 6);
+  const grades = Object.fromEntries(nodes.map((n) => [n.label, n.grade]));
+  assert.equal(grades['Atypical teratoid/rhabdoid tumour'], 'CNS WHO grade 4');
+  assert.equal(grades['Embryonal tumour with multilayered rosettes'], 'CNS WHO grade 4');
+  assert.equal(grades['CNS neuroblastoma, FOXR2-activated'], 'CNS WHO grade 4');
+  assert.equal(grades['Cribriform neuroepithelial tumour'], 'No CNS WHO grade assigned');
+  assert.equal(grades['CNS tumour with BCOR internal tandem duplication'], 'No CNS WHO grade assigned');
+  assert.equal(grades['CNS embryonal tumour'], 'No CNS WHO grade assigned');
+});
+
+/**
+ * The fork is SMARCB1 status specifically so that ATRT and cribriform neuroepithelial tumour land on
+ * the same rail: both lose SMARCB1, CRINET clusters inside the ATRT-TYR methylation subgroup, and
+ * the separation is the absent rhabdoid cells rather than any of that. Splitting them across the
+ * fork would teach the wrong thing, so the pairing is asserted rather than left to a later edit.
+ */
+test('the embryonal plate forks on SMARCB1 and pairs ATRT with CRINET', () => {
+  const p = plateFor('Other CNS embryonal tumours');
+  assert.match(p.fork.label, /SMARCB1/);
+  const lost = p.rails.find((r) => r.key === 'smarcb1lost');
+  assert.deepEqual(lost.nodes.map((n) => n.label), [
+    'Atypical teratoid/rhabdoid tumour',
+    'Cribriform neuroepithelial tumour']);
+});
+
+/**
  * The plate states a grade and the generator proposes one. They are written in different files from
  * different sources, so they can drift: the H3-wildtype entity was absent from FIXED_GRADE and the
  * form raised "CNS WHO grade is required" against an entity WHO grades 4. This ties them together.
