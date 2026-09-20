@@ -91,6 +91,83 @@ test('the embryonal plate grades three entities and leaves three ungraded', () =
 });
 
 /**
+ * Medulloblastoma is the only family CNS5 classifies twice over, and the schema models that as two
+ * separate `dxFamily` options with a field each. Two plates therefore cover it, each naming its own
+ * entity field, and each gate tells the reader the other axis is still outstanding. A later edit that
+ * merged them into one plate, or dropped the cross-reference, would misrepresent the integrated
+ * diagnosis as a single choice - so both halves of the arrangement are asserted.
+ */
+test('the medulloblastoma pair is two plates over two fields, each pointing at the other', () => {
+  const mol = plateFor('Medulloblastomas, molecularly defined');
+  const hist = plateFor('Medulloblastomas, histologically defined');
+  assert.equal(mol.entityField, 'dxMedMol');
+  assert.equal(hist.entityField, 'dxMedHist');
+  for (const p of [mol, hist]) {
+    const gate = p.gate.nodes.map((n) => `${n.label} ${n.detail}`).join(' ');
+    assert.match(gate, /integrated diagnosis/i);
+    assert.match(gate, /other family selection on the form/i);
+  }
+});
+
+/**
+ * Every medulloblastoma is grade 4, whichever group and whichever type. In the ICCR dataset the grade
+ * cell for WNT-activated and for non-WNT/non-SHH carries a dagger - "described in the section or
+ * chapter but not in the definition" - which is NOT the "n/a" that sent three embryonal entities into
+ * UNGRADED. The grade exists and prints. This asserts no plate node quietly acquires the ungraded
+ * wording on the strength of that footnote.
+ */
+test('every medulloblastoma node carries grade 4', () => {
+  for (const fam of ['Medulloblastomas, molecularly defined', 'Medulloblastomas, histologically defined']) {
+    const nodes = plateFor(fam).rails.flatMap((r) => r.nodes);
+    assert.equal(nodes.length, 4);
+    for (const n of nodes) assert.equal(n.grade, 'CNS WHO grade 4', `${n.label} must be grade 4`);
+  }
+});
+
+/**
+ * The molecular fork is YAP1 so that WNT and both SHH entities sit on the expressed rail and the
+ * non-WNT/non-SHH entity sits alone on the other. That shape is the teaching point: the three-marker
+ * panel resolves three groups and cannot separate group 3 from group 4, so the lone rail is where
+ * immunohistochemistry stops. A fork that split SHH-wildtype from SHH-mutant would imply a stain
+ * makes that call, when only sequencing does.
+ */
+test('the molecular plate forks on YAP1 and keeps both SHH entities together', () => {
+  const p = plateFor('Medulloblastomas, molecularly defined');
+  assert.match(p.fork.label, /YAP1/);
+  const pos = p.rails.find((r) => r.key === 'yap1pos');
+  assert.deepEqual(pos.nodes.map((n) => n.label), [
+    'Medulloblastoma, WNT-activated',
+    'Medulloblastoma, SHH-activated and TP53-wildtype',
+    'Medulloblastoma, SHH-activated and TP53-mutant']);
+  const neg = p.rails.find((r) => r.key === 'yap1neg');
+  assert.deepEqual(neg.nodes.map((n) => n.label), ['Medulloblastoma, non-WNT/non-SHH']);
+});
+
+/**
+ * Two facts the plate exists to carry. GAB1 and YAP1 both fade in the nodular regions of
+ * desmoplastic/nodular tumours and MBEN, which is the histology most likely to be SHH - so the two
+ * stains that call SHH fail together and fail where they are most needed. And a TP53 mutation defines
+ * an entity only within SHH, where 56 per cent are germline; the same mutation in a WNT tumour
+ * carries neither implication. Both are exactly the read-across error the earlier plates caught, so
+ * they are pinned here rather than left in prose.
+ */
+test('the medulloblastoma plates carry the surrogate and TP53 cautions', () => {
+  const mol = plateFor('Medulloblastomas, molecularly defined');
+  const disc = Object.fromEntries(mol.discriminators);
+  assert.match(disc['GAB1'], /nodular/i);
+  assert.match(disc['YAP1'], /nodular/i);
+  assert.match(disc['p53'], /not a substitute for sequencing/i);
+  const shhmut = mol.rails.flatMap((r) => r.nodes)
+    .find((n) => n.label === 'Medulloblastoma, SHH-activated and TP53-mutant');
+  assert.match(shhmut.note, /germline/i);
+  const wnt = mol.rails.flatMap((r) => r.nodes).find((n) => n.label === 'Medulloblastoma, WNT-activated');
+  assert.match(wnt.note, /neither the prognostic weight nor the germline risk/i);
+  const hist = plateFor('Medulloblastomas, histologically defined');
+  assert.match(hist.fork.label, /reticulin/i);
+  assert.match(Object.fromEntries(hist.discriminators)['Reticulin'], /perinodular/i);
+});
+
+/**
  * The fork is SMARCB1 status specifically so that ATRT and cribriform neuroepithelial tumour land on
  * the same rail: both lose SMARCB1, CRINET clusters inside the ATRT-TYR methylation subgroup, and
  * the separation is the absent rhabdoid cells rather than any of that. Splitting them across the

@@ -98,6 +98,26 @@ const SRC = {
     label: "A radiologist's guide to the 2021 CNS classification",
     url: 'https://pubs.rsna.org/doi/full/10.1148/radiol.221885',
   },
+  mbIhc: {
+    label: 'ICCR medulloblastoma immunohistochemistry guidance',
+    url: 'https://www.iccr-cancer.org/datasets/docs/iccr-cns-mole-medulloblastoma/',
+  },
+  mbHist: {
+    label: 'Pathology of medulloblastoma - morphologic features',
+    url: 'https://www.intechopen.com/chapters/1186464',
+  },
+  mbTp53: {
+    label: 'Subgroup-specific prognostic implications of TP53 mutation',
+    url: 'https://escholarship.org/uc/item/6x10w8zk',
+  },
+  mbGermline: {
+    label: 'Genetic predisposition in medulloblastoma - germline spectrum',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC5984248/',
+  },
+  mbSurrogate: {
+    label: 'Integrating molecular subclassification by immunohistochemistry',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC8029101/',
+  },
 };
 
 /**
@@ -520,7 +540,265 @@ const EMBRYONAL = {
   sources: [SRC.who5, SRC.review22, SRC.iccr, SRC.rsna, SRC.atrt, SRC.crinet, SRC.etmr, SRC.foxr2, SRC.bcor],
 };
 
-const PLATES = { [PAED_LOW.family]: PAED_LOW, [PAED_HIGH.family]: PAED_HIGH, [EMBRYONAL.family]: EMBRYONAL };
+/**
+ * Medulloblastomas, molecularly defined.
+ *
+ * Why this is two plates and not one. CNS5 classifies medulloblastoma twice over - once by
+ * molecular group, once by histological type - and the integrated diagnosis names both. The schema
+ * follows that by carrying two separate `dxFamily` options with a field each, `dxMedMol` and
+ * `dxMedHist`, so a plate can only ever name one of them. Rather than bend the plate contract to
+ * span two fields, each half gets its own plate and each gate carries a node pointing at the other.
+ * That is also the more honest drawing: the two axes are assigned by different evidence, and a
+ * reader working down one of them is not part way through the other.
+ *
+ * Grade. All four molecular groups and all four histological types are CNS WHO grade 4, and
+ * `FIXED_GRADE` already had every one of them right - the first of these plates to find no defect.
+ * One subtlety is worth recording. In the ICCR integrated diagnosis dataset the grade cell for
+ * WNT-activated and for non-WNT/non-SHH carries a dagger, footnoted "These CNS WHO grades are
+ * described in the section or chapter but not in the definition"
+ * (https://www.iccr-cancer.org/wp-content/uploads/2026/03/ICCR-CNS-Integrated-diagnosis-2nd-ed-v2.1-bookmark-1.pdf).
+ * That is not the same as the "n/a" that sent three embryonal entities into `UNGRADED`: the grade
+ * exists and is applied, it is simply stated outside the definition. Grade 4 prints, correctly.
+ *
+ * The fork is YAP1 because it is the one stain that cuts the family cleanly in two, and because
+ * the trap in this family is the surrogate panel rather than the entities. β-catenin, YAP1 and
+ * GAB1 resolve three groups, not four; group 3 and group 4 are not separable by immunohistochemistry
+ * at all (https://pmc.ncbi.nlm.nih.gov/articles/PMC8029101/). Worse, GAB1 "is often weak or absent
+ * in nodular regions" of desmoplastic/nodular tumours and MBEN, and YAP1 "can be attenuated" in the
+ * same regions (https://www.iccr-cancer.org/datasets/docs/iccr-cns-mole-medulloblastoma/) - so both
+ * stains used to call SHH fade in precisely the histology most likely to be SHH. That pairing is on
+ * the plate as a discriminator and is the reason the two plates cross-reference each other.
+ */
+const MED_MOL = {
+  family: 'Medulloblastomas, molecularly defined',
+  entityField: 'dxMedMol',
+  title: 'Medulloblastoma - molecular groups',
+  lede: 'Four groups, all grade 4. One stain cuts the family in two, three stains resolve only three of the four, and the last split is made by sequencing rather than by any stain.',
+  gate: {
+    label: 'Before the family applies',
+    nodes: [
+      {
+        key: 'g1',
+        label: 'Embryonal tumour of the cerebellum',
+        detail: 'An embryonal tumour arising in the cerebellum or the dorsal brainstem at the fourth ventricle. Densely cellular and undifferentiated, with a high nuclear-to-cytoplasmic ratio, brisk mitoses and apparent apoptosis. Site plus that appearance is the entry to the family.',
+        source: SRC.mbHist,
+      },
+      {
+        key: 'g2',
+        label: 'Both halves are reported together',
+        detail: 'CNS5 classifies medulloblastoma molecularly and histologically, and the integrated diagnosis carries both. This plate names only the molecular group. The histological type is the other family selection on the form, with its own plate.',
+        source: SRC.review22,
+      },
+      {
+        key: 'g3',
+        label: 'Grade 4 throughout',
+        detail: 'Every medulloblastoma is CNS WHO grade 4, whichever group and whichever histological type. Grade carries no discriminating information here and settles nothing. For WNT-activated and non-WNT/non-SHH the reporting dataset marks the grade as described in the chapter rather than in the tumour definition, which changes nothing about applying it.',
+        source: SRC.iccr,
+      },
+      {
+        key: 'g4',
+        label: 'Profiling is the reference standard',
+        detail: 'Gene-expression profiling is the gold-standard method for assigning a medulloblastoma to a molecular group, with DNA methylation profiling a reliable alternative. Immunohistochemistry is an approximation of it, and the plate below is a map of where that approximation holds and where it fails.',
+        source: SRC.mbIhc,
+      },
+    ],
+  },
+  fork: { label: 'Is YAP1 expressed?' },
+  rails: [
+    {
+      key: 'yap1pos',
+      label: 'YAP1 expressed',
+      note: 'WNT and SHH both. β-catenin against GAB1 separates them, then TP53 splits SHH in two.',
+      nodes: [
+        {
+          key: 'wnt',
+          label: 'Medulloblastoma, WNT-activated',
+          grade: 'CNS WHO grade 4',
+          key_line: 'Nuclear β-catenin - GAB1 negative - monosomy 6 or CTNNB1 mutation',
+          detail: 'Nuclear β-catenin immunoreactivity in most tumour cells, reflecting activation of the WNT pathway, although the staining may be patchy or focal. YAP1 is expressed and GAB1 is not. Almost all are classic in histology.',
+          note: 'Scattered single nucleopositive cells are not definitive evidence of WNT activation and require further analysis; one series used nuclear staining in at least five per cent of tumour cells. Where β-catenin is equivocal, widespread YAP1 with a negative GAB1 supports the call. Confirm with monosomy 6 or a CTNNB1 mutation. TP53 mutation occurs here in about sixteen per cent and carries neither the prognostic weight nor the germline risk it carries in SHH.',
+          source: SRC.mbIhc,
+        },
+        {
+          key: 'shhwt',
+          label: 'Medulloblastoma, SHH-activated and TP53-wildtype',
+          grade: 'CNS WHO grade 4',
+          key_line: 'GAB1 positive, YAP1 positive, β-catenin cytoplasmic - TP53 wild-type',
+          detail: 'Cytoplasmic GAB1 immunoreactivity with YAP1 expression and β-catenin confined to the cytoplasm. The desmoplastic/nodular and extensively nodular histologies sit predominantly in this group, which is why the two plates are read together.',
+          note: 'TP53 status must be established before this entity can be named - "SHH-activated" on its own is not one of the four groups, and the wild-type and mutant forms are separate entities with very different behaviour. Note that GAB1 and YAP1 both fade in nodular areas, so a nodular tumour can read as neither SHH nor WNT on stains alone.',
+          source: SRC.mbIhc,
+        },
+        {
+          key: 'shhmut',
+          label: 'Medulloblastoma, SHH-activated and TP53-mutant',
+          grade: 'CNS WHO grade 4',
+          key_line: 'SHH pattern with a TP53 mutation - more than half are germline',
+          detail: 'An SHH-pattern tumour carrying a TP53 mutation, found in about twenty-one per cent of SHH medulloblastomas. TP53 status is the strongest risk factor within SHH: five-year overall survival was 41 per cent against 81 per cent for the wild-type form, and TP53 mutation accounted for 72 per cent of deaths in children older than five.',
+          note: 'The finding with consequences outside the report. Fifty-six per cent of children with SHH TP53-mutant tumours carry a germline TP53 mutation, and germline mutations were not observed in the WNT tumours that also carry TP53 mutations. In one large cohort germline TP53 was present in eight per cent of paediatric SHH cases overall and twenty per cent of those aged five to sixteen, and was found only in SHH. A TP53 mutation in this group is a reason to raise Li-Fraumeni and genetic counselling, not only to name the entity.',
+          source: SRC.mbTp53,
+        },
+      ],
+    },
+    {
+      key: 'yap1neg',
+      label: 'YAP1 absent',
+      note: 'One entity, reached by exclusion. Immunohistochemistry stops at this node and goes no further.',
+      nodes: [
+        {
+          key: 'nonwnt',
+          label: 'Medulloblastoma, non-WNT/non-SHH',
+          grade: 'CNS WHO grade 4',
+          key_line: 'β-catenin cytoplasmic, GAB1 negative, YAP1 negative',
+          detail: 'Negative for all three surrogates: β-catenin cytoplasmic without nuclear staining, GAB1 absent, YAP1 absent. The entity is defined by the two pathways it does not use, so it is the only member of the family named for an absence rather than an alteration.',
+          note: 'This node holds group 3 and group 4, and the three-marker panel does not distinguish them - it assigns tumours to WNT, SHH or non-WNT/non-SHH only. Separating group 3 from group 4 requires methylation or expression profiling, and CNS5 allows reporting at either depth. Where profiling is unavailable, non-WNT/non-SHH is the correct and complete answer rather than a partial one.',
+          source: SRC.mbSurrogate,
+        },
+      ],
+    },
+  ],
+  discriminators: [
+    ['β-catenin', 'Nuclear staining marks WNT; cytoplasmic staining without nuclear staining is what SHH and non-WNT/non-SHH show, so the compartment is the finding, not the presence of stain. Scattered single nucleopositive cells are not sufficient and want monosomy 6 or a CTNNB1 mutation behind them.'],
+    ['YAP1', 'Expressed in WNT and SHH, absent in non-WNT/non-SHH, so it opens the fork and decides nothing inside it. Attenuated in the nodular regions of desmoplastic/nodular tumours and MBEN.'],
+    ['GAB1', 'Cytoplasmic staining is the SHH surrogate and is negative in the other two groups. Often weak or absent in nodular regions - the same regions that attenuate YAP1 - so the two stains that call SHH fail together, and they fail in the histology most likely to be SHH.'],
+    ['Filamin A', 'Substituted for YAP1 by some centres, and originally proposed in the three-marker panel. It was dropped from that panel because its expression mirrored YAP1 across the three groups and lacked specificity for any individual subgroup, so it adds a stain rather than a discriminator.'],
+    ['p53', 'A surrogate for the TP53-mutant SHH entity and not a substitute for sequencing: concordance with mutation status is incomplete, and in one series p53 immunopositivity was distributed almost equally across all the molecular subgroups. The entity is defined by the mutation, which also decides whether germline testing is raised.'],
+  ],
+  figures: [
+    { label: 'Simplified WHO CNS5 diagnostic algorithm (Fig 1)', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC9427889/figure/Fig1/', cite: 'WHO 2021 CNS classification review, CC BY 4.0' },
+    { label: 'Three-marker immunohistochemical assignment and where it stops', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC8029101/', cite: 'Integrating molecular subclassification by immunohistochemistry' },
+    { label: 'TP53 mutation by subgroup, with germline proportions', url: 'https://escholarship.org/uc/item/6x10w8zk', cite: 'Subgroup-specific prognostic implications of TP53 mutation' },
+  ],
+  sources: [SRC.who5, SRC.review22, SRC.iccr, SRC.mbIhc, SRC.mbSurrogate, SRC.mbTp53, SRC.mbGermline, SRC.mbHist],
+};
+
+/**
+ * Medulloblastomas, histologically defined.
+ *
+ * The other half of the integrated diagnosis, and the half that is read down a microscope. Four
+ * types, all CNS WHO grade 4, with the aggregate row in the ICCR dataset likewise grade 4 and
+ * daggered. `FIXED_GRADE` had all four right.
+ *
+ * The fork is reticulin, because desmoplastic/nodular is the type most often called on architecture
+ * alone. Both nodular architecture and perinodular desmoplasia are required, and "reticulin staining
+ * is imperative to identify the diagnostic pattern" (https://www.intechopen.com/chapters/1186464).
+ * Classic medulloblastoma may itself show nodular zones - they simply lack desmoplasia - so
+ * nodularity without a reticulin stain behind it is the commonest way into the wrong type.
+ *
+ * The second trap is anaplasia, which is a spectrum rather than a threshold. Focal anaplasia in an
+ * otherwise classic tumour does not warrant reclassification when the pattern is not predominant,
+ * but it should still be reported. Both halves of that sentence matter: the type does not change,
+ * and the finding is not dropped.
+ */
+const MED_HIST = {
+  family: 'Medulloblastomas, histologically defined',
+  entityField: 'dxMedHist',
+  title: 'Medulloblastoma - histological types',
+  lede: 'Four types, all grade 4. A reticulin stain opens the fork, the extent of nodularity decides one side of it, and a predominance judgement decides the other.',
+  gate: {
+    label: 'Before the family applies',
+    nodes: [
+      {
+        key: 'g1',
+        label: 'Embryonal tumour of the cerebellum',
+        detail: 'A densely cellular, undifferentiated small round cell tumour of the cerebellum or fourth ventricle, the cells consisting almost entirely of irregular hyperchromatic nuclei with very little visible cytoplasm. Mitoses are present though sometimes hard to see, and apoptotic cells are often apparent.',
+        source: SRC.mbHist,
+      },
+      {
+        key: 'g2',
+        label: 'Both halves are reported together',
+        detail: 'The histological type is one axis of the integrated diagnosis and the molecular group is the other. This plate names only the type. The molecular group is the other family selection on the form, with its own plate.',
+        source: SRC.review22,
+      },
+      {
+        key: 'g3',
+        label: 'Grade 4 throughout',
+        detail: 'All four histological types are CNS WHO grade 4, and so is the aggregate entry for the histologically defined family. Nothing on this plate changes the grade, including the presence or absence of anaplasia.',
+        source: SRC.iccr,
+      },
+      {
+        key: 'g4',
+        label: 'Cut a reticulin before deciding',
+        detail: 'Reticulin staining is imperative to identify the diagnostic pattern of the nodular types. Nodular architecture on haematoxylin and eosin is not by itself desmoplastic/nodular medulloblastoma, because classic tumours may show nodular zones that lack desmoplasia.',
+        source: SRC.mbHist,
+      },
+    ],
+  },
+  // Kept under ~31 characters so it sets on one line in the 260px fork box, as the other four
+  // plates do. The perinodular qualifier is carried by the rail label and the Reticulin row.
+  fork: { label: 'Desmoplasia on reticulin?' },
+  rails: [
+    {
+      key: 'nodular',
+      label: 'Nodular and desmoplastic',
+      note: 'Both types sit here. The extent of the nodularity, not its presence, separates them.',
+      nodes: [
+        {
+          key: 'dn',
+          label: 'Medulloblastoma, desmoplastic/nodular',
+          grade: 'CNS WHO grade 4',
+          key_line: 'Reticulin-free nodules with perinodular reticulin and collagen',
+          detail: 'Nodular architecture and perinodular desmoplasia together, both required. The nodules are less cellular than the surrounding tissue and are ringed by reticulin and collagen. The peripheral zones of the nodules are more densely cellular, with pleomorphic hyperchromatic nuclei, apoptotic cells, increased mitotic activity and a higher Ki-67 index. Homer Wright rosettes are absent.',
+          note: 'The word doing the work is perinodular. Nodules without reticulin around them are not this type, and the stain is what shows the difference. Strongly associated with the SHH group, which is also where GAB1 and YAP1 are least reliable - so a nodular tumour that stains as neither WNT nor SHH is a reason to go to profiling rather than to accept the negative panel.',
+          source: SRC.mbHist,
+        },
+        {
+          key: 'mben',
+          label: 'Medulloblastoma with extensive nodularity',
+          grade: 'CNS WHO grade 4',
+          key_line: 'Expanded lobular architecture - nodules coalesce and stream',
+          detail: 'Resembles the desmoplastic/nodular type but with an expanded lobular architecture and less conspicuous perinodular reticulin and collagen. The nodules may coalesce into a streaming pattern. The relatively hypocellular nodules hold small round cells with fibrillary cytoplasm showing neurocytic differentiation, while the interlobular regions retain increased cellularity, mitotic activity and Ki-67.',
+          note: 'The separation from desmoplastic/nodular is quantitative - how much of the tumour is nodule - rather than a different finding. Typically an infant tumour. Note that the reticulin ring is less conspicuous here, so a weak perinodular stain in a strongly lobular tumour points towards this type rather than away from the nodular rail.',
+          source: SRC.mbHist,
+        },
+      ],
+    },
+    {
+      key: 'nonnodular',
+      label: 'No desmoplastic nodularity',
+      note: 'Separated by whether large cell or anaplastic morphology predominates, which is a judgement of extent.',
+      nodes: [
+        {
+          key: 'classic',
+          label: 'Medulloblastoma, classic',
+          grade: 'CNS WHO grade 4',
+          key_line: 'Sheets of small hyperchromatic cells - no desmoplasia',
+          detail: 'Densely cellular and undifferentiated, the cells almost entirely irregular hyperchromatic nuclei with very little cytoplasm, some with delicate fibrillary processes. Homer Wright rosettes may be present but are relatively infrequent, in fewer than forty per cent of cases. Vascularity may be high but microvascular proliferation is not typical, and necrosis when present is usually non-palisading.',
+          note: 'Nodular zones may occur and they lack desmoplasia, which is the finding that keeps the tumour here rather than on the nodular rail. Focal anaplasia does not move it either, provided the anaplastic pattern is not predominant, but the anaplastic foci should still be reported.',
+          source: SRC.mbHist,
+        },
+        {
+          key: 'lca',
+          label: 'Medulloblastoma, large cell / anaplastic',
+          grade: 'CNS WHO grade 4',
+          key_line: 'Nuclear moulding and cell wrapping - or large pleomorphic nuclei with prominent nucleoli',
+          detail: 'Defined by large cell morphology, anaplastic morphology, or both. The large cell pattern shows cells larger than in the other types with large variably pleomorphic nuclei and prominent nucleoli. The anaplastic pattern shows increased mitotic activity, many apoptotic cells, nuclear moulding, cytoplasmic pseudoinclusions and tumour cell wrapping.',
+          note: 'Anaplasia is a spectrum, so this is a predominance judgement rather than a threshold count. Focal anaplasia in an otherwise classic tumour does not warrant reclassification when the pattern is not predominant - and should nevertheless be reported, so the finding survives even when the type does not change.',
+          source: SRC.mbHist,
+        },
+      ],
+    },
+  ],
+  discriminators: [
+    ['Reticulin', 'The stain that opens the fork. Desmoplastic/nodular requires nodules with perinodular deposition of reticulin and collagen, and both the nodularity and the desmoplasia must be present. Classic tumours may show nodular zones that lack desmoplasia, so architecture without the stain does not settle the type.'],
+    ['Extent of nodularity', 'Separates the two nodular types, and is a matter of how much rather than what. MBEN shows an expanded lobular architecture with nodules that may coalesce and stream, and a less conspicuous perinodular reticulin ring than the desmoplastic/nodular type.'],
+    ['Homer Wright rosettes', 'Present in fewer than forty per cent of classic tumours, so their absence says little; they are absent in desmoplastic/nodular. Useful in support, never as the deciding finding.'],
+    ['Nuclear moulding and cell wrapping', 'With cytoplasmic pseudoinclusions, brisk mitoses and abundant apoptosis, these are the anaplastic features. Large cell morphology is the separate half of the type: larger cells, pleomorphic nuclei and prominent nucleoli.'],
+    ['Predominance of anaplasia', 'Focal anaplasia in an otherwise classic tumour does not reclassify it unless the pattern predominates, but the foci should be reported regardless. The judgement changes the type; it does not change what is described.'],
+  ],
+  figures: [
+    { label: 'Morphologic features of the four histological types', url: 'https://www.intechopen.com/chapters/1186464', cite: 'Pathology of medulloblastoma, CC BY 3.0' },
+    { label: 'Simplified WHO CNS5 diagnostic algorithm (Fig 1)', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC9427889/figure/Fig1/', cite: 'WHO 2021 CNS classification review, CC BY 4.0' },
+  ],
+  sources: [SRC.who5, SRC.review22, SRC.iccr, SRC.mbHist, SRC.mbIhc],
+};
+
+const PLATES = {
+  [PAED_LOW.family]: PAED_LOW,
+  [PAED_HIGH.family]: PAED_HIGH,
+  [EMBRYONAL.family]: EMBRYONAL,
+  [MED_MOL.family]: MED_MOL,
+  [MED_HIST.family]: MED_HIST,
+};
 
 /** Families that have a plate, for the button to test against. */
 export const PLATE_FAMILIES = Object.keys(PLATES);
