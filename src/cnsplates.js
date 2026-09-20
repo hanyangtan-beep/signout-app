@@ -118,6 +118,37 @@ const SRC = {
     label: 'Integrating molecular subclassification by immunohistochemistry',
     url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC8029101/',
   },
+  /**
+   * CC BY 4.0 (MDPI Brain Sciences 13(5):817, doi 10.3390/brainsci13050817), licence checked
+   * 2026-09-20 on the article page. The only open-licensed source found that carries an
+   * entity-matched figure for each of the three adult-type entities, so its figures are the ones
+   * the adult plate deep-links. Quoted in comment for the criteria below; no figure reproduced.
+   */
+  adult: {
+    label: 'Implementing WHO 2021 for adult diffuse gliomas',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10216527/',
+  },
+  /**
+   * Update 2 is the amendment that lets an IDH-mutant astrocytic glioma be diagnosed without
+   * 1p/19q testing where ATRX is lost and/or p53 is strongly and diffusely positive. Already
+   * carried by `cnspathway.js` as SRC.u2; repeated here so the plate cites its own claim.
+   */
+  u2: {
+    label: 'cIMPACT-NOW update 2',
+    url: 'https://pubmed.ncbi.nlm.nih.gov/29497819/',
+  },
+  /**
+   * Update 12 is the current authority on grading IDH-mutant glioma, and the reason the
+   * oligodendroglioma rail stops at grade 3: "There is insufficient evidence to suggest changes to
+   * the established histologic criteria for distinguishing CNS WHO grade 2 and 3 oligodendroglioma",
+   * with six or more mitoses per 0.24 mm2 x10 HPF "as a pragmatic cut-off", and CDKN2A/B homozygous
+   * deletion explicitly not promoted to a grade 4 criterion there. Same entry as `cnspathway.js`
+   * SRC.u12, so the two stay in step.
+   */
+  u12: {
+    label: 'cIMPACT-NOW update 12',
+    url: 'https://academic.oup.com/neuro-oncology/advance-article/doi/10.1093/neuonc/noag108/8687120',
+  },
 };
 
 /**
@@ -792,7 +823,145 @@ const MED_HIST = {
   sources: [SRC.who5, SRC.review22, SRC.iccr, SRC.mbHist, SRC.mbIhc],
 };
 
+/**
+ * Adult-type diffuse gliomas.
+ *
+ * The family CNS5 cut hardest. Where the 2016 classification named a dozen adult diffuse gliomas
+ * across astrocytic and oligodendroglial lines at grades 2 to 4, CNS5 leaves three entities, and
+ * one branch point decides which line the case is on. `cnspathway.js` already walks that branch
+ * as a work-tracker - it asks what is outstanding on the case in front of you and, with only the
+ * family recorded, shows a single stage of unanswered orders. It never lays the three entities
+ * side by side, which is the one view a trainee wants before the molecular results land. Hence
+ * this plate. Its criteria are taken from the same sources the pathway cites, so the two agree by
+ * construction.
+ *
+ * What is new here against every earlier plate: grade. The paediatric, embryonal and
+ * medulloblastoma families carry a fixed grade per entity, or none at all. Here only glioblastoma
+ * is fixed - grade 4 by definition. Astrocytoma, IDH-mutant runs 2, 3 or 4 and oligodendroglioma
+ * runs 2 or 3, both derived from what the findings show. So a node may declare a span rather than
+ * a number, and the cross-check test in `tests/cnsplates.test.js` reads that span: with nothing
+ * recorded the generator must propose the bottom of it, and on a grade-defining feature it must
+ * reach the top.
+ *
+ * Criteria, quoted from the CC BY 4.0 source (SRC.adult) and from update 12 (SRC.u12):
+ *  - "Homozygous deletion of CDKN2A and/or CDKN2B (CDKN2A/B) defines a grade 4 assignment
+ *    irrespective of the histological features" - astrocytoma, IDH-mutant.
+ *  - Astrocytoma grade 3: "the presence of increased mitoses is the definitive criterion". Grade 4
+ *    adds microvascular proliferation or necrosis.
+ *  - Oligodendroglioma carries a "grade of 2 or 3, with the differentiating histological features
+ *    being the presence of mitotic activity, microvascular proliferation, and necrosis". Update 12
+ *    offers ">=6 mitoses/10 HPF of 0.24 mm^2 ... as a pragmatic cut-off" and records that CDKN2A/B
+ *    homozygous deletions "are not encountered in CNS WHO grade 2 oligodendrogliomas", that within
+ *    grade 3 they mark poor prognosis, and that outcomes "do not justify a CNS WHO grade 4
+ *    designation".
+ *  - Expected astrocytoma immunophenotype: IDH1 R132H cytoplasmic, loss of nuclear ATRX, strong
+ *    p53 overexpression. "As TP53 mutations and 1p19q codeletions are mutually exclusive,
+ *    oligodendrogliomas show a wild-type pattern of p53 staining without diffuse overexpression."
+ *  - R132H-negative with ATRX loss and a mutant p53 pattern should be sequenced, "particularly if
+ *    the patient is younger than 55 years of age and/or the tumour has a lower grade histology".
+ *  - Glioblastoma: IDH-wildtype and H3-wildtype astrocytic tumour with microvascular
+ *    proliferation, necrosis, TERT promoter mutation, EGFR amplification, or +7/-10. "EGFR
+ *    amplification and +7/-10 are most specific"; TERT is most frequent but has "poor specificity
+ *    as they can be encountered at an equal or greater frequency in oligodendroglioma and
+ *    melanoma".
+ */
+const ADULT = {
+  family: 'Adult-type diffuse gliomas',
+  entityField: 'dxAdult',
+  title: 'Adult-type diffuse gliomas',
+  lede: 'Three entities and one branch point. IDH splits the family in two, then ATRX and 1p/19q separate the pair on the mutant side. Grade is the thing to watch: it is fixed only for glioblastoma, and is read off the findings for the other two.',
+  gate: {
+    label: 'Before the family applies',
+    nodes: [
+      {
+        key: 'g1',
+        label: 'A diffusely infiltrating glioma in an adult',
+        detail: 'A glioma that infiltrates the surrounding parenchyma rather than sitting circumscribed within it, arising in an adult. Circumscribed astrocytic gliomas such as pilocytic astrocytoma and pleomorphic xanthoastrocytoma are a separate family with their own criteria, and are not graded or named by anything on this plate.',
+        source: SRC.who5,
+      },
+      {
+        key: 'g2',
+        label: 'H3-wildtype, or it leaves the family',
+        detail: 'A H3 K27 or H3 G34 alteration moves the tumour to the paediatric-type diffuse high-grade glioma family, whatever the age of the patient. H3 K27me3 loss and the H3 K27M and H3 G34R/V antibodies are the screen. Paediatric-type tumours do occur in adults, so age alone does not settle the family.',
+        source: SRC.u11,
+      },
+      {
+        key: 'g3',
+        label: 'Grade is set per entity, not per family',
+        detail: 'Unlike the embryonal and medulloblastoma families, this one carries no single grade. Glioblastoma is grade 4 by definition. Astrocytoma, IDH-mutant is grade 2, 3 or 4 and oligodendroglioma is grade 2 or 3, both read off mitoses, microvascular proliferation, necrosis and - for astrocytoma - CDKN2A/B. Grading happens within an entity once the entity is named, never before.',
+        source: SRC.u12,
+      },
+      {
+        key: 'g4',
+        label: 'Glioblastoma now means IDH-wildtype',
+        detail: 'CNS5 grades within tumour type rather than across the family, so a grade 4 IDH-mutant astrocytic glioma is reported as astrocytoma, IDH-mutant, CNS WHO grade 4. The name glioblastoma is reserved for the IDH-wildtype entity, and the terms secondary glioblastoma and anaplastic astrocytoma are retired.',
+        source: SRC.review22,
+      },
+    ],
+  },
+  fork: { label: 'Is IDH1 or IDH2 mutated?' },
+  rails: [
+    {
+      key: 'idhmut',
+      label: 'IDH-mutant',
+      note: 'ATRX and 1p/19q separate the two',
+      nodes: [
+        {
+          key: 'astro',
+          label: 'Astrocytoma, IDH-mutant',
+          key_line: 'IDH-mutant, 1p/19q intact - ATRX lost, p53 strong and diffuse',
+          grade: 'CNS WHO grade 2, 3 or 4',
+          detail: 'A diffusely infiltrating astrocytic glioma carrying an IDH1 or IDH2 mutation without whole-arm codeletion of 1p and 19q. The expected panel is cytoplasmic IDH1 R132H, loss of nuclear ATRX and strong p53 overexpression. Grade is read within the entity: atypia alone is grade 2, increased mitoses take it to grade 3, and microvascular proliferation or necrosis takes it to grade 4.',
+          note: 'Homozygous deletion of CDKN2A and/or CDKN2B makes the tumour grade 4 whatever the histology shows - the grading change CNS5 introduced here, and the reason molecular results can raise a grade after the slides are read. Where ATRX is lost and p53 is strongly and diffusely positive, update 2 allows the diagnosis without 1p/19q testing.',
+          source: SRC.adult,
+        },
+        {
+          key: 'oligo',
+          label: 'Oligodendroglioma, IDH-mutant and 1p/19q-codeleted',
+          key_line: 'IDH-mutant with whole-arm 1p/19q codeletion - ATRX retained',
+          grade: 'CNS WHO grade 2 or 3',
+          detail: 'Round monomorphic nuclei with perinuclear haloes and a branching capillary network, carrying an IDH1 or IDH2 mutation together with complete codeletion of 1p and 19q. ATRX is retained and p53 shows a wild-type pattern without diffuse overexpression, the two being mutually exclusive in practice. Both arms must be deleted whole; a partial deletion does not meet the criterion.',
+          note: 'Grading did not change in update 12 - grade 2 and grade 3 only. Microvascular proliferation, necrosis or brisk mitotic activity indicate grade 3, with six or more mitoses per 10 high-power fields of 0.24 mm2 offered as a pragmatic cut-off. CDKN2A/B homozygous deletion has not been recorded in a grade 2 oligodendroglioma and is a reason to look again at a grade 2 designation, but it is not an independent grade 3 criterion and does not make the tumour grade 4.',
+          source: SRC.u12,
+        },
+      ],
+    },
+    {
+      key: 'idhwt',
+      label: 'IDH-wildtype',
+      note: 'One entity, and molecular criteria can name it',
+      nodes: [
+        {
+          key: 'gbm',
+          label: 'Glioblastoma, IDH-wildtype',
+          key_line: 'MVP or necrosis - or TERT, EGFR amplification, +7/-10',
+          grade: 'CNS WHO grade 4',
+          detail: 'A diffuse astrocytic glioma that is IDH-wildtype and H3-wildtype with at least one of microvascular proliferation, necrosis, a TERT promoter mutation, EGFR amplification, or combined gain of chromosome 7 and loss of chromosome 10. Any one of the three molecular criteria names the tumour even where the histology looks low-grade, which is why the molecular work is ordered before a diffuse astrocytic glioma is signed out at a lower grade.',
+          note: 'Update 11 qualifies each molecular route: TERT must not be the sole defining factor where the histology is low-grade, and EGFR amplification or +7/-10 must not be the sole defining factor under 40. EGFR amplification and +7/-10 are the more specific two. TERT promoter mutation is the most frequent but is poorly specific, occurring as often or more often in oligodendroglioma and in melanoma.',
+          source: SRC.u11,
+        },
+      ],
+    },
+  ],
+  discriminators: [
+    ['IDH1 R132H', 'Opens the fork, and a negative stain does not close it. The antibody detects only the canonical mutation, so non-canonical IDH1 and all IDH2 mutations are invisible to it. Sequence where the stain is negative but ATRX is lost or p53 is mutant-pattern, particularly under 55 or where the histology is lower grade.'],
+    ['ATRX', 'Loss of nuclear staining supports astrocytoma and argues against oligodendroglioma. Retained staining settles nothing on its own - it is retained in oligodendroglioma and in most IDH-wildtype glioblastomas alike.'],
+    ['p53', 'Strong diffuse nuclear overexpression supports astrocytoma. Oligodendroglioma shows a wild-type pattern, TP53 mutation and 1p/19q codeletion being mutually exclusive. A wild-type pattern does not exclude a TP53 mutation.'],
+    ['1p/19q', 'Whole-arm codeletion of both arms defines oligodendroglioma. Partial deletion of either arm does not count, and is seen in astrocytic tumours.'],
+    ['CDKN2A/B', 'Homozygous deletion makes an IDH-mutant astrocytoma grade 4 irrespective of the histology. In oligodendroglioma it is not a grade 4 criterion and not an independent grade 3 criterion - it is a prompt to look again at a grade 2 call.'],
+    ['TERT, EGFR, +7/-10', 'Any one makes an IDH-wildtype, H3-wildtype diffuse astrocytic glioma a glioblastoma at grade 4. EGFR amplification and +7/-10 are the specific two; TERT is the frequent one and is shared with oligodendroglioma and melanoma.'],
+  ],
+  figures: [
+    { label: 'Astrocytoma, IDH-mutant - H&E, IDH1 R132H, ATRX loss, p53 (Fig 1)', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10216527/figure/brainsci-13-00817-f001/', cite: 'Implementing WHO 2021 for adult diffuse gliomas, CC BY 4.0' },
+    { label: 'WHO CNS5 diagnostic algorithm for adult diffuse glioma (Fig 2)', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10216527/figure/brainsci-13-00817-f002/', cite: 'Implementing WHO 2021 for adult diffuse gliomas, CC BY 4.0' },
+    { label: 'Oligodendroglioma - perinuclear haloes, retained ATRX, 1p/19q FISH (Fig 3)', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10216527/figure/brainsci-13-00817-f003/', cite: 'Implementing WHO 2021 for adult diffuse gliomas, CC BY 4.0' },
+    { label: 'Glioblastoma - microvascular proliferation, pseudopalisading necrosis, EGFR FISH (Fig 4)', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10216527/figure/brainsci-13-00817-f004/', cite: 'Implementing WHO 2021 for adult diffuse gliomas, CC BY 4.0' },
+  ],
+  sources: [SRC.adult, SRC.u11, SRC.u12, SRC.u2, SRC.who5, SRC.review22],
+};
+
 const PLATES = {
+  [ADULT.family]: ADULT,
   [PAED_LOW.family]: PAED_LOW,
   [PAED_HIGH.family]: PAED_HIGH,
   [EMBRYONAL.family]: EMBRYONAL,

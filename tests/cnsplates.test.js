@@ -20,7 +20,9 @@ test('every plate family is a real dxFamily option', async () => {
 
 test('a plate is offered only for a family that has one', () => {
   assert.equal(plateSupported({ dxFamily: 'Paediatric-type diffuse low-grade gliomas' }), true);
-  assert.equal(plateSupported({ dxFamily: 'Adult-type diffuse gliomas' }), false);
+  assert.equal(plateSupported({ dxFamily: 'Adult-type diffuse gliomas' }), true);
+  // A family that genuinely has no plate, so the negative case is still covered.
+  assert.equal(plateSupported({ dxFamily: 'Germ cell tumours' }), false);
   assert.equal(plateSupported({}), false);
   assert.equal(plateSupported(undefined), false);
   assert.equal(plateFor('Nonsense'), null);
@@ -194,13 +196,98 @@ test('a plate grade agrees with the grade the generator proposes', () => {
       const v = { dxFamily: fam, [plate.entityField]: n.label };
       const proposed = proposedGrade(v, n.label);
       const m = /^CNS WHO grade (\d)$/.exec(n.grade);
+      const span = (n.grade.match(/\d/g) || []).map(Number);
       if (m) {
         assert.equal(proposed, Number(m[1]), `${n.label}: plate says ${n.grade}, generator says ${proposed}`);
+      } else if (span.length > 1) {
+        // Adult-type diffuse glioma brought the first entities whose grade is read off the
+        // findings rather than fixed by the entity, so a node may state a span. The two ends are
+        // what can drift: the generator must open at the bottom of the declared span with nothing
+        // recorded, and reach the top of it on a grade-defining feature.
+        assert.equal(proposed, Math.min(...span),
+          `${n.label}: plate opens at ${Math.min(...span)}, generator proposes ${proposed}`);
+        const top = proposedGrade({ ...v, features: ['Microvascular proliferation'] }, n.label);
+        assert.equal(top, Math.max(...span),
+          `${n.label}: plate tops out at ${Math.max(...span)}, generator reaches ${top}`);
       } else {
         assert.equal(proposed, null, `${n.label} carries no WHO grade, so the generator must propose none`);
       }
     }
   }
+});
+
+/**
+ * Adult-type diffuse glioma is the first family whose entities do not carry a grade in the name, so
+ * the grade strings are asserted verbatim. Getting these wrong is not cosmetic: CNS5 retired
+ * "anaplastic astrocytoma" and "secondary glioblastoma" precisely so that a grade 3 or grade 4
+ * IDH-mutant tumour is reported as astrocytoma, IDH-mutant at that grade, and a plate that printed a
+ * single fixed grade here would reintroduce the thing the classification removed.
+ */
+test('the adult plate carries three entities, two of them with a grade span', () => {
+  const p = plateFor('Adult-type diffuse gliomas');
+  const nodes = p.rails.flatMap((r) => r.nodes);
+  assert.equal(nodes.length, 3);
+  const grades = Object.fromEntries(nodes.map((n) => [n.label, n.grade]));
+  assert.equal(grades['Astrocytoma, IDH-mutant'], 'CNS WHO grade 2, 3 or 4');
+  assert.equal(grades['Oligodendroglioma, IDH-mutant and 1p/19q-codeleted'], 'CNS WHO grade 2 or 3');
+  assert.equal(grades['Glioblastoma, IDH-wildtype'], 'CNS WHO grade 4');
+});
+
+/**
+ * The fork is IDH rather than 1p/19q so that both IDH-mutant entities sit on one rail and are
+ * separated inside it. Forking on 1p/19q would draw astrocytoma and oligodendroglioma as sibling
+ * branches of equal standing, when the actual algorithm settles IDH first and only then asks about
+ * codeletion - and would leave no rail for the wildtype entity that the same first question decides.
+ */
+test('the adult plate forks on IDH and keeps both IDH-mutant entities together', () => {
+  const p = plateFor('Adult-type diffuse gliomas');
+  assert.match(p.fork.label, /IDH/);
+  const mut = p.rails.find((r) => r.key === 'idhmut');
+  assert.deepEqual(mut.nodes.map((n) => n.label), [
+    'Astrocytoma, IDH-mutant',
+    'Oligodendroglioma, IDH-mutant and 1p/19q-codeleted']);
+  const wt = p.rails.find((r) => r.key === 'idhwt');
+  assert.deepEqual(wt.nodes.map((n) => n.label), ['Glioblastoma, IDH-wildtype']);
+});
+
+/**
+ * The read-across error this family invites. CDKN2A/B homozygous deletion makes an IDH-mutant
+ * ASTROCYTOMA grade 4 irrespective of the histology, and cIMPACT-NOW update 12 declines to give it
+ * the same force in oligodendroglioma: it is not an independent grade 3 criterion there and does not
+ * reach grade 4, because outcomes "do not justify a CNS WHO grade 4 designation". One fact, opposite
+ * consequences in two entities on the same rail, so both the panel text and the generator are pinned.
+ */
+test('CDKN2A/B is grade 4 in astrocytoma and not in oligodendroglioma', () => {
+  const p = plateFor('Adult-type diffuse gliomas');
+  const nodes = Object.fromEntries(p.rails.flatMap((r) => r.nodes).map((n) => [n.label, n]));
+  assert.match(nodes['Astrocytoma, IDH-mutant'].note, /grade 4 whatever the histology/i);
+  assert.match(nodes['Oligodendroglioma, IDH-mutant and 1p/19q-codeleted'].note,
+    /not an independent grade 3 criterion and does not make the tumour grade 4/i);
+  assert.match(Object.fromEntries(p.discriminators)['CDKN2A/B'], /not a grade 4 criterion/i);
+
+  const del = { cdkn2a: 'Homozygous deletion detected' };
+  const astro = 'Astrocytoma, IDH-mutant';
+  const oligo = 'Oligodendroglioma, IDH-mutant and 1p/19q-codeleted';
+  const fam = 'Adult-type diffuse gliomas';
+  assert.equal(proposedGrade({ dxFamily: fam, dxAdult: astro, ...del }, astro), 4);
+  assert.equal(proposedGrade({ dxFamily: fam, dxAdult: oligo, ...del }, oligo), 2);
+  // Update 12's pragmatic mitotic cut-off for oligodendroglioma is six, not the astrocytoma three.
+  assert.equal(proposedGrade({ dxFamily: fam, dxAdult: oligo, mitoses: '5' }, oligo), 2);
+  assert.equal(proposedGrade({ dxFamily: fam, dxAdult: oligo, mitoses: '6' }, oligo), 3);
+  assert.equal(proposedGrade({ dxFamily: fam, dxAdult: astro, mitoses: '3' }, astro), 3);
+});
+
+/**
+ * A negative IDH1 R132H stain does not put the case on the wildtype rail: the antibody sees only the
+ * canonical mutation, so non-canonical IDH1 and every IDH2 mutation are invisible to it. The plate
+ * forks on IDH status, which makes this the one caution it cannot omit.
+ */
+test('the adult plate warns that R132H immunohistochemistry is not IDH status', () => {
+  const disc = Object.fromEntries(plateFor('Adult-type diffuse gliomas').discriminators);
+  assert.match(disc['IDH1 R132H'], /canonical/i);
+  assert.match(disc['IDH1 R132H'], /IDH2/);
+  assert.match(disc['ATRX'], /retained/i);
+  assert.match(disc['1p/19q'], /whole-arm|partial/i);
 });
 
 test('every node and figure carries a source with a real URL', () => {
@@ -300,7 +387,7 @@ test('plate selection reads only its own family field', () => {
 });
 
 test('plate selection is empty off-family and on no case', () => {
-  assert.equal(plateSelection({ dxFamily: 'Adult-type diffuse gliomas', dxPaedLow: 'Angiocentric glioma' }), '');
+  assert.equal(plateSelection({ dxFamily: 'Germ cell tumours', dxPaedLow: 'Angiocentric glioma' }), '');
   assert.equal(plateSelection({}), '');
   assert.equal(plateSelection(null), '');
 });
