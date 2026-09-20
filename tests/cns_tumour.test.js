@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { generate } from '../src/engine.js';
 import { loadAll } from '../src/registry.js';
 import { entity, proposedGrade, grade, gradeValue, organPhrase, molecularBits, integratedDiagnosis } from '../generators/cns_tumour.js';
+import { gradeText, gradeClause, upperEntity } from '../generators/cns_layers.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const FIX = path.join(here, 'fixtures', 'cns_tumour');
@@ -143,6 +144,51 @@ test('an ungradeable entity asks for a grade rather than inventing one', () => {
   const out = run({ dxFamily: 'Mesenchymal tumours involving the CNS', dxMesenchymal: 'Solitary fibrous tumour', histClass: 'Not applicable' });
   assert.ok(errs(out).some((m) => /CNS WHO grade is required/.test(m)));
   assert.equal(gradeValue({ ...defaults(schema), ...EX, dxFamily: 'Mesenchymal tumours involving the CNS', dxMesenchymal: 'Solitary fibrous tumour' }), '');
+});
+
+/**
+ * Two different situations that look alike on the form. A solitary fibrous tumour has a grade that
+ * the recorded findings did not settle, so the form must ask for one - that is the test above. An
+ * entity WHO assigns no grade to has nothing to ask for, and asking made the pathologist pick
+ * "Not applicable" by hand on every such case.
+ */
+test('an entity WHO assigns no grade reads Not applicable without being asked', () => {
+  for (const [family, field, entityName] of [
+    ['Paediatric-type diffuse high-grade gliomas', 'dxPaedHigh', 'Infant-type hemispheric glioma'],
+    ['Paediatric-type diffuse low-grade gliomas', 'dxPaedLow', 'Diffuse low-grade glioma, MAPK pathway-altered'],
+  ]) {
+    const patch = { dxFamily: family, [field]: entityName };
+    const out = run(patch);
+    assert.ok(
+      !errs(out).some((m) => /CNS WHO grade is required/.test(m)),
+      `${entityName} must not be asked for a grade it does not have`,
+    );
+    const v = { ...defaults(schema), ...EX, ...patch };
+    assert.equal(gradeText(v), 'Not applicable');
+    // It reads "Not applicable" in the synoptic row and drops off the diagnosis line entirely -
+    // a diagnosis that ended "..., not applicable" would be nonsense.
+    assert.equal(gradeValue(v), 'Not applicable');
+    assert.equal(gradeClause(v), '');
+    // The synoptic row says so, but the diagnosis line must not: "..., not applicable" is nonsense.
+    assert.ok(out.report.includes('- CNS WHO grade: Not applicable'), 'the synoptic row reads Not applicable');
+    // The diagnosis line is the uppercased one, not the "Integrated diagnosis:" synoptic row.
+    // upperEntity preserves gene casing ("MAPK pathway-altered"), so ask it rather than guessing.
+    const dxLine = out.report.split('\n').find((l) => l.includes(upperEntity(entityName)));
+    assert.ok(dxLine, `the diagnosis names ${entityName}`);
+    assert.ok(!/not applicable/i.test(dxLine), `the diagnosis line must not read "not applicable": ${dxLine}`);
+  }
+});
+
+test('a grade chosen by hand still wins on an ungraded entity', () => {
+  // The exemption is a default, not a lock: a pathologist who records a grade gets that grade.
+  const v = {
+    ...defaults(schema), ...EX,
+    dxFamily: 'Paediatric-type diffuse high-grade gliomas',
+    dxPaedHigh: 'Infant-type hemispheric glioma',
+    grade: 'CNS WHO grade 4',
+  };
+  assert.equal(gradeText(v), 'CNS WHO grade 4');
+  assert.equal(gradeClause(v), 'CNS WHO grade 4');
 });
 
 test('Layer 4 branches: the IDH-mutant panel and the IDH-wildtype panel are different lists', () => {

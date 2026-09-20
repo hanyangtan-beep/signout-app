@@ -48,14 +48,42 @@ const SRC = {
     label: 'Paediatric CNS tumours and the 2021 classification',
     url: 'https://www.frontiersin.org/journals/molecular-neuroscience/articles/10.3389/fnmol.2024.1268038/full',
   },
+  phgg: {
+    label: 'Recent updates in paediatric diffuse glioma classification',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC11493159/',
+  },
+  g34: {
+    label: 'Diffuse hemispheric glioma, H3 G34-mutant - a review',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC12354862/',
+  },
+  /**
+   * CC BY-NC-ND 4.0, so linked and quoted in comment only - never reproduced, and no figure of it
+   * is embedded. It is cited here because it is the current criteria set for the H3-wildtype,
+   * IDH-wildtype entity and `cnspathway.js` already carries it as SRC.u11.
+   */
+  u11: {
+    label: 'cIMPACT-NOW update 11',
+    url: 'https://onlinelibrary.wiley.com/doi/10.1111/bpa.70035',
+  },
 };
 
 /**
  * Paediatric-type diffuse low-grade gliomas.
  *
  * Grounding, all four entities: the family is IDH-wildtype throughout and splits on driver -
- * MYB/MYBL1 against the MAPK pathway - with all four at CNS WHO grade 1
+ * MYB/MYBL1 against the MAPK pathway
  * (https://pmc.ncbi.nlm.nih.gov/articles/PMC9427889/, https://pmc.ncbi.nlm.nih.gov/articles/PMC12372413/).
+ *
+ * Grade is not uniform across the family, which an earlier build of this plate got wrong. Three
+ * carry CNS WHO grade 1: diffuse astrocytoma MYB- or MYBL1-altered and PLNTY are both listed at
+ * grade 1 in the WHO CNS5 table of newly recognised types, and angiocentric glioma carries grade 1
+ * from CNS4 (https://pmc.ncbi.nlm.nih.gov/articles/PMC8328013/,
+ * https://pmc.ncbi.nlm.nih.gov/articles/PMC9763978/). Diffuse low-grade glioma, MAPK pathway-altered
+ * has NO assigned grade - it appears in the CNS5 newly-recognised list with the grade column blank,
+ * and the paediatric review states these tumours "are believed to have a favourable outcome even if
+ * a CNS WHO grade has yet to be assigned" (https://pmc.ncbi.nlm.nih.gov/articles/PMC9763978/).
+ * `FIXED_GRADE` in generators/cns_layers.js omits it for the same reason, and the two are now tied
+ * together by a test.
  * Molecular demonstration is mandatory for the two MAPK entities and not for angiocentric glioma;
  * for MYB/MYBL1-altered astrocytoma a characteristic methylation profile may stand in where no
  * alteration is detectable. CD34 and OLIG2 carry most of the separation at the bench, and the
@@ -70,7 +98,7 @@ const PAED_LOW = {
    */
   entityField: 'dxPaedLow',
   title: 'Paediatric-type diffuse low-grade gliomas',
-  lede: 'All four are IDH-wildtype and all four are grade 1. The family splits on which driver is altered, and at the bench CD34 and OLIG2 do most of the separating.',
+  lede: 'All four are IDH-wildtype and the family splits on which driver is altered. Three are grade 1; the MAPK-altered diffuse glioma has no assigned grade at all. At the bench CD34 and OLIG2 do most of the separating.',
   gate: {
     label: 'Before the family applies',
     nodes: [
@@ -144,10 +172,10 @@ const PAED_LOW = {
         {
           key: 'mapkdlg',
           label: 'Diffuse low-grade glioma, MAPK pathway-altered',
-          grade: 'CNS WHO grade 1',
+          grade: 'No CNS WHO grade assigned',
           key_line: 'FGFR1 TKD-ITD, FGFR1 mutation or BRAF p.V600E',
           detail: 'An infiltrative low-grade glioma resembling oligodendroglioma, astrocytoma or a mixture of the two. FGFR1-altered tumours tend to be multinodular with clear rounded cells overlapping dysembryoplastic neuroepithelial tumour; BRAF p.V600E tumours tend to a fibrillary background with elongated to spindled cells and subpial condensation.',
-          note: 'IDH mutation, histone mutation and CDKN2A deletion must all be absent. Infiltration exceeds the circumscribed paediatric gliomas but falls well short of an adult-type IDH-mutant diffuse glioma.',
+          note: 'Alone in this family it carries no CNS WHO grade: the behaviour is believed to be favourable but a grade has yet to be assigned, so the grade line is left unset rather than taken as grade 1 from the company it keeps. IDH mutation, histone mutation and CDKN2A deletion must all be absent. Infiltration exceeds the circumscribed paediatric gliomas but falls well short of an adult-type IDH-mutant diffuse glioma.',
           source: SRC.plgg,
         },
       ],
@@ -173,7 +201,137 @@ const PAED_LOW = {
   sources: [SRC.review22, SRC.plgg, SRC.paedFront],
 };
 
-const PLATES = { [PAED_LOW.family]: PAED_LOW };
+/**
+ * Paediatric-type diffuse high-grade gliomas.
+ *
+ * Grounding. The family is IDH-wildtype throughout and splits first on histone H3: an H3 alteration
+ * gives the two eponymous entities, separated by site rather than by morphology - K27 in the midline,
+ * G34 in the hemispheres - and H3-wildtype gives the other two, separated by age and driver
+ * (https://pmc.ncbi.nlm.nih.gov/articles/PMC11493159/,
+ * https://pmc.ncbi.nlm.nih.gov/articles/PMC9209749/).
+ *
+ * Three of the four are CNS WHO grade 4 and the fourth carries no grade at all. For the two histone
+ * entities the grade holds "irrespective of the presence or absence of necrosis and microvascular
+ * proliferation", which is the single most useful thing to know about them at the bench: a bland
+ * midline biopsy is still grade 4 (https://pmc.ncbi.nlm.nih.gov/articles/PMC11493159/). Infant-type
+ * hemispheric glioma is assigned no WHO grade, so the plate says so rather than inventing one.
+ *
+ * Two points of current practice that a frozen published figure would miss. K27-altered is no longer
+ * K27M-mutant only - EZHIP overexpression and EGFR alteration also qualify, both acting through loss
+ * of K27 trimethylation. And cIMPACT-NOW update 11 holds that "a definitive diagnosis of Diffuse
+ * pediatric-type high-grade glioma, H3-wildtype and IDH-wildtype requires DNA methylation
+ * profiling", with PDGFRA, EGFR or MYCN single-gene surrogates permitted under 25 years and the
+ * diagnosis then qualified NOS (https://onlinelibrary.wiley.com/doi/10.1111/bpa.70035).
+ *
+ * OLIG2 is the stain that earns its place here: negative in G34-mutant and in the EGFR-mutant
+ * subtype of diffuse midline glioma, and an OLIG2-negative malignant glioma in a young adult is one
+ * of update 11's stated triggers to think of the H3-wildtype entity
+ * (https://pmc.ncbi.nlm.nih.gov/articles/PMC12354862/).
+ */
+const PAED_HIGH = {
+  family: 'Paediatric-type diffuse high-grade gliomas',
+  entityField: 'dxPaedHigh',
+  title: 'Paediatric-type diffuse high-grade gliomas',
+  lede: 'All four are IDH-wildtype. Histone H3 splits the family in two, then site decides between the H3-altered pair and age decides between the H3-wildtype pair. Three are grade 4; the infant tumour carries no grade at all.',
+  gate: {
+    label: 'Before the family applies',
+    nodes: [
+      {
+        key: 'g1',
+        label: 'Diffuse glioma with mitotic activity',
+        detail: 'A diffusely infiltrative glioma with histological features of malignancy. Mitotic activity is the entry criterion; microvascular proliferation and palisading necrosis are desirable rather than required, and for the two histone-altered entities the grade holds whether or not they are present.',
+        source: SRC.u11,
+      },
+      {
+        key: 'g2',
+        label: 'IDH-wildtype',
+        detail: 'The paediatric-type diffuse gliomas are IDH-wildtype throughout, and update 11 tightened the wording to absence of mutation in IDH1 and IDH2 rather than either. An IDH mutation moves the case to the adult-type family whatever the age.',
+        source: SRC.u11,
+      },
+      {
+        key: 'g3',
+        label: 'Not restricted to children',
+        detail: 'Typically a child, adolescent or young adult, but the family is not confined to them. The H3-wildtype entity is reported up to 70 years and is worth considering in any malignant glioma under 40, particularly one that is OLIG2- or ATRX-negative, TERT promoter-wildtype, or post-irradiation.',
+        source: SRC.u11,
+      },
+      {
+        key: 'g4',
+        label: 'Methylation profiling settles it',
+        detail: 'Context rather than a criterion. Histology alone does not separate these four, and for the H3-wildtype entity a definitive diagnosis requires DNA methylation profiling. Where testing is unavailable the diagnosis is made as far as it can be and qualified NOS.',
+        source: SRC.u11,
+      },
+    ],
+  },
+  fork: { label: 'Is histone H3 altered?' },
+  rails: [
+    {
+      key: 'h3alt',
+      label: 'Histone H3 altered',
+      note: 'Site separates them, not morphology. Both grade 4 regardless of necrosis.',
+      nodes: [
+        {
+          key: 'dmg',
+          label: 'Diffuse midline glioma, H3 K27-altered',
+          grade: 'CNS WHO grade 4',
+          key_line: 'K27M, EZHIP or EGFR · K27me3 lost · midline',
+          detail: 'A diffusely infiltrating glioma of the midline - pons, thalamus, spinal cord, and also hypothalamus, pineal region and cerebellum. Morphology is polymorphous and unhelpful, ranging from small monomorphic cells to astrocytic, oligodendroglial, epithelioid, piloid, giant-cell and undifferentiated patterns. The grade holds irrespective of necrosis and microvascular proliferation, so a bland-looking midline biopsy is still grade 4.',
+          note: 'Three routes qualify as K27-altered, all acting through loss of K27 trimethylation: an H3 K27M mutation in H3F3A or HIST1H3B/C, EZHIP overexpression, or an EGFR alteration. Lost trimethylation is therefore not the same as a K27M mutation, and posterior fossa group A ependymoma loses it too. OLIG2 is positive except in the EGFR-mutant subtype, which is OLIG2-negative and GFAP-positive.',
+          source: SRC.phgg,
+        },
+        {
+          key: 'g34',
+          label: 'Diffuse hemispheric glioma, H3 G34-mutant',
+          grade: 'CNS WHO grade 4',
+          key_line: 'H3-3A G34R or G34V · ATRX lost · OLIG2 negative',
+          detail: 'A hemispheric tumour of adolescents and young adults, usually frontal or parietal. Two morphologies occur: glioblastoma-like with brisk mitoses, palisading necrosis and microvascular proliferation, or small hyperchromatic cells resembling an embryonal tumour. G34R is commoner than G34V. The grade holds regardless of microvascular proliferation and necrosis.',
+          note: 'Both patterns are OLIG2-negative, with ATRX loss and diffuse p53 - a glioblastoma-like hemispheric glioma in a young patient that is OLIG2-negative should raise it. The embryonal-like pattern is diffusely synaptophysin-positive with only focal GFAP, which is the embryonal tumour trap. TP53 mutation is near-universal and CDKN2A is homozygously deleted in about three-quarters.',
+          source: SRC.g34,
+        },
+      ],
+    },
+    {
+      key: 'h3wt',
+      label: 'Histone H3-wildtype',
+      note: 'Age and driver separate them. Both need molecular work.',
+      nodes: [
+        {
+          key: 'phgg',
+          label: 'Diffuse paediatric-type high-grade glioma, H3-wildtype and IDH-wildtype',
+          grade: 'CNS WHO grade 4',
+          key_line: 'Methylation subclass RTK1, RTK2 or MYCN · K27me3 retained',
+          detail: 'A diffuse glioma with mitotic activity, wildtype for H3, IDH1 and IDH2, whose methylation profile aligns with one of the subtypes: RTK1 with PDGFRA alteration, RTK2 with EGFR alteration and TERT promoter mutation, or MYCN with MYCN amplification. Morphology is glioblastoma-like or embryonal-like; the MYCN subtype may be biphasic, with circumscribed nodules beside a diffuse component.',
+          note: 'Definitive diagnosis requires methylation profiling. Where it is out of reach, single-gene PDGFRA, EGFR or MYCN may support it in a patient under 25 and the diagnosis is then qualified NOS. Trimethylation is retained, which separates it from a midline K27-altered tumour. RTK1 may be post-irradiation and may show MSH2 or MSH6 loss over a germline mismatch-repair defect.',
+          source: SRC.u11,
+        },
+        {
+          key: 'ithg',
+          label: 'Infant-type hemispheric glioma',
+          grade: 'No CNS WHO grade assigned',
+          key_line: 'RTK fusion — NTRK1/2/3, ROS1, ALK or MET',
+          detail: 'A large superficial hemispheric tumour of the first year of life, often cystic and necrotic on imaging. Histology is high-grade: high cellularity, nuclear pleomorphism, brisk mitoses, necrosis and endothelial proliferation. NTRK-fused tumours tend to be spindled with a high Ki-67; ALK-fused tumours may be biphasic, or show ependymal or ganglion-cell differentiation.',
+          note: 'No CNS WHO grade is assigned to this entity, so the grade line is left unset rather than inferred from the histology. The fusion is the point: it is targetable, so demonstrating it changes treatment and not only the name. GFAP and OLIG2 are positive, and ALK is positive in ALK-fused tumours. A biphasic ALK tumour may contain a component that looks low-grade.',
+          source: SRC.phgg,
+        },
+      ],
+    },
+  ],
+  discriminators: [
+    ['OLIG2', 'Negative in G34-mutant and in the EGFR-mutant subtype of midline glioma. An OLIG2-negative malignant glioma in a young patient is a trigger to look further.'],
+    ['H3 K27me3', 'Lost in K27-altered, retained in the H3-wildtype entity. Loss is not a K27M mutation - EZHIP and EGFR-altered tumours lose it, and so does group A ependymoma.'],
+    ['ATRX and p53', 'ATRX loss with diffuse p53 points to G34-mutant. ATRX negativity also raises the H3-wildtype entity.'],
+    ['Fusion panel', 'NTRK1/2/3, ROS1, ALK and MET in a hemispheric tumour under one year. Targetable, so worth doing early.'],
+    ['Methylation profiling', 'The only definitive route to the H3-wildtype entity, and what separates it from an NOS diagnosis.'],
+  ],
+  figures: [
+    { label: 'Simplified WHO CNS5 diagnostic algorithm (Fig 1)', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC9427889/figure/Fig1/', cite: 'WHO 2021 CNS classification review, CC BY 4.0' },
+    { label: 'Differential diagnosis of paediatric diffuse glioma (Table 1)', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC11493159/#T1', cite: 'Recent updates in paediatric diffuse glioma classification, CC BY 4.0' },
+    { label: 'Grade, molecular alteration, age and site in one table (Fig 1)', url: 'https://www.frontiersin.org/journals/molecular-neuroscience/articles/10.3389/fnmol.2024.1268038/full#F1', cite: 'Paediatric CNS tumours and the 2021 classification, CC BY 4.0' },
+    { label: 'Revised criteria for the H3-wildtype entity', url: 'https://onlinelibrary.wiley.com/doi/10.1111/bpa.70035', cite: 'cIMPACT-NOW update 11 - linked only, CC BY-NC-ND 4.0' },
+  ],
+  sources: [SRC.phgg, SRC.g34, SRC.u11, SRC.paedFront],
+};
+
+const PLATES = { [PAED_LOW.family]: PAED_LOW, [PAED_HIGH.family]: PAED_HIGH };
 
 /** Families that have a plate, for the button to test against. */
 export const PLATE_FAMILIES = Object.keys(PLATES);

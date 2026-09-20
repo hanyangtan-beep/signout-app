@@ -99,10 +99,38 @@ export const histClassText = (v) => (v.histClass === 'Other (specify)'
 
 // ---------- Layer 3: CNS WHO grade ----------
 
+/**
+ * Entities WHO CNS5 assigns no grade to at all. This is not the same as a grade that depends on the
+ * findings, and not the same as an omission from FIXED_GRADE: for these the correct Layer 3 answer
+ * is that grading does not apply.
+ *
+ * - Infant-type hemispheric glioma: listed in WHO CNS5 without a grade
+ *   (https://pmc.ncbi.nlm.nih.gov/articles/PMC8328013/).
+ * - Diffuse low-grade glioma, MAPK pathway-altered: appears in the CNS5 newly-recognised list with
+ *   the grade column blank; the paediatric review states these tumours "are believed to have a
+ *   favourable outcome even if a CNS WHO grade has yet to be assigned"
+ *   (https://pmc.ncbi.nlm.nih.gov/articles/PMC9763978/).
+ */
+export const UNGRADED = new Set([
+  'Infant-type hemispheric glioma',
+  'Diffuse low-grade glioma, MAPK pathway-altered',
+]);
+
 export const FIXED_GRADE = {
   [GBM]: 4,
   [DMG]: 4,
   'Diffuse hemispheric glioma, H3 G34-mutant': 4,
+  // CNS WHO grade 4 by definition, as with the other two graded members of the family: "a diffuse
+  // glioma with histological features of malignancy, typically occurring in children, adolescents
+  // or young adults, which is wildtype for histone H3, IDH1, and IDH2 (CNS WHO grade 4)", quoted
+  // from WHO CNS5 in cIMPACT-NOW update 11 (https://onlinelibrary.wiley.com/doi/10.1111/bpa.70035).
+  // Without this entry the entity fell through to null and the resection form raised "CNS WHO grade
+  // is required" against an entity whose grade is not in question.
+  //
+  // Infant-type hemispheric glioma is deliberately absent: WHO CNS5 assigns it no grade at all, so
+  // null is the right answer there rather than an omission. It is listed in UNGRADED above, which
+  // is what turns that null into "Not applicable" on the form instead of a missing-grade error.
+  'Diffuse paediatric-type high-grade glioma, H3-wildtype and IDH-wildtype': 4,
   'Diffuse astrocytoma, MYB- or MYBL1-altered': 1,
   'Angiocentric glioma': 1,
   'Polymorphous low-grade neuroepithelial tumour of the young': 1,
@@ -422,6 +450,11 @@ export function gradeText(v, e = entity(v)) {
   const sel = v.grade || 'From the findings';
   if (sel === 'Pending') return 'Pending';
   if (sel === 'Not applicable') return 'Not applicable';
+  // An entity WHO assigns no grade to reads "Not applicable" from the findings, because that is
+  // what the findings support: there is no grade to derive, not a grade left unrecorded. Without
+  // this the form demanded a grade for a tumour that has none and the only way past it was to pick
+  // "Not applicable" by hand on every such case.
+  if (sel === 'From the findings' && UNGRADED.has(e)) return 'Not applicable';
   if (sel === CBD) return `Cannot be determined${stripDot(v.gradeOther) ? ` (${lc1(stripDot(v.gradeOther))})` : ''}`;
   if (sel === 'Other (specify)') return stripDot(v.gradeOther) || 'Other';
   const g = grade(v, e);
