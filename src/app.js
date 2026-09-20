@@ -17,6 +17,7 @@ import { spanFull, groupProgress as progressOf } from './formlayout.js';
 import { organIcon, mountOrganSprite } from './organicons.js';
 import { wizardSteps, wizardSupported, wizardProgress, visibleSteps, stepAnswered, atDefault, cautions } from './cnswizard.js';
 import { pathway, pathwaySupported, pathwayChart } from './cnspathway.js';
+import { plateFor, plateSupported, plateSelection, plateChart, plateEntries } from './cnsplates.js';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -90,6 +91,7 @@ const nodes = {
   openList: $('#open-list'),
   dlgSettings: $('#dlg-settings'),
   dlgPathway: $('#dlg-pathway'),
+  dlgPlate: $('#dlg-plate'),
   settingsForm: $('#settings-form'),
   signout: $('#btn-signout'),
   meta: Object.fromEntries(META_FIELDS.map((k) => [k, $(`#meta-${k}`)])),
@@ -1186,6 +1188,116 @@ function pathwayChartView(p) {
     el('p', { class: 'pw-foot', text: 'Read-only. This overlay sets no field and prints nothing.' }));
 }
 
+// ---------- family reference plate ----------
+//
+// The pathway covers four families of nineteen. For the rest this is the map: the diagnostic
+// algorithm for the family the case has been assigned to, drawn from the criteria the app already
+// encodes, with the real published figures linked rather than reproduced. See src/cnsplates.js for
+// why it is drawn here and not pasted in.
+//
+// Unlike the pathway, a plate is reference rather than case state: it reads dxFamily to choose which
+// plate to open and nothing else, so no box has a satisfied/outstanding state. The one case-aware
+// touch is that the entity the form currently holds is marked. It says "selected on the form" and
+// not "recorded", because these picklists carry a schema default that is present whether or not
+// anyone chose it - see plateSelection() in src/cnsplates.js.
+
+const plates = { selKey: null };
+
+function plateEntityMark(entry, chosen) {
+  return chosen && entry.node.label === chosen;
+}
+
+function plateChartView(plate, chosen) {
+  const chart = plateChart(plate);
+  const entries = plateEntries(chart);
+  if (!entries.some((e) => e.key === plates.selKey)) {
+    // Open on the entity the form holds, so the plate answers the case with no click.
+    const here = entries.find((e) => plateEntityMark(e, chosen));
+    plates.selKey = here ? here.key : entries[0].key;
+  }
+  const selected = entries.find((e) => e.key === plates.selKey);
+
+  const pick = (entry) => {
+    plates.selKey = entry.key;
+    nodes.dlgPlate.querySelector('.plc-body').replaceChildren(plateChartView(plate, chosen));
+  };
+
+  const hit = (cls, entry, extra) => pwcBox(`${cls}${plateEntityMark(entry, chosen) ? ' is-here' : ''}`, entry,
+    el('button', {
+      type: 'button', class: 'pwc-hit', 'data-key': entry.key,
+      'aria-pressed': String(plates.selKey === entry.key),
+      onclick: () => pick(entry),
+    },
+      el('span', { class: 'plc-label', text: entry.node.label }),
+      extra ? extra(entry.node) : null));
+
+  return el('div', { class: 'pwc-wrap' },
+    el('p', { class: 'pwc-lede', text: plate.lede }),
+    el('div', { class: 'pwc-scroll' },
+      el('div', { class: 'pwc plc', style: `width:${chart.width}px;height:${chart.height}px` },
+        pwcLinks(chart),
+        el('span', { class: 'pwc-rail-label', style: `left:28px;top:${Math.max(0, chart.gate.nodes[0].y - 26)}px`, text: chart.gate.label }),
+        ...chart.gate.nodes.map((e) => hit('plc-gate', e, null)),
+        el('div', {
+          class: 'plc-fork',
+          style: `left:${chart.fork.x}px;top:${chart.fork.y}px;width:${chart.fork.w}px;height:${chart.fork.h}px`,
+        },
+          el('span', { class: 'pwc-diamond', 'aria-hidden': 'true', text: '\u25c6' }),
+          el('span', { class: 'pwc-label', text: chart.fork.label })),
+        ...chart.rails.flatMap((r) => [
+          el('div', { class: 'plc-rail', style: `left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px` },
+            el('div', { class: 'plc-rhead' },
+              el('span', { class: 'plc-rtitle', text: r.label }),
+              r.note ? el('span', { class: 'plc-rnote', text: r.note }) : null)),
+          ...r.nodes.map((e) => hit('plc-entity', e, (n) => el('span', {},
+            el('span', { class: 'plc-key', text: n.key_line }),
+            el('span', { class: 'plc-grade', text: n.grade })))),
+        ]))),
+    el('div', { class: 'plc-disc' },
+      el('h4', { text: 'What decides it' }),
+      el('dl', {}, ...plate.discriminators.flatMap(([k, why]) => [
+        el('dt', { text: k }),
+        el('dd', { text: why }),
+      ]))),
+    platePanel(selected ? selected.node : null, chosen),
+    el('div', { class: 'plc-figs' },
+      el('h4', { text: 'The published figures' }),
+      el('p', { class: 'plc-fignote', text: 'Drawn here from the criteria rather than copied, so it stays in step with the checks on the form. These open the real figures on the publisher\u2019s page.' }),
+      el('ul', {}, ...plate.figures.map((f) => el('li', {},
+        el('a', { href: f.url, target: '_blank', rel: 'noopener', text: f.label }),
+        el('span', { class: 'plc-cite', text: f.cite }))))),
+    el('p', { class: 'pw-foot' },
+      el('span', { text: 'Read-only. This overlay sets no field and prints nothing. Sources: ' }),
+      ...plate.sources.flatMap((s, k) => [
+        k ? el('span', { text: ' \u00b7 ' }) : null,
+        el('a', { class: 'pw-src', href: s.url, target: '_blank', rel: 'noopener', text: s.label }),
+      ])));
+}
+
+function platePanel(n, chosen) {
+  if (!n) return el('div', { class: 'pwc-panel is-empty' }, el('p', { text: 'Click any box to read its criteria.' }));
+  const here = chosen && n.label === chosen;
+  return el('div', { class: `pwc-panel${here ? ' is-here' : ''}`, 'aria-live': 'polite' },
+    el('div', { class: 'pwc-phead' },
+      el('strong', { text: n.label }),
+      n.grade ? el('span', { class: 'plc-pgrade', text: n.grade }) : null,
+      here ? el('span', { class: 'plc-phere', text: 'selected on the form' }) : null),
+    el('p', { class: 'pw-detail', text: n.detail }),
+    n.note ? el('p', { class: 'pw-note', text: n.note }) : null,
+    n.source ? el('a', { class: 'pw-src', href: n.source.url, target: '_blank', rel: 'noopener', text: n.source.label }) : null);
+}
+
+function openPlate(i) {
+  const part = state.caseState.parts[i];
+  const plate = plateFor(part.values.dxFamily);
+  if (!plate) return;
+  const chosen = plateSelection(part.values);
+  plates.selKey = null;
+  nodes.dlgPlate.querySelector('#plate-title').textContent = plate.title;
+  nodes.dlgPlate.querySelector('.plc-body').replaceChildren(plateChartView(plate, chosen));
+  nodes.dlgPlate.showModal();
+}
+
 function openPathwayChart(i) {
   const part = state.caseState.parts[i];
   const p = pathway(part.values);
@@ -1222,6 +1334,12 @@ function renderPanel() {
           ? 'Close the guided intake. Everything it recorded stays on the form.'
           : 'Walk the diagnostic funnel one question at a time. It writes the ordinary fields, and the form below stays exactly where it is.',
         onclick: () => { toggleWizard(i); render(); }
+      }) : null,
+      plateSupported(part.values) ? el('button', {
+        type: 'button', class: 'btn ghost small',
+        text: 'Family plate',
+        title: 'Open the diagnostic algorithm for this WHO family: the entry criteria, where it forks, the entities under each branch and the stains that separate them. It reads the form and changes nothing.',
+        onclick: () => openPlate(i),
       }) : null,
       pathwaySupported(s) ? el('button', {
         type: 'button', class: `btn small${pathwayOpen(i) ? '' : ' ghost'}`,
