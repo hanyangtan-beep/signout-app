@@ -43,11 +43,115 @@ test('parser: lettered markers only, LIS triples, prefix, history and one-per-li
 test('parser: warnings for gaps, empty pastes and the 26-part cap', () => {
   assert.deepEqual(parseIntake('').parts, []);
   assert.deepEqual(parseIntake('').warnings, []);
-  assert.match(parseIntake('Just some history').warnings[0], /No lettered parts/);
+  // Deliberate change 2026-09-21: unlettered text is a specimen list, not a warning. The LIS letters
+  // a list and not a specimen, so a one-part case carries no "(A)" and used to yield no parts at all.
+  assert.deepEqual(parseIntake('Just some history').warnings, []);
+  assert.equal(parseIntake('Just some history').parts.length, 1);
+  assert.equal(parseIntake(', ;').parts.length, 0);
+  assert.match(parseIntake(', ;').warnings[0], /No specimen text/);
   const gap = parseIntake('(A) Skin, excision, (C) Skin, excision');
   assert.match(gap.warnings[0], /labelled \(C\); expected \(B\)/);
   const many = parseIntake(Array.from({ length: 27 }, (_, i) => `(${String.fromCharCode(65 + (i % 26))}) Part`).join(', '));
   assert.ok(many.warnings.some((w) => w.includes(`at most ${MAX_PARTS}`)));
+  // An unlettered list past 26 parts numbers the overflow rather than labelling it `undefined`.
+  const over = parseIntake(Array.from({ length: 28 }, (_, i) => `Part ${i + 1}`).join(','));
+  assert.equal(over.parts.length, 28);
+  assert.equal(over.parts[26].label, '27');
+  assert.ok(over.warnings.some((w) => w.includes(`at most ${MAX_PARTS}`)));
+  assert.ok(!over.warnings.some((w) => /expected \(undefined\)/.test(w)));
+});
+
+test('parser: a single specimen carries no letter, and the export joins parts on a spaceless comma', () => {
+  // The house LIS letters a list, not a specimen: 0 of 4545 rows in the 2024-2026 case export carry
+  // "(A)" at all, so the unlettered paste is the normal single-part case rather than an error.
+  const one = parseIntake('Antrum, biopsy');
+  assert.equal(one.parts.length, 1);
+  assert.equal(one.parts[0].label, 'A');
+  assert.equal(one.parts[0].text, 'Antrum, biopsy');
+  assert.equal(one.parts[0].site, 'Antrum');
+  assert.equal(one.parts[0].procedure, 'biopsy');
+  // A comma with no space after it separates parts; the same comma with a space is "Site, detail".
+  assert.deepEqual(parseIntake('Antrum,Angular,Body').parts.map((p) => p.text), ['Antrum', 'Angular', 'Body']);
+  assert.deepEqual(parseIntake('Antrum,Angular,Body').parts.map((p) => p.label), ['A', 'B', 'C']);
+  assert.deepEqual(parseIntake('Breast, Right mastectomy').parts.map((p) => p.text), ['Breast, Right mastectomy']);
+  assert.deepEqual(parseIntake('Others, segment 3 lesion,Others, segment 6 lesion,Gallbladder').parts.map((p) => p.text),
+    ['segment 3 lesion', 'segment 6 lesion', 'Gallbladder']);
+  // A procedure word alone after a spaceless comma is the same part typed without the space.
+  assert.deepEqual(parseIntake('Antrum,biopsy').parts.map((p) => p.text), ['Antrum, biopsy']);
+  // History above a blank line still separates, with no heading and no letters anywhere.
+  const withHistory = parseIntake('Dyspepsia, H pylori eradicated\n\nAntrum');
+  assert.equal(withHistory.history, 'Dyspepsia, H pylori eradicated');
+  assert.deepEqual(withHistory.parts.map((p) => p.text), ['Antrum']);
+  // One per line is a list too.
+  assert.deepEqual(parseIntake('Specimen\nAntrum\nBody').parts.map((p) => p.text), ['Antrum', 'Body']);
+  // A lettered list is untouched by any of this.
+  assert.deepEqual(parseIntake('(A) Antrum and (B) Body').parts.map((p) => p.label), ['A', 'B']);
+});
+
+test('parser: the LIS null category and a repeated phrase are dropped from the part text', () => {
+  // "Others" is the export's null category, not a site (959 of 6384 part-pieces); a part whose
+  // category and description hold the same phrase (730 pieces) would otherwise print it twice.
+  assert.equal(parseIntake('Others, vault biopsy').parts[0].text, 'vault biopsy');
+  assert.equal(parseIntake('Placenta, Placenta').parts[0].text, 'Placenta');
+  assert.equal(parseIntake('right knee tumor, right knee tumor').parts[0].text, 'right knee tumor');
+  assert.equal(parseIntake('(A) Others, Left frontal tumour').parts[0].text, 'Left frontal tumour');
+  // Not a repeat and not a null category: left exactly as the LIS wrote it.
+  assert.equal(parseIntake('Soft tissue, right calf mass').parts[0].text, 'Soft tissue, right calf mass');
+  assert.equal(parseIntake('Others').parts[0].text, 'Others');
+});
+
+test('matcher: a bare site word resolves where the corpus says it may, and stays a choice where it does not', () => {
+  const one = (text, history = '') => matchParts(parseIntake(text), history, manifest)[0];
+  // `match.bare` templates: the site word alone is evidence, because the rival specimen is always
+  // named. Percentages are single-part rows of the 2024-2026 export naming no procedure, by test code.
+  for (const text of ['antrum', 'Antrum', 'Gastric antrum', 'Body', 'Incisura', 'Angular', 'Stomach']) {
+    const m = one(text);
+    assert.equal(m.templateId, 'gastric_biopsy', `${text}: ${m.templateId}`);   // 157/179 biopsy
+    assert.equal(m.tier, 'confident', `${text}: ${m.tier}`);
+  }
+  assert.equal(one('Endometrium, EA').templateId, 'endometrial_biopsy');        // 107/128 biopsy
+  assert.equal(one('Thyroid, Right thyroid nodule').templateId, 'thyroid_fna'); // 125/137 cytology
+  // Not flagged, and deliberately so: a bare colon segment is as likely a resection as a polyp
+  // (125/162), a bare prostate as likely chips as cores (9/29), a bare cervix most often a smear.
+  for (const text of ['Sigmoid', 'Ascending colon', 'Prostate', 'Cervix']) {
+    assert.notEqual(one(text).tier, 'confident', `${text} should stay a choice`);
+  }
+  // The bonus is silence-only: name the resection and it goes away.
+  assert.equal(one('Stomach, subtotal gastrectomy', 'Gastric Ca').templateId, 'gastric_carcinoma');
+  assert.equal(one('Uterus and cervix, resection', 'Fibroids').templateId, 'uterus_benign');
+  assert.equal(one('Thyroid, right hemithyroidectomy').templateId, 'thyroid_benign');
+});
+
+test('matcher: an organ with one routine operation beats its carcinoma twin until the history says otherwise', () => {
+  const one = (text, history = '') => matchParts(parseIntake(text), history, manifest)[0];
+  // A benign resection and its carcinoma twin both scored zero on a bare organ word, so the pair
+  // tied and the part fell to the generic form. Every gallbladder (46 pieces) and appendix (18) in
+  // the export is a surgical specimen, so the routine operation is the reading with nothing else said.
+  for (const [text, id] of [['Gallbladder', 'gallbladder'], ['gallbladder, gallbladder', 'gallbladder'],
+    ['Others, gallbladder', 'gallbladder'], ['Appendix', 'appendix'], ['appendix, appendix', 'appendix']]) {
+    const m = one(text);
+    assert.equal(m.templateId, id, `${text}: ${m.templateId}`);
+    assert.equal(m.tier, 'confident', `${text}: ${m.tier}`);
+  }
+  // Clinical history still decides: the tie-break is only for silence, never against evidence.
+  assert.equal(one('Appendix', 'Appendiceal adenocarcinoma').templateId, 'appendix_carcinoma');
+  assert.equal(one('Endometrium', 'CA corpus').templateId, 'endometrial_carcinoma');
+  assert.notEqual(one('Gallbladder', 'CA gallbladder').tier, 'confident');
+});
+
+test('matcher: export vocabulary that matched no site list', () => {
+  const one = (text, history = '') => matchParts(parseIntake(text), history, manifest)[0];
+  assert.equal(one('Caecal Polyp').templateId, 'colonic_polyp');                    // 36 pieces, 33 biopsies
+  assert.equal(one('Cecal polyp').templateId, 'colonic_polyp');
+  assert.equal(one('Prostate, 4 right anterior sector').templateId, 'prostate_biopsy');  // 91 pieces, all coded B3
+  assert.equal(one('Prostate, 6 right posterior sector').tier, 'confident');
+  assert.equal(one('Left hemithyroid').templateId, 'thyroid_benign');
+  // "Angular" is the house word for the incisura and reaches the subsite pick-list, not just the template.
+  const angular = one('Angular');
+  assert.equal(angular.templateId, 'gastric_biopsy');
+  assert.equal(matchOption(['Unspecified', 'Antrum, greater curvature', 'Incisura angularis', 'Fundus'], 'Angular'), 'Incisura angularis');
+  // "Antrum" alone still refuses to choose between the two antral options.
+  assert.equal(matchOption(['Antrum, greater curvature', 'Antrum, lesser curvature'], 'Antrum'), '');
 });
 
 test('matcher: every fixture part gets the expected template; >=90% top-1 and no confident miss', () => {

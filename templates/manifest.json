@@ -35,6 +35,8 @@
           "body",
           "fundus",
           "incisura",
+          "angular",
+          "angularis",
           "cardia",
           "OGD"
         ],
@@ -53,6 +55,7 @@
           "OLGA",
           "ulcer"
         ],
+        "bare": true,
         "fill": [
           {
             "field": "specimenName",
@@ -113,7 +116,9 @@
           "splenic flexure",
           "flexure",
           "rectosigmoid",
-          "ileocaecal"
+          "ileocaecal",
+          "caecal",
+          "cecal"
         ],
         "procedure": [
           "polypectomy",
@@ -372,7 +377,8 @@
           "TRUS",
           "transperineal",
           "targeted",
-          "systematic"
+          "systematic",
+          "sector"
         ],
         "clinical": [
           "PSA",
@@ -540,7 +546,8 @@
           "AUB",
           "thickened endometrium",
           "hyperplasia"
-        ]
+        ],
+        "bare": true
       },
       "version": "2026.09",
       "generator": "endometrial",
@@ -936,7 +943,8 @@
           "cholelithiasis",
           "gallstone",
           "biliary colic"
-        ]
+        ],
+        "bare": true
       },
       "version": "2026.09",
       "generator": "gallbladder",
@@ -970,6 +978,7 @@
         "site": [
           "thyroid",
           "thyroid lobe",
+          "hemithyroid",
           "isthmus",
           "hemithyroidectomy",
           "thyroidectomy"
@@ -1086,7 +1095,8 @@
         ],
         "clinical": [
           "appendicitis"
-        ]
+        ],
+        "bare": true
       },
       "version": "2026.09",
       "generator": "appendix",
@@ -3208,6 +3218,7 @@
           "TIRADS",
           "nodule"
         ],
+        "bare": true,
         "fill": [
           {
             "field": "specimenName",

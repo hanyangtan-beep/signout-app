@@ -45,7 +45,8 @@
    "cholelithiasis",
    "gallstone",
    "biliary colic"
-  ]
+  ],
+  "bare": true
  },
  "macroExtract": {
   "dimensions": {

@@ -43,7 +43,9 @@
    "splenic flexure",
    "flexure",
    "rectosigmoid",
-   "ileocaecal"
+   "ileocaecal",
+   "caecal",
+   "cecal"
   ],
   "procedure": [
    "polypectomy",

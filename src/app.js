@@ -1650,8 +1650,10 @@ async function doCopy(text, label) {
 
 
 // ---------- specimen intake (LIS paste -> parts) ----------
-// The Specimen box is parsed on every keystroke; the strip below it shows one row per lettered
-// part with the suggested template (dropdown: candidates first, then every template). "Build parts"
+// The Specimen box is parsed on every keystroke; the strip below it shows one row per part with
+// the suggested template (dropdown: candidates first, then every template). Parts come from "(A)"
+// markers when the paste has them and otherwise from the lines and spaceless commas the LIS writes,
+// so a single specimen ("Antrum") is a part without needing a letter. "Build parts"
 // replaces the case's parts, pre-fills what the LIS line tells us and derives the case title.
 const intake = { key: '', raw: '', rows: [], picks: {}, userPicks: new Set(), built: false };   // picks: label -> template id in the strip; userPicks: labels the user changed; built: collapsed after Build
 

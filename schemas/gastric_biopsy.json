@@ -32,6 +32,8 @@
    "body",
    "fundus",
    "incisura",
+   "angular",
+   "angularis",
    "cardia",
    "OGD"
   ],
@@ -50,6 +52,7 @@
    "OLGA",
    "ulcer"
   ],
+  "bare": true,
   "fill": [
    {
     "field": "specimenName",

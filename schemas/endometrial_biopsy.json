@@ -39,7 +39,8 @@
    "AUB",
    "thickened endometrium",
    "hyperplasia"
-  ]
+  ],
+  "bare": true
  },
  "specimenNoun": "curettings",
  "maxParts": 4,

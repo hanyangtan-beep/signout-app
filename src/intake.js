@@ -16,6 +16,12 @@ export const GENERIC_ID = 'generic';
 
 const PROCEDURE_WORDS = /^(resection|excision|biopsy|biopsies|polypectomy|curettings?|curettage|shave|punch|core|cores|fna|aspirate|smear|washing|fluid|dissection|enucleation|amputation|replacement|explant|re-excision|reexcision|revision|closure|reversal)$/i;
 const MARKER = /\(([A-Z])\)/g;
+// The LIS letters a list, not a specimen: a case with one part carries no "(A)" at all, and the case
+// export letters nothing whatever the part count (0 of 4545 rows in the 2024-2026 export). An
+// unlettered list is split on newlines and on a comma with no space after it — that is how the export
+// joins parts ("Antrum,Angular,Body"), while the "Site, detail" pair inside one part keeps the space
+// ("Breast, Right mastectomy"). 899 of those 4545 rows split on that comma; the rest are one part.
+const UNLETTERED_SPLIT = /\n|,(?=\S)/;
 const SPECIMEN_HEADING = /^\s*specimens?\s*:?\s*$/i;
 const HISTORY_HEADING = /^\s*(clinical\s+)?history\s*:?\s*$/i;
 
@@ -43,6 +49,21 @@ export function tidyText(text) {
 }
 
 /**
+ * Tidy one part as the LIS writes it, before it is split or scored.
+ *  - "Others, vault biopsy" - `Others` is the LIS null category, not a site (959 of 6384 part-pieces
+ *    in the 2024-2026 export). Dropped so the site word leads.
+ *  - "Placenta, Placenta" - the category and the description hold the same phrase (730 pieces).
+ *    Collapsed to one, otherwise it is printed twice in the specimen name.
+ * Only a leading `Others` and only an all-identical repeat, so "Breast, Right mastectomy" is untouched.
+ */
+export function tidyPart(text) {
+  let bits = clean(text).split(/\s*,\s*/).filter(Boolean);
+  if (bits.length > 1 && /^others?$/i.test(bits[0])) bits = bits.slice(1);
+  if (bits.length > 1 && new Set(bits.map((b) => b.toLowerCase())).size === 1) bits = [bits[0]];
+  return bits.join(', ');
+}
+
+/**
  * Parse the pasted LIS text. The specimen list is whatever follows the last "specimen" heading;
  * without a heading it is the block (after the last blank line) that contains the first "(A)".
  */
@@ -59,31 +80,55 @@ export function parseIntake(raw) {
       while (start > 0 && lines[start - 1].trim() !== '' && !HISTORY_HEADING.test(lines[start - 1])) start--;
     }
   }
-  if (start < 0) {
-    return { history: historyOf(lines), casePrefix: '', parts: [], warnings: text.trim() ? ['No lettered parts "(A)", "(B)"… found.'] : [] };
-  }
+  // No heading and no "(A)": an unlettered list, which is what a single-part case always looks like.
+  // The list is then the last block of the paste and whatever sits above it is the history.
+  if (start < 0) start = lastBlockStart(lines);
   const history = historyOf(lines.slice(0, start));
   const list = lines.slice(start).join('\n').trim();
   const first = list.search(MARKER);
-  let casePrefix = '';
-  if (first > 0) casePrefix = stripEnds(list.slice(0, first));
   const parts = [];
   MARKER.lastIndex = 0;
   const markers = [];
   let m;
   while ((m = MARKER.exec(list)) !== null) markers.push({ letter: m[1], index: m.index, end: m.index + m[0].length });
-  markers.forEach((mk, i) => {
-    const seg = list.slice(mk.end, i + 1 < markers.length ? markers[i + 1].index : undefined);
-    const body = stripEnds(seg);
-    const triple = splitTriple(body);
-    parts.push({ label: mk.letter, text: tidyText(body), raw: body, ...triple });
-  });
+  const lettered = markers.length > 0;
+  let casePrefix = '';
+  if (lettered && first > 0) casePrefix = stripEnds(list.slice(0, first));
+  const add = (label, seg) => {
+    const body = tidyPart(stripEnds(seg));
+    parts.push({ label, text: tidyText(body), raw: body, ...splitTriple(body) });
+  };
+  if (lettered) markers.forEach((mk, i) => add(mk.letter, list.slice(mk.end, i + 1 < markers.length ? markers[i + 1].index : undefined)));
+  else unletteredParts(list).forEach((body, i) => add(LETTERS[i] || String(i + 1), body));
+  // Only a lettered list can carry a letter gap; the unlettered path assigns the letters itself.
   parts.forEach((p, i) => {
-    if (p.label !== LETTERS[i]) warnings.push(`Part ${i + 1} is labelled (${p.label}); expected (${LETTERS[i]}).`);
+    if (lettered && p.label !== LETTERS[i]) warnings.push(`Part ${i + 1} is labelled (${p.label}); expected (${LETTERS[i]}).`);
     if (!p.text) warnings.push(`Part (${p.label}) has no text.`);
   });
+  if (!parts.length && text.trim()) warnings.push('No specimen text found.');
   if (parts.length > MAX_PARTS) warnings.push(`${parts.length} parts found; the app holds at most ${MAX_PARTS}.`);
   return { history, casePrefix, parts, warnings: [...new Set(warnings)] };
+}
+
+/** The last block of the paste: everything after the final blank line (or the whole of a one-block paste). */
+function lastBlockStart(lines) {
+  let i = lines.length - 1;
+  while (i >= 0 && lines[i].trim() === '') i--;
+  while (i >= 0 && lines[i].trim() !== '' && !HISTORY_HEADING.test(lines[i])) i--;
+  return i + 1;
+}
+
+/** Parts of an unlettered list: one per line, and one per comma that has no space after it. */
+function unletteredParts(list) {
+  const out = [];
+  for (const piece of String(list).split(UNLETTERED_SPLIT)) {
+    const body = stripEnds(piece);
+    if (!body) continue;
+    // "Antrum,biopsy" is one part typed without the space, not a part called "biopsy".
+    if (out.length && PROCEDURE_WORDS.test(body)) out[out.length - 1] += `, ${body}`;
+    else out.push(body);
+  }
+  return out;
 }
 
 function historyOf(lines) {
@@ -135,6 +180,14 @@ export function scorePart(part, ctx, manifest) {
     let score = 2 * hits(mt.procedure, text) + 2 * Math.min(1, hits(mt.clinical, history)) - 4 * hits(mt.not, text) + (mt.bias || 0);
     if (resected && !biopsied && BIOPSY_KINDS.includes(t.kind)) score -= 3;
     if (biopsied && !resected && RESECTION_KINDS.includes(t.kind)) score -= 3;
+    // `match.bare`: for these templates a site word with no procedure named is evidence in itself,
+    // weighted like one procedure hit. It is declared per template rather than inferred from the
+    // kind, because the inference only holds where the rival specimen is always named: nobody writes
+    // "antrum" for a gastrectomy, so a bare gastric subsite is a biopsy - but a bare "sigmoid" is as
+    // likely to be a segment of a resection as a polyp, and a bare "prostate" as likely chips as
+    // cores. A bonus and not a penalty on the resection, so an organ whose only template is a
+    // resection keeps a non-negative score and stays out of the generic bucket.
+    if (!resected && !biopsied && mt.bare) score += 2;
     if (cancer && !biopsied && CANCER_KINDS.includes(t.kind)) score += 1;
     out.push({ id: t.id, score, name: t.name, rank: t.rank ?? 999 });
   }
@@ -236,7 +289,9 @@ const SITE_SPELLINGS = [
   [/\bgreater curv(ature)?\b/g, 'gc'], [/\blesser curv(ature)?\b/g, 'lc'],
   [/\brecto-?sigmoid( junction)?\b/g, 'rectosigmoid'], [/\bsigmoid colon\b/g, 'sigmoid'],
   [/\brandom colon(ic)?\b/g, 'random'], [/\bt\.?i\.?\b/g, 'terminal ileum'],
-  [/\bincisura( angularis)?\b/g, 'incisura'], [/\bmandibular\b/g, 'mandible'], [/\bmaxillary\b/g, 'maxilla'], [/\bantral\b/g, 'antrum'],
+  // "Angular" is the house word for the incisura angularis and is written alone on the gastric
+  // mapping request (20 cases in the 2024-2026 export against 57 spelling it "incisura").
+  [/\bincisura( angularis)?\b/g, 'incisura'], [/\bangular(is)?\b/g, 'incisura'], [/\bmandibular\b/g, 'mandible'], [/\bmaxillary\b/g, 'maxilla'], [/\bantral\b/g, 'antrum'],
   [/\ba\.?p\.?r\.?\b/g, 'abdominoperineal resection'], [/\blar\b/g, 'low anterior resection'],
   // Uterus: LIS shorthand → the benign-uterus specimen options
   [/\b(?:tlh|tah|lavh|th)\s*-?\s*bso\b/g, 'uterus cervix and bilateral adnexa'], [/\b(?:appendages|adnexae|bilateral tubes and ovaries|bilateral ovaries and tubes|bso)\b/g, 'bilateral adnexa'],

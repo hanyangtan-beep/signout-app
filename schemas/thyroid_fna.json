@@ -32,6 +32,7 @@
    "TIRADS",
    "nodule"
   ],
+  "bare": true,
   "fill": [
    {
     "field": "specimenName",
