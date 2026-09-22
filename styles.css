@@ -351,7 +351,10 @@ textarea.input { min-height: 64px; resize: vertical; }
 .case-options input { width: 16px; height: 16px; accent-color: var(--color-primary); }
 
 /* Report */
-.report-actions { margin-left: auto; display: flex; gap: var(--space-2); }
+/* Three copy buttons now. Wrap the row rather than let a button wrap its own label into two lines,
+   which is what happens by default in the report column's width. */
+.report-actions { margin-left: auto; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-2); }
+.report-actions .btn { white-space: nowrap; }
 .report-blocks { display: grid; gap: var(--space-3); }
 .block {
   background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg);
@@ -564,6 +567,16 @@ textarea.input { min-height: 64px; resize: vertical; }
 .lis-row .check { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--color-text); cursor: pointer; font-size: var(--text-sm); }
 .lis-row .check input { margin: 0; accent-color: var(--color-primary); }
 .lis-row .lis-status { flex-basis: 100%; font-size: var(--text-xs); }
+.lis-row .lis-status.warn { color: #8a6208; }
+/* The specimen box is the widest input in the app and its row carries a line of help. In the field
+   grid the label column squeezed the box to two thirds and wrapped its hint to ten lines, so the
+   help moved down beside Capture from LIS and the label keeps only its one word. */
+.specimen-field .lis-row { grid-column: 2; gap: var(--space-2) var(--space-2); font-size: var(--text-xs); }
+.specimen-field .lis-row .muted { flex-basis: 100%; color: var(--color-text-faint); }
+/* One line of grey text under the button, never two: the status replaces the hint once it has
+   something to say, and both disappear when empty. */
+.specimen-field .lis-row .lis-status:empty { display: none; }
+.specimen-field .lis-row .lis-hint[hidden] { display: none; }
 .lis-row .btn.small { padding: 2px 8px; }
 .block-head h3 .tag { display: inline-block; margin-left: var(--space-2); padding: 1px 6px; border-radius: 999px; background: var(--color-primary-highlight); color: var(--color-primary); font-size: 10px; letter-spacing: 0.04em; text-transform: none; font-weight: 600; vertical-align: middle; }
 
@@ -1068,6 +1081,9 @@ html[data-gate] body > *:not(#gate):not(#toast):not(#dlg-settings) { display: no
   .actionbar .btn { min-height: 44px; justify-content: center; }
   /* The bar owns these two now; the pair in the report head would be the same action twice. */
   .report-head #btn-copy-dx, .report-head #btn-copy-report { display: none; }
+  /* The bridge needs a Windows desktop running Citrix and the script. Neither exists on a phone, so
+     both ends of it stay off the compact layout rather than sit there unusable. */
+  #btn-copy-lis, .specimen-field .lis-row { display: none; }
   .workspace { padding: var(--space-3) var(--space-3) 84px; }
   .statusbar { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
 
@@ -1084,6 +1100,10 @@ html[data-gate] body > *:not(#gate):not(#toast):not(#dlg-settings) { display: no
   input, select, textarea, .input.mono, .part-head .part-template { font-size: 16px; }
   .input, textarea.input, select.input { font-size: 16px; min-height: 44px; }
   textarea.input { min-height: 104px; }
+  /* The intake strip sets its picker to 28px so a row stays one line on a desktop. On a phone that
+     is a thumb target, and the strip is now reached by Capture from LIS as well as by pasting. */
+  .intake-preview td.pick select { min-height: 44px; font-size: 16px; }
+  .intake-preview td.pick { width: 11em; }
   /* width:auto sizes this select to its longest template name — 670px, well past a phone. */
   .part-head .part-template { max-width: 100%; }
   .part-head { flex-wrap: wrap; }

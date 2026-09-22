@@ -117,8 +117,13 @@
         </div>
       </div>
       <div class="field specimen-field">
-        <label for="meta-specimen">Specimen <span class="muted">— paste the LIS specimen list; parts and templates are suggested below</span></label>
+        <label for="meta-specimen">Specimen</label>
         <textarea class="input mono" id="meta-specimen" rows="3" placeholder="History&#10;Fibroids&#10;&#10;Specimen&#10;(A) Right fallopian tube, resection, (B) Left fallopian tube, resection and (C) Uterus, resection" spellcheck="false"></textarea>
+        <div class="lis-row">
+          <button class="btn ghost small" id="btn-lis-capture" type="button" title="Read the clipboard into the case. A payload from the bridge script fills every box at once; a plain copy fills the next empty box.">Capture from LIS</button>
+          <span class="muted lis-hint" id="lis-hint">or paste the specimen list; parts and templates are suggested below</span>
+          <span class="muted lis-status" id="lis-status-capture"></span>
+        </div>
       </div>
       <div id="intake-preview" class="intake-preview" hidden></div>
       <details class="meta-details" id="meta-details">
@@ -163,6 +168,7 @@
           <button class="btn ghost" id="btn-revert-edits" type="button" hidden title="Discard manual edits and return to the generated text">Revert edits</button>
           <button class="btn primary" id="btn-copy-dx" type="button" title="Cmd/Ctrl + Shift + C">Copy diagnosis</button>
           <button class="btn" id="btn-copy-report" type="button" title="Cmd/Ctrl + Enter">Copy full report</button>
+          <button class="btn" id="btn-copy-lis" type="button" title="Copy every block as one marked payload for the bridge script to paste into the LIS">Copy for LIS</button>
         </div>
       </div>
       <div id="report-blocks" class="report-blocks"></div>

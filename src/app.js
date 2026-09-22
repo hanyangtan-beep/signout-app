@@ -11,6 +11,7 @@ import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedir
 import { gateEnabled, gateState, parseAllowList, formatAllowList } from './gate.js';
 import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js';
 import { normaliseAccession, phiWarnings } from './docformat.js';
+import { buildPayload, payloadKeys, payloadLabel, parseHarvest, nextCaptureTarget } from './lisbridge.js';
 import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js';
 import { applyMacroToCase } from './macroparse.js';
 import { spanFull, groupProgress as progressOf } from './formlayout.js';
@@ -95,6 +96,10 @@ const nodes = {
   settingsForm: $('#settings-form'),
   signout: $('#btn-signout'),
   meta: Object.fromEntries(META_FIELDS.map((k) => [k, $(`#meta-${k}`)])),
+  copyLis: $('#btn-copy-lis'),
+  lisCapture: $('#btn-lis-capture'),
+  lisCaptureStatus: $('#lis-status-capture'),
+  lisHint: $('#lis-hint'),
   lis: {
     macro: { toggle: $('#meta-useLisMacro'), generated: $('#btn-macro-generated'), clear: $('#btn-macro-clear'), status: $('#lis-status-macro') },
     blockKey: { toggle: $('#meta-useLisBlockKey'), generated: $('#btn-blockKey-generated'), clear: $('#btn-blockKey-clear'), status: $('#lis-status-blockKey') }
@@ -1648,6 +1653,84 @@ async function doCopy(text, label) {
   toast(ok ? `${label} copied` : 'Copy failed');
 }
 
+// ---------- LIS clipboard bridge (src/lisbridge.js, docs/specs/lis-bridge.md) ----------
+// The LIS runs over Citrix, so nothing can read or write its fields directly and the clipboard is
+// the whole interface. Out: every block as one marked payload the AHK script walks into the fields.
+// In: the clipboard read into the case, either as a marked payload from the script or, for a plain
+// copy done by hand, into the next empty box.
+
+/** Copy the report as the marked payload the LIS script splits. */
+async function copyForLis() {
+  const out = state.lastOut;
+  const keys = payloadKeys(out || {});
+  if (!keys.length) return toast('Nothing in the report to copy yet');
+  const ok = await copyText(buildPayload(out, keys));
+  if (!ok) return toast('Copy failed');
+  toast(`${keys.length} block${keys.length === 1 ? '' : 's'} on the clipboard: ${keys.map(payloadLabel).join(', ')}`);
+}
+
+/** Apply harvested text to the case meta and refresh whatever depends on it. */
+function applyCapture(fields) {
+  const cs = state.caseState;
+  markDirty();
+  for (const [key, text] of Object.entries(fields)) {
+    cs.meta[key] = text;
+    if (nodes.meta[key]) nodes.meta[key].value = text;
+  }
+  // A captured macro refills the macro fields the same way a typed one does; a captured specimen
+  // re-runs the intake strip. Everything else only changes the report.
+  if (fields.macro !== undefined) { applyMacro(); render(); } else { renderIntake(); renderReport(); }
+  cacheCase(cs);
+}
+
+/** Read the clipboard into the case. Reports what landed, and what the paste looked like. */
+async function captureFromLis() {
+  let text = '';
+  try {
+    text = await navigator.clipboard.readText();
+  } catch {
+    // Reading needs permission the browser only grants on a gesture in a secure context; a denial is
+    // not recoverable from here, so say what to do instead of failing mutely.
+    return setCaptureStatus('The browser would not let the app read the clipboard. Paste into the boxes directly (Ctrl+V).', true);
+  }
+  if (!text.trim()) return setCaptureStatus('The clipboard is empty.', true);
+
+  const { fields, found, unknown, marked } = parseHarvest(text);
+
+  if (!marked) {
+    // A plain copy out of one LIS field: no markers to route on, so it fills the next empty box.
+    const target = nextCaptureTarget(state.caseState.meta);
+    if (!target) return setCaptureStatus('Every box already has text. Clear one first, or paste into it directly.', true);
+    applyCapture({ [target]: fields.specimen || text.trim() });
+    return setCaptureStatus(`Captured into ${captureLabel(target)}. Copy the next field in the LIS and click again.`);
+  }
+
+  if (!found.length) return setCaptureStatus(`Nothing recognised in that payload${unknown.length ? ` (markers: ${unknown.join(', ')})` : ''}.`, true);
+  applyCapture(fields);
+  const note = unknown.length ? ` Ignored: ${unknown.join(', ')}.` : '';
+  setCaptureStatus(`Captured ${found.map(captureLabel).join(', ')}.${note}`, !!unknown.length);
+  warnOnCapture(fields);
+}
+
+const CAPTURE_LABELS = { specimen: 'Specimen', clinical: 'Clinical history', macro: 'Macroscopic', blockKey: 'Block key' };
+function captureLabel(key) { return CAPTURE_LABELS[key] || key; }
+
+function setCaptureStatus(msg, warn = false) {
+  const node = nodes.lisCaptureStatus;
+  if (!node) return;
+  node.textContent = msg;
+  node.classList.toggle('warn', !!warn);
+  // The hint tells you the button exists; once it has been used the status is the more useful line,
+  // and two lines of grey text under one button is one too many.
+  if (nodes.lisHint) nodes.lisHint.hidden = !!msg;
+}
+
+/** Identifiers checked at capture, not only at save: this text came straight out of the LIS. */
+function warnOnCapture(fields) {
+  const warnings = phiWarnings(Object.fromEntries(Object.entries(fields).map(([k, v]) => [captureLabel(k), v])));
+  if (warnings.length) toast(`Possible patient identifiers captured — ${warnings.join('; ')}`);
+}
+
 
 // ---------- specimen intake (LIS paste -> parts) ----------
 // The Specimen box is parsed on every keystroke; the strip below it shows one row per part with
@@ -2079,6 +2162,8 @@ async function boot() {
   });
   nodes.copyDx.addEventListener('click', () => doCopy(state.lastOut.diagnosis, 'Diagnosis'));
   nodes.copyReport.addEventListener('click', () => doCopy(state.lastOut.report, 'Full report'));
+  nodes.copyLis?.addEventListener('click', copyForLis);
+  nodes.lisCapture?.addEventListener('click', captureFromLis);
   nodes.revertAll.addEventListener('click', revertAllEdits);
   initKeys();
 }

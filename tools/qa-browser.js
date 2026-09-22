@@ -238,6 +238,79 @@ await check('copy buttons are wired and yield report text', async () => {
   return `${text.trim().length} plain-text chars`;
 });
 
+// The LIS runs over Citrix and has no controls to read or write, so the clipboard is the entire
+// interface (docs/specs/lis-bridge.md). Both halves of that bridge are clipboard round trips, which
+// is the kind of wiring unit tests cannot reach: the format is covered in tests/lisbridge.test.js,
+// and what follows is that the buttons actually reach it in a real browser.
+await check('Copy for LIS emits the marked payload the script splits', async () => {
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.click('#btn-copy-lis');
+  await page.waitForTimeout(300);
+  const text = String(await page.evaluate(() => navigator.clipboard.readText()));
+  const marks = [...text.matchAll(/^<<<([A-Z]+)>>>$/gm)].map((m) => m[1]);
+  assert(marks.length >= 3, `payload carried ${marks.length} markers: ${marks.join(', ')}`);
+  assert(marks.includes('DIAGNOSIS'), 'no DIAGNOSIS marker in the payload');
+  assert(new Set(marks).size === marks.length, `a marker repeated: ${marks.join(', ')}`);
+  const dx = text.split('<<<DIAGNOSIS>>>')[1] || '';
+  assert(dx.trim().length > 10, 'the DIAGNOSIS marker carried no text under it');
+  return marks.join(' > ');
+});
+
+// Clearing the boxes directly rather than through New case: the menu item asks to discard unsaved
+// changes, and Playwright dismisses dialogs, so the case would survive and the check would read the
+// previous one's text.
+const clearMeta = (p) => p.evaluate(() => {
+  for (const id of ['#meta-specimen', '#meta-clinical', '#meta-macro', '#meta-blockKey']) {
+    const el = document.querySelector(id);
+    if (!el) continue;
+    el.value = '';
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+});
+
+await check('Capture from LIS routes a marked payload into the case boxes', async () => {
+  await clearMeta(page);
+  await page.waitForTimeout(300);
+  const payload = '<<<SPECIMEN>>>\nAntrum\n\n<<<HISTORY>>>\nEpigastric pain. Rule out H. pylori.\n\n<<<MACRO>>>\nReceived in formalin are three grey fragments,\nthe largest measuring 3 mm.';
+  await page.evaluate((t) => navigator.clipboard.writeText(t), payload);
+  await page.click('#btn-lis-capture');
+  await page.waitForTimeout(400);
+  const got = await page.evaluate(() => ({
+    specimen: document.querySelector('#meta-specimen').value,
+    clinical: document.querySelector('#meta-clinical').value,
+    macro: document.querySelector('#meta-macro').value,
+    status: document.querySelector('#lis-status-capture').textContent,
+  }));
+  assert(got.specimen === 'Antrum', `specimen box held "${got.specimen}"`);
+  assert(/H\. pylori/.test(got.clinical), `history box held "${got.clinical}"`);
+  assert(/3 mm/.test(got.macro), 'the macro block did not arrive');
+  assert(got.macro.split('\n').length === 2, 'the macro block lost its line break');
+  assert(/Captured/.test(got.status), `status read "${got.status}"`);
+  const strip = await page.locator('#intake-preview').isVisible();
+  assert(strip, 'capturing a specimen did not re-run the intake strip');
+  return got.status.trim();
+});
+
+await check('an unmarked copy fills the next empty box in order', async () => {
+  await clearMeta(page);
+  await page.waitForTimeout(300);
+  await page.evaluate(() => navigator.clipboard.writeText('Gallbladder'));
+  await page.click('#btn-lis-capture');
+  await page.waitForTimeout(350);
+  const first = await page.evaluate(() => document.querySelector('#meta-specimen').value);
+  assert(first === 'Gallbladder', `first capture landed in "${first}"`);
+  await page.evaluate(() => navigator.clipboard.writeText('Biliary colic.'));
+  await page.click('#btn-lis-capture');
+  await page.waitForTimeout(350);
+  const second = await page.evaluate(() => ({
+    specimen: document.querySelector('#meta-specimen').value,
+    clinical: document.querySelector('#meta-clinical').value,
+  }));
+  assert(second.specimen === 'Gallbladder', 'the second capture overwrote the specimen box');
+  assert(second.clinical === 'Biliary colic.', `second capture landed in "${second.clinical}"`);
+  return 'specimen then clinical history, no overwrite';
+});
+
 // The sign-in gate is off on localhost so every check above can drive the app without a Google
 // session. That bypass is the whole risk: if it ever widened, the published app would be open to
 // anyone. So load the same files over an address the bypass does NOT cover (hostname '0.0.0.0'
