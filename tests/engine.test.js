@@ -48,7 +48,11 @@ test('schema examples generate without error and include every part', () => {
     if (ex.parts.length > 1) for (const p of ex.parts) assert.ok(out.diagnosis.includes(`(${p.label})`), `${schema.id} missing ${p.label}`);
     // Synoptic templates carry their microscopy inside the synoptic block instead of a narrative paragraph.
     const micro = generator.synoptic ? out.synoptic : out.microscopy;
-    assert.ok(out.diagnosis.trim() !== '' && micro.trim() !== '', `${schema.id} example is empty`);
+    // A biomarker report has no microscopic narrative at all: the section comes from a block already
+    // reported under an earlier accession and the result lines are the whole report.
+    const needsMicro = schema.kind !== 'biomarker';
+    assert.ok(out.diagnosis.trim() !== '' && (!needsMicro || micro.trim() !== ''), `${schema.id} example is empty`);
+    if (!needsMicro) assert.equal(micro, '', `${schema.id} must not print a microscopy paragraph`);
     if (generator.synoptic) assert.equal(out.microscopy, out.synoptic, `${schema.id} prints its synoptic as the microscopy block`);
     assert.ok(out.report.length > 0);
   }

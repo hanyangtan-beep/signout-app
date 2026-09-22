@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 58,
+  "count": 59,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -3476,6 +3476,35 @@
       "generator": "cytology",
       "generatorPath": "generators/cytology.js",
       "schemaPath": "schemas/cervical_cytology.json"
+    },
+    {
+      "id": "breast_biomarkers",
+      "name": "Breast biomarkers — HER2 dual ISH",
+      "shortName": "Breast · HER2 dual ISH",
+      "label": "HER2 ISH",
+      "organ": "BREAST",
+      "system": "Biomarkers",
+      "kind": "biomarker",
+      "rank": 670,
+      "aliases": [
+        "HER2",
+        "DISH",
+        "dual ISH",
+        "ISH",
+        "breast markers",
+        "biomarkers",
+        "amplification",
+        "CEP17",
+        "reflex",
+        "equivocal",
+        "Ventana",
+        "INFORM",
+        "trastuzumab"
+      ],
+      "version": "2026.09",
+      "generator": "breast_ish",
+      "generatorPath": "generators/breast_ish.js",
+      "schemaPath": "schemas/breast_biomarkers.json"
     }
   ]
 }

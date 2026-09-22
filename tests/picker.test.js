@@ -97,7 +97,11 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   // every QMH cancer page is either built or planned: entries carry the QMH page stem.
   // The floor drops by one each time a QMH-stemmed placeholder ships (ampulla_carcinoma, Phase 22).
   assert.ok(planned.filter((t) => t.qmh).length >= 49);
-  assert.ok(top.find((g) => g.system === 'Biomarkers').items.every((t) => t.planned && t.kind === 'biomarker'));
+  // Biomarkers holds one built template (the standalone HER2 ISH report, Phase 30) and placeholders.
+  const biomarkers = top.find((g) => g.system === 'Biomarkers').items;
+  assert.ok(biomarkers.every((t) => t.kind === 'biomarker'));
+  assert.deepEqual(biomarkers.filter((t) => !t.planned).map((t) => t.id), ['breast_biomarkers']);
+  assert.ok(biomarkers.filter((t) => t.planned).length >= 8);
   assert.equal(bottom.find((g) => g.system === 'General').label, 'Generic');
   assert.equal(bottom[bottom.length - 1].system, 'General', 'Free text last');
   // built before planned within a group; planned carry the flag and open Generic in the app
@@ -154,7 +158,7 @@ test('palette ranking: exact shortName > alias > organ > keyword', () => {
 
 test('grouped browse and the part selector put Small biopsy first, systems in canonical order', () => {
   const groups = groupBySystem(manifest);
-  assert.deepEqual(groups.map((g) => g.system), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology', 'General']);
+  assert.deepEqual(groups.map((g) => g.system), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Biomarkers', 'Cytology', 'General']);
   const gyn = groups.find((g) => g.system === 'Gynae');
   assert.deepEqual(gyn.items.map((t) => t.kind), ['biopsy', 'biopsy', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'cancer resection', 'cancer resection'], 'ascending specimen size within a system');
   assert.deepEqual(gyn.items.slice(2).map(labelOf), ['LEEP', 'Placenta', 'Uterus', 'Ovarian cyst', 'Endometrial Ca', 'Ovary / tube / peritoneum Ca'], 'rank order within a kind');
@@ -162,5 +166,5 @@ test('grouped browse and the part selector put Small biopsy first, systems in ca
   assert.equal(sel[0].label, 'Small biopsy');
   assert.equal(sel[0].items.length, 12);
   // The CNS biopsy sits in the Small biopsy group; the CNS system group holds the resection.
-  assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Cytology', 'General']);
+  assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Biomarkers', 'Cytology', 'General']);
 });

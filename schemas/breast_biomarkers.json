@@ -1,0 +1,183 @@
+{
+ "id": "breast_biomarkers",
+ "version": "2026.09",
+ "name": "Breast biomarkers — HER2 dual ISH",
+ "shortName": "Breast · HER2 dual ISH",
+ "label": "HER2 ISH",
+ "organ": "BREAST",
+ "system": "Biomarkers",
+ "kind": "biomarker",
+ "rank": 670,
+ "generator": "breast_ish",
+ "style": {
+  "british": true
+ },
+ "aliases": [
+  "HER2",
+  "DISH",
+  "dual ISH",
+  "ISH",
+  "breast markers",
+  "biomarkers",
+  "amplification",
+  "CEP17",
+  "reflex",
+  "equivocal",
+  "Ventana",
+  "INFORM",
+  "trastuzumab"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 1,
+ "fields": [
+  {
+   "id": "site",
+   "label": "Specimen",
+   "type": "select",
+   "options": [
+    "Breast",
+    "Lymph node",
+    "Soft tissue",
+    "Liver",
+    "Other"
+   ],
+   "default": "Breast",
+   "help": "Measured from the 18 standalone HER2 requests in the 2024-2026 export: breast 12, lymph node 3, soft tissue 1, liver 1."
+  },
+  {
+   "id": "siteDetail",
+   "label": "Side / procedure",
+   "type": "text",
+   "default": "",
+   "placeholder": "left mastectomy",
+   "help": "Printed after the organ. Leave blank if the request says no more than the organ."
+  },
+  {
+   "id": "her2Dish",
+   "label": "HER2/neu oncoprotein DISH",
+   "type": "select",
+   "options": [
+    "",
+    "Cannot be determined",
+    "Negative (HER2 gene is not amplified)",
+    "Positive (HER2 gene is amplified)",
+    "Negative (not amplified, Group 5 result)",
+    "Negative, Group 2 ISH result (with IHC 0-2+)",
+    "Negative, Group 3 ISH result (with IHC 0-1+)",
+    "Negative, Group 4 ISH result (with IHC 0-2+)",
+    "Positive (amplified, Group 1 result in greater than 10% of cell population)",
+    "Positive, Group 2 ISH result (with IHC 3+)",
+    "Positive, Group 3 ISH result (with IHC 2-3+)",
+    "Positive, Group 4 ISH result (with IHC 3+)"
+   ],
+   "default": ""
+  },
+  {
+   "id": "dishCells",
+   "label": "DISH - Number of tumor cells counted",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "dishHer2",
+   "label": "DISH - Average HER2 signals (black) per cell",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "dishCep17",
+   "label": "DISH - Average CEP17 signals (red) per cell",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "dishRatio",
+   "label": "DISH - HER2/CEP17 ratio",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "dishPctAmp",
+   "label": "DISH - Cells with Amplified Signals (%)",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "dishAneusomy",
+   "label": "Other ISH abnormalities: Aneusomy",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "dishHeteroSignals",
+   "label": "Other ISH abnormalities: Heterogeneous signals",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "coldIschemia",
+   "label": "Cold ischemia time (min)",
+   "type": "text",
+   "default": "",
+   "placeholder": "blank = uncertain",
+   "help": "Optimal <= 60 min; > 60 min prolonged. Leave blank if unknown."
+  },
+  {
+   "id": "fixationTime",
+   "label": "Fixation time in buffered formalin (hours)",
+   "type": "text",
+   "default": "",
+   "placeholder": "blank = uncertain",
+   "help": "Inadequate < 6 h; optimal 6-72 h; > 72 h prolonged. Leave blank if unknown."
+  },
+  {
+   "id": "testType",
+   "label": "Test type",
+   "type": "select",
+   "options": [
+    "",
+    "Laboratory-developed test (QMH, HK).",
+    "Food and Drug Administration (FDA) cleared (specify test / vendor):",
+    "Laboratory-developed test (Non-U.S.-based health systems).",
+    "Laboratory-developed test (Health Canada Approved (specify test / vendor:).",
+    "Other (specify):"
+   ],
+   "default": ""
+  },
+  {
+   "id": "bmNotes",
+   "label": "Biomarker additional notes",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "her2_fish_followup",
+   "label": "Cannot be determined - HER2 FISH to follow",
+   "text": "HER2 FISH will be attempted; the results will be issued in a separate report.",
+   "auto": {
+    "field": "her2Dish",
+    "is": [
+     "Cannot be determined"
+    ]
+   }
+  }
+ ],
+ "example": {
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "site": "Breast",
+     "siteDetail": "left mastectomy",
+     "her2Dish": "Negative (not amplified, Group 5 result)",
+     "dishCells": "20",
+     "dishHer2": "1.35",
+     "dishCep17": "1.9",
+     "dishRatio": "0.71"
+    }
+   }
+  ]
+ }
+}

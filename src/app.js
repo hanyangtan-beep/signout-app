@@ -1496,7 +1496,12 @@ function renderReport() {
     ['microscopy', out.microscopyHeading ? out.microscopyHeading.charAt(0) + out.microscopyHeading.slice(1).toLowerCase() : 'Microscopic examination', out.microscopy],
     ['diagnosis', 'Diagnosis', out.diagnosis],
     ['comment', 'Comment', out.comment]
-  ].filter(([key, , text]) => text || out.edited?.[key] || ['specimens', 'microscopy', 'diagnosis'].includes(key));
+    // An empty specimens / microscopy / diagnosis block is kept as an editable box to type into. The
+    // exception is a template that has no microscopy to write: a biomarker report is a result block
+    // against a section already reported elsewhere, so an empty MICROSCOPIC EXAMINATION heading there
+    // is a box nobody can fill rather than a prompt.
+  ].filter(([key, , text]) => text || out.edited?.[key]
+    || (key === 'microscopy' ? !schemasInUse().every((s) => s.kind === 'biomarker') : ['specimens', 'diagnosis'].includes(key)));
   const issues = out.issues || [];
   // Checks collapse to their one-line count so the report starts at the top of the column; an issue that
   // names a field is clickable and focuses it. The open state is remembered between cases.

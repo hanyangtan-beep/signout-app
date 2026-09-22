@@ -1,0 +1,16 @@
+{
+  "templateId": "breast_biomarkers",
+  "values": {
+    "site": "Other",
+    "siteDetail": "Liver segment 8",
+    "her2Dish": "Negative (HER2 gene is not amplified)",
+    "dishCells": "20",
+    "dishHer2": "2",
+    "dishCep17": "2",
+    "dishRatio": "1",
+    "coldIschemia": "75",
+    "fixationTime": "80"
+  },
+  "report": "Liver segment 8, HER2 dual in-situ hybridisation\n\n- HER2 DISH : Negative (HER2 gene is not amplified)\n  - Number of tumour cell counted : 20\n  - Average number of HER2 signals (black) per cell : 2\n  - Average number of CEP17 signals (red) per cell : 2\n  - HER2/CEP17 ratio : 1\n\n- Cold ischaemia time : 75 min\n  - Prolonged intervals (> 60 min).\n- Fixation time in buffered formalin : 80 hours\n  - Prolonged intervals (>72 hours).\n- Given the suboptimal cold ischaemia time and/or suboptimal formalin fixation time, please interpret the above results with caution.\n\nHER2 Dual ISH was performed on formalin-fixed paraffin embedded section with the Ventana INFORM HER2 Dual ISH DNA Probe Cocktail Assay on an automated system, and was examined by a pathologist under light microscopy.",
+  "checks": []
+}

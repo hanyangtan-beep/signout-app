@@ -574,6 +574,68 @@ await check('the compact layout fits an iPhone and keeps its targets', async () 
   return notes.join(', ') + ', desktop unaffected';
 });
 
+// Standalone HER2 ISH: the first biomarker-kind template. It prints no macro and no microscopy, so
+// the report is the result block alone — worth checking in the real UI, where an empty block could
+// leave a stray heading or a gap behind.
+await check('the standalone HER2 ISH report prints the block and no empty headings', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  // Reload rather than "New case": by this point the run has built lettered parts, and the menu item
+  // asks to discard unsaved work, which would leave part (B) behind and mask what this check reads.
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  await page.click('#btn-palette');
+  await page.waitForSelector('#dlg-palette[open]', { timeout: 5000 });
+  await page.fill('#palette-search', 'HER2');
+  await page.waitForTimeout(250);
+  const hit = page.locator('#palette-list [data-template="breast_biomarkers"]');
+  assert(await hit.count(), 'HER2 did not find the standalone ISH template in the palette');
+  await hit.first().click();
+  await page.waitForTimeout(400);
+  const parts = await page.locator('#part-tabs .tab-label').count();
+  assert(parts <= 1, `the case carried ${parts} parts into this check; the report would not be the ISH report alone`);
+
+  // Three shapes to drive: a field with <= 6 options renders as chip buttons rather than a <select>
+  // (src/app.js), so `site` is chips while `her2Dish` with its 12 options is a real select.
+  const setField = async (id, value) => {
+    const chip = page.locator(`.chips[data-field="${id}"] .chip`, { hasText: value }).first();
+    if (await chip.count()) { await chip.click(); await page.waitForTimeout(120); return; }
+    const el = page.locator(`[data-field="${id}"] select, [data-field="${id}"] input, [data-field="${id}"] textarea`).first();
+    assert(await el.count(), `no ${id} field on the form`);
+    if ((await el.evaluate((n) => n.tagName)) === 'SELECT') await el.selectOption({ label: value });
+    else await el.fill(value);
+    await page.waitForTimeout(120);
+  };
+  await setField('site', 'Breast');
+  await setField('siteDetail', 'left mastectomy');
+  await setField('her2Dish', 'Negative (not amplified, Group 5 result)');
+  await setField('dishCells', '20');
+  await setField('dishHer2', '1.35');
+  await setField('dishCep17', '1.9');
+  await setField('dishRatio', '0.71');
+  await page.waitForTimeout(400);
+
+  const text = await page.locator('#report-blocks').innerText();
+  assert(/HER2 DISH : Negative \(not amplified, Group 5 result\)/.test(text), 'the ISH result did not reach the report');
+  assert(/Average number of CEP17 signals \(red\) per cell : 1\.9/.test(text), 'the signal counts did not reach the report');
+  assert(/Ventana INFORM HER2 Dual ISH DNA Probe Cocktail Assay/.test(text), 'the method sentence is missing');
+  assert(!/strogen|rogesterone/i.test(text), 'an ER/PR line leaked into the ISH-only report');
+  assert(!/randomized/.test(text), 'American spelling reached the report');
+  // No macro and no microscopy: those blocks must be absent, not present and empty.
+  for (const [label, re] of [['macroscopic', /MACROSCOPIC/i], ['microscopic', /MICROSCOPIC/i]]) {
+    assert(!re.test(text), `the ${label} heading printed on a report that has no such block`);
+  }
+
+  // The Checks panel must catch a Group that contradicts the numbers.
+  await setField('dishHer2', '6.4');
+  await setField('dishRatio', '3.37');
+  await page.waitForTimeout(400);
+  // The Checks panel is a <details class="checks"> that collapses to a count, so read the list items.
+  const checks = (await page.locator('details.checks .issue').allInnerTexts()).join(' | ');
+  assert(/Group 1 result, not Group 5/.test(checks), `the group mismatch was not flagged (checks read: ${checks.slice(0, 120)})`);
+  await shot('her2-ish-standalone');
+  return 'block printed, no empty headings, group mismatch flagged';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

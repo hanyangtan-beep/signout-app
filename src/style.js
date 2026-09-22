@@ -38,8 +38,11 @@ export const BRITISH = {
   // Found by scanning every printed option label, generator string and fixture report for an American
   // form the map did not cover. All five were reaching released reports, through the breast
   // biomarker block and the HER2 comment.
+  // `randomized` added 2026-09-22 while building breast_biomarkers: the first pass scanned the
+  // fixtures, which never select a Group 2 ISH result, so the word survived in that one comment
+  // paragraph. It is the only American form left after every branch of the block is exercised.
   estrogen: 'oestrogen', estrogens: 'oestrogens', ischemia: 'ischaemia', ischemic: 'ischaemic',
-  signaling: 'signalling'
+  signaling: 'signalling', randomized: 'randomised'
 };
 
 // Deliberately NOT in the map, checked against it by test:

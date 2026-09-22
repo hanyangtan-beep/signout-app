@@ -10,8 +10,12 @@ import path from 'node:path';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 export const MANIFEST_KEYS = ['id', 'name', 'shortName', 'label', 'organ', 'system', 'kind', 'rank', 'aliases', 'match', 'version', 'generator'];
-export const KINDS = ['biopsy', 'benign resection', 'cancer resection', 'frozen', 'cytology', 'generic'];
-export const SYSTEMS = ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'CNS', 'Frozen', 'Cytology', 'General'];
+// `biomarker` was already a kind the picker groups (ROWS.top in src/picker.js, 2026-09-12) and the
+// planned placeholders already used it; breast_biomarkers is the first built template to carry it.
+export const KINDS = ['biopsy', 'benign resection', 'cancer resection', 'frozen', 'cytology', 'biomarker', 'generic'];
+// `Biomarkers` likewise: SYSTEM_ORDER in src/picker.js has carried it since the menus were built
+// and 9 planned placeholders sit in it; breast_biomarkers is the first built template there.
+export const SYSTEMS = ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'CNS', 'Frozen', 'Biomarkers', 'Cytology', 'General'];
 
 /** One manifest entry from a schema object; throws on missing / invalid metadata. */
 export function manifestEntry(schema) {

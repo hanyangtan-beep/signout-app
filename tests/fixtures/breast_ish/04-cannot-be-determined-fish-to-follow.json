@@ -1,0 +1,11 @@
+{
+  "templateId": "breast_biomarkers",
+  "values": {
+    "site": "Lymph node",
+    "siteDetail": "left axillary",
+    "her2Dish": "Cannot be determined",
+    "fixationTime": "28.5"
+  },
+  "report": "Lymph node, left axillary, HER2 dual in-situ hybridisation\n\n- HER2 DISH : Cannot be determined\n\n- Cold ischaemic time is uncertain.\n- Fixation time in buffered formalin : 28.5 hours\n  - Optimal fixation (6-72 hours).\n- Given the uncertain cold ischaemia time and/or uncertain fixation time, please interpret the above results with caution.\n\nHER2 Dual ISH was performed on formalin-fixed paraffin embedded section with the Ventana INFORM HER2 Dual ISH DNA Probe Cocktail Assay on an automated system, and was examined by a pathologist under light microscopy.\n\nHER2 FISH will be attempted; the results will be issued in a separate report.",
+  "checks": []
+}

@@ -1,0 +1,17 @@
+{
+  "templateId": "breast_biomarkers",
+  "values": {
+    "site": "Breast",
+    "siteDetail": "left, 2 o'clock, core biopsy",
+    "her2Dish": "Positive (amplified, Group 1 result in greater than 10% of cell population)",
+    "dishCells": "20",
+    "dishHer2": "8.75",
+    "dishCep17": "2.05",
+    "dishRatio": "4.27",
+    "dishPctAmp": "90",
+    "coldIschemia": "20",
+    "fixationTime": "18"
+  },
+  "report": "Breast, left, 2 o'clock, core biopsy, HER2 dual in-situ hybridisation\n\n- HER2 DISH : Positive (amplified, Group 1 result in greater than 10% of cell population)\n  - Number of tumour cell counted : 20\n  - Average number of HER2 signals (black) per cell : 8.75\n  - Average number of CEP17 signals (red) per cell : 2.05\n  - HER2/CEP17 ratio : 4.27\n  - Percentage of Cells with Amplified HER2 Signals : 90\n\n- Cold ischaemia time : 20 min\n  - Optimal (<= 60 min).\n- Fixation time in buffered formalin : 18 hours\n  - Optimal fixation (6-72 hours).\n- Meet requirements specified in the latest version of the ASCO/CAP guidelines.\n\nHER2 Dual ISH was performed on formalin-fixed paraffin embedded section with the Ventana INFORM HER2 Dual ISH DNA Probe Cocktail Assay on an automated system, and was examined by a pathologist under light microscopy.\n\nPatients with breast cancers that are HER2 IHC 3+ or IHC 2+/ISH amplified may be eligible for several therapies that disrupt HER2 signalling pathways.",
+  "checks": []
+}
