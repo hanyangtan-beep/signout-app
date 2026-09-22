@@ -218,6 +218,29 @@ await check('the picker and the report agree on British spelling', async () => {
   return 'picker shows Caecum, stored value stays Cecum';
 });
 
+await check('a skin frozen margin does not print the tongue phrase', async () => {
+  await page.click('#btn-palette');
+  await page.waitForSelector('#dlg-palette[open]');
+  await page.fill('#palette-search', 'frozen');
+  await page.waitForTimeout(200);
+  await page.locator('#palette-list [data-template="frozen_section"]').first().click();
+  await page.waitForTimeout(400);
+  const pick = async (id, val) => {
+    const sel = page.locator(`[data-field="${id}"] select, select[name="${id}"], #f-${id}`).first();
+    if (await sel.count()) { await sel.selectOption(val); await page.waitForTimeout(150); }
+  };
+  await pick('scenario', 'Margin');
+  await pick('mgOrgan', 'SKIN');
+  await pick('tissueDesc', 'skin');
+  await page.waitForTimeout(400);
+  const report = await page.locator('#report-blocks').innerText();
+  assert(/It shows skin\./.test(report), `skin margin microscopy wrong: ${report.slice(0, 300)}`);
+  assert(!/squamous mucosa/i.test(report), 'the tongue phrase is still printed for a skin margin');
+  // The macro and the microscopy must describe the same tissue.
+  assert(/a piece of skin/.test(report), 'macro no longer says skin');
+  return 'skin margin prints skin, macro and microscopy agree';
+});
+
 await check('settings dialog opens and holds the Drive fields', async () => {
   await page.click('#btn-settings');
   await page.waitForSelector('#dlg-settings[open]', { timeout: 5000 });

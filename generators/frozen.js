@@ -887,6 +887,130 @@ export function intraop(parts, ctx) {
 
 // ---------- paraffin microscopy ----------
 
+// The benign margin default used to be the tongue phrase for every organ, so a skin margin printed
+// "squamous mucosa with underlying skeletal muscle" over a macro that said "a piece of skin".
+// Wording measured from the 2021-2026 frozen corpus (114 margin parts). The corpus shows the exact
+// sentence varies case to case, so the default is the short head phrase the site shares and the
+// reporter extends it in "Paraffin microscopy: tissue seen" when the case needs more.
+const MARGIN_TISSUE_BY_ORGAN = {
+  // Tongue and oral cavity keep the composite phrase: it was the accepted house default before this
+  // change and the corpus supports it ("squamous mucosa with underlying skeletal muscle bundles",
+  // "squamous mucosa with scattered skeletal muscle bundles within the stroma").
+  TONGUE: 'squamous mucosa with underlying skeletal muscle',
+  'ORAL CAVITY': 'squamous mucosa with underlying skeletal muscle',
+  // Everything else is the least-committal head phrase that is true of the site. A default must not
+  // assert a component the reporter has not looked for - intact urothelium, fatty marrow, breast
+  // lobules, depth to subcutis - so the detail is left for the reporter to add.
+  'SOFT PALATE': 'squamous mucosa',
+  OROPHARYNX: 'squamous mucosa',
+  PHARYNX: 'squamous mucosa',
+  LARYNX: 'squamous mucosa',
+  OESOPHAGUS: 'squamous mucosa',
+  NASOPHARYNX: 'respiratory-type mucosa',
+  'NASAL CAVITY': 'respiratory mucosa',
+  TRACHEA: 'respiratory mucosa',
+  SKIN: 'skin',
+  EYELID: 'skin',
+  FACE: 'skin',
+  VULVA: 'vulval tissue',
+  BREAST: 'fibrofatty breast tissue',
+  'SOFT TISSUE': 'fibroadipose tissue',
+  BONE: 'bone and fatty marrow tissue',
+  NERVE: 'nerve tissue',
+  PAROTID: 'salivary gland tissue',
+  URETER: 'a cross section of ureter',
+  URETHRA: 'urethral tissue',
+  STOMACH: 'gastric tissue',
+  LIVER: 'liver tissue',
+  GALLBLADDER: 'gallbladder wall',
+  'BILE DUCT': 'bile duct tissue',
+};
+
+// "Tissue as received" is a macroscopic field, so it is only allowed to set the microscopy default
+// where it carries real histological meaning, and only where it is more specific than the organ.
+// Skin and lymph node are tissue identities a reporter does not type by accident, and a skin margin
+// off a breast excision is the commonest single margin phrasing in the corpus, so those two override
+// the organ. "Mucosa" and "fibrofatty tissue" are generic and the organ refines them. Colour options
+// ("tan coloured tissue", "greyish tissue") say nothing about the section and never decide anything.
+const TISSUE_OVERRIDES_ORGAN = { skin: 'skin', 'lymph node': 'lymph node tissue' };
+const TISSUE_IF_ORGAN_UNKNOWN = { mucosa: 'squamous mucosa', 'fibrofatty tissue': 'fibroadipose tissue' };
+
+// Organs whose margin is plausibly a skin shave, so "skin" there is a refinement rather than a
+// contradiction and no warning is raised.
+const SKIN_BEARING = ['SKIN', 'EYELID', 'FACE', 'VULVA', 'BREAST', 'SOFT TISSUE', 'BONE', 'NERVE', 'Other', ''];
+
+export function marginTissueDesc(v) {
+  return String(v.tissueDesc || '').trim().toLowerCase();
+}
+
+// The Organ dropdown only builds the head line when "Specimen as received" is blank, so in practice
+// it is often left empty while the typed name carries the site ("Tongue, medial margin"). Same gate
+// as the intake abbreviations: match whole words against the known vocabulary and fire only on a
+// real signal, most specific pattern first so BILE DUCT beats DUCT and NASOPHARYNX beats NASAL.
+const ORGAN_FROM_NAME = [
+  // Pancreatic and biliary duct margins are the separate "Pancreatic / bile duct margin" scenario,
+  // which has its own tissue wording. Claim nothing here so a Whipple part typed as "Liver,
+  // pancreatic duct margin" does not get read as a liver margin.
+  [/\bpancrea\w*/i, ''],
+  [/\bnasophar\w*/i, 'NASOPHARYNX'],
+  [/\borophar\w*|\bbase of tongue\b|\btonsil\w*/i, 'OROPHARYNX'],
+  [/\bbile duct\b|\bcommon bile\b|\bcbd\b|\bhepatic duct\b|\bcystic duct\b/i, 'BILE DUCT'],
+  [/\bgall ?bladder\b/i, 'GALLBLADDER'],
+  [/\bnasal\b|\bsinonasal\b|\bmaxillary sinus\b|\bethmoid\b/i, 'NASAL CAVITY'],
+  [/\bsoft palate\b/i, 'SOFT PALATE'],
+  [/\btongue\b/i, 'TONGUE'],
+  [/\bbuccal\b|\bgingiv\w*|\balveol\w*|\bretromolar\b|\bhard palate\b|\bfloor of (the )?mouth\b|\boral cavity\b|\blip\b/i, 'ORAL CAVITY'],
+  [/\blaryn\w*|\bvocal cord\b|\bglottis\b|\bepiglottis\b/i, 'LARYNX'],
+  [/\bpharyn\w*|\bhypophar\w*/i, 'PHARYNX'],
+  [/\btrachea\w*/i, 'TRACHEA'],
+  [/\boesophag\w*|\besophag\w*/i, 'OESOPHAGUS'],
+  [/\bstomach\b|\bgastric\b|\bantrum\b|\bcardia\b/i, 'STOMACH'],
+  [/\bliver\b|\bhepatic parenchyma\b/i, 'LIVER'],
+  [/\bparotid\b|\bsubmandibular gland\b|\bsalivary\b/i, 'PAROTID'],
+  [/\beyelid\b|\bcanthus\b/i, 'EYELID'],
+  [/\bvulva\w*|\blabium\b|\blabia\w*/i, 'VULVA'],
+  [/\bbreast\b|\bnipple\b/i, 'BREAST'],
+  [/\bureter\b|\bureteric\b/i, 'URETER'],
+  [/\burethra\w*/i, 'URETHRA'],
+  [/\bmandib\w*|\bmaxill\w*|\bbone\b|\bbony\b/i, 'BONE'],
+  [/\bnerve\b|\bneural\b/i, 'NERVE'],
+  [/\bskin\b|\bcutaneous\b/i, 'SKIN'],
+  [/\bface\b|\bcheek\b|\bnose\b|\bear\b|\bscalp\b|\bforehead\b|\btemple\b/i, 'FACE'],
+  [/\bsoft tissue\b/i, 'SOFT TISSUE'],
+];
+
+export function marginOrgan(v) {
+  const picked = String(v.mgOrgan || '').trim().toUpperCase();
+  if (picked && picked !== 'OTHER') return picked;
+  const name = `${v.specimenName || ''} ${v.mgOrganOther || ''}`;
+  if (!name.trim()) return picked;
+  for (const [re, organ] of ORGAN_FROM_NAME) if (re.test(name)) return organ;
+  return picked;
+}
+
+export function marginTissue(v) {
+  const organ = marginOrgan(v);
+  const desc = marginTissueDesc(v);
+  if (TISSUE_OVERRIDES_ORGAN[desc]) return TISSUE_OVERRIDES_ORGAN[desc];
+  if (MARGIN_TISSUE_BY_ORGAN[organ]) return MARGIN_TISSUE_BY_ORGAN[organ];
+  return TISSUE_IF_ORGAN_UNKNOWN[desc] || 'the tissue described';
+}
+
+// True when the paraffin sentence has nothing to go on and falls back to "the tissue described".
+export function marginTissueUnknown(v) {
+  return v.scenario === 'Margin' && v.marginResult !== 'Positive' && !String(v.tissue || '').trim()
+    && marginTissue(v) === 'the tissue described';
+}
+
+// True when the received tissue and the organ disagree, e.g. a gastric margin received as skin.
+export function marginTissueConflict(v) {
+  const organ = marginOrgan(v);
+  const desc = marginTissueDesc(v);
+  if (v.scenario !== 'Margin' || v.marginResult === 'Positive' || String(v.tissue || '').trim()) return false;
+  if (desc === 'skin') return !SKIN_BEARING.includes(organ);
+  return false;
+}
+
 function defaultTissue(v) {
   switch (v.scenario) {
     case CNS:
@@ -896,7 +1020,7 @@ function defaultTissue(v) {
     case 'Margin':
       return v.marginResult === 'Positive'
         ? `infiltrating ${lc1(tumour(v, 'carcinoma'))} involving the margin`
-        : 'squamous mucosa with underlying skeletal muscle';
+        : marginTissue(v);
     case 'Lymph node':
       return ['Macrometastasis', 'Micrometastasis'].includes(v.nodeResult)
         ? `a lymph node infiltrated by metastatic ${lc1(tumour(v, 'carcinoma'))}`
@@ -1127,6 +1251,12 @@ export function validate(part, ctx) {
   const out = [];
   const info = (message) => out.push({ level: 'info', message });
   const warn = (message) => out.push({ level: 'warn', message });
+  if (marginTissueUnknown(v)) {
+    info('Paraffin microscopy has nothing to describe: pick the organ, or type the tissue seen. Without either the sentence reads "It shows the tissue described."', 'mgOrgan');
+  }
+  if (marginTissueConflict(v)) {
+    warn(`Received as skin but the organ is ${v.mgOrgan}: the paraffin sentence says skin. Type the tissue seen if that is not what the section shows.`, 'tissueDesc');
+  }
   if (isPd(v)) {
     const d = num(v.pdDistanceMm);
     if (pdResult(v) === 'Carcinoma close to margin' && d !== null && d <= 1) warn(`${uc1(pdSite(v).noun)} clearance of ${fmt(d)} mm: at 1 mm or less the paraffin report gives this as a positive margin (R1).`, 'pdDistanceMm');

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createCase, generate, generateCase } from '../src/engine.js';
 import { loadAll } from '../src/registry.js';
-import { labelRange, frozenResult, ovSummary, lungSummary, organPhrase, stageable, PAIRED_TEMPLATE, PAIR_SEPARATE, pairTemplate, marginSummary, PD, PD_SITES } from '../generators/frozen.js';
+import { labelRange, frozenResult, ovSummary, lungSummary, organPhrase, stageable, PAIRED_TEMPLATE, PAIR_SEPARATE, pairTemplate, marginSummary, marginOrgan, PD, PD_SITES } from '../generators/frozen.js';
 
 const registry = await loadAll();
 const { schema, generator } = registry.frozen_section;
@@ -342,4 +342,80 @@ test('pancreatic / bile duct margin: pairing, margin summary and checks', () => 
   assert.ok(check({}).some((m) => /0\.6 mm/.test(m) && /R1/.test(m)), 'a clearance of 1 mm or less warns');
   assert.ok(!check({ pdDistanceMm: '4' }).some((m) => /R1/.test(m)));
   assert.ok(check({ pdResult: 'Carcinoma close to margin', pdDistanceMm: '' }).some((m) => /distance/i.test(m)));
+});
+
+// Reported 22/09/2026: a skin margin received as skin still printed the tongue phrase "squamous
+// mucosa with underlying skeletal muscle". The benign margin default was one hardcoded string for
+// every organ, so the microscopy contradicted a macro that said "a piece of skin".
+test('benign margin microscopy follows the organ, not a fixed tongue phrase', () => {
+  const shows = (values) => {
+    const cs = fsCase(1);
+    part(cs, 0, { scenario: 'Margin', marginResult: 'Negative', ...values });
+    return (generate(schema, generator, cs).microscopy.match(/shows (.+?)\. There/) || [])[1];
+  };
+  assert.equal(shows({ mgOrgan: 'SKIN', tissueDesc: 'skin' }), 'skin');
+  assert.equal(shows({ mgOrgan: 'TONGUE' }), 'squamous mucosa with underlying skeletal muscle');
+  assert.equal(shows({ mgOrgan: 'LARYNX' }), 'squamous mucosa');
+  assert.equal(shows({ mgOrgan: 'NASAL CAVITY' }), 'respiratory mucosa');
+  assert.equal(shows({ mgOrgan: 'STOMACH' }), 'gastric tissue');
+  assert.equal(shows({ mgOrgan: 'BREAST' }), 'fibrofatty breast tissue');
+  // The typed specimen name carries the organ when the dropdown is left blank, which is the common
+  // case because the dropdown only builds the head line when the name is empty.
+  assert.equal(shows({ specimenName: 'Tongue, medial margin' }), 'squamous mucosa with underlying skeletal muscle');
+  assert.equal(shows({ specimenName: 'Skin, lateral margin' }), 'skin');
+});
+
+test('the tissue-as-received gate only fires on a histological signal', () => {
+  const shows = (values) => {
+    const cs = fsCase(1);
+    part(cs, 0, { scenario: 'Margin', marginResult: 'Negative', mgOrgan: 'TONGUE', ...values });
+    return (generate(schema, generator, cs).microscopy.match(/shows (.+?)\. There/) || [])[1];
+  };
+  // Colour-only descriptors describe the container, not the section: the organ must still win.
+  assert.equal(shows({ tissueDesc: 'tan coloured tissue' }), 'squamous mucosa with underlying skeletal muscle');
+  assert.equal(shows({ tissueDesc: 'greyish tissue' }), 'squamous mucosa with underlying skeletal muscle');
+  assert.equal(shows({ tissueDesc: 'other' }), 'squamous mucosa with underlying skeletal muscle');
+  // "mucosa" is generic, so the organ refines it rather than being overridden by it.
+  assert.equal(shows({ tissueDesc: 'mucosa' }), 'squamous mucosa with underlying skeletal muscle');
+  // Skin and lymph node are identities, not colours, so they do win.
+  assert.equal(shows({ tissueDesc: 'skin' }), 'skin');
+  assert.equal(shows({ tissueDesc: 'lymph node' }), 'lymph node tissue');
+});
+
+test('a margin with no organ asks rather than inventing, and a mismatch warns', () => {
+  const run = (values) => {
+    const cs = fsCase(1);
+    part(cs, 0, { scenario: 'Margin', marginResult: 'Negative', ...values });
+    const out = generate(schema, generator, cs);
+    return { shows: (out.microscopy.match(/shows (.+?)\. There/) || [])[1], issues: out.issues };
+  };
+  const bare = run({ specimenName: 'Left superior margin' });
+  assert.equal(bare.shows, 'the tissue described');
+  assert.ok(bare.issues.some((i) => i.level === 'info' && /nothing to describe/.test(i.message)));
+  // Typing the tissue seen answers it, so the check goes away.
+  const typed = run({ specimenName: 'Left superior margin', tissue: 'fibroadipose tissue and skeletal muscle' });
+  assert.equal(typed.shows, 'fibroadipose tissue and skeletal muscle');
+  assert.equal(typed.issues.length, 0);
+  // Skin off a gastric margin is implausible: print what was recorded, but say so.
+  const clash = run({ mgOrgan: 'STOMACH', tissueDesc: 'skin' });
+  assert.equal(clash.shows, 'skin');
+  assert.ok(clash.issues.some((i) => i.level === 'warn' && /Received as skin but the organ is STOMACH/.test(i.message)));
+  // A skin shave off a breast or vulval excision is routine and must not warn.
+  for (const organ of ['BREAST', 'VULVA', 'SKIN', 'SOFT TISSUE']) {
+    assert.equal(run({ mgOrgan: organ, tissueDesc: 'skin' }).issues.length, 0, `${organ} should not warn`);
+  }
+});
+
+test('the margin organ parser does not claim pancreatic or biliary duct margins', () => {
+  // Those are the separate PD scenario with its own wording; a wrong call here would print liver.
+  assert.equal(marginOrgan({ specimenName: 'Liver, pancreatic duct margin' }), '');
+  assert.equal(marginOrgan({ specimenName: 'Distal pancreatic margin' }), '');
+  // An explicit dropdown choice is always honoured over the typed name.
+  assert.equal(marginOrgan({ mgOrgan: 'BONE', specimenName: 'Tongue, deep margin' }), 'BONE');
+});
+
+test('positive margins are untouched by the tissue default', () => {
+  const cs = fsCase(1);
+  part(cs, 0, { scenario: 'Margin', marginResult: 'Positive', mgOrgan: 'SKIN', tissueDesc: 'skin', tumourType: 'Squamous cell carcinoma' });
+  assert.match(generate(schema, generator, cs).microscopy, /It shows infiltrating squamous cell carcinoma involving the margin\./);
 });

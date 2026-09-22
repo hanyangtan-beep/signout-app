@@ -1694,9 +1694,9 @@
       "id": "tissue",
       "label": "Paraffin microscopy: tissue seen",
       "type": "text",
-      "placeholder": "squamous mucosa with underlying skeletal muscle",
+      "placeholder": "as seen on the paraffin sections",
       "default": "",
-      "help": "Leave blank for the scenario default."
+      "help": "Leave blank for the scenario default, which follows the organ for a margin."
     },
     {
       "id": "additionalNotes",
