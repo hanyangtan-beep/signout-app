@@ -124,3 +124,23 @@ Fields: specimen name, clinical note (optional), microscopy (free text, seeded "
 - Vocabulary the site lists were missing, each measured: `angular` / `angularis` → the incisura (20 cases write "Angular" against 57 writing "Incisura"; it reaches the subsite pick-list, so a part written "Angular" pre-fills "Incisura angularis"); `caecal` / `cecal` on colonic_polyp (36 pieces, 33 coded as biopsies); `sector` on prostate_biopsy as a procedure word (91 pieces, every one coded B3 — a systematic core, not a TURP); `hemithyroid` on thyroid_benign (a lobectomy specimen written without "-ectomy", which would otherwise have been read as an FNA).
 - Effect. Over the 60 commonest specimen texts in the export (73 parts): 59 confident and 14 generic, against 52 and 21 before, and the one-part cases that produced nothing at all now produce a part. `Sputum` and `Vault` stay generic because no respiratory or vault-cytology template exists yet (Later).
 - Tests. Four new intake tests (unlettered single and multi-part pastes, the null category and repeat, the `bare` flag with its deliberate non-flags, and the missing vocabulary), plus the 26-part overflow and the reworked empty-paste contract in test 570. Golden fixtures untouched; `tests/fixtures/intake/cases.json` untouched; 1145 tests.
+
+## House subsite abbreviations
+
+`match.siteAbbrev` holds short forms for a subsite — AC, DC, TC, HF, ICV on the three colorectal
+templates. They are scored as a site hit only when the part also names something a specimen is taken
+for (polyp, tumour, mass, lesion, biopsy, cancer, ESD, EMR, SMT, scar, ulcer, erosion, stricture,
+colitis). Two letters are too weak to stand alone: in the 2021-2026 biopsy export AC is also the
+acromioclavicular joint and an axillary clearance margin, so an ungated "AC" put an orthopaedic
+specimen on a colon template.
+
+Counted in that export, each of the five appears only in colorectal context — AC 10 rows, ICV 7,
+TC 6, DC 4, HF 2. Deliberately excluded on the same evidence: **AV** is the aortic valve and an
+arteriovenous fistula there as often as the anal verge, and **SC** is the squamocolumnar junction,
+never sigmoid colon. Nothing is lost by omitting AV, because "Rectum, 2cm from AV" already matches on
+"Rectum". The exclusion is asserted against the schema rather than against behaviour, because a rival
+template outscores the colon on those phrases anyway — a behavioural test would stay green if the
+exclusion were reverted.
+
+Before this, an eleven-part screening colonoscopy written in house shorthand arrived with one
+template suggested and ten parts on the generic form.

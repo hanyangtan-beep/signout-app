@@ -120,7 +120,7 @@
         <label for="meta-specimen">Specimen</label>
         <textarea class="input mono" id="meta-specimen" rows="3" placeholder="History&#10;Fibroids&#10;&#10;Specimen&#10;(A) Right fallopian tube, resection, (B) Left fallopian tube, resection and (C) Uterus, resection" spellcheck="false"></textarea>
         <div class="lis-row">
-          <button class="btn ghost small" id="btn-lis-capture" type="button" title="Read the clipboard into the case. A payload from the bridge script fills every box at once; a plain copy fills the next empty box.">Capture from LIS</button>
+          <button class="btn ghost small" id="btn-lis-capture" type="button" title="Cmd/Ctrl + Shift + V. Read the clipboard into the case: a payload from the bridge script fills every box at once, a plain copy fills the next empty box.">Capture from LIS</button>
           <span class="muted lis-hint" id="lis-hint">or paste the specimen list; parts and templates are suggested below</span>
           <span class="muted lis-status" id="lis-status-capture"></span>
         </div>
@@ -186,7 +186,7 @@
 
   <footer class="statusbar">
     <span id="status-template"></span>
-    <span class="hint">Number keys pick options in the focused field. Cmd/Ctrl+Shift+C copies the diagnosis, Cmd/Ctrl+Enter the full report.</span>
+    <span class="hint">Number keys pick options in the focused field. Cmd/Ctrl+Shift+V captures from the LIS, Cmd/Ctrl+Shift+C copies the diagnosis, Cmd/Ctrl+Enter the full report.</span>
     <span id="status-save">Not saved to Drive.</span>
   </footer>
 

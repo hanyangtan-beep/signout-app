@@ -55,6 +55,13 @@
       "splenic flexure",
       "rectosigmoid"
     ],
+    "siteAbbrev": [
+      "AC",
+      "DC",
+      "TC",
+      "HF",
+      "ICV"
+    ],
     "procedure": [
       "hemicolectomy",
       "colectomy",

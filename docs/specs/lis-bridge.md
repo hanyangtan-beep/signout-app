@@ -108,6 +108,15 @@ system, so a name or HKID that travelled with it is worth flagging at the moment
 
 ## First run
 
+### Getting the harvest into the app
+
+The script's hotkeys are registered inside `#HotIf WinActive(LIS_WIN)`, so none of them fire anywhere
+but the LIS. The return leg is therefore an app-side shortcut: **Cmd/Ctrl+Shift+V** does exactly what
+the **Capture from LIS** button does. It is ignored while the caret is in a text box, where that
+combination is the browser's own paste-without-formatting.
+
+So the round trip is Ctrl+Alt+H in the LIS, alt-tab, Ctrl+Shift+V in the app.
+
 ### The screen table
 
 `FIELDS` in the script is the report entry screen, one row per field in `Ctrl+]` order. It is the

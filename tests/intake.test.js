@@ -139,6 +139,60 @@ test('matcher: an organ with one routine operation beats its carcinoma twin unti
   assert.notEqual(one('Gallbladder', 'CA gallbladder').tier, 'confident');
 });
 
+test('matcher: house subsite abbreviations need a specimen word beside them', () => {
+  const one = (text, history = '') => matchParts(parseIntake(text), history, manifest)[0];
+  // Counted in the 2021-2026 biopsy export, where each of these appears only in colorectal context:
+  // AC 10 rows, ICV 7, TC 6, DC 4, HF 2. Before this they matched no site list and every part after
+  // the first fell to the generic form - an eleven-part screening colonoscopy arrived with one
+  // template suggested and ten blanks.
+  for (const text of ['DC polyp 1', 'AC polyp 2', 'TC polyps', 'HF polyp 1', 'ICV biopsy', 'AC cancer', 'ICV SMT', 'DC tumour']) {
+    assert.equal(one(text, 'Screening for colonic polyps').templateId, 'colonic_polyp', `${text}`);
+  }
+  // Two letters are weak evidence, so the abbreviation only counts when the part also names what was
+  // taken. In the same corpus AC is the acromioclavicular joint and an axillary clearance margin.
+  for (const text of ['AC joint, excision', 'superior AC final margin', 'AC', 'DC']) {
+    const m = one(text);
+    assert.notEqual(m.templateId, 'colonic_polyp', `${text} is not a colonic polyp`);
+    assert.notEqual(m.templateId, 'colon_resection', `${text} is not a colon resection`);
+  }
+  // Excluded on the same evidence: in this corpus AV is the aortic valve and an arteriovenous
+  // fistula as often as the anal verge, and SC is the squamocolumnar junction, never sigmoid colon.
+  // "Rectum, 2cm from AV" already matches on "Rectum", so the anal verge loses nothing. Asserted on
+  // the schema rather than on behaviour, because a rival template happens to outscore the colon on
+  // these phrases either way - which would let the exclusion be reverted with every test still green.
+  const ambiguous = ['AV', 'SC', 'LN', 'GU', 'POD', 'IC'];
+  for (const t of manifest) {
+    const abbrev = t.match?.siteAbbrev || [];
+    for (const a of ambiguous) {
+      assert.ok(!abbrev.includes(a), `${t.id} lists ${a}, which is not a subsite in this corpus`);
+    }
+  }
+  assert.equal(one('Rectum, 2cm from AV, biopsy').templateId, 'colonic_polyp');
+  assert.notEqual(one('Aortic valve, replacement').templateId, 'colonic_polyp');
+  assert.notEqual(one('Stomach, SC junction biopsy').templateId, 'colonic_polyp');
+  // Every abbreviation that is declared must be short enough to need the gate; a full word here
+  // would silently stop matching when the part names no specimen.
+  for (const t of manifest) {
+    for (const a of t.match?.siteAbbrev || []) {
+      assert.ok(a.length <= 4, `${t.id}: "${a}" is a word, and belongs in match.site`);
+    }
+  }
+  // A word boundary keeps the short forms out of longer abbreviations that share their letters.
+  assert.notEqual(one('Left breast, DCIS, mastectomy', 'DCIS on core').templateId, 'colonic_polyp');
+  assert.notEqual(one('Skin, left cheek, SCC, excision').templateId, 'colonic_polyp');
+});
+
+test('matcher: an eleven-part screening colonoscopy resolves every part', () => {
+  const specimen = '(A) Caecal polyp, (B) DC polyp 1, (C) DC polyp 2, (D) DC polyp 3, (E) DC polyp 4, '
+    + '(F) DC polyp 5, (G) DC polyp 6, (H) DC polyp 7, (I) DC polyp 8, (J) DC polyp 9 and (K) DC polyp 10';
+  const parsed = parseIntake(specimen);
+  assert.equal(parsed.parts.length, 11);
+  const rows = matchParts(parsed, 'Colonic polyp\nScreening for colonic polyps', manifest);
+  assert.equal(rows.length, 11);
+  for (const r of rows) assert.equal(r.templateId, 'colonic_polyp', `(${r.label}) ${r.text}`);
+  for (const r of rows) assert.equal(r.tier, 'confident', `(${r.label}) should not need a choice`);
+});
+
 test('matcher: export vocabulary that matched no site list', () => {
   const one = (text, history = '') => matchParts(parseIntake(text), history, manifest)[0];
   assert.equal(one('Caecal Polyp').templateId, 'colonic_polyp');                    // 36 pieces, 33 biopsies

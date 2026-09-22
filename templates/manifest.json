@@ -120,6 +120,13 @@
           "caecal",
           "cecal"
         ],
+        "siteAbbrev": [
+          "AC",
+          "DC",
+          "TC",
+          "HF",
+          "ICV"
+        ],
         "procedure": [
           "polypectomy",
           "biopsy",
@@ -306,6 +313,13 @@
           "ileocaecal",
           "TI",
           "random colon"
+        ],
+        "siteAbbrev": [
+          "AC",
+          "DC",
+          "TC",
+          "HF",
+          "ICV"
         ],
         "procedure": [
           "biopsy",
@@ -1951,6 +1965,13 @@
           "hepatic flexure",
           "splenic flexure",
           "rectosigmoid"
+        ],
+        "siteAbbrev": [
+          "AC",
+          "DC",
+          "TC",
+          "HF",
+          "ICV"
         ],
         "procedure": [
           "hemicolectomy",

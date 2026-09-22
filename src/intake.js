@@ -158,6 +158,15 @@ const termRe = (term) => {
 };
 const hits = (terms, text) => (terms || []).filter((t) => termRe(t).test(text)).length;
 
+// `match.siteAbbrev`: house short forms for a subsite - "DC polyp 1", "AC cancer", "ICV SMT". They
+// are too short to stand on their own: in the 2021-2026 biopsy export AC is also the
+// acromioclavicular joint and an axillary clearance margin. So an abbreviation only counts as a site
+// hit when the part also names something a specimen is actually taken for. A full site word
+// ("descending colon") never needs this and is matched by `match.site` as before.
+const ABBREV_CTX = /\b(polyps?|polypectomy|tumours?|tumors?|mass|masses|lesions?|biopsy|biopsies|cancer|carcinomas?|adenomas?|ESD|EMR|SMT|scar|ulcers?|erosions?|stricture|colitis)\b/i;
+const siteHitsFor = (mt, text) =>
+  hits(mt.site, text) + (mt.siteAbbrev && ABBREV_CTX.test(text) ? hits(mt.siteAbbrev, text) : 0);
+
 const BREAST_MARGINS = ['Superior', 'Inferior', 'Medial', 'Lateral', 'Anterior', 'Posterior'];
 
 /**
@@ -175,7 +184,7 @@ export function scorePart(part, ctx, manifest) {
   for (const t of manifest) {
     if (t.id === GENERIC_ID || !t.match) continue;
     const mt = t.match;
-    const siteHits = hits(mt.site, text);
+    const siteHits = siteHitsFor(mt, text);
     if (!siteHits) continue;
     let score = 2 * hits(mt.procedure, text) + 2 * Math.min(1, hits(mt.clinical, history)) - 4 * hits(mt.not, text) + (mt.bias || 0);
     if (resected && !biopsied && BIOPSY_KINDS.includes(t.kind)) score -= 3;
@@ -201,7 +210,7 @@ function roleOf(part, ctx, manifest) {
   if (ids.has('lymph_node') && !CYTO.test(text)) {
     const strong = NODE_STRONG.test(text);
     const startsWithNode = /^\s*(lymph\s*nodes?|nodes?)\b/i.test(text);
-    const otherSite = manifest.some((t) => !['lymph_node', 'lymph_node_fna', GENERIC_ID].includes(t.id) && t.match && hits(t.match.site, text) > 0);
+    const otherSite = manifest.some((t) => !['lymph_node', 'lymph_node_fna', GENERIC_ID].includes(t.id) && t.match && siteHitsFor(t.match, text) > 0);
     if (strong || (NODE.test(text) && (startsWithNode || !otherSite))) return { role: 'lymph_node', templateId: 'lymph_node' };
   }
   if (ids.has('breast_excision') && MARGIN.test(text) && !/\bbreast\b/i.test(text)) {

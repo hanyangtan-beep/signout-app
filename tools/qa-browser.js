@@ -291,6 +291,42 @@ await check('Capture from LIS routes a marked payload into the case boxes', asyn
   return got.status.trim();
 });
 
+// The bridge script's hotkeys are scoped to the LIS window and cannot reach this page, so without a
+// shortcut here the return leg is the only step of the LIS round trip that needs the mouse.
+await check('Cmd/Ctrl+Shift+V captures, and stays out of the way inside a text box', async () => {
+  await clearMeta(page);
+  await page.waitForTimeout(300);
+  const payload = '<<<SPECIMEN>>>\n(A) DC polyp 1 and (B) DC polyp 2\n\n<<<HISTORY>>>\nScreening for colonic polyps';
+  await page.evaluate((t) => navigator.clipboard.writeText(t), payload);
+  // Focus outside any field: the shortcut fires.
+  await page.evaluate(() => document.body.focus());
+  await page.keyboard.press('Control+Shift+V');
+  await page.waitForTimeout(400);
+  const got = await page.evaluate(() => document.querySelector('#meta-specimen').value);
+  assert(/DC polyp 1/.test(got), `the shortcut did not capture; specimen box held "${got}"`);
+
+  // Focus inside a real textarea. There Ctrl+Shift+V is paste-without-formatting and belongs to the
+  // browser, so the app must not take it: capturing a stray clipboard into the meta boxes instead of
+  // pasting where the caret is would be a wrong-field surprise, which is the one thing this bridge
+  // exists to avoid. (#meta-details is a <details> disclosure, not a field - the shortcut does fire
+  // there, and an earlier version of this check failed because it focused that by mistake.)
+  await clearMeta(page);
+  await page.waitForTimeout(300);
+  await page.evaluate(() => navigator.clipboard.writeText('<<<SPECIMEN>>>\nShould not arrive'));
+  // The history box lives inside the collapsed disclosure, and a hidden textarea cannot take focus -
+  // the first version of this check pressed the key with focus still on <body> and read the app's
+  // correct behaviour as a failure. Open it, then assert focus actually moved before pressing.
+  await page.evaluate(() => { document.querySelector('#meta-details').open = true; });
+  await page.focus('#meta-clinical');
+  const focused = await page.evaluate(() => document.activeElement?.id);
+  assert(focused === 'meta-clinical', `focus was on "${focused}", so this proves nothing`);
+  await page.keyboard.press('Control+Shift+V');
+  await page.waitForTimeout(350);
+  const after = await page.evaluate(() => document.querySelector('#meta-specimen').value);
+  assert(!/Should not arrive/.test(after), 'the shortcut fired while typing in a field');
+  return 'fires outside a field, ignored inside one';
+});
+
 await check('an unmarked copy fills the next empty box in order', async () => {
   await clearMeta(page);
   await page.waitForTimeout(300);

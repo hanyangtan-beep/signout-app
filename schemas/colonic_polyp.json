@@ -47,6 +47,13 @@
    "caecal",
    "cecal"
   ],
+  "siteAbbrev": [
+   "AC",
+   "DC",
+   "TC",
+   "HF",
+   "ICV"
+  ],
   "procedure": [
    "polypectomy",
    "biopsy",

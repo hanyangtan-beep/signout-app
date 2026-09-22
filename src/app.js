@@ -2102,6 +2102,12 @@ function initKeys() {
     if (mod && e.shiftKey && (e.key === 'C' || e.key === 'c')) { e.preventDefault(); doCopy(state.lastOut.diagnosis, 'Diagnosis'); }
     else if (mod && !e.shiftKey && (e.key === 's' || e.key === 'S')) { e.preventDefault(); doSave(); }
     else if (mod && e.key === 'Enter') { e.preventDefault(); doCopy(state.lastOut.report, 'Full report'); }
+    // Ctrl+Shift+V pairs with the bridge script's Ctrl+Alt+H: harvest in the LIS, alt-tab, one key
+    // here. The script's own hotkeys are scoped to the LIS window and cannot reach this page, so
+    // without this the return leg is the only step in the round trip that needs the mouse. Not while
+    // typing: in a text box Ctrl+Shift+V is paste-without-formatting, and capturing a stray clipboard
+    // into the meta boxes instead of pasting it where the caret is would be a wrong-field surprise.
+    else if (mod && e.shiftKey && !typing && (e.key === 'V' || e.key === 'v')) { e.preventDefault(); captureFromLis(); }
     else if (e.altKey && e.key === 'ArrowRight') { e.preventDefault(); state.activePart = Math.min(state.activePart + 1, state.caseState.parts.length - 1); render(); }
     else if (e.altKey && e.key === 'ArrowLeft') { e.preventDefault(); state.activePart = Math.max(0, state.activePart - 1); render(); }
     else if (e.altKey && e.key === 'ArrowDown') { e.preventDefault(); jumpToUnset(1); }
