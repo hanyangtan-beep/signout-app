@@ -1,6 +1,7 @@
 {
  "id": "thyroid_fna",
  "version": 1,
+ "style": { "british": true },
  "name": "Thyroid FNA (Bethesda 2023)",
  "shortName": "Thyroid · FNA",
  "label": "Thyroid FNA",

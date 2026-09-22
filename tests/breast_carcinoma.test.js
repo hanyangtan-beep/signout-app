@@ -164,10 +164,10 @@ test('biomarkers: prior core summary, performed on this specimen (Allred, HER2, 
   const prior = rows(run({}));
   assert.equal(prior['Biomarker studies'], 'Reported on the prior core biopsy (S26-01234): ER positive (90%, strong), PR positive (60%, moderate), HER2 negative (score 1+), Ki-67 15%');
   const done = run(byName['02-wle-nst-grade1-biomarkers-performed'].patch);
-  assert.match(done.synoptic, /- Estrogen receptor: Positive\n  - Intensity: Strong \(3\)\n  - Positive nuclei\(%\): >2\/3 \(5\)\n/);
+  assert.match(done.synoptic, /- Oestrogen receptor: Positive\n  - Intensity: Strong \(3\)\n  - Positive nuclei\(%\): >2\/3 \(5\)\n/);
   assert.match(done.synoptic, /- HER2\/neu oncoprotein IHC: Negative for over-expression\n  - Score: [\s\S]*?\(Score 1\+\)\n/);
   assert.match(done.synoptic, /- Proliferation index Ki67 \(%\): 10\n/);
-  assert.match(done.synoptic, /- Cold ischemia time: 45 min\n  - Optimal \(<= 60 min\)\.\n/);
+  assert.match(done.synoptic, /- Cold ischaemia time: 45 min\n  - Optimal \(<= 60 min\)\.\n/);
   assert.match(done.synoptic, /- Fixation time in buffered formalin: 24 hours\n  - Optimal fixation \(6-72 hours\)\.\n/);
   assert.match(done.synoptic, /guidelines\.\n- Test type: Laboratory-developed test \(QMH, HK\)\.\n/, 'Test type starts its own line');
   assert.equal(rows(run({ biomarkers: 'Requested; to be reported separately' }))['Biomarker studies'], 'Requested; to be reported separately');

@@ -1,6 +1,7 @@
 {
  "id": "salivary_fna",
  "version": 1,
+ "style": { "british": true },
  "name": "Salivary gland FNA (Milan)",
  "shortName": "Salivary gland · FNA",
  "label": "Salivary gland FNA",

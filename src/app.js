@@ -14,6 +14,7 @@ import { normaliseAccession, phiWarnings } from './docformat.js';
 import { buildPayload, payloadKeys, payloadLabel, parseHarvest, nextCaptureTarget } from './lisbridge.js';
 import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js';
 import { applyMacroToCase } from './macroparse.js';
+import { britishise } from './style.js';
 import { spanFull, groupProgress as progressOf } from './formlayout.js';
 import { organIcon, mountOrganSprite } from './organicons.js';
 import { wizardSteps, wizardSupported, wizardProgress, visibleSteps, stepAnswered, atDefault, cautions } from './cnswizard.js';
@@ -664,7 +665,7 @@ function renderCaseFields() {
     const commit = (e) => { markDirty(); state.caseState[f.id] = e.target.value; renderReport(); cacheCase(state.caseState); };
     const input = f.type === 'select'
       ? el('select', { class: 'input', id, onchange: commit },
-        ...(f.options || []).map((o) => el('option', { value: o, text: o, selected: (state.caseState[f.id] || f.default || '') === o })))
+        ...(f.options || []).map((o) => el('option', { value: o, text: labelFor(f, o), selected: (state.caseState[f.id] || f.default || '') === o })))
       : el('input', {
         class: 'input', id, type: 'text', placeholder: f.placeholder || '', value: state.caseState[f.id] || '',
         oninput: commit
@@ -701,9 +702,13 @@ function renderTabs() {
   nodes.addPart.title = `Add part ${LETTERS_NEXT(parts.length)} (${schema().name})`;
 }
 
+// Display only. The stored value keeps the schema's spelling (a saved case holds site "Cecum"), so
+// the picker would otherwise read "Cecum" while the report printed CAECUM. Respelling on the way to
+// the screen keeps the two consistent without renaming an option and orphaning saved cases.
 function labelFor(field, value) {
   if (field.optionLabels && value in field.optionLabels) return field.optionLabels[value];
-  return value === '' ? '—' : value;
+  if (value === '') return '—';
+  return schema()?.style?.british ? britishise(value) : value;
 }
 
 // Optional per-field visual reference (schema `field.reference`): a collapsible comparison panel of

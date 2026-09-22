@@ -12,11 +12,14 @@ function brCase(n = 1) { return createCase(schema, n); }
 function part(cs, i, values) { Object.assign(cs.parts[i].values, values); return cs; }
 const run = (cs) => generate(schema, generator, cs);
 
-test('breast template is registered with the britishiser off (biomarker block must stay verbatim)', () => {
+test('breast template is registered with the britishiser on', () => {
   assert.equal(schema.generator, 'breast');
   assert.equal(schema.shortName, 'Breast · core biopsy');
   assert.equal(schema.label, 'Breast');
-  assert.equal(schema.style.british, false);
+  // Phase 4 set this false to keep the source biomarker block verbatim. Reversed on request: the
+  // same block is shared with breast_carcinoma and breast_dcis, which were already British, so the
+  // opt-out printed one template's biomarkers differently from the other two.
+  assert.equal(schema.style.british, true);
   assert.ok(schema.fields.some((f) => f.id === 'category'));
 });
 
@@ -107,6 +110,9 @@ test('axillary lymph node core: organ line without a B code', () => {
 
 // ---- Biomarker block: verbatim port of the CancerReportingTemplate breast biomarkers page ----
 
+// biomarkerReport() is the raw block, upstream of applyStyle, so the source spelling is asserted
+// here on purpose: "Estrogen", "tumor", "ischemia", "signaling". The respelling is the style layer's
+// job and is asserted through generate() in the test below.
 test('biomarker block prints the template lines verbatim, with optimal pre-analytics meeting ASCO/CAP', () => {
   const text = biomarkerReport({
     er: 'Positive (>10% positive nuclei)', erIntensity: 'Strong staining (3)', erNuclei: '66-100% (5)',
@@ -178,13 +184,15 @@ test('ER comments: internal controls absent and low positive', () => {
   assert.ok(biomarkerReport({ er: 'Low Positive (1-10% positive nuclei)' }).includes('The cancer in this sample has a low level (1-10%) of ER expression by IHC.'));
 });
 
-test('biomarker block is appended to the part microscopy unchanged (no British respelling of tumor/estrogen)', () => {
+test('biomarker block is appended to the part microscopy, respelled to British', () => {
   const cs = part(brCase(1), 0, { category: 'B5b', biomarkers: 'Performed', er: 'Positive (>10% positive nuclei)', her2Ihc: 'Negative for over-expression',
     her2Score: 'Incomplete membrane staining that is faint / barely perceptible and in greater than 10% of tumor cells (Score 1+)', coldIschemia: '30', fixationTime: '24' });
   const out = run(cs);
-  assert.ok(out.microscopy.includes('Lymphovascular invasion is not identified. Biomarkers results are as follows:\n- Estrogen receptor: Positive (>10% positive nuclei)\n- HER2/neu oncoprotein IHC: Negative for over-expression\n  - Score : Incomplete membrane staining that is faint / barely perceptible and in greater than 10% of tumor cells (Score 1+)\n\n- Cold ischemia time : 30 min'));
+  assert.ok(out.microscopy.includes('Lymphovascular invasion is not identified. Biomarkers results are as follows:\n- Oestrogen receptor: Positive (>10% positive nuclei)\n- HER2/neu oncoprotein IHC: Negative for over-expression\n  - Score : Incomplete membrane staining that is faint / barely perceptible and in greater than 10% of tumour cells (Score 1+)\n\n- Cold ischaemia time : 30 min'));
   assert.ok(out.microscopy.includes('tumour cells arranged in cords'), 'house prose stays British');
-  assert.ok(!out.microscopy.includes('oestrogen') && !out.microscopy.includes('tumour cells (Score 1+)'));
+  assert.ok(!/\bEstrogen\b/.test(out.microscopy) && !/\btumor\b/.test(out.microscopy) && !/\bischemia\b/.test(out.microscopy));
+  // The option value the case holds is untouched; only the printed line is respelled.
+  assert.match(cs.parts[0].values.her2Score, /tumor cells \(Score 1\+\)/);
   assert.ok(out.microscopy.trimEnd().endsWith('(IHC 0 results do not result in eligibility currently).'));
   const off = run(part(brCase(1), 0, { category: 'B5b', biomarkers: 'Not performed', er: 'Negative' }));
   assert.ok(!off.microscopy.includes('Biomarkers'));

@@ -74,10 +74,41 @@ test('style layer: ASCII normalisation and case-preserving British spelling', ()
   assert.equal(applyStyle('a\n\n\n\nb  '), 'a\n\nb');
 });
 
-test('legacy schemas keep American spelling (parity) unless style.british is set', () => {
+test('every schema prints British spelling, and the stored value is left American', () => {
+  // The layer rewrites the printed text, not the saved case. A case saved before the change still
+  // holds site "Cecum" - renaming the option would have orphaned it - and now prints CAECUM.
   const c = createCase(colonic.schema, 1);
   c.parts[0].values.site = 'Cecum';
-  assert.match(generate(colonic.schema, colonic.generator, c).diagnosis, /CECUM, Cecum polyp/);
-  const british = { ...colonic.schema, style: { british: true } };
-  assert.match(generate(british, colonic.generator, c).diagnosis, /CAECUM, Caecum polyp/);
+  assert.equal(colonic.schema.style.british, true);
+  assert.match(generate(colonic.schema, colonic.generator, c).diagnosis, /CAECUM, Caecum polyp/);
+  assert.ok(colonic.schema.fields.find((f) => f.id === 'site').options.includes('Cecum'),
+    'the option value stays as saved cases hold it');
+  const off = { ...colonic.schema, style: { british: false } };
+  assert.match(generate(off, colonic.generator, c).diagnosis, /CECUM, Cecum polyp/, 'the flag is what does it');
+});
+
+test('no template is left on American spelling', async () => {
+  const { readdirSync, readFileSync } = await import('node:fs');
+  const missing = [];
+  for (const f of readdirSync('schemas').filter((x) => x.endsWith('.json'))) {
+    const d = JSON.parse(readFileSync(`schemas/${f}`, 'utf8'));
+    if (!d.id || !d.fields) continue;
+    if (!(d.style || {}).british) missing.push(d.id);
+  }
+  assert.deepEqual(missing, [], 'these schemas would print American spelling');
+});
+
+test('the britishiser leaves house exceptions alone', async () => {
+  const { britishise, BRITISH } = await import('../src/style.js');
+  // House wording is "fetal", not "foetal", and Mullerian is an eponym rather than an Americanism.
+  assert.equal(britishise('Fetal membranes are unremarkable.'), 'Fetal membranes are unremarkable.');
+  assert.equal(britishise('malignant mixed Mullerian tumor'), 'malignant mixed Mullerian tumour');
+  for (const w of ['fetal', 'mullerian', 'her2', 'erbb2']) assert.ok(!(w in BRITISH), `${w} must not be in the map`);
+  // Whole-word only: these are not American spellings and must survive intact.
+  for (const w of ['colorectal', 'colostomy', 'colour', 'centre', 'fibre']) assert.equal(britishise(w), w);
+  // The words found reaching reports through the breast biomarker block.
+  assert.equal(britishise('Estrogen receptor'), 'Oestrogen receptor');
+  assert.equal(britishise('Cold ischemia time'), 'Cold ischaemia time');
+  assert.equal(britishise('Cold ischemic time is uncertain.'), 'Cold ischaemic time is uncertain.');
+  assert.equal(britishise('HER2 signaling'), 'HER2 signalling');
 });

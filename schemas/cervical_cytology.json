@@ -1,6 +1,7 @@
 {
  "id": "cervical_cytology",
  "version": 1,
+ "style": { "british": true },
  "name": "Cervical cytology (Bethesda 2014)",
  "shortName": "Cervix · cytology",
  "label": "Cervical smear",

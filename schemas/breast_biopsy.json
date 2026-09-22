@@ -49,7 +49,7 @@
  "defaultParts": 1,
  "generator": "breast",
  "style": {
-  "british": false
+  "british": true
  },
  "caseFields": [],
  "options": [

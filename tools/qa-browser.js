@@ -202,6 +202,22 @@ await check('prose microscopy opens with the house phrase', async () => {
   return 'colonic_polyp microscopy opens correctly';
 });
 
+// The polyp template is already loaded with its example case by the check above.
+await check('the picker and the report agree on British spelling', async () => {
+  const report = await page.locator('#report-blocks').innerText();
+  assert(/CAECUM/.test(report), 'the report does not print CAECUM');
+  assert(!/\bCECUM\b/.test(report), 'the report still prints CECUM');
+  // The stored value stays "Cecum" so old saved cases still resolve; only the visible text changes.
+  const site = page.locator('select').filter({ has: page.locator('option', { hasText: 'Caecum' }) }).first();
+  assert((await site.count()) === 1, 'no Site dropdown offers a Caecum label');
+  const values = await site.locator('option').evaluateAll((os) => os.map((o) => o.value));
+  const labels = await site.locator('option').evaluateAll((os) => os.map((o) => o.textContent));
+  assert(values.includes('Cecum'), `stored option value changed: ${values.slice(0, 3).join(', ')}`);
+  assert(labels.includes('Caecum'), `label not respelled: ${labels.slice(0, 3).join(', ')}`);
+  assert(!labels.includes('Cecum'), 'an American label is still shown');
+  return 'picker shows Caecum, stored value stays Cecum';
+});
+
 await check('settings dialog opens and holds the Drive fields', async () => {
   await page.click('#btn-settings');
   await page.waitForSelector('#dlg-settings[open]', { timeout: 5000 });

@@ -1,6 +1,7 @@
 {
  "id": "colonic_polyp",
  "version": "2026.09",
+ "style": { "british": true },
  "name": "Colonic polyp",
  "shortName": "Colon · polyp",
  "label": "Colonic polyp",

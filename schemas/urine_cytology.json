@@ -1,6 +1,7 @@
 {
  "id": "urine_cytology",
  "version": 1,
+ "style": { "british": true },
  "name": "Urine cytology (Paris System 2.0)",
  "shortName": "Urine · cytology",
  "label": "Urine cytology",

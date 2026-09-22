@@ -1,6 +1,7 @@
 {
  "id": "nasopharyngeal_biopsy",
  "version": "2026.09",
+ "style": { "british": true },
  "name": "Nasopharyngeal biopsy",
  "shortName": "Nasopharynx · biopsy",
  "label": "NPC",

@@ -1,6 +1,12 @@
 // Style layer: LIS-safe plain text. Applied to every generated block.
-// British spelling is opt-in per schema (`style.british: true`) so legacy wording
-// (e.g. "Cecum") stays byte-identical until you decide to change it.
+//
+// British spelling is per-schema (`style.british: true`). It began as opt-in so legacy wording
+// stayed byte-identical; every template now opts in, so the flag records that each one was
+// converted deliberately rather than swept up by a default. A new template must set it.
+//
+// The layer rewrites the PRINTED text, not the stored value: a saved case still holds site
+// "Cecum" and still prints CAECUM. Option labels are left alone for the same reason - renaming
+// them would orphan every case already saved against the old string.
 
 const ASCII_MAP = [
   [/[\u2018\u2019\u201A\u201B\u2032]/g, "'"],
@@ -28,8 +34,20 @@ export const BRITISH = {
   gynecological: 'gynaecological', pediatric: 'paediatric', diarrhea: 'diarrhoea', dyskeratosis: 'dyskeratosis',
   favorable: 'favourable', unfavorable: 'unfavourable', behavior: 'behaviour', characterized: 'characterised',
   organized: 'organised', localized: 'localised', generalized: 'generalised', vascularized: 'vascularised',
-  keratinized: 'keratinised', ulcerated: 'ulcerated', fibrosed: 'fibrosed', analyzed: 'analysed', gray: 'grey'
+  keratinized: 'keratinised', ulcerated: 'ulcerated', fibrosed: 'fibrosed', analyzed: 'analysed', gray: 'grey',
+  // Found by scanning every printed option label, generator string and fixture report for an American
+  // form the map did not cover. All five were reaching released reports, through the breast
+  // biomarker block and the HER2 comment.
+  estrogen: 'oestrogen', estrogens: 'oestrogens', ischemia: 'ischaemia', ischemic: 'ischaemic',
+  signaling: 'signalling'
 };
+
+// Deliberately NOT in the map, checked against it by test:
+//   fetal    - house wording is "fetal", not "foetal".
+//   Mullerian - an eponym, not an Americanism.
+// Eponyms, gene and protein symbols, and the titles of external documents (QMH template names, CAP
+// protocol names, FIGO and WHO citations) must survive this layer unchanged. Those titles are held in
+// schema `source` fields and are never printed into a report, so they never reach britishise().
 
 /** Normalise to plain ASCII the LIS will accept. Keeps line breaks. */
 export function toAscii(text) {

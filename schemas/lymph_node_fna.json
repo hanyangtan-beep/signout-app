@@ -1,6 +1,7 @@
 {
  "id": "lymph_node_fna",
  "version": 1,
+ "style": { "british": true },
  "name": "Lymph node FNA / EBUS-TBNA (Sydney)",
  "shortName": "Lymph node · FNA",
  "label": "Lymph node FNA",

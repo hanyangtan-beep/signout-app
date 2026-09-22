@@ -95,8 +95,8 @@ test('02 mastectomy with Paget disease of the nipple and biomarkers on this spec
   assert.equal(r['Nipple'], "Paget's disease present");
   assert.equal(r['Nuclear grade'], 'Grade III (high)');
   assert.equal(r['pTNM'], 'pTis(DCIS) pN0(sn)');
-  assert.match(out.synoptic, /- Estrogen receptor: Negative, Internal control cells present and stain as\n  expected\n  - Intensity: Negative \(0\)\n/);
-  assert.match(out.synoptic, /- Cold ischemia time: 30 min\n/);
+  assert.match(out.synoptic, /- Oestrogen receptor: Negative, Internal control cells present and stain as\n  expected\n  - Intensity: Negative \(0\)\n/);
+  assert.match(out.synoptic, /- Cold ischaemia time: 30 min\n/);
   assert.match(out.synoptic, /- Fixation time in buffered formalin: 48 hours\n/);
   assert.equal(flatDx(out), "BREAST, left, total mastectomy - DUCTAL CARCINOMA IN SITU, high grade, 55 mm; Paget's disease of the nipple; margins clear (all greater than 10 mm); no invasive carcinoma identified; see synoptic report - 0 of 2 sentinel lymph nodes involved - pTis(DCIS) pN0(sn) (AJCC 8th edition), stage 0 (if cM0)", 'a stage group prints once the nodes are staged');
   assert.ok(info(out).some((m) => /^DCIS with Paget disease of the nipple: pTis\(DCIS\)/.test(m)));

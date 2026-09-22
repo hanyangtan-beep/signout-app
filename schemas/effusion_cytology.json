@@ -1,6 +1,7 @@
 {
  "id": "effusion_cytology",
  "version": 1,
+ "style": { "british": true },
  "name": "Effusion cytology (International System)",
  "shortName": "Serous fluid · cytology",
  "label": "Effusion",
