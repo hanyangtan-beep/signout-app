@@ -59,6 +59,16 @@ warning instead of a box that mysteriously stays empty.
 round-trip test that splits a built payload with the same pattern the script uses, so a one-sided
 change fails a test first.
 
+Those tests also read `tools/lis-bridge.ahk` as text, because nothing here can run AutoHotkey. They
+assert the script's own splitting pattern accepts every marker the app emits, that its harvest
+labels all reach a box, that it sends in event mode with a key delay and pastes rather than types,
+that field advance is Ctrl+] and auto-advance ships off, and that `LIS_WIN` carries a title rather
+than bare `wfica32.exe`. They also assert **no variable shares a name with a function**: AutoHotkey
+names are case-insensitive, and the first version shipped with a `HARVEST` array above a `Harvest()`
+function, which the launcher rejected outright with "This Func cannot be used as an output
+variable". Every JavaScript test passed and the script was dead on arrival — the half of this
+feature that runs on Windows needs its own guards.
+
 ## Out: app to LIS
 
 `Copy for LIS` in the report column emits every block that has text, in report order, as one marked
@@ -95,10 +105,14 @@ system, so a name or HKID that travelled with it is worth flagging at the moment
 
 ## First run
 
-1. Double-click `tools/lis-bridge.ahk`. A syntax error shows immediately with a line number; a tray
+1. Set `LIS_WIN` to include the window title. `ahk_exe wfica32.exe` alone matches **every** published
+   application open on the machine, so the hotkeys would fire inside all of them. Title first, then
+   the criteria, one space between. `SetTitleMatchMode 2` means a fragment matches anywhere in the
+   real title, so use a short stable one — the house title carries a session id
+   (`anptq705---thy005`) that will not survive a reconnect, and a title that stops matching fails
+   silently: the script loads, the hotkeys do nothing.
+2. Double-click `tools/lis-bridge.ahk`. A syntax error shows immediately with a line number; a tray
    icon and nothing else means it loaded.
-2. Set `LIS_WIN` to include the window title. `ahk_exe wfica32.exe` alone matches **every** published
-   application open on the machine, so the hotkeys would fire inside all of them.
 3. Run `Ctrl+Alt+H` on a training case and paste the result into Notepad before clicking Capture.
    What you are checking is whether Ctrl+A selects inside the field or selects the whole screen. If
    the payload contains patient demographics, Ctrl+A is grabbing too much and the harvest needs to

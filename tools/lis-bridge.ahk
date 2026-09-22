@@ -35,13 +35,17 @@ SetKeyDelay 60, 50        ; raise both if characters go missing
 SetTitleMatchMode 2
 
 ; ---- settings -------------------------------------------------------------------------------
-LIS_WIN     := "ahk_exe wfica32.exe"   ; add the window title once you know it, e.g.
-                                       ; "ReportEntry ahk_exe wfica32.exe" — wfica32 alone
-                                       ; matches EVERY published app you have open
+; Title first, then ahk_exe, one space between. SetTitleMatchMode 2 above means the title only has
+; to appear somewhere in the real title, so use a short stable fragment — not a session or server id
+; that changes on reconnect, or the hotkeys silently stop firing. wfica32 alone would match EVERY
+; published app you have open.
+LIS_WIN     := "Anatomical Pathology ahk_exe wfica32.exe"
 FIELD_NEXT  := "^]"                    ; the LIS field-advance key
 CLIP_WAIT   := 300                     ; ms for Citrix to mirror a new clipboard into the session
 PASTE_WAIT  := 250                     ; ms after a paste before the next keystroke
-HARVEST     := ["SPECIMEN", "HISTORY", "MACRO"]
+; Not HARVEST: AutoHotkey names are case-insensitive, so that would collide with Harvest() below
+; and fail on load with "This Func cannot be used as an output variable". Guarded by a test.
+HARVEST_FIELDS := ["SPECIMEN", "HISTORY", "MACRO"]
 AUTO_NEXT   := false                   ; true = advance a field after each paste. Off on purpose:
                                        ; one wrong advance would put every later block in the wrong
                                        ; field. Turn it on only once the order is proven.
@@ -50,9 +54,9 @@ Q := { items: [], at: 0 }
 
 ; ---- harvest: LIS -> app --------------------------------------------------------------------
 Harvest() {
-    global HARVEST, FIELD_NEXT, PASTE_WAIT
+    global HARVEST_FIELDS, FIELD_NEXT, PASTE_WAIT
     payload := "", blank := 0
-    for i, label in HARVEST {
+    for i, label in HARVEST_FIELDS {
         A_Clipboard := ""
         Send "^a"
         Sleep 120
@@ -61,7 +65,7 @@ Harvest() {
         if (got = "")
             blank += 1
         payload .= "<<<" label ">>>`r`n" got "`r`n`r`n"
-        if (i < HARVEST.Length) {
+        if (i < HARVEST_FIELDS.Length) {
             Send FIELD_NEXT
             Sleep PASTE_WAIT
         }
@@ -71,10 +75,10 @@ Harvest() {
         Flash("Could not put the payload on the clipboard")
         return
     }
-    if (blank = HARVEST.Length)
+    if (blank = HARVEST_FIELDS.Length)
         Flash("All three fields came back empty.`nDid Ctrl+A select inside the field?")
     else
-        Flash("Harvested " (HARVEST.Length - blank) " of " HARVEST.Length " fields."
+        Flash("Harvested " (HARVEST_FIELDS.Length - blank) " of " HARVEST_FIELDS.Length " fields."
             . "`nSwitch to the app and click Capture from LIS.")
 }
 
