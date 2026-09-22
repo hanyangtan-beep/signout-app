@@ -4,6 +4,8 @@ Source: https://awiloqmh.github.io/CancerReportingTemplate/Biomarker-Breast-mark
 
 **Porting rule (user instruction 2026-09-10): the sign-out app's breast biomarker block must use these fields, option strings, output lines and pre-analytic logic exactly as they are here.** Do not rewrite into house prose; the only permitted change is the field-id naming used by the schema (map `A01` → `er` etc.) and British spelling is NOT applied to this block (the template text is reproduced verbatim).
 
+**Spelling override (user instruction 2026-09-22, commit 516e6e2): British spelling IS now applied to this block in printed reports.** `breast_biopsy` was flipped to `"style": {"british": true}` because the same generator feeds `breast_carcinoma` and `breast_dcis`, which were already British, so the one block was printing two spellings depending on the template it was called from. `estrogen`, `ischemia`, `ischemic` and `signaling` were added to the `BRITISH` map in `src/style.js`. The field labels, option strings, output line structure and pre-analytic logic above are still authoritative and still reproduced verbatim — only the respelling at print time differs. The source strings in this document and in `generators/breast_biomarkers.js` stay as written here, because `applyStyle` runs downstream of the generator; `tests/breast.test.js` asserts the generator's own output in source spelling and marks that boundary.
+
 ## Fields (form ids, labels, options)
 
 ### `A01` — Estrogen receptor (ER) IHC (select)
