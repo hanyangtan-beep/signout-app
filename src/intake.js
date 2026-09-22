@@ -295,6 +295,10 @@ export function presetValues(schema, part, match = {}) {
 /** Spelling variants folded before option matching (applied to option labels and part text alike). */
 const SITE_SPELLINGS = [
   [/\bcaec/g, 'cec'], [/\bileo-?caec/g, 'ileocec'], [/\boesophag/g, 'esophag'],
+  // The adjective and the noun name the same option. "Caecal polyp" was reaching a Site field whose
+  // option is "Caecum" and matching nothing, because the rule above only folds ae to e. Kept to the
+  // caecum and the rectum, the two whose adjective the requests actually use.
+  [/\bcecal\b/g, 'cecum'], [/\brectal\b/g, 'rectum'],
   [/\bgreater curv(ature)?\b/g, 'gc'], [/\blesser curv(ature)?\b/g, 'lc'],
   [/\brecto-?sigmoid( junction)?\b/g, 'rectosigmoid'], [/\bsigmoid colon\b/g, 'sigmoid'],
   [/\brandom colon(ic)?\b/g, 'random'], [/\bt\.?i\.?\b/g, 'terminal ileum'],
@@ -314,13 +318,43 @@ function siteTokens(s) {
   return x.split(/[^a-z0-9]+/).filter(Boolean);
 }
 
+// House short forms for a subsite, expanded before option matching. Kept separate from
+// SITE_SPELLINGS and applied only when the field's own options contain the expansion, because these
+// are two letters and mean other things elsewhere: AC is also the acromioclavicular joint and an
+// axillary clearance margin. A Site list that offers "Descending colon" is asking for a colonic
+// subsite and nothing else, so on that list the expansion is unambiguous; on any other list it never
+// fires. ICV is deliberately absent where no ileocaecal option exists - the valve is its own
+// landmark, and quietly rounding it to the caecum would put a site in the report the request did
+// not name.
+const SITE_ABBREV = [
+  [/\bac\b/g, 'ascending colon'], [/\bdc\b/g, 'descending colon'], [/\btc\b/g, 'transverse colon'],
+  [/\bhf\b/g, 'hepatic flexure'], [/\bsf\b/g, 'splenic flexure'], [/\bicv\b/g, 'ileocecal valve'],
+];
+
+// The gate is a whole-option match rather than a looser test on the first word. Both behave
+// identically on all 1048 option lists shipped today, so this is a statement of intent and not a
+// fix for an observed case: an option has to BE the expansion to receive it.
+function expandAbbrev(text, options) {
+  const opts = (options || []).map((o) => siteTokens(o).join(' '));
+  let out = String(text || '').toLowerCase();
+  for (const [re, to] of SITE_ABBREV) {
+    if (!re.test(out)) { re.lastIndex = 0; continue; }
+    re.lastIndex = 0;
+    const want = siteTokens(to).join(' ');
+    if (opts.some((o) => o === want)) out = out.replace(re, to);
+    re.lastIndex = 0;
+  }
+  return out;
+}
+
 /**
  * The option whose words all appear in the part text; the longest wins, a tie or an
  * "unspecified"-type option gives nothing. "Ascending colon, biopsy" → "Ascending colon";
  * "antrum" alone → nothing for ["Antrum, greater curvature", "Antrum, lesser curvature"].
+ * A house abbreviation is expanded first, but only into an option this field actually offers.
  */
 export function matchOption(options, text) {
-  const have = new Set(siteTokens(text));
+  const have = new Set(siteTokens(expandAbbrev(text, options)));
   if (!have.size) return '';
   let best = ''; let bestN = 0; let tie = false;
   for (const opt of options || []) {

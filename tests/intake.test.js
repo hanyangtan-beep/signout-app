@@ -257,6 +257,60 @@ test('matcher: clinical history decides between templates of the same organ', ()
   assert.equal(none.tier, 'choose');
 });
 
+test('presets: a house abbreviation reaches the Site field, but only where the field offers it', async () => {
+  const polyp = (await loadTemplate('colonic_polyp')).schema;
+  const ibd = (await loadTemplate('ibd_biopsy')).schema;
+  const site = (schema, text) => {
+    const m = matchParts(parseIntake(`(A) ${text}`), 'Screening for colonic polyps', manifest)[0];
+    return presetValues(schema, m, m).site;
+  };
+  // Matching the template was only half of it: the part still arrived with an empty Site field, so
+  // the subsite had to be picked eleven times by hand on a screening colonoscopy.
+  assert.equal(site(polyp, 'DC polyp 1'), 'Descending colon');
+  assert.equal(site(polyp, 'AC polyp 2'), 'Ascending colon');
+  assert.equal(site(polyp, 'TC polyps'), 'Transverse colon');
+  assert.equal(site(polyp, 'HF polyp 1'), 'Hepatic flexure');
+  // The adjective names the same option as the noun.
+  assert.equal(site(polyp, 'Caecal polyp'), 'Cecum');
+  assert.equal(site(polyp, 'Cecal polyp'), 'Cecum');
+  assert.equal(site(polyp, 'Rectal polyp'), 'Rectum');
+  // Unchanged: a full site word, and a bare organ word that names no subsite.
+  assert.equal(site(polyp, 'Descending colon polyp'), 'Descending colon');
+  assert.equal(site(polyp, 'Sigmoid polyp'), 'Sigmoid');
+  assert.equal(site(polyp, 'Colonic polyp'), undefined, 'no subsite named, so nothing to fill');
+  // The expansion is contained by the field: it fires only when this list offers the result. ICV is
+  // on the IBD list and not on the polyp list, so the polyp form is left for the reporter to set
+  // rather than rounded to the nearest neighbouring site.
+  assert.equal(site(ibd, 'ICV biopsy'), 'Ileocaecal valve');
+  assert.equal(site(polyp, 'ICV polyp'), undefined, 'no ileocaecal option here, so no guess');
+});
+
+test('presets: the abbreviations cannot leak onto a field that means something else by them', async () => {
+  const { matchOption } = await import('../src/intake.js');
+  // Expanding "AC" inserts the word "colon" into the text, and two shipped lists offer a bare
+  // "Colon" option - one of them a staging field. Ungated, "AC margin" on a Whipple would set
+  // pancreatic tumour extension to Colon, which is a pT change. So the expansion is asserted here
+  // against the real lists rather than a made-up one: these are the fields that would actually be
+  // hit. A synthetic list passed this test while the gate was removed.
+  const optionsOf = async (id, fieldId) => {
+    const schema = (await loadTemplate(id)).schema;
+    const fields = Array.isArray(schema.fields) ? schema.fields : Object.values(schema.fields || {}).flat();
+    return fields.find((f) => f.id === fieldId).options;
+  };
+  const pancreas = await optionsOf('pancreas_carcinoma', 'tumourExtension');
+  const gist = await optionsOf('gist_resection', 'tumourSite');
+  assert.ok(pancreas.includes('Colon') && gist.includes('Colon'), 'the bare Colon option moved; re-point this test');
+  for (const text of ['AC margin', 'DC segment', 'TC lesion', 'AC joint', 'post AC chemotherapy']) {
+    assert.equal(matchOption(pancreas, text), '', `pancreas extension took "${text}"`);
+    assert.equal(matchOption(gist, text), '', `GIST site took "${text}"`);
+  }
+  // Still works where it is meant to: a spelled-out colon does reach those same lists.
+  assert.equal(matchOption(gist, 'Colon, resection'), 'Colon');
+  // And a list offering only a near-miss never takes the colonic expansion.
+  assert.equal(matchOption(['Ascending aorta', 'Aortic arch', 'Descending aorta'], 'DC segment'), '');
+  assert.equal(matchOption(['Superior', 'Inferior', 'Medial', 'Lateral'], 'AC margin'), '');
+});
+
 test('presets: lymph node station, breast margins and generic specimen name', async () => {
   const ln = (await loadTemplate('lymph_node')).schema;
   const br = (await loadTemplate('breast_excision')).schema;
