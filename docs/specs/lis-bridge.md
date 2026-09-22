@@ -60,10 +60,13 @@ round-trip test that splits a built payload with the same pattern the script use
 change fails a test first.
 
 Those tests also read `tools/lis-bridge.ahk` as text, because nothing here can run AutoHotkey. They
-assert the script's own splitting pattern accepts every marker the app emits, that its harvest
-labels all reach a box, that it sends in event mode with a key delay and pastes rather than types,
-that field advance is Ctrl+] and auto-advance ships off, and that `LIS_WIN` carries a title rather
-than bare `wfica32.exe`. They also assert **no variable shares a name with a function**: AutoHotkey
+assert the script's own splitting pattern accepts every marker the app emits, that every field read
+reaches a capture box, that every report block has exactly one destination, that the fill walk
+anchors and confirms before it pastes, that it never overwrites a filled field, that the read helper
+cannot write, that the probe is read-only, that it sends in event mode with a key delay, that field
+advance is Ctrl+] and that `LIS_WIN` carries a title rather than bare `wfica32.exe`. Beyond text,
+`npm run validate:ahk` runs the real AutoHotkey v2 parser over the script under Wine, and it is a
+release gate. They also assert **no variable shares a name with a function**: AutoHotkey
 names are case-insensitive, and the first version shipped with a `HARVEST` array above a `Harvest()`
 function, which the launcher rejected outright with "This Func cannot be used as an output
 variable". Every JavaScript test passed and the script was dead on arrival — the half of this
@@ -104,6 +107,45 @@ into the boxes directly.
 system, so a name or HKID that travelled with it is worth flagging at the moment it arrives.
 
 ## First run
+
+### The screen table
+
+`FIELDS` in the script is the report entry screen, one row per field in `Ctrl+]` order. It is the
+only place the layout is written down and it drives both directions — `get` is what the harvest
+reads out of a field, `put` is which report blocks the fill walk writes into it. The house order:
+
+| # | Field | reads | writes |
+|---|---|---|---|
+| 1 | Clinical history | HISTORY | |
+| 2 | Pre-op diagnosis / operation | | |
+| 3 | Specimen(s) | SPECIMEN | |
+| 4 | Gross examination | MACRO | MACRO + BLOCKKEY |
+| 5 | Frozen section diagnosis | | INTRAOP |
+| 6 | Microscopic examination | | MICROSCOPY |
+| 7 | Diagnosis | | DIAGNOSIS |
+| 8 | Comments | | COMMENT |
+| 9 | Others | | |
+
+The block key has no field of its own, so it rides at the end of the gross examination. Specimen(s)
+is read but never written back: that field is the clerical entry the app copied in the first place.
+
+`Ctrl+Alt+P` walks the screen and dumps each field next to this table, so the two can be compared
+after any LIS change. A row in the wrong place misfiles text in both directions.
+
+### Why the fill walk asks before it types
+
+`Ctrl+Alt+F` counts `Ctrl+]` presses from wherever the caret is. A caret in the wrong field puts
+every block one or more fields out, and **checking the destination is empty does not catch that** —
+on an unreported case the wrong fields are empty too, so the check passes and the diagnosis lands in
+the wrong box. Emptiness only catches misalignment when it happens to hit a filled field, which is
+the rare case rather than the normal one.
+
+So the anchor is the starting field itself: it is read back and shown in the confirmation dialog
+before anything is typed. The person reading it knows what the case says. A test asserts the order —
+anchor read, then dialog, then focus returned to the LIS, then the first paste.
+
+Separately, a destination that already holds text is left alone and reported, because a frozen
+section diagnosis typed at the time of the frozen is the usual case rather than an error.
 
 1. Set `LIS_WIN` to include the window title. `ahk_exe wfica32.exe` alone matches **every** published
    application open on the machine, so the hotkeys would fire inside all of them. Title first, then

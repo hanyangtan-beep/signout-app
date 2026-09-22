@@ -65,6 +65,20 @@ step('tests', 'node --test tests/', () => {
   return `${pass} passing`;
 });
 
+// The AHK bridge script is the one artefact here that no JS test can execute, and this repo has
+// already shipped one that would not load. Run the real AutoHotkey parser over it. Exit 2 means the
+// Wine toolchain is absent, which is not a release failure - the note says the check was skipped.
+step('ahk syntax', 'tools/validate-ahk.sh', () => {
+  let out;
+  try { out = run('bash', ['tools/validate-ahk.sh']); }
+  catch (err) {
+    if (err.status === 2) return 'skipped (no AutoHotkey toolchain in this sandbox)';
+    throw new Error(String(err.stdout || err.stderr || err.message).trim().split('\n').pop());
+  }
+  const ok = (out.match(/^ahk ok/gm) || []).length;
+  return `${ok} script${ok === 1 ? '' : 's'} parse`;
+});
+
 step('fixtures clean', 'git diff tests/fixtures', () => {
   const out = run('git', ['diff', '--name-only', '--', 'tests/fixtures']);
   if (out.trim()) {

@@ -161,10 +161,18 @@ test('every report block key survives a round trip through marker naming', () =>
 // assignment tried to overwrite the function and the launcher refused the file with "This Func
 // cannot be used as an output variable". Every JS test passed; the script was dead on arrival.
 import { readFileSync } from 'node:fs';
+
 const AHK = readFileSync(new URL('../tools/lis-bridge.ahk', import.meta.url), 'utf8');
 
-const ahkFunctions = () => [...AHK.matchAll(/^([A-Za-z_]\w*)\(\)\s*\{/gm)].map((m) => m[1]);
+const ahkFunctions = () => [...AHK.matchAll(/^([A-Za-z_]\w*)\([^)]*\)\s*\{/gm)].map((m) => m[1]);
 const ahkAssigned = () => [...AHK.matchAll(/^\s*([A-Za-z_]\w*)\s*:=/gm)].map((m) => m[1]);
+const ahkBody = (name) => {
+  const m = new RegExp(`${name}\\([^)]*\\)\\s*\\{([\\s\\S]*?)\\n\\}`).exec(AHK);
+  assert.ok(m, `${name}() not found`);
+  return m[1];
+};
+const ahkSends = (body) => [...body.matchAll(/Send\s+(?:"([^"]+)"|(\w+))/g)].map((m) => m[1] || m[2]);
+
 
 test('no AHK variable collides with a function name', () => {
   const funcs = new Set(ahkFunctions().map((n) => n.toLowerCase()));
@@ -180,15 +188,106 @@ test('every hotkey calls a function that exists', () => {
   for (const fn of bound) assert.ok(funcs.has(fn.toLowerCase()), `hotkey calls ${fn}(), which is not defined`);
 });
 
-test('the script harvests fields the app can route', () => {
-  const m = /HARVEST_FIELDS\s*:=\s*\[([^\]]+)\]/.exec(AHK);
-  assert.ok(m, 'HARVEST_FIELDS not found');
-  const labels = [...m[1].matchAll(/"([^"]+)"/g)].map((x) => x[1]);
-  assert.deepEqual(labels, ['SPECIMEN', 'HISTORY', 'MACRO']);
-  // Each label must land in a box, or the harvest would collect text the app then discards.
-  const { fields, unknown } = parseHarvest(labels.map((l) => `<<<${l}>>>\ntext`).join('\n\n'));
-  assert.deepEqual(unknown, [], `the script harvests markers the app does not know: ${unknown.join(', ')}`);
-  assert.deepEqual(Object.keys(fields).sort(), ['clinical', 'macro', 'specimen']);
+// FIELDS is the LIS report entry screen, one row per field in Ctrl+] order. It is the only place
+// the layout is written down and it drives both directions, so a wrong row misfiles text either
+// into the app or into the patient's report. The order itself is a property of the LIS and cannot
+// be checked here; what can be checked is that every name resolves and every block has a home.
+const screenFields = () => {
+  const m = /FIELDS\s*:=\s*\[([\s\S]*?)\]\n/.exec(AHK);
+  assert.ok(m, 'the FIELDS table was not found');
+  return [...m[1].matchAll(/\{\s*name:\s*"([^"]*)"\s*,\s*get:\s*"([^"]*)"\s*,\s*put:\s*\[([^\]]*)\]\s*\}/g)]
+    .map((r) => ({
+      name: r[1],
+      get: r[2],
+      put: [...r[3].matchAll(/"([^"]+)"/g)].map((p) => p[1]),
+    }));
+};
+
+test('the screen table parses and every field is named', () => {
+  const rows = screenFields();
+  assert.ok(rows.length >= 5, `parsed only ${rows.length} rows; the table shape changed`);
+  for (const [i, r] of rows.entries()) assert.ok(r.name.trim() !== '', `field ${i + 1} has no name`);
+});
+
+test('every field read lands in a capture box', () => {
+  const gets = screenFields().map((r) => r.get).filter(Boolean);
+  assert.ok(gets.length > 0, 'the table reads nothing out of the LIS');
+  assert.equal(new Set(gets).size, gets.length, `a read name is repeated: ${gets.join(', ')}`);
+  const { fields, unknown } = parseHarvest(gets.map((l) => `<<<${l}>>>\ntext`).join('\n\n'));
+  assert.deepEqual(unknown, [], `the script reads markers the app does not know: ${unknown.join(', ')}`);
+  assert.equal(Object.keys(fields).length, gets.length, 'two read names collapsed into one box');
+  for (const k of Object.keys(fields)) assert.ok(CAPTURE_ORDER.includes(k), `${k} is not a capture box`);
+});
+
+test('every report block has exactly one destination field', () => {
+  const puts = screenFields().flatMap((r) => r.put);
+  const seen = new Set();
+  for (const p of puts) {
+    assert.ok(!seen.has(p), `${p} is written into two different fields`);
+    seen.add(p);
+  }
+  // The marker the app emits is what the script matches on, so compare against those, not the keys.
+  const emitted = PAYLOAD_KEYS.map((k) => marker(k).replace(/[<>]/g, ''));
+  for (const p of puts) assert.ok(emitted.includes(p), `nothing in the report is called ${p}`);
+  // A block with no destination is silently dropped on the way to the LIS, so every omission has to
+  // be deliberate and named. SPECIMENS is read out of the LIS but never written back: that field is
+  // the clerical entry the app copied in the first place, and rewriting it in the app's own
+  // formatting changes someone else's data for no gain.
+  const deliberatelyUnwritten = ['SPECIMENS'];
+  const homeless = emitted.filter((e) => !seen.has(e) && !deliberatelyUnwritten.includes(e));
+  assert.deepEqual(homeless, [], `these blocks would never reach the LIS: ${homeless.join(', ')}`);
+  for (const d of deliberatelyUnwritten) {
+    assert.ok(emitted.includes(d), `${d} is not a block the app emits; the exception is stale`);
+  }
+});
+
+// The fill walk counts Ctrl+] presses from wherever the caret happens to be, so a caret in the
+// wrong field puts every block one or more fields out. Checking the destination is empty does NOT
+// catch that - on an unreported case the wrong fields are empty too, the check passes, and the
+// diagnosis lands in the wrong box. The anchor is the starting field read back and shown to the
+// user before anything is typed, so these are the order-sensitive guarantees.
+test('the fill walk anchors before it types', () => {
+  const body = ahkBody('FillFields');
+  const at = (re) => body.search(re);
+  const anchorRead = at(/here := ReadField\(/);
+  const confirm = at(/MsgBox\(msg/);
+  const firstPaste = at(/Send "\^v"/);
+  assert.ok(anchorRead > -1, 'the walk must read its starting field as an anchor');
+  assert.ok(confirm > -1, 'the walk must be confirmed before it types into a live case');
+  assert.ok(firstPaste > -1, 'the walk never pastes');
+  assert.ok(anchorRead < confirm, 'the anchor must be read before the dialog, so it can be shown');
+  assert.ok(confirm < firstPaste, 'the dialog must come before the first paste');
+  // The dialog steals focus; sending keys before the LIS has it back pastes into another window.
+  const reactivate = at(/WinWaitActive\(LIS_WIN/);
+  assert.ok(reactivate > confirm && reactivate < firstPaste,
+    'the LIS must be confirmed active between the dialog and the first paste');
+  assert.match(body, /Loop last/, 'the walk must be bounded by the last field it needs');
+});
+
+test('the fill walk does not overwrite a field that has text', () => {
+  assert.match(AHK, /SKIP_FILLED\s*:=\s*true/, 'must ship leaving existing text alone');
+  const body = ahkBody('FillFields');
+  assert.match(body, /existing := SKIP_FILLED \? ReadField\(/, 'each destination must be read first');
+  assert.match(body, /if \(existing != ""\)/, 'a non-empty destination must take a different path');
+  assert.match(body, /skipped \.=/, 'a skipped field must be reported, not silently dropped');
+});
+
+// Reading a field is Ctrl+A then Ctrl+C, which leaves the text selected. Any later keystroke in that
+// state replaces the field, so this helper is the one place a slip turns a read into a write.
+// Harvest, the probe and the fill walk all read through it.
+test('reading a field cannot write to it', () => {
+  const body = ahkBody('ReadField');
+  assert.deepEqual(ahkSends(body).sort(), ['^a', '^c'], 'ReadField must only select and copy');
+  assert.ok(!/SendText|\^v/.test(body), 'ReadField must never paste or type');
+});
+
+test('the probe is read-only', () => {
+  const body = ahkBody('Probe');
+  // It walks and reads. Anything that types into a live LIS screen has no business in a probe.
+  assert.deepEqual([...new Set(ahkSends(body))], ['FIELD_NEXT'], 'the probe must only advance fields');
+  assert.match(body, /ReadField\(/, 'the probe must read through ReadField');
+  assert.ok(!/SendText|\^v/.test(body), 'a probe must not type or paste');
+  assert.match(AHK, /PROBE_DEPTH\s*:=\s*\d+/, 'PROBE_DEPTH not set');
 });
 
 test('the script splits markers on the pattern the app emits', () => {

@@ -13,7 +13,8 @@
     "build": "node tools/build.js",
     "qa": "node tools/qa-browser.js",
     "release": "node tools/release.js",
-    "new-template": "node scripts/new-template.mjs"
+    "new-template": "node scripts/new-template.mjs",
+    "validate:ahk": "bash tools/validate-ahk.sh"
   },
   "keywords": [],
   "author": "",
