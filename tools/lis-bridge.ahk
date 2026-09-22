@@ -18,26 +18,32 @@
 ; ---------------------------------------------------------------------------------------------
 ; HOTKEYS                                         (all of them only inside the LIS window)
 ;
-;   Ctrl+Alt+P     Probe: walk PROBE_DEPTH fields from the caret and dump each one, numbered,
-;                  to the clipboard. Read-only. Run this FIRST, on a training case, to find out
-;                  what order your screen puts the fields in, then set HARVEST_FIELDS to match.
+; Everything is driven by the FIELDS table below, which is the report entry screen written down
+; once: which fields to read out, and which report block belongs in each. Caret in field 1 for
+; both walks.
 ;
-;   Ctrl+Alt+H     Harvest: collect the fields named in HARVEST_FIELDS into one payload.
-;                  Put the caret in the same field you started the probe from.
-;                  Then click "Capture from LIS" in the app once.
+;   LIS -> app
+;   Ctrl+Alt+H     Harvest: read the fields FIELDS marks with a `get` into one payload,
+;                  then click "Capture from LIS" in the app once.
 ;
-;   Ctrl+Alt+L     Load the queue from the clipboard, after "Copy for LIS" in the app.
-;
-;   Ctrl+Alt+F     Fill: walk the screen from field 1 and put every block in its own field.
-;                  Shows what goes where and waits for OK. Stops if a destination is not empty.
-;
-;   Ctrl+Alt+V     Paste the next block into wherever the caret is, one field at a time.
-;                  For anything irregular - an addendum, one corrected field, a screen that
-;                  does not match FIELDS.
+;   app -> LIS
+;   Ctrl+Alt+L     Load the queue, after "Copy for LIS" in the app.
+;   Ctrl+Alt+F     Fill: walk the screen and put every block in its own field. Reads the
+;                  starting field back and shows it first - if that is not field 1, cancel.
+;                  A field that already holds text is left alone and reported.
+;   Ctrl+Alt+V     Paste the next block wherever the caret is, one field at a time. For
+;                  anything irregular: an addendum, one corrected field, a screen that does
+;                  not match FIELDS.
 ;   Ctrl+Alt+R     Reset the queue to the first block.
 ;   Ctrl+Alt+Q     Show what is in the queue and where you are in it.
 ;
-; The marker format is shared with src/lisbridge.js. Change one and you must change the other.
+;   setup
+;   Ctrl+Alt+P     Probe: walk PROBE_DEPTH fields and dump each one next to the FIELDS table,
+;                  so the two can be compared. Read-only. Run after any change to the LIS.
+;
+; The marker format is shared with src/lisbridge.js. Change one and you must change the other;
+; tests/lisbridge.test.js reads this file and fails if they drift. `npm run validate:ahk` runs the
+; real AutoHotkey parser over it, because a script that will not load passes every other check.
 ; ---------------------------------------------------------------------------------------------
 
 SendMode "Event"          ; SendInput is dropped by Citrix
