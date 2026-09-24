@@ -879,6 +879,68 @@ await check('bone / joint: revision synovium lists synovial diagnoses; a vertebr
   return 'synovium list and line; L3 metastasis Checks prompt cleared by CK7, TTF-1';
 });
 
+// Benign batch 2 (2026-09-24): products of gestation on the endometrial form, and a standalone tube on the
+// benign uterus form, each from a pasted request.
+await check('products of gestation: a pasted tissue mass asks for the villi, then prints the house line', async () => {
+  const routed = await pasteAndBuild('Tissue mass per vagina');
+  assert(routed === 'endometrial_biopsy', `routed to ${routed}`);
+  const type = await page.locator('[data-field="specimenType"] select').first().inputValue();
+  assert(type === 'Tissue mass, per vaginam', `specimen type read "${type}"`);
+  let checks = await checksText();
+  assert(/Chorionic villi: record present or absent/.test(checks), `Checks did not ask for the villi (read: ${checks.slice(0, 200)})`);
+  await pickField('villi', 'Present');
+  let report = await reportText();
+  assert(report.includes('TISSUE MASS, per vaginam - PRODUCTS OF GESTATION confirmed'), `diagnosis line wrong: ${report.slice(-300)}`);
+  assert(/- Chorionic villi\s+- Present/.test(report) && report.includes('- Decidua: Present'), `checklist microscopy missing: ${report.slice(0, 400)}`);
+  assert(!/CONCEPTION|conception/.test(report), 'the report says conception');
+  await page.locator('[data-field="villi"]').first().scrollIntoViewIfNeeded();
+  await shot('pog-villi-present');
+  await pickField('villi', 'Absent');
+  report = await reportText();
+  assert(report.includes('TISSUE MASS, per vaginam - DECIDUA only'), `no-villi line wrong: ${report.slice(-300)}`);
+  checks = await checksText();
+  assert(/an ectopic pregnancy should be suspected/.test(checks), `Checks did not warn about an ectopic (read: ${checks.slice(0, 200)})`);
+  await shot('pog-no-villi');
+  return 'per vaginam type pre-filled; villi prompt; confirmed line; DECIDUA only with the ectopic warning';
+});
+
+await check('fallopian tube: a pasted salpingectomy and a paratubal cyst open the tube fields only', async () => {
+  let routed = await pasteAndBuild('Left fallopian tube, salpingectomy');
+  assert(routed === 'uterus_benign', `salpingectomy routed to ${routed}`);
+  const name = await page.locator('[data-field="specimenName"] select').first().inputValue();
+  assert(name === 'Left fallopian tube, salpingectomy', `specimen read "${name}"`);
+  for (const id of ['leiomyomaSize', 'weight', 'endometriumThickness', 'ovarySize']) {
+    assert(await page.locator(`.field[data-field="${id}"]:visible`).count() === 0, `${id} shows on a tube part`);
+  }
+  assert(await page.locator('.field[data-field="tubeFindings"]:visible').count() === 1, 'no tube findings field');
+  await page.fill('#f-A-tubeSize', '5 x 0.6');
+  await page.fill('#f-A-cystSize', '2');
+  await pickField('tubeFindings', 'Paratubal cyst');
+  await page.waitForTimeout(300);
+  let report = await reportText();
+  assert(report.includes('Received in formalin is a left fallopian tube measuring 5 cm in length and 0.6 cm in diameter. A thin-walled paratubal cyst measuring 2 cm is attached.'), `macro wrong: ${report.slice(0, 400)}`);
+  assert(report.includes('(3) Paratubal cyst.'), 'no paratubal cyst block');
+  assert(report.includes('Left FALLOPIAN TUBE, salpingectomy - PARATUBAL CYST'), `diagnosis line wrong: ${report.slice(-300)}`);
+  assert(!/leiomyoma|endometri|cervix/i.test(report), 'uterus wording reached a tube report');
+  await page.locator('[data-field="tubeFindings"]').first().scrollIntoViewIfNeeded();
+  await shot('tube-salpingectomy');
+
+  routed = await pasteAndBuild('FALLOPIAN TUBE, right paratubal cyst, excision');
+  assert(routed === 'uterus_benign', `paratubal cyst routed to ${routed}`);
+  const sideChip = await page.locator('.chips[data-field="paratubalSide"] .chip[aria-pressed="true"]').allTextContents();
+  const sideSel = await page.locator('[data-field="paratubalSide"] select').count() ? await page.locator('[data-field="paratubalSide"] select').first().inputValue() : '';
+  assert((sideChip.length === 1 && /Right/.test(sideChip[0])) || sideSel === 'Right', `side read ${JSON.stringify(sideChip)} / "${sideSel}"`);
+  report = await reportText();
+  assert(report.includes('Right paratubal cyst, excision'), `specimen line wrong: ${report.slice(0, 160)}`);
+  assert(report.includes('FALLOPIAN TUBE, right paratubal cyst, excision - PARATUBAL CYST'), `paratubal line wrong: ${report.slice(-300)}`);
+  await page.locator('[data-field="paratubalSide"]').first().scrollIntoViewIfNeeded();
+  await shot('tube-paratubal-cyst');
+
+  routed = await pasteAndBuild('Left ovary and fallopian tube');
+  assert(routed !== 'uterus_benign', 'a line naming the ovary moved to the uterus form');
+  return 'left salpingectomy with cyst, uterus fields hidden; right paratubal cyst sided; ovary line keeps its route';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));
