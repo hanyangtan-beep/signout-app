@@ -1,0 +1,16 @@
+{
+  "templateId": "fallopian_tube_ectopic",
+  "values": {
+    "side": "Right",
+    "procedure": "Salpingotomy",
+    "fragmentSize": "3 x 2 x 1",
+    "cutSurface": [
+      "Blood clot",
+      "Villous material"
+    ],
+    "blocks": "2",
+    "sampling": "All embedded"
+  },
+  "report": "Right fallopian tube, salpingotomy\n\nReceived in formalin are fragments of haemorrhagic tissue measuring 3 x 2 x 1 cm in aggregate. The fragments comprise blood clot and villous material. No foetal parts are grossly identified. All embedded in 2 blocks.\n\n(1)&(2) Haemorrhagic tissue.\n\nThe sections show chorionic villi and blood clot. There is no evidence of gestational trophoblastic neoplasia or other malignancies.\n\nRight FALLOPIAN TUBE, salpingotomy - PRODUCTS OF GESTATION, consistent with ECTOPIC TUBAL PREGNANCY\n\nFollowing salpingotomy, trophoblast may persist in the tube; serial serum hCG measurement until a negative result is obtained is recommended.",
+  "checks": []
+}

@@ -46,7 +46,8 @@ export const BRITISH = {
 };
 
 // Deliberately NOT in the map, checked against it by test:
-//   fetal    - house wording is "fetal", not "foetal".
+//   fetal    - neither spelling is converted. The placenta keeps the Amsterdam terms' "fetal";
+//              the products-of-gestation and ectopic forms print the house "foetal" themselves.
 //   Mullerian - an eponym, not an Americanism.
 // Eponyms, gene and protein symbols, and the titles of external documents (QMH template names, CAP
 // protocol names, FIGO and WHO citations) must survive this layer unchanged. Those titles are held in

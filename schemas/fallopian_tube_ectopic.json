@@ -1,0 +1,600 @@
+{
+ "id": "fallopian_tube_ectopic",
+ "version": "2026.09",
+ "name": "Fallopian tube — ectopic pregnancy",
+ "shortName": "Fallopian tube · ectopic",
+ "label": "Ectopic",
+ "organ": "FALLOPIAN TUBE",
+ "system": "Gynae",
+ "kind": "benign resection",
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Macroscopy"
+  ],
+  "macroFields": [
+   "side",
+   "procedure"
+  ]
+ },
+ "rank": 50,
+ "aliases": [
+  "ectopic",
+  "ectopic pregnancy",
+  "tubal pregnancy",
+  "salpingectomy",
+  "salpingotomy",
+  "haematosalpinx",
+  "chorionic villi",
+  "implantation site"
+ ],
+ "match": {
+  "site": [
+   "ectopic",
+   "ectopic pregnancy",
+   "tubal pregnancy",
+   "tubal ectopic"
+  ],
+  "procedure": [
+   "salpingectomy",
+   "salpingotomy",
+   "salpingostomy"
+  ],
+  "clinical": [
+   "ectopic",
+   "ectopic pregnancy",
+   "tubal pregnancy"
+  ],
+  "exclude": [
+   "parathyroid",
+   "thyroid",
+   "thymus",
+   "pancreas",
+   "pancreatic",
+   "spleen",
+   "splenic",
+   "splenunculus",
+   "gastric",
+   "adrenal",
+   "breast",
+   "decidua",
+   "decidual"
+  ],
+  "not": [
+   "endometrium",
+   "endometrial",
+   "uterus",
+   "uterine",
+   "curettage",
+   "curettings",
+   "evacuation"
+  ],
+  "sideFromText": true,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "salpingo?tom|salpingostom",
+      "Salpingotomy"
+     ],
+     [
+      "partial\\s+salpingectom",
+      "Partial salpingectomy"
+     ],
+     [
+      "salpingectom",
+      "Salpingectomy"
+     ],
+     [
+      "\\bcontents\\b|\\bclots?\\b",
+      "Tubal contents"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "overallSize": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "tubeLength": {
+   "concept": "length",
+   "unit": "cm",
+   "near": "tube|fallopian|salpin"
+  },
+  "lumenDiameter": {
+   "concept": "diameter",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  },
+  "sampling": {
+   "concept": "choice",
+   "map": [
+    [
+     "\\ball\\s+(?:the\\s+tissue\\s+)?(?:is\\s+|are\\s+|been\\s+)?embedded",
+     "All embedded"
+    ],
+    [
+     "representative\\s+(?:sections?|blocks?)",
+     "Representative blocks"
+    ]
+   ]
+  }
+ },
+ "specimenNoun": "specimen",
+ "maxParts": 3,
+ "defaultParts": 1,
+ "generator": "fallopian_tube_ectopic",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "partDefaults": [],
+ "fields": [
+  {
+   "id": "side",
+   "label": "Side",
+   "type": "select",
+   "options": [
+    "Left",
+    "Right",
+    "Not stated"
+   ],
+   "default": "Left"
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "options": [
+    "Salpingectomy",
+    "Partial salpingectomy",
+    "Salpingotomy",
+    "Tubal contents"
+   ],
+   "default": "Salpingectomy"
+  },
+  {
+   "id": "overallSize",
+   "label": "Specimen dimensions (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "4 x 2 x 2",
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Salpingectomy",
+     "Partial salpingectomy"
+    ]
+   }
+  },
+  {
+   "id": "tubeLength",
+   "label": "Tube length (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "5",
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Salpingectomy",
+     "Partial salpingectomy"
+    ]
+   }
+  },
+  {
+   "id": "lumenDiameter",
+   "label": "Lumen distended up to (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "2",
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Salpingectomy",
+     "Partial salpingectomy"
+    ]
+   }
+  },
+  {
+   "id": "distensionSite",
+   "label": "Site of the distension",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "",
+    "Ampulla",
+    "Isthmus",
+    "Fimbrial end",
+    "Interstitial (cornual)"
+   ],
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Salpingectomy",
+     "Partial salpingectomy"
+    ]
+   }
+  },
+  {
+   "id": "fragmentSize",
+   "label": "Fragments in aggregate (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "3 x 2 x 1",
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Salpingotomy",
+     "Tubal contents"
+    ]
+   }
+  },
+  {
+   "id": "cutSurface",
+   "label": "Cut surface / contents",
+   "type": "multiselect",
+   "group": "Macroscopy",
+   "options": [
+    "Extensive blood clot",
+    "Blood clot",
+    "Spongy material",
+    "Villous material",
+    "Gestational sac"
+   ],
+   "default": [
+    "Blood clot",
+    "Spongy material"
+   ]
+  },
+  {
+   "id": "serosa",
+   "label": "Serosal surface",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "",
+    "Intact",
+    "Haemorrhage extends to the serosal surface",
+    "Rupture site"
+   ],
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Salpingectomy",
+     "Partial salpingectomy"
+    ]
+   }
+  },
+  {
+   "id": "ruptureSize",
+   "label": "Rupture site (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "1",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "is": [
+       "Salpingectomy",
+       "Partial salpingectomy"
+      ]
+     },
+     {
+      "field": "serosa",
+      "is": "Rupture site"
+     }
+    ]
+   }
+  },
+  {
+   "id": "fimbria",
+   "label": "Fimbrial end",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "",
+    "Identified",
+    "Not identified"
+   ],
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Salpingectomy",
+     "Partial salpingectomy"
+    ]
+   }
+  },
+  {
+   "id": "clotSize",
+   "label": "Separate blood clot (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "3 x 2 x 1",
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Salpingectomy",
+     "Partial salpingectomy"
+    ]
+   }
+  },
+  {
+   "id": "foetalParts",
+   "label": "Foetal parts",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Not identified",
+    "Identified"
+   ],
+   "default": "Not identified"
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": "3"
+  },
+  {
+   "id": "sampling",
+   "label": "Sampling",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Representative blocks",
+    "All embedded"
+   ],
+   "default": "Representative blocks"
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key (typed; replaces the automatic key)",
+   "type": "textarea",
+   "group": "Macroscopy",
+   "placeholder": "(1) Uninvolved fallopian tube.\n(2)&(3) Haemorrhagic tubal tissue with distension.",
+   "default": ""
+  },
+  {
+   "id": "villi",
+   "label": "Chorionic villi",
+   "type": "select",
+   "options": [
+    "Present",
+    "Present, degenerate",
+    "Not identified"
+   ],
+   "default": "Present"
+  },
+  {
+   "id": "villousChange",
+   "label": "Villous change",
+   "type": "select",
+   "options": [
+    "None",
+    "Hydropic change",
+    "Suspicious for hydatidiform mole – see comment"
+   ],
+   "default": "None",
+   "showIf": {
+    "field": "villi",
+    "not": "Not identified"
+   }
+  },
+  {
+   "id": "implantation",
+   "label": "Implantation-site intermediate trophoblast",
+   "type": "select",
+   "options": [
+    "Not identified",
+    "Present"
+   ],
+   "default": "Not identified"
+  },
+  {
+   "id": "haemorrhage",
+   "label": "Haemorrhage / blood clot",
+   "type": "select",
+   "options": [
+    "Present",
+    "Absent"
+   ],
+   "default": "Present"
+  },
+  {
+   "id": "wallRupture",
+   "label": "Disruption of the tubal wall (rupture)",
+   "type": "select",
+   "options": [
+    "Not identified",
+    "Present"
+   ],
+   "default": "Not identified",
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Salpingectomy",
+     "Partial salpingectomy"
+    ]
+   }
+  },
+  {
+   "id": "epithelium",
+   "label": "Tubal epithelium and wall",
+   "type": "multiselect",
+   "options": [
+    "Unremarkable",
+    "Chronic salpingitis",
+    "Salpingitis isthmica nodosa",
+    "Endometriosis"
+   ],
+   "default": [
+    "Unremarkable"
+   ],
+   "exclusive": [
+    "Unremarkable"
+   ],
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Salpingectomy",
+     "Partial salpingectomy"
+    ]
+   }
+  },
+  {
+   "id": "dxEntity",
+   "label": "Diagnosis wording",
+   "type": "select",
+   "options": [
+    "Ectopic tubal pregnancy",
+    "Products of gestation within the tubal lumen"
+   ],
+   "default": "Ectopic tubal pregnancy",
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "is": [
+       "Salpingectomy",
+       "Partial salpingectomy"
+      ]
+     },
+     {
+      "field": "villi",
+      "not": "Not identified"
+     }
+    ]
+   }
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "Free text appended to the microscopy for this part",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "ectopic_no_villi",
+   "label": "No villi — operative correlation and serial hCG",
+   "auto": {
+    "all": [
+     {
+      "field": "villi",
+      "is": "Not identified"
+     },
+     {
+      "field": "implantation",
+      "not": "Present"
+     },
+     {
+      "field": "foetalParts",
+      "not": "Identified"
+     }
+    ]
+   },
+   "text": "No chorionic villi or implantation-site trophoblast are identified. Correlation with the operative findings and serial serum hCG levels is suggested."
+  },
+  {
+   "id": "ectopic_salpingotomy",
+   "label": "Salpingotomy — persistent trophoblast, serial hCG",
+   "auto": {
+    "field": "procedure",
+    "is": "Salpingotomy"
+   },
+   "text": "Following salpingotomy, trophoblast may persist in the tube; serial serum hCG measurement until a negative result is obtained is recommended."
+  },
+  {
+   "id": "ectopic_mole",
+   "label": "Hydatidiform change — p57 and genotyping",
+   "auto": {
+    "all": [
+     {
+      "field": "villi",
+      "not": "Not identified"
+     },
+     {
+      "field": "villousChange",
+      "is": "Suspicious for hydatidiform mole – see comment"
+     }
+    ]
+   },
+   "text": "The villous features raise the possibility of a hydatidiform mole. p57KIP2 immunohistochemistry and ploidy analysis or molecular genotyping are suggested to confirm or exclude the diagnosis. If a mole is confirmed, serial serum hCG monitoring and referral to the trophoblastic disease service are recommended."
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "side": "Left",
+     "procedure": "Salpingectomy",
+     "overallSize": "4 x 2 x 2",
+     "tubeLength": "5",
+     "lumenDiameter": "2",
+     "distensionSite": "",
+     "fragmentSize": "",
+     "cutSurface": [
+      "Extensive blood clot",
+      "Spongy material"
+     ],
+     "serosa": "Haemorrhage extends to the serosal surface",
+     "ruptureSize": "",
+     "fimbria": "",
+     "clotSize": "",
+     "foetalParts": "Not identified",
+     "blocks": "3",
+     "sampling": "Representative blocks",
+     "blockKeyText": "",
+     "villi": "Present, degenerate",
+     "villousChange": "None",
+     "implantation": "Not identified",
+     "haemorrhage": "Present",
+     "wallRupture": "Not identified",
+     "epithelium": [
+      "Unremarkable"
+     ],
+     "dxEntity": "Ectopic tubal pregnancy",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
+}

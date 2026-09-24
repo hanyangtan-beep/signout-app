@@ -42,14 +42,6 @@
    "roadmap": "Later"
   },
   {
-   "id": "fallopian_tube_ectopic",
-   "name": "Fallopian tube — ectopic pregnancy",
-   "label": "Ectopic",
-   "system": "Gynae",
-   "kind": "benign resection",
-   "roadmap": "Next"
-  },
-  {
    "id": "prostate_radical",
    "name": "Radical prostatectomy",
    "label": "Prostatectomy",

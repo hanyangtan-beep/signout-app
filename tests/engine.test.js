@@ -104,7 +104,8 @@ test('no template is left on American spelling', async () => {
 
 test('the britishiser leaves house exceptions alone', async () => {
   const { britishise, BRITISH } = await import('../src/style.js');
-  // House wording is "fetal", not "foetal", and Mullerian is an eponym rather than an Americanism.
+  // "fetal" is left alone: only the placenta keeps it (the Amsterdam terms), and the gynae forms
+  // print the house "foetal" themselves. Mullerian is an eponym rather than an Americanism.
   assert.equal(britishise('Fetal membranes are unremarkable.'), 'Fetal membranes are unremarkable.');
   assert.equal(britishise('malignant mixed Mullerian tumor'), 'malignant mixed Mullerian tumour');
   for (const w of ['fetal', 'mullerian', 'her2', 'erbb2']) assert.ok(!(w in BRITISH), `${w} must not be in the map`);

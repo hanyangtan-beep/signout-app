@@ -1,0 +1,36 @@
+{
+  "templateId": "fallopian_tube_ectopic",
+  "values": {
+    "side": "Left",
+    "procedure": "Salpingectomy",
+    "overallSize": "4 x 2 x 2",
+    "tubeLength": "5",
+    "lumenDiameter": "2",
+    "distensionSite": "",
+    "fragmentSize": "",
+    "cutSurface": [
+      "Extensive blood clot",
+      "Spongy material"
+    ],
+    "serosa": "Haemorrhage extends to the serosal surface",
+    "ruptureSize": "",
+    "fimbria": "",
+    "clotSize": "",
+    "foetalParts": "Not identified",
+    "blocks": "3",
+    "sampling": "Representative blocks",
+    "blockKeyText": "",
+    "villi": "Present, degenerate",
+    "villousChange": "None",
+    "implantation": "Not identified",
+    "haemorrhage": "Present",
+    "wallRupture": "Not identified",
+    "epithelium": [
+      "Unremarkable"
+    ],
+    "dxEntity": "Ectopic tubal pregnancy",
+    "additionalNotes": ""
+  },
+  "report": "Left fallopian tube, salpingectomy\n\nReceived in formalin is a distended segment of tubal tissue measuring 4 x 2 x 2 cm. A segment of left fallopian tube is identified measuring 5 cm long, and its lumen is distended, up to 2 cm across. The cut surface of the fallopian tube tissue shows extensive blood clot within the tubal lumen, as well as spongy material. The area of haemorrhage extends to the serosal surface. No foetal parts are grossly identified. 3 representative blocks.\n\n(1) Uninvolved fallopian tube.\n(2)&(3) Haemorrhagic tubal tissue with distension.\n\nThe sections show degenerate chorionic villi and haemorrhage within the lumen of the fallopian tube. The tubal epithelium is unremarkable. There is no evidence of gestational trophoblastic neoplasia or other malignancies.\n\nLeft FALLOPIAN TUBE, salpingectomy - ECTOPIC TUBAL PREGNANCY",
+  "checks": []
+}

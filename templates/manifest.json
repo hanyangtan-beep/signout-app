@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 61,
+  "count": 62,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -3856,6 +3856,97 @@
       "generator": "ampulla_carcinoma",
       "generatorPath": "generators/ampulla_carcinoma.js",
       "schemaPath": "schemas/ampulla_carcinoma.json"
+    },
+    {
+      "id": "fallopian_tube_ectopic",
+      "name": "Fallopian tube — ectopic pregnancy",
+      "shortName": "Fallopian tube · ectopic",
+      "label": "Ectopic",
+      "organ": "FALLOPIAN TUBE",
+      "system": "Gynae",
+      "kind": "benign resection",
+      "rank": 50,
+      "aliases": [
+        "ectopic",
+        "ectopic pregnancy",
+        "tubal pregnancy",
+        "salpingectomy",
+        "salpingotomy",
+        "haematosalpinx",
+        "chorionic villi",
+        "implantation site"
+      ],
+      "match": {
+        "site": [
+          "ectopic",
+          "ectopic pregnancy",
+          "tubal pregnancy",
+          "tubal ectopic"
+        ],
+        "procedure": [
+          "salpingectomy",
+          "salpingotomy",
+          "salpingostomy"
+        ],
+        "clinical": [
+          "ectopic",
+          "ectopic pregnancy",
+          "tubal pregnancy"
+        ],
+        "exclude": [
+          "parathyroid",
+          "thyroid",
+          "thymus",
+          "pancreas",
+          "pancreatic",
+          "spleen",
+          "splenic",
+          "splenunculus",
+          "gastric",
+          "adrenal",
+          "breast",
+          "decidua",
+          "decidual"
+        ],
+        "not": [
+          "endometrium",
+          "endometrial",
+          "uterus",
+          "uterine",
+          "curettage",
+          "curettings",
+          "evacuation"
+        ],
+        "sideFromText": true,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "salpingo?tom|salpingostom",
+                "Salpingotomy"
+              ],
+              [
+                "partial\\s+salpingectom",
+                "Partial salpingectomy"
+              ],
+              [
+                "salpingectom",
+                "Salpingectomy"
+              ],
+              [
+                "\\bcontents\\b|\\bclots?\\b",
+                "Tubal contents"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "fallopian_tube_ectopic",
+      "generatorPath": "generators/fallopian_tube_ectopic.js",
+      "schemaPath": "schemas/fallopian_tube_ectopic.json"
     },
     {
       "id": "cns_biopsy",
