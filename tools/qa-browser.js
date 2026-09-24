@@ -941,6 +941,33 @@ await check('fallopian tube: a pasted salpingectomy and a paratubal cyst open th
   return 'left salpingectomy with cyst, uterus fields hidden; right paratubal cyst sided; ovary line keeps its route';
 });
 
+// Case options after a pasted request (2026-09-24): the tickboxes show what the report prints. The case
+// starts on the default small biopsy, whose options carry no macroscopy choice, as a fresh session does.
+await check('case options: a pasted hysterectomy ticks the macroscopy box it prints, and the box drives it', async () => {
+  await page.evaluate(() => localStorage.removeItem('signout.case.v1'));
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const routed = await pasteAndBuild('Uterus and cervix, total hysterectomy');
+  assert(routed === 'uterus_benign', `routed to ${routed}`);
+  const box = page.locator('#case-options label', { hasText: 'Generate the macroscopic description and block key' }).locator('input[type="checkbox"]');
+  assert(await box.count() === 1, 'no macroscopy option on the case');
+  const MACRO = 'Received in formalin is a total hysterectomy specimen';
+  let report = await reportText();
+  assert(report.includes(MACRO), `the macroscopy did not print: ${report.slice(0, 200)}`);
+  assert(await box.isChecked(), 'the macroscopy box shows unticked while the macroscopy prints');
+  await box.uncheck();
+  await page.waitForTimeout(300);
+  report = await reportText();
+  assert(!report.includes('Received in formalin') && !(await box.isChecked()), 'unticking left the macroscopy in the report');
+  await box.check();
+  await page.waitForTimeout(300);
+  report = await reportText();
+  assert(report.includes(MACRO) && await box.isChecked(), 'ticking did not restore the macroscopy');
+  await box.scrollIntoViewIfNeeded();
+  await shot('options-after-paste');
+  return 'macroscopy ticked after Build parts; untick removes it, tick restores it';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

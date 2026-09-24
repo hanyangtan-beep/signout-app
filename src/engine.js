@@ -251,6 +251,19 @@ export function templateIdOf(caseState, part) {
   return part.templateId || caseState.schemaId;
 }
 
+/**
+ * The options a case prints with: each template's defaults, in order of first use, then the
+ * case's own choices. The report and the option tickboxes both read this, so a default-on option
+ * (the macroscopy, a summary line) shows ticked whenever it prints. That matters for a case built
+ * from a pasted request or a part switched to another template, whose stored options still
+ * belong to the template the case started on.
+ */
+export function caseOptions(templates, caseState) {
+  const options = {};
+  for (const id of templatesInUse(caseState)) if (templates[id]) Object.assign(options, defaultOptions(templates[id].schema));
+  return Object.assign(options, caseState.options || {});
+}
+
 /** Distinct template ids used by a case, in order of first appearance. */
 export function templatesInUse(caseState) {
   const ids = [];
@@ -281,9 +294,7 @@ export function generateCase(templates, caseState) {
   const ids = templatesInUse(caseState);
   for (const id of ids) if (!templates[id]) throw new Error(`Template ${id} is not installed`);
 
-  const options = {};
-  for (const id of ids) Object.assign(options, defaultOptions(templates[id].schema));
-  Object.assign(options, caseState.options || {});
+  const options = caseOptions(templates, caseState);
 
   // Normalised parts in case order, each tagged with its template.
   const parts = caseState.parts.map((p, k) => {

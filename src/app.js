@@ -3,7 +3,7 @@
 import { loadManifest, loadPlanned, loadTemplate } from './registry.js';
 import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, rowOfKind, KIND_LABEL } from './picker.js';
 import {
-  createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
+  createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, caseOptions, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
 } from './engine.js';
 import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js';
 import { loadConfig, saveConfig, accountConfig, rememberForAccount } from './config.js';
@@ -1434,9 +1434,11 @@ function splitFields(s) {
 function renderOptions() {
   const opts = [];
   for (const s of schemasInUse()) for (const o of s.options || []) if (!opts.some((p) => p.id === o.id)) opts.push(o);
+  // Tick what the report prints: template defaults under the case's own choices (engine caseOptions).
+  const printed = caseOptions(state.templates, state.caseState);
   const optionNodes = opts.map((o) => {
     const input = el('input', { type: 'checkbox', onchange: (e) => { markDirty(); state.caseState.options[o.id] = e.target.checked; renderReport(); cacheCase(state.caseState); } });
-    input.checked = !!state.caseState.options[o.id];
+    input.checked = !!printed[o.id];
     return el('label', {}, input, document.createTextNode(o.label));
   });
   const snippets = snippetsFor(state.templates, state.caseState);

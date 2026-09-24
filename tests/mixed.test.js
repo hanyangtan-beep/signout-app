@@ -1,7 +1,7 @@
 // Phase 3: mixed-template cases (per-part templateId) assembled by generateCase.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createCase, createPart, generate, generateCase, templatesInUse, templateLabel } from '../src/engine.js';
+import { createCase, createPart, generate, generateCase, caseOptions, templatesInUse, templateLabel } from '../src/engine.js';
 import { loadAll } from '../src/registry.js';
 import { toSheetRow, buildDocText, fromSheetRow } from '../src/docformat.js';
 
@@ -60,6 +60,32 @@ test('options merge across templates; a shared includeHeader is honoured once', 
   assert.doesNotMatch(out.report, /^SPECIMEN:/m);
   c.options = { includeHeader: true };
   assert.match(generateCase(registry, c).report, /^SPECIMEN:/m);
+});
+
+test('caseOptions: template defaults under the case\'s own choices, as the report prints them', () => {
+  // A case started on the generic form keeps its options when its parts move to another template
+  // (a pasted request, or a part switched): the second template's default-on options still apply.
+  const generic = registry.generic;
+  const uterus = registry.uterus_benign;
+  const c = createCase(generic.schema, 1);
+  assert.deepEqual(Object.keys(c.options), ['includeHeader']);
+  c.parts = [{ ...createPart(uterus.schema, 0), label: 'A', templateId: 'uterus_benign' }];
+  assert.deepEqual(caseOptions(registry, c), { includeHeader: false, macro: true });
+  assert.ok(generateCase(registry, c).macro.startsWith('Received in formalin'));
+
+  // The case's own choice wins, and the report follows it.
+  c.options.macro = false;
+  assert.equal(caseOptions(registry, c).macro, false);
+  assert.equal(generateCase(registry, c).macro, '');
+
+  // Mixed case: every template in use contributes its defaults, in order of first use.
+  const m = ogdColonoscopy();
+  const merged = { ...Object.fromEntries((gastric.schema.options || []).map((o) => [o.id, o.default ?? false])), ...Object.fromEntries((colonic.schema.options || []).map((o) => [o.id, o.default ?? false])), ...m.options };
+  assert.deepEqual(caseOptions(registry, m), merged);
+
+  // A template not yet loaded contributes nothing and does not throw.
+  const partial = { gastric_biopsy: gastric };
+  assert.deepEqual(caseOptions(partial, m), { ...Object.fromEntries((gastric.schema.options || []).map((o) => [o.id, o.default ?? false])), ...m.options });
 });
 
 test('per-template summary only covers that template\'s parts and style is applied per part', () => {
