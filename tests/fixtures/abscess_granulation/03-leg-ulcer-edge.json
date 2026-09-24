@@ -1,0 +1,14 @@
+{
+  "templateId": "abscess_granulation",
+  "values": {
+    "site": "left leg ulcer",
+    "procedure": "Punch biopsy",
+    "diagnosis": "Ulcer",
+    "ulcerPart": "Edge",
+    "description": "Piece of skin",
+    "dimensions": "0.4 x 0.4 x 0.3",
+    "blocks": "1"
+  },
+  "report": "Skin, left leg ulcer, punch biopsy\n\nReceived in formalin is a piece of skin labelled left leg ulcer, measuring 0.4 x 0.4 x 0.3 cm. All embedded in 1 block.\n\n(1) Skin, all embedded.\n\nSections show skin at the edge of an ulcer, with reactive epidermal hyperplasia. The underlying dermis contains granulation tissue with mixed acute and chronic inflammatory infiltrates. There is no evidence of dysplasia or malignancy.\n\nSKIN, left leg ulcer, punch biopsy - In keeping with ULCER EDGE",
+  "checks": []
+}

@@ -1,0 +1,15 @@
+{
+  "templateId": "abscess_granulation",
+  "values": {
+    "site": "natal cleft pilonidal sinus",
+    "procedure": "Excision",
+    "diagnosis": "Sinus tract",
+    "foreignMaterial": "Hair shafts",
+    "description": "Ellipse of skin with a sinus opening",
+    "dimensions": "5 x 2 x 1.5",
+    "blocks": "3",
+    "blockScheme": "Representative sections"
+  },
+  "report": "Skin, natal cleft pilonidal sinus, excision\n\nReceived in formalin is an ellipse of skin labelled natal cleft pilonidal sinus, measuring 5 x 2 x 1.5 cm, with a sinus opening on the surface. Representative sections in 3 blocks.\n\n(1-3) Skin ellipse with sinus opening, representative cross-sections.\n\nSections show skin with a sinus tract extending into the dermis and subcutis, lined by granulation tissue and focally by squamous epithelium, with surrounding mixed inflammatory infiltrates and fibrosis. Hair shafts engulfed by foreign-body giant cells are seen in the wall of the sinus tract. The findings are in keeping with a pilonidal sinus. There is no evidence of dysplasia or malignancy.\n\nSKIN, natal cleft pilonidal sinus, excision - PILONIDAL SINUS",
+  "checks": []
+}

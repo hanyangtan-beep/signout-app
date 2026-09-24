@@ -48,6 +48,9 @@
       "obstruction",
       "CRS"
     ],
+    "not": [
+      "pilonidal"
+    ],
     "fill": [
       {
         "field": "specimenName",

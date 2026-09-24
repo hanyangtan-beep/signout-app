@@ -1,0 +1,12 @@
+{
+  "templateId": "abscess_granulation",
+  "values": {
+    "site": "left axilla abscess wall",
+    "procedure": "Excision",
+    "diagnosis": "Abscess wall",
+    "dimensions": "3 x 2 x 1",
+    "blocks": "2"
+  },
+  "report": "Skin, left axilla abscess wall, excision\n\nReceived in formalin are irregular pieces of tan-brown soft tissue labelled left axilla abscess wall, measuring 3 x 2 x 1 cm in aggregate. All embedded in 2 blocks.\n\n(1-2) Tissue pieces, all embedded.\n\nSections show skin and subcutaneous tissue with dense suppurative inflammation composed of abundant neutrophils, histiocytes and necrotic debris, surrounded by granulation tissue and fibrosis. The findings are in keeping with an abscess wall. There is no evidence of granulomatous inflammation or malignancy.\n\nSKIN, left axilla abscess wall, excision - In keeping with ABSCESS WALL",
+  "checks": []
+}

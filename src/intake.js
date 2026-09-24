@@ -167,6 +167,13 @@ const ABBREV_CTX = /\b(polyps?|polypectomy|tumours?|tumors?|mass|masses|lesions?
 const siteHitsFor = (mt, text) =>
   hits(mt.site, text) + (mt.siteAbbrev && ABBREV_CTX.test(text) ? hits(mt.siteAbbrev, text) : 0);
 
+// `match.exclude`: words that take a template out of the running altogether rather than 4 points
+// down (`match.not`). The abscess form reads "abscess", "ulcer" and "fistula" as its site words, and
+// those turn up on every organ: a mandibular fistula or a gastric ulcer belongs to that organ's
+// template, and a penalty alone still left the abscess form tied with it, which sent the part to
+// Generic. Only the abscess form declares it today.
+const excluded = (mt, text) => !!(mt.exclude && hits(mt.exclude, text));
+
 const BREAST_MARGINS = ['Superior', 'Inferior', 'Medial', 'Lateral', 'Anterior', 'Posterior'];
 
 /**
@@ -185,7 +192,7 @@ export function scorePart(part, ctx, manifest) {
     if (t.id === GENERIC_ID || !t.match) continue;
     const mt = t.match;
     const siteHits = siteHitsFor(mt, text);
-    if (!siteHits) continue;
+    if (!siteHits || excluded(mt, text)) continue;
     let score = 2 * hits(mt.procedure, text) + 2 * Math.min(1, hits(mt.clinical, history)) - 4 * hits(mt.not, text) + (mt.bias || 0);
     if (resected && !biopsied && BIOPSY_KINDS.includes(t.kind)) score -= 3;
     if (biopsied && !resected && RESECTION_KINDS.includes(t.kind)) score -= 3;
@@ -210,7 +217,7 @@ function roleOf(part, ctx, manifest) {
   if (ids.has('lymph_node') && !CYTO.test(text)) {
     const strong = NODE_STRONG.test(text);
     const startsWithNode = /^\s*(lymph\s*nodes?|nodes?)\b/i.test(text);
-    const otherSite = manifest.some((t) => !['lymph_node', 'lymph_node_fna', GENERIC_ID].includes(t.id) && t.match && siteHitsFor(t.match, text) > 0);
+    const otherSite = manifest.some((t) => !['lymph_node', 'lymph_node_fna', GENERIC_ID].includes(t.id) && t.match && !excluded(t.match, text) && siteHitsFor(t.match, text) > 0);
     if (strong || (NODE.test(text) && (startsWithNode || !otherSite))) return { role: 'lymph_node', templateId: 'lymph_node' };
   }
   if (ids.has('breast_excision') && MARGIN.test(text) && !/\bbreast\b/i.test(text)) {
@@ -435,6 +442,12 @@ const SITE_ABBREV = [
   [/\b[rl]ll\b|\blower\b(?!\s+lobe\b)/g, 'lower lobe'], [/\blingular\b/g, 'lingula'],
   [/\bwedge(?:\s+(?:resection|excision))?\b(?!\s+biopsy)/g, 'wedge resection'], [/\bwedge(?:\s+(?:resection|excision))?\b(?!\s+biopsy)/g, 'wedge excision'],
   [/\bcompletion\b(?!\s+lobectomy)/g, 'completion lobectomy'],
+  // Abscess, ulcer and granulation tissue: the requests write the procedure in short or as a verb
+  // ("I&D", "incision", "debrided", "punch") and the anal site without "peri". Only the abscess form
+  // offers Incision and drainage, Debridement, Punch biopsy and PERIANAL, so nothing else receives them.
+  [/\bi\s*&\s*d\b|\bi\s+and\s+d\b|\bincision\b(?!\s+(?:and\s+drainage|biopsy))/g, 'incision and drainage'],
+  [/\bdebrid(?:ed|ement)\b/g, 'debridement'], [/\bpunch\b(?!\s+biopsy)/g, 'punch biopsy'],
+  [/\bperi-?\s?anal\b|(?<![a-z-])\banal\b/g, 'perianal'],
 ];
 
 // The gate is a whole-option match rather than a looser test on the first word. Both behave

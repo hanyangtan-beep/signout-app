@@ -1,0 +1,19 @@
+{
+  "templateId": "abscess_granulation",
+  "values": {
+    "organ": "PERIANAL",
+    "site": "fistula tract",
+    "procedure": "Excision",
+    "diagnosis": "Fistula tract",
+    "granulomas": "Present – see comment",
+    "granulomaType": "Non-necrotising",
+    "stains": [
+      "Ziehl-Neelsen",
+      "PASD"
+    ],
+    "dimensions": "2.5 x 1 x 0.8",
+    "blocks": "2"
+  },
+  "report": "Perianal fistula tract, excision\n\nReceived in formalin are irregular pieces of tan-brown soft tissue labelled fistula tract, measuring 2.5 x 1 x 0.8 cm in aggregate. All embedded in 2 blocks.\n\n(1-2) Tissue pieces, all embedded.\n\nSections show perianal skin and subcutaneous tissue with a tract lined by inflamed granulation tissue, with surrounding mixed acute and chronic inflammatory infiltrates and fibrosis. Non-necrotising epithelioid granulomas are present. No acid-fast bacilli are identified on Ziehl-Neelsen stain. No fungal organisms are identified on PASD stain. The features are consistent with fistula-in-ano. There is no evidence of malignancy.\n\nPERIANAL, fistula tract, excision - Consistent with FISTULA-IN-ANO; non-necrotising granulomas present; see comment\n\nGranulomatous inflammation is present. The differential diagnosis includes Crohn's disease, mycobacterial infection including tuberculosis, and hidradenitis suppurativa. Correlation with the clinical and microbiological findings is suggested.",
+  "checks": []
+}
