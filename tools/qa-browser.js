@@ -791,6 +791,94 @@ await check('a pasted frozen sentinel node prints its side, or none with a Check
   return 'A "left SLN 1", B no side with Checks prompt; duodenal "TUBULAR ADENOMA with LOW GRADE DYSPLASIA"';
 });
 
+// Benign batch 1 (2026-09-24): soft tissue, abscess / granulation tissue and bone / joint from a pasted
+// request. Each builds the part from the LIS line, sets the fields a pathologist would, and reads the report.
+const pasteAndBuild = async (text) => {
+  const box = page.locator('#meta-specimen');
+  const accept = (d) => d.accept();
+  await box.fill('');
+  await box.type(text, { delay: 2 });
+  await page.waitForSelector('#intake-preview table tr', { timeout: 5000 });
+  const routed = await page.locator('#intake-preview select[aria-label="Template for part A"]').inputValue();
+  page.on('dialog', accept);
+  await page.click('#btn-build-parts');
+  await page.waitForTimeout(800);
+  page.off('dialog', accept);
+  return routed;
+};
+const pickField = async (id, value) => {
+  // A chip reads "<key digit><label>"; match the label exactly so "Amplified" is not "Not amplified".
+  const exact = new RegExp(`^\\s*\\d*\\s*${value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`);
+  const chip = page.locator(`.chips[data-field="${id}"] .chip`).filter({ hasText: exact }).first();
+  if (await chip.count()) { await chip.click(); await page.waitForTimeout(200); return; }
+  const el = page.locator(`[data-field="${id}"] select`).first();
+  assert(await el.count(), `no ${id} field on the form`);
+  await el.selectOption({ label: value });
+  await page.waitForTimeout(200);
+};
+const reportText = () => page.locator('#report-blocks').innerText();
+const checksText = async () => (await page.locator('details.checks .issue').allInnerTexts()).join(' | ');
+
+await check('soft tissue: a pasted excision prints its own site and no guessed lipoma; MDM2 amplification reaches the comment', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const routed = await pasteAndBuild('Soft tissue, right thigh, excision');
+  assert(routed === 'soft_tissue_benign', `routed to ${routed}`);
+  let report = await reportText();
+  assert(report.includes('SOFT TISSUE, right thigh, excision - LIPOMA'), `diagnosis line wrong: ${report.slice(-300)}`);
+  assert(!/thigh lipoma/i.test(report), 'the form default "lipoma" reached the site');
+  await pickField('diagnosis', 'Atypical lipomatous tumour – see comment');
+  await pickField('mdm2', 'Amplified');
+  report = await reportText();
+  assert(report.includes('SOFT TISSUE, right thigh, excision - ATYPICAL LIPOMATOUS TUMOUR'), `ALT line wrong: ${report.slice(-400)}`);
+  assert(report.includes('The atypical lipomatous tumour shows MDM2 amplification.'), 'the MDM2 comment did not print');
+  await page.locator('[data-field="mdm2"]').first().scrollIntoViewIfNeeded();
+  await shot('soft-tissue-alt');
+  return 'right thigh excision, no lipoma guess; ALT with MDM2 amplification and comment';
+});
+
+await check('abscess / granulation tissue: a pasted pilonidal sinus prints the house line and the hair-shaft sentence', async () => {
+  const routed = await pasteAndBuild('Pilonidal sinus');
+  assert(routed === 'abscess_granulation', `routed to ${routed}`);
+  await pickField('diagnosis', 'Sinus tract');
+  await pickField('foreignMaterial', 'Hair shafts');
+  const report = await reportText();
+  assert(report.includes('SKIN, pilonidal sinus - PILONIDAL SINUS'), `diagnosis line wrong: ${report.slice(-300)}`);
+  assert(report.includes('Hair shafts engulfed by foreign-body giant cells are seen in the wall of the sinus tract.'), 'hair-shaft sentence missing');
+  assert(report.includes('There is no evidence of dysplasia or malignancy.'), 'closing sentence missing');
+  await page.locator('[data-field="foreignMaterial"]').first().scrollIntoViewIfNeeded();
+  await shot('abscess-pilonidal');
+  return 'pilonidal sinus line, hair shafts, house closing';
+});
+
+await check('bone / joint: revision synovium lists synovial diagnoses; a vertebral metastasis asks for its IHC until typed', async () => {
+  let routed = await pasteAndBuild('Synovium, left hip, revision THR');
+  assert(routed === 'bone_joint', `synovium routed to ${routed}`);
+  const opts = await page.locator('[data-field="diagnosis"] select option').allTextContents();
+  assert(opts.includes('Wear debris reaction') && !opts.includes('Osteoarthritis'), `synovium diagnosis list: ${opts.join(', ')}`);
+  let report = await reportText();
+  assert(report.includes('SYNOVIUM, left hip, revision arthroplasty - CHRONIC SYNOVITIS; NO EVIDENCE OF INFECTION'), `synovium line wrong: ${report.slice(-300)}`);
+  await page.locator('[data-field="diagnosis"]').first().scrollIntoViewIfNeeded();
+  await shot('bone-synovium-revision');
+
+  routed = await pasteAndBuild('Bone, L3 vertebral biopsy');
+  assert(routed === 'bone_joint', `vertebral biopsy routed to ${routed}`);
+  await pickField('diagnosis', 'Metastatic carcinoma');
+  let checks = await checksText();
+  assert(/record the immunohistochemistry that supports it/.test(checks), `Checks did not ask for the IHC (read: ${checks.slice(0, 200)})`);
+  await page.fill('#f-A-ihcPositive', 'CK7, TTF-1');
+  await page.waitForTimeout(400);
+  checks = await checksText();
+  assert(!/record the immunohistochemistry/.test(checks), 'the IHC prompt stayed after the panel was typed');
+  report = await reportText();
+  assert(report.includes('BONE, L3 vertebral, biopsy - METASTATIC ADENOCARCINOMA; see comment'), `metastasis line wrong: ${report.slice(-300)}`);
+  assert(report.includes('the tumour cells are positive for CK7 and TTF-1'), 'typed IHC did not reach the microscopy');
+  await page.locator('#f-A-ihcPositive').scrollIntoViewIfNeeded();
+  await shot('bone-vertebral-metastasis');
+  return 'synovium list and line; L3 metastasis Checks prompt cleared by CK7, TTF-1';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

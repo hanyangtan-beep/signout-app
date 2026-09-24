@@ -206,3 +206,38 @@ template suggested and ten parts on the generic form.
   - The line drops "axillary", although 25 of the 178 released FS sentinel heads name the axilla.
   - Pasted `breast_carcinoma`, `breast_dcis` and `phyllodes` parts that name no side keep the form's Left.
   - These are recorded in Later.
+
+## Benign batch 1 routing and pre-fill (user request, built 2026-09-24)
+
+Counts are parts in the 2021-2026 biopsy export plus the 2024-2026 LIS export (17,706 parts), aggregate only.
+
+- Abscess, ulcer and granulation tissue (`abscess_granulation`):
+  - New schema key `match.exclude` (regex source): a hard exclusion, used by this form only, so an organ word keeps the organ's own template.
+  - `nasal_polyps` gains not: pilonidal.
+  - I&D, incision, debrided, punch and the anal short forms expand only on this form's options.
+  - 181 parts re-route: 124 from generic, 30 from skin cyst and 27 from soft tissue benign. No other part changes template or tier.
+- Bone and joint (`bone_joint`):
+  - `match.exclude` keeps jaws, digits, ossicles, marrow, nodes, vessels, amputations, spinal cord and fluids off the form.
+  - New fill rule `from: 'map'`: ordered [regex, option] pairs, so "THR", "NOF", "curettings" and "reamings" name the specimen and the procedure.
+  - `gastric_biopsy` gains not: bone.
+  - 172 parts re-route: 159 from generic, 5 from gastric biopsy, 3 from soft tissue benign and 1 from nasal polyps; 2 thyroid FNA and 2 effusion cytology parts move to generic. No tier changes on unchanged routes.
+- Soft tissue, benign (`soft_tissue_benign`):
+  - "abdominal wall" joins the site list; 2 parts re-route from generic.
+  - Browser QA found that a pasted part printed what the request did not say. Of the 317 historical parts that reach the form:
+    - 245 printed the form's default label, so "Soft tissue, right thigh, excision" read "right thigh lipoma" whatever the diagnosis;
+    - 47 said a word twice ("right thigh lipoma lipoma");
+    - 36 two-piece requests ("Right thigh lipoma, excision", "Abdominal wall nodule, excision") lost their site;
+    - 68 resections printed "excision".
+  - Fixes:
+    - the label now comes from the request (lipoma, ganglion, cyst, nodule, mass, lump, swelling, tumour or lesion) or stays blank, through `from: 'map'` on a text field with `noGuess`;
+    - a site that already names the label is not followed by it again;
+    - the new fallback `'site'` copies the first piece of a triple that parsed without a detail;
+    - the procedure is read from the line.
+  - Now: 0 guessed labels; 1 doubled word, which comes from the request itself; 0 lost sites. 62 resections print resection; the other 6 name both procedures and keep Excision.
+  - A part added by hand keeps the form's "lipoma" default. A request whose triple does not parse (40 parts) still leaves the site blank, as before.
+- Generic share, by the categories in the benign resections case mix (`tools/profile-benign-resections.py --route`):
+  - soft tissue 236 to 235 of 523 (this card changed the form, not its reach);
+  - abscess, ulcer and granulation tissue 183 to 62 of 262;
+  - bone and joint 165 to 12 of 179.
+- Found, not fixed here: 235 soft tissue parts still reach Generic. 114 name soft tissue with no procedure word, and 65 are biopsies, although the form offers Biopsy. This is recorded in Later.
+- Tests: tests/softtissue_batch1.test.js, tests/abscess_granulation.test.js and tests/bone_joint.test.js, plus three browser checks (soft tissue ALT with MDM2, pilonidal sinus, revision synovium and vertebral metastasis).
