@@ -150,6 +150,36 @@ Docs
 
 - **CNS algorithmic diagnosis — trial.** Merge the guided intake and the CNS pathway into one surface where the flowchart is the screen and each node is answered in place. Trial only: it lives in `lab/cns-algorithm/`, imports `src/cnswizard.js`, `src/cnspathway.js` and `generators/cns_layers.js` unchanged so it cannot drift, and is not wired into `index.html` until the design is settled. Scope: adult diffuse glioma, meningioma and posterior fossa ependymoma, i.e. the three branches the pathway module already carries. Grounding in `analysis/cns-algorithm-research.md`: no openly licensed interactive tool of this kind exists, and every published figure predates cIMPACT-NOW updates 11 and 12, so the node text is re-implemented from the criteria rather than copied from any figure.
 
+### Case options after a pasted request                  Size: S; fixes before ectopic
+Why:        a case built from the paste box keeps the options of the case it replaced, and so does a part switched to another template. Default-on options (the macroscopy on 46 templates, the case summary line on 7, the stage group, MMR, OLGA and molecular lines) then show unticked while they print. Seen in the browser on the hysterectomy, tube and soft tissue forms.
+Change:     one `caseOptions()` in the engine, each template's defaults and then the case's own choices, read by both the report and the tickboxes.
+Untouched:  every printed report; saved cases and the stored options.
+Accept:     after Build parts on a pasted hysterectomy the macroscopy box is ticked, unticking removes the macroscopy and ticking restores it; a unit test for a case whose options came from another template.
+Verify:     tests + browser
+Ship:       with batch
+Spec:       card is the spec
+Source:     browser QA, 2026-09-24
+
+### Endometrial biopsy — part letters in the microscopy   Size: S; fixes before ectopic
+Why:        83 of 89 released multi-part endometrial and cervical cases letter each microscopy paragraph "(A) … (B)". The endometrial narrative prints no letter, so two parts print two unlabelled paragraphs, and a mixed case letters only the products-of-gestation checklist.
+Change:     the narrative paragraph opens "(A) " as on the other biopsy forms; the single-part rule drops the letter.
+Untouched:  single-part reports, including every fixture; the checklist; diagnosis lines.
+Accept:     a curettings and polypectomy case prints "(A) Sections show …" and "(B) Sections show …"; fixtures unchanged.
+Verify:     tests only
+Ship:       with batch
+Spec:       card is the spec
+Source:     multi-part counts from the 2021-2026 biopsy export (aggregate)
+
+### Uterus (benign) — adnexa paratubal cyst lining        Size: S; fixes before ectopic
+Why:        adnexa, bilateral adnexa and sterilisation parts print "A thin-walled paratubal cyst lined by flattened cuboidal epithelium is present." None of the 42 released adnexa parts with a paratubal cyst describes that lining: they name the cyst ("The fallopian tube shows a paratubal cyst.", "A right paratubal cyst is seen."), and of the 42 tube-only parts, 8 call the lining ciliated and 3 cuboidal.
+Change:     the adnexa sentence becomes the tube form's "A paratubal cyst is seen, with a fibrous wall lined by ciliated tubal-type epithelium.", from one shared string.
+Untouched:  diagnosis lines, macroscopy and block keys; the tube form; `ovarian_cyst`.
+Accept:     no golden fixture carries the old sentence; the two `tests/uterus.test.js` assertions change deliberately.
+Verify:     tests only
+Ship:       with batch
+Spec:       card is the spec
+Source:     paratubal counts from the 2021-2026 biopsy export (aggregate); RCPath gynaecological tissue pathways, section 10.3
+
 ## Next
 
 The CNS pathways spec is now built out: the grading rules, the guided intake and the read-only pathway drawer are all in Done. The case-mix ordering below is unchanged.
@@ -308,12 +338,6 @@ Ship:       one batch, one publish
 Spec:       `docs/specs/frozen-section-scenarios.md`
 
 ## Later
-
-- Case options after a pasted request (found 2026-09-24): a case built from the specimen paste box shows "Generate the macroscopic description and block key" unticked while the macroscopy prints. Seen in the browser on the hysterectomy, tube and soft tissue forms.
-
-- Endometrial biopsy, multi-part microscopy (found 2026-09-24): the narrative paragraphs of a multi-part case print without part letters, while a products-of-gestation checklist carries its letter, so a mixed case letters one part and not the other.
-
-- Uterus (benign), adnexa paratubal cyst (found 2026-09-24): an adnexa part prints "lined by flattened cuboidal epithelium", while the released tube reports and the new tube form say ciliated tubal-type epithelium.
 
 - Soft tissue reach (found 2026-09-24): 235 of the 523 soft tissue parts in the benign case mix still reach Generic (222 after benign batch 2 moved 13 tissue-mass heads to the endometrial form). Of these, 114 name soft tissue with no procedure word and 65 are biopsies, although `soft_tissue_benign` offers Biopsy.
 
