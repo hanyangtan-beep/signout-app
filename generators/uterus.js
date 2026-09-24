@@ -5,6 +5,8 @@ import { stripDot } from './_house.js';
 //   myomectomy "Myomectomy"
 //   adnexa     "Left tube and ovary" / "Right tube and ovary"
 //   tubes      "Fallopian tube(s), sterilisation"
+//   tube       "Left fallopian tube, salpingectomy" / "Right fallopian tube, salpingectomy"
+//   paratubal  "Paratubal cyst, excision" (side from `paratubalSide`)
 // Blocks produced (uterus):
 //   specimens  "Uterus and cervix, total hysterectomy"
 //   macro      "(A) Received in formalin is a total hysterectomy specimen weighing 180 g. The uterus measures
@@ -21,6 +23,8 @@ import { stripDot } from './_house.js';
 //   diagnosis  "(A) UTERUS AND CERVIX, total hysterectomy - LEIOMYOMAS; ADENOMYOSIS; weakly proliferative
 //               endometrium; cervix with no evidence of squamous intraepithelial lesion or malignancy"
 // Adnexa parts: "(B) LEFT OVARY AND FALLOPIAN TUBE, salpingo-oophorectomy - NO SIGNIFICANT PATHOLOGY".
+// Tube parts: "(A) Left FALLOPIAN TUBE, salpingectomy - PARATUBAL CYST" and "(A) FALLOPIAN TUBE, left paratubal
+// cyst, excision - PARATUBAL CYST", the house heads of the 2021-2026 biopsy export (docs/specs/fallopian-tube.md).
 // Hyperplasia / HSIL options give a short diagnosis line only; the schema snippets
 // `uterus_endometrial_template` / `uterus_cervix_template` add the QMH cancer-template comment.
 // Wording is protected by tests/uterus.test.js — change it only deliberately.
@@ -50,6 +54,9 @@ export const MYOMECTOMY = 'Myomectomy';
 export const LEFT_ADNEXA = 'Left tube and ovary';
 export const RIGHT_ADNEXA = 'Right tube and ovary';
 export const TUBES = 'Fallopian tube(s), sterilisation';
+export const LEFT_TUBE = 'Left fallopian tube, salpingectomy';
+export const RIGHT_TUBE = 'Right fallopian tube, salpingectomy';
+export const PARATUBAL = 'Paratubal cyst, excision';
 
 export const kindOf = (v) => {
   switch (v.specimenName) {
@@ -57,6 +64,9 @@ export const kindOf = (v) => {
     case LEFT_ADNEXA:
     case RIGHT_ADNEXA: return 'adnexa';
     case TUBES: return 'tubes';
+    case LEFT_TUBE:
+    case RIGHT_TUBE: return 'tube';
+    case PARATUBAL: return 'paratubal';
     default: return 'uterus';
   }
 };
@@ -64,6 +74,8 @@ export const isUterus = (v) => kindOf(v) === 'uterus';
 export const hasCervix = (v) => v.specimenName === TOTAL || v.specimenName === TOTAL_BSO || !v.specimenName;
 export const hasAdnexa = (v) => v.specimenName === TOTAL_BSO || kindOf(v) === 'adnexa' || kindOf(v) === 'tubes';
 const side = (v) => (v.specimenName === LEFT_ADNEXA ? 'left' : v.specimenName === RIGHT_ADNEXA ? 'right' : '');
+const tubeSide = (v) => (v.specimenName === LEFT_TUBE ? 'left' : v.specimenName === RIGHT_TUBE ? 'right' : '');
+const paratubalSide = (v) => (v.paratubalSide === 'Left' || v.paratubalSide === 'Right' ? v.paratubalSide.toLowerCase() : '');
 
 export const leiomyomaPresent = (v) => (v.leiomyoma || 'Present') === 'Present' && (isUterus(v) || kindOf(v) === 'myomectomy');
 export const adenomyosisPresent = (v) => isUterus(v) && v.adenomyosis === 'Present';
@@ -85,6 +97,8 @@ export const polypPresent = (v) => isUterus(v) && (v.endometrium === 'Endometria
 
 /** Ticked adnexal findings, "Unremarkable" removed; [] when nothing significant. */
 export const adnexaFindings = (v) => (Array.isArray(v.adnexaFindings) ? v.adnexaFindings : []).filter((f) => f && f !== 'Unremarkable');
+/** Ticked findings on a salpingectomy part, "Unremarkable" removed; [] when nothing significant. */
+export const tubeFindings = (v) => (kindOf(v) === 'tube' && Array.isArray(v.tubeFindings) ? v.tubeFindings : []).filter((f) => f && f !== 'Unremarkable');
 
 // ---------- specimen phrases ----------
 
@@ -95,7 +109,10 @@ const SPECIMEN = {
   [MYOMECTOMY]: 'Myomectomy',
   [LEFT_ADNEXA]: 'Left fallopian tube and ovary, salpingo-oophorectomy',
   [RIGHT_ADNEXA]: 'Right fallopian tube and ovary, salpingo-oophorectomy',
-  [TUBES]: 'Fallopian tubes, sterilisation'
+  [TUBES]: 'Fallopian tubes, sterilisation',
+  [LEFT_TUBE]: 'Left fallopian tube, salpingectomy',
+  [RIGHT_TUBE]: 'Right fallopian tube, salpingectomy',
+  [PARATUBAL]: 'Paratubal cyst, excision'
 };
 
 const DX_HEAD = {
@@ -105,12 +122,16 @@ const DX_HEAD = {
   [MYOMECTOMY]: 'MYOMECTOMY',
   [LEFT_ADNEXA]: 'LEFT OVARY AND FALLOPIAN TUBE, salpingo-oophorectomy',
   [RIGHT_ADNEXA]: 'RIGHT OVARY AND FALLOPIAN TUBE, salpingo-oophorectomy',
-  [TUBES]: 'FALLOPIAN TUBES, bilateral, sterilisation'
+  [TUBES]: 'FALLOPIAN TUBES, bilateral, sterilisation',
+  [LEFT_TUBE]: 'Left FALLOPIAN TUBE, salpingectomy',
+  [RIGHT_TUBE]: 'Right FALLOPIAN TUBE, salpingectomy',
+  [PARATUBAL]: 'FALLOPIAN TUBE, paratubal cyst, excision'
 };
 
 export function specimenName(part) {
   const v = part.values;
   const raw = (v.specimenName || '').trim();
+  if (raw === PARATUBAL && paratubalSide(v)) return `${uc1(paratubalSide(v))} paratubal cyst, excision`;
   return SPECIMEN[raw] || raw || SPECIMEN[TOTAL];
 }
 
@@ -194,6 +215,15 @@ export function sidedSizes(raw) {
   return out;
 }
 
+/** "5 x 0.6" -> "5 cm in length and 0.6 cm in diameter"; "5" -> "5 cm in length"; any other form as a size phrase. */
+export function tubeMeasure(raw) {
+  const t = String(raw || '').trim();
+  if (!t) return '';
+  const m = /^(\d+(?:\.\d+)?)\s*(?:cm)?(?:\s*[xX×]\s*(\d+(?:\.\d+)?)\s*(?:cm)?)?$/.exec(t);
+  if (!m) return sizePhrase(t);
+  return `${m[1]} cm in length${m[2] ? ` and ${m[2]} cm in diameter` : ''}`;
+}
+
 function adnexaMacro(v) {
   const s = [];
   const tube = sizePhrase(v.tubeSize);
@@ -258,6 +288,19 @@ export function macro(part, ctx) {
     s.push(`Received in formalin is a ${side(v)} salpingo-oophorectomy specimen.`);
     s.push(...adnexaMacro(v));
     s.push(`Representative sections in ${blocks} block${blocks === 1 ? '' : 's'}.`);
+  } else if (kind === 'tube') {
+    const length = tubeMeasure(v.tubeSize);
+    const cyst = sizePhrase(v.cystSize);
+    const findings = tubeFindings(v);
+    s.push(`Received in formalin is a ${tubeSide(v)} fallopian tube${length ? ` measuring ${length}` : ''}.`);
+    if (findings.includes('Paratubal cyst')) s.push(`A thin-walled paratubal cyst${cyst ? ` measuring ${cyst}` : ''} is attached.`);
+    else if (cyst && findings.includes('Hydrosalpinx')) s.push(`The fallopian tube is cystically dilated to ${cyst}.`);
+    else if (cyst) s.push(`A thin-walled cyst measuring ${cyst} is attached.`);
+    s.push(`All embedded in ${blocks} block${blocks === 1 ? '' : 's'}.`);
+  } else if (kind === 'paratubal') {
+    const cyst = sizePhrase(v.cystSize);
+    s.push(`Received in formalin is a thin-walled paratubal cyst${cyst ? ` measuring ${cyst}` : ''}.`);
+    s.push(`All embedded in ${blocks} block${blocks === 1 ? '' : 's'}.`);
   } else {
     const tube = String(v.tubeSize || '').trim().replace(/\s*[xX×]\s*/g, ' x ');
     s.push(`Received in formalin are two segments of fallopian tube${tube ? ` measuring ${/cm|mm/i.test(tube) ? tube : `${tube} cm`} in length` : ''}.`);
@@ -285,6 +328,11 @@ export function blockItems(v) {
     items.push([singleLeiomyoma(v) ? 'Leiomyoma, representative sections' : 'Leiomyomas, representative sections', 4]);
   } else if (kind === 'adnexa') {
     items.push(['Fallopian tube, sectioned', 1], ['Ovary', 2]);
+  } else if (kind === 'tube') {
+    items.push(['Fimbria', 1], ['Cross sections of the fallopian tube', 1]);
+    if (tubeFindings(v).includes('Paratubal cyst')) items.push(['Paratubal cyst', 1]);
+  } else if (kind === 'paratubal') {
+    items.push(['Cyst wall', 1]);
   } else {
     items.push(['Left fallopian tube', 1], ['Right fallopian tube', 1]);
   }
@@ -380,6 +428,30 @@ const OVARY_FINDINGS = {
   'Corpus albicans': 'corpora albicantia'
 };
 
+// Salpingectomy and paratubal cyst parts. RCPath tissue pathways for gynaecological pathology (2023)
+// section 10.3.1: confirm the tube and a complete cross-sectional profile, and report any abnormality.
+// Sentences follow the house forms of the 2021-2026 biopsy export: "fibrous cyst wall lined by a single
+// layer of ciliated tubal-type epithelium", "The features are consistent with paratubal cyst.", "a dilated
+// lumen lined by benign tubal epithelium, consistent with hydrosalpinx". The older adnexa sentences above
+// (TUBE_FINDINGS) are left as they are.
+const TUBE_ONLY = {
+  'Paratubal cyst': 'A paratubal cyst is seen, with a fibrous wall lined by ciliated tubal-type epithelium.',
+  'Chronic salpingitis': 'The plicae contain a chronic inflammatory infiltrate with plasma cells, in keeping with chronic salpingitis.',
+  Endometriosis: 'Foci of endometrial glands and stroma with haemosiderin-laden macrophages are present, in keeping with endometriosis.'
+};
+const PARATUBAL_MICRO = 'Sections show a fibrous cyst wall lined by a single layer of ciliated tubal-type epithelium. The features are consistent with paratubal cyst.';
+
+function tubeMicro(v) {
+  const sd = tubeSide(v);
+  const f = tubeFindings(v);
+  const s = [];
+  if (f.includes('Hydrosalpinx')) s.push(`Sections of the ${sd} fallopian tube show a dilated lumen lined by benign tubal epithelium, consistent with hydrosalpinx.`);
+  else if (f.includes('Chronic salpingitis')) s.push(`Sections show fimbrial tissue and cross sections of the ${sd} fallopian tube.`);
+  else s.push(`Sections show fimbrial tissue and cross sections of the ${sd} fallopian tube with unremarkable plicae.`);
+  for (const x of Object.keys(TUBE_ONLY)) if (f.includes(x)) s.push(TUBE_ONLY[x]);
+  return s;
+}
+
 /** Adnexal microscopy sentences; `plural` for bilateral adnexa in one part. */
 function adnexaMicro(v, plural) {
   const findings = adnexaFindings(v);
@@ -447,6 +519,14 @@ export function microscopy(part) {
       s.push('Sections show pieces of unremarkable myometrium. There is no evidence of malignancy.');
     }
     closed = true;
+  } else if (kind === 'tube') {
+    s.push(...tubeMicro(v));
+    s.push('There is no evidence of malignancy.');
+    closed = true;
+  } else if (kind === 'paratubal') {
+    s.push(PARATUBAL_MICRO);
+    s.push('There is no evidence of malignancy.');
+    closed = true;
   } else {
     s.push(...adnexaMicro(v, false));
     s.push('There is no evidence of malignancy.');
@@ -481,12 +561,23 @@ const ADNEXA_DX = {
   'Serous cystadenoma': 'SEROUS CYSTADENOMA, ovary'
 };
 
+// House diagnosis lines for a tube on its own: "PARATUBAL CYST" and "Consistent with HYDROSALPINX" stand without
+// a closing clause; an unremarkable salpingectomy reads "NO EVIDENCE OF MALIGNANCY".
+const TUBE_DX = {
+  Hydrosalpinx: 'Consistent with HYDROSALPINX',
+  'Paratubal cyst': 'PARATUBAL CYST',
+  'Chronic salpingitis': 'CHRONIC SALPINGITIS',
+  Endometriosis: 'ENDOMETRIOSIS'
+};
+
 const CERVIX_NEG_DX = 'cervix with no evidence of squamous intraepithelial lesion or malignancy';
 
 export function diagnosis(part) {
   const v = part.values;
   const kind = kindOf(v);
-  const head = DX_HEAD[v.specimenName] || DX_HEAD[TOTAL];
+  const head = kind === 'paratubal' && paratubalSide(v)
+    ? `FALLOPIAN TUBE, ${paratubalSide(v)} paratubal cyst, excision`
+    : DX_HEAD[v.specimenName] || DX_HEAD[TOTAL];
   const upper = [];
   const lower = [];
   let closer = 'no evidence of malignancy';
@@ -523,6 +614,14 @@ export function diagnosis(part) {
   } else if (kind === 'myomectomy') {
     upper.push(leiomyomaPresent(v) ? (singleLeiomyoma(v) ? 'LEIOMYOMA' : 'LEIOMYOMAS') : 'NO SIGNIFICANT PATHOLOGY');
     closer = leiomyomaPresent(v) ? 'no evidence of malignancy' : '';
+  } else if (kind === 'tube') {
+    const f = tubeFindings(v);
+    const dx = Object.keys(TUBE_DX).filter((x) => f.includes(x)).map((x) => TUBE_DX[x]);
+    upper.push(...(dx.length ? dx : ['NO EVIDENCE OF MALIGNANCY']));
+    closer = '';
+  } else if (kind === 'paratubal') {
+    upper.push('PARATUBAL CYST');
+    closer = '';
   } else {
     const f = adnexaFindings(v).map((x) => ADNEXA_DX[x]).filter(Boolean);
     if (!f.length) { upper.push('NO SIGNIFICANT PATHOLOGY'); closer = ''; }

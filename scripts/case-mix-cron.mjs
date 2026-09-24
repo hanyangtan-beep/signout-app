@@ -201,7 +201,7 @@ const COVER = {
   'Endometrium / curettings': ['endometrial_biopsy', 'endometrial_carcinoma'],
   'Uterus resection': ['uterus_benign', 'uterine_sarcoma'],
   'Cervix biopsy / LEEP': ['cervical_biopsy', 'cervical_excision', 'cervical_carcinoma'],
-  'Ovary / fallopian tube': ['ovarian_cyst', 'ovary_ft_peritoneum'],
+  'Ovary / fallopian tube': ['ovarian_cyst', 'ovary_ft_peritoneum', 'uterus_benign'],
   Placenta: ['placenta'],
   'Vulva / vagina': ['vulval_carcinoma', 'vaginal_carcinoma'],
   Prostate: ['prostate_biopsy', 'turp', 'prostate_radical'],
@@ -210,7 +210,7 @@ const COVER = {
   'Testis / penis / scrotum': ['testis_tumour', 'penile_carcinoma'],
   Skin: ['skin_lesion', 'skin_excision', 'skin_cyst', 'melanoma', 'skin_scc'],
   'Soft tissue': ['soft_tissue_benign', 'soft_tissue_sarcoma'],
-  'Bone / joint': ['bone_tumour'],
+  'Bone / joint': ['bone_tumour', 'bone_joint'],
   'Lymph node (histology)': ['lymph_node', 'lymphoma_node'],
   'Thyroid / parathyroid': ['thyroid_benign', 'parathyroid', 'thyroid_carcinoma'],
   'Oral cavity / oropharynx': ['oral_cavity_carcinoma', 'oropharynx_hpv_carcinoma'],
@@ -223,7 +223,7 @@ const COVER = {
   'Brain / CNS': ['cns_tumour', 'meningioma'],
   Cardiovascular: ['aortic_valve_aorta', 'endomyocardial_biopsy'],
   'Hernia sac': [],
-  'Abscess / inflammatory': ['generic']
+  'Abscess / inflammatory': ['abscess_granulation']
 };
 
 

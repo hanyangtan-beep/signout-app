@@ -40,7 +40,8 @@ test('metadata: benign gynae resection with palette aliases and complete default
   for (const p of schema.example.parts) for (const k of Object.keys(p.values)) assert.ok(ids.has(k), `example key ${k} is a field`);
   for (const p of schema.example.parts) for (const id of ids) assert.ok(id in p.values, `example part ${p.label} has ${id}`);
   assert.equal(schema.fields[0].id, 'specimenName');
-  assert.deepEqual(schema.fields[0].options, ['Uterus and cervix, total hysterectomy', 'Uterus, cervix and bilateral adnexa', 'Uterus, subtotal', 'Myomectomy', 'Left tube and ovary', 'Right tube and ovary', 'Fallopian tube(s), sterilisation']);
+  // Benign batch 2 (2026-09-24) appended the three tube-only specimens; tests/fallopian_tube.test.js covers them.
+  assert.deepEqual(schema.fields[0].options, ['Uterus and cervix, total hysterectomy', 'Uterus, cervix and bilateral adnexa', 'Uterus, subtotal', 'Myomectomy', 'Left tube and ovary', 'Right tube and ovary', 'Fallopian tube(s), sterilisation', 'Left fallopian tube, salpingectomy', 'Right fallopian tube, salpingectomy', 'Paratubal cyst, excision']);
   assert.equal(schema.fields[schema.fields.length - 1].id, 'additionalNotes');
   const macroFields = schema.fields.filter((f) => f.group === 'Macroscopy').map((f) => f.id);
   assert.deepEqual(macroFields, ['weight', 'dimensions', 'serosa', 'leiomyomaCount', 'leiomyomaLocation', 'leiomyomaSize', 'cutSurface', 'endometriumThickness', 'polypSize', 'myometrium', 'cervixMacro', 'tubeSize', 'ovarySize', 'cystSize', 'blocks', 'blockKeyText']);

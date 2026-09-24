@@ -1283,7 +1283,66 @@
           "endometrial polyp",
           "bulky uterus"
         ],
+        "alone": {
+          "unless": "ovar|oophor|adnex|appendage|\\buter|hysterect|cervi|myom|fibroid|\\bTAH|\\bBSO\\b|ectopic|pregnan|gestation|villi|products of",
+          "site": [
+            "fallopian tube",
+            "salpingectomy",
+            "paratubal",
+            "fimbrial cyst",
+            "hydrosalpinx",
+            "tubal ligation"
+          ],
+          "procedure": [
+            "fallopian tube",
+            "salpingectomy",
+            "paratubal",
+            "fimbrial cyst",
+            "hydrosalpinx",
+            "tubal ligation",
+            "sterilisation",
+            "sterilization",
+            "excision",
+            "cystectomy"
+          ]
+        },
         "fill": [
+          {
+            "field": "specimenName",
+            "from": "map",
+            "alone": true,
+            "map": [
+              [
+                "\\b(?:ligation|sterili[sz]ation)\\b",
+                "Fallopian tube(s), sterilisation"
+              ],
+              [
+                "^(?=[\\s\\S]*salpingectom)[\\s\\S]*\\bleft\\b",
+                "Left fallopian tube, salpingectomy"
+              ],
+              [
+                "^(?=[\\s\\S]*salpingectom)[\\s\\S]*\\bright\\b",
+                "Right fallopian tube, salpingectomy"
+              ],
+              [
+                "paratubal|para-tubal|fimbrial cyst|\\bcysts?\\b",
+                "Paratubal cyst, excision"
+              ],
+              [
+                "\\bleft\\b",
+                "Left fallopian tube, salpingectomy"
+              ],
+              [
+                "\\bright\\b",
+                "Right fallopian tube, salpingectomy"
+              ]
+            ]
+          },
+          {
+            "field": "paratubalSide",
+            "from": "side",
+            "alone": true
+          },
           {
             "field": "specimenName",
             "from": "options"

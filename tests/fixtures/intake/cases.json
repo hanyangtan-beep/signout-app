@@ -199,20 +199,28 @@
       "expect": [
         {
           "label": "A",
-          "templateId": "generic",
-          "tier": "none"
+          "templateId": "uterus_benign",
+          "tier": "confident"
         },
         {
           "label": "B",
-          "templateId": "generic",
-          "tier": "none"
+          "templateId": "uterus_benign",
+          "tier": "confident"
         },
         {
           "label": "C",
           "templateId": "uterus_benign",
           "tier": "confident"
         }
-      ]
+      ],
+      "values": {
+        "A": {
+          "specimenName": "Right fallopian tube, salpingectomy"
+        },
+        "B": {
+          "specimenName": "Left fallopian tube, salpingectomy"
+        }
+      }
     },
     {
       "name": "gastric carcinoma with numbered stations (15 parts)",
@@ -745,6 +753,44 @@
         },
         "C": {
           "specimenType": "Uterus, evacuation of retained products of gestation"
+        }
+      }
+    },
+    {
+      "name": "fallopian tube only (benign batch 2)",
+      "text": "Specimen\n(A) Left fallopian tube, salpingectomy, (B) Right paratubal cyst, excision, (C) Bilateral fallopian tubes, sterilisation and (D) Left ovary and fallopian tube",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "uterus_benign",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "uterus_benign",
+          "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "uterus_benign",
+          "tier": "confident"
+        },
+        {
+          "label": "D",
+          "templateId": "generic",
+          "tier": "choose"
+        }
+      ],
+      "values": {
+        "A": {
+          "specimenName": "Left fallopian tube, salpingectomy"
+        },
+        "B": {
+          "specimenName": "Paratubal cyst, excision",
+          "paratubalSide": "Right"
+        },
+        "C": {
+          "specimenName": "Fallopian tube(s), sterilisation"
         }
       }
     }

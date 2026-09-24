@@ -13,7 +13,8 @@
       "Macroscopy"
     ],
     "macroFields": [
-      "specimenName"
+      "specimenName",
+      "paratubalSide"
     ]
   },
   "rank": 27,
@@ -65,7 +66,66 @@
       "endometrial polyp",
       "bulky uterus"
     ],
+    "alone": {
+      "unless": "ovar|oophor|adnex|appendage|\\buter|hysterect|cervi|myom|fibroid|\\bTAH|\\bBSO\\b|ectopic|pregnan|gestation|villi|products of",
+      "site": [
+        "fallopian tube",
+        "salpingectomy",
+        "paratubal",
+        "fimbrial cyst",
+        "hydrosalpinx",
+        "tubal ligation"
+      ],
+      "procedure": [
+        "fallopian tube",
+        "salpingectomy",
+        "paratubal",
+        "fimbrial cyst",
+        "hydrosalpinx",
+        "tubal ligation",
+        "sterilisation",
+        "sterilization",
+        "excision",
+        "cystectomy"
+      ]
+    },
     "fill": [
+      {
+        "field": "specimenName",
+        "from": "map",
+        "alone": true,
+        "map": [
+          [
+            "\\b(?:ligation|sterili[sz]ation)\\b",
+            "Fallopian tube(s), sterilisation"
+          ],
+          [
+            "^(?=[\\s\\S]*salpingectom)[\\s\\S]*\\bleft\\b",
+            "Left fallopian tube, salpingectomy"
+          ],
+          [
+            "^(?=[\\s\\S]*salpingectom)[\\s\\S]*\\bright\\b",
+            "Right fallopian tube, salpingectomy"
+          ],
+          [
+            "paratubal|para-tubal|fimbrial cyst|\\bcysts?\\b",
+            "Paratubal cyst, excision"
+          ],
+          [
+            "\\bleft\\b",
+            "Left fallopian tube, salpingectomy"
+          ],
+          [
+            "\\bright\\b",
+            "Right fallopian tube, salpingectomy"
+          ]
+        ]
+      },
+      {
+        "field": "paratubalSide",
+        "from": "side",
+        "alone": true
+      },
       {
         "field": "specimenName",
         "from": "options"
@@ -161,9 +221,29 @@
         "Myomectomy",
         "Left tube and ovary",
         "Right tube and ovary",
-        "Fallopian tube(s), sterilisation"
+        "Fallopian tube(s), sterilisation",
+        "Left fallopian tube, salpingectomy",
+        "Right fallopian tube, salpingectomy",
+        "Paratubal cyst, excision"
       ],
       "default": "Uterus and cervix, total hysterectomy"
+    },
+    {
+      "id": "paratubalSide",
+      "label": "Side",
+      "type": "select",
+      "options": [
+        "Not stated",
+        "Left",
+        "Right"
+      ],
+      "default": "Not stated",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Paratubal cyst, excision"
+        ]
+      }
     },
     {
       "id": "weight",
@@ -228,8 +308,21 @@
       "step": 1,
       "default": "",
       "showIf": {
-        "field": "leiomyoma",
-        "is": "Present"
+        "all": [
+          {
+            "field": "leiomyoma",
+            "is": "Present"
+          },
+          {
+            "field": "specimenName",
+            "is": [
+              "Uterus and cervix, total hysterectomy",
+              "Uterus, cervix and bilateral adnexa",
+              "Uterus, subtotal",
+              "Myomectomy"
+            ]
+          }
+        ]
       }
     },
     {
@@ -245,8 +338,21 @@
       ],
       "default": "Intramural",
       "showIf": {
-        "field": "leiomyoma",
-        "is": "Present"
+        "all": [
+          {
+            "field": "leiomyoma",
+            "is": "Present"
+          },
+          {
+            "field": "specimenName",
+            "is": [
+              "Uterus and cervix, total hysterectomy",
+              "Uterus, cervix and bilateral adnexa",
+              "Uterus, subtotal",
+              "Myomectomy"
+            ]
+          }
+        ]
       }
     },
     {
@@ -257,8 +363,21 @@
       "placeholder": "4",
       "default": "",
       "showIf": {
-        "field": "leiomyoma",
-        "is": "Present"
+        "all": [
+          {
+            "field": "leiomyoma",
+            "is": "Present"
+          },
+          {
+            "field": "specimenName",
+            "is": [
+              "Uterus and cervix, total hysterectomy",
+              "Uterus, cervix and bilateral adnexa",
+              "Uterus, subtotal",
+              "Myomectomy"
+            ]
+          }
+        ]
       }
     },
     {
@@ -274,8 +393,21 @@
       ],
       "default": "Whorled",
       "showIf": {
-        "field": "leiomyoma",
-        "is": "Present"
+        "all": [
+          {
+            "field": "leiomyoma",
+            "is": "Present"
+          },
+          {
+            "field": "specimenName",
+            "is": [
+              "Uterus and cervix, total hysterectomy",
+              "Uterus, cervix and bilateral adnexa",
+              "Uterus, subtotal",
+              "Myomectomy"
+            ]
+          }
+        ]
       }
     },
     {
@@ -361,7 +493,9 @@
           "Uterus, cervix and bilateral adnexa",
           "Left tube and ovary",
           "Right tube and ovary",
-          "Fallopian tube(s), sterilisation"
+          "Fallopian tube(s), sterilisation",
+          "Left fallopian tube, salpingectomy",
+          "Right fallopian tube, salpingectomy"
         ]
       }
     },
@@ -394,7 +528,10 @@
           "Uterus, cervix and bilateral adnexa",
           "Left tube and ovary",
           "Right tube and ovary",
-          "Fallopian tube(s), sterilisation"
+          "Fallopian tube(s), sterilisation",
+          "Left fallopian tube, salpingectomy",
+          "Right fallopian tube, salpingectomy",
+          "Paratubal cyst, excision"
         ]
       }
     },
@@ -490,8 +627,21 @@
       ],
       "default": "None",
       "showIf": {
-        "field": "leiomyoma",
-        "is": "Present"
+        "all": [
+          {
+            "field": "leiomyoma",
+            "is": "Present"
+          },
+          {
+            "field": "specimenName",
+            "is": [
+              "Uterus and cervix, total hysterectomy",
+              "Uterus, cervix and bilateral adnexa",
+              "Uterus, subtotal",
+              "Myomectomy"
+            ]
+          }
+        ]
       }
     },
     {
@@ -563,6 +713,31 @@
       }
     },
     {
+      "id": "tubeFindings",
+      "label": "Tube findings",
+      "type": "multiselect",
+      "options": [
+        "Unremarkable",
+        "Hydrosalpinx",
+        "Paratubal cyst",
+        "Chronic salpingitis",
+        "Endometriosis"
+      ],
+      "exclusive": [
+        "Unremarkable"
+      ],
+      "default": [
+        "Unremarkable"
+      ],
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Left fallopian tube, salpingectomy",
+          "Right fallopian tube, salpingectomy"
+        ]
+      }
+    },
+    {
       "id": "additionalNotes",
       "label": "Additional microscopy",
       "type": "textarea",
@@ -604,6 +779,7 @@
         "label": "A",
         "values": {
           "specimenName": "Uterus and cervix, total hysterectomy",
+          "paratubalSide": "Not stated",
           "weight": "180",
           "dimensions": "9 x 6 x 4",
           "serosa": "Smooth",
@@ -629,6 +805,9 @@
           "adnexaFindings": [
             "Unremarkable"
           ],
+          "tubeFindings": [
+            "Unremarkable"
+          ],
           "additionalNotes": ""
         }
       },
@@ -636,6 +815,7 @@
         "label": "B",
         "values": {
           "specimenName": "Left tube and ovary",
+          "paratubalSide": "Not stated",
           "weight": "",
           "dimensions": "",
           "serosa": "Smooth",
@@ -661,6 +841,9 @@
           "adnexaFindings": [
             "Paratubal cyst",
             "Cystic follicle"
+          ],
+          "tubeFindings": [
+            "Unremarkable"
           ],
           "additionalNotes": ""
         }

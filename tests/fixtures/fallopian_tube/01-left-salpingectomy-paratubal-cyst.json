@@ -1,0 +1,13 @@
+{
+  "templateId": "uterus_benign",
+  "values": {
+    "specimenName": "Left fallopian tube, salpingectomy",
+    "tubeSize": "5 x 0.6",
+    "cystSize": "2",
+    "tubeFindings": [
+      "Paratubal cyst"
+    ]
+  },
+  "report": "Left fallopian tube, salpingectomy\n\nReceived in formalin is a left fallopian tube measuring 5 cm in length and 0.6 cm in diameter. A thin-walled paratubal cyst measuring 2 cm is attached. All embedded in 3 blocks.\n\n(1) Fimbria. (2) Cross sections of the fallopian tube. (3) Paratubal cyst.\n\nSections show fimbrial tissue and cross sections of the left fallopian tube with unremarkable plicae. A paratubal cyst is seen, with a fibrous wall lined by ciliated tubal-type epithelium. There is no evidence of malignancy.\n\nLeft FALLOPIAN TUBE, salpingectomy - PARATUBAL CYST",
+  "checks": []
+}

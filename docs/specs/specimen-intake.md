@@ -262,3 +262,14 @@ Counts are the 18,913 parts that the benign resections profiler splits from the 
   - soft tissue 235 to 222 of 523, because of the 13 tissue-mass heads.
 - The 5 left on Generic: two "Uterus, …" lines and one "… tissue mass" line are offered as "choose", and two name no site.
 - Tests: tests/products_of_gestation.test.js (intake section), and the "products of gestation (benign batch 2)" case in tests/fixtures/intake/cases.json. That case has four parts under a "Missed miscarriage" history, and its placenta part keeps `placenta`.
+- Standalone fallopian tube (`uterus_benign`):
+  - A new rule, `match.alone`, carries site words (fallopian tube, salpingectomy, paratubal, fimbrial cyst, hydrosalpinx, tubal ligation) and procedure words (the same, plus sterilisation, excision and cystectomy). They count only on a line that names none of its `unless` words: the ovary, oophorectomy, adnexa or appendage, the uterus, hysterectomy, cervix, myoma or fibroid, TAH or BSO, ectopic, pregnancy, gestation, villi or "products of". Fill rules marked `alone: true` use the same gate.
+  - Two fills: the specimen type is read from the line (`from: 'map'`), then a paratubal cyst takes its side (`from: 'side'`). A line with no side fills nothing.
+  - 99 parts re-route to `uterus_benign`, all confident: 78 from generic and 21 from `ovarian_cyst`. By category that is tube 79 (65 generic, 14 `ovarian_cyst`), uncategorised 16 (9, 7) and ectopic 4 (generic). No other part changes template or tier, and the 87 parts already on the form keep the same pre-fill.
+  - Their pre-fill: paratubal cyst excision 57 (left 26, right 31), right salpingectomy 23 and left salpingectomy 19.
+- Generic share, by the same categories:
+  - fallopian tube, benign 69 to 4 of 83 (`uterus_benign` 0 to 79; `ovarian_cyst` 14 to 0);
+  - ectopic pregnancy 7 to 3 of 8 (`uterus_benign` 4; `ovarian_cyst` 1 unchanged).
+- The 4 tube parts and 4 ectopic parts that stay off the form all name the ovary, the uterus or a pregnancy.
+- Fixture change (deliberate, 2026-09-24): in the "fibroids" case of tests/fixtures/intake/cases.json, parts A and B ("Right/Left fallopian tube, resection") now expect `uterus_benign`/confident, not generic/none, with their sided salpingectomy pre-filled. Part C is unchanged. A "fallopian tube only (benign batch 2)" case adds a salpingectomy, a paratubal cyst excision, a sterilisation and an ovary-and-tube part; the last keeps its generic "choose" route.
+- Tests: tests/fallopian_tube.test.js (intake section); spec docs/specs/fallopian-tube.md.

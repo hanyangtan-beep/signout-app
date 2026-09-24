@@ -1,0 +1,10 @@
+{
+  "templateId": "uterus_benign",
+  "values": {
+    "specimenName": "Paratubal cyst, excision",
+    "paratubalSide": "Right",
+    "cystSize": "3"
+  },
+  "report": "Right paratubal cyst, excision\n\nReceived in formalin is a thin-walled paratubal cyst measuring 3 cm. All embedded in 1 block.\n\n(1) Cyst wall.\n\nSections show a fibrous cyst wall lined by a single layer of ciliated tubal-type epithelium. The features are consistent with paratubal cyst. There is no evidence of malignancy.\n\nFALLOPIAN TUBE, right paratubal cyst, excision - PARATUBAL CYST",
+  "checks": []
+}

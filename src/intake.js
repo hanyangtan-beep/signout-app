@@ -164,8 +164,15 @@ const hits = (terms, text) => (terms || []).filter((t) => termRe(t).test(text)).
 // hit when the part also names something a specimen is actually taken for. A full site word
 // ("descending colon") never needs this and is matched by `match.site` as before.
 const ABBREV_CTX = /\b(polyps?|polypectomy|tumours?|tumors?|mass|masses|lesions?|biopsy|biopsies|cancer|carcinomas?|adenomas?|ESD|EMR|SMT|scar|ulcers?|erosions?|stricture|colitis)\b/i;
+// `match.alone`: site and procedure words that count only on a line naming none of `alone.unless`
+// (regex source). The benign uterus form reads a tube-only request this way ("Left fallopian tube,
+// salpingectomy", "FALLOPIAN TUBE, left paratubal cyst, excision": 99 of the 18,913 request lines of
+// the 2021-2026 biopsy and 2024-2026 LIS exports, 78 of them with no candidate at all), while a line
+// that also names the ovary, the uterus or a pregnancy keeps the route it had - the ovarian cyst form,
+// the hysterectomy forms, and the ectopic pregnancy card. A fill rule marked `alone` follows the same gate.
+const aloneFor = (mt, text) => (mt?.alone && !new RegExp(mt.alone.unless, 'i').test(text) ? mt.alone : null);
 const siteHitsFor = (mt, text) =>
-  hits(mt.site, text) + (mt.siteAbbrev && ABBREV_CTX.test(text) ? hits(mt.siteAbbrev, text) : 0);
+  hits(mt.site, text) + (mt.siteAbbrev && ABBREV_CTX.test(text) ? hits(mt.siteAbbrev, text) : 0) + hits(aloneFor(mt, text)?.site, text);
 
 // `match.exclude`: words that take a template out of the running altogether rather than 4 points
 // down (`match.not`). The abscess form reads "abscess", "ulcer" and "fistula" as its site words, and
@@ -195,7 +202,7 @@ export function scorePart(part, ctx, manifest) {
     const mt = t.match;
     const siteHits = siteHitsFor(mt, text);
     if (!siteHits || excluded(mt, text)) continue;
-    let score = 2 * hits(mt.procedure, text) + 2 * Math.min(1, hits(mt.clinical, history)) - 4 * hits(mt.not, text) + (mt.bias || 0);
+    let score = 2 * hits(mt.procedure, text) + 2 * hits(aloneFor(mt, text)?.procedure, text) + 2 * Math.min(1, hits(mt.clinical, history)) - 4 * hits(mt.not, text) + (mt.bias || 0);
     if (resected && !biopsied && BIOPSY_KINDS.includes(t.kind)) score -= 3;
     if (biopsied && !resected && RESECTION_KINDS.includes(t.kind)) score -= 3;
     // `match.bare`: for these templates a site word with no procedure named is evidence in itself,
@@ -545,8 +552,9 @@ export function frozenScenario(text) {
 }
 
 /**
- * `match.fill`: `{field, from: "detail" | "text" | "options" | "side", fallback?, strip?, unless?, clock?,
- * noGuess?, scenario?}` rules (a single object is accepted too). `clock` writes a breast site the house way
+ * `match.fill`: `{field, from: "detail" | "text" | "options" | "side" | "map", fallback?, strip?, unless?, clock?,
+ * noGuess?, scenario?, alone?}` rules (a single object is accepted too). `alone` applies the rule only on a line
+ * that `match.alone` reads (see aloneFor). `clock` writes a breast site the house way
  * (see clockSite) and, when the line is not an LIS triple, still takes its clock position and distance from
  * the whole line. `noGuess` empties an options field the line names nothing on, so the form's default site
  * ("Frontal lobe", "Upper lobe") never prints for a request that did not name it. `side` writes the side the
@@ -562,6 +570,7 @@ function applyFill(schema, part, values) {
     const f = field(rule.field);
     if (!f || values[rule.field]) continue;
     if (rule.scenario && values.scenario !== rule.scenario) continue;
+    if (rule.alone && !aloneFor(schema.match, text)) continue;
     if (rule.from === 'options') {
       if (!Array.isArray(f.options)) continue;
       const words = rule.strip ? stripWords(text, rule.strip) : text;
