@@ -154,7 +154,15 @@ Docs
 
 ## Now
 
-- **CNS algorithmic diagnosis — trial.** Merge the guided intake and the CNS pathway into one surface where the flowchart is the screen and each node is answered in place. Trial only: it lives in `lab/cns-algorithm/`, imports `src/cnswizard.js`, `src/cnspathway.js` and `generators/cns_layers.js` unchanged so it cannot drift, and is not wired into `index.html` until the design is settled. Scope: adult diffuse glioma, meningioma and posterior fossa ependymoma, i.e. the three branches the pathway module already carries. Grounding in `analysis/cns-algorithm-research.md`: no openly licensed interactive tool of this kind exists, and every published figure predates cIMPACT-NOW updates 11 and 12, so the node text is re-implemented from the criteria rather than copied from any figure.
+### Fallopian tube — ectopic pregnancy                   Size: M; batch 2; pulled by the user 2026-09-24
+Why:        **6 / 2 parts** (5 / 1 tubal pregnancies), 3 of 8 on Generic after the standalone tube card (7 before it; the 4 lines that name only the tube now reach `uterus_benign`); a formulaic Gynae resection, and the user supplied a model report. Moved into this group 2026-09-24.
+Change:     new template `fallopian_tube_ectopic` (Gynae, benign resection, reusable part): macro builder, block key `(1) Uninvolved fallopian tube. (2)&(3) Haemorrhagic tubal tissue with distension.`, microscopy with villi / trophoblast / rupture / epithelium, mandatory GTN sentence, dx `LEFT FALLOPIAN TUBE, salpingectomy - ECTOPIC TUBAL PREGNANCY` with variants; snippets for no-villi and persistent trophoblast. Prints `foetal`, the spelling of the user's model report ("No foetal parts are grossly identified.") and of released microscopy ("foetal parts" 98 times, "fetal parts" never, in the five-year biopsy file; the macroscopy splits 41 to 32); the `src/style.js` and `tests/engine.test.js` comments that call `fetal` the house wording are corrected to say only the placenta keeps it.
+Untouched:  uterus benign template, including the standalone-tube routing (Done 2026-09-24); the placenta template's Amsterdam `fetal` terms, which released placenta reports also spell `fetal`; the style map, which converts neither spelling.
+Accept:     fixture from the user's example reproduces macro / block key / microscopy / dx; no-villi variant prints the hCG comment; appears in Resections browse under Gynae; the macroscopy prints "No foetal parts are identified." and no ectopic output contains `fetal`.
+Verify:     tests + browser (light)
+Ship:       with batch
+Spec:       `docs/specs/fallopian-tube-ectopic.md`
+Source:     RCPath Tissue pathways for gynaecological pathology (V3, Feb 2023) §10.2.4 and §10.3.3 — https://www.rcpath.org/static/94763195-0982-40ed-bbc79ca92370e9ac/Tissue-pathways-for-gynaecological-pathology.pdf
 
 ## Next
 
@@ -192,17 +200,7 @@ Carried over from the previous ordering, now ranked by the same case-mix measure
 Measure:    diagnosis parts, not the site-based table above: the five-year biopsy file (January 2021 to 14 September 2026, 9,325 cases) and the 2024–2026 LIS export (4,547 cases), counted by `tools/profile-benign-resections.py` into `docs/case-mix/benign-resections-2021-2026.md`. The twelve categories hold **1,144 parts in 1,017 cases (10.9 per cent) in the five-year file and 281 parts in 271 cases (6.0 per cent) in the export, and 975 of the 1,425 parts land on Generic today.** Counts in the cards read five-year / export.
 Batches:    1 — soft tissue benign upgrade; abscess, ulcer and granulation tissue; bone and joint. 2 — products of gestation; standalone fallopian tube; ectopic pregnancy. 3 — haemorrhoid, cholesteatoma and hernia sac; nail and digit; testis, scrotum and foreskin. 4 — kidney, non-neoplastic; soft tissue sarcoma grade and staging; soft tissue sarcoma synoptic (sarcoma sized L, split into two M cards).
 Shared:     new templates are kind 'benign resection' from `scripts/new-template.mjs`, print British spelling, follow `docs/specs/diagnosis-connectors.md`, carry intake aliases for their measured lines and appear under their system in Resections browse; each Done line records the Generic share from `--route` after the build. The `soft_tissue_sarcoma` placeholder in `templates/planned.json` reads Next from the batch 1 release.
-Status:     batch 1 shipped 2026-09-24 (Done). Products of gestation and standalone fallopian tube, the two cards added from the counts, were kept by the user 2026-09-24 and shipped the same day as the first two cards of batch 2 (Done). The ectopic pregnancy card stays here until it is pulled.
-
-### Fallopian tube — ectopic pregnancy                   Size: M; batch 2
-Why:        **6 / 2 parts** (5 / 1 tubal pregnancies), 3 of 8 on Generic after the standalone tube card (7 before it; the 4 lines that name only the tube now reach `uterus_benign`); a formulaic Gynae resection, and the user supplied a model report. Moved into this group 2026-09-24.
-Change:     new template `fallopian_tube_ectopic` (Gynae, benign resection, reusable part): macro builder, block key `(1) Uninvolved fallopian tube. (2)&(3) Haemorrhagic tubal tissue with distension.`, microscopy with villi / trophoblast / rupture / epithelium, mandatory GTN sentence, dx `LEFT FALLOPIAN TUBE, salpingectomy - ECTOPIC TUBAL PREGNANCY` with variants; snippets for no-villi and persistent trophoblast.
-Untouched:  uterus benign template, including the standalone-tube routing above; house `fetal` spelling.
-Accept:     fixture from the user's example reproduces macro / block key / microscopy / dx; no-villi variant prints the hCG comment; appears in Resections browse under Gynae.
-Verify:     tests + browser (light)
-Ship:       with batch
-Spec:       `docs/specs/fallopian-tube-ectopic.md`
-Source:     RCPath Tissue pathways for gynaecological pathology (V3, Feb 2023) §10.2.4 and §10.3.3 — https://www.rcpath.org/static/94763195-0982-40ed-bbc79ca92370e9ac/Tissue-pathways-for-gynaecological-pathology.pdf
+Status:     batch 1 shipped 2026-09-24 (Done). Products of gestation and standalone fallopian tube, the two cards added from the counts, were kept by the user 2026-09-24 and shipped the same day as the first two cards of batch 2 (Done). The ectopic pregnancy card, the last of batch 2, was pulled into Now by the user 2026-09-24.
 
 ### Haemorrhoid, cholesteatoma and hernia sac            Size: M; batch 3; one card, three templates
 Why:        three single-diagnosis resections typed by hand. **Haemorrhoid 40 / 16 parts** (39 / 16 cases), 54 of 56 on Generic. **Ear 30 / 6** — cholesteatoma 21 / 4, canal skin 4 / 1, aural polyp 3 / 0 — 35 of 36 on Generic. **Hernia sac 8 / 0**, 3 involved by carcinoma, 6 of 8 on `soft_tissue_benign`.
@@ -314,6 +312,8 @@ Ship:       one batch, one publish
 Spec:       `docs/specs/frozen-section-scenarios.md`
 
 ## Later
+
+- **CNS algorithmic diagnosis — trial** (moved to Later by the user 2026-09-24; the trial stays as built in `lab/cns-algorithm/`, last changed 2026-09-19, and comes back as a card when pulled). Merge the guided intake and the CNS pathway into one surface where the flowchart is the screen and each node is answered in place. Trial only: it lives in `lab/cns-algorithm/`, imports `src/cnswizard.js`, `src/cnspathway.js` and `generators/cns_layers.js` unchanged so it cannot drift, and is not wired into `index.html` until the design is settled. Scope: adult diffuse glioma, meningioma and posterior fossa ependymoma, i.e. the three branches the pathway module already carries. Grounding in `analysis/cns-algorithm-research.md`: no openly licensed interactive tool of this kind exists, and every published figure predates cIMPACT-NOW updates 11 and 12, so the node text is re-implemented from the criteria rather than copied from any figure.
 
 - Soft tissue reach (found 2026-09-24): 235 of the 523 soft tissue parts in the benign case mix still reach Generic (222 after benign batch 2 moved 13 tissue-mass heads to the endometrial form). Of these, 114 name soft tissue with no procedure word and 65 are biopsies, although `soft_tissue_benign` offers Biopsy.
 
