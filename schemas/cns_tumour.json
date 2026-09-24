@@ -65,6 +65,7 @@
    "medulloblastoma",
    "brain tumour resection"
   ],
+  "sideFromText": true,
   "fill": [
    {
     "field": "specimenName",
@@ -76,7 +77,8 @@
    },
    {
     "field": "site",
-    "from": "options"
+    "from": "options",
+    "noGuess": true
    }
   ]
  },

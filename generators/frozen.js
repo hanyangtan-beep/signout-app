@@ -748,11 +748,20 @@ function cnsFinalDx(v) {
   }
 }
 
+// The released intraoperative CNS lines open with the organ and put the site after it, as the paraffin CNS
+// templates do: "BRAIN, RIGHT PARIETAL TUMOUR, EXCISION X FROZEN SECTION". Of 27 in the 2021-2026 frozen
+// file, 20 open BRAIN and 7 PITUITARY; none opens with the lobe. A typed "Other" site is still the organ.
+const CNS_ORGAN = [[/^(pituitary|sellar)/i, 'PITUITARY'], [/^spinal cord/i, 'SPINAL CORD'], [/^dura/i, 'DURA'], [/^skull base/i, 'SKULL BASE']];
+
 function cnsOrganPhrase(v) {
-  const site = cnsSite(v).toUpperCase();
+  const site = cnsSite(v);
   const side = String(v.cnsSide || '').trim().toLowerCase();
   const proc = String(v.cnsProcedure || 'biopsy').trim().toLowerCase();
-  return `${site}, ${side ? `${side}, ` : ''}${proc} x frozen section`;
+  const other = v.cnsSite === 'Other';
+  const organ = other ? site.toUpperCase() : (CNS_ORGAN.find(([re]) => re.test(site)) || [null, 'BRAIN'])[1];
+  // The organ named again as the site adds nothing: "PITUITARY, transsphenoidal excision", not "PITUITARY, pituitary".
+  const place = other || organ === site.toUpperCase() ? '' : lc1(site);
+  return [organ, [side, place].filter(Boolean).join(' '), `${proc} x frozen section`].filter(Boolean).join(', ');
 }
 
 // ---------- the negative answer ----------

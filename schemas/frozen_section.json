@@ -67,7 +67,29 @@
       },
       {
         "field": "cnsSite",
-        "from": "options"
+        "from": "options",
+        "strip": "\\bbrain\\b(?!\\s*stem)",
+        "scenario": "CNS / pituitary"
+      },
+      {
+        "field": "cnsSide",
+        "from": "side",
+        "scenario": "CNS / pituitary"
+      },
+      {
+        "field": "luSide",
+        "from": "side",
+        "scenario": "Lung wedge / nodule"
+      },
+      {
+        "field": "luLobe",
+        "from": "options",
+        "scenario": "Lung wedge / nodule"
+      },
+      {
+        "field": "luSpecimen",
+        "from": "options",
+        "scenario": "Lung wedge / nodule"
       }
     ]
   },

@@ -796,6 +796,20 @@ export function methylationBits(v) {
   return out;
 }
 
+// Sites that come in pairs, so the report needs the side. Not the cerebellum: a cerebellar tumour may be
+// vermian, and so midline.
+const PAIRED_SITE = /lobe|cerebellopontine|sphenoid|thalamus|basal ganglia|insula|lateral ventricle|convexity/i;
+
+/**
+ * The site and side a pasted request left blank. A part built from the specimen list takes its site only
+ * from the request (docs/specs/specimen-intake.md); where the request named none on the list the field is
+ * empty and nothing prints for it, so the pathologist is asked here instead.
+ */
+export function siteChecks(v, warn) {
+  if (!v.site) warn('Choose the site: the specimen request named none on the list, so none is printed.', 'site');
+  else if (v.site !== 'Other' && PAIRED_SITE.test(v.site) && !(v.side || '').trim()) warn('Choose the side: the specimen request named none, so none is printed.', 'side');
+}
+
 /**
  * The pathway prompts the two CNS templates share: the cIMPACT-NOW criteria that bear on a case
  * once the findings are in. Every one of them is a panel warning. None of them is printed, and none

@@ -586,6 +586,10 @@ export function validate(part, ctx) {
   const info = (m, field) => at('info', m, field);
   const t = v.histType || ADENO_NM;
   const size = num(v.tumourSizeMm); const inv = num(v.invasiveSizeMm);
+  // A part built from a pasted request takes its side and lobe only from the request
+  // (docs/specs/specimen-intake.md); where it named none, none is printed and the pathologist is asked.
+  if (!v.laterality || v.laterality === 'Not specified') warn('Choose Right or Left: the specimen request named no side, so none is printed.', 'laterality');
+  if (!arr(v.lobes).length && !isPneumonectomy(v)) warn('Choose the lobe: the specimen request named none, so none is printed.', 'lobes');
   if (size === null && !stripDot(v.tumourDims) && !stripDot(v.sizeCannot) && !(isCompletion(v) && v.residualTumour !== 'Present')) warn('Tumour size not recorded.', 'tumourSizeMm');
   if (inv !== null && size !== null && inv > size) err('Invasive size is larger than the total tumour size.', 'invasiveSizeMm');
   if (isInvasiveNonMucinous(v)) {

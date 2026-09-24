@@ -53,7 +53,9 @@ test('side and site build the head line; smear-only omits the block sentence', (
     cnsPrep: 'Smear only', cnsSmears: '1', cnsResult: 'High-grade glioma',
   });
   const out = generate(schema, generator, cs);
-  assert.equal(organPhrase(cs.parts[0]), 'FRONTAL LOBE, right, stereotactic biopsy x frozen section');
+  // The organ opens the line and the site follows, as in the released frozen results (it used to read
+  // "FRONTAL LOBE, right, ...", a form none of the 27 released CNS frozen lines uses).
+  assert.equal(organPhrase(cs.parts[0]), 'BRAIN, right frontal lobe, stereotactic biopsy x frozen section');
   assert.match(out.macro, /One smear is prepared from the tissue\.$/);
   assert.ok(!/frozen block/.test(out.macro));
   assert.match(out.microscopy, /pseudopalisading tumour cells/);
@@ -82,7 +84,7 @@ test('metastatic carcinoma carries the known primary into result, microscopy and
   const out = generate(schema, generator, cs);
   assert.equal(out.intraop, 'Metastatic carcinoma, consistent with the known lung primary.');
   assert.match(out.microscopy, /consistent with the known lung primary/);
-  assert.equal(out.diagnosis, 'CEREBELLUM, biopsy x frozen section - METASTATIC CARCINOMA, consistent with a lung primary');
+  assert.equal(out.diagnosis, 'BRAIN, cerebellum, biopsy x frozen section - METASTATIC CARCINOMA, consistent with a lung primary');
 });
 
 test('inadequate and deferred both take the deferral paragraph and the see-microscopy line', () => {

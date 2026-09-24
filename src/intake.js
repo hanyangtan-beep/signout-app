@@ -255,21 +255,39 @@ const CLOCK_SRC = `(?<![A-Za-z\\d])(?:([LR])t?\\.?)?\\s?(${HOUR})(?:\\s?(?:-|/|t
 const CLOCK = new RegExp(CLOCK_SRC, 'i');
 const CLOCK_ALL = new RegExp(CLOCK_SRC, 'gi');
 const DISTANCE = /(\d+(?:\.\d+)?)\s?(?:cm)?\s?(?:FN|FTN|from\s+(?:the\s+)?nipple)\b/i;
-// "Lt" / "Rt" only beside an hour, "breast" or "axilla": on its own "RT" is as often radiotherapy.
-const SIDE_WORDS = /\b(left|right)\b|\b(lt|rt)\b\.?(?=\s*(?:\d|breast|axill))/gi;
+// "Lt" / "Rt" only beside an hour, "breast", "axilla" or a CNS or lung site word, and a bare "L" / "R"
+// only beside the site word: on its own "RT" is as often radiotherapy. In the 208 CNS request lines of
+// the 2021-2026 biopsy and 2024-2026 LIS exports the side is written "R CPA", "L sphenoidal" and
+// "Rt temporal" as well as in full.
+const SIDED_SITE = '(?:frontal|temporal|parietal|occipital|fronto|temporo|parieto|occipito|cerebell|cpa\\b|cerebello-?pontine|sphenoid|thalam|upper|middle|lower|lung)';
+const SIDE_WORDS = new RegExp(`\\b(left|right)\\b|\\b(lt|rt)\\b\\.?(?=\\s*(?:\\d|breast|axill|${SIDED_SITE}))|\\b([lr])\\b\\.?(?=\\s*${SIDED_SITE})`, 'gi');
+// A lung lobe written as the house abbreviation carries its side: RUL, RML, RLL, LUL, LLL.
+const LOBE_ABBREV = /\b(R(?:UL|ML|LL)|L(?:UL|LL))\b/gi;
 const TARGET_NOUNS = /\b(lesions?|mass(?:es)?|lumps?|nodules?|tumou?rs?)\b/gi;
 
 /**
  * The side a specimen line names: "Left", "Right", or '' when it names none or both. Reads the words,
- * "Lt" / "Rt", and the letter fused to a clock hour ("L11H", "R 2H", "L10-11H"). A bare L or R is
- * not a side ("LN", "L 3 cores"); it has to sit on a clock position.
+ * "Lt" / "Rt", the letter fused to a clock hour ("L11H", "R 2H", "L10-11H") and to a lung lobe ("LLL"),
+ * and a bare letter on a CNS or lung site word ("R CPA", "L upper lobe"). Anywhere else a bare L or R is
+ * not a side ("LN", "L 3 cores").
  */
 export function sideOf(text) {
   const t = String(text || '');
   const found = new Set();
-  for (const m of t.matchAll(SIDE_WORDS)) found.add(/^l/i.test(m[1] || m[2]) ? 'Left' : 'Right');
+  for (const m of t.matchAll(SIDE_WORDS)) found.add(/^l/i.test(m[1] || m[2] || m[3]) ? 'Left' : 'Right');
   for (const m of t.matchAll(CLOCK_ALL)) if (m[1]) found.add(/^l/i.test(m[1]) ? 'Left' : 'Right');
+  for (const m of t.matchAll(LOBE_ABBREV)) found.add(/^l/i.test(m[1]) ? 'Left' : 'Right');
   return found.size === 1 ? [...found][0] : '';
+}
+
+/**
+ * The side as a field spells it ("left" on the CNS forms, "Left" elsewhere), or '' when the line names
+ * none the field offers. A line with neither side may still say "midline" or "bilateral", which only the
+ * CNS side fields offer.
+ */
+export function sideFor(options, text) {
+  const s = sideOf(text) || (/\bmidline\b/i.test(text) ? 'midline' : /\bbilateral\b/i.test(text) ? 'bilateral' : '');
+  return (s && (options || []).find((o) => o.toLowerCase() === s.toLowerCase())) || '';
 }
 
 /**
@@ -312,11 +330,11 @@ export function presetValues(schema, part, match = {}) {
   // The option is matched without case: the CNS templates spell theirs "left" / "right".
   const sideField = ['side', 'laterality'].find((id) => fieldIds.has(id));
   const sideOption = (s) => (s && sideField ? (field(sideField).options || []).find((o) => o.toLowerCase() === s.toLowerCase()) : undefined);
-  const side = sideOf(text);
-  if (sideOption(side)) values[sideField] = sideOption(side);
+  const side = sideField ? sideFor(field(sideField).options, text) : '';
+  if (side) values[sideField] = side;
   // `match.sideFromText`: the side is only ever the one the request names. When it names none, the field
   // is left blank (or on the template's own "Not stated") rather than keeping the form's default side.
-  else if (!side && sideField && schema.match?.sideFromText) {
+  else if (sideField && schema.match?.sideFromText) {
     values[sideField] = (field(sideField).options || []).find((o) => /^not (stated|specified)$/i.test(o)) || '';
   }
   if (match.role === 'lymph_node' || schema?.id === 'lymph_node') {
@@ -391,10 +409,32 @@ function siteTokens(s) {
 // subsite and nothing else, so on that list the expansion is unambiguous; on any other list it never
 // fires. ICV is deliberately absent where no ileocaecal option exists - the valve is its own
 // landmark, and quietly rounding it to the caecum would put a site in the report the request did
-// not name.
+// not name. The CNS and lung entries are words rather than letters and are gated the same way:
+// "upper" becomes "upper lobe" only on a list that offers Upper lobe.
 const SITE_ABBREV = [
   [/\bac\b/g, 'ascending colon'], [/\bdc\b/g, 'descending colon'], [/\btc\b/g, 'transverse colon'],
   [/\bhf\b/g, 'hepatic flexure'], [/\bsf\b/g, 'splenic flexure'], [/\bicv\b/g, 'ileocecal valve'],
+  // CNS: the requests name a lobe by its adjective. Of 208 CNS request lines (2021-2026 biopsy and
+  // 2024-2026 LIS exports) 3 write "lobe", so "Frontal lobe" matched almost nothing and the form's
+  // default printed instead. Two lobes run together ("fronto-parietal") are not one option and are left
+  // for the pathologist to choose, as are "frontal sinus", "temporal bone" and the scalp.
+  ...['frontal', 'temporal', 'parietal', 'occipital'].map((w) => [
+    new RegExp(`(?<![a-z]-)\\b${w}\\b(?!-|\\s+(?:lobe|bone|sinus|scalp|skin|artery|muscle|horn|lymph|node|pleura|peritone))`, 'g'), `${w} lobe`]),
+  [/\bcerebellar\b(?!-)|\bvermi(?:s|an)\b/g, 'cerebellum'], [/\bcpa\b|\bcerebello-?pontine\b(?!\s+angle)/g, 'cerebellopontine angle'],
+  [/\bbrain\s+stem\b|\bpons\b|\bpontine\b|\bmedulla(?:\s+oblongata)?\b|\bmidbrain\b/g, 'brainstem'], [/\bthalamic\b/g, 'thalamus'],
+  [/\bpituitary\b|\bsella\b|\bintrasellar\b/g, 'sellar'], [/\b(?:supra|intra)?sellar\b(?!\s+region)|\bsella\b|\bpituitary\b/g, 'sellar region'],
+  [/\b(?:supra|intra)?sellar\b|\bsella\b/g, 'sellar suprasellar'],
+  [/(?<![a-z]-)\bsphenoid(?:al)?\b(?!\s+sinus)(?:\s+(?:wing|ridge)\b)?/g, 'sphenoid wing'], [/(?<![a-z]-)\bsphenoid(?:al)?\b(?!\s+sinus)(?:\s+(?:wing|ridge)\b)?/g, 'sphenoidal ridge'],
+  [/\b(?:para)?falx\b|\b(?:para)?falcine\b/g, 'falx'], [/\bconvexity\b(?!\s+dura)/g, 'convexity dura'],
+  [/\bperiventricular\b(?!\s+white)/g, 'periventricular white matter'], [/\b4th\s+ventricle\b/g, 'fourth ventricle'],
+  [/\b3rd\s+ventricle\b/g, 'third ventricle'], [/\blateral\s+ventricles\b/g, 'lateral ventricle'], [/\bpineal\b(?!\s+region)/g, 'pineal region'],
+  [/\binsular\b/g, 'insula'], [/\bcallosal\b/g, 'corpus callosum'], [/\bspinal\b(?!\s+(?:cord|accessory))|\bintramedullary\b/g, 'spinal cord'],
+  // Lung: the lobe by its abbreviation or its adjective alone ("right upper and middle lobes"), and the
+  // wedge, which the requests write without "resection" ("LLL wedge").
+  [/\b[rl]ul\b|\bupper\b(?!\s+lobe\b)/g, 'upper lobe'], [/\brml\b|\bmiddle\b(?!\s+lobe\b)/g, 'middle lobe'],
+  [/\b[rl]ll\b|\blower\b(?!\s+lobe\b)/g, 'lower lobe'], [/\blingular\b/g, 'lingula'],
+  [/\bwedge(?:\s+(?:resection|excision))?\b(?!\s+biopsy)/g, 'wedge resection'], [/\bwedge(?:\s+(?:resection|excision))?\b(?!\s+biopsy)/g, 'wedge excision'],
+  [/\bcompletion\b(?!\s+lobectomy)/g, 'completion lobectomy'],
 ];
 
 // The gate is a whole-option match rather than a looser test on the first word. Both behave
@@ -435,6 +475,21 @@ export function matchOption(options, text) {
 }
 
 /**
+ * For a multiselect: every option whose words all appear in the part text, less any whose words are
+ * all inside a longer match. "Lung, right upper and middle lobes" → ["Upper lobe", "Middle lobe"].
+ */
+export function matchOptions(options, text) {
+  const have = new Set(siteTokens(expandAbbrev(text, options)));
+  const hits = (options || [])
+    .filter((opt) => !UNSPECIFIC_OPTION.test(opt))
+    .map((opt) => ({ opt, toks: siteTokens(opt) }))
+    .filter(({ toks }) => toks.length && toks.every((w) => have.has(w)));
+  return hits
+    .filter((a) => !hits.some((b) => b.toks.length > a.toks.length && a.toks.every((w) => b.toks.includes(w))))
+    .map(({ opt }) => opt);
+}
+
+/**
  * Drop the words `strip` matches from a copied specimen value, comma-part by comma-part, so a
  * pasted "Prostate biopsy, left apex" reaches a Site field as "left apex" — the organ and the
  * procedure are already printed by the diagnosis line and would otherwise be said twice.
@@ -457,8 +512,11 @@ export function stripWords(value, strip) {
  */
 export function frozenScenario(text) {
   const t = String(text || '').toLowerCase();
-  // CNS first: "frontal lobe" would otherwise be caught by the lung test on "lobe".
+  // CNS first: "frontal lobe" would otherwise be caught by the lung test on "lobe". The lobe adjective
+  // alone ("left temporal tumour", "fronto-parietal lesion") is how the requests name most CNS sites, but
+  // not on a line about the scalp, skin, pleura, peritoneum or a node ("parietal pleura", "occipital node").
   if (/\bbrain\b|cerebell|cerebral|pituitar|sellar|craniotomy|burr hole|meningioma|glioma|schwannoma|intracranial|cerebellopontine|\bcpa\b|(?:frontal|temporal|parietal|occipital)\s+lobe/.test(t)) return 'CNS / pituitary';
+  if (/\b(?:frontal|temporal|parietal|occipital)\b(?!\s+(?:bone|sinus|artery|arteries|muscle))|\b(?:fronto|temporo|parieto|occipito)-?(?:frontal|temporal|parietal|occipital)\b/.test(t) && !/scalp|\bskin\b|cutaneous|pleura|peritone|lymph|\bnodes?\b/.test(t)) return 'CNS / pituitary';
   if (/\bsln\b|sentinel/.test(t)) return 'Sentinel lymph node';
   if (/parathyroid/.test(t)) return 'Parathyroid';
   if (/lymph\s*nodes?\b|\blevel\s+[i1-5]\b|\bnodal\b/.test(t)) return 'Lymph node';
@@ -471,9 +529,14 @@ export function frozenScenario(text) {
 }
 
 /**
- * `match.fill`: `{field, from: "detail" | "text" | "options", fallback?, strip?, unless?, clock?}` rules (a single
- * object is accepted too). `clock` writes a breast site the house way (see clockSite) and, when the line is
- * not an LIS triple, still takes its clock position and distance from the whole line.
+ * `match.fill`: `{field, from: "detail" | "text" | "options" | "side", fallback?, strip?, unless?, clock?,
+ * noGuess?, scenario?}` rules (a single object is accepted too). `clock` writes a breast site the house way
+ * (see clockSite) and, when the line is not an LIS triple, still takes its clock position and distance from
+ * the whole line. `noGuess` empties an options field the line names nothing on, so the form's default site
+ * ("Frontal lobe", "Upper lobe") never prints for a request that did not name it. `side` writes the side the
+ * line names (see sideFor). `scenario` applies the rule only to a frozen part read as that scenario. On an
+ * options rule `strip` drops words before matching: the frozen CNS list offers "Brain" beside "Cerebellum",
+ * and without it "Brain, right cerebellar lesion" is a one-word tie that matches neither.
  */
 function applyFill(schema, part, values) {
   const rules = [].concat(schema?.match?.fill || []);
@@ -482,10 +545,20 @@ function applyFill(schema, part, values) {
   for (const rule of rules) {
     const f = field(rule.field);
     if (!f || values[rule.field]) continue;
+    if (rule.scenario && values.scenario !== rule.scenario) continue;
     if (rule.from === 'options') {
       if (!Array.isArray(f.options)) continue;
-      const opt = matchOption(f.options, text);
-      if (opt) values[rule.field] = opt;
+      const words = rule.strip ? stripWords(text, rule.strip) : text;
+      if (f.type === 'multiselect') {
+        const opts = matchOptions(f.options, words);
+        if (opts.length || rule.noGuess) values[rule.field] = opts;
+        continue;
+      }
+      const opt = matchOption(f.options, words);
+      if (opt || rule.noGuess) values[rule.field] = opt;
+    } else if (rule.from === 'side') {
+      const side = sideFor(f.options, text);
+      if (side) values[rule.field] = side;
     } else if (f.type === 'text') {
       let v = rule.from === 'detail' ? part.detail : part.text;
       // `fallback` — the LIS triple did not parse ("Prostate biopsy, left apex" has no trailing

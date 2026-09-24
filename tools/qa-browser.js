@@ -681,6 +681,57 @@ await check('a pasted "L11H" breast core builds a left part at 11 o\'clock', asy
   return "Left chip, site 11 o'clock, both lines agree; no side named leaves the chips blank and Checks asks";
 });
 
+// Pasted brain and lung parts take the site the request names. Before 2026-09-24 "Brain, left temporal
+// tumour" printed the form's "right frontal lobe" and "Lung, RLL, wedge resection" printed "right upper
+// lobe, lobectomy". A request naming no site leaves the field blank and Checks asks for it.
+await check('pasted brain and lung parts print the site the request names, or none', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const box = page.locator('#meta-specimen');
+  const accept = (d) => d.accept();
+  const build = async (text) => {
+    await box.fill('');
+    await box.type(text, { delay: 2 });
+    await page.waitForSelector('#intake-preview table tr', { timeout: 5000 });
+    page.on('dialog', accept);
+    await page.click('#btn-build-parts');
+    await page.waitForTimeout(700);
+    page.off('dialog', accept);
+  };
+  await build('(A) Brain, left temporal tumour, biopsy\n(B) Brain, biopsy');
+  const siteA = await page.locator('#f-A-site').inputValue();
+  assert(siteA === 'Temporal lobe', `part A site read "${siteA}"`);
+  const sideA = await page.locator('.chips[data-field="side"] .chip[aria-pressed="true"]').allTextContents();
+  assert(sideA.length === 1 && /left/i.test(sideA[0]), `part A side chips pressed: ${JSON.stringify(sideA)}`);
+  let report = await page.locator('#report-blocks').innerText();
+  assert(report.includes('BRAIN, left temporal lobe, stereotactic biopsy'), `part A diagnosis line wrong: ${report.slice(0, 300)}`);
+  assert(report.includes('BRAIN, stereotactic biopsy'), 'part B printed a site the request did not name');
+  assert(!/frontal/i.test(report), 'the form default "frontal lobe" reached the report');
+  await page.locator('#part-tabs .tab').nth(1).click();
+  await page.waitForTimeout(300);
+  const siteB = await page.locator('#f-B-site').inputValue();
+  const shownB = (await page.locator('#f-B-site option:checked').textContent()).trim();
+  assert(siteB === '' && shownB === '—', `part B site read "${siteB}" shown "${shownB}"`);
+  const checks = (await page.locator('details.checks .issue').allTextContents()).join(' | ');
+  assert(/Choose the site/.test(checks), `Checks did not ask for the site (read: ${checks.slice(0, 160)})`);
+  await page.locator('#f-B-site').scrollIntoViewIfNeeded();
+  await shot('cns-site-intake');
+
+  await build('Lung, RLL, wedge resection');
+  const lat = await page.locator('.chips[data-field="laterality"] .chip[aria-pressed="true"]').allTextContents();
+  assert(lat.length === 1 && /Right/.test(lat[0]), `lung side chips pressed: ${JSON.stringify(lat)}`);
+  const lobes = await page.locator('.chips[data-field="lobes"] .chip[aria-pressed="true"]').allTextContents();
+  assert(lobes.length === 1 && /Lower lobe/.test(lobes[0]), `lobe chips pressed: ${JSON.stringify(lobes)}`);
+  const proc = await page.locator('#f-A-procedure').inputValue();
+  assert(proc === 'Wedge resection', `procedure read "${proc}"`);
+  report = await page.locator('#report-blocks').innerText();
+  assert(report.includes('LUNG, right lower lobe, wedge resection'), `lung diagnosis line wrong: ${report.slice(0, 300)}`);
+  await page.locator('.chips[data-field="lobes"]').scrollIntoViewIfNeeded();
+  await shot('lung-lobe-intake');
+  return 'brain A temporal lobe + left, B blank site with Checks; lung right lower lobe, wedge resection';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

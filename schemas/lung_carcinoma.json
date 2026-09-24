@@ -73,6 +73,18 @@
       "VATS",
       "EBUS",
       "PET"
+    ],
+    "sideFromText": true,
+    "fill": [
+      {
+        "field": "lobes",
+        "from": "options",
+        "noGuess": true
+      },
+      {
+        "field": "procedure",
+        "from": "options"
+      }
     ]
   },
   "macroExtract": {

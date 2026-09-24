@@ -31,7 +31,7 @@ import { stripDot } from './_house.js';
 import {
   grade as layerGrade, proposedGrade, gradeText, gradeClause, upperEntity,
   histClassText, featureClause, mitoticClause, ihcClause, molecularClause, molecularBits,
-  treatmentClause, NP, pathwayChecks, meningiomaGrade, meningiomaName, meningiomaChecks
+  treatmentClause, NP, pathwayChecks, meningiomaGrade, meningiomaName, meningiomaChecks, siteChecks
 } from './cns_layers.js';
 import {
   uc1, lc1, num, arr, word, list,
@@ -61,22 +61,24 @@ const smearOnly = (v) => v.prep === 'Smear preparation only';
 
 // ---------- specimen and organ line ----------
 
-const siteWord = (v) => (v.site === 'Other' ? (stripDot(v.siteOther) || 'Brain') : (v.site || 'Frontal lobe'));
+// A part built from a pasted request that named no site on the list has none: the lines print what is
+// known ("BRAIN, left, stereotactic biopsy") and the Checks panel asks for the site.
+const siteWord = (v) => (v.site === 'Other' ? (stripDot(v.siteOther) || 'Brain') : (v.site || ''));
+const placeOf = (v) => [(v.side || '').trim(), lc1(siteWord(v))].filter(Boolean).join(' ');
 
 export function specimenName(part) {
   const v = part.values;
   const text = stripDot(v.specimenName);
   if (text) return `${text}, ${v.procedure || 'stereotactic biopsy'}`;
-  const side = v.side ? `${v.side} ` : '';
-  return `Brain, ${side}${lc1(siteWord(v))}, ${v.procedure || 'stereotactic biopsy'}`;
+  return ['Brain', placeOf(v), v.procedure || 'stereotactic biopsy'].filter(Boolean).join(', ');
 }
 
 export function organPhrase(part) {
   const v = part.values;
-  const organ = /spinal/i.test(siteWord(v)) ? 'SPINAL CORD' : /dura|falx|sphenoid|convexity/i.test(siteWord(v)) ? 'DURA' : /sellar/i.test(siteWord(v)) ? 'PITUITARY' : 'BRAIN';
-  const side = v.side ? `${v.side} ` : '';
-  const detail = organ === 'BRAIN' || organ === 'PITUITARY' ? `${side}${lc1(siteWord(v))}, ` : (side ? `${side.trim()}, ` : '');
-  return `${organ}, ${detail}${(v.procedure || 'stereotactic biopsy').toLowerCase()}`;
+  const site = siteWord(v);
+  const organ = /spinal/i.test(site) ? 'SPINAL CORD' : /dura|falx|sphenoid|convexity/i.test(site) ? 'DURA' : /sellar/i.test(site) ? 'PITUITARY' : 'BRAIN';
+  const detail = organ === 'BRAIN' || organ === 'PITUITARY' ? placeOf(v) : (v.side || '').trim();
+  return [organ, detail, (v.procedure || 'stereotactic biopsy').toLowerCase()].filter(Boolean).join(', ');
 }
 
 // ---------- the smear block ----------
@@ -450,6 +452,7 @@ export function validate(part) {
   const info = (message, field) => out.push({ level: 'info', message, field });
   const warn = (message, field) => out.push({ level: 'warn', message, field });
 
+  siteChecks(v, warn);
   if (noTissue(v) && finding(v) !== GLIOSIS) {
     warn('No lesional tissue identified: the diagnosis line reports the absence of lesional tissue, not the selected diagnosis.', 'adequacy');
   }

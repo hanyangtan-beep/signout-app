@@ -3,12 +3,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { parseIntake, matchParts, presetValues, deriveTitle, splitTriple, MAX_PARTS, GENERIC_ID, matchOption, sideOf, clockSite } from '../src/intake.js';
+import { parseIntake, matchParts, presetValues, deriveTitle, splitTriple, MAX_PARTS, GENERIC_ID, matchOption, matchOptions, sideOf, sideFor, clockSite, frozenScenario } from '../src/intake.js';
 import { loadManifest, loadTemplate } from '../src/registry.js';
 import { parseSitesFromTitle } from '../generators/gastric.js';
 
 const fx = JSON.parse(readFileSync(new URL('./fixtures/intake/cases.json', import.meta.url), 'utf8'));
 const manifest = await loadManifest();
+const CNS_FS = 'CNS / pituitary';
 
 test('parser: lettered markers only, LIS triples, prefix, history and one-per-line lists', () => {
   const s1 = parseIntake(fx.cases[0].text);
@@ -546,4 +547,132 @@ test('a stated side reaches every template\'s side field (eight used to keep the
   const br = (await loadTemplate('breast_excision')).schema;
   const rows = matchParts(parseIntake('(A) Breast, L2-3H mass, excision\n(B) Anterior margin'), '', manifest);
   assert.equal(presetValues(br, rows[1], rows[1]).side, 'Left');
+});
+
+test('sideOf / sideFor: the CNS and lung spellings of a side', () => {
+  const cases = [
+    ['Brain, R CPA tumour', 'Right'], ['Brain, Rt temporal lesion', 'Right'], ['Brain, L sphenoidal wing', 'Left'],
+    ['Lung, RLL, wedge resection', 'Right'], ['Lung, LUL wedge', 'Left'], ['Lung, L upper lobe', 'Left'],
+    ['Lung, RUL and LLL', ''], ['Brain, midline posterior fossa', ''], ['Brain tumour', ''], ['L3 lesion', '']
+  ];
+  for (const [text, side] of cases) assert.equal(sideOf(text), side, text);
+  const cns = ['', 'right', 'left', 'midline'];
+  assert.equal(sideFor(cns, 'Brain, Lt frontal tumour'), 'left', 'spelt as the CNS options spell it');
+  assert.equal(sideFor(cns, 'Brain, midline posterior fossa'), 'midline');
+  assert.equal(sideFor([...cns, 'bilateral'], 'bilateral frontal lesions'), 'bilateral');
+  assert.equal(sideFor(['Right', 'Left', 'Not specified'], 'Lung, LLL'), 'Left');
+  assert.equal(sideFor(['Right', 'Left', 'Not specified'], 'Lung, midline'), '', 'midline only where the list offers it');
+});
+
+test('site words: a CNS lobe by its adjective and a lung lobe by its abbreviation, only onto an option the list offers', async () => {
+  const opts = async (id, field) => (await loadTemplate(id)).schema.fields.find((f) => f.id === field).options;
+  const bx = await opts('cns_biopsy', 'site');
+  const cases = [
+    ['Brain, left temporal tumour', 'Temporal lobe'], ['right occipital lesion', 'Occipital lobe'], ['R CPA tumour', 'Cerebellopontine angle'],
+    ['left cerebellar lesion', 'Cerebellum'], ['pituitary tumour', 'Sellar'], ['suprasellar mass', 'Suprasellar'], ['brain stem lesion', 'Brainstem'],
+    ['left sphenoid wing mass', 'Sphenoid wing'], ['parafalcine meningioma', 'Falx'],
+    // Two lobes run together, a sinus, a bone, the scalp or the organ alone name no option: left for the pathologist.
+    ['fronto-parietal tumour', ''], ['frontal sinus', ''], ['temporal bone', ''], ['occipital scalp lesion', ''], ['Brain', '']
+  ];
+  for (const [text, want] of cases) assert.equal(matchOption(bx, text), want, text);
+  const tu = await opts('cns_tumour', 'site');
+  assert.equal(matchOption(tu, 'right sphenoid wing meningioma'), 'Sphenoidal ridge');
+  assert.equal(matchOption(tu, 'pituitary tumour'), 'Sellar region');
+  assert.equal(matchOption(tu, 'trans-sphenoidal excision'), '', 'the approach is not the site');
+  assert.equal(matchOption(tu, 'left insular glioma'), 'Insula');
+  const lobes = await opts('lung_carcinoma', 'lobes');
+  assert.deepEqual(matchOptions(lobes, 'Lung, RLL, wedge resection'), ['Lower lobe']);
+  assert.deepEqual(matchOptions(lobes, 'Lung, right upper and middle lobes, bilobectomy'), ['Upper lobe', 'Middle lobe']);
+  assert.deepEqual(matchOptions(lobes, 'Lung, lingular nodule'), ['Lingula']);
+  assert.deepEqual(matchOptions(lobes, 'Lung, left, pneumonectomy'), []);
+  const proc = await opts('lung_carcinoma', 'procedure');
+  assert.equal(matchOption(proc, 'Lung, LLL wedge'), 'Wedge resection');
+  assert.equal(matchOption(proc, 'Lung, completion left upper lobe'), 'Completion lobectomy');
+  assert.equal(matchOption(proc, 'Lung, right lower lobectomy'), 'Lobectomy');
+  assert.equal(matchOption(proc, 'Lung, wedge biopsy'), '', 'a wedge biopsy is not a wedge resection');
+  // The expansion is gated on the list: "upper" means nothing to a list without Upper lobe.
+  assert.equal(matchOption(['Upper lip', 'Lower lip'], 'upper lip lesion'), 'Upper lip');
+});
+
+test('pasted CNS and lung parts: the lines print the site the request names, or none, with a Checks prompt', async () => {
+  const { generateCase, createPart } = await import('../src/engine.js');
+  const run = async (id, text, clinical = '') => {
+    const t = await loadTemplate(id);
+    const part = { ...createPart(t.schema, 0), templateId: id };
+    if (text !== null) {
+      const row = matchParts(parseIntake(text), clinical, manifest)[0];
+      Object.assign(part.values, presetValues(t.schema, row, row));
+    }
+    const out = generateCase({ [id]: t }, { schemaId: id, caseTitle: '', options: { includeHeader: false }, meta: {}, parts: [part] });
+    return { head: out.diagnosis.split('\n')[0].split(' - ')[0], values: part.values, checks: out.issues.filter((i) => i.level === 'warn').map((i) => i.message) };
+  };
+  const ask = /^Choose the (site|side|lobe)|^Choose Right or Left/;
+  let r = await run('cns_biopsy', 'Brain, left temporal tumour', 'Glioma');
+  assert.equal(r.head, 'BRAIN, left temporal lobe, stereotactic biopsy', 'was "BRAIN, right frontal lobe"');
+  assert.deepEqual(r.checks.filter((m) => ask.test(m)), []);
+  r = await run('cns_biopsy', 'Brain', 'Glioma');
+  assert.equal(r.head, 'BRAIN, stereotactic biopsy', 'no site and no side printed');
+  assert.ok(r.checks.some((m) => /^Choose the site/.test(m)));
+  r = await run('cns_biopsy', 'Brain, temporal lesion', 'Glioma');
+  assert.equal(r.head, 'BRAIN, temporal lobe, stereotactic biopsy');
+  assert.ok(r.checks.some((m) => /^Choose the side/.test(m)), 'a paired site with no side asks for it');
+  r = await run('cns_biopsy', 'Brain, posterior fossa tumour', 'Medulloblastoma');
+  assert.deepEqual(r.checks.filter((m) => ask.test(m)), [], 'a midline site does not ask for a side');
+  r = await run('cns_tumour', 'Brain, right occipital lesion, excision', 'Glioma');
+  assert.equal(r.head, 'BRAIN, right occipital lobe, craniotomy and excision');
+  r = await run('cns_tumour', 'Brain tumour', 'Glioma');
+  assert.equal(r.values.site, '');
+  assert.ok(r.checks.some((m) => /^Choose the site/.test(m)));
+  for (const id of ['cns_biopsy', 'cns_tumour']) {
+    r = await run(id, null);
+    assert.match(r.head, /^BRAIN, right frontal lobe, /, `${id}: a part added by hand keeps its defaults`);
+    assert.deepEqual(r.checks.filter((m) => ask.test(m)), [], `${id}: and asks nothing`);
+  }
+
+  r = await run('lung_carcinoma', 'Lung, left lower lobe, lobectomy');
+  assert.equal(r.head, 'LUNG, left lower lobe, lobectomy', 'was "LUNG, left upper lobe"');
+  r = await run('lung_carcinoma', 'Lung, RLL, wedge resection');
+  assert.equal(r.head, 'LUNG, right lower lobe, wedge resection', 'was "LUNG, right upper lobe, lobectomy"');
+  r = await run('lung_carcinoma', 'Lung, LUL wedge');
+  assert.equal(r.head, 'LUNG, left upper lobe, wedge resection');
+  r = await run('lung_carcinoma', 'Lung');
+  assert.equal(r.head, 'LUNG, lobectomy');
+  assert.ok(r.checks.some((m) => /^Choose Right or Left/.test(m)) && r.checks.some((m) => /^Choose the lobe/.test(m)));
+  r = await run('lung_carcinoma', 'Lung, left pneumonectomy');
+  assert.equal(r.head, 'LUNG, left, pneumonectomy');
+  assert.deepEqual(r.checks.filter((m) => ask.test(m)), [], 'a pneumonectomy has no lobe to ask for');
+  r = await run('lung_carcinoma', null);
+  assert.equal(r.head, 'LUNG, right upper lobe, lobectomy', 'a part added by hand keeps its defaults');
+  assert.deepEqual(r.checks.filter((m) => ask.test(m)), []);
+});
+
+test('frozen CNS and lung parts take their site and side, and the CNS line opens with the organ', async () => {
+  const t = await loadTemplate('frozen_section');
+  const { generateCase, createPart } = await import('../src/engine.js');
+  const read = (text) => presetValues(t.schema, parseIntake(text).parts[0], {});
+  const head = (values) => {
+    const part = { ...createPart(t.schema, 0), templateId: 'frozen_section' };
+    Object.assign(part.values, values);
+    return generateCase({ frozen_section: t }, { schemaId: 'frozen_section', caseTitle: '', options: { includeHeader: false }, meta: {}, parts: [part] }).diagnosis.split(' - ')[0];
+  };
+  let v = read('Brain, left temporal tumour, frozen section');
+  assert.equal(v.scenario, CNS_FS);
+  assert.equal(v.cnsSite, 'Temporal lobe');
+  assert.equal(v.cnsSide, 'left');
+  assert.equal(head(v), 'BRAIN, left temporal lobe, biopsy x frozen section');
+  assert.equal(read('Brain, right cerebellar lesion').cnsSite, 'Cerebellum', '"Brain" on the list does not tie with the site');
+  assert.equal(read('Brain, right CPA tumour').cnsSite, 'Cerebellopontine angle');
+  v = read('Brain, frozen section');
+  assert.equal(v.cnsSite, undefined, 'the organ alone keeps the default Brain');
+  assert.equal(head(v), 'BRAIN, biopsy x frozen section');
+  assert.equal(head(read('Pituitary tumour')), 'PITUITARY, biopsy x frozen section');
+  v = read('Lung, RLL wedge, frozen section');
+  assert.equal(v.scenario, 'Lung wedge / nodule');
+  assert.deepEqual([v.luSide, v.luLobe, v.luSpecimen], ['Right', 'Lower lobe', 'Wedge excision']);
+  assert.equal(read('Lung, RUL nodule').cnsSite, undefined, 'the CNS rule stays inside the CNS scenario');
+  // The lobe adjective alone is a CNS part unless the line names a surface or a node.
+  for (const [text, want] of [['Left parietal lesion', CNS_FS], ['Right frontal tumour', CNS_FS], ['Parietal pleura nodule', 'Lung wedge / nodule'],
+    ['Occipital scalp lesion', 'Nodule / mass'], ['Temporal artery', ''], ['Frontal sinus mucosa', '']]) {
+    assert.equal(frozenScenario(text), want, text);
+  }
 });

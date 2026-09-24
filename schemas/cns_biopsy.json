@@ -63,10 +63,16 @@
       "pituitary adenoma",
       "lymphoma"
     ],
+    "sideFromText": true,
     "fill": [
       {
         "field": "specimenName",
         "from": "detail"
+      },
+      {
+        "field": "site",
+        "from": "options",
+        "noGuess": true
       }
     ]
   },

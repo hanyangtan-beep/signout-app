@@ -935,7 +935,12 @@ function renderField(field, part, index) {
     return wrap;
   }
 
+  // A blank value the list does not offer (a pasted request that named no site) shows as blank, not as
+  // the first option, which the report is not printing.
+  const blank = value === '' && !options.includes('') ? [el('option', { value: '', text: labelFor(field, '') })] : [];
+  if (blank.length) blank[0].selected = true;
   const select = el('select', { class: 'input', id, onchange: (e) => setValue(field.id, e.target.value) },
+    ...blank,
     ...options.map((opt) => {
       const o = el('option', { value: opt, text: labelFor(field, opt) });
       if (opt === value) o.selected = true;

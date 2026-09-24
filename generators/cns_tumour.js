@@ -37,7 +37,7 @@ import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import {
   NP, isEpendymoma, entity, integratedDiagnosis, histClassText, proposedGrade, grade, gradeValue, gradeText,
   gradeClause, upperEntity, meningiomaName, meningiomaChecks, featureClause, mitoticClause, ihcClause, ki67Clause, treatmentClause,
-  treatmentValue, molecularClause, molecularBits, pathwayChecks
+  treatmentValue, molecularClause, molecularBits, pathwayChecks, siteChecks
 } from './cns_layers.js';
 import {
   uc1, lc1, num, arr,
@@ -55,7 +55,9 @@ export {
 
 // ---------- specimen ----------
 
-const siteWord = (v) => (v.site === 'Other' ? (stripDot(v.siteOther) || 'Brain') : (v.site || 'Frontal lobe'));
+// A part built from a pasted request that named no site on the list has none: the lines print what is
+// known ("BRAIN, left, craniotomy and excision") and the Checks panel asks for the site.
+const siteWord = (v) => (v.site === 'Other' ? (stripDot(v.siteOther) || 'Brain') : (v.site || ''));
 const procedureText = (v) => (v.procedure === 'other' ? (stripDot(v.procedureOther) || 'excision') : (v.procedure || 'craniotomy and excision'));
 
 const ORGAN = [
@@ -70,8 +72,8 @@ export function organPhrase(part) {
   const site = siteWord(v);
   const organ = (ORGAN.find(([re]) => re.test(site)) || [null, 'BRAIN'])[1];
   const side = (v.side || '').trim();
-  const place = organ === 'SPINAL CORD' || organ === 'PITUITARY' ? lc1(site) : `${side ? `${side} ` : ''}${lc1(site)}`;
-  return `${organ}, ${place}, ${procedureText(v)}`;
+  const place = organ === 'SPINAL CORD' || organ === 'PITUITARY' ? lc1(site) : [side, lc1(site)].filter(Boolean).join(' ');
+  return [organ, place, procedureText(v)].filter(Boolean).join(', ');
 }
 
 export function specimenName(part) {
@@ -79,7 +81,9 @@ export function specimenName(part) {
   const typed = stripDot(v.specimenName);
   if (typed) return typed;
   const side = (v.side || '').trim();
-  return `Brain, ${side ? `${side} ` : ''}${lc1(siteWord(v))} tumour, ${procedureText(v)}`;
+  const site = lc1(siteWord(v));
+  if (!site) return ['Brain tumour', side, procedureText(v)].filter(Boolean).join(', ');
+  return `Brain, ${side ? `${side} ` : ''}${site} tumour, ${procedureText(v)}`;
 }
 
 export function specimens(parts) {
@@ -98,7 +102,7 @@ export function macro(part, ctx) {
   if (ctx?.options && ctx.options.macro === false) return '';
   const v = part.values;
   const piece = INTEGRITY_PHRASE[v.integrity] || INTEGRITY_PHRASE['Fragmented, received in pieces'];
-  let s = `(${part.label}) Received in formalin ${piece} from the ${lc1(siteWord(v))}`;
+  let s = `(${part.label}) Received in formalin ${piece}${siteWord(v) ? ` from the ${lc1(siteWord(v))}` : ''}`;
   const dims = stripDot(v.specimenDims);
   if (dims) s += `, measuring ${dims} mm in aggregate`;
   s += '.';
@@ -180,7 +184,7 @@ export function synoptic(part, ctx) {
   const sections = [
     { heading: 'Specimen', items: [
       item('Procedure', uc1(procedureText(v))),
-      item('Tumour site', (v.side || '').trim() ? `${uc1(v.side)} ${lc1(siteWord(v))}` : uc1(siteWord(v))),
+      item('Tumour site', uc1([(v.side || '').trim(), lc1(siteWord(v))].filter(Boolean).join(' ')) || 'Not specified'),
       item('Extent of resection as stated by the surgeon', v.extent && v.extent !== 'Not stated' ? v.extent : null),
       item('Specimen integrity', v.integrity || null)
     ] },
@@ -241,6 +245,7 @@ export function validate(part) {
   const g = grade(v);
   const prop = proposedGrade(v);
 
+  siteChecks(v, warn);
   if (e === 'Tumour type not specified') err('Integrated diagnosis is required; choose an entity or type one in Layer 1.', 'dxFamily');
   if (!gradeText(v)) err('CNS WHO grade is required; this entity does not carry a settled grade, so choose one in Layer 3.', 'grade');
   if (g && prop && g !== prop) {

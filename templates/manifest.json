@@ -758,7 +758,29 @@
           },
           {
             "field": "cnsSite",
-            "from": "options"
+            "from": "options",
+            "strip": "\\bbrain\\b(?!\\s*stem)",
+            "scenario": "CNS / pituitary"
+          },
+          {
+            "field": "cnsSide",
+            "from": "side",
+            "scenario": "CNS / pituitary"
+          },
+          {
+            "field": "luSide",
+            "from": "side",
+            "scenario": "Lung wedge / nodule"
+          },
+          {
+            "field": "luLobe",
+            "from": "options",
+            "scenario": "Lung wedge / nodule"
+          },
+          {
+            "field": "luSpecimen",
+            "from": "options",
+            "scenario": "Lung wedge / nodule"
           }
         ]
       },
@@ -2542,6 +2564,18 @@
           "VATS",
           "EBUS",
           "PET"
+        ],
+        "sideFromText": true,
+        "fill": [
+          {
+            "field": "lobes",
+            "from": "options",
+            "noGuess": true
+          },
+          {
+            "field": "procedure",
+            "from": "options"
+          }
         ]
       },
       "version": "2026.09",
@@ -3092,10 +3126,16 @@
           "pituitary adenoma",
           "lymphoma"
         ],
+        "sideFromText": true,
         "fill": [
           {
             "field": "specimenName",
             "from": "detail"
+          },
+          {
+            "field": "site",
+            "from": "options",
+            "noGuess": true
           }
         ]
       },
@@ -3161,6 +3201,7 @@
           "medulloblastoma",
           "brain tumour resection"
         ],
+        "sideFromText": true,
         "fill": [
           {
             "field": "specimenName",
@@ -3172,7 +3213,8 @@
           },
           {
             "field": "site",
-            "from": "options"
+            "from": "options",
+            "noGuess": true
           }
         ]
       },
