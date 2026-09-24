@@ -8,6 +8,12 @@ State on 2026-09-12: 54 templates (10 small biopsy, 23 benign resection incl. LE
 
 ## Done
 
+- 2026-09-24 — Adnexa paratubal cyst lining (fix before ectopic, size S). Adnexa, bilateral adnexa and sterilisation parts printed "lined by flattened cuboidal epithelium", a lining none of the 42 released adnexa parts with a paratubal cyst describes; they now share the tube form's sentence, "A paratubal cyst is seen, with a fibrous wall lined by ciliated tubal-type epithelium." Two `tests/uterus.test.js` assertions changed deliberately and one test added; no golden fixture changed; 258 uterus outputs of the 8,781-output matrix differ by this sentence only.
+
+- 2026-09-24 — Endometrial biopsy part letters in the microscopy (fix before ectopic, size S). The narrative paragraph now opens "(A) " like the other biopsy forms, so a two-part case, or one mixing a products-of-gestation checklist with curettings, letters every part (83 of 89 released multi-part endometrial and cervical cases do). The single-part rule drops the letter: 4,445 single-part outputs and every fixture are unchanged, and 300 multi-part outputs differ by the letters only. New `tests/endometrial_biopsy.test.js` (5 tests).
+
+- 2026-09-24 — Case options after a pasted request (fix before ectopic, size S). A case built from the paste box, or a part switched to another template, showed default-on options such as the macroscopy unticked while they printed. The engine's new `caseOptions()` (template defaults, then the case's own choices) now drives both the report and the tickboxes; printed output is unchanged. 1309 tests, 33 browser checks (the new one fails on the old code), release gate 8/8.
+
 - 2026-09-24 — Standalone fallopian tube on the benign uterus form (benign batch 2, size S). `uterus_benign` gains "Left fallopian tube, salpingectomy", "Right fallopian tube, salpingectomy" and "Paratubal cyst, excision", with a side for the cyst and a tube findings list (hydrosalpinx, paratubal cyst, chronic salpingitis, endometriosis). The diagnosis reads "Left FALLOPIAN TUBE, salpingectomy - PARATUBAL CYST", "Consistent with HYDROSALPINX" or "NO EVIDENCE OF MALIGNANCY", and a cyst excision reads "FALLOPIAN TUBE, right paratubal cyst, excision - PARATUBAL CYST". A new intake key, `match.alone`, counts tube words only on a line that names no ovary, uterus or pregnancy. 99 parts re-route, all confident (78 from generic, 21 from ovarian cyst), and the tube category on Generic falls from 69 to 4 of 83, with ovarian cyst from 14 to 0. Four ectopic parts whose line names only the tube move too, so ectopic on Generic goes from 7 to 3 of 8. Hysterectomy, adnexa and sterilisation output is unchanged (the 8,781-combination matrix is identical), and the leiomyoma detail fields now show only on uterus and myomectomy parts. Wording is from the RCPath gynaecological tissue pathways (section 10.3.1) and the released tube reports. Three fixtures are in `tests/fixtures/fallopian_tube/`, and the "fibroids" intake fixture now routes its two tube parts here (a deliberate change). Spec: `docs/specs/fallopian-tube.md`. 1302 tests and 32 browser checks, two of them new for this batch (a pasted tissue mass and pasted tube lines). Phase 34.
 
 - 2026-09-24 — Products of gestation on the endometrial form (benign batch 2, size S). `endometrial_biopsy` gains "Tissue mass", "Tissue mass, per vaginam", "Uterus, suction evacuation" and "Uterus, evacuation of retained products of gestation". The house checklist records chorionic villi, villous appearance, villitis, gestational trophoblastic disease, decidua, hypersecretory endometrium and foetal parts. The diagnosis reads "PRODUCTS OF GESTATION confirmed", "DECIDUA only", "IMPLANTATION-SITE TROPHOBLAST WITHOUT CHORIONIC VILLI" or a mole line. Checks asks for the villi, warns that an ectopic pregnancy should be suspected when there are no villi, trophoblast or foetal parts, and flags a mole for urgent communication. Endometrial curettings with villi now read "PRODUCTS OF GESTATION confirmed" instead of "PRODUCTS OF CONCEPTION (CHORIONIC VILLI PRESENT)"; otherwise endometrial output is unchanged. 145 parts re-route from generic, and the category on Generic falls from 107 to 5 of 114. Soft tissue on Generic moves from 235 to 222 of 523, because 13 bare "tissue mass" heads, all released as decidua, blood clot or trophoblast, move with them. Wording is from the RCPath gynaecological tissue pathways (sections 11.4 to 11.6) and the released reports. Four fixtures are in `tests/fixtures/products_of_gestation/`. Spec: `docs/specs/products-of-gestation.md`. 1289 tests.
@@ -149,36 +155,6 @@ Docs
 ## Now
 
 - **CNS algorithmic diagnosis — trial.** Merge the guided intake and the CNS pathway into one surface where the flowchart is the screen and each node is answered in place. Trial only: it lives in `lab/cns-algorithm/`, imports `src/cnswizard.js`, `src/cnspathway.js` and `generators/cns_layers.js` unchanged so it cannot drift, and is not wired into `index.html` until the design is settled. Scope: adult diffuse glioma, meningioma and posterior fossa ependymoma, i.e. the three branches the pathway module already carries. Grounding in `analysis/cns-algorithm-research.md`: no openly licensed interactive tool of this kind exists, and every published figure predates cIMPACT-NOW updates 11 and 12, so the node text is re-implemented from the criteria rather than copied from any figure.
-
-### Case options after a pasted request                  Size: S; fixes before ectopic
-Why:        a case built from the paste box keeps the options of the case it replaced, and so does a part switched to another template. Default-on options (the macroscopy on 46 templates, the case summary line on 7, the stage group, MMR, OLGA and molecular lines) then show unticked while they print. Seen in the browser on the hysterectomy, tube and soft tissue forms.
-Change:     one `caseOptions()` in the engine, each template's defaults and then the case's own choices, read by both the report and the tickboxes.
-Untouched:  every printed report; saved cases and the stored options.
-Accept:     after Build parts on a pasted hysterectomy the macroscopy box is ticked, unticking removes the macroscopy and ticking restores it; a unit test for a case whose options came from another template.
-Verify:     tests + browser
-Ship:       with batch
-Spec:       card is the spec
-Source:     browser QA, 2026-09-24
-
-### Endometrial biopsy — part letters in the microscopy   Size: S; fixes before ectopic
-Why:        83 of 89 released multi-part endometrial and cervical cases letter each microscopy paragraph "(A) … (B)". The endometrial narrative prints no letter, so two parts print two unlabelled paragraphs, and a mixed case letters only the products-of-gestation checklist.
-Change:     the narrative paragraph opens "(A) " as on the other biopsy forms; the single-part rule drops the letter.
-Untouched:  single-part reports, including every fixture; the checklist; diagnosis lines.
-Accept:     a curettings and polypectomy case prints "(A) Sections show …" and "(B) Sections show …"; fixtures unchanged.
-Verify:     tests only
-Ship:       with batch
-Spec:       card is the spec
-Source:     multi-part counts from the 2021-2026 biopsy export (aggregate)
-
-### Uterus (benign) — adnexa paratubal cyst lining        Size: S; fixes before ectopic
-Why:        adnexa, bilateral adnexa and sterilisation parts print "A thin-walled paratubal cyst lined by flattened cuboidal epithelium is present." None of the 42 released adnexa parts with a paratubal cyst describes that lining: they name the cyst ("The fallopian tube shows a paratubal cyst.", "A right paratubal cyst is seen."), and of the 42 tube-only parts, 8 call the lining ciliated and 3 cuboidal.
-Change:     the adnexa sentence becomes the tube form's "A paratubal cyst is seen, with a fibrous wall lined by ciliated tubal-type epithelium.", from one shared string.
-Untouched:  diagnosis lines, macroscopy and block keys; the tube form; `ovarian_cyst`.
-Accept:     no golden fixture carries the old sentence; the two `tests/uterus.test.js` assertions change deliberately.
-Verify:     tests only
-Ship:       with batch
-Spec:       card is the spec
-Source:     paratubal counts from the 2021-2026 biopsy export (aggregate); RCPath gynaecological tissue pathways, section 10.3
 
 ## Next
 
