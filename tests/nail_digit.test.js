@@ -199,7 +199,8 @@ const flow = (line) => run(preset(line));
 
 test('intake: nail and digit lines land on this form, confidently, with the specimen, head and procedure', () => {
   const lines = ['Nail clipping, right hallux', 'Nail, right hallux', 'Right thumb, lesion, biopsy', 'Nail, right thumb pigmented band, biopsy', 'Left big toe, resection', 'Nail bed biopsy',
-    'Nail, right 1st toe nail plate', 'Toe nail plate', 'Right great toenail, ingrowing, wedge excision', 'Toenail, avulsion', 'Left 2nd toe, ray amputation, gangrene', 'Left index finger, glomus tumour', 'Right middle finger, digital mucous cyst'];
+    'Nail, right 1st toe nail plate', 'Toe nail plate', 'Right great toenail, ingrowing, wedge excision', 'Toenail, avulsion', 'Left 2nd toe, ray amputation, gangrene', 'Left index finger, glomus tumour', 'Right middle finger, digital mucous cyst',
+    'Left index finger, mass'];
   for (const line of lines) {
     const m = route(line);
     assert.deepEqual([m.templateId, m.tier], ['nail_digit', 'confident'], line);
