@@ -146,6 +146,25 @@ Docs
 
 - **CNS algorithmic diagnosis — trial.** Merge the guided intake and the CNS pathway into one surface where the flowchart is the screen and each node is answered in place. Trial only: it lives in `lab/cns-algorithm/`, imports `src/cnswizard.js`, `src/cnspathway.js` and `generators/cns_layers.js` unchanged so it cannot drift, and is not wired into `index.html` until the design is settled. Scope: adult diffuse glioma, meningioma and posterior fossa ependymoma, i.e. the three branches the pathway module already carries. Grounding in `analysis/cns-algorithm-research.md`: no openly licensed interactive tool of this kind exists, and every published figure predates cIMPACT-NOW updates 11 and 12, so the node text is re-implemented from the criteria rather than copied from any figure.
 
+### Products of gestation — intake and house wording     Size: S; batch 2
+Why:        **90 / 24 parts (89 / 23 cases; 1.0 / 0.5 per cent)**, not the "~0" the Parked line assumed: 55 / 7 arrive headed "tissue mass" and 27 / 12 as uterine evacuations. `endometrial_biopsy` already has a gestational path, but 107 of 114 parts land on Generic, and the released diagnosis reads `PRODUCTS OF GESTATION` in 102 of 114 (never "conception") where the template prints `PRODUCTS OF CONCEPTION (CHORIONIC VILLI PRESENT)`.
+Change:     intake aliases (tissue mass per vaginam, products of gestation or conception, evacuation of retained products, ERPC, miscarriage, suction evacuation) open `endometrial_biopsy` with the gestational phase preset and the dx head from the line (TISSUE MASS or UTERUS); dx `PRODUCTS OF GESTATION CONFIRMED` replaces the conception line while the no-villi and implantation-site lines stay; a hydatidiform-change flag (partial or complete mole → p57 and ploidy comment, hCG follow-up; 2 / 0 parts).
+Untouched:  non-gestational endometrial output; `placenta`; the ectopic card.
+Accept:     no fixture carries the old wording (checked 2026-09-24), so no golden change; new fixtures for a tissue mass with villi and an evacuation without villi; intake top-1 for "Tissue mass per vagina" and "Uterus, evacuation of retained products".
+Verify:     tests only
+Ship:       with batch
+Spec:       card is the spec
+Source:     house wording from the released reports, counted in `docs/case-mix/benign-resections-2021-2026.md`
+
+### Standalone fallopian tube — benign uterus template   Size: S; batch 2
+Why:        **68 / 15 parts (51 / 15 cases)** of tube-only specimens — paratubal cyst 30 / 10, unremarkable or sterilisation segment 24 / 3, hydrosalpinx 6 / 1. `uterus_benign` already carries "Fallopian tube(s), sterilisation" and the paratubal-cyst and hydrosalpinx findings, yet 69 of 83 parts land on Generic and 14 on `ovarian_cyst`.
+Change:     specimen options "Left fallopian tube, salpingectomy", "Right fallopian tube, salpingectomy" and "Paratubal cyst, excision" beside the sterilisation option; intake aliases (salpingectomy, fallopian tube, paratubal cyst, fimbrial cyst, hydrosalpinx, tubal ligation) route tube-only lines there, while a line that names the ovary keeps its current route.
+Untouched:  hysterectomy and adnexa outputs and fixtures; `ovarian_cyst`; the ectopic card.
+Accept:     fixtures for a left salpingectomy with a paratubal cyst and a bilateral sterilisation; intake top-1 for "Left fallopian tube, salpingectomy" and "Paratubal cyst, excision".
+Verify:     tests only
+Ship:       with batch
+Spec:       card is the spec
+
 ## Next
 
 The CNS pathways spec is now built out: the grading rules, the guided intake and the read-only pathway drawer are all in Done. The case-mix ordering below is unchanged.
@@ -182,26 +201,7 @@ Carried over from the previous ordering, now ranked by the same case-mix measure
 Measure:    diagnosis parts, not the site-based table above: the five-year biopsy file (January 2021 to 14 September 2026, 9,325 cases) and the 2024–2026 LIS export (4,547 cases), counted by `tools/profile-benign-resections.py` into `docs/case-mix/benign-resections-2021-2026.md`. The twelve categories hold **1,144 parts in 1,017 cases (10.9 per cent) in the five-year file and 281 parts in 271 cases (6.0 per cent) in the export, and 975 of the 1,425 parts land on Generic today.** Counts in the cards read five-year / export.
 Batches:    1 — soft tissue benign upgrade; abscess, ulcer and granulation tissue; bone and joint. 2 — products of gestation; standalone fallopian tube; ectopic pregnancy. 3 — haemorrhoid, cholesteatoma and hernia sac; nail and digit; testis, scrotum and foreskin. 4 — kidney, non-neoplastic; soft tissue sarcoma grade and staging; soft tissue sarcoma synoptic (sarcoma sized L, split into two M cards).
 Shared:     new templates are kind 'benign resection' from `scripts/new-template.mjs`, print British spelling, follow `docs/specs/diagnosis-connectors.md`, carry intake aliases for their measured lines and appear under their system in Resections browse; each Done line records the Generic share from `--route` after the build. The `soft_tissue_sarcoma` placeholder in `templates/planned.json` reads Next from the batch 1 release.
-Status:     batch 1 shipped 2026-09-24 (Done). Products of gestation and standalone fallopian tube, the two cards added from the counts, were kept by the user 2026-09-24.
-
-### Products of gestation — intake and house wording     Size: S; batch 2
-Why:        **90 / 24 parts (89 / 23 cases; 1.0 / 0.5 per cent)**, not the "~0" the Parked line assumed: 55 / 7 arrive headed "tissue mass" and 27 / 12 as uterine evacuations. `endometrial_biopsy` already has a gestational path, but 107 of 114 parts land on Generic, and the released diagnosis reads `PRODUCTS OF GESTATION` in 102 of 114 (never "conception") where the template prints `PRODUCTS OF CONCEPTION (CHORIONIC VILLI PRESENT)`.
-Change:     intake aliases (tissue mass per vaginam, products of gestation or conception, evacuation of retained products, ERPC, miscarriage, suction evacuation) open `endometrial_biopsy` with the gestational phase preset and the dx head from the line (TISSUE MASS or UTERUS); dx `PRODUCTS OF GESTATION CONFIRMED` replaces the conception line while the no-villi and implantation-site lines stay; a hydatidiform-change flag (partial or complete mole → p57 and ploidy comment, hCG follow-up; 2 / 0 parts).
-Untouched:  non-gestational endometrial output; `placenta`; the ectopic card.
-Accept:     no fixture carries the old wording (checked 2026-09-24), so no golden change; new fixtures for a tissue mass with villi and an evacuation without villi; intake top-1 for "Tissue mass per vagina" and "Uterus, evacuation of retained products".
-Verify:     tests only
-Ship:       with batch
-Spec:       card is the spec
-Source:     house wording from the released reports, counted in `docs/case-mix/benign-resections-2021-2026.md`
-
-### Standalone fallopian tube — benign uterus template   Size: S; batch 2
-Why:        **68 / 15 parts (51 / 15 cases)** of tube-only specimens — paratubal cyst 30 / 10, unremarkable or sterilisation segment 24 / 3, hydrosalpinx 6 / 1. `uterus_benign` already carries "Fallopian tube(s), sterilisation" and the paratubal-cyst and hydrosalpinx findings, yet 69 of 83 parts land on Generic and 14 on `ovarian_cyst`.
-Change:     specimen options "Left fallopian tube, salpingectomy", "Right fallopian tube, salpingectomy" and "Paratubal cyst, excision" beside the sterilisation option; intake aliases (salpingectomy, fallopian tube, paratubal cyst, fimbrial cyst, hydrosalpinx, tubal ligation) route tube-only lines there, while a line that names the ovary keeps its current route.
-Untouched:  hysterectomy and adnexa outputs and fixtures; `ovarian_cyst`; the ectopic card.
-Accept:     fixtures for a left salpingectomy with a paratubal cyst and a bilateral sterilisation; intake top-1 for "Left fallopian tube, salpingectomy" and "Paratubal cyst, excision".
-Verify:     tests only
-Ship:       with batch
-Spec:       card is the spec
+Status:     batch 1 shipped 2026-09-24 (Done). Products of gestation and standalone fallopian tube, the two cards added from the counts, were kept by the user 2026-09-24. Batch 2 started 2026-09-24 with those two cards pulled into Now (user request); the ectopic pregnancy card stays here until it is pulled.
 
 ### Fallopian tube — ectopic pregnancy                   Size: M; batch 2
 Why:        **6 / 2 parts** (5 / 1 tubal pregnancies), 7 of 8 on Generic today; a formulaic Gynae resection, and the user supplied a model report. Moved into this group 2026-09-24.
