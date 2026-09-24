@@ -941,6 +941,63 @@ await check('fallopian tube: a pasted salpingectomy and a paratubal cyst open th
   return 'left salpingectomy with cyst, uterus fields hidden; right paratubal cyst sided; ovary line keeps its route';
 });
 
+// Benign batch 2 (2026-09-24): the ectopic form from a pasted request, sided and with its procedure read
+// from the line; a salpingotomy swaps the tube fields for the fragments. A tube-only line keeps the tube form.
+await check('ectopic: a pasted tubal ectopic opens its own form sided, and a salpingotomy shows the fragments only', async () => {
+  const chosen = async (id) => {
+    const chips = await page.locator(`.chips[data-field="${id}"] .chip[aria-pressed="true"]`).allTextContents();
+    if (chips.length) return chips.map((c) => c.replace(/^\s*\d*\s*/, '').trim()).join(',');
+    const sel = page.locator(`[data-field="${id}"] select`).first();
+    return (await sel.count()) ? sel.inputValue() : '';
+  };
+  let routed = await pasteAndBuild('Left fallopian tube, ectopic pregnancy, salpingectomy');
+  assert(routed === 'fallopian_tube_ectopic', `ectopic line routed to ${routed}`);
+  let side = await chosen('side');
+  let procedure = await chosen('procedure');
+  assert(side === 'Left' && procedure === 'Salpingectomy', `side / procedure read "${side}" / "${procedure}"`);
+  assert(await page.locator('.field[data-field="fragmentSize"]:visible').count() === 0, 'fragment size shows on a salpingectomy');
+  await page.fill('#f-A-overallSize', '4 x 2 x 2');
+  await page.fill('#f-A-tubeLength', '5');
+  await page.fill('#f-A-lumenDiameter', '2');
+  await pickField('serosa', 'Haemorrhage extends to the serosal surface');
+  await pickField('villi', 'Present, degenerate');
+  await page.waitForTimeout(300);
+  let report = await reportText();
+  assert(report.includes('Received in formalin is a distended segment of tubal tissue measuring 4 x 2 x 2 cm. A segment of left fallopian tube is identified measuring 5 cm long, and its lumen is distended, up to 2 cm across.'), `macro wrong: ${report.slice(0, 400)}`);
+  assert(report.includes('The area of haemorrhage extends to the serosal surface. No foetal parts are grossly identified. 3 representative blocks.'), `serosa, foetal parts or blocks sentence missing: ${report.slice(0, 700)}`);
+  assert(report.includes('(2)&(3) Haemorrhagic tubal tissue with distension.'), 'block key wrong');
+  assert(report.includes('The sections show degenerate chorionic villi and haemorrhage within the lumen of the fallopian tube.'), 'microscopy wrong');
+  assert(report.includes('Left FALLOPIAN TUBE, salpingectomy - ECTOPIC TUBAL PREGNANCY'), `diagnosis line wrong: ${report.slice(-300)}`);
+  assert(!/fetal/i.test(report), 'the report says fetal');
+  await page.locator('[data-field="villi"]').first().scrollIntoViewIfNeeded();
+  await shot('ectopic-salpingectomy');
+  await pickField('villi', 'Not identified');
+  report = await reportText();
+  assert(report.includes('NO CHORIONIC VILLI OR TROPHOBLAST IDENTIFIED; see comment') && report.includes('serial serum hCG levels is suggested.'), `no-villi line or comment missing: ${report.slice(-400)}`);
+  const checks = await checksText();
+  assert(/communicate the result to the clinical team promptly/.test(checks), `Checks did not flag the unconfirmed pregnancy (read: ${checks.slice(0, 200)})`);
+  await shot('ectopic-no-villi');
+
+  routed = await pasteAndBuild('Right tubal pregnancy, salpingotomy');
+  assert(routed === 'fallopian_tube_ectopic', `salpingotomy routed to ${routed}`);
+  side = await chosen('side');
+  procedure = await chosen('procedure');
+  assert(side === 'Right' && procedure === 'Salpingotomy', `salpingotomy side / procedure read "${side}" / "${procedure}"`);
+  for (const id of ['overallSize', 'tubeLength', 'serosa', 'epithelium']) {
+    assert(await page.locator(`.field[data-field="${id}"]:visible`).count() === 0, `${id} shows on a salpingotomy`);
+  }
+  assert(await page.locator('.field[data-field="fragmentSize"]:visible').count() === 1, 'no fragment size on a salpingotomy');
+  report = await reportText();
+  assert(report.includes('Right FALLOPIAN TUBE, salpingotomy - PRODUCTS OF GESTATION, consistent with ECTOPIC TUBAL PREGNANCY'), `salpingotomy line wrong: ${report.slice(-400)}`);
+  assert(report.includes('Following salpingotomy, trophoblast may persist in the tube'), 'no persistent-trophoblast comment');
+  await page.locator('[data-field="fragmentSize"]').first().scrollIntoViewIfNeeded();
+  await shot('ectopic-salpingotomy');
+
+  routed = await pasteAndBuild('Left fallopian tube, salpingectomy');
+  assert(routed === 'uterus_benign', `a tube-only line moved to ${routed}`);
+  return 'left salpingectomy sided, model wording; no-villi line, comment and Checks; right salpingotomy fragments only; tube-only line keeps the tube form';
+});
+
 // Case options after a pasted request (2026-09-24): the tickboxes show what the report prints. The case
 // starts on the default small biopsy, whose options carry no macroscopy choice, as a fresh session does.
 await check('case options: a pasted hysterectomy ticks the macroscopy box it prints, and the box drives it', async () => {
