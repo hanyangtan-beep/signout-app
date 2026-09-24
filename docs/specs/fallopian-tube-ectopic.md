@@ -27,7 +27,7 @@ Status: **built 2026-09-24** (benign batch 2, the last card; pulled into Now by 
 - "PRODUCTS OF GESTATION" replaces the brief's "PRODUCTS OF CONCEPTION" (house wording), and clauses are joined by semicolons (`docs/specs/diagnosis-connectors.md`).
 - The salpingotomy and tubal-contents line is new: the brief had no diagnosis for a specimen without a tube.
 - The comments are suggested automatically rather than picked by hand.
-- The closing sentence keeps the model's "gestational trophoblastic neoplasia". Released reports usually say "no evidence of gestational trophoblastic disease" (87 to 1 across the biopsy file, 4 of 5 released ectopic reports); the choice is left to the user.
+- The closing sentence keeps the model's "gestational trophoblastic neoplasia". Released reports usually say "no evidence of gestational trophoblastic disease" (87 to 1 across the biopsy file, 4 of 5 released ectopic reports); the user kept the model's wording on 2026-09-24.
 - Intake: a line that names only the tube stays on the tube form of `uterus_benign`, even with an ectopic history, a line that names the ovary stays on `ovarian_cyst`, and uterine contents with "?ectopic" stay on Generic "choose".
 
 ## Grounding
