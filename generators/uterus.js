@@ -418,8 +418,13 @@ const CERVIX = {
   'HSIL - see comment': 'The cervix shows a high grade squamous intraepithelial lesion (HSIL); see comment.'
 };
 
+// One paratubal cyst sentence for adnexa, sterilisation and tube parts. The released adnexa reports
+// name the cyst ("A right paratubal cyst is seen.") and none describes a flattened cuboidal lining;
+// the tube reports that describe it say ciliated tubal-type epithelium (2021-2026 biopsy export).
+const PARATUBAL_SENTENCE = 'A paratubal cyst is seen, with a fibrous wall lined by ciliated tubal-type epithelium.';
+
 const TUBE_FINDINGS = {
-  'Paratubal cyst': 'A thin-walled paratubal cyst lined by flattened cuboidal epithelium is present.',
+  'Paratubal cyst': PARATUBAL_SENTENCE,
   Hydrosalpinx: 'The fallopian tube is dilated with attenuated plicae, in keeping with hydrosalpinx.'
 };
 const OVARY_FINDINGS = {
@@ -432,10 +437,10 @@ const OVARY_FINDINGS = {
 // section 10.3.1: confirm the tube and a complete cross-sectional profile, and report any abnormality.
 // Sentences follow the house forms of the 2021-2026 biopsy export: "fibrous cyst wall lined by a single
 // layer of ciliated tubal-type epithelium", "The features are consistent with paratubal cyst.", "a dilated
-// lumen lined by benign tubal epithelium, consistent with hydrosalpinx". The older adnexa sentences above
-// (TUBE_FINDINGS) are left as they are.
+// lumen lined by benign tubal epithelium, consistent with hydrosalpinx". The adnexa sentences above
+// (TUBE_FINDINGS) share the paratubal cyst sentence and keep their own hydrosalpinx sentence.
 const TUBE_ONLY = {
-  'Paratubal cyst': 'A paratubal cyst is seen, with a fibrous wall lined by ciliated tubal-type epithelium.',
+  'Paratubal cyst': PARATUBAL_SENTENCE,
   'Chronic salpingitis': 'The plicae contain a chronic inflammatory infiltrate with plasma cells, in keeping with chronic salpingitis.',
   Endometriosis: 'Foci of endometrial glands and stroma with haemosiderin-laden macrophages are present, in keeping with endometriosis.'
 };

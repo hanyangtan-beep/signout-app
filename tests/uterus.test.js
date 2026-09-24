@@ -74,7 +74,7 @@ test('example: two parts - uterus with leiomyomas, adenomyosis and polyp; left a
   assert.equal(r.macro.split('\n\n')[1], '(B) Received in formalin is a left salpingo-oophorectomy specimen. The fallopian tube measures 5 x 0.6 cm. The ovary measures 3 x 2 x 1.5 cm. A thin-walled paratubal cyst measuring 1 cm is attached to the fallopian tube. Representative sections in 3 blocks.');
   assert.equal(r.blockKey, '(A) (1-2) Anterior cervix and posterior cervix. (3-4) Anterior and posterior endomyometrium. (5-7) Leiomyomas. (8) Endometrial polyp. (9) Lower uterine segment.\n(B) (1) Fallopian tube, sectioned. (2-3) Ovary.');
   assert.equal(r.microscopy.split('\n\n')[0], '(A) Sections of the uterus show adenomyosis with scattered islands of endometrial glands and stroma in the myometrium. Intramural and subserosal leiomyomata with no coagulative necrosis are seen. Mitoses are inconspicuous and there is no cytological atypia. Endometrial polyp with fibrotic stroma and thick-walled vessels is sampled. The background endometrium shows no hyperplasia. The cervix shows no evidence of squamous intraepithelial lesion, glandular dysplasia, or malignancy.');
-  assert.equal(r.microscopy.split('\n\n')[1], '(B) Sections of the left fallopian tube show unremarkable plicae. A thin-walled paratubal cyst lined by flattened cuboidal epithelium is present. The ovary shows a cystic follicle. There is no evidence of malignancy.');
+  assert.equal(r.microscopy.split('\n\n')[1], '(B) Sections of the left fallopian tube show unremarkable plicae. A paratubal cyst is seen, with a fibrous wall lined by ciliated tubal-type epithelium. The ovary shows a cystic follicle. There is no evidence of malignancy.');
   assert.equal(r.diagnosis, `(A) ${TAH} - LEIOMYOMAS; ADENOMYOSIS; ENDOMETRIAL POLYP; ${CX_NEG}\n(B) LEFT OVARY AND FALLOPIAN TUBE, salpingo-oophorectomy - PARATUBAL CYST; CYSTIC FOLLICLE, ovary; no evidence of malignancy`);
   assert.equal(r.comment, '');
   assert.ok(!r.report.includes('undefined'));
@@ -230,7 +230,7 @@ test('sterilisation tubes and the combined uterus with bilateral adnexa', () => 
   assert.ok(b.macro.startsWith('Received in formalin is a total hysterectomy and bilateral salpingo-oophorectomy specimen weighing 210 g.'));
   assert.ok(b.macro.includes('The fallopian tubes measure up to 5 x 0.5 cm. The ovaries measure up to 2.5 x 1.5 x 1 cm. Representative sections in 14 blocks.'));
   assert.equal(b.blockKey, '(1-2) Anterior cervix and posterior cervix. (3-4) Anterior and posterior endomyometrium. (5-7) Leiomyomas. (8) Lower uterine segment. (9) Left fallopian tube, sectioned. (10-11) Left ovary. (12) Right fallopian tube, sectioned. (13-14) Right ovary.');
-  assert.ok(b.microscopy.includes('The cervix shows no evidence of squamous intraepithelial lesion, glandular dysplasia, or malignancy. Sections of the fallopian tubes show unremarkable plicae. A thin-walled paratubal cyst lined by flattened cuboidal epithelium is present. The ovaries are unremarkable. There is no evidence of malignancy.'));
+  assert.ok(b.microscopy.includes('The cervix shows no evidence of squamous intraepithelial lesion, glandular dysplasia, or malignancy. Sections of the fallopian tubes show unremarkable plicae. A paratubal cyst is seen, with a fibrous wall lined by ciliated tubal-type epithelium. The ovaries are unremarkable. There is no evidence of malignancy.'));
   assert.equal(b.diagnosis, `UTERUS, CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral salpingo-oophorectomy - LEIOMYOMAS; ADENOMYOSIS; proliferative endometrium; ${CX_NEG}; paratubal cyst`);
   assert.ok(run(one({ specimenName: 'Uterus, cervix and bilateral adnexa' })).diagnosis.endsWith(`${CX_NEG}; bilateral tubes and ovaries with no significant pathology`));
 });
@@ -245,6 +245,23 @@ test('blank size, weight and count fields produce no dangling text', () => {
   assert.ok(!/\bg\b/.test(r.macro));
   const a = run(one({ specimenName: 'Left tube and ovary', tubeSize: '', ovarySize: '', cystSize: '', adnexaFindings: ['Paratubal cyst'] }));
   assert.equal(a.macro, 'Received in formalin is a left salpingo-oophorectomy specimen. Representative sections in 3 blocks.');
+});
+
+test('one paratubal cyst sentence on adnexa, bilateral adnexa, sterilisation and tube parts', () => {
+  // Roadmap card 2026-09-24: ciliated tubal-type lining, as on the tube form; no flattened cuboidal lining.
+  const SENTENCE = 'A paratubal cyst is seen, with a fibrous wall lined by ciliated tubal-type epithelium.';
+  const cases = [
+    one({ specimenName: 'Left tube and ovary', adnexaFindings: ['Paratubal cyst'] }),
+    one({ specimenName: 'Uterus, cervix and bilateral adnexa', adnexaFindings: ['Paratubal cyst'] }),
+    one({ specimenName: 'Fallopian tube(s), sterilisation', adnexaFindings: ['Paratubal cyst'] }),
+    one({ specimenName: gen.LEFT_TUBE, tubeFindings: ['Paratubal cyst'] })
+  ];
+  for (const c of cases) {
+    const m = run(c).microscopy;
+    assert.equal(m.split(SENTENCE).length, 2, c.parts[0].values.specimenName);
+    assert.doesNotMatch(m, /cuboidal/);
+  }
+  assert.ok(run(cases[2]).microscopy.startsWith(`Sections show complete cross sections of fallopian tube from both sides with unremarkable plicae. ${SENTENCE}`));
 });
 
 test('typed block count and block key override', () => {
