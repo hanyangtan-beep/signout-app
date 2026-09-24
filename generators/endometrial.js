@@ -180,13 +180,16 @@ export function microscopy(part) {
   const v = part.values;
   if (isPog(v)) return pogMicroscopy(part);
   const s = [AMOUNT[v.amount] || AMOUNT.Moderate];
+  // One paragraph per part, opened by its letter as on the other biopsy forms (83 of 89 released
+  // multi-part endometrial and cervical cases letter each part); the single-part rule drops "(A) ".
+  const para = () => `(${part.label}) ${s.join(' ')}`;
   if (noEndometrium(v)) {
     if (v.endocervix === 'Fragments of endocervical polyp also present') s.push('Fragments of an endocervical polyp are present.');
-    return s.join(' ');
+    return para();
   }
   if (v.amount === 'Scanty (inadequate for assessment)') {
     if (v.endocervix === 'Unremarkable endocervical tissue also present') s.push('Fragments of unremarkable endocervical tissue are also present.');
-    return s.join(' ');
+    return para();
   }
 
   if (hasCarcinoma(v)) {
@@ -231,7 +234,7 @@ export function microscopy(part) {
     parts.push('hyperplasia', 'malignancy');
     s.push(`There is no evidence of ${parts.length === 3 ? `${parts[0]}, ${parts[1]} or ${parts[2]}` : `${parts[0]} or ${parts[1]}`}.`);
   }
-  return s.join(' ');
+  return para();
 }
 
 // ---------- diagnosis ----------
