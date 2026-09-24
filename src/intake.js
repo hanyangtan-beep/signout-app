@@ -216,11 +216,10 @@ function roleOf(part, ctx, manifest) {
   if (ids.has('breast_excision') && MARGIN.test(text) && !/\bbreast\b/i.test(text)) {
     const breastCase = /\bbreast\b/i.test(ctx.casePrefix || '') || /\bbreast\b/i.test(ctx.history || '') || (ctx.parts || []).some((p) => /\bbreast\b/i.test(p.raw || p.text));
     if (breastCase) {
-      // Side comes from the main breast part ("Left 2-3H breast mass"), else the prefix / history.
+      // Side comes from the main breast part ("Left 2-3H breast mass", "L2-3H mass"), else the prefix / history.
       const main = (ctx.parts || []).find((p) => /\bbreast\b/i.test(p.raw || p.text) && !MARGIN.test(p.raw || p.text));
       const src = `${main ? main.raw || main.text : ''} ${ctx.casePrefix || ''} ${ctx.history || ''}`;
-      const caseSide = /\bleft\b/i.test(src) && !/\bright\b/i.test(src) ? 'Left' : /\bright\b/i.test(src) && !/\bleft\b/i.test(src) ? 'Right' : '';
-      return { role: 'breast_margin', templateId: 'breast_excision', caseSide };
+      return { role: 'breast_margin', templateId: 'breast_excision', caseSide: sideOf(src) };
     }
   }
   return null;
@@ -245,14 +244,81 @@ export function matchParts(parsed, history, manifest) {
   });
 }
 
+// ---- Side, and the breast clock face -------------------------------------------------------------
+// Measured on the 671 breast part-pieces of the 2021-2026 biopsy export: 510 name the side as a word,
+// 119 put the side letter on the clock hour ("L11H" 59, "R2H" 60), 3 write "Lt" / "Rt". 290 carry a
+// clock position: "11 o'clock" in its spellings, "11H" (never "11 H"), and six ranges ("2-3H"); 24 give
+// the distance from the nipple ("3cm FN", "2FN"). Of the released diagnosis lines that give side and
+// hour, 94 read "BREAST, left 11 o'clock, core biopsy", 71 "BREAST, L11H ...", 25 "BREAST, left 11H".
+const HOUR = '(?:1[0-2]|0?[1-9])';
+const CLOCK_SRC = `(?<![A-Za-z\\d])(?:([LR])t?\\.?)?\\s?(${HOUR})(?:\\s?(?:-|/|to)\\s?(${HOUR}))?(?:H\\b|\\s?o\\s?['\u2019]?\\s?clock\\b)`;
+const CLOCK = new RegExp(CLOCK_SRC, 'i');
+const CLOCK_ALL = new RegExp(CLOCK_SRC, 'gi');
+const DISTANCE = /(\d+(?:\.\d+)?)\s?(?:cm)?\s?(?:FN|FTN|from\s+(?:the\s+)?nipple)\b/i;
+// "Lt" / "Rt" only beside an hour, "breast" or "axilla": on its own "RT" is as often radiotherapy.
+const SIDE_WORDS = /\b(left|right)\b|\b(lt|rt)\b\.?(?=\s*(?:\d|breast|axill))/gi;
+const TARGET_NOUNS = /\b(lesions?|mass(?:es)?|lumps?|nodules?|tumou?rs?)\b/gi;
+
+/**
+ * The side a specimen line names: "Left", "Right", or '' when it names none or both. Reads the words,
+ * "Lt" / "Rt", and the letter fused to a clock hour ("L11H", "R 2H", "L10-11H"). A bare L or R is
+ * not a side ("LN", "L 3 cores"); it has to sit on a clock position.
+ */
+export function sideOf(text) {
+  const t = String(text || '');
+  const found = new Set();
+  for (const m of t.matchAll(SIDE_WORDS)) found.add(/^l/i.test(m[1] || m[2]) ? 'Left' : 'Right');
+  for (const m of t.matchAll(CLOCK_ALL)) if (m[1]) found.add(/^l/i.test(m[1]) ? 'Left' : 'Right');
+  return found.size === 1 ? [...found][0] : '';
+}
+
+/**
+ * A breast site written the house way, for a template that prints the side from its own field:
+ * "L11H lesion" -> "11 o'clock"; "Right 2 O'clock, 3cm FN" -> "2 o'clock, 3 cm FN"; "R10-11H PA" ->
+ * "10-11 o'clock, PA"; "left UOQ" -> "UOQ". The side goes (left in, the diagnosis line would read
+ * "BREAST, left L11H lesion"), and so do "breast" and the generic target nouns (lesion, mass, lump,
+ * nodule, tumour) that the target field already carries; any other word is kept after the clock.
+ * `tokensOnly` returns just the clock and the distance, for a line that is not an LIS triple.
+ */
+export function clockSite(text, { tokensOnly = false } = {}) {
+  let t = ` ${String(text || '')} `;
+  let clock = '';
+  let distance = '';
+  const c = t.match(CLOCK);
+  if (c) {
+    clock = `${Number(c[2])}${c[3] ? `-${Number(c[3])}` : ''} o'clock`;
+    t = t.replace(c[0], ' ');
+  }
+  const d = t.match(DISTANCE);
+  if (d) {
+    distance = `${d[1]} cm FN`;
+    t = t.replace(d[0], ' ');
+  }
+  if (tokensOnly) return [clock, distance].filter(Boolean).join(', ');
+  const rest = t.replace(SIDE_WORDS, ' ').replace(/\bbreast\b/gi, ' ').replace(TARGET_NOUNS, ' ')
+    .split(/\s*[,;]\s*/).map((s) => s.replace(/\s+/g, ' ').trim()).filter((s) => /[a-z0-9]/i.test(s));
+  return [clock, distance, ...rest].filter(Boolean).join(', ');
+}
+
 /** Values to pre-fill on the new part; conservative — only fields whose meaning is certain. */
 export function presetValues(schema, part, match = {}) {
   const values = {};
   const fieldIds = new Set((schema?.fields || []).map((f) => f.id));
   const field = (id) => (schema?.fields || []).find((f) => f.id === id);
   const text = part.raw || part.text || '';
-  const side = /\bleft\b/i.test(text) ? 'Left' : /\bright\b/i.test(text) ? 'Right' : '';
-  if (side && field('side')?.options?.includes(side)) values.side = side;
+  // Templates call the field `side` or `laterality`. Until 2026-09-24 only `side` was written, and only
+  // as "Left" / "Right", so eight templates kept their default whatever the request said: the six
+  // `laterality` ones ("Parotid, right" printed left) and the two CNS ones ("left frontal" printed right).
+  // The option is matched without case: the CNS templates spell theirs "left" / "right".
+  const sideField = ['side', 'laterality'].find((id) => fieldIds.has(id));
+  const sideOption = (s) => (s && sideField ? (field(sideField).options || []).find((o) => o.toLowerCase() === s.toLowerCase()) : undefined);
+  const side = sideOf(text);
+  if (sideOption(side)) values[sideField] = sideOption(side);
+  // `match.sideFromText`: the side is only ever the one the request names. When it names none, the field
+  // is left blank (or on the template's own "Not stated") rather than keeping the form's default side.
+  else if (!side && sideField && schema.match?.sideFromText) {
+    values[sideField] = (field(sideField).options || []).find((o) => /^not (stated|specified)$/i.test(o)) || '';
+  }
   if (match.role === 'lymph_node' || schema?.id === 'lymph_node') {
     let station = part.detail || part.text;
     station = station.replace(/^\s*lymph\s*nodes?\s*(at|of|from)?\s*[,:-]?\s*/i, '').trim();
@@ -263,7 +329,7 @@ export function presetValues(schema, part, match = {}) {
     return values;
   }
   if (match.role === 'breast_margin') {
-    if (!values.side && match.caseSide && field('side')?.options?.includes(match.caseSide)) values.side = match.caseSide;
+    if (!values[sideField] && sideOption(match.caseSide)) values[sideField] = sideOption(match.caseSide);
     values.partType = 'Cavity shave margin';
     const named = BREAST_MARGINS.find((m) => new RegExp(`\\b${m}\\b`, 'i').test(text));
     if (named) values.margin = named;
@@ -404,7 +470,11 @@ export function frozenScenario(text) {
   return '';
 }
 
-/** `match.fill`: `{field, from: "detail" | "text" | "options", fallback?, strip?, unless?}` rules (a single object is accepted too). */
+/**
+ * `match.fill`: `{field, from: "detail" | "text" | "options", fallback?, strip?, unless?, clock?}` rules (a single
+ * object is accepted too). `clock` writes a breast site the house way (see clockSite) and, when the line is
+ * not an LIS triple, still takes its clock position and distance from the whole line.
+ */
 function applyFill(schema, part, values) {
   const rules = [].concat(schema?.match?.fill || []);
   const field = (id) => (schema?.fields || []).find((f) => f.id === id);
@@ -424,6 +494,7 @@ function applyFill(schema, part, values) {
       // `strip` (regex source) removes the organ and procedure words, then the remainder opens with a
       // capital so the microscopy heading reads "Left apex, 2 cores" whatever the LIS casing was.
       if (v && rule.strip) v = stripWords(v, rule.strip).replace(/^[a-z]/, (c) => c.toUpperCase());
+      if (rule.clock) v = v ? clockSite(v) : clockSite(text, { tokensOnly: true });
       // `unless` (regex source) skips a value that is only a generic word ("polyp", "biopsy").
       if (v && !(rule.unless && new RegExp(rule.unless, 'i').test(v.trim()))) values[rule.field] = v;
     }

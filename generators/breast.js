@@ -35,12 +35,16 @@ function coresPhrase(part) {
 
 const isLN = (part) => part.values.category === 'LN';
 
+const cap = (s) => `${s[0].toUpperCase()}${s.slice(1)}`;
+
+// The side is the one the request named. A pasted request that names none leaves the chips blank
+// (`match.sideFromText`), and the lines then carry no side instead of a guessed one; validate() asks.
 export function specimenName(part) {
   const v = part.values;
-  const side = low(v.laterality) || 'right';
+  const side = low(v.laterality);
   const site = clean(v.specimenName);
-  if (isLN(part)) return `${side[0].toUpperCase()}${side.slice(1)} ${site || 'axillary lymph node'}, core biopsy`;
-  return `${side[0].toUpperCase()}${side.slice(1)} breast${site ? `, ${site}` : ''}, core biopsy`;
+  if (isLN(part)) return `${cap([side, site || 'axillary lymph node'].filter(Boolean).join(' '))}, core biopsy`;
+  return `${cap([side, 'breast'].filter(Boolean).join(' '))}${site ? `, ${site}` : ''}, core biopsy`;
 }
 
 /** B code for a part: manual override, else derived from the category. Lymph node cores carry none. */
@@ -242,15 +246,16 @@ export function microscopy(part) {
 
 export function diagnosis(part) {
   const v = part.values;
-  const side = low(v.laterality) || 'right';
+  const side = low(v.laterality);
   const site = clean(v.specimenName);
   const code = bCode(part);
   const suffix = code ? ` (${code})` : '';
   if (isLN(part)) {
     const dx = { 'Negative for malignancy': 'NO EVIDENCE OF MALIGNANCY', 'Metastatic carcinoma': 'METASTATIC CARCINOMA', 'Suspicious for metastatic carcinoma': 'SUSPICIOUS FOR METASTATIC CARCINOMA' }[v.lnResult] || 'METASTATIC CARCINOMA';
-    return `(${part.label}) ${side.toUpperCase()} ${(site || 'axillary lymph node').toUpperCase()}, core biopsy - ${dx}`;
+    return `(${part.label}) ${[side, site || 'axillary lymph node'].filter(Boolean).join(' ').toUpperCase()}, core biopsy - ${dx}`;
   }
-  const head = `(${part.label}) BREAST, ${side}${site ? ` ${site}` : ''}, core biopsy - `;
+  const where = [side, site].filter(Boolean).join(' '); // "left 11 o'clock"
+  const head = `(${part.label}) BREAST, ${where ? `${where}, ` : ''}core biopsy - `;
   const cat = v.category || 'B2';
   if (cat === 'B1') {
     const t = v.b1Tissue || 'Normal breast tissue';
@@ -283,4 +288,10 @@ export function diagnosis(part) {
   return head + 'NO EVIDENCE OF MALIGNANCY' + suffix;
 }
 
-export default { specimenName, microscopy, diagnosis };
+/** Checks panel: the side is blank only when a pasted request named none. */
+export function validate(part) {
+  if (['Right', 'Left'].includes(part.values.laterality)) return [];
+  return [{ level: 'warn', message: 'Choose Right or Left: the specimen request named no side, so none is printed.' }];
+}
+
+export default { specimenName, microscopy, diagnosis, validate };

@@ -40,9 +40,11 @@
   "fill": [
    {
     "field": "specimenName",
-    "from": "detail"
+    "from": "detail",
+    "clock": true
    }
-  ]
+  ],
+  "sideFromText": true
  },
  "specimenNoun": "core biopsy",
  "maxParts": 8,

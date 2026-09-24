@@ -34,27 +34,27 @@ test('schema offers the two new grades for every adenomatous type but not hyperp
 
 test('existing grades still print the no-invasion sentence', () => {
   assert.match(micro(run({ dysplasia: 'High grade dysplasia' })), /There is no evidence of invasive malignancy\.$/);
-  assert.equal(dx(run({ dysplasia: 'High grade dysplasia' })), 'SIGMOID, Sigmoid polyp, polypectomy - TUBULOVILLOUS ADENOMA WITH HIGH GRADE DYSPLASIA.');
+  assert.equal(dx(run({ dysplasia: 'High grade dysplasia' })), 'SIGMOID, Sigmoid polyp, polypectomy - TUBULOVILLOUS ADENOMA with HIGH GRADE DYSPLASIA.');
 });
 
 test('at least HGD drops the no-invasion sentence and states invasion cannot be excluded', () => {
   const r = run({ dysplasia: 'At least high grade dysplasia', hgdReason: 'Not stated' });
   assert.doesNotMatch(micro(r), /no evidence of invasive malignancy/);
   assert.match(micro(r), /tubulovillous architecture and high grade dysplasia\. Invasion cannot be excluded on this material\.$/);
-  assert.equal(dx(r), 'SIGMOID, Sigmoid polyp, polypectomy - TUBULOVILLOUS ADENOMA WITH AT LEAST HIGH GRADE DYSPLASIA.');
+  assert.equal(dx(r), 'SIGMOID, Sigmoid polyp, polypectomy - TUBULOVILLOUS ADENOMA with at least HIGH GRADE DYSPLASIA.');
   assert.match(r, /COMMENT:\nCorrelation with endoscopic and radiological findings, with further sampling or resection as clinically indicated, is advised\./);
 });
 
 test('at least HGD reason qualifiers', () => {
   assert.match(micro(run({ dysplasia: 'At least high grade dysplasia', hgdReason: 'Fragmented material' })), /on this fragmented material\.$/);
   assert.match(micro(run({ dysplasia: 'At least high grade dysplasia', hgdReason: 'Cautery artefact' })), /owing to cautery artefact\.$/);
-  assert.equal(dx(run({ type: 'sessileSerrated', dysplasia: 'At least high grade dysplasia' })), 'SIGMOID, Sigmoid polyp, polypectomy - SESSILE SERRATED LESION / ADENOMA WITH AT LEAST HIGH GRADE DYSPLASIA.');
+  assert.equal(dx(run({ type: 'sessileSerrated', dysplasia: 'At least high grade dysplasia' })), 'SIGMOID, Sigmoid polyp, polypectomy - SESSILE SERRATED LESION / ADENOMA with at least HIGH GRADE DYSPLASIA.');
   assert.deepEqual(snippets({ dysplasia: 'At least high grade dysplasia' }), ['colonic_at_least_hgd']);
 });
 
 test('malignant polypectomy — roadmap example line', () => {
   const r = run({ ...ca, site: 'Rectum' });
-  assert.equal(dx(r), 'RECTUM, Rectum polyp, polypectomy - TUBULOVILLOUS ADENOMA WITH INVASIVE ADENOCARCINOMA, well differentiated; submucosal invasion; margin clear (2 mm); no lymphovascular invasion.');
+  assert.equal(dx(r), 'RECTUM, Rectum polyp, polypectomy - TUBULOVILLOUS ADENOMA with INVASIVE ADENOCARCINOMA, well differentiated; submucosal invasion; margin clear (2 mm); no lymphovascular invasion.');
   const m = micro(r);
   assert.doesNotMatch(m, /no evidence of invasive malignancy/);
   assert.match(m, /^Sections show a polypoid piece of large intestinal mucosa with tubulovillous architecture and high grade dysplasia, from which arises an invasive well differentiated adenocarcinoma/);
@@ -73,7 +73,7 @@ test('carcinoma biopsy of a mass — specimen becomes "<Site> mass, biopsy"', ()
 });
 
 test('histological types and the "Other" free text', () => {
-  assert.match(dx(run({ ...ca, histType: 'Mucinous adenocarcinoma' })), /WITH INVASIVE MUCINOUS ADENOCARCINOMA, well/);
+  assert.match(dx(run({ ...ca, histType: 'Mucinous adenocarcinoma' })), /ADENOMA with INVASIVE MUCINOUS ADENOCARCINOMA, well/);
   assert.match(dx(run({ ...ca, histType: 'Signet-ring cell carcinoma', backgroundAdenoma: 'Not identified' })), /- INVASIVE SIGNET-RING CELL CARCINOMA, well/);
   assert.match(dx(run({ ...ca, histType: 'Other', histTypeOther: 'Adenosquamous carcinoma', backgroundAdenoma: 'Not identified' })), /- INVASIVE ADENOSQUAMOUS CARCINOMA, well/);
   assert.match(micro(run({ ...ca, histType: 'Medullary carcinoma' })), /syncytial growth pattern/);
@@ -126,4 +126,23 @@ test('a saved case that predates the carcinoma block still generates (generator 
   assert.match(micro(r), /infiltrated by an invasive adenocarcinoma composed of/);
   assert.match(micro(r), /The depth of invasion cannot be assessed on this material\.$/);
   assert.equal(normalisePart(schema, { label: 'A', values: { ...base } }).values.dysplasia, 'Low grade dysplasia');
+});
+
+test('SNOMED form: capitalised terms, lower-case connector, for every type and grade', () => {
+  // "TUBULAR ADENOMA with LOW GRADE DYSPLASIA" — each capitalised run codes as one term. Sweeps the
+  // whole type x grade grid so a new wording cannot bring back "WITH" unnoticed.
+  const f = schema.fields.find((x) => x.id === 'dysplasia');
+  let lines = 0;
+  for (const [type, grades] of Object.entries(f.optionsByField.map)) {
+    for (const g of grades) {
+      const values = g === 'Invasive adenocarcinoma' ? { ...ca, type } : { type, dysplasia: g };
+      const line = dx(run(values));
+      assert.doesNotMatch(line, /\bWITH\b/, `${type} / ${g}: ${line}`);
+      if (/dysplasia/i.test(g) && type !== 'hyperplasticPolyp' && g !== 'No dysplasia') assert.match(line, / with (at least )?(LOW|HIGH) GRADE DYSPLASIA\.$/, `${type} / ${g}`);
+      lines++;
+    }
+  }
+  assert.ok(lines >= 20, `swept ${lines} lines`);
+  assert.equal(dx(run({ type: 'tubularAdenoma' })), 'SIGMOID, Sigmoid polyp, polypectomy - TUBULAR ADENOMA with LOW GRADE DYSPLASIA.');
+  assert.equal(dx(run({ type: 'tubularAdenoma' }, { uppercaseDx: false })), 'Sigmoid, Sigmoid polyp, polypectomy - Tubular adenoma with low grade dysplasia.', 'sentence-case mode unchanged');
 });

@@ -636,6 +636,51 @@ await check('the standalone HER2 ISH report prints the block and no empty headin
   return 'block printed, no empty headings, group mismatch flagged';
 });
 
+// A pasted breast core in the house shorthand: "L11H" is the left side at 11 o'clock. Before 2026-09-24
+// the side chip stayed on Right and the site printed as "L11H lesion".
+await check('a pasted "L11H" breast core builds a left part at 11 o\'clock', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const box = page.locator('#meta-specimen');
+  await box.click();
+  await box.type('breast, L11H lesion, biopsy', { delay: 4 });
+  await page.waitForSelector('#intake-preview table tr', { timeout: 5000 });
+  // The reload restores the previous check's case, so the button reads "Replace parts" and asks first.
+  const accept = (d) => d.accept();
+  page.on('dialog', accept);
+  await page.click('#btn-build-parts');
+  await page.waitForTimeout(600);
+  page.off('dialog', accept);
+  const pressed = await page.locator('.chips[data-field="laterality"] .chip[aria-pressed="true"]').allTextContents();
+  assert(pressed.length === 1 && /Left/.test(pressed[0]), `side chips pressed: ${JSON.stringify(pressed)}`);
+  const site = await page.locator('#f-A-specimenName').inputValue();
+  assert(site === "11 o'clock", `the site field read "${site}"`);
+  const report = await page.locator('#report-blocks').innerText();
+  assert(report.includes("Left breast, 11 o'clock, core biopsy"), `specimen line wrong: ${report.slice(0, 200)}`);
+  assert(report.includes("BREAST, left 11 o'clock, core biopsy - "), 'the diagnosis line does not carry the side and the clock');
+  await page.locator('#f-A-specimenName').scrollIntoViewIfNeeded();
+  await shot('breast-clock-intake');
+
+  // No side in the request: neither chip is pressed, nothing guessed prints, and Checks asks for it.
+  await box.fill('');
+  await box.type('breast, 11H lesion, biopsy', { delay: 4 });
+  await page.waitForSelector('#intake-preview table tr', { timeout: 5000 });
+  page.on('dialog', accept);
+  await page.click('#btn-build-parts');
+  await page.waitForTimeout(600);
+  page.off('dialog', accept);
+  const none = await page.locator('.chips[data-field="laterality"] .chip[aria-pressed="true"]').count();
+  assert(none === 0, `${none} side chip(s) pressed for a request that names no side`);
+  const blank = await page.locator('#report-blocks').innerText();
+  assert(blank.includes("Breast, 11 o'clock, core biopsy") && blank.includes("BREAST, 11 o'clock, core biopsy - "), `unstated side printed: ${blank.slice(0, 200)}`);
+  assert(!/right/i.test(blank.split(/DIAGNOSIS/)[1] || ''), 'a side was guessed into the diagnosis');
+  const checks = (await page.locator('details.checks .issue').allTextContents()).join(' | ');
+  assert(/Right or Left/.test(checks), `Checks did not ask for the side (read: ${checks.slice(0, 120)})`);
+  await shot('breast-clock-no-side');
+  return "Left chip, site 11 o'clock, both lines agree; no side named leaves the chips blank and Checks asks";
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { parseIntake, matchParts, presetValues, deriveTitle, splitTriple, MAX_PARTS, GENERIC_ID, matchOption } from '../src/intake.js';
+import { parseIntake, matchParts, presetValues, deriveTitle, splitTriple, MAX_PARTS, GENERIC_ID, matchOption, sideOf, clockSite } from '../src/intake.js';
 import { loadManifest, loadTemplate } from '../src/registry.js';
 import { parseSitesFromTitle } from '../generators/gastric.js';
 
@@ -472,4 +472,78 @@ test('matcher: Whipple phrasings route to the pancreas and ampulla synoptics', (
     assert.equal(m.templateId, 'ampulla_carcinoma', `${text}: ${m.templateId}`);
     assert.equal(m.tier, 'confident', `${text}: ${m.tier}`);
   }
+});
+
+test('sideOf: words, Lt / Rt, and the letter on a clock hour; nothing when unstated or both', () => {
+  const cases = [
+    ['breast, L11H lesion, biopsy', 'Left'], ['Breast, R2H mass, core biopsy', 'Right'], ['L 11H', 'Left'],
+    ['L10-11H', 'Left'], ["R 2 o'clock", 'Right'], ['Lt 11H', 'Left'], ['Lt. breast', 'Left'], ['Rt axilla', 'Right'],
+    ['Left breast, core biopsy', 'Left'], ["Right 2 O'clock 3cm FN", 'Right'], ['Parotid, right, excision', 'Right'],
+    ['breast, 11H lesion, biopsy', ''], ['Breast, core biopsy', ''], ['Left breast and right axilla', ''],
+    ['post-RT changes', ''], ['RT', ''], ['LN, core biopsy', ''], ['L 3 cores', ''], ['cleft', ''], ['2 H&E levels', '']
+  ];
+  for (const [text, side] of cases) assert.equal(sideOf(text), side, text);
+});
+
+test('clockSite: the breast site the house way, side and generic nouns out', () => {
+  const cases = [
+    ['L11H lesion', "11 o'clock"], ['R2H', "2 o'clock"], ['L 11H mass', "11 o'clock"], ['Lt 11H lesion', "11 o'clock"],
+    ["Right 2 O'clock, 3cm FN", "2 o'clock, 3 cm FN"], ['R10-11H PA lesion', "10-11 o'clock, PA"], ['L10/11H', "10-11 o'clock"],
+    ['left 11 oclock 2FN', "11 o'clock, 2 cm FN"], ["left breast 11 o\u2019clock", "11 o'clock"], ['3 cm from the nipple, 1H', "1 o'clock, 3 cm FN"],
+    ['left UOQ', 'UOQ'], ['left axillary tail lesion', 'axillary tail'], ['left breast', ''], ['lesion', ''], ['', '']
+  ];
+  for (const [text, want] of cases) assert.equal(clockSite(text), want, text);
+  assert.equal(clockSite('Left breast 11H lesion core biopsy', { tokensOnly: true }), "11 o'clock", 'not a triple: clock only');
+  assert.equal(clockSite('Left breast core biopsy', { tokensOnly: true }), '');
+});
+
+test('pasted breast core: "L11H" gives the left side and the 11 o\'clock site, and the lines mirror it', async () => {
+  const t = await loadTemplate('breast_biopsy');
+  const { generateCase, createPart } = await import('../src/engine.js');
+  const intake = (text) => {
+    const row = matchParts(parseIntake(text), '', manifest)[0];
+    assert.equal(row.templateId, 'breast_biopsy', text);
+    return presetValues(t.schema, row, row);
+  };
+  assert.deepEqual(intake('breast, L11H lesion, biopsy'), { laterality: 'Left', specimenName: "11 o'clock" });
+  assert.deepEqual(intake('Breast, R2H 3cm FN, core biopsy'), { laterality: 'Right', specimenName: "2 o'clock, 3 cm FN" });
+  assert.deepEqual(intake("Breast, core biopsy, left 11 o'clock"), { laterality: 'Left', specimenName: "11 o'clock" }, 'not a triple');
+  assert.deepEqual(intake('Left breast, core biopsy'), { laterality: 'Left' });
+  // No side named: the chips stay blank rather than keeping the form's default Right.
+  assert.deepEqual(intake('breast, 11H lesion, biopsy'), { laterality: '', specimenName: "11 o'clock" });
+
+  const report = (values) => {
+    const part = { ...createPart(t.schema, 0), templateId: 'breast_biopsy' };
+    Object.assign(part.values, values);
+    return generateCase({ breast_biopsy: t }, { schemaId: 'breast_biopsy', caseTitle: '', options: { includeHeader: false }, meta: {}, parts: [part] });
+  };
+  const left = report(intake('breast, L11H lesion, biopsy'));
+  assert.equal(left.specimens, "Left breast, 11 o'clock, core biopsy");
+  assert.equal(left.diagnosis.split('\n')[0], "BREAST, left 11 o'clock, core biopsy - FIBROADENOMA (B2)");
+  assert.deepEqual(left.issues.filter((i) => /side/i.test(i.message)), []);
+  const unstated = report(intake('breast, 11H lesion, biopsy'));
+  assert.equal(unstated.specimens, "Breast, 11 o'clock, core biopsy");
+  assert.equal(unstated.diagnosis.split('\n')[0], "BREAST, 11 o'clock, core biopsy - FIBROADENOMA (B2)");
+  assert.ok(unstated.issues.some((i) => i.level === 'warn' && /Right or Left/.test(i.message)), 'the Checks panel asks for the side');
+  assert.equal(report({ laterality: '', specimenName: '' }).diagnosis.split('\n')[0], 'BREAST, core biopsy - FIBROADENOMA (B2)', 'no empty comma');
+  assert.equal(report({ laterality: '', category: 'LN', lnResult: 'Negative for malignancy' }).diagnosis.split('\n')[0], 'AXILLARY LYMPH NODE, core biopsy - NO EVIDENCE OF MALIGNANCY');
+  assert.equal(report({}).diagnosis.split('\n')[0], 'BREAST, right, core biopsy - FIBROADENOMA (B2)', 'a part added by hand keeps the Right default');
+});
+
+test('a stated side reaches every template\'s side field (eight used to keep their default)', async () => {
+  const side = async (id, text, key = 'laterality') => {
+    const row = matchParts(parseIntake(text), '', manifest)[0];
+    assert.equal(row.templateId, id, text);
+    return presetValues((await loadTemplate(id)).schema, row, row)[key];
+  };
+  assert.equal(await side('salivary_benign', 'Parotid, right parotid, excision'), 'Right', 'default was Left');
+  assert.equal(await side('lung_carcinoma', 'Lung, left lower lobe, lobectomy'), 'Left', 'default was Right');
+  assert.equal(await side('breast_biopsy', 'Left breast, core biopsy'), 'Left', 'default was Right');
+  // The CNS options are lower case; "Left" never matched them.
+  assert.equal(await side('cns_biopsy', 'Brain, left frontal tumour, biopsy', 'side'), 'left', 'default was right');
+  assert.equal(await side('cns_tumour', 'Brain, left frontal lesion, excision', 'side'), 'left', 'default was right');
+  // The breast margin takes its side from the main part, shorthand included.
+  const br = (await loadTemplate('breast_excision')).schema;
+  const rows = matchParts(parseIntake('(A) Breast, L2-3H mass, excision\n(B) Anterior margin'), '', manifest);
+  assert.equal(presetValues(br, rows[1], rows[1]).side, 'Left');
 });

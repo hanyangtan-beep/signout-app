@@ -1,6 +1,6 @@
 {
   "name": "06-site-not-specified",
-  "description": "\"Colon, site not specified\" maps to COLON / Colon in diagnosis and specimen name.",
+  "description": "\"Colon, site not specified\" maps to COLON / Colon in diagnosis and specimen name. Diagnosis connector lower-cased deliberately on 2026-09-24 (\"TUBULAR ADENOMA with LOW GRADE DYSPLASIA\", the released house form) at the user's request, so each capitalised term codes separately in SNOMED; the legacy app printed \"WITH\".",
   "input": {
     "specimens": [
       {
@@ -15,6 +15,6 @@
     "uppercaseDx": true
   },
   "expected": {
-    "report": "SPECIMEN:\n(A) Colon polyp\n\nMICROSCOPIC EXAMINATION:\n(A)  Sections show a polypoid fragment of large intestinal mucosa with tubulovillous architecture and high grade dysplasia. There is no evidence of invasive malignancy.\n\nDIAGNOSIS:\n(A) COLON, Colon polyp, polypectomy - TUBULOVILLOUS ADENOMA WITH HIGH GRADE DYSPLASIA."
+    "report": "SPECIMEN:\n(A) Colon polyp\n\nMICROSCOPIC EXAMINATION:\n(A)  Sections show a polypoid fragment of large intestinal mucosa with tubulovillous architecture and high grade dysplasia. There is no evidence of invasive malignancy.\n\nDIAGNOSIS:\n(A) COLON, Colon polyp, polypectomy - TUBULOVILLOUS ADENOMA with HIGH GRADE DYSPLASIA."
   }
 }

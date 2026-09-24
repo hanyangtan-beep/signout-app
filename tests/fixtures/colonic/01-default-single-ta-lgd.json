@@ -1,6 +1,6 @@
 {
   "name": "01-default-single-ta-lgd",
-  "description": "App default state: one sigmoid tubular adenoma LGD, header on, uppercase on.",
+  "description": "App default state: one sigmoid tubular adenoma LGD, header on, uppercase on. Diagnosis connector lower-cased deliberately on 2026-09-24 (\"TUBULAR ADENOMA with LOW GRADE DYSPLASIA\", the released house form) at the user's request, so each capitalised term codes separately in SNOMED; the legacy app printed \"WITH\".",
   "input": {
     "specimens": [
       {
@@ -15,6 +15,6 @@
     "uppercaseDx": true
   },
   "expected": {
-    "report": "SPECIMEN:\n(A) Sigmoid polyp\n\nMICROSCOPIC EXAMINATION:\n(A)  Sections show a polypoid piece of large intestinal mucosa featuring tubular crypts with low grade dysplasia. There is no evidence of invasive malignancy.\n\nDIAGNOSIS:\n(A) SIGMOID, Sigmoid polyp, polypectomy - TUBULAR ADENOMA WITH LOW GRADE DYSPLASIA."
+    "report": "SPECIMEN:\n(A) Sigmoid polyp\n\nMICROSCOPIC EXAMINATION:\n(A)  Sections show a polypoid piece of large intestinal mucosa featuring tubular crypts with low grade dysplasia. There is no evidence of invasive malignancy.\n\nDIAGNOSIS:\n(A) SIGMOID, Sigmoid polyp, polypectomy - TUBULAR ADENOMA with LOW GRADE DYSPLASIA."
   }
 }

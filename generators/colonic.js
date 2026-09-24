@@ -1,5 +1,11 @@
 // Colonic polyp generator. Ported from legacy/colonic-polyp-signout.html.
 // Pure functions: (part, ctx) -> string. Wording protected by tests/fixtures/colonic.
+//
+// Diagnosis terms are in capitals and the words joining them are not: "TUBULAR ADENOMA with LOW
+// GRADE DYSPLASIA", "... with at least HIGH GRADE DYSPLASIA", "TUBULAR ADENOMA with INVASIVE
+// ADENOCARCINOMA". Each capitalised run is then one SNOMED term. The legacy app wrote "WITH"; the
+// released reports do not (1180 of the 1201 "ADENOMA with ... GRADE DYSPLASIA" diagnoses in the
+// 2021-2026 biopsy export are lower case), and the fixtures were changed deliberately on 2026-09-24.
 
 export const templates = {
   tubularAdenoma: {
@@ -9,8 +15,8 @@ export const templates = {
       'High grade dysplasia': 'Sections show a polypoid piece of large intestinal mucosa featuring tubular crypts with high grade dysplasia. There is no evidence of invasive malignancy.'
     },
     diagnosis: {
-      'Low grade dysplasia': 'TUBULAR ADENOMA WITH LOW GRADE DYSPLASIA',
-      'High grade dysplasia': 'TUBULAR ADENOMA WITH HIGH GRADE DYSPLASIA'
+      'Low grade dysplasia': 'TUBULAR ADENOMA with LOW GRADE DYSPLASIA',
+      'High grade dysplasia': 'TUBULAR ADENOMA with HIGH GRADE DYSPLASIA'
     }
   },
   tubulovillousAdenoma: {
@@ -20,8 +26,8 @@ export const templates = {
       'High grade dysplasia': 'Sections show a polypoid fragment of large intestinal mucosa with tubulovillous architecture and high grade dysplasia. There is no evidence of invasive malignancy.'
     },
     diagnosis: {
-      'Low grade dysplasia': 'TUBULOVILLOUS ADENOMA WITH LOW GRADE DYSPLASIA',
-      'High grade dysplasia': 'TUBULOVILLOUS ADENOMA WITH HIGH GRADE DYSPLASIA'
+      'Low grade dysplasia': 'TUBULOVILLOUS ADENOMA with LOW GRADE DYSPLASIA',
+      'High grade dysplasia': 'TUBULOVILLOUS ADENOMA with HIGH GRADE DYSPLASIA'
     }
   },
   villousAdenoma: {
@@ -31,8 +37,8 @@ export const templates = {
       'High grade dysplasia': 'Sections show a polypoid fragment of large intestinal mucosa with predominant villous architecture and high grade dysplasia. There is no evidence of invasive malignancy.'
     },
     diagnosis: {
-      'Low grade dysplasia': 'VILLOUS ADENOMA WITH LOW GRADE DYSPLASIA',
-      'High grade dysplasia': 'VILLOUS ADENOMA WITH HIGH GRADE DYSPLASIA'
+      'Low grade dysplasia': 'VILLOUS ADENOMA with LOW GRADE DYSPLASIA',
+      'High grade dysplasia': 'VILLOUS ADENOMA with HIGH GRADE DYSPLASIA'
     }
   },
   sessileSerrated: {
@@ -44,8 +50,8 @@ export const templates = {
     },
     diagnosis: {
       'No dysplasia': 'SESSILE SERRATED LESION / ADENOMA',
-      'Low grade dysplasia': 'SESSILE SERRATED LESION / ADENOMA WITH LOW GRADE DYSPLASIA',
-      'High grade dysplasia': 'SESSILE SERRATED LESION / ADENOMA WITH HIGH GRADE DYSPLASIA'
+      'Low grade dysplasia': 'SESSILE SERRATED LESION / ADENOMA with LOW GRADE DYSPLASIA',
+      'High grade dysplasia': 'SESSILE SERRATED LESION / ADENOMA with HIGH GRADE DYSPLASIA'
     }
   },
   hyperplasticPolyp: {
@@ -64,8 +70,8 @@ export const templates = {
       'High grade dysplasia': 'Sections show a serrated polyp with ectopic crypt formation and high grade dysplasia, in keeping with a traditional serrated adenoma. There is no evidence of invasive malignancy.'
     },
     diagnosis: {
-      'Low grade dysplasia': 'TRADITIONAL SERRATED ADENOMA WITH LOW GRADE DYSPLASIA',
-      'High grade dysplasia': 'TRADITIONAL SERRATED ADENOMA WITH HIGH GRADE DYSPLASIA'
+      'Low grade dysplasia': 'TRADITIONAL SERRATED ADENOMA with LOW GRADE DYSPLASIA',
+      'High grade dysplasia': 'TRADITIONAL SERRATED ADENOMA with HIGH GRADE DYSPLASIA'
     }
   }
 };
@@ -105,7 +111,7 @@ function atLeastHgdMicro(values) {
 
 function atLeastHgdDx(values) {
   const t = templates[values.type] || templates.tubularAdenoma;
-  return t.diagnosis['High grade dysplasia'].replace('WITH HIGH GRADE DYSPLASIA', 'WITH AT LEAST HIGH GRADE DYSPLASIA');
+  return t.diagnosis['High grade dysplasia'].replace('with HIGH GRADE DYSPLASIA', 'with at least HIGH GRADE DYSPLASIA');
 }
 
 // ---- Invasive adenocarcinoma --------------------------------------------------------------
@@ -267,7 +273,7 @@ function invasiveMicro(values) {
 
 function invasiveDx(values) {
   let head = carcinomaTypeDx(values);
-  if (hasBackgroundAdenoma(values)) head = `${ADENOMA_NAME[values.type] || ADENOMA_NAME.tubularAdenoma} WITH ${head}`;
+  if (hasBackgroundAdenoma(values)) head = `${ADENOMA_NAME[values.type] || ADENOMA_NAME.tubularAdenoma} with ${head}`;
   const qualifiers = [DIFF[values.differentiation] || ''].filter(Boolean);
   const clauses = [DEPTH_DX[values.depth] || '', marginDx(values), LVI_DX[values.lvi] || '', MMR_DX[values.mmr] || ''].filter(Boolean);
   let dx = head;

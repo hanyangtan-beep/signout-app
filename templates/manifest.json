@@ -458,9 +458,11 @@
         "fill": [
           {
             "field": "specimenName",
-            "from": "detail"
+            "from": "detail",
+            "clock": true
           }
-        ]
+        ],
+        "sideFromText": true
       },
       "version": "2026.09",
       "generator": "breast",
