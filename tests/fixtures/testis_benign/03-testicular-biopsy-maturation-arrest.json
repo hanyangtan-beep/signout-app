@@ -1,0 +1,16 @@
+{
+  "templateId": "testis_benign",
+  "values": {
+    "specimen": "Testicular biopsy",
+    "side": "Left",
+    "pattern": "Maturation arrest",
+    "arrestStage": "Primary spermatocyte",
+    "tubules": "25",
+    "johnsen": "4",
+    "procedure": "Biopsy",
+    "dimensions": "0.3 x 0.2 x 0.2",
+    "blockScheme": "All embedded"
+  },
+  "report": "Testis, left, biopsy\n\nReceived in formalin are fragments of testicular tissue labelled left testis, measuring 0.3 x 0.2 x 0.2 cm in aggregate. All embedded in 1 block.\n\n(1) Testicular tissue, all embedded.\n\nSections show testicular parenchyma with 25 seminiferous tubules. Spermatogenesis is arrested at the primary spermatocyte stage; no spermatids or spermatozoa are seen. The mean Johnsen score is 4. No Leydig cell hyperplasia is seen. There is no evidence of germ cell neoplasia in situ or malignancy.\n\nTESTIS, left, biopsy - MATURATION ARREST AT THE PRIMARY SPERMATOCYTE STAGE (mean Johnsen score 4)",
+  "checks": []
+}

@@ -1,0 +1,13 @@
+{
+  "templateId": "nail_digit",
+  "values": {
+    "specimen": "Lesion excision",
+    "organ": "TOE",
+    "site": "left hallux",
+    "procedure": "Excision",
+    "diagnosis": "Subungual exostosis",
+    "dimensions": "0.9 x 0.7 x 0.5"
+  },
+  "report": "Toe, left hallux, excision\n\nReceived in formalin is a piece of tissue labelled left hallux, measuring 0.9 x 0.7 x 0.5 cm. All embedded in 1 block after decalcification.\n\n(1) Lesion, all embedded, decalcified.\n\nSections show trabecular bone with a cap of fibrocartilaginous tissue. The features are those of a subungual exostosis. There is no evidence of malignancy.\n\nTOE, left hallux, excision - SUBUNGUAL EXOSTOSIS",
+  "checks": []
+}

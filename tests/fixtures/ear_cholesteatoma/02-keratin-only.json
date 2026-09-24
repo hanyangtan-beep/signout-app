@@ -1,0 +1,21 @@
+{
+  "templateId": "ear_cholesteatoma",
+  "values": {
+    "specimenName": "",
+    "organ": "EAR",
+    "side": "Left",
+    "site": "cholesteatoma",
+    "procedure": "Resection",
+    "description": "Fragments of keratinous material",
+    "dimensions": "0.8 x 0.5 x 0.2",
+    "blocks": "1",
+    "blockScheme": "All embedded",
+    "diagnosis": "Keratin only",
+    "inflammation": "Chronic",
+    "features": [],
+    "granulomas": "Not stated",
+    "additionalNotes": ""
+  },
+  "report": "Ear, left cholesteatoma, resection\n\nReceived in formalin are fragments of white keratinous material labelled left cholesteatoma, measuring 0.8 x 0.5 x 0.2 cm in aggregate. All embedded in 1 block.\n\n(1) Keratinous material, all embedded.\n\nSections show lamellated keratinous debris. No intact squamous epithelium is identified. Features are consistent with cholesteatoma. There is no evidence of malignancy.\n\nEAR, left cholesteatoma, resection - Consistent with CHOLESTEATOMA",
+  "checks": []
+}

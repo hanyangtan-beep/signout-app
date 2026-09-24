@@ -1,0 +1,23 @@
+{
+  "templateId": "ear_cholesteatoma",
+  "values": {
+    "specimenName": "",
+    "organ": "EAR",
+    "side": "Right",
+    "site": "aural polyp",
+    "procedure": "Resection",
+    "description": "A polypoid piece of tissue",
+    "dimensions": "0.6 x 0.4 x 0.3",
+    "blocks": "1",
+    "blockScheme": "All embedded",
+    "diagnosis": "Aural polyp",
+    "inflammation": "Chronic",
+    "features": [
+      "Surface ulceration"
+    ],
+    "granulomas": "Not stated",
+    "additionalNotes": ""
+  },
+  "report": "Ear, right aural polyp, resection\n\nReceived in formalin is a polypoid piece of tissue labelled right aural polyp, measuring 0.6 x 0.4 x 0.3 cm. All embedded in 1 block.\n\n(1) Polyp, all embedded.\n\nSections show a polypoid fragment of granulation tissue with numerous small blood vessels and a chronic inflammatory infiltrate of lymphocytes, plasma cells and histiocytes. The surface is ulcerated. Features are those of an aural polyp. There is no evidence of malignancy.\n\nEAR, right aural polyp, resection - AURAL POLYP",
+  "checks": []
+}

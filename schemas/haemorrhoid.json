@@ -1,0 +1,274 @@
+{
+ "id": "haemorrhoid",
+ "version": "2026.09",
+ "name": "Haemorrhoid",
+ "shortName": "Anus · haemorrhoid",
+ "label": "Haemorrhoid",
+ "organ": "ANUS",
+ "system": "GI",
+ "kind": "benign resection",
+ "rank": 51,
+ "aliases": [
+  "haemorrhoid",
+  "hemorrhoid",
+  "haemorrhoidectomy",
+  "hemorrhoidectomy",
+  "piles",
+  "thrombosed haemorrhoid"
+ ],
+ "match": {
+  "site": [
+   "haemorrhoid",
+   "hemorrhoid",
+   "haemorrhoidal",
+   "hemorrhoidal",
+   "haemorrhoidectomy",
+   "hemorrhoidectomy",
+   "piles"
+  ],
+  "procedure": [
+   "haemorrhoidectomy",
+   "hemorrhoidectomy",
+   "excision",
+   "resection"
+  ],
+  "clinical": [
+   "haemorrhoid",
+   "hemorrhoid",
+   "piles"
+  ],
+  "not": [
+   "abscess",
+   "fistula",
+   "fissure",
+   "carcinoma",
+   "tumour",
+   "tumor",
+   "condyloma",
+   "warts"
+  ],
+  "bare": true,
+  "bias": 1,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "haemorrhoidectom|hemorrhoidectom",
+      "Haemorrhoidectomy"
+     ],
+     [
+      "\\bresect",
+      "Resection"
+     ],
+     [
+      "\\bexcis",
+      "Excision"
+     ]
+    ]
+   },
+   {
+    "field": "site",
+    "from": "detail",
+    "fallback": "text",
+    "strip": "\\b(?:anus|anal\\s+canal|anal|anorectal|perianal|haemorrhoidal\\s+tissue|hemorrhoidal\\s+tissue|haemorrhoids?|hemorrhoids?|haemorrhoidal|hemorrhoidal|haemorrhoidectomy|hemorrhoidectomy|piles|thrombosed|prolapsed|prolapsing|strangulated|excision|excised|resection|tissue|specimen)\\b",
+    "unless": "^(?:polyp|biopsy|lesion)$"
+   }
+  ]
+ },
+ "macroExtract": {
+  "dimensions": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  },
+  "blockScheme": {
+   "concept": "choice",
+   "map": [
+    [
+     "\\ball\\s+(?:the\\s+tissue\\s+)?(?:is\\s+|are\\s+|been\\s+)?embedded|\\bentirely\\s+(?:embedded|submitted)",
+     "All embedded"
+    ],
+    [
+     "representative\\s+(?:sections?|blocks?)|partially\\s+embedded",
+     "Representative sections"
+    ]
+   ]
+  },
+  "description": {
+   "concept": "choice",
+   "map": [
+    [
+     "\\b(?:two|three|four|five|six|several|multiple|\\d+)\\s+(?:pieces|fragments)\\b|\\bpieces\\b|\\bfragments\\b",
+     "Pieces of haemorrhoidal tissue"
+    ],
+    [
+     "\\b(?:a|one)\\s+piece\\b",
+     "A piece of haemorrhoidal tissue"
+    ]
+   ]
+  }
+ },
+ "specimenNoun": "specimen",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "haemorrhoid",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "partDefaults": [],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "text",
+   "placeholder": "Anus, 3 o'clock haemorrhoid, haemorrhoidectomy",
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Position / label",
+   "type": "text",
+   "placeholder": "3 o'clock",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "options": [
+    "Excision",
+    "Haemorrhoidectomy",
+    "Resection"
+   ],
+   "default": "Excision"
+  },
+  {
+   "id": "description",
+   "label": "Description",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "A piece of haemorrhoidal tissue",
+    "Pieces of haemorrhoidal tissue"
+   ],
+   "default": "A piece of haemorrhoidal tissue"
+  },
+  {
+   "id": "dimensions",
+   "label": "Dimensions (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "2 x 1.5 x 1",
+   "default": ""
+  },
+  {
+   "id": "cutSurface",
+   "label": "Cut surface",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Dilated vessels",
+    "Dilated vessels with thrombus",
+    "Not described"
+   ],
+   "default": "Dilated vessels"
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": "1"
+  },
+  {
+   "id": "blockScheme",
+   "label": "Sampling",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "All embedded",
+    "Representative sections"
+   ],
+   "default": "Representative sections"
+  },
+  {
+   "id": "mucosa",
+   "label": "Surface",
+   "type": "select",
+   "options": [
+    "Anal squamous mucosa",
+    "Anorectal junction",
+    "Rectal mucosa",
+    "Perianal skin"
+   ],
+   "default": "Anal squamous mucosa"
+  },
+  {
+   "id": "findings",
+   "label": "Additional findings",
+   "type": "multiselect",
+   "options": [
+    "Thrombosis",
+    "Surface ulceration",
+    "Mucosal prolapse change",
+    "Reactive squamous atypia",
+    "Fibroepithelial polyp"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "Free text appended to the microscopy for this part",
+   "default": ""
+  }
+ ],
+ "snippets": [],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "",
+     "site": "3 o'clock",
+     "procedure": "Haemorrhoidectomy",
+     "description": "A piece of haemorrhoidal tissue",
+     "dimensions": "2 x 1.5 x 1",
+     "cutSurface": "Dilated vessels",
+     "blocks": "1",
+     "blockScheme": "Representative sections",
+     "mucosa": "Anal squamous mucosa",
+     "findings": [
+      "Thrombosis"
+     ],
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
+}

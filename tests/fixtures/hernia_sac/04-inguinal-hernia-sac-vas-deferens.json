@@ -1,0 +1,25 @@
+{
+  "templateId": "hernia_sac",
+  "values": {
+    "specimenName": "",
+    "organ": "SOFT TISSUE",
+    "side": "Left",
+    "herniaType": "Inguinal",
+    "procedure": "Excision",
+    "description": "A membranous sac",
+    "dimensions": "4 x 3 x 0.5",
+    "blocks": "1",
+    "blockScheme": "Representative sections",
+    "contents": "None",
+    "endometriosis": "Absent",
+    "cordStructures": "Vas deferens",
+    "malignancy": "Absent",
+    "metType": "Adenocarcinoma",
+    "ihcPositive": "",
+    "ihcNegative": "",
+    "favouredPrimary": "",
+    "additionalNotes": ""
+  },
+  "report": "Soft tissue, left inguinal hernia sac, excision\n\nReceived in formalin is a membranous sac labelled left inguinal hernia sac, measuring 4 x 3 x 0.5 cm. Representative sections in 1 block.\n\n(1) Hernia sac, representative sections.\n\nSections show peritoneal fibroadipose tissue lined by benign mesothelium. A segment of vas deferens is present in the wall of the sac. Features are in keeping with a hernia sac. There is no evidence of granulomatous inflammation or malignancy.\n\nSOFT TISSUE, left inguinal hernia sac, excision - In keeping with HERNIA SAC; VAS DEFERENS IDENTIFIED; see comment\n\nVas deferens or epididymal tissue is identified in the wall of the hernia sac. Correlation with the operative findings is suggested.",
+  "checks": []
+}

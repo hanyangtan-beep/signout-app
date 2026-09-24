@@ -1,0 +1,22 @@
+{
+  "templateId": "haemorrhoid",
+  "values": {
+    "specimenName": "",
+    "site": "3 o'clock",
+    "procedure": "Haemorrhoidectomy",
+    "description": "Pieces of haemorrhoidal tissue",
+    "dimensions": "2 x 1.5 x 1",
+    "cutSurface": "Dilated vessels with thrombus",
+    "blocks": "2",
+    "blockScheme": "All embedded",
+    "mucosa": "Anorectal junction",
+    "findings": [
+      "Thrombosis",
+      "Surface ulceration",
+      "Mucosal prolapse change"
+    ],
+    "additionalNotes": ""
+  },
+  "report": "Anus, 3 o'clock haemorrhoid, haemorrhoidectomy\n\nReceived in formalin are pieces of haemorrhoidal tissue labelled 3 o'clock, measuring 2 x 1.5 x 1 cm in aggregate. The cut surface shows dilated vessels within the stroma, some containing thrombus. All embedded in 2 blocks.\n\n(1-2) Haemorrhoid, all embedded.\n\nSections show squamous and columnar mucosa of the anorectal junction. Ectatic muscular blood vessels are noted in the stroma. Some of the vessels contain thrombi. The surface is ulcerated. There is mucosal prolapse change, with fibromuscular proliferation in the lamina propria. The features are those of haemorrhoid. There is no evidence of dysplasia or malignancy.\n\nANUS, 3 o'clock haemorrhoid, haemorrhoidectomy - HAEMORRHOID with THROMBOSIS, ULCERATION AND MUCOSAL PROLAPSE CHANGE",
+  "checks": []
+}

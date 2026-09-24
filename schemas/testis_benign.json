@@ -1,0 +1,686 @@
+{
+ "id": "testis_benign",
+ "version": "2026.09",
+ "name": "Testis and foreskin — benign",
+ "shortName": "Testis · foreskin",
+ "label": "Testis / foreskin",
+ "organ": "TESTIS",
+ "system": "GU",
+ "kind": "benign resection",
+ "rank": 55,
+ "aliases": [
+  "circumcision",
+  "foreskin",
+  "prepuce",
+  "phimosis",
+  "lichen sclerosus",
+  "orchidectomy",
+  "torsion",
+  "testicular biopsy",
+  "hydrocele",
+  "epididymal cyst",
+  "spermatocele",
+  "vasectomy",
+  "vas deferens"
+ ],
+ "match": {
+  "site": [
+   "testis",
+   "testes",
+   "testicle",
+   "testicular",
+   "orchidectomy",
+   "orchiectomy",
+   "foreskin",
+   "prepuce",
+   "preputial",
+   "circumcision",
+   "phimosis",
+   "hydrocele",
+   "hydrocoele",
+   "epididymis",
+   "epididymal",
+   "spermatocele",
+   "spermatocoele",
+   "spermatic cord",
+   "vas deferens",
+   "vas",
+   "vasectomy",
+   "tunica vaginalis"
+  ],
+  "procedure": [
+   "orchidectomy",
+   "orchiectomy",
+   "circumcision",
+   "excision",
+   "resection",
+   "biopsy",
+   "vasectomy",
+   "hydrocelectomy",
+   "epididymectomy"
+  ],
+  "clinical": [
+   "torsion",
+   "phimosis",
+   "infertility",
+   "azoospermia",
+   "balanitis",
+   "lichen sclerosus",
+   "undescended"
+  ],
+  "not": [
+   "tumour",
+   "tumor",
+   "mass",
+   "carcinoma",
+   "seminoma",
+   "teratoma",
+   "germ cell tumour",
+   "malignancy",
+   "malignant",
+   "neoplasm",
+   "lymphoma",
+   "glans",
+   "penile",
+   "penis",
+   "condyloma",
+   "warts",
+   "lipoma",
+   "liposarcoma",
+   "sarcoma",
+   "lesion",
+   "lesions",
+   "nodule",
+   "orchitis",
+   "epididymitis",
+   "abscess",
+   "adenomatoid"
+  ],
+  "exclude": [
+   "prostate",
+   "prostatic",
+   "bladder",
+   "cystoprostatectomy",
+   "kidney",
+   "renal",
+   "lymph node",
+   "appendage",
+   "appendix testis",
+   "appendix of testis",
+   "hydatid",
+   "morgagni"
+  ],
+  "bare": true,
+  "bias": 1,
+  "sideFromText": true,
+  "fill": [
+   {
+    "field": "specimen",
+    "from": "map",
+    "map": [
+     [
+      "circumcis|prepuc|preputial|foreskin|phimosis",
+      "Prepuce"
+     ],
+     [
+      "hydroc|tunica",
+      "Hydrocele sac"
+     ],
+     [
+      "epididym|spermatoc",
+      "Epididymal cyst or spermatocele"
+     ],
+     [
+      "\\bvas\\b|vasectom",
+      "Vas deferens"
+     ],
+     [
+      "\\bbiops",
+      "Testicular biopsy"
+     ],
+     [
+      "orchid|orchiect|\\btest[ei]s\\b|testicle|testicular|torsion",
+      "Orchidectomy"
+     ]
+    ]
+   },
+   {
+    "field": "organ",
+    "from": "map",
+    "map": [
+     [
+      "foreskin",
+      "FORESKIN"
+     ],
+     [
+      "prepuc|preputial|circumcis",
+      "PREPUCE"
+     ],
+     [
+      "spermatic\\s+cord",
+      "SPERMATIC CORD"
+     ],
+     [
+      "\\bvas\\b|vasectom",
+      "VAS DEFERENS"
+     ],
+     [
+      "epididym|spermatoc",
+      "EPIDIDYMIS"
+     ],
+     [
+      "hydroc|tunica",
+      "TUNICA VAGINALIS"
+     ],
+     [
+      "\\btest[ei]s\\b|testicle|testicular|orchid|orchiect",
+      "TESTIS"
+     ]
+    ]
+   },
+   {
+    "field": "procedure",
+    "from": "map",
+    "noGuess": true,
+    "map": [
+     [
+      "circumcis",
+      "Circumcision"
+     ],
+     [
+      "inguinal\\s+orchid|radical\\s+orchid",
+      "Inguinal orchidectomy"
+     ],
+     [
+      "orchid|orchiect",
+      "Orchidectomy"
+     ],
+     [
+      "hydrocelectom",
+      "Hydrocelectomy"
+     ],
+     [
+      "vasectom",
+      "Vasectomy"
+     ],
+     [
+      "\\bbiops",
+      "Biopsy"
+     ],
+     [
+      "excis|epididymectom",
+      "Excision"
+     ],
+     [
+      "\\bresect",
+      "Resection"
+     ]
+    ]
+   },
+   {
+    "field": "orchidDx",
+    "from": "map",
+    "map": [
+     [
+      "torsion",
+      "Torsion"
+     ]
+    ]
+   },
+   {
+    "field": "prepuceDx",
+    "from": "map",
+    "map": [
+     [
+      "lichen|\\bbxo\\b|balanitis\\s+xerotica",
+      "Lichen sclerosus"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "dimensions": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  },
+  "blockScheme": {
+   "concept": "choice",
+   "map": [
+    [
+     "\\ball\\s+(?:the\\s+tissue\\s+)?(?:is\\s+|are\\s+|been\\s+)?embedded|\\bentirely\\s+(?:embedded|submitted)",
+     "All embedded"
+    ],
+    [
+     "representative\\s+(?:sections?|blocks?)|partially\\s+embedded",
+     "Representative sections"
+    ]
+   ]
+  }
+ },
+ "specimenNoun": "specimen",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "testis_benign",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "partDefaults": [],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "text",
+   "placeholder": "Prepuce, circumcision",
+   "default": ""
+  },
+  {
+   "id": "specimen",
+   "label": "Specimen",
+   "type": "select",
+   "options": [
+    "Prepuce",
+    "Orchidectomy",
+    "Testicular biopsy",
+    "Hydrocele sac",
+    "Epididymal cyst or spermatocele",
+    "Vas deferens"
+   ],
+   "default": "Prepuce"
+  },
+  {
+   "id": "organ",
+   "label": "Organ (diagnosis line)",
+   "type": "select",
+   "options": [
+    "",
+    "PREPUCE",
+    "FORESKIN",
+    "TESTIS",
+    "EPIDIDYMIS",
+    "SPERMATIC CORD",
+    "VAS DEFERENS",
+    "TUNICA VAGINALIS"
+   ],
+   "optionLabels": {
+    "": "Per specimen"
+   },
+   "default": ""
+  },
+  {
+   "id": "side",
+   "label": "Side",
+   "type": "select",
+   "options": [
+    "Not stated",
+    "Left",
+    "Right",
+    "Bilateral"
+   ],
+   "default": "Not stated"
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "options": [
+    "",
+    "Circumcision",
+    "Orchidectomy",
+    "Inguinal orchidectomy",
+    "Biopsy",
+    "Excision",
+    "Resection",
+    "Hydrocelectomy",
+    "Vasectomy"
+   ],
+   "optionLabels": {
+    "": "Per specimen"
+   },
+   "default": ""
+  },
+  {
+   "id": "dimensions",
+   "label": "Dimensions (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "3 x 2 x 0.3",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": "1"
+  },
+  {
+   "id": "blockScheme",
+   "label": "Sampling",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "All embedded",
+    "Representative sections"
+   ],
+   "default": "Representative sections"
+  },
+  {
+   "id": "prepuceDx",
+   "label": "Diagnosis",
+   "type": "select",
+   "options": [
+    "No specific abnormality",
+    "Lichen sclerosus",
+    "Zoon's balanitis",
+    "Balanoposthitis",
+    "Chronic inflammation"
+   ],
+   "default": "No specific abnormality",
+   "showIf": {
+    "field": "specimen",
+    "is": "Prepuce"
+   }
+  },
+  {
+   "id": "orchidDx",
+   "label": "Diagnosis",
+   "type": "select",
+   "options": [
+    "Atrophy",
+    "Torsion",
+    "Unremarkable testis"
+   ],
+   "default": "Atrophy",
+   "showIf": {
+    "field": "specimen",
+    "is": "Orchidectomy"
+   }
+  },
+  {
+   "id": "mikuz",
+   "label": "Mikuz grade",
+   "type": "select",
+   "options": [
+    "1",
+    "2",
+    "3"
+   ],
+   "optionLabels": {
+    "1": "Grade 1",
+    "2": "Grade 2",
+    "3": "Grade 3"
+   },
+   "default": "3",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": "Orchidectomy"
+     },
+     {
+      "field": "orchidDx",
+      "is": "Torsion"
+     }
+    ]
+   }
+  },
+  {
+   "id": "spermatogenesis",
+   "label": "Spermatogenesis",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Reduced",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": "Orchidectomy"
+     },
+     {
+      "field": "orchidDx",
+      "is": "Atrophy"
+     }
+    ]
+   }
+  },
+  {
+   "id": "tubules",
+   "label": "Seminiferous tubules (number)",
+   "type": "text",
+   "placeholder": "40",
+   "default": "",
+   "showIf": {
+    "field": "specimen",
+    "is": "Testicular biopsy"
+   }
+  },
+  {
+   "id": "pattern",
+   "label": "Pattern",
+   "type": "select",
+   "options": [
+    "Normal spermatogenesis",
+    "Hypospermatogenesis",
+    "Maturation arrest",
+    "Sertoli cell-only",
+    "Tubular sclerosis"
+   ],
+   "default": "Hypospermatogenesis",
+   "showIf": {
+    "field": "specimen",
+    "is": "Testicular biopsy"
+   }
+  },
+  {
+   "id": "arrestStage",
+   "label": "Arrest at",
+   "type": "select",
+   "options": [
+    "Primary spermatocyte",
+    "Early spermatid"
+   ],
+   "default": "Primary spermatocyte",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": "Testicular biopsy"
+     },
+     {
+      "field": "pattern",
+      "is": "Maturation arrest"
+     }
+    ]
+   }
+  },
+  {
+   "id": "johnsen",
+   "label": "Mean Johnsen score",
+   "type": "text",
+   "placeholder": "5",
+   "default": "",
+   "showIf": {
+    "field": "specimen",
+    "is": "Testicular biopsy"
+   }
+  },
+  {
+   "id": "leydig",
+   "label": "Leydig cells",
+   "type": "select",
+   "options": [
+    "No hyperplasia",
+    "Hyperplasia"
+   ],
+   "default": "No hyperplasia",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": [
+       "Orchidectomy",
+       "Testicular biopsy"
+      ]
+     },
+     {
+      "field": "orchidDx",
+      "not": "Torsion"
+     }
+    ]
+   }
+  },
+  {
+   "id": "gcnis",
+   "label": "Germ cell neoplasia in situ",
+   "type": "select",
+   "options": [
+    "Not identified",
+    "Present – see comment"
+   ],
+   "default": "Not identified",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": [
+       "Orchidectomy",
+       "Testicular biopsy"
+      ]
+     },
+     {
+      "field": "orchidDx",
+      "not": "Torsion"
+     }
+    ]
+   }
+  },
+  {
+   "id": "cystType",
+   "label": "Cyst",
+   "type": "select",
+   "options": [
+    "Epididymal cyst",
+    "Spermatocele"
+   ],
+   "default": "Epididymal cyst",
+   "showIf": {
+    "field": "specimen",
+    "is": "Epididymal cyst or spermatocele"
+   }
+  },
+  {
+   "id": "crossSection",
+   "label": "Vas deferens",
+   "type": "select",
+   "options": [
+    "Full cross-section",
+    "Not in full cross-section – see comment"
+   ],
+   "default": "Full cross-section",
+   "showIf": {
+    "field": "specimen",
+    "is": "Vas deferens"
+   }
+  },
+  {
+   "id": "vasFindings",
+   "label": "Additional findings",
+   "type": "multiselect",
+   "options": [
+    "Sperm granuloma",
+    "Vasitis nodosa"
+   ],
+   "default": [],
+   "showIf": {
+    "field": "specimen",
+    "is": "Vas deferens"
+   }
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "Free text appended to the microscopy for this part",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "testis_gcnis",
+   "label": "Germ cell neoplasia in situ",
+   "auto": {
+    "field": "gcnis",
+    "is": "Present – see comment"
+   },
+   "text": "Germ cell neoplasia in situ is identified ({parts}). Referral to the urology multidisciplinary team is suggested."
+  },
+  {
+   "id": "testis_vas",
+   "label": "Vas deferens not in full cross-section",
+   "auto": {
+    "field": "crossSection",
+    "is": "Not in full cross-section – see comment"
+   },
+   "text": "A full cross-section of vas deferens is not identified ({parts}). Correlation with the operative findings and post-vasectomy semen analysis is advised."
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "",
+     "specimen": "Prepuce",
+     "organ": "",
+     "side": "Not stated",
+     "procedure": "Circumcision",
+     "dimensions": "3 x 2 x 0.3",
+     "blocks": "1",
+     "blockScheme": "Representative sections",
+     "prepuceDx": "Lichen sclerosus",
+     "orchidDx": "Atrophy",
+     "mikuz": "3",
+     "spermatogenesis": "Absent",
+     "tubules": "",
+     "pattern": "Hypospermatogenesis",
+     "arrestStage": "Primary spermatocyte",
+     "johnsen": "",
+     "leydig": "No hyperplasia",
+     "gcnis": "Not identified",
+     "cystType": "Epididymal cyst",
+     "crossSection": "Full cross-section",
+     "vasFindings": [],
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
+}

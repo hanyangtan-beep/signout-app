@@ -1,0 +1,443 @@
+{
+ "id": "hernia_sac",
+ "version": "2026.09",
+ "name": "Hernia sac",
+ "shortName": "Hernia · sac",
+ "label": "Hernia sac",
+ "organ": "SOFT TISSUE",
+ "system": "Soft tissue",
+ "kind": "benign resection",
+ "rank": 53,
+ "aliases": [
+  "hernia",
+  "hernia sac",
+  "inguinal hernia",
+  "femoral hernia",
+  "umbilical hernia",
+  "incisional hernia",
+  "herniotomy",
+  "herniorrhaphy"
+ ],
+ "match": {
+  "site": [
+   "hernia",
+   "hernia sac",
+   "herniotomy",
+   "herniorrhaphy",
+   "hernioplasty"
+  ],
+  "procedure": [
+   "excision",
+   "resection",
+   "herniotomy",
+   "herniorrhaphy",
+   "hernioplasty",
+   "repair"
+  ],
+  "clinical": [
+   "hernia"
+  ],
+  "exclude": [
+   "bowel",
+   "small bowel",
+   "ileum",
+   "ileal",
+   "jejunum",
+   "jejunal",
+   "colon",
+   "colonic",
+   "sigmoid",
+   "caecum",
+   "cecum",
+   "appendix",
+   "hiatus",
+   "hiatal",
+   "disc",
+   "intervertebral",
+   "nucleus pulposus",
+   "lymph node"
+  ],
+  "bare": true,
+  "bias": 1,
+  "sideFromText": true,
+  "fill": [
+   {
+    "field": "herniaType",
+    "from": "map",
+    "noGuess": true,
+    "map": [
+     [
+      "\\binguinal|\\bgroin",
+      "Inguinal"
+     ],
+     [
+      "\\bfemoral",
+      "Femoral"
+     ],
+     [
+      "\\bpara-?\\s?umbilical",
+      "Paraumbilical"
+     ],
+     [
+      "\\bumbilical",
+      "Umbilical"
+     ],
+     [
+      "\\bincisional",
+      "Incisional"
+     ],
+     [
+      "\\bepigastric",
+      "Epigastric"
+     ],
+     [
+      "\\bventral",
+      "Ventral"
+     ],
+     [
+      "\\bspigelian",
+      "Spigelian"
+     ],
+     [
+      "\\bobturator",
+      "Obturator"
+     ]
+    ]
+   },
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "herniotom",
+      "Herniotomy"
+     ],
+     [
+      "herniorrhaph|hernioplast|\\brepair",
+      "Herniorrhaphy"
+     ],
+     [
+      "\\bresect",
+      "Resection"
+     ],
+     [
+      "\\bexcis",
+      "Excision"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "dimensions": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  },
+  "blockScheme": {
+   "concept": "choice",
+   "map": [
+    [
+     "\\ball\\s+(?:the\\s+tissue\\s+)?(?:is\\s+|are\\s+|been\\s+)?embedded|\\bentirely\\s+(?:embedded|submitted)",
+     "All embedded"
+    ],
+    [
+     "representative\\s+(?:sections?|blocks?)|partially\\s+embedded",
+     "Representative sections"
+    ]
+   ]
+  },
+  "description": {
+   "concept": "choice",
+   "map": [
+    [
+     "\\bsac\\b|membran",
+     "A membranous sac"
+    ],
+    [
+     "fibro-?fatty|fibro-?adipose|\\bpieces\\b|\\bfragments\\b",
+     "Pieces of fibrofatty tissue"
+    ]
+   ]
+  }
+ },
+ "specimenNoun": "specimen",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "hernia_sac",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "partDefaults": [],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "text",
+   "placeholder": "Hernia sac, right inguinal, excision",
+   "default": ""
+  },
+  {
+   "id": "organ",
+   "label": "Organ (diagnosis line)",
+   "type": "select",
+   "options": [
+    "SOFT TISSUE",
+    "HERNIA SAC"
+   ],
+   "default": "SOFT TISSUE"
+  },
+  {
+   "id": "side",
+   "label": "Side",
+   "type": "select",
+   "options": [
+    "Not stated",
+    "Left",
+    "Right",
+    "Bilateral"
+   ],
+   "default": "Not stated"
+  },
+  {
+   "id": "herniaType",
+   "label": "Hernia",
+   "type": "select",
+   "options": [
+    "",
+    "Inguinal",
+    "Femoral",
+    "Umbilical",
+    "Paraumbilical",
+    "Incisional",
+    "Epigastric",
+    "Ventral",
+    "Spigelian",
+    "Obturator"
+   ],
+   "optionLabels": {
+    "": "Not stated"
+   },
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "options": [
+    "Excision",
+    "Resection",
+    "Herniotomy",
+    "Herniorrhaphy"
+   ],
+   "default": "Excision"
+  },
+  {
+   "id": "description",
+   "label": "Description",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "A membranous sac",
+    "Pieces of fibrofatty tissue"
+   ],
+   "default": "A membranous sac"
+  },
+  {
+   "id": "dimensions",
+   "label": "Dimensions (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "4 x 3 x 0.5",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": "1"
+  },
+  {
+   "id": "blockScheme",
+   "label": "Sampling",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "All embedded",
+    "Representative sections"
+   ],
+   "default": "Representative sections"
+  },
+  {
+   "id": "contents",
+   "label": "Omentum in the sac",
+   "type": "select",
+   "options": [
+    "None",
+    "Viable omentum",
+    "Infarcted omentum"
+   ],
+   "default": "None"
+  },
+  {
+   "id": "endometriosis",
+   "label": "Endometriosis",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent"
+  },
+  {
+   "id": "cordStructures",
+   "label": "Vas deferens / epididymis",
+   "type": "select",
+   "options": [
+    "Not stated",
+    "Not identified",
+    "Vas deferens",
+    "Epididymis"
+   ],
+   "default": "Not stated"
+  },
+  {
+   "id": "malignancy",
+   "label": "Malignancy",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Metastatic carcinoma – see comment"
+   ],
+   "default": "Absent"
+  },
+  {
+   "id": "metType",
+   "label": "Tumour type",
+   "type": "select",
+   "options": [
+    "Adenocarcinoma",
+    "Carcinoma",
+    "Squamous cell carcinoma"
+   ],
+   "default": "Adenocarcinoma",
+   "showIf": {
+    "field": "malignancy",
+    "is": "Metastatic carcinoma – see comment"
+   }
+  },
+  {
+   "id": "ihcPositive",
+   "label": "Positive for (IHC)",
+   "type": "text",
+   "placeholder": "CK7 and PAX8",
+   "default": "",
+   "showIf": {
+    "field": "malignancy",
+    "is": "Metastatic carcinoma – see comment"
+   }
+  },
+  {
+   "id": "ihcNegative",
+   "label": "Negative for (IHC)",
+   "type": "text",
+   "placeholder": "CK20 and calretinin",
+   "default": "",
+   "showIf": {
+    "field": "malignancy",
+    "is": "Metastatic carcinoma – see comment"
+   }
+  },
+  {
+   "id": "favouredPrimary",
+   "label": "Favoured primary",
+   "type": "text",
+   "placeholder": "ovarian",
+   "default": "",
+   "showIf": {
+    "field": "malignancy",
+    "is": "Metastatic carcinoma – see comment"
+   }
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "Free text appended to the microscopy for this part",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "hernia_cord",
+   "label": "Vas deferens or epididymis in the sac",
+   "auto": {
+    "field": "cordStructures",
+    "is": [
+     "Vas deferens",
+     "Epididymis"
+    ]
+   },
+   "text": "Vas deferens or epididymal tissue is identified in the wall of the hernia sac ({parts}). Correlation with the operative findings is suggested."
+  },
+  {
+   "id": "hernia_metastasis",
+   "label": "Metastatic carcinoma in the sac",
+   "auto": {
+    "field": "malignancy",
+    "is": "Metastatic carcinoma – see comment"
+   },
+   "text": "The hernia sac is involved by metastatic carcinoma ({parts}). Correlation with the clinical and radiological findings is suggested to establish the primary site."
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "",
+     "organ": "SOFT TISSUE",
+     "side": "Right",
+     "herniaType": "Inguinal",
+     "procedure": "Excision",
+     "description": "A membranous sac",
+     "dimensions": "4 x 3 x 0.5",
+     "blocks": "1",
+     "blockScheme": "Representative sections",
+     "contents": "None",
+     "endometriosis": "Absent",
+     "cordStructures": "Not identified",
+     "malignancy": "Absent",
+     "metType": "Adenocarcinoma",
+     "ihcPositive": "",
+     "ihcNegative": "",
+     "favouredPrimary": "",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
+}

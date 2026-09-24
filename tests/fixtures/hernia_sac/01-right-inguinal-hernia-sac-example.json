@@ -1,0 +1,25 @@
+{
+  "templateId": "hernia_sac",
+  "values": {
+    "specimenName": "",
+    "organ": "SOFT TISSUE",
+    "side": "Right",
+    "herniaType": "Inguinal",
+    "procedure": "Excision",
+    "description": "A membranous sac",
+    "dimensions": "4 x 3 x 0.5",
+    "blocks": "1",
+    "blockScheme": "Representative sections",
+    "contents": "None",
+    "endometriosis": "Absent",
+    "cordStructures": "Not identified",
+    "malignancy": "Absent",
+    "metType": "Adenocarcinoma",
+    "ihcPositive": "",
+    "ihcNegative": "",
+    "favouredPrimary": "",
+    "additionalNotes": ""
+  },
+  "report": "Soft tissue, right inguinal hernia sac, excision\n\nReceived in formalin is a membranous sac labelled right inguinal hernia sac, measuring 4 x 3 x 0.5 cm. Representative sections in 1 block.\n\n(1) Hernia sac, representative sections.\n\nSections show peritoneal fibroadipose tissue lined by benign mesothelium. No vas deferens or epididymal tissue is identified. Features are in keeping with a hernia sac. There is no evidence of granulomatous inflammation or malignancy.\n\nSOFT TISSUE, right inguinal hernia sac, excision - In keeping with HERNIA SAC",
+  "checks": []
+}

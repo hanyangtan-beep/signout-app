@@ -1,0 +1,20 @@
+{
+  "templateId": "haemorrhoid",
+  "values": {
+    "specimenName": "",
+    "site": "3 o'clock",
+    "procedure": "Haemorrhoidectomy",
+    "description": "A piece of haemorrhoidal tissue",
+    "dimensions": "2 x 1.5 x 1",
+    "cutSurface": "Dilated vessels",
+    "blocks": "1",
+    "blockScheme": "Representative sections",
+    "mucosa": "Anal squamous mucosa",
+    "findings": [
+      "Thrombosis"
+    ],
+    "additionalNotes": ""
+  },
+  "report": "Anus, 3 o'clock haemorrhoid, haemorrhoidectomy\n\nReceived in formalin is a piece of haemorrhoidal tissue labelled 3 o'clock, measuring 2 x 1.5 x 1 cm. The cut surface shows dilated vessels within the stroma. Representative sections in 1 block.\n\n(1) Haemorrhoid, representative sections.\n\nSections show anal squamous mucosa. Ectatic muscular blood vessels are noted in the stroma. Some of the vessels contain thrombi. The features are those of haemorrhoid. There is no evidence of dysplasia or malignancy.\n\nANUS, 3 o'clock haemorrhoid, haemorrhoidectomy - HAEMORRHOID with THROMBOSIS",
+  "checks": []
+}

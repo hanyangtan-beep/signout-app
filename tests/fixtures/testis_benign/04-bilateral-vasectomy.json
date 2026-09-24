@@ -1,0 +1,12 @@
+{
+  "templateId": "testis_benign",
+  "values": {
+    "specimen": "Vas deferens",
+    "side": "Bilateral",
+    "procedure": "Vasectomy",
+    "dimensions": "1 x 0.2 x 0.2",
+    "blocks": "2"
+  },
+  "report": "Vas deferens, bilateral, vasectomy\n\nReceived in formalin are two segments of vas deferens (left and right), measuring 1 x 0.2 x 0.2 cm in aggregate. Representative sections in 2 blocks.\n\n(1-2) Vas deferens, representative sections.\n\nSections show two segments of vas deferens, each in full cross-section. There is no evidence of malignancy.\n\nVAS DEFERENS, bilateral, vasectomy - VAS DEFERENS, full cross-section of both segments",
+  "checks": []
+}

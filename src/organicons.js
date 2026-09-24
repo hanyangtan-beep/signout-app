@@ -85,6 +85,11 @@ export const ORGAN_ICON = {
   nasopharynx: 'nasopharynx',
   oropharynx: 'nasopharynx',
   larynx: 'nasopharynx',
+  // No ear, nail or testis glyph yet: the ear takes the head-and-neck glyph, the nail the skin glyph
+  // (its system), and the testis the male genital glyph the germ-cell name hint already uses.
+  ear: 'nasopharynx',
+  nail: 'skin',
+  testis: 'prostate',
   'soft tissue': 'softtissue',
   'subcutaneous tissue': 'softtissue',
   'skeletal muscle': 'softtissue',

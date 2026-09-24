@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 62,
+  "count": 67,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -2244,6 +2244,10 @@
           "ear",
           "mastoid",
           "cholesteatoma",
+          "auditory canal",
+          "attic",
+          "tympanic",
+          "aural",
           "cornea",
           "corneal",
           "conjunctiva",
@@ -2560,7 +2564,11 @@
           "vessel",
           "aneurysm",
           "endarterectomy",
-          "atheroma"
+          "atheroma",
+          "hernia",
+          "herniotomy",
+          "herniorrhaphy",
+          "hernioplasty"
         ],
         "bare": true,
         "bias": 2,
@@ -3947,6 +3955,917 @@
       "generator": "fallopian_tube_ectopic",
       "generatorPath": "generators/fallopian_tube_ectopic.js",
       "schemaPath": "schemas/fallopian_tube_ectopic.json"
+    },
+    {
+      "id": "haemorrhoid",
+      "name": "Haemorrhoid",
+      "shortName": "Anus · haemorrhoid",
+      "label": "Haemorrhoid",
+      "organ": "ANUS",
+      "system": "GI",
+      "kind": "benign resection",
+      "rank": 51,
+      "aliases": [
+        "haemorrhoid",
+        "hemorrhoid",
+        "haemorrhoidectomy",
+        "hemorrhoidectomy",
+        "piles",
+        "thrombosed haemorrhoid"
+      ],
+      "match": {
+        "site": [
+          "haemorrhoid",
+          "hemorrhoid",
+          "haemorrhoidal",
+          "hemorrhoidal",
+          "haemorrhoidectomy",
+          "hemorrhoidectomy",
+          "piles"
+        ],
+        "procedure": [
+          "haemorrhoidectomy",
+          "hemorrhoidectomy",
+          "excision",
+          "resection"
+        ],
+        "clinical": [
+          "haemorrhoid",
+          "hemorrhoid",
+          "piles"
+        ],
+        "not": [
+          "abscess",
+          "fistula",
+          "fissure",
+          "carcinoma",
+          "tumour",
+          "tumor",
+          "condyloma",
+          "warts"
+        ],
+        "bare": true,
+        "bias": 1,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "haemorrhoidectom|hemorrhoidectom",
+                "Haemorrhoidectomy"
+              ],
+              [
+                "\\bresect",
+                "Resection"
+              ],
+              [
+                "\\bexcis",
+                "Excision"
+              ]
+            ]
+          },
+          {
+            "field": "site",
+            "from": "detail",
+            "fallback": "text",
+            "strip": "\\b(?:anus|anal\\s+canal|anal|anorectal|perianal|haemorrhoidal\\s+tissue|hemorrhoidal\\s+tissue|haemorrhoids?|hemorrhoids?|haemorrhoidal|hemorrhoidal|haemorrhoidectomy|hemorrhoidectomy|piles|thrombosed|prolapsed|prolapsing|strangulated|excision|excised|resection|tissue|specimen)\\b",
+            "unless": "^(?:polyp|biopsy|lesion)$"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "haemorrhoid",
+      "generatorPath": "generators/haemorrhoid.js",
+      "schemaPath": "schemas/haemorrhoid.json"
+    },
+    {
+      "id": "ear_cholesteatoma",
+      "name": "Ear — cholesteatoma and aural polyp",
+      "shortName": "Ear · cholesteatoma",
+      "label": "Ear",
+      "organ": "EAR",
+      "system": "Head and neck",
+      "kind": "benign resection",
+      "rank": 52,
+      "aliases": [
+        "cholesteatoma",
+        "aural polyp",
+        "middle ear",
+        "mastoid",
+        "attic",
+        "atticotomy",
+        "mastoidectomy",
+        "tympanomastoidectomy",
+        "ear canal"
+      ],
+      "match": {
+        "site": [
+          "cholesteatoma",
+          "middle ear",
+          "mastoid",
+          "mastoid cavity",
+          "attic",
+          "aural polyp",
+          "aural",
+          "ear polyp",
+          "tympanic membrane",
+          "tympanic",
+          "atticotomy",
+          "mastoidectomy",
+          "tympanomastoidectomy",
+          "external auditory canal",
+          "auditory canal",
+          "ear canal"
+        ],
+        "procedure": [
+          "resection",
+          "excision",
+          "punch",
+          "biopsy",
+          "curetting",
+          "curettings",
+          "curettage",
+          "atticotomy",
+          "mastoidectomy",
+          "tympanomastoidectomy",
+          "tympanoplasty",
+          "removal"
+        ],
+        "clinical": [
+          "cholesteatoma",
+          "otitis media",
+          "otorrhoea",
+          "otorrhea",
+          "ear discharge",
+          "discharging ear"
+        ],
+        "not": [
+          "naevus",
+          "nevus",
+          "keratosis",
+          "seborrhoeic",
+          "seborrheic",
+          "wart",
+          "verruca",
+          "carcinoma",
+          "melanoma",
+          "basal cell",
+          "BCC",
+          "SCC",
+          "pigmented",
+          "keloid",
+          "chondrodermatitis",
+          "epidermal cyst",
+          "epidermoid cyst",
+          "sebaceous",
+          "cyst",
+          "pinna",
+          "helix",
+          "earlobe",
+          "ear lobe",
+          "lobule",
+          "tragus",
+          "preauricular",
+          "pre-auricular",
+          "tumour",
+          "tumor"
+        ],
+        "exclude": [
+          "parotid",
+          "salivary",
+          "nasopharynx",
+          "nasopharyngeal",
+          "nasal",
+          "tonsil",
+          "larynx",
+          "laryngeal"
+        ],
+        "bare": true,
+        "bias": 2,
+        "sideFromText": true,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "tympanomastoidectom",
+                "Tympanomastoidectomy"
+              ],
+              [
+                "mastoidectom",
+                "Mastoidectomy"
+              ],
+              [
+                "atticotom",
+                "Atticotomy"
+              ],
+              [
+                "\\bpunch",
+                "Punch"
+              ],
+              [
+                "curett",
+                "Curetting"
+              ],
+              [
+                "\\bexcis",
+                "Excision"
+              ],
+              [
+                "\\bresect",
+                "Resection"
+              ],
+              [
+                "\\bbiops",
+                "Biopsy"
+              ]
+            ]
+          },
+          {
+            "field": "diagnosis",
+            "from": "map",
+            "map": [
+              [
+                "\\baural\\s+polyp|\\bear\\s+polyp|\\bpolyp\\b",
+                "Aural polyp"
+              ],
+              [
+                "\\bgranulation",
+                "Granulation tissue"
+              ]
+            ]
+          },
+          {
+            "field": "site",
+            "from": "detail",
+            "fallback": "text",
+            "strip": "\\b(?:resection|resected|excision|excised|punch\\s+biopsy|punch|biopsy|curettings?|curettage|removal|atticotomy|tympanomastoidectomy|mastoidectomy|specimen)\\b",
+            "unless": "^(?:left|right|ear|left ear|right ear|tissue)$"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "ear_cholesteatoma",
+      "generatorPath": "generators/ear_cholesteatoma.js",
+      "schemaPath": "schemas/ear_cholesteatoma.json"
+    },
+    {
+      "id": "hernia_sac",
+      "name": "Hernia sac",
+      "shortName": "Hernia · sac",
+      "label": "Hernia sac",
+      "organ": "SOFT TISSUE",
+      "system": "Soft tissue",
+      "kind": "benign resection",
+      "rank": 53,
+      "aliases": [
+        "hernia",
+        "hernia sac",
+        "inguinal hernia",
+        "femoral hernia",
+        "umbilical hernia",
+        "incisional hernia",
+        "herniotomy",
+        "herniorrhaphy"
+      ],
+      "match": {
+        "site": [
+          "hernia",
+          "hernia sac",
+          "herniotomy",
+          "herniorrhaphy",
+          "hernioplasty"
+        ],
+        "procedure": [
+          "excision",
+          "resection",
+          "herniotomy",
+          "herniorrhaphy",
+          "hernioplasty",
+          "repair"
+        ],
+        "clinical": [
+          "hernia"
+        ],
+        "exclude": [
+          "bowel",
+          "small bowel",
+          "ileum",
+          "ileal",
+          "jejunum",
+          "jejunal",
+          "colon",
+          "colonic",
+          "sigmoid",
+          "caecum",
+          "cecum",
+          "appendix",
+          "hiatus",
+          "hiatal",
+          "disc",
+          "intervertebral",
+          "nucleus pulposus",
+          "lymph node"
+        ],
+        "bare": true,
+        "bias": 1,
+        "sideFromText": true,
+        "fill": [
+          {
+            "field": "herniaType",
+            "from": "map",
+            "noGuess": true,
+            "map": [
+              [
+                "\\binguinal|\\bgroin",
+                "Inguinal"
+              ],
+              [
+                "\\bfemoral",
+                "Femoral"
+              ],
+              [
+                "\\bpara-?\\s?umbilical",
+                "Paraumbilical"
+              ],
+              [
+                "\\bumbilical",
+                "Umbilical"
+              ],
+              [
+                "\\bincisional",
+                "Incisional"
+              ],
+              [
+                "\\bepigastric",
+                "Epigastric"
+              ],
+              [
+                "\\bventral",
+                "Ventral"
+              ],
+              [
+                "\\bspigelian",
+                "Spigelian"
+              ],
+              [
+                "\\bobturator",
+                "Obturator"
+              ]
+            ]
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "herniotom",
+                "Herniotomy"
+              ],
+              [
+                "herniorrhaph|hernioplast|\\brepair",
+                "Herniorrhaphy"
+              ],
+              [
+                "\\bresect",
+                "Resection"
+              ],
+              [
+                "\\bexcis",
+                "Excision"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "hernia_sac",
+      "generatorPath": "generators/hernia_sac.js",
+      "schemaPath": "schemas/hernia_sac.json"
+    },
+    {
+      "id": "nail_digit",
+      "name": "Nail and digit",
+      "shortName": "Nail · digit",
+      "label": "Nail / digit",
+      "organ": "NAIL",
+      "system": "Skin",
+      "kind": "benign resection",
+      "rank": 54,
+      "aliases": [
+        "nail",
+        "nail clipping",
+        "toenail",
+        "fingernail",
+        "onychomycosis",
+        "subungual",
+        "digital mucous cyst",
+        "myxoid cyst",
+        "glomus",
+        "exostosis",
+        "toe amputation",
+        "ray amputation"
+      ],
+      "match": {
+        "site": [
+          "nail",
+          "nails",
+          "toenail",
+          "fingernail",
+          "nail plate",
+          "nail bed",
+          "nail matrix",
+          "nail unit",
+          "nail fold",
+          "subungual",
+          "periungual",
+          "paronychia",
+          "onychomycosis",
+          "onycholysis",
+          "onychogryphosis",
+          "ingrown",
+          "ingrowing",
+          "digital mucous cyst",
+          "mucous cyst",
+          "myxoid cyst"
+        ],
+        "procedure": [
+          "clipping",
+          "clippings",
+          "avulsion",
+          "excision",
+          "biopsy",
+          "punch",
+          "amputation",
+          "ray amputation",
+          "curettage",
+          "debridement",
+          "matrixectomy",
+          "wedge"
+        ],
+        "clinical": [
+          "onychomycosis",
+          "fungal",
+          "dystrophic",
+          "dystrophy",
+          "melanonychia",
+          "ingrowing",
+          "ingrown",
+          "osteomyelitis",
+          "gangrene",
+          "diabetic foot"
+        ],
+        "alone": {
+          "site": [
+            "finger",
+            "thumb",
+            "toe",
+            "hallux",
+            "digit",
+            "digital",
+            "big toe",
+            "fingertip"
+          ],
+          "unless": "ganglion|lipoma|naev|nev[iu]|pigment|melan|seborrh|keratos|wart|verruc|skin\\s*tag|fibroepithelial|basal\\s*cell|\\bbcc\\b|squamous\\s*cell|\\bscc\\b|carcinoma|dermatofibroma|epiderm|sebaceous|abscess|ulcer|cellulitis|granulation|\\bskin\\b|soft\\s*tissue"
+        },
+        "exclude": [
+          "lymph node",
+          "breast",
+          "nipple",
+          "forearm",
+          "wrist",
+          "palm",
+          "foot ulcer",
+          "heel",
+          "ankle",
+          "leg",
+          "knee",
+          "hip",
+          "spine",
+          "skull"
+        ],
+        "bare": true,
+        "bias": 2,
+        "fill": [
+          {
+            "field": "specimen",
+            "from": "map",
+            "map": [
+              [
+                "amputat|\\bray\\b",
+                "Digit or ray amputation"
+              ],
+              [
+                "clipping",
+                "Nail clipping"
+              ],
+              [
+                "nail\\s+unit|en\\s+bloc|matrixectom",
+                "Nail-unit excision"
+              ],
+              [
+                "matrix|nail\\s+bed|bed\\s+biops|longitudinal",
+                "Nail matrix or bed biopsy"
+              ],
+              [
+                "avulsion|nail\\s+plate|toenail|fingernail|ingrow",
+                "Nail avulsion"
+              ],
+              [
+                "excis|\\bmass|\\blump|\\blesion|\\bcyst|\\bnodule|swelling|tumou?r|glomus|exostosis|granuloma",
+                "Lesion excision"
+              ],
+              [
+                "\\bnails?\\b.*\\bbiops|\\bbiops.*\\bnails?\\b",
+                "Nail matrix or bed biopsy"
+              ],
+              [
+                "\\bnails?\\b",
+                "Nail clipping"
+              ],
+              [
+                "curett|debrid|\\bpunch|\\bbiops|\\btoph|\\bgout|\\b(?:fingers?|thumbs?|toes?|hallux|digits?|digital|fingertip)\\b",
+                "Lesion excision"
+              ]
+            ]
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "noGuess": true,
+            "map": [
+              [
+                "\\bwedge",
+                "Wedge excision"
+              ],
+              [
+                "curett",
+                "Curettage"
+              ],
+              [
+                "\\bpunch",
+                "Punch biopsy"
+              ],
+              [
+                "incisional",
+                "Incisional biopsy"
+              ],
+              [
+                "debrid",
+                "Debridement"
+              ],
+              [
+                "\\bbiops",
+                "Biopsy"
+              ],
+              [
+                "\\bresect",
+                "Resection"
+              ],
+              [
+                "\\bexcis",
+                "Excision"
+              ]
+            ]
+          },
+          {
+            "field": "organ",
+            "from": "map",
+            "map": [
+              [
+                "\\bnails?\\b|toenail|fingernail|subungual|periungual|onych|paronych",
+                "NAIL"
+              ],
+              [
+                "\\bthumb",
+                "THUMB"
+              ],
+              [
+                "\\btoes?\\b|hallux",
+                "TOE"
+              ],
+              [
+                "\\bfingers?\\b|\\bdigit|fingertip",
+                "FINGER"
+              ]
+            ]
+          },
+          {
+            "field": "diagnosis",
+            "from": "map",
+            "map": [
+              [
+                "mucous\\s+cyst|myxoid\\s+cyst",
+                "Digital mucous cyst"
+              ],
+              [
+                "\\bglomus",
+                "Glomus tumour"
+              ],
+              [
+                "exostosis",
+                "Subungual exostosis"
+              ],
+              [
+                "pyogenic",
+                "Pyogenic granuloma"
+              ],
+              [
+                "haematoma|hematoma",
+                "Subungual haematoma"
+              ],
+              [
+                "giant\\s+cell|tenosynovial|\\btgct\\b",
+                "Tenosynovial giant cell tumour, localised"
+              ],
+              [
+                "\\bgout|\\btoph",
+                "Gouty tophus"
+              ],
+              [
+                "fibrokeratoma",
+                "Acquired digital fibrokeratoma"
+              ],
+              [
+                "chondroma",
+                "Chondroma"
+              ],
+              [
+                "\\bmass\\b|\\blump\\b|\\blesion\\b|\\bswelling\\b|\\bnodule\\b|\\btumou?r\\b|\\bcyst\\b",
+                "No evidence of malignancy (descriptive)"
+              ],
+              [
+                "^(?!.*\\b(?:clippings?|avulsion|plate|onych\\w*|fung\\w*|dystroph\\w*|toe\\s*nails?|finger\\s*nails?)\\b)(?:(?=.*\\b(?:biops\\w*|excis\\w*|resect\\w*|punch|curett\\w*|lesion|mass|lump|swelling|nodule|tumou?r|cyst)\\b)|(?!.*\\bnails?\\b)(?=.*\\b(?:thumbs?|fingers?|toes?|hallux|digits?|fingertip)\\b))",
+                "No evidence of malignancy (descriptive)"
+              ]
+            ]
+          },
+          {
+            "field": "site",
+            "from": "detail",
+            "fallback": "text",
+            "strip": "\\b(?:nail\\s+clippings?|clippings?|nail\\s+avulsion|avulsion|nails?(?!\\s+(?:bed|matrix|fold|unit|plate))|excision|excised|resection|resected|biopsy|punch|curettage|debridement|matrixectomy|wedge|amputation|ray\\s+amputation|onychomycosis|onycholysis|onychogryphosis|fungal|fungus|dystrophic|dystrophy|ingrowing|ingrown|gangrene|gangrenous|osteomyelitis|diabetic|infected|specimen)\\b",
+            "unless": "^(?:tissue|lesion|mass|cyst)$"
+          },
+          {
+            "field": "site",
+            "from": "text",
+            "strip": "\\b(?:nail\\s+clippings?|clippings?|nail\\s+avulsion|avulsion|nails?(?!\\s+(?:bed|matrix|fold|unit|plate))|excision|excised|resection|resected|biopsy|punch|curettage|debridement|matrixectomy|wedge|amputation|ray\\s+amputation|onychomycosis|onycholysis|onychogryphosis|fungal|fungus|dystrophic|dystrophy|ingrowing|ingrown|gangrene|gangrenous|osteomyelitis|diabetic|infected|specimen)\\b",
+            "unless": "^(?:tissue|lesion|mass|cyst)$"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "nail_digit",
+      "generatorPath": "generators/nail_digit.js",
+      "schemaPath": "schemas/nail_digit.json"
+    },
+    {
+      "id": "testis_benign",
+      "name": "Testis and foreskin — benign",
+      "shortName": "Testis · foreskin",
+      "label": "Testis / foreskin",
+      "organ": "TESTIS",
+      "system": "GU",
+      "kind": "benign resection",
+      "rank": 55,
+      "aliases": [
+        "circumcision",
+        "foreskin",
+        "prepuce",
+        "phimosis",
+        "lichen sclerosus",
+        "orchidectomy",
+        "torsion",
+        "testicular biopsy",
+        "hydrocele",
+        "epididymal cyst",
+        "spermatocele",
+        "vasectomy",
+        "vas deferens"
+      ],
+      "match": {
+        "site": [
+          "testis",
+          "testes",
+          "testicle",
+          "testicular",
+          "orchidectomy",
+          "orchiectomy",
+          "foreskin",
+          "prepuce",
+          "preputial",
+          "circumcision",
+          "phimosis",
+          "hydrocele",
+          "hydrocoele",
+          "epididymis",
+          "epididymal",
+          "spermatocele",
+          "spermatocoele",
+          "spermatic cord",
+          "vas deferens",
+          "vas",
+          "vasectomy",
+          "tunica vaginalis"
+        ],
+        "procedure": [
+          "orchidectomy",
+          "orchiectomy",
+          "circumcision",
+          "excision",
+          "resection",
+          "biopsy",
+          "vasectomy",
+          "hydrocelectomy",
+          "epididymectomy"
+        ],
+        "clinical": [
+          "torsion",
+          "phimosis",
+          "infertility",
+          "azoospermia",
+          "balanitis",
+          "lichen sclerosus",
+          "undescended"
+        ],
+        "not": [
+          "tumour",
+          "tumor",
+          "mass",
+          "carcinoma",
+          "seminoma",
+          "teratoma",
+          "germ cell tumour",
+          "malignancy",
+          "malignant",
+          "neoplasm",
+          "lymphoma",
+          "glans",
+          "penile",
+          "penis",
+          "condyloma",
+          "warts",
+          "lipoma",
+          "liposarcoma",
+          "sarcoma",
+          "lesion",
+          "lesions",
+          "nodule",
+          "orchitis",
+          "epididymitis",
+          "abscess",
+          "adenomatoid"
+        ],
+        "exclude": [
+          "prostate",
+          "prostatic",
+          "bladder",
+          "cystoprostatectomy",
+          "kidney",
+          "renal",
+          "lymph node",
+          "appendage",
+          "appendix testis",
+          "appendix of testis",
+          "hydatid",
+          "morgagni"
+        ],
+        "bare": true,
+        "bias": 1,
+        "sideFromText": true,
+        "fill": [
+          {
+            "field": "specimen",
+            "from": "map",
+            "map": [
+              [
+                "circumcis|prepuc|preputial|foreskin|phimosis",
+                "Prepuce"
+              ],
+              [
+                "hydroc|tunica",
+                "Hydrocele sac"
+              ],
+              [
+                "epididym|spermatoc",
+                "Epididymal cyst or spermatocele"
+              ],
+              [
+                "\\bvas\\b|vasectom",
+                "Vas deferens"
+              ],
+              [
+                "\\bbiops",
+                "Testicular biopsy"
+              ],
+              [
+                "orchid|orchiect|\\btest[ei]s\\b|testicle|testicular|torsion",
+                "Orchidectomy"
+              ]
+            ]
+          },
+          {
+            "field": "organ",
+            "from": "map",
+            "map": [
+              [
+                "foreskin",
+                "FORESKIN"
+              ],
+              [
+                "prepuc|preputial|circumcis",
+                "PREPUCE"
+              ],
+              [
+                "spermatic\\s+cord",
+                "SPERMATIC CORD"
+              ],
+              [
+                "\\bvas\\b|vasectom",
+                "VAS DEFERENS"
+              ],
+              [
+                "epididym|spermatoc",
+                "EPIDIDYMIS"
+              ],
+              [
+                "hydroc|tunica",
+                "TUNICA VAGINALIS"
+              ],
+              [
+                "\\btest[ei]s\\b|testicle|testicular|orchid|orchiect",
+                "TESTIS"
+              ]
+            ]
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "noGuess": true,
+            "map": [
+              [
+                "circumcis",
+                "Circumcision"
+              ],
+              [
+                "inguinal\\s+orchid|radical\\s+orchid",
+                "Inguinal orchidectomy"
+              ],
+              [
+                "orchid|orchiect",
+                "Orchidectomy"
+              ],
+              [
+                "hydrocelectom",
+                "Hydrocelectomy"
+              ],
+              [
+                "vasectom",
+                "Vasectomy"
+              ],
+              [
+                "\\bbiops",
+                "Biopsy"
+              ],
+              [
+                "excis|epididymectom",
+                "Excision"
+              ],
+              [
+                "\\bresect",
+                "Resection"
+              ]
+            ]
+          },
+          {
+            "field": "orchidDx",
+            "from": "map",
+            "map": [
+              [
+                "torsion",
+                "Torsion"
+              ]
+            ]
+          },
+          {
+            "field": "prepuceDx",
+            "from": "map",
+            "map": [
+              [
+                "lichen|\\bbxo\\b|balanitis\\s+xerotica",
+                "Lichen sclerosus"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "testis_benign",
+      "generatorPath": "generators/testis_benign.js",
+      "schemaPath": "schemas/testis_benign.json"
     },
     {
       "id": "cns_biopsy",

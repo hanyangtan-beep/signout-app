@@ -1,0 +1,29 @@
+{
+  "templateId": "testis_benign",
+  "values": {
+    "specimenName": "",
+    "specimen": "Prepuce",
+    "organ": "",
+    "side": "Not stated",
+    "procedure": "Circumcision",
+    "dimensions": "3 x 2 x 0.3",
+    "blocks": "1",
+    "blockScheme": "Representative sections",
+    "prepuceDx": "Lichen sclerosus",
+    "orchidDx": "Atrophy",
+    "mikuz": "3",
+    "spermatogenesis": "Absent",
+    "tubules": "",
+    "pattern": "Hypospermatogenesis",
+    "arrestStage": "Primary spermatocyte",
+    "johnsen": "",
+    "leydig": "No hyperplasia",
+    "gcnis": "Not identified",
+    "cystType": "Epididymal cyst",
+    "crossSection": "Full cross-section",
+    "vasFindings": [],
+    "additionalNotes": ""
+  },
+  "report": "Prepuce, circumcision\n\nReceived in formalin is a piece of foreskin, measuring 3 x 2 x 0.3 cm. Representative sections in 1 block.\n\n(1) Foreskin, representative sections.\n\nSections of the prepuce show stratified squamous epithelium. The epithelium is atrophic, with hyperkeratosis and a band of homogenised, sclerotic collagen in the superficial dermis, beneath which there is a band-like lymphocytic infiltrate. Features are consistent with lichen sclerosus. There is no evidence of penile intraepithelial neoplasia or malignancy.\n\nPREPUCE, circumcision - Consistent with LICHEN SCLEROSUS (balanitis xerotica obliterans)",
+  "checks": []
+}

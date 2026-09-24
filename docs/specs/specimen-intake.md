@@ -283,3 +283,51 @@ Counts are the 18,913 parts that the benign resections profiler splits from the 
   - all benign-resection categories 513 to 510 of 1,425.
 - The 5 ectopic parts that stay off the form: 4 name only the tube and keep the tube form of `uterus_benign`, which this card left untouched even when the history names an ectopic; 1 names the ovary and keeps `ovarian_cyst`.
 - No intake fixture change. Tests: tests/fallopian_tube_ectopic.test.js (intake section); spec docs/specs/fallopian-tube-ectopic.md.
+
+## Benign batch 3 routing and pre-fill (user request, built 2026-09-25)
+
+Counts are the same 18,913 parts, routed with no clinical history. They are aggregate only.
+
+- 140 parts re-route, and Generic falls from 4,006 to 3,877 of the 18,913:
+  - `haemorrhoid` 48 (47 from generic, 1 from `colon_resection`);
+  - `testis_benign` 33 (32 from generic, 1 from `skin_cyst`);
+  - `ear_cholesteatoma` 29 (27 from generic, 2 from `abscess_granulation`);
+  - `nail_digit` 22 (21 from generic, 1 from `soft_tissue_benign`);
+  - `hernia_sac` 8 (2 from generic, 6 from `soft_tissue_benign`).
+  - 138 are confident and 2 are "choose" (1 haemorrhoid, 1 testis). No other part changes template or tier.
+- Haemorrhoid (`haemorrhoid`):
+  - Site terms: haemorrhoid, hemorrhoid, haemorrhoidal, haemorrhoidectomy and piles. Procedure terms: haemorrhoidectomy, excision and resection. Clinical terms: haemorrhoid and piles.
+  - `match.not` lowers it on abscess, fistula, fissure, carcinoma, tumour, condyloma and warts lines.
+  - Two fills: the procedure (`from: 'map'`: haemorrhoidectomy, then resection, then excision), and a subsite read from the line after the anal and haemorrhoid words and the clinical adjectives (thrombosed, prolapsed, strangulated and the like) are stripped, so a bare "Haemorrhoid" line fills no subsite.
+  - Pre-fill of the 48: resection 19, excision 16, haemorrhoidectomy 13; a subsite on 2.
+- Ear (`ear_cholesteatoma`):
+  - Site terms: cholesteatoma, middle ear, mastoid, attic, aural polyp, tympanic membrane, the external auditory canal and the operations (atticotomy, mastoidectomy, tympanomastoidectomy). Clinical terms: cholesteatoma, otitis media and ear discharge.
+  - `match.exclude` keeps parotid, salivary, nasopharyngeal, nasal, tonsil and laryngeal lines off the form. `match.not` lowers it on pinna, helix, lobule, tragus and preauricular lines, and on skin-lesion words (naevus, keratosis, wart, carcinoma, BCC, SCC, keloid, chondrodermatitis, cysts), which keep the skin templates.
+  - `abscess_granulation` now also excludes auditory canal, attic, tympanic and aural lines; 2 ear parts leave it.
+  - Fills: the side from the line (`sideFromText`), the procedure (tympanomastoidectomy, mastoidectomy, atticotomy, punch, curetting, excision, resection, biopsy), an aural polyp or granulation-tissue diagnosis, and the site text after the procedure words.
+  - Pre-fill of the 29: right 15, left 12, not stated 2; resection 12, punch 7, curetting 5, atticotomy 2, excision 1; granulation tissue 4, aural polyp 3.
+- Hernia sac (`hernia_sac`):
+  - Site terms: hernia, hernia sac, herniotomy, herniorrhaphy and hernioplasty. `match.exclude` keeps bowel, appendix, hiatus hernia, intervertebral disc and lymph node lines off the form.
+  - `bone_joint` now excludes hernia, herniotomy, herniorrhaphy and hernioplasty, so a disc herniation stays on bone and joint and a hernia sac never lands there.
+  - Fills: the side (`sideFromText`), the hernia type (`noGuess`: inguinal or groin, femoral, paraumbilical, umbilical, incisional, epigastric, ventral and the rest) and the procedure.
+  - Pre-fill of the 8: side not stated 8; paraumbilical 1, type blank 7; resection 5, excision 3.
+- Nail and digit (`nail_digit`):
+  - Site terms: nail, toenail, fingernail, nail plate, bed, matrix, unit and fold, subungual, periungual, paronychia, the onychoses, ingrown or ingrowing nail, and digital mucous or myxoid cyst. Clinical terms include onychomycosis, dystrophy, melanonychia, osteomyelitis and gangrene.
+  - `match.alone` counts finger, thumb, toe, hallux, digit and fingertip only on a line that names no skin, soft-tissue or lesion word (ganglion, lipoma, naevus, pigmented, keratosis, wart, skin tag, BCC, SCC, carcinoma, dermatofibroma, epidermal and sebaceous cysts, abscess, ulcer, granulation tissue, skin, soft tissue), so those lines keep their own templates.
+  - `match.exclude` keeps breast, forearm, wrist, palm, foot ulcer, heel, ankle, leg, knee, hip, spine, skull and lymph node lines off the form.
+  - Fills: the specimen type (amputation or ray, clipping, nail-unit excision, matrix or bed biopsy, avulsion or nail plate; a lesion word or a bare digit gives lesion excision, and a bare nail line a clipping), a new procedure field (`noGuess`: wedge excision, curettage, punch, incisional biopsy, debridement, biopsy, resection, excision), the dx head (NAIL, THUMB, TOE or FINGER), a named diagnosis from the line, and the site text. A lesion excision that names no diagnosis opens on "No evidence of malignancy (descriptive)".
+  - Pre-fill of the 22: lesion excision 16, matrix or bed biopsy 3, avulsion 3; head NAIL 9, THUMB 7, TOE 6; descriptive diagnosis 14, digital mucous cyst 1, subungual exostosis 1; procedure excision 7, biopsy 6, resection 2, blank 7.
+- Testis, scrotum and foreskin (`testis_benign`):
+  - Site terms: testis, testicle, testicular, orchidectomy, foreskin, prepuce, circumcision, phimosis, hydrocele, epididymis, spermatocele, spermatic cord, vas deferens, vasectomy and tunica vaginalis. Clinical terms: torsion, phimosis, infertility, azoospermia, balanitis, lichen sclerosus and undescended.
+  - `match.exclude` keeps prostate, bladder, cystoprostatectomy, kidney and lymph node lines, and the testicular appendage (appendix testis, hydatid of Morgagni), off the form. `match.not` lowers it on tumour, mass, carcinoma, germ cell tumour, lymphoma, glans, penis and penile, condyloma, lipoma and sarcoma, lesion and nodule, orchitis, epididymitis, abscess and adenomatoid lines.
+  - Fills: the side (`sideFromText`), the specimen type (prepuce, hydrocele sac, epididymal cyst or spermatocele, vas deferens, testicular biopsy, orchidectomy), the dx head (typed "foreskin" gives FORESKIN; prepuce and circumcision give PREPUCE), the procedure (`noGuess`), torsion, and lichen sclerosus.
+  - Pre-fill of the 33: orchidectomy 15, testicular biopsy 8, prepuce 6, vas deferens 4; right 14, left 10, not stated 9; torsion 2.
+- Generic share, by the categories in the benign resections case mix (`tools/profile-benign-resections.py --route`):
+  - haemorrhoid 54 to 7 of 56 (`haemorrhoid` 48; `colon_resection` 2 to 1);
+  - nail and digit 35 to 14 of 56 (`nail_digit` 22; `soft_tissue_benign` 11 to 10; `skin_cyst` 8 and `abscess_granulation` 2 unchanged);
+  - testis, scrotum and foreskin 37 to 10 of 45 (`testis_benign` 28; `skin_cyst` 5 to 4; `ovarian_cyst` 2 and `soft_tissue_benign` 1 unchanged); the other 5 testis parts sit outside the category;
+  - ear and temporal bone 33 to 6 of 36 (`ear_cholesteatoma` 29; `abscess_granulation` 2 to 0; `skin_cyst` 1 unchanged);
+  - hernia sac 2 to 0 of 8 (`hernia_sac` 8; `soft_tissue_benign` 6 to 0);
+  - all benign-resection categories 510 to 386 of 1,425.
+- Organ icons: `ear` takes the nasopharynx glyph, `nail` the skin glyph and `testis` the prostate glyph until each has its own.
+- No intake fixture change. Tests: the intake sections of tests/haemorrhoid.test.js, tests/ear_cholesteatoma.test.js, tests/hernia_sac.test.js, tests/nail_digit.test.js and tests/testis_benign.test.js.

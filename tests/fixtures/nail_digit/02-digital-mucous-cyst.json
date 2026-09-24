@@ -1,0 +1,13 @@
+{
+  "templateId": "nail_digit",
+  "values": {
+    "specimen": "Lesion excision",
+    "organ": "FINGER",
+    "site": "right middle finger",
+    "procedure": "Excision",
+    "diagnosis": "Digital mucous cyst",
+    "dimensions": "0.8 x 0.6 x 0.5"
+  },
+  "report": "Finger, right middle finger, excision\n\nReceived in formalin is a piece of tissue labelled right middle finger, measuring 0.8 x 0.6 x 0.5 cm. All embedded in 1 block.\n\n(1) Lesion, all embedded.\n\nSections show a focal collection of mucin in the dermis, with surrounding fibrous stroma and no epithelial lining. The features are those of a digital mucous (myxoid) cyst. There is no evidence of malignancy.\n\nFINGER, right middle finger, excision - DIGITAL MUCOUS CYST",
+  "checks": []
+}

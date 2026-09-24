@@ -998,6 +998,86 @@ await check('ectopic: a pasted tubal ectopic opens its own form sided, and a sal
   return 'left salpingectomy sided, model wording; no-villi line, comment and Checks; right salpingotomy fragments only; tube-only line keeps the tube form';
 });
 
+// Benign batch 3 (2026-09-25): a pasted haemorrhoid, cholesteatoma, hernia sac and nail clipping each open
+// their own form with the line read into it, and print the house diagnosis line.
+await check('batch 3: pasted haemorrhoid, ear, hernia sac and nail lines open their own forms with the house lines', async () => {
+  let routed = await pasteAndBuild('Haemorrhoid');
+  assert(routed === 'haemorrhoid', `haemorrhoid routed to ${routed}`);
+  await pickField('findings', 'Thrombosis');
+  let report = await reportText();
+  assert(report.includes('ANUS, haemorrhoid, excision - HAEMORRHOID'), `haemorrhoid line wrong: ${report.slice(-300)}`);
+  assert(report.includes('There is no evidence of dysplasia or malignancy.'), 'the haemorrhoid closing sentence is missing');
+  assert(!/HAEMORRHOIDS|hemorrhoid/.test(report), 'plural or American haemorrhoid in the report');
+  await page.locator('[data-field="findings"]').first().scrollIntoViewIfNeeded();
+  await shot('batch3-haemorrhoid');
+
+  routed = await pasteAndBuild('Left ear, cholesteatoma');
+  assert(routed === 'ear_cholesteatoma', `ear routed to ${routed}`);
+  report = await reportText();
+  assert(report.includes('EAR, left cholesteatoma, resection - CHOLESTEATOMA'), `ear line wrong: ${report.slice(-300)}`);
+  await shot('batch3-ear');
+
+  routed = await pasteAndBuild('Right inguinal hernia sac');
+  assert(routed === 'hernia_sac', `hernia routed to ${routed}`);
+  const type = await page.locator('[data-field="herniaType"] select').first().inputValue();
+  assert(type === 'Inguinal', `hernia type read "${type}"`);
+  report = await reportText();
+  assert(report.includes('SOFT TISSUE, right inguinal hernia sac, excision - In keeping with HERNIA SAC'), `hernia line wrong: ${report.slice(-300)}`);
+  assert(report.includes('There is no evidence of granulomatous inflammation or malignancy.'), 'the hernia closing sentence is missing');
+  await shot('batch3-hernia');
+
+  routed = await pasteAndBuild('Nail clipping, right hallux');
+  assert(routed === 'nail_digit', `nail routed to ${routed}`);
+  report = await reportText();
+  assert(report.includes('NAIL, right hallux, clipping - ONYCHOMYCOSIS'), `nail line wrong: ${report.slice(-300)}`);
+  await pickField('diagnosis', 'No fungal organisms');
+  report = await reportText();
+  assert(report.includes('NAIL, right hallux, clipping - NO FUNGAL ORGANISMS IDENTIFIED'), `negative nail line wrong: ${report.slice(-300)}`);
+  await page.locator('[data-field="diagnosis"]').first().scrollIntoViewIfNeeded();
+  await shot('batch3-nail');
+  return 'thrombosed haemorrhoid, left cholesteatoma, right inguinal sac typed Inguinal, nail clipping positive then negative';
+});
+
+// Benign batch 3 (2026-09-25): the testis form shows only the fields of the specimen the line names.
+await check('batch 3: foreskin, torsion and vasectomy lines open only their own testis fields', async () => {
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
+  let routed = await pasteAndBuild('Foreskin, circumcision');
+  assert(routed === 'testis_benign', `foreskin routed to ${routed}`);
+  assert(await shows('prepuceDx'), 'no prepuce diagnosis field on a circumcision');
+  for (const id of ['orchidDx', 'mikuz', 'pattern', 'johnsen', 'cystType', 'crossSection']) assert(!(await shows(id)), `${id} shows on a circumcision`);
+  await pickField('prepuceDx', 'Lichen sclerosus');
+  let report = await reportText();
+  assert(report.includes('FORESKIN, circumcision - Consistent with LICHEN SCLEROSUS (balanitis xerotica obliterans)'), `foreskin line wrong: ${report.slice(-300)}`);
+  assert(report.includes('There is no evidence of penile intraepithelial neoplasia or malignancy.'), 'the prepuce closing sentence is missing');
+  let checks = await checksText();
+  assert(!/side/i.test(checks), `Checks asked a prepuce for a side (read: ${checks.slice(0, 200)})`);
+  await page.locator('[data-field="prepuceDx"]').first().scrollIntoViewIfNeeded();
+  await shot('batch3-foreskin');
+
+  routed = await pasteAndBuild('Right testis, torsion, orchidectomy');
+  assert(routed === 'testis_benign', `torsion routed to ${routed}`);
+  assert(await shows('mikuz'), 'no Mikuz grade on a torsion');
+  for (const id of ['prepuceDx', 'leydig', 'gcnis', 'spermatogenesis']) assert(!(await shows(id)), `${id} shows on a torsion`);
+  report = await reportText();
+  assert(report.includes('TESTIS, right, orchidectomy - In keeping with TORSION OF TESTIS, Mikuz grade 3'), `torsion line wrong: ${report.slice(-300)}`);
+  assert(!/viable|reversible/.test(report), 'a viability clause reached the report');
+  await page.locator('[data-field="mikuz"]').first().scrollIntoViewIfNeeded();
+  await shot('batch3-torsion');
+
+  routed = await pasteAndBuild('Bilateral vas deferens, vasectomy');
+  assert(routed === 'testis_benign', `vasectomy routed to ${routed}`);
+  checks = await checksText();
+  assert(/Bilateral vasectomy: submit one block of each vas\./.test(checks), `Checks did not ask for a block per vas (read: ${checks.slice(0, 200)})`);
+  await page.fill('#f-A-blocks', '2');
+  await page.waitForTimeout(300);
+  checks = await checksText();
+  assert(!/one block of each vas/.test(checks), 'the block prompt stayed after two blocks');
+  report = await reportText();
+  assert(report.includes('VAS DEFERENS, bilateral, vasectomy - VAS DEFERENS, full cross-section of both segments'), `vasectomy line wrong: ${report.slice(-300)}`);
+  await shot('batch3-vasectomy');
+  return 'foreskin fields only with lichen sclerosus; torsion Mikuz 3, no viability clause; bilateral vasectomy block prompt clears at two';
+});
+
 // Case options after a pasted request (2026-09-24): the tickboxes show what the report prints. The case
 // starts on the default small biopsy, whose options carry no macroscopy choice, as a fresh session does.
 await check('case options: a pasted hysterectomy ticks the macroscopy box it prints, and the box drives it', async () => {

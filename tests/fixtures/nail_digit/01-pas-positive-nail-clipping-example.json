@@ -1,0 +1,23 @@
+{
+  "templateId": "nail_digit",
+  "values": {
+    "specimenName": "",
+    "specimen": "Nail clipping",
+    "organ": "NAIL",
+    "site": "right hallux",
+    "procedure": "",
+    "fixative": "In formalin",
+    "dimensions": "1.2 x 0.4 x 0.1",
+    "blocks": "1",
+    "blockScheme": "All embedded",
+    "diagnosis": "Onychomycosis",
+    "stain": "PAS",
+    "findingsText": "",
+    "ampSoft": "Gangrene",
+    "ampBone": "Chronic osteomyelitis",
+    "boneMargin": "Viable, no osteomyelitis",
+    "additionalNotes": ""
+  },
+  "report": "Nail, right hallux, clipping\n\nReceived in formalin is a nail clipping labelled right hallux, measuring 1.2 x 0.4 x 0.1 cm. All embedded on edge in 1 block.\n\n(1) Nail clipping, all embedded.\n\nSections show nail plate. Fungal hyphae are identified within the nail plate on PAS stain. The features are those of onychomycosis.\n\nNAIL, right hallux, clipping - ONYCHOMYCOSIS",
+  "checks": []
+}

@@ -192,7 +192,11 @@
    "vessel",
    "aneurysm",
    "endarterectomy",
-   "atheroma"
+   "atheroma",
+   "hernia",
+   "herniotomy",
+   "herniorrhaphy",
+   "hernioplasty"
   ],
   "bare": true,
   "bias": 2,

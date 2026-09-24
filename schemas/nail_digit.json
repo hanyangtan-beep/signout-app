@@ -1,0 +1,621 @@
+{
+ "id": "nail_digit",
+ "version": "2026.09",
+ "name": "Nail and digit",
+ "shortName": "Nail · digit",
+ "label": "Nail / digit",
+ "organ": "NAIL",
+ "system": "Skin",
+ "kind": "benign resection",
+ "rank": 54,
+ "aliases": [
+  "nail",
+  "nail clipping",
+  "toenail",
+  "fingernail",
+  "onychomycosis",
+  "subungual",
+  "digital mucous cyst",
+  "myxoid cyst",
+  "glomus",
+  "exostosis",
+  "toe amputation",
+  "ray amputation"
+ ],
+ "match": {
+  "site": [
+   "nail",
+   "nails",
+   "toenail",
+   "fingernail",
+   "nail plate",
+   "nail bed",
+   "nail matrix",
+   "nail unit",
+   "nail fold",
+   "subungual",
+   "periungual",
+   "paronychia",
+   "onychomycosis",
+   "onycholysis",
+   "onychogryphosis",
+   "ingrown",
+   "ingrowing",
+   "digital mucous cyst",
+   "mucous cyst",
+   "myxoid cyst"
+  ],
+  "procedure": [
+   "clipping",
+   "clippings",
+   "avulsion",
+   "excision",
+   "biopsy",
+   "punch",
+   "amputation",
+   "ray amputation",
+   "curettage",
+   "debridement",
+   "matrixectomy",
+   "wedge"
+  ],
+  "clinical": [
+   "onychomycosis",
+   "fungal",
+   "dystrophic",
+   "dystrophy",
+   "melanonychia",
+   "ingrowing",
+   "ingrown",
+   "osteomyelitis",
+   "gangrene",
+   "diabetic foot"
+  ],
+  "alone": {
+   "site": [
+    "finger",
+    "thumb",
+    "toe",
+    "hallux",
+    "digit",
+    "digital",
+    "big toe",
+    "fingertip"
+   ],
+   "unless": "ganglion|lipoma|naev|nev[iu]|pigment|melan|seborrh|keratos|wart|verruc|skin\\s*tag|fibroepithelial|basal\\s*cell|\\bbcc\\b|squamous\\s*cell|\\bscc\\b|carcinoma|dermatofibroma|epiderm|sebaceous|abscess|ulcer|cellulitis|granulation|\\bskin\\b|soft\\s*tissue"
+  },
+  "exclude": [
+   "lymph node",
+   "breast",
+   "nipple",
+   "forearm",
+   "wrist",
+   "palm",
+   "foot ulcer",
+   "heel",
+   "ankle",
+   "leg",
+   "knee",
+   "hip",
+   "spine",
+   "skull"
+  ],
+  "bare": true,
+  "bias": 2,
+  "fill": [
+   {
+    "field": "specimen",
+    "from": "map",
+    "map": [
+     [
+      "amputat|\\bray\\b",
+      "Digit or ray amputation"
+     ],
+     [
+      "clipping",
+      "Nail clipping"
+     ],
+     [
+      "nail\\s+unit|en\\s+bloc|matrixectom",
+      "Nail-unit excision"
+     ],
+     [
+      "matrix|nail\\s+bed|bed\\s+biops|longitudinal",
+      "Nail matrix or bed biopsy"
+     ],
+     [
+      "avulsion|nail\\s+plate|toenail|fingernail|ingrow",
+      "Nail avulsion"
+     ],
+     [
+      "excis|\\bmass|\\blump|\\blesion|\\bcyst|\\bnodule|swelling|tumou?r|glomus|exostosis|granuloma",
+      "Lesion excision"
+     ],
+     [
+      "\\bnails?\\b.*\\bbiops|\\bbiops.*\\bnails?\\b",
+      "Nail matrix or bed biopsy"
+     ],
+     [
+      "\\bnails?\\b",
+      "Nail clipping"
+     ],
+     [
+      "curett|debrid|\\bpunch|\\bbiops|\\btoph|\\bgout|\\b(?:fingers?|thumbs?|toes?|hallux|digits?|digital|fingertip)\\b",
+      "Lesion excision"
+     ]
+    ]
+   },
+   {
+    "field": "procedure",
+    "from": "map",
+    "noGuess": true,
+    "map": [
+     [
+      "\\bwedge",
+      "Wedge excision"
+     ],
+     [
+      "curett",
+      "Curettage"
+     ],
+     [
+      "\\bpunch",
+      "Punch biopsy"
+     ],
+     [
+      "incisional",
+      "Incisional biopsy"
+     ],
+     [
+      "debrid",
+      "Debridement"
+     ],
+     [
+      "\\bbiops",
+      "Biopsy"
+     ],
+     [
+      "\\bresect",
+      "Resection"
+     ],
+     [
+      "\\bexcis",
+      "Excision"
+     ]
+    ]
+   },
+   {
+    "field": "organ",
+    "from": "map",
+    "map": [
+     [
+      "\\bnails?\\b|toenail|fingernail|subungual|periungual|onych|paronych",
+      "NAIL"
+     ],
+     [
+      "\\bthumb",
+      "THUMB"
+     ],
+     [
+      "\\btoes?\\b|hallux",
+      "TOE"
+     ],
+     [
+      "\\bfingers?\\b|\\bdigit|fingertip",
+      "FINGER"
+     ]
+    ]
+   },
+   {
+    "field": "diagnosis",
+    "from": "map",
+    "map": [
+     [
+      "mucous\\s+cyst|myxoid\\s+cyst",
+      "Digital mucous cyst"
+     ],
+     [
+      "\\bglomus",
+      "Glomus tumour"
+     ],
+     [
+      "exostosis",
+      "Subungual exostosis"
+     ],
+     [
+      "pyogenic",
+      "Pyogenic granuloma"
+     ],
+     [
+      "haematoma|hematoma",
+      "Subungual haematoma"
+     ],
+     [
+      "giant\\s+cell|tenosynovial|\\btgct\\b",
+      "Tenosynovial giant cell tumour, localised"
+     ],
+     [
+      "\\bgout|\\btoph",
+      "Gouty tophus"
+     ],
+     [
+      "fibrokeratoma",
+      "Acquired digital fibrokeratoma"
+     ],
+     [
+      "chondroma",
+      "Chondroma"
+     ],
+     [
+      "\\bmass\\b|\\blump\\b|\\blesion\\b|\\bswelling\\b|\\bnodule\\b|\\btumou?r\\b|\\bcyst\\b",
+      "No evidence of malignancy (descriptive)"
+     ],
+     [
+      "^(?!.*\\b(?:clippings?|avulsion|plate|onych\\w*|fung\\w*|dystroph\\w*|toe\\s*nails?|finger\\s*nails?)\\b)(?:(?=.*\\b(?:biops\\w*|excis\\w*|resect\\w*|punch|curett\\w*|lesion|mass|lump|swelling|nodule|tumou?r|cyst)\\b)|(?!.*\\bnails?\\b)(?=.*\\b(?:thumbs?|fingers?|toes?|hallux|digits?|fingertip)\\b))",
+      "No evidence of malignancy (descriptive)"
+     ]
+    ]
+   },
+   {
+    "field": "site",
+    "from": "detail",
+    "fallback": "text",
+    "strip": "\\b(?:nail\\s+clippings?|clippings?|nail\\s+avulsion|avulsion|nails?(?!\\s+(?:bed|matrix|fold|unit|plate))|excision|excised|resection|resected|biopsy|punch|curettage|debridement|matrixectomy|wedge|amputation|ray\\s+amputation|onychomycosis|onycholysis|onychogryphosis|fungal|fungus|dystrophic|dystrophy|ingrowing|ingrown|gangrene|gangrenous|osteomyelitis|diabetic|infected|specimen)\\b",
+    "unless": "^(?:tissue|lesion|mass|cyst)$"
+   },
+   {
+    "field": "site",
+    "from": "text",
+    "strip": "\\b(?:nail\\s+clippings?|clippings?|nail\\s+avulsion|avulsion|nails?(?!\\s+(?:bed|matrix|fold|unit|plate))|excision|excised|resection|resected|biopsy|punch|curettage|debridement|matrixectomy|wedge|amputation|ray\\s+amputation|onychomycosis|onycholysis|onychogryphosis|fungal|fungus|dystrophic|dystrophy|ingrowing|ingrown|gangrene|gangrenous|osteomyelitis|diabetic|infected|specimen)\\b",
+    "unless": "^(?:tissue|lesion|mass|cyst)$"
+   }
+  ]
+ },
+ "macroExtract": {
+  "dimensions": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  },
+  "blockScheme": {
+   "concept": "choice",
+   "map": [
+    [
+     "\\ball\\s+(?:the\\s+tissue\\s+)?(?:is\\s+|are\\s+|been\\s+)?embedded|\\bentirely\\s+(?:embedded|submitted)",
+     "All embedded"
+    ],
+    [
+     "representative\\s+(?:sections?|blocks?)|partially\\s+embedded",
+     "Representative sections"
+    ]
+   ]
+  },
+  "fixative": {
+   "concept": "choice",
+   "map": [
+    [
+     "received\\s+dry|\\bdry\\b|without\\s+fixative|no\\s+fixative",
+     "Dry"
+    ],
+    [
+     "\\bformalin",
+     "In formalin"
+    ]
+   ]
+  }
+ },
+ "specimenNoun": "specimen",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "nail_digit",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "partDefaults": [],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "text",
+   "placeholder": "Nail, right hallux, clipping",
+   "default": ""
+  },
+  {
+   "id": "specimen",
+   "label": "Specimen",
+   "type": "select",
+   "options": [
+    "Nail clipping",
+    "Nail avulsion",
+    "Nail matrix or bed biopsy",
+    "Nail-unit excision",
+    "Lesion excision",
+    "Digit or ray amputation"
+   ],
+   "default": "Nail clipping"
+  },
+  {
+   "id": "organ",
+   "label": "Organ (diagnosis line)",
+   "type": "select",
+   "options": [
+    "NAIL",
+    "FINGER",
+    "THUMB",
+    "TOE"
+   ],
+   "default": "NAIL"
+  },
+  {
+   "id": "site",
+   "label": "Digit / site",
+   "type": "text",
+   "placeholder": "right hallux",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "options": [
+    "",
+    "Excision",
+    "Wedge excision",
+    "Resection",
+    "Biopsy",
+    "Incisional biopsy",
+    "Punch biopsy",
+    "Curettage",
+    "Debridement"
+   ],
+   "optionLabels": {
+    "": "As the specimen"
+   },
+   "default": "",
+   "showIf": {
+    "field": "specimen",
+    "is": [
+     "Nail avulsion",
+     "Nail matrix or bed biopsy",
+     "Nail-unit excision",
+     "Lesion excision"
+    ]
+   }
+  },
+  {
+   "id": "fixative",
+   "label": "Received",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "In formalin",
+    "Dry"
+   ],
+   "default": "In formalin",
+   "showIf": {
+    "field": "specimen",
+    "is": [
+     "Nail clipping",
+     "Nail avulsion"
+    ]
+   }
+  },
+  {
+   "id": "dimensions",
+   "label": "Dimensions (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "1.2 x 0.4 x 0.1",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": "1"
+  },
+  {
+   "id": "blockScheme",
+   "label": "Sampling",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "All embedded",
+    "Representative sections"
+   ],
+   "default": "All embedded"
+  },
+  {
+   "id": "diagnosis",
+   "label": "Diagnosis",
+   "type": "select",
+   "options": [
+    "Onychomycosis",
+    "No fungal organisms",
+    "Subungual haematoma",
+    "Pyogenic granuloma",
+    "Digital mucous cyst",
+    "Glomus tumour",
+    "Tenosynovial giant cell tumour, localised",
+    "Acquired digital fibrokeratoma",
+    "Subungual exostosis",
+    "Chondroma",
+    "Gouty tophus",
+    "Melanocytic lesion – see comment",
+    "No evidence of malignancy (descriptive)"
+   ],
+   "default": "Onychomycosis",
+   "showIf": {
+    "field": "specimen",
+    "not": "Digit or ray amputation"
+   }
+  },
+  {
+   "id": "stain",
+   "label": "Fungal stain",
+   "type": "select",
+   "options": [
+    "PAS",
+    "GMS",
+    "PAS and GMS"
+   ],
+   "default": "PAS",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "not": "Digit or ray amputation"
+     },
+     {
+      "field": "diagnosis",
+      "is": [
+       "Onychomycosis",
+       "No fungal organisms",
+       "Subungual haematoma"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "findingsText",
+   "label": "Findings (descriptive)",
+   "type": "text",
+   "placeholder": "fibrous tissue with chronic inflammation",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "not": "Digit or ray amputation"
+     },
+     {
+      "field": "diagnosis",
+      "is": "No evidence of malignancy (descriptive)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "ampSoft",
+   "label": "Soft tissue",
+   "type": "select",
+   "options": [
+    "Gangrene",
+    "Ulceration",
+    "No significant abnormality"
+   ],
+   "default": "Gangrene",
+   "showIf": {
+    "field": "specimen",
+    "is": "Digit or ray amputation"
+   }
+  },
+  {
+   "id": "ampBone",
+   "label": "Bone",
+   "type": "select",
+   "options": [
+    "Chronic osteomyelitis",
+    "Acute osteomyelitis",
+    "Osteonecrosis",
+    "No osteomyelitis"
+   ],
+   "default": "Chronic osteomyelitis",
+   "showIf": {
+    "field": "specimen",
+    "is": "Digit or ray amputation"
+   }
+  },
+  {
+   "id": "boneMargin",
+   "label": "Proximal bone margin",
+   "type": "select",
+   "options": [
+    "Viable, no osteomyelitis",
+    "Osteomyelitis at the margin – see comment",
+    "Not submitted"
+   ],
+   "default": "Viable, no osteomyelitis",
+   "showIf": {
+    "field": "specimen",
+    "is": "Digit or ray amputation"
+   }
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "Free text appended to the microscopy for this part",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "nail_melanocytic",
+   "label": "Melanocytic lesion of the nail unit",
+   "auto": {
+    "field": "diagnosis",
+    "is": "Melanocytic lesion – see comment"
+   },
+   "text": "A melanocytic lesion of the nail unit is present ({parts}). Melanocytic lesions of the nail matrix are difficult to assess on limited material; immunohistochemistry (SOX10, Melan-A and PRAME) and correlation with the clinical and dermoscopic findings are suggested."
+  },
+  {
+   "id": "nail_bone_margin",
+   "label": "Osteomyelitis at the proximal bone margin",
+   "auto": {
+    "field": "boneMargin",
+    "is": "Osteomyelitis at the margin – see comment"
+   },
+   "text": "Osteomyelitis extends to the proximal bone margin ({parts}), which suggests residual infection in the remaining bone. Correlation with the clinical and microbiological findings is suggested."
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "",
+     "specimen": "Nail clipping",
+     "organ": "NAIL",
+     "site": "right hallux",
+     "procedure": "",
+     "fixative": "In formalin",
+     "dimensions": "1.2 x 0.4 x 0.1",
+     "blocks": "1",
+     "blockScheme": "All embedded",
+     "diagnosis": "Onychomycosis",
+     "stain": "PAS",
+     "findingsText": "",
+     "ampSoft": "Gangrene",
+     "ampBone": "Chronic osteomyelitis",
+     "boneMargin": "Viable, no osteomyelitis",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
+}

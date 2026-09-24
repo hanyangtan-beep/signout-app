@@ -1,0 +1,23 @@
+{
+  "templateId": "ear_cholesteatoma",
+  "values": {
+    "specimenName": "",
+    "organ": "EAR",
+    "side": "Left",
+    "site": "cholesteatoma",
+    "procedure": "Resection",
+    "description": "Fragments of tan-white tissue",
+    "dimensions": "0.8 x 0.5 x 0.2",
+    "blocks": "1",
+    "blockScheme": "All embedded",
+    "diagnosis": "Cholesteatoma",
+    "inflammation": "Chronic",
+    "features": [
+      "Granulation tissue"
+    ],
+    "granulomas": "Not stated",
+    "additionalNotes": ""
+  },
+  "report": "Ear, left cholesteatoma, resection\n\nReceived in formalin are fragments of tan-white tissue labelled left cholesteatoma, measuring 0.8 x 0.5 x 0.2 cm in aggregate. All embedded in 1 block.\n\n(1) Tissue fragments, all embedded.\n\nSections show lamellated keratinous debris and fragments of benign keratinising squamous epithelium. Inflamed granulation tissue is also present. Features are consistent with cholesteatoma. There is no evidence of dysplasia or malignancy.\n\nEAR, left cholesteatoma, resection - CHOLESTEATOMA with GRANULATION TISSUE",
+  "checks": []
+}

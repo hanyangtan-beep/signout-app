@@ -1,0 +1,14 @@
+{
+  "templateId": "testis_benign",
+  "values": {
+    "specimen": "Orchidectomy",
+    "side": "Left",
+    "orchidDx": "Torsion",
+    "mikuz": "3",
+    "procedure": "Orchidectomy",
+    "dimensions": "4 x 3 x 2.5",
+    "blocks": "3"
+  },
+  "report": "Testis, left, orchidectomy\n\nReceived in formalin is a left testis, measuring 4 x 3 x 2.5 cm. Representative sections in 3 blocks.\n\n(1-3) Testis, representative sections.\n\nSections show testis with complete haemorrhagic infarction; the germ cells in all the seminiferous tubules are necrotic. The features are those of testicular torsion, Mikuz grade 3. There is no evidence of malignancy.\n\nTESTIS, left, orchidectomy - In keeping with TORSION OF TESTIS, Mikuz grade 3",
+  "checks": []
+}
