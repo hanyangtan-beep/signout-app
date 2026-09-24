@@ -17,7 +17,7 @@ Extends `schemas/nasal_polyps.json` / `generators/sinonasal.js`. Carded 2026-09-
 ## Output
 
 - Microscopy: one house sentence per type as in the roadmap card, then dysplasia / carcinoma clause, then "The lesion is received in fragments; margins cannot be assessed." when piecemeal.
-- Diagnosis: `NASAL CAVITY, left, polypectomy - SINONASAL PAPILLOMA, INVERTED TYPE, no dysplasia`; `… WITH HIGH GRADE DYSPLASIA`; `… WITH CARCINOMA IN SITU`; invasive carcinoma → `SQUAMOUS CELL CARCINOMA ARISING IN INVERTED PAPILLOMA - see comment` and the handoff snippet.
+- Diagnosis: `NASAL CAVITY, left, polypectomy - SINONASAL PAPILLOMA, INVERTED TYPE, no dysplasia`; `… with HIGH GRADE DYSPLASIA`; `… with CARCINOMA IN SITU`; invasive carcinoma → `SQUAMOUS CELL CARCINOMA ARISING IN INVERTED PAPILLOMA - see comment` and the handoff snippet.
 - Snippets: `inverted_papilloma` (existing), `papilloma_molecular`, `papilloma_exophytic_hpv`, `papilloma_margin_fragmented`, `papilloma_carcinoma_handoff`.
 
 ## Checks

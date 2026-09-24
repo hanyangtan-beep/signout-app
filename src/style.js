@@ -77,6 +77,25 @@ export function tidyBlanks(text) {
   return String(text ?? '').replace(/[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n');
 }
 
+// Diagnosis connectors (house rule, 2026-09-24, at the user's request): between capitalised terms the
+// connector is lower case, "TUBULAR ADENOMA with LOW GRADE DYSPLASIA", so each capitalised term codes on
+// its own in SNOMED; an article after it goes with it ("with a LEPIDIC PATTERN"). The qualifier phrases
+// are never capitals: "Consistent with" / "In keeping with" / "Compatible with" opening a clause,
+// "consistent with" after a comma. Measured on the released diagnoses (2021-2026 biopsy export, 9325;
+// LIS export 2024-2026, 4546; 2021-2026 frozen export, 598): capitalised term, "with", capitalised term
+// is lower case 1543 : 30, 390 : 15 and 6 : 2; the qualifier phrases are in capitals 0 times in 998,
+// open a clause in sentence case 669 : 20 and follow a comma in lower case 251 : 0. Like the spelling,
+// this rewrites the printed diagnosis, not the option labels or generator strings, and a typed edit of
+// the block prints as typed. "WITHOUT" and "AND" are left as they are.
+const QUALIFIER = /(\n|- )?\b(CONSISTENT|COMPATIBLE|IN KEEPING) (?:WITH|with)\b/g;
+export function houseConnectors(text) {
+  return String(text ?? '')
+    .replace(/\b(WITH|with) (AN?)\b/g, (m, w, a) => `${w} ${a.toLowerCase()}`)
+    // A clause opens at the start of the text, of a line, or after "- ".
+    .replace(QUALIFIER, (m, lead, w, at) => (lead || at === 0 ? `${lead || ''}${w[0]}${w.slice(1).toLowerCase()} with` : `${w.toLowerCase()} with`))
+    .replace(/\bWITH\b/g, 'with');
+}
+
 export function applyStyle(text, style = {}) {
   let out = toAscii(text);
   if (style.british) out = britishise(out);

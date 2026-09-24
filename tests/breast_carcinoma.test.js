@@ -125,7 +125,7 @@ test('histologic type names: pattern detail is not doubled, lobular and mixed ty
   assert.equal(shortTypeName({ histType: NST_PATTERN, histTypeDetail: 'with medullary pattern' }), 'Invasive carcinoma of no special type with medullary pattern');
   assert.equal(shortTypeName({ histType: LOBULAR }), 'Invasive lobular carcinoma');
   assert.equal(shortTypeName({ histType: 'Mixed histologic types (specify types and percentages)', histTypeDetail: 'NST 70%, lobular 30%' }), 'Invasive carcinoma, mixed types (NST 70%, lobular 30%)');
-  assert.match(flatDx(run(byName['05-mastectomy-t4b-skin-ulceration-involved-margin-n1a'].patch)), /INVASIVE CARCINOMA OF NO SPECIAL TYPE WITH MEDULLARY PATTERN, grade 3, 48 mm; invading the skin \(with ulceration\); anterior margin involved; other margins clear \(closest 8 mm, posterior\)/);
+  assert.match(flatDx(run(byName['05-mastectomy-t4b-skin-ulceration-involved-margin-n1a'].patch)), /INVASIVE CARCINOMA OF NO SPECIAL TYPE with MEDULLARY PATTERN, grade 3, 48 mm; invading the skin \(with ulceration\); anterior margin involved; other margins clear \(closest 8 mm, posterior\)/);
   assert.ok(errs(run({ histType: 'Mixed histologic types (specify types and percentages)', histTypeDetail: '' })).some((m) => /specified types/.test(m)));
 });
 
@@ -226,6 +226,18 @@ test('SLN frozen link: prefillFromFrozen maps the sentinel node scenario onto th
   assert.deepEqual(prefillFromFrozen(null), {});
 });
 
+test('SLN frozen link: a sentinel part with no side gives "Not specified" and a Checks prompt, not the form\'s Left', () => {
+  const fv = { scenario: SLN, slnSide: '', slnCount: '1', slnResult: 'Negative' };
+  const p = prefillFromFrozen(fv);
+  assert.equal(p.laterality, 'Not specified', 'was left on the form default "Left"');
+  assert.equal(prefillFromFrozen({ ...fv, slnSide: 'Right' }).laterality, 'Right');
+  const out = run(p);
+  assert.equal(rows(out)['Specimen laterality'], 'Not specified');
+  assert.doesNotMatch(out.diagnosis.split(' - ')[0], /\b(left|right)\b/i);
+  assert.ok(warns(out).some((m) => /^Choose Right or Left/.test(m)));
+  assert.ok(!warns(run({ laterality: 'Left' })).some((m) => /^Choose Right or Left/.test(m)));
+});
+
 test('01 SLN frozen (A) + mastectomy synoptic (B): separate letters, nodes carried from part A, pT2 pN1a(sn) IIB', () => {
   const fs_ = registry.frozen_section;
   const frozenValues = { ...defaults(fs_.schema), specimenName: 'Left SLN 1', scenario: SLN, slnSide: 'Left', slnLabel: 'SLN 1', slnSize: '3 x 2 x 1', slnCount: '2', slnNodeSizes: '1.2, 0.8', slnBlocks: '2', slnResult: 'Macrometastasis', slnPositive: '1', slnMetMm: '4', slnEne: 'Not identified' };
@@ -277,7 +289,9 @@ test('golden fixtures reproduce byte-for-byte', () => {
   for (const [name, patch, opts = {}, caseFields = {}] of CASES) {
     const out = run(patch, opts, caseFields);
     const file = path.join(FIX, `${name}.json`);
-    const current = { templateId: 'breast_carcinoma', patch, options: opts, caseFields, report: out.report, checks: out.issues };
+    // A deliberate edit's reason lives in the fixture's description; --update keeps it.
+    const kept = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')).description : undefined;
+    const current = { ...(kept ? { description: kept } : {}), templateId: 'breast_carcinoma', patch, options: opts, caseFields, report: out.report, checks: out.issues };
     if (UPDATE || !fs.existsSync(file)) { fs.writeFileSync(file, JSON.stringify(current, null, 2) + '\n'); continue; }
     const saved = JSON.parse(fs.readFileSync(file, 'utf8'));
     assert.equal(out.report, saved.report, `${file} changed; re-run with --update only after a deliberate wording change`);

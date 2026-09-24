@@ -166,3 +166,43 @@ template suggested and ten parts on the generic form.
 - Frozen section. The CNS and lung fills run only inside their scenario (`scenario` on the rule): site and side for CNS, side, lobe and specimen for lung. The lobe adjective alone now reads as CNS (6 of the 47 CNS frozen parts fell to "Nodule / mass"), unless the line names the scalp, skin, pleura, peritoneum or a node. The frozen CNS diagnosis line opens with the organ, as the released ones do (20 BRAIN, 7 PITUITARY, none with the lobe first, in 27): "BRAIN, left temporal lobe, biopsy x frozen section", formerly "TEMPORAL LOBE, left". `strip` on an options rule keeps the frozen list's "Brain" from tying with "Cerebellum".
 - Tests. `sideOf` / `sideFor` for the CNS and lung spellings, the site expansions against each list, the user's two examples end to end with the Checks prompts, hand-added parts keeping their defaults, and the frozen fills and scenario; browser check "pasted brain and lung parts print the site the request names, or none".
 - Found, not fixed here. When a CNS request is an LIS triple ("Brain, left temporal tumour, biopsy"), the "Specimen as received" field takes only the middle ("left temporal tumour"), so the specimen line loses the organ. None of the 208 CNS request lines in the exports is a triple, so it is rare. Recorded in Later.
+
+## Frozen ovary and sentinel sides (user request, built 2026-09-24)
+
+- Request: the frozen ovary and sentinel-node sides come from the request line, and nothing guesses one.
+- Before: `ovSide` and `slnSide` had no fill. A pasted "Left SLN 1" printed "LYMPH NODE, SLN 1, excision x frozen section", with the side dropped.
+- Evidence, counted on the 2021-2026 FS export (598 cases, 1291 parts):
+  - Sentinel parts: 40, of which 36 name a side (15 right, 21 left) and 4 name none.
+  - Ovary parts: 28, of which 11 name a side (6 right, 5 left) and 17 name none.
+  - The fields read none of these sides before the fix; they now read 36 and 11.
+  - The released FS sentinel lines put the side after the organ (178 heads): "LYMPH NODE, left SLN 1, ...". The app now prints the same. Before the fix, no sentinel line named a side; now 36 do.
+- The fix: two `match.fill` rules in `frozen_section`, each run only inside its scenario. `slnSide` takes Right or Left from the line. `ovSide` takes Right, Left or Bilateral.
+- When the line names no side:
+  - the field stays blank;
+  - the line prints no side;
+  - Checks asks "Choose Right or Left" (sentinel) or "Choose Right, Left or Bilateral" (ovary).
+- A part added by hand keeps its blank default.
+- The linked synoptic ("Stage this part", "Add breast synoptic") carries the frozen side across. When the frozen part has no side, the synoptic no longer supplies one; it gets the values below, prints no side, and Checks asks for it.
+
+| Synoptic | Field | Before, frozen part with no side | Now |
+|---|---|---|---|
+| `ovary_ft_peritoneum` | Procedure | the form's "Right salpingo-oophorectomy" when no specimen was picked | "Salpingo-oophorectomy, side not specified" |
+| `ovary_ft_peritoneum` | Tumour site | the form's "Right ovary" | "Not specified" |
+| `ovary_ft_peritoneum` | Surface involvement | "Present, right" | "Present, side not specified" |
+| `breast_carcinoma` | Laterality | the form's "Left" | "Not specified" |
+| `lung_carcinoma` | Laterality and lobe | the form's "Right" and "Upper lobe" | "Not specified", no lobe |
+
+  - `ovary-pair.md` had always specified a prompt for surface involvement; the code had set "right".
+- Routing is unchanged. No FS request part names "frozen", "FS" or "intraoperative" (0 of 1291), so frozen rows are picked by hand on the intake strip:
+  - the 40 sentinel parts arrive on Lymph node excision through the node rule;
+  - the 28 ovary parts arrive on the generic form (13), effusion cytology (14, on the word "peritoneal") or duodenal biopsy (1).
+  - This is recorded in Later.
+- Tests:
+  - intake: sides read from the line; blank with a prompt; the rules kept inside their scenarios; hand-added defaults;
+  - one no-guess link test each in `breast_carcinoma`, `ovary_ft_peritoneum` and `lung_carcinoma`;
+  - browser check "a pasted frozen sentinel node prints its side, or none with a Checks prompt", which picks Frozen section on each row as the pathologist does.
+- Found, not fixed here:
+  - The sentinel site keeps its "Breast" default whatever the line names, so "Left groin SLN 1" reads Breast.
+  - The line drops "axillary", although 25 of the 178 released FS sentinel heads name the axilla.
+  - Pasted `breast_carcinoma`, `breast_dcis` and `phyllodes` parts that name no side keep the form's Left.
+  - These are recorded in Later.

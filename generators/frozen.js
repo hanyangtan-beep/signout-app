@@ -1281,6 +1281,9 @@ export function validate(part, ctx) {
     return out;
   }
   if (isSln(v)) {
+    // The side comes from the request (intake fill) or from the pathologist, never from a default: the
+    // line prints none and the linked breast synoptic is left "Not specified" until one is chosen.
+    if (!String(v.slnSide || '').trim()) out.push({ level: 'warn', message: 'Choose Right or Left: no side is set for the sentinel node, so the line names none.', field: 'slnSide' });
     const n = slnCount(v);
     const pos = SLN_POSITIVE.includes(v.slnResult) ? Math.round(num(v.slnPositive) ?? 1) : 0;
     const mm = num(v.slnMetMm);
@@ -1315,6 +1318,7 @@ export function validate(part, ctx) {
     return out;
   }
   if (!isOvary(v)) return out;
+  if (!String(v.ovSide || '').trim()) out.push({ level: 'warn', message: 'Choose Right, Left or Bilateral: no side is set for the ovary, so none is carried into the linked synoptic.', field: 'ovSide' });
   const t = ovType(v);
   const r = v.ovaryResult || 'Benign';
   if (r === 'Malignant' && /mucinous|Brenner|teratoma/i.test(t)) info('Malignant mucinous, Brenner or teratomatous tumour: consider a metastasis; the linked synoptic asks for the primary-site assignment.');

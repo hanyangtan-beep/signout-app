@@ -366,7 +366,9 @@ export function prefillFromFrozen(fv) {
   const s = fv ? slnSummary(fv) : null;
   if (!s) return {};
   const out = { nodeSampling: 'Sentinel node biopsy only', nodesExamined: String(s.examined), nodesSentinel: String(s.examined), nodesMacro: String(s.macro), nodesMicro: String(s.micro), nodesItc: String(s.itc) };
-  if (s.side) out.laterality = s.side;
+  // The frozen side, never the form's "Left" (2026-09-24): a sentinel part with no side gives "Not
+  // specified" and Checks asks for it.
+  out.laterality = s.side || 'Not specified';
   if (s.positive && s.largestMm !== null) out.depositMm = String(s.largestMm);
   if (s.positive) out.ene = s.ene;
   if (s.treatment && s.treatment !== S.NO_THERAPY) out.lnTreatmentEffect = s.treatment;
@@ -380,6 +382,7 @@ export function validate(part, ctx) {
   const { out, at, err, warn } = checks();
   const info = (m, field) => at('info', m, field);
   const size = num(v.sizeMm);
+  if (!v.laterality || v.laterality === 'Not specified') warn('Choose Right or Left: the specimen laterality is not specified.', 'laterality');
   if (/^Reported on the prior/.test(v.biomarkers || '') && !stripDot(v.priorBiomarkerAccession) && !stripDot(ctx?.case?.priorAccession)) warn('Biomarkers reported on the prior core biopsy: record its accession number.', 'priorBiomarkerAccession');
   const t = v.histType || NST;
   if (!noResidual(v) && v.sizeMode !== 'Cannot be determined' && size === null) warn('Tumour size not recorded: pT cannot be derived.', 'sizeMm');

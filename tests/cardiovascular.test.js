@@ -18,7 +18,7 @@ const one = (values, options = {}) => {
 const AORTA = { specimenName: 'Ascending aorta, resection', aortaLength: '5', aortaDiameter: '3.5', aortaWall: '0.3', tearSize: '1.5' };
 
 const VALVE_DX = 'AORTIC VALVE, replacement - CALCIFIC DEGENERATION, tricuspid morphology; no evidence of endocarditis';
-const AORTA_DX = 'AORTA, ascending, resection - ACUTE DISSECTION WITH MODERATE MEDIAL DEGENERATION';
+const AORTA_DX = 'AORTA, ascending, resection - ACUTE DISSECTION with MODERATE MEDIAL DEGENERATION';
 const VALVE_MICRO = 'Sections show valve cusps with nodular dystrophic calcification and fibrosis. There is no evidence of active inflammation, vegetation or organisms on Gram and GMS stains.';
 const AORTA_MICRO = 'Sections show the aortic wall with an intimal tear and a dissection plane within the outer third of the media containing fresh haemorrhage and fibrin. The media shows moderate mucoid extracellular matrix accumulation and elastic fibre fragmentation, with mild loss of smooth muscle nuclei and no laminar medial collapse. Overall, moderate medial degeneration. Atherosclerosis is mild. There is no evidence of aortitis or malignancy.';
 
@@ -177,11 +177,11 @@ test('prosthetic valve explant: findings multiselect, macro and block key', () =
 test('aorta: each dissection option yields the right capitalised diagnosis', () => {
   const dx = (values) => run(one({ ...AORTA, ...values })).diagnosis;
   assert.equal(dx({ dissection: 'Acute' }), AORTA_DX);
-  assert.equal(dx({ dissection: 'Subacute' }), 'AORTA, ascending, resection - SUBACUTE DISSECTION WITH MODERATE MEDIAL DEGENERATION');
-  assert.equal(dx({ dissection: 'Chronic, healed' }), 'AORTA, ascending, resection - CHRONIC (HEALED) DISSECTION WITH MODERATE MEDIAL DEGENERATION');
+  assert.equal(dx({ dissection: 'Subacute' }), 'AORTA, ascending, resection - SUBACUTE DISSECTION with MODERATE MEDIAL DEGENERATION');
+  assert.equal(dx({ dissection: 'Chronic, healed' }), 'AORTA, ascending, resection - CHRONIC (HEALED) DISSECTION with MODERATE MEDIAL DEGENERATION');
   assert.equal(dx({ dissection: 'None', medialGrade: 'Severe' }), 'AORTA, ascending, resection - SEVERE MEDIAL DEGENERATION');
   assert.equal(dx({ dissection: 'None', medialGrade: 'Mild', atherosclerosis: 'Severe' }), 'AORTA, ascending, resection - MILD MEDIAL DEGENERATION; severe atherosclerosis');
-  assert.equal(dx({ specimenName: 'Aortic root, resection' }), 'AORTIC ROOT, resection - ACUTE DISSECTION WITH MODERATE MEDIAL DEGENERATION');
+  assert.equal(dx({ specimenName: 'Aortic root, resection' }), 'AORTIC ROOT, resection - ACUTE DISSECTION with MODERATE MEDIAL DEGENERATION');
 });
 
 test('aorta: dissection variants and SCVP medial degeneration grading in the microscopy', () => {

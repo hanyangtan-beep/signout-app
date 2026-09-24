@@ -96,7 +96,7 @@ test('each benign diagnosis option yields the house capitalised line and conclus
 
 test('NIFTP and malignant options: short line, no negative closer, comment recommends the QMH thyroid cancer template', () => {
   const niftp = run(one({ diagnosis: 'Non-invasive follicular thyroid neoplasm with papillary-like nuclear features (NIFTP)' }));
-  assert.equal(niftp.diagnosis, 'THYROID GLAND, right, hemithyroidectomy - NON-INVASIVE FOLLICULAR THYROID NEOPLASM WITH PAPILLARY-LIKE NUCLEAR FEATURES (NIFTP); no capsular or vascular invasion identified');
+  assert.equal(niftp.diagnosis, 'THYROID GLAND, right, hemithyroidectomy - NON-INVASIVE FOLLICULAR THYROID NEOPLASM with PAPILLARY-LIKE NUCLEAR FEATURES (NIFTP); no capsular or vascular invasion identified');
   assert.ok(!niftp.microscopy.includes('no evidence of malignancy'));
   assert.equal(niftp.comment, '');
   const ptc = run(one({ diagnosis: 'Papillary thyroid carcinoma - see comment', ptcNuclear: 'Present' }));

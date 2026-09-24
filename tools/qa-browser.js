@@ -732,6 +732,65 @@ await check('pasted brain and lung parts print the site the request names, or no
   return 'brain A temporal lobe + left, B blank site with Checks; lung right lower lobe, wedge resection';
 });
 
+// Frozen sentinel and ovary sides come from the request (2026-09-24): "Left SLN 1" used to print
+// "LYMPH NODE, SLN 1" with the side dropped. A request with no side leaves the field blank and Checks
+// asks. The same run checks the lower-case diagnosis connector on a duodenal adenoma.
+await check('a pasted frozen sentinel node prints its side, or none with a Checks prompt; "with" is lower case', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const box = page.locator('#meta-specimen');
+  const accept = (d) => d.accept();
+  // A frozen request line never says "frozen" (0 of the 1291 parts in the 2021-2026 FS export), so the
+  // sentinel rows arrive on Lymph node excision and the pathologist picks Frozen section on each row.
+  const build = async (text, pick = {}) => {
+    await box.fill('');
+    await box.type(text, { delay: 2 });
+    await page.waitForSelector('#intake-preview table tr', { timeout: 5000 });
+    for (const [label, id] of Object.entries(pick)) {
+      await page.locator(`#intake-preview select[aria-label="Template for part ${label}"]`).selectOption(id);
+      await page.waitForTimeout(200);
+    }
+    page.on('dialog', accept);
+    await page.click('#btn-build-parts');
+    await page.waitForTimeout(800);
+    page.off('dialog', accept);
+  };
+  const setField = async (id, value) => {
+    const chip = page.locator(`.chips[data-field="${id}"] .chip`, { hasText: value }).first();
+    if (await chip.count()) { await chip.click(); await page.waitForTimeout(150); return; }
+    const el = page.locator(`[data-field="${id}"] select`).first();
+    assert(await el.count(), `no ${id} field on the form`);
+    await el.selectOption({ label: value });
+    await page.waitForTimeout(150);
+  };
+  await build('(A) Left SLN 1\n(B) Sentinel lymph node', { A: 'frozen_section', B: 'frozen_section' });
+  let report = await page.locator('#report-blocks').innerText();
+  assert(/\(A\) LYMPH NODE, left SLN 1, excision x frozen section/.test(report), `part A line wrong: ${report.slice(0, 300)}`);
+  assert(/\(B\) LYMPH NODE, SLN \d+, excision x frozen section/.test(report), `part B line wrong or sided: ${report.slice(0, 400)}`);
+  // Side renders as chips: "Not stated", "Right", "Left".
+  const pressed = () => page.locator('.chips[data-field="slnSide"] .chip[aria-pressed="true"]').allTextContents();
+  const sideA = await pressed();
+  assert(sideA.length === 1 && /Left/.test(sideA[0]), `part A side chips pressed: ${JSON.stringify(sideA)}`);
+  await page.locator('#part-tabs .tab').nth(1).click();
+  await page.waitForTimeout(300);
+  const sideB = await pressed();
+  assert(!sideB.some((t) => /Right|Left/.test(t)), `part B side chips pressed: ${JSON.stringify(sideB)}`);
+  const checks = (await page.locator('details.checks .issue').allInnerTexts()).join(' | ');
+  assert(/Choose Right or Left: no side is set for the sentinel node/.test(checks), `Checks did not ask for the side (read: ${checks.slice(0, 200)})`);
+  await page.locator('.chips[data-field="slnSide"]').scrollIntoViewIfNeeded();
+  await shot('frozen-sln-side');
+
+  await build('Duodenum, D2, biopsy');
+  await setField('neoplasia', 'Adenoma, low grade dysplasia');
+  await page.waitForTimeout(300);
+  report = await page.locator('#report-blocks').innerText();
+  assert(report.includes('TUBULAR ADENOMA with LOW GRADE DYSPLASIA'), `duodenal line wrong: ${report.slice(-300)}`);
+  assert(!/\bWITH\b/.test(report), 'a capital WITH reached the report');
+  await shot('duodenal-with');
+  return 'A "left SLN 1", B no side with Checks prompt; duodenal "TUBULAR ADENOMA with LOW GRADE DYSPLASIA"';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

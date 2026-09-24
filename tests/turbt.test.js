@@ -71,7 +71,7 @@ test('example: two parts - pT1 high grade TURBT and benign random biopsies', () 
   assert.equal(r.blockKey, '(A) (1-2) Bladder chips, all embedded.\n(B) (1) Bladder biopsies, all embedded.');
   assert.equal(r.microscopy.split('\n\n')[0], '(A) Sections show fragments of bladder wall with a papillary urothelial neoplasm composed of fibrovascular cores lined by urothelium showing marked architectural and cytological disorder, with loss of polarity, nuclear pleomorphism and frequent mitoses. Nests of tumour cells infiltrate the lamina propria. Muscularis propria is present and uninvolved. There is no lymphovascular invasion.');
   assert.equal(r.microscopy.split('\n\n')[1], '(B) Sections show fragments of bladder mucosa lined by unremarkable urothelium with underlying lamina propria and muscularis propria. There is no evidence of dysplasia or malignancy.');
-  assert.equal(r.diagnosis, '(A) URINARY BLADDER, left lateral wall tumour, TURBT - HIGH GRADE PAPILLARY UROTHELIAL CARCINOMA WITH LAMINA PROPRIA INVASION (pT1); muscularis propria present and uninvolved\n(B) URINARY BLADDER, random biopsies - NO EVIDENCE OF DYSPLASIA OR MALIGNANCY');
+  assert.equal(r.diagnosis, '(A) URINARY BLADDER, left lateral wall tumour, TURBT - HIGH GRADE PAPILLARY UROTHELIAL CARCINOMA with LAMINA PROPRIA INVASION (pT1); muscularis propria present and uninvolved\n(B) URINARY BLADDER, random biopsies - NO EVIDENCE OF DYSPLASIA OR MALIGNANCY');
   assert.equal(r.comment, '');
   assert.ok(!r.report.includes('undefined'));
 });
@@ -137,10 +137,10 @@ test('each neoplasm option yields the right capitalised diagnosis', () => {
   assert.equal(dx({ neoplasm: 'Urothelial papilloma' }), `${head}UROTHELIAL PAPILLOMA; muscularis propria present`);
   assert.equal(dx({ neoplasm: 'PUNLMP' }), `${head}PAPILLARY UROTHELIAL NEOPLASM OF LOW MALIGNANT POTENTIAL (PUNLMP); muscularis propria present`);
   assert.equal(dx({ neoplasm: LG }), `${head}LOW GRADE PAPILLARY UROTHELIAL CARCINOMA, NON-INVASIVE (pTa); muscularis propria present`);
-  assert.equal(dx({ neoplasm: HG, invasion: 'Lamina propria invasion (pT1)' }), `${head}HIGH GRADE PAPILLARY UROTHELIAL CARCINOMA WITH LAMINA PROPRIA INVASION (pT1); muscularis propria present and uninvolved`);
+  assert.equal(dx({ neoplasm: HG, invasion: 'Lamina propria invasion (pT1)' }), `${head}HIGH GRADE PAPILLARY UROTHELIAL CARCINOMA with LAMINA PROPRIA INVASION (pT1); muscularis propria present and uninvolved`);
   assert.equal(dx({ neoplasm: 'Urothelial carcinoma in situ' }), `${head}UROTHELIAL CARCINOMA IN SITU (pTis); muscularis propria present`);
-  assert.equal(dx({ neoplasm: 'Invasive urothelial carcinoma, non-papillary' }), `${head}INVASIVE UROTHELIAL CARCINOMA, NON-PAPILLARY WITH LAMINA PROPRIA INVASION (pT1); muscularis propria present and uninvolved`);
-  assert.equal(dx({ neoplasm: HG, invasion: 'Muscularis propria invasion (pT2 at least)' }), `${head}HIGH GRADE PAPILLARY UROTHELIAL CARCINOMA WITH INVASION OF MUSCULARIS PROPRIA (at least pT2); see comment`);
+  assert.equal(dx({ neoplasm: 'Invasive urothelial carcinoma, non-papillary' }), `${head}INVASIVE UROTHELIAL CARCINOMA, NON-PAPILLARY with LAMINA PROPRIA INVASION (pT1); muscularis propria present and uninvolved`);
+  assert.equal(dx({ neoplasm: HG, invasion: 'Muscularis propria invasion (pT2 at least)' }), `${head}HIGH GRADE PAPILLARY UROTHELIAL CARCINOMA with INVASION OF MUSCULARIS PROPRIA (at least pT2); see comment`);
   assert.equal(dx({ neoplasm: HG, muscularisPropria: 'Not represented' }), `${head}HIGH GRADE PAPILLARY UROTHELIAL CARCINOMA, NON-INVASIVE (pTa); muscularis propria not represented`);
 });
 
@@ -155,7 +155,7 @@ test('muscularis propria sentence is mandatory in every microscopy', () => {
 
 test('muscularis propria invasion: either field triggers at least pT2 and the QMH cancer template comment', () => {
   const r = run(one({ ...TUMOUR, neoplasm: HG, muscularisPropria: 'Present and involved' }));
-  assert.ok(r.diagnosis.includes('WITH INVASION OF MUSCULARIS PROPRIA (at least pT2); see comment'));
+  assert.ok(r.diagnosis.includes('with INVASION OF MUSCULARIS PROPRIA (at least pT2); see comment'));
   const r2 = run(one({ ...TUMOUR, neoplasm: HG, invasion: 'Muscularis propria invasion (pT2 at least)' }));
   assert.equal(r2.comment, 'Invasion of the muscularis propria is identified in the TURBT material. The depth of invasion cannot be fully staged on transurethral resection specimens; the QMH bladder cancer template should be used for the cystectomy synoptic report.');
   assert.ok(r2.report.endsWith(r2.comment));
@@ -165,7 +165,7 @@ test('muscularis propria invasion: either field triggers at least pT2 and the QM
 test('associated CIS, variant histology and LVI print in microscopy and diagnosis', () => {
   const r = run(one({ ...TUMOUR, neoplasm: HG, invasion: 'Lamina propria invasion (pT1)', cis: 'Present', variant: ['Squamous', 'Glandular', 'Micropapillary'], lvi: 'Present' }));
   assert.ok(r.microscopy.includes('Nests of tumour cells infiltrate the lamina propria. The tumour shows squamous and glandular divergent differentiation and a micropapillary component. The adjacent flat urothelium shows urothelial carcinoma in situ. Muscularis propria is present and uninvolved. Lymphovascular invasion is present.'));
-  assert.equal(r.diagnosis, 'URINARY BLADDER, left lateral wall tumour, TURBT - HIGH GRADE PAPILLARY UROTHELIAL CARCINOMA WITH LAMINA PROPRIA INVASION (pT1); with squamous and glandular divergent differentiation; micropapillary subtype; associated urothelial carcinoma in situ; lymphovascular invasion present; muscularis propria present and uninvolved');
+  assert.equal(r.diagnosis, 'URINARY BLADDER, left lateral wall tumour, TURBT - HIGH GRADE PAPILLARY UROTHELIAL CARCINOMA with LAMINA PROPRIA INVASION (pT1); with squamous and glandular divergent differentiation; micropapillary subtype; associated urothelial carcinoma in situ; lymphovascular invasion present; muscularis propria present and uninvolved');
   const r2 = run(one({ ...TUMOUR, neoplasm: HG, lvi: 'Indeterminate' }));
   assert.ok(r2.microscopy.includes('Lymphovascular invasion cannot be reliably assessed in this material.'));
   assert.ok(r2.diagnosis.includes('; lymphovascular invasion indeterminate;'));

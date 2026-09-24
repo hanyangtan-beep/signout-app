@@ -209,6 +209,16 @@ test('frozen link: prefillFromFrozen maps the lung wedge scenario onto the synop
   assert.deepEqual(prefillFromFrozen(null), {});
 });
 
+test('frozen link: no side or lobe on the frozen part gives "Not specified" and no lobe, not the form\'s right upper lobe', () => {
+  const p = prefillFromFrozen({ scenario: 'Lung wedge / nodule', lungResult: 'Adenocarcinoma' });
+  assert.equal(p.laterality, 'Not specified');
+  assert.deepEqual(p.lobes, []);
+  const out = run(p);
+  assert.doesNotMatch(out.diagnosis.split(' - ')[0], /\b(right|left|upper)\b/i);
+  assert.ok(warns(out).some((m) => /^Choose Right or Left/.test(m)));
+  assert.ok(warns(out).some((m) => /^Choose the lobe/.test(m)));
+});
+
 test('01 frozen -> synoptic linked pair: one letter, letters dropped, the frozen line defers to the synoptic, pT1a pNX IA1', () => {
   const fs_ = registry.frozen_section;
   const frozenValues = { ...defaults(fs_.schema), specimenName: 'Left lower lobe wedge', scenario: 'Lung wedge / nodule', luSide: 'Left', luLobe: 'Lower lobe', luSpecimen: 'Wedge excision', luSize: '6 x 3 x 2', luNoduleCount: '1', luNoduleCm: '0.8', luMarginCm: '0.5', luPleuraGross: 'Puckered', lungResult: 'Adenocarcinoma', luPattern: 'acinar predominant', lungMargin: 'Negative', luBlocks: '2' };

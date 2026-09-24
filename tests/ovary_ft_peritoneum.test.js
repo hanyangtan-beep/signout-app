@@ -107,7 +107,7 @@ test('02: bilateral post-NACT with omental cake and macrometastasis is ypT3c ypN
   assert.equal(r['Ectocervical / vaginal cuff margin'], 'Uninvolved by carcinoma');
   assert.equal(r['Fallopian tube mucosa'], undefined, 'tubal mucosa prints in the histology paragraph, not as a row');
   assert.match(out.synoptic.replace(/\s+/g, ' '), /tubes are examined entirely \(SEE-FIM\) and the mucosa is not involved/);
-  assert.match(flat(out.diagnosis), /^\(A\) UTERUS WITH CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral salpingo-oophorectomy - HIGH-GRADE SEROUS CARCINOMA, tubo-ovarian, bilateral, 40 mm, ovarian surface involved; see synoptic report/);
+  assert.match(flat(out.diagnosis), /^\(A\) UTERUS with CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral salpingo-oophorectomy - HIGH-GRADE SEROUS CARCINOMA, tubo-ovarian, bilateral, 40 mm, ovarian surface involved; see synoptic report/);
   assert.match(out.diagnosis, /chemotherapy response score CRS2/);
   assert.equal(figo(out), 'IIIC');
 });
@@ -253,6 +253,23 @@ test('frozen link: prefillFromFrozen maps the ovarian scenario onto the synoptic
   assert.deepEqual(prefillFromFrozen(null), {});
 });
 
+test('frozen link: a frozen part with no side leaves the synoptic without one, and Checks asks', () => {
+  const fv = { scenario: 'Ovarian / adnexal mass', ovSide: '', ovSpecimen: '', ovSurface: 'Excrescences or papillary projections', ovType: 'high-grade serous carcinoma' };
+  const p = prefillFromFrozen(fv);
+  assert.deepEqual(p.procedures, ['Salpingo-oophorectomy, side not specified'], 'was the form default "Right salpingo-oophorectomy"');
+  assert.equal(p.tumourSite, '', 'was the form default "Right ovary"');
+  assert.equal(p.ovarianSurface, 'Present, side not specified', 'was "Present, right"');
+  assert.deepEqual(prefillFromFrozen({ ...fv, ovSide: 'Left' }).procedures, ['Left salpingo-oophorectomy'], 'no specimen picked: the form\'s procedure with the frozen side');
+  const out = run({ ...SOLO, ...p });
+  assert.equal(rows(out)['Tumour site'], 'Not specified');
+  assert.equal(rows(out)['Ovarian surface involvement'], 'Present, side not specified');
+  assert.doesNotMatch(out.diagnosis.split(' - ')[0], /\b(left|right)\b/i);
+  assert.match(out.macro, /The ovary is replaced by a /);
+  assert.ok(warns(out).some((m) => /^Choose the tumour site/.test(m)));
+  assert.ok(warns(out).some((m) => /^Choose the side of the ovarian surface/.test(m)));
+  assert.ok(!warns(run()).some((m) => /^Choose the (tumour site|side)/.test(m)), 'the worked example names its side');
+});
+
 test('07 frozen -> synoptic pair: one letter, one head line; the frozen line defers to the synoptic (Phase 7 linked-part retrofit)', () => {
   const fs_ = registry.frozen_section;
   const frozenValues = { ...Object.fromEntries(fs_.schema.fields.filter((f) => f.default !== undefined).map((f) => [f.id, f.default])), specimenName: 'Right ovary and fallopian tube', scenario: 'Ovarian / adnexal mass', ovSide: 'Right', ovSpecimen: 'Salpingo-oophorectomy', ovSizeMm: '120', ovWeightG: '350', ovSurface: 'Excrescences or papillary projections', ovCut: ['Solid areas', 'Necrosis'], ovaryResult: 'Malignant', ovType: 'high-grade serous carcinoma', ovBlocks: '2' };
@@ -291,7 +308,9 @@ test('golden fixtures reproduce byte-for-byte', () => {
     const opts = /^0[26]/.test(name) ? { printPTNM: true } : {};
     const out = run(patch, opts);
     const file = path.join(FIX, `${name}.json`);
-    const current = { templateId: 'ovary_ft_peritoneum', patch, options: opts, report: out.report, checks: out.issues };
+    // A deliberate edit's reason lives in the fixture's description; --update keeps it.
+    const kept = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')).description : undefined;
+    const current = { ...(kept ? { description: kept } : {}), templateId: 'ovary_ft_peritoneum', patch, options: opts, report: out.report, checks: out.issues };
     if (UPDATE || !fs.existsSync(file)) { fs.writeFileSync(file, JSON.stringify(current, null, 2) + '\n'); continue; }
     const saved = JSON.parse(fs.readFileSync(file, 'utf8'));
     assert.equal(out.report, saved.report, `${file} changed; re-run with --update only after a deliberate wording change`);

@@ -89,7 +89,7 @@ test('each lesion type yields the right capitalised diagnosis', () => {
   assert.equal(dx({ lesion: 'Sinonasal papilloma, inverted' }), `${head}SINONASAL PAPILLOMA, INVERTED TYPE; no evidence of dysplasia or malignancy; see comment`);
   assert.equal(dx({ lesion: 'Sinonasal papilloma, inverted', dysplasia: 'High grade' }), `${head}SINONASAL PAPILLOMA, INVERTED TYPE; HIGH-GRADE DYSPLASIA; no evidence of invasive malignancy; see comment`);
   assert.equal(dx({ lesion: 'Sinonasal papilloma, exophytic', dysplasia: 'Low grade' }), `${head}SINONASAL PAPILLOMA, EXOPHYTIC TYPE; low-grade dysplasia; no evidence of invasive malignancy`);
-  assert.equal(dx({ lesion: 'Granulomatous inflammation' }), `${head}NECROTISING GRANULOMATOUS INFLAMMATION WITH VASCULITIS; features suggestive of granulomatosis with polyangiitis - correlate with ANCA serology; no evidence of malignancy`);
+  assert.equal(dx({ lesion: 'Granulomatous inflammation' }), `${head}NECROTISING GRANULOMATOUS INFLAMMATION with VASCULITIS; features suggestive of granulomatosis with polyangiitis - correlate with ANCA serology; no evidence of malignancy`);
   assert.equal(dx({ lesion: 'Granulomatous inflammation', granulomaPattern: 'Sarcoid-type' }), `${head}NON-NECROTISING GRANULOMATOUS INFLAMMATION, sarcoid-type; no evidence of malignancy`);
   assert.equal(dx({ lesion: 'Granulomatous inflammation', granulomaPattern: 'TB - AFB' }), `${head}NECROTISING GRANULOMATOUS INFLAMMATION; tuberculosis to be excluded (AFB / culture); no evidence of malignancy`);
   assert.equal(dx({ lesion: MALIGNANT }), `${head}MALIGNANT NEOPLASM - SEE COMMENT`);
@@ -114,7 +114,7 @@ test('allergic mucin and fungal hyphae: GMS / PAS sentences and diagnosis clause
 test('invasive fungal sinusitis leads the diagnosis and adds the urgent clinical correlation comment', () => {
   const r = run(one({ fungus: 'Invasive, angioinvasion' }));
   assert.ok(r.microscopy.includes('GMS and PAS stains demonstrate fungal hyphae invading the mucosa with angioinvasion and associated necrosis, in keeping with invasive fungal sinusitis (see comment).'));
-  assert.equal(r.diagnosis, 'NASAL CAVITY, polyps, polypectomy - INVASIVE FUNGAL SINUSITIS WITH ANGIOINVASION - SEE COMMENT; inflammatory (oedematous) sinonasal polyps; no evidence of dysplasia or malignancy');
+  assert.equal(r.diagnosis, 'NASAL CAVITY, polyps, polypectomy - INVASIVE FUNGAL SINUSITIS with ANGIOINVASION - SEE COMMENT; inflammatory (oedematous) sinonasal polyps; no evidence of dysplasia or malignancy');
   assert.equal(r.comment, 'Angioinvasive fungal hyphae are present. Urgent clinical correlation advised.');
   assert.ok(!r.comment.includes('{parts}'));
 });

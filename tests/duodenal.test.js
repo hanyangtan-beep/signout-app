@@ -44,13 +44,13 @@ test('default single part is the house normal paragraph with no part letter', ()
   const out = run(one({}));
   assert.equal(out.specimens, 'Duodenum, D2, biopsy');
   assert.equal(out.microscopy, 'Sections show a piece of duodenal mucosa. The villous and crypt architecture are intact. Intraepithelial lymphocytes are not increased. The lamina propria contains moderate numbers of plasma cells, lymphocytes and eosinophils. Metaplastic changes are absent. No cryptitis, crypt abscess, granuloma, viral cytopathic change or parasite is present. There is no evidence of ulceration, dysplasia or malignancy.');
-  assert.equal(out.diagnosis, 'DUODENUM, D2, biopsy - DUODENAL MUCOSA WITH NO SIGNIFICANT HISTOLOGICAL ABNORMALITY');
+  assert.equal(out.diagnosis, 'DUODENUM, D2, biopsy - DUODENAL MUCOSA with NO SIGNIFICANT HISTOLOGICAL ABNORMALITY');
 });
 
 test('coeliac pattern: Marsh 3b diagnosis, interpretive sentence, and option to suppress it', () => {
   const values = { pieces: '4', villi: 'Marked blunting', iel: 'Increased', ielCount: '45', cryptHyperplasia: 'Present', lpInflammation: 'Increased chronic inflammation' };
   const out = run(one(values));
-  assert.equal(out.diagnosis, 'DUODENUM, D2, biopsy - VILLOUS ATROPHY WITH INTRAEPITHELIAL LYMPHOCYTOSIS AND CRYPT HYPERPLASIA (MARSH 3b), consistent with coeliac disease in the appropriate serological context; no evidence of dysplasia or malignancy');
+  assert.equal(out.diagnosis, 'DUODENUM, D2, biopsy - VILLOUS ATROPHY with INTRAEPITHELIAL LYMPHOCYTOSIS AND CRYPT HYPERPLASIA (MARSH 3b), consistent with coeliac disease in the appropriate serological context; no evidence of dysplasia or malignancy');
   assert.match(out.microscopy, /^Sections show 4 pieces of duodenal mucosa\. The villi are markedly blunted, with crypt hyperplasia and a reduced villous to crypt ratio\. Intraepithelial lymphocytes are increased \(approximately 45 per 100 enterocytes\), including at the villous tips\./);
   assert.match(out.microscopy, /consistent with coeliac disease in the appropriate serological context; other causes/);
   const c = one(values);
@@ -69,7 +69,7 @@ test('Marsh 1 and blunting without IELs are flagged with a comment', () => {
 
 test('peptic duodenitis, giardiasis, Helicobacter and adenoma clauses', () => {
   const peptic = run(one({ specimenName: 'Duodenal bulb', brunner: 'Brunner gland hyperplasia', foveolar: 'Present', activity: 'Erosion', hpylori: 'Present' }));
-  assert.equal(peptic.diagnosis, 'DUODENUM, bulb, biopsy - ACTIVE PEPTIC DUODENITIS WITH EROSION; Helicobacter-like organisms present; no evidence of dysplasia or malignancy');
+  assert.equal(peptic.diagnosis, 'DUODENUM, bulb, biopsy - ACTIVE PEPTIC DUODENITIS with EROSION; Helicobacter-like organisms present; no evidence of dysplasia or malignancy');
   assert.match(peptic.microscopy, /There is surface erosion with reactive epithelial change and neutrophilic inflammation\. Brunner gland hyperplasia and gastric foveolar metaplasia of the surface epithelium are present\. Helicobacter-like organisms/);
   assert.doesNotMatch(peptic.microscopy, /No cryptitis/);
   assert.match(peptic.microscopy, /There is no evidence of ulceration, dysplasia or malignancy\.$/);
@@ -80,7 +80,7 @@ test('peptic duodenitis, giardiasis, Helicobacter and adenoma clauses', () => {
   assert.doesNotMatch(giardia.microscopy, /or parasite is present/);
 
   const adenoma = run(one({ neoplasia: 'Adenoma, low grade dysplasia' }));
-  assert.equal(adenoma.diagnosis, 'DUODENUM, D2, biopsy - TUBULAR ADENOMA WITH LOW GRADE DYSPLASIA');
+  assert.equal(adenoma.diagnosis, 'DUODENUM, D2, biopsy - TUBULAR ADENOMA with LOW GRADE DYSPLASIA');
   assert.match(adenoma.microscopy, /There is no evidence of ulceration\.$/);
 });
 

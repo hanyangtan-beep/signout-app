@@ -90,6 +90,16 @@
         "field": "luSpecimen",
         "from": "options",
         "scenario": "Lung wedge / nodule"
+      },
+      {
+        "field": "ovSide",
+        "from": "side",
+        "scenario": "Ovarian / adnexal mass"
+      },
+      {
+        "field": "slnSide",
+        "from": "side",
+        "scenario": "Sentinel lymph node"
       }
     ]
   },

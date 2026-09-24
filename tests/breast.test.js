@@ -70,7 +70,7 @@ test('calcification target not represented adds the radiological correlation sen
 test('B3 lesions: atypia flag, recommendation sentence and diagnosis wording', () => {
   const out = run(part(brCase(1), 0, { category: 'B3', b3Lesion: 'Intraduct papilloma', b3Atypia: 'Present', b3Advice: 'Excision', specimenName: 'retroareolar' }));
   assert.ok(out.microscopy.includes('The epithelium shows focal cytological atypia. There is no evidence of invasive malignancy. Excision is recommended.'));
-  assert.equal(out.diagnosis, 'BREAST, right retroareolar, core biopsy - INTRADUCT PAPILLOMA WITH ATYPIA (B3)');
+  assert.equal(out.diagnosis, 'BREAST, right retroareolar, core biopsy - INTRADUCT PAPILLOMA with ATYPIA (B3)');
   const adh = run(part(brCase(1), 0, { category: 'B3', b3Lesion: 'Atypical ductal hyperplasia', b3Advice: 'Multidisciplinary discussion', specimenName: '' }));
   assert.ok(adh.microscopy.endsWith('The features are those of atypical ductal hyperplasia. There is no evidence of invasive malignancy. Multidisciplinary discussion is recommended.'));
   assert.equal(adh.diagnosis, 'BREAST, right, core biopsy - ATYPICAL DUCTAL HYPERPLASIA (B3)');

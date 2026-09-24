@@ -82,7 +82,7 @@ test('example: 25 g TURP, BPH with chronic prostatitis, no carcinoma', () => {
   assert.equal(r.macro, 'Received in formalin are multiple chips of prostatic tissue weighing 25 g in aggregate and measuring 6 x 5 x 2 cm. All embedded in 8 blocks.');
   assert.equal(r.blockKey, '(1-8) Prostatic chips, all embedded.');
   assert.equal(r.microscopy, 'Sections show chips of prostatic tissue with glandular and stromal nodular hyperplasia. The glands are lined by a layer of epithelial cells and basal cells. Chronic inflammatory cells are present within the stroma. There is no evidence of high grade prostatic intraepithelial neoplasia or malignancy.');
-  assert.equal(r.diagnosis, `${DX}BENIGN PROSTATIC HYPERPLASIA WITH CHRONIC PROSTATITIS; no evidence of malignancy`);
+  assert.equal(r.diagnosis, `${DX}BENIGN PROSTATIC HYPERPLASIA with CHRONIC PROSTATITIS; no evidence of malignancy`);
   assert.equal(r.comment, '');
   assert.ok(!r.report.includes('(A)'));
   assert.ok(!r.report.includes('undefined'));
@@ -129,10 +129,10 @@ test('two-part case keeps (A)/(B) prefixes on every block', () => {
 test('each inflammation option yields the right capitalised diagnosis', () => {
   const dx = (inflammation) => run(one({ inflammation })).diagnosis;
   assert.equal(dx('Absent'), `${DX}BENIGN PROSTATIC HYPERPLASIA; no evidence of malignancy`);
-  assert.equal(dx('Chronic prostatitis'), `${DX}BENIGN PROSTATIC HYPERPLASIA WITH CHRONIC PROSTATITIS; no evidence of malignancy`);
-  assert.equal(dx('Acute and chronic prostatitis'), `${DX}BENIGN PROSTATIC HYPERPLASIA WITH ACUTE AND CHRONIC PROSTATITIS; no evidence of malignancy`);
-  assert.equal(dx('Granulomatous prostatitis – see comment'), `${DX}BENIGN PROSTATIC HYPERPLASIA WITH GRANULOMATOUS PROSTATITIS; see comment; no evidence of malignancy`);
-  assert.equal(dx('Post-BCG granulomatous prostatitis'), `${DX}BENIGN PROSTATIC HYPERPLASIA WITH POST-BCG GRANULOMATOUS PROSTATITIS; no evidence of malignancy`);
+  assert.equal(dx('Chronic prostatitis'), `${DX}BENIGN PROSTATIC HYPERPLASIA with CHRONIC PROSTATITIS; no evidence of malignancy`);
+  assert.equal(dx('Acute and chronic prostatitis'), `${DX}BENIGN PROSTATIC HYPERPLASIA with ACUTE AND CHRONIC PROSTATITIS; no evidence of malignancy`);
+  assert.equal(dx('Granulomatous prostatitis – see comment'), `${DX}BENIGN PROSTATIC HYPERPLASIA with GRANULOMATOUS PROSTATITIS; see comment; no evidence of malignancy`);
+  assert.equal(dx('Post-BCG granulomatous prostatitis'), `${DX}BENIGN PROSTATIC HYPERPLASIA with POST-BCG GRANULOMATOUS PROSTATITIS; no evidence of malignancy`);
 });
 
 test('hyperplasia pattern and inflammation sentences follow the house paragraph', () => {
@@ -159,7 +159,7 @@ test('secondary benign findings: infarction, basal cell hyperplasia, urothelial 
 test('incidental carcinoma: Gleason / Grade Group, % of tissue, chips and pT1a', () => {
   const r = run(one({ inflammation: 'Chronic prostatitis', carcinoma: CA, primary: '3', secondary: '3', pctInvolved: '3', chipsInvolved: '2', chipsTotal: '40' }));
   assert.equal(r.microscopy, 'Sections show chips of prostatic tissue with glandular and stromal nodular hyperplasia. The glands are lined by a layer of epithelial cells and basal cells. Chronic inflammatory cells are present within the stroma. Infiltrating acinar adenocarcinoma is seen, Gleason score 3+3=6 (Grade Group 1), involving approximately 3% of the tissue (2 of 40 chips). Perineural invasion is not identified. The tumour involves 5% or less of the resected tissue (pT1a).');
-  assert.equal(r.diagnosis, `${DX}BENIGN PROSTATIC HYPERPLASIA WITH CHRONIC PROSTATITIS; INCIDENTAL ACINAR ADENOCARCINOMA, Gleason score 3+3=6 (Grade Group 1), involving 3% of chips (pT1a)`);
+  assert.equal(r.diagnosis, `${DX}BENIGN PROSTATIC HYPERPLASIA with CHRONIC PROSTATITIS; INCIDENTAL ACINAR ADENOCARCINOMA, Gleason score 3+3=6 (Grade Group 1), involving 3% of chips (pT1a)`);
   assert.ok(!r.microscopy.includes('no evidence'));
   assert.ok(!r.diagnosis.includes('no evidence'));
   const plain = run(one({ carcinoma: CA, pctInvolved: '3' })).diagnosis;

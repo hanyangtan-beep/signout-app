@@ -23,7 +23,7 @@ test('example: bilateral tonsils with cryptitis and actinomyces reads like the h
   assert.equal(r.macro, 'Received in formalin are two tonsils labelled left and right. The left tonsil measures 2.5 x 2 x 1.5 cm and weighs 4 g; the right tonsil measures 2.4 x 2 x 1.4 cm and weighs 4 g. The surfaces are cryptic and the cut surfaces are unremarkable. Representative sections in 2 blocks.');
   assert.equal(r.blockKey, '(1) Left tonsil. (2) Right tonsil.');
   assert.equal(r.microscopy, 'Sections of the tonsils show reactive lymphoid follicles with germinal centres. The surface is covered by benign squamous epithelium. The crypts contain keratinous debris and neutrophils, in keeping with cryptitis. A few colonies of actinomyces are noted on the surface. There is no evidence of dysplasia or malignancy.');
-  assert.equal(r.diagnosis, 'TONSILS, bilateral, tonsillectomy - REACTIVE FOLLICULAR LYMPHOID HYPERPLASIA WITH CHRONIC TONSILLITIS; actinomyces colonies present; no evidence of malignancy');
+  assert.equal(r.diagnosis, 'TONSILS, bilateral, tonsillectomy - REACTIVE FOLLICULAR LYMPHOID HYPERPLASIA with CHRONIC TONSILLITIS; actinomyces colonies present; no evidence of malignancy');
   assert.equal(r.comment, '');
   assert.ok(!r.report.includes('(A)'));
 });
@@ -61,14 +61,14 @@ test('two-part case keeps (A)/(B) on every block', () => {
   assert.equal(r.macro, '(A) Received in formalin is a left tonsil measuring 2 x 1.5 x 1 cm and weighing 3 g. The surface is cryptic and the cut surface is unremarkable. Representative sections in 1 block.\n\n(B) Received in formalin is a right tonsil measuring 2.2 x 1.5 x 1 cm and weighing 3.5 g. The surface is cryptic and the cut surface is unremarkable. Representative sections in 1 block.');
   assert.equal(r.blockKey, '(A) (1) Left tonsil.\n(B) (1) Right tonsil.');
   assert.match(r.microscopy, /^\(A\) Sections of the tonsil show reactive lymphoid follicles[\s\S]*\n\n\(B\) Sections of the tonsil show reactive lymphoid follicles with germinal centres\. The surface is covered by benign squamous epithelium\. There is stromal fibrosis, in keeping with chronic tonsillitis\. There is no evidence of dysplasia or malignancy\.$/);
-  assert.equal(r.diagnosis, '(A) LEFT TONSIL, tonsillectomy - REACTIVE FOLLICULAR LYMPHOID HYPERPLASIA; no evidence of malignancy\n(B) RIGHT TONSIL, tonsillectomy - REACTIVE FOLLICULAR LYMPHOID HYPERPLASIA WITH CHRONIC TONSILLITIS; no evidence of malignancy');
+  assert.equal(r.diagnosis, '(A) LEFT TONSIL, tonsillectomy - REACTIVE FOLLICULAR LYMPHOID HYPERPLASIA; no evidence of malignancy\n(B) RIGHT TONSIL, tonsillectomy - REACTIVE FOLLICULAR LYMPHOID HYPERPLASIA with CHRONIC TONSILLITIS; no evidence of malignancy');
 });
 
 test('each specimen type and lymphoid result yields the right capitalised diagnosis', () => {
   const dx = (values) => run(one(values)).diagnosis;
   assert.equal(dx({}), 'TONSILS, bilateral, tonsillectomy - REACTIVE FOLLICULAR LYMPHOID HYPERPLASIA; no evidence of malignancy');
-  assert.equal(dx({ cryptitis: 'Present' }), 'TONSILS, bilateral, tonsillectomy - REACTIVE FOLLICULAR LYMPHOID HYPERPLASIA WITH CHRONIC TONSILLITIS; no evidence of malignancy');
-  assert.equal(dx({ fibrosis: 'Present', actinomyces: 'Present' }), 'TONSILS, bilateral, tonsillectomy - REACTIVE FOLLICULAR LYMPHOID HYPERPLASIA WITH CHRONIC TONSILLITIS; actinomyces colonies present; no evidence of malignancy');
+  assert.equal(dx({ cryptitis: 'Present' }), 'TONSILS, bilateral, tonsillectomy - REACTIVE FOLLICULAR LYMPHOID HYPERPLASIA with CHRONIC TONSILLITIS; no evidence of malignancy');
+  assert.equal(dx({ fibrosis: 'Present', actinomyces: 'Present' }), 'TONSILS, bilateral, tonsillectomy - REACTIVE FOLLICULAR LYMPHOID HYPERPLASIA with CHRONIC TONSILLITIS; actinomyces colonies present; no evidence of malignancy');
   assert.equal(dx({ lymphoidHyperplasia: 'Unremarkable lymphoid tissue' }), 'TONSILS, bilateral, tonsillectomy - UNREMARKABLE LYMPHOID TISSUE; no evidence of malignancy');
   assert.equal(dx({ lymphoidHyperplasia: 'Unremarkable lymphoid tissue', fibrosis: 'Present' }), 'TONSILS, bilateral, tonsillectomy - CHRONIC TONSILLITIS; no evidence of malignancy');
   assert.equal(dx({ specimenName: 'Left tonsil, tonsillectomy' }), 'LEFT TONSIL, tonsillectomy - REACTIVE FOLLICULAR LYMPHOID HYPERPLASIA; no evidence of malignancy');

@@ -320,6 +320,7 @@
         "Present, right",
         "Present, left",
         "Present, bilateral",
+        "Present, side not specified",
         "Cannot be determined"
       ],
       "default": "Not identified"

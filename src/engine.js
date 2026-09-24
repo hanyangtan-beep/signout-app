@@ -1,7 +1,7 @@
 // Generic schema engine: builds part defaults, evaluates visibility, and assembles
 // the report from a schema + generator module. Runs unchanged in the browser and in Node.
 
-import { applyStyle } from './style.js';
+import { applyStyle, houseConnectors } from './style.js';
 
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -368,6 +368,9 @@ export function generateCase(templates, caseState) {
     const summary = ctx.gen.summary(ctx.parts, ctx);
     if (summary && summary.trim() !== '') diagnosis += `\n\n${styled(id, summary)}`;
   }
+  // House connectors on the whole printed diagnosis, linked organ phrases and summaries included
+  // ("ADENOMA with LOW GRADE DYSPLASIA"; src/style.js). Typed edits are applied later, verbatim.
+  diagnosis = houseConnectors(diagnosis);
 
   // A generator may print its own extra per-letter lines (ovary: contralateral adnexa, omentum, nodes
   // typed into `otherParts`); the case then behaves as multi-part and keeps "(A)".

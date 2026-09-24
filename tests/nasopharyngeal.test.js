@@ -134,7 +134,7 @@ test('other malignancies: papillary adenocarcinoma, salivary type and free-text 
 
 test('benign pick-list: chronicity, surface epithelium, adenoid remnant, Tornwaldt cyst', () => {
   const dx = (values) => run(one(values)).diagnosis;
-  assert.equal(dx({ finding: 'Chronic nasopharyngitis with lymphoid follicles' }), 'NASOPHARYNX, biopsy - CHRONIC NASOPHARYNGITIS WITH LYMPHOID FOLLICLES; no evidence of malignancy');
+  assert.equal(dx({ finding: 'Chronic nasopharyngitis with lymphoid follicles' }), 'NASOPHARYNX, biopsy - CHRONIC NASOPHARYNGITIS with LYMPHOID FOLLICLES; no evidence of malignancy');
   assert.equal(dx({ finding: 'Benign surface epithelium (respiratory / squamous)' }), 'NASOPHARYNX, biopsy - BENIGN NASOPHARYNGEAL EPITHELIUM AND LYMPHOID TISSUE; no evidence of malignancy');
   assert.equal(dx({ finding: 'Adenoid remnant' }), 'NASOPHARYNX, biopsy - ADENOID REMNANT; no evidence of malignancy');
   assert.equal(dx({ finding: 'Tornwaldt cyst' }), 'NASOPHARYNX, biopsy - TORNWALDT CYST; no evidence of malignancy');

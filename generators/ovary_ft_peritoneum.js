@@ -261,7 +261,8 @@ export function macro(part, ctx) {
   s.push(`The specimen consists of ${procPhrase}${meas ? ` (${meas})` : ''}${morc ? `; the ${lc1(morc)} is morcellated` : ''}.`);
   const size = num(v.tumourSizeMm); const dimsT = stripDot(v.tumourDims);
   const sizeText = size !== null ? `${fmt(size)} mm in greatest dimension${dimsT ? ` (${dimsT} mm)` : ''}` : dimsT ? `${dimsT} mm` : stripDot(v.sizeCannot) ? `of indeterminate size (${lc1(stripDot(v.sizeCannot))})` : '';
-  const site = v.tumourSite || 'Right ovary';
+  // A blank site (a linked frozen part that named no side) reads "The ovary is replaced by...".
+  const site = v.tumourSite || 'Ovary';
   const siteWord = site === 'Other (specify)' ? stripDot(v.tumourSiteDetail) || 'adnexa' : site === S.SITE_PERITONEUM ? 'peritoneum' : lc1(site.replace(/, laterality cannot be determined/, '').replace(/tubo-ovarian$/, /^Bilateral/.test(site) ? 'ovaries and fallopian tubes' : 'ovary and fallopian tube'));
   const cyst = arr(v.cutSurface).some((c) => /cyst/i.test(c)) && !arr(v.cutSurface).includes('Solid areas');
   if (site === S.SITE_PERITONEUM) s.push(`The ovaries and fallopian tubes are grossly unremarkable${sizeText ? `; the peritoneal tumour measures ${sizeText}` : ''}.`);
@@ -336,7 +337,7 @@ export function synoptic(part, ctx) {
       v.hysterectomyType && !na(v.hysterectomyType) && v.hysterectomyType !== 'Not specified' ? item('Hysterectomy type', v.hysterectomyType) : null,
       ...(integrity.length ? integrity.map(([o, s]) => item(`Specimen integrity (${lc1(o)})`, s)) : [item('Specimen integrity', 'Not applicable')]),
       stripDot(v.morcellated) ? item('Morcellated specimen', stripDot(v.morcellated)) : null,
-      item('Tumour site', `${v.tumourSite === 'Other (specify)' ? siteDetail || 'Other' : specify(v.tumourSite || 'Right ovary')}${v.tumourSite !== 'Other (specify)' && siteDetail ? ` (${siteDetail})` : ''}`),
+      item('Tumour site', `${v.tumourSite === 'Other (specify)' ? siteDetail || 'Other' : (v.tumourSite ? specify(v.tumourSite) : 'Not specified')}${v.tumourSite !== 'Other (specify)' && siteDetail ? ` (${siteDetail})` : ''}`),
       item('Ovarian surface involvement', v.ovarianSurface || 'Not identified'),
       item('Fallopian tube surface involvement', v.tubalSurface || 'Not identified'),
       item('Tumour size', sizeText)
@@ -438,11 +439,16 @@ export function prefillFromFrozen(fv) {
   const s = side.toLowerCase();
   const spec = fv.ovSpecimen || '';
   const out = {};
-  if (spec === 'Salpingo-oophorectomy') out.procedures = [side === 'Bilateral' ? 'Bilateral salpingo-oophorectomy' : side ? `${side} salpingo-oophorectomy` : 'Salpingo-oophorectomy, side not specified'];
+  // No side is guessed (2026-09-24). Until then a frozen part with no side, or with no specimen picked,
+  // left the synoptic on its own defaults ("Right ovary", "Right salpingo-oophorectomy") and a surface
+  // with excrescences became "Present, right". Now the side is only ever the frozen part's: with none, the
+  // tumour site is blank, the procedure and the surface say "side not specified", and Checks asks. With no
+  // specimen picked the procedure keeps the form's salpingo-oophorectomy but takes the frozen side.
+  if (!spec || spec === 'Salpingo-oophorectomy') out.procedures = [side === 'Bilateral' ? 'Bilateral salpingo-oophorectomy' : side ? `${side} salpingo-oophorectomy` : 'Salpingo-oophorectomy, side not specified'];
   else if (spec === 'Oophorectomy') out.procedures = [side && side !== 'Bilateral' ? `${side} oophorectomy` : 'Oophorectomy, side not specified'];
   else if (spec === 'Ovarian cystectomy') out.procedures = [side && side !== 'Bilateral' ? `${side} ovarian cystectomy` : 'Other (specify)'];
   else if (spec) { out.procedures = ['Other (specify)']; out.procedureOther = `${s ? `${s} ` : ''}${lc1(spec.replace(/, NOS$/, ''))}`; }
-  if (side) out.tumourSite = side === 'Bilateral' ? 'Bilateral ovaries' : `${side} ovary`;
+  out.tumourSite = side === 'Bilateral' ? 'Bilateral ovaries' : side ? `${side} ovary` : '';
   const rec = fv.ovReceived || 'Intact';
   const ovInteg = /^Ruptured/.test(rec) ? 'Capsule ruptured, preoperative or unknown timing' : /^Fragmented/.test(rec) ? 'Fragmented' : /^Opened/.test(rec) ? 'Capsule ruptured, intraoperative (surgical spill)' : 'Capsule intact';
   const withTube = spec === 'Salpingo-oophorectomy';
@@ -452,7 +458,7 @@ export function prefillFromFrozen(fv) {
   out.integrityLT = withTube && (side === 'Left' || side === 'Bilateral') ? 'Serosa intact' : 'Not applicable';
   if (num(fv.ovSizeMm) !== null) out.tumourSizeMm = String(fv.ovSizeMm).trim();
   if (num(fv.ovWeightG) !== null) out.weight = String(fv.ovWeightG).trim();
-  out.ovarianSurface = fv.ovSurface === 'Excrescences or papillary projections' ? `Present, ${s || 'right'}` : fv.ovSurface === 'Not assessable' ? 'Cannot be determined' : 'Not identified';
+  out.ovarianSurface = fv.ovSurface === 'Excrescences or papillary projections' ? (s ? `Present, ${s}` : 'Present, side not specified') : fv.ovSurface === 'Not assessable' ? 'Cannot be determined' : 'Not identified';
   if (Array.isArray(fv.ovCut) && fv.ovCut.length) out.cutSurface = [...fv.ovCut];
   const type = FROZEN_TYPE[(fv.ovType || '').toLowerCase()];
   if (type) out.histType = type;
@@ -471,6 +477,8 @@ export function validate(part) {
   const warn = (m, field) => at('warn', m, field);
   const info = (m, field) => at('info', m, field);
   const t = v.histType || '';
+  if (!v.tumourSite) warn('Choose the tumour site: none is set, so the synoptic reads "Not specified".', 'tumourSite');
+  if (v.ovarianSurface === 'Present, side not specified') warn('Choose the side of the ovarian surface involvement.', 'ovarianSurface');
   if (/\(specify/.test(t) && !stripDot(v.histTypeOther)) err('Histologic type needs the types / percentages or the specified type.', 'histTypeOther');
   if (num(v.tumourSizeMm) === null && !stripDot(v.tumourDims) && !stripDot(v.sizeCannot)) warn('Tumour size not recorded.', 'tumourSizeMm');
   const st = staging(part);

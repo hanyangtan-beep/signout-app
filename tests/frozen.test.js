@@ -141,7 +141,7 @@ test('free-text scenario and additional microscopy', () => {
   const out = generate(schema, generator, cs);
   assert.equal(out.intraop, 'Fibrous tissue with chronic inflammation; no malignancy.');
   assert.ok(out.microscopy.endsWith('There is no evidence of malignancy. A foreign body giant cell reaction is noted.'));
-  assert.equal(out.diagnosis, 'PERITONEAL NODULE, frozen section - FIBROUS TISSUE WITH CHRONIC INFLAMMATION; NO MALIGNANCY');
+  assert.equal(out.diagnosis, 'PERITONEAL NODULE, frozen section - FIBROUS TISSUE with CHRONIC INFLAMMATION; NO MALIGNANCY');
 });
 
 test('multiple pieces: aggregate wording and representative sampling', () => {

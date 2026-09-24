@@ -98,7 +98,7 @@ test('lymph node: EBUS-TBNA station, IHC in the microscopy paragraph, Sydney tag
   const out = fromExample('lymph_node_fna');
   assert.equal(out.specimens, 'Lymph node, station 7, EBUS-TBNA');
   assert.ok(out.microscopy.includes('Immunostaining on the cell block shows the tumour cells to be positive for TTF-1 and CK7 and negative for p40. Features are those of metastatic adenocarcinoma, consistent with lung primary.'));
-  assert.equal(out.diagnosis, 'LYMPH NODE, station 7, EBUS-TBNA - METASTATIC ADENOCARCINOMA, CONSISTENT WITH LUNG PRIMARY (Sydney System L5: Malignant)');
+  assert.equal(out.diagnosis, 'LYMPH NODE, station 7, EBUS-TBNA - METASTATIC ADENOCARCINOMA, consistent with LUNG PRIMARY (Sydney System L5: Malignant)');
   assert.ok(!out.report.includes('does not exclude metastatic disease'));
   const neg = fromExample('lymph_node_fna', { category: 'L2. Benign', features: ['Polymorphous lymphoid population', 'Lymphoglandular bodies'], ancillary: '' });
   assert.equal(neg.diagnosis, 'LYMPH NODE, station 7, EBUS-TBNA - NO EVIDENCE OF MALIGNANCY; REACTIVE LYMPHOID POPULATION (Sydney System L2: Benign)');
@@ -109,7 +109,7 @@ test('effusion: fluid volume line, TIS categories and ROM, negative wording', ()
   const out = fromExample('effusion_cytology');
   assert.equal(out.specimens, 'Pleural fluid, right');
   assert.equal(out.macro, 'Received is 50 ml of blood-stained fluid, processed as cytospin (2 slides) and cell block (1 block).');
-  assert.equal(out.diagnosis, 'PLEURAL FLUID, right - METASTATIC ADENOCARCINOMA, CONSISTENT WITH LUNG PRIMARY (TIS: Malignant)');
+  assert.equal(out.diagnosis, 'PLEURAL FLUID, right - METASTATIC ADENOCARCINOMA, consistent with LUNG PRIMARY (TIS: Malignant)');
   const neg = fromExample('effusion_cytology', { category: 'Negative for malignancy', features: ['Reactive mesothelial cells', 'Lymphocyte-predominant'], ancillary: '' });
   assert.equal(neg.microscopy, 'The cytospin (2 slides) and cell block (1 slide) are adequate for evaluation and show reactive mesothelial cells and a lymphocyte-predominant background. There is no evidence of malignancy.');
   assert.equal(neg.diagnosis, 'PLEURAL FLUID, right - NO EVIDENCE OF MALIGNANCY (TIS: Negative for malignancy)');
@@ -180,7 +180,9 @@ test('golden fixtures reproduce byte-for-byte', () => {
   cases.forEach(([id, patch], i) => {
     const out = fromExample(id, patch);
     const file = path.join(FIX, `${String(i + 1).padStart(2, '0')}-${id}.json`);
-    const current = { templateId: id, patch, report: out.report };
+    // A deliberate edit's reason lives in the fixture's description; --update keeps it.
+    const kept = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')).description : undefined;
+    const current = { ...(kept ? { description: kept } : {}), templateId: id, patch, report: out.report };
     if (UPDATE || !fs.existsSync(file)) {
       fs.writeFileSync(file, JSON.stringify(current, null, 2) + '\n');
       return;

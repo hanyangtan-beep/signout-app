@@ -77,7 +77,7 @@ Additional findings
 - Leiomyomas
 
 DIAGNOSIS:
-UTERUS WITH CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral
+UTERUS with CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral
 salpingo-oophorectomy with sentinel lymph node biopsy
 - ENDOMETRIOID CARCINOMA, FIGO grade 1, invading less than half of the
   myometrium

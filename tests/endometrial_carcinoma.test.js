@@ -86,7 +86,7 @@ test('example case: low-grade endometrioid IA2 NSMP', () => {
   assert.equal(r['Molecular classification'], 'No specific molecular profile (NSMP)');
   assert.equal(r['Pelvic lymph nodes'], '3 examined; 0 involved; includes sentinel lymph node(s)');
   assert.equal(out.diagnosis, [
-    'UTERUS WITH CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral',
+    'UTERUS with CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral',
     'salpingo-oophorectomy with sentinel lymph node biopsy',
     '- ENDOMETRIOID CARCINOMA, FIGO grade 1, invading less than half of the',
     '  myometrium',
@@ -94,7 +94,7 @@ test('example case: low-grade endometrioid IA2 NSMP', () => {
     '- 0 of 3 pelvic lymph nodes involved',
     '- molecular class NSMP'
   ].join('\n'));
-  assert.equal(flat(out.diagnosis), 'UTERUS WITH CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral salpingo-oophorectomy with sentinel lymph node biopsy - ENDOMETRIOID CARCINOMA, FIGO grade 1, invading less than half of the myometrium; no lymphovascular space invasion; cervix and adnexa uninvolved; 0 of 3 pelvic lymph nodes involved; molecular class NSMP');
+  assert.equal(flat(out.diagnosis), 'UTERUS with CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral salpingo-oophorectomy with sentinel lymph node biopsy - ENDOMETRIOID CARCINOMA, FIGO grade 1, invading less than half of the myometrium; no lymphovascular space invasion; cervix and adnexa uninvolved; 0 of 3 pelvic lymph nodes involved; molecular class NSMP');
   assert.equal(figo(out, 2009), 'IA');
   assert.equal(figo(out, 2023), 'IA2 - invasion of less than half of the myometrium, non-aggressive histotype');
   assert.deepEqual(out.issues.filter((i) => i.level !== 'info'), []);
@@ -319,7 +319,9 @@ test('golden fixtures reproduce byte-for-byte', () => {
     const opts = name.startsWith('02') ? { printPTNM: true } : {};
     const out = run(patch, opts);
     const file = path.join(FIX, `${name}.json`);
-    const current = { templateId: 'endometrial_carcinoma', patch, options: opts, report: out.report, checks: out.issues };
+    // A deliberate edit's reason lives in the fixture's description; --update keeps it.
+    const kept = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')).description : undefined;
+    const current = { ...(kept ? { description: kept } : {}), templateId: 'endometrial_carcinoma', patch, options: opts, report: out.report, checks: out.issues };
     if (UPDATE || !fs.existsSync(file)) { fs.writeFileSync(file, JSON.stringify(current, null, 2) + '\n'); continue; }
     const saved = JSON.parse(fs.readFileSync(file, 'utf8'));
     assert.equal(out.report, saved.report, `${file} changed; re-run with --update only after a deliberate wording change`);

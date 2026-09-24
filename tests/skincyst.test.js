@@ -107,7 +107,7 @@ test('each cyst type yields the right capitalised diagnosis', () => {
   assert.equal(dx('Dermoid cyst'), 'SKIN, right axilla seb cyst, excision - DERMOID CYST');
   assert.equal(dx('Hybrid cyst'), 'SKIN, right axilla seb cyst, excision - HYBRID CYST');
   assert.equal(dx('Steatocystoma'), 'SKIN, right axilla seb cyst, excision - STEATOCYSTOMA');
-  assert.equal(dx('Ruptured cyst with no residual lining', { rupture: 'Present' }), 'SKIN, right axilla seb cyst, excision - RUPTURED CYST WITH FOREIGN BODY GRANULOMATOUS REACTION; no residual cyst lining identified; no evidence of malignancy');
+  assert.equal(dx('Ruptured cyst with no residual lining', { rupture: 'Present' }), 'SKIN, right axilla seb cyst, excision - RUPTURED CYST with FOREIGN BODY GRANULOMATOUS REACTION; no residual cyst lining identified; no evidence of malignancy');
   assert.equal(dx('Ruptured cyst with no residual lining', { rupture: 'Absent' }), 'SKIN, right axilla seb cyst, excision - CHRONIC INFLAMMATION (see microscopic examination); no residual cyst lining identified; no evidence of malignancy');
 });
 

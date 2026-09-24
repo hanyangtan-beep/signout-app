@@ -92,7 +92,7 @@ test('macro: twin, eccentric velamentous variants, two-vessel cord, membranes an
 test('chorioamnionitis with funisitis: house microscopy clauses and Amsterdam-staged diagnosis', () => {
   const r = run(one({ chorioamnionitis: 'Stage 2 - acute chorioamnionitis', fetalResponse: 'Stage 1 - umbilical phlebitis or chorionic vasculitis' }));
   assert.equal(r.microscopy, house('Sections of the placenta show third-trimester chorionic villi with no inflammation. The umbilical cord contains two arteries and one vein with mild neutrophilic infiltrates in the wall of the umbilical vein, consistent with funisitis (fetal stage 1). Mild neutrophilic infiltration is seen in the chorion and amnion, consistent with acute chorioamnionitis (maternal stage 2). There is no evidence of villitis.'));
-  assert.equal(r.diagnosis, house('PLACENTA, singleton, third trimester - ACUTE CHORIOAMNIONITIS (maternal stage 2) WITH FUNISITIS (fetal stage 1)'));
+  assert.equal(r.diagnosis, house('PLACENTA, singleton, third trimester - ACUTE CHORIOAMNIONITIS (maternal stage 2) with FUNISITIS (fetal stage 1)'));
 });
 
 test('each maternal and fetal stage yields the right capitalised diagnosis', () => {
@@ -101,7 +101,7 @@ test('each maternal and fetal stage yields the right capitalised diagnosis', () 
   assert.equal(dx({ chorioamnionitis: 'Stage 2 - acute chorioamnionitis' }), 'PLACENTA, singleton, third trimester - ACUTE CHORIOAMNIONITIS (maternal stage 2)');
   assert.equal(dx({ chorioamnionitis: 'Stage 3 - necrotising' }), 'PLACENTA, singleton, third trimester - NECROTISING CHORIOAMNIONITIS (maternal stage 3)');
   assert.equal(dx({ fetalResponse: 'Stage 2 - umbilical arteritis' }), house('PLACENTA, singleton, third trimester - FUNISITIS (fetal stage 2)'));
-  assert.equal(dx({ chorioamnionitis: 'Stage 3 - necrotising', fetalResponse: 'Stage 3 - necrotising funisitis' }), house('PLACENTA, singleton, third trimester - NECROTISING CHORIOAMNIONITIS (maternal stage 3) WITH NECROTISING FUNISITIS (fetal stage 3)'));
+  assert.equal(dx({ chorioamnionitis: 'Stage 3 - necrotising', fetalResponse: 'Stage 3 - necrotising funisitis' }), house('PLACENTA, singleton, third trimester - NECROTISING CHORIOAMNIONITIS (maternal stage 3) with NECROTISING FUNISITIS (fetal stage 3)'));
   const r = run(one({ chorioamnionitis: 'Stage 1 - acute subchorionitis', fetalResponse: 'Stage 3 - necrotising funisitis' }));
   assert.ok(r.microscopy.includes('Neutrophils are present in the subchorionic fibrin and chorionic trophoblast layer of the placental membranes, consistent with acute subchorionitis (maternal stage 1).'));
   assert.ok(r.microscopy.includes(house("extending into Wharton's jelly with concentric bands of necrotic debris, consistent with necrotising funisitis (fetal stage 3).")));
@@ -116,7 +116,7 @@ test('villitis, infarcts, retroplacental haematoma and MVM/FVM appear as lower-c
     retroplacentalHaematoma: 'Present', mvm: ['Distal villous hypoplasia', 'Increased syncytial knots'], fvm: ['Avascular villi'],
     intervillousThrombi: 'Present', meconium: 'Present - membranes'
   }));
-  assert.equal(r.diagnosis, house('PLACENTA, singleton, third trimester - ACUTE CHORIOAMNIONITIS (maternal stage 2) WITH FUNISITIS (fetal stage 1); CHRONIC VILLITIS OF UNKNOWN AETIOLOGY, LOW GRADE; infarcts (5%); retroplacental haematoma; intervillous thrombi; features of maternal vascular malperfusion; features of fetal vascular malperfusion; meconium staining of the membranes'));
+  assert.equal(r.diagnosis, house('PLACENTA, singleton, third trimester - ACUTE CHORIOAMNIONITIS (maternal stage 2) with FUNISITIS (fetal stage 1); CHRONIC VILLITIS OF UNKNOWN AETIOLOGY, LOW GRADE; infarcts (5%); retroplacental haematoma; intervillous thrombi; features of maternal vascular malperfusion; features of fetal vascular malperfusion; meconium staining of the membranes'));
   assert.ok(r.microscopy.startsWith('Sections of the placenta show third-trimester chorionic villi.'), 'no "with no inflammation" when villitis is present');
   assert.ok(r.microscopy.includes('There is a patchy lymphohistiocytic infiltrate within the villous stroma, consistent with chronic villitis of unknown aetiology, low grade.'));
   assert.ok(r.microscopy.includes('Recent infarcts are present, involving approximately 5% of the parenchyma. A retroplacental haematoma is present. Intervillous thrombi are present.'));

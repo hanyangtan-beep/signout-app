@@ -545,8 +545,10 @@ export function prefillFromFrozen(fv) {
   if (!fv || fv.scenario !== 'Lung wedge / nodule') return {};
   const out = {};
   const side = fv.luSide || '';
-  if (side) out.laterality = side;
-  if (fv.luLobe) out.lobes = [fv.luLobe];
+  // The frozen side and lobe, never the form's "Right" / "Upper lobe" (2026-09-24): a frozen part with
+  // none gives "Not specified" and no lobe, and Checks asks for both.
+  out.laterality = side || 'Not specified';
+  out.lobes = fv.luLobe ? [fv.luLobe] : [];
   const spec = fv.luSpecimen || 'Wedge excision';
   if (spec === 'Wedge excision') out.procedure = 'Wedge resection';
   else if (spec === 'Segmentectomy') out.procedure = 'Segmentectomy';

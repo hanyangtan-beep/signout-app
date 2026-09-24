@@ -676,3 +676,42 @@ test('frozen CNS and lung parts take their site and side, and the CNS line opens
     assert.equal(frozenScenario(text), want, text);
   }
 });
+
+// The frozen ovary and sentinel sides were never read from the request (2026-09-24): on the 2021-2026 frozen
+// export 36 of 40 pasted sentinel parts named a side and none printed it. A request that names none leaves
+// the field blank, the line names no side, and Checks asks. The fields default to blank, so a part added by
+// hand gets the same prompt.
+test('frozen ovary and sentinel parts take their side from the request, or none with a Checks prompt', async () => {
+  const t = await loadTemplate('frozen_section');
+  const { generateCase, createPart } = await import('../src/engine.js');
+  const read = (text) => presetValues(t.schema, parseIntake(text).parts[0], {});
+  const report = (values) => {
+    const part = { ...createPart(t.schema, 0), templateId: 'frozen_section' };
+    Object.assign(part.values, values);
+    return generateCase({ frozen_section: t }, { schemaId: 'frozen_section', caseTitle: '', options: { includeHeader: false }, meta: {}, parts: [part] });
+  };
+  const sidePrompts = (r) => r.issues.filter((i) => /^Choose Right/.test(i.message)).map((i) => i.field);
+  let v = read('Left SLN 1, frozen section');
+  assert.equal(v.scenario, 'Sentinel lymph node');
+  assert.equal(v.slnSide, 'Left');
+  let r = report(v);
+  assert.equal(r.diagnosis.split(' - ')[0], 'LYMPH NODE, left SLN 1, excision x frozen section', 'was "LYMPH NODE, SLN 1"');
+  assert.deepEqual(sidePrompts(r), []);
+  assert.equal(read('Right axillary sentinel lymph node').slnSide, 'Right');
+  v = read('Sentinel lymph node');
+  assert.equal(v.slnSide, undefined);
+  r = report(v);
+  assert.equal(r.diagnosis.split(' - ')[0], 'LYMPH NODE, SLN 1, excision x frozen section');
+  assert.deepEqual(sidePrompts(r), ['slnSide']);
+  v = read('Right ovary, cystectomy');
+  assert.equal(v.scenario, 'Ovarian / adnexal mass');
+  assert.equal(v.ovSide, 'Right');
+  assert.deepEqual(sidePrompts(report(v)), []);
+  assert.equal(read('Bilateral ovarian masses').ovSide, 'Bilateral');
+  v = read('Ovarian mass');
+  assert.equal(v.ovSide, undefined);
+  assert.deepEqual(sidePrompts(report(v)), ['ovSide']);
+  v = read('Left ureteric margin, frozen section');
+  assert.deepEqual([v.ovSide, v.slnSide], [undefined, undefined], 'the rules stay inside their scenarios');
+  assert.deepEqual([createPart(t.schema, 0).values.ovSide, createPart(t.schema, 0).values.slnSide], ['', '']);
+});
