@@ -1,0 +1,14 @@
+{
+  "templateId": "soft_tissue_benign",
+  "values": {
+    "site": "left groin",
+    "clinicalLabel": "lump",
+    "diagnosis": "Fibroadipose tissue – no evidence of malignancy",
+    "tissueSeen": "fibroadipose tissue and skeletal muscle",
+    "description": "Ill-defined fibrofatty tissue",
+    "capsule": "Not identified",
+    "blocks": "2"
+  },
+  "report": "Left groin lump, excision\n\nReceived in formalin is an ill-defined piece of fibrofatty tissue labelled left groin lump. The cut surface is homogeneous and yellow. No capsule is identified. Representative sections in 2 blocks.\n\n(1-2) Lesion with capsule, representative sections.\n\nSections show fibroadipose tissue and skeletal muscle. There is no evidence of malignancy.\n\nSOFT TISSUE, left groin lump, excision - NO EVIDENCE OF MALIGNANCY",
+  "checks": []
+}

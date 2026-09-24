@@ -1,0 +1,17 @@
+{
+  "templateId": "soft_tissue_benign",
+  "values": {
+    "site": "left thigh",
+    "clinicalLabel": "intramuscular lipoma",
+    "diagnosis": "Atypical lipomatous tumour – see comment",
+    "mdm2": "Amplified",
+    "dimensions": "14 x 9 x 6",
+    "weight": "320",
+    "location": "Intramuscular",
+    "surrounding": "skeletal muscle",
+    "marginDistance": "2",
+    "blocks": "6"
+  },
+  "report": "Left thigh intramuscular lipoma, excision\n\nReceived in formalin is a lobulated piece of yellow fatty tissue labelled left thigh intramuscular lipoma, measuring 14 x 9 x 6 cm and weighing 320 g. The cut surface is homogeneous and yellow. Representative sections in 6 blocks.\n\n(1-6) Lesion with capsule, representative sections.\n\nSections show an adipocytic tumour composed of mature adipocytes with variation in cell size and scattered enlarged, hyperchromatic atypical stromal cells within thickened fibrous septa. MDM2 amplification is detected by fluorescence in situ hybridisation (FISH). The findings are in keeping with an atypical lipomatous tumour; see comment. The lesion is located within skeletal muscle and is completely excised, with the nearest margin clear by 2 mm. The surrounding tissue comprises skeletal muscle.\n\nSOFT TISSUE, left thigh intramuscular lipoma, excision - ATYPICAL LIPOMATOUS TUMOUR; completely excised; see comment\n\nThe atypical lipomatous tumour shows MDM2 amplification. This benign template does not grade or stage the lesion, and the QMH soft tissue sarcoma template should be used for the final synoptic report.",
+  "checks": []
+}

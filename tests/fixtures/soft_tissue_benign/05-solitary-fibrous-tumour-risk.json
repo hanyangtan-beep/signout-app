@@ -1,0 +1,18 @@
+{
+  "templateId": "soft_tissue_benign",
+  "values": {
+    "site": "left thigh",
+    "clinicalLabel": "mass",
+    "diagnosis": "Solitary fibrous tumour",
+    "dimensions": "8 x 6 x 5",
+    "description": "Well-circumscribed firm tan-white nodule",
+    "cutSurface": "Whorled tan-white",
+    "sftAge": "62",
+    "sftMitoses": "2",
+    "sftNecrosis": "Absent",
+    "location": "Subfascial",
+    "blocks": "5"
+  },
+  "report": "Left thigh mass, excision\n\nReceived in formalin is a well-circumscribed firm tan-white nodule labelled left thigh mass, measuring 8 x 6 x 5 cm. The cut surface is whorled and tan-white. Representative sections in 5 blocks.\n\n(1-5) Lesion with capsule, representative sections.\n\nSections show a well-circumscribed spindle cell tumour composed of bland ovoid to spindle cells arranged haphazardly around branching, thin-walled, staghorn-shaped vessels in a variably collagenous stroma. The mitotic count is 2 per 10 high-power fields. There is no tumour necrosis. On immunohistochemistry, the tumour cells show diffuse nuclear STAT6 expression. The findings are in keeping with solitary fibrous tumour. The lesion is located deep to the fascia and is completely excised.\n\nSOFT TISSUE, left thigh mass, excision - SOLITARY FIBROUS TUMOUR; completely excised; see comment\n\nSolitary fibrous tumour, modified Demicco risk model (age, tumour size, mitotic count and necrosis): score 3 of 7, low risk of metastasis.",
+  "checks": []
+}

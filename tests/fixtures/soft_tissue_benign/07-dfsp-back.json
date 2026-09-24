@@ -1,0 +1,18 @@
+{
+  "templateId": "soft_tissue_benign",
+  "values": {
+    "organ": "SKIN AND SUBCUTIS",
+    "site": "back",
+    "clinicalLabel": "nodule",
+    "diagnosis": "Dermatofibrosarcoma protuberans – see comment",
+    "dimensions": "4 x 3 x 2",
+    "description": "Well-circumscribed firm tan-white nodule",
+    "cutSurface": "Whorled tan-white",
+    "capsule": "Not identified",
+    "location": "Dermal",
+    "marginDistance": "5",
+    "blocks": "4"
+  },
+  "report": "Back nodule, excision\n\nReceived in formalin is a well-circumscribed firm tan-white nodule labelled back nodule, measuring 4 x 3 x 2 cm. The cut surface is whorled and tan-white. No capsule is identified. Representative sections in 4 blocks.\n\n(1-4) Lesion with capsule, representative sections.\n\nSections show a dermal and subcutaneous spindle cell tumour composed of uniform spindle cells arranged in a storiform pattern, infiltrating the subcutaneous fat in a honeycomb pattern. The findings are in keeping with dermatofibrosarcoma protuberans. The lesion is centred in the dermis and is completely excised, with the nearest margin clear by 5 mm.\n\nSKIN AND SUBCUTIS, back nodule, excision - DERMATOFIBROSARCOMA PROTUBERANS; completely excised; see comment\n\nDermatofibrosarcoma protuberans is identified. This benign template does not grade or stage the tumour; the QMH soft tissue sarcoma template should be used where a synoptic report is required.",
+  "checks": []
+}

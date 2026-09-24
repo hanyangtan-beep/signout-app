@@ -42,7 +42,8 @@ test('metadata: benign soft tissue resection with search aliases and complete de
   assert.equal(schema.fields[0].id, 'specimenName');
   assert.equal(schema.fields[schema.fields.length - 1].id, 'additionalNotes');
   const dx = schema.fields.find((f) => f.id === 'diagnosis');
-  assert.equal(dx.options.length, 16);
+  // 16 original + 20 added 2026-09-24 (benign batch 1: docs/roadmap.md, Soft tissue — benign template upgrade).
+  assert.equal(dx.options.length, 36);
   assert.equal(dx.default, 'Lipoma');
 });
 

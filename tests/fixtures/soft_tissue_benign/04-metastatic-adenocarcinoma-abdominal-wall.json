@@ -1,0 +1,21 @@
+{
+  "templateId": "soft_tissue_benign",
+  "values": {
+    "site": "abdominal wall",
+    "clinicalLabel": "nodule",
+    "diagnosis": "Metastatic malignancy",
+    "metType": "Adenocarcinoma",
+    "ihcPositive": "CK20, CDX2",
+    "ihcNegative": "CK7",
+    "favouredPrimary": "colorectal",
+    "dimensions": "2 x 1.5 x 1.2",
+    "description": "Well-circumscribed firm tan-white nodule",
+    "cutSurface": "Whorled tan-white",
+    "capsule": "Not identified",
+    "location": "Subcutaneous",
+    "marginDistance": "3",
+    "blocks": "3"
+  },
+  "report": "Abdominal wall nodule, excision\n\nReceived in formalin is a well-circumscribed firm tan-white nodule labelled abdominal wall nodule, measuring 2 x 1.5 x 1.2 cm. The cut surface is whorled and tan-white. No capsule is identified. Representative sections in 3 blocks.\n\n(1-3) Lesion with capsule, representative sections.\n\nSections show soft tissue infiltrated by adenocarcinoma composed of irregular glands lined by cells with enlarged, pleomorphic, hyperchromatic nuclei, in a desmoplastic stroma. On immunohistochemistry, the tumour cells are positive for CK20 and CDX2. They are negative for CK7. The findings are consistent with metastatic adenocarcinoma of colorectal primary. The lesion is located in the subcutaneous tissue and is completely excised, with the nearest margin clear by 3 mm.\n\nSOFT TISSUE, abdominal wall nodule, excision - METASTATIC ADENOCARCINOMA, consistent with COLORECTAL PRIMARY; completely excised",
+  "checks": []
+}

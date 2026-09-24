@@ -21,6 +21,17 @@
   "hemangioma",
   "leiomyoma",
   "myxoma",
+  "angioleiomyoma",
+  "tenosynovial giant cell tumour",
+  "giant cell tumour of tendon sheath",
+  "glomus tumour",
+  "granular cell tumour",
+  "elastofibroma",
+  "fat necrosis",
+  "desmoid",
+  "fibromatosis",
+  "solitary fibrous tumour",
+  "dermatofibrosarcoma",
   "subcutaneous",
   "mass",
   "nodule",
@@ -30,6 +41,7 @@
  "match": {
   "site": [
    "soft tissue",
+   "abdominal wall",
    "subcutaneous",
    "subcutis",
    "lipoma",
@@ -194,6 +206,7 @@
     "Whorled tan-white",
     "Myxoid",
     "Haemorrhagic",
+    "Variegated yellow-brown",
     "Necrotic areas – describe"
    ],
    "default": "Homogeneous yellow"
@@ -250,10 +263,201 @@
     "Intramuscular myxoma",
     "Fibroma",
     "Epidermal cyst",
+    "Angioleiomyoma",
+    "Tenosynovial giant cell tumour, localised",
+    "Tenosynovial giant cell tumour, diffuse",
+    "Glomus tumour",
+    "Granular cell tumour",
+    "Elastofibroma",
+    "Calcifying fibrous tumour",
+    "Fat necrosis",
+    "Organising haematoma",
+    "Scar",
+    "Foreign-body reaction",
+    "Vascular malformation",
+    "Endometriosis",
+    "Gouty tophus",
+    "Fibroadipose tissue – no evidence of malignancy",
     "Atypical lipomatous tumour – see comment",
-    "Sarcoma – see comment"
+    "Desmoid-type fibromatosis",
+    "Solitary fibrous tumour",
+    "Dermatofibrosarcoma protuberans – see comment",
+    "Sarcoma – see comment",
+    "Metastatic malignancy",
+    "Lymphoma"
    ],
    "default": "Lipoma"
+  },
+  {
+   "id": "mdm2",
+   "label": "MDM2 amplification (FISH)",
+   "type": "select",
+   "options": [
+    "Not tested",
+    "Amplified",
+    "Not amplified",
+    "Pending"
+   ],
+   "default": "Not tested",
+   "showIf": {
+    "field": "diagnosis",
+    "is": [
+     "Lipoma",
+     "Angiolipoma",
+     "Fibrolipoma",
+     "Spindle cell lipoma",
+     "Hibernoma",
+     "Atypical lipomatous tumour – see comment"
+    ]
+   },
+   "optionsByField": {
+    "field": "diagnosis",
+    "map": {
+     "Sarcoma – see comment": [
+      "Not tested"
+     ]
+    }
+   }
+  },
+  {
+   "id": "metType",
+   "label": "Tumour type",
+   "type": "select",
+   "options": [
+    "Adenocarcinoma",
+    "Carcinoma",
+    "Squamous cell carcinoma",
+    "Melanoma"
+   ],
+   "default": "Adenocarcinoma",
+   "showIf": {
+    "field": "diagnosis",
+    "is": "Metastatic malignancy"
+   }
+  },
+  {
+   "id": "lymphomaType",
+   "label": "Lymphoma type",
+   "type": "text",
+   "placeholder": "diffuse large B-cell lymphoma",
+   "default": "",
+   "showIf": {
+    "field": "diagnosis",
+    "is": "Lymphoma"
+   }
+  },
+  {
+   "id": "ihcPositive",
+   "label": "Positive for (IHC)",
+   "type": "text",
+   "placeholder": "CK20, CDX2",
+   "default": "",
+   "showIf": {
+    "field": "diagnosis",
+    "is": [
+     "Metastatic malignancy",
+     "Lymphoma"
+    ]
+   }
+  },
+  {
+   "id": "ihcNegative",
+   "label": "Negative for (IHC)",
+   "type": "text",
+   "placeholder": "CK7",
+   "default": "",
+   "showIf": {
+    "field": "diagnosis",
+    "is": [
+     "Metastatic malignancy",
+     "Lymphoma"
+    ]
+   }
+  },
+  {
+   "id": "favouredPrimary",
+   "label": "Favoured primary",
+   "type": "text",
+   "placeholder": "colorectal",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "diagnosis",
+      "is": "Metastatic malignancy"
+     },
+     {
+      "field": "metType",
+      "not": "Melanoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "tissueSeen",
+   "label": "Tissue seen",
+   "type": "text",
+   "placeholder": "fibroadipose tissue and skeletal muscle",
+   "default": "",
+   "showIf": {
+    "field": "diagnosis",
+    "is": "Fibroadipose tissue – no evidence of malignancy"
+   }
+  },
+  {
+   "id": "sftAge",
+   "label": "Patient age (years)",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "field": "diagnosis",
+    "is": "Solitary fibrous tumour"
+   }
+  },
+  {
+   "id": "sftSize",
+   "label": "Tumour size (cm; blank = largest dimension)",
+   "type": "number",
+   "min": 0,
+   "step": 0.1,
+   "default": "",
+   "showIf": {
+    "field": "diagnosis",
+    "is": "Solitary fibrous tumour"
+   }
+  },
+  {
+   "id": "sftMitoses",
+   "label": "Mitoses per 10 HPF",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "field": "diagnosis",
+    "is": "Solitary fibrous tumour"
+   }
+  },
+  {
+   "id": "sftNecrosis",
+   "label": "Tumour necrosis",
+   "type": "select",
+   "options": [
+    "",
+    "Absent",
+    "Less than 10%",
+    "10% or more"
+   ],
+   "optionLabels": {
+    "": "Not assessed"
+   },
+   "default": "",
+   "showIf": {
+    "field": "diagnosis",
+    "is": "Solitary fibrous tumour"
+   }
   },
   {
    "id": "fatNecrosis",
@@ -263,7 +467,28 @@
     "Absent",
     "Present"
    ],
-   "default": "Absent"
+   "default": "Absent",
+   "showIf": {
+    "field": "diagnosis",
+    "is": [
+     "Lipoma",
+     "Angiolipoma",
+     "Fibrolipoma",
+     "Spindle cell lipoma",
+     "Hibernoma",
+     "Schwannoma",
+     "Neurofibroma",
+     "Ganglion cyst",
+     "Nodular fasciitis",
+     "Cavernous haemangioma",
+     "Leiomyoma",
+     "Intramuscular myxoma",
+     "Fibroma",
+     "Epidermal cyst",
+     "Atypical lipomatous tumour – see comment",
+     "Sarcoma – see comment"
+    ]
+   }
   },
   {
    "id": "atypicalCells",
@@ -273,13 +498,55 @@
     "Absent",
     "Present – see comment"
    ],
-   "default": "Absent"
+   "default": "Absent",
+   "showIf": {
+    "field": "diagnosis",
+    "is": [
+     "Lipoma",
+     "Angiolipoma",
+     "Fibrolipoma",
+     "Spindle cell lipoma",
+     "Hibernoma",
+     "Schwannoma",
+     "Neurofibroma",
+     "Ganglion cyst",
+     "Nodular fasciitis",
+     "Cavernous haemangioma",
+     "Leiomyoma",
+     "Intramuscular myxoma",
+     "Fibroma",
+     "Epidermal cyst",
+     "Atypical lipomatous tumour – see comment",
+     "Sarcoma – see comment"
+    ]
+   }
   },
   {
    "id": "mitosesSentence",
    "label": "Add \"No increased mitotic activity or necrosis is seen.\"",
    "type": "checkbox",
-   "default": false
+   "default": false,
+   "showIf": {
+    "field": "diagnosis",
+    "is": [
+     "Lipoma",
+     "Angiolipoma",
+     "Fibrolipoma",
+     "Spindle cell lipoma",
+     "Hibernoma",
+     "Schwannoma",
+     "Neurofibroma",
+     "Ganglion cyst",
+     "Nodular fasciitis",
+     "Cavernous haemangioma",
+     "Leiomyoma",
+     "Intramuscular myxoma",
+     "Fibroma",
+     "Epidermal cyst",
+     "Atypical lipomatous tumour – see comment",
+     "Sarcoma – see comment"
+    ]
+   }
   },
   {
    "id": "encapsulation",
@@ -290,7 +557,51 @@
     "Well circumscribed and encapsulated",
     "Unencapsulated, ill-defined"
    ],
-   "default": "Partially encapsulated"
+   "default": "Partially encapsulated",
+   "showIf": {
+    "field": "diagnosis",
+    "is": [
+     "Lipoma",
+     "Angiolipoma",
+     "Fibrolipoma",
+     "Spindle cell lipoma",
+     "Hibernoma",
+     "Schwannoma",
+     "Neurofibroma",
+     "Ganglion cyst",
+     "Nodular fasciitis",
+     "Cavernous haemangioma",
+     "Leiomyoma",
+     "Intramuscular myxoma",
+     "Fibroma",
+     "Epidermal cyst",
+     "Atypical lipomatous tumour – see comment",
+     "Sarcoma – see comment"
+    ]
+   }
+  },
+  {
+   "id": "location",
+   "label": "Histological location",
+   "type": "select",
+   "options": [
+    "",
+    "Dermal",
+    "Subcutaneous",
+    "Subfascial",
+    "Intramuscular"
+   ],
+   "optionLabels": {
+    "": "Not stated"
+   },
+   "default": ""
+  },
+  {
+   "id": "surrounding",
+   "label": "Surrounding tissue",
+   "type": "text",
+   "placeholder": "unremarkable skeletal muscle",
+   "default": ""
   },
   {
    "id": "margins",
@@ -301,14 +612,59 @@
     "Incomplete – reaches inked margin",
     "Not assessable"
    ],
-   "default": "Complete"
+   "default": "Complete",
+   "showIf": {
+    "field": "diagnosis",
+    "not": [
+     "Fat necrosis",
+     "Organising haematoma",
+     "Scar",
+     "Foreign-body reaction",
+     "Fibroadipose tissue – no evidence of malignancy",
+     "Lymphoma"
+    ]
+   }
+  },
+  {
+   "id": "marginDistance",
+   "label": "Nearest margin (mm)",
+   "type": "number",
+   "min": 0,
+   "step": 0.1,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "margins",
+      "is": "Complete"
+     },
+     {
+      "field": "diagnosis",
+      "not": [
+       "Fat necrosis",
+       "Organising haematoma",
+       "Scar",
+       "Foreign-body reaction",
+       "Fibroadipose tissue – no evidence of malignancy",
+       "Lymphoma"
+      ]
+     }
+    ]
+   }
   },
   {
    "id": "ihc",
    "label": "Immunohistochemistry / ancillary (optional)",
    "type": "text",
    "placeholder": "S100 positive / MDM2 FISH recommended",
-   "default": ""
+   "default": "",
+   "showIf": {
+    "field": "diagnosis",
+    "not": [
+     "Metastatic malignancy",
+     "Lymphoma"
+    ]
+   }
   },
   {
    "id": "additionalNotes",
@@ -331,10 +687,18 @@
    "id": "soft_tissue_sarcoma_template",
    "label": "Atypical / malignant — MDM2 testing and QMH soft tissue sarcoma template",
    "auto": {
-    "field": "diagnosis",
-    "is": [
-     "Atypical lipomatous tumour – see comment",
-     "Sarcoma – see comment"
+    "all": [
+     {
+      "field": "diagnosis",
+      "is": [
+       "Atypical lipomatous tumour – see comment",
+       "Sarcoma – see comment"
+      ]
+     },
+     {
+      "field": "mdm2",
+      "is": "Not tested"
+     }
     ]
    },
    "text": "An atypical or malignant mesenchymal tumour is identified ({parts}). This benign template does not grade or stage the lesion. MDM2 amplification testing (FISH) is recommended for an atypical adipocytic tumour, and the QMH soft tissue sarcoma template should be used for the final synoptic report."
@@ -343,10 +707,85 @@
    "id": "soft_tissue_atypical_cells",
    "label": "Atypical stromal cells / lipoblasts — MDM2 testing recommended",
    "auto": {
-    "field": "atypicalCells",
-    "is": "Present – see comment"
+    "all": [
+     {
+      "field": "atypicalCells",
+      "is": "Present – see comment"
+     },
+     {
+      "field": "diagnosis",
+      "is": [
+       "Lipoma",
+       "Angiolipoma",
+       "Fibrolipoma",
+       "Spindle cell lipoma",
+       "Hibernoma",
+       "Schwannoma",
+       "Neurofibroma",
+       "Ganglion cyst",
+       "Nodular fasciitis",
+       "Cavernous haemangioma",
+       "Leiomyoma",
+       "Intramuscular myxoma",
+       "Fibroma",
+       "Epidermal cyst",
+       "Atypical lipomatous tumour – see comment",
+       "Sarcoma – see comment"
+      ]
+     }
+    ]
    },
    "text": "Atypical stromal cells / lipoblasts are present ({parts}). MDM2 amplification testing (FISH) is recommended to exclude atypical lipomatous tumour; if confirmed, the QMH soft tissue sarcoma template should be used for the final report."
+  },
+  {
+   "id": "soft_tissue_alt_mdm2_amplified",
+   "label": "Atypical lipomatous tumour, MDM2 amplified — QMH soft tissue sarcoma template",
+   "auto": {
+    "all": [
+     {
+      "field": "diagnosis",
+      "is": "Atypical lipomatous tumour – see comment"
+     },
+     {
+      "field": "mdm2",
+      "is": "Amplified"
+     }
+    ]
+   },
+   "text": "The atypical lipomatous tumour ({parts}) shows MDM2 amplification. This benign template does not grade or stage the lesion, and the QMH soft tissue sarcoma template should be used for the final synoptic report."
+  },
+  {
+   "id": "soft_tissue_mdm2_pending",
+   "label": "MDM2 FISH pending — supplementary report to follow",
+   "auto": {
+    "all": [
+     {
+      "field": "diagnosis",
+      "is": [
+       "Lipoma",
+       "Angiolipoma",
+       "Fibrolipoma",
+       "Spindle cell lipoma",
+       "Hibernoma",
+       "Atypical lipomatous tumour – see comment"
+      ]
+     },
+     {
+      "field": "mdm2",
+      "is": "Pending"
+     }
+    ]
+   },
+   "text": "MDM2 amplification testing (FISH) is pending ({parts}); a supplementary report will follow."
+  },
+  {
+   "id": "soft_tissue_dfsp",
+   "label": "Dermatofibrosarcoma protuberans — QMH soft tissue sarcoma template",
+   "auto": {
+    "field": "diagnosis",
+    "is": "Dermatofibrosarcoma protuberans – see comment"
+   },
+   "text": "Dermatofibrosarcoma protuberans is identified ({parts}). This benign template does not grade or stage the tumour; the QMH soft tissue sarcoma template should be used where a synoptic report is required."
   }
  ],
  "example": {
@@ -375,8 +814,22 @@
      "fatNecrosis": "Present",
      "atypicalCells": "Absent",
      "mitosesSentence": false,
+     "mdm2": "Not tested",
+     "metType": "Adenocarcinoma",
+     "lymphomaType": "",
+     "ihcPositive": "",
+     "ihcNegative": "",
+     "favouredPrimary": "",
+     "tissueSeen": "",
+     "sftAge": "",
+     "sftSize": "",
+     "sftMitoses": "",
+     "sftNecrosis": "",
      "encapsulation": "Partially encapsulated",
+     "location": "",
+     "surrounding": "",
      "margins": "Complete",
+     "marginDistance": "",
      "ihc": "",
      "additionalNotes": ""
     }

@@ -1,0 +1,15 @@
+{
+  "templateId": "soft_tissue_benign",
+  "values": {
+    "site": "right knee",
+    "clinicalLabel": "mass",
+    "diagnosis": "Tenosynovial giant cell tumour, localised",
+    "dimensions": "2.5 x 2 x 1.5",
+    "description": "Well-circumscribed firm tan-white nodule",
+    "cutSurface": "Variegated yellow-brown",
+    "blocks": "2",
+    "marginDistance": "1"
+  },
+  "report": "Right knee mass, excision\n\nReceived in formalin is a well-circumscribed firm tan-white nodule labelled right knee mass, measuring 2.5 x 2 x 1.5 cm. The cut surface is variegated yellow-brown. Representative sections in 2 blocks.\n\n(1-2) Lesion with capsule, representative sections.\n\nSections show a well-circumscribed, lobulated tumour composed of mononuclear histiocytoid cells admixed with osteoclast-like multinucleated giant cells, foamy macrophages and haemosiderin-laden macrophages in a collagenous stroma. There is no significant cytological atypia or necrosis. The findings are in keeping with tenosynovial giant cell tumour, localised type. The lesion is completely excised, with the nearest margin clear by 1 mm. There is no evidence of malignancy.\n\nSOFT TISSUE, right knee mass, excision - TENOSYNOVIAL GIANT CELL TUMOUR, localised type; completely excised",
+  "checks": []
+}

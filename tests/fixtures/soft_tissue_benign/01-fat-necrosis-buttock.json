@@ -1,0 +1,15 @@
+{
+  "templateId": "soft_tissue_benign",
+  "values": {
+    "site": "right buttock",
+    "clinicalLabel": "mass",
+    "diagnosis": "Fat necrosis",
+    "dimensions": "4 x 3 x 2",
+    "description": "Ill-defined fibrofatty tissue",
+    "capsule": "Not identified",
+    "location": "Subcutaneous",
+    "blocks": "2"
+  },
+  "report": "Right buttock mass, excision\n\nReceived in formalin is an ill-defined piece of fibrofatty tissue labelled right buttock mass, measuring 4 x 3 x 2 cm. The cut surface is homogeneous and yellow. No capsule is identified. Representative sections in 2 blocks.\n\n(1-2) Lesion with capsule, representative sections.\n\nSections show fibroadipose tissue with fat necrosis, comprising lipid-laden foamy macrophages, lipid cysts and multinucleated giant cells, with surrounding fibrosis. The findings are in keeping with fat necrosis. The lesion is located in the subcutaneous tissue. There is no evidence of malignancy.\n\nSOFT TISSUE, right buttock mass, excision - FAT NECROSIS; NO EVIDENCE OF MALIGNANCY",
+  "checks": []
+}

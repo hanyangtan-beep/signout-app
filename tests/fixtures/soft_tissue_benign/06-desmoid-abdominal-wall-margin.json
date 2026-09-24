@@ -1,0 +1,17 @@
+{
+  "templateId": "soft_tissue_benign",
+  "values": {
+    "site": "abdominal wall",
+    "clinicalLabel": "mass",
+    "diagnosis": "Desmoid-type fibromatosis",
+    "dimensions": "5 x 4 x 3",
+    "description": "Ill-defined fibrofatty tissue",
+    "cutSurface": "Whorled tan-white",
+    "capsule": "Not identified",
+    "location": "Intramuscular",
+    "margins": "Incomplete – reaches inked margin",
+    "blocks": "4"
+  },
+  "report": "Abdominal wall mass, excision\n\nReceived in formalin is an ill-defined piece of fibrofatty tissue labelled abdominal wall mass, measuring 5 x 4 x 3 cm. The cut surface is whorled and tan-white. No capsule is identified. Representative sections in 4 blocks.\n\n(1-4) Lesion with capsule, representative sections.\n\nSections show an infiltrative proliferation of uniform, bland spindle cells arranged in long sweeping fascicles in a collagenous stroma with thin-walled vessels, extending between skeletal muscle fibres and fat at the periphery. There is no significant cytological atypia. On immunohistochemistry, the tumour cells show nuclear beta-catenin expression. The findings are in keeping with desmoid-type fibromatosis. The lesion is located within skeletal muscle and reaches the inked margin.\n\nSOFT TISSUE, abdominal wall mass, excision - DESMOID-TYPE FIBROMATOSIS; lesion reaches the inked margin",
+  "checks": []
+}
