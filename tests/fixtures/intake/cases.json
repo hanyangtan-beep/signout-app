@@ -709,6 +709,44 @@
           "specimenName": "left cheek"
         }
       }
+    },
+    {
+      "name": "products of gestation (benign batch 2)",
+      "text": "History\nMissed miscarriage\n\nSpecimen\n(A) Tissue mass per vagina, (B) Uterus, suction evacuation, (C) Uterus, evacuation of retained products of gestation and (D) Placenta",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "endometrial_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "endometrial_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "endometrial_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "D",
+          "templateId": "placenta",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "specimenType": "Tissue mass, per vaginam",
+          "phase": "Gestational (decidua and hypersecretory glands)"
+        },
+        "B": {
+          "specimenType": "Uterus, suction evacuation"
+        },
+        "C": {
+          "specimenType": "Uterus, evacuation of retained products of gestation"
+        }
+      }
     }
   ]
 }

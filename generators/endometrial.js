@@ -1,6 +1,18 @@
+import { checks } from './_house.js';
 // Endometrial biopsy / curettings generator. Pure functions: (part, ctx) -> string.
 // House wording taken from the corpus (phase sentences, hyperplasia, endometrioid and
-// serous carcinoma, MMR / p53 lines). Protected by tests/endometrial.test.js.
+// serous carcinoma, MMR / p53 lines). The products-of-gestation path is protected by
+// tests/products_of_gestation.test.js; the endometrial lines have no golden test of their own.
+//
+// Products of gestation (benign batch 2, 2026-09-24). A tissue mass passed per vaginam or a uterine
+// evacuation is a specimen type of this form, reported as the house checklist rather than as
+// endometrium. Measured on the released reports (docs/case-mix/benign-resections-2021-2026.md;
+// counts only): the checklist below is the microscopy of every checklist-form report, the diagnosis
+// reads PRODUCTS OF GESTATION (never "conception"); where "confirmed" follows it (49 times, 52 bare) it
+// is always lower case, and a specimen without villi is signed out "DECIDUA only". The RCPath tissue
+// pathway for gynaecological pathology (V3, 2023) section 11.5 asks for the presence and appearance of the
+// villi; without villi, implantation-site trophoblast or foetal tissue an ectopic pregnancy is to be
+// suspected and the result communicated quickly, which the Checks panel prompts rather than the print.
 
 const NP = 'Not performed';
 const has = (v) => v && v !== NP && v !== 'None' && v !== 'Absent';
@@ -14,6 +26,12 @@ export const hasPolyp = (v) => (v.polyp === 'Present' || v.polyp === 'Fragments 
 export const hasEndometritis = (v) => has(v.endometritis) && !noEndometrium(v);
 export const isGestational = (v) => v.phase === 'Gestational (decidua and hypersecretory glands)' && !isInadequate(v);
 
+/** Products-of-gestation specimen types: the part prints the checklist, not the endometrial narrative. */
+export const POG_TYPES = ['Tissue mass', 'Tissue mass, per vaginam', 'Uterus, suction evacuation', 'Uterus, evacuation of retained products of gestation'];
+export const isPog = (v) => POG_TYPES.includes(v.specimenType);
+const IMPLANT = 'Absent; implantation-site trophoblast present';
+const MOLES = ['Partial hydatidiform mole', 'Complete hydatidiform mole'];
+
 const NOUN = {
   'Endometrial curettings': 'curettings',
   'Endometrial biopsy (Pipelle)': 'Pipelle biopsy',
@@ -21,11 +39,77 @@ const NOUN = {
   'Endometrial polypectomy': 'polypectomy'
 };
 
+// "Tissue mass, per vaginam" -> "TISSUE MASS, per vaginam"; "Uterus, suction evacuation" -> "UTERUS, suction evacuation".
+const pogHead = (t) => t.replace(/^[^,]+/, (m) => m.toUpperCase());
+
 export function specimenName(part) {
+  if (isPog(part.values)) return part.values.specimenType;
   return `Endometrium, ${NOUN[part.values.specimenType] || 'curettings'}`;
 }
 export function organPhrase(part) {
+  if (isPog(part.values)) return pogHead(part.values.specimenType);
   return `ENDOMETRIUM, ${NOUN[part.values.specimenType] || 'curettings'}`;
+}
+
+// ---------- products of gestation ----------
+
+const VILLOUS = { Unremarkable: '', 'Hydropic change': ' (with hydropic change)', Sclerotic: ' (sclerotic)' };
+const GTD_LINE = {
+  'No evidence': 'No evidence of gestational trophoblastic disease',
+  'Partial hydatidiform mole': 'Features of partial hydatidiform mole',
+  'Complete hydatidiform mole': 'Features of complete hydatidiform mole'
+};
+
+/** The house checklist; the bare "(A)" heading line is dropped in a single-part case. */
+export function pogMicroscopy(part) {
+  const v = part.values;
+  const lines = [`(${part.label})`, '- Chorionic villi'];
+  if (v.villi === 'Present') {
+    lines.push(`   - Present${VILLOUS[v.villousAppearance] || ''}`);
+    lines.push(`   - Villitis ${v.villitis === 'Present' ? 'present' : 'absent'}`);
+    lines.push(`   - ${GTD_LINE[v.gtd] || GTD_LINE['No evidence']}`);
+  } else if (v.villi === 'Absent' || v.villi === IMPLANT) {
+    lines.push('   - Absent');
+    if (v.villi === IMPLANT) lines.push('- Implantation-site intermediate trophoblast: Present');
+  } else {
+    lines.push('   - Not recorded');
+  }
+  lines.push(`- Decidua: ${v.decidua === 'Absent' ? 'Absent' : 'Present'}`);
+  lines.push(`- Hypersecretory endometrium: ${v.hypersecretory === 'Absent' ? 'Absent' : 'Present'}`);
+  lines.push(`- Foetal parts: ${v.foetalParts === 'Present' ? 'Present' : 'Absent'}`);
+  const notes = (v.additionalNotes || '').trim();
+  if (notes) lines.push(notes);
+  return lines.join('\n');
+}
+
+/** Diagnosis after the head. Foetal parts or implantation-site trophoblast confirm an intrauterine gestation without villi. */
+export function pogDiagnosis(v) {
+  if (v.villi === 'Present') {
+    if (v.gtd === 'Partial hydatidiform mole') return 'Consistent with PARTIAL HYDATIDIFORM MOLE';
+    if (v.gtd === 'Complete hydatidiform mole') return 'COMPLETE HYDATIDIFORM MOLE';
+    return 'PRODUCTS OF GESTATION confirmed';
+  }
+  if (v.villi === IMPLANT) return 'IMPLANTATION-SITE TROPHOBLAST WITHOUT CHORIONIC VILLI';
+  if (v.villi === 'Absent') {
+    if (v.foetalParts === 'Present') return 'PRODUCTS OF GESTATION confirmed';
+    if (v.decidua !== 'Absent') return 'DECIDUA only';
+    if (v.hypersecretory !== 'Absent') return 'HYPERSECRETORY ENDOMETRIUM only';
+    return 'NO PRODUCTS OF GESTATION IDENTIFIED';
+  }
+  return 'chorionic villi not recorded';
+}
+
+/** Checks for a products-of-gestation part; an endometrial part has none. */
+export function validate(part) {
+  const v = part.values;
+  if (!isPog(v)) return [];
+  const { out, err, warn } = checks();
+  if (!v.villi) err('Chorionic villi: record present or absent.', 'villi');
+  else if (v.villi === 'Absent' && v.foetalParts !== 'Present') {
+    warn('No chorionic villi, implantation-site trophoblast or foetal parts: an ectopic pregnancy should be suspected. Communicate the result to the clinical team promptly (the no-villi comment is available).', 'villi');
+  }
+  if (v.villi === 'Present' && MOLES.includes(v.gtd)) warn('Hydatidiform mole: communicate the result to the clinical team urgently if the diagnosis was not expected.', 'gtd');
+  return out;
 }
 
 // ---------- microscopy ----------
@@ -94,6 +178,7 @@ function ihcSentence(v) {
 
 export function microscopy(part) {
   const v = part.values;
+  if (isPog(v)) return pogMicroscopy(part);
   const s = [AMOUNT[v.amount] || AMOUNT.Moderate];
   if (noEndometrium(v)) {
     if (v.endocervix === 'Fragments of endocervical polyp also present') s.push('Fragments of an endocervical polyp are present.');
@@ -175,6 +260,7 @@ const PHASE_DX = {
 
 export function diagnosisText(part) {
   const v = part.values;
+  if (isPog(v)) return pogDiagnosis(v);
   if (noEndometrium(v)) return 'NO ENDOMETRIUM PRESENT; MUCUS, BLOOD AND ENDOCERVICAL TISSUE ONLY (INADEQUATE FOR ASSESSMENT)';
   if (v.amount === 'Scanty (inadequate for assessment)') return 'SCANTY ENDOMETRIUM, INADEQUATE FOR ASSESSMENT';
   if (hasCarcinoma(v)) {
@@ -187,7 +273,8 @@ export function diagnosisText(part) {
   if (hasPolyp(v)) items.push(v.polyp === 'Present' ? 'ENDOMETRIAL POLYP' : 'FRAGMENTS SUGGESTIVE OF ENDOMETRIAL POLYP');
   if (hasEndometritis(v)) items.push(v.endometritis === 'Acute endometritis' ? 'ACUTE ENDOMETRITIS' : 'CHRONIC ENDOMETRITIS');
   if (isGestational(v)) {
-    if (v.poc === 'Chorionic villi present') items.push('PRODUCTS OF CONCEPTION (CHORIONIC VILLI PRESENT)');
+    // House wording (2026-09-24): "gestation", never "conception", with "confirmed" in lower case.
+    if (v.poc === 'Chorionic villi present') items.push('PRODUCTS OF GESTATION confirmed');
     else if (v.poc === 'Implantation-site trophoblast without villi') items.push('IMPLANTATION-SITE TROPHOBLAST WITHOUT CHORIONIC VILLI');
     else if (v.poc === 'Decidua and hypersecretory endometrium without villi') items.push('DECIDUA AND HYPERSECRETORY ENDOMETRIUM; NO CHORIONIC VILLI IDENTIFIED');
     else items.push(PHASE_DX[v.phase]);
@@ -211,7 +298,7 @@ export function diagnosisText(part) {
 export function diagnosis(part, ctx) {
   const v = part.values;
   const lines = [`(${part.label}) ${organPhrase(part)} - ${diagnosisText(part)}`];
-  if (hasCarcinoma(v) && ctx?.options?.mmrLine !== false) {
+  if (!isPog(v) && hasCarcinoma(v) && ctx?.options?.mmrLine !== false) {
     if (v.mmr && v.mmr !== NP) {
       lines.push(v.mmr === 'Retained (MMR proficient)'
         ? '- Mismatch repair proteins: no loss of nuclear expression of MLH1, PMS2, MSH2 or MSH6 (MMR proficient); low probability of microsatellite instability-high (MSI-H).'
@@ -222,4 +309,4 @@ export function diagnosis(part, ctx) {
   return lines.join('\n');
 }
 
-export default { specimenName, microscopy, diagnosis };
+export default { specimenName, microscopy, diagnosis, validate };

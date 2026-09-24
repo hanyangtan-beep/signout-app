@@ -241,3 +241,24 @@ Counts are parts in the 2021-2026 biopsy export plus the 2024-2026 LIS export (1
   - bone and joint 165 to 12 of 179.
 - Found, not fixed here: 235 soft tissue parts still reach Generic. 114 name soft tissue with no procedure word, and 65 are biopsies, although the form offers Biopsy. This is recorded in Later.
 - Tests: tests/softtissue_batch1.test.js, tests/abscess_granulation.test.js and tests/bone_joint.test.js, plus three browser checks (soft tissue ALT with MDM2, pilonidal sinus, revision synovium and vertebral metastasis).
+
+## Benign batch 2 routing and pre-fill (user request, built 2026-09-24)
+
+Counts are the 18,913 parts that the benign resections profiler splits from the 2021-2026 biopsy export and the 2024-2026 LIS export, routed with no clinical history. They are aggregate only.
+
+- Products of gestation (`endometrial_biopsy`):
+  - New site terms: tissue mass, products (or product) of gestation or conception, gestational product, retained product, ERPC, ERPOC, evacuation and miscarriage. New procedure terms: evacuation, suction, per vagina, per vaginam, ERPC and ERPOC. New clinical terms: miscarriage, missed abortion and retained product.
+  - `match.exclude` keeps haematoma, subdural and extradural evacuations, abscesses, soft tissue, breast and placenta lines off the form. "Rectum, suction biopsy" keeps its own route.
+  - Two `from: 'map'` fills:
+    - The specimen type is read from the line: suction, vacuum or MVA gives "Uterus, suction evacuation"; evacuation, ERPC or retained products gives "Uterus, evacuation of retained products of gestation"; vagina, passed or PV gives "Tissue mass, per vaginam"; tissue mass, products of gestation or miscarriage gives "Tissue mass". A line that names the endometrium, pipelle, curettings, polypectomy, hysteroscopy, D&C or the uterine cavity keeps the endometrial types.
+    - The gestational phase is set from the same words.
+  - 145 parts re-route, all from generic:
+    - 102 in the products-of-gestation category;
+    - 13 bare "TISSUE MASS" heads that the profiler files under soft tissue, all released as decidua, blood clot or trophoblast;
+    - 30 uncategorised gestational heads (tissue mass per vagina, uterine suction, miscarriage).
+  - No other part changes template or tier.
+- Generic share, by the categories in the benign resections case mix (`tools/profile-benign-resections.py --route`):
+  - products of gestation 107 to 5 of 114 (`endometrial_biopsy` 5 to 107; `placenta` 2 unchanged);
+  - soft tissue 235 to 222 of 523, because of the 13 tissue-mass heads.
+- The 5 left on Generic: two "Uterus, …" lines and one "… tissue mass" line are offered as "choose", and two name no site.
+- Tests: tests/products_of_gestation.test.js (intake section), and the "products of gestation (benign batch 2)" case in tests/fixtures/intake/cases.json. That case has four parts under a "Missed miscarriage" history, and its placenta part keeps `placenta`.

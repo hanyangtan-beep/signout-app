@@ -1,0 +1,16 @@
+{
+  "templateId": "endometrial_biopsy",
+  "values": {
+    "specimenType": "Uterus, suction evacuation",
+    "villi": "Absent"
+  },
+  "report": "Uterus, suction evacuation\n\n- Chorionic villi\n   - Absent\n- Decidua: Present\n- Hypersecretory endometrium: Present\n- Foetal parts: Absent\n\nUTERUS, suction evacuation - DECIDUA only",
+  "checks": [
+    {
+      "level": "warn",
+      "message": "No chorionic villi, implantation-site trophoblast or foetal parts: an ectopic pregnancy should be suspected. Communicate the result to the clinical team promptly (the no-villi comment is available).",
+      "field": "villi",
+      "part": "A"
+    }
+  ]
+}

@@ -14,14 +14,32 @@
   "D&C",
   "hyperplasia",
   "EIN",
-  "PMB"
+  "PMB",
+  "products of gestation",
+  "POG",
+  "tissue mass",
+  "ERPC",
+  "miscarriage",
+  "hydatidiform mole"
  ],
  "match": {
   "site": [
    "endometrium",
    "endometrial",
    "pipelle",
-   "uterine cavity"
+   "uterine cavity",
+   "tissue mass",
+   "products of gestation",
+   "products of conception",
+   "product of gestation",
+   "product of conception",
+   "gestational product",
+   "retained product",
+   "ERPC",
+   "ERPOC",
+   "evacuation",
+   "evacuate",
+   "miscarriage"
   ],
   "procedure": [
    "biopsy",
@@ -30,7 +48,14 @@
    "D&C",
    "curettage",
    "hysteroscopic",
-   "polypectomy"
+   "polypectomy",
+   "evacuation",
+   "evacuate",
+   "suction",
+   "per vagina",
+   "per vaginam",
+   "ERPC",
+   "ERPOC"
   ],
   "clinical": [
    "PMB",
@@ -38,9 +63,56 @@
    "menorrhagia",
    "AUB",
    "thickened endometrium",
-   "hyperplasia"
+   "hyperplasia",
+   "miscarriage",
+   "missed abortion",
+   "retained product"
   ],
-  "bare": true
+  "bare": true,
+  "exclude": [
+   "haematoma",
+   "hematoma",
+   "subdural",
+   "extradural",
+   "abscess",
+   "soft tissue",
+   "breast",
+   "placenta"
+  ],
+  "fill": [
+   {
+    "field": "specimenType",
+    "from": "map",
+    "map": [
+     [
+      "^(?![\\s\\S]*(endometri|pipelle|curett|polypectomy|hysteroscop|d&c|uterine cavity))[\\s\\S]*(suction|vacuum|\\bMVA\\b)",
+      "Uterus, suction evacuation"
+     ],
+     [
+      "^(?![\\s\\S]*(endometri|pipelle|curett|polypectomy|hysteroscop|d&c|uterine cavity))[\\s\\S]*(evacuat|\\bE?RPO?C\\b|retained products)",
+      "Uterus, evacuation of retained products of gestation"
+     ],
+     [
+      "^(?![\\s\\S]*(endometri|pipelle|curett|polypectomy|hysteroscop|d&c|uterine cavity))[\\s\\S]*(vagin|passed|\\bPV\\b)",
+      "Tissue mass, per vaginam"
+     ],
+     [
+      "^(?![\\s\\S]*(endometri|pipelle|curett|polypectomy|hysteroscop|d&c|uterine cavity))[\\s\\S]*(tissue mass|products of (gestation|conception)|miscarriage)",
+      "Tissue mass"
+     ]
+    ]
+   },
+   {
+    "field": "phase",
+    "from": "map",
+    "map": [
+     [
+      "tissue mass|products of (gestation|conception)|retained products|evacuat|\\bE?RPO?C\\b|miscarriage|decidua",
+      "Gestational (decidua and hypersecretory glands)"
+     ]
+    ]
+   }
+  ]
  },
  "specimenNoun": "curettings",
  "maxParts": 4,
@@ -85,9 +157,173 @@
     "Endometrial curettings",
     "Endometrial biopsy (Pipelle)",
     "Hysteroscopic biopsy",
-    "Endometrial polypectomy"
+    "Endometrial polypectomy",
+    "Tissue mass",
+    "Tissue mass, per vaginam",
+    "Uterus, suction evacuation",
+    "Uterus, evacuation of retained products of gestation"
    ],
    "default": "Endometrial curettings"
+  },
+  {
+   "id": "villi",
+   "label": "Chorionic villi",
+   "type": "select",
+   "options": [
+    "Present",
+    "Absent",
+    "Absent; implantation-site trophoblast present"
+   ],
+   "default": "",
+   "showIf": {
+    "field": "specimenType",
+    "is": [
+     "Tissue mass",
+     "Tissue mass, per vaginam",
+     "Uterus, suction evacuation",
+     "Uterus, evacuation of retained products of gestation"
+    ]
+   }
+  },
+  {
+   "id": "villousAppearance",
+   "label": "Villi: appearance",
+   "type": "select",
+   "options": [
+    "Unremarkable",
+    "Hydropic change",
+    "Sclerotic"
+   ],
+   "default": "Unremarkable",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimenType",
+      "is": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     },
+     {
+      "field": "villi",
+      "is": "Present"
+     }
+    ]
+   }
+  },
+  {
+   "id": "villitis",
+   "label": "Villi: villitis",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimenType",
+      "is": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     },
+     {
+      "field": "villi",
+      "is": "Present"
+     }
+    ]
+   }
+  },
+  {
+   "id": "gtd",
+   "label": "Gestational trophoblastic disease",
+   "type": "select",
+   "options": [
+    "No evidence",
+    "Partial hydatidiform mole",
+    "Complete hydatidiform mole"
+   ],
+   "default": "No evidence",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimenType",
+      "is": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     },
+     {
+      "field": "villi",
+      "is": "Present"
+     }
+    ]
+   }
+  },
+  {
+   "id": "decidua",
+   "label": "Decidua",
+   "type": "select",
+   "options": [
+    "Present",
+    "Absent"
+   ],
+   "default": "Present",
+   "showIf": {
+    "field": "specimenType",
+    "is": [
+     "Tissue mass",
+     "Tissue mass, per vaginam",
+     "Uterus, suction evacuation",
+     "Uterus, evacuation of retained products of gestation"
+    ]
+   }
+  },
+  {
+   "id": "hypersecretory",
+   "label": "Hypersecretory endometrium",
+   "type": "select",
+   "options": [
+    "Present",
+    "Absent"
+   ],
+   "default": "Present",
+   "showIf": {
+    "field": "specimenType",
+    "is": [
+     "Tissue mass",
+     "Tissue mass, per vaginam",
+     "Uterus, suction evacuation",
+     "Uterus, evacuation of retained products of gestation"
+    ]
+   }
+  },
+  {
+   "id": "foetalParts",
+   "label": "Foetal parts",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "specimenType",
+    "is": [
+     "Tissue mass",
+     "Tissue mass, per vaginam",
+     "Uterus, suction evacuation",
+     "Uterus, evacuation of retained products of gestation"
+    ]
+   }
   },
   {
    "id": "amount",
@@ -100,7 +336,16 @@
     "Scanty (inadequate for assessment)",
     "No endometrium (mucus, blood and cervical tissue only)"
    ],
-   "default": "Moderate"
+   "default": "Moderate",
+   "showIf": {
+    "field": "specimenType",
+    "not": [
+     "Tissue mass",
+     "Tissue mass, per vaginam",
+     "Uterus, suction evacuation",
+     "Uterus, evacuation of retained products of gestation"
+    ]
+   }
   },
   {
    "id": "phase",
@@ -119,10 +364,23 @@
    ],
    "default": "Proliferative",
    "showIf": {
-    "field": "amount",
-    "not": [
-     "Scanty (inadequate for assessment)",
-     "No endometrium (mucus, blood and cervical tissue only)"
+    "all": [
+     {
+      "field": "amount",
+      "not": [
+       "Scanty (inadequate for assessment)",
+       "No endometrium (mucus, blood and cervical tissue only)"
+      ]
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
     ]
    }
   },
@@ -137,9 +395,22 @@
    ],
    "default": "Absent",
    "showIf": {
-    "field": "amount",
-    "not": [
-     "No endometrium (mucus, blood and cervical tissue only)"
+    "all": [
+     {
+      "field": "amount",
+      "not": [
+       "No endometrium (mucus, blood and cervical tissue only)"
+      ]
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
     ]
    }
   },
@@ -157,9 +428,22 @@
    ],
    "default": "None",
    "showIf": {
-    "field": "amount",
-    "not": [
-     "No endometrium (mucus, blood and cervical tissue only)"
+    "all": [
+     {
+      "field": "amount",
+      "not": [
+       "No endometrium (mucus, blood and cervical tissue only)"
+      ]
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
     ]
    }
   },
@@ -174,9 +458,22 @@
    ],
    "default": "Absent",
    "showIf": {
-    "field": "amount",
-    "not": [
-     "No endometrium (mucus, blood and cervical tissue only)"
+    "all": [
+     {
+      "field": "amount",
+      "not": [
+       "No endometrium (mucus, blood and cervical tissue only)"
+      ]
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
     ]
    }
   },
@@ -191,8 +488,21 @@
    ],
    "default": "Not performed",
    "showIf": {
-    "field": "endometritis",
-    "is": "Chronic endometritis (plasma cells)"
+    "all": [
+     {
+      "field": "endometritis",
+      "is": "Chronic endometritis (plasma cells)"
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
+    ]
    }
   },
   {
@@ -206,10 +516,23 @@
    ],
    "default": "None",
    "showIf": {
-    "field": "amount",
-    "not": [
-     "Scanty (inadequate for assessment)",
-     "No endometrium (mucus, blood and cervical tissue only)"
+    "all": [
+     {
+      "field": "amount",
+      "not": [
+       "Scanty (inadequate for assessment)",
+       "No endometrium (mucus, blood and cervical tissue only)"
+      ]
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
     ]
    }
   },
@@ -223,8 +546,21 @@
    ],
    "default": "Focal",
    "showIf": {
-    "field": "hyperplasia",
-    "not": "None"
+    "all": [
+     {
+      "field": "hyperplasia",
+      "not": "None"
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
+    ]
    }
   },
   {
@@ -243,10 +579,23 @@
    ],
    "default": "None",
    "showIf": {
-    "field": "amount",
-    "not": [
-     "Scanty (inadequate for assessment)",
-     "No endometrium (mucus, blood and cervical tissue only)"
+    "all": [
+     {
+      "field": "amount",
+      "not": [
+       "Scanty (inadequate for assessment)",
+       "No endometrium (mucus, blood and cervical tissue only)"
+      ]
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
     ]
    }
   },
@@ -261,8 +610,21 @@
    ],
    "default": "1",
    "showIf": {
-    "field": "carcinoma",
-    "is": "Endometrioid carcinoma"
+    "all": [
+     {
+      "field": "carcinoma",
+      "is": "Endometrioid carcinoma"
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
+    ]
    }
   },
   {
@@ -276,8 +638,21 @@
    ],
    "default": "Not assessable on biopsy",
    "showIf": {
-    "field": "carcinoma",
-    "not": "None"
+    "all": [
+     {
+      "field": "carcinoma",
+      "not": "None"
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
+    ]
    }
   },
   {
@@ -293,8 +668,21 @@
    ],
    "default": "Not performed",
    "showIf": {
-    "field": "carcinoma",
-    "not": "None"
+    "all": [
+     {
+      "field": "carcinoma",
+      "not": "None"
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
+    ]
    }
   },
   {
@@ -311,8 +699,21 @@
    ],
    "default": "Not performed",
    "showIf": {
-    "field": "carcinoma",
-    "not": "None"
+    "all": [
+     {
+      "field": "carcinoma",
+      "not": "None"
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
+    ]
    }
   },
   {
@@ -327,8 +728,21 @@
    ],
    "default": "Not performed",
    "showIf": {
-    "field": "carcinoma",
-    "not": "None"
+    "all": [
+     {
+      "field": "carcinoma",
+      "not": "None"
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
+    ]
    }
   },
   {
@@ -343,8 +757,21 @@
    ],
    "default": "Not performed",
    "showIf": {
-    "field": "carcinoma",
-    "not": "None"
+    "all": [
+     {
+      "field": "carcinoma",
+      "not": "None"
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
+    ]
    }
   },
   {
@@ -354,8 +781,21 @@
    "placeholder": "p16 diffuse; napsin A negative",
    "default": "",
    "showIf": {
-    "field": "carcinoma",
-    "not": "None"
+    "all": [
+     {
+      "field": "carcinoma",
+      "not": "None"
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
+    ]
    }
   },
   {
@@ -370,8 +810,21 @@
    ],
    "default": "None",
    "showIf": {
-    "field": "phase",
-    "is": "Gestational (decidua and hypersecretory glands)"
+    "all": [
+     {
+      "field": "phase",
+      "is": "Gestational (decidua and hypersecretory glands)"
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
+    ]
    }
   },
   {
@@ -383,7 +836,16 @@
     "Unremarkable endocervical tissue also present",
     "Fragments of endocervical polyp also present"
    ],
-   "default": "Not represented"
+   "default": "Not represented",
+   "showIf": {
+    "field": "specimenType",
+    "not": [
+     "Tissue mass",
+     "Tissue mass, per vaginam",
+     "Uterus, suction evacuation",
+     "Uterus, evacuation of retained products of gestation"
+    ]
+   }
   },
   {
    "id": "additionalNotes",
@@ -398,8 +860,21 @@
    "id": "endo_ah_comment",
    "label": "Atypical hyperplasia / EIN comment",
    "auto": {
-    "field": "hyperplasia",
-    "is": "Atypical hyperplasia / EIN"
+    "all": [
+     {
+      "field": "hyperplasia",
+      "is": "Atypical hyperplasia / EIN"
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
+    ]
    },
    "text": "Atypical hyperplasia / endometrioid intraepithelial neoplasia is associated with concurrent endometrioid carcinoma in a substantial proportion of subsequent hysterectomy specimens. Management in line with local gynaecological oncology guidelines is suggested."
   },
@@ -407,8 +882,21 @@
    "id": "endo_scanty_comment",
    "label": "Scanty sample caveat",
    "auto": {
-    "field": "amount",
-    "is": "Scanty (limited assessment)"
+    "all": [
+     {
+      "field": "amount",
+      "is": "Scanty (limited assessment)"
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
+    ]
    },
    "text": "The sample is scanty and assessment of the endometrium is limited. Repeat sampling is suggested if clinically indicated."
   },
@@ -416,15 +904,85 @@
    "id": "endo_mmr_lynch",
    "label": "MMR loss — Lynch follow-up",
    "auto": {
-    "field": "mmr",
-    "is": [
-     "Loss of MLH1 and PMS2",
-     "Loss of MSH2 and MSH6",
-     "Loss of MSH6",
-     "Loss of PMS2"
+    "all": [
+     {
+      "field": "mmr",
+      "is": [
+       "Loss of MLH1 and PMS2",
+       "Loss of MSH2 and MSH6",
+       "Loss of MSH6",
+       "Loss of PMS2"
+      ]
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     }
     ]
    },
    "text": "Loss of mismatch repair protein expression is identified. MLH1 promoter hypermethylation testing (for MLH1 / PMS2 loss) or referral for genetic counselling and germline testing (for other patterns) is suggested."
+  },
+  {
+   "id": "pog_partial_mole",
+   "label": "Partial hydatidiform mole — ploidy and hCG follow-up",
+   "auto": {
+    "all": [
+     {
+      "field": "specimenType",
+      "is": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     },
+     {
+      "field": "villi",
+      "is": "Present"
+     },
+     {
+      "field": "gtd",
+      "is": "Partial hydatidiform mole"
+     }
+    ]
+   },
+   "text": "p57KIP2 immunohistochemistry cannot distinguish a partial hydatidiform mole from a non-molar hydropic or aneuploid gestation; ploidy analysis or molecular genotyping is suggested to confirm the diagnosis. Serial serum hCG monitoring and referral to the trophoblastic disease service are recommended."
+  },
+  {
+   "id": "pog_complete_mole",
+   "label": "Complete hydatidiform mole — p57 and hCG follow-up",
+   "auto": {
+    "all": [
+     {
+      "field": "specimenType",
+      "is": [
+       "Tissue mass",
+       "Tissue mass, per vaginam",
+       "Uterus, suction evacuation",
+       "Uterus, evacuation of retained products of gestation"
+      ]
+     },
+     {
+      "field": "villi",
+      "is": "Present"
+     },
+     {
+      "field": "gtd",
+      "is": "Complete hydatidiform mole"
+     }
+    ]
+   },
+   "text": "p57KIP2 immunohistochemistry is suggested to confirm the diagnosis; loss of nuclear expression in the villous cytotrophoblast and stroma supports a complete hydatidiform mole. Serial serum hCG monitoring and referral to the trophoblastic disease service are recommended."
+  },
+  {
+   "id": "pog_no_villi",
+   "label": "No villi — ectopic pregnancy to be excluded",
+   "text": "No chorionic villi or implantation-site trophoblast are identified. The possibility of an ectopic pregnancy should be considered; correlation with the serum hCG level and ultrasound findings is suggested."
   }
  ],
  "example": {

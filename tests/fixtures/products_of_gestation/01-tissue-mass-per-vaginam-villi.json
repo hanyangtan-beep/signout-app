@@ -1,0 +1,9 @@
+{
+  "templateId": "endometrial_biopsy",
+  "values": {
+    "specimenType": "Tissue mass, per vaginam",
+    "villi": "Present"
+  },
+  "report": "Tissue mass, per vaginam\n\n- Chorionic villi\n   - Present\n   - Villitis absent\n   - No evidence of gestational trophoblastic disease\n- Decidua: Present\n- Hypersecretory endometrium: Present\n- Foetal parts: Absent\n\nTISSUE MASS, per vaginam - PRODUCTS OF GESTATION confirmed",
+  "checks": []
+}

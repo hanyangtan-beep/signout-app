@@ -540,14 +540,32 @@
         "D&C",
         "hyperplasia",
         "EIN",
-        "PMB"
+        "PMB",
+        "products of gestation",
+        "POG",
+        "tissue mass",
+        "ERPC",
+        "miscarriage",
+        "hydatidiform mole"
       ],
       "match": {
         "site": [
           "endometrium",
           "endometrial",
           "pipelle",
-          "uterine cavity"
+          "uterine cavity",
+          "tissue mass",
+          "products of gestation",
+          "products of conception",
+          "product of gestation",
+          "product of conception",
+          "gestational product",
+          "retained product",
+          "ERPC",
+          "ERPOC",
+          "evacuation",
+          "evacuate",
+          "miscarriage"
         ],
         "procedure": [
           "biopsy",
@@ -556,7 +574,14 @@
           "D&C",
           "curettage",
           "hysteroscopic",
-          "polypectomy"
+          "polypectomy",
+          "evacuation",
+          "evacuate",
+          "suction",
+          "per vagina",
+          "per vaginam",
+          "ERPC",
+          "ERPOC"
         ],
         "clinical": [
           "PMB",
@@ -564,9 +589,56 @@
           "menorrhagia",
           "AUB",
           "thickened endometrium",
-          "hyperplasia"
+          "hyperplasia",
+          "miscarriage",
+          "missed abortion",
+          "retained product"
         ],
-        "bare": true
+        "bare": true,
+        "exclude": [
+          "haematoma",
+          "hematoma",
+          "subdural",
+          "extradural",
+          "abscess",
+          "soft tissue",
+          "breast",
+          "placenta"
+        ],
+        "fill": [
+          {
+            "field": "specimenType",
+            "from": "map",
+            "map": [
+              [
+                "^(?![\\s\\S]*(endometri|pipelle|curett|polypectomy|hysteroscop|d&c|uterine cavity))[\\s\\S]*(suction|vacuum|\\bMVA\\b)",
+                "Uterus, suction evacuation"
+              ],
+              [
+                "^(?![\\s\\S]*(endometri|pipelle|curett|polypectomy|hysteroscop|d&c|uterine cavity))[\\s\\S]*(evacuat|\\bE?RPO?C\\b|retained products)",
+                "Uterus, evacuation of retained products of gestation"
+              ],
+              [
+                "^(?![\\s\\S]*(endometri|pipelle|curett|polypectomy|hysteroscop|d&c|uterine cavity))[\\s\\S]*(vagin|passed|\\bPV\\b)",
+                "Tissue mass, per vaginam"
+              ],
+              [
+                "^(?![\\s\\S]*(endometri|pipelle|curett|polypectomy|hysteroscop|d&c|uterine cavity))[\\s\\S]*(tissue mass|products of (gestation|conception)|miscarriage)",
+                "Tissue mass"
+              ]
+            ]
+          },
+          {
+            "field": "phase",
+            "from": "map",
+            "map": [
+              [
+                "tissue mass|products of (gestation|conception)|retained products|evacuat|\\bE?RPO?C\\b|miscarriage|decidua",
+                "Gestational (decidua and hypersecretory glands)"
+              ]
+            ]
+          }
+        ]
       },
       "version": "2026.09",
       "generator": "endometrial",

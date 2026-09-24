@@ -1,0 +1,18 @@
+{
+  "templateId": "endometrial_biopsy",
+  "values": {
+    "specimenType": "Uterus, evacuation of retained products of gestation",
+    "villi": "Present",
+    "villousAppearance": "Hydropic change",
+    "gtd": "Partial hydatidiform mole"
+  },
+  "report": "Uterus, evacuation of retained products of gestation\n\n- Chorionic villi\n   - Present (with hydropic change)\n   - Villitis absent\n   - Features of partial hydatidiform mole\n- Decidua: Present\n- Hypersecretory endometrium: Present\n- Foetal parts: Absent\n\nUTERUS, evacuation of retained products of gestation - Consistent with PARTIAL HYDATIDIFORM MOLE\n\np57KIP2 immunohistochemistry cannot distinguish a partial hydatidiform mole from a non-molar hydropic or aneuploid gestation; ploidy analysis or molecular genotyping is suggested to confirm the diagnosis. Serial serum hCG monitoring and referral to the trophoblastic disease service are recommended.",
+  "checks": [
+    {
+      "level": "warn",
+      "message": "Hydatidiform mole: communicate the result to the clinical team urgently if the diagnosis was not expected.",
+      "field": "gtd",
+      "part": "A"
+    }
+  ]
+}

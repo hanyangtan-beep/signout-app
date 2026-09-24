@@ -1,0 +1,10 @@
+{
+  "templateId": "endometrial_biopsy",
+  "values": {
+    "specimenType": "Endometrial curettings",
+    "phase": "Gestational (decidua and hypersecretory glands)",
+    "poc": "Chorionic villi present"
+  },
+  "report": "Endometrium, curettings\n\nSections show a moderate amount of fragmented endometrium. Decidua and hypersecretory endometrium are present. Chorionic villi are present, confirming an intrauterine gestation. There is no evidence of chronic endometritis, hyperplasia or malignancy.\n\nENDOMETRIUM, curettings - PRODUCTS OF GESTATION confirmed; no evidence of hyperplasia, gestational trophoblastic disease or malignancy",
+  "checks": []
+}
