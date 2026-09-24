@@ -146,6 +146,8 @@ The CNS pathways spec is now built out: the grading rules, the guided intake and
 
 Build order (2026-09-15) is set by the LIS export of 4547 cases, 2024 to 2026-09 — `docs/case-mix-2026-09.md`. Built templates cover 79.2 per cent of that caseload; the four cards above the rule take it to 89.9 per cent. Cards below the rule are carried over and are ordered by the same measure. Placeholders in the app menus (`templates/planned.json`) are removed by the card that builds the template.
 
+The Benign resections group (user request 2026-09-24) follows the Joint fluid and CSF card. It is sized by its own measure, diagnosis parts in both exports (`docs/case-mix/benign-resections-2021-2026.md`), and is built in the four batches its group note lists.
+
 ### Oral cavity and oropharynx — biopsy + resection pair  Size: L → split; build as one batch
 Why:        **106 cases, 2.3 per cent** — the largest uncovered histology category. The export shows both ends: plain oral-cavity and mandible biopsies, and full resections (mandibulectomy with neck dissection, maxillectomy with revised margins, wide local excision of alveolus, buccal mucosa with named margins). Two H&N placeholders are already in the menus.
 Source:     https://awiloqmh.github.io/CancerReportingTemplate/HN-Lip%20and%20oral%20cavity.html (JS-rendered; save as `docs/reference/HN-Lip-and-oral-cavity.html`, run `tools/import-qmh.js`).
@@ -170,6 +172,132 @@ Ship:       with batch
 Spec:       card is the spec
 Carried over from the previous ordering, now ranked by the same case-mix measure.
 
+### Benign resections — group note (user request 2026-09-24)
+Measure:    diagnosis parts, not the site-based table above: the five-year biopsy file (January 2021 to 14 September 2026, 9,325 cases) and the 2024–2026 LIS export (4,547 cases), counted by `tools/profile-benign-resections.py` into `docs/case-mix/benign-resections-2021-2026.md`. The twelve categories hold **1,144 parts in 1,017 cases (10.9 per cent) in the five-year file and 281 parts in 271 cases (6.0 per cent) in the export, and 975 of the 1,425 parts land on Generic today.** Counts in the cards read five-year / export.
+Batches:    1 — soft tissue benign upgrade; abscess, ulcer and granulation tissue; bone and joint. 2 — products of gestation; standalone fallopian tube; ectopic pregnancy. 3 — haemorrhoid, cholesteatoma and hernia sac; nail and digit; testis, scrotum and foreskin. 4 — kidney, non-neoplastic; soft tissue sarcoma grade and staging; soft tissue sarcoma synoptic (sarcoma sized L, split into two M cards).
+Shared:     new templates are kind 'benign resection' from `scripts/new-template.mjs`, print British spelling, follow `docs/specs/diagnosis-connectors.md`, carry intake aliases for their measured lines and appear under their system in Resections browse; each Done line records the Generic share from `--route` after the build. This carding is docs-only, so the `soft_tissue_sarcoma` placeholder still reads Later in `templates/planned.json` until the first batch ships.
+
+### Soft tissue — benign template upgrade                Size: M; batch 1
+Why:        **421 / 102 parts (366 / 97 cases; 3.9 / 2.1 per cent)**, of which the benign template's own diagnoses fit only 124 / 32. The rest: descriptive "no evidence of malignancy" 74 / 23, metastasis, lymphoma or other malignancy 77 / 11, reactive 31 / 6, inflammatory 25 / 4, benign tumours not on the list 18 / 2, ALT / WDLPS 13 / 5, nodal tissue 11 / 3, desmoid / SFT / DFSP 4 / 1, and sarcoma 27 / 9 (batch 4). 236 of 523 parts land on Generic.
+Change:     `soft_tissue_benign` gains a descriptive option (fibroadipose tissue, no evidence of malignancy); reactive entities (fat necrosis, organising haematoma, scar, foreign-body reaction, vascular malformation, endometriosis, gouty tophus); the missing benign tumours (angioleiomyoma, tenosynovial giant cell tumour — localised / diffuse, glomus tumour, granular cell tumour, elastofibroma, calcifying fibrous tumour); desmoid-type fibromatosis (β-catenin line) and solitary fibrous tumour (STAT6 line, risk comment), DFSP → see comment; ALT / WDLPS with **MDM2 status** (amplified / not amplified / pending / not tested) and margin, a retroperitoneal lesion pointing to the sarcoma synoptic; **metastatic malignancy** (carcinoma / melanoma / lymphoma) with the IHC sentence and favoured primary in the microscopy paragraph; excision fields per G105 §4.4 — histological location (dermal / subcutaneous / subfascial / intramuscular) and surrounding tissue, completeness of excision, distance to the nearest margin in mm.
+Untouched:  the 16 existing diagnoses and their printed lines (the ALT option gains fields, its line stays); soft tissue fixtures; `skin_cyst`, `lymph_node`.
+Accept:     fixtures for fat necrosis, a knee TGCT, an ALT with MDM2 amplified 2 mm from the margin, and metastatic adenocarcinoma in the abdominal wall (CK7 / CK20 / CDX2 sentence); existing fixtures unchanged; intake top-1 for "Soft tissue, right thigh, excision" and "Abdominal wall nodule, excision".
+Verify:     tests + browser (light)
+Ship:       with batch
+Spec:       card is the spec
+Source:     RCPath G105 Tissue pathways for bone and soft tissue pathology (V3, May 2023) §4.4 — https://www.rcpath.org/static/ed61da32-4f9c-439c-b080b9a7a662090f/g105-bone-soft-tissue.pdf; WHO Soft Tissue and Bone Tumours, 5th ed. (2020) — https://publications.iarc.who.int/588
+
+### Abscess, ulcer and granulation tissue                Size: M; batch 1
+Why:        **206 / 56 parts (192 / 52 cases; 2.1 / 1.1 per cent)** — abscess wall 56 / 16, ulcer 31 / 11, granulation tissue 24 / 5, inflammation 17 / 4, ruptured or inflamed cyst 15 / 0, stasis change 13 / 4, fistula or sinus 11 / 2, necrotic tissue 5 / 1, malignant or premalignant 6 / 1; skin 85 / 20, soft tissue 55 / 16, perianal and pilonidal 27 / 4. 183 of 262 parts land on Generic and 40 on `skin_cyst`.
+Change:     new template `abscess_granulation` (Soft tissue, benign resection, menu label "Abscess"; dx head SKIN, SOFT TISSUE or PERIANAL from the line; aliases abscess, abscess wall, granulation tissue, ulcer, sinus, fistula, pilonidal, debridement, slough, incision and drainage): site and procedure pick-lists (excision, debridement, incision and drainage, biopsy); diagnoses with fixed narrative — abscess wall, granulation tissue, ulcer (base and edge), stasis change, fistula or sinus track (hair shafts → pilonidal sinus), ruptured cyst with foreign-body reaction, necrotic tissue or slough; modifiers for granulomas (absent sentence, or present → Crohn's disease / tuberculosis / hidradenitis comment with stains), organisms on special stains and foreign material; the house closing sentence, `There is no evidence of dysplasia or malignancy.` or `There is no evidence of granulomatous inflammation or malignancy.`
+Untouched:  `skin_cyst` (an identified cyst stays there), `skin_lesion`, `soft_tissue_benign`; haemorrhoids (batch 3).
+Accept:     fixtures for an axillary abscess wall, a pilonidal sinus with hair shafts, a leg ulcer edge with the dysplasia sentence, and a perianal fistula with granulomas; intake top-1 for "Abscess wall", "Pilonidal sinus" and "Ulcer, left leg".
+Verify:     tests + browser (light)
+Ship:       with batch
+Spec:       card is the spec
+Source:     RCPath G085 Tissue pathways for GI and pancreatobiliary pathology (V3, Oct 2024) §3.4.3 — https://www.rcpath.org/static/4593f557-d75c-4ca6-9307a9d688e02a2d/1f175bdf-4934-4ace-bbde65114401944b/g085-tissue-pathways-for-gastrointestinal-and-pancreatobiliary-pathology.pdf; RCPath G075 Tissue pathways for dermatopathology (V3, Feb 2024) §3.6 report content — https://www.rcpath.org/static/88bfeeaf-7b1c-458e-be2019c1324cd7ac/G075-Tissue-pathways-for-dermatopathologyfor-publication.pdf
+
+### Bone and joint — non-neoplastic                      Size: M; batch 1
+Why:        **154 / 25 parts (141 / 25 cases; 1.5 / 0.5 per cent)** — descriptive 72 / 11, metastatic carcinoma 25 / 4, osteomyelitis 12 / 2, fracture 4 / 0, plasma cell neoplasm or lymphoma 4 / 0, avascular necrosis 3 / 0, degenerative 3 / 1, synovial disease 2 / 0, crystal 1 / 1; primary bone or cartilage tumours (24 / 6) stay with `bone_tumour`. Specimens: curettage or excision 38 / 5, synovium 34 / 8, femoral or humeral head 21 / 1, spine, disc or ligamentum 18 / 4, bone biopsy 18 / 5, reamings 6 / 1. 165 of 179 parts land on Generic.
+Change:     new template `bone_joint` (Soft tissue, benign resection, menu label "Bone / joint"; dx head BONE, FEMORAL HEAD, SYNOVIUM or INTERVERTEBRAL DISC from the line; aliases bone, femoral head, humeral head, synovium, joint, reamings, curettings, disc, ligamentum flavum, osteomyelitis): the specimen pick-list drives the fields per G105 — **femoral or humeral head** (osteoarthritis confirmed and graded mild / moderate / severe, avascular necrosis, fracture with the pathological-cause statement, inflammatory or crystal arthropathy); **synovium** (hyperplasia, inflammatory infiltrate, haemosiderin, crystals, bone or cartilage fragments, wear debris, granulomas; the revision-arthroplasty "no evidence of infection" sentence); **disc or ligamentum** (degenerate cells and matrix, polymorphs, vessel and nerve ingrowth, crystals); **bone biopsy, curettings, reamings** (lysis or sclerosis, new bone, marrow, acute or chronic osteomyelitis, necrosis with empty lacunae, Paget's disease, callus, metastatic carcinoma with the IHC sentence → see comment); decalcification line.
+Untouched:  the `bone_tumour` and `ewing_sarcoma` placeholders; the Joint fluid and CSF card; `soft_tissue_benign`.
+Accept:     fixtures for a femoral head with moderate osteoarthritis, a revision synovium with no evidence of infection, a degenerate lumbar disc, and a vertebral biopsy with metastatic carcinoma; intake top-1 for "Femoral head", "Synovium, right knee" and "Bone, L3 vertebral biopsy".
+Verify:     tests + browser (light)
+Ship:       with batch
+Spec:       card is the spec
+Source:     RCPath G105 (V3, May 2023) §3.4 synovium, §6.5 disc, §7.5 bone biopsy, §9.5 curettings, §10 joint replacement — https://www.rcpath.org/static/ed61da32-4f9c-439c-b080b9a7a662090f/g105-bone-soft-tissue.pdf
+
+### Products of gestation — intake and house wording     Size: S; batch 2
+Why:        **90 / 24 parts (89 / 23 cases; 1.0 / 0.5 per cent)**, not the "~0" the Parked line assumed: 55 / 7 arrive headed "tissue mass" and 27 / 12 as uterine evacuations. `endometrial_biopsy` already has a gestational path, but 107 of 114 parts land on Generic, and the released diagnosis reads `PRODUCTS OF GESTATION` in 102 of 114 (never "conception") where the template prints `PRODUCTS OF CONCEPTION (CHORIONIC VILLI PRESENT)`.
+Change:     intake aliases (tissue mass per vaginam, products of gestation or conception, evacuation of retained products, ERPC, miscarriage, suction evacuation) open `endometrial_biopsy` with the gestational phase preset and the dx head from the line (TISSUE MASS or UTERUS); dx `PRODUCTS OF GESTATION CONFIRMED` replaces the conception line while the no-villi and implantation-site lines stay; a hydatidiform-change flag (partial or complete mole → p57 and ploidy comment, hCG follow-up; 2 / 0 parts).
+Untouched:  non-gestational endometrial output; `placenta`; the ectopic card.
+Accept:     no fixture carries the old wording (checked 2026-09-24), so no golden change; new fixtures for a tissue mass with villi and an evacuation without villi; intake top-1 for "Tissue mass per vagina" and "Uterus, evacuation of retained products".
+Verify:     tests only
+Ship:       with batch
+Spec:       card is the spec
+Source:     house wording from the released reports, counted in `docs/case-mix/benign-resections-2021-2026.md`
+
+### Standalone fallopian tube — benign uterus template   Size: S; batch 2
+Why:        **68 / 15 parts (51 / 15 cases)** of tube-only specimens — paratubal cyst 30 / 10, unremarkable or sterilisation segment 24 / 3, hydrosalpinx 6 / 1. `uterus_benign` already carries "Fallopian tube(s), sterilisation" and the paratubal-cyst and hydrosalpinx findings, yet 69 of 83 parts land on Generic and 14 on `ovarian_cyst`.
+Change:     specimen options "Left fallopian tube, salpingectomy", "Right fallopian tube, salpingectomy" and "Paratubal cyst, excision" beside the sterilisation option; intake aliases (salpingectomy, fallopian tube, paratubal cyst, fimbrial cyst, hydrosalpinx, tubal ligation) route tube-only lines there, while a line that names the ovary keeps its current route.
+Untouched:  hysterectomy and adnexa outputs and fixtures; `ovarian_cyst`; the ectopic card.
+Accept:     fixtures for a left salpingectomy with a paratubal cyst and a bilateral sterilisation; intake top-1 for "Left fallopian tube, salpingectomy" and "Paratubal cyst, excision".
+Verify:     tests only
+Ship:       with batch
+Spec:       card is the spec
+
+### Fallopian tube — ectopic pregnancy                   Size: M; batch 2
+Why:        **6 / 2 parts** (5 / 1 tubal pregnancies), 7 of 8 on Generic today; a formulaic Gynae resection, and the user supplied a model report. Moved into this group 2026-09-24.
+Change:     new template `fallopian_tube_ectopic` (Gynae, benign resection, reusable part): macro builder, block key `(1) Uninvolved fallopian tube. (2)&(3) Haemorrhagic tubal tissue with distension.`, microscopy with villi / trophoblast / rupture / epithelium, mandatory GTN sentence, dx `LEFT FALLOPIAN TUBE, salpingectomy - ECTOPIC TUBAL PREGNANCY` with variants; snippets for no-villi and persistent trophoblast.
+Untouched:  uterus benign template, including the standalone-tube routing above; house `fetal` spelling.
+Accept:     fixture from the user's example reproduces macro / block key / microscopy / dx; no-villi variant prints the hCG comment; appears in Resections browse under Gynae.
+Verify:     tests + browser (light)
+Ship:       with batch
+Spec:       `docs/specs/fallopian-tube-ectopic.md`
+Source:     RCPath Tissue pathways for gynaecological pathology (V3, Feb 2023) §10.2.4 and §10.3.3 — https://www.rcpath.org/static/94763195-0982-40ed-bbc79ca92370e9ac/Tissue-pathways-for-gynaecological-pathology.pdf
+
+### Haemorrhoid, cholesteatoma and hernia sac            Size: M; batch 3; one card, three templates
+Why:        three single-diagnosis resections typed by hand. **Haemorrhoid 40 / 16 parts** (39 / 16 cases), 54 of 56 on Generic. **Ear 30 / 6** — cholesteatoma 21 / 4, canal skin 4 / 1, aural polyp 3 / 0 — 35 of 36 on Generic. **Hernia sac 8 / 0**, 3 involved by carcinoma, 6 of 8 on `soft_tissue_benign`.
+Change:     `haemorrhoid` (GI, menu label "Haemorrhoid", dx head ANUS): dx `HAEMORRHOID`, singular and British as in 44 of 56 released lines; fields for thrombosis, ulceration, mucosal prolapse change and reactive squamous atypia; microscopy "Ectatic muscular blood vessels are noted in the stroma." and the closing "There is no evidence of dysplasia or malignancy.", which all 40 five-year reports carry. `ear_cholesteatoma` (Head and neck, menu label "Ear", dx head EAR): cholesteatoma (keratin flakes with bland keratinising squamous epithelium), a keratin-only variant "Consistent with CHOLESTEATOMA" with "No intact squamous epithelium is identified.", and aural polyp or granulation tissue; canal skin lesions go to the skin templates. `hernia_sac` (Soft tissue, menu label "Hernia sac", dx head HERNIA SAC): "Features are in keeping with a hernia sac." and "There is no evidence of granulomatous inflammation or malignancy."; incarcerated-content and endometriosis modifiers; involvement by metastatic carcinoma → IHC sentence and see comment; paediatric inguinal sac checked for vas or epididymal inclusion.
+Untouched:  `colon_resection`, `soft_tissue_benign`, the skin templates.
+Accept:     fixtures for a plain and a thrombosed haemorrhoid, a keratin-only cholesteatoma, an aural polyp and an inguinal hernia sac; intake top-1 for "Haemorrhoid", "Left ear, cholesteatoma" and "Right inguinal hernia sac".
+Verify:     tests + browser (light)
+Ship:       with batch
+Spec:       card is the spec
+Source:     haemorrhoid — RCPath G085 (V3, Oct 2024) §3.3.3 — https://www.rcpath.org/static/4593f557-d75c-4ca6-9307a9d688e02a2d/1f175bdf-4934-4ace-bbde65114401944b/g085-tissue-pathways-for-gastrointestinal-and-pancreatobiliary-pathology.pdf; cholesteatoma — Sandison A, Update from the 5th edition of the WHO classification of head and neck tumours: tumours of the ear, Head Neck Pathol 2022 — https://pmc.ncbi.nlm.nih.gov/articles/PMC9018943/; hernia sac — house reports only
+
+### Nail and digit                                       Size: M; batch 3
+Why:        **41 / 15 parts (40 / 15 cases)** — descriptive 8 / 4, nail-unit melanocytic 6 / 4, TGCT, glomus or other tumour 6 / 3, pyogenic granuloma or inflammation 5 / 1, bone or cartilage 4 / 1, onychomycosis 3 / 2, digital mucous cyst or ganglion 4 / 0, gouty tophus 2 / 0; fingers 25 / 9, toes 10 / 3, nail unit 6 / 3. 36 of 56 on Generic, 12 on `soft_tissue_benign`, 8 on `skin_cyst`.
+Change:     new template `nail_digit` (Skin, benign resection, menu label "Nail / digit"; dx head FINGER, TOE or NAIL from the line; aliases nail, nail plate, nail bed, nail matrix, subungual, periungual, finger, toe, digit, hallux, onychomycosis): specimen pick-list (nail clipping, nail avulsion, matrix or bed biopsy, nail-unit excision, digit or ray amputation) with the G075 §6 handling line; diagnoses — onychomycosis (PAS / GMS positive), subungual haematoma, pyogenic granuloma, digital mucous cyst, glomus tumour, TGCT, acquired fibrokeratoma, subungual exostosis or chondroma, gouty tophus; a nail-matrix melanocytic lesion → see comment and the `melanoma` placeholder; amputation (gangrene, osteomyelitis, bone-margin viability) reuses the bone-and-joint sentences.
+Untouched:  `skin_lesion` (melanocytic grading stays there), `soft_tissue_benign`, `skin_cyst`.
+Accept:     fixtures for a PAS-positive nail clipping, a digital mucous cyst, a subungual exostosis and a toe amputation with osteomyelitis; intake top-1 for "Nail clipping, right hallux" and "Left index finger, mass".
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: Bone and joint — non-neoplastic (amputation sentences)
+Spec:       card is the spec
+Source:     RCPath G075 (V3, Feb 2024) §6 nail specimens — https://www.rcpath.org/static/88bfeeaf-7b1c-458e-be2019c1324cd7ac/G075-Tissue-pathways-for-dermatopathologyfor-publication.pdf; RCPath G105 (V3, May 2023) §2.3 amputations — https://www.rcpath.org/static/ed61da32-4f9c-439c-b080b9a7a662090f/g105-bone-soft-tissue.pdf
+
+### Testis, scrotum and foreskin — benign                Size: M; batch 3
+Why:        **35 / 10 parts (30 / 10 cases)** — orchidectomy without tumour 7 / 1, penile or scrotal skin 7 / 2, foreskin 6 / 3, hydrocele, epididymal cyst or vas 3 / 0, testicular biopsy 2 / 1, torsion 1 / 1; tumours (5 / 1) and carcinoma (3 / 1) stay with `testis_tumour` and `penile_carcinoma`. 37 of 45 on Generic.
+Change:     new template `testis_benign` (GU, benign resection, menu label "Testis / foreskin"; dx head TESTIS, FORESKIN or SPERMATIC CORD from the line; aliases orchidectomy, testis, circumcision, foreskin, prepuce, phimosis, hydrocele, epididymal cyst, spermatocele, vasectomy, vas deferens): the specimen pick-list drives the fields per G099 — prepuce (lichen sclerosus, Zoon's balanitis, balanoposthitis, the no PeIN or malignancy sentence); orchidectomy (spermatogenesis, atrophy, GCNIS absent; torsion with Mikutz grade 1–3 and viability); testicular biopsy (adequacy, spermatogenesis pattern, Johnsen score, GCNIS); hydrocele sac; epididymal cyst or spermatocele; vas deferens (full cross-section of each segment).
+Untouched:  the `testis_tumour` and `penile_carcinoma` placeholders; the skin templates for penile and scrotal skin lesions.
+Accept:     fixtures for a circumcision with lichen sclerosus, an orchidectomy for torsion (Mikutz 3), a testicular biopsy with maturation arrest and a bilateral vasectomy; intake top-1 for "Foreskin, circumcision", "Right testis, orchidectomy" and "Vas deferens, bilateral".
+Verify:     tests + browser (light)
+Ship:       with batch
+Spec:       card is the spec
+Source:     RCPath G099 Tissue pathways for urological pathology (V3, Sept 2024) §7.2, §8.1–8.3, §9.1–9.2 — https://www.rcpath.org/static/88d7ee53-9a54-4b9b-8bb89b03318b4c47/g099-tissue-pathways-for-urological-pathology.pdf
+
+### Kidney — non-neoplastic nephrectomy                  Size: M; batch 4
+Why:        **13 of 45 kidney parts in the five-year file and 3 of 10 in the export are non-neoplastic** — end-stage, polycystic or cystic 4 / 2, descriptive 5 / 1, graft or vascular 2 / 0, angiomyolipoma 2 / 0; the neoplastic 32 / 7 (renal cell carcinoma 24 / 4, urothelial 5 / 2, other 3 / 1) stay with `kidney_carcinoma`. 44 of 55 kidney parts land on Generic and 7 on `turbt`.
+Change:     new template `kidney_benign` (GU, benign resection, menu label "Kidney"; dx head KIDNEY; aliases simple nephrectomy, non-functioning kidney, polycystic kidney, renal cyst, cyst deroofing, graft nephrectomy): per G099 §2.1 — kidney dimensions, presence or absence of malignancy, type and cause of chronic damage (glomerulosclerosis, tubular atrophy and interstitial fibrosis, vascular sclerosis, chronic pyelonephritis), cyst pattern (ADPKD, acquired cystic disease, simple cyst, multicystic dysplasia; cystic nephroma excluded), renal artery lesion, urothelium, and a failed-graft option (rejection pattern, thrombosis, infarction); angiomyolipoma as the one benign tumour.
+Untouched:  the `kidney_carcinoma` placeholder; the medical renal biopsy card in Later; `turbt`.
+Accept:     fixtures for an end-stage kidney with chronic pyelonephritis, an ADPKD nephrectomy and a cyst deroofing; intake top-1 for "Left kidney, simple nephrectomy" and "Renal cyst, deroofing", while a line naming a tumour stays off this template.
+Verify:     tests + browser (light)
+Ship:       with batch
+Spec:       card is the spec
+Source:     RCPath G099 (V3, Sept 2024) §2.1 — https://www.rcpath.org/static/88d7ee53-9a54-4b9b-8bb89b03318b4c47/g099-tissue-pathways-for-urological-pathology.pdf
+
+### Soft tissue sarcoma — grade and staging module       Size: M; batch 4 (L → split, 1 of 2)
+Why:        **27 / 9 sarcoma parts** (liposarcomas, undifferentiated pleomorphic sarcoma, leiomyosarcoma, myxofibrosarcoma and synovial sarcoma among the named types) are typed by hand; `soft_tissue_sarcoma` is a Later placeholder and the benign template's "Sarcoma – see comment" has nowhere to go.
+Change:     `src/staging/softtissue.js` — FNCLCC grade from three scores as QMH lists them: differentiation by histological type (well-differentiated liposarcoma 1, myxofibrosarcoma 2, synovial sarcoma 3; "Other" takes a manual score), mitotic count per 1 mm² (0–5 / 6–11 / > 11) or per 10 HPF at a 22 mm eyepiece, and necrosis (none / < 50 / ≥ 50 per cent); sum 2–3 → grade 1, 4–5 → grade 2, 6–8 → grade 3. AJCC 8th pT by site group — trunk and extremities and retroperitoneum (5 / 10 / 15 cm), head and neck (2 / 4 cm, pT4a / pT4b by invasion), abdominal and thoracic visceral (organ-confined → multifocal), orbit — with pN, pM and, where AJCC 8th defines one, the stage group.
+Untouched:  the existing staging modules.
+Accept:     boundary tests on the FNCLCC sums and on every size cut-off; the type list reproduces the QMH differentiation scores; unit tests only.
+Verify:     tests only
+Ship:       with batch
+Spec:       card is the spec
+Source:     QMH MS-Soft tissue sarcoma — https://awiloqmh.github.io/CancerReportingTemplate/MS-Soft%20tissue%20sarcoma.html; RCPath Dataset for soft tissue sarcomas (V6, May 2022) — https://www.rcpath.org/static/369456b0-f7b4-4631-a0c6d161176f5782/Dataset-for-histopathological-reporting-of-soft-tissue-sarcoma.pdf; ICCR Soft Tissue Sarcoma — Resection Specimens (1st ed. v1.1) — https://www.iccr-cancer.org/datasets/published-datasets/soft-tissue-bone/soft-tissue-sarcoma-resection-specimens/
+
+### Soft tissue sarcoma — resection synoptic              Size: M; batch 4 (L → split, 2 of 2)
+Why:        the second half of the sarcoma split; carries the QMH element order.
+Change:     `soft_tissue_sarcoma` synoptic (Soft tissue, cancer resection; retires the placeholder) in QMH order — procedure (intralesional / marginal / wide / radical), site group, tumour size, focality, histological type, FNCLCC grade with its three scores, treatment effect, LVI, perineural invasion, margins with the closest distance and the margin named, regional nodes, distant metastasis, pTNM; a molecular line for translocation-defined and amplification-defined types (FISH / NGS result); the benign template's ALT and "Sarcoma – see comment" options offer "Open sarcoma synoptic", as "Add breast synoptic" does.
+Untouched:  `soft_tissue_benign` outputs; `gist_resection` (GIST stays there).
+Accept:     element order against the saved QMH page; fixtures for a grade 3 UPS of the thigh (pT3), a retroperitoneal DDLPS with MDM2 amplified, and a myxoid liposarcoma with the DDIT3 line; the placeholder is retired.
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: Soft tissue sarcoma — grade and staging module; Soft tissue — benign template upgrade
+Spec:       card is the spec
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/MS-Soft%20tissue%20sarcoma.html (JS-rendered; save as `docs/reference/MS-Soft-tissue-sarcoma.html`, run `tools/import-qmh.js`); WHO 5th ed. — https://publications.iarc.who.int/588
+
 ### Peritoneal nodule biopsy                             Size: M
 Why:        peritoneal / omental nodules sampled at laparoscopy or laparotomy are a recurring small specimen with a short list of answers (reactive mesothelial hyperplasia, peritoneal loose body, metastatic carcinoma, endometriosis, granuloma) and no template; the diagnosis line and IHC sentence are formulaic.
 Change:     new template `peritoneal_nodule` (GI, kind biopsy, header "Peritoneum"; aliases omentum, peritoneal nodule, loose body, mesothelial, deposit, implant): specimen builder (site pick-list — parietal peritoneum, omentum, mesentery, pelvic peritoneum, pouch of Douglas, diaphragm, serosa of named organ — plus procedure biopsy / excision; multi-part for several nodules); diagnosis pick-list with fixed narrative and dx lines — **reactive mesothelial hyperplasia** (florid / papillary variant, no invasion sentence), **peritoneal loose body** (laminated hyalinised fibrous tissue ± central fat necrosis / calcification, "consistent with an infarcted and detached appendix epiploica"), **metastatic carcinoma** (adenocarcinoma / serous / mucinous / signet-ring / squamous / other, with IHC sentence and a favoured-primary statement; "metastatic carcinoma, see comment" when primary uncertain), **endometriosis** (glands + stroma ± haemosiderin), **endosalpingiosis**, **fat necrosis**, **fibrous adhesion / fibrosis**, **granulomatous inflammation** (foreign-body / suture, keratin, necrotising with AFB / fungal stains pending), **splenosis**, **deciduosis**, **well-differentiated papillary mesothelial tumour**, **mesothelioma** (points to a Comment recommending full work-up); IHC field group with mesothelial (calretinin, WT1, D2-40, CK5/6) vs epithelial (BerEP4, MOC31, claudin-4) markers and site markers (CK7 / CK20, CDX2, SATB2, PAX8, GATA3, TTF-1, ER / PR) printed in one paragraph with microscopy; mesothelioma work-up extras BAP1 / MTAP; snippets for "no evidence of malignancy in this sample; sampling caveat", "correlate with imaging and clinical findings for the primary site", "stains pending", and "reactive mesothelial proliferation — features favouring reactive over neoplastic".
@@ -178,15 +306,6 @@ Accept:     fixtures for reactive mesothelial hyperplasia, peritoneal loose body
 Verify:     tests + browser (light)
 Ship:       with batch
 Spec:       card is the spec
-
-### Fallopian tube — ectopic pregnancy                   Size: M
-Why:        formulaic Gynae resection seen in the case mix; user supplied a model report.
-Change:     new template `fallopian_tube_ectopic` (Gynae, benign resection, reusable part): macro builder, block key `(1) Uninvolved fallopian tube. (2)&(3) Haemorrhagic tubal tissue with distension.`, microscopy with villi / trophoblast / rupture / epithelium, mandatory GTN sentence, dx `LEFT FALLOPIAN TUBE, salpingectomy - ECTOPIC TUBAL PREGNANCY` with variants; snippets for no-villi and persistent trophoblast.
-Untouched:  uterus benign template; house `fetal` spelling.
-Accept:     fixture from the user's example reproduces macro / block key / microscopy / dx; no-villi variant prints the hCG comment; appears in Resections browse under Gynae.
-Verify:     tests + browser (light)
-Ship:       with batch
-Spec:       `docs/specs/fallopian-tube-ectopic.md`
 
 ### Prostate biopsy — inadequate core                    Size: S
 Why:        cores with fibromuscular tissue only have no finding today.
@@ -238,7 +357,7 @@ Spec:       `docs/specs/frozen-section-scenarios.md`
 
 - Biomarker panel labels still read American where the QMH source did: the form shows "DISH - Number of tumor cells counted" and "HER2/neu oncoprotein DISH" while the printed report says "tumour". Printed output is britishised at render, panel labels are not, and changing `BIOMARKER_FIELD_MAP` touches a module three built templates share, so it was left alone while building the standalone ISH report (2026-09-22). Cosmetic, panel-only, no effect on any released report.
 
-- Remaining QMH cancer templates (placeholders in the menus since 2026-09-12, pull as cards when volume warrants; the placeholder is removed by the card that builds it): GI — small intestine, ampulla, anus; HPB — HCC, intrahepatic cholangiocarcinoma, pancreas NET, hepatoblastoma; Gynae — cervix, vulva, vagina, uterine sarcoma, GTD; H&N — nasopharynx, oropharynx HPV+, hypopharynx / oropharynx HPV−, larynx, sinonasal, salivary, mucosal melanoma; Endocrine — thyroid, adrenal cortical, phaeochromocytoma / paraganglioma, PitNET, neuroblastoma; Skin / soft tissue — melanoma, skin SCC, soft tissue sarcoma, bone, Ewing, rhabdomyosarcoma, extragonadal GCT; Thoracic — mesothelioma, thymus; GU — kidney, bladder, ureter / renal pelvis, urethra, penis, testis, Wilms; CNS — meningioma; Biomarkers — Gyn markers, colon HER2, stomach markers, MMR / MSI, PD-L1, DNA PCR, RNA RT-PCR, FISH, NGS.
+- Remaining QMH cancer templates (placeholders in the menus since 2026-09-12, pull as cards when volume warrants; the placeholder is removed by the card that builds it): GI — small intestine, ampulla, anus; HPB — HCC, intrahepatic cholangiocarcinoma, pancreas NET, hepatoblastoma; Gynae — cervix, vulva, vagina, uterine sarcoma, GTD; H&N — nasopharynx, oropharynx HPV+, hypopharynx / oropharynx HPV−, larynx, sinonasal, salivary, mucosal melanoma; Endocrine — thyroid, adrenal cortical, phaeochromocytoma / paraganglioma, PitNET, neuroblastoma; Skin / soft tissue — melanoma, skin SCC, bone, Ewing, rhabdomyosarcoma, extragonadal GCT (soft tissue sarcoma carded in Next 2026-09-24); Thoracic — mesothelioma, thymus; GU — kidney, bladder, ureter / renal pelvis, urethra, penis, testis, Wilms; CNS — meningioma; Biomarkers — Gyn markers, colon HER2, stomach markers, MMR / MSI, PD-L1, DNA PCR, RNA RT-PCR, FISH, NGS.
 
 - Related prior specimen — read-only Sheet lookup by accession (fills date, procedure, type, size, pT, pN from the saved case's staging summary); deferred from the Lung pair ("6 type-only for now").
 - Lung reference galleries (adenocarcinoma patterns for the IASLC grade, STAS, PL0–PL3 elastic-stain levels), openly licensed with credit; deferred from the Lung pair.
@@ -252,14 +371,9 @@ One line each; card them before building.
 
 Added from the 2024–2026 LIS export (`docs/case-mix-2026-09.md`), in volume order:
 
-- Soft tissue — 129 cases (2.8 per cent). `soft_tissue_benign` covers lipoma, fibroepithelial polyp and the simple excisions; the export also carries thigh / back / neck soft-tissue tumours and mesenteric nodules that need a sarcoma path and a site-of-origin panel. Card as an upgrade to the benign template, not a new one.
 - Bile duct and pancreas — 25 histology cases plus ~18 cytology (brushings, EUS-FNA) = 0.9 per cent. Note that pancreatic, bile-duct and pancreatic-duct **margins** arrive as separate lettered parts, so whatever is built must take a margin-only part. Folds into the existing Pancreatobiliary pair card.
 - Liver — neoplastic. 29 cases (0.6 per cent) in the export, all segment tumours, lobe resections and suspected metastases. The detailed card is already in Later (user request 2026-09-14); volume now confirms it.
-- Abscess and granulation tissue — 27 cases (0.6 per cent). Abscess wall, acetabular and pelvic granulation tissue, antral ulcer. Short template, fixed wording, currently Generic.
-- Bone and joint — 24 cases (0.5 per cent). Synovium (knee, wrist, elbow), femoral head, femur reaming material, iliac bone biopsy, intervertebral disc. Mostly formulaic non-neoplastic reports.
 - Vulva and vagina — 21 cases (0.5 per cent). The two detailed cards are already in Later (user request 2026-09-14); volume now confirms them.
-- Haemorrhoidectomy — 15 cases (0.3 per cent). Moved out of Parked; single-diagnosis template.
-- Kidney — 9 cases (0.2 per cent). Much lower than the earlier Drive-based estimate; stays low in Later.
 
 
 - Synoptic templates after stomach and the lung / breast pairs: prostate (radical) with Gleason arithmetic validation. (`docs/specs/synoptic-next-templates.md`; endometrium carded in Next)
@@ -331,7 +445,6 @@ Spec:       `docs/specs/report-review.md`
 
 - Phase 2 leftovers "one-time Google Cloud set-up" and "first real save" — superseded; both verified 2026-09-09.
 - Optgroup subgrouping of the 14-entity `dxGlioneuronal` picklist (glioneuronal entities, then neuronal) — offered 2026-09-20, declined by the user. The list stays one flat WHO CNS5 family. Do not propose again.
-- Hernia sac and products-of-conception templates — 1 and ~0 cases in the 2024–2026 export; add only if they appear on the TAT list. **Haemorrhoidectomy is no longer parked: the export shows 15 cases (0.3 per cent) — it moves to Later as a one-line card.**
 
 ---
 
