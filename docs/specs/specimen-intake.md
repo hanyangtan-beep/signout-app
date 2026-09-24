@@ -273,3 +273,13 @@ Counts are the 18,913 parts that the benign resections profiler splits from the 
 - The 4 tube parts and 4 ectopic parts that stay off the form all name the ovary, the uterus or a pregnancy.
 - Fixture change (deliberate, 2026-09-24): in the "fibroids" case of tests/fixtures/intake/cases.json, parts A and B ("Right/Left fallopian tube, resection") now expect `uterus_benign`/confident, not generic/none, with their sided salpingectomy pre-filled. Part C is unchanged. A "fallopian tube only (benign batch 2)" case adds a salpingectomy, a paratubal cyst excision, a sterilisation and an ovary-and-tube part; the last keeps its generic "choose" route.
 - Tests: tests/fallopian_tube.test.js (intake section); spec docs/specs/fallopian-tube.md.
+- Ectopic pregnancy (`fallopian_tube_ectopic`, added 2026-09-24 with the last card of the batch):
+  - Site terms: ectopic, ectopic pregnancy, tubal pregnancy and tubal ectopic. Procedure terms: salpingectomy, salpingotomy and salpingostomy. Clinical terms: ectopic, ectopic pregnancy and tubal pregnancy. A history alone never offers the form, because a candidate needs a site term.
+  - `match.exclude` keeps ectopic thyroid, parathyroid, thymus, pancreas, spleen, gastric, adrenal and breast tissue, and decidua lines, off the form. `match.not` lowers it on endometrial, uterine, curettage and evacuation lines.
+  - Two fills: the side from the line (`sideFromText`: a line that names no side gets "Not stated", not the form's default Left), and the procedure by `from: 'map'` (salpingotomy or salpingostomy, then partial salpingectomy, then salpingectomy, then contents or clot as "Tubal contents").
+  - 3 parts re-route, all from generic and all confident. Their pre-fill: right side 3; salpingectomy 2, and the third names no procedure and keeps the default salpingectomy. No other part of the 18,913 changes template or tier.
+- Generic share, by the same categories:
+  - ectopic pregnancy 3 to 0 of 8 (`fallopian_tube_ectopic` 3; `uterus_benign` 4 and `ovarian_cyst` 1 unchanged);
+  - all benign-resection categories 513 to 510 of 1,425.
+- The 5 ectopic parts that stay off the form: 4 name only the tube and keep the tube form of `uterus_benign`, which this card left untouched even when the history names an ectopic; 1 names the ovary and keeps `ovarian_cyst`.
+- No intake fixture change. Tests: tests/fallopian_tube_ectopic.test.js (intake section); spec docs/specs/fallopian-tube-ectopic.md.
