@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createCase, generate, isVisible } from '../src/engine.js';
-import { parseIntake, matchParts } from '../src/intake.js';
+import { parseIntake, matchParts, presetValues } from '../src/intake.js';
 import { loadManifest } from '../src/registry.js';
 import * as gen from '../generators/softtissue.js';
 import { ORIGINAL, NEM_IN_DX, NO_MARGIN, sftRisk, flags } from '../generators/softtissue.js';
@@ -235,6 +235,36 @@ test('the abdominal wall reaches the soft tissue template from the LIS line', as
   const manifest = await loadManifest();
   const m = matchParts(parseIntake('Abdominal wall nodule, excision'), '', manifest);
   assert.equal(m[0].templateId, 'soft_tissue_benign');
+});
+
+// Browser QA, 2026-09-24: a pasted part printed the form's default label, so "Soft tissue, right thigh,
+// excision" read "right thigh lipoma" whatever the diagnosis; a request that said lipoma printed it twice;
+// a two-piece request lost its site; and a resection printed "excision". Of the 317 parts in the 2021-2026
+// biopsy export that reach this form, 245 guessed lipoma, 47 said a word twice, 36 lost the site and 68
+// resections printed excision (62 now print resection; the other 6 name both procedures).
+test('a pasted part prints the site, lesion word and procedure the request names, and nothing it does not', async () => {
+  const manifest = await loadManifest();
+  const pasted = (line) => {
+    const parsed = parseIntake(line);
+    const m = matchParts(parsed, '', manifest)[0];
+    assert.equal(m.templateId, 'soft_tissue_benign', line);
+    return presetValues(schema, parsed.parts[0], m);
+  };
+  const head = (line) => run(pasted(line)).diagnosis.split(' - ')[0];
+  assert.equal(pasted('Soft tissue, right thigh, excision').clinicalLabel, '');
+  assert.equal(head('Soft tissue, right thigh, excision'), 'SOFT TISSUE, right thigh, excision');
+  assert.equal(head('Soft tissue, right thigh mass, excision'), 'SOFT TISSUE, right thigh mass, excision');
+  assert.equal(head('Lipoma, back, excision'), 'SOFT TISSUE, back lipoma, excision');
+  assert.equal(head('Right thigh lipoma, excision'), 'SOFT TISSUE, right thigh lipoma, excision');
+  assert.equal(head('Abdominal wall nodule, excision'), 'SOFT TISSUE, abdominal wall nodule, excision');
+  assert.equal(head('Soft tissue, left arm, resection'), 'SOFT TISSUE, left arm, resection');
+  assert.equal(head('Soft tissue, excision'), 'SOFT TISSUE, excision');
+  // A typed site that already names the label is not followed by it again; the British spelling counts.
+  assert.equal(gen.lesionPhrase({ site: 'right thigh lipoma', clinicalLabel: 'lipoma' }), 'right thigh lipoma');
+  assert.equal(gen.lesionPhrase({ site: 'Left arm tumor', clinicalLabel: 'tumour' }), 'left arm tumor');
+  assert.equal(gen.lesionPhrase({ site: 'right thigh', clinicalLabel: 'lipoma' }), 'right thigh lipoma');
+  // A part added by hand keeps the form's default label.
+  assert.equal(createCase(schema, 1).parts[0].values.clinicalLabel, 'lipoma');
 });
 
 const CASES = [

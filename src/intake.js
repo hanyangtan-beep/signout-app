@@ -578,14 +578,19 @@ function applyFill(schema, part, values) {
     } else if (rule.from === 'map') {
       // `map`: [regex source, option] pairs tried in order against the part text; the first that matches
       // names the option. For pick-lists whose option words are not what the request writes ("THR" is a
-      // femoral head, "curetting" is bone curettings), where whole-option matching finds nothing.
+      // femoral head, "curetting" is bone curettings), where whole-option matching finds nothing. On a
+      // text field the mapped word is the value. `noGuess` blanks the field when nothing matches, so a
+      // default the request did not state ("lipoma" on a soft tissue excision) is not printed.
       const hit = (rule.map || []).find(([re]) => new RegExp(re, 'i').test(text));
-      if (hit && (f.options || []).includes(hit[1])) values[rule.field] = hit[1];
+      const ok = hit && (Array.isArray(f.options) ? f.options.includes(hit[1]) : true);
+      if (ok) values[rule.field] = hit[1];
+      else if (rule.noGuess) values[rule.field] = '';
     } else if (f.type === 'text') {
       let v = rule.from === 'detail' ? part.detail : part.text;
       // `fallback` — the LIS triple did not parse ("Prostate biopsy, left apex" has no trailing
-      // procedure word), so copy the pasted part itself rather than leaving the field empty.
-      if (!v && rule.fallback) v = rule.fallback === 'detail' ? part.detail : part.text;
+      // procedure word), so copy the pasted part itself rather than leaving the field empty. 'site' copies
+      // only the first piece of a triple that parsed without a detail ("Right thigh lipoma, excision").
+      if (!v && rule.fallback) v = { detail: part.detail, site: part.site }[rule.fallback] ?? part.text;
       // `strip` (regex source) removes the organ and procedure words, then the remainder opens with a
       // capital so the microscopy heading reads "Left apex, 2 cores" whatever the LIS casing was.
       if (v && rule.strip) v = stripWords(v, rule.strip).replace(/^[a-z]/, (c) => c.toUpperCase());

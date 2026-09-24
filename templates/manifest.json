@@ -1725,8 +1725,57 @@
         "bias": -1,
         "fill": [
           {
+            "field": "procedure",
+            "from": "options"
+          },
+          {
             "field": "site",
-            "from": "detail"
+            "from": "detail",
+            "fallback": "site",
+            "strip": "\\b(?:soft tissues?|wide local excision|wide excision|marginal excision|excisional biopsy|excision|excised|resection|incisional biopsy|core biopsy|biopsy|debulking)\\b"
+          },
+          {
+            "field": "clinicalLabel",
+            "from": "map",
+            "noGuess": true,
+            "map": [
+              [
+                "\\blipomas?\\b",
+                "lipoma"
+              ],
+              [
+                "\\bganglion\\b",
+                "ganglion"
+              ],
+              [
+                "\\bcysts?\\b",
+                "cyst"
+              ],
+              [
+                "\\bnodules?\\b",
+                "nodule"
+              ],
+              [
+                "\\bmass(?:es)?\\b",
+                "mass"
+              ],
+              [
+                "\\blumps?\\b",
+                "lump"
+              ],
+              [
+                "\\bswellings?\\b",
+                "swelling"
+              ],
+              [
+                "\\btumou?rs?\\b",
+                "tumour"
+              ],
+              [
+                "\\blesions?\\b",
+                "lesion"
+              ]
+            ]
           }
         ]
       },

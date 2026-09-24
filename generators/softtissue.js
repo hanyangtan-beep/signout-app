@@ -72,9 +72,19 @@ const noNEM = (v) => isMalignantOrAtypical(v) || isMetastatic(v) || isLymphoma(v
 /** MDM2 status as recorded; saved cases without the field read as not tested. */
 const mdm2 = (v) => ((isAdipocytic(v) || isALT(v)) ? v.mdm2 || 'Not tested' : 'Not tested');
 
-/** "right thigh lipoma" from the site and clinical label; '' when both blank. */
+const lcWord = (s) => (/^[A-Z][a-z]/.test(s || '') ? lc1(s) : s || '');
+
+/**
+ * "right thigh lipoma" from the site and clinical label; '' when both blank. A site that already names the
+ * label ("right thigh lipoma" pasted from the request) is not followed by it again.
+ */
 export function lesionPhrase(v) {
-  return [stripDot(v.site), stripDot(v.clinicalLabel)].filter(Boolean).join(' ').trim();
+  // A pasted site opens with a capital ("Right thigh"); the diagnosis line and macro read it in lower case.
+  const site = lcWord(stripDot(v.site));
+  const label = stripDot(v.clinicalLabel);
+  const esc = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/our\b/gi, 'ou?r');
+  const named = label && site && new RegExp(`\\b${esc}s?\\b`, 'i').test(site);
+  return [site, named ? '' : label].filter(Boolean).join(' ').trim();
 }
 
 export function specimenName(part) {
