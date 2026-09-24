@@ -53,6 +53,9 @@
    "OLGA",
    "ulcer"
   ],
+  "not": [
+   "bone"
+  ],
   "bare": true,
   "fill": [
    {

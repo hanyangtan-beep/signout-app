@@ -1,0 +1,1161 @@
+{
+ "id": "bone_joint",
+ "version": "2026.09",
+ "name": "Bone and joint (non-neoplastic)",
+ "shortName": "Bone / joint · head, synovium, disc, biopsy",
+ "label": "Bone / joint",
+ "organ": "BONE",
+ "system": "Soft tissue",
+ "kind": "benign resection",
+ "rank": 39,
+ "aliases": [
+  "bone",
+  "femoral head",
+  "humeral head",
+  "synovium",
+  "joint",
+  "reamings",
+  "curettings",
+  "disc",
+  "ligamentum flavum",
+  "osteomyelitis"
+ ],
+ "match": {
+  "site": [
+   "bone",
+   "femoral head",
+   "humeral head",
+   "head of femur",
+   "neck of femur",
+   "femur",
+   "femoral",
+   "humerus",
+   "humeral",
+   "tibia",
+   "tibial",
+   "fibula",
+   "patella",
+   "radius",
+   "ulna",
+   "iliac crest",
+   "iliac",
+   "ilium",
+   "sacrum",
+   "coccyx",
+   "rib",
+   "sternum",
+   "clavicle",
+   "scapula",
+   "calcaneum",
+   "calcaneus",
+   "vertebra",
+   "vertebral",
+   "vertebral body",
+   "spine",
+   "lamina",
+   "disc",
+   "intervertebral disc",
+   "nucleus pulposus",
+   "ligamentum flavum",
+   "ligamentum",
+   "synovium",
+   "synovial",
+   "joint",
+   "knee",
+   "hip",
+   "shoulder",
+   "elbow",
+   "ankle",
+   "reaming",
+   "reamings",
+   "reamed"
+  ],
+  "procedure": [
+   "biopsy",
+   "core biopsy",
+   "core",
+   "trephine",
+   "trucut",
+   "tru-cut",
+   "punch",
+   "curettage",
+   "curetting",
+   "curettings",
+   "excision",
+   "resection",
+   "reaming",
+   "reamings",
+   "reamed",
+   "hemiarthroplasty",
+   "arthroplasty",
+   "replacement",
+   "THR",
+   "TKR",
+   "revision",
+   "synovectomy",
+   "discectomy",
+   "microdiscectomy",
+   "laminectomy",
+   "decompression"
+  ],
+  "clinical": [
+   "osteomyelitis",
+   "osteoarthritis",
+   "avascular necrosis",
+   "AVN",
+   "fracture",
+   "NOF",
+   "metastasis",
+   "metastatic",
+   "lytic",
+   "myeloma",
+   "discitis",
+   "septic arthritis",
+   "gout",
+   "pseudogout",
+   "rheumatoid",
+   "prolapsed disc",
+   "PID",
+   "spinal stenosis",
+   "loosening",
+   "Paget"
+  ],
+  "exclude": [
+   "mandible",
+   "mandibular",
+   "maxilla",
+   "maxillary",
+   "jaw",
+   "alveolar",
+   "dental",
+   "tooth",
+   "teeth",
+   "odontogenic",
+   "spinal cord",
+   "intradural",
+   "dura",
+   "dural",
+   "brain",
+   "cerebral",
+   "marrow",
+   "bone marrow",
+   "BMT",
+   "frozen section",
+   "skin",
+   "soft tissue",
+   "lipoma",
+   "ganglion",
+   "tendon",
+   "bursa",
+   "nasal",
+   "sinus",
+   "ear",
+   "temporal bone",
+   "mastoid",
+   "finger",
+   "toe",
+   "digit",
+   "nail",
+   "fluid",
+   "aspirate",
+   "aspiration",
+   "cytology",
+   "lymph",
+   "node",
+   "nodes",
+   "thumb",
+   "hallux",
+   "phalanx",
+   "phalanges",
+   "phalangeal",
+   "subungual",
+   "malleus",
+   "incus",
+   "stapes",
+   "ossicle",
+   "ossicles",
+   "ossicular",
+   "cholesteatoma",
+   "tympanic",
+   "middle ear",
+   "below knee",
+   "above knee",
+   "below-knee",
+   "above-knee",
+   "BKA",
+   "AKA",
+   "artery",
+   "arteries",
+   "arterial",
+   "vein",
+   "venous",
+   "vessel",
+   "aneurysm",
+   "endarterectomy",
+   "atheroma"
+  ],
+  "bare": true,
+  "bias": 2,
+  "fill": [
+   {
+    "field": "specimen",
+    "from": "map",
+    "map": [
+     [
+      "humeral head|head of (?:the )?humerus",
+      "Humeral head"
+     ],
+     [
+      "femoral head|head of (?:the )?femur|neck of femur|\\bnof\\b",
+      "Femoral head"
+     ],
+     [
+      "synovi",
+      "Synovium"
+     ],
+     [
+      "ligament(?:um)? flav|\\bligamentum\\b",
+      "Ligamentum"
+     ],
+     [
+      "\\bdiscs?\\b|discectomy|intervertebral|nucleus pulposus",
+      "Disc"
+     ],
+     [
+      "\\bthr\\b|total hip|hip replacement|hemiarthroplasty",
+      "Femoral head"
+     ],
+     [
+      "\\btkr\\b|total knee|knee replacement|tibial plateau|femoral condyle",
+      "Knee joint"
+     ],
+     [
+      "\\bream",
+      "Reamings"
+     ],
+     [
+      "curett",
+      "Curettings"
+     ],
+     [
+      "biops|\\bcore\\b|trephine|tru-?cut|\\bpunch\\b|needle",
+      "Bone biopsy"
+     ],
+     [
+      "\\bbone\\b|excision|resection|femur|tibia|fibula|humerus|radius|ulna|\\brib\\b|vertebra|sacrum|ilium|iliac",
+      "Bone"
+     ],
+     [
+      "\\bhip\\b",
+      "Femoral head"
+     ],
+     [
+      "\\bknee\\b",
+      "Knee joint"
+     ],
+     [
+      "\\bshoulder\\b",
+      "Humeral head"
+     ]
+    ]
+   },
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\brevision\\b",
+      "Revision arthroplasty"
+     ],
+     [
+      "\\bthr\\b|total hip",
+      "Total hip replacement"
+     ],
+     [
+      "\\btkr\\b|total knee",
+      "Total knee replacement"
+     ],
+     [
+      "hemiarthroplasty",
+      "Hemiarthroplasty"
+     ],
+     [
+      "tru-?cut|\\bcore\\b",
+      "Core biopsy"
+     ],
+     [
+      "trephine",
+      "Trephine biopsy"
+     ],
+     [
+      "\\bpunch\\b",
+      "Punch biopsy"
+     ],
+     [
+      "curett",
+      "Curettage"
+     ],
+     [
+      "micro-?discectomy",
+      "Discectomy"
+     ]
+    ]
+   },
+   {
+    "field": "procedure",
+    "from": "options",
+    "noGuess": true
+   },
+   {
+    "field": "site",
+    "from": "detail",
+    "fallback": "text",
+    "strip": "\\b(?:bone|spine|femoral head|humeral head|head of (?:the )?femur|neck of (?:the )?femur|nof|head of (?:the )?humerus|synovium|synovial tissue|synovial|intervertebral disc|disc material|disc|ligamentum flavum|reamed material|reamings?|curettings?|curettage|core biopsy|trephine biopsy|trephine|punch biopsy|punch|tru-?cut|biopsy|excision|resection|revision arthroplasty|revision|total hip replacement|total knee replacement|hemiarthroplasty|arthroplasty|thr|tkr|synovectomy|micro-?discectomy|discectomy|laminectomy|core)\\b"
+   }
+  ]
+ },
+ "macroExtract": {
+  "dimensions": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "specimenNoun": "specimen",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "bone",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "partDefaults": [],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "text",
+   "placeholder": "Left femoral head, total hip replacement",
+   "default": ""
+  },
+  {
+   "id": "specimen",
+   "label": "Specimen",
+   "type": "select",
+   "options": [
+    "Femoral head",
+    "Humeral head",
+    "Knee joint",
+    "Synovium",
+    "Disc",
+    "Ligamentum",
+    "Bone biopsy",
+    "Curettings",
+    "Bone",
+    "Reamings"
+   ],
+   "optionLabels": {
+    "Knee joint": "Knee joint surfaces",
+    "Disc": "Intervertebral disc",
+    "Ligamentum": "Ligamentum flavum",
+    "Curettings": "Bone curettings",
+    "Bone": "Bone (excision or resection)",
+    "Reamings": "Bone reamings"
+   },
+   "default": "Femoral head"
+  },
+  {
+   "id": "site",
+   "label": "Side / site / level",
+   "type": "text",
+   "placeholder": "left · right knee · L4/5 · L3 vertebral body",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "options": [
+    "",
+    "Biopsy",
+    "Core biopsy",
+    "Trephine biopsy",
+    "Punch biopsy",
+    "Curettage",
+    "Excision",
+    "Resection",
+    "Hemiarthroplasty",
+    "Total hip replacement",
+    "Total knee replacement",
+    "Arthroplasty",
+    "Revision arthroplasty",
+    "Synovectomy",
+    "Discectomy",
+    "Laminectomy"
+   ],
+   "optionLabels": {
+    "": "Not stated"
+   },
+   "default": ""
+  },
+  {
+   "id": "dimensions",
+   "label": "Dimensions (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "5 x 4.5 x 4",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": "2"
+  },
+  {
+   "id": "blockScheme",
+   "label": "Sampling",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "",
+    "All embedded",
+    "Representative sections"
+   ],
+   "optionLabels": {
+    "": "Per specimen (heads and bone excisions: representative)"
+   },
+   "default": ""
+  },
+  {
+   "id": "decalcification",
+   "label": "Decalcification",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "",
+    "Formic acid",
+    "EDTA",
+    "None"
+   ],
+   "optionLabels": {
+    "": "Per specimen (bone: formic acid)"
+   },
+   "default": ""
+  },
+  {
+   "id": "diagnosis",
+   "label": "Diagnosis",
+   "type": "select",
+   "options": [
+    "Osteoarthritis",
+    "Avascular necrosis",
+    "Fracture",
+    "Inflammatory arthropathy",
+    "Crystal arthropathy",
+    "Metastatic carcinoma",
+    "Chronic synovitis",
+    "Detritic synovitis",
+    "Wear debris reaction",
+    "Acute synovitis",
+    "Haemosiderotic synovitis",
+    "No significant pathology",
+    "Degenerative change",
+    "Acute inflammation",
+    "Crystal deposition",
+    "No evidence of malignancy",
+    "Plasma cell neoplasm",
+    "Acute osteomyelitis",
+    "Chronic osteomyelitis",
+    "Osteonecrosis",
+    "Paget's disease",
+    "Fracture callus"
+   ],
+   "optionsByField": {
+    "field": "specimen",
+    "map": {
+     "Femoral head": [
+      "Osteoarthritis",
+      "Avascular necrosis",
+      "Fracture",
+      "Inflammatory arthropathy",
+      "Crystal arthropathy",
+      "Metastatic carcinoma"
+     ],
+     "Humeral head": [
+      "Osteoarthritis",
+      "Avascular necrosis",
+      "Fracture",
+      "Inflammatory arthropathy",
+      "Crystal arthropathy",
+      "Metastatic carcinoma"
+     ],
+     "Knee joint": [
+      "Osteoarthritis",
+      "Avascular necrosis",
+      "Fracture",
+      "Inflammatory arthropathy",
+      "Crystal arthropathy",
+      "Metastatic carcinoma"
+     ],
+     "Synovium": [
+      "Chronic synovitis",
+      "Detritic synovitis",
+      "Wear debris reaction",
+      "Acute synovitis",
+      "Crystal arthropathy",
+      "Haemosiderotic synovitis",
+      "No significant pathology"
+     ],
+     "Disc": [
+      "Degenerative change",
+      "Acute inflammation",
+      "Crystal deposition",
+      "No significant pathology"
+     ],
+     "Ligamentum": [
+      "Degenerative change",
+      "Acute inflammation",
+      "Crystal deposition",
+      "No significant pathology"
+     ],
+     "Bone biopsy": [
+      "No evidence of malignancy",
+      "Metastatic carcinoma",
+      "Plasma cell neoplasm",
+      "Acute osteomyelitis",
+      "Chronic osteomyelitis",
+      "Osteonecrosis",
+      "Paget's disease",
+      "Fracture callus"
+     ],
+     "Curettings": [
+      "No evidence of malignancy",
+      "Metastatic carcinoma",
+      "Plasma cell neoplasm",
+      "Acute osteomyelitis",
+      "Chronic osteomyelitis",
+      "Osteonecrosis",
+      "Paget's disease",
+      "Fracture callus"
+     ],
+     "Bone": [
+      "No evidence of malignancy",
+      "Metastatic carcinoma",
+      "Plasma cell neoplasm",
+      "Acute osteomyelitis",
+      "Chronic osteomyelitis",
+      "Osteonecrosis",
+      "Paget's disease",
+      "Fracture callus"
+     ],
+     "Reamings": [
+      "No evidence of malignancy",
+      "Metastatic carcinoma",
+      "Plasma cell neoplasm",
+      "Acute osteomyelitis",
+      "Chronic osteomyelitis",
+      "Osteonecrosis",
+      "Paget's disease",
+      "Fracture callus"
+     ]
+    }
+   },
+   "default": "Osteoarthritis"
+  },
+  {
+   "id": "oaGrade",
+   "label": "Osteoarthritis grade",
+   "type": "select",
+   "options": [
+    "Mild",
+    "Moderate",
+    "Severe"
+   ],
+   "default": "Moderate",
+   "showIf": {
+    "field": "diagnosis",
+    "is": "Osteoarthritis"
+   }
+  },
+  {
+   "id": "avnCollapse",
+   "label": "Subchondral collapse",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "diagnosis",
+    "is": "Avascular necrosis"
+   }
+  },
+  {
+   "id": "fractureAge",
+   "label": "Fracture",
+   "type": "select",
+   "options": [
+    "Recent",
+    "Healing"
+   ],
+   "optionLabels": {
+    "Recent": "Recent (haemorrhage, fibrin)",
+    "Healing": "Healing (callus)"
+   },
+   "default": "Recent",
+   "showIf": {
+    "field": "diagnosis",
+    "is": "Fracture"
+   }
+  },
+  {
+   "id": "crystalType",
+   "label": "Crystals",
+   "type": "select",
+   "options": [
+    "Urate",
+    "Calcium pyrophosphate"
+   ],
+   "optionLabels": {
+    "Urate": "Urate (gout)",
+    "Calcium pyrophosphate": "Calcium pyrophosphate (CPPD)"
+   },
+   "default": "Urate",
+   "showIf": {
+    "field": "diagnosis",
+    "is": [
+     "Crystal arthropathy",
+     "Crystal deposition"
+    ]
+   }
+  },
+  {
+   "id": "hyperplasia",
+   "label": "Synovial hyperplasia",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Mild",
+    "Moderate",
+    "Marked"
+   ],
+   "default": "Mild",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": "Synovium"
+     },
+     {
+      "field": "diagnosis",
+      "not": "No significant pathology"
+     }
+    ]
+   }
+  },
+  {
+   "id": "infiltrate",
+   "label": "Chronic inflammatory infiltrate",
+   "type": "select",
+   "options": [
+    "Patchy",
+    "Diffuse",
+    "Absent"
+   ],
+   "default": "Patchy",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": "Synovium"
+     },
+     {
+      "field": "diagnosis",
+      "is": [
+       "Chronic synovitis",
+       "Detritic synovitis",
+       "Wear debris reaction",
+       "Haemosiderotic synovitis"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "lymphoidAggregates",
+   "label": "Lymphoid aggregates",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": "Synovium"
+     },
+     {
+      "field": "diagnosis",
+      "is": "Chronic synovitis"
+     },
+     {
+      "field": "infiltrate",
+      "not": "Absent"
+     }
+    ]
+   }
+  },
+  {
+   "id": "debris",
+   "label": "Wear debris",
+   "type": "multiselect",
+   "options": [
+    "Metal",
+    "Polyethylene",
+    "Cement"
+   ],
+   "default": [],
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": "Synovium"
+     },
+     {
+      "field": "diagnosis",
+      "is": "Wear debris reaction"
+     }
+    ]
+   }
+  },
+  {
+   "id": "synFindings",
+   "label": "Also present",
+   "type": "multiselect",
+   "options": [
+    "Haemosiderin",
+    "Bone or cartilage fragments",
+    "Wear debris"
+   ],
+   "default": [],
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": "Synovium"
+     },
+     {
+      "field": "diagnosis",
+      "not": "No significant pathology"
+     }
+    ]
+   }
+  },
+  {
+   "id": "discFeatures",
+   "label": "Degenerative features",
+   "type": "multiselect",
+   "options": [
+    "Chondrocyte clusters",
+    "Matrix fissures",
+    "Myxoid change",
+    "Calcification",
+    "Vessel ingrowth",
+    "Nerve ingrowth"
+   ],
+   "default": [
+    "Chondrocyte clusters",
+    "Matrix fissures"
+   ],
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": "Disc"
+     },
+     {
+      "field": "diagnosis",
+      "is": "Degenerative change"
+     }
+    ]
+   }
+  },
+  {
+   "id": "ligFeatures",
+   "label": "Degenerative features",
+   "type": "multiselect",
+   "options": [
+    "Elastic fibre fragmentation",
+    "Fibrosis",
+    "Myxoid change",
+    "Calcification",
+    "Chondroid metaplasia"
+   ],
+   "default": [
+    "Elastic fibre fragmentation",
+    "Fibrosis"
+   ],
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": "Ligamentum"
+     },
+     {
+      "field": "diagnosis",
+      "is": "Degenerative change"
+     }
+    ]
+   }
+  },
+  {
+   "id": "viability",
+   "label": "Bone trabeculae",
+   "type": "select",
+   "options": [
+    "Viable",
+    "Partly viable"
+   ],
+   "default": "Viable",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": [
+       "Bone biopsy",
+       "Curettings",
+       "Bone",
+       "Reamings"
+      ]
+     },
+     {
+      "field": "diagnosis",
+      "is": "No evidence of malignancy"
+     }
+    ]
+   }
+  },
+  {
+   "id": "marrow",
+   "label": "Marrow",
+   "type": "select",
+   "options": [
+    "Fibrous",
+    "Haematopoietic",
+    "Fatty",
+    "Not included"
+   ],
+   "default": "Fibrous",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": [
+       "Bone biopsy",
+       "Curettings",
+       "Bone",
+       "Reamings"
+      ]
+     },
+     {
+      "field": "diagnosis",
+      "is": "No evidence of malignancy"
+     }
+    ]
+   }
+  },
+  {
+   "id": "boneChanges",
+   "label": "Also seen",
+   "type": "multiselect",
+   "options": [
+    "Reactive woven bone",
+    "Sclerosis",
+    "Osteoclastic resorption",
+    "Cartilage on the surface"
+   ],
+   "default": [],
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "is": [
+       "Bone biopsy",
+       "Curettings",
+       "Bone",
+       "Reamings"
+      ]
+     },
+     {
+      "field": "diagnosis",
+      "is": "No evidence of malignancy"
+     }
+    ]
+   }
+  },
+  {
+   "id": "metType",
+   "label": "Tumour type",
+   "type": "select",
+   "options": [
+    "Adenocarcinoma",
+    "Carcinoma",
+    "Squamous cell carcinoma"
+   ],
+   "default": "Adenocarcinoma",
+   "showIf": {
+    "field": "diagnosis",
+    "is": "Metastatic carcinoma"
+   }
+  },
+  {
+   "id": "ihcPositive",
+   "label": "Positive for (IHC)",
+   "type": "text",
+   "placeholder": "CK7, TTF-1 and napsin A",
+   "default": "",
+   "showIf": {
+    "field": "diagnosis",
+    "is": [
+     "Metastatic carcinoma",
+     "Plasma cell neoplasm"
+    ]
+   }
+  },
+  {
+   "id": "ihcNegative",
+   "label": "Negative for (IHC)",
+   "type": "text",
+   "placeholder": "CK20 and GATA3",
+   "default": "",
+   "showIf": {
+    "field": "diagnosis",
+    "is": [
+     "Metastatic carcinoma",
+     "Plasma cell neoplasm"
+    ]
+   }
+  },
+  {
+   "id": "favouredPrimary",
+   "label": "Favoured primary",
+   "type": "text",
+   "placeholder": "lung",
+   "default": "",
+   "showIf": {
+    "field": "diagnosis",
+    "is": "Metastatic carcinoma"
+   }
+  },
+  {
+   "id": "pathologicalFracture",
+   "label": "Pathological fracture",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "diagnosis",
+    "is": "Metastatic carcinoma"
+   }
+  },
+  {
+   "id": "granulomas",
+   "label": "Granulomas",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present – see comment"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "specimen",
+    "not": [
+     "Femoral head",
+     "Humeral head",
+     "Knee joint"
+    ]
+   }
+  },
+  {
+   "id": "granulomaType",
+   "label": "Granuloma type",
+   "type": "select",
+   "options": [
+    "Non-necrotising",
+    "Necrotising"
+   ],
+   "default": "Non-necrotising",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimen",
+      "not": [
+       "Femoral head",
+       "Humeral head",
+       "Knee joint"
+      ]
+     },
+     {
+      "field": "granulomas",
+      "is": "Present – see comment"
+     }
+    ]
+   }
+  },
+  {
+   "id": "stains",
+   "label": "Special stains (negative)",
+   "type": "multiselect",
+   "options": [
+    "Gram",
+    "Ziehl-Neelsen",
+    "PASD",
+    "Grocott"
+   ],
+   "default": []
+  },
+  {
+   "id": "organisms",
+   "label": "Organisms",
+   "type": "select",
+   "options": [
+    "Not identified",
+    "Identified – describe"
+   ],
+   "default": "Not identified"
+  },
+  {
+   "id": "organismText",
+   "label": "Organisms seen",
+   "type": "text",
+   "placeholder": "Gram-positive cocci in clusters are seen on Gram stain",
+   "default": "",
+   "showIf": {
+    "field": "organisms",
+    "is": "Identified – describe"
+   }
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "Free text appended to the microscopy for this part",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "bone_granulomas",
+   "label": "Granulomas — differential diagnosis and correlation",
+   "auto": {
+    "field": "granulomas",
+    "is": "Present – see comment"
+   },
+   "text": "Granulomatous inflammation is present ({parts}). The differential diagnosis includes tuberculosis and other mycobacterial infection, fungal infection and sarcoidosis. Correlation with the clinical and microbiological findings is suggested."
+  },
+  {
+   "id": "bone_microbiology",
+   "label": "Infection suspected — correlate with microbiology",
+   "auto": {
+    "flag": "infective"
+   },
+   "text": "Please correlate with microbiological findings."
+  },
+  {
+   "id": "bone_metastatic",
+   "label": "Metastatic carcinoma — clinical and radiological correlation",
+   "auto": {
+    "field": "diagnosis",
+    "is": "Metastatic carcinoma"
+   },
+   "text": "Please correlate with clinical and radiological findings."
+  },
+  {
+   "id": "bone_myeloma",
+   "label": "Plasma cell neoplasm — correlate for myeloma",
+   "auto": {
+    "field": "diagnosis",
+    "is": "Plasma cell neoplasm"
+   },
+   "text": "Please correlate with clinical and radiological findings for myeloma."
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "",
+     "specimen": "Femoral head",
+     "site": "left",
+     "procedure": "Total hip replacement",
+     "dimensions": "5 x 4.5 x 4",
+     "blocks": "3",
+     "blockScheme": "",
+     "decalcification": "",
+     "diagnosis": "Osteoarthritis",
+     "oaGrade": "Moderate",
+     "avnCollapse": "Absent",
+     "fractureAge": "Recent",
+     "crystalType": "Urate",
+     "hyperplasia": "Mild",
+     "infiltrate": "Patchy",
+     "lymphoidAggregates": "Absent",
+     "debris": [],
+     "synFindings": [],
+     "discFeatures": [
+      "Chondrocyte clusters",
+      "Matrix fissures"
+     ],
+     "ligFeatures": [
+      "Elastic fibre fragmentation",
+      "Fibrosis"
+     ],
+     "viability": "Viable",
+     "marrow": "Fibrous",
+     "boneChanges": [],
+     "metType": "Adenocarcinoma",
+     "ihcPositive": "",
+     "ihcNegative": "",
+     "favouredPrimary": "",
+     "pathologicalFracture": "Absent",
+     "granulomas": "Absent",
+     "granulomaType": "Non-necrotising",
+     "stains": [],
+     "organisms": "Not identified",
+     "organismText": "",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
+}

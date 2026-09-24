@@ -1,0 +1,16 @@
+{
+  "templateId": "bone_joint",
+  "values": {
+    "specimen": "Bone biopsy",
+    "site": "L3 vertebral body",
+    "procedure": "Core biopsy",
+    "blocks": "2",
+    "diagnosis": "Metastatic carcinoma",
+    "metType": "Adenocarcinoma",
+    "ihcPositive": "CK7, TTF-1, napsin A",
+    "ihcNegative": "CK20, CDX2",
+    "favouredPrimary": "Lung"
+  },
+  "report": "Bone, L3 vertebral body, core biopsy\n\nReceived in formalin are cores of bone labelled L3 vertebral body. All embedded in 2 blocks after decalcification.\n\n(1-2) Bone cores, all embedded, decalcified.\n\nSections show bone with the marrow spaces infiltrated by adenocarcinoma composed of irregular glands lined by cells with enlarged, pleomorphic, hyperchromatic nuclei. On immunohistochemistry, the tumour cells are positive for CK7, TTF-1 and napsin A. They are negative for CK20 and CDX2. The findings are consistent with metastatic adenocarcinoma of lung primary.\n\nBONE, L3 vertebral body, core biopsy - METASTATIC ADENOCARCINOMA, consistent with LUNG PRIMARY; see comment\n\nPlease correlate with clinical and radiological findings.",
+  "checks": []
+}

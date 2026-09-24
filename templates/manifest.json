@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 60,
+  "count": 61,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -54,6 +54,9 @@
           "intestinal metaplasia",
           "OLGA",
           "ulcer"
+        ],
+        "not": [
+          "bone"
         ],
         "bare": true,
         "fill": [
@@ -2183,6 +2186,326 @@
       "generator": "cardiovascular",
       "generatorPath": "generators/cardiovascular.js",
       "schemaPath": "schemas/aortic_valve_aorta.json"
+    },
+    {
+      "id": "bone_joint",
+      "name": "Bone and joint (non-neoplastic)",
+      "shortName": "Bone / joint · head, synovium, disc, biopsy",
+      "label": "Bone / joint",
+      "organ": "BONE",
+      "system": "Soft tissue",
+      "kind": "benign resection",
+      "rank": 39,
+      "aliases": [
+        "bone",
+        "femoral head",
+        "humeral head",
+        "synovium",
+        "joint",
+        "reamings",
+        "curettings",
+        "disc",
+        "ligamentum flavum",
+        "osteomyelitis"
+      ],
+      "match": {
+        "site": [
+          "bone",
+          "femoral head",
+          "humeral head",
+          "head of femur",
+          "neck of femur",
+          "femur",
+          "femoral",
+          "humerus",
+          "humeral",
+          "tibia",
+          "tibial",
+          "fibula",
+          "patella",
+          "radius",
+          "ulna",
+          "iliac crest",
+          "iliac",
+          "ilium",
+          "sacrum",
+          "coccyx",
+          "rib",
+          "sternum",
+          "clavicle",
+          "scapula",
+          "calcaneum",
+          "calcaneus",
+          "vertebra",
+          "vertebral",
+          "vertebral body",
+          "spine",
+          "lamina",
+          "disc",
+          "intervertebral disc",
+          "nucleus pulposus",
+          "ligamentum flavum",
+          "ligamentum",
+          "synovium",
+          "synovial",
+          "joint",
+          "knee",
+          "hip",
+          "shoulder",
+          "elbow",
+          "ankle",
+          "reaming",
+          "reamings",
+          "reamed"
+        ],
+        "procedure": [
+          "biopsy",
+          "core biopsy",
+          "core",
+          "trephine",
+          "trucut",
+          "tru-cut",
+          "punch",
+          "curettage",
+          "curetting",
+          "curettings",
+          "excision",
+          "resection",
+          "reaming",
+          "reamings",
+          "reamed",
+          "hemiarthroplasty",
+          "arthroplasty",
+          "replacement",
+          "THR",
+          "TKR",
+          "revision",
+          "synovectomy",
+          "discectomy",
+          "microdiscectomy",
+          "laminectomy",
+          "decompression"
+        ],
+        "clinical": [
+          "osteomyelitis",
+          "osteoarthritis",
+          "avascular necrosis",
+          "AVN",
+          "fracture",
+          "NOF",
+          "metastasis",
+          "metastatic",
+          "lytic",
+          "myeloma",
+          "discitis",
+          "septic arthritis",
+          "gout",
+          "pseudogout",
+          "rheumatoid",
+          "prolapsed disc",
+          "PID",
+          "spinal stenosis",
+          "loosening",
+          "Paget"
+        ],
+        "exclude": [
+          "mandible",
+          "mandibular",
+          "maxilla",
+          "maxillary",
+          "jaw",
+          "alveolar",
+          "dental",
+          "tooth",
+          "teeth",
+          "odontogenic",
+          "spinal cord",
+          "intradural",
+          "dura",
+          "dural",
+          "brain",
+          "cerebral",
+          "marrow",
+          "bone marrow",
+          "BMT",
+          "frozen section",
+          "skin",
+          "soft tissue",
+          "lipoma",
+          "ganglion",
+          "tendon",
+          "bursa",
+          "nasal",
+          "sinus",
+          "ear",
+          "temporal bone",
+          "mastoid",
+          "finger",
+          "toe",
+          "digit",
+          "nail",
+          "fluid",
+          "aspirate",
+          "aspiration",
+          "cytology",
+          "lymph",
+          "node",
+          "nodes",
+          "thumb",
+          "hallux",
+          "phalanx",
+          "phalanges",
+          "phalangeal",
+          "subungual",
+          "malleus",
+          "incus",
+          "stapes",
+          "ossicle",
+          "ossicles",
+          "ossicular",
+          "cholesteatoma",
+          "tympanic",
+          "middle ear",
+          "below knee",
+          "above knee",
+          "below-knee",
+          "above-knee",
+          "BKA",
+          "AKA",
+          "artery",
+          "arteries",
+          "arterial",
+          "vein",
+          "venous",
+          "vessel",
+          "aneurysm",
+          "endarterectomy",
+          "atheroma"
+        ],
+        "bare": true,
+        "bias": 2,
+        "fill": [
+          {
+            "field": "specimen",
+            "from": "map",
+            "map": [
+              [
+                "humeral head|head of (?:the )?humerus",
+                "Humeral head"
+              ],
+              [
+                "femoral head|head of (?:the )?femur|neck of femur|\\bnof\\b",
+                "Femoral head"
+              ],
+              [
+                "synovi",
+                "Synovium"
+              ],
+              [
+                "ligament(?:um)? flav|\\bligamentum\\b",
+                "Ligamentum"
+              ],
+              [
+                "\\bdiscs?\\b|discectomy|intervertebral|nucleus pulposus",
+                "Disc"
+              ],
+              [
+                "\\bthr\\b|total hip|hip replacement|hemiarthroplasty",
+                "Femoral head"
+              ],
+              [
+                "\\btkr\\b|total knee|knee replacement|tibial plateau|femoral condyle",
+                "Knee joint"
+              ],
+              [
+                "\\bream",
+                "Reamings"
+              ],
+              [
+                "curett",
+                "Curettings"
+              ],
+              [
+                "biops|\\bcore\\b|trephine|tru-?cut|\\bpunch\\b|needle",
+                "Bone biopsy"
+              ],
+              [
+                "\\bbone\\b|excision|resection|femur|tibia|fibula|humerus|radius|ulna|\\brib\\b|vertebra|sacrum|ilium|iliac",
+                "Bone"
+              ],
+              [
+                "\\bhip\\b",
+                "Femoral head"
+              ],
+              [
+                "\\bknee\\b",
+                "Knee joint"
+              ],
+              [
+                "\\bshoulder\\b",
+                "Humeral head"
+              ]
+            ]
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\brevision\\b",
+                "Revision arthroplasty"
+              ],
+              [
+                "\\bthr\\b|total hip",
+                "Total hip replacement"
+              ],
+              [
+                "\\btkr\\b|total knee",
+                "Total knee replacement"
+              ],
+              [
+                "hemiarthroplasty",
+                "Hemiarthroplasty"
+              ],
+              [
+                "tru-?cut|\\bcore\\b",
+                "Core biopsy"
+              ],
+              [
+                "trephine",
+                "Trephine biopsy"
+              ],
+              [
+                "\\bpunch\\b",
+                "Punch biopsy"
+              ],
+              [
+                "curett",
+                "Curettage"
+              ],
+              [
+                "micro-?discectomy",
+                "Discectomy"
+              ]
+            ]
+          },
+          {
+            "field": "procedure",
+            "from": "options",
+            "noGuess": true
+          },
+          {
+            "field": "site",
+            "from": "detail",
+            "fallback": "text",
+            "strip": "\\b(?:bone|spine|femoral head|humeral head|head of (?:the )?femur|neck of (?:the )?femur|nof|head of (?:the )?humerus|synovium|synovial tissue|synovial|intervertebral disc|disc material|disc|ligamentum flavum|reamed material|reamings?|curettings?|curettage|core biopsy|trephine biopsy|trephine|punch biopsy|punch|tru-?cut|biopsy|excision|resection|revision arthroplasty|revision|total hip replacement|total knee replacement|hemiarthroplasty|arthroplasty|thr|tkr|synovectomy|micro-?discectomy|discectomy|laminectomy|core)\\b"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "bone",
+      "generatorPath": "generators/bone.js",
+      "schemaPath": "schemas/bone_joint.json"
     },
     {
       "id": "stoma",

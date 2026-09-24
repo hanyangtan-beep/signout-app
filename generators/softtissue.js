@@ -374,11 +374,11 @@ const MET_MICRO = {
 };
 const metType = (v) => (MET_MICRO[v.metType] ? v.metType : 'Adenocarcinoma');
 /** "CK20, CDX2" -> "CK20 and CDX2"; "AE1/AE3" stays whole. */
-const markerList = (raw) => {
+export const markerList = (raw) => {
   const xs = stripDot(raw).split(/\s*[,;]\s*|\s+and\s+/i).map((x) => x.trim()).filter(Boolean);
   return xs.length <= 1 ? xs[0] || '' : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`;
 };
-function ihcPanel(v, cells) {
+export function ihcPanel(v, cells) {
   const pos = markerList(v.ihcPositive);
   const neg = markerList(v.ihcNegative);
   if (pos && neg) return [`On immunohistochemistry, the ${cells} are positive for ${pos}.`, `They are negative for ${neg}.`];

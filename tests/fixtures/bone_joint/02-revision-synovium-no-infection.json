@@ -1,0 +1,18 @@
+{
+  "templateId": "bone_joint",
+  "values": {
+    "specimen": "Synovium",
+    "site": "left hip",
+    "procedure": "Revision arthroplasty",
+    "dimensions": "3 x 2 x 1",
+    "blocks": "2",
+    "diagnosis": "Chronic synovitis",
+    "hyperplasia": "Mild",
+    "infiltrate": "Patchy",
+    "stains": [
+      "Gram"
+    ]
+  },
+  "report": "Synovium, left hip, revision arthroplasty\n\nReceived in formalin are irregular pieces of tan-brown soft tissue labelled left hip, measuring 3 x 2 x 1 cm in aggregate. All embedded in 2 blocks.\n\n(1-2) Tissue pieces, all embedded.\n\nSections show synovium with mild lining hyperplasia. The subsynovial tissue contains a patchy chronic inflammatory infiltrate of lymphocytes and plasma cells. No bacterial organisms are identified on Gram stain. No haemosiderin, crystals, bone or cartilage fragments, foreign material or granulomas are identified. The features are in keeping with chronic synovitis. There is no evidence of infection or malignancy.\n\nSYNOVIUM, left hip, revision arthroplasty - CHRONIC SYNOVITIS; NO EVIDENCE OF INFECTION",
+  "checks": []
+}

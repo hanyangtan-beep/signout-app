@@ -171,7 +171,9 @@ const siteHitsFor = (mt, text) =>
 // down (`match.not`). The abscess form reads "abscess", "ulcer" and "fistula" as its site words, and
 // those turn up on every organ: a mandibular fistula or a gastric ulcer belongs to that organ's
 // template, and a penalty alone still left the abscess form tied with it, which sent the part to
-// Generic. Only the abscess form declares it today.
+// Generic. The bone and joint form declares it too: "iliac" is also a lymph node station, and a
+// jaw, a digit, an ossicle, marrow, a vessel, an amputation or a spinal cord lesion each has its own
+// template or card.
 const excluded = (mt, text) => !!(mt.exclude && hits(mt.exclude, text));
 
 const BREAST_MARGINS = ['Superior', 'Inferior', 'Medial', 'Lateral', 'Anterior', 'Posterior'];
@@ -444,7 +446,8 @@ const SITE_ABBREV = [
   [/\bcompletion\b(?!\s+lobectomy)/g, 'completion lobectomy'],
   // Abscess, ulcer and granulation tissue: the requests write the procedure in short or as a verb
   // ("I&D", "incision", "debrided", "punch") and the anal site without "peri". Only the abscess form
-  // offers Incision and drainage, Debridement, Punch biopsy and PERIANAL, so nothing else receives them.
+  // offers Incision and drainage, Debridement and PERIANAL, so nothing else receives them; Punch biopsy is
+  // offered by the abscess and the bone and joint forms, and is a punch biopsy on both.
   [/\bi\s*&\s*d\b|\bi\s+and\s+d\b|\bincision\b(?!\s+(?:and\s+drainage|biopsy))/g, 'incision and drainage'],
   [/\bdebrid(?:ed|ement)\b/g, 'debridement'], [/\bpunch\b(?!\s+biopsy)/g, 'punch biopsy'],
   [/\bperi-?\s?anal\b|(?<![a-z-])\banal\b/g, 'perianal'],
@@ -572,6 +575,12 @@ function applyFill(schema, part, values) {
     } else if (rule.from === 'side') {
       const side = sideFor(f.options, text);
       if (side) values[rule.field] = side;
+    } else if (rule.from === 'map') {
+      // `map`: [regex source, option] pairs tried in order against the part text; the first that matches
+      // names the option. For pick-lists whose option words are not what the request writes ("THR" is a
+      // femoral head, "curetting" is bone curettings), where whole-option matching finds nothing.
+      const hit = (rule.map || []).find(([re]) => new RegExp(re, 'i').test(text));
+      if (hit && (f.options || []).includes(hit[1])) values[rule.field] = hit[1];
     } else if (f.type === 'text') {
       let v = rule.from === 'detail' ? part.detail : part.text;
       // `fallback` — the LIS triple did not parse ("Prostate biopsy, left apex" has no trailing

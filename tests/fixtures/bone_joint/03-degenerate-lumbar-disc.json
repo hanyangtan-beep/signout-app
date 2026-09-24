@@ -1,0 +1,18 @@
+{
+  "templateId": "bone_joint",
+  "values": {
+    "specimen": "Disc",
+    "site": "L4/5",
+    "procedure": "Discectomy",
+    "dimensions": "2 x 1.5 x 0.5",
+    "blocks": "1",
+    "diagnosis": "Degenerative change",
+    "discFeatures": [
+      "Chondrocyte clusters",
+      "Matrix fissures",
+      "Vessel ingrowth"
+    ]
+  },
+  "report": "Intervertebral disc, L4/5, discectomy\n\nReceived in formalin are fragments of grey-white cartilaginous tissue labelled L4/5, measuring 2 x 1.5 x 0.5 cm in aggregate. All embedded in 1 block.\n\n(1) Disc fragments, all embedded.\n\nSections show fragments of intervertebral disc fibrocartilage with degenerative change, including chondrocyte clusters and fissuring of the matrix. There is ingrowth of small blood vessels. No acute inflammation is seen. There is no evidence of malignancy.\n\nINTERVERTEBRAL DISC, L4/5, discectomy - DEGENERATIVE CHANGE",
+  "checks": []
+}

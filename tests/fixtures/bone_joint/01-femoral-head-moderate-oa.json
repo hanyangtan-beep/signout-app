@@ -1,0 +1,14 @@
+{
+  "templateId": "bone_joint",
+  "values": {
+    "specimen": "Femoral head",
+    "site": "left",
+    "procedure": "Total hip replacement",
+    "dimensions": "5 x 4.5 x 4",
+    "blocks": "3",
+    "diagnosis": "Osteoarthritis",
+    "oaGrade": "Moderate"
+  },
+  "report": "Femoral head, left, total hip replacement\n\nReceived in formalin is a left femoral head, measuring 5 x 4.5 x 4 cm. Representative sections in 3 blocks after decalcification.\n\n(1-3) Femoral head, representative sections, decalcified.\n\nSections of the articular surface show fibrillation and fissuring of the articular cartilage with chondrocyte clusters and focal full-thickness cartilage loss. The subchondral bone is sclerotic. The features are in keeping with moderate osteoarthritis. There is no evidence of inflammatory arthropathy, crystal arthropathy, avascular necrosis or malignancy.\n\nFEMORAL HEAD, left, total hip replacement - MODERATE OSTEOARTHRITIS",
+  "checks": []
+}
