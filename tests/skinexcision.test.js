@@ -45,7 +45,8 @@ test('metadata: benign skin resection with search aliases and complete defaults'
   assert.equal(schema.fields[schema.fields.length - 1].id, 'additionalNotes');
   assert.equal(schema.fields.find((f) => f.id === 'blocks').default, '3');
   assert.equal(schema.fields.find((f) => f.id === 'blockScheme').default, 'Ellipse serially sliced and all embedded');
-  assert.equal(schema.fields.find((f) => f.id === 'diagnosis').options.length, 15);
+  // 15 to Phase 39; Phase 40 added 26 benign lesions (tests/skin_excision_benign.test.js).
+  assert.equal(schema.fields.find((f) => f.id === 'diagnosis').options.length, 41);
   assert.equal(schema.fields.find((f) => f.id === 'involvedMargins').type, 'multiselect');
 });
 

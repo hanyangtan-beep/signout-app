@@ -6,7 +6,7 @@ One JSON file per template. Keys: `id`, `version`, `name`, `shortName`, `organ`,
 
 Field types: `text`, `textarea`, `number` (`min`, `step`, `suffix`), `checkbox`, `select` / `grade` (`options`, `optionLabels`, `optionsByField`, `optionGroups`, `showIf`, `defaultForFirstPart`), `multiselect` (array value; `options`, `exclusive: [option]` clears the others when ticked, `default: []`).
 
-`optionGroups: [{ label, options }]` on a long select renders the list in `<optgroup>`s (Skin SCC tumour site: head and neck / trunk and limbs); the flat `options` stays the list that is validated and printed, and options no group names follow the groups. A grouped select also shows its `help` under the list; on other selects `help` is a schema note only.
+`optionGroups: [{ label, options }]` on a long select renders the list in `<optgroup>`s (Skin SCC tumour site: head and neck / trunk and limbs; Skin excision diagnosis: eight lesion families); the flat `options` stays the list that is validated and printed, and options no group names follow the groups. A grouped select also shows its `help` under the list; on other selects `help` is a schema note only.
 
 `showIf: { field, is | not | truthy | min | max }` — for multiselect fields `is` means "contains any of", `not` "contains none of", `truthy` "at least one ticked", `min` / `max` count the ticked options.
 

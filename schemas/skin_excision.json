@@ -23,7 +23,25 @@
     "Bowen",
     "margins",
     "ellipse",
-    "orientation suture"
+    "orientation suture",
+    "neurofibroma",
+    "pilomatrixoma",
+    "pilomatricoma",
+    "poroma",
+    "trichoepithelioma",
+    "trichoblastoma",
+    "hidradenoma",
+    "spiradenoma",
+    "cylindroma",
+    "syringoma",
+    "sebaceoma",
+    "sebaceous adenoma",
+    "naevus sebaceus",
+    "verruca",
+    "keloid",
+    "scar",
+    "skin tag",
+    "fibroepithelial polyp"
   ],
   "match": {
     "site": [
@@ -56,6 +74,24 @@
       "seborrheic",
       "actinic",
       "Bowen",
+      "neurofibroma",
+      "adnexal tumour",
+      "adnexal tumor",
+      "pilomatrixoma",
+      "pilomatricoma",
+      "poroma",
+      "trichoepithelioma",
+      "trichoblastoma",
+      "trichilemmoma",
+      "hidradenoma",
+      "spiradenoma",
+      "cylindroma",
+      "syringoma",
+      "sebaceoma",
+      "sebaceous adenoma",
+      "sebaceous hyperplasia",
+      "verruca",
+      "keloid",
       "skin lesion",
       "skin tumour",
       "skin tumor",
@@ -245,7 +281,114 @@
         "Squamous cell carcinoma in situ (Bowen disease)",
         "Invasive SCC – see comment",
         "Melanoma – see comment",
+        "Verruca vulgaris",
+        "Pilomatrixoma",
+        "Trichoepithelioma",
+        "Trichoblastoma",
+        "Trichilemmoma",
+        "Trichofolliculoma",
+        "Poroma",
+        "Hidradenoma",
+        "Spiradenoma",
+        "Cylindroma",
+        "Syringoma",
+        "Syringocystadenoma papilliferum",
+        "Mixed tumour (chondroid syringoma)",
+        "Sebaceous hyperplasia",
+        "Sebaceous adenoma",
+        "Sebaceoma",
+        "Naevus sebaceus",
+        "Neurofibroma",
+        "Schwannoma",
+        "Granular cell tumour",
+        "Fibroepithelial polyp",
+        "Scar",
+        "Keloid",
+        "Haemangioma",
+        "Lipoma",
+        "Benign adnexal tumour, other",
         "Benign, other"
+      ],
+      "optionGroups": [
+        {
+          "label": "Basal cell carcinoma",
+          "options": [
+            "Nodular basal cell carcinoma",
+            "Superficial BCC",
+            "Infiltrative BCC",
+            "Micronodular BCC"
+          ]
+        },
+        {
+          "label": "Keratinocytic",
+          "options": [
+            "Keratoacanthoma",
+            "Seborrhoeic keratosis",
+            "Verruca vulgaris",
+            "Actinic keratosis",
+            "Squamous cell carcinoma in situ (Bowen disease)",
+            "Invasive SCC – see comment"
+          ]
+        },
+        {
+          "label": "Melanocytic",
+          "options": [
+            "Intradermal naevus",
+            "Compound naevus",
+            "Melanoma – see comment"
+          ]
+        },
+        {
+          "label": "Adnexal, follicular",
+          "options": [
+            "Pilomatrixoma",
+            "Trichoepithelioma",
+            "Trichoblastoma",
+            "Trichilemmoma",
+            "Trichofolliculoma"
+          ]
+        },
+        {
+          "label": "Adnexal, sweat gland",
+          "options": [
+            "Poroma",
+            "Hidradenoma",
+            "Spiradenoma",
+            "Cylindroma",
+            "Syringoma",
+            "Syringocystadenoma papilliferum",
+            "Mixed tumour (chondroid syringoma)"
+          ]
+        },
+        {
+          "label": "Adnexal, sebaceous",
+          "options": [
+            "Sebaceous hyperplasia",
+            "Sebaceous adenoma",
+            "Sebaceoma",
+            "Naevus sebaceus"
+          ]
+        },
+        {
+          "label": "Neural",
+          "options": [
+            "Neurofibroma",
+            "Schwannoma",
+            "Granular cell tumour"
+          ]
+        },
+        {
+          "label": "Fibrous, vascular and fatty",
+          "options": [
+            "Dermatofibroma",
+            "Fibroepithelial polyp",
+            "Scar",
+            "Keloid",
+            "Pyogenic granuloma",
+            "Haemangioma",
+            "Lipoma"
+          ]
+        }
       ],
       "default": "Nodular basal cell carcinoma"
     },

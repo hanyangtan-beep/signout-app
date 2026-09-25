@@ -1,5 +1,7 @@
 import { stripDot } from './_house.js';
 // Skin lesion excision with margins (BCC / keratoacanthoma / benign lesions) generator.
+// Phase 40 added the benign adnexal (follicular, sweat gland, sebaceous), neural, fibrous, vascular and
+// fatty lesions, shown in groups on the Diagnosis list (schema `optionGroups`).
 // Pure functions: (part, ctx) -> string.
 // Blocks produced:
 //   specimens  "Skin, left cheek nodule, excision"
@@ -223,6 +225,155 @@ const LESION_MICRO = {
   'Melanoma - see comment': [
     'Sections show an atypical melanocytic proliferation with features of melanoma; see comment.'
   ],
+  // Phase 40 benign additions (user 2026-09-25). Verruca, neurofibroma, haemangioma, keloid and the
+  // fibroepithelial polyp reuse the Skin lesion (shave / punch) sentences, so one lesion reads the same
+  // on either form. Sources for every paragraph: docs/reference/skin-excision-benign-sources.md.
+  'Verruca vulgaris': [
+    'Sections show skin with a papillomatous epidermis showing hyperkeratosis, parakeratosis, acanthosis and inward bending of the elongated rete ridges.',
+    'Koilocytes with coarse keratohyaline granules are present in the upper epidermis.',
+    'The findings are those of a verruca vulgaris.',
+    'There is no evidence of dysplasia or malignancy.'
+  ],
+  Pilomatrixoma: [
+    'Sections show skin with a well-circumscribed, lobulated dermal tumour composed of islands of basaloid cells that keratinise abruptly to anucleate shadow cells.',
+    'There is a foreign body giant cell reaction to the keratin, with foci of calcification.',
+    'The findings are those of a pilomatrixoma.',
+    'There is no evidence of malignancy.'
+  ],
+  Trichoepithelioma: [
+    'Sections show skin with a superficial dermal tumour composed of nests of basaloid cells with keratin horn cysts, closely associated with a cellular fibrous stroma containing papillary mesenchymal bodies.',
+    'The findings are those of a trichoepithelioma.',
+    'There is no evidence of malignancy.'
+  ],
+  Trichoblastoma: [
+    'Sections show skin with a well-circumscribed dermal tumour composed of nests of basaloid cells with peripheral palisading, set in a prominent cellular stroma with papillary mesenchymal bodies.',
+    'Cellular pleomorphism is minimal.',
+    'The findings are those of a trichoblastoma.',
+    'There is no evidence of malignancy.'
+  ],
+  Trichilemmoma: [
+    'Sections show skin with a lobular squamoproliferative lesion in continuity with the epidermis, composed of pale-staining to clear cells with a peripheral palisade of columnar cells and a distinct basement membrane.',
+    'The overlying epidermis is hyperkeratotic.',
+    'The findings are those of a trichilemmoma.',
+    'There is no evidence of malignancy.'
+  ],
+  Trichofolliculoma: [
+    'Sections show skin with a dilated central follicle containing keratin and opening onto the epidermis, from which multiple small secondary vellus follicles radiate into a cellular fibrous stroma.',
+    'The findings are those of a trichofolliculoma.',
+    'There is no evidence of malignancy.'
+  ],
+  Poroma: [
+    'Sections show skin with a well-circumscribed tumour that replaces the epidermis and extends into the dermis in broad anastomosing bands of uniform small cuboidal cells with round basophilic nuclei and compact eosinophilic cytoplasm.',
+    'The tumour cells are sharply demarcated from the adjacent keratinocytes, and scattered ducts lined by an eosinophilic cuticle are seen within a delicate fibrovascular stroma.',
+    'The findings are those of a poroma.',
+    'There is no evidence of malignancy.'
+  ],
+  Hidradenoma: [
+    'Sections show skin with a well-circumscribed, unencapsulated dermal tumour with solid and cystic areas and no connection to the overlying epidermis.',
+    'The solid areas are composed of polygonal cells with basophilic cytoplasm and clear cells, with tubular lumina lined by cuboidal cells, in a hyalinised stroma.',
+    'The findings are those of a hidradenoma.',
+    'There is no evidence of malignancy.'
+  ],
+  Spiradenoma: [
+    'Sections show skin with well-circumscribed basophilic dermal nodules composed of small dark basaloid cells at the periphery and larger pale cells centrally, arranged in trabeculae, with scattered lymphocytes, small ducts and droplets of hyaline basement membrane material.',
+    'The findings are those of a spiradenoma.',
+    'There is no evidence of malignancy.'
+  ],
+  Cylindroma: [
+    'Sections show skin with a dermal tumour composed of closely packed nests of basaloid cells that fit together in a jigsaw pattern, each surrounded by a thick hyaline basement membrane.',
+    'The nests show a peripheral palisade of small dark cells, with larger pale cells centrally.',
+    'The findings are those of a cylindroma.',
+    'There is no evidence of malignancy.'
+  ],
+  Syringoma: [
+    'Sections show skin with a well-circumscribed proliferation of small ducts, nests and cords of bland cuboidal cells in the superficial dermis, set in a sclerotic stroma.',
+    'The ducts are lined by two layers of cells and some have comma-shaped tails.',
+    'The findings are those of a syringoma.',
+    'There is no evidence of malignancy.'
+  ],
+  'Syringocystadenoma papilliferum': [
+    'Sections show skin with cystic invaginations of the surface epithelium extending into the dermis, containing papillary projections lined by an inner layer of columnar cells with decapitation secretion and an outer layer of cuboidal cells.',
+    'The papillary stroma contains plasma cells.',
+    'The findings are those of a syringocystadenoma papilliferum.',
+    'There is no evidence of malignancy.'
+  ],
+  'Mixed tumour (chondroid syringoma)': [
+    'Sections show skin with a well-circumscribed, multilobulated dermal tumour composed of bland epithelial cells forming tubules and ducts lined by two layers of cells, with myoepithelial cells, set in a myxoid to chondroid stroma.',
+    'The findings are those of a mixed tumour (chondroid syringoma).',
+    'There is no evidence of malignancy.'
+  ],
+  'Sebaceous hyperplasia': [
+    'Sections show skin with enlarged, mature sebaceous lobules grouped around a dilated central duct.',
+    'The lobules have a thin peripheral rim of germinative cells.',
+    'The findings are those of sebaceous hyperplasia.',
+    'There is no evidence of malignancy.'
+  ],
+  'Sebaceous adenoma': [
+    'Sections show skin with a well-circumscribed nodular proliferation of sebaceous lobules, with basaloid germinative cells at the periphery and mature vacuolated sebocytes centrally.',
+    'Mature sebocytes predominate.',
+    'The findings are those of a sebaceous adenoma.',
+    'There is no evidence of malignancy.'
+  ],
+  Sebaceoma: [
+    'Sections show skin with a well-circumscribed dermal tumour composed of nodules of small basaloid cells with scattered mature sebocytes and duct-like spaces.',
+    'The basaloid cells predominate.',
+    'There are no atypical mitoses and no necrosis.',
+    'The findings are those of a sebaceoma.',
+    'There is no evidence of malignancy.'
+  ],
+  'Naevus sebaceus': [
+    'Sections show skin with an acanthotic and papillomatous epidermis, immature hair follicles and sebaceous glands, some of which open directly onto the epidermal surface.',
+    'The findings are those of a naevus sebaceus.',
+    'There is no evidence of malignancy.'
+  ],
+  Neurofibroma: [
+    'Sections show skin with a poorly circumscribed dermal proliferation of bland spindle cells with wavy nuclei, set in a loose collagenous and myxoid stroma containing scattered mast cells.',
+    'There is no cytological atypia or mitotic activity.',
+    'The findings are those of a neurofibroma.',
+    'There is no evidence of malignancy.'
+  ],
+  Schwannoma: [
+    'Sections show skin with an encapsulated spindle cell tumour composed of cellular (Antoni A) areas with nuclear palisading forming Verocay bodies, alternating with hypocellular myxoid (Antoni B) areas.',
+    'The cells have wavy, tapered nuclei, and the blood vessels have thick hyalinised walls.',
+    'The findings are those of a schwannoma.',
+    'There is no evidence of malignancy.'
+  ],
+  'Granular cell tumour': [
+    'Sections show skin with a dermal proliferation of large polygonal cells with abundant eosinophilic granular cytoplasm and small central nuclei.',
+    'The findings are those of a granular cell tumour.',
+    'There is no evidence of malignancy.'
+  ],
+  'Fibroepithelial polyp': [
+    'Sections show a polypoid piece of skin covered by mildly acanthotic epidermis with a loose fibrovascular dermal core containing mature adipose tissue.',
+    'The findings are those of a fibroepithelial polyp.',
+    'There is no evidence of dysplasia or malignancy.'
+  ],
+  Scar: [
+    'Sections show skin in which the dermis is replaced by fibrous tissue, with collagen bundles and fibroblasts arranged parallel to the epidermis, vertically orientated small blood vessels and loss of adnexal structures.',
+    'The findings are those of a scar.',
+    'There is no evidence of malignancy.'
+  ],
+  Keloid: [
+    'Sections show skin with a dermal proliferation of thick, glassy, hyalinised collagen bundles and fibroblasts beneath a flattened epidermis, with loss of adnexal structures.',
+    'The findings are those of a keloid.',
+    'There is no evidence of malignancy.'
+  ],
+  Haemangioma: [
+    'Sections show skin with a dermal proliferation of dilated, thin-walled vascular channels lined by bland flattened endothelial cells and filled with blood.',
+    'There is no endothelial atypia.',
+    'The findings are those of a haemangioma.',
+    'There is no evidence of malignancy.'
+  ],
+  Lipoma: [
+    'Sections show skin with an underlying lobulated proliferation of mature adipocytes separated by thin fibrous septa.',
+    'No atypical stromal cells or lipoblasts are observed.',
+    'The findings are those of a lipoma.',
+    'There is no evidence of malignancy.'
+  ],
+  'Benign adnexal tumour, other': [
+    'Sections show a benign adnexal tumour; see additional description.',
+    'There is no evidence of malignancy.'
+  ],
   'Benign, other': [
     'Sections show a benign skin lesion; see additional description.',
     'There is no evidence of malignancy.'
@@ -287,6 +438,34 @@ const MAIN = {
   'Squamous cell carcinoma in situ (Bowen disease)': 'SQUAMOUS CELL CARCINOMA IN SITU (BOWEN DISEASE)',
   'Invasive SCC - see comment': 'INVASIVE SQUAMOUS CELL CARCINOMA',
   'Melanoma - see comment': 'MELANOMA',
+  // Phase 40: the released majority forms - PILOMATRIXOMA (3 of 5 released lines), FIBROEPITHELIAL
+  // POLYP (33 of 35 skin lines, not "skin tag"), VERRUCA VULGARIS (46 of 46) - and British NAEVUS.
+  'Verruca vulgaris': 'VERRUCA VULGARIS',
+  Pilomatrixoma: 'PILOMATRIXOMA',
+  Trichoepithelioma: 'TRICHOEPITHELIOMA',
+  Trichoblastoma: 'TRICHOBLASTOMA',
+  Trichilemmoma: 'TRICHILEMMOMA',
+  Trichofolliculoma: 'TRICHOFOLLICULOMA',
+  Poroma: 'POROMA',
+  Hidradenoma: 'HIDRADENOMA',
+  Spiradenoma: 'SPIRADENOMA',
+  Cylindroma: 'CYLINDROMA',
+  Syringoma: 'SYRINGOMA',
+  'Syringocystadenoma papilliferum': 'SYRINGOCYSTADENOMA PAPILLIFERUM',
+  'Mixed tumour (chondroid syringoma)': 'MIXED TUMOUR (CHONDROID SYRINGOMA)',
+  'Sebaceous hyperplasia': 'SEBACEOUS HYPERPLASIA',
+  'Sebaceous adenoma': 'SEBACEOUS ADENOMA',
+  Sebaceoma: 'SEBACEOMA',
+  'Naevus sebaceus': 'NAEVUS SEBACEUS',
+  Neurofibroma: 'NEUROFIBROMA',
+  Schwannoma: 'SCHWANNOMA',
+  'Granular cell tumour': 'GRANULAR CELL TUMOUR',
+  'Fibroepithelial polyp': 'FIBROEPITHELIAL POLYP',
+  Scar: 'SCAR',
+  Keloid: 'KELOID',
+  Haemangioma: 'HAEMANGIOMA',
+  Lipoma: 'LIPOMA',
+  'Benign adnexal tumour, other': 'BENIGN ADNEXAL TUMOUR (see microscopic examination)',
   'Benign, other': 'BENIGN SKIN LESION (see microscopic examination)'
 };
 
