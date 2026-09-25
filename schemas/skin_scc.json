@@ -1,0 +1,1070 @@
+{
+ "id": "skin_scc",
+ "version": "2026.09",
+ "name": "Skin squamous cell carcinoma excision",
+ "shortName": "Skin · SCC excision",
+ "label": "Skin SCC",
+ "organ": "SKIN",
+ "system": "Skin",
+ "kind": "cancer resection",
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen and tumour",
+   "Macroscopy"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "rank": 50,
+ "aliases": [
+  "SCC",
+  "cSCC",
+  "squamous cell carcinoma",
+  "cutaneous SCC",
+  "keratoacanthoma-type SCC"
+ ],
+ "match": {
+  "site": [
+   "skin",
+   "scalp",
+   "face",
+   "forehead",
+   "temple",
+   "cheek",
+   "nose",
+   "ear",
+   "lip",
+   "chin",
+   "neck",
+   "eyelid",
+   "hand",
+   "finger",
+   "forearm",
+   "arm",
+   "shoulder",
+   "back",
+   "chest",
+   "leg",
+   "shin",
+   "thigh",
+   "foot",
+   "toe"
+  ],
+  "procedure": [
+   "excision",
+   "wide excision",
+   "wide local excision",
+   "re-excision",
+   "ellipse"
+  ],
+  "clinical": [
+   "SCC",
+   "cSCC",
+   "squamous cell carcinoma",
+   "squamous carcinoma"
+  ],
+  "gate": "\\b(c?SCC|squamous (cell )?carcinoma)\\b(?!\\s*in\\s*situ)",
+  "bias": 1,
+  "fill": [
+   {
+    "field": "specimenName",
+    "from": "detail"
+   },
+   {
+    "field": "tumourSite",
+    "from": "options",
+    "noGuess": true
+   },
+   {
+    "field": "laterality",
+    "from": "side"
+   }
+  ]
+ },
+ "macroExtract": {
+  "ellipseSize": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "lesionSize": {
+   "concept": "tumourDims",
+   "unit": "cm",
+   "min": 1
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  },
+  "blockScheme": {
+   "concept": "choice",
+   "map": [
+    [
+     "(?:serially\\s+(?:sliced|sectioned)|bisected)[^.]*all\\s+embedded|all\\s+embedded[^.]*serially",
+     "Ellipse serially sliced and all embedded"
+    ],
+    [
+     "representative\\s+(?:sections?|blocks?)|partially\\s+embedded",
+     "Representative sections"
+    ]
+   ]
+  }
+ },
+ "specimenNoun": "specimen",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "skin_scc",
+ "style": {
+  "british": true
+ },
+ "source": {
+  "template": "QMH Cancer Reporting Template HN-Skin SCC; CAP Cutaneous Squamous Cell Carcinoma of the Head and Neck protocol v1.2.0.0; RCPath dataset for primary invasive cutaneous squamous cell carcinoma and regional lymph nodes (v4, February 2019)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/HN-Skin%20SCC.html",
+  "capProtocol": "https://www.cap.org/wp-content/uploads/protocols/HN.Skin_Cutaneous_1.2.0.0.REL_CAPCP.pdf?download=true",
+  "dataset": "https://www.rcpath.org/static/9c1d8f71-5d3b-4508-8e6200f11e1f4a39/Dataset-for-histopathological-reporting-of-primary-invasive-cutaneous-squamous-cell-carcinoma-and-regional-lymph-nodes.pdf",
+  "staging": "pTNM derived by src/staging/skin_scc.js, with the system chosen by the tumour site: AJCC 8th edition for head and neck sites (including the dry vermilion lip and oral commissure) and UICC 8th edition for the trunk and limbs; eyelid and perianal skin are staged in their own chapters and get no pTNM here. pT1 is 20 mm or less, pT2 over 20 to 40 mm, pT3 over 40 mm or minor bone erosion, perineural invasion of a nerve 0.1 mm or more in calibre or deeper than the dermis, or deep invasion (beyond the subcutaneous fat, or more than 6 mm from the granular layer); pT4a gross cortical bone or marrow invasion; pT4b skull base or axial skeleton invasion or foraminal involvement. Head and neck pN follows the AJCC extranodal extension table in src/staging/hn_nodes.js; trunk and limb pN is 30 mm and 60 mm on the largest deposit with no ENE term, and contralateral nodes are pM1. No stage group is printed. The BWH class is derived from four factors and prints for every site. pTNM prints only with the printPTNM option.",
+  "stagingProtocol": "skin_scc",
+  "grading": "Graded by the least differentiated area (RCPath). Histologic types as listed on the QMH page, which keeps pseudovascular SCC and adenosquamous carcinoma; the WHO 5th edition skin classification no longer lists them as SCC subtypes (Histopathology 2025, https://onlinelibrary.wiley.com/doi/full/10.1111/his.15562). Morphology sentences and sources: generators/skin_scc_morphology.js and docs/reference/skin_scc-morphology.md."
+ },
+ "partDefaults": [],
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th head and neck, UICC 8th trunk and limbs)"
+  }
+ ],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Site",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "placeholder": "left cheek",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "multiselect",
+   "group": "Specimen and tumour",
+   "options": [
+    "Excision",
+    "Wide local excision",
+    "Re-excision",
+    "Sentinel lymph node biopsy",
+    "Lymphadenectomy",
+    "Other (specify)",
+    "Not specified"
+   ],
+   "exclusive": [
+    "Not specified"
+   ],
+   "default": [
+    "Excision"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Procedure (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "tumourSite",
+   "label": "Tumour site",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "options": [
+    "Scalp",
+    "Forehead",
+    "Temple",
+    "Eyebrow",
+    "Nose",
+    "Cheek",
+    "Ear",
+    "Preauricular",
+    "Postauricular",
+    "Lip",
+    "Oral commissure",
+    "Chin",
+    "Jaw",
+    "Neck",
+    "Shoulder",
+    "Upper arm",
+    "Elbow",
+    "Forearm",
+    "Wrist",
+    "Hand",
+    "Finger",
+    "Chest",
+    "Abdomen",
+    "Back",
+    "Buttock",
+    "Groin",
+    "Thigh",
+    "Knee",
+    "Lower leg",
+    "Ankle",
+    "Foot",
+    "Toe",
+    "Eyelid",
+    "Perianal skin (within 5 cm of the anal margin)",
+    "Other (specify)",
+    "Not specified"
+   ],
+   "optionGroups": [
+    {
+     "label": "Head and neck (AJCC 8th)",
+     "options": [
+      "Scalp",
+      "Forehead",
+      "Temple",
+      "Eyebrow",
+      "Nose",
+      "Cheek",
+      "Ear",
+      "Preauricular",
+      "Postauricular",
+      "Lip",
+      "Oral commissure",
+      "Chin",
+      "Jaw",
+      "Neck"
+     ]
+    },
+    {
+     "label": "Trunk and limbs (UICC 8th)",
+     "options": [
+      "Shoulder",
+      "Upper arm",
+      "Elbow",
+      "Forearm",
+      "Wrist",
+      "Hand",
+      "Finger",
+      "Chest",
+      "Abdomen",
+      "Back",
+      "Buttock",
+      "Groin",
+      "Thigh",
+      "Knee",
+      "Lower leg",
+      "Ankle",
+      "Foot",
+      "Toe"
+     ]
+    },
+    {
+     "label": "Not staged here (own chapter)",
+     "options": [
+      "Eyelid",
+      "Perianal skin (within 5 cm of the anal margin)"
+     ]
+    }
+   ],
+   "help": "Head and neck ends at the acromioclavicular joint in front and the upper margin of the scapula behind (RCPath). Lip: cutaneous and dry vermilion; the wet mucosa is oral cavity.",
+   "default": ""
+  },
+  {
+   "id": "tumourSiteOther",
+   "label": "Tumour site (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "tumourSite",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "siteRegion",
+   "label": "Staging region for this site",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "options": [
+    "Head and neck",
+    "Trunk and limbs",
+    "Not staged here (eyelid, perianal, vulval or penile skin)"
+   ],
+   "default": "",
+   "showIf": {
+    "field": "tumourSite",
+    "is": [
+     "Other (specify)",
+     "Not specified"
+    ]
+   }
+  },
+  {
+   "id": "laterality",
+   "label": "Tumour laterality",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "options": [
+    "Right",
+    "Left",
+    "Midline",
+    "Other (specify)",
+    "Not specified"
+   ],
+   "default": ""
+  },
+  {
+   "id": "lateralityOther",
+   "label": "Laterality (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "laterality",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "tumourSizeMm",
+   "label": "Tumour size, greatest dimension (mm)",
+   "type": "number",
+   "group": "Specimen and tumour",
+   "min": 0,
+   "step": 0.1,
+   "placeholder": "blank = the macroscopic lesion size",
+   "default": ""
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "options": [
+    "Single focus",
+    "Multiple foci (specify)",
+    "Cannot be determined"
+   ],
+   "default": "Single focus"
+  },
+  {
+   "id": "focalityDetail",
+   "label": "Tumour focality (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "focality",
+    "is": "Multiple foci (specify)"
+   }
+  },
+  {
+   "id": "ellipseSize",
+   "label": "Ellipse of skin (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "2.5 x 1.2 x 0.6",
+   "default": ""
+  },
+  {
+   "id": "lesionSize",
+   "label": "Lesion size (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "0.8",
+   "default": ""
+  },
+  {
+   "id": "lesionAppearance",
+   "label": "Lesion appearance",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Nodule",
+    "Ulcerated nodule",
+    "Ulcer",
+    "Pigmented lesion",
+    "Plaque",
+    "Papule"
+   ],
+   "default": "Nodule"
+  },
+  {
+   "id": "orientation",
+   "label": "Orientation",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "None",
+    "Suture at 12 o'clock = superior",
+    "Other – describe"
+   ],
+   "default": "None"
+  },
+  {
+   "id": "orientationOther",
+   "label": "Orientation as received",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "long suture lateral, short suture superior",
+   "default": "",
+   "showIf": {
+    "field": "orientation",
+    "is": "Other – describe"
+   }
+  },
+  {
+   "id": "macroMargin",
+   "label": "Closest macroscopic margin (mm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "2",
+   "default": ""
+  },
+  {
+   "id": "inking",
+   "label": "Inking",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Deep surface inked",
+    "Margins inked (see block key)",
+    "Not inked"
+   ],
+   "default": "Deep surface inked"
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": "3"
+  },
+  {
+   "id": "blockScheme",
+   "label": "Sampling",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Ellipse serially sliced and all embedded",
+    "Representative sections"
+   ],
+   "default": "Ellipse serially sliced and all embedded"
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key (typed; blank = from the sampling)",
+   "type": "textarea",
+   "group": "Macroscopy",
+   "placeholder": "1 Tip A\n2-4 Lesion, cross-sections\n5 Tip B",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type",
+   "type": "select",
+   "group": "Microscopic findings",
+   "options": [
+    "Squamous cell carcinoma, not otherwise specified",
+    "Keratoacanthoma",
+    "Acantholytic squamous cell carcinoma",
+    "Spindle cell squamous cell carcinoma",
+    "Verrucous squamous cell carcinoma",
+    "Adenosquamous carcinoma",
+    "Clear cell squamous cell carcinoma",
+    "Squamous cell carcinoma with sarcomatoid differentiation",
+    "Squamous cell carcinoma with osteoclast-like giant cells",
+    "Pseudovascular squamous cell carcinoma",
+    "Lymphoepithelioma-like carcinoma",
+    "Other histologic type not listed (specify)"
+   ],
+   "default": "Squamous cell carcinoma, not otherwise specified"
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Histologic type (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "histType",
+    "is": "Other histologic type not listed (specify)"
+   }
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade (least differentiated area)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "options": [
+    "GX, cannot be assessed",
+    "G1, well differentiated",
+    "G2, moderately differentiated",
+    "G3, poorly differentiated",
+    "G4, undifferentiated",
+    "Other (specify)",
+    "Not applicable"
+   ],
+   "default": ""
+  },
+  {
+   "id": "gradeOther",
+   "label": "Histologic grade (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "grade",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Tumour histology paragraph (overrides the generated text)",
+   "type": "textarea",
+   "group": "Microscopic findings",
+   "default": ""
+  },
+  {
+   "id": "doi",
+   "label": "Depth of invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "options": [
+    "Not applicable",
+    "Specify depth (mm)",
+    "At least (mm)",
+    "Cannot be determined (explain)"
+   ],
+   "default": "Specify depth (mm)"
+  },
+  {
+   "id": "doiMm",
+   "label": "Depth of invasion (mm), from the granular layer",
+   "type": "number",
+   "group": "Microscopic findings",
+   "min": 0,
+   "step": 0.1,
+   "default": "",
+   "showIf": {
+    "field": "doi",
+    "is": [
+     "Specify depth (mm)",
+     "At least (mm)"
+    ]
+   }
+  },
+  {
+   "id": "doiNote",
+   "label": "Depth of invasion (explain)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "doi",
+    "is": "Cannot be determined (explain)"
+   }
+  },
+  {
+   "id": "anatomicLevel",
+   "label": "Anatomic level",
+   "type": "select",
+   "group": "Microscopic findings",
+   "options": [
+    "Not applicable",
+    "I (carcinoma in situ)",
+    "II (carcinoma present in but does not fill and expand papillary dermis)",
+    "III (carcinoma fills and expands papillary dermis)",
+    "IV (carcinoma invades reticular dermis)",
+    "V (carcinoma invades subcutaneum)"
+   ],
+   "default": ""
+  },
+  {
+   "id": "beyondFat",
+   "label": "Invasion beyond the subcutaneous fat",
+   "type": "select",
+   "group": "Microscopic findings",
+   "options": [
+    "Not identified",
+    "Present (specify)",
+    "Cannot be determined"
+   ],
+   "default": "Not identified"
+  },
+  {
+   "id": "beyondFatDetail",
+   "label": "Structure invaded",
+   "type": "text",
+   "group": "Microscopic findings",
+   "placeholder": "skeletal muscle",
+   "default": "",
+   "showIf": {
+    "field": "beyondFat",
+    "is": "Present (specify)"
+   }
+  },
+  {
+   "id": "boneInvasion",
+   "label": "Bone invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Minor bone erosion",
+    "Gross cortical bone or marrow invasion",
+    "Skull base or axial skeleton invasion, or foraminal involvement",
+    "Cannot be determined"
+   ],
+   "default": "Not applicable"
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": "Not identified"
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "options": [
+    "Not identified",
+    "Present",
+    "Present, less than 0.1 mm in calibre",
+    "Present, 0.1 mm or more in calibre",
+    "Present, in a nerve deeper than the dermis",
+    "Cannot be determined"
+   ],
+   "default": "Not identified"
+  },
+  {
+   "id": "ihc",
+   "label": "Immunohistochemistry",
+   "type": "multiselect",
+   "group": "Microscopic findings",
+   "options": [
+    "p40 positive",
+    "p63 positive",
+    "CK5/6 positive",
+    "AE1/AE3 positive",
+    "EMA positive",
+    "SOX10 negative",
+    "S100 negative",
+    "Melan-A negative",
+    "CD34 negative",
+    "Desmin negative",
+    "EBER ISH negative"
+   ],
+   "default": []
+  },
+  {
+   "id": "ihcOther",
+   "label": "Immunohistochemistry (other results)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": ""
+  },
+  {
+   "id": "invasiveMargin",
+   "label": "Margin status for invasive tumour",
+   "type": "select",
+   "group": "Margins",
+   "options": [
+    "All margins negative for invasive tumour",
+    "Margin(s) involved by invasive tumour (specify)",
+    "Cannot be assessed"
+   ],
+   "default": "All margins negative for invasive tumour"
+  },
+  {
+   "id": "peripheralMm",
+   "label": "Closest peripheral margin (mm)",
+   "type": "number",
+   "group": "Margins",
+   "min": 0,
+   "step": 0.1,
+   "default": "",
+   "showIf": {
+    "field": "invasiveMargin",
+    "not": "Cannot be assessed"
+   }
+  },
+  {
+   "id": "peripheralSite",
+   "label": "Closest peripheral margin, location",
+   "type": "text",
+   "group": "Margins",
+   "placeholder": "superior",
+   "default": "",
+   "showIf": {
+    "field": "invasiveMargin",
+    "not": "Cannot be assessed"
+   }
+  },
+  {
+   "id": "deepMm",
+   "label": "Deep margin (mm)",
+   "type": "number",
+   "group": "Margins",
+   "min": 0,
+   "step": 0.1,
+   "default": "",
+   "showIf": {
+    "field": "invasiveMargin",
+    "not": "Cannot be assessed"
+   }
+  },
+  {
+   "id": "invasiveInvolvedDetail",
+   "label": "Margin(s) involved by invasive tumour",
+   "type": "text",
+   "group": "Margins",
+   "placeholder": "deep margin",
+   "default": "",
+   "showIf": {
+    "field": "invasiveMargin",
+    "is": "Margin(s) involved by invasive tumour (specify)"
+   }
+  },
+  {
+   "id": "insituMargin",
+   "label": "Margin status for non-invasive tumour",
+   "type": "select",
+   "group": "Margins",
+   "options": [
+    "Not applicable",
+    "All margins negative for in situ disease",
+    "Margin(s) involved by in situ disease (specify)",
+    "Cannot be assessed"
+   ],
+   "default": "Not applicable"
+  },
+  {
+   "id": "insituDetail",
+   "label": "Non-invasive tumour: involved margin or closest distance",
+   "type": "text",
+   "group": "Margins",
+   "placeholder": "1.5 mm, medial",
+   "default": "",
+   "showIf": {
+    "field": "insituMargin",
+    "is": [
+     "All margins negative for in situ disease",
+     "Margin(s) involved by in situ disease (specify)"
+    ]
+   }
+  },
+  {
+   "id": "bedMargin",
+   "label": "Tumour bed margin (re-excision)",
+   "type": "select",
+   "group": "Margins",
+   "options": [
+    "Not applicable",
+    "Cannot be assessed",
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Uninvolved by high-grade dysplasia / in situ disease",
+    "Involved by high-grade dysplasia / in situ disease"
+   ],
+   "default": "Not applicable"
+  },
+  {
+   "id": "bedDetail",
+   "label": "Tumour bed margin: location and closest distance",
+   "type": "text",
+   "group": "Margins",
+   "default": "",
+   "showIf": {
+    "field": "bedMargin",
+    "is": [
+     "Uninvolved by invasive carcinoma",
+     "Involved by invasive carcinoma",
+     "Uninvolved by high-grade dysplasia / in situ disease",
+     "Involved by high-grade dysplasia / in situ disease"
+    ]
+   }
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Number of regional lymph nodes examined",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "min": 0,
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Number of regional lymph nodes involved",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "min": 0,
+   "default": ""
+  },
+  {
+   "id": "nodeLaterality",
+   "label": "Laterality of the involved nodes",
+   "type": "select",
+   "group": "Lymph nodes and metastasis",
+   "options": [
+    "Ipsilateral (including midline)",
+    "Contralateral",
+    "Bilateral",
+    "Cannot be determined"
+   ],
+   "default": "",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "type": "select",
+   "group": "Lymph nodes and metastasis",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": "",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Size of the largest metastatic deposit (mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "min": 0,
+   "default": "",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "largestDepositSite",
+   "label": "Site of the largest metastatic deposit",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "placeholder": "left level II",
+   "default": "",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "largestNodeMm",
+   "label": "Size of the largest involved lymph node (mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "min": 0,
+   "default": "",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "largestNodeSite",
+   "label": "Site of the largest involved lymph node",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis",
+   "type": "multiselect",
+   "group": "Lymph nodes and metastasis",
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Bone",
+    "Brain",
+    "Lung",
+    "Liver",
+    "Other (specify)",
+    "Cannot be determined"
+   ],
+   "exclusive": [
+    "Not applicable",
+    "Not identified",
+    "Cannot be determined"
+   ],
+   "default": [
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "distantDetail",
+   "label": "Distant metastasis (specify)",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "distantMets",
+    "is": [
+     "Bone",
+     "Brain",
+     "Lung",
+     "Liver",
+     "Other (specify)",
+     "Cannot be determined"
+    ]
+   }
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "m (multiple primary tumours)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "r (recurrent tumour)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "y (after neoadjuvant therapy)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "Override derived pTNM (type e.g. pT2 pN1)",
+   "type": "text",
+   "group": "Staging",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason (printed in Checks)",
+   "type": "text",
+   "group": "Staging",
+   "default": ""
+  },
+  {
+   "id": "bwhOverride",
+   "label": "BWH tumour class",
+   "type": "select",
+   "group": "Staging",
+   "options": [
+    "Derived from the recorded factors",
+    "T1: 0 high-risk factors",
+    "T2a: 1 high-risk factor",
+    "T2b: 2-3 high-risk factors",
+    "T3: 4 high-risk factors or bone invasion"
+   ],
+   "default": "Derived from the recorded factors"
+  },
+  {
+   "id": "immunosuppression",
+   "label": "Immunosuppression (specify cause, if known)",
+   "type": "text",
+   "group": "Additional findings",
+   "placeholder": "renal transplant recipient",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes (any)",
+   "type": "textarea",
+   "group": "Additional findings",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01021",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "left cheek",
+     "procedure": [
+      "Excision"
+     ],
+     "tumourSite": "Cheek",
+     "laterality": "Left",
+     "tumourSizeMm": "14",
+     "focality": "Single focus",
+     "ellipseSize": "3.2 x 1.4 x 0.8",
+     "lesionSize": "1.4",
+     "lesionAppearance": "Ulcerated nodule",
+     "orientation": "Suture at 12 o'clock = superior",
+     "macroMargin": "4",
+     "inking": "Deep surface inked",
+     "blocks": "5",
+     "blockScheme": "Ellipse serially sliced and all embedded",
+     "histType": "Squamous cell carcinoma, not otherwise specified",
+     "grade": "G2, moderately differentiated",
+     "doi": "Specify depth (mm)",
+     "doiMm": "4",
+     "anatomicLevel": "IV (carcinoma invades reticular dermis)",
+     "beyondFat": "Not identified",
+     "boneInvasion": "Not applicable",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "ihc": [],
+     "invasiveMargin": "All margins negative for invasive tumour",
+     "peripheralMm": "4",
+     "peripheralSite": "superior",
+     "deepMm": "3",
+     "insituMargin": "Not applicable",
+     "bedMargin": "Not applicable",
+     "nodesExamined": "",
+     "nodesInvolved": "",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "bwhOverride": "Derived from the recorded factors"
+    }
+   }
+  ]
+ }
+}

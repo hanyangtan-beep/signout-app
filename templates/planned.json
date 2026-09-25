@@ -298,15 +298,6 @@
    "qmh": "Skin-Melanoma"
   },
   {
-   "id": "skin_scc",
-   "name": "Skin squamous cell carcinoma excision",
-   "label": "Skin SCC",
-   "system": "Skin",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "HN-Skin SCC"
-  },
-  {
    "id": "soft_tissue_sarcoma",
    "name": "Soft tissue sarcoma resection",
    "label": "Sarcoma",

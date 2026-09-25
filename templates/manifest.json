@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 67,
+  "count": 68,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -3955,6 +3955,85 @@
       "generator": "fallopian_tube_ectopic",
       "generatorPath": "generators/fallopian_tube_ectopic.js",
       "schemaPath": "schemas/fallopian_tube_ectopic.json"
+    },
+    {
+      "id": "skin_scc",
+      "name": "Skin squamous cell carcinoma excision",
+      "shortName": "Skin · SCC excision",
+      "label": "Skin SCC",
+      "organ": "SKIN",
+      "system": "Skin",
+      "kind": "cancer resection",
+      "rank": 50,
+      "aliases": [
+        "SCC",
+        "cSCC",
+        "squamous cell carcinoma",
+        "cutaneous SCC",
+        "keratoacanthoma-type SCC"
+      ],
+      "match": {
+        "site": [
+          "skin",
+          "scalp",
+          "face",
+          "forehead",
+          "temple",
+          "cheek",
+          "nose",
+          "ear",
+          "lip",
+          "chin",
+          "neck",
+          "eyelid",
+          "hand",
+          "finger",
+          "forearm",
+          "arm",
+          "shoulder",
+          "back",
+          "chest",
+          "leg",
+          "shin",
+          "thigh",
+          "foot",
+          "toe"
+        ],
+        "procedure": [
+          "excision",
+          "wide excision",
+          "wide local excision",
+          "re-excision",
+          "ellipse"
+        ],
+        "clinical": [
+          "SCC",
+          "cSCC",
+          "squamous cell carcinoma",
+          "squamous carcinoma"
+        ],
+        "gate": "\\b(c?SCC|squamous (cell )?carcinoma)\\b(?!\\s*in\\s*situ)",
+        "bias": 1,
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          },
+          {
+            "field": "tumourSite",
+            "from": "options",
+            "noGuess": true
+          },
+          {
+            "field": "laterality",
+            "from": "side"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "skin_scc",
+      "generatorPath": "generators/skin_scc.js",
+      "schemaPath": "schemas/skin_scc.json"
     },
     {
       "id": "haemorrhoid",

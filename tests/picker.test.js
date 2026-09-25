@@ -95,8 +95,9 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   assert.ok(bottom.find((g) => g.system === 'Skin').items.some((t) => t.id === 'soft_tissue_benign'));
   assert.ok(bottom.find((g) => g.system === 'Endocrine').items.some((t) => t.id === 'thyroid_benign'));
   // every QMH cancer page is either built or planned: entries carry the QMH page stem.
-  // The floor drops by one each time a QMH-stemmed placeholder ships (ampulla_carcinoma, Phase 22).
-  assert.ok(planned.filter((t) => t.qmh).length >= 49);
+  // The floor drops by one each time a QMH-stemmed placeholder ships (ampulla_carcinoma, Phase 22;
+  // skin_scc, Phase 39).
+  assert.ok(planned.filter((t) => t.qmh).length >= 48);
   // Biomarkers holds one built template (the standalone HER2 ISH report, Phase 30) and placeholders.
   const biomarkers = top.find((g) => g.system === 'Biomarkers').items;
   assert.ok(biomarkers.every((t) => t.kind === 'biomarker'));
@@ -148,11 +149,14 @@ test('palette ranking: exact shortName > alias > organ > keyword', () => {
   assert.deepEqual(rankTemplates(manifest, 'zzz'), []);
   // exclude filter (Resections ▾ hides biopsies)
   assert.ok(rankTemplates(manifest, '', { exclude: ['biopsy'] }).every((t) => t.kind !== 'biopsy'));
-  // any template in ≤ 3 keystrokes
+  // any template in ≤ 3 keystrokes: the first three letters of the label, or an alias of three
+  // letters or fewer. Skin SCC shares "Ski" with three benign skin forms that out-rank it on case
+  // mix, so it is reached by its alias "SCC" instead (Phase 39).
   for (const t of manifest) {
     const l = labelOf(t);
-    const hits = rankTemplates(manifest, l.slice(0, 3)).map(labelOf);
-    assert.ok(hits.slice(0, 3).includes(l), `${l} reachable from "${l.slice(0, 3)}" (got ${hits.join(', ')})`);
+    const probes = [l.slice(0, 3), ...(t.aliases || []).filter((a) => a.length <= 3)];
+    const reached = probes.some((p) => rankTemplates(manifest, p).map(labelOf).slice(0, 3).includes(l));
+    assert.ok(reached, `${l} reachable from ${probes.map((p) => `"${p}"`).join(' or ')} (got ${rankTemplates(manifest, l.slice(0, 3)).map(labelOf).join(', ')})`);
   }
 });
 

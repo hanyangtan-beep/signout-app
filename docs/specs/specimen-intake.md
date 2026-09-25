@@ -331,3 +331,12 @@ Counts are the same 18,913 parts, routed with no clinical history. They are aggr
   - all benign-resection categories 510 to 386 of 1,425.
 - Organ icons: `ear` takes the nasopharynx glyph, `nail` the skin glyph and `testis` the prostate glyph until each has its own.
 - No intake fixture change. Tests: the intake sections of tests/haemorrhoid.test.js, tests/ear_cholesteatoma.test.js, tests/hernia_sac.test.js, tests/nail_digit.test.js and tests/testis_benign.test.js.
+
+## Skin SCC gate (user request, built 2026-09-25)
+
+- `match.gate` (a regex source, read without case) is a pattern the specimen line or the clinical history must meet before a template is scored at all. A part that fails it is left to the other templates, never sent to Generic.
+- `skin_scc` gates on SCC, cSCC, squamous carcinoma or squamous cell carcinoma not followed by "in situ". "?SCC" or "squamous cell carcinoma" opens it; ?BCC, Bowen's disease, SCC in situ and keratoacanthoma leave a skin excision on Skin excision, and a line with no history is scored as before. Its site terms are skin sites (scalp, face, ear, lip, trunk and limbs), so tongue and oesophagus lines naming SCC never reach it.
+- Through the gate it scores on the skin excision procedure words, the four SCC clinical terms and bias 1. A skin excision with ?SCC in the clinical line puts Skin SCC first as "choose", Skin excision (which also lists SCC) next; "squamous cell carcinoma" adds the cancer-context point and makes it confident.
+- Fills: the specimen name from the line's detail, the tumour site from the options (`noGuess`) and the laterality from the side.
+- Routed with no clinical history, as the exports carry none: 7 of the 18,913 parts now open Skin SCC, each naming SCC in its specimen line. 6 are invasive SCC (five-year 5, from Skin cyst 3 and Skin excision 2; export 1, from Skin cyst) and 1 is a five-year part whose diagnosis refers to a comment. None of the 12 / 3 SCC in situ parts opens it. The other invasive SCC parts stay where they were: Generic 14 / 5, Skin cyst 4 / 2, Frozen section 0 / 1.
+- No intake fixture change. Tests: the intake section of tests/skin_scc.test.js.

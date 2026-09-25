@@ -202,6 +202,11 @@ export function scorePart(part, ctx, manifest) {
     const mt = t.match;
     const siteHits = siteHitsFor(mt, text);
     if (!siteHits || excluded(mt, text)) continue;
+    // `match.gate`: a pattern the specimen line or the clinical history must meet before the
+    // template is a candidate at all. Skin SCC shares every site word with the skin excision form
+    // and only the diagnosis tells them apart, so it is offered only when SCC is named (and not
+    // "SCC in situ"). A gate that fails leaves the part to the other templates, never to generic.
+    if (mt.gate && !new RegExp(mt.gate, 'i').test(`${text} ${history}`)) continue;
     let score = 2 * hits(mt.procedure, text) + 2 * hits(aloneFor(mt, text)?.procedure, text) + 2 * Math.min(1, hits(mt.clinical, history)) - 4 * hits(mt.not, text) + (mt.bias || 0);
     if (resected && !biopsied && BIOPSY_KINDS.includes(t.kind)) score -= 3;
     if (biopsied && !resected && RESECTION_KINDS.includes(t.kind)) score -= 3;

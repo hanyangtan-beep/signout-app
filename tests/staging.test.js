@@ -85,6 +85,7 @@ test('manual override replaces the derived categories, keeps derived M when omit
   assert.equal(bad.overridden, false); assert.equal(bad.tnm, 'pT3 pN0');
   assert.deepEqual(parseOverride('ypT4a ypN2b ypM1b'), { T: 'T4a', N: 'N2b', M: 'M1b' });
   assert.equal(parseOverride('T3'), null);
+  assert.deepEqual(parseOverride('pT2 pN2c'), { T: 'T2', N: 'N2c', M: 'M-' }, 'N2c, the head and neck contralateral category');
 });
 
 test('edition is stamped on every result', () => {

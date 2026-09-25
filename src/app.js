@@ -939,15 +939,27 @@ function renderField(field, part, index) {
   // the first option, which the report is not printing.
   const blank = value === '' && !options.includes('') ? [el('option', { value: '', text: labelFor(field, '') })] : [];
   if (blank.length) blank[0].selected = true;
+  const optionNode = (opt) => {
+    const o = el('option', { value: opt, text: labelFor(field, opt) });
+    if (opt === value) o.selected = true;
+    return o;
+  };
+  // `optionGroups` ([{label, options}]) only groups the list for reading; the flat `options` stays the
+  // list that is validated and printed, and any option no group names is listed after the groups.
+  const grouped = Array.isArray(field.optionGroups) && field.optionGroups.length
+    ? [
+      ...field.optionGroups.map((g) => el('optgroup', { label: g.label }, ...g.options.filter((o) => options.includes(o)).map(optionNode))),
+      ...options.filter((o) => !field.optionGroups.some((g) => g.options.includes(o))).map(optionNode)
+    ]
+    : null;
   const select = el('select', { class: 'input', id, onchange: (e) => setValue(field.id, e.target.value) },
     ...blank,
-    ...options.map((opt) => {
-      const o = el('option', { value: opt, text: labelFor(field, opt) });
-      if (opt === value) o.selected = true;
-      return o;
-    }));
+    ...(grouped || options.map(optionNode)));
   wrap.append(el('label', { for: id, text: field.label }),
     field.reference ? el('div', { class: 'field-control' }, select, referenceToggle(field, part)) : select);
+  // Help prints under a grouped list only: the boundary between the groups is what it explains, and the
+  // older selects keep their help as schema notes.
+  if (grouped && field.help) wrap.append(el('div', { class: 'field-help', text: field.help }));
   const refPanel = referencePanel(field, part);
   if (refPanel) wrap.append(refPanel);
   return wrap;
