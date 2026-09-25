@@ -95,7 +95,7 @@ The CNS pathways spec is now built out: the grading rules, the guided intake and
 
 Build order (2026-09-15) is set by the LIS export of 4547 cases, 2024 to 2026-09 — `docs/case-mix-2026-09.md`. Built templates cover 79.2 per cent of that caseload; the four cards above the rule take it to 89.9 per cent. Cards below the rule are carried over and are ordered by the same measure. Placeholders in the app menus (`templates/planned.json`) are removed by the card that builds the template.
 
-The Benign resections group (user request 2026-09-24) follows the Joint fluid and CSF card. It is sized by its own measure, diagnosis parts in both exports (`docs/case-mix/benign-resections-2021-2026.md`), and is built in the four batches its group note lists.
+The Benign resections group (user request 2026-09-24) follows the Oral cavity and oropharynx card. It is sized by its own measure, diagnosis parts in both exports (`docs/case-mix/benign-resections-2021-2026.md`), and is built in the four batches its group note lists.
 
 ### Oral cavity and oropharynx — biopsy + resection pair  Size: L → split; build as one batch
 Why:        **106 cases, 2.3 per cent** — the largest uncovered histology category. The export shows both ends: plain oral-cavity and mandible biopsies, and full resections (mandibulectomy with neck dissection, maxillectomy with revised margins, wide local excision of alveolus, buccal mucosa with named margins). Two H&N placeholders are already in the menus.
@@ -110,16 +110,6 @@ Accept:     element order against the saved page; fixtures for a dysplasia biops
 Verify:     tests + browser (light)
 Ship:       one batch, one publish
 Depends on: nothing outstanding
-
-### Joint fluid and CSF cytology                         Size: S; one card, two templates
-Why:        **84 cases together, 1.8 per cent** — joint fluid 44 (knee 34, plus elbow, hip, shoulder) and CSF 40 (lumbar puncture and ventricular). Both are short, highly formulaic reports and both are typed by hand today.
-Change:     two templates on the shared `generators/cytology.js`. `joint_fluid_cytology` — joint pick-list (knee, hip, elbow, shoulder, wrist, ankle) with side, volume, appearance (clear / turbid / blood-stained / purulent), total and differential cell counts as optional numbers, **crystal examination under polarised light** as a first-class field (none seen, monosodium urate — negatively birefringent needles, calcium pyrophosphate — positively birefringent rhomboids, both, not assessed) with the house sentence per result, findings (acute inflammation, histiocytes, synovial lining cells, no malignant cells), interpretation line; auto snippet for "crystals were sought under polarised light" and for a culture-correlation comment on a purulent aspirate. `csf_cytology` — specimen (lumbar puncture, ventricular, cisternal, shunt), volume, cytocentrifuge preparation line, cell count, findings (lymphocytes, neutrophils, monocytes / macrophages, no malignant cells, atypical cells, malignant cells), malignant categories (metastatic carcinoma, lymphoma / leukaemic infiltrate, primary CNS tumour) with the cell-block or flow-cytometry correlation sentence, and an explicit **low-volume sampling caveat** when volume is below the adequacy threshold. Neither carries a reporting-system category line (there is no house system in use for either).
-Untouched:  the six built cytology templates.
-Accept:     fixtures for a CPPD-positive knee aspirate, a negative knee aspirate, a CSF negative for malignancy, and a CSF with metastatic carcinoma; intake maps "Joint fluid, right knee" and "CSF, LP" top-1.
-Verify:     tests + browser (light)
-Ship:       with batch
-Spec:       card is the spec
-Carried over from the previous ordering, now ranked by the same case-mix measure.
 
 ### Benign resections — group note (user request 2026-09-24)
 Measure:    diagnosis parts, not the site-based table above: the five-year biopsy file (January 2021 to 14 September 2026, 9,325 cases) and the 2024–2026 LIS export (4,547 cases), counted by `tools/profile-benign-resections.py` into `docs/case-mix/benign-resections-2021-2026.md`. The twelve categories hold **1,144 parts in 1,017 cases (10.9 per cent) in the five-year file and 281 parts in 271 cases (6.0 per cent) in the export, and 975 of the 1,425 parts land on Generic today.** Counts in the cards read five-year / export.
@@ -208,6 +198,8 @@ Spec:       `docs/specs/frozen-section-scenarios.md`
 ## Later
 
 - **CNS algorithmic diagnosis — trial** (moved to Later by the user 2026-09-24; the trial stays as built in `lab/cns-algorithm/`, last changed 2026-09-19, and comes back as a card when pulled). Merge the guided intake and the CNS pathway into one surface where the flowchart is the screen and each node is answered in place. Trial only: it lives in `lab/cns-algorithm/`, imports `src/cnswizard.js`, `src/cnspathway.js` and `generators/cns_layers.js` unchanged so it cannot drift, and is not wired into `index.html` until the design is settled. Scope: adult diffuse glioma, meningioma and posterior fossa ependymoma, i.e. the three branches the pathway module already carries. Grounding in `analysis/cns-algorithm-research.md`: no openly licensed interactive tool of this kind exists, and every published figure predates cIMPACT-NOW updates 11 and 12, so the node text is re-implemented from the criteria rather than copied from any figure.
+
+- **Joint fluid and CSF cytology** (moved to Later by the user 2026-09-25; the card is kept word for word in `docs/specs/joint-fluid-csf-cytology.md` and comes back as a card when pulled). Two cytology templates on the shared `generators/cytology.js`: joint fluid with crystal examination under polarised light, and CSF with a low-volume caveat. 84 cases, 1.8 per cent of the 2024–2026 export (joint fluid 44, CSF 40). Until then, "Joint fluid, right knee" lands on the effusion form and "CSF, LP" on Generic.
 
 - Soft tissue reach (found 2026-09-24): 235 of the 523 soft tissue parts in the benign case mix still reach Generic (222 after benign batch 2 moved 13 tissue-mass heads to the endometrial form). Of these, 114 name soft tissue with no procedure word and 65 are biopsies, although `soft_tissue_benign` offers Biopsy.
 
