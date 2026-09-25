@@ -4,7 +4,7 @@ Schema-driven pathology sign-out app. Small biopsies (gastric, colonic polyp, th
 
 Built and hosted inside Perplexity: developed in the workspace, previewed in-thread, published to a private `pplx.app` URL. The browser talks to Google Drive directly via Google sign-in; there is no server and no GitHub.
 
-Design: `docs/design.md`. Roadmap: `docs/roadmap.md` (Done / Now / Next / Later / Parked; format in `docs/roadmap-template.md`, build briefs in `docs/specs/`, original phased plan in `docs/roadmap-history.md`).
+Design: `docs/design.md`. Roadmap: `docs/roadmap.md` (Done / Now / Next / Later / Parked; format in `docs/roadmap-template.md`, build briefs in `docs/specs/`, original phased plan in `docs/roadmap-history.md`, full Done write-ups to 2026-09-25 in `docs/done-log.md`).
 
 ## Status: Phase 2 code complete (publish + Google OAuth client pending)
 
