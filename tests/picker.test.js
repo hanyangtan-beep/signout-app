@@ -46,7 +46,8 @@ test('lazy registry resolves every manifest entry and matches loadAll', async ()
 
 test('small-biopsy row lists exactly the kind: biopsy templates in frequency order', () => {
   const row = biopsyRow(manifest).map(labelOf);
-  assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix', 'Endometrium', 'Lung', 'NPC', 'Brain']);
+  // Oral cavity (Phase 42) sits after NPC and before Brain on the 2021-2026 biopsy case mix.
+  assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix', 'Endometrium', 'Lung', 'NPC', 'Oral cavity', 'Brain']);
   assert.ok(!row.includes('LEEP') && !row.includes('Frozen'));
   assert.deepEqual(pushRecent(['a', 'b'], 'b'), ['b', 'a']);
   assert.deepEqual(togglePin(togglePin([], 'x'), 'x'), []);
@@ -96,8 +97,8 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   assert.ok(bottom.find((g) => g.system === 'Endocrine').items.some((t) => t.id === 'thyroid_benign'));
   // every QMH cancer page is either built or planned: entries carry the QMH page stem.
   // The floor drops by one each time a QMH-stemmed placeholder ships (ampulla_carcinoma, Phase 22;
-  // skin_scc, Phase 39).
-  assert.ok(planned.filter((t) => t.qmh).length >= 48);
+  // skin_scc, Phase 39; oropharynx_hpv_carcinoma into oral_carcinoma, Phase 42).
+  assert.ok(planned.filter((t) => t.qmh).length >= 47);
   // Biomarkers holds one built template (the standalone HER2 ISH report, Phase 30) and placeholders.
   const biomarkers = top.find((g) => g.system === 'Biomarkers').items;
   assert.ok(biomarkers.every((t) => t.kind === 'biomarker'));
@@ -168,7 +169,7 @@ test('grouped browse and the part selector put Small biopsy first, systems in ca
   assert.deepEqual(gyn.items.slice(2).map(labelOf), ['LEEP', 'Placenta', 'Uterus', 'Ovarian cyst', 'Ectopic', 'Endometrial Ca', 'Ovary / tube / peritoneum Ca'], 'rank order within a kind');
   const sel = selectorGroups(manifest);
   assert.equal(sel[0].label, 'Small biopsy');
-  assert.equal(sel[0].items.length, 12);
+  assert.equal(sel[0].items.length, 13); // oral_biopsy joins in Phase 42
   // The CNS biopsy sits in the Small biopsy group; the CNS system group holds the resection.
   assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Biomarkers', 'Cytology', 'General']);
 });

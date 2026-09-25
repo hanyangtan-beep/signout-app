@@ -56,6 +56,9 @@ export function positiveNodes(v) {
 export const countPhrase = (v) => `(${positiveNodes(v)}/${totalNodes(v)})`;
 
 const procedureWord = (v) => (v.procedure || 'Excision').toLowerCase();
+// A site copied from the request can name the procedure already ("left neck dissection, levels I-IV");
+// the word is then not said twice.
+const procedureAfter = (v, site) => { const w = procedureWord(v); return new RegExp(`\\b${w}\\b`, 'i').test(site || '') ? '' : w; };
 const nodeNoun = (v, upper = false) => {
   const s = totalNodes(v) === 1 ? 'lymph node' : 'lymph nodes';
   return upper ? s.toUpperCase() : s;
@@ -65,7 +68,7 @@ const nodeNoun = (v, upper = false) => {
 export function specimenName(part) {
   const v = part.values;
   const site = lcSite(v.specimenName);
-  return [uc1(nodeNoun(v)), site, procedureWord(v)].filter(Boolean).join(', ');
+  return [uc1(nodeNoun(v)), site, procedureAfter(v, site)].filter(Boolean).join(', ');
 }
 
 // ---------- macroscopic description ----------
@@ -216,7 +219,7 @@ export function microscopy(part) {
 function organPhrase(part) {
   const v = part.values;
   const site = lcSite(v.specimenName);
-  return [nodeNoun(v, true), site, procedureWord(v)].filter(Boolean).join(', ');
+  return [nodeNoun(v, true), site, procedureAfter(v, site)].filter(Boolean).join(', ');
 }
 
 export function diagnosis(part) {

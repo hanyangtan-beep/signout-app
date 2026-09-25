@@ -213,7 +213,7 @@ const COVER = {
   'Bone / joint': ['bone_tumour', 'bone_joint'],
   'Lymph node (histology)': ['lymph_node', 'lymphoma_node'],
   'Thyroid / parathyroid': ['thyroid_benign', 'parathyroid', 'thyroid_carcinoma'],
-  'Oral cavity / oropharynx': ['oral_cavity_carcinoma', 'oropharynx_hpv_carcinoma'],
+  'Oral cavity / oropharynx': ['oral_biopsy', 'oral_carcinoma'],
   'Nasopharynx / sinonasal': ['nasopharyngeal_biopsy', 'nasal_polyps', 'nasopharyngeal_carcinoma', 'sinonasal_carcinoma'],
   'Larynx / pharynx': ['larynx_carcinoma', 'hypopharynx_oropharynx_carcinoma'],
   'Salivary gland': ['salivary_benign', 'salivary_carcinoma'],

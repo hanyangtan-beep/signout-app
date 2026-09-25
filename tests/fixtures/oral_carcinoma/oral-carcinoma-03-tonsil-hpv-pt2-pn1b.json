@@ -1,0 +1,32 @@
+{
+  "templateId": "oral_carcinoma",
+  "patch": {
+    "specimenName": "left tonsil",
+    "procedure": [
+      "Transoral resection",
+      "Neck dissection"
+    ],
+    "tumourSite": "Palatine tonsil",
+    "laterality": "Left",
+    "specimenDims": "40 x 30 x 20",
+    "lesionDims": "28 x 20 x 12",
+    "orientation": "",
+    "tumourSizeMm": "28",
+    "doiMm": "",
+    "histType": "Squamous cell carcinoma, non-keratinising, HPV-associated",
+    "grade": "",
+    "p16": "Positive",
+    "hgdMargin": "",
+    "hpvPcr": "Positive",
+    "hpvPcrDetail": "HPV 16",
+    "nodesExamined": "32",
+    "nodesInvolved": "2",
+    "nodeLaterality": "Ipsilateral (including midline)",
+    "ene": "Not identified",
+    "largestDepositMm": "25",
+    "largestDepositSite": "level IIA"
+  },
+  "options": {},
+  "report": "Oropharynx, left tonsil, transoral resection and neck dissection\n\nReceived in formalin is a transoral resection specimen measuring 40 x 30 x 20 mm. There is an ulcerated tumour in the left tonsil measuring 28 x 20 x 12 mm, 6 mm from the closest (deep) margin. The margins are inked. Representative sections are taken in 8 blocks.\n\nSpecimen and tumour\n- Procedure: Transoral resection and neck dissection\n- Tumour site: Palatine tonsil, left\n- Tumour size: 28 mm (greatest dimension)\n\nMicroscopic findings\n- Histologic type: Squamous cell carcinoma, non-keratinising, HPV-associated\n- Tumour histology:\n  The tumour is an HPV-associated non-keratinising squamous cell carcinoma. Sheets and nests of cells with a high nuclear to cytoplasmic ratio, oval to spindled hyperchromatic nuclei and indistinct cell borders show little or no keratinisation.\n- Tumour extent: No extension beyond the primary site\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n- HPV status by p16 immunohistochemistry: Positive\n- HPV PCR: Positive (HPV 16)\n\nMargins\n- Invasive tumour: All margins negative\n  - Closest margin: 6 mm (deep)\n\nLymph nodes\n- Regional lymph nodes: 32 examined; 2 involved\n  - Extranodal extension: Not identified\n  - Size of largest metastatic deposit: 25 mm, level IIA\n  - Laterality: Ipsilateral (including midline)\n\nPathological stage (AJCC 9th edition)\n- pTNM: pT2 pN1b\n\nAdditional findings\n- None identified\n\nOROPHARYNX, left tonsil, transoral resection and neck dissection\n- SQUAMOUS CELL CARCINOMA, NON-KERATINISING, HPV-ASSOCIATED, 28 mm; p16 and HPV\n  PCR positive; completely excised (closest margin 6 mm, deep); see synoptic\n  report\n- 2 of 32 regional lymph nodes involved\n- pT2 pN1b (AJCC 9th edition)",
+  "checks": []
+}

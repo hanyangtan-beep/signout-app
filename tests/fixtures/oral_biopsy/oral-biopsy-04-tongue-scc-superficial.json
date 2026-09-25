@@ -1,0 +1,14 @@
+{
+  "templateId": "oral_biopsy",
+  "patch": {
+    "finding": "Invasive squamous cell carcinoma",
+    "sccGrade": "Well differentiated",
+    "invasion": [
+      "Perineural invasion"
+    ],
+    "superficial": true
+  },
+  "options": {},
+  "report": "Oral cavity, left lateral tongue, biopsy\n\nSections show a well-differentiated invasive squamous cell carcinoma, composed of infiltrating nests and cords of atypical squamous cells with abundant keratinisation, keratin pearls and intercellular bridges, and mild nuclear pleomorphism, within a desmoplastic stroma. Perineural invasion is present. The biopsy is superficial and the depth of invasion cannot be assessed.\n\nORAL CAVITY, left lateral tongue, biopsy - WELL-DIFFERENTIATED SQUAMOUS CELL CARCINOMA",
+  "checks": []
+}

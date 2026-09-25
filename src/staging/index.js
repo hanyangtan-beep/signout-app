@@ -24,8 +24,9 @@ import * as gallbladder from './gallbladder.js';
 import * as pancreas from './pancreas.js';
 import * as ampulla from './ampulla.js';
 import * as skin_scc from './skin_scc.js';
+import * as oral from './oral.js';
 
-export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes, gastric, oesophagus, appendix, gallbladder, pancreas, ampulla, skin_scc };
+export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes, gastric, oesophagus, appendix, gallbladder, pancreas, ampulla, skin_scc, oral };
 
 // T, N and M alternatives are listed longest first (ovary: T1c1-3, T2a/b, T3a-c, N0(i+); lung: T1mi,
 // N2a/b, M1c1/c2; head and neck skin: N2c; breast: Tis(DCIS), Tis(Paget), T4c/d, N0(mol+), N1mi, N3a-c and the optional (sn) / (f) node suffix); the negative look-aheads stand in for \b so "N0(i+)" and "T1c1 " both terminate cleanly.
@@ -41,7 +42,7 @@ export function parseCategory(text, axis) {
 // Ordinal rank of a category within its axis so a prior-specimen category can be compared with the
 // current one (higher wins for the combined stage).
 const RANK = (cat) => {
-  const order = ['Tis', 'Tis(DCIS)', 'Tis(Paget)', 'T1mi', 'T1a', 'T1b', 'T1c', 'T1c1', 'T1c2', 'T1c3', 'T1', 'T2a', 'T2b', 'T2', 'T3a', 'T3a1', 'T3a2', 'T3b', 'T3c', 'T3', 'T4a', 'T4b', 'T4c', 'T4d', 'T4', 'N0', 'N0(i+)', 'N0(mol+)', 'N1mi', 'N1a', 'N1b', 'N1c', 'N1', 'N2a', 'N2b', 'N2c', 'N2', 'N3a', 'N3b', 'N3c', 'N3'];
+  const order = ['T0', 'Tis', 'Tis(DCIS)', 'Tis(Paget)', 'T1mi', 'T1a', 'T1b', 'T1c', 'T1c1', 'T1c2', 'T1c3', 'T1', 'T2a', 'T2b', 'T2', 'T3a', 'T3a1', 'T3a2', 'T3b', 'T3c', 'T3', 'T4a', 'T4b', 'T4c', 'T4d', 'T4', 'N0', 'N0(i+)', 'N0(mol+)', 'N1mi', 'N1a', 'N1b', 'N1c', 'N1', 'N2a', 'N2b', 'N2c', 'N2', 'N3a', 'N3b', 'N3c', 'N3'];
   const i = order.indexOf(String(cat || '').replace(/\((sn|f)\)$/i, ''));
   return i < 0 ? -1 : i;
 };

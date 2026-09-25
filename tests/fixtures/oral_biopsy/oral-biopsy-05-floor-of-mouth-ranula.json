@@ -1,0 +1,13 @@
+{
+  "templateId": "oral_biopsy",
+  "patch": {
+    "organ": "FLOOR OF MOUTH",
+    "site": "",
+    "side": "Left",
+    "procedure": "Excision",
+    "finding": "Ranula"
+  },
+  "options": {},
+  "report": "Floor of mouth, left, excision\n\nSections show a mucin-filled pseudocyst walled by granulation tissue and fibrous tissue with muciphages, without an epithelial lining. There is no evidence of malignancy.\n\nFLOOR OF MOUTH, left, excision - RANULA",
+  "checks": []
+}

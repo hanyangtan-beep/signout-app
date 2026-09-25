@@ -1,0 +1,14 @@
+{
+  "templateId": "oral_biopsy",
+  "patch": {
+    "organ": "BUCCAL MUCOSA",
+    "site": "",
+    "side": "Right",
+    "dysplasiaSystem": "Three-tier (mild / moderate / severe)",
+    "dysplasiaGrade": "",
+    "dysplasiaGrade3": "Moderate"
+  },
+  "options": {},
+  "report": "Buccal mucosa, right, biopsy\n\nSections show squamous mucosa with moderate epithelial dysplasia. Architectural and cytological atypia extends into the middle third of the epithelium. There is no evidence of invasive carcinoma.\n\nBUCCAL MUCOSA, right, biopsy - MODERATE DYSPLASIA",
+  "checks": []
+}

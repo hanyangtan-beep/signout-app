@@ -143,6 +143,11 @@ const BIOPSY_CTX = /\b(biops(y|ies)|bx|punch|cores?|curett\w*|pipelle|polypectom
 const CANCER_CTX = /\b(ca|carcinoma|cancer|malignan\w*|adenocarcinoma|tumou?r|gist|lymphoma|sarcoma|metasta\w*|mets?)\b/i;
 const NODE_STRONG = /\b(ln|slnb?|sentinel)\b/i;
 const NODE = /\b(lymph\s*nodes?|nodes?)\b/i;
+// A neck dissection is a nodal specimen, but "neck" is a skin site word, so "Left neck dissection,
+// levels I-IV" named no node and went to the skin forms (to skin SCC when the history named SCC).
+// It is a node part when nothing else on the line names a site: "hemiglossectomy and neck
+// dissection" in one part still scores as the primary.
+const NECK_DISSECTION = /\bneck\s+dissections?\b/gi;
 const CYTO = /\b(fna|aspirate|smear|cytology|tbna|washing|fluid)\b/i;
 const MARGIN = /\bmargin\b/i;
 const CANCER_KINDS = ['cancer resection'];
@@ -231,8 +236,10 @@ function roleOf(part, ctx, manifest) {
   if (ids.has('lymph_node') && !CYTO.test(text)) {
     const strong = NODE_STRONG.test(text);
     const startsWithNode = /^\s*(lymph\s*nodes?|nodes?)\b/i.test(text);
-    const otherSite = manifest.some((t) => !['lymph_node', 'lymph_node_fna', GENERIC_ID].includes(t.id) && t.match && !excluded(t.match, text) && siteHitsFor(t.match, text) > 0);
-    if (strong || (NODE.test(text) && (startsWithNode || !otherSite))) return { role: 'lymph_node', templateId: 'lymph_node' };
+    const siteElsewhere = (s) => manifest.some((t) => !['lymph_node', 'lymph_node_fna', GENERIC_ID].includes(t.id) && t.match && !excluded(t.match, text) && siteHitsFor(t.match, s) > 0);
+    const otherSite = siteElsewhere(text);
+    const neck = text.search(NECK_DISSECTION) >= 0 && !siteElsewhere(text.replace(NECK_DISSECTION, ' '));
+    if (strong || neck || (NODE.test(text) && (startsWithNode || !otherSite))) return { role: 'lymph_node', templateId: 'lymph_node' };
   }
   if (ids.has('breast_excision') && MARGIN.test(text) && !/\bbreast\b/i.test(text)) {
     const breastCase = /\bbreast\b/i.test(ctx.casePrefix || '') || /\bbreast\b/i.test(ctx.history || '') || (ctx.parts || []).some((p) => /\bbreast\b/i.test(p.raw || p.text));

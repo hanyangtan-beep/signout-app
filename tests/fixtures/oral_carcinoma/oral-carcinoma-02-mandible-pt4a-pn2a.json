@@ -1,0 +1,38 @@
+{
+  "templateId": "oral_carcinoma",
+  "patch": {
+    "specimenName": "right mandible",
+    "procedure": [
+      "Segmental mandibulectomy",
+      "Neck dissection"
+    ],
+    "tumourSite": "Lower alveolus and gingiva",
+    "laterality": "Right",
+    "specimenDims": "80 x 45 x 35",
+    "lesionDims": "35 x 25 x 12",
+    "tumourSizeMm": "35",
+    "macroMarginMm": "8",
+    "macroMarginSite": "posterior soft tissue",
+    "orientation": "suture at the anterior bone cut",
+    "decalcified": true,
+    "blocks": "16",
+    "doiMm": "12",
+    "boneInvasion": "Present",
+    "bonePattern": "Infiltrative",
+    "boneLevel": "Medullary (through the cortex)",
+    "pni": "Present, extratumoural",
+    "closestMm": "8",
+    "closestSite": "posterior soft tissue",
+    "nodesExamined": "28",
+    "nodesInvolved": "1",
+    "nodeLaterality": "Ipsilateral (including midline)",
+    "ene": "Present, major (more than 2 mm from the capsule)",
+    "eneMm": "3",
+    "largestDepositMm": "22",
+    "largestDepositSite": "level IB",
+    "nodeLevels": "level IB 1/4, level IIA 0/6, level III 0/9, level IV 0/9"
+  },
+  "options": {},
+  "report": "Oral cavity, right mandible, segmental mandibulectomy and neck dissection\n\nReceived in formalin is a segmental mandibulectomy specimen measuring 80 x 45 x 35 mm. The specimen is orientated: suture at the anterior bone cut. There is an ulcerated tumour in the right mandible measuring 35 x 25 x 12 mm, 8 mm from the closest (posterior soft tissue) margin. The margins are inked. The bone is decalcified. Representative sections are taken in 16 blocks.\n\nSpecimen and tumour\n- Procedure: Segmental mandibulectomy and neck dissection\n- Tumour site: Lower alveolus and gingiva, right\n- Tumour size: 35 mm (greatest dimension)\n\nMicroscopic findings\n- Histologic type: Squamous cell carcinoma, conventional (keratinising)\n- Histologic grade: G2, moderately differentiated\n- Tumour histology:\n  The tumour is a moderately differentiated keratinising squamous cell carcinoma, invading to a depth of 12 mm. Infiltrating nests and cords of atypical squamous cells show intercellular bridges and focal keratinisation, with moderate nuclear pleomorphism, in a desmoplastic stroma.\n- Depth of invasion: 12 mm\n- Tumour extent: No other adjacent structure involved\n- Bone invasion: Present\n  - Pattern: Infiltrative\n  - Level: Medullary (through the cortex)\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Present, extratumoural\n\nMargins\n- Invasive tumour: All margins negative\n  - Closest margin: 8 mm (posterior soft tissue)\n- High grade dysplasia / carcinoma in situ: Margins uninvolved\n\nLymph nodes\n- Regional lymph nodes: 28 examined; 1 involved\n  - Extranodal extension: Present, major (more than 2 mm from the capsule); 3 mm\n  - Size of largest metastatic deposit: 22 mm, level IB\n  - Laterality: Ipsilateral (including midline)\n  - By level: level IB 1/4, level IIA 0/6, level III 0/9, level IV 0/9\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT4a pN2a\n\nAdditional findings\n- None identified\n\nORAL CAVITY, right mandible, segmental mandibulectomy and neck dissection\n- SQUAMOUS CELL CARCINOMA, moderately differentiated, 35 mm, invading to a depth\n  of 12 mm; medullary bone invasion; perineural invasion present\n  (extratumoural); completely excised (closest margin 8 mm, posterior soft\n  tissue); see synoptic report\n- 1 of 28 regional lymph nodes involved; extranodal extension present (major)\n- pT4a pN2a (AJCC 8th edition)",
+  "checks": []
+}

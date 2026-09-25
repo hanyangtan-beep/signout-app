@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 68,
+  "count": 70,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -764,6 +764,216 @@
       "generator": "nasopharyngeal",
       "generatorPath": "generators/nasopharyngeal.js",
       "schemaPath": "schemas/nasopharyngeal_biopsy.json"
+    },
+    {
+      "id": "oral_biopsy",
+      "name": "Oral and oropharyngeal biopsy",
+      "shortName": "Oral cavity · biopsy / excision",
+      "label": "Oral cavity",
+      "organ": "ORAL CAVITY",
+      "system": "Head and neck",
+      "kind": "biopsy",
+      "rank": 12,
+      "aliases": [
+        "oral",
+        "mouth",
+        "tongue",
+        "buccal mucosa",
+        "gingiva",
+        "palate",
+        "floor of mouth",
+        "oropharynx",
+        "leukoplakia",
+        "oral dysplasia",
+        "mucocele",
+        "ranula"
+      ],
+      "match": {
+        "site": [
+          "oral",
+          "oral cavity",
+          "mouth",
+          "tongue",
+          "buccal",
+          "buccal mucosa",
+          "gingiva",
+          "gingival",
+          "gum",
+          "alveolus",
+          "alveolar ridge",
+          "floor of mouth",
+          "palate",
+          "hard palate",
+          "soft palate",
+          "palatal",
+          "uvula",
+          "retromolar",
+          "oropharynx",
+          "oropharyngeal",
+          "base of tongue",
+          "tongue base",
+          "vallecula",
+          "lip mucosa",
+          "labial mucosa",
+          "mucocele",
+          "ranula"
+        ],
+        "alone": {
+          "site": [
+            "tonsil",
+            "tonsillar"
+          ],
+          "unless": "^(?![\\s\\S]*\\b(?:biops|punch|incision))"
+        },
+        "procedure": [
+          "biopsy",
+          "biopsies",
+          "incisional biopsy",
+          "punch",
+          "punch biopsy",
+          "incision",
+          "excisional biopsy",
+          "excision"
+        ],
+        "clinical": [
+          "leukoplakia",
+          "leucoplakia",
+          "erythroplakia",
+          "ulcer",
+          "lichen planus",
+          "white patch",
+          "mucocele",
+          "ranula",
+          "polyp",
+          "papilloma"
+        ],
+        "not": [
+          "wide",
+          "glossectomy",
+          "hemiglossectomy",
+          "mandibulectomy",
+          "maxillectomy",
+          "neck dissection"
+        ],
+        "exclude": [
+          "nasopharynx",
+          "nasopharyngeal",
+          "larynx",
+          "laryngeal",
+          "parotid",
+          "submandibular gland",
+          "sinus",
+          "nasal",
+          "appendix",
+          "appendiceal",
+          "skin"
+        ],
+        "bias": 3,
+        "sideFromText": true,
+        "fill": [
+          {
+            "field": "organ",
+            "from": "map",
+            "map": [
+              [
+                "\\bbase\\s+of\\s+(?:the\\s+)?tongue|\\btongue\\s+base",
+                "BASE OF TONGUE"
+              ],
+              [
+                "\\btonsil",
+                "TONSIL"
+              ],
+              [
+                "\\boropharyn",
+                "OROPHARYNX"
+              ],
+              [
+                "\\btongue",
+                "TONGUE"
+              ],
+              [
+                "\\bbuccal",
+                "BUCCAL MUCOSA"
+              ],
+              [
+                "\\bfloor\\s+of\\s+(?:the\\s+)?mouth|\\branula",
+                "FLOOR OF MOUTH"
+              ],
+              [
+                "\\bgingiv|\\bgums?\\b|\\balveol",
+                "GINGIVA"
+              ],
+              [
+                "\\bpalat|\\buvula",
+                "PALATE"
+              ],
+              [
+                "\\blip\\b|\\blabial",
+                "LIP"
+              ]
+            ]
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bpunch\\s+biops",
+                "Punch biopsy"
+              ],
+              [
+                "\\bpunch",
+                "Punch"
+              ],
+              [
+                "\\bincisional\\s+biops",
+                "Incisional biopsy"
+              ],
+              [
+                "\\bexcisional\\s+biops",
+                "Excisional biopsy"
+              ],
+              [
+                "\\bincision",
+                "Incision"
+              ],
+              [
+                "\\bexcis",
+                "Excision"
+              ],
+              [
+                "\\bbiops",
+                "Biopsy"
+              ]
+            ]
+          },
+          {
+            "field": "finding",
+            "from": "map",
+            "map": [
+              [
+                "\\bmucocele",
+                "Mucocele"
+              ],
+              [
+                "\\branula",
+                "Ranula"
+              ]
+            ]
+          },
+          {
+            "field": "site",
+            "from": "detail",
+            "fallback": "text",
+            "strip": "\\b(?:incisional\\s+biopsy|excisional\\s+biopsy|punch\\s+biopsy|biopsy|biopsies|punch|incision|excision|excised|specimen|oral\\s+cavity|mucocele|ranula|leu[ck]oplakia|erythroplakia|erythroleukoplakia|fibroepithelial\\s+polyp|squamous\\s+papilloma|fibroma|papilloma|polyp|pyogenic\\s+granuloma|granuloma|granular\\s+cell\\s+tumou?r|(?:fibrous\\s+)?epulis|mucous\\s+(?:retention|extravasation)\\s+cyst|cyst|ulcers?|ulceration|lesion|mass|swelling|growth|nodule|lump|white\\s+patch|red\\s+patch|lichen\\s+planus)\\b",
+            "unless": "^(?:left|right|midline|tissue|lesion|mouth|oral)$"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "oral_biopsy",
+      "generatorPath": "generators/oral_biopsy.js",
+      "schemaPath": "schemas/oral_biopsy.json"
     },
     {
       "id": "frozen_section",
@@ -4153,6 +4363,193 @@
       "generator": "haemorrhoid",
       "generatorPath": "generators/haemorrhoid.js",
       "schemaPath": "schemas/haemorrhoid.json"
+    },
+    {
+      "id": "oral_carcinoma",
+      "name": "Oral cavity and oropharynx carcinoma resection",
+      "shortName": "Oral cavity · carcinoma resection",
+      "label": "Oral cavity Ca",
+      "organ": "ORAL CAVITY",
+      "system": "Head and neck",
+      "kind": "cancer resection",
+      "rank": 51,
+      "aliases": [
+        "oral SCC",
+        "oral cavity carcinoma",
+        "tongue cancer",
+        "glossectomy",
+        "mandibulectomy",
+        "oropharyngeal carcinoma",
+        "tonsil carcinoma",
+        "HPV-associated oropharyngeal carcinoma",
+        "base of tongue carcinoma"
+      ],
+      "match": {
+        "site": [
+          "tongue",
+          "floor of mouth",
+          "buccal",
+          "buccal mucosa",
+          "gingiva",
+          "gingival",
+          "alveolus",
+          "alveolar ridge",
+          "retromolar",
+          "retromolar trigone",
+          "palate",
+          "hard palate",
+          "soft palate",
+          "oral cavity",
+          "oropharynx",
+          "oropharyngeal",
+          "base of tongue",
+          "tongue base",
+          "vallecula",
+          "lip mucosa",
+          "labial mucosa",
+          "glossectomy",
+          "hemiglossectomy",
+          "mandibulectomy",
+          "maxillectomy"
+        ],
+        "alone": {
+          "site": [
+            "tonsil",
+            "mandible",
+            "maxilla"
+          ],
+          "unless": "^(?![\\s\\S]*\\b(?:c?SCC|ca\\b|carcinoma|cancer|malignan\\w*|tumou?r|TORS|transoral|tonsillectomy))"
+        },
+        "procedure": [
+          "glossectomy",
+          "hemiglossectomy",
+          "partial glossectomy",
+          "mandibulectomy",
+          "marginal mandibulectomy",
+          "segmental mandibulectomy",
+          "maxillectomy",
+          "partial maxillectomy",
+          "palatectomy",
+          "composite resection",
+          "commando",
+          "wide local excision",
+          "wide excision",
+          "resection",
+          "TORS",
+          "transoral"
+        ],
+        "clinical": [
+          "SCC",
+          "squamous cell carcinoma",
+          "carcinoma",
+          "ca",
+          "cancer",
+          "malignancy"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:sinus|sinonasal|nasal\\s+cavity)\\b)(?:[\\s\\S]*\\b(?:c?SCC|ca|carcinoma|cancer)\\b|(?![\\s\\S]*\\b(?:ameloblastoma|keratocysts?|odontogenic|cysts?|osteoradionecrosis|ORN|osteonecrosis|MRONJ|BRONJ|fibrous\\s+dysplasia|ossifying\\s+fibroma|osteomyelitis|pleomorphic\\s+adenoma)\\b)[\\s\\S]*\\b(?:glossectomy|hemiglossectomy|mandibulectomy|maxillectomy|composite|commando|TORS|transoral|wide)\\b)",
+        "not": [
+          "cyst",
+          "keratocyst",
+          "ameloblastoma",
+          "odontogenic",
+          "periapical",
+          "epulis",
+          "mucocele",
+          "ranula",
+          "papilloma",
+          "fibroma",
+          "leukoplakia"
+        ],
+        "exclude": [
+          "sinus",
+          "nasal",
+          "nasopharynx",
+          "nasopharyngeal",
+          "larynx",
+          "laryngeal",
+          "hypopharynx",
+          "hypopharyngeal",
+          "parotid",
+          "salivary",
+          "submandibular gland"
+        ],
+        "bias": 1,
+        "sideFromText": true,
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "text",
+            "strip": "\\b(?:ulcers?|ulceration|lesion|mass|partial\\s+glossectomy|hemi-?glossectomy|subtotal\\s+glossectomy|total\\s+glossectomy|glossectomy|marginal\\s+mandibulectomy|segmental\\s+mandibulectomy|rim\\s+mandibulectomy|mandibulectomy|partial\\s+maxillectomy|maxillectomy|palatectomy|composite\\s+resection|commando(?:\\s+procedure)?|wide\\s+local\\s+excision|wide\\s+excision|transoral\\s+(?:robotic\\s+)?resection|TORS|tonsillectomy|resection|excision|specimen|oral\\s+cavity|oropharynx|c?SCC|squamous\\s+cell\\s+carcinoma|carcinoma|cancer|tumou?r)\\b",
+            "unless": "^(?:left|right|midline|bilateral)$"
+          },
+          {
+            "field": "tumourSite",
+            "from": "map",
+            "map": [
+              [
+                "\\bbase\\s+of\\s+(?:the\\s+)?tongue|\\btongue\\s+base",
+                "Base of tongue"
+              ],
+              [
+                "\\bvallecul",
+                "Vallecula"
+              ],
+              [
+                "\\btonsil",
+                "Palatine tonsil"
+              ],
+              [
+                "\\bsoft\\s+palate|\\buvula",
+                "Soft palate and uvula"
+              ],
+              [
+                "\\boropharyngeal\\s+wall|\\bposterior\\s+pharyngeal\\s+wall",
+                "Oropharyngeal wall"
+              ],
+              [
+                "\\bhard\\s+palate",
+                "Hard palate"
+              ],
+              [
+                "\\bfloor\\s+of\\s+(?:the\\s+)?mouth",
+                "Floor of mouth"
+              ],
+              [
+                "\\bretromolar",
+                "Retromolar trigone"
+              ],
+              [
+                "\\bbuccal",
+                "Buccal mucosa"
+              ],
+              [
+                "\\b(?:lower|mandibular)\\s+(?:alveol|gingiv|gum)|\\bmandibulectomy",
+                "Lower alveolus and gingiva"
+              ],
+              [
+                "\\b(?:upper|maxillary)\\s+(?:alveol|gingiv|gum)|\\bmaxillectomy",
+                "Upper alveolus and gingiva"
+              ],
+              [
+                "\\bglossectomy|\\btongue",
+                "Tongue (anterior two thirds)"
+              ],
+              [
+                "\\blip\\s+mucosa|\\blabial\\s+mucosa",
+                "Lip mucosa"
+              ]
+            ]
+          },
+          {
+            "field": "procedure",
+            "from": "options"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "oral_carcinoma",
+      "generatorPath": "generators/oral_carcinoma.js",
+      "schemaPath": "schemas/oral_carcinoma.json"
     },
     {
       "id": "ear_cholesteatoma",

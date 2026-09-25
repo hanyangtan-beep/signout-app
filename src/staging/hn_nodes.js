@@ -1,6 +1,6 @@
 // Pathological N with extranodal extension for the AJCC 8th edition head and neck chapters that
-// share it: cutaneous squamous cell carcinoma of the head and neck (chapter 15) now, and the lip
-// and oral cavity chapter when Oral cavity (b) is built. Built once so the two cannot drift.
+// share it: cutaneous squamous cell carcinoma of the head and neck (chapter 15, src/staging/skin_scc.js)
+// and the lip and oral cavity chapter (src/staging/oral.js). Built once so the two cannot drift.
 //
 // AJCC 8th pN, as listed on the QMH "HN-Skin SCC" page (CAP Cutaneous Carcinoma of the Head and
 // Neck v1.2.0.0) and the RCPath cutaneous SCC dataset (v4, February 2019):

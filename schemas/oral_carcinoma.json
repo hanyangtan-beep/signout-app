@@ -1,0 +1,1769 @@
+{
+  "id": "oral_carcinoma",
+  "version": "2026.09",
+  "name": "Oral cavity and oropharynx carcinoma resection",
+  "shortName": "Oral cavity · carcinoma resection",
+  "label": "Oral cavity Ca",
+  "organ": "ORAL CAVITY",
+  "system": "Head and neck",
+  "kind": "cancer resection",
+  "rank": 51,
+  "layout": {
+    "pack": true,
+    "macroGroups": [
+      "Specimen and tumour",
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
+  "aliases": [
+    "oral SCC",
+    "oral cavity carcinoma",
+    "tongue cancer",
+    "glossectomy",
+    "mandibulectomy",
+    "oropharyngeal carcinoma",
+    "tonsil carcinoma",
+    "HPV-associated oropharyngeal carcinoma",
+    "base of tongue carcinoma"
+  ],
+  "match": {
+    "site": [
+      "tongue",
+      "floor of mouth",
+      "buccal",
+      "buccal mucosa",
+      "gingiva",
+      "gingival",
+      "alveolus",
+      "alveolar ridge",
+      "retromolar",
+      "retromolar trigone",
+      "palate",
+      "hard palate",
+      "soft palate",
+      "oral cavity",
+      "oropharynx",
+      "oropharyngeal",
+      "base of tongue",
+      "tongue base",
+      "vallecula",
+      "lip mucosa",
+      "labial mucosa",
+      "glossectomy",
+      "hemiglossectomy",
+      "mandibulectomy",
+      "maxillectomy"
+    ],
+    "alone": {
+      "site": [
+        "tonsil",
+        "mandible",
+        "maxilla"
+      ],
+      "unless": "^(?![\\s\\S]*\\b(?:c?SCC|ca\\b|carcinoma|cancer|malignan\\w*|tumou?r|TORS|transoral|tonsillectomy))"
+    },
+    "procedure": [
+      "glossectomy",
+      "hemiglossectomy",
+      "partial glossectomy",
+      "mandibulectomy",
+      "marginal mandibulectomy",
+      "segmental mandibulectomy",
+      "maxillectomy",
+      "partial maxillectomy",
+      "palatectomy",
+      "composite resection",
+      "commando",
+      "wide local excision",
+      "wide excision",
+      "resection",
+      "TORS",
+      "transoral"
+    ],
+    "clinical": [
+      "SCC",
+      "squamous cell carcinoma",
+      "carcinoma",
+      "ca",
+      "cancer",
+      "malignancy"
+    ],
+    "gate": "^(?![\\s\\S]*\\b(?:sinus|sinonasal|nasal\\s+cavity)\\b)(?:[\\s\\S]*\\b(?:c?SCC|ca|carcinoma|cancer)\\b|(?![\\s\\S]*\\b(?:ameloblastoma|keratocysts?|odontogenic|cysts?|osteoradionecrosis|ORN|osteonecrosis|MRONJ|BRONJ|fibrous\\s+dysplasia|ossifying\\s+fibroma|osteomyelitis|pleomorphic\\s+adenoma)\\b)[\\s\\S]*\\b(?:glossectomy|hemiglossectomy|mandibulectomy|maxillectomy|composite|commando|TORS|transoral|wide)\\b)",
+    "not": [
+      "cyst",
+      "keratocyst",
+      "ameloblastoma",
+      "odontogenic",
+      "periapical",
+      "epulis",
+      "mucocele",
+      "ranula",
+      "papilloma",
+      "fibroma",
+      "leukoplakia"
+    ],
+    "exclude": [
+      "sinus",
+      "nasal",
+      "nasopharynx",
+      "nasopharyngeal",
+      "larynx",
+      "laryngeal",
+      "hypopharynx",
+      "hypopharyngeal",
+      "parotid",
+      "salivary",
+      "submandibular gland"
+    ],
+    "bias": 1,
+    "sideFromText": true,
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "text",
+        "strip": "\\b(?:ulcers?|ulceration|lesion|mass|partial\\s+glossectomy|hemi-?glossectomy|subtotal\\s+glossectomy|total\\s+glossectomy|glossectomy|marginal\\s+mandibulectomy|segmental\\s+mandibulectomy|rim\\s+mandibulectomy|mandibulectomy|partial\\s+maxillectomy|maxillectomy|palatectomy|composite\\s+resection|commando(?:\\s+procedure)?|wide\\s+local\\s+excision|wide\\s+excision|transoral\\s+(?:robotic\\s+)?resection|TORS|tonsillectomy|resection|excision|specimen|oral\\s+cavity|oropharynx|c?SCC|squamous\\s+cell\\s+carcinoma|carcinoma|cancer|tumou?r)\\b",
+        "unless": "^(?:left|right|midline|bilateral)$"
+      },
+      {
+        "field": "tumourSite",
+        "from": "map",
+        "map": [
+          [
+            "\\bbase\\s+of\\s+(?:the\\s+)?tongue|\\btongue\\s+base",
+            "Base of tongue"
+          ],
+          [
+            "\\bvallecul",
+            "Vallecula"
+          ],
+          [
+            "\\btonsil",
+            "Palatine tonsil"
+          ],
+          [
+            "\\bsoft\\s+palate|\\buvula",
+            "Soft palate and uvula"
+          ],
+          [
+            "\\boropharyngeal\\s+wall|\\bposterior\\s+pharyngeal\\s+wall",
+            "Oropharyngeal wall"
+          ],
+          [
+            "\\bhard\\s+palate",
+            "Hard palate"
+          ],
+          [
+            "\\bfloor\\s+of\\s+(?:the\\s+)?mouth",
+            "Floor of mouth"
+          ],
+          [
+            "\\bretromolar",
+            "Retromolar trigone"
+          ],
+          [
+            "\\bbuccal",
+            "Buccal mucosa"
+          ],
+          [
+            "\\b(?:lower|mandibular)\\s+(?:alveol|gingiv|gum)|\\bmandibulectomy",
+            "Lower alveolus and gingiva"
+          ],
+          [
+            "\\b(?:upper|maxillary)\\s+(?:alveol|gingiv|gum)|\\bmaxillectomy",
+            "Upper alveolus and gingiva"
+          ],
+          [
+            "\\bglossectomy|\\btongue",
+            "Tongue (anterior two thirds)"
+          ],
+          [
+            "\\blip\\s+mucosa|\\blabial\\s+mucosa",
+            "Lip mucosa"
+          ]
+        ]
+      },
+      {
+        "field": "procedure",
+        "from": "options"
+      }
+    ]
+  },
+  "specimenNoun": "specimen",
+  "maxParts": 6,
+  "defaultParts": 1,
+  "generator": "oral_carcinoma",
+  "style": {
+    "british": true
+  },
+  "source": {
+    "template": "QMH Cancer Reporting Template HN-Lip and oral cavity (CAP Oral Cavity protocol v4.3.0.0) and HN-HPV-Oropharynx (CAP HPV-Associated Squamous Cell Carcinoma of the Oropharynx protocol v1.1.0.0); RCPath dataset for carcinomas of the oral cavity",
+    "url": "https://awiloqmh.github.io/CancerReportingTemplate/HN-Lip%20and%20oral%20cavity.html",
+    "urlOropharynx": "https://awiloqmh.github.io/CancerReportingTemplate/HN-HPV-Oropharynx.html",
+    "capProtocol": "https://documents.cap.org/protocols/HN.Oral_4.3.0.0.REL_CAPCP.pdf",
+    "capProtocolOropharynx": "https://www.cap.org/wp-content/uploads/2026/06/HN.HPV-Assoc_Oropharynx.Res_1.1.0.0.REL_CAPCP.pdf?download=true",
+    "dataset": "https://www.rcpath.org/static/c4a9faf7-393a-4ba8-9532f719d8cdff3b/7b0a5709-ce18-4694-8e4c84a4ffd466f2/Dataset-for-histopathology-reporting-of-carcinomas-of-the-oral-cavity.pdf",
+    "grounding": "docs/reference/oral-morphology.md",
+    "staging": "pTNM derived by src/staging/oral.js, with the system chosen by the tumour site and, in the oropharynx, by p16: AJCC 8th edition for the oral cavity and AJCC 9th edition for HPV-associated (p16 positive) oropharyngeal carcinoma. An oropharyngeal carcinoma without a positive p16 is HPV-independent, staged on a protocol not built here, and gets no pTNM."
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "$use": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "$use": "printPTNM",
+      "label": "Print the pTNM block (AJCC 8th oral cavity, AJCC 9th HPV-associated oropharynx)"
+    }
+  ],
+  "partDefaults": [],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Site as written on the request",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "default": "",
+      "placeholder": "left lateral tongue"
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "multiselect",
+      "group": "Specimen and tumour",
+      "default": [],
+      "options": [
+        "Wide local excision",
+        "Partial glossectomy",
+        "Hemiglossectomy",
+        "Subtotal or total glossectomy",
+        "Marginal mandibulectomy",
+        "Segmental mandibulectomy",
+        "Partial maxillectomy",
+        "Palatectomy",
+        "Composite resection",
+        "Transoral resection",
+        "Tonsillectomy",
+        "Neck dissection",
+        "Other (specify)",
+        "Not specified"
+      ],
+      "exclusive": [
+        "Not specified"
+      ]
+    },
+    {
+      "id": "procedureOther",
+      "label": "Procedure (specify)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "default": "",
+      "showIf": {
+        "field": "procedure",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "tumourSite",
+      "label": "Tumour site",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "default": "",
+      "options": [
+        "Tongue (anterior two thirds)",
+        "Floor of mouth",
+        "Buccal mucosa",
+        "Lower alveolus and gingiva",
+        "Upper alveolus and gingiva",
+        "Retromolar trigone",
+        "Hard palate",
+        "Lip mucosa",
+        "Palatine tonsil",
+        "Base of tongue",
+        "Soft palate and uvula",
+        "Oropharyngeal wall",
+        "Vallecula",
+        "Other (specify)",
+        "Not specified"
+      ],
+      "optionGroups": [
+        {
+          "label": "Oral cavity",
+          "options": [
+            "Tongue (anterior two thirds)",
+            "Floor of mouth",
+            "Buccal mucosa",
+            "Lower alveolus and gingiva",
+            "Upper alveolus and gingiva",
+            "Retromolar trigone",
+            "Hard palate",
+            "Lip mucosa"
+          ]
+        },
+        {
+          "label": "Oropharynx",
+          "options": [
+            "Palatine tonsil",
+            "Base of tongue",
+            "Soft palate and uvula",
+            "Oropharyngeal wall",
+            "Vallecula"
+          ]
+        },
+        {
+          "label": "Other",
+          "options": [
+            "Other (specify)",
+            "Not specified"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tumourSiteOther",
+      "label": "Tumour site (specify)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "default": "",
+      "showIf": {
+        "field": "tumourSite",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "siteRegion",
+      "label": "Region for this site (chooses the staging system)",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "default": "",
+      "options": [
+        "Oral cavity",
+        "Oropharynx"
+      ],
+      "showIf": {
+        "field": "tumourSite",
+        "is": [
+          "Other (specify)",
+          "Not specified"
+        ]
+      }
+    },
+    {
+      "id": "laterality",
+      "label": "Tumour laterality",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "default": "",
+      "options": [
+        "Right",
+        "Left",
+        "Midline",
+        "Bilateral",
+        "Not specified"
+      ]
+    },
+    {
+      "id": "tumourSizeMm",
+      "label": "Tumour size, greatest dimension (mm)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "default": ""
+    },
+    {
+      "id": "focality",
+      "label": "Tumour focality",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "default": "Single focus",
+      "options": [
+        "Single focus",
+        "Multiple foci (specify)",
+        "Cannot be determined"
+      ]
+    },
+    {
+      "id": "focalityDetail",
+      "label": "Tumour focality (specify)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "default": "",
+      "showIf": {
+        "field": "focality",
+        "is": "Multiple foci (specify)"
+      }
+    },
+    {
+      "id": "specimenDims",
+      "label": "Specimen dimensions (mm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "default": "",
+      "placeholder": "45 x 30 x 20"
+    },
+    {
+      "id": "lesionAppearance",
+      "label": "Lesion appearance",
+      "type": "select",
+      "group": "Macroscopy",
+      "default": "Ulcerated tumour",
+      "options": [
+        "Ulcerated tumour",
+        "Exophytic tumour",
+        "Endophytic tumour",
+        "Indurated area",
+        "Scar (previous biopsy site)"
+      ]
+    },
+    {
+      "id": "lesionDims",
+      "label": "Lesion size, macroscopic (mm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "default": "",
+      "placeholder": "18 x 12 x 8"
+    },
+    {
+      "id": "macroMarginMm",
+      "label": "Closest macroscopic margin (mm)",
+      "type": "number",
+      "group": "Macroscopy",
+      "default": ""
+    },
+    {
+      "id": "macroMarginSite",
+      "label": "Closest macroscopic margin, location",
+      "type": "text",
+      "group": "Macroscopy",
+      "default": "",
+      "placeholder": "deep"
+    },
+    {
+      "id": "orientation",
+      "label": "Orientation as received",
+      "type": "text",
+      "group": "Macroscopy",
+      "default": "",
+      "placeholder": "long suture lateral, short suture anterior"
+    },
+    {
+      "id": "inking",
+      "label": "Inking",
+      "type": "select",
+      "group": "Macroscopy",
+      "default": "Margins inked (see block key)",
+      "options": [
+        "Margins inked (see block key)",
+        "Not inked"
+      ]
+    },
+    {
+      "id": "decalcified",
+      "label": "Bone decalcified",
+      "type": "checkbox",
+      "group": "Macroscopy",
+      "default": false,
+      "showIf": {
+        "field": "procedure",
+        "is": [
+          "Marginal mandibulectomy",
+          "Segmental mandibulectomy",
+          "Partial maxillectomy",
+          "Composite resection"
+        ]
+      }
+    },
+    {
+      "id": "blocks",
+      "label": "Blocks",
+      "type": "number",
+      "group": "Macroscopy",
+      "default": ""
+    },
+    {
+      "id": "blockKeyText",
+      "label": "Block key (typed; one block per line)",
+      "type": "textarea",
+      "group": "Macroscopy",
+      "default": ""
+    },
+    {
+      "id": "histType",
+      "label": "Histologic type",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "",
+      "options": [
+        "Squamous cell carcinoma, conventional (keratinising)",
+        "Squamous cell carcinoma, non-keratinising",
+        "Adenosquamous carcinoma",
+        "Basaloid squamous cell carcinoma",
+        "Acantholytic squamous cell carcinoma",
+        "Papillary squamous cell carcinoma",
+        "Spindle cell (sarcomatoid) squamous cell carcinoma",
+        "Verrucous carcinoma",
+        "Carcinoma cuniculatum",
+        "Lymphoepithelial carcinoma (non-nasopharyngeal)",
+        "Squamous cell carcinoma, non-keratinising, HPV-associated",
+        "Squamous cell carcinoma, keratinising, HPV-associated",
+        "Adenosquamous carcinoma, HPV-associated",
+        "Ciliated adenosquamous carcinoma, HPV-associated",
+        "Basaloid squamous cell carcinoma, HPV-associated",
+        "Papillary squamous cell carcinoma, HPV-associated",
+        "Spindle cell (sarcomatoid) squamous cell carcinoma, HPV-associated",
+        "Lymphoepithelial carcinoma (non-nasopharyngeal), HPV-associated",
+        "HPV-associated carcinoma, type cannot be determined",
+        "Neuroendocrine tumour, grade 1",
+        "Neuroendocrine tumour, grade 2",
+        "Neuroendocrine tumour, grade 3",
+        "Neuroendocrine carcinoma, small cell type",
+        "Neuroendocrine carcinoma, large cell type",
+        "Combined neuroendocrine carcinoma (specify the components)",
+        "Carcinoma, type cannot be determined",
+        "Other histologic type not listed (specify)"
+      ],
+      "optionGroups": [
+        {
+          "label": "Squamous cell carcinoma and variants",
+          "options": [
+            "Squamous cell carcinoma, conventional (keratinising)",
+            "Squamous cell carcinoma, non-keratinising",
+            "Adenosquamous carcinoma",
+            "Basaloid squamous cell carcinoma",
+            "Acantholytic squamous cell carcinoma",
+            "Papillary squamous cell carcinoma",
+            "Spindle cell (sarcomatoid) squamous cell carcinoma",
+            "Verrucous carcinoma",
+            "Carcinoma cuniculatum",
+            "Lymphoepithelial carcinoma (non-nasopharyngeal)"
+          ]
+        },
+        {
+          "label": "HPV-associated (oropharynx, p16 positive)",
+          "options": [
+            "Squamous cell carcinoma, non-keratinising, HPV-associated",
+            "Squamous cell carcinoma, keratinising, HPV-associated",
+            "Adenosquamous carcinoma, HPV-associated",
+            "Ciliated adenosquamous carcinoma, HPV-associated",
+            "Basaloid squamous cell carcinoma, HPV-associated",
+            "Papillary squamous cell carcinoma, HPV-associated",
+            "Spindle cell (sarcomatoid) squamous cell carcinoma, HPV-associated",
+            "Lymphoepithelial carcinoma (non-nasopharyngeal), HPV-associated",
+            "HPV-associated carcinoma, type cannot be determined"
+          ]
+        },
+        {
+          "label": "Neuroendocrine",
+          "options": [
+            "Neuroendocrine tumour, grade 1",
+            "Neuroendocrine tumour, grade 2",
+            "Neuroendocrine tumour, grade 3",
+            "Neuroendocrine carcinoma, small cell type",
+            "Neuroendocrine carcinoma, large cell type",
+            "Combined neuroendocrine carcinoma (specify the components)"
+          ]
+        },
+        {
+          "label": "Other",
+          "options": [
+            "Carcinoma, type cannot be determined",
+            "Other histologic type not listed (specify)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "histTypeOther",
+      "label": "Histologic type (specify)",
+      "type": "text",
+      "group": "Microscopic findings",
+      "default": "",
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Other histologic type not listed (specify)",
+          "Combined neuroendocrine carcinoma (specify the components)"
+        ]
+      }
+    },
+    {
+      "id": "grade",
+      "label": "Histologic grade",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "",
+      "options": [
+        "G1, well differentiated",
+        "G2, moderately differentiated",
+        "G3, poorly differentiated",
+        "GX, cannot be assessed",
+        "Not applicable",
+        "Other (specify)"
+      ],
+      "showIf": {
+        "field": "histType",
+        "not": [
+          "Squamous cell carcinoma, non-keratinising, HPV-associated",
+          "Squamous cell carcinoma, keratinising, HPV-associated",
+          "Adenosquamous carcinoma, HPV-associated",
+          "Ciliated adenosquamous carcinoma, HPV-associated",
+          "Basaloid squamous cell carcinoma, HPV-associated",
+          "Papillary squamous cell carcinoma, HPV-associated",
+          "Spindle cell (sarcomatoid) squamous cell carcinoma, HPV-associated",
+          "Lymphoepithelial carcinoma (non-nasopharyngeal), HPV-associated",
+          "HPV-associated carcinoma, type cannot be determined",
+          "Neuroendocrine tumour, grade 1",
+          "Neuroendocrine tumour, grade 2",
+          "Neuroendocrine tumour, grade 3",
+          "Neuroendocrine carcinoma, small cell type",
+          "Neuroendocrine carcinoma, large cell type",
+          "Combined neuroendocrine carcinoma (specify the components)",
+          "Verrucous carcinoma",
+          "Carcinoma cuniculatum"
+        ]
+      }
+    },
+    {
+      "id": "gradeOther",
+      "label": "Histologic grade (specify)",
+      "type": "text",
+      "group": "Microscopic findings",
+      "default": "",
+      "showIf": {
+        "field": "grade",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "histologyNotes",
+      "label": "Tumour histology paragraph (overrides the generated text)",
+      "type": "textarea",
+      "group": "Microscopic findings",
+      "default": ""
+    },
+    {
+      "id": "doi",
+      "label": "Depth of invasion",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "Specify depth (mm)",
+      "options": [
+        "Specify depth (mm)",
+        "At least (mm)",
+        "Less than 1 mm",
+        "Other (specify)",
+        "Cannot be determined (explain)"
+      ],
+      "showIf": {
+        "any": [
+          {
+            "field": "tumourSite",
+            "is": [
+              "Tongue (anterior two thirds)",
+              "Floor of mouth",
+              "Buccal mucosa",
+              "Lower alveolus and gingiva",
+              "Upper alveolus and gingiva",
+              "Retromolar trigone",
+              "Hard palate",
+              "Lip mucosa"
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Other (specify)",
+                  "Not specified"
+                ]
+              },
+              {
+                "field": "siteRegion",
+                "is": "Oral cavity"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "doiMm",
+      "label": "Depth of invasion (mm)",
+      "type": "number",
+      "group": "Microscopic findings",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "any": [
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Tongue (anterior two thirds)",
+                  "Floor of mouth",
+                  "Buccal mucosa",
+                  "Lower alveolus and gingiva",
+                  "Upper alveolus and gingiva",
+                  "Retromolar trigone",
+                  "Hard palate",
+                  "Lip mucosa"
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "field": "tumourSite",
+                    "is": [
+                      "Other (specify)",
+                      "Not specified"
+                    ]
+                  },
+                  {
+                    "field": "siteRegion",
+                    "is": "Oral cavity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "field": "doi",
+            "is": [
+              "Specify depth (mm)",
+              "At least (mm)"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "doiNote",
+      "label": "Depth of invasion (explain)",
+      "type": "text",
+      "group": "Microscopic findings",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "any": [
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Tongue (anterior two thirds)",
+                  "Floor of mouth",
+                  "Buccal mucosa",
+                  "Lower alveolus and gingiva",
+                  "Upper alveolus and gingiva",
+                  "Retromolar trigone",
+                  "Hard palate",
+                  "Lip mucosa"
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "field": "tumourSite",
+                    "is": [
+                      "Other (specify)",
+                      "Not specified"
+                    ]
+                  },
+                  {
+                    "field": "siteRegion",
+                    "is": "Oral cavity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "field": "doi",
+            "is": [
+              "Other (specify)",
+              "Cannot be determined (explain)"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "adjacent",
+      "label": "Tumour extent: structures beyond the primary site",
+      "type": "multiselect",
+      "group": "Microscopic findings",
+      "default": [
+        "Not identified"
+      ],
+      "options": [
+        "Not identified",
+        "Maxillary sinus",
+        "Skin of the face",
+        "Masticator space",
+        "Pterygoid plates",
+        "Skull base",
+        "Encases the internal carotid artery"
+      ],
+      "exclusive": [
+        "Not identified"
+      ],
+      "showIf": {
+        "any": [
+          {
+            "field": "tumourSite",
+            "is": [
+              "Tongue (anterior two thirds)",
+              "Floor of mouth",
+              "Buccal mucosa",
+              "Lower alveolus and gingiva",
+              "Upper alveolus and gingiva",
+              "Retromolar trigone",
+              "Hard palate",
+              "Lip mucosa"
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Other (specify)",
+                  "Not specified"
+                ]
+              },
+              {
+                "field": "siteRegion",
+                "is": "Oral cavity"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "hpvExtent",
+      "label": "Tumour extent: structures beyond the primary site",
+      "type": "multiselect",
+      "group": "Microscopic findings",
+      "default": [
+        "Not identified"
+      ],
+      "options": [
+        "Not identified",
+        "Lingual surface of the epiglottis",
+        "Larynx",
+        "Deep (extrinsic) muscle of the tongue",
+        "Pterygoid muscles",
+        "Hard palate",
+        "Mandible",
+        "Pterygoid plates",
+        "Nasopharynx",
+        "Skull base",
+        "Encases the carotid artery"
+      ],
+      "exclusive": [
+        "Not identified"
+      ],
+      "showIf": {
+        "any": [
+          {
+            "field": "tumourSite",
+            "is": [
+              "Palatine tonsil",
+              "Base of tongue",
+              "Soft palate and uvula",
+              "Oropharyngeal wall",
+              "Vallecula"
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Other (specify)",
+                  "Not specified"
+                ]
+              },
+              {
+                "field": "siteRegion",
+                "is": "Oropharynx"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "extentNotes",
+      "label": "Tumour extent (other structures)",
+      "type": "text",
+      "group": "Microscopic findings",
+      "default": ""
+    },
+    {
+      "id": "boneInvasion",
+      "label": "Bone invasion",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "Not applicable",
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "any": [
+          {
+            "field": "tumourSite",
+            "is": [
+              "Tongue (anterior two thirds)",
+              "Floor of mouth",
+              "Buccal mucosa",
+              "Lower alveolus and gingiva",
+              "Upper alveolus and gingiva",
+              "Retromolar trigone",
+              "Hard palate",
+              "Lip mucosa"
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Other (specify)",
+                  "Not specified"
+                ]
+              },
+              {
+                "field": "siteRegion",
+                "is": "Oral cavity"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "bonePattern",
+      "label": "Pattern of bone invasion",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "",
+      "options": [
+        "Erosive",
+        "Infiltrative"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "any": [
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Tongue (anterior two thirds)",
+                  "Floor of mouth",
+                  "Buccal mucosa",
+                  "Lower alveolus and gingiva",
+                  "Upper alveolus and gingiva",
+                  "Retromolar trigone",
+                  "Hard palate",
+                  "Lip mucosa"
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "field": "tumourSite",
+                    "is": [
+                      "Other (specify)",
+                      "Not specified"
+                    ]
+                  },
+                  {
+                    "field": "siteRegion",
+                    "is": "Oral cavity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "field": "boneInvasion",
+            "is": "Present"
+          }
+        ]
+      }
+    },
+    {
+      "id": "boneLevel",
+      "label": "Level of bone invasion",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "",
+      "options": [
+        "Cortical (superficial erosion only)",
+        "Medullary (through the cortex)"
+      ],
+      "showIf": {
+        "all": [
+          {
+            "any": [
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Tongue (anterior two thirds)",
+                  "Floor of mouth",
+                  "Buccal mucosa",
+                  "Lower alveolus and gingiva",
+                  "Upper alveolus and gingiva",
+                  "Retromolar trigone",
+                  "Hard palate",
+                  "Lip mucosa"
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "field": "tumourSite",
+                    "is": [
+                      "Other (specify)",
+                      "Not specified"
+                    ]
+                  },
+                  {
+                    "field": "siteRegion",
+                    "is": "Oral cavity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "field": "boneInvasion",
+            "is": "Present"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lvi",
+      "label": "Lymphovascular invasion",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "Not identified",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ]
+    },
+    {
+      "id": "pni",
+      "label": "Perineural invasion",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "Not identified",
+      "options": [
+        "Not identified",
+        "Present",
+        "Present, intratumoural",
+        "Present, extratumoural",
+        "Present, intraneural (size of nerve)",
+        "Cannot be determined"
+      ]
+    },
+    {
+      "id": "pniNerveMm",
+      "label": "Diameter of the involved nerve (mm)",
+      "type": "number",
+      "group": "Microscopic findings",
+      "default": "",
+      "showIf": {
+        "field": "pni",
+        "is": "Present, intraneural (size of nerve)"
+      }
+    },
+    {
+      "id": "wpoi",
+      "label": "Worst pattern of invasion (optional)",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "",
+      "options": [
+        "WPOI 5 (tumour satellites 1 mm or more apart, lymphovascular invasion or extratumoural perineural invasion)",
+        "WPOI 1 to 4",
+        "Not assessed"
+      ],
+      "showIf": {
+        "any": [
+          {
+            "field": "tumourSite",
+            "is": [
+              "Tongue (anterior two thirds)",
+              "Floor of mouth",
+              "Buccal mucosa",
+              "Lower alveolus and gingiva",
+              "Upper alveolus and gingiva",
+              "Retromolar trigone",
+              "Hard palate",
+              "Lip mucosa"
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Other (specify)",
+                  "Not specified"
+                ]
+              },
+              {
+                "field": "siteRegion",
+                "is": "Oral cavity"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "p16",
+      "label": "HPV status by p16 immunohistochemistry",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "",
+      "options": [
+        "Positive",
+        "Negative",
+        "Cannot be determined",
+        "Not performed"
+      ],
+      "showIf": {
+        "any": [
+          {
+            "field": "tumourSite",
+            "is": [
+              "Palatine tonsil",
+              "Base of tongue",
+              "Soft palate and uvula",
+              "Oropharyngeal wall",
+              "Vallecula"
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Other (specify)",
+                  "Not specified"
+                ]
+              },
+              {
+                "field": "siteRegion",
+                "is": "Oropharynx"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "hpvPcr",
+      "label": "HPV PCR",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "Positive",
+        "Negative",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "any": [
+          {
+            "field": "tumourSite",
+            "is": [
+              "Palatine tonsil",
+              "Base of tongue",
+              "Soft palate and uvula",
+              "Oropharyngeal wall",
+              "Vallecula"
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Other (specify)",
+                  "Not specified"
+                ]
+              },
+              {
+                "field": "siteRegion",
+                "is": "Oropharynx"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "hpvPcrDetail",
+      "label": "HPV PCR: type(s) detected",
+      "type": "text",
+      "group": "Microscopic findings",
+      "default": "",
+      "placeholder": "HPV 16",
+      "showIf": {
+        "all": [
+          {
+            "any": [
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Palatine tonsil",
+                  "Base of tongue",
+                  "Soft palate and uvula",
+                  "Oropharyngeal wall",
+                  "Vallecula"
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "field": "tumourSite",
+                    "is": [
+                      "Other (specify)",
+                      "Not specified"
+                    ]
+                  },
+                  {
+                    "field": "siteRegion",
+                    "is": "Oropharynx"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "field": "hpvPcr",
+            "is": "Positive"
+          }
+        ]
+      }
+    },
+    {
+      "id": "eber",
+      "label": "EBER in situ hybridisation",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "Positive",
+        "Negative"
+      ],
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Lymphoepithelial carcinoma (non-nasopharyngeal)",
+          "Lymphoepithelial carcinoma (non-nasopharyngeal), HPV-associated"
+        ]
+      }
+    },
+    {
+      "id": "ihc",
+      "label": "Immunohistochemistry",
+      "type": "multiselect",
+      "group": "Microscopic findings",
+      "default": [],
+      "options": [
+        "p40 positive",
+        "p63 positive",
+        "CK5/6 positive",
+        "AE1/AE3 positive",
+        "Synaptophysin positive",
+        "Chromogranin positive",
+        "INSM1 positive"
+      ]
+    },
+    {
+      "id": "ihcOther",
+      "label": "Immunohistochemistry (other results)",
+      "type": "text",
+      "group": "Microscopic findings",
+      "default": ""
+    },
+    {
+      "id": "invasiveMargin",
+      "label": "Margin status for invasive tumour",
+      "type": "select",
+      "group": "Margins",
+      "default": "All margins negative for invasive tumour",
+      "options": [
+        "All margins negative for invasive tumour",
+        "Margin(s) involved by invasive tumour (specify)",
+        "Cannot be assessed"
+      ]
+    },
+    {
+      "id": "closestMm",
+      "label": "Closest margin to invasive tumour (mm)",
+      "type": "number",
+      "group": "Margins",
+      "default": "",
+      "showIf": {
+        "field": "invasiveMargin",
+        "is": "All margins negative for invasive tumour"
+      }
+    },
+    {
+      "id": "closestSite",
+      "label": "Closest margin, location",
+      "type": "text",
+      "group": "Margins",
+      "default": "",
+      "placeholder": "deep",
+      "showIf": {
+        "field": "invasiveMargin",
+        "is": "All margins negative for invasive tumour"
+      }
+    },
+    {
+      "id": "invasiveInvolvedDetail",
+      "label": "Margin(s) involved by invasive tumour",
+      "type": "text",
+      "group": "Margins",
+      "default": "",
+      "showIf": {
+        "field": "invasiveMargin",
+        "is": "Margin(s) involved by invasive tumour (specify)"
+      }
+    },
+    {
+      "id": "hgdMargin",
+      "label": "Margin status for high grade dysplasia / carcinoma in situ",
+      "type": "select",
+      "group": "Margins",
+      "default": "",
+      "options": [
+        "Uninvolved by high grade dysplasia / carcinoma in situ",
+        "Involved by high grade dysplasia / carcinoma in situ (specify)",
+        "Cannot be assessed"
+      ],
+      "showIf": {
+        "any": [
+          {
+            "field": "tumourSite",
+            "is": [
+              "Tongue (anterior two thirds)",
+              "Floor of mouth",
+              "Buccal mucosa",
+              "Lower alveolus and gingiva",
+              "Upper alveolus and gingiva",
+              "Retromolar trigone",
+              "Hard palate",
+              "Lip mucosa"
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Other (specify)",
+                  "Not specified"
+                ]
+              },
+              {
+                "field": "siteRegion",
+                "is": "Oral cavity"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "hgdDetail",
+      "label": "High grade dysplasia: involved margin, or closest margin and distance",
+      "type": "text",
+      "group": "Margins",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "any": [
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Tongue (anterior two thirds)",
+                  "Floor of mouth",
+                  "Buccal mucosa",
+                  "Lower alveolus and gingiva",
+                  "Upper alveolus and gingiva",
+                  "Retromolar trigone",
+                  "Hard palate",
+                  "Lip mucosa"
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "field": "tumourSite",
+                    "is": [
+                      "Other (specify)",
+                      "Not specified"
+                    ]
+                  },
+                  {
+                    "field": "siteRegion",
+                    "is": "Oral cavity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "field": "hgdMargin",
+            "is": [
+              "Uninvolved by high grade dysplasia / carcinoma in situ",
+              "Involved by high grade dysplasia / carcinoma in situ (specify)"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "bedMargin",
+      "label": "Tumour bed margins",
+      "type": "select",
+      "group": "Margins",
+      "default": "Not applicable",
+      "options": [
+        "Not applicable",
+        "Cannot be assessed",
+        "Uninvolved by invasive carcinoma",
+        "Involved by invasive carcinoma",
+        "Uninvolved by high grade dysplasia / carcinoma in situ",
+        "Involved by high grade dysplasia / carcinoma in situ"
+      ]
+    },
+    {
+      "id": "bedDetail",
+      "label": "Tumour bed margins: location and closest distance",
+      "type": "text",
+      "group": "Margins",
+      "default": "",
+      "showIf": {
+        "field": "bedMargin",
+        "is": [
+          "Uninvolved by invasive carcinoma",
+          "Involved by invasive carcinoma",
+          "Uninvolved by high grade dysplasia / carcinoma in situ",
+          "Involved by high grade dysplasia / carcinoma in situ"
+        ]
+      }
+    },
+    {
+      "id": "frozenMargins",
+      "label": "Frozen section margins",
+      "type": "text",
+      "group": "Margins",
+      "default": "",
+      "placeholder": "FS1 to FS4 free of carcinoma"
+    },
+    {
+      "id": "nodesExamined",
+      "label": "Number of regional lymph nodes examined",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": ""
+    },
+    {
+      "id": "nodesInvolved",
+      "label": "Number of regional lymph nodes involved",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": ""
+    },
+    {
+      "id": "ene",
+      "label": "Extranodal extension (ENE)",
+      "type": "select",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "options": [
+        "Not identified",
+        "Present, major (more than 2 mm from the capsule)",
+        "Present, minor (2 mm or less from the capsule)",
+        "Present, less than 1 mm from the capsule",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "field": "nodesInvolved",
+        "min": 1
+      }
+    },
+    {
+      "id": "eneMm",
+      "label": "Extranodal extension, distance from the capsule (mm)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "nodesInvolved",
+            "min": 1
+          },
+          {
+            "field": "ene",
+            "is": [
+              "Present, major (more than 2 mm from the capsule)",
+              "Present, minor (2 mm or less from the capsule)",
+              "Present, less than 1 mm from the capsule"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "largestDepositMm",
+      "label": "Size of the largest metastatic deposit (mm)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodesInvolved",
+        "min": 1
+      }
+    },
+    {
+      "id": "largestDepositSite",
+      "label": "Site of the largest metastatic deposit",
+      "type": "text",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "placeholder": "level IB",
+      "showIf": {
+        "field": "nodesInvolved",
+        "min": 1
+      }
+    },
+    {
+      "id": "largestNodeMm",
+      "label": "Size of the largest involved lymph node (mm)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodesInvolved",
+        "min": 1
+      }
+    },
+    {
+      "id": "largestNodeSite",
+      "label": "Site of the largest involved lymph node",
+      "type": "text",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodesInvolved",
+        "min": 1
+      }
+    },
+    {
+      "id": "nodeLaterality",
+      "label": "Laterality of the involved nodes",
+      "type": "select",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "options": [
+        "Ipsilateral (including midline)",
+        "Contralateral",
+        "Bilateral",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "field": "nodesInvolved",
+        "min": 1
+      }
+    },
+    {
+      "id": "nodeLevels",
+      "label": "Lymph nodes by level",
+      "type": "text",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "placeholder": "level IB 1/3, level IIA 0/5, level III 0/8"
+    },
+    {
+      "id": "distantMets",
+      "label": "Distant metastasis",
+      "type": "multiselect",
+      "group": "Lymph nodes and metastasis",
+      "default": [
+        "Not applicable"
+      ],
+      "options": [
+        "Not applicable",
+        "Not identified",
+        "Non-regional lymph node(s)",
+        "Lung",
+        "Liver",
+        "Bone",
+        "Brain",
+        "Other (specify)",
+        "Cannot be determined"
+      ],
+      "exclusive": [
+        "Not applicable",
+        "Not identified"
+      ]
+    },
+    {
+      "id": "distantDetail",
+      "label": "Distant metastasis (specify)",
+      "type": "text",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "distantMets",
+        "is": [
+          "Non-regional lymph node(s)",
+          "Lung",
+          "Liver",
+          "Bone",
+          "Brain",
+          "Other (specify)",
+          "Cannot be determined"
+        ]
+      }
+    },
+    {
+      "id": "multiplePrimaries",
+      "label": "m (multiple primary tumours)",
+      "type": "checkbox",
+      "group": "Staging",
+      "default": false
+    },
+    {
+      "id": "recurrent",
+      "label": "r (recurrent tumour)",
+      "type": "checkbox",
+      "group": "Staging",
+      "default": false
+    },
+    {
+      "id": "postTherapy",
+      "label": "y (after neoadjuvant therapy)",
+      "type": "checkbox",
+      "group": "Staging",
+      "default": false
+    },
+    {
+      "id": "tnmOverride",
+      "label": "Override derived pTNM (type e.g. pT2 pN1)",
+      "type": "text",
+      "group": "Staging",
+      "default": ""
+    },
+    {
+      "id": "tnmOverrideReason",
+      "label": "Override reason (printed in Checks)",
+      "type": "text",
+      "group": "Staging",
+      "default": ""
+    },
+    {
+      "id": "treatmentEffect",
+      "label": "Treatment effect",
+      "type": "text",
+      "group": "Additional findings",
+      "default": "",
+      "showIf": {
+        "field": "postTherapy",
+        "truthy": true
+      }
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional notes (any)",
+      "type": "textarea",
+      "group": "Additional findings",
+      "default": ""
+    }
+  ],
+  "example": {
+    "case": {
+      "accession": "S26-01042",
+      "status": "Draft"
+    },
+    "options": {
+      "includeHeader": false,
+      "macro": true,
+      "printPTNM": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "left lateral tongue",
+          "procedure": [
+            "Partial glossectomy"
+          ],
+          "tumourSite": "Tongue (anterior two thirds)",
+          "laterality": "Left",
+          "tumourSizeMm": "18",
+          "focality": "Single focus",
+          "specimenDims": "45 x 30 x 20",
+          "lesionAppearance": "Ulcerated tumour",
+          "lesionDims": "18 x 12 x 8",
+          "macroMarginMm": "6",
+          "macroMarginSite": "deep",
+          "orientation": "long suture lateral, short suture anterior",
+          "inking": "Margins inked (see block key)",
+          "blocks": "8",
+          "histType": "Squamous cell carcinoma, conventional (keratinising)",
+          "grade": "G2, moderately differentiated",
+          "doi": "Specify depth (mm)",
+          "doiMm": "8",
+          "adjacent": [
+            "Not identified"
+          ],
+          "boneInvasion": "Not applicable",
+          "lvi": "Not identified",
+          "pni": "Not identified",
+          "wpoi": "",
+          "ihc": [],
+          "invasiveMargin": "All margins negative for invasive tumour",
+          "closestMm": "6",
+          "closestSite": "deep",
+          "hgdMargin": "Uninvolved by high grade dysplasia / carcinoma in situ",
+          "bedMargin": "Not applicable",
+          "nodesExamined": "",
+          "nodesInvolved": "",
+          "distantMets": [
+            "Not applicable"
+          ]
+        }
+      }
+    ]
+  }
+}

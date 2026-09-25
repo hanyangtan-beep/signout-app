@@ -1,0 +1,734 @@
+{
+  "id": "oral_biopsy",
+  "version": "2026.09",
+  "name": "Oral and oropharyngeal biopsy",
+  "shortName": "Oral cavity · biopsy / excision",
+  "label": "Oral cavity",
+  "organ": "ORAL CAVITY",
+  "system": "Head and neck",
+  "kind": "biopsy",
+  "rank": 12,
+  "aliases": [
+    "oral",
+    "mouth",
+    "tongue",
+    "buccal mucosa",
+    "gingiva",
+    "palate",
+    "floor of mouth",
+    "oropharynx",
+    "leukoplakia",
+    "oral dysplasia",
+    "mucocele",
+    "ranula"
+  ],
+  "match": {
+    "site": [
+      "oral",
+      "oral cavity",
+      "mouth",
+      "tongue",
+      "buccal",
+      "buccal mucosa",
+      "gingiva",
+      "gingival",
+      "gum",
+      "alveolus",
+      "alveolar ridge",
+      "floor of mouth",
+      "palate",
+      "hard palate",
+      "soft palate",
+      "palatal",
+      "uvula",
+      "retromolar",
+      "oropharynx",
+      "oropharyngeal",
+      "base of tongue",
+      "tongue base",
+      "vallecula",
+      "lip mucosa",
+      "labial mucosa",
+      "mucocele",
+      "ranula"
+    ],
+    "alone": {
+      "site": [
+        "tonsil",
+        "tonsillar"
+      ],
+      "unless": "^(?![\\s\\S]*\\b(?:biops|punch|incision))"
+    },
+    "procedure": [
+      "biopsy",
+      "biopsies",
+      "incisional biopsy",
+      "punch",
+      "punch biopsy",
+      "incision",
+      "excisional biopsy",
+      "excision"
+    ],
+    "clinical": [
+      "leukoplakia",
+      "leucoplakia",
+      "erythroplakia",
+      "ulcer",
+      "lichen planus",
+      "white patch",
+      "mucocele",
+      "ranula",
+      "polyp",
+      "papilloma"
+    ],
+    "not": [
+      "wide",
+      "glossectomy",
+      "hemiglossectomy",
+      "mandibulectomy",
+      "maxillectomy",
+      "neck dissection"
+    ],
+    "exclude": [
+      "nasopharynx",
+      "nasopharyngeal",
+      "larynx",
+      "laryngeal",
+      "parotid",
+      "submandibular gland",
+      "sinus",
+      "nasal",
+      "appendix",
+      "appendiceal",
+      "skin"
+    ],
+    "bias": 3,
+    "sideFromText": true,
+    "fill": [
+      {
+        "field": "organ",
+        "from": "map",
+        "map": [
+          [
+            "\\bbase\\s+of\\s+(?:the\\s+)?tongue|\\btongue\\s+base",
+            "BASE OF TONGUE"
+          ],
+          [
+            "\\btonsil",
+            "TONSIL"
+          ],
+          [
+            "\\boropharyn",
+            "OROPHARYNX"
+          ],
+          [
+            "\\btongue",
+            "TONGUE"
+          ],
+          [
+            "\\bbuccal",
+            "BUCCAL MUCOSA"
+          ],
+          [
+            "\\bfloor\\s+of\\s+(?:the\\s+)?mouth|\\branula",
+            "FLOOR OF MOUTH"
+          ],
+          [
+            "\\bgingiv|\\bgums?\\b|\\balveol",
+            "GINGIVA"
+          ],
+          [
+            "\\bpalat|\\buvula",
+            "PALATE"
+          ],
+          [
+            "\\blip\\b|\\blabial",
+            "LIP"
+          ]
+        ]
+      },
+      {
+        "field": "procedure",
+        "from": "map",
+        "map": [
+          [
+            "\\bpunch\\s+biops",
+            "Punch biopsy"
+          ],
+          [
+            "\\bpunch",
+            "Punch"
+          ],
+          [
+            "\\bincisional\\s+biops",
+            "Incisional biopsy"
+          ],
+          [
+            "\\bexcisional\\s+biops",
+            "Excisional biopsy"
+          ],
+          [
+            "\\bincision",
+            "Incision"
+          ],
+          [
+            "\\bexcis",
+            "Excision"
+          ],
+          [
+            "\\bbiops",
+            "Biopsy"
+          ]
+        ]
+      },
+      {
+        "field": "finding",
+        "from": "map",
+        "map": [
+          [
+            "\\bmucocele",
+            "Mucocele"
+          ],
+          [
+            "\\branula",
+            "Ranula"
+          ]
+        ]
+      },
+      {
+        "field": "site",
+        "from": "detail",
+        "fallback": "text",
+        "strip": "\\b(?:incisional\\s+biopsy|excisional\\s+biopsy|punch\\s+biopsy|biopsy|biopsies|punch|incision|excision|excised|specimen|oral\\s+cavity|mucocele|ranula|leu[ck]oplakia|erythroplakia|erythroleukoplakia|fibroepithelial\\s+polyp|squamous\\s+papilloma|fibroma|papilloma|polyp|pyogenic\\s+granuloma|granuloma|granular\\s+cell\\s+tumou?r|(?:fibrous\\s+)?epulis|mucous\\s+(?:retention|extravasation)\\s+cyst|cyst|ulcers?|ulceration|lesion|mass|swelling|growth|nodule|lump|white\\s+patch|red\\s+patch|lichen\\s+planus)\\b",
+        "unless": "^(?:left|right|midline|tissue|lesion|mouth|oral)$"
+      }
+    ]
+  },
+  "specimenNoun": "biopsy",
+  "maxParts": 6,
+  "defaultParts": 1,
+  "generator": "oral_biopsy",
+  "style": {
+    "british": true
+  },
+  "source": {
+    "template": "WHO Classification of Tumours, 5th edition, Head and Neck Tumours: oral epithelial dysplasia, carcinoma and benign mucosal lesions",
+    "grounding": "docs/reference/oral-morphology.md",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9018914/"
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "$use": "includeHeader"
+    }
+  ],
+  "partDefaults": [],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen as received",
+      "type": "text",
+      "placeholder": "Oral cavity, left lateral tongue, biopsy",
+      "default": ""
+    },
+    {
+      "id": "organ",
+      "label": "Organ (diagnosis line)",
+      "type": "select",
+      "options": [
+        "ORAL CAVITY",
+        "TONGUE",
+        "LIP",
+        "BUCCAL MUCOSA",
+        "GINGIVA",
+        "PALATE",
+        "FLOOR OF MOUTH",
+        "OROPHARYNX",
+        "TONSIL",
+        "BASE OF TONGUE"
+      ],
+      "default": "ORAL CAVITY"
+    },
+    {
+      "id": "side",
+      "label": "Side",
+      "type": "select",
+      "options": [
+        "Not stated",
+        "Left",
+        "Right",
+        "Midline"
+      ],
+      "default": "Not stated"
+    },
+    {
+      "id": "site",
+      "label": "Site / clinical label",
+      "type": "text",
+      "placeholder": "lateral tongue",
+      "default": ""
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "options": [
+        "Biopsy",
+        "Incisional biopsy",
+        "Incision",
+        "Punch biopsy",
+        "Punch",
+        "Excisional biopsy",
+        "Excision"
+      ],
+      "default": "Biopsy"
+    },
+    {
+      "id": "finding",
+      "label": "Finding",
+      "type": "select",
+      "options": [
+        "Epithelial dysplasia",
+        "Squamous cell carcinoma in situ",
+        "Invasive squamous cell carcinoma",
+        "Verrucous carcinoma",
+        "Verrucous hyperplasia",
+        "Atypical squamous proliferation",
+        "No evidence of malignancy",
+        "Squamous hyperplasia",
+        "Frictional keratosis",
+        "Lichen planus",
+        "Lichenoid mucositis",
+        "Candidiasis",
+        "Ulcer",
+        "Fibroepithelial polyp",
+        "Fibroma",
+        "Fibrous epulis",
+        "Pyogenic granuloma",
+        "Squamous papilloma",
+        "Granular cell tumour",
+        "Mucocele",
+        "Mucous extravasation cyst",
+        "Ranula",
+        "Mucous retention cyst"
+      ],
+      "optionGroups": [
+        {
+          "label": "Dysplasia and carcinoma",
+          "options": [
+            "Epithelial dysplasia",
+            "Squamous cell carcinoma in situ",
+            "Invasive squamous cell carcinoma",
+            "Verrucous carcinoma",
+            "Verrucous hyperplasia",
+            "Atypical squamous proliferation"
+          ]
+        },
+        {
+          "label": "Keratosis and inflammation",
+          "options": [
+            "No evidence of malignancy",
+            "Squamous hyperplasia",
+            "Frictional keratosis",
+            "Lichen planus",
+            "Lichenoid mucositis",
+            "Candidiasis",
+            "Ulcer"
+          ]
+        },
+        {
+          "label": "Polyps and tumours",
+          "options": [
+            "Fibroepithelial polyp",
+            "Fibroma",
+            "Fibrous epulis",
+            "Pyogenic granuloma",
+            "Squamous papilloma",
+            "Granular cell tumour"
+          ]
+        },
+        {
+          "label": "Salivary mucus lesions",
+          "options": [
+            "Mucocele",
+            "Mucous extravasation cyst",
+            "Ranula",
+            "Mucous retention cyst"
+          ]
+        }
+      ],
+      "default": "",
+      "reference": {
+        "title": "Oral epithelial dysplasia and carcinoma (WHO 5th edition)",
+        "intro": "WHO 5th edition keeps the three-tier grade (mild, moderate, severe) as its primary scheme and acknowledges the binary one (low, high); the house prints the binary grade. Grade on the architectural and cytological features, not on epithelial thirds alone.",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "Low grade dysplasia",
+            "points": [
+              "Irregular stratification, basal cell crowding and loss of basal polarity",
+              "Drop-shaped rete ridges; nuclear enlargement and hyperchromasia",
+              "Binary scheme (Kujan): up to 4 architectural and up to 5 cytological features",
+              "Three-tier equivalent: mild, and most moderate, dysplasia"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/oral/dysplasia_low_grade.jpg",
+                "caption": "Low-grade dysplasia",
+                "credit": "Lorini et al., Cancers 2021, Fig 2C (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://www.mdpi.com/2072-6694/13/15/3696"
+              }
+            ]
+          },
+          {
+            "heading": "High grade dysplasia",
+            "points": [
+              "More than 4 architectural and more than 5 cytological features (Kujan)",
+              "Marked pleomorphism, atypical mitoses, mitoses high in the epithelium, single-cell keratinisation",
+              "Cytological atypia can upgrade change confined to the basal third",
+              "Carcinoma in situ is treated as synonymous with severe dysplasia (WHO 5th)"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/oral/dysplasia_high_grade.jpg",
+                "caption": "High-grade dysplasia / carcinoma in situ",
+                "credit": "Lorini et al., Cancers 2021, Fig 2D (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://www.mdpi.com/2072-6694/13/15/3696"
+              }
+            ]
+          },
+          {
+            "heading": "Invasive squamous cell carcinoma",
+            "points": [
+              "Nests and cords of atypical squamous cells breach the basement membrane into the lamina propria",
+              "Desmoplastic or inflammatory stromal reaction around the invading nests",
+              "Grade on the least differentiated area: well, moderately or poorly differentiated",
+              "A superficial biopsy gives neither the depth of invasion nor the worst pattern of invasion"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/oral/scc_invasive.jpg",
+                "caption": "Infiltrating squamous cell carcinoma",
+                "credit": "Lorini et al., Cancers 2021, Fig 2E (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://www.mdpi.com/2072-6694/13/15/3696"
+              },
+              {
+                "src": "assets/reference/oral/scc_well_differentiated.jpg",
+                "caption": "Well-differentiated squamous cell carcinoma, excisional biopsy",
+                "credit": "KGH, Wikimedia Commons (resized)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Oral_cancer_(1)_squamous_cell_carcinoma_histopathology.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Lichen planus (mimic)",
+            "points": [
+              "Band-like lymphocytic infiltrate confined to the epithelium-lamina propria interface",
+              "Basal cell hydropic degeneration and lymphocytic exocytosis",
+              "No dysplasia and no verrucous architecture (AAOMP 2016)",
+              "Proliferative verrucous leukoplakia keeps intact basal cells or shows dysplasia"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/oral/lichen_planus.jpg",
+                "caption": "Oral lichen planus",
+                "credit": "Lorini et al., Cancers 2021, Fig 2A (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://www.mdpi.com/2072-6694/13/15/3696"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "dysplasiaSystem",
+      "label": "Dysplasia grade scheme",
+      "type": "select",
+      "options": [
+        "Two-tier (low / high grade)",
+        "Three-tier (mild / moderate / severe)"
+      ],
+      "default": "Two-tier (low / high grade)",
+      "showIf": {
+        "field": "finding",
+        "is": "Epithelial dysplasia"
+      },
+      "help": "The house prints the binary grade; WHO 5th edition keeps the three tiers as its primary scheme."
+    },
+    {
+      "id": "dysplasiaGrade",
+      "label": "Dysplasia grade",
+      "type": "select",
+      "options": [
+        "Low grade",
+        "High grade"
+      ],
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": "Epithelial dysplasia"
+          },
+          {
+            "field": "dysplasiaSystem",
+            "is": "Two-tier (low / high grade)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dysplasiaGrade3",
+      "label": "Dysplasia grade (three-tier)",
+      "type": "select",
+      "options": [
+        "Mild",
+        "Moderate",
+        "Severe"
+      ],
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": "Epithelial dysplasia"
+          },
+          {
+            "field": "dysplasiaSystem",
+            "is": "Three-tier (mild / moderate / severe)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pvl",
+      "label": "Clinically proliferative verrucous leukoplakia",
+      "type": "checkbox",
+      "default": false,
+      "showIf": {
+        "field": "finding",
+        "is": "Verrucous hyperplasia"
+      },
+      "help": "Tick only when the request describes multifocal, progressive leukoplakia; the diagnosis then reads 'consistent with'."
+    },
+    {
+      "id": "sccType",
+      "label": "Carcinoma type",
+      "type": "select",
+      "options": [
+        "Keratinising",
+        "Non-keratinising",
+        "Basaloid",
+        "Papillary",
+        "Spindle cell"
+      ],
+      "default": "Keratinising",
+      "showIf": {
+        "field": "finding",
+        "is": "Invasive squamous cell carcinoma"
+      }
+    },
+    {
+      "id": "sccGrade",
+      "label": "Differentiation",
+      "type": "select",
+      "options": [
+        "Not graded",
+        "Well differentiated",
+        "Moderately differentiated",
+        "Poorly differentiated"
+      ],
+      "default": "Not graded",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": "Invasive squamous cell carcinoma"
+          },
+          {
+            "field": "sccType",
+            "is": "Keratinising"
+          }
+        ]
+      }
+    },
+    {
+      "id": "superficial",
+      "label": "Superficial biopsy: depth of invasion cannot be assessed",
+      "type": "checkbox",
+      "default": false,
+      "showIf": {
+        "field": "finding",
+        "is": [
+          "Invasive squamous cell carcinoma",
+          "Verrucous carcinoma"
+        ]
+      }
+    },
+    {
+      "id": "invasion",
+      "label": "Invasion seen",
+      "type": "multiselect",
+      "options": [
+        "Perineural invasion",
+        "Lymphovascular invasion"
+      ],
+      "default": [],
+      "showIf": {
+        "field": "finding",
+        "is": "Invasive squamous cell carcinoma"
+      }
+    },
+    {
+      "id": "p16",
+      "label": "p16 immunohistochemistry",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Positive",
+        "Negative",
+        "Cannot be determined"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": "Invasive squamous cell carcinoma"
+          },
+          {
+            "field": "organ",
+            "is": [
+              "OROPHARYNX",
+              "TONSIL",
+              "BASE OF TONGUE"
+            ]
+          }
+        ]
+      },
+      "help": "Oropharyngeal sites only; CAP advises against routine HPV testing of oral cavity carcinoma."
+    },
+    {
+      "id": "hpvPcr",
+      "label": "HPV PCR",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Positive",
+        "Negative"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "all": [
+          {
+            "field": "finding",
+            "is": "Invasive squamous cell carcinoma"
+          },
+          {
+            "field": "organ",
+            "is": [
+              "OROPHARYNX",
+              "TONSIL",
+              "BASE OF TONGUE"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "atypicalReason",
+      "label": "Why the atypia is not graded",
+      "type": "select",
+      "options": [
+        "Not stated",
+        "Superficial or fragmented biopsy",
+        "Adjacent to ulceration"
+      ],
+      "default": "Not stated",
+      "showIf": {
+        "field": "finding",
+        "is": "Atypical squamous proliferation"
+      }
+    },
+    {
+      "id": "gctIhc",
+      "label": "Immunohistochemistry",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "S100 and CD68 positive, AE1/AE3 negative"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "finding",
+        "is": "Granular cell tumour"
+      }
+    },
+    {
+      "id": "features",
+      "label": "Additional findings",
+      "type": "multiselect",
+      "options": [
+        "Hyperkeratosis",
+        "Parakeratosis",
+        "Surface ulceration",
+        "Granulation tissue",
+        "Chronic inflammation",
+        "Lichenoid inflammation",
+        "Candida hyphae",
+        "Actinomyces colonies",
+        "Koilocytes",
+        "Pseudoepitheliomatous hyperplasia"
+      ],
+      "default": []
+    },
+    {
+      "id": "stains",
+      "label": "Special stains",
+      "type": "multiselect",
+      "options": [
+        "PAS",
+        "Grocott (GMS)"
+      ],
+      "default": []
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "",
+          "organ": "ORAL CAVITY",
+          "side": "Left",
+          "site": "lateral tongue",
+          "procedure": "Biopsy",
+          "finding": "Epithelial dysplasia",
+          "dysplasiaSystem": "Two-tier (low / high grade)",
+          "dysplasiaGrade": "High grade",
+          "features": [
+            "Hyperkeratosis"
+          ],
+          "stains": [],
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

@@ -66,14 +66,6 @@
    "roadmap": "Later"
   },
   {
-   "id": "oral_cavity_carcinoma",
-   "name": "Lip and oral cavity carcinoma resection",
-   "label": "Oral cavity Ca",
-   "system": "Head and neck",
-   "kind": "cancer resection",
-   "roadmap": "Later"
-  },
-  {
    "id": "lymphoma_node",
    "name": "Lymph node for lymphoma (WHO-HAEM5)",
    "label": "Lymphoma",
@@ -188,15 +180,6 @@
    "kind": "cancer resection",
    "roadmap": "Later",
    "qmh": "HN-Nasopharynx"
-  },
-  {
-   "id": "oropharynx_hpv_carcinoma",
-   "name": "Oropharyngeal carcinoma (HPV-positive) resection",
-   "label": "Oropharynx HPV+",
-   "system": "Head and neck",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "HN-HPV-Oropharynx"
   },
   {
    "id": "hypopharynx_oropharynx_carcinoma",

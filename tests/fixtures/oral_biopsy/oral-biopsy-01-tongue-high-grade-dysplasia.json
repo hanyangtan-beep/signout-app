@@ -1,0 +1,11 @@
+{
+  "templateId": "oral_biopsy",
+  "patch": {
+    "features": [
+      "Hyperkeratosis"
+    ]
+  },
+  "options": {},
+  "report": "Oral cavity, left lateral tongue, biopsy\n\nSections show squamous mucosa with high grade epithelial dysplasia. There is disordered stratification with drop-shaped rete ridges and loss of basal polarity, marked nuclear pleomorphism and hyperchromasia, and mitoses high in the epithelium. There is hyperkeratosis. There is no evidence of invasive carcinoma.\n\nORAL CAVITY, left lateral tongue, biopsy - HIGH GRADE DYSPLASIA",
+  "checks": []
+}

@@ -1,0 +1,29 @@
+{
+  "templateId": "oral_carcinoma",
+  "patch": {
+    "specimenName": "right tonsil",
+    "procedure": [
+      "Tonsillectomy"
+    ],
+    "tumourSite": "Palatine tonsil",
+    "laterality": "Right",
+    "specimenDims": "40 x 30 x 20",
+    "lesionDims": "15 x 12 x 8",
+    "orientation": "",
+    "tumourSizeMm": "15",
+    "doiMm": "",
+    "histType": "Squamous cell carcinoma, conventional (keratinising)",
+    "grade": "G2, moderately differentiated",
+    "p16": "Negative",
+    "hgdMargin": ""
+  },
+  "options": {},
+  "report": "Oropharynx, right tonsil, tonsillectomy\n\nReceived in formalin is a tonsillectomy specimen measuring 40 x 30 x 20 mm. There is an ulcerated tumour in the right tonsil measuring 15 x 12 x 8 mm, 6 mm from the closest (deep) margin. The margins are inked. Representative sections are taken in 8 blocks.\n\nSpecimen and tumour\n- Procedure: Tonsillectomy\n- Tumour site: Palatine tonsil, right\n- Tumour size: 15 mm (greatest dimension)\n\nMicroscopic findings\n- Histologic type: Squamous cell carcinoma, conventional (keratinising)\n- Histologic grade: G2, moderately differentiated\n- Tumour histology:\n  The tumour is a moderately differentiated keratinising squamous cell carcinoma. Infiltrating nests and cords of atypical squamous cells show intercellular bridges and focal keratinisation, with moderate nuclear pleomorphism, in a desmoplastic stroma.\n- Tumour extent: No extension beyond the primary site\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n- HPV status by p16 immunohistochemistry: Negative\n\nMargins\n- Invasive tumour: All margins negative\n  - Closest margin: 6 mm (deep)\n\nAdditional findings\n- None identified\n\nOROPHARYNX, right tonsil, tonsillectomy\n- SQUAMOUS CELL CARCINOMA, moderately differentiated, 15 mm; p16 negative;\n  completely excised (closest margin 6 mm, deep); see synoptic report",
+  "checks": [
+    {
+      "level": "warn",
+      "message": "p16 is not positive: HPV-independent oropharyngeal carcinoma is staged on the HPV-independent oropharynx and hypopharynx protocol; no pTNM is assigned here.",
+      "part": "A"
+    }
+  ]
+}

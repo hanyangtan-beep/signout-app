@@ -1,0 +1,14 @@
+{
+  "templateId": "oral_biopsy",
+  "patch": {
+    "organ": "TONSIL",
+    "site": "",
+    "side": "Left",
+    "finding": "Invasive squamous cell carcinoma",
+    "sccType": "Non-keratinising",
+    "p16": "Positive"
+  },
+  "options": {},
+  "report": "Tonsil, left, biopsy\n\nSections show an invasive non-keratinising squamous cell carcinoma composed of sheets and nests of cells with a high nuclear to cytoplasmic ratio, oval to spindled nuclei and indistinct cell borders, with little or no keratinisation. p16 immunohistochemistry shows strong, diffuse nuclear and cytoplasmic staining of the tumour cells.\n\nTONSIL, left, biopsy - SQUAMOUS CELL CARCINOMA, NON-KERATINISING, HPV-ASSOCIATED; p16 positive",
+  "checks": []
+}
