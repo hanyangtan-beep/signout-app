@@ -127,12 +127,20 @@ const PHASE = {
   'Weakly proliferative': 'The endometrium is weakly proliferative, composed of tubular glands with only occasional mitoses. The gland to stromal ratio is within normal limits.',
   'Disordered proliferative': 'The endometrial glands show disordered proliferation, composed of tubular glands with cystic dilatation, lined by columnar epithelium with occasional mitosis. The gland to stromal ratio is not significantly increased.',
   Secretory: 'The glands are tortuous with secretory vacuoles and luminal secretions, and the stroma is oedematous, in keeping with secretory endometrium.',
+  // Dated secretory phases (user 2026-09-25): interval, early, mid- and late secretory.
+  Interval: 'The glands are mildly coiled and lined by pseudostratified columnar epithelium with occasional mitoses and scattered subnuclear vacuoles, in keeping with interval endometrium. The gland to stromal ratio is within normal limits.',
+  'Early secretory': 'The glands are coiled, and the lining epithelium shows uniform subnuclear vacuoles with rare mitoses, in keeping with early secretory endometrium.',
+  'Mid-secretory': 'The glands are tortuous with luminal secretions, and the stroma is oedematous, in keeping with mid-secretory endometrium.',
+  'Late secretory': 'The glands are tortuous with luminal secretions, and the stroma shows predecidual change around the spiral arterioles, in keeping with late secretory endometrium.',
   'Menstrual / disintegrating': 'The endometrium shows stromal breakdown with collapsed glands, fibrin and neutrophils, in keeping with menstrual / disintegrating endometrium.',
   'Inactive (atrophic)': 'The endometrium is inactive, composed of small tubular glands lined by cuboidal epithelium without mitoses.',
   'Progestogen effect': 'The glands are small and inactive and the stroma is compact and shows areas of decidualisation, consistent with progestogen effect.',
   'Gestational (decidua and hypersecretory glands)': 'Decidua and hypersecretory endometrium are present.',
   'Not assessable (replaced by lesion)': 'The background endometrium is not assessable.'
 };
+
+// Background sentence under a carcinoma: "is interval" does not read, so that one is phrased.
+const PHASE_BG = { Interval: 'in the interval phase' };
 
 const META = {
   'Tubal (ciliated) metaplasia': 'Focal tubal metaplasia is present.',
@@ -197,7 +205,7 @@ export function microscopy(part) {
     if (MI[v.mi]) s.push(MI[v.mi]);
     const ihc = ihcSentence(v);
     if (ihc) s.push(ihc);
-    if (v.phase && v.phase !== 'Not assessable (replaced by lesion)' && PHASE[v.phase]) s.push(`The background endometrium is ${v.phase.toLowerCase().replace(/ \(.*\)$/, '')}.`);
+    if (v.phase && v.phase !== 'Not assessable (replaced by lesion)' && PHASE[v.phase]) s.push(`The background endometrium is ${PHASE_BG[v.phase] || v.phase.toLowerCase().replace(/ \(.*\)$/, '')}.`);
     if (hasPolyp(v)) s.push('Fragments of endometrial polyp are also present.');
   } else {
     if (PHASE[v.phase]) s.push(PHASE[v.phase]);
@@ -254,6 +262,12 @@ const PHASE_DX = {
   'Weakly proliferative': 'WEAKLY PROLIFERATIVE ENDOMETRIUM',
   'Disordered proliferative': 'DISORDERED PROLIFERATIVE ENDOMETRIUM',
   Secretory: 'SECRETORY ENDOMETRIUM',
+  // House wording from the released diagnoses: INTERVAL ENDOMETRIUM (never "interval phase"),
+  // and MID-SECRETORY hyphenated, as in most of the released lines that name it.
+  Interval: 'INTERVAL ENDOMETRIUM',
+  'Early secretory': 'EARLY SECRETORY ENDOMETRIUM',
+  'Mid-secretory': 'MID-SECRETORY ENDOMETRIUM',
+  'Late secretory': 'LATE SECRETORY ENDOMETRIUM',
   'Menstrual / disintegrating': 'MENSTRUAL / DISINTEGRATING ENDOMETRIUM',
   'Inactive (atrophic)': 'INACTIVE (ATROPHIC) ENDOMETRIUM',
   'Progestogen effect': 'ENDOMETRIUM WITH PROGESTOGEN EFFECT',

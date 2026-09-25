@@ -2,7 +2,7 @@
 
 Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item, newest first. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`; the full Done write-ups to 2026-09-25 are in `docs/done-log.md`.
 
-State on 2026-09-25: 67 templates (12 small biopsy, 31 benign resection incl. LEEP, 1 frozen section, 15 synoptic cancer resections, 6 cytology, 1 biomarker, 1 generic), 1406 tests, published at `https://han-signout.pplx.app`.
+State on 2026-09-25: 67 templates (12 small biopsy, 31 benign resection incl. LEEP, 1 frozen section, 15 synoptic cancer resections, 6 cytology, 1 biomarker, 1 generic), 1415 tests, published at `https://han-signout.pplx.app`.
 
 ---
 
@@ -10,6 +10,7 @@ State on 2026-09-25: 67 templates (12 small biopsy, 31 benign resection incl. LE
 
 Newest first. The full write-ups as they stood at ship time are in `docs/done-log.md`.
 
+- 2026-09-25 — Endometrial biopsy, dated secretory phases: Interval, Early secretory, Mid-secretory and Late secretory added under Secretory in Background endometrium, with diagnosis lines in the released wording, INTERVAL ENDOMETRIUM (all 11 released lines that name it) and MID-SECRETORY hyphenated (3 of 5); undated Secretory unchanged. 67 templates, 1415 tests. Phase 38.
 - 2026-09-25 — Haemorrhoid, cholesteatoma and hernia sac (benign batch 3): `haemorrhoid`, `ear_cholesteatoma` and `hernia_sac`; the one departure is the hernia head, SOFT TISSUE by default as in 6 of the 8 released lines. On Generic: haemorrhoid 54 → 7 of 56, ear 33 → 6 of 36, hernia sac 2 → 0 of 8. 67 templates, 1406 tests. Phase 37.
 - 2026-09-25 — Nail and digit (benign batch 3): `nail_digit` for clippings, avulsions, matrix or bed biopsies, excisions and digit or ray amputations; heads NAIL, FINGER, THUMB (added to the card's three) or TOE; tissue defaults to NO EVIDENCE OF MALIGNANCY. On Generic 35 → 14 of 56. Phase 37.
 - 2026-09-25 — Testis, scrotum and foreskin — benign (benign batch 3): `testis_benign` for prepuce, orchidectomy, testicular biopsy, hydrocele sac, epididymal cyst and vas deferens, with the heads PREPUCE, TESTIS, TUNICA VAGINALIS, EPIDIDYMIS and VAS DEFERENS and torsion graded "Mikuz". On Generic 37 → 10 of 45; across the batch 4,006 → 3,877 of 18,913 parts. Phase 37.
