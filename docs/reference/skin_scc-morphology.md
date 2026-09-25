@@ -280,6 +280,8 @@ Note the discrepancy with RCPath practice: RCPath explicitly recommends **agains
 
 **AJCC 8th vs UICC 8th wording (per RCPath's summary):** AJCC TNM 8 applies the **full triad** of criteria (named nerve OR ≥0.1 mm calibre OR beyond the dermis) as upstaging criteria to T3, whereas UICC TNM 8 is, per RCPath, **"currently confined to a named nerve"** (which may include clinical/imaging detection), i.e., UICC's stated criterion is narrower on paper, though RCPath notes this is largely moot in practice because named nerves and nerves beyond the dermis are "invariably" ≥0.1 mm in calibre anyway ([RCPath dataset](https://www.rcpath.org/static/9c1d8f71-5d3b-4508-8e6200f11e1f4a39/Dataset-for-histopathological-reporting-of-primary-invasive-cutaneous-squamous-cell-carcinoma-and-regional-lymph-nodes.pdf)). This is a source disagreement worth flagging rather than resolving: RCPath's own text explicitly notes the AJCC/UICC wording difference.
 
+**UICC TNM 9 (trunk and limbs from Phase 41):** the named-nerve wording is replaced by a nerve deeper than the dermis, 0.1 mm or more in calibre, or five or more nerves per section ([RCPath Appendix A, TNM 9](https://www.rcpath.org/static/22a3c502-b300-4132-b0e0b93d104dd64f/Squamous-cellTNM9.pdf)); see `skin_scc-tnm9.md`.
+
 ### G5. pN size cut-off (3 cm / 6 cm): metastatic deposit size or lymph node size? ENE definition.
 
 **This is a point of explicit disagreement between the two source documents that must be reported, not resolved:**

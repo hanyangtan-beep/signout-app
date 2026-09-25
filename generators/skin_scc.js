@@ -5,7 +5,7 @@
 // spelling throughout.
 //
 // One template, two staging systems: src/staging/skin_scc.js picks AJCC 8th edition for head and
-// neck sites and UICC 8th edition for the trunk and limbs from the tumour site, and gives no pTNM
+// neck sites and UICC 9th edition for the trunk and limbs from the tumour site, and gives no pTNM
 // for eyelid or perianal skin, which have their own chapters. pTNM prints only with
 // `options.printPTNM`, stamped with the edition in use. The Brigham and Women's Hospital (BWH) class
 // prints for every site.
@@ -342,7 +342,8 @@ export function synoptic(part, ctx) {
         : v.beyondFat === S.BEYOND_FAT.cannot ? 'Cannot be determined' : ''),
       item('Bone invasion', v.boneInvasion && v.boneInvasion !== S.BONE.na ? v.boneInvasion : ''),
       item('Lymphovascular invasion', v.lvi || 'Not identified'),
-      item('Perineural invasion', v.pni || 'Not identified')
+      // UICC 9th, trunk and limbs: five or more involved nerves in a section (a pT3 criterion).
+      { label: 'Perineural invasion', value: v.pni || 'Not identified', sub: S.fiveNerves(v) ? [{ label: 'Nerves involved', value: 'Five or more in a section' }] : [] }
     ] },
     { heading: 'Margins', items: [invasiveMarginItem(v), insituMarginItem(v), bedMarginItem(v)] },
     { heading: 'Lymph nodes', items: [nodesItem(v)] },
@@ -379,7 +380,8 @@ export function diagnosis(part, ctx) {
   first.push(clause);
   if (S.anyBone(v)) first.push(lc1(v.boneInvasion));
   if (/^Present/.test(v.pni || '')) {
-    first.push(v.pni === S.PNI.unstated ? 'perineural invasion present' : `perineural invasion present (${lc1(v.pni.replace(/^Present, /, ''))})`);
+    const q = [v.pni === S.PNI.unstated ? '' : lc1(v.pni.replace(/^Present, /, '')), S.fiveNerves(v) ? 'five or more nerves in a section' : ''].filter(Boolean);
+    first.push(q.length ? `perineural invasion present (${q.join('; ')})` : 'perineural invasion present');
   }
   if (v.lvi === 'Present') first.push('lymphovascular invasion present');
   const mp = marginsPhrase(v);
@@ -411,7 +413,7 @@ export function validate(part, ctx) {
   if (!v.histType) err('Histologic type is required.', 'histType');
   if (v.histType === OTHER_TYPE && !stripDot(v.histTypeOther)) warn('Histologic type "Other" needs specifying.', 'histTypeOther');
   if (!v.grade) warn('Histologic grade is not recorded; poor differentiation is a BWH high-risk factor.', 'grade');
-  if (!v.tumourSite) err('Tumour site is required: it chooses the staging system (AJCC 8th head and neck, UICC 8th trunk and limbs).', 'tumourSite');
+  if (!v.tumourSite) err('Tumour site is required: it chooses the staging system (AJCC 8th head and neck, UICC 9th trunk and limbs).', 'tumourSite');
   else if (r === '') err('Choose the staging region for this site: head and neck, trunk and limbs, or not staged here.', 'siteRegion');
   if (v.tumourSite === 'Other (specify)' && !stripDot(v.tumourSiteOther)) warn('Tumour site "Other" needs specifying.', 'tumourSiteOther');
   if (v.anatomicLevel === S.LEVEL_IN_SITU) warn('Anatomic level I is carcinoma in situ; an in situ lesion is reported on the Skin excision form.', 'anatomicLevel');

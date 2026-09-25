@@ -28,6 +28,14 @@ test('gastric showIf: IM type hidden while IM absent', () => {
   assert.equal(isVisible(f, { imDegree: 'Mild' }), true);
 });
 
+test('showIf any: one member passing is enough, and members nest with all', () => {
+  const f = { showIf: { any: [{ field: 'a', is: 'x' }, { all: [{ field: 'a', is: 'o' }, { field: 'b', is: ['y', 'z'] }] }] } };
+  assert.equal(isVisible(f, { a: 'x' }), true);
+  assert.equal(isVisible(f, { a: 'o', b: 'z' }), true);
+  assert.equal(isVisible(f, { a: 'o', b: 'n' }), false);
+  assert.equal(isVisible(f, { a: 'q', b: 'y' }), false);
+});
+
 test('colonic dysplasia options follow polyp type and are coerced', () => {
   const f = colonic.schema.fields.find((x) => x.id === 'dysplasia');
   assert.deepEqual(optionsFor(f, { type: 'hyperplasticPolyp' }), ['Not applicable']);

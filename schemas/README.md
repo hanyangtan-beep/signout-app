@@ -8,7 +8,7 @@ Field types: `text`, `textarea`, `number` (`min`, `step`, `suffix`), `checkbox`,
 
 `optionGroups: [{ label, options }]` on a long select renders the list in `<optgroup>`s (Skin SCC tumour site: head and neck / trunk and limbs; Skin excision diagnosis: eight lesion families); the flat `options` stays the list that is validated and printed, and options no group names follow the groups. A grouped select also shows its `help` under the list; on other selects `help` is a schema note only.
 
-`showIf: { field, is | not | truthy | min | max }` — for multiselect fields `is` means "contains any of", `not` "contains none of", `truthy` "at least one ticked", `min` / `max` count the ticked options.
+`showIf: { field, is | not | truthy | min | max }` — for multiselect fields `is` means "contains any of", `not` "contains none of", `truthy` "at least one ticked", `min` / `max` count the ticked options. `{ all: [rule, …] }` needs every rule and `{ any: [rule, …] }` one of them; the two nest (Skin SCC `pniFiveNerves`).
 
 Optional keys: `options[]` case-level switches (`{id, label, default}`; read by the generator through `ctx.options`); `presets[]` one-click part sets (`{id, label, help, caseTitle, parts: [{values}]}` — the Presets row in the case card replaces all parts, see the gastric Sydney protocol).
 

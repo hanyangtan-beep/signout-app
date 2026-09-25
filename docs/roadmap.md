@@ -2,7 +2,7 @@
 
 Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item, newest first. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`; the full Done write-ups to 2026-09-25 are in `docs/done-log.md`.
 
-State on 2026-09-25: 68 templates (12 small biopsy, 31 benign resection incl. LEEP, 1 frozen section, 16 synoptic cancer resections, 6 cytology, 1 biomarker, 1 generic), 1442 tests, published at `https://han-signout.pplx.app`.
+State on 2026-09-25: 68 templates (12 small biopsy, 31 benign resection incl. LEEP, 1 frozen section, 16 synoptic cancer resections, 6 cytology, 1 biomarker, 1 generic), 1445 tests, published at `https://han-signout.pplx.app`.
 
 ---
 
@@ -10,6 +10,7 @@ State on 2026-09-25: 68 templates (12 small biopsy, 31 benign resection incl. LE
 
 Newest first. The full write-ups as they stood at ship time are in `docs/done-log.md`.
 
+- 2026-09-25 — Skin SCC, UICC TNM 9th for trunk and limbs: trunk and limb sites now print "UICC 9th edition" (T, N and M unchanged from the 8th), and a tick box, "Five or more nerves involved in a section", shows on those sites when perineural invasion is present with the calibre not stated or under 0.1 mm; a tick makes pT3 and prints under perineural invasion and in the diagnosis. Head and neck stays on AJCC 8th without the tick box, and BWH is unchanged; `showIf` gains `any`. Fixtures 04 and 05 relabelled deliberately. 68 templates, 1445 tests. Phase 41.
 - 2026-09-25 — Skin excision, benign lesions: 26 diagnoses added — follicular, sweat gland and sebaceous adnexal tumours, neurofibroma, schwannoma, granular cell tumour, verruca vulgaris, fibroepithelial polyp, scar, keloid, haemangioma and lipoma, plus "Benign adnexal tumour, other" — and the list of 41 is now in eight groups. A skin part whose history names neurofibroma, keloid, verruca or an adnexal tumour opens Skin excision; diagnosis lines in the released forms PILOMATRIXOMA (3 of 5), FIBROEPITHELIAL POLYP (33 of 35 skin lines) and VERRUCA VULGARIS (46 of 46). 68 templates, 1442 tests. Phase 40.
 - 2026-09-25 — Skin squamous cell carcinoma — excision synoptic: `skin_scc` in QMH element order, staged by the site picked from a grouped list — AJCC 8th for head and neck (pN from the ENE table in `src/staging/hn_nodes.js`, kept for Oral cavity (b)), UICC 8th for trunk and limbs (contralateral nodes pM1), no pTNM for eyelid or perianal skin — and the BWH class for every site. New intake key `match.gate`: SCC in the specimen or clinical line opens it, while ?BCC, Bowen, SCC in situ and keratoacanthoma stay on Skin excision; by specimen line alone 5 / 1 of the 23 / 9 invasive SCC parts now open it. 68 templates, 1434 tests. Phase 39.
 - 2026-09-25 — Endometrial biopsy, dated secretory phases: Interval, Early secretory, Mid-secretory and Late secretory added under Secretory in Background endometrium, with diagnosis lines in the released wording, INTERVAL ENDOMETRIUM (all 11 released lines that name it) and MID-SECRETORY hyphenated (3 of 5); undated Secretory unchanged. 67 templates, 1415 tests. Phase 38.

@@ -5,13 +5,20 @@
 // of the Head and Neck protocol v1.2.0.0
 // (https://www.cap.org/wp-content/uploads/protocols/HN.Skin_Cutaneous_1.2.0.0.REL_CAPCP.pdf).
 // AJCC 8th includes the lip (cutaneous and dry vermilion) and the oral commissure; the wet mucosa
-// is oral cavity. UICC 8th sends the vermilion to the lip and oral cavity chapter (RCPath dataset 5.1);
-// "Lip" here follows AJCC, the system used for head and neck sites.
+// is oral cavity. UICC 8th sent the vermilion to the lip and oral cavity chapter (RCPath dataset 5.1);
+// UICC 9th allocates the vermilion border and commissure (C00.0-2, C00.6, C44.0) to skin as well
+// (Int J Cancer 2026, https://pmc.ncbi.nlm.nih.gov/articles/PMC13432304/). "Lip" here follows
+// AJCC, the system used for head and neck sites.
 //   pT1  <= 20 mm; pT2 > 20 to 40 mm; pT3 > 40 mm, or minor bone erosion, qualifying perineural
 //   invasion or deep invasion; pT4a gross cortical bone or marrow invasion; pT4b skull base
 //   invasion or skull base foramen involvement. pN is the ENE table in ./hn_nodes.js.
 //
-// Trunk and limbs: UICC TNM 8th edition, carcinoma of the skin, as set out in Appendix A of the
+// Trunk and limbs: UICC TNM 9th edition (2025; UICC recommends it from 1 January 2026), carcinoma
+// of the skin, as set out in RCPath's "Appendix A UICC TNM 9 pathological staging of primary
+// cutaneous carcinoma" (V3, 061125)
+// (https://www.rcpath.org/static/22a3c502-b300-4132-b0e0b93d104dd64f/Squamous-cellTNM9.pdf).
+// T, N, M and the stage groups are those of the 8th; the 9th clarifies deep invasion and perineural
+// invasion (Int J Cancer 2026, Table 1). The reporting rules cited below as "RCPath" are from the
 // RCPath dataset for primary invasive cutaneous SCC (v4, February 2019)
 // (https://www.rcpath.org/static/9c1d8f71-5d3b-4508-8e6200f11e1f4a39/Dataset-for-histopathological-reporting-of-primary-invasive-cutaneous-squamous-cell-carcinoma-and-regional-lymph-nodes.pdf).
 //   The same pT1 to pT4a; pT4b axial skeleton, skull base or foraminal invasion.
@@ -24,8 +31,10 @@
 //   thickness > 6 mm from the granular layer of the adjacent normal epidermis to the deepest
 //   point of the tumour (CAP; RCPath).
 //   Qualifying perineural invasion: tumour in the nerve sheath of a nerve 0.1 mm or more in
-//   calibre or lying deeper than the dermis. That is AJCC 8th's wording; UICC 8th names only a
-//   named nerve, and RCPath extends it to the same rule, so both systems apply it here.
+//   calibre or lying deeper than the dermis. That is AJCC 8th's wording and UICC 9th's (UICC 8th
+//   named only a named nerve), so both systems apply it here. UICC 9th adds "involvement of five
+//   or more nerves per section" (RCPath TNM 9 appendix); that counts on trunk and limb sites only
+//   (fiveNerves), as AJCC 8th has no such criterion, and it is not a BWH factor.
 //   Size is the clinical dimension, but the pathological (usually macroscopic) dimension may be
 //   used when the clinical one is not available (RCPath Appendix A) — hence sizeMm() falling back
 //   to the macroscopic lesion size.
@@ -76,7 +85,7 @@ export function region(v) {
   return REGION_BY_OPTION[v.siteRegion] || '';
 }
 
-export const EDITIONS = { hn: 'AJCC 8th edition', trunk: 'UICC 8th edition' };
+export const EDITIONS = { hn: 'AJCC 8th edition', trunk: 'UICC 9th edition' };
 
 export const edition = (v) => EDITIONS[region(v)] || '';
 
@@ -142,6 +151,10 @@ function depthMm(v) {
 }
 
 export const qualifyingPni = (v) => v.pni === PNI.large || v.pni === PNI.deep;
+// UICC 9th, trunk and limbs only: five or more involved nerves in a section are a pT3 criterion
+// whatever their calibre. Read only where the tick box shows (calibre not stated, or under 0.1 mm,
+// on a trunk or limb site), so a tick left behind by a changed site or calibre does not count.
+export const fiveNerves = (v) => v.pniFiveNerves === true && [PNI.unstated, PNI.small].includes(v.pni) && region(v) === 'trunk';
 export const beyondFat = (v) => v.beyondFat === BEYOND_FAT.present;
 export const anyBone = (v) => [BONE.minor, BONE.gross, BONE.base].includes(v.boneInvasion);
 
@@ -150,6 +163,7 @@ export function t3Factors(v) {
   const f = [];
   if (v.boneInvasion === BONE.minor) f.push('minor bone erosion');
   if (qualifyingPni(v)) f.push(v.pni === PNI.deep ? 'perineural invasion in a nerve deeper than the dermis' : 'perineural invasion of a nerve 0.1 mm or more in calibre');
+  if (fiveNerves(v)) f.push('perineural invasion of five or more nerves in a section');
   const d = depthMm(v);
   if (d !== null && d > 6) f.push(`depth of invasion ${fmt(d)} mm${v.doi === DOI.least ? ' or more' : ''}`);
   if (beyondFat(v)) f.push('invasion beyond the subcutaneous fat');
@@ -161,7 +175,7 @@ export function t3Factors(v) {
 export function T(v) {
   const r = region(v);
   if (r === 'none') return { cat: 'TX', note: 'Eyelid and perianal skin are staged in their own chapters; no pTNM is assigned here.' };
-  if (r === '') return { cat: 'TX', note: 'Tumour site not recorded; the staging system (AJCC 8th head and neck, UICC 8th trunk and limbs) cannot be chosen.' };
+  if (r === '') return { cat: 'TX', note: 'Tumour site not recorded; the staging system (AJCC 8th head and neck, UICC 9th trunk and limbs) cannot be chosen.' };
   if (v.anatomicLevel === LEVEL_IN_SITU) return { cat: 'Tis' };
   if (v.boneInvasion === BONE.base) return { cat: 'T4b' };
   if (v.boneInvasion === BONE.gross) return { cat: 'T4a' };
@@ -192,7 +206,7 @@ export function N(v) {
   const side = nodeSide(v);
   const size = num(v.largestDepositMm);
   if (r === 'hn') return pathologicalN({ count: involved, laterality: side, ene: v.ene || '', sizeMm: size });
-  // UICC 8th, trunk and limbs: contralateral nodes are distant metastasis (see M).
+  // UICC 9th, trunk and limbs: contralateral nodes are distant metastasis (see M).
   if (side === 'contralateral') {
     return examined > involved
       ? { cat: 'N0', note: 'Only contralateral nodes are involved; for a trunk or limb primary they are distant metastasis (pM1), and pN0 assumes the uninvolved nodes are regional.' }
@@ -212,7 +226,7 @@ export function M(v) {
   if (arr(v.distantMets).some((s) => DISTANT_M1.test(s))) return { cat: 'M1' };
   const involved = int(v.nodesInvolved);
   if (region(v) === 'trunk' && involved && involved > 0 && ['contralateral', 'bilateral'].includes(nodeSide(v))) {
-    return { cat: 'M1', note: 'Contralateral lymph node metastasis from a trunk or limb primary is distant metastasis (pM1, UICC 8th).' };
+    return { cat: 'M1', note: 'Contralateral lymph node metastasis from a trunk or limb primary is distant metastasis (pM1, UICC 9th).' };
   }
   return { cat: 'M-' };
 }

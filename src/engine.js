@@ -79,15 +79,19 @@ export const letterCount = (parts) => new Set(parts.map((p) => p.label)).size;
  * Evaluate a `showIf` rule against the part values. Rules: `is` / `not` (a value or a
  * list of values), `truthy`, and for multiselect fields `min` / `max` (number of ticked
  * options). When the referenced field is a multiselect (its value is an array), `is`
- * means "contains any of" and `not` means "contains none of".
+ * means "contains any of" and `not` means "contains none of". `all` / `any` combine rules.
  */
 export function isVisible(field, values) {
   const rule = field.showIf;
   if (!rule) return true;
   // `all: [rule, ...]` gates a field on several fields at once - every rule must pass. Each member
-  // is an ordinary single-field rule, so nothing else in this function changes. Used by the CNS
-  // templates, where a Layer 4 item needs both a glioma finding and a reported IDH branch.
+  // is an ordinary rule, so nothing else in this function changes. Used by the CNS templates, where
+  // a Layer 4 item needs both a glioma finding and a reported IDH branch.
   if (Array.isArray(rule.all)) return rule.all.every((r) => isVisible({ showIf: r }, values));
+  // `any: [rule, ...]` passes when one member passes; members may themselves be `all` / `any`.
+  // Used by Skin SCC, where a trunk or limb site is either one listed under "Trunk and limbs" or
+  // "Other" / "Not specified" with the trunk and limbs region chosen.
+  if (Array.isArray(rule.any)) return rule.any.some((r) => isVisible({ showIf: r }, values));
   const v = values[rule.field];
   if (Array.isArray(v)) {
     const want = (x) => (Array.isArray(x) ? x : [x]);

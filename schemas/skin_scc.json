@@ -123,7 +123,7 @@
   "url": "https://awiloqmh.github.io/CancerReportingTemplate/HN-Skin%20SCC.html",
   "capProtocol": "https://www.cap.org/wp-content/uploads/protocols/HN.Skin_Cutaneous_1.2.0.0.REL_CAPCP.pdf?download=true",
   "dataset": "https://www.rcpath.org/static/9c1d8f71-5d3b-4508-8e6200f11e1f4a39/Dataset-for-histopathological-reporting-of-primary-invasive-cutaneous-squamous-cell-carcinoma-and-regional-lymph-nodes.pdf",
-  "staging": "pTNM derived by src/staging/skin_scc.js, with the system chosen by the tumour site: AJCC 8th edition for head and neck sites (including the dry vermilion lip and oral commissure) and UICC 8th edition for the trunk and limbs; eyelid and perianal skin are staged in their own chapters and get no pTNM here. pT1 is 20 mm or less, pT2 over 20 to 40 mm, pT3 over 40 mm or minor bone erosion, perineural invasion of a nerve 0.1 mm or more in calibre or deeper than the dermis, or deep invasion (beyond the subcutaneous fat, or more than 6 mm from the granular layer); pT4a gross cortical bone or marrow invasion; pT4b skull base or axial skeleton invasion or foraminal involvement. Head and neck pN follows the AJCC extranodal extension table in src/staging/hn_nodes.js; trunk and limb pN is 30 mm and 60 mm on the largest deposit with no ENE term, and contralateral nodes are pM1. No stage group is printed. The BWH class is derived from four factors and prints for every site. pTNM prints only with the printPTNM option.",
+  "staging": "pTNM derived by src/staging/skin_scc.js, with the system chosen by the tumour site: AJCC 8th edition for head and neck sites (including the dry vermilion lip and oral commissure) and UICC 9th edition for the trunk and limbs; eyelid and perianal skin are staged in their own chapters and get no pTNM here. pT1 is 20 mm or less, pT2 over 20 to 40 mm, pT3 over 40 mm or minor bone erosion, perineural invasion of a nerve 0.1 mm or more in calibre or deeper than the dermis (or, on trunk and limb sites, of five or more nerves in a section), or deep invasion (beyond the subcutaneous fat, or more than 6 mm from the granular layer); pT4a gross cortical bone or marrow invasion; pT4b skull base or axial skeleton invasion or foraminal involvement. Head and neck pN follows the AJCC extranodal extension table in src/staging/hn_nodes.js; trunk and limb pN is 30 mm and 60 mm on the largest deposit with no ENE term, and contralateral nodes are pM1. No stage group is printed. The BWH class is derived from four factors and prints for every site. pTNM prints only with the printPTNM option.",
   "stagingProtocol": "skin_scc",
   "grading": "Graded by the least differentiated area (RCPath). Histologic types as listed on the QMH page, which keeps pseudovascular SCC and adenosquamous carcinoma; the WHO 5th edition skin classification no longer lists them as SCC subtypes (Histopathology 2025, https://onlinelibrary.wiley.com/doi/full/10.1111/his.15562). Morphology sentences and sources: generators/skin_scc_morphology.js and docs/reference/skin_scc-morphology.md."
  },
@@ -141,7 +141,7 @@
   },
   {
    "$use": "printPTNM",
-   "label": "Print the pTNM block (AJCC 8th head and neck, UICC 8th trunk and limbs)"
+   "label": "Print the pTNM block (AJCC 8th head and neck, UICC 9th trunk and limbs)"
   }
  ],
  "fields": [
@@ -249,7 +249,7 @@
      ]
     },
     {
-     "label": "Trunk and limbs (UICC 8th)",
+     "label": "Trunk and limbs (UICC 9th)",
      "options": [
       "Shoulder",
       "Upper arm",
@@ -659,6 +659,67 @@
     "Cannot be determined"
    ],
    "default": "Not identified"
+  },
+  {
+   "id": "pniFiveNerves",
+   "label": "Five or more nerves involved in a section",
+   "type": "checkbox",
+   "group": "Microscopic findings",
+   "default": false,
+   "help": "UICC 9th, trunk and limbs: five or more involved nerves in a section are a pT3 criterion whatever their calibre. Not used for head and neck sites (AJCC 8th) or for the BWH class.",
+   "showIf": {
+    "all": [
+     {
+      "field": "pni",
+      "is": [
+       "Present",
+       "Present, less than 0.1 mm in calibre"
+      ]
+     },
+     {
+      "any": [
+       {
+        "field": "tumourSite",
+        "is": [
+         "Shoulder",
+         "Upper arm",
+         "Elbow",
+         "Forearm",
+         "Wrist",
+         "Hand",
+         "Finger",
+         "Chest",
+         "Abdomen",
+         "Back",
+         "Buttock",
+         "Groin",
+         "Thigh",
+         "Knee",
+         "Lower leg",
+         "Ankle",
+         "Foot",
+         "Toe"
+        ]
+       },
+       {
+        "all": [
+         {
+          "field": "tumourSite",
+          "is": [
+           "Other (specify)",
+           "Not specified"
+          ]
+         },
+         {
+          "field": "siteRegion",
+          "is": "Trunk and limbs"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
   },
   {
    "id": "ihc",

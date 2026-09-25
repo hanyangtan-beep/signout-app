@@ -1,4 +1,4 @@
-// Skin squamous cell carcinoma excision (synoptic; AJCC 8th head and neck, UICC 8th trunk and limbs,
+// Skin squamous cell carcinoma excision (synoptic; AJCC 8th head and neck, UICC 9th trunk and limbs,
 // BWH class for every site) - generator, staging boundaries, checks, intake and golden fixtures.
 // Fixtures: tests/fixtures/skin_scc/*.json (golden; --update only after a deliberate change).
 import test from 'node:test';
@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { createCase, generate } from '../src/engine.js';
+import { createCase, generate, isVisible } from '../src/engine.js';
 import { loadAll, loadManifest } from '../src/registry.js';
 import { parseSynoptic } from '../src/synoptic.js';
 import { parseIntake, matchParts, presetValues } from '../src/intake.js';
@@ -59,9 +59,9 @@ const CASES = [
     nodesExamined: '14', nodesInvolved: '2', nodeLaterality: 'Ipsilateral (including midline)', ene: 'Present',
     largestDepositMm: '18', largestDepositSite: 'level II', largestNodeMm: '22', largestNodeSite: 'level II'
   }],
-  // Card accept: a 25 mm forearm SCC, pT2 on UICC 8th, BWH T2a (diameter 2 cm or more).
+  // Card accept: a 25 mm forearm SCC, pT2 on UICC 9th, BWH T2a (diameter 2 cm or more).
   ['skin-scc-04-forearm-uicc-pt2', { ...FOREARM, tumourSizeMm: '25' }],
-  // Card accept: a thigh SCC with one ipsilateral inguinal node, deposit 35 mm: pN2 on UICC 8th.
+  // Card accept: a thigh SCC with one ipsilateral inguinal node, deposit 35 mm: pN2 on UICC 9th.
   ['skin-scc-05-thigh-uicc-pn2', {
     specimenName: '', tumourSite: 'Thigh', laterality: 'Left', tumourSizeMm: '35', ellipseSize: '6.5 x 3.5 x 1.5', lesionSize: '3.5',
     procedure: ['Wide local excision', 'Lymphadenectomy'], nodesExamined: '9', nodesInvolved: '1',
@@ -88,7 +88,7 @@ test('schema option lists are the staging module constants', () => {
   assert.deepEqual(site.options, S.SITE_OPTIONS);
   const staged = S.SITE_GROUPS.filter((g) => g.region);
   assert.deepEqual(site.optionGroups.map((g) => g.options), staged.map((g) => g.options), 'optgroups follow the staging regions');
-  assert.deepEqual(site.optionGroups.map((g) => g.label), ['Head and neck (AJCC 8th)', 'Trunk and limbs (UICC 8th)', 'Not staged here (own chapter)']);
+  assert.deepEqual(site.optionGroups.map((g) => g.label), ['Head and neck (AJCC 8th)', 'Trunk and limbs (UICC 9th)', 'Not staged here (own chapter)']);
   assert.deepEqual(fieldOf('siteRegion').options, S.REGION_OPTIONS);
   assert.deepEqual(fieldOf('pni').options, S.PNI_OPTIONS);
   assert.deepEqual(fieldOf('boneInvasion').options, S.BONE_OPTIONS);
@@ -172,9 +172,9 @@ test('synoptic element order follows the saved QMH HN-Skin SCC page', () => {
 
 // ---------- staging ----------
 
-test('staging system follows the site: AJCC 8th head and neck, UICC 8th trunk and limbs, none for eyelid and perianal', () => {
+test('staging system follows the site: AJCC 8th head and neck, UICC 9th trunk and limbs, none for eyelid and perianal', () => {
   assert.ok(sections(run()).includes('Pathological stage (AJCC 8th edition)'));
-  assert.ok(sections(run({ ...FOREARM, tumourSizeMm: '14' })).includes('Pathological stage (UICC 8th edition)'));
+  assert.ok(sections(run({ ...FOREARM, tumourSizeMm: '14' })).includes('Pathological stage (UICC 9th edition)'));
   for (const site of ['Eyelid', 'Perianal skin (within 5 cm of the anal margin)']) {
     const c = run({ specimenName: '', tumourSite: site });
     assert.ok(!sections(c).some((s) => /^Pathological stage/.test(s)), `${site}: no pTNM block`);
@@ -186,7 +186,7 @@ test('staging system follows the site: AJCC 8th head and neck, UICC 8th trunk an
   const other = { specimenName: '', tumourSite: 'Other (specify)', tumourSiteOther: 'nasal vestibule' };
   assert.ok(msgs(run(other), 'error').some((m) => /Choose the staging region/.test(m)));
   assert.ok(sections(run({ ...other, siteRegion: 'Head and neck' })).includes('Pathological stage (AJCC 8th edition)'));
-  assert.ok(sections(run({ ...other, siteRegion: 'Trunk and limbs' })).includes('Pathological stage (UICC 8th edition)'));
+  assert.ok(sections(run({ ...other, siteRegion: 'Trunk and limbs' })).includes('Pathological stage (UICC 9th edition)'));
   assert.equal(rows(run({ ...other, siteRegion: 'Head and neck' }))['Tumour site'], 'Left nasal vestibule');
   // printPTNM off: no block and no stage clause, BWH stays in the synoptic.
   const off = run({}, { printPTNM: false });
@@ -222,6 +222,64 @@ test('pT boundaries are the same in both systems: 20 and 40 mm, 6 mm deep, 0.1 m
   assert.ok(msgs(none, 'error').some((m) => /^pT cannot be assigned/.test(m)));
 });
 
+test('UICC 9th, trunk and limbs: five or more involved nerves in a section is pT3 whatever the calibre', () => {
+  const small = { pni: 'Present, less than 0.1 mm in calibre' };
+  const limb = (p) => run({ ...FOREARM, tumourSizeMm: '14', ...p });
+  assert.equal(tnm(limb(small)), 'pT1 pNX');
+  const five = limb({ ...small, pniFiveNerves: true });
+  assert.equal(tnm(five), 'pT3 pNX');
+  assert.equal(tnm(limb({ pni: 'Present', pniFiveNerves: true })), 'pT3 pNX');
+  assert.equal(bwh(five), 'T1: 0 high-risk factors', 'not a BWH factor');
+  // Printed as seen: a line under perineural invasion, and in the diagnosis clause.
+  assert.equal(rows(five)['Perineural invasion'], 'Present, less than 0.1 mm in calibre');
+  assert.equal(rows(five)['Nerves involved'], 'Five or more in a section');
+  assert.ok(flatDx(five).includes('perineural invasion present (less than 0.1 mm in calibre; five or more nerves in a section);'));
+  assert.ok(flatDx(limb({ pni: 'Present', pniFiveNerves: true })).includes('perineural invasion present (five or more nerves in a section);'));
+  assert.deepEqual(five.issues, [], 'clean');
+  assert.ok(msgs(limb({ ...small, pniFiveNerves: true, tnmOverride: 'pT1 pNX', tnmOverrideReason: 'test' }), 'error')
+    .includes('pT1 recorded, but perineural invasion of five or more nerves in a section is a pT3 criterion.'));
+  // Head and neck stays on AJCC 8th, which has no nerve count, and a tick left behind by a changed
+  // site or calibre does not count or print.
+  const cheek = run({ ...small, pniFiveNerves: true });
+  assert.equal(tnm(cheek), 'pT1 pNX');
+  assert.equal(rows(cheek)['Nerves involved'], undefined);
+  assert.ok(flatDx(cheek).includes('perineural invasion present (less than 0.1 mm in calibre);'));
+  for (const pni of ['Not identified', 'Present, 0.1 mm or more in calibre', 'Cannot be determined']) {
+    assert.equal(rows(limb({ pni, pniFiveNerves: true }))['Nerves involved'], undefined, pni);
+  }
+  // Other and Not specified sites count when the trunk and limbs region is chosen.
+  const other = { specimenName: '', tumourSite: 'Other (specify)', tumourSiteOther: 'flank', tumourSizeMm: '14', ...small, pniFiveNerves: true };
+  assert.equal(tnm(run({ ...other, siteRegion: 'Trunk and limbs' })), 'pT3 pNX');
+  assert.equal(tnm(run({ ...other, siteRegion: 'Head and neck' })), 'pT1 pNX');
+});
+
+test('the five-nerve tick box shows only on trunk and limb sites, with the calibre not stated or under 0.1 mm', () => {
+  const f = fieldOf('pniFiveNerves');
+  assert.equal(f.type, 'checkbox');
+  assert.equal(f.default, false);
+  const trunk = S.SITE_GROUPS.find((g) => g.region === 'trunk').options;
+  assert.deepEqual(f.showIf.all[1].any[0].is, trunk, 'the trunk list follows SITE_GROUPS');
+  const vis = (p) => isVisible(f, { ...defaults(schema), ...EX, ...p });
+  for (const site of trunk) assert.equal(vis({ tumourSite: site, pni: 'Present, less than 0.1 mm in calibre' }), true, site);
+  assert.equal(vis({ tumourSite: 'Forearm', pni: 'Present' }), true);
+  for (const pni of ['Not identified', 'Present, 0.1 mm or more in calibre', 'Present, in a nerve deeper than the dermis', 'Cannot be determined']) {
+    assert.equal(vis({ tumourSite: 'Forearm', pni }), false, pni);
+  }
+  for (const g of S.SITE_GROUPS.filter((x) => x.region !== 'trunk')) {
+    for (const site of g.options.filter((s) => !['Other (specify)', 'Not specified'].includes(s))) assert.equal(vis({ tumourSite: site, pni: 'Present' }), false, site);
+  }
+  assert.equal(vis({ tumourSite: 'Other (specify)', siteRegion: 'Trunk and limbs', pni: 'Present' }), true);
+  assert.equal(vis({ tumourSite: 'Not specified', siteRegion: 'Trunk and limbs', pni: 'Present' }), true);
+  assert.equal(vis({ tumourSite: 'Other (specify)', siteRegion: 'Head and neck', pni: 'Present' }), false);
+  // Wherever the box shows, a tick stages; wherever it is hidden, a tick does not.
+  for (const site of S.SITE_OPTIONS) {
+    for (const pni of S.PNI_OPTIONS) {
+      const v = { ...defaults(schema), ...EX, tumourSite: site, siteRegion: 'Trunk and limbs', pni, pniFiveNerves: true };
+      assert.equal(S.fiveNerves(v), isVisible(f, v), `${site} / ${pni}`);
+    }
+  }
+});
+
 test('head and neck pN is the AJCC 8th ENE table', () => {
   const N = (count, laterality, ene, sizeMm) => pathologicalN({ count, laterality, ene, sizeMm }).cat;
   assert.equal(N(1, 'ipsilateral', 'Not identified', 30), 'N1');
@@ -244,13 +302,13 @@ test('head and neck pN is the AJCC 8th ENE table', () => {
   assert.equal(ear({ nodeLaterality: 'Contralateral', ene: 'Not identified' }), 'pT1 pN2c');
 });
 
-test('trunk and limb pN is UICC 8th: 30 and 60 mm, no ENE, contralateral nodes are pM1', () => {
+test('trunk and limb pN is UICC 9th: 30 and 60 mm, no ENE, contralateral nodes are pM1', () => {
   const limb = (p) => tnm(run({ ...CASES[4][1], ...p }));
   assert.equal(limb({ largestDepositMm: '30' }), 'pT2 pN1');
   assert.equal(limb({ largestDepositMm: '30.1' }), 'pT2 pN2');
   assert.equal(limb({ nodesInvolved: '2', largestDepositMm: '12' }), 'pT2 pN2');
   assert.equal(limb({ largestDepositMm: '60.1' }), 'pT2 pN3');
-  assert.equal(limb({ largestDepositMm: '12', ene: 'Present' }), 'pT2 pN1', 'no ENE term on UICC 8th');
+  assert.equal(limb({ largestDepositMm: '12', ene: 'Present' }), 'pT2 pN1', 'no ENE term on UICC 9th');
   const contra = run({ ...CASES[4][1], nodeLaterality: 'Contralateral', largestDepositMm: '12' });
   assert.equal(tnm(contra), 'pT2 pN0 pM1');
   assert.deepEqual(msgs(contra, 'warn'), ['Only contralateral nodes are involved; for a trunk or limb primary they are distant metastasis (pM1), and pN0 assumes the uninvolved nodes are regional.']);
@@ -341,7 +399,7 @@ test('checks: the errors', () => {
   const hn = E({ nodesExamined: '3', nodesInvolved: '1', nodeLaterality: 'Ipsilateral (including midline)', ene: '', largestDepositMm: '' });
   assert.ok(hn.includes('Extranodal extension is required for involved head and neck nodes: it decides pN.'));
   assert.ok(hn.includes('Size of the largest metastatic deposit is required: pN turns on 30 mm and 60 mm.'));
-  assert.ok(!E({ ...FOREARM, nodesExamined: '3', nodesInvolved: '1', nodeLaterality: 'Ipsilateral (including midline)', ene: '', largestDepositMm: '8' }).some((m) => /Extranodal/.test(m)), 'no ENE check on UICC 8th');
+  assert.ok(!E({ ...FOREARM, nodesExamined: '3', nodesInvolved: '1', nodeLaterality: 'Ipsilateral (including midline)', ene: '', largestDepositMm: '8' }).some((m) => /Extranodal/.test(m)), 'no ENE check on UICC 9th');
   assert.ok(E({ doiMm: '8', tnmOverride: 'pT2 pNX', tnmOverrideReason: 'test' }).includes('pT2 recorded, but depth of invasion 8 mm is a pT3 criterion.'));
 });
 
@@ -400,7 +458,9 @@ test('golden fixtures reproduce byte-for-byte', () => {
   for (const [name, patch, opts = {}] of CASES) {
     const out = run(patch, opts);
     const file = path.join(FIX, `${name}.json`);
-    const current = { templateId: 'skin_scc', patch, options: opts, report: out.report, checks: out.issues };
+    // A deliberate edit's reason lives in the fixture's description; --update keeps it.
+    const kept = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')).description : undefined;
+    const current = { ...(kept ? { description: kept } : {}), templateId: 'skin_scc', patch, options: opts, report: out.report, checks: out.issues };
     if (UPDATE || !fs.existsSync(file)) { fs.writeFileSync(file, JSON.stringify(current, null, 2) + '\n'); continue; }
     const saved = JSON.parse(fs.readFileSync(file, 'utf8'));
     assert.equal(out.report, saved.report, `${file} changed; re-run with --update only after a deliberate wording change`);
@@ -417,7 +477,7 @@ test('golden fixtures: the card accept cases stage as the card says', () => {
   assert.equal(tnm(byName['skin-scc-03-ear-pn3b']), 'pT1 pN3b');
   assert.equal(tnm(byName['skin-scc-04-forearm-uicc-pt2']), 'pT2 pNX');
   assert.equal(bwh(byName['skin-scc-04-forearm-uicc-pt2']), 'T2a: 1 high-risk factor');
-  assert.ok(sections(byName['skin-scc-04-forearm-uicc-pt2']).includes('Pathological stage (UICC 8th edition)'));
+  assert.ok(sections(byName['skin-scc-04-forearm-uicc-pt2']).includes('Pathological stage (UICC 9th edition)'));
   assert.equal(tnm(byName['skin-scc-05-thigh-uicc-pn2']), 'pT2 pN2');
   for (const [n, out] of Object.entries(byName)) assert.deepEqual(out.issues, [], `${n} is clean`);
 });
