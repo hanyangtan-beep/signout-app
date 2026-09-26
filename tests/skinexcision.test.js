@@ -28,11 +28,12 @@ test('metadata: benign skin resection with search aliases and complete defaults'
   assert.equal(schema.label, 'Skin excision');
   assert.equal(schema.organ, 'SKIN');
   assert.equal(schema.rank, 30);
-  assert.equal(schema.shortName, 'Skin · excision with margins');
+  // Phase 43: the retired Skin lesion form's shave, punch and curettings are Procedure choices here.
+  assert.equal(schema.shortName, 'Skin · excision, shave, punch, curettings');
   assert.ok(schema.shortName.includes(' · '));
   assert.ok(schema.aliases.length >= 6);
   for (const a of ['BCC', 'basal cell carcinoma', 'keratoacanthoma', 'seborrhoeic keratosis', 'naevus', 'nevus', 'dermatofibroma', 'pyogenic granuloma', 'actinic keratosis', 'SCC in situ', 'Bowen', 'margins', 'ellipse', 'orientation suture']) assert.ok(schema.aliases.includes(a), a);
-  assert.equal(schema.maxParts, 3);
+  assert.equal(schema.maxParts, 6, 'Phase 43: six, as multiple shaves or curettings come in one case');
   assert.equal(schema.defaultParts, 1);
   for (const f of schema.fields) assert.ok('default' in f, `${f.id} has a default`);
   const ids = new Set(schema.fields.map((f) => f.id));
@@ -45,8 +46,9 @@ test('metadata: benign skin resection with search aliases and complete defaults'
   assert.equal(schema.fields[schema.fields.length - 1].id, 'additionalNotes');
   assert.equal(schema.fields.find((f) => f.id === 'blocks').default, '3');
   assert.equal(schema.fields.find((f) => f.id === 'blockScheme').default, 'Ellipse serially sliced and all embedded');
-  // 15 to Phase 39; Phase 40 added 26 benign lesions (tests/skin_excision_benign.test.js).
-  assert.equal(schema.fields.find((f) => f.id === 'diagnosis').options.length, 41);
+  // 15 to Phase 39; Phase 40 added 26 benign lesions (tests/skin_excision_benign.test.js); Phase 43 added
+  // four from the retired Skin lesion form (tests/skin_excision_procedures.test.js).
+  assert.equal(schema.fields.find((f) => f.id === 'diagnosis').options.length, 45);
   assert.equal(schema.fields.find((f) => f.id === 'involvedMargins').type, 'multiselect');
 });
 

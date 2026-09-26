@@ -208,7 +208,7 @@ const COVER = {
   'Bladder / urothelium': ['turbt', 'bladder_carcinoma'],
   Kidney: ['renal_biopsy', 'kidney_carcinoma'],
   'Testis / penis / scrotum': ['testis_tumour', 'penile_carcinoma'],
-  Skin: ['skin_lesion', 'skin_excision', 'skin_cyst', 'melanoma', 'skin_scc'],
+  Skin: ['skin_excision', 'skin_cyst', 'melanoma', 'skin_scc'],
   'Soft tissue': ['soft_tissue_benign', 'soft_tissue_sarcoma'],
   'Bone / joint': ['bone_tumour', 'bone_joint'],
   'Lymph node (histology)': ['lymph_node', 'lymphoma_node'],

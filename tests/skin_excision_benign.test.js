@@ -60,9 +60,14 @@ const ADDED = {
   'Benign adnexal tumour, other': ['BENIGN ADNEXAL TUMOUR (see microscopic examination)', `Sections show a benign adnexal tumour; see additional description. ${NO_MAL}`]
 };
 
+// Phase 43 (2026-09-26) added four more from the retired Skin lesion form; their wording is tested in
+// tests/skin_excision_procedures.test.js.
+const PHASE43 = ['Irritated seborrhoeic keratosis', 'Junctional naevus', 'Congenital melanocytic naevus', 'Hypertrophic scar'];
+
 test('Phase 40 lesions join the list; the original options keep their order and the default', () => {
   const opts = field.options;
-  assert.equal(opts.length, ORIGINAL.length + Object.keys(ADDED).length);
+  assert.equal(opts.length, ORIGINAL.length + Object.keys(ADDED).length + PHASE43.length);
+  for (const o of PHASE43) assert.ok(opts.includes(o), o);
   assert.equal(new Set(opts).size, opts.length, 'no duplicate options');
   assert.deepEqual(opts.filter((o) => ORIGINAL.includes(o)), ORIGINAL);
   for (const o of Object.keys(ADDED)) assert.ok(opts.includes(o), o);
@@ -143,7 +148,8 @@ test('intake: a lesion named in the history opens Skin excision; shaves, cysts a
     assert.equal(r.templateId, 'skin_excision', `${line} | ${history}`);
     assert.equal(r.tier, 'confident', `${line} | ${history}`);
   }
-  assert.equal(route('Skin, back, shave', 'verruca').templateId, 'skin_lesion');
+  // Phase 43: Skin lesion (shave / punch) was retired into Skin excision, so a shave opens it too.
+  assert.equal(route('Skin, back, shave', 'verruca').templateId, 'skin_excision');
   assert.equal(route('Skin, back, excision', 'sebaceous cyst').templateId, 'skin_cyst');
   assert.equal(route('Lipoma, back, excision', 'lipoma').templateId, 'soft_tissue_benign');
   assert.equal(route('Skin, back, excision').tier, 'choose', 'the specimen line alone still offers the choice');

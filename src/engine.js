@@ -217,6 +217,33 @@ export function coerceValue(field, values) {
   return opts.includes(values[field.id]) ? values[field.id] : opts[0];
 }
 
+/**
+ * `defaultByField: { field, map }` — a field whose default follows another field's value; a value the
+ * map does not name keeps the field's own `default`. Skin excision: a shave, punch or curettings starts
+ * at 1 block and no clinical label, where an ellipse starts at 3 blocks and "nodule"; a shave or
+ * curettings starts at seborrhoeic keratosis, as the retired Skin lesion form did.
+ */
+export function linkedDefault(field, value) {
+  const map = field.defaultByField?.map || {};
+  return Object.prototype.hasOwnProperty.call(map, value) ? map[value] : field.default;
+}
+
+/**
+ * After `changedId` moves from `before` to its current value, each field whose default follows it and
+ * still holds the old value's default takes the new one. A value the pathologist typed is left alone,
+ * and so is any field named in `skip` (a value the pasted request set itself).
+ */
+export function applyLinkedDefaults(schema, part, changedId, before, skip = {}) {
+  const same = (a, b) => JSON.stringify(a ?? '') === JSON.stringify(b ?? '');
+  for (const f of schema.fields || []) {
+    if (f.defaultByField?.field !== changedId || f.id in skip) continue;
+    if (same(part.values[f.id], linkedDefault(f, before))) {
+      part.values[f.id] = JSON.parse(JSON.stringify(linkedDefault(f, part.values[changedId]) ?? ''));
+    }
+  }
+  return part;
+}
+
 /** Normalise all dependent fields in a part after an edit. */
 export function normalisePart(schema, part) {
   for (const f of schema.fields) {

@@ -48,3 +48,20 @@ Released diagnosis lines from the 2021–2026 biopsy export and the 2024–2026 
 | Keloid | thick glassy keloidal collagen; increased fibroblasts; replaces adnexa (Skin lesion house sentence) | [PathologyOutlines — keloid](https://www.pathologyoutlines.com/topic/earkeloid.html), [DermNet — keloid and hypertrophic scar](https://dermnetnz.org/topics/keloid-and-hypertrophic-scar) |
 | Haemangioma | vascular channels lined by flattened endothelium (Skin lesion house sentence) | [PathologyOutlines — haemangioma](https://www.pathologyoutlines.com/topic/softtissuehemangioma.html), [DermNet — cherry angioma](https://dermnetnz.org/topics/cherry-angioma-pathology) |
 | Lipoma | lobulated mature adipocytes with thin fibrous septa (Soft tissue house sentence for lipoblasts) | [PathologyOutlines — lipoma](https://www.pathologyoutlines.com/topic/softtissueadiposelipoma.html) |
+
+## Phase 43 — shave, punch and curettings (2026-09-26)
+
+Skin — small benign lesion (`skin_lesion`) was retired into this form at the user's request (2026-09-26). A Procedure field (Excision / Shave / Punch / Curettings) carries the retired form's macroscopy, block key and shave and punch margin sentences across unchanged; curettings print no margin. Blocks, the clinical label, the lesion appearance and the diagnosis follow the procedure until the pathologist changes them (`defaultByField`, applied by `applyLinkedDefaults` in `src/engine.js`). The Diagnosis list is now 45. Tested in `tests/skin_excision_procedures.test.js`.
+
+Released use, aggregate part-line counts (five-year biopsy file / 2024–2026 LIS export), checked 2026-09-26:
+
+- By specimen line alone the retired form opened 9 of 865 skin parts in the biopsy file (8 punch, 1 shave) and none of 239 in the export; none of the nine was a benign lesion it could report, and no saved case used it. Those nine now open Generic.
+- Carried across: IRRITATED SEBORRHOEIC KERATOSIS 6 / 4, JUNCTIONAL NAEVUS 1 / 0, CONGENITAL MELANOCYTIC NAEVUS 2 / 0, HYPERTROPHIC SCAR 3 / 0.
+- Not carried across: the seborrhoeic keratosis subtypes (hyperkeratotic, clonal, reticulated) 0 / 0; an actinic keratosis KIN grade 0 / 0 (14 actinic keratosis lines, none graded); naevus with mild dysplastic features 0 / 0; molluscum contagiosum 0 / 0; xanthelasma 0 / 0; chondrodermatitis nodularis helicis 1 / 0; "Malignant / atypical – see comment", which the BCC, SCC in situ, invasive SCC and melanoma options cover. Of the three snippets, the skin cancer template one already exists here (`skin_cancer_template`); the actinic keratosis at margin and naevus with atypia snippets were advice sentences and were not carried.
+
+| Option | Printed features | Source |
+|---|---|---|
+| Irritated seborrhoeic keratosis | the house seborrhoeic keratosis description with squamous eddies and a brisk lichenoid infiltrate | [DermNet — seborrhoeic keratosis pathology](https://dermnetnz.org/topics/seborrhoeic-keratosis-pathology) ("focal squamous eddies; underlying lichenoid inflammation") |
+| Junctional naevus | nests of bland naevus cells confined to the dermo-epidermal junction; no dermal component | [DermNet — melanocytic naevi pathology](https://dermnetnz.org/topics/melanocytic-naevi-pathology), [Patholines — junctional nevus](http://patholines.org/Junctional_nevus/) |
+| Congenital melanocytic naevus | dermal naevus cells with maturation; extension around adnexa and neurovascular bundles in the deeper dermis | [StatPearls — congenital nevus](https://www.ncbi.nlm.nih.gov/books/NBK559270/) |
+| Hypertrophic scar | nodules of fibrous tissue; collagen and fibroblasts parallel to the epidermis; vertically orientated vessels | [StatPearls — hypertrophic scars and keloids](https://www.ncbi.nlm.nih.gov/books/NBK537058/) |

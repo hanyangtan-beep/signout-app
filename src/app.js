@@ -3,7 +3,8 @@
 import { loadManifest, loadPlanned, loadTemplate } from './registry.js';
 import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, rowOfKind, KIND_LABEL } from './picker.js';
 import {
-  createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, caseOptions, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset
+  createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, caseOptions, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset,
+  applyLinkedDefaults
 } from './engine.js';
 import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js';
 import { loadConfig, saveConfig, accountConfig, rememberForAccount } from './config.js';
@@ -407,7 +408,9 @@ function markDirty() { if (!state.dirty) { state.dirty = true; renderSaveStatus(
 function setValue(fieldId, value) {
   markDirty();
   const part = activePart();
+  const before = part.values[fieldId];
   part.values[fieldId] = value;
+  applyLinkedDefaults(schema(), part, fieldId, before);
   normalisePart(schema(), part);
   render();
 }
@@ -1855,7 +1858,9 @@ async function buildPartsFromIntake() {
     for (const rule of [].concat(s.match?.fill || [])) {
       if (preset[rule.field] === undefined && positional[rule.field] !== undefined && part.values[rule.field] === positional[rule.field]) part.values[rule.field] = '';
     }
+    const before = { ...part.values };
     Object.assign(part.values, preset);
+    for (const k of Object.keys(preset)) applyLinkedDefaults(s, part, k, before[k], preset);
     normalisePart(s, part);
     return part;
   });

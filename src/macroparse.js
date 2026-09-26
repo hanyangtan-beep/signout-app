@@ -12,7 +12,7 @@
 // unlettered text belongs to part A) and written only to fields still at their default or
 // still holding the previous auto-fill, so a hand-edited value is never overwritten.
 
-import { defaultValues } from './engine.js';
+import { defaultValues, linkedDefault } from './engine.js';
 
 const NUM = String.raw`(\d+(?:\.\d+)?)`;
 const UNIT = String.raw`(mm|cm|millimet(?:er|re)s?|centimet(?:er|re)s?)`;
@@ -561,7 +561,10 @@ export function applyMacroToCase(caseState, schemaFor) {
     const next = {};
     for (const field of Object.keys(schema.macroExtract)) {
       const cur = part.values[field];
-      const def = defaults[field];
+      // A default that follows another field is the one to compare and revert to: a Skin excision
+      // shave starts at 1 block, not the ellipse's 3.
+      const f = (schema.fields || []).find((x) => x.id === field);
+      const def = f?.defaultByField ? linkedDefault(f, part.values[f.defaultByField.field]) : defaults[field];
       const writable = cur === def || cur === '' || cur === undefined || (field in prev && cur === prev[field]);
       if (!writable) continue;
       if (field in found) { part.values[field] = found[field]; next[field] = found[field]; filled++; }

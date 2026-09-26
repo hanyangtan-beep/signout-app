@@ -26,7 +26,7 @@ A schema opts in with
 ## Opted in
 
 - 2026-09-12 (Phase 9b): `breast_carcinoma`, then the same batch extended to every large resection template — cancer resections `breast_dcis`, `phyllodes`, `lung_carcinoma` (group "Specimen and tumour"), `ovary_ft_peritoneum`, `endometrial_carcinoma`, `colon_resection`, `gist_resection` (group "Macroscopy"), and the organ-level benign resections `uterus_benign`, `placenta`, `aortic_valve_aorta`, `appendix`, `gallbladder`, `liver_benign`, `ovarian_cyst`, `salivary_benign`, `thyroid_benign`, `tonsils` (group "Macroscopy"); `specimenName` moves left in all of them.
-- Not opted in (small excisions; all fields stay in the middle column): `breast_excision`, `skin_excision`, `skin_lesion`, `skin_cyst`, `soft_tissue_benign`, `nasal_polyps`, `parathyroid`, `jaw_cyst`, `lymph_node`, `stoma`, `turbt`, `turp`, biopsies, cytology, frozen section. Any of these can opt in with the same `layout` line.
+- Not opted in (small excisions; all fields stay in the middle column): `breast_excision`, `skin_excision`, `skin_cyst`, `soft_tissue_benign`, `nasal_polyps`, `parathyroid`, `jaw_cyst`, `lymph_node`, `stoma`, `turbt`, `turp`, biopsies, cytology, frozen section. Any of these can opt in with the same `layout` line.
 - The breast trio and the JSON-edited schemas carry the key after `kind`; `tests/liverbenign.test.js` asserts the key order and the layout value. `scripts/gen-endometrium-schema.py` is stale (it no longer reproduces `schemas/endometrial_carcinoma.json`), so that schema was edited directly.
 
 ## Packed forms (widescreen pilot, 2026-09-13)

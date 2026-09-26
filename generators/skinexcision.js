@@ -2,6 +2,14 @@ import { stripDot } from './_house.js';
 // Skin lesion excision with margins (BCC / keratoacanthoma / benign lesions) generator.
 // Phase 40 added the benign adnexal (follicular, sweat gland, sebaceous), neural, fibrous, vascular and
 // fatty lesions, shown in groups on the Diagnosis list (schema `optionGroups`).
+// Phase 43 (user 2026-09-26) retired Skin — small benign lesion into this form: Procedure offers a shave,
+// punch or curettings beside the excision. Those hide the ellipse fields (orientation, inking, sampling,
+// measured margins) and print the retired form's macro, block key and margin sentences:
+//   macro      "(A) Received in formalin is a shave of skin measuring 0.6 x 0.4 x 0.2 cm bearing a papule
+//               measuring 0.3 cm. All embedded in 1 block."
+//   blockKey   "(A) (1) Shave, all embedded."
+//   diagnosis  "(A) SKIN, back, shave - SEBORRHOEIC KERATOSIS; lesion extends to the edge of the shave"
+// A part saved before Phase 43 has no `procedure` and reads as an excision, so its report is unchanged.
 // Pure functions: (part, ctx) -> string.
 // Blocks produced:
 //   specimens  "Skin, left cheek nodule, excision"
@@ -40,6 +48,18 @@ export const MALIGNANT = [...BCC, 'Squamous cell carcinoma in situ (Bowen diseas
 export const isBcc = (v) => BCC.includes(v.diagnosis);
 export const isCancerReferral = (v) => CANCER.includes(dash(v.diagnosis));
 export const isMalignant = (v) => MALIGNANT.includes(dash(v.diagnosis));
+
+export const SMALL = ['Shave', 'Punch', 'Curettings'];
+export const procedureOf = (v) => (SMALL.includes(v.procedure) ? v.procedure : 'Excision');
+export const isSmall = (v) => procedureOf(v) !== 'Excision';
+// The shave, punch and curettings wording is the retired Skin lesion form's, unchanged.
+const PROC = {
+  Excision: { word: 'excision' },
+  Shave: { word: 'shave', received: 'is a shave of skin', block: 'Shave, all embedded.' },
+  Punch: { word: 'punch', received: 'is a punch biopsy of skin', block: 'Punch, all embedded.' },
+  Curettings: { word: 'curettings', received: 'are multiple fragments of skin (curettings)', block: 'Curettings, all embedded.' }
+};
+const procWord = (v) => PROC[procedureOf(v)].word;
 
 export const MARGINS = [
   ['Superior', 'marginSuperior'],
@@ -89,7 +109,8 @@ export function sitePhrase(v) {
 
 export function specimenName(part) {
   const site = sitePhrase(part.values);
-  return site ? `Skin, ${site}, excision` : 'Skin, excision';
+  const word = procWord(part.values);
+  return site ? `Skin, ${site}, ${word}` : `Skin, ${word}`;
 }
 
 // ---------- macroscopic description ----------
@@ -102,15 +123,33 @@ const APPEARANCE = {
   Plaque: 'a plaque',
   Papule: 'a papule'
 };
+const appearance = (v) => APPEARANCE[v.lesionAppearance] || (v.lesionAppearance ? `a ${lc1(stripDot(v.lesionAppearance))}` : 'a lesion');
+const blockCount = (v, fallback) => Math.max(1, Math.round(num(v.blocks) ?? fallback));
+
+/** Shave / punch: "Received in formalin is a shave of skin measuring ... bearing a papule measuring ..."; curettings in aggregate. */
+function smallMacro(v) {
+  const p = PROC[procedureOf(v)];
+  const size = sizePhrase(v.ellipseSize);
+  const s = [];
+  if (procedureOf(v) === 'Curettings') {
+    s.push(`Received in formalin ${p.received}${size ? ` measuring ${size} in aggregate` : ''}.`);
+  } else {
+    const lesion = sizePhrase(v.lesionSize);
+    s.push(`Received in formalin ${p.received}${size ? ` measuring ${size}` : ''} bearing ${appearance(v)}${lesion ? ` measuring ${lesion}` : ''}.`);
+  }
+  const blocks = blockCount(v, 1);
+  s.push(`All embedded in ${blocks} block${blocks === 1 ? '' : 's'}.`);
+  return s.join(' ');
+}
 
 export function macro(part, ctx) {
   if (ctx?.options?.macro === false) return '';
   const v = part.values;
+  if (isSmall(v)) return `(${part.label}) ${smallMacro(v)}`;
   const s = [];
   const ellipse = sizePhrase(v.ellipseSize);
   const lesion = sizePhrase(v.lesionSize);
-  const what = APPEARANCE[v.lesionAppearance] || (v.lesionAppearance ? `a ${lc1(stripDot(v.lesionAppearance))}` : 'a lesion');
-  s.push(`Received in formalin is an ellipse of skin${ellipse ? ` measuring ${ellipse}` : ''} bearing ${what}${lesion ? ` measuring ${lesion}` : ''}.`);
+  s.push(`Received in formalin is an ellipse of skin${ellipse ? ` measuring ${ellipse}` : ''} bearing ${appearance(v)}${lesion ? ` measuring ${lesion}` : ''}.`);
   const orient = dash(v.orientation || '');
   if (orient === "Suture at 12 o'clock = superior") s.push("A suture marks 12 o'clock, taken as superior.");
   else if (orient === 'Other - describe') {
@@ -121,7 +160,7 @@ export function macro(part, ctx) {
   if (mm) s.push(`The lesion is ${mm} from the closest skin edge.`);
   if (v.inking === 'Deep surface inked') s.push('The deep surface is inked.');
   else if (v.inking === 'Margins inked (see block key)') s.push('The margins are inked (see block key).');
-  const blocks = Math.max(1, Math.round(num(v.blocks) ?? 3));
+  const blocks = blockCount(v, 3);
   const plural = blocks === 1 ? '' : 's';
   if (v.blockScheme === 'Representative sections') s.push(`Representative sections in ${blocks} block${plural}.`);
   else s.push(`The ellipse is serially sliced and all embedded in ${blocks} block${plural}.`);
@@ -131,8 +170,9 @@ export function macro(part, ctx) {
 export function blockKey(part, ctx) {
   if (ctx?.options?.macro === false) return '';
   const v = part.values;
-  const blocks = Math.max(1, Math.round(num(v.blocks) ?? 3));
   const range = (a, b) => (a === b ? `(${a})` : `(${a}-${b})`);
+  if (isSmall(v)) return `(${part.label}) ${range(1, blockCount(v, 1))} ${PROC[procedureOf(v)].block}`;
+  const blocks = blockCount(v, 3);
   let key;
   if (v.blockScheme === 'Representative sections') key = `${range(1, blocks)} Lesion, representative sections.`;
   else if (blocks < 3) key = `${range(1, blocks)} Lesion, cross-sections.`;
@@ -184,6 +224,17 @@ const LESION_MICRO = {
     'The features are those of a benign squamoproliferative lesion, suggestive of seborrhoeic keratosis.',
     'There is no evidence of dysplasia or malignancy.'
   ],
+  // Phase 43: the irritated keratosis, junctional and congenital naevi and the hypertrophic scar come
+  // across from the retired Skin lesion form, in this form's voice. Sources are in
+  // docs/reference/skin-excision-benign-sources.md.
+  'Irritated seborrhoeic keratosis': [
+    'Sections show an acanthotic epidermis with elongation of rete ridges and overlying papillomatosis forming a verrucous, exophytic configuration.',
+    'Squamous eddies are present within the lesion.',
+    'The epidermis is composed of cytologically bland keratinocytes without significant nuclear atypia or dysplasia.',
+    'The underlying dermis shows a brisk lichenoid lymphocytic infiltrate.',
+    'The findings are those of an irritated seborrhoeic keratosis.',
+    'There is no evidence of dysplasia or malignancy.'
+  ],
   'Intradermal naevus': [
     'Sections show skin with nests and cords of bland naevus cells within the dermis, showing maturation with descent.',
     'There is no junctional component.',
@@ -195,6 +246,20 @@ const LESION_MICRO = {
     'Sections show skin with nests of bland naevus cells at the dermo-epidermal junction and within the dermis, showing maturation with descent.',
     'No atypical features are seen.',
     'The findings are those of a compound naevus.',
+    'There is no evidence of malignancy.'
+  ],
+  'Junctional naevus': [
+    'Sections show skin with nests of bland naevus cells confined to the dermo-epidermal junction.',
+    'There is no dermal component.',
+    'No atypical features are seen.',
+    'The findings are those of a junctional naevus.',
+    'There is no evidence of malignancy.'
+  ],
+  'Congenital melanocytic naevus': [
+    'Sections show skin with nests and cords of bland naevus cells within the dermis, showing maturation with descent.',
+    'Naevus cells extend around adnexal structures and neurovascular bundles in the deeper dermis.',
+    'No atypical features are seen.',
+    'The findings are those of a congenital melanocytic naevus.',
     'There is no evidence of malignancy.'
   ],
   Dermatofibroma: [
@@ -226,8 +291,8 @@ const LESION_MICRO = {
     'Sections show an atypical melanocytic proliferation with features of melanoma; see comment.'
   ],
   // Phase 40 benign additions (user 2026-09-25). Verruca, neurofibroma, haemangioma, keloid and the
-  // fibroepithelial polyp reuse the Skin lesion (shave / punch) sentences, so one lesion reads the same
-  // on either form. Sources for every paragraph: docs/reference/skin-excision-benign-sources.md.
+  // fibroepithelial polyp took their sentences from the Skin lesion (shave / punch) form, which Phase 43
+  // retired into this one. Sources for every paragraph: docs/reference/skin-excision-benign-sources.md.
   'Verruca vulgaris': [
     'Sections show skin with a papillomatous epidermis showing hyperkeratosis, parakeratosis, acanthosis and inward bending of the elongated rete ridges.',
     'Koilocytes with coarse keratohyaline granules are present in the upper epidermis.',
@@ -353,6 +418,11 @@ const LESION_MICRO = {
     'The findings are those of a scar.',
     'There is no evidence of malignancy.'
   ],
+  'Hypertrophic scar': [
+    'Sections show skin in which the dermis is replaced by nodules of fibrous tissue, with collagen bundles and fibroblasts arranged parallel to the epidermis, vertically orientated small blood vessels and loss of adnexal structures.',
+    'The findings are those of a hypertrophic scar.',
+    'There is no evidence of malignancy.'
+  ],
   Keloid: [
     'Sections show skin with a dermal proliferation of thick, glassy, hyalinised collagen bundles and fibroblasts beneath a flattened epidermis, with loss of adnexal structures.',
     'The findings are those of a keloid.',
@@ -402,6 +472,20 @@ const involvedList = (v) => (Array.isArray(v.involvedMargins) ? v.involvedMargin
 const involvedCount = (v) => involvedList(v).length;
 const involvedNames = (v) => listJoin(involvedList(v).map((s) => s.toLowerCase()));
 
+// Shave and punch margins, as the retired Skin lesion form printed them: [microscopy, diagnosis clause].
+// "Not stated" prints nothing, and curettings carry no margin.
+const SMALL_MARGIN = {
+  'Completely excised': ['The lesion is completely excised.', 'completely excised'],
+  'Lesion extends to the edge of the shave': ['The lesion extends to the edge of the shave.', 'lesion extends to the edge of the shave'],
+  'Lesion extends to the lateral margin': ['The lesion extends to the lateral margin.', 'lesion extends to the lateral margin'],
+  'Involves deep margin': ['The lesion involves the deep margin.', 'lesion involves the deep margin']
+};
+const smallMargin = (v) => (procedureOf(v) === 'Curettings' ? null : SMALL_MARGIN[dash(v.smallMargin || '')] || null);
+/** "The lesion extends to the edge of the shave." for a shave or punch; '' when not stated or curettings. */
+export const smallMarginSentence = (v) => smallMargin(v)?.[0] || '';
+/** "lesion extends to the edge of the shave" for a shave or punch; '' when not stated or curettings. */
+export const smallMarginClause = (v) => smallMargin(v)?.[1] || '';
+
 export function microscopy(part) {
   const v = part.values;
   const s = [];
@@ -418,6 +502,10 @@ export function microscopy(part) {
 
   const body = s.join(' ');
   if (isCancerReferral(v)) return `(${part.label}) ${body}`;
+  if (isSmall(v)) {
+    const margin = smallMarginSentence(v);
+    return `(${part.label}) ${body}${margin ? ` ${margin}` : ''}`;
+  }
   return `(${part.label}) ${body} ${marginBlock(v)}`;
 }
 
@@ -430,8 +518,13 @@ const MAIN = {
   'Micronodular BCC': 'MICRONODULAR BASAL CELL CARCINOMA',
   Keratoacanthoma: 'KERATOACANTHOMA',
   'Seborrhoeic keratosis': 'SEBORRHOEIC KERATOSIS',
+  // Phase 43: released forms - IRRITATED SEBORRHOEIC KERATOSIS, JUNCTIONAL NAEVUS, CONGENITAL
+  // MELANOCYTIC NAEVUS and HYPERTROPHIC SCAR, each with nothing after the name.
+  'Irritated seborrhoeic keratosis': 'IRRITATED SEBORRHOEIC KERATOSIS',
   'Intradermal naevus': 'INTRADERMAL NAEVUS',
   'Compound naevus': 'COMPOUND NAEVUS',
+  'Junctional naevus': 'JUNCTIONAL NAEVUS',
+  'Congenital melanocytic naevus': 'CONGENITAL MELANOCYTIC NAEVUS',
   Dermatofibroma: 'DERMATOFIBROMA',
   'Pyogenic granuloma': 'PYOGENIC GRANULOMA (LOBULAR CAPILLARY HAEMANGIOMA)',
   'Actinic keratosis': 'ACTINIC KERATOSIS',
@@ -462,6 +555,7 @@ const MAIN = {
   'Granular cell tumour': 'GRANULAR CELL TUMOUR',
   'Fibroepithelial polyp': 'FIBROEPITHELIAL POLYP',
   Scar: 'SCAR',
+  'Hypertrophic scar': 'HYPERTROPHIC SCAR',
   Keloid: 'KELOID',
   Haemangioma: 'HAEMANGIOMA',
   Lipoma: 'LIPOMA',
@@ -493,10 +587,11 @@ export function diagnosis(part) {
     clauses.push('see comment');
   } else {
     if (v.pni === 'Present') clauses.push('perineural invasion present');
-    clauses.push(marginClause(v));
+    const margin = isSmall(v) ? smallMarginClause(v) : marginClause(v);
+    if (margin) clauses.push(margin);
   }
   const site = sitePhrase(v);
-  return `(${part.label}) SKIN, ${site ? `${site}, ` : ''}excision - ${clauses.join('; ')}`;
+  return `(${part.label}) SKIN, ${site ? `${site}, ` : ''}${procWord(v)} - ${clauses.join('; ')}`;
 }
 
 export default { specimenName, macro, blockKey, microscopy, diagnosis };

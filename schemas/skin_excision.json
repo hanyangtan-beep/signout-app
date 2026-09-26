@@ -2,7 +2,7 @@
   "id": "skin_excision",
   "version": "2026.09",
   "name": "Skin lesion excision",
-  "shortName": "Skin · excision with margins",
+  "shortName": "Skin · excision, shave, punch, curettings",
   "label": "Skin excision",
   "organ": "SKIN",
   "system": "Skin",
@@ -41,7 +41,17 @@
     "keloid",
     "scar",
     "skin tag",
-    "fibroepithelial polyp"
+    "fibroepithelial polyp",
+    "shave",
+    "punch",
+    "curettings",
+    "curettage",
+    "wart",
+    "irritated seborrhoeic keratosis",
+    "junctional naevus",
+    "congenital naevus",
+    "hypertrophic scar",
+    "small benign lesion"
   ],
   "match": {
     "site": [
@@ -58,7 +68,11 @@
       "excision biopsy",
       "wide excision",
       "re-excision",
-      "ellipse"
+      "ellipse",
+      "shave",
+      "punch",
+      "curetting",
+      "curettage"
     ],
     "clinical": [
       "BCC",
@@ -101,6 +115,28 @@
       {
         "field": "specimenName",
         "from": "detail"
+      },
+      {
+        "field": "procedure",
+        "from": "map",
+        "map": [
+          [
+            "\\b(excision|excised|ellipse)",
+            "Excision"
+          ],
+          [
+            "\\bshav",
+            "Shave"
+          ],
+          [
+            "\\bpunch",
+            "Punch"
+          ],
+          [
+            "\\bcurett",
+            "Curettings"
+          ]
+        ]
       }
     ]
   },
@@ -133,7 +169,7 @@
     }
   },
   "specimenNoun": "excision",
-  "maxParts": 3,
+  "maxParts": 6,
   "defaultParts": 1,
   "generator": "skinexcision",
   "style": {
@@ -161,15 +197,35 @@
       "default": ""
     },
     {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "options": [
+        "Excision",
+        "Shave",
+        "Punch",
+        "Curettings"
+      ],
+      "default": "Excision"
+    },
+    {
       "id": "clinicalLabel",
       "label": "Lesion (clinical label)",
       "type": "text",
       "placeholder": "nodule",
-      "default": "nodule"
+      "default": "nodule",
+      "defaultByField": {
+        "field": "procedure",
+        "map": {
+          "Shave": "",
+          "Punch": "",
+          "Curettings": ""
+        }
+      }
     },
     {
       "id": "ellipseSize",
-      "label": "Ellipse of skin (cm)",
+      "label": "Specimen size (cm)",
       "type": "text",
       "group": "Macroscopy",
       "placeholder": "2.5 x 1.2 x 0.6",
@@ -181,7 +237,11 @@
       "type": "text",
       "group": "Macroscopy",
       "placeholder": "0.8",
-      "default": ""
+      "default": "",
+      "showIf": {
+        "field": "procedure",
+        "not": "Curettings"
+      }
     },
     {
       "id": "lesionAppearance",
@@ -196,7 +256,18 @@
         "Plaque",
         "Papule"
       ],
-      "default": "Nodule"
+      "default": "Nodule",
+      "defaultByField": {
+        "field": "procedure",
+        "map": {
+          "Shave": "Papule",
+          "Punch": "Papule"
+        }
+      },
+      "showIf": {
+        "field": "procedure",
+        "not": "Curettings"
+      }
     },
     {
       "id": "orientation",
@@ -208,7 +279,15 @@
         "Suture at 12 o'clock = superior",
         "Other – describe"
       ],
-      "default": "None"
+      "default": "None",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Shave",
+          "Punch",
+          "Curettings"
+        ]
+      }
     },
     {
       "id": "orientationOther",
@@ -218,8 +297,20 @@
       "placeholder": "long suture lateral, short suture superior",
       "default": "",
       "showIf": {
-        "field": "orientation",
-        "is": "Other – describe"
+        "all": [
+          {
+            "field": "orientation",
+            "is": "Other – describe"
+          },
+          {
+            "field": "procedure",
+            "not": [
+              "Shave",
+              "Punch",
+              "Curettings"
+            ]
+          }
+        ]
       }
     },
     {
@@ -228,7 +319,15 @@
       "type": "text",
       "group": "Macroscopy",
       "placeholder": "2",
-      "default": ""
+      "default": "",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Shave",
+          "Punch",
+          "Curettings"
+        ]
+      }
     },
     {
       "id": "inking",
@@ -240,7 +339,15 @@
         "Margins inked (see block key)",
         "Not inked"
       ],
-      "default": "Deep surface inked"
+      "default": "Deep surface inked",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Shave",
+          "Punch",
+          "Curettings"
+        ]
+      }
     },
     {
       "id": "blocks",
@@ -249,7 +356,15 @@
       "group": "Macroscopy",
       "min": 1,
       "step": 1,
-      "default": "3"
+      "default": "3",
+      "defaultByField": {
+        "field": "procedure",
+        "map": {
+          "Shave": "1",
+          "Punch": "1",
+          "Curettings": "1"
+        }
+      }
     },
     {
       "id": "blockScheme",
@@ -260,7 +375,15 @@
         "Ellipse serially sliced and all embedded",
         "Representative sections"
       ],
-      "default": "Ellipse serially sliced and all embedded"
+      "default": "Ellipse serially sliced and all embedded",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Shave",
+          "Punch",
+          "Curettings"
+        ]
+      }
     },
     {
       "id": "diagnosis",
@@ -273,8 +396,11 @@
         "Micronodular BCC",
         "Keratoacanthoma",
         "Seborrhoeic keratosis",
+        "Irritated seborrhoeic keratosis",
         "Intradermal naevus",
         "Compound naevus",
+        "Junctional naevus",
+        "Congenital melanocytic naevus",
         "Dermatofibroma",
         "Pyogenic granuloma",
         "Actinic keratosis",
@@ -303,6 +429,7 @@
         "Granular cell tumour",
         "Fibroepithelial polyp",
         "Scar",
+        "Hypertrophic scar",
         "Keloid",
         "Haemangioma",
         "Lipoma",
@@ -324,6 +451,7 @@
           "options": [
             "Keratoacanthoma",
             "Seborrhoeic keratosis",
+            "Irritated seborrhoeic keratosis",
             "Verruca vulgaris",
             "Actinic keratosis",
             "Squamous cell carcinoma in situ (Bowen disease)",
@@ -335,6 +463,8 @@
           "options": [
             "Intradermal naevus",
             "Compound naevus",
+            "Junctional naevus",
+            "Congenital melanocytic naevus",
             "Melanoma – see comment"
           ]
         },
@@ -383,6 +513,7 @@
             "Dermatofibroma",
             "Fibroepithelial polyp",
             "Scar",
+            "Hypertrophic scar",
             "Keloid",
             "Pyogenic granuloma",
             "Haemangioma",
@@ -390,7 +521,14 @@
           ]
         }
       ],
-      "default": "Nodular basal cell carcinoma"
+      "default": "Nodular basal cell carcinoma",
+      "defaultByField": {
+        "field": "procedure",
+        "map": {
+          "Shave": "Seborrhoeic keratosis",
+          "Curettings": "Seborrhoeic keratosis"
+        }
+      }
     },
     {
       "id": "keratotic",
@@ -432,35 +570,75 @@
       "label": "Superior margin (mm)",
       "type": "text",
       "placeholder": "1.5",
-      "default": ""
+      "default": "",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Shave",
+          "Punch",
+          "Curettings"
+        ]
+      }
     },
     {
       "id": "marginInferior",
       "label": "Inferior margin (mm)",
       "type": "text",
       "placeholder": "2.5",
-      "default": ""
+      "default": "",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Shave",
+          "Punch",
+          "Curettings"
+        ]
+      }
     },
     {
       "id": "marginLateral",
       "label": "Lateral margin (mm)",
       "type": "text",
       "placeholder": "3.5",
-      "default": ""
+      "default": "",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Shave",
+          "Punch",
+          "Curettings"
+        ]
+      }
     },
     {
       "id": "marginMedial",
       "label": "Medial margin (mm)",
       "type": "text",
       "placeholder": "6",
-      "default": ""
+      "default": "",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Shave",
+          "Punch",
+          "Curettings"
+        ]
+      }
     },
     {
       "id": "marginDeep",
       "label": "Deep margin (mm)",
       "type": "text",
       "placeholder": "2.5",
-      "default": ""
+      "default": "",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Shave",
+          "Punch",
+          "Curettings"
+        ]
+      }
     },
     {
       "id": "completeness",
@@ -471,7 +649,15 @@
         "Involved – which",
         "Close < 1 mm"
       ],
-      "default": "Complete"
+      "default": "Complete",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Shave",
+          "Punch",
+          "Curettings"
+        ]
+      }
     },
     {
       "id": "involvedMargins",
@@ -486,8 +672,51 @@
       ],
       "default": [],
       "showIf": {
-        "field": "completeness",
-        "is": "Involved – which"
+        "all": [
+          {
+            "field": "completeness",
+            "is": "Involved – which"
+          },
+          {
+            "field": "procedure",
+            "not": [
+              "Shave",
+              "Punch",
+              "Curettings"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "smallMargin",
+      "label": "Margins",
+      "type": "select",
+      "options": [
+        "Not stated",
+        "Completely excised",
+        "Lesion extends to the edge of the shave",
+        "Lesion extends to the lateral margin",
+        "Involves deep margin"
+      ],
+      "optionsByField": {
+        "field": "procedure",
+        "map": {
+          "Punch": [
+            "Not stated",
+            "Completely excised",
+            "Lesion extends to the lateral margin",
+            "Involves deep margin"
+          ]
+        }
+      },
+      "default": "Not stated",
+      "showIf": {
+        "field": "procedure",
+        "is": [
+          "Shave",
+          "Punch"
+        ]
       }
     },
     {
@@ -523,6 +752,7 @@
         "label": "A",
         "values": {
           "specimenName": "left cheek",
+          "procedure": "Excision",
           "clinicalLabel": "nodule",
           "ellipseSize": "2.5 x 1.2 x 0.6",
           "lesionSize": "0.8",
@@ -544,6 +774,7 @@
           "marginDeep": "2.5",
           "completeness": "Complete",
           "involvedMargins": [],
+          "smallMargin": "Not stated",
           "additionalNotes": ""
         }
       }
