@@ -1763,6 +1763,17 @@
           "curetting",
           "curettage"
         ],
+        "own": {
+          "procedure": [
+            "curetting",
+            "curettage"
+          ],
+          "site": [
+            "skin",
+            "scalp",
+            "face"
+          ]
+        },
         "clinical": [
           "BCC",
           "basal cell",

@@ -65,3 +65,7 @@ Released use, aggregate part-line counts (five-year biopsy file / 2024–2026 LI
 | Junctional naevus | nests of bland naevus cells confined to the dermo-epidermal junction; no dermal component | [DermNet — melanocytic naevi pathology](https://dermnetnz.org/topics/melanocytic-naevi-pathology), [Patholines — junctional nevus](http://patholines.org/Junctional_nevus/) |
 | Congenital melanocytic naevus | dermal naevus cells with maturation; extension around adnexa and neurovascular bundles in the deeper dermis | [StatPearls — congenital nevus](https://www.ncbi.nlm.nih.gov/books/NBK559270/) |
 | Hypertrophic scar | nodules of fibrous tissue; collagen and fibroblasts parallel to the epidermis; vertically orientated vessels | [StatPearls — hypertrophic scars and keloids](https://www.ncbi.nlm.nih.gov/books/NBK537058/) |
+
+## Phase 44 — curettings routing (2026-09-26)
+
+Skin curettings now open this form from the specimen line alone (`match.own`; see docs/specs/specimen-intake.md, "Skin curettings"). All 22 / 14 skin curettings parts (five-year biopsy file / 2024–2026 LIS export) route here, where all had opened Generic. The Curettings default diagnosis, seborrhoeic keratosis, fits 20 / 13 of them; the others were naevus 1 / 0 and fibroepithelial polyp 1 / 1.

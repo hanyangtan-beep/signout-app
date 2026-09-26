@@ -188,6 +188,15 @@ const siteHitsFor = (mt, text) =>
 // template or card.
 const excluded = (mt, text) => !!(mt.exclude && hits(mt.exclude, text));
 
+// `match.own`: biopsy words a resection form reports itself, on a line naming one of `own.site`.
+// There they are not biopsy context for that form, so the -3 kind gate below leaves it alone.
+// Skin excision takes curettings: 20 of the 22 skin curettings in the 2021-2026 biopsy file and 13
+// of the 14 in the 2024-2026 LIS export were seborrhoeic keratoses, yet the gate left the form at
+// -1 and every one opened Generic. The sites are the unambiguous skin words; ear, eyelid, lip and
+// nose curettings keep their routes (the ear ones are the cholesteatoma form's).
+const ownFor = (mt, text) => (mt?.own && hits(mt.own.site, text) ? mt.own : null);
+const without = (terms, text) => (terms || []).reduce((s, t) => s.replace(new RegExp(termRe(t).source, 'gi'), ' '), text);
+
 const BREAST_MARGINS = ['Superior', 'Inferior', 'Medial', 'Lateral', 'Anterior', 'Posterior'];
 
 /**
@@ -214,7 +223,9 @@ export function scorePart(part, ctx, manifest) {
     if (mt.gate && !new RegExp(mt.gate, 'i').test(`${text} ${history}`)) continue;
     let score = 2 * hits(mt.procedure, text) + 2 * hits(aloneFor(mt, text)?.procedure, text) + 2 * Math.min(1, hits(mt.clinical, history)) - 4 * hits(mt.not, text) + (mt.bias || 0);
     if (resected && !biopsied && BIOPSY_KINDS.includes(t.kind)) score -= 3;
-    if (biopsied && !resected && RESECTION_KINDS.includes(t.kind)) score -= 3;
+    const own = ownFor(mt, text);
+    const biopsiedHere = own ? BIOPSY_CTX.test(without(own.procedure, text)) : biopsied;
+    if (biopsiedHere && !resected && RESECTION_KINDS.includes(t.kind)) score -= 3;
     // `match.bare`: for these templates a site word with no procedure named is evidence in itself,
     // weighted like one procedure hit. It is declared per template rather than inferred from the
     // kind, because the inference only holds where the rival specimen is always named: nobody writes

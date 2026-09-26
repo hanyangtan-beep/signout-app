@@ -33,6 +33,19 @@ function edited(values) {
   return c;
 }
 const route = (line, history = '') => matchParts(parseIntake(`(A) ${line}`), history, manifest)[0];
+// Build parts, as src/app.js does it: the routed part's preset, then the linked defaults it moves.
+function built(line, history = '') {
+  const r = route(line, history);
+  assert.equal(r.templateId, 'skin_excision', `${line} | ${history}`);
+  assert.equal(r.tier, 'confident', `${line} | ${history}`);
+  const part = createPart(schema, 0);
+  const preset = presetValues(schema, r, r);
+  const before = { ...part.values };
+  Object.assign(part.values, preset);
+  for (const k of Object.keys(preset)) applyLinkedDefaults(schema, part, k, before[k], preset);
+  normalisePart(schema, part);
+  return part.values;
+}
 
 const SK_OPEN = 'Sections show an acanthotic epidermis with elongation of rete ridges and overlying papillomatosis forming a verrucous, exophytic configuration.';
 
@@ -215,19 +228,7 @@ test('a saved case with no procedure prints as an excision, as it did before', (
 });
 
 test('intake: a shave or punch whose history names a lesion opens Skin excision with the procedure set', () => {
-  const build = (line, history) => {
-    const r = route(line, history);
-    assert.equal(r.templateId, 'skin_excision', `${line} | ${history}`);
-    assert.equal(r.tier, 'confident', `${line} | ${history}`);
-    // Build parts, as src/app.js does it.
-    const part = createPart(schema, 0);
-    const preset = presetValues(schema, r, r);
-    const before = { ...part.values };
-    Object.assign(part.values, preset);
-    for (const k of Object.keys(preset)) applyLinkedDefaults(schema, part, k, before[k], preset);
-    normalisePart(schema, part);
-    return part.values;
-  };
+  const build = built;
   const shave = build('Skin, back, shave', 'seborrhoeic keratosis');
   assert.deepEqual([shave.specimenName, shave.procedure, shave.blocks, shave.clinicalLabel, shave.diagnosis], ['back', 'Shave', '1', '', 'Seborrhoeic keratosis']);
   const punch = build('Skin, arm, punch', '?dermatofibroma');
@@ -237,6 +238,30 @@ test('intake: a shave or punch whose history names a lesion opens Skin excision 
   const exc = build('Skin, left cheek, excision', 'BCC');
   assert.deepEqual([exc.procedure, exc.blocks, exc.clinicalLabel], ['Excision', '3', 'nodule']);
   assert.equal(route('Skin, back, excision').tier, 'choose', 'the specimen line alone still offers the choice');
+});
+
+test('intake: skin curettings open Skin excision on the specimen line alone, with Curettings preset', () => {
+  // Phase 44 (pulled by the user 2026-09-26): `match.own`. Before it the resection-kind gate left the
+  // form at -1 on a curettings line and every skin curettings part in both exports opened Generic.
+  for (const line of ['Skin, back, curetting', 'Skin, back, curettings', 'Skin lesion, chest, curettage', 'Scalp, curettings', 'Face, curettage', 'Skin, left breast, curetting']) {
+    const r = route(line);
+    assert.deepEqual([r.templateId, r.tier], ['skin_excision', 'confident'], line);
+  }
+  const v = built('Skin, back, curetting');
+  assert.deepEqual([v.specimenName, v.procedure, v.blocks, v.clinicalLabel, v.diagnosis], ['back', 'Curettings', '1', '', 'Seborrhoeic keratosis']);
+  const c = createCase(schema, 1);
+  c.parts[0].values = v;
+  const printed = run(c);
+  assert.equal(printed.diagnosis, 'SKIN, back, curettings - SEBORRHOEIC KERATOSIS');
+  assert.equal(printed.blockKey, '(1) Curettings, all embedded.');
+  // Curettings anywhere else keep their route, and the other small procedures still need a history.
+  assert.equal(route('Endometrium, curettings').templateId, 'endometrial_biopsy');
+  assert.equal(route('Products of gestation, suction curettage').templateId, 'endometrial_biopsy');
+  assert.equal(route('Left ear, mastoid cavity, curetting').templateId, 'ear_cholesteatoma');
+  assert.equal(route('Bone, tibia, curettage').templateId, 'bone_joint');
+  for (const line of ['Left upper eyelid, chalazion, curettage', 'Lip, curettage', 'Nose, curettage', 'Skin, back, punch', 'Skin, back, shave']) {
+    assert.equal(route(line).templateId, 'generic', line);
+  }
 });
 
 test('picker: the retired form\'s searches find Skin excision', () => {

@@ -340,3 +340,12 @@ Counts are the same 18,913 parts, routed with no clinical history. They are aggr
 - Fills: the specimen name from the line's detail, the tumour site from the options (`noGuess`) and the laterality from the side.
 - Routed with no clinical history, as the exports carry none: 7 of the 18,913 parts now open Skin SCC, each naming SCC in its specimen line. 6 are invasive SCC (five-year 5, from Skin cyst 3 and Skin excision 2; export 1, from Skin cyst) and 1 is a five-year part whose diagnosis refers to a comment. None of the 12 / 3 SCC in situ parts opens it. The other invasive SCC parts stay where they were: Generic 14 / 5, Skin cyst 4 / 2, Frozen section 0 / 1.
 - No intake fixture change. Tests: the intake section of tests/skin_scc.test.js.
+
+## Skin curettings (user request, built 2026-09-26)
+
+- `match.own` names biopsy words a resection form reports itself (`own.procedure`) and the sites on which it does (`own.site`). On a line naming one of those sites the biopsy-context test is re-run without those words, so the -3 for a biopsied part on a resection-kind form is not applied. Every other rule reads the line as before.
+- `skin_excision` owns curetting and curettage on a line naming skin, scalp or face. "Skin, back, curetting" scored 2 for the procedure word less 3 for biopsy context and opened Generic; it now scores 2 against Skin cyst's -3 and opens Skin excision confidently. The linked defaults then give Curettings 1 block, no clinical label and a seborrhoeic keratosis diagnosis.
+- Left out on purpose: ear (ear curettings are the cholesteatoma form's), eyelid, lip and nose (chalazion, mucosal and nasal lines), and punch and shave, which keep the penalty — the request named curettings.
+- Routed with no clinical history: 36 of the 18,913 parts change route, all skin curettings — 22 of 22 in the five-year file (21 from Generic with no match, 1 from a Generic choice) and 14 of 14 in the export. Diagnoses (five-year / export): seborrhoeic keratosis 20 / 13, naevus 1 / 0, fibroepithelial polyp 1 / 1. No other curettings line moves.
+- On Generic: 263 to 241 of 865 skin parts in the five-year file, 76 to 62 of 239 in the export.
+- No intake fixture change. Tests: the intake section of tests/skin_excision_procedures.test.js.
