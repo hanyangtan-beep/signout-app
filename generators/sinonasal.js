@@ -5,8 +5,22 @@
 //   microscopy "(A) Sections show polypoid fragments of sinonasal mucosa lined by respiratory epithelium with basement membrane thickening. ..."
 //   diagnosis  "(A) NASAL CAVITY, polyps, polypectomy - INFLAMMATORY (OEDEMATOUS) SINONASAL POLYPS; no evidence of dysplasia or malignancy"
 // Malignancy gives a short capitalised line only; the synoptic report belongs to the QMH head and
-// neck cancer template (the schema's auto snippet says so in the COMMENT block). Invasive fungal
-// sinusitis, inverted papilloma and the NK/T-cell lymphoma flag also auto-tick their comments.
+// neck cancer template (the schema's auto snippet says so in the COMMENT block). A squamous cell
+// carcinoma arising in a papilloma does the same. Invasive fungal sinusitis and the NK/T-cell
+// lymphoma flag also auto-tick their comments; the inverted papilloma follow-up comment is ticked
+// by hand (Phase 45: no released papilloma report carries it).
+//
+// Papillomas (Phase 45, docs/specs/sinonasal-papilloma.md): the house paragraphs measured from the
+// released reports, one per type, with that type's negative sentence or the grade sentence, and the
+// released diagnosis lines "SINONASAL PAPILLOMA, INVERTED TYPE" / "... EXOPHYTIC TYPE" / "... ONCOCYTIC
+// SUBTYPE" (the house word; WHO writes "oncocytic type") with no closer and no "see comment".
+// Nomenclature: WHO Head and Neck Tumours 5th ed.
+// (https://whobluebooks.iarc.who.int/structures/head-and-neck-tumours/,
+// https://pmc.ncbi.nlm.nih.gov/articles/PMC9018924/). Morphology: Udager et al., Head Neck Pathol
+// 2017 (https://pmc.ncbi.nlm.nih.gov/articles/PMC5550400/) and PathologyOutlines
+// (https://www.pathologyoutlines.com/topic/nasalsinonasalpapilloma.html). The EGFR / KRAS / HPV
+// background (https://pubmed.ncbi.nlm.nih.gov/25931286/, https://deepblue.lib.umich.edu/handle/2027.42/133586)
+// stays in the spec: no released report prints it and the report register excludes it.
 // Wording is protected by tests/sinonasal.test.js — change it only deliberately.
 
 const num = (v) => {
@@ -20,6 +34,7 @@ export const ANTROCHOANAL = 'Antrochoanal polyp';
 export const REAH = 'Respiratory epithelial adenomatoid hamartoma';
 export const INVERTED = 'Sinonasal papilloma, inverted';
 export const EXOPHYTIC = 'Sinonasal papilloma, exophytic';
+export const ONCOCYTIC = 'Sinonasal papilloma, oncocytic';
 export const GRANULOMATOUS = 'Granulomatous inflammation';
 export const MALIGNANT = 'Malignant - see comment (QMH head and neck template)';
 
@@ -28,11 +43,13 @@ export const FUNGUS_AFS = 'Present on GMS, non-invasive - allergic fungal sinusi
 export const FUNGUS_BALL = 'Fungal ball';
 export const FUNGUS_INVASIVE = 'Invasive, angioinvasion';
 
+/** Papilloma dysplasia field option for a carcinoma arising in the papilloma. */
+export const PAPILLOMA_SCC = 'Squamous cell carcinoma arising';
+
 export const isMalignant = (v) => v.lesion === MALIGNANT;
-export const isPapilloma = (v) => v.lesion === INVERTED || v.lesion === EXOPHYTIC;
+export const isPapilloma = (v) => v.lesion === INVERTED || v.lesion === EXOPHYTIC || v.lesion === ONCOCYTIC;
 const isGranulomatous = (v) => v.lesion === GRANULOMATOUS;
 const isInflammatoryPolyp = (v) => v.lesion === OEDEMATOUS || v.lesion === FIBROUS || !v.lesion;
-const hasDysplasia = (v) => isPapilloma(v) && (v.dysplasia === 'Low grade' || v.dysplasia === 'High grade');
 const suspicious = (v) => v.lymphomaSuspicion === true || v.lymphomaSuspicion === 'true';
 const mucin = (v) => v.allergicMucin === true || v.allergicMucin === 'true';
 
@@ -203,6 +220,58 @@ function granulomaSentences(v) {
   }
 }
 
+// ---------- papilloma paragraphs (house wording, docs/specs/sinonasal-papilloma.md) ----------
+
+const PAPILLOMA_TYPE = { [INVERTED]: 'inverted type', [EXOPHYTIC]: 'exophytic type', [ONCOCYTIC]: 'oncocytic subtype' };
+
+/** "polypoid pieces of mucosal tissue" / "a polypoid piece of mucosal tissue"; a biopsy drops "polypoid". */
+function mucosalPieces(v) {
+  const polypoid = v.procedure === 'Biopsy' ? '' : 'polypoid ';
+  return single(v) ? `a ${polypoid}piece of mucosal tissue` : `${polypoid}pieces of mucosal tissue`;
+}
+
+/** The type's negative sentence, or the grade sentence with the invasion negative, or the carcinoma sentence. */
+function papillomaGradeSentences(v) {
+  const onco = v.lesion === ONCOCYTIC;
+  const noInvasion = onco ? 'No destructive stromal invasion is present.' : 'No invasion is identified.';
+  switch (v.dysplasia) {
+    case PAPILLOMA_SCC: return ['Invasive squamous cell carcinoma arising in the papilloma is present (see comment).'];
+    case 'High grade': return ['High grade dysplasia is present.', noInvasion];
+    case 'Low grade': return ['Low grade dysplasia is present.', onco ? noInvasion : 'No high grade cytological atypia or invasion is identified.'];
+    default: return onco
+      ? ['No destructive stromal invasion is present.', suspicious(v) ? 'No dysplasia is seen.' : 'No dysplasia or malignancy is seen.']
+      : ['No high grade cytological atypia or invasion is identified.'];
+  }
+}
+
+function papillomaSentences(v) {
+  const s = [];
+  if (v.lesion === ONCOCYTIC) {
+    s.push('Sections show a papillary epithelial proliferation with mixed exophytic and endophytic growth.');
+    s.push('It is lined by multilayered pseudostratified to columnar oncocytic epithelium with abundant eosinophilic cytoplasm and small uniform nuclei.');
+    s.push('Numerous intraepithelial mucin-filled microcysts and neutrophilic microabscesses are present.');
+  } else if (v.lesion === EXOPHYTIC) {
+    s.push(`Sections show ${mucosalPieces(v)} with an exophytic papillary growth of epithelium over fibrovascular cores.`);
+    s.push('The papillae are lined by hyperplastic squamous to transitional type epithelium with scattered mucous cells and transmigrating neutrophils.');
+  } else {
+    let lining = 'lined by respiratory type to transitional type epithelium';
+    if (v.epithelium === 'Squamous metaplasia') lining = 'lined by squamous type epithelium';
+    else if (v.epithelium === 'Ulcerated') lining = 'with surface ulceration';
+    s.push(`Sections show ${mucosalPieces(v)} ${lining}.`);
+    s.push('An endophytic growth of round epithelial nests with smooth contour is seen.');
+    s.push('The epithelium is hyperplastic with transmigrating neutrophils and neutrophilic microabscesses.');
+  }
+  if (v.lesion !== INVERTED) {
+    if (v.epithelium === 'Squamous metaplasia') s.push('The adjacent surface epithelium shows squamous metaplasia.');
+    else if (v.epithelium === 'Ulcerated') s.push('The surface is focally ulcerated.');
+  }
+  s.push(`The features are those of a sinonasal papilloma, ${PAPILLOMA_TYPE[v.lesion]}.`);
+  s.push(...papillomaGradeSentences(v));
+  // A second finding (allergic mucin, fungus) follows the finished papilloma paragraph.
+  if (v.fungus !== FUNGUS_NONE || mucin(v)) s.push(...mucinSentences(v));
+  return s;
+}
+
 export function microscopy(part) {
   const v = part.values;
   const s = [];
@@ -228,20 +297,10 @@ export function microscopy(part) {
       s.push('The features are those of a respiratory epithelial adenomatoid hamartoma.');
       break;
     case INVERTED:
-    case EXOPHYTIC: {
-      const pattern = v.lesion === INVERTED
-        ? 'growing in an endophytic (inverted) pattern into the underlying stroma'
-        : 'growing in an exophytic papillary pattern over fibrovascular cores';
-      s.push(`Sections show a sinonasal papilloma composed of thickened non-keratinising squamous and transitional-type epithelium with interspersed mucous cells and transmigrating neutrophils, ${pattern}.`);
-      if (v.epithelium === 'Squamous metaplasia') s.push('The adjacent surface epithelium shows squamous metaplasia.');
-      else if (v.epithelium === 'Ulcerated') s.push('The surface is focally ulcerated.');
-      if (v.dysplasia === 'Low grade') s.push('Low-grade dysplasia is present.');
-      else if (v.dysplasia === 'High grade') s.push('High-grade dysplasia is present.');
-      else s.push('There is no dysplasia.');
-      if (v.fungus !== FUNGUS_NONE || mucin(v)) s.push(...mucinSentences(v));
-      s.push(`The features are those of an ${v.lesion === INVERTED ? 'inverted' : 'exophytic'} sinonasal papilloma${v.lesion === INVERTED ? ' (see comment)' : ''}.`);
+    case EXOPHYTIC:
+    case ONCOCYTIC:
+      s.push(...papillomaSentences(v));
       break;
-    }
     case GRANULOMATOUS:
       s.push(`Sections show ${one ? 'a fragment' : 'fragments'} of sinonasal mucosa ${liningPhrase(v)}.`);
       s.push(`The stroma contains ${infiltratePhrase(v)}${v.glandHyperplasia === 'Present' ? ' and seromucinous glands' : ''}.`);
@@ -260,7 +319,7 @@ export function microscopy(part) {
 
   if (suspicious(v)) s.push('In addition, there is an atypical lymphoid infiltrate with angiocentric growth and necrosis (see comment).');
   if (isMalignant(v)) s.push('In addition, there is a malignant neoplasm (see comment).');
-  else if (!suspicious(v)) s.push(hasDysplasia(v) ? 'There is no evidence of invasive malignancy.' : 'There is no evidence of dysplasia or malignancy.');
+  else if (!suspicious(v) && !isPapilloma(v)) s.push('There is no evidence of dysplasia or malignancy.');
 
   const notes = String(v.additionalNotes || '').trim();
   if (notes) s.push(notes);
@@ -278,6 +337,7 @@ export function mainClause(v) {
     case REAH: return 'RESPIRATORY EPITHELIAL ADENOMATOID HAMARTOMA';
     case INVERTED: return 'SINONASAL PAPILLOMA, INVERTED TYPE';
     case EXOPHYTIC: return 'SINONASAL PAPILLOMA, EXOPHYTIC TYPE';
+    case ONCOCYTIC: return 'SINONASAL PAPILLOMA, ONCOCYTIC SUBTYPE';
     case GRANULOMATOUS:
       if (v.granulomaPattern === 'Sarcoid-type') return 'NON-NECROTISING GRANULOMATOUS INFLAMMATION, sarcoid-type';
       if (v.granulomaPattern === 'TB - AFB') return 'NECROTISING GRANULOMATOUS INFLAMMATION; tuberculosis to be excluded (AFB / culture)';
@@ -296,10 +356,20 @@ function fungalClause(v) {
   }
 }
 
+/** "SINONASAL PAPILLOMA, INVERTED TYPE with HIGH GRADE DYSPLASIA" / "SQUAMOUS CELL CARCINOMA ARISING IN ... - SEE COMMENT". */
+function papillomaClause(v) {
+  const entity = mainClause(v);
+  if (v.dysplasia === PAPILLOMA_SCC) return `SQUAMOUS CELL CARCINOMA ARISING IN ${entity} - SEE COMMENT`;
+  if (v.dysplasia === 'High grade') return `${entity} with HIGH GRADE DYSPLASIA`;
+  if (v.dysplasia === 'Low grade') return `${entity} with LOW GRADE DYSPLASIA`;
+  return entity;
+}
+
 export function diagnosis(part) {
   const v = part.values;
   const clauses = [];
   const fungal = fungalClause(v);
+  const entity = isPapilloma(v) ? papillomaClause(v) : mainClause(v);
 
   if (isMalignant(v)) {
     clauses.push(mainClause(v));
@@ -307,23 +377,17 @@ export function diagnosis(part) {
   } else {
     if (v.fungus === FUNGUS_INVASIVE) {
       clauses.push(fungal);
-      if (isInflammatoryPolyp(v)) clauses.push(mainClause(v).toLowerCase());
-      else clauses.push(mainClause(v));
+      if (isInflammatoryPolyp(v)) clauses.push(entity.toLowerCase());
+      else clauses.push(entity);
     } else {
-      clauses.push(mainClause(v));
+      clauses.push(entity);
       if (fungal) clauses.push(fungal);
     }
     if (mucin(v) && v.fungus !== FUNGUS_AFS) clauses.push('allergic mucin with Charcot-Leyden crystals present');
-    if (isPapilloma(v)) {
-      if (v.dysplasia === 'High grade') clauses.push('HIGH-GRADE DYSPLASIA');
-      else if (v.dysplasia === 'Low grade') clauses.push('low-grade dysplasia');
-    }
     if (v.epithelium === 'Ulcerated') clauses.push('surface ulceration');
     if (suspicious(v)) clauses.push('ATYPICAL LYMPHOID INFILTRATE - SEE COMMENT');
     else if (isGranulomatous(v)) clauses.push('no evidence of malignancy');
-    else if (hasDysplasia(v)) clauses.push('no evidence of invasive malignancy');
-    else clauses.push('no evidence of dysplasia or malignancy');
-    if (v.lesion === INVERTED && v.fungus !== FUNGUS_INVASIVE) clauses.push('see comment');
+    else if (!isPapilloma(v)) clauses.push('no evidence of dysplasia or malignancy');
   }
   return `(${part.label}) ${organPhrase(part)} - ${clauses.filter(Boolean).join('; ')}`;
 }

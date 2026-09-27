@@ -1,4 +1,5 @@
 // Phase 4b: nasal polyps / sinonasal biopsy template (roadmap item 13). Wording is deliberate; update the strings only on purpose.
+// Phase 45: the papilloma paragraphs and diagnosis lines follow the released reports (docs/specs/sinonasal-papilloma.md).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createCase, generate } from '../src/engine.js';
@@ -86,9 +87,12 @@ test('each lesion type yields the right capitalised diagnosis', () => {
   assert.equal(dx({ lesion: 'Inflammatory polyp, fibrous' }), `${head}INFLAMMATORY (FIBROUS) SINONASAL POLYPS; no evidence of dysplasia or malignancy`);
   assert.equal(dx({ lesion: 'Antrochoanal polyp' }), `${head}ANTROCHOANAL POLYP; no evidence of dysplasia or malignancy`);
   assert.equal(dx({ lesion: 'Respiratory epithelial adenomatoid hamartoma' }), `${head}RESPIRATORY EPITHELIAL ADENOMATOID HAMARTOMA; no evidence of dysplasia or malignancy`);
-  assert.equal(dx({ lesion: 'Sinonasal papilloma, inverted' }), `${head}SINONASAL PAPILLOMA, INVERTED TYPE; no evidence of dysplasia or malignancy; see comment`);
-  assert.equal(dx({ lesion: 'Sinonasal papilloma, inverted', dysplasia: 'High grade' }), `${head}SINONASAL PAPILLOMA, INVERTED TYPE; HIGH-GRADE DYSPLASIA; no evidence of invasive malignancy; see comment`);
-  assert.equal(dx({ lesion: 'Sinonasal papilloma, exophytic', dysplasia: 'Low grade' }), `${head}SINONASAL PAPILLOMA, EXOPHYTIC TYPE; low-grade dysplasia; no evidence of invasive malignancy`);
+  // Phase 45: the released papilloma lines (21 of 21) carry no closer and no "see comment".
+  assert.equal(dx({ lesion: 'Sinonasal papilloma, inverted' }), `${head}SINONASAL PAPILLOMA, INVERTED TYPE`);
+  assert.equal(dx({ lesion: 'Sinonasal papilloma, inverted', dysplasia: 'High grade' }), `${head}SINONASAL PAPILLOMA, INVERTED TYPE with HIGH GRADE DYSPLASIA`);
+  assert.equal(dx({ lesion: 'Sinonasal papilloma, exophytic', dysplasia: 'Low grade' }), `${head}SINONASAL PAPILLOMA, EXOPHYTIC TYPE with LOW GRADE DYSPLASIA`);
+  assert.equal(dx({ lesion: 'Sinonasal papilloma, oncocytic' }), `${head}SINONASAL PAPILLOMA, ONCOCYTIC SUBTYPE`);
+  assert.equal(dx({ lesion: 'Sinonasal papilloma, oncocytic', dysplasia: 'Squamous cell carcinoma arising' }), `${head}SQUAMOUS CELL CARCINOMA ARISING IN SINONASAL PAPILLOMA, ONCOCYTIC SUBTYPE - SEE COMMENT`);
   assert.equal(dx({ lesion: 'Granulomatous inflammation' }), `${head}NECROTISING GRANULOMATOUS INFLAMMATION with VASCULITIS; features suggestive of granulomatosis with polyangiitis - correlate with ANCA serology; no evidence of malignancy`);
   assert.equal(dx({ lesion: 'Granulomatous inflammation', granulomaPattern: 'Sarcoid-type' }), `${head}NON-NECROTISING GRANULOMATOUS INFLAMMATION, sarcoid-type; no evidence of malignancy`);
   assert.equal(dx({ lesion: 'Granulomatous inflammation', granulomaPattern: 'TB - AFB' }), `${head}NECROTISING GRANULOMATOUS INFLAMMATION; tuberculosis to be excluded (AFB / culture); no evidence of malignancy`);
@@ -119,15 +123,55 @@ test('invasive fungal sinusitis leads the diagnosis and adds the urgent clinical
   assert.ok(!r.comment.includes('{parts}'));
 });
 
-test('inverted papilloma auto-adds the recurrence / malignant transformation comment; exophytic does not', () => {
+test('inverted and exophytic papillomas print the house paragraph; the follow-up comment is ticked by hand only', () => {
   const inv = run(one({ lesion: 'Sinonasal papilloma, inverted', appearance: 'Papillary' }));
   assert.ok(inv.macro.includes('polypoid pieces of papillary tissue'));
-  assert.ok(inv.microscopy.startsWith('Sections show a sinonasal papilloma composed of thickened non-keratinising squamous and transitional-type epithelium'));
-  assert.ok(inv.microscopy.includes('growing in an endophytic (inverted) pattern into the underlying stroma. There is no dysplasia. The features are those of an inverted sinonasal papilloma (see comment). There is no evidence of dysplasia or malignancy.'));
-  assert.equal(inv.comment, 'Inverted sinonasal papilloma is present. Inverted papillomas carry a risk of local recurrence and of malignant transformation; complete excision and clinical follow-up are recommended.');
+  assert.equal(inv.microscopy, 'Sections show polypoid pieces of mucosal tissue lined by respiratory type to transitional type epithelium. An endophytic growth of round epithelial nests with smooth contour is seen. The epithelium is hyperplastic with transmigrating neutrophils and neutrophilic microabscesses. The features are those of a sinonasal papilloma, inverted type. No high grade cytological atypia or invasion is identified.');
+  assert.equal(inv.comment, '');
+  const ticked = one({ lesion: 'Sinonasal papilloma, inverted' });
+  ticked.snippets = { inverted_papilloma: true };
+  assert.equal(run(ticked).comment, 'Inverted sinonasal papilloma is present. Inverted papillomas carry a risk of local recurrence and of malignant transformation; complete excision and clinical follow-up are recommended.');
   const exo = run(one({ lesion: 'Sinonasal papilloma, exophytic' }));
-  assert.ok(exo.microscopy.includes('growing in an exophytic papillary pattern over fibrovascular cores.'));
+  assert.equal(exo.microscopy, 'Sections show polypoid pieces of mucosal tissue with an exophytic papillary growth of epithelium over fibrovascular cores. The papillae are lined by hyperplastic squamous to transitional type epithelium with scattered mucous cells and transmigrating neutrophils. The features are those of a sinonasal papilloma, exophytic type. No high grade cytological atypia or invasion is identified.');
   assert.equal(exo.comment, '');
+});
+
+test('inverted papilloma with high grade dysplasia: one piece, squamous lining, grade sentence and the "with" line', () => {
+  const r = run(one({ lesion: 'Sinonasal papilloma, inverted', dysplasia: 'High grade', fragments: 'One', epithelium: 'Squamous metaplasia' }));
+  assert.equal(r.microscopy, 'Sections show a polypoid piece of mucosal tissue lined by squamous type epithelium. An endophytic growth of round epithelial nests with smooth contour is seen. The epithelium is hyperplastic with transmigrating neutrophils and neutrophilic microabscesses. The features are those of a sinonasal papilloma, inverted type. High grade dysplasia is present. No invasion is identified.');
+  assert.equal(r.diagnosis, 'NASAL CAVITY, polyps, polypectomy - SINONASAL PAPILLOMA, INVERTED TYPE with HIGH GRADE DYSPLASIA');
+  assert.equal(r.comment, '');
+  const bx = run(one({ lesion: 'Sinonasal papilloma, inverted', procedure: 'Biopsy', epithelium: 'Ulcerated' }));
+  assert.ok(bx.microscopy.startsWith('Sections show pieces of mucosal tissue with surface ulceration. An endophytic growth'));
+});
+
+test('oncocytic papilloma prints its house paragraph and the ONCOCYTIC SUBTYPE line', () => {
+  const r = run(one({ lesion: 'Sinonasal papilloma, oncocytic' }));
+  assert.equal(r.microscopy, 'Sections show a papillary epithelial proliferation with mixed exophytic and endophytic growth. It is lined by multilayered pseudostratified to columnar oncocytic epithelium with abundant eosinophilic cytoplasm and small uniform nuclei. Numerous intraepithelial mucin-filled microcysts and neutrophilic microabscesses are present. The features are those of a sinonasal papilloma, oncocytic subtype. No destructive stromal invasion is present. No dysplasia or malignancy is seen.');
+  assert.equal(r.diagnosis, 'NASAL CAVITY, polyps, polypectomy - SINONASAL PAPILLOMA, ONCOCYTIC SUBTYPE');
+  assert.equal(r.comment, '');
+  const low = run(one({ lesion: 'Sinonasal papilloma, oncocytic', dysplasia: 'Low grade' }));
+  assert.ok(low.microscopy.endsWith('oncocytic subtype. Low grade dysplasia is present. No destructive stromal invasion is present.'));
+  assert.equal(low.diagnosis, 'NASAL CAVITY, polyps, polypectomy - SINONASAL PAPILLOMA, ONCOCYTIC SUBTYPE with LOW GRADE DYSPLASIA');
+  const lymph = run(one({ lesion: 'Sinonasal papilloma, oncocytic', lymphomaSuspicion: true }));
+  assert.ok(lymph.microscopy.includes('No destructive stromal invasion is present. No dysplasia is seen. In addition, there is an atypical lymphoid infiltrate'));
+});
+
+test('carcinoma arising in a papilloma: capitalised line, carcinoma sentence and the QMH head and neck template comment', () => {
+  const r = run(one({ lesion: 'Sinonasal papilloma, inverted', dysplasia: 'Squamous cell carcinoma arising' }));
+  assert.equal(r.diagnosis, 'NASAL CAVITY, polyps, polypectomy - SQUAMOUS CELL CARCINOMA ARISING IN SINONASAL PAPILLOMA, INVERTED TYPE - SEE COMMENT');
+  assert.ok(r.microscopy.endsWith('The features are those of a sinonasal papilloma, inverted type. Invasive squamous cell carcinoma arising in the papilloma is present (see comment).'));
+  assert.equal(r.comment, 'A malignant neoplasm is present. Tumour type, grade, extent and margin status should be reported on the QMH head and neck cancer template; a supplementary synoptic report will follow.');
+  // The option is hidden off a papilloma; a stale value there changes nothing.
+  const polyp = run(one({ dysplasia: 'Squamous cell carcinoma arising' }));
+  assert.equal(polyp.comment, '');
+  assert.equal(polyp.diagnosis, 'NASAL CAVITY, polyps, polypectomy - INFLAMMATORY (OEDEMATOUS) SINONASAL POLYPS; no evidence of dysplasia or malignancy');
+});
+
+test('a second finding follows the finished papilloma paragraph', () => {
+  const r = run(one({ lesion: 'Sinonasal papilloma, inverted', fungus: AFS, allergicMucin: true }));
+  assert.ok(r.microscopy.includes('inverted type. No high grade cytological atypia or invasion is identified. Allergic mucin containing degenerating eosinophils'));
+  assert.equal(r.diagnosis, 'NASAL CAVITY, polyps, polypectomy - SINONASAL PAPILLOMA, INVERTED TYPE; ALLERGIC FUNGAL SINUSITIS - non-invasive fungal hyphae on GMS');
 });
 
 test('granulomatous patterns write the GPA / sarcoid / TB sentences', () => {
@@ -189,7 +233,7 @@ test('metadata and example integrity', () => {
   assert.equal(schema.shortName, 'Nose · polypectomy / biopsy');
   assert.ok(schema.shortName.includes(' · '));
   assert.ok(schema.aliases.length >= 6);
-  for (const a of ['nasal polyp', 'sinonasal', 'FESS', 'antrochoanal', 'inverted papilloma', 'fungal sinusitis', 'Schneiderian']) assert.ok(schema.aliases.includes(a), `alias ${a}`);
+  for (const a of ['nasal polyp', 'sinonasal', 'FESS', 'antrochoanal', 'inverted papilloma', 'oncocytic papilloma', 'sinonasal papilloma', 'fungal sinusitis', 'Schneiderian']) assert.ok(schema.aliases.includes(a), `alias ${a}`);
   assert.equal(schema.maxParts, 4);
   assert.equal(schema.defaultParts, 1);
   assert.equal(schema.version, '2026.09');
@@ -207,7 +251,10 @@ test('metadata and example integrity', () => {
     for (const k of Object.keys(p.values)) assert.ok(ids.has(k), `example key ${k} is not a field`);
     for (const id of ids) assert.ok(id in p.values, `example lacks field ${id}`);
   }
-  for (const sn of schema.snippets) assert.ok(ids.has(sn.auto.field), `snippet ${sn.id} auto field exists`);
+  // Snippet rules may be plain, any / all (the carcinoma-arising rule), or absent (ticked by hand).
+  const ruleFields = (r) => (r.any || r.all ? (r.any || r.all).flatMap(ruleFields) : [r.field]);
+  for (const sn of schema.snippets) for (const f of sn.auto ? ruleFields(sn.auto) : []) assert.ok(ids.has(f), `snippet ${sn.id} auto field ${f} exists`);
+  assert.equal(schema.snippets.find((sn) => sn.id === 'inverted_papilloma').auto, undefined);
   const macroFields = schema.fields.filter((f) => f.group === 'Macroscopy').map((f) => f.id);
   const idx = macroFields.map((id) => schema.fields.findIndex((f) => f.id === id));
   assert.equal(idx[idx.length - 1] - idx[0] + 1, idx.length, 'Macroscopy fields are consecutive');

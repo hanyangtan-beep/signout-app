@@ -1,6 +1,6 @@
 # Sinonasal papilloma detail — brief
 
-Extends `schemas/nasal_polyps.json` / `generators/sinonasal.js`. Carded 2026-09-11; re-carded against the released reports and pulled by the user on 2026-09-27 (Phase 45).
+Extends `schemas/nasal_polyps.json` / `generators/sinonasal.js`. Carded 2026-09-11; re-carded against the released reports, pulled by the user and built on 2026-09-27 (Phase 45). Wording is protected by `tests/sinonasal.test.js`.
 
 ## Measure (released reports, aggregate only)
 
@@ -29,7 +29,7 @@ Microscopy, per type (the epithelium field changes the inverted lining; one frag
 | Oncocytic | Sections show a papillary epithelial proliferation with mixed exophytic and endophytic growth. It is lined by multilayered pseudostratified to columnar oncocytic epithelium with abundant eosinophilic cytoplasm and small uniform nuclei. Numerous intraepithelial mucin-filled microcysts and neutrophilic microabscesses are present. The features are those of a sinonasal papilloma, oncocytic subtype. | No destructive stromal invasion is present. No dysplasia or malignancy is seen. |
 | Exophytic | Sections show polypoid pieces of mucosal tissue with an exophytic papillary growth of epithelium over fibrovascular cores. The papillae are lined by hyperplastic squamous to transitional type epithelium with scattered mucous cells and transmigrating neutrophils. The features are those of a sinonasal papilloma, exophytic type. | No high grade cytological atypia or invasion is identified. |
 
-Grade sentences replace the negative sentence: low grade "Low grade dysplasia is present." plus the type's invasion negative; high grade "High grade dysplasia is present." plus the invasion negative; carcinoma "Invasive squamous cell carcinoma arising in the papilloma is present (see comment)."
+Grade sentences replace the negative sentence: low grade "Low grade dysplasia is present." plus "No high grade cytological atypia or invasion is identified." (oncocytic: "No destructive stromal invasion is present."); high grade "High grade dysplasia is present." plus "No invasion is identified." (oncocytic as before); carcinoma "Invasive squamous cell carcinoma arising in the papilloma is present (see comment)." Allergic mucin and fungal sentences follow the finished papilloma paragraph. With the atypical lymphoid infiltrate ticked, the oncocytic negative reads "No dysplasia is seen." so that it does not contradict the lymphoid sentence.
 
 Diagnosis: `SINONASAL PAPILLOMA, INVERTED TYPE` / `SINONASAL PAPILLOMA, EXOPHYTIC TYPE` / `SINONASAL PAPILLOMA, ONCOCYTIC SUBTYPE` (the house word; WHO 5th says "oncocytic type"); `with LOW GRADE DYSPLASIA` / `with HIGH GRADE DYSPLASIA` when graded; `SQUAMOUS CELL CARCINOMA ARISING IN SINONASAL PAPILLOMA, INVERTED TYPE - SEE COMMENT` for a carcinoma, which ticks the QMH head and neck template comment. The fungal, mucin, ulceration and lymphoid clauses follow as before. A benign papilloma line has no closer and no "see comment".
 
