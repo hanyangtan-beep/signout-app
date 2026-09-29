@@ -21,6 +21,8 @@ import { organIcon, mountOrganSprite } from './organicons.js';
 import { wizardSteps, wizardSupported, wizardProgress, visibleSteps, stepAnswered, atDefault, cautions } from './cnswizard.js';
 import { pathway, pathwaySupported, pathwayChart } from './cnspathway.js';
 import { plateFor, plateSupported, plateSelection, plateChart, plateEntries } from './cnsplates.js';
+import { openRoadmap, openSuggest } from './panels.js';
+import { choiceSummary } from './suggest.js';
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -89,6 +91,8 @@ const nodes = {
   save: $('#btn-save'),
   google: $('#btn-google'),
   settings: $('#btn-settings'),
+  roadmap: $('#btn-roadmap'),
+  suggest: $('#btn-suggest'),
   dlgOpen: $('#dlg-open'),
   openSearch: $('#open-search'),
   openList: $('#open-list'),
@@ -116,6 +120,27 @@ const LETTERS_NEXT = (n) => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[n] || '?';
 /** Template entry for a part (each part may use a different template). */
 function templateOf(part) { return state.templates[templateIdOf(state.caseState, part)]; }
 function schemaOf(part) { return templateOf(part).schema; }
+
+const phoneLayout = window.matchMedia('(max-width: 700px)');
+
+/**
+ * Suggest a change (docs/specs/suggestions-and-roadmap.md). From a part's actions the dialog opens on
+ * that part's template; from the header it opens on the whole app, with the active part's template
+ * one pick away. Either way it can attach that part's choice fields, never its free text.
+ */
+function suggest(i, fromPart) {
+  const part = state.caseState.parts[i];
+  const s = part ? schemaOf(part) : null;
+  const current = s ? { id: s.id, name: s.name, version: s.version || '', choices: choiceSummary(s, part.values, i) } : null;
+  openSuggest({
+    groups: selectorGroups(state.manifest),
+    current,
+    initial: fromPart && current ? current.id : '',
+    email: currentUser() || '',
+    layout: phoneLayout.matches ? 'phone' : 'desktop',
+    toast
+  });
+}
 /** Schema of the active part: the one new parts inherit and the nav highlights. */
 function schema() { return schemaOf(activePart()); }
 /** Schemas of every template used by the case, in order of first appearance. */
@@ -1379,6 +1404,7 @@ function renderPanel() {
           : 'See the integrated-diagnosis pathway for this case: which criteria are satisfied, which are outstanding, and what the next test would be. It reads the form and changes nothing.',
         onclick: () => { togglePathway(i); render(); }
       }) : null,
+      el('button', { type: 'button', class: 'btn ghost small', text: 'Suggest a change', title: 'Suggest a change or report an error in this template (opens a Google Form)', onclick: () => suggest(i, true) }),
       el('button', { type: 'button', class: 'btn ghost small', text: 'Reset', onclick: () => resetPart(i) }),
       el('button', { type: 'button', class: 'btn ghost small danger', text: 'Remove', onclick: () => removePart(i) })
     ));
@@ -2112,6 +2138,8 @@ function initDrive() {
     try { await ensureSignedIn(true, 'signin'); toast(`Signed in as ${currentUser() || 'Google user'}`); } catch (err) { toast(err.message); }
   });
   nodes.settings.addEventListener('click', openSettings);
+  nodes.roadmap.addEventListener('click', () => openRoadmap());
+  nodes.suggest.addEventListener('click', () => suggest(state.activePart, false));
   nodes.settingsForm.addEventListener('submit', (e) => {
     if (e.submitter?.value !== 'save') return;
     // A new client id invalidates the token issued by the old one, so the session has to go.

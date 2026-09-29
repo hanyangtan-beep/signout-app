@@ -410,6 +410,47 @@ textarea.input { min-height: 64px; resize: vertical; }
 .dialog .field > label { padding-top: 0; }
 .dialog-actions { display: flex; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-2); flex-wrap: wrap; }
 .field-note { margin: 0; font-size: var(--text-xs); color: var(--color-text-faint); }
+
+/* Roadmap panel and Suggest a change (docs/specs/suggestions-and-roadmap.md) */
+.dialog.roadmap { width: min(880px, calc(100vw - 2 * var(--space-4))); max-height: 92vh; }
+.dialog.roadmap .dialog-body { max-height: 92vh; overflow: auto; }
+.dialog.suggest { width: min(640px, calc(100vw - 2 * var(--space-4))); max-height: 92vh; }
+.dialog.suggest .dialog-body { max-height: 92vh; overflow: auto; }
+.rm-body { display: grid; gap: var(--space-5); }
+.rm-sec { display: grid; gap: var(--space-2); }
+.rm-sec > h3 { font-size: var(--text-base); display: flex; align-items: baseline; gap: var(--space-2); }
+.rm-count { font-size: var(--text-xs); font-weight: 500; color: var(--color-text-faint); }
+.rm-note { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+.rm-card, .rm-item { border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: var(--text-sm); }
+.rm-card > summary, .rm-item > summary { cursor: pointer; padding: var(--space-2) var(--space-3); display: flex; gap: var(--space-2); align-items: baseline; }
+.rm-item > summary { display: block; }
+.rm-card[open] > summary, .rm-item[open] > summary { border-bottom: 1px solid var(--color-border); }
+.rm-title { font-weight: 500; }
+.rm-size { margin-left: auto; flex: none; max-width: 45%; text-align: right; font-size: var(--text-xs); color: var(--color-text-muted); }
+.rm-date { font-weight: 500; color: var(--color-text-muted); }
+.rm-rows { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-1) var(--space-3); margin: 0; padding: var(--space-2) var(--space-3) var(--space-3); }
+.rm-rows dt { font-weight: 600; color: var(--color-text-muted); }
+.rm-rows dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.rm-item > p, .rm-item > ul { margin: 0; padding: var(--space-2) var(--space-3) 0; overflow-wrap: anywhere; }
+.rm-item > :last-child { padding-bottom: var(--space-3); }
+.rm-item > ul { padding-left: calc(var(--space-3) + 1.1em); }
+.rm-item.plain { padding: var(--space-2) var(--space-3); }
+.rm-body code, #roadmap-asof code { font-family: var(--font-mono); font-size: 0.92em; }
+.sg-attach label.check { display: flex; gap: var(--space-2); align-items: center; font-weight: 500; }
+.sg-preview { margin: var(--space-1) 0 0; max-height: 160px; overflow: auto; white-space: pre-wrap; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-text-muted); }
+.sg-error { margin: 0; font-size: var(--text-sm); color: var(--color-alert); }
+.sg-error[hidden], .sg-attach[hidden] { display: none; }
+.dialog.suggest .dialog-actions { align-items: center; flex-wrap: nowrap; }
+.sg-foot { flex: 1 1 auto; }
+#sg-open { flex: none; white-space: nowrap; }
+@media (max-width: 700px) {
+  /* The phone header has room for one more icon, not two: Roadmap stays, and Suggest a change
+     moves to each part's actions, where the dialog can still be switched to the whole app. */
+  #btn-suggest { display: none; }
+  .rm-rows { grid-template-columns: 1fr; }
+  .rm-rows dt { margin-top: var(--space-1); }
+  .dialog.suggest .dialog-actions { flex-wrap: wrap; }
+}
 .case-list { display: grid; gap: var(--space-1); max-height: 50vh; overflow: auto; }
 .case-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: var(--space-3); align-items: center; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-2) var(--space-3); background: var(--color-surface); cursor: pointer; text-align: left; font-size: var(--text-sm); }
 .case-row:hover { background: var(--color-surface-2); }

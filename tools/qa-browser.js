@@ -1105,6 +1105,81 @@ await check('case options: a pasted hysterectomy ticks the macroscopy box it pri
   return 'macroscopy ticked after Build parts; untick removes it, tick restores it';
 });
 
+// Phase 46 (docs/specs/suggestions-and-roadmap.md). From a source checkout the panel parses
+// docs/roadmap.md itself; a build ships dist/roadmap.json instead.
+await check('roadmap panel opens with Now, Next, Later and Recently done', async () => {
+  await page.click('#btn-roadmap');
+  await page.waitForSelector('#dlg-roadmap[open] .rm-sec', { timeout: 5000 });
+  const heads = await page.$$eval('#dlg-roadmap .rm-sec > h3', (hs) => hs.map((h) => h.firstChild.textContent.trim()));
+  assert(heads.join('|') === 'Now|Next|Later|Recently done', `sections were ${heads.join(', ')}`);
+  const counts = await page.evaluate(() => ({
+    cards: document.querySelectorAll('#dlg-roadmap .rm-card').length,
+    done: document.querySelectorAll('#dlg-roadmap .rm-sec:last-child .rm-item').length
+  }));
+  assert(counts.cards > 0 && counts.done === 10, `cards ${counts.cards}, Done lines ${counts.done}`);
+  await shot('roadmap');
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(200);
+  return `${counts.cards} cards, ${counts.done} Done lines`;
+});
+
+await check('suggest a change blocks patient details and opens a pre-filled form', async () => {
+  // The form is never really opened: window.open is replaced so the URL can be read instead.
+  await page.evaluate(() => { window.__opened = []; window.open = (u) => { window.__opened.push(String(u)); return null; }; });
+  await page.locator('.part-actions button', { hasText: 'Suggest a change' }).first().click();
+  await page.waitForSelector('#dlg-suggest[open] #sg-text', { timeout: 5000 });
+  const about = await page.$eval('#sg-about', (sel) => sel.value);
+  assert(about !== '', 'the part button did not preselect its template');
+  await page.fill('#sg-text', 'Wording for A123456(7)');
+  await page.click('#sg-open');
+  const err = await page.$eval('#sg-error', (e) => (e.hidden ? '' : e.textContent));
+  assert(/HKID/.test(err), `no HKID block: "${err}"`);
+  assert((await page.evaluate(() => window.__opened.length)) === 0, 'the form opened despite the HKID');
+  await page.fill('#sg-text', 'The diagnosis line should read differently.');
+  await page.locator('#sg-where .chip', { hasText: 'Diagnosis' }).click();
+  await shot('suggest');
+  await page.click('#sg-open');
+  const opened = await page.evaluate(() => window.__opened);
+  assert(opened.length === 1, `window.open called ${opened.length} times`);
+  const u = new URL(opened[0]);
+  assert(u.hostname === 'docs.google.com' && u.searchParams.get('usp') === 'pp_url', `unexpected URL ${u.origin}${u.pathname}`);
+  const answers = [...u.searchParams.entries()].filter(([k]) => k.startsWith('entry.')).map(([, v]) => v);
+  assert(answers.some((v) => v.endsWith(`(${about})`)), 'template answer missing');
+  assert(answers.includes('Diagnosis'), 'where answer missing');
+  assert(!answers.some((v) => v.includes('A123456')), 'the blocked text reached the URL');
+  assert((await page.locator('#dlg-suggest[open]').count()) === 0, 'dialog stayed open');
+  await page.click('#btn-suggest');
+  await page.waitForSelector('#dlg-suggest[open]', { timeout: 5000 });
+  const fromHeader = await page.$eval('#sg-about', (sel) => sel.value);
+  assert(fromHeader === '', `the header button preselected "${fromHeader}" instead of the whole app`);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(200);
+  return `${about}: ${answers.length} answers pre-filled; HKID blocked`;
+});
+
+await check('phone header keeps Roadmap on one row and leaves Suggest to the part', async () => {
+  const size = page.viewportSize();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForTimeout(300);
+  const box = await page.evaluate(() => {
+    const vis = (n) => !!n && window.getComputedStyle(n).display !== 'none' && n.getBoundingClientRect().width > 0;
+    const acts = document.querySelector('.topbar-actions');
+    const shown = [...acts.children].filter(vis);
+    return {
+      roadmap: vis(document.querySelector('#btn-roadmap')),
+      suggest: vis(document.querySelector('#btn-suggest')),
+      rows: new Set(shown.map((n) => Math.round(n.getBoundingClientRect().top))).size,
+      overflow: acts.scrollWidth > acts.clientWidth + 1 || document.documentElement.scrollWidth > window.innerWidth + 1
+    };
+  });
+  await shot('phone-header');
+  await page.setViewportSize(size);
+  await page.waitForTimeout(300);
+  assert(box.roadmap && !box.suggest, `roadmap shown ${box.roadmap}, suggest shown ${box.suggest}`);
+  assert(box.rows === 1 && !box.overflow, `header actions on ${box.rows} rows, overflow ${box.overflow}`);
+  return 'one row at 390px';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));
