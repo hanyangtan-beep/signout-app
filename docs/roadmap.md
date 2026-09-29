@@ -1,6 +1,6 @@
 # Sign-out App — Roadmap
 
-Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item, newest first. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`; the full Done write-ups to 2026-09-25 are in `docs/done-log.md`.
+Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item, newest first. The app's Roadmap panel is built from this file, so a change here is rebuilt, deployed and published (user decision 2026-09-29); other docs-only changes are committed only. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`; the full Done write-ups to 2026-09-25 are in `docs/done-log.md`.
 
 State on 2026-09-27: 69 templates (13 small biopsy, 30 benign resection incl. LEEP, 1 frozen section, 17 synoptic cancer resections, 6 cytology, 1 biomarker, 1 generic), 1485 tests, published at `https://han-signout.pplx.app`.
 
@@ -96,7 +96,15 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. Sinonasal papilloma detail finished on 2026-09-27; pull the next card from Next.
+### Suggestions box and in-app roadmap — pulled by the user 2026-09-29   Size: S
+Measure:    not a case-mix card; the four design choices are the user's (2026-09-29): a Google Form for storage, publish on every roadmap change, a summary view, review when asked.
+Why:        colleagues have no route to report an error or propose a change except messaging the owner, and the roadmap can only be read in the project files.
+Change:     "Suggest a change" in the header (the whole app) and in each part's actions (that template) opens a short dialog — about, type, where, suggestion — with an optional attachment of the part's choice fields that differ from the template default and sit on its own option list, never free text, numbers, the specimen line or the report. A patient-detail check (docformat's HKID, honorific, phone and date-of-birth rules plus accession and hospital-number shapes) blocks the send; "Open the form" opens the Google Form `Sign-out app — suggestions` pre-filled and the user presses Submit there; only the owner sees responses. "Roadmap" in the header opens a read-only summary built from this file at build time (`dist/roadmap.json`): Now, Next cards, Later items and cards, the ten newest Done lines, each expandable, dated by the last roadmap commit.
+Untouched:  every template, generator and fixture; Drive, Sheet and sign-in scopes; the case store.
+Accept:     tests: the live roadmap parses into four sections with every Done line dated, newest first; headings split into title and size; the pre-fill URL carries all seven answers; the choice summary lists only changed, visible choice fields on their own options; each patient-detail shape blocks and ordinary wording passes. Browser: both dialogs open; an HKID blocks; a clean suggestion opens a docs.google.com form URL with the template filled; the phone header stays on one row.
+Verify:     tests + browser QA (desktop and 390 px)
+Ship:       alone (pulled by the user)
+Spec:       `docs/specs/suggestions-and-roadmap.md`
 
 ## Next
 
@@ -300,7 +308,8 @@ Spec:       `docs/specs/report-review.md`
 
 ## Deployment and reference
 
-- Published: `https://han-signout.pplx.app` (site id `50c90ba7-8e5b-49c2-8462-5db64121e8d4`). Flow: `deploy_website` then `publish_website` with the existing site id, once per batch.
+- Published: `https://han-signout.pplx.app` (site id `50c90ba7-8e5b-49c2-8462-5db64121e8d4`). Flow: `deploy_website` then `publish_website` with the existing site id, once per batch. A roadmap-only change is also built, deployed and published, so the Roadmap panel matches this file; the release gate is for code changes.
+- Suggestions: Google Form `Sign-out app — suggestions` (form id `1LFrHIihbJq12zOdsK8W7WxMJZ8CrQskwFvEJoykNZK8`), owned by the app's owner, who alone sees responses; reviewed when the owner asks. Entry ids are in `src/suggest.js`.
 - Drive: Sheet `Sign-out cases` `1KZBenmjudy1_TRqpoyTqvvxMaktgvzcjVmsJePH6ivk`; folder "Pathology reports" `1IDOdz37IQJaYDX7PVFlqB7VFzyfiNXMM`; OAuth client `834072849408-kerfr1jhg6nc05h3dpk0965juj3b9379.apps.googleusercontent.com` (secret not stored here).
 - Repo seams: `src/engine.js` (`generateCase`, `mergeLis`, edits overlay, `out.source` / `out.generated`), `src/docformat.js` (`buildDocText`, PHI guard), `src/staging/`, `templates/manifest.json` via `scripts/build-manifest.mjs`, `tools/import-qmh.js`.
 - QA harness: `pplx-tool js_repl`, static server on 8790 serving `dist/`, Playwright 1360×900; report blocks `#report-blocks .block`; case details `#meta-details`; theme `#theme-toggle`.
