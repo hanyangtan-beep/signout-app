@@ -99,7 +99,15 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. Sign-in restricted to a built-in list of accounts finished on 2026-09-30; pull the next card from Next.
+### Locked draft reopens only for its own account — pulled by the user 2026-09-30   Size: S
+Measure:    not a case-mix card. Security review, 2026-09-30: locking keeps the draft in the tab, and a second allowed account signing in on that tab sees it.
+Why:        the user chose to fix this before Phase 47 and the sign-in list are published.
+Change:     the tab's cached draft records the account it belongs to. On opening, a draft that belongs to another account, or to an account when nobody is signed in, is cleared and a new case starts, with a toast that names nobody. An untagged draft (localhost without sign-in) opens as before.
+Untouched:  Drive, Sheets, the gate and every template; the draft still survives a refresh and the Google round trip for the same account.
+Accept:     tests: the same account restores, however the address is cased or dotted; another account and no account get a clean case and the tab's copy is gone; an untagged draft restores.
+Verify:     tests + browser QA
+Ship:       with Phase 47 (one publish)
+Spec:       none (this card)
 
 ## Next
 
