@@ -98,7 +98,15 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. Frozen section, several lymph nodes in one part finished on 2026-09-30; pull the next card from Next.
+### Sign-in restricted to a built-in list of accounts — pulled by the user 2026-09-30   Size: S
+Measure:    not a case-mix card. Pre-publish security review, 2026-09-30: the gate admits any Google account by default, and its allow-list lives in each browser's Settings, so it cannot restrict a stranger's machine.
+Why:        the user chose to restrict sign-in to four Google accounts before Phase 47 is published.
+Change:     a built-in allow-list in `src/gate.js`, held as SHA-256 digests of the canonical address, never the address (the file is served to anyone). When it is set it is the only list: an address that cannot be confirmed is not admitted, and Settings shows the list as fixed. The signed-in address comes from Drive's about.get, which works under drive.file, with userinfo as the fallback. `tools/allow-hash.mjs` prints the digest for a new address.
+Untouched:  localhost has no gate; a build with no built-in list keeps the Settings list; Drive, Sheets and every template.
+Accept:     tests: a member is admitted however the address is cased or dotted (Gmail); a stranger is refused; an unresolved address or missing Web Crypto is not admitted; no address-shaped text in the gate or config source; the old rules hold with no built-in list.
+Verify:     tests + browser QA
+Ship:       with Phase 47 (one publish)
+Spec:       `docs/google-setup.md` §5
 
 ## Next
 
