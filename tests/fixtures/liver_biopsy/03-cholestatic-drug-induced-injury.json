@@ -1,0 +1,31 @@
+{
+  "templateId": "liver_biopsy",
+  "values": {
+    "specimenName": "random",
+    "cores": "2",
+    "coreLength": "22",
+    "portalTracts": "14",
+    "pattern": "Biliary",
+    "bilDx": "Drug-induced liver injury",
+    "diliCholPattern": "Cholestatic hepatitis",
+    "portalInfl": "Mild",
+    "infiltrate": "Mixed, with eosinophils",
+    "interface": "Absent",
+    "lobular": "Mild",
+    "bilFeatures": [
+      "Canalicular cholestasis",
+      "Hepatocellular cholestasis",
+      "Ductular reaction"
+    ],
+    "stageSystem": "",
+    "fibrosis": "No fibrosis",
+    "stains": [
+      "Reticulin",
+      "Perls",
+      "CK7"
+    ],
+    "stCk7": "Ductular reaction"
+  },
+  "report": "Liver, random, biopsy\n\nSections show two cores of liver measuring 22 mm in aggregate length, with 14 portal tracts. The portal tracts contain a mild mixed inflammatory infiltrate including eosinophils, without interface hepatitis. There is mild lobular inflammation. There is a ductular reaction, canalicular cholestasis and hepatocellular cholestasis. Reticulin stain shows no fibrosis. Perls stain shows no stainable iron. CK7 highlights a ductular reaction.\n\nLIVER, random, biopsy - CHOLESTATIC HEPATITIS, compatible with DRUG-INDUCED LIVER INJURY\n\nPlease correlate with clinical findings and the drug and herbal medicine history.",
+  "checks": []
+}

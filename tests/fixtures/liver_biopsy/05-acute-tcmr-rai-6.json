@@ -1,0 +1,18 @@
+{
+  "templateId": "liver_biopsy",
+  "values": {
+    "specimenName": "allograft",
+    "cores": "1",
+    "coreLength": "21",
+    "portalTracts": "12",
+    "pattern": "Transplant",
+    "txDx": "Moderate acute T-cell-mediated rejection",
+    "raiPortal": "2",
+    "raiBileDuct": "2",
+    "raiVenous": "2",
+    "stageSystem": "",
+    "fibrosis": "No fibrosis"
+  },
+  "report": "Liver allograft, biopsy\n\nSections show a core of liver measuring 21 mm in length, with 12 portal tracts. Most portal tracts are expanded by a mixed infiltrate of lymphocytes with occasional blasts, neutrophils and eosinophils. Most bile ducts are infiltrated by inflammatory cells, and more than an occasional duct shows degenerative change. Most portal and hepatic venules show subendothelial infiltration. Rejection activity index components: portal inflammation 2, bile duct inflammation 2 and venous endothelial inflammation 2. There is no fibrosis.\n\nLIVER ALLOGRAFT, biopsy - MODERATE ACUTE T-CELL-MEDIATED REJECTION (RAI 6/9)",
+  "checks": []
+}

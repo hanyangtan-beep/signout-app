@@ -1,0 +1,42 @@
+{
+  "templateId": "liver_biopsy",
+  "values": {
+    "specimenName": "random",
+    "cores": "1",
+    "coreLength": "18",
+    "portalTracts": "11",
+    "pattern": "Biliary",
+    "bilDx": "Primary biliary cholangitis",
+    "portalInfl": "Moderate",
+    "infiltrate": "Lymphoplasmacytic",
+    "interface": "Mild",
+    "lobular": "Mild",
+    "bilFeatures": [
+      "Florid duct lesion",
+      "Ductular reaction",
+      "Bile duct loss"
+    ],
+    "ductlessTracts": "3",
+    "nkFibrosis": "1",
+    "nkDuctLoss": "1",
+    "nkOrcein": "1",
+    "nkCA": "2",
+    "nkHA": "1",
+    "stains": [
+      "Reticulin",
+      "Orcein",
+      "CK7"
+    ],
+    "stOrcein": "Copper-associated protein in periportal hepatocytes",
+    "stCk7": "Ductular reaction and periportal hepatocyte expression"
+  },
+  "report": "Liver, random, biopsy\n\nSections show a core of liver measuring 18 mm in length, with 11 portal tracts. The portal tracts contain a moderate lymphoplasmacytic infiltrate with mild interface hepatitis. There is mild lobular inflammation. There are florid duct lesions and a ductular reaction. Bile ducts are absent from 3 of 11 portal tracts. Nakanuma scores: fibrosis 1, bile duct loss 1 and orcein-positive granules 1. Reticulin stain shows periportal or incomplete septal fibrosis. Orcein stain shows copper-associated protein in periportal hepatocytes. CK7 highlights a ductular reaction and is expressed by periportal hepatocytes.\n\nLIVER, random, biopsy - CHRONIC NON-SUPPURATIVE DESTRUCTIVE CHOLANGITIS with PERIPORTAL FIBROSIS (Nakanuma stage 2, mild progression; CA2, HA1), consistent with PRIMARY BILIARY CHOLANGITIS",
+  "checks": [
+    {
+      "level": "info",
+      "message": "18 mm is compromised by length (10-20 mm): choose Compromised to state the limitation if it matters.",
+      "field": "adequacy",
+      "part": "A"
+    }
+  ]
+}

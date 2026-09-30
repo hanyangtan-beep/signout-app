@@ -1,0 +1,2587 @@
+{
+ "id": "liver_biopsy",
+ "version": "2026.09",
+ "name": "Liver biopsy (medical)",
+ "shortName": "Liver · medical biopsy",
+ "label": "Liver (medical)",
+ "organ": "LIVER",
+ "system": "Hepatobiliary",
+ "kind": "biopsy",
+ "rank": 61,
+ "aliases": [
+  "medical liver",
+  "random liver biopsy",
+  "hepatitis",
+  "autoimmune hepatitis",
+  "AIH",
+  "PBC",
+  "PSC",
+  "drug-induced liver injury",
+  "DILI",
+  "steatohepatitis",
+  "MASH",
+  "MASLD",
+  "NASH",
+  "NAFLD",
+  "cirrhosis",
+  "fibrosis",
+  "Ishak",
+  "METAVIR",
+  "liver transplant",
+  "rejection",
+  "RAI"
+ ],
+ "match": {
+  "site": [
+   "liver"
+  ],
+  "procedure": [
+   "biopsy",
+   "biopsies",
+   "core",
+   "needle",
+   "transjugular",
+   "TJLB",
+   "random"
+  ],
+  "clinical": [
+   "hepatitis",
+   "autoimmune",
+   "cirrhosis",
+   "fibrosis",
+   "steatohepatitis",
+   "fatty liver",
+   "cholangitis",
+   "cholestasis",
+   "jaundice",
+   "deranged",
+   "LFT",
+   "LFTs",
+   "rejection",
+   "transplant"
+  ],
+  "gate": "\\b(?:random|background|non-?lesional)\\b|^(?![\\s\\S]*\\b(?:mass(?:es)?|lesions?|nodules?|SOL|HCC|hepatoma|tumou?rs?|metasta\\w*|mets|abscess(?:es)?|cysts?|carcinoma|cholangiocarcinoma|neoplasm\\w*|malignan\\w*|adenomas?|ha?emangiomas?|FNH)\\b)[\\s\\S]*\\b(?:medical|parenchyma\\w*|deranged|LFTs?|liver\\s+function|ALT|ALP|GGT|transaminas\\w*|hepatitis|AIH|autoimmune|PBC|PSC|cholangitis|cholesta\\w*|jaundice|cirrho\\w*|fibros\\w*|steato\\w*|fatty|NASH|NAFLD|MASH|MASLD|MetALD|transplant\\w*|allograft|graft|OLT|LDLT|DDLT|rejection|transjugular|TJLB|ha?emochromatosis|iron|Wilson\\w*|A1AT|DILI|drugs?|HBV|HCV|hep\\s*[BC]|(?:right|left)\\s+lobe)\\b",
+  "bias": 1,
+  "exclude": [
+   "mass",
+   "masses",
+   "lesion",
+   "nodule",
+   "SOL",
+   "HCC",
+   "hepatoma",
+   "tumour",
+   "tumor",
+   "metastasis",
+   "metastases",
+   "metastatic",
+   "abscess",
+   "cyst",
+   "carcinoma",
+   "cholangiocarcinoma",
+   "neoplasm",
+   "malignancy",
+   "malignant",
+   "adenoma",
+   "haemangioma",
+   "hemangioma",
+   "FNH",
+   "flexure",
+   "resection",
+   "hepatectomy",
+   "segmentectomy",
+   "lobectomy"
+  ],
+  "fill": [
+   {
+    "field": "specimenName",
+    "from": "detail",
+    "unless": "^(?:liver|biops(?:y|ies)|core|needle|percutaneous|medical)$"
+   },
+   {
+    "field": "specimenName",
+    "from": "map",
+    "map": [
+     [
+      "\\b(?:transjugular|TJLB)\\b",
+      "transjugular"
+     ],
+     [
+      "\\b(?:allograft|transplant(?:ed)?|graft)\\b",
+      "allograft"
+     ],
+     [
+      "\\brandom\\b",
+      "random"
+     ],
+     [
+      "\\bbackground\\b",
+      "background"
+     ],
+     [
+      "\\bnon-?lesional\\b",
+      "non-lesional"
+     ],
+     [
+      "\\bright\\s+lobe\\b",
+      "right lobe"
+     ],
+     [
+      "\\bleft\\s+lobe\\b",
+      "left lobe"
+     ]
+    ]
+   }
+  ]
+ },
+ "specimenNoun": "biopsy",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "liver_biopsy",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  }
+ ],
+ "partDefaults": [],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Site",
+   "type": "text",
+   "placeholder": "Random / right lobe / allograft",
+   "default": "",
+   "group": "Specimen"
+  },
+  {
+   "id": "cores",
+   "label": "Cores",
+   "type": "number",
+   "placeholder": "2",
+   "default": "",
+   "min": 1,
+   "step": 1,
+   "group": "Specimen"
+  },
+  {
+   "id": "coreLength",
+   "label": "Aggregate core length (mm)",
+   "type": "number",
+   "placeholder": "22",
+   "default": "",
+   "min": 0,
+   "step": 1,
+   "group": "Specimen"
+  },
+  {
+   "id": "portalTracts",
+   "label": "Portal tracts",
+   "type": "number",
+   "placeholder": "12",
+   "default": "",
+   "min": 0,
+   "step": 1,
+   "group": "Specimen"
+  },
+  {
+   "id": "fragmented",
+   "label": "Fragmented",
+   "type": "checkbox",
+   "default": false,
+   "group": "Specimen"
+  },
+  {
+   "id": "adequacy",
+   "label": "Adequacy",
+   "type": "select",
+   "options": [
+    "Auto",
+    "Good",
+    "Compromised",
+    "Inadequate"
+   ],
+   "default": "Auto",
+   "help": "Auto reads the aggregate length: good over 20 mm, compromised 10-20 mm, inadequate under 10 mm (RCPath tissue pathways, 2020). Ten or fewer portal tracts under-estimate grade and stage (BSG 2020).",
+   "reference": {
+    "title": "Biopsy adequacy",
+    "intro": "State the core length, fragmentation and an approximate portal-tract count (RCPath G064; BSG 2020).",
+    "groups": [
+     {
+      "heading": "RCPath tiers (total core length)",
+      "points": [
+       "Good: over 20 mm",
+       "Compromised: 10-20 mm",
+       "Inadequate: under 10 mm",
+       "Trials: at least 20 mm with more than 10 portal tracts per section"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/adequacy_cores.jpg",
+        "caption": "Three percutaneous needle cores at scanning power (H&E).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 3",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "Why size matters",
+      "points": [
+       "10 or fewer portal tracts under-estimate the fibrosis stage and inflammatory grade in chronic viral hepatitis",
+       "The portal-tract count cannot be predicted from the length",
+       "Transjugular cores (19 G) are narrower and need several passes"
+      ],
+      "images": []
+     }
+    ]
+   },
+   "group": "Specimen"
+  },
+  {
+   "id": "pattern",
+   "label": "Pattern",
+   "type": "select",
+   "options": [
+    "Hepatitic",
+    "Biliary",
+    "Steatotic",
+    "Transplant",
+    "Other",
+    "No significant abnormality"
+   ],
+   "default": "Hepatitic",
+   "help": "Choose the dominant pattern of injury; the fields below follow it.",
+   "reference": {
+    "title": "Patterns of injury",
+    "intro": "Name the pattern first, then the likely cause; RCPath advises against an unqualified \"chronic hepatitis\" for unexplained portal inflammation.",
+    "groups": [
+     {
+      "heading": "Hepatitic",
+      "points": [
+       "Portal inflammation with interface and lobular hepatitis",
+       "Grade and stage: Ishak, METAVIR or Batts-Ludwig",
+       "Causes: AIH, hepatitis B or C, drugs"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/interface_hepatitis_he.jpg",
+        "caption": "Interface hepatitis: a portal tract whose infiltrate breaches the limiting plate into the adjacent lobule (H&E).",
+        "credit": "Nephron, Wikimedia Commons",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Interface_hepatitis_--_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Biliary",
+      "points": [
+       "Duct injury or loss, ductular reaction, periportal copper-associated protein and CK7",
+       "PBC: florid duct lesions and granulomas; PSC: periductal concentric fibrosis",
+       "Large-duct obstruction: portal oedema, ductular reaction, neutrophils"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/pbc_portal.jpg",
+        "caption": "Primary biliary cholangitis: an expanded portal tract with a dense lymphoid infiltrate and a pale epithelioid (granulomatous) area (H&E).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Primary_biliary_cirrhosis_intermed_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Steatotic",
+      "points": [
+       "Steatosis over 5%; steatohepatitis needs ballooning and lobular inflammation",
+       "Score with NAS (0-8) and stage with NASH CRN; SAF optional"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/ballooning_mdb.jpg",
+        "caption": "Ballooned hepatocytes with rarefied cytoplasm and Mallory-Denk bodies in steatohepatitis (H&E, x200).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 15",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "Transplant",
+      "points": [
+       "Banff global assessment with the rejection activity index (RAI, 0-9)",
+       "Portal inflammation, bile duct damage and venous endothelial inflammation, each 0-3"
+      ],
+      "images": []
+     },
+     {
+      "heading": "Other",
+      "points": [
+       "Granulomas, iron overload, venous outflow obstruction, non-specific reactive change"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/congestive_hepatopathy.jpg",
+        "caption": "Congestive hepatopathy: perivenular sinusoidal dilatation and congestion (trichrome).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Congestive_hepatopathy_intermed_mag.jpg"
+       }
+      ]
+     }
+    ],
+    "columns": 3
+   },
+   "group": "Pattern"
+  },
+  {
+   "id": "portalInfl",
+   "label": "Portal inflammation",
+   "type": "grade",
+   "options": [
+    "Minimal",
+    "Mild",
+    "Moderate",
+    "Marked"
+   ],
+   "default": "Mild",
+   "group": "Inflammation",
+   "showIf": {
+    "field": "pattern",
+    "is": [
+     "Hepatitic",
+     "Biliary"
+    ]
+   }
+  },
+  {
+   "id": "infiltrate",
+   "label": "Portal infiltrate",
+   "type": "select",
+   "options": [
+    "Lymphocytic",
+    "Lymphoplasmacytic",
+    "Plasma cell-rich",
+    "Mixed, with neutrophils",
+    "Mixed, with eosinophils"
+   ],
+   "default": "Lymphocytic",
+   "group": "Inflammation",
+   "showIf": {
+    "field": "pattern",
+    "is": [
+     "Hepatitic",
+     "Biliary"
+    ]
+   }
+  },
+  {
+   "id": "interface",
+   "label": "Interface hepatitis",
+   "type": "grade",
+   "options": [
+    "Absent",
+    "Mild",
+    "Moderate",
+    "Marked"
+   ],
+   "default": "Absent",
+   "group": "Inflammation",
+   "showIf": {
+    "field": "pattern",
+    "is": [
+     "Hepatitic",
+     "Biliary"
+    ]
+   }
+  },
+  {
+   "id": "lobular",
+   "label": "Lobular inflammation",
+   "type": "grade",
+   "options": [
+    "Absent",
+    "Mild",
+    "Moderate",
+    "Marked"
+   ],
+   "default": "Absent",
+   "group": "Inflammation",
+   "showIf": {
+    "field": "pattern",
+    "is": [
+     "Hepatitic",
+     "Biliary"
+    ]
+   }
+  },
+  {
+   "id": "hepDx",
+   "label": "Diagnosis",
+   "type": "select",
+   "options": [
+    "Chronic hepatitis",
+    "Autoimmune hepatitis",
+    "Chronic hepatitis B",
+    "Chronic hepatitis C",
+    "Drug-induced liver injury",
+    "Acute hepatitis"
+   ],
+   "default": "Chronic hepatitis",
+   "optionLabels": {
+    "Chronic hepatitis": "Chronic hepatitis, cause not stated"
+   },
+   "group": "Hepatitis",
+   "showIf": {
+    "field": "pattern",
+    "is": "Hepatitic"
+   }
+  },
+  {
+   "id": "diliPattern",
+   "label": "DILI pattern",
+   "type": "select",
+   "options": [
+    "Acute hepatitis",
+    "Chronic hepatitis",
+    "Zonal necrosis",
+    "Submassive necrosis"
+   ],
+   "default": "Acute hepatitis",
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Hepatitic"
+     },
+     {
+      "field": "hepDx",
+      "is": "Drug-induced liver injury"
+     }
+    ]
+   },
+   "help": "DILIN hepatocellular patterns (Kleiner 2014); the cholestatic patterns sit under Biliary.",
+   "group": "Hepatitis"
+  },
+  {
+   "id": "aihSystem",
+   "label": "AIH histology criteria",
+   "type": "select",
+   "options": [
+    "IAIHG 2022",
+    "Simplified criteria 2008"
+   ],
+   "default": "IAIHG 2022",
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Hepatitic"
+     },
+     {
+      "field": "hepDx",
+      "is": "Autoimmune hepatitis"
+     }
+    ]
+   },
+   "group": "Hepatitis"
+  },
+  {
+   "id": "aihCategory",
+   "label": "AIH histology category",
+   "type": "select",
+   "options": [
+    "Likely AIH",
+    "Possible AIH",
+    "Unlikely AIH",
+    "Typical",
+    "Compatible",
+    "Atypical"
+   ],
+   "default": "Likely AIH",
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Hepatitic"
+     },
+     {
+      "field": "hepDx",
+      "is": "Autoimmune hepatitis"
+     }
+    ]
+   },
+   "optionsByField": {
+    "field": "aihSystem",
+    "map": {
+     "IAIHG 2022": [
+      "Likely AIH",
+      "Possible AIH",
+      "Unlikely AIH"
+     ],
+     "Simplified criteria 2008": [
+      "Typical",
+      "Compatible",
+      "Atypical"
+     ]
+    }
+   },
+   "help": "IAIHG 2022 (portal pattern): likely = portal lymphoplasmacytic infiltrate with more than mild interface or lobular hepatitis and no features of another disease. 2008: typical needs interface hepatitis, lymphoplasmacytic infiltrates, emperipolesis and rosettes.",
+   "group": "Hepatitis"
+  },
+  {
+   "id": "otherDisease",
+   "label": "Features of another liver disease",
+   "type": "checkbox",
+   "default": false,
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Hepatitic"
+     },
+     {
+      "field": "hepDx",
+      "is": "Autoimmune hepatitis"
+     }
+    ]
+   },
+   "group": "Hepatitis"
+  },
+  {
+   "id": "hepFeatures",
+   "label": "Features",
+   "type": "multiselect",
+   "options": [
+    "Plasma cell clusters",
+    "Hepatocyte rosettes",
+    "Emperipolesis",
+    "Confluent necrosis",
+    "Bridging necrosis",
+    "Centrilobular necrosis",
+    "Acidophil bodies",
+    "Ground-glass hepatocytes",
+    "Portal lymphoid aggregates",
+    "Bile duct injury",
+    "Eosinophils",
+    "Canalicular cholestasis",
+    "Steatosis"
+   ],
+   "default": [],
+   "group": "Hepatitis",
+   "showIf": {
+    "field": "pattern",
+    "is": "Hepatitic"
+   }
+  },
+  {
+   "id": "gradeSystem",
+   "label": "Grading system",
+   "type": "select",
+   "options": [
+    "Not graded",
+    "Ishak modified HAI",
+    "METAVIR",
+    "Batts-Ludwig"
+   ],
+   "default": "Not graded",
+   "group": "Hepatitis",
+   "showIf": {
+    "field": "pattern",
+    "is": "Hepatitic"
+   }
+  },
+  {
+   "id": "ishakA",
+   "label": "A - Interface hepatitis",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - absent",
+    "1": "1 - mild, focal, few portal areas",
+    "2": "2 - mild/moderate, focal, most portal areas",
+    "3": "3 - moderate, continuous <50%",
+    "4": "4 - severe, continuous >50%"
+   },
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Hepatitic"
+     },
+     {
+      "field": "gradeSystem",
+      "is": "Ishak modified HAI"
+     }
+    ]
+   },
+   "reference": {
+    "title": "Ishak modified HAI",
+    "intro": "Grade = A + B + C + D (0-18). For autoimmune hepatitis IAIHG 2022 uses A + B + C only (0-14).",
+    "groups": [
+     {
+      "heading": "A - interface hepatitis (0-4)",
+      "points": [
+       "0 absent",
+       "1 mild: focal, few portal areas",
+       "2 mild/moderate: focal, most portal areas",
+       "3 moderate: continuous around under 50% of tracts or septa",
+       "4 severe: continuous around over 50%"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/interface_hepatitis.jpg",
+        "caption": "Interface hepatitis: inflammation at the limiting plate around more than half of a portal tract (H&E, x100).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 8",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "B - confluent necrosis (0-6)",
+      "points": [
+       "0 absent",
+       "1 focal confluent necrosis",
+       "2 zone 3 necrosis in some areas",
+       "3 zone 3 necrosis in most areas",
+       "4 zone 3 necrosis with occasional portal-central bridging",
+       "5 zone 3 necrosis with multiple portal-central bridging",
+       "6 panacinar or multiacinar necrosis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/bridging_necrosis.jpg",
+        "caption": "Bridging necrosis: hepatocyte loss and inflammation extending between portal tracts (H&E, x100).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 10",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "C and D (0-4 each)",
+      "points": [
+       "C focal lytic necrosis, apoptosis and focal inflammation per 10x objective: 0 absent, 1 one focus or fewer, 2 two to four, 3 five to ten, 4 more than ten",
+       "D portal inflammation: 0 none, 1 mild (some or all), 2 moderate (some or all), 3 moderate/marked (all), 4 marked (all)"
+      ],
+      "images": []
+     }
+    ],
+    "columns": 3
+   },
+   "group": "Hepatitis"
+  },
+  {
+   "id": "ishakB",
+   "label": "B - Confluent necrosis",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - absent",
+    "1": "1 - focal",
+    "2": "2 - zone 3, some areas",
+    "3": "3 - zone 3, most areas",
+    "4": "4 - zone 3 + occasional P-C bridging",
+    "5": "5 - zone 3 + multiple P-C bridging",
+    "6": "6 - panacinar or multiacinar"
+   },
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Hepatitic"
+     },
+     {
+      "field": "gradeSystem",
+      "is": "Ishak modified HAI"
+     }
+    ]
+   },
+   "group": "Hepatitis"
+  },
+  {
+   "id": "ishakC",
+   "label": "C - Focal necrosis",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - absent",
+    "1": "1 - 1 focus or fewer per 10x",
+    "2": "2 - 2-4 foci per 10x",
+    "3": "3 - 5-10 foci per 10x",
+    "4": "4 - more than 10 foci per 10x"
+   },
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Hepatitic"
+     },
+     {
+      "field": "gradeSystem",
+      "is": "Ishak modified HAI"
+     }
+    ]
+   },
+   "group": "Hepatitis"
+  },
+  {
+   "id": "ishakD",
+   "label": "D - Portal inflammation",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - none",
+    "1": "1 - mild, some or all",
+    "2": "2 - moderate, some or all",
+    "3": "3 - moderate/marked, all",
+    "4": "4 - marked, all"
+   },
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Hepatitic"
+     },
+     {
+      "all": [
+       {
+        "field": "gradeSystem",
+        "is": "Ishak modified HAI"
+       },
+       {
+        "field": "hepDx",
+        "not": "Autoimmune hepatitis"
+       }
+      ]
+     }
+    ]
+   },
+   "group": "Hepatitis"
+  },
+  {
+   "id": "metavirPn",
+   "label": "Piecemeal necrosis",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - none",
+    "1": "1 - mild",
+    "2": "2 - moderate",
+    "3": "3 - severe"
+   },
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Hepatitic"
+     },
+     {
+      "field": "gradeSystem",
+      "is": "METAVIR"
+     }
+    ]
+   },
+   "group": "Hepatitis"
+  },
+  {
+   "id": "metavirLn",
+   "label": "Lobular necrosis",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - none or mild",
+    "1": "1 - moderate",
+    "2": "2 - severe"
+   },
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Hepatitic"
+     },
+     {
+      "field": "gradeSystem",
+      "is": "METAVIR"
+     }
+    ]
+   },
+   "group": "Hepatitis"
+  },
+  {
+   "id": "metavirA",
+   "label": "METAVIR activity",
+   "type": "select",
+   "options": [
+    "Auto",
+    "A0",
+    "A1",
+    "A2",
+    "A3"
+   ],
+   "default": "Auto",
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Hepatitic"
+     },
+     {
+      "field": "gradeSystem",
+      "is": "METAVIR"
+     }
+    ]
+   },
+   "help": "Auto derives A from piecemeal and lobular necrosis (Bedossa 1996 algorithm).",
+   "group": "Hepatitis"
+  },
+  {
+   "id": "battsGrade",
+   "label": "Batts-Ludwig grade",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - portal inflammation only",
+    "1": "1 - minimal",
+    "2": "2 - mild",
+    "3": "3 - moderate",
+    "4": "4 - severe"
+   },
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Hepatitic"
+     },
+     {
+      "field": "gradeSystem",
+      "is": "Batts-Ludwig"
+     }
+    ]
+   },
+   "group": "Hepatitis"
+  },
+  {
+   "id": "bilDx",
+   "label": "Diagnosis",
+   "type": "select",
+   "options": [
+    "Chronic biliary disease",
+    "Primary biliary cholangitis",
+    "Primary sclerosing cholangitis",
+    "Large-duct obstruction",
+    "Drug-induced liver injury"
+   ],
+   "default": "Chronic biliary disease",
+   "optionLabels": {
+    "Chronic biliary disease": "Chronic biliary disease, cause not stated"
+   },
+   "group": "Biliary",
+   "showIf": {
+    "field": "pattern",
+    "is": "Biliary"
+   }
+  },
+  {
+   "id": "diliCholPattern",
+   "label": "DILI pattern",
+   "type": "select",
+   "options": [
+    "Acute (bland) cholestasis",
+    "Cholestatic hepatitis",
+    "Chronic cholestasis"
+   ],
+   "default": "Cholestatic hepatitis",
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Biliary"
+     },
+     {
+      "field": "bilDx",
+      "is": "Drug-induced liver injury"
+     }
+    ]
+   },
+   "help": "DILIN cholestatic patterns (Kleiner 2014).",
+   "reference": {
+    "title": "Cholestatic drug injury",
+    "intro": "Drugs are the commonest cause of bland cholestasis; the differential includes early large-duct obstruction, sepsis and occult lymphoma (RCPath G064).",
+    "groups": [
+     {
+      "heading": "Bland cholestasis",
+      "points": [
+       "Canalicular bile plugs with little inflammation or hepatocyte injury"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/bland_cholestasis.jpg",
+        "caption": "Bland canalicular cholestasis without significant inflammation in drug-induced liver injury (H&E, x400).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 18",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "Features favouring drug over AIH",
+      "points": [
+       "Hepatocellular pattern: intra-acinar eosinophils, canalicular cholestasis",
+       "Cholestatic pattern: portal neutrophils, hepatocellular cholestasis (Suzuki 2011)"
+      ],
+      "images": []
+     }
+    ]
+   },
+   "group": "Biliary"
+  },
+  {
+   "id": "bilFeatures",
+   "label": "Features",
+   "type": "multiselect",
+   "options": [
+    "Florid duct lesion",
+    "Granulomatous cholangitis",
+    "Lymphocytic cholangitis",
+    "Bile duct loss",
+    "Ductular reaction",
+    "Portal oedema",
+    "Periportal cholate stasis",
+    "Periductal concentric fibrosis",
+    "Fibro-obliterative duct lesion",
+    "Neutrophilic cholangitis",
+    "Canalicular cholestasis",
+    "Hepatocellular cholestasis",
+    "Bile infarcts"
+   ],
+   "default": [],
+   "group": "Biliary",
+   "showIf": {
+    "field": "pattern",
+    "is": "Biliary"
+   }
+  },
+  {
+   "id": "ductlessTracts",
+   "label": "Portal tracts without a bile duct",
+   "type": "number",
+   "placeholder": "4",
+   "default": "",
+   "min": 0,
+   "step": 1,
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Biliary"
+     },
+     {
+      "field": "bilFeatures",
+      "is": "Bile duct loss"
+     }
+    ]
+   },
+   "group": "Biliary"
+  },
+  {
+   "id": "nkFibrosis",
+   "label": "Nakanuma fibrosis",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - none or portal only",
+    "1": "1 - periportal or incomplete septal",
+    "2": "2 - bridging",
+    "3": "3 - cirrhosis"
+   },
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Biliary"
+     },
+     {
+      "field": "bilDx",
+      "is": "Primary biliary cholangitis"
+     }
+    ]
+   },
+   "reference": {
+    "title": "Nakanuma staging (PBC)",
+    "intro": "Stage from the sum of fibrosis, bile duct loss and orcein-positive granules (0-9), or of fibrosis and duct loss alone (0-6) when orcein is not assessed (Nakanuma 2010).",
+    "groups": [
+     {
+      "heading": "Items (0-3 each)",
+      "points": [
+       "Fibrosis: 0 none or portal only; 1 periportal or incomplete septal; 2 bridging; 3 cirrhosis",
+       "Bile duct loss: 0 none; 1 under 1/3 of tracts; 2 1/3-2/3; 3 over 2/3",
+       "Orcein granules: 0 none; 1 several periportal cells in under 1/3 of tracts; 2 1/3-2/3; 3 many cells in over 2/3"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/pbc_portal.jpg",
+        "caption": "Primary biliary cholangitis: an expanded portal tract with a dense lymphoid infiltrate and a pale epithelioid (granulomatous) area (H&E).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Primary_biliary_cirrhosis_intermed_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Stage",
+      "points": [
+       "With orcein: 0 stage 1; 1-3 stage 2; 4-6 stage 3; 7-9 stage 4",
+       "Without orcein: 0 stage 1; 1-2 stage 2; 3-4 stage 3; 5-6 stage 4",
+       "Stage 1 no, 2 mild, 3 moderate, 4 advanced progression"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/copper_rhodanine.jpg",
+        "caption": "Copper in periportal hepatocytes as coarse orange-brown granules (rhodanine, x200); here Wilson disease.",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 20",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "Activity (revised)",
+      "points": [
+       "CA1 one duct with evident chronic cholangitis; CA2 more than two; CA3 at least one CNSDC (includes granulomatous cholangitis)",
+       "HA1-HA3 interface hepatitis of 10 continuous hepatocytes in one tract, in more than two, or of 20 in over half, with lobular hepatitis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/ductular_reaction_ck7.jpg",
+        "caption": "Ductular reaction around the native bile duct (BD) (CK7, x200).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 17",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     }
+    ],
+    "columns": 3
+   },
+   "group": "Biliary"
+  },
+  {
+   "id": "nkDuctLoss",
+   "label": "Nakanuma bile duct loss",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - none",
+    "1": "1 - <1/3 of portal tracts",
+    "2": "2 - 1/3-2/3",
+    "3": "3 - >2/3"
+   },
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Biliary"
+     },
+     {
+      "field": "bilDx",
+      "is": "Primary biliary cholangitis"
+     }
+    ]
+   },
+   "group": "Biliary"
+  },
+  {
+   "id": "nkOrcein",
+   "label": "Nakanuma orcein-positive granules",
+   "type": "select",
+   "options": [
+    "Not assessed",
+    "0",
+    "1",
+    "2",
+    "3"
+   ],
+   "default": "Not assessed",
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Biliary"
+     },
+     {
+      "field": "bilDx",
+      "is": "Primary biliary cholangitis"
+     }
+    ]
+   },
+   "optionLabels": {
+    "0": "0 - none",
+    "1": "1 - several periportal cells, <1/3 of tracts",
+    "2": "2 - 1/3-2/3 of tracts",
+    "3": "3 - many cells, >2/3 of tracts"
+   },
+   "group": "Biliary"
+  },
+  {
+   "id": "nkStage",
+   "label": "Nakanuma stage",
+   "type": "select",
+   "options": [
+    "Auto",
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "default": "Auto",
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Biliary"
+     },
+     {
+      "field": "bilDx",
+      "is": "Primary biliary cholangitis"
+     }
+    ]
+   },
+   "help": "Auto sums the items (Nakanuma 2010, Table 2).",
+   "group": "Biliary"
+  },
+  {
+   "id": "nkCA",
+   "label": "Cholangitis activity (CA)",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - none",
+    "1": "1 - one duct with evident chronic cholangitis",
+    "2": "2 - more than two ducts",
+    "3": "3 - at least one CNSDC"
+   },
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Biliary"
+     },
+     {
+      "field": "bilDx",
+      "is": "Primary biliary cholangitis"
+     }
+    ]
+   },
+   "group": "Biliary"
+  },
+  {
+   "id": "nkHA",
+   "label": "Hepatitis activity (HA)",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - none",
+    "1": "1 - one tract, 10 cells",
+    "2": "2 - more than two tracts, 10 cells",
+    "3": "3 - over half, 20 cells, or bridging"
+   },
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Biliary"
+     },
+     {
+      "field": "bilDx",
+      "is": "Primary biliary cholangitis"
+     }
+    ]
+   },
+   "group": "Biliary"
+  },
+  {
+   "id": "steatDx",
+   "label": "Diagnosis",
+   "type": "select",
+   "options": [
+    "Steatohepatitis",
+    "Steatosis without steatohepatitis"
+   ],
+   "default": "Steatohepatitis",
+   "group": "Steatosis",
+   "showIf": {
+    "field": "pattern",
+    "is": "Steatotic"
+   }
+  },
+  {
+   "id": "steatContext",
+   "label": "Clinical context",
+   "type": "select",
+   "options": [
+    "Not stated",
+    "Metabolic dysfunction-associated",
+    "Metabolic dysfunction and alcohol-related",
+    "Alcohol-related",
+    "Drug-induced"
+   ],
+   "default": "Not stated",
+   "help": "MASLD, MASH and MetALD need cardiometabolic and alcohol history (Rinella 2023); histology cannot separate alcohol-related from metabolic disease (RCPath G064).",
+   "group": "Steatosis",
+   "showIf": {
+    "field": "pattern",
+    "is": "Steatotic"
+   }
+  },
+  {
+   "id": "steatosisPct",
+   "label": "Steatosis (% of parenchyma)",
+   "type": "number",
+   "placeholder": "40",
+   "default": "",
+   "min": 0,
+   "step": 1,
+   "max": 100,
+   "group": "Steatosis",
+   "showIf": {
+    "field": "pattern",
+    "is": "Steatotic"
+   }
+  },
+  {
+   "id": "nasSteatosis",
+   "label": "Steatosis grade",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - <5%",
+    "1": "1 - 5-33%",
+    "2": "2 - >33-66%",
+    "3": "3 - >66%"
+   },
+   "reference": {
+    "title": "NASH CRN and SAF",
+    "intro": "NAS = steatosis (0-3) + lobular inflammation (0-3) + ballooning (0-2), 0-8; fibrosis is staged separately. The NAS does not replace the diagnosis of steatohepatitis (Kleiner 2005).",
+    "groups": [
+     {
+      "heading": "NAS components",
+      "points": [
+       "Steatosis: under 5% 0; 5-33% 1; over 33-66% 2; over 66% 3",
+       "Lobular inflammation per 200x field: 0 none; 1 under 2 foci; 2 two to four; 3 over 4",
+       "Ballooning: 0 none; 1 few; 2 many or prominent"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/macrovesicular_steatosis.jpg",
+        "caption": "Macrovesicular steatosis: large droplets displacing the nucleus to the periphery (H&E, x400).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 12",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       },
+       {
+        "src": "assets/reference/liver_biopsy/ballooning_mdb.jpg",
+        "caption": "Ballooned hepatocytes with rarefied cytoplasm and Mallory-Denk bodies in steatohepatitis (H&E, x200).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 15",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "NASH CRN fibrosis",
+      "points": [
+       "1a mild and 1b moderate zone 3 perisinusoidal; 1c portal or periportal only",
+       "2 perisinusoidal and portal/periportal",
+       "3 bridging; 4 cirrhosis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/pericellular_fibrosis.jpg",
+        "caption": "Zone 3 pericellular (\"chicken-wire\") fibrosis in steatohepatitis (trichrome, x100).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 21",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "SAF and FLIP",
+      "points": [
+       "A = ballooning (0-2) + lobular inflammation per 20x field (0 none; 1 up to 2 foci; 2 over 2)",
+       "Steatohepatitis when steatosis, ballooning and lobular inflammation are each at least 1 (Bedossa 2012)"
+      ],
+      "images": []
+     }
+    ],
+    "columns": 3
+   },
+   "group": "Steatosis",
+   "showIf": {
+    "field": "pattern",
+    "is": "Steatotic"
+   }
+  },
+  {
+   "id": "nasLobular",
+   "label": "Lobular inflammation (NAS)",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - no foci",
+    "1": "1 - <2 foci per 200x field",
+    "2": "2 - 2-4 foci",
+    "3": "3 - >4 foci"
+   },
+   "group": "Steatosis",
+   "showIf": {
+    "field": "pattern",
+    "is": "Steatotic"
+   }
+  },
+  {
+   "id": "nasBallooning",
+   "label": "Ballooning",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - none",
+    "1": "1 - few balloon cells",
+    "2": "2 - many or prominent"
+   },
+   "group": "Steatosis",
+   "showIf": {
+    "field": "pattern",
+    "is": "Steatotic"
+   }
+  },
+  {
+   "id": "steatFeatures",
+   "label": "Features",
+   "type": "multiselect",
+   "options": [
+    "Mallory-Denk bodies",
+    "Microvesicular steatosis",
+    "Lipogranulomas",
+    "Glycogenated nuclei",
+    "Megamitochondria",
+    "Portal inflammation"
+   ],
+   "default": [],
+   "group": "Steatosis",
+   "showIf": {
+    "field": "pattern",
+    "is": "Steatotic"
+   }
+  },
+  {
+   "id": "safReport",
+   "label": "Add the SAF score",
+   "type": "checkbox",
+   "default": false,
+   "group": "Steatosis",
+   "showIf": {
+    "field": "pattern",
+    "is": "Steatotic"
+   }
+  },
+  {
+   "id": "safLobular",
+   "label": "Lobular inflammation (SAF)",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - none",
+    "1": "1 - up to 2 foci per 20x field",
+    "2": "2 - more than 2 foci"
+   },
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Steatotic"
+     },
+     {
+      "field": "safReport",
+      "truthy": true
+     }
+    ]
+   },
+   "group": "Steatosis"
+  },
+  {
+   "id": "txDx",
+   "label": "Banff global assessment",
+   "type": "select",
+   "options": [
+    "No rejection",
+    "Indeterminate for rejection",
+    "Mild acute T-cell-mediated rejection",
+    "Moderate acute T-cell-mediated rejection",
+    "Severe acute T-cell-mediated rejection"
+   ],
+   "default": "No rejection",
+   "group": "Transplant",
+   "showIf": {
+    "field": "pattern",
+    "is": "Transplant"
+   }
+  },
+  {
+   "id": "raiPortal",
+   "label": "RAI portal inflammation",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - absent",
+    "1": "1 - minority of triads",
+    "2": "2 - most or all triads",
+    "3": "3 - marked, with spillover"
+   },
+   "reference": {
+    "title": "Banff rejection activity index",
+    "intro": "Record the global assessment and the three RAI components; the grade is not derived from the RAI total (Banff 2016).",
+    "groups": [
+     {
+      "heading": "Portal inflammation",
+      "points": [
+       "1 mostly lymphocytic, a minority of triads, not expanding them",
+       "2 mixed infiltrate expanding most or all triads",
+       "3 marked expansion with blasts and eosinophils and periportal spillover"
+      ],
+      "images": []
+     },
+     {
+      "heading": "Bile duct inflammation damage",
+      "points": [
+       "1 a minority of ducts cuffed and infiltrated, mild reactive change",
+       "2 most or all ducts infiltrated, more than an occasional duct degenerate",
+       "3 most or all ducts degenerate or with focal luminal disruption"
+      ],
+      "images": []
+     },
+     {
+      "heading": "Venous endothelial inflammation",
+      "points": [
+       "1 subendothelial lymphocytes in some but not most venules",
+       "2 most or all venules, with or without perivenular necrosis in a minority",
+       "3 as 2 with perivenular inflammation and necrosis in the majority"
+      ],
+      "images": []
+     }
+    ],
+    "columns": 3
+   },
+   "group": "Transplant",
+   "showIf": {
+    "field": "pattern",
+    "is": "Transplant"
+   }
+  },
+  {
+   "id": "raiBileDuct",
+   "label": "RAI bile duct inflammation",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - absent",
+    "1": "1 - minority of ducts",
+    "2": "2 - most or all ducts",
+    "3": "3 - degeneration or luminal disruption"
+   },
+   "group": "Transplant",
+   "showIf": {
+    "field": "pattern",
+    "is": "Transplant"
+   }
+  },
+  {
+   "id": "raiVenous",
+   "label": "RAI venous endothelial inflammation",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "2",
+    "3"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-",
+    "0": "0 - absent",
+    "1": "1 - some venules",
+    "2": "2 - most or all venules",
+    "3": "3 - with perivenular necrosis"
+   },
+   "group": "Transplant",
+   "showIf": {
+    "field": "pattern",
+    "is": "Transplant"
+   }
+  },
+  {
+   "id": "txFeatures",
+   "label": "Other findings",
+   "type": "multiselect",
+   "options": [
+    "Central perivenulitis",
+    "Plasma cell-rich infiltrate",
+    "Preservation injury",
+    "Features of biliary obstruction",
+    "Bile duct loss",
+    "Recurrent primary disease",
+    "Viral inclusions"
+   ],
+   "default": [],
+   "group": "Transplant",
+   "showIf": {
+    "field": "pattern",
+    "is": "Transplant"
+   }
+  },
+  {
+   "id": "otherDx",
+   "label": "Diagnosis",
+   "type": "select",
+   "options": [
+    "Granulomatous hepatitis",
+    "Iron overload",
+    "Venous outflow obstruction",
+    "Non-specific reactive hepatitis"
+   ],
+   "default": "Granulomatous hepatitis",
+   "reference": {
+    "title": "Other patterns",
+    "intro": "Granulomas, iron and venous outflow obstruction.",
+    "groups": [
+     {
+      "heading": "Granulomas",
+      "points": [
+       "Epithelioid non-necrotising: sarcoidosis, PBC, drugs, hepatitis C",
+       "Necrotising: mycobacteria, fungi; negative stains do not exclude infection",
+       "Fibrin-ring: Q fever and others; lipogranulomas: steatosis"
+      ],
+      "images": []
+     },
+     {
+      "heading": "Iron",
+      "points": [
+       "Hepatocellular grade 0-4; parenchymal iron has a periportal-to-centrilobular gradient",
+       "Mesenchymal iron is in Kupffer cells and portal macrophages; mixed patterns occur in cirrhosis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/iron_perls.jpg",
+        "caption": "Iron deposition (Prussian blue, x100).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 19",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "Venous outflow obstruction",
+      "points": [
+       "Perivenular sinusoidal dilatation, congestion and hepatocyte loss; patchy and easily missed",
+       "Zone 3 sinusoidal dilatation alone is not specific"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/congestive_hepatopathy.jpg",
+        "caption": "Congestive hepatopathy: perivenular sinusoidal dilatation and congestion (trichrome).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Congestive_hepatopathy_intermed_mag.jpg"
+       }
+      ]
+     }
+    ],
+    "columns": 3
+   },
+   "group": "Other findings",
+   "showIf": {
+    "field": "pattern",
+    "is": "Other"
+   }
+  },
+  {
+   "id": "granulomaType",
+   "label": "Granulomas",
+   "type": "select",
+   "options": [
+    "Non-necrotising epithelioid",
+    "Necrotising epithelioid",
+    "Fibrin-ring",
+    "Lipogranulomas"
+   ],
+   "default": "Non-necrotising epithelioid",
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Other"
+     },
+     {
+      "field": "otherDx",
+      "is": "Granulomatous hepatitis"
+     }
+    ]
+   },
+   "group": "Other findings"
+  },
+  {
+   "id": "granulomaSite",
+   "label": "Granuloma location",
+   "type": "select",
+   "options": [
+    "Portal and lobular",
+    "Portal",
+    "Lobular"
+   ],
+   "default": "Portal and lobular",
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Other"
+     },
+     {
+      "field": "otherDx",
+      "is": "Granulomatous hepatitis"
+     }
+    ]
+   },
+   "group": "Other findings"
+  },
+  {
+   "id": "outflowFeatures",
+   "label": "Features",
+   "type": "multiselect",
+   "options": [
+    "Zone 3 sinusoidal dilatation",
+    "Sinusoidal congestion",
+    "Zone 3 hepatocyte atrophy",
+    "Zone 3 hepatocyte loss",
+    "Perivenular haemorrhage",
+    "Hepatic venule obliteration",
+    "Perivenular fibrosis"
+   ],
+   "default": [
+    "Zone 3 sinusoidal dilatation",
+    "Sinusoidal congestion"
+   ],
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Other"
+     },
+     {
+      "field": "otherDx",
+      "is": "Venous outflow obstruction"
+     }
+    ]
+   },
+   "group": "Other findings"
+  },
+  {
+   "id": "fibrosis",
+   "label": "Fibrosis",
+   "type": "select",
+   "options": [
+    "No fibrosis",
+    "Portal fibrosis",
+    "Periportal fibrosis",
+    "Zone 3 perisinusoidal fibrosis",
+    "Perisinusoidal and periportal fibrosis",
+    "Bridging fibrosis",
+    "Bridging fibrosis with nodules",
+    "Cirrhosis"
+   ],
+   "default": "No fibrosis",
+   "showIf": {
+    "all": [
+     {
+      "any": [
+       {
+        "field": "pattern",
+        "not": "Biliary"
+       },
+       {
+        "field": "bilDx",
+        "not": "Primary biliary cholangitis"
+       }
+      ]
+     },
+     {
+      "field": "stage",
+      "is": ""
+     }
+    ]
+   },
+   "help": "Used when no stage is entered; a stage replaces it with the system's own words.",
+   "group": "Fibrosis"
+  },
+  {
+   "id": "stageSystem",
+   "label": "Staging system",
+   "type": "select",
+   "options": [
+    "",
+    "Ishak",
+    "METAVIR",
+    "NASH CRN",
+    "Batts-Ludwig"
+   ],
+   "default": "Ishak",
+   "optionLabels": {
+    "": "Not staged"
+   },
+   "help": "Follows the pattern until changed: Ishak for hepatitic, NASH CRN for steatotic, none otherwise.",
+   "defaultByField": {
+    "field": "pattern",
+    "map": {
+     "Hepatitic": "Ishak",
+     "Biliary": "",
+     "Steatotic": "NASH CRN",
+     "Transplant": "",
+     "Other": "",
+     "No significant abnormality": ""
+    }
+   },
+   "group": "Fibrosis",
+   "showIf": {
+    "any": [
+     {
+      "field": "pattern",
+      "not": "Biliary"
+     },
+     {
+      "field": "bilDx",
+      "not": "Primary biliary cholangitis"
+     }
+    ]
+   }
+  },
+  {
+   "id": "stage",
+   "label": "Stage",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1",
+    "1a",
+    "1b",
+    "1c",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-"
+   },
+   "reference": {
+    "title": "Fibrosis staging",
+    "intro": "Choose one system; the stage words print in the microscopy and the stage in the diagnosis. Collapse after necrosis can mimic septa on reticulin; a collagen stain separates them (RCPath G064).",
+    "groups": [
+     {
+      "heading": "Ishak (0-6)",
+      "points": [
+       "1 some portal areas expanded; 2 most portal areas",
+       "3 occasional portal-portal bridging; 4 marked bridging including portal-central",
+       "5 marked bridging with occasional nodules (incomplete cirrhosis); 6 cirrhosis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/cirrhosis_trichrome.jpg",
+        "caption": "Cirrhosis: nodules surrounded by broad fibrous septa (trichrome, x40).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 22",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "METAVIR (F0-F4) and Batts-Ludwig (0-4)",
+      "points": [
+       "METAVIR: F1 portal fibrosis without septa; F2 rare septa; F3 numerous septa; F4 cirrhosis",
+       "Batts-Ludwig: 1 portal; 2 periportal or rare septa; 3 septal with distortion; 4 cirrhosis"
+      ],
+      "images": []
+     },
+     {
+      "heading": "NASH CRN (0-4)",
+      "points": [
+       "1a/1b zone 3 perisinusoidal; 1c portal/periportal",
+       "2 perisinusoidal and portal/periportal; 3 bridging; 4 cirrhosis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/pericellular_fibrosis.jpg",
+        "caption": "Zone 3 pericellular (\"chicken-wire\") fibrosis in steatohepatitis (trichrome, x100).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 21",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     }
+    ],
+    "columns": 3
+   },
+   "optionsByField": {
+    "field": "stageSystem",
+    "map": {
+     "": [
+      "",
+      "0",
+      "1",
+      "1a",
+      "1b",
+      "1c",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+     ],
+     "Ishak": [
+      "",
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+     ],
+     "METAVIR": [
+      "",
+      "0",
+      "1",
+      "2",
+      "3",
+      "4"
+     ],
+     "NASH CRN": [
+      "",
+      "0",
+      "1a",
+      "1b",
+      "1c",
+      "2",
+      "3",
+      "4"
+     ],
+     "Batts-Ludwig": [
+      "",
+      "0",
+      "1",
+      "2",
+      "3",
+      "4"
+     ]
+    }
+   },
+   "group": "Fibrosis",
+   "showIf": {
+    "any": [
+     {
+      "field": "pattern",
+      "not": "Biliary"
+     },
+     {
+      "field": "bilDx",
+      "not": "Primary biliary cholangitis"
+     }
+    ]
+   }
+  },
+  {
+   "id": "stains",
+   "label": "Stains",
+   "type": "multiselect",
+   "options": [
+    "Reticulin",
+    "Masson trichrome",
+    "Perls",
+    "D-PAS",
+    "Orcein",
+    "Rhodanine",
+    "CK7",
+    "CK19",
+    "HBsAg",
+    "HBcAg"
+   ],
+   "default": [],
+   "group": "Stains"
+  },
+  {
+   "id": "ironSite",
+   "label": "Iron",
+   "type": "select",
+   "options": [
+    "None",
+    "Hepatocellular",
+    "Kupffer cells and macrophages",
+    "Mixed"
+   ],
+   "default": "None",
+   "showIf": {
+    "any": [
+     {
+      "field": "stains",
+      "is": "Perls"
+     },
+     {
+      "all": [
+       {
+        "field": "pattern",
+        "is": "Other"
+       },
+       {
+        "field": "otherDx",
+        "is": "Iron overload"
+       }
+      ]
+     }
+    ]
+   },
+   "reference": {
+    "title": "Iron (Perls)",
+    "intro": "Hepatocellular iron is graded 0-4; grade 2 or more raises haemochromatosis, especially without significant fibrosis (RCPath G064).",
+    "groups": [
+     {
+      "heading": "Scheuer grade (Searle modification)",
+      "points": [
+       "0 granules absent or barely discernible at x400",
+       "1 barely discernible at x250",
+       "2 discrete granules resolved at x100",
+       "3 discrete granules resolved at x25",
+       "4 masses visible at x10 or with the naked eye"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/iron_perls.jpg",
+        "caption": "Iron deposition (Prussian blue, x100).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 19",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "Distribution",
+      "points": [
+       "Parenchymal: biliary-pole granules with a periportal-to-centrilobular gradient",
+       "Mesenchymal: Kupffer cells and portal macrophages, no lobular gradient",
+       "Mixed: complex conditions or massive loading"
+      ],
+      "images": []
+     }
+    ]
+   },
+   "group": "Stains"
+  },
+  {
+   "id": "ironGrade",
+   "label": "Hepatocellular iron grade",
+   "type": "select",
+   "options": [
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "default": "1",
+   "showIf": {
+    "all": [
+     {
+      "field": "ironSite",
+      "is": [
+       "Hepatocellular",
+       "Mixed"
+      ]
+     },
+     {
+      "any": [
+       {
+        "field": "stains",
+        "is": "Perls"
+       },
+       {
+        "all": [
+         {
+          "field": "pattern",
+          "is": "Other"
+         },
+         {
+          "field": "otherDx",
+          "is": "Iron overload"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "group": "Stains"
+  },
+  {
+   "id": "ironGradient",
+   "label": "Iron distribution",
+   "type": "select",
+   "options": [
+    "Not stated",
+    "Periportal-to-centrilobular gradient",
+    "Panlobular",
+    "Patchy"
+   ],
+   "default": "Not stated",
+   "showIf": {
+    "all": [
+     {
+      "field": "ironSite",
+      "is": [
+       "Hepatocellular",
+       "Mixed"
+      ]
+     },
+     {
+      "any": [
+       {
+        "field": "stains",
+        "is": "Perls"
+       },
+       {
+        "all": [
+         {
+          "field": "pattern",
+          "is": "Other"
+         },
+         {
+          "field": "otherDx",
+          "is": "Iron overload"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "group": "Stains"
+  },
+  {
+   "id": "stDpas",
+   "label": "D-PAS",
+   "type": "select",
+   "options": [
+    "No globules",
+    "Diastase-resistant globules",
+    "Ceroid-laden macrophages"
+   ],
+   "default": "No globules",
+   "showIf": {
+    "field": "stains",
+    "is": "D-PAS"
+   },
+   "group": "Stains"
+  },
+  {
+   "id": "stOrcein",
+   "label": "Orcein",
+   "type": "select",
+   "options": [
+    "No copper-associated protein",
+    "Copper-associated protein in periportal hepatocytes",
+    "HBsAg in hepatocytes"
+   ],
+   "default": "No copper-associated protein",
+   "showIf": {
+    "field": "stains",
+    "is": "Orcein"
+   },
+   "group": "Stains"
+  },
+  {
+   "id": "stRhodanine",
+   "label": "Rhodanine",
+   "type": "select",
+   "options": [
+    "No stainable copper",
+    "Copper in periportal hepatocytes"
+   ],
+   "default": "No stainable copper",
+   "showIf": {
+    "field": "stains",
+    "is": "Rhodanine"
+   },
+   "group": "Stains"
+  },
+  {
+   "id": "stCk7",
+   "label": "CK7",
+   "type": "select",
+   "options": [
+    "No ductular reaction",
+    "Ductular reaction",
+    "Periportal hepatocyte expression",
+    "Ductular reaction and periportal hepatocyte expression"
+   ],
+   "default": "No ductular reaction",
+   "showIf": {
+    "field": "stains",
+    "is": "CK7"
+   },
+   "group": "Stains"
+  },
+  {
+   "id": "stCk19",
+   "label": "CK19",
+   "type": "select",
+   "options": [
+    "Bile ducts in all portal tracts",
+    "Bile duct loss",
+    "Ductular reaction"
+   ],
+   "default": "Bile ducts in all portal tracts",
+   "showIf": {
+    "field": "stains",
+    "is": "CK19"
+   },
+   "group": "Stains"
+  },
+  {
+   "id": "stHbsag",
+   "label": "HBsAg",
+   "type": "select",
+   "options": [
+    "Negative",
+    "Cytoplasmic staining",
+    "Membranous staining",
+    "Cytoplasmic and membranous staining"
+   ],
+   "default": "Negative",
+   "showIf": {
+    "field": "stains",
+    "is": "HBsAg"
+   },
+   "reference": {
+    "title": "Hepatitis B",
+    "intro": "HBsAg immunostain is more sensitive than orcein and shows membranous antigen; HBcAg is nuclear in HBeAg-positive infection (RCPath G064, Appendix B).",
+    "groups": [
+     {
+      "heading": "HBsAg",
+      "points": [
+       "Cytoplasmic staining corresponds to ground-glass hepatocytes",
+       "Membranous staining correlates with HBV DNA",
+       "Typically negative in acute hepatitis B"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/hbsag_ihc.jpg",
+        "caption": "HBsAg immunostain: cytoplasmic staining of hepatocytes in chronic hepatitis B (x200).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 5",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "Ground-glass hepatocytes",
+      "points": [
+       "Finely granular eosinophilic cytoplasm",
+       "Pseudo-ground-glass change occurs with drugs"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/ground_glass.jpg",
+        "caption": "Ground-glass hepatocytes with finely granular pale cytoplasm in chronic hepatitis B (H&E).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Ground_glass_hepatocytes_high_mag_cropped.jpg"
+       }
+      ]
+     }
+    ]
+   },
+   "group": "Stains"
+  },
+  {
+   "id": "stHbcag",
+   "label": "HBcAg",
+   "type": "select",
+   "options": [
+    "Negative",
+    "Nuclear staining",
+    "Cytoplasmic staining",
+    "Nuclear and cytoplasmic staining"
+   ],
+   "default": "Negative",
+   "showIf": {
+    "field": "stains",
+    "is": "HBcAg"
+   },
+   "group": "Stains"
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "liver_aih_correlation",
+   "label": "Autoimmune hepatitis: correlate with IgG and autoantibodies",
+   "text": "Please correlate with clinical findings, serum IgG and autoantibody titres.",
+   "auto": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Hepatitic"
+     },
+     {
+      "field": "hepDx",
+      "is": "Autoimmune hepatitis"
+     }
+    ]
+   }
+  },
+  {
+   "id": "liver_dili_correlation",
+   "label": "Drug-induced liver injury: correlate with the drug history",
+   "text": "Please correlate with clinical findings and the drug and herbal medicine history.",
+   "auto": {
+    "any": [
+     {
+      "all": [
+       {
+        "field": "pattern",
+        "is": "Hepatitic"
+       },
+       {
+        "field": "hepDx",
+        "is": "Drug-induced liver injury"
+       }
+      ]
+     },
+     {
+      "all": [
+       {
+        "field": "pattern",
+        "is": "Biliary"
+       },
+       {
+        "field": "bilDx",
+        "is": "Drug-induced liver injury"
+       }
+      ]
+     },
+     {
+      "all": [
+       {
+        "field": "pattern",
+        "is": "Steatotic"
+       },
+       {
+        "field": "steatContext",
+        "is": "Drug-induced"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "liver_steatosis_correlation",
+   "label": "Steatotic liver disease: correlate with metabolic risk factors and alcohol",
+   "text": "Please correlate with metabolic risk factors and alcohol intake.",
+   "auto": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Steatotic"
+     },
+     {
+      "field": "steatContext",
+      "is": "Not stated"
+     }
+    ]
+   }
+  },
+  {
+   "id": "liver_biliary_imaging",
+   "label": "Biliary disease: correlate with biliary imaging",
+   "text": "Please correlate with biliary imaging.",
+   "auto": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Biliary"
+     },
+     {
+      "field": "bilDx",
+      "is": [
+       "Primary sclerosing cholangitis",
+       "Large-duct obstruction"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "liver_outflow_imaging",
+   "label": "Venous outflow obstruction: correlate with hepatic vein imaging",
+   "text": "Please correlate with imaging of the hepatic veins.",
+   "auto": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Other"
+     },
+     {
+      "field": "otherDx",
+      "is": "Venous outflow obstruction"
+     }
+    ]
+   }
+  },
+  {
+   "id": "liver_iron_studies",
+   "label": "Hepatocellular iron: correlate with iron studies and HFE",
+   "text": "Please correlate with serum iron studies and HFE genotype.",
+   "auto": {
+    "all": [
+     {
+      "field": "ironSite",
+      "is": [
+       "Hepatocellular",
+       "Mixed"
+      ]
+     },
+     {
+      "field": "ironGrade",
+      "is": [
+       "2",
+       "3",
+       "4"
+      ]
+     },
+     {
+      "any": [
+       {
+        "field": "stains",
+        "is": "Perls"
+       },
+       {
+        "all": [
+         {
+          "field": "pattern",
+          "is": "Other"
+         },
+         {
+          "field": "otherDx",
+          "is": "Iron overload"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "random",
+     "cores": "2",
+     "coreLength": "22",
+     "portalTracts": "14",
+     "pattern": "Hepatitic",
+     "portalInfl": "Moderate",
+     "infiltrate": "Plasma cell-rich",
+     "interface": "Moderate",
+     "lobular": "Mild",
+     "hepDx": "Autoimmune hepatitis",
+     "aihSystem": "IAIHG 2022",
+     "aihCategory": "Likely AIH",
+     "hepFeatures": [
+      "Plasma cell clusters",
+      "Hepatocyte rosettes",
+      "Emperipolesis"
+     ],
+     "gradeSystem": "Ishak modified HAI",
+     "ishakA": "3",
+     "ishakB": "0",
+     "ishakC": "2",
+     "stageSystem": "Ishak",
+     "stage": "3",
+     "stains": [
+      "Reticulin",
+      "Masson trichrome",
+      "Perls",
+      "D-PAS"
+     ]
+    }
+   }
+  ]
+ }
+}

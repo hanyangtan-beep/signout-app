@@ -793,6 +793,47 @@
           "specimenName": "Fallopian tube(s), sterilisation"
         }
       }
+    },
+    {
+      "name": "medical liver biopsy (liver pair)",
+      "text": "History\nDeranged liver function, ? autoimmune hepatitis\n\nSpecimen\n(A) Liver, random, biopsy",
+      "history": "Deranged liver function, ? autoimmune hepatitis",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "liver_biopsy",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "specimenName": "random"
+        }
+      }
+    },
+    {
+      "name": "liver mass core and background biopsies (liver pair)",
+      "text": "History\nCirrhosis, liver mass\n\nSpecimen\n(A) Liver, segment 6, core biopsy and (B) Liver, background, biopsy",
+      "history": "Cirrhosis, liver mass",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "B",
+          "templateId": "liver_biopsy",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "B": {
+          "specimenName": "background"
+        }
+      }
     }
   ]
 }

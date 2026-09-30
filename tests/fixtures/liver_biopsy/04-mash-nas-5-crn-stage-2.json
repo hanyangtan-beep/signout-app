@@ -1,0 +1,25 @@
+{
+  "templateId": "liver_biopsy",
+  "values": {
+    "specimenName": "right lobe",
+    "cores": "2",
+    "coreLength": "24",
+    "portalTracts": "13",
+    "pattern": "Steatotic",
+    "stageSystem": "NASH CRN",
+    "stage": "2",
+    "steatContext": "Metabolic dysfunction-associated",
+    "steatosisPct": "40",
+    "nasSteatosis": "2",
+    "nasLobular": "2",
+    "nasBallooning": "1",
+    "steatFeatures": [
+      "Mallory-Denk bodies"
+    ],
+    "stains": [
+      "Masson trichrome"
+    ]
+  },
+  "report": "Liver, right lobe, biopsy\n\nSections show two cores of liver measuring 24 mm in aggregate length, with 13 portal tracts. There is macrovesicular steatosis involving about 40% of the parenchyma. There are a few ballooned hepatocytes. There is moderate lobular inflammation. Mallory-Denk bodies are seen. NAS components: steatosis 2, lobular inflammation 2 and ballooning 1. Masson trichrome stain shows zone 3 perisinusoidal and portal or periportal fibrosis.\n\nLIVER, right lobe, biopsy - STEATOHEPATITIS with PERISINUSOIDAL AND PERIPORTAL FIBROSIS (NAS 5/8; NASH CRN stage 2), in keeping with METABOLIC DYSFUNCTION-ASSOCIATED STEATOHEPATITIS (MASH)",
+  "checks": []
+}

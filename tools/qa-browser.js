@@ -1295,6 +1295,42 @@ await check('batch 3: foreskin, torsion and vasectomy lines open only their own 
   return 'foreskin fields only with lichen sclerosus; torsion Mikuz 3, no viability clause; bilateral vasectomy block prompt clears at two';
 });
 
+// Liver pair (2026-09-30): a pasted random liver biopsy under a deranged LFT history opens the medical
+// liver form; the pattern pick shows only its own fields, a field gallery opens its photos, and a line
+// naming a mass is left to the other forms.
+await check('medical liver: a pasted random biopsy opens Liver (medical); each pattern shows its own fields; the gallery opens', async () => {
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
+  let routed = await pasteAndBuild('History\nDeranged liver function\n\nSpecimen\n(A) Liver, random, biopsy');
+  assert(routed === 'liver_biopsy', `random liver biopsy routed to ${routed}`);
+  let report = await reportText();
+  assert(report.includes('LIVER, random, biopsy - CHRONIC HEPATITIS with MINIMAL ACTIVITY and NO FIBROSIS'), `hepatitic line wrong: ${report.slice(-300)}`);
+  assert(await shows('hepDx') && await shows('interface') && !(await shows('bilDx')) && !(await shows('nasSteatosis')), 'the hepatitic fields are not the ones showing');
+  await pickField('pattern', 'Biliary');
+  assert(await shows('bilDx') && await shows('bilFeatures') && !(await shows('hepDx')), 'the biliary fields are not the ones showing');
+  report = await reportText();
+  assert(report.includes('LIVER, random, biopsy - CHRONIC BILIARY DISEASE'), `biliary line wrong: ${report.slice(-300)}`);
+  await pickField('pattern', 'Steatotic');
+  assert(await shows('nasSteatosis') && await shows('nasBallooning') && !(await shows('bilDx')) && !(await shows('interface')), 'the steatotic fields are not the ones showing');
+  await page.locator('.field[data-field="pattern"] .ref-toggle').first().click();
+  await page.waitForSelector('.field[data-field="pattern"] .ref-panel img', { timeout: 5000 });
+  const imgs = page.locator('.field[data-field="pattern"] .ref-panel img');
+  const photos = await imgs.count();
+  assert(photos === 4, `pattern gallery holds ${photos} photos`);
+  for (let i = 0; i < photos; i++) await imgs.nth(i).scrollIntoViewIfNeeded();   // the photos load lazily
+  await page.waitForFunction(() => [...document.querySelectorAll('.field[data-field="pattern"] .ref-panel img')].every((i) => i.complete && i.naturalWidth > 0), null, { timeout: 8000 });
+  await page.locator('.field[data-field="pattern"] .ref-panel').first().scrollIntoViewIfNeeded();
+  await shot('liver-pattern-gallery');
+  await page.locator('.field[data-field="pattern"] .ref-panel img').first().click();
+  await page.waitForSelector('#ref-lightbox[open]', { timeout: 3000 });
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(200);
+  assert(await page.locator('#ref-lightbox[open]').count() === 0, 'the lightbox did not close on Escape');
+  await page.locator('.field[data-field="pattern"] .ref-toggle').first().click();
+  routed = await pasteAndBuild('History\nDeranged liver function\n\nSpecimen\n(A) Liver, segment 6, mass, biopsy');
+  assert(routed !== 'liver_biopsy', 'a liver mass line opened the medical liver form');
+  return 'routed on the history; hepatitic, biliary and steatotic fields swap; pattern gallery 4 photos and the lightbox; a mass line stays out';
+});
+
 // Case options after a pasted request (2026-09-24): the tickboxes show what the report prints. The case
 // starts on the default small biopsy, whose options carry no macroscopy choice, as a fresh session does.
 await check('case options: a pasted hysterectomy ticks the macroscopy box it prints, and the box drives it', async () => {

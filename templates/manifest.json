@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 69,
+  "count": 70,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -5516,6 +5516,146 @@
       "generator": "cns_tumour",
       "generatorPath": "generators/cns_tumour.js",
       "schemaPath": "schemas/cns_tumour.json"
+    },
+    {
+      "id": "liver_biopsy",
+      "name": "Liver biopsy (medical)",
+      "shortName": "Liver · medical biopsy",
+      "label": "Liver (medical)",
+      "organ": "LIVER",
+      "system": "Hepatobiliary",
+      "kind": "biopsy",
+      "rank": 61,
+      "aliases": [
+        "medical liver",
+        "random liver biopsy",
+        "hepatitis",
+        "autoimmune hepatitis",
+        "AIH",
+        "PBC",
+        "PSC",
+        "drug-induced liver injury",
+        "DILI",
+        "steatohepatitis",
+        "MASH",
+        "MASLD",
+        "NASH",
+        "NAFLD",
+        "cirrhosis",
+        "fibrosis",
+        "Ishak",
+        "METAVIR",
+        "liver transplant",
+        "rejection",
+        "RAI"
+      ],
+      "match": {
+        "site": [
+          "liver"
+        ],
+        "procedure": [
+          "biopsy",
+          "biopsies",
+          "core",
+          "needle",
+          "transjugular",
+          "TJLB",
+          "random"
+        ],
+        "clinical": [
+          "hepatitis",
+          "autoimmune",
+          "cirrhosis",
+          "fibrosis",
+          "steatohepatitis",
+          "fatty liver",
+          "cholangitis",
+          "cholestasis",
+          "jaundice",
+          "deranged",
+          "LFT",
+          "LFTs",
+          "rejection",
+          "transplant"
+        ],
+        "gate": "\\b(?:random|background|non-?lesional)\\b|^(?![\\s\\S]*\\b(?:mass(?:es)?|lesions?|nodules?|SOL|HCC|hepatoma|tumou?rs?|metasta\\w*|mets|abscess(?:es)?|cysts?|carcinoma|cholangiocarcinoma|neoplasm\\w*|malignan\\w*|adenomas?|ha?emangiomas?|FNH)\\b)[\\s\\S]*\\b(?:medical|parenchyma\\w*|deranged|LFTs?|liver\\s+function|ALT|ALP|GGT|transaminas\\w*|hepatitis|AIH|autoimmune|PBC|PSC|cholangitis|cholesta\\w*|jaundice|cirrho\\w*|fibros\\w*|steato\\w*|fatty|NASH|NAFLD|MASH|MASLD|MetALD|transplant\\w*|allograft|graft|OLT|LDLT|DDLT|rejection|transjugular|TJLB|ha?emochromatosis|iron|Wilson\\w*|A1AT|DILI|drugs?|HBV|HCV|hep\\s*[BC]|(?:right|left)\\s+lobe)\\b",
+        "bias": 1,
+        "exclude": [
+          "mass",
+          "masses",
+          "lesion",
+          "nodule",
+          "SOL",
+          "HCC",
+          "hepatoma",
+          "tumour",
+          "tumor",
+          "metastasis",
+          "metastases",
+          "metastatic",
+          "abscess",
+          "cyst",
+          "carcinoma",
+          "cholangiocarcinoma",
+          "neoplasm",
+          "malignancy",
+          "malignant",
+          "adenoma",
+          "haemangioma",
+          "hemangioma",
+          "FNH",
+          "flexure",
+          "resection",
+          "hepatectomy",
+          "segmentectomy",
+          "lobectomy"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail",
+            "unless": "^(?:liver|biops(?:y|ies)|core|needle|percutaneous|medical)$"
+          },
+          {
+            "field": "specimenName",
+            "from": "map",
+            "map": [
+              [
+                "\\b(?:transjugular|TJLB)\\b",
+                "transjugular"
+              ],
+              [
+                "\\b(?:allograft|transplant(?:ed)?|graft)\\b",
+                "allograft"
+              ],
+              [
+                "\\brandom\\b",
+                "random"
+              ],
+              [
+                "\\bbackground\\b",
+                "background"
+              ],
+              [
+                "\\bnon-?lesional\\b",
+                "non-lesional"
+              ],
+              [
+                "\\bright\\s+lobe\\b",
+                "right lobe"
+              ],
+              [
+                "\\bleft\\s+lobe\\b",
+                "left lobe"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "liver_biopsy",
+      "generatorPath": "generators/liver_biopsy.js",
+      "schemaPath": "schemas/liver_biopsy.json"
     },
     {
       "id": "generic",

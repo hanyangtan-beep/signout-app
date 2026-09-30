@@ -1,0 +1,37 @@
+{
+  "templateId": "liver_biopsy",
+  "values": {
+    "specimenName": "transjugular",
+    "cores": "3",
+    "coreLength": "12",
+    "portalTracts": "11",
+    "pattern": "Hepatitic",
+    "stageSystem": "METAVIR",
+    "stage": "2",
+    "stains": [
+      "Reticulin",
+      "HBsAg",
+      "HBcAg"
+    ],
+    "fragmented": true,
+    "hepDx": "Chronic hepatitis B",
+    "interface": "Mild",
+    "lobular": "Mild",
+    "gradeSystem": "METAVIR",
+    "metavirPn": "1",
+    "metavirLn": "1",
+    "hepFeatures": [
+      "Ground-glass hepatocytes"
+    ],
+    "stHbsag": "Cytoplasmic staining"
+  },
+  "report": "Liver, transjugular biopsy\n\nSections show three fragmented cores of liver measuring 12 mm in aggregate length, with 11 portal tracts. The portal tracts contain a mild lymphocytic infiltrate with mild interface hepatitis. There is mild lobular hepatitis. Ground-glass hepatocytes are seen. METAVIR components: piecemeal necrosis 1 and lobular necrosis 1. Reticulin stain shows portal fibrosis with rare septa. HBsAg immunostain shows cytoplasmic staining of hepatocytes. HBcAg immunostain is negative.\n\nLIVER, transjugular biopsy - CHRONIC HEPATITIS B with MILD ACTIVITY and PORTAL FIBROSIS with RARE SEPTA (METAVIR A1 F2)",
+  "checks": [
+    {
+      "level": "info",
+      "message": "12 mm is compromised by length (10-20 mm): choose Compromised to state the limitation if it matters.",
+      "field": "adequacy",
+      "part": "A"
+    }
+  ]
+}
