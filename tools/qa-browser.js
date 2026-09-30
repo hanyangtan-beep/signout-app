@@ -1343,7 +1343,7 @@ await check('Hirschsprung biopsy: a pasted suction biopsy opens the form; the an
   assert(report.includes('RECTUM, 2 cm from AV, suction rectal biopsy:') && report.includes('- GANGLION CELLS PRESENT.'), `present line wrong: ${report.slice(-300)}`);
   assert(await shows('submucosa') && !(await shows('myenteric')) && !(await shows('mastCells')), 'the suction biopsy fields are not the ones showing');
   await pickField('ganglion', 'Not identified');
-  await pickField('calretinin', 'No positive fibres');
+  await pickField('calretinin', 'No positive nerve fibres');   // the chip shows the option label
   report = await reportText();
   assert(report.includes('- NO GANGLION CELLS IDENTIFIED, consistent with HIRSCHSPRUNG DISEASE.'), `aganglionic line wrong: ${report.slice(-300)}`);
   assert(await shows('mastCells'), 'the mast-cell box did not show with negative calretinin');
