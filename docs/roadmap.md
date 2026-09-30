@@ -2,7 +2,7 @@
 
 Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item, newest first. The app's Roadmap panel is built from this file, so a change here is rebuilt, deployed and published (user decision 2026-09-29); other docs-only changes are committed only. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`; the full Done write-ups to 2026-09-25 are in `docs/done-log.md`.
 
-State on 2026-09-29: 69 templates (13 small biopsy, 30 benign resection incl. LEEP, 1 frozen section, 17 synoptic cancer resections, 6 cytology, 1 biomarker, 1 generic), 1501 tests, published at `https://han-signout.pplx.app`.
+State on 2026-09-30: 69 templates (13 small biopsy, 30 benign resection incl. LEEP, 1 frozen section, 17 synoptic cancer resections, 6 cytology, 1 biomarker, 1 generic), 1513 tests, published at `https://han-signout.pplx.app`.
 
 ---
 
@@ -10,6 +10,7 @@ State on 2026-09-29: 69 templates (13 small biopsy, 30 benign resection incl. LE
 
 Newest first. The full write-ups as they stood at ship time are in `docs/done-log.md`.
 
+- 2026-09-30 — Frozen section, several lymph nodes in one part (pulled by the user): in the Lymph node scenario "Lymph nodes examined" moves to the top of the fields and, at two or more, drives the part — the gross ("are three lymph nodes"; other tissue gains "Three lymph nodes are identified within."), the intraoperative positive ("Metastatic carcinoma present in 1 of 3 lymph nodes"), the paraffin sentences ("They show three lymph nodes …", "one of which is" / "both of which are" / "all of which are") and the head ("LYMPH NODES, right obturator, frozen section - NO EVIDENCE OF MALIGNANCY (0/3)"). One node prints exactly as before; a pasted gross fills the count; Checks flag involved above examined and a piece count that disagrees with the node count. Also hid the CNS smear count and the breast presurgical-therapy chips, which showed under every frozen scenario. No fixture changed; 69 templates, 1513 tests. Phase 47.
 - 2026-09-29 — Suggestions box and in-app roadmap (pulled by the user): "Suggest a change" in the header (the whole app) and in each part's actions (that template) opens a short dialog that pre-fills the Google Form `Sign-out app — suggestions` — about, type, where, the suggestion and, if ticked, the part's changed choice fields (never free text, numbers or report text), with the signed-in account and build; a patient-detail check blocks an HKID, an honorific with a name, a phone number, a date of birth and accession or hospital-number shapes; the user presses Submit in Forms and only the owner sees responses. "Roadmap" in the header opens a summary of this file made at build time (`dist/roadmap.json`: Now, Next cards, Later, the ten newest Done lines, dated by the last roadmap commit), and roadmap edits now publish. No template or fixture changed; 69 templates, 1501 tests. Phase 46.
 - 2026-09-27 — Sinonasal papilloma detail, nasal polyps template (pulled by the user): the lesion list gains the oncocytic type and the papilloma dysplasia field gains squamous cell carcinoma arising. Papilloma microscopy is the house paragraph for each type, measured from the 21 released papilloma parts (inverted 12, oncocytic 5, exophytic 1, untyped 3), with that type's negative sentence or the grade sentence. Diagnosis lines read `SINONASAL PAPILLOMA, INVERTED TYPE` / `… EXOPHYTIC TYPE` / `… ONCOCYTIC SUBTYPE`, add `with LOW / HIGH GRADE DYSPLASIA` when graded, and a carcinoma gives `SQUAMOUS CELL CARCINOMA ARISING IN SINONASAL PAPILLOMA, … - SEE COMMENT` with the QMH head and neck template comment ticked. Benign papilloma lines lose the closer and "see comment", and the inverted follow-up comment is ticked by hand only; none of the 21 released reports carries either. Dropped from the 2026-09-11 card: the site, extent, mitoses and surgical-intent fields, the EGFR / KRAS / HPV comments, transformation rates and the fragmented-margin caveat. Example unchanged; routing unchanged (by specimen line alone 7 of the 21 open the form; Later has the gap). 69 templates, 1485 tests. Phase 45.
 - 2026-09-26 — Skin curettings open Skin excision with Curettings preset (pulled by the user): new intake key `match.own` — on a line naming skin, scalp or face, curetting and curettage are the form's own procedure, not biopsy context, so the resection-kind penalty no longer leaves it at −1. By specimen line alone all 22 skin curettings in the five-year file and all 14 in the export now open it confidently (all opened Generic), with 1 block and seborrhoeic keratosis preset; 36 of 18,913 parts change route and no other curettings line moves (ear stays on the cholesteatoma form; eyelid, lip and nose stay on Generic, as do punch and shave). On Generic 263 → 241 of 865 skin parts in the five-year file and 76 → 62 of 239 in the export. 69 templates, 1481 tests. Phase 44.
@@ -97,15 +98,7 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-### Frozen section: several lymph nodes in one part — pulled by the user 2026-09-30   Size: S
-Measure:    not a case-mix card. Five-year frozen file: 23 lymph node parts hold two or more nodes; their diagnosis heads split 14 keeping the label's singular LYMPH NODE to 9 reading LYMPH NODES, and the paraffin sentence is plural ("sections show … reactive lymph nodes"). The sentinel scenario's house form is already plural.
-Why:        the Lymph node scenario reads as one node. Its count reaches only the (0/1) at the end of the diagnosis line, so a part labelled "lymph node" that holds three still says "a lymph node" in the microscopy and "LYMPH NODE" in the head.
-Change:     "Lymph nodes examined" moves to the top of the scenario's fields and drives the part. Two or more make the gross plural (a lymph node part reads "are three lymph nodes"; other tissue gains "Three lymph nodes are identified within."), the paraffin sentences plural ("They show three lymph nodes with preserved architecture and reactive follicles" / "…, one of which is infiltrated by metastatic carcinoma"), the intraoperative positive line "in 1 of 3 lymph nodes", and the head LYMPH NODES when the typed name says lymph node. A pasted LIS gross fills the count. Checks: involved above examined; a lymph node gross whose piece count disagrees with the node count.
-Untouched:  one node prints exactly as before; the sentinel, margin and every other scenario; every fixture.
-Accept:     tests: one node unchanged; three nodes negative and one of three positive across gross, intraoperative, microscopy and diagnosis; two of two reads "both of which"; a typed head without "lymph node" is left as typed; sentence-case register; a pasted gross sets the count; both checks fire.
-Verify:     tests + browser QA
-Ship:       alone (pulled by the user)
-Spec:       `docs/specs/frozen-section-scenarios.md` (f)
+Empty. Frozen section, several lymph nodes in one part finished on 2026-09-30; pull the next card from Next.
 
 ## Next
 
@@ -296,6 +289,7 @@ Spec:       `docs/specs/report-review.md`
 - Diff view for edited blocks (generated vs edited) using `out.generated`.
 - iPad layout; shared look with PathExam.
 - Optional public schema set (no PHI) for colleagues.
+- Stray fields (found 2026-09-30): the aortic valve and aorta fields "Intimal tear", "Intimal tear length (cm)" and "False lumen / outer-media haemorrhage", and the gastric carcinoma "Vertical margin: distance (mm)", show while the field their rule reads is hidden, as the frozen CNS and sentinel fields did before Phase 47.
 - Small fixes to verify and card: TURP `≤` rendering as `<=`; flag snippets marking every part rather than the triggering part; LAR example block key still using colon wording.
 
 ---
