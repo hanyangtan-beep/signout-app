@@ -19,11 +19,11 @@
   },
   {
    "id": "liver_biopsy",
-   "name": "Liver biopsy (medical; Ishak / METAVIR / NAS / RAI)",
+   "name": "Liver biopsy (medical; pattern-based)",
    "label": "Liver",
    "system": "Hepatobiliary",
    "kind": "biopsy",
-   "roadmap": "Later"
+   "roadmap": "Next"
   },
   {
    "id": "endomyocardial_biopsy",
