@@ -16,14 +16,18 @@ export function setDraftOwner(account) {
 /**
  * The cached draft, or null. A draft tagged with an account other than `account` is not handed
  * over: it is cleared from the tab and `dropped` is true, so the caller can say so without naming
- * anyone. An untagged draft (cached while nobody was signed in) opens for anybody, as before.
+ * anyone. With `strict` (the signed-in site, where every draft is tagged as it is cached) an
+ * untagged draft found by a known account can only be one left by the build before the tag, whose
+ * owner is unknown, so it is cleared too (security review 2026-09-30). Without it (localhost, no
+ * gate), or with no account to compare, an untagged draft opens as before.
  */
-export function loadDraft(account = '') {
+export function loadDraft(account = '', { strict = false } = {}) {
   try {
     const raw = window.sessionStorage.getItem(KEY);
     if (!raw) return { caseState: null, dropped: false };
     const tag = window.sessionStorage.getItem(OWNER_KEY) || '';
-    if (tag && tag !== String(account || '')) {
+    const who = String(account || '');
+    if (tag ? tag !== who : strict && who !== '') {
       clearCase();
       return { caseState: null, dropped: true };
     }

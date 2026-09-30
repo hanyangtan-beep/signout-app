@@ -596,7 +596,8 @@ await check('the gate stays out of the way on localhost', async () => {
 
 // The tab's draft reopens only for the account that left it (security review 2026-09-30). A draft
 // tagged with an account is not shown when that account is not the one signed in (here: nobody),
-// and a new case starts; an untagged draft restores as before. Each run gets a fresh tab.
+// and a new case starts; an untagged draft restores as before here, where the gate is off (on the
+// signed-in site it is cleared too: tests/store_owner.test.js). Each run gets a fresh tab.
 await check('a draft left by another account is not reopened', async () => {
   const cached = await page.evaluate(() => sessionStorage.getItem('signout.case.v1'));
   assert(cached, 'no cached draft on the main page to plant');
@@ -625,7 +626,7 @@ await check('a draft left by another account is not reopened', async () => {
         notes.push('untagged draft restored');
       } else {
         assert(got.accession !== 'S26-04242', 'another account\'s draft was reopened');
-        assert(got.toast === 'New case: the draft left on this tab belonged to another account', `toast: ${got.toast}`);
+        assert(got.toast === 'New case: the draft left on this tab was not saved under this account', `toast: ${got.toast}`);
         assert(got.tag === null, `owner tag survived: ${got.tag}`);
         notes.push('tagged draft cleared, new case');
       }

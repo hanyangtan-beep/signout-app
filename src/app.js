@@ -2216,10 +2216,11 @@ async function boot() {
   state.planned = await loadPlanned();
   loadPicker();
   // A draft left on this tab by another account (locked, then somebody else signed in) is cleared
-  // rather than shown to them.
+  // rather than shown to them; on the signed-in site so is an untagged one, left by the build
+  // before drafts carried their account.
   const account = canonicalEmail(currentUser());
   setDraftOwner(account);
-  const { caseState: saved, dropped: droppedDraft } = loadDraft(account);
+  const { caseState: saved, dropped: droppedDraft } = loadDraft(account, { strict: gateEnabled(location.hostname) });
   initDrive();
   initPalette();
   initModeSwitch();
@@ -2234,7 +2235,7 @@ async function boot() {
   if (isSignedIn() && !currentUser()) fetchUserInfo(await getToken(state.config, { interactive: false })).then(() => { useAccount(); renderAccount(); }).catch(() => {});
   if (back?.error) toast(back.error === 'access_denied' ? 'Google sign-in was cancelled' : `Google sign-in failed: ${back.error}`);
   // A resumed Save or Open belonged to the draft that was cleared, so it is not carried out.
-  else if (droppedDraft) toast('New case: the draft left on this tab belonged to another account');
+  else if (droppedDraft) toast('New case: the draft left on this tab was not saved under this account');
   else if (back?.token) {
     if (back.action === 'save') { state.dirty = true; queueMicrotask(doSave); }
     else if (back.action === 'open') queueMicrotask(doOpen);

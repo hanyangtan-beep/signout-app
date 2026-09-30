@@ -44,11 +44,25 @@ test('with nobody signed in, an account\'s draft is not shown', () => {
   assert.equal(store.size, 0);
 });
 
-test('an untagged draft, cached while nobody was signed in, opens as before', () => {
+test('with the gate off, an untagged draft, cached while nobody was signed in, opens as before', () => {
   leaveDraftAs('');
   assert.equal(store.has('signout.case.owner.v1'), false);
   assert.deepEqual(loadDraft(B), { caseState: draft, dropped: false });
   assert.deepEqual(loadCase(), draft);
+});
+
+test('on the signed-in site, an untagged draft left by the earlier build is not handed to an account', () => {
+  // Security review 2026-09-30: the build before the owner tag cached drafts without one, so on the
+  // gated site an untagged draft has no known owner and is not handed to whoever signs in next.
+  leaveDraftAs('');
+  assert.deepEqual(loadDraft(B, { strict: true }), { caseState: null, dropped: true });
+  assert.equal(store.size, 0, 'draft cleared from the tab');
+  assert.equal(loadCase(A), null, 'not recoverable by another account either');
+  leaveDraftAs(A);
+  assert.deepEqual(loadDraft(A, { strict: true }), { caseState: draft, dropped: false }, 'a tagged draft still opens for its own account');
+  // No account to compare (only possible with no sign-in list, where no draft carries a tag).
+  leaveDraftAs('');
+  assert.deepEqual(loadDraft('', { strict: true }), { caseState: draft, dropped: false });
 });
 
 test('a later save retags the draft for whoever is signed in now', () => {
