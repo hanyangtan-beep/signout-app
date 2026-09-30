@@ -1,6 +1,6 @@
 {
   "id": "frozen_section",
-  "version": "2026.09d",
+  "version": "2026.09e",
   "name": "Frozen section",
   "shortName": "Frozen section",
   "label": "Frozen",
@@ -516,6 +516,18 @@
       }
     },
     {
+      "id": "lnExamined",
+      "label": "Lymph nodes examined",
+      "type": "number",
+      "default": 1,
+      "min": 1,
+      "showIf": {
+        "field": "scenario",
+        "is": "Lymph node"
+      },
+      "help": "Count every node in the part, whatever the label says. Two or more make the gross, microscopy and diagnosis plural; the diagnosis prints (involved/examined)."
+    },
+    {
       "id": "nodeResult",
       "label": "Frozen result",
       "type": "select",
@@ -550,17 +562,6 @@
           "Micrometastasis"
         ]
       }
-    },
-    {
-      "id": "lnExamined",
-      "label": "Lymph nodes examined",
-      "type": "number",
-      "default": 1,
-      "showIf": {
-        "field": "scenario",
-        "is": "Lymph node"
-      },
-      "help": "Prints the (involved/examined) count on the diagnosis line, as in 102 of the measured cases."
     },
     {
       "id": "lnPositive",
@@ -689,10 +690,18 @@
       "default": "2",
       "min": 1,
       "showIf": {
-        "field": "cnsPrep",
-        "is": [
-          "Smear and frozen section",
-          "Smear only"
+        "all": [
+          {
+            "field": "scenario",
+            "is": "CNS / pituitary"
+          },
+          {
+            "field": "cnsPrep",
+            "is": [
+              "Smear and frozen section",
+              "Smear only"
+            ]
+          }
         ]
       },
       "group": "CNS / pituitary"
@@ -1610,8 +1619,19 @@
       "default": "No known presurgical therapy",
       "help": "Post-neoadjuvant nodes: the paraffin line names the treatment effect and the linked synoptic derives ypN.",
       "showIf": {
-        "field": "slnSite",
-        "is": "Breast"
+        "all": [
+          {
+            "field": "scenario",
+            "is": [
+              "Sentinel lymph node",
+              "Breast sentinel lymph node"
+            ]
+          },
+          {
+            "field": "slnSite",
+            "is": "Breast"
+          }
+        ]
       }
     },
     {
@@ -2078,6 +2098,12 @@
       "near": "node|axilla|sentinel"
     },
     "slnCount": {
+      "concept": "count",
+      "unit": "count",
+      "of": "lymph nodes?|nodes?",
+      "near": "node"
+    },
+    "lnExamined": {
       "concept": "count",
       "unit": "count",
       "of": "lymph nodes?|nodes?",

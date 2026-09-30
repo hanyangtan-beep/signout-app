@@ -91,14 +91,20 @@ export function macro(part, ctx) {
   const noun = tissueNoun(v);
   const size = sizePhrase(v);
   let received;
+  // Lymph node scenario: a recorded count of two or more is the number of nodes received, whatever
+  // "Number of pieces" says; below that the piece count stands, so a gross saved with pieces only
+  // reads as it did. Any other tissue keeps its receipt and names the nodes found within it.
+  let within = '';
   if (noun === 'lymph node') {
-    received = n === 1 ? `is a lymph node${size}` : `are ${word(n)} lymph nodes${size}${size && !/each|aggregate/i.test(size) ? ' in aggregate' : ''}`;
+    const nodes = lnMany(v) ? lnCount(v) : n;
+    received = nodes === 1 ? `is a lymph node${size}` : `are ${word(nodes)} lymph nodes${size}${size && !/each|aggregate/i.test(size) ? ' in aggregate' : ''}`;
   } else if (n === 1) {
     received = `is a piece of ${noun}${size}`;
   } else {
     const agg = size && !/each|aggregate/i.test(size) ? ' in aggregate' : '';
     received = `are ${word(n)} pieces of ${noun}${size}${agg}`;
   }
+  if (noun !== 'lymph node' && lnMany(v)) within = ` ${uc1(word(lnCount(v)))} lymph nodes are identified within.`;
   // One generated block sentence. The measured file carries six variants across ~900 occurrences
   // that differ only in digit-versus-word and one serial comma; the house form is the digit and the
   // comma (774 of them). 32 cases do not convert the block, which is the `converted` flag.
@@ -111,7 +117,7 @@ export function macro(part, ctx) {
   const smear = isCns(v) ? cnsSmearSentence(v) : '';
   const tail = v.cnsPrep === 'Smear only' ? '' : ` ${handling}`;
   const reserved = isCns(v) ? cnsTissueSentences(v) : '';
-  return `(${part.label}) Received in a fresh state ${received}.${smear ? ` ${smear}` : ''}${tail}${reserved}`;
+  return `(${part.label}) Received in a fresh state ${received}.${within}${smear ? ` ${smear}` : ''}${tail}${reserved}`;
 }
 
 // ---------- frozen (intraoperative) diagnosis ----------
@@ -142,6 +148,26 @@ function nodeCount(v) {
     : 0;
   return ` (${positive}/${examined})`;
 }
+
+/** Nodes in a Lymph node part, never below one; a part saved before the count existed is one node. */
+function lnCount(v) {
+  const n = num(v.lnExamined);
+  return n === null ? 1 : Math.max(1, Math.round(n));
+}
+
+/** Involved nodes, capped at the count as the (involved/examined) figure is. */
+function lnPositive(v) {
+  return ['Macrometastasis', 'Micrometastasis'].includes(v.nodeResult)
+    ? Math.min(lnCount(v), Math.max(1, Math.round(num(v.lnPositive) ?? 1)))
+    : 0;
+}
+
+/**
+ * Two or more nodes in one Lymph node part. A part is often labelled "lymph node" when it holds
+ * several, so the count drives the gross, the intraoperative positive, the paraffin sentences and
+ * the head (docs/specs/frozen-section-scenarios.md (f)). One node prints exactly as before.
+ */
+const lnMany = (v) => v.scenario === 'Lymph node' && lnCount(v) > 1;
 
 /**
  * The report register. Uppercase is house and the default; sentence case is the minority register
@@ -805,7 +831,8 @@ export function frozenResult(part, ctx) {
         case 'Micrometastasis': {
           const d = num(v.metSize);
           const kind = v.nodeResult === 'Macrometastasis' ? 'macrometastasis' : 'micrometastasis';
-          return `Metastatic ${lc1(tumour(v, 'carcinoma'))} present (${kind}${d === null ? '' : `, ${fmt(d)} mm`}).`;
+          const of = lnMany(v) ? ` in ${lnPositive(v)} of ${lnCount(v)} lymph nodes` : '';
+          return `Metastatic ${lc1(tumour(v, 'carcinoma'))} present${of} (${kind}${d === null ? '' : `, ${fmt(d)} mm`}).`;
         }
         case 'Deferred': return 'Deferred to paraffin sections.';
         default: return negative(ctx, 'Negative for malignancy');
@@ -1030,10 +1057,19 @@ function defaultTissue(v) {
       return v.marginResult === 'Positive'
         ? `infiltrating ${lc1(tumour(v, 'carcinoma'))} involving the margin`
         : marginTissue(v);
-    case 'Lymph node':
-      return ['Macrometastasis', 'Micrometastasis'].includes(v.nodeResult)
-        ? `a lymph node infiltrated by metastatic ${lc1(tumour(v, 'carcinoma'))}`
-        : 'a lymph node with preserved architecture and reactive follicles';
+    case 'Lymph node': {
+      const met = ['Macrometastasis', 'Micrometastasis'].includes(v.nodeResult);
+      if (!lnMany(v)) {
+        return met
+          ? `a lymph node infiltrated by metastatic ${lc1(tumour(v, 'carcinoma'))}`
+          : 'a lymph node with preserved architecture and reactive follicles';
+      }
+      const n = lnCount(v);
+      if (!met) return `${word(n)} lymph nodes with preserved architecture and reactive follicles`;
+      const pos = lnPositive(v);
+      const which = pos < n ? `${word(pos)} of which ${pos === 1 ? 'is' : 'are'}` : n === 2 ? 'both of which are' : 'all of which are';
+      return `${word(n)} lymph nodes, ${which} infiltrated by metastatic ${lc1(tumour(v, 'carcinoma'))}`;
+    }
     case 'Parathyroid':
       switch (v.parathyroidResult) {
         case 'Parathyroid, normocellular': return 'normocellular parathyroid tissue with an admixture of stromal fat';
@@ -1102,8 +1138,9 @@ export function microscopy(part, ctx) {
     const finalDx = stripDot(v.paraffinDx);
     s = `(${part.label}) The frozen section diagnosis was deferred. The paraffin section shows ${tissue}.`
       + (finalDx ? ` The features are those of ${lc1(finalDx)}.` : '');
-  } else if (isLung(v) || isSln(v)) {
-    // House §10 (lung) and §2 (sentinel nodes): plural "sections".
+  } else if (isLung(v) || isSln(v) || lnMany(v)) {
+    // House §10 (lung) and §2 (sentinel nodes): plural "sections"; so does a Lymph node part with
+    // two or more nodes, as the released multi-node paraffin sentences do.
     s = `(${part.label}) The paraffin sections confirm the frozen section diagnosis. They show ${tissue}.`;
     const close = closingSentence(v);
     if (close) s += ` ${close}`;
@@ -1138,8 +1175,11 @@ export function organPhrase(part) {
   }
   const name = specimenName(part).trim();
   const i = name.indexOf(',');
-  if (i === -1) return name.toUpperCase();
-  return `${name.slice(0, i).toUpperCase()}${name.slice(i)}`;
+  // Several nodes under a singular label: the head says LYMPH NODES, as the sentinel lines do. Only
+  // the words "lymph node" turn plural; a name without them ("Right SLN1", "Node") stays as typed.
+  const plural = (s) => (lnMany(v) ? s.replace(/\blymph node\b(?!s|\(s\))/i, (m) => `${m}s`) : s);
+  if (i === -1) return plural(name).toUpperCase();
+  return `${plural(name.slice(0, i)).toUpperCase()}${name.slice(i)}`;
 }
 
 /** Final diagnosis text (uppercase lead) derived from the frozen result, unless a paraffin diagnosis overrides it. */
@@ -1272,6 +1312,23 @@ export function validate(part, ctx) {
     if (pdResult(v) === 'Carcinoma close to margin' && d === null) info('Record the clearance in mm: the distance is printed in the intraoperative line and carried into the paraffin synoptic.', 'pdDistanceMm');
     if (pdResult(v) === 'No epithelium identified' && /neck|duct/i.test(v.pdSite || 'Pancreatic neck (transection)')) info('No ductal epithelium in the shaving: say so in the intraoperative line rather than reporting the margin as negative.', 'pdResult');
     if (pdResult(v) === 'High-grade dysplasia only') info('High-grade dysplasia at the margin is recorded separately in the paraffin synoptic; it does not make the margin positive for invasive carcinoma.', 'pdResult');
+  }
+  if (v.scenario === 'Lymph node') {
+    const examined = num(v.lnExamined);
+    const involved = ['Macrometastasis', 'Micrometastasis'].includes(v.nodeResult) ? Math.round(num(v.lnPositive) ?? 1) : 0;
+    if (examined !== null && involved > Math.round(examined)) {
+      out.push({ level: 'warn', message: `Lymph nodes involved (${involved}) exceeds lymph nodes examined (${fmt(Math.round(examined))}); the count is capped in the report.`, field: 'lnPositive' });
+    }
+    const pieces = Math.max(1, Math.round(num(v.pieces) ?? 1));
+    if (tissueNoun(v) === 'lymph node' && pieces > 1 && pieces !== lnCount(v)) {
+      out.push({
+        level: 'info',
+        field: 'lnExamined',
+        message: lnMany(v)
+          ? `Number of pieces (${pieces}) and lymph nodes examined (${lnCount(v)}) differ; the gross follows the lymph node count.`
+          : `The gross has ${pieces} lymph nodes but lymph nodes examined is ${examined === null ? 'blank' : fmt(Math.round(examined))}: set it to ${pieces} so the microscopy and the (involved/examined) count agree.`
+      });
+    }
   }
   if (isLung(v)) {
     const mm = luMarginMm(v);

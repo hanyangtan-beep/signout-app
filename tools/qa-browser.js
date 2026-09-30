@@ -241,6 +241,38 @@ await check('a skin frozen margin does not print the tongue phrase', async () =>
   return 'skin margin prints skin, macro and microscopy agree';
 });
 
+await check('a frozen lymph node part holding three nodes reads plural throughout; one of three positive', async () => {
+  // The frozen template is still open from the check above. Phase 47: the node count sits at the top
+  // of the Lymph node fields and drives the part (docs/specs/frozen-section-scenarios.md (f)).
+  const pick = async (id, val) => {
+    const sel = page.locator(`.field[data-field="${id}"] select`).first();
+    if (await sel.count()) { await sel.selectOption(val); await page.waitForTimeout(150); }
+  };
+  await pick('scenario', 'Lymph node');
+  await pick('tissueDesc', 'lymph node');
+  const order = await page.evaluate(() => [...document.querySelectorAll('#part-panel .field[data-field]:not(.hidden)')].map((n) => n.dataset.field));
+  assert(order.indexOf('lnExamined') !== -1 && order.indexOf('lnExamined') < order.indexOf('nodeResult'), `node count not ahead of the frozen result: ${order.join(', ')}`);
+  // The CNS smear count and the breast presurgical-therapy chips belong to their own scenarios.
+  const stray = await page.evaluate(() => ['cnsSmears', 'slnTreatment'].filter((id) => { const n = document.querySelector(`#part-panel [data-field="${id}"]`); return n && n.offsetParent !== null; }));
+  assert(stray.length === 0, `fields from other scenarios are showing: ${stray.join(', ')}`);
+  const count = page.locator('.field[data-field="lnExamined"] input').first();
+  await count.fill('3');
+  await count.press('Tab');
+  await page.waitForTimeout(400);
+  let report = await page.locator('#report-blocks').innerText();
+  assert(/are three lymph nodes/.test(report), `gross not plural: ${report.slice(0, 300)}`);
+  assert(/They show three lymph nodes with preserved architecture and reactive follicles\./.test(report), `microscopy not plural: ${report.slice(0, 500)}`);
+  assert(/frozen section - NO EVIDENCE OF MALIGNANCY \(0\/3\)/.test(report), `diagnosis count wrong: ${report.slice(-300)}`);
+  await page.locator('.chips[data-field="nodeResult"] .chip', { hasText: 'macrometastasis' }).first().click();
+  await page.waitForTimeout(400);
+  report = await page.locator('#report-blocks').innerText();
+  assert(/Metastatic carcinoma present in 1 of 3 lymph nodes \(macrometastasis\)\./.test(report), `intraoperative positive wrong: ${report.slice(0, 500)}`);
+  assert(/three lymph nodes, one of which is infiltrated by metastatic carcinoma\./.test(report), `paraffin positive wrong: ${report.slice(0, 600)}`);
+  assert(/METASTATIC CARCINOMA \(macrometastasis\) \(1\/3\)/.test(report), `diagnosis positive wrong: ${report.slice(-300)}`);
+  await shot('frozen-ln-three');
+  return 'count first, gross/microscopy/diagnosis plural, 1 of 3 positive, no stray fields';
+});
+
 await check('settings dialog opens and holds the Drive fields', async () => {
   await page.click('#btn-settings');
   await page.waitForSelector('#dlg-settings[open]', { timeout: 5000 });

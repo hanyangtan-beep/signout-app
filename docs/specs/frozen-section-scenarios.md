@@ -97,6 +97,7 @@ A part is often labelled "lymph node" when it holds several. The node count (`ln
 - Diagnosis: the (involved/examined) count as before; the head's `LYMPH NODE` turns `LYMPH NODES` when the typed name says lymph node (`LYMPH NODES, right obturator, frozen section - NO EVIDENCE OF MALIGNANCY (0/3)`). A typed name without the words (`RIGHT SLN1`, `NODE`) is left as typed. The specimen line keeps the label as received.
 - Pasted LIS gross: the count of lymph nodes fills `lnExamined`, as it fills the sentinel count.
 - Checks: involved above examined (the count is capped in the report); a lymph node gross whose piece count disagrees with the node count.
+- Found while building it: the CNS smear count and the breast presurgical-therapy chips showed under every scenario, because their parent fields are hidden but keep a default that satisfies the rule. Both now also require their own scenario (`all` rules); nothing printed changes.
 
 Measured in the five-year frozen file (aggregate only): 23 lymph node parts hold two or more nodes; 14 of their heads keep the label's singular and 9 read LYMPH NODES. The plural head follows the sentinel scenario's house form so that one template reads one way.
 
