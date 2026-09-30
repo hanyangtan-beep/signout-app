@@ -2,7 +2,7 @@
 
 Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item, newest first. The app's Roadmap panel is built from this file, so a change here is rebuilt, deployed and published (user decision 2026-09-29); other docs-only changes are committed only. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`; the full Done write-ups to 2026-09-25 are in `docs/done-log.md`.
 
-State on 2026-09-30: 69 templates (13 small biopsy, 30 benign resection incl. LEEP, 1 frozen section, 17 synoptic cancer resections, 6 cytology, 1 biomarker, 1 generic), 1513 tests, published at `https://han-signout.pplx.app`.
+State on 2026-09-30: 69 templates (13 small biopsy, 30 benign resection incl. LEEP, 1 frozen section, 17 synoptic cancer resections, 6 cytology, 1 biomarker, 1 generic), 1524 tests, published at `https://han-signout.pplx.app`.
 
 ---
 
@@ -10,6 +10,7 @@ State on 2026-09-30: 69 templates (13 small biopsy, 30 benign resection incl. LE
 
 Newest first. The full write-ups as they stood at ship time are in `docs/done-log.md`.
 
+- 2026-09-30 — Sign-in restricted to a built-in list of accounts (pulled by the user): the published build admits only four Google accounts, held in `src/gate.js` as salted SHA-256 digests, never the addresses. A signed-in account off the list sees "No access", one whose address cannot be confirmed is not let in, and Settings shows the list as fixed. The signed-in address now comes from Drive's about.get under drive.file, with userinfo as the fallback; `tools/allow-hash.mjs` prints the digest for a new account. No fixture changed; 69 templates, 1524 tests. Phase 47b.
 - 2026-09-30 — Frozen section, several lymph nodes in one part (pulled by the user): in the Lymph node scenario "Lymph nodes examined" moves to the top of the fields and, at two or more, drives the part — the gross ("are three lymph nodes"; other tissue gains "Three lymph nodes are identified within."), the intraoperative positive ("Metastatic carcinoma present in 1 of 3 lymph nodes"), the paraffin sentences ("They show three lymph nodes …", "one of which is" / "both of which are" / "all of which are") and the head ("LYMPH NODES, right obturator, frozen section - NO EVIDENCE OF MALIGNANCY (0/3)"). One node prints exactly as before; a pasted gross fills the count; Checks flag involved above examined and a piece count that disagrees with the node count. Also hid the CNS smear count and the breast presurgical-therapy chips, which showed under every frozen scenario. No fixture changed; 69 templates, 1513 tests. Phase 47.
 - 2026-09-29 — Suggestions box and in-app roadmap (pulled by the user): "Suggest a change" in the header (the whole app) and in each part's actions (that template) opens a short dialog that pre-fills the Google Form `Sign-out app — suggestions` — about, type, where, the suggestion and, if ticked, the part's changed choice fields (never free text, numbers or report text), with the signed-in account and build; a patient-detail check blocks an HKID, an honorific with a name, a phone number, a date of birth and accession or hospital-number shapes; the user presses Submit in Forms and only the owner sees responses. "Roadmap" in the header opens a summary of this file made at build time (`dist/roadmap.json`: Now, Next cards, Later, the ten newest Done lines, dated by the last roadmap commit), and roadmap edits now publish. No template or fixture changed; 69 templates, 1501 tests. Phase 46.
 - 2026-09-27 — Sinonasal papilloma detail, nasal polyps template (pulled by the user): the lesion list gains the oncocytic type and the papilloma dysplasia field gains squamous cell carcinoma arising. Papilloma microscopy is the house paragraph for each type, measured from the 21 released papilloma parts (inverted 12, oncocytic 5, exophytic 1, untyped 3), with that type's negative sentence or the grade sentence. Diagnosis lines read `SINONASAL PAPILLOMA, INVERTED TYPE` / `… EXOPHYTIC TYPE` / `… ONCOCYTIC SUBTYPE`, add `with LOW / HIGH GRADE DYSPLASIA` when graded, and a carcinoma gives `SQUAMOUS CELL CARCINOMA ARISING IN SINONASAL PAPILLOMA, … - SEE COMMENT` with the QMH head and neck template comment ticked. Benign papilloma lines lose the closer and "see comment", and the inverted follow-up comment is ticked by hand only; none of the 21 released reports carries either. Dropped from the 2026-09-11 card: the site, extent, mitoses and surgical-intent fields, the EGFR / KRAS / HPV comments, transformation rates and the fragmented-margin caveat. Example unchanged; routing unchanged (by specimen line alone 7 of the 21 open the form; Later has the gap). 69 templates, 1485 tests. Phase 45.
@@ -98,15 +99,7 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-### Sign-in restricted to a built-in list of accounts — pulled by the user 2026-09-30   Size: S
-Measure:    not a case-mix card. Pre-publish security review, 2026-09-30: the gate admits any Google account by default, and its allow-list lives in each browser's Settings, so it cannot restrict a stranger's machine.
-Why:        the user chose to restrict sign-in to four Google accounts before Phase 47 is published.
-Change:     a built-in allow-list in `src/gate.js`, held as SHA-256 digests of the canonical address, never the address (the file is served to anyone). When it is set it is the only list: an address that cannot be confirmed is not admitted, and Settings shows the list as fixed. The signed-in address comes from Drive's about.get, which works under drive.file, with userinfo as the fallback. `tools/allow-hash.mjs` prints the digest for a new address.
-Untouched:  localhost has no gate; a build with no built-in list keeps the Settings list; Drive, Sheets and every template.
-Accept:     tests: a member is admitted however the address is cased or dotted (Gmail); a stranger is refused; an unresolved address or missing Web Crypto is not admitted; no address-shaped text in the gate or config source; the old rules hold with no built-in list.
-Verify:     tests + browser QA
-Ship:       with Phase 47 (one publish)
-Spec:       `docs/google-setup.md` §5
+Empty. Sign-in restricted to a built-in list of accounts finished on 2026-09-30; pull the next card from Next.
 
 ## Next
 
@@ -299,6 +292,7 @@ Spec:       `docs/specs/report-review.md`
 - Optional public schema set (no PHI) for colleagues.
 - Stray fields (found 2026-09-30): the aortic valve and aorta fields "Intimal tear", "Intimal tear length (cm)" and "False lumen / outer-media haemorrhage", and the gastric carcinoma "Vertical margin: distance (mm)", show while the field their rule reads is hidden, as the frozen CNS and sentinel fields did before Phase 47.
 - Small fixes to verify and card: TURP `≤` rendering as `<=`; flag snippets marking every part rather than the triggering part; LAR example block key still using colon wording.
+- Narrower Sheets permission (security review 2026-09-30): `spreadsheets` reaches every Sheet in the account, and `drive.file` may be enough for the app-created `Sign-out cases` Sheet; needs a sign-in test before the scope changes.
 
 ---
 
@@ -321,7 +315,7 @@ Spec:       `docs/specs/report-review.md`
 ## Risks
 
 - Wording drift → golden fixtures on every run.
-- OAuth friction → consent screen stays in Testing with one test user; widen to `drive` scope only if `drive.file` cannot place the Doc.
+- OAuth friction → consent screen stays in Testing, so each account on the built-in sign-in list must also be a Google test user; widen to `drive` scope only if `drive.file` cannot place the Doc.
 - Preview iframe limits → sign-in and storage are tested on the published URL, not the in-thread preview.
 - PHI on personal Drive → accession-only guard; no names or HKIDs entered.
 - Staging rule errors → unit tests per pT / pN boundary; edition stamped on output.
