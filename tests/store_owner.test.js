@@ -1,0 +1,67 @@
+// The tab's cached draft reopens only for the account that left it (pulled by the user
+// 2026-09-30, after the security review): a tab locked by one person does not hand their case to
+// the next person who signs in on it.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { canonicalEmail } from '../src/gate.js';
+
+const store = new Map();
+globalThis.window = {
+  sessionStorage: {
+    getItem: (k) => (store.has(k) ? store.get(k) : null),
+    setItem: (k, v) => store.set(k, String(v)),
+    removeItem: (k) => store.delete(k)
+  }
+};
+const { saveCase, loadCase, loadDraft, clearCase, setDraftOwner } = await import('../src/store.js');
+
+const draft = { schemaId: 'gastric_biopsy', meta: { accession: 'S26-00001' }, parts: [] };
+const A = canonicalEmail('Member.One@gmail.com');
+const B = canonicalEmail('member.two@gmail.com');
+
+function leaveDraftAs(account) {
+  store.clear();
+  setDraftOwner(account);
+  assert.equal(saveCase(draft), true);
+}
+
+test('the same account gets its draft back, however the address is written', () => {
+  leaveDraftAs(A);
+  assert.deepEqual(loadDraft(canonicalEmail('memberone@GMAIL.com')), { caseState: draft, dropped: false });
+  assert.deepEqual(loadCase(A), draft, 'still there after reading');
+});
+
+test('another account gets a clean case and the draft is gone from the tab', () => {
+  leaveDraftAs(A);
+  assert.deepEqual(loadDraft(B), { caseState: null, dropped: true });
+  assert.equal(store.size, 0, 'draft and its owner tag both cleared');
+  assert.equal(loadCase(A), null, 'not recoverable by switching back');
+});
+
+test('with nobody signed in, an account\'s draft is not shown', () => {
+  leaveDraftAs(A);
+  assert.deepEqual(loadDraft(''), { caseState: null, dropped: true });
+  assert.equal(store.size, 0);
+});
+
+test('an untagged draft, cached while nobody was signed in, opens as before', () => {
+  leaveDraftAs('');
+  assert.equal(store.has('signout.case.owner.v1'), false);
+  assert.deepEqual(loadDraft(B), { caseState: draft, dropped: false });
+  assert.deepEqual(loadCase(), draft);
+});
+
+test('a later save retags the draft for whoever is signed in now', () => {
+  leaveDraftAs(A);
+  setDraftOwner(B);
+  saveCase(draft);
+  assert.deepEqual(loadDraft(B).caseState, draft);
+  assert.equal(loadDraft(A).dropped, true);
+});
+
+test('clearCase removes the draft and its tag; no draft reads as nothing dropped', () => {
+  leaveDraftAs(A);
+  clearCase();
+  assert.equal(store.size, 0);
+  assert.deepEqual(loadDraft(A), { caseState: null, dropped: false });
+});

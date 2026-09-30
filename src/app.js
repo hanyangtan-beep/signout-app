@@ -6,10 +6,10 @@ import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, caseOptions, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset,
   applyLinkedDefaults
 } from './engine.js';
-import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js';
+import { loadDraft, setDraftOwner, saveCase as cacheCase, clearCase, copyText } from './store.js';
 import { loadConfig, saveConfig, accountConfig, rememberForAccount } from './config.js';
 import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js';
-import { gateEnabled, gateState, parseAllowList, formatAllowList, BUILT_IN_ALLOWED, emailDigest } from './gate.js';
+import { gateEnabled, gateState, parseAllowList, formatAllowList, BUILT_IN_ALLOWED, emailDigest, canonicalEmail } from './gate.js';
 import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js';
 import { normaliseAccession, phiWarnings } from './docformat.js';
 import { buildPayload, payloadKeys, payloadLabel, parseHarvest, nextCaptureTarget } from './lisbridge.js';
@@ -1955,6 +1955,7 @@ function renderSaveStatus() {
  */
 function useAccount() {
   state.config = accountConfig(loadConfig(), currentUser());
+  setDraftOwner(canonicalEmail(currentUser())); // the tab's draft belongs to whoever is signed in
   return state.config;
 }
 
@@ -2003,7 +2004,7 @@ function showGate(mode) {
   $('#gate-signin').focus();
 }
 
-/** Drop the Google token and come back to the gate, leaving the cached draft where it is. */
+/** Drop the Google token and come back to the gate. The cached draft stays, for this account only. */
 function lockApp() {
   state.leaving = true;
   cacheCase(state.caseState);
@@ -2194,10 +2195,12 @@ async function boot() {
   // The gate runs before any case is built, so a refused visitor gets an empty page rather than a
   // hidden-but-present workspace. Off on localhost so `npm run qa` drives the app without a
   // Google session — keyed on hostname only, never a flag a visitor could set.
+  // Resolve the signed-in address before anything is decided or restored: the gate needs it, and so
+  // does the tab's draft, which reopens only for the account that left it.
+  if (isSignedIn() && !currentUser()) {
+    await getToken(state.config, { interactive: false }).then((t) => fetchUserInfo(t)).catch(() => null);
+  }
   if (gateEnabled(location.hostname)) {
-    if (isSignedIn() && !currentUser()) {
-      await getToken(state.config, { interactive: false }).then((t) => fetchUserInfo(t)).catch(() => null);
-    }
     useAccount(); // a returning session picks up its own folder and sheet before anything is loaded
     const email = currentUser();
     const decision = gateState({
@@ -2212,7 +2215,11 @@ async function boot() {
   state.manifest = await loadManifest();
   state.planned = await loadPlanned();
   loadPicker();
-  const saved = loadCase();
+  // A draft left on this tab by another account (locked, then somebody else signed in) is cleared
+  // rather than shown to them.
+  const account = canonicalEmail(currentUser());
+  setDraftOwner(account);
+  const { caseState: saved, dropped: droppedDraft } = loadDraft(account);
   initDrive();
   initPalette();
   initModeSwitch();
@@ -2226,6 +2233,8 @@ async function boot() {
   } else await newCase(defaultId);
   if (isSignedIn() && !currentUser()) fetchUserInfo(await getToken(state.config, { interactive: false })).then(() => { useAccount(); renderAccount(); }).catch(() => {});
   if (back?.error) toast(back.error === 'access_denied' ? 'Google sign-in was cancelled' : `Google sign-in failed: ${back.error}`);
+  // A resumed Save or Open belonged to the draft that was cleared, so it is not carried out.
+  else if (droppedDraft) toast('New case: the draft left on this tab belonged to another account');
   else if (back?.token) {
     if (back.action === 'save') { state.dirty = true; queueMicrotask(doSave); }
     else if (back.action === 'open') queueMicrotask(doOpen);

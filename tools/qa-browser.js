@@ -594,6 +594,48 @@ await check('the gate stays out of the way on localhost', async () => {
   return 'bypass intact';
 });
 
+// The tab's draft reopens only for the account that left it (security review 2026-09-30). A draft
+// tagged with an account is not shown when that account is not the one signed in (here: nobody),
+// and a new case starts; an untagged draft restores as before. Each run gets a fresh tab.
+await check('a draft left by another account is not reopened', async () => {
+  const cached = await page.evaluate(() => sessionStorage.getItem('signout.case.v1'));
+  assert(cached, 'no cached draft on the main page to plant');
+  const planted = JSON.parse(cached);
+  planted.meta = { ...(planted.meta || {}), accession: 'S26-04242' };
+  const notes = [];
+  for (const [tag, reopen] of [['someone@example.org', false], ['', true]]) {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } });
+    try {
+      const tab = await ctx.newPage();
+      await tab.addInitScript(([d, t]) => {
+        if (sessionStorage.getItem('qa.planted')) return; // plant once, not again on a reload
+        sessionStorage.setItem('qa.planted', '1');
+        sessionStorage.setItem('signout.case.v1', d);
+        if (t) sessionStorage.setItem('signout.case.owner.v1', t);
+      }, [JSON.stringify(planted), tag]);
+      await tab.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+      await tab.waitForSelector('#part-panel', { state: 'visible', timeout: 10000 });
+      const got = await tab.evaluate(() => ({
+        accession: document.querySelector('#meta-accession').value,
+        toast: document.querySelector('#toast').textContent,
+        tag: sessionStorage.getItem('signout.case.owner.v1')
+      }));
+      if (reopen) {
+        assert(got.accession === 'S26-04242', `untagged draft not restored (accession "${got.accession}")`);
+        notes.push('untagged draft restored');
+      } else {
+        assert(got.accession !== 'S26-04242', 'another account\'s draft was reopened');
+        assert(got.toast === 'New case: the draft left on this tab belonged to another account', `toast: ${got.toast}`);
+        assert(got.tag === null, `owner tag survived: ${got.tag}`);
+        notes.push('tagged draft cleared, new case');
+      }
+    } finally {
+      await ctx.close();
+    }
+  }
+  return notes.join('; ');
+});
+
 // ---- compact layout (phones) -----------------------------------------------------
 // Runs last and at the end of the desktop journey, so a failure here is unambiguous: the desktop
 // checks above have already passed at 1440px. docs/specs/iphone-layout.md
