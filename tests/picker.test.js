@@ -47,8 +47,9 @@ test('lazy registry resolves every manifest entry and matches loadAll', async ()
 test('small-biopsy row lists exactly the kind: biopsy templates in frequency order', () => {
   const row = biopsyRow(manifest).map(labelOf);
   // Oral cavity (Phase 42) sits after NPC and before Brain on the 2021-2026 biopsy case mix; Liver (medical),
-  // built 2026-09-30, after Brain (43 medical-type liver cases against 60 CNS).
-  assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix', 'Endometrium', 'Lung', 'NPC', 'Oral cavity', 'Brain', 'Liver (medical)']);
+  // built 2026-09-30, after Brain (43 medical-type liver cases against 60 CNS). Hirschsprung (2026-09-30) comes
+  // last: its rectal biopsies are the rarest biopsy type on the case mix.
+  assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix', 'Endometrium', 'Lung', 'NPC', 'Oral cavity', 'Brain', 'Liver (medical)', 'Hirschsprung']);
   assert.ok(!row.includes('LEEP') && !row.includes('Frozen'));
   assert.deepEqual(pushRecent(['a', 'b'], 'b'), ['b', 'a']);
   assert.deepEqual(togglePin(togglePin([], 'x'), 'x'), []);
@@ -110,7 +111,7 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   assert.equal(bottom[bottom.length - 1].system, 'General', 'Free text last');
   // built before planned within a group; planned carry the flag and open Generic in the app
   const gi = top.find((g) => g.system === 'GI');
-  assert.deepEqual(gi.items.map(labelOf), ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Peritoneum']);
+  assert.deepEqual(gi.items.map(labelOf), ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Hirschsprung', 'Peritoneum']);
   assert.equal(gi.items.at(-1).planned, true);
   const giBottom = bottom.find((g) => g.system === 'GI').items;
   assert.ok(giBottom.findIndex((t) => t.id === 'colon_resection') < giBottom.findIndex((t) => t.id === 'gastric_carcinoma'));
@@ -171,7 +172,7 @@ test('grouped browse and the part selector put Small biopsy first, systems in ca
   assert.deepEqual(gyn.items.slice(2).map(labelOf), ['LEEP', 'Placenta', 'Uterus', 'Ovarian cyst', 'Ectopic', 'Endometrial Ca', 'Ovary / tube / peritoneum Ca'], 'rank order within a kind');
   const sel = selectorGroups(manifest);
   assert.equal(sel[0].label, 'Small biopsy');
-  assert.equal(sel[0].items.length, 14); // oral_biopsy joins in Phase 42, liver_biopsy on 2026-09-30
+  assert.equal(sel[0].items.length, 15); // oral_biopsy joins in Phase 42, liver_biopsy and hirschsprung_biopsy on 2026-09-30
   // The CNS biopsy sits in the Small biopsy group; the CNS system group holds the resection.
   assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Biomarkers', 'Cytology', 'General']);
 });

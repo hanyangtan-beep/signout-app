@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 70,
+  "count": 71,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -5656,6 +5656,112 @@
       "generator": "liver_biopsy",
       "generatorPath": "generators/liver_biopsy.js",
       "schemaPath": "schemas/liver_biopsy.json"
+    },
+    {
+      "id": "hirschsprung_biopsy",
+      "name": "Hirschsprung rectal biopsy",
+      "shortName": "Rectum · Hirschsprung biopsy",
+      "label": "Hirschsprung",
+      "organ": "RECTUM",
+      "system": "GI",
+      "kind": "biopsy",
+      "rank": 62,
+      "aliases": [
+        "Hirschsprung disease",
+        "HD",
+        "rectal suction biopsy",
+        "suction rectal biopsy",
+        "RSB",
+        "full-thickness rectal biopsy",
+        "aganglionosis",
+        "ganglion cells",
+        "calretinin",
+        "acetylcholinesterase"
+      ],
+      "match": {
+        "site": [
+          "rectum",
+          "rectal",
+          "anorectal",
+          "rectosigmoid",
+          "sigmoid",
+          "colon",
+          "colonic"
+        ],
+        "procedure": [
+          "suction",
+          "full thickness",
+          "full-thickness",
+          "RSB",
+          "biopsy",
+          "biopsies"
+        ],
+        "clinical": [
+          "hirschsprung",
+          "aganglionosis",
+          "aganglionic",
+          "ganglion cells",
+          "meconium",
+          "constipation",
+          "?HD"
+        ],
+        "gate": "\\b(?:hirschsprung\\w*|aganglion\\w*|suction|full[-\\s]?thickness|RSB|meconium)\\b|\\bganglion\\s+cells?\\b|\\?\\s*HD\\b",
+        "exclude": [
+          "polyp",
+          "polypectomy",
+          "tumour",
+          "tumor",
+          "mass",
+          "lesion",
+          "ulcer",
+          "carcinoma",
+          "cancer",
+          "growth",
+          "stricture",
+          "pull-through",
+          "pull through",
+          "pullthrough",
+          "Swenson",
+          "Duhamel",
+          "Soave",
+          "TERPT",
+          "endorectal",
+          "resection",
+          "colectomy",
+          "proctectomy"
+        ],
+        "bias": 1,
+        "fill": [
+          {
+            "field": "site",
+            "from": "options"
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bsuction\\b|\\bRSB\\b",
+                "Suction biopsy"
+              ],
+              [
+                "\\bfull[-\\s]?thickness\\b",
+                "Full-thickness biopsy"
+              ]
+            ]
+          },
+          {
+            "field": "level",
+            "from": "text",
+            "strip": "\\b(?:recto-?sigmoid|anorectal|rectum|rectal|sigmoid(?:\\s+colon)?|colonic|colon|suction|full[-\\s]?thickness|RSB|biops(?:y|ies)|bx|x\\s*\\d+|for|hirschsprung\\w*(?:\\s+disease)?|ganglion\\s+cells?)\\b|\\?\\s*(?:hirschsprung\\w*(?:\\s+disease)?|HD)\\b|\\?",
+            "unless": "^[^0-9]*$"
+          }
+        ]
+      },
+      "version": "2026.09",
+      "generator": "hirschsprung_biopsy",
+      "generatorPath": "generators/hirschsprung_biopsy.js",
+      "schemaPath": "schemas/hirschsprung_biopsy.json"
     },
     {
       "id": "generic",

@@ -1,0 +1,13 @@
+{
+  "templateId": "hirschsprung_biopsy",
+  "values": {
+    "level": "2",
+    "fragments": "2",
+    "sections": "60",
+    "nerves": "Not hypertrophic",
+    "calretinin": "Positive fibres",
+    "ache": "No increase"
+  },
+  "report": "Rectum, 2 cm from AV, suction rectal biopsy\n\nSections show two pieces of large intestinal mucosa with submucosa, in which clusters of ganglion cells are found. A total of 60 serial sections are examined. No hypertrophic submucosal nerves are seen. Histochemical staining for acetylcholinesterase confirms the presence of these ganglion cells in clusters, and does not reveal any overtly thickened nerve fibres in the muscularis mucosae or lamina propria. Immunostaining for calretinin shows positive nerve fibrils in the lamina propria and muscularis mucosae.\n\nRECTUM, 2 cm from AV, suction rectal biopsy:\n- GANGLION CELLS PRESENT.",
+  "checks": []
+}

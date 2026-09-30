@@ -1,0 +1,26 @@
+{
+  "templateId": "hirschsprung_biopsy",
+  "values": {
+    "level": "1",
+    "fragments": "1",
+    "ganglion": "Not identified",
+    "distal": "Squamous and transitional mucosa",
+    "sections": "60",
+    "calretinin": "Positive fibres"
+  },
+  "report": "Rectum, 1 cm from AV, suction rectal biopsy\n\nSections show a piece of large intestinal mucosa with submucosa. No ganglion cells are found. The biopsy also includes squamous and transitional mucosa of the anal canal. A total of 60 serial sections are examined. Immunostaining for calretinin shows positive nerve fibrils in the lamina propria and muscularis mucosae.\n\nRECTUM, 1 cm from AV, suction rectal biopsy:\n- INADEQUATE FOR EVALUATION (anal canal mucosa).",
+  "checks": [
+    {
+      "level": "info",
+      "message": "No ganglion cells: the diagnosis line reads inadequate because the biopsy includes anal canal mucosa, and the zone just above the dentate line normally has few or no ganglion cells.",
+      "field": "distal",
+      "part": "A"
+    },
+    {
+      "level": "warn",
+      "message": "No ganglion cells are recorded, but calretinin shows positive mucosal nerve fibrils: the two disagree. The fibrils can extend 1-2 cm into aganglionic bowel (Kapur 2014), and a low biopsy may be physiologically hypoganglionic: review the level and the sections.",
+      "field": "calretinin",
+      "part": "A"
+    }
+  ]
+}

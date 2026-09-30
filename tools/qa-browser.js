@@ -1331,6 +1331,40 @@ await check('medical liver: a pasted random biopsy opens Liver (medical); each p
   return 'routed on the history; hepatitic, biliary and steatotic fields swap; pattern gallery 4 photos and the lightbox; a mass line stays out';
 });
 
+// Hirschsprung pair (2026-09-30): a pasted suction biopsy under a ?Hirschsprung history opens the rectal
+// biopsy form with its level filled; the diagnosis line follows the ganglion-cell and calretinin picks, the
+// full-thickness pick swaps the submucosa for the myenteric plexus, the calretinin gallery opens, and a plain
+// rectal biopsy with no Hirschsprung word is left to the other forms.
+await check('Hirschsprung biopsy: a pasted suction biopsy opens the form; the answer follows the picks; the calretinin gallery opens', async () => {
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
+  let routed = await pasteAndBuild('History\nDelayed passage of meconium, ? Hirschsprung disease\n\nSpecimen\n(A) Rectal suction biopsy, 2 cm from AV');
+  assert(routed === 'hirschsprung_biopsy', `suction biopsy routed to ${routed}`);
+  let report = await reportText();
+  assert(report.includes('RECTUM, 2 cm from AV, suction rectal biopsy:') && report.includes('- GANGLION CELLS PRESENT.'), `present line wrong: ${report.slice(-300)}`);
+  assert(await shows('submucosa') && !(await shows('myenteric')) && !(await shows('mastCells')), 'the suction biopsy fields are not the ones showing');
+  await pickField('ganglion', 'Not identified');
+  await pickField('calretinin', 'No positive fibres');
+  report = await reportText();
+  assert(report.includes('- NO GANGLION CELLS IDENTIFIED, consistent with HIRSCHSPRUNG DISEASE.'), `aganglionic line wrong: ${report.slice(-300)}`);
+  assert(await shows('mastCells'), 'the mast-cell box did not show with negative calretinin');
+  await pickField('procedure', 'Full-thickness biopsy');
+  assert(await shows('myenteric') && !(await shows('submucosa')), 'the full-thickness fields are not the ones showing');
+  await pickField('procedure', 'Suction biopsy');
+  await page.locator('.field[data-field="calretinin"] .ref-toggle').first().click();
+  await page.waitForSelector('.field[data-field="calretinin"] .ref-panel img', { timeout: 5000 });
+  const imgs = page.locator('.field[data-field="calretinin"] .ref-panel img');
+  const photos = await imgs.count();
+  assert(photos === 3, `calretinin gallery holds ${photos} photos`);
+  for (let i = 0; i < photos; i++) await imgs.nth(i).scrollIntoViewIfNeeded();   // the photos load lazily
+  await page.waitForFunction(() => [...document.querySelectorAll('.field[data-field="calretinin"] .ref-panel img')].every((i) => i.complete && i.naturalWidth > 0), null, { timeout: 8000 });
+  await page.locator('.field[data-field="calretinin"] .ref-panel').first().scrollIntoViewIfNeeded();
+  await shot('hirschsprung-calretinin-gallery');
+  await page.locator('.field[data-field="calretinin"] .ref-toggle').first().click();
+  routed = await pasteAndBuild('Rectal biopsy');
+  assert(routed !== 'hirschsprung_biopsy', 'a plain rectal biopsy opened the Hirschsprung form');
+  return 'routed on the line and history; present and aganglionic lines; mast-cell box; full-thickness fields swap; calretinin gallery 3 photos; a plain rectal biopsy stays out';
+});
+
 // Case options after a pasted request (2026-09-24): the tickboxes show what the report prints. The case
 // starts on the default small biopsy, whose options carry no macroscopy choice, as a fresh session does.
 await check('case options: a pasted hysterectomy ticks the macroscopy box it prints, and the box drives it', async () => {

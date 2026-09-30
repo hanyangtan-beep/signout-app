@@ -184,9 +184,9 @@ export function microscopy(part, ctx) {
 }
 
 export function diagnosis(part) {
-  // Return the clause lines only; the engine adds the lettered specimen line above them.
-  void part;
-  return '- TODO';
+  // Return the part's whole diagnosis: its lettered specimen line and the "- " clauses under it. The engine
+  // prints the text as returned, and drops the letter when the case has one part.
+  return \`(\${part.label}) TODO:\\n- TODO\`;
 }
 
 // The registry loads this default export; a generator without one is not wired in.

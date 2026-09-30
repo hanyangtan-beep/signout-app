@@ -834,6 +834,54 @@
           "specimenName": "background"
         }
       }
+    },
+    {
+      "name": "rectal suction biopsies at two levels (Hirschsprung pair)",
+      "text": "History\nDelayed passage of meconium, ? Hirschsprung disease\n\nSpecimen\n(A) Rectal suction biopsy, 2 cm from AV and (B) Rectal suction biopsy, 3 cm from AV",
+      "history": "Delayed passage of meconium, ? Hirschsprung disease",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "hirschsprung_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "hirschsprung_biopsy",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "site": "Rectum",
+          "procedure": "Suction biopsy",
+          "level": "2 cm from AV"
+        },
+        "B": {
+          "level": "3 cm from AV"
+        }
+      }
+    },
+    {
+      "name": "rectal biopsy with ?HD in the history (Hirschsprung pair)",
+      "text": "History\nChronic constipation, ?HD\n\nSpecimen\n(A) Rectal biopsy",
+      "history": "Chronic constipation, ?HD",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "hirschsprung_biopsy",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "site": "Rectum",
+          "procedure": "",
+          "level": ""
+        }
+      }
     }
   ]
 }

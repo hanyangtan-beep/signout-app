@@ -1,0 +1,22 @@
+{
+  "templateId": "hirschsprung_biopsy",
+  "values": {
+    "level": "3",
+    "fragments": "2",
+    "ganglion": "Not identified",
+    "sections": "75",
+    "nerves": "Hypertrophic",
+    "nerveDiameter": "50",
+    "calretinin": "No positive fibres",
+    "mastCells": true
+  },
+  "report": "Rectum, 3 cm from AV, suction rectal biopsy\n\nSections show two pieces of large intestinal mucosa with submucosa. No ganglion cells are found. A total of 75 serial sections are examined. Hypertrophic submucosal nerves are seen, measuring up to 50 microns in diameter. Immunostaining for calretinin shows no positive nerve fibrils in the lamina propria or muscularis mucosae; mast cells are positive.\n\nRECTUM, 3 cm from AV, suction rectal biopsy:\n- NO GANGLION CELLS IDENTIFIED, consistent with HIRSCHSPRUNG DISEASE.",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Hirschsprung disease is a critical result in most practices: record when and to whom it was communicated (IWG 2009). A positive diagnosis needs specialist input (RCPath G085).",
+      "field": "conclusion",
+      "part": "A"
+    }
+  ]
+}

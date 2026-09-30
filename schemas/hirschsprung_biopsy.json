@@ -1,0 +1,569 @@
+{
+ "id": "hirschsprung_biopsy",
+ "version": "2026.09",
+ "name": "Hirschsprung rectal biopsy",
+ "shortName": "Rectum · Hirschsprung biopsy",
+ "label": "Hirschsprung",
+ "organ": "RECTUM",
+ "system": "GI",
+ "kind": "biopsy",
+ "rank": 62,
+ "aliases": [
+  "Hirschsprung disease",
+  "HD",
+  "rectal suction biopsy",
+  "suction rectal biopsy",
+  "RSB",
+  "full-thickness rectal biopsy",
+  "aganglionosis",
+  "ganglion cells",
+  "calretinin",
+  "acetylcholinesterase"
+ ],
+ "match": {
+  "site": [
+   "rectum",
+   "rectal",
+   "anorectal",
+   "rectosigmoid",
+   "sigmoid",
+   "colon",
+   "colonic"
+  ],
+  "procedure": [
+   "suction",
+   "full thickness",
+   "full-thickness",
+   "RSB",
+   "biopsy",
+   "biopsies"
+  ],
+  "clinical": [
+   "hirschsprung",
+   "aganglionosis",
+   "aganglionic",
+   "ganglion cells",
+   "meconium",
+   "constipation",
+   "?HD"
+  ],
+  "gate": "\\b(?:hirschsprung\\w*|aganglion\\w*|suction|full[-\\s]?thickness|RSB|meconium)\\b|\\bganglion\\s+cells?\\b|\\?\\s*HD\\b",
+  "exclude": [
+   "polyp",
+   "polypectomy",
+   "tumour",
+   "tumor",
+   "mass",
+   "lesion",
+   "ulcer",
+   "carcinoma",
+   "cancer",
+   "growth",
+   "stricture",
+   "pull-through",
+   "pull through",
+   "pullthrough",
+   "Swenson",
+   "Duhamel",
+   "Soave",
+   "TERPT",
+   "endorectal",
+   "resection",
+   "colectomy",
+   "proctectomy"
+  ],
+  "bias": 1,
+  "fill": [
+   {
+    "field": "site",
+    "from": "options"
+   },
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bsuction\\b|\\bRSB\\b",
+      "Suction biopsy"
+     ],
+     [
+      "\\bfull[-\\s]?thickness\\b",
+      "Full-thickness biopsy"
+     ]
+    ]
+   },
+   {
+    "field": "level",
+    "from": "text",
+    "strip": "\\b(?:recto-?sigmoid|anorectal|rectum|rectal|sigmoid(?:\\s+colon)?|colonic|colon|suction|full[-\\s]?thickness|RSB|biops(?:y|ies)|bx|x\\s*\\d+|for|hirschsprung\\w*(?:\\s+disease)?|ganglion\\s+cells?)\\b|\\?\\s*(?:hirschsprung\\w*(?:\\s+disease)?|HD)\\b|\\?",
+    "unless": "^[^0-9]*$"
+   }
+  ]
+ },
+ "specimenNoun": "biopsy",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "hirschsprung_biopsy",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  }
+ ],
+ "partDefaults": [],
+ "fields": [
+  {
+   "id": "site",
+   "label": "Site",
+   "type": "select",
+   "options": [
+    "Rectum",
+    "Sigmoid colon",
+    "Colon"
+   ],
+   "default": "Rectum",
+   "group": "Specimen"
+  },
+  {
+   "id": "level",
+   "label": "Level",
+   "type": "text",
+   "placeholder": "2 cm from AV",
+   "default": "",
+   "group": "Specimen",
+   "help": "As labelled on the request. A distance alone (\"2\", \"2cm\") prints as \"2 cm from AV\". Recommended levels: at least 2 cm above the dentate line (ERNICA 2020), or 2, 3 and 4 cm from the anal verge (Ambartsumyan 2020)."
+  },
+  {
+   "id": "procedure",
+   "label": "Biopsy",
+   "type": "select",
+   "options": [
+    "Suction biopsy",
+    "Full-thickness biopsy",
+    "Biopsy"
+   ],
+   "default": "Suction biopsy",
+   "group": "Specimen"
+  },
+  {
+   "id": "fragments",
+   "label": "Fragments",
+   "type": "number",
+   "placeholder": "2",
+   "default": "",
+   "min": 1,
+   "step": 1,
+   "group": "Specimen"
+  },
+  {
+   "id": "submucosa",
+   "label": "Submucosa",
+   "type": "select",
+   "options": [
+    "Sufficient",
+    "Scant",
+    "Absent"
+   ],
+   "default": "Sufficient",
+   "group": "Specimen",
+   "showIf": {
+    "any": [
+     {
+      "field": "procedure",
+      "not": "Full-thickness biopsy"
+     },
+     {
+      "field": "myenteric",
+      "is": "Not sampled"
+     }
+    ]
+   },
+   "help": "Sufficient: at least 3 mm across with a third or more submucosa (IWG 2009; ERNICA 2020), or submucosa as thick as the mucosa (AJCP 2023). With scant or no submucosa, ganglion cells cannot be judged absent.",
+   "reference": {
+    "title": "Biopsy adequacy",
+    "intro": "Each biopsy is judged on its own: enough submucosa, and colorectal rather than anal canal mucosa (IWG 2009; APSA HDIG 2019).",
+    "groups": [
+     {
+      "heading": "Sufficient submucosa",
+      "points": [
+       "At least 3 mm across, with a third or more submucosa (IWG 2009; ERNICA 2020)",
+       "Ambartsumyan 2020: 2-3 mm with 50% or more submucosa",
+       "AJCP 2023: submucosa as thick as the mucosa; under a third risks sampling error"
+      ],
+      "images": []
+     },
+     {
+      "heading": "Too distal",
+      "points": [
+       "Squamous or transitional mucosa places the biopsy in the anal canal",
+       "Ganglion cells there still exclude Hirschsprung disease; their absence does not diagnose it (IWG 2009)",
+       "The submucosal hypoganglionic zone reaches 10-25 mm above the dentate line, with age (IWG 2009)"
+      ],
+      "images": []
+     }
+    ],
+    "note": "Room for your own photographs: no openly licensed images of an adequate or a too-distal suction biopsy were found."
+   }
+  },
+  {
+   "id": "distal",
+   "label": "Anal canal mucosa",
+   "type": "select",
+   "options": [
+    "None",
+    "Transitional mucosa",
+    "Squamous mucosa",
+    "Squamous and transitional mucosa"
+   ],
+   "default": "None",
+   "group": "Specimen",
+   "help": "Squamous or transitional mucosa marks a biopsy from the anal canal. Ganglion cells found there still exclude Hirschsprung disease; their absence does not diagnose it (IWG 2009; Ambartsumyan 2020)."
+  },
+  {
+   "id": "sections",
+   "label": "H&E sections examined",
+   "type": "number",
+   "placeholder": "60",
+   "default": "",
+   "min": 1,
+   "step": 1,
+   "group": "Specimen",
+   "help": "The IWG 2009 asks for the number of sections evaluated; it suggests 50-75 H&E sections at first. No minimum has been validated."
+  },
+  {
+   "id": "ganglion",
+   "label": "Submucosal ganglion cells",
+   "type": "select",
+   "options": [
+    "Present",
+    "Not identified"
+   ],
+   "default": "Present",
+   "group": "Ganglion cells",
+   "help": "A single unequivocal submucosal ganglion cell excludes Hirschsprung disease when the submucosa is adequate (IWG 2009). Mimics: endothelial cells, plasma cells, histiocytes, glia and CMV-infected cells (AJCP 2023).",
+   "reference": {
+    "title": "Ganglion cells",
+    "intro": "Look next to the muscularis mucosae and next to the muscularis propria, where the yield is highest (AJCP 2023).",
+    "groups": [
+     {
+      "heading": "Ganglion cells",
+      "points": [
+       "Abundant amphophilic cytoplasm, eccentric round nucleus, conspicuous nucleolus (Ambartsumyan 2020)",
+       "Usually grouped, in contact with neuropil",
+       "Immature, in neonates: less cytoplasm, stippled chromatin, inconspicuous nucleolus"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hirschsprung_biopsy/ganglion_cells.jpg",
+        "caption": "Submucosal ganglion cells (arrows) in a rectal biopsy without Hirschsprung disease (H&E).",
+        "credit": "Beltman et al., Virchows Arch 2022, Fig 1a (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9343274/"
+       }
+      ]
+     },
+     {
+      "heading": "Mimics",
+      "points": [
+       "Endothelial cells: red cells in tiny lumina are a clue",
+       "Plasma cells, especially on frozen sections",
+       "Histiocytes, glia and CMV-infected cells",
+       "One candidate cell in many sections: share the case (AJCP 2023)"
+      ],
+      "images": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "myenteric",
+   "label": "Myenteric ganglion cells",
+   "type": "select",
+   "options": [
+    "Present",
+    "Not identified",
+    "Not sampled"
+   ],
+   "default": "Present",
+   "group": "Ganglion cells",
+   "showIf": {
+    "field": "procedure",
+    "is": "Full-thickness biopsy"
+   },
+   "help": "Many biopsies sent as full-thickness hold only mucosa and submucosa (AJCP 2023): choose Not sampled when the muscularis propria is missing."
+  },
+  {
+   "id": "immature",
+   "label": "Immature ganglion cells",
+   "type": "checkbox",
+   "default": false,
+   "group": "Ganglion cells",
+   "showIf": {
+    "any": [
+     {
+      "field": "ganglion",
+      "is": "Present"
+     },
+     {
+      "all": [
+       {
+        "field": "procedure",
+        "is": "Full-thickness biopsy"
+       },
+       {
+        "field": "myenteric",
+        "is": "Present"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "nerves",
+   "label": "Submucosal nerves",
+   "type": "select",
+   "options": [
+    "Not recorded",
+    "Not hypertrophic",
+    "Hypertrophic"
+   ],
+   "default": "Not recorded",
+   "group": "Nerve fibres",
+   "help": "Hypertrophic: at least two nerves of 40 µm or more in one high-power field (AJCP 2023; Monforte-Muñoz 1998). Less reliable after 6-12 months of age; may be absent in total colonic aganglionosis, long-segment disease and premature infants.",
+   "reference": {
+    "title": "Hypertrophic submucosal nerves",
+    "groups": [
+     {
+      "heading": "Hypertrophic",
+      "points": [
+       "At least two nerves of 40 µm or more in one high-power field (AJCP 2023)",
+       "Normal infant submucosal nerves measure 10-30 µm (Monforte 2025)",
+       "Ganglion cells with hypertrophic nerves: consider the transition zone of very-short-segment disease (Ambartsumyan 2020)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hirschsprung_biopsy/hypertrophic_nerves.jpg",
+        "caption": "Hypertrophic submucosal nerve fibres (arrows) and no ganglion cells: Hirschsprung disease (H&E).",
+        "credit": "Beltman et al., Virchows Arch 2022, Fig 1b (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9343274/"
+       }
+      ]
+     },
+     {
+      "heading": "May be absent",
+      "points": [
+       "Total colonic aganglionosis",
+       "Long-segment disease, neonates and premature infants (IWG 2009; AJCP 2023)",
+       "After 6-12 months, nerves over 40 µm can be normal (AJCP 2023; Kapur 2016)"
+      ],
+      "images": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "nerveDiameter",
+   "label": "Largest nerve (µm)",
+   "type": "number",
+   "placeholder": "60",
+   "default": "",
+   "min": 1,
+   "step": 1,
+   "group": "Nerve fibres",
+   "showIf": {
+    "field": "nerves",
+    "is": "Hypertrophic"
+   }
+  },
+  {
+   "id": "calretinin",
+   "label": "Calretinin",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "Positive fibres",
+    "No positive fibres"
+   ],
+   "optionLabels": {
+    "Positive fibres": "Positive nerve fibres",
+    "No positive fibres": "No positive nerve fibres"
+   },
+   "default": "Not performed",
+   "group": "Stains",
+   "help": "Count only fibrils in the lamina propria and muscularis mucosae, and ganglion cells: extrinsic submucosal nerves can stain in aganglionic bowel (AJCP 2023; Ambartsumyan 2020). Mast cells are a limited internal control.",
+   "reference": {
+    "title": "Calretinin",
+    "groups": [
+     {
+      "heading": "Normal pattern",
+      "points": [
+       "Granular fibrils in the lamina propria, muscularis mucosae and superficial submucosa (Kapur 2009)",
+       "Ganglion cells stain, cell bodies and processes"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hirschsprung_biopsy/calretinin_lamina_propria.jpg",
+        "caption": "Calretinin-positive nerve fibres in the lamina propria: normal pattern.",
+        "credit": "Hiradfar et al., Iran J Basic Med Sci 2012, Fig 1A (cropped)",
+        "license": "CC BY 3.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3586927/"
+       },
+       {
+        "src": "assets/reference/hirschsprung_biopsy/calretinin_normal.jpg",
+        "caption": "Calretinin in a rectal biopsy without Hirschsprung disease: positive fibres at the base of the mucosa and in the submucosa.",
+        "credit": "Beltman et al., Virchows Arch 2022, Fig 1e (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9343274/"
+       }
+      ]
+     },
+     {
+      "heading": "Aganglionic pattern",
+      "points": [
+       "No fibrils in the lamina propria or muscularis mucosae",
+       "Mast cells still stain: round or oval, fine uniform staining",
+       "Fibrils persist in the proximal 1-2 cm of aganglionic bowel, so their presence does not exclude very-short-segment disease (Kapur 2014)",
+       "Freeze-thaw can remove calretinin: not after AChE on the same tissue"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hirschsprung_biopsy/calretinin_absent.jpg",
+        "caption": "Calretinin in Hirschsprung disease: no immunoreactive fibres.",
+        "credit": "Beltman et al., Virchows Arch 2022, Fig 1f (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9343274/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "mastCells",
+   "label": "Mast cells stain (internal control)",
+   "type": "checkbox",
+   "default": false,
+   "group": "Stains",
+   "showIf": {
+    "field": "calretinin",
+    "is": "No positive fibres"
+   }
+  },
+  {
+   "id": "ache",
+   "label": "Acetylcholinesterase",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "No increase",
+    "Increased fibres"
+   ],
+   "optionLabels": {
+    "No increase": "No increase in positive fibres",
+    "Increased fibres": "Increased positive fibres"
+   },
+   "default": "Not performed",
+   "group": "Stains",
+   "help": "Frozen tissue only (10-15 µm sections; IWG 2009). Hirschsprung pattern: abundant coarse fibres in the muscularis mucosae and lamina propria. False negatives in neonates, total colonic aganglionosis and ultrashort disease.",
+   "reference": {
+    "title": "Acetylcholinesterase",
+    "groups": [
+     {
+      "heading": "Normal pattern",
+      "points": [
+       "Sparse, thin fibres, mostly in the submucosa and muscularis mucosae (IWG 2009)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hirschsprung_biopsy/ache_normal.jpg",
+        "caption": "Acetylcholinesterase without Hirschsprung disease: focal fibres confined to the submucosa and muscularis mucosae (frozen section).",
+        "credit": "Beltman et al., Virchows Arch 2022, Fig 1c (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9343274/"
+       }
+      ]
+     },
+     {
+      "heading": "Hirschsprung pattern",
+      "points": [
+       "Abundant coarse fibres in the muscularis mucosae and lamina propria (IWG 2009)",
+       "False negatives in the first weeks of life, in total colonic aganglionosis and in ultrashort disease"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hirschsprung_biopsy/ache_hirschsprung.jpg",
+        "caption": "Acetylcholinesterase in Hirschsprung disease: aberrant positive fibres (brown) in the lamina propria.",
+        "credit": "Marvin 101, Wikimedia Commons 2008 (resized)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Hirschsprung_acetylcholine.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "conclusion",
+   "label": "Diagnosis line",
+   "type": "select",
+   "options": [
+    "Auto",
+    "Ganglion cells present",
+    "No ganglion cells identified",
+    "Consistent with Hirschsprung disease",
+    "Inadequate for evaluation"
+   ],
+   "default": "Auto",
+   "group": "Diagnosis",
+   "help": "Auto: ganglion cells present; none identified, with the Hirschsprung statement when hypertrophic nerves, absent calretinin fibrils or increased acetylcholinesterase fibres are recorded (IWG 2009: findings \"consistent with\" Hirschsprung disease); or inadequate for evaluation when there is too little submucosa or the biopsy includes anal canal mucosa (IWG 2009 Box 1)."
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "",
+   "default": "",
+   "group": "Diagnosis"
+  }
+ ],
+ "snippets": [],
+ "example": {
+  "caseTitle": "Rectal suction biopsies at two levels",
+  "options": {
+   "includeHeader": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "site": "Rectum",
+     "level": "2 cm from AV",
+     "procedure": "Suction biopsy",
+     "fragments": "2",
+     "submucosa": "Sufficient",
+     "ganglion": "Present",
+     "nerves": "Not hypertrophic",
+     "calretinin": "Positive fibres"
+    }
+   },
+   {
+    "label": "B",
+    "values": {
+     "site": "Rectum",
+     "level": "3 cm from AV",
+     "procedure": "Suction biopsy",
+     "fragments": "2",
+     "submucosa": "Sufficient",
+     "ganglion": "Present",
+     "nerves": "Not hypertrophic",
+     "calretinin": "Positive fibres"
+    }
+   }
+  ]
+ }
+}
