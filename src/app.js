@@ -2151,12 +2151,22 @@ function initDrive() {
   nodes.suggest.addEventListener('click', () => suggest(state.activePart, false));
   nodes.settingsForm.addEventListener('submit', (e) => {
     if (e.submitter?.value !== 'save') return;
-    // A new client id invalidates the token issued by the old one, so the session has to go.
-    if (applySettingsForm().clientIdChanged) signOut();
+    // A new client id invalidates the token issued by the old one, so the session has to go; on the
+    // signed-in site that means the gate, as for Sign out.
+    if (applySettingsForm().clientIdChanged) {
+      if (gateEnabled(location.hostname)) return lockApp();
+      signOut();
+    }
     renderAccount(); renderSaveStatus();
     toast('Settings saved');
   });
-  nodes.signout.addEventListener('click', () => { signOut(); renderAccount(); nodes.dlgSettings.close(); toast('Signed out'); });
+  // On the signed-in site Sign out is Lock: the workspace goes behind the gate instead of staying on
+  // screen signed out, and the tab's draft is kept for this account only (security review
+  // 2026-09-30). Signing in again always leaves for Google and reloads, so the gate runs again.
+  nodes.signout.addEventListener('click', () => {
+    if (gateEnabled(location.hostname)) return lockApp();
+    signOut(); renderAccount(); nodes.dlgSettings.close(); toast('Signed out');
+  });
   window.addEventListener('beforeunload', (e) => { if (state.dirty && !state.leaving && state.caseState?.drive?.savedAt) { e.preventDefault(); e.returnValue = ''; } });
   document.addEventListener('signout:redirect', () => { state.leaving = true; cacheCase(state.caseState); });
   renderAccount();

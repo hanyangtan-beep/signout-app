@@ -65,6 +65,24 @@ test('on the signed-in site, an untagged draft left by the earlier build is not 
   assert.deepEqual(loadDraft('', { strict: true }), { caseState: draft, dropped: false });
 });
 
+test('a failed case write leaves no untagged draft and never passes a draft to another account', () => {
+  // Security re-check 2026-09-30: the tag is written before the case, so storage running out part
+  // way through cannot leave a case without a tag for the signed-in site to clear.
+  const ss = globalThis.window.sessionStorage;
+  const real = ss.setItem;
+  const failCase = (k, v) => { if (k === 'signout.case.v1') throw new Error('QuotaExceededError'); return real(k, v); };
+  leaveDraftAs(A);
+  ss.setItem = failCase;
+  try { assert.equal(saveCase({ ...draft, meta: { accession: 'S26-00002' } }), false); } finally { ss.setItem = real; }
+  assert.deepEqual(loadDraft(A, { strict: true }), { caseState: draft, dropped: false }, 'the earlier draft stays under its own tag');
+  leaveDraftAs(A);
+  setDraftOwner(B);
+  ss.setItem = failCase;
+  try { assert.equal(saveCase(draft), false); } finally { ss.setItem = real; }
+  assert.equal(store.has('signout.case.v1'), false, 'the earlier draft goes rather than change hands');
+  assert.deepEqual(loadDraft(B, { strict: true }), { caseState: null, dropped: false });
+});
+
 test('a later save retags the draft for whoever is signed in now', () => {
   leaveDraftAs(A);
   setDraftOwner(B);

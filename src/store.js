@@ -43,9 +43,19 @@ export function loadCase(account = '') {
 
 export function saveCase(caseState) {
   try {
-    window.sessionStorage.setItem(KEY, JSON.stringify(caseState));
-    if (owner) window.sessionStorage.setItem(OWNER_KEY, owner);
-    else window.sessionStorage.removeItem(OWNER_KEY);
+    const ss = window.sessionStorage;
+    // The tag goes first, so a case is never left without one (the signed-in site clears untagged
+    // drafts). If the larger case write then fails (storage full), the earlier draft stays only
+    // while the tag still names the account it was left by.
+    const before = ss.getItem(OWNER_KEY) || '';
+    if (owner) ss.setItem(OWNER_KEY, owner);
+    else ss.removeItem(OWNER_KEY);
+    try {
+      ss.setItem(KEY, JSON.stringify(caseState));
+    } catch {
+      if (before !== owner) ss.removeItem(KEY);
+      return false;
+    }
     return true;
   } catch {
     return false;
