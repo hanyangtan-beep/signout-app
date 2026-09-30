@@ -16,6 +16,7 @@
 // same machinery the unit tests drive directly.
 
 import { chromium } from 'playwright';
+import { emailDigest } from '../src/gate.js';
 import { createServer } from 'node:http';
 import { readFile, mkdir } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
@@ -635,6 +636,106 @@ await check('a draft left by another account is not reopened', async () => {
     }
   }
   return notes.join('; ');
+});
+
+// On the signed-in site Sign out is Lock, and the tab's draft follows its account (security review
+// 2026-09-30). 127.0.0.2 keeps the gate on; in these browser contexts only, src/gate.js is served
+// with a built-in list of two test addresses, so the shipped list is never touched or needed.
+await check('sign out on the signed-in site locks, and the draft follows its account', async () => {
+  const [A, B] = ['qa.member@example.org', 'qa.other@example.org'];
+  const source = await readFile(join(ROOT, 'src', 'gate.js'), 'utf8');
+  const start = source.indexOf('export const BUILT_IN_ALLOWED = Object.freeze([');
+  const end = source.indexOf(']);', start);
+  assert(start >= 0 && end > start, 'BUILT_IN_ALLOWED not found in src/gate.js');
+  const digests = await Promise.all([A, B].map((a) => emailDigest(a)));
+  const testGate = `${source.slice(0, start)}export const BUILT_IN_ALLOWED = Object.freeze([\n${digests.map((d) => `  '${d}',`).join('\n')}\n${source.slice(end)}`;
+  const NEW_CASE = 'New case: the draft left on this tab was not saved under this account';
+  const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'authorization, content-type' };
+  let who = A;
+  const open = async (plant) => {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 }, serviceWorkers: 'block' });
+    const tab = await ctx.newPage();
+    await tab.route((url) => url.pathname.endsWith('/src/gate.js'), (route) => route.fulfill({ status: 200, contentType: MIME['.js'], body: testGate }));
+    await tab.route((url) => url.protocol === 'https:', (route) => {
+      const req = route.request();
+      if (new URL(req.url()).hostname !== 'www.googleapis.com') return route.fulfill({ status: 404, body: '' });
+      if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
+      return req.url().startsWith('https://www.googleapis.com/drive/v3/about')
+        ? route.fulfill({ status: 200, headers: { ...CORS, 'content-type': 'application/json' }, body: JSON.stringify({ user: { emailAddress: who } }) })
+        : route.fulfill({ status: 403, headers: CORS, body: '{}' });
+    });
+    await tab.addInitScript((draft) => {
+      if (sessionStorage.getItem('qa.planted')) return; // once, not again on a reload
+      sessionStorage.setItem('qa.planted', '1');
+      sessionStorage.setItem('signout.token.v1', JSON.stringify({ access_token: 'qa', expires_at: Date.now() + 3600e3, email: null }));
+      if (draft) sessionStorage.setItem('signout.case.v1', draft);
+    }, plant || '');
+    await tab.goto(`http://127.0.0.2:${PORT}/index.html`, { waitUntil: 'load' });
+    return { ctx, tab };
+  };
+  const settle = async (tab) => {
+    await tab.waitForSelector('#part-panel', { state: 'visible', timeout: 15000 });
+    await tab.waitForLoadState('networkidle').catch(() => {});
+    await tab.waitForTimeout(800);
+  };
+  const read = (tab) => tab.evaluate(() => ({
+    accession: document.querySelector('#meta-accession').value,
+    toast: document.querySelector('#toast').textContent,
+    gate: document.querySelector('#gate').hidden ? '' : document.documentElement.dataset.gate,
+    cached: sessionStorage.getItem('signout.case.v1'),
+    tag: sessionStorage.getItem('signout.case.owner.v1'),
+    token: sessionStorage.getItem('signout.token.v1')
+  }));
+  const signOut = async (tab) => {
+    await tab.click('#btn-settings');
+    await tab.waitForSelector('#btn-signout', { state: 'visible' });
+    await Promise.all([tab.waitForEvent('load'), tab.click('#btn-signout')]);
+    await tab.waitForFunction(() => !document.querySelector('#gate').hidden, null, { timeout: 10000 });
+  };
+  const signIn = async (tab, account) => {
+    who = account;
+    await tab.evaluate(() => sessionStorage.setItem('signout.token.v1', JSON.stringify({ access_token: 'qa', expires_at: Date.now() + 3600e3, email: null })));
+    await tab.reload({ waitUntil: 'load' });
+    await settle(tab);
+  };
+  const { ctx, tab } = await open();
+  let legacy = '';
+  try {
+    await settle(tab);
+    assert((await read(tab)).gate === '', 'an allowed test account did not reach the workspace');
+    await tab.fill('#meta-accession', 'S2604343');
+    await tab.press('#meta-accession', 'Tab');
+    await signOut(tab);
+    let s = await read(tab);
+    assert(s.gate === 'signin', `Sign out left gate "${s.gate}"`);
+    assert(!(await tab.locator('#report-blocks').isVisible().catch(() => false)), 'the workspace stayed on screen after Sign out');
+    assert(s.token === null, 'the token survived Sign out');
+    assert(JSON.parse(s.cached || '{}').meta?.accession === 'S2604343' && s.tag === A, 'the draft was not kept for its account');
+    await signIn(tab, A);
+    s = await read(tab);
+    assert(s.accession === 'S2604343', `the same account did not get its draft back ("${s.accession}")`);
+    legacy = s.cached;
+    await signOut(tab);
+    await signIn(tab, B);
+    s = await read(tab);
+    assert(s.accession !== 'S2604343', 'another account was shown the draft');
+    assert(s.toast === NEW_CASE, `toast: ${s.toast}`);
+  } finally {
+    await ctx.close();
+  }
+  // A draft with no tag, as the build before tags left it, is not opened for a signed-in account.
+  const old = JSON.parse(legacy);
+  old.meta = { ...old.meta, accession: 'S2604444' };
+  const second = await open(JSON.stringify(old));
+  try {
+    await settle(second.tab);
+    const s = await read(second.tab);
+    assert(s.accession !== 'S2604444', 'an untagged draft was opened on the signed-in site');
+    assert(s.toast === NEW_CASE, `toast: ${s.toast}`);
+  } finally {
+    await second.ctx.close();
+  }
+  return 'locked on Sign out; same account restored; other account and untagged draft cleared';
 });
 
 // ---- compact layout (phones) -----------------------------------------------------
