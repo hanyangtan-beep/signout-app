@@ -87,6 +87,19 @@ Change: multi-part presets for the Margin scenario — "Oral tongue (5)", "Oral 
 
 Accept: tongue 5-margin fixture reproduces §6 lines; nasal ala fixture reproduces §5 lines (with `Skin, nasal ala, margin ("Rm A")` naming); existing frozen fixtures updated once with a stated reason.
 
+## (f) Several lymph nodes in one part (Lymph node scenario) — Size S — pulled by the user 2026-09-30
+
+A part is often labelled "lymph node" when it holds several. The node count (`lnExamined`, "Lymph nodes examined", default 1) becomes the first field of the scenario and drives every block once it is two or more. One node prints exactly as before, so saved cases and fixtures do not move.
+
+- Gross: a part received as lymph node reads `are three lymph nodes measuring … in aggregate` (the node count wins over "Number of pieces" once it is two or more; a gross saved with pieces only keeps its piece count). Any other tissue keeps its receipt sentence and gains `Three lymph nodes are identified within.`, the sentinel scenario's house sentence.
+- Intraoperative: the negative line is unchanged (the released multi-node lines carry no count); a positive reads `Metastatic carcinoma present in 1 of 3 lymph nodes (macrometastasis, 4 mm).`
+- Paraffin: plural, as the sentinel and lung scenarios: `The paraffin sections confirm the frozen section diagnosis. They show three lymph nodes with preserved architecture and reactive follicles. There is no evidence of malignancy.`; positive `They show three lymph nodes, one of which is infiltrated by metastatic carcinoma.` (two of two: `both of which are`; all of three or more: `all of which are`).
+- Diagnosis: the (involved/examined) count as before; the head's `LYMPH NODE` turns `LYMPH NODES` when the typed name says lymph node (`LYMPH NODES, right obturator, frozen section - NO EVIDENCE OF MALIGNANCY (0/3)`). A typed name without the words (`RIGHT SLN1`, `NODE`) is left as typed. The specimen line keeps the label as received.
+- Pasted LIS gross: the count of lymph nodes fills `lnExamined`, as it fills the sentinel count.
+- Checks: involved above examined (the count is capped in the report); a lymph node gross whose piece count disagrees with the node count.
+
+Measured in the five-year frozen file (aggregate only): 23 lymph node parts hold two or more nodes; 14 of their heads keep the label's singular and 9 read LYMPH NODES. The plural head follows the sentinel scenario's house form so that one template reads one way.
+
 ## Order and shipping
 
 Build order: (a) SLN, (b) duct margins, (e) presets and line form as one unstaged batch; (c) lung wedge ships inside the Lung pair and (d) CNS inside the CNS pair (see "Staged frozen specimens" below).

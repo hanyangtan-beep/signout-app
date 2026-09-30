@@ -97,7 +97,15 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. Suggestions box and in-app roadmap finished on 2026-09-29; pull the next card from Next.
+### Frozen section: several lymph nodes in one part — pulled by the user 2026-09-30   Size: S
+Measure:    not a case-mix card. Five-year frozen file: 23 lymph node parts hold two or more nodes; their diagnosis heads split 14 keeping the label's singular LYMPH NODE to 9 reading LYMPH NODES, and the paraffin sentence is plural ("sections show … reactive lymph nodes"). The sentinel scenario's house form is already plural.
+Why:        the Lymph node scenario reads as one node. Its count reaches only the (0/1) at the end of the diagnosis line, so a part labelled "lymph node" that holds three still says "a lymph node" in the microscopy and "LYMPH NODE" in the head.
+Change:     "Lymph nodes examined" moves to the top of the scenario's fields and drives the part. Two or more make the gross plural (a lymph node part reads "are three lymph nodes"; other tissue gains "Three lymph nodes are identified within."), the paraffin sentences plural ("They show three lymph nodes with preserved architecture and reactive follicles" / "…, one of which is infiltrated by metastatic carcinoma"), the intraoperative positive line "in 1 of 3 lymph nodes", and the head LYMPH NODES when the typed name says lymph node. A pasted LIS gross fills the count. Checks: involved above examined; a lymph node gross whose piece count disagrees with the node count.
+Untouched:  one node prints exactly as before; the sentinel, margin and every other scenario; every fixture.
+Accept:     tests: one node unchanged; three nodes negative and one of three positive across gross, intraoperative, microscopy and diagnosis; two of two reads "both of which"; a typed head without "lymph node" is left as typed; sentence-case register; a pasted gross sets the count; both checks fire.
+Verify:     tests + browser QA
+Ship:       alone (pulled by the user)
+Spec:       `docs/specs/frozen-section-scenarios.md` (f)
 
 ## Next
 
