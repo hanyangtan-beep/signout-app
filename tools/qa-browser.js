@@ -279,9 +279,15 @@ await check('settings dialog opens and holds the Drive fields', async () => {
   for (const id of ['#cfg-clientId', '#cfg-folderId', '#cfg-sheetName', '#cfg-scopeMode']) {
     assert((await page.locator(id).count()) === 1, `missing ${id}`);
   }
+  // The published build carries a built-in allow-list (2026-09-30), so the Settings list is fixed.
+  const allow = page.locator('#cfg-allowedEmails');
+  assert(await allow.isDisabled(), 'the allowed-accounts field is editable despite the built-in list');
+  const hint = await allow.getAttribute('placeholder');
+  assert(/^Fixed in this build: 4 Google accounts$/.test(hint || ''), `allow-list hint wrong: ${hint}`);
+  assert((await allow.inputValue()) === '', 'the built-in list leaked into the Settings field');
   await page.keyboard.press('Escape');
   await page.waitForTimeout(200);
-  return 'four settings fields present';
+  return 'four settings fields present; allow-list fixed (4 accounts)';
 });
 
 await check('theme toggle flips the document theme', async () => {
@@ -443,7 +449,42 @@ await check('the sign-in gate closes on a non-local host', async () => {
     // before any case is built, so this is absence, not CSS hiding.
     const html = await visitor.content();
     assert(!/Sections show/.test(html), 'report prose reached the DOM before sign-in');
-    return 'gate shown, workspace absent';
+    // A signed-in stranger stays out too. 127.0.0.2 is a secure context to Chrome (loopback, so Web
+    // Crypto works) but is not one of the gate's local hosts. The token is planted before the page
+    // loads and Google's lookups are answered here: Drive names a stranger, then fails outright.
+    const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'authorization, content-type' };
+    const seen = [];
+    for (const [who, about, want] of [['stranger@example.org', { user: { emailAddress: 'stranger@example.org' } }, 'refused'], ['', null, 'unconfirmed']]) {
+      const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, serviceWorkers: 'block' });
+      try {
+        const stranger = await ctx.newPage();
+        await stranger.addInitScript(() => {
+          sessionStorage.setItem('signout.token.v1', JSON.stringify({ access_token: 'qa', expires_at: Date.now() + 3600e3, email: null }));
+        });
+        await stranger.route((url) => url.protocol === 'https:', (route) => {
+          const req = route.request();
+          if (new URL(req.url()).hostname !== 'www.googleapis.com') return route.fulfill({ status: 404, body: '' });
+          if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
+          return about && req.url().startsWith('https://www.googleapis.com/drive/v3/about')
+            ? route.fulfill({ status: 200, headers: { ...CORS, 'content-type': 'application/json' }, body: JSON.stringify(about) })
+            : route.fulfill({ status: 403, headers: CORS, body: '{}' });
+        });
+        await stranger.goto(`http://127.0.0.2:${PORT + 1}/index.html`, { waitUntil: 'load' });
+        await stranger.waitForFunction(() => !document.querySelector('#gate').hidden, null, { timeout: 10000 });
+        const mode = await stranger.evaluate(() => document.documentElement.dataset.gate);
+        assert(mode === want, `gate mode ${mode}, expected ${want}`);
+        assert(!(await stranger.locator('#report-blocks').isVisible().catch(() => false)), `workspace rendered (${want})`);
+        assert(await stranger.locator('#gate-signout').isVisible(), `no way to sign out from the gate (${want})`);
+        if (who) {
+          const note = await stranger.locator('#gate-note').textContent();
+          assert(note === `${who} is not on the allowed list for this app. Sign in with a different Google account.`, `refused note: ${note}`);
+        }
+        seen.push(want);
+      } finally {
+        await ctx.close();
+      }
+    }
+    return `gate shown, workspace absent; signed-in stranger ${seen.join(', lookup failed ')}`;
   } finally {
     await visitor.close();
     gated.close();

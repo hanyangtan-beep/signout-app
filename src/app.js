@@ -9,7 +9,7 @@ import {
 import { loadCase, saveCase as cacheCase, clearCase, copyText } from './store.js';
 import { loadConfig, saveConfig, accountConfig, rememberForAccount } from './config.js';
 import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js';
-import { gateEnabled, gateState, parseAllowList, formatAllowList } from './gate.js';
+import { gateEnabled, gateState, parseAllowList, formatAllowList, BUILT_IN_ALLOWED, emailDigest } from './gate.js';
 import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js';
 import { normaliseAccession, phiWarnings } from './docformat.js';
 import { buildPayload, payloadKeys, payloadLabel, parseHarvest, nextCaptureTarget } from './lisbridge.js';
@@ -1971,20 +1971,24 @@ function renderAccount() {
 }
 
 /**
- * Show the gate instead of the workspace. `mode` is 'signin' (no Google account yet) or
- * 'refused' (signed in, but not on the allow-list).
+ * Show the gate instead of the workspace. `mode` is 'signin' (no Google account yet), 'refused'
+ * (signed in, but not on the allow-list) or 'unconfirmed' (a built-in list is set and the signed-in
+ * address could not be looked up).
  */
 function showGate(mode) {
   const gate = $('#gate');
   const who = currentUser();
+  const signedIn = mode === 'refused' || mode === 'unconfirmed';
   document.documentElement.dataset.gate = mode;
   gate.hidden = false;
   $('#gate-title').textContent = mode === 'refused' ? 'No access' : 'Sign-out';
   $('#gate-note').textContent = mode === 'refused'
-    ? `${who || 'That account'} is not on the allowed list for this app. Sign in with a different Google account, or add the address in Settings.`
-    : 'Sign in with Google to open the reporting workspace.';
-  $('#gate-signin').hidden = mode === 'refused';
-  $('#gate-signout').hidden = mode !== 'refused';
+    ? `${who || 'That account'} is not on the allowed list for this app. Sign in with a different Google account${BUILT_IN_ALLOWED.length ? '' : ', or add the address in Settings'}.`
+    : mode === 'unconfirmed'
+      ? 'Signed in, but the account could not be confirmed. Check the connection and reload, or sign out and sign in again.'
+      : 'Sign in with Google to open the reporting workspace.';
+  $('#gate-signin').hidden = signedIn;
+  $('#gate-signout').hidden = !signedIn;
   $('#gate-signin').addEventListener('click', async () => {
     if (!state.config.clientId) { openSettings(); return toast('Paste the Google OAuth client id first'); }
     try { await ensureSignedIn(true, 'signin'); } catch (err) { toast(err.message); }
@@ -2090,7 +2094,8 @@ function applySettingsForm() {
   setDensity($('#cfg-density').value);
   const patch = {};
   for (const k of ['clientId', 'folderId', 'sheetName', 'scopeMode']) patch[k] = $(`#cfg-${k}`).value.trim();
-  patch.allowedEmails = parseAllowList($('#cfg-allowedEmails').value);
+  // A built-in list is fixed in the build, so the Settings field is read-only and saves nothing.
+  if (!BUILT_IN_ALLOWED.length) patch.allowedEmails = parseAllowList($('#cfg-allowedEmails').value);
   // A different sheet name, client id or scope invalidates the cached Sheet; a different folder id
   // invalidates the folder this account had resolved as well, so it is probed again on next save.
   const resetSheet = patch.sheetName !== state.config.sheetName || patch.clientId !== state.config.clientId || patch.scopeMode !== state.config.scopeMode;
@@ -2106,7 +2111,10 @@ function applySettingsForm() {
 
 function openSettings() {
   for (const k of ['clientId', 'folderId', 'sheetName', 'scopeMode']) $(`#cfg-${k}`).value = state.config[k] || '';
-  $('#cfg-allowedEmails').value = formatAllowList(state.config.allowedEmails);
+  const allow = $('#cfg-allowedEmails');
+  allow.disabled = BUILT_IN_ALLOWED.length > 0;
+  allow.value = allow.disabled ? '' : formatAllowList(state.config.allowedEmails);
+  if (allow.disabled) allow.placeholder = `Fixed in this build: ${BUILT_IN_ALLOWED.length} Google account${BUILT_IN_ALLOWED.length === 1 ? '' : 's'}`;
   $('#cfg-density').value = document.documentElement.dataset.density || 'comfortable';
   nodes.signout.hidden = !isSignedIn();
   nodes.dlgSettings.showModal();
@@ -2191,8 +2199,10 @@ async function boot() {
       await getToken(state.config, { interactive: false }).then((t) => fetchUserInfo(t)).catch(() => null);
     }
     useAccount(); // a returning session picks up its own folder and sheet before anything is loaded
+    const email = currentUser();
     const decision = gateState({
-      enabled: true, signedIn: isSignedIn(), email: currentUser(), allowed: state.config.allowedEmails
+      enabled: true, signedIn: isSignedIn(), email, allowed: state.config.allowedEmails,
+      builtIn: BUILT_IN_ALLOWED, digest: BUILT_IN_ALLOWED.length && email ? await emailDigest(email) : ''
     });
     if (decision !== 'open') {
       if (back?.error) toast(back.error === 'access_denied' ? 'Google sign-in was cancelled' : `Google sign-in failed: ${back.error}`);

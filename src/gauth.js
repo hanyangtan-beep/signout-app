@@ -102,12 +102,22 @@ export async function getToken(config, { interactive = true, action } = {}) {
   return redirectToGoogle(config, action || activeAction);
 }
 
+/**
+ * Find the signed-in address. The token carries the Drive and Sheets scopes only, so userinfo may
+ * return no address; Drive's about.get names the account under drive.file
+ * (developers.google.com/workspace/drive/api/reference/rest/v3/about/get), so it is asked first
+ * and userinfo is the fallback. The built-in allow-list in src/gate.js depends on this address.
+ */
 export async function fetchUserInfo(accessToken) {
-  const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: `Bearer ${accessToken}` } });
-  if (r.ok && token) {
-    const j = await r.json();
-    writeToken({ ...token, email: j.email || null });
-  }
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  const read = async (url, pick) => {
+    const r = await fetch(url, { headers }).catch(() => null);
+    if (!r?.ok) return null;
+    return pick(await r.json().catch(() => ({}))) || null;
+  };
+  const email = await read('https://www.googleapis.com/drive/v3/about?fields=user(emailAddress)', (j) => j?.user?.emailAddress)
+    || await read('https://www.googleapis.com/oauth2/v3/userinfo', (j) => j?.email);
+  if (token && email) writeToken({ ...token, email });
   return currentUser();
 }
 

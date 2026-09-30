@@ -38,11 +38,14 @@ The app signs into Google in your browser and writes straight to your Drive. Not
 
 Each signed-in account works in its own Drive: the folder id in Settings is probed on first save, and an account that cannot write to it gets a folder of its own called "Pathology reports" with its own `Sign-out cases` Sheet inside it. Nobody sees anybody else's cases, and nothing needs to be shared.
 
-What has to change is the Google project, because the app is in *Testing* and only listed test users may sign in.
+Two things have to change: the Google project, because the app is in *Testing* and only listed test users may sign in, and the app's built-in allow-list, because the published build admits only the accounts on it (from 2026-09-30).
 
 1. [console.cloud.google.com](https://console.cloud.google.com/) → project `signout-app` → **Google Auth Platform → Audience**.
 2. Under **Test users**, click **Add users**, paste one Gmail address per line, Save. The address must be the exact account the colleague signs in with.
-3. Tell them the address `https://han-signout.pplx.app`, and that Google will show an "unverified app" warning on first sign-in: **Advanced → Go to Sign-out (unsafe)**. That wording is Google's, not a fault in the app.
+3. In the repo, run `node tools/allow-hash.mjs <address>` and paste the line it prints into `BUILT_IN_ALLOWED` in `src/gate.js`, then run the release gate and publish. The list holds salted SHA-256 digests, never the address, because the file is served to anyone: a reader cannot recover an address from it, though someone who already guesses one can check the guess. Case, dots and "+tags" in a Gmail address do not matter. Settings shows the list as fixed, and a signed-in account that is not on it sees "No access".
+4. Tell them the address `https://han-signout.pplx.app`, and that Google will show an "unverified app" warning on first sign-in: **Advanced → Go to Sign-out (unsafe)**. That wording is Google's, not a fault in the app.
+
+The gate reads the signed-in address from Drive (`about.get`, allowed under `drive.file`), so no extra permission is asked for. It runs in the browser, so it keeps strangers out of the workspace but is not a security boundary for the files themselves; the app's Visibility setting in Perplexity is the control the host enforces.
 
 Limits worth knowing before you add anybody:
 
