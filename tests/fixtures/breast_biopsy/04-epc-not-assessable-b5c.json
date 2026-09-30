@@ -1,0 +1,22 @@
+{
+  "templateId": "breast_biopsy",
+  "description": "New (Phase 50): encapsulated papillary carcinoma in stroma-free fragments, in situ versus invasive not assessable.",
+  "values": {
+    "laterality": "Left",
+    "specimenName": "2 o'clock",
+    "category": "Papillary",
+    "papLesion": "Encapsulated papillary carcinoma",
+    "papInvasion": "Not assessable",
+    "papMecEdge": "Edge not sampled",
+    "papEr": "Diffuse, strong"
+  },
+  "report": "Left breast, 2 o'clock, core biopsy\n\nSections show three cores composed entirely of fragments of a papillary carcinoma, with delicate fibrovascular cores lined by a monotonous population of atypical epithelial cells with small, uniform nuclei. The tumour cells are diffusely and strongly positive for ER. The features are in keeping with encapsulated papillary carcinoma. The distinction between in situ and invasive carcinoma cannot be made on this material, as the fragments include no surrounding stroma.\n\nBREAST, left 2 o'clock, core biopsy - ENCAPSULATED PAPILLARY CARCINOMA, IN SITU VERSUS INVASIVE NOT ASSESSABLE (B5c)",
+  "checks": [
+    {
+      "level": "info",
+      "field": "papInvasion",
+      "message": "B5c is for fragments of carcinoma with no surrounding stroma, and malignant papillary lesions are not routinely B5c (RCPath G150).",
+      "part": "A"
+    }
+  ]
+}

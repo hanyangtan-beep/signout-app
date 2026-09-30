@@ -1,0 +1,16 @@
+{
+  "templateId": "breast_biopsy",
+  "description": "New (Phase 50): encapsulated papillary carcinoma, no myoepithelial cells in or around it, without invasion.",
+  "values": {
+    "laterality": "Left",
+    "specimenName": "2 o'clock",
+    "category": "Papillary",
+    "papLesion": "Encapsulated papillary carcinoma",
+    "papMecCores": "Absent",
+    "papMecEdge": "Absent",
+    "papCk56": "Negative",
+    "papEr": "Diffuse, strong"
+  },
+  "report": "Left breast, 2 o'clock, core biopsy\n\nSections show three cores of breast tissue containing a papillary carcinoma within a cystic space surrounded by a fibrous capsule. The delicate fibrovascular cores are lined by a monotonous population of atypical epithelial cells with small, uniform nuclei. Immunostaining for p63 shows no myoepithelial cells along the fibrovascular cores or at the periphery of the lesion. The tumour cells show loss of CK5/6 and are diffusely and strongly positive for ER. The features are those of encapsulated papillary carcinoma. There is no evidence of invasive carcinoma in the material examined.\n\nBREAST, left 2 o'clock, core biopsy - ENCAPSULATED PAPILLARY CARCINOMA without invasion (B5a)",
+  "checks": []
+}

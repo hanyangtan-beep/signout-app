@@ -1,3 +1,7 @@
+// STALE - do not run. schemas/breast_biopsy.json has been edited directly since the specimen intake work
+// (b3b6f7c) and the papillary lesions (Phase 50); running this script would overwrite those changes. Edit the
+// JSON itself (load, change, write with indent 1 and ensure_ascii off, so the round trip is byte-identical).
+//
 // Writes schemas/breast_biopsy.json. The biomarker fields come from generators/breast_biomarkers.js so
 // the option strings stay byte-identical to the source template. Run: node scripts/build-breast-schema.mjs
 import { writeFile } from 'node:fs/promises';

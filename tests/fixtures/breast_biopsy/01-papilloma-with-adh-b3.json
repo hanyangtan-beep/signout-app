@@ -1,0 +1,23 @@
+{
+  "templateId": "breast_biopsy",
+  "description": "New (Phase 50): papilloma with ADH, p63 kept along the cores but lost in the atypical area, CK5/6 loss and diffuse ER.",
+  "values": {
+    "laterality": "Left",
+    "specimenName": "2 o'clock",
+    "category": "Papillary",
+    "papLesion": "Papilloma with atypical ductal hyperplasia",
+    "papMecCores": "Absent in the atypical areas",
+    "papMecEdge": "Present",
+    "papCk56": "Negative",
+    "papEr": "Diffuse, strong"
+  },
+  "report": "Left breast, 2 o'clock, core biopsy\n\nSections show three cores of breast tissue containing an intraductal papilloma with fibrovascular cores lined by epithelial and myoepithelial cells. Part of the papilloma is involved by a monotonous epithelial proliferation forming rigid cribriform spaces, lined by cells with evenly spaced rounded nuclei. The atypical proliferation is limited in extent and falls short of ductal carcinoma in situ. Immunostaining for p63 demonstrates myoepithelial cells along the fibrovascular cores and at the periphery of the lesion but none within the atypical areas. The atypical cells show loss of CK5/6 and are diffusely and strongly positive for ER. The features are those of an intraductal papilloma with atypical ductal hyperplasia. There is no evidence of invasive malignancy. Multidisciplinary discussion is recommended.\n\nBREAST, left 2 o'clock, core biopsy - INTRADUCTAL PAPILLOMA with ATYPICAL DUCTAL HYPERPLASIA (B3)",
+  "checks": [
+    {
+      "level": "info",
+      "field": "papLesion",
+      "message": "ADH and DCIS within a papilloma are separated by extent: DCIS when the atypical proliferation is larger than 3 mm (RCPath G150), or at any size when of intermediate or high nuclear grade (Kulka 2022).",
+      "part": "A"
+    }
+  ]
+}

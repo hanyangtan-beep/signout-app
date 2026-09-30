@@ -7,6 +7,9 @@
 // The biomarker block is a verbatim port of the Breast biomarkers template (see breast_biomarkers.js).
 // British spelling is written directly (schema style.british is off). Wording is protected by
 // tests/breast.test.js — change it only deliberately.
+// The "Papillary lesion" category (Phase 50) takes its B code from the lesion and, for encapsulated and
+// solid papillary carcinoma, from the invasion field; its wording is protected by tests/breast_papillary.test.js
+// and the golden fixtures in tests/fixtures/breast_biopsy/. Grounding: docs/reference/breast-papillary-lesions.md.
 
 import { biomarkerReport, hasBiomarkerData } from './breast_biomarkers.js';
 
@@ -47,11 +50,13 @@ export function specimenName(part) {
   return `${cap([side, 'breast'].filter(Boolean).join(' '))}${site ? `, ${site}` : ''}, core biopsy`;
 }
 
-/** B code for a part: manual override, else derived from the category. Lymph node cores carry none. */
+/** B code for a part: manual override, else derived from the category (for a papillary lesion, from the
+ * lesion and its invasion). Lymph node cores carry none. */
 export function bCode(part) {
   const v = part.values;
   if (isLN(part)) return '';
   if (v.bOverride && v.bOverride !== 'Auto') return v.bOverride;
+  if (v.category === 'Papillary') return papillaryCode(v);
   return B_CODES[v.category] || '';
 }
 
@@ -97,7 +102,9 @@ const B3_TEXT = {
 const B3_DX = {
   'Atypical ductal hyperplasia': 'ATYPICAL DUCTAL HYPERPLASIA', 'Flat epithelial atypia': 'FLAT EPITHELIAL ATYPIA',
   'Lobular neoplasia': 'LOBULAR NEOPLASIA (ATYPICAL LOBULAR HYPERPLASIA / LOBULAR CARCINOMA IN SITU)',
-  'Intraduct papilloma': 'INTRADUCT PAPILLOMA', 'Radial scar / complex sclerosing lesion': 'RADIAL SCAR / COMPLEX SCLEROSING LESION',
+  // The option value stays "Intraduct papilloma" so saved drafts still open; the printed line follows the
+  // released reports, which read INTRADUCTAL (the five-year biopsy file and the LIS export hold no INTRADUCT).
+  'Intraduct papilloma': 'INTRADUCTAL PAPILLOMA', 'Radial scar / complex sclerosing lesion': 'RADIAL SCAR / COMPLEX SCLEROSING LESION',
   'Cellular fibroepithelial lesion': 'CELLULAR FIBROEPITHELIAL LESION, PHYLLODES TUMOUR NOT EXCLUDED', 'Mucocoele-like lesion': 'MUCOCOELE-LIKE LESION'
 };
 const B3_ATYPIA_LESIONS = ['Intraduct papilloma', 'Radial scar / complex sclerosing lesion', 'Mucocoele-like lesion'];
@@ -206,6 +213,290 @@ function b5cNarrative(part) {
   return `Sections show ${coresPhrase(part)} of breast tissue containing malignant epithelial cells with enlarged, pleomorphic, hyperchromatic nuclei. The distinction between in situ and invasive carcinoma cannot be made on this material owing to ${reason}.`;
 }
 
+// ---------- papillary lesions (Phase 50) ----------
+// B codes (RCPath G150, 2026: s3.5, s3.6.5, s3.8 and Appendix F): a papilloma with or without atypia is B3,
+// B2 only when small and seen whole within the width of the core; ADH and DCIS within a papilloma are split
+// by extent (3 mm); papilloma with DCIS, papillary DCIS, and encapsulated and solid papillary carcinoma are
+// B5a; B5b needs overt invasion; B5c only for fragments of carcinoma with no surrounding stroma. Invasion
+// needs unequivocal stromal invasion - absent myoepithelial cells alone are not invasion (Rakha, Histopathology
+// 2026, his.70072; WHO 6th ed.). None of these rules is printed: the report states the findings.
+
+export const PAP = {
+  IP: 'Intraductal papilloma', SUG: 'Papillary lesion, suggestive of papilloma', ADH: 'Papilloma with atypical ductal hyperplasia',
+  DCIS_IN: 'Papilloma with ductal carcinoma in situ', PDCIS: 'Papillary ductal carcinoma in situ',
+  EPC: 'Encapsulated papillary carcinoma', SPC: 'Solid papillary carcinoma', IPC: 'Invasive papillary carcinoma'
+};
+const papLesion = (v) => v.papLesion || PAP.IP;
+const isEpcSpc = (lesion) => lesion === PAP.EPC || lesion === PAP.SPC;
+/** The invasion pick of an encapsulated or solid papillary carcinoma; '' for the other lesions. */
+const papInvasion = (v) => (isEpcSpc(papLesion(v)) ? v.papInvasion || 'Not identified' : '');
+
+/** True when the papillary lesion carries an invasive component (the grading fields show). */
+export function papInvasive(v) {
+  const lesion = papLesion(v);
+  return lesion === PAP.IPC || (isEpcSpc(lesion) && papInvasion(v) === 'Present');
+}
+
+/** The B code a papillary lesion gives before any override. */
+export function papillaryCode(v) {
+  const lesion = papLesion(v);
+  if (lesion === PAP.IP) return v.papWithinCore ? 'B2' : 'B3';
+  if (lesion === PAP.SUG || lesion === PAP.ADH) return 'B3';
+  if (lesion === PAP.DCIS_IN || lesion === PAP.PDCIS) return 'B5a';
+  if (isEpcSpc(lesion)) {
+    const inv = papInvasion(v);
+    return inv === 'Present' ? 'B5b' : inv === 'Not assessable' ? 'B5c' : 'B5a';
+  }
+  return lesion === PAP.IPC ? 'B5b' : 'B3';
+}
+
+/** The B3 recommendation prints for the B3 papillary lesions; it mirrors the b3Advice showIf. */
+const papAdvises = (v) => [PAP.SUG, PAP.ADH].includes(papLesion(v)) || (papLesion(v) === PAP.IP && !v.papWithinCore);
+
+const listJoin = (xs, conj = 'and') => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} ${conj} ${xs[xs.length - 1]}`);
+const papGrade = (v) => low(v.papGrade || 'Low');
+// Cells lining the cores, by nuclear grade: lining cells (papillary DCIS, EPC, DCIS in a papilloma) and
+// the tumour cells of a solid papillary carcinoma.
+const LINING = {
+  low: 'a monotonous population of atypical epithelial cells with small, uniform nuclei',
+  intermediate: 'atypical epithelial cells with moderately enlarged, mildly pleomorphic nuclei',
+  high: 'atypical epithelial cells with large, pleomorphic nuclei'
+};
+const SOLID = {
+  low: 'monotonous tumour cells with small, uniform nuclei',
+  intermediate: 'tumour cells with moderately enlarged, mildly pleomorphic nuclei',
+  high: 'tumour cells with large, pleomorphic nuclei'
+};
+
+/** Where the edge of the lesion lies, for the p63 sentence. */
+function papEdgeWords(lesion) {
+  if (lesion === PAP.PDCIS) return 'around the involved ducts';
+  if (lesion === PAP.SPC) return 'around the tumour nodules';
+  return 'at the periphery of the lesion';
+}
+
+/** One p63 sentence from the cores and edge picks (house: "Immunostaining for p63 ..."); '' if unstained. */
+function papP63Sentence(v, lesion, b5c) {
+  const cores = v.papMecCores || 'Not stained';
+  const edge = v.papMecEdge || 'Not stained';
+  const where = papEdgeWords(lesion);
+  const pos = [];
+  const neg = [];
+  if (cores === 'Present') pos.push('along the fibrovascular cores');
+  if (cores === 'Absent in the atypical areas') { pos.push('along the fibrovascular cores'); neg.push('within the atypical areas'); }
+  if (cores === 'Absent') neg.push('along the fibrovascular cores');
+  if (edge === 'Present') pos.push(where);
+  if (edge === 'Focal') pos.push(`focally ${where}`);
+  if (edge === 'Absent') neg.push(where);
+  let text = '';
+  if (pos.length) text = `Immunostaining for p63 demonstrates myoepithelial cells ${listJoin(pos)}${neg.length ? ` but none ${listJoin(neg, 'or')}` : ''}.`;
+  else if (neg.length) text = `Immunostaining for p63 shows no myoepithelial cells ${listJoin(neg, 'or')}.`;
+  // A stroma-free B5c core already says why the edge cannot be judged.
+  if (edge === 'Edge not sampled' && !b5c) text = [text, 'The edge of the lesion is not represented in the cores.'].filter(Boolean).join(' ');
+  return text;
+}
+
+/** CK5/6 and ER on the lesional cells, in one sentence (house: "show loss of CK5/6", "diffusely positive for ER"). */
+function papCkErSentence(v, lesion) {
+  const ck = { Mosaic: 'show a mosaic pattern of CK5/6 staining', Negative: 'show loss of CK5/6' }[v.papCk56];
+  const er = { Heterogeneous: 'are heterogeneously positive for ER', 'Diffuse, strong': 'are diffusely and strongly positive for ER' }[v.papEr];
+  const preds = [ck, er].filter(Boolean);
+  if (!preds.length) return '';
+  const subject = [PAP.IP, PAP.SUG].includes(lesion) ? 'The epithelial cells' : [PAP.ADH, PAP.DCIS_IN].includes(lesion) ? 'The atypical cells' : 'The tumour cells';
+  return `${subject} ${preds.join(' and ')}.`;
+}
+
+/** Neuroendocrine markers, solid papillary carcinoma only. */
+function papNeSentence(v, afterCkEr) {
+  if (!['Positive', 'Negative'].includes(v.papNe)) return '';
+  const picked = (Array.isArray(v.papNeMarkers) ? v.papNeMarkers : []).map((m) => (m === 'INSM1' ? m : low(m)));
+  const pos = v.papNe === 'Positive';
+  const list = picked.length ? listJoin(picked, pos ? 'and' : 'or') : 'neuroendocrine markers';
+  if (afterCkEr) return pos ? `They also express ${list}.` : `They do not express ${list}.`;
+  return pos ? `The tumour cells express ${list}.` : `The tumour cells do not express ${list}.`;
+}
+
+/** The invasive component's name in a sentence ("Invasive mucinous carcinoma"). */
+function papInvName(v) {
+  const type = v.papInvType || 'No special type';
+  if (type === 'Other') return cap(clean(v.papInvOther) || 'invasive carcinoma');
+  return { 'No special type': 'Invasive carcinoma of no special type', 'Solid papillary': 'Invasive solid papillary carcinoma',
+    Mucinous: 'Invasive mucinous carcinoma', Lobular: 'Invasive lobular carcinoma' }[type] || 'Invasive carcinoma of no special type';
+}
+
+/** Grading, extent and LVI; `component` words them for the invasive part of an in situ papillary carcinoma. */
+function papGradingSentences(v, component) {
+  const g = nottingham(v.tubules, v.nuclear, v.mitoses);
+  const tubule = TUBULE_TEXT[v.tubules] || TUBULE_TEXT[3];
+  let text = component
+    ? `In the invasive component, ${tubule[0].toLowerCase()}${tubule.slice(1)}. The invasive tumour cells show ${NUCLEAR_TEXT[v.nuclear] || NUCLEAR_TEXT[2]}. ${MITOSES_TEXT[v.mitoses] || MITOSES_TEXT[1]}.`
+    : `${tubule}. The tumour cells show ${NUCLEAR_TEXT[v.nuclear] || NUCLEAR_TEXT[2]}. ${MITOSES_TEXT[v.mitoses] || MITOSES_TEXT[1]}.`;
+  if (g) text += ` Provisional Nottingham grade ${g.grade} (tubules ${v.tubules}, nuclear pleomorphism ${v.nuclear}, mitoses ${v.mitoses}; score ${g.sum}/9).`;
+  const mm = num(v.invExtentMm);
+  if (mm !== null) text += ` The invasive carcinoma measures ${fmt(mm)} mm in maximum extent in the cores.`;
+  text += v.lvi === 'Present' ? ' Lymphovascular invasion is present.' : ' Lymphovascular invasion is not identified.';
+  return text;
+}
+
+const INV_SEEN = {
+  'Irregular infiltrative margin': 'an irregular infiltrative margin', 'Desmoplastic stroma': 'desmoplastic stroma',
+  'Entrapped fat': 'entrapped fat', 'Entrapped breast tissue': 'entrapped breast tissue'
+};
+
+/** The invasion statement of an encapsulated or solid papillary carcinoma. */
+function papInvasionText(v, lesion) {
+  const inv = papInvasion(v);
+  if (inv === 'Not assessable') return 'The distinction between in situ and invasive carcinoma cannot be made on this material, as the fragments include no surrounding stroma.';
+  if (inv === 'Suspicious, not definite') {
+    const s = v.papSuspect || 'Irregular nests at the edge';
+    if (s === 'Irregular nests at the edge') return 'Irregular nests of tumour cells are present at the edge of the lesion, but definite stromal invasion is not established. Invasion cannot be excluded.';
+    if (s === 'Nests entrapped in the capsule or stroma') {
+      return `Nests of tumour cells are entrapped within the ${lesion === PAP.EPC ? 'fibrous capsule' : 'surrounding stroma'}, but definite stromal invasion is not established. Invasion cannot be excluded.`;
+    }
+    return 'Definite stromal invasion is not established, but invasion cannot be excluded.';
+  }
+  if (inv === 'Present') {
+    const seen = (Array.isArray(v.papInvSeen) ? v.papInvSeen : []).map((x) => INV_SEEN[x]).filter(Boolean);
+    const where = lesion === PAP.EPC ? 'beyond the fibrous capsule' : 'beyond the circumscribed nodules';
+    return `${papInvName(v)} is present ${where}${seen.length ? `, with ${listJoin(seen)}` : ''}. ${papGradingSentences(v, true)}`;
+  }
+  return 'There is no evidence of invasive carcinoma in the material examined.';
+}
+
+function papillaryNarrative(part) {
+  const v = part.values;
+  const lesion = papLesion(v);
+  const cores = coresPhrase(part);
+  const g = papGrade(v);
+  const b5c = papInvasion(v) === 'Not assessable';
+  const out = [];
+  if (lesion === PAP.IP) {
+    out.push(`Sections show ${cores} of breast tissue containing an intraductal papillary proliferation with fibrovascular cores lined by epithelial and myoepithelial cells.`);
+    out.push(v.papUdh ? 'The epithelium shows usual ductal hyperplasia without atypia.' : 'The epithelium shows no atypia.');
+  } else if (lesion === PAP.SUG) {
+    out.push(`Sections show ${cores} of breast tissue and detached fragments of a papillary lesion. The fragments consist of fibrovascular cores lined by epithelial and myoepithelial cells, and the epithelium shows no atypia.`);
+  } else if (lesion === PAP.ADH) {
+    out.push(`Sections show ${cores} of breast tissue containing an intraductal papilloma with fibrovascular cores lined by epithelial and myoepithelial cells. Part of the papilloma is involved by a monotonous epithelial proliferation forming rigid cribriform spaces, lined by cells with evenly spaced rounded nuclei. The atypical proliferation is limited in extent and falls short of ductal carcinoma in situ.`);
+  } else if (lesion === PAP.DCIS_IN) {
+    out.push(`Sections show ${cores} of breast tissue containing an intraductal papilloma with fibrovascular cores lined by epithelial and myoepithelial cells. Part of the papilloma is involved by ${g} nuclear grade ductal carcinoma in situ, composed of ${LINING[g]}.`);
+  } else if (lesion === PAP.PDCIS) {
+    out.push(`Sections show ${cores} of breast tissue containing ducts distended by a papillary proliferation, with delicate fibrovascular cores lined by ${LINING[g]}.`);
+  } else if (lesion === PAP.EPC) {
+    out.push(b5c
+      ? `Sections show ${cores} composed entirely of fragments of a papillary carcinoma, with delicate fibrovascular cores lined by ${LINING[g]}.`
+      : `Sections show ${cores} of breast tissue containing a papillary carcinoma within a cystic space surrounded by a fibrous capsule. The delicate fibrovascular cores are lined by ${LINING[g]}.`);
+  } else if (lesion === PAP.SPC) {
+    out.push(b5c
+      ? `Sections show ${cores} composed entirely of fragments of a solid epithelial proliferation of ${SOLID[g]}, arranged around delicate fibrovascular cores.`
+      : `Sections show ${cores} of breast tissue containing expansile solid nodules with smooth contours, composed of ${SOLID[g]} arranged around delicate fibrovascular cores.`);
+  } else {
+    out.push(`Sections show ${cores} of breast tissue infiltrated by an invasive papillary carcinoma, composed of papillary structures with fibrovascular cores lined by tumour cells, without a myoepithelial layer.`);
+    out.push(papGradingSentences(v, false));
+    return out.join(' ');
+  }
+  const p63 = papP63Sentence(v, lesion, b5c);
+  const ckEr = papCkErSentence(v, lesion);
+  out.push(p63, ckEr);
+  if (lesion === PAP.SPC) out.push(papNeSentence(v, !!ckEr));
+  if (lesion === PAP.IP) {
+    out.push('The features are consistent with intraductal papilloma.');
+    if (v.papWithinCore) out.push('The papilloma is small and is seen whole within the core.');
+    out.push('There is no evidence of in situ or invasive malignancy.');
+  } else if (lesion === PAP.SUG) {
+    out.push('The features are suggestive of intraductal papilloma. There is no evidence of in situ or invasive malignancy.');
+  } else if (lesion === PAP.ADH) {
+    out.push('The features are those of an intraductal papilloma with atypical ductal hyperplasia. There is no evidence of invasive malignancy.');
+  } else if (lesion === PAP.DCIS_IN) {
+    out.push('There is no evidence of invasive carcinoma in the material examined.');
+  } else if (lesion === PAP.PDCIS) {
+    out.push(`The features are those of ${g} nuclear grade papillary ductal carcinoma in situ. There is no evidence of invasive carcinoma in the material examined.`);
+  } else {
+    const name = lesion === PAP.EPC ? 'encapsulated papillary carcinoma' : 'solid papillary carcinoma';
+    out.push(b5c ? `The features are in keeping with ${name}.` : `The features are those of ${name}.`);
+    out.push(papInvasionText(v, lesion));
+  }
+  if (papAdvises(v)) {
+    if (v.b3Advice === 'Multidisciplinary discussion') out.push('Multidisciplinary discussion is recommended.');
+    if (v.b3Advice === 'Excision') out.push('Excision is recommended.');
+  }
+  return out.filter(Boolean).join(' ');
+}
+
+/** The diagnosis after the organ head, before the B code. Released wording: "INTRADUCTAL PAPILLOMA with
+ * USUAL DUCTAL HYPERPLASIA", "PAPILLARY LESION, suggestive of INTRADUCTAL PAPILLOMA", "..., low grade". */
+function papillaryDx(v) {
+  const lesion = papLesion(v);
+  const grade = `${papGrade(v)} grade`;
+  const g = nottingham(v.tubules, v.nuclear, v.mitoses);
+  const provisional = g ? `, provisional grade ${g.grade}` : '';
+  if (lesion === PAP.IP) return v.papUdh ? 'INTRADUCTAL PAPILLOMA with USUAL DUCTAL HYPERPLASIA' : 'INTRADUCTAL PAPILLOMA';
+  if (lesion === PAP.SUG) return 'PAPILLARY LESION, suggestive of INTRADUCTAL PAPILLOMA';
+  if (lesion === PAP.ADH) return 'INTRADUCTAL PAPILLOMA with ATYPICAL DUCTAL HYPERPLASIA';
+  if (lesion === PAP.DCIS_IN) return `INTRADUCTAL PAPILLOMA with DUCTAL CARCINOMA IN SITU, ${grade}`;
+  if (lesion === PAP.PDCIS) return `PAPILLARY DUCTAL CARCINOMA IN SITU, ${grade}`;
+  if (lesion === PAP.IPC) return `INVASIVE PAPILLARY CARCINOMA${provisional}`;
+  const name = lesion === PAP.EPC ? 'ENCAPSULATED PAPILLARY CARCINOMA' : 'SOLID PAPILLARY CARCINOMA';
+  const inv = papInvasion(v);
+  if (inv === 'Suspicious, not definite') return `${name}, invasion cannot be excluded`;
+  if (inv === 'Not assessable') return `${name}, IN SITU VERSUS INVASIVE NOT ASSESSABLE`;
+  if (inv === 'Present') {
+    // WHO 6th ed.: invasive solid papillary carcinoma is its own entity, so it is named alone.
+    if (lesion === PAP.SPC && v.papInvType === 'Solid papillary') return `INVASIVE SOLID PAPILLARY CARCINOMA${provisional}`;
+    return `${name} with ${papInvName(v).toUpperCase()}${provisional}`;
+  }
+  return `${name} without invasion`;
+}
+
+/** Checks for a papillary lesion: warnings where the picks disagree with each other or with the rules above,
+ * and reminders of the rules themselves (level info). */
+function papillaryChecks(v) {
+  const lesion = papLesion(v);
+  const inv = papInvasion(v);
+  const out = [];
+  const warn = (field, message) => out.push({ level: 'warn', field, message });
+  const info = (field, message) => out.push({ level: 'info', field, message });
+  if (inv === 'Present' && !(Array.isArray(v.papInvSeen) && v.papInvSeen.length)) {
+    warn('papInvSeen', 'Invasion is recorded without a stromal feature. Absent myoepithelial cells alone do not make invasion (Rakha 2026; WHO 6th ed.): tick what shows it.');
+  }
+  if ([PAP.IP, PAP.SUG, PAP.ADH, PAP.DCIS_IN].includes(lesion) && v.papMecCores === 'Absent') {
+    warn('papMecCores', 'No myoepithelial cells along the fibrovascular cores fits papillary DCIS or encapsulated papillary carcinoma better than a papilloma (Rakha 2024; Kulka 2022).');
+  }
+  if (lesion === PAP.PDCIS && v.papMecCores === 'Present') {
+    warn('papMecCores', 'Myoepithelial cells along the fibrovascular cores favour a papilloma involved by DCIS: the cores of papillary DCIS are devoid of them (Rakha 2024).');
+  }
+  if (lesion === PAP.PDCIS && v.papMecEdge === 'Absent') {
+    warn('papMecEdge', 'Papillary DCIS keeps a myoepithelial layer around the duct (Rakha 2024; Kulka 2022); with none there, consider encapsulated or solid papillary carcinoma.');
+  }
+  if ([PAP.IP, PAP.SUG].includes(lesion) && v.papCk56 === 'Negative') {
+    warn('papCk56', 'Loss of CK5/6 in a papilloma without atypia: look again for atypical ductal hyperplasia or DCIS within it.');
+  }
+  if (lesion === PAP.EPC && v.papGrade === 'High') {
+    warn('papGrade', 'High-grade encapsulated papillary carcinoma is rare, and a note of the unusual features is advised (WHO 6th ed.). With peripheral myoepithelial cells it stays B5a; without them, Rakha 2024 reports it as B5c, since invasion cannot be excluded.');
+  }
+  if (v.bOverride && v.bOverride !== 'Auto' && v.bOverride !== papillaryCode(v)) {
+    warn('bOverride', `The B category chosen (${v.bOverride}) differs from the one this lesion gives (${papillaryCode(v)}).`);
+  }
+  if (inv === 'Not assessable' && ['Present', 'Focal'].includes(v.papMecEdge)) {
+    warn('papMecEdge', 'Myoepithelial cells are recorded at the edge, so the edge and its stroma are in the cores; B5c is only for fragments with no surrounding stroma (RCPath G150).');
+  }
+  if (lesion === PAP.IP && v.papWithinCore) {
+    info('papWithinCore', 'B2 is for a small papilloma without atypia seen whole within the width of the core; otherwise B3 (RCPath G150).');
+  }
+  if (lesion === PAP.ADH || lesion === PAP.DCIS_IN) {
+    info('papLesion', 'ADH and DCIS within a papilloma are separated by extent: DCIS when the atypical proliferation is larger than 3 mm (RCPath G150), or at any size when of intermediate or high nuclear grade (Kulka 2022).');
+  }
+  if (inv === 'Not assessable') {
+    info('papInvasion', 'B5c is for fragments of carcinoma with no surrounding stroma, and malignant papillary lesions are not routinely B5c (RCPath G150).');
+  }
+  if (lesion === PAP.IPC) {
+    info('papLesion', 'Pure invasive papillary carcinoma is exceptionally rare: its papillae infiltrate the stroma, without the circumscription, capsule, neuroendocrine differentiation or mucin of encapsulated and solid papillary carcinoma, which stay in situ without stromal invasion (Rakha 2026; WHO 6th ed.).');
+  }
+  if (papInvasive(v) && v.biomarkers === 'Performed') {
+    info('biomarkers', 'Grade, size and receptors are assessed in the invasive component (Rakha 2024).');
+  }
+  return out;
+}
+
 function lnNarrative(part) {
   const v = part.values;
   const r = v.lnResult || 'Metastatic carcinoma';
@@ -226,7 +517,8 @@ export function microscopy(part) {
   const v = part.values;
   const cat = v.category || 'B2';
   const narrative = {
-    B1: b1Narrative, B2: benignNarrative, B3: b3Narrative, B4: b4Narrative, B5a: insituNarrative, B5b: invasiveNarrative, B5c: b5cNarrative, LN: lnNarrative
+    B1: b1Narrative, B2: benignNarrative, B3: b3Narrative, B4: b4Narrative, B5a: insituNarrative, B5b: invasiveNarrative, B5c: b5cNarrative,
+    Papillary: papillaryNarrative, LN: lnNarrative
   }[cat] || benignNarrative;
   const sentences = [narrative(part)];
   if (cat !== 'LN') {
@@ -285,13 +577,16 @@ export function diagnosis(part) {
     return head + dx + (g ? `, provisional grade ${g.grade}` : '') + suffix;
   }
   if (cat === 'B5c') return head + 'CARCINOMA, IN SITU VERSUS INVASIVE NOT ASSESSABLE' + suffix;
+  if (cat === 'Papillary') return head + papillaryDx(v) + suffix;
   return head + 'NO EVIDENCE OF MALIGNANCY' + suffix;
 }
 
-/** Checks panel: the side is blank only when a pasted request named none. */
+/** Checks panel: the side is blank only when a pasted request named none; a papillary lesion adds its own. */
 export function validate(part) {
-  if (['Right', 'Left'].includes(part.values.laterality)) return [];
-  return [{ level: 'warn', message: 'Choose Right or Left: the specimen request named no side, so none is printed.' }];
+  const out = ['Right', 'Left'].includes(part.values.laterality) ? []
+    : [{ level: 'warn', message: 'Choose Right or Left: the specimen request named no side, so none is printed.' }];
+  if (part.values.category === 'Papillary') out.push(...papillaryChecks(part.values));
+  return out;
 }
 
 export default { specimenName, microscopy, diagnosis, validate };

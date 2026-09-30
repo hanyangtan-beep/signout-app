@@ -111,6 +111,7 @@
     "B5a",
     "B5b",
     "B5c",
+    "Papillary",
     "LN"
    ],
    "optionLabels": {
@@ -121,6 +122,7 @@
     "B5a": "B5a In situ carcinoma",
     "B5b": "B5b Invasive carcinoma",
     "B5c": "B5c Carcinoma, in situ vs invasive not assessable",
+    "Papillary": "Papillary lesion",
     "LN": "Axillary lymph node"
    },
    "default": "B2"
@@ -188,6 +190,9 @@
     "Cellular fibroepithelial lesion",
     "Mucocoele-like lesion"
    ],
+   "optionLabels": {
+    "Intraduct papilloma": "Intraductal papilloma"
+   },
    "default": "Atypical ductal hyperplasia",
    "showIf": {
     "field": "category",
@@ -210,21 +215,6 @@
      "Radial scar / complex sclerosing lesion",
      "Mucocoele-like lesion"
     ]
-   }
-  },
-  {
-   "id": "b3Advice",
-   "label": "B3 recommendation",
-   "type": "select",
-   "options": [
-    "None",
-    "Multidisciplinary discussion",
-    "Excision"
-   ],
-   "default": "Multidisciplinary discussion",
-   "showIf": {
-    "field": "category",
-    "is": "B3"
    }
   },
   {
@@ -364,6 +354,696 @@
    }
   },
   {
+   "id": "papLesion",
+   "label": "Papillary lesion",
+   "type": "select",
+   "options": [
+    "Intraductal papilloma",
+    "Papillary lesion, suggestive of papilloma",
+    "Papilloma with atypical ductal hyperplasia",
+    "Papilloma with ductal carcinoma in situ",
+    "Papillary ductal carcinoma in situ",
+    "Encapsulated papillary carcinoma",
+    "Solid papillary carcinoma",
+    "Invasive papillary carcinoma"
+   ],
+   "default": "Intraductal papilloma",
+   "showIf": {
+    "field": "category",
+    "is": "Papillary"
+   },
+   "help": "The B code follows the lesion and, for encapsulated and solid papillary carcinoma, the invasion field (RCPath G150, 2026). A B category chosen below still wins.",
+   "reference": {
+    "title": "Papillary lesions on core biopsy",
+    "intro": "B codes follow RCPath G150 (2026). Myoepithelial cells, CK5/6 and ER separate benign from atypical and malignant papillary lesions (Kulka 2022).",
+    "columns": 3,
+    "groups": [
+     {
+      "heading": "Intraductal papilloma (B3)",
+      "points": [
+       "Fibrovascular cores lined by epithelial and myoepithelial cells",
+       "p63: myoepithelial cells along the cores and at the edge (RCPath G150)",
+       "Usual-type epithelium: CK5/6 mosaic, ER heterogeneous",
+       "B2 only when small and seen whole within the width of the core (RCPath G150)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/breast_biopsy/papilloma.jpg",
+        "caption": "Intraductal papilloma in a large duct (H&E).",
+        "credit": "Kulka et al., Virchows Arch 2022, Fig 2a (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/"
+       },
+       {
+        "src": "assets/reference/breast_biopsy/papilloma_p63.jpg",
+        "caption": "p63 marks myoepithelial cells in the duct wall and along the fibrovascular cores of a papilloma.",
+        "credit": "Kulka et al., Virchows Arch 2022, Fig 2d (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/"
+       }
+      ]
+     },
+     {
+      "heading": "Papilloma with ADH (B3) or DCIS (B5a)",
+      "points": [
+       "A monotonous atypical proliferation within the papilloma: CK5/6 lost, ER diffuse and strong",
+       "ADH when the atypical area is 3 mm or less, DCIS when larger (RCPath G150)",
+       "Intermediate or high nuclear grade: DCIS at any size (Kulka 2022)",
+       "Myoepithelial cells are usually kept along the cores (RCPath G150)",
+       "Atypia in a papilloma on a core: surgical excision is recommended (RCPath G150)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/breast_biopsy/papilloma_adh.jpg",
+        "caption": "Atypical ductal proliferation under 3 mm within an intraductal papilloma: ADH (H&E).",
+        "credit": "Kulka et al., Virchows Arch 2022, Fig 4a (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/"
+       },
+       {
+        "src": "assets/reference/breast_biopsy/papilloma_adh_ck5.jpg",
+        "caption": "The atypical proliferation lacks CK5 staining.",
+        "credit": "Kulka et al., Virchows Arch 2022, Fig 4b (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/"
+       }
+      ]
+     },
+     {
+      "heading": "Papillary DCIS (B5a)",
+      "points": [
+       "Delicate fibrovascular cores lined by monotonous atypical cells",
+       "No myoepithelial cells along the cores, but a preserved layer around the duct (Rakha 2024; Kulka 2022)",
+       "ER diffuse and strong, CK5/6 negative (Kulka 2022)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/breast_biopsy/papillary_dcis.jpg",
+        "caption": "Papillary DCIS; the star marks a focus of microinvasion (H&E).",
+        "credit": "Kulka et al., Virchows Arch 2022, Fig 5a (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/"
+       }
+      ]
+     },
+     {
+      "heading": "Encapsulated papillary carcinoma (B5a)",
+      "points": [
+       "Arborising papillae lined by low-grade cells in a cystic space with a fibrous capsule",
+       "Myoepithelial cells are usually absent at the periphery, yet it is B5a (RCPath G150) and staged as DCIS (WHO 6th ed.)",
+       "Most are ER positive and of low or intermediate grade; a high-grade or ER-negative one is rare, and a note of the unusual features is advised (WHO 6th ed.)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/breast_biopsy/epc.jpg",
+        "caption": "Encapsulated papillary carcinoma: papillae lined by low-grade atypical epithelium within a cystic space and fibrous capsule (H&E).",
+        "credit": "Kulka et al., Virchows Arch 2022, Fig 6b (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/"
+       }
+      ]
+     },
+     {
+      "heading": "Solid papillary carcinoma (B5a)",
+      "points": [
+       "Solid nodules of low-grade cells around fine fibrovascular cores",
+       "Smooth, circumscribed nodules are in situ even without myoepithelial cells (WHO 6th ed.)",
+       "Neuroendocrine differentiation and mucin production are very common (Kulka 2022)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/breast_biopsy/spc.jpg",
+        "caption": "Solid papillary carcinoma: low-grade cells in a solid pattern filling dilated ducts (H&E).",
+        "credit": "Kulka et al., Virchows Arch 2022, Fig 7a (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/"
+       },
+       {
+        "src": "assets/reference/breast_biopsy/spc_synaptophysin.jpg",
+        "caption": "Synaptophysin expression in solid papillary carcinoma.",
+        "credit": "Kulka et al., Virchows Arch 2022, Fig 7c (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/"
+       }
+      ]
+     },
+     {
+      "heading": "Invasive papillary carcinoma (B5b)",
+      "points": [
+       "Finger-like fibrovascular projections infiltrating desmoplastic or fibrotic stroma; exceptionally rare (Rakha 2026)",
+       "No circumscription, capsule, neuroendocrine differentiation or mucin, unlike encapsulated and solid papillary carcinoma (Rakha 2026)",
+       "Not for a non-papillary invasive carcinoma arising with papillary carcinoma in situ (Rakha 2026)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/breast_biopsy/invasive_papillary.jpg",
+        "caption": "Invasive papillary carcinoma: cystically dilated spaces of varying size (H&E).",
+        "credit": "Kulka et al., Virchows Arch 2022, Fig 8a (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "papWithinCore",
+   "label": "Small, and seen whole within the core (B2)",
+   "type": "checkbox",
+   "default": false,
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": "Intraductal papilloma"
+     }
+    ]
+   },
+   "help": "RCPath G150: B2 may be considered only for a small papilloma without atypia that lies wholly within the width of the core."
+  },
+  {
+   "id": "papUdh",
+   "label": "Usual ductal hyperplasia in the papilloma",
+   "type": "checkbox",
+   "default": false,
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": "Intraductal papilloma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "papGrade",
+   "label": "Nuclear grade",
+   "type": "select",
+   "options": [
+    "Low",
+    "Intermediate",
+    "High"
+   ],
+   "default": "Low",
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": [
+       "Papilloma with ductal carcinoma in situ",
+       "Papillary ductal carcinoma in situ",
+       "Encapsulated papillary carcinoma",
+       "Solid papillary carcinoma"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "papMecCores",
+   "label": "p63 along the fibrovascular cores",
+   "type": "select",
+   "options": [
+    "Not stained",
+    "Present",
+    "Absent in the atypical areas",
+    "Absent"
+   ],
+   "optionsByField": {
+    "field": "papLesion",
+    "map": {
+     "Intraductal papilloma": [
+      "Not stained",
+      "Present",
+      "Absent"
+     ],
+     "Papillary lesion, suggestive of papilloma": [
+      "Not stained",
+      "Present",
+      "Absent"
+     ],
+     "Papillary ductal carcinoma in situ": [
+      "Not stained",
+      "Present",
+      "Absent"
+     ],
+     "Encapsulated papillary carcinoma": [
+      "Not stained",
+      "Present",
+      "Absent"
+     ],
+     "Solid papillary carcinoma": [
+      "Not stained",
+      "Present",
+      "Absent"
+     ]
+    }
+   },
+   "default": "Not stained",
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": [
+       "Intraductal papilloma",
+       "Papillary lesion, suggestive of papilloma",
+       "Papilloma with atypical ductal hyperplasia",
+       "Papilloma with ductal carcinoma in situ",
+       "Papillary ductal carcinoma in situ",
+       "Encapsulated papillary carcinoma",
+       "Solid papillary carcinoma"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "papMecEdge",
+   "label": "p63 at the edge of the lesion",
+   "type": "select",
+   "options": [
+    "Not stained",
+    "Present",
+    "Focal",
+    "Absent",
+    "Edge not sampled"
+   ],
+   "default": "Not stained",
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": [
+       "Intraductal papilloma",
+       "Papillary lesion, suggestive of papilloma",
+       "Papilloma with atypical ductal hyperplasia",
+       "Papilloma with ductal carcinoma in situ",
+       "Papillary ductal carcinoma in situ",
+       "Encapsulated papillary carcinoma",
+       "Solid papillary carcinoma"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "papCk56",
+   "label": "CK5/6",
+   "type": "select",
+   "options": [
+    "Not stained",
+    "Mosaic",
+    "Negative"
+   ],
+   "optionLabels": {
+    "Mosaic": "Mosaic (usual type)",
+    "Negative": "Negative (loss)"
+   },
+   "default": "Not stained",
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": [
+       "Intraductal papilloma",
+       "Papillary lesion, suggestive of papilloma",
+       "Papilloma with atypical ductal hyperplasia",
+       "Papilloma with ductal carcinoma in situ",
+       "Papillary ductal carcinoma in situ",
+       "Encapsulated papillary carcinoma",
+       "Solid papillary carcinoma"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "papEr",
+   "label": "ER in the lesion",
+   "type": "select",
+   "options": [
+    "Not stained",
+    "Heterogeneous",
+    "Diffuse, strong"
+   ],
+   "default": "Not stained",
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": [
+       "Intraductal papilloma",
+       "Papillary lesion, suggestive of papilloma",
+       "Papilloma with atypical ductal hyperplasia",
+       "Papilloma with ductal carcinoma in situ",
+       "Papillary ductal carcinoma in situ",
+       "Encapsulated papillary carcinoma",
+       "Solid papillary carcinoma"
+      ]
+     }
+    ]
+   },
+   "help": "The staining pattern, for the diagnosis; ER, PR and HER2 scores go in Breast biomarkers."
+  },
+  {
+   "id": "papNe",
+   "label": "Neuroendocrine markers",
+   "type": "select",
+   "options": [
+    "Not stained",
+    "Positive",
+    "Negative"
+   ],
+   "default": "Not stained",
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": "Solid papillary carcinoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "papNeMarkers",
+   "label": "Neuroendocrine markers stained",
+   "type": "multiselect",
+   "options": [
+    "Synaptophysin",
+    "Chromogranin",
+    "INSM1"
+   ],
+   "default": [
+    "Synaptophysin",
+    "Chromogranin"
+   ],
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": "Solid papillary carcinoma"
+     },
+     {
+      "field": "papNe",
+      "is": [
+       "Positive",
+       "Negative"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "papInvasion",
+   "label": "Invasion",
+   "type": "select",
+   "options": [
+    "Not identified",
+    "Suspicious, not definite",
+    "Present",
+    "Not assessable"
+   ],
+   "optionLabels": {
+    "Not identified": "Not identified (B5a)",
+    "Suspicious, not definite": "Suspicious, not definite (B5a)",
+    "Present": "Present (B5b)",
+    "Not assessable": "Not assessable, no stroma (B5c)"
+   },
+   "default": "Not identified",
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": [
+       "Encapsulated papillary carcinoma",
+       "Solid papillary carcinoma"
+      ]
+     }
+    ]
+   },
+   "help": "Invasion needs unequivocal stromal invasion beyond the capsule or nodule; absent myoepithelial cells alone are not enough (Rakha 2026). B5c only when the fragments carry no stroma (RCPath G150).",
+   "reference": {
+    "title": "Invasion in encapsulated and solid papillary carcinoma",
+    "intro": "Absent myoepithelial cells alone do not make invasion: look for stromal invasion beyond the capsule or nodule (Rakha 2026; WHO 6th ed.).",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "Not identified (B5a)",
+      "points": [
+       "A smooth, pushing edge: the capsule of an encapsulated papillary carcinoma, or rounded solid papillary nodules",
+       "Cells entrapped in the fibrous capsule or displaced into the biopsy-site scar are not invasion (Rakha 2024)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/breast_biopsy/pseudoinvasion.jpg",
+        "caption": "Sclerosis of a papilloma capsule with entrapped epithelial and myoepithelial cells mimicking invasion (H&E).",
+        "credit": "Kulka et al., Virchows Arch 2022, Fig 3a (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/"
+       },
+       {
+        "src": "assets/reference/breast_biopsy/pseudoinvasion_p63.jpg",
+        "caption": "p63 shows myoepithelial cells around the entrapped nests and excludes invasion.",
+        "credit": "Kulka et al., Virchows Arch 2022, Fig 3b (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/"
+       }
+      ]
+     },
+     {
+      "heading": "Suspicious, not definite (B5a)",
+      "points": [
+       "Irregular nests at the edge or within the capsule, short of definite stromal invasion",
+       "Unequivocal in situ carcinoma with features suspicious of invasion is B5a (RCPath G150)",
+       "Uncertain invasion on a core: excision to settle it (Rakha 2026), not neoadjuvant therapy (Rakha 2024)"
+      ],
+      "images": []
+     },
+     {
+      "heading": "Present (B5b)",
+      "points": [
+       "Absent myoepithelial cells plus unequivocal stromal invasion: irregular infiltrative margins, desmoplasia, or entrapped breast structures (Rakha 2026)",
+       "Entrapped fat cells within an encapsulated papillary carcinoma are a definite sign of invasion (Rakha 2024)",
+       "Jagged nests in a jigsaw pattern within desmoplastic stroma: invasive solid papillary carcinoma (WHO 6th ed.)",
+       "Grade, size and receptors are assessed in the invasive component (Rakha 2024)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/breast_biopsy/epc_invasion.jpg",
+        "caption": "Encapsulated papillary carcinoma with frank invasion (H&E).",
+        "credit": "Kulka et al., Virchows Arch 2022, Fig 6c (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/"
+       },
+       {
+        "src": "assets/reference/breast_biopsy/spc_invasion.jpg",
+        "caption": "Invasion from solid papillary carcinoma: small infiltrative ducts and nests (H&E).",
+        "credit": "Kulka et al., Virchows Arch 2022, Fig 7b (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/"
+       }
+      ]
+     },
+     {
+      "heading": "Not assessable (B5c)",
+      "points": [
+       "Only for fragments of carcinoma with no surrounding stroma; malignant papillary lesions are not routinely B5c (RCPath G150)",
+       "Rakha 2024 also uses B5c for an encapsulated papillary carcinoma without peripheral myoepithelial cells that has an irregular margin or high nuclear grade"
+      ],
+      "images": []
+     }
+    ],
+    "note": "Room for your own photographs of a suspicious edge and of stroma-free fragments: no openly licensed images of either were found."
+   }
+  },
+  {
+   "id": "papSuspect",
+   "label": "Suspicious feature",
+   "type": "select",
+   "options": [
+    "Irregular nests at the edge",
+    "Nests entrapped in the capsule or stroma",
+    "Not specified"
+   ],
+   "default": "Irregular nests at the edge",
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": [
+       "Encapsulated papillary carcinoma",
+       "Solid papillary carcinoma"
+      ]
+     },
+     {
+      "field": "papInvasion",
+      "is": "Suspicious, not definite"
+     }
+    ]
+   }
+  },
+  {
+   "id": "papInvSeen",
+   "label": "Invasion shown by",
+   "type": "multiselect",
+   "options": [
+    "Irregular infiltrative margin",
+    "Desmoplastic stroma",
+    "Entrapped fat",
+    "Entrapped breast tissue"
+   ],
+   "default": [],
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": [
+       "Encapsulated papillary carcinoma",
+       "Solid papillary carcinoma"
+      ]
+     },
+     {
+      "field": "papInvasion",
+      "is": "Present"
+     }
+    ]
+   }
+  },
+  {
+   "id": "papInvType",
+   "label": "Invasive component",
+   "type": "select",
+   "options": [
+    "No special type",
+    "Solid papillary",
+    "Mucinous",
+    "Lobular",
+    "Other"
+   ],
+   "optionLabels": {
+    "No special type": "Invasive carcinoma of no special type",
+    "Solid papillary": "Invasive solid papillary carcinoma",
+    "Mucinous": "Invasive mucinous carcinoma",
+    "Lobular": "Invasive lobular carcinoma"
+   },
+   "optionsByField": {
+    "field": "papLesion",
+    "map": {
+     "Encapsulated papillary carcinoma": [
+      "No special type",
+      "Mucinous",
+      "Lobular",
+      "Other"
+     ]
+    }
+   },
+   "default": "No special type",
+   "defaultByField": {
+    "field": "papLesion",
+    "map": {
+     "Solid papillary carcinoma": "Solid papillary"
+    }
+   },
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": [
+       "Encapsulated papillary carcinoma",
+       "Solid papillary carcinoma"
+      ]
+     },
+     {
+      "field": "papInvasion",
+      "is": "Present"
+     }
+    ]
+   }
+  },
+  {
+   "id": "papInvOther",
+   "label": "Other invasive type (name)",
+   "type": "text",
+   "default": "",
+   "placeholder": "e.g. invasive micropapillary carcinoma",
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": [
+       "Encapsulated papillary carcinoma",
+       "Solid papillary carcinoma"
+      ]
+     },
+     {
+      "field": "papInvasion",
+      "is": "Present"
+     },
+     {
+      "field": "papInvType",
+      "is": "Other"
+     }
+    ]
+   }
+  },
+  {
    "id": "tubules",
    "label": "Tubule formation score",
    "type": "select",
@@ -374,8 +1054,43 @@
    ],
    "default": "3",
    "showIf": {
-    "field": "category",
-    "is": "B5b"
+    "any": [
+     {
+      "field": "category",
+      "is": "B5b"
+     },
+     {
+      "all": [
+       {
+        "field": "category",
+        "is": "Papillary"
+       },
+       {
+        "any": [
+         {
+          "field": "papLesion",
+          "is": "Invasive papillary carcinoma"
+         },
+         {
+          "all": [
+           {
+            "field": "papLesion",
+            "is": [
+             "Encapsulated papillary carcinoma",
+             "Solid papillary carcinoma"
+            ]
+           },
+           {
+            "field": "papInvasion",
+            "is": "Present"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
    }
   },
   {
@@ -389,8 +1104,43 @@
    ],
    "default": "2",
    "showIf": {
-    "field": "category",
-    "is": "B5b"
+    "any": [
+     {
+      "field": "category",
+      "is": "B5b"
+     },
+     {
+      "all": [
+       {
+        "field": "category",
+        "is": "Papillary"
+       },
+       {
+        "any": [
+         {
+          "field": "papLesion",
+          "is": "Invasive papillary carcinoma"
+         },
+         {
+          "all": [
+           {
+            "field": "papLesion",
+            "is": [
+             "Encapsulated papillary carcinoma",
+             "Solid papillary carcinoma"
+            ]
+           },
+           {
+            "field": "papInvasion",
+            "is": "Present"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
    }
   },
   {
@@ -404,8 +1154,43 @@
    ],
    "default": "1",
    "showIf": {
-    "field": "category",
-    "is": "B5b"
+    "any": [
+     {
+      "field": "category",
+      "is": "B5b"
+     },
+     {
+      "all": [
+       {
+        "field": "category",
+        "is": "Papillary"
+       },
+       {
+        "any": [
+         {
+          "field": "papLesion",
+          "is": "Invasive papillary carcinoma"
+         },
+         {
+          "all": [
+           {
+            "field": "papLesion",
+            "is": [
+             "Encapsulated papillary carcinoma",
+             "Solid papillary carcinoma"
+            ]
+           },
+           {
+            "field": "papInvasion",
+            "is": "Present"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
    }
   },
   {
@@ -416,8 +1201,43 @@
    "step": 0.5,
    "suffix": "mm",
    "showIf": {
-    "field": "category",
-    "is": "B5b"
+    "any": [
+     {
+      "field": "category",
+      "is": "B5b"
+     },
+     {
+      "all": [
+       {
+        "field": "category",
+        "is": "Papillary"
+       },
+       {
+        "any": [
+         {
+          "field": "papLesion",
+          "is": "Invasive papillary carcinoma"
+         },
+         {
+          "all": [
+           {
+            "field": "papLesion",
+            "is": [
+             "Encapsulated papillary carcinoma",
+             "Solid papillary carcinoma"
+            ]
+           },
+           {
+            "field": "papInvasion",
+            "is": "Present"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
    }
   },
   {
@@ -444,8 +1264,93 @@
    ],
    "default": "Not identified",
    "showIf": {
-    "field": "category",
-    "is": "B5b"
+    "any": [
+     {
+      "field": "category",
+      "is": "B5b"
+     },
+     {
+      "all": [
+       {
+        "field": "category",
+        "is": "Papillary"
+       },
+       {
+        "any": [
+         {
+          "field": "papLesion",
+          "is": "Invasive papillary carcinoma"
+         },
+         {
+          "all": [
+           {
+            "field": "papLesion",
+            "is": [
+             "Encapsulated papillary carcinoma",
+             "Solid papillary carcinoma"
+            ]
+           },
+           {
+            "field": "papInvasion",
+            "is": "Present"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "b3Advice",
+   "label": "B3 recommendation",
+   "type": "select",
+   "options": [
+    "None",
+    "Multidisciplinary discussion",
+    "Excision"
+   ],
+   "default": "Multidisciplinary discussion",
+   "showIf": {
+    "any": [
+     {
+      "field": "category",
+      "is": "B3"
+     },
+     {
+      "all": [
+       {
+        "field": "category",
+        "is": "Papillary"
+       },
+       {
+        "any": [
+         {
+          "field": "papLesion",
+          "is": [
+           "Papillary lesion, suggestive of papilloma",
+           "Papilloma with atypical ductal hyperplasia"
+          ]
+         },
+         {
+          "all": [
+           {
+            "field": "papLesion",
+            "is": "Intraductal papilloma"
+           },
+           {
+            "field": "papWithinCore",
+            "truthy": false
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
    }
   },
   {
@@ -519,7 +1424,7 @@
     "field": "category",
     "not": "LN"
    },
-   "help": "Auto derives the code from the category above."
+   "help": "Auto derives the code from the category above; for a papillary lesion, from the lesion and its invasion."
   },
   {
    "id": "additionalNotes",

@@ -1,0 +1,25 @@
+{
+  "templateId": "breast_biopsy",
+  "description": "New (Phase 50): solid papillary carcinoma with neuroendocrine markers and an invasive solid papillary component.",
+  "values": {
+    "laterality": "Left",
+    "specimenName": "2 o'clock",
+    "category": "Papillary",
+    "papLesion": "Solid papillary carcinoma",
+    "papMecEdge": "Absent",
+    "papEr": "Diffuse, strong",
+    "papNe": "Positive",
+    "papInvasion": "Present",
+    "papInvType": "Solid papillary",
+    "papInvSeen": [
+      "Irregular infiltrative margin",
+      "Desmoplastic stroma"
+    ],
+    "tubules": "3",
+    "nuclear": "2",
+    "mitoses": "1",
+    "invExtentMm": "4"
+  },
+  "report": "Left breast, 2 o'clock, core biopsy\n\nSections show three cores of breast tissue containing expansile solid nodules with smooth contours, composed of monotonous tumour cells with small, uniform nuclei arranged around delicate fibrovascular cores. Immunostaining for p63 shows no myoepithelial cells around the tumour nodules. The tumour cells are diffusely and strongly positive for ER. They also express synaptophysin and chromogranin. The features are those of solid papillary carcinoma. Invasive solid papillary carcinoma is present beyond the circumscribed nodules, with an irregular infiltrative margin and desmoplastic stroma. In the invasive component, tubule formation is inconspicuous. The invasive tumour cells show moderate nuclear pleomorphism with visible nucleoli. Mitoses are infrequent. Provisional Nottingham grade 2 (tubules 3, nuclear pleomorphism 2, mitoses 1; score 6/9). The invasive carcinoma measures 4 mm in maximum extent in the cores. Lymphovascular invasion is not identified.\n\nBREAST, left 2 o'clock, core biopsy - INVASIVE SOLID PAPILLARY CARCINOMA, provisional grade 2 (B5b)",
+  "checks": []
+}

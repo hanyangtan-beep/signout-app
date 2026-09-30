@@ -1365,6 +1365,41 @@ await check('Hirschsprung biopsy: a pasted suction biopsy opens the form; the an
   return 'routed on the line and history; present and aganglionic lines; mast-cell box; full-thickness fields swap; calretinin gallery 3 photos; a plain rectal biopsy stays out';
 });
 
+// Breast papillary lesions (Phase 50): the category, the lesion and the invasion pick decide the line and the
+// B code; invasion without a stromal feature raises a Check; solid papillary carcinoma takes its own invasive
+// type by default; the lesion gallery opens with its photos.
+await check('breast papillary lesion: the lesion and invasion decide the line; the lesion gallery opens', async () => {
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
+  const routed = await pasteAndBuild('breast, L2H lesion, biopsy');
+  assert(routed === 'breast_biopsy', `breast core routed to ${routed}`);
+  await pickField('category', 'Papillary lesion');
+  let report = await reportText();
+  assert(report.includes("BREAST, left 2 o'clock, core biopsy - INTRADUCTAL PAPILLOMA (B3)"), `papilloma line wrong: ${report.slice(-300)}`);
+  await pickField('papLesion', 'Encapsulated papillary carcinoma');
+  report = await reportText();
+  assert(report.includes('ENCAPSULATED PAPILLARY CARCINOMA without invasion (B5a)'), `EPC line wrong: ${report.slice(-300)}`);
+  assert(!(await shows('tubules')), 'the grading fields show without invasion');
+  await pickField('papInvasion', 'Present (B5b)');
+  report = await reportText();
+  assert(report.includes('ENCAPSULATED PAPILLARY CARCINOMA with INVASIVE CARCINOMA OF NO SPECIAL TYPE, provisional grade 2 (B5b)'), `invasive EPC line wrong: ${report.slice(-300)}`);
+  assert(await shows('tubules') && await shows('papInvSeen'), 'the invasive fields did not show');
+  assert(/without a stromal feature/.test(await checksText()), 'Checks did not flag invasion without a stromal feature');
+  await pickField('papLesion', 'Solid papillary carcinoma');
+  report = await reportText();
+  assert(report.includes('INVASIVE SOLID PAPILLARY CARCINOMA, provisional grade 2 (B5b)'), `invasive SPC line wrong: ${report.slice(-300)}`);
+  await page.locator('.field[data-field="papLesion"] .ref-toggle').first().click();
+  await page.waitForSelector('.field[data-field="papLesion"] .ref-panel img', { timeout: 5000 });
+  const imgs = page.locator('.field[data-field="papLesion"] .ref-panel img');
+  const photos = await imgs.count();
+  assert(photos === 9, `lesion gallery holds ${photos} photos`);
+  for (let i = 0; i < photos; i++) await imgs.nth(i).scrollIntoViewIfNeeded();   // the photos load lazily
+  await page.waitForFunction(() => [...document.querySelectorAll('.field[data-field="papLesion"] .ref-panel img')].every((i) => i.complete && i.naturalWidth > 0), null, { timeout: 8000 });
+  await page.locator('.field[data-field="papLesion"] .ref-panel').first().scrollIntoViewIfNeeded();
+  await shot('breast-papillary-gallery');
+  await page.locator('.field[data-field="papLesion"] .ref-toggle').first().click();
+  return 'papilloma B3; EPC B5a; invasion B5b with the stromal-feature Check; SPC takes invasive solid papillary; lesion gallery 9 photos';
+});
+
 // Case options after a pasted request (2026-09-24): the tickboxes show what the report prints. The case
 // starts on the default small biopsy, whose options carry no macroscopy choice, as a fresh session does.
 await check('case options: a pasted hysterectomy ticks the macroscopy box it prints, and the box drives it', async () => {
