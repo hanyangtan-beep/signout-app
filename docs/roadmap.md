@@ -2,7 +2,7 @@
 
 Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item, newest first. The app's Roadmap panel is built from this file, so a change here is rebuilt, deployed and published (user decision 2026-09-29); other docs-only changes are committed only. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`; the full Done write-ups to 2026-09-25 are in `docs/done-log.md`.
 
-State on 2026-09-30: 69 templates (13 small biopsy, 30 benign resection incl. LEEP, 1 frozen section, 17 synoptic cancer resections, 6 cytology, 1 biomarker, 1 generic), 1524 tests, published at `https://han-signout.pplx.app`.
+State on 2026-09-30: 69 templates (13 small biopsy, 30 benign resection incl. LEEP, 1 frozen section, 17 synoptic cancer resections, 6 cytology, 1 biomarker, 1 generic), 1530 tests, published at `https://han-signout.pplx.app`.
 
 ---
 
@@ -10,6 +10,7 @@ State on 2026-09-30: 69 templates (13 small biopsy, 30 benign resection incl. LE
 
 Newest first. The full write-ups as they stood at ship time are in `docs/done-log.md`.
 
+- 2026-09-30 — Locked draft reopens only for its own account (pulled by the user): the tab's cached draft records the account it belongs to, so after Lock a different account signing in on that tab gets a new case and a toast that names nobody, and the draft is cleared rather than shown; the same account still gets its draft back after a refresh or the Google round trip. No fixture changed; 69 templates, 1530 tests. Phase 47c.
 - 2026-09-30 — Sign-in restricted to a built-in list of accounts (pulled by the user): the published build admits only four Google accounts, held in `src/gate.js` as salted SHA-256 digests, never the addresses. A signed-in account off the list sees "No access", one whose address cannot be confirmed is not let in, and Settings shows the list as fixed. The signed-in address now comes from Drive's about.get under drive.file, with userinfo as the fallback; `tools/allow-hash.mjs` prints the digest for a new account. No fixture changed; 69 templates, 1524 tests. Phase 47b.
 - 2026-09-30 — Frozen section, several lymph nodes in one part (pulled by the user): in the Lymph node scenario "Lymph nodes examined" moves to the top of the fields and, at two or more, drives the part — the gross ("are three lymph nodes"; other tissue gains "Three lymph nodes are identified within."), the intraoperative positive ("Metastatic carcinoma present in 1 of 3 lymph nodes"), the paraffin sentences ("They show three lymph nodes …", "one of which is" / "both of which are" / "all of which are") and the head ("LYMPH NODES, right obturator, frozen section - NO EVIDENCE OF MALIGNANCY (0/3)"). One node prints exactly as before; a pasted gross fills the count; Checks flag involved above examined and a piece count that disagrees with the node count. Also hid the CNS smear count and the breast presurgical-therapy chips, which showed under every frozen scenario. No fixture changed; 69 templates, 1513 tests. Phase 47.
 - 2026-09-29 — Suggestions box and in-app roadmap (pulled by the user): "Suggest a change" in the header (the whole app) and in each part's actions (that template) opens a short dialog that pre-fills the Google Form `Sign-out app — suggestions` — about, type, where, the suggestion and, if ticked, the part's changed choice fields (never free text, numbers or report text), with the signed-in account and build; a patient-detail check blocks an HKID, an honorific with a name, a phone number, a date of birth and accession or hospital-number shapes; the user presses Submit in Forms and only the owner sees responses. "Roadmap" in the header opens a summary of this file made at build time (`dist/roadmap.json`: Now, Next cards, Later, the ten newest Done lines, dated by the last roadmap commit), and roadmap edits now publish. No template or fixture changed; 69 templates, 1501 tests. Phase 46.
@@ -99,15 +100,7 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-### Locked draft reopens only for its own account — pulled by the user 2026-09-30   Size: S
-Measure:    not a case-mix card. Security review, 2026-09-30: locking keeps the draft in the tab, and a second allowed account signing in on that tab sees it.
-Why:        the user chose to fix this before Phase 47 and the sign-in list are published.
-Change:     the tab's cached draft records the account it belongs to. On opening, a draft that belongs to another account, or to an account when nobody is signed in, is cleared and a new case starts, with a toast that names nobody. An untagged draft (localhost without sign-in) opens as before.
-Untouched:  Drive, Sheets, the gate and every template; the draft still survives a refresh and the Google round trip for the same account.
-Accept:     tests: the same account restores, however the address is cased or dotted; another account and no account get a clean case and the tab's copy is gone; an untagged draft restores.
-Verify:     tests + browser QA
-Ship:       with Phase 47 (one publish)
-Spec:       none (this card)
+Empty. Locked draft reopens only for its own account finished on 2026-09-30; pull the next card from Next.
 
 ## Next
 
