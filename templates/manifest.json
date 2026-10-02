@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 71,
+  "count": 73,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -3969,6 +3969,136 @@
       "schemaPath": "schemas/gallbladder_carcinoma.json"
     },
     {
+      "id": "hcc",
+      "name": "Hepatocellular carcinoma resection",
+      "shortName": "Liver · HCC resection",
+      "label": "HCC",
+      "organ": "LIVER",
+      "system": "Hepatobiliary",
+      "kind": "cancer resection",
+      "rank": 47,
+      "aliases": [
+        "HCC",
+        "hepatocellular carcinoma",
+        "hepatoma",
+        "liver cancer",
+        "fibrolamellar",
+        "hepatectomy",
+        "segmentectomy"
+      ],
+      "match": {
+        "site": [
+          "liver",
+          "hepatic",
+          "hepatectomy",
+          "segmentectomy",
+          "sectionectomy",
+          "segment"
+        ],
+        "procedure": [
+          "hepatectomy",
+          "segmentectomy",
+          "sectionectomy",
+          "lobectomy",
+          "resection",
+          "wedge",
+          "explant"
+        ],
+        "clinical": [
+          "HCC",
+          "hepatocellular carcinoma",
+          "hepatoma"
+        ],
+        "gate": "\\b(?:HCC|hepatocellular|hepatoma|fibrolamellar)\\b",
+        "exclude": [
+          "flexure",
+          "biopsy",
+          "biopsies",
+          "core",
+          "needle"
+        ],
+        "bias": 2,
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "map",
+            "map": [
+              [
+                "\\bextended\\s+right\\s+(?:hemi-?)?hepatectomy\\b",
+                "Liver, extended right hepatectomy"
+              ],
+              [
+                "\\bextended\\s+left\\s+(?:hemi-?)?hepatectomy\\b",
+                "Liver, extended left hepatectomy"
+              ],
+              [
+                "\\bright\\s+(?:hemi-?)?hepatectomy\\b",
+                "Liver, right hepatectomy"
+              ],
+              [
+                "\\bleft\\s+(?:hemi-?)?hepatectomy\\b",
+                "Liver, left hepatectomy"
+              ],
+              [
+                "\\bright\\s+tri-?sectionectomy\\b",
+                "Liver, right trisectionectomy"
+              ],
+              [
+                "\\bleft\\s+tri-?sectionectomy\\b",
+                "Liver, left trisectionectomy"
+              ],
+              [
+                "\\bleft\\s+lateral\\s+sectionectomy\\b",
+                "Liver, left lateral sectionectomy"
+              ],
+              [
+                "\\bleft\\s+medial\\s+sectionectomy\\b",
+                "Liver, left medial sectionectomy"
+              ],
+              [
+                "\\bright\\s+anterior\\s+sectionectomy\\b",
+                "Liver, right anterior sectionectomy"
+              ],
+              [
+                "\\bright\\s+posterior\\s+sectionectomy\\b",
+                "Liver, right posterior sectionectomy"
+              ]
+            ]
+          },
+          {
+            "field": "segments",
+            "from": "options"
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bwedge\\b",
+                "Wedge resection"
+              ],
+              [
+                "\\b(?:explant|total\\s+hepatectomy)\\b",
+                "Total hepatectomy"
+              ],
+              [
+                "\\b(?:(?:right|left|extended)\\s+(?:hemi-?)?hepatectomy|hemihepatectomy|tri-?sectionectomy|trisegmentectomy)\\b",
+                "Partial hepatectomy, major (3 segments or more)"
+              ],
+              [
+                "\\b(?:segmentectomy|bisegmentectomy|sectionectomy)\\b",
+                "Partial hepatectomy, minor (less than 3 segments)"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.10",
+      "generator": "hcc",
+      "generatorPath": "generators/hcc.js",
+      "schemaPath": "schemas/hcc.json"
+    },
+    {
       "id": "pancreas_carcinoma",
       "name": "Pancreatic carcinoma resection (Whipple)",
       "shortName": "Pancreas · carcinoma resection",
@@ -5656,6 +5786,83 @@
       "generator": "liver_biopsy",
       "generatorPath": "generators/liver_biopsy.js",
       "schemaPath": "schemas/liver_biopsy.json"
+    },
+    {
+      "id": "liver_lesion_biopsy",
+      "name": "Liver biopsy (mass lesion)",
+      "shortName": "Liver · targeted biopsy",
+      "label": "Liver (mass)",
+      "organ": "LIVER",
+      "system": "Hepatobiliary",
+      "kind": "biopsy",
+      "rank": 61,
+      "aliases": [
+        "liver mass",
+        "liver lesion",
+        "liver nodule",
+        "SOL",
+        "targeted liver biopsy",
+        "liver metastasis",
+        "HCC biopsy",
+        "cholangiocarcinoma",
+        "hepatocellular adenoma",
+        "FNH",
+        "haemangioma",
+        "EHE",
+        "PEComa"
+      ],
+      "match": {
+        "site": [
+          "liver",
+          "hepatic"
+        ],
+        "procedure": [
+          "biopsy",
+          "biopsies",
+          "core",
+          "needle",
+          "tru-cut",
+          "trucut"
+        ],
+        "clinical": [
+          "HCC",
+          "hepatoma",
+          "metastasis",
+          "metastases",
+          "liver mass",
+          "liver lesion",
+          "SOL"
+        ],
+        "gate": "^(?=[\\s\\S]*\\b(?:biops(?:y|ies)|cores?|needle|tru-?cut|trucut)\\b)(?=[\\s\\S]*(?:\\b(?:mass(?:es)?|lesions?|nodules?|SOL|HCC|hepatoma|hepatocellular|tumou?rs?|metasta\\w*|mets?|carcinoma|cholangiocarcinoma|neoplasm\\w*|malignan\\w*|adenomas?|ha?emangiomas?|FNH|EHE|PEComa|angiomyolipoma|lymphoma|abscess(?:es)?|cysts?|hydatid|targeted|segments?|S[1-8])\\b|\\?\\s*(?:HCC|mets?)\\b))",
+        "exclude": [
+          "flexure",
+          "random",
+          "background",
+          "non-lesional",
+          "resection",
+          "hepatectomy",
+          "segmentectomy",
+          "sectionectomy",
+          "lobectomy",
+          "explant",
+          "FNA",
+          "aspirate",
+          "aspiration",
+          "cytology"
+        ],
+        "bias": 1,
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail",
+            "unless": "^(?:liver|hepatic|biops(?:y|ies)|core|needle|core biopsy|needle biopsy|\\?.*)$"
+          }
+        ]
+      },
+      "version": "2026.10",
+      "generator": "liver_lesion_biopsy",
+      "generatorPath": "generators/liver_lesion_biopsy.js",
+      "schemaPath": "schemas/liver_lesion_biopsy.json"
     },
     {
       "id": "hirschsprung_biopsy",

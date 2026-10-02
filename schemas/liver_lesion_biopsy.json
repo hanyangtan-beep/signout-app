@@ -1,0 +1,1183 @@
+{
+ "id": "liver_lesion_biopsy",
+ "version": "2026.10",
+ "name": "Liver biopsy (mass lesion)",
+ "shortName": "Liver · targeted biopsy",
+ "label": "Liver (mass)",
+ "organ": "LIVER",
+ "system": "Hepatobiliary",
+ "kind": "biopsy",
+ "rank": 61,
+ "aliases": [
+  "liver mass",
+  "liver lesion",
+  "liver nodule",
+  "SOL",
+  "targeted liver biopsy",
+  "liver metastasis",
+  "HCC biopsy",
+  "cholangiocarcinoma",
+  "hepatocellular adenoma",
+  "FNH",
+  "haemangioma",
+  "EHE",
+  "PEComa"
+ ],
+ "match": {
+  "site": [
+   "liver",
+   "hepatic"
+  ],
+  "procedure": [
+   "biopsy",
+   "biopsies",
+   "core",
+   "needle",
+   "tru-cut",
+   "trucut"
+  ],
+  "clinical": [
+   "HCC",
+   "hepatoma",
+   "metastasis",
+   "metastases",
+   "liver mass",
+   "liver lesion",
+   "SOL"
+  ],
+  "gate": "^(?=[\\s\\S]*\\b(?:biops(?:y|ies)|cores?|needle|tru-?cut|trucut)\\b)(?=[\\s\\S]*(?:\\b(?:mass(?:es)?|lesions?|nodules?|SOL|HCC|hepatoma|hepatocellular|tumou?rs?|metasta\\w*|mets?|carcinoma|cholangiocarcinoma|neoplasm\\w*|malignan\\w*|adenomas?|ha?emangiomas?|FNH|EHE|PEComa|angiomyolipoma|lymphoma|abscess(?:es)?|cysts?|hydatid|targeted|segments?|S[1-8])\\b|\\?\\s*(?:HCC|mets?)\\b))",
+  "exclude": [
+   "flexure",
+   "random",
+   "background",
+   "non-lesional",
+   "resection",
+   "hepatectomy",
+   "segmentectomy",
+   "sectionectomy",
+   "lobectomy",
+   "explant",
+   "FNA",
+   "aspirate",
+   "aspiration",
+   "cytology"
+  ],
+  "bias": 1,
+  "fill": [
+   {
+    "field": "specimenName",
+    "from": "detail",
+    "unless": "^(?:liver|hepatic|biops(?:y|ies)|core|needle|core biopsy|needle biopsy|\\?.*)$"
+   }
+  ]
+ },
+ "specimenNoun": "biopsy",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "liver_lesion_biopsy",
+ "style": {
+  "british": true
+ },
+ "source": {
+  "title": "RCPath G050 liver dataset (2022), section 10: needle core biopsies of focal lesions; RCPath G167 cancer of unknown primary (2024); WHO Classification of Tumours, Digestive System, 5th and 6th editions",
+  "url": "https://www.rcpath.org/static/cbae24ce-220c-4d9f-95c5b83dd1f0ad2b/Dataset-for-histopathological-reporting-of-liver-resection-specimens-and-liver-biopsies-for-primary-and-metastatic-carcinoma.pdf"
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  }
+ ],
+ "partDefaults": [],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Site as received",
+   "type": "text",
+   "group": "Specimen",
+   "default": "",
+   "placeholder": "e.g. segment 7 mass",
+   "help": "The site from the request, without \"liver\" or \"biopsy\": it heads the diagnosis line (\"LIVER, segment 7 mass, biopsy\")."
+  },
+  {
+   "id": "cores",
+   "label": "Number of cores",
+   "type": "number",
+   "group": "Specimen",
+   "min": 1,
+   "step": 1,
+   "default": 1
+  },
+  {
+   "id": "coreLength",
+   "label": "Aggregate core length (mm)",
+   "type": "number",
+   "group": "Specimen",
+   "min": 0,
+   "step": 1,
+   "default": ""
+  },
+  {
+   "id": "dx",
+   "label": "Diagnosis",
+   "type": "select",
+   "group": "Diagnosis",
+   "options": [
+    "Hepatocellular carcinoma",
+    "Fibrolamellar carcinoma",
+    "Hepatocellular adenoma",
+    "Focal nodular hyperplasia",
+    "Atypical hepatocellular neoplasm",
+    "High-grade dysplastic nodule",
+    "Hepatoblastoma",
+    "Intrahepatic cholangiocarcinoma",
+    "Combined hepatocellular-cholangiocarcinoma",
+    "Adenocarcinoma, intrahepatic or metastatic",
+    "Bile duct adenoma",
+    "Bile duct hamartoma",
+    "Metastatic adenocarcinoma",
+    "Metastatic carcinoma (specify type)",
+    "Metastatic neuroendocrine tumour",
+    "Metastatic neuroendocrine carcinoma",
+    "Metastatic melanoma",
+    "Metastatic gastrointestinal stromal tumour",
+    "Haemangioma",
+    "Epithelioid haemangioendothelioma",
+    "Angiosarcoma",
+    "PEComa (epithelioid angiomyolipoma)",
+    "Solitary fibrous tumour",
+    "Inflammatory myofibroblastic tumour",
+    "Undifferentiated embryonal sarcoma",
+    "Lymphoma (specify type)",
+    "Myeloid sarcoma",
+    "Carcinoma, not further classifiable",
+    "Malignant neoplasm, not further classifiable",
+    "Abscess",
+    "Hydatid cyst",
+    "Inflammatory pseudotumour",
+    "Necrotic tissue only",
+    "Non-lesional liver only",
+    "Other (specify)"
+   ],
+   "default": "Metastatic adenocarcinoma",
+   "optionGroups": [
+    {
+     "label": "Hepatocellular",
+     "options": [
+      "Hepatocellular carcinoma",
+      "Fibrolamellar carcinoma",
+      "Hepatocellular adenoma",
+      "Focal nodular hyperplasia",
+      "Atypical hepatocellular neoplasm",
+      "High-grade dysplastic nodule",
+      "Hepatoblastoma"
+     ]
+    },
+    {
+     "label": "Biliary",
+     "options": [
+      "Intrahepatic cholangiocarcinoma",
+      "Combined hepatocellular-cholangiocarcinoma",
+      "Adenocarcinoma, intrahepatic or metastatic",
+      "Bile duct adenoma",
+      "Bile duct hamartoma"
+     ]
+    },
+    {
+     "label": "Metastatic",
+     "options": [
+      "Metastatic adenocarcinoma",
+      "Metastatic carcinoma (specify type)",
+      "Metastatic neuroendocrine tumour",
+      "Metastatic neuroendocrine carcinoma",
+      "Metastatic melanoma",
+      "Metastatic gastrointestinal stromal tumour"
+     ]
+    },
+    {
+     "label": "Vascular and mesenchymal",
+     "options": [
+      "Haemangioma",
+      "Epithelioid haemangioendothelioma",
+      "Angiosarcoma",
+      "PEComa (epithelioid angiomyolipoma)",
+      "Solitary fibrous tumour",
+      "Inflammatory myofibroblastic tumour",
+      "Undifferentiated embryonal sarcoma"
+     ]
+    },
+    {
+     "label": "Haematolymphoid",
+     "options": [
+      "Lymphoma (specify type)",
+      "Myeloid sarcoma"
+     ]
+    },
+    {
+     "label": "Not classifiable",
+     "options": [
+      "Carcinoma, not further classifiable",
+      "Malignant neoplasm, not further classifiable"
+     ]
+    },
+    {
+     "label": "Non-neoplastic or not sampled",
+     "options": [
+      "Abscess",
+      "Hydatid cyst",
+      "Inflammatory pseudotumour",
+      "Necrotic tissue only",
+      "Non-lesional liver only"
+     ]
+    }
+   ],
+   "help": "The lesion on the core. \"Non-lesional liver only\" when the targeted lesion is not represented.",
+   "reference": {
+    "title": "Other lesions",
+    "intro": "Fibrolamellar, biliary, metastatic and vascular lesions on targeted cores.",
+    "columns": 3,
+    "groups": [
+     {
+      "heading": "Fibrolamellar carcinoma",
+      "points": [
+       "Large eosinophilic cells with prominent nucleoli; pale and hyaline bodies",
+       "Lamellar fibrosis, often not seen on a core; non-cirrhotic liver",
+       "CK7 and CD68 positive"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/flc_pale_bodies.jpg",
+        "caption": "Fibrolamellar carcinoma: tumour cells with large nuclei and pale bodies (C, short arrows) and hyaline globules (D, long arrows) (H&E, x400).",
+        "credit": "Takahashi, Surg Case Rep 2021, Fig 2 (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8448801/"
+       }
+      ]
+     },
+     {
+      "heading": "Intrahepatic cholangiocarcinoma",
+      "points": [
+       "Small-duct: non-mucinous cuboidal cells in a ductular or cord-like pattern; CRP, N-cadherin, CD56",
+       "Large-duct: columnar, often mucinous cells; S100P, MUC5AC",
+       "Immunohistochemistry does not separate it from a pancreatic or gastric metastasis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/icca_small_duct.jpg",
+        "caption": "Small-duct intrahepatic cholangiocarcinoma: morphology (a) with CRP (b), N-cadherin (c) and CD56 (d) (x100).",
+        "credit": "Wang, Front Oncol 2025, Fig 2",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12535893/"
+       }
+      ]
+     },
+     {
+      "heading": "Bile duct hamartoma",
+      "points": [
+       "Ducts of variable shapes and sizes, often rounded, in a fibrous stroma",
+       "Differential: bile duct adenoma and metastatic adenocarcinoma"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/bile_duct_hamartoma.jpg",
+        "caption": "Bile duct hamartoma (von Meyenburg complex): ducts of variable shapes and sizes in a fibrous stroma (H&E).",
+        "credit": "Haloui, Pan Afr Med J 2022, Fig 4",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9307921/"
+       }
+      ]
+     },
+     {
+      "heading": "Metastatic colorectal adenocarcinoma",
+      "points": [
+       "CK20 and CDX2 positive; over 15% of mismatch-repair-deficient tumours lose CK20 or CDX2",
+       "Growth at the liver interface: desmoplastic, replacement or pushing"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/crc_met_growth_patterns.jpg",
+        "caption": "Colorectal liver metastases: desmoplastic (a), replacement (b), pushing (c) and mixed (d) growth patterns (H&E).",
+        "credit": "Zaharia, Cancers 2023, Fig 2",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9818232/"
+       }
+      ]
+     },
+     {
+      "heading": "Epithelioid haemangioendothelioma",
+      "points": [
+       "Strands and nests of epithelioid cells with intracytoplasmic vacuoles in a myxohyaline stroma",
+       "ERG, CD31, CD34; CAMTA1 in most, TFE3 in a minority",
+       "May express keratin; on a core it can pass for granulation tissue"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/ehe_ihc.jpg",
+        "caption": "TFE3-rearranged EHE: CD34, CD31, ERG and FLI-1 (A-D) and TFE3 (E) positive; Ki-67 about 15% (F).",
+        "credit": "Meng, Front Oncol 2025, Fig 3",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11799294/"
+       }
+      ]
+     },
+     {
+      "heading": "PEComa",
+      "points": [
+       "Epithelioid cells with granular eosinophilic to clear cytoplasm, with fat",
+       "HMB45, Melan-A, SMA and cathepsin K; HepPar-1 and keratin negative"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/pecoma.jpg",
+        "caption": "Hepatic PEComa: cut surface (A), epithelioid cells with granular to clear cytoplasm and fat (B, H&E x200), HMB-45 (C), Melan-A (D), SMA (E) and CD34 (F).",
+        "credit": "Ji, Front Oncol 2024, Fig 3",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11361986/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "dxOther",
+   "label": "Diagnosis (specify)",
+   "type": "text",
+   "group": "Diagnosis",
+   "default": "",
+   "showIf": {
+    "field": "dx",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "qualifier",
+   "label": "Certainty",
+   "type": "select",
+   "group": "Diagnosis",
+   "options": [
+    "",
+    "Suspicious for"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "Definite"
+   },
+   "showIf": {
+    "field": "dx",
+    "is": [
+     "Hepatocellular carcinoma",
+     "Fibrolamellar carcinoma",
+     "Hepatoblastoma",
+     "Intrahepatic cholangiocarcinoma",
+     "Combined hepatocellular-cholangiocarcinoma",
+     "Adenocarcinoma, intrahepatic or metastatic",
+     "Metastatic adenocarcinoma",
+     "Metastatic carcinoma (specify type)",
+     "Metastatic neuroendocrine tumour",
+     "Metastatic neuroendocrine carcinoma",
+     "Metastatic melanoma",
+     "Metastatic gastrointestinal stromal tumour",
+     "Epithelioid haemangioendothelioma",
+     "Angiosarcoma",
+     "Undifferentiated embryonal sarcoma",
+     "Lymphoma (specify type)",
+     "Myeloid sarcoma",
+     "Carcinoma, not further classifiable",
+     "Malignant neoplasm, not further classifiable"
+    ]
+   },
+   "help": "\"Suspicious for\" heads the diagnosis when the sample is too limited for a definite call."
+  },
+  {
+   "id": "hccGrade",
+   "label": "Histologic grade (WHO)",
+   "type": "select",
+   "group": "Diagnosis",
+   "options": [
+    "Well differentiated",
+    "Moderately differentiated",
+    "Poorly differentiated",
+    "Not assessable"
+   ],
+   "default": "Moderately differentiated",
+   "showIf": {
+    "field": "dx",
+    "is": "Hepatocellular carcinoma"
+   },
+   "reference": {
+    "title": "HCC grade (WHO)",
+    "intro": "Three tiers (WHO, ICCR, RCPath); where the tumour is heterogeneous the worst grade is assigned (RCPath G050). CAP uses four (G1-G4).",
+    "columns": 3,
+    "groups": [
+     {
+      "heading": "Well differentiated",
+      "points": [
+       "Cells resemble mature hepatocytes, with minimal to mild atypia",
+       "Differential: high-grade dysplastic nodule (cirrhosis) or adenoma (non-cirrhotic liver)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/hcc_well_he.jpg",
+        "caption": "Well-differentiated HCC: trabecular and pseudoglandular growth with mild atypia and bile pigment in the lumina (H&E, x400).",
+        "credit": "Limaiem, Int J Surg Case Rep 2025, Fig 5",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12410352/"
+       }
+      ]
+     },
+     {
+      "heading": "Moderately differentiated",
+      "points": [
+       "Clearly malignant; the morphology strongly suggests hepatocellular differentiation",
+       "Moderate nuclear atypia; occasional multinucleated cells"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/hcc_moderate_biopsy_he.jpg",
+        "caption": "Moderately differentiated HCC on a liver biopsy: pleomorphic hepatocytes with granular eosinophilic cytoplasm and prominent nucleoli (H&E, x400).",
+        "credit": "Lukoo, Case Rep Radiol 2026, Fig 1",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13389434/"
+       }
+      ]
+     },
+     {
+      "heading": "Poorly differentiated",
+      "points": [
+       "Clearly malignant, but the hepatocellular nature is not evident from the morphology",
+       "Marked pleomorphism; anaplastic giant cells"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/hcc_poor_biopsy_he.jpg",
+        "caption": "Poorly differentiated HCC on a liver biopsy: sheets of markedly atypical cells with multinucleated giant cells and necrosis (H&E).",
+        "credit": "Singh, Cureus 2025, Fig 3",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12825689/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "hccSubtype",
+   "label": "Subtype (WHO 5th edition)",
+   "type": "select",
+   "group": "Diagnosis",
+   "options": [
+    "",
+    "Steatohepatitic",
+    "Clear cell",
+    "Macrotrabecular-massive",
+    "Scirrhous",
+    "Chromophobe",
+    "Neutrophil-rich",
+    "Lymphocyte-rich"
+   ],
+   "optionLabels": {
+    "": "Not otherwise specified"
+   },
+   "default": "",
+   "showIf": {
+    "field": "dx",
+    "is": "Hepatocellular carcinoma"
+   }
+  },
+  {
+   "id": "hcaSubtype",
+   "label": "Adenoma subtype",
+   "type": "select",
+   "group": "Diagnosis",
+   "options": [
+    "Not determined",
+    "HNF1A-inactivated",
+    "Inflammatory",
+    "Beta-catenin-activated, exon 3",
+    "Beta-catenin-activated, exon 7/8",
+    "Beta-catenin-activated inflammatory",
+    "Sonic hedgehog",
+    "Unclassified"
+   ],
+   "default": "Not determined",
+   "showIf": {
+    "field": "dx",
+    "is": "Hepatocellular adenoma"
+   },
+   "help": "WHO 6th edition subtypes. \"Unclassified\" only when the subtyping panel shows no abnormality.",
+   "reference": {
+    "title": "Adenoma subtypes",
+    "intro": "Glutamine synthetase, serum amyloid A and beta-catenin identify the clinically important inflammatory and beta-catenin-activated types (RCPath G050).",
+    "columns": 3,
+    "groups": [
+     {
+      "heading": "HNF1A-inactivated",
+      "points": [
+       "Steatosis, with ballooned or clear hepatocytes",
+       "Loss of LFABP"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/hca_hnf1a_lfabp.jpg",
+        "caption": "HNF1A-inactivated adenoma: steatosis (a, c) and loss of LFABP (b).",
+        "credit": "Margolskee, Diagn Pathol 2016, Fig 1",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4784347/"
+       }
+      ]
+     },
+     {
+      "heading": "Inflammatory",
+      "points": [
+       "Telangiectasia, ductular reaction and inflammation",
+       "Diffuse strong SAA and CRP"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/hca_inflammatory_saa.jpg",
+        "caption": "Inflammatory adenoma: telangiectasia and inflammation (a, c) with diffuse serum amyloid A (b).",
+        "credit": "Margolskee, Diagn Pathol 2016, Fig 3",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4784347/"
+       }
+      ]
+     },
+     {
+      "heading": "Beta-catenin-activated",
+      "points": [
+       "Exon 3: diffuse homogeneous glutamine synthetase, frequent nuclear beta-catenin; carries the risk of malignant change",
+       "Exon 7/8: patchy or faint glutamine synthetase; no nuclear beta-catenin",
+       "Glutamine synthetase not strong and diffuse on a biopsy: molecular testing decides"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/hca_bcatenin_gs.jpg",
+        "caption": "Beta-catenin-activated adenoma: diffuse glutamine synthetase against perivenular staining in normal liver (b), and focal nuclear beta-catenin (c, left).",
+        "credit": "Margolskee, Diagn Pathol 2016, Fig 2",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4784347/"
+       }
+      ]
+     },
+     {
+      "heading": "Sonic hedgehog and unclassified",
+      "points": [
+       "Sonic hedgehog: bland small hepatocytes with haemorrhage and peliosis; ASS1 or PTGDS positive",
+       "Unclassified: none of the above demonstrated"
+      ],
+      "images": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "hbPatterns",
+   "label": "Hepatoblastoma: histological patterns",
+   "type": "multiselect",
+   "group": "Diagnosis",
+   "options": [
+    "Fetal, low mitotic activity",
+    "Fetal, mitotically active",
+    "Embryonal",
+    "Pleomorphic",
+    "Macrotrabecular",
+    "Cholangioblastic",
+    "Small cell undifferentiated",
+    "Mixed epithelial and mesenchymal"
+   ],
+   "default": [],
+   "showIf": {
+    "field": "dx",
+    "is": "Hepatoblastoma"
+   }
+  },
+  {
+   "id": "ccaType",
+   "label": "Cholangiocarcinoma type",
+   "type": "select",
+   "group": "Diagnosis",
+   "options": [
+    "Not determined",
+    "Large duct type",
+    "Small duct type"
+   ],
+   "default": "Not determined",
+   "showIf": {
+    "field": "dx",
+    "is": "Intrahepatic cholangiocarcinoma"
+   }
+  },
+  {
+   "id": "ccaGrade",
+   "label": "Cholangiocarcinoma grade",
+   "type": "select",
+   "group": "Diagnosis",
+   "options": [
+    "",
+    "Well differentiated",
+    "Moderately differentiated",
+    "Poorly differentiated"
+   ],
+   "optionLabels": {
+    "": "Not graded"
+   },
+   "default": "",
+   "showIf": {
+    "field": "dx",
+    "is": "Intrahepatic cholangiocarcinoma"
+   }
+  },
+  {
+   "id": "carcinomaType",
+   "label": "Carcinoma type (specify)",
+   "type": "text",
+   "group": "Diagnosis",
+   "default": "",
+   "placeholder": "e.g. squamous cell carcinoma",
+   "showIf": {
+    "field": "dx",
+    "is": "Metastatic carcinoma (specify type)"
+   }
+  },
+  {
+   "id": "netGrade",
+   "label": "Neuroendocrine tumour grade (WHO)",
+   "type": "select",
+   "group": "Diagnosis",
+   "options": [
+    "Grade 1",
+    "Grade 2",
+    "Grade 3",
+    "Not assessable"
+   ],
+   "default": "Grade 2",
+   "showIf": {
+    "field": "dx",
+    "is": "Metastatic neuroendocrine tumour"
+   }
+  },
+  {
+   "id": "necType",
+   "label": "Neuroendocrine carcinoma type",
+   "type": "select",
+   "group": "Diagnosis",
+   "options": [
+    "Small cell",
+    "Large cell"
+   ],
+   "default": "Small cell",
+   "showIf": {
+    "field": "dx",
+    "is": "Metastatic neuroendocrine carcinoma"
+   }
+  },
+  {
+   "id": "lymphomaType",
+   "label": "Lymphoma type (specify)",
+   "type": "text",
+   "group": "Diagnosis",
+   "default": "",
+   "placeholder": "e.g. diffuse large B-cell lymphoma",
+   "showIf": {
+    "field": "dx",
+    "is": "Lymphoma (specify type)"
+   }
+  },
+  {
+   "id": "primarySite",
+   "label": "Primary site",
+   "type": "select",
+   "group": "Diagnosis",
+   "options": [
+    "",
+    "Colorectal",
+    "Small intestinal",
+    "Upper gastrointestinal",
+    "Pancreatic",
+    "Pancreatobiliary",
+    "Lung",
+    "Breast",
+    "Prostatic",
+    "Renal",
+    "Ovarian",
+    "Endometrial",
+    "Urothelial",
+    "Thyroid",
+    "Other (specify)"
+   ],
+   "optionLabels": {
+    "": "Not stated"
+   },
+   "default": "",
+   "showIf": {
+    "field": "dx",
+    "is": [
+     "Metastatic adenocarcinoma",
+     "Metastatic carcinoma (specify type)",
+     "Metastatic neuroendocrine tumour",
+     "Metastatic neuroendocrine carcinoma"
+    ]
+   }
+  },
+  {
+   "id": "primaryOther",
+   "label": "Primary site (specify)",
+   "type": "text",
+   "group": "Diagnosis",
+   "default": "",
+   "placeholder": "e.g. gallbladder",
+   "showIf": {
+    "field": "primarySite",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "primaryBasis",
+   "label": "Primary site: wording",
+   "type": "select",
+   "group": "Diagnosis",
+   "options": [
+    "In keeping with",
+    "Favour",
+    "Consistent with the known"
+   ],
+   "default": "In keeping with",
+   "showIf": {
+    "field": "primarySite",
+    "not": ""
+   },
+   "help": "\"Consistent with the known\" when previous histology of the primary is available for comparison."
+  },
+  {
+   "id": "lesionNotes",
+   "label": "Lesion description (typed; replaces the derived sentence)",
+   "type": "textarea",
+   "group": "Microscopy and immunohistochemistry",
+   "default": ""
+  },
+  {
+   "id": "ihc",
+   "label": "Immunohistochemistry",
+   "type": "text",
+   "group": "Microscopy and immunohistochemistry",
+   "default": "",
+   "placeholder": "e.g. CK20+, CDX2+, SATB2+, CK7-, TTF-1-",
+   "help": "Stains with \"+\", \"-\", \"focal +\" or \"weak +\", separated by commas; or \"positive: ...; negative: ...\". Printed as one sentence."
+  },
+  {
+   "id": "gs",
+   "label": "Glutamine synthetase pattern",
+   "type": "select",
+   "group": "Microscopy and immunohistochemistry",
+   "options": [
+    "",
+    "Map-like",
+    "Diffuse strong",
+    "Diffuse heterogeneous (starry sky)",
+    "Patchy",
+    "Rim at the periphery",
+    "Perivenular only",
+    "Negative"
+   ],
+   "optionLabels": {
+    "": "Not done"
+   },
+   "default": "",
+   "showIf": {
+    "field": "dx",
+    "is": [
+     "Hepatocellular carcinoma",
+     "Fibrolamellar carcinoma",
+     "Hepatocellular adenoma",
+     "Focal nodular hyperplasia",
+     "Atypical hepatocellular neoplasm",
+     "High-grade dysplastic nodule",
+     "Hepatoblastoma"
+    ]
+   }
+  },
+  {
+   "id": "cd34",
+   "label": "CD34 (sinusoidal)",
+   "type": "select",
+   "group": "Microscopy and immunohistochemistry",
+   "options": [
+    "",
+    "Diffuse sinusoidal",
+    "Patchy sinusoidal",
+    "No sinusoidal staining"
+   ],
+   "optionLabels": {
+    "": "Not done"
+   },
+   "default": "",
+   "showIf": {
+    "field": "dx",
+    "is": [
+     "Hepatocellular carcinoma",
+     "Fibrolamellar carcinoma",
+     "Hepatocellular adenoma",
+     "Focal nodular hyperplasia",
+     "Atypical hepatocellular neoplasm",
+     "High-grade dysplastic nodule",
+     "Hepatoblastoma"
+    ]
+   }
+  },
+  {
+   "id": "reticulin",
+   "label": "Reticulin",
+   "type": "select",
+   "group": "Microscopy and immunohistochemistry",
+   "options": [
+    "",
+    "Retained",
+    "Focally reduced",
+    "Lost"
+   ],
+   "optionLabels": {
+    "": "Not done"
+   },
+   "default": "",
+   "showIf": {
+    "field": "dx",
+    "is": [
+     "Hepatocellular carcinoma",
+     "Fibrolamellar carcinoma",
+     "Hepatocellular adenoma",
+     "Focal nodular hyperplasia",
+     "Atypical hepatocellular neoplasm",
+     "High-grade dysplastic nodule",
+     "Hepatoblastoma"
+    ]
+   },
+   "reference": {
+    "title": "Hepatocellular stains",
+    "intro": "On a well-differentiated lesion, reticulin loss, or at least two of glypican-3, HSP70 and diffuse glutamine synthetase, favour HCC (RCPath G050).",
+    "columns": 3,
+    "groups": [
+     {
+      "heading": "Reticulin and CD34",
+      "points": [
+       "HCC: fragmentation and loss of the reticulin framework",
+       "HCC: diffuse sinusoidal capillarisation on CD34"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/hcc_biopsy_reticulin_cd34.jpg",
+        "caption": "Moderately differentiated HCC on a liver biopsy: H&E (A), arginase-1 and LFABP (B), loss of the reticulin network on a silver stain (C) and diffuse sinusoidal CD34 (D).",
+        "credit": "van den Berg, J Cannabis Res 2025, Fig 1",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12642083/"
+       }
+      ]
+     },
+     {
+      "heading": "Glypican-3",
+      "points": [
+       "Positive in over 70% of HCC; may be weak or focal when well differentiated",
+       "Not hepatocyte-specific: positive in 14% of gastrointestinal and pancreatic metastases"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/hcc_glypican3.jpg",
+        "caption": "Glypican-3 in HCC: weak (A) and strong (B-D) staining (x200; D x400).",
+        "credit": "Gong, PLoS One 2014, Fig 1",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3909016/"
+       }
+      ]
+     },
+     {
+      "heading": "Glutamine synthetase",
+      "points": [
+       "FNH: map-like, anastomosing staining",
+       "Diffuse strong staining: some HCC, and beta-catenin-activated adenoma",
+       "Normal liver: zone 3 staining around central veins"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/fnh_gs_maplike.jpg",
+        "caption": "FNH: map-like glutamine synthetase in the lesion (arrows) beside zone 3 staining around a central vein (CV) in the adjacent liver.",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 6",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "betaCatenin",
+   "label": "Beta-catenin",
+   "type": "select",
+   "group": "Microscopy and immunohistochemistry",
+   "options": [
+    "",
+    "Nuclear staining",
+    "Membranous only"
+   ],
+   "optionLabels": {
+    "": "Not done"
+   },
+   "default": "",
+   "showIf": {
+    "field": "dx",
+    "is": [
+     "Hepatocellular carcinoma",
+     "Fibrolamellar carcinoma",
+     "Hepatocellular adenoma",
+     "Focal nodular hyperplasia",
+     "Atypical hepatocellular neoplasm",
+     "High-grade dysplastic nodule",
+     "Hepatoblastoma"
+    ]
+   }
+  },
+  {
+   "id": "ki67",
+   "label": "Ki-67 proliferation index (%)",
+   "type": "number",
+   "group": "Microscopy and immunohistochemistry",
+   "min": 0,
+   "max": 100,
+   "step": 1,
+   "default": ""
+  },
+  {
+   "id": "stainsNote",
+   "label": "Other stains (typed sentence)",
+   "type": "text",
+   "group": "Microscopy and immunohistochemistry",
+   "default": "",
+   "placeholder": "e.g. PAS-diastase shows no intracytoplasmic mucin"
+  },
+  {
+   "id": "nonLesional",
+   "label": "Non-lesional liver",
+   "type": "select",
+   "group": "Background liver",
+   "options": [
+    "Present",
+    "Scanty",
+    "Not identified"
+   ],
+   "default": "Present"
+  },
+  {
+   "id": "bgFindings",
+   "label": "Additional pathologic findings (background liver)",
+   "type": "multiselect",
+   "group": "Background liver",
+   "options": [
+    "None identified",
+    "Fibrosis (specify extent, providing name of the scheme and assessment scale used)",
+    "Cirrhosis",
+    "Low-grade dysplastic nodule",
+    "High-grade dysplastic nodule",
+    "Steatosis",
+    "Steatohepatitis",
+    "Iron overload",
+    "Chronic hepatitis (specify aetiology)",
+    "Other (specify)"
+   ],
+   "default": [],
+   "showIf": {
+    "field": "nonLesional",
+    "not": "Not identified"
+   }
+  },
+  {
+   "id": "bgStageSystem",
+   "label": "Fibrosis: staging system",
+   "type": "select",
+   "group": "Background liver",
+   "options": [
+    "",
+    "Ishak",
+    "METAVIR",
+    "NASH CRN",
+    "Batts-Ludwig"
+   ],
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "nonLesional",
+      "not": "Not identified"
+     },
+     {
+      "field": "bgFindings",
+      "is": [
+       "Fibrosis (specify extent, providing name of the scheme and assessment scale used)",
+       "Cirrhosis"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "bgStage",
+   "label": "Fibrosis: stage",
+   "type": "select",
+   "group": "Background liver",
+   "options": [
+    "",
+    "0",
+    "1",
+    "1a",
+    "1b",
+    "1c",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+   ],
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "nonLesional",
+      "not": "Not identified"
+     },
+     {
+      "field": "bgFindings",
+      "is": [
+       "Fibrosis (specify extent, providing name of the scheme and assessment scale used)",
+       "Cirrhosis"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "bgAetiology",
+   "label": "Chronic hepatitis: aetiology",
+   "type": "select",
+   "group": "Background liver",
+   "options": [
+    "Hepatitis B",
+    "Hepatitis C",
+    "Hepatitis B and D",
+    "Autoimmune",
+    "Not determined",
+    "Other (specify)"
+   ],
+   "default": "Hepatitis B",
+   "showIf": {
+    "all": [
+     {
+      "field": "nonLesional",
+      "not": "Not identified"
+     },
+     {
+      "field": "bgFindings",
+      "is": "Chronic hepatitis (specify aetiology)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "bgAetiologyOther",
+   "label": "Chronic hepatitis: aetiology (specify)",
+   "type": "text",
+   "group": "Background liver",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "nonLesional",
+      "not": "Not identified"
+     },
+     {
+      "field": "bgAetiology",
+      "is": "Other (specify)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "bgSteatosisPct",
+   "label": "Steatosis (% of parenchyma)",
+   "type": "number",
+   "group": "Background liver",
+   "min": 0,
+   "max": 100,
+   "step": 5,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "nonLesional",
+      "not": "Not identified"
+     },
+     {
+      "field": "bgFindings",
+      "is": [
+       "Steatosis",
+       "Steatohepatitis"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "bgOther",
+   "label": "Other finding (specify)",
+   "type": "text",
+   "group": "Background liver",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "nonLesional",
+      "not": "Not identified"
+     },
+     {
+      "field": "bgFindings",
+      "is": "Other (specify)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes (any)",
+   "type": "textarea",
+   "group": "Background liver",
+   "default": ""
+  }
+ ],
+ "example": {
+  "caseTitle": "Targeted liver biopsy - hepatocellular carcinoma on cirrhosis",
+  "options": {
+   "includeHeader": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "segment 7 mass",
+     "cores": 2,
+     "coreLength": 22,
+     "dx": "Hepatocellular carcinoma",
+     "hccGrade": "Moderately differentiated",
+     "ihc": "HepPar-1+, arginase-1+, glypican-3+, CK7-, CK19-",
+     "reticulin": "Lost",
+     "cd34": "Diffuse sinusoidal",
+     "nonLesional": "Present",
+     "bgFindings": [
+      "Cirrhosis",
+      "Chronic hepatitis (specify aetiology)"
+     ],
+     "bgStageSystem": "Ishak",
+     "bgStage": "6",
+     "bgAetiology": "Hepatitis B"
+    }
+   }
+  ]
+ }
+}

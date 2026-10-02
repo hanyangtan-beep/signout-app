@@ -25,8 +25,9 @@ import * as pancreas from './pancreas.js';
 import * as ampulla from './ampulla.js';
 import * as skin_scc from './skin_scc.js';
 import * as oral from './oral.js';
+import * as hcc from './hcc.js';
 
-export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes, gastric, oesophagus, appendix, gallbladder, pancreas, ampulla, skin_scc, oral };
+export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes, gastric, oesophagus, appendix, gallbladder, pancreas, ampulla, skin_scc, oral, hcc };
 
 // T, N and M alternatives are listed longest first (ovary: T1c1-3, T2a/b, T3a-c, N0(i+); lung: T1mi,
 // N2a/b, M1c1/c2; head and neck skin: N2c; breast: Tis(DCIS), Tis(Paget), T4c/d, N0(mol+), N1mi, N3a-c and the optional (sn) / (f) node suffix); the negative look-aheads stand in for \b so "N0(i+)" and "T1c1 " both terminate cleanly.

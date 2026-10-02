@@ -1,0 +1,21 @@
+{
+  "templateId": "hcc",
+  "values": {
+    "tumourCount": 3,
+    "tumourSizeCm": 6.2,
+    "tumourDims": "",
+    "otherSizesCm": "2.1, 1.4",
+    "satellitosis": "Present",
+    "vascularInvasion": "Present, small vessel invasion",
+    "histType": "Hepatocellular carcinoma, macrotrabecular-massive"
+  },
+  "report": "Liver, segment 6, resection\n\nReceived in formalin is a partial hepatectomy specimen (segment 6) measuring 110 x 80 x 55 mm and weighing 210 g. There are three tumours, the largest measuring 6.2 cm in greatest dimension; the others measure 2.1 and 1.4 cm. The tumour is well circumscribed, tan-green and encapsulated, 8 mm from the parenchymal margin. Representative sections are taken; see block key.\n\n(1-4) Tumour.\n(5) Tumour with nearest parenchymal margin.\n(6) Background liver.\n\nSpecimen and tumour\n- Procedure: Partial hepatectomy, minor (less than 3 segments)\n- Tumour site: Segment 6\n- Tumour focality: Multiple (3 tumours)\n- Tumour size: 6.2 cm (largest tumour, greatest dimension); other tumours\n  2.1 and 1.4 cm\n\nMicroscopic findings\n- Histologic type: Hepatocellular carcinoma, macrotrabecular-massive\n- Histologic grade: G2: Moderately differentiated\n- Tumour histology:\n  The tumour is a moderately differentiated hepatocellular carcinoma of macrotrabecular-massive subtype. The tumour cells are hepatocyte-like, with moderate nuclear atypia, and grow in thickened trabeculae and pseudoglandular structures. The tumour grows predominantly in thick macrotrabeculae.\n- Tumour extension: Tumour confined to liver\n- Satellitosis: Present\n- Vascular invasion: Present, small vessel invasion\n- Perineural invasion: Not identified\n- Treatment effect: No known presurgical therapy\n\nMargins\n- Parenchymal margin: Uninvolved by invasive carcinoma, 8 mm\n\nLymph nodes\n- Regional lymph nodes: None submitted (0 examined)\n\nDistant metastasis\n- Distant metastasis: Not applicable\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT3 pNX\n\nAdditional findings\n- Cirrhosis (Ishak stage 6/6)\n- Chronic hepatitis (hepatitis B)\n\nLIVER, segment 6, resection\n- Moderately differentiated HEPATOCELLULAR CARCINOMA, macrotrabecular-massive\n  subtype, multifocal (three tumours)\n- Stage pT3 (pTNM, AJCC 8th edition)\n- Margin clear\n- CHRONIC HEPATITIS B with CIRRHOSIS (Ishak stage 6/6)",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Multiple tumours, at least one larger than 5 cm: pT3.",
+      "field": "tumourCount",
+      "part": "A"
+    }
+  ]
+}

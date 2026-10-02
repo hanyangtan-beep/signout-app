@@ -1,0 +1,19 @@
+{
+  "templateId": "hcc",
+  "values": {
+    "tumourSizeCm": 4.5,
+    "tumourDims": "45 x 40 x 38",
+    "vascularInvasion": "Present, small vessel invasion",
+    "vascularDetail": "largest nodule",
+    "grade": "G3: Poorly differentiated"
+  },
+  "report": "Liver, segment 6, resection\n\nReceived in formalin is a partial hepatectomy specimen (segment 6) measuring 110 x 80 x 55 mm and weighing 210 g. There is a single tumour measuring 45 x 40 x 38 mm. The tumour is well circumscribed, tan-green and encapsulated, 8 mm from the parenchymal margin. Representative sections are taken; see block key.\n\n(1-4) Tumour.\n(5) Tumour with nearest parenchymal margin.\n(6) Background liver.\n\nSpecimen and tumour\n- Procedure: Partial hepatectomy, minor (less than 3 segments)\n- Tumour site: Segment 6\n- Tumour focality: Solitary\n- Tumour size: 4.5 cm (largest tumour, greatest dimension)\n\nMicroscopic findings\n- Histologic type: Hepatocellular carcinoma\n- Histologic grade: G3: Poorly differentiated\n- Tumour histology:\n  The tumour is a poorly differentiated hepatocellular carcinoma. The tumour cells show marked nuclear pleomorphism and grow in solid sheets, with only focal hepatocellular differentiation.\n- Tumour extension: Tumour confined to liver\n- Satellitosis: Not identified\n- Vascular invasion: Present, small vessel invasion (largest nodule)\n- Perineural invasion: Not identified\n- Treatment effect: No known presurgical therapy\n\nMargins\n- Parenchymal margin: Uninvolved by invasive carcinoma, 8 mm\n\nLymph nodes\n- Regional lymph nodes: None submitted (0 examined)\n\nDistant metastasis\n- Distant metastasis: Not applicable\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT2 pNX\n\nAdditional findings\n- Cirrhosis (Ishak stage 6/6)\n- Chronic hepatitis (hepatitis B)\n\nLIVER, segment 6, resection\n- Poorly differentiated HEPATOCELLULAR CARCINOMA\n- Stage pT2 (pTNM, AJCC 8th edition)\n- Margin clear\n- CHRONIC HEPATITIS B with CIRRHOSIS (Ishak stage 6/6)",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Solitary tumour larger than 2 cm with vascular invasion: pT2.",
+      "field": "vascularInvasion",
+      "part": "A"
+    }
+  ]
+}

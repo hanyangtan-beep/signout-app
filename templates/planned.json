@@ -84,15 +84,6 @@
    "qmh": "GI-Anus"
   },
   {
-   "id": "hcc",
-   "name": "Hepatocellular carcinoma resection",
-   "label": "HCC",
-   "system": "Hepatobiliary",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "GI-HCC"
-  },
-  {
    "id": "intrahepatic_cholangiocarcinoma",
    "name": "Intrahepatic cholangiocarcinoma resection",
    "label": "iCCA",

@@ -1,0 +1,32 @@
+{
+  "templateId": "hcc",
+  "values": {
+    "tumourSizeCm": 8,
+    "tumourDims": "80 x 70 x 65",
+    "grossDetails": "the tumour is ill defined and reaches the parenchymal margin; tumour thrombus fills the right portal vein",
+    "tumourExtension": [
+      "Tumour involves a major branch of the portal vein"
+    ],
+    "vascularInvasion": "Present, large vessel invasion (major branch of hepatic vein or portal vein)",
+    "parenchymalMargin": "Involved by invasive carcinoma",
+    "parenchymalMarginMm": "",
+    "nodesExamined": 2,
+    "nodesInvolved": 0,
+    "bgFindings": [
+      "Steatohepatitis",
+      "Fibrosis (specify extent, providing name of the scheme and assessment scale used)"
+    ],
+    "bgStageSystem": "NASH CRN",
+    "bgStage": "3",
+    "bgSteatosisPct": 30
+  },
+  "report": "Liver, segment 6, resection\n\nReceived in formalin is a partial hepatectomy specimen (segment 6) measuring 110 x 80 x 55 mm and weighing 210 g. There is a single tumour measuring 80 x 70 x 65 mm. The tumour is ill defined and reaches the parenchymal margin; tumour thrombus fills the right portal vein. Representative sections are taken; see block key.\n\n(1-4) Tumour.\n(5) Tumour with nearest parenchymal margin.\n(6) Background liver.\n\nSpecimen and tumour\n- Procedure: Partial hepatectomy, minor (less than 3 segments)\n- Tumour site: Segment 6\n- Tumour focality: Solitary\n- Tumour size: 8 cm (largest tumour, greatest dimension)\n\nMicroscopic findings\n- Histologic type: Hepatocellular carcinoma\n- Histologic grade: G2: Moderately differentiated\n- Tumour histology:\n  The tumour is a moderately differentiated hepatocellular carcinoma, invading a major branch of the portal vein. The tumour cells are hepatocyte-like, with moderate nuclear atypia, and grow in thickened trabeculae and pseudoglandular structures.\n- Tumour extension: Tumour involves a major branch of the portal vein\n- Satellitosis: Not identified\n- Vascular invasion: Present, large vessel invasion (major branch of hepatic\n  vein or portal vein)\n- Perineural invasion: Not identified\n- Treatment effect: No known presurgical therapy\n\nMargins\n- Parenchymal margin: Involved by invasive carcinoma\n\nLymph nodes\n- Regional lymph nodes: 2 examined; 0 involved\n  - Number examined: 2\n  - Number involved: 0\n\nDistant metastasis\n- Distant metastasis: Not applicable\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT4 pN0\n  - Stage group (if cM0): IIIB\n\nAdditional findings\n- Fibrosis (NASH CRN stage 3)\n- Steatohepatitis (steatosis about 30% of the parenchyma)\n\nLIVER, segment 6, resection\n- Moderately differentiated HEPATOCELLULAR CARCINOMA\n- Stage pT4 pN0 (pTNM, AJCC 8th edition)\n- Margin involved\n- 0 of 2 regional lymph nodes involved\n- STEATOHEPATITIS with BRIDGING FIBROSIS (NASH CRN stage 3)",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Tumour involves a major branch of the portal vein: pT4.",
+      "field": "tumourExtension",
+      "part": "A"
+    }
+  ]
+}

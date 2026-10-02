@@ -1,0 +1,13 @@
+{
+  "templateId": "liver_lesion_biopsy",
+  "values": {
+    "specimenName": "segment 8 lesion",
+    "cores": 2,
+    "coreLength": 20,
+    "dx": "Epithelioid haemangioendothelioma",
+    "ihc": "ERG+, CD31+, CD34+, CAMTA1+, AE1/AE3-",
+    "nonLesional": "Scanty"
+  },
+  "report": "Liver, segment 8 lesion, biopsy\n\nSections show two cores of liver measuring 20 mm in aggregate length. The cores are infiltrated by cords and nests of epithelioid cells with intracytoplasmic vacuoles, some containing red cells, in a myxohyaline stroma. On immunohistochemistry, the tumour cells are positive for ERG, CD31, CD34 and CAMTA1, and negative for AE1/AE3. Only a small amount of non-lesional liver is present.\n\nLIVER, segment 8 lesion, biopsy - EPITHELIOID HAEMANGIOENDOTHELIOMA",
+  "checks": []
+}

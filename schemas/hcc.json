@@ -1,0 +1,1153 @@
+{
+ "id": "hcc",
+ "version": "2026.10",
+ "name": "Hepatocellular carcinoma resection",
+ "shortName": "Liver · HCC resection",
+ "label": "HCC",
+ "organ": "LIVER",
+ "system": "Hepatobiliary",
+ "kind": "cancer resection",
+ "layout": {
+  "macroGroups": [
+   "Specimen and tumour"
+  ],
+  "macroFields": [
+   "specimenName"
+  ],
+  "pack": true
+ },
+ "rank": 47,
+ "aliases": [
+  "HCC",
+  "hepatocellular carcinoma",
+  "hepatoma",
+  "liver cancer",
+  "fibrolamellar",
+  "hepatectomy",
+  "segmentectomy"
+ ],
+ "match": {
+  "site": [
+   "liver",
+   "hepatic",
+   "hepatectomy",
+   "segmentectomy",
+   "sectionectomy",
+   "segment"
+  ],
+  "procedure": [
+   "hepatectomy",
+   "segmentectomy",
+   "sectionectomy",
+   "lobectomy",
+   "resection",
+   "wedge",
+   "explant"
+  ],
+  "clinical": [
+   "HCC",
+   "hepatocellular carcinoma",
+   "hepatoma"
+  ],
+  "gate": "\\b(?:HCC|hepatocellular|hepatoma|fibrolamellar)\\b",
+  "exclude": [
+   "flexure",
+   "biopsy",
+   "biopsies",
+   "core",
+   "needle"
+  ],
+  "bias": 2,
+  "fill": [
+   {
+    "field": "specimenName",
+    "from": "map",
+    "map": [
+     [
+      "\\bextended\\s+right\\s+(?:hemi-?)?hepatectomy\\b",
+      "Liver, extended right hepatectomy"
+     ],
+     [
+      "\\bextended\\s+left\\s+(?:hemi-?)?hepatectomy\\b",
+      "Liver, extended left hepatectomy"
+     ],
+     [
+      "\\bright\\s+(?:hemi-?)?hepatectomy\\b",
+      "Liver, right hepatectomy"
+     ],
+     [
+      "\\bleft\\s+(?:hemi-?)?hepatectomy\\b",
+      "Liver, left hepatectomy"
+     ],
+     [
+      "\\bright\\s+tri-?sectionectomy\\b",
+      "Liver, right trisectionectomy"
+     ],
+     [
+      "\\bleft\\s+tri-?sectionectomy\\b",
+      "Liver, left trisectionectomy"
+     ],
+     [
+      "\\bleft\\s+lateral\\s+sectionectomy\\b",
+      "Liver, left lateral sectionectomy"
+     ],
+     [
+      "\\bleft\\s+medial\\s+sectionectomy\\b",
+      "Liver, left medial sectionectomy"
+     ],
+     [
+      "\\bright\\s+anterior\\s+sectionectomy\\b",
+      "Liver, right anterior sectionectomy"
+     ],
+     [
+      "\\bright\\s+posterior\\s+sectionectomy\\b",
+      "Liver, right posterior sectionectomy"
+     ]
+    ]
+   },
+   {
+    "field": "segments",
+    "from": "options"
+   },
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bwedge\\b",
+      "Wedge resection"
+     ],
+     [
+      "\\b(?:explant|total\\s+hepatectomy)\\b",
+      "Total hepatectomy"
+     ],
+     [
+      "\\b(?:(?:right|left|extended)\\s+(?:hemi-?)?hepatectomy|hemihepatectomy|tri-?sectionectomy|trisegmentectomy)\\b",
+      "Partial hepatectomy, major (3 segments or more)"
+     ],
+     [
+      "\\b(?:segmentectomy|bisegmentectomy|sectionectomy)\\b",
+      "Partial hepatectomy, minor (less than 3 segments)"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "mm",
+   "label": true
+  },
+  "tumourDims": {
+   "concept": "tumourDims",
+   "unit": "mm"
+  },
+  "blockKeyText": {
+   "concept": "blockKey"
+  }
+ },
+ "specimenNoun": "specimen",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "hcc",
+ "style": {
+  "british": true
+ },
+ "source": {
+  "template": "QMH Cancer Reporting Template - GI-HCC (Hepatocellular carcinoma)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/GI-HCC.html",
+  "capProtocol": "CAP Hepatocellular 4.3.0.0 (June 2022)",
+  "staging": "AJCC 8th edition pTNM derived from the number of tumours (satellitosis counts as multiple), the size of the largest tumour, vascular invasion and the tumour-extension ticks (a major branch of the portal or hepatic vein, the visceral peritoneum, the diaphragm or another adjacent organ other than the gallbladder is pT4), the nodal counts and the distant-metastasis options. Complete necrosis after treatment is ypT0. pTNM prints only with the printPTNM option, stamped (AJCC 8th edition).",
+  "stagingProtocol": "hcc",
+  "grading": "WHO 5th edition digestive system tumours (2019): grade in three tiers on the worst area, with the QMH G1-G4 options; the WHO 5th edition subtypes follow the QMH types in the list."
+ },
+ "partDefaults": [],
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM"
+  }
+ ],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "text",
+   "placeholder": "Liver, segments 5 and 6, resection",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "options": [
+    "Wedge resection",
+    "Partial hepatectomy, minor (less than 3 segments)",
+    "Partial hepatectomy, major (3 segments or more)",
+    "Total hepatectomy",
+    "Other",
+    "Not specified"
+   ],
+   "default": "Partial hepatectomy, minor (less than 3 segments)"
+  },
+  {
+   "id": "procedureOther",
+   "label": "Procedure (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "placeholder": "Right hepatectomy with caudate lobe",
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other"
+   }
+  },
+  {
+   "id": "segments",
+   "label": "Segments (Couinaud)",
+   "type": "multiselect",
+   "group": "Specimen and tumour",
+   "options": [
+    "Segment 1",
+    "Segment 2",
+    "Segment 3",
+    "Segment 4",
+    "Segment 5",
+    "Segment 6",
+    "Segment 7",
+    "Segment 8",
+    "Not specified"
+   ],
+   "default": [
+    "Not specified"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (mm)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "placeholder": "120 x 90 x 60",
+   "default": ""
+  },
+  {
+   "id": "specimenWeight",
+   "label": "Specimen weight (g)",
+   "type": "number",
+   "group": "Specimen and tumour",
+   "min": 0,
+   "step": 1,
+   "default": ""
+  },
+  {
+   "id": "tumourCount",
+   "label": "Number of tumours",
+   "type": "number",
+   "group": "Specimen and tumour",
+   "min": 1,
+   "step": 1,
+   "default": 1,
+   "help": "Each separate tumour nodule. Satellite nodules are recorded under Satellitosis; they count as multiple tumours for pT (AJCC 8th edition)."
+  },
+  {
+   "id": "tumourSizeCm",
+   "label": "Largest tumour: greatest dimension (cm)",
+   "type": "number",
+   "group": "Specimen and tumour",
+   "min": 0,
+   "step": 0.1,
+   "default": "",
+   "help": "pT turns on 2 cm (solitary tumour) and 5 cm (multiple tumours), so record the largest tumour in cm. After treatment, give the largest viable tumour: only viable tumour is used for staging (CAP)."
+  },
+  {
+   "id": "tumourDims",
+   "label": "Largest tumour dimensions (mm x mm x mm, macro)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "placeholder": "32 x 30 x 28",
+   "default": ""
+  },
+  {
+   "id": "otherSizesCm",
+   "label": "Other tumours: greatest dimension (cm, comma separated)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "placeholder": "1.2, 0.8",
+   "default": ""
+  },
+  {
+   "id": "grossDetails",
+   "label": "Gross appearance (colour, capsule, necrosis, distance to the margin)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "placeholder": "The tumour is well circumscribed, tan-green and encapsulated, 8 mm from the parenchymal margin",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key (one line per block: e.g. 1-4 Tumour)",
+   "type": "textarea",
+   "group": "Specimen and tumour",
+   "placeholder": "1-4 Tumour\n5 Tumour with nearest parenchymal margin\n6 Background liver",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Tumour histology and immunohistochemical studies (typed text replaces the derived sentence)",
+   "type": "textarea",
+   "group": "Histology and immunohistochemistry",
+   "placeholder": "The tumour cells are positive for HepPar-1 and arginase-1.",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO, as on the QMH page; WHO 5th edition subtypes below the line)",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "Hepatocellular carcinoma",
+    "Hepatocellular carcinoma, fibrolamellar",
+    "Hepatocellular carcinoma, scirrhous",
+    "Hepatocellular carcinoma, clear cell type",
+    "Hepatocellular carcinoma, steatohepatitic",
+    "Hepatocellular carcinoma, macrotrabecular-massive",
+    "Hepatocellular carcinoma, chromophobe",
+    "Hepatocellular carcinoma, neutrophil-rich",
+    "Hepatocellular carcinoma, lymphocyte-rich",
+    "Other histologic type not listed (specify)",
+    "Carcinoma, type cannot be determined"
+   ],
+   "default": "Hepatocellular carcinoma",
+   "help": "WHO 5th edition subtypes (RCPath Appendix N): steatohepatitic (more than 50% of the tumour), clear cell (more than 80% clear cells), macrotrabecular-massive (more than 50% of the tumour in trabeculae 10 or more cells thick), scirrhous (more than 50% dense fibrosis), chromophobe, fibrolamellar, neutrophil-rich and lymphocyte-rich. Combined hepatocellular-cholangiocarcinoma is staged with the intrahepatic bile duct protocol.",
+   "reference": {
+    "title": "HCC subtypes",
+    "intro": "The predominant subtype informs the diagnosis; clear cell needs more than 80% and steatohepatitic 50% (ICCR). Definitions from RCPath Appendix N (after WHO).",
+    "columns": 3,
+    "groups": [
+     {
+      "heading": "Steatohepatitic",
+      "points": [
+       "More than 50% of the tumour: steatotic and ballooned tumour cells, Mallory-Denk bodies, inflammation and pericellular fibrosis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hcc/hcc_steatohepatitic.jpg",
+        "caption": "Steatohepatitic HCC: multinodular yellow-grey mass (a); tumour cells with fat droplets and ballooning (b, H&E x100), positive for HepPar-1 (c).",
+        "credit": "Choi and Thung, Biomedicines 2023, Fig 2",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10526317/"
+       }
+      ]
+     },
+     {
+      "heading": "Clear cell",
+      "points": [
+       "More than 80% of the tumour with clear cells from glycogen; steatotic cells may be present",
+       "Torbenson recommends at least 50%: the sources differ"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hcc/hcc_clear_cell.jpg",
+        "caption": "Clear cell HCC in a cirrhotic liver: grey nodular tumour (a), nests of tumour cells (b, H&E x10) with abundant clear cytoplasm (c, H&E x100).",
+        "credit": "Choi and Thung, Biomedicines 2023, Fig 3",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10526317/"
+       }
+      ]
+     },
+     {
+      "heading": "Macrotrabecular-massive",
+      "points": [
+       "More than 50% of the tumour in trabeculae 10 or more cells thick (RCPath); other studies use more than 6",
+       "Often with satellite nodules and vascular invasion"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hcc/hcc_macrotrabecular.jpg",
+        "caption": "Macrotrabecular-massive HCC: expanding tumour (a); trabeculae of more than 10 cells surrounded by vascular spaces (b, H&E x100); CD34 shows vessels encapsulating tumour clusters (c).",
+        "credit": "Choi and Thung, Biomedicines 2023, Fig 4",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10526317/"
+       }
+      ]
+     },
+     {
+      "heading": "Lymphocyte-rich",
+      "points": [
+       "Dense lymphoid infiltrate; lymphocytes outnumber tumour cells in most areas",
+       "Torbenson: diffuse, in over 50% of the tumour"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hcc/hcc_lymphocyte_rich.jpg",
+        "caption": "Lymphocyte-rich HCC: circumscribed tumour (a); tumour-infiltrating lymphocytes outnumber the tumour cells (b, H&E x100), which are positive for HepPar-1 (c).",
+        "credit": "Choi and Thung, Biomedicines 2023, Fig 6",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10526317/"
+       }
+      ]
+     },
+     {
+      "heading": "Chromophobe",
+      "points": [
+       "Light or clear cytoplasm; generally mild atypia with focal marked (abrupt) anaplasia",
+       "Scattered microscopic pseudocysts"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hcc/hcc_chromophobe.jpg",
+        "caption": "Chromophobe HCC: tumour cells with smooth clear cytoplasm and distinct cell membranes (arrows) (H&E).",
+        "credit": "Saler, Cancer Rep 2025, Fig 5A (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11828739/"
+       }
+      ]
+     },
+     {
+      "heading": "Fibrolamellar",
+      "points": [
+       "Large eosinophilic cells with vesicular nuclei and prominent nucleoli; pale and hyaline bodies",
+       "Dense lamellar fibrosis; non-cirrhotic liver",
+       "CK7 and CD68 positive in nearly all cases, but not specific (CAP)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hcc/flc_resection.jpg",
+        "caption": "Fibrolamellar carcinoma: lobulated tumour with a central scar (a); large polygonal cells with eosinophilic cytoplasm and prominent nucleoli (b, H&E x100); fibrosis in parallel bands (c, Masson trichrome).",
+        "credit": "Choi and Thung, Biomedicines 2023, Fig 5",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10526317/"
+       }
+      ]
+     },
+     {
+      "heading": "Scirrhous and neutrophil-rich",
+      "points": [
+       "Scirrhous: more than 50% of the tumour with dense fibrosis",
+       "Neutrophil-rich: numerous neutrophils diffusely infiltrating the tumour; may have sarcomatoid areas"
+      ],
+      "images": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Histologic type (specify)",
+   "type": "text",
+   "group": "Histology and immunohistochemistry",
+   "default": "",
+   "showIf": {
+    "field": "histType",
+    "is": "Other histologic type not listed (specify)"
+   }
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "G1: Well differentiated",
+    "G2: Moderately differentiated",
+    "G3: Poorly differentiated",
+    "G4: Undifferentiated",
+    "GX: Cannot be assessed",
+    "Other (specify)",
+    "Not applicable"
+   ],
+   "default": "G2: Moderately differentiated",
+   "help": "CAP (AJCC 8th edition, four tiers): well differentiated tumours closely resemble normal liver; moderately differentiated tumours have thick plates and more prominent reticulin loss; poorly differentiated tumours show marked atypia or high mitotic activity; undifferentiated is rarely used. For multiple tumours, select the worst grade. Not printed for fibrolamellar carcinoma.",
+   "reference": {
+    "title": "Grade (CAP, AJCC 8th)",
+    "intro": "Four tiers, graded on the worst area; for multiple tumours, the worst grade (CAP). ICCR, RCPath and WHO use three, combining Edmondson-Steiner grades 1 and 2 as well differentiated.",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "G1 Well differentiated",
+      "points": [
+       "Closely resembles normal liver: minimal to mild atypia, relatively thin plates, limited reticulin loss"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/hcc_well_he.jpg",
+        "caption": "Well-differentiated HCC: trabecular and pseudoglandular growth with mild atypia and bile pigment in the lumina (H&E, x400).",
+        "credit": "Limaiem, Int J Surg Case Rep 2025, Fig 5",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12410352/"
+       }
+      ]
+     },
+     {
+      "heading": "G2 Moderately differentiated",
+      "points": [
+       "Thick plates, mild to moderate nuclear atypia and more prominent reticulin loss"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/hcc_moderate_biopsy_he.jpg",
+        "caption": "Moderately differentiated HCC on a liver biopsy: pleomorphic hepatocytes with granular eosinophilic cytoplasm and prominent nucleoli (H&E, x400).",
+        "credit": "Lukoo, Case Rep Radiol 2026, Fig 1",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13389434/"
+       }
+      ]
+     },
+     {
+      "heading": "G3 Poorly differentiated",
+      "points": [
+       "Marked nuclear atypia and/or high mitotic activity; the hepatocellular nature may not be evident"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_lesion_biopsy/hcc_poor_biopsy_he.jpg",
+        "caption": "Poorly differentiated HCC on a liver biopsy: sheets of markedly atypical cells with multinucleated giant cells and necrosis (H&E).",
+        "credit": "Singh, Cureus 2025, Fig 3",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12825689/"
+       }
+      ]
+     },
+     {
+      "heading": "G4 Undifferentiated",
+      "points": [
+       "Rarely used: no hepatocellular or other differentiation on morphology or immunohistochemistry",
+       "CAP: better classed as undifferentiated carcinoma than as HCC"
+      ],
+      "images": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "gradeOther",
+   "label": "Grade (specify)",
+   "type": "text",
+   "group": "Histology and immunohistochemistry",
+   "default": "",
+   "showIf": {
+    "field": "grade",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "tumourExtension",
+   "label": "Tumour extension (tick every applicable box)",
+   "type": "multiselect",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "Tumour confined to liver",
+    "Tumour involves a major branch of the portal vein",
+    "Tumour involves hepatic vein(s)",
+    "Tumour involves (perforates) visceral peritoneum",
+    "Tumour directly invades gallbladder",
+    "Tumour directly invades diaphragm",
+    "Tumour directly invades other adjacent organs (specify)",
+    "Cannot be assessed",
+    "No evidence of primary tumour"
+   ],
+   "default": [
+    "Tumour confined to liver"
+   ]
+  },
+  {
+   "id": "extensionDetail",
+   "label": "Other adjacent organ(s) (specify)",
+   "type": "text",
+   "group": "Histology and immunohistochemistry",
+   "default": "",
+   "showIf": {
+    "field": "tumourExtension",
+    "is": "Tumour directly invades other adjacent organs (specify)"
+   }
+  },
+  {
+   "id": "satellitosis",
+   "label": "Satellitosis",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": "Not identified",
+   "reference": {
+    "title": "Satellitosis",
+    "intro": "Satellite nodules count as multiple tumours for pT (CAP, ICCR, RCPath).",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "Satellite nodules",
+      "points": [
+       "CAP: an HCC nodule smaller than the primary, within 2 cm of it and separated by non-tumorous liver",
+       "WHO, ICCR and RCPath: often multiple, usually within 2 cm of the main tumour",
+       "Tumour within a vessel is vascular invasion, not satellitosis (CAP)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hcc/satellite_nodules_gross.jpg",
+        "caption": "Encapsulated 4 x 4 cm chromophobe HCC with numerous satellite nodules (blue arrows), each under 2 cm and within 2 cm of the main tumour.",
+        "credit": "Ben-Slama, Arq Bras Cir Dig 2025, Fig 2",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11745479/"
+       }
+      ]
+     },
+     {
+      "heading": "Attached co-nodules",
+      "points": [
+       "A co-nodule attached to the main tumour makes a single tumour: an irregular leading edge (ICCR)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hcc/hcc_gross_patterns.jpg",
+        "caption": "Gross patterns of HCC: pseudocapsulated nodule in cirrhosis (a); diffuse HCC with multiple satellite nodules (b); infiltrative HCC (c); pseudocapsulated nodule in non-cirrhotic liver (d); macroscopic bile duct invasion (e) and vascular invasion (f), in blue boxes.",
+        "credit": "Sweed, World J Surg Oncol 2022, Fig 2",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9484175/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "vascularInvasion",
+   "label": "Vascular invasion",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "Not identified",
+    "Present, small vessel invasion",
+    "Present, large vessel invasion (major branch of hepatic vein or portal vein)",
+    "Present (not otherwise specified)",
+    "Cannot be determined"
+   ],
+   "default": "Not identified",
+   "help": "Small vessel (microvascular) invasion is seen only microscopically; large vessel invasion is of a major branch of the portal or hepatic vein (pT4).",
+   "reference": {
+    "title": "Vascular invasion",
+    "intro": "Vascular invasion is part of T for the liver; a major branch of the portal or hepatic vein is pT4.",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "Microscopic (small vessel)",
+      "points": [
+       "Tumour in an endothelium-lined space, seen only microscopically, in the capsule, fibrous septa or surrounding liver (CAP)",
+       "Attachment to the vessel wall, or smooth muscle or elastic lamina, helps confirm it",
+       "Suspicious but short of these criteria: indeterminate (ICCR), not counted for staging"
+      ],
+      "images": []
+     },
+     {
+      "heading": "Large vessel (macroscopic)",
+      "points": [
+       "Right or left portal vein, or the right, middle or left hepatic vein: pT4 (RCPath)",
+       "CAP also counts the right or left hepatic artery as major vascular invasion",
+       "Report a portal vein tumour thrombus (CAP)"
+      ],
+      "images": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "vascularDetail",
+   "label": "Vascular invasion: the tumour nodule (if applicable)",
+   "type": "text",
+   "group": "Histology and immunohistochemistry",
+   "placeholder": "largest nodule",
+   "default": "",
+   "showIf": {
+    "field": "vascularInvasion",
+    "not": [
+     "Not identified",
+     "Cannot be determined"
+    ]
+   }
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": "Not identified"
+  },
+  {
+   "id": "treatmentEffect",
+   "label": "Treatment effect",
+   "type": "select",
+   "group": "Histology and immunohistochemistry",
+   "options": [
+    "No known presurgical therapy",
+    "Complete necrosis (no viable tumour)",
+    "Incomplete necrosis (viable tumour present)",
+    "No necrosis",
+    "Cannot be determined"
+   ],
+   "default": "No known presurgical therapy",
+   "reference": {
+    "title": "Treatment effect",
+    "intro": "No necrosis cut-off has been validated (CAP, ICCR); give the extent of necrosis for up to the five largest nodules.",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "Complete necrosis",
+      "points": [
+       "Sample a tumour up to 2 cm entirely, plus a section for each further 1 cm (CAP)",
+       "Only the size of viable tumour is used for staging (CAP)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hcc/tace_complete_necrosis.jpg",
+        "caption": "HCC after balloon-occluded TACE: a totally necrotic tumour (asterisk) with necrotic surrounding parenchyma (c), and complete necrosis of the tumour and peritumoral liver on H&E (d, x10).",
+        "credit": "Kim, Diseases 2023, Fig 5 (panels c-d)",
+        "license": "CC BY 4.0",
+        "url": "https://www.mdpi.com/2079-9721/11/4/149"
+       }
+      ]
+     },
+     {
+      "heading": "Incomplete or no necrosis",
+      "points": [
+       "Incomplete: viable tumour present; give the percentage of necrosis",
+       "ICCR uses response terms: complete, partial or no response"
+      ],
+      "images": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "necrosisPct",
+   "label": "Tumour necrosis (%)",
+   "type": "number",
+   "group": "Histology and immunohistochemistry",
+   "min": 0,
+   "max": 100,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "field": "treatmentEffect",
+    "is": "Incomplete necrosis (viable tumour present)"
+   }
+  },
+  {
+   "id": "treatment",
+   "label": "Presurgical therapy (if known)",
+   "type": "text",
+   "group": "Histology and immunohistochemistry",
+   "placeholder": "TACE",
+   "default": "",
+   "showIf": {
+    "field": "treatmentEffect",
+    "not": [
+     "No known presurgical therapy"
+    ]
+   }
+  },
+  {
+   "id": "parenchymalMargin",
+   "label": "Parenchymal margin",
+   "type": "select",
+   "group": "Margins",
+   "options": [
+    "Cannot be assessed",
+    "Involved by invasive carcinoma",
+    "Uninvolved by invasive carcinoma (specify distance)"
+   ],
+   "default": "Uninvolved by invasive carcinoma (specify distance)"
+  },
+  {
+   "id": "parenchymalMarginMm",
+   "label": "Parenchymal margin: distance (mm)",
+   "type": "number",
+   "group": "Margins",
+   "min": 0,
+   "step": 0.5,
+   "default": "",
+   "showIf": {
+    "field": "parenchymalMargin",
+    "is": "Uninvolved by invasive carcinoma (specify distance)"
+   }
+  },
+  {
+   "id": "otherMargin",
+   "label": "Other margin(s)",
+   "type": "select",
+   "group": "Margins",
+   "options": [
+    "Not applicable",
+    "Cannot be assessed",
+    "Involved by invasive carcinoma",
+    "Uninvolved by invasive carcinoma (specify distance)"
+   ],
+   "default": "Not applicable"
+  },
+  {
+   "id": "otherMarginDetail",
+   "label": "Other margin (specify)",
+   "type": "text",
+   "group": "Margins",
+   "placeholder": "hilar vascular margin",
+   "default": "",
+   "showIf": {
+    "field": "otherMargin",
+    "not": [
+     "Not applicable"
+    ]
+   }
+  },
+  {
+   "id": "otherMarginMm",
+   "label": "Other margin: distance (mm)",
+   "type": "number",
+   "group": "Margins",
+   "min": 0,
+   "step": 0.5,
+   "default": "",
+   "showIf": {
+    "field": "otherMargin",
+    "is": "Uninvolved by invasive carcinoma (specify distance)"
+   }
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Number of regional lymph nodes examined (0 if none submitted)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "min": 0,
+   "step": 1,
+   "default": 0
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Number of lymph nodes involved",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "min": 0,
+   "step": 1,
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension",
+   "type": "select",
+   "group": "Lymph nodes and metastasis",
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": "Not applicable"
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Size of the largest metastatic deposit (mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "min": 0,
+   "step": 0.5,
+   "default": ""
+  },
+  {
+   "id": "largestNodeMm",
+   "label": "Size of the largest lymph node involved (mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "min": 0,
+   "step": 0.5,
+   "default": ""
+  },
+  {
+   "id": "largestNodeSite",
+   "label": "Largest deposit / node: site",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "placeholder": "hepatoduodenal ligament",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis",
+   "type": "multiselect",
+   "group": "Lymph nodes and metastasis",
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s) (specify)",
+    "Other (specify)",
+    "Cannot be determined"
+   ],
+   "default": [
+    "Not applicable"
+   ],
+   "help": "Intrahepatic spread counts towards the number of tumours (pT), not distant metastasis, so the QMH \"Liver (specify)\" box is not offered here."
+  },
+  {
+   "id": "distantDetail",
+   "label": "Distant metastasis (specify)",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": ""
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple synchronous primary tumours (m descriptor)",
+   "type": "checkbox",
+   "group": "Stage and other findings",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r descriptor)",
+   "type": "checkbox",
+   "group": "Stage and other findings",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "Override derived pTNM (type e.g. pT2 pN0)",
+   "type": "text",
+   "group": "Stage and other findings",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason (printed in Checks)",
+   "type": "text",
+   "group": "Stage and other findings",
+   "default": ""
+  },
+  {
+   "id": "bgFindings",
+   "label": "Additional pathologic findings (background liver)",
+   "type": "multiselect",
+   "group": "Background liver",
+   "options": [
+    "None identified",
+    "Fibrosis (specify extent, providing name of the scheme and assessment scale used)",
+    "Cirrhosis",
+    "Low-grade dysplastic nodule",
+    "High-grade dysplastic nodule",
+    "Steatosis",
+    "Steatohepatitis",
+    "Iron overload",
+    "Chronic hepatitis (specify aetiology)",
+    "Other (specify)"
+   ],
+   "default": [
+    "None identified"
+   ]
+  },
+  {
+   "id": "bgStageSystem",
+   "label": "Fibrosis: staging system",
+   "type": "select",
+   "group": "Background liver",
+   "options": [
+    "",
+    "Ishak",
+    "METAVIR",
+    "NASH CRN",
+    "Batts-Ludwig"
+   ],
+   "default": "",
+   "showIf": {
+    "field": "bgFindings",
+    "is": [
+     "Fibrosis (specify extent, providing name of the scheme and assessment scale used)",
+     "Cirrhosis"
+    ]
+   }
+  },
+  {
+   "id": "bgStage",
+   "label": "Fibrosis: stage",
+   "type": "select",
+   "group": "Background liver",
+   "options": [
+    "",
+    "0",
+    "1",
+    "1a",
+    "1b",
+    "1c",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+   ],
+   "default": "",
+   "showIf": {
+    "field": "bgFindings",
+    "is": [
+     "Fibrosis (specify extent, providing name of the scheme and assessment scale used)",
+     "Cirrhosis"
+    ]
+   }
+  },
+  {
+   "id": "bgAetiology",
+   "label": "Chronic hepatitis: aetiology",
+   "type": "select",
+   "group": "Background liver",
+   "options": [
+    "Hepatitis B",
+    "Hepatitis C",
+    "Hepatitis B and D",
+    "Autoimmune",
+    "Not determined",
+    "Other (specify)"
+   ],
+   "default": "Hepatitis B",
+   "showIf": {
+    "field": "bgFindings",
+    "is": "Chronic hepatitis (specify aetiology)"
+   }
+  },
+  {
+   "id": "bgAetiologyOther",
+   "label": "Chronic hepatitis: aetiology (specify)",
+   "type": "text",
+   "group": "Background liver",
+   "default": "",
+   "showIf": {
+    "field": "bgAetiology",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "bgSteatosisPct",
+   "label": "Steatosis (% of parenchyma)",
+   "type": "number",
+   "group": "Background liver",
+   "min": 0,
+   "max": 100,
+   "step": 5,
+   "default": "",
+   "showIf": {
+    "field": "bgFindings",
+    "is": [
+     "Steatosis",
+     "Steatohepatitis"
+    ]
+   }
+  },
+  {
+   "id": "bgOther",
+   "label": "Other finding (specify)",
+   "type": "text",
+   "group": "Background liver",
+   "default": "",
+   "showIf": {
+    "field": "bgFindings",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes (any)",
+   "type": "textarea",
+   "group": "Background liver",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-00431",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "",
+     "procedure": "Partial hepatectomy, minor (less than 3 segments)",
+     "procedureOther": "",
+     "segments": [
+      "Segment 6"
+     ],
+     "specimenDims": "110 x 80 x 55",
+     "specimenWeight": 210,
+     "tumourCount": 1,
+     "tumourSizeCm": 3.2,
+     "tumourDims": "32 x 30 x 28",
+     "otherSizesCm": "",
+     "grossDetails": "The tumour is well circumscribed, tan-green and encapsulated, 8 mm from the parenchymal margin",
+     "blockKeyText": "1-4 Tumour\n5 Tumour with nearest parenchymal margin\n6 Background liver",
+     "histologyNotes": "",
+     "histType": "Hepatocellular carcinoma",
+     "histTypeOther": "",
+     "grade": "G2: Moderately differentiated",
+     "gradeOther": "",
+     "tumourExtension": [
+      "Tumour confined to liver"
+     ],
+     "extensionDetail": "",
+     "satellitosis": "Not identified",
+     "vascularInvasion": "Not identified",
+     "vascularDetail": "",
+     "pni": "Not identified",
+     "treatmentEffect": "No known presurgical therapy",
+     "necrosisPct": "",
+     "treatment": "",
+     "parenchymalMargin": "Uninvolved by invasive carcinoma (specify distance)",
+     "parenchymalMarginMm": 8,
+     "otherMargin": "Not applicable",
+     "otherMarginDetail": "",
+     "otherMarginMm": "",
+     "nodesExamined": 0,
+     "nodesInvolved": "",
+     "ene": "Not applicable",
+     "largestDepositMm": "",
+     "largestNodeMm": "",
+     "largestNodeSite": "",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "distantDetail": "",
+     "multiplePrimaries": false,
+     "recurrent": false,
+     "tnmOverride": "",
+     "tnmOverrideReason": "",
+     "bgFindings": [
+      "Cirrhosis",
+      "Chronic hepatitis (specify aetiology)"
+     ],
+     "bgStageSystem": "Ishak",
+     "bgStage": "6",
+     "bgAetiology": "Hepatitis B",
+     "bgAetiologyOther": "",
+     "bgSteatosisPct": "",
+     "bgOther": "",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
+}

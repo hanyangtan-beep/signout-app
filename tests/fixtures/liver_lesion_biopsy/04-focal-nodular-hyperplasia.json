@@ -1,0 +1,16 @@
+{
+  "templateId": "liver_lesion_biopsy",
+  "values": {
+    "specimenName": "segment 2 nodule",
+    "cores": 1,
+    "coreLength": 15,
+    "dx": "Focal nodular hyperplasia",
+    "gs": "Map-like",
+    "reticulin": "Retained",
+    "bgFindings": [
+      "None identified"
+    ]
+  },
+  "report": "Liver, segment 2 nodule, biopsy\n\nSections show a core of liver measuring 15 mm in length. The core contains a hepatocellular lesion composed of benign hepatocytes in plates one to two cells thick, with fibrous septa containing thick-walled vessels, ductular reaction and inflammation, and no normal portal tracts. Glutamine synthetase shows a map-like pattern. The reticulin framework is retained. The background liver shows no significant abnormality.\n\nLIVER, segment 2 nodule, biopsy - FOCAL NODULAR HYPERPLASIA",
+  "checks": []
+}

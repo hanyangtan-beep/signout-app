@@ -1,0 +1,15 @@
+{
+  "templateId": "liver_lesion_biopsy",
+  "values": {
+    "specimenName": "segment 3 mass",
+    "cores": 3,
+    "coreLength": 30,
+    "dx": "Metastatic neuroendocrine tumour",
+    "netGrade": "Grade 2",
+    "ki67": 8,
+    "ihc": "synaptophysin+, chromogranin+, INSM1+, CDX2+, TTF-1-",
+    "primarySite": "Small intestinal"
+  },
+  "report": "Liver, segment 3 mass, biopsy\n\nSections show three cores of liver measuring 30 mm in aggregate length. The cores are infiltrated by a well-differentiated neuroendocrine tumour composed of nests and trabeculae of uniform cells with finely granular chromatin. On immunohistochemistry, the tumour cells are positive for synaptophysin, chromogranin, INSM1 and CDX2, and negative for TTF-1. The Ki-67 proliferation index is approximately 8%. Non-lesional liver is present.\n\nLIVER, segment 3 mass, biopsy - METASTATIC WELL-DIFFERENTIATED NEUROENDOCRINE TUMOUR, grade 2, in keeping with small intestinal primary",
+  "checks": []
+}

@@ -1,0 +1,17 @@
+{
+  "templateId": "liver_lesion_biopsy",
+  "values": {
+    "specimenName": "",
+    "cores": 1,
+    "coreLength": 12,
+    "dx": "Hepatocellular carcinoma",
+    "qualifier": "Suspicious for",
+    "hccGrade": "Well differentiated",
+    "reticulin": "Focally reduced",
+    "gs": "Diffuse strong",
+    "ihc": "glypican-3 focal",
+    "nonLesional": "Not identified"
+  },
+  "report": "Liver, biopsy\n\nSections show a core of liver measuring 12 mm in length. The core contains a limited focus of atypical cells, suspicious for hepatocellular carcinoma. On immunohistochemistry, the atypical cells are focally positive for glypican-3. Glutamine synthetase shows diffuse strong staining. The reticulin framework is focally reduced. No non-lesional liver is present.\n\nLIVER, biopsy - Suspicious for HEPATOCELLULAR CARCINOMA",
+  "checks": []
+}

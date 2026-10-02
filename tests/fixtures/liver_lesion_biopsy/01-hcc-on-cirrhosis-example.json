@@ -1,0 +1,23 @@
+{
+  "templateId": "liver_lesion_biopsy",
+  "values": {
+    "specimenName": "segment 7 mass",
+    "cores": 2,
+    "coreLength": 22,
+    "dx": "Hepatocellular carcinoma",
+    "hccGrade": "Moderately differentiated",
+    "ihc": "HepPar-1+, arginase-1+, glypican-3+, CK7-, CK19-",
+    "reticulin": "Lost",
+    "cd34": "Diffuse sinusoidal",
+    "nonLesional": "Present",
+    "bgFindings": [
+      "Cirrhosis",
+      "Chronic hepatitis (specify aetiology)"
+    ],
+    "bgStageSystem": "Ishak",
+    "bgStage": "6",
+    "bgAetiology": "Hepatitis B"
+  },
+  "report": "Liver, segment 7 mass, biopsy\n\nSections show two cores of liver measuring 22 mm in aggregate length. The cores are infiltrated by moderately differentiated hepatocellular carcinoma. The tumour cells are hepatocyte-like, with moderate nuclear atypia, and grow in thickened trabeculae and pseudoglandular structures. On immunohistochemistry, the tumour cells are positive for HepPar-1, arginase-1 and glypican-3, and negative for CK7 and CK19. CD34 shows diffuse sinusoidal staining. There is loss of the reticulin framework. The background liver shows chronic hepatitis B. There is cirrhosis (Ishak stage 6/6).\n\nLIVER, segment 7 mass, biopsy - Moderately differentiated HEPATOCELLULAR CARCINOMA; background liver shows CHRONIC HEPATITIS B with CIRRHOSIS (Ishak stage 6/6)",
+  "checks": []
+}

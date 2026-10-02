@@ -11,5 +11,6 @@ These were previously under `analysis/qmh/`, which is gitignored, so a fresh clo
 | `phyllodes.txt` | BREAST-Phyllodes | `phyllodes` |
 | `lung.txt` | Thorax-Lung | `lung_carcinoma` |
 | `ovary.txt` | GYN-Ovary | `ovary_ft_peritoneum` |
+| `hcc.txt` | GI-HCC | `hcc` |
 
 Do not edit by hand. To refresh a page, re-save the rendered HTML into `docs/reference/` and re-dump the text; a change here should be reviewed against the element-order test in the same commit.

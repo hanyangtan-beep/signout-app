@@ -1,0 +1,21 @@
+{
+  "templateId": "liver_lesion_biopsy",
+  "values": {
+    "specimenName": "segment 5 mass",
+    "cores": 2,
+    "coreLength": 25,
+    "dx": "Hepatocellular adenoma",
+    "hcaSubtype": "Inflammatory",
+    "ihc": "SAA+, CRP+",
+    "gs": "Patchy",
+    "betaCatenin": "Membranous only",
+    "cd34": "Patchy sinusoidal",
+    "reticulin": "Retained",
+    "bgFindings": [
+      "Steatosis"
+    ],
+    "bgSteatosisPct": 10
+  },
+  "report": "Liver, segment 5 mass, biopsy\n\nSections show two cores of liver measuring 25 mm in aggregate length. The cores contain a hepatocellular lesion composed of benign hepatocytes in plates one to two cells thick, with unpaired arteries and no portal tracts. There is sinusoidal dilatation, with patchy inflammation and ductular reaction. On immunohistochemistry, the lesional cells are positive for SAA and CRP. Glutamine synthetase shows patchy staining. CD34 shows patchy sinusoidal staining. The reticulin framework is retained. Beta-catenin shows membranous staining only. The background liver shows macrovesicular steatosis involving about 10% of the parenchyma.\n\nLIVER, segment 5 mass, biopsy - HEPATOCELLULAR ADENOMA, inflammatory subtype; background liver shows STEATOSIS",
+  "checks": []
+}

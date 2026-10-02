@@ -1,0 +1,127 @@
+ ﻿
+ Hepatocellular carcinoma click to access explanations in the original CAP template
+ Microscopic descriptions:
+- Tumor histology and immunohistochemical studies:
+- Histologic type (WHO 2019):
+ *
+ *
+ * Hepatocellular carcinoma
+ * Hepatocellular carcinoma, fibrolamellar
+ * Hepatocellular carcinoma, scirrhous
+ * Hepatocellular carcinoma, clear cell type
+ * Other histologic type not listed (specify):
+ * Carcinoma, type cannot be determined
+- Histologic grade:
+ *
+ * G1: Well differentiated
+ * G2: Moderately differentiated
+ * G3: Poorly differentiated
+ * G4: Undifferentiated
+ * GX: Cannot be assessed
+ * Other (specify):
+ * Not applicable
+- Tumor extension:
+ *
+ * Tumor confined to liver
+ * Tumor involves a major branch of the portal vein
+ * Tumor involves hepatic vein(s)
+ * Tumor involves (perforates) visceral peritoneum
+ * Tumor directly invades gallbladder
+ * Tumor directly invades diaphragm
+ * Tumor directly invades other adjacent organs (specify):
+ * Cannot be assessed
+ * No evidence of primary tumor
+ + Satellitosis:
+ *
+ * Not identified
+ * Present
+ * Cannot be determined
+- Vascular invasion (specify the tumor nodule, if applicable):
+ *
+ * Not identified
+ * Present, small vessel invasion
+ * Present, large vessel invasion (major branch of hepatic vein or portal vein)
+ * Present (not otherwise specified)
+ * Cannot be determined
+ + Perineural invasion:
+ *
+ * Not identified
+ * Present
+ * Cannot be determined
+- Treatment effect:
+ *
+ * No known presurgical therapy
+ * Complete necrosis (no viable tumor)
+ * Incomplete necrosis (viable tumor present), specify tumor necrosis %:
+ * No necrosis
+ * Cannot be determined
+ [image: Risk assessment]Liang et al 2022.
+ Surgical margins:
+- Parenchymal margin:
+ *
+ * Cannot be assessed
+ * Involved by invasive carcinoma
+ * Uninvolved by invasive carcinoma, specify distance (mm):
+- Other margin(s) (specify: ):
+ *
+ * Cannot be assessed
+ * Involved by invasive carcinoma
+ * Uninvolved by invasive carcinoma, specify distance (mm):
+ Regional lymph nodes:
+- Number of regional lymph nodes examined:
+- Number of lymph nodes involved:
+- Extranodal extension:
+ *
+ * Not identified
+ * Present
+ * Cannot be determined
+- Size of largest metastatic deposit (mm), specify site:
+- Size of largest lymph node involved (mm), specify site:
+ Distant Metastasis:
+ Not applicable
+ Not identified
+ Non-regional lymph node(s) (specify):
+ Liver (specify):
+ Other (specify):
+ Cannot be determined:
+ Pathologic Stage Classification (AJCC 8e):
+- TNM Descriptors:
+ m (multiple primary tumors)
+ r (recurrent)
+ y (post treatment)
+- Primary tumor (pT):
+ *
+ *  pT not assigned (cannot be determined based on available pathological information)
+ * pT0: No evidence of primary tumor
+ * pT1: Solitary tumor < or = 2 cm, or > 2 cm without vascular invasion
+ * pT1a: Solitary tumor < or = 2 cm
+ * pT1b: Solitary tumor >2 cm without vascular invasion
+ * pT2: Solitary tumor > 2 cm with vascular invasion, or multiple tumors, none > 5 cm
+ * pT3: Multiple tumors, at least one of which is > 5 cm
+ * pT4: Single tumor or multiple tumors of any size involving a major branch of the portal vein or hepatic vein, or tumor(s) with direct invasion of adjacent organs other than the gallbladder or with perforation of visceral peritoneum
+- Regional lymph nodes (pN):
+ *
+ * pN not assigned (no nodes submitted or found)
+ * pN not assigned (cannot be determined based on available pathological information)
+ * pN0: No regional lymph node metastasis
+ * pN1: Regional lymph node metastasis
+- Distant metastasis (pM):
+ *
+ * Not applicable - pM cannot be determined from the submitted specimen(s)
+ * pM1: Distant metastasis
+ + Additional pathologic findings:
+ Fibrosis (specify extent, providing name of the scheme and assessment scale used):
+ Cirrhosis
+ Low-grade dysplastic nodule
+ High-grade dysplastic nodule
+ Steatosis
+ Steatohepatitis
+ Iron overload
+ Chronic hepatitis (specify etiology):
+- Other (specify):
+- Additional notes:
+ Copy text to Clipboard
+ Last upated on 18-Dec-2024,
+ based on US CAP cancer protocol templates.
+ Version: Hepatocellular 4.3.0.0 (June 2022), html form was created on pForm, W3 School, StackOverflow, and Icons8.
+ Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.

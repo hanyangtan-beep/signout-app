@@ -1,0 +1,22 @@
+{
+  "templateId": "liver_lesion_biopsy",
+  "values": {
+    "specimenName": "segment 6 nodule",
+    "cores": 1,
+    "coreLength": 10,
+    "dx": "Non-lesional liver only",
+    "bgFindings": [
+      "Steatosis"
+    ],
+    "bgSteatosisPct": 20
+  },
+  "report": "Liver, segment 6 nodule, biopsy\n\nSections show a core of liver measuring 10 mm in length. Only non-lesional liver is present; the targeted lesion is not represented. The liver shows macrovesicular steatosis involving about 20% of the parenchyma.\n\nLIVER, segment 6 nodule, biopsy - NON-LESIONAL LIVER showing STEATOSIS; the targeted lesion is not represented",
+  "checks": [
+    {
+      "level": "info",
+      "message": "No viable lesional tissue: RCPath asks for deeper levels before reporting this, and for the report to say that further biopsy or investigation is needed (add it as a comment).",
+      "field": "dx",
+      "part": "A"
+    }
+  ]
+}

@@ -184,7 +184,7 @@ const COVER = {
   Appendix: ['appendix', 'appendix_carcinoma'],
   Haemorrhoid: ['generic'],
   Gallbladder: ['gallbladder', 'gallbladder_carcinoma'],
-  Liver: ['liver_benign', 'liver_biopsy', 'hcc'],
+  Liver: ['liver_benign', 'liver_biopsy', 'liver_lesion_biopsy', 'hcc'],
   'Bile duct / pancreas': ['bile_duct_carcinoma', 'pancreas_carcinoma', 'ampulla_carcinoma'],
   'Lung / pleura': ['lung_biopsy', 'lung_carcinoma'],
   'Respiratory cytology': ['respiratory_cytology'],

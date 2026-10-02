@@ -1365,6 +1365,75 @@ await check('Hirschsprung biopsy: a pasted suction biopsy opens the form; the an
   return 'routed on the line and history; present and aganglionic lines; mast-cell box; full-thickness fields swap; calretinin gallery 3 photos; a plain rectal biopsy stays out';
 });
 
+// Neoplastic liver pair (Phase 51): a pasted segment biopsy under a colon carcinoma history opens Liver (mass)
+// with its site filled; the line follows the diagnosis, primary-site and basis picks; an EHE without CAMTA1 or
+// TFE3 raises a Check; the hepatocellular pick swaps the fields; the diagnosis gallery opens with its photos.
+await check('liver mass biopsy: a pasted lesion biopsy opens Liver (mass); the line follows the picks; the gallery opens', async () => {
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
+  const routed = await pasteAndBuild('History\nCarcinoma of colon, liver lesions\n\nSpecimen\n(A) Liver, segment 7 mass, biopsy');
+  assert(routed === 'liver_lesion_biopsy', `liver mass biopsy routed to ${routed}`);
+  let report = await reportText();
+  assert(report.includes('LIVER, segment 7 mass, biopsy - METASTATIC ADENOCARCINOMA'), `default line wrong: ${report.slice(-300)}`);
+  assert(await shows('primarySite') && !(await shows('hccGrade')), 'the metastasis fields are not the ones showing');
+  await pickField('primarySite', 'Colorectal');
+  report = await reportText();
+  assert(report.includes('METASTATIC ADENOCARCINOMA, in keeping with colorectal primary'), `primary line wrong: ${report.slice(-300)}`);
+  await pickField('primaryBasis', 'Consistent with the known');
+  report = await reportText();
+  assert(report.includes('METASTATIC ADENOCARCINOMA, consistent with the known colorectal primary'), `known-primary line wrong: ${report.slice(-300)}`);
+  await pickField('dx', 'Epithelioid haemangioendothelioma');
+  report = await reportText();
+  assert(report.includes('LIVER, segment 7 mass, biopsy - EPITHELIOID HAEMANGIOENDOTHELIOMA'), `EHE line wrong: ${report.slice(-300)}`);
+  assert(/CAMTA1 or TFE3 is not recorded/.test(await checksText()), 'Checks did not ask for CAMTA1 or TFE3');
+  await pickField('dx', 'Hepatocellular carcinoma');
+  assert(await shows('hccGrade') && await shows('reticulin') && !(await shows('primarySite')), 'the hepatocellular fields are not the ones showing');
+  await page.locator('.field[data-field="dx"] .ref-toggle').first().click();
+  await page.waitForSelector('.field[data-field="dx"] .ref-panel img', { timeout: 5000 });
+  const imgs = page.locator('.field[data-field="dx"] .ref-panel img');
+  const photos = await imgs.count();
+  assert(photos === 6, `diagnosis gallery holds ${photos} photos`);
+  for (let i = 0; i < photos; i++) await imgs.nth(i).scrollIntoViewIfNeeded();   // the photos load lazily
+  await page.waitForFunction(() => [...document.querySelectorAll('.field[data-field="dx"] .ref-panel img')].every((i) => i.complete && i.naturalWidth > 0), null, { timeout: 8000 });
+  await page.locator('.field[data-field="dx"] .ref-panel').first().scrollIntoViewIfNeeded();
+  await shot('liver-mass-gallery');
+  await page.locator('.field[data-field="dx"] .ref-toggle').first().click();
+  return 'routed on the history with the site filled; metastatic, known-primary and EHE lines; CAMTA1/TFE3 Check; HCC fields swap; diagnosis gallery 6 photos';
+});
+
+// HCC resection (Phase 51): a pasted right hepatectomy under an HCC history opens the synoptic with the received
+// name and a major hepatectomy; the missing size is a Check; size and vascular invasion give pT2 once the pTNM
+// option is ticked; the subtype gallery opens with its photos.
+await check('HCC resection: a pasted right hepatectomy opens the synoptic; size and vessels set pT2; the subtype gallery opens', async () => {
+  const routed = await pasteAndBuild('History\nHepatitis B cirrhosis, HCC\n\nSpecimen\n(A) Right hepatectomy');
+  assert(routed === 'hcc', `right hepatectomy routed to ${routed}`);
+  let report = await reportText();
+  assert(report.includes('LIVER, right hepatectomy') && report.includes('- Moderately differentiated HEPATOCELLULAR CARCINOMA'), `diagnosis head wrong: ${report.slice(-300)}`);
+  assert(report.includes('Received in formalin is a partial hepatectomy specimen'), `macro wrong: ${report.slice(0, 300)}`);
+  assert(/Size of the largest tumour is required/.test(await checksText()), 'Checks did not ask for the tumour size');
+  await page.locator('.field[data-field="tumourSizeCm"] input').first().fill('4.5');
+  await page.waitForTimeout(200);
+  await pickField('vascularInvasion', 'Present, small vessel invasion');
+  const box = page.locator('#case-options label', { hasText: 'Print the AJCC 8th edition pTNM block' }).locator('input[type="checkbox"]');
+  assert(await box.count() === 1, 'no pTNM option on the case');
+  await box.check();
+  await page.waitForTimeout(300);
+  report = await reportText();
+  assert(report.includes('- pTNM: pT2 pNX') && report.includes('- Stage pT2 (pTNM, AJCC 8th edition)'), `pT2 not printed: ${report.slice(-500)}`);
+  await box.uncheck();
+  await page.waitForTimeout(200);
+  await page.locator('.field[data-field="histType"] .ref-toggle').first().click();
+  await page.waitForSelector('.field[data-field="histType"] .ref-panel img', { timeout: 5000 });
+  const imgs = page.locator('.field[data-field="histType"] .ref-panel img');
+  const photos = await imgs.count();
+  assert(photos === 6, `subtype gallery holds ${photos} photos`);
+  for (let i = 0; i < photos; i++) await imgs.nth(i).scrollIntoViewIfNeeded();   // the photos load lazily
+  await page.waitForFunction(() => [...document.querySelectorAll('.field[data-field="histType"] .ref-panel img')].every((i) => i.complete && i.naturalWidth > 0), null, { timeout: 8000 });
+  await page.locator('.field[data-field="histType"] .ref-panel').first().scrollIntoViewIfNeeded();
+  await shot('hcc-subtype-gallery');
+  await page.locator('.field[data-field="histType"] .ref-toggle').first().click();
+  return 'routed on the history with the received name; size Check; pT2 with the pTNM option; subtype gallery 6 photos';
+});
+
 // Breast papillary lesions (Phase 50): the category, the lesion and the invasion pick decide the line and the
 // B code; invasion without a stromal feature raises a Check; solid papillary carcinoma takes its own invasive
 // type by default; the lesion gallery opens with its photos.

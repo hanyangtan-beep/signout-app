@@ -820,8 +820,8 @@
       "expect": [
         {
           "label": "A",
-          "templateId": "generic",
-          "tier": "none"
+          "templateId": "liver_lesion_biopsy",
+          "tier": "confident"
         },
         {
           "label": "B",
@@ -834,6 +834,64 @@
           "specimenName": "background"
         }
       }
+    },
+    {
+      "name": "targeted liver biopsies (neoplastic liver pair)",
+      "text": "History\nCarcinoma of colon, liver lesions\n\nSpecimen\n(A) Liver, segment 7 mass, biopsy and (B) Liver, ?metastasis, biopsy",
+      "history": "Carcinoma of colon, liver lesions",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "liver_lesion_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "liver_lesion_biopsy",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "specimenName": "segment 7 mass"
+        },
+        "B": {
+          "specimenName": ""
+        }
+      }
+    },
+    {
+      "name": "HCC resection (neoplastic liver pair)",
+      "text": "History\nHepatitis B cirrhosis, HCC\n\nSpecimen\n(A) Right hepatectomy",
+      "history": "Hepatitis B cirrhosis, HCC",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "hcc",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "specimenName": "Liver, right hepatectomy",
+          "procedure": "Partial hepatectomy, major (3 segments or more)"
+        }
+      }
+    },
+    {
+      "name": "wedge resection for a query metastasis stays benign-resection (neoplastic liver pair)",
+      "text": "(A) Liver, wedge resection, ?metastasis",
+      "history": "",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "liver_benign",
+          "tier": "confident"
+        }
+      ]
     },
     {
       "name": "rectal suction biopsies at two levels (Hirschsprung pair)",

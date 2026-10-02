@@ -1,0 +1,14 @@
+{
+  "templateId": "liver_lesion_biopsy",
+  "values": {
+    "specimenName": "segment 4 lesion",
+    "cores": 2,
+    "coreLength": 18,
+    "dx": "Metastatic adenocarcinoma",
+    "ihc": "CK20+, CDX2+, SATB2+, CK7-",
+    "primarySite": "Colorectal",
+    "primaryBasis": "In keeping with"
+  },
+  "report": "Liver, segment 4 lesion, biopsy\n\nSections show two cores of liver measuring 18 mm in aggregate length. The cores are infiltrated by adenocarcinoma forming cribriform glands of tall columnar cells, with luminal necrotic debris. On immunohistochemistry, the tumour cells are positive for CK20, CDX2 and SATB2, and negative for CK7. Non-lesional liver is present.\n\nLIVER, segment 4 lesion, biopsy - METASTATIC ADENOCARCINOMA, in keeping with colorectal primary",
+  "checks": []
+}
