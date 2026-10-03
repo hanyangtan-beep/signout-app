@@ -927,6 +927,52 @@
       }
     },
     {
+      "id": "proxPancMargin",
+      "label": "Proximal pancreatic parenchymal margin",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Cannot be assessed",
+        "Uninvolved by invasive carcinoma (specify distance)",
+        "Involved by invasive carcinoma",
+        "Not applicable"
+      ],
+      "default": "Uninvolved by invasive carcinoma (specify distance)",
+      "showIf": {
+        "field": "procedure",
+        "is": [
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
+    },
+    {
+      "id": "proxPancMarginMm",
+      "label": "Proximal pancreatic parenchymal margin - distance to carcinoma (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "all": [
+          {
+            "field": "proxPancMargin",
+            "is": "Uninvolved by invasive carcinoma (specify distance)"
+          },
+          {
+            "field": "procedure",
+            "is": [
+              "Distal pancreatectomy",
+              "Central pancreatectomy",
+              "Partial pancreatectomy, pancreatic body",
+              "Partial pancreatectomy, pancreatic tail"
+            ]
+          }
+        ]
+      }
+    },
+    {
       "id": "posteriorMargin",
       "label": "Posterior surface",
       "type": "select",
@@ -1057,52 +1103,6 @@
               "Distal pancreatectomy",
               "Central pancreatectomy",
               "Excisional biopsy (enucleation)",
-              "Partial pancreatectomy, pancreatic body",
-              "Partial pancreatectomy, pancreatic tail"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "id": "proxPancMargin",
-      "label": "Proximal pancreatic parenchymal margin",
-      "type": "select",
-      "group": "Margins",
-      "options": [
-        "Cannot be assessed",
-        "Uninvolved by invasive carcinoma (specify distance)",
-        "Involved by invasive carcinoma",
-        "Not applicable"
-      ],
-      "default": "Uninvolved by invasive carcinoma (specify distance)",
-      "showIf": {
-        "field": "procedure",
-        "is": [
-          "Distal pancreatectomy",
-          "Central pancreatectomy",
-          "Partial pancreatectomy, pancreatic body",
-          "Partial pancreatectomy, pancreatic tail"
-        ]
-      }
-    },
-    {
-      "id": "proxPancMarginMm",
-      "label": "Proximal pancreatic parenchymal margin - distance to carcinoma (mm)",
-      "type": "number",
-      "group": "Margins",
-      "min": 0,
-      "showIf": {
-        "all": [
-          {
-            "field": "proxPancMargin",
-            "is": "Uninvolved by invasive carcinoma (specify distance)"
-          },
-          {
-            "field": "procedure",
-            "is": [
-              "Distal pancreatectomy",
-              "Central pancreatectomy",
               "Partial pancreatectomy, pancreatic body",
               "Partial pancreatectomy, pancreatic tail"
             ]
