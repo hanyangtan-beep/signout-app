@@ -124,5 +124,6 @@ fills.
   frozen pancreatic transection margin is not yet carried to a distal pancreatectomy.
 - An en bloc resection line naming a colectomy routes on the clinical history; without a
   pancreatic history it goes to the colorectal template.
-- The house diagnosis form for pancreatic resections (dash lines, lower-case organ joins) is
-  not yet adopted; the template keeps the synoptic diagnosis used by the Whipple pair.
+- The diagnosis head and stage line keep the Whipple pair's form ("PANCREAS AND SPLEEN",
+  "pT2 pN1 (AJCC 8th edition)"); the HCC synoptic's "- Stage ... (pTNM, AJCC 8th edition)" line
+  is not adopted here until the house form for pancreatic resections is confirmed (Later).
