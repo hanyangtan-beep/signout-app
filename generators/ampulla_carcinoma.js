@@ -1,7 +1,7 @@
 // Ampulla of Vater carcinoma resection generator — the ampullary half of the Whipple pair.
 // Elements follow the CAP protocol Ampulla of Vater v4.3.0.0 (June 2025, required use March
 // 2026) in the CAP order, with the same house departures as the pancreatic template
-// (docs/specs/whipple-pair.md): the "- Tumour histology:" paragraph follows "- Histologic
+// (docs/specs/pancreatectomy.md): the "- Tumour histology:" paragraph follows "- Histologic
 // grade:", the treatment-effect strings are the house CAP TRG variants, margin distances are in
 // mm, British spelling throughout.
 //

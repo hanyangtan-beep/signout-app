@@ -1,0 +1,43 @@
+{
+  "templateId": "pancreas_carcinoma",
+  "patch": {
+    "duodenumLengthMm": "",
+    "bileDuctLengthMm": "",
+    "bileDuctDilatation": "",
+    "blockKeyText": "",
+    "station13": "",
+    "station17": "",
+    "largestDepositMm": "",
+    "largestNodeSite": "",
+    "procedure": "Excisional biopsy (enucleation)",
+    "tumourSite": [
+      "Head of pancreas"
+    ],
+    "tumourSizeCm": 0.9,
+    "tumourDims": "9 x 8 x 7",
+    "specimenDims": "15 x 12 x 10",
+    "pancreasDims": "",
+    "pancDuctDilatation": "",
+    "tumourExtension": [
+      "Confined to pancreas"
+    ],
+    "surfaceInvolvement": "Not identified",
+    "lvi": "Not identified",
+    "pni": "Not identified",
+    "parenchymalMargin": "Uninvolved by invasive carcinoma (specify distance)",
+    "parenchymalMarginMm": 0.4,
+    "nodesExamined": 0,
+    "nodesInvolved": "",
+    "ene": "Not applicable"
+  },
+  "options": {},
+  "report": "Pancreas, head of pancreas, enucleation\n\nReceived in formalin is an enucleation specimen measuring 15 x 12 x 10 mm. The surface is inked and the specimen is serially sliced. There is a firm, ill-defined pale tumour centred on the head of pancreas measuring 9 x 8 x 7 mm. Representative sections are taken; see block key.\n\nSpecimen and tumour\n- Procedure: Excisional biopsy (enucleation)\n- Tumour site: Head of pancreas\n- Tumour size: 0.9 cm (unifocal invasive carcinoma, greatest dimension)\n\nMicroscopic findings\n- Histologic type: Ductal adenocarcinoma, NOS\n- Histologic grade: G2, moderately differentiated\n- Tumour histology:\n  The tumour is a moderately differentiated ductal adenocarcinoma, NOS, confined to the pancreas. Haphazardly arranged infiltrating glands with incomplete lumina and luminal necrotic debris are set in abundant desmoplastic stroma, lying immediately adjacent to muscular vessels and nerves, and show marked variation in nuclear size within individual glands. The tumour cells express CK7. There is loss of nuclear SMAD4 (DPC4) expression.\n- Sites involved by direct extension: Confined to pancreas\n- Pancreatic surface involvement: Not identified\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n- Treatment effect: No known presurgical therapy\n- Precursor lesion: Pancreatic intraepithelial neoplasia, high grade (PanIN)\n\nMargins\n- Pancreatic parenchymal margin: Uninvolved by invasive carcinoma, 0.4 mm\n- High-grade dysplasia at the margins: Not identified\n\nLymph nodes\n- Regional lymph nodes: None submitted (0 examined)\n\nDistant metastasis\n- Distant metastasis: Not identified\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT1b pNX\n\nAdditional findings\n- Chronic pancreatitis\n\nPANCREAS, head of pancreas, enucleation\n- DUCTAL ADENOCARCINOMA, NOS, moderately differentiated, 0.9 cm, confined to the\n  pancreas; pancreatic parenchymal margin 0.4 mm (margin positive at 1 mm or\n  less); see synoptic report\n- pT1b pNX (AJCC 8th edition)",
+  "checks": [
+    {
+      "level": "warn",
+      "message": "Pancreatic parenchymal margin is 0.4 mm from the carcinoma; at 1 mm or less this is reported as a positive margin (R1) in pancreatobiliary resections.",
+      "field": "parenchymalMargin",
+      "part": "A"
+    }
+  ]
+}

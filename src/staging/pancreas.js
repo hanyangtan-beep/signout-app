@@ -55,7 +55,9 @@ export function T(v) {
   const cm = num(v.tumourSizeCm);
   if (cm === null) return { cat: 'TX', note: 'Tumour size is not recorded; pT is assigned on size in this edition and cannot be derived.' };
   const cat = sizeCategory(cm);
-  const note = ticks.some((s) => /peripancreatic|retroperitoneal|duodenal wall|stomach|mesocolon|mesenteric adipose|extrapancreatic common bile duct|ampulla of Vater|superior mesenteric vein|portal vein|vascular bed/i.test(s))
+  // Body and tail carcinomas reach the spleen, splenic vessels, adrenal, colon or kidney; CAP notes
+  // that this extension is recorded but does not change pT either.
+  const note = ticks.some((s) => /peripancreatic|retroperitoneal|duodenal wall|stomach|mesocolon|mesenteric adipose|extrapancreatic common bile duct|ampulla of Vater|superior mesenteric vein|portal vein|vascular bed|spleen|splenic|adrenal|colon|kidney/i.test(s))
     ? 'Extrapancreatic extension is recorded but does not alter pT in this edition; pT1-pT3 are assigned on tumour size alone.'
     : undefined;
   return note ? { cat, note } : { cat };

@@ -4100,7 +4100,7 @@
     },
     {
       "id": "pancreas_carcinoma",
-      "name": "Pancreatic carcinoma resection (Whipple)",
+      "name": "Pancreatic carcinoma resection",
       "shortName": "Pancreas · carcinoma resection",
       "label": "Pancreas Ca",
       "organ": "Pancreas",
@@ -4114,7 +4114,10 @@
         "pdac",
         "ductal adenocarcinoma pancreas",
         "pancreatic head carcinoma",
-        "ppppd"
+        "ppppd",
+        "distal pancreatectomy",
+        "total pancreatectomy",
+        "central pancreatectomy"
       ],
       "match": {
         "site": [
@@ -4124,12 +4127,14 @@
           "pancreatic body",
           "pancreatic tail",
           "pancreaticoduodenectomy",
-          "whipple"
+          "whipple",
+          "pancreatectomy"
         ],
         "procedure": [
           "whipple",
           "pancreaticoduodenectomy",
-          "pancreatectomy"
+          "pancreatectomy",
+          "distal pancreas"
         ],
         "clinical": [
           "pancreatic carcinoma",
@@ -4137,16 +4142,61 @@
           "pdac",
           "ca pancreas",
           "ductal adenocarcinoma",
-          "ipmn with invasion"
+          "ipmn with invasion",
+          "tail of pancreas",
+          "body of pancreas",
+          "pancreatic tail",
+          "pancreatic body"
         ],
         "fill": [
           {
             "field": "specimenName",
-            "from": "detail"
+            "from": "text",
+            "unless": "^[^,]*$"
           },
           {
             "field": "procedure",
-            "from": "options"
+            "from": "map",
+            "map": [
+              [
+                "\\btotal\\s+pancreatectomy\\b",
+                "Total pancreatectomy"
+              ],
+              [
+                "\\b(?:central|middle|median|segmental)\\s+pancreatectomy\\b",
+                "Central pancreatectomy"
+              ],
+              [
+                "\\benucleat(?:ion|ed)\\b",
+                "Excisional biopsy (enucleation)"
+              ],
+              [
+                "\\b(?:distal|left|subtotal)\\s+pancreatectomy\\b|\\bdistal\\s+pancreas\\b|\\bpancreas,\\s*(?:body\\s+and\\s+)?tail\\b|\\bpancreatic\\s+(?:body\\s+and\\s+)?tail\\b|\\btail\\s+of\\s+(?:the\\s+)?pancreas\\b|\\bramps\\b|\\bappleby\\b|\\bspleno-?pancreatectomy\\b|\\bpancreato-?splenectomy\\b",
+                "Distal pancreatectomy"
+              ],
+              [
+                "\\bpylorus[- ]preserving\\b|\\bpppd\\b|\\bpp-?pd\\b",
+                "Pylorus-preserving pancreaticoduodenectomy"
+              ],
+              [
+                "\\bwhipple|\\bpancreat(?:ic)?o-?duodenectomy\\b",
+                "Pancreaticoduodenectomy (Whipple resection)"
+              ]
+            ]
+          },
+          {
+            "field": "spleen",
+            "from": "map",
+            "map": [
+              [
+                "\\bspleen[- ]?(?:preserv\\w*|sparing)\\b|\\bsplenic\\s+preservation\\b|\\bpreserv\\w*\\s+(?:of\\s+)?(?:the\\s+)?spleen\\b|\\bkimura\\b|\\bwarshaw\\b",
+                "Not included (spleen-preserving)"
+              ],
+              [
+                "\\bspleen\\b|\\bsplenectomy\\b|\\bspleno-?pancreatectomy\\b|\\bpancreato-?splenectomy\\b|\\bramps\\b",
+                "Included (splenectomy)"
+              ]
+            ]
           },
           {
             "field": "tumourSite",
@@ -4154,7 +4204,7 @@
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "pancreas_carcinoma",
       "generatorPath": "generators/pancreas_carcinoma.js",
       "schemaPath": "schemas/pancreas_carcinoma.json"

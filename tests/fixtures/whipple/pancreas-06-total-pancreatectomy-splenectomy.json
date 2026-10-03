@@ -1,0 +1,47 @@
+{
+  "templateId": "pancreas_carcinoma",
+  "patch": {
+    "procedure": "Total pancreatectomy",
+    "spleen": "Included (splenectomy)",
+    "tumourSite": [
+      "Head of pancreas",
+      "Body of pancreas"
+    ],
+    "tumourSizeCm": 5.2,
+    "tumourDims": "52 x 40 x 30",
+    "specimenDims": "260 x 120 x 60",
+    "pancreasDims": "190 x 50 x 35",
+    "duodenumLengthMm": "150",
+    "bileDuctLengthMm": "30",
+    "spleenDims": "105 x 70 x 35",
+    "spleenWeightG": 140,
+    "blockKeyText": "1-6 Tumour with uncinate and posterior surfaces\n7 Bile duct margin, en face\n8 Portal vein segment",
+    "tumourExtension": [
+      "Peripancreatic soft tissue",
+      "Superior mesenteric vein or portal vein"
+    ],
+    "surfaceInvolvement": "Not identified",
+    "extendedResection": [
+      "Superior mesenteric or portal vein segment"
+    ],
+    "uncinateMarginMm": 2,
+    "posteriorMargin": "Uninvolved by invasive carcinoma (specify distance)",
+    "posteriorMarginMm": 3,
+    "bileDuctMarginMm": 15,
+    "otherMargin": "Uninvolved by invasive carcinoma (specify distance)",
+    "otherMarginName": "Portal vein segment margins",
+    "otherMarginMm": 6,
+    "nodesExamined": 31,
+    "nodesInvolved": 5,
+    "station8": 1,
+    "station11": 1,
+    "station13": 2,
+    "station17": 1,
+    "ene": "Present",
+    "largestDepositMm": 9,
+    "largestNodeSite": "station 13"
+  },
+  "options": {},
+  "report": "Pancreas, duodenum and spleen, head of pancreas and body of pancreas, total pancreatectomy and splenectomy\n\nReceived in formalin is a total pancreatectomy and splenectomy specimen measuring 260 x 120 x 60 mm. The pancreas measures 190 x 50 x 35 mm, the attached duodenum measures 150 mm in length, the common bile duct measures 30 mm in length and the spleen measures 105 x 70 x 35 mm and weighs 140 g. The uncinate (superior mesenteric artery) and posterior surfaces are inked in different colours and the bile duct margin is taken en face. The pancreatic head is sliced axially and the body and tail are sliced in the sagittal plane. There is a firm, ill-defined pale tumour centred on the head of pancreas and body of pancreas measuring 52 x 40 x 30 mm. The pancreatic duct is dilated to 6 mm upstream and the common bile duct is dilated to 14 mm. The lymph node stations are dissected separately and submitted in labelled cassettes. Representative sections are taken; see block key.\n\n(1-6) Tumour with uncinate and posterior surfaces.\n(7) Bile duct margin, en face.\n(8) Portal vein segment.\n\nSpecimen and tumour\n- Procedure: Total pancreatectomy with splenectomy\n- Additionally resected organs or structures: Superior mesenteric or portal vein\n  segment\n- Origin: Pancreatic (ductal adenocarcinoma centred in the pancreatic head or\n  uncinate process)\n- Tumour site: Head of pancreas and Body of pancreas\n- Tumour size: 5.2 cm (unifocal invasive carcinoma, greatest dimension)\n\nMicroscopic findings\n- Histologic type: Ductal adenocarcinoma, NOS\n- Histologic grade: G2, moderately differentiated\n- Tumour histology:\n  The tumour is a moderately differentiated ductal adenocarcinoma, NOS, extending into the peripancreatic soft tissue and superior mesenteric vein or portal vein. Haphazardly arranged infiltrating glands with incomplete lumina and luminal necrotic debris are set in abundant desmoplastic stroma, lying immediately adjacent to muscular vessels and nerves, and show marked variation in nuclear size within individual glands. The tumour cells express CK7. There is loss of nuclear SMAD4 (DPC4) expression.\n- Sites involved by direct extension: Peripancreatic soft tissue and Superior\n  mesenteric vein or portal vein\n- Pancreatic surface involvement: Not identified\n- Lymphovascular invasion: Present\n- Perineural invasion: Present\n- Treatment effect: No known presurgical therapy\n- Precursor lesion: Pancreatic intraepithelial neoplasia, high grade (PanIN)\n\nMargins\n- Bile duct margin: Uninvolved by invasive carcinoma, 15 mm\n- Uncinate (retroperitoneal / superior mesenteric artery) margin: Uninvolved by\n  invasive carcinoma, 2 mm\n- Posterior surface: Uninvolved by invasive carcinoma, 3 mm\n- Proximal (gastric or duodenal) margin: Uninvolved by invasive carcinoma, 45 mm\n- Distal (duodenal or jejunal) margin: Uninvolved by invasive carcinoma, 60 mm\n- Portal vein segment margins: Uninvolved by invasive carcinoma, 6 mm\n- High-grade dysplasia at the margins: Not identified\n\nLymph nodes\n- Regional lymph nodes: 31 examined; 5 involved\n  - Number examined: 31\n  - Number involved: 5\n  - Stations involved: 8 (common hepatic artery): 1, 11 (splenic artery): 1,\n    13 (posterior pancreaticoduodenal): 2 and 17 (anterior pancreaticoduodenal):\n    1\n  - Extranodal extension: Present\n  - Size of largest metastatic deposit: 9 mm, station 13\n\nDistant metastasis\n- Distant metastasis: Not identified\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT3 pN2\n  - Stage group (if cM0): III\n\nAdditional findings\n- Chronic pancreatitis\n\nPANCREAS, DUODENUM AND SPLEEN, head of pancreas and body of pancreas, total\npancreatectomy and splenectomy\n- DUCTAL ADENOCARCINOMA, NOS, moderately differentiated, 5.2 cm, extending into\n  the peripancreatic soft tissue and superior mesenteric vein or portal vein;\n  lymphovascular invasion present; perineural invasion present; remaining\n  margins clear (closest 2 mm); see synoptic report\n- 5 of 31 regional lymph nodes involved; extranodal extension present\n- pT3 pN2 (AJCC 8th edition), stage III (if cM0)",
+  "checks": []
+}

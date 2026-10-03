@@ -7,6 +7,11 @@
 //
 // Nothing here prints on its own. Each generator composes these pieces in its own chapter order.
 //
+// The pancreatic template also reports the other pancreatectomies (distal, total, central,
+// enucleation; docs/specs/pancreatectomy.md). `procedureKind` names the operation, and the margin
+// list, the node stations shown and the node-yield check follow it. The ampullary template is
+// always a pancreatoduodenectomy and never passes the values that select another operation.
+//
 // Sources for the element wording:
 //   CAP Pancreas (Exocrine) v4.3.0.0, June 2025 (required use March 2026)
 //     https://documents.cap.org/documents/New-Cancer-Protocols-June-2025/Panc.Exo_4.3.0.0.REL_CAPCP.pdf
@@ -53,10 +58,73 @@ export const MARGINS = [
   { id: 'proximalMargin', mm: 'proximalMarginMm', label: 'Proximal (gastric or duodenal) margin', name: 'proximal margin', both: true },
   { id: 'distalMargin', mm: 'distalMarginMm', label: 'Distal (duodenal or jejunal) margin', name: 'distal margin', both: true },
   { id: 'pancDuctMargin', mm: 'pancDuctMarginMm', label: 'Pancreatic duct margin', name: 'pancreatic duct margin', ampullaOnly: true },
-  { id: 'duodMucosalMargin', mm: 'duodMucosalMarginMm', label: 'Duodenal mucosal margin', name: 'duodenal mucosal margin', ampullaOnly: true }
+  { id: 'duodMucosalMargin', mm: 'duodMucosalMarginMm', label: 'Duodenal mucosal margin', name: 'duodenal mucosal margin', ampullaOnly: true },
+  // The pancreatic parenchymal margins of the other operations, in the house (CAP) wording: a distal
+  // pancreatectomy has one transection (the proximal), a central pancreatectomy two, an enucleation
+  // the parenchyma around the lesion. "Other margin" carries a typed name - a splenic vessel or a
+  // resected vein segment, an en bloc organ.
+  { id: 'proxPancMargin', mm: 'proxPancMarginMm', label: 'Proximal pancreatic parenchymal margin', name: 'proximal pancreatic margin', pancreasOnly: true },
+  { id: 'distPancMargin', mm: 'distPancMarginMm', label: 'Distal pancreatic parenchymal margin', name: 'distal pancreatic margin', pancreasOnly: true },
+  { id: 'parenchymalMargin', mm: 'parenchymalMarginMm', label: 'Pancreatic parenchymal margin', name: 'pancreatic parenchymal margin', pancreasOnly: true },
+  { id: 'otherMargin', mm: 'otherMarginMm', label: 'Other margin', name: 'other margin', pancreasOnly: true }
 ];
 
-export const marginsFor = (template) => MARGINS.filter((m) => m.both || (template === 'ampulla' && m.ampullaOnly));
+// ---------- the operation ----------
+
+/**
+ * Procedure option -> operation. Anything not listed (Other, Not specified) stays a
+ * pancreatoduodenectomy, which is what the template reported before the other operations were
+ * added. The two CAP "Partial pancreatectomy" options were retired from the list; a saved draft
+ * that still holds one reads as a distal pancreatectomy.
+ */
+export const PROCEDURE_KIND = {
+  'Pancreaticoduodenectomy (Whipple resection)': 'pd',
+  'Pylorus-preserving pancreaticoduodenectomy': 'pd',
+  'Total pancreatectomy': 'total',
+  'Distal pancreatectomy': 'distal',
+  'Central pancreatectomy': 'central',
+  'Excisional biopsy (enucleation)': 'enucleation',
+  'Partial pancreatectomy, pancreatic body': 'distal',
+  'Partial pancreatectomy, pancreatic tail': 'distal'
+};
+
+/** 'pd' | 'total' | 'distal' | 'central' | 'enucleation'. */
+export const procedureKind = (v) => PROCEDURE_KIND[v?.procedure] || 'pd';
+
+/** True for the operations that take the pancreatic head and duodenum. */
+export const takesHead = (kind) => kind === 'pd' || kind === 'total';
+
+/**
+ * The margins each operation carries, in print order. A total pancreatectomy has no pancreatic
+ * transection; a distal pancreatectomy has the proximal transection and the posterior (dissection)
+ * surface, the one most often involved (Sahakyan, Verbeke et al. 2021); a central pancreatectomy has
+ * both pancreatic ends; an enucleation the parenchyma around the lesion.
+ */
+export const KIND_MARGINS = {
+  pd: ['neckMargin', 'bileDuctMargin', 'uncinateMargin', 'posteriorMargin', 'proximalMargin', 'distalMargin', 'otherMargin'],
+  total: ['bileDuctMargin', 'uncinateMargin', 'posteriorMargin', 'proximalMargin', 'distalMargin', 'otherMargin'],
+  distal: ['proxPancMargin', 'posteriorMargin', 'otherMargin'],
+  central: ['proxPancMargin', 'distPancMargin', 'otherMargin'],
+  enucleation: ['parenchymalMargin', 'otherMargin']
+};
+
+/** First letter down unless the word is an abbreviation ("SMV", "CHA"). */
+const lcWord = (s) => (/^[A-Z][a-z]/.test(s) ? lc1(s) : s);
+
+/** The typed name of the other margin replaces its label and diagnosis phrase. */
+const withName = (m, v) => {
+  const typed = m.id === 'otherMargin' ? stripDot(v?.otherMarginName) : '';
+  return typed ? { ...m, label: uc1(typed), name: lcWord(typed) } : m;
+};
+
+/**
+ * The margins `template` reports. The ampullary list is fixed; the pancreatic list follows the
+ * operation in `v` (a pancreatoduodenectomy when `v` is not given).
+ */
+export const marginsFor = (template, v) => {
+  if (template !== 'pancreas') return MARGINS.filter((m) => m.both || (template === 'ampulla' && m.ampullaOnly));
+  return KIND_MARGINS[procedureKind(v)].map((id) => withName(MARGINS.find((m) => m.id === id), v));
+};
 
 export const MARGIN_OPTIONS = [
   'Cannot be assessed',
@@ -80,9 +148,9 @@ export function resMarginText(vv, mmVal) {
   return s;
 }
 
-/** Margin items for the synoptic Margins section, in MARGINS order. */
+/** Margin items for the synoptic Margins section, in the order marginsFor gives. */
 export function marginItems(v, template) {
-  return marginsFor(template).map((m) => {
+  return marginsFor(template, v).map((m) => {
     const text = resMarginText(v[m.id], v[m.mm]);
     return text ? { label: m.label, value: text } : null;
   }).filter(Boolean);
@@ -94,7 +162,7 @@ export function marginItems(v, template) {
  * names them so the surgeon sees which one.
  */
 export function marginsPhrase(v, template) {
-  const named = marginsFor(template)
+  const named = marginsFor(template, v)
     .map((m) => ({ ...m, value: v[m.id], dist: num(v[m.mm]) }))
     .filter((m) => m.value && !/^Cannot be assessed|^Not applicable/.test(m.value));
   const involved = named.filter((m) => /^Involved/.test(m.value));
@@ -113,7 +181,7 @@ export function marginsPhrase(v, template) {
 
 /** True when any margin is involved or within the 1 mm threshold. */
 export function isR1(v, template) {
-  return marginsFor(template).some((m) => {
+  return marginsFor(template, v).some((m) => {
     if (/^Involved/.test(v[m.id] || '')) return true;
     const d = num(v[m.mm]);
     return /^Uninvolved/.test(v[m.id] || '') && d !== null && d <= R1_MM;
@@ -127,17 +195,26 @@ export function isR1(v, template) {
  * Pancreas Society scheme used in the CAP protocol notes: 8 common hepatic artery,
  * 12 hepatoduodenal ligament, 13 posterior pancreaticoduodenal, 14 superior mesenteric artery,
  * 17 anterior pancreaticoduodenal. All five are regional for both chapters, so a node in any of
- * them counts toward the same pN.
+ * them counts toward the same pN. A distal or total pancreatectomy adds the body and tail stations
+ * (RCPath G091 JPS table): 9 coeliac, 10 splenic hilum, 11 splenic artery; the pancreatic form
+ * shows each station only for the operations that remove it. A station left blank never prints.
  */
 export const NODE_STATIONS = [
   { id: 'station8', label: 'Station 8 (common hepatic artery)' },
+  { id: 'station9', label: 'Station 9 (coeliac axis)' },
+  { id: 'station10', label: 'Station 10 (splenic hilum)' },
+  { id: 'station11', label: 'Station 11 (splenic artery)' },
   { id: 'station12', label: 'Station 12 (hepatoduodenal ligament)' },
   { id: 'station13', label: 'Station 13 (posterior pancreaticoduodenal)' },
   { id: 'station14', label: 'Station 14 (superior mesenteric artery)' },
   { id: 'station17', label: 'Station 17 (anterior pancreaticoduodenal)' }
 ];
 
-/** AJCC recommends at least 12 regional nodes for a reliable pN in both chapters. */
+/**
+ * AJCC recommends at least 12 regional nodes for a reliable pN in both chapters. The figure is for
+ * pancreatoduodenectomy; no minimum is established for a distal pancreatectomy (ICCR 2020), so the
+ * check runs only for the operations that take the head.
+ */
 export const NODE_SUFFICIENCY = 12;
 
 export function nodesItem(v) {
@@ -256,6 +333,18 @@ export const originText = (v) => {
 };
 
 /**
+ * Whether the periampullary origin question applies: always on the ampullary template; on the
+ * pancreatic one when the operation takes the head and, for a total pancreatectomy, the tumour
+ * is in the head. A body or tail carcinoma is not periampullary. Mirrors the schema showIf.
+ */
+export function originApplies(v, template) {
+  if (template === 'ampulla') return true;
+  const kind = procedureKind(v);
+  if (kind === 'pd') return true;
+  return kind === 'total' && arr(v.tumourSite).some((s) => s === 'Head of pancreas' || s === 'Uncinate process');
+}
+
+/**
  * Checks that the case is in the right template for the recorded origin. Returns a message when
  * it is not, or '' when the assignment agrees (or has not been made).
  */
@@ -276,6 +365,9 @@ export const PROCEDURE_PHRASE = {
   'Total pancreatectomy': 'total pancreatectomy',
   'Partial pancreatectomy, pancreatic body': 'partial pancreatectomy of the pancreatic body',
   'Partial pancreatectomy, pancreatic tail': 'partial pancreatectomy of the pancreatic tail',
+  'Distal pancreatectomy': 'distal pancreatectomy',
+  'Central pancreatectomy': 'central pancreatectomy',
+  'Excisional biopsy (enucleation)': 'enucleation',
   'Ampullectomy': 'ampullectomy'
 };
 
@@ -335,23 +427,27 @@ export function tumourFragment(v, centre) {
 
 /** Node, margin and treatment checks both templates run. `at` comes from checks(). */
 export function sharedChecks(v, template, { err, warn }) {
+  const kind = template === 'pancreas' ? procedureKind(v) : 'pd';
   const ex = int(v.nodesExamined); const pos = int(v.nodesInvolved);
   if (ex === null) err('Number of regional lymph nodes examined is required (enter 0 if none submitted).', 'nodesExamined');
   else if (ex > 0 && pos === null) err('Number of involved lymph nodes is required (enter 0 if none).', 'nodesInvolved');
   if (ex !== null && pos !== null && pos > ex) err('Involved nodes exceed the number examined.', 'nodesInvolved');
-  if (ex !== null && ex > 0 && ex < NODE_SUFFICIENCY) warn(`Fewer than ${NODE_SUFFICIENCY} regional lymph nodes examined; AJCC 8th edition recommends at least ${NODE_SUFFICIENCY} for a reliable pN in this specimen.`, 'nodesExamined');
+  if (takesHead(kind) && ex !== null && ex > 0 && ex < NODE_SUFFICIENCY) warn(`Fewer than ${NODE_SUFFICIENCY} regional lymph nodes examined; AJCC 8th edition recommends at least ${NODE_SUFFICIENCY} for a reliable pN in this specimen.`, 'nodesExamined');
   const stationTotal = NODE_STATIONS.reduce((a, s) => { const n = int(v[s.id]); return n === null ? a : a + n; }, 0);
   const anyStation = NODE_STATIONS.some((s) => int(v[s.id]) !== null);
   if (anyStation && pos !== null && stationTotal !== pos) warn(`Station counts total ${stationTotal} but ${pos} node${pos === 1 ? ' is' : 's are'} recorded as involved.`, 'nodesInvolved');
   if (pos && pos > 0 && (!v.ene || /^Not applicable/.test(v.ene))) warn('Extranodal extension is not recorded for a node-positive case.', 'ene');
-  for (const m of marginsFor(template)) {
+  for (const m of marginsFor(template, v)) {
     if (/^Uninvolved/.test(v[m.id] || '') && /distance/i.test(v[m.id] || '') && num(v[m.mm]) === null) warn(`${m.label} uninvolved: record the distance.`, m.mm);
     const d = num(v[m.mm]);
     if (/^Uninvolved/.test(v[m.id] || '') && d !== null && d <= R1_MM) warn(`${m.label} is ${fmt(d)} mm from the carcinoma; at 1 mm or less this is reported as a positive margin (R1) in pancreatobiliary resections.`, m.id);
   }
-  if (!v.neckMargin) err('Pancreatic neck (transection) margin status is required.', 'neckMargin');
-  if (!v.uncinateMargin) err('Uncinate (retroperitoneal / superior mesenteric artery) margin status is required; it is the margin most often involved.', 'uncinateMargin');
-  const mism = originMismatch(v, template === 'ampulla' ? 'ampulla_carcinoma' : 'pancreas_carcinoma');
+  if (kind === 'pd' && !v.neckMargin) err('Pancreatic neck (transection) margin status is required.', 'neckMargin');
+  if (takesHead(kind) && !v.uncinateMargin) err('Uncinate (retroperitoneal / superior mesenteric artery) margin status is required; it is the margin most often involved.', 'uncinateMargin');
+  if ((kind === 'distal' || kind === 'central') && !v.proxPancMargin) err('Proximal pancreatic parenchymal margin status is required.', 'proxPancMargin');
+  if (kind === 'central' && !v.distPancMargin) err('Distal pancreatic parenchymal margin status is required.', 'distPancMargin');
+  if (kind === 'enucleation' && !v.parenchymalMargin) err('Pancreatic parenchymal margin status is required.', 'parenchymalMargin');
+  const mism = originApplies(v, template) ? originMismatch(v, template === 'ampulla' ? 'ampulla_carcinoma' : 'pancreas_carcinoma') : '';
   if (mism) err(mism, 'origin');
   if (isTreated(v) && !/^y/.test(v.tnmOverride || 'y')) warn('Presurgical therapy is recorded; the y descriptor is added to the derived pTNM automatically but the typed override does not carry it.', 'tnmOverride');
 }

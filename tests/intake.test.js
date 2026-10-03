@@ -475,6 +475,52 @@ test('matcher: Whipple phrasings route to the pancreas and ampulla synoptics', (
   }
 });
 
+test('matcher: the other pancreatectomies route to the pancreatic synoptic and name the operation', async () => {
+  const { schema } = await loadTemplate('pancreas_carcinoma');
+  const one = (text, history) => matchParts(parseIntake(`(A) ${text}`), history, manifest)[0];
+  const lines = [
+    // [specimen line, history, procedure, spleen]
+    ['Pancreas and spleen, distal pancreatectomy and splenectomy', 'PDAC', 'Distal pancreatectomy', 'Included (splenectomy)'],
+    ['Distal pancreatectomy and splenectomy', 'Ca tail of pancreas', 'Distal pancreatectomy', 'Included (splenectomy)'],
+    ['Pancreas, spleen-preserving distal pancreatectomy', 'Ca body of pancreas', 'Distal pancreatectomy', 'Not included (spleen-preserving)'],
+    ['Pancreas, body and tail, resection', 'Ca pancreas', 'Distal pancreatectomy', undefined],
+    ['Pancreas, subtotal pancreatectomy and splenectomy', 'PDAC', 'Distal pancreatectomy', 'Included (splenectomy)'],
+    ['Pancreas and spleen, RAMPS', 'PDAC', 'Distal pancreatectomy', 'Included (splenectomy)'],
+    ['Pancreas, total pancreatectomy, resection', 'Ca pancreas', 'Total pancreatectomy', undefined],
+    ['Pancreas, central pancreatectomy', 'pancreatic body mass', 'Central pancreatectomy', undefined],
+    ['Pancreas, enucleation', 'pancreatic lesion', 'Excisional biopsy (enucleation)', undefined],
+    ['Pancreas, pylorus-preserving pancreaticoduodenectomy', 'Ca pancreas', 'Pylorus-preserving pancreaticoduodenectomy', undefined],
+    ['Pancreas, whipple specimen, resection', 'Ca pancreas', 'Pancreaticoduodenectomy (Whipple resection)', undefined],
+  ];
+  for (const [text, history, procedure, spleen] of lines) {
+    const m = one(text, history);
+    assert.equal(m.templateId, 'pancreas_carcinoma', `${text}: ${m.templateId}`);
+    assert.equal(m.tier, 'confident', `${text}: ${m.tier}`);
+    const pv = presetValues(schema, m, m.candidates?.[0] || {});
+    assert.equal(pv.procedure, procedure, `${text}: procedure`);
+    assert.equal(pv.spleen, spleen, `${text}: spleen`);
+  }
+  // The LIS line is the specimen name, so the diagnosis head reads as requested (it used to keep
+  // only the middle piece, "whipple specimen"); a line that is not a triple keeps the generated name.
+  const whip = one('Pancreas, whipple specimen, resection', 'Ca pancreas');
+  assert.equal(presetValues(schema, whip, whip.candidates?.[0] || {}).specimenName, 'Pancreas, whipple specimen, resection');
+  const bare = one('Distal pancreatectomy and splenectomy', 'Ca tail of pancreas');
+  assert.equal(presetValues(schema, bare, bare.candidates?.[0] || {}).specimenName, undefined);
+  // "subtotal" is not "total".
+  const sub = one('Pancreas, subtotal pancreatectomy', 'PDAC');
+  assert.equal(presetValues(schema, sub, sub.candidates?.[0] || {}).procedure, 'Distal pancreatectomy');
+  // The part of the gland written on its own reaches the site list ("Tail of pancreas"); a line that
+  // names none sets no site, and the form's operation-linked default applies.
+  const site = (text) => { const m = one(text, 'PDAC'); return presetValues(schema, m, m.candidates?.[0] || {}).tumourSite; };
+  assert.deepEqual(site('Pancreas, tail, distal pancreatectomy'), ['Tail of pancreas']);
+  assert.deepEqual(site('Pancreas, body and tail, resection'), ['Body of pancreas', 'Tail of pancreas']);
+  assert.deepEqual(site('Pancreatic tail, resection'), ['Tail of pancreas']);
+  assert.deepEqual(site('Pancreas, uncinate, Whipple'), ['Uncinate process']);
+  assert.equal(site('Pancreas and spleen, distal pancreatectomy and splenectomy'), undefined);
+  // Gated to the list that offers the expansion: a gastric body stays a gastric body.
+  assert.deepEqual(matchOptions(['Antrum', 'Body', 'Fundus', 'Cardia'], 'Stomach, body, biopsy'), ['Body']);
+});
+
 test('sideOf: words, Lt / Rt, and the letter on a clock hour; nothing when unstated or both', () => {
   const cases = [
     ['breast, L11H lesion, biopsy', 'Left'], ['Breast, R2H mass, core biopsy', 'Right'], ['L 11H', 'Left'],

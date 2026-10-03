@@ -1,0 +1,36 @@
+{
+  "templateId": "pancreas_carcinoma",
+  "patch": {
+    "duodenumLengthMm": "",
+    "bileDuctLengthMm": "",
+    "bileDuctDilatation": "",
+    "blockKeyText": "",
+    "station13": "",
+    "station17": "",
+    "largestDepositMm": "",
+    "largestNodeSite": "",
+    "procedure": "Central pancreatectomy",
+    "tumourSite": [
+      "Body of pancreas"
+    ],
+    "tumourSizeCm": 1.2,
+    "tumourDims": "12 x 10 x 9",
+    "specimenDims": "",
+    "pancreasDims": "45 x 30 x 22",
+    "tumourExtension": [
+      "Confined to pancreas"
+    ],
+    "surfaceInvolvement": "Not identified",
+    "lvi": "Not identified",
+    "pni": "Not identified",
+    "proxPancMargin": "Uninvolved by invasive carcinoma (specify distance)",
+    "proxPancMarginMm": 6,
+    "distPancMargin": "Involved by invasive carcinoma",
+    "nodesExamined": 2,
+    "nodesInvolved": 0,
+    "ene": "Not applicable"
+  },
+  "options": {},
+  "report": "Pancreas, body of pancreas, central pancreatectomy\n\nReceived in formalin is a central pancreatectomy specimen. The pancreas measures 45 x 30 x 22 mm. The proximal and distal pancreatic transection margins are inked in different colours and the pancreas is serially sliced in the sagittal plane. There is a firm, ill-defined pale tumour centred on the body of pancreas measuring 12 x 10 x 9 mm. The pancreatic duct is dilated to 6 mm upstream. The peripancreatic lymph nodes are dissected and submitted. Representative sections are taken; see block key.\n\nSpecimen and tumour\n- Procedure: Central pancreatectomy\n- Tumour site: Body of pancreas\n- Tumour size: 1.2 cm (unifocal invasive carcinoma, greatest dimension)\n\nMicroscopic findings\n- Histologic type: Ductal adenocarcinoma, NOS\n- Histologic grade: G2, moderately differentiated\n- Tumour histology:\n  The tumour is a moderately differentiated ductal adenocarcinoma, NOS, confined to the pancreas. Haphazardly arranged infiltrating glands with incomplete lumina and luminal necrotic debris are set in abundant desmoplastic stroma, lying immediately adjacent to muscular vessels and nerves, and show marked variation in nuclear size within individual glands. The tumour cells express CK7. There is loss of nuclear SMAD4 (DPC4) expression.\n- Sites involved by direct extension: Confined to pancreas\n- Pancreatic surface involvement: Not identified\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n- Treatment effect: No known presurgical therapy\n- Precursor lesion: Pancreatic intraepithelial neoplasia, high grade (PanIN)\n\nMargins\n- Proximal pancreatic parenchymal margin: Uninvolved by invasive carcinoma, 6 mm\n- Distal pancreatic parenchymal margin: Involved by invasive carcinoma\n- High-grade dysplasia at the margins: Not identified\n\nLymph nodes\n- Regional lymph nodes: 2 examined; 0 involved\n  - Number examined: 2\n  - Number involved: 0\n\nDistant metastasis\n- Distant metastasis: Not identified\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT1c pN0\n  - Stage group (if cM0): IA\n\nAdditional findings\n- Chronic pancreatitis\n\nPANCREAS, body of pancreas, central pancreatectomy\n- DUCTAL ADENOCARCINOMA, NOS, moderately differentiated, 1.2 cm, confined to the\n  pancreas; distal pancreatic margin involved; proximal pancreatic margin clear\n  (closest 6 mm); see synoptic report\n- 0 of 2 regional lymph nodes involved\n- pT1c pN0 (AJCC 8th edition), stage IA (if cM0)",
+  "checks": []
+}

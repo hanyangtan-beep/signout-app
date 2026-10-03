@@ -1,0 +1,40 @@
+{
+  "templateId": "pancreas_carcinoma",
+  "patch": {
+    "duodenumLengthMm": "",
+    "bileDuctLengthMm": "",
+    "bileDuctDilatation": "",
+    "blockKeyText": "",
+    "station13": "",
+    "station17": "",
+    "largestDepositMm": "",
+    "largestNodeSite": "",
+    "procedure": "Distal pancreatectomy",
+    "spleen": "Not included (spleen-preserving)",
+    "tumourSite": [
+      "Body of pancreas"
+    ],
+    "tumourSizeCm": 1.8,
+    "tumourDims": "18 x 15 x 12",
+    "specimenDims": "",
+    "pancreasDims": "85 x 30 x 22",
+    "tumourExtension": [
+      "Confined to pancreas"
+    ],
+    "surfaceInvolvement": "Not identified",
+    "lvi": "Not identified",
+    "proxPancMargin": "Uninvolved by invasive carcinoma (specify distance)",
+    "proxPancMarginMm": 15,
+    "posteriorMargin": "Uninvolved by invasive carcinoma (specify distance)",
+    "posteriorMarginMm": 3,
+    "otherMargin": "Uninvolved by invasive carcinoma (specify distance)",
+    "otherMarginName": "Splenic vein transection margin",
+    "otherMarginMm": 20,
+    "nodesExamined": 7,
+    "nodesInvolved": 0,
+    "ene": "Not applicable"
+  },
+  "options": {},
+  "report": "Pancreas, body of pancreas, spleen-preserving distal pancreatectomy\n\nReceived in formalin is a spleen-preserving distal pancreatectomy specimen. The pancreas measures 85 x 30 x 22 mm. The pancreatic transection margin and the anterior and posterior surfaces are inked in different colours and the pancreas is serially sliced in the sagittal plane. There is a firm, ill-defined pale tumour centred on the body of pancreas measuring 18 x 15 x 12 mm. The pancreatic duct is dilated to 6 mm upstream. The peripancreatic lymph nodes are dissected and submitted. Representative sections are taken; see block key.\n\nSpecimen and tumour\n- Procedure: Distal pancreatectomy, spleen-preserving\n- Tumour site: Body of pancreas\n- Tumour size: 1.8 cm (unifocal invasive carcinoma, greatest dimension)\n\nMicroscopic findings\n- Histologic type: Ductal adenocarcinoma, NOS\n- Histologic grade: G2, moderately differentiated\n- Tumour histology:\n  The tumour is a moderately differentiated ductal adenocarcinoma, NOS, confined to the pancreas. Haphazardly arranged infiltrating glands with incomplete lumina and luminal necrotic debris are set in abundant desmoplastic stroma, lying immediately adjacent to muscular vessels and nerves, and show marked variation in nuclear size within individual glands. The tumour cells express CK7. There is loss of nuclear SMAD4 (DPC4) expression.\n- Sites involved by direct extension: Confined to pancreas\n- Pancreatic surface involvement: Not identified\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Present\n- Treatment effect: No known presurgical therapy\n- Precursor lesion: Pancreatic intraepithelial neoplasia, high grade (PanIN)\n\nMargins\n- Proximal pancreatic parenchymal margin: Uninvolved by invasive carcinoma,\n  15 mm\n- Posterior surface: Uninvolved by invasive carcinoma, 3 mm\n- Splenic vein transection margin: Uninvolved by invasive carcinoma, 20 mm\n- High-grade dysplasia at the margins: Not identified\n\nLymph nodes\n- Regional lymph nodes: 7 examined; 0 involved\n  - Number examined: 7\n  - Number involved: 0\n\nDistant metastasis\n- Distant metastasis: Not identified\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT1c pN0\n  - Stage group (if cM0): IA\n\nAdditional findings\n- Chronic pancreatitis\n\nPANCREAS, body of pancreas, spleen-preserving distal pancreatectomy\n- DUCTAL ADENOCARCINOMA, NOS, moderately differentiated, 1.8 cm, confined to the\n  pancreas; perineural invasion present; remaining margins clear (closest 3 mm);\n  see synoptic report\n- 0 of 7 regional lymph nodes involved\n- pT1c pN0 (AJCC 8th edition), stage IA (if cM0)",
+  "checks": []
+}

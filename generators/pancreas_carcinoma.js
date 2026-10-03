@@ -1,6 +1,10 @@
-// Pancreatic (exocrine) carcinoma resection generator — the pancreatic half of the Whipple pair.
+// Pancreatic (exocrine) carcinoma resection generator — the pancreatic half of the Whipple pair,
+// and since Phase 52 the other pancreatectomies too: distal (with or without the spleen), total,
+// central and enucleation (docs/specs/pancreatectomy.md). The operation decides the organs named
+// in the specimen line, the macro, the margins and the node checks; a pancreatoduodenectomy reads
+// exactly as before.
 // Elements follow the CAP protocol Pancreas (Exocrine) v4.3.0.0 (June 2025, required use March
-// 2026) in the CAP order, with the house departures recorded in docs/specs/whipple-pair.md: the
+// 2026) in the CAP order, with the house departures recorded in docs/specs/pancreatectomy.md: the
 // "- Tumour histology:" paragraph follows "- Histologic grade:" (all synoptic templates), the
 // treatment-effect strings are the house CAP TRG variants (score 0-3), margin distances are in
 // mm, and British spelling is used throughout. Tumour size is in cm as in the protocol.
@@ -44,13 +48,63 @@ export function sitesText(v) {
   return sites.length ? listJoin(sites) : '';
 }
 
+export const SPLEEN_IN = 'Included (splenectomy)';
+export const SPLEEN_OUT = 'Not included (spleen-preserving)';
+
+/**
+ * 'in' | 'out' | '' — the spleen, for the two operations that may take it. The retired "Partial
+ * pancreatectomy" options never asked, so a draft holding one names no spleen.
+ */
+export function spleenState(v) {
+  if (v.procedure !== 'Distal pancreatectomy' && v.procedure !== 'Total pancreatectomy') return '';
+  return v.spleen === SPLEEN_IN ? 'in' : v.spleen === SPLEEN_OUT ? 'out' : '';
+}
+
+/** The organs the specimen line opens with. */
+function organs(v) {
+  const kind = W.procedureKind(v);
+  const spleen = spleenState(v) === 'in';
+  if (kind === 'pd') return 'Pancreas and duodenum';
+  if (kind === 'total') return spleen ? 'Pancreas, duodenum and spleen' : 'Pancreas and duodenum';
+  if (kind === 'distal') return spleen ? 'Pancreas and spleen' : 'Pancreas';
+  return 'Pancreas';
+}
+
+/** The operation as the specimen line and the macro write it: "distal pancreatectomy and splenectomy". */
+export function operationPhrase(v) {
+  const p = procedurePhrase(v);
+  const spleen = spleenState(v);
+  if (!p || !spleen) return p;
+  return spleen === 'in' ? `${p} and splenectomy` : `spleen-preserving ${p}`;
+}
+
+/** The synoptic Procedure value: "Distal pancreatectomy with splenectomy". */
+export function procedureValue(v) {
+  const p = procedureText(v);
+  const spleen = spleenState(v);
+  if (!spleen) return p;
+  return spleen === 'in' ? `${p} with splenectomy` : `${p}, spleen-preserving`;
+}
+
+/** "Additionally resected organs or structures", when any is ticked. */
+export function extendedValue(v) {
+  const named = arr(v.extendedResection).filter((s) => s !== 'None')
+    .map((s) => (s === 'Other (specify)' ? stripDot(v.extendedResectionOther) || 'Other' : s));
+  return named.length ? listJoin(named) : '';
+}
+
+/** The generated name after the organs: ", tail of pancreas, distal pancreatectomy and splenectomy". */
+function nameTail(v) {
+  const proc = operationPhrase(v);
+  const sites = sitesText(v);
+  return `${sites ? `, ${sites}` : ''}${proc ? `, ${proc}` : ''}`;
+}
+
 export function specimenName(part) {
   const v = part.values;
   const typed = (v.specimenName || '').trim();
   if (typed) return typed;
-  const proc = procedurePhrase(v);
-  const sites = sitesText(v);
-  return `Pancreas${sites ? ` and duodenum, ${sites}` : ' and duodenum'}${proc ? `, ${proc}` : ''}`;
+  return `${organs(v)}${nameTail(v)}`;
 }
 
 export function specimens(parts) {
@@ -65,13 +119,69 @@ export function staging(part, ctx) { return deriveTNM(part.values, 'pancreas'); 
 
 export function macro(part, ctx) {
   const v = part.values;
-  const centre = sitesText(v) || 'pancreatic head';
+  const kind = W.procedureKind(v);
+  const centre = sitesText(v) || (kind === 'pd' ? 'pancreatic head' : 'pancreas');
   let sentence = W.tumourFragment(v, centre);
   const duct = [];
   if (stripDot(v.pancDuctDilatation)) duct.push(`the pancreatic duct is dilated to ${stripDot(v.pancDuctDilatation)} mm upstream`);
-  if (stripDot(v.bileDuctDilatation)) duct.push(`the common bile duct is dilated to ${stripDot(v.bileDuctDilatation)} mm`);
+  if (stripDot(v.bileDuctDilatation) && W.takesHead(kind)) duct.push(`the common bile duct is dilated to ${stripDot(v.bileDuctDilatation)} mm`);
   if (duct.length) sentence += ` ${uc1(listJoin(duct))}.`;
-  return W.whippleMacro(part, ctx, { tumourSentence: sentence });
+  if (kind === 'pd') return W.whippleMacro(part, ctx, { tumourSentence: sentence });
+  return resectionMacro(part, ctx, kind, sentence);
+}
+
+/**
+ * How each of the other operations is inked and sliced (RCPath G091: a left pancreatectomy has its
+ * transection margin and anterior and posterior surfaces painted and is sliced sagittally; a total
+ * pancreatectomy has its head sliced axially and its body and tail sagittally).
+ */
+const HANDLING = {
+  total: 'The uncinate (superior mesenteric artery) and posterior surfaces are inked in different colours and the bile duct margin is taken en face. The pancreatic head is sliced axially and the body and tail are sliced in the sagittal plane.',
+  distal: 'The pancreatic transection margin and the anterior and posterior surfaces are inked in different colours and the pancreas is serially sliced in the sagittal plane.',
+  central: 'The proximal and distal pancreatic transection margins are inked in different colours and the pancreas is serially sliced in the sagittal plane.',
+  enucleation: 'The surface is inked and the specimen is serially sliced.'
+};
+
+function spleenPhrase(v) {
+  const dims = stripDot(v.spleenDims);
+  const g = num(v.spleenWeightG);
+  if (dims && g !== null) return `the spleen measures ${dims} mm and weighs ${fmt(g)} g`;
+  if (dims) return `the spleen measures ${dims} mm`;
+  return g !== null ? `the spleen weighs ${fmt(g)} g` : '';
+}
+
+function nodesSentence(v, kind) {
+  if (kind === 'total') return 'The lymph node stations are dissected separately and submitted in labelled cassettes.';
+  if (kind === 'distal') return spleenState(v) === 'in' ? 'The splenic hilar and peripancreatic lymph nodes are dissected and submitted.' : 'The peripancreatic lymph nodes are dissected and submitted.';
+  return (W.int(v.nodesExamined) || 0) > 0 ? 'The peripancreatic lymph nodes are dissected and submitted.' : '';
+}
+
+/** The macro for a total, distal or central pancreatectomy or an enucleation. */
+function resectionMacro(part, ctx, kind, tumourSentence) {
+  if (ctx?.options && ctx.options.macro === false) return '';
+  const v = part.values;
+  const proc = operationPhrase(v) || 'pancreatectomy';
+  const article = /^[aeiou]/.test(proc) ? 'an' : 'a';
+  let s = `(${part.label}) Received in formalin is ${article} ${proc} specimen`;
+  if (stripDot(v.specimenDims)) s += ` measuring ${stripDot(v.specimenDims)} mm`;
+  s += '.';
+  const seg = [];
+  if (stripDot(v.pancreasDims)) seg.push(`the pancreas measures ${stripDot(v.pancreasDims)} mm`);
+  if (kind === 'total') {
+    if (stripDot(v.duodenumLengthMm)) seg.push(`the attached duodenum measures ${stripDot(v.duodenumLengthMm)} mm in length`);
+    if (stripDot(v.bileDuctLengthMm)) seg.push(`the common bile duct measures ${stripDot(v.bileDuctLengthMm)} mm in length`);
+    if (stripDot(v.stomachLengthMm)) seg.push(`the gastric cuff measures ${stripDot(v.stomachLengthMm)} mm in length`);
+  }
+  if (spleenState(v) === 'in') seg.push(spleenPhrase(v));
+  if (seg.filter(Boolean).length) s += ` ${uc1(listJoin(seg))}.`;
+  s += ` ${HANDLING[kind]}`;
+  if (tumourSentence) s += ` ${tumourSentence}`;
+  if (stripDot(v.ductFindings)) s += ` ${uc1(stripDot(v.ductFindings))}.`;
+  if (stripDot(v.grossDetails)) s += ` ${uc1(stripDot(v.grossDetails))}.`;
+  const nodes = nodesSentence(v, kind);
+  if (nodes) s += ` ${nodes}`;
+  s += ' Representative sections are taken; see block key.';
+  return s;
 }
 
 // ---------- block key ----------
@@ -172,8 +282,9 @@ export function synoptic(part, ctx) {
     : 'Not recorded';
   const sections = [
     { heading: 'Specimen and tumour', items: [
-      item('Procedure', procedureText(v)),
-      item('Origin', W.originText(v)),
+      item('Procedure', procedureValue(v)),
+      item('Additionally resected organs or structures', extendedValue(v)),
+      W.originApplies(v, TEMPLATE) ? item('Origin', W.originText(v)) : null,
       item('Tumour site', sites.length
         ? listJoin(sites.map((s) => (s === 'Other (specify)' ? stripDot(v.tumourSiteOther) || 'Other' : s)))
         : 'Not specified'),
@@ -222,7 +333,8 @@ const upperHead = (spec) => { const c = spec.indexOf(', '); return c > 0 ? `${sp
 export function diagnosis(part, ctx) {
   const v = part.values;
   const typed = stripDot(v.specimenName);
-  const head = `(${part.label}) ${typed ? upperHead(typed) : upperHead(specimenName(part))}`;
+  // The generated organs are upper-cased whole: "PANCREAS, DUODENUM AND SPLEEN" carries a comma.
+  const head = `(${part.label}) ${typed ? upperHead(typed) : `${organs(v).toUpperCase()}${nameTail(v)}`}`;
   const first = [];
   if (isPT0(v)) first.push('NO RESIDUAL CARCINOMA following therapy');
   else if (isTis(v)) first.push('CARCINOMA IN SITU (high-grade dysplasia), no invasive carcinoma identified');
@@ -266,9 +378,10 @@ export function validate(part, ctx) {
   }
   if (!arr(v.tumourExtension).length && !cr) warn('Sites involved by direct extension are not recorded.', 'tumourExtension');
   if (arr(v.tumourExtension).some((s) => /\(specify\)$/.test(s)) && !stripDot(v.extensionDetail)) warn('An extension option needs specifying.', 'extensionDetail');
-  // The seventh-edition habit: recording extrapancreatic spread and expecting pT3.
+  // The seventh-edition habit: recording extrapancreatic spread and expecting pT3. The body and
+  // tail neighbours (spleen, splenic vessels, stomach, adrenal, colon, kidney) count the same way.
   const cm = num(v.tumourSizeCm);
-  if (cm !== null && cm <= 4 && arr(v.tumourExtension).some((s) => /peripancreatic|retroperitoneal|duodenal wall|mesocolon|mesenteric adipose/i.test(s))) {
+  if (cm !== null && cm <= 4 && arr(v.tumourExtension).some((s) => /peripancreatic|retroperitoneal|duodenal wall|mesocolon|mesenteric adipose|spleen|splenic|stomach|adrenal|colon|kidney/i.test(s))) {
     warn('Extrapancreatic extension is recorded with a tumour of 4 cm or less. In the eighth edition pT follows size alone, so this remains pT1 or pT2; extension no longer raises it to pT3.', 'tumourExtension');
   }
   if (/^Ductal adenocarcinoma/.test(v.histType || '') && (!v.grade || /^Not applicable/.test(v.grade))) {
@@ -277,6 +390,19 @@ export function validate(part, ctx) {
   if (/^Present, with no viable/.test(v.treatmentEffect || '') && !cr) {
     warn('Complete pathological response (score 0) recorded but the extension list is not "No evidence of primary tumour".', 'treatmentEffect');
   }
+  // The operation and the tumour site have to agree: a distal or central pancreatectomy leaves the
+  // head behind, and a spleen-preserving operation cannot show splenic invasion.
+  const kind = W.procedureKind(v);
+  const sites = chosen(v.tumourSite);
+  // A distal pancreatectomy or an enucleation opens with no site (the head default does not follow
+  // the operation), so a request that named none leaves it to be picked.
+  if (!arr(v.tumourSite).length) warn('Tumour site is not recorded.', 'tumourSite');
+  if ((kind === 'distal' || kind === 'central') && sites.length && sites.every((s) => s === 'Head of pancreas' || s === 'Uncinate process')) {
+    warn(`Tumour site is the pancreatic head, which a ${kind} pancreatectomy does not include; check the tumour site.`, 'tumourSite');
+  }
+  if (spleenState(v) === 'out' && arr(v.tumourExtension).includes('Spleen')) warn('Splenic invasion is recorded but the spleen was preserved.', 'tumourExtension');
+  if (arr(v.extendedResection).includes('Other (specify)') && !stripDot(v.extendedResectionOther)) warn('An additionally resected structure needs specifying.', 'extendedResectionOther');
+  if (v.otherMargin && !/^Not applicable/.test(v.otherMargin) && !stripDot(v.otherMarginName)) warn('Name the other margin.', 'otherMarginName');
   W.sharedChecks(v, TEMPLATE, { err, warn });
   return out;
 }

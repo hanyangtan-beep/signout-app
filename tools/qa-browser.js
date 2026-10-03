@@ -1434,6 +1434,28 @@ await check('HCC resection: a pasted right hepatectomy opens the synoptic; size 
   return 'routed on the history with the received name; size Check; pT2 with the pTNM option; subtype gallery 6 photos';
 });
 
+// Other pancreatectomies (Phase 52): a pasted distal pancreatectomy and splenectomy under a pancreatic history
+// opens the pancreatic synoptic with the operation and the spleen filled and no head site; the margins are the
+// operation's own; switching to a Whipple brings the head margins back.
+await check('pancreatectomy: a pasted distal pancreatectomy fills the operation and the spleen; the margins follow the operation', async () => {
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
+  const routed = await pasteAndBuild('History\nCa tail of pancreas\n\nSpecimen\n(A) Pancreas and spleen, distal pancreatectomy and splenectomy');
+  assert(routed === 'pancreas_carcinoma', `distal pancreatectomy routed to ${routed}`);
+  let report = await reportText();
+  assert(report.includes('PANCREAS AND SPLEEN, distal pancreatectomy and splenectomy'), `diagnosis head wrong: ${report.slice(-400)}`);
+  assert(report.includes('- Procedure: Distal pancreatectomy with splenectomy'), `procedure row wrong: ${report.slice(0, 600)}`);
+  assert(await shows('proxPancMargin') && await shows('spleenWeightG') && !(await shows('neckMargin')) && !(await shows('uncinateMargin')), 'the distal fields are not the ones showing');
+  assert(/Tumour site is not recorded/.test(await checksText()), 'Checks did not ask for the tumour site');
+  await pickField('tumourSite', 'Tail of pancreas');
+  report = await reportText();
+  assert(report.includes('- Tumour site: Tail of pancreas'), `site not printed: ${report.slice(0, 600)}`);
+  await page.locator('.field[data-field="proxPancMargin"]').first().scrollIntoViewIfNeeded();
+  await shot('pancreas-distal-margins');
+  await pickField('procedure', 'Pancreaticoduodenectomy (Whipple resection)');
+  assert(await shows('neckMargin') && await shows('uncinateMargin') && !(await shows('proxPancMargin')) && !(await shows('spleen')), 'the Whipple fields did not come back');
+  return 'routed on the history with the operation and spleen filled; no head site and a Check; distal margins and spleen fields; a Whipple brings the head margins back';
+});
+
 // Breast papillary lesions (Phase 50): the category, the lesion and the invasion pick decide the line and the
 // B code; invasion without a stromal feature raises a Check; solid papillary carcinoma takes its own invasive
 // type by default; the lesion gallery opens with its photos.

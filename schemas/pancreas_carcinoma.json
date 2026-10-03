@@ -1,7 +1,7 @@
 {
   "id": "pancreas_carcinoma",
-  "version": "2026.09",
-  "name": "Pancreatic carcinoma resection (Whipple)",
+  "version": "2026.10",
+  "name": "Pancreatic carcinoma resection",
   "shortName": "Pancreas · carcinoma resection",
   "label": "Pancreas Ca",
   "organ": "Pancreas",
@@ -24,7 +24,10 @@
     "pdac",
     "ductal adenocarcinoma pancreas",
     "pancreatic head carcinoma",
-    "ppppd"
+    "ppppd",
+    "distal pancreatectomy",
+    "total pancreatectomy",
+    "central pancreatectomy"
   ],
   "match": {
     "site": [
@@ -34,12 +37,14 @@
       "pancreatic body",
       "pancreatic tail",
       "pancreaticoduodenectomy",
-      "whipple"
+      "whipple",
+      "pancreatectomy"
     ],
     "procedure": [
       "whipple",
       "pancreaticoduodenectomy",
-      "pancreatectomy"
+      "pancreatectomy",
+      "distal pancreas"
     ],
     "clinical": [
       "pancreatic carcinoma",
@@ -47,16 +52,61 @@
       "pdac",
       "ca pancreas",
       "ductal adenocarcinoma",
-      "ipmn with invasion"
+      "ipmn with invasion",
+      "tail of pancreas",
+      "body of pancreas",
+      "pancreatic tail",
+      "pancreatic body"
     ],
     "fill": [
       {
         "field": "specimenName",
-        "from": "detail"
+        "from": "text",
+        "unless": "^[^,]*$"
       },
       {
         "field": "procedure",
-        "from": "options"
+        "from": "map",
+        "map": [
+          [
+            "\\btotal\\s+pancreatectomy\\b",
+            "Total pancreatectomy"
+          ],
+          [
+            "\\b(?:central|middle|median|segmental)\\s+pancreatectomy\\b",
+            "Central pancreatectomy"
+          ],
+          [
+            "\\benucleat(?:ion|ed)\\b",
+            "Excisional biopsy (enucleation)"
+          ],
+          [
+            "\\b(?:distal|left|subtotal)\\s+pancreatectomy\\b|\\bdistal\\s+pancreas\\b|\\bpancreas,\\s*(?:body\\s+and\\s+)?tail\\b|\\bpancreatic\\s+(?:body\\s+and\\s+)?tail\\b|\\btail\\s+of\\s+(?:the\\s+)?pancreas\\b|\\bramps\\b|\\bappleby\\b|\\bspleno-?pancreatectomy\\b|\\bpancreato-?splenectomy\\b",
+            "Distal pancreatectomy"
+          ],
+          [
+            "\\bpylorus[- ]preserving\\b|\\bpppd\\b|\\bpp-?pd\\b",
+            "Pylorus-preserving pancreaticoduodenectomy"
+          ],
+          [
+            "\\bwhipple|\\bpancreat(?:ic)?o-?duodenectomy\\b",
+            "Pancreaticoduodenectomy (Whipple resection)"
+          ]
+        ]
+      },
+      {
+        "field": "spleen",
+        "from": "map",
+        "map": [
+          [
+            "\\bspleen[- ]?(?:preserv\\w*|sparing)\\b|\\bsplenic\\s+preservation\\b|\\bpreserv\\w*\\s+(?:of\\s+)?(?:the\\s+)?spleen\\b|\\bkimura\\b|\\bwarshaw\\b",
+            "Not included (spleen-preserving)"
+          ],
+          [
+            "\\bspleen\\b|\\bsplenectomy\\b|\\bspleno-?pancreatectomy\\b|\\bpancreato-?splenectomy\\b|\\bramps\\b",
+            "Included (splenectomy)"
+          ]
+        ]
       },
       {
         "field": "tumourSite",
@@ -96,6 +146,16 @@
     },
     "blockKeyText": {
       "concept": "blockKey"
+    },
+    "spleenDims": {
+      "concept": "dims",
+      "unit": "mm",
+      "near": "spleen"
+    },
+    "spleenWeightG": {
+      "concept": "weight",
+      "unit": "g",
+      "near": "spleen"
     }
   },
   "specimenNoun": "resection",
@@ -111,7 +171,8 @@
     "staging": "AJCC 8th edition pTNM derived by src/staging/pancreas.js. pT1-pT3 are assigned on tumour size alone (T1a 0.5 cm or less, T1b over 0.5 up to 1 cm, T1c over 1 up to 2 cm, T2 over 2 up to 4 cm, T3 over 4 cm); extrapancreatic extension is recorded but does not raise pT. pT4 is arterial involvement only (coeliac axis, superior mesenteric artery or common hepatic artery) - venous involvement is not pT4 in this edition. pN1 is 1 to 3 involved nodes, pN2 is 4 or more. pTNM prints only with the printPTNM option, stamped (AJCC 8th edition). Treatment effect maps to the y descriptor automatically.",
     "stagingProtocol": "pancreas",
     "grading": "WHO 2019 digestive tumours histologic type and grade. Tumour size is in cm as in the CAP protocol; margin distances are in mm. Margins at 1 mm or less are reported as positive (R1) as is standard for pancreatobiliary resections.",
-    "staging_reference": "https://digital.nhs.uk/ndrs/data/cancer-data-training-materials/staging-sheets/pancreas"
+    "staging_reference": "https://digital.nhs.uk/ndrs/data/cancer-data-training-materials/staging-sheets/pancreas",
+    "procedures": "Procedures, margins and node stations for the other pancreatectomies: ICCR Carcinoma of the Exocrine Pancreas dataset, 1st edition, and RCPath G091 dataset (distal pancreatectomy: proximal pancreatic transection margin and posterior surface; central pancreatectomy: both pancreatic transection margins; enucleation: the parenchymal margin; total pancreatectomy: no pancreatic transection). No node minimum is established for distal pancreatectomy, so the 12-node check runs for pancreatoduodenectomy and total pancreatectomy only."
   },
   "partDefaults": [],
   "options": [
@@ -143,9 +204,10 @@
       "options": [
         "Pancreaticoduodenectomy (Whipple resection)",
         "Pylorus-preserving pancreaticoduodenectomy",
+        "Distal pancreatectomy",
         "Total pancreatectomy",
-        "Partial pancreatectomy, pancreatic body",
-        "Partial pancreatectomy, pancreatic tail",
+        "Central pancreatectomy",
+        "Excisional biopsy (enucleation)",
         "Other",
         "Not specified"
       ],
@@ -162,6 +224,57 @@
       }
     },
     {
+      "id": "spleen",
+      "label": "Spleen",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "options": [
+        "Included (splenectomy)",
+        "Not included (spleen-preserving)"
+      ],
+      "default": "Included (splenectomy)",
+      "showIf": {
+        "field": "procedure",
+        "is": [
+          "Distal pancreatectomy",
+          "Total pancreatectomy"
+        ]
+      }
+    },
+    {
+      "id": "extendedResection",
+      "label": "Additionally resected organs or structures",
+      "type": "multiselect",
+      "group": "Specimen and tumour",
+      "options": [
+        "None",
+        "Superior mesenteric or portal vein segment",
+        "Coeliac axis",
+        "Common hepatic artery",
+        "Left adrenal gland",
+        "Stomach",
+        "Colon",
+        "Left kidney",
+        "Other (specify)"
+      ],
+      "exclusive": [
+        "None"
+      ],
+      "default": [
+        "None"
+      ]
+    },
+    {
+      "id": "extendedResectionOther",
+      "label": "Additionally resected (specify)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "showIf": {
+        "field": "extendedResection",
+        "is": "Other (specify)"
+      }
+    },
+    {
       "id": "origin",
       "label": "Origin of the periampullary carcinoma",
       "type": "select",
@@ -173,7 +286,37 @@
         "Duodenal",
         "Cannot be determined"
       ],
-      "default": "Pancreatic (ductal adenocarcinoma centred in the pancreatic head or uncinate process)"
+      "default": "Pancreatic (ductal adenocarcinoma centred in the pancreatic head or uncinate process)",
+      "showIf": {
+        "any": [
+          {
+            "field": "procedure",
+            "not": [
+              "Total pancreatectomy",
+              "Distal pancreatectomy",
+              "Central pancreatectomy",
+              "Excisional biopsy (enucleation)",
+              "Partial pancreatectomy, pancreatic body",
+              "Partial pancreatectomy, pancreatic tail"
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "procedure",
+                "is": "Total pancreatectomy"
+              },
+              {
+                "field": "tumourSite",
+                "is": [
+                  "Head of pancreas",
+                  "Uncinate process"
+                ]
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "originOther",
@@ -201,7 +344,17 @@
       ],
       "default": [
         "Head of pancreas"
-      ]
+      ],
+      "defaultByField": {
+        "field": "procedure",
+        "map": {
+          "Distal pancreatectomy": [],
+          "Central pancreatectomy": [
+            "Body of pancreas"
+          ],
+          "Excisional biopsy (enucleation)": []
+        }
+      }
     },
     {
       "id": "tumourSiteOther",
@@ -264,7 +417,7 @@
     },
     {
       "id": "pancreasDims",
-      "label": "Pancreatic head dimensions (mm)",
+      "label": "Pancreas dimensions (mm)",
       "type": "text",
       "group": "Specimen and tumour",
       "placeholder": "55 x 45 x 35"
@@ -273,19 +426,93 @@
       "id": "duodenumLengthMm",
       "label": "Duodenum length (mm)",
       "type": "text",
-      "group": "Specimen and tumour"
+      "group": "Specimen and tumour",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Excisional biopsy (enucleation)",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
     },
     {
       "id": "bileDuctLengthMm",
       "label": "Common bile duct length (mm)",
       "type": "text",
-      "group": "Specimen and tumour"
+      "group": "Specimen and tumour",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Excisional biopsy (enucleation)",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
     },
     {
       "id": "stomachLengthMm",
       "label": "Gastric cuff length (mm)",
       "type": "text",
-      "group": "Specimen and tumour"
+      "group": "Specimen and tumour",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Excisional biopsy (enucleation)",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
+    },
+    {
+      "id": "spleenDims",
+      "label": "Spleen dimensions (mm)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "placeholder": "110 x 70 x 40",
+      "showIf": {
+        "all": [
+          {
+            "field": "procedure",
+            "is": [
+              "Distal pancreatectomy",
+              "Total pancreatectomy"
+            ]
+          },
+          {
+            "field": "spleen",
+            "is": "Included (splenectomy)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "spleenWeightG",
+      "label": "Spleen weight (g)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "min": 0,
+      "showIf": {
+        "all": [
+          {
+            "field": "procedure",
+            "is": [
+              "Distal pancreatectomy",
+              "Total pancreatectomy"
+            ]
+          },
+          {
+            "field": "spleen",
+            "is": "Included (splenectomy)"
+          }
+        ]
+      }
     },
     {
       "id": "pancDuctDilatation",
@@ -297,7 +524,17 @@
       "id": "bileDuctDilatation",
       "label": "Common bile duct calibre (mm)",
       "type": "text",
-      "group": "Specimen and tumour"
+      "group": "Specimen and tumour",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Excisional biopsy (enucleation)",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
     },
     {
       "id": "ductFindings",
@@ -401,6 +638,7 @@
         "Mesocolon",
         "Stomach",
         "Spleen",
+        "Splenic vein or artery",
         "Adrenal gland",
         "Colon",
         "Superior mesenteric vein or portal vein",
@@ -553,7 +791,18 @@
         "Involved by invasive carcinoma",
         "Not applicable"
       ],
-      "default": "Uninvolved by invasive carcinoma (specify distance)"
+      "default": "Uninvolved by invasive carcinoma (specify distance)",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Total pancreatectomy",
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Excisional biopsy (enucleation)",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
     },
     {
       "id": "neckMarginMm",
@@ -562,8 +811,23 @@
       "group": "Margins",
       "min": 0,
       "showIf": {
-        "field": "neckMargin",
-        "is": "Uninvolved by invasive carcinoma (specify distance)"
+        "all": [
+          {
+            "field": "neckMargin",
+            "is": "Uninvolved by invasive carcinoma (specify distance)"
+          },
+          {
+            "field": "procedure",
+            "not": [
+              "Total pancreatectomy",
+              "Distal pancreatectomy",
+              "Central pancreatectomy",
+              "Excisional biopsy (enucleation)",
+              "Partial pancreatectomy, pancreatic body",
+              "Partial pancreatectomy, pancreatic tail"
+            ]
+          }
+        ]
       }
     },
     {
@@ -577,7 +841,17 @@
         "Involved by invasive carcinoma",
         "Not applicable"
       ],
-      "default": "Uninvolved by invasive carcinoma (specify distance)"
+      "default": "Uninvolved by invasive carcinoma (specify distance)",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Excisional biopsy (enucleation)",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
     },
     {
       "id": "bileDuctMarginMm",
@@ -586,8 +860,22 @@
       "group": "Margins",
       "min": 0,
       "showIf": {
-        "field": "bileDuctMargin",
-        "is": "Uninvolved by invasive carcinoma (specify distance)"
+        "all": [
+          {
+            "field": "bileDuctMargin",
+            "is": "Uninvolved by invasive carcinoma (specify distance)"
+          },
+          {
+            "field": "procedure",
+            "not": [
+              "Distal pancreatectomy",
+              "Central pancreatectomy",
+              "Excisional biopsy (enucleation)",
+              "Partial pancreatectomy, pancreatic body",
+              "Partial pancreatectomy, pancreatic tail"
+            ]
+          }
+        ]
       }
     },
     {
@@ -601,7 +889,17 @@
         "Involved by invasive carcinoma",
         "Not applicable"
       ],
-      "default": "Uninvolved by invasive carcinoma (specify distance)"
+      "default": "Uninvolved by invasive carcinoma (specify distance)",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Excisional biopsy (enucleation)",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
     },
     {
       "id": "uncinateMarginMm",
@@ -610,8 +908,22 @@
       "group": "Margins",
       "min": 0,
       "showIf": {
-        "field": "uncinateMargin",
-        "is": "Uninvolved by invasive carcinoma (specify distance)"
+        "all": [
+          {
+            "field": "uncinateMargin",
+            "is": "Uninvolved by invasive carcinoma (specify distance)"
+          },
+          {
+            "field": "procedure",
+            "not": [
+              "Distal pancreatectomy",
+              "Central pancreatectomy",
+              "Excisional biopsy (enucleation)",
+              "Partial pancreatectomy, pancreatic body",
+              "Partial pancreatectomy, pancreatic tail"
+            ]
+          }
+        ]
       }
     },
     {
@@ -625,7 +937,14 @@
         "Involved by invasive carcinoma",
         "Not applicable"
       ],
-      "default": "Uninvolved by invasive carcinoma (specify distance)"
+      "default": "Uninvolved by invasive carcinoma (specify distance)",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Central pancreatectomy",
+          "Excisional biopsy (enucleation)"
+        ]
+      }
     },
     {
       "id": "posteriorMarginMm",
@@ -634,8 +953,19 @@
       "group": "Margins",
       "min": 0,
       "showIf": {
-        "field": "posteriorMargin",
-        "is": "Uninvolved by invasive carcinoma (specify distance)"
+        "all": [
+          {
+            "field": "posteriorMargin",
+            "is": "Uninvolved by invasive carcinoma (specify distance)"
+          },
+          {
+            "field": "procedure",
+            "not": [
+              "Central pancreatectomy",
+              "Excisional biopsy (enucleation)"
+            ]
+          }
+        ]
       }
     },
     {
@@ -649,7 +979,17 @@
         "Involved by invasive carcinoma",
         "Not applicable"
       ],
-      "default": "Uninvolved by invasive carcinoma (specify distance)"
+      "default": "Uninvolved by invasive carcinoma (specify distance)",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Excisional biopsy (enucleation)",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
     },
     {
       "id": "proximalMarginMm",
@@ -658,8 +998,22 @@
       "group": "Margins",
       "min": 0,
       "showIf": {
-        "field": "proximalMargin",
-        "is": "Uninvolved by invasive carcinoma (specify distance)"
+        "all": [
+          {
+            "field": "proximalMargin",
+            "is": "Uninvolved by invasive carcinoma (specify distance)"
+          },
+          {
+            "field": "procedure",
+            "not": [
+              "Distal pancreatectomy",
+              "Central pancreatectomy",
+              "Excisional biopsy (enucleation)",
+              "Partial pancreatectomy, pancreatic body",
+              "Partial pancreatectomy, pancreatic tail"
+            ]
+          }
+        ]
       }
     },
     {
@@ -673,7 +1027,17 @@
         "Involved by invasive carcinoma",
         "Not applicable"
       ],
-      "default": "Uninvolved by invasive carcinoma (specify distance)"
+      "default": "Uninvolved by invasive carcinoma (specify distance)",
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Excisional biopsy (enucleation)",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
     },
     {
       "id": "distalMarginMm",
@@ -682,7 +1046,173 @@
       "group": "Margins",
       "min": 0,
       "showIf": {
-        "field": "distalMargin",
+        "all": [
+          {
+            "field": "distalMargin",
+            "is": "Uninvolved by invasive carcinoma (specify distance)"
+          },
+          {
+            "field": "procedure",
+            "not": [
+              "Distal pancreatectomy",
+              "Central pancreatectomy",
+              "Excisional biopsy (enucleation)",
+              "Partial pancreatectomy, pancreatic body",
+              "Partial pancreatectomy, pancreatic tail"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "proxPancMargin",
+      "label": "Proximal pancreatic parenchymal margin",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Cannot be assessed",
+        "Uninvolved by invasive carcinoma (specify distance)",
+        "Involved by invasive carcinoma",
+        "Not applicable"
+      ],
+      "default": "Uninvolved by invasive carcinoma (specify distance)",
+      "showIf": {
+        "field": "procedure",
+        "is": [
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
+    },
+    {
+      "id": "proxPancMarginMm",
+      "label": "Proximal pancreatic parenchymal margin - distance to carcinoma (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "all": [
+          {
+            "field": "proxPancMargin",
+            "is": "Uninvolved by invasive carcinoma (specify distance)"
+          },
+          {
+            "field": "procedure",
+            "is": [
+              "Distal pancreatectomy",
+              "Central pancreatectomy",
+              "Partial pancreatectomy, pancreatic body",
+              "Partial pancreatectomy, pancreatic tail"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "distPancMargin",
+      "label": "Distal pancreatic parenchymal margin",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Cannot be assessed",
+        "Uninvolved by invasive carcinoma (specify distance)",
+        "Involved by invasive carcinoma",
+        "Not applicable"
+      ],
+      "default": "Uninvolved by invasive carcinoma (specify distance)",
+      "showIf": {
+        "field": "procedure",
+        "is": "Central pancreatectomy"
+      }
+    },
+    {
+      "id": "distPancMarginMm",
+      "label": "Distal pancreatic parenchymal margin - distance to carcinoma (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "all": [
+          {
+            "field": "distPancMargin",
+            "is": "Uninvolved by invasive carcinoma (specify distance)"
+          },
+          {
+            "field": "procedure",
+            "is": "Central pancreatectomy"
+          }
+        ]
+      }
+    },
+    {
+      "id": "parenchymalMargin",
+      "label": "Pancreatic parenchymal margin",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Cannot be assessed",
+        "Uninvolved by invasive carcinoma (specify distance)",
+        "Involved by invasive carcinoma",
+        "Not applicable"
+      ],
+      "default": "Uninvolved by invasive carcinoma (specify distance)",
+      "showIf": {
+        "field": "procedure",
+        "is": "Excisional biopsy (enucleation)"
+      }
+    },
+    {
+      "id": "parenchymalMarginMm",
+      "label": "Pancreatic parenchymal margin - distance to carcinoma (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "all": [
+          {
+            "field": "parenchymalMargin",
+            "is": "Uninvolved by invasive carcinoma (specify distance)"
+          },
+          {
+            "field": "procedure",
+            "is": "Excisional biopsy (enucleation)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "otherMargin",
+      "label": "Other margin",
+      "type": "select",
+      "group": "Margins",
+      "options": [
+        "Not applicable",
+        "Cannot be assessed",
+        "Uninvolved by invasive carcinoma (specify distance)",
+        "Involved by invasive carcinoma"
+      ],
+      "default": "Not applicable"
+    },
+    {
+      "id": "otherMarginName",
+      "label": "Other margin, name (e.g. splenic vein transection margin)",
+      "type": "text",
+      "group": "Margins",
+      "showIf": {
+        "field": "otherMargin",
+        "not": "Not applicable"
+      }
+    },
+    {
+      "id": "otherMarginMm",
+      "label": "Other margin - distance to carcinoma (mm)",
+      "type": "number",
+      "group": "Margins",
+      "min": 0,
+      "showIf": {
+        "field": "otherMargin",
         "is": "Uninvolved by invasive carcinoma (specify distance)"
       }
     },
@@ -696,6 +1226,7 @@
         "Not identified",
         "Present at the bile duct margin",
         "Present at the pancreatic neck margin",
+        "Present at the pancreatic parenchymal margin",
         "Other (specify)"
       ],
       "default": "Not applicable"
@@ -728,32 +1259,121 @@
       "min": 0
     },
     {
+      "id": "station9",
+      "label": "Station 9 (coeliac axis) - nodes involved",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0,
+      "showIf": {
+        "field": "procedure",
+        "is": [
+          "Distal pancreatectomy",
+          "Total pancreatectomy",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
+    },
+    {
+      "id": "station10",
+      "label": "Station 10 (splenic hilum) - nodes involved",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0,
+      "showIf": {
+        "field": "procedure",
+        "is": [
+          "Distal pancreatectomy",
+          "Total pancreatectomy",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
+    },
+    {
+      "id": "station11",
+      "label": "Station 11 (splenic artery) - nodes involved",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "min": 0,
+      "showIf": {
+        "field": "procedure",
+        "is": [
+          "Distal pancreatectomy",
+          "Total pancreatectomy",
+          "Central pancreatectomy",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
+    },
+    {
       "id": "station12",
       "label": "Station 12 (hepatoduodenal ligament) - nodes involved",
       "type": "number",
       "group": "Lymph nodes and metastasis",
-      "min": 0
+      "min": 0,
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Excisional biopsy (enucleation)",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
     },
     {
       "id": "station13",
       "label": "Station 13 (posterior pancreaticoduodenal) - nodes involved",
       "type": "number",
       "group": "Lymph nodes and metastasis",
-      "min": 0
+      "min": 0,
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Excisional biopsy (enucleation)",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
     },
     {
       "id": "station14",
       "label": "Station 14 (superior mesenteric artery) - nodes involved",
       "type": "number",
       "group": "Lymph nodes and metastasis",
-      "min": 0
+      "min": 0,
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Excisional biopsy (enucleation)",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
     },
     {
       "id": "station17",
       "label": "Station 17 (anterior pancreaticoduodenal) - nodes involved",
       "type": "number",
       "group": "Lymph nodes and metastasis",
-      "min": 0
+      "min": 0,
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Distal pancreatectomy",
+          "Central pancreatectomy",
+          "Excisional biopsy (enucleation)",
+          "Partial pancreatectomy, pancreatic body",
+          "Partial pancreatectomy, pancreatic tail"
+        ]
+      }
     },
     {
       "id": "ene",

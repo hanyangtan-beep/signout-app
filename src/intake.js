@@ -481,6 +481,11 @@ const SITE_ABBREV = [
   [/\bi\s*&\s*d\b|\bi\s+and\s+d\b|\bincision\b(?!\s+(?:and\s+drainage|biopsy))/g, 'incision and drainage'],
   [/\bdebrid(?:ed|ement)\b/g, 'debridement'], [/\bpunch\b(?!\s+biopsy)/g, 'punch biopsy'],
   [/\bperi-?\s?anal\b|(?<![a-z-])\banal\b/g, 'perianal'],
+  // Pancreas: the requests name the part of the gland on its own ("Pancreas, tail, distal
+  // pancreatectomy", "pancreatic body and tail") where the site options read "Tail of pancreas". Only
+  // the pancreatic carcinoma site list offers these, so nothing else receives them.
+  [/\bhead\b(?!\s+of\s+(?:the\s+)?pancreas)/g, 'head of pancreas'], [/\bbody\b(?!\s+of\s+(?:the\s+)?pancreas)/g, 'body of pancreas'],
+  [/\btail\b(?!\s+of\s+(?:the\s+)?pancreas)/g, 'tail of pancreas'], [/\buncinate\b(?!\s+process)/g, 'uncinate process'],
 ];
 
 // The gate is a whole-option match rather than a looser test on the first word. Both behave

@@ -1,0 +1,54 @@
+{
+  "templateId": "pancreas_carcinoma",
+  "patch": {
+    "duodenumLengthMm": "",
+    "bileDuctLengthMm": "",
+    "bileDuctDilatation": "",
+    "blockKeyText": "1-4 Tumour with posterior surface\n5 Proximal pancreatic margin, en face\n6 Splenic hilum",
+    "station13": "",
+    "station17": "",
+    "largestDepositMm": 4,
+    "largestNodeSite": "station 11",
+    "procedure": "Distal pancreatectomy",
+    "spleen": "Included (splenectomy)",
+    "tumourSite": [
+      "Tail of pancreas"
+    ],
+    "tumourSizeCm": 3.5,
+    "tumourDims": "35 x 30 x 25",
+    "specimenDims": "180 x 90 x 50",
+    "pancreasDims": "110 x 40 x 30",
+    "spleenDims": "115 x 75 x 40",
+    "spleenWeightG": 160,
+    "tumourExtension": [
+      "Peripancreatic soft tissue",
+      "Splenic vein or artery"
+    ],
+    "surfaceInvolvement": "Not identified",
+    "proxPancMargin": "Uninvolved by invasive carcinoma (specify distance)",
+    "proxPancMarginMm": 12,
+    "posteriorMargin": "Uninvolved by invasive carcinoma (specify distance)",
+    "posteriorMarginMm": 0.5,
+    "nodesExamined": 14,
+    "nodesInvolved": 2,
+    "station10": 1,
+    "station11": 1,
+    "ene": "Not identified"
+  },
+  "options": {},
+  "report": "Pancreas and spleen, tail of pancreas, distal pancreatectomy and splenectomy\n\nReceived in formalin is a distal pancreatectomy and splenectomy specimen measuring 180 x 90 x 50 mm. The pancreas measures 110 x 40 x 30 mm and the spleen measures 115 x 75 x 40 mm and weighs 160 g. The pancreatic transection margin and the anterior and posterior surfaces are inked in different colours and the pancreas is serially sliced in the sagittal plane. There is a firm, ill-defined pale tumour centred on the tail of pancreas measuring 35 x 30 x 25 mm. The pancreatic duct is dilated to 6 mm upstream. The splenic hilar and peripancreatic lymph nodes are dissected and submitted. Representative sections are taken; see block key.\n\n(1-4) Tumour with posterior surface.\n(5) Proximal pancreatic margin, en face.\n(6) Splenic hilum.\n\nSpecimen and tumour\n- Procedure: Distal pancreatectomy with splenectomy\n- Tumour site: Tail of pancreas\n- Tumour size: 3.5 cm (unifocal invasive carcinoma, greatest dimension)\n\nMicroscopic findings\n- Histologic type: Ductal adenocarcinoma, NOS\n- Histologic grade: G2, moderately differentiated\n- Tumour histology:\n  The tumour is a moderately differentiated ductal adenocarcinoma, NOS, extending into the peripancreatic soft tissue and splenic vein or artery. Haphazardly arranged infiltrating glands with incomplete lumina and luminal necrotic debris are set in abundant desmoplastic stroma, lying immediately adjacent to muscular vessels and nerves, and show marked variation in nuclear size within individual glands. The tumour cells express CK7. There is loss of nuclear SMAD4 (DPC4) expression.\n- Sites involved by direct extension: Peripancreatic soft tissue and Splenic\n  vein or artery\n- Pancreatic surface involvement: Not identified\n- Lymphovascular invasion: Present\n- Perineural invasion: Present\n- Treatment effect: No known presurgical therapy\n- Precursor lesion: Pancreatic intraepithelial neoplasia, high grade (PanIN)\n\nMargins\n- Proximal pancreatic parenchymal margin: Uninvolved by invasive carcinoma,\n  12 mm\n- Posterior surface: Uninvolved by invasive carcinoma, 0.5 mm\n- High-grade dysplasia at the margins: Not identified\n\nLymph nodes\n- Regional lymph nodes: 14 examined; 2 involved\n  - Number examined: 14\n  - Number involved: 2\n  - Stations involved: 10 (splenic hilum): 1 and 11 (splenic artery): 1\n  - Extranodal extension: Not identified\n  - Size of largest metastatic deposit: 4 mm, station 11\n\nDistant metastasis\n- Distant metastasis: Not identified\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT2 pN1\n  - Stage group (if cM0): IIB\n\nAdditional findings\n- Chronic pancreatitis\n\nPANCREAS AND SPLEEN, tail of pancreas, distal pancreatectomy and splenectomy\n- DUCTAL ADENOCARCINOMA, NOS, moderately differentiated, 3.5 cm, extending into\n  the peripancreatic soft tissue and splenic vein or artery; lymphovascular\n  invasion present; perineural invasion present; posterior surface 0.5 mm\n  (margin positive at 1 mm or less); proximal pancreatic margin clear (closest\n  12 mm); see synoptic report\n- 2 of 14 regional lymph nodes involved\n- pT2 pN1 (AJCC 8th edition), stage IIB (if cM0)",
+  "checks": [
+    {
+      "level": "warn",
+      "message": "Extrapancreatic extension is recorded with a tumour of 4 cm or less. In the eighth edition pT follows size alone, so this remains pT1 or pT2; extension no longer raises it to pT3.",
+      "field": "tumourExtension",
+      "part": "A"
+    },
+    {
+      "level": "warn",
+      "message": "Posterior surface is 0.5 mm from the carcinoma; at 1 mm or less this is reported as a positive margin (R1) in pancreatobiliary resections.",
+      "field": "posteriorMargin",
+      "part": "A"
+    }
+  ]
+}

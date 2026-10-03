@@ -107,7 +107,16 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-One card. The Hirschsprung pull-through was pulled by the user on 2026-09-30; the rectal biopsy form it reuses shipped on its own publish (Done). The liver pair pulled by the user on 2026-10-02, the neoplastic liver biopsy and the HCC resection synoptic, shipped together (Done).
+Two cards. The Hirschsprung pull-through was pulled by the user on 2026-09-30; the rectal biopsy form it reuses shipped on its own publish (Done). The liver pair pulled by the user on 2026-10-02, the neoplastic liver biopsy and the HCC resection synoptic, shipped together (Done). The other pancreatectomies were pulled by the user on 2026-10-03.
+
+### Pancreatic carcinoma — other pancreatectomies (pulled by the user 2026-10-03)   Size: M
+Why:        `pancreas_carcinoma` reported only a pancreatoduodenectomy, so a distal pancreatectomy printed the Whipple margins, organs and node stations, and a pasted request kept only the middle of the line as the specimen name.
+Change:     the operation decides the report — distal (with or without the spleen), total and central pancreatectomy and enucleation join the Whipple. Each takes its own organs in the specimen line and diagnosis head, its own macroscopy (inking and slicing per RCPath G091), its own margins in the house wording (proximal and distal pancreatic parenchymal, pancreatic parenchymal, a named other margin), the splenic and coeliac stations 9 to 11, the spleen, and additionally resected structures. Origin is asked only when the head is taken; the 12-node Check runs only for a pancreatoduodenectomy or total pancreatectomy. Intake fills the operation and the spleen from the request, the site from the part of the gland written alone, and the specimen name from the whole line.
+Untouched:  `ampulla_carcinoma` output; the pancreatoduodenectomy wording and golden fixtures; the pT and pN derivation (pT on size alone; the note saying so now also covers splenic, adrenal, colonic and renal extension).
+Accept:     golden fixtures for a distal pancreatectomy with splenectomy, a spleen-preserving distal pancreatectomy, a total pancreatectomy with splenectomy, a central pancreatectomy and an enucleation; the Whipple fixtures unchanged; intake routes distal, subtotal, RAMPS, total, central and enucleation lines to the template with the operation filled.
+Verify:     tests + browser (light)
+Ship:       its own publish
+Spec:       `docs/specs/pancreatectomy.md`
 
 ### Hirschsprung disease — pull-through resection (user request 2026-09-29; pulled by the user 2026-09-30)   Size: M; Hirschsprung pair (L → split, 2 of 2)
 Why:        the resection report gives the length of the aganglionic segment and says whether the proximal margin is ganglionated and clear of the transition zone; pull-through lines open Generic today.
