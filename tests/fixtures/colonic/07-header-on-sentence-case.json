@@ -1,6 +1,6 @@
 {
   "name": "07-header-on-sentence-case",
-  "description": "Header on, uppercase off: sentence-case diagnosis under DIAGNOSIS heading.",
+  "description": "Header on, uppercase off: sentence-case diagnosis under DIAGNOSIS heading. DELIBERATE EDIT 2026-10-05 (user request): the sessile serrated lesion, traditional serrated adenoma and high grade dysplasia microscopy now name their features (the defaults ticked on the form); diagnosis lines unchanged.",
   "input": {
     "specimens": [
       {
@@ -22,6 +22,6 @@
     "uppercaseDx": false
   },
   "expected": {
-    "report": "SPECIMEN:\n(A) Descending colon polyp\n(B) Colon polyp\n\nMICROSCOPIC EXAMINATION:\n(A)  Sections show a polypoid fragment of large intestinal mucosa with predominant villous architecture and low grade dysplasia. There is no evidence of invasive malignancy.\n\n(B)  Sections show a serrated polyp with architectural features in keeping with a sessile serrated lesion / adenoma. No cytological dysplasia is identified. There is no evidence of invasive malignancy.\n\nDIAGNOSIS:\n(A) Descending colon, Descending colon polyp, polypectomy - Villous adenoma with low grade dysplasia.\n(B) Colon, Colon polyp, polypectomy - Sessile serrated lesion / adenoma."
+    "report": "SPECIMEN:\n(A) Descending colon polyp\n(B) Colon polyp\n\nMICROSCOPIC EXAMINATION:\n(A)  Sections show a polypoid fragment of large intestinal mucosa with predominant villous architecture and low grade dysplasia. There is no evidence of invasive malignancy.\n\n(B)  Sections show large intestinal mucosa with architecturally distorted serrated crypts, which show basal dilatation and serration extending into the crypt bases, in keeping with a sessile serrated lesion / adenoma. No cytological dysplasia is identified. There is no evidence of invasive malignancy.\n\nDIAGNOSIS:\n(A) Descending colon, Descending colon polyp, polypectomy - Villous adenoma with low grade dysplasia.\n(B) Colon, Colon polyp, polypectomy - Sessile serrated lesion / adenoma."
   }
 }

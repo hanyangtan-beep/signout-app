@@ -6,6 +6,11 @@
 // ADENOCARCINOMA". Each capitalised run is then one SNOMED term. The legacy app wrote "WITH"; the
 // released reports do not (1180 of the 1201 "ADENOMA with ... GRADE DYSPLASIA" diagnoses in the
 // 2021-2026 biopsy export are lower case), and the fixtures were changed deliberately on 2026-09-24.
+//
+// Descriptions (2026-10-05, at the user's request; docs/specs/colonic-polyp-descriptions.md): the
+// sessile serrated lesion, traditional serrated adenoma and high grade dysplasia sentences now name
+// the features seen, from tick lists whose defaults are the features the released reports name
+// most. The `templates` table below keeps the plain sentences; the description builders extend it.
 
 export const templates = {
   tubularAdenoma: {
@@ -95,6 +100,115 @@ const isAdenomatous = (values) => (templates[values.type] || templates.tubularAd
 const isAtLeastHgd = (values) => values.dysplasia === AT_LEAST_HGD && isAdenomatous(values);
 const isInvasive = (values) => values.dysplasia === INVASIVE && isAdenomatous(values);
 
+// ---- Descriptions: high grade dysplasia and the serrated lesions ---------------------------
+const LGD = 'Low grade dysplasia';
+const HGD = 'High grade dysplasia';
+const CONVENTIONAL = ['tubularAdenoma', 'tubulovillousAdenoma', 'villousAdenoma'];
+const listOf = (a) => (a.length <= 1 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
+// A saved case from before the tick lists has no value: it prints the defaults the form would show.
+const ticked = (value, defaults) => (Array.isArray(value) ? value : defaults);
+
+// High grade dysplasia: the BCSP architectural criteria (complex crowding, cribriform and
+// back-to-back glands, papillary tufting) and cytological ones (loss of polarity with stratification
+// through the full thickness, markedly enlarged nuclei with nucleoli, atypical mitoses), with
+// pleomorphism, increased mitoses and luminal necrosis, which the released reports also name. The
+// three ticked by default are the ones the released high grade dysplasia reports name most. Features
+// print in this order whatever order they were ticked in.
+export const HGD_FEATURES = {
+  'Cribriform / back-to-back glands': 'cribriform and back-to-back glands',
+  'Glandular crowding': 'complex glandular crowding and irregularity',
+  'Papillary tufting': 'prominent intraluminal papillary tufting',
+  'Loss of polarity': 'loss of polarity with full-thickness nuclear stratification',
+  'Enlarged nuclei, prominent nucleoli': 'markedly enlarged nuclei with prominent nucleoli',
+  'Pleomorphism': 'nuclear pleomorphism',
+  'Increased mitoses': 'increased mitotic activity',
+  'Atypical mitoses': 'atypical mitoses',
+  'Luminal necrosis': 'intraluminal necrotic debris'
+};
+const HGD_DEFAULT = ['Cribriform / back-to-back glands', 'Loss of polarity', 'Enlarged nuclei, prominent nucleoli'];
+const phrases = (table, picked) => Object.keys(table).filter((k) => picked.includes(k)).map((k) => table[k]);
+const hgdShowing = (values) => {
+  const f = listOf(phrases(HGD_FEATURES, ticked(values.hgdFeatures, HGD_DEFAULT)));
+  return f ? `, showing ${f}` : '';
+};
+
+// Sessile serrated lesion (WHO 2019): architecturally distorted serrated crypts - dilatation of the
+// crypt base, serration reaching it, and horizontal (L-shaped or inverted T) growth along the
+// muscularis mucosae. One unequivocal distorted crypt is enough for the diagnosis.
+export const SSL_FEATURES = {
+  'Basal dilatation': 'basal dilatation',
+  'Serration into the crypt base': 'serration extending into the crypt bases',
+  'Horizontal growth (L / inverted T)': 'horizontal growth along the muscularis mucosae (L-shaped and inverted T-shaped crypts)',
+  'Branching': 'branching',
+  'Herniation through the muscularis mucosae': 'herniation through the muscularis mucosae'
+};
+const SSL_DEFAULT = ['Basal dilatation', 'Serration into the crypt base'];
+// The lesion is flat more often than polypoid, so the sentence does not say "polypoid piece".
+function sslSentence(values) {
+  const f = listOf(phrases(SSL_FEATURES, ticked(values.sslFeatures, SSL_DEFAULT)));
+  return `Sections show large intestinal mucosa with architecturally distorted serrated crypts${f ? `, which show ${f}` : ''}, in keeping with a sessile serrated lesion / adenoma.`;
+}
+
+// Traditional serrated adenoma: villiform architecture, slit-like serrations, ectopic crypt foci and
+// tall columnar cells with eosinophilic cytoplasm and pencillate nuclei - the four the released TSA
+// reports name. Its own cytology is the low grade dysplasia, so a low grade TSA has no second sentence.
+export const TSA_FEATURES = {
+  'Villiform architecture': 'villiform architecture',
+  'Slit-like serrations': 'slit-like serrations',
+  'Ectopic crypt foci': 'ectopic crypt foci'
+};
+const TSA_CELLS = 'Eosinophilic cells, pencillate nuclei';
+const TSA_DEFAULT = [...Object.keys(TSA_FEATURES), TSA_CELLS];
+function tsaSentence(values, grade) {
+  const picked = ticked(values.tsaFeatures, TSA_DEFAULT);
+  const arch = listOf(phrases(TSA_FEATURES, picked));
+  const cells = picked.includes(TSA_CELLS) ? 'lined by tall columnar cells with abundant eosinophilic cytoplasm and pencillate nuclei' : '';
+  const name = `a traditional serrated adenoma${grade === LGD ? ' with low grade dysplasia' : ''}`;
+  const body = [arch ? `with ${arch}` : '', cells].filter(Boolean).join(', ');
+  return body
+    ? `Sections show a polypoid piece of large intestinal mucosa ${body}, in keeping with ${name}.`
+    : `Sections show a polypoid piece of large intestinal mucosa with features of ${name}.`;
+}
+
+// Dysplasia in a serrated lesion: intestinal (adenomatous) or serrated. The house grades it low or
+// high, as the released reports do.
+const SERRATED_DYSPLASIA = {
+  'Intestinal (adenomatous)': { lgd: ' of intestinal (adenomatous) type, with elongated, pseudostratified, hyperchromatic nuclei', hgd: ' of intestinal (adenomatous) type' },
+  'Serrated': { lgd: ' of serrated type, with cuboidal cells, eosinophilic cytoplasm and enlarged vesicular nuclei', hgd: ' of serrated type' },
+  'Not specified': { lgd: '', hgd: '' }
+};
+function serratedDysplasiaSentence(values, grade) {
+  const t = SERRATED_DYSPLASIA[values.serratedDysplasia] || SERRATED_DYSPLASIA['Intestinal (adenomatous)'];
+  return grade === LGD
+    ? `There is a focus of low grade dysplasia${t.lgd}.`
+    : `There is a focus of high grade dysplasia${t.hgd}${hgdShowing(values)}.`;
+}
+
+const isFocalHgd = (values) => !!values.hgdFocal && values.dysplasia === HGD && CONVENTIONAL.includes(values.type);
+
+/**
+ * The description of a polyp without invasion, ending before the closing invasion sentence. `grade` is
+ * the resolved grade; "at least high grade" passes 'High grade dysplasia'. Hyperplastic polyps keep
+ * their own closing sentence.
+ */
+function lesionMicro(values, grade) {
+  const type = templates[values.type] ? values.type : 'tubularAdenoma';
+  const t = templates[type];
+  if (type === 'hyperplasticPolyp') return t.micro[grade];
+  if (type === 'sessileSerrated') {
+    if (grade === 'No dysplasia') return `${sslSentence(values)} No cytological dysplasia is identified.`;
+    return `${sslSentence(values)} ${serratedDysplasiaSentence(values, grade)}`;
+  }
+  if (type === 'traditionalSerrated') {
+    return grade === LGD ? tsaSentence(values, LGD) : `${tsaSentence(values, HGD)} ${serratedDysplasiaSentence(values, HGD)}`;
+  }
+  if (grade === LGD) return t.micro[LGD].replace(NO_INVASION, '');
+  if (isFocalHgd(values)) {
+    return `${t.micro[LGD].replace(NO_INVASION, '')} There is focal high grade dysplasia${hgdShowing(values)}.`;
+  }
+  return `${t.micro[HGD].replace(NO_INVASION, '').replace(/\.$/, '')}${hgdShowing(values)}.`;
+}
+
 // ---- At least high grade dysplasia -------------------------------------------------------
 const HGD_SENTENCE = {
   'Fragmented material': 'Invasion cannot be excluded on this fragmented material.',
@@ -104,8 +218,7 @@ const HGD_SENTENCE = {
 };
 
 function atLeastHgdMicro(values) {
-  const t = templates[values.type] || templates.tubularAdenoma;
-  const base = t.micro['High grade dysplasia'].replace(NO_INVASION, '');
+  const base = lesionMicro(values, HGD);
   return `${base} ${HGD_SENTENCE[values.hgdReason] || 'Invasion cannot be excluded on this material.'}`;
 }
 
@@ -239,12 +352,62 @@ function marginDx(values) {
   return '';
 }
 
-function levelMicro(values) {
+// ---- Haggitt and Kikuchi levels (malignant polyps) -----------------------------------------
+// Haggitt for a pedunculated polyp, Kikuchi for a sessile one (UK BCSP guidance; USMSTF 2020). On a
+// polypectomy or EMR / ESD the recorded level is the depth sentence, in place of the plain
+// "Invasion extends into the submucosa." A biopsy of a mass, or invasion into the muscularis propria,
+// prints no level. The stored option values are the ones saved before 2026-10-05.
+const HAGGITT = {
+  'Level 1': { micro: 'Invasion extends into the submucosa of the polyp head', tag: 'Haggitt level 1' },
+  'Level 2': { micro: 'Invasion extends into the submucosa at the neck of the polyp', tag: 'Haggitt level 2' },
+  'Level 3': { micro: 'Invasion extends into the submucosa of the stalk', tag: 'Haggitt level 3' },
+  'Level 4': { micro: 'Invasion extends into the submucosa below the stalk', tag: 'Haggitt level 4' }
+};
+const KIKUCHI = {
+  sm1: { micro: 'Invasion is confined to the upper third of the submucosa', tag: 'Kikuchi level sm1' },
+  sm2: { micro: 'Invasion extends into the middle third of the submucosa', tag: 'Kikuchi level sm2' },
+  sm3: { micro: 'Invasion extends into the lower third of the submucosa', tag: 'Kikuchi level sm3' }
+};
+const NOT_ASSESSABLE = 'Not assessable';
+const levelsApply = (values) => !isBiopsyOfMass(values) && values.depth !== 'Muscularis propria';
+function levels(values) {
+  if (!levelsApply(values)) return [];
+  return [HAGGITT[values.haggitt], KIKUCHI[values.kikuchi]].filter(Boolean);
+}
+
+function depthMicro(values) {
+  const lv = levels(values);
+  if (lv.length) return `${lv[0].micro} (${lv.map((l) => l.tag).join('; ')}).`;
+  return DEPTH_MICRO[values.depth] || DEPTH_MICRO['Not assessable'];
+}
+
+function levelCaveats(values) {
+  if (!levelsApply(values)) return [];
+  return [
+    values.haggitt === NOT_ASSESSABLE ? 'The Haggitt level cannot be assessed on this specimen.' : '',
+    values.kikuchi === NOT_ASSESSABLE ? 'The Kikuchi level cannot be assessed, as muscularis propria is not represented.' : ''
+  ].filter(Boolean);
+}
+
+const mmValue = (raw) => {
+  const n = parseFloat(raw);
+  return Number.isFinite(n) && n > 0 ? n : null;
+};
+
+function measureMicro(values) {
   if (isBiopsyOfMass(values)) return '';
-  const out = [];
-  if (values.haggitt && values.haggitt !== 'Not applicable') out.push(`Haggitt ${values.haggitt.toLowerCase()}`);
-  if (values.kikuchi && values.kikuchi !== 'Not applicable') out.push(`Kikuchi level ${values.kikuchi}`);
-  return out.length ? `The invasion corresponds to ${out.join(' / ')}.` : '';
+  const depth = mmValue(values.invasionDepth);
+  const width = mmValue(values.invasionWidth);
+  if (depth !== null && width !== null) return `The depth of submucosal invasion is ${fmtMm(depth)} and the width of invasion is ${fmtMm(width)}.`;
+  if (depth !== null) return `The depth of submucosal invasion is ${fmtMm(depth)}.`;
+  if (width !== null) return `The width of invasion is ${fmtMm(width)}.`;
+  return '';
+}
+
+function depthDx(values) {
+  const lv = levels(values);
+  if (lv.length) return `submucosal invasion (${lv.map((l) => l.tag).join(', ')})`;
+  return DEPTH_DX[values.depth] || '';
 }
 
 function invasiveMicro(values) {
@@ -261,11 +424,12 @@ function invasiveMicro(values) {
   }
   const parts = [
     text,
-    DEPTH_MICRO[values.depth] || DEPTH_MICRO['Not assessable'],
+    depthMicro(values),
+    ...levelCaveats(values),
+    measureMicro(values),
     LVI_MICRO[values.lvi] || '',
     BUDDING_MICRO[values.budding] || '',
     marginMicro(values),
-    levelMicro(values),
     MMR_MICRO[values.mmr] || ''
   ];
   return parts.filter(Boolean).join(' ');
@@ -275,7 +439,7 @@ function invasiveDx(values) {
   let head = carcinomaTypeDx(values);
   if (hasBackgroundAdenoma(values)) head = `${ADENOMA_NAME[values.type] || ADENOMA_NAME.tubularAdenoma} with ${head}`;
   const qualifiers = [DIFF[values.differentiation] || ''].filter(Boolean);
-  const clauses = [DEPTH_DX[values.depth] || '', marginDx(values), LVI_DX[values.lvi] || '', MMR_DX[values.mmr] || ''].filter(Boolean);
+  const clauses = [depthDx(values), marginDx(values), LVI_DX[values.lvi] || '', MMR_DX[values.mmr] || ''].filter(Boolean);
   let dx = head;
   if (qualifiers.length) dx += `, ${qualifiers.join(', ')}`;
   if (clauses.length) dx += `; ${clauses.join('; ')}`;
@@ -302,7 +466,7 @@ export function microscopy(part) {
   else if (isAtLeastHgd(s)) text = atLeastHgdMicro(s);
   else {
     const { t, grade } = resolve(s);
-    text = t.micro[grade];
+    text = t === templates.hyperplasticPolyp ? t.micro[grade] : `${lesionMicro(s, grade)}${NO_INVASION}`;
   }
   const c = (s.comment || '').trim();
   if (c) text += ` ${c}`;
@@ -317,7 +481,11 @@ export function diagnosis(part, ctx) {
   let noun = ctx.schema.specimenNoun;
   if (isInvasive(s)) { dxUpper = invasiveDx(s); noun = carcinomaNoun(s); }
   else if (isAtLeastHgd(s)) dxUpper = atLeastHgdDx(s);
-  else { const { t, grade } = resolve(s); dxUpper = t.diagnosis[grade]; }
+  else {
+    const { t, grade } = resolve(s);
+    dxUpper = t.diagnosis[grade];
+    if (isFocalHgd(s)) dxUpper = dxUpper.replace('with HIGH GRADE DYSPLASIA', 'with focal HIGH GRADE DYSPLASIA');
+  }
   const dx = upper ? dxUpper : (isInvasive(s) ? sentenceCaseDx(dxUpper) : sentenceCase(dxUpper));
   return `(${part.label}) ${siteText}, ${specimenName(part)}, ${noun} - ${dx}.`;
 }
@@ -326,17 +494,22 @@ export function diagnosis(part, ctx) {
  * Case-level flags for snippet `auto: {flag}` rules. A malignant polyp (polypectomy or
  * EMR / ESD with invasive carcinoma) is flagged as `malignantPolypRisk` when any adverse
  * feature for local excision is present (poor differentiation, lymphovascular invasion,
- * high grade budding, involved margin or clearance under 1 mm), otherwise as
- * `malignantPolypFavourable` when every feature has been assessed and is favourable.
+ * high grade budding, involved margin or clearance under 1 mm, and since 2026-10-05 deep
+ * submucosal invasion: Haggitt level 4, or Kikuchi sm2 or sm3, which USMSTF 2020 and the BCSP
+ * guidance give lymph node metastasis rates that warrant surgery), otherwise as
+ * `malignantPolypFavourable` when every feature has been assessed and is favourable. A measured
+ * depth alone does not set the flag: whether 1 mm matters turns on the polyp's configuration,
+ * which the form does not record.
  */
 export function flags(parts) {
   const out = [];
   const polyps = parts.map((p) => p.values).filter((v) => isInvasive(v) && !isBiopsyOfMass(v));
+  const deepSubmucosal = (v) => levelsApply(v) && (v.haggitt === 'Level 4' || v.kikuchi === 'sm2' || v.kikuchi === 'sm3');
   const adverse = (v) => {
     const mm = marginMm(v);
     return v.differentiation === 'Poorly differentiated' || v.lvi === 'Present'
       || v.budding === 'High (Bd3, 10 or more buds)' || v.margin === 'Involved'
-      || (v.margin === 'Clear' && mm !== null && mm < 1);
+      || (v.margin === 'Clear' && mm !== null && mm < 1) || deepSubmucosal(v);
   };
   const favourable = (v) => DIFF[v.differentiation] && v.differentiation !== 'Poorly differentiated'
     && v.lvi === 'Not identified' && BUDDING_MICRO[v.budding] && v.budding !== 'High (Bd3, 10 or more buds)'

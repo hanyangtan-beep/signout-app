@@ -1154,6 +1154,44 @@ await check('cervical polyp and endometrial aspirate: pasted lines open their fo
   return 'polyp pre-filled; ENDOCERVICAL then DECIDUAL POLYP lines; aspirate line with no trailing negative';
 });
 
+// Colonic polyp descriptions and malignant polyp levels (user request, 2026-10-05).
+await check('colonic polyp: serrated and high grade descriptions; Haggitt level on a pasted polypectomy', async () => {
+  const visible = (id) => page.locator(`.field[data-field="${id}"]:visible`).count();
+  const routed = await pasteAndBuild('Sigmoid colon, polypectomy');
+  assert(routed === 'colonic_polyp', `routed to ${routed}`);
+  await pickField('type', 'Sessile serrated lesion / adenoma');
+  assert(await visible('sslFeatures') === 1, 'no SSL features field');
+  let report = await reportText();
+  assert(report.includes('architecturally distorted serrated crypts, which show basal dilatation and serration extending into the crypt bases'), `SSL microscopy wrong: ${report.slice(0, 400)}`);
+  await pickField('type', 'Traditional serrated adenoma');
+  assert(await visible('tsaFeatures') === 1 && await visible('sslFeatures') === 0, 'TSA / SSL feature fields wrong');
+  report = await reportText();
+  assert(report.includes('villiform architecture, slit-like serrations and ectopic crypt foci, lined by tall columnar cells'), `TSA microscopy wrong: ${report.slice(0, 400)}`);
+  await pickField('type', 'Tubular adenoma');
+  await pickField('dysplasia', 'High grade dysplasia');
+  assert(await visible('hgdFeatures') === 1 && await visible('hgdFocal') === 1, 'no high grade fields');
+  await page.check('#f-A-hgdFocal');
+  await page.waitForTimeout(200);
+  report = await reportText();
+  assert(report.includes('TUBULAR ADENOMA with focal HIGH GRADE DYSPLASIA'), `focal diagnosis wrong: ${report.slice(-300)}`);
+  assert(report.includes('There is focal high grade dysplasia, showing cribriform and back-to-back glands'), `focal microscopy wrong: ${report.slice(0, 400)}`);
+  await page.locator('[data-field="hgdFeatures"]').first().scrollIntoViewIfNeeded();
+  await shot('colonic-focal-hgd');
+  await page.uncheck('#f-A-hgdFocal');
+  await pickField('dysplasia', 'Invasive adenocarcinoma');
+  await page.evaluate(() => document.querySelectorAll('details').forEach((d) => { if (d.querySelector('[data-field="haggitt"]')) d.open = true; }));
+  assert(await visible('haggitt') === 1 && await visible('kikuchi') === 1, 'levels hidden on a pasted polypectomy (specimen kind not filled?)');
+  await pickField('haggitt', 'Level 2 (neck)');
+  report = await reportText();
+  assert(report.includes('Invasion extends into the submucosa at the neck of the polyp (Haggitt level 2).'), `Haggitt sentence missing: ${report.slice(0, 600)}`);
+  assert(report.includes('submucosal invasion (Haggitt level 2)'), `Haggitt not in the diagnosis: ${report.slice(-300)}`);
+  await page.locator('[data-field="haggitt"]').first().scrollIntoViewIfNeeded();
+  await shot('colonic-haggitt');
+  await pickField('caKind', 'Biopsy of mass');
+  assert(await visible('haggitt') === 0 && await visible('invasionDepth') === 0, 'levels show on a biopsy of a mass');
+  return 'SSL and TSA features printed; focal HGD line; Haggitt level 2 as the depth sentence and in the diagnosis; hidden on a biopsy';
+});
+
 await check('fallopian tube: a pasted salpingectomy and a paratubal cyst open the tube fields only', async () => {
   let routed = await pasteAndBuild('Left fallopian tube, salpingectomy');
   assert(routed === 'uterus_benign', `salpingectomy routed to ${routed}`);

@@ -1,6 +1,6 @@
 {
  "id": "colonic_polyp",
- "version": "2026.09",
+ "version": "2026.10",
  "style": { "british": true },
  "name": "Colonic polyp",
  "shortName": "Colon · polyp",
@@ -77,6 +77,24 @@
     "field": "customSpecimen",
     "from": "detail",
     "unless": "^(polyps?|biopsy|biopsies|tissue|fragments?|lesion|mass)$"
+   },
+   {
+    "field": "caKind",
+    "from": "map",
+    "map": [
+     [
+      "\\b(EMR|ESD)\\b|mucosal resection|submucosal dissection",
+      "EMR / ESD fragments"
+     ],
+     [
+      "polypectomy|\\bsnare",
+      "Polypectomy"
+     ],
+     [
+      "^(?!.*biops).*\\bpolyps?\\b",
+      "Polypectomy"
+     ]
+    ]
    }
   ]
  },
@@ -209,6 +227,171 @@
    "showIf": {
     "field": "dysplasia",
     "is": "At least high grade dysplasia"
+   }
+  },
+  {
+   "id": "sslFeatures",
+   "label": "SSL features",
+   "type": "multiselect",
+   "options": [
+    "Basal dilatation",
+    "Serration into the crypt base",
+    "Horizontal growth (L / inverted T)",
+    "Branching",
+    "Herniation through the muscularis mucosae"
+   ],
+   "default": [
+    "Basal dilatation",
+    "Serration into the crypt base"
+   ],
+   "help": "Printed as \"architecturally distorted serrated crypts, which show ...\". One unequivocal distorted crypt is enough (WHO 2019).",
+   "showIf": {
+    "all": [
+     {
+      "field": "type",
+      "is": "sessileSerrated"
+     },
+     {
+      "field": "dysplasia",
+      "is": [
+       "No dysplasia",
+       "Low grade dysplasia",
+       "High grade dysplasia",
+       "At least high grade dysplasia"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "tsaFeatures",
+   "label": "TSA features",
+   "type": "multiselect",
+   "options": [
+    "Villiform architecture",
+    "Slit-like serrations",
+    "Ectopic crypt foci",
+    "Eosinophilic cells, pencillate nuclei"
+   ],
+   "default": [
+    "Villiform architecture",
+    "Slit-like serrations",
+    "Ectopic crypt foci",
+    "Eosinophilic cells, pencillate nuclei"
+   ],
+   "help": "Untick a feature the polyp does not show; the cells print as \"lined by tall columnar cells with abundant eosinophilic cytoplasm and pencillate nuclei\".",
+   "showIf": {
+    "all": [
+     {
+      "field": "type",
+      "is": "traditionalSerrated"
+     },
+     {
+      "field": "dysplasia",
+      "is": [
+       "Low grade dysplasia",
+       "High grade dysplasia",
+       "At least high grade dysplasia"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "serratedDysplasia",
+   "label": "Dysplasia type",
+   "type": "select",
+   "options": [
+    "Intestinal (adenomatous)",
+    "Serrated",
+    "Not specified"
+   ],
+   "default": "Intestinal (adenomatous)",
+   "showIf": {
+    "any": [
+     {
+      "all": [
+       {
+        "field": "type",
+        "is": "sessileSerrated"
+       },
+       {
+        "field": "dysplasia",
+        "is": [
+         "Low grade dysplasia",
+         "High grade dysplasia",
+         "At least high grade dysplasia"
+        ]
+       }
+      ]
+     },
+     {
+      "all": [
+       {
+        "field": "type",
+        "is": "traditionalSerrated"
+       },
+       {
+        "field": "dysplasia",
+        "is": [
+         "High grade dysplasia",
+         "At least high grade dysplasia"
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "hgdFocal",
+   "label": "Focal high grade dysplasia",
+   "type": "checkbox",
+   "default": false,
+   "showIf": {
+    "all": [
+     {
+      "field": "type",
+      "is": [
+       "tubularAdenoma",
+       "tubulovillousAdenoma",
+       "villousAdenoma"
+      ]
+     },
+     {
+      "field": "dysplasia",
+      "is": "High grade dysplasia"
+     }
+    ]
+   }
+  },
+  {
+   "id": "hgdFeatures",
+   "label": "High grade features",
+   "type": "multiselect",
+   "options": [
+    "Cribriform / back-to-back glands",
+    "Glandular crowding",
+    "Papillary tufting",
+    "Loss of polarity",
+    "Enlarged nuclei, prominent nucleoli",
+    "Pleomorphism",
+    "Increased mitoses",
+    "Atypical mitoses",
+    "Luminal necrosis"
+   ],
+   "default": [
+    "Cribriform / back-to-back glands",
+    "Loss of polarity",
+    "Enlarged nuclei, prominent nucleoli"
+   ],
+   "help": "Printed as \"showing ...\" after the high grade dysplasia. Architecture leads; cytology alone is not enough except on a small superficial biopsy (BCSP).",
+   "showIf": {
+    "field": "dysplasia",
+    "is": [
+     "High grade dysplasia",
+     "At least high grade dysplasia"
+    ]
    }
   },
   {
@@ -379,12 +562,30 @@
     "Level 1",
     "Level 2",
     "Level 3",
-    "Level 4"
+    "Level 4",
+    "Not assessable"
    ],
+   "optionLabels": {
+    "Level 1": "Level 1 (head)",
+    "Level 2": "Level 2 (neck)",
+    "Level 3": "Level 3 (stalk)",
+    "Level 4": "Level 4 (below the stalk)"
+   },
    "default": "Not applicable",
    "showIf": {
-    "field": "dysplasia",
-    "is": "Invasive adenocarcinoma"
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": "Invasive adenocarcinoma"
+     },
+     {
+      "field": "caKind",
+      "is": [
+       "Polypectomy",
+       "EMR / ESD fragments"
+      ]
+     }
+    ]
    },
    "group": "Carcinoma"
   },
@@ -396,12 +597,79 @@
     "Not applicable",
     "sm1",
     "sm2",
-    "sm3"
+    "sm3",
+    "Not assessable"
    ],
+   "optionLabels": {
+    "sm1": "sm1 (upper third)",
+    "sm2": "sm2 (middle third)",
+    "sm3": "sm3 (lower third)"
+   },
    "default": "Not applicable",
    "showIf": {
-    "field": "dysplasia",
-    "is": "Invasive adenocarcinoma"
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": "Invasive adenocarcinoma"
+     },
+     {
+      "field": "caKind",
+      "is": [
+       "Polypectomy",
+       "EMR / ESD fragments"
+      ]
+     }
+    ]
+   },
+   "group": "Carcinoma"
+  },
+  {
+   "id": "invasionDepth",
+   "label": "Depth of submucosal invasion (mm)",
+   "type": "number",
+   "default": "",
+   "min": 0,
+   "step": 0.1,
+   "placeholder": "e.g. 1.2",
+   "showIf": {
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": "Invasive adenocarcinoma"
+     },
+     {
+      "field": "caKind",
+      "is": [
+       "Polypectomy",
+       "EMR / ESD fragments"
+      ]
+     }
+    ]
+   },
+   "group": "Carcinoma"
+  },
+  {
+   "id": "invasionWidth",
+   "label": "Width of invasion (mm)",
+   "type": "number",
+   "default": "",
+   "min": 0,
+   "step": 0.1,
+   "placeholder": "e.g. 3",
+   "showIf": {
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": "Invasive adenocarcinoma"
+     },
+     {
+      "field": "caKind",
+      "is": [
+       "Polypectomy",
+       "EMR / ESD fragments"
+      ]
+     }
+    ]
    },
    "group": "Carcinoma"
   },
@@ -506,7 +774,7 @@
    "auto": {
     "flag": "malignantPolypRisk"
    },
-   "text": "Adverse features for the adequacy of local excision (poor differentiation, lymphovascular invasion, high grade tumour budding, or a margin of less than 1 mm) are present. Discussion at the multidisciplinary meeting regarding the need for further resection is advised."
+   "text": "Adverse features for the adequacy of local excision (poor differentiation, lymphovascular invasion, high grade tumour budding, deep submucosal invasion, or a margin of less than 1 mm) are present. Discussion at the multidisciplinary meeting regarding the need for further resection is advised."
   },
   {
    "id": "colonic_malignant_polyp_favourable",

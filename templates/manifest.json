@@ -152,10 +152,28 @@
             "field": "customSpecimen",
             "from": "detail",
             "unless": "^(polyps?|biopsy|biopsies|tissue|fragments?|lesion|mass)$"
+          },
+          {
+            "field": "caKind",
+            "from": "map",
+            "map": [
+              [
+                "\\b(EMR|ESD)\\b|mucosal resection|submucosal dissection",
+                "EMR / ESD fragments"
+              ],
+              [
+                "polypectomy|\\bsnare",
+                "Polypectomy"
+              ],
+              [
+                "^(?!.*biops).*\\bpolyps?\\b",
+                "Polypectomy"
+              ]
+            ]
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "colonic",
       "generatorPath": "generators/colonic.js",
       "schemaPath": "schemas/colonic_polyp.json"

@@ -1,6 +1,6 @@
 {
   "name": "06-site-not-specified",
-  "description": "\"Colon, site not specified\" maps to COLON / Colon in diagnosis and specimen name. Diagnosis connector lower-cased deliberately on 2026-09-24 (\"TUBULAR ADENOMA with LOW GRADE DYSPLASIA\", the released house form) at the user's request, so each capitalised term codes separately in SNOMED; the legacy app printed \"WITH\".",
+  "description": "\"Colon, site not specified\" maps to COLON / Colon in diagnosis and specimen name. Diagnosis connector lower-cased deliberately on 2026-09-24 (\"TUBULAR ADENOMA with LOW GRADE DYSPLASIA\", the released house form) at the user's request, so each capitalised term codes separately in SNOMED; the legacy app printed \"WITH\". DELIBERATE EDIT 2026-10-05 (user request): the sessile serrated lesion, traditional serrated adenoma and high grade dysplasia microscopy now name their features (the defaults ticked on the form); diagnosis lines unchanged.",
   "input": {
     "specimens": [
       {
@@ -15,6 +15,6 @@
     "uppercaseDx": true
   },
   "expected": {
-    "report": "SPECIMEN:\n(A) Colon polyp\n\nMICROSCOPIC EXAMINATION:\n(A)  Sections show a polypoid fragment of large intestinal mucosa with tubulovillous architecture and high grade dysplasia. There is no evidence of invasive malignancy.\n\nDIAGNOSIS:\n(A) COLON, Colon polyp, polypectomy - TUBULOVILLOUS ADENOMA with HIGH GRADE DYSPLASIA."
+    "report": "SPECIMEN:\n(A) Colon polyp\n\nMICROSCOPIC EXAMINATION:\n(A)  Sections show a polypoid fragment of large intestinal mucosa with tubulovillous architecture and high grade dysplasia, showing cribriform and back-to-back glands, loss of polarity with full-thickness nuclear stratification and markedly enlarged nuclei with prominent nucleoli. There is no evidence of invasive malignancy.\n\nDIAGNOSIS:\n(A) COLON, Colon polyp, polypectomy - TUBULOVILLOUS ADENOMA with HIGH GRADE DYSPLASIA."
   }
 }

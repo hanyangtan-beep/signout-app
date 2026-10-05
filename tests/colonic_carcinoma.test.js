@@ -40,7 +40,8 @@ test('existing grades still print the no-invasion sentence', () => {
 test('at least HGD drops the no-invasion sentence and states invasion cannot be excluded', () => {
   const r = run({ dysplasia: 'At least high grade dysplasia', hgdReason: 'Not stated' });
   assert.doesNotMatch(micro(r), /no evidence of invasive malignancy/);
-  assert.match(micro(r), /tubulovillous architecture and high grade dysplasia\. Invasion cannot be excluded on this material\.$/);
+  // 2026-10-05 (user request): the high grade dysplasia now names its features (the three ticked by default).
+  assert.match(micro(r), /tubulovillous architecture and high grade dysplasia, showing cribriform and back-to-back glands, loss of polarity with full-thickness nuclear stratification and markedly enlarged nuclei with prominent nucleoli\. Invasion cannot be excluded on this material\.$/);
   assert.equal(dx(r), 'SIGMOID, Sigmoid polyp, polypectomy - TUBULOVILLOUS ADENOMA with at least HIGH GRADE DYSPLASIA.');
   assert.match(r, /COMMENT:\nCorrelation with endoscopic and radiological findings, with further sampling or resection as clinically indicated, is advised\./);
 });
@@ -93,8 +94,12 @@ test('adverse features flag the risk snippet: poor differentiation, LVI, Bd3, in
 });
 
 test('Haggitt / Kikuchi levels print on polypectomies only', () => {
-  assert.match(micro(run({ ...ca, haggitt: 'Level 2' })), /The invasion corresponds to Haggitt level 2\./);
-  assert.match(micro(run({ ...ca, kikuchi: 'sm1' })), /The invasion corresponds to Kikuchi level sm1\./);
+  // 2026-10-05 (user request): the level is the depth sentence and is named in the diagnosis; the old
+  // trailing "The invasion corresponds to ..." sentence is gone.
+  assert.match(micro(run({ ...ca, haggitt: 'Level 2' })), /Invasion extends into the submucosa at the neck of the polyp \(Haggitt level 2\)\. Lymphovascular/);
+  assert.match(micro(run({ ...ca, kikuchi: 'sm1' })), /Invasion is confined to the upper third of the submucosa \(Kikuchi level sm1\)\. Lymphovascular/);
+  assert.doesNotMatch(micro(run({ ...ca, haggitt: 'Level 2' })), /corresponds to|Invasion extends into the submucosa\./);
+  assert.match(dx(run({ ...ca, haggitt: 'Level 2' })), /; submucosal invasion \(Haggitt level 2\); margin clear/);
   assert.doesNotMatch(micro(run({ ...ca, caKind: 'Biopsy of mass', haggitt: 'Level 2' })), /Haggitt/);
 });
 
