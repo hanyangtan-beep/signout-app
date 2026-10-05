@@ -30,7 +30,7 @@ test('ranking helpers and organ phrases', () => {
   assert.equal(organPhrase({ values: { specimenType: 'Cervical biopsy', specimenName: '12 o\'clock' } }), "CERVIX, cervical biopsy at 12 o'clock");
   assert.equal(organPhrase({ values: { specimenType: 'Cervical biopsy', specimenName: 'Cervix 3 o\'clock' } }), "CERVIX, cervical biopsy at 3 o'clock");
   assert.equal(organPhrase({ values: { specimenType: 'Endocervical curettings' } }), 'ENDOCERVICAL CURETTINGS');
-  assert.equal(organPhrase({ values: { specimenType: 'Cervical polyp' } }), 'CERVIX, polyp');
+  assert.equal(organPhrase({ values: { specimenType: 'Cervical polyp' } }), 'CERVIX, polypectomy', 'the commonest released head (2026-10-05)');
 });
 
 test('default single biopsy is the house negative paragraph with no part letter', () => {
@@ -78,10 +78,11 @@ test('benign findings, cytology discordance comment, polyp and inadequate curett
   assert.equal(cerv.diagnosis, 'CERVIX, cervical biopsy - CHRONIC CERVICITIS; no evidence of dysplasia or malignancy; see comment');
   assert.match(cerv.microscopy, /lymphocytes and plasma cells\. There is no evidence of squamous intraepithelial lesion, glandular dysplasia or malignancy\. The HSIL reported on cytology is not represented in this biopsy; correlation with the colposcopic findings and further sampling are suggested if clinically indicated\.$/);
 
+  // 2026-10-05 (user request): a polyp is described as one and signed out by its type alone.
   const polyp = run(one({ specimenType: 'Cervical polyp', benign: 'Endocervical polyp' }));
   assert.equal(polyp.specimens, 'Cervix, polyp');
-  assert.equal(polyp.diagnosis, 'CERVIX, polyp - ENDOCERVICAL POLYP; no evidence of dysplasia or malignancy');
-  assert.match(polyp.microscopy, /^Sections show a piece of polypoid cervical tissue\. The squamous epithelium shows normal maturation and no CIN is seen\. The polyp consists of endocervical glands/);
+  assert.equal(polyp.diagnosis, 'CERVIX, polypectomy - ENDOCERVICAL POLYP', 'the benign pick is not repeated');
+  assert.equal(polyp.microscopy, 'Sections show a polypoid piece of tissue composed of endocervical glands, some cystically dilated, lined by mucinous columnar epithelium and set in a fibrovascular stroma with a chronic inflammatory infiltrate. There is no evidence of squamous intraepithelial lesion, glandular dysplasia or malignancy.');
 
   const ecc = run(one({ specimenType: 'Endocervical curettings', eccContent: 'Mucus and blood only (inadequate)', squamous: 'HSIL (CIN III)' }));
   assert.equal(ecc.microscopy, 'Sections show mucus and blood only. No epithelium is present for assessment.');

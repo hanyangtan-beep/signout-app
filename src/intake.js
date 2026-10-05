@@ -194,6 +194,8 @@ const excluded = (mt, text) => !!(mt.exclude && hits(mt.exclude, text));
 // of the 14 in the 2024-2026 LIS export were seborrhoeic keratoses, yet the gate left the form at
 // -1 and every one opened Generic. The sites are the unambiguous skin words; ear, eyelid, lip and
 // nose curettings keep their routes (the ear ones are the cholesteatoma form's).
+// On a biopsy form `own` works the other way: resection words it reports itself. A cervical polyp
+// "excision" is a polypectomy, and the gate sent "Cervical polyp, excision" to Generic (2026-10-05).
 const ownFor = (mt, text) => (mt?.own && hits(mt.own.site, text) ? mt.own : null);
 const without = (terms, text) => (terms || []).reduce((s, t) => s.replace(new RegExp(termRe(t).source, 'gi'), ' '), text);
 
@@ -222,8 +224,9 @@ export function scorePart(part, ctx, manifest) {
     // "SCC in situ"). A gate that fails leaves the part to the other templates, never to generic.
     if (mt.gate && !new RegExp(mt.gate, 'i').test(`${text} ${history}`)) continue;
     let score = 2 * hits(mt.procedure, text) + 2 * hits(aloneFor(mt, text)?.procedure, text) + 2 * Math.min(1, hits(mt.clinical, history)) - 4 * hits(mt.not, text) + (mt.bias || 0);
-    if (resected && !biopsied && BIOPSY_KINDS.includes(t.kind)) score -= 3;
     const own = ownFor(mt, text);
+    const resectedHere = own && BIOPSY_KINDS.includes(t.kind) ? RESECTION_CTX.test(without(own.procedure, text)) : resected;
+    if (resectedHere && !biopsied && BIOPSY_KINDS.includes(t.kind)) score -= 3;
     const biopsiedHere = own ? BIOPSY_CTX.test(without(own.procedure, text)) : biopsied;
     if (biopsiedHere && !resected && RESECTION_KINDS.includes(t.kind)) score -= 3;
     // `match.bare`: for these templates a site word with no procedure named is evidence in itself,

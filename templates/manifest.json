@@ -490,7 +490,9 @@
         "ECC",
         "endocervical curettings",
         "p16",
-        "HPV"
+        "HPV",
+        "endocervical polyp",
+        "decidual polyp"
       ],
       "match": {
         "site": [
@@ -503,7 +505,10 @@
           "biopsy",
           "punch",
           "curettings",
-          "colposcopy"
+          "colposcopy",
+          "polyp",
+          "polypectomy",
+          "avulsion"
         ],
         "clinical": [
           "CIN",
@@ -513,14 +518,48 @@
           "HPV",
           "colposcopy"
         ],
+        "own": {
+          "site": [
+            "polyp"
+          ],
+          "procedure": [
+            "excision",
+            "resection"
+          ]
+        },
         "fill": [
           {
+            "field": "specimenType",
+            "from": "map",
+            "map": [
+              [
+                "curett|\\bECC\\b",
+                "Endocervical curettings"
+              ],
+              [
+                "polyp",
+                "Cervical polyp"
+              ]
+            ]
+          },
+          {
+            "field": "polypType",
+            "from": "map",
+            "map": [
+              [
+                "decidu",
+                "Decidual polyp"
+              ]
+            ]
+          },
+          {
             "field": "specimenName",
-            "from": "detail"
+            "from": "detail",
+            "unless": "^(?:(?:endo)?cervi(?:x|cal)\\s+)?(?:polyps?|polypectomy|avulsion|biopsy|punch biopsy|excision|removal)$"
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "cervical",
       "generatorPath": "generators/cervical.js",
       "schemaPath": "schemas/cervical_biopsy.json"
@@ -536,6 +575,7 @@
       "rank": 9,
       "aliases": [
         "pipelle",
+        "endometrial aspirate",
         "curettings",
         "D&C",
         "hyperplasia",
@@ -625,6 +665,30 @@
               [
                 "^(?![\\s\\S]*(endometri|pipelle|curett|polypectomy|hysteroscop|d&c|uterine cavity))[\\s\\S]*(tissue mass|products of (gestation|conception)|miscarriage)",
                 "Tissue mass"
+              ],
+              [
+                "polypectom|hysteroscop[\\s\\S]*\\bpolyp|\\bpolyp[\\s\\S]*hysteroscop",
+                "Endometrial polypectomy"
+              ],
+              [
+                "hysteroscop",
+                "Hysteroscopic biopsy"
+              ],
+              [
+                "aspirat|pipelle|vabra|\\bEA\\b",
+                "Endometrial aspirate"
+              ],
+              [
+                "curett|\\bD\\s*&\\s*C\\b",
+                "Endometrial curettings"
+              ],
+              [
+                "biops",
+                "Endometrial biopsy"
+              ],
+              [
+                "\\bpolyp",
+                "Endometrial polypectomy"
               ]
             ]
           },
@@ -640,7 +704,7 @@
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "endometrial",
       "generatorPath": "generators/endometrial.js",
       "schemaPath": "schemas/endometrial_biopsy.json"
@@ -1123,9 +1187,13 @@
           "HPV",
           "AIS",
           "glandular"
+        ],
+        "exclude": [
+          "polyp",
+          "polypectomy"
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "leep",
       "generatorPath": "generators/leep.js",
       "schemaPath": "schemas/cervical_excision.json"

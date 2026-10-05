@@ -13,6 +13,14 @@ import { checks } from './_house.js';
 // pathway for gynaecological pathology (V3, 2023) section 11.5 asks for the presence and appearance of the
 // villi; without villi, implantation-site trophoblast or foetal tissue an ectopic pregnancy is to be
 // suspected and the result communicated quickly, which the Checks panel prompts rather than the print.
+//
+// Aspirates (user request, 2026-10-05). Most released endometrial samples are aspirates (the head names
+// aspiration or an aspirate far more often than curettings, and Pipelle almost never), so an aspirate is
+// the default and the line names it: "ENDOMETRIUM, aspirate". The request line fills the type (aspirate,
+// Pipelle or EA; curettings or D&C; biopsy; hysteroscopic; polypectomy). A benign diagnosis is not
+// followed by "no evidence of hyperplasia or malignancy": the released lines rarely add it, and the
+// microscopy already closes on it. After atypical hyperplasia the invasive-carcinoma clause stays, and a
+// gestational part keeps "no evidence of gestational trophoblastic disease".
 
 const NP = 'Not performed';
 const has = (v) => v && v !== NP && v !== 'None' && v !== 'Absent';
@@ -33,22 +41,26 @@ const IMPLANT = 'Absent; implantation-site trophoblast present';
 const MOLES = ['Partial hydatidiform mole', 'Complete hydatidiform mole'];
 
 const NOUN = {
+  'Endometrial aspirate': 'aspirate',
   'Endometrial curettings': 'curettings',
-  'Endometrial biopsy (Pipelle)': 'Pipelle biopsy',
+  'Endometrial biopsy': 'biopsy',
   'Hysteroscopic biopsy': 'hysteroscopic biopsy',
-  'Endometrial polypectomy': 'polypectomy'
+  'Endometrial polypectomy': 'polypectomy',
+  // Retired option (2026-10-05): a saved draft that chose it reads as the aspirate it was.
+  'Endometrial biopsy (Pipelle)': 'aspirate'
 };
+const noun = (v) => NOUN[v.specimenType] || 'aspirate';
 
 // "Tissue mass, per vaginam" -> "TISSUE MASS, per vaginam"; "Uterus, suction evacuation" -> "UTERUS, suction evacuation".
 const pogHead = (t) => t.replace(/^[^,]+/, (m) => m.toUpperCase());
 
 export function specimenName(part) {
   if (isPog(part.values)) return part.values.specimenType;
-  return `Endometrium, ${NOUN[part.values.specimenType] || 'curettings'}`;
+  return `Endometrium, ${noun(part.values)}`;
 }
 export function organPhrase(part) {
   if (isPog(part.values)) return pogHead(part.values.specimenType);
-  return `ENDOMETRIUM, ${NOUN[part.values.specimenType] || 'curettings'}`;
+  return `ENDOMETRIUM, ${noun(part.values)}`;
 }
 
 // ---------- products of gestation ----------
@@ -298,17 +310,13 @@ export function diagnosisText(part) {
   }
   if (!items.length) {
     const p = PHASE_DX[v.phase] || 'BENIGN ENDOMETRIUM';
-    let d = p;
-    if (v.amount === 'Scanty (limited assessment)') d += ' (scanty sample)';
-    return `${d}; no evidence of hyperplasia or malignancy`;
+    return v.amount === 'Scanty (limited assessment)' ? `${p} (scanty sample)` : p;
   }
   let d = items.join('; ');
   const background = PHASE_DX[v.phase];
   if (background && !isGestational(v) && !hasHyperplasia(v)) d += `; background ${background.toLowerCase()}`;
   if (isAtypical(v)) d += '; no evidence of invasive carcinoma in the fragments examined';
-  else if (hasHyperplasia(v)) d += '; no evidence of atypia or malignancy';
-  else if (!isGestational(v)) d += '; no evidence of hyperplasia or malignancy';
-  else d += '; no evidence of hyperplasia, gestational trophoblastic disease or malignancy';
+  else if (isGestational(v)) d += '; no evidence of gestational trophoblastic disease';
   return d;
 }
 

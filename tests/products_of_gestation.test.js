@@ -34,10 +34,10 @@ const POG_FIELDS = ['villi', 'villousAppearance', 'villitis', 'gtd', 'decidua', 
 
 test('the four specimen types follow the endometrial ones, and the checklist fields follow the type', () => {
   assert.deepEqual(field('specimenType').options, [
-    'Endometrial curettings', 'Endometrial biopsy (Pipelle)', 'Hysteroscopic biopsy', 'Endometrial polypectomy',
+    'Endometrial aspirate', 'Endometrial curettings', 'Endometrial biopsy', 'Hysteroscopic biopsy', 'Endometrial polypectomy',
     'Tissue mass', 'Tissue mass, per vaginam', 'Uterus, suction evacuation', 'Uterus, evacuation of retained products of gestation'
   ]);
-  assert.equal(field('specimenType').default, 'Endometrial curettings');
+  assert.equal(field('specimenType').default, 'Endometrial aspirate', 'an aspirate by default (2026-10-05)');
   assert.deepEqual(schema.fields.slice(1, 8).map((f) => f.id), POG_FIELDS);
   assert.deepEqual(field('villi').options, ['Present', 'Absent', IMPLANT]);
   assert.equal(field('villi').default, '', 'villi start blank: the pathologist records them');
@@ -146,10 +146,10 @@ test('the mole comments are suggested; the no-villi comment is offered, never au
 
 test('endometrial curettings with villi now read PRODUCTS OF GESTATION confirmed', () => {
   const r = run({ specimenType: 'Endometrial curettings', phase: GESTATIONAL, poc: 'Chorionic villi present' });
-  assert.equal(r.diagnosis, 'ENDOMETRIUM, curettings - PRODUCTS OF GESTATION confirmed; no evidence of hyperplasia, gestational trophoblastic disease or malignancy');
+  assert.equal(r.diagnosis, 'ENDOMETRIUM, curettings - PRODUCTS OF GESTATION confirmed; no evidence of gestational trophoblastic disease');
   assert.doesNotMatch(r.report, /CONCEPTION/);
   assert.equal(run({ specimenType: 'Endometrial curettings', phase: GESTATIONAL, poc: 'Implantation-site trophoblast without villi' }).diagnosis,
-    'ENDOMETRIUM, curettings - IMPLANTATION-SITE TROPHOBLAST WITHOUT CHORIONIC VILLI; no evidence of hyperplasia, gestational trophoblastic disease or malignancy');
+    'ENDOMETRIUM, curettings - IMPLANTATION-SITE TROPHOBLAST WITHOUT CHORIONIC VILLI; no evidence of gestational trophoblastic disease');
 });
 
 test('a multi-part case letters the checklist', () => {
@@ -186,8 +186,8 @@ test('intake: the specimen type and the gestational phase are pre-filled from th
   assert.deepEqual(preset('Uterus, evacuation of retained products'), { specimenType: ERPC, phase: GESTATIONAL });
   assert.deepEqual(preset('ERPC'), { specimenType: ERPC, phase: GESTATIONAL });
   assert.deepEqual(preset('Products of gestation'), { specimenType: MASS, phase: GESTATIONAL });
-  assert.deepEqual(preset('Endometrial curettings, miscarriage'), { phase: GESTATIONAL }, 'an endometrial line keeps its endometrial type');
-  assert.deepEqual(preset('Endometrial pipelle'), {}, 'an ordinary endometrial line pre-fills nothing, as before');
+  assert.deepEqual(preset('Endometrial curettings, miscarriage'), { specimenType: 'Endometrial curettings', phase: GESTATIONAL }, 'an endometrial line keeps its endometrial type');
+  assert.deepEqual(preset('Endometrial pipelle'), { specimenType: 'Endometrial aspirate' }, 'a Pipelle sample is an aspirate (2026-10-05)');
 });
 
 test('intake: other suction, evacuation and tissue-mass lines keep their own route', () => {

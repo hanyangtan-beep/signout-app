@@ -17,6 +17,7 @@ Status: **built 2026-09-24** (benign batch 2). The card in `docs/roadmap.md` is 
   - warning for a hydatidiform mole: communicate urgently if the diagnosis was not expected.
 - Comments: the partial and complete mole comments (p57KIP2 and ploidy or genotyping; serial hCG and referral) are suggested automatically. The no-villi comment is offered in the snippet list and never added automatically.
 - Endometrial curettings with villi (the existing gestational path) now read "PRODUCTS OF GESTATION confirmed", replacing "PRODUCTS OF CONCEPTION (CHORIONIC VILLI PRESENT)". No golden fixture carried the old line.
+- 2026-10-05 (user request): an endometrial gestational line now ends "; no evidence of gestational trophoblastic disease" instead of "; no evidence of hyperplasia, gestational trophoblastic disease or malignancy", and the endometrial types gain "Endometrial aspirate" as the default; fixture 04 was regenerated deliberately. See `docs/specs/cervical-polyps-endometrial-aspirates.md`.
 
 ## Departures from the card
 

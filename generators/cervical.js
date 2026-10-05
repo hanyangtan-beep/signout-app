@@ -3,6 +3,15 @@
 // Squamous lesions use the two-tier LAST / WHO 5th edition scheme with the CIN grade in
 // brackets (house style: "HIGH GRADE SQUAMOUS INTRAEPITHELIAL LESION (HSIL / CIN III)").
 // Wording is protected by tests/cervical.test.js — change it only deliberately.
+//
+// Cervical polyps (user request, 2026-10-05). Measured on the released reports (counts only): most
+// cervical polyps are signed out "ENDOCERVICAL POLYP" alone, with no trailing negative, and a few are
+// decidual or endometrial polyps; the commonest exact head is "CERVIX, POLYPECTOMY". The description
+// follows the released microscopy (glands, columnar epithelium, fibrovascular stroma, inflammation and
+// dilated glands are its commonest phrases) and the published features: a fibrovascular core with
+// thick-walled vessels, cystic glands, squamous metaplasia, surface erosion and chronic inflammation
+// (PathologyOutlines, Endocervical polyp); in decidual polyps the stromal cells have abundant pink
+// cytoplasm and well-defined borders, with erosion and inflammation in most (PMC9158793).
 
 const num = (v) => {
   const n = parseFloat(String(v ?? '').trim());
@@ -19,6 +28,20 @@ export const isECC = (v) => v.specimenType === 'Endocervical curettings';
 export const isPolyp = (v) => v.specimenType === 'Cervical polyp';
 export const isInadequateECC = (v) => isECC(v) && v.eccContent === 'Mucus and blood only (inadequate)';
 
+export const POLYP_TYPES = ['Endocervical polyp', 'Decidual polyp', 'Endometrial polyp'];
+export const polypType = (v) => (POLYP_TYPES.includes(v.polypType) ? v.polypType : 'Endocervical polyp');
+const POLYP_DX = { 'Endocervical polyp': 'ENDOCERVICAL POLYP', 'Decidual polyp': 'DECIDUAL POLYP', 'Endometrial polyp': 'ENDOMETRIAL POLYP' };
+const feature = (v, name) => [].concat(v.polypFeatures || []).includes(name);
+
+/** The benign pick, unless a polyp's type already says it ("Endocervical polyp"; "Decidual change" on a decidual polyp). */
+export function benignOf(v) {
+  const b = v.benign && v.benign !== 'None' ? v.benign : '';
+  if (!b || !isPolyp(v)) return b;
+  if (b === 'Endocervical polyp') return '';
+  if (b === 'Decidual change' && polypType(v) === 'Decidual polyp') return '';
+  return b;
+}
+
 const site = (v) => (v.specimenName || '').replace(/\s*\bcervi(x|cal)\b\s*/i, ' ').replace(/^[\s,]+|[\s,]+$/g, '').trim();
 
 export function specimenName(part) {
@@ -29,12 +52,12 @@ export function specimenName(part) {
   return s ? `Cervix, ${s}, biopsy` : 'Cervix, biopsy';
 }
 
-/** "CERVIX, cervical biopsy at 12 o'clock" / "ENDOCERVICAL CURETTINGS" / "CERVIX, polyp". */
+/** "CERVIX, cervical biopsy at 12 o'clock" / "ENDOCERVICAL CURETTINGS" / "CERVIX, polypectomy". */
 export function organPhrase(part) {
   const v = part.values;
   if (isECC(v)) return 'ENDOCERVICAL CURETTINGS';
   const s = site(v);
-  if (isPolyp(v)) return `CERVIX, polyp${s ? ` at ${s}` : ''}`;
+  if (isPolyp(v)) return `CERVIX, polypectomy${s ? ` at ${s}` : ''}`;
   return `CERVIX, cervical biopsy${s ? ` at ${s}` : ''}`;
 }
 
@@ -71,7 +94,7 @@ const BENIGN_SENTENCE = {
   'Follicular cervicitis': 'The stroma contains lymphoid follicles with germinal centres, in keeping with follicular cervicitis.',
   'Immature squamous metaplasia': 'Immature squamous metaplasia is present in the transformation zone.',
   Atrophy: 'The squamous epithelium is thin and atrophic with reduced glycogenation and no maturation abnormality.',
-  'Endocervical polyp': 'The polyp consists of endocervical glands and fibrovascular stroma with surface squamous metaplasia and focal erosion.',
+  'Endocervical polyp': 'A polypoid fragment of endocervical glands lined by mucinous columnar epithelium in a fibrovascular stroma is also present, in keeping with an endocervical polyp.',
   'Nabothian cysts': 'Dilated mucus-filled endocervical glands (Nabothian cysts) are present.',
   'Condyloma acuminatum': 'There is a papillary squamous proliferation with acanthosis, hyperkeratosis and prominent koilocytosis, consistent with condyloma acuminatum.',
   'Tuboendometrioid metaplasia': 'Some endocervical glands are lined by ciliated tubal-type epithelium, in keeping with tuboendometrioid metaplasia.',
@@ -81,6 +104,32 @@ const BENIGN_SENTENCE = {
   'Radiation change': 'The stroma shows hyalinisation with atypical fibroblasts and vascular change, consistent with radiation effect.',
   'Reactive / reparative change': 'The epithelium shows reactive and reparative change with nuclear enlargement, prominent nucleoli and preserved polarity, without dysplasia.',
 };
+
+/** The polyp's own sentences, by type; the surface sentence is shared. */
+export function polypSentences(v, n) {
+  const piece = n && n > 1 ? `${fmt(n)} polypoid pieces of tissue` : 'a polypoid piece of tissue';
+  const dilated = feature(v, 'Cystically dilated glands') ? ', some cystically dilated,' : '';
+  const inflamed = feature(v, 'Chronic inflammation');
+  const vessels = feature(v, 'Thick-walled vessels');
+  const s = [];
+  const type = polypType(v);
+  if (type === 'Decidual polyp') {
+    s.push(`Sections show ${piece} in which the stroma is replaced by sheets of decidualised cells with abundant eosinophilic cytoplasm, well-defined cell borders and bland round nuclei.`);
+    s.push(`Scattered endocervical glands${dilated} are present${inflamed ? ' and the stroma contains a chronic inflammatory infiltrate' : ''}.`);
+    if (vessels) s.push('Thick-walled vessels are present.');
+  } else if (type === 'Endometrial polyp') {
+    s.push(`Sections show ${piece} composed of irregularly spaced endometrial-type glands${dilated} set in a fibrous stroma with thick-walled vessels${inflamed ? ' and a chronic inflammatory infiltrate' : ''}.`);
+  } else {
+    const stroma = listJoin([vessels && 'thick-walled vessels', inflamed && 'a chronic inflammatory infiltrate']);
+    s.push(`Sections show ${piece} composed of endocervical glands${dilated} lined by mucinous columnar epithelium and set in a fibrovascular stroma${stroma ? ` with ${stroma}` : ''}.`);
+  }
+  const metaplasia = feature(v, 'Squamous metaplasia');
+  const erosion = feature(v, 'Surface erosion');
+  if (metaplasia && erosion) s.push('The surface shows squamous metaplasia and focal erosion.');
+  else if (metaplasia) s.push('The surface shows squamous metaplasia.');
+  else if (erosion) s.push('The surface is focally eroded.');
+  return s;
+}
 
 export function microscopy(part, ctx) {
   const v = part.values;
@@ -99,7 +148,7 @@ export function microscopy(part, ctx) {
       ? 'Sections show fragments of endocervical mucosa and mucus together with detached strips of squamous epithelium.'
       : 'Sections show fragments of endocervical mucosa and mucus.');
   } else if (isPolyp(v)) {
-    s.push(`Sections show ${pieces} polypoid cervical tissue.`);
+    s.push(...polypSentences(v, n));
   } else {
     s.push(`Serial sections show ${pieces} ${TISSUE_TEXT[v.tissue] || 'cervical mucosa'}.`);
   }
@@ -117,7 +166,7 @@ export function microscopy(part, ctx) {
     s.push('The squamous epithelium shows loss of maturation with enlarged hyperchromatic nuclei and mitoses extending into the middle third, with maturation of the upper third.');
   } else if (sq === 'LSIL (CIN I)') {
     s.push('Focally, the squamous epithelium shows enlarged hyperchromatic nuclei limited to the basal third, with maturation towards the surface.');
-  } else if (!isECC(v) || v.eccContent === 'Endocervical mucosa with detached squamous fragments') {
+  } else if (!isPolyp(v) && (!isECC(v) || v.eccContent === 'Endocervical mucosa with detached squamous fragments')) {
     s.push('The squamous epithelium shows normal maturation and no CIN is seen.');
   }
   if (koilo && !isSCC(v)) s.push(sq === 'Negative' ? 'Koilocytosis is present.' : 'Koilocytosis is also seen.');
@@ -151,7 +200,7 @@ export function microscopy(part, ctx) {
     s.push('The endocervical glands are unremarkable.');
   }
 
-  if (BENIGN_SENTENCE[v.benign]) s.push(BENIGN_SENTENCE[v.benign]);
+  if (BENIGN_SENTENCE[benignOf(v)]) s.push(BENIGN_SENTENCE[benignOf(v)]);
 
   // Closing negatives
   if (!hasLesion(v)) s.push('There is no evidence of squamous intraepithelial lesion, glandular dysplasia or malignancy.');
@@ -203,10 +252,13 @@ export function diagnosis(part, ctx) {
   const v = part.values;
   if (isInadequateECC(v)) return `(${part.label}) ${organPhrase(part)} - MUCUS AND BLOOD ONLY; NO EPITHELIUM FOR ASSESSMENT (INADEQUATE)`;
   const clauses = [squamousClause(v), glandularClause(v)].filter(Boolean);
-  if (v.benign && v.benign !== 'None') clauses.push(v.benign.replace(' / ', ' AND ').toUpperCase());
+  if (isPolyp(v)) clauses.push(POLYP_DX[polypType(v)]);
+  const benign = benignOf(v);
+  if (benign) clauses.push(benign.replace(' / ', ' AND ').toUpperCase());
   const extras = [];
   if (!clauses.length) clauses.push('NO EVIDENCE OF SQUAMOUS INTRAEPITHELIAL LESION OR MALIGNANCY');
-  else if (!hasLesion(v)) extras.push('no evidence of dysplasia or malignancy');
+  // A polyp is signed out by its type alone, as released; the negative stays in the microscopy.
+  else if (!hasLesion(v) && !isPolyp(v)) extras.push('no evidence of dysplasia or malignancy');
   if (v.correlation === 'Lesion reported on cytology is not represented') extras.push('see comment');
   return `(${part.label}) ${organPhrase(part)} - ${[...clauses, ...extras].join('; ')}`;
 }

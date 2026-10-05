@@ -2,6 +2,7 @@
 // Interval, early, mid- and late secretory sit under Secretory in the Background endometrium
 // list. The diagnosis lines follow the released house wording (INTERVAL ENDOMETRIUM, never
 // "interval phase"; MID-SECRETORY hyphenated), and undated Secretory is unchanged.
+// 2026-10-05 (user request): a benign line no longer ends "; no evidence of hyperplasia or malignancy".
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createCase, generate } from '../src/engine.js';
@@ -32,14 +33,14 @@ test('the four dated phases follow Secretory, in cycle order', () => {
 for (const [phase, dx, micro] of DATED) {
   test(`${phase}: diagnosis line and microscopy`, () => {
     const out = run({ phase });
-    assert.equal(out.diagnosis, `ENDOMETRIUM, curettings - ${dx}; no evidence of hyperplasia or malignancy`);
+    assert.equal(out.diagnosis, `ENDOMETRIUM, curettings - ${dx}`);
     assert.match(out.microscopy, micro);
   });
 }
 
 test('undated Secretory is unchanged', () => {
   const out = run({ phase: 'Secretory' });
-  assert.equal(out.diagnosis, 'ENDOMETRIUM, curettings - SECRETORY ENDOMETRIUM; no evidence of hyperplasia or malignancy');
+  assert.equal(out.diagnosis, 'ENDOMETRIUM, curettings - SECRETORY ENDOMETRIUM');
   assert.match(out.microscopy, /secretory vacuoles and luminal secretions, and the stroma is oedematous, in keeping with secretory endometrium\./);
 });
 
@@ -52,7 +53,7 @@ test('every Background endometrium option has its own diagnosis line', () => {
 test('a dated phase prints as the background to a polyp', () => {
   assert.equal(
     run({ phase: 'Mid-secretory', polyp: 'Present' }).diagnosis,
-    'ENDOMETRIUM, curettings - ENDOMETRIAL POLYP; background mid-secretory endometrium; no evidence of hyperplasia or malignancy'
+    'ENDOMETRIUM, curettings - ENDOMETRIAL POLYP; background mid-secretory endometrium'
   );
 });
 

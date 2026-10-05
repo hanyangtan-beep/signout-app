@@ -1,10 +1,11 @@
 {
+  "description": "Diagnosis line shortened deliberately on 2026-10-05 at the user's request: a gestational endometrial line now ends \"; no evidence of gestational trophoblastic disease\" instead of \"; no evidence of hyperplasia, gestational trophoblastic disease or malignancy\", as the microscopy already closes on hyperplasia and malignancy. Regenerated through this test's --update path; only the diagnosis line changed.",
   "templateId": "endometrial_biopsy",
   "values": {
     "specimenType": "Endometrial curettings",
     "phase": "Gestational (decidua and hypersecretory glands)",
     "poc": "Chorionic villi present"
   },
-  "report": "Endometrium, curettings\n\nSections show a moderate amount of fragmented endometrium. Decidua and hypersecretory endometrium are present. Chorionic villi are present, confirming an intrauterine gestation. There is no evidence of chronic endometritis, hyperplasia or malignancy.\n\nENDOMETRIUM, curettings - PRODUCTS OF GESTATION confirmed; no evidence of hyperplasia, gestational trophoblastic disease or malignancy",
+  "report": "Endometrium, curettings\n\nSections show a moderate amount of fragmented endometrium. Decidua and hypersecretory endometrium are present. Chorionic villi are present, confirming an intrauterine gestation. There is no evidence of chronic endometritis, hyperplasia or malignancy.\n\nENDOMETRIUM, curettings - PRODUCTS OF GESTATION confirmed; no evidence of gestational trophoblastic disease",
   "checks": []
 }

@@ -108,7 +108,7 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-One card. The Hirschsprung pull-through was pulled by the user on 2026-09-30; the rectal biopsy form it reuses shipped on its own publish (Done). The liver pair pulled by the user on 2026-10-02, the neoplastic liver biopsy and the HCC resection synoptic, shipped together (Done). The other pancreatectomies, pulled by the user on 2026-10-03, shipped on their own publish (Done).
+Two cards. The Hirschsprung pull-through was pulled by the user on 2026-09-30; the rectal biopsy form it reuses shipped on its own publish (Done). The liver pair pulled by the user on 2026-10-02, the neoplastic liver biopsy and the HCC resection synoptic, shipped together (Done). The other pancreatectomies, pulled by the user on 2026-10-03, shipped on their own publish (Done). The cervical polyp and endometrial aspirate changes were pulled by the user on 2026-10-05.
 
 ### Hirschsprung disease — pull-through resection (user request 2026-09-29; pulled by the user 2026-09-30)   Size: M; Hirschsprung pair (L → split, 2 of 2)
 Why:        the resection report gives the length of the aganglionic segment and says whether the proximal margin is ganglionated and clear of the transition zone; pull-through lines open Generic today.
@@ -119,6 +119,15 @@ Verify:     tests + browser (light)
 Ship:       its own publish (the biopsy shipped first, 2026-09-30)
 Depends on: Hirschsprung disease — rectal biopsy (shipped 2026-09-30)
 Spec:       card is the spec, with the research brief
+
+### Cervical polyps and endometrial aspirates (pulled by the user 2026-10-05)   Size: S/M
+Why:        cervical polyps printed as "polypoid cervical tissue" and a pasted polyp line opened Generic; endometrial samples defaulted to curettings, though most released samples are aspirates; benign endometrial lines ended "no evidence of hyperplasia or malignancy", which the user finds repetitive.
+Change:     cervical form: polyp type (endocervical by default, decidual, endometrial) and polyp features; the microscopy describes the polyp; dx "CERVIX, polypectomy - ENDOCERVICAL POLYP" with no trailing negative; polyp lines route to the form with the type pre-filled. Endometrial form: "Endometrial aspirate" as the default type ("Endometrial biopsy" replaces the Pipelle option); head "ENDOMETRIUM, aspirate"; the type pre-filled from the line; no trailing negative after a benign line (the atypia and gestational caveats stay).
+Untouched:  the hysterectomy form; LEEP and cone routing other than polyp lines; the closing negatives in the microscopy.
+Accept:     new tests for the polyp types, the aspirate line and the fills; deliberate updates to the cervical, cycle-phase and products-of-gestation tests and one products-of-gestation fixture; the route diff over both exports changes only cervical polyp lines.
+Verify:     tests + browser (light)
+Ship:       its own publish
+Spec:       docs/specs/cervical-polyps-endometrial-aspirates.md
 
 ## Next
 

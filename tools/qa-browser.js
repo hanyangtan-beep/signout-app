@@ -1121,6 +1121,39 @@ await check('products of gestation: a pasted tissue mass asks for the villi, the
   return 'per vaginam type pre-filled; villi prompt; confirmed line; DECIDUA only with the ectopic warning';
 });
 
+// Cervical polyps and endometrial aspirates (user request, 2026-10-05).
+await check('cervical polyp and endometrial aspirate: pasted lines open their forms with the house lines', async () => {
+  const valueOf = async (id) => {
+    const sel = page.locator(`[data-field="${id}"] select`);
+    if (await sel.count()) return sel.first().inputValue();
+    return (await page.locator(`.chips[data-field="${id}"] .chip[aria-pressed="true"]`).allTextContents()).join('|');
+  };
+  let routed = await pasteAndBuild('Cervical polyp');
+  assert(routed === 'cervical_biopsy', `polyp routed to ${routed}`);
+  const type = await valueOf('specimenType');
+  assert(/Cervical polyp/.test(type), `specimen type read "${type}"`);
+  assert(await page.locator('.field[data-field="polypType"]:visible').count() === 1, 'no polyp type field');
+  assert(await page.locator('.field[data-field="tissue"]:visible').count() === 0, 'the biopsy tissue picker shows on a polyp');
+  let report = await reportText();
+  assert(report.includes('CERVIX, polypectomy - ENDOCERVICAL POLYP') && !report.includes('ENDOCERVICAL POLYP;'), `polyp line wrong: ${report.slice(-300)}`);
+  assert(report.includes('lined by mucinous columnar epithelium and set in a fibrovascular stroma'), `polyp microscopy wrong: ${report.slice(0, 400)}`);
+  await pickField('polypType', 'Decidual polyp');
+  report = await reportText();
+  assert(report.includes('CERVIX, polypectomy - DECIDUAL POLYP') && report.includes('decidualised cells'), `decidual polyp wrong: ${report.slice(-300)}`);
+  await page.locator('[data-field="polypType"]').first().scrollIntoViewIfNeeded();
+  await shot('cervical-decidual-polyp');
+
+  routed = await pasteAndBuild('Endometrial aspirate');
+  assert(routed === 'endometrial_biopsy', `aspirate routed to ${routed}`);
+  const sample = await valueOf('specimenType');
+  assert(/Endometrial aspirate/.test(sample), `sample type read "${sample}"`);
+  report = await reportText();
+  assert(report.includes('ENDOMETRIUM, aspirate - PROLIFERATIVE ENDOMETRIUM') && !report.includes('PROLIFERATIVE ENDOMETRIUM;'), `aspirate line wrong: ${report.slice(-300)}`);
+  assert(!/curettings/i.test(report), 'curettings in an aspirate report');
+  await shot('endometrial-aspirate');
+  return 'polyp pre-filled; ENDOCERVICAL then DECIDUAL POLYP lines; aspirate line with no trailing negative';
+});
+
 await check('fallopian tube: a pasted salpingectomy and a paratubal cyst open the tube fields only', async () => {
   let routed = await pasteAndBuild('Left fallopian tube, salpingectomy');
   assert(routed === 'uterus_benign', `salpingectomy routed to ${routed}`);

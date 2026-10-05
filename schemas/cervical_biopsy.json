@@ -1,6 +1,6 @@
 {
  "id": "cervical_biopsy",
- "version": "2026.09",
+ "version": "2026.10",
  "name": "Cervical biopsy",
  "shortName": "Cervix · biopsy",
  "label": "Cervix",
@@ -17,7 +17,9 @@
   "ECC",
   "endocervical curettings",
   "p16",
-  "HPV"
+  "HPV",
+  "endocervical polyp",
+  "decidual polyp"
  ],
  "match": {
   "site": [
@@ -30,7 +32,10 @@
    "biopsy",
    "punch",
    "curettings",
-   "colposcopy"
+   "colposcopy",
+   "polyp",
+   "polypectomy",
+   "avulsion"
   ],
   "clinical": [
    "CIN",
@@ -40,10 +45,44 @@
    "HPV",
    "colposcopy"
   ],
+  "own": {
+   "site": [
+    "polyp"
+   ],
+   "procedure": [
+    "excision",
+    "resection"
+   ]
+  },
   "fill": [
    {
+    "field": "specimenType",
+    "from": "map",
+    "map": [
+     [
+      "curett|\\bECC\\b",
+      "Endocervical curettings"
+     ],
+     [
+      "polyp",
+      "Cervical polyp"
+     ]
+    ]
+   },
+   {
+    "field": "polypType",
+    "from": "map",
+    "map": [
+     [
+      "decidu",
+      "Decidual polyp"
+     ]
+    ]
+   },
+   {
     "field": "specimenName",
-    "from": "detail"
+    "from": "detail",
+    "unless": "^(?:(?:endo)?cervi(?:x|cal)\\s+)?(?:polyps?|polypectomy|avulsion|biopsy|punch biopsy|excision|removal)$"
    }
   ]
  },
@@ -111,6 +150,42 @@
    }
   },
   {
+   "id": "polypType",
+   "label": "Polyp type",
+   "type": "select",
+   "options": [
+    "Endocervical polyp",
+    "Decidual polyp",
+    "Endometrial polyp"
+   ],
+   "default": "Endocervical polyp",
+   "showIf": {
+    "field": "specimenType",
+    "is": "Cervical polyp"
+   },
+   "help": "Decidual: stroma decidualised in pregnancy or with progestogens. Endometrial: endometrial-type glands and stroma (lower uterine segment, or a prolapsed endometrial polyp)."
+  },
+  {
+   "id": "polypFeatures",
+   "label": "Polyp features",
+   "type": "multiselect",
+   "options": [
+    "Cystically dilated glands",
+    "Chronic inflammation",
+    "Thick-walled vessels",
+    "Squamous metaplasia",
+    "Surface erosion"
+   ],
+   "default": [
+    "Cystically dilated glands",
+    "Chronic inflammation"
+   ],
+   "showIf": {
+    "field": "specimenType",
+    "is": "Cervical polyp"
+   }
+  },
+  {
    "id": "pieces",
    "label": "Number of pieces",
    "type": "number",
@@ -131,10 +206,7 @@
    "default": "Transformation zone mucosa",
    "showIf": {
     "field": "specimenType",
-    "is": [
-     "Cervical biopsy",
-     "Cervical polyp"
-    ]
+    "is": "Cervical biopsy"
    }
   },
   {

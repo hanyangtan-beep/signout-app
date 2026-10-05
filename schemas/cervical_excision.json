@@ -1,6 +1,6 @@
 {
  "id": "cervical_excision",
- "version": "2026.09",
+ "version": "2026.10",
  "name": "Cervical excision (LEEP / cone)",
  "shortName": "Cervix · LEEP / cone",
  "label": "LEEP",
@@ -38,6 +38,10 @@
    "HPV",
    "AIS",
    "glandular"
+  ],
+  "exclude": [
+   "polyp",
+   "polypectomy"
   ]
  },
  "specimenNoun": "LEEP",

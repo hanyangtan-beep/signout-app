@@ -1,6 +1,6 @@
 {
  "id": "endometrial_biopsy",
- "version": "2026.09",
+ "version": "2026.10",
  "name": "Endometrial biopsy",
  "shortName": "Endometrium · biopsy",
  "label": "Endometrium",
@@ -10,6 +10,7 @@
  "rank": 9,
  "aliases": [
   "pipelle",
+  "endometrial aspirate",
   "curettings",
   "D&C",
   "hyperplasia",
@@ -99,6 +100,30 @@
      [
       "^(?![\\s\\S]*(endometri|pipelle|curett|polypectomy|hysteroscop|d&c|uterine cavity))[\\s\\S]*(tissue mass|products of (gestation|conception)|miscarriage)",
       "Tissue mass"
+     ],
+     [
+      "polypectom|hysteroscop[\\s\\S]*\\bpolyp|\\bpolyp[\\s\\S]*hysteroscop",
+      "Endometrial polypectomy"
+     ],
+     [
+      "hysteroscop",
+      "Hysteroscopic biopsy"
+     ],
+     [
+      "aspirat|pipelle|vabra|\\bEA\\b",
+      "Endometrial aspirate"
+     ],
+     [
+      "curett|\\bD\\s*&\\s*C\\b",
+      "Endometrial curettings"
+     ],
+     [
+      "biops",
+      "Endometrial biopsy"
+     ],
+     [
+      "\\bpolyp",
+      "Endometrial polypectomy"
      ]
     ]
    },
@@ -114,7 +139,7 @@
    }
   ]
  },
- "specimenNoun": "curettings",
+ "specimenNoun": "aspirate",
  "maxParts": 4,
  "defaultParts": 1,
  "generator": "endometrial",
@@ -142,7 +167,7 @@
  ],
  "partDefaults": [
   {
-   "specimenType": "Endometrial curettings"
+   "specimenType": "Endometrial aspirate"
   },
   {
    "specimenType": "Endometrial polypectomy"
@@ -154,8 +179,9 @@
    "label": "Specimen",
    "type": "select",
    "options": [
+    "Endometrial aspirate",
     "Endometrial curettings",
-    "Endometrial biopsy (Pipelle)",
+    "Endometrial biopsy",
     "Hysteroscopic biopsy",
     "Endometrial polypectomy",
     "Tissue mass",
@@ -163,7 +189,8 @@
     "Uterus, suction evacuation",
     "Uterus, evacuation of retained products of gestation"
    ],
-   "default": "Endometrial curettings"
+   "default": "Endometrial aspirate",
+   "help": "Aspirate covers Pipelle and the other suction samplers."
   },
   {
    "id": "villi",
@@ -1000,7 +1027,7 @@
    {
     "label": "A",
     "values": {
-     "specimenType": "Endometrial curettings",
+     "specimenType": "Endometrial aspirate",
      "amount": "Moderate",
      "phase": "Inactive (atrophic)",
      "polyp": "Absent",
