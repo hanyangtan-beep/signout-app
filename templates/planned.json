@@ -2,14 +2,6 @@
  "note": "Templates still to build (see signout_app_roadmap.md). Each shows in its system menu as a greyed 'pending build' placeholder that opens Generic free text. Remove the entry in the card that builds the template. `qmh` = page on https://awiloqmh.github.io/CancerReportingTemplate/ (QMH cancer reporting templates); every QMH page not yet built has an entry (2026-09-12).",
  "planned": [
   {
-   "id": "peritoneal_nodule",
-   "name": "Peritoneal nodule biopsy",
-   "label": "Peritoneum",
-   "system": "GI",
-   "kind": "biopsy",
-   "roadmap": "Next"
-  },
-  {
    "id": "renal_biopsy",
    "name": "Renal biopsy (medical; Banff / MEST-C / ISN-RPS)",
    "label": "Renal",

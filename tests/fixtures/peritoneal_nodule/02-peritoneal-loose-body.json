@@ -1,0 +1,14 @@
+{
+  "templateId": "peritoneal_nodule",
+  "values": {
+    "site": "Pelvic peritoneum",
+    "procedure": "Excision",
+    "dx": "Peritoneal loose body",
+    "lbFeatures": [
+      "Central fat necrosis",
+      "Calcification"
+    ]
+  },
+  "report": "Pelvic peritoneum, excision\n\nSections show a nodule composed of concentric layers of hyalinised, acellular fibrous tissue surrounding a central core of necrotic fat, with calcification. The features are consistent with an infarcted and detached appendix epiploica. There is no evidence of malignancy.\n\nPELVIC PERITONEUM, excision - PERITONEAL LOOSE BODY",
+  "checks": []
+}

@@ -1,0 +1,45 @@
+{
+  "templateId": "peritoneal_nodule",
+  "values": [
+    {
+      "site": "Omentum",
+      "lesion": "Nodule",
+      "dx": "Metastatic carcinoma",
+      "lead": "Involved by",
+      "carcinomaType": "High-grade serous carcinoma",
+      "primarySite": "Tubo-ovarian",
+      "ihcPos": [
+        "PAX8",
+        "WT1"
+      ],
+      "ihcNeg": [
+        "calretinin"
+      ],
+      "p53": "Aberrant, overexpression"
+    },
+    {
+      "site": "Paracolic gutter",
+      "side": "Right",
+      "dx": "Endosalpingiosis",
+      "psammoma": true
+    },
+    {
+      "site": "Diaphragm",
+      "side": "Right",
+      "lesion": "Plaque",
+      "dx": "Reactive mesothelial hyperplasia"
+    },
+    {
+      "site": "Pouch of Douglas",
+      "nemFindings": [
+        "Mesothelial lining",
+        "Fibrosis"
+      ]
+    }
+  ],
+  "meta": {
+    "clinical": "Pelvic mass, raised CA-125. ?Ovarian cancer."
+  },
+  "report": "(A) Omentum, nodule, biopsy\n(B) Right paracolic gutter, biopsy\n(C) Right diaphragm, plaque, biopsy\n(D) Pouch of Douglas, biopsy\n\n(A) Sections show fibroadipose tissue involved by high-grade serous carcinoma forming papillae, solid sheets and slit-like spaces, composed of cells with marked nuclear pleomorphism, prominent nucleoli and frequent mitoses. On immunohistochemistry, the tumour cells are positive for PAX8 and WT1, and negative for calretinin. p53 shows aberrant (mutation-type) overexpression.\n\n(B) Sections show fibroadipose tissue containing small glands lined by a single layer of bland ciliated tubal-type epithelium, with psammoma bodies. There is no evidence of malignancy.\n\n(C) Sections show fibroadipose tissue with a surface layer of reactive mesothelial cells. The cells have uniform round to oval nuclei with small central nucleoli. The proliferation is confined to the surface, with no invasion of the underlying tissue. There is no evidence of malignancy.\n\n(D) Sections show fibroadipose tissue lined by mesothelium, with fibrosis. There is no evidence of malignancy.\n\n(A) OMENTUM, nodule, biopsy - INVOLVED BY HIGH-GRADE SEROUS CARCINOMA, in keeping with tubo-ovarian primary\n(B) RIGHT PARACOLIC GUTTER, biopsy - ENDOSALPINGIOSIS\n(C) RIGHT DIAPHRAGM, plaque, biopsy - REACTIVE MESOTHELIAL HYPERPLASIA\n(D) POUCH OF DOUGLAS, biopsy - NO EVIDENCE OF MALIGNANCY\n\nNo malignancy is identified in the sampled tissue (parts B, C and D), which may not be representative of the lesion; correlation with the operative and imaging findings is advised.\n\nThe mesothelial proliferation (part C) is confined to the surface, without invasion of the underlying tissue; these features favour a reactive process over a mesothelial neoplasm.",
+  "checks": []
+}

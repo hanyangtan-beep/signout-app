@@ -1641,6 +1641,29 @@ await check('gastric biopsy: a polypectomy opens the form; polyp, carcinoma type
   return 'polypectomy routed; polyp bullet and line; carcinoma and biomarker fields appear and print; criteria panel opens';
 });
 
+// Peritoneal nodule biopsy (2026-10-07, Phase 58): a pasted omental nodule under a cancer history opens the
+// peritoneal form with its site filled; the sampling caveat ticks itself on the negative biopsy; the carcinoma
+// fields appear on a carcinoma pick, the primary-site clause prints and the caveat drops.
+await check('peritoneal nodule: a pasted omental nodule opens the form; the caveat follows the diagnosis; the carcinoma line prints', async () => {
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
+  const routed = await pasteAndBuild('History\nCarcinoma of sigmoid colon, ? peritoneal metastases\n\nSpecimen\n(A) Omentum, nodule, biopsy');
+  assert(routed === 'peritoneal_nodule', `omental nodule routed to ${routed}`);
+  let report = await reportText();
+  assert(report.includes('OMENTUM, nodule, biopsy - NO EVIDENCE OF MALIGNANCY'), `negative line wrong: ${report.slice(-400)}`);
+  assert(report.includes('No malignancy is identified in the sampled tissue'), 'the sampling caveat did not tick itself');
+  assert(!(await shows('carcinomaType')) && !(await shows('primarySite')), 'carcinoma fields show without a carcinoma');
+  await pickField('dx', 'Metastatic carcinoma');
+  assert(await shows('carcinomaType') && await shows('primarySite') && await shows('p53'), 'the carcinoma fields did not appear');
+  await pickField('primarySite', 'Colorectal');
+  report = await reportText();
+  assert(report.includes('OMENTUM, nodule, biopsy - METASTATIC ADENOCARCINOMA, in keeping with colorectal primary'), `carcinoma line wrong: ${report.slice(-400)}`);
+  assert(!report.includes('No malignancy is identified in the sampled tissue'), 'the sampling caveat stayed on a carcinoma');
+  await shot('peritoneal-metastatic-carcinoma');
+  return 'omental nodule routed under a cancer history; negative line with the caveat; carcinoma fields appear; primary clause prints and the caveat drops';
+});
+
 await check('case options: a pasted hysterectomy ticks the macroscopy box it prints, and the box drives it', async () => {
   await page.evaluate(() => localStorage.removeItem('signout.case.v1'));
   await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });

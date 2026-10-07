@@ -1,0 +1,21 @@
+{
+  "templateId": "peritoneal_nodule",
+  "values": {
+    "site": "Omentum",
+    "lesion": "Nodule",
+    "dx": "Metastatic carcinoma",
+    "carcinomaType": "Adenocarcinoma",
+    "primarySite": "Colorectal",
+    "primaryBasis": "In keeping with",
+    "ihcPos": [
+      "CK20",
+      "CDX2",
+      "SATB2"
+    ],
+    "ihcNeg": [
+      "CK7"
+    ]
+  },
+  "report": "Omentum, nodule, biopsy\n\nSections show fibroadipose tissue involved by adenocarcinoma forming cribriform glands of tall columnar cells, with luminal necrotic debris. On immunohistochemistry, the tumour cells are positive for CK20, CDX2 and SATB2, and negative for CK7.\n\nOMENTUM, nodule, biopsy - METASTATIC ADENOCARCINOMA, in keeping with colorectal primary",
+  "checks": []
+}

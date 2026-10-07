@@ -1,0 +1,22 @@
+{
+  "templateId": "peritoneal_nodule",
+  "values": {
+    "site": "Pouch of Douglas",
+    "lesion": "Nodule",
+    "dx": "Reactive mesothelial hyperplasia",
+    "rmhPattern": "Papillary",
+    "ihcPos": [
+      "calretinin",
+      "WT1",
+      "D2-40"
+    ],
+    "ihcNeg": [
+      "BerEP4",
+      "claudin-4"
+    ],
+    "bap1": "Retained",
+    "mtap": "Retained"
+  },
+  "report": "Pouch of Douglas, nodule, biopsy\n\nSections show fibroadipose tissue with a surface proliferation of mesothelial cells forming small papillae and tubulopapillary structures. The cells have uniform round to oval nuclei with small central nucleoli. The proliferation is confined to the surface, with no invasion of the underlying tissue. On immunohistochemistry, the mesothelial cells are positive for calretinin, WT1 and D2-40, and negative for BerEP4 and claudin-4. BAP1 and MTAP expression is retained. There is no evidence of malignancy.\n\nPOUCH OF DOUGLAS, nodule, biopsy - REACTIVE MESOTHELIAL HYPERPLASIA, papillary pattern\n\nThe mesothelial proliferation is confined to the surface, without invasion of the underlying tissue; these features favour a reactive process over a mesothelial neoplasm.",
+  "checks": []
+}

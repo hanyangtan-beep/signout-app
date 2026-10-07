@@ -125,3 +125,16 @@ test('the britishiser leaves house exceptions alone', async () => {
   assert.equal(britishise('Cold ischemic time is uncertain.'), 'Cold ischaemic time is uncertain.');
   assert.equal(britishise('HER2 signaling'), 'HER2 signalling');
 });
+
+test('a flag snippet with a field rule ticks itself for the matching parts only', async () => {
+  const { snippetsFor } = await import('../src/engine.js');
+  const schema = {
+    id: 'toy_flag', fields: [{ id: 'dx', type: 'select', options: ['benign', 'malignant'], default: 'benign' }],
+    snippets: [{ id: 'every_part', auto: { flag: 'query' }, text: 'x' }, { id: 'benign_parts', auto: { flag: 'query', field: 'dx', is: 'benign' }, text: 'y' }]
+  };
+  const templates = { toy_flag: { schema, generator: { flags: (parts, ctx) => (/\?ca/.test(ctx.case.meta?.clinical || '') ? ['query'] : []) } } };
+  const cs = (clinical) => ({ schemaId: 'toy_flag', meta: { clinical }, snippets: {}, parts: [{ label: 'A', values: { dx: 'malignant' } }, { label: 'B', values: { dx: 'benign' } }] });
+  const got = (clinical) => snippetsFor(templates, cs(clinical)).map((s) => [s.id, s.matchedParts, s.active]);
+  assert.deepEqual(got('?ca'), [['every_part', ['A', 'B'], true], ['benign_parts', ['B'], true]]);
+  assert.deepEqual(got('pain'), [['every_part', [], false], ['benign_parts', [], false]], 'no flag, no suggestion');
+});

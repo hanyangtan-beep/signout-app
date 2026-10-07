@@ -181,8 +181,12 @@ export function snippetsFor(templates, caseState) {
     for (const sn of t.schema.snippets || []) {
       if (out.some((o) => o.id === sn.id)) continue;
       let matched = [];
-      if (sn.auto && 'flag' in sn.auto) matched = flags.includes(sn.auto.flag) ? own.map((p) => p.label) : [];
-      else if (sn.auto) matched = own.filter((p) => matches(sn.auto, p.values)).map((p) => p.label);
+      // `auto: {flag, field, is}` narrows a case-level flag to the parts that also meet the field rule (the
+      // peritoneal sampling caveat: a history naming malignancy, printed for the benign parts only).
+      if (sn.auto && 'flag' in sn.auto) {
+        const { flag, ...partRule } = sn.auto;
+        matched = flags.includes(flag) ? own.filter((p) => !Object.keys(partRule).length || matches(partRule, p.values)).map((p) => p.label) : [];
+      } else if (sn.auto) matched = own.filter((p) => matches(sn.auto, p.values)).map((p) => p.label);
       const suggested = matched.length > 0;
       const active = chosen[sn.id] === true || (suggested && chosen[sn.id] !== false);
       out.push({ ...sn, templateId: id, suggested, matchedParts: matched, active });

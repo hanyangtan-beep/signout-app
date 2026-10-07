@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 73,
+  "count": 74,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -6112,6 +6112,344 @@
       "generator": "hirschsprung_biopsy",
       "generatorPath": "generators/hirschsprung_biopsy.js",
       "schemaPath": "schemas/hirschsprung_biopsy.json"
+    },
+    {
+      "id": "peritoneal_nodule",
+      "name": "Peritoneal nodule biopsy",
+      "shortName": "Peritoneum · biopsy",
+      "label": "Peritoneum",
+      "organ": "PERITONEUM",
+      "system": "GI",
+      "kind": "biopsy",
+      "rank": 63,
+      "aliases": [
+        "omentum",
+        "peritoneal nodule",
+        "loose body",
+        "mesothelial",
+        "deposit",
+        "implant",
+        "mesothelioma",
+        "mesentery",
+        "pouch of Douglas",
+        "paracolic gutter",
+        "diaphragm",
+        "serosa",
+        "endometriosis",
+        "endosalpingiosis",
+        "carcinomatosis"
+      ],
+      "match": {
+        "site": [
+          "peritoneum",
+          "peritoneal",
+          "mesentery",
+          "mesenteric",
+          "mesocolon",
+          "mesocolic",
+          "pouch of douglas",
+          "cul-de-sac",
+          "paracolic",
+          "diaphragm",
+          "diaphragmatic",
+          "hemidiaphragm",
+          "serosa",
+          "serosal",
+          "loose body",
+          "loose bodies"
+        ],
+        "alone": {
+          "site": [
+            "omentum",
+            "omental"
+          ],
+          "unless": "^(?![\\s\\S]*\\b(?:biops\\w*|excis\\w*|nodul\\w*|deposits?|implants?|plaques?|lesions?|mass(?:es)?|cake|tumou?rs?|seros\\w*|periton\\w*|mesenter\\w*|metasta\\w*))"
+        },
+        "procedure": [
+          "biopsy",
+          "biopsies",
+          "excision",
+          "nodule",
+          "nodules",
+          "deposit",
+          "deposits",
+          "implant",
+          "implants",
+          "plaque",
+          "plaques",
+          "loose body",
+          "loose bodies",
+          "soft tissue"
+        ],
+        "clinical": [
+          "carcinomatosis",
+          "peritoneal disease",
+          "omental cake",
+          "peritoneal nodule",
+          "peritoneal nodules",
+          "omental nodule",
+          "endometriosis"
+        ],
+        "exclude": [
+          "cyst",
+          "cystic",
+          "lipoma",
+          "omentectomy",
+          "washing",
+          "washings",
+          "fluid",
+          "ascitic",
+          "ascites",
+          "effusion",
+          "cytology",
+          "aspirate",
+          "aspiration",
+          "frozen",
+          "intraoperative",
+          "pleura",
+          "pleural",
+          "hernia",
+          "lymph node",
+          "colectomy",
+          "hemicolectomy",
+          "hysterectomy",
+          "gastrectomy",
+          "oesophagectomy",
+          "esophagectomy",
+          "whipple",
+          "pancreatectomy",
+          "pancreaticoduodenectomy",
+          "splenectomy",
+          "nephrectomy",
+          "oophorectomy",
+          "salpingo-oophorectomy",
+          "salpingectomy",
+          "appendicectomy",
+          "appendectomy",
+          "cholecystectomy",
+          "anterior resection",
+          "peritonectomy",
+          "elbow",
+          "knee",
+          "hip",
+          "shoulder",
+          "ankle",
+          "wrist",
+          "joint",
+          "synovium",
+          "synovial",
+          "meniscus",
+          "patella",
+          "olecranon",
+          "bone",
+          "bony",
+          "cartilage",
+          "cartilaginous",
+          "osteochondral"
+        ],
+        "not": [
+          "colon",
+          "sigmoid",
+          "rectum",
+          "caecum",
+          "cecum"
+        ],
+        "own": {
+          "site": [
+            "peritoneum",
+            "peritoneal",
+            "omentum",
+            "omental",
+            "mesentery",
+            "mesenteric",
+            "mesocolon",
+            "mesocolic",
+            "pouch of douglas",
+            "cul-de-sac",
+            "paracolic",
+            "diaphragm",
+            "diaphragmatic",
+            "hemidiaphragm",
+            "serosa",
+            "serosal",
+            "loose body"
+          ],
+          "procedure": [
+            "excision",
+            "excisional",
+            "excised"
+          ]
+        },
+        "bias": 2,
+        "sideFromText": true,
+        "fill": [
+          {
+            "field": "site",
+            "from": "map",
+            "map": [
+              [
+                "pouch of douglas|cul[- ]?de[- ]?sac|recto-?uterine|recto-?vaginal pouch",
+                "Pouch of Douglas"
+              ],
+              [
+                "paracolic",
+                "Paracolic gutter"
+              ],
+              [
+                "diaphragm",
+                "Diaphragm"
+              ],
+              [
+                "\\bseros|\\bbladder (?:peritoneum|flap)\\b|\\bvesico-?uterine",
+                "Serosa of a named organ"
+              ],
+              [
+                "mesenter|mesocol",
+                "Mesentery"
+              ],
+              [
+                "\\bomen(?:tum|tal)\\b",
+                "Omentum"
+              ],
+              [
+                "\\bpelvi(?:c|s)\\b",
+                "Pelvic peritoneum"
+              ]
+            ]
+          },
+          {
+            "field": "organ",
+            "from": "map",
+            "map": [
+              [
+                "\\bsmall (?:bowel|intestin\\w*)\\b|\\bile(?:um|al)\\b|\\bjejun\\w*",
+                "small bowel"
+              ],
+              [
+                "\\bsigmoid\\b",
+                "sigmoid colon"
+              ],
+              [
+                "\\btransverse (?:colon|mesocolon)\\b",
+                "transverse colon"
+              ],
+              [
+                "\\bcaec\\w*|\\bcec(?:um|al)\\b",
+                "caecal"
+              ],
+              [
+                "\\brect(?:um|al)\\b",
+                "rectal"
+              ],
+              [
+                "\\bcolo(?:n|nic)\\b",
+                "colonic"
+              ],
+              [
+                "\\bappendi(?:x|ceal)\\b",
+                "appendiceal"
+              ],
+              [
+                "\\bstomach\\b|\\bgastric\\b",
+                "gastric"
+              ],
+              [
+                "\\buter(?:us|ine)\\b",
+                "uterine"
+              ],
+              [
+                "\\bbladder\\b|\\bvesico",
+                "bladder"
+              ],
+              [
+                "\\bovar(?:y|ian)\\b",
+                "ovarian"
+              ],
+              [
+                "\\bfallopian\\b|\\btubal\\b",
+                "tubal"
+              ],
+              [
+                "\\bliver\\b|\\bhepatic\\b",
+                "hepatic"
+              ],
+              [
+                "\\bspleen\\b|\\bsplenic\\b",
+                "splenic"
+              ]
+            ]
+          },
+          {
+            "field": "lesion",
+            "from": "map",
+            "noGuess": true,
+            "map": [
+              [
+                "\\bnodules\\b",
+                "Nodules"
+              ],
+              [
+                "\\bnodul(?:e|ar)\\b",
+                "Nodule"
+              ],
+              [
+                "\\bdeposits\\b",
+                "Deposits"
+              ],
+              [
+                "\\bdeposit\\b",
+                "Deposit"
+              ],
+              [
+                "\\bplaques?\\b",
+                "Plaque"
+              ]
+            ]
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bexcis",
+                "Excision"
+              ],
+              [
+                "\\bbiops",
+                "Biopsy"
+              ],
+              [
+                "\\bloose bod(?:y|ies)\\b",
+                "Excision"
+              ]
+            ]
+          },
+          {
+            "field": "headStyle",
+            "from": "map",
+            "map": [
+              [
+                "\\bsoft tissues?\\b",
+                "Soft tissue"
+              ]
+            ]
+          },
+          {
+            "field": "dx",
+            "from": "map",
+            "map": [
+              [
+                "\\bloose bod(?:y|ies)\\b",
+                "Peritoneal loose body"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.10",
+      "generator": "peritoneal_nodule",
+      "generatorPath": "generators/peritoneal_nodule.js",
+      "schemaPath": "schemas/peritoneal_nodule.json"
     },
     {
       "id": "generic",

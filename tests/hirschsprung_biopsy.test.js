@@ -58,7 +58,8 @@ test('it sits with the GI biopsies in the top row, after IBD, and is not a pendi
   assert.ok(!planned.some((p) => p.id === 'hirschsprung_biopsy'), 'not in planned.json');
   const group = rowGroups(manifest, planned, 'top').find((g) => g.items.some((i) => i.id === 'hirschsprung_biopsy'));
   assert.equal(group.system, 'GI');
-  assert.deepEqual(group.items.filter((i) => !i.planned).map((i) => i.label), ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Hirschsprung']);
+  // Peritoneum (Phase 58, 2026-10-07) is built after it and closes the row.
+  assert.deepEqual(group.items.filter((i) => !i.planned).map((i) => i.label), ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Hirschsprung', 'Peritoneum']);
 });
 
 test('the example: suction biopsies at two levels with ganglion cells and calretinin-positive fibrils', () => {

@@ -76,6 +76,7 @@
     },
     {
       "name": "serous carcinoma debulking (13 parts)",
+      "description": "Edited 2026-10-07 (Phase 58): the mesenteric nodule (D), the diaphragm nodule (F) and the left pelvic peritoneum (H) now open the peritoneal nodule form; the bare omentum (A), an omentectomy at debulking, stays on Generic.",
       "text": "History\nSerous carcinoma\nThere was no ascites.\nA 1 cm thickening was noted at the right subdiaphragmatic surface but no gross tumors were seen.\nNo gross tumor was noted in the omentum.\nA few miliary whitish lesions were seen on the splenic capsule but not gross tumors were seen.\nA 0.5 x 0.5 x 1 cm lymph node was noted around the common bile duct and hepatic artery.\nA few miliary deposits were noted at bilateral paracolic gutters and pelvic peritoneum.\nA 0.5 x 0.5 x 1 cm thickening was seen at the right posterior abdominal peritoneum.\nA 2 cm tumor was seen attaching between the appendix and the proximal sigmoid colon.\nA few miliary deposits were seen on the rectal surface.\nThe bladder flap was thickened of around 0.5 x 0.5 x 1.5 cm.\nThe left ovary was slightly enlarged and the right looked normal.\nThree 0.2 cm necrotic tumors were noted at the right ovarian fossa and one 0.5 x 0.5 x 1 cm necrotic\ntumor was seen over the right uterosacral ligament.\nA 0.5 x 0.5 x 1 cm elongated LN was noted at right external iliac artery.\n\n(A) Omentum, (B) Spleen, (C) Lymph node at bile duct, (D) Mesenteric nodule, (E) Nodule near bile duct, (F) Nodule at diaphragm, (G) Left para-aortic gutter, (H) Left pelvic peritoneum, (I) Sigmoid, (J) Tumour on sigmoid, (K) Uterus and bilateral appendages, (L) Right pelvic lymph node and (M) Proximal margin of sigmoid",
       "casePrefix": "",
       "expect": [
@@ -96,8 +97,8 @@
         },
         {
           "label": "D",
-          "templateId": "generic",
-          "tier": "none"
+          "templateId": "peritoneal_nodule",
+          "tier": "confident"
         },
         {
           "label": "E",
@@ -106,8 +107,8 @@
         },
         {
           "label": "F",
-          "templateId": "generic",
-          "tier": "none"
+          "templateId": "peritoneal_nodule",
+          "tier": "confident"
         },
         {
           "label": "G",
@@ -116,8 +117,8 @@
         },
         {
           "label": "H",
-          "templateId": "generic",
-          "tier": "none"
+          "templateId": "peritoneal_nodule",
+          "tier": "confident"
         },
         {
           "label": "I",

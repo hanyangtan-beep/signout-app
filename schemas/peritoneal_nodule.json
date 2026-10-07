@@ -1,0 +1,1205 @@
+{
+ "id": "peritoneal_nodule",
+ "version": "2026.10",
+ "name": "Peritoneal nodule biopsy",
+ "shortName": "Peritoneum · biopsy",
+ "label": "Peritoneum",
+ "organ": "PERITONEUM",
+ "system": "GI",
+ "kind": "biopsy",
+ "rank": 63,
+ "aliases": [
+  "omentum",
+  "peritoneal nodule",
+  "loose body",
+  "mesothelial",
+  "deposit",
+  "implant",
+  "mesothelioma",
+  "mesentery",
+  "pouch of Douglas",
+  "paracolic gutter",
+  "diaphragm",
+  "serosa",
+  "endometriosis",
+  "endosalpingiosis",
+  "carcinomatosis"
+ ],
+ "match": {
+  "site": [
+   "peritoneum",
+   "peritoneal",
+   "mesentery",
+   "mesenteric",
+   "mesocolon",
+   "mesocolic",
+   "pouch of douglas",
+   "cul-de-sac",
+   "paracolic",
+   "diaphragm",
+   "diaphragmatic",
+   "hemidiaphragm",
+   "serosa",
+   "serosal",
+   "loose body",
+   "loose bodies"
+  ],
+  "alone": {
+   "site": [
+    "omentum",
+    "omental"
+   ],
+   "unless": "^(?![\\s\\S]*\\b(?:biops\\w*|excis\\w*|nodul\\w*|deposits?|implants?|plaques?|lesions?|mass(?:es)?|cake|tumou?rs?|seros\\w*|periton\\w*|mesenter\\w*|metasta\\w*))"
+  },
+  "procedure": [
+   "biopsy",
+   "biopsies",
+   "excision",
+   "nodule",
+   "nodules",
+   "deposit",
+   "deposits",
+   "implant",
+   "implants",
+   "plaque",
+   "plaques",
+   "loose body",
+   "loose bodies",
+   "soft tissue"
+  ],
+  "clinical": [
+   "carcinomatosis",
+   "peritoneal disease",
+   "omental cake",
+   "peritoneal nodule",
+   "peritoneal nodules",
+   "omental nodule",
+   "endometriosis"
+  ],
+  "exclude": [
+   "cyst",
+   "cystic",
+   "lipoma",
+   "omentectomy",
+   "washing",
+   "washings",
+   "fluid",
+   "ascitic",
+   "ascites",
+   "effusion",
+   "cytology",
+   "aspirate",
+   "aspiration",
+   "frozen",
+   "intraoperative",
+   "pleura",
+   "pleural",
+   "hernia",
+   "lymph node",
+   "colectomy",
+   "hemicolectomy",
+   "hysterectomy",
+   "gastrectomy",
+   "oesophagectomy",
+   "esophagectomy",
+   "whipple",
+   "pancreatectomy",
+   "pancreaticoduodenectomy",
+   "splenectomy",
+   "nephrectomy",
+   "oophorectomy",
+   "salpingo-oophorectomy",
+   "salpingectomy",
+   "appendicectomy",
+   "appendectomy",
+   "cholecystectomy",
+   "anterior resection",
+   "peritonectomy",
+   "elbow",
+   "knee",
+   "hip",
+   "shoulder",
+   "ankle",
+   "wrist",
+   "joint",
+   "synovium",
+   "synovial",
+   "meniscus",
+   "patella",
+   "olecranon",
+   "bone",
+   "bony",
+   "cartilage",
+   "cartilaginous",
+   "osteochondral"
+  ],
+  "not": [
+   "colon",
+   "sigmoid",
+   "rectum",
+   "caecum",
+   "cecum"
+  ],
+  "own": {
+   "site": [
+    "peritoneum",
+    "peritoneal",
+    "omentum",
+    "omental",
+    "mesentery",
+    "mesenteric",
+    "mesocolon",
+    "mesocolic",
+    "pouch of douglas",
+    "cul-de-sac",
+    "paracolic",
+    "diaphragm",
+    "diaphragmatic",
+    "hemidiaphragm",
+    "serosa",
+    "serosal",
+    "loose body"
+   ],
+   "procedure": [
+    "excision",
+    "excisional",
+    "excised"
+   ]
+  },
+  "bias": 2,
+  "sideFromText": true,
+  "fill": [
+   {
+    "field": "site",
+    "from": "map",
+    "map": [
+     [
+      "pouch of douglas|cul[- ]?de[- ]?sac|recto-?uterine|recto-?vaginal pouch",
+      "Pouch of Douglas"
+     ],
+     [
+      "paracolic",
+      "Paracolic gutter"
+     ],
+     [
+      "diaphragm",
+      "Diaphragm"
+     ],
+     [
+      "\\bseros|\\bbladder (?:peritoneum|flap)\\b|\\bvesico-?uterine",
+      "Serosa of a named organ"
+     ],
+     [
+      "mesenter|mesocol",
+      "Mesentery"
+     ],
+     [
+      "\\bomen(?:tum|tal)\\b",
+      "Omentum"
+     ],
+     [
+      "\\bpelvi(?:c|s)\\b",
+      "Pelvic peritoneum"
+     ]
+    ]
+   },
+   {
+    "field": "organ",
+    "from": "map",
+    "map": [
+     [
+      "\\bsmall (?:bowel|intestin\\w*)\\b|\\bile(?:um|al)\\b|\\bjejun\\w*",
+      "small bowel"
+     ],
+     [
+      "\\bsigmoid\\b",
+      "sigmoid colon"
+     ],
+     [
+      "\\btransverse (?:colon|mesocolon)\\b",
+      "transverse colon"
+     ],
+     [
+      "\\bcaec\\w*|\\bcec(?:um|al)\\b",
+      "caecal"
+     ],
+     [
+      "\\brect(?:um|al)\\b",
+      "rectal"
+     ],
+     [
+      "\\bcolo(?:n|nic)\\b",
+      "colonic"
+     ],
+     [
+      "\\bappendi(?:x|ceal)\\b",
+      "appendiceal"
+     ],
+     [
+      "\\bstomach\\b|\\bgastric\\b",
+      "gastric"
+     ],
+     [
+      "\\buter(?:us|ine)\\b",
+      "uterine"
+     ],
+     [
+      "\\bbladder\\b|\\bvesico",
+      "bladder"
+     ],
+     [
+      "\\bovar(?:y|ian)\\b",
+      "ovarian"
+     ],
+     [
+      "\\bfallopian\\b|\\btubal\\b",
+      "tubal"
+     ],
+     [
+      "\\bliver\\b|\\bhepatic\\b",
+      "hepatic"
+     ],
+     [
+      "\\bspleen\\b|\\bsplenic\\b",
+      "splenic"
+     ]
+    ]
+   },
+   {
+    "field": "lesion",
+    "from": "map",
+    "noGuess": true,
+    "map": [
+     [
+      "\\bnodules\\b",
+      "Nodules"
+     ],
+     [
+      "\\bnodul(?:e|ar)\\b",
+      "Nodule"
+     ],
+     [
+      "\\bdeposits\\b",
+      "Deposits"
+     ],
+     [
+      "\\bdeposit\\b",
+      "Deposit"
+     ],
+     [
+      "\\bplaques?\\b",
+      "Plaque"
+     ]
+    ]
+   },
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bexcis",
+      "Excision"
+     ],
+     [
+      "\\bbiops",
+      "Biopsy"
+     ],
+     [
+      "\\bloose bod(?:y|ies)\\b",
+      "Excision"
+     ]
+    ]
+   },
+   {
+    "field": "headStyle",
+    "from": "map",
+    "map": [
+     [
+      "\\bsoft tissues?\\b",
+      "Soft tissue"
+     ]
+    ]
+   },
+   {
+    "field": "dx",
+    "from": "map",
+    "map": [
+     [
+      "\\bloose bod(?:y|ies)\\b",
+      "Peritoneal loose body"
+     ]
+    ]
+   }
+  ]
+ },
+ "specimenNoun": "biopsy",
+ "maxParts": 8,
+ "defaultParts": 1,
+ "generator": "peritoneal_nodule",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  }
+ ],
+ "partDefaults": [],
+ "fields": [
+  {
+   "id": "site",
+   "label": "Site",
+   "type": "select",
+   "group": "Specimen",
+   "default": "Parietal peritoneum",
+   "options": [
+    "Parietal peritoneum",
+    "Omentum",
+    "Mesentery",
+    "Pelvic peritoneum",
+    "Pouch of Douglas",
+    "Paracolic gutter",
+    "Diaphragm",
+    "Serosa of a named organ",
+    "Other (specify)"
+   ],
+   "help": "Heads the diagnosis line: OMENTUM, POUCH OF DOUGLAS, LEFT PARACOLIC GUTTER. Parietal peritoneum prints PERITONEUM."
+  },
+  {
+   "id": "side",
+   "label": "Side",
+   "type": "select",
+   "group": "Specimen",
+   "default": "",
+   "options": [
+    "",
+    "Left",
+    "Right"
+   ],
+   "optionLabels": {
+    "": "Not stated"
+   },
+   "showIf": {
+    "field": "site",
+    "is": [
+     "Paracolic gutter",
+     "Diaphragm",
+     "Pelvic peritoneum"
+    ]
+   }
+  },
+  {
+   "id": "organ",
+   "label": "Organ (printed before the site)",
+   "type": "text",
+   "group": "Specimen",
+   "default": "",
+   "placeholder": "e.g. small bowel, uterine",
+   "showIf": {
+    "field": "site",
+    "is": [
+     "Mesentery",
+     "Serosa of a named organ"
+    ]
+   },
+   "help": "SMALL BOWEL MESENTERY, UTERINE SEROSA."
+  },
+  {
+   "id": "siteOther",
+   "label": "Site (typed)",
+   "type": "text",
+   "group": "Specimen",
+   "default": "",
+   "placeholder": "e.g. falciform ligament",
+   "showIf": {
+    "field": "site",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "lesion",
+   "label": "Lesion word (optional)",
+   "type": "select",
+   "group": "Specimen",
+   "default": "",
+   "options": [
+    "",
+    "Nodule",
+    "Nodules",
+    "Deposit",
+    "Deposits",
+    "Plaque"
+   ],
+   "optionLabels": {
+    "": "None"
+   },
+   "help": "The middle segment of the line: OMENTUM, nodule, biopsy."
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "group": "Specimen",
+   "default": "Biopsy",
+   "options": [
+    "Biopsy",
+    "Excision"
+   ]
+  },
+  {
+   "id": "headStyle",
+   "label": "Specimen line head",
+   "type": "select",
+   "group": "Specimen",
+   "default": "Site",
+   "options": [
+    "Site",
+    "Soft tissue"
+   ],
+   "optionLabels": {
+    "Site": "Site first",
+    "Soft tissue": "SOFT TISSUE, site"
+   }
+  },
+  {
+   "id": "dx",
+   "label": "Diagnosis",
+   "type": "select",
+   "group": "Diagnosis",
+   "default": "No evidence of malignancy",
+   "options": [
+    "No evidence of malignancy",
+    "Reactive mesothelial hyperplasia",
+    "Peritoneal loose body",
+    "Endometriosis",
+    "Endosalpingiosis",
+    "Fat necrosis",
+    "Fibrous adhesion / fibrosis",
+    "Granulomatous inflammation",
+    "Splenosis",
+    "Deciduosis",
+    "Well-differentiated papillary mesothelial tumour",
+    "Metastatic carcinoma",
+    "Mesothelioma",
+    "Other (specify)"
+   ],
+   "optionGroups": [
+    {
+     "label": "No lesion",
+     "options": [
+      "No evidence of malignancy"
+     ]
+    },
+    {
+     "label": "Benign",
+     "options": [
+      "Reactive mesothelial hyperplasia",
+      "Peritoneal loose body",
+      "Endometriosis",
+      "Endosalpingiosis",
+      "Fat necrosis",
+      "Fibrous adhesion / fibrosis",
+      "Granulomatous inflammation",
+      "Splenosis",
+      "Deciduosis"
+     ]
+    },
+    {
+     "label": "Mesothelial tumour",
+     "options": [
+      "Well-differentiated papillary mesothelial tumour",
+      "Mesothelioma"
+     ]
+    },
+    {
+     "label": "Carcinoma",
+     "options": [
+      "Metastatic carcinoma"
+     ]
+    }
+   ],
+   "help": "Several nodules are entered as several parts: each part prints its own diagnosis line."
+  },
+  {
+   "id": "dxOther",
+   "label": "Diagnosis (typed)",
+   "type": "text",
+   "group": "Diagnosis",
+   "default": "",
+   "placeholder": "e.g. leiomyomatosis peritonealis disseminata",
+   "showIf": {
+    "field": "dx",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "tissue",
+   "label": "Tissue",
+   "type": "select",
+   "group": "Diagnosis",
+   "default": "Fibroadipose tissue",
+   "options": [
+    "Fibroadipose tissue",
+    "Adipose tissue",
+    "Fibrous tissue"
+   ],
+   "showIf": {
+    "field": "dx",
+    "is": [
+     "No evidence of malignancy",
+     "Reactive mesothelial hyperplasia",
+     "Endometriosis",
+     "Endosalpingiosis",
+     "Deciduosis",
+     "Fat necrosis",
+     "Granulomatous inflammation",
+     "Metastatic carcinoma",
+     "Mesothelioma"
+    ]
+   }
+  },
+  {
+   "id": "nemFindings",
+   "label": "Background findings",
+   "type": "multiselect",
+   "group": "Diagnosis",
+   "default": [],
+   "options": [
+    "Mesothelial lining",
+    "Mild chronic inflammation",
+    "Fibrosis",
+    "Vascular congestion",
+    "Haemorrhage"
+   ],
+   "showIf": {
+    "field": "dx",
+    "is": "No evidence of malignancy"
+   }
+  },
+  {
+   "id": "rmhPattern",
+   "label": "Pattern",
+   "type": "select",
+   "group": "Diagnosis",
+   "default": "Simple",
+   "options": [
+    "Simple",
+    "Florid",
+    "Papillary"
+   ],
+   "showIf": {
+    "field": "dx",
+    "is": "Reactive mesothelial hyperplasia"
+   }
+  },
+  {
+   "id": "lbFeatures",
+   "label": "Core of the loose body",
+   "type": "multiselect",
+   "group": "Diagnosis",
+   "default": [
+    "Central fat necrosis",
+    "Calcification"
+   ],
+   "options": [
+    "Central fat necrosis",
+    "Calcification"
+   ],
+   "showIf": {
+    "field": "dx",
+    "is": "Peritoneal loose body"
+   }
+  },
+  {
+   "id": "haemosiderin",
+   "label": "Haemosiderin-laden macrophages",
+   "type": "checkbox",
+   "group": "Diagnosis",
+   "default": true,
+   "showIf": {
+    "field": "dx",
+    "is": "Endometriosis"
+   }
+  },
+  {
+   "id": "fnFeatures",
+   "label": "Also present",
+   "type": "multiselect",
+   "group": "Diagnosis",
+   "default": [],
+   "options": [
+    "Fibrosis",
+    "Calcification"
+   ],
+   "showIf": {
+    "field": "dx",
+    "is": "Fat necrosis"
+   }
+  },
+  {
+   "id": "fibrosisTerm",
+   "label": "Diagnosis term",
+   "type": "select",
+   "group": "Diagnosis",
+   "default": "Fibrous adhesion",
+   "options": [
+    "Fibrous adhesion",
+    "Fibrosis"
+   ],
+   "showIf": {
+    "field": "dx",
+    "is": "Fibrous adhesion / fibrosis"
+   }
+  },
+  {
+   "id": "fibFeatures",
+   "label": "Also present",
+   "type": "multiselect",
+   "group": "Diagnosis",
+   "default": [],
+   "options": [
+    "Chronic inflammation",
+    "Haemosiderin-laden macrophages"
+   ],
+   "showIf": {
+    "field": "dx",
+    "is": "Fibrous adhesion / fibrosis"
+   }
+  },
+  {
+   "id": "granType",
+   "label": "Granuloma type",
+   "type": "select",
+   "group": "Diagnosis",
+   "default": "Foreign-body reaction to suture",
+   "options": [
+    "Foreign-body reaction to suture",
+    "Foreign-body reaction",
+    "Keratin granulomas",
+    "Necrotising granulomas",
+    "Non-necrotising granulomas"
+   ],
+   "showIf": {
+    "field": "dx",
+    "is": "Granulomatous inflammation"
+   }
+  },
+  {
+   "id": "specialStains",
+   "label": "Ziehl-Neelsen and Grocott stains",
+   "type": "select",
+   "group": "Diagnosis",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Pending",
+    "Negative",
+    "Acid-fast bacilli present",
+    "Fungal organisms present"
+   ],
+   "showIf": {
+    "all": [
+     {
+      "field": "dx",
+      "is": "Granulomatous inflammation"
+     },
+     {
+      "field": "granType",
+      "is": [
+       "Necrotising granulomas",
+       "Non-necrotising granulomas"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "mesoType",
+   "label": "Mesothelioma type",
+   "type": "select",
+   "group": "Diagnosis",
+   "default": "Epithelioid",
+   "options": [
+    "Epithelioid",
+    "Biphasic",
+    "Sarcomatoid",
+    "Not otherwise specified"
+   ],
+   "showIf": {
+    "field": "dx",
+    "is": "Mesothelioma"
+   }
+  },
+  {
+   "id": "mesoInvasion",
+   "label": "Invasion",
+   "type": "select",
+   "group": "Diagnosis",
+   "default": "Adipose tissue",
+   "options": [
+    "Adipose tissue",
+    "Fibrous stroma",
+    "Not seen in this sample"
+   ],
+   "showIf": {
+    "field": "dx",
+    "is": "Mesothelioma"
+   }
+  },
+  {
+   "id": "carcinomaType",
+   "label": "Carcinoma type",
+   "type": "select",
+   "group": "Diagnosis",
+   "default": "Adenocarcinoma",
+   "options": [
+    "Adenocarcinoma",
+    "High-grade serous carcinoma",
+    "Low-grade serous carcinoma",
+    "Mucinous adenocarcinoma",
+    "Poorly cohesive (signet-ring cell) carcinoma",
+    "Squamous cell carcinoma",
+    "Carcinoma (type not determined)",
+    "Other (specify)"
+   ],
+   "showIf": {
+    "field": "dx",
+    "is": "Metastatic carcinoma"
+   }
+  },
+  {
+   "id": "carcinomaOther",
+   "label": "Carcinoma type (typed)",
+   "type": "text",
+   "group": "Diagnosis",
+   "default": "",
+   "placeholder": "e.g. urothelial carcinoma",
+   "showIf": {
+    "all": [
+     {
+      "field": "dx",
+      "is": "Metastatic carcinoma"
+     },
+     {
+      "field": "carcinomaType",
+      "is": "Other (specify)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "psammoma",
+   "label": "Psammoma bodies",
+   "type": "checkbox",
+   "group": "Diagnosis",
+   "default": false,
+   "showIf": {
+    "any": [
+     {
+      "field": "dx",
+      "is": [
+       "Endosalpingiosis",
+       "Well-differentiated papillary mesothelial tumour"
+      ]
+     },
+     {
+      "all": [
+       {
+        "field": "dx",
+        "is": "Metastatic carcinoma"
+       },
+       {
+        "field": "carcinomaType",
+        "is": [
+         "High-grade serous carcinoma",
+         "Low-grade serous carcinoma"
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "lead",
+   "label": "Diagnosis wording",
+   "type": "select",
+   "group": "Diagnosis",
+   "default": "Metastatic",
+   "options": [
+    "Metastatic",
+    "Involved by"
+   ],
+   "optionLabels": {
+    "Metastatic": "METASTATIC …",
+    "Involved by": "INVOLVED BY …"
+   },
+   "showIf": {
+    "field": "dx",
+    "is": "Metastatic carcinoma"
+   }
+  },
+  {
+   "id": "primarySite",
+   "label": "Primary site",
+   "type": "select",
+   "group": "Diagnosis",
+   "default": "",
+   "options": [
+    "",
+    "Colorectal",
+    "Appendiceal",
+    "Upper gastrointestinal",
+    "Pancreatobiliary",
+    "Tubo-ovarian",
+    "Müllerian",
+    "Endometrial",
+    "Breast",
+    "Lung",
+    "Urothelial",
+    "Renal",
+    "Uncertain – see comment",
+    "Other (specify)"
+   ],
+   "optionLabels": {
+    "": "Not stated"
+   },
+   "showIf": {
+    "field": "dx",
+    "is": "Metastatic carcinoma"
+   },
+   "help": "\"Uncertain – see comment\" prints \"; see comment\" on the diagnosis line and suggests the correlation comment."
+  },
+  {
+   "id": "primaryOther",
+   "label": "Primary site (typed)",
+   "type": "text",
+   "group": "Diagnosis",
+   "default": "",
+   "placeholder": "e.g. gastric",
+   "showIf": {
+    "all": [
+     {
+      "field": "dx",
+      "is": "Metastatic carcinoma"
+     },
+     {
+      "field": "primarySite",
+      "is": "Other (specify)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "primaryBasis",
+   "label": "Primary site: wording",
+   "type": "select",
+   "group": "Diagnosis",
+   "default": "In keeping with",
+   "options": [
+    "In keeping with",
+    "Favour",
+    "Consistent with the known"
+   ],
+   "showIf": {
+    "all": [
+     {
+      "field": "dx",
+      "is": "Metastatic carcinoma"
+     },
+     {
+      "field": "primarySite",
+      "not": [
+       "",
+       "Uncertain – see comment"
+      ]
+     }
+    ]
+   },
+   "help": "\"Consistent with the known\" when previous histology of the primary is available for comparison."
+  },
+  {
+   "id": "ihcPos",
+   "label": "Positive for",
+   "type": "multiselect",
+   "group": "Immunohistochemistry",
+   "default": [],
+   "options": [
+    "AE1/AE3",
+    "calretinin",
+    "WT1",
+    "D2-40",
+    "CK5/6",
+    "BerEP4",
+    "MOC31",
+    "claudin-4",
+    "CK7",
+    "CK20",
+    "CDX2",
+    "SATB2",
+    "PAX8",
+    "GATA3",
+    "TTF-1",
+    "ER",
+    "PR"
+   ]
+  },
+  {
+   "id": "ihcNeg",
+   "label": "Negative for",
+   "type": "multiselect",
+   "group": "Immunohistochemistry",
+   "default": [],
+   "options": [
+    "AE1/AE3",
+    "calretinin",
+    "WT1",
+    "D2-40",
+    "CK5/6",
+    "BerEP4",
+    "MOC31",
+    "claudin-4",
+    "CK7",
+    "CK20",
+    "CDX2",
+    "SATB2",
+    "PAX8",
+    "GATA3",
+    "TTF-1",
+    "ER",
+    "PR"
+   ]
+  },
+  {
+   "id": "ihcOther",
+   "label": "Other stains (typed)",
+   "type": "text",
+   "group": "Immunohistochemistry",
+   "default": "",
+   "placeholder": "e.g. ER focal +, p16+, Ki-67 40%",
+   "help": "Stains with \"+\", \"-\", \"focal +\" or \"weak +\", separated by commas. Printed in the same sentence as the ticked markers."
+  },
+  {
+   "id": "p53",
+   "label": "p53",
+   "type": "select",
+   "group": "Immunohistochemistry",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Wild-type pattern",
+    "Aberrant, overexpression",
+    "Aberrant, null",
+    "Aberrant, cytoplasmic"
+   ],
+   "showIf": {
+    "field": "dx",
+    "is": "Metastatic carcinoma"
+   }
+  },
+  {
+   "id": "bap1",
+   "label": "BAP1",
+   "type": "select",
+   "group": "Immunohistochemistry",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Retained",
+    "Lost"
+   ],
+   "showIf": {
+    "field": "dx",
+    "is": [
+     "Reactive mesothelial hyperplasia",
+     "Well-differentiated papillary mesothelial tumour",
+     "Mesothelioma"
+    ]
+   }
+  },
+  {
+   "id": "mtap",
+   "label": "MTAP",
+   "type": "select",
+   "group": "Immunohistochemistry",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Retained",
+    "Lost"
+   ],
+   "showIf": {
+    "field": "dx",
+    "is": [
+     "Reactive mesothelial hyperplasia",
+     "Well-differentiated papillary mesothelial tumour",
+     "Mesothelioma"
+    ]
+   }
+  },
+  {
+   "id": "stainsPending",
+   "label": "Further stains pending",
+   "type": "checkbox",
+   "group": "Immunohistochemistry",
+   "default": false
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "group": "Notes",
+   "default": "",
+   "placeholder": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "peri_sampling",
+   "label": "No malignancy in this sample (sampling caveat)",
+   "auto": {
+    "flag": "malignancyQuery",
+    "field": "dx",
+    "is": [
+     "No evidence of malignancy",
+     "Reactive mesothelial hyperplasia",
+     "Peritoneal loose body",
+     "Endometriosis",
+     "Endosalpingiosis",
+     "Fat necrosis",
+     "Fibrous adhesion / fibrosis",
+     "Granulomatous inflammation",
+     "Splenosis",
+     "Deciduosis"
+    ]
+   },
+   "text": "No malignancy is identified in the sampled tissue ({parts}), which may not be representative of the lesion; correlation with the operative and imaging findings is advised."
+  },
+  {
+   "id": "peri_primary",
+   "label": "Correlate for the primary site",
+   "auto": {
+    "all": [
+     {
+      "field": "dx",
+      "is": "Metastatic carcinoma"
+     },
+     {
+      "field": "primarySite",
+      "is": "Uncertain – see comment"
+     }
+    ]
+   },
+   "text": "The primary site cannot be determined on the morphology and immunohistochemistry ({parts}); correlation with the imaging and clinical findings is advised."
+  },
+  {
+   "id": "peri_stains_pending",
+   "label": "Further stains pending",
+   "auto": {
+    "any": [
+     {
+      "field": "stainsPending",
+      "truthy": true
+     },
+     {
+      "all": [
+       {
+        "field": "dx",
+        "is": "Granulomatous inflammation"
+       },
+       {
+        "field": "granType",
+        "is": [
+         "Necrotising granulomas",
+         "Non-necrotising granulomas"
+        ]
+       },
+       {
+        "field": "specialStains",
+        "is": "Pending"
+       }
+      ]
+     }
+    ]
+   },
+   "text": "Further stains are in progress ({parts}) and will be issued in a supplementary report."
+  },
+  {
+   "id": "peri_reactive",
+   "label": "Reactive mesothelial proliferation",
+   "auto": {
+    "field": "dx",
+    "is": "Reactive mesothelial hyperplasia"
+   },
+   "text": "The mesothelial proliferation ({parts}) is confined to the surface, without invasion of the underlying tissue; these features favour a reactive process over a mesothelial neoplasm."
+  },
+  {
+   "id": "peri_mesothelioma",
+   "label": "Mesothelioma: complete the work-up",
+   "auto": {
+    "field": "dx",
+    "is": "Mesothelioma"
+   },
+   "text": "The features ({parts}) are those of mesothelioma. A full work-up is recommended, with correlation with the imaging and operative findings and review at the multidisciplinary team meeting."
+  },
+  {
+   "id": "peri_granuloma",
+   "label": "Necrotising granulomas: infection",
+   "auto": {
+    "all": [
+     {
+      "field": "dx",
+      "is": "Granulomatous inflammation"
+     },
+     {
+      "field": "granType",
+      "is": "Necrotising granulomas"
+     }
+    ]
+   },
+   "text": "Necrotising granulomatous inflammation ({parts}) raises the possibility of mycobacterial or fungal infection; correlation with microbiological culture and the clinical findings is advised."
+  }
+ ],
+ "example": {
+  "caseTitle": "Peritoneal biopsies - high-grade serous carcinoma",
+  "options": {
+   "includeHeader": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "site": "Omentum",
+     "lesion": "Nodule",
+     "procedure": "Biopsy",
+     "dx": "Metastatic carcinoma",
+     "carcinomaType": "High-grade serous carcinoma",
+     "psammoma": true,
+     "lead": "Involved by",
+     "primarySite": "Tubo-ovarian",
+     "primaryBasis": "In keeping with",
+     "ihcPos": [
+      "WT1",
+      "PAX8"
+     ],
+     "ihcNeg": [
+      "calretinin",
+      "CK20"
+     ],
+     "p53": "Aberrant, overexpression"
+    }
+   },
+   {
+    "label": "B",
+    "values": {
+     "site": "Paracolic gutter",
+     "side": "Left",
+     "procedure": "Biopsy",
+     "dx": "No evidence of malignancy",
+     "tissue": "Fibroadipose tissue"
+    }
+   }
+  ]
+ }
+}
