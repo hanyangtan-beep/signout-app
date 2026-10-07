@@ -9,8 +9,9 @@ import { stripDot } from './_house.js';
 //               glands are lined by a layer of epithelial cells and basal cells. Chronic inflammatory cells are
 //               present within the stroma. There is no evidence of high grade prostatic intraepithelial
 //               neoplasia or malignancy."
-//   diagnosis  "(A) PROSTATE, chips, TURP - BENIGN PROSTATIC HYPERPLASIA WITH CHRONIC PROSTATITIS; no evidence of
-//               malignancy"
+//   diagnosis  "(A) PROSTATE, chips, TURP - NODULAR HYPERPLASIA WITH CHRONIC PROSTATITIS"
+// A benign line names the hyperplasia and stops: no trailing "no evidence of malignancy" (user preference
+// 2026-10-07, Phase 56). The HGPIN caveat "no evidence of invasive malignancy" stays.
 // Incidental carcinoma is reported in full (Gleason score / Grade Group, % of tissue, chips involved,
 // pT1a <= 5% vs pT1b > 5%) because the TURP is the staging specimen for pT1a/b disease.
 // Gleason / Grade Group handling mirrors generators/prostate.js.
@@ -211,7 +212,7 @@ export function diagnosis(part) {
   const p = proc(v);
   const clauses = [];
   const infl = INFLAMMATION_DX[dash(v.inflammation)];
-  clauses.push(`BENIGN PROSTATIC HYPERPLASIA${infl ? ` WITH ${infl}` : ''}`);
+  clauses.push(`NODULAR HYPERPLASIA${infl ? ` WITH ${infl}` : ''}`);
   if (hasCarcinoma(v)) {
     const gl = gleasonText(v.primary, v.secondary);
     let ca = `INCIDENTAL ACINAR ADENOCARCINOMA${gl ? `, Gleason score ${gl}` : ''}`;
@@ -230,7 +231,7 @@ export function diagnosis(part) {
   if (hasHgpin(v)) clauses.push('focal high grade prostatic intraepithelial neoplasia');
   if (TREATMENT_MICRO[v.treatmentEffect]) clauses.push(v.treatmentEffect === 'Radiotherapy effect' ? 'radiotherapy effect' : 'hormonal therapy effect');
   if (/granulomatous/i.test(v.inflammation || '') && /see comment/i.test(v.inflammation || '')) clauses.push('see comment');
-  if (!hasCarcinoma(v)) clauses.push(hasHgpin(v) ? 'no evidence of invasive malignancy' : 'no evidence of malignancy');
+  if (!hasCarcinoma(v) && hasHgpin(v)) clauses.push('no evidence of invasive malignancy');
   return `(${part.label}) PROSTATE, ${p.site}, ${p.noun} - ${clauses.join('; ')}`;
 }
 

@@ -76,13 +76,13 @@ test('helpers: size, weight, Grade Group, stage and sampling rule', () => {
   assert.equal(suggestedBlocks(''), 8);
 });
 
-test('example: 25 g TURP, BPH with chronic prostatitis, no carcinoma', () => {
+test('example: 25 g TURP, nodular hyperplasia with chronic prostatitis, no carcinoma', () => {
   const r = run(example());
   assert.equal(r.specimens, 'Prostate, chips, TURP');
   assert.equal(r.macro, 'Received in formalin are multiple chips of prostatic tissue weighing 25 g in aggregate and measuring 6 x 5 x 2 cm. All embedded in 8 blocks.');
   assert.equal(r.blockKey, '(1-8) Prostatic chips, all embedded.');
   assert.equal(r.microscopy, 'Sections show chips of prostatic tissue with glandular and stromal nodular hyperplasia. The glands are lined by a layer of epithelial cells and basal cells. Chronic inflammatory cells are present within the stroma. There is no evidence of high grade prostatic intraepithelial neoplasia or malignancy.');
-  assert.equal(r.diagnosis, `${DX}BENIGN PROSTATIC HYPERPLASIA with CHRONIC PROSTATITIS; no evidence of malignancy`);
+  assert.equal(r.diagnosis, `${DX}NODULAR HYPERPLASIA with CHRONIC PROSTATITIS`);
   assert.equal(r.comment, '');
   assert.ok(!r.report.includes('(A)'));
   assert.ok(!r.report.includes('undefined'));
@@ -93,7 +93,9 @@ test('default single part is the house benign TURP report', () => {
   assert.equal(r.macro, 'Received in formalin are multiple chips of prostatic tissue. All embedded in 8 blocks.');
   assert.equal(r.blockKey, '(1-8) Prostatic chips, all embedded.');
   assert.equal(r.microscopy, 'Sections show chips of prostatic tissue with glandular and stromal nodular hyperplasia. The glands are lined by a layer of epithelial cells and basal cells. There is no evidence of high grade prostatic intraepithelial neoplasia or malignancy.');
-  assert.equal(r.diagnosis, `${DX}BENIGN PROSTATIC HYPERPLASIA; no evidence of malignancy`);
+  // User preference (2026-10-07, Phase 56): the benign line names the hyperplasia and stops, with no
+  // trailing "no evidence of malignancy".
+  assert.equal(r.diagnosis, `${DX}NODULAR HYPERPLASIA`);
 });
 
 test('macro option off removes the macroscopic description and block key', () => {
@@ -122,17 +124,17 @@ test('two-part case keeps (A)/(B) prefixes on every block', () => {
   assert.ok(r.microscopy.startsWith('(A) Sections show chips'));
   assert.ok(r.microscopy.includes('\n\n(B) Sections show chips'));
   assert.ok(r.microscopy.includes('Areas of infarction with surrounding squamous metaplasia are present.'));
-  assert.equal(r.diagnosis.split('\n')[0], `(A) ${DX}BENIGN PROSTATIC HYPERPLASIA; no evidence of malignancy`);
-  assert.equal(r.diagnosis.split('\n')[1], `(B) ${DX}BENIGN PROSTATIC HYPERPLASIA; infarction; no evidence of malignancy`);
+  assert.equal(r.diagnosis.split('\n')[0], `(A) ${DX}NODULAR HYPERPLASIA`);
+  assert.equal(r.diagnosis.split('\n')[1], `(B) ${DX}NODULAR HYPERPLASIA; infarction`);
 });
 
 test('each inflammation option yields the right capitalised diagnosis', () => {
   const dx = (inflammation) => run(one({ inflammation })).diagnosis;
-  assert.equal(dx('Absent'), `${DX}BENIGN PROSTATIC HYPERPLASIA; no evidence of malignancy`);
-  assert.equal(dx('Chronic prostatitis'), `${DX}BENIGN PROSTATIC HYPERPLASIA with CHRONIC PROSTATITIS; no evidence of malignancy`);
-  assert.equal(dx('Acute and chronic prostatitis'), `${DX}BENIGN PROSTATIC HYPERPLASIA with ACUTE AND CHRONIC PROSTATITIS; no evidence of malignancy`);
-  assert.equal(dx('Granulomatous prostatitis – see comment'), `${DX}BENIGN PROSTATIC HYPERPLASIA with GRANULOMATOUS PROSTATITIS; see comment; no evidence of malignancy`);
-  assert.equal(dx('Post-BCG granulomatous prostatitis'), `${DX}BENIGN PROSTATIC HYPERPLASIA with POST-BCG GRANULOMATOUS PROSTATITIS; no evidence of malignancy`);
+  assert.equal(dx('Absent'), `${DX}NODULAR HYPERPLASIA`);
+  assert.equal(dx('Chronic prostatitis'), `${DX}NODULAR HYPERPLASIA with CHRONIC PROSTATITIS`);
+  assert.equal(dx('Acute and chronic prostatitis'), `${DX}NODULAR HYPERPLASIA with ACUTE AND CHRONIC PROSTATITIS`);
+  assert.equal(dx('Granulomatous prostatitis – see comment'), `${DX}NODULAR HYPERPLASIA with GRANULOMATOUS PROSTATITIS; see comment`);
+  assert.equal(dx('Post-BCG granulomatous prostatitis'), `${DX}NODULAR HYPERPLASIA with POST-BCG GRANULOMATOUS PROSTATITIS`);
 });
 
 test('hyperplasia pattern and inflammation sentences follow the house paragraph', () => {
@@ -148,28 +150,28 @@ test('hyperplasia pattern and inflammation sentences follow the house paragraph'
 test('secondary benign findings: infarction, basal cell hyperplasia, urothelial metaplasia, treatment effect, HGPIN', () => {
   const r = run(one({ infarction: 'Present with squamous metaplasia', basalCellHyperplasia: 'Present', urothelialMetaplasia: 'Present', hgpin: 'Present, focal' }));
   assert.equal(r.microscopy, 'Sections show chips of prostatic tissue with glandular and stromal nodular hyperplasia. The glands are lined by a layer of epithelial cells and basal cells. Areas of infarction with surrounding squamous metaplasia are present. Foci of basal cell hyperplasia and transitional (urothelial) metaplasia are seen. A focus of high grade prostatic intraepithelial neoplasia is present. There is no evidence of invasive malignancy.');
-  assert.equal(r.diagnosis, `${DX}BENIGN PROSTATIC HYPERPLASIA; infarction; focal high grade prostatic intraepithelial neoplasia; no evidence of invasive malignancy`);
+  assert.equal(r.diagnosis, `${DX}NODULAR HYPERPLASIA; infarction; focal high grade prostatic intraepithelial neoplasia; no evidence of invasive malignancy`);
   const t = run(one({ treatmentEffect: 'Hormonal / 5-alpha reductase inhibitor effect' }));
   assert.ok(t.microscopy.includes('in keeping with hormonal therapy effect.'));
-  assert.equal(t.diagnosis, `${DX}BENIGN PROSTATIC HYPERPLASIA; hormonal therapy effect; no evidence of malignancy`);
-  assert.ok(run(one({ treatmentEffect: 'Radiotherapy effect' })).diagnosis.includes('; radiotherapy effect;'));
+  assert.equal(t.diagnosis, `${DX}NODULAR HYPERPLASIA; hormonal therapy effect`);
+  assert.ok(run(one({ treatmentEffect: 'Radiotherapy effect' })).diagnosis.endsWith('; radiotherapy effect'));
   assert.ok(run(one({ basalCellHyperplasia: 'Present' })).microscopy.includes('Foci of basal cell hyperplasia are seen.'));
 });
 
 test('incidental carcinoma: Gleason / Grade Group, % of tissue, chips and pT1a', () => {
   const r = run(one({ inflammation: 'Chronic prostatitis', carcinoma: CA, primary: '3', secondary: '3', pctInvolved: '3', chipsInvolved: '2', chipsTotal: '40' }));
   assert.equal(r.microscopy, 'Sections show chips of prostatic tissue with glandular and stromal nodular hyperplasia. The glands are lined by a layer of epithelial cells and basal cells. Chronic inflammatory cells are present within the stroma. Infiltrating acinar adenocarcinoma is seen, Gleason score 3+3=6 (Grade Group 1), involving approximately 3% of the tissue (2 of 40 chips). Perineural invasion is not identified. The tumour involves 5% or less of the resected tissue (pT1a).');
-  assert.equal(r.diagnosis, `${DX}BENIGN PROSTATIC HYPERPLASIA with CHRONIC PROSTATITIS; INCIDENTAL ACINAR ADENOCARCINOMA, Gleason score 3+3=6 (Grade Group 1), involving 3% of chips (pT1a)`);
+  assert.equal(r.diagnosis, `${DX}NODULAR HYPERPLASIA with CHRONIC PROSTATITIS; INCIDENTAL ACINAR ADENOCARCINOMA, Gleason score 3+3=6 (Grade Group 1), involving 3% of chips (pT1a)`);
   assert.ok(!r.microscopy.includes('no evidence'));
   assert.ok(!r.diagnosis.includes('no evidence'));
   const plain = run(one({ carcinoma: CA, pctInvolved: '3' })).diagnosis;
-  assert.equal(plain, `${DX}BENIGN PROSTATIC HYPERPLASIA; INCIDENTAL ACINAR ADENOCARCINOMA, Gleason score 3+3=6 (Grade Group 1), involving 3% of chips (pT1a)`);
+  assert.equal(plain, `${DX}NODULAR HYPERPLASIA; INCIDENTAL ACINAR ADENOCARCINOMA, Gleason score 3+3=6 (Grade Group 1), involving 3% of chips (pT1a)`);
 });
 
 test('incidental carcinoma above 5% is pT1b with perineural invasion and extent', () => {
   const r = run(one({ carcinoma: CA, primary: '4', secondary: '3', pctInvolved: '15', chipsInvolved: '9', chipsTotal: '30', pni: 'Present', extent: 'present in chips from both lobes', hgpin: 'Present, focal' }));
   assert.ok(r.microscopy.includes('A focus of high grade prostatic intraepithelial neoplasia is present. Infiltrating acinar adenocarcinoma is seen, Gleason score 4+3=7 (Grade Group 3), involving approximately 15% of the tissue (9 of 30 chips). The tumour is present in chips from both lobes. Perineural invasion is present. The tumour involves more than 5% of the resected tissue (pT1b).'));
-  assert.equal(r.diagnosis, `${DX}BENIGN PROSTATIC HYPERPLASIA; INCIDENTAL ACINAR ADENOCARCINOMA, Gleason score 4+3=7 (Grade Group 3), involving 15% of chips (pT1b); perineural invasion present; focal high grade prostatic intraepithelial neoplasia`);
+  assert.equal(r.diagnosis, `${DX}NODULAR HYPERPLASIA; INCIDENTAL ACINAR ADENOCARCINOMA, Gleason score 4+3=7 (Grade Group 3), involving 15% of chips (pT1b); perineural invasion present; focal high grade prostatic intraepithelial neoplasia`);
   assert.equal(stage('5'), 'pT1a');
   assert.ok(run(one({ carcinoma: CA, pctInvolved: '5' })).diagnosis.endsWith('involving 5% of chips (pT1a)'));
   assert.ok(run(one({ carcinoma: CA, pctInvolved: '6' })).diagnosis.endsWith('involving 6% of chips (pT1b)'));
@@ -179,10 +181,10 @@ test('carcinoma with blank percentage omits the stage and any dangling text', ()
   const r = run(one({ carcinoma: CA, primary: '4', secondary: '4', chipsInvolved: '3', chipsTotal: '25' }));
   assert.ok(r.microscopy.includes('Infiltrating acinar adenocarcinoma is seen, Gleason score 4+4=8 (Grade Group 4), involving 3 of 25 chips. Perineural invasion is not identified.'));
   assert.ok(!r.microscopy.includes('pT1'));
-  assert.equal(r.diagnosis, `${DX}BENIGN PROSTATIC HYPERPLASIA; INCIDENTAL ACINAR ADENOCARCINOMA, Gleason score 4+4=8 (Grade Group 4), involving 3 of 25 chips`);
+  assert.equal(r.diagnosis, `${DX}NODULAR HYPERPLASIA; INCIDENTAL ACINAR ADENOCARCINOMA, Gleason score 4+4=8 (Grade Group 4), involving 3 of 25 chips`);
   const bare = run(one({ carcinoma: CA }));
   assert.ok(bare.microscopy.includes('Infiltrating acinar adenocarcinoma is seen, Gleason score 3+3=6 (Grade Group 1). Perineural invasion is not identified.'));
-  assert.equal(bare.diagnosis, `${DX}BENIGN PROSTATIC HYPERPLASIA; INCIDENTAL ACINAR ADENOCARCINOMA, Gleason score 3+3=6 (Grade Group 1)`);
+  assert.equal(bare.diagnosis, `${DX}NODULAR HYPERPLASIA; INCIDENTAL ACINAR ADENOCARCINOMA, Gleason score 3+3=6 (Grade Group 1)`);
   assert.ok(!bare.report.includes('undefined'));
 });
 
@@ -194,13 +196,13 @@ test('macro variants: representative sampling, tissue description, HoLEP and enu
   const h = run(one({ specimenName: '', procedure: 'HoLEP', chipsDescription: 'Multiple morcellated fragments of prostatic tissue', weight: '60', blocks: '12' }));
   assert.equal(h.specimens, 'Prostate, chips, HoLEP');
   assert.equal(h.macro, 'Received in formalin are multiple morcellated fragments of prostatic tissue weighing 60 g in aggregate. All embedded in 12 blocks.');
-  assert.equal(h.diagnosis, 'PROSTATE, chips, HoLEP - BENIGN PROSTATIC HYPERPLASIA; no evidence of malignancy');
+  assert.equal(h.diagnosis, 'PROSTATE, chips, HoLEP - NODULAR HYPERPLASIA');
   const e = run(one({ specimenName: '', procedure: 'Simple prostatectomy (enucleation)', chipsDescription: 'Enucleated nodular prostatic tissue', weight: '95', dimensions: '7 x 6 x 5', blocks: '10' }));
   assert.equal(e.specimens, 'Prostate, enucleation, simple prostatectomy');
   assert.equal(e.macro, 'Received in formalin is enucleated nodular prostatic tissue weighing 95 g and measuring 7 x 6 x 5 cm. All embedded in 10 blocks.');
   assert.equal(e.blockKey, '(1-10) Prostatic tissue, all embedded.');
   assert.ok(e.microscopy.startsWith('Sections show enucleated prostatic tissue with glandular and stromal nodular hyperplasia.'));
-  assert.equal(e.diagnosis, 'PROSTATE, enucleation, simple prostatectomy - BENIGN PROSTATIC HYPERPLASIA; no evidence of malignancy');
+  assert.equal(e.diagnosis, 'PROSTATE, enucleation, simple prostatectomy - NODULAR HYPERPLASIA');
 });
 
 test('blank weight and dimensions produce no dangling text', () => {
