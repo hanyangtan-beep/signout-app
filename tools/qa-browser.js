@@ -1604,6 +1604,43 @@ await check('cervical cytology: each category prints its cell description; the l
 
 // Case options after a pasted request (2026-09-24): the tickboxes show what the report prints. The case
 // starts on the default small biopsy, whose options carry no macroscopy choice, as a fresh session does.
+// Gastric biopsy lesions (2026-10-07, Phase 57): a pasted polypectomy opens the gastric form; a polyp leads
+// the line; a carcinoma shows its WHO and biomarker fields, which print in the microscopy; the text-only
+// criteria panels read "Show criteria".
+await check('gastric biopsy: a polypectomy opens the form; polyp, carcinoma type and biomarkers print; criteria panels open', async () => {
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
+  const routed = await pasteAndBuild('Specimen\n(A) Stomach, body polyp, polypectomy');
+  assert(routed === 'gastric_biopsy', `polypectomy routed to ${routed}`);
+  assert(!(await shows('caType')) && !(await shows('her2')), 'carcinoma fields show without a carcinoma');
+  await pickField('polyp', 'Fundic gland polyp');
+  let report = await reportText();
+  assert(report.includes('- Polyp: Fundic gland polyp. Cystically dilated oxyntic glands'), `polyp bullet missing: ${report.slice(0, 400)}`);
+  assert(/- FUNDIC GLAND POLYP\s*$/m.test(report), `polyp line wrong: ${report.slice(-200)}`);
+  await pickField('polyp', 'None');
+  await pickField('dysplasia', 'Malignancy present');
+  assert(await shows('caType') && await shows('her2') && await shows('claudin'), 'the carcinoma fields did not appear');
+  await pickField('caType', 'Poorly cohesive carcinoma, signet-ring cell type');
+  assert(!(await shows('caGrade')) && await shows('caLauren'), 'grade or Lauren field wrong for a poorly cohesive carcinoma');
+  await pickField('caLauren', 'Diffuse type');
+  await pickField('her2', '1+ (negative)');
+  await pickField('pdl1', 'Pending');
+  await pickField('claudin', 'Pending');
+  report = await reportText();
+  assert(report.includes('POORLY COHESIVE CARCINOMA, signet-ring cell type, diffuse type (Lauren)'), `carcinoma line wrong: ${report.slice(-300)}`);
+  assert(report.includes('- Biomarkers: HER2 (4B5) is negative (score 1+). PD-L1 and claudin 18.2 immunohistochemistry have been requested (results to follow).'), `biomarker bullet wrong: ${report.slice(0, 900)}`);
+  const toggle = page.locator('.field[data-field="claudin"] .ref-toggle').first();
+  assert((await toggle.innerText()).includes('Show criteria'), 'the claudin panel button does not read Show criteria');
+  await toggle.click();
+  await page.waitForSelector('.field[data-field="claudin"] .ref-panel', { timeout: 3000 });
+  const panel = await page.locator('.field[data-field="claudin"] .ref-panel').innerText();
+  assert(panel.includes('75%') && (await toggle.innerText()).includes('Hide criteria'), 'the claudin criteria did not open');
+  await shot('gastric-claudin-criteria');
+  await toggle.click();
+  return 'polypectomy routed; polyp bullet and line; carcinoma and biomarker fields appear and print; criteria panel opens';
+});
+
 await check('case options: a pasted hysterectomy ticks the macroscopy box it prints, and the box drives it', async () => {
   await page.evaluate(() => localStorage.removeItem('signout.case.v1'));
   await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });

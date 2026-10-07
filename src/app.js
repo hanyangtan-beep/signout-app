@@ -747,11 +747,14 @@ function referenceToggle(field, part) {
   const ref = field.reference;
   if (!ref) return null;
   const key = `${part.label}:${field.id}`;
+  // A panel without images (the gastric polyp and biomarker criteria) is labelled for what it holds.
+  const photos = (ref.groups || []).some((g) => g.images?.length);
+  const open = openReferences.has(key);
   return el('button', {
-    type: 'button', class: 'ref-toggle', 'aria-expanded': String(openReferences.has(key)),
-    title: ref.title || 'Show reference images',
+    type: 'button', class: 'ref-toggle', 'aria-expanded': String(open),
+    title: ref.title || (photos ? 'Show reference images' : 'Show reference criteria'),
     onclick: () => { openReferences.has(key) ? openReferences.delete(key) : openReferences.add(key); render(); }
-  }, el('span', { 'aria-hidden': 'true', text: '◧' }), document.createTextNode(openReferences.has(key) ? 'Hide photos' : 'Compare photos'));
+  }, el('span', { 'aria-hidden': 'true', text: '◧' }), document.createTextNode(photos ? (open ? 'Hide photos' : 'Compare photos') : (open ? 'Hide criteria' : 'Show criteria')));
 }
 function referencePanel(field, part) {
   const ref = field.reference;

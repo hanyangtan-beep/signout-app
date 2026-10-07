@@ -808,7 +808,7 @@
    "help": "Prints the CPS with its clone and no positive or negative label: the cut-off depends on the drug.",
    "reference": {
     "title": "PD-L1 combined positive score",
-    "intro": "CPS: PD-L1-staining tumour cells, lymphocytes and macrophages, divided by the viable tumour cells, times 100 (22C3 gastric manual). Recorded from 0 to 100.",
+    "intro": "CPS: PD-L1-staining tumour cells, lymphocytes and macrophages, divided by the viable tumour cells, times 100 (22C3 gastric manual), recorded from 0 to 100. The report prints the CPS and clone without a positive or negative label, because the cut-off depends on the drug.",
     "groups": [
      {
       "heading": "Cut-offs in use",
