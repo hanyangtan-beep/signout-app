@@ -138,8 +138,9 @@ test('urine: Paris 2.0 NHGUC default, LGUN flag under NHGUC, high grade features
 test('cervical: adequacy clause with TZ status, NILM with organisms, HSIL colposcopy comment, unsatisfactory', () => {
   const out = fromExample('cervical_cytology');
   assert.equal(out.specimens, 'Cervix, liquid-based cytology');
-  // Phase 55: each finding prints as its own descriptive sentence after the adequacy sentence.
-  assert.equal(out.microscopy, 'The liquid-based preparation is satisfactory for evaluation, with an endocervical/transformation zone component present. Reactive cellular changes associated with inflammation are seen, with mild nuclear enlargement, smooth nuclear outlines, fine chromatin and small nucleoli. HPV testing: negative for high-risk HPV. There is no intraepithelial lesion or malignancy.');
+  // Phase 55: each finding prints as its own descriptive sentence after the adequacy sentence, and the
+  // HPV result comes last, after the interpretation.
+  assert.equal(out.microscopy, 'The liquid-based preparation is satisfactory for evaluation, with an endocervical/transformation zone component present. Reactive cellular changes associated with inflammation are seen, with mild nuclear enlargement, smooth nuclear outlines, fine chromatin and small nucleoli. There is no intraepithelial lesion or malignancy. HPV testing: negative for high-risk HPV.');
   assert.equal(out.diagnosis, 'CERVIX, liquid-based cytology - NEGATIVE FOR INTRAEPITHELIAL LESION OR MALIGNANCY (NILM)');
   const tv = fromExample('cervical_cytology', { features: ['Trichomonas vaginalis'], hpv: 'Not performed' });
   assert.equal(tv.diagnosis, 'CERVIX, liquid-based cytology - NEGATIVE FOR INTRAEPITHELIAL LESION OR MALIGNANCY; Trichomonas vaginalis (NILM)');

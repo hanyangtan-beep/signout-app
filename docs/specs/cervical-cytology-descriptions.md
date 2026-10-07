@@ -44,7 +44,9 @@ changes and tubal metaplasia, with help text.
 ## As built — wording
 
 Microscopy order: adequacy sentence → cell description → organisms and findings → additional
-findings → ancillary → HPV → closing interpretation. Defaults print (adequacy sentence omitted):
+findings → ancillary → closing interpretation → HPV result. The HPV sentence moved to the end in
+this phase, so the closing sentence follows the cells it sums up. Defaults print (adequacy sentence
+omitted):
 
 - ASC-US: "Scattered atypical squamous cells show mild nuclear enlargement, a slightly raised
   nuclear-to-cytoplasmic ratio and mild hyperchromasia. The changes are insufficient in degree or

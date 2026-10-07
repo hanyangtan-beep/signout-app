@@ -1,6 +1,6 @@
 {
-  "description": "Phase 55 (7 October 2026), deliberate: the adequacy sentence now stands alone and each finding prints as its own descriptive sentence (reactive change from inflammation described by its nuclear features).",
+  "description": "Phase 55 (7 October 2026), deliberate: the adequacy sentence now stands alone and each finding prints as its own descriptive sentence (reactive change from inflammation described by its nuclear features); the HPV result now follows the interpretation.",
   "templateId": "cervical_cytology",
   "patch": {},
-  "report": "Cervix, liquid-based cytology\n\nReceived is one liquid-based cytology vial, processed as one slide.\n\nThe liquid-based preparation is satisfactory for evaluation, with an endocervical/transformation zone component present. Reactive cellular changes associated with inflammation are seen, with mild nuclear enlargement, smooth nuclear outlines, fine chromatin and small nucleoli. HPV testing: negative for high-risk HPV. There is no intraepithelial lesion or malignancy.\n\nCERVIX, liquid-based cytology - NEGATIVE FOR INTRAEPITHELIAL LESION OR MALIGNANCY (NILM)"
+  "report": "Cervix, liquid-based cytology\n\nReceived is one liquid-based cytology vial, processed as one slide.\n\nThe liquid-based preparation is satisfactory for evaluation, with an endocervical/transformation zone component present. Reactive cellular changes associated with inflammation are seen, with mild nuclear enlargement, smooth nuclear outlines, fine chromatin and small nucleoli. There is no intraepithelial lesion or malignancy. HPV testing: negative for high-risk HPV.\n\nCERVIX, liquid-based cytology - NEGATIVE FOR INTRAEPITHELIAL LESION OR MALIGNANCY (NILM)"
 }

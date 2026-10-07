@@ -762,13 +762,15 @@ export function microscopy(part, ctx) {
   if (extra) sentences.push(`${extra}.`);
   const anc = stripDot(v.ancillary);
   if (anc) sentences.push(`${anc}.`);
-  if (id === 'cervical_cytology') {
-    const hpv = stripDot(v.hpv);
-    if (hpv && hpv !== 'Not performed') sentences.push(`HPV testing: ${lower1(hpv)}.`);
-  }
   if (!nd) {
     const interp = interpretation(v, id);
     if (interp) sentences.push(interp);
+  }
+  // The HPV result is a separate test on the vial, so it comes last: the closing sentence then
+  // follows the cells it sums up ("The atypia exceeds reactive change ..."), Phase 55.
+  if (id === 'cervical_cytology') {
+    const hpv = stripDot(v.hpv);
+    if (hpv && hpv !== 'Not performed') sentences.push(`HPV testing: ${lower1(hpv)}.`);
   }
   return `(${part.label}) ${sentences.join(' ')}`;
 }
