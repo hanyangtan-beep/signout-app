@@ -1562,6 +1562,46 @@ await check('breast papillary lesion: the lesion and invasion decide the line; t
   return 'papilloma B3; EPC B5a; invasion B5b with the stromal-feature Check; SPC takes invasive solid papillary; lesion gallery 9 photos';
 });
 
+// Cervical cytology descriptions (Phase 55): a pasted LBC opens the cervical form; HSIL prints its cell
+// description and follows the chips; the lists swap with the interpretation and the AGC origin; Checks flags
+// HSIL with a negative HPV result; the category and organism galleries open with their photos.
+await check('cervical cytology: each category prints its cell description; the lists follow the picks; both galleries open', async () => {
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
+  const routed = await pasteAndBuild('History\nCervical screening\n\nSpecimen\n(A) Cervix, LBC smear');
+  assert(routed === 'cervical_cytology', `LBC routed to ${routed}`);
+  assert(!(await shows('hsilFeatures')) && !(await shows('extent')), 'description fields show under NILM');
+  await pickField('interpretation', 'High grade squamous intraepithelial lesion (HSIL)');
+  let report = await reportText();
+  assert(report.includes('Scattered small immature squamous cells, present singly and in syncytial aggregates, show a high nuclear-to-cytoplasmic ratio, hyperchromasia, irregular nuclear membranes and coarsely granular chromatin.'), `HSIL description wrong: ${report.slice(0, 600)}`);
+  assert(await shows('hsilFeatures') && await shows('extent') && !(await shows('lsilFeatures')), 'the HSIL fields are not the ones showing');
+  await pickField('hsilFeatures', 'Coarse chromatin');   // unticks the default
+  await pickField('extent', 'Numerous');
+  report = await reportText();
+  assert(report.includes('Numerous small immature squamous cells, present singly and in syncytial aggregates, show a high nuclear-to-cytoplasmic ratio, hyperchromasia and irregular nuclear membranes.'), `edited HSIL description wrong: ${report.slice(0, 600)}`);
+  await pickField('hpv', 'Negative for high-risk HPV');
+  assert(/negative high-risk HPV/.test(await checksText()), 'Checks did not flag HSIL with a negative HPV result');
+  await pickField('interpretation', 'Atypical glandular cells (AGC)');
+  await pickField('glandularOrigin', 'Endometrial');
+  report = await reportText();
+  assert(report.includes('Atypical endometrial cells are present in small groups.') && report.includes('falls short of adenocarcinoma.'), `endometrial AGC wrong: ${report.slice(0, 700)}`);
+  assert(await shows('agcEndometrialFeatures') && !(await shows('agcFeatures')) && !(await shows('extent')), 'the endometrial AGC list is not the one showing');
+  const counts = [];
+  for (const [id, want, name] of [['interpretation', 27, 'cervical-categories-gallery'], ['features', 14, 'cervical-organisms-gallery']]) {
+    await page.locator(`.field[data-field="${id}"] .ref-toggle`).first().click();
+    await page.waitForSelector(`.field[data-field="${id}"] .ref-panel img`, { timeout: 5000 });
+    const imgs = page.locator(`.field[data-field="${id}"] .ref-panel img`);
+    const photos = await imgs.count();
+    assert(photos === want, `${id} gallery holds ${photos} photos`);
+    for (let i = 0; i < photos; i++) await imgs.nth(i).scrollIntoViewIfNeeded();   // the photos load lazily
+    await page.waitForFunction((f) => [...document.querySelectorAll(`.field[data-field="${f}"] .ref-panel img`)].every((i) => i.complete && i.naturalWidth > 0), id, { timeout: 10000 });
+    await page.locator(`.field[data-field="${id}"] .ref-panel`).first().scrollIntoViewIfNeeded();
+    await shot(name);
+    await page.locator(`.field[data-field="${id}"] .ref-toggle`).first().click();
+    counts.push(photos);
+  }
+  return `LBC routed; HSIL description follows the chips and extent; negative-HPV Check; endometrial AGC list and wording; galleries ${counts.join(' and ')} photos`;
+});
+
 // Case options after a pasted request (2026-09-24): the tickboxes show what the report prints. The case
 // starts on the default small biopsy, whose options carry no macroscopy choice, as a fresh session does.
 await check('case options: a pasted hysterectomy ticks the macroscopy box it prints, and the box drives it', async () => {

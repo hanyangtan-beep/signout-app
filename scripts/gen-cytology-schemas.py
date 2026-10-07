@@ -221,6 +221,12 @@ SCHEMAS = [
     base("cervical_cytology", "Cervical cytology (Bethesda 2014)", "Cervix · cytology", "Cervix", 660, ["pap smear", "cervical smear", "lbc", "thinprep", "cervical cytology", "nilm"], "cervical sample", cervical_fields, cervical_snips, cervical_example, label="Cervical smear"),
 ]
 
+# cervical_cytology.json is hand-edited since Phase 55 (2026-10-07): per-category description lists, help and
+# two reference galleries live only in the JSON. Never regenerate it from here; edit it by exact string replacement.
+HAND_EDITED = {"cervical_cytology"}
 for s in SCHEMAS:
+    if s["id"] in HAND_EDITED:
+        print("skipped", s["id"], "(hand-edited since Phase 55)")
+        continue
     (ROOT / f"{s['id']}.json").write_text(json.dumps(s, indent=2, ensure_ascii=False) + "\n")
     print("wrote", s["id"], len(s["fields"]), "fields")

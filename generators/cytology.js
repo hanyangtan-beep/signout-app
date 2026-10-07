@@ -279,10 +279,15 @@ const FEATURE_TEXT = {
   'Shift in flora suggestive of bacterial vaginosis': 'a shift in flora suggestive of bacterial vaginosis',
   'Actinomyces': 'bacteria morphologically consistent with Actinomyces species',
   'Herpes simplex virus changes': 'cellular changes consistent with herpes simplex virus',
+  'Cytomegalovirus changes': 'cellular changes consistent with cytomegalovirus',
   'Reactive changes (inflammation)': 'reactive cellular changes associated with inflammation',
   'Reactive changes (repair)': 'reactive cellular changes associated with repair',
+  'Lymphocytic (follicular) cervicitis': 'lymphocytic (follicular) cervicitis',
+  'Reactive changes (radiation)': 'reactive cellular changes associated with radiation',
   'Reactive changes (IUD)': 'reactive cellular changes associated with an intrauterine device',
   'Atrophy': 'atrophy',
+  'Keratotic changes': 'keratotic changes',
+  'Tubal metaplasia': 'tubal metaplasia',
   'Endometrial cells (45 or older)': 'endometrial cells in a woman aged 45 or older',
   'Glandular cells post hysterectomy': 'benign glandular cells following hysterectomy',
   'Koilocytes': 'koilocytes',
@@ -383,6 +388,258 @@ const CERVICAL_ABBR = {
   'Other malignant neoplasm': 'Other malignant neoplasm',
 };
 
+// ---------------------------------------------------------------------------
+// Cervical cytology: cell descriptions and findings (Bethesda 2014)
+// ---------------------------------------------------------------------------
+// Each abnormal category has its own tick list in the schema (ascusFeatures to adenoFeatures). The
+// ticked items print after the adequacy sentence: squamous as one sentence ("Scattered small immature
+// squamous cells, present singly and in syncytial aggregates, show a high nuclear-to-cytoplasmic
+// ratio, ..."), glandular as two ("Atypical endocervical cells are present in crowded sheets and
+// strips. The cells show nuclear overlap, ..."). Item keys: `arch` where the cells lie, `with` an
+// architectural detail after it, `cyto` cytoplasm (printed first), `nuc` nuclear features (after
+// "with" when cytoplasm is named), `noun` a replacement cell noun, `bg` the background, `extra` a
+// sentence of its own. Print order follows the key order below, not the order of ticking. Criteria
+// and thresholds stay in the field help and the reference galleries (docs/new-template-brief.md
+// §3.2). A list missing from a draft saved before 7 October 2026 prints nothing, as the form then
+// shows nothing ticked, and Checks asks for a description.
+const CX_EXTENT = ['Occasional', 'A few', 'Scattered', 'Numerous'];
+const CX_HSIL = {
+  field: 'hsilFeatures', noun: 'small immature squamous cells',
+  items: {
+    'Single cells': { arch: 'singly' },
+    'Sheets': { arch: 'in sheets' },
+    'Syncytial aggregates': { arch: 'in syncytial aggregates' },
+    'Keratinised cytoplasm': { cyto: 'dense orangeophilic cytoplasm', noun: 'small squamous cells' },
+    'High N:C ratio': { nuc: 'a high nuclear-to-cytoplasmic ratio' },
+    'Hyperchromasia': { nuc: 'hyperchromasia' },
+    'Irregular nuclear membranes': { nuc: 'irregular nuclear membranes' },
+    'Coarse chromatin': { nuc: 'coarsely granular chromatin' },
+  },
+};
+const CX_SQUAMOUS = {
+  [CERVICAL[1]]: {
+    field: 'ascusFeatures', noun: 'atypical squamous cells',
+    items: {
+      'Ill-defined perinuclear halos': { cyto: 'ill-defined perinuclear halos' },
+      'Mild nuclear enlargement': { nuc: 'mild nuclear enlargement' },
+      'Slightly raised N:C ratio': { nuc: 'a slightly raised nuclear-to-cytoplasmic ratio' },
+      'Mild hyperchromasia': { nuc: 'mild hyperchromasia' },
+      'Slightly irregular nuclear outlines': { nuc: 'slightly irregular nuclear outlines' },
+      'Binucleation': { nuc: 'occasional binucleation' },
+      'Atypical parakeratosis': { extra: 'Atypical parakeratotic cells with dense orangeophilic cytoplasm are also present.' },
+    },
+  },
+  [CERVICAL[2]]: {
+    field: 'aschFeatures', noun: 'atypical squamous cells',
+    items: {
+      'Immature metaplastic-type cells': { noun: 'small immature squamous cells of metaplastic type' },
+      'Single cells': { arch: 'singly' },
+      'Small groups': { arch: 'in small groups' },
+      'Crowded sheets': { arch: 'in crowded sheets' },
+      'High N:C ratio': { nuc: 'a high nuclear-to-cytoplasmic ratio' },
+      'Hyperchromasia': { nuc: 'hyperchromasia' },
+      'Irregular nuclear outlines': { nuc: 'irregular nuclear outlines' },
+    },
+  },
+  [CERVICAL[3]]: {
+    field: 'lsilFeatures', noun: 'squamous cells of superficial and intermediate type',
+    items: {
+      'Koilocytosis': { cyto: 'sharply defined perinuclear cavitation (koilocytosis)' },
+      'Dense orangeophilic cytoplasm': { cyto: 'dense orangeophilic cytoplasm' },
+      'Nuclear enlargement': { nuc: 'nuclear enlargement' },
+      'Hyperchromasia': { nuc: 'hyperchromasia' },
+      'Irregular nuclear outlines': { nuc: 'slightly irregular nuclear outlines' },
+      'Binucleation': { nuc: 'binucleation' },
+      'Smudged chromatin': { nuc: 'smudged chromatin' },
+    },
+  },
+  [CERVICAL[4]]: CX_HSIL,
+  [CERVICAL[5]]: CX_HSIL,
+  [CERVICAL[6]]: {
+    field: 'sccFeatures', noun: 'malignant squamous cells',
+    items: {
+      'Single cells': { arch: 'singly' },
+      'Syncytial aggregates': { arch: 'in syncytial aggregates' },
+      'Bizarre (caudate, spindle) shapes': { cyto: 'bizarre (caudate and spindle) shapes' },
+      'Keratinised cytoplasm': { cyto: 'dense orangeophilic (keratinised) cytoplasm' },
+      'High N:C ratio': { nuc: 'a high nuclear-to-cytoplasmic ratio' },
+      'Hyperchromatic opaque nuclei': { nuc: 'hyperchromatic opaque nuclei' },
+      'Coarse chromatin': { nuc: 'coarsely clumped chromatin' },
+      'Prominent nucleoli': { nuc: 'prominent nucleoli' },
+      'Tumour diathesis': { extra: 'The background shows a granular necrotic (tumour) diathesis.' },
+    },
+  },
+};
+// HSIL with features suspicious for invasion: one sentence after the HSIL description.
+const CX_INVASION = {
+  'Tumour diathesis': { np: 'a granular necrotic (tumour) diathesis' },
+  'Bizarre keratinised cells': { np: 'bizarre keratinised cells' },
+  'Prominent nucleoli': { cell: 'prominent nucleoli' },
+  'Irregular chromatin distribution': { cell: 'irregularly distributed chromatin' },
+};
+const CX_GLANDULAR = {
+  agc: {
+    field: 'agcFeatures', noun: 'Atypical glandular cells',
+    items: {
+      'Crowded sheets and strips': { arch: 'in crowded sheets and strips' },
+      'Small groups': { arch: 'in small groups' },
+      'Vacuolated cytoplasm': { cyto: 'vacuolated cytoplasm' },
+      'Nuclear overlap': { nuc: 'nuclear overlap' },
+      'Pseudostratification': { nuc: 'focal pseudostratification' },
+      'Enlarged nuclei': { nuc: 'enlarged nuclei' },
+      'Mild hyperchromasia': { nuc: 'mild hyperchromasia' },
+      'Small nucleoli': { nuc: 'small nucleoli' },
+      'Mitotic figures': { nuc: 'occasional mitotic figures' },
+    },
+  },
+  agcEndometrial: {
+    field: 'agcEndometrialFeatures', noun: 'Atypical endometrial cells',
+    items: {
+      'Small groups': { arch: 'in small groups' },
+      'Vacuolated cytoplasm': { cyto: 'scant, vacuolated cytoplasm' },
+      'Ill-defined cell borders': { cyto: 'ill-defined cell borders' },
+      'Enlarged nuclei': { nuc: 'slightly enlarged nuclei' },
+      'Mild hyperchromasia': { nuc: 'mild hyperchromasia' },
+      'Small nucleoli': { nuc: 'small nucleoli' },
+    },
+  },
+  ais: {
+    field: 'aisFeatures', noun: 'Abnormal endocervical cells',
+    items: {
+      'Crowded sheets and strips': { arch: 'in crowded sheets and strips' },
+      'Feathering': { with: 'peripheral feathering' },
+      'Rosettes': { with: 'rosettes' },
+      'Elongated pseudostratified nuclei': { nuc: 'elongated pseudostratified nuclei' },
+      'Hyperchromasia': { nuc: 'hyperchromasia' },
+      'Coarse chromatin': { nuc: 'coarsely granular chromatin' },
+      'Mitotic figures': { nuc: 'mitotic figures' },
+      'Apoptotic bodies': { nuc: 'apoptotic bodies' },
+      'Clean background': { extra: 'The background is clean.' },
+    },
+  },
+  adeno: {
+    field: 'adenoFeatures', noun: 'Malignant glandular cells',
+    items: {
+      'Single cells': { arch: 'singly' },
+      'Three-dimensional clusters': { arch: 'in three-dimensional clusters' },
+      'Sheets and strips': { arch: 'in sheets and strips' },
+      'Papillary groups': { arch: 'in papillary groups' },
+      'Vacuolated cytoplasm': { cyto: 'vacuolated cytoplasm' },
+      'Enlarged pleomorphic nuclei': { nuc: 'enlarged pleomorphic nuclei' },
+      'Irregular chromatin with clearing': { nuc: 'irregularly distributed chromatin with parachromatin clearing' },
+      'Prominent nucleoli': { nuc: 'prominent nucleoli' },
+      'Tumour diathesis': { bg: 'a granular necrotic (tumour) diathesis' },
+      'Watery diathesis': { bg: 'a finely granular, watery diathesis' },
+      'Psammoma bodies': { extra: 'Psammoma bodies are present.' },
+    },
+  },
+};
+// Organisms and non-neoplastic findings, one sentence each, in this order. 'Koilocytes' survives
+// only on drafts saved before 7 October 2026; under LSIL it gives way to the Koilocytosis tick.
+const CX_FINDINGS = {
+  'Trichomonas vaginalis': 'Trichomonas vaginalis is present, as pear-shaped cyanophilic organisms with eccentric nuclei and eosinophilic cytoplasmic granules.',
+  'Fungal organisms consistent with Candida': 'Fungal pseudohyphae and budding yeasts are present, morphologically consistent with Candida species.',
+  'Shift in flora suggestive of bacterial vaginosis': 'There is a shift in flora suggestive of bacterial vaginosis, with a filmy background of coccobacilli and clue cells.',
+  'Actinomyces': 'Bacteria morphologically consistent with Actinomyces species are present, as tangled clumps of filamentous organisms (cotton-ball clusters).',
+  'Herpes simplex virus changes': 'Cellular changes consistent with herpes simplex virus are present, with multinucleated cells showing nuclear moulding, chromatin margination and ground-glass nuclei.',
+  'Cytomegalovirus changes': 'Cellular changes consistent with cytomegalovirus are present, with enlarged cells bearing a large intranuclear inclusion surrounded by a clear halo.',
+  'Reactive changes (inflammation)': 'Reactive cellular changes associated with inflammation are seen, with mild nuclear enlargement, smooth nuclear outlines, fine chromatin and small nucleoli.',
+  'Reactive changes (repair)': 'Reactive cellular changes associated with repair are seen, as flat cohesive sheets of cells with streaming nuclei, distinct cell borders and prominent nucleoli.',
+  'Lymphocytic (follicular) cervicitis': 'Lymphocytic (follicular) cervicitis is present, with a polymorphous population of lymphoid cells and tingible-body macrophages.',
+  'Reactive changes (radiation)': 'Reactive cellular changes associated with radiation are seen, with cell enlargement, vacuolated or polychromatic cytoplasm and multinucleation, without a raised nuclear-to-cytoplasmic ratio.',
+  'Reactive changes (IUD)': 'Reactive cellular changes associated with an intrauterine device are seen, with small groups of vacuolated glandular cells and occasional single cells with a raised nuclear-to-cytoplasmic ratio.',
+  'Atrophy': 'The squamous cells are mainly parabasal cells in flat sheets with preserved nuclear polarity, in keeping with atrophy.',
+  'Keratotic changes': 'Keratotic changes are seen, with anucleate squames and small parakeratotic cells bearing dense orangeophilic cytoplasm and pyknotic nuclei.',
+  'Tubal metaplasia': 'Tubal metaplasia is present, as columnar cells with cilia and terminal bars.',
+  'Endometrial cells (45 or older)': 'Benign-appearing endometrial cells, in small, tight three-dimensional clusters, are present in a woman aged 45 or older.',
+  'Glandular cells post hysterectomy': 'Benign-appearing glandular cells are present in this post-hysterectomy sample.',
+  'Koilocytes': 'Koilocytes are present.',
+};
+
+// Tick-list configuration for the selected interpretation (and glandular origin), or null.
+function cxConfig(v) {
+  const i = v.interpretation || CERVICAL[0];
+  if (CX_SQUAMOUS[i]) return { kind: 'squamous', cfg: CX_SQUAMOUS[i] };
+  if (i === CERVICAL[7] || i === CERVICAL[8]) {
+    if (v.glandularOrigin === 'Endometrial') return { kind: 'glandular', cfg: CX_GLANDULAR.agcEndometrial };
+    const noun = v.glandularOrigin === 'Endocervical' ? 'Atypical endocervical cells' : 'Atypical glandular cells';
+    return { kind: 'glandular', cfg: { ...CX_GLANDULAR.agc, noun } };
+  }
+  if (i === CERVICAL[9]) return { kind: 'glandular', cfg: CX_GLANDULAR.ais };
+  if (i === CERVICAL[10]) return { kind: 'glandular', cfg: CX_GLANDULAR.adeno };
+  return null;
+}
+
+function cxParts(cfg, v) {
+  const list = Array.isArray(v[cfg.field]) ? v[cfg.field] : [];
+  const on = Object.keys(cfg.items).filter((k) => list.includes(k)).map((k) => cfg.items[k]);
+  const get = (key) => on.map((x) => x[key]).filter(Boolean);
+  return { arch: get('arch'), with: get('with'), cyto: get('cyto'), nuc: get('nuc'), bg: get('bg'), extra: get('extra'), noun: get('noun').pop() || cfg.noun };
+}
+
+const cxCellFeatures = (p) => (p.cyto.length && p.nuc.length ? `${joinList(p.cyto)}, with ${joinList(p.nuc)}` : joinList([...p.cyto, ...p.nuc]));
+
+function cxSquamous(cfg, v) {
+  const p = cxParts(cfg, v);
+  const feats = cxCellFeatures(p);
+  const arch = joinList(p.arch);
+  // No extent word when the draft has none (saved before the field existed): print what the form shows.
+  const cells = CX_EXTENT.includes(v.extent) ? `${v.extent} ${p.noun}` : `${p.noun.charAt(0).toUpperCase()}${p.noun.slice(1)}`;
+  const out = [];
+  if (arch && feats) out.push(`${cells}, present ${arch}, show ${feats}.`);
+  else if (feats) out.push(`${cells} show ${feats}.`);
+  else if (arch) out.push(`${cells} are present ${arch}.`);
+  for (const e of p.extra) out.push(out.length ? e : e.replace(' also ', ' '));
+  return out;
+}
+
+function cxInvasion(v, also) {
+  const list = Array.isArray(v.invasionFeatures) ? v.invasionFeatures : [];
+  const on = Object.keys(CX_INVASION).filter((k) => list.includes(k)).map((k) => CX_INVASION[k]);
+  const items = on.map((x) => x.np).filter(Boolean);
+  const cells = on.map((x) => x.cell).filter(Boolean);
+  if (cells.length) items.push(`cells with ${joinList(cells)}`);
+  if (!items.length) return '';
+  return `There ${/^an? /.test(items[0]) ? 'is' : 'are'}${also ? ' also' : ''} ${joinList(items)}.`;
+}
+
+function cxGlandular(cfg, v) {
+  const p = cxParts(cfg, v);
+  const feats = cxCellFeatures(p);
+  const withText = p.with.length ? `with ${joinList(p.with)}` : '';
+  const where = p.arch.length ? `${joinList(p.arch)}${withText ? `, ${withText}` : ''}` : withText ? `in groups ${withText}` : '';
+  const out = [];
+  if (where) {
+    out.push(`${p.noun} are present ${where}.`);
+    if (feats) out.push(`The cells show ${feats}.`);
+  } else if (feats) out.push(`${p.noun} show ${feats}.`);
+  if (p.bg.length) out.push(`The background shows ${joinList(p.bg)}.`);
+  out.push(...p.extra);
+  return out;
+}
+
+// Sentences describing the abnormal cells for the selected interpretation ([] when nothing is ticked).
+export function cervicalDescription(v) {
+  if ((v.adequacy || '').startsWith('Unsatisfactory')) return [];
+  const c = cxConfig(v);
+  if (!c) return [];
+  if (c.kind === 'glandular') return cxGlandular(c.cfg, v);
+  const out = cxSquamous(c.cfg, v);
+  if (v.interpretation === CERVICAL[5]) {
+    const inv = cxInvasion(v, out.length > 0);
+    if (inv) out.push(inv);
+  }
+  return out;
+}
+
+function cervicalFindings(v) {
+  const feats = arr(v.features);
+  const lsilKoilo = v.interpretation === CERVICAL[3] && arr(v.lsilFeatures).includes('Koilocytosis');
+  const known = Object.keys(CX_FINDINGS).filter((f) => feats.includes(f) && !(f === 'Koilocytes' && lsilKoilo)).map((f) => CX_FINDINGS[f]);
+  const other = feats.filter((f) => !CX_FINDINGS[f] && stripDot(f)).map((f) => `${stripDot(f)}.`);
+  return [...known, ...other];
+}
+
 function isNonDiagnostic(v, id) {
   const c = v.category || '';
   if (id === 'cervical_cytology') return (v.adequacy || '').startsWith('Unsatisfactory');
@@ -453,17 +710,22 @@ function interpretation(v, id) {
     }
     case 'cervical_cytology': {
       const i = v.interpretation || CERVICAL[0];
+      const o = v.glandularOrigin && v.glandularOrigin !== 'Not otherwise specified' ? v.glandularOrigin : '';
+      // With the cells described, the closing sentence states where the category sits; without a
+      // description it names the cells instead (the wording before Phase 55).
+      const described = cervicalDescription(v).length > 0;
+      const shortOf = o === 'Endometrial' || o === 'Extrauterine' ? 'adenocarcinoma' : `${o === 'Endocervical' ? 'endocervical ' : ''}adenocarcinoma in situ or invasive adenocarcinoma`;
       if (i === CERVICAL[0]) return 'There is no intraepithelial lesion or malignancy.';
-      if (/ASC-US/.test(i)) return 'Atypical squamous cells of undetermined significance are present.';
-      if (/ASC-H/.test(i)) return 'Atypical squamous cells are present in which a high grade squamous intraepithelial lesion cannot be excluded.';
+      if (/ASC-US/.test(i)) return described ? 'The changes are insufficient in degree or extent for a definitive interpretation of a squamous intraepithelial lesion.' : 'Atypical squamous cells of undetermined significance are present.';
+      if (/ASC-H/.test(i)) return described ? 'The changes are insufficient for a definitive interpretation, but a high grade squamous intraepithelial lesion cannot be excluded.' : 'Atypical squamous cells are present in which a high grade squamous intraepithelial lesion cannot be excluded.';
       if (/^Low grade/.test(i)) return 'Features are those of a low grade squamous intraepithelial lesion.';
       if (/^High grade/.test(i)) return 'Features are those of a high grade squamous intraepithelial lesion.';
       if (/suspicious for invasion/.test(i)) return 'Features are those of a high grade squamous intraepithelial lesion with features suspicious for invasion.';
       if (i === 'Squamous cell carcinoma') return 'Features are those of squamous cell carcinoma.';
-      if (/favour neoplastic/.test(i)) return `Atypical glandular cells${v.glandularOrigin && v.glandularOrigin !== 'Not otherwise specified' ? ` (${lower1(v.glandularOrigin)})` : ''} are present, favouring a neoplastic process.`;
-      if (/^Atypical glandular/.test(i)) return `Atypical glandular cells${v.glandularOrigin && v.glandularOrigin !== 'Not otherwise specified' ? ` (${lower1(v.glandularOrigin)})` : ''} are present.`;
+      if (/favour neoplastic/.test(i)) return described ? `The features are suspicious for, but fall short of, ${shortOf}.` : `Atypical glandular cells${o ? ` (${lower1(o)})` : ''} are present, favouring a neoplastic process.`;
+      if (/^Atypical glandular/.test(i)) return described ? `The atypia exceeds reactive change but falls short of ${shortOf}.` : `Atypical glandular cells${o ? ` (${lower1(o)})` : ''} are present.`;
       if (/AIS/.test(i)) return 'Features are those of endocervical adenocarcinoma in situ.';
-      if (i === 'Adenocarcinoma') return `Features are those of adenocarcinoma${v.glandularOrigin && v.glandularOrigin !== 'Not otherwise specified' ? `, ${lower1(v.glandularOrigin)}` : ''}.`;
+      if (i === 'Adenocarcinoma') return `Features are those of ${o ? `${lower1(o)} ` : ''}adenocarcinoma.`;
       return 'Features are those of a malignant neoplasm.';
     }
     default: return '';
@@ -487,6 +749,10 @@ export function microscopy(part, ctx) {
   if (nd) {
     // Inadequate: adequacy sentence, then what little is present, then stop.
     sentences.push(`${subject} ${adequacy}${feats ? `, showing only ${feats}` : ''}.`);
+  } else if (id === 'cervical_cytology') {
+    // Adequacy, then the abnormal cells, then each organism or non-neoplastic finding.
+    sentences.push(`${`${subject} ${adequacy}`.replace(/,$/, '')}.`);
+    sentences.push(...cervicalDescription(v), ...cervicalFindings(v));
   } else {
     let first = `${subject} ${adequacy}`;
     if (feats) first += ` and ${verb.shows} ${feats}`;
@@ -567,11 +833,12 @@ function diagnosisText(v, id) {
     case 'cervical_cytology': {
       if ((v.adequacy || '').startsWith('Unsatisfactory')) return `UNSATISFACTORY FOR EVALUATION${ndReason ? `, ${ndReason.toUpperCase()}` : ''}`;
       const i = v.interpretation || CERVICAL[0];
-      const abbr = CERVICAL_ABBR[i];
-      let text = i.replace(/\s*\((ASC-US|ASC-H|LSIL|HSIL|AGC|AIS)\)$/, '').toUpperCase();
+      // No tag when the category has no abbreviation ("ADENOCARCINOMA", not "ADENOCARCINOMA (Adenocarcinoma)").
+      const abbr = CERVICAL_ABBR[i] !== i ? CERVICAL_ABBR[i] : '';
+      let text = (i === CERVICAL[5] ? 'High grade squamous intraepithelial lesion, with features suspicious for invasion' : i).replace(/\s*\((ASC-US|ASC-H|LSIL|HSIL|AGC|AIS)\)$/, '').toUpperCase();
       if (/^Atypical glandular/.test(i) && v.glandularOrigin && v.glandularOrigin !== 'Not otherwise specified') text += `, ${lower1(v.glandularOrigin)}`;
       if (i === 'Adenocarcinoma' && v.glandularOrigin && v.glandularOrigin !== 'Not otherwise specified') text += `, ${lower1(v.glandularOrigin)}`;
-      const orgs = arr(v.features).filter((f) => ['Trichomonas vaginalis', 'Fungal organisms consistent with Candida', 'Shift in flora suggestive of bacterial vaginosis', 'Actinomyces', 'Herpes simplex virus changes'].includes(f));
+      const orgs = arr(v.features).filter((f) => ['Trichomonas vaginalis', 'Fungal organisms consistent with Candida', 'Shift in flora suggestive of bacterial vaginosis', 'Actinomyces', 'Herpes simplex virus changes', 'Cytomegalovirus changes'].includes(f));
       if (i === CERVICAL[0] && orgs.length) text += `; ${joinList(orgs.map((o) => FEATURE_TEXT[o]))}`;
       return abbr && abbr !== text ? `${text} (${abbr})` : text;
     }
@@ -641,8 +908,14 @@ export function validate(part, ctx) {
     if (/lymphoma/i.test(v.malignantDx || v.suspDx || '') && !stripDot(v.ancillary)) warn('Lymphoma favoured without flow cytometry or immunostaining recorded.');
   }
   if (id === 'cervical_cytology') {
-    if (a.startsWith('Unsatisfactory') && v.interpretation && v.interpretation !== CERVICAL[0]) warn('An epithelial abnormality is selected on an unsatisfactory specimen; an abnormality makes the specimen satisfactory by definition.');
-    if (/LSIL/.test(v.interpretation || '') && !has('Koilocytes')) warn('LSIL without koilocytes ticked.');
+    const i = v.interpretation || CERVICAL[0];
+    const unsat = a.startsWith('Unsatisfactory');
+    if (unsat && v.interpretation && v.interpretation !== CERVICAL[0]) warn('An epithelial abnormality is selected on an unsatisfactory specimen; an abnormality makes the specimen satisfactory by definition.');
+    if (!unsat && cxConfig(v) && !cervicalDescription(v).length) warn(`No cell description is ticked for ${CERVICAL_ABBR[i]}; the microscopy names the category only.`);
+    if (!unsat && i === CERVICAL[5] && !arr(v.invasionFeatures).length) warn('HSIL with features suspicious for invasion: tick the feature that raised the suspicion.');
+    if (has('Koilocytes') && i !== CERVICAL[3]) warn('Koilocytes are ticked (a draft saved before 7 October 2026); koilocytosis is now described under LSIL. Untick it or change the interpretation.');
+    if ([CERVICAL[2], CERVICAL[4], CERVICAL[5], CERVICAL[6]].includes(i) && v.hpv === 'Negative for high-risk HPV') warn('A high grade squamous interpretation with a negative high-risk HPV result: confirm both.');
+    if (has('Glandular cells post hysterectomy') && a === 'Satisfactory') warn('Glandular cells post hysterectomy are ticked, but the adequacy states that a transformation zone component is present; a vault sample has none.');
   }
   return out;
 }

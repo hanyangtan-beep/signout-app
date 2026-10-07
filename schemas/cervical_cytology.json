@@ -1,6 +1,6 @@
 {
  "id": "cervical_cytology",
- "version": 1,
+ "version": "2026.10",
  "style": { "british": true },
  "name": "Cervical cytology (Bethesda 2014)",
  "shortName": "Cervix · cytology",
@@ -135,7 +135,293 @@
     "Other malignant neoplasm"
    ],
    "default": "Negative for intraepithelial lesion or malignancy",
-   "group": "Category"
+   "group": "Category",
+   "reference": {
+    "title": "Bethesda 2014 categories",
+    "intro": "Criteria from The Bethesda System for Reporting Cervical Cytology (3rd edition, 2014). Nuclear size is judged against a normal intermediate squamous cell nucleus, about 35 µm².",
+    "columns": 3,
+    "groups": [
+     {
+      "heading": "NILM",
+      "points": [
+       "Superficial and intermediate squamous cells; metaplastic cells with dense cyanophilic cytoplasm and regular nuclei",
+       "Endocervical cells in honeycomb sheets or palisaded strips; a transformation zone component needs at least 10 well-preserved endocervical or squamous metaplastic cells",
+       "Reactive change: nuclei 1.5 to 2 times an intermediate nucleus, smooth outlines, fine chromatin; nucleoli may be prominent"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/nilm_superficial_intermediate.jpg",
+        "caption": "Superficial (eosinophilic, polygonal) and intermediate (basophilic) squamous cells in a negative smear (Papanicolaou, x400).",
+        "credit": "Department of Pathology, Calicut Medical College, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Normal_PAP_(Cervical)_Smear.jpg"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/nilm_endocervical_sheet.jpg",
+        "caption": "Endocervical cells in a honeycomb sheet; the mild crowding here may be reactive (Pap stain).",
+        "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+        "license": "CC0 1.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Endocervical_cells_on_Pap_test.jpg"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/nilm_squamous_metaplasia.jpg",
+        "caption": "Squamous metaplastic cells: dense, refractile cyanophilic cytoplasm with projections, moderately enlarged nuclei with regular outlines and fine, even chromatin (annotated, Pap stain).",
+        "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+        "license": "CC0 1.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Cytology_of_cervical_squamous_metaplasia.png"
+       }
+      ]
+     },
+     {
+      "heading": "ASC-US",
+      "points": [
+       "Changes suggestive of LSIL, insufficient in degree or extent",
+       "Mature (superficial or intermediate) cells; nuclei 2.5 to 3 times an intermediate nucleus; N:C ratio slightly raised",
+       "Minimal hyperchromasia and irregularity of chromatin or outline; atypical parakeratosis can qualify"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/ascus_mild_enlargement.jpg",
+        "caption": "ASC-US: a small group of squamous cells with mildly enlarged nuclei and a slightly raised N:C ratio, beside normal superficial and intermediate cells (Pap stain).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Pap,_Interpreted_as_ASC-US_(8097128692).jpg"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/ascus_atypical_group.jpg",
+        "caption": "ASC-US: a group of mature squamous cells with orangeophilic cytoplasm and mildly enlarged, slightly hyperchromatic nuclei (Pap stain).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Atypical_squamous_cell_of_undetermined_significance_-_1_--_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "ASC-H",
+      "points": [
+       "Changes suggestive of HSIL, insufficient for a definitive interpretation",
+       "Usually few cells, singly or in small groups, the size of metaplastic cells; nuclei 1.5 to 2.5 times a metaplastic nucleus, high N:C ratio",
+       "Patterns: atypical immature metaplasia, crowded sheets, atypical repair and atrophy-like cells; compare with HSIL"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/asch_single_cell.jpg",
+        "caption": "ASC-H: a single small cell with a hyperchromatic nucleus and a high N:C ratio (Pap stain, x40 objective).",
+        "credit": "Hata et al., Asian Pac J Cancer Prev 2019, Fig 1",
+        "license": "CC BY 3.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6745206/"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/asch_and_hsil_lbc.jpg",
+        "caption": "ASC-H (A) compared with HSIL (B) in liquid-based preparations (x40 objective).",
+        "credit": "Liu et al., J Cancer 2024, Fig 2",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10751681/"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/asch_favour_hsil_patterns.jpg",
+        "caption": "ASC-H, favour HSIL: a syncytial hyperchromatic crowded group (6A) and isolated small cells with a high N:C ratio (6B), each beside its biopsy (SurePath; H&E).",
+        "credit": "Chivukula and Shidham, CytoJournal 2006, Fig 6",
+        "license": "CC BY 2.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1524979/"
+       }
+      ]
+     },
+     {
+      "heading": "LSIL",
+      "points": [
+       "Mature (superficial or intermediate) cells, singly or in sheets",
+       "Nuclei more than 3 times an intermediate nucleus, hyperchromatic, with irregular outlines; bi- and multinucleation are common",
+       "Koilocytosis (sharply defined perinuclear cavity, dense rim) is common, but the nuclear changes are what is required"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/lsil_annotated.jpg",
+        "caption": "LSIL: an enlarged, darker nucleus with coarse chromatin and an irregular contour, beside an unremarkable intermediate cell (annotated, Pap stain).",
+        "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+        "license": "CC0 1.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Cytopathology_of_low-grade_squamous_intraepithelial_lesion_(LSIL).png"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/lsil_koilocyte.jpg",
+        "caption": "Koilocyte: a binucleate squamous cell with a sharply defined perinuclear cavity and a dense peripheral rim of cytoplasm (ThinPrep).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:HPV-Infected_Squamous_Cell_(Koilocyte)_of_the_Cervix_(44001403165).jpg"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/lsil_koilocytes_and_intermediate.jpg",
+        "caption": "A group of koilocytes with enlarged, hyperchromatic nuclei, with two normal intermediate cells for comparison (ThinPrep).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:CIN_1-HPV_on_ThinPrep.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "HSIL",
+      "points": [
+       "Smaller, less mature cells with lacy, delicate or dense metaplastic cytoplasm, singly, in sheets or in syncytial aggregates",
+       "Much higher N:C ratio than LSIL, hyperchromasia, fine or coarsely granular chromatin and irregular nuclear membranes; nucleoli usually absent",
+       "Hyperchromatic crowded groups: compare with endocervical cells, atrophy and AIS"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/hsil_and_intermediate.jpg",
+        "caption": "HSIL: small cells with a high N:C ratio and hyperchromatic, irregular nuclei (right), with intermediate cells for comparison (left) (ThinPrep).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:High-grade_Squamous_Intraepithelial_Lesion_of_Cervix,_ThinPrep_(6032536156).jpg"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/hsil_single_cells.jpg",
+        "caption": "HSIL: isolated small cells with a high N:C ratio and coarse chromatin, beside a superficial cell (ThinPrep).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Pap_(ThinPrep)_HSIL_(1799757221).jpg"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/hsil_group.jpg",
+        "caption": "HSIL (CIN 2-3): a loose group of small cells with a high N:C ratio and hyperchromatic nuclei, beside intermediate cells (SurePath).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:HSIL_(CIN2-3),_SurePath_Pap_(3884100273).jpg"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/hsil_syncytial_group.jpg",
+        "caption": "HSIL: a crowded aggregate of cells with high N:C ratios and hyperchromatic nuclei, below intermediate cells (Pap stain).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:High-grade_squamous_intraepithelial_lesion.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Squamous cell carcinoma",
+      "points": [
+       "Keratinising: single cells with bizarre (caudate, spindle) shapes, dense orangeophilic cytoplasm and opaque hyperchromatic nuclei; less diathesis",
+       "Non-keratinising: syncytial aggregates; coarsely clumped chromatin, prominent nucleoli and a tumour diathesis",
+       "HSIL with features suspicious for invasion: a tumour diathesis, macronucleoli or irregular chromatin, short of frank carcinoma"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/scc_keratinising_annotated.jpg",
+        "caption": "Keratinising squamous cell carcinoma: tailed cells with orangeophilic keratinised cytoplasm and hyperchromatic nuclei with granular, irregular chromatin and visible nucleoli, in a dirty background (annotated, Pap stain).",
+        "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+        "license": "CC0 1.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Cytopathology_of_keratinizing_squamous_cell_carcinoma.png"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/scc_keratinising_diathesis.jpg",
+        "caption": "Squamous cell carcinoma of the cervix: keratinised malignant cells with hyperchromatic nuclei among inflammatory cells and debris (Pap stain, x200).",
+        "credit": "National Cancer Institute, via Wikimedia Commons",
+        "license": "Public domain",
+        "url": "https://commons.wikimedia.org/wiki/File:Cytological_specimen_showing_cervical_cancer.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "AGC and its mimics",
+      "points": [
+       "Endocervical: sheets and strips with crowding and overlap, nuclei 3 to 5 times a normal endocervical nucleus, mild hyperchromasia, occasional nucleoli",
+       "Endometrial: small groups of cells with slightly enlarged nuclei, mild hyperchromasia, small nucleoli and scant, sometimes vacuolated cytoplasm",
+       "Favour neoplastic falls just short of AIS or adenocarcinoma; mimics include tubal metaplasia and lower uterine segment cells"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/agc_endometrial_cluster.jpg",
+        "caption": "Atypical endometrial cells: a tight, degenerate three-dimensional cluster with a high N:C ratio and small faint nucleoli, short of adenocarcinoma in quantity and quality (Pap stain, x400).",
+        "credit": "Lai, Hsu and Li, IntechOpen 2012, Fig 3",
+        "license": "CC BY 3.0",
+        "url": "https://www.intechopen.com/chapters/27773"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/agc_mimic_tubal_metaplasia.jpg",
+        "caption": "Tubal metaplasia mimicking AIS, with milder crowding, elongation and stratification; no cilia were found and it was called AGC-NOS, endocervical (Pap stain, x400).",
+        "credit": "Lai, Hsu and Li, IntechOpen 2012, Fig 12",
+        "license": "CC BY 3.0",
+        "url": "https://www.intechopen.com/chapters/27773"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/agc_mimic_lower_uterine_segment.jpg",
+        "caption": "Lower uterine segment cells: a tightly packed, uniform honeycomb sheet; without the usual stroma it was called AGC-NOS (Pap stain, x400).",
+        "credit": "Lai, Hsu and Li, IntechOpen 2012, Fig 13",
+        "license": "CC BY 3.0",
+        "url": "https://www.intechopen.com/chapters/27773"
+       }
+      ]
+     },
+     {
+      "heading": "Endocervical AIS",
+      "points": [
+       "Crowded sheets, strips and rosettes; pseudostratification and feathering at the edges",
+       "Elongated hyperchromatic nuclei with evenly dispersed, coarsely granular chromatin; nucleoli small or absent",
+       "Mitoses and apoptotic bodies; the background is usually clean"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/ais_crowded_group.jpg",
+        "caption": "AIS: a crowded group of columnar cells with elongated, overlapping hyperchromatic nuclei, beside superficial squamous cells (ThinPrep).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Pap_(ThinPrep)_Adenocarcinoma_in_situ_(1799754415).jpg"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/ais_feathering.jpg",
+        "caption": "AIS: a crowded strip with pseudostratification and a feathered edge; elongated hyperchromatic nuclei without nucleoli. Called AGC, favour neoplastic, on two fragments; AIS on histology (Pap stain, x200).",
+        "credit": "Lai, Hsu and Li, IntechOpen 2012, Fig 11",
+        "license": "CC BY 3.0",
+        "url": "https://www.intechopen.com/chapters/27773"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/ais_three_dimensional.jpg",
+        "caption": "AIS: a three-dimensional group of crowded columnar cells with hyperchromatic nuclei (ThinPrep).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Adenocarcinoma_in_Situ_of_the_Cervix_(5477438226).jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Adenocarcinoma",
+      "points": [
+       "Endocervical: abundant cells in sheets, strips and three-dimensional clusters; enlarged pleomorphic nuclei, irregular chromatin with clearing, macronucleoli; tumour diathesis",
+       "Endometrial: fewer cells, singly or in small three-dimensional clusters; vacuolated cytoplasm, nucleoli; a finely granular, watery diathesis",
+       "Extrauterine: a clean background, papillary groups or psammoma bodies"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/adenocarcinoma_endocervical_vacuolated.jpg",
+        "caption": "Endocervical adenocarcinoma: a crowded three-dimensional cluster of malignant cells with mucin-filled cytoplasmic vacuoles; a normal intermediate cell lies to the right (Pap stain).",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Adenocarcinoma_on_pap_test_1.jpg"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/adenocarcinoma_endocervical_mucin.jpg",
+        "caption": "Endocervical adenocarcinoma: mucin streaks with necrotic mucinous cells, like an ileal conduit urine, a background that points to an endocervical primary (Pap stain, x200).",
+        "credit": "Lai, Hsu and Li, IntechOpen 2012, Fig 5",
+        "license": "CC BY 3.0",
+        "url": "https://www.intechopen.com/chapters/27773"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/adenocarcinoma_serous_endometrial.jpg",
+        "caption": "Endometrial serous carcinoma on a Pap test: a small cluster of cells with large pleomorphic nuclei and prominent nucleoli, beside superficial squamous cells (Pap stain).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Serous_carcinoma_-_Pap_--_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/adenocarcinoma_endometrial_diathesis.jpg",
+        "caption": "Endometrial debris: a watery diathesis with foamy histiocytes, degenerate necrotic debris and phagocytosis, a pattern that points to an endometrial lesion (Pap stain, x400).",
+        "credit": "Lai, Hsu and Li, IntechOpen 2012, Fig 4",
+        "license": "CC BY 3.0",
+        "url": "https://www.intechopen.com/chapters/27773"
+       }
+      ]
+     }
+    ]
+   }
   },
   {
    "id": "glandularOrigin",
@@ -159,6 +445,339 @@
    }
   },
   {
+   "id": "extent",
+   "label": "Abnormal cells",
+   "type": "select",
+   "options": [
+    "Occasional",
+    "A few",
+    "Scattered",
+    "Numerous"
+   ],
+   "default": "Scattered",
+   "group": "Microscopy",
+   "showIf": {
+    "field": "interpretation",
+    "is": [
+     "Atypical squamous cells of undetermined significance (ASC-US)",
+     "Atypical squamous cells, cannot exclude HSIL (ASC-H)",
+     "Low grade squamous intraepithelial lesion (LSIL)",
+     "High grade squamous intraepithelial lesion (HSIL)",
+     "HSIL with features suspicious for invasion",
+     "Squamous cell carcinoma"
+    ]
+   }
+  },
+  {
+   "id": "ascusFeatures",
+   "label": "ASC-US features",
+   "type": "multiselect",
+   "options": [
+    "Mild nuclear enlargement",
+    "Slightly raised N:C ratio",
+    "Mild hyperchromasia",
+    "Slightly irregular nuclear outlines",
+    "Binucleation",
+    "Ill-defined perinuclear halos",
+    "Atypical parakeratosis"
+   ],
+   "default": [
+    "Mild nuclear enlargement",
+    "Slightly raised N:C ratio",
+    "Mild hyperchromasia"
+   ],
+   "group": "Microscopy",
+   "showIf": {
+    "field": "interpretation",
+    "is": [
+     "Atypical squamous cells of undetermined significance (ASC-US)"
+    ]
+   },
+   "help": "Bethesda 2014: changes suggestive of LSIL but insufficient in degree or extent. Mature (superficial or intermediate) cells with nuclei 2.5 to 3 times the area of an intermediate nucleus (about 35 µm²) and a slightly raised N:C ratio; minimal hyperchromasia and irregularity of chromatin or outline. Atypical parakeratosis (miniature cells with dense orangeophilic cytoplasm and atypical nuclei) may qualify. Prints as a sentence before the interpretation."
+  },
+  {
+   "id": "aschFeatures",
+   "label": "ASC-H features",
+   "type": "multiselect",
+   "options": [
+    "Immature metaplastic-type cells",
+    "Single cells",
+    "Small groups",
+    "Crowded sheets",
+    "High N:C ratio",
+    "Hyperchromasia",
+    "Irregular nuclear outlines"
+   ],
+   "default": [
+    "Immature metaplastic-type cells",
+    "Single cells",
+    "Small groups",
+    "High N:C ratio",
+    "Hyperchromasia"
+   ],
+   "group": "Microscopy",
+   "showIf": {
+    "field": "interpretation",
+    "is": [
+     "Atypical squamous cells, cannot exclude HSIL (ASC-H)"
+    ]
+   },
+   "help": "Bethesda 2014: changes suggestive of HSIL but insufficient for a definitive interpretation. Usually few cells, singly or in small groups, the size of metaplastic cells, with nuclei 1.5 to 2.5 times a normal metaplastic nucleus and an N:C ratio approaching that of HSIL. Patterns include atypical immature metaplasia, crowded sheets, atypical repair and atrophy-like cells."
+  },
+  {
+   "id": "lsilFeatures",
+   "label": "LSIL features",
+   "type": "multiselect",
+   "options": [
+    "Koilocytosis",
+    "Nuclear enlargement",
+    "Hyperchromasia",
+    "Irregular nuclear outlines",
+    "Binucleation",
+    "Smudged chromatin",
+    "Dense orangeophilic cytoplasm"
+   ],
+   "default": [
+    "Koilocytosis",
+    "Nuclear enlargement",
+    "Hyperchromasia",
+    "Irregular nuclear outlines",
+    "Binucleation"
+   ],
+   "group": "Microscopy",
+   "showIf": {
+    "field": "interpretation",
+    "is": [
+     "Low grade squamous intraepithelial lesion (LSIL)"
+    ]
+   },
+   "help": "Bethesda 2014: changes in mature (superficial or intermediate) cells, singly or in sheets. Nuclear enlargement more than 3 times an intermediate nucleus, hyperchromasia, uniformly dense or smudged chromatin and irregular outlines; bi- and multinucleation are common. Koilocytosis (a sharply defined perinuclear cavity with a dense peripheral rim) is common but not required; the nuclear changes are."
+  },
+  {
+   "id": "hsilFeatures",
+   "label": "HSIL features",
+   "type": "multiselect",
+   "options": [
+    "Single cells",
+    "Sheets",
+    "Syncytial aggregates",
+    "High N:C ratio",
+    "Hyperchromasia",
+    "Irregular nuclear membranes",
+    "Coarse chromatin",
+    "Keratinised cytoplasm"
+   ],
+   "default": [
+    "Single cells",
+    "Syncytial aggregates",
+    "High N:C ratio",
+    "Hyperchromasia",
+    "Irregular nuclear membranes",
+    "Coarse chromatin"
+   ],
+   "group": "Microscopy",
+   "showIf": {
+    "field": "interpretation",
+    "is": [
+     "High grade squamous intraepithelial lesion (HSIL)",
+     "HSIL with features suspicious for invasion"
+    ]
+   },
+   "help": "Bethesda 2014: smaller, less mature cells (lacy, delicate or dense metaplastic cytoplasm, occasionally keratinised), singly, in sheets or in syncytial aggregates. Nuclear enlargement like LSIL but with less cytoplasm, so a much higher N:C ratio; hyperchromasia, fine or coarsely granular chromatin and marked irregularity of the nuclear membrane; nucleoli are generally absent."
+  },
+  {
+   "id": "invasionFeatures",
+   "label": "Features suspicious for invasion",
+   "type": "multiselect",
+   "options": [
+    "Tumour diathesis",
+    "Prominent nucleoli",
+    "Irregular chromatin distribution",
+    "Bizarre keratinised cells"
+   ],
+   "default": [
+    "Tumour diathesis"
+   ],
+   "group": "Microscopy",
+   "showIf": {
+    "field": "interpretation",
+    "is": [
+     "HSIL with features suspicious for invasion"
+    ]
+   },
+   "help": "Bethesda 2014: HSIL with features suspicious for invasion when a tumour diathesis, macronucleoli or irregularly distributed chromatin is present without the features of frank carcinoma. Tick what raised the suspicion; it prints after the HSIL description."
+  },
+  {
+   "id": "sccFeatures",
+   "label": "Squamous carcinoma features",
+   "type": "multiselect",
+   "options": [
+    "Single cells",
+    "Syncytial aggregates",
+    "Bizarre (caudate, spindle) shapes",
+    "Keratinised cytoplasm",
+    "High N:C ratio",
+    "Hyperchromatic opaque nuclei",
+    "Coarse chromatin",
+    "Prominent nucleoli",
+    "Tumour diathesis"
+   ],
+   "default": [
+    "Single cells",
+    "Syncytial aggregates",
+    "High N:C ratio",
+    "Coarse chromatin",
+    "Prominent nucleoli",
+    "Tumour diathesis"
+   ],
+   "group": "Microscopy",
+   "showIf": {
+    "field": "interpretation",
+    "is": [
+     "Squamous cell carcinoma"
+    ]
+   },
+   "help": "Keratinising: mostly single cells with bizarre (caudate, spindle) shapes, dense orangeophilic cytoplasm and opaque hyperchromatic nuclei; the diathesis may be slight. Non-keratinising: single cells or syncytial aggregates with cyanophilic cytoplasm, coarsely clumped irregular chromatin, prominent nucleoli and a tumour diathesis (granular necrotic debris and old blood)."
+  },
+  {
+   "id": "agcFeatures",
+   "label": "AGC features",
+   "type": "multiselect",
+   "options": [
+    "Crowded sheets and strips",
+    "Small groups",
+    "Nuclear overlap",
+    "Pseudostratification",
+    "Enlarged nuclei",
+    "Mild hyperchromasia",
+    "Small nucleoli",
+    "Vacuolated cytoplasm",
+    "Mitotic figures"
+   ],
+   "default": [
+    "Crowded sheets and strips",
+    "Nuclear overlap",
+    "Enlarged nuclei",
+    "Mild hyperchromasia"
+   ],
+   "group": "Microscopy",
+   "showIf": {
+    "all": [
+     {
+      "field": "interpretation",
+      "is": [
+       "Atypical glandular cells (AGC)",
+       "Atypical glandular cells, favour neoplastic"
+      ]
+     },
+     {
+      "field": "glandularOrigin",
+      "not": "Endometrial"
+     }
+    ]
+   },
+   "help": "Bethesda 2014, endocervical: sheets and strips with nuclear crowding and overlap or pseudostratification; nuclei 3 to 5 times the area of normal endocervical nuclei, mild hyperchromasia, occasional nucleoli, rare mitoses; cell borders often discernible. Favour neoplastic falls just short of AIS or adenocarcinoma, in quantity or quality (rosettes, feathering, more crowding). Shown for origin not otherwise specified, endocervical and extrauterine."
+  },
+  {
+   "id": "agcEndometrialFeatures",
+   "label": "AGC features (endometrial)",
+   "type": "multiselect",
+   "options": [
+    "Small groups",
+    "Enlarged nuclei",
+    "Mild hyperchromasia",
+    "Small nucleoli",
+    "Vacuolated cytoplasm",
+    "Ill-defined cell borders"
+   ],
+   "default": [
+    "Small groups",
+    "Enlarged nuclei",
+    "Mild hyperchromasia",
+    "Vacuolated cytoplasm"
+   ],
+   "group": "Microscopy",
+   "showIf": {
+    "all": [
+     {
+      "field": "interpretation",
+      "is": [
+       "Atypical glandular cells (AGC)",
+       "Atypical glandular cells, favour neoplastic"
+      ]
+     },
+     {
+      "field": "glandularOrigin",
+      "is": "Endometrial"
+     }
+    ]
+   },
+   "help": "Bethesda 2014, endometrial: small groups, usually of 5 to 10 cells; nuclei slightly enlarged compared with normal endometrial cells, mild hyperchromasia, small nucleoli; scant, occasionally vacuolated cytoplasm and ill-defined cell borders."
+  },
+  {
+   "id": "aisFeatures",
+   "label": "AIS features",
+   "type": "multiselect",
+   "options": [
+    "Crowded sheets and strips",
+    "Feathering",
+    "Rosettes",
+    "Elongated pseudostratified nuclei",
+    "Hyperchromasia",
+    "Coarse chromatin",
+    "Mitotic figures",
+    "Apoptotic bodies",
+    "Clean background"
+   ],
+   "default": [
+    "Crowded sheets and strips",
+    "Feathering",
+    "Elongated pseudostratified nuclei",
+    "Hyperchromasia",
+    "Mitotic figures",
+    "Apoptotic bodies"
+   ],
+   "group": "Microscopy",
+   "showIf": {
+    "field": "interpretation",
+    "is": [
+     "Endocervical adenocarcinoma in situ (AIS)"
+    ]
+   },
+   "help": "Bethesda 2014: crowded sheets, strips and rosettes with nuclear pseudostratification and feathering at the edges; enlarged, elongated, hyperchromatic nuclei with evenly dispersed, coarsely granular chromatin; nucleoli small or inconspicuous; mitoses and apoptotic bodies common; the background is usually clean, without a tumour diathesis."
+  },
+  {
+   "id": "adenoFeatures",
+   "label": "Adenocarcinoma features",
+   "type": "multiselect",
+   "options": [
+    "Three-dimensional clusters",
+    "Sheets and strips",
+    "Papillary groups",
+    "Single cells",
+    "Enlarged pleomorphic nuclei",
+    "Irregular chromatin with clearing",
+    "Prominent nucleoli",
+    "Vacuolated cytoplasm",
+    "Tumour diathesis",
+    "Watery diathesis",
+    "Psammoma bodies"
+   ],
+   "default": [
+    "Three-dimensional clusters",
+    "Enlarged pleomorphic nuclei",
+    "Prominent nucleoli"
+   ],
+   "group": "Microscopy",
+   "showIf": {
+    "field": "interpretation",
+    "is": [
+     "Adenocarcinoma"
+    ]
+   },
+   "help": "Endocervical: abundant abnormal cells in sheets, strips and three-dimensional clusters; enlarged pleomorphic nuclei, irregular chromatin with parachromatin clearing, macronucleoli and a tumour diathesis. Endometrial: fewer cells, singly or in small three-dimensional clusters, with nucleoli, vacuolated cytoplasm and a finely granular, watery diathesis. Extrauterine: a clean background, papillary groups or psammoma bodies."
+  },
+  {
    "id": "features",
    "label": "Organisms and non-neoplastic findings",
    "type": "multiselect",
@@ -168,16 +787,228 @@
     "Shift in flora suggestive of bacterial vaginosis",
     "Actinomyces",
     "Herpes simplex virus changes",
+    "Cytomegalovirus changes",
     "Reactive changes (inflammation)",
     "Reactive changes (repair)",
+    "Lymphocytic (follicular) cervicitis",
+    "Reactive changes (radiation)",
     "Reactive changes (IUD)",
     "Atrophy",
+    "Keratotic changes",
+    "Tubal metaplasia",
     "Endometrial cells (45 or older)",
-    "Glandular cells post hysterectomy",
-    "Koilocytes"
+    "Glandular cells post hysterectomy"
    ],
    "default": [],
-   "group": "Microscopy"
+   "group": "Microscopy",
+   "help": "Bethesda 2014 organisms and other non-neoplastic findings; each prints as a short description of what was seen. Reporting reactive change is optional. Endometrial cells are reported in women aged 45 or older. Koilocytosis is described under LSIL.",
+   "reference": {
+    "title": "Organisms and non-neoplastic findings",
+    "intro": "Criteria from The Bethesda System (2014). Organisms are reported under NILM; reporting reactive change is optional.",
+    "columns": 3,
+    "groups": [
+     {
+      "heading": "Trichomonas vaginalis",
+      "points": [
+       "Pear-shaped, oval or round cyanophilic organisms, 15 to 30 µm, with a pale, eccentric nucleus and eosinophilic cytoplasmic granules",
+       "Flagella are seldom seen; neutrophils, small perinuclear halos and Leptothrix often accompany them"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/trichomonas_organisms.jpg",
+        "caption": "Trichomonas vaginalis: pear-shaped and oval cyanophilic organisms with pale, eccentric nuclei among squamous cells (Pap stain).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Trichomonas_-_Pap_-_3_--_very_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/trichomonas_inflammation.jpg",
+        "caption": "Trichomonas vaginalis with neutrophils among squamous cells (Pap stain, x400).",
+        "credit": "Alex_brollo, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Pap_test_trichomonas.JPG"
+       }
+      ]
+     },
+     {
+      "heading": "Candida",
+      "points": [
+       "Budding yeasts (3 to 7 µm) and pseudohyphae, eosinophilic to grey-brown",
+       "Pseudohyphae may spear stacked squamous cells (shish kebab)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/candida_pseudohyphae.jpg",
+        "caption": "Candida: a tangle of pseudohyphae and budding yeasts among squamous cells (liquid-based preparation).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Candida,_Liquid-based_Pap_(3952574619).jpg"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/candida_spears.jpg",
+        "caption": "Candida: pseudohyphae among squamous cells and neutrophils (Pap stain).",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Candida_-_Pap_test_--_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Shift in flora (bacterial vaginosis)",
+      "points": [
+       "Filmy background of small coccobacilli, with few or no lactobacilli",
+       "Clue cells: squamous cells coated by coccobacilli that obscure the cell membrane"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/flora_normal_and_bv.jpg",
+        "caption": "Normal flora (lactobacilli, left) compared with bacterial vaginosis (coccobacilli coating a squamous cell, right) (Pap stain).",
+        "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+        "license": "CC0 1.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Normal_vaginal_flora_versus_bacterial_vaginosis_on_Pap_stain.jpg"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/flora_clue_cells.jpg",
+        "caption": "Clue cells: squamous cells covered by coccobacilli that obscure the cell borders, in a filmy background (Pap stain).",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Clue_cells_-_Pap_test_--_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Actinomyces",
+      "points": [
+       "Tangled clumps of filamentous organisms (cotton balls), often with acute-angle branching and radiating filaments",
+       "Usually seen with an intrauterine device"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/actinomyces.jpg",
+        "caption": "Actinomyces: a dense, tangled cotton-ball cluster of filamentous organisms with radiating filaments at its edge (Pap stain).",
+        "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+        "license": "CC0 1.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Actinomyces_on_Pap_test.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Herpes simplex virus",
+      "points": [
+       "Multinucleation, moulding and chromatin margination, giving ground-glass nuclei",
+       "Dense eosinophilic intranuclear (Cowdry A) inclusions in some cells"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/hsv_annotated.jpg",
+        "caption": "Herpes simplex: multinucleation, nuclear moulding, chromatin margination and Cowdry A intranuclear inclusions (annotated, Pap stain).",
+        "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+        "license": "CC0 1.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Cytology_of_herpes_simplex_on_Pap_test.png"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/hsv_multinucleated.jpg",
+        "caption": "Herpes simplex: multinucleated cells with moulded, ground-glass nuclei (ThinPrep).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Herpes_infection_on_ThinPrep_Pap_smear_(4131420362).jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Cytomegalovirus",
+      "points": [
+       "Enlarged cells, usually endocervical, with a large eosinophilic intranuclear inclusion and a clear halo",
+       "Small granular cytoplasmic inclusions may be present"
+      ]
+     },
+     {
+      "heading": "Reactive and reparative change",
+      "points": [
+       "Inflammation: nuclei 1.5 to 2 times an intermediate nucleus, smooth outlines, fine chromatin; nucleoli and cytoplasmic halos may be present",
+       "Repair: flat cohesive sheets with streaming (school-of-fish) nuclei, distinct borders and prominent nucleoli; few single cells",
+       "Lymphocytic (follicular) cervicitis: polymorphous lymphoid cells with tingible-body macrophages"
+      ]
+     },
+     {
+      "heading": "Radiation and IUD effects",
+      "points": [
+       "Radiation: marked cell enlargement without a raised N:C ratio; vacuolated or polychromatic cytoplasm, bi- and multinucleation, degenerate nuclei",
+       "IUD: small groups of vacuolated glandular cells (signet-ring forms) and single cells with a high N:C ratio that can mimic HSIL"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/iud_vacuolated_group.jpg",
+        "caption": "IUD-associated change: a small three-dimensional group of endometrial cells with cytoplasmic vacuolation and slightly enlarged hyperchromatic nuclei, called AGC-NOS before the IUD was known (Pap stain, x400).",
+        "credit": "Lai, Hsu and Li, IntechOpen 2012, Fig 10",
+        "license": "CC BY 3.0",
+        "url": "https://www.intechopen.com/chapters/27773"
+       }
+      ]
+     },
+     {
+      "heading": "Atrophy",
+      "points": [
+       "Flat sheets of parabasal cells with preserved polarity; nuclei may enlarge, with slight hyperchromasia",
+       "A granular basophilic background, blue blobs and inflammation are common"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/atrophy_parabasal.jpg",
+        "caption": "Atrophy in a postmenopausal woman: a flat sheet of parabasal cells with evenly spaced nuclei and preserved polarity (Pap stain, x400).",
+        "credit": "Alex_brollo, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Pap_test_atropy.JPG"
+       }
+      ]
+     },
+     {
+      "heading": "Endometrial cells (45 or older)",
+      "points": [
+       "Small, tight three-dimensional clusters; nuclei about the size of an intermediate nucleus, with scant cytoplasm and apoptotic debris",
+       "Reported in women aged 45 or older"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/endometrial_cells_cluster.jpg",
+        "caption": "Exfoliated endometrial cells: a small, tight three-dimensional ball of cells with scant cytoplasm, beside a superficial squamous cell (Pap stain).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Endometrial_cells_on_Pap_--_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/cervical_cytology/endometrial_cells_thinprep.jpg",
+        "caption": "Endometrial cells in a woman over 40: a tight three-dimensional group of small cells with dark nuclei and scant cytoplasm (Pap stain).",
+        "credit": "Keleş et al., Turk Patoloji Derg 2022, Fig 2",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10508401/"
+       }
+      ]
+     },
+     {
+      "heading": "Keratotic change and tubal metaplasia",
+      "points": [
+       "Hyperkeratosis: anucleate squames; parakeratosis: miniature superficial cells with dense orangeophilic cytoplasm and pyknotic nuclei",
+       "Tubal metaplasia: columnar cells with cilia and terminal bars; crowded, pseudostratified groups can mimic AIS"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/cervical_cytology/agc_mimic_tubal_metaplasia.jpg",
+        "caption": "Tubal metaplasia mimicking AIS, with milder crowding, elongation and stratification; no cilia were found and it was called AGC-NOS, endocervical (Pap stain, x400).",
+        "credit": "Lai, Hsu and Li, IntechOpen 2012, Fig 12",
+        "license": "CC BY 3.0",
+        "url": "https://www.intechopen.com/chapters/27773"
+       }
+      ]
+     },
+     {
+      "heading": "Glandular cells post hysterectomy",
+      "points": [
+       "Benign-appearing glandular cells in a vaginal vault sample after hysterectomy"
+      ]
+     }
+    ]
+   }
   },
   {
    "id": "hpv",
@@ -277,6 +1108,70 @@
      "inadequacyReason": "Scant squamous cellularity",
      "interpretation": "Negative for intraepithelial lesion or malignancy",
      "glandularOrigin": "Not otherwise specified",
+     "extent": "Scattered",
+     "ascusFeatures": [
+      "Mild nuclear enlargement",
+      "Slightly raised N:C ratio",
+      "Mild hyperchromasia"
+     ],
+     "aschFeatures": [
+      "Immature metaplastic-type cells",
+      "Single cells",
+      "Small groups",
+      "High N:C ratio",
+      "Hyperchromasia"
+     ],
+     "lsilFeatures": [
+      "Koilocytosis",
+      "Nuclear enlargement",
+      "Hyperchromasia",
+      "Irregular nuclear outlines",
+      "Binucleation"
+     ],
+     "hsilFeatures": [
+      "Single cells",
+      "Syncytial aggregates",
+      "High N:C ratio",
+      "Hyperchromasia",
+      "Irregular nuclear membranes",
+      "Coarse chromatin"
+     ],
+     "invasionFeatures": [
+      "Tumour diathesis"
+     ],
+     "sccFeatures": [
+      "Single cells",
+      "Syncytial aggregates",
+      "High N:C ratio",
+      "Coarse chromatin",
+      "Prominent nucleoli",
+      "Tumour diathesis"
+     ],
+     "agcFeatures": [
+      "Crowded sheets and strips",
+      "Nuclear overlap",
+      "Enlarged nuclei",
+      "Mild hyperchromasia"
+     ],
+     "agcEndometrialFeatures": [
+      "Small groups",
+      "Enlarged nuclei",
+      "Mild hyperchromasia",
+      "Vacuolated cytoplasm"
+     ],
+     "aisFeatures": [
+      "Crowded sheets and strips",
+      "Feathering",
+      "Elongated pseudostratified nuclei",
+      "Hyperchromasia",
+      "Mitotic figures",
+      "Apoptotic bodies"
+     ],
+     "adenoFeatures": [
+      "Three-dimensional clusters",
+      "Enlarged pleomorphic nuclei",
+      "Prominent nucleoli"
+     ],
      "features": [
       "Reactive changes (inflammation)"
      ],

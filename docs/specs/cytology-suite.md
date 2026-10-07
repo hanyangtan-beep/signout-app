@@ -1,6 +1,6 @@
 # Cytology suite — build record
 
-Shipped 2026-09-11. Six templates, kind `cytology`, system Cytology, one shared generator (`generators/cytology.js`). Schemas are written by `scripts/gen-cytology-schemas.py` (re-run it after editing; do not hand-edit the JSON). No rapid on-site evaluation fields: the service does not offer ROSE, so adequacy is assessed on the final preparations only.
+Shipped 2026-09-11. Six templates, kind `cytology`, system Cytology, one shared generator (`generators/cytology.js`). Schemas are written by `scripts/gen-cytology-schemas.py` (re-run it after editing; do not hand-edit the JSON). Exception: `cervical_cytology.json` is hand-edited since Phase 55 (2026-10-07) and the script skips it; see `docs/specs/cervical-cytology-descriptions.md`. No rapid on-site evaluation fields: the service does not offer ROSE, so adequacy is assessed on the final preparations only.
 
 ## Templates
 
@@ -24,7 +24,7 @@ Shipped 2026-09-11. Six templates, kind `cytology`, system Cytology, one shared 
 ## Checks
 
 - Adequacy inadequate / unsatisfactory with a diagnostic category, or nondiagnostic category with adequate material → error.
-- PTC nuclear features ticked under Bethesda II → warning; HGUC without the required nuclear criteria (N:C ≥ 0.7 plus hyperchromasia / irregular membranes / coarse chromatin) → warning; malignant categories without a stated type → warning; cervical HSIL/ASC-H with negative HPV → warning.
+- PTC nuclear features ticked under Bethesda II → warning; HGUC without the required nuclear criteria (N:C ≥ 0.7 plus hyperchromasia / irregular membranes / coarse chromatin) → warning; malignant categories without a stated type → warning; cervical HSIL/ASC-H with negative HPV → warning (Phase 55 adds HSIL-inv and SCC, and the cervical description Checks in `docs/specs/cervical-cytology-descriptions.md`).
 
 ## Sources
 

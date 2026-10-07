@@ -38,7 +38,8 @@ test('six cytology templates are registered under kind cytology / system Cytolog
     assert.equal(t.schema.system, 'Cytology');
     assert.equal(t.schema.generator, 'cytology');
     assert.ok(t.schema.example, `${id} has an example`);
-    assert.ok(!JSON.stringify(t.schema).match(/on-site|ROSE/i), `${id} has no rapid on-site evaluation wording`);
+    // \bROSE\b, not ROSE: "rosettes" (cervical AIS features, Phase 55) is not on-site evaluation.
+    assert.ok(!JSON.stringify(t.schema).match(/on-site|\bROSE\b/i), `${id} has no rapid on-site evaluation wording`);
   }
 });
 
@@ -137,7 +138,8 @@ test('urine: Paris 2.0 NHGUC default, LGUN flag under NHGUC, high grade features
 test('cervical: adequacy clause with TZ status, NILM with organisms, HSIL colposcopy comment, unsatisfactory', () => {
   const out = fromExample('cervical_cytology');
   assert.equal(out.specimens, 'Cervix, liquid-based cytology');
-  assert.equal(out.microscopy, 'The liquid-based preparation is satisfactory for evaluation, with an endocervical/transformation zone component present, and shows reactive cellular changes associated with inflammation. HPV testing: negative for high-risk HPV. There is no intraepithelial lesion or malignancy.');
+  // Phase 55: each finding prints as its own descriptive sentence after the adequacy sentence.
+  assert.equal(out.microscopy, 'The liquid-based preparation is satisfactory for evaluation, with an endocervical/transformation zone component present. Reactive cellular changes associated with inflammation are seen, with mild nuclear enlargement, smooth nuclear outlines, fine chromatin and small nucleoli. HPV testing: negative for high-risk HPV. There is no intraepithelial lesion or malignancy.');
   assert.equal(out.diagnosis, 'CERVIX, liquid-based cytology - NEGATIVE FOR INTRAEPITHELIAL LESION OR MALIGNANCY (NILM)');
   const tv = fromExample('cervical_cytology', { features: ['Trichomonas vaginalis'], hpv: 'Not performed' });
   assert.equal(tv.diagnosis, 'CERVIX, liquid-based cytology - NEGATIVE FOR INTRAEPITHELIAL LESION OR MALIGNANCY; Trichomonas vaginalis (NILM)');

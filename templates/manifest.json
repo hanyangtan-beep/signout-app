@@ -6399,7 +6399,7 @@
           "smear"
         ]
       },
-      "version": 1,
+      "version": "2026.10",
       "generator": "cytology",
       "generatorPath": "generators/cytology.js",
       "schemaPath": "schemas/cervical_cytology.json"
