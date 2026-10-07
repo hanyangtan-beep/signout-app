@@ -1,6 +1,11 @@
 // Gastric biopsy generator. Ported from legacy/gastric-legacy.cjs (v8 wording).
 // Pure functions: (part, ctx) -> string. `part.values` holds the schema field values.
 // Wording is protected by tests/fixtures/gastric — change it only deliberately.
+// Polyps, typed carcinoma and the biomarker panel live in generators/gastric_lesions.js
+// (2026-10-07, docs/specs/gastric-biopsy-polyps-carcinoma.md); they print nothing until set.
+
+import { checks } from './_house.js';
+import { polypOf, polypLines, dysplasiaValue, biomarkerLines, lesionHead, lesionChecks } from './gastric_lesions.js';
 
 const low = (v) => String(v || '').trim().toLowerCase();
 const present = (v) => v && v !== 'Absent';
@@ -161,7 +166,9 @@ export function microscopy(part) {
     `- Evidence of ulcer / erosion: ${s.ulcer}`,
     `- Intestinal metaplasia: ${imText}`,
     ...(stain ? [`- Mucin histochemistry: ${stain}`] : []),
-    `- Dysplasia / malignancy: ${s.dysplasia}`,
+    ...polypLines(s),
+    `- Dysplasia / malignancy: ${dysplasiaValue(s)}`,
+    ...biomarkerLines(s),
     `- Helicobacter pylori: ${s.hp}`
   ];
   if (note !== '') lines.push(`- Additional notes: ${note}`);
@@ -175,7 +182,7 @@ export function microscopy(part) {
  */
 export function isNormal(s) {
   return !present(s.chronic) && !present(s.activity) && !hpPresent(s.hp) && s.follicles !== 'Present'
-    && !present(s.atrophy) && s.ulcer !== 'Present' && !present(s.imDegree) && (s.dysplasia === 'Absent' || !s.dysplasia);
+    && !present(s.atrophy) && s.ulcer !== 'Present' && !present(s.imDegree) && (s.dysplasia === 'Absent' || !s.dysplasia) && !polypOf(s);
 }
 
 /**
@@ -187,12 +194,43 @@ export function isNormal(s) {
  */
 const noGastritis = (s) => !present(s.chronic) && !present(s.activity) && !hpPresent(s.hp);
 
+/** The gastritis phrase, or '' when no chronic inflammation, activity or Helicobacter is recorded. */
+function gastritisPhrase(s) {
+  if (hpPresent(s.hp)) return 'HELICOBACTER ASSOCIATED CHRONIC ' + (present(s.activity) ? 'ACTIVE ' : '') + 'GASTRITIS';
+  if (present(s.activity)) return 'CHRONIC ACTIVE GASTRITIS';
+  if (present(s.chronic)) return 'CHRONIC GASTRITIS, inactive, Helicobacter-negative';
+  return '';
+}
+
+/**
+ * "with ULCER" attaches to the gastritis it complicates, except after the inactive phrase, which
+ * already ends on its Helicobacter clause and takes "; ULCER". Everything else opens its own clause.
+ * Fixed 2026-10-07 (fixture 03 re-captured): the Helicobacter line ran on as "GASTRITIS moderate
+ * INTESTINAL METAPLASIA" when there was no ulcer, and the other lines read "GASTRITIS; with ULCER".
+ */
+const ulcerClause = (gastritis) => (/Helicobacter-negative$/.test(gastritis) ? '; ULCER' : ' with ULCER');
+
+/**
+ * A polyp or a typed carcinoma leads the line; the background gastritis, intestinal metaplasia and
+ * atrophy follow only when they are recorded. No trailing "Helicobacter-negative" when nothing else
+ * is recorded: "FUNDIC GLAND POLYP" (2026-10-07; the house polyp lines rarely state it).
+ */
+function lesionLine(s, lesion) {
+  const g = gastritisPhrase(s);
+  const clauses = [g ? g + (s.ulcer === 'Present' ? ulcerClause(g) : '') : ''];
+  if (present(s.imDegree)) clauses.push(`${low(s.imDegree)} INTESTINAL METAPLASIA${imQualifier(s)}`);
+  if (present(s.atrophy)) clauses.push(`${low(s.atrophy)} ATROPHY`);
+  return [lesion, ...clauses].filter(Boolean).join('; ');
+}
+
 export function diagnosis(part, ctx) {
   const s = part.values;
   const parsed = ctx.prepared.sites;
   const verbatimSite = parsed[part.label] ? parsed[part.label] : (s.specimenName || mappedSite(s) || 'stomach');
   const site = low(verbatimSite);
   let line = `(${part.label}) ${ctx.schema.organ}, ${site}, ${ctx.schema.specimenNoun} - `;
+  const lesion = lesionHead(s);
+  if (lesion) return line + lesionLine(s, lesion);
   if (isNormal(s)) return `${line}NO SIGNIFICANT ABNORMALITY, Helicobacter-negative`;
   if (noGastritis(s)) {
     const items = [];
@@ -204,27 +242,25 @@ export function diagnosis(part, ctx) {
     if (!items.length) items.push('REACTIVE LYMPHOID FOLLICLE(S)');
     return `${line}${items.join('; ')}, Helicobacter-negative`;
   }
-  if (hpPresent(s.hp)) {
-    line += 'HELICOBACTER ASSOCIATED CHRONIC ' + (present(s.activity) ? 'ACTIVE ' : '') + 'GASTRITIS';
-  } else if (present(s.activity)) {
-    line += 'CHRONIC ACTIVE GASTRITIS';
-  } else {
-    line += 'CHRONIC GASTRITIS, inactive, Helicobacter-negative';
-  }
+  const gastritis = gastritisPhrase(s);
+  line += gastritis;
+  if (s.ulcer === 'Present') line += ulcerClause(gastritis);
   const extras = [];
-  if (s.ulcer === 'Present') extras.push('with ULCER');
   if (present(s.imDegree)) {
     extras.push(`${low(s.imDegree)} INTESTINAL METAPLASIA${imQualifier(s)}`);
   }
   if (present(s.atrophy)) extras.push(`${low(s.atrophy)} ATROPHY`);
   if (s.dysplasia !== 'Absent') extras.push(s.dysplasia.toUpperCase());
-  if (hpPresent(s.hp) && extras.length) {
-    line += ' ' + extras[0];
-    if (extras.length > 1) line += '; ' + extras.slice(1).join('; ');
-  } else if (!hpPresent(s.hp) && extras.length) {
-    line += '; ' + extras.join('; ');
-  }
+  if (extras.length) line += '; ' + extras.join('; ');
   return line;
 }
 
-export default { prepare, specimens, specimenName, microscopy, diagnosis, summary, flags };
+/** Checks for the polyp, carcinoma and biomarker fields (generators/gastric_lesions.js). */
+export function validate(part) {
+  const s = part.values;
+  const { out, at, err, warn } = checks();
+  lesionChecks(s, { err, warn, info: (m, f) => at('info', m, f) });
+  return out;
+}
+
+export default { prepare, specimens, specimenName, microscopy, diagnosis, summary, flags, validate };

@@ -1,6 +1,6 @@
 {
  "id": "gastric_biopsy",
- "version": "2026.09.2",
+ "version": "2026.10",
  "style": { "british": true },
  "name": "Gastric biopsy",
  "shortName": "Stomach · biopsy",
@@ -21,7 +21,13 @@
   "gastritis",
   "antrum",
   "body",
-  "fundus"
+  "fundus",
+  "gastric polyp",
+  "fundic gland polyp",
+  "hyperplastic polyp",
+  "gastric adenoma",
+  "HER2",
+  "claudin 18.2"
  ],
  "match": {
   "site": [
@@ -41,7 +47,8 @@
   "procedure": [
    "biopsy",
    "biopsies",
-   "OGD"
+   "OGD",
+   "polypectomy"
   ],
   "clinical": [
    "gastritis",
@@ -318,6 +325,87 @@
    "help": "Adds a histochemistry line to the microscopy when performed."
   },
   {
+   "id": "polyp",
+   "label": "Polyp / adenoma",
+   "type": "select",
+   "options": [
+    "None",
+    "Hyperplastic polyp",
+    "Fundic gland polyp",
+    "Intestinal-type adenoma",
+    "Foveolar-type adenoma",
+    "Pyloric gland adenoma",
+    "Oxyntic gland adenoma",
+    "Inflammatory fibroid polyp"
+   ],
+   "default": "None",
+   "help": "Leads the diagnosis line; grade any dysplasia in the field below.",
+   "reference": {
+    "title": "Gastric polyps and adenomas",
+    "intro": "Key features from Pathology Outlines, StatPearls and Gastric Adenomas and Mimickers (Diagnostics, 2026). Dysplasia, when present, is graded low or high. WHO 6th edition (2026) folds intestinal-type and foveolar-type adenomas into gastric dysplasia (MAPS III); pyloric and oxyntic gland adenomas stay separate.",
+    "columns": 3,
+    "groups": [
+     {
+      "heading": "Hyperplastic polyp",
+      "points": [
+       "Elongated, tortuous, cystically dilated foveolar pits with apical mucin",
+       "Oedematous, inflamed lamina propria with strands of smooth muscle",
+       "Regenerative atypia matures toward the surface; dysplasia involves the surface and begins abruptly"
+      ]
+     },
+     {
+      "heading": "Fundic gland polyp",
+      "points": [
+       "Cystically dilated oxyntic glands lined by parietal, chief and mucous foveolar cells",
+       "Parietal-cell hyperplasia with apocrine snouting on proton-pump inhibitors",
+       "Dysplasia is rare in sporadic polyps and commoner in FAP"
+      ]
+     },
+     {
+      "heading": "Intestinal-type adenoma",
+      "points": [
+       "Dysplastic columnar epithelium with goblet and Paneth cells; no apical mucin cap",
+       "MUC2 and CDX2 positive, with apical CD10",
+       "Background chronic gastritis with intestinal metaplasia may be present"
+      ]
+     },
+     {
+      "heading": "Foveolar-type adenoma",
+      "points": [
+       "Dysplastic foveolar epithelium with an apical mucin cap",
+       "Diffuse MUC5AC",
+       "Background mucosa usually without inflammation, atrophy or metaplasia; hybrid intestinal and gastric phenotypes occur"
+      ]
+     },
+     {
+      "heading": "Pyloric gland adenoma",
+      "points": [
+       "Closely packed pyloric-type glands with eosinophilic, ground-glass cytoplasm and no apical mucin cap",
+       "Diffuse MUC6; MUC5AC mostly confined to the surface",
+       "Seen without dysplasia or with low or high grade dysplasia, and can be associated with adenocarcinoma"
+      ]
+     },
+     {
+      "heading": "Oxyntic gland adenoma",
+      "points": [
+       "Deep-mucosal, branching and anastomosing glands of chief cells with basophilic cytoplasm",
+       "No more than mild atypia; the surface foveolae may be spared",
+       "Pepsinogen I and MUC6 positive; diffuse strong cyclin D1 helps separate it from normal oxyntic glands in biopsies",
+       "Submucosal invasion makes it an adenocarcinoma of fundic-gland type"
+      ]
+     },
+     {
+      "heading": "Inflammatory fibroid polyp",
+      "points": [
+       "Submucosal spindle and stellate cells with onion-skin cuffing of thin-walled vessels",
+       "Oedematous stroma rich in eosinophils; minimal mitotic activity",
+       "CD34 positive, KIT negative"
+      ]
+     }
+    ]
+   }
+  },
+  {
    "id": "dysplasia",
    "label": "Dysplasia / malignancy",
    "type": "select",
@@ -330,6 +418,590 @@
     "Malignancy present"
    ],
    "default": "Absent"
+  },
+  {
+   "id": "caType",
+   "label": "Carcinoma type (WHO)",
+   "type": "select",
+   "options": [
+    "",
+    "Adenocarcinoma",
+    "Tubular adenocarcinoma",
+    "Papillary adenocarcinoma",
+    "Poorly cohesive carcinoma, signet-ring cell type",
+    "Poorly cohesive carcinoma, non-signet-ring cell type",
+    "Mucinous adenocarcinoma",
+    "Mixed adenocarcinoma",
+    "Micropapillary adenocarcinoma",
+    "Adenocarcinoma of fundic-gland type",
+    "Hepatoid adenocarcinoma",
+    "Carcinoma with lymphoid stroma",
+    "Adenosquamous carcinoma",
+    "Squamous cell carcinoma",
+    "Undifferentiated carcinoma",
+    "Sarcomatoid carcinoma",
+    "Large cell neuroendocrine carcinoma",
+    "Small cell neuroendocrine carcinoma",
+    "Mixed neuroendocrine-non-neuroendocrine neoplasm",
+    "Other (specify)"
+   ],
+   "optionLabels": {
+    "": "Not specified",
+    "Adenocarcinoma": "Adenocarcinoma (subtype not assessable)",
+    "Mixed neuroendocrine-non-neuroendocrine neoplasm": "MiNEN (mixed neuroendocrine-non-neuroendocrine neoplasm)"
+   },
+   "default": "",
+   "showIf": {
+    "field": "dysplasia",
+    "is": [
+     "Intramucosal carcinoma",
+     "Malignancy present"
+    ]
+   },
+   "help": "WHO Digestive System Tumours, 6th edition (2026). Prints in place of the dysplasia / malignancy value, with a short morphology sentence."
+  },
+  {
+   "id": "caOther",
+   "label": "Carcinoma type (specify)",
+   "type": "text",
+   "placeholder": "Paneth cell carcinoma",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": [
+       "Intramucosal carcinoma",
+       "Malignancy present"
+      ]
+     },
+     {
+      "field": "caType",
+      "is": "Other (specify)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "caGrade",
+   "label": "Differentiation",
+   "type": "select",
+   "options": [
+    "",
+    "Well differentiated",
+    "Moderately differentiated",
+    "Poorly differentiated"
+   ],
+   "optionLabels": {
+    "": "Not stated"
+   },
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": [
+       "Intramucosal carcinoma",
+       "Malignancy present"
+      ]
+     },
+     {
+      "field": "caType",
+      "is": [
+       "Adenocarcinoma",
+       "Tubular adenocarcinoma",
+       "Papillary adenocarcinoma"
+      ]
+     }
+    ]
+   },
+   "help": "Tubular and papillary types, and adenocarcinoma whose subtype is not assessable. CAP grades by gland formation: well (more than 95% glands), moderately (50 to 95%) or poorly differentiated (49% or less)."
+  },
+  {
+   "id": "caLauren",
+   "label": "Lauren type",
+   "type": "select",
+   "options": [
+    "",
+    "Intestinal type",
+    "Diffuse type",
+    "Mixed type",
+    "Indeterminate type"
+   ],
+   "optionLabels": {
+    "": "Not stated"
+   },
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": [
+       "Intramucosal carcinoma",
+       "Malignancy present"
+      ]
+     },
+     {
+      "field": "caType",
+      "is": [
+       "Adenocarcinoma",
+       "Tubular adenocarcinoma",
+       "Papillary adenocarcinoma",
+       "Poorly cohesive carcinoma, signet-ring cell type",
+       "Poorly cohesive carcinoma, non-signet-ring cell type",
+       "Mucinous adenocarcinoma",
+       "Mixed adenocarcinoma",
+       "Micropapillary adenocarcinoma"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "her2",
+   "label": "HER2 IHC (4B5)",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "Pending",
+    "Score 0",
+    "Score 1+",
+    "Score 2+",
+    "Score 3+",
+    "Cannot be determined"
+   ],
+   "optionLabels": {
+    "Score 0": "0 (negative)",
+    "Score 1+": "1+ (negative)",
+    "Score 2+": "2+ (equivocal)",
+    "Score 3+": "3+ (positive)"
+   },
+   "default": "Not performed",
+   "showIf": {
+    "field": "dysplasia",
+    "is": [
+     "Intramucosal carcinoma",
+     "Malignancy present"
+    ]
+   },
+   "help": "Biopsy scoring: a cluster of at least 5 tumour cells, whatever the percentage stained (CAP).",
+   "reference": {
+    "title": "HER2 in gastric biopsies",
+    "intro": "CAP gastric HER2 template (ToGA criteria). Biopsy: a cancer-cell cluster of at least 5 cells, whatever the percentage stained; resection: 10% of cancer cells. Membranous staining only.",
+    "columns": 3,
+    "groups": [
+     {
+      "heading": "Score 0 (negative)",
+      "points": [
+       "No reactivity, or no membranous reactivity in any cancer cell"
+      ]
+     },
+     {
+      "heading": "Score 1+ (negative)",
+      "points": [
+       "A cluster with faint or barely perceptible membranous reactivity"
+      ]
+     },
+     {
+      "heading": "Score 2+ (equivocal)",
+      "points": [
+       "A cluster with weak to moderate complete, basolateral or lateral membranous reactivity",
+       "Reflex to ISH"
+      ]
+     },
+     {
+      "heading": "Score 3+ (positive)",
+      "points": [
+       "A cluster with strong complete, basolateral or lateral membranous reactivity"
+      ]
+     },
+     {
+      "heading": "Dual ISH",
+      "points": [
+       "Amplified at a HER2/CEP17 ratio of 2.0 or more",
+       "Record the average HER2 signals per cell and the ratio"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "her2Ish",
+   "label": "HER2 dual ISH",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "Pending",
+    "Not amplified",
+    "Amplified",
+    "Cannot be determined"
+   ],
+   "default": "Not performed",
+   "showIf": {
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": [
+       "Intramucosal carcinoma",
+       "Malignancy present"
+      ]
+     },
+     {
+      "field": "her2",
+      "is": [
+       "Score 2+",
+       "Cannot be determined"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "her2Ratio",
+   "label": "HER2/CEP17 ratio",
+   "type": "number",
+   "min": 0,
+   "step": 0.01,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": [
+       "Intramucosal carcinoma",
+       "Malignancy present"
+      ]
+     },
+     {
+      "field": "her2",
+      "is": [
+       "Score 2+",
+       "Cannot be determined"
+      ]
+     },
+     {
+      "field": "her2Ish",
+      "is": [
+       "Not amplified",
+       "Amplified"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "her2Copies",
+   "label": "Average HER2 signals per cell",
+   "type": "number",
+   "min": 0,
+   "step": 0.1,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": [
+       "Intramucosal carcinoma",
+       "Malignancy present"
+      ]
+     },
+     {
+      "field": "her2",
+      "is": [
+       "Score 2+",
+       "Cannot be determined"
+      ]
+     },
+     {
+      "field": "her2Ish",
+      "is": [
+       "Not amplified",
+       "Amplified"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "eber",
+   "label": "EBER ISH",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "Pending",
+    "Negative in tumour cells",
+    "Positive in tumour cells",
+    "Background lymphoid cells only",
+    "Cannot be determined"
+   ],
+   "optionLabels": {
+    "Background lymphoid cells only": "Positive in background lymphoid cells only"
+   },
+   "default": "Not performed",
+   "showIf": {
+    "field": "dysplasia",
+    "is": [
+     "Intramucosal carcinoma",
+     "Malignancy present"
+    ]
+   },
+   "reference": {
+    "title": "EBER in situ hybridisation",
+    "intro": "EBV-associated gastric carcinoma is defined by EBER in the tumour cells.",
+    "groups": [
+     {
+      "heading": "Positive",
+      "points": [
+       "Nuclear signal in the tumour cells",
+       "Common in carcinoma with lymphoid stroma: syncytial growth, poorly formed glands and a dense lymphoid stroma without desmoplasia"
+      ]
+     },
+     {
+      "heading": "Negative",
+      "points": [
+       "No signal in the tumour cells; positive background lymphoid cells alone do not make the carcinoma EBV-associated"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "mmr",
+   "label": "MMR IHC",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "Pending",
+    "Retained (MLH1, PMS2, MSH2, MSH6)",
+    "Loss of MLH1 and PMS2",
+    "Loss of MSH2 and MSH6",
+    "Isolated loss of PMS2",
+    "Isolated loss of MSH6"
+   ],
+   "default": "Not performed",
+   "showIf": {
+    "field": "dysplasia",
+    "is": [
+     "Intramucosal carcinoma",
+     "Malignancy present"
+    ]
+   }
+  },
+  {
+   "id": "pdl1",
+   "label": "PD-L1 IHC",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "Pending",
+    "Performed",
+    "Cannot be determined"
+   ],
+   "default": "Not performed",
+   "showIf": {
+    "field": "dysplasia",
+    "is": [
+     "Intramucosal carcinoma",
+     "Malignancy present"
+    ]
+   },
+   "help": "Prints the CPS with its clone and no positive or negative label: the cut-off depends on the drug.",
+   "reference": {
+    "title": "PD-L1 combined positive score",
+    "intro": "CPS: PD-L1-staining tumour cells, lymphocytes and macrophages, divided by the viable tumour cells, times 100 (22C3 gastric manual). Recorded from 0 to 100.",
+    "groups": [
+     {
+      "heading": "Cut-offs in use",
+      "points": [
+       "US labels for pembrolizumab and nivolumab in HER2-negative disease: CPS 1 or more (2025)",
+       "22C3 gastric manual: PD-L1 expression at CPS 1 or more",
+       "A 2026 biomarker review: pembrolizumab CPS 10 or more, nivolumab CPS 5 or more, tislelizumab tumour area positivity 5% or more",
+       "The QMH stomach biomarker page groups at CPS 10"
+      ]
+     },
+     {
+      "heading": "Clones",
+      "points": [
+       "The QMH page lists 22C3 (Dako) and E1L3N (Cell Signaling)",
+       "28-8 and SP263 are offered for results from other laboratories"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "pdl1Clone",
+   "label": "PD-L1 clone",
+   "type": "select",
+   "options": [
+    "22C3",
+    "28-8",
+    "SP263",
+    "E1L3N"
+   ],
+   "default": "22C3",
+   "showIf": {
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": [
+       "Intramucosal carcinoma",
+       "Malignancy present"
+      ]
+     },
+     {
+      "field": "pdl1",
+      "is": [
+       "Performed",
+       "Cannot be determined"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "pdl1Cps",
+   "label": "Combined positive score (CPS)",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": [
+       "Intramucosal carcinoma",
+       "Malignancy present"
+      ]
+     },
+     {
+      "field": "pdl1",
+      "is": "Performed"
+     }
+    ]
+   }
+  },
+  {
+   "id": "pdl1Tps",
+   "label": "Tumour proportion score (%, optional)",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": [
+       "Intramucosal carcinoma",
+       "Malignancy present"
+      ]
+     },
+     {
+      "field": "pdl1",
+      "is": "Performed"
+     }
+    ]
+   }
+  },
+  {
+   "id": "claudin",
+   "label": "Claudin 18.2 IHC (43-14A)",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "Pending",
+    "Positive",
+    "Negative",
+    "Cannot be determined"
+   ],
+   "default": "Not performed",
+   "showIf": {
+    "field": "dysplasia",
+    "is": [
+     "Intramucosal carcinoma",
+     "Malignancy present"
+    ]
+   },
+   "reference": {
+    "title": "Claudin 18.2 (VENTANA CLDN18, 43-14A)",
+    "intro": "Roche interpretation guide; the FDA-approved test for zolbetuximab. QMH records the moderate (2+) and strong (3+) percentages.",
+    "groups": [
+     {
+      "heading": "Positive",
+      "points": [
+       "75% or more of viable tumour cells with moderate to strong (2+ or 3+) membranous staining"
+      ]
+     },
+     {
+      "heading": "Negative",
+      "points": [
+       "Fewer than 75% of viable tumour cells with moderate to strong membranous staining"
+      ]
+     },
+     {
+      "heading": "Scoring",
+      "points": [
+       "At least 50 viable tumour cells",
+       "Membranous staining only; cytoplasmic staining is not scored",
+       "Normal gastric mucosa is the internal positive control"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "claudin2",
+   "label": "Claudin 2+ tumour cells (%)",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": [
+       "Intramucosal carcinoma",
+       "Malignancy present"
+      ]
+     },
+     {
+      "field": "claudin",
+      "is": [
+       "Positive",
+       "Negative"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "claudin3",
+   "label": "Claudin 3+ tumour cells (%)",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "dysplasia",
+      "is": [
+       "Intramucosal carcinoma",
+       "Malignancy present"
+      ]
+     },
+     {
+      "field": "claudin",
+      "is": [
+       "Positive",
+       "Negative"
+      ]
+     }
+    ]
+   }
   },
   {
    "id": "hp",

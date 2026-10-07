@@ -1,0 +1,163 @@
+Stomach/OGJ biomarkers
+Stomach Biomarkers test
+click to access explanations in the original CAP template
+-
+HER2 IHC, biopsy :
+(> or = 5 cancer cell clusters)
+Cannot be determined
+Negative for over-expression
+Equivocal for over-expression
+Positive for over-expression
+- Score:
+0 Negative (No reactivity or no membranous reactivity in any cancer cell)
+1 Negative (Cancer cell cluster, > or = 5 cells) with a faint or barely perceptible membranous reactivity irrespective of percentage of cancer cells positive)
+2 Equivocal (Cancer cell cluster, > or = 5 cells, with a weak to moderate complete, basolateral, or lateral membranous reactivity irrespective of percentage of cancer cells positive)
+3 Positive (Cancer cell cluster, > or = 5 cells, with a strong complete basolateral, or lateral membranous reactivity irrespective of percentage of cancer cells positive)
+-
+HER2 IHC, excision
+:
+(10% cancer cells)
+Cannot be determined
+Negative for over-expression
+Equivocal for over-expression
+Positive for over-expression
+- Score:
+0 Negative (No reactivity or membranous reactivity in < 10% of cancer cells)
+1 Negative (Faint or barely perceptible membranous react ivity in > or = 10% of cancer cells; cells are reactive only in part of their membrane)
+2 Equivocal (Weak to moderate complete, basolateral or lateral membranous reactivity in > or = 10% of tumor cells)
+3 Positive (Strong complete, basolateral or lateral membranous reactivity in > or = 10% of cancer cells)
+-
+HER2/neu oncoprotein DISH :
+HER2 DISH calculator
+DOWNLOAD AN EXCEL FILE
+Cannot be determined
+Negative for HER2 amplification
+Positive for HER2 amplification
+- Number of tumor cell counted :
+- HER2 signals (black) per cell :
+- CEP17 signals (red) per cell :
+- HER2/CEP17 ratio :
+- Other ISH abnormalities:
+Aneusomy
+Heterogeneous signals
++ EBER ISH:
+Negative for the tumor cells
+Positive for the tumor cells
+Cannot be determined
+Reactivation in the lymphoid cells
++ MMR IHC:
+No loss of nuclear signals of all 4 proteins: Not defective in DNA mismatch repair (non-dMMR or MMRp) and low probability of microsatellite instability-high (MSI-H).
+Loss of nuclear signals of 1 or more proteins: Defective DNA mismatch repair within the tumor (dMMR).
+MMR status cannot be determined by IHC.
+- MLH1 (mutL homolog 1):
+Intact nuclear expression in tumor cells
+Loss of nuclear expression in tumor cells
+Attenuated nuclear expression in tumor cells
+Cannot be determined:
+- MSH2 (mutS homolog 2):
+Intact nuclear expression in tumor cells
+Loss of nuclear expression in tumor cells
+Attenuated nuclear expression in tumor cells
+Cannot be determined:
+- MSH6 (mutS homolog 6):
+Intact nuclear expression in tumor cells
+Loss of nuclear expression in tumor cells
+Attenuated nuclear expression in tumor cells
+Cannot be determined:
+- PMS2 (PMS1 homolog 2):
+Intact nuclear expression in tumor cells
+Loss of nuclear expression in tumor cells
+Attenuated nuclear expression in tumor cells
+Cannot be determined:
++ MSI status:
+MSI – stable (MSS)
+MSI – low (MSI-L) 1% - 29% of the National Cancer Institute (NCI) or mononucleotide markers exhibit instability
+MSI – low (MSI-L) 1 of the NCI or mononucleotide markers exhibit instability
+MSI – low (MSI-L) Other (specify):
+MSI – high (MSI-H) greater or equal 30% of the NCI or mononucleotide markers exhibit instability
+MSI – high (MSI-H) 2 or more of the NCI or mononucleotide markers exhibit instability
+MSI – high (MSI-H) Other (specify):
+MSI - cannot be determined.
+BAT-25:
+Stable
+Unstable
+Cannot be determined:
+Not performed
+BAT-26:
+Stable
+Unstable
+Cannot be determined:
+Not performed
+NR-21:
+Stable
+Unstable
+Cannot be determined:
+Not performed
+NR-24 :
+Stable
+Unstable
+Cannot be determined:
+Not performed
+NR-27 :
+Stable
+Unstable
+Cannot be determined:
+Not performed
+D2S123:
+Stable
+Unstable
+Cannot be determined:
+Not performed
+D5S346:
+Stable
+Unstable
+Cannot be determined:
+Not performed
+D17S250:
+Stable
+Unstable
+Cannot be determined:
+Not performed
++ PD-L1 assessment :
+PD-L1 calculator
+Cannot be determined
+Negative (combined positive score CPS < 10)
+Positive (combined positive score CPS >= 10)
+- Antibody (anti-CD274) :
+22C3 (Dako)
+E1L3N (Cell Signaling)
+Other, specify:
+- Positive tumor cells (TPS, %) :
+- Combined Positive Score (CPS) :
++
+Claudin18.2 IHC
+:
+Negative for the tumor cells (<75% moderate to strong membranous stain)
+Positive for the tumor cells (>=75% moderate to strong membranous stain)
+Cannot be determined
+-
+IHC 2+ tumor cells %
+:
+-
+IHC 3+ tumor cells %
+:
+- Total tumor cells 2+ & 3+ : :
+- Cold ischemia time (min) :
+min
+- Fixation time in buffered formalin :
+hours
+- Additional notes:
+Copy text to Clipboard
+Last upated 11-Apr-2025, based on
+US CAP cancer protocol templates
+.
+html form was created on
+pForm
+,
+W3 School
+,
+StackOverflow
+, and
+Icons8
+.
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.

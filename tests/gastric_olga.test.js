@@ -137,6 +137,7 @@ test('a biopsy with no chronic inflammation states the findings instead of a gas
   assert.equal(dx({}), 'STOMACH, antrum, biopsy - NO SIGNIFICANT ABNORMALITY, Helicobacter-negative');
   assert.equal(dx({ chronic: 'Mild', imDegree: 'Mild' }),
     'STOMACH, antrum, biopsy - CHRONIC GASTRITIS, inactive, Helicobacter-negative; mild INTESTINAL METAPLASIA');
+  // The Helicobacter line takes "; " before intestinal metaplasia (fixed 2026-10-07; it ran on without a joiner).
   assert.equal(dx({ imDegree: 'Mild', hp: 'Present' }),
-    'STOMACH, antrum, biopsy - HELICOBACTER ASSOCIATED CHRONIC GASTRITIS mild INTESTINAL METAPLASIA');
+    'STOMACH, antrum, biopsy - HELICOBACTER ASSOCIATED CHRONIC GASTRITIS; mild INTESTINAL METAPLASIA');
 });
