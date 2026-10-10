@@ -49,6 +49,46 @@ the report register carries only what is seen down the microscope. Grading logic
 - Two atypical features sit on the grade 1 / grade 2 border; the template raises an info check and
   offers the molecular snippet rather than pushing the grade either way.
 
+## Solitary fibrous tumour
+
+Added 2026-10-10 at the user's request (Phase 64).
+
+- Graded on the mitotic count and necrosis alone, counted in the most proliferative area: CNS WHO
+  grade 1 below 2.5 mitoses per mm2 (fewer than 5 per 10 high-power fields); grade 2 at 2.5 per mm2
+  (5 per 10 high-power fields) or more without necrosis; grade 3 at that count with necrosis.
+  Necrosis with a lower count leaves the tumour at grade 1, and Checks says so. With no count there
+  is no grade: the line reads "SOLITARY FIBROUS TUMOUR" and Checks asks for the count. The count is
+  entered per 10 high-power fields, the unit the local reports use; the per-mm2 figure stays in the
+  help text. A chosen grade prints as chosen, and a disagreement with the findings is a warning.
+  [J Neurosurg 2024](https://thejns.org/view/journals/j-neurosurg/140/1/article-p69.xml) ·
+  [PMC9427069](https://pmc.ncbi.nlm.nih.gov/articles/PMC9427069/) ·
+  [PathologyOutlines, CNS SFT](https://www.pathologyoutlines.com/topic/cnstumorsft.html) ·
+  [WHO CNS5 summary, Louis et al. 2021](https://academic.oup.com/neuro-oncology/article/23/8/1231/6311214)
+- Morphology, two ends of one spectrum. Classic: alternating hypocellular and hypercellular areas,
+  ovoid to spindle cells with vesicular nuclei and indistinct borders between collagen bundles, and
+  thin-walled, branching staghorn vessels. Cellular (the former haemangiopericytoma, a term WHO CNS5
+  retired and the form does not offer): densely packed, monotonous ovoid to round cells with little
+  or no stroma around prominent staghorn vessels.
+  [PMC13586501](https://pmc.ncbi.nlm.nih.gov/articles/PMC13586501/) ·
+  [PMC10791336](https://pmc.ncbi.nlm.nih.gov/articles/PMC10791336/)
+- Immunohistochemistry. Strong diffuse nuclear STAT6 stands in for the NAB2::STAT6 fusion and leads
+  the stain sentence, as on the soft tissue form. A meningioma can show weak nuclear or cytoplasmic
+  STAT6 but not that pattern, so only the strong diffuse nuclear pattern is offered as positive. CD34
+  is positive in most tumours but reduced or lost in higher grades, so CD34 negative raises no Check;
+  CD99 and BCL2 are frequently positive, and ALDH1 and GRIA2 are offered. EMA is variable and focal
+  in a minority; SSTR2A is negative; progesterone receptor, S100, SOX10 and GFAP are negative or only
+  focal. STAT6 is lost in some dedifferentiated tumours, so STAT6 negative without a fusion is a
+  warning rather than a block. [PMC13586501](https://pmc.ncbi.nlm.nih.gov/articles/PMC13586501/) ·
+  [PMC10791336](https://pmc.ncbi.nlm.nih.gov/articles/PMC10791336/) ·
+  [PathologyOutlines, CNS SFT](https://www.pathologyoutlines.com/topic/cnstumorsft.html) ·
+  [J Neurosurg 2024](https://thejns.org/view/journals/j-neurosurg/140/1/article-p69.xml)
+- Smears: cohesive cellular clusters of ovoid to short spindle cells with scant cytoplasm, scattered
+  single cells and little collagenous stroma. The collagen-rich smear is the picture of the
+  hypocellular tumour. [PMC12485863](https://pmc.ncbi.nlm.nih.gov/articles/PMC12485863/)
+- Local reports name the tumour rarely. Their panel (STAT6, CD34, EMA, SSTR2A, S100, SOX10, GFAP)
+  and their per-10-high-power-field count set the options. Routing is unchanged. In the CNS pathway
+  the tumour stays on the funnel with the other non-glioma findings; it has no branch of its own.
+
 ## Smear and squash preparations
 
 The smear block is written before the paraffin sentence and carries its own morphology per finding

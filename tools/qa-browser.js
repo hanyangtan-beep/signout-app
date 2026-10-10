@@ -1217,6 +1217,35 @@ await check('breast margins: "Breast, left superior margin" opens as left superi
   return 'pasted lines open left superior / inferior; typing moves side and margin with focus kept; a mismatch is checked; Generic to breast keeps the line';
 });
 
+await check('brain biopsy: a solitary fibrous tumour shows its own block and grades on the mitotic count and necrosis', async () => {
+  // Phase 64 (2026-10-10, user request): the brain biopsy diagnosis list had no solitary fibrous tumour.
+  const routed = await pasteAndBuild('Dura, left convexity tumour');
+  assert(routed === 'cns_biopsy', `routed to ${routed}`);
+  await pickField('finding', 'Solitary fibrous tumour');
+  // Hidden fields stay in the DOM with the class "hidden", so read the field wrappers' classes.
+  const hidden = async (id) => /\bhidden\b/.test(await page.locator(`.field[data-field="${id}"]`).first().getAttribute('class'));
+  assert(!(await hidden('sftMitoses')), 'the solitary fibrous tumour block did not appear');
+  assert(await hidden('mgSubtype'), 'the meningioma block stayed on the form');
+  let report = await reportText();
+  assert(/DURA, left, [^\n]* - SOLITARY FIBROUS TUMOUR\n/.test(report), `ungraded line wrong: ${report.slice(-400)}`);
+  const flagged = await checksText();
+  assert(flagged.includes('record the mitotic count'), `no mitotic count check: ${flagged}`);
+  await page.locator('[data-field="sftMitoses"] input').first().fill('7');
+  await page.waitForTimeout(300);
+  await pickField('sftIhc', 'STAT6 strong diffuse nuclear');
+  await pickField('sftIhc', 'EMA negative');
+  report = await reportText();
+  assert(report.includes('SOLITARY FIBROUS TUMOUR, CNS WHO grade 2'), `grade 2 line wrong: ${report.slice(-400)}`);
+  assert(report.includes('Mitoses number 7 per 10 high-power fields.'), 'the mitotic sentence is missing');
+  assert(report.includes('On immunohistochemistry, the tumour cells show strong diffuse nuclear STAT6 expression. They are negative for EMA.'), `stain sentence wrong: ${report.slice(-600)}`);
+  await pickField('sftNecrosis', 'Present');
+  report = await reportText();
+  assert(report.includes('SOLITARY FIBROUS TUMOUR, CNS WHO grade 3') && report.includes('- CNS WHO grade 3'), `grade 3 line wrong: ${report.slice(-400)}`);
+  await page.locator('[data-field="sftMitoses"]').first().scrollIntoViewIfNeeded();
+  await shot('cns-solitary-fibrous-tumour');
+  return 'dural line on the brain form; its own block in place of the meningioma one; ungraded until counted; grade 2 at 7 mitoses, grade 3 with necrosis';
+});
+
 await check('abscess / granulation tissue: a pasted pilonidal sinus prints the house line and the hair-shaft sentence', async () => {
   const routed = await pasteAndBuild('Pilonidal sinus');
   assert(routed === 'abscess_granulation', `routed to ${routed}`);

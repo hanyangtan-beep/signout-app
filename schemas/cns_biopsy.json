@@ -1,6 +1,6 @@
 {
   "id": "cns_biopsy",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Brain and CNS biopsy",
   "shortName": "Brain · biopsy / smear",
   "label": "Brain",
@@ -224,6 +224,7 @@
       "type": "select",
       "options": [
         "Meningioma",
+        "Solitary fibrous tumour",
         "Astrocytoma, IDH-mutant",
         "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
         "Glioblastoma, IDH-wildtype",
@@ -412,6 +413,112 @@
         "field": "finding",
         "is": "Meningioma"
       }
+    },
+    {
+      "id": "sftPattern",
+      "label": "Pattern",
+      "type": "select",
+      "default": "Classic (collagenous)",
+      "group": "Solitary fibrous tumour",
+      "showIf": {
+        "field": "finding",
+        "is": "Solitary fibrous tumour"
+      },
+      "options": [
+        "Classic (collagenous)",
+        "Cellular"
+      ]
+    },
+    {
+      "id": "sftMitoses",
+      "label": "Mitoses (per 10 high-power fields)",
+      "type": "number",
+      "default": "",
+      "group": "Solitary fibrous tumour",
+      "showIf": {
+        "field": "finding",
+        "is": "Solitary fibrous tumour"
+      },
+      "help": "Fewer than 5 is grade 1; 5 or more is grade 2, or grade 3 with necrosis (2.5 per mm²). Count the most active area."
+    },
+    {
+      "id": "sftNecrosis",
+      "label": "Necrosis",
+      "type": "select",
+      "default": "Not identified",
+      "group": "Solitary fibrous tumour",
+      "showIf": {
+        "field": "finding",
+        "is": "Solitary fibrous tumour"
+      },
+      "options": [
+        "Not identified",
+        "Present"
+      ]
+    },
+    {
+      "id": "sftGrade",
+      "label": "CNS WHO grade",
+      "type": "select",
+      "default": "From the findings",
+      "group": "Solitary fibrous tumour",
+      "showIf": {
+        "field": "finding",
+        "is": "Solitary fibrous tumour"
+      },
+      "options": [
+        "From the findings",
+        "CNS WHO grade 1",
+        "CNS WHO grade 2",
+        "CNS WHO grade 3",
+        "Cannot be determined"
+      ],
+      "help": "From the findings grades on the mitotic count and necrosis."
+    },
+    {
+      "id": "sftIhc",
+      "label": "Immunohistochemistry",
+      "type": "multiselect",
+      "default": [],
+      "group": "Solitary fibrous tumour",
+      "showIf": {
+        "field": "finding",
+        "is": "Solitary fibrous tumour"
+      },
+      "options": [
+        "STAT6 strong diffuse nuclear",
+        "CD34 positive",
+        "CD34 patchy and weak",
+        "CD99 positive",
+        "BCL2 positive",
+        "ALDH1 positive",
+        "GRIA2 positive",
+        "EMA negative",
+        "EMA focally positive",
+        "SSTR2A negative",
+        "Progesterone receptor negative",
+        "S100 negative",
+        "SOX10 negative",
+        "GFAP negative",
+        "CD34 negative",
+        "STAT6 negative"
+      ]
+    },
+    {
+      "id": "sftFusion",
+      "label": "NAB2::STAT6 fusion",
+      "type": "select",
+      "default": "Not performed",
+      "group": "Solitary fibrous tumour",
+      "showIf": {
+        "field": "finding",
+        "is": "Solitary fibrous tumour"
+      },
+      "options": [
+        "Not performed",
+        "Detected",
+        "Not detected"
+      ]
     },
     {
       "id": "dxQualifier",
@@ -2286,6 +2393,7 @@
         "field": "finding",
         "is": [
           "Meningioma",
+          "Solitary fibrous tumour",
           "Astrocytoma, IDH-mutant",
           "Oligodendroglioma, IDH-mutant and 1p/19q-codeleted",
           "Glioblastoma, IDH-wildtype",

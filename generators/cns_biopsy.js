@@ -20,6 +20,12 @@
 //     (C228T / C250T), or CDKN2A/B homozygous deletion
 //     https://academic.oup.com/neuro-oncology/article/24/9/1524/6525422
 //     https://academic.oup.com/neuro-oncology/article/27/2/319/7745776
+//   Solitary fibrous tumour grading - grade 1 below 2.5 mitoses per mm2 (fewer than 5 per 10 HPF),
+//     grade 2 at 2.5 per mm2 (5 per 10 HPF) or more, grade 3 at that count with necrosis, counted in
+//     the most proliferative area; strong diffuse nuclear STAT6 stands in for NAB2::STAT6
+//     https://thejns.org/view/journals/j-neurosurg/140/1/article-p69.xml
+//     https://pmc.ncbi.nlm.nih.gov/articles/PMC9427069/
+//     https://www.pathologyoutlines.com/topic/cnstumorsft.html
 //
 // Blocks produced:
 //   specimenName / microscopy (smear block, then "Sections show …") / diagnosis / summary / flags
@@ -35,13 +41,13 @@ import {
 } from './cns_layers.js';
 import {
   uc1, lc1, num, arr, word, list,
-  MENINGIOMA, ASTRO, OLIGO, GBM, DMG, PILOCYTIC, EPENDYMOMA, PITNET, SCHWANNOMA, METASTASIS, LYMPHOMA,
+  MENINGIOMA, SFT, ASTRO, OLIGO, GBM, DMG, PILOCYTIC, EPENDYMOMA, PITNET, SCHWANNOMA, METASTASIS, LYMPHOMA,
   ABSCESS, DEMYELINATION, GLIOSIS, FREETEXT,
-  MENINGIOMA_SUBTYPE, BASE_MORPHOLOGY, METASTASIS_MORPHOLOGY, FEATURE_PHRASE, ATYPICAL_PHRASE, MOLECULAR_PHRASE
+  MENINGIOMA_SUBTYPE, SFT_MORPHOLOGY, BASE_MORPHOLOGY, METASTASIS_MORPHOLOGY, FEATURE_PHRASE, ATYPICAL_PHRASE, MOLECULAR_PHRASE
 } from './cns_morphology.js';
 
 export {
-  MENINGIOMA, ASTRO, OLIGO, GBM, DMG, PILOCYTIC, EPENDYMOMA, PITNET, SCHWANNOMA, METASTASIS, LYMPHOMA,
+  MENINGIOMA, SFT, ASTRO, OLIGO, GBM, DMG, PILOCYTIC, EPENDYMOMA, PITNET, SCHWANNOMA, METASTASIS, LYMPHOMA,
   ABSCESS, DEMYELINATION, GLIOSIS, FREETEXT
 } from './cns_morphology.js';
 
@@ -53,6 +59,7 @@ const GLIOMAS = [ASTRO, OLIGO, GBM, DMG, PILOCYTIC, EPENDYMOMA];
 
 export const isGlioma = (v) => GLIOMAS.includes(v.finding);
 export const isMeningioma = (v) => v.finding === MENINGIOMA;
+export const isSft = (v) => v.finding === SFT;
 const finding = (v) => v.finding || MENINGIOMA;
 const noTissue = (v) => v.adequacy === 'No lesional tissue identified';
 const limited = (v) => v.adequacy === 'Scanty lesional tissue' || v.adequacy === 'Crush artefact limits assessment';
@@ -93,6 +100,10 @@ const SMEAR_TEXT = {
   [EPENDYMOMA]: 'cells with monomorphic round nuclei and fibrillary processes radiating on to vessels',
   [PITNET]: 'a discohesive population of monotonous cells with round nuclei and finely granular chromatin',
   [SCHWANNOMA]: 'cohesive clusters of spindle cells with elongated wavy nuclei in a fibrillary matrix',
+  // Meningeal SFT smears: cohesive cellular clusters of ovoid to short spindle cells with minimal
+  // cytoplasm, scattered single cells, minimal collagenous stroma
+  // https://pmc.ncbi.nlm.nih.gov/articles/PMC12485863/
+  [SFT]: 'cohesive cellular clusters of ovoid to short spindle cells with scant cytoplasm, with scattered single cells and wisps of collagenous stroma',
   [METASTASIS]: 'cohesive clusters of large epithelioid cells with well-defined cytoplasmic borders against a non-fibrillary background',
   [LYMPHOMA]: 'discohesive large atypical lymphoid cells with scant cytoplasm and prominent nucleoli',
   [ABSCESS]: 'abundant neutrophils, necrotic debris and macrophages',
@@ -120,6 +131,7 @@ function morphologySentence(v) {
   if (finding(v) === METASTASIS) {
     return `brain parenchyma ${METASTASIS_MORPHOLOGY[v.metType] || METASTASIS_MORPHOLOGY.Adenocarcinoma}`;
   }
+  if (isSft(v)) return SFT_MORPHOLOGY[v.sftPattern] || SFT_MORPHOLOGY['Classic (collagenous)'];
   if (finding(v) === FREETEXT) return stripDot(v.findingOther) ? lc1(stripDot(v.findingOther)) : 'the lesional tissue described';
   return BASE_MORPHOLOGY[finding(v)] || 'brain parenchyma with reactive astrocytosis';
 }
@@ -150,10 +162,22 @@ function meningiomaSentences(v) {
   return s;
 }
 
+// The solitary fibrous tumour count is per 10 high-power fields, the unit the grade is read in; the
+// thresholds stay in the help text and the Checks, never in the printed sentence.
+function sftSentences(v) {
+  const s = [];
+  const n = num(v.sftMitoses);
+  if (n !== null) s.push(n === 0 ? 'Mitoses are not identified in 10 high-power fields.' : `Mitoses number ${n} per 10 high-power fields.`);
+  if (v.sftNecrosis === 'Present') s.push('There are foci of tumour necrosis.');
+  else if (v.sftNecrosis === 'Not identified') s.push('No necrosis is identified.');
+  return s;
+}
+
 // ---------- immunohistochemistry, printed with the microscopy ----------
 
 const IHC_FIELD = {
   [MENINGIOMA]: 'mgIhc',
+  [SFT]: 'sftIhc',
   [PITNET]: 'pitIhc',
   [SCHWANNOMA]: 'swIhc',
   [METASTASIS]: 'metIhc',
@@ -169,6 +193,7 @@ function ihcValues(v) {
 /** "On immunohistochemistry, the tumour cells are positive for GFAP and OLIG2, and negative for IDH1 R132H; ATRX is retained." */
 function ihcSentence(v) {
   if (isGlioma(v)) return ihcClause(v);
+  if (isSft(v)) return sftIhcSentence(v);
   const values = ihcValues(v);
   if (!values.length) return '';
   const pos = [];
@@ -190,6 +215,50 @@ function ihcSentence(v) {
     sentence = sentence ? `${sentence}, with ${tail}` : `On immunohistochemistry, there is ${tail}`;
   }
   return `${sentence}.`;
+}
+
+// Solitary fibrous tumour: the STAT6 result leads, as the soft tissue template prints it, then the
+// positive, negative and qualified stains. Only the strong diffuse nuclear pattern is offered as
+// positive, since a meningioma can show weak nuclear or cytoplasmic STAT6 but not that pattern
+// (https://pmc.ncbi.nlm.nih.gov/articles/PMC10791336/).
+const SFT_STAIN = {
+  'CD34 positive': ['pos', 'CD34'],
+  'CD99 positive': ['pos', 'CD99'],
+  'BCL2 positive': ['pos', 'BCL2'],
+  'ALDH1 positive': ['pos', 'ALDH1'],
+  'GRIA2 positive': ['pos', 'GRIA2'],
+  'CD34 patchy and weak': ['with', 'patchy weak staining for CD34'],
+  'EMA focally positive': ['with', 'focal staining for EMA'],
+  'EMA negative': ['neg', 'EMA'],
+  'SSTR2A negative': ['neg', 'SSTR2A'],
+  'Progesterone receptor negative': ['neg', 'progesterone receptor'],
+  'S100 negative': ['neg', 'S100'],
+  'SOX10 negative': ['neg', 'SOX10'],
+  'GFAP negative': ['neg', 'GFAP'],
+  'CD34 negative': ['neg', 'CD34'],
+  'STAT6 negative': ['neg', 'STAT6']
+};
+const STAT6_STRONG = 'STAT6 strong diffuse nuclear';
+
+function sftIhcSentence(v) {
+  const values = arr(v.sftIhc);
+  const stat6 = values.includes(STAT6_STRONG);
+  const by = { pos: [], neg: [], with: [] };
+  for (const entry of values) {
+    const [kind, text] = SFT_STAIN[entry] || [];
+    if (kind) by[kind].push(text);
+  }
+  const out = [];
+  if (stat6) out.push('On immunohistochemistry, the tumour cells show strong diffuse nuclear STAT6 expression.');
+  const clauses = [];
+  if (by.pos.length) clauses.push(`positive for ${list(by.pos)}`);
+  if (by.neg.length) clauses.push(`negative for ${list(by.neg)}`);
+  let rest = clauses.length ? `${stat6 ? 'They are' : 'On immunohistochemistry, the tumour cells are'} ${clauses.join(', and ')}` : '';
+  if (by.with.length) {
+    rest = rest ? `${rest}, with ${list(by.with)}` : `${stat6 ? 'There is' : 'On immunohistochemistry, there is'} ${list(by.with)}`;
+  }
+  if (rest) out.push(`${rest}.`);
+  return out.join(' ');
 }
 
 function ki67Sentence(v) {
@@ -216,10 +285,20 @@ function stainSentence(v) {
 
 // ---------- molecular ----------
 
-const molecularResults = (v) => (isMeningioma(v) ? arr(v.mgMolecular) : []);
+const SFT_FUSION = { Detected: 'NAB2::STAT6 fusion detected', 'Not detected': 'no NAB2::STAT6 fusion detected' };
+const molecularResults = (v) => {
+  if (isMeningioma(v)) return arr(v.mgMolecular);
+  if (isSft(v) && SFT_FUSION[v.sftFusion]) return [SFT_FUSION[v.sftFusion]];
+  return [];
+};
 
 function molecularSentence(v) {
   if (isGlioma(v)) return molecularClause(v);
+  if (isSft(v)) {
+    if (v.sftFusion === 'Detected') return 'On molecular testing, a NAB2::STAT6 fusion is detected.';
+    if (v.sftFusion === 'Not detected') return 'On molecular testing, no NAB2::STAT6 fusion is detected.';
+    return '';
+  }
   const results = molecularResults(v);
   if (results.length) {
     return `On molecular testing, ${list(results.map((r) => MOLECULAR_PHRASE[r] || lc1(r)))}.`;
@@ -248,6 +327,7 @@ export function microscopy(part) {
   s.push(opener);
 
   if (isMeningioma(v)) s.push(...meningiomaSentences(v));
+  else if (isSft(v)) s.push(...sftSentences(v));
   else if (isGlioma(v)) {
     const f = featureClause(v);
     if (f) s.push(f);
@@ -297,8 +377,31 @@ export function gliomaGrade(v) {
   return layerGrade(v, finding(v));
 }
 
+// Solitary fibrous tumour: WHO CNS5 grades on the mitotic count and necrosis alone. Below 5 mitoses
+// per 10 high-power fields (2.5 per mm2) is grade 1 whatever the necrosis; 5 or more is grade 2, and
+// grade 3 with necrosis. No count, no grade. Sources in the header and the grounding doc.
+export function sftFindingsGrade(v) {
+  const n = num(v.sftMitoses);
+  if (n === null) return null;
+  if (n < 5) return 1;
+  return v.sftNecrosis === 'Present' ? 3 : 2;
+}
+
+const SFT_CBD = 'Cannot be determined';
+const sftChosen = (v) => {
+  const m = /^CNS WHO grade (\d)$/.exec(v.sftGrade || '');
+  return m ? Number(m[1]) : null;
+};
+
+/** The grade that prints: the one chosen, otherwise the one the mitotic count and necrosis support. */
+export function sftGrade(v) {
+  if (v.sftGrade === SFT_CBD) return null;
+  return sftChosen(v) ?? sftFindingsGrade(v);
+}
+
 export function grade(v) {
   if (isMeningioma(v)) return meningiomaGrade(v);
+  if (isSft(v)) return sftGrade(v);
   if (isGlioma(v)) return gliomaGrade(v);
   if (finding(v) === SCHWANNOMA) return 1;
   return null;
@@ -310,6 +413,12 @@ function meningiomaDx(v) {
   // The name and the grade both come from the shared core, so a meningioma reads identically on a
   // stereotactic core and on a craniotomy.
   return `${upperEntity(meningiomaName(v))}, CNS WHO grade ${meningiomaGrade(v)}`;
+}
+
+function sftDx(v) {
+  if (v.sftGrade === SFT_CBD) return 'SOLITARY FIBROUS TUMOUR, CNS WHO grade cannot be determined';
+  const g = sftGrade(v);
+  return g ? `SOLITARY FIBROUS TUMOUR, CNS WHO grade ${g}` : 'SOLITARY FIBROUS TUMOUR';
 }
 
 function metastasisDx(v) {
@@ -330,6 +439,7 @@ export function diagnosisText(part) {
   if (noTissue(v)) return 'NO LESIONAL TISSUE IDENTIFIED; brain parenchyma with reactive gliosis only';
   switch (finding(v)) {
     case MENINGIOMA: return meningiomaDx(v);
+    case SFT: return sftDx(v);
     case ASTRO:
     case OLIGO:
     case GBM:
@@ -372,6 +482,18 @@ const HISTOLOGY_LAYER = {
 export function layers(part) {
   const v = part.values;
   const out = [];
+  if (isSft(v)) {
+    // Its own fields only, so values left behind on a hidden meningioma block cannot print here.
+    out.push(`- Histological appearance: ${v.sftPattern === 'Cellular' ? 'cellular neoplasm' : 'spindle cell neoplasm'} with staghorn vessels`);
+    const stains = arr(v.sftIhc).map((x) => lc1(x));
+    if (stains.length) out.push(`- Immunohistochemistry: ${stains.join('; ')}`);
+    const mol = molecularResults(v);
+    if (mol.length) out.push(`- Molecular parameters: ${mol.join('; ')}`);
+    const g = sftGrade(v);
+    if (v.sftGrade === SFT_CBD) out.push('- CNS WHO grade: cannot be determined');
+    else if (g) out.push(`- CNS WHO grade ${g}`);
+    return out;
+  }
   const base = HISTOLOGY_LAYER[finding(v)];
   if (!base) return out;
   if (isGlioma(v)) {
@@ -460,6 +582,7 @@ export function validate(part) {
     info('Smear preparation only: the paraffin sentence refers to the residual tissue. Check that paraffin sections were in fact examined.', 'prep');
   }
   if (isMeningioma(v)) meningiomaChecks(v, warn, info);
+  if (isSft(v)) sftChecks(v, warn, info);
   if (isGlioma(v)) {
     pathwayChecks(v, warn, (level, message, field) => out.push({ level, message, field }), finding(v));
     // Layer 3 is a free choice: the grade the findings support is proposed and disagreement is
@@ -519,6 +642,41 @@ export function validate(part) {
     info('Record the transcription factor result (PIT1, TPIT or SF1); it determines the PitNET lineage.', 'pitIhc');
   }
   return out;
+}
+
+/**
+ * Solitary fibrous tumour. The grade is proposed from the count and necrosis and a different choice is
+ * flagged, never overruled; the STAT6 and fusion checks ask for the result that confirms the entity.
+ * STAT6 is lost in some dedifferentiated tumours (https://thejns.org/view/journals/j-neurosurg/140/1/article-p69.xml).
+ */
+export function sftChecks(v, warn, info) {
+  const stains = arr(v.sftIhc);
+  const has = (x) => stains.includes(x);
+  const n = num(v.sftMitoses);
+  const chosen = sftChosen(v);
+  const supported = sftFindingsGrade(v);
+  if (n === null && chosen === null && v.sftGrade !== SFT_CBD) {
+    info('Solitary fibrous tumour: record the mitotic count per 10 high-power fields. It sets the CNS WHO grade, with necrosis for grade 3.', 'sftMitoses');
+  }
+  if (chosen !== null && supported !== null && chosen !== supported) {
+    warn(`CNS WHO grade ${chosen} is recorded but the mitotic count and necrosis support grade ${supported}.`, 'sftGrade');
+  }
+  if (n !== null && n < 5 && v.sftNecrosis === 'Present') {
+    info(`Necrosis with ${n} mitos${n === 1 ? 'is' : 'es'} per 10 high-power fields stays CNS WHO grade 1: necrosis raises the grade only at 5 or more.`, 'sftNecrosis');
+  }
+  if (!has(STAT6_STRONG) && !has('STAT6 negative') && v.sftFusion !== 'Detected') {
+    info('Solitary fibrous tumour: record the STAT6 immunostain or the NAB2::STAT6 fusion result.', 'sftIhc');
+  }
+  if (has('STAT6 negative') && v.sftFusion !== 'Detected') {
+    warn('STAT6 is negative and no NAB2::STAT6 fusion is recorded: strong nuclear STAT6 is expected in solitary fibrous tumour, and only rare dedifferentiated tumours lose it.', 'sftIhc');
+  }
+  if (v.sftFusion === 'Not detected' && !has(STAT6_STRONG)) {
+    warn('No NAB2::STAT6 fusion is detected and strong nuclear STAT6 is not recorded: nothing on the form confirms solitary fibrous tumour.', 'sftFusion');
+  }
+  for (const [a, b] of [[STAT6_STRONG, 'STAT6 negative'], ['CD34 positive', 'CD34 negative'], ['CD34 patchy and weak', 'CD34 negative'],
+    ['CD34 positive', 'CD34 patchy and weak'], ['EMA negative', 'EMA focally positive']]) {
+    if (has(a) && has(b)) warn(`Immunohistochemistry records both ${a} and ${lc1(b)}: keep one.`, 'sftIhc');
+  }
 }
 
 export default { specimenName, microscopy, diagnosis, summary, flags, validate };

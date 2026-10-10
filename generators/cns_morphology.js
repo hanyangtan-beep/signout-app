@@ -26,6 +26,7 @@ export const list = (items) => {
 // ---------- finding families ----------
 
 export const MENINGIOMA = 'Meningioma';
+export const SFT = 'Solitary fibrous tumour';
 export const ASTRO = 'Astrocytoma, IDH-mutant';
 export const OLIGO = 'Oligodendroglioma, IDH-mutant and 1p/19q-codeleted';
 export const GBM = 'Glioblastoma, IDH-wildtype';
@@ -71,6 +72,17 @@ export const BASE_MORPHOLOGY = {
   [ABSCESS]: 'brain parenchyma with a dense neutrophilic infiltrate and necrotic debris, rimmed by granulation tissue and reactive astrocytes',
   [DEMYELINATION]: 'a well-demarcated area of myelin loss occupied by sheets of foamy macrophages, with relative preservation of axons and scattered reactive astrocytes',
   [GLIOSIS]: 'brain parenchyma with reactive astrocytosis and a scattered macrophage infiltrate'
+};
+
+// Solitary fibrous tumour, by the two ends of its spectrum. Classic: alternating hypocellular and
+// hypercellular areas, ovoid to spindle cells with vesicular nuclei and indistinct borders between
+// collagen bundles, thin-walled branching staghorn vessels. Cellular (the former haemangiopericytoma):
+// densely packed monotonous ovoid to round cells, little or no stroma, prominent staghorn vessels.
+//   https://pmc.ncbi.nlm.nih.gov/articles/PMC13586501/
+//   https://pmc.ncbi.nlm.nih.gov/articles/PMC10791336/
+export const SFT_MORPHOLOGY = {
+  'Classic (collagenous)': 'a spindle cell neoplasm with alternating hypocellular and hypercellular areas, in which ovoid to spindle cells with vesicular nuclei and indistinct cell borders lie haphazardly between collagen bundles, around thin-walled, branching staghorn vessels',
+  Cellular: 'a cellular neoplasm in which densely packed, monotonous ovoid to round cells with indistinct cell borders and little intervening stroma are arranged around prominent thin-walled, branching staghorn vessels'
 };
 
 export const METASTASIS_MORPHOLOGY = {

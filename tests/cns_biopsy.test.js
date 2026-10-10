@@ -7,7 +7,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { generate } from '../src/engine.js';
 import { loadAll } from '../src/registry.js';
-import { meningiomaGrade, gliomaGrade, smearBlock, organPhrase, diagnosisText, validate } from '../generators/cns_biopsy.js';
+import { meningiomaGrade, gliomaGrade, sftGrade, smearBlock, organPhrase, diagnosisText, validate } from '../generators/cns_biopsy.js';
+import { pathway } from '../src/cnspathway.js';
 import { isVisible } from '../src/engine.js';
 import * as resection from '../generators/cns_tumour.js';
 import { upperEntity, gradeClause } from '../generators/cns_layers.js';
@@ -73,6 +74,14 @@ const CASES = [
     features: ['Rounded nuclei with perinuclear haloes', 'Delicate branching capillary network', 'Microcalcification'],
     mitoses: '0', ihc: ['GFAP positive', 'OLIG2 positive'], ihcOther: '',
     molStatus: 'Sent, result pending', grade: 'Pending', tert: 'Not performed', tertDetail: '', ki67: '4'
+  }],
+  // Added 2026-10-10 with the solitary fibrous tumour block (user request): a new fixture, not a change.
+  ['09-solitary-fibrous-tumour-grade-2', {
+    ...NOGLIOMA, specimenName: 'Dura, left parafalcine tumour', site: 'Falx', side: 'left',
+    procedure: 'craniotomy and excision', prep: 'Smear and paraffin sections', smears: '2', pieces: '',
+    finding: 'Solitary fibrous tumour', sftPattern: 'Cellular', sftMitoses: '7', sftNecrosis: 'Not identified',
+    sftGrade: 'From the findings', sftIhc: ['STAT6 strong diffuse nuclear', 'CD34 patchy and weak', 'EMA negative', 'SSTR2A negative', 'S100 negative'],
+    sftFusion: 'Not performed', ki67: '8'
   }]
 ];
 
@@ -233,4 +242,82 @@ test('a layer field needs both a glioma finding and its own branch', () => {
   assert.equal(isVisible(field, base), true);
   assert.equal(isVisible(field, { ...base, idhBranch: 'IDH-wildtype' }), false);
   assert.equal(isVisible(field, { ...base, finding: 'Meningioma' }), false);
+});
+
+// ---------- solitary fibrous tumour (user request 2026-10-10) ----------
+
+const SFTV = { ...NOGLIOMA, finding: 'Solitary fibrous tumour', prep: 'Paraffin sections only', pieces: '', ki67: '' };
+
+test('solitary fibrous tumour grading follows the mitotic count and necrosis', () => {
+  const v = (p) => ({ finding: 'Solitary fibrous tumour', sftNecrosis: 'Not identified', sftGrade: 'From the findings', ...p });
+  assert.equal(sftGrade(v({ sftMitoses: '0' })), 1);
+  assert.equal(sftGrade(v({ sftMitoses: '4' })), 1);
+  assert.equal(sftGrade(v({ sftMitoses: '5' })), 2);
+  assert.equal(sftGrade(v({ sftMitoses: '5', sftNecrosis: 'Present' })), 3);
+  // Necrosis counts only at 5 or more mitoses per 10 high-power fields.
+  assert.equal(sftGrade(v({ sftMitoses: '3', sftNecrosis: 'Present' })), 1);
+  // No count, no grade; a chosen grade prints as chosen; "Cannot be determined" prints none.
+  assert.equal(sftGrade(v({ sftMitoses: '' })), null);
+  assert.equal(sftGrade(v({ sftMitoses: '', sftGrade: 'CNS WHO grade 2' })), 2);
+  assert.equal(sftGrade(v({ sftMitoses: '9', sftGrade: 'Cannot be determined' })), null);
+});
+
+test('the solitary fibrous tumour diagnosis line carries a grade only when there is one', () => {
+  const dx = (p) => diagnosisText({ label: 'A', values: { ...defaults(schema), ...EX, finding: 'Solitary fibrous tumour', ...p } });
+  assert.equal(dx({ sftMitoses: '2' }), 'SOLITARY FIBROUS TUMOUR, CNS WHO grade 1');
+  assert.equal(dx({ sftMitoses: '6' }), 'SOLITARY FIBROUS TUMOUR, CNS WHO grade 2');
+  assert.equal(dx({ sftMitoses: '6', sftNecrosis: 'Present' }), 'SOLITARY FIBROUS TUMOUR, CNS WHO grade 3');
+  assert.equal(dx({ sftMitoses: '' }), 'SOLITARY FIBROUS TUMOUR');
+  assert.equal(dx({ sftGrade: 'Cannot be determined' }), 'SOLITARY FIBROUS TUMOUR, CNS WHO grade cannot be determined');
+});
+
+test('the solitary fibrous tumour microscopy leads with STAT6 and prints only its own block', () => {
+  const a = run({
+    ...SFTV, sftPattern: 'Classic (collagenous)', sftMitoses: '0',
+    sftIhc: ['STAT6 strong diffuse nuclear', 'CD34 positive', 'CD99 positive', 'EMA negative', 'SSTR2A negative'], sftFusion: 'Detected',
+    // Values left behind on the hidden meningioma block must not print.
+    mgAtypical: ['High cellularity'], mgIhc: ['EMA positive'], mgMitoses: '9', mgBrain: 'Present'
+  });
+  assert.match(a.report, /Sections show a spindle cell neoplasm with alternating hypocellular and hypercellular areas/);
+  assert.ok(a.report.includes('Mitoses are not identified in 10 high-power fields. No necrosis is identified.'));
+  assert.ok(a.report.includes('On immunohistochemistry, the tumour cells show strong diffuse nuclear STAT6 expression. They are positive for CD34 and CD99, and negative for EMA and SSTR2A.'));
+  assert.ok(a.report.includes('On molecular testing, a NAB2::STAT6 fusion is detected.'));
+  assert.ok(a.diagnosis.includes('- Molecular parameters: NAB2::STAT6 fusion detected'));
+  assert.ok(a.diagnosis.includes('- CNS WHO grade 1'));
+  assert.ok(!/high cellularity|brain parenchyma|1\.6 mm2|EMA positive/i.test(a.report));
+  const b = run({ ...SFTV, sftPattern: 'Cellular', sftIhc: ['CD34 patchy and weak', 'EMA focally positive'] });
+  assert.ok(b.report.includes('On immunohistochemistry, there is patchy weak staining for CD34 and focal staining for EMA.'));
+  assert.ok(b.diagnosis.includes('- Histological appearance: cellular neoplasm with staghorn vessels'));
+  assert.ok(!b.diagnosis.includes('- CNS WHO grade'));
+});
+
+test('the solitary fibrous tumour checks ask for the count and STAT6, and flag a grade the findings do not support', () => {
+  const msgs = (p, level) => validate({ label: 'A', values: { ...defaults(schema), ...EX, finding: 'Solitary fibrous tumour', ...p } })
+    .filter((i) => i.level === level).map((i) => i.message);
+  assert.ok(msgs({ sftMitoses: '' }, 'info').some((m) => /record the mitotic count/.test(m)));
+  assert.ok(msgs({ sftMitoses: '', sftGrade: 'CNS WHO grade 1' }, 'info').every((m) => !/record the mitotic count/.test(m)));
+  assert.ok(msgs({ sftMitoses: '2' }, 'info').some((m) => /record the STAT6 immunostain/.test(m)));
+  assert.ok(msgs({ sftMitoses: '2', sftIhc: ['STAT6 strong diffuse nuclear'] }, 'info').every((m) => !/STAT6/.test(m)));
+  assert.ok(msgs({ sftMitoses: '8', sftNecrosis: 'Present', sftGrade: 'CNS WHO grade 2' }, 'warn').some((m) => /support grade 3/.test(m)));
+  assert.ok(msgs({ sftMitoses: '3', sftNecrosis: 'Present' }, 'info').some((m) => /stays CNS WHO grade 1/.test(m)));
+  assert.ok(msgs({ sftMitoses: '2', sftIhc: ['STAT6 negative'] }, 'warn').some((m) => /dedifferentiated/.test(m)));
+  assert.ok(msgs({ sftMitoses: '2', sftIhc: ['STAT6 negative'], sftFusion: 'Detected' }, 'warn').every((m) => !/dedifferentiated/.test(m)));
+  assert.ok(msgs({ sftMitoses: '2', sftFusion: 'Not detected' }, 'warn').some((m) => /nothing on the form confirms/.test(m)));
+  assert.ok(msgs({ sftMitoses: '2', sftIhc: ['STAT6 strong diffuse nuclear', 'CD34 positive', 'CD34 negative'] }, 'warn')
+    .some((m) => /both CD34 positive and CD34 negative/.test(m)));
+  // CD34 is lost in some higher-grade tumours, so CD34 negative on its own raises nothing.
+  assert.deepEqual(msgs({ sftMitoses: '6', sftIhc: ['STAT6 strong diffuse nuclear', 'CD34 negative'] }, 'warn'), []);
+});
+
+test('the solitary fibrous tumour block shows only for that finding, and Ki-67 shows with it', () => {
+  for (const id of ['sftPattern', 'sftMitoses', 'sftNecrosis', 'sftGrade', 'sftIhc', 'sftFusion', 'ki67']) {
+    assert.equal(isVisible(schema.fields.find((x) => x.id === id), { finding: 'Solitary fibrous tumour' }), true, id);
+  }
+  assert.equal(isVisible(schema.fields.find((x) => x.id === 'sftIhc'), { finding: 'Meningioma' }), false);
+});
+
+test('a solitary fibrous tumour stays off the meningioma branch of the CNS pathway', () => {
+  // A new part starts from the defaults; the example carries a glioblastoma's IDH-wildtype result.
+  const p = pathway({ ...defaults(schema), finding: 'Solitary fibrous tumour', site: 'Convexity dura' });
+  assert.equal(p.branch, 'none');
 });

@@ -19,6 +19,7 @@ const GLIOMAS = [
 ];
 const FINDINGS = [
   'Meningioma',
+  'Solitary fibrous tumour',
   ...GLIOMAS,
   'Pituitary neuroendocrine tumour (PitNET)',
   'Schwannoma',
@@ -37,6 +38,25 @@ const TUMOURS = [...FINDINGS.filter((f) => !/Abscess|Demyelinating|Gliosis|Other
 const BIOPSY_DEFAULT = {
   histClass: '', features: [], ihc: [], molStatus: 'Not performed', idh1R132H: 'Not performed'
 };
+
+const SFT = 'Solitary fibrous tumour';
+function sftFields() {
+  const own = { group: SFT, showIf: isFinding(SFT) };
+  return [
+    { id: 'sftPattern', label: 'Pattern', type: 'select', default: 'Classic (collagenous)', ...own, options: ['Classic (collagenous)', 'Cellular'] },
+    { id: 'sftMitoses', label: 'Mitoses (per 10 high-power fields)', type: 'number', default: '', ...own,
+      help: 'Fewer than 5 is grade 1; 5 or more is grade 2, or grade 3 with necrosis (2.5 per mm²). Count the most active area.' },
+    { id: 'sftNecrosis', label: 'Necrosis', type: 'select', default: 'Not identified', ...own, options: ['Not identified', 'Present'] },
+    { id: 'sftGrade', label: 'CNS WHO grade', type: 'select', default: 'From the findings', ...own,
+      options: ['From the findings', 'CNS WHO grade 1', 'CNS WHO grade 2', 'CNS WHO grade 3', 'Cannot be determined'],
+      help: 'From the findings grades on the mitotic count and necrosis.' },
+    { id: 'sftIhc', label: 'Immunohistochemistry', type: 'multiselect', default: [], ...own, options: [
+      'STAT6 strong diffuse nuclear', 'CD34 positive', 'CD34 patchy and weak', 'CD99 positive', 'BCL2 positive', 'ALDH1 positive',
+      'GRIA2 positive', 'EMA negative', 'EMA focally positive', 'SSTR2A negative', 'Progesterone receptor negative', 'S100 negative',
+      'SOX10 negative', 'GFAP negative', 'CD34 negative', 'STAT6 negative' ] },
+    { id: 'sftFusion', label: 'NAB2::STAT6 fusion', type: 'select', default: 'Not performed', ...own, options: ['Not performed', 'Detected', 'Not detected'] }
+  ];
+}
 
 function gliomaLayers() {
   const gate = { field: 'finding', is: GLIOMAS };
@@ -78,6 +98,13 @@ const fields = [
   // block serves a stereotactic core and a craniotomy. Gated on the finding here, on family plus
   // entity on the resection form.
   ...LAYERS.meningioma.map((f) => ({ ...f, group: 'Meningioma', showIf: isFinding('Meningioma') })),
+
+  // ----- solitary fibrous tumour (user request 2026-10-10) -----
+  // Graded on the mitotic count and necrosis alone: grade 1 below 5 mitoses per 10 high-power fields
+  // (2.5 per mm2), grade 2 at 5 or more, grade 3 at 5 or more with necrosis, counted in the most active
+  // area. Nuclear STAT6 stands in for the NAB2::STAT6 fusion. Grounding and URLs:
+  // docs/reference/cns_biopsy-morphology.md, "Solitary fibrous tumour".
+  ...sftFields(),
 
   // ----- gliomas: the shared CNS diagnosis core, behind a glioma finding -----
   // Field-level gates are kept and combined with the finding gate through `all`, so Layer 4 still
@@ -121,7 +148,7 @@ const fields = [
 
 const schema = {
   id: 'cns_biopsy',
-  version: '2026.09',
+  version: '2026.10',
   name: 'Brain and CNS biopsy',
   shortName: 'Brain · biopsy / smear',
   label: 'Brain',
@@ -134,7 +161,9 @@ const schema = {
     site: ['brain', 'brain tumour', 'cerebral', 'cerebellum', 'dura', 'meninges', 'frontal lobe', 'parietal lobe', 'temporal lobe', 'occipital lobe', 'periventricular', 'suprasellar', 'sellar', 'cerebellopontine angle', 'posterior fossa', 'spinal cord', 'sphenoidal ridge', 'sphenoid wing'],
     procedure: ['biopsy', 'stereotactic biopsy', 'craniotomy', 'excision', 'debulking', 'smear', 'squash'],
     clinical: ['glioma', 'glioblastoma', 'meningioma', 'brain tumour', 'space-occupying lesion', 'metastasis', 'pituitary adenoma', 'lymphoma'],
-    fill: [{ field: 'specimenName', from: 'detail' }]
+    // Kept in step with the JSON, which gained these on 2026-09-24 (docs/specs/specimen-intake.md, CNS and lung sites).
+    sideFromText: true,
+    fill: [{ field: 'specimenName', from: 'detail' }, { field: 'site', from: 'options', noGuess: true }]
   },
   specimenNoun: 'biopsy',
   maxParts: 6,
