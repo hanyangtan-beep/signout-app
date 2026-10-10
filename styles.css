@@ -563,6 +563,31 @@ textarea.input { min-height: 64px; resize: vertical; }
 .ref-credit a { color: inherit; text-decoration: underline dotted; }
 @media (max-width: 720px) { .ref-groups { grid-template-columns: 1fr; } .ref-panel { padding: var(--space-3); } }
 
+/* HER2 DISH calculator (field type `dishCounter`, breast_biomarkers): the QMH 20-nucleus grid. Placed
+   before the phone block so its 44px / 16px input rule still wins there. */
+.field.dish-calc { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
+.dish-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.dish-head .field-label { padding-top: 0; }
+.dish-calc .field-help { grid-column: 1; margin-top: 0; }
+.dish-actions { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.dish-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-2) var(--space-5); }
+.dish-col { display: grid; grid-template-columns: 2em minmax(0, 1fr) minmax(0, 1fr); gap: 4px 6px; align-items: center; }
+.dish-colhead { font-size: var(--text-xs); color: var(--color-text-muted); font-weight: 500; white-space: nowrap; }
+.dish-colhead:first-child { text-align: right; }
+.dish-n { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-text-faint); text-align: right; font-variant-numeric: tabular-nums; }
+.dish-in { min-height: 32px; padding: 2px 6px; text-align: center; font-family: var(--font-mono); font-size: 13px; }
+.dish-in.bad { border-color: var(--color-alert); background: var(--color-alert-highlight); }
+.dish-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: 1px; }
+.dish-dot.her2 { background: #1a1a1a; box-shadow: 0 0 0 1px var(--color-border-strong); }
+.dish-dot.cep17 { background: #c8323a; }
+.dish-summary { display: grid; gap: var(--space-1); padding: var(--space-2) var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-2); font-size: var(--text-sm); }
+.dish-stats { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-4); color: var(--color-text-muted); }
+.dish-stat b { font-family: var(--font-mono); font-weight: 600; color: var(--color-text); font-variant-numeric: tabular-nums; }
+.dish-verdict { color: var(--color-text); }
+.dish-verdict.empty, .dish-verdict.counting, .dish-verdict.no-ratio { color: var(--color-text-muted); }
+.dish-group { font-weight: 600; color: var(--color-primary); }
+.dish-verdict.needs-ihc .dish-group, .dish-recount { color: var(--color-warn); }
+
 /* Multiselect chips and case presets */
 .chips.multi .chip[aria-pressed='true']::before { content: '\2713\00a0'; color: var(--color-primary); }
 .field-hint { font-weight: 400; color: var(--color-text-faint); font-size: var(--text-xs); }

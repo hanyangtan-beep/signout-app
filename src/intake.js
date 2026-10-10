@@ -243,10 +243,26 @@ export function scorePart(part, ctx, manifest) {
   return out.sort((a, b) => b.score - a.score || a.rank - b.rank || a.name.localeCompare(b.name));
 }
 
-/** Role rules that beat scoring: lymph node parts and breast margins. */
+// A request for a HER2 dual ISH test on a block already reported: the standalone HER2 ISH form
+// (`breast_biomarkers`), whatever the specimen was. "Breast, left 8 o'clock, 2 cm FN, core biopsy,
+// paraffin block (26BX-012345), for HER-2 DISH test" (user example, 2026-10-08) scored as a breast
+// core biopsy, and a node or a liver metastasis sent for the test would have taken the node or liver
+// form. The test has to be named in the specimen line itself - a history that mentions an earlier
+// HER2 result does not make a new core a HER2 request - and the case has to be a breast one: named in
+// the line, or in the history or prefix when the line is one of the form's other sites (a node, soft
+// tissue or skin, the liver). Gastric and other HER2 requests keep their own routes. FISH is a
+// different test and is not matched.
+export const HER2_ISH_TEST = /\b(?:HER-?2(?:\/neu)?|c-?erb-?B-?2)\b[^;\n]*?\b(?:D-?ISH|dual[\s-]?ISH|SISH|ISH|in[\s-]?situ[\s-]+hybridi[sz]ation)\b|\bD-?ISH\b|\bdual[\s-]?ISH\b/i;
+const BREAST_WORD = /\b(?:breast|mammary)\b/i;
+const HER2_ISH_OTHER_SITE = /\b(?:lymph\s*nodes?|LN|axill(?:a|ary)|soft\s+tissue|chest\s+wall|skin|liver|hepatic)\b/i;
+const her2IshRequest = (text, ctx) => HER2_ISH_TEST.test(text)
+  && (BREAST_WORD.test(text) || (BREAST_WORD.test(`${ctx.casePrefix || ''} ${ctx.history || ''}`) && HER2_ISH_OTHER_SITE.test(text)));
+
+/** Role rules that beat scoring: HER2 ISH requests, lymph node parts and breast margins. */
 function roleOf(part, ctx, manifest) {
   const text = `${part.raw || part.text}`;
   const ids = new Set(manifest.map((t) => t.id));
+  if (ids.has('breast_biomarkers') && her2IshRequest(text, ctx)) return { role: 'her2_ish', templateId: 'breast_biomarkers' };
   if (ids.has('lymph_node') && !CYTO.test(text)) {
     const strong = NODE_STRONG.test(text);
     const startsWithNode = /^\s*(lymph\s*nodes?|nodes?)\b/i.test(text);
@@ -360,6 +376,35 @@ export function clockSite(text, { tokensOnly = false } = {}) {
   return [clock, distance, ...rest].filter(Boolean).join(', ');
 }
 
+// The HER2 ISH request line read into the form: the organ when the line opens on one the form offers,
+// the rest of the specimen as written, and the block number. "Breast, left 8 o'clock, 2 cm FN, core
+// biopsy, paraffin block (26BX-012345), for HER-2 DISH test" -> Breast / "left 8 o'clock, 2 cm FN,
+// core biopsy" / 26BX-012345, which the form prints back as the same line. A line that does not open
+// on the organ ("Left breast, 8H, core biopsy, …") keeps its own words under Other.
+const ISH_TAIL = /[\s,;]*\b(?:paraffin\s+blocks?\b|blocks?\s*(?:no\.?\s*)?(?=[(\dA-Z])|for\s+(?:the\s+)?(?:HER-?2|c-?erb|D-?ISH|dual[\s-]?ISH|ISH)\b)/i;
+const ISH_BLOCK = /\bblocks?\s*(?:no\.?\s*)?(?:\(\s*([^)]+?)\s*\)|([A-Z0-9]*\d[A-Z0-9]*(?:[-/][A-Z0-9]+)*(?:\s+[A-Z]{1,2}\d{1,3}\b)?))/i;
+export function her2IshValues(schema, text) {
+  const values = {};
+  const fieldIds = new Set((schema?.fields || []).map((f) => f.id));
+  const options = (schema?.fields || []).find((f) => f.id === 'site')?.options || [];
+  const line = clean(text).replace(/[\s.]+$/, '');
+  const b = ISH_BLOCK.exec(line);
+  if (b && fieldIds.has('blockNo')) values.blockNo = (b[1] || b[2]).trim();
+  const cut = line.search(ISH_TAIL);
+  const head = (cut >= 0 ? line.slice(0, cut) : line).replace(/[\s,;:-]+$/, '').trim();
+  if (!head) return values;
+  const m = /^(breast|lymph\s+nodes?|soft\s+tissue|liver)\b\s*(?:[,:]\s*|\s+-\s+|$)(.*)$/i.exec(head);
+  const organ = m && options.find((o) => o.toLowerCase() === m[1].toLowerCase().replace(/\s+/g, ' ').replace(/s$/, ''));
+  if (organ && fieldIds.has('site')) {
+    values.site = organ;
+    if (fieldIds.has('siteDetail')) values.siteDetail = m[2].trim();
+  } else if (options.includes('Other') && fieldIds.has('siteDetail')) {
+    values.site = 'Other';
+    values.siteDetail = head.charAt(0).toUpperCase() + head.slice(1);
+  }
+  return values;
+}
+
 /** Values to pre-fill on the new part; conservative — only fields whose meaning is certain. */
 export function presetValues(schema, part, match = {}) {
   const values = {};
@@ -379,6 +424,7 @@ export function presetValues(schema, part, match = {}) {
   else if (sideField && schema.match?.sideFromText) {
     values[sideField] = (field(sideField).options || []).find((o) => /^not (stated|specified)$/i.test(o)) || '';
   }
+  if (match.role === 'her2_ish') return { ...values, ...her2IshValues(schema, text) };
   if (match.role === 'lymph_node' || schema?.id === 'lymph_node') {
     let station = part.detail || part.text;
     station = station.replace(/^\s*lymph\s*nodes?\s*(at|of|from)?\s*[,:-]?\s*/i, '').trim();

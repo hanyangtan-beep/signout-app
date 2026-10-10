@@ -1,6 +1,6 @@
 {
  "id": "breast_biopsy",
- "version": "2026.09",
+ "version": "2026.10",
  "name": "Breast core biopsy",
  "shortName": "Breast · core biopsy",
  "label": "Breast",
@@ -365,7 +365,8 @@
     "Papillary ductal carcinoma in situ",
     "Encapsulated papillary carcinoma",
     "Solid papillary carcinoma",
-    "Invasive papillary carcinoma"
+    "Invasive papillary carcinoma",
+    "Invasive lobular carcinoma with solid papillary pattern"
    ],
    "default": "Intraductal papilloma",
    "showIf": {
@@ -375,7 +376,7 @@
    "help": "The B code follows the lesion and, for encapsulated and solid papillary carcinoma, the invasion field (RCPath G150, 2026). A B category chosen below still wins.",
    "reference": {
     "title": "Papillary lesions on core biopsy",
-    "intro": "B codes follow RCPath G150 (2026). Myoepithelial cells, CK5/6 and ER separate benign from atypical and malignant papillary lesions (Kulka 2022).",
+    "intro": "B codes follow RCPath G150 (2026). Myoepithelial cells, CK5/6 and ER separate benign from atypical and malignant papillary lesions (Kulka 2022); E-cadherin and p120 pick out the lobular mimic (Kuba and Brogi 2023).",
     "columns": 3,
     "groups": [
      {
@@ -503,6 +504,25 @@
         "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/"
        }
       ]
+     },
+     {
+      "heading": "Invasive lobular carcinoma with solid papillary pattern (B5b)",
+      "points": [
+       "A variation of the solid pattern of invasive lobular carcinoma, not a separate tumour type: well-delimited nodules with a pseudocapsule, often with classic ILC at the periphery (WHO 6th ed.)",
+       "Discohesive cells around fibrovascular cores, with no myoepithelial cells in the nodules; nuclear grade low to high (Kuba and Brogi 2023)",
+       "E-cadherin lost, or retained with cytoplasmic p120 or loss of membranous β-catenin; ER positive and HER2 negative in the reported cases (Kuba and Brogi 2023)",
+       "Neuroendocrine markers are usually negative but may be positive, so they do not exclude it (Kuba and Brogi 2023)",
+       "Mimics on a core: solid and encapsulated papillary carcinoma, solid ILC in sheets without cores, and lobular neoplasia involving a papillary lesion (Kuba and Brogi 2023)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/breast_biopsy/ilc_solid_papillary.jpg",
+        "caption": "Invasive lobular carcinoma with solid papillary pattern: expansile, well-delimited nodules of discohesive cells, with linear cords of invasive lobular carcinoma in the adjacent stroma (arrows) (H&E).",
+        "credit": "Quinn et al., Histopathology 2026 (WHO 6th ed. summary), Fig 12",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13341065/"
+       }
+      ]
      }
     ]
    }
@@ -543,6 +563,25 @@
      }
     ]
    }
+  },
+  {
+   "id": "papIlcCords",
+   "label": "Classic lobular carcinoma in the adjacent stroma",
+   "type": "checkbox",
+   "default": false,
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": "Invasive lobular carcinoma with solid papillary pattern"
+     }
+    ]
+   },
+   "help": "Single files or linear cords of the same discohesive cells beside the nodules; often present at the periphery (WHO 6th ed.)."
   },
   {
    "id": "papGrade",
@@ -609,6 +648,11 @@
       "Not stained",
       "Present",
       "Absent"
+     ],
+     "Invasive lobular carcinoma with solid papillary pattern": [
+      "Not stained",
+      "Present",
+      "Absent"
      ]
     }
    },
@@ -628,7 +672,8 @@
        "Papilloma with ductal carcinoma in situ",
        "Papillary ductal carcinoma in situ",
        "Encapsulated papillary carcinoma",
-       "Solid papillary carcinoma"
+       "Solid papillary carcinoma",
+       "Invasive lobular carcinoma with solid papillary pattern"
       ]
      }
     ]
@@ -661,7 +706,69 @@
        "Papilloma with ductal carcinoma in situ",
        "Papillary ductal carcinoma in situ",
        "Encapsulated papillary carcinoma",
-       "Solid papillary carcinoma"
+       "Solid papillary carcinoma",
+       "Invasive lobular carcinoma with solid papillary pattern"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "papEcad",
+   "label": "E-cadherin",
+   "type": "select",
+   "options": [
+    "Not stained",
+    "Lost",
+    "Aberrant",
+    "Retained"
+   ],
+   "optionLabels": {
+    "Lost": "Lost (no membranous staining)",
+    "Aberrant": "Aberrant (reduced, beaded or cytoplasmic)",
+    "Retained": "Retained (membranous)"
+   },
+   "default": "Not stained",
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": [
+       "Encapsulated papillary carcinoma",
+       "Solid papillary carcinoma",
+       "Invasive lobular carcinoma with solid papillary pattern"
+      ]
+     }
+    ]
+   },
+   "help": "Lobular differentiation: E-cadherin with p120, or β-catenin in the immunohistochemistry sentence, when classic ILC or LCIS sits beside a papillary carcinoma (Kuba and Brogi 2023)."
+  },
+  {
+   "id": "papP120",
+   "label": "p120",
+   "type": "select",
+   "options": [
+    "Not stained",
+    "Cytoplasmic",
+    "Membranous"
+   ],
+   "default": "Not stained",
+   "showIf": {
+    "all": [
+     {
+      "field": "category",
+      "is": "Papillary"
+     },
+     {
+      "field": "papLesion",
+      "is": [
+       "Encapsulated papillary carcinoma",
+       "Solid papillary carcinoma",
+       "Invasive lobular carcinoma with solid papillary pattern"
       ]
      }
     ]
@@ -696,7 +803,8 @@
        "Papilloma with ductal carcinoma in situ",
        "Papillary ductal carcinoma in situ",
        "Encapsulated papillary carcinoma",
-       "Solid papillary carcinoma"
+       "Solid papillary carcinoma",
+       "Invasive lobular carcinoma with solid papillary pattern"
       ]
      }
     ]
@@ -727,7 +835,8 @@
        "Papilloma with ductal carcinoma in situ",
        "Papillary ductal carcinoma in situ",
        "Encapsulated papillary carcinoma",
-       "Solid papillary carcinoma"
+       "Solid papillary carcinoma",
+       "Invasive lobular carcinoma with solid papillary pattern"
       ]
      }
     ]
@@ -752,7 +861,10 @@
      },
      {
       "field": "papLesion",
-      "is": "Solid papillary carcinoma"
+      "is": [
+       "Solid papillary carcinoma",
+       "Invasive lobular carcinoma with solid papillary pattern"
+      ]
      }
     ]
    }
@@ -778,7 +890,10 @@
      },
      {
       "field": "papLesion",
-      "is": "Solid papillary carcinoma"
+      "is": [
+       "Solid papillary carcinoma",
+       "Invasive lobular carcinoma with solid papillary pattern"
+      ]
      },
      {
       "field": "papNe",
@@ -1069,7 +1184,10 @@
         "any": [
          {
           "field": "papLesion",
-          "is": "Invasive papillary carcinoma"
+          "is": [
+           "Invasive papillary carcinoma",
+           "Invasive lobular carcinoma with solid papillary pattern"
+          ]
          },
          {
           "all": [
@@ -1119,7 +1237,10 @@
         "any": [
          {
           "field": "papLesion",
-          "is": "Invasive papillary carcinoma"
+          "is": [
+           "Invasive papillary carcinoma",
+           "Invasive lobular carcinoma with solid papillary pattern"
+          ]
          },
          {
           "all": [
@@ -1169,7 +1290,10 @@
         "any": [
          {
           "field": "papLesion",
-          "is": "Invasive papillary carcinoma"
+          "is": [
+           "Invasive papillary carcinoma",
+           "Invasive lobular carcinoma with solid papillary pattern"
+          ]
          },
          {
           "all": [
@@ -1216,7 +1340,10 @@
         "any": [
          {
           "field": "papLesion",
-          "is": "Invasive papillary carcinoma"
+          "is": [
+           "Invasive papillary carcinoma",
+           "Invasive lobular carcinoma with solid papillary pattern"
+          ]
          },
          {
           "all": [
@@ -1279,7 +1406,10 @@
         "any": [
          {
           "field": "papLesion",
-          "is": "Invasive papillary carcinoma"
+          "is": [
+           "Invasive papillary carcinoma",
+           "Invasive lobular carcinoma with solid papillary pattern"
+          ]
          },
          {
           "all": [

@@ -1,0 +1,30 @@
+{
+  "templateId": "breast_biopsy",
+  "description": "New (Phase 61): invasive lobular carcinoma with solid papillary pattern and classic ILC in the stroma; no myoepithelial cells, E-cadherin loss with cytoplasmic p120, diffuse ER, neuroendocrine markers negative.",
+  "values": {
+    "laterality": "Left",
+    "specimenName": "2 o'clock",
+    "category": "Papillary",
+    "papLesion": "Invasive lobular carcinoma with solid papillary pattern",
+    "papIlcCords": true,
+    "papMecCores": "Absent",
+    "papMecEdge": "Absent",
+    "papEcad": "Lost",
+    "papP120": "Cytoplasmic",
+    "papEr": "Diffuse, strong",
+    "papNe": "Negative",
+    "tubules": "3",
+    "nuclear": "2",
+    "mitoses": "1",
+    "invExtentMm": "6"
+  },
+  "report": "Left breast, 2 o'clock, core biopsy\n\nSections show three cores of breast tissue containing expansile, well-circumscribed solid nodules of discohesive tumour cells arranged around delicate fibrovascular cores. Similar tumour cells also infiltrate the adjacent stroma in single files and linear cords. Immunostaining for p63 shows no myoepithelial cells along the fibrovascular cores or around the tumour nodules. The tumour cells show loss of E-cadherin expression with cytoplasmic p120 staining and are diffusely and strongly positive for ER. They do not express synaptophysin or chromogranin. The features are those of invasive lobular carcinoma with a solid papillary pattern. Tubule formation is inconspicuous. The tumour cells show moderate nuclear pleomorphism with visible nucleoli. Mitoses are infrequent. Provisional Nottingham grade 2 (tubules 3, nuclear pleomorphism 2, mitoses 1; score 6/9). The invasive carcinoma measures 6 mm in maximum extent in the cores. Lymphovascular invasion is not identified.\n\nBREAST, left 2 o'clock, core biopsy - INVASIVE LOBULAR CARCINOMA with SOLID PAPILLARY PATTERN, provisional grade 2 (B5b)",
+  "checks": [
+    {
+      "level": "info",
+      "field": "papLesion",
+      "message": "A variation of the solid pattern of invasive lobular carcinoma, not a separate tumour type (WHO 6th ed.). Confirm lobular differentiation with E-cadherin and p120 or β-catenin; on a core it is easily taken for lobular carcinoma in situ, or for solid or encapsulated papillary carcinoma (Kuba and Brogi 2023).",
+      "part": "A"
+    }
+  ]
+}

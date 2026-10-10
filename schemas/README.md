@@ -4,7 +4,7 @@
 
 One JSON file per template. Keys: `id`, `version`, `name`, `shortName`, `organ`, `specimenNoun`, `maxParts`, `defaultParts`, `generator`, `style`, `caseFields`, `options`, `partDefaults`, `fields`, `example`.
 
-Field types: `text`, `textarea`, `number` (`min`, `step`, `suffix`), `checkbox`, `select` / `grade` (`options`, `optionLabels`, `optionsByField`, `optionGroups`, `showIf`, `defaultForFirstPart`), `multiselect` (array value; `options`, `exclusive: [option]` clears the others when ticked, `default: []`).
+Field types: `text`, `textarea`, `number` (`min`, `step`, `suffix`), `checkbox`, `select` / `grade` (`options`, `optionLabels`, `optionsByField`, `optionGroups`, `showIf`, `defaultForFirstPart`), `multiselect` (array value; `options`, `exclusive: [option]` clears the others when ticked, `default: []`), `dishCounter` (the HER2 DISH calculator grid, `default: []`; the value is one `[HER2, CEP17]` pair of typed strings per nucleus, blank rows included, and the generator's `derive` hook turns it into the printed numbers and result — `breast_biomarkers` only, see `generators/dish_calculator.js`).
 
 `optionGroups: [{ label, options }]` on a long select renders the list in `<optgroup>`s (Skin SCC tumour site: head and neck / trunk and limbs; Skin excision diagnosis: eight lesion families); the flat `options` stays the list that is validated and printed, and options no group names follow the groups. A grouped select also shows its `help` under the list; on other selects `help` is a schema note only.
 

@@ -220,11 +220,15 @@ function b5cNarrative(part) {
 // B5a; B5b needs overt invasion; B5c only for fragments of carcinoma with no surrounding stroma. Invasion
 // needs unequivocal stromal invasion - absent myoepithelial cells alone are not invasion (Rakha, Histopathology
 // 2026, his.70072; WHO 6th ed.). None of these rules is printed: the report states the findings.
+// Phase 61: invasive lobular carcinoma with solid papillary pattern, a variation of the solid pattern of ILC in
+// WHO 6th ed. (Quinn, Histopathology 2026, his.70149), is invasive carcinoma, so B5b; E-cadherin and p120
+// separate it from solid and encapsulated papillary carcinoma (Kuba and Brogi, Histopathology 2023, his.14829).
 
 export const PAP = {
   IP: 'Intraductal papilloma', SUG: 'Papillary lesion, suggestive of papilloma', ADH: 'Papilloma with atypical ductal hyperplasia',
   DCIS_IN: 'Papilloma with ductal carcinoma in situ', PDCIS: 'Papillary ductal carcinoma in situ',
-  EPC: 'Encapsulated papillary carcinoma', SPC: 'Solid papillary carcinoma', IPC: 'Invasive papillary carcinoma'
+  EPC: 'Encapsulated papillary carcinoma', SPC: 'Solid papillary carcinoma', IPC: 'Invasive papillary carcinoma',
+  ILC_SP: 'Invasive lobular carcinoma with solid papillary pattern'
 };
 const papLesion = (v) => v.papLesion || PAP.IP;
 const isEpcSpc = (lesion) => lesion === PAP.EPC || lesion === PAP.SPC;
@@ -234,7 +238,7 @@ const papInvasion = (v) => (isEpcSpc(papLesion(v)) ? v.papInvasion || 'Not ident
 /** True when the papillary lesion carries an invasive component (the grading fields show). */
 export function papInvasive(v) {
   const lesion = papLesion(v);
-  return lesion === PAP.IPC || (isEpcSpc(lesion) && papInvasion(v) === 'Present');
+  return lesion === PAP.IPC || lesion === PAP.ILC_SP || (isEpcSpc(lesion) && papInvasion(v) === 'Present');
 }
 
 /** The B code a papillary lesion gives before any override. */
@@ -247,7 +251,7 @@ export function papillaryCode(v) {
     const inv = papInvasion(v);
     return inv === 'Present' ? 'B5b' : inv === 'Not assessable' ? 'B5c' : 'B5a';
   }
-  return lesion === PAP.IPC ? 'B5b' : 'B3';
+  return lesion === PAP.IPC || lesion === PAP.ILC_SP ? 'B5b' : 'B3';
 }
 
 /** The B3 recommendation prints for the B3 papillary lesions; it mirrors the b3Advice showIf. */
@@ -271,7 +275,7 @@ const SOLID = {
 /** Where the edge of the lesion lies, for the p63 sentence. */
 function papEdgeWords(lesion) {
   if (lesion === PAP.PDCIS) return 'around the involved ducts';
-  if (lesion === PAP.SPC) return 'around the tumour nodules';
+  if (lesion === PAP.SPC || lesion === PAP.ILC_SP) return 'around the tumour nodules';
   return 'at the periphery of the lesion';
 }
 
@@ -296,17 +300,32 @@ function papP63Sentence(v, lesion, b5c) {
   return text;
 }
 
-/** CK5/6 and ER on the lesional cells, in one sentence (house: "show loss of CK5/6", "diffusely positive for ER"). */
+/** E-cadherin and p120 as a predicate of "The tumour cells": encapsulated and solid papillary carcinoma and
+ * the solid papillary pattern of ILC only (their fields show); '' when neither is stained. */
+const CADHERIN_LESIONS = [PAP.EPC, PAP.SPC, PAP.ILC_SP];
+function papCadherinPhrase(v, lesion) {
+  if (!CADHERIN_LESIONS.includes(lesion)) return '';
+  const e = { Lost: 'show loss of E-cadherin expression', Aberrant: 'show aberrant E-cadherin expression', Retained: 'retain membranous E-cadherin expression' }[v.papEcad];
+  const p = { Cytoplasmic: 'cytoplasmic p120 staining', Membranous: 'membranous p120 staining' }[v.papP120];
+  if (e && p) {
+    if (v.papEcad === 'Retained') return v.papP120 === 'Membranous' ? 'retain membranous E-cadherin and p120 expression' : `${e} but show ${p}`;
+    return `${e} with ${p}`;
+  }
+  return e || (p ? `show ${p}` : '');
+}
+
+/** E-cadherin and p120, CK5/6 and ER on the lesional cells, in one sentence (house: "show loss of CK5/6",
+ * "diffusely positive for ER"). */
 function papCkErSentence(v, lesion) {
   const ck = { Mosaic: 'show a mosaic pattern of CK5/6 staining', Negative: 'show loss of CK5/6' }[v.papCk56];
   const er = { Heterogeneous: 'are heterogeneously positive for ER', 'Diffuse, strong': 'are diffusely and strongly positive for ER' }[v.papEr];
-  const preds = [ck, er].filter(Boolean);
+  const preds = [papCadherinPhrase(v, lesion), ck, er].filter(Boolean);
   if (!preds.length) return '';
   const subject = [PAP.IP, PAP.SUG].includes(lesion) ? 'The epithelial cells' : [PAP.ADH, PAP.DCIS_IN].includes(lesion) ? 'The atypical cells' : 'The tumour cells';
-  return `${subject} ${preds.join(' and ')}.`;
+  return `${subject} ${listJoin(preds)}.`;
 }
 
-/** Neuroendocrine markers, solid papillary carcinoma only. */
+/** Neuroendocrine markers: solid papillary carcinoma and the solid papillary pattern of ILC. */
 function papNeSentence(v, afterCkEr) {
   if (!['Positive', 'Negative'].includes(v.papNe)) return '';
   const picked = (Array.isArray(v.papNeMarkers) ? v.papNeMarkers : []).map((m) => (m === 'INSM1' ? m : low(m)));
@@ -389,6 +408,9 @@ function papillaryNarrative(part) {
     out.push(b5c
       ? `Sections show ${cores} composed entirely of fragments of a solid epithelial proliferation of ${SOLID[g]}, arranged around delicate fibrovascular cores.`
       : `Sections show ${cores} of breast tissue containing expansile solid nodules with smooth contours, composed of ${SOLID[g]} arranged around delicate fibrovascular cores.`);
+  } else if (lesion === PAP.ILC_SP) {
+    out.push(`Sections show ${cores} of breast tissue containing expansile, well-circumscribed solid nodules of discohesive tumour cells arranged around delicate fibrovascular cores.`);
+    if (v.papIlcCords) out.push('Similar tumour cells also infiltrate the adjacent stroma in single files and linear cords.');
   } else {
     out.push(`Sections show ${cores} of breast tissue infiltrated by an invasive papillary carcinoma, composed of papillary structures with fibrovascular cores lined by tumour cells, without a myoepithelial layer.`);
     out.push(papGradingSentences(v, false));
@@ -397,7 +419,7 @@ function papillaryNarrative(part) {
   const p63 = papP63Sentence(v, lesion, b5c);
   const ckEr = papCkErSentence(v, lesion);
   out.push(p63, ckEr);
-  if (lesion === PAP.SPC) out.push(papNeSentence(v, !!ckEr));
+  if (lesion === PAP.SPC || lesion === PAP.ILC_SP) out.push(papNeSentence(v, !!ckEr));
   if (lesion === PAP.IP) {
     out.push('The features are consistent with intraductal papilloma.');
     if (v.papWithinCore) out.push('The papilloma is small and is seen whole within the core.');
@@ -410,6 +432,9 @@ function papillaryNarrative(part) {
     out.push('There is no evidence of invasive carcinoma in the material examined.');
   } else if (lesion === PAP.PDCIS) {
     out.push(`The features are those of ${g} nuclear grade papillary ductal carcinoma in situ. There is no evidence of invasive carcinoma in the material examined.`);
+  } else if (lesion === PAP.ILC_SP) {
+    out.push('The features are those of invasive lobular carcinoma with a solid papillary pattern.');
+    out.push(papGradingSentences(v, false));
   } else {
     const name = lesion === PAP.EPC ? 'encapsulated papillary carcinoma' : 'solid papillary carcinoma';
     out.push(b5c ? `The features are in keeping with ${name}.` : `The features are those of ${name}.`);
@@ -435,6 +460,7 @@ function papillaryDx(v) {
   if (lesion === PAP.DCIS_IN) return `INTRADUCTAL PAPILLOMA with DUCTAL CARCINOMA IN SITU, ${grade}`;
   if (lesion === PAP.PDCIS) return `PAPILLARY DUCTAL CARCINOMA IN SITU, ${grade}`;
   if (lesion === PAP.IPC) return `INVASIVE PAPILLARY CARCINOMA${provisional}`;
+  if (lesion === PAP.ILC_SP) return `INVASIVE LOBULAR CARCINOMA with SOLID PAPILLARY PATTERN${provisional}`;
   const name = lesion === PAP.EPC ? 'ENCAPSULATED PAPILLARY CARCINOMA' : 'SOLID PAPILLARY CARCINOMA';
   const inv = papInvasion(v);
   if (inv === 'Suspicious, not definite') return `${name}, invasion cannot be excluded`;
@@ -473,6 +499,19 @@ function papillaryChecks(v) {
   if (lesion === PAP.EPC && v.papGrade === 'High') {
     warn('papGrade', 'High-grade encapsulated papillary carcinoma is rare, and a note of the unusual features is advised (WHO 6th ed.). With peripheral myoepithelial cells it stays B5a; without them, Rakha 2024 reports it as B5c, since invasion cannot be excluded.');
   }
+  if (isEpcSpc(lesion) && (v.papEcad === 'Lost' || v.papP120 === 'Cytoplasmic')) {
+    warn(v.papEcad === 'Lost' ? 'papEcad' : 'papP120', 'Loss of E-cadherin or cytoplasmic p120 points to lobular differentiation: consider invasive lobular carcinoma with solid papillary pattern (WHO 6th ed.; Kuba and Brogi 2023).');
+  }
+  if (lesion === PAP.ILC_SP) {
+    if (v.papEcad === 'Retained' && v.papP120 !== 'Cytoplasmic') {
+      warn('papEcad', 'Membranous E-cadherin is retained: consider solid or encapsulated papillary carcinoma. A lobular carcinoma that keeps E-cadherin shows cytoplasmic p120 or loses membranous β-catenin (Kuba and Brogi 2023).');
+    } else if (v.papP120 === 'Membranous') {
+      warn('papP120', 'Membranous p120 does not support lobular differentiation, which moves p120 to the cytoplasm (Kuba and Brogi 2023): consider solid or encapsulated papillary carcinoma.');
+    }
+    if (v.papMecCores === 'Present' || ['Present', 'Focal'].includes(v.papMecEdge)) {
+      warn(v.papMecCores === 'Present' ? 'papMecCores' : 'papMecEdge', 'Myoepithelial cells are recorded, but this pattern has none in its nodules (Kuba and Brogi 2023): consider lobular neoplasia, including within a papillary lesion.');
+    }
+  }
   if (v.bOverride && v.bOverride !== 'Auto' && v.bOverride !== papillaryCode(v)) {
     warn('bOverride', `The B category chosen (${v.bOverride}) differs from the one this lesion gives (${papillaryCode(v)}).`);
   }
@@ -490,6 +529,12 @@ function papillaryChecks(v) {
   }
   if (lesion === PAP.IPC) {
     info('papLesion', 'Pure invasive papillary carcinoma is exceptionally rare: its papillae infiltrate the stroma, without the circumscription, capsule, neuroendocrine differentiation or mucin of encapsulated and solid papillary carcinoma, which stay in situ without stromal invasion (Rakha 2026; WHO 6th ed.).');
+  }
+  if (lesion === PAP.ILC_SP) {
+    info('papLesion', 'A variation of the solid pattern of invasive lobular carcinoma, not a separate tumour type (WHO 6th ed.). Confirm lobular differentiation with E-cadherin and p120 or β-catenin; on a core it is easily taken for lobular carcinoma in situ, or for solid or encapsulated papillary carcinoma (Kuba and Brogi 2023).');
+    if (v.papNe === 'Positive') {
+      info('papNe', 'Neuroendocrine markers do not exclude this pattern: they were diffusely positive in one reported case (Kuba and Brogi 2023). E-cadherin and p120 separate it from solid papillary carcinoma.');
+    }
   }
   if (papInvasive(v) && v.biomarkers === 'Performed') {
     info('biomarkers', 'Grade, size and receptors are assessed in the invasive component (Rakha 2024).');

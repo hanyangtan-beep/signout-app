@@ -835,6 +835,19 @@ await check('the standalone HER2 ISH report prints the block and no empty headin
   assert(/HER2 DISH : Negative \(not amplified, Group 5 result\)/.test(text), 'the ISH result did not reach the report');
   assert(/Average number of CEP17 signals \(red\) per cell : 1\.9/.test(text), 'the signal counts did not reach the report');
   assert(/Ventana INFORM HER2 Dual ISH DNA Probe Cocktail Assay/.test(text), 'the method sentence is missing');
+  // Since 2026-10-08 the pre-analytic lines and the method sentence print in the Comment block, the
+  // result lines in Molecular findings, and the Diagnosis is one line naming the specimen.
+  const blockText = async (name) => page.locator('#report-blocks .block').filter({ has: page.locator('.block-head h3', { hasText: new RegExp(`^${name}`) }) }).first().innerText();
+  // The headings render in capitals (CSS), which innerText reports.
+  const heads = await page.locator('#report-blocks .block .block-head h3').allInnerTexts();
+  assert(JSON.stringify(heads.map((h) => h.split('\n')[0].trim().toLowerCase())) === JSON.stringify(['specimens', 'molecular findings', 'diagnosis', 'comment']),
+    `the HER2 report blocks read ${JSON.stringify(heads)}`);
+  const mol = await blockText('Molecular findings');
+  const dx = await blockText('Diagnosis');
+  const cmt = await blockText('Comment');
+  assert(/HER2\/CEP17 ratio : 0\.71/.test(mol) && !/ischaem|Ventana/i.test(mol), `the Molecular findings block should hold the result alone: ${mol.slice(0, 300)}`);
+  assert(/Breast, left mastectomy, for HER-2 DISH test - NEGATIVE for HER2 amplification/.test(dx) && !/HER2\/CEP17/.test(dx), `the Diagnosis block should be the one line: ${dx.slice(0, 300)}`);
+  assert(/Cold ischaemic time is uncertain\./.test(cmt) && /Ventana INFORM/.test(cmt), `the Comment block is missing the pre-analytic lines or the method: ${cmt.slice(0, 300)}`);
   assert(!/strogen|rogesterone/i.test(text), 'an ER/PR line leaked into the ISH-only report');
   assert(!/randomized/.test(text), 'American spelling reached the report');
   // No macro and no microscopy: those blocks must be absent, not present and empty.
@@ -850,7 +863,120 @@ await check('the standalone HER2 ISH report prints the block and no empty headin
   const checks = (await page.locator('details.checks .issue').allInnerTexts()).join(' | ');
   assert(/Group 1 result, not Group 5/.test(checks), `the group mismatch was not flagged (checks read: ${checks.slice(0, 120)})`);
   await shot('her2-ish-standalone');
-  return 'block printed, no empty headings, group mismatch flagged';
+  return 'result in Molecular findings, one-line Diagnosis, pre-analytics and method in Comment, no empty headings, group mismatch flagged';
+});
+
+// A HER2 DISH request pasted from the LIS (user example, 2026-10-08) opens the HER2 ISH form, not the
+// breast core biopsy form it used to, with the block number read off the line.
+await check('a pasted HER2 DISH request builds the HER2 ISH part with its paraffin block', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const line = "Breast, left 8 o'clock, 2 cm FN, core biopsy, paraffin block (26BX-012345), for HER-2 DISH test.";
+  const box = page.locator('#meta-specimen');
+  await box.click();
+  await box.fill('');
+  await box.type(line, { delay: 2 });
+  await page.waitForSelector('#intake-preview table tr', { timeout: 5000 });
+  const accept = (d) => d.accept();
+  page.on('dialog', accept);
+  await page.click('#btn-build-parts');
+  await page.waitForTimeout(600);
+  page.off('dialog', accept);
+  assert(await page.locator('#f-A-blockNo').count(), 'the part did not open on the HER2 ISH form');
+  const got = { blockNo: await page.inputValue('#f-A-blockNo'), siteDetail: await page.inputValue('#f-A-siteDetail') };
+  assert(got.blockNo === '26BX-012345' && got.siteDetail === "left 8 o'clock, 2 cm FN, core biopsy", `the form was filled with ${JSON.stringify(got)}`);
+  await page.selectOption('#f-A-her2Dish', { label: 'Negative (not amplified, Group 5 result)' });
+  await page.waitForTimeout(400);
+  const blocks = await page.locator('#report-blocks').innerText();
+  assert(blocks.includes(line), 'the specimen line did not print back as pasted');
+  assert(blocks.includes("Breast, left 8 o'clock, 2 cm FN, core biopsy, paraffin block (26BX-012345), for HER-2 DISH test - NEGATIVE for HER2 amplification"), 'the diagnosis line is not the specimen line and the verdict');
+  await shot('her2-ish-pasted-request');
+  return 'opened HER2 ISH, block 26BX-012345 and the detail filled, specimen and diagnosis lines as pasted';
+});
+
+// The HER2 DISH calculator (2026-10-08): counts typed nucleus by nucleus fill the cells counted, both
+// averages, the ratio and the result in place, without taking focus out of the grid; Groups 2-4 wait
+// for the IHC score. Unit tests cover the arithmetic; this covers the wiring.
+await check('the HER2 DISH calculator fills the numbers and the group as nuclei are counted', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  await page.click('#btn-palette');
+  await page.waitForSelector('#dlg-palette[open]', { timeout: 5000 });
+  await page.fill('#palette-search', 'HER2');
+  await page.waitForTimeout(250);
+  await page.locator('#palette-list [data-template="breast_biomarkers"]').first().click();
+  await page.waitForTimeout(400);
+  const accept = (d) => d.accept();
+  page.on('dialog', accept);
+  // The reload restores the previous check's case; start the counts from empty.
+  if (await page.locator('.dish-calc .dish-actions .btn.danger:not([hidden])').count()) {
+    await page.click('.dish-calc .dish-actions .btn.danger');
+    await page.waitForTimeout(300);
+  }
+  for (const id of ['dishHer2', 'dishCep17', 'dishRatio', 'dishCells']) await page.fill(`#f-A-${id}`, '');
+  await page.selectOption('#f-A-her2Dish', '');
+  await page.waitForTimeout(200);
+  const cells = await page.locator('.dish-calc input.dish-in').count();
+  assert(cells === 40, `the grid has ${cells} boxes, not 20 nuclei x 2`);
+
+  // Nineteen nuclei by keyboard alone: type, Enter, type, Enter.
+  const h = [2, 3, 2, 2, 1, 2, 3, 2, 2, 2, 1, 2, 2, 3, 2, 2, 2, 1, 2, 2];
+  const c = [2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2];
+  await page.click('#f-A-dishCounts-h1');
+  for (let k = 0; k < 19; k++) {
+    await page.keyboard.type(String(h[k]));
+    await page.keyboard.press('Enter');
+    await page.keyboard.type(String(c[k]));
+    await page.keyboard.press('Enter');
+  }
+  await page.waitForTimeout(200);
+  const focus = await page.evaluate(() => document.activeElement?.id || '');
+  assert(focus === 'f-A-dishCounts-h20', `focus is on "${focus}" after nucleus 19, not on nucleus 20's HER2 box`);
+  assert(await page.inputValue('#f-A-her2Dish') === '', 'a result was assigned before 20 nuclei were counted');
+  const counting = await page.locator('.dish-summary').innerText();
+  assert(/19 of 20/.test(counting) && /1 more to count/.test(counting), `the summary while counting read: ${counting}`);
+  await page.keyboard.type(String(h[19]));
+  await page.keyboard.press('Enter');
+  await page.keyboard.type(String(c[19]));
+  await page.waitForTimeout(300);
+  const filled = {};
+  for (const id of ['dishCells', 'dishHer2', 'dishCep17', 'dishRatio', 'her2Dish']) filled[id] = await page.inputValue(`#f-A-${id}`);
+  assert(JSON.stringify(filled) === JSON.stringify({ dishCells: '20', dishHer2: '2.00', dishCep17: '1.90', dishRatio: '1.05', her2Dish: 'Negative (not amplified, Group 5 result)' }),
+    `the calculator filled ${JSON.stringify(filled)}`);
+  assert((await page.evaluate(() => document.activeElement?.id || '')) === 'f-A-dishCounts-c20', 'typing the last count took focus out of the grid');
+  const done = await page.locator('.dish-summary').innerText();
+  assert(/Group 5/.test(done) && /Negative \(not amplified, Group 5 result\)/.test(done), `the summary after 20 nuclei read: ${done}`);
+  const report = await page.locator('#report-blocks').innerText();
+  assert(report.includes('Number of tumour cell counted : 20') && report.includes('HER2/CEP17 ratio : 1.05'), 'the counted numbers did not reach the report');
+  await page.locator('.dish-calc').scrollIntoViewIfNeeded();
+  await shot('her2-dish-calculator');
+
+  // Group 3 (7 HER2, 4 CEP17 a nucleus): no result until the IHC score is chosen, then IHC 2+ gives the
+  // positive Group 3 result and the blinded-recount reminder.
+  for (let k = 1; k <= 20; k++) {
+    await page.fill(`#f-A-dishCounts-h${k}`, '7');
+    await page.fill(`#f-A-dishCounts-c${k}`, '4');
+  }
+  await page.waitForTimeout(250);
+  assert(await page.inputValue('#f-A-her2Dish') === '', 'a Group 3 count assigned a result without the IHC score');
+  assert(/Group 3/.test(await page.locator('.dish-summary').innerText()), 'the summary did not name Group 3');
+  await page.locator('.chips[data-field="dishIhc"] .chip', { hasText: '2+' }).first().click();
+  await page.waitForTimeout(300);
+  assert(await page.inputValue('#f-A-her2Dish') === 'Positive, Group 3 ISH result (with IHC 2-3+)', `IHC 2+ gave "${await page.inputValue('#f-A-her2Dish')}"`);
+  const checks = (await page.locator('details.checks .issue').allInnerTexts()).join(' | ');
+  assert(/recount of at least 20 nuclei/.test(checks), `the recount reminder is missing (checks read: ${checks.slice(0, 160)})`);
+
+  // Clear counts empties the grid, the numbers and the result it wrote.
+  await page.click('.dish-calc .dish-actions .btn.danger');
+  await page.waitForTimeout(300);
+  page.off('dialog', accept);
+  const after = {};
+  for (const id of ['dishCells', 'dishRatio', 'her2Dish']) after[id] = await page.inputValue(`#f-A-${id}`);
+  assert(Object.values(after).every((x) => x === ''), `Clear counts left ${JSON.stringify(after)}`);
+  assert(await page.inputValue('#f-A-dishCounts-h1') === '', 'Clear counts left the grid filled');
+  return 'Group 5 filled at nucleus 20 with focus kept, Group 3 waited for IHC 2+, recount flagged, clear emptied it';
 });
 
 // A pasted breast core in the house shorthand: "L11H" is the left side at 11 o'clock. Before 2026-09-24
@@ -861,6 +987,8 @@ await check('a pasted "L11H" breast core builds a left part at 11 o\'clock', asy
   await page.waitForTimeout(600);
   const box = page.locator('#meta-specimen');
   await box.click();
+  // The restored case may carry an earlier check's specimen text (the pasted HER2 request); start empty.
+  await box.fill('');
   await box.type('breast, L11H lesion, biopsy', { delay: 4 });
   await page.waitForSelector('#intake-preview table tr', { timeout: 5000 });
   // The reload restores the previous check's case, so the button reads "Replace parts" and asks first.
@@ -1397,9 +1525,27 @@ await check('medical liver: a pasted random biopsy opens Liver (medical); each p
   await page.waitForTimeout(200);
   assert(await page.locator('#ref-lightbox[open]').count() === 0, 'the lightbox did not close on Escape');
   await page.locator('.field[data-field="pattern"] .ref-toggle').first().click();
+  // Phase 62: each section heading has its own gallery on its first field; open two and count the photos.
+  const gallery = async (id, expected, name) => {
+    await page.locator(`.field[data-field="${id}"] .ref-toggle`).first().click();
+    await page.waitForSelector(`.field[data-field="${id}"] .ref-panel img`, { timeout: 5000 });
+    const pics = page.locator(`.field[data-field="${id}"] .ref-panel img`);
+    const n = await pics.count();
+    assert(n === expected, `${id} gallery holds ${n} photos, expected ${expected}`);
+    for (let i = 0; i < n; i++) await pics.nth(i).scrollIntoViewIfNeeded();
+    await page.waitForFunction((fid) => [...document.querySelectorAll(`.field[data-field="${fid}"] .ref-panel img`)].every((i) => i.complete && i.naturalWidth > 0), id, { timeout: 8000 });
+    await page.locator(`.field[data-field="${id}"] .ref-panel`).first().scrollIntoViewIfNeeded();
+    await shot(name);
+    await page.locator(`.field[data-field="${id}"] .ref-toggle`).first().click();
+  };
+  await pickField('pattern', 'Transplant');
+  await gallery('txDx', 6, 'liver-transplant-gallery');
+  await pickField('pattern', 'Hepatitic');
+  await gallery('portalInfl', 5, 'liver-inflammation-gallery');
+  await gallery('hepDx', 7, 'liver-hepatitis-gallery');
   routed = await pasteAndBuild('History\nDeranged liver function\n\nSpecimen\n(A) Liver, segment 6, mass, biopsy');
   assert(routed !== 'liver_biopsy', 'a liver mass line opened the medical liver form');
-  return 'routed on the history; hepatitic, biliary and steatotic fields swap; pattern gallery 4 photos and the lightbox; a mass line stays out';
+  return 'routed on the history; hepatitic, biliary and steatotic fields swap; pattern gallery 4 photos and the lightbox; transplant 6, inflammation 5 and hepatitis 7 photos; a mass line stays out';
 });
 
 // Hirschsprung pair (2026-09-30): a pasted suction biopsy under a ?Hirschsprung history opens the rectal
@@ -1529,7 +1675,8 @@ await check('pancreatectomy: a pasted distal pancreatectomy fills the operation 
 
 // Breast papillary lesions (Phase 50): the category, the lesion and the invasion pick decide the line and the
 // B code; invasion without a stromal feature raises a Check; solid papillary carcinoma takes its own invasive
-// type by default; the lesion gallery opens with its photos.
+// type by default; the lesion gallery opens with its photos. Phase 61: invasive lobular carcinoma with solid
+// papillary pattern is B5b with the grading fields and E-cadherin, and retained E-cadherin raises a Check.
 await check('breast papillary lesion: the lesion and invasion decide the line; the lesion gallery opens', async () => {
   const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
   const routed = await pasteAndBuild('breast, L2H lesion, biopsy');
@@ -1549,17 +1696,28 @@ await check('breast papillary lesion: the lesion and invasion decide the line; t
   await pickField('papLesion', 'Solid papillary carcinoma');
   report = await reportText();
   assert(report.includes('INVASIVE SOLID PAPILLARY CARCINOMA, provisional grade 2 (B5b)'), `invasive SPC line wrong: ${report.slice(-300)}`);
+  await pickField('papLesion', 'Invasive lobular carcinoma with solid papillary pattern');
+  report = await reportText();
+  assert(report.includes('INVASIVE LOBULAR CARCINOMA with SOLID PAPILLARY PATTERN, provisional grade 2 (B5b)'), `ILC solid papillary line wrong: ${report.slice(-300)}`);
+  assert(await shows('papEcad') && await shows('papIlcCords') && await shows('tubules') && !(await shows('papInvasion')), 'the lobular pattern fields are not the ones showing');
+  await pickField('papEcad', 'Retained (membranous)');
+  assert(/Membranous E-cadherin is retained/.test(await checksText()), 'Checks did not flag retained E-cadherin');
+  await pickField('papEcad', 'Lost (no membranous staining)');
+  report = await reportText();
+  assert(report.includes('The tumour cells show loss of E-cadherin expression.'), `E-cadherin sentence missing: ${report.slice(0, 700)}`);
+  await page.locator('.field[data-field="papEcad"]').first().scrollIntoViewIfNeeded();
+  await shot('breast-papillary-ilc');
   await page.locator('.field[data-field="papLesion"] .ref-toggle').first().click();
   await page.waitForSelector('.field[data-field="papLesion"] .ref-panel img', { timeout: 5000 });
   const imgs = page.locator('.field[data-field="papLesion"] .ref-panel img');
   const photos = await imgs.count();
-  assert(photos === 9, `lesion gallery holds ${photos} photos`);
+  assert(photos === 10, `lesion gallery holds ${photos} photos`);
   for (let i = 0; i < photos; i++) await imgs.nth(i).scrollIntoViewIfNeeded();   // the photos load lazily
   await page.waitForFunction(() => [...document.querySelectorAll('.field[data-field="papLesion"] .ref-panel img')].every((i) => i.complete && i.naturalWidth > 0), null, { timeout: 8000 });
   await page.locator('.field[data-field="papLesion"] .ref-panel').first().scrollIntoViewIfNeeded();
   await shot('breast-papillary-gallery');
   await page.locator('.field[data-field="papLesion"] .ref-toggle').first().click();
-  return 'papilloma B3; EPC B5a; invasion B5b with the stromal-feature Check; SPC takes invasive solid papillary; lesion gallery 9 photos';
+  return 'papilloma B3; EPC B5a; invasion B5b with the stromal-feature Check; SPC takes invasive solid papillary; ILC with solid papillary pattern B5b with the E-cadherin Check; lesion gallery 10 photos';
 });
 
 // Cervical cytology descriptions (Phase 55): a pasted LBC opens the cervical form; HSIL prints its cell

@@ -492,7 +492,7 @@
         ],
         "sideFromText": true
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "breast",
       "generatorPath": "generators/breast.js",
       "schemaPath": "schemas/breast_biopsy.json"
@@ -5925,7 +5925,7 @@
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "liver_biopsy",
       "generatorPath": "generators/liver_biopsy.js",
       "schemaPath": "schemas/liver_biopsy.json"
@@ -6773,7 +6773,7 @@
         "INFORM",
         "trastuzumab"
       ],
-      "version": "2026.09",
+      "version": "2026.10b",
       "generator": "breast_ish",
       "generatorPath": "generators/breast_ish.js",
       "schemaPath": "schemas/breast_biomarkers.json"

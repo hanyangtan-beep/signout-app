@@ -232,8 +232,10 @@ test('every report block has exactly one destination field', () => {
   // A block with no destination is silently dropped on the way to the LIS, so every omission has to
   // be deliberate and named. SPECIMENS is read out of the LIS but never written back: that field is
   // the clerical entry the app copied in the first place, and rewriting it in the app's own
-  // formatting changes someone else's data for no gain.
-  const deliberatelyUnwritten = ['SPECIMENS'];
+  // formatting changes someone else's data for no gain. MOLECULAR (a biomarker report's Molecular
+  // findings, 2026-10-08) has no field on the screen FIELDS describes, and the biomarker screen has
+  // not been probed, so the fill walk names it for pasting by hand rather than guessing a row.
+  const deliberatelyUnwritten = ['SPECIMENS', 'MOLECULAR'];
   const homeless = emitted.filter((e) => !seen.has(e) && !deliberatelyUnwritten.includes(e));
   assert.deepEqual(homeless, [], `these blocks would never reach the LIS: ${homeless.join(', ')}`);
   for (const d of deliberatelyUnwritten) {

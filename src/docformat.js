@@ -50,6 +50,8 @@ export function buildDocText(caseState, out) {
     // One microscopy section; synoptic parts print inside it and the heading says so
     // (`out.microscopyHeading`). Older outputs without the heading fall back to the plain one.
     [out.microscopyHeading || 'MICROSCOPIC EXAMINATION', out.microscopy],
+    // Biomarker reports only (2026-10-08): the results, between the microscopy and the diagnosis line.
+    ...(out.molecular && out.molecular.trim() !== '' ? [['MOLECULAR FINDINGS', out.molecular]] : []),
     ['DIAGNOSIS', out.diagnosis],
     ...(out.comment && out.comment.trim() !== '' ? [['COMMENT', out.comment]] : [])
   ];

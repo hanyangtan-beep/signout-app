@@ -1,6 +1,6 @@
 {
  "id": "breast_biomarkers",
- "version": "2026.09",
+ "version": "2026.10b",
  "name": "Breast biomarkers — HER2 dual ISH",
  "shortName": "Breast · HER2 dual ISH",
  "label": "HER2 ISH",
@@ -49,8 +49,37 @@
    "label": "Side / procedure",
    "type": "text",
    "default": "",
-   "placeholder": "left mastectomy",
-   "help": "Printed after the organ. Leave blank if the request says no more than the organ."
+   "placeholder": "left 8 o'clock, 2 cm FN, core biopsy",
+   "help": "Printed after the organ, as the request writes it. Leave blank if the request says no more than the organ."
+  },
+  {
+   "id": "blockNo",
+   "label": "Paraffin block",
+   "type": "text",
+   "default": "",
+   "placeholder": "26BX-012345",
+   "help": "The block the section was cut from, under its earlier accession. Prints in the specimen line as \"paraffin block (26BX-012345)\" before \"for HER-2 DISH test\"; left out when blank."
+  },
+  {
+   "id": "dishCounts",
+   "label": "HER2 DISH calculator",
+   "type": "dishCounter",
+   "default": [],
+   "help": "HER2 (black) and CEP17 (red) signals in at least 20 non-overlapping invasive tumour nuclei, as on the QMH calculator. The cells counted, both averages, the ratio and the result below fill in from the counts; Enter moves to the next box. Not printed."
+  },
+  {
+   "id": "dishIhc",
+   "label": "Concurrent HER2 IHC score (Groups 2-4)",
+   "type": "select",
+   "options": [
+    "",
+    "0",
+    "1+",
+    "2+",
+    "3+"
+   ],
+   "default": "",
+   "help": "Not printed. Groups 2-4 take their result from it (ASCO/CAP 2018; CAP 2023 algorithm): Groups 2 and 4 are positive only with IHC 3+, Group 3 with IHC 2+ or 3+; IHC 2+ asks for a blinded recount by a second observer first."
   },
   {
    "id": "her2Dish",
@@ -170,12 +199,15 @@
     "label": "A",
     "values": {
      "site": "Breast",
-     "siteDetail": "left mastectomy",
+     "siteDetail": "left 8 o'clock, 2 cm FN, core biopsy",
+     "blockNo": "26BX-012345",
      "her2Dish": "Negative (not amplified, Group 5 result)",
      "dishCells": "20",
-     "dishHer2": "1.35",
-     "dishCep17": "1.9",
-     "dishRatio": "0.71"
+     "dishHer2": "3.25",
+     "dishCep17": "2.30",
+     "dishRatio": "1.41",
+     "coldIschemia": "5",
+     "fixationTime": "32"
     }
    }
   ]

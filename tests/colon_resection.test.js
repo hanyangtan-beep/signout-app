@@ -33,7 +33,9 @@ test('schema metadata and the QMH source are recorded', () => {
 });
 
 test('engine exposes the synoptic block between microscopy and diagnosis', () => {
-  assert.deepEqual(BLOCK_ORDER, ['specimens', 'macro', 'blockKey', 'intraop', 'microscopy', 'diagnosis', 'comment']);
+  // `molecular` (2026-10-08) prints only for biomarker templates; nothing here has the hook.
+  assert.deepEqual(BLOCK_ORDER, ['specimens', 'macro', 'blockKey', 'intraop', 'microscopy', 'molecular', 'diagnosis', 'comment']);
+  assert.ok(!run({}, { includeHeader: true }).report.includes('MOLECULAR FINDINGS'));
   assert.equal(HEADERS.synoptic, 'MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:');
   const r = run({}, { includeHeader: true }).report;
   assert.ok(!r.includes('MICROSCOPIC EXAMINATION:'), 'no separate narrative microscopy block');

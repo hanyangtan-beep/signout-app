@@ -4,7 +4,7 @@ import { loadManifest, loadPlanned, loadTemplate } from './registry.js';
 import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, rowOfKind, KIND_LABEL } from './picker.js';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, caseOptions, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset,
-  applyLinkedDefaults
+  applyLinkedDefaults, applyDerived
 } from './engine.js';
 import { loadDraft, setDraftOwner, saveCase as cacheCase, clearCase, copyText } from './store.js';
 import { loadConfig, saveConfig, accountConfig, rememberForAccount } from './config.js';
@@ -17,6 +17,7 @@ import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_
 import { applyMacroToCase } from './macroparse.js';
 import { britishise } from './style.js';
 import { spanFull, groupProgress as progressOf } from './formlayout.js';
+import { calculatorView, MIN_NUCLEI } from '../generators/dish_calculator.js';
 import { organIcon, mountOrganSprite } from './organicons.js';
 import { wizardSteps, wizardSupported, wizardProgress, visibleSteps, stepAnswered, atDefault, cautions } from './cnswizard.js';
 import { pathway, pathwaySupported, pathwayChart } from './cnspathway.js';
@@ -436,6 +437,7 @@ function setValue(fieldId, value) {
   const before = part.values[fieldId];
   part.values[fieldId] = value;
   applyLinkedDefaults(schema(), part, fieldId, before);
+  applyDerived(templateOf(part).generator, part, fieldId);
   normalisePart(schema(), part);
   render();
 }
@@ -904,6 +906,7 @@ function focusFieldNode(node) {
 }
 
 function renderField(field, part, index) {
+  if (field.type === 'dishCounter') return dishCounterField(field, part);
   const visible = isVisible(field, part.values);
   const id = `f-${part.label}-${field.id}`;
   const wrap = el('div', { class: `field${visible ? '' : ' hidden'}${field.reference ? ' has-ref' : ''}`, 'data-field': field.id });
@@ -994,6 +997,120 @@ function renderField(field, part, index) {
   const refPanel = referencePanel(field, part);
   if (refPanel) wrap.append(refPanel);
   return wrap;
+}
+
+// ---------- HER2 DISH calculator (field type `dishCounter`; generators/dish_calculator.js) ----------
+//
+// The QMH 20-nucleus grid: HER2 (black) and CEP17 (red) signals per nucleus, nuclei 1-10 in the first
+// column and 11-20 in the second, so Tab or Enter runs 1 to 20 in order. Every keystroke stores the
+// counts and hands them to the generator's derive hook, which fills the cells counted, both averages,
+// the ratio and the result. The grid is never redrawn while typing, so focus stays in it; the controls
+// the hook changed are updated in place. Add 10 nuclei extends the grid (the stored list keeps its
+// length, blank rows included, so the grid comes back the same size).
+function dishCounterField(field, part) {
+  const stored = Array.isArray(part.values[field.id]) ? part.values[field.id] : [];
+  const rows = Math.max(MIN_NUCLEI, Math.ceil(stored.length / 10) * 10);
+  const cell = (k, w) => String((Array.isArray(stored[k]) ? stored[k][w] : '') ?? '');
+  const id = `f-${part.label}-${field.id}`;
+  const inputs = [];
+  const summary = el('div', { class: 'dish-summary', 'aria-live': 'polite' });
+  const bad = (input) => { const ok = /^\d{0,3}$/.test(input.value.trim()); input.classList.toggle('bad', !ok); input.setAttribute('aria-invalid', String(!ok)); };
+  const read = () => Array.from({ length: rows }, (_, k) => [inputs[2 * k].value.trim(), inputs[2 * k + 1].value.trim()]);
+  const clear = el('button', {
+    type: 'button', class: 'btn ghost small danger', text: 'Clear counts',
+    onclick: () => { if (confirm('Clear every count in the HER2 DISH calculator?')) setValue(field.id, []); }
+  });
+  const showClear = (list) => { clear.hidden = !list.some((r) => Array.isArray(r) && (String(r[0] ?? '').trim() || String(r[1] ?? '').trim())); };
+  const onEdit = (e) => {
+    bad(e.target);
+    markDirty();
+    part.values[field.id] = read();
+    showClear(part.values[field.id]);
+    syncControls(part, applyDerived(templateOf(part).generator, part, field.id));
+    paintDishSummary(summary, part.values);
+    renderReport();
+    cacheCase(state.caseState);
+  };
+  const onKey = (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const at = inputs.indexOf(e.target) + (e.shiftKey ? -1 : 1);
+    if (inputs[at]) { inputs[at].focus(); inputs[at].select(); }
+  };
+  const columns = [];
+  for (let start = 0; start < rows; start += 10) {
+    const col = el('div', { class: 'dish-col', role: 'group', 'aria-label': `Nuclei ${start + 1} to ${start + 10}` },
+      el('span', { class: 'dish-colhead', text: '#' }),
+      el('span', { class: 'dish-colhead' }, el('i', { class: 'dish-dot her2', 'aria-hidden': 'true' }), 'HER2'),
+      el('span', { class: 'dish-colhead' }, el('i', { class: 'dish-dot cep17', 'aria-hidden': 'true' }), 'CEP17'));
+    for (let k = start; k < start + 10; k++) {
+      col.append(el('span', { class: 'dish-n', text: String(k + 1) }));
+      for (const [w, probe] of [[0, 'HER2'], [1, 'CEP17']]) {
+        const input = el('input', {
+          class: 'input dish-in', type: 'text', id: `${id}-${w ? 'c' : 'h'}${k + 1}`, inputmode: 'numeric', pattern: '[0-9]*',
+          maxlength: '3', autocomplete: 'off', 'aria-label': `Nucleus ${k + 1}, ${probe} signals`, oninput: onEdit, onkeydown: onKey
+        });
+        input.value = cell(k, w);
+        bad(input);
+        inputs.push(input);
+        col.append(input);
+      }
+    }
+    columns.push(col);
+  }
+  showClear(stored);
+  const actions = el('div', { class: 'dish-actions' },
+    el('button', {
+      type: 'button', class: 'btn ghost small', text: 'Add 10 nuclei', title: 'Extend the grid for a longer count or a second population',
+      onclick: () => {
+        markDirty();
+        part.values[field.id] = [...read(), ...Array.from({ length: 10 }, () => ['', ''])];
+        render();
+        requestAnimationFrame(() => document.getElementById(`${id}-h${rows + 1}`)?.focus());
+      }
+    }),
+    clear);
+  paintDishSummary(summary, part.values);
+  const wrap = el('div', { class: 'field dish-calc', 'data-field': field.id },
+    el('div', { class: 'dish-head' }, el('div', { class: 'field-label', id: `${id}-label`, text: field.label }), actions));
+  if (field.help) wrap.append(el('div', { class: 'field-help', text: field.help }));
+  wrap.append(el('div', { class: 'dish-grid', role: 'group', 'aria-labelledby': `${id}-label` }, ...columns), summary);
+  return wrap;
+}
+
+/** The line under the grid: the four numbers, then the group and the result they give. */
+function paintDishSummary(node, values) {
+  const v = calculatorView(values);
+  const stat = (label, value) => el('span', { class: 'dish-stat' }, `${label} `, el('b', { text: value || '\u2013' }));
+  const nucleiText = v.cells >= v.min ? String(v.cells) : `${v.cells} of ${v.min}`;
+  const group = v.group ? el('span', { class: 'dish-group', text: `Group ${v.group}` }) : null;
+  const say = {
+    empty: () => [`Count at least ${v.min} nuclei; the cells counted, both averages, the ratio and the result below fill in as you go.`],
+    'no-ratio': () => ['No CEP17 signal counted yet, so there is no ratio.'],
+    counting: () => (v.group ? [group, ` so far (${v.rule}); ${v.min - v.cells} more to count.`] : [`${v.min - v.cells} more nuclei to count.`]),
+    'needs-ihc': () => [group, ` (${v.rule}): choose the concurrent HER2 IHC score below to fill in the result.`],
+    done: () => [group, ` (${v.rule}) \u2192 ${v.result}.`,
+      ...(v.recount ? [el('span', { class: 'dish-recount', text: ` IHC 2+: recount at least ${v.min} nuclei, including the IHC 2+ area, by a second observer blinded to this count (ASCO/CAP).` })] : [])]
+  }[v.state]();
+  node.replaceChildren(
+    el('div', { class: 'dish-stats' }, stat('Nuclei', nucleiText), stat('HER2 per cell', v.her2Text), stat('CEP17 per cell', v.cep17Text), stat('Ratio', v.ratioText)),
+    el('div', { class: `dish-verdict ${v.state}` }, ...say));
+}
+
+/** Controls whose values a derive hook rewrote, updated in place (a full redraw would take focus from the grid). */
+function syncControls(part, ids) {
+  for (const fid of ids) {
+    const node = nodes.panel.querySelector(`.field[data-field="${CSS.escape(fid)}"]`);
+    if (!node) continue;
+    const value = part.values[fid];
+    const control = node.querySelector('input.input, textarea.input, select.input');
+    if (control) { control.value = value ?? ''; continue; }
+    const box = node.querySelector('input[type="checkbox"]');
+    if (box) { box.checked = !!value; continue; }
+    node.querySelectorAll('.chips .chip').forEach((chip) => {
+      chip.setAttribute('aria-pressed', String(chip.lastChild?.textContent === labelFor(schemaOf(part).fields.find((f) => f.id === fid) || {}, value)));
+    });
+  }
 }
 
 function focusField(fieldId) {
@@ -1539,20 +1656,23 @@ function renderReport() {
   }
   state.lastOut = out;
   const tagFor = (key) => ({ lis: 'from LIS', merged: '+ typed text', edited: 'edited' }[out.source?.[key]] || '');
+  const biomarkerOnly = () => schemasInUse().every((s) => s.kind === 'biomarker');
   const blocks = [
     ['specimens', 'Specimens', out.specimens],
     ['macro', 'Macroscopic description', out.macro],
     ['blockKey', 'Block key', out.blockKey],
     ['intraop', 'Intraoperative consultation', out.intraop],
     ['microscopy', out.microscopyHeading ? out.microscopyHeading.charAt(0) + out.microscopyHeading.slice(1).toLowerCase() : 'Microscopic examination', out.microscopy],
+    ['molecular', 'Molecular findings', out.molecular],
     ['diagnosis', 'Diagnosis', out.diagnosis],
     ['comment', 'Comment', out.comment]
     // An empty specimens / microscopy / diagnosis block is kept as an editable box to type into. The
     // exception is a template that has no microscopy to write: a biomarker report is a result block
     // against a section already reported elsewhere, so an empty MICROSCOPIC EXAMINATION heading there
-    // is a box nobody can fill rather than a prompt.
+    // is a box nobody can fill rather than a prompt. Molecular findings is the other way round: kept
+    // empty for a biomarker report, where the results go, and absent everywhere else.
   ].filter(([key, , text]) => text || out.edited?.[key]
-    || (key === 'microscopy' ? !schemasInUse().every((s) => s.kind === 'biomarker') : ['specimens', 'diagnosis'].includes(key)));
+    || (key === 'microscopy' ? !biomarkerOnly() : key === 'molecular' ? biomarkerOnly() : ['specimens', 'diagnosis'].includes(key)));
   const issues = out.issues || [];
   // Checks collapse to their one-line count so the report starts at the top of the column; an issue that
   // names a field is clickable and focuses it. The open state is remembered between cases.

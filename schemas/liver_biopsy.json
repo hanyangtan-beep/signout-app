@@ -1,6 +1,6 @@
 {
  "id": "liver_biopsy",
- "version": "2026.09",
+ "version": "2026.10",
  "name": "Liver biopsy (medical)",
  "shortName": "Liver · medical biopsy",
  "label": "Liver (medical)",
@@ -355,6 +355,85 @@
      "Hepatitic",
      "Biliary"
     ]
+   },
+   "reference": {
+    "title": "Inflammation",
+    "intro": "Grade portal, interface and lobular inflammation separately, then name the predominant cell type; the cell type narrows the differential more than the grade does.",
+    "groups": [
+     {
+      "heading": "Portal inflammation",
+      "points": [
+       "Minimal to marked; say whether some or most portal tracts are involved (Ishak D)",
+       "Lymphoid aggregates in a lymphocytic portal infiltrate are common in hepatitis C"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/portal_inflammation_aih.jpg",
+        "caption": "Portal inflammation: a portal tract expanded by a dense lymphoplasmacytic infiltrate in autoimmune hepatitis (H&E, low power).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Autoimmune_hepatitis_-_intermed_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Interface hepatitis",
+      "points": [
+       "Lymphocytes and plasma cells cross the limiting plate and surround periportal hepatocytes",
+       "Ishak A: focal or continuous, around fewer or more than half of the tracts or septa"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/interface_hepatitis_vhigh.jpg",
+        "caption": "Interface hepatitis at high power: lymphocytes surrounding periportal hepatocytes at the edge of a portal tract (H&E).",
+        "credit": "Nephron, Wikimedia Commons",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Interface_hepatitis_--_very_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Lobular inflammation",
+      "points": [
+       "Count foci of necro-inflammation per 10x objective field (Ishak C)",
+       "Spotty necrosis: focal hepatocyte dropout with lymphocytes; note confluent necrosis separately (Ishak B)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/lobular_inflammation.jpg",
+        "caption": "Lobular necro-inflammation: scattered small clusters of lymphocytes and histiocytes within the lobule (H&E).",
+        "credit": "Nephron, Wikimedia Commons",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Lobular_necro-inflammation_--_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/liver_biopsy/spotty_necrosis.jpg",
+        "caption": "Spotty (focal) necrosis: focal hepatocyte dropout accompanied by lymphocytes (H&E, x200).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 9",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "Infiltrate type",
+      "points": [
+       "Plasma cells and clusters of 5 or more: AIH; in an allograft, plasma cell-rich rejection",
+       "Eosinophils: drug injury; with oedema and endothelial swelling in an allograft, consider AMR",
+       "Neutrophils: large-duct obstruction; within ducts and lumina, ascending cholangitis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/plasma_cells_aih.jpg",
+        "caption": "Plasma cell-rich infiltrate: lymphocytes and plasma cells at the portal-lobular interface in autoimmune hepatitis (H&E, high power).",
+        "credit": "Nephron, Wikimedia Commons",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Autoimmune_hepatitis_-_very_high_mag.jpg"
+       }
+      ]
+     }
+    ],
+    "columns": 2
    }
   },
   {
@@ -438,6 +517,107 @@
    "showIf": {
     "field": "pattern",
     "is": "Hepatitic"
+   },
+   "reference": {
+    "title": "Hepatitis",
+    "intro": "Describe the pattern first, then the cause the morphology supports; AIH and drug injury are clinicopathological diagnoses (IAIHG 2022; RCPath G064).",
+    "groups": [
+     {
+      "heading": "Autoimmune hepatitis",
+      "points": [
+       "Portal lymphoplasmacytic infiltrate with interface and lobular hepatitis",
+       "IAIHG 2022: likely, possible or unlikely; rosettes and emperipolesis are descriptive only"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/aih_interface.jpg",
+        "caption": "Autoimmune hepatitis: a lymphoplasmacytic infiltrate at the interface between a portal tract and the hepatocytes (H&E).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Autoimmune_hepatitis_-_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Chronic hepatitis B and C",
+      "points": [
+       "B: ground-glass hepatocytes, confirmed with HBsAg; C: lymphocytic portal infiltrate, often with lymphoid aggregates",
+       "Grade and stage with Ishak, METAVIR or Batts-Ludwig"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/ground_glass.jpg",
+        "caption": "Ground-glass hepatocytes with finely granular pale cytoplasm in chronic hepatitis B (H&E).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Ground_glass_hepatocytes_high_mag_cropped.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Drug-induced liver injury",
+      "points": [
+       "Hepatitic, cholestatic or mixed; eosinophils and granulomas go with milder injury",
+       "Necrosis, fibrosis, microvesicular steatosis and ductular reaction go with more severe injury"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/dili_granuloma.jpg",
+        "caption": "Drug-induced hepatitis: a small non-caseating epithelioid granuloma in the lobule (H&E).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Drug-induced_hepatitis_intermed_mag.jpg"
+       },
+       {
+        "src": "assets/reference/liver_biopsy/zone3_necrosis_paracetamol.jpg",
+        "caption": "Paracetamol (acetaminophen) toxicity: zone 3 submassive necrosis (H&E, x40).",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 11",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "Acute hepatitis",
+      "points": [
+       "Lobular disarray with lymphocytic inflammation, acidophil bodies and bilirubinostasis",
+       "Causes include viral hepatitis, drugs and acute-onset AIH"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/acute_hepatitis.jpg",
+        "caption": "Acute hepatitis: lobular disarray with lymphocytic inflammation, an acidophil body (arrow) and bilirubinostasis (H&E).",
+        "credit": "Boyd, Cain, Chauhan, Webb, Frontline Gastroenterol 2020, via Wikimedia Commons",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_acute_hepatitis.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Necrosis patterns",
+      "points": [
+       "Spotty, confluent, bridging, submassive or massive; state the zone",
+       "Zone 3 necrosis with little inflammation suggests ischaemia or paracetamol"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/centrilobular_necrosis_ischaemic.jpg",
+        "caption": "Ischaemic (shock) liver: centrilobular necrosis with viable periportal hepatocytes (H&E, annotated).",
+        "credit": "Mikael Häggström, Wikimedia Commons",
+        "license": "CC0 1.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_early_centrilobular_hepatic_necrosis_of_shock_liver_(intermediate_magnification).jpg"
+       },
+       {
+        "src": "assets/reference/liver_biopsy/massive_necrosis.jpg",
+        "caption": "Massive hepatic necrosis in hepatitis B: hepatocyte dropout with residual hepatocytes and an intact portal framework (H&E, x100).",
+        "credit": "Xue, Zhu, Liu, Meng, Sci Rep 2019, via Wikimedia Commons",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_massive_hepatic_necrosis_in_hepatitis_B.jpg"
+       }
+      ]
+     }
+    ],
+    "columns": 2
    }
   },
   {
@@ -946,6 +1126,77 @@
    "showIf": {
     "field": "pattern",
     "is": "Biliary"
+   },
+   "reference": {
+    "title": "Biliary disease",
+    "intro": "Look at every portal tract for duct injury or loss, then for the periportal changes of chronic cholestasis: ductular reaction, copper-associated protein and CK7 (RCPath G064).",
+    "groups": [
+     {
+      "heading": "Primary biliary cholangitis",
+      "points": [
+       "Florid duct lesion: lymphocytes within the duct epithelium, often with epithelioid granulomas",
+       "Mixed portal infiltrate; stage with Nakanuma (orcein for copper-associated protein)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/pbc_duct_lesion.jpg",
+        "caption": "Primary biliary cholangitis: a damaged bile duct with intraepithelial lymphocytes in a mixed portal infiltrate, with a poorly formed granuloma nearby (H&E).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Primary_biliary_cirrhosis_intermed_mag_2.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Primary sclerosing cholangitis",
+      "points": [
+       "Concentric periductal (onion-skin) fibrosis; fibro-obliterative scars are seen in a minority of biopsies",
+       "Often only non-specific chronic biliary features on a needle core; imaging decides"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/psc_onion_skin.jpg",
+        "caption": "Primary sclerosing cholangitis: a bile duct surrounded by concentric periductal (onion-skin) fibrosis (H&E).",
+        "credit": "Worthington, Chapman, Orphanet J Rare Dis 2006, Fig 2 (cropped)",
+        "license": "CC BY 2.0",
+        "url": "https://ojrd.biomedcentral.com/articles/10.1186/1750-1172-1-41"
+       }
+      ]
+     },
+     {
+      "heading": "Large-duct obstruction",
+      "points": [
+       "Portal oedema, ductular reaction at the limiting plate and focal neutrophils",
+       "Neutrophils within ducts and lumina raise ascending cholangitis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/large_duct_obstruction.jpg",
+        "caption": "Large-duct obstruction: an oedematous portal tract with neutrophils and reactive bile duct epithelium (H&E).",
+        "credit": "Vaz, J Med Case Rep 2019, Fig 2",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6408836/"
+       }
+      ]
+     },
+     {
+      "heading": "Cholestasis",
+      "points": [
+       "Hepatocellular and canalicular bile, maximal in zone 3",
+       "Periportal cholate stasis (feathery change, Mallory-Denk bodies) means chronic cholestasis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/hepatocellular_cholestasis.jpg",
+        "caption": "Cholestasis: bile pigment in hepatocytes and dilated canaliculi (H&E, high power).",
+        "credit": "Nephron, Wikimedia Commons",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Cholestasis_high_mag.jpg"
+       }
+      ]
+     }
+    ],
+    "columns": 2
    }
   },
   {
@@ -1311,6 +1562,91 @@
    "showIf": {
     "field": "pattern",
     "is": "Steatotic"
+   },
+   "reference": {
+    "title": "Steatosis and steatohepatitis",
+    "intro": "Grade steatosis on the whole core, then look for ballooning and lobular inflammation; steatohepatitis needs both, and the NAS does not replace that judgement (Kleiner 2005).",
+    "groups": [
+     {
+      "heading": "Steatosis grade",
+      "points": [
+       "0 under 5%; 1 5-33%; 2 over 33-66%; 3 over 66% of parenchyma (NASH CRN)",
+       "SAF counts large and medium droplets only, not foamy microvesicles"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/steatosis_grades.jpg",
+        "caption": "Steatosis grades in chronic hepatitis B: (a) none, (b) mild, (c) moderate and (d) severe (H&E, x200).",
+        "credit": "Zhang, Wang, Kang, Wu, Wang, Sci Rep 2016, via Wikimedia Commons",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Steatosis_severity_at_histopathology.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Droplet type",
+      "points": [
+       "Macrovesicular: one large droplet displaces the nucleus",
+       "Microvesicular: foamy cytoplasm with a central nucleus; report it separately"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/microvesicular_steatosis.jpg",
+        "caption": "Microvesicular steatosis in acute fatty liver of pregnancy: foamy hepatocytes (arrows); inset, macrovesicular steatosis for comparison (H&E).",
+        "credit": "Ronen, Shaheen, Steinberg, Justus, Cureus 2018, via Wikimedia Commons",
+        "license": "CC BY 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_microvesicular_steatosis.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Ballooning and Mallory-Denk bodies",
+      "points": [
+       "Ballooning: rounded pale, reticulated cells; grade 2 when some are at least twice normal size (SAF)",
+       "Mallory-Denk bodies: ropy eosinophilic inclusions, often in ballooned cells; not specific"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/ballooned_hepatocyte.jpg",
+        "caption": "A ballooned hepatocyte in steatohepatitis: cell enlargement with reticulated cytoplasm (H&E, annotated).",
+        "credit": "Mikael Häggström, Wikimedia Commons",
+        "license": "CC0 1.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_a_ballooning_hepatocyte.png"
+       },
+       {
+        "src": "assets/reference/liver_biopsy/mallory_denk_body.jpg",
+        "caption": "Mallory-Denk body (circled): a ropy eosinophilic inclusion in a hepatocyte in steatohepatitis (H&E).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Mallory_body_high_mag_cropped_annotated.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Zone 3 pattern and lobular inflammation",
+      "points": [
+       "Steatosis and pericellular fibrosis start around the central veins",
+       "Lobular inflammation: foci per 200x field, 0 none to 3 over 4 (NAS)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/zone3_steatosis.jpg",
+        "caption": "Centrilobular (zone 3) steatosis surrounding the central veins (H&E).",
+        "credit": "Mikael Häggström, Wikimedia Commons",
+        "license": "CC0 1.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_centrilobular_steatosis_of_the_liver.jpg"
+       },
+       {
+        "src": "assets/reference/liver_biopsy/mash_lobular_foci.jpg",
+        "caption": "Two lobular inflammatory foci (arrows) in metabolic dysfunction-associated steatohepatitis (H&E).",
+        "credit": "Mikael Häggström, Wikimedia Commons",
+        "license": "CC0 1.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_2_inflammatory_foci_in_metabolic_dysfunction–associated_steatohepatitis_(MASH).png"
+       }
+      ]
+     }
+    ],
+    "columns": 2
    }
   },
   {
@@ -1553,6 +1889,109 @@
    "showIf": {
     "field": "pattern",
     "is": "Transplant"
+   },
+   "reference": {
+    "title": "Liver allograft",
+    "intro": "Give the Banff global assessment with the RAI, then weigh the time since transplant against preservation injury, biliary or arterial complications, infection and recurrent disease (Banff 2016).",
+    "groups": [
+     {
+      "heading": "T-cell-mediated rejection",
+      "points": [
+       "Mixed portal infiltrate with bile duct inflammation and venous subendothelial inflammation",
+       "Each RAI component scored 1-3 and summed to 9"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/tcmr_portal.jpg",
+        "caption": "Acute T-cell-mediated rejection 6 days after transplant: lymphocyte (square), neutrophil (triangle), eosinophil (circle) and macrophages (hexagon) around a bile duct (B); inset, portal vein (PV) endothelial damage (H&E, x600).",
+        "credit": "Ronca, Wootton, Milani, Cain, Front Immunol 2020, Fig 1A (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://www.frontiersin.org/journals/immunology/articles/10.3389/fimmu.2020.02155/full"
+       }
+      ]
+     },
+     {
+      "heading": "Central perivenulitis",
+      "points": [
+       "Perivenular inflammation with hepatocyte dropout; may be the only lesion of late TCMR",
+       "Scored as venous endothelial inflammation in the RAI"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/central_perivenulitis.jpg",
+        "caption": "Mild central perivenulitis 51 days after transplant (H&E, x400).",
+        "credit": "Jiang, Guo, Yang et al., J Pers Med 2023, Fig 2d (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://www.mdpi.com/2075-4426/13/1/41"
+       }
+      ]
+     },
+     {
+      "heading": "Antibody-mediated rejection",
+      "points": [
+       "Portal microvascular endothelial hypertrophy, capillary dilatation, microvasculitis, oedema and ductular reaction",
+       "Definite acute AMR needs the pattern, donor-specific antibody, diffuse C4d (score 3) and exclusion of other causes"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/amr_portal_microvasculature.jpg",
+        "caption": "Acute antibody-mediated rejection at diagnosis: portal microvascular endothelial hypertrophy with dilated capillaries in a mixed portal infiltrate (H&E).",
+        "credit": "Cicalese et al., Transpl Int 2024, Fig 2B (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11391112/"
+       },
+       {
+        "src": "assets/reference/liver_biopsy/amr_arteriopathy.jpg",
+        "caption": "Intrahepatic artery with endothelial oedema and luminal narrowing in a failed allograft resected 62 days after transplant (H&E, x400).",
+        "credit": "Jiang, Guo, Yang et al., J Pers Med 2023, Fig 1g (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://www.mdpi.com/2075-4426/13/1/41"
+       }
+      ]
+     },
+     {
+      "heading": "Chronic rejection",
+      "points": [
+       "Early: duct senescence, duct loss in under 50% of portal tracts; late: loss in 50% or more",
+       "Arteriolar loss, foam cell arteriopathy and perivenular fibrosis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/chronic_rejection_duct_loss.jpg",
+        "caption": "Chronic rejection: inflammation around the hepatic artery (white arrow) and portal vein (blue arrow), loss of the interlobular bile duct and canalicular cholestasis (H&E, x170).",
+        "credit": "Kim et al., J Clin Med 2023, Fig 2",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9917672/"
+       }
+      ]
+     },
+     {
+      "heading": "Preservation-reperfusion injury",
+      "points": [
+       "Zone 3 hepatocyte swelling, apoptosis, cholestasis and sinusoidal neutrophil clusters",
+       "Usually mild and resolving within 1-2 weeks; compare with the time-zero biopsy"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/preservation_injury_time_zero.jpg",
+        "caption": "Time-zero biopsy: moderate ischaemia-reperfusion injury with clusters of more than 5 neutrophils and hepatocyte dropout (x200).",
+        "credit": "Sabry et al., Int J Hepatol 2025, Fig 4",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11991779/"
+       }
+      ]
+     },
+     {
+      "heading": "Other causes",
+      "points": [
+       "Recurrent disease: hepatitis B or C, AIH, PBC, PSC, steatohepatitis",
+       "Plasma cell-rich rejection: plasma cells over 30% with interface or perivenular activity",
+       "Infection (CMV inclusions, EBV) and biliary or hepatic artery complications"
+      ],
+      "images": []
+     }
+    ],
+    "columns": 2
    }
   },
   {
@@ -1942,6 +2381,20 @@
       ],
       "images": [
        {
+        "src": "assets/reference/liver_biopsy/fibrosis_portal_hvg.jpg",
+        "caption": "Fibrous expansion of a portal tract (P, arrow) without septa, as in Ishak 1-2 (haematoxylin and van Gieson).",
+        "credit": "Boyd, Cain, Chauhan, Webb, Frontline Gastroenterol 2020, via Wikimedia Commons",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_steatohepatitis_with_mild_fibrosis_in_the_form_of_fibrous_expansion_(van_Gieson).jpg"
+       },
+       {
+        "src": "assets/reference/liver_biopsy/fibrosis_bridging_hvg.jpg",
+        "caption": "Thin fibrous bridge (arrow) linking two portal tracts (P), as in Ishak 3-4 (haematoxylin and van Gieson).",
+        "credit": "Boyd, Cain, Chauhan, Webb, Frontline Gastroenterol 2020, via Wikimedia Commons",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_steatohepatitis_with_moderate_fibrosis,_with_thin_fibrous_bridges_(van_Gieson).jpg"
+       },
+       {
         "src": "assets/reference/liver_biopsy/cirrhosis_trichrome.jpg",
         "caption": "Cirrhosis: nodules surrounded by broad fibrous septa (trichrome, x40).",
         "credit": "Choi, Int J Mol Sci 2025, Fig 22",
@@ -1956,7 +2409,22 @@
        "METAVIR: F1 portal fibrosis without septa; F2 rare septa; F3 numerous septa; F4 cirrhosis",
        "Batts-Ludwig: 1 portal; 2 periportal or rare septa; 3 septal with distortion; 4 cirrhosis"
       ],
-      "images": []
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/fibrosis_none_hvg.jpg",
+        "caption": "No fibrosis (F0): collagen (arrow) confined to the portal tract (P) in mild zone 3 steatosis (haematoxylin and van Gieson).",
+        "credit": "Boyd, Cain, Chauhan, Webb, Frontline Gastroenterol 2020, via Wikimedia Commons",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_mild_zone_3_steatosis_without_fibrosis_(van_Gieson).jpg"
+       },
+       {
+        "src": "assets/reference/liver_biopsy/cirrhosis_hvg.jpg",
+        "caption": "Cirrhosis (F4): thick fibrous bands (arrows) encircling a hepatocyte nodule (haematoxylin and van Gieson).",
+        "credit": "Boyd, Cain, Chauhan, Webb, Frontline Gastroenterol 2020, via Wikimedia Commons",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_steatohepatitis_with_established_cirrhosis,_with_thick_bands_of_fibrosis_(van_Gieson).jpg"
+       }
+      ]
      },
      {
       "heading": "NASH CRN (0-4)",
@@ -1973,9 +2441,26 @@
         "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
        }
       ]
+     },
+     {
+      "heading": "Stains for fibrosis",
+      "points": [
+       "Collagen stain for staging: trichrome, Sirius red or van Gieson",
+       "Reticulin for collapse, plate thickness and nodular regenerative hyperplasia",
+       "Orcein or Victoria blue: elastic fibres mark long-standing septa"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/reticulin_normal.jpg",
+        "caption": "Normal reticulin pattern: one- to two-cell-thick hepatocyte plates between a portal tract and a hepatic venule (reticulin).",
+        "credit": "Nephron, Wikimedia Commons",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Liver_reticulin.jpg"
+       }
+      ]
      }
     ],
-    "columns": 3
+    "columns": 2
    },
    "optionsByField": {
     "field": "stageSystem",

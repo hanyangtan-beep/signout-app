@@ -1,11 +1,11 @@
 # Breast core biopsy: papillary lesions
 
-Research notes and build decisions for the "Papillary lesion" category of the breast core biopsy template (Phase 50, pulled by the user on 30 September 2026). Compiled 30 September 2026.
+Research notes and build decisions for the "Papillary lesion" category of the breast core biopsy template (Phase 50, pulled by the user on 30 September 2026). Compiled 30 September 2026. Phase 61 (pulled by the user on 8 October 2026) adds invasive lobular carcinoma with solid papillary pattern; its notes are marked "Phase 61".
 
 **How to read this document**
 - Every quotation was read from the linked source in this session. Where a source did not say something, the text says so.
 - House evidence is given as aggregate counts only, and counts under 10 are not given. No report text is reproduced.
-- The code lives in `generators/breast.js` (section "papillary lesions") and `schemas/breast_biopsy.json` (fields `papLesion` to `papInvOther`). The wording is fixed by `tests/breast_papillary.test.js` and four golden fixtures in `tests/fixtures/breast_biopsy/`.
+- The code lives in `generators/breast.js` (section "papillary lesions") and `schemas/breast_biopsy.json` (fields `papLesion` to `papInvOther`). The wording is fixed by `tests/breast_papillary.test.js` and five golden fixtures in `tests/fixtures/breast_biopsy/`.
 
 ## Sources
 
@@ -16,6 +16,8 @@ Research notes and build decisions for the "Papillary lesion" category of the br
 | Rakha 2024 | Rakha et al. Encapsulated papillary carcinoma of the breast. Histopathology 2024;86(4):497–513, doi 10.1111/his.15310 | [PMC11791731](https://pmc.ncbi.nlm.nih.gov/articles/PMC11791731/) |
 | Rakha 2026 | Rakha, Tan, Raymond. Invasive papillary carcinomas of the breast. Histopathology 2026;88(4):747–768, doi 10.1111/his.70072 | [Wiley](https://onlinelibrary.wiley.com/doi/full/10.1111/his.70072) |
 | Kulka 2022 | Kulka, Madaras, Floris et al. Papillary lesions of the breast. Virchows Arch 2022;480(1):65–84, doi 10.1007/s00428-021-03182-7, CC BY 4.0 | [PMC8983543](https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/) |
+| Kuba and Brogi 2023 (Phase 61) | Kuba MG, Brogi E. Update on lobular lesions of the breast. Histopathology 2023;82(1):36–52, doi 10.1111/his.14829 | [PMC9752180](https://pmc.ncbi.nlm.nih.gov/articles/PMC9752180/) |
+| Christgen 2017 (Phase 61) | Christgen et al. Subclonal analysis in a lobular breast cancer with classical and solid growth pattern mimicking a solid-papillary carcinoma. J Pathol Clin Res 2017;3(3):191–202, doi 10.1002/cjp2.76, CC BY-NC 4.0 (so no figure is used) | [PMC5527319](https://pmc.ncbi.nlm.nih.gov/articles/PMC5527319/) |
 
 ## Key statements
 
@@ -57,6 +59,16 @@ Research notes and build decisions for the "Papillary lesion" category of the br
 - "…an exceptionally rare type of IBCP defined by the formation of finger-like fibrovascular projections covered by neoplastic epithelium, which infiltrate desmoplastic or fibrotic stroma in >90% of the tumour."
 - "IPC is not characterised by a circumscribed growth pattern, neuroendocrine differentiation, mucin secretion, or a peripheral fibrous capsule…"; "the term IPC should not be used for non-papillary carcinomas arising in association with papillary carcinoma in situ"; "IPC should be staged and managed as IBC-NST."
 - Not found: none of the five sources calls invasive papillary carcinoma a "diagnosis of exclusion" in those words.
+
+### Invasive lobular carcinoma with solid papillary pattern (Phase 61)
+- WHO 6th ed.: ILC has "special architectural patterns (solid, alveolar, and trabecular)"; a pattern differs morphologically only, and "variant" is discouraged. "Solid papillary ILC is a variation of the solid pattern that displays a solid papillary architecture and appears well delimited with a pseudocapsule and is often associated with satellite foci of ILC at the periphery (Figure 12). Awareness of this entity avoids confusion with other papillary lesions, particularly in small biopsy specimens."
+- WHO 6th ed.: "Some ILCs may show aberrant E‐cadherin expression or uncommonly have membranous E‐cadherin retention but loss of membrane staining of other proteins in the cadherin‐catenin complex such as p120 and β‐catenin."
+- Kuba and Brogi 2023: first described by Rakha et al. in 2016 (3 cases); 6 cases reported, all in elderly women with masses. Well-circumscribed solid proliferations with fibrovascular cores, some with cystic areas and a thick capsule; classic ILC in all cases; nuclear grade low to high. "Lobular phenotype was confirmed in all cases with loss of membranous e-cadherin expression." Myoepithelial markers (SMM, SMA or p63) negative in the papillary masses; all ER positive and HER2 negative.
+- Kuba and Brogi 2023: neuroendocrine markers were negative in the 6 reported cases, but their own case was diffusely positive for synaptophysin and chromogranin: "SPC frequently expresses neuroendocrine markers, which may be seen in ILC with SP pattern".
+- Kuba and Brogi 2023: core biopsy diagnoses "ranged from LCIS to ILC, IBC-NST with lobular features, and SPC or EPC." The differential "includes solid variant of ILC, non-invasive PC (SPC in situ and EPC) and lobular neoplasia extensively involving a papillary lesion"; solid ILC grows "in sheets rather than circumscribed nodules and lack[s] fibrovascular cores or a fibrous capsule."
+- Kuba and Brogi 2023: "lobular lesions with retained E-cadherin expression display cytoplasmic p120 or lack membranous β-catenin"; "The presence of classic ILC and LCIS associated with the papillary carcinoma should raise the possibility that the papillary tumour is of lobular differentiation and additional workup with E-cadherin, as well as p120 or β-catenin is recommended."
+- Christgen 2017: complete loss of E-cadherin and β-catenin, no CK5/14-positive myoepithelial layer, ER 100%, with a satellite focus of classic ILC.
+- Not found: no source gives a B category for this pattern. It is an invasive carcinoma, so B5b follows from the B5b definition.
 
 ## House wording evidence (aggregate)
 
@@ -106,9 +118,31 @@ From the five-year biopsy export and the 2024–2026 LIS export. Both stay in th
   - The existing B5a DCIS line prints "nuclear grade", but released diagnoses write ", low grade".
   - Released breast diagnoses rarely print a B code.
 
+### Phase 61: invasive lobular carcinoma with solid papillary pattern
+
+- **Lesion.** "Invasive lobular carcinoma with solid papillary pattern" is the last papillary option, in the user's words and the WHO term "pattern". It is B5b, and `papInvasive()` is true, so tubules, pleomorphism, mitoses, extent and LVI show (no nuclear grade or invasion pick).
+- **Fields.**
+  - `papIlcCords` (checkbox): classic lobular carcinoma in the adjacent stroma. This lesion only.
+  - `papEcad` (Not stained, Lost, Aberrant, Retained) and `papP120` (Not stained, Cytoplasmic, Membranous): this lesion and its two mimics, encapsulated and solid papillary carcinoma. β-catenin goes in the immunohistochemistry sentence.
+  - p63 (cores and edge), CK5/6, ER and neuroendocrine markers also show for this lesion.
+- **Printed text.** Description (expansile, well-circumscribed solid nodules of discohesive tumour cells around delicate fibrovascular cores), stromal cords if ticked, p63, one sentence for E-cadherin and p120 with CK5/6 and ER, neuroendocrine markers, "The features are those of invasive lobular carcinoma with a solid papillary pattern.", then the grading sentences. A pseudocapsule is not printed, as a core may not sample it. With E-cadherin unstained, the encapsulated and solid papillary carcinoma text is unchanged.
+- **Diagnosis line.** "INVASIVE LOBULAR CARCINOMA with SOLID PAPILLARY PATTERN, provisional grade 2 (B5b)": capital entity names with a lowercase connector, as in the other lines.
+- **Checks.**
+  - Warnings:
+    - retained membranous E-cadherin without cytoplasmic p120
+    - membranous p120
+    - myoepithelial cells along the cores or at the edge (lobular neoplasia, including within a papillary lesion)
+    - E-cadherin loss or cytoplasmic p120 recorded for an encapsulated or solid papillary carcinoma
+  - Reminders:
+    - the WHO classification (a pattern, not a separate type), the stains that confirm it, and the core-biopsy mimics
+    - neuroendocrine markers do not exclude it
+- **Left alone.** The breast resection template still takes lobular patterns as free text after "Invasive lobular carcinoma, variant pattern" and prints "…, [pattern] variant"; offered to the user, not changed.
+
 ## Images
 
-All 13 images are crops from Kulka 2022, reused under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) with credit and the note "(cropped)". Rakha 2024, Rakha 2026 and the WHO summary do not state an open licence, so none of their figures is used. No openly licensed image of a suspicious edge or of stroma-free fragments was found; those gallery groups are left for the user's own photographs.
+Thirteen images are crops from Kulka 2022, reused under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) with credit and the note "(cropped)". Rakha 2024 and Rakha 2026 do not state an open licence, so none of their figures is used. No openly licensed image of a suspicious edge or of stroma-free fragments was found; those gallery groups are left for the user's own photographs.
+
+Phase 61: on 8 October 2026 the PMC copy of the WHO summary states "This is an open access article under the terms of the Creative Commons Attribution License" (CC BY 4.0), which supersedes the earlier note that it stated no open licence. Its Fig 12 is reused uncropped, re-encoded to 98 kB, as `ilc_solid_papillary.jpg`, credited "Quinn et al., Histopathology 2026 (WHO 6th ed. summary), Fig 12". Christgen 2017 is CC BY-NC 4.0, so its figures are not used.
 
 | File (assets/reference/breast_biopsy/) | Figure | Shows | Gallery |
 |---|---|---|---|
@@ -125,5 +159,6 @@ All 13 images are crops from Kulka 2022, reused under [CC BY 4.0](https://creati
 | pseudoinvasion_p63.jpg | Fig 3b | p63 around the entrapped nests | Invasion |
 | epc_invasion.jpg | Fig 6c | Frank invasion from an EPC | Invasion |
 | spc_invasion.jpg | Fig 7b | Invasion from an SPC | Invasion |
+| ilc_solid_papillary.jpg | WHO summary Fig 12 | Solid papillary nodules of discohesive cells, with linear cords of ILC in the stroma (arrows) | Lesion |
 
-Credit on each image: "Kulka et al., Virchows Arch 2022, Fig Nx (cropped)", licence "CC BY 4.0", link https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/.
+Credit on each Kulka image: "Kulka et al., Virchows Arch 2022, Fig Nx (cropped)", licence "CC BY 4.0", link https://pmc.ncbi.nlm.nih.gov/articles/PMC8983543/. The WHO figure links to https://pmc.ncbi.nlm.nih.gov/articles/PMC13341065/.

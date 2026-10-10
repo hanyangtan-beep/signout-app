@@ -511,7 +511,9 @@ test('correlation comments are offered for AIH, drug injury, sclerosing and obst
 
 test('reference galleries sit on the adequacy, pattern and score fields, each image sourced and under 150 kB', () => {
   const withGallery = schema.fields.filter((f) => f.reference).map((f) => f.id);
-  for (const id of ['adequacy', 'pattern', 'ishakA', 'nkFibrosis', 'nasSteatosis', 'raiPortal', 'stage', 'ironSite']) assert.ok(withGallery.includes(id), id);
+  for (const id of ['adequacy', 'pattern', 'portalInfl', 'hepDx', 'ishakA', 'bilDx', 'nkFibrosis', 'steatDx', 'nasSteatosis', 'txDx', 'raiPortal', 'stage', 'ironSite']) {
+    assert.ok(withGallery.includes(id), id);
+  }
   const used = new Set();
   for (const f of schema.fields.filter((x) => x.reference)) {
     for (const g of f.reference.groups) {
@@ -525,7 +527,26 @@ test('reference galleries sit on the adequacy, pattern and score fields, each im
   }
   const files = fs.readdirSync(path.join(root, 'assets', 'reference', 'liver_biopsy'));
   assert.deepEqual(files.filter((f) => !used.has(f)), [], 'every gallery file is shown');
-  assert.ok(used.size >= 16, `${used.size} images`);
+  assert.ok(used.size >= 48, `${used.size} images`);
+});
+
+test('each section heading of the form has its own gallery, and fibrosis staging shows every system with photos', () => {
+  const ref = (id) => schema.fields.find((f) => f.id === id).reference;
+  const headings = (id) => ref(id).groups.map((g) => g.heading);
+  const photos = (id) => ref(id).groups.reduce((n, g) => n + (g.images || []).length, 0);
+  assert.deepEqual(headings('portalInfl'), ['Portal inflammation', 'Interface hepatitis', 'Lobular inflammation', 'Infiltrate type']);
+  assert.deepEqual(headings('hepDx'), ['Autoimmune hepatitis', 'Chronic hepatitis B and C', 'Drug-induced liver injury', 'Acute hepatitis', 'Necrosis patterns']);
+  assert.deepEqual(headings('bilDx'), ['Primary biliary cholangitis', 'Primary sclerosing cholangitis', 'Large-duct obstruction', 'Cholestasis']);
+  assert.deepEqual(headings('steatDx'), ['Steatosis grade', 'Droplet type', 'Ballooning and Mallory-Denk bodies', 'Zone 3 pattern and lobular inflammation']);
+  assert.deepEqual(headings('txDx'), ['T-cell-mediated rejection', 'Central perivenulitis', 'Antibody-mediated rejection', 'Chronic rejection',
+    'Preservation-reperfusion injury', 'Other causes']);
+  assert.deepEqual(headings('stage'), ['Ishak (0-6)', 'METAVIR (F0-F4) and Batts-Ludwig (0-4)', 'NASH CRN (0-4)', 'Stains for fibrosis']);
+  for (const [id, n] of [['portalInfl', 5], ['hepDx', 7], ['bilDx', 4], ['steatDx', 6], ['txDx', 6], ['stage', 7]]) assert.equal(photos(id), n, id);
+  // each gallery sits on the first field under its heading, so it opens where that section of the form starts
+  for (const [id, group] of [['portalInfl', 'Inflammation'], ['hepDx', 'Hepatitis'], ['bilDx', 'Biliary'], ['steatDx', 'Steatosis'], ['txDx', 'Transplant']]) {
+    assert.equal(schema.fields.find((x) => x.group === group).id, id, group);
+    for (const g of ref(id).groups) for (const im of g.images || []) assert.ok(im.caption && im.credit && /^https?:\/\//.test(im.url), im.src);
+  }
 });
 
 // ---------- intake ----------

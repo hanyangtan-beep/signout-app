@@ -71,7 +71,8 @@ PROBE_DEPTH := 10                      ; how many fields Ctrl+Alt+P walks from t
 ;
 ; Verify with Ctrl+Alt+P after any LIS change. A row in the wrong place misfiles text.
 ; Names: SPECIMEN HISTORY MACRO BLOCKKEY for get; SPECIMENS MACRO BLOCKKEY INTRAOP MICROSCOPY
-; DIAGNOSIS COMMENT for put. A test checks every block has exactly one destination.
+; MOLECULAR DIAGNOSIS COMMENT for put. A test checks every block has exactly one destination, or is
+; named as deliberately unwritten (SPECIMENS and MOLECULAR, below).
 FIELDS := [
 ;     screen field                          get          put
     { name: "Clinical history"            , get: "HISTORY" , put: [] },
@@ -91,6 +92,11 @@ FIELDS := [
 ; place, and it is the clerical entry - overwriting it with the app's own formatting is a change to
 ; someone else's data for no gain. Put "SPECIMENS" in its put list if you want the lettered version
 ; written back, and note it will then be skipped whenever the field already has text.
+;
+; MOLECULAR is the Molecular findings of a biomarker report (the HER2 DISH result lines, 2026-10-08).
+; This screen has no such field, and where the biomarker report screen puts its own has not been
+; probed, so the fill walk lists it under "No field for" to paste by hand rather than guess a row.
+; Once Ctrl+Alt+P on a biomarker case shows the field, give it a row or add "MOLECULAR" to one.
 AUTO_NEXT    := false                  ; Ctrl+Alt+V only: advance a field after each paste. Off on
                                        ; purpose - use Ctrl+Alt+F, which knows where each block goes.
 SKIP_FILLED   := true                  ; Ctrl+Alt+F reads each destination first and leaves it alone

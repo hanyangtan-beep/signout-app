@@ -138,6 +138,12 @@ reads out of a field, `put` is which report blocks the fill walk writes into it.
 The block key has no field of its own, so it rides at the end of the gross examination. Specimen(s)
 is read but never written back: that field is the clerical entry the app copied in the first place.
 
+MOLECULAR (since 2026-10-08) is the Molecular findings block of a biomarker report — the HER2 DISH
+result lines, with DIAGNOSIS now one line naming the specimen. This screen has no such field, and
+where the biomarker report screen puts its own has not been probed, so it has no row: the fill walk
+lists it under "No field for" and it is pasted by hand (Ctrl+Alt+V, or the block's Copy button).
+Once Ctrl+Alt+P on a biomarker case shows the field, give it a row or add `"MOLECULAR"` to one.
+
 `Ctrl+Alt+P` walks the screen and dumps each field next to this table, so the two can be compared
 after any LIS change. A row in the wrong place misfiles text in both directions.
 

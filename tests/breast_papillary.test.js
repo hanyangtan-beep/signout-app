@@ -1,6 +1,7 @@
 // Breast core biopsy - papillary lesions. Card: docs/roadmap.md "Breast biopsy — papillary lesions" (pulled by the
-// user 2026-09-30); grounding docs/reference/breast-papillary-lesions.md. Wording is deliberate; update the strings
-// only on purpose. Fixtures: tests/fixtures/breast_biopsy/*.json (golden; --update only after a deliberate change).
+// user 2026-09-30); Phase 61 adds invasive lobular carcinoma with solid papillary pattern (pulled 2026-10-08);
+// grounding docs/reference/breast-papillary-lesions.md. Wording is deliberate; update the strings only on purpose.
+// Fixtures: tests/fixtures/breast_biopsy/*.json (golden; --update only after a deliberate change).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -38,8 +39,8 @@ test('the Papillary lesion category sits before the lymph node, and its fields f
   assert.deepEqual(cat.options.slice(-2), ['Papillary', 'LN']);
   assert.equal(cat.optionLabels.Papillary, 'Papillary lesion');
   const ids = schema.fields.map((f) => f.id);
-  const block = ['papLesion', 'papWithinCore', 'papUdh', 'papGrade', 'papMecCores', 'papMecEdge', 'papCk56', 'papEr', 'papNe',
-    'papNeMarkers', 'papInvasion', 'papSuspect', 'papInvSeen', 'papInvType', 'papInvOther'];
+  const block = ['papLesion', 'papWithinCore', 'papUdh', 'papIlcCords', 'papGrade', 'papMecCores', 'papMecEdge', 'papEcad', 'papP120',
+    'papCk56', 'papEr', 'papNe', 'papNeMarkers', 'papInvasion', 'papSuspect', 'papInvSeen', 'papInvType', 'papInvOther'];
   assert.deepEqual(ids.slice(ids.indexOf('invOther') + 1, ids.indexOf('invOther') + 1 + block.length), block);
   assert.equal(ids.indexOf('b3Advice'), ids.indexOf('lvi') + 1, 'the B3 recommendation follows the grading fields');
   assert.deepEqual(field('papLesion').options, Object.values(PAP));
@@ -65,6 +66,9 @@ test('B code: the lesion decides, invasion decides for encapsulated and solid pa
   }
   assert.equal(code({ papLesion: PAP.IPC }), 'B5b');
   assert.equal(code({ papLesion: PAP.IPC, papInvasion: 'Not assessable' }), 'B5b', 'a hidden invasion pick is ignored');
+  assert.equal(code({ papLesion: PAP.ILC_SP }), 'B5b', 'the solid papillary pattern of ILC is invasive carcinoma');
+  assert.equal(code({ papLesion: PAP.ILC_SP, papInvasion: 'Not identified' }), 'B5b', 'a hidden invasion pick is ignored');
+  assert.equal(papInvasive({ papLesion: PAP.ILC_SP }), true);
   assert.equal(code({ papLesion: PAP.IP, papInvasion: 'Present' }), 'B3', 'a hidden invasion pick is ignored');
   assert.equal(code({ papLesion: PAP.EPC, bOverride: 'B5b' }), 'B5b');
   assert.equal(code({ papLesion: PAP.EPC, bOverride: 'Auto' }), 'B5a');
@@ -74,25 +78,32 @@ test('B code: the lesion decides, invasion decides for encapsulated and solid pa
 });
 
 test('visibility: each lesion shows its own fields, and the grading fields serve an invasive component', () => {
-  const pap = ['papWithinCore', 'papUdh', 'papGrade', 'papMecCores', 'papMecEdge', 'papCk56', 'papEr', 'papNe', 'papNeMarkers',
-    'papInvasion', 'papSuspect', 'papInvSeen', 'papInvType', 'papInvOther', 'tubules', 'nuclear', 'mitoses', 'invExtentMm', 'lvi', 'b3Advice'];
+  const pap = ['papWithinCore', 'papUdh', 'papIlcCords', 'papGrade', 'papMecCores', 'papMecEdge', 'papEcad', 'papP120', 'papCk56', 'papEr',
+    'papNe', 'papNeMarkers', 'papInvasion', 'papSuspect', 'papInvSeen', 'papInvType', 'papInvOther', 'tubules', 'nuclear', 'mitoses',
+    'invExtentMm', 'lvi', 'b3Advice'];
   const shown = (v) => visible(v).filter((id) => pap.includes(id));
   const stains = ['papMecCores', 'papMecEdge', 'papCk56', 'papEr'];
+  // E-cadherin and p120 join the stains for the lesions a lobular carcinoma can mimic, and for its own pattern.
+  const cad = ['papMecCores', 'papMecEdge', 'papEcad', 'papP120', 'papCk56', 'papEr'];
+  const grading = ['tubules', 'nuclear', 'mitoses', 'invExtentMm', 'lvi'];
   assert.deepEqual(shown({ papLesion: PAP.IP }), ['papWithinCore', 'papUdh', ...stains, 'b3Advice']);
   assert.deepEqual(shown({ papLesion: PAP.IP, papWithinCore: true }), ['papWithinCore', 'papUdh', ...stains]);
   assert.deepEqual(shown({ papLesion: PAP.SUG }), [...stains, 'b3Advice']);
   assert.deepEqual(shown({ papLesion: PAP.ADH }), [...stains, 'b3Advice']);
   assert.deepEqual(shown({ papLesion: PAP.DCIS_IN }), ['papGrade', ...stains]);
   assert.deepEqual(shown({ papLesion: PAP.PDCIS }), ['papGrade', ...stains]);
-  assert.deepEqual(shown({ papLesion: PAP.EPC }), ['papGrade', ...stains, 'papInvasion']);
-  assert.deepEqual(shown({ papLesion: PAP.EPC, papInvasion: 'Suspicious, not definite' }), ['papGrade', ...stains, 'papInvasion', 'papSuspect']);
-  assert.deepEqual(shown({ ...INVADED }), ['papGrade', ...stains, 'papInvasion', 'papInvSeen', 'papInvType', 'tubules', 'nuclear', 'mitoses', 'invExtentMm', 'lvi']);
+  assert.deepEqual(shown({ papLesion: PAP.EPC }), ['papGrade', ...cad, 'papInvasion']);
+  assert.deepEqual(shown({ papLesion: PAP.EPC, papInvasion: 'Suspicious, not definite' }), ['papGrade', ...cad, 'papInvasion', 'papSuspect']);
+  assert.deepEqual(shown({ ...INVADED }), ['papGrade', ...cad, 'papInvasion', 'papInvSeen', 'papInvType', ...grading]);
   assert.ok(shown({ ...INVADED, papInvType: 'Other' }).includes('papInvOther'));
-  assert.deepEqual(shown({ papLesion: PAP.EPC, papInvasion: 'Not assessable' }), ['papGrade', ...stains, 'papInvasion']);
-  assert.deepEqual(shown({ papLesion: PAP.SPC }), ['papGrade', ...stains, 'papNe', 'papInvasion']);
+  assert.deepEqual(shown({ papLesion: PAP.EPC, papInvasion: 'Not assessable' }), ['papGrade', ...cad, 'papInvasion']);
+  assert.deepEqual(shown({ papLesion: PAP.SPC }), ['papGrade', ...cad, 'papNe', 'papInvasion']);
   assert.ok(shown({ papLesion: PAP.SPC, papNe: 'Positive' }).includes('papNeMarkers'));
   assert.ok(shown({ papLesion: PAP.SPC, papNe: 'Negative' }).includes('papNeMarkers'));
-  assert.deepEqual(shown({ papLesion: PAP.IPC }), ['tubules', 'nuclear', 'mitoses', 'invExtentMm', 'lvi']);
+  assert.deepEqual(shown({ papLesion: PAP.IPC }), grading);
+  // The solid papillary pattern of ILC: no nuclear grade or invasion pick, as the grading fields cover it.
+  assert.deepEqual(shown({ papLesion: PAP.ILC_SP }), ['papIlcCords', ...cad, 'papNe', ...grading]);
+  assert.ok(shown({ papLesion: PAP.ILC_SP, papNe: 'Positive' }).includes('papNeMarkers'));
   // The other categories are untouched.
   const other = (v) => visible({ category: 'B3', ...v }).filter((id) => pap.includes(id) || id === 'papLesion');
   assert.deepEqual(other({}), ['b3Advice']);
@@ -105,6 +116,7 @@ test('options follow the lesion: no "atypical areas" without atypia, no solid pa
   assert.deepEqual(optionsFor(cores, { papLesion: PAP.IP }), ['Not stained', 'Present', 'Absent']);
   assert.deepEqual(optionsFor(cores, { papLesion: PAP.ADH }), ['Not stained', 'Present', 'Absent in the atypical areas', 'Absent']);
   assert.deepEqual(optionsFor(cores, { papLesion: PAP.DCIS_IN }), ['Not stained', 'Present', 'Absent in the atypical areas', 'Absent']);
+  assert.deepEqual(optionsFor(cores, { papLesion: PAP.ILC_SP }), ['Not stained', 'Present', 'Absent']);
   const type = field('papInvType');
   assert.deepEqual(optionsFor(type, { papLesion: PAP.EPC }), ['No special type', 'Mucinous', 'Lobular', 'Other']);
   assert.deepEqual(optionsFor(type, { papLesion: PAP.SPC }), ['No special type', 'Solid papillary', 'Mucinous', 'Lobular', 'Other']);
@@ -194,6 +206,29 @@ test('invasive papillary carcinoma: B5b with the grading sentences', () => {
   assert.equal(r.microscopy, `${CORES} infiltrated by an invasive papillary carcinoma, composed of papillary structures with fibrovascular cores lined by tumour cells, without a myoepithelial layer. Tubule formation is seen in a moderate proportion of the tumour. The tumour cells show moderate nuclear pleomorphism with visible nucleoli. Mitoses are readily identified. Provisional Nottingham grade 2 (tubules 2, nuclear pleomorphism 2, mitoses 2; score 6/9). Lymphovascular invasion is not identified.`);
 });
 
+test('invasive lobular carcinoma with solid papillary pattern: B5b, the lobular stains, and classic ILC in the stroma', () => {
+  const r = run({ papLesion: PAP.ILC_SP, papIlcCords: true, papMecCores: 'Absent', papMecEdge: 'Absent', papEcad: 'Lost', papP120: 'Cytoplasmic',
+    papEr: 'Diffuse, strong', papNe: 'Negative' });
+  assert.equal(r.diagnosis, `${HEAD}INVASIVE LOBULAR CARCINOMA with SOLID PAPILLARY PATTERN, provisional grade 2 (B5b)`);
+  assert.equal(r.microscopy, `${CORES} containing expansile, well-circumscribed solid nodules of discohesive tumour cells arranged around delicate fibrovascular cores. Similar tumour cells also infiltrate the adjacent stroma in single files and linear cords. Immunostaining for p63 shows no myoepithelial cells along the fibrovascular cores or around the tumour nodules. The tumour cells show loss of E-cadherin expression with cytoplasmic p120 staining and are diffusely and strongly positive for ER. They do not express synaptophysin or chromogranin. The features are those of invasive lobular carcinoma with a solid papillary pattern. Tubule formation is inconspicuous. The tumour cells show moderate nuclear pleomorphism with visible nucleoli. Mitoses are infrequent. Provisional Nottingham grade 2 (tubules 3, nuclear pleomorphism 2, mitoses 1; score 6/9). Lymphovascular invasion is not identified.`);
+  // Nothing stained: the morphology, the conclusion and the grading only.
+  const bare = run({ papLesion: PAP.ILC_SP, tubules: '3', nuclear: '3', mitoses: '2' });
+  assert.equal(bare.diagnosis, `${HEAD}INVASIVE LOBULAR CARCINOMA with SOLID PAPILLARY PATTERN, provisional grade 3 (B5b)`);
+  assert.ok(bare.microscopy.startsWith(`${CORES} containing expansile, well-circumscribed solid nodules of discohesive tumour cells arranged around delicate fibrovascular cores. The features are those of invasive lobular carcinoma with a solid papillary pattern. Tubule formation is inconspicuous.`));
+  // E-cadherin and p120 in their combinations.
+  const stains = (v) => run({ papLesion: PAP.ILC_SP, ...v }).microscopy;
+  assert.ok(stains({ papEcad: 'Retained', papP120: 'Cytoplasmic' }).includes('The tumour cells retain membranous E-cadherin expression but show cytoplasmic p120 staining.'));
+  assert.ok(stains({ papEcad: 'Aberrant' }).includes('The tumour cells show aberrant E-cadherin expression.'));
+  assert.ok(stains({ papP120: 'Cytoplasmic', papCk56: 'Negative', papEr: 'Diffuse, strong' }).includes('The tumour cells show cytoplasmic p120 staining, show loss of CK5/6 and are diffusely and strongly positive for ER.'));
+  assert.ok(stains({ papEcad: 'Lost', papNe: 'Positive' }).includes('The tumour cells show loss of E-cadherin expression. They also express synaptophysin and chromogranin.'));
+  assert.ok(stains({ invExtentMm: '6', lvi: 'Present' }).endsWith('The invasive carcinoma measures 6 mm in maximum extent in the cores. Lymphovascular invasion is present.'));
+  // The mimics may record E-cadherin too; the other lesions never print it, nor the stromal cords.
+  assert.ok(run({ papLesion: PAP.SPC, papEcad: 'Retained', papP120: 'Membranous', papEr: 'Diffuse, strong' }).microscopy
+    .includes('The tumour cells retain membranous E-cadherin and p120 expression and are diffusely and strongly positive for ER.'));
+  assert.ok(!run({ papLesion: PAP.IP, papEcad: 'Lost', papP120: 'Cytoplasmic' }).microscopy.includes('cadherin'), 'a hidden E-cadherin pick is ignored');
+  assert.ok(!run({ papLesion: PAP.SPC, papIlcCords: true }).microscopy.includes('single files'), 'a hidden stromal-cords tick is ignored');
+});
+
 test('hidden papillary values never reach another category, and the printed text carries no rules', () => {
   const b5b = generate(schema, t.generator, (() => { const c = createCase(schema, 1); Object.assign(c.parts[0].values, { laterality: 'Left', category: 'B5b' }); return c; })());
   const leaked = generate(schema, t.generator, (() => {
@@ -202,7 +237,8 @@ test('hidden papillary values never reach another category, and the printed text
     return c;
   })());
   assert.equal(leaked.report, b5b.report);
-  for (const v of [{ papLesion: PAP.IP }, { papLesion: PAP.ADH }, { ...INVADED }, { papLesion: PAP.EPC, papInvasion: 'Not assessable' }, { papLesion: PAP.SPC, papInvasion: 'Suspicious, not definite' }]) {
+  for (const v of [{ papLesion: PAP.IP }, { papLesion: PAP.ADH }, { ...INVADED }, { papLesion: PAP.EPC, papInvasion: 'Not assessable' }, { papLesion: PAP.SPC, papInvasion: 'Suspicious, not definite' },
+    { papLesion: PAP.ILC_SP, papIlcCords: true, papEcad: 'Retained', papP120: 'Membranous', papNe: 'Positive', papMecCores: 'Present' }]) {
     const text = run(v).report;
     assert.ok(!/RCPath|WHO|Rakha|G150|3 mm|B2 is|excision is advised/i.test(text), `no citations or rules in ${JSON.stringify(v)}`);
   }
@@ -231,6 +267,22 @@ test('Checks: warnings where the picks disagree, reminders of the rules', () => 
   assert.deepEqual(checksOf(run({ papLesion: PAP.IPC })), [['info', 'papLesion']]);
   assert.deepEqual(checksOf(run({ ...INVADED, biomarkers: 'Performed' })), [['info', 'biomarkers']]);
   assert.deepEqual(checksOf(run({ papLesion: PAP.EPC, laterality: '' })), [['warn', undefined]], 'the side check still leads');
+  // Invasive lobular carcinoma with solid papillary pattern, and the lobular stains on its mimics.
+  assert.deepEqual(checksOf(run({ papLesion: PAP.ILC_SP })), [['info', 'papLesion']]);
+  assert.deepEqual(checksOf(run({ papLesion: PAP.ILC_SP, papEcad: 'Lost', papP120: 'Cytoplasmic', papMecCores: 'Absent', papMecEdge: 'Absent' })), [['info', 'papLesion']]);
+  assert.deepEqual(checksOf(run({ papLesion: PAP.ILC_SP, papEcad: 'Retained' })), [['warn', 'papEcad'], ['info', 'papLesion']]);
+  assert.deepEqual(checksOf(run({ papLesion: PAP.ILC_SP, papEcad: 'Retained', papP120: 'Cytoplasmic' })), [['info', 'papLesion']], 'retained E-cadherin with cytoplasmic p120 is still lobular');
+  assert.deepEqual(checksOf(run({ papLesion: PAP.ILC_SP, papEcad: 'Lost', papP120: 'Membranous' })), [['warn', 'papP120'], ['info', 'papLesion']]);
+  assert.deepEqual(checksOf(run({ papLesion: PAP.ILC_SP, papMecCores: 'Present' })), [['warn', 'papMecCores'], ['info', 'papLesion']]);
+  assert.deepEqual(checksOf(run({ papLesion: PAP.ILC_SP, papMecEdge: 'Focal' })), [['warn', 'papMecEdge'], ['info', 'papLesion']]);
+  assert.deepEqual(checksOf(run({ papLesion: PAP.ILC_SP, papNe: 'Positive' })), [['info', 'papLesion'], ['info', 'papNe']]);
+  assert.deepEqual(checksOf(run({ papLesion: PAP.ILC_SP, bOverride: 'B5a' })), [['warn', 'bOverride'], ['info', 'papLesion']]);
+  assert.deepEqual(checksOf(run({ papLesion: PAP.ILC_SP, biomarkers: 'Performed' })), [['info', 'papLesion'], ['info', 'biomarkers']]);
+  assert.deepEqual(checksOf(run({ papLesion: PAP.SPC, papEcad: 'Lost' })), [['warn', 'papEcad']]);
+  assert.deepEqual(checksOf(run({ papLesion: PAP.EPC, papP120: 'Cytoplasmic' })), [['warn', 'papP120']]);
+  assert.deepEqual(checksOf(run({ papLesion: PAP.SPC, papEcad: 'Retained', papP120: 'Membranous' })), []);
+  assert.deepEqual(checksOf(run({ papLesion: PAP.IP, papEcad: 'Lost' })), [], 'a hidden E-cadherin pick is quiet');
+  assert.ok(run({ papLesion: PAP.SPC, papEcad: 'Lost' }).issues[0].message.includes('consider invasive lobular carcinoma with solid papillary pattern'));
   assert.ok(run({ papLesion: PAP.EPC, bOverride: 'B5b' }).issues[0].message.includes('(B5b) differs from the one this lesion gives (B5a)'));
 });
 
@@ -253,7 +305,10 @@ test('reference galleries sit on the lesion and invasion fields, each image open
   }
   const files = fs.readdirSync(path.join(root, 'assets', 'reference', 'breast_biopsy'));
   assert.deepEqual([...used].sort(), files.sort(), 'every image file is used, and every used image exists');
-  assert.equal(field('papLesion').reference.groups.length, 6);
+  assert.equal(field('papLesion').reference.groups.length, 7);
+  const ilc = field('papLesion').reference.groups.at(-1);
+  assert.equal(ilc.heading, `${PAP.ILC_SP} (B5b)`);
+  assert.equal(ilc.images[0].license, 'CC BY 4.0');
   assert.equal(field('papInvasion').reference.groups.length, 4);
 });
 
@@ -268,7 +323,10 @@ const CASES = [
     { papLesion: PAP.SPC, papMecEdge: 'Absent', papEr: 'Diffuse, strong', papNe: 'Positive', papInvasion: 'Present', papInvType: 'Solid papillary',
       papInvSeen: ['Irregular infiltrative margin', 'Desmoplastic stroma'], tubules: '3', nuclear: '2', mitoses: '1', invExtentMm: '4' }],
   ['04-epc-not-assessable-b5c', 'New (Phase 50): encapsulated papillary carcinoma in stroma-free fragments, in situ versus invasive not assessable.',
-    { papLesion: PAP.EPC, papInvasion: 'Not assessable', papMecEdge: 'Edge not sampled', papEr: 'Diffuse, strong' }]
+    { papLesion: PAP.EPC, papInvasion: 'Not assessable', papMecEdge: 'Edge not sampled', papEr: 'Diffuse, strong' }],
+  ['05-ilc-solid-papillary-b5b', 'New (Phase 61): invasive lobular carcinoma with solid papillary pattern and classic ILC in the stroma; no myoepithelial cells, E-cadherin loss with cytoplasmic p120, diffuse ER, neuroendocrine markers negative.',
+    { papLesion: PAP.ILC_SP, papIlcCords: true, papMecCores: 'Absent', papMecEdge: 'Absent', papEcad: 'Lost', papP120: 'Cytoplasmic', papEr: 'Diffuse, strong',
+      papNe: 'Negative', tubules: '3', nuclear: '2', mitoses: '1', invExtentMm: '6' }]
 ];
 
 test('golden fixtures reproduce byte-for-byte', () => {

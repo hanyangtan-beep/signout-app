@@ -12,6 +12,7 @@ export const HEADERS = {
   intraop: 'INTRAOPERATIVE CONSULTATION:',
   microscopy: 'MICROSCOPIC EXAMINATION:',
   synoptic: 'MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:',
+  molecular: 'MOLECULAR FINDINGS:',
   diagnosis: 'DIAGNOSIS:',
   comment: 'COMMENT:'
 };
@@ -22,8 +23,10 @@ export const HEADERS = {
  * not a block of its own: it prints inside `microscopy`, part by part in case order, under the
  * heading MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT whenever any part is synoptic
  * (`out.microscopyHeading`). `out.synoptic` still exposes the synoptic text alone.
+ * `molecular` (MOLECULAR FINDINGS) only appears for templates with a `molecular` hook: a biomarker
+ * report puts its results there and keeps DIAGNOSIS to one line naming the specimen (2026-10-08).
  */
-export const BLOCK_ORDER = ['specimens', 'macro', 'blockKey', 'intraop', 'microscopy', 'diagnosis', 'comment'];
+export const BLOCK_ORDER = ['specimens', 'macro', 'blockKey', 'intraop', 'microscopy', 'molecular', 'diagnosis', 'comment'];
 
 /** Default values for one part. `index` is 0-based. */
 export function defaultValues(schema, index = 0) {
@@ -248,6 +251,24 @@ export function applyLinkedDefaults(schema, part, changedId, before, skip = {}) 
   return part;
 }
 
+/**
+ * Fields a generator keeps in step with another (`derive(values, changedId)` returns a patch of field
+ * values): the HER2 DISH calculator writes the cells counted, both averages, the ratio and the result
+ * from the per-nucleus counts (generators/dish_calculator.js). It runs only after an edit, never on
+ * load, so a saved case opens exactly as it was saved. Returns the ids it changed.
+ */
+export function applyDerived(gen, part, changedId) {
+  if (!gen || typeof gen.derive !== 'function') return [];
+  const patch = gen.derive(part.values, changedId) || {};
+  const changed = [];
+  for (const [id, value] of Object.entries(patch)) {
+    if (JSON.stringify(part.values[id] ?? '') === JSON.stringify(value ?? '')) continue;
+    part.values[id] = value;
+    changed.push(id);
+  }
+  return changed;
+}
+
 /** Normalise all dependent fields in a part after an edit. */
 export function normalisePart(schema, part) {
   for (const f of schema.fields) {
@@ -323,7 +344,7 @@ export function templateLabel(caseState) {
  * `specimens`, `summary`) run once per template over that template's parts;
  * `specimens` is only honoured when the whole case uses one template, since it
  * may rewrite the specimen list from the case title.
- * @returns {{specimens: string, microscopy: string, diagnosis: string, comment: string, report: string}}
+ * @returns {{specimens: string, microscopy: string, molecular: string, diagnosis: string, comment: string, report: string}}
  */
 export function generateCase(templates, caseState) {
   const ids = templatesInUse(caseState);
@@ -384,6 +405,10 @@ export function generateCase(templates, caseState) {
   // paragraph (docs/specs/synoptic-layout.md); the heading says so when any part is synoptic.
   const perPart = (p) => { const c = ctxs[p.templateId]; return styled(p.templateId, c.gen.synoptic ? c.gen.synoptic(p, c) : c.gen.microscopy(p, c)); };
   const microscopy = parts.map(perPart).filter((t) => t && t.trim() !== '').join('\n\n');
+  // Optional per-part MOLECULAR FINDINGS (biomarker reports: the test results, between the microscopy
+  // and the diagnosis), parts in case order.
+  const molecular = parts.filter((p) => typeof ctxs[p.templateId].gen.molecular === 'function')
+    .map((p) => styled(p.templateId, ctxs[p.templateId].gen.molecular(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n\n');
   const hasSynoptic = parts.some((p) => ctxs[p.templateId].gen.synoptic);
   const synoptic = parts.filter((p) => ctxs[p.templateId].gen.synoptic).map(perPart).filter((t) => t && t.trim() !== '').join('\n\n');
   // Validation issues (`{level: 'error'|'warn', message}`) from templates with a `validate` hook.
@@ -437,6 +462,7 @@ export function generateCase(templates, caseState) {
     blockKey: tidy(letters(blockKey)),
     intraop: tidy(letters(intraop)),
     microscopy: tidy(letters(microscopy)),
+    molecular: tidy(letters(molecular)),
     diagnosis: tidy(letters(diagnosis)),
     comment: tidy(comment),
     microscopyHeading: hasSynoptic ? HEADERS.synoptic.slice(0, -1) : HEADERS.microscopy.slice(0, -1)

@@ -820,6 +820,62 @@ The following were excluded because their licence is not eligible or could not b
 
 The following components were skipped because no figure with a verified eligible licence was found: PSC, acute TCMR, granulomatous hepatitis, and the scoring tables themselves.
 
+### 5.1 Phase 62 photographs: a gallery for each heading (9 October 2026)
+
+The user asked for galleries under INFLAMMATION, HEPATITIS, BILIARY, STEATOSIS and TRANSPLANT, and more photos for FIBROSIS. Each gallery sits on the first field under its heading (`portalInfl`, `hepDx`, `bilDx`, `steatDx`, `txDx`); the Fibrosis staging gallery on `stage` gains four van Gieson photos and a "Stains for fibrosis" group with a reticulin photo. That makes 32 new files and 48 in the folder.
+
+Each file was downloaded, cropped where marked, and re-encoded as JPEG at 150 kB or less. Licences were read on the Commons file page or the article page on 8–9 October 2026. Annotations (arrows, labels, symbols) are the authors' own and were kept. Where an article figure had several panels, only the panel named in the credit was used.
+
+Licence notes: Wikimedia Commons uploads by Nephron are CC BY-SA 3.0 (also GFDL), and those by Mikael Häggström are CC0. The Boyd, Cain, Chauhan and Webb van Gieson and acute hepatitis images are from [Frontline Gastroenterol 2020;11:40–47](https://fg.bmj.com/content/flgastro/11/1/40.full.pdf), CC BY 4.0, via Commons. Xue 2019 (Sci Rep) and Zhang 2016 (Sci Rep) are CC BY 4.0 via Commons, and Ronen 2018 (Cureus) is CC BY 3.0 via Commons. Several articles are CC BY 4.0 on the article page: Int J Mol Sci 2025 (Choi), J Med Case Rep 2019 (Vaz), Front Immunol 2020 (Ronca), J Pers Med 2023 (Jiang), Transpl Int 2024 (Cicalese), J Clin Med 2023 (Kim) and Int J Hepatol 2025 (Sabry). Orphanet J Rare Dis 2006 (Worthington) is CC BY 2.0. The figure legends were read on the article pages. The PSC legend reads only "Histological features of primary sclerosing cholangitis", so the caption describes what the panel shows. The Sabry Fig 4 legend says "IHC × 200" for what is an H&E-type image, so the caption gives only the magnification.
+
+| File | Gallery › group | Credit | Licence | Source |
+|---|---|---|---|---|
+| `portal_inflammation_aih.jpg` | Inflammation › Portal inflammation | Nephron, Wikimedia Commons (cropped) | CC BY-SA 3.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Autoimmune_hepatitis_-_intermed_mag.jpg) |
+| `interface_hepatitis_vhigh.jpg` | Inflammation › Interface hepatitis | Nephron, Wikimedia Commons | CC BY-SA 3.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Interface_hepatitis_--_very_high_mag.jpg) |
+| `lobular_inflammation.jpg` | Inflammation › Lobular inflammation | Nephron, Wikimedia Commons | CC BY-SA 3.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Lobular_necro-inflammation_--_high_mag.jpg) |
+| `spotty_necrosis.jpg` | Inflammation › Lobular inflammation | Choi, Int J Mol Sci 2025, Fig 9 | CC BY 4.0 | [article](https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/) |
+| `plasma_cells_aih.jpg` | Inflammation › Infiltrate type | Nephron, Wikimedia Commons | CC BY-SA 3.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Autoimmune_hepatitis_-_very_high_mag.jpg) |
+| `aih_interface.jpg` | Hepatitis › Autoimmune hepatitis | Nephron, Wikimedia Commons (cropped) | CC BY-SA 3.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Autoimmune_hepatitis_-_high_mag.jpg) |
+| `dili_granuloma.jpg` | Hepatitis › Drug-induced liver injury | Nephron, Wikimedia Commons (cropped) | CC BY-SA 3.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Drug-induced_hepatitis_intermed_mag.jpg) |
+| `zone3_necrosis_paracetamol.jpg` | Hepatitis › Drug-induced liver injury | Choi, Int J Mol Sci 2025, Fig 11 | CC BY 4.0 | [article](https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/) |
+| `acute_hepatitis.jpg` | Hepatitis › Acute hepatitis | Boyd, Cain, Chauhan, Webb, Frontline Gastroenterol 2020, via Wikimedia Commons | CC BY 4.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Histopathology_of_acute_hepatitis.jpg) |
+| `centrilobular_necrosis_ischaemic.jpg` | Hepatitis › Necrosis patterns | Mikael Häggström, Wikimedia Commons | CC0 1.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Histopathology_of_early_centrilobular_hepatic_necrosis_of_shock_liver_(intermediate_magnification).jpg) |
+| `massive_necrosis.jpg` | Hepatitis › Necrosis patterns | Xue, Zhu, Liu, Meng, Sci Rep 2019, via Wikimedia Commons | CC BY 4.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Histopathology_of_massive_hepatic_necrosis_in_hepatitis_B.jpg) |
+| `pbc_duct_lesion.jpg` | Biliary disease › Primary biliary cholangitis | Nephron, Wikimedia Commons (cropped) | CC BY-SA 3.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Primary_biliary_cirrhosis_intermed_mag_2.jpg) |
+| `psc_onion_skin.jpg` | Biliary disease › Primary sclerosing cholangitis | Worthington, Chapman, Orphanet J Rare Dis 2006, Fig 2 (cropped) | CC BY 2.0 | [article](https://ojrd.biomedcentral.com/articles/10.1186/1750-1172-1-41) |
+| `large_duct_obstruction.jpg` | Biliary disease › Large-duct obstruction | Vaz, J Med Case Rep 2019, Fig 2 | CC BY 4.0 | [article](https://pmc.ncbi.nlm.nih.gov/articles/PMC6408836/) |
+| `hepatocellular_cholestasis.jpg` | Biliary disease › Cholestasis | Nephron, Wikimedia Commons | CC BY-SA 3.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Cholestasis_high_mag.jpg) |
+| `steatosis_grades.jpg` | Steatosis and steatohepatitis › Steatosis grade | Zhang, Wang, Kang, Wu, Wang, Sci Rep 2016, via Wikimedia Commons | CC BY 4.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Steatosis_severity_at_histopathology.jpg) |
+| `microvesicular_steatosis.jpg` | Steatosis and steatohepatitis › Droplet type | Ronen, Shaheen, Steinberg, Justus, Cureus 2018, via Wikimedia Commons | CC BY 3.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Histopathology_of_microvesicular_steatosis.jpg) |
+| `ballooned_hepatocyte.jpg` | Steatosis and steatohepatitis › Ballooning and Mallory-Denk bodies | Mikael Häggström, Wikimedia Commons | CC0 1.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Histopathology_of_a_ballooning_hepatocyte.png) |
+| `mallory_denk_body.jpg` | Steatosis and steatohepatitis › Ballooning and Mallory-Denk bodies | Nephron, Wikimedia Commons (cropped) | CC BY-SA 3.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Mallory_body_high_mag_cropped_annotated.jpg) |
+| `zone3_steatosis.jpg` | Steatosis and steatohepatitis › Zone 3 pattern and lobular inflammation | Mikael Häggström, Wikimedia Commons | CC0 1.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Histopathology_of_centrilobular_steatosis_of_the_liver.jpg) |
+| `mash_lobular_foci.jpg` | Steatosis and steatohepatitis › Zone 3 pattern and lobular inflammation | Mikael Häggström, Wikimedia Commons | CC0 1.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Histopathology_of_2_inflammatory_foci_in_metabolic_dysfunction–associated_steatohepatitis_(MASH).png) |
+| `tcmr_portal.jpg` | Liver allograft › T-cell-mediated rejection | Ronca, Wootton, Milani, Cain, Front Immunol 2020, Fig 1A (cropped) | CC BY 4.0 | [article](https://www.frontiersin.org/journals/immunology/articles/10.3389/fimmu.2020.02155/full) |
+| `central_perivenulitis.jpg` | Liver allograft › Central perivenulitis | Jiang, Guo, Yang et al., J Pers Med 2023, Fig 2d (cropped) | CC BY 4.0 | [article](https://www.mdpi.com/2075-4426/13/1/41) |
+| `amr_portal_microvasculature.jpg` | Liver allograft › Antibody-mediated rejection | Cicalese et al., Transpl Int 2024, Fig 2B (cropped) | CC BY 4.0 | [article](https://pmc.ncbi.nlm.nih.gov/articles/PMC11391112/) |
+| `amr_arteriopathy.jpg` | Liver allograft › Antibody-mediated rejection | Jiang, Guo, Yang et al., J Pers Med 2023, Fig 1g (cropped) | CC BY 4.0 | [article](https://www.mdpi.com/2075-4426/13/1/41) |
+| `chronic_rejection_duct_loss.jpg` | Liver allograft › Chronic rejection | Kim et al., J Clin Med 2023, Fig 2 | CC BY 4.0 | [article](https://pmc.ncbi.nlm.nih.gov/articles/PMC9917672/) |
+| `preservation_injury_time_zero.jpg` | Liver allograft › Preservation-reperfusion injury | Sabry et al., Int J Hepatol 2025, Fig 4 | CC BY 4.0 | [article](https://pmc.ncbi.nlm.nih.gov/articles/PMC11991779/) |
+| `fibrosis_portal_hvg.jpg` | Fibrosis staging › Ishak (0-6) | Boyd, Cain, Chauhan, Webb, Frontline Gastroenterol 2020, via Wikimedia Commons | CC BY 4.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Histopathology_of_steatohepatitis_with_mild_fibrosis_in_the_form_of_fibrous_expansion_(van_Gieson).jpg) |
+| `fibrosis_bridging_hvg.jpg` | Fibrosis staging › Ishak (0-6) | Boyd, Cain, Chauhan, Webb, Frontline Gastroenterol 2020, via Wikimedia Commons | CC BY 4.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Histopathology_of_steatohepatitis_with_moderate_fibrosis,_with_thin_fibrous_bridges_(van_Gieson).jpg) |
+| `fibrosis_none_hvg.jpg` | Fibrosis staging › METAVIR (F0-F4) and Batts-Ludwig (0-4) | Boyd, Cain, Chauhan, Webb, Frontline Gastroenterol 2020, via Wikimedia Commons | CC BY 4.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Histopathology_of_mild_zone_3_steatosis_without_fibrosis_(van_Gieson).jpg) |
+| `cirrhosis_hvg.jpg` | Fibrosis staging › METAVIR (F0-F4) and Batts-Ludwig (0-4) | Boyd, Cain, Chauhan, Webb, Frontline Gastroenterol 2020, via Wikimedia Commons | CC BY 4.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Histopathology_of_steatohepatitis_with_established_cirrhosis,_with_thick_bands_of_fibrosis_(van_Gieson).jpg) |
+| `reticulin_normal.jpg` | Fibrosis staging › Stains for fibrosis | Nephron, Wikimedia Commons | CC BY-SA 3.0 | [Commons file page](https://commons.wikimedia.org/wiki/File:Liver_reticulin.jpg) |
+
+Excluded in Phase 62:
+- Licence not eligible:
+  - CC BY-NC-ND: the Banff 2022 donor steatosis consensus (Neil 2022, [PMC9299655](https://pmc.ncbi.nlm.nih.gov/articles/PMC9299655/)), Transplantation Direct 2023 and 2025, ACG Case Rep 2016 (vanishing bile duct syndrome, [PMC4748189](https://pmc.ncbi.nlm.nih.gov/articles/PMC4748189/)) and IAIHG 2022.
+  - CC BY-NC: Clin Transplant Res 2025 ([PMC12783007](https://pmc.ncbi.nlm.nih.gov/articles/PMC12783007/)), Hepat Mon 2015, the World J Gastroenterol and World J Hepatol titles, Karger titles and Yonsei Med J.
+  - All rights reserved: Pathologica 2021 and J Clin Exp Hepatol.
+- Not suitable:
+  - "Emperipolesis - very high mag" is from a lymph node in Rosai-Dorfman disease.
+  - The Ed Uthman lipogranuloma is subcutaneous.
+  - "Histopathology of bile duct damage" is a schematic, not a micrograph.
+- No AI-generated images were used.
+
+Still not illustrated (the user's own photographs are the next source): hepatitis C-specific features (lymphoid aggregates, duct injury), CMV inclusions, plasma cell-rich rejection, C4d-positive AMR, and a florid duct lesion with a well-formed granuloma.
+
 ---
 
 ## 6. Consolidated list of source disagreements
@@ -870,4 +926,4 @@ Where the sources disagree, the template takes one reading and records it here. 
 11. **MASLD wording.** No pathology-body guidance was found. The diagnosis gives the morphology (steatohepatitis, or steatosis without steatohepatitis) with grade and stage; MASH, MetALD or alcohol-related wording appears only when the clinical context is chosen, and otherwise a comment asks for correlation with metabolic risk factors and alcohol intake.
 12. **Iron.** Hepatocellular grade 0–4 (Scheuer as modified by Searle) with the distribution (parenchymal, mesenchymal or mixed). The Deugnier–Turlin score is not offered.
 13. **Scheuer grade.** Not offered, because the rule for combining its two columns is n.a.
-14. **Gallery.** Figures from IJMS 2025 (CC BY 4.0) and Wikimedia Commons (CC BY-SA 3.0, CC BY 2.0) as listed in section 5. PSC, TCMR and granulomas have no figure yet and are left for the user's own photographs.
+14. **Gallery.** Figures from IJMS 2025 (CC BY 4.0) and Wikimedia Commons (CC BY-SA 3.0, CC BY 2.0) as listed in section 5. Phase 62 (9 October 2026) added a gallery under each heading (Inflammation, Hepatitis, Biliary, Steatosis, Transplant) and more fibrosis photos (section 5.1). PSC, TCMR, drug-induced granulomas, antibody-mediated rejection, chronic rejection and time-zero ischaemia-reperfusion injury are now illustrated. Still left for the user's own photographs: hepatitis C-specific features, CMV, plasma cell-rich rejection and C4d-positive AMR. Gallery points are short and carry their scheme name (Ishak, NASH CRN, SAF, Banff 2016, IAIHG 2022); they are reading aids and never print.
