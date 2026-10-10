@@ -254,8 +254,9 @@ export function applyLinkedDefaults(schema, part, changedId, before, skip = {}) 
 /**
  * Fields a generator keeps in step with another (`derive(values, changedId)` returns a patch of field
  * values): the HER2 DISH calculator writes the cells counted, both averages, the ratio and the result
- * from the per-nucleus counts (generators/dish_calculator.js). It runs only after an edit, never on
- * load, so a saved case opens exactly as it was saved. Returns the ids it changed.
+ * from the per-nucleus counts (generators/dish_calculator.js), and the breast excision form sets the side
+ * and margin the specimen as received names (generators/breastbenign.js). It runs only after an edit,
+ * never on load, so a saved case opens exactly as it was saved. Returns the ids it changed.
  */
 export function applyDerived(gen, part, changedId) {
   if (!gen || typeof gen.derive !== 'function') return [];

@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { parseIntake, matchParts, presetValues, deriveTitle, splitTriple, MAX_PARTS, GENERIC_ID, matchOption, matchOptions, sideOf, sideFor, clockSite, frozenScenario } from '../src/intake.js';
+import { parseIntake, matchParts, presetValues, deriveTitle, splitTriple, MAX_PARTS, GENERIC_ID, matchOption, matchOptions, sideOf, sideFor, clockSite, frozenScenario, readBreastMargin, breastMarginLine } from '../src/intake.js';
 import { loadManifest, loadTemplate } from '../src/registry.js';
 import { parseSitesFromTitle } from '../generators/gastric.js';
 
@@ -325,10 +325,11 @@ test('presets: lymph node station, breast margins and generic specimen name', as
   assert.equal(presetValues(ln, s1[1], s1[1]).specimenName, 'Left sentinel pelvic lymph node');
   assert.equal(presetValues(ln, s1[3], s1[3]).side, undefined);
   const breast = matchParts(parseIntake(fx.cases[1].text), '', manifest);
-  assert.deepEqual(presetValues(br, breast[0], breast[0]), { side: 'Left', partType: 'Breast lesion excision', site: 'Left 2-3H breast mass' });
-  assert.deepEqual(presetValues(br, breast[1], breast[1]), { side: 'Left', partType: 'Cavity shave margin', margin: 'Anterior' }, 'margin side follows the main breast part');
+  // The line goes into "Specimen as received" as written (2026-10-10).
+  assert.deepEqual(presetValues(br, breast[0], breast[0]), { side: 'Left', specimenName: 'Left 2-3H breast mass', partType: 'Breast lesion excision', site: 'Left 2-3H breast mass' });
+  assert.deepEqual(presetValues(br, breast[1], breast[1]), { side: 'Left', specimenName: 'Anterior margin', partType: 'Cavity shave margin', margin: 'Anterior', marginOther: '' }, 'margin side follows the main breast part');
   const odd = matchParts(parseIntake('Breast, excision: (A) Breast lump and (B) Superolateral margin'), '', manifest);
-  assert.deepEqual(presetValues(br, odd[1], odd[1]), { partType: 'Cavity shave margin', margin: 'Other', marginOther: 'superolateral' }, 'no side when the case does not say');
+  assert.deepEqual(presetValues(br, odd[1], odd[1]), { side: 'Not stated', specimenName: 'Superolateral margin', partType: 'Cavity shave margin', margin: 'Other', marginOther: 'superolateral' }, 'side Not stated, never the form default, when the case does not say');
   const gastric = matchParts(parseIntake(fx.cases[6].text), '', manifest);
   assert.equal(presetValues(gb, gastric[0], gastric[0]).specimenName, 'antrum', 'match.fill from the LIS detail');
   // Fixture-declared values
@@ -760,4 +761,48 @@ test('frozen ovary and sentinel parts take their side from the request, or none 
   v = read('Left ureteric margin, frozen section');
   assert.deepEqual([v.ovSide, v.slnSide], [undefined, undefined], 'the rules stay inside their scenarios');
   assert.deepEqual([createPart(t.schema, 0).values.ovSide, createPart(t.schema, 0).values.slnSide], ['', '']);
+});
+
+// Phase 63 (2026-10-10, pulled by the user): the lab writes a cavity shave margin "Breast, left superior
+// margin". It opened Generic, and a part switched to the excision form kept the right / superior defaults.
+test('breast margins in the lab\'s form open the margin part with the side and margin from the line', async () => {
+  const br = (await loadTemplate('breast_excision')).schema;
+  const route = (text, history = '') => matchParts(parseIntake(text), history, manifest);
+  const fill = (row, schema = br) => presetValues(schema, row, schema.id === row.templateId ? row : { ...row, templateId: schema.id, role: null });
+  const one = (text, history) => { const [r] = route(text, history); return { id: r.templateId, tier: r.tier, role: r.role, ...fill(r) }; };
+  const margin = (side, name, specimenName, other = '') => ({ id: 'breast_excision', tier: 'confident', role: 'breast_margin', side, specimenName, partType: 'Cavity shave margin', margin: name, marginOther: other });
+
+  assert.deepEqual(one('Breast, left superior margin'), margin('Left', 'Superior', 'Breast, left superior margin'));
+  const pair = route('(A) Breast, left superior margin, excision (B) Breast, left inferior margin, excision');
+  assert.deepEqual(pair.map((r) => [r.templateId, r.tier, fill(r).side, fill(r).margin, fill(r).specimenName]), [
+    ['breast_excision', 'confident', 'Left', 'Superior', 'Breast, left superior margin, excision'],
+    ['breast_excision', 'confident', 'Left', 'Inferior', 'Breast, left inferior margin, excision']]);
+  assert.deepEqual(one('Breast, superior margin', 'Left breast carcinoma'), margin('Left', 'Superior', 'Breast, superior margin'), 'side from the history');
+  assert.deepEqual(one('Breast, superior margin'), margin('Not stated', 'Superior', 'Breast, superior margin'), 'no side anywhere: Not stated');
+  assert.deepEqual(one('Lt breast superior margin'), margin('Left', 'Superior', 'Lt breast superior margin'));
+  assert.deepEqual(one('Breast, L sup margin'), margin('Left', 'Superior', 'Breast, L sup margin'));
+  assert.deepEqual(one('Breast, superior margin (L lumpectomy)'), margin('Left', 'Superior', 'Breast, superior margin (L lumpectomy)'));
+  assert.deepEqual(one('Breast, superior margin, left breast mass'), margin('Left', 'Superior', 'Breast, superior margin, left breast mass'));
+  assert.deepEqual(one('Breast, right new medial margin, re-excision'), margin('Right', 'Medial', 'Breast, right new medial margin, re-excision'));
+  assert.deepEqual(one('Breast, posterior (deep) margin', 'Right breast IDC'), margin('Right', 'Posterior', 'Breast, posterior (deep) margin'));
+  assert.deepEqual(one('Left superomedial margin', 'Left breast carcinoma'), margin('Left', 'Other', 'Left superomedial margin', 'superomedial'), 'no side word in the margin name');
+  assert.deepEqual(one('Breast, left deep margin'), margin('Left', 'Other', 'Breast, left deep margin', 'deep'));
+  const wle = route('(A) Right breast, wide local excision (B) Left superior margin');
+  assert.equal(fill(wle[1]).side, 'Left', 'the line\'s own side beats the case\'s');
+
+  // A side and a direction with no breast anywhere is rarely a breast margin in the exports: it stays
+  // Generic, and picked onto the breast form by hand it is still read as the margin it names.
+  const [bare] = route('Left superior margin');
+  assert.equal(bare.templateId, GENERIC_ID);
+  assert.deepEqual(fill(bare, br), { side: 'Left', specimenName: 'Left superior margin', partType: 'Cavity shave margin', margin: 'Superior', marginOther: '' });
+
+  // Not hijacked: a frozen section margin, and a lesion excision that names its margins to orient it.
+  assert.equal(route('Breast, left superior margin, frozen section')[0].templateId, 'frozen_section');
+  assert.equal(route('(A) Left breast mass, wide local excision (B) Superior margin for frozen section')[1].templateId, 'frozen_section');
+  const oriented = route('Left breast mass, WLE, superior margin short stitch')[0];
+  assert.notEqual(oriented.role, 'breast_margin');
+  assert.equal(fill(oriented, br).partType, 'Breast lesion excision');
+  assert.equal(breastMarginLine('Superior margin, FS'), false);
+  assert.deepEqual(readBreastMargin('Breast, left and right superior margins'), { margin: false, side: '', name: '', other: '' }, 'plural margins: not one margin specimen');
+  assert.deepEqual(readBreastMargin('Breast, right superior margin, L 3H'), { margin: true, side: '', name: 'Superior', other: '' }, 'two sides named: none taken');
 });

@@ -271,7 +271,10 @@ async function switchTemplate(id) {
   await setPartTemplate(state.activePart, id);
 }
 
-/** Change one part's template; its values are reset to that template's defaults. */
+/**
+ * Change one part's template; its values are reset to that template's defaults, then pre-filled from
+ * the part's specimen line when it has one (carriedRow), as Build parts fills them.
+ */
 async function setPartTemplate(i, id) {
   const parts = state.caseState.parts;
   if (templateIdOf(state.caseState, parts[i]) === id) return;
@@ -280,7 +283,9 @@ async function setPartTemplate(i, id) {
   markDirty();
   const own = parts.filter((p, j) => j < i && templateIdOf(state.caseState, p) === id).length; // position within that template
   const keepLink = !!parts[i].linked && Object.values(pairedTemplates()).includes(id);
-  parts[i] = { ...createPart(s, own), label: parts[i].label, templateId: id, ...(keepLink ? { linked: true } : {}) };
+  const row = carriedRow(parts[i]);
+  parts[i] = { ...createPart(s, own), label: parts[i].label, templateId: id, ...(keepLink ? { linked: true } : {}), ...(parts[i].lis ? { lis: parts[i].lis } : {}) };
+  if (row) prefillFromLine(s, parts[i], row, own);
   relabel(parts);
   syncPrimary();
   applyMacro();
@@ -915,7 +920,15 @@ function renderField(field, part, index) {
   if (field.type === 'text' || field.type === 'textarea' || field.type === 'number') {
     const input = el(field.type === 'textarea' ? 'textarea' : 'input', {
       class: 'input', id, placeholder: field.placeholder || '', rows: field.type === 'textarea' ? 2 : undefined,
-      oninput: (e) => { markDirty(); part.values[field.id] = e.target.value; renderReport(); cacheCase(state.caseState); }
+      oninput: (e) => {
+        markDirty();
+        part.values[field.id] = e.target.value;
+        // A derive hook may fill other fields from this one (the breast excision form reads the side and
+        // margin from the specimen as received); they change in place, so the cursor stays in the box.
+        const changed = applyDerived(templateOf(part).generator, part, field.id);
+        if (changed.length) { syncControls(part, changed); syncVisibility(part); }
+        renderReport(); cacheCase(state.caseState);
+      }
     });
     if (field.type === 'text') input.type = 'text';
     if (field.type === 'number') { input.type = 'number'; input.min = field.min ?? 0; input.step = field.step ?? 1; input.inputMode = 'decimal'; }
@@ -1097,10 +1110,22 @@ function paintDishSummary(node, values) {
     el('div', { class: `dish-verdict ${v.state}` }, ...say));
 }
 
+/** A field's node in the form: the histology column, or the macroscopy column of a three-column layout. */
+const fieldNode = (fid) => nodes.panel.querySelector(`.field[data-field="${CSS.escape(fid)}"]`) || nodes.macroPanel.querySelector(`.field[data-field="${CSS.escape(fid)}"]`);
+
+/** Fields shown or hidden in place after a derive hook changed the values their `showIf` reads. */
+function syncVisibility(part) {
+  const s = schemaOf(part);
+  for (const node of [...nodes.panel.querySelectorAll('.field[data-field]'), ...nodes.macroPanel.querySelectorAll('.field[data-field]')]) {
+    const f = s.fields.find((x) => x.id === node.dataset.field);
+    if (f) node.classList.toggle('hidden', !isVisible(f, part.values));
+  }
+}
+
 /** Controls whose values a derive hook rewrote, updated in place (a full redraw would take focus from the grid). */
 function syncControls(part, ids) {
   for (const fid of ids) {
-    const node = nodes.panel.querySelector(`.field[data-field="${CSS.escape(fid)}"]`);
+    const node = fieldNode(fid);
     if (!node) continue;
     const value = part.values[fid];
     const control = node.querySelector('input.input, textarea.input, select.input');
@@ -1998,19 +2023,7 @@ async function buildPartsFromIntake() {
     const { schema: s } = state.templates[id];
     const own = counts[id] || 0; counts[id] = own + 1;
     const part = { ...createPart(s, own), label: r.label, templateId: id, lis: r.raw };
-    const match = id === r.templateId ? r : { ...r, templateId: id, role: null };
-    const preset = presetValues(s, r, match);
-    // A part built from a pasted list takes its site from the paste. Where the paste names no site,
-    // drop the positional default (the prostate sextant map, the IBD site series) rather than let a
-    // guessed site reach the diagnosis line; a value the pathologist typed is never touched here.
-    const positional = (s.partDefaults || [])[own] || {};
-    for (const rule of [].concat(s.match?.fill || [])) {
-      if (preset[rule.field] === undefined && positional[rule.field] !== undefined && part.values[rule.field] === positional[rule.field]) part.values[rule.field] = '';
-    }
-    const before = { ...part.values };
-    Object.assign(part.values, preset);
-    for (const k of Object.keys(preset)) applyLinkedDefaults(s, part, k, before[k], preset);
-    normalisePart(s, part);
+    prefillFromLine(s, part, r, own);
     return part;
   });
   cs.parts = parts;
@@ -2027,6 +2040,44 @@ async function buildPartsFromIntake() {
   state.activePart = 0;
   render();
   toast(`${parts.length} part${parts.length === 1 ? '' : 's'} built from the specimen list`);
+}
+
+/**
+ * Fill a fresh part of template `s` from its intake row `r` (the parsed line, its route and the case's
+ * side). The role a row was routed with holds only on that template; picked onto another it is matched
+ * as a plain line.
+ */
+function prefillFromLine(s, part, r, own) {
+  const match = s.id === r.templateId ? r : { ...r, templateId: s.id, role: null };
+  const preset = presetValues(s, r, match);
+  // A part built from a pasted list takes its site from the paste. Where the paste names no site,
+  // drop the positional default (the prostate sextant map, the IBD site series) rather than let a
+  // guessed site reach the diagnosis line; a value the pathologist typed is never touched here.
+  const positional = (s.partDefaults || [])[own] || {};
+  for (const rule of [].concat(s.match?.fill || [])) {
+    if (preset[rule.field] === undefined && positional[rule.field] !== undefined && part.values[rule.field] === positional[rule.field]) part.values[rule.field] = '';
+  }
+  const before = { ...part.values };
+  Object.assign(part.values, preset);
+  for (const k of Object.keys(preset)) applyLinkedDefaults(s, part, k, before[k], preset);
+  normalisePart(s, part);
+}
+
+/**
+ * The specimen line a part carries into another template: the intake row it was built from, else its
+ * pasted line or a Generic part's typed specimen, matched afresh. Switching "Breast, left superior
+ * margin" from Generic to the breast excision form used to reset it to the form's right / superior
+ * defaults (user, 2026-10-10).
+ */
+function carriedRow(part) {
+  const typed = templateIdOf(state.caseState, part) === GENERIC_ID ? String(part.values?.specimenName || '').trim() : '';
+  const line = part.lis || typed;
+  if (!line) return null;
+  const row = (intake.rows || []).find((r) => r.label === part.label && r.raw === line);
+  if (row) return row;
+  const parsed = parseIntake(line);
+  if (parsed.parts.length !== 1) return null;
+  return matchParts(parsed, state.caseState.meta?.clinical || '', state.manifest)[0] || null;
 }
 
 function initIntake() {

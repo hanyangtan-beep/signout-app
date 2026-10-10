@@ -1,4 +1,5 @@
-import { stripDot } from './_house.js';
+import { stripDot, checks } from './_house.js';
+import { readBreastMargin } from '../src/intake.js';
 // Breast benign excision and cavity shave margins generator. Pure functions: (part, ctx) -> string.
 // Each part is either a cavity shave margin (side + margin name) or a breast lesion excision
 // (side + site text + procedure), so a WLE case can carry the lesion and up to seven shaves.
@@ -54,8 +55,9 @@ export function marginName(v) {
   return m.toLowerCase();
 }
 
+// A blank side is not stated: the form never assumes one (user, 2026-10-10).
 const sideWord = (v) => {
-  const s = String(v.side || 'Right').trim();
+  const s = String(v.side || '').trim();
   return s === 'Not stated' || !s ? '' : s.toLowerCase();
 };
 const procedureWord = (v) => (v.procedure || 'Excision').toLowerCase();
@@ -85,6 +87,49 @@ export function organPhrase(v) {
   const site = stripDot(v.site);
   if (site) return `BREAST, ${site}, ${procedureWord(v)}`;
   return `${[sideWord(v), 'breast'].filter(Boolean).join(' ').toUpperCase()}, ${procedureWord(v)}`;
+}
+
+// ---------- the specimen as received ----------
+
+// The side and margin follow the line as received ("Breast, left superior margin"): Build parts fills
+// them from the paste (src/intake.js presetValues), typing the line fills them here, and the checks flag
+// a field that disagrees with the line, so a form default never prints as the specimen's side (user,
+// 2026-10-10: a left superior margin kept the form's right / superior). One reader serves all three.
+const LESION_WORDS = /\b(?:mass(?:es)?|lesions?|lumps?|tumou?rs?|nodules?|fibroadenomas?|papillomas?|WLE|wide\s+local\s+excision|lumpectomy)\b/i;
+
+/**
+ * Generator `derive` hook (src/engine.js applyDerived): typing the specimen as received sets the part
+ * type, side and margin it names. A field the line does not name keeps its value.
+ */
+export function derive(values, changedId) {
+  if (changedId !== 'specimenName') return {};
+  const text = String(values?.specimenName || '');
+  const m = readBreastMargin(text);
+  const patch = {};
+  if (m.side) patch.side = m.side;
+  if (m.margin) {
+    patch.partType = 'Cavity shave margin';
+    if (m.name) { patch.margin = m.name; patch.marginOther = m.name === 'Other' ? m.other : ''; }
+  } else if (LESION_WORDS.test(text)) patch.partType = 'Breast lesion excision';
+  return patch;
+}
+
+/** Checks: the side and margin agree with the specimen as received, and a shave margin names both. */
+export function validate(part) {
+  const v = part.values || {};
+  const { out, warn } = checks();
+  const typed = stripDot(v.specimenName);
+  const m = typed ? readBreastMargin(typed) : { margin: false, side: '', name: '', other: '' };
+  const side = sideWord(v);
+  if (m.side && m.side.toLowerCase() !== side) warn(`The specimen as received says ${m.side.toLowerCase()}: choose ${m.side} for the side.`, 'side');
+  else if (isShave(v) && !side) warn(`Choose the side: the line otherwise reads ${organPhrase(v)}.`, 'side');
+  if (m.margin && !isShave(v)) warn('The specimen as received is a margin: choose Cavity shave margin for the part type.', 'partType');
+  if (isShave(v)) {
+    if (m.name && m.name !== 'Other' && m.name !== (v.margin || 'Superior')) warn(`The specimen as received names the ${m.name.toLowerCase()} margin: choose ${m.name}.`, 'margin');
+    else if (m.name === 'Other' && v.margin !== 'Other') warn(`The specimen as received names the ${m.other} margin: choose Other and type it.`, 'margin');
+    else if (!marginName(v)) warn(`Name the margin: the line otherwise reads ${organPhrase(v)}.`, v.margin === 'Other' ? 'marginOther' : 'margin');
+  }
+  return out;
 }
 
 // ---------- macroscopic description ----------
@@ -294,4 +339,4 @@ export function diagnosis(part) {
   return `(${part.label}) ${organPhrase(v)} - ${[main, ...clauses].join('; ')}`;
 }
 
-export default { specimenName, macro, blockKey, microscopy, diagnosis };
+export default { specimenName, macro, blockKey, microscopy, diagnosis, derive, validate };

@@ -199,7 +199,59 @@ const excluded = (mt, text) => !!(mt.exclude && hits(mt.exclude, text));
 const ownFor = (mt, text) => (mt?.own && hits(mt.own.site, text) ? mt.own : null);
 const without = (terms, text) => (terms || []).reduce((s, t) => s.replace(new RegExp(termRe(t).source, 'gi'), ' '), text);
 
-const BREAST_MARGINS = ['Superior', 'Inferior', 'Medial', 'Lateral', 'Anterior', 'Posterior'];
+// ---- Breast cavity shave margins ------------------------------------------------------------------
+// The lab writes a cavity shave margin "Breast, left superior margin". In the 2021-2026 biopsy and
+// 2024-2026 LIS exports 168 specimen lines name a breast margin, nearly all in that shape, and none was
+// filled as a margin: the role rule took only a margin line without the word "breast" ("Anterior margin"
+// under "Breast, excision:"), so 153 opened Generic as a close call and 15 opened the excision form as a
+// lesion excision, and a part switched to the form by hand kept its right / superior defaults (user,
+// 2026-10-10). None of those lines reads as a lesion excision that names its margins: "mass" and
+// "lumpectomy" come only after the margin word ("Breast, superior margin, left breast mass"). A margin
+// line without "breast" still needs a breast case: a side and a margin direction with no organ ("Left
+// superior margin") named a breast margin in fewer than one in ten of the 29 such lines.
+export const BREAST_MARGINS = ['Superior', 'Inferior', 'Medial', 'Lateral', 'Anterior', 'Posterior'];
+const MARGIN_DIRS = { superior: 'Superior', sup: 'Superior', inferior: 'Inferior', inf: 'Inferior', medial: 'Medial', med: 'Medial', lateral: 'Lateral', lat: 'Lateral', anterior: 'Anterior', ant: 'Anterior', posterior: 'Posterior', post: 'Posterior' };
+// A line that names a margin only to orient the lesion ("Left breast mass, WLE, superior margin short
+// stitch"), or names the lesion before the margin, is the lesion excision.
+const MARGIN_ORIENT = /\b(?:stitch\w*|sutur\w*|loops?|clips?|short|long|ink(?:ed)?|marked)\b/i;
+const LESION_THEN_MARGIN = /\b(?:mass(?:es)?|lesions?|lumps?|tumou?rs?|nodules?|mastectomy)\b[^()]*?\bmargin\b/i;
+// A frozen section margin ("Superior margin, FS") is the frozen form's, whatever the case.
+const FROZEN_WORDS = /\b(?:frozen|FS|intra-?operative)\b/i;
+// Words that are not the margin's name: side, organ, sequence and procedure ("left new superior").
+const NOT_MARGIN_NAME = /\b(?:left|right|lt|rt|l|r|breast|mammary|new|final|additional|further|re|cavity|shaves?|shaved|shaving|excision|re-excision|resection|specimen|the|of)\b\.?/gi;
+// "Lt" / "Rt" and a bare "L" / "R" are a side on a margin line ("L superior margin", "Superior margin
+// (R lumpectomy)"); sideOf reads them only beside an hour, "breast" or a sided site word.
+const MARGIN_SIDE_LETTER = /(?:^|[\s(,;:])(lt|rt|l|r)\.?(?=[\s),;:]|$)/gi;
+
+/**
+ * A breast margin line in the excision form's terms: `margin` (the line is a margin specimen), `side`
+ * ('Left', 'Right' or '' when it names none or both), `name` (one of BREAST_MARGINS, 'Other', or '' when
+ * the margin is not named) and `other` (the name as written, for Other: "superomedial", "deep").
+ * "Breast, left superior margin" -> { margin: true, side: 'Left', name: 'Superior', other: '' }.
+ */
+export function readBreastMargin(text) {
+  const t = clean(text);
+  const margin = MARGIN.test(t) && !MARGIN_ORIENT.test(t) && !LESION_THEN_MARGIN.test(t);
+  const found = sidesIn(t);
+  if (margin) for (const m of t.matchAll(MARGIN_SIDE_LETTER)) found.add(/^l/i.test(m[1]) ? 'Left' : 'Right');
+  const side = found.size === 1 ? [...found][0] : '';
+  if (!margin) return { margin, side, name: '', other: '' };
+  // The name is in the comma piece before "margin": "Breast, left new superior margin" -> "left new superior".
+  const before = t.slice(0, t.search(MARGIN)).split(/[,;:]/).pop().replace(/[()]/g, ' ');
+  const dirs = [...new Set((before.match(/[A-Za-z]+/g) || []).map((w) => MARGIN_DIRS[w.toLowerCase()]).filter(Boolean))];
+  if (dirs.length === 1) return { margin, side, name: dirs[0], other: '' };
+  const other = before.replace(NOT_MARGIN_NAME, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+  return { margin, side, name: other ? 'Other' : '', other };
+}
+
+/** True when a specimen line is a breast margin for the excision form (a frozen section margin is not). */
+export const breastMarginLine = (text) => readBreastMargin(text).margin && !FROZEN_WORDS.test(String(text || ''));
+
+/** The side of a breast case, for a breast line that names none: the main breast part, else the prefix and history. */
+function breastCaseSide(ctx) {
+  const main = (ctx.parts || []).find((p) => BREAST_WORD.test(p.raw || p.text) && !MARGIN.test(p.raw || p.text));
+  return sideOf(`${main ? main.raw || main.text : ''} ${ctx.casePrefix || ''} ${ctx.history || ''}`);
+}
 
 /**
  * Score every template for one part. Candidates are templates whose `match.site` hits the part
@@ -271,14 +323,12 @@ function roleOf(part, ctx, manifest) {
     const neck = text.search(NECK_DISSECTION) >= 0 && !siteElsewhere(text.replace(NECK_DISSECTION, ' '));
     if (strong || neck || (NODE.test(text) && (startsWithNode || !otherSite))) return { role: 'lymph_node', templateId: 'lymph_node' };
   }
-  if (ids.has('breast_excision') && MARGIN.test(text) && !/\bbreast\b/i.test(text)) {
-    const breastCase = /\bbreast\b/i.test(ctx.casePrefix || '') || /\bbreast\b/i.test(ctx.history || '') || (ctx.parts || []).some((p) => /\bbreast\b/i.test(p.raw || p.text));
-    if (breastCase) {
-      // Side comes from the main breast part ("Left 2-3H breast mass", "L2-3H mass"), else the prefix / history.
-      const main = (ctx.parts || []).find((p) => /\bbreast\b/i.test(p.raw || p.text) && !MARGIN.test(p.raw || p.text));
-      const src = `${main ? main.raw || main.text : ''} ${ctx.casePrefix || ''} ${ctx.history || ''}`;
-      return { role: 'breast_margin', templateId: 'breast_excision', caseSide: sideOf(src) };
-    }
+  // A breast margin (readBreastMargin): a line that says "breast" is one on its own; one that does not
+  // ("Anterior margin" under "Breast, excision:") needs the breast in the prefix, the history or another
+  // part. A frozen section margin stays with the frozen form. matchParts adds the case's side.
+  if (ids.has('breast_excision') && breastMarginLine(text)) {
+    const breastCase = [text, ctx.casePrefix, ctx.history, ...(ctx.parts || []).map((p) => p.raw || p.text)].some((s) => BREAST_WORD.test(s || ''));
+    if (breastCase) return { role: 'breast_margin', templateId: 'breast_excision' };
   }
   return null;
 }
@@ -289,16 +339,19 @@ function roleOf(part, ctx, manifest) {
  */
 export function matchParts(parsed, history, manifest) {
   const ctx = { casePrefix: parsed.casePrefix || '', history: history || parsed.history || '', parts: parsed.parts };
+  // Every row carries the breast case's side, so a breast part whose line names none takes it whichever
+  // form it ends up on (a margin picked by hand from Generic included).
+  const caseSide = breastCaseSide(ctx);
   return parsed.parts.map((part) => {
     const role = roleOf(part, ctx, manifest);
     const candidates = scorePart(part, ctx, manifest);
-    if (role) return { ...part, templateId: role.templateId, tier: 'confident', role: role.role, caseSide: role.caseSide || '', candidates };
+    if (role) return { ...part, templateId: role.templateId, tier: 'confident', role: role.role, caseSide, candidates };
     const best = candidates[0];
     const second = candidates[1];
-    if (!best || best.score < 0) return { ...part, templateId: GENERIC_ID, tier: 'none', role: null, candidates };
-    if (!second || best.score - second.score >= 2) return { ...part, templateId: best.id, tier: 'confident', role: null, candidates };
+    if (!best || best.score < 0) return { ...part, templateId: GENERIC_ID, tier: 'none', role: null, caseSide, candidates };
+    if (!second || best.score - second.score >= 2) return { ...part, templateId: best.id, tier: 'confident', role: null, caseSide, candidates };
     // Weak evidence (an organ word alone): offer the candidates but start from the generic form.
-    return { ...part, templateId: best.score >= 2 ? best.id : GENERIC_ID, tier: 'choose', role: null, candidates };
+    return { ...part, templateId: best.score >= 2 ? best.id : GENERIC_ID, tier: 'choose', role: null, caseSide, candidates };
   });
 }
 
@@ -330,12 +383,18 @@ const TARGET_NOUNS = /\b(lesions?|mass(?:es)?|lumps?|nodules?|tumou?rs?)\b/gi;
  * not a side ("LN", "L 3 cores").
  */
 export function sideOf(text) {
+  const found = sidesIn(text);
+  return found.size === 1 ? [...found][0] : '';
+}
+
+/** Every side the line names, read as sideOf reads them (a Set of 'Left' / 'Right'). */
+function sidesIn(text) {
   const t = String(text || '');
   const found = new Set();
   for (const m of t.matchAll(SIDE_WORDS)) found.add(/^l/i.test(m[1] || m[2] || m[3]) ? 'Left' : 'Right');
   for (const m of t.matchAll(CLOCK_ALL)) if (m[1]) found.add(/^l/i.test(m[1]) ? 'Left' : 'Right');
   for (const m of t.matchAll(LOBE_ABBREV)) found.add(/^l/i.test(m[1]) ? 'Left' : 'Right');
-  return found.size === 1 ? [...found][0] : '';
+  return found;
 }
 
 /**
@@ -434,17 +493,24 @@ export function presetValues(schema, part, match = {}) {
     if (opts.includes(proc)) values.procedure = proc;
     return values;
   }
-  if (match.role === 'breast_margin') {
-    if (!values[sideField] && sideOption(match.caseSide)) values[sideField] = sideOption(match.caseSide);
-    values.partType = 'Cavity shave margin';
-    const named = BREAST_MARGINS.find((m) => new RegExp(`\\b${m}\\b`, 'i').test(text));
-    if (named) values.margin = named;
-    else { values.margin = 'Other'; values.marginOther = text.replace(/\bmargins?\b/i, '').trim().toLowerCase(); }
-    return values;
-  }
+  // Breast excision form: the part's line goes into "Specimen as received" as written, and the side and
+  // margin come from it, never from the form's right / superior defaults (user, 2026-10-10). A margin line
+  // (readBreastMargin) is a cavity shave margin however it reached the form: by the role rule, or picked
+  // by hand for a line that opened Generic. A side the line does not name is the case's, else Not stated.
   if (schema?.id === 'breast_excision') {
-    values.partType = 'Breast lesion excision';
-    if (fieldIds.has('site')) values.site = part.detail || part.text;
+    const m = readBreastMargin(text);
+    const notStated = (field('side')?.options || []).find((o) => /^not stated$/i.test(o)) || '';
+    values.side = sideOption(m.side) || sideOption(match.caseSide) || notStated;
+    const received = clean(part.text || text);
+    if (fieldIds.has('specimenName') && received) values.specimenName = received.charAt(0).toUpperCase() + received.slice(1);
+    if (m.margin) {
+      values.partType = 'Cavity shave margin';
+      values.margin = m.name || 'Other';
+      values.marginOther = m.name === 'Other' ? m.other : '';
+    } else {
+      values.partType = 'Breast lesion excision';
+      if (fieldIds.has('site')) values.site = part.detail || part.text;
+    }
     return values;
   }
   if (schema?.id === GENERIC_ID) {

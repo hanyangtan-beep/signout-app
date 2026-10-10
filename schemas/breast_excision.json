@@ -1,6 +1,6 @@
 {
   "id": "breast_excision",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Breast excision / margins",
   "shortName": "Breast · excision and cavity shaves",
   "label": "Breast excision",
@@ -114,7 +114,7 @@
       "id": "specimenName",
       "label": "Specimen as received",
       "type": "text",
-      "placeholder": "Right breast superior margin, resection",
+      "placeholder": "Breast, left superior margin",
       "default": ""
     },
     {
@@ -136,7 +136,7 @@
         "Left",
         "Not stated"
       ],
-      "default": "Right"
+      "default": "Not stated"
     },
     {
       "id": "margin",

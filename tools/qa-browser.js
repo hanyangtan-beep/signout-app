@@ -1183,6 +1183,40 @@ await check('soft tissue: a pasted excision prints its own site and no guessed l
   return 'right thigh excision, no lipoma guess; ALT with MDM2 amplification and comment';
 });
 
+await check('breast margins: "Breast, left superior margin" opens as left superior; typing or switching the form follows the line', async () => {
+  // Phase 63 (2026-10-10): the line opened Generic, and the excision form kept its right / superior defaults.
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const routed = await pasteAndBuild('(A) Breast, left superior margin, excision (B) Breast, left inferior margin, excision');
+  assert(routed === 'breast_excision', `routed to ${routed}`);
+  const box = page.locator('[data-field="specimenName"] input').first();
+  assert(await box.inputValue() === 'Breast, left superior margin, excision', `specimen as received reads "${await box.inputValue()}"`);
+  let report = await reportText();
+  assert(report.includes('(A) LEFT BREAST, superior margin, resection - NO EVIDENCE OF MALIGNANCY'), `part A line wrong: ${report.slice(-400)}`);
+  assert(report.includes('(B) LEFT BREAST, inferior margin, resection'), `part B line wrong: ${report.slice(-400)}`);
+  assert(!/RIGHT BREAST/.test(report), 'a default right side printed');
+  // Typing the specimen as received moves Side and Margin in place; the cursor stays in the box.
+  await box.fill('Breast, right medial margin');
+  await page.waitForTimeout(300);
+  report = await reportText();
+  assert(report.includes('(A) RIGHT BREAST, medial margin, resection'), `the typed line did not move the fields: ${report.slice(-400)}`);
+  assert(await box.evaluate((n) => n === document.activeElement), 'the specimen box lost focus');
+  const marginNow = await page.locator('[data-field="margin"] select').first().inputValue();
+  assert(marginNow === 'Medial', `the margin select reads ${marginNow}`);
+  await pickField('side', 'Left');
+  const flagged = await checksText();
+  assert(flagged.includes('The specimen as received says right: choose Right for the side.'), `no side check: ${flagged}`);
+  // A bare "Left superior margin" stays Generic; switched to the breast form it keeps its line.
+  assert(await pasteAndBuild('Left superior margin') === 'generic', 'a bare margin left Generic');
+  await page.locator('select.part-template').first().selectOption('breast_excision');
+  await page.waitForTimeout(800);
+  report = await reportText();
+  assert(report.includes('LEFT BREAST, superior margin, resection - NO EVIDENCE OF MALIGNANCY'), `switched part lost its line: ${report.slice(-400)}`);
+  assert(await page.locator('[data-field="specimenName"] input').first().inputValue() === 'Left superior margin', 'the switched part has no specimen as received');
+  return 'pasted lines open left superior / inferior; typing moves side and margin with focus kept; a mismatch is checked; Generic to breast keeps the line';
+});
+
 await check('abscess / granulation tissue: a pasted pilonidal sinus prints the house line and the hair-shaft sentence', async () => {
   const routed = await pasteAndBuild('Pilonidal sinus');
   assert(routed === 'abscess_granulation', `routed to ${routed}`);

@@ -9,12 +9,15 @@ import { schemaSync } from './_schema.js';
 const schema = schemaSync('breast_excision');
 const run = (c) => generate(schema, gen, c);
 const example = () => ({ ...JSON.parse(JSON.stringify(schema.example)), schemaId: schema.id });
+// The wording tests are written on a right-sided shave; the form's own default side is Not stated
+// (2026-10-10: a default side must never print as the specimen's).
 const one = (values, options = {}) => {
   const c = createCase(schema, 1);
-  c.parts[0].values = { ...c.parts[0].values, ...values };
+  c.parts[0].values = { ...c.parts[0].values, side: 'Right', ...values };
   Object.assign(c.options, options);
   return c;
 };
+const rightSided = (c) => { for (const p of c.parts) p.values.side = 'Right'; return c; };
 const lesion = (values, options = {}) => one({ partType: 'Breast lesion excision', site: 'L3H breast mass', ...values }, options);
 
 const NEG_MICRO = 'Sections show hyalinised fibroadipose tissue, as well as breast ducts and lobules, without architectural distortion. They are lined by ductal epithelium and myoepithelium, without atypia. There is no evidence of atypical hyperplasia, in-situ or invasive carcinoma.';
@@ -54,7 +57,8 @@ test('partDefaults walk the six cavity margins so + Part defaults to the next sh
   const c = createCase(schema, 8);
   assert.deepEqual(c.parts.slice(0, 6).map((p) => p.values.margin), ['Superior', 'Inferior', 'Medial', 'Lateral', 'Anterior', 'Posterior']);
   assert.ok(c.parts.every((p) => p.values.partType === 'Cavity shave margin'));
-  assert.equal(run(c).specimens.split('\n')[3], '(D) Right breast lateral margin, resection');
+  assert.ok(c.parts.every((p) => p.values.side === 'Not stated'), 'no part assumes a side');
+  assert.equal(run(c).specimens.split('\n')[3], '(D) Breast lateral margin, resection');
 });
 
 test('helpers: size phrase, margin name, organ phrase, secondaries', () => {
@@ -91,14 +95,15 @@ test('example: two negative / fat necrosis shaves and a completely excised fibro
   assert.ok(!r.report.includes('undefined'));
 });
 
-test('default single part is a negative right superior shave without part letters', () => {
+test('default single part is a negative superior shave, side not stated, without part letters', () => {
   const r = run(createCase(schema, 1));
-  assert.equal(r.specimens, 'Right breast superior margin, resection');
+  assert.equal(r.specimens, 'Breast superior margin, resection');
   assert.equal(r.macro, 'Received in formalin is a piece of fibrofatty breast tissue. A suture marks the new margin, which is inked black. No discrete lesion is seen on sectioning. Serially sliced perpendicular to the new margin and all embedded in 3 blocks.');
   assert.equal(r.blockKey, '(1-3) Serial slices, all embedded, new margin inked black.');
   assert.equal(r.microscopy, NEG_MICRO);
-  assert.equal(r.diagnosis, 'RIGHT BREAST, superior margin, resection - NO EVIDENCE OF MALIGNANCY');
+  assert.equal(r.diagnosis, 'BREAST, superior margin, resection - NO EVIDENCE OF MALIGNANCY');
   assert.ok(!r.report.includes('(A)'));
+  assert.deepEqual(r.issues.map((i) => [i.level, i.field, i.message]), [['warn', 'side', 'Choose the side: the line otherwise reads BREAST, superior margin, resection.']]);
 });
 
 test('macro option off removes the macroscopic description and block key', () => {
@@ -118,7 +123,7 @@ test('headers option labels the macro and block key blocks', () => {
 });
 
 test('two-part case keeps (A)/(B) prefixes on every block', () => {
-  const c = createCase(schema, 2);
+  const c = rightSided(createCase(schema, 2));
   c.parts[1].values.result = 'Fat necrosis';
   const r = run(c);
   assert.equal(r.specimens, '(A) Right breast superior margin, resection\n(B) Right breast inferior margin, resection');
@@ -225,7 +230,7 @@ test('atypia / DCIS / invasive give a short line and the QMH breast cancer templ
   assert.ok(dcis.microscopy.includes('Microcalcification is present within the ductal carcinoma in situ.'));
   assert.equal(run(one({ result: 'Invasive carcinoma – see comment' })).diagnosis, `${head}INVASIVE CARCINOMA; see comment`);
 
-  const c = createCase(schema, 2);
+  const c = rightSided(createCase(schema, 2));
   c.parts[1].values.result = 'DCIS – see comment';
   const r = run(c);
   assert.ok(r.comment.includes('in the breast (part B).'));
@@ -235,4 +240,30 @@ test('atypia / DCIS / invasive give a short line and the QMH breast cancer templ
 test('additional notes are appended to the microscopy', () => {
   const r = run(one({ additionalNotes: 'a small intramammary lymph node is reactive' }));
   assert.ok(r.microscopy.endsWith('There is no evidence of atypical hyperplasia, in-situ or invasive carcinoma. A small intramammary lymph node is reactive.'));
+});
+
+// Phase 63 (2026-10-10, pulled by the user): the side and margin follow the specimen as received.
+test('derive: typing the specimen as received sets the part type, side and margin it names', () => {
+  const d = (text) => gen.derive({ specimenName: text }, 'specimenName');
+  assert.deepEqual(d('Breast, left inferior margin'), { side: 'Left', partType: 'Cavity shave margin', margin: 'Inferior', marginOther: '' });
+  assert.deepEqual(d('Lt breast superomedial margin'), { side: 'Left', partType: 'Cavity shave margin', margin: 'Other', marginOther: 'superomedial' });
+  assert.deepEqual(d('R new posterior (deep) margin'), { side: 'Right', partType: 'Cavity shave margin', margin: 'Posterior', marginOther: '' });
+  assert.deepEqual(d('Breast, superior margin'), { partType: 'Cavity shave margin', margin: 'Superior', marginOther: '' }, 'no side named, none set');
+  assert.deepEqual(d('Left breast mass, wide local excision'), { side: 'Left', partType: 'Breast lesion excision' });
+  assert.deepEqual(d('Left'), { side: 'Left' }, 'part-typed: only what the text names so far');
+  assert.deepEqual(d(''), {});
+  assert.deepEqual(gen.derive({ specimenName: 'Breast, left inferior margin' }, 'result'), {}, 'only the specimen as received drives it');
+});
+
+test('checks: a side or margin that disagrees with the specimen as received', () => {
+  const warns = (values) => run(one(values)).issues.map((i) => [i.field, i.message]);
+  assert.deepEqual(warns({ specimenName: 'Breast, right superior margin' }), [], 'agreeing fields: no check');
+  assert.deepEqual(warns({ specimenName: 'Breast, left superior margin' }), [['side', 'The specimen as received says left: choose Left for the side.']]);
+  assert.deepEqual(warns({ specimenName: 'Breast, right inferior margin' }), [['margin', 'The specimen as received names the inferior margin: choose Inferior.']]);
+  assert.deepEqual(warns({ specimenName: 'Breast, right deep margin' }), [['margin', 'The specimen as received names the deep margin: choose Other and type it.']]);
+  assert.deepEqual(warns({ specimenName: 'Breast, right superior margin', partType: 'Breast lesion excision', site: 'R2H mass' }), [['partType', 'The specimen as received is a margin: choose Cavity shave margin for the part type.']]);
+  assert.deepEqual(warns({ side: 'Left', margin: 'Other', marginOther: '' }), [['marginOther', 'Name the margin: the line otherwise reads LEFT BREAST, resection.']]);
+  assert.deepEqual(warns({ side: 'Not stated', specimenName: 'Breast, superior margin' }), [['side', 'Choose the side: the line otherwise reads BREAST, superior margin, resection.']]);
+  assert.deepEqual(warns({ side: 'Not stated', partType: 'Breast lesion excision', site: 'L3H breast mass' }), [], 'a lesion names its side in the site');
+  assert.deepEqual(run(example()).issues, [], 'the worked example raises no checks');
 });

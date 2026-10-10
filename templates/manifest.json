@@ -1985,7 +1985,7 @@
           "breast lump"
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "breastbenign",
       "generatorPath": "generators/breastbenign.js",
       "schemaPath": "schemas/breast_excision.json"
