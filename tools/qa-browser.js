@@ -1985,6 +1985,135 @@ await check('phone header keeps Roadmap on one row and leaves Suggest to the par
   return 'one row at 390px';
 });
 
+// Save & new (2026-10-10, user request): one button in the bar saves the case to Drive, then starts a
+// new case as New does, and only once the save has gone through. Google is faked in this context only:
+// the app is served at http://localhost:3000, an origin its sign-in accepts (AUTH_ORIGINS in
+// src/app.js), with a planted token, and every Google API call answers from a stub that records it.
+await check('top bar: Save & new saves the case to Drive, then starts a new case; a failed save keeps the case', async () => {
+  const ACCOUNT = 'qa.member@example.org';
+  const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'authorization, content-type', 'access-control-allow-methods': 'GET, POST, PUT, PATCH, OPTIONS' };
+  // One body that satisfies every call a save makes: account, folder probe, file search, Sheet values, Doc upload.
+  const STUB = { id: 'qa-file', trashed: false, mimeType: 'application/vnd.google-apps.folder', capabilities: { canAddChildren: true }, files: [{ id: 'qa-file', name: 'qa' }], values: [], user: { emailAddress: ACCOUNT }, email: ACCOUNT };
+  const calls = [];
+  const dialogs = [];
+  const errors = [];
+  let failUpload = false;
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 }, serviceWorkers: 'block' });
+  const tab = await ctx.newPage();
+  try {
+    tab.on('pageerror', (e) => errors.push(String(e)));
+    tab.on('dialog', (d) => { dialogs.push(d.message()); d.dismiss(); });
+    await tab.route('http://localhost:3000/**', async (route) => {
+      let p = decodeURIComponent(new URL(route.request().url()).pathname);
+      if (p === '/') p = '/index.html';
+      const file = join(ROOT, normalize(p).replace(/^(\.\.[/\\])+/, ''));
+      const body = await readFile(file).catch(() => null);
+      await route.fulfill(body ? { status: 200, contentType: MIME[extname(file)] || 'application/octet-stream', body } : { status: 404, body: 'not found' });
+    });
+    await tab.route((url) => url.protocol === 'https:', (route) => {
+      const req = route.request();
+      const u = new URL(req.url());
+      if (!/(^|\.)googleapis\.com$/.test(u.hostname)) return route.fulfill({ status: 404, body: '' });
+      if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
+      calls.push(`${req.method()} ${u.hostname}${u.pathname}`);
+      if (failUpload && u.pathname.startsWith('/upload/')) {
+        return route.fulfill({ status: 500, headers: { ...CORS, 'content-type': 'application/json' }, body: JSON.stringify({ error: { message: 'QA outage' } }) });
+      }
+      return route.fulfill({ status: 200, headers: { ...CORS, 'content-type': 'application/json' }, body: JSON.stringify(STUB) });
+    });
+    await tab.addInitScript((email) => {
+      if (sessionStorage.getItem('qa.planted')) return; // once, not again on a reload
+      sessionStorage.setItem('qa.planted', '1');
+      sessionStorage.setItem('signout.token.v1', JSON.stringify({ access_token: 'qa', expires_at: Date.now() + 3600e3, email }));
+    }, ACCOUNT);
+    await tab.goto('http://localhost:3000/index.html', { waitUntil: 'networkidle' });
+    await tab.waitForSelector('#part-panel', { state: 'visible', timeout: 15000 });
+    const read = () => tab.evaluate(() => ({
+      accession: document.querySelector('#meta-accession').value,
+      template: document.querySelector('#status-template').textContent,
+      focus: document.activeElement?.id || ''
+    }));
+    const press = async (selector, expected) => {
+      await tab.evaluate(() => { document.querySelector('#toast').textContent = ''; });
+      await tab.click(selector);
+      await tab.waitForFunction((t) => document.querySelector('#toast').textContent === t, expected, { timeout: 10000 })
+        .catch(async () => { throw new Error(`toast "${await tab.locator('#toast').textContent()}", expected "${expected}"; dialogs ${JSON.stringify(dialogs)}`); });
+      await tab.waitForTimeout(150);
+      return read();
+    };
+    const writes = () => calls.filter((c) => !c.startsWith('GET ')).length;
+    const template = (await read()).template;
+    assert(await tab.locator('#btn-save-new').isVisible(), 'Save & new is not in the bar at 1440 px');
+
+    // No accession: nothing goes to Drive and the case stays, as with Save.
+    let before = calls.length;
+    let got = await press('#btn-save-new', 'Enter an accession number first');
+    assert(calls.length === before && got.focus === 'meta-accession', `no-accession path: ${calls.length - before} calls, focus ${got.focus}`);
+
+    // Drive refuses the Doc: the toast says so and the case is kept, accession and all.
+    await tab.fill('#meta-accession', 'S2604242');
+    failUpload = true;
+    got = await press('#btn-save-new', 'Google API 500: QA outage');
+    assert(got.accession === 'S2604242', `failed save did not keep the case (accession "${got.accession}")`);
+    assert(calls.some((c) => c.startsWith('POST www.googleapis.com/upload/')), `no Doc upload was tried: ${calls.join(', ')}`);
+
+    // Drive accepts: Doc and Sheet row written, then a new case of the same template.
+    failUpload = false;
+    before = calls.length;
+    got = await press('#btn-save-new', 'Saved S2604242 to Drive. New case started');
+    const saved = calls.slice(before);
+    assert(saved.some((c) => c.startsWith('POST www.googleapis.com/upload/')) && saved.some((c) => c.startsWith('POST sheets.googleapis.com/')), `save calls: ${saved.join(', ')}`);
+    assert(got.accession === '' && got.template === template, `new case: accession "${got.accession}", template "${got.template}" (was "${template}")`);
+
+    // Saved with Save and unchanged since: not written again, the new case just starts.
+    await tab.fill('#meta-accession', 'S2604243');
+    await press('#btn-save', 'Saved S2604243 to Drive');
+    before = writes();
+    got = await press('#btn-save-new', 'S2604243 is already in Drive. New case started');
+    assert(writes() === before && got.accession === '', `unchanged case: ${writes() - before} writes, accession "${got.accession}"`);
+
+    // Back from a Google sign-in started by Save & new: the cached case is saved, then a new case.
+    await tab.fill('#meta-accession', 'S2604244');
+    before = writes();
+    await tab.evaluate(() => { sessionStorage.removeItem('signout.token.v1'); });
+    // Google returns to the app's directory with the token in the hash; a new path, so the page loads afresh.
+    await tab.goto('http://localhost:3000/#access_token=qa2&expires_in=3600&state=savenew:qa', { waitUntil: 'networkidle' });
+    await tab.waitForFunction(() => document.querySelector('#toast').textContent === 'Saved S2604244 to Drive. New case started', null, { timeout: 15000 })
+      .catch(async () => { throw new Error(`after the sign-in return: toast "${await tab.locator('#toast').textContent()}"`); });
+    got = await read();
+    assert(writes() > before && got.accession === '', `resumed Save & new: ${writes() - before} writes, accession "${got.accession}"`);
+
+    // Where it would add a row to the bar it moves into the Case menu, which a phone opens on screen.
+    const notes = [];
+    for (const width of [820, 390]) {
+      await tab.setViewportSize({ width, height: 844 });
+      await tab.waitForTimeout(250);
+      assert(!(await tab.locator('#btn-save-new').isVisible()), `Save & new still in the bar at ${width} px`);
+      await tab.click('#btn-case-menu');
+      const item = tab.locator('#case-menu-list .menu-item', { hasText: 'Save & new' });
+      assert(await item.isVisible(), `no Save & new in the Case menu at ${width} px`);
+      const box = await tab.locator('#case-menu-list').boundingBox();
+      assert(box && box.x >= 0 && box.x + box.width <= width, `Case menu off screen at ${width} px: ${JSON.stringify(box)}`);
+      await tab.evaluate(() => { document.querySelector('#toast').textContent = ''; });
+      await item.click();
+      await tab.waitForFunction(() => document.querySelector('#toast').textContent === 'Enter an accession number first', null, { timeout: 5000 });
+      notes.push(`${width} px in the Case menu`);
+    }
+    await tab.setViewportSize({ width: 1440, height: 950 });
+    await tab.waitForTimeout(250);
+    await tab.click('#btn-case-menu');
+    const listed = await tab.locator('#case-menu-list .menu-item', { hasText: 'Save & new' }).isVisible();
+    const opened = await tab.locator('#case-menu-list .menu-item', { hasText: 'New case' }).isVisible();
+    await tab.keyboard.press('Escape');
+    assert(opened && !listed, `Case menu at 1440 px: opened ${opened}, Save & new listed beside the bar button ${listed}`);
+    assert(errors.length === 0, `page errors: ${errors.join(' | ')}`);
+    return `kept on a failed save; saved then new; unchanged not rewritten; resumed after sign-in; ${notes.join(', ')}`;
+  } finally {
+    await tab.unrouteAll({ behavior: 'ignoreErrors' });
+    await ctx.close();
+  }
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

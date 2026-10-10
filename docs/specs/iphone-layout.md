@@ -20,7 +20,9 @@ Compact does six things.
 the search button becomes a full-width **Templates** button opening the palette that already exists.
 The palette is the template sheet on a phone — it searches every template by name and alias, which
 the two rows cannot do at this width. Case / New / Open are already behind the Case menu below
-1600 px; Save, the account button, Settings and the theme toggle stay in the bar.
+1600 px; Save, the account button, Settings and the theme toggle stay in the bar. Save & new is in
+the Case menu at 860 px and below (2026-10-10), and in compact the menu opens rightwards from its
+button so it stays on screen.
 
 **The form and the report become two tabs.** `body[data-mview]` is `case` or `report`; a sticky tab
 strip under the header switches it. In `case` the report pane is not rendered to the screen, in

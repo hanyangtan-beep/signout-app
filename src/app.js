@@ -90,6 +90,7 @@ const nodes = {
   theme: $('#theme-toggle'),
   open: $('#btn-open'),
   save: $('#btn-save'),
+  saveNew: $('#btn-save-new'),
   google: $('#btn-google'),
   settings: $('#btn-settings'),
   roadmap: $('#btn-roadmap'),
@@ -574,11 +575,13 @@ function renderCaseId() {
 
 /** Example / New / Open collapse into this menu on narrower screens; the inline buttons stay the source of truth. */
 function initCaseMenu() {
-  const items = [['Example', () => nodes.example.click()], ['New case', () => nodes.newCase.click()], ['Open…', () => nodes.open.click()]];
+  const items = [['Example', () => nodes.example.click()], ['New case', () => nodes.newCase.click()],
+    // Where Save & new would add a row to the bar (860 px and below) it is listed here instead.
+    ['Save & new', () => nodes.saveNew.click(), 'narrow-only'], ['Open…', () => nodes.open.click()]];
   // Walking away from a shared reporting station mid-list: drop the token and return to the gate.
   if (gateEnabled(location.hostname)) items.push(['Lock', () => lockApp()]);
-  nodes.caseMenuList.replaceChildren(...items.map(([label, run]) => el('button', {
-    type: 'button', role: 'menuitem', class: 'menu-item', text: label,
+  nodes.caseMenuList.replaceChildren(...items.map(([label, run, only]) => el('button', {
+    type: 'button', role: 'menuitem', class: only ? `menu-item ${only}` : 'menu-item', text: label,
     onclick: () => { closeCaseMenu(); run(); }
   })));
   nodes.caseMenuBtn.addEventListener('click', (e) => {
@@ -2115,6 +2118,7 @@ function renderSaveStatus() {
     el('span', { text: state.saving ? 'Saving…' : (d?.savedAt && !state.dirty ? 'Saved' : 'Save') })
   );
   nodes.save.disabled = state.saving;
+  nodes.saveNew.disabled = state.saving;
   nodes.save.classList.toggle('primary', state.dirty && !!state.caseState?.meta?.accession);
   nodes.save.classList.toggle('is-dirty', state.dirty);
   nodes.save.classList.toggle('is-saved', !state.dirty && !!d?.savedAt);
@@ -2204,25 +2208,52 @@ async function ensureSignedIn(interactive = true, action = 'signin') {
   return t;
 }
 
-async function doSave() {
-  if (state.saving) return;
+/**
+ * Save the case to Drive. Resolves true once it is there, false when it was not saved (no accession,
+ * identifiers declined, sign-in or Drive failed). `action` names what a Google sign-in round trip
+ * resumes on the way back (see boot); `quiet` leaves the toast to the caller.
+ */
+async function doSave({ action = 'save', quiet = false } = {}) {
+  if (state.saving) return false;
   const meta = state.caseState.meta;
-  if (!normaliseAccession(meta.accession)) { nodes.meta.accession.focus(); return toast('Enter an accession number first'); }
+  if (!normaliseAccession(meta.accession)) { nodes.meta.accession.focus(); toast('Enter an accession number first'); return false; }
   const warnings = phiWarnings({ Specimen: meta.specimen, 'Clinical history': meta.clinical, Macroscopic: meta.macro, 'Block key': meta.blockKey, Report: state.lastOut?.report });
-  if (warnings.length && !window.confirm(`Possible patient identifiers:\n\n${warnings.join('\n')}\n\nOnly accession numbers and report text should go to Drive. Save anyway?`)) return;
+  if (warnings.length && !window.confirm(`Possible patient identifiers:\n\n${warnings.join('\n')}\n\nOnly accession numbers and report text should go to Drive. Save anyway?`)) return false;
   try {
     state.saving = true; renderSaveStatus();
     cacheCase(state.caseState); // survives the Google round trip if sign-in is needed
-    await ensureSignedIn(true, 'save');
+    await ensureSignedIn(true, action);
     await driveSave(state.config, state.caseState, state.lastOut);
     state.dirty = false;
     cacheCase(state.caseState);
-    toast(`Saved ${normaliseAccession(meta.accession)} to Drive`);
+    if (!quiet) toast(`Saved ${normaliseAccession(meta.accession)} to Drive`);
+    return true;
   } catch (err) {
     toast(err.message || 'Save failed');
+    return false;
   } finally {
     state.saving = false; renderSaveStatus();
   }
+}
+
+/** A blank case of the current template, as New and Save & new start it; the tab's draft is dropped. */
+function startNewCase() {
+  clearCase();
+  return newCase(state.caseState.schemaId);
+}
+
+/**
+ * Save & new (user request 2026-10-10): save the case to Drive, then start a new case as New does.
+ * The new case starts only once the save has gone through, so a refused or failed save leaves the
+ * case on screen; a case already in Drive and unchanged since is not written again.
+ */
+async function saveAndNew() {
+  if (state.saving) return;
+  const accession = normaliseAccession(state.caseState.meta?.accession);
+  const inDrive = !state.dirty && !!state.caseState.drive?.savedAt;
+  if (!inDrive && !(await doSave({ action: 'savenew', quiet: true }))) return;
+  await startNewCase();
+  toast(inDrive ? `${accession} is already in Drive. New case started` : `Saved ${accession} to Drive. New case started`);
 }
 
 function renderCaseList(filter = '') {
@@ -2313,7 +2344,8 @@ function initDrive() {
     const n = normaliseAccession(e.target.value);
     if (n !== e.target.value) { e.target.value = n; state.caseState.meta.accession = n; cacheCase(state.caseState); }
   });
-  nodes.save.addEventListener('click', doSave);
+  nodes.save.addEventListener('click', () => doSave());
+  nodes.saveNew.addEventListener('click', saveAndNew);
   nodes.open.addEventListener('click', doOpen);
   nodes.openSearch.addEventListener('input', (e) => renderCaseList(e.target.value));
   nodes.google.addEventListener('click', async () => {
@@ -2422,6 +2454,7 @@ async function boot() {
   else if (droppedDraft) toast('New case: the draft left on this tab was not saved under this account');
   else if (back?.token) {
     if (back.action === 'save') { state.dirty = true; queueMicrotask(doSave); }
+    else if (back.action === 'savenew') { state.dirty = true; queueMicrotask(saveAndNew); }
     else if (back.action === 'open') queueMicrotask(doOpen);
     else toast('Signed in');
   }
@@ -2430,7 +2463,7 @@ async function boot() {
   nodes.example.addEventListener('click', loadExample);
   nodes.newCase.addEventListener('click', () => {
     if (state.dirty && !window.confirm('Discard unsaved changes to this case?')) return;
-    clearCase(); newCase(state.caseState.schemaId).then(() => toast('New case'));
+    startNewCase().then(() => toast('New case'));
   });
   nodes.copyDx.addEventListener('click', () => doCopy(state.lastOut.diagnosis, 'Diagnosis'));
   nodes.copyReport.addEventListener('click', () => doCopy(state.lastOut.report, 'Full report'));

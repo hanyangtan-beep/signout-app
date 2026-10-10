@@ -21,6 +21,14 @@ Small systems are merged per row (`ROW_MERGE` in `src/picker.js`): top — Renal
 
 Fit: both rows and the action buttons sit on two lines at ≥ 1360 px; below that the actions wrap under the rows. On phones (≤ 960 px) the menu is fixed and full-width.
 
+## Save & new (2026-10-10, Phase 65)
+
+User request: a top-bar button to save and start a new case. **Save & new** sits after Save. It saves exactly as Save does (accession required, identifier warning, Google sign-in, Doc and Sheet row), then starts a blank case of the same template, as New does. The new case starts only once the save has gone through, so a refused or failed save leaves the case on screen with the error toast. A case already in Drive and unchanged since is not written again ("… is already in Drive. New case started"). A Google sign-in started by Save & new resumes it on the way back (`state` action `savenew`).
+
+Fit: at 860 px and below the button would add a row to the bar (measured at 740–820 px), so it moves into the Case menu (class `narrow-only`). Above that, with a saved case, the header height is unchanged at every width measured (390–1920 px, both sides of the switch). On the biopsy side at 1600 px and wider, a blank case's actions now sit on a second line, where a saved case's already did. In compact (≤ 700 px) the Case menu opens rightwards from its button; right-aligned, it had opened off the left of the screen.
+
+QA: `top bar: Save & new …` in `tools/qa-browser.js` serves the app at http://localhost:3000 with a planted token and stubbed Google APIs. It checks the no-accession, failed-save, saved-then-new, unchanged and sign-in-return paths, and the Case-menu entry at 820 and 390 px.
+
 ## Placeholders — `templates/planned.json`
 
 One entry per template still to build: `id, name, label, system, kind, roadmap` (roadmap section holding the card). `rowGroups()` appends them after the built items of their system; `standalonePlanned()` returns those outside both rows (today only **Autopsy**, kind `autopsy`, its own header button next to the top row). Clicking a placeholder calls `switchTemplate('generic')` and writes the intended template name into `specimenName`, with a toast naming the roadmap section. The card that builds a template removes its entry; `tests/picker.test.js` fails if a planned id is already in the manifest.

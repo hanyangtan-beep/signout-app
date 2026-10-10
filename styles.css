@@ -189,6 +189,7 @@ kbd { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; b
 .casemenu[hidden] { display: none; }
 .casemenu .menu-item { border: 0; background: transparent; text-align: left; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); font-size: var(--text-sm); color: var(--color-text); cursor: pointer; }
 .casemenu .menu-item:hover { background: var(--color-surface-2); }
+.casemenu .menu-item.narrow-only { display: none; } /* Save & new: in the bar, except where it would add a row */
 /* Save carries its own state: a dot for unsaved edits, "Saved" once Drive is in step */
 .save-btn { display: inline-flex; align-items: center; gap: 7px; }
 .save-btn .save-dot { width: 7px; height: 7px; border-radius: 50%; background: transparent; flex: none; }
@@ -488,6 +489,10 @@ textarea.input { min-height: 64px; resize: vertical; }
 @media (max-width: 1450px) {            /* save state to its dot alone */
   .ci-save > span:last-child { display: none; }
   .templates.systems > button, .sys > button { padding: 6px 6px; }
+}
+@media (max-width: 860px) {             /* Save & new would add a row (measured 740-820 px), so it moves into the Case menu */
+  .topbar-actions .save-new-btn { display: none; }
+  .casemenu .menu-item.narrow-only { display: block; }
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
@@ -1120,6 +1125,9 @@ html[data-gate] body > *:not(#gate):not(#toast):not(#dlg-settings) { display: no
   .topbar-right { margin-left: 0; width: 100%; gap: var(--space-2); }
   .topbar-actions { flex: 1 1 auto; }
   .topbar-actions .save-btn { margin-right: auto; }
+  /* Case sits at the left edge of row two here, so its menu opens rightwards; right-aligned, as on a
+     desktop, it opened off the left of the screen (found 2026-10-10 with Save & new). */
+  .casemenu { left: 0; right: auto; }
   .brand h1 { font-size: var(--text-base); }
   .topbar-actions .btn, .topbar-actions .icon-btn { min-height: 44px; height: 44px; }
   .topbar-actions .icon-btn { width: 44px; }
