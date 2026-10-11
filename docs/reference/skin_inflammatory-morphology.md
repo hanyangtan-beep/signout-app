@@ -833,3 +833,71 @@ The original paper (Lerner et al., Transplant Proc 1974;6:367–371) was not ava
 | p53 panel for differentiated VIN in LS | n.a. (outside scope) | [JDDG 2026](https://pmc.ncbi.nlm.nih.gov/articles/PMC13059072/) |
 
 
+
+## 23. Gallery images (Phase 69, 12 October 2026)
+
+Eight galleries open from "Compare photos": reaction patterns, blister level, granuloma types, panniculitis, vessels involved, direct immunofluorescence, the NIH 2014 categories and the Lerner grade. Only CC0, CC BY and CC BY-SA images are used. Figures under NC or ND licences, clinical photographs, low-resolution figures and photographs with a circular eyepiece vignette were excluded. Figures taken straight from journal articles were used only after the article licence was checked in Europe PMC; journal figures hosted on Wikimedia Commons are credited to their authors and journal. Each photo is a re-encoded JPEG of at most 900 px in `assets/reference/skin_inflammatory/`; its caption, credit, licence and source show under the photo in the app.
+
+- The Lerner photographs come from a human skin explant assay graded on the same scale (Ghimire et al., Front Immunol 2017), not from patient biopsies; their captions and the panel note say so.
+- The Yao et al. figure is tagged CC BY 2.5 on Commons; the licence of the article itself (CC BY 2.0) is recorded.
+- The van Beek et al. article states "CC BY" without a version, which is recorded as given.
+- Text-only groups, each named in the panel note: no significant abnormality, septal and lobular panniculitis, IgM-positive cytoid bodies and the chronic GVHD patterns.
+
+| File | Gallery and group | Credit | Licence | Source |
+| --- | --- | --- | --- | --- |
+| `spongiotic_subacute.jpg` | Reaction patterns: Spongiotic | Yao et al., Arthritis Res Ther 2011, via Wikimedia Commons, full figure | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Micrograph_of_subacute_spongiotic_dermatitis.jpg |
+| `spongiotic_mild.jpg` | Reaction patterns: Spongiotic | Nephron, Wikimedia Commons (cropped) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Spongiotic_dermatitis_-_high_mag.jpg |
+| `psoriasis_regular.jpg` | Reaction patterns: Psoriasiform | Giang et al., Front Immunol 2018, via Wikimedia Commons, panel A (cropped) | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:Micrograph_of_psoriasis_vulgaris.jpg |
+| `lsc_irregular.jpg` | Reaction patterns: Psoriasiform | Nephron, Wikimedia Commons, full figure | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Lichen_simplex_chronicus_-_low_mag.jpg |
+| `vacuolar_interface.jpg` | Reaction patterns: Interface (vacuolar) | Heldt Manica and Cohen, Cureus 2017, via Wikimedia Commons, full figure | CC BY 3.0 | https://commons.wikimedia.org/wiki/File:Micrograph_of_vacuolar_interface_dermatitis.jpg |
+| `confluent_necrosis.jpg` | Reaction patterns: Interface (vacuolar) | Nephron, Wikimedia Commons, full figure | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Confluent_epidermal_necrosis_-_intermed_mag.jpg |
+| `lichen_planus_band.jpg` | Reaction patterns: Interface (lichenoid) | Nephron, Wikimedia Commons, full figure | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Lichen_planus_intermed_mag.jpg |
+| `civatte_body.jpg` | Reaction patterns: Interface (lichenoid) | Kaira et al., Ann Pathol Lab Med 2019, via Wikimedia Commons, full figure | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:Civatte_body.jpg |
+| `eac_coat_sleeve.jpg` | Reaction patterns: Perivascular | Mandel et al., J Med Case Rep 2015, via Wikimedia Commons, panel a (cropped) | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:Micrograph_of_erythema_annulare_centrifugum.jpg |
+| `arthropod_wedge.jpg` | Reaction patterns: Perivascular | Nephron, Wikimedia Commons, full figure | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Dermal_perivascular_lymphoeosinophilic_infiltrate_-_low_mag.jpg |
+| `urticaria.jpg` | Reaction patterns: Perivascular | Giang et al., Front Immunol 2018, via Wikimedia Commons, panel B (cropped) | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:Micrograph_of_urticaria.jpg |
+| `lcv_intermediate.jpg` | Reaction patterns: Vasculitis | Nephron, Wikimedia Commons, full figure | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Leukocytoclastic_vasculitis_--_intermed_mag.jpg |
+| `lcv_high.jpg` | Reaction patterns: Vasculitis; Vessels involved: Superficial dermal small vessels | Nephron, Wikimedia Commons, full figure | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Leukocytoclastic_vasculitis_--_high_mag.jpg |
+| `bp_subepidermal.jpg` | Reaction patterns: Vesiculobullous; Blister level: Subepidermal | Sarahkayb, Wikimedia Commons, full figure | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Skin_Pemphigoid_Medium_Magnification.jpg |
+| `pv_suprabasal.jpg` | Reaction patterns: Vesiculobullous; Blister level: Suprabasal | Nephron, Wikimedia Commons, full figure | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Pemphigus_vulgaris_-_intermed_mag.jpg |
+| `sarcoidal.jpg` | Reaction patterns: Granulomatous; Granuloma types: Sarcoidal | Jensflorian, Wikimedia Commons, full figure | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Sarcoidosis_histology_skin_involvement.jpg |
+| `ga_palisading.jpg` | Reaction patterns: Granulomatous; Granuloma types: Palisading | Nephron, Wikimedia Commons, full figure | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Granuloma_annulare_-_add_-_intermed_mag.jpg |
+| `en_septal.jpg` | Reaction patterns: Panniculitis; Panniculitis: Septal | Wagle et al., Clin Case Rep 2025, Fig 4, full figure | CC BY 4.0 | https://pmc.ncbi.nlm.nih.gov/articles/PMC12129819/ |
+| `pancreatic_lobular.jpg` | Reaction patterns: Panniculitis; Panniculitis: Lobular | Assis and Gomes, Cureus 2025, Fig 4, full figure | CC BY 4.0 | https://pmc.ncbi.nlm.nih.gov/articles/PMC12162400/ |
+| `morphoea.jpg` | Reaction patterns: Sclerosing | Nephron, Wikimedia Commons, full figure | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Morphea_--_low_mag.jpg |
+| `lichen_sclerosus.jpg` | Reaction patterns: Sclerosing | Nephron, Wikimedia Commons, full figure | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Lichen_sclerosus_-_intermed_mag.jpg |
+| `demodex.jpg` | Reaction patterns: Folliculitis | Patho, Wikimedia Commons, full figure | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Demodex,_HE_1.JPG |
+| `granulomatous_folliculitis.jpg` | Reaction patterns: Folliculitis | Mikael Häggström, Wikimedia Commons, full figure | CC0 1.0 | https://commons.wikimedia.org/wiki/File:Histopathology_of_granulomatous_folliculitis.jpg |
+| `sweet_neutrophils.jpg` | Reaction patterns: Neutrophilic dermatosis | Mustafa and Lavizzo, J Med Case Rep 2008, via Wikimedia Commons, full figure | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Sweet%27s_syndrome_pathology.jpg |
+| `sweet_oedema.jpg` | Reaction patterns: Neutrophilic dermatosis | Ed Uthman, Wikimedia Commons, full figure | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Sweet_Syndrome_(neutrophilic_dermatosis)_(4703669338).jpg |
+| `gvhd_satellitosis_1.jpg` | Reaction patterns: Graft-versus-host disease; NIH 2014 categories: Categories | Mark Ong, Wikimedia Commons, full figure | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Skin_graft_versus_host_disease_high_mag_1.jpg |
+| `lad_neutrophils.jpg` | Blister level: Subepidermal | Saleem and Iftikhar, Cureus 2019, via Wikimedia Commons, full figure | CC BY 3.0 | https://commons.wikimedia.org/wiki/File:Micrograph_of_linear_IgA_bullous_dermatosis.jpg |
+| `pg_subepidermal.jpg` | Blister level: Subepidermal | Nephron, Wikimedia Commons, full figure | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Pemphigoid_gestationis_-_intermed_mag.jpg |
+| `pv_tombstones.jpg` | Blister level: Suprabasal | Nephron, Wikimedia Commons, full figure | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Pemphigus_vulgaris_-_high_mag.jpg |
+| `hsv_intraepidermal.jpg` | Blister level: Intraepidermal | Goswami et al., Acta Med Litu 2025, Fig 4A-B (cropped) | CC BY 4.0 | https://pmc.ncbi.nlm.nih.gov/articles/PMC12875543/ |
+| `pf_subcorneal.jpg` | Blister level: Subcorneal | Ahmad et al., Cureus 2024, Fig 2, full figure | CC BY 4.0 | https://pmc.ncbi.nlm.nih.gov/articles/PMC11681950/ |
+| `nl_layered.jpg` | Granuloma types: Palisading | Nephron, Wikimedia Commons, full figure | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Necrobiosis_lipoidica_-_low_mag.jpg |
+| `ga_interstitial.jpg` | Granuloma types: Interstitial | Nephron, Wikimedia Commons (cropped) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Granuloma_annulare_-_intermed_mag.jpg |
+| `bt_leprosy_gland.jpg` | Granuloma types: Tuberculoid | SB Lucas, Wellcome Collection, via Wikimedia Commons, full figure | CC0 1.0 | https://commons.wikimedia.org/wiki/File:Leprosy_borderline_tuberculoid_leprosy_skin_Wellcome_W0043378.jpg |
+| `bt_leprosy_low.jpg` | Granuloma types: Tuberculoid | Department of Pathology, Calicut Medical College, Wikimedia Commons, full figure | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Leprosy_-_Borderline_Tuberculoid_(BT)_-_1.jpg |
+| `chromo_sclerotic.jpg` | Granuloma types: Suppurative | Department of Pathology, Calicut Medical College, Wikimedia Commons, full figure | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Chromoblastomycosis_40x.jpg |
+| `chromo_abscess.jpg` | Granuloma types: Suppurative | Department of Pathology, Calicut Medical College, Wikimedia Commons, full figure | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Chromoblastomycosis_10x.jpg |
+| `hair_granuloma.jpg` | Granuloma types: Foreign body | Atlas of Medical Foreign Bodies, Wikimedia Commons, full figure | CC BY-SA 2.0 | https://commons.wikimedia.org/wiki/File:Hair_granuloma_-_Skin_(49619556247).jpg |
+| `ruptured_cyst.jpg` | Granuloma types: Foreign body | Mikael Häggström, Wikimedia Commons, full figure | CC0 1.0 | https://commons.wikimedia.org/wiki/File:Histopathology_of_granulomatous_inflammation_by_a_ruptured_inclusion_cyst.jpg |
+| `en_miescher.jpg` | Panniculitis: Septal | Wagle et al., Clin Case Rep 2025, Fig 3, full figure | CC BY 4.0 | https://pmc.ncbi.nlm.nih.gov/articles/PMC12129819/ |
+| `csvv.jpg` | Vessels involved: Superficial dermal small vessels | Giang et al., Front Immunol 2018, via Wikimedia Commons, full figure | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:Micrograph_of_cutaneous_small-vessel_vasculitis.jpg |
+| `lcv_low.jpg` | Vessels involved: Superficial and deep dermal small vessels | Nephron, Wikimedia Commons, full figure | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Leukocytoclastic_vasculitis_--_low_mag.jpg |
+| `pan_medium.jpg` | Vessels involved: Medium-sized vessels at the dermal-subcutaneous junction | Berardi et al., Medicine (Baltimore) 2023, via Wikimedia Commons, full figure | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:Cutaneous_polyarteritis_nodosa_histopathology.jpg |
+| `calciphylaxis.jpg` | Vessels involved: Small vessels in the subcutis | Čular et al., Curr Oncol 2026, Fig 3 (cropped) | CC BY 4.0 | https://pmc.ncbi.nlm.nih.gov/articles/PMC13298184/ |
+| `dif_serration.jpg` | Direct immunofluorescence: Linear IgG and C3 along the basement membrane zone | Witte et al., Front Med (Lausanne) 2018, Fig 3, full figure | CC BY 4.0 | https://pmc.ncbi.nlm.nih.gov/articles/PMC6224342/ |
+| `dif_linear_iga.jpg` | Direct immunofluorescence: Linear IgA along the basement membrane zone | Khalid et al., Cureus 2026, Fig 4, full figure | CC BY 4.0 | https://pmc.ncbi.nlm.nih.gov/articles/PMC12900970/ |
+| `dif_pemphigus_vulgaris.jpg` | Direct immunofluorescence: Intercellular IgG and C3 in the epidermis | Emmanuelm, Wikimedia Commons, full figure | CC BY 3.0 | https://commons.wikimedia.org/wiki/File:Pemphigus_immunofluorescence.jpg |
+| `dif_pemphigus_foliaceus.jpg` | Direct immunofluorescence: Intercellular IgG and C3 in the epidermis | Ahmad et al., Cureus 2024, Fig 3A (cropped) | CC BY 4.0 | https://pmc.ncbi.nlm.nih.gov/articles/PMC11681950/ |
+| `dif_dh_granular_iga.jpg` | Direct immunofluorescence: Granular IgA in the dermal papillae | van Beek et al., Front Immunol 2024, Fig 5A (cropped) | CC BY | https://pmc.ncbi.nlm.nih.gov/articles/PMC11187241/ |
+| `dif_iga_vasculitis.jpg` | Direct immunofluorescence: Perivascular IgA and C3 in superficial dermal vessels | Emmanuelm, Wikimedia Commons, full figure | CC BY 3.0 | https://commons.wikimedia.org/wiki/File:HSP_IF_IgA.jpg |
+| `dif_lupus_band.jpg` | Direct immunofluorescence: Granular IgG, IgM and C3 along the basement membrane zone | Emmanuelm, Wikimedia Commons, full figure | CC BY 3.0 | https://commons.wikimedia.org/wiki/File:Lupus_band_test.jpg |
+| `gvhd_satellitosis_2.jpg` | NIH 2014 categories: Categories | Mark Ong, Wikimedia Commons, full figure | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Skin_graft_versus_host_disease_high_mag_2.jpg |
+| `lerner_explant_1.jpg` | Lerner grade (acute GVHD): I | Ghimire et al., Front Immunol 2017, via Wikimedia Commons, grade I panel (cropped) | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:Micrographs_of_grades_of_skin_graft-versus-host-disease.jpg |
+| `lerner_explant_2.jpg` | Lerner grade (acute GVHD): II | Ghimire et al., Front Immunol 2017, via Wikimedia Commons, grade II panel (cropped) | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:Micrographs_of_grades_of_skin_graft-versus-host-disease.jpg |
+| `lerner_explant_3.jpg` | Lerner grade (acute GVHD): III | Ghimire et al., Front Immunol 2017, via Wikimedia Commons, grade III panel (cropped) | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:Micrographs_of_grades_of_skin_graft-versus-host-disease.jpg |
+| `lerner_explant_4.jpg` | Lerner grade (acute GVHD): IV | Ghimire et al., Front Immunol 2017, via Wikimedia Commons, grade IV panel (cropped) | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:Micrographs_of_grades_of_skin_graft-versus-host-disease.jpg |

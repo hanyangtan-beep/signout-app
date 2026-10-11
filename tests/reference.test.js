@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadAll } from '../src/registry.js';
@@ -92,5 +92,39 @@ test('every prostate gallery image is under 150 kB', () => {
         assert.ok(statSync(path.join(root, im.src)).size <= 150 * 1024, `${im.src} is at most 150 kB`);
       }
     }
+  }
+});
+
+// Phase 69 (pulled by the user 2026-10-12): the Dermatoses form illustrates its pattern, blister, granuloma,
+// panniculitis, vessel, immunofluorescence and GVHD fields; a group without an open image says so in the note.
+test('dermatoses carry illustrated galleries on the pattern, blister, granuloma, panniculitis, vessel, DIF and GVHD fields', () => {
+  const schema = registry.skin_inflammatory.schema;
+  const fields = new Map(schema.fields.map((f) => [f.id, f]));
+  const dir = 'assets/reference/skin_inflammatory/';
+  let total = 0;
+  const files = new Set();
+  for (const id of ['pattern', 'blisterLevel', 'granulomaType', 'compartment', 'vessels', 'difPattern', 'nih', 'lerner']) {
+    const f = fields.get(id);
+    assert.ok(f && f.reference, `${id} has a reference gallery`);
+    if (id !== 'nih') for (const g of f.reference.groups) assert.ok(f.options.includes(g.heading), `${id}: ${g.heading} is one of the options`);
+    const withImages = f.reference.groups.filter((g) => (g.images || []).length > 0);
+    assert.ok(withImages.length >= (id === 'nih' ? 1 : 2), `${id} has illustrated groups`);
+    if (withImages.length < f.reference.groups.length) assert.match(f.reference.note || '', /^Room for your own photographs/, `${id} names its text-only groups in the note`);
+    for (const g of f.reference.groups) {
+      for (const im of g.images || []) {
+        assert.ok(im.src.startsWith(dir) && existsSync(path.join(root, im.src)), `${im.src} exists under ${dir}`);
+        assert.ok(im.caption && im.credit, `${im.src} has a caption and credit`);
+        assert.match(im.license, /^CC(0| BY| BY-SA)/, `${im.src} is CC BY / CC BY-SA / CC0`);
+        assert.ok(!/NC|ND/.test(im.license), `${im.src} is not NC/ND`);
+        assert.match(im.url, /^https:\/\//, `${im.src} carries a source url`);
+        total += 1;
+        files.add(im.src.slice(dir.length));
+      }
+    }
+  }
+  assert.ok(total >= 60, `dermatoses galleries hold ${total} images`);
+  assert.deepEqual([...files].sort(), readdirSync(path.join(root, dir)).sort(), 'every file in the folder is used and nothing else');
+  for (const g of fields.get('lerner').reference.groups) {
+    for (const im of g.images) assert.match(im.caption, /skin explant assay/, `${im.src} says it is from the skin explant assay`);
   }
 });

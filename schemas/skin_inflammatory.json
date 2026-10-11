@@ -309,28 +309,300 @@
         "intro": "Choose the dominant pattern at scanning power; the diagnosis list and the features follow it.",
         "groups": [
           {
-            "heading": "Epidermal and junctional",
+            "heading": "Spongiotic",
             "points": [
-              "Spongiotic: intercellular oedema in the epidermis, from slight widening of the spaces to vesicles",
-              "Psoriasiform: elongated rete ridges, regular (psoriasis) or irregular (lichen simplex chronicus)",
-              "Interface (vacuolar): vacuoles and apoptotic keratinocytes along the basal layer with a sparse infiltrate",
-              "Interface (lichenoid): a band of lymphocytes in the papillary dermis that obscures the junction"
+              "Intercellular oedema in the epidermis, from slight widening of the spaces to vesicles"
             ],
-            "images": []
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/spongiotic_subacute.jpg",
+                "caption": "Subacute spongiotic dermatitis: spongiosis and acanthosis with a superficial perivascular lymphocytic infiltrate (H&E).",
+                "credit": "Yao et al., Arthritis Res Ther 2011, via Wikimedia Commons, full figure",
+                "license": "CC BY 2.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_subacute_spongiotic_dermatitis.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/spongiotic_mild.jpg",
+                "caption": "Mild spongiotic dermatitis: widened intercellular spaces in the lower epidermis (H&E).",
+                "credit": "Nephron, Wikimedia Commons (cropped)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Spongiotic_dermatitis_-_high_mag.jpg"
+              }
+            ]
           },
           {
-            "heading": "Dermal and subcutaneous",
+            "heading": "Psoriasiform",
             "points": [
-              "Perivascular: lymphocytes around superficial, or superficial and deep, vessels with little epidermal change",
-              "Vasculitis: inflammatory cells in vessel walls with fibrinoid necrosis; leukocytoclasia and red cells in small-vessel disease",
-              "Vesiculobullous: the level of the split and the cells in the blister; direct immunofluorescence classifies the autoimmune diseases",
-              "Granulomatous: sarcoidal, palisading, interstitial, tuberculoid, suppurative or foreign body",
-              "Panniculitis: septal or lobular, with or without vasculitis",
-              "Sclerosing: thickened dermal collagen and loss of periadnexal fat, or a homogenised papillary dermis"
+              "Elongated rete ridges, regular (psoriasis) or irregular (lichen simplex chronicus)"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/psoriasis_regular.jpg",
+                "caption": "Psoriasis: regular psoriasiform hyperplasia (EH) with confluent parakeratosis and neutrophils in the scale (arrow) (H&E).",
+                "credit": "Giang et al., Front Immunol 2018, via Wikimedia Commons, panel A (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_psoriasis_vulgaris.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/lsc_irregular.jpg",
+                "caption": "Lichen simplex chronicus: irregular psoriasiform hyperplasia with hyperkeratosis (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Lichen_simplex_chronicus_-_low_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Interface (vacuolar)",
+            "points": [
+              "Vacuoles and apoptotic keratinocytes along the basal layer with a sparse infiltrate"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/vacuolar_interface.jpg",
+                "caption": "Vacuolar interface dermatitis: vacuolar alteration of the basal layer (arrows) with lymphocytes at the junction between the epidermis (star) and the dermis (circle) (H&E).",
+                "credit": "Heldt Manica and Cohen, Cureus 2017, via Wikimedia Commons, full figure",
+                "license": "CC BY 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_vacuolar_interface_dermatitis.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/confluent_necrosis.jpg",
+                "caption": "Confluent epidermal necrosis lifting off the dermis, as in erythema multiforme, Stevens-Johnson syndrome and toxic epidermal necrolysis (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Confluent_epidermal_necrosis_-_intermed_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Interface (lichenoid)",
+            "points": [
+              "A band of lymphocytes in the papillary dermis that obscures the junction"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/lichen_planus_band.jpg",
+                "caption": "Lichen planus: a band of lymphocytes along the junction with loss of basal cells (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Lichen_planus_intermed_mag.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/civatte_body.jpg",
+                "caption": "A Civatte body (arrow): an apoptotic keratinocyte at the junction in interface dermatitis (H&E).",
+                "credit": "Kaira et al., Ann Pathol Lab Med 2019, via Wikimedia Commons, full figure",
+                "license": "CC BY 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Civatte_body.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Perivascular",
+            "points": [
+              "Lymphocytes around superficial, or superficial and deep, vessels with little epidermal change"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/eac_coat_sleeve.jpg",
+                "caption": "Erythema annulare centrifugum: a tight superficial perivascular lymphohistiocytic infiltrate with papillary dermal oedema and focal spongiosis (H&E).",
+                "credit": "Mandel et al., J Med Case Rep 2015, via Wikimedia Commons, panel a (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_erythema_annulare_centrifugum.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/arthropod_wedge.jpg",
+                "caption": "A wedge-shaped superficial and deep perivascular infiltrate of lymphocytes and eosinophils, as after an insect bite (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Dermal_perivascular_lymphoeosinophilic_infiltrate_-_low_mag.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/urticaria.jpg",
+                "caption": "Urticaria: dermal oedema (solid arrow) and a sparse perivascular and interstitial infiltrate with eosinophils (dashed arrow), without vasculitis (H&E).",
+                "credit": "Giang et al., Front Immunol 2018, via Wikimedia Commons, panel B (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_urticaria.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Vasculitis",
+            "points": [
+              "Inflammatory cells in vessel walls with fibrinoid necrosis; leukocytoclasia and red cells in small-vessel disease"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/lcv_intermediate.jpg",
+                "caption": "Leukocytoclastic vasculitis: neutrophils, nuclear dust and fibrin around small dermal vessels (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Leukocytoclastic_vasculitis_--_intermed_mag.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/lcv_high.jpg",
+                "caption": "Leukocytoclastic vasculitis at high power: fibrinoid change of a small vessel wall with neutrophils and nuclear dust (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Leukocytoclastic_vasculitis_--_high_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Vesiculobullous",
+            "points": [
+              "The level of the split and the cells in the blister; direct immunofluorescence classifies the autoimmune diseases"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/bp_subepidermal.jpg",
+                "caption": "Bullous pemphigoid, confirmed by immunofluorescence: a subepidermal blister with eosinophils in the cavity and the dermis (H&E).",
+                "credit": "Sarahkayb, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Skin_Pemphigoid_Medium_Magnification.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/pv_suprabasal.jpg",
+                "caption": "Pemphigus vulgaris: a suprabasal acantholytic blister with dermal papillae still lined by basal cells (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Pemphigus_vulgaris_-_intermed_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Granulomatous",
+            "points": [
+              "Sarcoidal, palisading, interstitial, tuberculoid, suppurative or foreign body"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/sarcoidal.jpg",
+                "caption": "Sarcoidosis: discrete epithelioid granulomas with few lymphocytes in the dermis and subcutis (H&E).",
+                "credit": "Jensflorian, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Sarcoidosis_histology_skin_involvement.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/ga_palisading.jpg",
+                "caption": "Granuloma annulare: histiocytes in a loose palisade around pale altered collagen in the mid dermis (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Granuloma_annulare_-_add_-_intermed_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Panniculitis",
+            "points": [
+              "Septal or lobular, with or without vasculitis"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/en_septal.jpg",
+                "caption": "Erythema nodosum: panniculitis (white arrow) with histiocytic infiltrates (yellow arrow) (H&E).",
+                "credit": "Wagle et al., Clin Case Rep 2025, Fig 4, full figure",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12129819/"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/pancreatic_lobular.jpg",
+                "caption": "Pancreatic panniculitis: lobular fat necrosis with ghost adipocytes (H&E).",
+                "credit": "Assis and Gomes, Cureus 2025, Fig 4, full figure",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12162400/"
+              }
+            ]
+          },
+          {
+            "heading": "Sclerosing",
+            "points": [
+              "Thickened dermal collagen and loss of periadnexal fat, or a homogenised papillary dermis"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/morphoea.jpg",
+                "caption": "Morphoea: thickened, closely packed collagen bundles through the dermis, with a squared-off outline (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Morphea_--_low_mag.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/lichen_sclerosus.jpg",
+                "caption": "Lichen sclerosus: a pale, homogenised papillary dermis with follicular plugging (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Lichen_sclerosus_-_intermed_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Folliculitis",
+            "points": [
+              "Inflammation of the follicle: neutrophils in acute and infective folliculitis, granulomas around a ruptured follicle; look for yeasts, fungi and Demodex"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/demodex.jpg",
+                "caption": "Demodex mites in a dilated follicular infundibulum (H&E).",
+                "credit": "Patho, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Demodex,_HE_1.JPG"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/granulomatous_folliculitis.jpg",
+                "caption": "Granulomatous folliculitis: multinucleated giant cells around a hair (H&E).",
+                "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+                "license": "CC0 1.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_granulomatous_folliculitis.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Neutrophilic dermatosis",
+            "points": [
+              "A dense dermal infiltrate of neutrophils without vasculitis, often with papillary dermal oedema: Sweet syndrome and pyoderma gangrenosum, once infection is excluded"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/sweet_neutrophils.jpg",
+                "caption": "Sweet syndrome: a dense dermal infiltrate of neutrophils without vasculitis (H&E).",
+                "credit": "Mustafa and Lavizzo, J Med Case Rep 2008, via Wikimedia Commons, full figure",
+                "license": "CC BY 2.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Sweet%27s_syndrome_pathology.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/sweet_oedema.jpg",
+                "caption": "Sweet syndrome at low power: a dense diffuse infiltrate through the upper dermis (H&E).",
+                "credit": "Ed Uthman, Wikimedia Commons, full figure",
+                "license": "CC BY 2.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Sweet_Syndrome_(neutrophilic_dermatosis)_(4703669338).jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Graft-versus-host disease",
+            "points": [
+              "Basal vacuolar change with apoptotic keratinocytes in the basal and lower spinous layers, often with adjacent lymphocytes (satellitosis)"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/gvhd_satellitosis_1.jpg",
+                "caption": "Acute GVHD: apoptotic keratinocytes in the epidermis with adjacent lymphocytes (satellitosis) (H&E).",
+                "credit": "Mark Ong, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Skin_graft_versus_host_disease_high_mag_1.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "No significant abnormality",
+            "points": [
+              "Before calling the skin normal, look again for subtle changes: fungal hyphae in the stratum corneum (PASD), sparse dermal neutrophils or eosinophils, amyloid in the dermal papillae and squared-off sclerosis"
             ],
             "images": []
           }
-        ]
+        ],
+        "note": "Room for your own photographs of normal skin: no openly licensed image of a normal biopsy taken for a rash was found."
       }
     },
     {
@@ -721,6 +993,84 @@
           "Cutaneous polyarteritis nodosa": "Medium-sized vessels at the dermal-subcutaneous junction",
           "Calciphylaxis": "Small vessels in the subcutis"
         }
+      },
+      "reference": {
+        "title": "Vessels involved",
+        "intro": "The size and depth of the vessels separate small-vessel from medium-vessel disease; deep vessels need a biopsy that reaches the subcutis.",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "Superficial dermal small vessels",
+            "points": [
+              "Postcapillary venules of the superficial plexus",
+              "Leukocytoclastic, IgA and urticarial vasculitis; immunofluorescence on an early lesion identifies IgA vasculitis"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/lcv_high.jpg",
+                "caption": "Leukocytoclastic vasculitis at high power: fibrinoid change of a small vessel wall with neutrophils and nuclear dust (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Leukocytoclastic_vasculitis_--_high_mag.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/csvv.jpg",
+                "caption": "Cutaneous small-vessel vasculitis: a mixed infiltrate around superficial postcapillary venules with nuclear dust (dashed arrows) (H&E).",
+                "credit": "Giang et al., Front Immunol 2018, via Wikimedia Commons, full figure",
+                "license": "CC BY 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_cutaneous_small-vessel_vasculitis.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Superficial and deep dermal small vessels",
+            "points": [
+              "Small vessels of both plexuses",
+              "Deep involvement raises a systemic vasculitis: ANCA-associated, cryoglobulinaemic or connective tissue disease"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/lcv_low.jpg",
+                "caption": "Leukocytoclastic vasculitis at low power: perivascular infiltrates in the superficial and deep dermis (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Leukocytoclastic_vasculitis_--_low_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Medium-sized vessels at the dermal-subcutaneous junction",
+            "points": [
+              "Muscular arteries at the junction or in the subcutaneous septa",
+              "Fibrinoid necrosis and neutrophils in the wall, then thrombosis and fibrosis: cutaneous polyarteritis nodosa"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/pan_medium.jpg",
+                "caption": "Cutaneous polyarteritis nodosa at increasing magnification: ulceration, dermal oedema and fibrinoid necrosis of vessel walls with a mild perivascular infiltrate (H&E).",
+                "credit": "Berardi et al., Medicine (Baltimore) 2023, via Wikimedia Commons, full figure",
+                "license": "CC BY 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Cutaneous_polyarteritis_nodosa_histopathology.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Small vessels in the subcutis",
+            "points": [
+              "Calcium in the walls of small subcutaneous vessels with thrombi and fat necrosis: calciphylaxis; a von Kossa stain helps",
+              "Vasculitis with lobular panniculitis: erythema induratum (nodular vasculitis)"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/calciphylaxis.jpg",
+                "caption": "Calciphylaxis at scanning power: calcium deposits in the deep dermis and subcutis, including vessel walls (H&E, x10).",
+                "credit": "Čular et al., Curr Oncol 2026, Fig 3 (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13298184/"
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -774,6 +1124,103 @@
           "Pemphigus vulgaris": "Suprabasal",
           "Pemphigus foliaceus": "Subcorneal"
         }
+      },
+      "reference": {
+        "title": "Blister level",
+        "intro": "Judge the level at the edge of an early blister; an older subepidermal blister can re-epithelialise and look intraepidermal.",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "Subepidermal",
+            "points": [
+              "The whole epidermis forms the roof",
+              "Eosinophils: bullous pemphigoid, pemphigoid gestationis",
+              "Neutrophils: dermatitis herpetiformis, linear IgA disease, bullous lupus",
+              "Few cells: porphyria cutanea tarda, epidermolysis bullosa acquisita"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/bp_subepidermal.jpg",
+                "caption": "Bullous pemphigoid, confirmed by immunofluorescence: a subepidermal blister with eosinophils in the cavity and the dermis (H&E).",
+                "credit": "Sarahkayb, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Skin_Pemphigoid_Medium_Magnification.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/lad_neutrophils.jpg",
+                "caption": "Linear IgA disease: a subepidermal blister filled with neutrophils (arrow) (H&E).",
+                "credit": "Saleem and Iftikhar, Cureus 2019, via Wikimedia Commons, full figure",
+                "license": "CC BY 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_linear_IgA_bullous_dermatosis.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/pg_subepidermal.jpg",
+                "caption": "Pemphigoid gestationis: subepidermal separation with eosinophils (HPS stain).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Pemphigoid_gestationis_-_intermed_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Suprabasal",
+            "points": [
+              "A cleft just above the basal layer, with acantholytic cells in the cavity",
+              "The basal keratinocytes stay on the floor like a row of tombstones",
+              "Pemphigus vulgaris; focal suprabasal acantholysis in Darier, Hailey-Hailey and Grover disease"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/pv_tombstones.jpg",
+                "caption": "Pemphigus vulgaris: rounded acantholytic cells in the cavity above a row of basal keratinocytes (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Pemphigus_vulgaris_-_high_mag.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/pv_suprabasal.jpg",
+                "caption": "Pemphigus vulgaris: a suprabasal acantholytic blister with dermal papillae still lined by basal cells (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Pemphigus_vulgaris_-_intermed_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Intraepidermal",
+            "points": [
+              "A split within the spinous layer",
+              "Spongiotic vesicles: eczema, arthropod bites, eosinophilic spongiosis",
+              "Ballooning with multinucleated keratinocytes: herpes simplex and varicella-zoster virus"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/hsv_intraepidermal.jpg",
+                "caption": "Kaposi varicelliform eruption: an intraepidermal blister with acantholysis (top) and infected keratinocytes with multinucleation, chromatin margination and moulding (bottom) (H&E).",
+                "credit": "Goswami et al., Acta Med Litu 2025, Fig 4A-B (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12875543/"
+              }
+            ]
+          },
+          {
+            "heading": "Subcorneal",
+            "points": [
+              "A split beneath or within the stratum corneum or granular layer",
+              "Acantholytic cells: pemphigus foliaceus",
+              "Neutrophils: subcorneal pustular dermatosis, IgA pemphigus, acute generalised exanthematous pustulosis, impetigo"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/pf_subcorneal.jpg",
+                "caption": "Pemphigus foliaceus: a subcorneal split with acantholysis and neutrophils in the upper epidermis (H&E).",
+                "credit": "Ahmad et al., Cureus 2024, Fig 2, full figure",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11681950/"
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -847,6 +1294,136 @@
           "Granuloma annulare": "Palisading",
           "Necrobiosis lipoidica": "Palisading"
         }
+      },
+      "reference": {
+        "title": "Granuloma types",
+        "intro": "Name the type at scanning power; stains for organisms and polarised light sort the infective and foreign-body types.",
+        "groups": [
+          {
+            "heading": "Sarcoidal",
+            "points": [
+              "Discrete, rounded epithelioid granulomas with few lymphocytes",
+              "Sarcoidosis, once infection and foreign material are excluded"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/sarcoidal.jpg",
+                "caption": "Sarcoidosis: discrete epithelioid granulomas with few lymphocytes in the dermis and subcutis (H&E).",
+                "credit": "Jensflorian, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Sarcoidosis_histology_skin_involvement.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Palisading",
+            "points": [
+              "Histiocytes palisade around altered collagen",
+              "Mucin centrally: granuloma annulare; layered bands through the dermis with plasma cells: necrobiosis lipoidica; fibrin: rheumatoid nodule"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/ga_palisading.jpg",
+                "caption": "Granuloma annulare: histiocytes in a loose palisade around pale altered collagen in the mid dermis (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Granuloma_annulare_-_add_-_intermed_mag.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/nl_layered.jpg",
+                "caption": "Necrobiosis lipoidica: layered granulomatous inflammation through the full dermis (H&E).",
+                "credit": "Nephron, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Necrobiosis_lipoidica_-_low_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Interstitial",
+            "points": [
+              "Histiocytes scattered between collagen bundles, without a formed palisade",
+              "Interstitial granuloma annulare, interstitial granulomatous dermatitis and drug reaction"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/ga_interstitial.jpg",
+                "caption": "Granuloma annulare: histiocytes spread between collagen bundles of the mid and deep dermis (H&E).",
+                "credit": "Nephron, Wikimedia Commons (cropped)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Granuloma_annulare_-_intermed_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Tuberculoid",
+            "points": [
+              "Epithelioid granulomas with a cuff of lymphocytes, with or without caseous necrosis",
+              "Tuberculosis and tuberculoid leprosy (granulomas along nerves and adnexa); Ziehl-Neelsen and Fite stains"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/bt_leprosy_gland.jpg",
+                "caption": "Borderline tuberculoid leprosy: a granuloma with lymphocytes disrupting a sweat gland (H&E).",
+                "credit": "SB Lucas, Wellcome Collection, via Wikimedia Commons, full figure",
+                "license": "CC0 1.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Leprosy_borderline_tuberculoid_leprosy_skin_Wellcome_W0043378.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/bt_leprosy_low.jpg",
+                "caption": "Borderline tuberculoid leprosy: epithelioid granulomas in the dermis with fewer appendages (H&E).",
+                "credit": "Department of Pathology, Calicut Medical College, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Leprosy_-_Borderline_Tuberculoid_(BT)_-_1.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Suppurative",
+            "points": [
+              "Neutrophils or a microabscess in the centre of the granuloma",
+              "Deep fungal infection (chromoblastomycosis, sporotrichosis), atypical mycobacteria, a ruptured follicle or cyst; PASD, Grocott, Ziehl-Neelsen and culture"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/chromo_sclerotic.jpg",
+                "caption": "Chromoblastomycosis: brown sclerotic (Medlar) bodies in a granuloma with giant cells (H&E).",
+                "credit": "Department of Pathology, Calicut Medical College, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Chromoblastomycosis_40x.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/chromo_abscess.jpg",
+                "caption": "Chromoblastomycosis: epidermal hyperplasia over dermal collections of acute inflammatory cells around sclerotic bodies (H&E).",
+                "credit": "Department of Pathology, Calicut Medical College, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Chromoblastomycosis_10x.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Foreign body",
+            "points": [
+              "Foreign-body giant cells, often with the material inside them",
+              "Exogenous material (suture, splinters, tattoo pigment; polarise) or endogenous material (keratin and hair from a ruptured follicle or cyst)"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/hair_granuloma.jpg",
+                "caption": "Hair in the dermis, in longitudinal and cross section, with a foreign-body granulomatous reaction (H&E).",
+                "credit": "Atlas of Medical Foreign Bodies, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 2.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Hair_granuloma_-_Skin_(49619556247).jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/ruptured_cyst.jpg",
+                "caption": "Ruptured inclusion cyst: multinucleated giant cells around keratin flakes (H&E).",
+                "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+                "license": "CC0 1.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_granulomatous_inflammation_by_a_ruptured_inclusion_cyst.jpg"
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -891,6 +1468,61 @@
           "Lupus panniculitis": "Lobular",
           "Lipodermatosclerosis": "Septal and lobular"
         }
+      },
+      "reference": {
+        "title": "Panniculitis",
+        "intro": "Decide whether the septa or the lobules hold most of the inflammation, then look for vasculitis.",
+        "groups": [
+          {
+            "heading": "Septal",
+            "points": [
+              "Thickened, inflamed septa with the lobules largely spared",
+              "Erythema nodosum, with Miescher radial granulomas; also morphoea profunda and necrobiosis lipoidica"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/en_septal.jpg",
+                "caption": "Erythema nodosum: panniculitis (white arrow) with histiocytic infiltrates (yellow arrow) (H&E).",
+                "credit": "Wagle et al., Clin Case Rep 2025, Fig 4, full figure",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12129819/"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/en_miescher.jpg",
+                "caption": "Erythema nodosum: a Miescher radial granuloma (circled) (H&E).",
+                "credit": "Wagle et al., Clin Case Rep 2025, Fig 3, full figure",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12129819/"
+              }
+            ]
+          },
+          {
+            "heading": "Lobular",
+            "points": [
+              "Inflammation within the fat lobules, usually with fat necrosis",
+              "Lupus panniculitis (lymphoid follicles, hyaline fat necrosis), pancreatic panniculitis (ghost adipocytes, saponification), erythema induratum (with vasculitis) and infection",
+              "Exclude subcutaneous panniculitis-like T-cell lymphoma"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/pancreatic_lobular.jpg",
+                "caption": "Pancreatic panniculitis: lobular fat necrosis with ghost adipocytes (H&E).",
+                "credit": "Assis and Gomes, Cureus 2025, Fig 4, full figure",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12162400/"
+              }
+            ]
+          },
+          {
+            "heading": "Septal and lobular",
+            "points": [
+              "Both compartments inflamed",
+              "Lipodermatosclerosis (septal fibrosis, lipomembranous change), late erythema nodosum, infection and trauma"
+            ],
+            "images": []
+          }
+        ],
+        "note": "Room for your own photographs: no openly licensed image of lipodermatosclerosis or another mixed septal and lobular panniculitis was found."
       }
     },
     {
@@ -1006,7 +1638,22 @@
               "Minimal criterion: apoptosis in the basal or lower spinous layer, the follicular infundibulum or outer root sheath, or the acrosyringium, with or without lichenoid inflammation, vacuolar change and satellitosis",
               "Eosinophils often occur in GVHD and do not by themselves indicate a drug reaction"
             ],
-            "images": []
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/gvhd_satellitosis_1.jpg",
+                "caption": "Acute GVHD: apoptotic keratinocytes in the epidermis with adjacent lymphocytes (satellitosis) (H&E).",
+                "credit": "Mark Ong, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Skin_graft_versus_host_disease_high_mag_1.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/gvhd_satellitosis_2.jpg",
+                "caption": "Acute GVHD: apoptotic keratinocytes with lymphocyte satellitosis in another field (H&E).",
+                "credit": "Mark Ong, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Skin_graft_versus_host_disease_high_mag_2.jpg"
+              }
+            ]
           },
           {
             "heading": "Chronic GVHD patterns",
@@ -1018,7 +1665,8 @@
             ],
             "images": []
           }
-        ]
+        ],
+        "note": "Room for your own photographs: no openly licensed images of chronic GVHD at a useful resolution were found."
       }
     },
     {
@@ -1105,20 +1753,71 @@
       },
       "reference": {
         "title": "Lerner grade (acute GVHD)",
-        "intro": "Grades the epidermal injury of acute GVHD at its most damaged point; chronic GVHD is not graded this way.",
+        "intro": "Grades the epidermal injury of acute GVHD at its most damaged point; 0 is normal skin, and chronic GVHD is not graded this way.",
+        "columns": 2,
         "groups": [
           {
-            "heading": "Grades",
+            "heading": "I",
             "points": [
-              "0: normal skin",
-              "I: vacuolar change of the basal keratinocytes",
-              "II: as grade I, with apoptotic (dyskeratotic) keratinocytes",
-              "III: subepidermal cleft formation",
-              "IV: complete separation of the epidermis from the dermis"
+              "Vacuolar change of the basal keratinocytes"
             ],
-            "images": []
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/lerner_explant_1.jpg",
+                "caption": "Grade I: vacuolar change of the basal keratinocytes (skin explant assay, H&E).",
+                "credit": "Ghimire et al., Front Immunol 2017, via Wikimedia Commons, grade I panel (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Micrographs_of_grades_of_skin_graft-versus-host-disease.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "II",
+            "points": [
+              "As grade I, with apoptotic (dyskeratotic) keratinocytes"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/lerner_explant_2.jpg",
+                "caption": "Grade II: vacuolar change with dyskeratotic keratinocytes (arrows) (skin explant assay, H&E).",
+                "credit": "Ghimire et al., Front Immunol 2017, via Wikimedia Commons, grade II panel (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Micrographs_of_grades_of_skin_graft-versus-host-disease.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "III",
+            "points": [
+              "Subepidermal cleft formation"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/lerner_explant_3.jpg",
+                "caption": "Grade III: subepidermal clefts (arrows) (skin explant assay, H&E).",
+                "credit": "Ghimire et al., Front Immunol 2017, via Wikimedia Commons, grade III panel (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Micrographs_of_grades_of_skin_graft-versus-host-disease.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "IV",
+            "points": [
+              "Complete separation of the epidermis from the dermis"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/lerner_explant_4.jpg",
+                "caption": "Grade IV: complete separation of the epidermis from the dermis (arrows) (skin explant assay, H&E).",
+                "credit": "Ghimire et al., Front Immunol 2017, via Wikimedia Commons, grade IV panel (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Micrographs_of_grades_of_skin_graft-versus-host-disease.jpg"
+              }
+            ]
           }
-        ]
+        ],
+        "note": "The photographs come from a human skin explant assay graded on the same scale, not from patient biopsies."
       }
     },
     {
@@ -1357,19 +2056,113 @@
         "intro": "The deposit, its site and its pattern; the reagents not named print as negative.",
         "groups": [
           {
-            "heading": "Deposits and the diseases they suggest",
+            "heading": "Linear IgG and C3 along the basement membrane zone",
             "points": [
-              "Linear IgG and C3 along the basement membrane zone: bullous pemphigoid; epidermolysis bullosa acquisita",
-              "Linear IgA along the basement membrane zone: linear IgA disease",
-              "Intercellular IgG and C3 in the epidermis: pemphigus",
-              "Granular IgA in the dermal papillae: dermatitis herpetiformis",
-              "Perivascular IgA and C3 in superficial dermal vessels: IgA vasculitis",
-              "Granular IgG, IgM and C3 along the basement membrane zone: lupus erythematosus",
-              "IgM-positive cytoid bodies in the papillary dermis: lichen planus and other interface dermatitides"
+              "Bullous pemphigoid and epidermolysis bullosa acquisita",
+              "n-serrated in pemphigoid; u-serrated only in epidermolysis bullosa acquisita"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/dif_serration.jpg",
+                "caption": "n-serrated (left) and u-serrated (right) linear deposits along the basement membrane zone (direct immunofluorescence).",
+                "credit": "Witte et al., Front Med (Lausanne) 2018, Fig 3, full figure",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6224342/"
+              }
+            ]
+          },
+          {
+            "heading": "Linear IgA along the basement membrane zone",
+            "points": [
+              "Linear IgA disease, including chronic bullous disease of childhood"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/dif_linear_iga.jpg",
+                "caption": "Linear IgA along the basement membrane (arrow) in linear IgA bullous dermatosis of a child (direct immunofluorescence).",
+                "credit": "Khalid et al., Cureus 2026, Fig 4, full figure",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12900970/"
+              }
+            ]
+          },
+          {
+            "heading": "Intercellular IgG and C3 in the epidermis",
+            "points": [
+              "Pemphigus vulgaris and pemphigus foliaceus; the level of the split, not the deposit, separates them"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/dif_pemphigus_vulgaris.jpg",
+                "caption": "Pemphigus vulgaris: intercellular IgG through the epidermis, with an early acantholytic vesicle (direct immunofluorescence).",
+                "credit": "Emmanuelm, Wikimedia Commons, full figure",
+                "license": "CC BY 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Pemphigus_immunofluorescence.jpg"
+              },
+              {
+                "src": "assets/reference/skin_inflammatory/dif_pemphigus_foliaceus.jpg",
+                "caption": "Pemphigus foliaceus: intercellular IgG and C3 in the epidermis (direct immunofluorescence).",
+                "credit": "Ahmad et al., Cureus 2024, Fig 3A (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11681950/"
+              }
+            ]
+          },
+          {
+            "heading": "Granular IgA in the dermal papillae",
+            "points": [
+              "Dermatitis herpetiformis; sample perilesional skin"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/dif_dh_granular_iga.jpg",
+                "caption": "Dermatitis herpetiformis: granular IgA at the tips of the dermal papillae and along the junction (direct immunofluorescence).",
+                "credit": "van Beek et al., Front Immunol 2024, Fig 5A (cropped)",
+                "license": "CC BY",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11187241/"
+              }
+            ]
+          },
+          {
+            "heading": "Perivascular IgA and C3 in superficial dermal vessels",
+            "points": [
+              "IgA vasculitis; deposits fade from older lesions, so sample an early one"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/dif_iga_vasculitis.jpg",
+                "caption": "IgA vasculitis (Henoch-Schönlein purpura): IgA in the walls of small superficial vessels (arrows) (direct immunofluorescence).",
+                "credit": "Emmanuelm, Wikimedia Commons, full figure",
+                "license": "CC BY 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:HSP_IF_IgA.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Granular IgG, IgM and C3 along the basement membrane zone",
+            "points": [
+              "Lupus erythematosus: the lupus band"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/skin_inflammatory/dif_lupus_band.jpg",
+                "caption": "Systemic lupus erythematosus: a band of IgG along the epidermal basement membrane, with IgG also in keratinocyte nuclei (direct immunofluorescence).",
+                "credit": "Emmanuelm, Wikimedia Commons, full figure",
+                "license": "CC BY 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Lupus_band_test.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "IgM-positive cytoid bodies",
+            "points": [
+              "Clumps of IgM, often with IgA, IgG, C3 and fibrin, on apoptotic keratinocytes in the papillary dermis",
+              "Lichen planus and other interface dermatitides"
             ],
             "images": []
           }
-        ]
+        ],
+        "note": "Room for your own photographs: no openly licensed image of IgM-positive cytoid bodies was found."
       }
     },
     {
