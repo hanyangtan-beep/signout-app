@@ -57,7 +57,7 @@ const hpvNodes = (involved, ene, examined = '20') => ({
 });
 
 const CASES = [
-  // Card accept: the example, a left lateral tongue partial glossectomy, 18 mm, DOI 8 mm: pT2 pNX.
+  // Card accept: the example, a left lateral tongue partial glossectomy, 18 mm, DOI 8 mm: pT2.
   ['oral-carcinoma-01-tongue-pt2', {}],
   // Card accept: a lower alveolus SCC on a segmental mandibulectomy with medullary bone invasion and
   // a neck dissection, one ipsilateral level IB node 22 mm with major ENE: pT4a pN2a.
@@ -155,9 +155,9 @@ test('example: specimen, macroscopy, rows and diagnosis', () => {
   assert.equal(r['Invasive tumour'], 'All margins negative');
   assert.equal(r['Closest margin'], '6 mm (deep)');
   assert.equal(r['High grade dysplasia / carcinoma in situ'], 'Margins uninvolved');
-  assert.equal(r['pTNM'], 'pT2 pNX');
+  assert.equal(r['pTNM'], 'pT2');
   assert.ok(sections(c).includes('Pathological stage (AJCC 8th edition)'));
-  assert.equal(flatDx(c), 'ORAL CAVITY, left lateral tongue, partial glossectomy - SQUAMOUS CELL CARCINOMA, moderately differentiated, 18 mm, invading to a depth of 8 mm; completely excised (closest margin 6 mm, deep); see synoptic report - pT2 pNX (AJCC 8th edition)');
+  assert.equal(flatDx(c), 'ORAL CAVITY, left lateral tongue, partial glossectomy - SQUAMOUS CELL CARCINOMA, moderately differentiated, 18 mm, invading to a depth of 8 mm; completely excised (closest margin 6 mm, deep); see synoptic report - pT2 (AJCC 8th edition)');
   assert.equal(run({}, { printPTNM: false }).synoptic.includes('pTNM'), false, 'printPTNM off drops the stage block');
 });
 
@@ -198,7 +198,7 @@ const NODES = { ene: ENE_MAJOR, eneMm: '3', largestDepositMm: '22', largestDepos
 const TAIL = { bedMargin: 'Uninvolved by invasive carcinoma', distantMets: ['Not identified'], additionalNotes: 'Sections of the tonsillar bed are included.' };
 
 test('synoptic element order follows the saved QMH pages', () => {
-  const oral = run({ ...CASES[1][1], ...NODES, ...TAIL, wpoi: 'WPOI 1 to 4', lvi: 'Present' });
+  const oral = run({ ...CASES[1][1], ...NODES, ...TAIL, wpoi: 'WPOI 1 to 4', lvi: 'Present' }, { printNodesMets: true });
   assertPageOrder(oral, 'HN-Lip-and-oral-cavity.html', [
     ['Histologic type', 'Histologic type (WHO 5e)'], ['Histologic grade', 'Histologic grade'], ['Depth of invasion', 'Depth of Invasion (DOI'],
     ['Tumour extent', 'Tumor extension'], ['Lymphovascular invasion', 'Lymphovascular invasion'], ['Perineural invasion', 'Perineural invasion'],
@@ -207,7 +207,7 @@ test('synoptic element order follows the saved QMH pages', () => {
     ['Size of largest metastatic deposit', 'Size of largest metastatic deposit'], ['Size of largest involved lymph node', 'Size of largest lymph node involved'],
     ['Laterality', 'Laterality'], ['pTNM', 'Primary tumor (pT)'], ['Additional notes', 'Additional notes']
   ]);
-  const hpv = run({ ...CASES[2][1], ...NODES, ...TAIL, ene: 'Not identified', eneMm: '' });
+  const hpv = run({ ...CASES[2][1], ...NODES, ...TAIL, ene: 'Not identified', eneMm: '' }, { printNodesMets: true });
   assertPageOrder(hpv, 'HN-HPV-Oropharynx.html', [
     ['Histologic type', 'Histologic type (WHO 5e)'], ['Tumour extent', 'Tumor extent'], ['Lymphovascular invasion', 'Lymphatic and/on vascular invasion'],
     ['Perineural invasion', 'Perineural invasion'], ['HPV status by p16 immunohistochemistry', 'HPV status by p16 IHC'], ['HPV PCR', 'HPV by PCR'],
@@ -234,39 +234,39 @@ test('oral pT: size and depth of invasion at every boundary', () => {
   assert.equal(T(40, 10.1), 'pT3');
   assert.equal(T(41, 10), 'pT3');
   assert.equal(T(41, 10.1), 'pT4a');
-  assert.equal(tnm(run({ tumourSizeMm: '15', doi: 'Less than 1 mm', doiMm: '' })), 'pT1 pNX');
+  assert.equal(tnm(run({ tumourSizeMm: '15', doi: 'Less than 1 mm', doiMm: '' })), 'pT1');
 });
 
 test('oral pT: an "at least" depth stages only when no deeper reading could change it', () => {
   const floor7 = run({ tumourSizeMm: '30', doi: 'At least (mm)', doiMm: '7' });
-  assert.equal(tnm(floor7), 'pTX pNX');
+  assert.equal(tnm(floor7), 'pTX');
   assert.ok(msgs(floor7, 'warn').includes('Depth of invasion is at least 7 mm; with a tumour of 30 mm the pT could be higher than T2, so it is not assigned.'));
   assert.equal(rows(floor7)['Depth of invasion'], 'At least 7 mm');
-  assert.equal(tnm(run({ tumourSizeMm: '30', doi: 'At least (mm)', doiMm: '12' })), 'pT3 pNX');
-  assert.equal(tnm(run({ tumourSizeMm: '15', doi: 'At least (mm)', doiMm: '6' })), 'pT2 pNX');
+  assert.equal(tnm(run({ tumourSizeMm: '30', doi: 'At least (mm)', doiMm: '12' })), 'pT3');
+  assert.equal(tnm(run({ tumourSizeMm: '15', doi: 'At least (mm)', doiMm: '6' })), 'pT2');
   const cannot = run({ doi: 'Cannot be determined (explain)', doiMm: '', doiNote: 'tangential sections' });
-  assert.equal(tnm(cannot), 'pTX pNX');
+  assert.equal(tnm(cannot), 'pTX');
   assert.ok(msgs(cannot, 'warn').includes('Depth of invasion is not a measurement; pT is not assigned.'));
 });
 
 test('oral pT: bone and adjacent structures', () => {
   const alveolus = { tumourSite: 'Lower alveolus and gingiva', tumourSizeMm: '15', doiMm: '4' };
   const medullary = run({ ...alveolus, boneInvasion: 'Present', bonePattern: 'Infiltrative', boneLevel: 'Medullary (through the cortex)' });
-  assert.equal(tnm(medullary), 'pT4a pNX');
+  assert.equal(tnm(medullary), 'pT4a');
   assert.ok(flatDx(medullary).includes('invading to a depth of 4 mm; medullary bone invasion; completely excised'));
   assert.equal(rows(medullary)['Tumour extent'], 'No other adjacent structure involved', 'the extent row does not contradict the bone row');
   const cortical = run({ ...alveolus, boneInvasion: 'Present', bonePattern: 'Erosive', boneLevel: 'Cortical (superficial erosion only)' });
-  assert.equal(tnm(cortical), 'pT1 pNX', 'superficial erosion alone is not pT4');
+  assert.equal(tnm(cortical), 'pT1', 'superficial erosion alone is not pT4');
   assert.ok(flatDx(cortical).includes('; cortical bone erosion;'));
   const noLevel = run({ ...alveolus, boneInvasion: 'Present' });
-  assert.equal(tnm(noLevel), 'pT1 pNX');
+  assert.equal(tnm(noLevel), 'pT1');
   assert.ok(msgs(noLevel, 'warn').includes('Record the level of bone invasion: medullary invasion (through the cortex) is pT4a; superficial cortical erosion by a gingival primary is not.'));
   const sinus = run({ tumourSite: 'Upper alveolus and gingiva', specimenName: 'left maxilla', procedure: ['Partial maxillectomy'], adjacent: ['Maxillary sinus'] });
-  assert.equal(tnm(sinus), 'pT4a pNX');
+  assert.equal(tnm(sinus), 'pT4a');
   assert.equal(rows(sinus)['Tumour extent'], 'Invades the maxillary sinus');
   assert.ok(flatDx(sinus).startsWith('ORAL CAVITY, left maxilla, partial maxillectomy - SQUAMOUS CELL CARCINOMA'));
-  assert.equal(tnm(run({ adjacent: ['Skin of the face'] })), 'pT4a pNX');
-  for (const s of S.ORAL_T4B) assert.equal(tnm(run({ adjacent: [s] })), 'pT4b pNX', s);
+  assert.equal(tnm(run({ adjacent: ['Skin of the face'] })), 'pT4a');
+  for (const s of S.ORAL_T4B) assert.equal(tnm(run({ adjacent: [s] })), 'pT4b', s);
   assert.ok(flatDx(run({ adjacent: ['Encases the internal carotid artery'] })).includes('; encasing the internal carotid artery;'));
 });
 
@@ -287,7 +287,7 @@ test('oral pN: count, laterality, ENE and the largest deposit', () => {
   assert.equal(N(oralNodes(1, IPSI, ENE_MAJOR, '31')), 'pN3b');
   assert.equal(N(oralNodes(3, IPSI, ENE_MAJOR, '20')), 'pN3b', 'multiple nodes, any with ENE');
   assert.equal(N(oralNodes(1, 'Contralateral', ENE_MAJOR, '10')), 'pN3b', 'a single contralateral node with ENE');
-  assert.equal(N({}), 'pNX', 'no nodes submitted');
+  assert.equal(N({}), undefined, 'no nodes submitted: pN is left out (Phase 67)');
   const one = run(oralNodes(1, IPSI, ENE_MAJOR, '22'));
   assert.ok(flatDx(one).includes('- 1 of 30 regional lymph nodes involved; extranodal extension present (major)'));
   assert.equal(rows(one)['Regional lymph nodes'], '30 examined; 1 involved');
@@ -347,7 +347,7 @@ test('oropharynx without a positive p16: no pTNM, and the checks say why', () =>
 
 test('diagnosis wording: HPV status, margins, bone, perineural and lymphovascular invasion', () => {
   const hpv = run({ ...TONSIL, hpvPcr: 'Positive', hpvPcrDetail: 'HPV 16' });
-  assert.equal(flatDx(hpv), 'OROPHARYNX, left tonsil, transoral resection - SQUAMOUS CELL CARCINOMA, NON-KERATINISING, HPV-ASSOCIATED, 28 mm; p16 and HPV PCR positive; completely excised (closest margin 6 mm, deep); see synoptic report - pT2 pNX (AJCC 9th edition)');
+  assert.equal(flatDx(hpv), 'OROPHARYNX, left tonsil, transoral resection - SQUAMOUS CELL CARCINOMA, NON-KERATINISING, HPV-ASSOCIATED, 28 mm; p16 and HPV PCR positive; completely excised (closest margin 6 mm, deep); see synoptic report - pT2 (AJCC 9th edition)');
   assert.equal(rows(hpv)['HPV PCR'], 'Positive (HPV 16)');
   assert.ok(flatDx(run({ ...TONSIL })).includes('28 mm; p16 positive; completely excised'));
   assert.ok(flatDx(run({ invasiveMargin: 'Margin(s) involved by invasive tumour (specify)', invasiveInvolvedDetail: 'deep', closestMm: '', closestSite: '' })).includes('; invasive carcinoma involves the deep margin; see synoptic report'));
@@ -360,7 +360,7 @@ test('diagnosis wording: HPV status, margins, bone, perineural and lymphovascula
   assert.ok(flatDx(nerve).includes('8 mm; perineural invasion present (intraneural); completely excised'));
   assert.equal(rows(nerve)['Perineural invasion'], 'Present, intraneural (nerve 1.2 mm in diameter)');
   const mets = run({ distantMets: ['Lung'] });
-  assert.ok(flatDx(mets).includes('- distant metastasis: lung - pT2 pNX pM1 (AJCC 8th edition)'));
+  assert.ok(flatDx(mets).includes('- distant metastasis: lung - pT2 pM1 (AJCC 8th edition)'));
   assert.equal(rows(run({ histType: 'Verrucous carcinoma', grade: '' }))['Histologic grade'], undefined, 'verrucous carcinoma is not graded');
   const nec = run({ histType: 'Neuroendocrine carcinoma, small cell type', grade: '', ihc: ['Synaptophysin positive', 'INSM1 positive'] });
   assert.ok(flatDx(nec).includes('- NEUROENDOCRINE CARCINOMA, SMALL CELL TYPE, 18 mm, invading to a depth of 8 mm;'));
@@ -495,7 +495,7 @@ test('golden fixtures reproduce byte-for-byte', () => {
 
 test('golden fixtures: the card accept cases stage as the card says', () => {
   const byName = Object.fromEntries(CASES.map(([n, p]) => [n, run(p)]));
-  assert.equal(tnm(byName['oral-carcinoma-01-tongue-pt2']), 'pT2 pNX');
+  assert.equal(tnm(byName['oral-carcinoma-01-tongue-pt2']), 'pT2');
   assert.equal(tnm(byName['oral-carcinoma-02-mandible-pt4a-pn2a']), 'pT4a pN2a');
   assert.equal(tnm(byName['oral-carcinoma-03-tonsil-hpv-pt2-pn1b']), 'pT2 pN1b');
   assert.equal(tnm(byName['oral-carcinoma-04-tonsil-p16-negative']), undefined);

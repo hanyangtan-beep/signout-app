@@ -19,7 +19,7 @@
 // export: "SQUAMOUS CELL CARCINOMA, moderately differentiated" on a synoptic line, as on the skin form.
 // Wording is protected by tests/oral_carcinoma.test.js — change it only deliberately.
 
-import { deriveTNM } from '../src/staging/index.js';
+import { deriveTNM, showNodes, showMets } from '../src/staging/index.js';
 import * as S from '../src/staging/oral.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { stripDot, letteredBlockKey, checks } from './_house.js';
@@ -582,8 +582,8 @@ export function synoptic(part, ctx) {
       item('HPV PCR', pcrValue(v))
     ] },
     { heading: 'Margins', items: [invasiveMarginItem(v), hgdMarginItem(v), bedMarginItem(v), item('Frozen section margins', stripDot(v.frozenMargins))] },
-    { heading: 'Lymph nodes', items: [nodesItem(v)] },
-    { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] },
+    showNodes(st, ctx) ? { heading: 'Lymph nodes', items: [nodesItem(v)] } : null,
+    showMets(st, ctx, metastasisValue(v)) ? { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] } : null,
     ctx?.options?.printPTNM && staged(v) ? { heading: `Pathological stage (${st.edition})`, items: [
       { label: 'pTNM', value: st.overridden ? `${st.tnm} [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${stripDot(v.tnmOverrideReason) ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : st.tnm }
     ] } : null,

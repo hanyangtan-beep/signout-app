@@ -20,7 +20,7 @@
 // Wording is protected by tests/appendix.test.js — change it only deliberately.
 
 import { typeMorphology } from './appendix_morphology.js';
-import { deriveTNM, stageLine } from '../src/staging/index.js';
+import { deriveTNM, stageLine, showNodes, showMets } from '../src/staging/index.js';
 import * as S from '../src/staging/appendix.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { letteredBlockKey, checks } from './_house.js';
@@ -326,8 +326,8 @@ export function synoptic(part, ctx) {
       item('Mesenteric margin', resMarginText(v.mesentericMargin, v.mesentericMarginMm)),
       v.otherMargin && !/^Not applicable/.test(v.otherMargin) ? item('Other margin(s)', `${resMarginText(v.otherMargin, v.otherMarginMm)}${stripDot(v.otherMarginDetail) ? ` (${stripDot(v.otherMarginDetail)})` : ''}`) : null
     ] },
-    { heading: 'Lymph nodes', items: [nodesItem(v)] },
-    { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] },
+    showNodes(st, ctx) ? { heading: 'Lymph nodes', items: [nodesItem(v)] } : null,
+    showMets(st, ctx, metastasisValue(v)) ? { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] } : null,
     ctx?.options?.printPTNM ? { heading: `Pathological stage (${st.edition})`, items: [
       { label: 'pTNM', value: st.overridden ? `${st.tnm} [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${(v.tnmOverrideReason || '').trim() ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : st.tnm,
         sub: stageLine(st) ? [{ label: stageLine(st).split(': ')[0], value: stageLine(st).split(': ').slice(1).join(': ') }] : [] }

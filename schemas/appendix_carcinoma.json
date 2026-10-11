@@ -1,6 +1,6 @@
 {
   "id": "appendix_carcinoma",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Appendiceal tumour resection (adenocarcinoma, LAMN / HAMN, goblet cell adenocarcinoma)",
   "shortName": "Appendix · cancer resection",
   "label": "Appendix Ca",
@@ -119,6 +119,9 @@
     },
     {
       "$use": "printPTNM"
+    },
+    {
+      "$use": "printNodesMets"
     }
   ],
   "fields": [

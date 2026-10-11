@@ -63,7 +63,7 @@ export function N(v) {
   const deposits = int(v.tumourDepositsN) ?? 0;
   if ((examined === null || examined === 0)) {
     if (deposits > 0) return { cat: 'N1c', note: 'Tumour deposits present and no regional nodes submitted or positive; this grades pN1c.' };
-    return { cat: 'NX', note: 'No regional lymph nodes submitted; pN not assigned.' };
+    return { cat: 'NX', none: true, note: 'No regional lymph nodes submitted; pN not assigned.' };
   }
   if (involved === null) return { cat: 'NX', note: 'Number of involved lymph nodes not recorded; pN cannot be assigned.' };
   if (involved === 0) {

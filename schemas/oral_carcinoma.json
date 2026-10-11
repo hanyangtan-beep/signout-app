@@ -1,6 +1,6 @@
 {
   "id": "oral_carcinoma",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Oral cavity and oropharynx carcinoma resection",
   "shortName": "Oral cavity · carcinoma resection",
   "label": "Oral cavity Ca",
@@ -223,6 +223,9 @@
     {
       "$use": "printPTNM",
       "label": "Print the pTNM block (AJCC 8th oral cavity, AJCC 9th HPV-associated oropharynx)"
+    },
+    {
+      "$use": "printNodesMets"
     }
   ],
   "partDefaults": [],

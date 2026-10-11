@@ -1,6 +1,6 @@
 {
   "id": "gastric_carcinoma",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Gastric carcinoma resection",
   "shortName": "Stomach · cancer resection",
   "label": "Gastric Ca",
@@ -130,6 +130,9 @@
     },
     {
       "$use": "printPTNM"
+    },
+    {
+      "$use": "printNodesMets"
     }
   ],
   "fields": [

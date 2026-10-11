@@ -3153,7 +3153,7 @@
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "colon_resection",
       "generatorPath": "generators/colon_resection.js",
       "schemaPath": "schemas/colon_resection.json"
@@ -3288,7 +3288,7 @@
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "oesophageal_carcinoma",
       "generatorPath": "generators/oesophageal_carcinoma.js",
       "schemaPath": "schemas/oesophageal_carcinoma.json"
@@ -3357,7 +3357,7 @@
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "gist_resection",
       "generatorPath": "generators/gist_resection.js",
       "schemaPath": "schemas/gist_resection.json"
@@ -3537,7 +3537,7 @@
           "atypical hyperplasia"
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "endometrial_carcinoma",
       "generatorPath": "generators/endometrial_carcinoma.js",
       "schemaPath": "schemas/endometrial_carcinoma.json"
@@ -3613,7 +3613,7 @@
           "BRCA"
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "ovary_ft_peritoneum",
       "generatorPath": "generators/ovary_ft_peritoneum.js",
       "schemaPath": "schemas/ovary_ft_peritoneum.json"
@@ -3697,7 +3697,7 @@
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "lung_carcinoma",
       "generatorPath": "generators/lung_carcinoma.js",
       "schemaPath": "schemas/lung_carcinoma.json"
@@ -3775,7 +3775,7 @@
         ],
         "bias": -1
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "breast_carcinoma",
       "generatorPath": "generators/breast_carcinoma.js",
       "schemaPath": "schemas/breast_carcinoma.json"
@@ -3837,7 +3837,7 @@
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "gastric_carcinoma",
       "generatorPath": "generators/gastric_carcinoma.js",
       "schemaPath": "schemas/gastric_carcinoma.json"
@@ -3897,7 +3897,7 @@
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "appendix_carcinoma",
       "generatorPath": "generators/appendix_carcinoma.js",
       "schemaPath": "schemas/appendix_carcinoma.json"
@@ -3954,7 +3954,7 @@
         ],
         "bias": -1
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "breast_dcis",
       "generatorPath": "generators/breast_dcis.js",
       "schemaPath": "schemas/breast_dcis.json"
@@ -4005,7 +4005,7 @@
         ],
         "bias": -1
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "phyllodes",
       "generatorPath": "generators/phyllodes.js",
       "schemaPath": "schemas/phyllodes.json"
@@ -4056,7 +4056,7 @@
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "gallbladder_carcinoma",
       "generatorPath": "generators/gallbladder_carcinoma.js",
       "schemaPath": "schemas/gallbladder_carcinoma.json"
@@ -4356,7 +4356,7 @@
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "ampulla_carcinoma",
       "generatorPath": "generators/ampulla_carcinoma.js",
       "schemaPath": "schemas/ampulla_carcinoma.json"
@@ -4526,7 +4526,7 @@
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "skin_scc",
       "generatorPath": "generators/skin_scc.js",
       "schemaPath": "schemas/skin_scc.json"
@@ -4796,7 +4796,7 @@
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "oral_carcinoma",
       "generatorPath": "generators/oral_carcinoma.js",
       "schemaPath": "schemas/oral_carcinoma.json"

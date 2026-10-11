@@ -1,6 +1,6 @@
 {
   "id": "breast_carcinoma",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Breast carcinoma resection",
   "shortName": "Breast · cancer resection",
   "label": "Breast Ca",
@@ -162,6 +162,9 @@
     },
     {
       "$use": "printPTNM"
+    },
+    {
+      "$use": "printNodesMets"
     }
   ],
   "fields": [

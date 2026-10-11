@@ -1,6 +1,6 @@
 {
   "id": "gallbladder_carcinoma",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Gallbladder carcinoma resection",
   "shortName": "Gallbladder · cancer resection",
   "label": "Gallbladder Ca",
@@ -106,6 +106,9 @@
     },
     {
       "$use": "printPTNM"
+    },
+    {
+      "$use": "printNodesMets"
     }
   ],
   "fields": [

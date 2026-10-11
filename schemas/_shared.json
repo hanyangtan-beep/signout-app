@@ -13,6 +13,12 @@
    "type": "checkbox",
    "default": false
   },
+  "printNodesMets": {
+   "id": "printNodesMets",
+   "label": "Print the lymph node and distant metastasis sections when none are recorded",
+   "type": "checkbox",
+   "default": false
+  },
   "lbc": {
    "id": "lbc",
    "label": "Liquid-based slide",

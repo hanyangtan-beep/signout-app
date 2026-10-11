@@ -19,7 +19,7 @@
 //               MMR proficient"
 // Wording is protected by tests/colon_resection.test.js — change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js';
+import { deriveTNM, stageLine, showNodes, showMets } from '../src/staging/index.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { stripDot, checks } from './_house.js';
 
@@ -274,8 +274,8 @@ export function synoptic(part, ctx) {
       v.otherMargin && v.otherMargin !== 'Not applicable' ? item(`Other margin (${(v.otherMarginName || 'specify').trim()})`, marginValue(v.otherMargin, v.otherMarginMm)) : null,
       v.nonInvasiveMargin && v.nonInvasiveMargin !== 'Not applicable' ? item('Status of non-invasive tumour at margin(s)', `${v.nonInvasiveMargin}${(v.nonInvasiveMarginDetail || '').trim() ? ` (${stripDot(v.nonInvasiveMarginDetail)})` : ''}`) : null
     ] },
-    { heading: 'Regional lymph nodes', items: [nodes] },
-    { heading: 'Distant metastasis', items: [item('Distant metastasis', sites.length ? `${listJoin(sites)}${(v.metastasisDetail || '').trim() ? ` (${stripDot(v.metastasisDetail)})` : ''}` : 'Not applicable')] },
+    showNodes(st, ctx) ? { heading: 'Regional lymph nodes', items: [nodes] } : null,
+    showMets(st, ctx) || sites.length ? { heading: 'Distant metastasis', items: [item('Distant metastasis', sites.length ? `${listJoin(sites)}${(v.metastasisDetail || '').trim() ? ` (${stripDot(v.metastasisDetail)})` : ''}` : 'Not applicable')] } : null,
     { heading: `Pathological stage (${st.edition})`, items: [
       { label: 'pTNM', value: `${st.tnm}${st.overridden ? ` [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${(v.tnmOverrideReason || '').trim() ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : ''}`,
         sub: ctx?.options?.stageGroup === false || !stageLine(st) ? [] : [{ label: stageLine(st).split(': ')[0], value: stageLine(st).split(': ').slice(1).join(': ') }] }

@@ -188,6 +188,9 @@
     },
     {
       "$use": "printPTNM"
+    },
+    {
+      "$use": "printNodesMets"
     }
   ],
   "fields": [

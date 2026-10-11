@@ -1,6 +1,6 @@
 {
   "id": "colon_resection",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Colon and rectum carcinoma resection",
   "shortName": "Colon / rectum · cancer resection",
   "label": "Colorectal Ca",
@@ -149,6 +149,9 @@
       "label": "Print the AJCC stage group under the pTNM",
       "type": "checkbox",
       "default": true
+    },
+    {
+      "$use": "printNodesMets"
     }
   ],
   "partDefaults": [],

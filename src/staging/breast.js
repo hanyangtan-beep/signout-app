@@ -84,7 +84,7 @@ export function N(v) {
   const c = nodeCounts(v);
   const sampling = String(v.nodeSampling || '');
   if (sampling === 'No nodes submitted' || (c.examined === 0 && !v.imNodes?.startsWith('Positive') && !v.supraclavicular && !v.infraclavicular)) {
-    return { cat: 'NX', note: 'pNX: no regional lymph nodes examined.' };
+    return { cat: 'NX', none: true, note: 'pNX: no regional lymph nodes examined.' };
   }
   const sn = /^Sentinel node biopsy only/.test(sampling) && c.examined <= 5 ? '(sn)' : '';
   const im = String(v.imNodes || '');

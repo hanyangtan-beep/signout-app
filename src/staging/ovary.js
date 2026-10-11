@@ -119,7 +119,7 @@ export function nodes(v) {
 
 export function N(v) {
   const n = nodes(v);
-  if (n.examined === null || n.examined === 0) return { cat: 'NX' };
+  if (n.examined === null || n.examined === 0) return { cat: 'NX', none: true };
   if (!n.positive) return { cat: n.itc ? 'N0(i+)' : 'N0' };
   const dep = num(v.nodeDepositMm);
   if (dep !== null) return { cat: dep > 10 ? 'N1b' : 'N1a' };

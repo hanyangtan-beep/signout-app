@@ -1683,7 +1683,7 @@ await check('liver mass biopsy: a pasted lesion biopsy opens Liver (mass); the l
 // HCC resection (Phase 51): a pasted right hepatectomy under an HCC history opens the synoptic with the received
 // name and a major hepatectomy; the missing size is a Check; size and vascular invasion give pT2 once the pTNM
 // option is ticked; the subtype gallery opens with its photos.
-await check('HCC resection: a pasted right hepatectomy opens the synoptic; size and vessels set pT2; the subtype gallery opens', async () => {
+await check('HCC resection: a pasted right hepatectomy opens the synoptic; size and vessels set pT2; the lymph node option prints the empty sections; the subtype gallery opens', async () => {
   const routed = await pasteAndBuild('History\nHepatitis B cirrhosis, HCC\n\nSpecimen\n(A) Right hepatectomy');
   assert(routed === 'hcc', `right hepatectomy routed to ${routed}`);
   let report = await reportText();
@@ -1698,7 +1698,19 @@ await check('HCC resection: a pasted right hepatectomy opens the synoptic; size 
   await box.check();
   await page.waitForTimeout(300);
   report = await reportText();
-  assert(report.includes('- pTNM: pT2 pNX') && report.includes('- Stage pT2 (pTNM, AJCC 8th edition)'), `pT2 not printed: ${report.slice(-500)}`);
+  assert(/^- pTNM: pT2$/m.test(report) && report.includes('- Stage pT2 (pTNM, AJCC 8th edition)'), `pT2 not printed: ${report.slice(-500)}`);
+  // Phase 67: with no node examined the Lymph nodes and Distant metastasis sections and pN are left out; the
+  // footer option prints the two placeholder sections again.
+  assert(!report.includes('Regional lymph nodes:') && !report.includes('Distant metastasis:'), `empty node / metastasis sections printed: ${report.slice(-500)}`);
+  const nm = page.locator('#case-options label', { hasText: 'Print the lymph node and distant metastasis sections when none are recorded' }).locator('input[type="checkbox"]');
+  assert(await nm.count() === 1, 'no lymph node and distant metastasis option on the case');
+  await nm.check();
+  await page.waitForTimeout(300);
+  report = await reportText();
+  assert(report.includes('- Regional lymph nodes: None submitted (0 examined)') && report.includes('- Distant metastasis: Not applicable'), `the option did not print the sections: ${report.slice(-500)}`);
+  assert(/^- pTNM: pT2$/m.test(report), 'the option brought pNX back');
+  await nm.uncheck();
+  await page.waitForTimeout(200);
   await box.uncheck();
   await page.waitForTimeout(200);
   await page.locator('.field[data-field="histType"] .ref-toggle').first().click();

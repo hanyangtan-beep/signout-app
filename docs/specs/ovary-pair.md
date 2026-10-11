@@ -122,7 +122,7 @@ Shipped as one batch (commits: frozen enrichment; `src/staging/ovary.js`; schema
 - Macro and block key carry the part letter ("(B) The specimen consists of…", "(B1-6)") when the case has other letters; the engine drops "(A) " again in one-part cases.
 - Frozen line in a case that also holds an `ovary_ft_peritoneum` part: `… x frozen section - HIGH-GRADE SEROUS CARCINOMA, see synoptic report`.
 - Borderline tumours are staged (CAP / FIGO): pTNM prints with `printPTNM` like every other type, FIGO reference line in Checks. "No stage printed" in the fixture list means the default options (printPTNM off).
-- Stage groups follow AJCC 8th including IC1 / IC2 / IC3; `pNX` when no nodes are examined.
+- Stage groups follow AJCC 8th including IC1 / IC2 / IC3; with no nodes examined N is NX and pN is left out of the printed pTNM (Phase 67).
 
 **Fixtures regenerated deliberately.** 2026-09-12: `tests/fixtures/ovary/01`–`07` created (new template). No existing fixture changed.
 

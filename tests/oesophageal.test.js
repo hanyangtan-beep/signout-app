@@ -22,7 +22,7 @@ test('schema shape: metadata key order, layout and field census', () => {
   assert.equal(schema.kind, 'cancer resection');
   assert.equal(schema.system, 'GI');
   assert.equal(schema.defaultParts, 1);
-  assert.equal(schema.version, '2026.09');
+  assert.equal(schema.version, '2026.10');
   assert.equal(schema.source.stagingProtocol, 'oesophagus');
   assert.deepEqual(Object.keys(schema).slice(0, 11), ['id', 'version', 'name', 'shortName', 'label', 'organ', 'system', 'kind', 'layout', 'rank', 'aliases']);
   assert.deepEqual(schema.layout, { macroGroups: ['Specimen and tumour'], macroFields: ['specimenName'], pack: true });
@@ -61,7 +61,7 @@ test('example report: pinned wording (oesophagectomy case)', () => {
   assert.ok(r.includes('- Regional lymph nodes: 19 examined; 2 involved'));
   assert.ok(r.includes('- Extracapsular spread: Not identified'));
   assert.ok(r.includes('- Size of largest metastatic deposit: 6 mm, Para-oesophageal, middle thoracic'));
-  assert.ok(r.includes('- Distant metastasis: Not identified'));
+  assert.ok(!r.includes('Distant metastasis'), 'no distant metastasis section without a recorded metastasis (Phase 67)');
   assert.ok(r.includes('- pTNM: pT3 pN1'));
   assert.ok(r.includes('- Stage group (if cM0): IIIB'));
   assert.ok(r.includes('OESOPHAGUS, middle thoracic, oesophagectomy'));
@@ -75,7 +75,7 @@ test('synoptic element order follows the saved QMH GI-Esophagus page', () => {
   const page = fileURLToPath(new URL('../docs/reference/GI-Esophagus.html', import.meta.url));
   execFileSync(process.execPath, [tool, page], { encoding: 'utf8' });
   assert.match(readFileSync(page, 'utf8'), /Esophagus/i);
-  const rows = Object.keys(synopticRows(runP({}).synoptic));
+  const rows = Object.keys(synopticRows(runP({}, { ...schema.example.options, printNodesMets: true }).synoptic));
   const idx = (l) => { const i = rows.indexOf(l); assert.ok(i >= 0, `${l} missing: ${rows}`); return i; };
   // Page order within Microscopic findings: histologic type, grade, extension, SM depth/extent,
   // Ly, V, PNI, treatment effect, TRG; the "- Tumour histology:" paragraph directly after the
@@ -89,7 +89,7 @@ test('synoptic element order follows the saved QMH GI-Esophagus page', () => {
   assert.ok(idx('Regional lymph nodes') < idx('Distant metastasis'));
   assert.ok(idx('Distant metastasis') < idx('pTNM'));
   assert.deepEqual([...new Set(parseSynoptic(runP({}).synoptic).map((r) => r.section))],
-    ['Specimen and tumour', 'Microscopic findings', 'Margins', 'Lymph nodes', 'Distant metastasis', 'Pathological stage (AJCC 8th edition)', 'Additional findings']);
+    ['Specimen and tumour', 'Microscopic findings', 'Margins', 'Lymph nodes', 'Pathological stage (AJCC 8th edition)', 'Additional findings']);
 });
 
 test('endoscopic resection: mucosal / deep margins replace the oesophagectomy set', () => {
@@ -107,7 +107,7 @@ test('endoscopic resection: mucosal / deep margins replace the oesophagectomy se
   assert.ok(flat(r).includes('- Mucosal margin: Uninvolved by invasive carcinoma and uninvolved by dysplasia'));
   assert.ok(r.includes('- Deep margin: Uninvolved by tumour, 1 mm'));
   assert.ok(flat(out.report).includes('other margins clear (closest 1 mm)'));
-  assert.ok(r.includes('- Regional lymph nodes: None submitted (0 examined)'));
+  assert.ok(!r.includes('Regional lymph nodes'), 'no lymph node section without nodes (Phase 67)');
   assert.ok(!r.includes('NaN'));
 });
 

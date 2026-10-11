@@ -24,6 +24,7 @@ Status: agreed with the user 2026-09-11; built 2026-09-12 (`src/synoptic.js` ren
 6. The separate narrative microscopy paragraph is dropped for synoptic templates; the block heading is `MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT` (block headings stay in capitals like the other LIS block headings; only the section headings inside are sentence case). No switch back.
 7. Additional findings print one bullet each.
 8. Diagnosis: specimen line, then one `- ` clause per line with hanging indent. `Copy diagnosis` copies the multi-line form. COMMENT block unchanged.
+9. Lymph nodes and Distant metastasis print only with a recorded input: a regional node examined (or nodal disease such as tumour deposits) and a recorded metastasis or "Cannot be determined". Otherwise both sections are left out, and pN is left out of the pTNM, unless the case option "Print the lymph node and distant metastasis sections when none are recorded" is ticked (Phase 67, 2026-10-11; `docs/specs/nodes-and-metastasis-optional.md`).
 
 ## Agreed example — endometrium fixture 01
 
@@ -68,9 +69,6 @@ Margins
 Lymph nodes
 - Pelvic lymph nodes: 3 examined; 0 involved; includes sentinel lymph node(s)
 - Para-aortic lymph nodes: No lymph nodes submitted or found
-
-Distant metastasis
-- Distant metastasis: Not identified
 
 Additional findings
 - Atypical hyperplasia / endometrial intraepithelial neoplasia (EIN)
@@ -119,14 +117,8 @@ Microscopic findings
 Margins
 - Surgical margins: Uninvolved by GIST (8 mm from the gastric resection margin)
 
-Regional lymph nodes
-- Regional lymph nodes: No regional lymph nodes submitted or found
-
-Distant metastasis
-- Distant metastasis: Not applicable
-
 Pathological stage (AJCC 8th edition)
-- pTNM: pT2 pNX
+- pTNM: pT2
   - Stage group (if cM0): IA
 
 DIAGNOSIS:
@@ -134,7 +126,7 @@ STOMACH, wedge resection
 - GASTROINTESTINAL STROMAL TUMOUR, spindle cell type, 4.5 cm, mitotic count
   2 per 5 mm2
 - very low risk (Miettinen and Lasota 2006); margins clear
-- pT2 pNX (AJCC 8th edition), stage IA (if cM0)
+- pT2 (AJCC 8th edition), stage IA (if cM0)
 - KIT and DOG1 positive; molecular studies to follow
 
 COMMENT:
@@ -177,9 +169,6 @@ Regional lymph nodes
   - Apical lymph nodes: 1 examined; 0 involved
   - Extranodal extension: Not identified
   - Largest metastatic deposit: 6 mm
-
-Distant metastasis
-- Distant metastasis: Not applicable
 
 Pathological stage (AJCC 8th edition)
 - pTNM: pT3 pN1b

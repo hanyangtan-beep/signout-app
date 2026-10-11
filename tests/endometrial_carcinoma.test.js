@@ -76,7 +76,7 @@ test('example case: low-grade endometrioid IA2 NSMP', () => {
   assert.ok(out.synoptic.includes('- Myometrial invasion: Estimated less than 50% myometrial invasion\n  - Depth of myometrial invasion: 6 mm\n  - Myometrial thickness: 18 mm\n  - Percentage of myometrial invasion: 33%\n'));
   assert.equal(r['Mismatch repair (MMR) immunohistochemistry'], 'Intact nuclear expression of MLH1, PMS2, MSH2 and MSH6');
   assert.equal(r['Other immunohistochemistry'], 'ER and PR positive');
-  assert.deepEqual([...new Set(parseSynoptic(out.synoptic).map((x) => x.section))], ['Specimen and tumour', 'Microscopic findings', 'Margins', 'Lymph nodes', 'Distant metastasis', 'Additional findings']);
+  assert.deepEqual([...new Set(parseSynoptic(out.synoptic).map((x) => x.section))], ['Specimen and tumour', 'Microscopic findings', 'Margins', 'Lymph nodes', 'Additional findings']);
   assert.ok(out.synoptic.startsWith('Specimen and tumour\n- Procedure: Total hysterectomy and bilateral salpingo-oophorectomy; sentinel\n  lymph node biopsy\n'));
   assert.ok(out.synoptic.includes('\n\nMicroscopic findings\n- Histologic type: Endometrioid carcinoma\n- Histologic grade: FIGO grade 1 (endometrioid carcinoma)\n- Tumour histology:\n  Sections show an endometrioid carcinoma with a predominantly glandular architecture'));
   // The tumour histology paragraph is prose on one line; every other line holds 80 columns.
@@ -142,13 +142,13 @@ test('POLEmut carcinoma confined to a polyp: IAm, no nodes', () => {
   assert.ok(!rows(out)['Tumour histology'].includes('Myometrial invasion is by'), 'no invasion-pattern sentence without myoinvasion');
   assert.equal(rows(out)['POLE status'], 'Mutated (P286R)');
   assert.equal(rows(out)['Molecular classification'], 'POLE-mutated carcinoma');
-  assert.equal(rows(out)['Pelvic lymph nodes'], 'No lymph nodes submitted or found');
+  assert.equal(rows(out)['Pelvic lymph nodes'], undefined, 'no lymph node section without nodes (Phase 67)');
   assert.ok(flat(out.diagnosis).includes('confined to an endometrial polyp; no lymphovascular space invasion; cervix and adnexa uninvolved; molecular class POLEmut'));
   assert.equal(figo(out, 2009), 'IA - nodes not assessed');
   assert.equal(figo(out, 2023), 'IAm - POLEmut confined to the corpus (non-aggressive histotype)');
   assert.deepEqual(out.snippets, ['endometrium_pole_mut']);
   const pt = run(byName['03-polyp-polemut-iam'], { printPTNM: true });
-  assert.equal(rows(pt)['pTNM'], 'pT1a pNX');
+  assert.equal(rows(pt)['pTNM'], 'pT1a');
 });
 
 test('carcinosarcoma with para-aortic macrometastasis and omental deposit: IVB, MMR warning', () => {

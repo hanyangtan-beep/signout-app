@@ -196,11 +196,11 @@ export function nodeSide(v) {
 
 export function N(v) {
   const r = region(v);
-  if (r !== 'hn' && r !== 'trunk') return { cat: 'NX' };
+  if (r !== 'hn' && r !== 'trunk') return { cat: 'NX', none: !(int(v.nodesExamined) > 0) };
   const examined = int(v.nodesExamined);
   const involved = int(v.nodesInvolved);
   // No nodes submitted is the usual excision: pNX, and nothing to warn about.
-  if (examined === null || examined === 0) return { cat: 'NX' };
+  if (examined === null || examined === 0) return { cat: 'NX', none: true };
   if (involved === null) return { cat: 'NX', note: 'Number of involved lymph nodes not recorded; pN cannot be assigned.' };
   if (involved === 0) return { cat: 'N0' };
   const side = nodeSide(v);

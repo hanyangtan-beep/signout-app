@@ -57,7 +57,7 @@ test('template metadata and registration', () => {
   assert.deepEqual(schema.fields.find((f) => f.id === 'histType').options, ['Ductal carcinoma in situ (DCIS)', 'Paget disease', 'Encapsulated papillary carcinoma in situ', 'Solid papillary carcinoma in situ']);
 });
 
-test('example case: WLE, intermediate-grade DCIS 22 mm, no nodes -> pTis(DCIS) pNX, no pNX nag', () => {
+test('example case: WLE, intermediate-grade DCIS 22 mm, no nodes -> pTis(DCIS), no pNX nag', () => {
   const out = run({}, { printPTNM: true });
   const r = rows(out);
   assert.match(out.report, /^Breast, right, wide local excision\n/);
@@ -70,9 +70,9 @@ test('example case: WLE, intermediate-grade DCIS 22 mm, no nodes -> pTis(DCIS) p
   assert.equal(r['Nuclear grade'], 'Grade II (intermediate)');
   assert.equal(r['Necrosis'], 'Present, focal (small foci or single cell necrosis)');
   assert.equal(r['Nipple'], 'Not present in specimen');
-  assert.equal(r['Regional lymph nodes'], 'No lymph nodes submitted or found');
-  assert.equal(r['pTNM'], 'pTis(DCIS) pNX');
-  assert.equal(flatDx(out), 'BREAST, right, wide local excision - DUCTAL CARCINOMA IN SITU, intermediate grade, 22 mm; margins clear (closest 3 mm, anterior); no invasive carcinoma identified; see synoptic report - pTis(DCIS) pNX (AJCC 8th edition)');
+  assert.equal(r['Regional lymph nodes'], undefined, 'no lymph node section without nodes (Phase 67)');
+  assert.equal(r['pTNM'], 'pTis(DCIS)');
+  assert.equal(flatDx(out), 'BREAST, right, wide local excision - DUCTAL CARCINOMA IN SITU, intermediate grade, 22 mm; margins clear (closest 3 mm, anterior); no invasive carcinoma identified; see synoptic report - pTis(DCIS) (AJCC 8th edition)');
   assert.ok(!out.issues.some((i) => /^pNX/.test(i.message)), 'pNX is expected for pure DCIS without nodes');
   assert.ok(!/pTNM/.test(run({}).report), 'pTNM prints only with printPTNM');
   assert.match(out.report, /Sections show ductal carcinoma in situ of intermediate grade with cribriform and solid architecture, with focal necrosis and associated microcalcification, spanning 22 mm \(5 of 14 blocks\)\. The cribriform areas show rigid punched-out/);
@@ -111,8 +111,8 @@ test('03 Paget disease alone: blocks row not applicable, size cannot be determin
   assert.equal(r['Histologic type'], 'Paget disease');
   assert.equal(r['Size (extent) of DCIS'], 'Cannot be determined (Paget disease confined to the nipple epidermis)');
   assert.equal(r['Anterior margin'], "Involved by Paget's disease");
-  assert.equal(r['pTNM'], 'pTis(Paget) pNX');
-  assert.equal(flatDx(out), "BREAST, left, central excision with nipple - PAGET'S DISEASE OF THE NIPPLE, high grade; anterior margin involved by Paget's disease; other margins clear (closest 4 mm, superior); no invasive carcinoma identified; see synoptic report - pTis(Paget) pNX (AJCC 8th edition)");
+  assert.equal(r['pTNM'], 'pTis(Paget)');
+  assert.equal(flatDx(out), "BREAST, left, central excision with nipple - PAGET'S DISEASE OF THE NIPPLE, high grade; anterior margin involved by Paget's disease; other margins clear (closest 4 mm, superior); no invasive carcinoma identified; see synoptic report - pTis(Paget) (AJCC 8th edition)");
   assert.ok(info(out).some((m) => m === "Paget's disease at a margin: re-excision is usually recommended after breast-conserving surgery."));
   assert.ok(!info(out).some((m) => /Record the number of blocks/.test(m)), 'blocks nag suppressed for Paget');
   assert.ok(!info(out).some((m) => /No architectural pattern/.test(m)));

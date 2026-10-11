@@ -15,7 +15,7 @@
 // There is no separate narrative microscopy paragraph. Wording is protected by
 // tests/endometrial_carcinoma.test.js and tests/fixtures/endometrium - change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js';
+import { deriveTNM, stageLine, showNodes, showMets } from '../src/staging/index.js';
 import * as S from '../src/staging/endometrium.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { stripDot, checks } from './_house.js';
@@ -437,8 +437,8 @@ export function synoptic(part, ctx) {
       item('Ectocervical / vaginal cuff margin', vm === 'Uninvolved by carcinoma' && vmm !== null ? `Uninvolved by carcinoma (closest distance ${fmt(vmm)} mm)` : vm),
       item('Parametrial / paracervical margin', pm === 'Uninvolved by carcinoma' && pmm !== null ? `Uninvolved by carcinoma (closest distance ${fmt(pmm)} mm)` : pm)
     ] },
-    { heading: 'Lymph nodes', items: [nodesItem(v, 'pelvic'), nodesItem(v, 'pa')] },
-    { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] },
+    showNodes(st, ctx) ? { heading: 'Lymph nodes', items: [nodesItem(v, 'pelvic'), nodesItem(v, 'pa')] } : null,
+    showMets(st, ctx, metastasisValue(v)) ? { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] } : null,
     ctx?.options?.printPTNM ? { heading: `Pathological stage (${st.edition})`, items: [
       { label: 'pTNM', value: `${st.tnm}${st.overridden ? ` [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${(v.tnmOverrideReason || '').trim() ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : ''}`,
         sub: stageLine(st) ? [{ label: stageLine(st).split(': ')[0], value: stageLine(st).split(': ').slice(1).join(': ') }] : [] }

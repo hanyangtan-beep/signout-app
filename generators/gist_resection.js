@@ -12,7 +12,7 @@
 //   diagnosis  "(A) STOMACH, wedge resection - GASTROINTESTINAL STROMAL TUMOUR, spindle cell type, 4.5 cm, …"
 // Wording is protected by tests/gist_resection.test.js — change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js';
+import { deriveTNM, stageLine, showNodes, showMets } from '../src/staging/index.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { riskAssessment, gradeFromMitoses, mitoticClass, tFromSize, RISK_TABLE_SITES } from '../src/staging/gist.js';
 import { stripDot, checks } from './_house.js';
@@ -224,8 +224,8 @@ export function synoptic(part, ctx) {
       item('Molecular studies', molecularValue(v))
     ] },
     { heading: 'Margins', items: [item('Surgical margins', marginValue(v))] },
-    { heading: 'Regional lymph nodes', items: [nodes] },
-    { heading: 'Distant metastasis', items: [item('Distant metastasis', sites.length ? `${listJoin(sites)}${stripDot(v.metastasisDetail) ? ` (${stripDot(v.metastasisDetail)})` : ''}` : 'Not applicable')] },
+    showNodes(st, ctx) ? { heading: 'Regional lymph nodes', items: [nodes] } : null,
+    showMets(st, ctx) || sites.length ? { heading: 'Distant metastasis', items: [item('Distant metastasis', sites.length ? `${listJoin(sites)}${stripDot(v.metastasisDetail) ? ` (${stripDot(v.metastasisDetail)})` : ''}` : 'Not applicable')] } : null,
     { heading: `Pathological stage (${st.edition})`, items: [
       { label: 'pTNM', value: `${st.tnm}${st.overridden ? ` [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${(v.tnmOverrideReason || '').trim() ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : ''}`,
         sub: ctx?.options?.stageGroup === false || !stageLine(st) ? [] : [{ label: stageLine(st).split(': ')[0], value: stageLine(st).split(': ').slice(1).join(': ') }] }

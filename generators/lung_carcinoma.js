@@ -16,7 +16,7 @@
 //   comment    the completion-resection staging sentence when a prior accession is typed
 // Wording is protected by tests/lung_carcinoma.test.js and tests/fixtures/lung - change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js';
+import { deriveTNM, stageLine, showNodes, showMets } from '../src/staging/index.js';
 import * as S from '../src/staging/lung.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { typeMorphology, patternMorphology, STAS_SENTENCE, ADENO_CYTOLOGY } from './lung_morphology.js';
@@ -429,8 +429,8 @@ export function synoptic(part, ctx) {
       item('Parenchymal margin', marginValue(v.parenchymalMargin, num(v.parenchymalMarginMm))),
       !na(v.otherMargin) ? item('Other tissue margin(s)', `${v.otherMargin}${stripDot(v.otherMarginDetail) ? ` (${stripDot(v.otherMarginDetail)})` : ''}`) : null
     ] },
-    { heading: 'Lymph nodes', items: [nodesItem(v)] },
-    { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] },
+    showNodes(st, ctx) ? { heading: 'Lymph nodes', items: [nodesItem(v)] } : null,
+    showMets(st, ctx, metastasisValue(v)) ? { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] } : null,
     ctx?.options?.printPTNM ? { heading: `Pathological stage (${st.edition})`, items: [
       { label: 'pTNM', value: `${tnmText(st, v, ctx)}${st.overridden ? ` [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${(v.tnmOverrideReason || '').trim() ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : ''}`,
         sub: stageLine(st) ? [{ label: stageLine(st).split(': ')[0], value: stageLine(st).split(': ').slice(1).join(': ') }] : [] }

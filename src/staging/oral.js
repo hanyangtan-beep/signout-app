@@ -197,7 +197,7 @@ export function eneState(v) {
 function oralN(v) {
   const examined = int(v.nodesExamined);
   const involved = int(v.nodesInvolved);
-  if (examined === null || examined === 0) return { cat: 'NX' };
+  if (examined === null || examined === 0) return { cat: 'NX', none: true };
   if (involved === null) return { cat: 'NX', note: 'Number of involved lymph nodes not recorded; pN cannot be assigned.' };
   if (involved === 0) return { cat: 'N0' };
   return pathologicalN({ count: involved, laterality: nodeSide(v), ene: eneState(v), sizeMm: num(v.largestDepositMm) });
@@ -208,7 +208,7 @@ export const HPV_MIN_PN0 = 6;
 function hpvN(v) {
   const examined = int(v.nodesExamined);
   const involved = int(v.nodesInvolved);
-  if (examined === null || examined === 0) return { cat: 'NX' };
+  if (examined === null || examined === 0) return { cat: 'NX', none: true };
   if (involved === null) return { cat: 'NX', note: 'Number of involved lymph nodes not recorded; pN cannot be assigned.' };
   if (involved === 0) {
     if (examined < HPV_MIN_PN0) return { cat: 'NX', note: `A minimum of ${HPV_MIN_PN0} lymph nodes is required to assign pN0 status (AJCC 9th edition); fewer were examined.` };
@@ -226,7 +226,7 @@ export function N(v) {
   const s = system(v);
   if (s === 'oral') return oralN(v);
   if (s === 'hpv') return hpvN(v);
-  return { cat: 'NX' };
+  return { cat: 'NX', none: !(int(v.nodesExamined) > 0) };
 }
 
 // ---------- M, descriptors, stage ----------

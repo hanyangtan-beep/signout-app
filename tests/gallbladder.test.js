@@ -18,7 +18,7 @@ test('schema shape: metadata key order, layout and field census', () => {
   assert.equal(schema.kind, 'cancer resection');
   assert.equal(schema.system, 'Hepatobiliary');
   assert.equal(schema.defaultParts, 1);
-  assert.equal(schema.version, '2026.09');
+  assert.equal(schema.version, '2026.10');
   assert.equal(schema.source.stagingProtocol, 'gallbladder');
   assert.deepEqual(Object.keys(schema).slice(0, 11), ['id', 'version', 'name', 'shortName', 'label', 'organ', 'system', 'kind', 'layout', 'rank', 'aliases']);
   assert.deepEqual(schema.layout, { macroGroups: ['Specimen and tumour'], macroFields: ['specimenName'], pack: true });

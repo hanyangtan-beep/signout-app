@@ -17,7 +17,7 @@ test('schema shape: metadata key order, layout and field census', () => {
   assert.equal(schema.kind, 'cancer resection');
   assert.equal(schema.system, 'GI');
   assert.equal(schema.defaultParts, 1);
-  assert.equal(schema.version, '2026.09');
+  assert.equal(schema.version, '2026.10');
   assert.equal(schema.source.stagingProtocol, 'appendix');
   assert.deepEqual(Object.keys(schema).slice(0, 11), ['id', 'version', 'name', 'shortName', 'label', 'organ', 'system', 'kind', 'layout', 'rank', 'aliases']);
   assert.deepEqual(schema.layout, { macroGroups: ['Specimen and tumour'], macroFields: ['specimenName'], pack: true });
@@ -60,7 +60,7 @@ test('example report: pinned wording (appendectomy, T2 N0)', () => {
   assert.ok(r.includes('- Proximal margin: Uninvolved by invasive carcinoma, 15 mm'));
   assert.ok(r.includes('- Mesenteric margin: Uninvolved by invasive carcinoma, 3 mm'));
   assert.ok(r.includes('- Regional lymph nodes: 12 examined; 0 involved'));
-  assert.ok(r.includes('- Distant metastasis: Not applicable'));
+  assert.ok(!r.includes('Distant metastasis'), 'no distant metastasis section without a recorded metastasis (Phase 67)');
   assert.ok(r.includes('- pTNM: pT2 pN0'));
   assert.ok(r.includes('- Stage group (if cM0): I'));
   assert.ok(r.includes('- Appendicitis'));

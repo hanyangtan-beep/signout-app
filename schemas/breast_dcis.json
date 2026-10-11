@@ -1,6 +1,6 @@
 {
   "id": "breast_dcis",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Breast DCIS resection",
   "shortName": "Breast · DCIS resection",
   "label": "DCIS",
@@ -127,6 +127,9 @@
     },
     {
       "$use": "printPTNM"
+    },
+    {
+      "$use": "printNodesMets"
     }
   ],
   "fields": [

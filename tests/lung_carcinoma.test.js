@@ -100,7 +100,7 @@ test('nodes: station table drives N1 / N2a / N2b / N3 and the diagnosis node lin
   assert.equal(n('7: 1/2; 10R: 0/2'), 'pT2a pN2a', 'single N2 station');
   assert.equal(n('7: 1/2; 4R: 1/1'), 'pT2a pN2b', 'multiple N2 stations');
   assert.equal(n('4L: 1/1; 10R: 0/2'), 'pT2a pN3', 'contralateral mediastinal node');
-  assert.equal(n(''), 'pT2a pNX');
+  assert.equal(n(''), 'pT2a');
   assert.match(flatDx(run({ nodeStations: '7: 1/2; 4R: 1/1; 10R: 0/2' })), /2 of 5 regional lymph nodes involved \(stations 7 and 4R\)/);
   assert.ok(errs(run({ nodeStations: 'seven: one of two' })).some((m) => /not understood/.test(m)));
 });
@@ -219,7 +219,7 @@ test('frozen link: no side or lobe on the frozen part gives "Not specified" and 
   assert.ok(warns(out).some((m) => /^Choose the lobe/.test(m)));
 });
 
-test('01 frozen -> synoptic linked pair: one letter, letters dropped, the frozen line defers to the synoptic, pT1a pNX IA1', () => {
+test('01 frozen -> synoptic linked pair: one letter, letters dropped, the frozen line defers to the synoptic, pT1a IA1', () => {
   const fs_ = registry.frozen_section;
   const frozenValues = { ...defaults(fs_.schema), specimenName: 'Left lower lobe wedge', scenario: 'Lung wedge / nodule', luSide: 'Left', luLobe: 'Lower lobe', luSpecimen: 'Wedge excision', luSize: '6 x 3 x 2', luNoduleCount: '1', luNoduleCm: '0.8', luMarginCm: '0.5', luPleuraGross: 'Puckered', lungResult: 'Adenocarcinoma', luPattern: 'acinar predominant', lungMargin: 'Negative', luBlocks: '2' };
   const patch = prefillFromFrozen(frozenValues);
@@ -240,8 +240,8 @@ test('01 frozen -> synoptic linked pair: one letter, letters dropped, the frozen
   assert.equal(r['Tumour size'], '8 mm in greatest dimension');
   assert.equal(r['Histologic grade'], 'Grade 2 (IASLC 2020; acinar predominant, no high-grade pattern)');
   assert.equal(r['Parenchymal margin'], 'Uninvolved by invasive carcinoma (closest distance 5 mm)');
-  assert.equal(r['pTNM'], 'pT1a pNX');
-  assert.match(flatDx(out), /^LUNG, left lower lobe, wedge excision x frozen section - INVASIVE ADENOCARCINOMA, acinar predominant, 8 mm, visceral pleura not invaded; parenchymal margin clear; see synoptic report - pT1a pNX \(AJCC 9th edition\), stage IA1 \(if cM0\)$/);
+  assert.equal(r['pTNM'], 'pT1a');
+  assert.match(flatDx(out), /^LUNG, left lower lobe, wedge excision x frozen section - INVASIVE ADENOCARCINOMA, acinar predominant, 8 mm, visceral pleura not invaded; parenchymal margin clear; see synoptic report - pT1a \(AJCC 9th edition\), stage IA1 \(if cM0\)$/);
   assert.equal((out.diagnosis.match(/wedge/gi) || []).length, 1, 'no second head line for the synoptic part');
   // A second letter (a separate node) restores the letters; both A parts sit under one "(A)".
   const two = generateCase({ frozen_section: fs_, lung_carcinoma: registry.lung_carcinoma }, { ...cs, parts: relabel([...cs.parts, { templateId: 'frozen_section', values: { ...defaults(fs_.schema), specimenName: 'Station 11L lymph node', scenario: 'Lymph node', nodeResult: 'Negative' } }]) });

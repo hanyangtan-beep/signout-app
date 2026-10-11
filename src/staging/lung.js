@@ -146,7 +146,7 @@ export function N(v) {
   const direct = v.nodeDirectExtension === true;
   if (n.rows.length === 0) {
     if (direct) return { cat: 'N1', note: 'Direct extension of the primary tumour into a hilar / intrapulmonary node counts as pN1; no separate nodes recorded.' };
-    return { cat: 'NX', note: n.bad.length ? `Lymph node stations not understood: ${n.bad.join('; ')}. Use "7: 2/3; 10R: 0/2".` : undefined };
+    return { cat: 'NX', none: !n.bad.length, note: n.bad.length ? `Lymph node stations not understood: ${n.bad.join('; ')}. Use "7: 2/3; 10R: 0/2".` : undefined };
   }
   const pos = n.rows.filter((r) => r.involved > 0);
   const note = n.bad.length ? `Some lymph node entries were not understood and are ignored: ${n.bad.join('; ')}.` : undefined;

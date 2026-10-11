@@ -63,8 +63,8 @@ test('the example: a solitary pT1b HCC on a hepatitis B cirrhosis', () => {
   const x = rows(r);
   assert.equal(x['Tumour size'], '3.2 cm (largest tumour, greatest dimension)');
   assert.equal(x['Parenchymal margin'], 'Uninvolved by invasive carcinoma, 8 mm');
-  assert.equal(x['Regional lymph nodes'], 'None submitted (0 examined)');
-  assert.equal(x.pTNM, 'pT1b pNX');
+  assert.equal(x['Regional lymph nodes'], undefined, 'no lymph node section without nodes (Phase 67)');
+  assert.equal(x.pTNM, 'pT1b');
   assert.match(r.synoptic, /Additional findings\n- Cirrhosis \(Ishak stage 6\/6\)\n- Chronic hepatitis \(hepatitis B\)/);
   assert.deepEqual(r.issues, []);
 });
@@ -127,10 +127,10 @@ test('pN, pM, the y descriptor and the stage groups', () => {
   assert.equal(tnm({ ...N0, distantMets: ['Other (specify)'], distantDetail: 'lung' }).stage, 'IVB');
   assert.equal(tnm({}).stage, null, 'no stage group without pN');
   const treated = tnm({ treatmentEffect: 'Incomplete necrosis (viable tumour present)', necrosisPct: 60, treatment: 'TACE', tumourSizeCm: 1.8 });
-  assert.equal(treated.tnm, 'ypT1a ypNX');
+  assert.equal(treated.tnm, 'ypT1a');
   const complete = tnm({ treatmentEffect: 'Complete necrosis (no viable tumour)', treatment: 'TACE' });
-  assert.equal(complete.tnm, 'ypT0 ypNX');
-  assert.equal(tnm({ recurrent: true }).tnm, 'rpT1b pNX');
+  assert.equal(complete.tnm, 'ypT0');
+  assert.equal(tnm({ recurrent: true }).tnm, 'rpT1b');
 });
 
 // ---------- printed text ----------
@@ -160,7 +160,7 @@ test('synoptic element order follows the QMH GI-HCC page (docs/reference/qmh/hcc
   for (const h of ['Histologic Type', 'Histologic Grade', 'Tumor Extension', 'Satellitosis', 'Vascular Invasion', 'Perineural Invasion', 'Treatment Effect']) {
     assert.ok(page.toLowerCase().includes(h.toLowerCase()), `${h} is on the saved QMH page`);
   }
-  const ours = Object.keys(rows(run({ otherMargin: 'Uninvolved by invasive carcinoma (specify distance)', otherMarginDetail: 'hepatic vein', otherMarginMm: 12, ...N0 })));
+  const ours = Object.keys(rows(run({ otherMargin: 'Uninvolved by invasive carcinoma (specify distance)', otherMarginDetail: 'hepatic vein', otherMarginMm: 12, ...N0 }, { printNodesMets: true })));
   let cursor = -1;
   for (const label of QMH) {
     const idx = ours.indexOf(label);

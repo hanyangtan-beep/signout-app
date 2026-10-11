@@ -118,7 +118,7 @@ test('03: serous borderline with non-invasive implants prints no stage, FIGO IIB
   assert.equal(r['Histologic grade'], 'Not applicable (borderline tumour)');
   assert.equal(r['Implants'], 'Present, non-invasive epithelial (pelvic peritoneum)');
   // Borderline tumours are staged (CAP / AJCC 8th); as elsewhere the stage prints only when printPTNM is on.
-  assert.equal(r['pTNM'], 'pT2b pNX');
+  assert.equal(r['pTNM'], 'pT2b');
   assert.ok(!('pTNM' in rows(run(byName['03-serous-borderline-implants-cystectomy']))), 'default options: no stage printed');
   assert.match(flat(out.diagnosis), /^\(A\) OVARY, left, cystectomy - SEROUS BORDERLINE TUMOUR, 60 mm, received fragmented; see synoptic report - non-invasive epithelial implants, pelvic peritoneum; involving the pelvic peritoneum/);
   assert.equal(figo(out), 'IIB');
@@ -128,7 +128,7 @@ test('04: unilateral expansile mucinous carcinoma is pT1a / IA with the metastas
   const out = run(byName['04-mucinous-expansile-ia'], { printPTNM: true });
   const r = rows(out);
   assert.equal(r['Histologic grade'], 'Low grade, growth pattern-based (expansile growth or infiltrative growth in 10% or less)');
-  assert.equal(r['pTNM'], 'pT1a pNX');
+  assert.equal(r['pTNM'], 'pT1a');
   assert.equal(r['Stage group (if cM0)'], 'IA');
   assert.match(out.synoptic, /Invasion is expansile \(confluent\)/);
   assert.ok(info(out).some((m) => /exclude a metastasis/.test(m)));
@@ -139,7 +139,7 @@ test('05: endometrioid grade 2 with surface involvement is pT1c2 / IC2', () => {
   const out = run(byName['05-endometrioid-g2-endometriosis-ic2'], { printPTNM: true });
   const r = rows(out);
   assert.equal(r['Histologic grade'], 'FIGO grade 2 (endometrioid carcinoma)');
-  assert.equal(r['pTNM'], 'pT1c2 pNX');
+  assert.equal(r['pTNM'], 'pT1c2');
   assert.equal(figo(out), 'IC2');
   assert.match(flat(out.diagnosis), /ENDOMETRIOID CARCINOMA, FIGO grade 2, 70 mm, ovarian surface involved; see synoptic report/);
   assert.match(out.synoptic, /p53 shows a wild-type pattern/);
@@ -151,12 +151,12 @@ test('06: primary peritoneal HGSC with normal adnexa cannot be stage I; pelvic d
   const out = run(byName['06-primary-peritoneal-hgsc-iib'], { printPTNM: true });
   const r = rows(out);
   assert.equal(r['Tumour site'], 'Primary peritoneum');
-  assert.equal(r['pTNM'], 'pT2b pNX');
+  assert.equal(r['pTNM'], 'pT2b');
   assert.equal(figo(out), 'IIB');
   assert.ok(info(out).some((m) => /Primary peritoneal carcinoma: stage cannot be I/.test(m)));
   assert.match(flat(out.diagnosis), /HIGH-GRADE SEROUS CARCINOMA, primary peritoneal, 30 mm; see synoptic report/);
   const noEvidence = run({ ...byName['06-primary-peritoneal-hgsc-iib'], otherInvolvement: ['Not identified'], peritonealFluid: 'Not submitted / unknown' }, { printPTNM: true });
-  assert.equal(rows(noEvidence)['pTNM'], 'pTX pNX');
+  assert.equal(rows(noEvidence)['pTNM'], 'pTX');
 });
 
 test('primary-site rule (WHO 5th) and the mismatch warning', () => {
@@ -213,7 +213,7 @@ test('synoptic element order follows the QMH GYN-Ovary page (text-dump order; th
     'Histologic type', 'Histologic grade', 'Lymphovascular invasion', 'Largest extrapelvic peritoneal focus', 'Peritoneal / ascitic fluid', 'Chemotherapy response score', 'Other tissue / organ involvement',
     'Ectocervical / vaginal cuff margin', 'Parametrial / paracervical margin', 'Number examined', 'With metastasis more than 10 mm', 'With metastasis 10 mm or less', 'With isolated tumour cells only (0.2 mm or less)', 'Largest metastatic deposit', 'Largest involved lymph node', 'Extranodal extension',
     'Distant metastasis', 'pTNM'];
-  const ours = Object.keys(rows(run(byName['02-hgsc-bilateral-nact-iiic'], { printPTNM: true })));
+  const ours = Object.keys(rows(run(byName['02-hgsc-bilateral-nact-iiic'], { printPTNM: true, printNodesMets: true })));
   let cursor = -1;
   for (const label of QMH) {
     const idx = ours.indexOf(label);

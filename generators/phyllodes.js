@@ -2,7 +2,7 @@
 // Element order follows the QMH BREAST-Phyllodes page (CAP Phyllodes Tumor 4.1.0.0); house exceptions: a
 // Specimen and tumour section, the Tumour histology paragraph after the histologic type, the epithelial
 // component and the margin walker text. pTNM prints only with the printPTNM option, and only for malignant phyllodes tumour (AJCC staging does not apply to benign or borderline tumours).
-import { deriveTNM, stageLine } from '../src/staging/index.js';
+import { deriveTNM, stageLine, showNodes, showMets } from '../src/staging/index.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { phyllodesMorphology } from './breast_morphology.js';
 import {
@@ -143,8 +143,8 @@ export function synoptic(part, ctx) {
       ] : [])
     ] },
     { heading: 'Surgical margins', items: marginItems(v.margins, 'tumour') },
-    { heading: 'Regional lymph nodes', items: nodeItems(v, { simple: true }) },
-    { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] },
+    showNodes(st, ctx) ? { heading: 'Regional lymph nodes', items: nodeItems(v, { simple: true }) } : null,
+    showMets(st, ctx, metastasisValue(v)) ? { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] } : null,
     ctx?.options?.printPTNM ? (gradeOf(v) === 'malignant' || noTumour(v) ? ptnmSection(st, v, stageLine) : { heading: `Pathological stage (${st.edition})`, items: [item('pTNM', `Not applicable (${gradeOf(v) || 'benign'} phyllodes tumour; AJCC staging applies to malignant phyllodes tumour only)`)] }) : null,
     { heading: 'Additional findings', items: [
       item('Additional pathologic findings', extra.length ? extra.join(', ') : 'Not identified'),

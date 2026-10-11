@@ -9,6 +9,8 @@
 // stageGroup also receives the part values for protocols whose groups depend on more than TNM
 // (GIST: site and mitotic rate).
 // Categories are bare ('T3', 'N1b', 'M1a', 'Tis', 'TX', 'N0', 'M-') — the prefix is added here.
+// N() returns `none: true` when no regional lymph node was examined (Phase 67, user request 2026-10-11):
+// the category stays NX for the stage group but pN is left out of the printed pTNM.
 
 import * as colorectal from './colorectal.js';
 import * as gist from './gist.js';
@@ -97,13 +99,27 @@ export function deriveTNM(values, protocol = 'colorectal', opts = {}) {
     else notes.push(`Override "${ov}" could not be parsed; derived TNM used.`);
   }
   const prefix = descriptors.includes('y') ? 'yp' : 'p';
+  // pN prints only with a clear nodal input: with no node examined it is left out, unless a typed override or a
+  // prior specimen supplies a category (a prior pNX adds nothing). pM prints only for M1 (M- is never printed).
+  const noNodes = !!n.none;
+  const omitN = noNodes && cats.N === 'NX' && !overridden;
   // r prefix for recurrence, (m) suffix on T for multiple synchronous primaries; the y prefix folds into 'yp'.
-  const parts = [`${descriptors.includes('r') ? 'r' : ''}${prefix}${cats.T}${descriptors.includes('m') ? '(m)' : ''}`, `${prefix}${cats.N}`];
+  const parts = [`${descriptors.includes('r') ? 'r' : ''}${prefix}${cats.T}${descriptors.includes('m') ? '(m)' : ''}`];
+  if (!omitN) parts.push(`${prefix}${cats.N}`);
   if (cats.M !== 'M-') parts.push(`${prefix}${cats.M}`);
   const tnm = parts.join(' ');
   const stage = P.stageGroup(cats.T, cats.N, cats.M, values);
-  return { ...cats, descriptors, prefix, tnm, stage, edition: typeof P.edition === 'function' ? P.edition(values) : P.edition, notes, overridden, derived, origin, prior };
+  return { ...cats, descriptors, prefix, tnm, stage, edition: typeof P.edition === 'function' ? P.edition(values) : P.edition, notes, overridden, derived, origin, prior, noNodes };
 }
+
+// The synoptic Lymph nodes and Distant metastasis sections print only with a clear input - a node examined
+// (or nodal disease such as tumour deposits); a recorded distant metastasis (pM1) or any printed value other than
+// the negatives below - or when the case option `printNodesMets` asks for the "none submitted" /
+// "not applicable" lines (Phase 67).
+const NO_METS = new Set(['', 'not applicable', 'not identified']);
+export const showNodes = (st, ctx) => !st.noNodes || !!ctx?.options?.printNodesMets;
+export const showMets = (st, ctx, value = '') => st.derived.M !== 'M-' || !!ctx?.options?.printNodesMets
+  || !NO_METS.has(String(value ?? '').trim().toLowerCase());
 
 /** "pT3 pN1b" -> "pT3 pN1b" is already readable; this adds the stage group line used in reports. */
 export function stageLine(result) {

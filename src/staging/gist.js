@@ -32,7 +32,7 @@ export function T(v) {
 export function N(v) {
   const examined = int(v.nodesExamined);
   const positive = int(v.nodesPositive);
-  if (examined === null || examined === 0) return { cat: 'NX', note: 'No regional lymph nodes submitted; pN not assigned (nodal metastasis is rare in GIST and the stage group assumes N0).' };
+  if (examined === null || examined === 0) return { cat: 'NX', none: true, note: 'No regional lymph nodes submitted; pN not assigned (nodal metastasis is rare in GIST and the stage group assumes N0).' };
   if (positive === null) return { cat: 'NX', note: 'Number of involved nodes not recorded; pN cannot be assigned.' };
   return { cat: positive > 0 ? 'N1' : 'N0' };
 }

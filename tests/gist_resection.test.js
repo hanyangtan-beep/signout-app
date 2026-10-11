@@ -84,14 +84,8 @@ test('fixture: gastric spindle-cell very-low-risk GIST (example case)', () => {
     'Margins',
     '- Surgical margins: Uninvolved by GIST (8 mm from the gastric resection margin)',
     '',
-    'Regional lymph nodes',
-    '- Regional lymph nodes: No regional lymph nodes submitted or found',
-    '',
-    'Distant metastasis',
-    '- Distant metastasis: Not applicable',
-    '',
     'Pathological stage (AJCC 8th edition)',
-    '- pTNM: pT2 pNX',
+    '- pTNM: pT2',
     '  - Stage group (if cM0): IA'
   ].join('\n'));
   assert.equal(out.diagnosis, [
@@ -99,7 +93,7 @@ test('fixture: gastric spindle-cell very-low-risk GIST (example case)', () => {
     '- GASTROINTESTINAL STROMAL TUMOUR, spindle cell type, 4.5 cm, mitotic count',
     '  2 per 5 mm2',
     '- very low risk (Miettinen and Lasota 2006); margins clear',
-    '- pT2 pNX (AJCC 8th edition), stage IA (if cM0)',
+    '- pT2 (AJCC 8th edition), stage IA (if cM0)',
     '- KIT and DOG1 positive; molecular studies to follow'
   ].join('\n'));
   assert.deepEqual(out.issues, []);
@@ -179,8 +173,8 @@ test('treated case with complete response: ypT0, tumour bed wording, risk not ap
   assert.equal(r['Risk assessment (Miettinen and Lasota 2006)'], 'Not applicable (complete response to treatment)');
   assert.equal(r['Treatment effect'], 'Present (0% viable tumour)');
   assert.equal(r['Presurgical treatment'], 'Systemic therapy performed (imatinib or other tyrosine kinase inhibitor) (imatinib 9 months)');
-  assert.equal(r['pTNM'], 'ypT0 ypNX');
-  assert.equal(out.diagnosis, 'STOMACH, wedge resection\n- NO RESIDUAL GASTROINTESTINAL STROMAL TUMOUR (complete response to treatment)\n- margins clear\n- ypT0 ypNX (AJCC 8th edition)');
+  assert.equal(r['pTNM'], 'ypT0');
+  assert.equal(out.diagnosis, 'STOMACH, wedge resection\n- NO RESIDUAL GASTROINTESTINAL STROMAL TUMOUR (complete response to treatment)\n- margins clear\n- ypT0 (AJCC 8th edition)');
   assert.deepEqual(out.issues, []);
 });
 
@@ -227,8 +221,8 @@ test('options: no macro, stage group off, section headers; multi-part headings; 
   assert.equal(b.macro, ''); assert.equal(b.blockKey, '');
   const c = run({}, { stageGroup: false });
   assert.ok(!c.synoptic.includes('Stage group'));
-  assert.ok(c.synoptic.endsWith('- pTNM: pT2 pNX'));
-  assert.ok(c.diagnosis.endsWith('- pT2 pNX (AJCC 8th edition)\n- KIT and DOG1 positive; molecular studies to follow'));
+  assert.ok(c.synoptic.endsWith('- pTNM: pT2'));
+  assert.ok(c.diagnosis.endsWith('- pT2 (AJCC 8th edition)\n- KIT and DOG1 positive; molecular studies to follow'));
   const d = run({}, { includeHeader: true }).report;
   assert.ok(!d.includes('MICROSCOPIC EXAMINATION:'));
   assert.ok(d.indexOf('BLOCK KEY:') < d.indexOf('MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT:') && d.indexOf('SYNOPTIC REPORT:') < d.indexOf('DIAGNOSIS:'));
@@ -238,5 +232,5 @@ test('options: no macro, stage group off, section headers; multi-part headings; 
   assert.match(e.macro, /\(B\) Received in formalin is an excision of omental \/ mesenteric mass \(omentum\) measuring 20 x 15 x 10 mm\./);
   assert.equal(e.microscopy, e.synoptic);
   assert.match(e.synoptic, /\(B\)[\s\S]*- Risk assessment \(Miettinen and Lasota 2006\): None \(omentum, 1\.5 cm, 0 mitoses\n  per 5 mm2\)/);
-  assert.match(e.diagnosis, /\n\n\(B\) OMENTUM, excision of omental \/ mesenteric mass\n- GASTROINTESTINAL STROMAL TUMOUR, spindle cell type, 1\.5 cm, mitotic count\n  0 per 5 mm2\n- no appreciable risk \(Miettinen and Lasota 2006\); margins clear\n- pT1 pNX \(AJCC 8th edition\), stage IA \(if cM0\)/);
+  assert.match(e.diagnosis, /\n\n\(B\) OMENTUM, excision of omental \/ mesenteric mass\n- GASTROINTESTINAL STROMAL TUMOUR, spindle cell type, 1\.5 cm, mitotic count\n  0 per 5 mm2\n- no appreciable risk \(Miettinen and Lasota 2006\); margins clear\n- pT1 \(AJCC 8th edition\), stage IA \(if cM0\)/);
 });

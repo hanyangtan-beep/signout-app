@@ -63,7 +63,7 @@ test('example case: tumour histology paragraph replaces the narrative microscopy
 });
 
 test('example case: synoptic block mirrors the QMH colon elements in order with derived pTNM and stage', () => {
-  const out = run();
+  const out = run({}, { printNodesMets: true });
   const lines = out.synoptic.split('\n');
   const rows = parseSynoptic(out.synoptic);
   // QMH order, with the single agreed exception: Tumour histology sits after Histologic grade.
@@ -84,6 +84,7 @@ test('example case: synoptic block mirrors the QMH colon elements in order with 
   // The tumour histology paragraph is prose on one line; every other line holds 80 columns.
   assert.equal(out.synoptic.split('\n').filter((l) => l.length > 80 && !/^ {2}(?!- )/.test(l)).length, 0);
   assert.ok(!run({}, { stageGroup: false }).synoptic.includes('Stage group'));
+  assert.ok(!run().synoptic.includes('Distant metastasis'), 'the section prints only with the option or a recorded metastasis (Phase 67)');
 });
 
 test('example case: diagnosis line', () => {

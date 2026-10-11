@@ -1,6 +1,6 @@
 {
   "id": "ampulla_carcinoma",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Ampullary carcinoma resection (Whipple)",
   "shortName": "Ampulla of Vater · carcinoma resection",
   "label": "Ampulla Ca",
@@ -125,6 +125,9 @@
     },
     {
       "$use": "printPTNM"
+    },
+    {
+      "$use": "printNodesMets"
     }
   ],
   "fields": [

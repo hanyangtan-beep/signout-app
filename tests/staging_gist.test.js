@@ -101,11 +101,11 @@ test('risk: sites without their own column use the small-intestinal criteria wit
 
 test('deriveTNM with the gist protocol: prefix, descriptors, stage line and override', () => {
   const st = deriveTNM(v(), 'gist');
-  assert.equal(st.tnm, 'pT2 pNX'); assert.equal(st.stage, 'IA'); assert.equal(st.edition, 'AJCC 8th edition');
+  assert.equal(st.tnm, 'pT2'); assert.equal(st.stage, 'IA'); assert.equal(st.edition, 'AJCC 8th edition');
   assert.equal(stageLine(st), 'Stage group (if cM0): IA');
   assert.deepEqual(descriptors(v({ focality: 'Multifocal', recurrent: true, treatmentEffect: 'Present' })), ['m', 'r', 'y']);
-  assert.equal(deriveTNM(v({ focality: 'Multifocal', treatmentEffect: 'Present' }), 'gist').tnm, 'ypT2(m) ypNX');
+  assert.equal(deriveTNM(v({ focality: 'Multifocal', treatmentEffect: 'Present' }), 'gist').tnm, 'ypT2(m)');
   const ov = deriveTNM(v({ tnmOverride: 'pT3 pN0', tnmOverrideReason: 'size after fixation' }), 'gist');
   assert.equal(ov.tnm, 'pT3 pN0'); assert.equal(ov.stage, 'IB'); assert.ok(ov.overridden);
-  assert.equal(deriveTNM(v({ distantMetastasis: ['Liver'] }), 'gist').tnm, 'pT2 pNX pM1');
+  assert.equal(deriveTNM(v({ distantMetastasis: ['Liver'] }), 'gist').tnm, 'pT2 pM1');
 });

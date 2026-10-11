@@ -141,7 +141,7 @@ test('T and N (AJCC 8th): size bands, (m) for multifocal, T4b skin, ypT after th
   assert.equal(t({ nodesItc: '1' }), 'pT2 pN0(i+)(sn)');
   assert.equal(t({ nodeSampling: 'Axillary dissection', nodesExamined: '14', nodesSentinel: '', nodesMacro: '4', depositMm: '12' }), 'pT2 pN2a');
   assert.equal(t({ nodeSampling: 'Axillary dissection', nodesExamined: '18', nodesSentinel: '', nodesMacro: '10', depositMm: '12' }), 'pT2 pN3a');
-  assert.equal(t({ nodeSampling: 'No nodes submitted', nodesExamined: '', nodesSentinel: '' }), 'pT2 pNX');
+  assert.equal(t({ nodeSampling: 'No nodes submitted', nodesExamined: '', nodesSentinel: '' }), 'pT2');
   assert.equal(t({ treatmentEffect: 'Probable or definite response to presurgical therapy in the invasive carcinoma', millerPayne: 'Grade 3' }), 'ypT2 ypN0(sn)');
   assert.match(flatDx(run({ nodeSampling: 'Axillary dissection', nodesExamined: '14', nodesSentinel: '', nodesMacro: '4', depositMm: '12', ene: 'Present' })), /4 of 14 axillary lymph nodes involved \(macrometastases up to 12 mm; extranodal extension present\)/);
   assert.match(flatDx(run(byName['05-mastectomy-t4b-skin-ulceration-involved-margin-n1a'].patch)), /3 of 12 lymph nodes involved \(macrometastases in 2 and micrometastasis in 1; largest deposit 9 mm\)/);
@@ -193,7 +193,7 @@ test('report options: macro off, header on, single part has no letters; a typed 
 test('synoptic element order follows the QMH BREAST-Cancers page (docs/reference/qmh/breast.txt), house exceptions noted', () => {
   const QMH = ['Procedure', 'Specimen laterality', 'Tumour site', 'Tumour size', 'Histologic type', 'Tumour focality', 'Histologic grade', 'Tubule formation', 'Nuclear pleomorphism', 'Mitotic rate',
     'Tumour extension', 'Lymphatic and/or vascular invasion', 'Dermal lymphatic and/or vascular invasion', 'Breast treatment effect', 'Ductal carcinoma in situ', 'Anterior margin', 'Regional lymph nodes', 'Extranodal extension', 'Distant metastasis', 'pTNM'];
-  const ours = Object.keys(rows(run(byName['03-mastectomy-lobular-multifocal-axillary-n2a-ene'].patch, { printPTNM: true })));
+  const ours = Object.keys(rows(run(byName['03-mastectomy-lobular-multifocal-axillary-n2a-ene'].patch, { printPTNM: true, printNodesMets: true })));
   let cursor = -1;
   for (const label of QMH) {
     const idx = ours.indexOf(label);

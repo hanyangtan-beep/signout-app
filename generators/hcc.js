@@ -16,7 +16,7 @@
 // Morphology sentences are grounded in docs/reference/hcc-morphology.md; printed text is released-report prose.
 // Pure functions: (part, ctx) -> string. Wording is protected by tests/hcc.test.js — change it only deliberately.
 
-import { deriveTNM, stageLine } from '../src/staging/index.js';
+import { deriveTNM, stageLine, showNodes, showMets } from '../src/staging/index.js';
 import * as S from '../src/staging/hcc.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { letteredBlockKey, checks } from './_house.js';
@@ -302,8 +302,8 @@ export function synoptic(part, ctx) {
       item('Parenchymal margin', resMarginText(v.parenchymalMargin, v.parenchymalMarginMm) || 'Not recorded'),
       other ? item('Other margin(s)', other) : null
     ] },
-    { heading: 'Lymph nodes', items: [nodesItem(v)] },
-    { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] },
+    showNodes(st, ctx) ? { heading: 'Lymph nodes', items: [nodesItem(v)] } : null,
+    showMets(st, ctx, metastasisValue(v)) ? { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] } : null,
     ctx?.options?.printPTNM ? { heading: `Pathological stage (${st.edition})`, items: [
       { label: 'pTNM', value: st.overridden ? `${st.tnm} [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${stripDot(v.tnmOverrideReason) ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : st.tnm,
         sub: stageLine(st) ? [{ label: stageLine(st).split(': ')[0], value: stageLine(st).split(': ').slice(1).join(': ') }] : [] }

@@ -1,6 +1,6 @@
 {
   "id": "ovary_ft_peritoneum",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Ovary, fallopian tube and peritoneum carcinoma resection",
   "shortName": "Ovary · cancer resection",
   "label": "Ovary / tube / peritoneum Ca",
@@ -144,6 +144,9 @@
     {
       "$use": "printPTNM",
       "label": "Print the AJCC 8th edition pTNM block (FIGO is never printed)"
+    },
+    {
+      "$use": "printNodesMets"
     }
   ],
   "partDefaults": [],

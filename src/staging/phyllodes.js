@@ -26,7 +26,7 @@ export function T(v) {
 
 export function N(v) {
   const examined = int(v.nodesExamined);
-  if (examined === 0 || v.nodeSampling === 'No nodes submitted') return { cat: 'NX', note: 'pNX: no regional lymph nodes examined.' };
+  if (examined === 0 || v.nodeSampling === 'No nodes submitted') return { cat: 'NX', none: true, note: 'pNX: no regional lymph nodes examined.' };
   return { cat: int(v.nodesPositive) > 0 ? 'N1' : 'N0' };
 }
 

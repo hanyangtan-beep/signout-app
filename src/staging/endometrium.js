@@ -127,7 +127,7 @@ export function T(v) {
 
 export function N(v) {
   const pel = nodes(v, 'pelvic'); const pa = nodes(v, 'pa');
-  if (!((pel.examined || 0) + (pa.examined || 0))) return { cat: 'NX', note: 'No regional lymph nodes submitted; pN not assigned.' };
+  if (!((pel.examined || 0) + (pa.examined || 0))) return { cat: 'NX', none: true, note: 'No regional lymph nodes submitted; pN not assigned.' };
   if (pa.macro) return { cat: 'N2a' };
   if (pa.micro) return { cat: 'N2mi' };
   if (pel.macro) return { cat: 'N1a' };

@@ -15,7 +15,7 @@
 // Wording is protected by tests/skin_scc.test.js — change it only deliberately.
 
 import { typeMorphology, IHC_PHRASE } from './skin_scc_morphology.js';
-import { deriveTNM } from '../src/staging/index.js';
+import { deriveTNM, showNodes, showMets } from '../src/staging/index.js';
 import * as S from '../src/staging/skin_scc.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { stripDot, letteredBlockKey, checks } from './_house.js';
@@ -346,8 +346,8 @@ export function synoptic(part, ctx) {
       { label: 'Perineural invasion', value: v.pni || 'Not identified', sub: S.fiveNerves(v) ? [{ label: 'Nerves involved', value: 'Five or more in a section' }] : [] }
     ] },
     { heading: 'Margins', items: [invasiveMarginItem(v), insituMarginItem(v), bedMarginItem(v)] },
-    { heading: 'Lymph nodes', items: [nodesItem(v)] },
-    { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] },
+    showNodes(st, ctx) ? { heading: 'Lymph nodes', items: [nodesItem(v)] } : null,
+    showMets(st, ctx, metastasisValue(v)) ? { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] } : null,
     ctx?.options?.printPTNM && staged(v) ? { heading: `Pathological stage (${st.edition})`, items: [
       { label: 'pTNM', value: st.overridden ? `${st.tnm} [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${stripDot(v.tnmOverrideReason) ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : st.tnm }
     ] } : null,

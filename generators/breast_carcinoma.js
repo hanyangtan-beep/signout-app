@@ -5,7 +5,7 @@
 // Sentinel nodes: a frozen sentinel lymph node part in the same case pre-fills the node counts
 // ("Add breast synoptic" in the app; `prefillFromFrozen`) and the Regional lymph nodes line names it as
 // the origin; a prior sentinel node accession typed in the case fields prints the same way.
-import { deriveTNM, stageLine } from '../src/staging/index.js';
+import { deriveTNM, stageLine, showNodes, showMets } from '../src/staging/index.js';
 import * as S from '../src/staging/breast.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { biomarkerReport, hasBiomarkerData } from './breast_biomarkers.js';
@@ -286,13 +286,13 @@ export function synoptic(part, ctx) {
     { heading: 'Ancillary studies', items: [...biomarkerItems(v, ctx), stripDot(v.ancillary) ? item('Other', stripDot(v.ancillary)) : null] },
     !noResidual(v) ? { heading: 'Margins (invasive carcinoma)', items: marginItems(v.marginsInvasive, 'invasive carcinoma') } : null,
     dcisPresent(v) ? { heading: 'Margins (DCIS)', items: marginItems(v.marginsDcis, 'DCIS') } : null,
-    { heading: 'Regional lymph nodes', items: [
+    showNodes(st, ctx) || (v.imNodes && v.imNodes !== 'Not submitted') ? { heading: 'Regional lymph nodes', items: [
       ...nodeItems(v, { origin }),
       v.imNodes && v.imNodes !== 'Not submitted' ? item('Internal mammary nodes', v.imNodes) : null,
       v.infraclavicular === true ? item('Infraclavicular (level III) nodes', 'Involved') : null,
       v.supraclavicular === true ? item('Ipsilateral supraclavicular nodes', 'Involved') : null
-    ] },
-    { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] },
+    ] } : null,
+    showMets(st, ctx, metastasisValue(v)) ? { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] } : null,
     ctx?.options?.printPTNM ? ptnmSection(st, v, stageLine) : null,
     { heading: 'Additional findings', items: [
       treated(v) && v.rcbClass ? item('Residual Cancer Burden', `${v.rcbClass}${stripDot(v.rcbDetail) ? ` (${stripDot(v.rcbDetail)})` : ''}`) : null,

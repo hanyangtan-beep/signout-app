@@ -111,8 +111,8 @@ test('checks: WHO mismatch warn / heterologous error, nodal metastasis in a non-
   assert.ok(warns(run({ mitoticCount: '' })).some((m) => /Mitotic rate: enter the count/.test(m)));
   assert.ok(info(run({ epithelium: ['Ductal carcinoma in situ (specify)'], epitheliumDetail: 'low grade, 3 mm' })).some((m) => /In situ carcinoma within a phyllodes tumour/.test(m)));
   assert.equal(rows(run({ ...MALIGNANT, nodeSampling: 'Sentinel node biopsy only', nodesExamined: '2', nodesPositive: '1', depositMm: '5' }, { printPTNM: true }))['pTNM'], 'pT1 pN1', '45 mm is pT1 (5 cm or less)');
-  assert.equal(rows(run({ ...MALIGNANT, sizeMm: '70' }, { printPTNM: true }))['pTNM'], 'pT2 pNX');
-  assert.equal(rows(run({ ...MALIGNANT, sizeMm: '160' }, { printPTNM: true }))['pTNM'], 'pT4 pNX');
+  assert.equal(rows(run({ ...MALIGNANT, sizeMm: '70' }, { printPTNM: true }))['pTNM'], 'pT2');
+  assert.equal(rows(run({ ...MALIGNANT, sizeMm: '160' }, { printPTNM: true }))['pTNM'], 'pT4');
 });
 
 test('report options: macro off, header on, single part without letters, other part restores letters', () => {

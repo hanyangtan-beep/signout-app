@@ -50,7 +50,7 @@ test('breast N: macro / micro / ITC counts, (sn) up to five sentinel nodes, N2a 
   assert.equal(tnm({ nodesMacro: '1', imNodes: 'Positive (clinically detected)' }), 'pT2 pN3b(sn)');
   assert.equal(tnm({ infraclavicular: true }), 'pT2 pN3a(sn)');
   assert.equal(tnm({ supraclavicular: true }), 'pT2 pN3c(sn)');
-  assert.equal(tnm({ nodeSampling: 'No nodes submitted', nodesExamined: '', nodesSentinel: '' }), 'pT2 pNX');
+  assert.equal(tnm({ nodeSampling: 'No nodes submitted', nodesExamined: '', nodesSentinel: '' }), 'pT2');
   assert.ok(br({ nodeSampling: 'No nodes submitted', nodesExamined: '', nodesSentinel: '' }).notes.some((n) => /^pNX/.test(n)));
   assert.equal(bareN('N0(i+)(sn)'), 'N0');
   assert.equal(bareN('N1a(sn)'), 'N1a');
@@ -96,13 +96,13 @@ test('phyllodes T by 50 / 100 / 150 mm, N by involved count, M, r prefix, no sta
   assert.equal(phT(150), 'T3');
   assert.equal(phT(151), 'T4');
   const ph = (v) => deriveTNM({ histType: 'Phyllodes tumor, malignant', ...v }, 'phyllodes');
-  assert.equal(ph({ sizeMm: '45', nodeSampling: 'No nodes submitted' }).tnm, 'pT1 pNX');
+  assert.equal(ph({ sizeMm: '45', nodeSampling: 'No nodes submitted' }).tnm, 'pT1');
   assert.equal(ph({ sizeMm: '51', nodeSampling: 'Sentinel node biopsy only', nodesExamined: '2', nodesPositive: '0' }).tnm, 'pT2 pN0');
   assert.equal(ph({ sizeMm: '120', nodeSampling: 'Axillary dissection', nodesExamined: '3', nodesPositive: '1' }).tnm, 'pT3 pN1');
-  assert.equal(ph({ sizeMm: '160', distantMets: 'Present', distantSites: ['Lung'] }).tnm, 'pT4 pNX pM1');
-  assert.equal(ph({ sizeMm: '30', recurrent: true }).tnm, 'rpT1 pNX');
-  assert.equal(ph({ histType: 'No tumor' }).tnm, 'pT0 pNX');
-  assert.equal(ph({}).tnm, 'pTX pNX');
+  assert.equal(ph({ sizeMm: '160', distantMets: 'Present', distantSites: ['Lung'] }).tnm, 'pT4 pM1');
+  assert.equal(ph({ sizeMm: '30', recurrent: true }).tnm, 'rpT1');
+  assert.equal(ph({ histType: 'No tumor' }).tnm, 'pT0');
+  assert.equal(ph({}).tnm, 'pTX');
   assert.ok(ph({}).notes.some((n) => /5 \/ 10 \/ 15 cm/.test(n)));
   assert.equal(ph({ sizeMm: '45' }).stage, null, 'phyllodes has no AJCC stage group');
   assert.equal(ph({ sizeMm: '45' }).edition, 'AJCC 8th edition');

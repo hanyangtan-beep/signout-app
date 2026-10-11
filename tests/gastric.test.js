@@ -22,7 +22,7 @@ test('schema shape: metadata key order, layout and field census', () => {
   assert.equal(schema.kind, 'cancer resection');
   assert.equal(schema.system, 'GI');
   assert.equal(schema.defaultParts, 1);
-  assert.equal(schema.version, '2026.09');
+  assert.equal(schema.version, '2026.10');
   assert.equal(schema.source.stagingProtocol, 'gastric');
   assert.deepEqual(Object.keys(schema).slice(0, 11), ['id', 'version', 'name', 'shortName', 'label', 'organ', 'system', 'kind', 'layout', 'rank', 'aliases']);
   assert.deepEqual(schema.layout, { macroGroups: ['Specimen and tumour'], macroFields: ['specimenName'], pack: true });
@@ -59,7 +59,7 @@ test('example report: pinned wording (gastrectomy case)', () => {
   assert.ok(r.includes('- Regional lymph nodes: 24 examined; 4 involved'));
   assert.ok(r.includes('- Extranodal extension: Present'));
   assert.ok(r.includes('- Size of largest metastatic deposit: 18 mm, lesser curvature'));
-  assert.ok(r.includes('- Distant metastasis: Not identified'));
+  assert.ok(!r.includes('Distant metastasis'), 'no distant metastasis section without a recorded metastasis (Phase 67)');
   assert.ok(r.includes('- pTNM: pT1b pN2'));
   assert.ok(r.includes('- Stage group (if cM0): IIA'));
   assert.ok(r.includes('STOMACH, antrum, lesser curvature, distal partial gastrectomy'));
@@ -72,7 +72,7 @@ test('synoptic element order follows the saved QMH GI-Stomach page', () => {
   const page = fileURLToPath(new URL('../docs/reference/GI-Stomach.html', import.meta.url));
   execFileSync(process.execPath, [tool, page], { encoding: 'utf8' });
   assert.match(readFileSync(page, 'utf8'), /Gastric/);
-  const rows = Object.keys(synopticRows(runP({}).synoptic));
+  const rows = Object.keys(synopticRows(runP({}, { ...schema.example.options, printNodesMets: true }).synoptic));
   const idx = (l) => { const i = rows.indexOf(l); assert.ok(i >= 0, `${l} missing: ${rows}`); return i; };
   // Page order inside Microscopic findings: histologic type, Lauren, grade, JCGC grade, extension,
   // SM depth/extent, ulceration, Ly, V, PNI, treatment effect; the "- Tumour histology:" paragraph
@@ -85,7 +85,7 @@ test('synoptic element order follows the saved QMH GI-Stomach page', () => {
   assert.ok(idx('Regional lymph nodes') < idx('Distant metastasis'));
   assert.ok(idx('Distant metastasis') < idx('pTNM'));
   assert.deepEqual([...new Set(parseSynoptic(runP({}).synoptic).map((r) => r.section))],
-    ['Specimen and tumour', 'Microscopic findings', 'Margins', 'Lymph nodes', 'Distant metastasis', 'Pathological stage (AJCC 8th edition)', 'Additional findings']);
+    ['Specimen and tumour', 'Microscopic findings', 'Margins', 'Lymph nodes', 'Pathological stage (AJCC 8th edition)', 'Additional findings']);
 });
 
 test('endoscopic resection: HM / VM margins replace the gastrectomy margins; eCura section and clause print', () => {
@@ -102,7 +102,7 @@ test('endoscopic resection: HM / VM margins replace the gastrectomy margins; eCu
   assert.ok(!r.includes('Proximal margin:'));
   assert.ok(r.includes('- Mucosal (horizontal) margins (HM): Uninvolved by invasive carcinoma and\n  uninvolved by dysplasia'));
   assert.ok(r.includes('- Deep (vertical) margin (VM): Involved by invasive carcinoma'));
-  assert.ok(r.includes('- Regional lymph nodes: Not recorded'));
+  assert.ok(!r.includes('Regional lymph nodes'), 'no lymph node section without nodes (Phase 67)');
   assert.ok(r.includes('Endoscopic curability (eCura C)'));
   assert.ok(r.includes('- eCura score: 5 of 7 - High risk (5-7 points); not determined for Venous\n  invasion (V)'));
   assert.ok(flat(r).includes('deep (vertical) margin involved'));

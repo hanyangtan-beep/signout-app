@@ -49,7 +49,7 @@ export function T(v) {
 export function N(v) {
   const examined = int(v.nodesExamined);
   const involved = int(v.nodesInvolved);
-  if (examined === null || examined === 0) return { cat: 'NX', note: 'No regional lymph nodes submitted; pN not assigned.' };
+  if (examined === null || examined === 0) return { cat: 'NX', none: true, note: 'No regional lymph nodes submitted; pN not assigned.' };
   if (involved === null) return { cat: 'NX', note: 'Number of involved lymph nodes not recorded; pN cannot be assigned.' };
   if (involved === 0) return { cat: 'N0' };
   if (involved <= 2) return { cat: 'N1' };

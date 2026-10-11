@@ -1,6 +1,6 @@
 {
   "id": "gist_resection",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Gastrointestinal stromal tumour resection",
   "shortName": "GIST · cancer resection",
   "label": "GIST",
@@ -124,6 +124,9 @@
       "label": "Print the AJCC stage group under the pTNM",
       "type": "checkbox",
       "default": true
+    },
+    {
+      "$use": "printNodesMets"
     }
   ],
   "partDefaults": [],

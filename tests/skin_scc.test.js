@@ -138,7 +138,7 @@ test('example: specimen, macroscopy, rows and diagnosis', () => {
   assert.equal(r['Invasive tumour'], 'All margins negative');
   assert.equal(r['Closest peripheral margin'], '4 mm (superior)');
   assert.equal(r['Deep margin'], '3 mm');
-  assert.equal(r['pTNM'], 'pT1 pNX');
+  assert.equal(r['pTNM'], 'pT1');
   assert.equal(r['BWH class'], 'T1: 0 high-risk factors');
   assert.equal(r['High-risk factors'], undefined, 'no factor list when there are none');
   assert.equal(r['Regional lymph nodes'], undefined, 'no node row when none were submitted');
@@ -147,7 +147,7 @@ test('example: specimen, macroscopy, rows and diagnosis', () => {
   const d = flatDx(c);
   assert.ok(d.startsWith('SKIN, left cheek, excision'));
   assert.ok(d.includes('SQUAMOUS CELL CARCINOMA, moderately differentiated, 14 mm, invading the reticular dermis to a depth of 4 mm; completely excised (closest peripheral margin 4 mm, superior; deep margin 3 mm); see synoptic report'));
-  assert.ok(d.includes('pT1 pNX (AJCC 8th edition); BWH T1'));
+  assert.ok(d.includes('pT1 (AJCC 8th edition); BWH T1'));
   assert.deepEqual(c.issues, []);
 });
 
@@ -156,7 +156,7 @@ test('synoptic element order follows the saved QMH HN-Skin SCC page', () => {
   const page = fileURLToPath(new URL('../docs/reference/HN-Skin-SCC.html', import.meta.url));
   execFileSync(process.execPath, [tool, page], { encoding: 'utf8' });
   assert.match(fs.readFileSync(page, 'utf8'), /Skin/i);
-  const out = run({ ...CASES[2][1], bedMargin: 'Uninvolved by invasive carcinoma', insituMargin: 'All margins negative for in situ disease', distantMets: ['Not identified'] });
+  const out = run({ ...CASES[2][1], bedMargin: 'Uninvolved by invasive carcinoma', insituMargin: 'All margins negative for in situ disease', distantMets: ['Not identified'] }, { printNodesMets: true });
   const labels = parseSynoptic(out.synoptic).map((r) => r.label).filter(Boolean);
   const idx = (l) => { const i = labels.indexOf(l); assert.ok(i >= 0, `${l} missing: ${labels}`); return i; };
   // Page order: type, grade, DOI, anatomic level, LVI, PNI; margins invasive, non-invasive, bed;
@@ -216,19 +216,19 @@ test('pT boundaries are the same in both systems: 20 and 40 mm, 6 mm deep, 0.1 m
   // The size falls back to the macroscopic lesion size and says so.
   const macro = run({ tumourSizeMm: '', lesionSize: '2.2' });
   assert.equal(rows(macro)['Tumour size'], '22 mm (greatest dimension, from the macroscopic lesion size)');
-  assert.equal(tnm(macro), 'pT2 pNX');
+  assert.equal(tnm(macro), 'pT2');
   const none = run({ tumourSizeMm: '', lesionSize: '' });
-  assert.equal(tnm(none), 'pTX pNX');
+  assert.equal(tnm(none), 'pTX');
   assert.ok(msgs(none, 'error').some((m) => /^pT cannot be assigned/.test(m)));
 });
 
 test('UICC 9th, trunk and limbs: five or more involved nerves in a section is pT3 whatever the calibre', () => {
   const small = { pni: 'Present, less than 0.1 mm in calibre' };
   const limb = (p) => run({ ...FOREARM, tumourSizeMm: '14', ...p });
-  assert.equal(tnm(limb(small)), 'pT1 pNX');
+  assert.equal(tnm(limb(small)), 'pT1');
   const five = limb({ ...small, pniFiveNerves: true });
-  assert.equal(tnm(five), 'pT3 pNX');
-  assert.equal(tnm(limb({ pni: 'Present', pniFiveNerves: true })), 'pT3 pNX');
+  assert.equal(tnm(five), 'pT3');
+  assert.equal(tnm(limb({ pni: 'Present', pniFiveNerves: true })), 'pT3');
   assert.equal(bwh(five), 'T1: 0 high-risk factors', 'not a BWH factor');
   // Printed as seen: a line under perineural invasion, and in the diagnosis clause.
   assert.equal(rows(five)['Perineural invasion'], 'Present, less than 0.1 mm in calibre');
@@ -241,7 +241,7 @@ test('UICC 9th, trunk and limbs: five or more involved nerves in a section is pT
   // Head and neck stays on AJCC 8th, which has no nerve count, and a tick left behind by a changed
   // site or calibre does not count or print.
   const cheek = run({ ...small, pniFiveNerves: true });
-  assert.equal(tnm(cheek), 'pT1 pNX');
+  assert.equal(tnm(cheek), 'pT1');
   assert.equal(rows(cheek)['Nerves involved'], undefined);
   assert.ok(flatDx(cheek).includes('perineural invasion present (less than 0.1 mm in calibre);'));
   for (const pni of ['Not identified', 'Present, 0.1 mm or more in calibre', 'Cannot be determined']) {
@@ -249,8 +249,8 @@ test('UICC 9th, trunk and limbs: five or more involved nerves in a section is pT
   }
   // Other and Not specified sites count when the trunk and limbs region is chosen.
   const other = { specimenName: '', tumourSite: 'Other (specify)', tumourSiteOther: 'flank', tumourSizeMm: '14', ...small, pniFiveNerves: true };
-  assert.equal(tnm(run({ ...other, siteRegion: 'Trunk and limbs' })), 'pT3 pNX');
-  assert.equal(tnm(run({ ...other, siteRegion: 'Head and neck' })), 'pT1 pNX');
+  assert.equal(tnm(run({ ...other, siteRegion: 'Trunk and limbs' })), 'pT3');
+  assert.equal(tnm(run({ ...other, siteRegion: 'Head and neck' })), 'pT1');
 });
 
 test('the five-nerve tick box shows only on trunk and limb sites, with the calibre not stated or under 0.1 mm', () => {
@@ -314,7 +314,7 @@ test('trunk and limb pN is UICC 9th: 30 and 60 mm, no ENE, contralateral nodes a
   assert.deepEqual(msgs(contra, 'warn'), ['Only contralateral nodes are involved; for a trunk or limb primary they are distant metastasis (pM1), and pN0 assumes the uninvolved nodes are regional.']);
   // pM0 is not a pathological category, so a typed override cannot take the pM1 away.
   assert.equal(tnm(run({ ...CASES[4][1], nodeLaterality: 'Contralateral', largestDepositMm: '12', tnmOverride: 'pT2 pN0 pM0', tnmOverrideReason: 'test' })).split(' [')[0], 'pT2 pN0 pM1');
-  assert.equal(tnm(run({ distantMets: ['Lung'] })), 'pT1 pNX pM1');
+  assert.equal(tnm(run({ distantMets: ['Lung'] })), 'pT1 pM1');
 });
 
 test('BWH class counts the four factors; bone makes T3; level I is T0', () => {
@@ -380,11 +380,13 @@ test('margins, nodes and metastasis wording', () => {
   assert.equal(r['Laterality'], 'Ipsilateral (including midline)');
   assert.equal(r['Size of largest metastatic deposit'], '18 mm, level II');
   assert.ok(flatDx(ear).includes('- 2 of 14 regional lymph nodes involved; extranodal extension present'));
-  assert.equal(rows(run({ nodesExamined: '0' }))['Regional lymph nodes'], 'None submitted (0 examined)');
+  assert.equal(rows(run({ nodesExamined: '0' }))['Regional lymph nodes'], undefined, 'no lymph node section without nodes (Phase 67)');
+  assert.equal(rows(run({ nodesExamined: '0' }, { printNodesMets: true }))['Regional lymph nodes'], 'None submitted (0 examined)');
   const mets = run({ distantMets: ['Lung', 'Liver'] });
   assert.equal(rows(mets)['Distant metastasis'], 'Lung and liver');
   assert.ok(flatDx(mets).includes('- distant metastasis: lung and liver'));
-  assert.equal(rows(run({ distantMets: ['Not identified'] }))['Distant metastasis'], 'Not identified');
+  assert.equal(rows(run({ distantMets: ['Not identified'] }))['Distant metastasis'], undefined, 'a negative prints only with the option (Phase 67)');
+  assert.equal(rows(run({ distantMets: ['Not identified'] }, { printNodesMets: true }))['Distant metastasis'], 'Not identified');
   assert.equal(rows(run())['Distant metastasis'], undefined, 'Not applicable prints nothing');
 });
 
@@ -470,12 +472,12 @@ test('golden fixtures reproduce byte-for-byte', () => {
 
 test('golden fixtures: the card accept cases stage as the card says', () => {
   const byName = Object.fromEntries(CASES.map(([n, p]) => [n, run(p)]));
-  assert.equal(tnm(byName['skin-scc-01-cheek-pt1']), 'pT1 pNX');
+  assert.equal(tnm(byName['skin-scc-01-cheek-pt1']), 'pT1');
   assert.equal(bwh(byName['skin-scc-01-cheek-pt1']), 'T1: 0 high-risk factors');
-  assert.equal(tnm(byName['skin-scc-02-scalp-pt3-bwh-t2b']), 'pT3 pNX');
+  assert.equal(tnm(byName['skin-scc-02-scalp-pt3-bwh-t2b']), 'pT3');
   assert.equal(bwh(byName['skin-scc-02-scalp-pt3-bwh-t2b']), 'T2b: 2-3 high-risk factors');
   assert.equal(tnm(byName['skin-scc-03-ear-pn3b']), 'pT1 pN3b');
-  assert.equal(tnm(byName['skin-scc-04-forearm-uicc-pt2']), 'pT2 pNX');
+  assert.equal(tnm(byName['skin-scc-04-forearm-uicc-pt2']), 'pT2');
   assert.equal(bwh(byName['skin-scc-04-forearm-uicc-pt2']), 'T2a: 1 high-risk factor');
   assert.ok(sections(byName['skin-scc-04-forearm-uicc-pt2']).includes('Pathological stage (UICC 9th edition)'));
   assert.equal(tnm(byName['skin-scc-05-thigh-uicc-pn2']), 'pT2 pN2');

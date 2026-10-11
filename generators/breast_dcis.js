@@ -3,7 +3,7 @@
 // Specimen and tumour section, the Tumour histology paragraph after the nuclear grade, and the margin walker
 // text. pTNM (pTis(DCIS) / pTis(Paget) with pN and pM) prints only with the printPTNM option.
 // Shared helpers: ./breast_shared.js; biomarker rendering: ./breast_carcinoma.js (biomarkerItems).
-import { deriveTNM, stageLine } from '../src/staging/index.js';
+import { deriveTNM, stageLine, showNodes, showMets } from '../src/staging/index.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { hasBiomarkerData } from './breast_biomarkers.js';
 import { biomarkerItems } from './breast_carcinoma.js';
@@ -159,8 +159,8 @@ export function synoptic(part, ctx) {
     ] },
     { heading: 'Ancillary studies', items: [...biomarkerItems(v, ctx), stripDot(v.ancillary) ? item('Other', stripDot(v.ancillary)) : null] },
     { heading: 'Margins (DCIS)', items: marginItems(v.marginsDcis, marginWord(v)) },
-    { heading: 'Regional lymph nodes', items: nodeItems(v) },
-    { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] },
+    showNodes(st, ctx) ? { heading: 'Regional lymph nodes', items: nodeItems(v) } : null,
+    showMets(st, ctx, metastasisValue(v)) ? { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] } : null,
     ctx?.options?.printPTNM ? ptnmSection(st, v, stageLine) : null,
     { heading: 'Additional findings', items: [stripDot(v.additionalNotes) ? item('Additional notes', stripDot(v.additionalNotes)) : { text: 'None' }] }
   ].filter(Boolean);

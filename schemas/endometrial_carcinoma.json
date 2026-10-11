@@ -1,6 +1,6 @@
 {
   "id": "endometrial_carcinoma",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Endometrial carcinoma resection",
   "shortName": "Uterus · cancer resection",
   "label": "Endometrial Ca",
@@ -131,6 +131,9 @@
     {
       "$use": "printPTNM",
       "label": "Print the AJCC 8th edition pTNM block (FIGO is never printed)"
+    },
+    {
+      "$use": "printNodesMets"
     }
   ],
   "partDefaults": [],
