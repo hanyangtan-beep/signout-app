@@ -74,7 +74,7 @@ test('example: radicular cyst, left posterior mandible, enucleation with tooth r
   assert.equal(r.macro, 'Received in formalin are multiple fragments of cyst wall measuring 1.5 x 1 x 0.3 cm in aggregate, together with a tooth root. All soft tissue embedded in 1 block; the tooth is not processed.');
   assert.equal(r.blockKey, '(1) Cyst wall, all embedded. Tooth retained, not processed.');
   assert.equal(r.microscopy, RADICULAR_MICRO);
-  assert.equal(r.diagnosis, 'MANDIBLE, left posterior, enucleation - RADICULAR CYST; no evidence of dysplasia or malignancy');
+  assert.equal(r.diagnosis, 'MANDIBLE, left posterior, enucleation - RADICULAR CYST');
   assert.equal(r.comment, '');
   assert.ok(!r.report.includes('(A)'));
   assert.ok(!r.report.includes('undefined'));
@@ -111,25 +111,24 @@ test('two-part case keeps (A)/(B) prefixes on every block', () => {
   assert.equal(r.blockKey, '(A) (1) Cyst wall, all embedded.\n(B) (1-2) Cyst wall, all embedded.');
   assert.ok(r.microscopy.startsWith('(A) Sections show'));
   assert.ok(r.microscopy.includes('\n\n(B) Sections show'));
-  assert.equal(r.diagnosis, '(A) MANDIBLE, left posterior, enucleation - RADICULAR CYST; no evidence of dysplasia or malignancy\n(B) MAXILLA, anterior, apicectomy - RESIDUAL CYST; no evidence of dysplasia or malignancy');
+  assert.equal(r.diagnosis, '(A) MANDIBLE, left posterior, enucleation - RADICULAR CYST\n(B) MAXILLA, anterior, apicectomy - RESIDUAL CYST');
   for (const block of [r.specimens, r.macro, r.blockKey, r.microscopy, r.diagnosis]) assert.ok(block.includes('(A)') && block.includes('(B)'));
 });
 
 test('each cyst type yields the right capitalised diagnosis', () => {
   const dx = (cystType, extra = {}) => run(one({ specimenName: 'left posterior', cystType, ...extra })).diagnosis;
   const H = 'MANDIBLE, left posterior, enucleation - ';
-  const N = '; no evidence of dysplasia or malignancy';
-  assert.equal(dx('Radicular (periapical) cyst'), `${H}RADICULAR CYST${N}`);
-  assert.equal(dx('Residual cyst'), `${H}RESIDUAL CYST${N}`);
-  assert.equal(dx('Dentigerous cyst'), `${H}DENTIGEROUS CYST${N}`);
-  assert.equal(dx('Odontogenic keratocyst'), `${H}ODONTOGENIC KERATOCYST${N}`);
-  assert.equal(dx('Odontogenic keratocyst', { satelliteCysts: true }), `${H}ODONTOGENIC KERATOCYST; satellite cysts present${N}`);
-  assert.equal(dx('Lateral periodontal cyst'), `${H}LATERAL PERIODONTAL CYST${N}`);
-  assert.equal(dx('Botryoid odontogenic cyst'), `${H}BOTRYOID ODONTOGENIC CYST${N}`);
-  assert.equal(dx('Glandular odontogenic cyst'), `${H}GLANDULAR ODONTOGENIC CYST${N}`);
-  assert.equal(dx('Nasopalatine duct cyst', { site: 'Maxilla', specimenName: 'anterior' }), `MAXILLA, anterior, enucleation - NASOPALATINE DUCT CYST${N}`);
-  assert.equal(dx('Periapical granuloma (no lining)', { procedure: 'Apicectomy' }), 'MANDIBLE, left posterior, apicectomy - PERIAPICAL GRANULOMA; no epithelial lining identified; no evidence of malignancy');
-  assert.equal(dx('Radicular (periapical) cyst', { inflammation: 'Severe', procedure: 'Extraction with cyst' }), `MANDIBLE, left posterior, extraction with cyst - RADICULAR CYST; heavily inflamed${N}`);
+  assert.equal(dx('Radicular (periapical) cyst'), `${H}RADICULAR CYST`);
+  assert.equal(dx('Residual cyst'), `${H}RESIDUAL CYST`);
+  assert.equal(dx('Dentigerous cyst'), `${H}DENTIGEROUS CYST`);
+  assert.equal(dx('Odontogenic keratocyst'), `${H}ODONTOGENIC KERATOCYST`);
+  assert.equal(dx('Odontogenic keratocyst', { satelliteCysts: true }), `${H}ODONTOGENIC KERATOCYST; satellite cysts present`);
+  assert.equal(dx('Lateral periodontal cyst'), `${H}LATERAL PERIODONTAL CYST`);
+  assert.equal(dx('Botryoid odontogenic cyst'), `${H}BOTRYOID ODONTOGENIC CYST`);
+  assert.equal(dx('Glandular odontogenic cyst'), `${H}GLANDULAR ODONTOGENIC CYST`);
+  assert.equal(dx('Nasopalatine duct cyst', { site: 'Maxilla', specimenName: 'anterior' }), `MAXILLA, anterior, enucleation - NASOPALATINE DUCT CYST`);
+  assert.equal(dx('Periapical granuloma (no lining)', { procedure: 'Apicectomy' }), 'MANDIBLE, left posterior, apicectomy - PERIAPICAL GRANULOMA; no epithelial lining identified');
+  assert.equal(dx('Radicular (periapical) cyst', { inflammation: 'Severe', procedure: 'Extraction with cyst' }), `MANDIBLE, left posterior, extraction with cyst - RADICULAR CYST; heavily inflamed`);
 });
 
 test('lining description follows the cyst type', () => {
@@ -189,14 +188,14 @@ test('blank size, wall, tooth and region fields produce no dangling text', () =>
   assert.equal(r.specimens, 'Mandible, enucleation');
   assert.equal(r.macro, 'Received in formalin are multiple fragments of cyst wall. All embedded in 1 block.');
   assert.equal(r.blockKey, '(1) Cyst wall, all embedded.');
-  assert.equal(r.diagnosis, 'MANDIBLE, enucleation - RADICULAR CYST; no evidence of dysplasia or malignancy');
+  assert.equal(r.diagnosis, 'MANDIBLE, enucleation - RADICULAR CYST');
   assert.ok(!r.report.includes('undefined'));
   assert.ok(!r.report.includes('__'));
   assert.ok(!r.report.includes('measuring  '));
   assert.ok(!/\bcm\b/.test(r.macro));
   const region = run(one({ specimenName: 'left posterior mandible, 36 region', toothNumber: '' }));
   assert.equal(region.specimens, 'Mandible, left posterior, 36 region, enucleation');
-  assert.equal(region.diagnosis, 'MANDIBLE, left posterior, 36 region, enucleation - RADICULAR CYST; no evidence of dysplasia or malignancy');
+  assert.equal(region.diagnosis, 'MANDIBLE, left posterior, 36 region, enucleation - RADICULAR CYST');
   const wallOnly = run(one({ aggregateSize: '', wallThickness: '0.3', toothIncluded: true, toothPart: 'Whole tooth' }));
   assert.ok(wallOnly.macro.startsWith('Received in formalin are multiple fragments of cyst wall, together with a tooth. The cyst wall measures up to 0.3 cm in thickness.'));
 });

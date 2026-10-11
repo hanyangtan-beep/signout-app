@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { createCase, generate, isVisible, snippetsFor } from '../src/engine.js';
 import { parseIntake, matchParts, presetValues, matchOption } from '../src/intake.js';
 import { loadAll, loadManifest } from '../src/registry.js';
-import { stainSentences, closing, SURFACE_DX, NEM_IN_DX } from '../generators/abscess.js';
+import { stainSentences, closing, SURFACE_DX } from '../generators/abscess.js';
 
 const registry = await loadAll();
 const manifest = await loadManifest();
@@ -66,7 +66,7 @@ test('a multi-part case letters its specimens', () => {
 test('each diagnosis prints its own line', () => {
   const lines = [
     [{ diagnosis: 'Abscess wall' }, 'In keeping with ABSCESS WALL'],
-    [{ diagnosis: 'Granulation tissue' }, 'GRANULATION TISSUE; NO EVIDENCE OF MALIGNANCY'],
+    [{ diagnosis: 'Granulation tissue' }, 'GRANULATION TISSUE'],
     [{ diagnosis: 'Ulcer' }, 'ULCER'],
     [{ diagnosis: 'Ulcer', ulcerPart: 'Edge' }, 'In keeping with ULCER EDGE'],
     [{ diagnosis: 'Ulcer', ulcerPart: 'Base' }, 'ULCER BASE'],
@@ -77,8 +77,8 @@ test('each diagnosis prints its own line', () => {
     [{ diagnosis: 'Fistula tract' }, 'In keeping with FISTULA TRACT'],
     [{ diagnosis: 'Fistula tract', organ: 'PERIANAL' }, 'Consistent with FISTULA-IN-ANO'],
     [{ diagnosis: 'Ruptured cyst with foreign-body reaction' }, 'Consistent with ABSCESS WALL, suggestive of RUPTURED CYST'],
-    [{ diagnosis: 'Necrotic tissue or slough' }, 'NECROTIC TISSUE; NO EVIDENCE OF MALIGNANCY'],
-    [{ diagnosis: 'Acute on chronic inflammation' }, 'ACUTE ON CHRONIC INFLAMMATION; NO EVIDENCE OF MALIGNANCY']
+    [{ diagnosis: 'Necrotic tissue or slough' }, 'NECROTIC TISSUE'],
+    [{ diagnosis: 'Acute on chronic inflammation' }, 'ACUTE ON CHRONIC INFLAMMATION']
   ];
   for (const [values, want] of lines) {
     const r = run({ site: 'right thigh', procedure: 'Excision', ...values });
@@ -96,7 +96,6 @@ test('each diagnosis opens on "Sections show" and closes on a house sentence', (
         : 'There is no evidence of granulomatous inflammation or malignancy.';
     assert.ok(r.microscopy.endsWith(close), `${diagnosis}: ${r.microscopy}`);
   }
-  assert.deepEqual(NEM_IN_DX, ['Granulation tissue', 'Necrotic tissue or slough', 'Acute on chronic inflammation']);
 });
 
 test('the tissue named in the microscopy follows the organ head', () => {

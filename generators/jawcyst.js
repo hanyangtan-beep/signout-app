@@ -9,7 +9,7 @@ import { stripDot } from './_house.js';
 //               with arcading, supported by a fibrous wall containing a moderate chronic inflammatory infiltrate,
 //               cholesterol clefts and foamy macrophages. Rushton bodies are seen within the lining. The findings are
 //               those of a radicular cyst. There is no evidence of dysplasia or malignancy."
-//   diagnosis  "(A) MANDIBLE, left posterior, enucleation - RADICULAR CYST; no evidence of dysplasia or malignancy"
+//   diagnosis  "(A) MANDIBLE, left posterior, enucleation - RADICULAR CYST"
 // Roadmap Phase 4b item 18. The odontogenic tumour option gives a short diagnosis line only; the schema snippet
 // `jaw_cyst_tumour_template` adds the comment pointing to the QMH head and neck template. OKC and glandular
 // odontogenic cyst auto-tick their recurrence snippets. Wording is protected by tests/jawcyst.test.js.
@@ -223,12 +223,10 @@ export function diagnosis(part) {
   } else if (isGranuloma(v)) {
     clauses.push(MAIN[GRANULOMA]);
     clauses.push('no epithelial lining identified');
-    clauses.push('no evidence of malignancy');
   } else {
     clauses.push(MAIN[v.cystType] || 'RADICULAR CYST');
     if (v.cystType === OKC && v.satelliteCysts) clauses.push('satellite cysts present');
     if (v.inflammation === 'Severe') clauses.push('heavily inflamed');
-    clauses.push('no evidence of dysplasia or malignancy');
   }
   const head = [siteWord(v).toUpperCase(), regionPhrase(v), procWord(v)].filter(Boolean).join(', ');
   return `(${part.label}) ${head} - ${clauses.join('; ')}`;

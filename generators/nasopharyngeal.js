@@ -1,6 +1,6 @@
 // Nasopharyngeal biopsy generator (roadmap "Nasopharyngeal biopsy", Next; built 2026-09-12).
 // Small-biopsy module for the local NPC work-up: benign pick-list with the house
-// "NASOPHARYNX, biopsy - ...; no evidence of malignancy" line, WHO 5th edition
+// "NASOPHARYNX, biopsy - REACTIVE LYMPHOID HYPERPLASIA" line (Phase 66: no trailing negative), WHO 5th edition
 // nasopharyngeal carcinoma subtypes with the epithelial-IHC + EBER sentence woven into
 // the microscopy, lymphoma work-up flag, granulomatous inflammation with ZN/GMS and
 // post-radiotherapy settings. Wording is protected by tests/nasopharyngeal.test.js —
@@ -239,13 +239,14 @@ export function diagnosisText(part) {
   if (isGranulomatous(v)) {
     const nec = v.finding === NEC_GRAN;
     const tb = nec && v.afStains !== 'Acid-fast bacilli identified (ZN)' ? '; tuberculosis to be correlated with microbiology' : '';
-    return `${nec ? 'NECROTISING' : 'NON-NECROTISING'} GRANULOMATOUS INFLAMMATION${stainTag(v)}${tb}; no evidence of malignancy`;
+    return `${nec ? 'NECROTISING' : 'NON-NECROTISING'} GRANULOMATOUS INFLAMMATION${stainTag(v)}${tb}`;
   }
   const benign = BENIGN_DX[v.finding] || 'NO SIGNIFICANT ABNORMALITY';
   if (isPostRT(v)) {
     return `POST-RADIOTHERAPY CHANGES; ${benign.toLowerCase()}; no evidence of recurrent carcinoma`;
   }
-  return `${benign}; no evidence of malignancy`;
+  // A named benign finding stands alone (trailing negatives, Phase 66); with nothing to name, the negative is the diagnosis.
+  return BENIGN_DX[v.finding] || 'NO EVIDENCE OF MALIGNANCY';
 }
 
 export function diagnosis(part) {

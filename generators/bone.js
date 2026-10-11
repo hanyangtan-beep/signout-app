@@ -503,15 +503,10 @@ export function mainLine(v) {
   }
 }
 
-// "NO EVIDENCE OF MALIGNANCY" joins the lines where the house states it: a fracture or callus, where the
-// question is an underlying lesion.
-const NEM_IN_DX = [FRACTURE, CALLUS];
-
 export function diagnosis(part) {
   const v = part.values;
   const clauses = [mainLine(v)];
   if (dx(v) === METASTATIC && pathologicalFracture(v)) clauses.push('PATHOLOGICAL FRACTURE');
-  if (NEM_IN_DX.includes(dx(v))) clauses.push('NO EVIDENCE OF MALIGNANCY');
   if (revision(v) && !infective(v)) clauses.push('NO EVIDENCE OF INFECTION');
   if (granulomasPresent(v)) clauses.push(`${v.granulomaType === 'Necrotising' ? 'necrotising' : 'non-necrotising'} granulomas present`);
   if (organismsIdentified(v)) clauses.push('organisms identified');

@@ -96,13 +96,13 @@ test('each diagnosis prints its own line under the specimen head', () => {
     [{ oaGrade: 'Severe' }, 'FEMORAL HEAD - SEVERE OSTEOARTHRITIS'],
     [{ diagnosis: 'Avascular necrosis' }, 'FEMORAL HEAD - AVASCULAR NECROSIS'],
     [{ diagnosis: 'Avascular necrosis', avnCollapse: 'Present' }, 'FEMORAL HEAD - AVASCULAR NECROSIS with SUBCHONDRAL COLLAPSE'],
-    [{ diagnosis: 'Fracture' }, 'FEMORAL HEAD - RECENT FRACTURE; NO EVIDENCE OF MALIGNANCY'],
-    [{ diagnosis: 'Fracture', fractureAge: 'Healing' }, 'FEMORAL HEAD - HEALING FRACTURE; NO EVIDENCE OF MALIGNANCY'],
+    [{ diagnosis: 'Fracture' }, 'FEMORAL HEAD - RECENT FRACTURE'],
+    [{ diagnosis: 'Fracture', fractureAge: 'Healing' }, 'FEMORAL HEAD - HEALING FRACTURE'],
     [{ diagnosis: 'Inflammatory arthropathy' }, 'FEMORAL HEAD - In keeping with INFLAMMATORY ARTHROPATHY'],
     [{ diagnosis: 'Crystal arthropathy' }, 'FEMORAL HEAD - GOUTY ARTHRITIS'],
     [{ diagnosis: 'Crystal arthropathy', crystalType: 'Calcium pyrophosphate' }, 'FEMORAL HEAD - CALCIUM PYROPHOSPHATE DEPOSITION DISEASE'],
     [{ diagnosis: 'Metastatic carcinoma' }, 'FEMORAL HEAD - METASTATIC ADENOCARCINOMA; see comment'],
-    [{ specimen: 'Humeral head', site: 'right', procedure: 'Hemiarthroplasty', diagnosis: 'Fracture' }, 'HUMERAL HEAD, right, hemiarthroplasty - RECENT FRACTURE; NO EVIDENCE OF MALIGNANCY'],
+    [{ specimen: 'Humeral head', site: 'right', procedure: 'Hemiarthroplasty', diagnosis: 'Fracture' }, 'HUMERAL HEAD, right, hemiarthroplasty - RECENT FRACTURE'],
     [{ specimen: 'Knee joint', site: 'right knee', procedure: 'Total knee replacement', oaGrade: 'Severe' }, 'KNEE, right, total knee replacement - SEVERE OSTEOARTHRITIS'],
     [{ ...SYN, diagnosis: 'Chronic synovitis' }, 'SYNOVIUM, right knee - CHRONIC SYNOVITIS'],
     [{ ...SYN, diagnosis: 'Chronic synovitis', infiltrate: 'Absent' }, 'SYNOVIUM, right knee - SYNOVIAL HYPERPLASIA'],
@@ -124,7 +124,7 @@ test('each diagnosis prints its own line under the specimen head', () => {
     [{ ...BONE, diagnosis: 'Chronic osteomyelitis' }, 'BONE, left tibia - CHRONIC OSTEOMYELITIS'],
     [{ ...BONE, diagnosis: 'Osteonecrosis' }, 'BONE, left tibia - OSTEONECROSIS'],
     [{ ...BONE, diagnosis: "Paget's disease" }, "BONE, left tibia - PAGET'S DISEASE OF BONE"],
-    [{ ...BONE, diagnosis: 'Fracture callus' }, 'BONE, left tibia - FRACTURE CALLUS; NO EVIDENCE OF MALIGNANCY']
+    [{ ...BONE, diagnosis: 'Fracture callus' }, 'BONE, left tibia - FRACTURE CALLUS']
   ];
   for (const [values, want] of lines) assert.equal(run(values).diagnosis, want, JSON.stringify(values));
 });

@@ -39,7 +39,7 @@ test('example: right hemithyroidectomy with nodular hyperplasia and an incidenta
   assert.equal(r.macro, 'Received in formalin is a right hemithyroidectomy specimen weighing 32 g and measuring 5 x 3.5 x 2.5 cm. The capsule is intact. Sectioning shows a well-circumscribed colloid nodule measuring 2.8 cm in the mid lobe. The background parenchyma is nodular. Representative sections in 8 blocks.');
   assert.equal(r.blockKey, '(1) Isthmic margin. (2-6) Dominant nodule with capsule. (7-8) Background thyroid.');
   assert.equal(r.microscopy, 'Sections show the thyroid gland is composed of multiple variably sized nodules composed of colloid-filled follicles, some with Sanderson polsters present. They are lined by follicular cells having round, hyperchromatic nuclei. Nuclear features of papillary carcinoma are not observed. Areas of haemorrhage, hyalinised fibrosis and dystrophic calcification are seen. A parathyroid gland with features of nodular hyperplasia is seen in block (A4). The findings are those of nodular hyperplasia. There is no evidence of malignancy.');
-  assert.equal(r.diagnosis, 'THYROID GLAND, right, hemithyroidectomy - NODULAR HYPERPLASIA; incidental parathyroid gland with nodular hyperplasia; no evidence of malignancy');
+  assert.equal(r.diagnosis, 'THYROID GLAND, right, hemithyroidectomy - NODULAR HYPERPLASIA; incidental parathyroid gland with nodular hyperplasia');
   assert.ok(!r.report.includes('(A)'));
   assert.equal(r.comment, '');
 });
@@ -70,27 +70,27 @@ test('two-part case keeps (A)/(B) prefixes on every block and adds gross parathy
   assert.ok(r.microscopy.startsWith('(A) Sections show') && r.microscopy.includes('\n\n(B) Sections show'));
   assert.ok(r.microscopy.includes('A benign lymph node has been sampled.'));
   const dx = r.diagnosis.split('\n');
-  assert.equal(dx[0], '(A) THYROID GLAND, right, hemithyroidectomy - NODULAR HYPERPLASIA; no evidence of malignancy');
-  assert.equal(dx[1], '(B) THYROID GLAND, left, hemithyroidectomy - NODULAR HYPERPLASIA; benign lymph node; no evidence of malignancy');
+  assert.equal(dx[0], '(A) THYROID GLAND, right, hemithyroidectomy - NODULAR HYPERPLASIA');
+  assert.equal(dx[1], '(B) THYROID GLAND, left, hemithyroidectomy - NODULAR HYPERPLASIA; benign lymph node');
 });
 
 test('each benign diagnosis option yields the house capitalised line and conclusion', () => {
-  assert.equal(run(one({ diagnosis: 'Hyperplastic (adenomatoid) nodule' })).diagnosis, 'THYROID GLAND, right, hemithyroidectomy - HYPERPLASTIC (ADENOMATOID) NODULE; no evidence of malignancy');
+  assert.equal(run(one({ diagnosis: 'Hyperplastic (adenomatoid) nodule' })).diagnosis, 'THYROID GLAND, right, hemithyroidectomy - HYPERPLASTIC (ADENOMATOID) NODULE');
   const fa = run(one({ specimenName: 'Left lobe and isthmus', diagnosis: 'Follicular adenoma', follicularPattern: 'Microfollicular', sanderson: 'Absent', noduleCapsule: 'Thick capsule - no capsular or vascular invasion' }));
-  assert.equal(fa.diagnosis, 'THYROID GLAND, left lobe and isthmus, hemithyroidectomy - FOLLICULAR ADENOMA; no evidence of malignancy');
+  assert.equal(fa.diagnosis, 'THYROID GLAND, left lobe and isthmus, hemithyroidectomy - FOLLICULAR ADENOMA');
   assert.ok(fa.microscopy.startsWith('Sections show an encapsulated nodule composed of microfollicles containing scant colloid, distinct from the surrounding thyroid.'));
   assert.ok(fa.microscopy.includes('The dominant nodule has a thick fibrous capsule; the entire capsule has been examined and shows no capsular or vascular invasion. The features are those of a follicular adenoma. There is no evidence of malignancy.'));
   const graves = run(one({ specimenName: 'Total thyroid', procedure: 'Total thyroidectomy', diagnosis: 'Diffuse hyperplasia (Graves disease)', isthmicMarginBlock: false, noduleCount: '0' }));
-  assert.equal(graves.diagnosis, 'THYROID GLAND, total thyroidectomy - DIFFUSE HYPERPLASIA (GRAVES DISEASE); no evidence of malignancy');
+  assert.equal(graves.diagnosis, 'THYROID GLAND, total thyroidectomy - DIFFUSE HYPERPLASIA (GRAVES DISEASE)');
   assert.ok(graves.microscopy.includes('The features are those of diffuse hyperplasia, consistent with Graves disease. There is no evidence of malignancy.'));
   assert.equal(graves.blockKey, '(1-8) Thyroid parenchyma.');
   assert.ok(graves.macro.includes('Received in formalin is a total thyroidectomy specimen. The capsule is intact. Sectioning shows no discrete nodule.'));
   const hash = run(one({ diagnosis: 'Lymphocytic (Hashimoto) thyroiditis', thyroiditis: 'Diffuse with germinal centres', parathyroid: 'Normal' }));
-  assert.equal(hash.diagnosis, 'THYROID GLAND, right, hemithyroidectomy - LYMPHOCYTIC THYROIDITIS; incidental normal parathyroid gland; no evidence of malignancy');
+  assert.equal(hash.diagnosis, 'THYROID GLAND, right, hemithyroidectomy - LYMPHOCYTIC THYROIDITIS; incidental normal parathyroid gland');
   assert.ok(hash.microscopy.includes('A normal parathyroid gland is seen. The features are those of lymphocytic (Hashimoto) thyroiditis.'));
   assert.ok(!hash.microscopy.includes('background thyroid shows a diffuse lymphocytic'), 'Hashimoto does not repeat the background thyroiditis sentence');
   const bgThy = run(one({ thyroiditis: 'Focal', cCell: 'Present', margin: 'Uninvolved' }));
-  assert.equal(bgThy.diagnosis, 'THYROID GLAND, right, hemithyroidectomy - NODULAR HYPERPLASIA; focal lymphocytic thyroiditis; C-cell hyperplasia; no evidence of malignancy');
+  assert.equal(bgThy.diagnosis, 'THYROID GLAND, right, hemithyroidectomy - NODULAR HYPERPLASIA; focal lymphocytic thyroiditis; C-cell hyperplasia');
   assert.ok(bgThy.microscopy.includes('Focal lymphocytic infiltrates are present in the background thyroid. C-cell hyperplasia is noted in the background thyroid. The isthmic margin is uninvolved.'));
 });
 

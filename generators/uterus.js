@@ -21,7 +21,7 @@ import { stripDot } from './_house.js';
 //               weakly proliferative endometrium without hyperplasia. The cervix shows no evidence of squamous
 //               intraepithelial lesion, glandular dysplasia, or malignancy."
 //   diagnosis  "(A) UTERUS AND CERVIX, total hysterectomy - LEIOMYOMAS; ADENOMYOSIS; weakly proliferative
-//               endometrium; cervix with no evidence of squamous intraepithelial lesion or malignancy"
+//               endometrium" (Phase 66: the cervix is named only when it has a finding)
 // Adnexa parts: "(B) LEFT OVARY AND FALLOPIAN TUBE, salpingo-oophorectomy - NO SIGNIFICANT PATHOLOGY".
 // Tube parts: "(A) Left FALLOPIAN TUBE, salpingectomy - PARATUBAL CYST" and "(A) FALLOPIAN TUBE, left paratubal
 // cyst, excision - PARATUBAL CYST", the house heads of the 2021-2026 biopsy export (docs/specs/fallopian-tube.md).
@@ -575,8 +575,6 @@ const TUBE_DX = {
   Endometriosis: 'ENDOMETRIOSIS'
 };
 
-const CERVIX_NEG_DX = 'cervix with no evidence of squamous intraepithelial lesion or malignancy';
-
 export function diagnosis(part) {
   const v = part.values;
   const kind = kindOf(v);
@@ -585,7 +583,8 @@ export function diagnosis(part) {
     : DX_HEAD[v.specimenName] || DX_HEAD[TOTAL];
   const upper = [];
   const lower = [];
-  let closer = 'no evidence of malignancy';
+  // Named findings stand alone (trailing negatives, Phase 66); the cervix is named only when it has a finding.
+  let closer = '';
 
   if (kind === 'uterus') {
     const neoplastic = endometriumNeoplastic(v) || cervixNeoplastic(v);
@@ -607,18 +606,12 @@ export function diagnosis(part) {
       else if (v.cervix === 'Nabothian cysts') lower.push('nabothian cysts of cervix');
     }
     if (neoplastic) closer = 'see comment';
-    else if (hasCervix(v) && v.cervix === 'No SIL') closer = CERVIX_NEG_DX;
-    else if (hasCervix(v)) closer = 'no evidence of dysplasia or malignancy';
-    else closer = 'no evidence of hyperplasia or malignancy';
     if (v.specimenName === TOTAL_BSO) {
-      // The cervix clause reads better immediately after the uterine findings, before the adnexa.
-      if (closer === CERVIX_NEG_DX) { lower.push(closer); closer = ''; }
       const f = adnexaFindings(v).map((x) => ADNEXA_DX[x]).filter(Boolean).map((x) => x.toLowerCase());
       lower.push(...(f.length ? f : ['bilateral tubes and ovaries with no significant pathology']));
     }
   } else if (kind === 'myomectomy') {
     upper.push(leiomyomaPresent(v) ? (singleLeiomyoma(v) ? 'LEIOMYOMA' : 'LEIOMYOMAS') : 'NO SIGNIFICANT PATHOLOGY');
-    closer = leiomyomaPresent(v) ? 'no evidence of malignancy' : '';
   } else if (kind === 'tube') {
     const f = tubeFindings(v);
     const dx = Object.keys(TUBE_DX).filter((x) => f.includes(x)).map((x) => TUBE_DX[x]);

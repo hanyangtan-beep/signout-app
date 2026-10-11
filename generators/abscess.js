@@ -53,9 +53,6 @@ export const NECROTIC = 'Necrotic tissue or slough';
 export const INFLAMMATION = 'Acute on chronic inflammation';
 // A skin surface is described: the paragraph closes on the dysplasia sentence.
 export const SURFACE_DX = [ULCER, STASIS, SINUS];
-// Descriptive lines print "NO EVIDENCE OF MALIGNANCY" on the diagnosis line, as the house does for
-// granulation tissue, necrosis and acute inflammation.
-export const NEM_IN_DX = [GRANULATION, NECROTIC, INFLAMMATION];
 
 const dx = (v) => v.diagnosis || ABSCESS;
 export const granulomasPresent = (v) => /^Present/.test(v.granulomas || '');
@@ -269,7 +266,6 @@ const FOREIGN_DX = {
 export function diagnosis(part) {
   const v = part.values;
   const clauses = [mainLine(v)];
-  if (NEM_IN_DX.includes(dx(v))) clauses.push('NO EVIDENCE OF MALIGNANCY');
   if (granulomasPresent(v)) clauses.push(`${v.granulomaType === 'Necrotising' ? 'necrotising' : 'non-necrotising'} granulomas present`);
   if (foreign(v) && !pilonidal(v) && dx(v) !== RUPTURED) clauses.push(FOREIGN_DX[foreign(v)]);
   if (organismsIdentified(v)) clauses.push('organisms identified');

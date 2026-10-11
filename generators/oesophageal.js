@@ -196,7 +196,8 @@ export function diagnosis(part, ctx) {
   if (v.candida === 'Present' && clauses[0] !== 'CANDIDA OESOPHAGITIS') extras.push('Candida hyphae present');
   if (hasColumnar(v) && v.hpylori === 'Present') extras.push('Helicobacter-like organisms present');
   const neoplastic = squamousGrade(v) > 0 || glandularGrade(v) > 0;
-  if (!neoplastic) extras.push('no evidence of dysplasia or malignancy');
+  // Columnar (Barrett's or cardiac-type) lines keep their dysplasia status; squamous findings stand alone.
+  if (!neoplastic && hasColumnar(v)) extras.push('no evidence of dysplasia or malignancy');
   return `(${part.label}) ${organPhrase(part, ctx)} - ${[...clauses, ...extras].join('; ')}`;
 }
 

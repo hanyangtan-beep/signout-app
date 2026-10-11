@@ -136,7 +136,7 @@ test('each cyst type yields the right capitalised diagnosis', () => {
   assert.equal(dx('Mucinous cystadenoma'), `${H}MUCINOUS CYSTADENOMA; no evidence of borderline features or malignancy`);
   assert.equal(dx('Seromucinous cystadenoma'), `${H}SEROMUCINOUS CYSTADENOMA; no evidence of borderline features or malignancy`);
   assert.equal(dx('Mature cystic teratoma'), `${H}MATURE CYSTIC TERATOMA; no immature elements`);
-  assert.equal(dx('Fibroma'), `${H}FIBROMA; no evidence of malignancy`);
+  assert.equal(dx('Fibroma'), `${H}FIBROMA`);
   assert.equal(dx('Paratubal cyst'), 'ADNEXA, right paratubal cyst, cystectomy - PARATUBAL CYST');
   assert.equal(dx('Borderline tumour – see comment'), `${H}BORDERLINE TUMOUR; see comment`);
   assert.equal(dx('Carcinoma – see comment'), `${H}CARCINOMA; see comment`);

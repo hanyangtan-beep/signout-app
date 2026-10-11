@@ -13,7 +13,7 @@ import { readBreastMargin } from '../src/intake.js';
 //   microscopy   "(A) Sections show hyalinised fibroadipose tissue, as well as breast ducts and lobules, without
 //                 architectural distortion. ... There is no evidence of atypical hyperplasia, in-situ or invasive carcinoma."
 //   diagnosis    "(A) RIGHT BREAST, superior margin, resection - NO EVIDENCE OF MALIGNANCY"
-//                "(B) RIGHT BREAST, inferior margin, resection - FAT NECROSIS; no evidence of malignancy"
+//                "(B) RIGHT BREAST, inferior margin, resection - FAT NECROSIS"
 //                "(C) BREAST, L3H breast mass, excision - INTRADUCTAL PAPILLOMA with usual-type ductal hyperplasia; margins clear"
 // Atypia / DCIS / invasive options give a short diagnosis line only; the schema snippet
 // `breast_cancer_template` adds the comment pointing to the QMH breast cancer template.
@@ -334,7 +334,6 @@ export function diagnosis(part) {
 
   if (!isShave(v)) clauses.push(marginClause(v));
   if (isAtypia(v)) clauses.push('see comment');
-  else if (isShave(v) && !isNegative(v)) clauses.push('no evidence of malignancy');
 
   return `(${part.label}) ${organPhrase(v)} - ${[main, ...clauses].join('; ')}`;
 }

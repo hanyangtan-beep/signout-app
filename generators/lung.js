@@ -249,9 +249,11 @@ export function diagnosisText(part) {
   if (v.benign === 'Squamous metaplasia' && v.squamousDysplasia && v.squamousDysplasia !== 'Absent') items.push(v.squamousDysplasia === 'Low grade' ? 'SQUAMOUS METAPLASIA WITH LOW GRADE DYSPLASIA' : 'SQUAMOUS CELL CARCINOMA IN SITU; no invasion identified');
   else if (v.benign && v.benign !== 'None') items.push(BENIGN_DX[v.benign] || v.benign.toUpperCase());
   if (!items.length) items.push(v.tissue === 'Alveolated lung parenchyma' ? 'ALVEOLATED LUNG PARENCHYMA WITH NO SIGNIFICANT ABNORMALITY' : 'BRONCHIAL MUCOSA WITH NO SIGNIFICANT ABNORMALITY');
-  const g = v.granuloma && v.granuloma !== 'Absent';
+  // A named finding stands alone (trailing negatives, Phase 66); squamous dysplasia and carcinoma in situ keep
+  // the invasion answer.
   const dysp = v.benign === 'Squamous metaplasia' && v.squamousDysplasia && v.squamousDysplasia !== 'Absent';
-  return `${items.join('; ')}; no evidence of ${g ? '' : 'granuloma, '}${dysp ? '' : 'dysplasia or '}malignancy`.replace('SQUAMOUS CELL CARCINOMA IN SITU; no invasion identified; no evidence of malignancy', 'SQUAMOUS CELL CARCINOMA IN SITU; no evidence of invasive malignancy');
+  if (!dysp) return items.join('; ');
+  return `${items.join('; ')}; no evidence of malignancy`.replace('SQUAMOUS CELL CARCINOMA IN SITU; no invasion identified; no evidence of malignancy', 'SQUAMOUS CELL CARCINOMA IN SITU; no evidence of invasive malignancy');
 }
 
 const BENIGN_DX = {

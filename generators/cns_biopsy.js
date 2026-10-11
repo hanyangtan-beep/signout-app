@@ -456,8 +456,8 @@ export function diagnosisText(part) {
     case LYMPHOMA: return arr(v.lyIhc).some((x) => /^CD20 positive|^CD79a positive/.test(x))
       ? 'MALIGNANT LYMPHOMA, large B-cell type'
       : 'MALIGNANT LYMPHOID INFILTRATE (see microscopic description)';
-    case ABSCESS: return 'ACUTE INFLAMMATION AND ABSCESS FORMATION; no evidence of malignancy';
-    case DEMYELINATION: return 'DEMYELINATING LESION; no evidence of malignancy';
+    case ABSCESS: return 'ACUTE INFLAMMATION AND ABSCESS FORMATION';
+    case DEMYELINATION: return 'DEMYELINATING LESION';
     case GLIOSIS: return 'REACTIVE GLIOSIS; no tumour identified';
     case FREETEXT: return stripDot(v.findingOther) ? stripDot(v.findingOther).toUpperCase() : 'SEE MICROSCOPIC EXAMINATION';
     default: return 'SEE MICROSCOPIC EXAMINATION';

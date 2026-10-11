@@ -7,7 +7,7 @@ Build brief moved verbatim from the phased roadmap on 2026-09-10. The card in `d
 ## Built (2026-09-12, Phase 10)
 
 - `schemas/nasopharyngeal_biopsy.json` (biopsy, system Head and neck, rank 11, label `NPC`) + `generators/nasopharyngeal.js`; listed in `templates/manifest.json` and loaded by generator id `nasopharyngeal`.
-- Benign default reads `NASOPHARYNX, biopsy - REACTIVE LYMPHOID HYPERPLASIA; no evidence of malignancy`; the house `NO EVIDENCE OF MALIGNANCY` form appears via `finding: None` when only adequacy caveats apply.
+- Benign default reads `NASOPHARYNX, biopsy - REACTIVE LYMPHOID HYPERPLASIA`: benign findings stand alone since Phase 66 (docs/specs/trailing-negatives.md), and a blank finding reads `NO EVIDENCE OF MALIGNANCY`.
 - All 15 finding options print as specced: 5 benign, 2 granulomatous (stain outcomes in microscopy and diagnosis), WHO 5th NPC subtypes (IHC + EBER single-sentence form), papillary adenocarcinoma, salivary gland-type, free-text other.
 - EBER pending: microscopy says the ISH was ordered and auto-ticks the `npc_eber_pending` addendum snippet (flag gated to carcinoma / atypical-lymphoid findings so benign defaults never tick it). Carcinoma auto-ticks `npc_ebv_staging`; atypical lymphoid infiltrate auto-ticks `npc_lymphoma_workup`; `npc_negative_correlation` is manual.
 - Recurrence setting prefixes `PERSISTENT / RECURRENT` and adds post-radiotherapy change wording; post-RT surveillance benign reports end `no evidence of recurrent carcinoma`.

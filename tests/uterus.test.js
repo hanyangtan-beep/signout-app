@@ -17,7 +17,6 @@ const one = (values, options = {}) => {
 };
 
 const TAH = 'UTERUS AND CERVIX, total hysterectomy';
-const CX_NEG = 'cervix with no evidence of squamous intraepithelial lesion or malignancy';
 
 test('metadata: benign gynae resection with palette aliases and complete defaults', () => {
   assert.equal(schema.id, 'uterus_benign');
@@ -75,7 +74,7 @@ test('example: two parts - uterus with leiomyomas, adenomyosis and polyp; left a
   assert.equal(r.blockKey, '(A) (1-2) Anterior cervix and posterior cervix. (3-4) Anterior and posterior endomyometrium. (5-7) Leiomyomas. (8) Endometrial polyp. (9) Lower uterine segment.\n(B) (1) Fallopian tube, sectioned. (2-3) Ovary.');
   assert.equal(r.microscopy.split('\n\n')[0], '(A) Sections of the uterus show adenomyosis with scattered islands of endometrial glands and stroma in the myometrium. Intramural and subserosal leiomyomata with no coagulative necrosis are seen. Mitoses are inconspicuous and there is no cytological atypia. Endometrial polyp with fibrotic stroma and thick-walled vessels is sampled. The background endometrium shows no hyperplasia. The cervix shows no evidence of squamous intraepithelial lesion, glandular dysplasia, or malignancy.');
   assert.equal(r.microscopy.split('\n\n')[1], '(B) Sections of the left fallopian tube show unremarkable plicae. A paratubal cyst is seen, with a fibrous wall lined by ciliated tubal-type epithelium. The ovary shows a cystic follicle. There is no evidence of malignancy.');
-  assert.equal(r.diagnosis, `(A) ${TAH} - LEIOMYOMAS; ADENOMYOSIS; ENDOMETRIAL POLYP; ${CX_NEG}\n(B) LEFT OVARY AND FALLOPIAN TUBE, salpingo-oophorectomy - PARATUBAL CYST; CYSTIC FOLLICLE, ovary; no evidence of malignancy`);
+  assert.equal(r.diagnosis, `(A) ${TAH} - LEIOMYOMAS; ADENOMYOSIS; ENDOMETRIAL POLYP\n(B) LEFT OVARY AND FALLOPIAN TUBE, salpingo-oophorectomy - PARATUBAL CYST; CYSTIC FOLLICLE, ovary`);
   assert.equal(r.comment, '');
   assert.ok(!r.report.includes('undefined'));
 });
@@ -86,13 +85,13 @@ test('default single part is the house total hysterectomy report with (1)...(8) 
   assert.equal(r.macro, 'Received in formalin is a total hysterectomy specimen. The serosa is smooth. The cervix is unremarkable. Sectioning shows intramural leiomyomas with a whorled cut surface. Representative sections in 8 blocks.');
   assert.equal(r.blockKey, '(1-2) Anterior cervix and posterior cervix. (3-4) Anterior and posterior endomyometrium. (5-7) Leiomyomas. (8) Lower uterine segment.');
   assert.equal(r.microscopy, 'Sections of the uterus show intramural leiomyomata with no coagulative necrosis. Mitoses are inconspicuous and there is no cytological atypia. The endometrial cavity shows proliferative endometrium without hyperplasia. The cervix shows no evidence of squamous intraepithelial lesion, glandular dysplasia, or malignancy.');
-  assert.equal(r.diagnosis, `${TAH} - LEIOMYOMAS; proliferative endometrium; ${CX_NEG}`);
+  assert.equal(r.diagnosis, `${TAH} - LEIOMYOMAS; proliferative endometrium`);
   assert.ok(!r.report.includes('(A)'));
 });
 
 test('house diagnosis form: leiomyomas, adenomyosis, proliferative endometrium, unremarkable cervix', () => {
   const r = run(one({ adenomyosis: 'Present', weight: '180', dimensions: '9 x 6 x 4', leiomyomaCount: '3', leiomyomaSize: '4', endometriumThickness: '0.3 cm', myometrium: 'Trabeculated' }));
-  assert.equal(r.diagnosis, `${TAH} - LEIOMYOMAS; ADENOMYOSIS; proliferative endometrium; ${CX_NEG}`);
+  assert.equal(r.diagnosis, `${TAH} - LEIOMYOMAS; ADENOMYOSIS; proliferative endometrium`);
   assert.equal(r.macro, 'Received in formalin is a total hysterectomy specimen weighing 180 g. The uterus measures 9 x 6 x 4 cm. The serosa is smooth. The cervix is unremarkable. The endometrium measures up to 0.3 cm in thickness. The myometrium is trabeculated. Sectioning shows three intramural leiomyomas measuring up to 4 cm with a whorled cut surface. Representative sections in 8 blocks.');
   assert.ok(r.microscopy.startsWith('Sections of the uterus show adenomyosis with scattered islands of endometrial glands and stroma in the myometrium. Intramural leiomyomata with no coagulative necrosis are seen. Mitoses are inconspicuous and there is no cytological atypia.'));
 });
@@ -122,7 +121,7 @@ test('two-part case keeps (A)/(B) prefixes on every block and part B defaults to
   assert.equal(r.blockKey, '(A) (1-2) Anterior cervix and posterior cervix. (3-4) Anterior and posterior endomyometrium. (5-7) Leiomyomas. (8) Lower uterine segment.\n(B) (1) Fallopian tube, sectioned. (2-3) Ovary.');
   assert.ok(r.microscopy.startsWith('(A) Sections of the uterus'));
   assert.ok(r.microscopy.includes('\n\n(B) Sections of the left fallopian tube and ovary show no significant pathology. There is no evidence of malignancy.'));
-  assert.equal(r.diagnosis, `(A) ${TAH} - LEIOMYOMAS; proliferative endometrium; ${CX_NEG}\n(B) LEFT OVARY AND FALLOPIAN TUBE, salpingo-oophorectomy - NO SIGNIFICANT PATHOLOGY`);
+  assert.equal(r.diagnosis, `(A) ${TAH} - LEIOMYOMAS; proliferative endometrium\n(B) LEFT OVARY AND FALLOPIAN TUBE, salpingo-oophorectomy - NO SIGNIFICANT PATHOLOGY`);
   const c3 = createCase(schema, 3);
   assert.equal(c3.parts[2].values.specimenName, 'Right tube and ovary');
   assert.ok(run(c3).diagnosis.includes('(C) RIGHT OVARY AND FALLOPIAN TUBE, salpingo-oophorectomy - NO SIGNIFICANT PATHOLOGY'));
@@ -130,14 +129,14 @@ test('two-part case keeps (A)/(B) prefixes on every block and part B defaults to
 
 test('each endometrium option yields the right diagnosis clause', () => {
   const dx = (endometrium, extra = {}) => run(one({ endometrium, ...extra })).diagnosis;
-  assert.equal(dx('Proliferative'), `${TAH} - LEIOMYOMAS; proliferative endometrium; ${CX_NEG}`);
-  assert.equal(dx('Secretory'), `${TAH} - LEIOMYOMAS; secretory endometrium; ${CX_NEG}`);
-  assert.equal(dx('Weakly proliferative'), `${TAH} - LEIOMYOMAS; weakly proliferative endometrium; ${CX_NEG}`);
-  assert.equal(dx('Inactive-atrophic'), `${TAH} - LEIOMYOMAS; inactive, atrophic endometrium; ${CX_NEG}`);
-  assert.equal(dx('Disordered proliferative'), `${TAH} - LEIOMYOMAS; disordered proliferative endometrium; ${CX_NEG}`);
-  assert.equal(dx('Endometrial polyp'), `${TAH} - LEIOMYOMAS; ENDOMETRIAL POLYP; ${CX_NEG}`);
+  assert.equal(dx('Proliferative'), `${TAH} - LEIOMYOMAS; proliferative endometrium`);
+  assert.equal(dx('Secretory'), `${TAH} - LEIOMYOMAS; secretory endometrium`);
+  assert.equal(dx('Weakly proliferative'), `${TAH} - LEIOMYOMAS; weakly proliferative endometrium`);
+  assert.equal(dx('Inactive-atrophic'), `${TAH} - LEIOMYOMAS; inactive, atrophic endometrium`);
+  assert.equal(dx('Disordered proliferative'), `${TAH} - LEIOMYOMAS; disordered proliferative endometrium`);
+  assert.equal(dx('Endometrial polyp'), `${TAH} - LEIOMYOMAS; ENDOMETRIAL POLYP`);
   // No leiomyoma or adenomyosis: the endometrial phase becomes the capitalised main line.
-  assert.equal(dx('Secretory', { leiomyoma: 'Absent' }), `${TAH} - SECRETORY ENDOMETRIUM; ${CX_NEG}`);
+  assert.equal(dx('Secretory', { leiomyoma: 'Absent' }), `${TAH} - SECRETORY ENDOMETRIUM`);
   const r = run(one({ endometrium: 'Weakly proliferative', leiomyoma: 'Absent' }));
   assert.equal(r.microscopy, 'Sections of the uterus show unremarkable myometrium. The endometrial cavity shows weakly proliferative endometrium without hyperplasia. The cervix shows no evidence of squamous intraepithelial lesion, glandular dysplasia, or malignancy.');
   assert.equal(r.blockKey, '(1-2) Anterior cervix and posterior cervix. (3-4) Anterior and posterior endomyometrium. (5) Lower uterine segment.');
@@ -149,7 +148,7 @@ test('leiomyoma count, location, degeneration and singular wording', () => {
   assert.ok(r.macro.includes('Sectioning shows a single subserosal leiomyoma measuring 2.5 cm with a haemorrhagic cut surface.'));
   assert.ok(r.microscopy.startsWith('Sections of the uterus show a subserosal leiomyoma showing red (haemorrhagic) degeneration with no coagulative necrosis. Mitoses are inconspicuous and there is no cytological atypia.'));
   assert.ok(r.blockKey.includes('(5-7) Leiomyoma.'));
-  assert.equal(r.diagnosis, `${TAH} - LEIOMYOMA; proliferative endometrium; ${CX_NEG}`);
+  assert.equal(r.diagnosis, `${TAH} - LEIOMYOMA; proliferative endometrium`);
   const r2 = run(one({ leiomyomaCount: '4', leiomyomaLocation: 'Submucosal', cutSurface: 'Calcified', degeneration: 'Hyaline', adenomyosis: 'Present' }));
   assert.ok(r2.macro.includes('Sectioning shows four submucosal leiomyomas with a gritty, calcified cut surface.'));
   assert.ok(r2.microscopy.includes('Submucosal leiomyomata showing hyaline degeneration with no coagulative necrosis are seen.'));
@@ -161,10 +160,10 @@ test('cervix options: cervicitis, nabothian cysts, LSIL and the subtotal uterus 
   const r = run(one({ cervix: 'Chronic cervicitis', cervixMacro: 'Nabothian cysts' }));
   assert.ok(r.macro.includes('The cervix shows nabothian cysts.'));
   assert.ok(r.microscopy.endsWith('The cervix shows chronic cervicitis with no evidence of squamous intraepithelial lesion, glandular dysplasia, or malignancy.'));
-  assert.equal(r.diagnosis, `${TAH} - LEIOMYOMAS; proliferative endometrium; chronic cervicitis; no evidence of dysplasia or malignancy`);
-  assert.equal(run(one({ cervix: 'Nabothian cysts' })).diagnosis, `${TAH} - LEIOMYOMAS; proliferative endometrium; nabothian cysts of cervix; no evidence of dysplasia or malignancy`);
+  assert.equal(r.diagnosis, `${TAH} - LEIOMYOMAS; proliferative endometrium; chronic cervicitis`);
+  assert.equal(run(one({ cervix: 'Nabothian cysts' })).diagnosis, `${TAH} - LEIOMYOMAS; proliferative endometrium; nabothian cysts of cervix`);
   const l = run(one({ cervix: 'LSIL' }));
-  assert.equal(l.diagnosis, `${TAH} - LOW GRADE SQUAMOUS INTRAEPITHELIAL LESION (LSIL), cervix; LEIOMYOMAS; proliferative endometrium; no evidence of dysplasia or malignancy`);
+  assert.equal(l.diagnosis, `${TAH} - LOW GRADE SQUAMOUS INTRAEPITHELIAL LESION (LSIL), cervix; LEIOMYOMAS; proliferative endometrium`);
   assert.ok(l.microscopy.endsWith('The cervix shows a low grade squamous intraepithelial lesion (LSIL). There is no glandular dysplasia or invasive malignancy. There is no evidence of malignancy.'));
   assert.equal(l.comment, '');
   const s = run(one({ specimenName: 'Uterus, subtotal', adenomyosis: 'Present' }));
@@ -173,14 +172,14 @@ test('cervix options: cervicitis, nabothian cysts, LSIL and the subtotal uterus 
   assert.ok(!s.macro.includes('cervix'));
   assert.equal(s.blockKey, '(1-2) Anterior and posterior endomyometrium. (3-5) Leiomyomas. (6) Lower uterine segment.');
   assert.ok(s.microscopy.endsWith('The endometrial cavity shows proliferative endometrium without hyperplasia. There is no evidence of malignancy.'));
-  assert.equal(s.diagnosis, 'UTERUS, subtotal hysterectomy - LEIOMYOMAS; ADENOMYOSIS; proliferative endometrium; no evidence of hyperplasia or malignancy');
+  assert.equal(s.diagnosis, 'UTERUS, subtotal hysterectomy - LEIOMYOMAS; ADENOMYOSIS; proliferative endometrium');
 });
 
 test('chronic endometritis and additional notes', () => {
   const r = run(one({ endometritis: 'Present', additionalNotes: 'A small focus of squamous metaplasia is present.' }));
   assert.ok(r.microscopy.includes('Plasma cells are present in the endometrial stroma, in keeping with chronic endometritis.'));
   assert.ok(r.microscopy.endsWith('glandular dysplasia, or malignancy. A small focus of squamous metaplasia is present.'));
-  assert.equal(r.diagnosis, `${TAH} - LEIOMYOMAS; proliferative endometrium; chronic endometritis; ${CX_NEG}`);
+  assert.equal(r.diagnosis, `${TAH} - LEIOMYOMAS; proliferative endometrium; chronic endometritis`);
 });
 
 test('myomectomy gives the house leiomyoma line', () => {
@@ -189,11 +188,11 @@ test('myomectomy gives the house leiomyoma line', () => {
   assert.equal(r.macro, 'Received in formalin is a well-circumscribed firm nodule weighing 120 g and measuring 6 x 5 x 4 cm in aggregate. The nodule measures 6 cm. The cut surface is whorled. Representative sections in 4 blocks.');
   assert.equal(r.blockKey, '(1-4) Leiomyoma, representative sections.');
   assert.equal(r.microscopy, 'Sections show pieces of smooth muscle tumour tissue comprising spindle cells arranged in fascicles and whorls. Thick walled vessels are seen. No epithelioid tumour cells, significant nuclear atypia, coagulative tumour necrosis, or frequent mitoses are observed. There is no evidence of malignancy. Features are those of leiomyoma.');
-  assert.equal(r.diagnosis, 'MYOMECTOMY - LEIOMYOMA; no evidence of malignancy');
+  assert.equal(r.diagnosis, 'MYOMECTOMY - LEIOMYOMA');
   const m = run(one({ specimenName: 'Myomectomy', leiomyomaCount: '3', degeneration: 'Hyaline', cutSurface: 'Degenerate' }));
   assert.ok(m.macro.startsWith('Received in formalin are three well-circumscribed firm nodules. The cut surface is soft, degenerate.'));
   assert.ok(m.microscopy.includes('Areas of hyaline degeneration are present.'));
-  assert.equal(m.diagnosis, 'MYOMECTOMY - LEIOMYOMAS; no evidence of malignancy');
+  assert.equal(m.diagnosis, 'MYOMECTOMY - LEIOMYOMAS');
 });
 
 test('adnexa parts: each finding gives the right capitalised clause', () => {
@@ -201,14 +200,14 @@ test('adnexa parts: each finding gives the right capitalised clause', () => {
   const R = 'RIGHT OVARY AND FALLOPIAN TUBE, salpingo-oophorectomy';
   assert.equal(dx(['Unremarkable']), `${R} - NO SIGNIFICANT PATHOLOGY`);
   assert.equal(dx([]), `${R} - NO SIGNIFICANT PATHOLOGY`);
-  assert.equal(dx(['Paratubal cyst']), `${R} - PARATUBAL CYST; no evidence of malignancy`);
-  assert.equal(dx(['Cystic follicle']), `${R} - CYSTIC FOLLICLE, ovary; no evidence of malignancy`);
-  assert.equal(dx(['Corpus luteum']), `${R} - CORPUS LUTEUM, ovary; no evidence of malignancy`);
-  assert.equal(dx(['Corpus albicans']), `${R} - corpora albicantia, ovary; no evidence of malignancy`);
-  assert.equal(dx(['Endometriosis']), `${R} - ENDOMETRIOSIS; no evidence of malignancy`);
-  assert.equal(dx(['Serous cystadenoma']), `${R} - SEROUS CYSTADENOMA, ovary; no evidence of malignancy`);
-  assert.equal(dx(['Hydrosalpinx']), `${R} - HYDROSALPINX; no evidence of malignancy`);
-  assert.equal(dx(['Paratubal cyst', 'Cystic follicle', 'Endometriosis']), `${R} - PARATUBAL CYST; CYSTIC FOLLICLE, ovary; ENDOMETRIOSIS; no evidence of malignancy`);
+  assert.equal(dx(['Paratubal cyst']), `${R} - PARATUBAL CYST`);
+  assert.equal(dx(['Cystic follicle']), `${R} - CYSTIC FOLLICLE, ovary`);
+  assert.equal(dx(['Corpus luteum']), `${R} - CORPUS LUTEUM, ovary`);
+  assert.equal(dx(['Corpus albicans']), `${R} - corpora albicantia, ovary`);
+  assert.equal(dx(['Endometriosis']), `${R} - ENDOMETRIOSIS`);
+  assert.equal(dx(['Serous cystadenoma']), `${R} - SEROUS CYSTADENOMA, ovary`);
+  assert.equal(dx(['Hydrosalpinx']), `${R} - HYDROSALPINX`);
+  assert.equal(dx(['Paratubal cyst', 'Cystic follicle', 'Endometriosis']), `${R} - PARATUBAL CYST; CYSTIC FOLLICLE, ovary; ENDOMETRIOSIS`);
   const r = run(one({ specimenName: 'Right tube and ovary', adnexaFindings: ['Serous cystadenoma', 'Endometriosis', 'Hydrosalpinx'], tubeSize: '6 x 1.5', ovarySize: '5 x 4 x 3', cystSize: '4' }));
   assert.equal(r.macro, 'Received in formalin is a right salpingo-oophorectomy specimen. The fallopian tube measures 6 x 1.5 cm. The ovary measures 5 x 4 x 3 cm. The fallopian tube is cystically dilated to 4 cm. Representative sections in 3 blocks.');
   assert.equal(r.microscopy, 'Sections of the right fallopian tube show unremarkable plicae. The fallopian tube is dilated with attenuated plicae, in keeping with hydrosalpinx. The ovary shows a cyst lined by benign mullerian epithelium, underneath which benign fibrous stroma composed of bland spindle cells is seen. Features are those of a serous cystadenoma. Foci of endometrial glands and stroma with haemosiderin-laden macrophages are present, in keeping with endometriosis. There is no evidence of malignancy.');
@@ -231,8 +230,8 @@ test('sterilisation tubes and the combined uterus with bilateral adnexa', () => 
   assert.ok(b.macro.includes('The fallopian tubes measure up to 5 x 0.5 cm. The ovaries measure up to 2.5 x 1.5 x 1 cm. Representative sections in 14 blocks.'));
   assert.equal(b.blockKey, '(1-2) Anterior cervix and posterior cervix. (3-4) Anterior and posterior endomyometrium. (5-7) Leiomyomas. (8) Lower uterine segment. (9) Left fallopian tube, sectioned. (10-11) Left ovary. (12) Right fallopian tube, sectioned. (13-14) Right ovary.');
   assert.ok(b.microscopy.includes('The cervix shows no evidence of squamous intraepithelial lesion, glandular dysplasia, or malignancy. Sections of the fallopian tubes show unremarkable plicae. A paratubal cyst is seen, with a fibrous wall lined by ciliated tubal-type epithelium. The ovaries are unremarkable. There is no evidence of malignancy.'));
-  assert.equal(b.diagnosis, `UTERUS, CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral salpingo-oophorectomy - LEIOMYOMAS; ADENOMYOSIS; proliferative endometrium; ${CX_NEG}; paratubal cyst`);
-  assert.ok(run(one({ specimenName: 'Uterus, cervix and bilateral adnexa' })).diagnosis.endsWith(`${CX_NEG}; bilateral tubes and ovaries with no significant pathology`));
+  assert.equal(b.diagnosis, `UTERUS, CERVIX AND BILATERAL ADNEXA, total hysterectomy and bilateral salpingo-oophorectomy - LEIOMYOMAS; ADENOMYOSIS; proliferative endometrium; paratubal cyst`);
+  assert.ok(run(one({ specimenName: 'Uterus, cervix and bilateral adnexa' })).diagnosis.endsWith('proliferative endometrium; bilateral tubes and ovaries with no significant pathology'));
 });
 
 test('blank size, weight and count fields produce no dangling text', () => {

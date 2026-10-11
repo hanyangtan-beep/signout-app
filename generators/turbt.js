@@ -348,7 +348,6 @@ export function diagnosis(part) {
     if (findings.length) {
       clauses.push(findings[0].toUpperCase(), ...findings.slice(1));
       if (v.urothelium === 'Denuded') clauses.push('urothelium largely denuded');
-      clauses.push('no evidence of dysplasia or malignancy');
     } else {
       clauses.push('NO EVIDENCE OF DYSPLASIA OR MALIGNANCY');
       if (v.urothelium === 'Denuded') clauses.push('urothelium largely denuded, see comment');

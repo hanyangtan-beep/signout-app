@@ -23,14 +23,14 @@ test('example: loop ileostomy closure with prolapse change and suture granuloma 
   assert.equal(r.macro, 'Received in formalin is a segment of small bowel measuring 6 cm in length and up to 3 cm in diameter, with an attached ellipse of skin measuring 3 x 2 cm at the stoma site. The mucosa is congested and prolapsed at the stoma. Representative sections in 3 blocks.');
   assert.equal(r.blockKey, '(1) Stoma with skin. (2) Bowel wall. (3) Proximal and distal margins.');
   assert.equal(r.microscopy, HOUSE_MICRO);
-  assert.equal(r.diagnosis, 'SMALL BOWEL, loop ileostomy, closure - ILEOSTOMY with REACTIVE AND PROLAPSE-TYPE CHANGES; no evidence of dysplasia or malignancy');
+  assert.equal(r.diagnosis, 'SMALL BOWEL, loop ileostomy, closure - ILEOSTOMY with REACTIVE AND PROLAPSE-TYPE CHANGES');
   assert.equal(r.comment, '');
   assert.ok(!r.report.includes('(A)'));
 });
 
 test('defaults give the roadmap default diagnosis line', () => {
   const r = run(createCase(schema, 1));
-  assert.equal(r.diagnosis, 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE AND PROLAPSE-TYPE CHANGES; no evidence of dysplasia or malignancy');
+  assert.equal(r.diagnosis, 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE AND PROLAPSE-TYPE CHANGES');
   assert.equal(r.microscopy, HOUSE_MICRO);
   assert.equal(r.specimens, 'Small bowel, ileostomy, closure');
   const typed = run(one({ specimenName: 'Small bowel, ileostomy, Hartmann reversal' }));
@@ -56,7 +56,7 @@ test('macro options: serosa, suture material, hernia sac and no skin change the 
   assert.equal(r.macro, 'Received in formalin is a segment of small bowel measuring 10 cm in length and up to 4 cm in diameter. The mucosa is ulcerated at the stoma. The serosa shows fibrous adhesions. Suture material is present in the wall. A parastomal hernia sac of fibrous tissue is also received. Representative sections in 4 blocks.');
   assert.equal(r.blockKey, '(1) Stoma site. (2) Bowel wall. (3) Proximal and distal margins. (4) Parastomal hernia sac.');
   assert.ok(r.microscopy.startsWith('Sections show small bowel with an ileostomy site. '));
-  assert.ok(r.diagnosis.includes('; parastomal hernia sac;'));
+  assert.match(r.diagnosis, /; parastomal hernia sac(;|$)/);
 });
 
 test('two-part case keeps (A)/(B) on every block; colostomy sits in the large bowel', () => {
@@ -68,22 +68,22 @@ test('two-part case keeps (A)/(B) on every block; colostomy sits in the large bo
   assert.match(r.macro, /^\(A\) Received in formalin is a segment of small bowel measuring 6 cm in length and up to 3 cm in diameter, with an attached ellipse of skin measuring 3 x 2 cm at the stoma site\.[\s\S]*\n\n\(B\) Received in formalin is a segment of large bowel, with an attached ellipse of skin at the stoma site\. /);
   assert.equal(r.blockKey, '(A) (1) Stoma with skin. (2) Bowel wall. (3) Proximal and distal margins.\n(B) (1) Stoma with skin. (2) Bowel wall. (3) Proximal and distal margins.');
   assert.match(r.microscopy, /^\(A\) Sections show small bowel with an ileostomy site[\s\S]*\n\n\(B\) Sections show large bowel with a colostomy site covered by unremarkable skin\. The adjacent mucosa is unremarkable\. The resection margins are viable\. There is no evidence of dysplasia or malignancy\.$/);
-  assert.equal(r.diagnosis, '(A) SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE AND PROLAPSE-TYPE CHANGES; no evidence of dysplasia or malignancy\n(B) LARGE BOWEL, end colostomy, reversal - COLOSTOMY with NO SIGNIFICANT ABNORMALITY; no evidence of dysplasia or malignancy');
+  assert.equal(r.diagnosis, '(A) SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE AND PROLAPSE-TYPE CHANGES\n(B) LARGE BOWEL, end colostomy, reversal - COLOSTOMY with NO SIGNIFICANT ABNORMALITY');
 });
 
 test('each main-result combination yields the right capitalised diagnosis', () => {
   const dx = (values) => run(one(values)).diagnosis;
   const quiet = { peristomalSkin: 'Unremarkable', prolapseChange: false, sutureReaction: false };
-  assert.equal(dx({}), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE AND PROLAPSE-TYPE CHANGES; no evidence of dysplasia or malignancy');
-  assert.equal(dx({ sutureReaction: false, peristomalSkin: 'Unremarkable' }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with PROLAPSE-TYPE CHANGES; no evidence of dysplasia or malignancy');
-  assert.equal(dx({ prolapseChange: false }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE CHANGES; no evidence of dysplasia or malignancy');
-  assert.equal(dx({ ...quiet, stenosis: 'Stenosis with mural fibrosis' }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE CHANGES; stenosis; no evidence of dysplasia or malignancy');
-  assert.equal(dx({ ...quiet, stomaType: 'Colostomy', procedure: 'Revision' }), 'LARGE BOWEL, colostomy, revision - COLOSTOMY with NO SIGNIFICANT ABNORMALITY; no evidence of dysplasia or malignancy');
-  assert.equal(dx({ ...quiet, ischaemia: 'Transmural', marginsViable: false }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with TRANSMURAL ISCHAEMIC CHANGE; ischaemic change at the resection margins; no evidence of dysplasia or malignancy');
-  assert.equal(dx({ ischaemia: 'Superficial' }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE AND PROLAPSE-TYPE CHANGES; superficial ischaemic change; no evidence of dysplasia or malignancy');
-  assert.equal(dx({ ischaemia: 'Transmural' }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE AND PROLAPSE-TYPE CHANGES; TRANSMURAL ISCHAEMIC CHANGE; no evidence of dysplasia or malignancy');
-  assert.equal(dx({ ...quiet, ibdActivity: 'Inactive chronic' }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with INACTIVE CHRONIC INFLAMMATORY BOWEL DISEASE; no evidence of dysplasia or malignancy; see comment');
-  assert.equal(dx({ ibdActivity: 'Active', diverticula: true, herniaSac: true }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE AND PROLAPSE-TYPE CHANGES; parastomal hernia sac; active chronic inflammatory bowel disease at the stoma; diverticula; no evidence of dysplasia or malignancy; see comment');
+  assert.equal(dx({}), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE AND PROLAPSE-TYPE CHANGES');
+  assert.equal(dx({ sutureReaction: false, peristomalSkin: 'Unremarkable' }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with PROLAPSE-TYPE CHANGES');
+  assert.equal(dx({ prolapseChange: false }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE CHANGES');
+  assert.equal(dx({ ...quiet, stenosis: 'Stenosis with mural fibrosis' }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE CHANGES; stenosis');
+  assert.equal(dx({ ...quiet, stomaType: 'Colostomy', procedure: 'Revision' }), 'LARGE BOWEL, colostomy, revision - COLOSTOMY with NO SIGNIFICANT ABNORMALITY');
+  assert.equal(dx({ ...quiet, ischaemia: 'Transmural', marginsViable: false }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with TRANSMURAL ISCHAEMIC CHANGE; ischaemic change at the resection margins');
+  assert.equal(dx({ ischaemia: 'Superficial' }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE AND PROLAPSE-TYPE CHANGES; superficial ischaemic change');
+  assert.equal(dx({ ischaemia: 'Transmural' }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE AND PROLAPSE-TYPE CHANGES; TRANSMURAL ISCHAEMIC CHANGE');
+  assert.equal(dx({ ...quiet, ibdActivity: 'Inactive chronic' }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with INACTIVE CHRONIC INFLAMMATORY BOWEL DISEASE; see comment');
+  assert.equal(dx({ ibdActivity: 'Active', diverticula: true, herniaSac: true }), 'SMALL BOWEL, ileostomy, closure - ILEOSTOMY with REACTIVE AND PROLAPSE-TYPE CHANGES; parastomal hernia sac; active chronic inflammatory bowel disease at the stoma; diverticula; see comment');
 });
 
 test('secondary findings add microscopy sentences and the IBD comment', () => {

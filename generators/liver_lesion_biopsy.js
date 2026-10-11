@@ -359,9 +359,9 @@ export function entityDx(v, { bare = false } = {}) {
     case 'Myeloid sarcoma': return 'MYELOID SARCOMA';
     case 'Carcinoma, not further classifiable': return 'CARCINOMA, not further classifiable';
     case 'Malignant neoplasm, not further classifiable': return 'MALIGNANT NEOPLASM, not further classifiable';
-    case 'Abscess': return 'ABSCESS; no malignancy identified';
-    case 'Hydatid cyst': return 'HYDATID CYST; no malignancy identified';
-    case 'Inflammatory pseudotumour': return 'INFLAMMATORY PSEUDOTUMOUR; no malignancy identified';
+    case 'Abscess': return 'ABSCESS';
+    case 'Hydatid cyst': return 'HYDATID CYST';
+    case 'Inflammatory pseudotumour': return 'INFLAMMATORY PSEUDOTUMOUR';
     case 'Necrotic tissue only': return 'NECROTIC TISSUE ONLY; no viable lesional tissue identified';
     case 'Non-lesional liver only': {
       const bg = bare ? '' : backgroundOf(v);

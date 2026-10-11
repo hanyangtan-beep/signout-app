@@ -175,7 +175,6 @@ export function diagnosis(part, ctx) {
   const extras = [];
   if (v.hpylori === 'Present') extras.push('Helicobacter-like organisms present');
   if (!clauses.length) clauses.push('DUODENAL MUCOSA WITH NO SIGNIFICANT HISTOLOGICAL ABNORMALITY');
-  else if (!isNeoplastic(v)) extras.push('no evidence of dysplasia or malignancy');
   return `(${part.label}) ${organPhrase(part, ctx)} - ${[...clauses, ...extras].join('; ')}`;
 }
 

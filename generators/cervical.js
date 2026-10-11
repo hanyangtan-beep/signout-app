@@ -42,6 +42,14 @@ export function benignOf(v) {
   return b;
 }
 
+// Condyloma acuminatum is a low grade squamous intraepithelial lesion in the LAST terminology, which keeps
+// "condyloma" as an optional qualifier (Darragh et al., Arch Pathol Lab Med 2012;
+// https://documents.cap.org/documents/2012-arpa.lgt200570-v136.pdf). It ranks with LSIL and prints
+// "LOW GRADE SQUAMOUS INTRAEPITHELIAL LESION (LSIL / CONDYLOMA ACUMINATUM)" (user decision, 2026-10-11).
+export const CONDYLOMA = 'Condyloma acuminatum';
+export const isCondyloma = (v) => benignOf(v) === CONDYLOMA;
+const CONDYLOMA_DX = 'LOW GRADE SQUAMOUS INTRAEPITHELIAL LESION (LSIL / CONDYLOMA ACUMINATUM)';
+
 const site = (v) => (v.specimenName || '').replace(/\s*\bcervi(x|cal)\b\s*/i, ' ').replace(/^[\s,]+|[\s,]+$/g, '').trim();
 
 export function specimenName(part) {
@@ -61,11 +69,12 @@ export function organPhrase(part) {
   return `CERVIX, cervical biopsy${s ? ` at ${s}` : ''}`;
 }
 
-// Squamous ranking: 0 negative, 1 HPV effect only, 2 LSIL, 3 CIN II, 4 CIN III, 5 SCC.
+// Squamous ranking: 0 negative, 1 HPV effect only, 2 LSIL (CIN I or condyloma), 3 CIN II, 4 CIN III, 5 SCC.
 const SQ_RANK = { Negative: 0, 'LSIL (CIN I)': 2, 'HSIL (CIN II)': 3, 'HSIL (CIN III)': 4, 'Squamous cell carcinoma': 5 };
 export function squamousRank(v) {
   if (isInadequateECC(v)) return 0;
   const r = SQ_RANK[v.squamous] ?? 0;
+  if (r < 2 && isCondyloma(v)) return 2;
   if (r === 0 && v.koilocytosis === 'Present') return 1;
   return r;
 }
@@ -233,7 +242,8 @@ export function squamousClause(v) {
     if (v.invasionSuspicious === 'Cannot be excluded') t += '; early stromal invasion cannot be excluded, excision recommended for definitive assessment';
     return t;
   }
-  if (sq === 'LSIL (CIN I)') return `LOW GRADE SQUAMOUS INTRAEPITHELIAL LESION (LSIL / CIN I${hpv ? ' AND HPV EFFECT' : ''})`;
+  if (sq === 'LSIL (CIN I)') return `LOW GRADE SQUAMOUS INTRAEPITHELIAL LESION (LSIL / CIN I${isCondyloma(v) ? ' AND CONDYLOMA ACUMINATUM' : hpv ? ' AND HPV EFFECT' : ''})`;
+  if (isCondyloma(v)) return CONDYLOMA_DX;
   if (hpv) return 'LOW GRADE SQUAMOUS INTRAEPITHELIAL LESION (HPV EFFECT)';
   return '';
 }
@@ -254,11 +264,14 @@ export function diagnosis(part, ctx) {
   const clauses = [squamousClause(v), glandularClause(v)].filter(Boolean);
   if (isPolyp(v)) clauses.push(POLYP_DX[polypType(v)]);
   const benign = benignOf(v);
-  if (benign) clauses.push(benign.replace(' / ', ' AND ').toUpperCase());
+  // Condyloma prints as LSIL in the squamous clause; beside HSIL or carcinoma it keeps its own clause.
+  if (benign === CONDYLOMA) { if (squamousRank(v) > 2) clauses.push(CONDYLOMA_DX); }
+  else if (benign) clauses.push(benign.replace(' / ', ' AND ').toUpperCase());
   const extras = [];
   if (!clauses.length) clauses.push('NO EVIDENCE OF SQUAMOUS INTRAEPITHELIAL LESION OR MALIGNANCY');
-  // A polyp is signed out by its type alone, as released; the negative stays in the microscopy.
-  else if (!hasLesion(v) && !isPolyp(v)) extras.push('no evidence of dysplasia or malignancy');
+  // A polyp is signed out by its type alone, as released, whether it is the specimen or is found in a biopsy
+  // (user decision, 2026-10-11); the negative stays in the microscopy.
+  else if (!hasLesion(v) && !isPolyp(v) && benign !== 'Endocervical polyp') extras.push('no evidence of dysplasia or malignancy');
   if (v.correlation === 'Lesion reported on cytology is not represented') extras.push('see comment');
   return `(${part.label}) ${organPhrase(part)} - ${[...clauses, ...extras].join('; ')}`;
 }
@@ -269,12 +282,17 @@ const SQ_TEXT = { 1: 'HPV effect', 2: 'LSIL (CIN I)', 3: 'HSIL (CIN II)', 4: 'HS
 const GL_TEXT = { 1: 'adenocarcinoma in situ', 2: 'invasive adenocarcinoma' };
 const partList = (parts) => (parts.length === 1 ? `part ${parts[0].label}` : `parts ${listJoin(parts.map((p) => p.label))}`);
 
+// LSIL parts are named by kind: "LSIL (CIN I)", "LSIL (condyloma acuminatum)" or both.
+const lsilKind = (v) => ((SQ_RANK[v.squamous] ?? 0) < 2 && isCondyloma(v) ? 'condyloma acuminatum' : 'CIN I');
+const lsilText = (ps) => `LSIL (${[...new Set(ps.map((p) => lsilKind(p.values)))].sort().join(' and ')})`;
+
 /** One SUMMARY line for multi-part cases; omitted for single parts or when the option is off. */
 export function summary(parts, ctx) {
   if (parts.length < 2 || ctx.options.summary === false) return '';
   const bits = [];
   const sqTop = Math.max(...parts.map((p) => squamousRank(p.values)));
-  if (sqTop > 0) bits.push(`highest grade squamous lesion ${SQ_TEXT[sqTop]} in ${partList(parts.filter((p) => squamousRank(p.values) === sqTop))}`);
+  const sqParts = parts.filter((p) => squamousRank(p.values) === sqTop);
+  if (sqTop > 0) bits.push(`highest grade squamous lesion ${sqTop === 2 ? lsilText(sqParts) : SQ_TEXT[sqTop]} in ${partList(sqParts)}`);
   const glTop = Math.max(...parts.map((p) => glandularRank(p.values)));
   if (glTop > 0) bits.push(`${GL_TEXT[glTop]} in ${partList(parts.filter((p) => glandularRank(p.values) === glTop))}`);
   const inadequate = parts.filter((p) => isInadequateECC(p.values));

@@ -85,7 +85,7 @@ test('two-part case keeps (A)/(B) prefixes on every block; submandibular sialade
   assert.ok(r.microscopy.includes('A calculus is present within a dilated duct, in keeping with sialolithiasis. The features are those of chronic sialadenitis. There is no evidence of malignancy.'));
   const dx = r.diagnosis.split('\n');
   assert.equal(dx[0], '(A) PAROTID, left, superficial parotidectomy - PLEOMORPHIC ADENOMA; completely excised');
-  assert.equal(dx[1], '(B) SUBMANDIBULAR GLAND, right, excision - CHRONIC SIALADENITIS; sialolithiasis; no evidence of malignancy');
+  assert.equal(dx[1], '(B) SUBMANDIBULAR GLAND, right, excision - CHRONIC SIALADENITIS; sialolithiasis');
   assert.equal(r.comment, '');
 });
 
@@ -102,11 +102,11 @@ test('each benign lesion option yields the house capitalised line and conclusion
   assert.ok(lec.microscopy.includes('The features are those of a lymphoepithelial cyst. The lesion is completely excised.'));
   assert.ok(lec.macro.startsWith('Received in formalin is an excision specimen from the left parotid.'));
   const kut = run(one({ gland: 'Submandibular gland', procedure: 'Submandibular gland excision', lesion: 'Küttner tumour (chronic sclerosing sialadenitis)', noduleDescription: 'No discrete nodule' }));
-  assert.equal(kut.diagnosis, 'SUBMANDIBULAR GLAND, left, excision - CHRONIC SCLEROSING SIALADENITIS (KUTTNER TUMOUR); no evidence of malignancy');
+  assert.equal(kut.diagnosis, 'SUBMANDIBULAR GLAND, left, excision - CHRONIC SCLEROSING SIALADENITIS (KUTTNER TUMOUR)');
   assert.ok(kut.microscopy.includes('The features are those of chronic sclerosing sialadenitis (Kuttner tumour). There is no evidence of malignancy.'));
   assert.ok(!kut.microscopy.includes('surrounding submandibular gland tissue is unremarkable'));
   const node = run(one({ lesion: 'Intraparotid lymph node, reactive', procedure: 'Excision biopsy', laterality: 'Not stated' }));
-  assert.equal(node.diagnosis, 'PAROTID, excision biopsy - REACTIVE LYMPHOID HYPERPLASIA, INTRAPAROTID LYMPH NODE; no evidence of malignancy');
+  assert.equal(node.diagnosis, 'PAROTID, excision biopsy - REACTIVE LYMPHOID HYPERPLASIA, INTRAPAROTID LYMPH NODE');
   const muc = run(one({ gland: 'Minor salivary gland, lip', laterality: 'Not stated', procedure: 'Excision biopsy', lesion: 'Mucocoele / ranula', blocks: '1' }));
   assert.equal(muc.specimens, 'Minor salivary gland, lip, excision biopsy');
   assert.equal(muc.diagnosis, 'MINOR SALIVARY GLAND, lip, excision biopsy - MUCOCOELE (MUCUS EXTRAVASATION CYST); completely excised');
@@ -135,7 +135,7 @@ test('pleomorphic adenoma variants: stroma, capsule, satellites and margin drive
 
 test('IgG4 pattern adds the immunostain / serum IgG4 comment; malignant option defers to the QMH salivary template', () => {
   const ig = run(one({ gland: 'Submandibular gland', procedure: 'Submandibular gland excision', lesion: 'Chronic sialadenitis', igg4: true, noduleDescription: 'No discrete nodule' }));
-  assert.equal(ig.diagnosis, 'SUBMANDIBULAR GLAND, left, excision - CHRONIC SIALADENITIS; IgG4-related disease to be excluded - see comment; no evidence of malignancy');
+  assert.equal(ig.diagnosis, 'SUBMANDIBULAR GLAND, left, excision - CHRONIC SIALADENITIS; IgG4-related disease to be excluded - see comment');
   assert.ok(ig.microscopy.includes('raising the possibility of IgG4-related disease; see comment.'));
   assert.ok(ig.comment.includes('IgG4/IgG ratio') && ig.comment.includes('serum IgG4'));
   assert.ok(!ig.comment.includes('{parts}') && !ig.comment.includes('part A'));

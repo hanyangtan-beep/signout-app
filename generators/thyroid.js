@@ -4,7 +4,7 @@
 //   macro        "(A) Received in formalin is a right hemithyroidectomy specimen weighing 32 g and measuring 5 x 3.5 x 2.5 cm. ..."
 //   blockKey     "(A) (1) Isthmic margin. (2-6) Dominant nodule with capsule. (7-8) Background thyroid."
 //   microscopy   "(A) Sections show the thyroid gland is composed of multiple variably sized nodules ... There is no evidence of malignancy."
-//   diagnosis    "(A) THYROID GLAND, right, hemithyroidectomy - NODULAR HYPERPLASIA; no evidence of malignancy"
+//   diagnosis    "(A) THYROID GLAND, right, hemithyroidectomy - NODULAR HYPERPLASIA"
 // Malignant options print a short capitalised line only; the schema snippet `thyroid_cancer_template`
 // adds the comment recommending the QMH thyroid cancer template.
 // Wording is protected by tests/thyroid.test.js — change it only deliberately.
@@ -294,7 +294,6 @@ export function diagnosis(part, ctx) {
   if (v.parathyroid === 'Normal') clauses.push('incidental normal parathyroid gland');
   else if (v.parathyroid === 'Nodular hyperplasia') clauses.push('incidental parathyroid gland with nodular hyperplasia');
   if (v.lymphNode === 'Benign') clauses.push('benign lymph node');
-  if (isBenign(v)) clauses.push('no evidence of malignancy');
   return `(${part.label}) ${organPhrase(part, ctx)} - ${clauses.join('; ')}`;
 }
 

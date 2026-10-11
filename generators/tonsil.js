@@ -3,7 +3,7 @@
 //   macro      "(A) Received in formalin are two tonsils labelled left and right. The left tonsil measures 2.5 x 2 x 1.5 cm and weighs 4 g; ... Representative sections in 2 blocks."
 //   blockKey   "(A) (1) Left tonsil. (2) Right tonsil."
 //   microscopy "(A) Sections of the tonsils show reactive lymphoid follicles with germinal centres. The surface is covered by benign squamous epithelium. ..."
-//   diagnosis  "(A) TONSILS, bilateral, tonsillectomy - REACTIVE FOLLICULAR LYMPHOID HYPERPLASIA WITH CHRONIC TONSILLITIS; actinomyces colonies present; no evidence of malignancy"
+//   diagnosis  "(A) TONSILS, bilateral, tonsillectomy - REACTIVE FOLLICULAR LYMPHOID HYPERPLASIA WITH CHRONIC TONSILLITIS; actinomyces colonies present"
 // Squamous cell carcinoma gives a short capitalised line only; the synoptic report belongs to
 // the QMH head and neck cancer template (the schema's auto snippet says so in the COMMENT block).
 // The asymmetric-tonsil flag (atypical lymphoid infiltrate) auto-ticks the lymphoma / p16 / EBER comment.
@@ -247,7 +247,6 @@ export function diagnosis(part) {
     clauses.push(mainClause(v, type));
     if (v.actinomyces === 'Present') clauses.push('actinomyces colonies present');
     if (v.epithelium === 'Ulcerated') clauses.push('surface ulceration');
-    clauses.push('no evidence of malignancy');
   }
   return `(${part.label}) ${organPhrase(part)} - ${clauses.filter(Boolean).join('; ')}`;
 }

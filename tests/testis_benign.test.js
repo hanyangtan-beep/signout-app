@@ -86,7 +86,7 @@ test('prepuce branches: no abnormality, Zoon\'s balanitis, balanoposthitis, chro
   const bp = run({ ...EXAMPLE, prepuceDx: 'Balanoposthitis' });
   assert.match(bp.microscopy, / There is non-specific acute and chronic inflammation of the epithelium and superficial dermis, with spongiosis\. The features are those of non-specific balanoposthitis\. /);
   assert.equal(bp.diagnosis, 'PREPUCE, circumcision - NON-SPECIFIC BALANOPOSTHITIS');
-  assert.equal(run({ ...EXAMPLE, prepuceDx: 'Chronic inflammation' }).diagnosis, 'PREPUCE, circumcision - CHRONIC INFLAMMATION; NO EVIDENCE OF MALIGNANCY');
+  assert.equal(run({ ...EXAMPLE, prepuceDx: 'Chronic inflammation' }).diagnosis, 'PREPUCE, circumcision - CHRONIC INFLAMMATION');
   const fore = run({ ...EXAMPLE, organ: 'FORESKIN', prepuceDx: 'No specific abnormality' });
   assert.equal(fore.specimens, 'Foreskin, circumcision');
   assert.equal(fore.diagnosis, 'FORESKIN, circumcision - NO EVIDENCE OF MALIGNANCY');
@@ -111,7 +111,7 @@ test('non-torsion orchidectomy: atrophy in the house sentence, Leydig cells and 
   const atrophy = run({ specimen: ORCHIDECTOMY, side: 'Right', orchidDx: 'Atrophy', spermatogenesis: 'Absent', procedure: 'Inguinal orchidectomy' });
   assert.equal(atrophy.specimens, 'Testis, right, inguinal orchidectomy');
   assert.equal(atrophy.microscopy, `Sections show testis with atrophic seminiferous tubules and interstitial fibrosis. The basement membrane is thickened. No spermatogonia, spermatocytes, spermatids and spermatozoa are noted. No Leydig cell hyperplasia is seen. ${NO_GCNIS}`);
-  assert.equal(atrophy.diagnosis, 'TESTIS, right, inguinal orchidectomy - TESTICULAR ATROPHY; NO EVIDENCE OF MALIGNANCY');
+  assert.equal(atrophy.diagnosis, 'TESTIS, right, inguinal orchidectomy - TESTICULAR ATROPHY');
   const normal = run({ specimen: ORCHIDECTOMY, side: 'Left', orchidDx: 'Unremarkable testis', leydig: 'Hyperplasia' });
   assert.equal(normal.microscopy, `Sections show testis with active spermatogenesis. Focally, there is hyperplasia of the Leydig cells. ${NO_GCNIS}`);
   assert.equal(normal.diagnosis, 'TESTIS, left, orchidectomy - NO EVIDENCE OF MALIGNANCY');
@@ -214,7 +214,7 @@ test('intake: prepuce, testis, hydrocele, epididymal and vas lines land on this 
   assert.deepEqual(preset('Bilateral vas deferens, vasectomy'), { side: 'Bilateral', specimen: VAS, organ: 'VAS DEFERENS', procedure: 'Vasectomy' });
   assert.deepEqual(preset('Vas deferens, bilateral'), { side: 'Bilateral', specimen: VAS, organ: 'VAS DEFERENS', procedure: '' });
   assert.equal(run(preset('Vas deferens, bilateral')).specimens, 'Vas deferens, bilateral, vasectomy', 'a blank procedure prints the specimen default');
-  assert.equal(run(preset('Left testis, resection')).diagnosis, 'TESTIS, left, resection - TESTICULAR ATROPHY; NO EVIDENCE OF MALIGNANCY');
+  assert.equal(run(preset('Left testis, resection')).diagnosis, 'TESTIS, left, resection - TESTICULAR ATROPHY');
 });
 
 test('intake: lesions, infections, appendages and cord lipomas stay off this form', () => {

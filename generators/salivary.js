@@ -337,7 +337,6 @@ export function diagnosis(part) {
   }
   const nodes = nodeClause(v);
   if (nodes) clauses.push(nodes);
-  if (!isMalignant(v) && !hasMargin(v)) clauses.push('no evidence of malignancy');
   return `(${part.label}) ${organPhrase(part)} - ${clauses.join('; ')}`;
 }
 

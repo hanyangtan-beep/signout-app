@@ -180,14 +180,14 @@ test('carcinoma in situ alone has its own house paragraph', () => {
 test('benign findings: cystitis patterns, squamous metaplasia, nephrogenic adenoma, reactive and denuded urothelium', () => {
   const dx = (values) => run(one({ siteType: 'Random bladder biopsies', ...values })).diagnosis;
   const head = 'URINARY BLADDER, random biopsies - ';
-  assert.equal(dx({ cystitis: 'Cystitis cystica et glandularis' }), `${head}CYSTITIS CYSTICA ET GLANDULARIS; no evidence of dysplasia or malignancy`);
-  assert.equal(dx({ cystitis: 'Follicular cystitis' }), `${head}FOLLICULAR CYSTITIS; no evidence of dysplasia or malignancy`);
-  assert.equal(dx({ cystitis: 'Eosinophilic cystitis' }), `${head}EOSINOPHILIC CYSTITIS; no evidence of dysplasia or malignancy`);
-  assert.equal(dx({ cystitis: 'BCG-related granulomatous cystitis' }), `${head}BCG-RELATED GRANULOMATOUS CYSTITIS; no evidence of dysplasia or malignancy`);
-  assert.equal(dx({ cystitis: 'Radiation or chemotherapy change' }), `${head}RADIATION OR CHEMOTHERAPY CHANGE; no evidence of dysplasia or malignancy`);
-  assert.equal(dx({ cystitis: 'Polypoid cystitis' }), `${head}POLYPOID CYSTITIS; no evidence of dysplasia or malignancy`);
-  assert.equal(dx({ squamousMetaplasia: 'Present, keratinising', nephrogenicAdenoma: 'Present' }), `${head}KERATINISING SQUAMOUS METAPLASIA; nephrogenic adenoma; no evidence of dysplasia or malignancy`);
-  assert.equal(dx({ urothelium: 'Reactive atypia', cystitis: 'Follicular cystitis' }), `${head}REACTIVE UROTHELIAL ATYPIA; follicular cystitis; no evidence of dysplasia or malignancy`);
+  assert.equal(dx({ cystitis: 'Cystitis cystica et glandularis' }), `${head}CYSTITIS CYSTICA ET GLANDULARIS`);
+  assert.equal(dx({ cystitis: 'Follicular cystitis' }), `${head}FOLLICULAR CYSTITIS`);
+  assert.equal(dx({ cystitis: 'Eosinophilic cystitis' }), `${head}EOSINOPHILIC CYSTITIS`);
+  assert.equal(dx({ cystitis: 'BCG-related granulomatous cystitis' }), `${head}BCG-RELATED GRANULOMATOUS CYSTITIS`);
+  assert.equal(dx({ cystitis: 'Radiation or chemotherapy change' }), `${head}RADIATION OR CHEMOTHERAPY CHANGE`);
+  assert.equal(dx({ cystitis: 'Polypoid cystitis' }), `${head}POLYPOID CYSTITIS`);
+  assert.equal(dx({ squamousMetaplasia: 'Present, keratinising', nephrogenicAdenoma: 'Present' }), `${head}KERATINISING SQUAMOUS METAPLASIA; nephrogenic adenoma`);
+  assert.equal(dx({ urothelium: 'Reactive atypia', cystitis: 'Follicular cystitis' }), `${head}REACTIVE UROTHELIAL ATYPIA; follicular cystitis`);
   const r = run(one({ siteType: 'Random bladder biopsies', cystitis: 'Cystitis cystica et glandularis', squamousMetaplasia: 'Present, keratinising', nephrogenicAdenoma: 'Present' }));
   assert.equal(r.microscopy, 'Sections show fragments of bladder mucosa lined by unremarkable urothelium with underlying lamina propria and muscularis propria. The lamina propria contains von Brunn nests with cystic dilatation and glandular metaplasia, in keeping with cystitis cystica et glandularis. There is keratinising squamous metaplasia of the surface urothelium. There is a nephrogenic adenoma composed of small tubules lined by cuboidal cells with hobnail nuclei within the lamina propria. There is no evidence of dysplasia or malignancy.');
   const d = run(one({ siteType: 'Random bladder biopsies', urothelium: 'Denuded' }));

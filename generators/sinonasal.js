@@ -3,7 +3,7 @@
 //   macro      "(A) Received in formalin are multiple polypoid pieces of glistening translucent tissue measuring 3 x 2 x 1 cm in aggregate. All embedded in 2 blocks."
 //   blockKey   "(A) (1-2) Polyps, all embedded."
 //   microscopy "(A) Sections show polypoid fragments of sinonasal mucosa lined by respiratory epithelium with basement membrane thickening. ..."
-//   diagnosis  "(A) NASAL CAVITY, polyps, polypectomy - INFLAMMATORY (OEDEMATOUS) SINONASAL POLYPS; no evidence of dysplasia or malignancy"
+//   diagnosis  "(A) NASAL CAVITY, polyps, polypectomy - INFLAMMATORY (OEDEMATOUS) SINONASAL POLYPS"
 // Malignancy gives a short capitalised line only; the synoptic report belongs to the QMH head and
 // neck cancer template (the schema's auto snippet says so in the COMMENT block). A squamous cell
 // carcinoma arising in a papilloma does the same. Invasive fungal sinusitis and the NK/T-cell
@@ -48,7 +48,6 @@ export const PAPILLOMA_SCC = 'Squamous cell carcinoma arising';
 
 export const isMalignant = (v) => v.lesion === MALIGNANT;
 export const isPapilloma = (v) => v.lesion === INVERTED || v.lesion === EXOPHYTIC || v.lesion === ONCOCYTIC;
-const isGranulomatous = (v) => v.lesion === GRANULOMATOUS;
 const isInflammatoryPolyp = (v) => v.lesion === OEDEMATOUS || v.lesion === FIBROUS || !v.lesion;
 const suspicious = (v) => v.lymphomaSuspicion === true || v.lymphomaSuspicion === 'true';
 const mucin = (v) => v.allergicMucin === true || v.allergicMucin === 'true';
@@ -386,8 +385,6 @@ export function diagnosis(part) {
     if (mucin(v) && v.fungus !== FUNGUS_AFS) clauses.push('allergic mucin with Charcot-Leyden crystals present');
     if (v.epithelium === 'Ulcerated') clauses.push('surface ulceration');
     if (suspicious(v)) clauses.push('ATYPICAL LYMPHOID INFILTRATE - SEE COMMENT');
-    else if (isGranulomatous(v)) clauses.push('no evidence of malignancy');
-    else if (!isPapilloma(v)) clauses.push('no evidence of dysplasia or malignancy');
   }
   return `(${part.label}) ${organPhrase(part)} - ${clauses.filter(Boolean).join('; ')}`;
 }

@@ -201,7 +201,6 @@ export function diagnosis(part) {
   if (v.excision === 'Incomplete') clauses.push('incompletely excised');
   else if (v.excision === 'Not assessable') clauses.push('completeness of excision not assessable');
   if (hasNeoplasia(v)) clauses.push('see comment');
-  else if (noLining) clauses.push('no evidence of malignancy');
 
   const site = sitePhrase(v);
   return `(${part.label}) SKIN, ${site ? `${site}, ` : ''}excision - ${clauses.join('; ')}`;

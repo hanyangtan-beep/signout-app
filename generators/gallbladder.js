@@ -10,7 +10,7 @@ import { stripDot } from './_house.js';
 //               formation as well as a transmural chronic inflammatory infiltrate of lymphocytes and some plasma
 //               cells. The findings are consistent with chronic cholecystitis. There is no evidence of dysplasia
 //               or malignancy."
-//   diagnosis  "(A) GALLBLADDER, cholecystectomy - CHRONIC CHOLECYSTITIS; no evidence of dysplasia or malignancy"
+//   diagnosis  "(A) GALLBLADDER, cholecystectomy - CHRONIC CHOLECYSTITIS"
 // Dysplasia / carcinoma options give a short diagnosis line only; the schema snippet
 // `gallbladder_cancer_template` adds the comment pointing to the QMH cancer template.
 // Wording is protected by tests/gallbladder.test.js — change it only deliberately.
@@ -239,7 +239,7 @@ export function diagnosis(part) {
   if (v.cysticMargin === 'Involved by dysplasia') clauses.push('cystic duct margin involved by dysplasia');
   if (v.cysticNodeResult === 'Reactive') clauses.push('cystic duct lymph node reactive (0/1)');
   else if (v.cysticNodeResult === 'Metastatic') clauses.push('metastatic carcinoma in cystic duct lymph node (1/1)');
-  clauses.push(hasNeoplasia(v) ? 'see comment' : 'no evidence of dysplasia or malignancy');
+  if (hasNeoplasia(v)) clauses.push('see comment');
   return `(${part.label}) GALLBLADDER, cholecystectomy - ${clauses.join('; ')}`;
 }
 

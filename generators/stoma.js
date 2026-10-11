@@ -192,7 +192,6 @@ export function diagnosis(part, ctx) {
   if (feats && IBD_MICRO[v.ibdActivity]) clauses.push(`${v.ibdActivity === 'Active' ? 'active' : 'inactive'} chronic inflammatory bowel disease at the stoma`);
   if (v.diverticula) clauses.push('diverticula');
   if (!v.marginsViable) clauses.push('ischaemic change at the resection margins');
-  if (!hasNeoplasia(v)) clauses.push('no evidence of dysplasia or malignancy');
   if (hasNeoplasia(v) || IBD_MICRO[v.ibdActivity]) clauses.push('see comment');
   return `(${part.label}) ${organPhrase(part, ctx)} - ${clauses.join('; ')}`;
 }

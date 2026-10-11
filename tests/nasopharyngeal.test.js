@@ -29,7 +29,7 @@ test('default: reactive lymphoid tissue reads the house benign line', () => {
     'Sections show nasopharyngeal mucosa lined by respiratory epithelium with underlying lymphoid tissue. ' +
     'The lymphoid tissue shows reactive follicular hyperplasia with polarised germinal centres containing tingible body macrophages; the overlying surface epithelium is unremarkable. ' +
     'There is no evidence of malignancy.');
-  assert.equal(r.diagnosis, 'NASOPHARYNX, biopsy - REACTIVE LYMPHOID HYPERPLASIA; no evidence of malignancy');
+  assert.equal(r.diagnosis, 'NASOPHARYNX, biopsy - REACTIVE LYMPHOID HYPERPLASIA');
   assert.ok(!r.report.includes('(A)'));
   // Accept: the EBER-pending snippet must NOT auto-tick for a benign finding.
   assert.deepEqual(activeSnippets(one({})), []);
@@ -103,11 +103,11 @@ test('necrotising granulomatous inflammation: ZN/GMS negative and TB correlation
   const ra = run(a);
   assert.ok(ra.microscopy.includes('Necrotising epithelioid granulomas with multinucleated giant cells and caseous necrosis are present.'));
   assert.ok(ra.microscopy.includes('Ziehl-Neelsen and GMS stains do not highlight any acid-fast bacilli or fungal elements.'));
-  assert.equal(ra.diagnosis, 'NASOPHARYNX, biopsy - NECROTISING GRANULOMATOUS INFLAMMATION; no acid-fast bacilli or fungal elements on special stains; tuberculosis to be correlated with microbiology; no evidence of malignancy');
+  assert.equal(ra.diagnosis, 'NASOPHARYNX, biopsy - NECROTISING GRANULOMATOUS INFLAMMATION; no acid-fast bacilli or fungal elements on special stains; tuberculosis to be correlated with microbiology');
 
   const b = run(one({ finding: 'Granulomatous inflammation, necrotising', afStains: 'Acid-fast bacilli identified (ZN)' }));
   assert.ok(b.microscopy.includes('Ziehl-Neelsen stain highlights acid-fast bacilli.'));
-  assert.equal(b.diagnosis, 'NASOPHARYNX, biopsy - NECROTISING GRANULOMATOUS INFLAMMATION; ACID-FAST BACILLI IDENTIFIED on Ziehl-Neelsen stain; no evidence of malignancy');
+  assert.equal(b.diagnosis, 'NASOPHARYNX, biopsy - NECROTISING GRANULOMATOUS INFLAMMATION; ACID-FAST BACILLI IDENTIFIED on Ziehl-Neelsen stain');
 });
 
 test('suboptimal crushed material short-circuits the microscopy and keeps the notes', () => {
@@ -134,10 +134,10 @@ test('other malignancies: papillary adenocarcinoma, salivary type and free-text 
 
 test('benign pick-list: chronicity, surface epithelium, adenoid remnant, Tornwaldt cyst', () => {
   const dx = (values) => run(one(values)).diagnosis;
-  assert.equal(dx({ finding: 'Chronic nasopharyngitis with lymphoid follicles' }), 'NASOPHARYNX, biopsy - CHRONIC NASOPHARYNGITIS with LYMPHOID FOLLICLES; no evidence of malignancy');
-  assert.equal(dx({ finding: 'Benign surface epithelium (respiratory / squamous)' }), 'NASOPHARYNX, biopsy - BENIGN NASOPHARYNGEAL EPITHELIUM AND LYMPHOID TISSUE; no evidence of malignancy');
-  assert.equal(dx({ finding: 'Adenoid remnant' }), 'NASOPHARYNX, biopsy - ADENOID REMNANT; no evidence of malignancy');
-  assert.equal(dx({ finding: 'Tornwaldt cyst' }), 'NASOPHARYNX, biopsy - TORNWALDT CYST; no evidence of malignancy');
+  assert.equal(dx({ finding: 'Chronic nasopharyngitis with lymphoid follicles' }), 'NASOPHARYNX, biopsy - CHRONIC NASOPHARYNGITIS with LYMPHOID FOLLICLES');
+  assert.equal(dx({ finding: 'Benign surface epithelium (respiratory / squamous)' }), 'NASOPHARYNX, biopsy - BENIGN NASOPHARYNGEAL EPITHELIUM AND LYMPHOID TISSUE');
+  assert.equal(dx({ finding: 'Adenoid remnant' }), 'NASOPHARYNX, biopsy - ADENOID REMNANT');
+  assert.equal(dx({ finding: 'Tornwaldt cyst' }), 'NASOPHARYNX, biopsy - TORNWALDT CYST');
   assert.ok(run(one({ finding: 'Tornwaldt cyst' })).microscopy.includes('Tornwaldt cyst (nasopharyngeal bursa cyst)'));
 });
 
@@ -145,7 +145,7 @@ test('adequacy caveat when only lymphoid tissue is sampled', () => {
   const r = run(one({ adequacy: 'Lymphoid tissue only (no surface epithelium)' }));
   assert.ok(r.microscopy.startsWith('Sections show nasopharyngeal lymphoid tissue without representation of the surface epithelium.'));
   assert.ok(r.microscopy.includes('a small submucosal lesion cannot be entirely excluded (see comment)'));
-  assert.equal(r.diagnosis, 'NASOPHARYNX, biopsy - REACTIVE LYMPHOID HYPERPLASIA; no evidence of malignancy');
+  assert.equal(r.diagnosis, 'NASOPHARYNX, biopsy - REACTIVE LYMPHOID HYPERPLASIA');
 });
 
 test('two parts keep (A)/(B) labels and join in a SUMMARY line', () => {
@@ -158,7 +158,7 @@ test('two parts keep (A)/(B) labels and join in a SUMMARY line', () => {
   assert.match(r.microscopy, /\n\n\(B\) Sections/);
   assert.equal(r.diagnosis,
     '(A) NASOPHARYNX, right fossa of Rosenmuller, biopsy - NASOPHARYNGEAL CARCINOMA, non-keratinising undifferentiated type; EBER positive\n' +
-    '(B) NASOPHARYNX, left fossa of Rosenmuller, biopsy - REACTIVE LYMPHOID HYPERPLASIA; no evidence of malignancy\n' +
+    '(B) NASOPHARYNX, left fossa of Rosenmuller, biopsy - REACTIVE LYMPHOID HYPERPLASIA\n' +
     '\n' +
     'SUMMARY: nasopharyngeal carcinoma (non-keratinising undifferentiated) in (A); no evidence of malignancy in (B).');
 });

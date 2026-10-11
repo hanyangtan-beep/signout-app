@@ -50,7 +50,7 @@ test('default single part is the house normal paragraph with no part letter', ()
 test('coeliac pattern: Marsh 3b diagnosis, interpretive sentence, and option to suppress it', () => {
   const values = { pieces: '4', villi: 'Marked blunting', iel: 'Increased', ielCount: '45', cryptHyperplasia: 'Present', lpInflammation: 'Increased chronic inflammation' };
   const out = run(one(values));
-  assert.equal(out.diagnosis, 'DUODENUM, D2, biopsy - VILLOUS ATROPHY with INTRAEPITHELIAL LYMPHOCYTOSIS AND CRYPT HYPERPLASIA (MARSH 3b), consistent with coeliac disease in the appropriate serological context; no evidence of dysplasia or malignancy');
+  assert.equal(out.diagnosis, 'DUODENUM, D2, biopsy - VILLOUS ATROPHY with INTRAEPITHELIAL LYMPHOCYTOSIS AND CRYPT HYPERPLASIA (MARSH 3b), consistent with coeliac disease in the appropriate serological context');
   assert.match(out.microscopy, /^Sections show 4 pieces of duodenal mucosa\. The villi are markedly blunted, with crypt hyperplasia and a reduced villous to crypt ratio\. Intraepithelial lymphocytes are increased \(approximately 45 per 100 enterocytes\), including at the villous tips\./);
   assert.match(out.microscopy, /consistent with coeliac disease in the appropriate serological context; other causes/);
   const c = one(values);
@@ -63,19 +63,19 @@ test('Marsh 1 and blunting without IELs are flagged with a comment', () => {
   const m1 = run(one({ iel: 'Increased' }));
   assert.match(m1.microscopy, /Correlation with coeliac serology is recommended\./);
   const blunt = run(one({ villi: 'Mild blunting' }));
-  assert.equal(blunt.diagnosis, 'DUODENUM, D2, biopsy - VILLOUS BLUNTING WITHOUT INTRAEPITHELIAL LYMPHOCYTOSIS; see comment; no evidence of dysplasia or malignancy');
+  assert.equal(blunt.diagnosis, 'DUODENUM, D2, biopsy - VILLOUS BLUNTING WITHOUT INTRAEPITHELIAL LYMPHOCYTOSIS; see comment');
   assert.match(blunt.microscopy, /not typical of coeliac disease/);
 });
 
 test('peptic duodenitis, giardiasis, Helicobacter and adenoma clauses', () => {
   const peptic = run(one({ specimenName: 'Duodenal bulb', brunner: 'Brunner gland hyperplasia', foveolar: 'Present', activity: 'Erosion', hpylori: 'Present' }));
-  assert.equal(peptic.diagnosis, 'DUODENUM, bulb, biopsy - ACTIVE PEPTIC DUODENITIS with EROSION; Helicobacter-like organisms present; no evidence of dysplasia or malignancy');
+  assert.equal(peptic.diagnosis, 'DUODENUM, bulb, biopsy - ACTIVE PEPTIC DUODENITIS with EROSION; Helicobacter-like organisms present');
   assert.match(peptic.microscopy, /There is surface erosion with reactive epithelial change and neutrophilic inflammation\. Brunner gland hyperplasia and gastric foveolar metaplasia of the surface epithelium are present\. Helicobacter-like organisms/);
   assert.doesNotMatch(peptic.microscopy, /No cryptitis/);
   assert.match(peptic.microscopy, /There is no evidence of ulceration, dysplasia or malignancy\.$/);
 
   const giardia = run(one({ giardia: 'Present' }));
-  assert.equal(giardia.diagnosis, 'DUODENUM, D2, biopsy - GIARDIASIS; no evidence of dysplasia or malignancy');
+  assert.equal(giardia.diagnosis, 'DUODENUM, D2, biopsy - GIARDIASIS');
   assert.match(giardia.microscopy, /Pear-shaped trophozoites consistent with Giardia/);
   assert.doesNotMatch(giardia.microscopy, /or parasite is present/);
 
@@ -87,7 +87,7 @@ test('peptic duodenitis, giardiasis, Helicobacter and adenoma clauses', () => {
 test('example case renders two parts with a SUMMARY line', () => {
   const out = run(example());
   assert.match(out.specimens, /^\(A\) Duodenal bulb, biopsy\n\(B\) Duodenum, D2, biopsy$/);
-  assert.match(out.diagnosis, /\(A\) DUODENUM, bulb, biopsy - ACTIVE PEPTIC DUODENITIS; no evidence of dysplasia or malignancy\n\(B\) DUODENUM, D2, biopsy - VILLOUS ATROPHY/);
+  assert.match(out.diagnosis, /\(A\) DUODENUM, bulb, biopsy - ACTIVE PEPTIC DUODENITIS\n\(B\) DUODENUM, D2, biopsy - VILLOUS ATROPHY/);
   assert.match(out.diagnosis, /\n\nSUMMARY: Highest Marsh.Oberhuber type 3b \(part B\); peptic duodenitis in part A\.$/);
   const c = example();
   c.options.summary = false;

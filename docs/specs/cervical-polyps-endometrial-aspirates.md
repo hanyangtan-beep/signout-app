@@ -9,8 +9,8 @@ is necessary to follow the main diagnosis with 'no evidence of hyperplasia or ma
 repetitive and already implied."
 
 Templates `cervical_biopsy` and `endometrial_biopsy` (schema version 2026.10), with a routing
-change to `cervical_excision` (2026.10). The hysterectomy form (`generators/uterus.js`) is
-unchanged and still closes its endometrial clause with "no evidence of hyperplasia or malignancy".
+change to `cervical_excision` (2026.10). The hysterectomy form (`generators/uterus.js`) was
+left unchanged here; since Phase 66 it names its findings alone too (docs/specs/trailing-negatives.md).
 
 ## Sources
 

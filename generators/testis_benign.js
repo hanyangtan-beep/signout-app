@@ -239,7 +239,7 @@ const PREPUCE_DX = {
   'Lichen sclerosus': 'Consistent with LICHEN SCLEROSUS (balanitis xerotica obliterans)',
   "Zoon's balanitis": "ZOON'S (PLASMA CELL) BALANITIS",
   Balanoposthitis: 'NON-SPECIFIC BALANOPOSTHITIS',
-  'Chronic inflammation': 'CHRONIC INFLAMMATION; NO EVIDENCE OF MALIGNANCY'
+  'Chronic inflammation': 'CHRONIC INFLAMMATION'
 };
 const PATTERN_DX = {
   'Normal spermatogenesis': 'NORMAL SPERMATOGENESIS',
@@ -254,7 +254,7 @@ export function mainLine(v) {
     case ORCHIDECTOMY:
       if (v.orchidDx === 'Torsion') return `In keeping with TORSION OF TESTIS, Mikuz grade ${grade(v)}`;
       if (v.orchidDx === 'Unremarkable testis') return gcnis(v) ? GCNIS_DX : 'NO EVIDENCE OF MALIGNANCY';
-      return gcnis(v) ? `TESTICULAR ATROPHY; ${GCNIS_DX}` : 'TESTICULAR ATROPHY; NO EVIDENCE OF MALIGNANCY';
+      return gcnis(v) ? `TESTICULAR ATROPHY; ${GCNIS_DX}` : 'TESTICULAR ATROPHY';
     case BIOPSY: {
       const main = v.pattern === 'Maturation arrest' ? `MATURATION ARREST AT THE ${arrestAt(v).toUpperCase()} STAGE` : PATTERN_DX[v.pattern] || PATTERN_DX.Hypospermatogenesis;
       const score = johnsen(v) ? ` (mean Johnsen score ${johnsen(v)})` : '';

@@ -72,7 +72,7 @@ test('a lesion or a second benign finding in a polyp comes with the polyp type',
 test('a biopsy with an endocervical polyp keeps its biopsy line', () => {
   const r = render(cx, { benign: 'Endocervical polyp' });
   assert.match(r.microscopy, /The endocervical glands are unremarkable\. A polypoid fragment of endocervical glands lined by mucinous columnar epithelium in a fibrovascular stroma is also present, in keeping with an endocervical polyp\. There is no evidence/);
-  assert.equal(r.diagnosis, 'CERVIX, cervical biopsy - ENDOCERVICAL POLYP; no evidence of dysplasia or malignancy');
+  assert.equal(r.diagnosis, 'CERVIX, cervical biopsy - ENDOCERVICAL POLYP');
 });
 
 test('intake: cervical polyp lines open the cervical form as a polyp', () => {

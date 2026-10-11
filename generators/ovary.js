@@ -343,7 +343,6 @@ export function diagnosis(part) {
   if (isNeoplastic(v)) clauses.push('see comment');
   else if (isCystadenoma(v)) clauses.push('no evidence of borderline features or malignancy');
   else if (t === TYPES.TERATOMA) clauses.push('no immature elements');
-  else if (t === TYPES.FIBROMA) clauses.push('no evidence of malignancy');
   return `(${part.label}) ${diagnosisHeader(v)} - ${clauses.join('; ')}`;
 }
 

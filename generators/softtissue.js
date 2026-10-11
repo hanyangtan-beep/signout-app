@@ -61,11 +61,10 @@ const isMetastatic = (v) => v.diagnosis === METASTATIC;
 const isLymphoma = (v) => v.diagnosis === LYMPHOMA;
 const isSFT = (v) => v.diagnosis === SFT;
 const isDFSP = (v) => /^Dermatofibrosarcoma protuberans/.test(v.diagnosis || '');
-// Tumour mimics that print "NO EVIDENCE OF MALIGNANCY" on the diagnosis line, as the house does for fat
-// necrosis and scar (2021-2026 biopsy export); no excision statement is made for them or for the
-// descriptive line and lymphoma.
-export const NEM_IN_DX = ['Fat necrosis', 'Organising haematoma', 'Scar', 'Foreign-body reaction'];
-export const NO_MARGIN = [...NEM_IN_DX, DESCRIPTIVE, LYMPHOMA];
+// Tumour mimics are named alone on the diagnosis line (trailing negatives, Phase 66); the microscopy keeps the
+// negative. No excision statement is made for them or for the descriptive line and lymphoma.
+export const MIMICS = ['Fat necrosis', 'Organising haematoma', 'Scar', 'Foreign-body reaction'];
+export const NO_MARGIN = [...MIMICS, DESCRIPTIVE, LYMPHOMA];
 const marginsApply = (v) => !NO_MARGIN.includes(v.diagnosis);
 // Intermediate and malignant lines close without "There is no evidence of malignancy."
 const noNEM = (v) => isMalignantOrAtypical(v) || isMetastatic(v) || isLymphoma(v) || isSFT(v) || isDFSP(v) || v.diagnosis === DESMOID;
@@ -568,7 +567,6 @@ export function diagnosis(part) {
   if (isALT(v)) clauses.push('ATYPICAL LIPOMATOUS TUMOUR');
   else if (isSarcoma(v)) clauses.push('SARCOMA');
   else clauses.push(mainLine(v));
-  if (NEM_IN_DX.includes(v.diagnosis)) clauses.push('NO EVIDENCE OF MALIGNANCY');
   if (!isALT(v) && !isSarcoma(v) && atypicalPresent(v)) clauses.push('atypical stromal cells present');
   if (marginsApply(v) && marginsComplete(v)) clauses.push('completely excised');
   else if (marginsApply(v) && marginsIncomplete(v)) clauses.push('lesion reaches the inked margin');

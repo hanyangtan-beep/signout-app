@@ -3,7 +3,7 @@
 //   macro      "(A) Received in formalin is an appendix measuring 6 cm long and 0.8 cm in diameter. ... All embedded in 3 blocks."
 //   blockKey   "(A) (1) Proximal resection margin. (2) Body, longitudinal sections. (3) Tip, bisected."
 //   microscopy "(A) Sections of the appendix show ulceration and suppurative inflammation ..."
-//   diagnosis  "(A) APPENDIX, appendicectomy - ACUTE SUPPURATIVE APPENDICITIS; faecolith; no evidence of dysplasia or malignancy"
+//   diagnosis  "(A) APPENDIX, appendicectomy - ACUTE SUPPURATIVE APPENDICITIS; faecolith"
 // Neoplasm options give a short capitalised line only; grading / staging belongs to the
 // QMH appendix cancer template (the schema's auto snippet says so in the COMMENT block).
 // Wording is protected by tests/appendix.test.js — change it only deliberately.
@@ -243,7 +243,6 @@ export function diagnosis(part, ctx) {
   if (v.proximalMargin === 'Inflamed') clauses.push('acute inflammation at the proximal margin');
   else if (v.proximalMargin === 'Involved') clauses.push('proximal margin involved');
   if (hasNeoplasm(v)) clauses.push('see comment');
-  else clauses.push('no evidence of dysplasia or malignancy');
   return `(${part.label}) ${organPhrase(part, ctx)} - ${clauses.join('; ')}`;
 }
 

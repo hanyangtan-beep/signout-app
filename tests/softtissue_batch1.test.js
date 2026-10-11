@@ -11,7 +11,7 @@ import { createCase, generate, isVisible } from '../src/engine.js';
 import { parseIntake, matchParts, presetValues } from '../src/intake.js';
 import { loadManifest } from '../src/registry.js';
 import * as gen from '../generators/softtissue.js';
-import { ORIGINAL, NEM_IN_DX, NO_MARGIN, sftRisk, flags } from '../generators/softtissue.js';
+import { ORIGINAL, MIMICS, NO_MARGIN, sftRisk, flags } from '../generators/softtissue.js';
 import { schemaSync } from './_schema.js';
 
 const schema = schemaSync('soft_tissue_benign');
@@ -72,15 +72,15 @@ test('the adipocytic modifiers are hidden for the added options and a left-over 
   assert.equal(r.comment, '');
 });
 
-test('reactive mimics state no evidence of malignancy on the line and make no excision statement', () => {
-  for (const dx of NEM_IN_DX) {
+test('reactive mimics are named alone on the line and make no excision statement', () => {
+  for (const dx of MIMICS) {
     const r = run({ diagnosis: dx, margins: 'Complete', marginDistance: '4' });
-    assert.ok(r.diagnosis.endsWith('; NO EVIDENCE OF MALIGNANCY'), dx);
+    assert.ok(!r.diagnosis.includes('NO EVIDENCE OF MALIGNANCY'), dx);
     assert.ok(!r.diagnosis.includes('excised'), dx);
     assert.ok(!r.microscopy.includes('excised'), dx);
     assert.ok(r.microscopy.endsWith('There is no evidence of malignancy.'), dx);
   }
-  assert.equal(run({ diagnosis: 'Scar' }).diagnosis, 'SOFT TISSUE, lipoma, excision - SCAR TISSUE; NO EVIDENCE OF MALIGNANCY');
+  assert.equal(run({ diagnosis: 'Scar' }).diagnosis, 'SOFT TISSUE, lipoma, excision - SCAR TISSUE');
   for (const dx of NO_MARGIN) {
     assert.equal(isVisible(field('margins'), { diagnosis: dx }), false, dx);
     assert.equal(isVisible(field('marginDistance'), { diagnosis: dx, margins: 'Complete' }), false, dx);

@@ -88,7 +88,7 @@ test('example: two negative / fat necrosis shaves and a completely excised fibro
   assert.equal(micro[2], `(C) ${FA_MICRO}`);
   assert.equal(r.diagnosis, [
     '(A) RIGHT BREAST, superior margin, resection - NO EVIDENCE OF MALIGNANCY',
-    '(B) RIGHT BREAST, inferior margin, resection - FAT NECROSIS; no evidence of malignancy',
+    '(B) RIGHT BREAST, inferior margin, resection - FAT NECROSIS',
     '(C) BREAST, R2H breast mass, excision - FIBROADENOMA; completely excised'
   ].join('\n'));
   assert.equal(r.comment, '');
@@ -132,21 +132,21 @@ test('two-part case keeps (A)/(B) prefixes on every block', () => {
   assert.equal(r.blockKey, '(A) (1-3) Serial slices, all embedded, new margin inked black.\n(B) (1-3) Serial slices, all embedded, new margin inked black.');
   assert.ok(r.microscopy.startsWith('(A) Sections show hyalinised'));
   assert.ok(r.microscopy.includes('\n\n(B) Sections show fibroadipose tissue with fat necrosis'));
-  assert.equal(r.diagnosis, '(A) RIGHT BREAST, superior margin, resection - NO EVIDENCE OF MALIGNANCY\n(B) RIGHT BREAST, inferior margin, resection - FAT NECROSIS; no evidence of malignancy');
+  assert.equal(r.diagnosis, '(A) RIGHT BREAST, superior margin, resection - NO EVIDENCE OF MALIGNANCY\n(B) RIGHT BREAST, inferior margin, resection - FAT NECROSIS');
 });
 
 test('each benign result yields the right capitalised diagnosis on a shave', () => {
   const dx = (result) => run(one({ result })).diagnosis;
   const head = 'RIGHT BREAST, superior margin, resection - ';
   assert.equal(dx('No evidence of malignancy (benign breast tissue)'), `${head}NO EVIDENCE OF MALIGNANCY`);
-  assert.equal(dx('Fat necrosis'), `${head}FAT NECROSIS; no evidence of malignancy`);
-  assert.equal(dx('Fibrocystic change'), `${head}FIBROCYSTIC CHANGE; no evidence of malignancy`);
-  assert.equal(dx('Usual ductal hyperplasia'), `${head}USUAL DUCTAL HYPERPLASIA; no evidence of malignancy`);
-  assert.equal(dx('Columnar cell change'), `${head}COLUMNAR CELL CHANGE; no evidence of malignancy`);
-  assert.equal(dx('Sclerosing adenosis'), `${head}SCLEROSING ADENOSIS; no evidence of malignancy`);
-  assert.equal(dx('Intraductal papilloma'), `${head}INTRADUCTAL PAPILLOMA; no evidence of malignancy`);
-  assert.equal(dx('Fibroadenoma'), `${head}FIBROADENOMA; no evidence of malignancy`);
-  assert.equal(dx('Radial scar'), `${head}RADIAL SCAR; no evidence of malignancy`);
+  assert.equal(dx('Fat necrosis'), `${head}FAT NECROSIS`);
+  assert.equal(dx('Fibrocystic change'), `${head}FIBROCYSTIC CHANGE`);
+  assert.equal(dx('Usual ductal hyperplasia'), `${head}USUAL DUCTAL HYPERPLASIA`);
+  assert.equal(dx('Columnar cell change'), `${head}COLUMNAR CELL CHANGE`);
+  assert.equal(dx('Sclerosing adenosis'), `${head}SCLEROSING ADENOSIS`);
+  assert.equal(dx('Intraductal papilloma'), `${head}INTRADUCTAL PAPILLOMA`);
+  assert.equal(dx('Fibroadenoma'), `${head}FIBROADENOMA`);
+  assert.equal(dx('Radial scar'), `${head}RADIAL SCAR`);
   for (const result of ['Fibrocystic change', 'Usual ductal hyperplasia', 'Columnar cell change', 'Sclerosing adenosis', 'Radial scar']) {
     const m = run(one({ result })).microscopy;
     assert.ok(m.startsWith('Sections show '), result);
@@ -179,7 +179,7 @@ test('lesion excision: papilloma with UDH and the margin options follow the hous
 
 test('secondary findings are listed in lower case after the main entity', () => {
   const r = run(one({ result: 'Fat necrosis', secondary: ['Fibrocystic change', 'Apocrine metaplasia'], calcification: 'Present, benign' }));
-  assert.equal(r.diagnosis, 'RIGHT BREAST, superior margin, resection - FAT NECROSIS; fibrocystic change; apocrine metaplasia; benign microcalcification; no evidence of malignancy');
+  assert.equal(r.diagnosis, 'RIGHT BREAST, superior margin, resection - FAT NECROSIS; fibrocystic change; apocrine metaplasia; benign microcalcification');
   assert.ok(r.microscopy.includes('The background breast shows fibrocystic change and apocrine metaplasia.'));
 });
 
