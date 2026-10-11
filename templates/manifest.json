@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 74,
+  "count": 75,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -1063,6 +1063,165 @@
       "generator": "oral_biopsy",
       "generatorPath": "generators/oral_biopsy.js",
       "schemaPath": "schemas/oral_biopsy.json"
+    },
+    {
+      "id": "skin_inflammatory",
+      "name": "Skin biopsy (inflammatory)",
+      "shortName": "Skin · inflammatory dermatoses, GVHD",
+      "label": "Dermatoses",
+      "organ": "SKIN",
+      "system": "Skin",
+      "kind": "biopsy",
+      "rank": 13,
+      "aliases": [
+        "rash",
+        "dermatitis",
+        "eczema",
+        "spongiotic",
+        "psoriasis",
+        "psoriasiform",
+        "lichen planus",
+        "lichenoid",
+        "interface",
+        "lupus",
+        "DLE",
+        "dermatomyositis",
+        "erythema multiforme",
+        "drug eruption",
+        "fixed drug",
+        "vasculitis",
+        "leukocytoclastic",
+        "purpura",
+        "pemphigoid",
+        "pemphigus",
+        "bullous",
+        "blister",
+        "dermatitis herpetiformis",
+        "GVHD",
+        "graft-versus-host",
+        "urticaria",
+        "morphoea",
+        "morphea",
+        "panniculitis",
+        "erythema nodosum",
+        "granuloma annulare",
+        "sarcoidosis",
+        "necrobiosis",
+        "folliculitis",
+        "Sweet",
+        "pyoderma",
+        "DIF",
+        "immunofluorescence"
+      ],
+      "match": {
+        "site": [
+          "skin",
+          "scalp"
+        ],
+        "procedure": [
+          "punch",
+          "biopsy",
+          "biopsies",
+          "incisional"
+        ],
+        "clinical": [
+          "rash",
+          "eruption",
+          "dermatitis",
+          "dermatosis",
+          "eczema",
+          "psoriasis",
+          "lichen planus",
+          "lichenoid",
+          "lupus",
+          "dermatomyositis",
+          "erythema multiforme",
+          "erythema nodosum",
+          "vasculitis",
+          "purpura",
+          "urticaria",
+          "pemphigoid",
+          "pemphigus",
+          "bullous",
+          "blister",
+          "blistering",
+          "vesicles",
+          "dermatitis herpetiformis",
+          "GVHD",
+          "graft-versus-host",
+          "graft versus host",
+          "morphoea",
+          "morphea",
+          "scleroderma",
+          "lichen sclerosus",
+          "panniculitis",
+          "granuloma annulare",
+          "sarcoidosis",
+          "necrobiosis",
+          "folliculitis",
+          "alopecia",
+          "pyoderma",
+          "pityriasis",
+          "pruritus",
+          "itchy",
+          "drug reaction",
+          "drug eruption",
+          "immunofluorescence",
+          "DIF"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:BCC|basal\\s+cell|c?SCC|squamous\\s+cell\\s+carcinoma|melanoma|naev(?:us|i)|nev(?:us|i)|moles?|keratoacanthoma|seborrh?o?eic\\s+keratos[ie]s|actinic\\s+keratos[ie]s|Bowen'?s?|dermatofibroma|cysts?|lipoma|verruca|warts?|skin\\s+tags?|tumou?rs?|neoplasms?|lesion|lump|mass)\\b)|\\b(?:rash|eruption|dermatitis|dermatos[ie]s|eczema\\w*|spongiotic|psoria\\w*|lichen\\s+planus|lichenoid|lichen\\s+sclerosus|lupus|DLE|SCLE|dermatomyositis|erythema\\w*|vasculitis|purpura|urticari\\w*|pemphig\\w*|bullous|bullae|blister\\w*|vesic\\w*|herpetiformis|GVHD|graft[\\s-]+(?:versus|vs\\.?)[\\s-]+host|morph(?:o)?ea|scleroderma|sclerosis|panniculitis|granuloma\\s+annulare|sarcoid\\w*|necrobiosis|folliculitis|alopecia|Sweet|pyoderma|pityriasis|prurit\\w*|itch\\w*|drug\\s+reaction|DIF|immunofluorescence)\\b",
+        "not": [
+          "excision",
+          "wide excision",
+          "re-excision",
+          "ellipse"
+        ],
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail",
+            "fallback": "text",
+            "strip": "\\b(?:skin|punch|shave|incisional|excisional|excision|excised|ellipse|biops(?:y|ies)|for\\s+H&E(?:\\s+and\\s+DIF)?|for\\s+DIF|x\\s*\\d+)\\b"
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bpunch",
+                "Punch biopsy"
+              ],
+              [
+                "\\bshav",
+                "Shave biopsy"
+              ],
+              [
+                "\\bincision",
+                "Incisional biopsy"
+              ],
+              [
+                "\\b(excision|excised|ellipse)",
+                "Excision"
+              ]
+            ]
+          },
+          {
+            "field": "pattern",
+            "from": "map",
+            "history": true,
+            "map": [
+              [
+                "\\bGVHD\\b|graft[\\s-]+(versus|vs\\.?)[\\s-]+host|\\ballo(geneic)?[\\s-]*(HSCT|BMT|SCT|transplant)|\\b(HSCT|BMT)\\b|(stem[\\s-]+cell|bone[\\s-]+marrow)[\\s-]+transplant",
+                "Graft-versus-host disease"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.10",
+      "generator": "skin_inflammatory",
+      "generatorPath": "generators/skin_inflammatory.js",
+      "schemaPath": "schemas/skin_inflammatory.json"
     },
     {
       "id": "frozen_section",

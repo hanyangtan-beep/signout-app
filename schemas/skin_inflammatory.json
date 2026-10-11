@@ -1,0 +1,1467 @@
+{
+  "id": "skin_inflammatory",
+  "version": "2026.10",
+  "name": "Skin biopsy (inflammatory)",
+  "shortName": "Skin · inflammatory dermatoses, GVHD",
+  "label": "Dermatoses",
+  "organ": "SKIN",
+  "system": "Skin",
+  "kind": "biopsy",
+  "rank": 13,
+  "aliases": [
+    "rash",
+    "dermatitis",
+    "eczema",
+    "spongiotic",
+    "psoriasis",
+    "psoriasiform",
+    "lichen planus",
+    "lichenoid",
+    "interface",
+    "lupus",
+    "DLE",
+    "dermatomyositis",
+    "erythema multiforme",
+    "drug eruption",
+    "fixed drug",
+    "vasculitis",
+    "leukocytoclastic",
+    "purpura",
+    "pemphigoid",
+    "pemphigus",
+    "bullous",
+    "blister",
+    "dermatitis herpetiformis",
+    "GVHD",
+    "graft-versus-host",
+    "urticaria",
+    "morphoea",
+    "morphea",
+    "panniculitis",
+    "erythema nodosum",
+    "granuloma annulare",
+    "sarcoidosis",
+    "necrobiosis",
+    "folliculitis",
+    "Sweet",
+    "pyoderma",
+    "DIF",
+    "immunofluorescence"
+  ],
+  "match": {
+    "site": [
+      "skin",
+      "scalp"
+    ],
+    "procedure": [
+      "punch",
+      "biopsy",
+      "biopsies",
+      "incisional"
+    ],
+    "clinical": [
+      "rash",
+      "eruption",
+      "dermatitis",
+      "dermatosis",
+      "eczema",
+      "psoriasis",
+      "lichen planus",
+      "lichenoid",
+      "lupus",
+      "dermatomyositis",
+      "erythema multiforme",
+      "erythema nodosum",
+      "vasculitis",
+      "purpura",
+      "urticaria",
+      "pemphigoid",
+      "pemphigus",
+      "bullous",
+      "blister",
+      "blistering",
+      "vesicles",
+      "dermatitis herpetiformis",
+      "GVHD",
+      "graft-versus-host",
+      "graft versus host",
+      "morphoea",
+      "morphea",
+      "scleroderma",
+      "lichen sclerosus",
+      "panniculitis",
+      "granuloma annulare",
+      "sarcoidosis",
+      "necrobiosis",
+      "folliculitis",
+      "alopecia",
+      "pyoderma",
+      "pityriasis",
+      "pruritus",
+      "itchy",
+      "drug reaction",
+      "drug eruption",
+      "immunofluorescence",
+      "DIF"
+    ],
+    "gate": "^(?![\\s\\S]*\\b(?:BCC|basal\\s+cell|c?SCC|squamous\\s+cell\\s+carcinoma|melanoma|naev(?:us|i)|nev(?:us|i)|moles?|keratoacanthoma|seborrh?o?eic\\s+keratos[ie]s|actinic\\s+keratos[ie]s|Bowen'?s?|dermatofibroma|cysts?|lipoma|verruca|warts?|skin\\s+tags?|tumou?rs?|neoplasms?|lesion|lump|mass)\\b)|\\b(?:rash|eruption|dermatitis|dermatos[ie]s|eczema\\w*|spongiotic|psoria\\w*|lichen\\s+planus|lichenoid|lichen\\s+sclerosus|lupus|DLE|SCLE|dermatomyositis|erythema\\w*|vasculitis|purpura|urticari\\w*|pemphig\\w*|bullous|bullae|blister\\w*|vesic\\w*|herpetiformis|GVHD|graft[\\s-]+(?:versus|vs\\.?)[\\s-]+host|morph(?:o)?ea|scleroderma|sclerosis|panniculitis|granuloma\\s+annulare|sarcoid\\w*|necrobiosis|folliculitis|alopecia|Sweet|pyoderma|pityriasis|prurit\\w*|itch\\w*|drug\\s+reaction|DIF|immunofluorescence)\\b",
+    "not": [
+      "excision",
+      "wide excision",
+      "re-excision",
+      "ellipse"
+    ],
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "detail",
+        "fallback": "text",
+        "strip": "\\b(?:skin|punch|shave|incisional|excisional|excision|excised|ellipse|biops(?:y|ies)|for\\s+H&E(?:\\s+and\\s+DIF)?|for\\s+DIF|x\\s*\\d+)\\b"
+      },
+      {
+        "field": "procedure",
+        "from": "map",
+        "map": [
+          [
+            "\\bpunch",
+            "Punch biopsy"
+          ],
+          [
+            "\\bshav",
+            "Shave biopsy"
+          ],
+          [
+            "\\bincision",
+            "Incisional biopsy"
+          ],
+          [
+            "\\b(excision|excised|ellipse)",
+            "Excision"
+          ]
+        ]
+      },
+      {
+        "field": "pattern",
+        "from": "map",
+        "history": true,
+        "map": [
+          [
+            "\\bGVHD\\b|graft[\\s-]+(versus|vs\\.?)[\\s-]+host|\\ballo(geneic)?[\\s-]*(HSCT|BMT|SCT|transplant)|\\b(HSCT|BMT)\\b|(stem[\\s-]+cell|bone[\\s-]+marrow)[\\s-]+transplant",
+            "Graft-versus-host disease"
+          ]
+        ]
+      }
+    ]
+  },
+  "specimenNoun": "biopsy",
+  "maxParts": 6,
+  "defaultParts": 1,
+  "generator": "skin_inflammatory",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "$use": "includeHeader"
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "partDefaults": [],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Site",
+      "type": "text",
+      "group": "Specimen",
+      "placeholder": "left forearm",
+      "default": ""
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "group": "Specimen",
+      "options": [
+        "Punch biopsy",
+        "Shave biopsy",
+        "Incisional biopsy",
+        "Excision"
+      ],
+      "default": "Punch biopsy"
+    },
+    {
+      "id": "depth",
+      "label": "Sections reach",
+      "type": "select",
+      "group": "Specimen",
+      "options": [
+        "Subcutis",
+        "Reticular dermis",
+        "Superficial dermis"
+      ],
+      "default": "Subcutis",
+      "defaultByField": {
+        "field": "procedure",
+        "map": {
+          "Shave biopsy": "Superficial dermis"
+        }
+      }
+    },
+    {
+      "id": "size",
+      "label": "Specimen size (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "0.4 x 0.4 x 0.3",
+      "default": ""
+    },
+    {
+      "id": "handling",
+      "label": "Handling",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Bisected",
+        "Serially sliced",
+        "Embedded whole"
+      ],
+      "default": "Bisected",
+      "defaultByField": {
+        "field": "procedure",
+        "map": {
+          "Shave biopsy": "Embedded whole",
+          "Incisional biopsy": "Serially sliced",
+          "Excision": "Serially sliced"
+        }
+      }
+    },
+    {
+      "id": "blocks",
+      "label": "Blocks",
+      "type": "number",
+      "group": "Macroscopy",
+      "min": 1,
+      "step": 1,
+      "default": "1",
+      "defaultByField": {
+        "field": "procedure",
+        "map": {
+          "Incisional biopsy": "2",
+          "Excision": "3"
+        }
+      }
+    },
+    {
+      "id": "difReceived",
+      "label": "Second biopsy for direct immunofluorescence",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "None",
+        "Received fresh",
+        "Received in Michel's medium"
+      ],
+      "default": "None"
+    },
+    {
+      "id": "difSize",
+      "label": "Its size (cm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "placeholder": "0.3 x 0.3 x 0.3",
+      "default": "",
+      "showIf": {
+        "field": "difReceived",
+        "not": "None"
+      }
+    },
+    {
+      "id": "pattern",
+      "label": "Reaction pattern",
+      "type": "select",
+      "group": "Pattern",
+      "options": [
+        "Spongiotic",
+        "Psoriasiform",
+        "Interface (vacuolar)",
+        "Interface (lichenoid)",
+        "Perivascular",
+        "Vasculitis",
+        "Vesiculobullous",
+        "Granulomatous",
+        "Panniculitis",
+        "Sclerosing",
+        "Folliculitis",
+        "Neutrophilic dermatosis",
+        "Graft-versus-host disease",
+        "No significant abnormality"
+      ],
+      "default": "Spongiotic",
+      "help": "The pattern sets the diagnosis list and the features offered. Graft-versus-host disease opens its own grading.",
+      "reference": {
+        "title": "Reaction patterns",
+        "intro": "Choose the dominant pattern at scanning power; the diagnosis list and the features follow it.",
+        "groups": [
+          {
+            "heading": "Epidermal and junctional",
+            "points": [
+              "Spongiotic: intercellular oedema in the epidermis, from slight widening of the spaces to vesicles",
+              "Psoriasiform: elongated rete ridges, regular (psoriasis) or irregular (lichen simplex chronicus)",
+              "Interface (vacuolar): vacuoles and apoptotic keratinocytes along the basal layer with a sparse infiltrate",
+              "Interface (lichenoid): a band of lymphocytes in the papillary dermis that obscures the junction"
+            ],
+            "images": []
+          },
+          {
+            "heading": "Dermal and subcutaneous",
+            "points": [
+              "Perivascular: lymphocytes around superficial, or superficial and deep, vessels with little epidermal change",
+              "Vasculitis: inflammatory cells in vessel walls with fibrinoid necrosis; leukocytoclasia and red cells in small-vessel disease",
+              "Vesiculobullous: the level of the split and the cells in the blister; direct immunofluorescence classifies the autoimmune diseases",
+              "Granulomatous: sarcoidal, palisading, interstitial, tuberculoid, suppurative or foreign body",
+              "Panniculitis: septal or lobular, with or without vasculitis",
+              "Sclerosing: thickened dermal collagen and loss of periadnexal fat, or a homogenised papillary dermis"
+            ],
+            "images": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "dx",
+      "label": "Diagnosis",
+      "type": "select",
+      "group": "Pattern",
+      "options": [
+        "Spongiotic dermatitis",
+        "Allergic contact dermatitis",
+        "Arthropod bite reaction",
+        "Spongiotic drug reaction",
+        "Pityriasis rosea",
+        "Seborrhoeic dermatitis",
+        "Stasis dermatitis",
+        "Dermatophytosis",
+        "Psoriasiform dermatitis",
+        "Psoriasis",
+        "Lichen simplex chronicus",
+        "Pityriasis rubra pilaris",
+        "Interface dermatitis",
+        "Erythema multiforme",
+        "Fixed drug eruption",
+        "Drug eruption",
+        "Cutaneous lupus erythematosus",
+        "Dermatomyositis",
+        "Pityriasis lichenoides",
+        "Lichenoid dermatitis",
+        "Lichen planus",
+        "Lichenoid drug eruption",
+        "Lichenoid keratosis",
+        "Lichen planopilaris",
+        "Perivascular dermatitis",
+        "Urticaria",
+        "Pigmented purpuric dermatosis",
+        "Leukocytoclastic vasculitis",
+        "Medium-vessel vasculitis",
+        "Occlusive vasculopathy",
+        "IgA vasculitis",
+        "Urticarial vasculitis",
+        "Cutaneous polyarteritis nodosa",
+        "Livedoid vasculopathy",
+        "Calciphylaxis",
+        "Blistering dermatosis",
+        "Bullous pemphigoid",
+        "Pemphigus vulgaris",
+        "Pemphigus foliaceus",
+        "Dermatitis herpetiformis",
+        "Linear IgA disease",
+        "Epidermolysis bullosa acquisita",
+        "Porphyria cutanea tarda",
+        "Granulomatous dermatitis",
+        "Granuloma annulare",
+        "Sarcoidosis",
+        "Necrobiosis lipoidica",
+        "Panniculitis",
+        "Erythema nodosum",
+        "Lipodermatosclerosis",
+        "Lupus panniculitis",
+        "Dermal sclerosis",
+        "Morphoea",
+        "Lichen sclerosus",
+        "Folliculitis",
+        "Pityrosporum folliculitis",
+        "Demodex folliculitis",
+        "Eosinophilic folliculitis",
+        "Neutrophilic dermatosis",
+        "Sweet syndrome",
+        "Pyoderma gangrenosum"
+      ],
+      "default": "Spongiotic dermatitis",
+      "optionsByField": {
+        "field": "pattern",
+        "map": {
+          "Spongiotic": [
+            "Spongiotic dermatitis",
+            "Allergic contact dermatitis",
+            "Arthropod bite reaction",
+            "Spongiotic drug reaction",
+            "Pityriasis rosea",
+            "Seborrhoeic dermatitis",
+            "Stasis dermatitis",
+            "Dermatophytosis"
+          ],
+          "Psoriasiform": [
+            "Psoriasiform dermatitis",
+            "Psoriasis",
+            "Lichen simplex chronicus",
+            "Pityriasis rubra pilaris",
+            "Dermatophytosis"
+          ],
+          "Interface (vacuolar)": [
+            "Interface dermatitis",
+            "Erythema multiforme",
+            "Fixed drug eruption",
+            "Drug eruption",
+            "Cutaneous lupus erythematosus",
+            "Dermatomyositis",
+            "Pityriasis lichenoides"
+          ],
+          "Interface (lichenoid)": [
+            "Lichenoid dermatitis",
+            "Lichen planus",
+            "Lichenoid drug eruption",
+            "Lichenoid keratosis",
+            "Lichen planopilaris"
+          ],
+          "Perivascular": [
+            "Perivascular dermatitis",
+            "Arthropod bite reaction",
+            "Urticaria",
+            "Pigmented purpuric dermatosis"
+          ],
+          "Vasculitis": [
+            "Leukocytoclastic vasculitis",
+            "Medium-vessel vasculitis",
+            "Occlusive vasculopathy",
+            "IgA vasculitis",
+            "Urticarial vasculitis",
+            "Cutaneous polyarteritis nodosa",
+            "Livedoid vasculopathy",
+            "Calciphylaxis"
+          ],
+          "Vesiculobullous": [
+            "Blistering dermatosis",
+            "Bullous pemphigoid",
+            "Pemphigus vulgaris",
+            "Pemphigus foliaceus",
+            "Dermatitis herpetiformis",
+            "Linear IgA disease",
+            "Epidermolysis bullosa acquisita",
+            "Porphyria cutanea tarda"
+          ],
+          "Granulomatous": [
+            "Granulomatous dermatitis",
+            "Granuloma annulare",
+            "Sarcoidosis",
+            "Necrobiosis lipoidica"
+          ],
+          "Panniculitis": [
+            "Panniculitis",
+            "Erythema nodosum",
+            "Lipodermatosclerosis",
+            "Lupus panniculitis"
+          ],
+          "Sclerosing": [
+            "Dermal sclerosis",
+            "Morphoea",
+            "Lichen sclerosus"
+          ],
+          "Folliculitis": [
+            "Folliculitis",
+            "Pityrosporum folliculitis",
+            "Demodex folliculitis",
+            "Eosinophilic folliculitis"
+          ],
+          "Neutrophilic dermatosis": [
+            "Neutrophilic dermatosis",
+            "Sweet syndrome",
+            "Pyoderma gangrenosum"
+          ]
+        }
+      },
+      "help": "The first entry is the pattern itself; the others name a disease.",
+      "showIf": {
+        "field": "pattern",
+        "not": [
+          "Graft-versus-host disease",
+          "No significant abnormality"
+        ]
+      }
+    },
+    {
+      "id": "certainty",
+      "label": "Wording",
+      "type": "select",
+      "group": "Pattern",
+      "options": [
+        "Auto",
+        "Diagnostic",
+        "In keeping with",
+        "Consistent with",
+        "Suggestive of"
+      ],
+      "default": "Auto",
+      "help": "Auto names a disease on its own when the histology is specific, and after the pattern (\"..., in keeping with ...\") when it needs clinical correlation or immunofluorescence.",
+      "showIf": {
+        "all": [
+          {
+            "field": "pattern",
+            "not": [
+              "Graft-versus-host disease",
+              "No significant abnormality"
+            ]
+          },
+          {
+            "field": "dx",
+            "not": [
+              "Spongiotic dermatitis",
+              "Psoriasiform dermatitis",
+              "Interface dermatitis",
+              "Lichenoid dermatitis",
+              "Perivascular dermatitis",
+              "Leukocytoclastic vasculitis",
+              "Blistering dermatosis",
+              "Granulomatous dermatitis",
+              "Panniculitis",
+              "Dermal sclerosis",
+              "Folliculitis",
+              "Neutrophilic dermatosis",
+              "Medium-vessel vasculitis",
+              "Occlusive vasculopathy"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "spongiosis",
+      "label": "Spongiosis",
+      "type": "select",
+      "group": "Features",
+      "options": [
+        "Mild",
+        "Moderate",
+        "Marked"
+      ],
+      "default": "Moderate",
+      "showIf": {
+        "field": "pattern",
+        "is": "Spongiotic"
+      }
+    },
+    {
+      "id": "featSpongiotic",
+      "label": "Features",
+      "type": "multiselect",
+      "group": "Features",
+      "default": [],
+      "showIf": {
+        "field": "pattern",
+        "is": "Spongiotic"
+      },
+      "options": [
+        "Parakeratosis",
+        "Mounds of parakeratosis",
+        "Spongiotic vesicles",
+        "Exocytosis of lymphocytes",
+        "Eosinophilic spongiosis",
+        "Acanthosis",
+        "Papillary dermal oedema",
+        "Extravasated red cells",
+        "Haemosiderin-laden macrophages",
+        "Proliferation of small thick-walled vessels",
+        "Dermal fibrosis"
+      ]
+    },
+    {
+      "id": "acanthosis",
+      "label": "Hyperplasia",
+      "type": "select",
+      "group": "Features",
+      "options": [
+        "Regular",
+        "Irregular"
+      ],
+      "default": "Regular",
+      "showIf": {
+        "field": "pattern",
+        "is": "Psoriasiform"
+      }
+    },
+    {
+      "id": "featPsoriasiform",
+      "label": "Features",
+      "type": "multiselect",
+      "group": "Features",
+      "default": [],
+      "showIf": {
+        "field": "pattern",
+        "is": "Psoriasiform"
+      },
+      "options": [
+        "Confluent parakeratosis",
+        "Neutrophils in the parakeratotic scale",
+        "Spongiform pustules",
+        "Loss of the granular layer",
+        "Suprapapillary thinning",
+        "Compact orthokeratosis",
+        "Hypergranulosis",
+        "Alternating orthokeratosis and parakeratosis",
+        "Focal spongiosis",
+        "Dilated tortuous papillary capillaries",
+        "Vertically orientated papillary dermal collagen"
+      ]
+    },
+    {
+      "id": "featVacuolar",
+      "label": "Features",
+      "type": "multiselect",
+      "group": "Features",
+      "default": [
+        "Basal vacuolar change"
+      ],
+      "showIf": {
+        "field": "pattern",
+        "is": "Interface (vacuolar)"
+      },
+      "options": [
+        "Basal vacuolar change",
+        "Apoptotic keratinocytes",
+        "Apoptotic keratinocytes at all levels",
+        "Confluent epidermal necrosis",
+        "Exocytosis of lymphocytes",
+        "Epidermal atrophy",
+        "Follicular plugging",
+        "Thickened basement membrane",
+        "Pigment incontinence",
+        "Increased dermal mucin",
+        "Papillary dermal oedema"
+      ]
+    },
+    {
+      "id": "featLichenoid",
+      "label": "Features",
+      "type": "multiselect",
+      "group": "Features",
+      "default": [],
+      "showIf": {
+        "field": "pattern",
+        "is": "Interface (lichenoid)"
+      },
+      "options": [
+        "Compact orthokeratosis",
+        "Focal parakeratosis",
+        "Wedge-shaped hypergranulosis",
+        "Irregular acanthosis",
+        "Saw-tooth rete ridges",
+        "Basal vacuolar change",
+        "Civatte bodies",
+        "Epidermal atrophy",
+        "Pigment incontinence",
+        "Solar elastosis"
+      ]
+    },
+    {
+      "id": "featPerivascular",
+      "label": "Features",
+      "type": "multiselect",
+      "group": "Features",
+      "default": [],
+      "showIf": {
+        "field": "pattern",
+        "is": "Perivascular"
+      },
+      "options": [
+        "Mild spongiosis",
+        "Focal parakeratosis",
+        "Papillary dermal oedema",
+        "Interstitial eosinophils",
+        "Interstitial neutrophils",
+        "Extravasated red cells",
+        "Haemosiderin-laden macrophages",
+        "Increased dermal mucin",
+        "Tight perivascular cuffing"
+      ]
+    },
+    {
+      "id": "vessels",
+      "label": "Vessels",
+      "type": "select",
+      "group": "Features",
+      "showIf": {
+        "field": "pattern",
+        "is": "Vasculitis"
+      },
+      "options": [
+        "Superficial dermal small vessels",
+        "Superficial and deep dermal small vessels",
+        "Medium-sized vessels at the dermal-subcutaneous junction",
+        "Small vessels in the subcutis"
+      ],
+      "default": "Superficial dermal small vessels",
+      "defaultByField": {
+        "field": "dx",
+        "map": {
+          "Medium-vessel vasculitis": "Medium-sized vessels at the dermal-subcutaneous junction",
+          "Cutaneous polyarteritis nodosa": "Medium-sized vessels at the dermal-subcutaneous junction",
+          "Calciphylaxis": "Small vessels in the subcutis"
+        }
+      }
+    },
+    {
+      "id": "featVasculitis",
+      "label": "Features",
+      "type": "multiselect",
+      "group": "Features",
+      "showIf": {
+        "field": "pattern",
+        "is": "Vasculitis"
+      },
+      "default": [
+        "Fibrinoid necrosis of vessel walls",
+        "Neutrophils in vessel walls",
+        "Leukocytoclasia",
+        "Extravasated red cells"
+      ],
+      "options": [
+        "Fibrinoid necrosis of vessel walls",
+        "Neutrophils in vessel walls",
+        "Lymphocytes in vessel walls",
+        "Endothelial swelling",
+        "Intraluminal thrombi",
+        "Hyalinised vessel walls",
+        "Mural calcification",
+        "Leukocytoclasia",
+        "Extravasated red cells",
+        "Eosinophils",
+        "Ulceration"
+      ]
+    },
+    {
+      "id": "blisterLevel",
+      "label": "Blister level",
+      "type": "select",
+      "group": "Features",
+      "showIf": {
+        "field": "pattern",
+        "is": "Vesiculobullous"
+      },
+      "options": [
+        "Subepidermal",
+        "Suprabasal",
+        "Intraepidermal",
+        "Subcorneal"
+      ],
+      "default": "Subepidermal",
+      "defaultByField": {
+        "field": "dx",
+        "map": {
+          "Pemphigus vulgaris": "Suprabasal",
+          "Pemphigus foliaceus": "Subcorneal"
+        }
+      }
+    },
+    {
+      "id": "blisterContent",
+      "label": "Blister contents",
+      "type": "select",
+      "group": "Features",
+      "showIf": {
+        "field": "pattern",
+        "is": "Vesiculobullous"
+      },
+      "options": [
+        "Eosinophils",
+        "Neutrophils",
+        "Eosinophils and neutrophils",
+        "Few inflammatory cells"
+      ],
+      "default": "Eosinophils",
+      "defaultByField": {
+        "field": "dx",
+        "map": {
+          "Dermatitis herpetiformis": "Neutrophils",
+          "Linear IgA disease": "Neutrophils",
+          "Porphyria cutanea tarda": "Few inflammatory cells",
+          "Pemphigus vulgaris": "Few inflammatory cells",
+          "Pemphigus foliaceus": "Few inflammatory cells"
+        }
+      }
+    },
+    {
+      "id": "featBullous",
+      "label": "Features",
+      "type": "multiselect",
+      "group": "Features",
+      "default": [],
+      "showIf": {
+        "field": "pattern",
+        "is": "Vesiculobullous"
+      },
+      "options": [
+        "Acantholysis",
+        "Tombstoning of basal keratinocytes",
+        "Eosinophilic spongiosis",
+        "Neutrophil microabscesses in the dermal papillae",
+        "Festooning of the dermal papillae",
+        "Re-epithelialised blister floor",
+        "Papillary dermal oedema"
+      ]
+    },
+    {
+      "id": "granulomaType",
+      "label": "Granulomas",
+      "type": "select",
+      "group": "Features",
+      "showIf": {
+        "field": "pattern",
+        "is": "Granulomatous"
+      },
+      "options": [
+        "Sarcoidal",
+        "Palisading",
+        "Interstitial",
+        "Tuberculoid",
+        "Suppurative",
+        "Foreign body"
+      ],
+      "default": "Sarcoidal",
+      "defaultByField": {
+        "field": "dx",
+        "map": {
+          "Granuloma annulare": "Palisading",
+          "Necrobiosis lipoidica": "Palisading"
+        }
+      }
+    },
+    {
+      "id": "featGranulomatous",
+      "label": "Features",
+      "type": "multiselect",
+      "group": "Features",
+      "default": [],
+      "showIf": {
+        "field": "pattern",
+        "is": "Granulomatous"
+      },
+      "options": [
+        "Increased central mucin",
+        "Central caseous necrosis",
+        "Multinucleated giant cells",
+        "Asteroid bodies",
+        "Polarisable foreign material",
+        "Layered granulomatous inflammation",
+        "Plasma cells",
+        "Dermal sclerosis"
+      ]
+    },
+    {
+      "id": "compartment",
+      "label": "Compartment",
+      "type": "select",
+      "group": "Features",
+      "showIf": {
+        "field": "pattern",
+        "is": "Panniculitis"
+      },
+      "options": [
+        "Septal",
+        "Lobular",
+        "Septal and lobular"
+      ],
+      "default": "Septal",
+      "defaultByField": {
+        "field": "dx",
+        "map": {
+          "Lupus panniculitis": "Lobular",
+          "Lipodermatosclerosis": "Septal and lobular"
+        }
+      }
+    },
+    {
+      "id": "featPanniculitis",
+      "label": "Features",
+      "type": "multiselect",
+      "group": "Features",
+      "default": [],
+      "showIf": {
+        "field": "pattern",
+        "is": "Panniculitis"
+      },
+      "options": [
+        "Septal thickening and fibrosis",
+        "Miescher radial granulomas",
+        "Multinucleated giant cells",
+        "Fat necrosis",
+        "Lipomembranous change",
+        "Hyaline fat necrosis",
+        "Lymphoid follicles",
+        "Vasculitis",
+        "Calcification"
+      ]
+    },
+    {
+      "id": "featSclerosing",
+      "label": "Features",
+      "type": "multiselect",
+      "group": "Features",
+      "showIf": {
+        "field": "pattern",
+        "is": "Sclerosing"
+      },
+      "default": [
+        "Thickened hyalinised collagen bundles"
+      ],
+      "options": [
+        "Thickened hyalinised collagen bundles",
+        "Loss of periadnexal fat",
+        "Atrophic adnexal structures",
+        "Squared-off biopsy edges",
+        "Homogenised papillary dermis",
+        "Band-like infiltrate beneath the sclerotic zone",
+        "Epidermal atrophy",
+        "Basal vacuolar change",
+        "Follicular plugging"
+      ]
+    },
+    {
+      "id": "featFollicular",
+      "label": "Features",
+      "type": "multiselect",
+      "group": "Features",
+      "default": [
+        "Neutrophils in the follicle"
+      ],
+      "showIf": {
+        "field": "pattern",
+        "is": "Folliculitis"
+      },
+      "options": [
+        "Neutrophils in the follicle",
+        "Ruptured follicle",
+        "Perifollicular granulomatous reaction",
+        "Yeasts in the follicle",
+        "Eosinophils in the follicular epithelium",
+        "Demodex mites"
+      ]
+    },
+    {
+      "id": "featNeutrophilic",
+      "label": "Features",
+      "type": "multiselect",
+      "group": "Features",
+      "default": [],
+      "showIf": {
+        "field": "pattern",
+        "is": "Neutrophilic dermatosis"
+      },
+      "options": [
+        "Marked papillary dermal oedema",
+        "Leukocytoclasia",
+        "Ulceration",
+        "Dermal abscess formation"
+      ]
+    },
+    {
+      "id": "nih",
+      "label": "NIH category",
+      "type": "select",
+      "group": "Graft-versus-host disease",
+      "showIf": {
+        "field": "pattern",
+        "is": "Graft-versus-host disease"
+      },
+      "options": [
+        "Likely GVHD",
+        "Possible GVHD",
+        "Not GVHD"
+      ],
+      "default": "Likely GVHD",
+      "help": "The NIH 2014 final categories. Possible GVHD: name the other explanations in the differential.",
+      "reference": {
+        "title": "NIH 2014 categories",
+        "intro": "Final categories for a biopsy taken for GVHD; no single feature is pathognomonic.",
+        "groups": [
+          {
+            "heading": "Categories",
+            "points": [
+              "Not GVHD: no evidence for GVHD",
+              "Possible GVHD: evidence of GVHD but other possible explanations, such as a drug reaction; name them",
+              "Likely GVHD: clear evidence of GVHD without a competing cause, or with mitigating factors, or GVHD the most likely diagnosis on limited clinical information; includes the former \"consistent with\" and \"unequivocal\" categories",
+              "Minimal criterion: apoptosis in the basal or lower spinous layer, the follicular infundibulum or outer root sheath, or the acrosyringium, with or without lichenoid inflammation, vacuolar change and satellitosis",
+              "Eosinophils often occur in GVHD and do not by themselves indicate a drug reaction"
+            ],
+            "images": []
+          },
+          {
+            "heading": "Chronic GVHD patterns",
+            "points": [
+              "Lichen planus-like: orthohyperkeratosis, hypergranulosis and acanthosis, with or without lichenoid inflammation or vacuolar change of eccrine units",
+              "Morphoea-like: thickened homogenised collagen through the reticular dermis, or pandermal sclerosis, with overlying interface change",
+              "Lichen sclerosus-like: homogenised papillary dermis with interface change, melanophages and a sparse infiltrate",
+              "Fasciitis: thickened fascial septa with adjacent inflammation"
+            ],
+            "images": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "gvhdPhase",
+      "label": "Type",
+      "type": "select",
+      "group": "Graft-versus-host disease",
+      "showIf": {
+        "field": "pattern",
+        "is": "Graft-versus-host disease"
+      },
+      "options": [
+        "Acute",
+        "Chronic, lichen planus-like",
+        "Chronic, morphoea-like",
+        "Chronic, lichen sclerosus-like",
+        "Acute and chronic"
+      ],
+      "default": "Acute"
+    },
+    {
+      "id": "gvhdFeatures",
+      "label": "Features",
+      "type": "multiselect",
+      "group": "Graft-versus-host disease",
+      "showIf": {
+        "field": "pattern",
+        "is": "Graft-versus-host disease"
+      },
+      "default": [
+        "Basal vacuolar change",
+        "Apoptotic keratinocytes in the basal layer"
+      ],
+      "options": [
+        "Basal vacuolar change",
+        "Apoptotic keratinocytes in the basal layer",
+        "Apoptotic keratinocytes in the lower spinous layer",
+        "Apoptotic cells in the follicular epithelium",
+        "Apoptotic cells in the acrosyringium",
+        "Lymphocyte satellitosis",
+        "Exocytosis of lymphocytes",
+        "Subepidermal clefts",
+        "Separation of the epidermis",
+        "Lichen planus-like changes",
+        "Perieccrine inflammation",
+        "Homogenised papillary dermis",
+        "Sclerosis of the reticular dermis"
+      ]
+    },
+    {
+      "id": "lerner",
+      "label": "Lerner grade",
+      "type": "select",
+      "group": "Graft-versus-host disease",
+      "options": [
+        "Auto",
+        "Not graded",
+        "0",
+        "I",
+        "II",
+        "III",
+        "IV"
+      ],
+      "default": "Auto",
+      "help": "Auto reads the grade from the features ticked: I basal vacuolar change, II apoptotic keratinocytes, III subepidermal clefts, IV separation of the epidermis. Printed with Likely GVHD only.",
+      "showIf": {
+        "all": [
+          {
+            "field": "pattern",
+            "is": "Graft-versus-host disease"
+          },
+          {
+            "field": "gvhdPhase",
+            "is": [
+              "Acute",
+              "Acute and chronic"
+            ]
+          },
+          {
+            "field": "nih",
+            "is": "Likely GVHD"
+          }
+        ]
+      },
+      "reference": {
+        "title": "Lerner grade (acute GVHD)",
+        "intro": "Grades the epidermal injury of acute GVHD at its most damaged point; chronic GVHD is not graded this way.",
+        "groups": [
+          {
+            "heading": "Grades",
+            "points": [
+              "0: normal skin",
+              "I: vacuolar change of the basal keratinocytes",
+              "II: as grade I, with apoptotic (dyskeratotic) keratinocytes",
+              "III: subepidermal cleft formation",
+              "IV: complete separation of the epidermis from the dermis"
+            ],
+            "images": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "infiltrate",
+      "label": "Distribution",
+      "type": "select",
+      "group": "Infiltrate",
+      "showIf": {
+        "field": "pattern",
+        "is": [
+          "Spongiotic",
+          "Psoriasiform",
+          "Interface (vacuolar)",
+          "Interface (lichenoid)",
+          "Perivascular",
+          "Vesiculobullous",
+          "Sclerosing",
+          "Neutrophilic dermatosis",
+          "Graft-versus-host disease"
+        ]
+      },
+      "options": [
+        "Superficial perivascular",
+        "Superficial and deep perivascular",
+        "Superficial and deep perivascular and periadnexal",
+        "Superficial perivascular and interstitial",
+        "Band-like",
+        "Interstitial",
+        "Diffuse"
+      ],
+      "default": "Superficial perivascular",
+      "defaultByField": {
+        "field": "pattern",
+        "map": {
+          "Interface (lichenoid)": "Band-like",
+          "Neutrophilic dermatosis": "Diffuse",
+          "Sclerosing": "Superficial and deep perivascular"
+        }
+      }
+    },
+    {
+      "id": "density",
+      "label": "Density",
+      "type": "select",
+      "group": "Infiltrate",
+      "showIf": {
+        "field": "pattern",
+        "is": [
+          "Spongiotic",
+          "Psoriasiform",
+          "Interface (vacuolar)",
+          "Interface (lichenoid)",
+          "Perivascular",
+          "Vesiculobullous",
+          "Sclerosing",
+          "Neutrophilic dermatosis",
+          "Graft-versus-host disease",
+          "Folliculitis"
+        ]
+      },
+      "options": [
+        "Sparse",
+        "Mild",
+        "Moderate",
+        "Dense"
+      ],
+      "default": "Mild",
+      "defaultByField": {
+        "field": "pattern",
+        "map": {
+          "Interface (lichenoid)": "Dense",
+          "Neutrophilic dermatosis": "Dense",
+          "Graft-versus-host disease": "Sparse"
+        }
+      }
+    },
+    {
+      "id": "cells",
+      "label": "Cells",
+      "type": "multiselect",
+      "group": "Infiltrate",
+      "showIf": {
+        "field": "pattern",
+        "is": [
+          "Spongiotic",
+          "Psoriasiform",
+          "Interface (vacuolar)",
+          "Interface (lichenoid)",
+          "Perivascular",
+          "Vesiculobullous",
+          "Sclerosing",
+          "Neutrophilic dermatosis",
+          "Graft-versus-host disease",
+          "Panniculitis",
+          "Folliculitis"
+        ]
+      },
+      "options": [
+        "Lymphocytes",
+        "Histiocytes",
+        "Eosinophils",
+        "Neutrophils",
+        "Plasma cells"
+      ],
+      "default": [
+        "Lymphocytes"
+      ],
+      "defaultByField": {
+        "field": "pattern",
+        "map": {
+          "Neutrophilic dermatosis": [
+            "Neutrophils"
+          ],
+          "Panniculitis": [
+            "Lymphocytes",
+            "Histiocytes"
+          ],
+          "Folliculitis": [
+            "Neutrophils",
+            "Lymphocytes"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pasd",
+      "label": "PASD",
+      "type": "select",
+      "group": "Stains",
+      "options": [
+        "Not performed",
+        "Negative",
+        "Positive"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "pattern",
+        "not": "No significant abnormality"
+      }
+    },
+    {
+      "id": "mucin",
+      "label": "Alcian blue",
+      "type": "select",
+      "group": "Stains",
+      "options": [
+        "Not performed",
+        "Increased dermal mucin",
+        "No increase in dermal mucin"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "field": "pattern",
+        "not": "No significant abnormality"
+      }
+    },
+    {
+      "id": "organisms",
+      "label": "Negative stains for organisms",
+      "type": "multiselect",
+      "group": "Stains",
+      "options": [
+        "Gram",
+        "Ziehl-Neelsen",
+        "Fite",
+        "Grocott"
+      ],
+      "default": [],
+      "showIf": {
+        "field": "pattern",
+        "not": "No significant abnormality"
+      }
+    },
+    {
+      "id": "otherStains",
+      "label": "Other stains",
+      "type": "text",
+      "group": "Stains",
+      "placeholder": "Congo red stain is negative",
+      "default": ""
+    },
+    {
+      "id": "dif",
+      "label": "Direct immunofluorescence",
+      "type": "select",
+      "group": "Immunofluorescence",
+      "options": [
+        "Not performed",
+        "Negative",
+        "Positive",
+        "Reported separately"
+      ],
+      "default": "Not performed",
+      "defaultByField": {
+        "field": "difReceived",
+        "map": {
+          "Received fresh": "Reported separately",
+          "Received in Michel's medium": "Reported separately"
+        }
+      }
+    },
+    {
+      "id": "difPattern",
+      "label": "Deposits",
+      "type": "select",
+      "group": "Immunofluorescence",
+      "options": [
+        "Linear IgG and C3 along the basement membrane zone",
+        "Linear IgA along the basement membrane zone",
+        "Intercellular IgG and C3 in the epidermis",
+        "Granular IgA in the dermal papillae",
+        "Perivascular IgA and C3 in superficial dermal vessels",
+        "Granular IgG, IgM and C3 along the basement membrane zone",
+        "IgM-positive cytoid bodies",
+        "Other"
+      ],
+      "default": "Linear IgG and C3 along the basement membrane zone",
+      "showIf": {
+        "field": "dif",
+        "is": "Positive"
+      },
+      "defaultByField": {
+        "field": "dx",
+        "map": {
+          "Pemphigus vulgaris": "Intercellular IgG and C3 in the epidermis",
+          "Pemphigus foliaceus": "Intercellular IgG and C3 in the epidermis",
+          "Dermatitis herpetiformis": "Granular IgA in the dermal papillae",
+          "Linear IgA disease": "Linear IgA along the basement membrane zone",
+          "IgA vasculitis": "Perivascular IgA and C3 in superficial dermal vessels",
+          "Cutaneous lupus erythematosus": "Granular IgG, IgM and C3 along the basement membrane zone",
+          "Lichen planus": "IgM-positive cytoid bodies"
+        }
+      },
+      "reference": {
+        "title": "Direct immunofluorescence",
+        "intro": "The deposit, its site and its pattern; the reagents not named print as negative.",
+        "groups": [
+          {
+            "heading": "Deposits and the diseases they suggest",
+            "points": [
+              "Linear IgG and C3 along the basement membrane zone: bullous pemphigoid; epidermolysis bullosa acquisita",
+              "Linear IgA along the basement membrane zone: linear IgA disease",
+              "Intercellular IgG and C3 in the epidermis: pemphigus",
+              "Granular IgA in the dermal papillae: dermatitis herpetiformis",
+              "Perivascular IgA and C3 in superficial dermal vessels: IgA vasculitis",
+              "Granular IgG, IgM and C3 along the basement membrane zone: lupus erythematosus",
+              "IgM-positive cytoid bodies in the papillary dermis: lichen planus and other interface dermatitides"
+            ],
+            "images": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "difOther",
+      "label": "Describe the deposits",
+      "type": "text",
+      "group": "Immunofluorescence",
+      "placeholder": "granular C3 along the basement membrane zone",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "dif",
+            "is": "Positive"
+          },
+          {
+            "field": "difPattern",
+            "is": "Other"
+          }
+        ]
+      }
+    },
+    {
+      "id": "differential",
+      "label": "Differential diagnosis",
+      "type": "text",
+      "group": "Report",
+      "placeholder": "allergic contact dermatitis and a drug reaction",
+      "default": "",
+      "help": "Prints \"The differential diagnosis includes ...\"."
+    },
+    {
+      "id": "overall",
+      "label": "Close with \"The overall features are those of ...\"",
+      "type": "checkbox",
+      "group": "Report",
+      "default": true
+    },
+    {
+      "id": "correlate",
+      "label": "Please correlate with clinical findings",
+      "type": "checkbox",
+      "group": "Report",
+      "default": true
+    },
+    {
+      "id": "seeDescription",
+      "label": "Add \"(please see description)\" to a pattern diagnosis",
+      "type": "checkbox",
+      "group": "Report",
+      "default": true
+    },
+    {
+      "id": "noMalignancy",
+      "label": "There is no evidence of malignancy",
+      "type": "checkbox",
+      "group": "Report",
+      "default": false
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional notes",
+      "type": "textarea",
+      "group": "Report",
+      "default": ""
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "left forearm",
+          "size": "0.4 x 0.4 x 0.3",
+          "pattern": "Spongiotic",
+          "dx": "Spongiotic dermatitis",
+          "featSpongiotic": [
+            "Parakeratosis",
+            "Exocytosis of lymphocytes"
+          ],
+          "cells": [
+            "Lymphocytes",
+            "Eosinophils"
+          ],
+          "pasd": "Negative"
+        }
+      }
+    ]
+  }
+}

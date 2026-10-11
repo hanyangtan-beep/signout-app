@@ -50,8 +50,9 @@ test('small-biopsy row lists exactly the kind: biopsy templates in frequency ord
   // built 2026-09-30, after Brain (43 medical-type liver cases against 60 CNS). Liver (mass), built 2026-10-02, shares
   // its rank and follows it (fewer targeted liver biopsies than medical ones). Hirschsprung (2026-09-30) comes last:
   // its rectal biopsies are the rarest biopsy type on the case mix. Peritoneum (Phase 58, 2026-10-07) is appended
-  // after it, leaving the order of the others unchanged.
-  assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix', 'Endometrium', 'Lung', 'NPC', 'Oral cavity', 'Brain', 'Liver (medical)', 'Liver (mass)', 'Hirschsprung', 'Peritoneum']);
+  // after it, leaving the order of the others unchanged. Dermatoses (Phase 68, 2026-10-11) sits after Oral cavity and
+  // before Brain: 146 inflammatory skin parts on the 2021-2026 biopsy case mix, against 223 oral and 60 CNS.
+  assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix', 'Endometrium', 'Lung', 'NPC', 'Oral cavity', 'Dermatoses', 'Brain', 'Liver (medical)', 'Liver (mass)', 'Hirschsprung', 'Peritoneum']);
   assert.ok(!row.includes('LEEP') && !row.includes('Frozen'));
   assert.deepEqual(pushRecent(['a', 'b'], 'b'), ['b', 'a']);
   assert.deepEqual(togglePin(togglePin([], 'x'), 'x'), []);
@@ -176,7 +177,7 @@ test('grouped browse and the part selector put Small biopsy first, systems in ca
   assert.deepEqual(gyn.items.slice(2).map(labelOf), ['LEEP', 'Placenta', 'Uterus', 'Ovarian cyst', 'Ectopic', 'Endometrial Ca', 'Ovary / tube / peritoneum Ca'], 'rank order within a kind');
   const sel = selectorGroups(manifest);
   assert.equal(sel[0].label, 'Small biopsy');
-  assert.equal(sel[0].items.length, 17); // oral_biopsy joins in Phase 42, liver_biopsy and hirschsprung_biopsy on 2026-09-30, liver_lesion_biopsy on 2026-10-02, peritoneal_nodule on 2026-10-07
+  assert.equal(sel[0].items.length, 18); // oral_biopsy joins in Phase 42, liver_biopsy and hirschsprung_biopsy on 2026-09-30, liver_lesion_biopsy on 2026-10-02, peritoneal_nodule on 2026-10-07, skin_inflammatory on 2026-10-11
   // The CNS biopsy sits in the Small biopsy group; the CNS system group holds the resection.
   assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Biomarkers', 'Cytology', 'General']);
 });

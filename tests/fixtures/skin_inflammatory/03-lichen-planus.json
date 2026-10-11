@@ -1,0 +1,19 @@
+{
+  "templateId": "skin_inflammatory",
+  "values": {
+    "specimenName": "left wrist",
+    "pattern": "Interface (lichenoid)",
+    "dx": "Lichen planus",
+    "infiltrate": "Band-like",
+    "density": "Dense",
+    "featLichenoid": [
+      "Compact orthokeratosis",
+      "Wedge-shaped hypergranulosis",
+      "Saw-tooth rete ridges",
+      "Civatte bodies",
+      "Pigment incontinence"
+    ]
+  },
+  "report": "Skin, left wrist, punch biopsy\n\nReceived in formalin is a punch biopsy of skin. Bisected and all embedded in 1 block.\n\n(1) Punch, bisected, all embedded.\n\nSections show a piece of skin down to the subcutis. The epidermis shows compact orthokeratosis, wedge-shaped hypergranulosis, saw-tooth rete ridges and Civatte bodies. The papillary dermis shows a dense band-like infiltrate of lymphocytes, with pigment incontinence. The overall features are those of lichen planus. Please correlate with clinical findings.\n\nSKIN, left wrist, punch biopsy - LICHEN PLANUS",
+  "checks": []
+}

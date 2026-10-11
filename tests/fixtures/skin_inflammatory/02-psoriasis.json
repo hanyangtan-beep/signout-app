@@ -1,0 +1,18 @@
+{
+  "templateId": "skin_inflammatory",
+  "values": {
+    "specimenName": "right elbow",
+    "pattern": "Psoriasiform",
+    "dx": "Psoriasis",
+    "featPsoriasiform": [
+      "Confluent parakeratosis",
+      "Neutrophils in the parakeratotic scale",
+      "Loss of the granular layer",
+      "Suprapapillary thinning",
+      "Dilated tortuous papillary capillaries"
+    ],
+    "pasd": "Negative"
+  },
+  "report": "Skin, right elbow, punch biopsy\n\nReceived in formalin is a punch biopsy of skin. Bisected and all embedded in 1 block.\n\n(1) Punch, bisected, all embedded.\n\nSections show a piece of skin down to the subcutis. The epidermis shows regular psoriasiform hyperplasia with confluent parakeratosis, neutrophils in the parakeratotic scale, loss of the granular layer and thinning of the suprapapillary plates. The dermis shows a mild superficial perivascular infiltrate of lymphocytes, with dilated tortuous capillaries in the dermal papillae. No fungal organisms are identified on PASD stain. The overall features are those of a psoriasiform dermatitis, in keeping with psoriasis. Please correlate with clinical findings.\n\nSKIN, right elbow, punch biopsy - PSORIASIFORM DERMATITIS, in keeping with PSORIASIS",
+  "checks": []
+}

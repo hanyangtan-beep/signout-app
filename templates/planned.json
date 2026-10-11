@@ -18,14 +18,6 @@
    "roadmap": "Later"
   },
   {
-   "id": "inflammatory_dermatoses",
-   "name": "Inflammatory dermatoses",
-   "label": "Dermatoses",
-   "system": "Skin",
-   "kind": "biopsy",
-   "roadmap": "Later"
-  },
-  {
    "id": "prostate_radical",
    "name": "Radical prostatectomy",
    "label": "Prostatectomy",

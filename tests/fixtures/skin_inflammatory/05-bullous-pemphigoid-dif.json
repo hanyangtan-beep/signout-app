@@ -1,0 +1,20 @@
+{
+  "templateId": "skin_inflammatory",
+  "values": {
+    "specimenName": "right thigh",
+    "pattern": "Vesiculobullous",
+    "dx": "Bullous pemphigoid",
+    "featBullous": [
+      "Papillary dermal oedema"
+    ],
+    "cells": [
+      "Lymphocytes",
+      "Eosinophils"
+    ],
+    "difReceived": "Received in Michel's medium",
+    "difSize": "0.3 x 0.3 x 0.3",
+    "dif": "Positive"
+  },
+  "report": "Skin, right thigh, punch biopsy\n\nReceived in formalin is a punch biopsy of skin. Bisected and all embedded in 1 block. A second punch biopsy of skin measuring 0.3 x 0.3 x 0.3 cm is received in Michel's medium for direct immunofluorescence.\n\n(1) Punch, bisected, all embedded.\n\nSections show a piece of skin down to the subcutis. There is a subepidermal blister containing eosinophils. The dermis shows a mild superficial perivascular infiltrate of lymphocytes and eosinophils, with papillary dermal oedema. Direct immunofluorescence studies show linear deposition of IgG and C3 along the basement membrane zone; IgA, IgM, C1q and fibrinogen are negative. The overall features are those of bullous pemphigoid. Please correlate with clinical findings.\n\nSKIN, right thigh, punch biopsy - BULLOUS PEMPHIGOID",
+  "checks": []
+}

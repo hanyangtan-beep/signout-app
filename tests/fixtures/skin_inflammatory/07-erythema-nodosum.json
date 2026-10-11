@@ -1,0 +1,24 @@
+{
+  "templateId": "skin_inflammatory",
+  "values": {
+    "specimenName": "right shin",
+    "procedure": "Incisional biopsy",
+    "size": "1.2 x 0.5 x 0.6",
+    "handling": "Serially sliced",
+    "blocks": "2",
+    "pattern": "Panniculitis",
+    "dx": "Erythema nodosum",
+    "cells": [
+      "Lymphocytes",
+      "Histiocytes",
+      "Neutrophils"
+    ],
+    "featPanniculitis": [
+      "Septal thickening and fibrosis",
+      "Miescher radial granulomas",
+      "Multinucleated giant cells"
+    ]
+  },
+  "report": "Skin, right shin, incisional biopsy\n\nReceived in formalin is an incisional biopsy of skin measuring 1.2 x 0.5 x 0.6 cm. Serially sliced and all embedded in 2 blocks.\n\n(1-2) Incisional biopsy, serially sliced, all embedded.\n\nSections show a piece of skin down to the subcutis. The subcutis shows a septal panniculitis composed of lymphocytes, histiocytes and neutrophils, with septal thickening and fibrosis, Miescher radial granulomas and multinucleated giant cells. The overall features are those of a septal panniculitis, in keeping with erythema nodosum. Please correlate with clinical findings.\n\nSKIN, right shin, incisional biopsy - SEPTAL PANNICULITIS, in keeping with ERYTHEMA NODOSUM",
+  "checks": []
+}

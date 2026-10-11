@@ -259,9 +259,13 @@ test('intake: skin curettings open Skin excision on the specimen line alone, wit
   assert.equal(route('Products of gestation, suction curettage').templateId, 'endometrial_biopsy');
   assert.equal(route('Left ear, mastoid cavity, curetting').templateId, 'ear_cholesteatoma');
   assert.equal(route('Bone, tibia, curettage').templateId, 'bone_joint');
-  for (const line of ['Left upper eyelid, chalazion, curettage', 'Lip, curettage', 'Nose, curettage', 'Skin, back, punch', 'Skin, back, shave']) {
+  for (const line of ['Left upper eyelid, chalazion, curettage', 'Lip, curettage', 'Nose, curettage', 'Skin, back, shave']) {
     assert.equal(route(line).templateId, 'generic', line);
   }
+  // Phase 68 (2026-10-11): a bare skin punch opens the inflammatory skin biopsy form, as most skin punches on both
+  // exports are medical biopsies (77% and 89%); a punch with a lesion history keeps Skin excision.
+  assert.equal(route('Skin, back, punch').templateId, 'skin_inflammatory');
+  for (const history of ['?BCC', 'pigmented lesion']) assert.equal(route('Skin, back, punch', history).templateId, 'skin_excision', history);
 });
 
 test('picker: the retired form\'s searches find Skin excision', () => {

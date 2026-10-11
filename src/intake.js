@@ -345,13 +345,13 @@ export function matchParts(parsed, history, manifest) {
   return parsed.parts.map((part) => {
     const role = roleOf(part, ctx, manifest);
     const candidates = scorePart(part, ctx, manifest);
-    if (role) return { ...part, templateId: role.templateId, tier: 'confident', role: role.role, caseSide, candidates };
+    if (role) return { ...part, templateId: role.templateId, tier: 'confident', role: role.role, caseSide, history: ctx.history, candidates };
     const best = candidates[0];
     const second = candidates[1];
-    if (!best || best.score < 0) return { ...part, templateId: GENERIC_ID, tier: 'none', role: null, caseSide, candidates };
-    if (!second || best.score - second.score >= 2) return { ...part, templateId: best.id, tier: 'confident', role: null, caseSide, candidates };
+    if (!best || best.score < 0) return { ...part, templateId: GENERIC_ID, tier: 'none', role: null, caseSide, history: ctx.history, candidates };
+    if (!second || best.score - second.score >= 2) return { ...part, templateId: best.id, tier: 'confident', role: null, caseSide, history: ctx.history, candidates };
     // Weak evidence (an organ word alone): offer the candidates but start from the generic form.
-    return { ...part, templateId: best.score >= 2 ? best.id : GENERIC_ID, tier: 'choose', role: null, caseSide, candidates };
+    return { ...part, templateId: best.score >= 2 ? best.id : GENERIC_ID, tier: 'choose', role: null, caseSide, history: ctx.history, candidates };
   });
 }
 
@@ -520,13 +520,13 @@ export function presetValues(schema, part, match = {}) {
   if (schema?.id === 'frozen_section') {
     const sc = frozenScenario(text);
     if (sc && field('scenario')?.options?.includes(sc)) values.scenario = sc;
-    applyFill(schema, part, values);
+    applyFill(schema, part, values, match.history);
     // The margin pick-lists carry the organ, so the typed specimen name would say it twice.
     if (values.scenario === 'Margin' && values.mgOrgan) delete values.specimenName;
     else if (!values.specimenName && fieldIds.has('specimenName')) values.specimenName = part.detail || part.text;
     return values;
   }
-  applyFill(schema, part, values);
+  applyFill(schema, part, values, match.history);
   return values;
 }
 
@@ -696,7 +696,7 @@ export function frozenScenario(text) {
 
 /**
  * `match.fill`: `{field, from: "detail" | "text" | "options" | "side" | "map", fallback?, strip?, unless?, clock?,
- * noGuess?, scenario?, alone?}` rules (a single object is accepted too). `alone` applies the rule only on a line
+ * noGuess?, scenario?, alone?, history?}` rules (a single object is accepted too). `alone` applies the rule only on a line
  * that `match.alone` reads (see aloneFor). `clock` writes a breast site the house way
  * (see clockSite) and, when the line is not an LIS triple, still takes its clock position and distance from
  * the whole line. `noGuess` empties an options field the line names nothing on, so the form's default site
@@ -705,7 +705,7 @@ export function frozenScenario(text) {
  * options rule `strip` drops words before matching: the frozen CNS list offers "Brain" beside "Cerebellum",
  * and without it "Brain, right cerebellar lesion" is a one-word tie that matches neither.
  */
-function applyFill(schema, part, values) {
+function applyFill(schema, part, values, history = '') {
   const rules = [].concat(schema?.match?.fill || []);
   const field = (id) => (schema?.fields || []).find((f) => f.id === id);
   const text = part.raw || part.text || '';
@@ -733,7 +733,11 @@ function applyFill(schema, part, values) {
       // femoral head, "curetting" is bone curettings), where whole-option matching finds nothing. On a
       // text field the mapped word is the value. `noGuess` blanks the field when nothing matches, so a
       // default the request did not state ("lipoma" on a soft tissue excision) is not printed.
-      const hit = (rule.map || []).find(([re]) => new RegExp(re, 'i').test(text));
+      // `history: true` reads the clinical history as well as the line: a skin punch biopsy from a transplant
+      // recipient opens on the graft-versus-host pattern when the request says so in the history, which is
+      // where it is written ("post allo-HSCT day 30, rash ?GVHD"), not on the specimen line.
+      const hay = rule.history ? `${text}\n${history || ''}` : text;
+      const hit = (rule.map || []).find(([re]) => new RegExp(re, 'i').test(hay));
       const ok = hit && (Array.isArray(f.options) ? f.options.includes(hit[1]) : true);
       if (ok) values[rule.field] = hit[1];
       else if (rule.noGuess) values[rule.field] = '';

@@ -2126,6 +2126,37 @@ await check('top bar: Save & new saves the case to Drive, then starts a new case
   }
 });
 
+// Dermatoses (Phase 68): a pasted skin punch under a GVHD history opens the inflammatory skin biopsy form on the
+// GVHD pattern (the history reaches the presets); the NIH 2014 category words the line and hides the Lerner grade
+// when not Likely; the NIH panel opens as text; a pattern swap shows that pattern's fields; a ?BCC punch stays out.
+await check('Dermatoses: a skin punch under a GVHD history opens the form on the GVHD pattern; the NIH category words the line; a ?BCC punch stays out', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
+  let routed = await pasteAndBuild('History\nDay 30 after allogeneic stem cell transplant, maculopapular rash ?GVHD\n\nSpecimen\n(A) Skin, abdomen, punch biopsy');
+  assert(routed === 'skin_inflammatory', `GVHD punch routed to ${routed}`);
+  let report = await reportText();
+  assert(report.includes('SKIN, abdomen, punch biopsy - INTERFACE DERMATITIS, likely ACUTE GRAFT-VERSUS-HOST DISEASE (Lerner grade II)'), `GVHD line wrong: ${report.slice(-300)}`);
+  assert(await shows('lerner') && await shows('gvhdFeatures') && !(await shows('dx')), 'the GVHD fields are not the ones showing');
+  await pickField('nih', 'Possible GVHD');
+  report = await reportText();
+  assert(report.includes('INTERFACE DERMATITIS, possible ACUTE GRAFT-VERSUS-HOST DISEASE (please see description)'), `possible line wrong: ${report.slice(-300)}`);
+  assert(!(await shows('lerner')), 'the Lerner grade still shows with Possible GVHD');
+  await page.locator('.field[data-field="nih"] .ref-toggle').first().click();
+  await page.waitForSelector('.field[data-field="nih"] .ref-panel', { timeout: 5000 });
+  const panel = await page.locator('.field[data-field="nih"] .ref-panel').first().innerText();
+  assert(panel.includes('Possible GVHD') && panel.includes('Minimal criterion'), `NIH panel text: ${panel.slice(0, 200)}`);
+  await page.locator('.field[data-field="nih"] .ref-toggle').first().click();
+  await pickField('pattern', 'Spongiotic');
+  report = await reportText();
+  assert(report.includes('SKIN, abdomen, punch biopsy - SPONGIOTIC DERMATITIS (please see description)'), `spongiotic line wrong: ${report.slice(-300)}`);
+  assert(await shows('featSpongiotic') && !(await shows('nih')), 'the spongiotic fields are not the ones showing');
+  routed = await pasteAndBuild('History\n?BCC\n\nSpecimen\n(A) Skin, nose, punch biopsy');
+  assert(routed !== 'skin_inflammatory', 'a ?BCC punch opened the Dermatoses form');
+  return 'routed on the history, GVHD pattern preset; likely and possible lines; Lerner hides; NIH panel opens; spongiotic fields swap; a ?BCC punch stays out';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));
