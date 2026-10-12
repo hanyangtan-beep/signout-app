@@ -1,9 +1,9 @@
 {
  "id": "cervical_biopsy",
  "version": "2026.10",
- "name": "Cervical biopsy",
- "shortName": "Cervix · biopsy",
- "label": "Cervix",
+ "name": "Cervical, vaginal and vulval biopsy",
+ "shortName": "Cervix / vagina / vulva · biopsy",
+ "label": "Cervix / vagina / vulva",
  "organ": "CERVIX",
  "system": "Gynae",
  "kind": "biopsy",
@@ -19,7 +19,16 @@
   "p16",
   "HPV",
   "endocervical polyp",
-  "decidual polyp"
+  "decidual polyp",
+  "vulva",
+  "vulval",
+  "vagina",
+  "vaginal",
+  "VIN",
+  "VaIN",
+  "dVIN",
+  "Paget",
+  "lichen sclerosus"
  ],
  "match": {
   "site": [
@@ -58,6 +67,21 @@
    {
     "field": "specimenType",
     "from": "map",
+    "alone": true,
+    "map": [
+     [
+      "\\bvulva[lr]?\\b|\\blabi(?:a|um)\\b|fourchette|introitus|clitor",
+      "Vulval biopsy"
+     ],
+     [
+      "\\bvagina[l]?\\b",
+      "Vaginal biopsy"
+     ]
+    ]
+   },
+   {
+    "field": "specimenType",
+    "from": "map",
     "map": [
      [
       "curett|\\bECC\\b",
@@ -81,10 +105,69 @@
    },
    {
     "field": "specimenName",
+    "from": "text",
+    "alone": true,
+    "strip": "\\b(?:vulva[lr]?|vagina[l]?|skin|biops(?:y|ies)|punch|avulsion|granulation(?: tissue)?|others?)\\b|\\(?\\?.*"
+   },
+   {
+    "field": "specimenName",
     "from": "detail",
     "unless": "^(?:(?:endo)?cervi(?:x|cal)\\s+)?(?:polyps?|polypectomy|avulsion|biopsy|punch biopsy|excision|removal)$"
+   },
+   {
+    "field": "vvProcedure",
+    "from": "map",
+    "alone": true,
+    "map": [
+     [
+      "punch",
+      "Punch biopsy"
+     ],
+     [
+      "avuls",
+      "Avulsion"
+     ]
+    ]
+   },
+   {
+    "field": "vaginaBenign",
+    "from": "map",
+    "alone": true,
+    "map": [
+     [
+      "granulation",
+      "Granulation tissue"
+     ]
+    ]
    }
-  ]
+  ],
+  "alone": {
+   "site": [
+    "vulva",
+    "vulval",
+    "vulvar",
+    "labium",
+    "labia",
+    "fourchette",
+    "introitus",
+    "clitoris",
+    "clitoral",
+    "vagina",
+    "vaginal"
+   ],
+   "procedure": [
+    "lesion",
+    "nodule",
+    "warty",
+    "wart",
+    "granulation",
+    "ulcer",
+    "plaque",
+    "leukoplakia",
+    "skin"
+   ],
+   "unless": "\\b(?:tissues? (?:mass|fragments?)|per\\s*vagin\\w*|PV|passed|products?|POC|gestation\\w*|miscarriage|decidua\\w*|endometri\\w*|pipelle|lipoma|cysts?|abscess\\w*|skin tags?|bartholin\\w*|hysterectom\\w*|uter(?:us|ine)|ovar\\w*|tubes?|adnex\\w*|appendages|cuff|vulvectom\\w*|vaginectom\\w*|wide local|WLE|excision|resection|margins?|stitch\\w*|sentinel|lymph|nodes?|cervi\\w*|ECC|curett\\w*|nose|nasal)\\b"
+  }
  },
  "specimenNoun": "biopsy",
  "maxParts": 8,
@@ -131,7 +214,9 @@
    "options": [
     "Cervical biopsy",
     "Endocervical curettings",
-    "Cervical polyp"
+    "Cervical polyp",
+    "Vaginal biopsy",
+    "Vulval biopsy"
    ],
    "default": "Cervical biopsy"
   },
@@ -139,13 +224,33 @@
    "id": "specimenName",
    "label": "Site",
    "type": "text",
-   "placeholder": "12 o'clock / anterior lip / 3 and 9 o'clock",
+   "placeholder": "12 o'clock / left labium majus / vault",
    "default": "",
    "showIf": {
     "field": "specimenType",
     "is": [
      "Cervical biopsy",
-     "Cervical polyp"
+     "Cervical polyp",
+     "Vaginal biopsy",
+     "Vulval biopsy"
+    ]
+   }
+  },
+  {
+   "id": "vvProcedure",
+   "label": "Procedure",
+   "type": "select",
+   "options": [
+    "Biopsy",
+    "Punch biopsy",
+    "Avulsion"
+   ],
+   "default": "Biopsy",
+   "showIf": {
+    "field": "specimenType",
+    "is": [
+     "Vaginal biopsy",
+     "Vulval biopsy"
     ]
    }
   },
@@ -210,6 +315,21 @@
    }
   },
   {
+   "id": "vulvaTissue",
+   "label": "Tissue present",
+   "type": "select",
+   "options": [
+    "Vulval skin",
+    "Vulval mucosa (vestibule)",
+    "Vulval skin and mucosa"
+   ],
+   "default": "Vulval skin",
+   "showIf": {
+    "field": "specimenType",
+    "is": "Vulval biopsy"
+   }
+  },
+  {
    "id": "eccContent",
    "label": "Curettings contain",
    "type": "select",
@@ -235,7 +355,282 @@
     "HSIL (CIN III)",
     "Squamous cell carcinoma"
    ],
-   "default": "Negative"
+   "default": "Negative",
+   "showIf": {
+    "field": "specimenType",
+    "not": [
+     "Vaginal biopsy",
+     "Vulval biopsy"
+    ]
+   },
+   "reference": {
+    "title": "Cervical squamous lesions",
+    "intro": "Two tiers, LSIL and HSIL, with the CIN grade in brackets; block-type p16 supports HSIL when CIN II is in question.",
+    "groups": [
+     {
+      "heading": "Negative",
+      "points": [
+       "Orderly maturation from a single basal layer to flattened surface cells"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/cervix_normal.jpg",
+        "caption": "Normal ectocervical squamous epithelium (H&E).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:CIN_1_vs_normal_exocervix_(3_of_3).jpg"
+       }
+      ]
+     },
+     {
+      "heading": "LSIL (CIN I)",
+      "points": [
+       "Maturation preserved, with atypia and mitoses limited to the lower third",
+       "Koilocytes in the upper layers: enlarged, hyperchromatic, irregular nuclei with perinuclear halos",
+       "p16 usually negative or weak and patchy, but overexpressed in about a third: only a negative or patchy result helps"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/cin1_beside_normal.jpg",
+        "caption": "Cervical LSIL (CIN I) on the left beside normal squamous epithelium on the right (H&E).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:CIN_1_vs_normal_exocervix_(1_of_3).jpg"
+       },
+       {
+        "src": "assets/reference/lower_genital/cin1_koilocytes.jpg",
+        "caption": "Cervical LSIL (CIN I): koilocytes in the upper layers with preserved maturation (H&E).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:CIN_1_vs_normal_exocervix_(2_of_3).jpg"
+       }
+      ]
+     },
+     {
+      "heading": "HSIL (CIN II)",
+      "points": [
+       "Atypia and mitoses into the middle third, with maturation of the upper third",
+       "Strong, diffuse block p16 supports HSIL"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/cin2.jpg",
+        "caption": "Cervical biopsy at 12 o'clock showing CIN II (HSIL) (H&E).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Cervical_Correlation_Case_2,_Biopsy_(4073276522).jpg"
+       }
+      ]
+     },
+     {
+      "heading": "HSIL (CIN III)",
+      "points": [
+       "Basal and parabasal-type cells through the full thickness, without maturation",
+       "Thin HSIL (fewer than 10 cells thick) can mimic atrophy: p16 separates them"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/cin3.jpg",
+        "caption": "CIN III (HSIL) in a cervical biopsy: basal-type cells through the full thickness, without maturation (H&E).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:CIN_3,_Cervical_Biopsy_(3995927827).jpg"
+       },
+       {
+        "src": "assets/reference/lower_genital/cin3_haggstrom.jpg",
+        "caption": "CIN III: atypical cells with nuclear pleomorphism through a little more than two-thirds of the epithelium (H&E).",
+        "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+        "license": "CC0 1.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_CIN_3.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "vaginaSquamous",
+   "label": "Squamous epithelium",
+   "type": "select",
+   "options": [
+    "Negative",
+    "LSIL (VaIN 1)",
+    "LSIL (condyloma acuminatum)",
+    "HSIL (VaIN 2)",
+    "HSIL (VaIN 3)",
+    "Squamous cell carcinoma"
+   ],
+   "default": "Negative",
+   "showIf": {
+    "field": "specimenType",
+    "is": "Vaginal biopsy"
+   },
+   "reference": {
+    "title": "Vaginal squamous lesions",
+    "intro": "Graded by the depth of atypia, as in the cervix: VaIN 1 is LSIL, and VaIN 2 and VaIN 3 are HSIL.",
+    "groups": [
+     {
+      "heading": "LSIL (VaIN 1)",
+      "points": [
+       "Atypia in the lower third, with koilocytes towards the surface",
+       "p16 focal or weak"
+      ]
+     },
+     {
+      "heading": "HSIL (VaIN 2)",
+      "points": [
+       "Atypia in the lower two-thirds, with maturation of the upper third"
+      ]
+     },
+     {
+      "heading": "HSIL (VaIN 3)",
+      "points": [
+       "Atypia in more than two-thirds, including full thickness carcinoma in situ",
+       "p16 block-type beyond the lower third in nearly all high grade lesions; p53 wild-type",
+       "Check the basement membrane to exclude invasion"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/vain3.jpg",
+        "caption": "VaIN 3: a full thickness intraepithelial lesion with severe dysplasia (H&E).",
+        "credit": "Bruno et al., Cancers (Basel) 2024, Fig 1, full figure",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11274675/"
+       }
+      ]
+     }
+    ],
+    "note": "Room for your own photographs of VaIN 1 and VaIN 2: no openly licensed images of either were found."
+   }
+  },
+  {
+   "id": "vulvaSquamous",
+   "label": "Squamous epithelium",
+   "type": "select",
+   "options": [
+    "Negative",
+    "LSIL",
+    "LSIL (condyloma acuminatum)",
+    "HSIL (usual-type VIN)",
+    "Differentiated VIN (HPV-independent)",
+    "Squamous cell carcinoma"
+   ],
+   "default": "Negative",
+   "showIf": {
+    "field": "specimenType",
+    "is": "Vulval biopsy"
+   },
+   "help": "Differentiated VIN is HPV-independent, with basal atypia only, and is never called HSIL.",
+   "reference": {
+    "title": "Vulval squamous lesions",
+    "intro": "Two pathways: HPV-associated LSIL and HSIL, and HPV-independent differentiated VIN, whose atypia is basal and which is never called HSIL.",
+    "groups": [
+     {
+      "heading": "LSIL",
+      "points": [
+       "Acanthosis or papillomatosis with koilocytes in the upper layers",
+       "Mild atypia and mitoses limited to the lower third; binucleate cells",
+       "p16 usually negative; Ki-67 raised mainly in the lower third"
+      ]
+     },
+     {
+      "heading": "LSIL (condyloma acuminatum)",
+      "points": [
+       "Papillary acanthosis with hyperkeratosis and prominent koilocytes",
+       "Prints as LSIL with condyloma acuminatum in brackets",
+       "A fibroepithelial stromal polyp has no papillomatosis or koilocytes"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/vulva_condyloma.jpg",
+        "caption": "Vulval condyloma acuminatum: acanthotic squamous epithelium with prominent koilocytes (H&E).",
+        "credit": "Léonard et al., Biomed Res Int 2014, Fig 1, full figure",
+        "license": "CC BY 3.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3956289/"
+       },
+       {
+        "src": "assets/reference/lower_genital/condyloma_koilocytes.jpg",
+        "caption": "Condyloma acuminatum: koilocytes with perinuclear halos and enlarged, wrinkled nuclei in the upper layers (H&E).",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Condyloma_acuminatum_-_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "HSIL (usual-type VIN)",
+      "points": [
+       "Atypical nuclei in all layers, including the middle and upper thirds, with suprabasal and atypical mitoses",
+       "Warty type: surface keratosis, koilocytes and wide rete; basaloid type: immature parabasal-type cells throughout",
+       "Often extends into hair follicles and skin appendages; p16 block-type, p53 wild-type"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/vulva_hsil_basaloid.jpg",
+        "caption": "Vulval HSIL, basaloid type: atypical parabasal-type cells through nearly the whole thickness of the epidermis (H&E).",
+        "credit": "Léonard et al., Biomed Res Int 2014, Fig 3, full figure",
+        "license": "CC BY 3.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3956289/"
+       },
+       {
+        "src": "assets/reference/lower_genital/vulva_hsil_nephron.jpg",
+        "caption": "Vulval HSIL (VIN III in the older terms): atypia through the full thickness with loss of maturation (H&E).",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Vulvar_intraepithelial_neoplasia3_2.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Differentiated VIN (HPV-independent)",
+      "points": [
+       "Acanthosis, parakeratosis and elongated, anastomosing rete ridges",
+       "Atypia confined to the basal and parabasal layers: enlarged cells with eosinophilic cytoplasm, vesicular nuclei, prominent nucleoli and prominent intercellular bridges",
+       "p53 mutant-type (basal, diffuse, null or cytoplasmic); p16 negative or patchy; can be hard to separate from lichen simplex chronicus in a punch biopsy"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/dvin_architecture.jpg",
+        "caption": "Differentiated VIN at low power: acanthosis and parakeratosis with elongated, anastomosing rete ridges (H&E).",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Differentiated_vulvar_intraepithelial_neoplasia_-_low_mag.jpg"
+       },
+       {
+        "src": "assets/reference/lower_genital/dvin_basal_atypia.jpg",
+        "caption": "Differentiated VIN, deep epithelium: enlarged eosinophilic keratinocytes with atypical basal nuclei (H&E).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Differentiated_vulvar_intraepithelial_neoplasia_-_deep_-_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/lower_genital/dvin_leonard.jpg",
+        "caption": "Differentiated VIN: atypical keratinocytes with large vesicular nuclei and macronucleoli in the basal and mid layers, without koilocytes (H&E).",
+        "credit": "Léonard et al., Biomed Res Int 2014, Fig 4, full figure",
+        "license": "CC BY 3.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3956289/"
+       }
+      ]
+     },
+     {
+      "heading": "Squamous cell carcinoma",
+      "points": [
+       "Desmoplasia, irregular contours, an inflammatory response and distorted architecture",
+       "Block-type p16 is a reliable surrogate for HPV-associated carcinoma"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/vulva_scc_keratinising.jpg",
+        "caption": "Keratinising squamous cell carcinoma of the vulva: infiltrating mature cells with abundant eosinophilic cytoplasm and keratin pearls (H&E).",
+        "credit": "Léonard et al., Biomed Res Int 2014, Fig 6, full figure",
+        "license": "CC BY 3.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3956289/"
+       }
+      ]
+     }
+    ],
+    "note": "Room for your own photographs of flat vulval LSIL: no openly licensed image of it was found."
+   }
   },
   {
    "id": "koilocytosis",
@@ -247,12 +642,23 @@
    ],
    "default": "Absent",
    "showIf": {
-    "field": "squamous",
-    "is": [
-     "Negative",
-     "LSIL (CIN I)",
-     "HSIL (CIN II)",
-     "HSIL (CIN III)"
+    "all": [
+     {
+      "field": "squamous",
+      "is": [
+       "Negative",
+       "LSIL (CIN I)",
+       "HSIL (CIN II)",
+       "HSIL (CIN III)"
+      ]
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Vaginal biopsy",
+       "Vulval biopsy"
+      ]
+     }
     ]
    }
   },
@@ -266,10 +672,46 @@
    ],
    "default": "Not involved",
    "showIf": {
-    "field": "squamous",
-    "is": [
-     "HSIL (CIN II)",
-     "HSIL (CIN III)"
+    "all": [
+     {
+      "field": "squamous",
+      "is": [
+       "HSIL (CIN II)",
+       "HSIL (CIN III)"
+      ]
+     },
+     {
+      "field": "specimenType",
+      "not": [
+       "Vaginal biopsy",
+       "Vulval biopsy"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "appendageInvolvement",
+   "label": "Skin appendage involvement",
+   "type": "select",
+   "options": [
+    "Not involved",
+    "Involved"
+   ],
+   "default": "Not involved",
+   "showIf": {
+    "all": [
+     {
+      "field": "specimenType",
+      "is": "Vulval biopsy"
+     },
+     {
+      "field": "vulvaSquamous",
+      "is": [
+       "HSIL (usual-type VIN)",
+       "Differentiated VIN (HPV-independent)"
+      ]
+     }
     ]
    }
   },
@@ -283,10 +725,55 @@
    ],
    "default": "Not suspected",
    "showIf": {
-    "field": "squamous",
-    "is": [
-     "HSIL (CIN II)",
-     "HSIL (CIN III)"
+    "any": [
+     {
+      "all": [
+       {
+        "field": "specimenType",
+        "not": [
+         "Vaginal biopsy",
+         "Vulval biopsy"
+        ]
+       },
+       {
+        "field": "squamous",
+        "is": [
+         "HSIL (CIN II)",
+         "HSIL (CIN III)"
+        ]
+       }
+      ]
+     },
+     {
+      "all": [
+       {
+        "field": "specimenType",
+        "is": "Vaginal biopsy"
+       },
+       {
+        "field": "vaginaSquamous",
+        "is": [
+         "HSIL (VaIN 2)",
+         "HSIL (VaIN 3)"
+        ]
+       }
+      ]
+     },
+     {
+      "all": [
+       {
+        "field": "specimenType",
+        "is": "Vulval biopsy"
+       },
+       {
+        "field": "vulvaSquamous",
+        "is": [
+         "HSIL (usual-type VIN)",
+         "Differentiated VIN (HPV-independent)"
+        ]
+       }
+      ]
+     }
     ]
    }
   },
@@ -300,8 +787,87 @@
    ],
    "default": "Non-keratinising",
    "showIf": {
-    "field": "squamous",
-    "is": "Squamous cell carcinoma"
+    "any": [
+     {
+      "all": [
+       {
+        "field": "specimenType",
+        "not": [
+         "Vaginal biopsy",
+         "Vulval biopsy"
+        ]
+       },
+       {
+        "field": "squamous",
+        "is": "Squamous cell carcinoma"
+       }
+      ]
+     },
+     {
+      "all": [
+       {
+        "field": "specimenType",
+        "is": "Vaginal biopsy"
+       },
+       {
+        "field": "vaginaSquamous",
+        "is": "Squamous cell carcinoma"
+       }
+      ]
+     },
+     {
+      "all": [
+       {
+        "field": "specimenType",
+        "is": "Vulval biopsy"
+       },
+       {
+        "field": "vulvaSquamous",
+        "is": "Squamous cell carcinoma"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "hpvStatus",
+   "label": "HPV status",
+   "type": "select",
+   "options": [
+    "Not determined",
+    "HPV-associated",
+    "HPV-independent"
+   ],
+   "default": "Not determined",
+   "help": "Block-type p16 is the usual surrogate for an HPV-associated carcinoma.",
+   "showIf": {
+    "any": [
+     {
+      "all": [
+       {
+        "field": "specimenType",
+        "is": "Vaginal biopsy"
+       },
+       {
+        "field": "vaginaSquamous",
+        "is": "Squamous cell carcinoma"
+       }
+      ]
+     },
+     {
+      "all": [
+       {
+        "field": "specimenType",
+        "is": "Vulval biopsy"
+       },
+       {
+        "field": "vulvaSquamous",
+        "is": "Squamous cell carcinoma"
+       }
+      ]
+     }
+    ]
    }
   },
   {
@@ -311,8 +877,219 @@
    "placeholder": "3",
    "default": "",
    "showIf": {
-    "field": "squamous",
-    "is": "Squamous cell carcinoma"
+    "any": [
+     {
+      "all": [
+       {
+        "field": "specimenType",
+        "not": [
+         "Vaginal biopsy",
+         "Vulval biopsy"
+        ]
+       },
+       {
+        "field": "squamous",
+        "is": "Squamous cell carcinoma"
+       }
+      ]
+     },
+     {
+      "all": [
+       {
+        "field": "specimenType",
+        "is": "Vaginal biopsy"
+       },
+       {
+        "field": "vaginaSquamous",
+        "is": "Squamous cell carcinoma"
+       }
+      ]
+     },
+     {
+      "all": [
+       {
+        "field": "specimenType",
+        "is": "Vulval biopsy"
+       },
+       {
+        "field": "vulvaSquamous",
+        "is": "Squamous cell carcinoma"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "paget",
+   "label": "Paget disease",
+   "type": "select",
+   "options": [
+    "Not identified",
+    "Primary, intraepithelial",
+    "Primary, with dermal invasion",
+    "Secondary (pagetoid spread)"
+   ],
+   "default": "Not identified",
+   "showIf": {
+    "field": "specimenType",
+    "is": "Vulval biopsy"
+   },
+   "reference": {
+    "title": "Paget disease",
+    "intro": "Large pale cells in the epidermis; stains separate primary Paget disease from pagetoid spread of an anorectal or urothelial carcinoma.",
+    "groups": [
+     {
+      "heading": "Primary, intraepithelial",
+      "points": [
+       "Enlarged polygonal cells with abundant pale cytoplasm, large nuclei and small to prominent nucleoli; intracytoplasmic mucin is frequent",
+       "Mainly basal and parabasal, extending upwards singly and in small clusters, often into skin adnexa",
+       "Basal keratinocytes are preserved but may be compressed"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/paget_he.jpg",
+        "caption": "Extramammary Paget disease in a vulval biopsy: large cells with pale cytoplasm in the epidermis (H&E).",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Extramammary_Paget_disease_-_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/lower_genital/paget_he_vulva.jpg",
+        "caption": "Primary extramammary Paget disease of the vulva: pale Paget cells scattered through the epidermis (H&E).",
+        "credit": "Sarahkayb, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Skin_Vulva_PagetDisease_MP_15BR***.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Primary, with dermal invasion",
+      "points": [
+       "Single cells or small groups infiltrating the dermis with a desmoplastic reaction"
+      ]
+     },
+     {
+      "heading": "Secondary (pagetoid spread)",
+      "points": [
+       "Anorectal primary: CK20, CDX2 and SATB2 positive; CK7, GATA3 and GCDFP-15 usually negative",
+       "Urothelial primary: CK7, CK20, GATA3, uroplakin III and p63 positive; GCDFP-15 negative"
+      ]
+     }
+    ],
+    "note": "Room for your own photographs of invasive and secondary Paget disease: no openly licensed images of either were found."
+   }
+  },
+  {
+   "id": "pagetStains",
+   "label": "Paget stains",
+   "type": "multiselect",
+   "options": [
+    "CK7 positive",
+    "GATA3 positive",
+    "CEA positive",
+    "GCDFP-15 positive",
+    "CK20 negative",
+    "p63 negative",
+    "SOX10 negative",
+    "CK20 positive",
+    "CDX2 positive",
+    "Uroplakin III positive"
+   ],
+   "default": [],
+   "showIf": {
+    "all": [
+     {
+      "field": "specimenType",
+      "is": "Vulval biopsy"
+     },
+     {
+      "field": "paget",
+      "not": "Not identified"
+     }
+    ]
+   },
+   "reference": {
+    "title": "Paget disease stains",
+    "intro": "Primary Paget cells are CK7, GATA3, CEA and GCDFP-15 positive, and CK20, p63 and SOX10 negative.",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "CK7 positive",
+      "points": [
+       "Strong in primary Paget cells; also positive in urothelial secondary spread"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/paget_ck7.jpg",
+        "caption": "Primary vulval Paget disease: the Paget cells are strongly positive (CK7 immunostain).",
+        "credit": "Sarahkayb, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Skin_Vulva_PagetDisease_CK7_15BR***.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "GATA3 positive",
+      "points": [
+       "Positive in primary and urothelial secondary disease; negative in anorectal secondary disease"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/paget_gata3.jpg",
+        "caption": "Primary vulval Paget disease: nuclear staining of the Paget cells (GATA3 immunostain).",
+        "credit": "Sarahkayb, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Skin_Vulva_PagetDisease_GATA_15BR***.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "CEA positive",
+      "points": [
+       "Positive in primary and secondary disease"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/paget_cea.jpg",
+        "caption": "Primary vulval Paget disease: the Paget cells are positive (CEA immunostain).",
+        "credit": "Sarahkayb, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Skin_Vulva_PagetDisease_CEA_15BR***.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "CK20 negative",
+      "points": [
+       "Negative in primary disease; positive in anorectal and urothelial secondary disease"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/paget_ck20.jpg",
+        "caption": "Primary vulval Paget disease: the Paget cells are negative (CK20 immunostain).",
+        "credit": "Sarahkayb, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Skin_Vulva_PagetDisease_CK20_15BR***.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "p63 negative",
+      "points": [
+       "The Paget cells are negative among the stained keratinocytes; positive in urothelial secondary disease"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/paget_p63.jpg",
+        "caption": "Primary vulval Paget disease: the keratinocyte nuclei stain and the Paget cells do not (p63 immunostain).",
+        "credit": "Sarahkayb, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Skin_Vulva_PagetDisease_p63_15BR***.jpg"
+       }
+      ]
+     }
+    ]
    }
   },
   {
@@ -325,7 +1102,61 @@
     "Negative",
     "Patchy / focal"
    ],
-   "default": "Not performed"
+   "default": "Not performed",
+   "reference": {
+    "title": "p16 patterns",
+    "intro": "Only strong, diffuse, continuous block staining counts as positive; patchy or mosaic staining does not support HSIL.",
+    "groups": [
+     {
+      "heading": "Block positive",
+      "points": [
+       "Strong, continuous nuclear or nuclear and cytoplasmic staining from the basal layer upwards",
+       "Cervix: through at least the lower third; vagina: beyond the lower third",
+       "Supports HSIL and HPV-associated carcinoma"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/p16_block_boundary.jpg",
+        "caption": "CIN II (HSIL): strong, diffuse block staining; benign cervical biopsies often stain weakly or patchily (p16 immunostain).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:CIN_2_(HSIL),_p16_Immunostain_(7205728160).jpg"
+       },
+       {
+        "src": "assets/reference/lower_genital/p16_block_hsil.jpg",
+        "caption": "HSIL: block-type p16 staining from the basal layer upwards (p16 immunostain).",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:High-grade_squamous_intraepithelial_lesion_-_p16_--_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Patchy / focal",
+      "points": [
+       "Discontinuous, mosaic staining of variable intensity",
+       "LSIL, reactive and metaplastic epithelium, and HPV-independent lesions"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/p16_mosaic.jpg",
+        "caption": "HPV-independent vulval squamous cell carcinoma: mosaic, non-block p16 staining (p16 immunostain).",
+        "credit": "Haddad et al., Einstein (Sao Paulo) 2025, Fig 3, panel A (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12539858/"
+       }
+      ]
+     },
+     {
+      "heading": "Negative",
+      "points": [
+       "No staining, or only rare scattered cells",
+       "Differentiated VIN is negative or patchy"
+      ]
+     }
+    ],
+    "note": "Room for your own photographs of p16-negative epithelium: no openly licensed image of it was found."
+   }
   },
   {
    "id": "ki67",
@@ -336,7 +1167,165 @@
     "Confined to the basal and parabasal layers",
     "Extends into the upper two-thirds"
    ],
-   "default": "Not performed"
+   "default": "Not performed",
+   "reference": {
+    "title": "Ki-67 patterns",
+    "intro": "Read it with p16: Ki-67 alone is raised in both low and high grade lesions.",
+    "groups": [
+     {
+      "heading": "Extends into the upper two-thirds",
+      "points": [
+       "Positive nuclei in the middle and upper layers in HSIL",
+       "Metaplastic epithelium should not stain in the upper half"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/ki67_upper_layers.jpg",
+        "caption": "Cervical biopsy: Ki-67-positive nuclei extending into the upper half of the epithelium, where metaplastic epithelium should not stain (Ki-67 immunostain).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Cervical_biopsy,_Ki-67_immunostain_(4055154159).jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Confined to the basal and parabasal layers",
+      "points": [
+       "Normal, atrophic and reactive epithelium, and lichen simplex chronicus",
+       "Differentiated VIN often stays basal, so this pattern does not exclude it"
+      ]
+     }
+    ],
+    "note": "Room for your own photographs of a basal Ki-67 pattern: no openly licensed image of it was found."
+   }
+  },
+  {
+   "id": "p53",
+   "label": "p53",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "Wild-type: scattered",
+    "Wild-type: mid-epithelial, basal sparing",
+    "Mutant-type: basal overexpression",
+    "Mutant-type: diffuse overexpression",
+    "Mutant-type: null",
+    "Mutant-type: cytoplasmic"
+   ],
+   "default": "Not performed",
+   "showIf": {
+    "field": "specimenType",
+    "is": [
+     "Vaginal biopsy",
+     "Vulval biopsy"
+    ]
+   },
+   "reference": {
+    "title": "p53 patterns",
+    "intro": "Six patterns in two classes; read the basal layer first. HPV-associated HSIL and lichen sclerosus are wild-type; a mutant-type pattern supports differentiated VIN.",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "Wild-type: scattered",
+      "points": [
+       "Scattered nuclear staining of variable intensity in the basal and parabasal cells"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/p53_scattered.jpg",
+        "caption": "Vulval squamous cell carcinoma: scattered nuclear staining of variable intensity, a wild-type pattern (p53 immunostain).",
+        "credit": "Kortekaas et al., Histopathology 2020, Fig 1, panel A (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7383647/"
+       }
+      ]
+     },
+     {
+      "heading": "Wild-type: mid-epithelial, basal sparing",
+      "points": [
+       "Strong to moderate staining of the middle layers, sparing the basal layer",
+       "Associated with HPV"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/p53_mid_epithelial.jpg",
+        "caption": "Vulval squamous cell carcinoma: mid-epithelial staining with sparing of the basal layer, a wild-type pattern (p53 immunostain).",
+        "credit": "Kortekaas et al., Histopathology 2020, Fig 1, panel B (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7383647/"
+       }
+      ]
+     },
+     {
+      "heading": "Mutant-type: basal overexpression",
+      "points": [
+       "Strong nuclear staining of consecutive basal cells; a little parabasal staining is acceptable"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/p53_basal.jpg",
+        "caption": "Vulval squamous cell carcinoma: strong staining of consecutive basal cells, a mutant-type pattern (p53 immunostain).",
+        "credit": "Kortekaas et al., Histopathology 2020, Fig 1, panel C (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7383647/"
+       },
+       {
+        "src": "assets/reference/lower_genital/p53_basal_dvin.jpg",
+        "caption": "Differentiated VIN: strong, continuous staining of the basal and parabasal layers, a mutant-type pattern (p53 immunostain).",
+        "credit": "Dasgupta et al., Histopathology 2026, Fig 3, panel D (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12703432/"
+       }
+      ]
+     },
+     {
+      "heading": "Mutant-type: diffuse overexpression",
+      "points": [
+       "Strong, diffuse staining of the basal and upper layers",
+       "Parabasal overexpression in more than 10 per cent of the lesion makes a basal pattern diffuse"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/p53_diffuse.jpg",
+        "caption": "Vulval squamous cell carcinoma: strong staining from the basal into the upper layers, a mutant-type pattern (p53 immunostain).",
+        "credit": "Kortekaas et al., Histopathology 2020, Fig 1, panel D (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7383647/"
+       }
+      ]
+     },
+     {
+      "heading": "Mutant-type: null",
+      "points": [
+       "No nuclear staining, with a positive internal control"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/p53_null.jpg",
+        "caption": "Vulval squamous cell carcinoma: no nuclear staining in the tumour with positive stromal cells, a mutant-type null pattern (p53 immunostain).",
+        "credit": "Kortekaas et al., Histopathology 2020, Fig 1, panel E (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7383647/"
+       }
+      ]
+     },
+     {
+      "heading": "Mutant-type: cytoplasmic",
+      "points": [
+       "Diffuse cytoplasmic staining, with or without nuclear staining, and a positive internal control"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/p53_cytoplasmic.jpg",
+        "caption": "Vulval squamous cell carcinoma: diffuse cytoplasmic staining, a mutant-type pattern (p53 immunostain).",
+        "credit": "Kortekaas et al., Histopathology 2020, Fig 1, panel F (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7383647/"
+       }
+      ]
+     }
+    ]
+   }
   },
   {
    "id": "glandular",
@@ -349,7 +1338,14 @@
     "Adenocarcinoma, HPV-associated",
     "Adenocarcinoma, HPV-independent (gastric type)"
    ],
-   "default": "Negative"
+   "default": "Negative",
+   "showIf": {
+    "field": "specimenType",
+    "not": [
+     "Vaginal biopsy",
+     "Vulval biopsy"
+    ]
+   }
   },
   {
    "id": "lvi",
@@ -361,8 +1357,62 @@
    ],
    "default": "Not identified",
    "showIf": {
-    "field": "squamous",
-    "is": "Squamous cell carcinoma"
+    "any": [
+     {
+      "all": [
+       {
+        "field": "specimenType",
+        "not": [
+         "Vaginal biopsy",
+         "Vulval biopsy"
+        ]
+       },
+       {
+        "field": "squamous",
+        "is": "Squamous cell carcinoma"
+       }
+      ]
+     },
+     {
+      "all": [
+       {
+        "field": "specimenType",
+        "is": "Vaginal biopsy"
+       },
+       {
+        "field": "vaginaSquamous",
+        "is": "Squamous cell carcinoma"
+       }
+      ]
+     },
+     {
+      "all": [
+       {
+        "field": "specimenType",
+        "is": "Vulval biopsy"
+       },
+       {
+        "field": "vulvaSquamous",
+        "is": "Squamous cell carcinoma"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "pasd",
+   "label": "PASD",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "Negative",
+    "Positive"
+   ],
+   "default": "Not performed",
+   "showIf": {
+    "field": "specimenType",
+    "is": "Vulval biopsy"
    }
   },
   {
@@ -385,7 +1435,248 @@
     "Radiation change",
     "Reactive / reparative change"
    ],
-   "default": "None"
+   "default": "None",
+   "showIf": {
+    "field": "specimenType",
+    "not": [
+     "Vaginal biopsy",
+     "Vulval biopsy"
+    ]
+   }
+  },
+  {
+   "id": "vulvaBenign",
+   "label": "Benign / other finding",
+   "type": "select",
+   "options": [
+    "None",
+    "Lichen sclerosus",
+    "Lichen simplex chronicus",
+    "Lichen planus",
+    "Spongiotic dermatitis",
+    "Psoriasiform dermatitis",
+    "Candidiasis",
+    "Fibroepithelial stromal polyp",
+    "Hidradenoma papilliferum",
+    "Melanosis",
+    "Melanocytic naevus",
+    "Non-specific chronic inflammation"
+   ],
+   "default": "None",
+   "showIf": {
+    "field": "specimenType",
+    "is": "Vulval biopsy"
+   },
+   "reference": {
+    "title": "Vulval dermatoses and benign lesions",
+    "intro": "The papillary dermis and the basal layer separate the three lichens; consider differentiated VIN in any of them.",
+    "groups": [
+     {
+      "heading": "Lichen sclerosus",
+      "points": [
+       "Vacuolar interface change with homogenised, hyalinised collagen between the infiltrate and the epithelium",
+       "Hyperkeratosis, a thin epidermis with loss of rete, and band-like chronic inflammation",
+       "Early lesions may show inflammation without sclerosis and are not diagnostic; p53 wild-type"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/skin_inflammatory/lichen_sclerosus.jpg",
+        "caption": "Lichen sclerosus: a pale, homogenised papillary dermis with follicular plugging (H&E).",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Lichen_sclerosus_-_intermed_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Lichen simplex chronicus",
+      "points": [
+       "Compact hyperkeratosis, hypergranulosis and irregular acanthosis",
+       "Vertically oriented, thickened collagen bundles in the superficial dermis; no basal damage or sclerosis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/skin_inflammatory/lsc_irregular.jpg",
+        "caption": "Lichen simplex chronicus: irregular psoriasiform hyperplasia with hyperkeratosis (H&E).",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Lichen_simplex_chronicus_-_low_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Lichen planus",
+      "points": [
+       "Band-like lymphocytic infiltrate directly under the epithelium, with no separating sclerosis",
+       "Basal damage with Civatte bodies; saw-toothed rete in keratinised skin"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/skin_inflammatory/lichen_planus_band.jpg",
+        "caption": "Lichen planus: a band of lymphocytes along the junction with loss of basal cells (H&E).",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Lichen_planus_intermed_mag.jpg"
+       },
+       {
+        "src": "assets/reference/skin_inflammatory/civatte_body.jpg",
+        "caption": "A Civatte body (arrow): an apoptotic keratinocyte at the junction in interface dermatitis (H&E).",
+        "credit": "Kaira et al., Ann Pathol Lab Med 2019, via Wikimedia Commons, full figure",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Civatte_body.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Fibroepithelial stromal polyp",
+      "points": [
+       "Polypoid, non-circumscribed stroma reaching the epithelial interface",
+       "Stellate and multinucleate stromal cells, often around vessels, which are not sarcoma",
+       "No papillomatosis or koilocytes, unlike condyloma"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/fep_low.jpg",
+        "caption": "Fibroepithelial stromal polyp of the vulva at low power: a polypoid, loose oedematous stroma under squamous epithelium (H&E).",
+        "credit": "Amarvinita, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Fibroepithelial_polyp_of_the_vulva_with_atypical_cells_on_low_magnification.jpg"
+       },
+       {
+        "src": "assets/reference/lower_genital/fep_stromal_atypia.jpg",
+        "caption": "Fibroepithelial stromal polyp of the vulva: multinucleate atypical stromal cells, which are not sarcoma (H&E).",
+        "credit": "Amarvinita, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Fibroepithelial_polyp_of_the_vulva.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Hidradenoma papilliferum",
+      "points": [
+       "Circumscribed dermal maze of papillae, cysts and glands, rarely connected to the epidermis",
+       "Luminal apocrine columnar cells over a myoepithelial layer"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/hidradenoma_papilliferum.jpg",
+        "caption": "Hidradenoma papilliferum in a vulval punch biopsy: a circumscribed dermal nodule of branching papillae and glands (H&E).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Hidradenoma_Papilliferum_of_the_Vulva_(2646470314).jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "vaginaBenign",
+   "label": "Benign / other finding",
+   "type": "select",
+   "options": [
+    "None",
+    "Atrophy",
+    "Non-specific chronic inflammation",
+    "Granulation tissue",
+    "Fibroepithelial stromal polyp",
+    "Vaginal adenosis",
+    "Gartner duct cyst",
+    "Müllerian cyst",
+    "Endometriosis",
+    "Hyperkeratosis and acanthosis (prolapse)",
+    "Radiation change",
+    "Reactive / reparative change"
+   ],
+   "default": "None",
+   "showIf": {
+    "field": "specimenType",
+    "is": "Vaginal biopsy"
+   },
+   "reference": {
+    "title": "Benign vaginal findings",
+    "intro": "Thin HSIL can mimic atrophy, and a fibroepithelial stromal polyp can look alarming: p16 and the stromal cells settle most cases.",
+    "groups": [
+     {
+      "heading": "Atrophy",
+      "points": [
+       "Thin epithelium of small uniform basal-type cells with little glycogen and no maturation abnormality",
+       "Main mimic: thin HSIL; atrophy is p16 negative"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/atrophy.jpg",
+        "caption": "Atrophy, shown in the cervix, where it looks the same as in the vagina: thin epithelium of small uniform cells; this case was p16 negative (H&E).",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Atrophic_cervix_--_intermed_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Fibroepithelial stromal polyp",
+      "points": [
+       "Stellate and multinucleate stromal cells near the epithelial interface and around vessels",
+       "Desmin, ER and PR positive; no koilocytes"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/fep_low.jpg",
+        "caption": "Fibroepithelial stromal polyp of the vulva at low power: a polypoid, loose oedematous stroma under squamous epithelium (H&E).",
+        "credit": "Amarvinita, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Fibroepithelial_polyp_of_the_vulva_with_atypical_cells_on_low_magnification.jpg"
+       },
+       {
+        "src": "assets/reference/lower_genital/fep_stromal_atypia.jpg",
+        "caption": "Fibroepithelial stromal polyp of the vulva: multinucleate atypical stromal cells, which are not sarcoma (H&E).",
+        "credit": "Amarvinita, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Fibroepithelial_polyp_of_the_vulva.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Vaginal adenosis",
+      "points": [
+       "Mucinous (most) or tuboendometrial glands in the lamina propria or on the surface",
+       "Squamous metaplasia is how adenosis heals",
+       "Endometriosis has endometrial stroma; mesonephric remnants have dense luminal secretions"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/vaginal_adenosis.jpg",
+        "caption": "Vaginal adenosis: tuboendometrial-type glands in the lamina propria, partly replaced by squamous metaplasia (H&E).",
+        "credit": "National Cancer Institute, Wikimedia Commons, full figure",
+        "license": "Public domain",
+        "url": "https://commons.wikimedia.org/wiki/File:Diethylstilbestrol_(des)_cervix_(26).jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Gartner duct cyst",
+      "points": [
+       "A single layer of cuboidal to low columnar non-mucinous epithelium"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/lower_genital/gartner_cyst.jpg",
+        "caption": "Gartner duct cyst: the cyst wall (below) under the native vaginal squamous epithelium (top) (H&E).",
+        "credit": "Ed Uthman, Wikimedia Commons, full figure",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Gartner_Duct_Cyst_(low_power)_(4881813679).jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Müllerian cyst",
+      "points": [
+       "Mucinous or ciliated tubal-type columnar lining, sometimes with squamous metaplasia"
+      ]
+     }
+    ],
+    "note": "Room for your own photographs of a Müllerian cyst: no openly licensed image of one was found."
+   }
   },
   {
    "id": "correlation",
@@ -396,7 +1687,11 @@
     "Lesion reported on cytology is not represented"
    ],
    "default": "Not stated",
-   "help": "Adds the discordance comment; uses the referral cytology field above."
+   "help": "Adds the discordance comment; uses the referral cytology field above.",
+   "showIf": {
+    "field": "specimenType",
+    "not": "Vulval biopsy"
+   }
   },
   {
    "id": "additionalNotes",

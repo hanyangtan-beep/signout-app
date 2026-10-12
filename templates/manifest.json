@@ -499,9 +499,9 @@
     },
     {
       "id": "cervical_biopsy",
-      "name": "Cervical biopsy",
-      "shortName": "Cervix · biopsy",
-      "label": "Cervix",
+      "name": "Cervical, vaginal and vulval biopsy",
+      "shortName": "Cervix / vagina / vulva · biopsy",
+      "label": "Cervix / vagina / vulva",
       "organ": "CERVIX",
       "system": "Gynae",
       "kind": "biopsy",
@@ -517,7 +517,16 @@
         "p16",
         "HPV",
         "endocervical polyp",
-        "decidual polyp"
+        "decidual polyp",
+        "vulva",
+        "vulval",
+        "vagina",
+        "vaginal",
+        "VIN",
+        "VaIN",
+        "dVIN",
+        "Paget",
+        "lichen sclerosus"
       ],
       "match": {
         "site": [
@@ -556,6 +565,21 @@
           {
             "field": "specimenType",
             "from": "map",
+            "alone": true,
+            "map": [
+              [
+                "\\bvulva[lr]?\\b|\\blabi(?:a|um)\\b|fourchette|introitus|clitor",
+                "Vulval biopsy"
+              ],
+              [
+                "\\bvagina[l]?\\b",
+                "Vaginal biopsy"
+              ]
+            ]
+          },
+          {
+            "field": "specimenType",
+            "from": "map",
             "map": [
               [
                 "curett|\\bECC\\b",
@@ -579,10 +603,69 @@
           },
           {
             "field": "specimenName",
+            "from": "text",
+            "alone": true,
+            "strip": "\\b(?:vulva[lr]?|vagina[l]?|skin|biops(?:y|ies)|punch|avulsion|granulation(?: tissue)?|others?)\\b|\\(?\\?.*"
+          },
+          {
+            "field": "specimenName",
             "from": "detail",
             "unless": "^(?:(?:endo)?cervi(?:x|cal)\\s+)?(?:polyps?|polypectomy|avulsion|biopsy|punch biopsy|excision|removal)$"
+          },
+          {
+            "field": "vvProcedure",
+            "from": "map",
+            "alone": true,
+            "map": [
+              [
+                "punch",
+                "Punch biopsy"
+              ],
+              [
+                "avuls",
+                "Avulsion"
+              ]
+            ]
+          },
+          {
+            "field": "vaginaBenign",
+            "from": "map",
+            "alone": true,
+            "map": [
+              [
+                "granulation",
+                "Granulation tissue"
+              ]
+            ]
           }
-        ]
+        ],
+        "alone": {
+          "site": [
+            "vulva",
+            "vulval",
+            "vulvar",
+            "labium",
+            "labia",
+            "fourchette",
+            "introitus",
+            "clitoris",
+            "clitoral",
+            "vagina",
+            "vaginal"
+          ],
+          "procedure": [
+            "lesion",
+            "nodule",
+            "warty",
+            "wart",
+            "granulation",
+            "ulcer",
+            "plaque",
+            "leukoplakia",
+            "skin"
+          ],
+          "unless": "\\b(?:tissues? (?:mass|fragments?)|per\\s*vagin\\w*|PV|passed|products?|POC|gestation\\w*|miscarriage|decidua\\w*|endometri\\w*|pipelle|lipoma|cysts?|abscess\\w*|skin tags?|bartholin\\w*|hysterectom\\w*|uter(?:us|ine)|ovar\\w*|tubes?|adnex\\w*|appendages|cuff|vulvectom\\w*|vaginectom\\w*|wide local|WLE|excision|resection|margins?|stitch\\w*|sentinel|lymph|nodes?|cervi\\w*|ECC|curett\\w*|nose|nasal)\\b"
+        }
       },
       "version": "2026.10",
       "generator": "cervical",

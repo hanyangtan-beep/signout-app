@@ -12,6 +12,19 @@
 // thick-walled vessels, cystic glands, squamous metaplasia, surface erosion and chronic inflammation
 // (PathologyOutlines, Endocervical polyp); in decidual polyps the stromal cells have abundant pink
 // cytoplasm and well-defined borders, with erosion and inflammation in most (PMC9158793).
+//
+// Vulval and vaginal biopsies (Phase 70, pulled by the user 2026-10-12) share the form through the specimen
+// type and print through their own branch below, so the cervical wording is untouched. Terminology follows
+// the SIL grading notes answered for the user on 2026-09-14: the vulva is two-tier, with vulval HSIL the
+// HPV-associated usual-type VIN and differentiated VIN a separate HPV-independent precursor that is never
+// called HSIL, and "VIN 1" is not used; the vagina keeps the VaIN grade in brackets as the cervix keeps CIN.
+// The head is organ, site and procedure, as for the cervix, with a clock position after the procedure as in
+// the vulval report revised with the user on 2026-09-15 ("VULVA, BIOPSY AT 7 O'CLOCK"). A dermatosis
+// prints that report's negatives, condensed: "LICHEN SIMPLEX CHRONICUS; no lichen sclerosus, lichen planus,
+// Paget disease, VIN or malignancy; PASD negative". Criteria and stain patterns:
+// docs/reference/lower_genital_tract-morphology.md.
+
+import { checks } from './_house.js';
 
 const num = (v) => {
   const n = parseFloat(String(v ?? '').trim());
@@ -27,6 +40,9 @@ const listJoin = (items) => {
 export const isECC = (v) => v.specimenType === 'Endocervical curettings';
 export const isPolyp = (v) => v.specimenType === 'Cervical polyp';
 export const isInadequateECC = (v) => isECC(v) && v.eccContent === 'Mucus and blood only (inadequate)';
+export const isVulva = (v) => v.specimenType === 'Vulval biopsy';
+export const isVagina = (v) => v.specimenType === 'Vaginal biopsy';
+export const isVulvaOrVagina = (v) => isVulva(v) || isVagina(v);
 
 export const POLYP_TYPES = ['Endocervical polyp', 'Decidual polyp', 'Endometrial polyp'];
 export const polypType = (v) => (POLYP_TYPES.includes(v.polypType) ? v.polypType : 'Endocervical polyp');
@@ -35,6 +51,8 @@ const feature = (v, name) => [].concat(v.polypFeatures || []).includes(name);
 
 /** The benign pick, unless a polyp's type already says it ("Endocervical polyp"; "Decidual change" on a decidual polyp). */
 export function benignOf(v) {
+  if (isVulva(v)) return v.vulvaBenign && v.vulvaBenign !== 'None' ? v.vulvaBenign : '';
+  if (isVagina(v)) return v.vaginaBenign && v.vaginaBenign !== 'None' ? v.vaginaBenign : '';
   const b = v.benign && v.benign !== 'None' ? v.benign : '';
   if (!b || !isPolyp(v)) return b;
   if (b === 'Endocervical polyp') return '';
@@ -52,17 +70,46 @@ const CONDYLOMA_DX = 'LOW GRADE SQUAMOUS INTRAEPITHELIAL LESION (LSIL / CONDYLOM
 
 const site = (v) => (v.specimenName || '').replace(/\s*\bcervi(x|cal)\b\s*/i, ' ').replace(/^[\s,]+|[\s,]+$/g, '').trim();
 
+/**
+ * The vulval or vaginal site without the organ word the head already carries, and without a lone side the
+ * request repeats: "Left vulval lesion, left vulva" -> "left lesion"; "Vaginal vault" -> "vault";
+ * "Vulval biopsy at 7 o'clock" -> "7 o'clock".
+ */
+export function vvSite(v) {
+  const bits = String(v.specimenName || '').replace(/\b(?:vulva[lr]?|vagina[l]?)\b/gi, ' ').split(',')
+    .map((x) => x.replace(/\s+/g, ' ').trim()).filter((x) => /[a-z0-9]/i.test(x));
+  const kept = bits.filter((x, i) => !(/^(?:left|right)$/i.test(x) && bits.some((y, j) => j !== i && new RegExp(`\\b${x}\\b`, 'i').test(y))));
+  const s = kept.join(', ').replace(/^\((.*)\)$/, '$1').replace(/^at\s+/i, '').trim();
+  return /^[A-Z][a-z]/.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s;
+}
+const VV_PROCEDURES = ['Biopsy', 'Punch biopsy', 'Avulsion'];
+const vvProcedure = (v) => (VV_PROCEDURES.includes(v.vvProcedure) ? v.vvProcedure : 'Biopsy').toLowerCase();
+const vvOrgan = (v) => (isVulva(v) ? 'Vulva' : 'Vagina');
+
 export function specimenName(part) {
   const v = part.values;
+  if (isVulvaOrVagina(v)) {
+    const s = vvSite(v);
+    return `${vvOrgan(v)}, ${s ? `${s}, ` : ''}${vvProcedure(v)}`;
+  }
   if (isECC(v)) return 'Endocervical curettings';
   const s = site(v);
   if (isPolyp(v)) return s ? `Cervix, ${s}, polyp` : 'Cervix, polyp';
   return s ? `Cervix, ${s}, biopsy` : 'Cervix, biopsy';
 }
 
-/** "CERVIX, cervical biopsy at 12 o'clock" / "ENDOCERVICAL CURETTINGS" / "CERVIX, polypectomy". */
+/**
+ * "CERVIX, cervical biopsy at 12 o'clock" / "ENDOCERVICAL CURETTINGS" / "CERVIX, polypectomy";
+ * "VULVA, biopsy at 7 o'clock" for a clock position, else "VULVA, left labium majus, punch biopsy".
+ */
 export function organPhrase(part) {
   const v = part.values;
+  if (isVulvaOrVagina(v)) {
+    const s = vvSite(v);
+    const head = vvOrgan(v).toUpperCase();
+    if (!s) return `${head}, ${vvProcedure(v)}`;
+    return /^\d/.test(s) ? `${head}, ${vvProcedure(v)} at ${s}` : `${head}, ${s}, ${vvProcedure(v)}`;
+  }
   if (isECC(v)) return 'ENDOCERVICAL CURETTINGS';
   const s = site(v);
   if (isPolyp(v)) return `CERVIX, polypectomy${s ? ` at ${s}` : ''}`;
@@ -71,22 +118,37 @@ export function organPhrase(part) {
 
 // Squamous ranking: 0 negative, 1 HPV effect only, 2 LSIL (CIN I or condyloma), 3 CIN II, 4 CIN III, 5 SCC.
 const SQ_RANK = { Negative: 0, 'LSIL (CIN I)': 2, 'HSIL (CIN II)': 3, 'HSIL (CIN III)': 4, 'Squamous cell carcinoma': 5 };
+// The vulva ranks HSIL and differentiated VIN with CIN III; the vagina ranks VaIN as the cervix ranks CIN.
+export const DVIN = 'Differentiated VIN (HPV-independent)';
+const VULVA_SQ_RANK = { LSIL: 2, 'LSIL (condyloma acuminatum)': 2, 'HSIL (usual-type VIN)': 4, [DVIN]: 4, 'Squamous cell carcinoma': 5 };
+const VAGINA_SQ_RANK = { 'LSIL (VaIN 1)': 2, 'LSIL (condyloma acuminatum)': 2, 'HSIL (VaIN 2)': 3, 'HSIL (VaIN 3)': 4, 'Squamous cell carcinoma': 5 };
+export const vvSquamous = (v) => (isVulva(v) ? v.vulvaSquamous : isVagina(v) ? v.vaginaSquamous : '') || 'Negative';
+export const isDVIN = (v) => isVulva(v) && v.vulvaSquamous === DVIN;
 export function squamousRank(v) {
+  if (isVulva(v)) return VULVA_SQ_RANK[v.vulvaSquamous] ?? 0;
+  if (isVagina(v)) return VAGINA_SQ_RANK[v.vaginaSquamous] ?? 0;
   if (isInadequateECC(v)) return 0;
   const r = SQ_RANK[v.squamous] ?? 0;
   if (r < 2 && isCondyloma(v)) return 2;
   if (r === 0 && v.koilocytosis === 'Present') return 1;
   return r;
 }
-export const isHSIL = (v) => squamousRank(v) === 3 || squamousRank(v) === 4;
-export const isSCC = (v) => v.squamous === 'Squamous cell carcinoma' && !isInadequateECC(v);
+export const isHSIL = (v) => (squamousRank(v) === 3 || squamousRank(v) === 4) && !isDVIN(v);
+export const isSCC = (v) => (isVulvaOrVagina(v) ? vvSquamous(v) : v.squamous) === 'Squamous cell carcinoma' && !isInadequateECC(v);
 
 const GL_RANK = { Negative: 0, 'Adenocarcinoma in situ, HPV-associated': 1, 'Adenocarcinoma in situ, HPV-independent (gastric type)': 1, 'Adenocarcinoma, HPV-associated': 2, 'Adenocarcinoma, HPV-independent (gastric type)': 2 };
-export const glandularRank = (v) => (isInadequateECC(v) ? 0 : GL_RANK[v.glandular] ?? 0);
+export const glandularRank = (v) => (isInadequateECC(v) || isVulvaOrVagina(v) ? 0 : GL_RANK[v.glandular] ?? 0);
 export const isAIS = (v) => glandularRank(v) === 1;
 export const isAdenoca = (v) => glandularRank(v) === 2;
-export const hasLesion = (v) => squamousRank(v) > 0 || glandularRank(v) > 0;
-export const isInvasive = (v) => isSCC(v) || isAdenoca(v);
+
+// Vulval Paget disease: primary (cutaneous) or secondary pagetoid spread of another carcinoma.
+export const PAGET_PRIMARY = 'Primary, intraepithelial';
+export const PAGET_INVASIVE = 'Primary, with dermal invasion';
+export const PAGET_SECONDARY = 'Secondary (pagetoid spread)';
+export const pagetOf = (v) => (isVulva(v) && [PAGET_PRIMARY, PAGET_INVASIVE, PAGET_SECONDARY].includes(v.paget) ? v.paget : '');
+
+export const hasLesion = (v) => squamousRank(v) > 0 || glandularRank(v) > 0 || !!pagetOf(v);
+export const isInvasive = (v) => isSCC(v) || isAdenoca(v) || pagetOf(v) === PAGET_INVASIVE;
 
 // ---------- microscopy ----------
 
@@ -142,6 +204,7 @@ export function polypSentences(v, n) {
 
 export function microscopy(part, ctx) {
   const v = part.values;
+  if (isVulvaOrVagina(v)) return vvMicroscopy(part, ctx);
   const s = [];
   const n = num(v.pieces);
   const pieces = n && n > 1 ? `${fmt(n)} pieces of` : 'a piece of';
@@ -260,6 +323,7 @@ export function glandularClause(v) {
 
 export function diagnosis(part, ctx) {
   const v = part.values;
+  if (isVulvaOrVagina(v)) return vvDiagnosis(part);
   if (isInadequateECC(v)) return `(${part.label}) ${organPhrase(part)} - MUCUS AND BLOOD ONLY; NO EPITHELIUM FOR ASSESSMENT (INADEQUATE)`;
   const clauses = [squamousClause(v), glandularClause(v)].filter(Boolean);
   if (isPolyp(v)) clauses.push(POLYP_DX[polypType(v)]);
@@ -276,6 +340,201 @@ export function diagnosis(part, ctx) {
   return `(${part.label}) ${organPhrase(part)} - ${[...clauses, ...extras].join('; ')}`;
 }
 
+// ---------- vulva and vagina ----------
+// Criteria (PathologyOutlines: HPV-associated SIL and HPV-independent VIN of the vulva, VAIN, Paget disease,
+// vulval dermatoses and vaginal cysts) are quoted with links in docs/reference/lower_genital_tract-morphology.md;
+// the six p53 patterns follow Kortekaas et al., Histopathology 2020 (PMC7383647).
+
+const VULVA_TISSUE = { 'Vulval skin': 'vulval skin', 'Vulval mucosa (vestibule)': 'vulval mucosa', 'Vulval skin and mucosa': 'vulval skin and mucosa' };
+const vvTissue = (v) => (isVulva(v) ? VULVA_TISSUE[v.vulvaTissue] || 'vulval skin' : 'vaginal mucosa');
+
+const LSIL_SENTENCE = 'Focally, the squamous epithelium shows koilocytes in the upper layers, with mild nuclear atypia and mitoses limited to the lower third and maturation towards the surface.';
+const VV_SQ_SENTENCE = {
+  LSIL: LSIL_SENTENCE,
+  'LSIL (VaIN 1)': LSIL_SENTENCE,
+  'LSIL (condyloma acuminatum)': BENIGN_SENTENCE[CONDYLOMA],
+  'HSIL (VaIN 2)': 'The squamous epithelium shows loss of maturation with enlarged hyperchromatic nuclei and mitoses extending into the middle third, with maturation of the upper third.',
+  'HSIL (VaIN 3)': 'The squamous epithelium shows full thickness loss of maturation with enlarged hyperchromatic pleomorphic nuclei, a high nuclear to cytoplasmic ratio and mitoses in the upper layers.',
+  'HSIL (usual-type VIN)': 'The squamous epithelium shows loss of maturation, with atypical cells with enlarged hyperchromatic nuclei and suprabasal mitoses extending into the upper layers.',
+  [DVIN]: 'The squamous epithelium is acanthotic with parakeratosis and elongated, anastomosing rete ridges; the basal and parabasal keratinocytes are atypical, with abundant eosinophilic cytoplasm, enlarged vesicular nuclei and prominent nucleoli, without koilocytosis or full thickness atypia.',
+};
+
+const PAGET_CELLS = 'The epidermis contains large atypical cells with abundant pale cytoplasm, large nuclei and prominent nucleoli, mainly in its lower layers and extending upwards singly and in small clusters, in keeping with Paget disease.';
+const PAGET_SENTENCE = {
+  [PAGET_PRIMARY]: PAGET_CELLS,
+  [PAGET_INVASIVE]: `${PAGET_CELLS} Paget cells also infiltrate the underlying dermis.`,
+  [PAGET_SECONDARY]: 'The epidermis contains atypical glandular cells with pale or vacuolated cytoplasm spreading singly and in small clusters in a pagetoid pattern.',
+};
+const PAGET_DX = {
+  [PAGET_PRIMARY]: 'EXTRAMAMMARY PAGET DISEASE, intraepithelial',
+  [PAGET_INVASIVE]: 'EXTRAMAMMARY PAGET DISEASE with dermal invasion',
+  [PAGET_SECONDARY]: 'PAGETOID SPREAD OF A NON-CUTANEOUS CARCINOMA (SECONDARY EXTRAMAMMARY PAGET DISEASE)',
+};
+const pagetStainList = (v) => [].concat(v.pagetStains || []);
+
+/** "The Paget cells are positive for CK7, GATA3 and CEA, and negative for CK20 and p63." */
+export function pagetStainSentence(v) {
+  const picked = pagetStainList(v);
+  const by = (sign) => picked.filter((x) => x.endsWith(` ${sign}`)).map((x) => x.slice(0, -sign.length - 1));
+  // Stain names keep their own case except uroplakin, which is a common noun mid-sentence.
+  const pos = by('positive').map((x) => x.replace(/^Uroplakin\b/, 'uroplakin'));
+  const neg = by('negative');
+  if (!pos.length && !neg.length) return '';
+  const said = [pos.length ? `positive for ${listJoin(pos)}` : '', neg.length ? `negative for ${listJoin(neg)}` : ''].filter(Boolean).join(', and ');
+  return `${v.paget === PAGET_SECONDARY ? 'The atypical cells are' : 'The Paget cells are'} ${said}.`;
+}
+
+const P53_TEXT = {
+  'Wild-type: scattered': 'p53 shows a wild-type pattern, with scattered nuclear staining of variable intensity',
+  'Wild-type: mid-epithelial, basal sparing': 'p53 shows a wild-type mid-epithelial pattern with sparing of the basal layer',
+  'Mutant-type: basal overexpression': 'p53 shows a mutant-type pattern, with strong continuous nuclear staining of the basal layer',
+  'Mutant-type: diffuse overexpression': 'p53 shows a mutant-type pattern, with strong continuous nuclear staining extending from the basal layer into the upper layers',
+  'Mutant-type: null': 'p53 shows a mutant-type null pattern, with complete absence of staining in the lesion and a positive internal control',
+  'Mutant-type: cytoplasmic': 'p53 shows a mutant-type cytoplasmic pattern',
+};
+const isMutantP53 = (v) => /^Mutant-type/.test(v.p53 || '');
+
+function vvIhc(v) {
+  const ihc = [];
+  if (v.p16 === 'Block positive') ihc.push('p16 shows strong diffuse block positivity');
+  else if (v.p16 === 'Negative') ihc.push('p16 is negative');
+  else if (v.p16 === 'Patchy / focal') ihc.push('p16 shows patchy, non-block staining');
+  if (v.ki67 === 'Extends into the upper two-thirds') ihc.push('Ki-67 labels nuclei extending into the upper two-thirds of the epithelium');
+  else if (v.ki67 === 'Confined to the basal and parabasal layers') ihc.push('Ki-67 is confined to the basal and parabasal layers');
+  if (P53_TEXT[v.p53]) ihc.push(P53_TEXT[v.p53]);
+  if (!ihc.length) return '';
+  const support = isHSIL(v) && v.p16 === 'Block positive' ? ', supporting a high grade lesion'
+    : isDVIN(v) && isMutantP53(v) ? ', supporting differentiated VIN' : '';
+  return `On immunohistochemistry, ${listJoin(ihc)}${support}.`;
+}
+
+const FEP_SENTENCE = 'There is a polypoid fragment covered by squamous epithelium, with a loose fibrovascular stroma containing stellate and multinucleate stromal cells, in keeping with a fibroepithelial stromal polyp.';
+const VULVA_BENIGN_SENTENCE = {
+  'Lichen sclerosus': 'There is hyperkeratosis with basal vacuolar change, and a band of pale homogenised collagen in the papillary dermis overlies a band-like lymphocytic infiltrate, in keeping with lichen sclerosus.',
+  'Lichen simplex chronicus': 'There is compact hyperkeratosis, irregular acanthosis and hypergranulosis, with vertically oriented collagen in the papillary dermis, in keeping with lichen simplex chronicus.',
+  'Lichen planus': 'There is a band-like lymphocytic infiltrate at the dermo-epidermal junction with basal cell damage and apoptotic (Civatte) bodies, without dermal sclerosis, in keeping with lichen planus.',
+  'Spongiotic dermatitis': 'The epidermis shows spongiosis with a superficial perivascular lymphocytic infiltrate, in keeping with a spongiotic dermatitis.',
+  'Psoriasiform dermatitis': 'The epidermis shows regular psoriasiform acanthosis with parakeratosis, in keeping with a psoriasiform dermatitis.',
+  Candidiasis: 'The stratum corneum contains neutrophils and fungal pseudohyphae and yeasts, in keeping with candidiasis.',
+  'Fibroepithelial stromal polyp': FEP_SENTENCE,
+  'Hidradenoma papilliferum': 'There is a circumscribed dermal nodule of branching tubules and papillae lined by an inner layer of columnar cells with apocrine snouts and an outer layer of myoepithelial cells, in keeping with hidradenoma papilliferum.',
+  Melanosis: 'There is increased melanin pigment in the basal layer without an increase in melanocytes or melanocytic atypia, in keeping with melanosis.',
+  'Melanocytic naevus': 'There is a melanocytic naevus composed of nests of bland melanocytes that mature with depth.',
+  'Non-specific chronic inflammation': 'The dermis contains a mild chronic inflammatory infiltrate.',
+};
+const VAGINA_BENIGN_SENTENCE = {
+  Atrophy: BENIGN_SENTENCE.Atrophy,
+  'Non-specific chronic inflammation': 'The lamina propria contains a chronic inflammatory infiltrate of lymphocytes and plasma cells.',
+  'Granulation tissue': 'There is granulation tissue with proliferating capillaries in an oedematous stroma with mixed inflammation.',
+  'Fibroepithelial stromal polyp': FEP_SENTENCE,
+  'Vaginal adenosis': 'Glands lined by mucinous columnar or tuboendometrial-type epithelium are present in the lamina propria, in keeping with vaginal adenosis.',
+  'Gartner duct cyst': 'There is a cyst in the lamina propria lined by a single layer of cuboidal to low columnar non-mucinous epithelium, in keeping with a Gartner duct cyst.',
+  'Müllerian cyst': 'There is a cyst in the lamina propria lined by mucinous or ciliated columnar epithelium, in keeping with a Müllerian cyst.',
+  Endometriosis: 'Endometrial-type glands and stroma are present within the lamina propria, consistent with endometriosis.',
+  'Hyperkeratosis and acanthosis (prolapse)': 'The squamous epithelium shows hyperkeratosis and acanthosis, in keeping with prolapse.',
+  'Radiation change': BENIGN_SENTENCE['Radiation change'],
+  'Reactive / reparative change': BENIGN_SENTENCE['Reactive / reparative change'],
+};
+// Dermatoses that print the lichen sclerosus and lichen planus negatives when nothing else is found.
+const VULVA_LSC_LIKE = ['Lichen simplex chronicus', 'Spongiotic dermatitis', 'Psoriasiform dermatitis', 'Non-specific chronic inflammation'];
+
+function vvMicroscopy(part, ctx) {
+  const v = part.values;
+  const vulva = isVulva(v);
+  const s = [];
+  const n = num(v.pieces);
+  s.push(`Serial sections show ${n && n > 1 ? `${fmt(n)} pieces of` : 'a piece of'} ${vvTissue(v)}.`);
+  const benign = benignOf(v);
+  const paget = pagetOf(v);
+
+  if (isSCC(v)) {
+    const depth = num(v.invasionDepth);
+    s.push(`There is an invasive ${v.sccType === 'Keratinising' ? 'keratinising' : 'non-keratinising'} squamous cell carcinoma infiltrating the ${vulva ? 'dermis' : 'stroma'} as irregular nests and cords of atypical squamous cells with a desmoplastic and inflammatory response${depth ? `, to a depth of at least ${fmt(depth)} mm in this biopsy` : ''}.`);
+    s.push(v.lvi === 'Present' ? 'Lymphovascular invasion is present.' : 'No lymphovascular invasion is identified.');
+  } else if (VV_SQ_SENTENCE[vvSquamous(v)]) {
+    s.push(VV_SQ_SENTENCE[vvSquamous(v)]);
+  } else if (!benign && !paget) {
+    // The vulval closing line already names VIN; the vaginal one follows the cervical house paragraph.
+    s.push(vulva ? 'The squamous epithelium shows normal maturation.' : 'The squamous epithelium shows normal maturation and no VaIN is seen.');
+  }
+  if (isHSIL(v) || isDVIN(v)) {
+    if (vulva && v.appendageInvolvement === 'Involved') s.push('The lesion extends along hair follicles and skin appendages.');
+    s.push(v.invasionSuspicious === 'Cannot be excluded'
+      ? `There are irregular nests at the epithelial–${vulva ? 'dermal' : 'stromal'} interface with a stromal response; early ${vulva ? '' : 'stromal '}invasion cannot be excluded in this biopsy.`
+      : `No ${vulva ? 'dermal' : 'stromal'} invasion is identified.`);
+  }
+
+  if (paget) {
+    s.push(PAGET_SENTENCE[paget]);
+    if (paget !== PAGET_INVASIVE && !isHSIL(v) && !isDVIN(v) && !isSCC(v)) s.push('No dermal invasion is identified.');
+    const stains = pagetStainSentence(v);
+    if (stains) s.push(stains);
+    if (paget === PAGET_SECONDARY) s.push('Correlation for an underlying anorectal or urothelial carcinoma is suggested.');
+  }
+
+  const benignText = (vulva ? VULVA_BENIGN_SENTENCE : VAGINA_BENIGN_SENTENCE)[benign];
+  if (benignText) s.push(benignText);
+  if (vulva && VULVA_LSC_LIKE.includes(benign) && !hasLesion(v)) s.push('There are no features of lichen sclerosus or lichen planus.');
+  if (vulva && v.pasd === 'Negative') s.push('No fungal organisms are identified on PASD stain.');
+  else if (vulva && v.pasd === 'Positive') s.push(benign === 'Candidiasis' ? 'PASD stain highlights the fungal organisms.' : 'PASD stain shows fungal hyphae and yeasts in the stratum corneum.');
+
+  // Immunostains follow the morphology they qualify, as in the cervical paragraph.
+  const ihc = vvIhc(v);
+  if (ihc) s.push(ihc);
+
+  // Closing negatives
+  if (!hasLesion(v)) s.push(vulva ? 'There is no evidence of VIN, Paget disease or malignancy.' : 'There is no evidence of squamous intraepithelial lesion or malignancy.');
+  else if (paget && squamousRank(v) === 0) { /* the Paget sentences carry the invasion statement */ }
+  else if (squamousRank(v) <= 2 && !paget) s.push(`There is no evidence of high grade squamous intraepithelial lesion${vulva ? ', differentiated VIN' : ''} or malignancy.`);
+  else if (!isInvasive(v)) s.push('There is no evidence of invasive malignancy.');
+
+  if (!vulva && v.correlation === 'Lesion reported on cytology is not represented') {
+    const cyto = String(ctx?.case?.cytology || '').trim();
+    s.push(`The ${cyto ? `${cyto} ` : 'lesion '}reported on cytology is not represented in this biopsy; correlation with the colposcopic findings and further sampling are suggested if clinically indicated.`);
+  }
+
+  const notes = (v.additionalNotes || '').trim();
+  if (notes) s.push(notes);
+  return `(${part.label}) ${s.join(' ')}`;
+}
+
+function vvSquamousClause(v) {
+  if (isSCC(v)) {
+    const depth = num(v.invasionDepth);
+    const hpv = ['HPV-associated', 'HPV-independent'].includes(v.hpvStatus) ? `, ${v.hpvStatus}` : '';
+    return `INVASIVE SQUAMOUS CELL CARCINOMA, ${v.sccType === 'Keratinising' ? 'keratinising' : 'non-keratinising'} type${hpv}${depth ? `, depth of invasion at least ${fmt(depth)} mm` : ''}${v.lvi === 'Present' ? ', with lymphovascular invasion' : ''}`;
+  }
+  const sq = vvSquamous(v);
+  const vulva = isVulva(v);
+  const appendages = vulva && v.appendageInvolvement === 'Involved' ? ' with skin appendage involvement' : '';
+  const caveat = v.invasionSuspicious === 'Cannot be excluded' ? `; early ${vulva ? '' : 'stromal '}invasion cannot be excluded, excision recommended for definitive assessment` : '';
+  if (sq === 'HSIL (VaIN 3)' || sq === 'HSIL (VaIN 2)') return `HIGH GRADE SQUAMOUS INTRAEPITHELIAL LESION (HSIL / ${sq === 'HSIL (VaIN 3)' ? 'VaIN 3' : 'VaIN 2'})${caveat}`;
+  if (sq === 'HSIL (usual-type VIN)') return `HIGH GRADE SQUAMOUS INTRAEPITHELIAL LESION (HSIL / USUAL-TYPE VIN)${appendages}${caveat}`;
+  if (sq === DVIN) return `DIFFERENTIATED VULVAL INTRAEPITHELIAL NEOPLASIA (dVIN), HPV-independent${appendages && `,${appendages}`}${caveat}`;
+  if (sq === 'LSIL (VaIN 1)') return 'LOW GRADE SQUAMOUS INTRAEPITHELIAL LESION (LSIL / VaIN 1)';
+  if (sq === 'LSIL (condyloma acuminatum)') return CONDYLOMA_DX;
+  if (sq === 'LSIL') return 'LOW GRADE SQUAMOUS INTRAEPITHELIAL LESION (LSIL)';
+  return '';
+}
+
+function vvDiagnosis(part) {
+  const v = part.values;
+  const vulva = isVulva(v);
+  const benign = benignOf(v);
+  const clauses = [vvSquamousClause(v), PAGET_DX[pagetOf(v)]].filter(Boolean);
+  if (benign) clauses.push(benign.replace(' / ', ' AND ').toUpperCase());
+  if (vulva && v.pasd === 'Positive' && benign !== 'Candidiasis') clauses.push('FUNGAL ORGANISMS IDENTIFIED ON PASD STAIN');
+  const extras = [];
+  if (!clauses.length) clauses.push(vulva ? 'NO EVIDENCE OF VIN OR MALIGNANCY' : 'NO EVIDENCE OF SQUAMOUS INTRAEPITHELIAL LESION OR MALIGNANCY');
+  else if (!hasLesion(v)) {
+    if (!vulva) extras.push('no evidence of dysplasia or malignancy');
+    else extras.push(VULVA_LSC_LIKE.includes(benign) ? 'no lichen sclerosus, lichen planus, Paget disease, VIN or malignancy' : 'no evidence of VIN or malignancy');
+  }
+  if (vulva && !hasLesion(v) && v.pasd === 'Negative') extras.push('PASD negative');
+  if (!vulva && v.correlation === 'Lesion reported on cytology is not represented') extras.push('see comment');
+  return `(${part.label}) ${organPhrase(part)} - ${[...clauses, ...extras].join('; ')}`;
+}
+
 // ---------- case summary ----------
 
 const SQ_TEXT = { 1: 'HPV effect', 2: 'LSIL (CIN I)', 3: 'HSIL (CIN II)', 4: 'HSIL (CIN III)', 5: 'invasive squamous cell carcinoma' };
@@ -286,20 +545,71 @@ const partList = (parts) => (parts.length === 1 ? `part ${parts[0].label}` : `pa
 const lsilKind = (v) => ((SQ_RANK[v.squamous] ?? 0) < 2 && isCondyloma(v) ? 'condyloma acuminatum' : 'CIN I');
 const lsilText = (ps) => `LSIL (${[...new Set(ps.map((p) => lsilKind(p.values)))].sort().join(' and ')})`;
 
+// Vulval and vaginal parts are named by their own lesion; cervical parts keep the CIN text above.
+const VV_SUMMARY_TEXT = {
+  LSIL: 'LSIL', 'LSIL (condyloma acuminatum)': 'LSIL (condyloma acuminatum)', 'HSIL (usual-type VIN)': 'HSIL (usual-type VIN)', [DVIN]: 'differentiated VIN',
+  'LSIL (VaIN 1)': 'LSIL (VaIN 1)', 'HSIL (VaIN 2)': 'HSIL (VaIN 2)', 'HSIL (VaIN 3)': 'HSIL (VaIN 3)',
+};
+const PAGET_SUMMARY_TEXT = { [PAGET_PRIMARY]: 'Paget disease', [PAGET_INVASIVE]: 'invasive Paget disease', [PAGET_SECONDARY]: 'secondary Paget disease' };
+
+/** Parts grouped by their own text, in part order: "HSIL (CIN III) in part A and HSIL (usual-type VIN) in part B". */
+function byText(parts, textOf) {
+  const groups = [];
+  for (const p of parts) {
+    const t = textOf(p);
+    const g = groups.find((x) => x.text === t);
+    if (g) g.parts.push(p);
+    else groups.push({ text: t, parts: [p] });
+  }
+  return groups.map((g) => `${g.text} in ${partList(g.parts)}`).join(' and ');
+}
+
 /** One SUMMARY line for multi-part cases; omitted for single parts or when the option is off. */
 export function summary(parts, ctx) {
   if (parts.length < 2 || ctx.options.summary === false) return '';
   const bits = [];
   const sqTop = Math.max(...parts.map((p) => squamousRank(p.values)));
   const sqParts = parts.filter((p) => squamousRank(p.values) === sqTop);
-  if (sqTop > 0) bits.push(`highest grade squamous lesion ${sqTop === 2 ? lsilText(sqParts) : SQ_TEXT[sqTop]} in ${partList(sqParts)}`);
+  if (sqTop > 0) {
+    const cervixText = sqTop === 2 ? lsilText(sqParts.filter((p) => !isVulvaOrVagina(p.values))) : SQ_TEXT[sqTop];
+    bits.push(`highest grade squamous lesion ${byText(sqParts, (p) => (isVulvaOrVagina(p.values) && sqTop < 5 ? VV_SUMMARY_TEXT[vvSquamous(p.values)] : cervixText))}`);
+  }
   const glTop = Math.max(...parts.map((p) => glandularRank(p.values)));
   if (glTop > 0) bits.push(`${GL_TEXT[glTop]} in ${partList(parts.filter((p) => glandularRank(p.values) === glTop))}`);
+  const paget = parts.filter((p) => pagetOf(p.values));
+  if (paget.length) bits.push(byText(paget, (p) => PAGET_SUMMARY_TEXT[pagetOf(p.values)]));
   const inadequate = parts.filter((p) => isInadequateECC(p.values));
   if (inadequate.length) bits.push(`${partList(inadequate)} inadequate`);
-  if (!bits.length) return 'SUMMARY: No squamous intraepithelial lesion, glandular dysplasia or malignancy in any part.';
+  if (!bits.length) {
+    const cervix = parts.some((p) => !isVulvaOrVagina(p.values));
+    const vulva = parts.some((p) => isVulva(p.values));
+    const vagina = parts.some((p) => isVagina(p.values));
+    const none = [(cervix || vagina) && 'squamous intraepithelial lesion', vulva && 'VIN', vulva && 'Paget disease', cervix && 'glandular dysplasia'].filter(Boolean);
+    return `SUMMARY: No ${none.join(', ')} or malignancy in any part.`;
+  }
   const text = bits.join('; ');
   return `SUMMARY: ${text.charAt(0).toUpperCase()}${text.slice(1)}.`;
 }
 
-export default { specimenName, microscopy, diagnosis, summary };
+// ---------- checks (vulva and vagina) ----------
+
+/** Stain and HPV-status contradictions for vulval and vaginal parts; cervical parts return none. */
+export function validate(part) {
+  const v = part.values;
+  const { out, warn, at } = checks();
+  const info = (message, field) => at('info', message, field);
+  if (!isVulvaOrVagina(v)) return out;
+  if (isDVIN(v) && v.p16 === 'Block positive') warn('Differentiated VIN is HPV-independent, but p16 is block positive: block-type p16 points to HPV-associated HSIL.', 'p16');
+  if (isDVIN(v) && (v.p53 || 'Not performed') === 'Not performed') info('No p53 is recorded: a mutant-type pattern supports differentiated VIN, which can be hard to separate from lichen simplex chronicus in a punch biopsy.', 'p53');
+  if (isHSIL(v) && v.p16 === 'Negative') warn(`${isVulva(v) ? 'Vulval' : 'Vaginal'} HSIL is HPV-associated, but p16 is negative.`, 'p16');
+  if (isSCC(v) && v.hpvStatus === 'HPV-associated' && ['Negative', 'Patchy / focal'].includes(v.p16)) warn('HPV-associated carcinoma is chosen, but p16 is not block positive.', 'hpvStatus');
+  if (isSCC(v) && v.hpvStatus === 'HPV-independent' && v.p16 === 'Block positive') warn('HPV-independent carcinoma is chosen, but p16 is block positive.', 'hpvStatus');
+  const paget = pagetOf(v);
+  const stains = pagetStainList(v);
+  if (paget && !stains.length) info('No Paget stains are recorded: CK7 and GATA3 support Paget cells, and CK20, p63 and GCDFP-15 help separate secondary spread and pagetoid squamous lesions.', 'pagetStains');
+  if (paget && paget !== PAGET_SECONDARY && stains.includes('CK20 positive')) warn('Primary Paget disease is chosen, but CK20 is positive: CK20 positivity raises secondary spread from an anorectal or urothelial carcinoma.', 'paget');
+  if (paget && stains.includes('CK20 positive') && stains.includes('CK20 negative')) warn('CK20 is recorded as both positive and negative.', 'pagetStains');
+  return out;
+}
+
+export default { specimenName, microscopy, diagnosis, summary, validate };

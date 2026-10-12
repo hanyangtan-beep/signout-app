@@ -203,7 +203,7 @@ const COVER = {
   'Cervix biopsy / LEEP': ['cervical_biopsy', 'cervical_excision', 'cervical_carcinoma'],
   'Ovary / fallopian tube': ['ovarian_cyst', 'ovary_ft_peritoneum', 'uterus_benign'],
   Placenta: ['placenta'],
-  'Vulva / vagina': ['vulval_carcinoma', 'vaginal_carcinoma'],
+  'Vulva / vagina': ['cervical_biopsy', 'vulval_carcinoma', 'vaginal_carcinoma'],
   Prostate: ['prostate_biopsy', 'turp', 'prostate_radical'],
   'Bladder / urothelium': ['turbt', 'bladder_carcinoma'],
   Kidney: ['renal_biopsy', 'kidney_carcinoma'],

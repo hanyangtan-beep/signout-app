@@ -1346,6 +1346,53 @@ await check('cervical polyp and endometrial aspirate: pasted lines open their fo
   return 'polyp pre-filled; ENDOCERVICAL then DECIDUAL POLYP lines; aspirate line with no trailing negative';
 });
 
+// Vulval and vaginal biopsies in the cervical form, with galleries (Phase 70, pulled by the user 2026-10-12).
+await check('vulval and vaginal biopsies: pasted lines open the cervical form on their own fields; dVIN with p53; the p53 and Paget stain galleries open', async () => {
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) === 1;
+  const valueOf = async (id) => {
+    const sel = page.locator(`[data-field="${id}"] select`);
+    if (await sel.count()) return sel.first().inputValue();
+    return (await page.locator(`.chips[data-field="${id}"] .chip[aria-pressed="true"]`).allTextContents()).join('|');
+  };
+  const gallery = async (id, expected, name) => {
+    await page.locator(`.field[data-field="${id}"] .ref-toggle`).first().click();
+    await page.waitForSelector(`.field[data-field="${id}"] .ref-panel img`, { timeout: 5000 });
+    const pics = page.locator(`.field[data-field="${id}"] .ref-panel img`);
+    const n = await pics.count();
+    assert(n === expected, `${id} gallery holds ${n} photos, expected ${expected}`);
+    for (let i = 0; i < n; i++) await pics.nth(i).scrollIntoViewIfNeeded();   // the photos load lazily
+    await page.waitForFunction((fid) => [...document.querySelectorAll(`.field[data-field="${fid}"] .ref-panel img`)].every((i) => i.complete && i.naturalWidth > 0), id, { timeout: 8000 });
+    await page.locator(`.field[data-field="${id}"] .ref-panel`).first().scrollIntoViewIfNeeded();
+    await shot(name);
+    await page.locator(`.field[data-field="${id}"] .ref-toggle`).first().click();
+  };
+  let routed = await pasteAndBuild("Vulva, left 3 o'clock, punch biopsy");
+  assert(routed === 'cervical_biopsy', `vulval punch routed to ${routed}`);
+  const type = await valueOf('specimenType');
+  assert(/Vulval biopsy/.test(type), `specimen type read "${type}"`);
+  assert(!(await shows('tissue')) && !(await shows('squamous')) && await shows('vulvaSquamous') && await shows('p53'), 'the vulval fields are not the ones showing');
+  await pickField('vulvaSquamous', 'Differentiated VIN (HPV-independent)');
+  await pickField('p53', 'Mutant-type: basal overexpression');
+  let report = await reportText();
+  assert(report.includes("VULVA, left 3 o'clock, punch biopsy - DIFFERENTIATED VULVAL INTRAEPITHELIAL NEOPLASIA (dVIN), HPV-independent"), `dVIN line wrong: ${report.slice(-300)}`);
+  assert(report.includes('supporting differentiated VIN'), `p53 sentence missing: ${report.slice(0, 600)}`);
+  await gallery('p53', 7, 'vulva-p53-gallery');
+  await pickField('vulvaSquamous', 'Negative');
+  await pickField('paget', 'Primary, intraepithelial');
+  assert(await shows('pagetStains'), 'no Paget stains field');
+  await gallery('pagetStains', 5, 'vulva-paget-stains-gallery');
+  report = await reportText();
+  assert(report.includes('EXTRAMAMMARY PAGET DISEASE, intraepithelial'), `Paget line wrong: ${report.slice(-300)}`);
+
+  routed = await pasteAndBuild('Vaginal vault biopsy');
+  assert(routed === 'cervical_biopsy', `vault biopsy routed to ${routed}`);
+  assert(/Vaginal biopsy/.test(await valueOf('specimenType')), 'the vaginal type is not pre-filled');
+  report = await reportText();
+  assert(report.includes('VAGINA, vault, biopsy - NO EVIDENCE OF SQUAMOUS INTRAEPITHELIAL LESION OR MALIGNANCY'), `vault line wrong: ${report.slice(-300)}`);
+  await shot('vagina-vault-negative');
+  return 'vulval punch pre-filled with its own fields; dVIN line and p53 sentence; p53 gallery 7 photos; Paget stains gallery 5 photos; vault negative line';
+});
+
 // Colonic polyp descriptions and malignant polyp levels (user request, 2026-10-05).
 await check('colonic polyp: serrated and high grade descriptions; Haggitt level on a pasted polypectomy', async () => {
   const visible = (id) => page.locator(`.field[data-field="${id}"]:visible`).count();

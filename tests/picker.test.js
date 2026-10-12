@@ -52,7 +52,9 @@ test('small-biopsy row lists exactly the kind: biopsy templates in frequency ord
   // its rectal biopsies are the rarest biopsy type on the case mix. Peritoneum (Phase 58, 2026-10-07) is appended
   // after it, leaving the order of the others unchanged. Dermatoses (Phase 68, 2026-10-11) sits after Oral cavity and
   // before Brain: 146 inflammatory skin parts on the 2021-2026 biopsy case mix, against 223 oral and 60 CNS.
-  assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix', 'Endometrium', 'Lung', 'NPC', 'Oral cavity', 'Dermatoses', 'Brain', 'Liver (medical)', 'Liver (mass)', 'Hirschsprung', 'Peritoneum']);
+  // Phase 70 (2026-10-12), deliberate: the cervical form also takes vaginal and vulval biopsies, so its label is
+  // "Cervix / vagina / vulva"; it keeps its place.
+  assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix / vagina / vulva', 'Endometrium', 'Lung', 'NPC', 'Oral cavity', 'Dermatoses', 'Brain', 'Liver (medical)', 'Liver (mass)', 'Hirschsprung', 'Peritoneum']);
   assert.ok(!row.includes('LEEP') && !row.includes('Frozen'));
   assert.deepEqual(pushRecent(['a', 'b'], 'b'), ['b', 'a']);
   assert.deepEqual(togglePin(togglePin([], 'x'), 'x'), []);
@@ -151,8 +153,12 @@ test('palette ranking: exact shortName > alias > organ > keyword', () => {
   assert.equal(top('pipelle'), 'Endometrium');
   assert.equal(top('EBUS'), 'Lung');
   assert.equal(top('gstr'), 'Gastric');             // subsequence fallback
-  // organ beats keyword: "cervix" ranks the two cervical templates, biopsy first by rank
-  assert.deepEqual(rankTemplates(manifest, 'cervix').map(labelOf), ['Cervix', 'LEEP', 'Cervical smear', 'Uterus']);
+  // organ beats keyword: "cervix" ranks the two cervical templates, biopsy first by rank (label renamed in Phase 70)
+  assert.deepEqual(rankTemplates(manifest, 'cervix').map(labelOf), ['Cervix / vagina / vulva', 'LEEP', 'Cervical smear', 'Uterus']);
+  // Phase 70: vulval and vaginal biopsies are found under the cervical form
+  assert.equal(top('vulva'), 'Cervix / vagina / vulva');
+  assert.equal(top('vagina'), 'Cervix / vagina / vulva');
+  assert.equal(top('dVIN'), 'Cervix / vagina / vulva');
   // multi-token: every token must match
   assert.deepEqual(rankTemplates(manifest, 'cervix cone').map(labelOf), ['LEEP']);
   assert.deepEqual(rankTemplates(manifest, 'zzz'), []);
