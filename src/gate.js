@@ -44,7 +44,8 @@ export const BUILT_IN_ALLOWED = Object.freeze([
   '9f75c2117c0022709c3c07be3b1cfb546b2383f4cf91bd45d0babc5f6f75bf76',
   '01d0953041061cc52f50214eb3fd1c182db1c1def812bb96cfa5d29ea84af6a9',
   '56010ba9f1298acd33cd127f72f7614a7a100f140311b7922a9710a42256f961',
-  '648ff2ab33aa277eddbd5928f26539f77141e23fc6f2a02abda82bd108b7a093'
+  '648ff2ab33aa277eddbd5928f26539f77141e23fc6f2a02abda82bd108b7a093',
+  '238098f5dae4ef8a39ce05f8ab455e92570892c56b35ea8303fec10463ea12fb'
 ]);
 
 /** Salt for the digests, so they cannot be looked up in a table of hashed addresses. */
