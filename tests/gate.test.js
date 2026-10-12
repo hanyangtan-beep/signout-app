@@ -91,7 +91,7 @@ test('a corrupted stored allow-list falls back to the permissive default', () =>
 // ---- built-in allow-list (pulled by the user 2026-09-30; docs/google-setup.md section 5) ----------
 
 test('the built-in list holds unique SHA-256 digests only', () => {
-  assert.equal(BUILT_IN_ALLOWED.length, 5);
+  assert.equal(BUILT_IN_ALLOWED.length, 6);
   assert.equal(new Set(BUILT_IN_ALLOWED).size, BUILT_IN_ALLOWED.length);
   for (const d of BUILT_IN_ALLOWED) assert.match(d, /^[0-9a-f]{64}$/);
   assert.ok(Object.isFrozen(BUILT_IN_ALLOWED));
