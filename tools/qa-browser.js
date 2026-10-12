@@ -16,7 +16,7 @@
 // same machinery the unit tests drive directly.
 
 import { chromium } from 'playwright';
-import { emailDigest } from '../src/gate.js';
+import { emailDigest, BUILT_IN_ALLOWED } from '../src/gate.js';
 import { createServer } from 'node:http';
 import { readFile, mkdir } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
@@ -284,7 +284,8 @@ await check('settings dialog opens and holds the Drive fields', async () => {
   const allow = page.locator('#cfg-allowedEmails');
   assert(await allow.isDisabled(), 'the allowed-accounts field is editable despite the built-in list');
   const hint = await allow.getAttribute('placeholder');
-  assert(/^Fixed in this build: 4 Google accounts$/.test(hint || ''), `allow-list hint wrong: ${hint}`);
+  const fixedHint = `Fixed in this build: ${BUILT_IN_ALLOWED.length} Google account${BUILT_IN_ALLOWED.length === 1 ? '' : 's'}`;
+  assert(hint === fixedHint, `allow-list hint wrong: ${hint} (expected ${fixedHint})`);
   assert((await allow.inputValue()) === '', 'the built-in list leaked into the Settings field');
   await page.keyboard.press('Escape');
   await page.waitForTimeout(200);
