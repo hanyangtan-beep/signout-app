@@ -1,0 +1,47 @@
+{
+  "templateId": "lymphoma_node",
+  "values": {
+    "site": "right inguinal",
+    "procedure": "Core biopsy",
+    "fixation": "In formalin",
+    "cores": "3",
+    "coreLength": "10 to 15",
+    "blocks": "1",
+    "architecture": "Effaced",
+    "pattern": "Follicular / nodular",
+    "cellSize": "Small to medium",
+    "cytology": [
+      "Centrocytes and centroblasts",
+      "Irregular, cleaved nuclei"
+    ],
+    "features": [
+      "Back-to-back follicles",
+      "Attenuated mantle zones",
+      "Absent tingible body macrophages"
+    ],
+    "dx": "Follicular lymphoma",
+    "flGrade": "Grade 1-2",
+    "flPattern": "Follicular",
+    "panel": [
+      "CD20",
+      "CD10",
+      "BCL6",
+      "BCL2",
+      "CD3",
+      "Cyclin D1"
+    ],
+    "r_CD20": "Positive",
+    "r_CD10": "Positive",
+    "r_BCL6": "Positive",
+    "r_BCL2": "Positive",
+    "r_CD3": "Negative",
+    "r_CyclinD1": "Negative",
+    "ihcBackground": "CD21 highlights expanded follicular dendritic cell meshworks",
+    "cbCount": "8",
+    "cbField": "40x objective, 0.159 mm2",
+    "ki67": "15",
+    "clonIG": "Clonal"
+  },
+  "report": "Lymph node, right inguinal, core biopsy\n\nReceived in formalin are three cores of tan tissue measuring 10 to 15 mm in length. All embedded in one block.\n\nSections show three cores of lymphoid tissue with the nodal architecture effaced by a nodular proliferation of small to medium-sized atypical lymphoid cells. The atypical cells comprise centrocytes and centroblasts and show irregular, cleaved nuclei. The follicles are crowded and back to back, with attenuated mantle zones and no tingible body macrophages. Immunohistochemical stains show that the atypical lymphoid cells are positive for CD20, CD10, BCL6 and BCL2, and negative for cyclin D1 and CD3. CD21 highlights expanded follicular dendritic cell meshworks. Centroblasts are counted at 8/HPF (40x objective, 0.159 mm2). The Ki-67 proliferative index is approximately 15%. The overall features are those of follicular lymphoma, grade 1-2, follicular pattern.\n\nImmunohistochemistry\n- CD20: Positive\n- CD10: Positive\n- BCL6: Positive\n- BCL2: Positive\n- Cyclin D1: Negative\n- CD3: Negative\n- Ki-67: approximately 15%\n- Centroblasts: 8/HPF\n\nClonality\n- IG gene rearrangement: Clonal\n\nLYMPH NODE, right inguinal, core biopsy\n- FOLLICULAR LYMPHOMA, grade 1-2, follicular pattern",
+  "checks": []
+}

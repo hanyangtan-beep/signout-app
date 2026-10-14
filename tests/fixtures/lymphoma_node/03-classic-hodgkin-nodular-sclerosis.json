@@ -1,0 +1,49 @@
+{
+  "templateId": "lymphoma_node",
+  "values": {
+    "site": "left supraclavicular",
+    "procedure": "Excisional biopsy",
+    "fixation": "Fresh",
+    "size": "2.5 x 2.0 x 1.5",
+    "cutSurface": "With fibrous bands",
+    "blocks": "4",
+    "architecture": "Effaced",
+    "pattern": "Nodular with fibrous bands",
+    "cellSize": "Scattered large cells in a mixed background",
+    "cytology": [
+      "Hodgkin and Reed-Sternberg cells",
+      "Lacunar cells"
+    ],
+    "background": [
+      "Small lymphocytes",
+      "Eosinophils",
+      "Plasma cells",
+      "Histiocytes"
+    ],
+    "features": [
+      "Sclerosis"
+    ],
+    "dx": "Classic Hodgkin lymphoma",
+    "chlSubtype": "Nodular sclerosis",
+    "bnli": "Grade 2",
+    "panel": [
+      "CD20",
+      "PAX5",
+      "MUM1",
+      "CD3",
+      "CD30",
+      "CD15",
+      "CD45"
+    ],
+    "r_CD20": "Negative",
+    "r_PAX5": "Weak",
+    "r_MUM1": "Positive",
+    "r_CD3": "Negative",
+    "r_CD30": "Positive",
+    "r_CD15": "Positive (subset)",
+    "r_CD45": "Negative",
+    "eber": "Negative"
+  },
+  "report": "Lymph node, left supraclavicular, excisional biopsy\n\nReceived fresh is a lymph node measuring 2.5 x 2.0 x 1.5 cm. The cut surface shows fibrous bands. Serially sliced and all embedded in four blocks.\n\nSections show a lymph node with the nodal architecture effaced by a nodular mixed infiltrate separated by fibrous bands containing scattered large atypical cells. Hodgkin and Reed-Sternberg cells and lacunar cells are present. The background contains small lymphocytes, eosinophils, plasma cells and histiocytes. There is sclerosis. Immunohistochemical stains show that the Hodgkin and Reed-Sternberg cells are positive for MUM1 and CD30, weakly positive for PAX5, and negative for CD20, CD3 and CD45. A subset of the Hodgkin and Reed-Sternberg cells is positive for CD15. In situ hybridisation for EBER is negative in the Hodgkin and Reed-Sternberg cells. The overall features are those of nodular sclerosis classic Hodgkin lymphoma, grade 2 (BNLI).\n\nImmunohistochemistry\n- CD20: Negative\n- PAX5: Weak\n- MUM1: Positive\n- CD3: Negative\n- CD30: Positive\n- CD15: Positive (subset)\n- CD45: Negative\n\nIn situ hybridisation\n- EBER: Negative\n\nLYMPH NODE, left supraclavicular, excisional biopsy\n- NODULAR SCLEROSIS CLASSIC HODGKIN LYMPHOMA, GRADE 2 (BNLI)",
+  "checks": []
+}

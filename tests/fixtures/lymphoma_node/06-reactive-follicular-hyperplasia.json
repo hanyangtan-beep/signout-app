@@ -1,0 +1,26 @@
+{
+  "templateId": "lymphoma_node",
+  "values": {
+    "site": "left neck",
+    "procedure": "Excision",
+    "fixation": "In formalin",
+    "size": "1.5 x 1.0 x 0.8",
+    "blocks": "2",
+    "architecture": "Preserved",
+    "dx": "Reactive lymphoid hyperplasia",
+    "reactivePattern": [
+      "Follicular hyperplasia",
+      "Sinus histiocytosis"
+    ],
+    "ihcCells": "germinal centre cells",
+    "panel": [
+      "BCL2",
+      "CD10"
+    ],
+    "r_BCL2": "Negative",
+    "r_CD10": "Positive",
+    "ihcBackground": "Kappa and lambda in situ hybridisation shows a polytypic pattern"
+  },
+  "report": "Lymph node, left neck, excision\n\nReceived in formalin is a lymph node measuring 1.5 x 1.0 x 0.8 cm. Serially sliced and all embedded in two blocks.\n\nSections show a lymph node with preserved nodal architecture. Reactive follicles of varying size and shape show polarised germinal centres with tingible body macrophages and intact mantle zones. The sinuses are distended by histiocytes. Immunohistochemical stains show that the germinal centre cells are positive for CD10 and negative for BCL2. Kappa and lambda in situ hybridisation shows a polytypic pattern. The overall features are those of reactive follicular hyperplasia with sinus histiocytosis.\n\nImmunohistochemistry\n- CD10: Positive\n- BCL2: Negative\n\nLYMPH NODE, left neck, excision\n- REACTIVE FOLLICULAR HYPERPLASIA with SINUS HISTIOCYTOSIS",
+  "checks": []
+}

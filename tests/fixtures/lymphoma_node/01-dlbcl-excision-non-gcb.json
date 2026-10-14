@@ -1,0 +1,73 @@
+{
+  "templateId": "lymphoma_node",
+  "values": {
+    "site": "left neck",
+    "procedure": "Excision",
+    "fixation": "Fresh",
+    "freshFor": [
+      "Flow cytometry",
+      "Cytogenetics"
+    ],
+    "size": "3.2 x 2.5 x 1.8",
+    "cutSurface": "Homogeneous, tan and fleshy",
+    "blocks": "3",
+    "blockKeyText": "1-3. Lymph node, serial slices",
+    "architecture": "Effaced",
+    "pattern": "Diffuse",
+    "cellSize": "Large",
+    "cytology": [
+      "Vesicular nuclei with prominent nucleoli"
+    ],
+    "background": [
+      "Small lymphocytes",
+      "Histiocytes"
+    ],
+    "features": [
+      "Frequent mitoses",
+      "Necrosis"
+    ],
+    "dx": "Diffuse large B-cell lymphoma, NOS",
+    "panel": [
+      "CD20",
+      "PAX5",
+      "CD10",
+      "BCL6",
+      "MUM1",
+      "BCL2",
+      "MYC",
+      "Cyclin D1",
+      "CD5",
+      "CD3",
+      "CD30"
+    ],
+    "r_CD20": "Positive",
+    "r_PAX5": "Positive",
+    "r_CD10": "Negative",
+    "r_BCL6": "Positive",
+    "r_MUM1": "Positive",
+    "r_BCL2": "Positive",
+    "r_MYC": "Positive",
+    "r_CyclinD1": "Negative",
+    "r_CD5": "Negative",
+    "r_CD3": "Negative",
+    "r_CD30": "Negative",
+    "mycPct": "50",
+    "bcl2Pct": "80",
+    "ki67": "80",
+    "eber": "Negative",
+    "fishMYC": "Not rearranged",
+    "fishBCL2": "Not rearranged",
+    "fishBCL6": "Not rearranged",
+    "flow": "Concordant",
+    "flowText": "a lambda-restricted B-cell population"
+  },
+  "report": "Lymph node, left neck, excision\n\nReceived fresh is a lymph node measuring 3.2 x 2.5 x 1.8 cm. The cut surface is homogeneous, tan and fleshy. A portion is taken fresh for flow cytometry and cytogenetics. Serially sliced and all embedded in three blocks.\n\n(1-3) Lymph node, serial slices.\n\nSections show a lymph node with the nodal architecture effaced by a diffuse proliferation of large atypical lymphoid cells. The atypical cells show vesicular nuclei with prominent nucleoli. The background contains small lymphocytes and histiocytes. There are areas of necrosis. Mitoses are frequent. Immunohistochemical stains show that the atypical lymphoid cells are positive for CD20, PAX5, BCL6, MUM1, BCL2 and MYC, and negative for CD10, cyclin D1, CD5, CD3 and CD30. MYC is expressed in approximately 50% and BCL2 in approximately 80% of the atypical lymphoid cells. The Ki-67 proliferative index is approximately 80%. In situ hybridisation for EBER is negative in the atypical lymphoid cells. The overall features are those of diffuse large B-cell lymphoma, NOS, non-GCB type.\n\nImmunohistochemistry\n- CD20: Positive\n- PAX5: Positive\n- CD10: Negative\n- BCL6: Positive\n- MUM1: Positive\n- BCL2: Positive (80%)\n- MYC: Positive (50%)\n- Cyclin D1: Negative\n- CD5: Negative\n- CD3: Negative\n- CD30: Negative\n- Ki-67: approximately 80%\n- Cell of origin (Hans algorithm): Non-GCB type\n\nIn situ hybridisation\n- EBER: Negative\n\nFISH\n- MYC: Not rearranged\n- BCL2: Not rearranged\n- BCL6: Not rearranged\n\nLYMPH NODE, left neck, excision\n- DIFFUSE LARGE B-CELL LYMPHOMA, NOS, non-GCB type\n\nFlow cytometry shows a lambda-restricted B-cell population, concordant with the histological findings. The cell of origin is assigned by the Hans immunohistochemical algorithm (CD10, BCL6 and MUM1).\n\nThe lymphoma cells co-express MYC and BCL2 by immunohistochemistry (dual expressor).",
+  "checks": [
+    {
+      "level": "info",
+      "message": "MYC 40% or more and BCL2 50% or more: dual expressor by immunohistochemistry (the comment snippet is suggested).",
+      "field": "mycPct",
+      "part": "A"
+    }
+  ]
+}

@@ -42,14 +42,6 @@
    "roadmap": "Later"
   },
   {
-   "id": "lymphoma_node",
-   "name": "Lymph node for lymphoma (WHO-HAEM5)",
-   "label": "Lymphoma",
-   "system": "Lymphoid",
-   "kind": "cancer resection",
-   "roadmap": "Later"
-  },
-  {
    "id": "small_intestine_carcinoma",
    "name": "Small intestine carcinoma resection",
    "label": "Small bowel Ca",

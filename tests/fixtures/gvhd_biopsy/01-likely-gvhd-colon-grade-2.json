@@ -1,0 +1,20 @@
+{
+  "templateId": "gvhd_biopsy",
+  "values": {
+    "site": "Sigmoid colon",
+    "pieces": "2",
+    "sections": "10",
+    "apoptosis": "At least one per piece",
+    "cryptLoss": "Individual crypts",
+    "cryptChanges": [
+      "Withering",
+      "Regenerative epithelial changes"
+    ],
+    "laminaPropria": "Sparse",
+    "eosinophils": "Inconspicuous",
+    "cmv": "Negative",
+    "nih": "Likely GVHD"
+  },
+  "report": "Sigmoid colon, biopsy\n\nSerial sections show two pieces of colonic mucosa. Apoptotic bodies are seen in the basal crypt epithelium of every piece. There is dropout of individual crypts. The remaining crypts show withering and regenerative epithelial changes. The lamina propria contains a sparse inflammatory infiltrate. Eosinophils are inconspicuous. No viral cytopathic change or granuloma is seen. Immunohistochemistry for cytomegalovirus (CMV) is negative. The overall features likely represent graft-versus-host disease (grade 2). There is no evidence of dysplasia or malignancy. Please correlate with clinical findings.\n\nSIGMOID COLON, biopsy:\n- CRYPT APOPTOSIS AND CRYPT DROPOUT, likely GRAFT-VERSUS-HOST DISEASE (grade 2).",
+  "checks": []
+}

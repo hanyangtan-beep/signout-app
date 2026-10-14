@@ -50,15 +50,16 @@ test('template is registered with the required metadata', () => {
   assert.equal(schema.style.british, true);
 });
 
-test('it closes the GI biopsy row, built rather than pending; the row is otherwise unchanged', () => {
+// Phase 71 (2026-10-14), deliberate: GI and oral GVHD biopsy is appended after it, so Peritoneum is last but one.
+test('it follows Hirschsprung in the GI biopsy row, built rather than pending; the row is otherwise unchanged', () => {
   const planned = JSON.parse(fs.readFileSync(path.join(root, 'templates', 'planned.json'), 'utf8')).planned;
   assert.ok(!planned.some((p) => p.id === 'peritoneal_nodule'), 'not in planned.json');
   const group = rowGroups(manifest, planned, 'top').find((g) => g.items.some((i) => i.id === 'peritoneal_nodule'));
   assert.equal(group.system, 'GI');
-  assert.deepEqual(group.items.map((i) => i.id), ['gastric_biopsy', 'colonic_polyp', 'duodenal_biopsy', 'oesophageal_biopsy', 'ibd_biopsy', 'hirschsprung_biopsy', 'peritoneal_nodule']);
+  assert.deepEqual(group.items.map((i) => i.id), ['gastric_biopsy', 'colonic_polyp', 'duodenal_biopsy', 'oesophageal_biopsy', 'ibd_biopsy', 'hirschsprung_biopsy', 'peritoneal_nodule', 'gvhd_biopsy']);
   assert.ok(!group.items.find((i) => i.id === 'peritoneal_nodule').planned, 'a built template, not a pending one');
   const row = biopsyRow(manifest).map((x) => x.id);
-  assert.equal(row[row.length - 1], 'peritoneal_nodule', 'appended to the Small biopsy row');
+  assert.equal(row[row.length - 2], 'peritoneal_nodule', 'appended to the Small biopsy row, before GVHD (Phase 71)');
 });
 
 // ---------- the example ----------

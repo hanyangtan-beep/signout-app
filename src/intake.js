@@ -310,6 +310,11 @@ const HER2_ISH_OTHER_SITE = /\b(?:lymph\s*nodes?|LN|axill(?:a|ary)|soft\s+tissue
 const her2IshRequest = (text, ctx) => HER2_ISH_TEST.test(text)
   && (BREAST_WORD.test(text) || (BREAST_WORD.test(`${ctx.casePrefix || ''} ${ctx.history || ''}`) && HER2_ISH_OTHER_SITE.test(text)));
 
+// The lymphoma test reads the history as well as the line: the request names the node and the history
+// names the question ("Lymph node, left neck, excision" with "?lymphoma").
+const lymphomaNode = (mt, text, ctx) => !excluded(mt, text) && !!mt.gate
+  && new RegExp(mt.gate, 'i').test(`${text} ${ctx.casePrefix || ''} ${ctx.history || ''}`);
+
 /** Role rules that beat scoring: HER2 ISH requests, lymph node parts and breast margins. */
 function roleOf(part, ctx, manifest) {
   const text = `${part.raw || part.text}`;
@@ -318,10 +323,18 @@ function roleOf(part, ctx, manifest) {
   if (ids.has('lymph_node') && !CYTO.test(text)) {
     const strong = NODE_STRONG.test(text);
     const startsWithNode = /^\s*(lymph\s*nodes?|nodes?)\b/i.test(text);
-    const siteElsewhere = (s) => manifest.some((t) => !['lymph_node', 'lymph_node_fna', GENERIC_ID].includes(t.id) && t.match && !excluded(t.match, text) && siteHitsFor(t.match, s) > 0);
+    // The lymphoma form (Phase 71) shares the node site words, so it is not "a site elsewhere" either.
+    const siteElsewhere = (s) => manifest.some((t) => !['lymph_node', 'lymph_node_fna', 'lymphoma_node', GENERIC_ID].includes(t.id) && t.match && !excluded(t.match, text) && siteHitsFor(t.match, s) > 0);
     const otherSite = siteElsewhere(text);
     const neck = text.search(NECK_DISSECTION) >= 0 && !siteElsewhere(text.replace(NECK_DISSECTION, ' '));
-    if (strong || neck || (NODE.test(text) && (startsWithNode || !otherSite))) return { role: 'lymph_node', templateId: 'lymph_node' };
+    if (strong || neck || (NODE.test(text) && (startsWithNode || !otherSite))) {
+      // A node sent for lymphoma (Phase 71, user request 2026-10-14): the lymphoma form when the line, the
+      // case prefix or the history meets its `match.gate`, unless its `match.exclude` names a sentinel node,
+      // a dissection, an aspirate or a frozen section. Both are declared in schemas/lymphoma_node.json.
+      const lymphoma = manifest.find((t) => t.id === 'lymphoma_node');
+      if (lymphoma?.match && lymphomaNode(lymphoma.match, text, ctx)) return { role: 'lymphoma_node', templateId: 'lymphoma_node' };
+      return { role: 'lymph_node', templateId: 'lymph_node' };
+    }
   }
   // A breast margin (readBreastMargin): a line that says "breast" is one on its own; one that does not
   // ("Anterior margin" under "Breast, excision:") needs the breast in the prefix, the history or another

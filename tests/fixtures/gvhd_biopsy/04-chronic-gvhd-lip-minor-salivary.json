@@ -1,0 +1,27 @@
+{
+  "templateId": "gvhd_biopsy",
+  "values": {
+    "site": "Lip",
+    "detail": "lower",
+    "pieces": "1",
+    "oralFeatures": [
+      "Lichenoid interface inflammation",
+      "Lymphocytic exocytosis",
+      "Apoptotic keratinocytes",
+      "Satellitosis"
+    ],
+    "salivary": "Included",
+    "lobules": "6",
+    "salivaryFeatures": [
+      "Periductal lymphocytic inflammation",
+      "Plasma cells in the infiltrate",
+      "Exocytosis into ducts",
+      "Exocytosis into acini",
+      "Acinar loss",
+      "Periductal fibrosis"
+    ],
+    "nih": "Likely GVHD"
+  },
+  "report": "Lip, lower, biopsy\n\nSerial sections show a piece of squamous mucosa with underlying minor salivary glands. There is a band-like lymphocytic infiltrate at the epithelium-lamina propria interface, with lymphocytic exocytosis into the epithelium. Apoptotic keratinocytes are seen in the basal and parabasal layers, some with adjacent lymphocytes (satellitosis). Six lobules of minor salivary gland are present. They show periductal lymphocytic inflammation with plasma cells, lymphocytic exocytosis into the ducts and acini, acinar loss and periductal fibrosis. No viral cytopathic change or granuloma is seen. The overall features likely represent chronic graft-versus-host disease. There is no evidence of dysplasia or malignancy. Please correlate with clinical findings.\n\nLIP, lower, biopsy:\n- LICHENOID MUCOSITIS AND LYMPHOCYTIC SIALADENITIS, likely CHRONIC GRAFT-VERSUS-HOST DISEASE.",
+  "checks": []
+}

@@ -54,7 +54,8 @@ test('small-biopsy row lists exactly the kind: biopsy templates in frequency ord
   // before Brain: 146 inflammatory skin parts on the 2021-2026 biopsy case mix, against 223 oral and 60 CNS.
   // Phase 70 (2026-10-12), deliberate: the cervical form also takes vaginal and vulval biopsies, so its label is
   // "Cervix / vagina / vulva"; it keeps its place.
-  assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix / vagina / vulva', 'Endometrium', 'Lung', 'NPC', 'Oral cavity', 'Dermatoses', 'Brain', 'Liver (medical)', 'Liver (mass)', 'Hirschsprung', 'Peritoneum']);
+  // Phase 71 (2026-10-14), deliberate: GI and oral GVHD biopsy (rank 64) appended last; the others keep their order.
+  assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix / vagina / vulva', 'Endometrium', 'Lung', 'NPC', 'Oral cavity', 'Dermatoses', 'Brain', 'Liver (medical)', 'Liver (mass)', 'Hirschsprung', 'Peritoneum', 'GVHD']);
   assert.ok(!row.includes('LEEP') && !row.includes('Frozen'));
   assert.deepEqual(pushRecent(['a', 'b'], 'b'), ['b', 'a']);
   assert.deepEqual(togglePin(togglePin([], 'x'), 'x'), []);
@@ -117,8 +118,9 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   assert.equal(bottom[bottom.length - 1].system, 'General', 'Free text last');
   // built before planned within a group; planned carry the flag and open Generic in the app
   const gi = top.find((g) => g.system === 'GI');
-  assert.deepEqual(gi.items.map(labelOf), ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Hirschsprung', 'Peritoneum']);
+  assert.deepEqual(gi.items.map(labelOf), ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Hirschsprung', 'Peritoneum', 'GVHD']);
   // Peritoneum was the last GI placeholder and is built in Phase 58; the Medical button above still shows built before planned.
+  // Phase 71 (2026-10-14), deliberate: GVHD is built without a placeholder and closes the GI biopsies.
   assert.ok(gi.items.every((t) => !t.planned), 'every GI biopsy is built');
   const giBottom = bottom.find((g) => g.system === 'GI').items;
   assert.ok(giBottom.findIndex((t) => t.id === 'colon_resection') < giBottom.findIndex((t) => t.id === 'gastric_carcinoma'));
@@ -129,7 +131,7 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   // pins sort first inside their menu, planned still last
   const pinned = rowGroups(manifest, planned, 'top', { pins: ['ibd_biopsy'] }).find((g) => g.system === 'GI').items.map((t) => t.id);
   assert.equal(pinned[0], 'ibd_biopsy');
-  assert.equal(pinned.at(-1), 'peritoneal_nodule');
+  assert.equal(pinned.at(-1), 'gvhd_biopsy'); // Phase 71 (2026-10-14), deliberate: GVHD closes the GI biopsies
   // a group that only has planned entries still gets a button (Medical, CNS)
   assert.deepEqual(bottom.find((g) => g.system === 'CNS').items.map((t) => t.id), ['cns_tumour', 'meningioma']);
   // Autopsy is in neither row; it is the standalone button
@@ -183,7 +185,7 @@ test('grouped browse and the part selector put Small biopsy first, systems in ca
   assert.deepEqual(gyn.items.slice(2).map(labelOf), ['LEEP', 'Placenta', 'Uterus', 'Ovarian cyst', 'Ectopic', 'Endometrial Ca', 'Ovary / tube / peritoneum Ca'], 'rank order within a kind');
   const sel = selectorGroups(manifest);
   assert.equal(sel[0].label, 'Small biopsy');
-  assert.equal(sel[0].items.length, 18); // oral_biopsy joins in Phase 42, liver_biopsy and hirschsprung_biopsy on 2026-09-30, liver_lesion_biopsy on 2026-10-02, peritoneal_nodule on 2026-10-07, skin_inflammatory on 2026-10-11
+  assert.equal(sel[0].items.length, 19); // oral_biopsy joins in Phase 42, liver_biopsy and hirschsprung_biopsy on 2026-09-30, liver_lesion_biopsy on 2026-10-02, peritoneal_nodule on 2026-10-07, skin_inflammatory on 2026-10-11, gvhd_biopsy on 2026-10-14 (Phase 71, deliberate)
   // The CNS biopsy sits in the Small biopsy group; the CNS system group holds the resection.
   assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Biomarkers', 'Cytology', 'General']);
 });

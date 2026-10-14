@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 75,
+  "count": 77,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -1517,6 +1517,150 @@
       "generator": "lymphnode",
       "generatorPath": "generators/lymphnode.js",
       "schemaPath": "schemas/lymph_node.json"
+    },
+    {
+      "id": "lymphoma_node",
+      "name": "Lymph node for lymphoma (WHO-HAEM5)",
+      "shortName": "Lymph node · lymphoma work-up",
+      "label": "Lymphoma",
+      "organ": "LYMPH NODE",
+      "system": "Lymphoid",
+      "kind": "cancer resection",
+      "rank": 22,
+      "aliases": [
+        "lymphoma",
+        "NHL",
+        "Hodgkin",
+        "DLBCL",
+        "follicular lymphoma",
+        "PTLD",
+        "lymphoproliferative"
+      ],
+      "match": {
+        "site": [
+          "lymph node",
+          "lymph nodes",
+          "LN",
+          "node",
+          "nodes",
+          "lymphadenopathy"
+        ],
+        "procedure": [
+          "excision",
+          "excisional biopsy",
+          "incisional biopsy",
+          "core biopsy",
+          "core",
+          "cores",
+          "biopsy",
+          "biopsies",
+          "incision",
+          "trucut",
+          "tru-cut",
+          "slide review",
+          "slides for review"
+        ],
+        "clinical": [
+          "lymphoma",
+          "lymphoproliferative",
+          "PTLD",
+          "Hodgkin",
+          "NHL",
+          "DLBCL",
+          "CLL",
+          "SLL",
+          "MALT",
+          "Burkitt",
+          "atypical lymphoid",
+          "Kikuchi",
+          "Castleman"
+        ],
+        "gate": "\\b(?:lymphomas?|lymphoproliferative|LPD|PTLD|Hodgkin\\w*|NHL|DLBCL|CLL|SLL|MALT\\w*|PTCL|AITL|ALCL|Burkitt\\w*|lymphoid\\s+neoplasm\\w*|atypical\\s+lymphoid|Kikuchi\\w*|Castleman\\w*)\\b",
+        "exclude": [
+          "sentinel",
+          "SLN",
+          "SLNB",
+          "dissection",
+          "lymphadenectomy",
+          "clearance",
+          "FNA",
+          "aspirate",
+          "aspiration",
+          "EBUS",
+          "TBNA",
+          "frozen",
+          "FS"
+        ],
+        "own": {
+          "site": [
+            "lymph node",
+            "lymph nodes",
+            "LN",
+            "node",
+            "nodes",
+            "lymphadenopathy"
+          ],
+          "procedure": [
+            "core biopsy",
+            "core",
+            "cores",
+            "biopsy",
+            "biopsies",
+            "incisional biopsy",
+            "excisional biopsy",
+            "trucut",
+            "tru-cut"
+          ]
+        },
+        "bias": 1,
+        "fill": [
+          {
+            "field": "site",
+            "from": "text",
+            "strip": "\\b(?:lymph\\s*nodes?|LNs?|nodes?|lymphadenopathy|excisional\\s+biops(?:y|ies)|incisional\\s+biops(?:y|ies)|core\\s+(?:needle\\s+)?biops(?:y|ies)|needle\\s+biops(?:y|ies)|tru-?cut(?:\\s+biops(?:y|ies))?|excision|incision|biops(?:y|ies)|cores?|for\\s+slides?\\s+review|slides?\\s+for\\s+review|slides?\\s+review|for\\s+review|x\\s*\\d+)\\b|(?:\\?\\s*|\\b(?:query|r\\/o|rule\\s+out|to\\s+exclude|exclude|for|suspected|suspicious\\s+(?:of|for))\\s+)?\\b(?:lymphomas?|lymphoproliferative|LPD|PTLD|Hodgkin\\w*|NHL|DLBCL|CLL|SLL|MALT\\w*|PTCL|AITL|ALCL|Burkitt\\w*|lymphoid\\s+neoplasm\\w*|atypical\\s+lymphoid|Kikuchi\\w*|Castleman\\w*)\\b(?:\\s+(?:disorders?|disease|work-?\\s*up))?|\\?"
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bcores?\\b|tru-?cut",
+                "Core biopsy"
+              ],
+              [
+                "\\bexcisional",
+                "Excisional biopsy"
+              ],
+              [
+                "\\bincisional|\\bincision\\b",
+                "Incisional biopsy"
+              ],
+              [
+                "\\bexcision",
+                "Excision"
+              ],
+              [
+                "\\bbiops",
+                "Biopsy"
+              ]
+            ]
+          },
+          {
+            "field": "received",
+            "from": "map",
+            "map": [
+              [
+                "slides?\\s+(?:for\\s+)?review|for\\s+(?:slide\\s+)?review|consultation",
+                "Slides for review"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.10",
+      "generator": "lymphoma_node",
+      "generatorPath": "generators/lymphoma_node.js",
+      "schemaPath": "schemas/lymphoma_node.json"
     },
     {
       "id": "placenta",
@@ -6692,6 +6836,283 @@
       "generator": "peritoneal_nodule",
       "generatorPath": "generators/peritoneal_nodule.js",
       "schemaPath": "schemas/peritoneal_nodule.json"
+    },
+    {
+      "id": "gvhd_biopsy",
+      "name": "GI and oral graft-versus-host disease biopsy",
+      "shortName": "GI / oral · GVHD biopsy",
+      "label": "GVHD",
+      "organ": "COLON",
+      "system": "GI",
+      "kind": "biopsy",
+      "rank": 64,
+      "aliases": [
+        "GVHD",
+        "graft-versus-host disease",
+        "graft versus host",
+        "aGVHD",
+        "cGVHD",
+        "BMT",
+        "HSCT",
+        "allogeneic transplant",
+        "lichenoid mucositis",
+        "minor salivary gland"
+      ],
+      "match": {
+        "site": [
+          "oesophagus",
+          "oesophageal",
+          "esophagus",
+          "esophageal",
+          "stomach",
+          "gastric",
+          "antrum",
+          "antral",
+          "corpus",
+          "body",
+          "fundus",
+          "duodenum",
+          "duodenal",
+          "D2",
+          "jejunum",
+          "jejunal",
+          "ileum",
+          "ileal",
+          "terminal ileum",
+          "TI",
+          "small bowel",
+          "colon",
+          "colonic",
+          "caecum",
+          "cecum",
+          "ascending",
+          "transverse",
+          "descending",
+          "sigmoid",
+          "rectosigmoid",
+          "rectum",
+          "rectal",
+          "hepatic flexure",
+          "splenic flexure",
+          "random colon",
+          "oral",
+          "oral mucosa",
+          "mouth",
+          "buccal",
+          "buccal mucosa",
+          "cheek",
+          "lip",
+          "lips",
+          "labial",
+          "tongue",
+          "gingiva",
+          "gingival",
+          "gum",
+          "palate",
+          "hard palate",
+          "soft palate",
+          "floor of mouth",
+          "minor salivary gland",
+          "minor salivary glands",
+          "MSG"
+        ],
+        "procedure": [
+          "biopsy",
+          "biopsies",
+          "punch",
+          "punch biopsy",
+          "incisional biopsy"
+        ],
+        "clinical": [
+          "GVHD",
+          "aGVHD",
+          "cGVHD",
+          "GVH",
+          "graft-versus-host",
+          "graft versus host",
+          "BMT",
+          "HSCT",
+          "allo-HSCT",
+          "allogeneic",
+          "stem cell transplant",
+          "bone marrow transplant"
+        ],
+        "gate": "\\b[ac]?GVHD?\\b|graft[\\s-]+(?:versus|vs\\.?)[\\s-]+host|\\ballo(?:geneic)?[\\s-]*(?:HSCT|BMT|SCT|PBSCT|HCT|transplant\\w*)|\\b(?:HSCT|BMT|PBSCT)\\b|(?:stem[\\s-]+cell|bone[\\s-]+marrow|ha?ematopoietic(?:[\\s-]+stem)?[\\s-]+cell)[\\s-]+transplant\\w*",
+        "exclude": [
+          "polyp",
+          "polypectomy",
+          "mass",
+          "tumour",
+          "tumor",
+          "growth",
+          "carcinoma",
+          "cancer",
+          "EMR",
+          "ESD",
+          "resection",
+          "excision",
+          "colectomy",
+          "gastrectomy",
+          "oesophagectomy",
+          "esophagectomy",
+          "leukoplakia",
+          "leucoplakia",
+          "erythroplakia",
+          "dysplasia",
+          "frozen"
+        ],
+        "bias": 5,
+        "fill": [
+          {
+            "field": "site",
+            "from": "map",
+            "map": [
+              [
+                "\\bterminal\\s+ileum\\b|\\bTI\\b",
+                "Terminal ileum"
+              ],
+              [
+                "\\bile(?:um|al)\\b",
+                "Ileum"
+              ],
+              [
+                "\\bjejun",
+                "Jejunum"
+              ],
+              [
+                "\\bduoden|\\bD[1-4]\\b",
+                "Duodenum"
+              ],
+              [
+                "o?esophag|\\bOGJ\\b|\\bGOJ\\b",
+                "Oesophagus"
+              ],
+              [
+                "\\bantr",
+                "Gastric antrum"
+              ],
+              [
+                "\\b(?:body|corpus|fundus)\\b",
+                "Gastric body"
+              ],
+              [
+                "\\b(?:stomach|gastric)\\b",
+                "Stomach"
+              ],
+              [
+                "\\bca?ec(?:um|al)\\b",
+                "Caecum"
+              ],
+              [
+                "\\bhepatic\\s+flexure\\b",
+                "Hepatic flexure"
+              ],
+              [
+                "\\bsplenic\\s+flexure\\b",
+                "Splenic flexure"
+              ],
+              [
+                "\\bascending\\b",
+                "Ascending colon"
+              ],
+              [
+                "\\btransverse\\b",
+                "Transverse colon"
+              ],
+              [
+                "\\bdescending\\b",
+                "Descending colon"
+              ],
+              [
+                "\\brecto-?sigmoid\\b",
+                "Rectosigmoid"
+              ],
+              [
+                "\\bsigmoid\\b",
+                "Sigmoid colon"
+              ],
+              [
+                "\\brect(?:um|al)\\b",
+                "Rectum"
+              ],
+              [
+                "\\bcolon|\\bcolonic\\b",
+                "Colon"
+              ],
+              [
+                "\\bbuccal\\b|\\bcheek\\b",
+                "Buccal mucosa"
+              ],
+              [
+                "\\blips?\\b|\\blabial\\b|\\bminor\\s+salivary\\b|\\bMSG\\b",
+                "Lip"
+              ],
+              [
+                "\\btongue\\b",
+                "Tongue"
+              ],
+              [
+                "\\bging|\\bgums?\\b",
+                "Gingiva"
+              ],
+              [
+                "\\bhard\\s+palate\\b",
+                "Hard palate"
+              ],
+              [
+                "\\bsoft\\s+palate\\b",
+                "Soft palate"
+              ],
+              [
+                "\\bpalat",
+                "Palate"
+              ],
+              [
+                "\\bfloor\\s+of\\s+(?:the\\s+)?mouth\\b",
+                "Floor of mouth"
+              ],
+              [
+                "\\boral\\b|\\bmouth\\b",
+                "Oral mucosa"
+              ]
+            ]
+          },
+          {
+            "field": "detail",
+            "from": "text",
+            "strip": "\\b(?:terminal\\s+ileum|ileum|ileal|TI|jejun\\w*|duoden\\w*|o?esophag\\w*|OGJ|GOJ|stomach|gastric|antr\\w*|body|corpus|fundus|ca?ec(?:um|al)|hepatic\\s+flexure|splenic\\s+flexure|ascending|transverse|descending|recto-?sigmoid|sigmoid|rect(?:um|al)|colon(?:ic)?|buccal(?:\\s+mucosa)?|cheek|mucosa|lips?|labial|minor\\s+salivary\\s+glands?|salivary\\s+glands?|MSG|tongue|ging\\w*|gums?|hard\\s+palate|soft\\s+palate|palat\\w*|floor\\s+of\\s+(?:the\\s+)?mouth|mouth|oral(?:\\s+cavity)?|punch|incisional|biops(?:y|ies)|bx|x\\s*\\d+|for\\s+[ac]?GVHD?|[ac]?GVHD?|query|r\\/o)\\b|\\?\\s*[ac]?GVHD?\\b|\\?|[()]|(?:\\?\\s*|\\b(?:query|r\\/o|rule\\s+out|to\\s+exclude|exclude|for|suspected)\\s+)?(?:\\b(?:acute|chronic|upper\\s+GI|lower\\s+GI|gut|GI)\\s+)?(?:\\b[ac]?GVHD?\\b|\\bgraft[\\s-]+(?:versus|vs\\.?)[\\s-]+host(?:[\\s-]+disease)?\\b)|\\b(?:post[\\s-]*)?(?:allo(?:geneic)?[\\s-]*)?(?:HSCT|BMT|SCT|PBSCT|HCT)\\b|\\b(?:post[\\s-]+)?(?:allo(?:geneic)?[\\s-]+)?(?:stem[\\s-]+cell|bone[\\s-]+marrow|ha?ematopoietic(?:[\\s-]+stem)?[\\s-]+cell)[\\s-]+transplant\\w*|\\b(?:post[\\s-]+)?allo(?:geneic)?[\\s-]+transplant\\w*",
+            "unless": "^(?:and|of|the|for|with)$"
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bpunch",
+                "Punch biopsy"
+              ],
+              [
+                "\\bincisional",
+                "Incisional biopsy"
+              ]
+            ]
+          },
+          {
+            "field": "salivary",
+            "from": "map",
+            "map": [
+              [
+                "salivary|\\bMSG\\b|\\blips?\\b|\\blabial\\b",
+                "Included"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.10",
+      "generator": "gvhd_biopsy",
+      "generatorPath": "generators/gvhd_biopsy.js",
+      "schemaPath": "schemas/gvhd_biopsy.json"
     },
     {
       "id": "generic",

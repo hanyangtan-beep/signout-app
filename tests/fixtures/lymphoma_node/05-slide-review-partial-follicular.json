@@ -1,0 +1,40 @@
+{
+  "templateId": "lymphoma_node",
+  "values": {
+    "site": "left axillary",
+    "procedure": "Excision",
+    "received": "Slides for review",
+    "refHospital": "Queen Elizabeth Hospital",
+    "refNumber": "B26/00001",
+    "slidesHE": "3",
+    "slidesIHC": "10",
+    "slidesISH": "1",
+    "refBlocks": "1",
+    "refDate": "01/10/2026",
+    "architecture": "Partially effaced",
+    "pattern": "Follicular / nodular",
+    "cellSize": "Small to medium",
+    "cytology": [
+      "Centrocytes and centroblasts"
+    ],
+    "features": [
+      "Residual reactive follicles"
+    ],
+    "dx": "Follicular lymphoma",
+    "flGrade": "Grade 1",
+    "extent": "Partial involvement",
+    "certainty": "In keeping with",
+    "panel": [
+      "CD20",
+      "CD10",
+      "BCL2"
+    ],
+    "r_CD20": "Positive",
+    "r_CD10": "Positive",
+    "r_BCL2": "Positive",
+    "ki67": "10",
+    "eber": "Not performed"
+  },
+  "report": "Lymph node, left axillary, excision for slide review\n\nThree H&E sections, ten immunostained sections, one in situ hybridisation section and one paraffin block labelled B26/00001 are received from Queen Elizabeth Hospital. They represent a left axillary lymph node excision, received on 01/10/2026. Sections show a lymph node with the nodal architecture partially effaced by a nodular proliferation of small to medium-sized atypical lymphoid cells. The atypical cells comprise centrocytes and centroblasts. Residual reactive follicles are present. Immunohistochemical stains show that the atypical lymphoid cells are positive for CD20, CD10 and BCL2. The Ki-67 proliferative index is approximately 10%. The overall features are in keeping with partial involvement by follicular lymphoma, grade 1.\n\nImmunohistochemistry\n- CD20: Positive\n- CD10: Positive\n- BCL2: Positive\n- Ki-67: approximately 10%\n\nLYMPH NODE, left axillary, excision for slide review (B26/00001 x 14 slides\nfrom Queen Elizabeth Hospital)\n- In keeping with partial involvement by FOLLICULAR LYMPHOMA, grade 1",
+  "checks": []
+}

@@ -53,6 +53,6 @@ Phase 68 (user request and pulled by the user 2026-10-11). Template `skin_inflam
 
 ## Not built (Later)
 
-- GI graft-versus-host disease on gastric, duodenal and colonic biopsies (NIH 2014 categories and a modified Lerner grade; research in §20.9 of the reference document).
+- GI graft-versus-host disease on gastric, duodenal and colonic biopsies (NIH 2014 categories and a modified Lerner grade; research in §20.9 of the reference document). Built on 2026-10-14 (Phase 71) as its own form, with oral mucosa: `docs/specs/gvhd-biopsy.md`.
 - Reference images for the inflammatory patterns. The form's reference panels are text only.
 - Alopecia on horizontal sections (follicle counts and ratios).

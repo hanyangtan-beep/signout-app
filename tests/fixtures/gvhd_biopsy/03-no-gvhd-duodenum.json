@@ -1,0 +1,17 @@
+{
+  "templateId": "gvhd_biopsy",
+  "values": {
+    "site": "Duodenum",
+    "detail": "D2",
+    "pieces": "4",
+    "sections": "8",
+    "apoptosis": "None seen",
+    "paneth": "Preserved",
+    "laminaPropria": "Sparse",
+    "eosinophils": "Inconspicuous",
+    "cmv": "Negative",
+    "nih": "Not GVHD"
+  },
+  "report": "Duodenum, D2, biopsy\n\nSerial sections show four pieces of duodenal mucosa. No crypt apoptosis is seen. Paneth cells are preserved. The lamina propria contains a sparse inflammatory infiltrate. Eosinophils are inconspicuous. No viral cytopathic change or granuloma is seen. Immunohistochemistry for cytomegalovirus (CMV) is negative. There is no evidence of graft-versus-host disease. There is no evidence of dysplasia or malignancy. Please correlate with clinical findings.\n\nDUODENUM, D2, biopsy:\n- NO EVIDENCE OF GRAFT-VERSUS-HOST DISEASE.",
+  "checks": []
+}

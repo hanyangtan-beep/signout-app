@@ -1,0 +1,27 @@
+{
+  "templateId": "lymphoma_node",
+  "values": {
+    "site": "right posterior neck",
+    "procedure": "Excision",
+    "fixation": "In formalin",
+    "size": "1.8 x 1.2 x 1.0",
+    "blocks": "2",
+    "architecture": "Partially effaced",
+    "background": [
+      "Histiocytes",
+      "Small lymphocytes"
+    ],
+    "dx": "Kikuchi-Fujimoto disease",
+    "ihcCells": "histiocytes",
+    "panel": [
+      "CD68",
+      "MPO"
+    ],
+    "r_CD68": "Positive",
+    "r_MPO": "Positive",
+    "ihcBackground": "CD123 highlights clusters of plasmacytoid dendritic cells. CD3 highlights numerous T cells, with CD8 predominance",
+    "eber": "Negative"
+  },
+  "report": "Lymph node, right posterior neck, excision\n\nReceived in formalin is a lymph node measuring 1.8 x 1.2 x 1.0 cm. Serially sliced and all embedded in two blocks.\n\nSections show a lymph node with the nodal architecture partially effaced. There are paracortical areas of necrosis with karyorrhectic debris and histiocytes. The background contains small lymphocytes and histiocytes. Immunohistochemical stains show that the histiocytes are positive for CD68 and MPO. CD123 highlights clusters of plasmacytoid dendritic cells. CD3 highlights numerous T cells, with CD8 predominance. In situ hybridisation for EBER is negative in the histiocytes. The overall features are those of histiocytic necrotising lymphadenitis, in keeping with Kikuchi-Fujimoto disease.\n\nImmunohistochemistry\n- CD68: Positive\n- MPO: Positive\n\nIn situ hybridisation\n- EBER: Negative\n\nLYMPH NODE, right posterior neck, excision\n- HISTIOCYTIC NECROTISING LYMPHADENITIS, in keeping with KIKUCHI-FUJIMOTO\n  DISEASE",
+  "checks": []
+}

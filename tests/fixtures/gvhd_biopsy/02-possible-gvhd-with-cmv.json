@@ -1,0 +1,24 @@
+{
+  "templateId": "gvhd_biopsy",
+  "values": {
+    "site": "Transverse colon",
+    "pieces": "3",
+    "apoptosis": "Numerous",
+    "cryptChanges": [
+      "Regenerative epithelial changes"
+    ],
+    "gutFeatures": [
+      "Erosion"
+    ],
+    "laminaPropria": "Moderate",
+    "eosinophils": "Inconspicuous",
+    "viral": "Cytomegalovirus inclusions",
+    "cmv": "Positive, near the apoptotic cells",
+    "nih": "Possible GVHD",
+    "differential": [
+      "CMV-related injury"
+    ]
+  },
+  "report": "Transverse colon, biopsy\n\nSerial sections show three pieces of colonic mucosa. Numerous apoptotic bodies are seen in the basal crypt epithelium. The crypts show regenerative epithelial changes. There is surface erosion. The lamina propria shows a moderate chronic inflammatory infiltrate of lymphocytes and plasma cells. Eosinophils are inconspicuous. Enlarged cells with cytomegalovirus inclusions are seen. Immunohistochemistry for cytomegalovirus (CMV) highlights infected cells close to the apoptotic epithelial cells. The overall features may represent graft-versus-host disease. The differential diagnosis includes cytomegalovirus-related injury. There is no evidence of dysplasia or malignancy. Please correlate with clinical findings.\n\nTRANSVERSE COLON, biopsy:\n- CRYPT APOPTOSIS, possible GRAFT-VERSUS-HOST DISEASE (please see description).\n- CYTOMEGALOVIRUS COLITIS.",
+  "checks": []
+}

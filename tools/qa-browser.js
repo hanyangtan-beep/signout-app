@@ -1393,6 +1393,58 @@ await check('vulval and vaginal biopsies: pasted lines open the cervical form on
   return 'vulval punch pre-filled with its own fields; dVIN line and p53 sentence; p53 gallery 7 photos; Paget stains gallery 5 photos; vault negative line';
 });
 
+// Lymph node for lymphoma and GI / oral GVHD biopsies (Phase 71, pulled by the user 2026-10-14).
+await check('lymph node for lymphoma: "?lymphoma" opens the lymphoma form on its site; Hans reads CD10, BCL6 and MUM1; a plain node keeps the node form', async () => {
+  let routed = await pasteAndBuild('Lymph node, left neck, excision ?lymphoma');
+  assert(routed === 'lymphoma_node', `routed to ${routed}`);
+  const site = await page.locator('#f-A-site').inputValue();
+  assert(site === 'Left neck', `site read "${site}"`);
+  for (const marker of ['CD10', 'BCL6', 'MUM1']) await pickField('panel', marker);
+  let report = await reportText();
+  assert(report.includes('LYMPH NODE, left neck, excision') && report.includes('- DIFFUSE LARGE B-CELL LYMPHOMA, NOS, GCB type'), `GCB line wrong: ${report.slice(-400)}`);
+  await pickField('r_CD10', 'Negative');
+  report = await reportText();
+  assert(report.includes('- DIFFUSE LARGE B-CELL LYMPHOMA, NOS, non-GCB type'), `non-GCB line wrong: ${report.slice(-400)}`);
+  assert(report.includes('- Cell of origin (Hans algorithm): Non-GCB type'), 'the Hans line is missing from the stain list');
+  assert(report.includes('The cell of origin is assigned by the Hans immunohistochemical algorithm (CD10, BCL6 and MUM1).'), 'the method sentence is missing');
+  await page.locator('[data-field="panel"]').first().scrollIntoViewIfNeeded();
+  await shot('lymphoma-dlbcl-hans');
+  routed = await pasteAndBuild('Lymph node, left neck, excision');
+  assert(routed === 'lymph_node', `a node with no lymphoma question routed to ${routed}`);
+  return 'left neck pre-filled; GCB then non-GCB on CD10; Hans line and method sentence; plain node stays on the node form';
+});
+
+await check('GI and oral GVHD: "?GVHD" opens the GVHD form; crypt dropout reads grade 2; Possible hides the grade; a lip shows the oral and salivary fields', async () => {
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) === 1;
+  let routed = await pasteAndBuild('Sigmoid colon, biopsy ?GVHD');
+  assert(routed === 'gvhd_biopsy', `colon routed to ${routed}`);
+  assert(await shows('apoptosis') && await shows('cryptLoss') && !(await shows('oralFeatures')), 'the gut fields are not the ones showing');
+  await pickField('apoptosis', 'At least one per piece');
+  await pickField('cryptLoss', 'Individual crypts');
+  let report = await reportText();
+  assert(report.includes('SIGMOID COLON, biopsy:') && report.includes('- CRYPT APOPTOSIS AND CRYPT DROPOUT, likely GRAFT-VERSUS-HOST DISEASE (grade 2).'), `likely line wrong: ${report.slice(-300)}`);
+  assert(report.includes('Apoptotic bodies are seen in the basal crypt epithelium of every piece.'), `apoptosis sentence missing: ${report.slice(0, 400)}`);
+  await pickField('nih', 'Possible GVHD');
+  assert(!(await shows('grade')), 'the grade still shows with Possible GVHD');
+  report = await reportText();
+  assert(report.includes('- CRYPT APOPTOSIS AND CRYPT DROPOUT, possible GRAFT-VERSUS-HOST DISEASE (please see description).'), `possible line wrong: ${report.slice(-300)}`);
+  const checks = await checksText();
+  assert(/name the other explanations in the differential/.test(checks), `Checks did not ask for the differential (read: ${checks.slice(0, 200)})`);
+  await page.locator('[data-field="nih"]').first().scrollIntoViewIfNeeded();
+  await shot('gvhd-colon-possible');
+
+  routed = await pasteAndBuild('Lower lip, biopsy ?chronic GVHD');
+  assert(routed === 'gvhd_biopsy', `lip routed to ${routed}`);
+  assert(await shows('oralFeatures') && await shows('salivaryFeatures') && !(await shows('apoptosis')), 'the oral and salivary fields are not the ones showing');
+  await pickField('oralFeatures', 'Lichenoid interface inflammation');
+  await pickField('salivaryFeatures', 'Periductal lymphocytic inflammation');
+  report = await reportText();
+  assert(report.includes('LIP, lower, biopsy:') && report.includes('- LICHENOID MUCOSITIS AND LYMPHOCYTIC SIALADENITIS, likely CHRONIC GRAFT-VERSUS-HOST DISEASE.'), `lip line wrong: ${report.slice(-300)}`);
+  await page.locator('[data-field="salivaryFeatures"]').first().scrollIntoViewIfNeeded();
+  await shot('gvhd-lip-salivary');
+  return 'colon grade 2 line; Possible hides the grade and asks for the differential; lip opens on oral and salivary fields with the chronic line';
+});
+
 // Colonic polyp descriptions and malignant polyp levels (user request, 2026-10-05).
 await check('colonic polyp: serrated and high grade descriptions; Haggitt level on a pasted polypectomy', async () => {
   const visible = (id) => page.locator(`.field[data-field="${id}"]:visible`).count();
