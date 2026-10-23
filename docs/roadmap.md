@@ -136,7 +136,28 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. The Phase 74 batch (attached tubes and ovaries on the benign uterus form with the leiomyoma not by default, the leiomyoma assessment, and the benign tube and ovary form with p53 signature, STIL and STIC, all M, user request 2026-10-23) shipped on 2026-10-23; the write-up is in `docs/specs/specimen-intake.md` (Uterus attached adnexa, leiomyoma assessment and benign tube and ovary). The morcellated leiomyoma and uterine leiomyosarcoma cards from the same request wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+An M and an S card from the user's request of 2026-10-23 (the CNS resection form's PitNET prints the glioma microscopy and stains); one batch. The morcellated leiomyoma and uterine leiomyosarcoma cards wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+
+### Pituitary neuroendocrine tumour (PitNET) — resection synoptic (user request 2026-10-23)   Size: M
+Why:        the Glioma form offers PitNET among the sellar tumours but prints the glioma microscopy and stains (increased cellularity, microvascular proliferation, pseudopalisading necrosis, GFAP and OLIG2, IDH1 R132H, a Glioblastoma classification) and asks for a CNS WHO grade; it has no lineage, hormone, keratin or Ki-67 fields (user, 2026-10-23). The QMH Endocrine-PitNET page waits in Later as a placeholder.
+Change:     new template `pituitary_net` (Endocrine, cancer resection, menu label "PitNET"; replaces the placeholder) in the QMH Endocrine-PitNET element order: procedure, tumour integrity, tumour number and size; tumour type and subtype grouped by lineage (TPIT, PIT1, SF1, no distinct lineage) with the CAP subtypes; the tumour histology paragraph carrying the morphology, reticulin and PAS, and the immunohistochemistry woven in (diffusely positive, focally positive and negative; the lineage transcription factors follow the type; keratin with its extent and pattern; p27, ATRX and p53); Ki-67 labelling index and mitotic count per 2 mm2; histologically confirmed invasion with its site; metastasis; non-tumorous pituitary with Crooke's hyaline change for a corticotroph tumour; additional findings (apoplexy, hypophysitis, Rathke's cleft cyst, craniopharyngioma). Diagnosis "PITUITARY, tumour, transsphenoidal excision" then "- GONADOTROPH PITUITARY NEUROENDOCRINE TUMOUR (PitNET), SF1-lineage". Checks: a transcription factor at odds with the lineage, Crooke's change not recorded for a corticotroph tumour with gland present, a keratin pattern at odds with the somatotroph granulation, Ki-67 not recorded. No CNS WHO grade.
+Untouched:  the Glioma and Brain biopsy forms' wording and fixtures; frozen section.
+Accept:     fixtures for an SF1-lineage gonadotroph tumour, a sparsely granulated somatotroph tumour with fibrous bodies and bone invasion, a densely granulated corticotroph tumour with Crooke's hyaline change, and a null cell tumour; the element-order test against the saved QMH page.
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: none
+Spec:       card is the spec
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/Endocrine-PitNET.html; https://www.cap.org/wp-content/uploads/2026/07/Pituitary.NET_1.0.0.0.REL_.CAPCP_.pdf?download; https://link.springer.com/article/10.1007/s12022-022-09703-7
+
+### PitNET — intake routing and the CNS form hand-off (user request 2026-10-23)   Size: S
+Why:        pituitary lines such as "Pituitary, Pituitary tumour" open Generic (fewer than 10 in each export), and the Glioma form still offers PitNET with the glioma defaults.
+Change:     a pituitary, sella or PitNET line (tumour, lesion, adenoma, macroadenoma; transsphenoidal, TSS, endoscopic) opens the PitNET form with the procedure read from the line; frozen section, cyst, Rathke's cleft, craniopharyngioma, hypophysitis, tuberculum sellae and meningioma lines keep their forms. On the Glioma form, PitNET stays in the sellar list for saved cases, reads "use the PitNET form" there, and raises a check that points to that form.
+Untouched:  the Brain biopsy form's PitNET (smear and small biopsy); suprasellar lines (Brain biopsy form); the frozen CNS / pituitary scenario; every golden fixture.
+Accept:     intake top-1 for "Pituitary, Pituitary tumour", "Pituitary adenoma, transsphenoidal excision", "Pituitary macroadenoma, TSS" and "Sellar tumour, endoscopic transsphenoidal resection"; "Sella, cystic lesion" and "Pituitary tumour, frozen section" do not open it; the line comparison on both exports moves only pituitary and sellar lines.
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: Pituitary neuroendocrine tumour (PitNET) — resection synoptic
+Spec:       card is the spec
 
 ## Next
 
@@ -293,6 +314,7 @@ Spec:       `docs/specs/frozen-section-scenarios.md`
 - Sites and sides still defaulted (found 2026-09-24): the frozen sentinel site stays "Breast" whatever the line names ("Left groin SLN 1"), and the line drops "axillary", which 25 of 178 released heads name. Pasted breast carcinoma, DCIS and phyllodes parts that name no side keep the form's Left.
 
 - CNS specimen line from an LIS triple (found 2026-09-24): "Brain, left temporal tumour, biopsy" puts only "left temporal tumour" in "Specimen as received", so the specimen line loses the organ; none of the 208 CNS request lines in the exports is a triple.
+- CNS resection defaults for non-glioma entities (found 2026-10-23 while carding PitNET): the Glioma form opens with the glioblastoma features, GFAP and OLIG2, an IDH1 R132H result and a Glioblastoma classification whatever the family, so a craniopharyngioma, a metastasis or another non-glioma entity prints them unless each is cleared; open them blank, or by family, for the non-glioma families.
 
 - Testicular and epididymal appendages (found 2026-09-25): the 2 scrotal-exploration lines naming a testicular appendage route confidently to the ovarian cyst form, and the 1 epididymal appendage line stays on Generic, all as before batch 3; `testis_benign` excludes the appendage, so a torted appendix testis or epididymis has no form yet.
 
@@ -308,7 +330,7 @@ Spec:       `docs/specs/frozen-section-scenarios.md`
 
 - Pancreatic diagnosis head and stage line in the house form (found 2026-10-03): the pancreatic template prints "PANCREAS AND SPLEEN" and "pT2 pN1 (AJCC 8th edition)", where the HCC synoptic prints "- Stage pT2 (pTNM, AJCC 8th edition)"; align them once the house form for pancreatic resections is confirmed.
 
-- Remaining QMH cancer templates (placeholders in the menus since 2026-09-12, pull as cards when volume warrants; the placeholder is removed by the card that builds it): GI — small intestine, anus; HPB — intrahepatic cholangiocarcinoma, pancreas NET, hepatoblastoma; Gynae — cervix, vulva, vagina, uterine sarcoma (carded in Next 2026-10-23), GTD; H&N — nasopharynx, hypopharynx / oropharynx HPV−, larynx, sinonasal, salivary, mucosal melanoma; Endocrine — thyroid, adrenal cortical, phaeochromocytoma / paraganglioma, PitNET, neuroblastoma; Skin / soft tissue — melanoma, bone, Ewing, rhabdomyosarcoma, extragonadal GCT (soft tissue sarcoma carded in Next 2026-09-24, skin SCC 2026-09-25, oral cavity and HPV-associated oropharynx 2026-09-26); Thoracic — mesothelioma, thymus; GU — kidney, bladder, ureter / renal pelvis, urethra, penis, testis, Wilms; CNS — meningioma; Biomarkers — Gyn markers, colon HER2, stomach markers, MMR / MSI, PD-L1, DNA PCR, RNA RT-PCR, FISH, NGS.
+- Remaining QMH cancer templates (placeholders in the menus since 2026-09-12, pull as cards when volume warrants; the placeholder is removed by the card that builds it): GI — small intestine, anus; HPB — intrahepatic cholangiocarcinoma, pancreas NET, hepatoblastoma; Gynae — cervix, vulva, vagina, uterine sarcoma (carded in Next 2026-10-23), GTD; H&N — nasopharynx, hypopharynx / oropharynx HPV−, larynx, sinonasal, salivary, mucosal melanoma; Endocrine — thyroid, adrenal cortical, phaeochromocytoma / paraganglioma, PitNET (carded in Now 2026-10-23), neuroblastoma; Skin / soft tissue — melanoma, bone, Ewing, rhabdomyosarcoma, extragonadal GCT (soft tissue sarcoma carded in Next 2026-09-24, skin SCC 2026-09-25, oral cavity and HPV-associated oropharynx 2026-09-26); Thoracic — mesothelioma, thymus; GU — kidney, bladder, ureter / renal pelvis, urethra, penis, testis, Wilms; CNS — meningioma; Biomarkers — Gyn markers, colon HER2, stomach markers, MMR / MSI, PD-L1, DNA PCR, RNA RT-PCR, FISH, NGS.
 
 - Related prior specimen — read-only Sheet lookup by accession (fills date, procedure, type, size, pT, pN from the saved case's staging summary); deferred from the Lung pair ("6 type-only for now").
 - Lung reference galleries (adenocarcinoma patterns for the IASLC grade, STAS, PL0–PL3 elastic-stain levels), openly licensed with credit; deferred from the Lung pair.
