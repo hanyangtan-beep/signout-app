@@ -763,6 +763,12 @@ function applyFill(schema, part, values, history = '') {
       // `strip` (regex source) removes the organ and procedure words, then the remainder opens with a
       // capital so the microscopy heading reads "Left apex, 2 cores" whatever the LIS casing was.
       if (v && rule.strip) v = stripWords(v, rule.strip).replace(/^[a-z]/, (c) => c.toUpperCase());
+      // `dedupe` — a piece the same as an earlier one, in any case, is dropped: the LIS often lists a site
+      // twice ("Right back sebaceous cyst, Right back"), which would otherwise print "right back, Right back".
+      if (v && rule.dedupe) {
+        const seen = new Set();
+        v = v.split(/\s*,\s*/).filter((bit) => !seen.has(bit.toLowerCase()) && seen.add(bit.toLowerCase())).join(', ');
+      }
       // `lower` — the value prints mid-heading ("SKIN, left cheek nodule, excision"), so a first word
       // typed with a capital ("Left", "RIght") opens in lower case; a short form in capitals ("L leg",
       // "RLL") keeps its case.

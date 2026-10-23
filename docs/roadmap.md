@@ -2,7 +2,7 @@
 
 Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item, newest first. The app's Roadmap panel is built from this file, so a change here is rebuilt, deployed and published (user decision 2026-09-29); other docs-only changes are committed only. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`; the full Done write-ups to 2026-09-25 are in `docs/done-log.md`.
 
-State on 2026-10-23: 77 templates (19 small biopsy, 30 benign resection incl. LEEP, 1 frozen section, 18 synoptic cancer resections, 1 lymph node for lymphoma, 6 cytology, 1 biomarker, 1 generic), 1879 tests, published at `https://han-signout.pplx.app`.
+State on 2026-10-23: 77 templates (19 small biopsy, 30 benign resection incl. LEEP, 1 frozen section, 18 synoptic cancer resections, 1 lymph node for lymphoma, 6 cytology, 1 biomarker, 1 generic), 1887 tests, published at `https://han-signout.pplx.app`.
 
 ---
 
@@ -10,6 +10,8 @@ State on 2026-10-23: 77 templates (19 small biopsy, 30 benign resection incl. LE
 
 Newest first. The full write-ups as they stood at ship time are in `docs/done-log.md`.
 
+- 2026-10-23 — Skin SCC — site copied from the specimen line (user request): the same rule ("Left cheek SCC, stitch at 12 oc" prints "Skin, left cheek, excision"; "right preauricular SCC, short long stitch at 12 oclock" gives "right preauricular"); with no site on the line the specimen still prints the tumour site and laterality. Site went from blank to filled on all 11 SCC parts of both exports. Schema 2026.10. Phase 73.
+- 2026-10-23 — Skin cyst — site copied from the specimen line (user request): Site now fills from the specimen line with the Skin excision rule ("Skin, Left groin sebaceous cyst" gives "left groin"; "sebaceous cyst left forehead" gives "left forehead"), and a site the line repeats is copied once ("Right back sebaceous cyst, Right back" gives "right back"), on the three skin forms only. On the cyst parts of both exports, Site went from blank on every one to filled on 205 of 208; the rest name no site ("cyst wall biopsy"). No line changes route, and no other form's prefill changes. Schema 2026.10. Spec: `docs/specs/specimen-intake.md`. 77 templates, 1887 tests. Phase 73.
 - 2026-10-23 — Skin excision — naevus lipomatosus cutaneous superficialis (user request): a diagnosis option after Lipoma in the Fibrous, vascular and fatty group, with its own paragraph (groups of mature adipocytes in the superficial and mid dermis, between the collagen bundles and around small vessels, not encapsulated and with no connection with the subcutaneous fat, no lipoblasts) and "NAEVUS LIPOMATOSUS CUTANEOUS SUPERFICIALIS" with the margin clause. The name keeps "cutaneous", as the department's reports print it. Sources: `docs/reference/skin-excision-benign-sources.md`. Phase 72.
 - 2026-10-23 — Skin excision — site copied from the specimen line (user request): Site now fills from a two-piece skin line ("Skin, Right thigh" gives "right thigh"; "Skin, Left anterior shin lesion, stitch at proximal" gives "left anterior shin"), without the word skin, the procedure, sizes, a question mark, lesion and diagnosis words or the stitch, and in lower case except short forms in capitals ("L leg"); a line that is only a margin name stays blank. It runs whether the line routes to the form or the part is switched to it by hand. On the skin parts of both exports, Site went from blank on every one to filled on 590 of 609; the rest name no site. No line changes route. Schema 2026.10. Spec: `docs/specs/specimen-intake.md`. 77 templates, 1879 tests. Phase 72.
 - 2026-10-14 — GI and oral graft-versus-host disease biopsy (pulled by the user): a new form, `gvhd_biopsy` ("GVHD", last in the Small biopsy row and the GI biopsies), reports GVHD biopsies from the oesophagus to the rectum and from the mouth (buccal mucosa, lip with minor salivary glands, tongue, gingiva, palate, floor of mouth), each region on its own fields. Gut: crypt or gland apoptosis (isolated, at least one per piece, numerous, exploding crypts), crypt loss and changes, Paneth cells, the lamina propria, eosinophils, viral change and CMV immunohistochemistry, and basal apoptosis in oesophageal squamous mucosa; mouth: lichenoid interface inflammation, exocytosis, apoptotic keratinocytes and satellitosis, and in minor salivary glands the lobules, periductal inflammation, exocytosis into ducts and acini, duct damage, acinar loss and fibrosis. The NIH 2014 category is the qualifier ("CRYPT APOPTOSIS AND CRYPT DROPOUT, likely GRAFT-VERSUS-HOST DISEASE (grade 2)", "possible … (please see description)" with the differential as a sentence, "NO EVIDENCE OF GRAFT-VERSUS-HOST DISEASE"); the gut grade 1 to 4 reads from the crypt findings in the small bowel and colon unless set, salivary gland changes read as chronic GVHD ("LICHENOID MUCOSITIS AND LYMPHOCYTIC SIALADENITIS, likely CHRONIC GRAFT-VERSUS-HOST DISEASE"), and CMV prints its own line ("CYTOMEGALOVIRUS COLITIS"). Checks for the NIH criteria, superficial apoptosis, increased eosinophils with mycophenolate, CMV near the apoptotic cells or not stained, fewer than five salivary lobules, the phase, a biopsy within 20 days of the transplant, a grade the findings do not support and fewer than eight serial sections; the day after the transplant and mycophenolate are read from the clinical history or two optional case fields. A GI or oral line whose text or history names GVHD, graft-versus-host disease, an allogeneic or stem cell transplant or BMT opens it; polyps, masses, resections, leukoplakia, dysplasia, skin and liver keep their forms, and no line in either export changes route by its specimen line alone. Four new golden fixtures. Spec: `docs/specs/gvhd-biopsy.md`. Phase 71.
@@ -131,27 +133,7 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Two S cards from the user's request of 2026-10-23. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
-
-### Skin cyst — site copied from the specimen line (user request 2026-10-23)   Size: S
-Why:        Site opens blank on Skin cyst unless the line has three pieces, although the site is on the specimen line ("Skin, Left groin sebaceous cyst", "left neck trichilemmal cyst"); the user asked for the Skin excision fix here on 2026-10-23.
-Change:     the Skin excision Site rule, with additions measured on the cyst lines: a lesion word that opens a piece is dropped ("sebaceous cyst left forehead" gives left forehead), a margin on a named site blanks, and trichilemmal, dermoid and misspelt sebaceous are cut. A new `dedupe` option copies a site the line repeats only once ("Right back sebaceous cyst, Right back" gives right back); it is set on the three skin forms only. Schema 2026.10.
-Untouched:  routing (no line in either export changes route); the prefill of every other form, Skin excision included; the golden fixtures.
-Accept:     "Skin, Left groin sebaceous cyst" gives left groin; "Right back sebaceous cyst, Right back" gives right back; "cyst wall biopsy" stays blank; the diagnosis prints "SKIN, left groin seb cyst, excision - EPIDERMAL CYST".
-Verify:     tests only
-Ship:       with batch
-Depends on: none
-Spec:       card is the spec
-
-### Skin SCC — site copied from the specimen line (user request 2026-10-23)   Size: S
-Why:        Site opens blank on Skin SCC for a line such as "Left cheek SCC, stitch at 12 oc", so the specimen prints from the tumour site and laterality, or with no site when the site list has no match; the user asked for the same fix on 2026-10-23.
-Change:     the same rule as Skin cyst, one identical strip on the three skin forms; "short long" before a stitch is cut. With no site on the line the specimen still prints the tumour site and laterality. Schema stays 2026.10.
-Untouched:  the tumour site and laterality fills; the synoptic; the golden fixtures.
-Accept:     "Left cheek SCC, stitch at 12 oc" gives left cheek and prints "Skin, left cheek, excision"; "right preauricular SCC, short long stitch at 12 oclock" gives right preauricular; "Skin, Lower lip ?SCC" gives lower lip.
-Verify:     tests only
-Ship:       with batch
-Depends on: none
-Spec:       card is the spec
+Empty. The Phase 73 batch (the skin cyst and skin SCC site copied from the specimen line, both S, user request 2026-10-23) shipped on 2026-10-23; the write-up is in `docs/specs/specimen-intake.md` (Skin cyst and Skin SCC site). The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
 
 ## Next
 

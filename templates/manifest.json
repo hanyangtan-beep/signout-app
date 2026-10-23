@@ -2158,11 +2158,15 @@
         "fill": [
           {
             "field": "specimenName",
-            "from": "detail"
+            "from": "detail",
+            "fallback": "text",
+            "strip": "^(?!.*lid\\s+margin)(?!.*\\b(?:anal|costal)\\s+margin)\\s*(?:\\S+\\s+){0,3}margins?(?:\\s+\\w{1,2}|\\s+(?:on|of|from|at)\\b.*)?\\s*$|^\\s*\\?\\s*|^\\s*(?:skin\\s+)?(?:(?:sebac\\w*|seb|epidermoid|epidermal|pilar|tri\\w*lemmal|infected|inflamed|ruptured|recurrent|pigmented)\\s+)*(?:cysts?|keratos[ie]s|SK|lesions?|nodules?|warts?|naev[iu]s|nev[iu]s|moles?|BCC|SCC)\\s+(?:(?:at|over|on|of|from|in)\\s+(?:the\\s+)?)?(?!(?:wall|contents?|lining|excision|biops\\w*|with|and|x)\\b)(?=[A-Za-z])|\\b(?:skin(?:\\s+and)?|excision(?:al)?\\s+biops(?:y|ies)|incisional\\s+biops(?:y|ies)|wide\\s+(?:local\\s+)?excision|re-?excision|excisional|excision|excised|ellipse|shave(?:\\s+biopsy)?|punch(?:\\s+biopsy)?|curett(?:ings?|age)|biops(?:y|ies)|debrided|debridement)\\b|(?:\\(\\s*)?(?:\\?|\\b(?:\\d+(?:\\.\\d+)?\\s*(?:mm|cm)\\b|\\d+(?:\\.\\d+)?\\s*x\\s*\\d|x\\s*\\d+\\b|lesions?|lestions?|nodules?|nodular|mass(?:es)?|lumps?|swellings?|cysts?|cystic|sebac\\w*|seb|epidermoid|epidermal|pilar|tri\\w*lemmal|dermoid|cutaneous|subcut\\w*|eccrine|apocrine|papillomas?|tags?|polyps?|warts?|viral|verruca\\w*|seborrh?o?eic|keratos[ie]s|keratotic|actinic|AK|SK|naev[iu]s|naevi|nev[iu]s|nevi|moles?|pigmented|melanocytic|BCC|SCC|basal|squamous|(?!stomas?\\b)\\w+omas?|\\w+itis|DFSP|pyogenic|scars?|keloid|ulcers?|ulcerated|venous|tumou?rs?|growths?|papules?|plaques?|patch(?:es)?|rash|erythematous|vascular|induration|indurated|perilesional|blister\\w*|abscess\\w*|chronic|xanthelasma|Bowen\\S*|corns?|callus|horn|stitch\\w*|sttich\\w*|stich\\w*|(?:short|long)(?=(?:\\s+(?:and\\s+)?(?:short|long))*\\s+(?:stitch|suture|sttich|stich))|sutures?|previously|infected|inflamed|recurrent|ruptured|superficial|suspicious|suspected|query|multiple|tissue|further|resection)\\b).*$",
+            "dedupe": true,
+            "lower": true
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "skincyst",
       "generatorPath": "generators/skincyst.js",
       "schemaPath": "schemas/skin_cyst.json"
@@ -2295,7 +2299,8 @@
             "field": "specimenName",
             "from": "detail",
             "fallback": "text",
-            "strip": "^(?!.*lid\\s+margin)(?!.*\\b(?:anal|costal)\\s+margin)\\s*(?:\\S+\\s+){0,3}margins?(?:\\s+\\w{1,2})?\\s*$|^\\s*\\?\\s*|\\b(?:skin(?:\\s+and)?|excision(?:al)?\\s+biops(?:y|ies)|incisional\\s+biops(?:y|ies)|wide\\s+(?:local\\s+)?excision|re-?excision|excisional|excision|excised|ellipse|shave(?:\\s+biopsy)?|punch(?:\\s+biopsy)?|curett(?:ings?|age)|biops(?:y|ies)|debrided|debridement)\\b|(?:\\(\\s*)?(?:\\?|\\b(?:\\d+(?:\\.\\d+)?\\s*(?:mm|cm)\\b|\\d+(?:\\.\\d+)?\\s*x\\s*\\d|x\\s*\\d+\\b|lesions?|lestions?|nodules?|nodular|mass(?:es)?|lumps?|swellings?|cysts?|cystic|sebaceous|seb|epidermoid|epidermal|pilar|subcut\\w*|eccrine|apocrine|papillomas?|tags?|polyps?|warts?|viral|verruca\\w*|seborrh?o?eic|keratos[ie]s|keratotic|actinic|AK|SK|naev[iu]s|naevi|nev[iu]s|nevi|moles?|pigmented|melanocytic|BCC|SCC|basal|squamous|(?!stomas?\\b)\\w+omas?|\\w+itis|DFSP|pyogenic|scars?|keloid|ulcers?|ulcerated|venous|tumou?rs?|growths?|papules?|plaques?|patch(?:es)?|rash|erythematous|vascular|induration|indurated|perilesional|blister\\w*|abscess\\w*|chronic|xanthelasma|Bowen\\S*|corns?|callus|horn|stitch\\w*|sttich\\w*|stich\\w*|sutures?|previously|infected|inflamed|recurrent|ruptured|superficial|suspicious|suspected|query|multiple|tissue|further|resection)\\b).*$",
+            "strip": "^(?!.*lid\\s+margin)(?!.*\\b(?:anal|costal)\\s+margin)\\s*(?:\\S+\\s+){0,3}margins?(?:\\s+\\w{1,2}|\\s+(?:on|of|from|at)\\b.*)?\\s*$|^\\s*\\?\\s*|^\\s*(?:skin\\s+)?(?:(?:sebac\\w*|seb|epidermoid|epidermal|pilar|tri\\w*lemmal|infected|inflamed|ruptured|recurrent|pigmented)\\s+)*(?:cysts?|keratos[ie]s|SK|lesions?|nodules?|warts?|naev[iu]s|nev[iu]s|moles?|BCC|SCC)\\s+(?:(?:at|over|on|of|from|in)\\s+(?:the\\s+)?)?(?!(?:wall|contents?|lining|excision|biops\\w*|with|and|x)\\b)(?=[A-Za-z])|\\b(?:skin(?:\\s+and)?|excision(?:al)?\\s+biops(?:y|ies)|incisional\\s+biops(?:y|ies)|wide\\s+(?:local\\s+)?excision|re-?excision|excisional|excision|excised|ellipse|shave(?:\\s+biopsy)?|punch(?:\\s+biopsy)?|curett(?:ings?|age)|biops(?:y|ies)|debrided|debridement)\\b|(?:\\(\\s*)?(?:\\?|\\b(?:\\d+(?:\\.\\d+)?\\s*(?:mm|cm)\\b|\\d+(?:\\.\\d+)?\\s*x\\s*\\d|x\\s*\\d+\\b|lesions?|lestions?|nodules?|nodular|mass(?:es)?|lumps?|swellings?|cysts?|cystic|sebac\\w*|seb|epidermoid|epidermal|pilar|tri\\w*lemmal|dermoid|cutaneous|subcut\\w*|eccrine|apocrine|papillomas?|tags?|polyps?|warts?|viral|verruca\\w*|seborrh?o?eic|keratos[ie]s|keratotic|actinic|AK|SK|naev[iu]s|naevi|nev[iu]s|nevi|moles?|pigmented|melanocytic|BCC|SCC|basal|squamous|(?!stomas?\\b)\\w+omas?|\\w+itis|DFSP|pyogenic|scars?|keloid|ulcers?|ulcerated|venous|tumou?rs?|growths?|papules?|plaques?|patch(?:es)?|rash|erythematous|vascular|induration|indurated|perilesional|blister\\w*|abscess\\w*|chronic|xanthelasma|Bowen\\S*|corns?|callus|horn|stitch\\w*|sttich\\w*|stich\\w*|(?:short|long)(?=(?:\\s+(?:and\\s+)?(?:short|long))*\\s+(?:stitch|suture|sttich|stich))|sutures?|previously|infected|inflamed|recurrent|ruptured|superficial|suspicious|suspected|query|multiple|tissue|further|resection)\\b).*$",
+            "dedupe": true,
             "lower": true
           },
           {
@@ -4902,7 +4907,11 @@
         "fill": [
           {
             "field": "specimenName",
-            "from": "detail"
+            "from": "detail",
+            "fallback": "text",
+            "strip": "^(?!.*lid\\s+margin)(?!.*\\b(?:anal|costal)\\s+margin)\\s*(?:\\S+\\s+){0,3}margins?(?:\\s+\\w{1,2}|\\s+(?:on|of|from|at)\\b.*)?\\s*$|^\\s*\\?\\s*|^\\s*(?:skin\\s+)?(?:(?:sebac\\w*|seb|epidermoid|epidermal|pilar|tri\\w*lemmal|infected|inflamed|ruptured|recurrent|pigmented)\\s+)*(?:cysts?|keratos[ie]s|SK|lesions?|nodules?|warts?|naev[iu]s|nev[iu]s|moles?|BCC|SCC)\\s+(?:(?:at|over|on|of|from|in)\\s+(?:the\\s+)?)?(?!(?:wall|contents?|lining|excision|biops\\w*|with|and|x)\\b)(?=[A-Za-z])|\\b(?:skin(?:\\s+and)?|excision(?:al)?\\s+biops(?:y|ies)|incisional\\s+biops(?:y|ies)|wide\\s+(?:local\\s+)?excision|re-?excision|excisional|excision|excised|ellipse|shave(?:\\s+biopsy)?|punch(?:\\s+biopsy)?|curett(?:ings?|age)|biops(?:y|ies)|debrided|debridement)\\b|(?:\\(\\s*)?(?:\\?|\\b(?:\\d+(?:\\.\\d+)?\\s*(?:mm|cm)\\b|\\d+(?:\\.\\d+)?\\s*x\\s*\\d|x\\s*\\d+\\b|lesions?|lestions?|nodules?|nodular|mass(?:es)?|lumps?|swellings?|cysts?|cystic|sebac\\w*|seb|epidermoid|epidermal|pilar|tri\\w*lemmal|dermoid|cutaneous|subcut\\w*|eccrine|apocrine|papillomas?|tags?|polyps?|warts?|viral|verruca\\w*|seborrh?o?eic|keratos[ie]s|keratotic|actinic|AK|SK|naev[iu]s|naevi|nev[iu]s|nevi|moles?|pigmented|melanocytic|BCC|SCC|basal|squamous|(?!stomas?\\b)\\w+omas?|\\w+itis|DFSP|pyogenic|scars?|keloid|ulcers?|ulcerated|venous|tumou?rs?|growths?|papules?|plaques?|patch(?:es)?|rash|erythematous|vascular|induration|indurated|perilesional|blister\\w*|abscess\\w*|chronic|xanthelasma|Bowen\\S*|corns?|callus|horn|stitch\\w*|sttich\\w*|stich\\w*|(?:short|long)(?=(?:\\s+(?:and\\s+)?(?:short|long))*\\s+(?:stitch|suture|sttich|stich))|sutures?|previously|infected|inflamed|recurrent|ruptured|superficial|suspicious|suspected|query|multiple|tissue|further|resection)\\b).*$",
+            "dedupe": true,
+            "lower": true
           },
           {
             "field": "tumourSite",
