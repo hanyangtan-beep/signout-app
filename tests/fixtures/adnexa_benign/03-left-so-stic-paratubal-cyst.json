@@ -1,0 +1,31 @@
+{
+  "description": "left risk-reducing salpingo-oophorectomy with a STIC and a paratubal cyst",
+  "templateId": "adnexa_benign",
+  "values": [
+    {
+      "side": "Left",
+      "procedure": "Salpingo-oophorectomy",
+      "indication": "Risk-reducing",
+      "sampling": "Entirely submitted (SEE-FIM)",
+      "tubeSize": "6 x 0.7",
+      "fimbria": "Present",
+      "ovarySize": "2.5 x 2 x 1",
+      "ovaryCut": "Unremarkable",
+      "cystSize": "1.2",
+      "blocks": "",
+      "blockKeyText": "",
+      "tubeFindings": [
+        "Paratubal cyst",
+        "STIC – see comment"
+      ],
+      "ovaryFindings": [
+        "Unremarkable"
+      ],
+      "p53Pattern": "Aberrant – null",
+      "ki67": "Increased",
+      "additionalNotes": ""
+    }
+  ],
+  "report": "Left fallopian tube and ovary, risk-reducing salpingo-oophorectomy\n\nReceived in formalin is a risk-reducing left salpingo-oophorectomy specimen. The fallopian tube measures 6 cm in length and 0.7 cm in diameter, with a fimbriated end. The ovary measures 2.5 x 2 x 1 cm, with an unremarkable cut surface. A thin-walled paratubal cyst measuring 1.2 cm is attached to the fallopian tube. The fimbriated end is amputated and sectioned longitudinally, and the remaining tube and the ovary are sectioned serially (SEE-FIM protocol). All embedded in 6 blocks.\n\n(1) Fimbria, longitudinal sections. (2-3) Fallopian tube, cross sections. (4) Paratubal cyst. (5-6) Ovary.\n\nSections show fimbrial tissue and cross sections of the left fallopian tube with unremarkable plicae. A paratubal cyst is seen, with a fibrous wall lined by ciliated tubal-type epithelium. A focus of tubal epithelium is stratified and lacks ciliated cells, with loss of nuclear polarity, enlarged hyperchromatic pleomorphic nuclei and prominent nucleoli, without stromal invasion. Immunohistochemistry shows aberrant p53 expression, with complete absence of nuclear staining in the lesional cells (null pattern). The Ki-67 proliferation index is increased in the lesional cells. The features are those of serous tubal intraepithelial carcinoma (STIC); see comment. The ovary is unremarkable.\n\nLEFT FALLOPIAN TUBE AND OVARY, risk-reducing salpingo-oophorectomy - SEROUS TUBAL INTRAEPITHELIAL CARCINOMA (STIC); PARATUBAL CYST; see comment\n\nSerous tubal intraepithelial carcinoma (STIC) is identified. Discussion at the gynaecological oncology multidisciplinary team meeting is suggested.",
+  "checks": []
+}

@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 77,
+  "count": 78,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -2034,11 +2034,62 @@
           },
           {
             "field": "specimenName",
+            "from": "map",
+            "map": [
+              [
+                "^(?=[\\s\\S]*(?:\\buter|hysterect))(?=[\\s\\S]*(?:subtotal|sub-total|supracervical))(?=[\\s\\S]*(?:ovar|oophor|adnex|appendage|bso\\b|\\btubes?\\b|fallopian|salping))",
+                "Uterus, subtotal"
+              ],
+              [
+                "^(?=[\\s\\S]*(?:\\buter|hysterect|\\b(?:tah|tlh|lavh|vh)(?:\\s*-?\\s*bso)?\\b))(?=[\\s\\S]*(?:ovar|oophor|adnex|appendage|bso\\b|\\btubes?\\b|fallopian|salping))(?![\\s\\S]*(?:bilat|\\bboth\\b|bso\\b|appendages|adnexae|\\bovaries\\b|\\b(?:left|lt)\\b[\\s\\S]*\\b(?:right|rt)\\b|\\b(?:right|rt)\\b[\\s\\S]*\\b(?:left|lt)\\b))",
+                "Uterus and cervix, total hysterectomy"
+              ]
+            ]
+          },
+          {
+            "field": "attachedAdnexa",
+            "from": "map",
+            "map": [
+              [
+                "^(?=[\\s\\S]*(?:\\buter|hysterect|\\b(?:tah|tlh|lavh|vh)(?:\\s*-?\\s*bso)?\\b))(?=[\\s\\S]*(?:ovar|oophor|adnex|appendage|bso\\b))(?=[\\s\\S]*(?:bilat|\\bboth\\b|bso\\b|appendages|adnexae|\\bovaries\\b|\\b(?:left|lt)\\b[\\s\\S]*\\b(?:right|rt)\\b|\\b(?:right|rt)\\b[\\s\\S]*\\b(?:left|lt)\\b))",
+                "Bilateral tubes and ovaries"
+              ],
+              [
+                "^(?=[\\s\\S]*(?:\\buter|hysterect|\\b(?:tah|tlh|lavh|vh)(?:\\s*-?\\s*bso)?\\b))(?=[\\s\\S]*(?:\\btubes?\\b|fallopian|salping))(?![\\s\\S]*(?:ovar|oophor|adnex|appendage|bso\\b))(?=[\\s\\S]*(?:bilat|\\bboth\\b|\\btubes\\b|salpingectomies|\\b(?:left|lt)\\b[\\s\\S]*\\b(?:right|rt)\\b|\\b(?:right|rt)\\b[\\s\\S]*\\b(?:left|lt)\\b))",
+                "Bilateral tubes"
+              ],
+              [
+                "^(?=[\\s\\S]*(?:\\buter|hysterect|\\b(?:tah|tlh|lavh|vh)(?:\\s*-?\\s*bso)?\\b))(?=[\\s\\S]*(?:ovar|oophor|adnex|appendage|bso\\b))(?=[\\s\\S]*\\b(?:left|lt)\\b)(?![\\s\\S]*\\b(?:right|rt)\\b)",
+                "Left tube and ovary"
+              ],
+              [
+                "^(?=[\\s\\S]*(?:\\buter|hysterect|\\b(?:tah|tlh|lavh|vh)(?:\\s*-?\\s*bso)?\\b))(?=[\\s\\S]*(?:ovar|oophor|adnex|appendage|bso\\b))(?=[\\s\\S]*\\b(?:right|rt)\\b)(?![\\s\\S]*\\b(?:left|lt)\\b)",
+                "Right tube and ovary"
+              ],
+              [
+                "^(?=[\\s\\S]*(?:\\buter|hysterect|\\b(?:tah|tlh|lavh|vh)(?:\\s*-?\\s*bso)?\\b))(?=[\\s\\S]*(?:adnex|\\btubes?\\b[\\s\\S]*ovar|ovar[\\s\\S]*\\btubes?\\b))",
+                "Bilateral tubes and ovaries"
+              ]
+            ]
+          },
+          {
+            "field": "leiomyoma",
+            "from": "map",
+            "history": true,
+            "map": [
+              [
+                "fibroid|leiomyom|\\bmyoma|myomectom",
+                "Present"
+              ]
+            ]
+          },
+          {
+            "field": "specimenName",
             "from": "options"
           }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "uterus",
       "generatorPath": "generators/uterus.js",
       "schemaPath": "schemas/uterus_benign.json"
@@ -2170,6 +2221,174 @@
       "generator": "skincyst",
       "generatorPath": "generators/skincyst.js",
       "schemaPath": "schemas/skin_cyst.json"
+    },
+    {
+      "id": "adnexa_benign",
+      "name": "Fallopian tube and ovary (benign)",
+      "shortName": "Tube and ovary · salpingo-oophorectomy",
+      "label": "Tube and ovary",
+      "organ": "FALLOPIAN TUBE AND OVARY",
+      "system": "Gynae",
+      "kind": "benign resection",
+      "rank": 29,
+      "aliases": [
+        "salpingo-oophorectomy",
+        "RRSO",
+        "risk-reducing",
+        "SEE-FIM",
+        "p53 signature",
+        "STIL",
+        "STIC",
+        "Walthard"
+      ],
+      "match": {
+        "site": [
+          "fallopian tube and ovary",
+          "ovary and fallopian tube",
+          "tube and ovary",
+          "ovary and tube",
+          "fallopian tubes and ovaries",
+          "ovaries and fallopian tubes",
+          "tubes and ovaries",
+          "ovaries and tubes",
+          "salpingo-oophorectomy",
+          "salpingo-oophorectomies",
+          "adnexa",
+          "adnexae",
+          "bso",
+          "rrso",
+          "rrbso",
+          "ovary & tube",
+          "ovary + tube",
+          "tube & ovary",
+          "tube + ovary",
+          "ovaries & tubes",
+          "ovaries + tubes",
+          "tubes & ovaries",
+          "tubes + ovaries"
+        ],
+        "procedure": [
+          "salpingo-oophorectomy",
+          "oophorectomy"
+        ],
+        "clinical": [
+          "risk-reducing",
+          "risk reducing",
+          "prophylactic",
+          "BRCA",
+          "BRCA1",
+          "BRCA2",
+          "Lynch"
+        ],
+        "exclude": [
+          "uterus",
+          "uterine",
+          "hysterectomy",
+          "cervix",
+          "tah",
+          "tlh",
+          "lavh",
+          "tahbso",
+          "tlhbso",
+          "myomectomy",
+          "endometrium",
+          "endometrial",
+          "cyst",
+          "cysts",
+          "cystic",
+          "cystectomy",
+          "mass",
+          "masses",
+          "tumour",
+          "tumor",
+          "carcinoma",
+          "cancer",
+          "malignancy",
+          "malignant",
+          "borderline",
+          "metastasis",
+          "metastatic",
+          "ectopic",
+          "pregnancy",
+          "gestation",
+          "frozen",
+          "fs",
+          "torsion",
+          "torted",
+          "abscess",
+          "endometrioma",
+          "dermoid",
+          "teratoma",
+          "cystadenoma",
+          "fibroma",
+          "omentum",
+          "peritoneum",
+          "peritoneal"
+        ],
+        "gate": "^(?:(?=[\\s\\S]*(?:risk[- ]?reduc|prophyl|brca|lynch|\\brr(?:b)?so\\b))|(?![\\s\\S]*(?:carcinoma|cancer|malignan|borderline|metasta|sarcoma|lymphoma|tumou?r|\\bmass|neoplas|\\bcyst)))",
+        "bias": 2,
+        "fill": [
+          {
+            "field": "side",
+            "from": "map",
+            "map": [
+              [
+                "\\bbilat|\\bboth\\b|\\bbso\\b|rrbso|(?:tubes|ovaries) and (?:fallopian )?(?:tubes|ovaries)|salpingo-oophorectomies|\\b(?:left|lt)\\b[\\s\\S]*\\b(?:right|rt)\\b|\\b(?:right|rt)\\b[\\s\\S]*\\b(?:left|lt)\\b",
+                "Bilateral"
+              ],
+              [
+                "\\b(?:left|lt)\\b",
+                "Left"
+              ],
+              [
+                "\\b(?:right|rt)\\b",
+                "Right"
+              ],
+              [
+                "^\\s*l\\.?\\s+(?=ovar|tube|fallop|adnex)",
+                "Left"
+              ],
+              [
+                "^\\s*r\\.?\\s+(?=ovar|tube|fallop|adnex)",
+                "Right"
+              ],
+              [
+                "\\brr(?:b)?so\\b",
+                "Bilateral"
+              ]
+            ]
+          },
+          {
+            "field": "indication",
+            "from": "map",
+            "history": true,
+            "map": [
+              [
+                "risk[- ]?reduc|prophyl|\\brr(?:b)?so\\b|\\bbrca|lynch",
+                "Risk-reducing"
+              ],
+              [
+                "opportunis",
+                "Opportunistic"
+              ]
+            ]
+          },
+          {
+            "field": "sampling",
+            "from": "map",
+            "map": [
+              [
+                "see-?fim",
+                "Entirely submitted (SEE-FIM)"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.10",
+      "generator": "adnexa_benign",
+      "generatorPath": "generators/adnexa_benign.js",
+      "schemaPath": "schemas/adnexa_benign.json"
     },
     {
       "id": "skin_excision",

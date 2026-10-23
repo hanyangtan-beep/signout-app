@@ -1,0 +1,30 @@
+{
+  "description": "right salpingo-oophorectomy, fimbria entirely submitted, p53 signature with overexpression and low Ki-67",
+  "templateId": "adnexa_benign",
+  "values": [
+    {
+      "side": "Right",
+      "procedure": "Salpingo-oophorectomy",
+      "indication": "Not stated",
+      "sampling": "Fimbria entirely submitted",
+      "tubeSize": "5.5 x 0.6",
+      "fimbria": "Present",
+      "ovarySize": "3 x 2 x 1.2",
+      "ovaryCut": "Unremarkable",
+      "cystSize": "",
+      "blocks": "",
+      "blockKeyText": "",
+      "tubeFindings": [
+        "p53 signature"
+      ],
+      "ovaryFindings": [
+        "Corpora albicantia"
+      ],
+      "p53Pattern": "Aberrant – overexpression",
+      "ki67": "Low",
+      "additionalNotes": ""
+    }
+  ],
+  "report": "Right fallopian tube and ovary, salpingo-oophorectomy\n\nReceived in formalin is a right salpingo-oophorectomy specimen. The fallopian tube measures 5.5 cm in length and 0.6 cm in diameter, with a fimbriated end. The ovary measures 3 x 2 x 1.2 cm, with an unremarkable cut surface. The fimbriated end is entirely submitted, with representative sections of the remainder, in 4 blocks.\n\n(1) Fimbria, entirely submitted. (2) Fallopian tube, cross sections. (3-4) Ovary.\n\nSections show fimbrial tissue and cross sections of the right fallopian tube with unremarkable plicae. The fallopian tube epithelium shows no cytological abnormality. Immunohistochemistry shows strong nuclear p53 expression in a short stretch of tubal epithelial cells. Only scattered cells are positive for Ki-67. The features are those of a p53 signature. The ovary shows corpora albicantia. There is no evidence of STIC or invasive malignancy.\n\nRIGHT FALLOPIAN TUBE AND OVARY, salpingo-oophorectomy - p53 SIGNATURE; corpora albicantia, ovary; NO EVIDENCE OF MALIGNANCY",
+  "checks": []
+}

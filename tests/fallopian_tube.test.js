@@ -33,10 +33,12 @@ test('three tube-only specimens follow the existing ones, with a side and a find
   assert.deepEqual([kindOf({ specimenName: LEFT_TUBE }), kindOf({ specimenName: RIGHT_TUBE }), kindOf({ specimenName: PARATUBAL })], ['tube', 'tube', 'paratubal']);
   assert.deepEqual(field('paratubalSide').options, ['Not stated', 'Left', 'Right']);
   assert.equal(field('paratubalSide').default, 'Not stated');
-  assert.deepEqual(field('tubeFindings').options, ['Unremarkable', 'Hydrosalpinx', 'Paratubal cyst', 'Chronic salpingitis', 'Endometriosis']);
+  // Phase 74 (23 October 2026), deliberate: the tube lesions (p53 signature, STIL, STIC) follow the benign findings.
+  assert.deepEqual(field('tubeFindings').options, ['Unremarkable', 'Hydrosalpinx', 'Paratubal cyst', 'Chronic salpingitis', 'Endometriosis', 'p53 signature', 'STIL', 'STIC – see comment']);
   assert.deepEqual(field('tubeFindings').default, ['Unremarkable']);
   assert.deepEqual(field('tubeFindings').exclusive, ['Unremarkable']);
-  assert.deepEqual(schema.layout.macroFields, ['specimenName', 'paratubalSide'], 'the side sits under the specimen in the case column');
+  // Phase 74 (23 October 2026), deliberate: the hysterectomy's attached tubes and ovaries sit under the specimen too.
+  assert.deepEqual(schema.layout.macroFields, ['specimenName', 'attachedAdnexa', 'paratubalSide'], 'the side sits under the specimen in the case column');
 });
 
 test('a tube-only part shows the tube fields only', () => {
@@ -45,7 +47,8 @@ test('a tube-only part shows the tube fields only', () => {
   assert.deepEqual(visible({ specimenName: RIGHT_TUBE, leiomyoma: 'Present' }), salp, 'a stale leiomyoma value does not bring its detail fields back');
   assert.deepEqual(visible({ specimenName: PARATUBAL }), ['specimenName', 'paratubalSide', 'cystSize', 'blocks', 'blockKeyText', 'additionalNotes']);
   const tah = visible({ specimenName: 'Uterus and cervix, total hysterectomy', leiomyoma: 'Present' });
-  for (const id of ['leiomyomaCount', 'leiomyomaLocation', 'leiomyomaSize', 'cutSurface', 'degeneration']) assert.ok(tah.includes(id), `${id} still shows on a hysterectomy`);
+  // Phase 74: `degeneration` became the leiomyoma type and changes fields.
+  for (const id of ['leiomyomaCount', 'leiomyomaLocation', 'leiomyomaSize', 'cutSurface', 'leiomyomaType', 'changes']) assert.ok(tah.includes(id), `${id} still shows on a hysterectomy`);
   assert.ok(visible({ specimenName: 'Myomectomy', leiomyoma: 'Present' }).includes('leiomyomaSize'));
   assert.ok(!tah.includes('tubeFindings') && !tah.includes('paratubalSide'));
   assert.ok(!visible({ specimenName: TUBES }).includes('tubeFindings'), 'the sterilisation segments keep the adnexal findings list');

@@ -1,6 +1,6 @@
 {
   "id": "uterus_benign",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Uterus (benign)",
   "shortName": "Uterus · hysterectomy",
   "label": "Uterus",
@@ -14,6 +14,7 @@
     ],
     "macroFields": [
       "specimenName",
+      "attachedAdnexa",
       "paratubalSide"
     ]
   },
@@ -128,6 +129,57 @@
       },
       {
         "field": "specimenName",
+        "from": "map",
+        "map": [
+          [
+            "^(?=[\\s\\S]*(?:\\buter|hysterect))(?=[\\s\\S]*(?:subtotal|sub-total|supracervical))(?=[\\s\\S]*(?:ovar|oophor|adnex|appendage|bso\\b|\\btubes?\\b|fallopian|salping))",
+            "Uterus, subtotal"
+          ],
+          [
+            "^(?=[\\s\\S]*(?:\\buter|hysterect|\\b(?:tah|tlh|lavh|vh)(?:\\s*-?\\s*bso)?\\b))(?=[\\s\\S]*(?:ovar|oophor|adnex|appendage|bso\\b|\\btubes?\\b|fallopian|salping))(?![\\s\\S]*(?:bilat|\\bboth\\b|bso\\b|appendages|adnexae|\\bovaries\\b|\\b(?:left|lt)\\b[\\s\\S]*\\b(?:right|rt)\\b|\\b(?:right|rt)\\b[\\s\\S]*\\b(?:left|lt)\\b))",
+            "Uterus and cervix, total hysterectomy"
+          ]
+        ]
+      },
+      {
+        "field": "attachedAdnexa",
+        "from": "map",
+        "map": [
+          [
+            "^(?=[\\s\\S]*(?:\\buter|hysterect|\\b(?:tah|tlh|lavh|vh)(?:\\s*-?\\s*bso)?\\b))(?=[\\s\\S]*(?:ovar|oophor|adnex|appendage|bso\\b))(?=[\\s\\S]*(?:bilat|\\bboth\\b|bso\\b|appendages|adnexae|\\bovaries\\b|\\b(?:left|lt)\\b[\\s\\S]*\\b(?:right|rt)\\b|\\b(?:right|rt)\\b[\\s\\S]*\\b(?:left|lt)\\b))",
+            "Bilateral tubes and ovaries"
+          ],
+          [
+            "^(?=[\\s\\S]*(?:\\buter|hysterect|\\b(?:tah|tlh|lavh|vh)(?:\\s*-?\\s*bso)?\\b))(?=[\\s\\S]*(?:\\btubes?\\b|fallopian|salping))(?![\\s\\S]*(?:ovar|oophor|adnex|appendage|bso\\b))(?=[\\s\\S]*(?:bilat|\\bboth\\b|\\btubes\\b|salpingectomies|\\b(?:left|lt)\\b[\\s\\S]*\\b(?:right|rt)\\b|\\b(?:right|rt)\\b[\\s\\S]*\\b(?:left|lt)\\b))",
+            "Bilateral tubes"
+          ],
+          [
+            "^(?=[\\s\\S]*(?:\\buter|hysterect|\\b(?:tah|tlh|lavh|vh)(?:\\s*-?\\s*bso)?\\b))(?=[\\s\\S]*(?:ovar|oophor|adnex|appendage|bso\\b))(?=[\\s\\S]*\\b(?:left|lt)\\b)(?![\\s\\S]*\\b(?:right|rt)\\b)",
+            "Left tube and ovary"
+          ],
+          [
+            "^(?=[\\s\\S]*(?:\\buter|hysterect|\\b(?:tah|tlh|lavh|vh)(?:\\s*-?\\s*bso)?\\b))(?=[\\s\\S]*(?:ovar|oophor|adnex|appendage|bso\\b))(?=[\\s\\S]*\\b(?:right|rt)\\b)(?![\\s\\S]*\\b(?:left|lt)\\b)",
+            "Right tube and ovary"
+          ],
+          [
+            "^(?=[\\s\\S]*(?:\\buter|hysterect|\\b(?:tah|tlh|lavh|vh)(?:\\s*-?\\s*bso)?\\b))(?=[\\s\\S]*(?:adnex|\\btubes?\\b[\\s\\S]*ovar|ovar[\\s\\S]*\\btubes?\\b))",
+            "Bilateral tubes and ovaries"
+          ]
+        ]
+      },
+      {
+        "field": "leiomyoma",
+        "from": "map",
+        "history": true,
+        "map": [
+          [
+            "fibroid|leiomyom|\\bmyoma|myomectom",
+            "Present"
+          ]
+        ]
+      },
+      {
+        "field": "specimenName",
         "from": "options"
       }
     ]
@@ -201,12 +253,10 @@
       "specimenName": "Uterus and cervix, total hysterectomy"
     },
     {
-      "specimenName": "Left tube and ovary",
-      "leiomyoma": "Absent"
+      "specimenName": "Left tube and ovary"
     },
     {
-      "specimenName": "Right tube and ovary",
-      "leiomyoma": "Absent"
+      "specimenName": "Right tube and ovary"
     }
   ],
   "fields": [
@@ -227,6 +277,26 @@
         "Paratubal cyst, excision"
       ],
       "default": "Uterus and cervix, total hysterectomy"
+    },
+    {
+      "id": "attachedAdnexa",
+      "label": "Attached tubes and ovaries",
+      "type": "select",
+      "options": [
+        "None",
+        "Bilateral tubes and ovaries",
+        "Bilateral tubes",
+        "Left tube and ovary",
+        "Right tube and ovary"
+      ],
+      "default": "None",
+      "showIf": {
+        "field": "specimenName",
+        "is": [
+          "Uterus and cervix, total hysterectomy",
+          "Uterus, subtotal"
+        ]
+      }
     },
     {
       "id": "paratubalSide",
@@ -488,14 +558,38 @@
       "placeholder": "5 x 0.6",
       "default": "",
       "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Uterus, cervix and bilateral adnexa",
-          "Left tube and ovary",
-          "Right tube and ovary",
-          "Fallopian tube(s), sterilisation",
-          "Left fallopian tube, salpingectomy",
-          "Right fallopian tube, salpingectomy"
+        "any": [
+          {
+            "field": "specimenName",
+            "is": [
+              "Uterus, cervix and bilateral adnexa",
+              "Left tube and ovary",
+              "Right tube and ovary",
+              "Fallopian tube(s), sterilisation",
+              "Left fallopian tube, salpingectomy",
+              "Right fallopian tube, salpingectomy"
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "specimenName",
+                "is": [
+                  "Uterus and cervix, total hysterectomy",
+                  "Uterus, subtotal"
+                ]
+              },
+              {
+                "field": "attachedAdnexa",
+                "is": [
+                  "Bilateral tubes and ovaries",
+                  "Bilateral tubes",
+                  "Left tube and ovary",
+                  "Right tube and ovary"
+                ]
+              }
+            ]
+          }
         ]
       }
     },
@@ -507,11 +601,34 @@
       "placeholder": "3 x 2 x 1.5",
       "default": "",
       "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Uterus, cervix and bilateral adnexa",
-          "Left tube and ovary",
-          "Right tube and ovary"
+        "any": [
+          {
+            "field": "specimenName",
+            "is": [
+              "Uterus, cervix and bilateral adnexa",
+              "Left tube and ovary",
+              "Right tube and ovary"
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "specimenName",
+                "is": [
+                  "Uterus and cervix, total hysterectomy",
+                  "Uterus, subtotal"
+                ]
+              },
+              {
+                "field": "attachedAdnexa",
+                "is": [
+                  "Bilateral tubes and ovaries",
+                  "Left tube and ovary",
+                  "Right tube and ovary"
+                ]
+              }
+            ]
+          }
         ]
       }
     },
@@ -523,15 +640,39 @@
       "placeholder": "1",
       "default": "",
       "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Uterus, cervix and bilateral adnexa",
-          "Left tube and ovary",
-          "Right tube and ovary",
-          "Fallopian tube(s), sterilisation",
-          "Left fallopian tube, salpingectomy",
-          "Right fallopian tube, salpingectomy",
-          "Paratubal cyst, excision"
+        "any": [
+          {
+            "field": "specimenName",
+            "is": [
+              "Uterus, cervix and bilateral adnexa",
+              "Left tube and ovary",
+              "Right tube and ovary",
+              "Fallopian tube(s), sterilisation",
+              "Left fallopian tube, salpingectomy",
+              "Right fallopian tube, salpingectomy",
+              "Paratubal cyst, excision"
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "specimenName",
+                "is": [
+                  "Uterus and cervix, total hysterectomy",
+                  "Uterus, subtotal"
+                ]
+              },
+              {
+                "field": "attachedAdnexa",
+                "is": [
+                  "Bilateral tubes and ovaries",
+                  "Bilateral tubes",
+                  "Left tube and ovary",
+                  "Right tube and ovary"
+                ]
+              }
+            ]
+          }
         ]
       }
     },
@@ -603,7 +744,13 @@
         "Present",
         "Absent"
       ],
-      "default": "Present",
+      "default": "Absent",
+      "defaultByField": {
+        "field": "specimenName",
+        "map": {
+          "Myomectomy": "Present"
+        }
+      },
       "showIf": {
         "field": "specimenName",
         "is": [
@@ -615,17 +762,166 @@
       }
     },
     {
-      "id": "degeneration",
-      "label": "Leiomyoma degeneration",
+      "id": "leiomyomaType",
+      "label": "Leiomyoma: type",
+      "type": "select",
+      "options": [
+        "Usual",
+        "Cellular",
+        "Mitotically active",
+        "With bizarre nuclei",
+        "Fumarate hydratase-deficient – see comment",
+        "Lipoleiomyoma",
+        "Epithelioid",
+        "Myxoid",
+        "Apoplectic",
+        "Hydropic",
+        "Dissecting",
+        "Diffuse leiomyomatosis",
+        "Intravenous leiomyomatosis – see comment",
+        "STUMP – see comment"
+      ],
+      "default": "Usual",
+      "showIf": {
+        "all": [
+          {
+            "field": "leiomyoma",
+            "is": "Present"
+          },
+          {
+            "field": "specimenName",
+            "is": [
+              "Uterus and cervix, total hysterectomy",
+              "Uterus, cervix and bilateral adnexa",
+              "Uterus, subtotal",
+              "Myomectomy"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "changes",
+      "label": "Leiomyoma: degeneration and change",
+      "type": "multiselect",
+      "options": [
+        "Hyaline degeneration",
+        "Hydropic change",
+        "Myxoid change",
+        "Cystic degeneration",
+        "Red degeneration",
+        "Infarct-type necrosis",
+        "Calcification"
+      ],
+      "default": [],
+      "showIf": {
+        "all": [
+          {
+            "field": "leiomyoma",
+            "is": "Present"
+          },
+          {
+            "field": "specimenName",
+            "is": [
+              "Uterus and cervix, total hysterectomy",
+              "Uterus, cervix and bilateral adnexa",
+              "Uterus, subtotal",
+              "Myomectomy"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "atypia",
+      "label": "Leiomyoma: cytological atypia",
       "type": "select",
       "options": [
         "None",
-        "Hyaline",
-        "Cystic",
-        "Red",
-        "Calcific"
+        "Mild",
+        "Focal moderate to severe",
+        "Diffuse moderate to severe"
       ],
       "default": "None",
+      "showIf": {
+        "all": [
+          {
+            "field": "leiomyoma",
+            "is": "Present"
+          },
+          {
+            "field": "specimenName",
+            "is": [
+              "Uterus and cervix, total hysterectomy",
+              "Uterus, cervix and bilateral adnexa",
+              "Uterus, subtotal",
+              "Myomectomy"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "mitoticCount",
+      "label": "Leiomyoma: mitoses (per 10 HPF, or '2/mm2')",
+      "type": "text",
+      "placeholder": "3",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "leiomyoma",
+            "is": "Present"
+          },
+          {
+            "field": "specimenName",
+            "is": [
+              "Uterus and cervix, total hysterectomy",
+              "Uterus, cervix and bilateral adnexa",
+              "Uterus, subtotal",
+              "Myomectomy"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "tumourNecrosis",
+      "label": "Coagulative tumour cell necrosis",
+      "type": "select",
+      "options": [
+        "Not identified",
+        "Present"
+      ],
+      "default": "Not identified",
+      "showIf": {
+        "all": [
+          {
+            "field": "leiomyoma",
+            "is": "Present"
+          },
+          {
+            "field": "specimenName",
+            "is": [
+              "Uterus and cervix, total hysterectomy",
+              "Uterus, cervix and bilateral adnexa",
+              "Uterus, subtotal",
+              "Myomectomy"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fhIhc",
+      "label": "FH immunohistochemistry",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Retained",
+        "Lost"
+      ],
+      "default": "Not performed",
       "showIf": {
         "all": [
           {
@@ -694,7 +990,10 @@
         "Corpus albicans",
         "Endometriosis",
         "Serous cystadenoma",
-        "Hydrosalpinx"
+        "Hydrosalpinx",
+        "p53 signature",
+        "STIL",
+        "STIC – see comment"
       ],
       "exclusive": [
         "Unremarkable"
@@ -703,12 +1002,35 @@
         "Unremarkable"
       ],
       "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Uterus, cervix and bilateral adnexa",
-          "Left tube and ovary",
-          "Right tube and ovary",
-          "Fallopian tube(s), sterilisation"
+        "any": [
+          {
+            "field": "specimenName",
+            "is": [
+              "Uterus, cervix and bilateral adnexa",
+              "Left tube and ovary",
+              "Right tube and ovary",
+              "Fallopian tube(s), sterilisation"
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "specimenName",
+                "is": [
+                  "Uterus and cervix, total hysterectomy",
+                  "Uterus, subtotal"
+                ]
+              },
+              {
+                "field": "attachedAdnexa",
+                "is": [
+                  "Bilateral tubes and ovaries",
+                  "Left tube and ovary",
+                  "Right tube and ovary"
+                ]
+              }
+            ]
+          }
         ]
       }
     },
@@ -721,7 +1043,10 @@
         "Hydrosalpinx",
         "Paratubal cyst",
         "Chronic salpingitis",
-        "Endometriosis"
+        "Endometriosis",
+        "p53 signature",
+        "STIL",
+        "STIC – see comment"
       ],
       "exclusive": [
         "Unremarkable"
@@ -730,10 +1055,94 @@
         "Unremarkable"
       ],
       "showIf": {
-        "field": "specimenName",
-        "is": [
-          "Left fallopian tube, salpingectomy",
-          "Right fallopian tube, salpingectomy"
+        "any": [
+          {
+            "field": "specimenName",
+            "is": [
+              "Left fallopian tube, salpingectomy",
+              "Right fallopian tube, salpingectomy"
+            ]
+          },
+          {
+            "all": [
+              {
+                "field": "specimenName",
+                "is": [
+                  "Uterus and cervix, total hysterectomy",
+                  "Uterus, subtotal"
+                ]
+              },
+              {
+                "field": "attachedAdnexa",
+                "is": [
+                  "Bilateral tubes"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "p53Pattern",
+      "label": "p53 immunohistochemistry",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Wild-type",
+        "Aberrant – overexpression",
+        "Aberrant – null"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "any": [
+          {
+            "field": "tubeFindings",
+            "is": [
+              "p53 signature",
+              "STIL",
+              "STIC – see comment"
+            ]
+          },
+          {
+            "field": "adnexaFindings",
+            "is": [
+              "p53 signature",
+              "STIL",
+              "STIC – see comment"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "ki67",
+      "label": "Ki-67",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Low",
+        "Increased"
+      ],
+      "default": "Not performed",
+      "showIf": {
+        "any": [
+          {
+            "field": "tubeFindings",
+            "is": [
+              "p53 signature",
+              "STIL",
+              "STIC – see comment"
+            ]
+          },
+          {
+            "field": "adnexaFindings",
+            "is": [
+              "p53 signature",
+              "STIL",
+              "STIC – see comment"
+            ]
+          }
         ]
       }
     },
@@ -766,6 +1175,23 @@
         "is": "HSIL – see comment"
       },
       "text": "A high grade squamous intraepithelial lesion is identified in the cervix ({parts}). This benign template does not report margins or invasion; the cervix should be entirely embedded and the QMH cervix cancer template used if invasive carcinoma is identified."
+    },
+    {
+      "id": "uterus_stic_mdt",
+      "label": "STIC — multidisciplinary meeting",
+      "auto": {
+        "any": [
+          {
+            "field": "tubeFindings",
+            "is": "STIC – see comment"
+          },
+          {
+            "field": "adnexaFindings",
+            "is": "STIC – see comment"
+          }
+        ]
+      },
+      "text": "Serous tubal intraepithelial carcinoma (STIC) is identified ({parts}). Discussion at the gynaecological oncology multidisciplinary team meeting is suggested."
     }
   ],
   "example": {
@@ -779,6 +1205,7 @@
         "label": "A",
         "values": {
           "specimenName": "Uterus and cervix, total hysterectomy",
+          "attachedAdnexa": "None",
           "paratubalSide": "Not stated",
           "weight": "180",
           "dimensions": "9 x 6 x 4",
@@ -799,7 +1226,12 @@
           "endometrium": "Endometrial polyp",
           "endometritis": "Absent",
           "leiomyoma": "Present",
-          "degeneration": "None",
+          "leiomyomaType": "Usual",
+          "changes": [],
+          "atypia": "None",
+          "mitoticCount": "",
+          "tumourNecrosis": "Not identified",
+          "fhIhc": "Not performed",
           "adenomyosis": "Present",
           "cervix": "No SIL",
           "adnexaFindings": [
@@ -808,6 +1240,8 @@
           "tubeFindings": [
             "Unremarkable"
           ],
+          "p53Pattern": "Not performed",
+          "ki67": "Not performed",
           "additionalNotes": ""
         }
       },
@@ -815,6 +1249,7 @@
         "label": "B",
         "values": {
           "specimenName": "Left tube and ovary",
+          "attachedAdnexa": "None",
           "paratubalSide": "Not stated",
           "weight": "",
           "dimensions": "",
@@ -835,7 +1270,12 @@
           "endometrium": "Proliferative",
           "endometritis": "Absent",
           "leiomyoma": "Absent",
-          "degeneration": "None",
+          "leiomyomaType": "Usual",
+          "changes": [],
+          "atypia": "None",
+          "mitoticCount": "",
+          "tumourNecrosis": "Not identified",
+          "fhIhc": "Not performed",
           "adenomyosis": "Absent",
           "cervix": "No SIL",
           "adnexaFindings": [
@@ -845,6 +1285,8 @@
           "tubeFindings": [
             "Unremarkable"
           ],
+          "p53Pattern": "Not performed",
+          "ki67": "Not performed",
           "additionalNotes": ""
         }
       }

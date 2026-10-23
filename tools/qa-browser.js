@@ -1516,8 +1516,45 @@ await check('fallopian tube: a pasted salpingectomy and a paratubal cyst open th
   await shot('tube-paratubal-cyst');
 
   routed = await pasteAndBuild('Left ovary and fallopian tube');
-  assert(routed !== 'uterus_benign', 'a line naming the ovary moved to the uterus form');
-  return 'left salpingectomy with cyst, uterus fields hidden; right paratubal cyst sided; ovary line keeps its route';
+  // Phase 74 (2026-10-23): a tube-and-ovary line opens the benign tube and ovary form, not the uterus form.
+  assert(routed === 'adnexa_benign', `a line naming the ovary routed to ${routed}`);
+  return 'left salpingectomy with cyst, uterus fields hidden; right paratubal cyst sided; ovary line opens the tube and ovary form';
+});
+
+// Phase 74 (2026-10-23): the benign tube and ovary form from a pasted request. The side and a risk-reducing
+// indication come from the line, SEE-FIM follows the indication, and the stains show with a p53 signature.
+await check('tube and ovary: a pasted RRSO opens its own form, bilateral, risk-reducing and SEE-FIM; a p53 signature prints', async () => {
+  const chosen = async (id) => {
+    const chips = await page.locator(`.chips[data-field="${id}"] .chip[aria-pressed="true"]`).allTextContents();
+    if (chips.length) return chips.map((c) => c.replace(/^\s*\d*\s*/, '').trim()).join(',');
+    const sel = page.locator(`[data-field="${id}"] select`).first();
+    return (await sel.count()) ? sel.inputValue() : '';
+  };
+  let routed = await pasteAndBuild('Bilateral tubes and ovaries, RRSO');
+  assert(routed === 'adnexa_benign', `RRSO routed to ${routed}`);
+  for (const [id, want] of [['side', 'Bilateral'], ['indication', 'Risk-reducing'], ['sampling', 'Entirely submitted (SEE-FIM)']]) {
+    const got = await chosen(id);
+    assert(got === want, `${id} read "${got}", expected "${want}"`);
+  }
+  let report = await reportText();
+  assert(report.includes('Received in formalin is a risk-reducing bilateral salpingo-oophorectomy specimen.'), `macro wrong: ${report.slice(0, 400)}`);
+  assert(report.includes('(SEE-FIM protocol)'), 'SEE-FIM sentence missing');
+  assert(report.includes('BILATERAL FALLOPIAN TUBES AND OVARIES, risk-reducing bilateral salpingo-oophorectomy - NO EVIDENCE OF MALIGNANCY OR STIC'), `diagnosis line wrong: ${report.slice(-300)}`);
+  assert(await page.locator('.field[data-field="p53Pattern"]:visible').count() === 1, 'p53 field hidden on a risk-reducing specimen');
+  await pickField('tubeFindings', 'p53 signature');
+  await pickField('p53Pattern', 'Aberrant \u2013 overexpression');
+  await page.waitForTimeout(300);
+  report = await reportText();
+  assert(report.includes('The features are those of a p53 signature.'), `p53 signature sentence missing: ${report.slice(0, 900)}`);
+  assert(report.includes('There is no evidence of STIC or invasive malignancy.'), 'p53 signature closer missing');
+  assert(report.includes('- p53 SIGNATURE; NO EVIDENCE OF MALIGNANCY'), `p53 signature diagnosis wrong: ${report.slice(-300)}`);
+  await page.locator('[data-field="p53Pattern"]').first().scrollIntoViewIfNeeded();
+  await shot('adnexa-rrso-p53-signature');
+  routed = await pasteAndBuild('Right salpingo-oophorectomy');
+  assert(routed === 'adnexa_benign', `salpingo-oophorectomy routed to ${routed}`);
+  assert(await chosen('side') === 'Right', 'side not read from a right salpingo-oophorectomy');
+  assert(await page.locator('.field[data-field="p53Pattern"]:visible').count() === 0, 'p53 field shows with no lesion and no risk-reducing indication');
+  return 'RRSO bilateral, risk-reducing, SEE-FIM; p53 signature sentence, closer and diagnosis; right salpingo-oophorectomy sided with the stains hidden';
 });
 
 // Benign batch 2 (2026-09-24): the ectopic form from a pasted request, sided and with its procedure read

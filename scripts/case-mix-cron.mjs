@@ -201,7 +201,7 @@ const COVER = {
   'Endometrium / curettings': ['endometrial_biopsy', 'endometrial_carcinoma'],
   'Uterus resection': ['uterus_benign', 'uterine_sarcoma'],
   'Cervix biopsy / LEEP': ['cervical_biopsy', 'cervical_excision', 'cervical_carcinoma'],
-  'Ovary / fallopian tube': ['ovarian_cyst', 'ovary_ft_peritoneum', 'uterus_benign'],
+  'Ovary / fallopian tube': ['ovarian_cyst', 'adnexa_benign', 'ovary_ft_peritoneum', 'uterus_benign'],
   Placenta: ['placenta'],
   'Vulva / vagina': ['cervical_biopsy', 'vulval_carcinoma', 'vaginal_carcinoma'],
   Prostate: ['prostate_biopsy', 'turp', 'prostate_radical'],

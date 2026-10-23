@@ -1,0 +1,495 @@
+{
+ "id": "adnexa_benign",
+ "version": "2026.10",
+ "name": "Fallopian tube and ovary (benign)",
+ "shortName": "Tube and ovary · salpingo-oophorectomy",
+ "label": "Tube and ovary",
+ "organ": "FALLOPIAN TUBE AND OVARY",
+ "system": "Gynae",
+ "kind": "benign resection",
+ "rank": 29,
+ "aliases": [
+  "salpingo-oophorectomy",
+  "RRSO",
+  "risk-reducing",
+  "SEE-FIM",
+  "p53 signature",
+  "STIL",
+  "STIC",
+  "Walthard"
+ ],
+ "match": {
+  "site": [
+   "fallopian tube and ovary",
+   "ovary and fallopian tube",
+   "tube and ovary",
+   "ovary and tube",
+   "fallopian tubes and ovaries",
+   "ovaries and fallopian tubes",
+   "tubes and ovaries",
+   "ovaries and tubes",
+   "salpingo-oophorectomy",
+   "salpingo-oophorectomies",
+   "adnexa",
+   "adnexae",
+   "bso",
+   "rrso",
+   "rrbso",
+   "ovary & tube",
+   "ovary + tube",
+   "tube & ovary",
+   "tube + ovary",
+   "ovaries & tubes",
+   "ovaries + tubes",
+   "tubes & ovaries",
+   "tubes + ovaries"
+  ],
+  "procedure": [
+   "salpingo-oophorectomy",
+   "oophorectomy"
+  ],
+  "clinical": [
+   "risk-reducing",
+   "risk reducing",
+   "prophylactic",
+   "BRCA",
+   "BRCA1",
+   "BRCA2",
+   "Lynch"
+  ],
+  "exclude": [
+   "uterus",
+   "uterine",
+   "hysterectomy",
+   "cervix",
+   "tah",
+   "tlh",
+   "lavh",
+   "tahbso",
+   "tlhbso",
+   "myomectomy",
+   "endometrium",
+   "endometrial",
+   "cyst",
+   "cysts",
+   "cystic",
+   "cystectomy",
+   "mass",
+   "masses",
+   "tumour",
+   "tumor",
+   "carcinoma",
+   "cancer",
+   "malignancy",
+   "malignant",
+   "borderline",
+   "metastasis",
+   "metastatic",
+   "ectopic",
+   "pregnancy",
+   "gestation",
+   "frozen",
+   "fs",
+   "torsion",
+   "torted",
+   "abscess",
+   "endometrioma",
+   "dermoid",
+   "teratoma",
+   "cystadenoma",
+   "fibroma",
+   "omentum",
+   "peritoneum",
+   "peritoneal"
+  ],
+  "gate": "^(?:(?=[\\s\\S]*(?:risk[- ]?reduc|prophyl|brca|lynch|\\brr(?:b)?so\\b))|(?![\\s\\S]*(?:carcinoma|cancer|malignan|borderline|metasta|sarcoma|lymphoma|tumou?r|\\bmass|neoplas|\\bcyst)))",
+  "bias": 2,
+  "fill": [
+   {
+    "field": "side",
+    "from": "map",
+    "map": [
+     [
+      "\\bbilat|\\bboth\\b|\\bbso\\b|rrbso|(?:tubes|ovaries) and (?:fallopian )?(?:tubes|ovaries)|salpingo-oophorectomies|\\b(?:left|lt)\\b[\\s\\S]*\\b(?:right|rt)\\b|\\b(?:right|rt)\\b[\\s\\S]*\\b(?:left|lt)\\b",
+      "Bilateral"
+     ],
+     [
+      "\\b(?:left|lt)\\b",
+      "Left"
+     ],
+     [
+      "\\b(?:right|rt)\\b",
+      "Right"
+     ],
+     [
+      "^\\s*l\\.?\\s+(?=ovar|tube|fallop|adnex)",
+      "Left"
+     ],
+     [
+      "^\\s*r\\.?\\s+(?=ovar|tube|fallop|adnex)",
+      "Right"
+     ],
+     [
+      "\\brr(?:b)?so\\b",
+      "Bilateral"
+     ]
+    ]
+   },
+   {
+    "field": "indication",
+    "from": "map",
+    "history": true,
+    "map": [
+     [
+      "risk[- ]?reduc|prophyl|\\brr(?:b)?so\\b|\\bbrca|lynch",
+      "Risk-reducing"
+     ],
+     [
+      "opportunis",
+      "Opportunistic"
+     ]
+    ]
+   },
+   {
+    "field": "sampling",
+    "from": "map",
+    "map": [
+     [
+      "see-?fim",
+      "Entirely submitted (SEE-FIM)"
+     ]
+    ]
+   }
+  ]
+ },
+ "specimenNoun": "specimen",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "adnexa_benign",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "partDefaults": [
+  {
+   "side": "Right"
+  },
+  {
+   "side": "Left"
+  }
+ ],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Macroscopy"
+  ],
+  "macroFields": [
+   "side",
+   "procedure",
+   "indication"
+  ]
+ },
+ "fields": [
+  {
+   "id": "side",
+   "label": "Side",
+   "type": "select",
+   "options": [
+    "Right",
+    "Left",
+    "Bilateral"
+   ],
+   "default": "Right"
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "options": [
+    "Salpingo-oophorectomy",
+    "Salpingectomy"
+   ],
+   "default": "Salpingo-oophorectomy"
+  },
+  {
+   "id": "indication",
+   "label": "Indication",
+   "type": "select",
+   "options": [
+    "Not stated",
+    "Risk-reducing",
+    "Opportunistic"
+   ],
+   "default": "Not stated"
+  },
+  {
+   "id": "sampling",
+   "label": "Sampling",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Representative",
+    "Fimbria entirely submitted",
+    "Entirely submitted (SEE-FIM)"
+   ],
+   "default": "Representative",
+   "defaultByField": {
+    "field": "indication",
+    "map": {
+     "Risk-reducing": "Entirely submitted (SEE-FIM)"
+    }
+   }
+  },
+  {
+   "id": "tubeSize",
+   "label": "Fallopian tube (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "5 x 0.6; right 5 x 0.6, left 4.5 x 0.5",
+   "default": ""
+  },
+  {
+   "id": "fimbria",
+   "label": "Fimbriated end",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Present",
+    "Not identified"
+   ],
+   "default": "Present"
+  },
+  {
+   "id": "ovarySize",
+   "label": "Ovary (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "3 x 2 x 1.5",
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": "Salpingo-oophorectomy"
+   }
+  },
+  {
+   "id": "ovaryCut",
+   "label": "Ovary cut surface",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Unremarkable",
+    "Small cysts",
+    "Corpus luteum"
+   ],
+   "default": "Unremarkable",
+   "showIf": {
+    "field": "procedure",
+    "is": "Salpingo-oophorectomy"
+   }
+  },
+  {
+   "id": "cystSize",
+   "label": "Paratubal cyst (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "1.5",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "placeholder": "auto"
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "type": "textarea",
+   "group": "Macroscopy",
+   "placeholder": "Leave blank for the automatic key",
+   "default": ""
+  },
+  {
+   "id": "tubeFindings",
+   "label": "Tube findings",
+   "type": "multiselect",
+   "options": [
+    "Unremarkable",
+    "Paratubal cyst",
+    "Hydrosalpinx",
+    "Chronic salpingitis",
+    "Salpingitis isthmica nodosa",
+    "Endometriosis",
+    "Walthard rests",
+    "p53 signature",
+    "STIL",
+    "STIC – see comment"
+   ],
+   "exclusive": [
+    "Unremarkable"
+   ],
+   "default": [
+    "Unremarkable"
+   ]
+  },
+  {
+   "id": "ovaryFindings",
+   "label": "Ovary findings",
+   "type": "multiselect",
+   "options": [
+    "Unremarkable",
+    "Cystic follicles",
+    "Corpus luteum",
+    "Corpora albicantia",
+    "Surface inclusion cysts",
+    "Stromal hyperplasia",
+    "Endometriosis"
+   ],
+   "exclusive": [
+    "Unremarkable"
+   ],
+   "default": [
+    "Unremarkable"
+   ],
+   "showIf": {
+    "field": "procedure",
+    "is": "Salpingo-oophorectomy"
+   }
+  },
+  {
+   "id": "p53Pattern",
+   "label": "p53 immunohistochemistry",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "Wild-type",
+    "Aberrant – overexpression",
+    "Aberrant – null"
+   ],
+   "default": "Not performed",
+   "showIf": {
+    "any": [
+     {
+      "field": "tubeFindings",
+      "is": [
+       "p53 signature",
+       "STIL",
+       "STIC – see comment"
+      ]
+     },
+     {
+      "field": "indication",
+      "is": "Risk-reducing"
+     },
+     {
+      "field": "sampling",
+      "is": "Entirely submitted (SEE-FIM)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "ki67",
+   "label": "Ki-67",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "Low",
+    "Increased"
+   ],
+   "default": "Not performed",
+   "showIf": {
+    "any": [
+     {
+      "field": "tubeFindings",
+      "is": [
+       "p53 signature",
+       "STIL",
+       "STIC – see comment"
+      ]
+     },
+     {
+      "field": "indication",
+      "is": "Risk-reducing"
+     },
+     {
+      "field": "sampling",
+      "is": "Entirely submitted (SEE-FIM)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "Free text appended to the microscopy for this part",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "adnexa_stic_mdt",
+   "label": "STIC — multidisciplinary meeting",
+   "auto": {
+    "field": "tubeFindings",
+    "is": "STIC – see comment"
+   },
+   "text": "Serous tubal intraepithelial carcinoma (STIC) is identified ({parts}). Discussion at the gynaecological oncology multidisciplinary team meeting is suggested."
+  }
+ ],
+ "macroExtract": {
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "side": "Right",
+     "procedure": "Salpingo-oophorectomy",
+     "indication": "Not stated",
+     "sampling": "Fimbria entirely submitted",
+     "tubeSize": "5.5 x 0.6",
+     "fimbria": "Present",
+     "ovarySize": "3 x 2 x 1.2",
+     "ovaryCut": "Unremarkable",
+     "cystSize": "",
+     "blocks": "",
+     "blockKeyText": "",
+     "tubeFindings": [
+      "p53 signature"
+     ],
+     "ovaryFindings": [
+      "Corpora albicantia"
+     ],
+     "p53Pattern": "Aberrant – overexpression",
+     "ki67": "Low",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
+}

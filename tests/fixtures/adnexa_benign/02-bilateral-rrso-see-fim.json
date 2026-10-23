@@ -1,0 +1,30 @@
+{
+  "description": "risk-reducing bilateral salpingo-oophorectomy by SEE-FIM, wild-type p53, nothing found",
+  "templateId": "adnexa_benign",
+  "values": [
+    {
+      "side": "Bilateral",
+      "procedure": "Salpingo-oophorectomy",
+      "indication": "Risk-reducing",
+      "sampling": "Entirely submitted (SEE-FIM)",
+      "tubeSize": "right 5 x 0.6, left 4.5 x 0.5",
+      "fimbria": "Present",
+      "ovarySize": "right 2.5 x 1.5 x 1, left 2 x 1.5 x 1",
+      "ovaryCut": "Unremarkable",
+      "cystSize": "",
+      "blocks": "",
+      "blockKeyText": "",
+      "tubeFindings": [
+        "Unremarkable"
+      ],
+      "ovaryFindings": [
+        "Unremarkable"
+      ],
+      "p53Pattern": "Wild-type",
+      "ki67": "Low",
+      "additionalNotes": ""
+    }
+  ],
+  "report": "Bilateral fallopian tubes and ovaries, risk-reducing bilateral salpingo-oophorectomy\n\nReceived in formalin is a risk-reducing bilateral salpingo-oophorectomy specimen. The right fallopian tube measures 5 x 0.6 cm and the left fallopian tube 4.5 x 0.5 cm, both with fimbriated ends. The right ovary measures 2.5 x 1.5 x 1 cm and the left ovary 2 x 1.5 x 1 cm, with unremarkable cut surfaces. The fimbriated ends are amputated and sectioned longitudinally, and the remaining tubes and the ovaries are sectioned serially (SEE-FIM protocol). All embedded in 10 blocks.\n\n(1) Left fimbria, longitudinal sections. (2-3) Left fallopian tube, cross sections. (4-5) Left ovary. (6) Right fimbria, longitudinal sections. (7-8) Right fallopian tube, cross sections. (9-10) Right ovary.\n\nSections show fimbrial tissue and cross sections of both fallopian tubes with unremarkable plicae. The fallopian tube epithelium shows a wild-type expression pattern on immunohistochemistry for p53. Only scattered cells are positive for Ki-67. The ovaries are unremarkable. There is no evidence of malignancy or serous tubal intraepithelial carcinoma (STIC).\n\nBILATERAL FALLOPIAN TUBES AND OVARIES, risk-reducing bilateral salpingo-oophorectomy - NO EVIDENCE OF MALIGNANCY OR STIC",
+  "checks": []
+}

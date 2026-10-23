@@ -759,6 +759,7 @@
     },
     {
       "name": "fallopian tube only (benign batch 2)",
+      "description": "Edited 2026-10-23 (Phase 74), deliberate: the left ovary and fallopian tube (D) now opens the benign tube and ovary form (adnexa_benign) with the side read from the line; the tube-only parts (A-C) keep the uterus form.",
       "text": "Specimen\n(A) Left fallopian tube, salpingectomy, (B) Right paratubal cyst, excision, (C) Bilateral fallopian tubes, sterilisation and (D) Left ovary and fallopian tube",
       "expect": [
         {
@@ -778,8 +779,8 @@
         },
         {
           "label": "D",
-          "templateId": "generic",
-          "tier": "choose"
+          "templateId": "adnexa_benign",
+          "tier": "confident"
         }
       ],
       "values": {
@@ -792,6 +793,9 @@
         },
         "C": {
           "specimenName": "Fallopian tube(s), sterilisation"
+        },
+        "D": {
+          "side": "Left"
         }
       }
     },

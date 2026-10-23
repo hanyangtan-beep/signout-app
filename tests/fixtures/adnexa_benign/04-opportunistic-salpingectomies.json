@@ -1,0 +1,52 @@
+{
+  "description": "opportunistic right and left salpingectomies, Walthard rests and hydrosalpinx",
+  "templateId": "adnexa_benign",
+  "values": [
+    {
+      "side": "Right",
+      "procedure": "Salpingectomy",
+      "indication": "Opportunistic",
+      "sampling": "Representative",
+      "tubeSize": "5 x 0.5",
+      "fimbria": "Present",
+      "ovarySize": "",
+      "ovaryCut": "Unremarkable",
+      "cystSize": "",
+      "blocks": "",
+      "blockKeyText": "",
+      "tubeFindings": [
+        "Walthard rests"
+      ],
+      "ovaryFindings": [
+        "Unremarkable"
+      ],
+      "p53Pattern": "Not performed",
+      "ki67": "Not performed",
+      "additionalNotes": ""
+    },
+    {
+      "side": "Left",
+      "procedure": "Salpingectomy",
+      "indication": "Opportunistic",
+      "sampling": "Representative",
+      "tubeSize": "6 x 1.5",
+      "fimbria": "Present",
+      "ovarySize": "",
+      "ovaryCut": "Unremarkable",
+      "cystSize": "",
+      "blocks": "",
+      "blockKeyText": "",
+      "tubeFindings": [
+        "Hydrosalpinx"
+      ],
+      "ovaryFindings": [
+        "Unremarkable"
+      ],
+      "p53Pattern": "Not performed",
+      "ki67": "Not performed",
+      "additionalNotes": ""
+    }
+  ],
+  "report": "(A) Right fallopian tube, opportunistic salpingectomy\n(B) Left fallopian tube, opportunistic salpingectomy\n\n(A) Received in formalin is an opportunistic right salpingectomy specimen. The fallopian tube measures 5 cm in length and 0.5 cm in diameter, with a fimbriated end. Representative sections in 1 block.\n\n(B) Received in formalin is an opportunistic left salpingectomy specimen. The fallopian tube measures 6 cm in length and 1.5 cm in diameter, with a fimbriated end. Representative sections in 1 block.\n\n(A) (1) Fallopian tube, fimbria and cross sections.\n(B) (1) Fallopian tube, fimbria and cross sections.\n\n(A) Sections show fimbrial tissue and cross sections of the right fallopian tube with unremarkable plicae. Walthard rests are seen on the tubal serosa. There is no evidence of malignancy.\n\n(B) Sections of the left fallopian tube show a dilated lumen lined by benign tubal epithelium, consistent with hydrosalpinx. There is no evidence of malignancy.\n\n(A) RIGHT FALLOPIAN TUBE, opportunistic salpingectomy - WALTHARD CELL REST\n(B) LEFT FALLOPIAN TUBE, opportunistic salpingectomy - HYDROSALPINX",
+  "checks": []
+}
