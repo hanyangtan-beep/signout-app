@@ -1,6 +1,6 @@
 # Vulval carcinoma resection — sources
 
-Phase 77 (23 October 2026). Grounding for the Vulval carcinoma resection form (`schemas/vulval_carcinoma.json`, `generators/vulval_carcinoma.js`), its staging module (`src/staging/vulva.js`) and the Vulval carcinoma criteria on Lymph node excision (`schemas/lymph_node.json`, `generators/lymphnode.js`). Nothing on this page prints.
+Phase 77 (23 October 2026); the reference galleries of Phase 78 list their image sources and licences in `docs/specs/vulval-carcinoma-gallery.md`. Grounding for the Vulval carcinoma resection form (`schemas/vulval_carcinoma.json`, `generators/vulval_carcinoma.js`), its staging module (`src/staging/vulva.js`) and the Vulval carcinoma criteria on Lymph node excision (`schemas/lymph_node.json`, `generators/lymphnode.js`). Nothing on this page prints.
 
 ## Documents
 
@@ -11,6 +11,7 @@ Phase 77 (23 October 2026). Grounding for the Vulval carcinoma resection form (`
 | ICCR | ICCR Carcinoma of the Vulva, 2nd edition, version 2.1, https://www.iccr-cancer.org/wp-content/uploads/2024/09/ICCR-Vulva-2nd-ed-v2.1-bookmarked.pdf | HPV-associated and HPV-independent types, grading, p16 and p53, the ESGO note on depth |
 | FIGO 2021 | Olawaiye AB et al. FIGO staging for carcinoma of the vulva: 2021 revision. Int J Gynaecol Obstet 2021;155(1):43–47, https://pmc.ncbi.nlm.nih.gov/articles/PMC9290586/ | Depth of invasion method |
 | AJCC 9 | Olawaiye AB et al. The new (version 9) AJCC TNM staging protocol for carcinoma of the vulva. CA Cancer J Clin 2026;76(5):e70104, https://pmc.ncbi.nlm.nih.gov/articles/PMC13525161/ | T, N and M categories (Tables 3–5), stage groups (Table 6); in use from 1 January 2024 |
+| Bleeker 2024 | Bleeker MCG et al. Does "one size fits all"? Rethinking FIGO depth of invasion measurements in vulvar cancer. Int J Gynecol Pathol 2024;43(5):457, https://pmc.ncbi.nlm.nih.gov/articles/PMC11332368/ | Depth of invasion images and the survey figures in their captions (Phase 78 gallery) |
 | Alsolami 2026 | Alsolami S, Ji J, Hoang L. Squamous cancers and precancers of the vulva: emerging diagnostic, prognostic and predictive biomarkers in pathology. Cancers (Basel) 2026;18(10):1518, https://pmc.ncbi.nlm.nih.gov/articles/PMC13204309/ | p16 and p53 patterns |
 | Rakislova 2017 | Rakislova N et al. Histological characteristics of HPV-associated and -independent squamous cell carcinomas of the vulva: a study of 1,594 cases. Int J Cancer 2017, https://onlinelibrary.wiley.com/doi/full/10.1002/ijc.31006 | HPV DNA and p16 can disagree |
 | Ueda 2010 | Ueda Y, Enomoto T, Kimura T, Yoshino K, Fujita M, Kimura T. Two distinct pathways to development of squamous cell carcinoma of the vulva. J Skin Cancer, published online 2010, https://pmc.ncbi.nlm.nih.gov/articles/PMC3003991/ | Basaloid and warty morphology |

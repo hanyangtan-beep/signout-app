@@ -1,8 +1,63 @@
 # Vulval carcinoma — reference gallery research (2026-10-23)
 
-Research only (user request 2026-10-23: "card the vulval carcinoma template; do research on a reference gallery as well. ask me before you build"). Nothing is built or published. The panels attach to fields of the planned `vulval_carcinoma` synoptic (roadmap Next, Vulval carcinoma group) through `field.reference` (schemas/README.md, "Field reference photos"). The gallery is the last card of that group.
+Researched on 2026-10-23 (user request: "card the vulval carcinoma template; do research on a reference gallery as well. ask me before you build") and built the same day as Phase 78, with the user's decisions below. The panels attach to fields of the `vulval_carcinoma` synoptic (Phase 77) through `field.reference` (schemas/README.md, "Field reference photos"). The gallery is the last card of the Vulval carcinoma group. "As built" records what shipped; the research sections after it stand as researched.
 
-## Summary
+## Decisions (user, 2026-10-23)
+
+1. Staging edition: AJCC version 9 with FIGO 2021, for the form and the node panel.
+2. Images from other sites (penile, perianal, oral): left out, as not representative of the vulva. Where no vulval image was found, the group keeps its points and has no photograph.
+3. The Bleeker et al. Fig 1 schematic: used, as the first image of the depth panel.
+4. Ed Uthman's eyepiece series: not used. The user asked for other verrucous carcinoma images instead, and two vulval sources were added (Wang et al. 2021, Fig 1B; Bouquet de Jolinière et al. 2016, Fig 3E). A centre crop of the series remains possible.
+5. The node criteria panel: kept, as text.
+6. ExpertPath: the user asked for its reference images, through their login. ExpertPath is Elsevier's subscription content and the app is published at a public address, so the panels link the matching ExpertPath topics, which open with the reader's own login, and hold none of their images. ExpertPath has no vulva-specific verrucous carcinoma topic (the topic the user linked is the penile one), so the Dermatopathology "Verrucous Carcinoma (and Variants)" topic is linked.
+
+## As built (Phase 78, 2026-10-23)
+
+Eight panels on `vulval_carcinoma` (schema 2026.10b). Every photograph is of a vulval lesion. Captions and points never print.
+
+| Panel | Field | Groups | Photographs (new + reused) | ExpertPath links |
+|---|---|---|---|---|
+| Vulval carcinoma types | `histType` | 6 | 10 (8 + 2) | 6 |
+| Depth of invasion: three measurements | `doi` | 3 | 5 (5 + 0) | 0 |
+| Tumour border | `growthPattern` | 2 | 4 (4 + 0) | 2 |
+| Squamous precursors at a margin | `precursorMargin` | 3 | 6 (3 + 3) | 3 |
+| Paget disease at a margin | `pagetMargin` | 1 | 1 (0 + 1) | 1 |
+| Regional lymph nodes (AJCC version 9) | `nodeSampling` | 4 | 0 | 0 |
+| p16 patterns | `p16` | 3 | 5 (4 + 1) | 0 |
+| p53 patterns | `p53` | 6 | 7 (0 + 7) | 0 |
+
+- 38 placements of 34 files: 22 new files in `assets/reference/vulval_carcinoma/` (24 placements) and 12 reused from `assets/reference/lower_genital/` (14 placements), with their cervical biopsy captions and credits. The cervical `p16_block_boundary.jpg` and `p16_block_hsil.jpg` are not used, as the p16 panel now has vulval images.
+- Groups may carry `links` (schemas/README.md); the app lists them under the images and opens them in a new tab. 12 links reach 6 ExpertPath topics: [Squamous Cell Carcinoma (vulva)](https://app.expertpath.com/document/squamous-cell-carcinoma/8d70c2d4-901b-4a4e-9b70-056c239a810f), [Verrucous Carcinoma (and Variants)](https://app.expertpath.com/document/verrucous-carcinoma-and-variants/6d08105b-6c03-4352-83f6-2de3e1747543), [Basal Cell Carcinoma (vulva)](https://app.expertpath.com/document/basal-cell-carcinoma/788c2f11-4458-4652-b350-41d1936ad7f1), [Extramammary Paget Disease (vulva)](https://app.expertpath.com/document/extramammary-paget-disease/141d8db5-d433-4705-9d03-eb85f1f6f5ea), [Bartholin Gland Carcinoma](https://app.expertpath.com/document/bartholin-gland-carcinoma/6b739e6e-4b66-47f5-9530-36c922e524ef) and [Vulvar Intraepithelial Neoplasia](https://app.expertpath.com/document/vulvar-intraepithelial-neoplasia/6d9143d7-fd2d-4014-953c-8128277c2b55).
+- Paget disease moves from the precursor panel to its own `pagetMargin` field, which the form reports separately.
+- The p53 panel is the cervical biopsy one (the same points and images) under this form's option names.
+- The depth captions quote the Bleeker et al. survey for each case, from the Fig 4 legend.
+- Fix: the depth of invasion help now gives the FIGO 2021 wording, "from the basement membrane of the deepest adjacent dysplastic, tumour-free rete ridge (or the nearest dysplastic rete peg) to the deepest point of invasion"; Phase 77 had "dysplasia-free".
+- Tests: the galleries test in `tests/vulval_carcinoma.test.js` and the links test in `tests/reference.test.js`; the browser QA opens every panel, waits for each photograph and checks that the printed report does not change.
+
+### Changes from the research
+
+- The stand-ins are gone: Hrudka et al. (penile), Philippou et al. (penile), Trøstrup and Matzen (perianal) and Johansson et al. (oral). HPV-associated carcinoma now shows Alsolami et al. 2026, Fig 1A (H&E) and Fig 1B (block-type p16); the pushing border shows Wang et al. 2021, Fig 1B and Bouquet de Jolinière et al. 2016, Fig 3E (vulval verrucous carcinoma); the node panel is text only.
+- Alsolami et al. 2026 moves up from the backups: the publisher's full-size figure files (mdpi-res.com) made its panels usable, and Fig 1N (negative p16, HPV-independent carcinoma) and Fig 2B (block-type p16 in HSIL) join the p16 panel. The Thuijs, Klamminger and Kostov crops also come from the MDPI files, and the Wang, Peng and Nobile crops from the Frontiers figure files.
+- Thuijs et al. 2024, Fig 3B (patchy p16 in vaVIN) joins the p16 panel.
+- Samba et al. 2024 (adenoid cystic carcinoma) is left out: the form has no adenoid cystic carcinoma option, and the case report does not place the tumour in the Bartholin gland. The type panel has 6 groups, not 7.
+
+### Sources (as built)
+
+| Source | Licence | Panels used | Field |
+|---|---|---|---|
+| Alsolami et al., Cancers 2026. [PMC13204309](https://pmc.ncbi.nlm.nih.gov/articles/PMC13204309/) | CC BY 4.0 | Fig 1A, 1B, 1N; Fig 2B | `histType`, `p16` |
+| Peng et al., Front Oncol 2025. [PMC12667435](https://pmc.ncbi.nlm.nih.gov/articles/PMC12667435/) | CC BY 4.0 | Fig 3B | `histType` |
+| Wang et al., Front Oncol 2021. [PMC8193986](https://pmc.ncbi.nlm.nih.gov/articles/PMC8193986/) | CC BY 4.0 | Fig 1A, 1B | `histType`, `growthPattern` |
+| Bouquet de Jolinière et al., Front Surg 2016. [PMC4749678](https://pmc.ncbi.nlm.nih.gov/articles/PMC4749678/) | CC BY 4.0 | Fig 3E | `growthPattern` |
+| Asuman et al., Indian J Dermatol 2008. [PMC2763753](https://pmc.ncbi.nlm.nih.gov/articles/PMC2763753/) | CC BY 2.0 | Fig 2 | `histType` |
+| Nobile et al., Front Oncol 2026. [PMC12864080](https://pmc.ncbi.nlm.nih.gov/articles/PMC12864080/) | CC BY 4.0 | Fig 3C | `histType` |
+| Alessandrini et al., Diagn Pathol 2018. [PMC6389142](https://pmc.ncbi.nlm.nih.gov/articles/PMC6389142/) | CC BY 4.0 | Fig 1b | `histType` |
+| Kostov et al., Cancers 2025. [PMC12691067](https://pmc.ncbi.nlm.nih.gov/articles/PMC12691067/) | CC BY 4.0 | Fig 1B | `histType` |
+| Bleeker et al., Int J Gynecol Pathol 2024. [PMC11332368](https://pmc.ncbi.nlm.nih.gov/articles/PMC11332368/) | CC BY 4.0 | Fig 1; Fig 4A–D | `doi` |
+| Klamminger et al., Cancers 2025. [PMC12109898](https://pmc.ncbi.nlm.nih.gov/articles/PMC12109898/) | CC BY 4.0 | Fig 1A, 1C | `growthPattern` |
+| Thuijs et al., Cancers 2024. [PMC11640302](https://pmc.ncbi.nlm.nih.gov/articles/PMC11640302/) | CC BY 4.0 | Fig 3A, 3B, 3C | `precursorMargin`, `p16` |
+
+## Research summary (as proposed, before the decisions)
 
 | Panel | Field | New images | Reused | Groups |
 |---|---|---|---|---|
@@ -140,7 +195,7 @@ Criteria sources (points only, no images): [CAP Vulva 5.1.0.0](https://documents
 - Lymphovascular and perineural invasion have no vulval panels proposed. Nobile et al. Fig 3D is a backup for perineural invasion.
 - Several PMC copies give panels of 300 to 400 px. Nothing is upscaled.
 
-## Decisions for the user
+## Decisions for the user (answered 2026-10-23; see Decisions above)
 
 1. Images from other sites (penile basaloid and warty; penile and perianal verrucous pushing front; oral SCC nodes): accept them with site-named captions, or keep those groups text-only.
 2. Bleeker et al. Fig 1 schematic for depth of invasion: earlier galleries rejected schematics.
@@ -148,4 +203,4 @@ Criteria sources (points only, no images): [CAP Vulva 5.1.0.0](https://documents
 
 ## Draft card
 
-The roadmap card "Vulval carcinoma — reference galleries" (Next, Vulval carcinoma group) uses this brief as its spec. Its panel list, counts and sources are the ones above.
+The roadmap card "Vulval carcinoma — reference galleries" (Vulval carcinoma group) used this brief as its spec; it was pulled by the user on 2026-10-23 and built as Phase 78. "As built" above gives the shipped panels, counts and sources.

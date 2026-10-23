@@ -27,6 +27,21 @@ test('every field reference points at existing image files with captions and cre
   assert.ok(count >= 2, 'at least one reference gallery is defined');
 });
 
+// Group `links` (Phase 78) lead to pages the app must not copy, such as the ExpertPath topics; each needs a
+// label and an https URL, and no image may come from a linked site.
+test('every gallery link has a label and an https URL, and no image is taken from a linked site', () => {
+  for (const { schema } of Object.values(registry)) {
+    for (const f of schema.fields) {
+      for (const g of f.reference?.groups || []) {
+        for (const l of g.links || []) {
+          assert.ok(l.label && /^https:\/\//.test(l.url || ''), `${schema.id}.${f.id}: link ${JSON.stringify(l)} needs a label and an https URL`);
+          for (const im of g.images || []) assert.notEqual(new URL(im.url).host, new URL(l.url).host, `${schema.id}.${f.id}: ${im.src} comes from a linked site`);
+        }
+      }
+    }
+  }
+});
+
 test('gastric IM subtype carries a complete vs incomplete reference gallery', () => {
   const f = registry.gastric_biopsy.schema.fields.find((x) => x.id === 'imType');
   assert.equal(f.label, 'IM subtype');

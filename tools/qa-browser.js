@@ -2496,6 +2496,59 @@ await check('vulval carcinoma: a pasted excision with a vulval carcinoma history
   return 'excision line with a vulval SCC history opens Vulva Ca, left, wide excision; pattern for SCC only; depth both ways; pT1b pN0(sn) printed with the option; stage group IB in Checks; groin sentinel node on the vulval criteria, 0.2 mm ITC check, 3 mm pN1a note, criteria panel';
 });
 
+// Phase 78 (2026-10-23): vulval carcinoma reference galleries. Eight panels of vulval photographs (no stand-ins
+// from other sites, by the user's decision); the ExpertPath topics are links only, opening in a new tab with the
+// reader's own login. The node panel is criteria only. Opening every panel leaves the printed report unchanged.
+await check('vulval carcinoma galleries: eight panels open with their photographs loaded; ExpertPath topics are links only; the printed report is unchanged', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const routed = await pasteAndBuild('History\nVulval squamous cell carcinoma\n\nSpecimen\n(A) Left labium majus, wide local excision');
+  assert(routed === 'vulval_carcinoma', `vulval excision routed to ${routed}`);
+  await pickField('adjacent', 'HSIL (VIN 3)');
+  await pickField('adjacent', 'Paget disease (intraepithelial)');
+  await page.fill('#f-A-nodesExamined', '2');
+  await page.waitForTimeout(300);
+  const printedBefore = (await page.locator('#report-blocks .block pre').allInnerTexts()).join('\n');
+  const gallery = async (id, expected, links, name) => {
+    const toggle = page.locator(`.field[data-field="${id}"] .ref-toggle`).first();
+    assert(await toggle.count(), `no gallery toggle on ${id}`);
+    const label = (await toggle.innerText()).trim();
+    assert(label.endsWith(expected ? 'Compare photos' : 'Show criteria'), `${id} toggle reads "${label}"`);
+    await toggle.click();
+    await page.waitForSelector(`.field[data-field="${id}"] .ref-panel`, { timeout: 5000 });
+    const pics = page.locator(`.field[data-field="${id}"] .ref-panel img`);
+    const n = await pics.count();
+    assert(n === expected, `${id} gallery holds ${n} photos, expected ${expected}`);
+    for (let i = 0; i < n; i++) await pics.nth(i).scrollIntoViewIfNeeded();   // the photos load lazily
+    if (n) await page.waitForFunction((fid) => [...document.querySelectorAll(`.field[data-field="${fid}"] .ref-panel img`)].every((i) => i.complete && i.naturalWidth > 0), id, { timeout: 8000 });
+    const anchors = await page.locator(`.field[data-field="${id}"] .ref-links a`).evaluateAll((as) => as.map((a) => ({ href: a.href, target: a.target, rel: a.rel, text: a.textContent })));
+    assert(anchors.length === links, `${id} lists ${anchors.length} ExpertPath links, expected ${links}`);
+    for (const a of anchors) assert(a.href.startsWith('https://app.expertpath.com/document/') && a.target === '_blank' && a.rel.includes('noopener') && a.text.startsWith('ExpertPath: '), `${id} link ${JSON.stringify(a)}`);
+    const srcs = await pics.evaluateAll((is) => is.map((i) => i.src));
+    assert(srcs.every((s) => !/expertpath/i.test(s)), `${id} shows an image from ExpertPath`);
+    const words = await page.locator(`.field[data-field="${id}"] .ref-panel`).first().innerText();
+    await page.locator(`.field[data-field="${id}"] .ref-panel`).first().scrollIntoViewIfNeeded();
+    if (name) await shot(name);
+    await toggle.click();
+    return words;
+  };
+  await gallery('histType', 10, 6, 'vulva-type-gallery');
+  const doiPanel = await gallery('doi', 5, 0, 'vulva-doi-gallery');
+  assert(doiPanel.includes('dysplastic, tumour-free rete ridge'), `depth panel text: ${doiPanel.slice(0, 300)}`);
+  await gallery('growthPattern', 4, 2);
+  await gallery('precursorMargin', 6, 3, 'vulva-precursor-gallery');
+  await gallery('pagetMargin', 1, 1);
+  const nodePanel = await gallery('nodeSampling', 0, 0);
+  for (const pn of ['pN0(i+)', 'pN1mi', 'pN1a', 'pN1b', 'pN1c', 'pN2']) assert(nodePanel.includes(pn), `node panel lacks ${pn}`);
+  await gallery('p16', 5, 0);
+  await gallery('p53', 7, 0);
+  const printedAfter = (await page.locator('#report-blocks .block pre').allInnerTexts()).join('\n');
+  assert(printedAfter === printedBefore, 'opening the galleries changed the printed report');
+  assert(!/\((H&E|p16 immunostain|p53 immunostain|diagram)\)\.|ExpertPath/.test(printedAfter), `gallery text reached the printed report: ${printedAfter.slice(-400)}`);
+  return 'adjacent HSIL and Paget ticked, two nodes; galleries load (type 10 with 6 ExpertPath links, depth 5, border 4 with 2, precursor margin 6 with 3, Paget margin 1 with 1, nodes criteria only, p16 5, p53 7); links open in a new tab; printed report unchanged';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

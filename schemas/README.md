@@ -51,3 +51,5 @@ Any field may carry `reference` to give the pathologist a side-by-side visual ke
 ```
 
 The app renders a "Compare photos" toggle beside the control; the panel spans the field row with one column per group. Images live under `assets/reference/<organ>/` (≤ 900 px, JPEG) and must be openly licensed (CC BY / CC BY-SA / CC0) with the credit, licence and source URL recorded — `tests/reference.test.js` checks that every image file exists and carries all four. Never use AI-generated histology.
+
+A group may also carry `links: [{ "label": "...", "url": "https://..." }]`, listed under its images and opened in a new tab. Use them for pages the app must not copy, such as subscription atlases: the vulval carcinoma galleries link ExpertPath topics, which open with the reader's own login, and never embed their images. `tests/reference.test.js` checks that every link has a label and an https URL.

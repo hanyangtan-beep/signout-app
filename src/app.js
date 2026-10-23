@@ -786,7 +786,11 @@ function referencePanel(field, part) {
           im.caption ? el('span', { class: 'ref-caption', text: im.caption }) : null,
           im.credit ? el('span', { class: 'ref-credit' },
             im.url ? el('a', { href: im.url, target: '_blank', rel: 'noopener', text: im.credit }) : document.createTextNode(im.credit),
-            im.license ? document.createTextNode(` · ${im.license}`) : null) : null)))))));
+            im.license ? document.createTextNode(` · ${im.license}`) : null) : null))),
+      // `links` lead to further pages outside the app (the vulval carcinoma ExpertPath topics, which open
+      // with the reader's own subscription); the app shows their titles only, never their images.
+      g.links?.length ? el('ul', { class: 'ref-links' }, ...g.links.map((l) => el('li', {},
+        el('a', { href: l.url, target: '_blank', rel: 'noopener', text: l.label })))) : null))));
   if (ref.note) panel.append(el('p', { class: 'ref-note', text: ref.note }));
   return panel;
 }

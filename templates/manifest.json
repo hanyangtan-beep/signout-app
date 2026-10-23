@@ -4451,7 +4451,7 @@
           }
         ]
       },
-      "version": "2026.10",
+      "version": "2026.10b",
       "generator": "vulval_carcinoma",
       "generatorPath": "generators/vulval_carcinoma.js",
       "schemaPath": "schemas/vulval_carcinoma.json"

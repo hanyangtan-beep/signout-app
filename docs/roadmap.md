@@ -2,13 +2,15 @@
 
 Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item, newest first. The app's Roadmap panel is built from this file, so a change here is rebuilt, deployed and published (user decision 2026-09-29); other docs-only changes are committed only. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`; the full Done write-ups to 2026-09-25 are in `docs/done-log.md`.
 
-State on 2026-10-23: 80 templates (19 small biopsy, 31 benign resection incl. LEEP, 1 frozen section, 20 synoptic cancer resections, 1 lymph node for lymphoma, 6 cytology, 1 biomarker, 1 generic), 2001 tests, published at `https://han-signout.pplx.app`.
+State on 2026-10-23: 80 templates (19 small biopsy, 31 benign resection incl. LEEP, 1 frozen section, 20 synoptic cancer resections, 1 lymph node for lymphoma, 6 cytology, 1 biomarker, 1 generic), 2003 tests, published at `https://han-signout.pplx.app`.
 
 ---
 
 ## Done
 
 Newest first. The full write-ups as they stood at ship time are in `docs/done-log.md`.
+
+- 2026-10-23 — Vulval carcinoma — reference galleries (user request): eight panels on Vulva Ca, which never print, with photographs of vulval lesions only (the user left out stand-ins from other sites): histological type (6 groups, 10 photographs), depth of invasion (the Bleeker et al. schematic and four annotated sections with the FIGO 2021, conventional and tumour thickness lines, their captions quoting the authors' survey), tumour border (4), squamous precursors at a margin (6), Paget disease at a margin (1; Paget disease now has its own panel, on its margin field), regional lymph nodes (the AJCC version 9 categories as text, no photograph), p16 (5) and p53 (the cervical biopsy panel under this form's option names, 7). 22 new images from open-access articles and 12 reused from the cervical biopsy galleries. A gallery group can now list links: 12 lead to 6 ExpertPath topics, which open with the reader's own ExpertPath login, and the app holds none of their images. Fix: the depth of invasion help gives the FIGO 2021 wording (the deepest adjacent dysplastic, tumour-free rete ridge, or the nearest dysplastic rete peg); it said "dysplasia-free". The report text and every fixture are unchanged. Schema 2026.10b. Spec: `docs/specs/vulval-carcinoma-gallery.md`. 80 templates, 2003 tests. Phase 78.
 
 - 2026-10-23 — Lymph node excision — vulval carcinoma criteria (pulled by the user): the Staging criteria field gains Vulval carcinoma (AJCC version 9 as given in CAP Vulva 5.1.0.0, with ICCR), and the criteria panel, which never prints, gains its group: inguinal and femoral nodes only, the isolated tumour cell wording, the size bands, extranodal extension and fixed nodes. A carcinoma deposit of more than 0.2 mm to 2 mm prints as a micrometastasis ("the largest deposit measuring 1.5 mm (micrometastasis)"); larger deposits print their size alone. Checks give the node's own category for information ("This node alone: pN1a (AJCC 9th edition)"; the case pN is staged on the resection form) and warn on a carcinoma deposit of 0.2 mm or less. Intake: a sentinel line naming the vulva, or a groin line with the vulva in the request or history, opens on Vulval carcinoma; a pelvic line stays Not applied (pelvic nodes are pM1), and melanoma still wins. The Not applied, Breast and Melanoma outputs, every lymph node fixture and the frozen section form are unchanged, and so are the criteria on both exports. Schema 2026.10b. Spec: `docs/specs/sentinel-node.md`. Phase 77.
 
@@ -146,24 +148,13 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-The last card of the Vulval carcinoma group (user request 2026-10-23; pulled by the user the same day): the reference galleries, a batch of its own after the Phase 77 batch shipped the same day. The morcellated leiomyoma and uterine leiomyosarcoma cards wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
-
-### Vulval carcinoma — reference galleries (user request 2026-10-23; pulled by the user 2026-10-23)   Size: M; Vulval carcinoma group
-Why:        the Later line of 2026-09-14 asked for reference images for depth-of-invasion measurement and margin assessment, and the new synoptic's type, depth, growth pattern, precursor and node fields have none.
-Change:     eight `field.reference` panels on `vulval_carcinoma`, with photographs of vulval lesions only (the user left out the images from other sites on 2026-10-23): histological type (6 groups, 10 photographs), depth of invasion (3 groups, 5: the Bleeker et al. Fig 1 schematic and four annotated panels with the FIGO 2021, conventional and tumour thickness lines), tumour border (2 groups, 4), squamous precursors at a margin (3 groups, 6), Paget disease at a margin (1 group, 1; Paget disease moves to its own margin field), regional lymph nodes (4 groups of AJCC version 9 criteria, no photograph), p16 (3 groups, 5) and p53 (the cervical biopsy panel's 6 groups and 7 photographs under this form's option names). 22 new images in `assets/reference/vulval_carcinoma/` and 12 reused from `assets/reference/lower_genital/`. A group may list links (a new `links` key): 12 ExpertPath topic links open with the reader's own ExpertPath login, and the app holds none of ExpertPath's images. Captions never print.
-Untouched:  the report text and every fixture; the cervical biopsy galleries.
-Accept:     every image 900 px or less and 150 kB or less, with a CC BY, CC BY-SA or CC0 licence, credit and URL (`tests/reference.test.js`); every new image of a vulval lesion, from an open-access article; each panel opens from its field with its photographs loaded, and the ExpertPath links open in a new tab; the printed report is the same with every panel open; no AI-generated image and no eyepiece photograph; the one schematic is the Bleeker et al. Fig 1, which the user allowed.
-Verify:     tests + browser (light)
-Ship:       with batch
-Depends on: Vulval carcinoma — resection synoptic (shipped 2026-10-23)
-Spec:       `docs/specs/vulval-carcinoma-gallery.md`, with the user's decisions of 2026-10-23
-Source:     the spec's source table; Bleeker et al., Int J Gynecol Pathol 2024 — https://pmc.ncbi.nlm.nih.gov/articles/PMC11332368/
+Empty. The Phase 78 batch (vulval carcinoma reference galleries) shipped on 2026-10-23; the write-up is in Done, with the sources in `docs/specs/vulval-carcinoma-gallery.md`, and the Vulval carcinoma group is complete. The morcellated leiomyoma and uterine leiomyosarcoma cards wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
 
 ## Next
 
 Build order (2026-09-15) is set by the LIS export of 4547 cases, 2024 to 2026-09 — `docs/case-mix-2026-09.md`, which found built templates covering 79.2 per cent of that caseload on the day. Of the four cards it ranked first, Oral cavity and oropharynx shipped on 2026-09-26 and Brain and CNS on 2026-09-19; Respiratory cytology and Joint fluid and CSF cytology are in Later. The cards after benign batch 4 were carried over from before the ranking. Placeholders in the app menus (`templates/planned.json`) are removed by the card that builds the template.
 
-After the Hirschsprung pull-through (still pulled), the perineurioma card, the two uterus cards and the vulval carcinoma group of 2026-10-23, the Benign resections group (user request 2026-09-24) is next; batch 4 is the one left. It is sized by its own measure, diagnosis parts in both exports (`docs/case-mix/benign-resections-2021-2026.md`), and is built in the four batches its group note lists.
+After the Hirschsprung pull-through (still pulled), the perineurioma card and the two uterus cards, the Benign resections group (user request 2026-09-24) is next; batch 4 is the one left. It is sized by its own measure, diagnosis parts in both exports (`docs/case-mix/benign-resections-2021-2026.md`), and is built in the four batches its group note lists.
 
 ### Hirschsprung disease — pull-through resection (user request 2026-09-29; pulled by the user 2026-09-30; moved from Now 2026-10-14 to make room, still pulled)   Size: M; Hirschsprung pair (L → split, 2 of 2)
 Why:        the resection report gives the length of the aganglionic segment and says whether the proximal margin is ganglionated and clear of the transition zone; pull-through lines open Generic today.
@@ -206,12 +197,6 @@ Ship:       with batch
 Depends on: Benign uterus — leiomyoma assessment
 Spec:       card is the spec; element order from the QMH page
 Source:     https://awiloqmh.github.io/CancerReportingTemplate/GYN-Sarcoma.html; https://www.iccr-cancer.org/datasets/published-datasets/female-reproductive/uterine-malignant/; https://www.rcpath.org/static/c146b1c0-0e0e-47a4-a6ab29b3230d69f8/G106-Dataset-for-histopathological-reporting-of-uterine-sarcomas.pdf
-
-### Vulval carcinoma — group note (user request 2026-10-23)
-Group:      four cards. The resection synoptic is an L, split into a staging module (1 of 2) and the synoptic (2 of 2); a Lymph node excision criteria card (S) and the reference galleries (M) follow. Proposed batches, three cards at most: (1) the staging module, the synoptic and the node criteria; (2) the galleries.
-Evidence:   the LIS export counts 21 vulva and vagina cases (0.5 per cent; vaginal masses and tumours, vulval margins, labial lesions — `docs/case-mix-2026-09.md`), and both exports hold fewer than 10 vulval excisions or vulvectomies. Before Phase 77 a vulval excision or vulvectomy line opened Generic, and a groin sentinel node with a vulval history opened Lymph node excision with the criteria "Not applied".
-Status:     pulled by the user 2026-10-23, both batches: cards 1 to 3 built 2026-10-23 (Phase 77, in Done); the galleries are in Now as the second batch. Decided: AJCC version 9 with FIGO 2021 (the QMH page prints the AJCC 8th edition); the gallery leaves out the images from other sites (penile, perianal, oral), uses the Bleeker et al. Fig 1 schematic and links the ExpertPath topics rather than copying their images.
-Spec:       cards 1 to 3 are their own spec, element order from the QMH page; the galleries `docs/specs/vulval-carcinoma-gallery.md`.
 
 ### Liver transplant pair — group note (user request 2026-10-09)
 Pair:       (A) the native liver, total hepatectomy at transplant; (B) the donor graft biopsy at time zero (back table or after reperfusion). Each letter keeps its own form and line; an explant with HCC links the `hcc` synoptic under (A). Both forms open with a criteria panel holding their systematic checklist, which never prints.
@@ -343,7 +328,7 @@ Spec:       `docs/specs/frozen-section-scenarios.md`
 - Lung reference galleries (adenocarcinoma patterns for the IASLC grade, STAS, PL0–PL3 elastic-stain levels), openly licensed with credit; deferred from the Lung pair.
 - Specimen intake — AI fallback: when the rule-based matcher returns "none" or "choose", offer a model suggestion from the specimen text and clinical history (S; needs a PHI decision first — the paste may contain identifiers); and macro-paste field extraction (sizes, counts, node numbers into schema fields) as a separate card.
 - Access control — gate the published app behind Google sign-in (the same OAuth client already used for Drive): an allow-list of permitted Google accounts, sign-in required before any case or template loads, everything else unchanged; static hosting means the gate is client-side (hides the UI from casual visitors, does not protect the bundle itself) unless a small backend is added.
-- Vulva and vagina resection templates (user request 2026-09-14): wide local excision / partial and radical vulvectomy and vaginectomy, benign and dysplastic first, then the QMH `Gynae-Vulva` and `Gynae-Vagina` cancer synoptics (depth of invasion, peripheral and deep margin clearances in mm, LVSI, groin nodes, AJCC / FIGO), with reference images for depth-of-invasion measurement and margin assessment. The vulval cancer synoptic was built 2026-10-23 (Phase 77) and its reference images are carded in Next (Vulval carcinoma group); the benign and dysplastic resections and the vagina synoptic stay here.
+- Vulva and vagina resection templates (user request 2026-09-14): wide local excision / partial and radical vulvectomy and vaginectomy, benign and dysplastic first, then the QMH `Gynae-Vulva` and `Gynae-Vagina` cancer synoptics (depth of invasion, peripheral and deep margin clearances in mm, LVSI, groin nodes, AJCC / FIGO), with reference images for depth-of-invasion measurement and margin assessment. The vulval cancer synoptic and its reference images were built 2026-10-23 (Phases 77 and 78); the benign and dysplastic resections and the vagina synoptic stay here.
 
 One line each; card them before building.
 

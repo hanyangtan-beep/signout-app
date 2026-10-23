@@ -1,6 +1,6 @@
 {
   "id": "vulval_carcinoma",
-  "version": "2026.10",
+  "version": "2026.10b",
   "name": "Vulval carcinoma resection",
   "shortName": "Vulva · carcinoma resection",
   "label": "Vulva Ca",
@@ -444,7 +444,172 @@
           ]
         }
       ],
-      "help": "WHO 5th edition, as the QMH page lists it, with CAP Vulva 5.1.0.0 additions."
+      "help": "WHO 5th edition, as the QMH page lists it, with CAP Vulva 5.1.0.0 additions.",
+      "reference": {
+        "title": "Vulval carcinoma types",
+        "intro": "HPV status, not the keratinising, basaloid or warty pattern, now sets the squamous type; Squamous cell carcinoma, NOS is for when HPV status cannot be determined.",
+        "columns": 3,
+        "groups": [
+          {
+            "heading": "Squamous cell carcinoma, HPV-associated",
+            "points": [
+              "Mostly basaloid or warty, but the morphology overlaps with HPV-independent carcinoma in 15 to 20 per cent",
+              "p16 block-type and p53 wild-type, often basal sparing; adjacent HSIL",
+              "A negative p16 with warty or basaloid morphology or adjacent HSIL calls for p53 or HPV testing"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/vulval_carcinoma/hpva_scc_he.jpg",
+                "caption": "HPV-associated squamous cell carcinoma: sheets and nests of basaloid cells without keratinisation (H&E).",
+                "credit": "Alsolami et al., Cancers 2026, Fig 1, panel A (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13204309/"
+              },
+              {
+                "src": "assets/reference/vulval_carcinoma/hpva_scc_p16_block.jpg",
+                "caption": "HPV-associated squamous cell carcinoma: strong, diffuse block-type staining of the tumour nests (p16 immunostain).",
+                "credit": "Alsolami et al., Cancers 2026, Fig 1, panel B (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13204309/"
+              }
+            ],
+            "links": [
+              {
+                "label": "ExpertPath: Squamous Cell Carcinoma (vulva)",
+                "url": "https://app.expertpath.com/document/squamous-cell-carcinoma/8d70c2d4-901b-4a4e-9b70-056c239a810f"
+              }
+            ]
+          },
+          {
+            "heading": "Squamous cell carcinoma, HPV-independent",
+            "points": [
+              "Usually keratinising, often with lichen sclerosus and chronic inflammation; verrucous carcinoma belongs here",
+              "p16 negative or patchy; p53 abnormal with adjacent dVIN, or wild-type, where verrucous morphology is over-represented"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/vulval_carcinoma/hpvi_scc_keratinising.jpg",
+                "caption": "HPV-independent squamous cell carcinoma: keratinising tumour cells infiltrating with a fibromyxoid stromal reaction (H&E).",
+                "credit": "Peng et al., Front Oncol 2025, Fig 3, panel B (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12667435/"
+              },
+              {
+                "src": "assets/reference/lower_genital/vulva_scc_keratinising.jpg",
+                "caption": "Keratinising squamous cell carcinoma of the vulva: infiltrating mature cells with abundant eosinophilic cytoplasm and keratin pearls (H&E).",
+                "credit": "Léonard et al., Biomed Res Int 2014, Fig 6, full figure",
+                "license": "CC BY 3.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3956289/"
+              },
+              {
+                "src": "assets/reference/vulval_carcinoma/verrucous_low.jpg",
+                "caption": "Verrucous carcinoma of the vulva: nests and islands of well-differentiated squamous cells in a dense stroma, at low power (H&E).",
+                "credit": "Wang et al., Front Oncol 2021, Fig 1, panel A (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8193986/"
+              }
+            ],
+            "links": [
+              {
+                "label": "ExpertPath: Squamous Cell Carcinoma (vulva)",
+                "url": "https://app.expertpath.com/document/squamous-cell-carcinoma/8d70c2d4-901b-4a4e-9b70-056c239a810f"
+              },
+              {
+                "label": "ExpertPath: Verrucous Carcinoma (and Variants)",
+                "url": "https://app.expertpath.com/document/verrucous-carcinoma-and-variants/6d08105b-6c03-4352-83f6-2de3e1747543"
+              }
+            ]
+          },
+          {
+            "heading": "Basal cell carcinoma, NOS",
+            "points": [
+              "Uncommon in the vulva"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/vulval_carcinoma/bcc_clitoris.jpg",
+                "caption": "Basal cell carcinoma of the vulva: dermal nests of basaloid cells with peripheral palisading and clefting (H&E).",
+                "credit": "Asuman et al., Indian J Dermatol 2008, Fig 2, full figure",
+                "license": "CC BY 2.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2763753/"
+              }
+            ],
+            "links": [
+              {
+                "label": "ExpertPath: Basal Cell Carcinoma (vulva)",
+                "url": "https://app.expertpath.com/document/basal-cell-carcinoma/788c2f11-4458-4652-b350-41d1936ad7f1"
+              }
+            ]
+          },
+          {
+            "heading": "Adenocarcinoma of anogenital mammary-like glands",
+            "points": [
+              "Arises from the anogenital mammary-like glands, which can also give rise to malignant phyllodes tumours"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/vulval_carcinoma/mammary_type_adenocarcinoma.jpg",
+                "caption": "Mammary-type adenocarcinoma of the vulva: small glands infiltrating the dermis (H&E).",
+                "credit": "Nobile et al., Front Oncol 2026, Fig 3, panel C (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12864080/"
+              }
+            ]
+          },
+          {
+            "heading": "Paget disease, extramammary (invasive)",
+            "points": [
+              "Single cells or small groups infiltrating the dermis with a desmoplastic reaction",
+              "The invasive component may be a non-specific adenocarcinoma, a mammary-type adenocarcinoma or a sweat gland-type carcinoma"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/lower_genital/paget_he_vulva.jpg",
+                "caption": "Primary extramammary Paget disease of the vulva: pale Paget cells scattered through the epidermis (H&E).",
+                "credit": "Sarahkayb, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Skin_Vulva_PagetDisease_MP_15BR***.jpg"
+              },
+              {
+                "src": "assets/reference/vulval_carcinoma/paget_invasive.jpg",
+                "caption": "Invasive extramammary Paget disease: Paget cells in the epidermis, with stromal and lymphovascular invasion below (arrows) (H&E).",
+                "credit": "Alessandrini et al., Diagn Pathol 2018, Fig 1, panel b (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6389142/"
+              }
+            ],
+            "links": [
+              {
+                "label": "ExpertPath: Extramammary Paget Disease (vulva)",
+                "url": "https://app.expertpath.com/document/extramammary-paget-disease/141d8db5-d433-4705-9d03-eb85f1f6f5ea"
+              }
+            ]
+          },
+          {
+            "heading": "Bartholin gland carcinoma (specify the subtype)",
+            "points": [
+              "Squamous cell carcinoma, adenoid cystic carcinoma and adenocarcinoma are the commonest subtypes",
+              "Bartholin origin: a tumour in the gland region with compatible histology, a transition from a benign gland or cyst, and no other primary site"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/vulval_carcinoma/bartholin_scc.jpg",
+                "caption": "Squamous cell carcinoma of the Bartholin gland: irregular, anastomosing nests and cords with a brisk stromal reaction (H&E).",
+                "credit": "Kostov et al., Cancers 2025, Fig 1, panel B (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12691067/"
+              }
+            ],
+            "links": [
+              {
+                "label": "ExpertPath: Bartholin Gland Carcinoma",
+                "url": "https://app.expertpath.com/document/bartholin-gland-carcinoma/6b739e6e-4b66-47f5-9530-36c922e524ef"
+              }
+            ]
+          }
+        ],
+        "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+      }
     },
     {
       "id": "histTypeOther",
@@ -518,6 +683,75 @@
           "Phyllodes tumour, borderline",
           "Phyllodes tumour, malignant"
         ]
+      },
+      "reference": {
+        "title": "Depth of invasion: three measurements",
+        "intro": "Line colours: yellow, FIGO 2021; red, conventional (FIGO 2009); blue, tumour thickness. Invasion of more than 1 mm calls for groin node evaluation; say so in the report when the depth is ambiguous.",
+        "columns": 3,
+        "groups": [
+          {
+            "heading": "FIGO 2021 method",
+            "points": [
+              "From the basement membrane of the deepest adjacent dysplastic, tumour-free rete ridge, or the nearest dysplastic rete peg, to the deepest point of invasion",
+              "FIGO 2021 and AJCC version 9 use it for every vulval carcinoma, whatever the type or HPV status",
+              "Where the deepest rete ridge lies deeper than the tumour, some measure from the nearest rete ridge, dysplastic or not"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/vulval_carcinoma/doi_methods_schematic.jpg",
+                "caption": "Depth of invasion, the three measurements: tumour thickness (blue), the conventional depth, labelled FIGO 2009 (red), and the FIGO 2021 depth (yellow) (diagram).",
+                "credit": "Bleeker et al., Int J Gynecol Pathol 2024, Fig 1 (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11332368/"
+              },
+              {
+                "src": "assets/reference/vulval_carcinoma/doi_figo2021_rete.jpg",
+                "caption": "FIGO 2021 method: depth (yellow) from the closest dysplastic epithelium, shorter than the conventional depth (red); preferred here by 80 per cent of the surveyed pathologists (H&E).",
+                "credit": "Bleeker et al., Int J Gynecol Pathol 2024, Fig 4, panel C (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11332368/"
+              },
+              {
+                "src": "assets/reference/vulval_carcinoma/doi_figo2021_oblique.jpg",
+                "caption": "FIGO 2021 method: an oblique depth (yellow) from the closest dysplastic epithelium to the deepest invasion, beside the conventional depth (red); the surveyed pathologists split evenly between the two (H&E).",
+                "credit": "Bleeker et al., Int J Gynecol Pathol 2024, Fig 4, panel D (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11332368/"
+              }
+            ]
+          },
+          {
+            "heading": "Conventional method",
+            "points": [
+              "From the epithelial-stromal junction of the most superficial adjacent dermal papilla to the deepest point of invasion (FIGO 2009)",
+              "AJCC keeps it as an ancillary value; it makes some tumours pT1b that the FIGO 2021 method stages pT1a"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/vulval_carcinoma/doi_conventional.jpg",
+                "caption": "Conventional method: depth (red) from the most superficial adjacent papilla; all the surveyed pathologists preferred it here, and few found the FIGO 2021 line (yellow) easy to apply (H&E).",
+                "credit": "Bleeker et al., Int J Gynecol Pathol 2024, Fig 4, panel A (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11332368/"
+              }
+            ]
+          },
+          {
+            "heading": "Tumour thickness",
+            "points": [
+              "From the surface of the dysplastic epithelium to the deepest point of invasion"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/vulval_carcinoma/doi_thickness.jpg",
+                "caption": "Tumour thickness: the blue line, from the surface to the deepest invasion, beside the conventional (red) and FIGO 2021 (yellow) depths (H&E).",
+                "credit": "Bleeker et al., Int J Gynecol Pathol 2024, Fig 4, panel B (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11332368/"
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -541,7 +775,7 @@
           }
         ]
       },
-      "help": "FIGO 2021: from the basement membrane of the deepest, adjacent, dysplasia-free rete ridge (or nearest dysplasia-free rete ridge) to the deepest point of invasion."
+      "help": "FIGO 2021: from the basement membrane of the deepest adjacent dysplastic, tumour-free rete ridge (or the nearest dysplastic rete peg) to the deepest point of invasion."
     },
     {
       "id": "doiConventionalMm",
@@ -599,7 +833,73 @@
         "Pushing",
         "Infiltrating",
         "Other (specify)"
-      ]
+      ],
+      "reference": {
+        "title": "Tumour border",
+        "intro": "Vulval squamous cell carcinomas generally either infiltrate or invade on a broad, pushing front. Tumour budding, spray-like infiltration and a fibromyxoid stromal response are related features, linked to worse outcomes in some studies but understudied as a group.",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "Pushing",
+            "points": [
+              "Invasion on a broad front of rounded, bulbous nests",
+              "The pattern of verrucous carcinoma, whose nests are very well differentiated"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/vulval_carcinoma/verrucous_high.jpg",
+                "caption": "Pushing border: broad, bulbous nests of very well-differentiated squamous cells in verrucous carcinoma of the vulva (H&E).",
+                "credit": "Wang et al., Front Oncol 2021, Fig 1, panel B (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8193986/"
+              },
+              {
+                "src": "assets/reference/vulval_carcinoma/verrucous_bulbous_nests.jpg",
+                "caption": "Pushing border: rounded, bulbous nests advancing on a broad front in verrucous carcinoma of the vulva (H&E).",
+                "credit": "Bouquet de Jolinière et al., Front Surg 2016, Fig 3, panel E (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4749678/"
+              }
+            ],
+            "links": [
+              {
+                "label": "ExpertPath: Verrucous Carcinoma (and Variants)",
+                "url": "https://app.expertpath.com/document/verrucous-carcinoma-and-variants/6d08105b-6c03-4352-83f6-2de3e1747543"
+              }
+            ]
+          },
+          {
+            "heading": "Infiltrating",
+            "points": [
+              "Tumour buds: clusters of 4 cells or fewer detaching at the invasive front",
+              "Poorly defined clusters: 5 or more cells in the stroma at the invasive front"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/vulval_carcinoma/border_budding.jpg",
+                "caption": "Infiltrating border: tumour buds of 4 cells or fewer (arrows) detaching at the invasive front (dashed line) (H&E).",
+                "credit": "Klamminger et al., Cancers 2025, Fig 1, panel A (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12109898/"
+              },
+              {
+                "src": "assets/reference/vulval_carcinoma/border_poorly_defined_clusters.jpg",
+                "caption": "Infiltrating border: poorly defined clusters of 5 or more cells (arrows) in the stroma at the invasive front (dashed line) (H&E).",
+                "credit": "Klamminger et al., Cancers 2025, Fig 1, panel C (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12109898/"
+              }
+            ],
+            "links": [
+              {
+                "label": "ExpertPath: Squamous Cell Carcinoma (vulva)",
+                "url": "https://app.expertpath.com/document/squamous-cell-carcinoma/8d70c2d4-901b-4a4e-9b70-056c239a810f"
+              }
+            ]
+          }
+        ],
+        "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+      }
     },
     {
       "id": "growthOther",
@@ -686,7 +986,76 @@
         "Other (specify)",
         "Not performed"
       ],
-      "help": "Printed inside the histology paragraph. ICCR: report p16 as block-type, not simply as positive."
+      "help": "Printed inside the histology paragraph. ICCR: report p16 as block-type, not simply as positive.",
+      "reference": {
+        "title": "p16 patterns",
+        "intro": "Only diffuse, block-like staining indicates HPV association; focal or patchy staining, or none, is seen in HPV-independent lesions.",
+        "columns": 3,
+        "groups": [
+          {
+            "heading": "Block-type positive",
+            "points": [
+              "Strong, diffuse cytoplasmic and nuclear staining through at least the lower third of the epithelium",
+              "HPV-associated carcinoma and HSIL"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/vulval_carcinoma/hpva_scc_p16_block.jpg",
+                "caption": "HPV-associated squamous cell carcinoma: strong, diffuse block-type staining of the tumour nests (p16 immunostain).",
+                "credit": "Alsolami et al., Cancers 2026, Fig 1, panel B (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13204309/"
+              },
+              {
+                "src": "assets/reference/vulval_carcinoma/hsil_p16_block.jpg",
+                "caption": "HSIL: strong, diffuse block-type staining of the lesional epithelium (p16 immunostain).",
+                "credit": "Alsolami et al., Cancers 2026, Fig 2, panel B (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13204309/"
+              }
+            ]
+          },
+          {
+            "heading": "Patchy, non-block-type",
+            "points": [
+              "Focal, patchy or mosaic staining that is not continuous",
+              "HPV-independent carcinoma and its precursors"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/lower_genital/p16_mosaic.jpg",
+                "caption": "HPV-independent vulval squamous cell carcinoma: mosaic, non-block p16 staining (p16 immunostain).",
+                "credit": "Haddad et al., Einstein (Sao Paulo) 2025, Fig 3, panel A (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12539858/"
+              },
+              {
+                "src": "assets/reference/vulval_carcinoma/vavin_p16_patchy.jpg",
+                "caption": "HPV-independent, p53-wild-type VIN: patchy, non-block staining (p16 immunostain).",
+                "credit": "Thuijs et al., Cancers 2024, Fig 3, panel B (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11640302/"
+              }
+            ]
+          },
+          {
+            "heading": "Negative",
+            "points": [
+              "No staining, or only rare scattered cells",
+              "Falsely negative in fewer than 1 per cent of HPV-associated carcinomas: with warty or basaloid morphology or adjacent HSIL, look for basal-sparing p53 or test for HPV"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/vulval_carcinoma/hpvi_scc_p16_negative.jpg",
+                "caption": "HPV-independent, p53-wild-type squamous cell carcinoma: no staining (p16 immunostain).",
+                "credit": "Alsolami et al., Cancers 2026, Fig 1, panel N (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13204309/"
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "p16Other",
@@ -715,7 +1084,113 @@
         "Other (specify)",
         "Not performed"
       ],
-      "help": "Printed inside the histology paragraph. Basal sparing (mid-epithelial) staining is the pattern of HPV-associated lesions."
+      "help": "Printed inside the histology paragraph. Basal sparing (mid-epithelial) staining is the pattern of HPV-associated lesions.",
+      "reference": {
+        "title": "p53 patterns",
+        "intro": "Two wild-type and four abnormal patterns; read the basal layer first. HPV-associated carcinoma and HSIL are wild-type, often with basal sparing; an abnormal pattern goes with HPV-independent carcinoma and dVIN.",
+        "columns": 3,
+        "groups": [
+          {
+            "heading": "Wild-type pattern",
+            "points": [
+              "Scattered nuclear staining of variable intensity in the basal and parabasal cells"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/lower_genital/p53_scattered.jpg",
+                "caption": "Vulval squamous cell carcinoma: scattered nuclear staining of variable intensity, a wild-type pattern (p53 immunostain).",
+                "credit": "Kortekaas et al., Histopathology 2020, Fig 1, panel A (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7383647/"
+              }
+            ]
+          },
+          {
+            "heading": "Wild-type, mid-epithelial (basal sparing) pattern",
+            "points": [
+              "Strong to moderate staining of the middle layers, sparing the basal layer",
+              "Associated with HPV"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/lower_genital/p53_mid_epithelial.jpg",
+                "caption": "Vulval squamous cell carcinoma: mid-epithelial staining with sparing of the basal layer, a wild-type pattern (p53 immunostain).",
+                "credit": "Kortekaas et al., Histopathology 2020, Fig 1, panel B (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7383647/"
+              }
+            ]
+          },
+          {
+            "heading": "Abnormal, basal overexpression",
+            "points": [
+              "Strong nuclear staining of consecutive basal cells; a little parabasal staining is acceptable"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/lower_genital/p53_basal.jpg",
+                "caption": "Vulval squamous cell carcinoma: strong staining of consecutive basal cells, a mutant-type pattern (p53 immunostain).",
+                "credit": "Kortekaas et al., Histopathology 2020, Fig 1, panel C (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7383647/"
+              },
+              {
+                "src": "assets/reference/lower_genital/p53_basal_dvin.jpg",
+                "caption": "Differentiated VIN: strong, continuous staining of the basal and parabasal layers, a mutant-type pattern (p53 immunostain).",
+                "credit": "Dasgupta et al., Histopathology 2026, Fig 3, panel D (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12703432/"
+              }
+            ]
+          },
+          {
+            "heading": "Abnormal, parabasal / diffuse overexpression",
+            "points": [
+              "Strong, diffuse staining of the basal and upper layers",
+              "Parabasal overexpression in more than 10 per cent of the lesion makes a basal pattern diffuse"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/lower_genital/p53_diffuse.jpg",
+                "caption": "Vulval squamous cell carcinoma: strong staining from the basal into the upper layers, a mutant-type pattern (p53 immunostain).",
+                "credit": "Kortekaas et al., Histopathology 2020, Fig 1, panel D (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7383647/"
+              }
+            ]
+          },
+          {
+            "heading": "Abnormal, null",
+            "points": [
+              "No nuclear staining, with a positive internal control"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/lower_genital/p53_null.jpg",
+                "caption": "Vulval squamous cell carcinoma: no nuclear staining in the tumour with positive stromal cells, a mutant-type null pattern (p53 immunostain).",
+                "credit": "Kortekaas et al., Histopathology 2020, Fig 1, panel E (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7383647/"
+              }
+            ]
+          },
+          {
+            "heading": "Abnormal, cytoplasmic",
+            "points": [
+              "Diffuse cytoplasmic staining, with or without nuclear staining, and a positive internal control"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/lower_genital/p53_cytoplasmic.jpg",
+                "caption": "Vulval squamous cell carcinoma: diffuse cytoplasmic staining, a mutant-type pattern (p53 immunostain).",
+                "credit": "Kortekaas et al., Histopathology 2020, Fig 1, panel F (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7383647/"
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "p53Other",
@@ -888,6 +1363,101 @@
           "Differentiated VIN (dVIN)",
           "Vulvar aberrant maturation (VAM) / HPV-independent, p53-wild-type verruciform acanthotic VIN"
         ]
+      },
+      "reference": {
+        "title": "Squamous precursors at a margin",
+        "intro": "Report the precursor margin even when invasive carcinoma involves a margin.",
+        "columns": 3,
+        "groups": [
+          {
+            "heading": "HSIL (VIN 2 or VIN 3)",
+            "points": [
+              "Atypical nuclei in all layers, including the middle and upper thirds, with suprabasal and atypical mitoses",
+              "Often extends into hair follicles and skin appendages; p16 block-type, p53 wild-type"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/lower_genital/vulva_hsil_basaloid.jpg",
+                "caption": "Vulval HSIL, basaloid type: atypical parabasal-type cells through nearly the whole thickness of the epidermis (H&E).",
+                "credit": "Léonard et al., Biomed Res Int 2014, Fig 3, full figure",
+                "license": "CC BY 3.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3956289/"
+              },
+              {
+                "src": "assets/reference/vulval_carcinoma/hsil_p16_block.jpg",
+                "caption": "HSIL: strong, diffuse block-type staining of the lesional epithelium (p16 immunostain).",
+                "credit": "Alsolami et al., Cancers 2026, Fig 2, panel B (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13204309/"
+              }
+            ],
+            "links": [
+              {
+                "label": "ExpertPath: Vulvar Intraepithelial Neoplasia",
+                "url": "https://app.expertpath.com/document/vulvar-intraepithelial-neoplasia/6d9143d7-fd2d-4014-953c-8128277c2b55"
+              }
+            ]
+          },
+          {
+            "heading": "Differentiated VIN (dVIN)",
+            "points": [
+              "Atypia confined to the basal and parabasal layers: enlarged cells with eosinophilic cytoplasm, vesicular nuclei and prominent nucleoli",
+              "p53 abnormal (basal, diffuse, null or cytoplasmic); p16 negative or patchy"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/lower_genital/dvin_basal_atypia.jpg",
+                "caption": "Differentiated VIN, deep epithelium: enlarged eosinophilic keratinocytes with atypical basal nuclei (H&E).",
+                "credit": "Nephron, Wikimedia Commons (cropped)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Differentiated_vulvar_intraepithelial_neoplasia_-_deep_-_high_mag.jpg"
+              },
+              {
+                "src": "assets/reference/lower_genital/p53_basal_dvin.jpg",
+                "caption": "Differentiated VIN: strong, continuous staining of the basal and parabasal layers, a mutant-type pattern (p53 immunostain).",
+                "credit": "Dasgupta et al., Histopathology 2026, Fig 3, panel D (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12703432/"
+              }
+            ],
+            "links": [
+              {
+                "label": "ExpertPath: Vulvar Intraepithelial Neoplasia",
+                "url": "https://app.expertpath.com/document/vulvar-intraepithelial-neoplasia/6d9143d7-fd2d-4014-953c-8128277c2b55"
+              }
+            ]
+          },
+          {
+            "heading": "Vulvar aberrant maturation (VAM) / HPV-independent, p53-wild-type verruciform acanthotic VIN",
+            "points": [
+              "HPV-independent lesions combining aberrant maturation and verruciform acanthosis with minimal nuclear atypia",
+              "p53 wild-type; p16 negative or non-block"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/vulval_carcinoma/vavin_he.jpg",
+                "caption": "HPV-independent, p53-wild-type VIN: acanthotic epithelium with thick surface keratin (H&E).",
+                "credit": "Thuijs et al., Cancers 2024, Fig 3, panel A (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11640302/"
+              },
+              {
+                "src": "assets/reference/vulval_carcinoma/vavin_p53_wildtype.jpg",
+                "caption": "HPV-independent, p53-wild-type VIN: scattered basal and parabasal nuclear staining, a wild-type pattern (p53 immunostain).",
+                "credit": "Thuijs et al., Cancers 2024, Fig 3, panel C (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11640302/"
+              }
+            ],
+            "links": [
+              {
+                "label": "ExpertPath: Vulvar Intraepithelial Neoplasia",
+                "url": "https://app.expertpath.com/document/vulvar-intraepithelial-neoplasia/6d9143d7-fd2d-4014-953c-8128277c2b55"
+              }
+            ]
+          }
+        ],
+        "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
       }
     },
     {
@@ -964,6 +1534,36 @@
             "is": "Paget disease, extramammary (invasive)"
           }
         ]
+      },
+      "reference": {
+        "title": "Paget disease at a margin",
+        "intro": "Report the Paget disease margin even when invasive carcinoma involves a margin.",
+        "columns": 1,
+        "groups": [
+          {
+            "heading": "Paget disease (intraepithelial)",
+            "points": [
+              "Enlarged cells with abundant pale cytoplasm, large nuclei and small to prominent nucleoli; intracytoplasmic mucin is frequent",
+              "Mainly basal and parabasal, extending upwards singly and in small clusters, often into skin adnexa"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/lower_genital/paget_he_vulva.jpg",
+                "caption": "Primary extramammary Paget disease of the vulva: pale Paget cells scattered through the epidermis (H&E).",
+                "credit": "Sarahkayb, Wikimedia Commons, full figure",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Skin_Vulva_PagetDisease_MP_15BR***.jpg"
+              }
+            ],
+            "links": [
+              {
+                "label": "ExpertPath: Extramammary Paget Disease (vulva)",
+                "url": "https://app.expertpath.com/document/extramammary-paget-disease/141d8db5-d433-4705-9d03-eb85f1f6f5ea"
+              }
+            ]
+          }
+        ],
+        "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
       }
     },
     {
@@ -1019,7 +1619,42 @@
         "field": "nodesExamined",
         "min": 1
       },
-      "help": "Sentinel only adds (sn) to pN. A negative lymphadenectomy with fewer than 6 nodes is pN not assigned (CAP)."
+      "help": "Sentinel only adds (sn) to pN. A negative lymphadenectomy with fewer than 6 nodes is pN not assigned (CAP).",
+      "reference": {
+        "title": "Regional lymph nodes (AJCC version 9)",
+        "intro": "Regional nodes are inguinal and femoral; an involved iliac node is a distant metastasis (pM1).",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "Isolated tumour cells",
+            "points": [
+              "0.2 mm or less, or single cells or clusters of 200 cells or fewer in one cross-section: pN0(i+)",
+              "Counted only when no node holds a larger metastasis"
+            ]
+          },
+          {
+            "heading": "Micrometastasis",
+            "points": [
+              "More than 0.2 mm to 2.0 mm: pN1mi"
+            ]
+          },
+          {
+            "heading": "Metastasis, by size",
+            "points": [
+              "More than 2.0 mm to 5 mm: pN1a",
+              "More than 5 mm: pN1b"
+            ]
+          },
+          {
+            "heading": "Extranodal extension and fixed nodes",
+            "points": [
+              "Extranodal extension: pN1c",
+              "Fixed or ulcerated nodes: pN2"
+            ]
+          }
+        ],
+        "note": "No openly licensed photograph of a vulval carcinoma node was found, and photographs from other sites are left out."
+      }
     },
     {
       "id": "nodesSentinel",

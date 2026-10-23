@@ -2,7 +2,8 @@
 // Its own form (Gynae, "Vulva Ca"), in the QMH GYN-Vulva element order, staged on AJCC version 9 as CAP
 // Vulva 5.1.0.0 lists it (the user chose version 9 on 2026-10-23; the QMH page prints the 8th edition).
 // Sources: docs/reference/vulva-sources.md. Staging: tests/staging_vulva.test.js. Groin node criteria:
-// tests/lymphnode_sln.test.js.
+// tests/lymphnode_sln.test.js. Phase 78 (23 October 2026) adds the reference galleries, tested at the end of
+// this file; their sources and licences are in docs/specs/vulval-carcinoma-gallery.md.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -302,3 +303,86 @@ for (const [name, description, parts] of CASES) {
     assert.doesNotMatch(r.report, /undefined|\[object|NaN| {3,}/);
   });
 }
+
+// Reference galleries - Phase 78 (user request 2026-10-23). Every photograph is of a vulval lesion: the user left
+// out stand-ins from other sites, so the node panel is criteria only. ExpertPath topics are links, never images.
+// Sources and licences: docs/specs/vulval-carcinoma-gallery.md.
+const GALLERIES = {
+  histType: ['Vulval carcinoma types', 6, 10], doi: ['Depth of invasion: three measurements', 3, 5],
+  growthPattern: ['Tumour border', 2, 4], precursorMargin: ['Squamous precursors at a margin', 3, 6],
+  pagetMargin: ['Paget disease at a margin', 1, 1], nodeSampling: ['Regional lymph nodes (AJCC version 9)', 4, 0],
+  p16: ['p16 patterns', 3, 5], p53: ['p53 patterns', 6, 7]
+};
+const REUSED = ['vulva_scc_keratinising.jpg', 'paget_he_vulva.jpg', 'vulva_hsil_basaloid.jpg', 'dvin_basal_atypia.jpg', 'p53_basal_dvin.jpg',
+  'p16_mosaic.jpg', 'p53_scattered.jpg', 'p53_mid_epithelial.jpg', 'p53_basal.jpg', 'p53_diffuse.jpg', 'p53_null.jpg', 'p53_cytoplasmic.jpg'];
+const jpegSize = (buf) => {
+  for (let i = 2; i < buf.length - 8;) {
+    if (buf[i] !== 0xff) { i++; continue; }
+    const m = buf[i + 1];
+    if (m >= 0xc0 && m <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(m)) return { h: buf.readUInt16BE(i + 5), w: buf.readUInt16BE(i + 7) };
+    i += 2 + buf.readUInt16BE(i + 2);
+  }
+  return null;
+};
+test('galleries: eight panels of vulval images with open licences, credits and ExpertPath links', async () => {
+  const { schema: cervical } = await loadTemplate('cervical_biopsy');
+  const cervicalImages = new Map();
+  for (const f of cervical.fields) for (const g of f.reference?.groups || []) for (const im of g.images || []) cervicalImages.set(im.src, im);
+  const used = new Set();
+  for (const [id, [title, groups, photos]] of Object.entries(GALLERIES)) {
+    const ref = field(id).reference;
+    assert.equal(ref.title, title, `${id} panel title`);
+    assert.equal(ref.groups.length, groups, `${id} group count`);
+    const images = ref.groups.flatMap((g) => g.images || []);
+    assert.equal(images.length, photos, `${id} photo count`);
+    for (const g of ref.groups) {
+      assert.ok(g.points?.length, `${id}: ${g.heading} has points`);
+      for (const l of g.links || []) assert.ok(l.label.startsWith('ExpertPath: ') && l.url.startsWith('https://app.expertpath.com/document/'), `${id}: ${l.label}`);
+    }
+    if (ref.groups.some((g) => g.links?.length)) assert.match(ref.note, /own ExpertPath login/, `${id} says the ExpertPath pages need a login`);
+    for (const im of images) {
+      used.add(im.src);
+      assert.match(im.caption, /: .+ \((H&E|p16 immunostain|p53 immunostain|diagram)\)\.$/, `${im.src} caption form`);
+      assert.match(im.license, /^CC(0| BY| BY-SA) /, `${im.src} licence`);
+      const name = path.basename(im.src);
+      if (im.src.startsWith('assets/reference/lower_genital/')) {
+        assert.ok(REUSED.includes(name), `${name} is one of the vulval cervical biopsy photographs`);
+        assert.deepEqual(im, cervicalImages.get(im.src), `${name} keeps its cervical biopsy caption and credit`);
+      } else {
+        assert.ok(im.src.startsWith('assets/reference/vulval_carcinoma/'), `${im.src} folder`);
+        assert.match(im.license, /^CC BY [24]\.0$/, `${im.src} licence`);
+        assert.match(im.url, /^https:\/\/pmc\.ncbi\.nlm\.nih\.gov\/articles\/PMC\d+\/$/, `${im.src} source URL`);
+        assert.match(im.credit, /^.+ et al\., .+ (19|20)\d\d, Fig \d+(, panel [A-Za-z])? \(cropped\)$|, full figure$/, `${im.src} credit`);
+        const buf = fs.readFileSync(path.join(root, im.src));
+        const size = jpegSize(buf);
+        assert.ok(buf.length <= 150 * 1024 && size && size.w <= 900 && size.h <= 900, `${im.src} is a JPEG of 900 px and 150 kB or less`);
+      }
+    }
+  }
+  const folder = fs.readdirSync(path.join(root, 'assets/reference/vulval_carcinoma')).map((n) => `assets/reference/vulval_carcinoma/${n}`);
+  assert.deepEqual(folder.filter((s) => !used.has(s)), [], 'every vulval carcinoma photograph is used');
+  assert.equal(folder.length, 22, 'new photographs');
+  assert.equal([...used].filter((s) => s.includes('/lower_genital/')).length, REUSED.length, 'reused photographs');
+  // Headings follow the options they illustrate.
+  for (const id of ['histType', 'growthPattern', 'p16', 'p53']) {
+    for (const g of field(id).reference.groups) assert.ok(field(id).options.includes(g.heading), `${id}: "${g.heading}" is an option`);
+  }
+  assert.deepEqual(field('precursorMargin').reference.groups.slice(1).map((g) => g.heading), field('adjacent').options.slice(2, 4));
+  assert.equal(field('pagetMargin').reference.groups[0].heading, 'Paget disease (intraepithelial)');
+  // The p53 panel is the cervical biopsy one under this form's option names.
+  const cp53 = cervical.fields.find((f) => f.id === 'p53').reference.groups;
+  assert.deepEqual(field('p53').reference.groups.map((g) => [g.points, g.images]), cp53.map((g) => [g.points, g.images]));
+  // The node panel holds the AJCC version 9 categories as text.
+  const nodeText = field('nodeSampling').reference.groups.flatMap((g) => g.points).join(' ');
+  for (const pn of ['pN0(i+)', 'pN1mi', 'pN1a', 'pN1b', 'pN1c', 'pN2']) assert.ok(nodeText.includes(pn), `node panel has ${pn}`);
+  assert.match(field('nodeSampling').reference.note, /No openly licensed photograph/);
+  assert.match(field('doiMm').help, /deepest adjacent dysplastic, tumour-free rete ridge \(or the nearest dysplastic rete peg\)/);
+  // Captions and criteria never print.
+  const r = runParts([EXAMPLE]);
+  for (const id of Object.keys(GALLERIES)) {
+    const ref = field(id).reference;
+    for (const t of [ref.intro, ...ref.groups.flatMap((g) => [...g.points, ...(g.images || []).map((im) => im.caption)])]) {
+      assert.ok(!r.report.includes(t), `"${t.slice(0, 60)}" reached the report`);
+    }
+  }
+});
