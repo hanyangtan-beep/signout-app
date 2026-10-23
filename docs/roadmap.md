@@ -138,7 +138,29 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. The Phase 75 batch (PitNET resection synoptic; PitNET intake routing and the CNS form hand-off) shipped on 2026-10-23; the write-up is in `docs/specs/specimen-intake.md` (PitNET form and CNS hand-off). The morcellated leiomyoma and uterine leiomyosarcoma cards wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+An M and an S card from the user's request of 2026-10-23 (the breast and melanoma criteria, extranodal extension and a treatment effect for the sentinel node on the Lymph node excision form, and the frozen section sentinel node); one batch. The morcellated leiomyoma and uterine leiomyosarcoma cards wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+
+### Sentinel lymph node — breast and melanoma criteria, extranodal extension and treatment effect (user request 2026-10-23)   Size: M
+Why:        the Lymph node excision form prints a metastasis with its size and extranodal extension only: no isolated tumour cells, no macrometastasis or micrometastasis, no extent of extranodal extension, no treatment effect after presurgical therapy, no melanoma deposit location, and the criteria are nowhere on the form (user, 2026-10-23). Sentinel nodes are mostly breast, then melanoma.
+Change:     a "Staging criteria" field (not applied, breast carcinoma, melanoma) with a criteria panel that never prints: the breast categories (macrometastasis more than 2 mm; micrometastasis more than 0.2 mm to 2 mm or more than 200 cells in one cross-section; isolated tumour cells 0.2 mm or less and fewer than 200 cells, not counted as positive), how the deposit is measured, extranodal extension and its 2 mm extent, nodes after presurgical therapy, and the melanoma rules (any tumour cells make the node positive; the largest discrete deposit to 0.1 mm; subcapsular or intraparenchymal; nodal naevus). A result "Isolated tumour cells" ("ISOLATED TUMOUR CELLS ONLY (1/1)", as the frozen form prints it). For breast the category follows the largest deposit unless chosen ("largest deposit 3 mm (macrometastasis)"); extranodal extension gains "Cannot be determined" and an extent (2 mm or less, more than 2 mm); breast gains the CAP treatment effect in lymph nodes (no definite response, response present, fibrous scarring with no metastasis, neither); melanoma gains the deposit location. A pasted sentinel line opens on breast unless it or the case names melanoma (melanoma), or a pelvic, groin or neck node or another primary (not applied); choosing the sentinel procedure sets breast. Checks: a category at odds with the deposit size, isolated tumour cells with the melanoma criteria or larger than 0.2 mm, criteria at odds with the result, a treatment effect at odds with the result, deposit size not recorded.
+Untouched:  reports with the criteria not applied, and the negative, granulomatous and lymphoma wording; the lymphoma form; routing.
+Accept:     fixtures for a breast macrometastasis, a micrometastasis, isolated tumour cells, a node with fibrous scarring after presurgical therapy and a subcapsular melanoma deposit; `tests/lymphnode.test.js` unchanged; the intake fills measured on both exports.
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: none
+Spec:       card is the spec
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/BREAST-Cancers.html; https://www.cap.org/wp-content/uploads/2026/06/Breast.Invasive.Res_4.11.0.0.REL_CAPCP.pdf?download; https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5978683/; https://www.iccr-cancer.org/docs/ICCR-Melanoma2-LN.pdf; https://documents.cap.org/documents/New-Cancer-Protocols-March-2025/Skin.Inv_Melanoma.Res_1.2.0.0.REL.CAPCP.docx
+
+### Frozen section — sentinel node criteria, extranodal extension extent and treatment effect (user request 2026-10-23)   Size: S
+Why:        the frozen sentinel node offers isolated tumour cells, micrometastasis and macrometastasis without the 200-cell criterion or a criteria panel, has no extent of extranodal extension, lacks the fifth CAP treatment-effect answer and prints carcinoma categories for a melanoma node; its treatment and extranodal answers reach the breast synoptic as values that form does not offer.
+Change:     the result labels gain the 200-cell criterion and the criteria panel; an extent (2 mm or less, more than 2 mm) when extranodal extension is present, printed in the paraffin microscopy and the diagnosis; the treatment answer "No metastasis; no fibrous scarring or histiocytic aggregates", with the five answers worded as on the Lymph node form; with the site "Skin (melanoma)" the lines name metastatic malignant melanoma with its size and no category, and a check says why. "Add breast synoptic" carries the treatment effect, extranodal extension and its extent as the breast form's own answers.
+Untouched:  the breast sentinel wording without the new fields (the `tests/frozen_sln.test.js` strings); the other frozen scenarios.
+Accept:     tests for the extent in both lines, the melanoma wording and check, and the breast prefill of every treatment answer and of "Cannot be assessed".
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: Sentinel lymph node — breast and melanoma criteria, extranodal extension and treatment effect
+Spec:       card is the spec
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/BREAST-Cancers.html; https://www.cap.org/wp-content/uploads/2026/06/Breast.Invasive.Res_4.11.0.0.REL_CAPCP.pdf?download; https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5978683/
 
 ## Next
 
