@@ -1557,6 +1557,37 @@ await check('tube and ovary: a pasted RRSO opens its own form, bilateral, risk-r
   return 'RRSO bilateral, risk-reducing, SEE-FIM; p53 signature sentence, closer and diagnosis; right salpingo-oophorectomy sided with the stains hidden';
 });
 
+// Phase 75 (2026-10-23): a pituitary line opens the PitNET form (Endocrine), not Generic or the Glioma
+// form. The synoptic carries the lineage, and the stains sit in the histology paragraph; picking a
+// tumour type moves the lineage transcription factors with it. No glioma wording reaches the report.
+await check('PitNET: a pasted pituitary adenoma opens the PitNET form with its lineage; the type moves the transcription factors', async () => {
+  const chosen = async (id) => {
+    const chips = await page.locator(`.chips[data-field="${id}"] .chip[aria-pressed="true"]`).allTextContents();
+    if (chips.length) return chips.map((c) => c.replace(/^\s*\d*\s*/, '').trim()).join(',');
+    const sel = page.locator(`[data-field="${id}"] select`).first();
+    return (await sel.count()) ? sel.inputValue() : '';
+  };
+  const routed = await pasteAndBuild('Pituitary adenoma, transsphenoidal excision');
+  assert(routed === 'pituitary_net', `pituitary adenoma routed to ${routed}`);
+  assert(await chosen('procedure') === 'Transsphenoidal resection', 'procedure not read from the line');
+  let report = await reportText();
+  assert(report.includes('SF1-lineage pituitary neuroendocrine tumour,'), `type line missing: ${report.slice(0, 900)}`);
+  assert(report.includes('Reticulin shows loss of the normal acinar architecture.'), 'reticulin sentence missing');
+  assert(report.includes('the tumour cells are diffusely positive for synaptophysin and SF1, and negative for TPIT and PIT1.'), `IHC sentence wrong: ${report.slice(0, 1200)}`);
+  assert(report.includes('GONADOTROPH PITUITARY NEUROENDOCRINE TUMOUR (PitNET), SF1-lineage'), `diagnosis wrong: ${report.slice(-300)}`);
+  assert(!/GFAP|OLIG2|IDH1|pseudopalisad|CNS WHO grade/i.test(report), 'glioma wording in a PitNET report');
+  await pickField('tumourType', 'Somatotroph tumour, sparsely granulated');
+  await page.waitForTimeout(300);
+  report = await reportText();
+  assert(report.includes('diffusely positive for synaptophysin and PIT1, and negative for TPIT and SF1.'), `factors did not follow the type: ${report.slice(0, 1200)}`);
+  assert(report.includes('Fibrous bodies are present.'), 'fibrous bodies did not follow the type');
+  assert(report.includes('SPARSELY GRANULATED SOMATOTROPH PITUITARY NEUROENDOCRINE TUMOUR (PitNET),'), `diagnosis did not follow: ${report.slice(-300)}`);
+  assert((await checksText()).includes('Low-molecular-weight keratin is not recorded'), 'keratin check missing for a PIT1-lineage tumour');
+  await page.locator('[data-field="tumourType"]').first().scrollIntoViewIfNeeded();
+  await shot('pitnet-sg-somatotroph');
+  return 'pituitary adenoma line opens the PitNET form, transsphenoidal; SF1 lineage, reticulin and IHC in the paragraph, house diagnosis; the type moves the factors, fibrous bodies, diagnosis and the keratin check';
+});
+
 // Benign batch 2 (2026-09-24): the ectopic form from a pasted request, sided and with its procedure read
 // from the line; a salpingotomy swaps the tube fields for the fragments. A tube-only line keeps the tube form.
 await check('ectopic: a pasted tubal ectopic opens its own form sided, and a salpingotomy shows the fragments only', async () => {

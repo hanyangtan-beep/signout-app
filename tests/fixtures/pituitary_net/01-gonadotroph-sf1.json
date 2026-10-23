@@ -1,0 +1,65 @@
+{
+  "description": "SF1-lineage gonadotroph tumour, transsphenoidal, the example",
+  "templateId": "pituitary_net",
+  "values": [
+    {
+      "specimenName": "",
+      "procedure": "Transsphenoidal resection",
+      "procedureOther": "",
+      "integrity": "Fragmented",
+      "specimenDims": "18 x 12 x 4",
+      "grossDetails": "",
+      "sampling": "Entirely embedded",
+      "blockKeyText": "1-2 Tumour fragments",
+      "tumourNumber": "Single",
+      "tumourCount": "",
+      "tumourSize": 24,
+      "sizeFrom": "Imaging",
+      "tumourType": "Gonadotroph tumour",
+      "typeDetail": "",
+      "architecture": [
+        "Diffuse sheets",
+        "Perivascular pseudorosettes"
+      ],
+      "cytoplasm": "Chromophobic",
+      "atypia": "None",
+      "features": [],
+      "reticulin": "Disrupted",
+      "pas": "Not performed",
+      "ihcDiffuse": [
+        "Synaptophysin",
+        "SF1",
+        "GATA3"
+      ],
+      "ihcFocal": [
+        "Beta-FSH"
+      ],
+      "ihcNegative": [
+        "TPIT",
+        "PIT1"
+      ],
+      "keratin": "Not performed",
+      "keratinClone": "CAM5.2",
+      "keratinPattern": [],
+      "p27": "Not performed",
+      "atrx": "Not performed",
+      "p53": "Not performed",
+      "ki67": 2,
+      "mitoses": 0,
+      "invasion": "Not identified",
+      "invasionSites": [],
+      "invasionOther": "",
+      "metastasis": "Not applicable",
+      "metastasisDetail": "",
+      "nonTumour": [
+        "Adenohypophysis"
+      ],
+      "crooke": "",
+      "additional": [],
+      "additionalOther": "",
+      "additionalNotes": ""
+    }
+  ],
+  "report": "Pituitary tumour, transsphenoidal excision\n\nReceived in formalin are fragments of soft tumour tissue, measuring 18 x 12 x 4 mm in aggregate. The specimen is entirely embedded; see block key.\n\n(1-2) Tumour fragments.\n\nSpecimen and tumour\n- Procedure: Transsphenoidal pituitary tumour resection\n- Tumour integrity: Fragmented\n- Tumour number: Single pituitary neuroendocrine tumour\n- Tumour size: 24 mm in greatest dimension (imaging)\n\nMicroscopic findings\n- Tumour type and subtype: SF1-lineage pituitary neuroendocrine tumour,\n  gonadotroph tumour\n- Tumour histology:\n  Sections show a pituitary neuroendocrine tumour composed of monotonous cells arranged in diffuse sheets and perivascular pseudorosettes, with chromophobic cytoplasm and round to oval nuclei with finely granular chromatin. Reticulin shows loss of the normal acinar architecture. On immunohistochemistry, the tumour cells are diffusely positive for synaptophysin, SF1 and GATA3, focally positive for beta-FSH, and negative for TPIT and PIT1.\n- Ki-67 labelling index: 2%\n- Mitotic count: 0 per 2 mm2\n- Histologically confirmed invasion: Not identified\n- Non-tumorous pituitary: Adenohypophysis identified\n\nAdditional findings\n- None identified\n\nPITUITARY, tumour, transsphenoidal excision\n- GONADOTROPH PITUITARY NEUROENDOCRINE TUMOUR (PitNET), SF1-lineage",
+  "checks": []
+}

@@ -213,15 +213,6 @@
    "qmh": "Endocrine-Pheochromocytoma"
   },
   {
-   "id": "pituitary_net",
-   "name": "Pituitary neuroendocrine tumour",
-   "label": "PitNET",
-   "system": "Endocrine",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "Endocrine-PitNET"
-  },
-  {
    "id": "neuroblastoma",
    "name": "Neuroblastoma (paediatric) resection",
    "label": "Neuroblastoma",

@@ -1,0 +1,1009 @@
+{
+ "id": "pituitary_net",
+ "version": "2026.10",
+ "name": "Pituitary neuroendocrine tumour (PitNET) resection",
+ "shortName": "Pituitary · PitNET resection",
+ "label": "PitNET",
+ "organ": "PITUITARY",
+ "system": "Endocrine",
+ "kind": "cancer resection",
+ "rank": 65,
+ "aliases": [
+  "PitNET",
+  "pituitary adenoma",
+  "pituitary neuroendocrine tumour",
+  "pituitary tumour",
+  "sellar tumour",
+  "macroadenoma",
+  "transsphenoidal",
+  "TSS",
+  "PIT1",
+  "TPIT",
+  "SF1",
+  "gonadotroph",
+  "somatotroph",
+  "corticotroph",
+  "lactotroph",
+  "null cell",
+  "Crooke",
+  "synoptic",
+  "CAP"
+ ],
+ "match": {
+  "site": [
+   "pituitary",
+   "pituitary gland",
+   "pituitary fossa",
+   "sella",
+   "sellar",
+   "intrasellar",
+   "pituitary adenoma",
+   "macroadenoma",
+   "microadenoma",
+   "PitNET"
+  ],
+  "procedure": [
+   "transsphenoidal",
+   "trans-sphenoidal",
+   "TSS",
+   "endoscopic",
+   "endonasal",
+   "excision",
+   "resection",
+   "transcranial"
+  ],
+  "clinical": [
+   "pituitary adenoma",
+   "macroadenoma",
+   "PitNET",
+   "acromegaly",
+   "Cushing",
+   "prolactinoma"
+  ],
+  "exclude": [
+   "frozen",
+   "frozen section",
+   "FS",
+   "intraoperative",
+   "cyst",
+   "cystic",
+   "Rathke",
+   "craniopharyngioma",
+   "tuberculum",
+   "meningioma",
+   "hypophysitis",
+   "smear",
+   "squash"
+  ],
+  "bare": true,
+  "fill": [
+   {
+    "field": "specimenName",
+    "from": "detail"
+   },
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "transcranial|craniotomy|craniectomy",
+      "Transcranial resection"
+     ],
+     [
+      "trans-?sphenoid|\\bTSS\\b|endoscopic|endonasal",
+      "Transsphenoidal resection"
+     ]
+    ]
+   }
+  ]
+ },
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Macroscopy"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "mm",
+   "label": true
+  },
+  "blockKeyText": {
+   "concept": "blockKey"
+  }
+ },
+ "specimenNoun": "resection",
+ "maxParts": 3,
+ "defaultParts": 1,
+ "generator": "pituitary_net",
+ "style": {
+  "british": true
+ },
+ "source": {
+  "template": "QMH Cancer Reporting Template - Endocrine-PitNET",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Endocrine-PitNET.html",
+  "capProtocol": "CAP Pituitary Neuroendocrine Tumor 1.0.0.0 (Mar-2025)",
+  "staging": "None. PitNETs are not staged by AJCC and carry no CNS WHO grade; the lineage, subtype, Ki-67, mitotic count and invasion carry the prognostic weight.",
+  "savedPage": "docs/reference/Endocrine-PitNET.html"
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "partDefaults": [],
+ "snippets": [
+  {
+   "id": "pituitary_net_ki67_manual",
+   "label": "Ki-67 method: manual count",
+   "text": "The Ki-67 labelling index was assessed by manual count of at least 500 tumour cells in hot spots."
+  },
+  {
+   "id": "pituitary_net_ki67_image",
+   "label": "Ki-67 method: image analysis",
+   "text": "The Ki-67 labelling index was assessed by automated image analysis of at least 500 tumour cells in hot spots."
+  }
+ ],
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "",
+     "procedure": "Transsphenoidal resection",
+     "procedureOther": "",
+     "integrity": "Fragmented",
+     "specimenDims": "18 x 12 x 4",
+     "grossDetails": "",
+     "sampling": "Entirely embedded",
+     "blockKeyText": "1-2 Tumour fragments",
+     "tumourNumber": "Single",
+     "tumourCount": "",
+     "tumourSize": 24,
+     "sizeFrom": "Imaging",
+     "tumourType": "Gonadotroph tumour",
+     "typeDetail": "",
+     "architecture": [
+      "Diffuse sheets",
+      "Perivascular pseudorosettes"
+     ],
+     "cytoplasm": "Chromophobic",
+     "atypia": "None",
+     "features": [],
+     "reticulin": "Disrupted",
+     "pas": "Not performed",
+     "ihcDiffuse": [
+      "Synaptophysin",
+      "SF1",
+      "GATA3"
+     ],
+     "ihcFocal": [
+      "Beta-FSH"
+     ],
+     "ihcNegative": [
+      "TPIT",
+      "PIT1"
+     ],
+     "keratin": "Not performed",
+     "keratinClone": "CAM5.2",
+     "keratinPattern": [],
+     "p27": "Not performed",
+     "atrx": "Not performed",
+     "p53": "Not performed",
+     "ki67": 2,
+     "mitoses": 0,
+     "invasion": "Not identified",
+     "invasionSites": [],
+     "invasionOther": "",
+     "metastasis": "Not applicable",
+     "metastasisDetail": "",
+     "nonTumour": [
+      "Adenohypophysis"
+     ],
+     "crooke": "",
+     "additional": [],
+     "additionalOther": "",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "text",
+   "placeholder": "e.g. Pituitary tumour"
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "group": "Macroscopy",
+   "default": "Transsphenoidal resection",
+   "options": [
+    "Transsphenoidal resection",
+    "Transcranial resection",
+    "Other"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Procedure (specify)",
+   "type": "text",
+   "group": "Macroscopy",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other"
+   }
+  },
+  {
+   "id": "integrity",
+   "label": "Tumour integrity",
+   "type": "select",
+   "group": "Macroscopy",
+   "default": "Fragmented",
+   "options": [
+    "Fragmented",
+    "Intact"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Aggregate specimen size (mm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "15 x 10 x 4"
+  },
+  {
+   "id": "grossDetails",
+   "label": "Further macroscopic detail",
+   "type": "textarea",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "The fragments are tan with areas of haemorrhage"
+  },
+  {
+   "id": "sampling",
+   "label": "Sampling",
+   "type": "select",
+   "group": "Macroscopy",
+   "default": "Entirely embedded",
+   "options": [
+    "Entirely embedded",
+    "Representative sections"
+   ]
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "type": "textarea",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "1-2 Tumour fragments"
+  },
+  {
+   "id": "tumourNumber",
+   "label": "Tumour number",
+   "type": "select",
+   "group": "Macroscopy",
+   "default": "Single",
+   "options": [
+    "Single",
+    "Multiple"
+   ]
+  },
+  {
+   "id": "tumourCount",
+   "label": "Number of distinct tumours",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 2,
+   "step": 1,
+   "showIf": {
+    "field": "tumourNumber",
+    "is": "Multiple"
+   }
+  },
+  {
+   "id": "tumourSize",
+   "label": "Tumour size, greatest dimension",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 0,
+   "step": 1,
+   "suffix": "mm",
+   "help": "From the imaging report or the specimen; leave blank if not known."
+  },
+  {
+   "id": "sizeFrom",
+   "label": "Tumour size from",
+   "type": "select",
+   "group": "Macroscopy",
+   "default": "Imaging",
+   "options": [
+    "Imaging",
+    "Specimen",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "tumourType",
+   "label": "Tumour type and subtype",
+   "type": "select",
+   "group": "Tumour type",
+   "default": "Gonadotroph tumour",
+   "options": [
+    "Densely granulated corticotroph tumour",
+    "Sparsely granulated corticotroph tumour",
+    "Crooke cell tumour",
+    "Somatotroph tumour, densely granulated",
+    "Somatotroph tumour, sparsely granulated",
+    "Lactotroph tumour, densely granulated",
+    "Lactotroph tumour, sparsely granulated",
+    "Thyrotroph tumour",
+    "Mammosomatotroph tumour",
+    "Mature PIT1-lineage plurihormonal tumour",
+    "Immature PIT1-lineage tumour",
+    "Acidophil stem cell tumour",
+    "Mixed somatotroph and lactotroph tumour",
+    "Gonadotroph tumour",
+    "Null cell tumour",
+    "Unusual plurihormonal (multilineage) tumour",
+    "Pituitary neuroendocrine tumour, NOS",
+    "Other (specify)"
+   ],
+   "optionGroups": [
+    {
+     "label": "TPIT lineage (corticotroph)",
+     "options": [
+      "Densely granulated corticotroph tumour",
+      "Sparsely granulated corticotroph tumour",
+      "Crooke cell tumour"
+     ]
+    },
+    {
+     "label": "PIT1 lineage",
+     "options": [
+      "Somatotroph tumour, densely granulated",
+      "Somatotroph tumour, sparsely granulated",
+      "Lactotroph tumour, densely granulated",
+      "Lactotroph tumour, sparsely granulated",
+      "Thyrotroph tumour",
+      "Mammosomatotroph tumour",
+      "Mature PIT1-lineage plurihormonal tumour",
+      "Immature PIT1-lineage tumour",
+      "Acidophil stem cell tumour",
+      "Mixed somatotroph and lactotroph tumour"
+     ]
+    },
+    {
+     "label": "SF1 lineage",
+     "options": [
+      "Gonadotroph tumour"
+     ]
+    },
+    {
+     "label": "No distinct cell lineage",
+     "options": [
+      "Null cell tumour",
+      "Unusual plurihormonal (multilineage) tumour"
+     ]
+    },
+    {
+     "label": "Not classified",
+     "options": [
+      "Pituitary neuroendocrine tumour, NOS",
+      "Other (specify)"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "typeDetail",
+   "label": "Subtype detail (specify)",
+   "type": "text",
+   "group": "Tumour type",
+   "placeholder": "e.g. densely granulated somatotroph and sparsely granulated lactotroph",
+   "showIf": {
+    "field": "tumourType",
+    "is": [
+     "Mixed somatotroph and lactotroph tumour",
+     "Unusual plurihormonal (multilineage) tumour",
+     "Other (specify)"
+    ]
+   }
+  },
+  {
+   "id": "architecture",
+   "label": "Architecture",
+   "type": "multiselect",
+   "group": "Tumour histology",
+   "default": [
+    "Diffuse sheets"
+   ],
+   "options": [
+    "Diffuse sheets",
+    "Trabeculae",
+    "Lobules",
+    "Nests",
+    "Papillae",
+    "Perivascular pseudorosettes"
+   ]
+  },
+  {
+   "id": "cytoplasm",
+   "label": "Cytoplasm",
+   "type": "select",
+   "group": "Tumour histology",
+   "default": "Chromophobic",
+   "options": [
+    "Chromophobic",
+    "Eosinophilic",
+    "Basophilic",
+    "Amphophilic",
+    "Oncocytic",
+    "Hyaline"
+   ],
+   "defaultByField": {
+    "field": "tumourType",
+    "map": {
+     "Densely granulated corticotroph tumour": "Basophilic",
+     "Crooke cell tumour": "Hyaline",
+     "Somatotroph tumour, densely granulated": "Eosinophilic",
+     "Lactotroph tumour, densely granulated": "Eosinophilic",
+     "Mammosomatotroph tumour": "Eosinophilic",
+     "Mature PIT1-lineage plurihormonal tumour": "Eosinophilic",
+     "Acidophil stem cell tumour": "Oncocytic"
+    }
+   }
+  },
+  {
+   "id": "atypia",
+   "label": "Nuclear pleomorphism",
+   "type": "select",
+   "group": "Tumour histology",
+   "default": "None",
+   "options": [
+    "None",
+    "Mild",
+    "Moderate",
+    "Marked"
+   ]
+  },
+  {
+   "id": "features",
+   "label": "Other features",
+   "type": "multiselect",
+   "group": "Tumour histology",
+   "default": [],
+   "options": [
+    "Fibrous bodies",
+    "Necrosis",
+    "Calcification",
+    "Amyloid"
+   ],
+   "defaultByField": {
+    "field": "tumourType",
+    "map": {
+     "Somatotroph tumour, sparsely granulated": [
+      "Fibrous bodies"
+     ]
+    }
+   }
+  },
+  {
+   "id": "reticulin",
+   "label": "Reticulin",
+   "type": "select",
+   "group": "Tumour histology",
+   "default": "Disrupted",
+   "options": [
+    "Not performed",
+    "Disrupted",
+    "Expanded acini"
+   ]
+  },
+  {
+   "id": "pas",
+   "label": "PAS",
+   "type": "select",
+   "group": "Tumour histology",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Positive",
+    "Negative"
+   ]
+  },
+  {
+   "id": "ihcDiffuse",
+   "label": "Positive, diffuse",
+   "type": "multiselect",
+   "group": "Immunohistochemistry",
+   "default": [
+    "Synaptophysin",
+    "SF1"
+   ],
+   "options": [
+    "Synaptophysin",
+    "Chromogranin",
+    "TPIT",
+    "PIT1",
+    "SF1",
+    "GATA3",
+    "ER-alpha",
+    "Alpha-subunit",
+    "ACTH",
+    "GH",
+    "PRL",
+    "Beta-TSH",
+    "Beta-FSH",
+    "Beta-LH"
+   ],
+   "defaultByField": {
+    "field": "tumourType",
+    "map": {
+     "Densely granulated corticotroph tumour": [
+      "Synaptophysin",
+      "TPIT"
+     ],
+     "Sparsely granulated corticotroph tumour": [
+      "Synaptophysin",
+      "TPIT"
+     ],
+     "Crooke cell tumour": [
+      "Synaptophysin",
+      "TPIT"
+     ],
+     "Somatotroph tumour, densely granulated": [
+      "Synaptophysin",
+      "PIT1"
+     ],
+     "Somatotroph tumour, sparsely granulated": [
+      "Synaptophysin",
+      "PIT1"
+     ],
+     "Lactotroph tumour, densely granulated": [
+      "Synaptophysin",
+      "PIT1"
+     ],
+     "Lactotroph tumour, sparsely granulated": [
+      "Synaptophysin",
+      "PIT1"
+     ],
+     "Thyrotroph tumour": [
+      "Synaptophysin",
+      "PIT1"
+     ],
+     "Mammosomatotroph tumour": [
+      "Synaptophysin",
+      "PIT1"
+     ],
+     "Mature PIT1-lineage plurihormonal tumour": [
+      "Synaptophysin",
+      "PIT1"
+     ],
+     "Immature PIT1-lineage tumour": [
+      "Synaptophysin",
+      "PIT1"
+     ],
+     "Acidophil stem cell tumour": [
+      "Synaptophysin",
+      "PIT1"
+     ],
+     "Mixed somatotroph and lactotroph tumour": [
+      "Synaptophysin",
+      "PIT1"
+     ],
+     "Null cell tumour": [
+      "Synaptophysin"
+     ],
+     "Unusual plurihormonal (multilineage) tumour": [
+      "Synaptophysin"
+     ],
+     "Pituitary neuroendocrine tumour, NOS": [
+      "Synaptophysin"
+     ],
+     "Other (specify)": [
+      "Synaptophysin"
+     ]
+    }
+   }
+  },
+  {
+   "id": "ihcFocal",
+   "label": "Positive, focal",
+   "type": "multiselect",
+   "group": "Immunohistochemistry",
+   "default": [],
+   "options": [
+    "Synaptophysin",
+    "Chromogranin",
+    "TPIT",
+    "PIT1",
+    "SF1",
+    "GATA3",
+    "ER-alpha",
+    "Alpha-subunit",
+    "ACTH",
+    "GH",
+    "PRL",
+    "Beta-TSH",
+    "Beta-FSH",
+    "Beta-LH"
+   ]
+  },
+  {
+   "id": "ihcNegative",
+   "label": "Negative",
+   "type": "multiselect",
+   "group": "Immunohistochemistry",
+   "default": [
+    "TPIT",
+    "PIT1"
+   ],
+   "options": [
+    "Synaptophysin",
+    "Chromogranin",
+    "TPIT",
+    "PIT1",
+    "SF1",
+    "GATA3",
+    "ER-alpha",
+    "Alpha-subunit",
+    "ACTH",
+    "GH",
+    "PRL",
+    "Beta-TSH",
+    "Beta-FSH",
+    "Beta-LH"
+   ],
+   "defaultByField": {
+    "field": "tumourType",
+    "map": {
+     "Densely granulated corticotroph tumour": [
+      "PIT1",
+      "SF1"
+     ],
+     "Sparsely granulated corticotroph tumour": [
+      "PIT1",
+      "SF1"
+     ],
+     "Crooke cell tumour": [
+      "PIT1",
+      "SF1"
+     ],
+     "Somatotroph tumour, densely granulated": [
+      "TPIT",
+      "SF1"
+     ],
+     "Somatotroph tumour, sparsely granulated": [
+      "TPIT",
+      "SF1"
+     ],
+     "Lactotroph tumour, densely granulated": [
+      "TPIT",
+      "SF1"
+     ],
+     "Lactotroph tumour, sparsely granulated": [
+      "TPIT",
+      "SF1"
+     ],
+     "Thyrotroph tumour": [
+      "TPIT",
+      "SF1"
+     ],
+     "Mammosomatotroph tumour": [
+      "TPIT",
+      "SF1"
+     ],
+     "Mature PIT1-lineage plurihormonal tumour": [
+      "TPIT",
+      "SF1"
+     ],
+     "Immature PIT1-lineage tumour": [
+      "TPIT",
+      "SF1"
+     ],
+     "Acidophil stem cell tumour": [
+      "TPIT",
+      "SF1"
+     ],
+     "Mixed somatotroph and lactotroph tumour": [
+      "TPIT",
+      "SF1"
+     ],
+     "Null cell tumour": [
+      "TPIT",
+      "PIT1",
+      "SF1"
+     ],
+     "Unusual plurihormonal (multilineage) tumour": [],
+     "Pituitary neuroendocrine tumour, NOS": [],
+     "Other (specify)": []
+    }
+   }
+  },
+  {
+   "id": "keratin",
+   "label": "Low-molecular-weight keratin",
+   "type": "select",
+   "group": "Immunohistochemistry",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Positive, diffuse",
+    "Positive, focal",
+    "Negative"
+   ]
+  },
+  {
+   "id": "keratinClone",
+   "label": "Keratin clone",
+   "type": "text",
+   "group": "Immunohistochemistry",
+   "default": "CAM5.2",
+   "showIf": {
+    "field": "keratin",
+    "not": "Not performed"
+   }
+  },
+  {
+   "id": "keratinPattern",
+   "label": "Keratin pattern",
+   "type": "multiselect",
+   "group": "Immunohistochemistry",
+   "default": [],
+   "options": [
+    "Fibrous bodies in more than 70% of tumour cells",
+    "Fibrous bodies in fewer than 70% of tumour cells",
+    "Perinuclear cytoplasmic",
+    "Diffuse dense cytoplasmic",
+    "Ring-like cytoplasmic",
+    "Membranous"
+   ],
+   "defaultByField": {
+    "field": "tumourType",
+    "map": {
+     "Densely granulated corticotroph tumour": [
+      "Diffuse dense cytoplasmic"
+     ],
+     "Sparsely granulated corticotroph tumour": [
+      "Diffuse dense cytoplasmic"
+     ],
+     "Crooke cell tumour": [
+      "Ring-like cytoplasmic"
+     ],
+     "Somatotroph tumour, densely granulated": [
+      "Perinuclear cytoplasmic"
+     ],
+     "Somatotroph tumour, sparsely granulated": [
+      "Fibrous bodies in more than 70% of tumour cells"
+     ],
+     "Mammosomatotroph tumour": [
+      "Perinuclear cytoplasmic"
+     ],
+     "Mature PIT1-lineage plurihormonal tumour": [
+      "Perinuclear cytoplasmic"
+     ]
+    }
+   },
+   "showIf": {
+    "field": "keratin",
+    "is": [
+     "Positive, diffuse",
+     "Positive, focal"
+    ]
+   }
+  },
+  {
+   "id": "p27",
+   "label": "p27",
+   "type": "select",
+   "group": "Immunohistochemistry",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Retained",
+    "Lost"
+   ]
+  },
+  {
+   "id": "atrx",
+   "label": "ATRX",
+   "type": "select",
+   "group": "Immunohistochemistry",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Retained",
+    "Lost"
+   ]
+  },
+  {
+   "id": "p53",
+   "label": "p53",
+   "type": "select",
+   "group": "Immunohistochemistry",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Wild-type",
+    "Abnormal"
+   ]
+  },
+  {
+   "id": "ki67",
+   "label": "Ki-67 labelling index",
+   "type": "number",
+   "group": "Proliferation and invasion",
+   "min": 0,
+   "max": 100,
+   "step": 0.1,
+   "suffix": "%",
+   "help": "Count at least 500 tumour cells in hot spots, by manual count or image analysis."
+  },
+  {
+   "id": "mitoses",
+   "label": "Mitotic count (22 mm eyepiece at 40x: count 42 fields = 10 mm2 and divide by 5)",
+   "type": "number",
+   "group": "Proliferation and invasion",
+   "min": 0,
+   "step": 1,
+   "suffix": "/2 mm2"
+  },
+  {
+   "id": "invasion",
+   "label": "Histologically confirmed invasion",
+   "type": "select",
+   "group": "Proliferation and invasion",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "invasionSites",
+   "label": "Invaded tissue",
+   "type": "multiselect",
+   "group": "Proliferation and invasion",
+   "default": [],
+   "options": [
+    "Bone",
+    "Sinonasal mucosa",
+    "Dura",
+    "Brain tissue"
+   ],
+   "showIf": {
+    "field": "invasion",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "invasionOther",
+   "label": "Other invaded tissue (specify)",
+   "type": "text",
+   "group": "Proliferation and invasion",
+   "showIf": {
+    "field": "invasion",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "metastasis",
+   "label": "Metastasis",
+   "type": "select",
+   "group": "Proliferation and invasion",
+   "default": "Not applicable",
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Cerebrospinal",
+    "Liver",
+    "Bone",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "metastasisDetail",
+   "label": "Metastasis (specify)",
+   "type": "text",
+   "group": "Proliferation and invasion",
+   "showIf": {
+    "field": "metastasis",
+    "is": [
+     "Cerebrospinal",
+     "Liver",
+     "Bone",
+     "Other (specify)"
+    ]
+   }
+  },
+  {
+   "id": "nonTumour",
+   "label": "Non-tumorous pituitary",
+   "type": "multiselect",
+   "group": "Non-tumorous pituitary",
+   "default": [],
+   "options": [
+    "Adenohypophysis",
+    "Neurohypophysis",
+    "Pituitary hyperplasia"
+   ]
+  },
+  {
+   "id": "crooke",
+   "label": "Crooke's hyaline change of the non-tumorous corticotrophs",
+   "type": "select",
+   "group": "Non-tumorous pituitary",
+   "default": "",
+   "options": [
+    "",
+    "Present",
+    "Not identified"
+   ],
+   "showIf": {
+    "all": [
+     {
+      "field": "tumourType",
+      "is": [
+       "Densely granulated corticotroph tumour",
+       "Sparsely granulated corticotroph tumour",
+       "Crooke cell tumour"
+      ]
+     },
+     {
+      "field": "nonTumour",
+      "is": "Adenohypophysis"
+     }
+    ]
+   }
+  },
+  {
+   "id": "additional",
+   "label": "Additional findings",
+   "type": "multiselect",
+   "group": "Additional findings",
+   "default": [],
+   "options": [
+    "Acute haemorrhagic necrosis (apoplexy)",
+    "Hypophysitis",
+    "Rathke's cleft cyst",
+    "Craniopharyngioma"
+   ]
+  },
+  {
+   "id": "additionalOther",
+   "label": "Other findings (specify)",
+   "type": "text",
+   "group": "Additional findings"
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "type": "textarea",
+   "group": "Additional findings"
+  }
+ ]
+}

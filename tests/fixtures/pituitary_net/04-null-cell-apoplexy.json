@@ -1,0 +1,64 @@
+{
+  "description": "null cell tumour with apoplexy, keratin focal, p27, ATRX and p53 recorded",
+  "templateId": "pituitary_net",
+  "values": [
+    {
+      "specimenName": "",
+      "procedure": "Transsphenoidal resection",
+      "procedureOther": "",
+      "integrity": "Fragmented",
+      "specimenDims": "18 x 12 x 4",
+      "grossDetails": "The fragments are tan and haemorrhagic",
+      "sampling": "Entirely embedded",
+      "blockKeyText": "1-2 Tumour fragments",
+      "tumourNumber": "Single",
+      "tumourCount": "",
+      "tumourSize": 24,
+      "sizeFrom": "Imaging",
+      "tumourType": "Null cell tumour",
+      "typeDetail": "",
+      "architecture": [
+        "Diffuse sheets",
+        "Perivascular pseudorosettes"
+      ],
+      "cytoplasm": "Chromophobic",
+      "atypia": "None",
+      "features": [],
+      "reticulin": "Disrupted",
+      "pas": "Not performed",
+      "ihcDiffuse": [
+        "Synaptophysin"
+      ],
+      "ihcFocal": [],
+      "ihcNegative": [
+        "TPIT",
+        "PIT1",
+        "SF1"
+      ],
+      "keratin": "Positive, focal",
+      "keratinClone": "CAM5.2",
+      "keratinPattern": [],
+      "p27": "Retained",
+      "atrx": "Retained",
+      "p53": "Wild-type",
+      "ki67": 3,
+      "mitoses": 0,
+      "invasion": "Not identified",
+      "invasionSites": [],
+      "invasionOther": "",
+      "metastasis": "Not applicable",
+      "metastasisDetail": "",
+      "nonTumour": [
+        "Adenohypophysis"
+      ],
+      "crooke": "",
+      "additional": [
+        "Acute haemorrhagic necrosis (apoplexy)"
+      ],
+      "additionalOther": "",
+      "additionalNotes": ""
+    }
+  ],
+  "report": "Pituitary tumour, transsphenoidal excision\n\nReceived in formalin are fragments of soft tumour tissue, measuring 18 x 12 x 4 mm in aggregate. The fragments are tan and haemorrhagic. The specimen is entirely embedded; see block key.\n\n(1-2) Tumour fragments.\n\nSpecimen and tumour\n- Procedure: Transsphenoidal pituitary tumour resection\n- Tumour integrity: Fragmented\n- Tumour number: Single pituitary neuroendocrine tumour\n- Tumour size: 24 mm in greatest dimension (imaging)\n\nMicroscopic findings\n- Tumour type and subtype: Pituitary neuroendocrine tumour of no distinct cell\n  lineage, null cell tumour\n- Tumour histology:\n  Sections show a pituitary neuroendocrine tumour composed of monotonous cells arranged in diffuse sheets and perivascular pseudorosettes, with chromophobic cytoplasm and round to oval nuclei with finely granular chromatin. Reticulin shows loss of the normal acinar architecture. On immunohistochemistry, the tumour cells are diffusely positive for synaptophysin and negative for TPIT, PIT1 and SF1. Low-molecular-weight keratin (CAM5.2) is focally positive. Nuclear p27 and ATRX expression is retained, and p53 shows a wild-type pattern.\n- Ki-67 labelling index: 3%\n- Mitotic count: 0 per 2 mm2\n- Histologically confirmed invasion: Not identified\n- Non-tumorous pituitary: Adenohypophysis identified\n\nAdditional findings\n- Acute haemorrhagic necrosis (apoplexy)\n\nPITUITARY, tumour, transsphenoidal excision\n- NULL CELL PITUITARY NEUROENDOCRINE TUMOUR (PitNET)",
+  "checks": []
+}

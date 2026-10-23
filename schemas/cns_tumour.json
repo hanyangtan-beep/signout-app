@@ -629,6 +629,9 @@
     "field": "dxFamily",
     "is": "Tumours of the sellar region"
    },
+   "optionLabels": {
+    "Pituitary neuroendocrine tumour (PitNET)": "Pituitary neuroendocrine tumour (PitNET): use the PitNET form"
+   },
    "options": [
     "Adamantinomatous craniopharyngioma",
     "Papillary craniopharyngioma",

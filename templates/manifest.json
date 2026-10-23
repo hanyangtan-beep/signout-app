@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 78,
+  "count": 79,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -7344,6 +7344,109 @@
       "generator": "gvhd_biopsy",
       "generatorPath": "generators/gvhd_biopsy.js",
       "schemaPath": "schemas/gvhd_biopsy.json"
+    },
+    {
+      "id": "pituitary_net",
+      "name": "Pituitary neuroendocrine tumour (PitNET) resection",
+      "shortName": "Pituitary · PitNET resection",
+      "label": "PitNET",
+      "organ": "PITUITARY",
+      "system": "Endocrine",
+      "kind": "cancer resection",
+      "rank": 65,
+      "aliases": [
+        "PitNET",
+        "pituitary adenoma",
+        "pituitary neuroendocrine tumour",
+        "pituitary tumour",
+        "sellar tumour",
+        "macroadenoma",
+        "transsphenoidal",
+        "TSS",
+        "PIT1",
+        "TPIT",
+        "SF1",
+        "gonadotroph",
+        "somatotroph",
+        "corticotroph",
+        "lactotroph",
+        "null cell",
+        "Crooke",
+        "synoptic",
+        "CAP"
+      ],
+      "match": {
+        "site": [
+          "pituitary",
+          "pituitary gland",
+          "pituitary fossa",
+          "sella",
+          "sellar",
+          "intrasellar",
+          "pituitary adenoma",
+          "macroadenoma",
+          "microadenoma",
+          "PitNET"
+        ],
+        "procedure": [
+          "transsphenoidal",
+          "trans-sphenoidal",
+          "TSS",
+          "endoscopic",
+          "endonasal",
+          "excision",
+          "resection",
+          "transcranial"
+        ],
+        "clinical": [
+          "pituitary adenoma",
+          "macroadenoma",
+          "PitNET",
+          "acromegaly",
+          "Cushing",
+          "prolactinoma"
+        ],
+        "exclude": [
+          "frozen",
+          "frozen section",
+          "FS",
+          "intraoperative",
+          "cyst",
+          "cystic",
+          "Rathke",
+          "craniopharyngioma",
+          "tuberculum",
+          "meningioma",
+          "hypophysitis",
+          "smear",
+          "squash"
+        ],
+        "bare": true,
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "detail"
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "transcranial|craniotomy|craniectomy",
+                "Transcranial resection"
+              ],
+              [
+                "trans-?sphenoid|\\bTSS\\b|endoscopic|endonasal",
+                "Transsphenoidal resection"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.10",
+      "generator": "pituitary_net",
+      "generatorPath": "generators/pituitary_net.js",
+      "schemaPath": "schemas/pituitary_net.json"
     },
     {
       "id": "generic",

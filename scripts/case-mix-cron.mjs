@@ -220,7 +220,7 @@ const COVER = {
   'Tonsil / adenoid': ['tonsils'],
   'Ear / temporal bone': [],
   'Nail / digit': ['skin_excision'],
-  'Brain / CNS': ['cns_tumour', 'meningioma'],
+  'Brain / CNS': ['cns_tumour', 'meningioma', 'pituitary_net'],
   Cardiovascular: ['aortic_valve_aorta', 'endomyocardial_biopsy'],
   'Hernia sac': [],
   'Abscess / inflammatory': ['abscess_granulation']

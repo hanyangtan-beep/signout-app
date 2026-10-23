@@ -247,6 +247,8 @@ export function validate(part) {
 
   siteChecks(v, warn);
   if (e === 'Tumour type not specified') err('Integrated diagnosis is required; choose an entity or type one in Layer 1.', 'dxFamily');
+  // Phase 75: a PitNET has its own form (pituitary_net, Endocrine); the entity stays here so saved cases open.
+  if (e === PITNET) warn('A PitNET is reported on the PitNET form (Endocrine), with the lineage, the hormone panel, Ki-67 and invasion; change this part\'s form.', 'dxSellar');
   if (!gradeText(v)) err('CNS WHO grade is required; this entity does not carry a settled grade, so choose one in Layer 3.', 'grade');
   if (g && prop && g !== prop) {
     warn(`CNS WHO grade ${g} is recorded but the entity and the recorded findings support grade ${prop}.`, 'grade');

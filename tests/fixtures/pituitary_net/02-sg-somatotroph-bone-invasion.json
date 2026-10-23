@@ -1,0 +1,70 @@
+{
+  "description": "sparsely granulated somatotroph tumour with keratin fibrous bodies, invading bone and sinonasal mucosa",
+  "templateId": "pituitary_net",
+  "values": [
+    {
+      "specimenName": "",
+      "procedure": "Transsphenoidal resection",
+      "procedureOther": "",
+      "integrity": "Fragmented",
+      "specimenDims": "18 x 12 x 4",
+      "grossDetails": "",
+      "sampling": "Entirely embedded",
+      "blockKeyText": "1-2 Tumour fragments",
+      "tumourNumber": "Single",
+      "tumourCount": "",
+      "tumourSize": 32,
+      "sizeFrom": "Imaging",
+      "tumourType": "Somatotroph tumour, sparsely granulated",
+      "typeDetail": "",
+      "architecture": [
+        "Diffuse sheets",
+        "Perivascular pseudorosettes"
+      ],
+      "cytoplasm": "Chromophobic",
+      "atypia": "None",
+      "features": [
+        "Fibrous bodies"
+      ],
+      "reticulin": "Disrupted",
+      "pas": "Not performed",
+      "ihcDiffuse": [
+        "Synaptophysin",
+        "PIT1",
+        "GH"
+      ],
+      "ihcFocal": [
+        "PRL"
+      ],
+      "ihcNegative": [
+        "TPIT",
+        "SF1"
+      ],
+      "keratin": "Positive, diffuse",
+      "keratinClone": "CAM5.2",
+      "keratinPattern": [
+        "Fibrous bodies in more than 70% of tumour cells"
+      ],
+      "p27": "Not performed",
+      "atrx": "Not performed",
+      "p53": "Not performed",
+      "ki67": 4,
+      "mitoses": 1,
+      "invasion": "Present",
+      "invasionSites": [
+        "Bone",
+        "Sinonasal mucosa"
+      ],
+      "invasionOther": "",
+      "metastasis": "Not applicable",
+      "metastasisDetail": "",
+      "nonTumour": [],
+      "crooke": "",
+      "additional": [],
+      "additionalOther": "",
+      "additionalNotes": ""
+    }
+  ],
+  "report": "Pituitary tumour, transsphenoidal excision\n\nReceived in formalin are fragments of soft tumour tissue, measuring 18 x 12 x 4 mm in aggregate. The specimen is entirely embedded; see block key.\n\n(1-2) Tumour fragments.\n\nSpecimen and tumour\n- Procedure: Transsphenoidal pituitary tumour resection\n- Tumour integrity: Fragmented\n- Tumour number: Single pituitary neuroendocrine tumour\n- Tumour size: 32 mm in greatest dimension (imaging)\n\nMicroscopic findings\n- Tumour type and subtype: PIT1-lineage pituitary neuroendocrine tumour,\n  somatotroph tumour, sparsely granulated\n- Tumour histology:\n  Sections show a pituitary neuroendocrine tumour composed of monotonous cells arranged in diffuse sheets and perivascular pseudorosettes, with chromophobic cytoplasm and round to oval nuclei with finely granular chromatin. Fibrous bodies are present. Reticulin shows loss of the normal acinar architecture. On immunohistochemistry, the tumour cells are diffusely positive for synaptophysin, PIT1 and GH, focally positive for PRL, and negative for TPIT and SF1. Low-molecular-weight keratin (CAM5.2) is diffusely positive, with fibrous bodies in more than 70% of tumour cells.\n- Ki-67 labelling index: 4%\n- Mitotic count: 1 per 2 mm2\n- Histologically confirmed invasion: Present (bone and sinonasal mucosa)\n- Non-tumorous pituitary: Not identified\n\nAdditional findings\n- None identified\n\nPITUITARY, tumour, transsphenoidal excision\n- SPARSELY GRANULATED SOMATOTROPH PITUITARY NEUROENDOCRINE TUMOUR (PitNET),\n  PIT1-lineage\n- histologically confirmed invasion of bone and sinonasal mucosa",
+  "checks": []
+}

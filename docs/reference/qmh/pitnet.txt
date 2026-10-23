@@ -1,0 +1,246 @@
+ 
+ Pituitary Neuroendocrine Tumor
+ click to access explanations in the original CAP template 
+ Gross descriptions: 
+Useful information to be included from the case notes:
+1. Clinical history 
+2. Functional status 
+3. Tumor sizes from imaging
+4. Tumor extent or invasive growth from imaging
+ - Procedure: 
+ [] 
+ [Transsphenoidal pituitary tumor resection specimen] 
+ [Transcranial pituitary tumor resection specimen] 
+ [Other (specify):] 
+ [Not specified] 
+ - Tumor integrity: 
+ [] 
+ [Intact] 
+ [Fragmented] 
+ [Other (specify):] 
+ [Not specified] 
+ - Tumor size: 
+ [] 
+ [Greatest dimension (mm): ] 
+ [Cannot be determined (explain):] 
+ Microscopic descriptions: 
+ - Tumor histology: 
+ - Tumor Number: 
+ [] 
+ [Single pituitary neuroendocrine tumor] 
+ [Multiple pituitary neuroendocrine tumors] 
+ [Other (specify):] 
+For multiple pituitary neuroendocrine tumors, repeat the following 5 elements for each distinct pituitary neuroendocrine tumor:
+ 1. Tumor Types and Subtypes,
+ 2. Tumor Proliferative Activity, 
+ 3. Histologically Confirmed Invasion, 
+ 4. Histochemical Features, and 
+ 5. Immunohistochemical Features .
+This section can be repeated up to 10 times.
+ 1. Tumor Types and Subtypes: 
+ TPIT-lineage pituitary neuroendocrine tumor (corticotroph tumor) 
+ Densely granulated corticotroph tumor 
+ Sparsely granulated corticotroph tumor 
+ TPIT-lineage pituitary neuroendocrine tumor (corticotroph tumor), Crooke cell tumor 
+ TPIT-lineage pituitary neuroendocrine tumor (corticotroph tumor), Other (specify): 
+ PIT1-lineage pituitary neuroendocrine tumor 
+ Somatotroph tumor, densely granulated 
+ Somatotroph tumor, sparsely granulated 
+ Lactotroph tumor, densely granulated 
+ Lactotroph tumor, sparsely granulated 
+ Thyrotroph tumor 
+ Mammosomatotroph tumor 
+ Mature PIT1-lineage plurihormonal tumor 
+ Immature PIT1-lineage tumor 
+ Acidophil stem cell tumor 
+ Mixed somatotroph and lactotroph tumor (specify subtype) 
+ Other (specify): 
+ SF1-lineage pituitary neuroendocrine tumor 
+ Gonadotroph tumor 
+ Other (specify): 
+ Pituitary neuroendocrine tumor of no distinct cell lineage 
+ Null cell tumor 
+ Unusual plurihormonal (multilineage) pituitary neuroendocrine tumors (specify) 
+ Pituitary neuroendocrine tumor, NOS 
+ Other (specify): 
+ 2. Tumor Proliferative Activity: 
+ - Ki-67 Labeling Index : 
+ Selecting multiple small hot spots (at least 500 tumor cells) from different hot spot regions of the tumor rather than a single larger area of the same tumor are recommended.
+ + Mitotic Count (per 2 mm 2 ): 
+ Using 22 mm eyepiece at 40x objective, count active proliferative areas for 42 fields (equals 10 mm 2 ), divide by 5 to get mitotic count for 2 mm 2 
+ 3. Histologically Confirmed Invasion: 
+ [] 
+ [Not identified] 
+ [Present (specify):] 
+ [Cannot be determined] 
+ 4. + Histochemical stains: 
+ + Reticulin Histochemistry 
+ [] 
+ [Not performed] 
+ [Disrupted] 
+ [Expanded acini] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ + PAS Histochemistry 
+ [] 
+ [Not performed] 
+ [Positive] 
+ [Negative] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ 5. Immunohistochemical studies 
+ - TPIT 
+ [] 
+ [Positive, diffuse] 
+ [Positive, focal] 
+ [Negative] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ - PIT1 
+ [] 
+ [Positive, diffuse] 
+ [Positive, focal] 
+ [Negative] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ - SF1 
+ [] 
+ [Positive, diffuse] 
+ [Positive, focal] 
+ [Negative] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ + GATA3 
+ [] 
+ [Positive, diffuse] 
+ [Positive, focal] 
+ [Negative] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ + ER-alpha 
+ [] 
+ [Positive, diffuse] 
+ [Positive, focal] 
+ [Negative] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ + alpha-subunit 
+ [] 
+ [Not available] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ - ACTH (TPIT-tumors) 
+ [] 
+ [Not applicable] 
+ [Positive, diffuse] 
+ [Positive, focal] 
+ [Negative] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ - GH (PIT1-tumors) 
+ [] 
+ [Not applicable] 
+ [Positive, diffuse] 
+ [Positive, focal] 
+ [Negative] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ - PRL (PIT1-tumors) 
+ [] 
+ [Not applicable] 
+ [Positive, diffuse] 
+ [Positive, focal] 
+ [Negative] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ - beta-TSH (PIT1-tumors) 
+ [] 
+ [Not applicable] 
+ [Positive, diffuse] 
+ [Positive, focal] 
+ [Negative] 
+ [Not available] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ + beta-FSH 
+ [] 
+ [Positive, diffuse] 
+ [Positive, focal] 
+ [Negative] 
+ [Not available] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ + p27 
+ [] 
+ [Not available] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ + ATRX 
+ [] 
+ [Intact] 
+ [Loss] 
+ [Not available] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ + p53 
+ [] 
+ [Abnormal] 
+ [Wild-type] 
+ [Other (specify):] 
+ [Cannot be determined] 
+ - Low Molecular Weight Keratins 
+ [] 
+ [Not applicable] 
+ [Positive] 
+ [Negative] 
+ [Other (specify):] 
+ [Cannot be determined] 
+Extent of Reactivity:
+ [] 
+ [Diffuse] 
+ [Focal (non-diffuse)] 
+ [Other (specify):] 
+Pattern of Reactivity:
+ Fibrous bodies (accounting for greater than 70% of the tumor) 
+ Fibrous bodies (variable / scattered, accounting for less than 70% of the tumor) 
+ Perinuclear cytoplasmic 
+ Diffuse dense cytoplasmic 
+ Ring-like cytoplasmic 
+ Membranous 
+ Other (specify): 
+ Metastasis: 
+ Not applicable 
+ Not identified 
+ Cerebrospinal (specify site(s)): 
+ Bone (specify): 
+ Liver (specify): 
+ Other (specify): 
+ Cannot be determined: 
+ Non-tumorous Pituitary Site(s): 
+ Not applicable 
+ Not identified 
+ Adenohypophysis identified 
+ Adenohypophysis identified, Crooke’s Hyaline Change of the Non-tumorous Corticotrophs (required for all corticotroph tumors) 
+ Adenohypophysis identified, + Pituitary Hyperplasia 
+ Neurohypophysis identified 
+ Cannot be determined (explain): 
+ Other (specify): 
+ + Additional pathologic findings: 
+ Not applicable 
+ Not identified 
+ Hypophysitis (specify): 
+ Craniopharyngioma (specify type): 
+ Rathke’s cleft cyst (specify): 
+ Acute hemorrhagic necrosis (apoplexy) 
+ Other (specify): 
+ - Additional notes: 
+ Copy text to Clipboard 
+Last upated on 21-Jun-2025,
+based on 
+ US CAP cancer protocol templates .
+Pituitary Neuroendocrine Tumor 1.0.0.0 Mar-2025.
+html form was created on pForm , W3 School , 
+ StackOverflow , and 
+ Icons8 .
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.
+ 

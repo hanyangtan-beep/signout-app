@@ -107,8 +107,9 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   assert.ok(bottom.find((g) => g.system === 'Endocrine').items.some((t) => t.id === 'thyroid_benign'));
   // every QMH cancer page is either built or planned: entries carry the QMH page stem.
   // The floor drops by one each time a QMH-stemmed placeholder ships (ampulla_carcinoma, Phase 22;
-  // skin_scc, Phase 39; oropharynx_hpv_carcinoma into oral_carcinoma, Phase 42; hcc, Phase 51).
-  assert.ok(planned.filter((t) => t.qmh).length >= 46);
+  // skin_scc, Phase 39; oropharynx_hpv_carcinoma into oral_carcinoma, Phase 42; hcc, Phase 51;
+  // pituitary_net, Phase 75 - deliberate).
+  assert.ok(planned.filter((t) => t.qmh).length >= 45);
   // Biomarkers holds one built template (the standalone HER2 ISH report, Phase 30) and placeholders.
   const biomarkers = top.find((g) => g.system === 'Biomarkers').items;
   assert.ok(biomarkers.every((t) => t.kind === 'biomarker'));
