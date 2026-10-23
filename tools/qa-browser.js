@@ -2426,6 +2426,76 @@ await check('sentinel node: Breast criteria from a pasted line; category, extent
   return 'sentinel line opens on Breast; micrometastasis from 1.2 mm; extent more than 2 mm in both sections; criteria panel; isolated tumour cells with treatment effect and the pN0(i+) check; melanoma subcapsular with no category; frozen labels and extent';
 });
 
+// Phase 77 (2026-10-23): the vulval carcinoma resection form from a pasted excision with a vulval carcinoma
+// history; AJCC 9th edition pTNM printed with the option, the stage group in Checks only; the pattern field
+// for squamous cell carcinoma only. A groin sentinel node in the same case opens on the vulval criteria.
+await check('vulval carcinoma: a pasted excision with a vulval carcinoma history opens Vulva Ca; depth both ways, pT1b pN0(sn), stage group in Checks; a groin sentinel node on the vulval criteria', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const chosen = async (id) => {
+    const chips = await page.locator(`.chips[data-field="${id}"] .chip[aria-pressed="true"]`).allTextContents();
+    if (chips.length) return chips.map((c) => c.replace(/^\s*\d*\s*/, '').trim()).join(',');
+    const sel = page.locator(`[data-field="${id}"] select`).first();
+    return (await sel.count()) ? sel.inputValue() : '';
+  };
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
+  const type = async (id, value) => { await page.fill(`#f-A-${id}`, value); await page.waitForTimeout(300); };
+  // The LIS paste carries its own History block, as the specimen box placeholder shows.
+  let routed = await pasteAndBuild('History\nVulval squamous cell carcinoma\n\nSpecimen\n(A) Left labium majus, wide local excision');
+  assert(routed === 'vulval_carcinoma', `vulval excision routed to ${routed}`);
+  assert(await chosen('laterality') === 'Left', `side read "${await chosen('laterality')}"`);
+  assert(await chosen('procedure') === 'Wide excision', `procedure read "${await chosen('procedure')}"`);
+  await pickField('histType', 'Basal cell carcinoma, NOS');
+  assert(!(await shows('pattern')), 'the squamous pattern shows for a basal cell carcinoma');
+  await pickField('histType', 'Squamous cell carcinoma, HPV-independent');
+  assert(await shows('pattern'), 'the squamous pattern does not show');
+  await pickField('pattern', 'Keratinising');
+  await type('tumourSizeMm', '24');
+  await type('doiMm', '4.5');
+  await type('doiConventionalMm', '5');
+  await pickField('p16', 'Negative');
+  await pickField('p53', 'Abnormal, basal overexpression');
+  await type('nodesExamined', '2');
+  assert(await shows('nodeSampling'), 'the node sampling does not show once nodes are examined');
+  await pickField('nodeSampling', 'Sentinel lymph node biopsy only');
+  await pickField('nodeFindings', 'None identified');
+  await page.locator('#case-options label', { hasText: 'Print the pTNM block (AJCC 9th edition)' }).locator('input').check();
+  await page.waitForTimeout(300);
+  let report = await reportText();
+  assert(report.includes('The tumour is an HPV-independent squamous cell carcinoma with a keratinising pattern, invading to a depth of 4.5 mm.')
+    && report.includes('On immunohistochemistry, p16 is negative and p53 shows an abnormal pattern of basal overexpression.'), `paragraph wrong: ${report.slice(0, 1400)}`);
+  assert(report.includes('Depth of invasion: 4.5 mm (conventional method: 5 mm)'), 'depth line wrong');
+  assert(report.includes('pTNM: pT1b pN0(sn)') && report.includes('pT1b pN0(sn) (AJCC 9th edition)'), `pTNM missing: ${report.slice(-700)}`);
+  assert(report.includes('VULVA, left labium majus, wide excision'), `diagnosis head wrong: ${report.slice(-700)}`);
+  assert(report.includes('Depth of invasion is measured by the FIGO 2021 method.'), 'the depth method is not in the comment');
+  // The report pane holds the Checks panel too; only the blocks' text prints.
+  const printed = (await page.locator('#report-blocks .block pre').allInnerTexts()).join('\n');
+  assert(printed.includes('pT1b pN0(sn)') && !/FIGO stage|Stage group|\bIB\b/.test(printed), `a stage group reached the printed report: ${printed.slice(-600)}`);
+  assert((await checksText()).includes('Stage group, AJCC 9th edition, matching FIGO 2021 (reference, not reported): IB'), `stage group missing from Checks: ${await checksText()}`);
+  await page.locator('[data-field="doiMm"]').first().scrollIntoViewIfNeeded();
+  await shot('vulva-synoptic');
+  // A groin sentinel node in a vulval carcinoma case: the Lymph node excision form on the vulval criteria.
+  routed = await pasteAndBuild('History\nVulval squamous cell carcinoma\n\nSpecimen\n(A) Left groin sentinel lymph node');
+  assert(routed === 'lymph_node', `groin sentinel line routed to ${routed}`);
+  assert(await chosen('criteria') === 'Vulval carcinoma', `criteria read "${await chosen('criteria')}"`);
+  await pickField('result', 'Metastatic carcinoma');
+  await type('largestDeposit', '0.2');
+  assert((await checksText()).includes('0.2 mm or less is isolated tumour cells, pN0(i+) (AJCC 9th edition)'), `0.2 mm check missing: ${await checksText()}`);
+  await type('largestDeposit', '3');
+  report = await reportText();
+  assert(report.includes('METASTATIC CARCINOMA (1/1); largest deposit 3 mm; no extranodal extension') && !/macrometastasis/.test(report), `groin node diagnosis: ${report.slice(-300)}`);
+  assert((await checksText()).includes('This node alone: pN1a (AJCC 9th edition).'), `pN1a note missing: ${await checksText()}`);
+  await page.locator('.field[data-field="criteria"] .ref-toggle').first().click();
+  await page.waitForSelector('.field[data-field="criteria"] .ref-panel', { timeout: 5000 });
+  const panel = await page.locator('.field[data-field="criteria"] .ref-panel').first().innerText();
+  assert(panel.includes('Vulval carcinoma: the largest deposit'), `criteria panel text: ${panel.slice(0, 400)}`);
+  await page.locator('.field[data-field="criteria"] .ref-panel').first().scrollIntoViewIfNeeded();
+  await shot('vulva-groin-sentinel');
+  await page.locator('.field[data-field="criteria"] .ref-toggle').first().click();
+  return 'excision line with a vulval SCC history opens Vulva Ca, left, wide excision; pattern for SCC only; depth both ways; pT1b pN0(sn) printed with the option; stage group IB in Checks; groin sentinel node on the vulval criteria, 0.2 mm ITC check, 3 mm pN1a note, criteria panel';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

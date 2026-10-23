@@ -1,0 +1,100 @@
+{
+  "description": "HPV-associated basaloid squamous cell carcinoma with HSIL (VIN 3) at the lateral margin, block-type p16, wild-type p53, high-risk HPV detected, pT1a with no nodes",
+  "templateId": "vulval_carcinoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "specimenName": "Right labium minus",
+      "procedure": "Local excision",
+      "procedureOther": "",
+      "laterality": "Right",
+      "tumourSite": [
+        "Labium minus"
+      ],
+      "tumourSiteOther": "",
+      "tumourSizeMm": "12",
+      "focality": "Unifocal",
+      "specimenDims": "30 x 18 x 6",
+      "orientation": "suture at 12 o'clock",
+      "lesionAppearance": "Ulcerated tumour",
+      "lesionDims": "12 x 9",
+      "macroMarginMm": "5",
+      "macroMarginSite": "medial",
+      "inking": "Margins inked (see block key)",
+      "blocks": "10",
+      "blockKeyText": "1-4 Tumour with deep margin\n5-8 Peripheral margins, 12 to 9 o'clock\n9-10 Adjacent skin",
+      "histType": "Squamous cell carcinoma, HPV-associated",
+      "histTypeOther": "",
+      "pattern": "Basaloid",
+      "grade": "",
+      "doi": "Measured",
+      "doiMm": "0.8",
+      "doiConventionalMm": "1.2",
+      "doiReason": "",
+      "growthPattern": "Infiltrating",
+      "growthOther": "",
+      "extension": [
+        "Not identified"
+      ],
+      "extensionOther": "",
+      "lvi": "Not identified",
+      "pni": "Not identified",
+      "p16": "Block-type positive",
+      "p16Other": "",
+      "p53": "Wild-type pattern",
+      "p53Other": "",
+      "ihcOther": "",
+      "histologyNotes": "",
+      "hpvPcr": "High-risk HPV detected",
+      "hpvGenotype": "HPV 16",
+      "peripheralMargin": "Uninvolved",
+      "peripheralMarginMm": "4",
+      "peripheralMarginSite": "medial",
+      "deepMargin": "Uninvolved",
+      "deepMarginMm": "3",
+      "deepMarginSite": "",
+      "adjacent": [
+        "HSIL (VIN 3)"
+      ],
+      "precursorMargin": "Involved",
+      "precursorMarginMm": "",
+      "precursorMarginSite": "lateral",
+      "pagetMargin": "Uninvolved",
+      "pagetMarginSite": "",
+      "nodesExamined": "",
+      "nodeSampling": "",
+      "nodesSentinel": "",
+      "nodesOver5": "0",
+      "nodes2to5": "0",
+      "nodesMicro": "0",
+      "nodesItc": "0",
+      "largestDepositMm": "",
+      "nodeSites": [],
+      "nodeSitesOther": "",
+      "nodeFindings": [],
+      "distantMets": [
+        "Not identified"
+      ],
+      "distantMetsOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "postTherapy": false,
+      "treatmentEffect": "",
+      "tnmOverride": "",
+      "tnmOverrideReason": "",
+      "additionalFindings": ""
+    }
+  ],
+  "report": "Vulva, right labium minus, local excision\n\nReceived in formalin is a local excision specimen of vulva measuring 30 x 18 x 6 mm. The specimen is orientated: suture at 12 o'clock. There is an ulcerated tumour on the right labium minus measuring 12 x 9 mm, 5 mm from the closest (medial) margin. The margins are inked. Representative sections are taken in 10 blocks.\n\n(1-4) Tumour with deep margin.\n(5-8) Peripheral margins, 12 to 9 o'clock.\n(9-10) Adjacent skin.\n\nSpecimen and tumour\n- Procedure: Local excision\n- Tumour site: Right labium minus\n- Tumour size: 12 mm (greatest dimension)\n- Tumour focality: Unifocal\n\nMicroscopic findings\n- Histologic type: Squamous cell carcinoma, HPV-associated\n- Tumour histology:\n  The tumour is an HPV-associated squamous cell carcinoma with a basaloid pattern, invading to a depth of 0.8 mm. Infiltrating nests and sheets of basaloid squamous cells with scant cytoplasm and hyperchromatic nuclei lie in a desmoplastic stroma, with little keratinisation. On immunohistochemistry, p16 shows diffuse block-type staining and p53 shows a wild-type pattern.\n- Depth of invasion: 0.8 mm (conventional method: 1.2 mm)\n- Tumour border: Infiltrating\n- Other tissue / organ involvement: Not identified\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n\nMargins\n- Invasive carcinoma, peripheral margin: Uninvolved (closest 4 mm, medial)\n- Invasive carcinoma, deep margin: Uninvolved (closest 3 mm)\n- Squamous precursor lesion (HSIL): Involved (lateral)\n\nPathological stage (AJCC 9th edition)\n- pTNM: pT1a\n\nAdditional findings\n- Adjacent epithelium: HSIL (VIN 3)\n\nHPV testing\n- HPV PCR: High-risk HPV detected (HPV 16)\n\nVULVA, right labium minus, local excision\n- SQUAMOUS CELL CARCINOMA, HPV-ASSOCIATED, 12 mm, invading to a depth of 0.8 mm;\n  completely excised (closest margin 3 mm, deep); HSIL present at the margin\n  (lateral); see synoptic report\n- pT1a (AJCC 9th edition)\n- Background HSIL (VIN 3)\n\nDepth of invasion is measured by the FIGO 2021 method.",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 9th edition, matching FIGO 2021 (reference, not reported): IA, with no nodes examined (CAP asks for node evaluation only for invasion of more than 1 mm)",
+      "part": "A"
+    }
+  ]
+}

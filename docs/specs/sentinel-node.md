@@ -49,5 +49,15 @@ Measured on both exports (aggregate, no history in the exports): 179 sentinel li
 
 ## Not changed
 
-- The breast synoptic's own node fields and wording; the vulval and head and neck sentinel nodes, which have no criteria of their own here.
+- The breast synoptic's own node fields and wording; the vulval and head and neck sentinel nodes, which have no criteria of their own here (Phase 77 adds the vulval criteria, below).
 - Tests: tests/lymphnode_sln.test.js (golden reports `tests/fixtures/lymph_node_sln/01-05`), tests/frozen_sln_criteria.test.js; browser QA "sentinel node".
+
+## Vulval carcinoma criteria (Phase 77, 23 October 2026)
+
+- Lymph node excision (version 2026.10b) gains a fourth option, **Vulval carcinoma** (AJCC version 9 as given in CAP Vulva 5.1.0.0; printed and checked as "AJCC 9th edition"). Sources: `docs/reference/vulva-sources.md`.
+- The report names a micrometastasis only, for a carcinoma deposit of more than 0.2 mm to 2.0 mm: "the largest deposit measuring 1.5 mm (micrometastasis)". Larger deposits print their size alone; there is no macrometastasis. Extranodal extension prints as before; the breast size category and nodal treatment effect stay hidden.
+- Checks: the node's own category, as information ("This node alone: pN1a (AJCC 9th edition). The case pN is staged on the Vulval carcinoma resection form, from all the regional nodes."): pN0(i+) for isolated tumour cells; pN1mi more than 0.2 to 2.0 mm; pN1a more than 2.0 to 5.0 mm; pN1b more than 5.0 mm; pN1c with extranodal extension. Warnings: a carcinoma deposit of 0.2 mm or less (isolated tumour cells); isolated tumour cells larger than 0.2 mm; a melanoma result. Information: no deposit size recorded.
+- The criteria panel gains "Vulval carcinoma: the largest deposit" (regional nodes are inguinal and femoral only; the ITC wording of AJCC and CAP, "or", against ICCR's "and"; the size bands; extranodal extension and fixed or ulcerated nodes; the case pN from the resection form). The frozen section sentinel node form is untouched: its panel keeps the breast and melanoma groups, and the test now compares those. Nothing on either panel prints.
+- Intake: a sentinel line naming the vulva, or a groin line (groin, inguinal, femoral) in a request or history naming the vulva, opens with Vulval carcinoma; a pelvic line stays Not applied (pelvic nodes are pM1); a groin dissection that is not a sentinel line also opens with Vulval carcinoma in a vulval case. Melanoma anywhere still wins. A groin line with no vulval cue stays Not applied, as before.
+- Measured on both exports (aggregate, no clinical history): the criteria are unchanged (150 Breast, 29 Not applied); no line names the vulva beside a groin node.
+- Tests: tests/lymphnode_sln.test.js (golden report `tests/fixtures/lymph_node_sln/06-vulva-groin-sentinel`).

@@ -27,6 +27,13 @@ import { stripDot, checks } from './_house.js';
 //   https://documents.cap.org/documents/New-Cancer-Protocols-March-2025/Skin.Inv_Melanoma.Res_1.2.0.0.REL.CAPCP.docx):
 //   any tumour cells make the node positive (no isolated tumour cell category); the largest discrete deposit
 //   to the nearest 0.1 mm; nodal site subcapsular, intraparenchymal or both.
+//   Vulval carcinoma (Phase 77; AJCC version 9, Olawaiye et al., CA Cancer J Clin 2026, https://pmc.ncbi.nlm.nih.gov/articles/PMC13525161/,
+//   as in CAP Vulva 5.1.0.0, https://documents.cap.org/protocols/Vulva_5.1.0.0.REL_CAPCP.docx, and the ICCR vulva
+//   dataset 2nd edition, https://www.iccr-cancer.org/wp-content/uploads/2024/09/ICCR-Vulva-2nd-ed-v2.1-bookmarked.pdf):
+//   isolated tumour cells 0.2 mm or less, or clusters of 200 cells or fewer, pN0(i+); micrometastasis more
+//   than 0.2 mm to 2.0 mm, pN1mi; more than 2.0 mm to 5.0 mm pN1a; more than 5.0 mm pN1b; extranodal extension
+//   pN1c; fixed or ulcerated nodes pN2. The number of involved nodes no longer counts. The report names a
+//   micrometastasis only; the case pN is staged on the vulval carcinoma form from all the regional nodes.
 
 const num = (v) => {
   const n = parseFloat(String(v ?? '').trim());
@@ -57,6 +64,7 @@ export const isLymphoma = (v) => v.result === 'Lymphoma - see comment';
 export const isItc = (v) => v.result === 'Isolated tumour cells';
 const isBreast = (v) => v.criteria === 'Breast';
 const isMelanomaCriteria = (v) => v.criteria === 'Melanoma';
+const isVulvaCriteria = (v) => v.criteria === 'Vulva';
 
 /** Largest deposit in millimetres from "8", "8 mm" or "0.8 cm"; null when blank or unreadable. */
 export function depositMm(v) {
@@ -68,12 +76,18 @@ export function depositMm(v) {
 
 /**
  * Breast size category of a carcinoma metastasis: the one chosen, else from the largest deposit
- * (more than 2 mm macrometastasis, more than 0.2 mm micrometastasis). '' when the criteria are not Breast,
- * when no size is given, or for a deposit of 0.2 mm or less (Checks asks for isolated tumour cells or a
- * micrometastasis by cell count).
+ * (more than 2 mm macrometastasis, more than 0.2 mm micrometastasis). '' when the criteria are neither
+ * Breast nor Vulva, when no size is given, or for a deposit of 0.2 mm or less (Checks asks for isolated
+ * tumour cells or a micrometastasis by cell count). With the Vulva criteria only a micrometastasis is
+ * named (more than 0.2 mm to 2 mm, pN1mi); larger deposits print their size alone.
  */
 export function metCategory(v) {
-  if (!isBreast(v) || v.result !== 'Metastatic carcinoma') return '';
+  if (v.result !== 'Metastatic carcinoma') return '';
+  if (isVulvaCriteria(v)) {
+    const mm = depositMm(v);
+    return mm !== null && mm > 0.2 && mm <= 2 ? 'Micrometastasis' : '';
+  }
+  if (!isBreast(v)) return '';
   if (v.metCategory === 'Macrometastasis' || v.metCategory === 'Micrometastasis') return v.metCategory;
   const mm = depositMm(v);
   if (mm === null) return '';
@@ -95,6 +109,21 @@ export function treatmentEffect(v) {
 }
 const responded = (v) => (isMetastatic(v) || isItc(v)) && treatmentEffect(v) === TREATMENT.response;
 const scarred = (v) => isNegative(v) && treatmentEffect(v) === TREATMENT.scarring;
+
+/**
+ * Vulval pN category of this node alone (AJCC 9th edition, AJCC version 9), for Checks only: pN0(i+) for isolated tumour
+ * cells; for a carcinoma metastasis pN1c with extranodal extension, else by the largest deposit. '' when
+ * the criteria are not Vulva or the deposit is not recorded.
+ */
+export function vulvaCategory(v) {
+  if (!isVulvaCriteria(v)) return '';
+  if (isItc(v)) return 'pN0(i+)';
+  if (v.result !== 'Metastatic carcinoma') return '';
+  if (v.extranodal === 'Present') return 'pN1c';
+  const mm = depositMm(v);
+  if (mm === null || mm <= 0.2) return '';
+  return mm > 5 ? 'pN1b' : mm > 2 ? 'pN1a' : 'pN1mi';
+}
 
 /** Melanoma deposit site, read only with the Melanoma criteria: [microscopy phrase, diagnosis clause]. */
 const LOCATIONS = {
@@ -413,6 +442,16 @@ export function validate(part) {
       if (mm === null) info('Record the largest discrete deposit (mm), to the nearest 0.1 mm.', 'largestDeposit');
       if (!location(v)) info('Choose the location of the deposits: subcapsular, intraparenchymal or both.', 'location');
     }
+  }
+  if (isVulvaCriteria(v)) {
+    if (v.result === 'Metastatic malignant melanoma') warn('Staging criteria Vulval carcinoma with a melanoma result: change the criteria to Melanoma, or the result.', 'criteria');
+    if (v.result === 'Metastatic carcinoma') {
+      if (mm !== null && mm <= 0.2) warn(`Largest deposit ${fmtMm(mm)} mm: 0.2 mm or less is isolated tumour cells, pN0(i+) (AJCC 9th edition). Choose the result "Isolated tumour cells".`, 'largestDeposit');
+      if (mm === null) info('Record the largest deposit (mm): the vulval pN category depends on its size.', 'largestDeposit');
+    }
+    if (isItc(v) && mm !== null && mm > 0.2) warn(`Isolated tumour cells with a largest cluster of ${fmtMm(mm)} mm: isolated tumour cells measure 0.2 mm or less, so this is a metastasis.`, 'largestDeposit');
+    const cat = vulvaCategory(v);
+    if (cat) info(`This node alone: ${cat} (AJCC 9th edition). The case pN is staged on the Vulval carcinoma resection form, from all the regional nodes.`, 'result');
   }
   return out;
 }

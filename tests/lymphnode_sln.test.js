@@ -4,6 +4,9 @@
 // ICCR, CAP melanoma): no isolated tumour cell category, the largest discrete deposit and its location.
 // With the criteria "Not applied" (the default) every report reads as before (tests/lymphnode.test.js).
 // Spec: docs/specs/sentinel-node.md. Sources: docs/reference/sentinel-node-sources.md.
+// Phase 77 (deliberate): a fourth option, Vulval carcinoma (AJCC version 9, CAP Vulva 5.1.0.0, ICCR vulva
+// 2nd edition): the report names a micrometastasis only; Checks gives the node's own pN category; groin
+// lines of a vulval case open with these criteria. Sources: docs/reference/vulva-sources.md.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -11,8 +14,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadTemplate, loadManifest } from '../src/registry.js';
 import { createCase, generate, isVisible, applyLinkedDefaults } from '../src/engine.js';
-import { parseIntake, matchParts, presetValues, sentinelCriteria } from '../src/intake.js';
-import gen, { metCategory, depositMm, involvedNodes, positiveNodes, countPhrase, TREATMENT } from '../generators/lymphnode.js';
+import { parseIntake, matchParts, presetValues, sentinelCriteria, nodeCriteria } from '../src/intake.js';
+import gen, { metCategory, vulvaCategory, depositMm, involvedNodes, positiveNodes, countPhrase, TREATMENT } from '../generators/lymphnode.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const FIX = path.join(here, 'fixtures', 'lymph_node_sln');
@@ -30,18 +33,23 @@ const runParts = (list) => {
 const run = (values) => runParts([values]);
 const BREAST = { specimenName: 'left SLN1', procedure: 'Sentinel lymph node biopsy', criteria: 'Breast' };
 const MELANOMA = { specimenName: 'right groin', procedure: 'Sentinel lymph node biopsy', criteria: 'Melanoma' };
+const VULVA = { specimenName: 'Left groin sentinel lymph node', procedure: 'Sentinel lymph node biopsy', criteria: 'Vulva' };
 const issues = (r) => r.issues.map((i) => `${i.level}|${i.field || ''}|${i.message}`);
 
 // ---------- form ----------
 
 test('the staging criteria field: options, labels, the sentinel default and the criteria panel', () => {
   const f = byId.criteria;
-  assert.deepEqual(f.options, ['', 'Breast', 'Melanoma']);
-  assert.deepEqual(f.optionLabels, { '': 'Not applied', Breast: 'Breast carcinoma', Melanoma: 'Melanoma' });
+  assert.deepEqual(f.options, ['', 'Breast', 'Melanoma', 'Vulva'], 'Phase 77 (deliberate): Vulva added');
+  assert.deepEqual(f.optionLabels, { '': 'Not applied', Breast: 'Breast carcinoma', Melanoma: 'Melanoma', Vulva: 'Vulval carcinoma' });
   assert.equal(f.default, '');
   assert.deepEqual(f.defaultByField, { field: 'procedure', map: { 'Sentinel lymph node biopsy': 'Breast' } });
-  assert.deepEqual(f.reference.groups.map((g) => g.heading), ['Breast: the largest deposit', 'Extranodal extension', 'Breast: after presurgical therapy', 'Melanoma']);
-  assert.deepEqual(f.reference, frozen.fields.find((x) => x.id === 'slnResult').reference, 'the frozen form shows the same criteria');
+  assert.deepEqual(f.reference.groups.map((g) => g.heading), ['Breast: the largest deposit', 'Extranodal extension', 'Breast: after presurgical therapy', 'Melanoma', 'Vulval carcinoma: the largest deposit']);
+  // Phase 77 (deliberate): the frozen section form is untouched, so its panel keeps the breast and melanoma groups.
+  const fsRef = frozen.fields.find((x) => x.id === 'slnResult').reference;
+  assert.deepEqual(fsRef.groups, f.reference.groups.filter((g) => !g.heading.startsWith('Vulval')), 'the frozen form shows the same breast and melanoma criteria');
+  for (const k of ['title', 'intro', 'columns']) assert.deepEqual(fsRef[k], f.reference[k], `the same panel ${k}`);
+  assert.ok(f.reference.note.startsWith(fsRef.note + ' '), 'the lymph node note extends the frozen note');
   assert.ok(byId.result.options.includes('Isolated tumour cells'));
   for (const id of ['metCategory', 'location', 'eneExtent', 'treatmentEffect']) assert.ok(id in byId && 'default' in byId[id], `${id} has a default`);
   assert.deepEqual(byId.extranodal.options, ['Absent', 'Present', 'Cannot be determined']);
@@ -205,6 +213,68 @@ test('intake: presetValues carries the criteria on sentinel lines only', () => {
   assert.equal('criteria' in pre(dissection[0]), false);
 });
 
+// ---------- vulval carcinoma (Phase 77) ----------
+
+test('vulval criteria: only a micrometastasis is named, at more than 0.2 mm to 2.0 mm', () => {
+  const cat = (mm, x = {}) => metCategory({ criteria: 'Vulva', result: 'Metastatic carcinoma', largestDeposit: mm, ...x });
+  assert.equal(cat('0.2'), '', '0.2 mm is isolated tumour cells');
+  assert.equal(cat('0.21'), 'Micrometastasis');
+  assert.equal(cat('2.0'), 'Micrometastasis');
+  assert.equal(cat('2.1'), '', 'a larger deposit prints its size alone');
+  assert.equal(cat('0.15 cm'), 'Micrometastasis', 'centimetres read as 1.5 mm');
+  assert.equal(cat(''), '');
+  assert.equal(cat('1', { metCategory: 'Macrometastasis' }), 'Micrometastasis', 'the breast size category is not read');
+  assert.equal(metCategory({ criteria: 'Vulva', result: 'Isolated tumour cells', largestDeposit: '0.1' }), '');
+});
+
+test('vulval criteria: the node\'s own pN category, at the AJCC 9th edition boundaries', () => {
+  const vc = (x) => vulvaCategory({ criteria: 'Vulva', result: 'Metastatic carcinoma', extranodal: 'Absent', ...x });
+  assert.deepEqual(['0.2', '0.21', '2.0', '2.1', '5.0', '5.1', ''].map((mm) => vc({ largestDeposit: mm })), ['', 'pN1mi', 'pN1mi', 'pN1a', 'pN1a', 'pN1b', '']);
+  assert.equal(vc({ largestDeposit: '1', extranodal: 'Present' }), 'pN1c', 'extranodal extension outranks the size');
+  assert.equal(vc({ result: 'Isolated tumour cells', largestDeposit: '0.1' }), 'pN0(i+)');
+  assert.equal(vc({ result: 'Negative - reactive' }), '');
+  assert.equal(vulvaCategory({ criteria: 'Breast', result: 'Metastatic carcinoma', largestDeposit: '3' }), '', 'Vulva criteria only');
+});
+
+test('vulval criteria: the report and Checks', () => {
+  const micro = run({ ...VULVA, result: 'Metastatic carcinoma', largestDeposit: '1.5', extranodal: 'Absent' });
+  assert.match(micro.report, /the largest deposit measuring 1\.5 mm \(micrometastasis\)\./);
+  assert.match(micro.report, /largest deposit 1\.5 mm \(micrometastasis\); no extranodal extension/);
+  assert.ok(issues(micro).includes('info|result|This node alone: pN1mi (AJCC 9th edition). The case pN is staged on the Vulval carcinoma resection form, from all the regional nodes.'));
+  const big = run({ ...VULVA, result: 'Metastatic carcinoma', largestDeposit: '6', extranodal: 'Absent' });
+  assert.match(big.report, /the largest deposit measuring 6 mm\. There is no extranodal extension\./);
+  assert.doesNotMatch(big.report, /macrometastasis/i, 'no breast category');
+  const small = run({ ...VULVA, result: 'Metastatic carcinoma', largestDeposit: '0.2', extranodal: 'Absent' });
+  assert.ok(issues(small).includes('warn|largestDeposit|Largest deposit 0.2 mm: 0.2 mm or less is isolated tumour cells, pN0(i+) (AJCC 9th edition). Choose the result "Isolated tumour cells".'));
+  const itc = run({ ...VULVA, result: 'Isolated tumour cells', largestDeposit: '0.3' });
+  assert.ok(issues(itc).some((m) => m.startsWith('warn|largestDeposit|Isolated tumour cells with a largest cluster of 0.3 mm')));
+  const none = run({ ...VULVA, result: 'Metastatic carcinoma', extranodal: 'Absent' });
+  assert.ok(issues(none).includes('info|largestDeposit|Record the largest deposit (mm): the vulval pN category depends on its size.'));
+  const mel = run({ ...VULVA, result: 'Metastatic malignant melanoma' });
+  assert.ok(issues(mel).some((m) => m.startsWith('warn|criteria|Staging criteria Vulval carcinoma with a melanoma result')));
+  const neg = run({ ...VULVA });
+  assert.deepEqual(issues(neg).filter((m) => /vulv|pN/i.test(m)), [], 'a negative node has no vulval checks');
+  assert.ok(!isVisible(byId.metCategory, { ...createCase(schema, 1).parts[0].values, criteria: 'Vulva', result: 'Metastatic carcinoma' }), 'the breast size category stays hidden');
+  assert.ok(!isVisible(byId.treatmentEffect, { ...createCase(schema, 1).parts[0].values, criteria: 'Vulva', result: 'Metastatic carcinoma' }), 'the nodal treatment effect stays breast-only');
+});
+
+test('intake: groin lines of a vulval case open with the Vulva criteria; pelvic lines stay Not applied', () => {
+  assert.equal(sentinelCriteria('Left groin sentinel lymph node'), '', 'no vulval cue: as before');
+  assert.equal(sentinelCriteria('Left groin sentinel lymph node', 'vulval carcinoma'), 'Vulva');
+  assert.equal(sentinelCriteria('Left groin sentinel lymph node', 'CA endometrium'), '');
+  assert.equal(sentinelCriteria('Left groin sentinel lymph node', 'melanoma of the vulva'), 'Melanoma', 'melanoma outranks the vulva');
+  assert.equal(sentinelCriteria('Left pelvic sentinel lymph node', 'vulval carcinoma'), '', 'a pelvic node is pM1, not regional');
+  assert.equal(sentinelCriteria('Left sentinel lymph node', 'carcinoma of the left labium majus'), 'Vulva');
+  assert.equal(sentinelCriteria('Right SLN', '', '(A) Vulva, wide local excision\n(B) Right SLN'), 'Vulva');
+  assert.equal(nodeCriteria('Right inguinofemoral lymph node dissection', 'SCC vulva'), 'Vulva');
+  assert.equal(nodeCriteria('Right inguinofemoral lymph node dissection'), undefined, 'no vulval cue: the form keeps its default');
+  assert.equal(nodeCriteria('Left inguinal lymph node dissection', 'melanoma left heel'), undefined);
+  assert.equal(nodeCriteria('Left axillary lymph nodes, dissection', 'vulval carcinoma'), undefined, 'not a groin line');
+  assert.equal(nodeCriteria('Left axillary sentinel lymph node'), 'Breast', 'sentinel lines keep their rules');
+  const rows = matchParts(parseIntake('(A) Vulva, left, wide local excision\n(B) Left groin sentinel lymph node\n(C) Left pelvic sentinel lymph node\n(D) Right inguinofemoral lymph node dissection'), 'vulval carcinoma', manifest);
+  assert.deepEqual(rows.slice(1).map((r) => [r.templateId, presetValues(schema, r, r).criteria]), [['lymph_node', 'Vulva'], ['lymph_node', ''], ['lymph_node', 'Vulva']]);
+});
+
 // ---------- golden reports ----------
 
 // Written on first run, compared after; edit deliberately (UPDATE_FIXTURES=1 rewrites).
@@ -213,7 +283,8 @@ const CASES = [
   ['02-breast-micrometastasis', 'breast sentinel node, micrometastasis by size, no extranodal extension', [{ ...BREAST, result: 'Metastatic carcinoma', largestDeposit: '1.2', ihc: ['AE1/AE3'] }]],
   ['03-breast-isolated-tumour-cells', 'breast sentinel node, isolated tumour cells only in one of two nodes', [{ ...BREAST, nodesReceived: '2', result: 'Isolated tumour cells', positiveNodes: '1', largestDeposit: '0.1', ihc: ['AE1/AE3'] }]],
   ['04-breast-post-treatment-scarring', 'breast sentinel node after presurgical therapy, fibrous scarring and no residual metastasis', [{ ...BREAST, nodesReceived: '3', treatmentEffect: TREATMENT.scarring, ihc: ['AE1/AE3'] }]],
-  ['05-melanoma-subcapsular', 'melanoma sentinel node, subcapsular deposit 0.4 mm', [{ ...MELANOMA, result: 'Metastatic malignant melanoma', largestDeposit: '0.4', location: 'Subcapsular', ihc: ['SOX10'] }]]
+  ['05-melanoma-subcapsular', 'melanoma sentinel node, subcapsular deposit 0.4 mm', [{ ...MELANOMA, result: 'Metastatic malignant melanoma', largestDeposit: '0.4', location: 'Subcapsular', ihc: ['SOX10'] }]],
+  ['06-vulva-groin-sentinel', 'Phase 77: vulval carcinoma, left groin sentinel node, 3 mm deposit without extranodal extension (pN1a for this node)', [{ ...VULVA, result: 'Metastatic carcinoma', largestDeposit: '3', extranodal: 'Absent', ihc: ['AE1/AE3'] }]]
 ];
 for (const [name, description, parts] of CASES) {
   test(`golden: ${name}`, () => {

@@ -1,6 +1,6 @@
 {
   "id": "lymph_node",
-  "version": "2026.10",
+  "version": "2026.10b",
   "name": "Lymph node excision",
   "shortName": "Lymph node · excision",
   "label": "Lymph node",
@@ -115,12 +115,14 @@
       "options": [
         "",
         "Breast",
-        "Melanoma"
+        "Melanoma",
+        "Vulva"
       ],
       "optionLabels": {
         "": "Not applied",
         "Breast": "Breast carcinoma",
-        "Melanoma": "Melanoma"
+        "Melanoma": "Melanoma",
+        "Vulva": "Vulval carcinoma"
       },
       "default": "",
       "defaultByField": {
@@ -167,9 +169,19 @@
               "Location: subcapsular sinus, nodal parenchyma, or both.",
               "Nodal naevus: bland cells in the capsule and trabeculae, no mitoses, minimal HMB45 and Ki-67 below 2%; isolated Melan-A-positive cells are not overinterpreted."
             ]
+          },
+          {
+            "heading": "Vulval carcinoma: the largest deposit",
+            "points": [
+              "Regional nodes are the inguinal and femoral nodes only; an involved pelvic node is distant metastasis (pM1).",
+              "Isolated tumour cells: 0.2 mm or less, or single cells or clusters of 200 cells or fewer in a single node cross-section (AJCC 9th edition, CAP); ICCR writes 0.2 mm or less and 200 cells or fewer. pN0(i+).",
+              "Micrometastasis: more than 0.2 mm to 2.0 mm, pN1mi. More than 2.0 mm to 5.0 mm: pN1a. More than 5.0 mm: pN1b. The number of involved nodes no longer changes the category.",
+              "Extranodal extension: pN1c. Fixed or ulcerated nodes: pN2.",
+              "The case pN is set on the Vulval carcinoma resection form from all the regional nodes; (sn) when only sentinel nodes were examined."
+            ]
           }
         ],
-        "note": "Breast: AJCC 8th edition as given in the CAP breast protocol 4.11 (June 2026) and the QMH template. Melanoma: AJCC 8th edition, the ICCR melanoma dataset and the CAP melanoma protocol."
+        "note": "Breast: AJCC 8th edition as given in the CAP breast protocol 4.11 (June 2026) and the QMH template. Melanoma: AJCC 8th edition, the ICCR melanoma dataset and the CAP melanoma protocol. Vulval carcinoma: the AJCC 9th edition (AJCC Version 9) definitions in CAP Vulva 5.1.0.0, and the ICCR vulva dataset, 2nd edition."
       }
     },
     {

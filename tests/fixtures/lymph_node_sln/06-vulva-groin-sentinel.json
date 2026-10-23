@@ -1,0 +1,26 @@
+{
+  "description": "Phase 77: vulval carcinoma, left groin sentinel node, 3 mm deposit without extranodal extension (pN1a for this node)",
+  "templateId": "lymph_node",
+  "values": [
+    {
+      "specimenName": "Left groin sentinel lymph node",
+      "procedure": "Sentinel lymph node biopsy",
+      "criteria": "Vulva",
+      "result": "Metastatic carcinoma",
+      "largestDeposit": "3",
+      "extranodal": "Absent",
+      "ihc": [
+        "AE1/AE3"
+      ]
+    }
+  ],
+  "report": "Lymph node, left groin sentinel lymph node, sentinel lymph node biopsy\n\nReceived in formalin is a piece of fibroadipose tissue containing one lymph node. All embedded in 1 block.\n\n(1) Lymph node, bisected.\n\nSections show fibroadipose tissue and one lymph node. The lymph node is involved by metastatic carcinoma, the largest deposit measuring 3 mm. There is no extranodal extension. The tumour cells are highlighted by immunostain for pancytokeratin AE1/AE3.\n\nLYMPH NODE, left groin sentinel lymph node, sentinel lymph node biopsy - METASTATIC CARCINOMA (1/1); largest deposit 3 mm; no extranodal extension",
+  "checks": [
+    {
+      "level": "info",
+      "message": "This node alone: pN1a (AJCC 9th edition). The case pN is staged on the Vulval carcinoma resection form, from all the regional nodes.",
+      "field": "result",
+      "part": "A"
+    }
+  ]
+}

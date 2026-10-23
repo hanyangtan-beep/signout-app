@@ -1,0 +1,101 @@
+{
+  "description": "HPV-independent keratinising squamous cell carcinoma with dVIN and lichen sclerosus, wide excision, negative left groin sentinel nodes, pT1b pN0(sn), the example",
+  "templateId": "vulval_carcinoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "specimenName": "left labium majus",
+      "procedure": "Wide excision",
+      "procedureOther": "",
+      "laterality": "Left",
+      "tumourSite": [
+        "Labium majus"
+      ],
+      "tumourSiteOther": "",
+      "tumourSizeMm": "24",
+      "focality": "Unifocal",
+      "specimenDims": "60 x 40 x 15",
+      "orientation": "suture at 12 o'clock",
+      "lesionAppearance": "Ulcerated tumour",
+      "lesionDims": "24 x 15 x 6",
+      "macroMarginMm": "8",
+      "macroMarginSite": "deep",
+      "inking": "Margins inked (see block key)",
+      "blocks": "10",
+      "blockKeyText": "1-4 Tumour with deep margin\n5-8 Peripheral margins, 12 to 9 o'clock\n9-10 Adjacent skin",
+      "histType": "Squamous cell carcinoma, HPV-independent",
+      "histTypeOther": "",
+      "pattern": "Keratinising",
+      "grade": "",
+      "doi": "Measured",
+      "doiMm": "4.5",
+      "doiConventionalMm": "5",
+      "doiReason": "",
+      "growthPattern": "Infiltrating",
+      "growthOther": "",
+      "extension": [
+        "Not identified"
+      ],
+      "extensionOther": "",
+      "lvi": "Not identified",
+      "pni": "Not identified",
+      "p16": "Negative",
+      "p16Other": "",
+      "p53": "Abnormal, basal overexpression",
+      "p53Other": "",
+      "ihcOther": "",
+      "histologyNotes": "",
+      "hpvPcr": "Not performed",
+      "hpvGenotype": "",
+      "peripheralMargin": "Uninvolved",
+      "peripheralMarginMm": "9",
+      "peripheralMarginSite": "3 o'clock",
+      "deepMargin": "Uninvolved",
+      "deepMarginMm": "6",
+      "deepMarginSite": "",
+      "adjacent": [
+        "Differentiated VIN (dVIN)",
+        "Lichen sclerosus"
+      ],
+      "precursorMargin": "Uninvolved",
+      "precursorMarginMm": "3",
+      "precursorMarginSite": "peripheral, 6 o'clock",
+      "pagetMargin": "Uninvolved",
+      "pagetMarginSite": "",
+      "nodesExamined": "2",
+      "nodeSampling": "Sentinel lymph node biopsy only",
+      "nodesSentinel": "2",
+      "nodesOver5": "0",
+      "nodes2to5": "0",
+      "nodesMicro": "0",
+      "nodesItc": "0",
+      "largestDepositMm": "",
+      "nodeSites": [],
+      "nodeSitesOther": "",
+      "nodeFindings": [],
+      "distantMets": [
+        "Not identified"
+      ],
+      "distantMetsOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "postTherapy": false,
+      "treatmentEffect": "",
+      "tnmOverride": "",
+      "tnmOverrideReason": "",
+      "additionalFindings": ""
+    }
+  ],
+  "report": "Vulva, left labium majus, wide excision\n\nReceived in formalin is a wide excision specimen of vulva measuring 60 x 40 x 15 mm. The specimen is orientated: suture at 12 o'clock. There is an ulcerated tumour on the left labium majus measuring 24 x 15 x 6 mm, 8 mm from the closest (deep) margin. The margins are inked. Representative sections are taken in 10 blocks.\n\n(1-4) Tumour with deep margin.\n(5-8) Peripheral margins, 12 to 9 o'clock.\n(9-10) Adjacent skin.\n\nSpecimen and tumour\n- Procedure: Wide excision\n- Tumour site: Left labium majus\n- Tumour size: 24 mm (greatest dimension)\n- Tumour focality: Unifocal\n\nMicroscopic findings\n- Histologic type: Squamous cell carcinoma, HPV-independent\n- Tumour histology:\n  The tumour is an HPV-independent squamous cell carcinoma with a keratinising pattern, invading to a depth of 4.5 mm. Infiltrating nests and cords of atypical squamous cells show abundant eosinophilic cytoplasm, intercellular bridges and keratin pearls. On immunohistochemistry, p16 is negative and p53 shows an abnormal pattern of basal overexpression.\n- Depth of invasion: 4.5 mm (conventional method: 5 mm)\n- Tumour border: Infiltrating\n- Other tissue / organ involvement: Not identified\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n\nMargins\n- Invasive carcinoma, peripheral margin: Uninvolved (closest 9 mm, 3 o'clock)\n- Invasive carcinoma, deep margin: Uninvolved (closest 6 mm)\n- Squamous precursor lesion (dVIN): Uninvolved (closest 3 mm, peripheral,\n  6 o'clock)\n\nLymph nodes\n- Regional lymph nodes: 2 examined (sentinel lymph node biopsy); none involved\n\nPathological stage (AJCC 9th edition)\n- pTNM: pT1b pN0(sn)\n\nAdditional findings\n- Adjacent epithelium: Differentiated VIN (dVIN); lichen sclerosus\n\nVULVA, left labium majus, wide excision\n- SQUAMOUS CELL CARCINOMA, HPV-INDEPENDENT, 24 mm, invading to a depth of\n  4.5 mm; completely excised (closest margin 6 mm, deep); see synoptic report\n- 0 of 2 sentinel lymph nodes involved\n- pT1b pN0(sn) (AJCC 9th edition)\n- Background differentiated VIN (dVIN) and lichen sclerosus\n\nDepth of invasion is measured by the FIGO 2021 method.",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 9th edition, matching FIGO 2021 (reference, not reported): IB",
+      "part": "A"
+    }
+  ]
+}

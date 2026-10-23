@@ -96,15 +96,6 @@
    "qmh": "GYN-Cervix"
   },
   {
-   "id": "vulval_carcinoma",
-   "name": "Vulval carcinoma resection",
-   "label": "Vulva Ca",
-   "system": "Gynae",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "GYN-Vulva"
-  },
-  {
    "id": "vaginal_carcinoma",
    "name": "Vaginal carcinoma resection",
    "label": "Vagina Ca",

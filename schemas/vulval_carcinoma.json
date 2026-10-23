@@ -1,0 +1,1362 @@
+{
+  "id": "vulval_carcinoma",
+  "version": "2026.10",
+  "name": "Vulval carcinoma resection",
+  "shortName": "Vulva · carcinoma resection",
+  "label": "Vulva Ca",
+  "organ": "VULVA",
+  "system": "Gynae",
+  "kind": "cancer resection",
+  "rank": 44,
+  "aliases": [
+    "vulval SCC",
+    "vulvar carcinoma",
+    "vulval cancer",
+    "vulvectomy",
+    "radical vulvectomy",
+    "partial vulvectomy",
+    "wide local excision vulva",
+    "Bartholin gland carcinoma"
+  ],
+  "specimenNoun": "specimen",
+  "maxParts": 6,
+  "defaultParts": 1,
+  "generator": "vulval_carcinoma",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "partDefaults": [],
+  "layout": {
+    "pack": true,
+    "macroGroups": [
+      "Specimen and tumour",
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
+  "options": [
+    {
+      "$use": "includeHeader",
+      "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "$use": "printPTNM",
+      "label": "Print the pTNM block (AJCC 9th edition)"
+    },
+    {
+      "$use": "printNodesMets"
+    }
+  ],
+  "source": {
+    "template": "QMH Cancer Reporting Template GYN-Vulva (AJCC 8th edition), staged here on AJCC version 9 as CAP Vulva 5.1.0.0 lists it; ICCR vulva dataset, 2nd edition",
+    "url": "https://awiloqmh.github.io/CancerReportingTemplate/GYN-Vulva.html",
+    "capProtocol": "https://documents.cap.org/protocols/Vulva_5.1.0.0.REL_CAPCP.docx",
+    "dataset": "https://www.iccr-cancer.org/wp-content/uploads/2024/09/ICCR-Vulva-2nd-ed-v2.1-bookmarked.pdf",
+    "figo": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9290586/",
+    "ajcc": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13525161/",
+    "grounding": "docs/reference/vulva-sources.md",
+    "staging": "pTNM derived by src/staging/vulva.js on AJCC version 9 (in use from 1 January 2024), whose tables give each category its matching FIGO 2021 stage; the stage group shows in Checks only. The QMH page prints the AJCC 8th edition; the user chose version 9 on 2026-10-23. Phyllodes tumours are not staged.",
+    "savedPage": "docs/reference/GYN-Vulva.html"
+  },
+  "match": {
+    "site": [
+      "vulva",
+      "vulval",
+      "vulvar",
+      "labium majus",
+      "labium minus",
+      "labia majora",
+      "labia minora",
+      "clitoris",
+      "clitoral",
+      "Bartholin",
+      "vulvectomy",
+      "hemivulvectomy"
+    ],
+    "procedure": [
+      "vulvectomy",
+      "hemivulvectomy",
+      "partial vulvectomy",
+      "radical vulvectomy",
+      "wide local excision",
+      "wide excision",
+      "WLE",
+      "radical local excision",
+      "local excision",
+      "excision"
+    ],
+    "clinical": [
+      "SCC",
+      "squamous cell carcinoma",
+      "carcinoma",
+      "ca",
+      "cancer",
+      "malignancy"
+    ],
+    "gate": "\\b(?:c?SCC|ca|carcinoma|cancer|malignan\\w*)\\b|\\bradical\\s+(?:local\\s+excision|(?:hemi-?)?vulvectomy)\\b",
+    "not": [
+      "condyloma",
+      "condylomata",
+      "wart",
+      "warts"
+    ],
+    "exclude": [
+      "cervix",
+      "uterus",
+      "uterine",
+      "hysterectomy",
+      "penis",
+      "penile",
+      "scrotum",
+      "scrotal",
+      "perianal",
+      "anal canal",
+      "cyst",
+      "abscess",
+      "skin tag",
+      "lipoma",
+      "hidradenitis"
+    ],
+    "sideFromText": true,
+    "fill": [
+      {
+        "field": "specimenName",
+        "from": "text",
+        "strip": "\\b(?:lesions?|mass|ulcers?|ulceration|radical\\s+(?:hemi-?)?vulvectomy|radical\\s+local\\s+excision|partial\\s+vulvectomy|hemi-?vulvectomy|simple\\s+vulvectomy|total\\s+vulvectomy|skinning\\s+vulvectomy|vulvectomy|wide\\s+local\\s+excision|wide\\s+excision|WLE|local\\s+excision|excision|resection|specimen|vulva[lr]?|c?SCC|squamous\\s+cell\\s+carcinoma|carcinoma|cancer|tumou?r)\\b",
+        "unless": "^(?:left|right|midline|bilateral)$"
+      },
+      {
+        "field": "procedure",
+        "from": "map",
+        "map": [
+          [
+            "\\bradical\\s+(?:hemi-?)?vulvectomy",
+            "Radical vulvectomy"
+          ],
+          [
+            "\\b(?:total|simple)\\s+vulvectomy",
+            "Total vulvectomy"
+          ],
+          [
+            "\\bpartial\\s+vulvectomy|\\bhemi-?vulvectomy",
+            "Partial vulvectomy"
+          ],
+          [
+            "\\bwide\\s+(?:local\\s+)?excision|\\bWLE\\b|\\bradical\\s+local\\s+excision",
+            "Wide excision"
+          ],
+          [
+            "\\b(?:local\\s+)?excision",
+            "Local excision"
+          ]
+        ]
+      },
+      {
+        "field": "tumourSite",
+        "from": "map",
+        "map": [
+          [
+            "\\blabi(?:um|a)\\s+maj(?:us|ora)\\b",
+            "Labium majus"
+          ],
+          [
+            "\\blabi(?:um|a)\\s+(?:maj(?:us|ora)\\s+(?:and|&)\\s+)?min(?:us|ora)\\b",
+            "Labium minus"
+          ],
+          [
+            "\\bbartholin",
+            "Bartholin gland"
+          ],
+          [
+            "\\bclitor",
+            "Clitoris"
+          ]
+        ]
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "default": "",
+      "placeholder": "e.g. left labium majus",
+      "help": "The site as the specimen is labelled; the procedure is added from the next field."
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "default": "",
+      "options": [
+        "Local excision",
+        "Wide excision",
+        "Partial vulvectomy",
+        "Total vulvectomy",
+        "Radical vulvectomy",
+        "Other (specify)",
+        "Not specified"
+      ]
+    },
+    {
+      "id": "procedureOther",
+      "label": "Procedure (specify)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "default": "",
+      "showIf": {
+        "field": "procedure",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "laterality",
+      "label": "Laterality",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "default": "",
+      "options": [
+        "Right",
+        "Left",
+        "Bilateral",
+        "Midline",
+        "Not specified"
+      ]
+    },
+    {
+      "id": "tumourSite",
+      "label": "Tumour site",
+      "type": "multiselect",
+      "group": "Specimen and tumour",
+      "default": [],
+      "options": [
+        "Labium majus",
+        "Labium minus",
+        "Bartholin gland",
+        "Clitoris",
+        "Other (specify)",
+        "Not specified"
+      ],
+      "exclusive": [
+        "Not specified"
+      ]
+    },
+    {
+      "id": "tumourSiteOther",
+      "label": "Tumour site (specify)",
+      "type": "text",
+      "group": "Specimen and tumour",
+      "default": "",
+      "placeholder": "e.g. posterior fourchette, perineum",
+      "showIf": {
+        "field": "tumourSite",
+        "includes": "Other (specify)"
+      }
+    },
+    {
+      "id": "tumourSizeMm",
+      "label": "Tumour size, greatest dimension (mm)",
+      "type": "number",
+      "group": "Specimen and tumour",
+      "default": "",
+      "placeholder": "mm"
+    },
+    {
+      "id": "focality",
+      "label": "Tumour focality",
+      "type": "select",
+      "group": "Specimen and tumour",
+      "default": "Unifocal",
+      "options": [
+        "Unifocal",
+        "Multifocal",
+        "Cannot be determined"
+      ]
+    },
+    {
+      "id": "specimenDims",
+      "label": "Specimen dimensions (mm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "default": "",
+      "placeholder": "e.g. 60 x 40 x 15"
+    },
+    {
+      "id": "orientation",
+      "label": "Orientation",
+      "type": "text",
+      "group": "Macroscopy",
+      "default": "",
+      "placeholder": "e.g. suture at 12 o'clock"
+    },
+    {
+      "id": "lesionAppearance",
+      "label": "Lesion appearance",
+      "type": "select",
+      "group": "Macroscopy",
+      "default": "",
+      "options": [
+        "Ulcerated tumour",
+        "Exophytic tumour",
+        "Plaque-like tumour",
+        "Nodular tumour",
+        "Ill-defined lesion",
+        "No macroscopic lesion"
+      ]
+    },
+    {
+      "id": "lesionDims",
+      "label": "Lesion dimensions (mm)",
+      "type": "text",
+      "group": "Macroscopy",
+      "default": "",
+      "placeholder": "e.g. 25 x 18 x 6",
+      "showIf": {
+        "field": "lesionAppearance",
+        "not": [
+          "",
+          "No macroscopic lesion"
+        ]
+      }
+    },
+    {
+      "id": "macroMarginMm",
+      "label": "Distance to the closest margin, macroscopic (mm)",
+      "type": "number",
+      "group": "Macroscopy",
+      "default": "",
+      "showIf": {
+        "field": "lesionAppearance",
+        "not": [
+          "",
+          "No macroscopic lesion"
+        ]
+      }
+    },
+    {
+      "id": "macroMarginSite",
+      "label": "Closest margin, macroscopic",
+      "type": "text",
+      "group": "Macroscopy",
+      "default": "",
+      "placeholder": "e.g. deep",
+      "showIf": {
+        "field": "lesionAppearance",
+        "not": [
+          "",
+          "No macroscopic lesion"
+        ]
+      }
+    },
+    {
+      "id": "inking",
+      "label": "Inking",
+      "type": "select",
+      "group": "Macroscopy",
+      "default": "",
+      "options": [
+        "Margins inked",
+        "Margins inked (see block key)",
+        "Not inked"
+      ]
+    },
+    {
+      "id": "blocks",
+      "label": "Blocks",
+      "type": "number",
+      "group": "Macroscopy",
+      "default": ""
+    },
+    {
+      "id": "blockKeyText",
+      "label": "Block key",
+      "type": "textarea",
+      "group": "Macroscopy",
+      "default": "",
+      "placeholder": "e.g. A1 tumour with deep margin; A2-A3 peripheral margins",
+      "help": "Printed after the macroscopy as typed."
+    },
+    {
+      "id": "histType",
+      "label": "Histologic type",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "",
+      "options": [
+        "Squamous cell carcinoma, HPV-associated",
+        "Squamous cell carcinoma, HPV-independent",
+        "Squamous cell carcinoma, NOS",
+        "Basal cell carcinoma, NOS",
+        "Adenocarcinoma, NOS",
+        "Adenocarcinoma of anogenital mammary-like glands",
+        "Adenocarcinoma, intestinal type",
+        "Paget disease, extramammary (invasive)",
+        "Bartholin gland carcinoma (specify the subtype)",
+        "Phyllodes tumour, borderline",
+        "Phyllodes tumour, malignant",
+        "Carcinoma, type cannot be determined",
+        "Other histologic type (specify)"
+      ],
+      "optionGroups": [
+        {
+          "label": "Squamous and basal cell",
+          "options": [
+            "Squamous cell carcinoma, HPV-associated",
+            "Squamous cell carcinoma, HPV-independent",
+            "Squamous cell carcinoma, NOS",
+            "Basal cell carcinoma, NOS"
+          ]
+        },
+        {
+          "label": "Glandular",
+          "options": [
+            "Adenocarcinoma, NOS",
+            "Adenocarcinoma of anogenital mammary-like glands",
+            "Adenocarcinoma, intestinal type",
+            "Paget disease, extramammary (invasive)",
+            "Bartholin gland carcinoma (specify the subtype)"
+          ]
+        },
+        {
+          "label": "Mesenchymal (not staged)",
+          "options": [
+            "Phyllodes tumour, borderline",
+            "Phyllodes tumour, malignant"
+          ]
+        },
+        {
+          "label": "Other",
+          "options": [
+            "Carcinoma, type cannot be determined",
+            "Other histologic type (specify)"
+          ]
+        }
+      ],
+      "help": "WHO 5th edition, as the QMH page lists it, with CAP Vulva 5.1.0.0 additions."
+    },
+    {
+      "id": "histTypeOther",
+      "label": "Histologic type (specify)",
+      "type": "text",
+      "group": "Microscopic findings",
+      "default": "",
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Other histologic type (specify)",
+          "Bartholin gland carcinoma (specify the subtype)"
+        ]
+      },
+      "placeholder": "e.g. adenoid cystic carcinoma"
+    },
+    {
+      "id": "pattern",
+      "label": "Morphological pattern",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "",
+      "options": [
+        "Keratinising",
+        "Non-keratinising",
+        "Basaloid",
+        "Warty",
+        "Verrucous"
+      ],
+      "showIf": {
+        "field": "histType",
+        "is": [
+          "Squamous cell carcinoma, HPV-associated",
+          "Squamous cell carcinoma, HPV-independent",
+          "Squamous cell carcinoma, NOS"
+        ]
+      },
+      "help": "Sets the description in the histology paragraph; not printed as an item. ICCR: HPV-associated carcinomas are mostly basaloid or warty, HPV-independent carcinomas mostly keratinising; verrucous carcinoma is HPV-independent."
+    },
+    {
+      "id": "grade",
+      "label": "Histologic grade (optional)",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "",
+      "options": [
+        "G1, well differentiated",
+        "G2, moderately differentiated",
+        "G3, poorly differentiated",
+        "GX, cannot be assessed",
+        "Not applicable"
+      ],
+      "help": "Optional (CAP Note E). ICCR does not recommend grading vulval squamous cell carcinoma."
+    },
+    {
+      "id": "doi",
+      "label": "Depth of invasion",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "Measured",
+      "options": [
+        "Measured",
+        "Cannot be determined"
+      ],
+      "optionLabels": {
+        "Measured": "Measured (mm)"
+      },
+      "showIf": {
+        "field": "histType",
+        "not": [
+          "Phyllodes tumour, borderline",
+          "Phyllodes tumour, malignant"
+        ]
+      }
+    },
+    {
+      "id": "doiMm",
+      "label": "Depth of invasion, FIGO 2021 method (mm)",
+      "type": "number",
+      "group": "Microscopic findings",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "histType",
+            "not": [
+              "Phyllodes tumour, borderline",
+              "Phyllodes tumour, malignant"
+            ]
+          },
+          {
+            "field": "doi",
+            "is": "Measured"
+          }
+        ]
+      },
+      "help": "FIGO 2021: from the basement membrane of the deepest, adjacent, dysplasia-free rete ridge (or nearest dysplasia-free rete ridge) to the deepest point of invasion."
+    },
+    {
+      "id": "doiConventionalMm",
+      "label": "Depth of invasion, conventional method (mm, optional)",
+      "type": "number",
+      "group": "Microscopic findings",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "histType",
+            "not": [
+              "Phyllodes tumour, borderline",
+              "Phyllodes tumour, malignant"
+            ]
+          },
+          {
+            "field": "doi",
+            "is": "Measured"
+          }
+        ]
+      },
+      "help": "Conventional method: from the epithelial-stromal junction of the adjacent most superficial dermal papilla. ESGO 2023 advises recording both."
+    },
+    {
+      "id": "doiReason",
+      "label": "Depth of invasion cannot be determined (reason)",
+      "type": "text",
+      "group": "Microscopic findings",
+      "default": "",
+      "placeholder": "e.g. tangential sectioning",
+      "showIf": {
+        "all": [
+          {
+            "field": "histType",
+            "not": [
+              "Phyllodes tumour, borderline",
+              "Phyllodes tumour, malignant"
+            ]
+          },
+          {
+            "field": "doi",
+            "is": "Cannot be determined"
+          }
+        ]
+      }
+    },
+    {
+      "id": "growthPattern",
+      "label": "Tumour border",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "",
+      "options": [
+        "Pushing",
+        "Infiltrating",
+        "Other (specify)"
+      ]
+    },
+    {
+      "id": "growthOther",
+      "label": "Tumour border (specify)",
+      "type": "text",
+      "group": "Microscopic findings",
+      "default": "",
+      "showIf": {
+        "field": "growthPattern",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "extension",
+      "label": "Other tissue / organ involvement",
+      "type": "multiselect",
+      "group": "Microscopic findings",
+      "default": [
+        "Not identified"
+      ],
+      "options": [
+        "Not identified",
+        "Vagina, lower one-third",
+        "Vagina, upper two-thirds",
+        "Urethra, lower one-third",
+        "Urethra, upper two-thirds",
+        "Anus",
+        "Bladder mucosa",
+        "Rectal mucosa",
+        "Pelvic bone",
+        "Other tissue or organ (specify)",
+        "Cannot be determined"
+      ],
+      "exclusive": [
+        "Not identified",
+        "Cannot be determined"
+      ]
+    },
+    {
+      "id": "extensionOther",
+      "label": "Other tissue or organ (specify)",
+      "type": "text",
+      "group": "Microscopic findings",
+      "default": "",
+      "showIf": {
+        "field": "extension",
+        "includes": "Other tissue or organ (specify)"
+      }
+    },
+    {
+      "id": "lvi",
+      "label": "Lymphovascular invasion",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "Not identified",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ]
+    },
+    {
+      "id": "pni",
+      "label": "Perineural invasion",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "Not identified",
+      "options": [
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ]
+    },
+    {
+      "id": "p16",
+      "label": "p16 immunohistochemistry",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "",
+      "options": [
+        "Block-type positive",
+        "Negative",
+        "Patchy, non-block-type",
+        "Other (specify)",
+        "Not performed"
+      ],
+      "help": "Printed inside the histology paragraph. ICCR: report p16 as block-type, not simply as positive."
+    },
+    {
+      "id": "p16Other",
+      "label": "p16 (specify)",
+      "type": "text",
+      "group": "Microscopic findings",
+      "default": "",
+      "showIf": {
+        "field": "p16",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "p53",
+      "label": "p53 immunohistochemistry",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "",
+      "options": [
+        "Wild-type pattern",
+        "Wild-type, mid-epithelial (basal sparing) pattern",
+        "Abnormal, basal overexpression",
+        "Abnormal, parabasal / diffuse overexpression",
+        "Abnormal, null",
+        "Abnormal, cytoplasmic",
+        "Other (specify)",
+        "Not performed"
+      ],
+      "help": "Printed inside the histology paragraph. Basal sparing (mid-epithelial) staining is the pattern of HPV-associated lesions."
+    },
+    {
+      "id": "p53Other",
+      "label": "p53 (specify)",
+      "type": "text",
+      "group": "Microscopic findings",
+      "default": "",
+      "showIf": {
+        "field": "p53",
+        "is": "Other (specify)"
+      }
+    },
+    {
+      "id": "ihcOther",
+      "label": "Other immunohistochemistry",
+      "type": "text",
+      "group": "Microscopic findings",
+      "default": "",
+      "placeholder": "e.g. The tumour cells are positive for CK7 and GATA3.",
+      "help": "One sentence, printed in the histology paragraph as typed."
+    },
+    {
+      "id": "histologyNotes",
+      "label": "Tumour histology (replaces the generated paragraph)",
+      "type": "textarea",
+      "group": "Microscopic findings",
+      "default": "",
+      "help": "Leave blank to use the paragraph built from the fields above."
+    },
+    {
+      "id": "hpvPcr",
+      "label": "HPV testing (PCR)",
+      "type": "select",
+      "group": "Microscopic findings",
+      "default": "Not performed",
+      "options": [
+        "Not performed",
+        "High-risk HPV detected",
+        "High-risk HPV not detected",
+        "Pending",
+        "Failed"
+      ],
+      "help": "Printed under Molecular findings."
+    },
+    {
+      "id": "hpvGenotype",
+      "label": "HPV genotype",
+      "type": "text",
+      "group": "Microscopic findings",
+      "default": "",
+      "placeholder": "e.g. HPV 16",
+      "showIf": {
+        "field": "hpvPcr",
+        "is": "High-risk HPV detected"
+      }
+    },
+    {
+      "id": "peripheralMargin",
+      "label": "Peripheral margin, invasive carcinoma",
+      "type": "select",
+      "group": "Margins",
+      "default": "Uninvolved",
+      "options": [
+        "Uninvolved",
+        "Involved",
+        "Cannot be assessed"
+      ]
+    },
+    {
+      "id": "peripheralMarginMm",
+      "label": "Peripheral margin: closest distance (mm)",
+      "type": "number",
+      "group": "Margins",
+      "default": "",
+      "showIf": {
+        "field": "peripheralMargin",
+        "is": "Uninvolved"
+      }
+    },
+    {
+      "id": "peripheralMarginSite",
+      "label": "Peripheral margin: location",
+      "type": "text",
+      "group": "Margins",
+      "default": "",
+      "placeholder": "e.g. 3 o'clock",
+      "showIf": {
+        "field": "peripheralMargin",
+        "is": [
+          "Uninvolved",
+          "Involved"
+        ]
+      }
+    },
+    {
+      "id": "deepMargin",
+      "label": "Deep margin, invasive carcinoma",
+      "type": "select",
+      "group": "Margins",
+      "default": "Uninvolved",
+      "options": [
+        "Uninvolved",
+        "Involved",
+        "Cannot be assessed"
+      ]
+    },
+    {
+      "id": "deepMarginMm",
+      "label": "Deep margin: closest distance (mm)",
+      "type": "number",
+      "group": "Margins",
+      "default": "",
+      "showIf": {
+        "field": "deepMargin",
+        "is": "Uninvolved"
+      }
+    },
+    {
+      "id": "deepMarginSite",
+      "label": "Deep margin: location",
+      "type": "text",
+      "group": "Margins",
+      "default": "",
+      "showIf": {
+        "field": "deepMargin",
+        "is": [
+          "Uninvolved",
+          "Involved"
+        ]
+      }
+    },
+    {
+      "id": "adjacent",
+      "label": "Adjacent epithelium",
+      "type": "multiselect",
+      "group": "Additional findings",
+      "default": [],
+      "options": [
+        "HSIL (VIN 2)",
+        "HSIL (VIN 3)",
+        "Differentiated VIN (dVIN)",
+        "Vulvar aberrant maturation (VAM) / HPV-independent, p53-wild-type verruciform acanthotic VIN",
+        "Paget disease (intraepithelial)",
+        "Lichen sclerosus",
+        "LSIL (VIN 1)",
+        "Condyloma acuminatum",
+        "None identified"
+      ],
+      "exclusive": [
+        "None identified"
+      ],
+      "help": "Printed under Additional findings; a squamous precursor or Paget disease also opens its margin field."
+    },
+    {
+      "id": "precursorMargin",
+      "label": "Margins, squamous precursor lesion",
+      "type": "select",
+      "group": "Margins",
+      "default": "Uninvolved",
+      "options": [
+        "Uninvolved",
+        "Involved",
+        "Cannot be assessed"
+      ],
+      "showIf": {
+        "field": "adjacent",
+        "includes": [
+          "HSIL (VIN 2)",
+          "HSIL (VIN 3)",
+          "Differentiated VIN (dVIN)",
+          "Vulvar aberrant maturation (VAM) / HPV-independent, p53-wild-type verruciform acanthotic VIN"
+        ]
+      }
+    },
+    {
+      "id": "precursorMarginMm",
+      "label": "Squamous precursor lesion: closest distance (mm)",
+      "type": "number",
+      "group": "Margins",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "adjacent",
+            "includes": [
+              "HSIL (VIN 2)",
+              "HSIL (VIN 3)",
+              "Differentiated VIN (dVIN)",
+              "Vulvar aberrant maturation (VAM) / HPV-independent, p53-wild-type verruciform acanthotic VIN"
+            ]
+          },
+          {
+            "field": "precursorMargin",
+            "is": "Uninvolved"
+          }
+        ]
+      }
+    },
+    {
+      "id": "precursorMarginSite",
+      "label": "Squamous precursor lesion: margin location",
+      "type": "text",
+      "group": "Margins",
+      "default": "",
+      "placeholder": "e.g. peripheral, 6 o'clock",
+      "showIf": {
+        "all": [
+          {
+            "field": "adjacent",
+            "includes": [
+              "HSIL (VIN 2)",
+              "HSIL (VIN 3)",
+              "Differentiated VIN (dVIN)",
+              "Vulvar aberrant maturation (VAM) / HPV-independent, p53-wild-type verruciform acanthotic VIN"
+            ]
+          },
+          {
+            "field": "precursorMargin",
+            "is": [
+              "Uninvolved",
+              "Involved"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pagetMargin",
+      "label": "Margins, Paget disease",
+      "type": "select",
+      "group": "Margins",
+      "default": "Uninvolved",
+      "options": [
+        "Uninvolved",
+        "Involved",
+        "Cannot be assessed"
+      ],
+      "showIf": {
+        "any": [
+          {
+            "field": "adjacent",
+            "includes": "Paget disease (intraepithelial)"
+          },
+          {
+            "field": "histType",
+            "is": "Paget disease, extramammary (invasive)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pagetMarginSite",
+      "label": "Paget disease: margin location",
+      "type": "text",
+      "group": "Margins",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "any": [
+              {
+                "field": "adjacent",
+                "includes": "Paget disease (intraepithelial)"
+              },
+              {
+                "field": "histType",
+                "is": "Paget disease, extramammary (invasive)"
+              }
+            ]
+          },
+          {
+            "field": "pagetMargin",
+            "is": [
+              "Uninvolved",
+              "Involved"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "nodesExamined",
+      "label": "Regional lymph nodes examined (total)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "help": "Inguinofemoral nodes, all parts together, as CAP counts them. Leave blank when none were submitted."
+    },
+    {
+      "id": "nodeSampling",
+      "label": "Lymph node sampling",
+      "type": "select",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "options": [
+        "Sentinel lymph node biopsy only",
+        "Sentinel lymph node biopsy and lymphadenectomy",
+        "Lymphadenectomy"
+      ],
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      },
+      "help": "Sentinel only adds (sn) to pN. A negative lymphadenectomy with fewer than 6 nodes is pN not assigned (CAP)."
+    },
+    {
+      "id": "nodesSentinel",
+      "label": "Sentinel lymph nodes examined",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "nodesExamined",
+            "min": 1
+          },
+          {
+            "field": "nodeSampling",
+            "is": [
+              "Sentinel lymph node biopsy only",
+              "Sentinel lymph node biopsy and lymphadenectomy"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "nodesOver5",
+      "label": "Nodes with metastasis more than 5 mm",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      }
+    },
+    {
+      "id": "nodes2to5",
+      "label": "Nodes with metastasis more than 2 mm to 5 mm",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      }
+    },
+    {
+      "id": "nodesMicro",
+      "label": "Nodes with micrometastasis (more than 0.2 mm to 2 mm)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      }
+    },
+    {
+      "id": "nodesItc",
+      "label": "Nodes with isolated tumour cells only (0.2 mm or less)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      },
+      "help": "Counted only when no node has a metastasis larger than 0.2 mm (CAP)."
+    },
+    {
+      "id": "largestDepositMm",
+      "label": "Largest nodal metastatic deposit (mm)",
+      "type": "number",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      }
+    },
+    {
+      "id": "nodeSites",
+      "label": "Nodal sites with tumour",
+      "type": "multiselect",
+      "group": "Lymph nodes and metastasis",
+      "default": [],
+      "options": [
+        "Right inguinal",
+        "Left inguinal",
+        "Inguinal, NOS",
+        "Right femoral",
+        "Left femoral",
+        "Femoral, NOS",
+        "Other (specify)",
+        "Cannot be determined"
+      ],
+      "exclusive": [
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      }
+    },
+    {
+      "id": "nodeSitesOther",
+      "label": "Nodal sites (specify)",
+      "type": "text",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "nodeSites",
+        "includes": "Other (specify)"
+      }
+    },
+    {
+      "id": "nodeFindings",
+      "label": "Additional lymph node findings",
+      "type": "multiselect",
+      "group": "Lymph nodes and metastasis",
+      "default": [],
+      "options": [
+        "None identified",
+        "Extranodal extension",
+        "Fixed or ulcerated nodes",
+        "Cannot be determined"
+      ],
+      "exclusive": [
+        "None identified",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "field": "nodesExamined",
+        "min": 1
+      },
+      "help": "Extranodal extension makes pN1c, fixed or ulcerated nodes pN2."
+    },
+    {
+      "id": "distantMets",
+      "label": "Distant metastasis",
+      "type": "multiselect",
+      "group": "Lymph nodes and metastasis",
+      "default": [
+        "Not identified"
+      ],
+      "options": [
+        "Not identified",
+        "Pelvic lymph node(s)",
+        "Internal iliac / hypogastric lymph node(s)",
+        "External iliac lymph node(s)",
+        "Common iliac lymph node(s)",
+        "Presacral lymph node(s)",
+        "Lung",
+        "Liver",
+        "Bone",
+        "Other (specify)",
+        "Cannot be determined"
+      ],
+      "exclusive": [
+        "Not identified",
+        "Cannot be determined"
+      ],
+      "help": "Pelvic lymph nodes are distant metastasis (pM1)."
+    },
+    {
+      "id": "distantMetsOther",
+      "label": "Distant metastasis (specify)",
+      "type": "text",
+      "group": "Lymph nodes and metastasis",
+      "default": "",
+      "showIf": {
+        "field": "distantMets",
+        "includes": "Other (specify)"
+      }
+    },
+    {
+      "id": "multiplePrimaries",
+      "label": "Multiple primary tumours (m)",
+      "type": "checkbox",
+      "group": "Staging",
+      "default": false
+    },
+    {
+      "id": "recurrent",
+      "label": "Recurrent tumour (r)",
+      "type": "checkbox",
+      "group": "Staging",
+      "default": false
+    },
+    {
+      "id": "postTherapy",
+      "label": "After neoadjuvant therapy (y)",
+      "type": "checkbox",
+      "group": "Staging",
+      "default": false
+    },
+    {
+      "id": "treatmentEffect",
+      "label": "Treatment effect",
+      "type": "select",
+      "group": "Staging",
+      "default": "",
+      "options": [
+        "No known presurgical therapy",
+        "Not identified",
+        "Present",
+        "Cannot be determined"
+      ],
+      "showIf": {
+        "field": "postTherapy",
+        "is": true
+      }
+    },
+    {
+      "id": "tnmOverride",
+      "label": "pTNM override",
+      "type": "text",
+      "group": "Staging",
+      "default": "",
+      "placeholder": "e.g. pT1b pN0(sn)",
+      "help": "Replaces the derived pTNM; give the reason below."
+    },
+    {
+      "id": "tnmOverrideReason",
+      "label": "pTNM override: reason",
+      "type": "text",
+      "group": "Staging",
+      "default": "",
+      "showIf": {
+        "field": "tnmOverride",
+        "not": ""
+      }
+    },
+    {
+      "id": "additionalFindings",
+      "label": "Other findings",
+      "type": "text",
+      "group": "Additional findings",
+      "default": "",
+      "placeholder": "e.g. Fibroepithelial polyp, separate"
+    }
+  ],
+  "example": {
+    "case": {
+      "accession": "S26-01077",
+      "status": "Draft"
+    },
+    "options": {
+      "includeHeader": false,
+      "macro": true,
+      "printPTNM": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "left labium majus",
+          "procedure": "Wide excision",
+          "procedureOther": "",
+          "laterality": "Left",
+          "tumourSite": [
+            "Labium majus"
+          ],
+          "tumourSiteOther": "",
+          "tumourSizeMm": "24",
+          "focality": "Unifocal",
+          "specimenDims": "60 x 40 x 15",
+          "orientation": "suture at 12 o'clock",
+          "lesionAppearance": "Ulcerated tumour",
+          "lesionDims": "24 x 15 x 6",
+          "macroMarginMm": "8",
+          "macroMarginSite": "deep",
+          "inking": "Margins inked (see block key)",
+          "blocks": "10",
+          "blockKeyText": "1-4 Tumour with deep margin\n5-8 Peripheral margins, 12 to 9 o'clock\n9-10 Adjacent skin",
+          "histType": "Squamous cell carcinoma, HPV-independent",
+          "histTypeOther": "",
+          "pattern": "Keratinising",
+          "grade": "",
+          "doi": "Measured",
+          "doiMm": "4.5",
+          "doiConventionalMm": "5",
+          "doiReason": "",
+          "growthPattern": "Infiltrating",
+          "growthOther": "",
+          "extension": [
+            "Not identified"
+          ],
+          "extensionOther": "",
+          "lvi": "Not identified",
+          "pni": "Not identified",
+          "p16": "Negative",
+          "p16Other": "",
+          "p53": "Abnormal, basal overexpression",
+          "p53Other": "",
+          "ihcOther": "",
+          "histologyNotes": "",
+          "hpvPcr": "Not performed",
+          "hpvGenotype": "",
+          "peripheralMargin": "Uninvolved",
+          "peripheralMarginMm": "9",
+          "peripheralMarginSite": "3 o'clock",
+          "deepMargin": "Uninvolved",
+          "deepMarginMm": "6",
+          "deepMarginSite": "",
+          "adjacent": [
+            "Differentiated VIN (dVIN)",
+            "Lichen sclerosus"
+          ],
+          "precursorMargin": "Uninvolved",
+          "precursorMarginMm": "3",
+          "precursorMarginSite": "peripheral, 6 o'clock",
+          "pagetMargin": "Uninvolved",
+          "pagetMarginSite": "",
+          "nodesExamined": "2",
+          "nodeSampling": "Sentinel lymph node biopsy only",
+          "nodesSentinel": "2",
+          "nodesOver5": "0",
+          "nodes2to5": "0",
+          "nodesMicro": "0",
+          "nodesItc": "0",
+          "largestDepositMm": "",
+          "nodeSites": [],
+          "nodeSitesOther": "",
+          "nodeFindings": [],
+          "distantMets": [
+            "Not identified"
+          ],
+          "distantMetsOther": "",
+          "multiplePrimaries": false,
+          "recurrent": false,
+          "postTherapy": false,
+          "treatmentEffect": "",
+          "tnmOverride": "",
+          "tnmOverrideReason": "",
+          "additionalFindings": ""
+        }
+      }
+    ]
+  }
+}

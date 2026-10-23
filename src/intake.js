@@ -490,26 +490,46 @@ const MELANOMA_CUE = /melanoma/i;
 const BREAST_CUE = /\bbreast|\baxill|\bmastectom|\blumpectom/i;
 const NODE_REGION = /\b(?:pelvic|obturator|iliac|para[- ]?aortic|groin|inguinal|neck|levels?\b|cervical|submandibular|submental|parotid)/i;
 const OTHER_PRIMARY = /\b(?:uter|endometr|corpus\b|cervi[cx]|vulv|ovar|salping|fallopian|hysterectom|TAH|vagin|tongue|oral\b|buccal|floor of (?:the )?mouth|penis|penile)/i;
+// Vulval carcinoma (Phase 77): the inguinal and femoral nodes are its regional nodes; pelvic nodes are pM1,
+// so a pelvic line keeps no criteria.
+const VULVA_CUE = /\bvulv|\bclitor|\bbartholin|\blabi(?:a|um)\s+(?:majora|minora|majus|minus)/i;
+const GROIN = /\b(?:groin|inguin|femoral)/i;
 
 /**
  * Staging criteria for a sentinel node line: 'Melanoma' when the request names melanoma anywhere,
- * 'Breast' when the line names the breast or axilla, '' for a pelvic, groin or neck line, then the other
- * lines of the request, then the history: a breast operation gives 'Breast', a uterine, adnexal, vulval,
- * oral or penile one gives ''. A sentinel line with no cue anywhere is a breast one. `undefined` for a
- * line that is not a sentinel node.
+ * 'Breast' when the line names the breast or axilla, 'Vulva' when it names the vulva, or names the groin
+ * in a request or history that names the vulva; '' for any other pelvic, groin or neck line. Then the
+ * other lines of the request, then the history: a breast operation gives 'Breast', a vulval one 'Vulva', a
+ * uterine, adnexal, oral or penile one ''. A sentinel line with no cue anywhere is a breast one.
+ * `undefined` for a line that is not a sentinel node.
  */
 export function sentinelCriteria(line, history = '', caseText = '') {
   if (!SENTINEL_LINE.test(line || '')) return undefined;
   if (MELANOMA_CUE.test(`${line}\n${history}\n${caseText}`)) return 'Melanoma';
   if (BREAST_CUE.test(line)) return 'Breast';
+  if (VULVA_CUE.test(line)) return 'Vulva';
+  if (GROIN.test(line)) return VULVA_CUE.test(`${caseText}\n${history}`) ? 'Vulva' : '';
   if (NODE_REGION.test(line)) return '';
   for (const hay of [caseText, history]) {
     const breast = BREAST_CUE.test(hay || '');
     const other = OTHER_PRIMARY.test(hay || '');
+    if (VULVA_CUE.test(hay || '') && !breast) return 'Vulva';
     if (breast && !other) return 'Breast';
     if (other && !breast) return '';
   }
   return 'Breast';
+}
+
+/**
+ * Staging criteria for any node line: the sentinel rules, and for a groin line that is not a sentinel
+ * node (an inguinofemoral lymphadenectomy) 'Vulva' when the line, the request or the history names the
+ * vulva and none names melanoma. `undefined` otherwise, so the form keeps its default.
+ */
+export function nodeCriteria(line, history = '', caseText = '') {
+  const s = sentinelCriteria(line, history, caseText);
+  if (s !== undefined) return s;
+  if (!GROIN.test(line || '') || MELANOMA_CUE.test(`${line}\n${history}\n${caseText}`)) return undefined;
+  return VULVA_CUE.test(`${line}\n${caseText}\n${history}`) ? 'Vulva' : undefined;
 }
 
 /** Values to pre-fill on the new part; conservative — only fields whose meaning is certain. */
@@ -540,7 +560,7 @@ export function presetValues(schema, part, match = {}) {
     const proc = /sentinel/i.test(text) ? 'Sentinel lymph node biopsy' : /dissection/i.test(text) ? 'Dissection' : /resection/i.test(text) ? 'Resection' : 'Excision';
     if (opts.includes(proc)) values.procedure = proc;
     // Always set on a sentinel line, so the procedure's linked default (Breast) cannot override a ''.
-    const criteria = sentinelCriteria(text, match.history || '', match.caseText || '');
+    const criteria = nodeCriteria(text, match.history || '', match.caseText || '');
     if (criteria !== undefined && (field('criteria')?.options || []).includes(criteria)) values.criteria = criteria;
     return values;
   }
@@ -787,7 +807,16 @@ function applyFill(schema, part, values, history = '') {
       // `history: true` reads the clinical history as well as the line: a skin punch biopsy from a transplant
       // recipient opens on the graft-versus-host pattern when the request says so in the history, which is
       // where it is written ("post allo-HSCT day 30, rash ?GVHD"), not on the specimen line.
+      // On a multi-select every pair that matches names an option, in the map's order: "Left labium majus
+      // and minus, WLE" ticks both labia on the vulval carcinoma form (Phase 77).
       const hay = rule.history ? `${text}\n${history || ''}` : text;
+      if (f.type === 'multiselect') {
+        const picks = [...new Set((rule.map || []).filter(([re]) => new RegExp(re, 'i').test(hay)).map(([, o]) => o))]
+          .filter((o) => !Array.isArray(f.options) || f.options.includes(o));
+        if (picks.length) values[rule.field] = picks;
+        else if (rule.noGuess) values[rule.field] = [];
+        continue;
+      }
       const hit = (rule.map || []).find(([re]) => new RegExp(re, 'i').test(hay));
       const ok = hit && (Array.isArray(f.options) ? f.options.includes(hit[1]) : true);
       if (ok) values[rule.field] = hit[1];

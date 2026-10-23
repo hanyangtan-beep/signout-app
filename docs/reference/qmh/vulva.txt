@@ -1,0 +1,345 @@
+Vulva CA
+Primary carcinoma of the vulva
+click to access explanations in the original CAP template
+Gross descriptions:
+- Procedure:
+[opt]
+[opt] Local excision
+[opt] Wide excision
+[opt] Partial vulvectomy
+[opt] Total vulvectomy
+[opt] Radical vulvectomy
+[opt] Other (specify):
+[opt] Not specified
+- Tumor site:
+[checkbox] - Right vulva
+Right vulva
+[checkbox] - Right vulva, labium majus
+Right vulva, labium majus
+[checkbox] - Right vulva, labium minus
+Right vulva, labium minus
+[checkbox] - Right vulva, Bartholin gland
+Right vulva, Bartholin gland
+[checkbox] - Left vulva
+Left vulva
+[checkbox] - Left vulva, labium majus
+Left vulva, labium majus
+[checkbox] - Left vulva, labium minus
+Left vulva, labium minus
+[checkbox] - Left vulva, Bartholin gland
+Left vulva, Bartholin gland
+[checkbox] - Clitoris
+Clitoris
+[checkbox] - Other, specify:
+Other, specify:
+[checkbox] - Not specified
+Not specified
+- Tumor size:
+[opt]
+[opt] Greatest dimension (mm):
+[opt] All dimensions (mm x mm x mm):
+[opt] Cannot be determined (explain):
+- Tumor focality:
+[opt]
+[opt] Unifocal
+[opt] Multifocal
+[opt] Not specified
+[opt] Cannot be determined (explain):
+-->
+Microscopic descriptions:
+- Tumor histology and immunohistochemical studies:
+- Histologic type (WHO 5e) :
+[opt]
+[opt] Squamous cell carcinoma, HPV-associated
+[opt] Squamous cell carcinoma, HPV-independent
+[opt] Basal cell carcinoma, NOS
+[opt] Phyllodes tumor, borderline
+[opt] Phyllodes tumor, malignant
+[opt] Adenocarcinoma, NOS
+[opt] Adenocarcinoma of anogenital mammary-like glands
+[opt] Adenocarcinoma, intestinal type
+[opt] Paget disease, extramammary
+[opt] Sweat gland adenocarcinoma
+[opt] Apocrine adenocarcinoma
+[opt] Eccrine adenocarcinoma
+[opt] Porocarcinoma, NOS
+[opt] Adenoid cystic carcinoma
+[opt] Adenosquamous carcinoma
+[opt] Carcinoma, poorly differentiated, NOS
+[opt] Small cell neuroendocrine carcinoma
+[opt] Large cell neuroendocrine carcinoma
+[opt] Combined small cell neuroendocrine carcinoma
+[opt] Combined large cell neuroendocrine carcinoma
+[opt] Neuroendocrine tumor, NOS
+[opt] Neuroendocrine tumor, grade 1
+[opt] Neuroendocrine tumor, grade 2
+[opt] Myoepithelial carcinoma
+[opt] Epithelial-myoepithelial carcinoma
+[opt] Carcinoma, type cannot be determined
+[opt] Other (specify):
+- Histologic grade:
+[opt]
+[opt] G1: Well differentiated
+[opt] G2: Moderately differentiated
+[opt] G3: Poorly differentiated
+[opt] GX: Cannot be assessed
+[opt] Other (specify):
+[opt] Not applicable
+- Depth of invasion :
+[opt]
+[opt] Specify depth of invasion (mm)
+[opt] Cannot be determined (explain):
++ Tumor border :
+[opt]
+[opt] Pushing
+[opt] Infiltrating
+- Other tissue/ organ involvement:
+[checkbox] - Not applicable
+Not applicable
+[checkbox] - Not identified
+Not identified
+[checkbox] - Vagina, lower one-third
+Vagina, lower one-third
+[checkbox] - Vagina, upper two-thirds
+Vagina, upper two-thirds
+[checkbox] - Urethra, lower one-third
+Urethra, lower one-third
+[checkbox] - Urethra, upper two-thirds
+Urethra, upper two-third
+[checkbox] - Anus
+Anus
+[checkbox] - Bladder mucosa
+Bladder mucosa
+[checkbox] - Rectal mucosa
+Rectal mucosa
+[checkbox] - Pelvic bone
+Pelvic bone
+[checkbox] - Other organs/tissue (specify):
+Other organs/tissue (specify):
+[checkbox] - Cannot be determined (explain):
+Cannot be determined (explain):
+- Lymphatic and / or Vascular Invasion :
+[opt]
+[opt] Not identified
+[opt] Present
+[opt] Equivocal (explain):
+[opt] Cannot be determined
++ Perineural invasion:
+[opt]
+[opt] Not identified
+[opt] Present
+[opt] Cannot be determined
++ p16 IHC :
+[opt]
+[opt] Positive
+[opt] Negatve
+[opt] Other (specify):
++ p53 IHC :
+[opt]
+[opt] Normal (wild type)
+[opt] Abnormal (mutated)
+[opt] Abnormal, Basal overexpression (uniform strong, diffuse nuclear expression in basal cells)
+[opt] Abnormal, Parabasal / diffuse overexpression
+[opt] Abnormal, Null (lack of nuclear or cytoplasmic expression)
+[opt] Abnormal, Cytoplasmic only (lacks nuclear expression)
+HPV-ISH is not available, PCR-sequencing type test can be ordered.
+Surgical margins for invasive tumor:
+- Peripheral margins:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved, specify closest distance and location:
+[opt] Involved, specify location:
+- Deep margins:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved, specify closest distance and location:
+[opt] Involved, specify location:
+Surgical margins for Squamous Precursor Lesion(s):
+- Peripheral margins:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved, specify closest distance and location:
+[opt] Involved, specify location:
+- Deep margins:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved, specify closest distance and location:
+[opt] Involved, specify location:
+Surgical margins for HSIL:
+- Peripheral margins:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved, specify closest distance and location:
+[opt] Involved, specify location:
+- Deep margins:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved, specify closest distance and location:
+[opt] Involved, specify location:
+Surgical margins for dVIN:
+- Peripheral margins:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved, specify closest distance and location:
+[opt] Involved, specify location:
+- Deep margins:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved, specify closest distance and location:
+[opt] Involved, specify location:
+Surgical margins for VAM / HPVi (p53wt) vaVIN:
+- Peripheral margins:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved, specify closest distance and location:
+[opt] Involved, specify location:
+- Deep margins:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved, specify closest distance and location:
+[opt] Involved, specify location:
+Surgical margins for Paget Disease:
+- Peripheral margins:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved, specify closest distance and location:
+[opt] Involved, specify location:
+- Deep margins:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved, specify closest distance and location:
+[opt] Involved, specify location:
+Regional lymph nodes:
+- Number of regional lymph nodes examined:
+- Number of sentinel lymph nodes examined:
+- Number of lymph nodes with metastasis > or = 5 mm:
+- Number of lymph nodes with metastasis < 5 mm (exclude ITC):
+- Number of lymph nodes with isolated tumor cells (< or = 0.2 mm):
+- Size of largest metastatic deposit (mm), specify site:
+- Size of largest lymph node involved (mm), specify site:
+- Additional lymph node findings:
+[checkbox] - Extranodal extension
+Extranodal extension
+[checkbox] - Fixed/ulcerated nodes
+Fixed/ulcerated nodes
+[checkbox] - Other (specify):
+Other (specify):
+[checkbox] - Cannot be determined
+Cannot be determined
+Distant Metastasis:
+[checkbox] - Not applicable
+Not applicable
+[checkbox] - Not identified
+Not identified
+[checkbox] - Pelvic lymph node(s):
+Pelvic lymph node(s):
+[checkbox] - Internal iliac / hypogastric lymph node(s):
+Internal iliac / hypogastric lymph node(s):
+[checkbox] - External iliac lymph node(s):
+External iliac lymph node(s):
+[checkbox] - Common iliac lymph node(s):
+Common iliac lymph node(s):
+[checkbox] - Presacral lymph node(s):
+Presacral lymph node(s):
+[checkbox] - Lung (specify):
+Lung (specify):
+[checkbox] - Liver (specify):
+Liver (specify):
+[checkbox] - Bone (specify):
+Bone (specify):
+[checkbox] - Other (specify):
+Other (specify):
+[checkbox] - Cannot be determined:
+Cannot be determined:
+FIGO stage (2021 Cancer Report):
+Click the table for the original reference.
+-->
+I: Tumor confined to the vulva
+IA: Tumor size less than or equal to 2 cm and stromal invasion less than or equal to 1 mm
+IB: Tumor size greater than 2 cm or stromal invasion greater than 1 mm
+II: Tumor of any size with extension to lower one-third of the urethra, lower one-third of the vagina, or lower one-third of the anus with negative nodes
+III: Tumor of any size with extension to upper part of adjacent perineal structures, or with any number of non-fixed, non-ulcerated lymph node(s)
+IIIA: Tumor of any size with disease extension to upper two-thirds of the urethra, upper two-thirds of the vagina, bladder mucosa, rectal mucosa, or regional lymph node metastases less than or equal to 5 mm#
+IIIB: Regional lymph node metastases greater than 5 mm
+IIIC: Regional lymph node metastases with extracapsular spread
+IV: Tumor of any size fixed to bone, or fixed, ulcerated lymph node metastases, or distant metastases
+IVA: Disease fixed to pelvic
+IVB: Distant metastases
+[opt]
+[opt] I: Tumor confined to the vulva
+[opt] IA: Lesions
+[opt] 2 cm in size or with stromal invasion > 1.0 mm, confined to the vulva and/or perineum, with negative nodes">IB: Lesions > 2 cm in size or with stromal invasion > 1.0 mm, confined to the vulva and/or perineum, with negative nodes
+[opt] II: Tumor of any size with extension to adjacent perineal structures (lower third of urethra, lower third of vagina, anus) with negative nodes
+[opt] III: Tumor of any size with or without extension to adjacent perineal structures (lower third of urethra, lower third of vagina, anus) with positive inguinofemoral nodes
+[opt] or = 5 mm)">IIIA: With 1 lymph node metastasis (> or = 5 mm)
+[opt] IIIA: With 1 to 2 lymph node metastasis(es) (
+[opt] or = 5 mm)">IIIB: With 2 or more lymph node metastases (> or = 5 mm)
+[opt] IIIB: With 3 or more lymph node metastases (
+[opt] IIIC: With positive nodes with extracapsular spread
+[opt] IV: Tumor invades other regional (upper two-thirds urethra, upper two-thirds vagina), or distant structures
+[opt] IVA: Tumor invades any of the following: upper urethral and/or vaginal mucosa, bladder mucosa, rectal mucosa, or fixed to pelvic bone, or fixed or ulcerated inguino-femoral lymph nodes
+[opt] IVB: Any distant metastasis including pelvic lymph nodes
+-->
+Pathologic Stage Classification (AJCC 8e):
+- TNM Descriptors:
+[checkbox] m (multiple primary tumors)
+m (multiple primary tumors)
+[checkbox] r (recurrent)
+r (recurrent)
+[checkbox] y (post treatment)
+y (post treatment)
+- Primary tumor (pT):
+[opt]
+[opt] pTX: Primary tumor cannot be assessed
+[opt] pT0: No evidence of primary tumor
+[opt] pT1: Tumor confined to the vulva and / or perineum
+[opt] pT1a: Lesions 2 cm or less, confined to the vulva and/or perineum, and with stromal invasion of 1.0 mm or less
+[opt] pT1b: Lesions more than 2 cm, or any size with stromal invasion more than 1.0 mm, confined to the vulva and/or perineum
+[opt] pT2: Tumor of any size with extension to adjacent perineal structures (lower/distal third of the urethra, lower/distal third of the vagina, anal involvement)
+[opt] pT3: Tumor of any size with extension to any of the following: upper/proximal two-thirds of the urethra, upper/proximal two-thirds of the vagina, bladder mucosa, or rectal mucosa, or fixed to pelvic bone
+- Regional lymph nodes modifier:
+[opt]
+[opt] sn
+[opt] sn(i-)
+[opt] sn(i+)
+- Regional lymph nodes (pN):
+[opt]
+[opt] pNX: Regional lymph nodes cannot be assessed
+[opt] pN0: No regional lymph node metastasis
+[opt] pN0(i+): Isolated tumor cells in regional lymph node(s)
+[opt] or = 5 mm">pN1: Regional lymph node metastasis with one or two lymph node metastases each less than 5 mm; or one lymph node metastasis > or = 5 mm
+[opt] pN1a: One or two lymph node metastasis each less than 5 mms
+[opt] or = 5 mm">pN1b: One lymph node metastasis > or = 5 mm
+[opt] or = 5 mm; or lymph node(s) with extranodal extension">pN2: Regional lymph node metastasis with 3 or more lymph node metastases each less than 5 mm; or 2 or more lymph node metastases > or = 5 mm; or lymph node(s) with extranodal extension
+[opt] pN2a: 3 or more lymph node metastases each less than 5 mm
+[opt] or = 5 mm">pN2b: 2 or more lymph node metastases > or = 5 mm
+[opt] pN2c: Lymph node(s) with extranodal extension
+[opt] pN3: Fixed or ulcerated regional lymph node metastasis
+- Distant metastasis (pM):
+[opt]
+[opt] pM1:Distant metastasis
+- Specify site(s), if known:
+-->
++ Additional pathologic findings:
+[checkbox] - Low grade squamous intraepithelial lesion / vulvar intraepithelial neoplasia, grade 1 (VIN 1)
+Low grade squamous intraepithelial lesion / vulvar intraepithelial neoplasia, grade 1 (VIN 1)
+[checkbox] - High grade squamous intraepithelial lesion / vulvar intraepithelial neoplasia, grade 2 (VIN 2)
+High grade squamous intraepithelial lesion / vulvar intraepithelial neoplasia, grade 2 (VIN 2)
+[checkbox] - High grade squamous intraepithelial lesion / vulvar intraepithelial neoplasia, grade 2 (VIN 3)
+High grade squamous intraepithelial lesion / vulvar intraepithelial neoplasia, grade 3 (VIN 3)
+[checkbox] - Differentiated vulvar intraepithelial neoplasia (dVIN)
+Differentiated vulvar intraepithelial neoplasia (dVIN)
+[checkbox] - Vulvar aberrant maturation / HPV-independent, p53-wild-type verruciform acanthotic vulvar intraepithelial neoplasia
+Vulvar aberrant maturation / HPV-independent, p53-wild-type verruciform acanthotic vulvar intraepithelial neoplasia
+[checkbox] - Condyloma acuminatum
+Condyloma acuminatum
+[checkbox] - Lichen sclerosus
+Lichen sclerosus
+- Other (specify):
+- Additional notes:
+Copy text to Clipboard
+Last upated on 14-Aug-2024,
+based on US CAP cancer protocol templates ,
+Vulva 5.1.0.0 (Jun 2023)
+html form was created on pForm , W3 School , StackOverflow , and Icons8 .
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.

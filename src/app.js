@@ -929,7 +929,12 @@ function renderField(field, part, index) {
         // A derive hook may fill other fields from this one (the breast excision form reads the side and
         // margin from the specimen as received); they change in place, so the cursor stays in the box.
         const changed = applyDerived(templateOf(part).generator, part, field.id);
-        if (changed.length) { syncControls(part, changed); syncVisibility(part); }
+        if (changed.length) syncControls(part, changed);
+        // Until 2026-10-23 a typed box changed what showed only through a derive hook, so fields keyed to a
+        // typed value waited for the next redraw: the node fields on the colon, oral, skin SCC, ovary and vulva
+        // forms, the benign thyroid nodule fields, and the pTNM override reason on the nine forms that show it
+        // only once an override is typed. They now appear and go as the box is typed.
+        if (changed.length || schemaOf(part).fields.some((f) => ruleReads(f.showIf, field.id))) syncVisibility(part);
         renderReport(); cacheCase(state.caseState);
       }
     });
@@ -1116,7 +1121,10 @@ function paintDishSummary(node, values) {
 /** A field's node in the form: the histology column, or the macroscopy column of a three-column layout. */
 const fieldNode = (fid) => nodes.panel.querySelector(`.field[data-field="${CSS.escape(fid)}"]`) || nodes.macroPanel.querySelector(`.field[data-field="${CSS.escape(fid)}"]`);
 
-/** Fields shown or hidden in place after a derive hook changed the values their `showIf` reads. */
+/** True when a `showIf` rule, or a member of its `all` / `any`, reads field `fid`. */
+const ruleReads = (rule, fid) => !!rule && (rule.field === fid || [...(rule.all || []), ...(rule.any || [])].some((r) => ruleReads(r, fid)));
+
+/** Fields shown or hidden in place after a derive hook, or a typed box, changed the values their `showIf` reads. */
 function syncVisibility(part) {
   const s = schemaOf(part);
   for (const node of [...nodes.panel.querySelectorAll('.field[data-field]'), ...nodes.macroPanel.querySelectorAll('.field[data-field]')]) {

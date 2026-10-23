@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 79,
+  "count": 80,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -1513,7 +1513,7 @@
           "sentinel"
         ]
       },
-      "version": "2026.10",
+      "version": "2026.10b",
       "generator": "lymphnode",
       "generatorPath": "generators/lymphnode.js",
       "schemaPath": "schemas/lymph_node.json"
@@ -4314,6 +4314,147 @@
       "generator": "lung_carcinoma",
       "generatorPath": "generators/lung_carcinoma.js",
       "schemaPath": "schemas/lung_carcinoma.json"
+    },
+    {
+      "id": "vulval_carcinoma",
+      "name": "Vulval carcinoma resection",
+      "shortName": "Vulva · carcinoma resection",
+      "label": "Vulva Ca",
+      "organ": "VULVA",
+      "system": "Gynae",
+      "kind": "cancer resection",
+      "rank": 44,
+      "aliases": [
+        "vulval SCC",
+        "vulvar carcinoma",
+        "vulval cancer",
+        "vulvectomy",
+        "radical vulvectomy",
+        "partial vulvectomy",
+        "wide local excision vulva",
+        "Bartholin gland carcinoma"
+      ],
+      "match": {
+        "site": [
+          "vulva",
+          "vulval",
+          "vulvar",
+          "labium majus",
+          "labium minus",
+          "labia majora",
+          "labia minora",
+          "clitoris",
+          "clitoral",
+          "Bartholin",
+          "vulvectomy",
+          "hemivulvectomy"
+        ],
+        "procedure": [
+          "vulvectomy",
+          "hemivulvectomy",
+          "partial vulvectomy",
+          "radical vulvectomy",
+          "wide local excision",
+          "wide excision",
+          "WLE",
+          "radical local excision",
+          "local excision",
+          "excision"
+        ],
+        "clinical": [
+          "SCC",
+          "squamous cell carcinoma",
+          "carcinoma",
+          "ca",
+          "cancer",
+          "malignancy"
+        ],
+        "gate": "\\b(?:c?SCC|ca|carcinoma|cancer|malignan\\w*)\\b|\\bradical\\s+(?:local\\s+excision|(?:hemi-?)?vulvectomy)\\b",
+        "not": [
+          "condyloma",
+          "condylomata",
+          "wart",
+          "warts"
+        ],
+        "exclude": [
+          "cervix",
+          "uterus",
+          "uterine",
+          "hysterectomy",
+          "penis",
+          "penile",
+          "scrotum",
+          "scrotal",
+          "perianal",
+          "anal canal",
+          "cyst",
+          "abscess",
+          "skin tag",
+          "lipoma",
+          "hidradenitis"
+        ],
+        "sideFromText": true,
+        "fill": [
+          {
+            "field": "specimenName",
+            "from": "text",
+            "strip": "\\b(?:lesions?|mass|ulcers?|ulceration|radical\\s+(?:hemi-?)?vulvectomy|radical\\s+local\\s+excision|partial\\s+vulvectomy|hemi-?vulvectomy|simple\\s+vulvectomy|total\\s+vulvectomy|skinning\\s+vulvectomy|vulvectomy|wide\\s+local\\s+excision|wide\\s+excision|WLE|local\\s+excision|excision|resection|specimen|vulva[lr]?|c?SCC|squamous\\s+cell\\s+carcinoma|carcinoma|cancer|tumou?r)\\b",
+            "unless": "^(?:left|right|midline|bilateral)$"
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bradical\\s+(?:hemi-?)?vulvectomy",
+                "Radical vulvectomy"
+              ],
+              [
+                "\\b(?:total|simple)\\s+vulvectomy",
+                "Total vulvectomy"
+              ],
+              [
+                "\\bpartial\\s+vulvectomy|\\bhemi-?vulvectomy",
+                "Partial vulvectomy"
+              ],
+              [
+                "\\bwide\\s+(?:local\\s+)?excision|\\bWLE\\b|\\bradical\\s+local\\s+excision",
+                "Wide excision"
+              ],
+              [
+                "\\b(?:local\\s+)?excision",
+                "Local excision"
+              ]
+            ]
+          },
+          {
+            "field": "tumourSite",
+            "from": "map",
+            "map": [
+              [
+                "\\blabi(?:um|a)\\s+maj(?:us|ora)\\b",
+                "Labium majus"
+              ],
+              [
+                "\\blabi(?:um|a)\\s+(?:maj(?:us|ora)\\s+(?:and|&)\\s+)?min(?:us|ora)\\b",
+                "Labium minus"
+              ],
+              [
+                "\\bbartholin",
+                "Bartholin gland"
+              ],
+              [
+                "\\bclitor",
+                "Clitoris"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.10",
+      "generator": "vulval_carcinoma",
+      "generatorPath": "generators/vulval_carcinoma.js",
+      "schemaPath": "schemas/vulval_carcinoma.json"
     },
     {
       "id": "breast_carcinoma",

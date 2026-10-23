@@ -1,0 +1,107 @@
+{
+  "description": "radical vulvectomy with a right inguinofemoral lymphadenectomy, HPV-independent keratinising carcinoma into the lower vagina, lymphovascular invasion, extranodal extension, pT2 pN1c",
+  "templateId": "vulval_carcinoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "specimenName": "",
+      "procedure": "Radical vulvectomy",
+      "procedureOther": "",
+      "laterality": "Midline",
+      "tumourSite": [
+        "Labium majus",
+        "Clitoris"
+      ],
+      "tumourSiteOther": "",
+      "tumourSizeMm": "45",
+      "focality": "Unifocal",
+      "specimenDims": "110 x 80 x 30",
+      "orientation": "suture at 12 o'clock",
+      "lesionAppearance": "Ulcerated tumour",
+      "lesionDims": "45 x 30",
+      "macroMarginMm": "8",
+      "macroMarginSite": "posterior",
+      "inking": "Margins inked (see block key)",
+      "blocks": "10",
+      "blockKeyText": "1-4 Tumour with deep margin\n5-8 Peripheral margins, 12 to 9 o'clock\n9-10 Adjacent skin",
+      "histType": "Squamous cell carcinoma, HPV-independent",
+      "histTypeOther": "",
+      "pattern": "Keratinising",
+      "grade": "",
+      "doi": "Measured",
+      "doiMm": "7",
+      "doiConventionalMm": "8",
+      "doiReason": "",
+      "growthPattern": "Infiltrating",
+      "growthOther": "",
+      "extension": [
+        "Vagina, lower one-third"
+      ],
+      "extensionOther": "",
+      "lvi": "Present",
+      "pni": "Not identified",
+      "p16": "Negative",
+      "p16Other": "",
+      "p53": "Abnormal, null",
+      "p53Other": "",
+      "ihcOther": "",
+      "histologyNotes": "",
+      "hpvPcr": "Not performed",
+      "hpvGenotype": "",
+      "peripheralMargin": "Uninvolved",
+      "peripheralMarginMm": "7",
+      "peripheralMarginSite": "posterior",
+      "deepMargin": "Uninvolved",
+      "deepMarginMm": "2",
+      "deepMarginSite": "",
+      "adjacent": [
+        "Differentiated VIN (dVIN)",
+        "Lichen sclerosus"
+      ],
+      "precursorMargin": "Uninvolved",
+      "precursorMarginMm": "6",
+      "precursorMarginSite": "posterior",
+      "pagetMargin": "Uninvolved",
+      "pagetMarginSite": "",
+      "nodesExamined": "14",
+      "nodeSampling": "Lymphadenectomy",
+      "nodesSentinel": "",
+      "nodesOver5": "1",
+      "nodes2to5": "1",
+      "nodesMicro": "0",
+      "nodesItc": "0",
+      "largestDepositMm": "9",
+      "nodeSites": [
+        "Right inguinal",
+        "Right femoral"
+      ],
+      "nodeSitesOther": "",
+      "nodeFindings": [
+        "Extranodal extension"
+      ],
+      "distantMets": [
+        "Not identified"
+      ],
+      "distantMetsOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "postTherapy": false,
+      "treatmentEffect": "",
+      "tnmOverride": "",
+      "tnmOverrideReason": "",
+      "additionalFindings": ""
+    }
+  ],
+  "report": "Vulva, labium majus and clitoris (midline), radical vulvectomy\n\nReceived in formalin is a radical vulvectomy specimen measuring 110 x 80 x 30 mm. The specimen is orientated: suture at 12 o'clock. There is an ulcerated tumour on the labium majus and clitoris (midline) measuring 45 x 30 mm, 8 mm from the closest (posterior) margin. The margins are inked. Representative sections are taken in 10 blocks.\n\n(1-4) Tumour with deep margin.\n(5-8) Peripheral margins, 12 to 9 o'clock.\n(9-10) Adjacent skin.\n\nSpecimen and tumour\n- Procedure: Radical vulvectomy\n- Tumour site: Labium majus and clitoris (midline)\n- Tumour size: 45 mm (greatest dimension)\n- Tumour focality: Unifocal\n\nMicroscopic findings\n- Histologic type: Squamous cell carcinoma, HPV-independent\n- Tumour histology:\n  The tumour is an HPV-independent squamous cell carcinoma with a keratinising pattern, invading to a depth of 7 mm. Infiltrating nests and cords of atypical squamous cells show abundant eosinophilic cytoplasm, intercellular bridges and keratin pearls. On immunohistochemistry, p16 is negative and p53 shows an abnormal null pattern.\n- Depth of invasion: 7 mm (conventional method: 8 mm)\n- Tumour border: Infiltrating\n- Other tissue / organ involvement: Lower one-third of the vagina\n- Lymphovascular invasion: Present\n- Perineural invasion: Not identified\n\nMargins\n- Invasive carcinoma, peripheral margin: Uninvolved (closest 7 mm, posterior)\n- Invasive carcinoma, deep margin: Uninvolved (closest 2 mm)\n- Squamous precursor lesion (dVIN): Uninvolved (closest 6 mm, posterior)\n\nLymph nodes\n- Regional lymph nodes: 14 examined (lymphadenectomy); 2 involved\n  - Metastasis more than 5 mm: 1 node\n  - Metastasis more than 2 mm to 5 mm: 1 node\n  - Size of largest metastatic deposit: 9 mm\n  - Nodal sites with tumour: Right inguinal and right femoral\n  - Extranodal extension: Present\n\nPathological stage (AJCC 9th edition)\n- pTNM: pT2 pN1c\n\nAdditional findings\n- Adjacent epithelium: Differentiated VIN (dVIN); lichen sclerosus\n\nVULVA, labium majus and clitoris (midline), radical vulvectomy\n- SQUAMOUS CELL CARCINOMA, HPV-INDEPENDENT, 45 mm, invading to a depth of 7 mm,\n  involving the lower one-third of the vagina; completely excised (closest\n  margin 2 mm, deep); see synoptic report\n- 2 of 14 regional lymph nodes involved; extranodal extension present\n- pT2 pN1c (AJCC 9th edition)\n- Background differentiated VIN (dVIN) and lichen sclerosus\n\nDepth of invasion is measured by the FIGO 2021 method.",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 9th edition, matching FIGO 2021 (reference, not reported): IIIC",
+      "part": "A"
+    }
+  ]
+}
