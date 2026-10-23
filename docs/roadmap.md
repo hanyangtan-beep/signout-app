@@ -129,7 +129,28 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. The Phase 71 batch (the lymph node for lymphoma, both cards, and the GI and oral graft-versus-host disease biopsy) shipped on 2026-10-14; the cards are in `docs/specs/lymphoma-node.md` and `docs/specs/gvhd-biopsy.md`. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+Two S cards from the user's request of 2026-10-23. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+
+### Skin excision — site copied from the specimen line (user request 2026-10-23)   Size: S
+Why:        Site opens blank on Skin excision for a two-piece skin line ("Skin, Right thigh", "Skin, left cheek BCC"), the way the lab writes almost every skin part, although the site is on the specimen line; the user asked for it to be copied on 2026-10-23.
+Change:     the Site fill falls back to the whole line when it has no detail and drops the word skin, the procedure, sizes, a question mark, lesion and diagnosis words and the stitch; a piece that is only a margin name stays blank. A new `lower` option opens a capitalised first word in lower case ("right thigh") and keeps short forms in capitals ("L leg", "RLL"). The fill also runs when a part is switched to the form by hand. Schema 2026.10.
+Untouched:  routing (no line in either export changes route); Skin cyst and Skin SCC; the other fill rules; the golden fixtures.
+Accept:     "Skin, Right thigh" gives right thigh; "Skin, Left anterior shin lesion, stitch at proximal" gives left anterior shin; "Skin margin A" stays blank; "Skin, back, shave" still gives back; the diagnosis prints "SKIN, right thigh nodule, excision - …".
+Verify:     tests only
+Ship:       with batch
+Depends on: none
+Spec:       card is the spec
+
+### Skin excision — naevus lipomatosus cutaneous superficialis (user request 2026-10-23)   Size: S
+Why:        the form has no naevus lipomatosus cutaneous superficialis, which the user meets often, so it is typed as free text; the department's reports name it with "cutaneous".
+Change:     a diagnosis option after Lipoma in the Fibrous, vascular and fatty group: microscopy of groups of mature adipocytes in the superficial and mid dermis, between the collagen bundles and around small vessels, not encapsulated and with no connection with the subcutaneous fat, and no lipoblasts; dx "NAEVUS LIPOMATOSUS CUTANEOUS SUPERFICIALIS" with the margin clause.
+Untouched:  the other options, their order and the default; the golden fixtures.
+Accept:     the option follows Lipoma in the list and the group; the paragraph prints, and "SKIN, left buttock nodule, excision - NAEVUS LIPOMATOSUS CUTANEOUS SUPERFICIALIS; completely excised".
+Verify:     tests only
+Ship:       with batch
+Depends on: none
+Spec:       card is the spec
+Source:     https://www.pathologyoutlines.com/topic/skintumornonmelanocyticnls.html; https://dermnetnz.org/topics/naevus-lipomatosus-superficialis-pathology
 
 ## Next
 
