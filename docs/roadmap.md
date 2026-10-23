@@ -133,13 +133,45 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. The Phase 73 batch (the skin cyst and skin SCC site copied from the specimen line, both S, user request 2026-10-23) shipped on 2026-10-23; the write-up is in `docs/specs/specimen-intake.md` (Skin cyst and Skin SCC site). The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+Three M cards from the user's request of 2026-10-23; the morcellated leiomyoma and uterine leiomyosarcoma cards from the same request wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+
+### Benign uterus — attached tubes and ovaries; leiomyoma not by default (user request 2026-10-23)   Size: M
+Why:        the uterus form offers attached adnexa only as "Uterus, cervix and bilateral adnexa", so a uterus with one tube and ovary, or with both tubes and no ovaries, is typed by hand; and every uterus part opens with leiomyomas present, which print unless switched off (user, 2026-10-23: "they do not always contain leiomyomata").
+Change:     an "Attached tubes and ovaries" field on the total and subtotal hysterectomy parts (none by default; bilateral tubes and ovaries; bilateral tubes; left tube and ovary; right tube and ovary), which the macroscopy, block key, microscopy and diagnosis head follow ("UTERUS, CERVIX, LEFT FALLOPIAN TUBE AND OVARY, total hysterectomy and left salpingo-oophorectomy"); the pasted line sets it ("Uterus and left ovary and tube"). Leiomyoma opens Absent; a myomectomy part opens Present, and so does a line or history that names a fibroid, leiomyoma or myoma. Schema 2026.10.
+Untouched:  "Uterus, cervix and bilateral adnexa" and its wording (bilateral tubes and ovaries prints the same); the separate tube, ovary and paratubal parts; routing; the golden fixtures.
+Accept:     each attached choice prints its head, macroscopy and block key; a new total hysterectomy part prints no leiomyoma; Myomectomy and "Uterus, fibroids" turn it on; the golden fixtures print as before.
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: none
+Spec:       card is the spec
+
+### Benign uterus — leiomyoma assessment (user request 2026-10-23)   Size: M
+Why:        with leiomyomas present the form takes one degeneration (hyaline, cystic, red or calcific) and prints a fixed negative sentence, so the subtypes, infarct-type necrosis and a STUMP are typed by hand.
+Change:     on a uterus or myomectomy part with a leiomyoma: a type (usual; cellular; mitotically active; with bizarre nuclei; fumarate hydratase-deficient; lipoleiomyoma; epithelioid; myxoid; apoplectic; hydropic; dissecting; diffuse leiomyomatosis; intravenous leiomyomatosis; smooth muscle tumour of uncertain malignant potential), changes as a tick list (hyaline degeneration, hydropic, myxoid, cystic, red degeneration, infarct-type necrosis, calcification, progestogen effect) in place of the single degeneration, and the assessment: cytological atypia, mitotic count, coagulative tumour cell necrosis and FH immunohistochemistry. Each type has its own microscopy sentence and diagnosis line; STUMP, FH-deficient leiomyoma and intravenous leiomyomatosis print "see comment" with a comment snippet that states the features. Sources in `docs/reference/uterus-leiomyoma-sources.md`.
+Untouched:  the usual-type wording when nothing new is chosen; a saved case's single degeneration still prints; the golden fixtures.
+Accept:     each type's diagnosis line and sentence; infarct-type necrosis prints with no coagulative tumour cell necrosis; a STUMP with coagulative necrosis and no atypia names that feature in its comment; an FH loss prints the stain result in the microscopy paragraph.
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: the attached tubes and ovaries card (same batch)
+Spec:       card is the spec
+Source:     https://www.pathologyoutlines.com/topic/uterusleiomyoma.html; https://www.pathologyoutlines.com/topic/uterusstump.html; https://www.pathologyoutlines.com/topic/stainsFH2SC.html; https://www.nature.com/articles/modpathol2015139
+
+### Fallopian tube and ovary — benign, with p53 signature, STIL and STIC (user request 2026-10-23)   Size: M
+Why:        a tube-and-ovary line without a uterus opens Generic (79 / 20 parts, such as "Right ovary and tube"), and no form records a p53 signature, STIL or STIC.
+Change:     new template `adnexa_benign` (Gynae, benign resection, menu label "Tube and ovary" after Ovarian cyst; head from the side and procedure, "RIGHT FALLOPIAN TUBE AND OVARY, salpingo-oophorectomy"). Per part: side, procedure (salpingo-oophorectomy or salpingectomy), indication when stated (risk-reducing, opportunistic), sampling (representative; fimbria entirely submitted; entirely submitted, SEE-FIM); macroscopy of the tube, fimbria, ovary and any paratubal cyst; tube findings (unremarkable, paratubal cyst, hydrosalpinx, chronic salpingitis, salpingitis isthmica nodosa, endometriosis, Walthard cell nests, p53 signature, STIL, STIC) and ovary findings; the p53 pattern and Ki-67 in the microscopy paragraph; STIC prints "see comment" with a comment snippet. Intake: a line that names a tube and an ovary, or a salpingo-oophorectomy, without a uterus, cyst, mass or cancer word routes here. The uterus form's tube and adnexa findings gain the same three lesions with the same sentences. Sources in `docs/reference/fallopian-tube-lesions-sources.md`.
+Untouched:  tube-only lines (they stay on the uterus form's tube parts); the ovarian cyst, ectopic, ovary synoptic and frozen section forms; the golden fixtures except the intake case below.
+Accept:     fixtures for a right salpingo-oophorectomy with a p53 signature, a risk-reducing bilateral salpingo-oophorectomy submitted by SEE-FIM with wild-type p53, and a left salpingo-oophorectomy with STIC; the intake case "fallopian tube only (benign batch 2)" part D ("Left ovary and fallopian tube") moves from Generic to the new form, edited deliberately; the line comparison shows only tube-and-ovary lines move.
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: none
+Spec:       card is the spec
+Source:     https://www.pathologyoutlines.com/topic/fallopiantubesstic.html; https://pmc.ncbi.nlm.nih.gov/articles/PMC3319355/
 
 ## Next
 
 Build order (2026-09-15) is set by the LIS export of 4547 cases, 2024 to 2026-09 — `docs/case-mix-2026-09.md`, which found built templates covering 79.2 per cent of that caseload on the day. Of the four cards it ranked first, Oral cavity and oropharynx shipped on 2026-09-26 and Brain and CNS on 2026-09-19; Respiratory cytology and Joint fluid and CSF cytology are in Later. The cards after benign batch 4 were carried over from before the ranking. Placeholders in the app menus (`templates/planned.json`) are removed by the card that builds the template.
 
-After the Hirschsprung pull-through (still pulled) and the perineurioma card, the Benign resections group (user request 2026-09-24) is next; batch 4 is the one left. It is sized by its own measure, diagnosis parts in both exports (`docs/case-mix/benign-resections-2021-2026.md`), and is built in the four batches its group note lists.
+After the Hirschsprung pull-through (still pulled), the perineurioma card and the two uterus cards of 2026-10-23, the Benign resections group (user request 2026-09-24) is next; batch 4 is the one left. It is sized by its own measure, diagnosis parts in both exports (`docs/case-mix/benign-resections-2021-2026.md`), and is built in the four batches its group note lists.
 
 ### Hirschsprung disease — pull-through resection (user request 2026-09-29; pulled by the user 2026-09-30; moved from Now 2026-10-14 to make room, still pulled)   Size: M; Hirschsprung pair (L → split, 2 of 2)
 Why:        the resection report gives the length of the aganglionic segment and says whether the proximal margin is ganglionated and clear of the transition zone; pull-through lines open Generic today.
@@ -160,6 +192,28 @@ Verify:     tests only
 Ship:       with batch
 Spec:       card is the spec
 Source:     https://www.pathologyoutlines.com/topic/colontumorperineurioma.html; https://pmc.ncbi.nlm.nih.gov/articles/PMC5819702/
+
+### Uterus — morcellated leiomyoma (user request 2026-10-23)   Size: M
+Why:        a morcellated myomectomy or hysterectomy is reported on the uterus form's myomectomy part, which has no fields for the fragments, the tissue types found among them or the fragmentation caveat; fewer than 10 reports in either export name morcellation, so it waits here.
+Change:     new template `uterus_morcellated` (Gynae, benign resection, menu label "Morcellated"): procedure (morcellated myomectomy, morcellated supracervical hysterectomy), aggregate weight and dimensions, fragment count and size range, cut surface, tissue types seen (leiomyoma, myometrium, endometrium, cervix, serosa) and blocks; microscopy and diagnosis reuse the leiomyoma assessment (type, changes, atypia, mitotic count, necrosis, STUMP); a comment snippet that the fragmentation precludes assessment of the tumour border and the serosa.
+Untouched:  the uterus form's myomectomy part and every uterus fixture.
+Accept:     fixtures for a morcellated usual leiomyoma, a cellular leiomyoma and a STUMP found on morcellation; intake top-1 for "Uterus, morcellated fibroid" and "Morcellated myoma".
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: Benign uterus — leiomyoma assessment
+Spec:       card is the spec
+Source:     https://www.rcpath.org/static/94763195-0982-40ed-bbc79ca92370e9ac/Tissue-pathways-for-gynaecological-pathology.pdf; https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0050058
+
+### Uterine leiomyosarcoma — resection synoptic (user request 2026-10-23)   Size: L → split; two M cards, one batch
+Why:        a hysterectomy with leiomyosarcoma has no synoptic: `uterine_sarcoma` is a Later placeholder that opens Generic, so the type, size, mitotic count, necrosis, extent, margins and stage are typed by hand.
+Change:     split before build into (1) a uterine sarcoma staging module, FIGO (2009) and TNM 8 for leiomyosarcoma and endometrial stromal sarcoma, with adenosarcoma staged on its own, and (2) the `uterine_sarcoma` synoptic in QMH GYN-Sarcoma order with the ICCR elements: procedure and specimen integrity (intact, opened, morcellated), tumour site and size, histological type (spindle, epithelioid or myxoid leiomyosarcoma, with the other ICCR types listed), mitotic count, tumour necrosis, lymphovascular invasion, extent (serosa, cervix, adnexa, beyond), margins, nodes, ancillary studies and stage. It shares the leiomyoma assessment's atypia, mitosis and necrosis wording and retires the placeholder.
+Untouched:  the benign uterus, endometrial carcinoma and soft tissue sarcoma forms.
+Accept:     fixtures for a spindle-cell leiomyosarcoma confined to the uterus, a myxoid leiomyosarcoma and a leiomyosarcoma on a morcellated specimen; intake top-1 for "Uterus, leiomyosarcoma, total hysterectomy".
+Verify:     tests + browser (light), per card
+Ship:       with batch
+Depends on: Benign uterus — leiomyoma assessment
+Spec:       card is the spec; element order from the QMH page
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/GYN-Sarcoma.html; https://www.iccr-cancer.org/datasets/published-datasets/female-reproductive/uterine-malignant/; https://www.rcpath.org/static/c146b1c0-0e0e-47a4-a6ab29b3230d69f8/G106-Dataset-for-histopathological-reporting-of-uterine-sarcomas.pdf
 
 ### Liver transplant pair — group note (user request 2026-10-09)
 Pair:       (A) the native liver, total hepatectomy at transplant; (B) the donor graft biopsy at time zero (back table or after reperfusion). Each letter keeps its own form and line; an explant with HCC links the `hcc` synoptic under (A). Both forms open with a criteria panel holding their systematic checklist, which never prints.
@@ -283,7 +337,7 @@ Spec:       `docs/specs/frozen-section-scenarios.md`
 
 - Pancreatic diagnosis head and stage line in the house form (found 2026-10-03): the pancreatic template prints "PANCREAS AND SPLEEN" and "pT2 pN1 (AJCC 8th edition)", where the HCC synoptic prints "- Stage pT2 (pTNM, AJCC 8th edition)"; align them once the house form for pancreatic resections is confirmed.
 
-- Remaining QMH cancer templates (placeholders in the menus since 2026-09-12, pull as cards when volume warrants; the placeholder is removed by the card that builds it): GI — small intestine, anus; HPB — intrahepatic cholangiocarcinoma, pancreas NET, hepatoblastoma; Gynae — cervix, vulva, vagina, uterine sarcoma, GTD; H&N — nasopharynx, hypopharynx / oropharynx HPV−, larynx, sinonasal, salivary, mucosal melanoma; Endocrine — thyroid, adrenal cortical, phaeochromocytoma / paraganglioma, PitNET, neuroblastoma; Skin / soft tissue — melanoma, bone, Ewing, rhabdomyosarcoma, extragonadal GCT (soft tissue sarcoma carded in Next 2026-09-24, skin SCC 2026-09-25, oral cavity and HPV-associated oropharynx 2026-09-26); Thoracic — mesothelioma, thymus; GU — kidney, bladder, ureter / renal pelvis, urethra, penis, testis, Wilms; CNS — meningioma; Biomarkers — Gyn markers, colon HER2, stomach markers, MMR / MSI, PD-L1, DNA PCR, RNA RT-PCR, FISH, NGS.
+- Remaining QMH cancer templates (placeholders in the menus since 2026-09-12, pull as cards when volume warrants; the placeholder is removed by the card that builds it): GI — small intestine, anus; HPB — intrahepatic cholangiocarcinoma, pancreas NET, hepatoblastoma; Gynae — cervix, vulva, vagina, uterine sarcoma (carded in Next 2026-10-23), GTD; H&N — nasopharynx, hypopharynx / oropharynx HPV−, larynx, sinonasal, salivary, mucosal melanoma; Endocrine — thyroid, adrenal cortical, phaeochromocytoma / paraganglioma, PitNET, neuroblastoma; Skin / soft tissue — melanoma, bone, Ewing, rhabdomyosarcoma, extragonadal GCT (soft tissue sarcoma carded in Next 2026-09-24, skin SCC 2026-09-25, oral cavity and HPV-associated oropharynx 2026-09-26); Thoracic — mesothelioma, thymus; GU — kidney, bladder, ureter / renal pelvis, urethra, penis, testis, Wilms; CNS — meningioma; Biomarkers — Gyn markers, colon HER2, stomach markers, MMR / MSI, PD-L1, DNA PCR, RNA RT-PCR, FISH, NGS.
 
 - Related prior specimen — read-only Sheet lookup by accession (fills date, procedure, type, size, pT, pN from the saved case's staging summary); deferred from the Lung pair ("6 type-only for now").
 - Lung reference galleries (adenocarcinoma patterns for the IASLC grade, STAS, PL0–PL3 elastic-stain levels), openly licensed with credit; deferred from the Lung pair.
