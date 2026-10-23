@@ -440,6 +440,15 @@ const LESION_MICRO = {
     'The findings are those of a lipoma.',
     'There is no evidence of malignancy.'
   ],
+  // Phase 72 (user 2026-10-23). The name keeps "cutaneous", as the department's reports print it.
+  // Sources: docs/reference/skin-excision-benign-sources.md.
+  'Naevus lipomatosus cutaneous superficialis': [
+    'Sections show skin with groups of mature adipocytes in the superficial and mid dermis, set between the collagen bundles and around small blood vessels.',
+    'The adipocytes are not encapsulated and show no connection with the subcutaneous fat.',
+    'No lipoblasts are seen.',
+    'The findings are those of a naevus lipomatosus cutaneous superficialis.',
+    'There is no evidence of malignancy.'
+  ],
   'Benign adnexal tumour, other': [
     'Sections show a benign adnexal tumour; see additional description.',
     'There is no evidence of malignancy.'
@@ -559,6 +568,7 @@ const MAIN = {
   Keloid: 'KELOID',
   Haemangioma: 'HAEMANGIOMA',
   Lipoma: 'LIPOMA',
+  'Naevus lipomatosus cutaneous superficialis': 'NAEVUS LIPOMATOSUS CUTANEOUS SUPERFICIALIS',
   'Benign adnexal tumour, other': 'BENIGN ADNEXAL TUMOUR (see microscopic examination)',
   'Benign, other': 'BENIGN SKIN LESION (see microscopic examination)'
 };

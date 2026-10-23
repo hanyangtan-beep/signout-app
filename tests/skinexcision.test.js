@@ -47,8 +47,9 @@ test('metadata: benign skin resection with search aliases and complete defaults'
   assert.equal(schema.fields.find((f) => f.id === 'blocks').default, '3');
   assert.equal(schema.fields.find((f) => f.id === 'blockScheme').default, 'Ellipse serially sliced and all embedded');
   // 15 to Phase 39; Phase 40 added 26 benign lesions (tests/skin_excision_benign.test.js); Phase 43 added
-  // four from the retired Skin lesion form (tests/skin_excision_procedures.test.js).
-  assert.equal(schema.fields.find((f) => f.id === 'diagnosis').options.length, 45);
+  // four from the retired Skin lesion form (tests/skin_excision_procedures.test.js); Phase 72 added naevus
+  // lipomatosus cutaneous superficialis (tests/skin_excision_site.test.js).
+  assert.equal(schema.fields.find((f) => f.id === 'diagnosis').options.length, 46);
   assert.equal(schema.fields.find((f) => f.id === 'involvedMargins').type, 'multiselect');
 });
 

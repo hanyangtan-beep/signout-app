@@ -12,6 +12,7 @@ Released diagnosis lines from the 2021–2026 biopsy export and the 2024–2026 
 - Adnexal tumours seen: poroma 8, trichoblastoma 5, pilomatrixoma / pilomatricoma 5, sebaceous hyperplasia 5, trichoepithelioma 4, sebaceoma 3, adnexal tumour not otherwise named 3, naevus sebaceus 1. Hidradenoma, spiradenoma, cylindroma, syringoma, trichilemmoma, syringocystadenoma papilliferum, trichofolliculoma and mixed tumour did not appear; they are on the list for completeness.
 - Other benign lesions on SKIN specimen lines: verruca 46, scar or keloid 36, fibroepithelial polyp 35, haemangioma 27, lipoma 15, schwannoma 3, granular cell tumour 1.
 - Name forms: PILOMATRIXOMA in 3 of 5 lines (PILOMATRICOMA 2). PathologyOutlines prefers "pilomatricoma", which also works as a search alias. FIBROEPITHELIAL POLYP in 33 of 35 skin lines (ACROCHORDON 2). VERRUCA VULGARIS in 46 of 46. The one naevus sebaceus line was spelt NEVUS; the app prints the British NAEVUS SEBACEUS.
+- Naevus lipomatosus cutaneous superficialis (added 2026-10-23, user request, Phase 72): fewer than 10 cases name it across the two exports (checked 2026-10-23), every one with "cutaneous" and most spelt NEVUS. The app prints the British NAEVUS LIPOMATOSUS CUTANEOUS SUPERFICIALIS, the name as the user gave it. The released microscopy describes mature adipocytes in the dermis with no capsule and no connection with the subcutaneous fat, and no lipoblasts; the printed paragraph follows it.
 
 ## Routing
 
@@ -48,6 +49,7 @@ Released diagnosis lines from the 2021–2026 biopsy export and the 2024–2026 
 | Keloid | thick glassy keloidal collagen; increased fibroblasts; replaces adnexa (Skin lesion house sentence) | [PathologyOutlines — keloid](https://www.pathologyoutlines.com/topic/earkeloid.html), [DermNet — keloid and hypertrophic scar](https://dermnetnz.org/topics/keloid-and-hypertrophic-scar) |
 | Haemangioma | vascular channels lined by flattened endothelium (Skin lesion house sentence) | [PathologyOutlines — haemangioma](https://www.pathologyoutlines.com/topic/softtissuehemangioma.html), [DermNet — cherry angioma](https://dermnetnz.org/topics/cherry-angioma-pathology) |
 | Lipoma | lobulated mature adipocytes with thin fibrous septa (Soft tissue house sentence for lipoblasts) | [PathologyOutlines — lipoma](https://www.pathologyoutlines.com/topic/softtissueadiposelipoma.html) |
+| Naevus lipomatosus cutaneous superficialis | groups of mature adipocytes in the superficial and mid dermis, between the collagen bundles and around small vessels; not encapsulated, no connection with the subcutaneous fat; no lipoblasts (house sentence) | [PathologyOutlines — nevus lipomatosus superficialis](https://www.pathologyoutlines.com/topic/skintumornonmelanocyticnls.html), [DermNet — naevus lipomatosus superficialis pathology](https://dermnetnz.org/topics/naevus-lipomatosus-superficialis-pathology) |
 
 ## Phase 43 — shave, punch and curettings (2026-09-26)
 

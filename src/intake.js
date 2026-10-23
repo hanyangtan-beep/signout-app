@@ -763,6 +763,10 @@ function applyFill(schema, part, values, history = '') {
       // `strip` (regex source) removes the organ and procedure words, then the remainder opens with a
       // capital so the microscopy heading reads "Left apex, 2 cores" whatever the LIS casing was.
       if (v && rule.strip) v = stripWords(v, rule.strip).replace(/^[a-z]/, (c) => c.toUpperCase());
+      // `lower` — the value prints mid-heading ("SKIN, left cheek nodule, excision"), so a first word
+      // typed with a capital ("Left", "RIght") opens in lower case; a short form in capitals ("L leg",
+      // "RLL") keeps its case.
+      if (v && rule.lower) v = v.replace(/^[A-Za-z]+/, (w) => (/[a-z]/.test(w) ? w.toLowerCase() : w));
       if (rule.clock) v = v ? clockSite(v) : clockSite(text, { tokensOnly: true });
       // `unless` (regex source) skips a value that is only a generic word ("polyp", "biopsy").
       if (v && !(rule.unless && new RegExp(rule.unless, 'i').test(v.trim()))) values[rule.field] = v;

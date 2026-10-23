@@ -57,6 +57,8 @@ const ADDED = {
   Keloid: ['KELOID', `The findings are those of a keloid. ${NO_MAL}`],
   Haemangioma: ['HAEMANGIOMA', `There is no endothelial atypia. The findings are those of a haemangioma. ${NO_MAL}`],
   Lipoma: ['LIPOMA', `No atypical stromal cells or lipoblasts are observed. The findings are those of a lipoma. ${NO_MAL}`],
+  // Phase 72 (user 2026-10-23); its full paragraph is tested in tests/skin_excision_site.test.js.
+  'Naevus lipomatosus cutaneous superficialis': ['NAEVUS LIPOMATOSUS CUTANEOUS SUPERFICIALIS', `The adipocytes are not encapsulated and show no connection with the subcutaneous fat. No lipoblasts are seen. The findings are those of a naevus lipomatosus cutaneous superficialis. ${NO_MAL}`],
   'Benign adnexal tumour, other': ['BENIGN ADNEXAL TUMOUR (see microscopic examination)', `Sections show a benign adnexal tumour; see additional description. ${NO_MAL}`]
 };
 
