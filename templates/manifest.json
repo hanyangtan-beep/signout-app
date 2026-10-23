@@ -1410,7 +1410,7 @@
           }
         ]
       },
-      "version": "2026.09e",
+      "version": "2026.10",
       "generator": "frozen",
       "generatorPath": "generators/frozen.js",
       "schemaPath": "schemas/frozen_section.json"
@@ -1513,7 +1513,7 @@
           "sentinel"
         ]
       },
-      "version": "2026.09",
+      "version": "2026.10",
       "generator": "lymphnode",
       "generatorPath": "generators/lymphnode.js",
       "schemaPath": "schemas/lymph_node.json"

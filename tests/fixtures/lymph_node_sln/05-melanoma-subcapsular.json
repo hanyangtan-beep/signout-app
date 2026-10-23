@@ -1,0 +1,19 @@
+{
+  "description": "melanoma sentinel node, subcapsular deposit 0.4 mm",
+  "templateId": "lymph_node",
+  "values": [
+    {
+      "specimenName": "right groin",
+      "procedure": "Sentinel lymph node biopsy",
+      "criteria": "Melanoma",
+      "result": "Metastatic malignant melanoma",
+      "largestDeposit": "0.4",
+      "location": "Subcapsular",
+      "ihc": [
+        "SOX10"
+      ]
+    }
+  ],
+  "report": "Lymph node, right groin, sentinel lymph node biopsy\n\nReceived in formalin is a piece of fibroadipose tissue containing one lymph node. All embedded in 1 block.\n\n(1) Lymph node, bisected.\n\nSections show fibroadipose tissue and one lymph node. The lymph node is involved by metastatic malignant melanoma in the subcapsular sinus, the largest deposit measuring 0.4 mm. There is no extranodal extension. The tumour cells are highlighted by immunostain for SOX10.\n\nLYMPH NODE, right groin, sentinel lymph node biopsy - METASTATIC MALIGNANT MELANOMA (1/1); largest deposit 0.4 mm; subcapsular; no extranodal extension",
+  "checks": []
+}

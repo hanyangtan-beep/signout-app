@@ -1,0 +1,18 @@
+{
+  "description": "breast sentinel node after presurgical therapy, fibrous scarring and no residual metastasis",
+  "templateId": "lymph_node",
+  "values": [
+    {
+      "specimenName": "left SLN1",
+      "procedure": "Sentinel lymph node biopsy",
+      "criteria": "Breast",
+      "nodesReceived": "3",
+      "treatmentEffect": "Presurgical therapy, fibrous scarring and no metastasis",
+      "ihc": [
+        "AE1/AE3"
+      ]
+    }
+  ],
+  "report": "Lymph nodes, left SLN1, sentinel lymph node biopsy\n\nReceived in formalin is a piece of fibroadipose tissue containing three lymph nodes. All embedded in 1 block.\n\n(1) Lymph nodes 1-3.\n\nSections show fibroadipose tissue and three lymph nodes. There is fibrous scarring in keeping with treatment effect, with no residual metastatic carcinoma. No suspicious cells are identified on immunostain for pancytokeratin AE1/AE3.\n\nLYMPH NODES, left SLN1, sentinel lymph node biopsy - NO RESIDUAL METASTATIC CARCINOMA (0/3); fibrous scarring in keeping with treatment effect",
+  "checks": []
+}

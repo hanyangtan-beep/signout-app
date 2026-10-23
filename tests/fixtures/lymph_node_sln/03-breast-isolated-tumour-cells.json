@@ -1,0 +1,27 @@
+{
+  "description": "breast sentinel node, isolated tumour cells only in one of two nodes",
+  "templateId": "lymph_node",
+  "values": [
+    {
+      "specimenName": "left SLN1",
+      "procedure": "Sentinel lymph node biopsy",
+      "criteria": "Breast",
+      "nodesReceived": "2",
+      "result": "Isolated tumour cells",
+      "positiveNodes": "1",
+      "largestDeposit": "0.1",
+      "ihc": [
+        "AE1/AE3"
+      ]
+    }
+  ],
+  "report": "Lymph nodes, left SLN1, sentinel lymph node biopsy\n\nReceived in formalin is a piece of fibroadipose tissue containing two lymph nodes. All embedded in 1 block.\n\n(1) Lymph nodes 1-2.\n\nSections show fibroadipose tissue and two lymph nodes. One of the lymph nodes contains isolated tumour cells, the largest cluster measuring 0.1 mm. The tumour cells are highlighted by immunostain for pancytokeratin AE1/AE3. The remaining one lymph node is reactive.\n\nLYMPH NODES, left SLN1, sentinel lymph node biopsy - ISOLATED TUMOUR CELLS ONLY (1/2)",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Isolated tumour cells only: pN0(i+); the node counts as examined, not as positive.",
+      "field": "result",
+      "part": "A"
+    }
+  ]
+}

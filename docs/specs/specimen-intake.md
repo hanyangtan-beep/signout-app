@@ -450,3 +450,9 @@ Counts are the same 18,913 parts, routed with no clinical history. They are aggr
 - Not changed: the frozen section CNS and pituitary scenarios; the Glioma form's glioblastoma defaults for other non-glioma entities, offered as a Later line.
 - Deliberate test changes: the picker's QMH placeholder floor drops to 45 and the packed-form count rises to 31, each with its reason in the test. New fixtures `tests/fixtures/pituitary_net/01-04`.
 - Tests: tests/pituitary_net.test.js; browser QA "PitNET".
+
+## Sentinel node staging criteria (user request, built 2026-10-23)
+
+- Lymph node excision gains staging criteria (Not applied / Breast carcinoma / Melanoma). A sentinel line (`sentinel`, `SLN`) always carries them: melanoma anywhere in the request gives Melanoma; a breast or axillary line gives Breast; a pelvic, groin or neck line gives Not applied; then the other lines of the request and the history (a breast operation, or a uterine, adnexal, vulval, oral or penile one); otherwise Breast. Full rules and wording: `docs/specs/sentinel-node.md`.
+- Measured on both exports (aggregate): 179 sentinel lines open the Lymph node form, 150 on Breast and 29 on Not applied; no line names melanoma. Routes are unchanged across all 21,482 parts.
+- Tests: tests/lymphnode_sln.test.js; tests/frozen_sln_criteria.test.js; browser QA "sentinel node".

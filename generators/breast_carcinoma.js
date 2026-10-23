@@ -361,6 +361,15 @@ export function comment() { return ''; }
 
 // ---------- frozen link ----------
 
+/** Frozen sentinel node treatment answers → the LN treatment effect options (CAP breast protocol 4.11 wording).
+ *  Until Phase 76 the frozen answer was copied as it stood, which matched none of the options. */
+const LN_TREATMENT_FROM_FROZEN = {
+  'Presurgical therapy, no definite response': 'No definite response to presurgical therapy in metastatic carcinoma',
+  'Presurgical therapy, metastasis with treatment effect': 'Metastatic carcinoma present with evidence of response to presurgical therapy',
+  'Presurgical therapy, fibrous scarring and no metastasis': 'No lymph node metastases. Fibrous scarring or histiocytic aggregates, possibly related to prior lymph node metastases with pathologic complete response',
+  'Presurgical therapy, no metastasis and no scarring': 'No lymph node metastases and no fibrous scarring or histiocytic aggregates in the nodes'
+};
+
 /** Pre-fill from a frozen sentinel lymph node part (app "Add breast synoptic"). */
 export function prefillFromFrozen(fv) {
   const s = fv ? slnSummary(fv) : null;
@@ -370,8 +379,13 @@ export function prefillFromFrozen(fv) {
   // specified" and Checks asks for it.
   out.laterality = s.side || 'Not specified';
   if (s.positive && s.largestMm !== null) out.depositMm = String(s.largestMm);
-  if (s.positive) out.ene = s.ene;
-  if (s.treatment && s.treatment !== S.NO_THERAPY) out.lnTreatmentEffect = s.treatment;
+  // The frozen form says "Cannot be assessed"; the synoptic option is "Cannot be determined".
+  if (s.positive) out.ene = s.ene === 'Cannot be assessed' ? 'Cannot be determined' : s.ene;
+  if (s.positive && s.ene === 'Present' && s.eneExtent) {
+    const ext = s.eneExtent === 'More than 2 mm' ? 'greater than 2 mm' : '2 mm or less';
+    out.eneExtent = s.positive === 1 ? `1 node, ${ext}` : ext;
+  }
+  if (LN_TREATMENT_FROM_FROZEN[s.treatment]) out.lnTreatmentEffect = LN_TREATMENT_FROM_FROZEN[s.treatment];
   return out;
 }
 

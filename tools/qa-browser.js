@@ -2346,6 +2346,86 @@ await check('Dermatoses: a skin punch under a GVHD history opens the form on the
   return 'routed on the history, GVHD pattern preset; likely and possible lines; Lerner hides; spongiotic fields swap; galleries load (Lerner 4, NIH 2, pattern 26, blister 7, granuloma 10, panniculitis 3, vessels 5, DIF 7); a ?BCC punch stays out';
 });
 
+// Phase 76 (2026-10-23): sentinel node staging criteria. A pasted sentinel line opens the Lymph node form on
+// the Breast criteria: the size category follows the deposit, the extranodal extent prints, the criteria
+// panel opens, and isolated tumour cells and the treatment effect reach the diagnosis. The Melanoma criteria
+// show the location and print no size category. The frozen sentinel node shows the fuller category labels
+// and prints the extranodal extent.
+await check('sentinel node: Breast criteria from a pasted line; category, extent, isolated tumour cells and treatment effect print; melanoma location; frozen extent', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const chosen = async (id) => {
+    const chips = await page.locator(`.chips[data-field="${id}"] .chip[aria-pressed="true"]`).allTextContents();
+    if (chips.length) return chips.map((c) => c.replace(/^\s*\d*\s*/, '').trim()).join(',');
+    const sel = page.locator(`[data-field="${id}"] select`).first();
+    return (await sel.count()) ? sel.inputValue() : '';
+  };
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
+  const type = async (id, value) => { await page.fill(`#f-A-${id}`, value); await page.waitForTimeout(300); };
+  const routed = await pasteAndBuild('Left sentinel lymph node, excision');
+  assert(routed === 'lymph_node', `sentinel line routed to ${routed}`);
+  assert(await chosen('criteria') === 'Breast carcinoma', `criteria read "${await chosen('criteria')}"`);
+  await pickField('result', 'Metastatic carcinoma');
+  await type('largestDeposit', '1.2');
+  let report = await reportText();
+  assert(report.includes('the largest deposit measuring 1.2 mm (micrometastasis).'), `category missing: ${report.slice(0, 900)}`);
+  assert(report.includes('METASTATIC CARCINOMA (1/1); largest deposit 1.2 mm (micrometastasis); no extranodal extension'), `diagnosis wrong: ${report.slice(-300)}`);
+  await pickField('extranodal', 'Present');
+  assert(await shows('eneExtent'), 'the extranodal extent does not show');
+  await pickField('eneExtent', 'More than 2 mm');
+  report = await reportText();
+  assert(report.includes('Extranodal extension is present, extending more than 2 mm beyond the lymph node capsule.') && report.includes('extranodal extension present (more than 2 mm)'), `extent missing: ${report.slice(-500)}`);
+  await page.locator('.field[data-field="criteria"] .ref-toggle').first().click();
+  await page.waitForSelector('.field[data-field="criteria"] .ref-panel', { timeout: 5000 });
+  const panel = await page.locator('.field[data-field="criteria"] .ref-panel').first().innerText();
+  assert(panel.includes('Macrometastasis: more than 2 mm.') && panel.includes('pN0(i+)') && panel.includes('no isolated tumour cell category'), `criteria panel text: ${panel.slice(0, 300)}`);
+  await page.locator('.field[data-field="criteria"] .ref-panel').first().scrollIntoViewIfNeeded();
+  await shot('sentinel-criteria-panel');
+  await page.locator('.field[data-field="criteria"] .ref-toggle').first().click();
+  await pickField('result', 'Isolated tumour cells');
+  await type('largestDeposit', '0.1');
+  await pickField('treatmentEffect', 'Metastasis with evidence of response to therapy');
+  report = await reportText();
+  assert(report.includes('The lymph node contains isolated tumour cells, the largest cluster measuring 0.1 mm. There is evidence of response to presurgical therapy.'), `isolated tumour cells wrong: ${report.slice(0, 900)}`);
+  assert(report.includes('ISOLATED TUMOUR CELLS ONLY (1/1); treatment effect present'), `diagnosis wrong: ${report.slice(-300)}`);
+  assert((await checksText()).includes('pN0(i+)'), 'the isolated tumour cell check is missing');
+  await pickField('criteria', 'Melanoma');
+  assert(!(await shows('treatmentEffect')), 'the treatment effect shows with the Melanoma criteria');
+  await pickField('result', 'Metastatic malignant melanoma');
+  await pickField('extranodal', 'Not identified');
+  await type('largestDeposit', '0.4');
+  await pickField('location', 'Subcapsular');
+  report = await reportText();
+  assert(report.includes('involved by metastatic malignant melanoma in the subcapsular sinus, the largest deposit measuring 0.4 mm.'), `melanoma wording: ${report.slice(0, 900)}`);
+  assert(report.includes('METASTATIC MALIGNANT MELANOMA (1/1); largest deposit 0.4 mm; subcapsular; no extranodal extension') && !/metastasis\)/.test(report), `melanoma diagnosis: ${report.slice(-300)}`);
+  await page.locator('[data-field="location"]').first().scrollIntoViewIfNeeded();
+  await shot('sentinel-melanoma');
+  // The frozen form: a sentinel row arrives on Lymph node excision and the pathologist picks Frozen section.
+  const box = page.locator('#meta-specimen');
+  const accept = (d) => d.accept();
+  await box.fill('');
+  await box.type('Left SLN 1', { delay: 2 });
+  await page.waitForSelector('#intake-preview table tr', { timeout: 5000 });
+  await page.locator('#intake-preview select[aria-label="Template for part A"]').selectOption('frozen_section');
+  await page.waitForTimeout(200);
+  page.on('dialog', accept);
+  await page.click('#btn-build-parts');
+  await page.waitForTimeout(800);
+  page.off('dialog', accept);
+  const labels = (await page.locator('.chips[data-field="slnResult"] .chip').allTextContents()).map((c) => c.replace(/^\s*\d*\s*/, '').trim());
+  assert(labels.includes('Micrometastasis (more than 0.2 mm to 2 mm, or more than 200 cells)'), `frozen result labels: ${JSON.stringify(labels)}`);
+  await pickField('slnResult', 'Macrometastasis (more than 2 mm)');
+  await type('slnMetMm', '6');
+  await pickField('slnEne', 'Present');
+  await pickField('slnEneExtent', 'More than 2 mm');
+  report = await reportText();
+  assert(report.includes('METASTATIC CARCINOMA, macrometastasis 6 mm, with extranodal extension (more than 2 mm) (1/1)'), `frozen diagnosis: ${report.slice(-300)}`);
+  await page.locator('.chips[data-field="slnResult"]').first().scrollIntoViewIfNeeded();
+  await shot('sentinel-frozen-extent');
+  return 'sentinel line opens on Breast; micrometastasis from 1.2 mm; extent more than 2 mm in both sections; criteria panel; isolated tumour cells with treatment effect and the pN0(i+) check; melanoma subcapsular with no category; frozen labels and extent';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

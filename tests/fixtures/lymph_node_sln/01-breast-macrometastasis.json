@@ -1,0 +1,22 @@
+{
+  "description": "breast sentinel node, macrometastasis with extranodal extension more than 2 mm, one of two nodes",
+  "templateId": "lymph_node",
+  "values": [
+    {
+      "specimenName": "left SLN1",
+      "procedure": "Sentinel lymph node biopsy",
+      "criteria": "Breast",
+      "nodesReceived": "2",
+      "result": "Metastatic carcinoma",
+      "positiveNodes": "1",
+      "largestDeposit": "6",
+      "extranodal": "Present",
+      "eneExtent": "More than 2 mm",
+      "ihc": [
+        "AE1/AE3"
+      ]
+    }
+  ],
+  "report": "Lymph nodes, left SLN1, sentinel lymph node biopsy\n\nReceived in formalin is a piece of fibroadipose tissue containing two lymph nodes. All embedded in 1 block.\n\n(1) Lymph nodes 1-2.\n\nSections show fibroadipose tissue and two lymph nodes. One of the lymph nodes is involved by metastatic carcinoma, the largest deposit measuring 6 mm (macrometastasis). Extranodal extension is present, extending more than 2 mm beyond the lymph node capsule. The tumour cells are highlighted by immunostain for pancytokeratin AE1/AE3. The remaining one lymph node is reactive.\n\nLYMPH NODES, left SLN1, sentinel lymph node biopsy - METASTATIC CARCINOMA (1/2); largest deposit 6 mm (macrometastasis); extranodal extension present (more than 2 mm)",
+  "checks": []
+}

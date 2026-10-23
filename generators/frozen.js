@@ -512,6 +512,20 @@ const SLN_POSITIVE = ['Isolated tumour cells', 'Micrometastasis', 'Macrometastas
 const slnCount = (v) => Math.max(0, Math.round(num(v.slnCount) ?? 1));
 const slnPositive = (v) => (SLN_POSITIVE.includes(v.slnResult) ? Math.min(slnCount(v), Math.max(1, Math.round(num(v.slnPositive) ?? 1))) : 0);
 const slnTreated = (v) => slnIsBreast(v) && !!v.slnTreatment && v.slnTreatment !== 'No known presurgical therapy';
+const SLN_SCARRING = 'Presurgical therapy, fibrous scarring and no metastasis';
+const SLN_NO_SCARRING = 'Presurgical therapy, no metastasis and no scarring';
+/** Melanoma (AJCC 8th edition; sources in generators/lymphnode.js and docs/reference/sentinel-node-sources.md):
+ *  any tumour cells make the node positive and there is no isolated tumour cell category, so a positive
+ *  melanoma sentinel node prints the deposit size and no breast size category. */
+const slnIsMelanoma = (v) => slnSite(v) === 'Skin (melanoma)';
+const slnNoun = (v) => (slnIsMelanoma(v) ? 'malignant melanoma' : lc1(tumour(v, 'carcinoma')));
+/** Extent beyond the capsule, read only when extension is present on a micro- or macrometastasis. */
+const slnEneExtent = (v) => (v.slnEne === 'Present' && ['Micrometastasis', 'Macrometastasis'].includes(v.slnResult)
+  && ['2 mm or less', 'More than 2 mm'].includes(v.slnEneExtent) ? v.slnEneExtent : '');
+const slnEneText = (v) => {
+  const ext = slnEneExtent(v);
+  return `extranodal extension${ext ? ` (${ext.toLowerCase()})` : ''}`;
+};
 
 /** House label: side plus an auto number — "right SLN1", "left SLN 2" as measured. A typed label wins. */
 function slnNodeLabel(v) {
@@ -560,6 +574,10 @@ function slnResultLine(v, ctx) {
   const n = slnCount(v);
   const pos = slnPositive(v);
   const of = n > 1 ? ` (${pos} of ${n} lymph nodes)` : '';
+  if (slnIsMelanoma(v) && SLN_POSITIVE.includes(v.slnResult)) {
+    const mm = num(v.slnMetMm);
+    return `Metastatic malignant melanoma${mm === null ? '' : `, ${fmt(mm)} mm`}${of}.`;
+  }
   switch (v.slnResult || 'Negative') {
     case 'Macrometastasis': return `Metastatic ${lc1(tumour(v, 'carcinoma'))}, >2 mm${of}.`;
     case 'Micrometastasis': return `Metastatic ${lc1(tumour(v, 'carcinoma'))}, 0.2-2 mm (micrometastasis)${of}.`;
@@ -578,16 +596,16 @@ function slnTissue(v) {
   const fat = v.slnReceived === 'Lymph node(s) only' ? '' : 'fibroadipose tissue and ';
   if (v.slnResult === 'No nodal tissue identified' || n === 0) return 'fibroadipose tissue with no lymph node identified';
   if (!SLN_POSITIVE.includes(v.slnResult)) {
-    return slnTreated(v) && v.slnTreatment === 'Presurgical therapy, fibrous scarring and no metastasis'
-      ? `${fat}${nodes} with fibrous scarring and no residual metastatic carcinoma`
-      : `${fat}${n === 1 ? 'a reactive lymph node' : `${word(n)} reactive lymph nodes`}`;
+    if (slnTreated(v) && v.slnTreatment === SLN_SCARRING) return `${fat}${nodes} with fibrous scarring and no residual metastatic carcinoma`;
+    const reactive = `${fat}${n === 1 ? 'a reactive lymph node' : `${word(n)} reactive lymph nodes`}`;
+    return slnTreated(v) && v.slnTreatment === SLN_NO_SCARRING ? `${reactive}, with no fibrous scarring or histiocytic aggregates` : reactive;
   }
   const mm = num(v.slnMetMm);
   const kind = v.slnResult === 'Macrometastasis' ? 'macrometastasis' : v.slnResult === 'Micrometastasis' ? 'micrometastasis' : 'isolated tumour cells';
-  const focus = `${kind}${mm === null ? '' : `, ${fmt(mm)} mm`}`;
+  const focus = slnIsMelanoma(v) ? (mm === null ? '' : `${fmt(mm)} mm`) : `${kind}${mm === null ? '' : `, ${fmt(mm)} mm`}`;
   const which = n === 1 ? 'which is' : pos === n ? 'all of which are' : `${word(pos)} of which ${pos === 1 ? 'is' : 'are'}`;
-  let s = `${fat}${nodes}, ${which} involved by metastatic ${lc1(tumour(v, 'carcinoma'))} (${focus})`;
-  if (v.slnEne === 'Present') s += ' with extranodal extension';
+  let s = `${fat}${nodes}, ${which} involved by metastatic ${slnNoun(v)}${focus ? ` (${focus})` : ''}`;
+  if (v.slnEne === 'Present') s += ` with ${slnEneText(v)}`;
   if (slnIsBreast(v) && v.slnTreatment === 'Presurgical therapy, metastasis with treatment effect') s += `, with treatment effect${v.slnMillerPayne ? ` (Miller-Payne ${stripDot(v.slnMillerPayne).replace(/^Miller[- ]Payne\s*/i, '')})` : ''}`;
   return s;
 }
@@ -606,7 +624,14 @@ function slnFinalDx(v) {
   const count = ` (${pos}/${n})`;
   const mm = num(v.slnMetMm);
   const tx = slnIsBreast(v) && v.slnTreatment === 'Presurgical therapy, metastasis with treatment effect' ? ', with treatment effect' : '';
-  const ene = v.slnEne === 'Present' ? ', with extranodal extension' : '';
+  const ene = v.slnEne === 'Present' ? `, with ${slnEneText(v)}` : '';
+  if (slnIsMelanoma(v) && SLN_POSITIVE.includes(v.slnResult)) {
+    return `METASTATIC MALIGNANT MELANOMA${mm === null ? '' : `, largest deposit ${fmt(mm)} mm`}${v.slnResult === 'Isolated tumour cells' ? '' : ene}${count}`;
+  }
+  if (slnTreated(v) && v.slnTreatment === SLN_SCARRING && !SLN_POSITIVE.includes(v.slnResult) && n > 0
+    && !['No nodal tissue identified', 'Deferred'].includes(v.slnResult)) {
+    return `NO RESIDUAL METASTATIC CARCINOMA, with fibrous scarring in keeping with treatment effect${count}`;
+  }
   switch (v.slnResult || 'Negative') {
     case 'Macrometastasis': return `METASTATIC ${tumour(v, 'carcinoma').toUpperCase()}, macrometastasis${mm === null ? '' : ` ${fmt(mm)} mm`}${ene}${tx}${count}`;
     case 'Micrometastasis': return `METASTATIC ${tumour(v, 'carcinoma').toUpperCase()}, micrometastasis${mm === null ? '' : ` ${fmt(mm)} mm`}${ene}${tx}${count}`;
@@ -626,7 +651,7 @@ export function slnSummary(v) {
   const n = slnCount(v);
   const pos = slnPositive(v);
   const r = v.slnResult || 'Negative';
-  return {
+  const out = {
     examined: n,
     positive: pos,
     macro: r === 'Macrometastasis' ? pos : 0,
@@ -637,6 +662,10 @@ export function slnSummary(v) {
     side: v.slnSide || '',
     treatment: v.slnTreatment || 'No known presurgical therapy',
   };
+  // Only when extension is present and its extent chosen, so summaries saved before Phase 76 read the same.
+  const ext = slnEneExtent(v);
+  if (ext) out.eneExtent = ext;
+  return out;
 }
 
 // ---------- CNS / pituitary scenario ----------
@@ -1345,13 +1374,21 @@ export function validate(part, ctx) {
     const pos = SLN_POSITIVE.includes(v.slnResult) ? Math.round(num(v.slnPositive) ?? 1) : 0;
     const mm = num(v.slnMetMm);
     if (pos > n) warn(`Nodes involved (${pos}) exceeds the nodes identified (${n}); the count is capped in the report.`);
-    if (pos && mm === null) info('Record the size of the largest metastatic focus (mm); it is carried into the breast synoptic.');
+    if (pos && mm === null) info(slnIsMelanoma(v) ? 'Record the largest discrete deposit (mm), to the nearest 0.1 mm.' : 'Record the size of the largest metastatic focus (mm); it is carried into the breast synoptic.');
     if (n === 0 && v.slnResult !== 'No nodal tissue identified' && v.slnResult !== 'Deferred') warn('No lymph node identified: pick the result "No nodal tissue identified" or enter the node count.', 'slnCount');
-    if (v.slnResult === 'Macrometastasis' && mm !== null && mm <= 2) warn(`Macrometastasis with a largest focus of ${fmt(mm)} mm: a macrometastasis is more than 2 mm.`, 'slnMetMm');
-    if (v.slnResult === 'Micrometastasis' && mm !== null && (mm > 2 || mm <= 0.2)) warn(`Micrometastasis with a largest focus of ${fmt(mm)} mm: a micrometastasis is more than 0.2 mm and up to 2 mm.`, 'slnMetMm');
-    if (v.slnResult === 'Isolated tumour cells' && mm !== null && mm > 0.2) warn(`Isolated tumour cells with a largest focus of ${fmt(mm)} mm: isolated tumour cells measure 0.2 mm or less.`, 'slnMetMm');
-    if (v.slnResult === 'Isolated tumour cells') info('Isolated tumour cells only: pN0(i+) in the linked synoptic; the intraoperative line reports negative for macrometastasis.');
-    if (v.slnResult && v.slnResult !== 'Deferred' && !(ctx?.case?.parts || []).some((p) => p !== part && p.templateId === 'breast_carcinoma')) info('"Add breast synoptic" adds the breast carcinoma resection as the next part with the sentinel node counts pre-filled.');
+    if (slnIsMelanoma(v)) {
+      if (pos) info('Melanoma: any tumour cells make the node positive and the breast size categories are not used, so the lines print metastatic malignant melanoma with the deposit size.', 'slnResult');
+    } else {
+      if (v.slnResult === 'Macrometastasis' && mm !== null && mm <= 2) warn(`Macrometastasis with a largest focus of ${fmt(mm)} mm: a macrometastasis is more than 2 mm.`, 'slnMetMm');
+      if (v.slnResult === 'Micrometastasis' && mm !== null && (mm > 2 || mm <= 0.2)) warn(`Micrometastasis with a largest focus of ${fmt(mm)} mm: a micrometastasis is more than 0.2 mm and up to 2 mm.`, 'slnMetMm');
+      if (v.slnResult === 'Isolated tumour cells' && mm !== null && mm > 0.2) warn(`Isolated tumour cells with a largest focus of ${fmt(mm)} mm: isolated tumour cells measure 0.2 mm or less.`, 'slnMetMm');
+      if (v.slnResult === 'Isolated tumour cells') info('Isolated tumour cells only: pN0(i+) in the linked synoptic; the intraoperative line reports negative for macrometastasis.');
+    }
+    if (slnIsBreast(v) && v.slnEne === 'Present' && ['Micrometastasis', 'Macrometastasis'].includes(v.slnResult) && !slnEneExtent(v)) info('Extranodal extension present: choose the extent beyond the capsule (2 mm or less, or more than 2 mm); it is carried into the breast synoptic.', 'slnEneExtent');
+    if (slnTreated(v) && [SLN_SCARRING, SLN_NO_SCARRING].includes(v.slnTreatment) && pos) warn('The presurgical therapy answer says no metastasis but the frozen result has tumour: change one of them.', 'slnTreatment');
+    if (slnTreated(v) && !pos && ['Presurgical therapy, no definite response', 'Presurgical therapy, metastasis with treatment effect'].includes(v.slnTreatment) && !['Deferred', 'No nodal tissue identified'].includes(v.slnResult)) warn('The presurgical therapy answer describes a metastasis but the frozen result is negative: change one of them.', 'slnTreatment');
+    // Breast only: the other sentinel sites have no synoptic to link to (pairTemplate).
+    if (slnIsBreast(v) && v.slnResult && v.slnResult !== 'Deferred' && !(ctx?.case?.parts || []).some((p) => p !== part && p.templateId === 'breast_carcinoma')) info('"Add breast synoptic" adds the breast carcinoma resection as the next part with the sentinel node counts pre-filled.');
     return out;
   }
   if (isCns(v)) {

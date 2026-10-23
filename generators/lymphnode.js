@@ -1,4 +1,4 @@
-import { stripDot } from './_house.js';
+import { stripDot, checks } from './_house.js';
 // Lymph node excision / sentinel node / dissection generator. Pure functions: (part, ctx) -> string.
 // Each part is one node specimen (site or station) so any case can add node parts.
 // Blocks produced:
@@ -9,6 +9,24 @@ import { stripDot } from './_house.js';
 //   diagnosis    "(A) LYMPH NODE, right SLN2, excision - NO EVIDENCE OF MALIGNANCY (0/1)"
 // The (x/y) count is derived from the positive and total node counts.
 // Wording is protected by tests/lymphnode.test.js — change it only deliberately.
+//
+// Staging criteria (Phase 76, docs/specs/sentinel-node.md; sources in docs/reference/sentinel-node-sources.md).
+// "Breast" adds the size category, isolated tumour cells, the extranodal extent and the nodal treatment
+// effect; "Melanoma" adds the location of the deposits and prints no size category. With the criteria
+// "Not applied" (the default) every report reads exactly as before.
+//   Breast categories (AJCC 8th edition, as in the CAP breast invasive resection protocol 4.11.0.0, June 2026,
+//   https://www.cap.org/wp-content/uploads/2026/06/Breast.Invasive.Res_4.11.0.0.REL_CAPCP.pdf?download, and
+//   the QMH template https://awiloqmh.github.io/CancerReportingTemplate/BREAST-Cancers.html): macrometastasis
+//   more than 2 mm; micrometastasis more than 0.2 mm to 2 mm or more than 200 cells in a single cross-section;
+//   isolated tumour cells 0.2 mm or less or fewer than 200 cells, counted as examined but not as positive.
+//   The size is that of the largest group of touching tumour cells, including any part outside the node.
+//   Extranodal extent 2 mm or less / more than 2 mm (QMH; CAP 4.11 note on measuring perpendicular to the
+//   capsule or in another dimension). Nodal treatment effect: the four CAP 4.11 answers.
+//   Melanoma (AJCC 8th edition, Gershenwald et al. 2017, https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5978683/;
+//   ICCR https://www.iccr-cancer.org/docs/ICCR-Melanoma2-LN.pdf; CAP melanoma 1.2.0.0,
+//   https://documents.cap.org/documents/New-Cancer-Protocols-March-2025/Skin.Inv_Melanoma.Res_1.2.0.0.REL.CAPCP.docx):
+//   any tumour cells make the node positive (no isolated tumour cell category); the largest discrete deposit
+//   to the nearest 0.1 mm; nodal site subcapsular, intraparenchymal or both.
 
 const num = (v) => {
   const n = parseFloat(String(v ?? '').trim());
@@ -36,6 +54,58 @@ export const isMetastatic = (v) => METASTATIC.includes(v.result);
 export const isNegative = (v) => !v.result || v.result.startsWith('Negative');
 export const isGranulomatous = (v) => v.result === 'Granulomatous inflammation';
 export const isLymphoma = (v) => v.result === 'Lymphoma - see comment';
+export const isItc = (v) => v.result === 'Isolated tumour cells';
+const isBreast = (v) => v.criteria === 'Breast';
+const isMelanomaCriteria = (v) => v.criteria === 'Melanoma';
+
+/** Largest deposit in millimetres from "8", "8 mm" or "0.8 cm"; null when blank or unreadable. */
+export function depositMm(v) {
+  const s = String(v.largestDeposit ?? '').trim();
+  const n = parseFloat(s);
+  if (!Number.isFinite(n)) return null;
+  return /cm/i.test(s) ? Math.round(n * 1000) / 100 : n;
+}
+
+/**
+ * Breast size category of a carcinoma metastasis: the one chosen, else from the largest deposit
+ * (more than 2 mm macrometastasis, more than 0.2 mm micrometastasis). '' when the criteria are not Breast,
+ * when no size is given, or for a deposit of 0.2 mm or less (Checks asks for isolated tumour cells or a
+ * micrometastasis by cell count).
+ */
+export function metCategory(v) {
+  if (!isBreast(v) || v.result !== 'Metastatic carcinoma') return '';
+  if (v.metCategory === 'Macrometastasis' || v.metCategory === 'Micrometastasis') return v.metCategory;
+  const mm = depositMm(v);
+  if (mm === null) return '';
+  return mm > 2 ? 'Macrometastasis' : mm > 0.2 ? 'Micrometastasis' : '';
+}
+
+export const TREATMENT = {
+  none: 'No known presurgical therapy',
+  noResponse: 'Presurgical therapy, no definite response',
+  response: 'Presurgical therapy, metastasis with treatment effect',
+  scarring: 'Presurgical therapy, fibrous scarring and no metastasis',
+  noScarring: 'Presurgical therapy, no metastasis and no scarring'
+};
+/** The nodal treatment effect, read only with the Breast criteria and the results it is shown for. */
+export function treatmentEffect(v) {
+  if (!isBreast(v)) return TREATMENT.none;
+  if (!(isNegative(v) || isItc(v) || v.result === 'Metastatic carcinoma')) return TREATMENT.none;
+  return v.treatmentEffect || TREATMENT.none;
+}
+const responded = (v) => (isMetastatic(v) || isItc(v)) && treatmentEffect(v) === TREATMENT.response;
+const scarred = (v) => isNegative(v) && treatmentEffect(v) === TREATMENT.scarring;
+
+/** Melanoma deposit site, read only with the Melanoma criteria: [microscopy phrase, diagnosis clause]. */
+const LOCATIONS = {
+  Subcapsular: [' in the subcapsular sinus', 'subcapsular'],
+  Intraparenchymal: [' within the nodal parenchyma', 'intraparenchymal'],
+  'Subcapsular and intraparenchymal': [' in the subcapsular sinus and the nodal parenchyma', 'subcapsular and intraparenchymal']
+};
+const location = (v) => (isMelanomaCriteria(v) && v.result === 'Metastatic malignant melanoma' && LOCATIONS[v.location]) || null;
+
+/** Extranodal extent, read only when extension is present on a metastasis. */
+const eneExtent = (v) => (isMetastatic(v) && v.extranodal === 'Present' && ['2 mm or less', 'More than 2 mm'].includes(v.eneExtent) ? v.eneExtent : '');
 
 /** Total nodes examined: microscopy count when given, else the number received (never below 0). */
 export function totalNodes(v) {
@@ -44,16 +114,21 @@ export function totalNodes(v) {
   return Math.max(0, Math.round(n));
 }
 
-/** Positive nodes for metastatic results, clamped to the total; 0 otherwise. */
-export function positiveNodes(v) {
-  if (!isMetastatic(v)) return 0;
+/** Nodes holding tumour, clamped to the total: those with a metastasis, or with isolated tumour cells only. */
+export function involvedNodes(v) {
+  if (!isMetastatic(v) && !isItc(v)) return 0;
   const total = totalNodes(v);
   const p = Math.max(0, Math.round(num(v.positiveNodes) ?? 1));
   return total > 0 ? Math.min(p, total) : p;
 }
 
-/** "(0/1)" / "(2/14)". */
-export const countPhrase = (v) => `(${positiveNodes(v)}/${totalNodes(v)})`;
+/** Positive nodes for metastatic results, clamped to the total; 0 otherwise (isolated tumour cells included). */
+export function positiveNodes(v) {
+  return isMetastatic(v) ? involvedNodes(v) : 0;
+}
+
+/** "(0/1)" / "(2/14)"; with isolated tumour cells only, the nodes holding them ("ISOLATED TUMOUR CELLS ONLY (1/2)"). */
+export const countPhrase = (v) => `(${involvedNodes(v)}/${totalNodes(v)})`;
 
 const procedureWord = (v) => (v.procedure || 'Excision').toLowerCase();
 // A site copied from the request can name the procedure already ("left neck dissection, levels I-IV");
@@ -154,7 +229,7 @@ function ihcSentence(v) {
   if (!hasIhc(v)) return '';
   const names = ihcList(v);
   const stains = names.length ? `immunostain${names.length > 1 ? 's' : ''} for ${listJoin(names)}` : 'immunostains';
-  if (isMetastatic(v)) return `The tumour cells are highlighted by ${stains}.`;
+  if (isMetastatic(v) || isItc(v)) return `The tumour cells are highlighted by ${stains}.`;
   return `No suspicious cells are identified on ${stains}.`;
 }
 
@@ -163,6 +238,30 @@ const tumourNoun = (v) => {
   if (v.result === 'Other metastatic tumour') return t ? `metastatic ${t.charAt(0).toLowerCase()}${t.slice(1)}` : 'metastatic tumour';
   return v.result === 'Metastatic malignant melanoma' ? 'metastatic malignant melanoma' : 'metastatic carcinoma';
 };
+
+/** "8 mm" from "8"; a typed unit is kept ("0.8 cm"). */
+const depositText = (v) => {
+  const dep = String(v.largestDeposit || '').trim();
+  return dep ? (/mm|cm/i.test(dep) ? dep : `${dep} mm`) : '';
+};
+
+function eneSentence(v) {
+  if (v.extranodal === 'Present') {
+    const ext = eneExtent(v);
+    return `Extranodal extension is present${ext ? `, extending ${ext.toLowerCase()} beyond the lymph node capsule` : ''}.`;
+  }
+  if (v.extranodal === 'Cannot be determined') return 'Extranodal extension cannot be determined.';
+  return 'There is no extranodal extension.';
+}
+
+/** Response of a metastasis or of isolated tumour cells to presurgical therapy (Breast criteria). */
+function treatmentSentence(v) {
+  if (!isMetastatic(v) && !isItc(v)) return '';
+  const t = treatmentEffect(v);
+  if (t === TREATMENT.response) return 'There is evidence of response to presurgical therapy.';
+  if (t === TREATMENT.noResponse) return 'There is no definite evidence of response to presurgical therapy.';
+  return '';
+}
 
 export function microscopy(part) {
   const v = part.values;
@@ -174,12 +273,16 @@ export function microscopy(part) {
   if (isNegative(v)) {
     const adj = v.result === 'Negative - unremarkable' ? '' : 'reactive ';
     if (total === 0) sentences.push(`${fat ? 'Sections show fibroadipose tissue' : 'Sections show fibrous tissue'} with no lymph node identified.`);
-    else {
+    else if (scarred(v)) {
+      sentences.push(`${lead}${word(total)} ${nodeNoun(v)}.`);
+      sentences.push('There is fibrous scarring in keeping with treatment effect, with no residual metastatic carcinoma.');
+    } else {
       sentences.push(`${lead}${word(total)} ${adj}${nodeNoun(v)}${adj ? '' : ' with preserved architecture'}.`);
+      if (treatmentEffect(v) === TREATMENT.noScarring) sentences.push('No fibrous scarring or histiocytic aggregates are seen.');
     }
     const ihc = ihcSentence(v);
     if (ihc) sentences.push(ihc);
-    sentences.push('There is no evidence of malignancy.');
+    if (!(scarred(v) && total > 0)) sentences.push('There is no evidence of malignancy.');
   } else if (isGranulomatous(v)) {
     const gran = v.granulomaType === 'Necrotising'
       ? 'necrotising epithelioid granulomas with central necrosis'
@@ -191,14 +294,32 @@ export function microscopy(part) {
     sentences.push('There is no evidence of malignancy.');
   } else if (isMetastatic(v)) {
     const pos = positiveNodes(v);
-    const dep = String(v.largestDeposit || '').trim();
-    const depText = dep ? `, the largest deposit measuring ${/mm|cm/i.test(dep) ? dep : `${dep} mm`}` : '';
+    const dep = depositText(v);
+    const cat = metCategory(v).toLowerCase();
+    const depText = dep ? `, the largest deposit measuring ${dep}${cat ? ` (${cat})` : ''}` : '';
+    const loc = location(v);
     sentences.push(`${lead}${word(total)} ${nodeNoun(v)}.`);
     const involved = pos === total
       ? (total === 1 ? 'The lymph node is' : `All ${word(total)} lymph nodes are`)
       : `${uc1(word(pos))} of the lymph nodes ${pos === 1 ? 'is' : 'are'}`;
-    sentences.push(`${involved} involved by ${tumourNoun(v)}${depText}.`);
-    sentences.push(v.extranodal === 'Present' ? 'Extranodal extension is present.' : 'There is no extranodal extension.');
+    sentences.push(`${involved} involved by ${tumourNoun(v)}${cat && !dep ? ` (${cat})` : ''}${loc ? loc[0] : ''}${depText}.`);
+    const tx = treatmentSentence(v);
+    if (tx) sentences.push(tx);
+    sentences.push(eneSentence(v));
+    const ihc = ihcSentence(v);
+    if (ihc) sentences.push(ihc);
+    const rest = total - pos;
+    if (rest > 0) sentences.push(`The remaining ${word(rest)} lymph node${rest === 1 ? ' is' : 's are'} reactive.`);
+  } else if (isItc(v)) {
+    const pos = involvedNodes(v);
+    const dep = depositText(v);
+    sentences.push(`${lead}${word(total)} ${nodeNoun(v)}.`);
+    const holds = pos === total
+      ? (total === 1 ? 'The lymph node contains' : `All ${word(total)} lymph nodes contain`)
+      : `${uc1(word(pos))} of the lymph nodes ${pos === 1 ? 'contains' : 'contain'}`;
+    sentences.push(`${holds} isolated tumour cells${dep ? `, the largest cluster measuring ${dep}` : ''}.`);
+    const tx = treatmentSentence(v);
+    if (tx) sentences.push(tx);
     const ihc = ihcSentence(v);
     if (ihc) sentences.push(ihc);
     const rest = total - pos;
@@ -227,15 +348,26 @@ export function diagnosis(part) {
   const count = countPhrase(v);
   let text;
   if (isNegative(v)) {
-    text = `NO EVIDENCE OF MALIGNANCY ${count}`;
+    text = scarred(v) && totalNodes(v) > 0
+      ? `NO RESIDUAL METASTATIC CARCINOMA ${count}; fibrous scarring in keeping with treatment effect`
+      : `NO EVIDENCE OF MALIGNANCY ${count}`;
+  } else if (isItc(v)) {
+    text = `ISOLATED TUMOUR CELLS ONLY ${count}${responded(v) ? '; treatment effect present' : ''}`;
   } else if (isGranulomatous(v)) {
     const qual = v.granulomaType === 'Necrotising' ? ', necrotising' : '';
     text = `GRANULOMATOUS INFLAMMATION${qual}; no evidence of malignancy ${count}`;
   } else if (isMetastatic(v)) {
     const clauses = [`${tumourNoun(v).toUpperCase()} ${count}`];
-    const dep = String(v.largestDeposit || '').trim();
-    if (dep) clauses.push(`largest deposit ${/mm|cm/i.test(dep) ? dep : `${dep} mm`}`);
-    clauses.push(v.extranodal === 'Present' ? 'extranodal extension present' : 'no extranodal extension');
+    const dep = depositText(v);
+    const cat = metCategory(v).toLowerCase();
+    if (dep) clauses.push(`largest deposit ${dep}${cat ? ` (${cat})` : ''}`);
+    else if (cat) clauses.push(cat);
+    const loc = location(v);
+    if (loc) clauses.push(loc[1]);
+    const ext = eneExtent(v);
+    clauses.push(v.extranodal === 'Present' ? `extranodal extension present${ext ? ` (${ext.toLowerCase()})` : ''}`
+      : v.extranodal === 'Cannot be determined' ? 'extranodal extension cannot be determined' : 'no extranodal extension');
+    if (responded(v)) clauses.push('treatment effect present');
     const t = stripDot(v.tumourType);
     if (t && v.result !== 'Other metastatic tumour') clauses.push(t.charAt(0).toLowerCase() + t.slice(1));
     text = clauses.join('; ');
@@ -245,4 +377,44 @@ export function diagnosis(part) {
   return `(${part.label}) ${organPhrase(part)} - ${text}`;
 }
 
-export default { specimenName, macro, blockKey, microscopy, diagnosis };
+// ---------- checks ----------
+
+const fmtMm = (n) => String(Math.round(n * 100) / 100);
+
+/** Checks for the staging criteria; with the criteria "Not applied" nothing fires. */
+export function validate(part) {
+  const v = part.values;
+  const { out, at, warn } = checks();
+  const info = (m, field) => at('info', m, field);
+  const mm = depositMm(v);
+  if (isBreast(v)) {
+    if (v.result === 'Metastatic malignant melanoma') warn('Staging criteria Breast with a melanoma result: change the criteria to Melanoma, or the result.', 'criteria');
+    if (v.result === 'Metastatic carcinoma') {
+      const chosen = v.metCategory;
+      if (chosen === 'Macrometastasis' && mm !== null && mm <= 2) warn(`Macrometastasis with a largest deposit of ${fmtMm(mm)} mm: a macrometastasis is more than 2 mm.`, 'metCategory');
+      if (chosen === 'Micrometastasis' && mm !== null && mm > 2) warn(`Micrometastasis with a largest deposit of ${fmtMm(mm)} mm: a micrometastasis is more than 0.2 mm and up to 2 mm.`, 'metCategory');
+      if (chosen === 'Micrometastasis' && mm !== null && mm <= 0.2) info(`Micrometastasis with a largest deposit of ${fmtMm(mm)} mm: right only for more than 200 cells in a single cross-section.`, 'metCategory');
+      if (!chosen && mm !== null && mm <= 0.2) warn(`Largest deposit ${fmtMm(mm)} mm: choose the result "Isolated tumour cells", or the size category Micrometastasis for more than 200 cells in a single cross-section.`, 'metCategory');
+      if (!chosen && mm === null) info('Record the largest deposit (mm) or choose the size category: the report names the category from either.', 'largestDeposit');
+      if (v.extranodal === 'Present' && !eneExtent(v)) info('Extranodal extension present: choose the extent beyond the capsule (2 mm or less, or more than 2 mm).', 'eneExtent');
+    }
+    if (isItc(v)) {
+      if (mm !== null && mm > 0.2) warn(`Isolated tumour cells with a largest cluster of ${fmtMm(mm)} mm: isolated tumour cells measure 0.2 mm or less, so this is a metastasis.`, 'largestDeposit');
+      info('Isolated tumour cells only: pN0(i+); the node counts as examined, not as positive.', 'result');
+    }
+    const t = treatmentEffect(v);
+    if ((t === TREATMENT.scarring || t === TREATMENT.noScarring) && (v.result === 'Metastatic carcinoma' || isItc(v))) warn('The presurgical therapy answer says no metastasis but the result has tumour: change one of them.', 'treatmentEffect');
+    if ((t === TREATMENT.response || t === TREATMENT.noResponse) && isNegative(v)) warn('The presurgical therapy answer describes a metastasis but the result is negative: change one of them.', 'treatmentEffect');
+  }
+  if (isMelanomaCriteria(v)) {
+    if (v.result === 'Metastatic carcinoma') warn('Staging criteria Melanoma with a carcinoma result: change the criteria, or the result.', 'criteria');
+    if (isItc(v)) warn('Melanoma has no isolated tumour cell category: any tumour cells make the node positive. Choose the result "Metastatic malignant melanoma".', 'result');
+    if (v.result === 'Metastatic malignant melanoma') {
+      if (mm === null) info('Record the largest discrete deposit (mm), to the nearest 0.1 mm.', 'largestDeposit');
+      if (!location(v)) info('Choose the location of the deposits: subcapsular, intraparenchymal or both.', 'location');
+    }
+  }
+  return out;
+}
+
+export default { specimenName, macro, blockKey, microscopy, diagnosis, validate };

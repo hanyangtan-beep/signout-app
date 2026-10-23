@@ -355,16 +355,19 @@ export function matchParts(parsed, history, manifest) {
   // Every row carries the breast case's side, so a breast part whose line names none takes it whichever
   // form it ends up on (a margin picked by hand from Generic included).
   const caseSide = breastCaseSide(ctx);
+  // Every line of the request, so a sentinel node part can read the operation it came with (the staging
+  // criteria in presetValues: a sentinel node beside a hysterectomy is not a breast one).
+  const caseText = parsed.parts.map((p) => p.raw || p.text || '').join('\n');
   return parsed.parts.map((part) => {
     const role = roleOf(part, ctx, manifest);
     const candidates = scorePart(part, ctx, manifest);
-    if (role) return { ...part, templateId: role.templateId, tier: 'confident', role: role.role, caseSide, history: ctx.history, candidates };
+    if (role) return { ...part, templateId: role.templateId, tier: 'confident', role: role.role, caseSide, caseText, history: ctx.history, candidates };
     const best = candidates[0];
     const second = candidates[1];
-    if (!best || best.score < 0) return { ...part, templateId: GENERIC_ID, tier: 'none', role: null, caseSide, history: ctx.history, candidates };
-    if (!second || best.score - second.score >= 2) return { ...part, templateId: best.id, tier: 'confident', role: null, caseSide, history: ctx.history, candidates };
+    if (!best || best.score < 0) return { ...part, templateId: GENERIC_ID, tier: 'none', role: null, caseSide, caseText, history: ctx.history, candidates };
+    if (!second || best.score - second.score >= 2) return { ...part, templateId: best.id, tier: 'confident', role: null, caseSide, caseText, history: ctx.history, candidates };
     // Weak evidence (an organ word alone): offer the candidates but start from the generic form.
-    return { ...part, templateId: best.score >= 2 ? best.id : GENERIC_ID, tier: 'choose', role: null, caseSide, history: ctx.history, candidates };
+    return { ...part, templateId: best.score >= 2 ? best.id : GENERIC_ID, tier: 'choose', role: null, caseSide, caseText, history: ctx.history, candidates };
   });
 }
 
@@ -477,6 +480,38 @@ export function her2IshValues(schema, text) {
   return values;
 }
 
+// ---- Sentinel node staging criteria (Phase 76, docs/specs/sentinel-node.md) ------------------------
+// Measured on the 2021-2026 biopsy and 2024-2026 LIS exports (sentinel lines that open the Lymph node
+// form): most name no site at all; the rest name the breast or axilla, a pelvic, groin or neck region, or
+// sit beside a uterine or adnexal operation in the same request. No line or diagnosis named melanoma.
+const SENTINEL_LINE = /sentinel|\bSLN/i; // "SLN", "SLNB", "SLN1", "SLNs"
+const MELANOMA_CUE = /melanoma/i;
+// \baxill, not axill: "maxillary" would match.
+const BREAST_CUE = /\bbreast|\baxill|\bmastectom|\blumpectom/i;
+const NODE_REGION = /\b(?:pelvic|obturator|iliac|para[- ]?aortic|groin|inguinal|neck|levels?\b|cervical|submandibular|submental|parotid)/i;
+const OTHER_PRIMARY = /\b(?:uter|endometr|corpus\b|cervi[cx]|vulv|ovar|salping|fallopian|hysterectom|TAH|vagin|tongue|oral\b|buccal|floor of (?:the )?mouth|penis|penile)/i;
+
+/**
+ * Staging criteria for a sentinel node line: 'Melanoma' when the request names melanoma anywhere,
+ * 'Breast' when the line names the breast or axilla, '' for a pelvic, groin or neck line, then the other
+ * lines of the request, then the history: a breast operation gives 'Breast', a uterine, adnexal, vulval,
+ * oral or penile one gives ''. A sentinel line with no cue anywhere is a breast one. `undefined` for a
+ * line that is not a sentinel node.
+ */
+export function sentinelCriteria(line, history = '', caseText = '') {
+  if (!SENTINEL_LINE.test(line || '')) return undefined;
+  if (MELANOMA_CUE.test(`${line}\n${history}\n${caseText}`)) return 'Melanoma';
+  if (BREAST_CUE.test(line)) return 'Breast';
+  if (NODE_REGION.test(line)) return '';
+  for (const hay of [caseText, history]) {
+    const breast = BREAST_CUE.test(hay || '');
+    const other = OTHER_PRIMARY.test(hay || '');
+    if (breast && !other) return 'Breast';
+    if (other && !breast) return '';
+  }
+  return 'Breast';
+}
+
 /** Values to pre-fill on the new part; conservative — only fields whose meaning is certain. */
 export function presetValues(schema, part, match = {}) {
   const values = {};
@@ -504,6 +539,9 @@ export function presetValues(schema, part, match = {}) {
     const opts = field('procedure')?.options || [];
     const proc = /sentinel/i.test(text) ? 'Sentinel lymph node biopsy' : /dissection/i.test(text) ? 'Dissection' : /resection/i.test(text) ? 'Resection' : 'Excision';
     if (opts.includes(proc)) values.procedure = proc;
+    // Always set on a sentinel line, so the procedure's linked default (Breast) cannot override a ''.
+    const criteria = sentinelCriteria(text, match.history || '', match.caseText || '');
+    if (criteria !== undefined && (field('criteria')?.options || []).includes(criteria)) values.criteria = criteria;
     return values;
   }
   // Breast excision form: the part's line goes into "Specimen as received" as written, and the side and

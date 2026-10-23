@@ -1,6 +1,6 @@
 {
   "id": "lymph_node",
-  "version": "2026.09",
+  "version": "2026.10",
   "name": "Lymph node excision",
   "shortName": "Lymph node · excision",
   "label": "Lymph node",
@@ -109,6 +109,70 @@
       "default": "Excision"
     },
     {
+      "id": "criteria",
+      "label": "Staging criteria",
+      "type": "select",
+      "options": [
+        "",
+        "Breast",
+        "Melanoma"
+      ],
+      "optionLabels": {
+        "": "Not applied",
+        "Breast": "Breast carcinoma",
+        "Melanoma": "Melanoma"
+      },
+      "default": "",
+      "defaultByField": {
+        "field": "procedure",
+        "map": {
+          "Sentinel lymph node biopsy": "Breast"
+        }
+      },
+      "reference": {
+        "title": "Sentinel and regional node criteria",
+        "intro": "For reference while choosing; nothing here prints.",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "Breast: the largest deposit",
+            "points": [
+              "Macrometastasis: more than 2 mm.",
+              "Micrometastasis: more than 0.2 mm and up to 2 mm, or more than 200 cells in a single cross-section; pN1mi when none is larger.",
+              "Isolated tumour cells: single cells or clusters 0.2 mm or less, or fewer than 200 cells in a single cross-section, on H&E or immunohistochemistry; pN0(i+), counted as examined but not as positive.",
+              "Measure the largest group of touching tumour cells, including any part outside the node or in an adjacent lymphatic; the distance between clusters is not added.",
+              "More than 200 dispersed or nearly confluent cells in one section of a node is a micrometastasis (about 1000 cells fill a 0.2 mm cluster). The 200 cells must lie in a single node profile; cells in different sections or levels are not added. The threshold is a guide: judge whether the cluster is a true micrometastasis."
+            ]
+          },
+          {
+            "heading": "Extranodal extension",
+            "points": [
+              "Tumour extending through the lymph node capsule into the adjacent tissue.",
+              "Extent beyond the capsule: 2 mm or less, or more than 2 mm; measured perpendicular to the capsule or in another dimension, the larger measurement preferred.",
+              "The part outside the node is included in the size of the deposit."
+            ]
+          },
+          {
+            "heading": "Breast: after presurgical therapy",
+            "points": [
+              "ypN uses the largest contiguous focus of residual tumour; treatment-related fibrosis beside it is not measured.",
+              "Treatment effect in the nodes: no definite response in metastatic carcinoma; metastatic carcinoma with response (for example small deposits within fibrosis); no metastasis but fibrous scarring or histiocytic aggregates, possibly a prior metastasis with complete response; no metastasis and no scarring or aggregates."
+            ]
+          },
+          {
+            "heading": "Melanoma",
+            "points": [
+              "Any metastatic tumour cells, however few, on H&E or immunohistochemistry make the node positive; there is no isolated tumour cell category.",
+              "Record the largest discrete deposit (cells in direct continuity) to the nearest 0.1 mm: the largest single deposit, not the area the deposits are scattered over.",
+              "Location: subcapsular sinus, nodal parenchyma, or both.",
+              "Nodal naevus: bland cells in the capsule and trabeculae, no mitoses, minimal HMB45 and Ki-67 below 2%; isolated Melan-A-positive cells are not overinterpreted."
+            ]
+          }
+        ],
+        "note": "Breast: AJCC 8th edition as given in the CAP breast protocol 4.11 (June 2026) and the QMH template. Melanoma: AJCC 8th edition, the ICCR melanoma dataset and the CAP melanoma protocol."
+      }
+    },
+    {
       "id": "nodesReceived",
       "label": "Number of lymph nodes received",
       "type": "number",
@@ -181,6 +245,7 @@
         "Negative - reactive",
         "Negative - unremarkable",
         "Granulomatous inflammation",
+        "Isolated tumour cells",
         "Metastatic carcinoma",
         "Metastatic malignant melanoma",
         "Other metastatic tumour",
@@ -190,7 +255,7 @@
     },
     {
       "id": "positiveNodes",
-      "label": "Positive nodes",
+      "label": "Nodes involved",
       "type": "number",
       "min": 0,
       "step": 1,
@@ -198,6 +263,7 @@
       "showIf": {
         "field": "result",
         "is": [
+          "Isolated tumour cells",
           "Metastatic carcinoma",
           "Metastatic malignant melanoma",
           "Other metastatic tumour"
@@ -213,9 +279,65 @@
       "showIf": {
         "field": "result",
         "is": [
+          "Isolated tumour cells",
           "Metastatic carcinoma",
           "Metastatic malignant melanoma",
           "Other metastatic tumour"
+        ]
+      }
+    },
+    {
+      "id": "metCategory",
+      "label": "Size category",
+      "type": "select",
+      "options": [
+        "",
+        "Macrometastasis",
+        "Micrometastasis"
+      ],
+      "optionLabels": {
+        "": "From the largest deposit",
+        "Macrometastasis": "Macrometastasis (more than 2 mm)",
+        "Micrometastasis": "Micrometastasis (more than 0.2 mm to 2 mm, or more than 200 cells)"
+      },
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "criteria",
+            "is": "Breast"
+          },
+          {
+            "field": "result",
+            "is": "Metastatic carcinoma"
+          }
+        ]
+      }
+    },
+    {
+      "id": "location",
+      "label": "Location in the node",
+      "type": "select",
+      "options": [
+        "",
+        "Subcapsular",
+        "Intraparenchymal",
+        "Subcapsular and intraparenchymal"
+      ],
+      "optionLabels": {
+        "": "Not stated"
+      },
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "criteria",
+            "is": "Melanoma"
+          },
+          {
+            "field": "result",
+            "is": "Metastatic malignant melanoma"
+          }
         ]
       }
     },
@@ -225,8 +347,12 @@
       "type": "select",
       "options": [
         "Absent",
-        "Present"
+        "Present",
+        "Cannot be determined"
       ],
+      "optionLabels": {
+        "Absent": "Not identified"
+      },
       "default": "Absent",
       "showIf": {
         "field": "result",
@@ -234,6 +360,36 @@
           "Metastatic carcinoma",
           "Metastatic malignant melanoma",
           "Other metastatic tumour"
+        ]
+      }
+    },
+    {
+      "id": "eneExtent",
+      "label": "Extranodal extent",
+      "type": "select",
+      "options": [
+        "",
+        "2 mm or less",
+        "More than 2 mm"
+      ],
+      "optionLabels": {
+        "": "Not stated"
+      },
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "result",
+            "is": [
+              "Metastatic carcinoma",
+              "Metastatic malignant melanoma",
+              "Other metastatic tumour"
+            ]
+          },
+          {
+            "field": "extranodal",
+            "is": "Present"
+          }
         ]
       }
     },
@@ -249,6 +405,42 @@
           "Metastatic carcinoma",
           "Metastatic malignant melanoma",
           "Other metastatic tumour"
+        ]
+      }
+    },
+    {
+      "id": "treatmentEffect",
+      "label": "Presurgical therapy",
+      "type": "select",
+      "options": [
+        "No known presurgical therapy",
+        "Presurgical therapy, no definite response",
+        "Presurgical therapy, metastasis with treatment effect",
+        "Presurgical therapy, fibrous scarring and no metastasis",
+        "Presurgical therapy, no metastasis and no scarring"
+      ],
+      "optionLabels": {
+        "Presurgical therapy, no definite response": "Metastasis, no definite response to therapy",
+        "Presurgical therapy, metastasis with treatment effect": "Metastasis with evidence of response to therapy",
+        "Presurgical therapy, fibrous scarring and no metastasis": "No metastasis; fibrous scarring or histiocytic aggregates",
+        "Presurgical therapy, no metastasis and no scarring": "No metastasis; no fibrous scarring or histiocytic aggregates"
+      },
+      "default": "No known presurgical therapy",
+      "showIf": {
+        "all": [
+          {
+            "field": "criteria",
+            "is": "Breast"
+          },
+          {
+            "field": "result",
+            "is": [
+              "Negative - reactive",
+              "Negative - unremarkable",
+              "Isolated tumour cells",
+              "Metastatic carcinoma"
+            ]
+          }
         ]
       }
     },
@@ -345,6 +537,7 @@
         "values": {
           "specimenName": "right SLN1",
           "procedure": "Excision",
+          "criteria": "Breast",
           "nodesReceived": "1",
           "tissue": "Fibroadipose tissue with node(s)",
           "tissueSize": "2.5 x 1.5 x 1",
