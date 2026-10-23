@@ -131,7 +131,27 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. The Phase 72 batch (the skin excision site copied from the specimen line and naevus lipomatosus cutaneous superficialis, both S, user request 2026-10-23) shipped on 2026-10-23; the site card's write-up is in `docs/specs/specimen-intake.md` (Skin excision site) and the new lesion's sources in `docs/reference/skin-excision-benign-sources.md`. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+Two S cards from the user's request of 2026-10-23. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+
+### Skin cyst — site copied from the specimen line (user request 2026-10-23)   Size: S
+Why:        Site opens blank on Skin cyst unless the line has three pieces, although the site is on the specimen line ("Skin, Left groin sebaceous cyst", "left neck trichilemmal cyst"); the user asked for the Skin excision fix here on 2026-10-23.
+Change:     the Skin excision Site rule, with additions measured on the cyst lines: a lesion word that opens a piece is dropped ("sebaceous cyst left forehead" gives left forehead), a margin on a named site blanks, and trichilemmal, dermoid and misspelt sebaceous are cut. A new `dedupe` option copies a site the line repeats only once ("Right back sebaceous cyst, Right back" gives right back); it is set on the three skin forms only. Schema 2026.10.
+Untouched:  routing (no line in either export changes route); the prefill of every other form, Skin excision included; the golden fixtures.
+Accept:     "Skin, Left groin sebaceous cyst" gives left groin; "Right back sebaceous cyst, Right back" gives right back; "cyst wall biopsy" stays blank; the diagnosis prints "SKIN, left groin seb cyst, excision - EPIDERMAL CYST".
+Verify:     tests only
+Ship:       with batch
+Depends on: none
+Spec:       card is the spec
+
+### Skin SCC — site copied from the specimen line (user request 2026-10-23)   Size: S
+Why:        Site opens blank on Skin SCC for a line such as "Left cheek SCC, stitch at 12 oc", so the specimen prints from the tumour site and laterality, or with no site when the site list has no match; the user asked for the same fix on 2026-10-23.
+Change:     the same rule as Skin cyst, one identical strip on the three skin forms; "short long" before a stitch is cut. With no site on the line the specimen still prints the tumour site and laterality. Schema stays 2026.10.
+Untouched:  the tumour site and laterality fills; the synoptic; the golden fixtures.
+Accept:     "Left cheek SCC, stitch at 12 oc" gives left cheek and prints "Skin, left cheek, excision"; "right preauricular SCC, short long stitch at 12 oclock" gives right preauricular; "Skin, Lower lip ?SCC" gives lower lip.
+Verify:     tests only
+Ship:       with batch
+Depends on: none
+Spec:       card is the spec
 
 ## Next
 
