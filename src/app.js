@@ -2469,6 +2469,18 @@ function initKeys() {
 }
 
 // ---------- boot ----------
+/**
+ * Start the offline copy (src/offline.js). When it already runs this tab its files are on the
+ * computer and it starts at once, so a release that is waiting is taken at the first break. On a
+ * first open it waits until the page has loaded, so it never competes with start-up for the network.
+ */
+function scheduleOffline() {
+  const later = () => setTimeout(startOffline, 1000);
+  if (navigator.serviceWorker?.controller) startOffline();
+  else if (document.readyState === 'complete') later();
+  else window.addEventListener('load', later, { once: true });
+}
+
 async function boot() {
   initTheme();
   initDensity();
@@ -2491,6 +2503,9 @@ async function boot() {
     });
     if (decision !== 'open') {
       if (back?.error) toast(back.error === 'access_denied' ? 'Google sign-in was cancelled' : `Google sign-in failed: ${back.error}`);
+      // The sign-in screen starts the offline copy too, so a computer has it from its first open:
+      // it holds the app's own files, which this screen has just loaded, and nothing from Google.
+      scheduleOffline();
       return showGate(decision);
     }
   }
@@ -2538,13 +2553,7 @@ async function boot() {
   nodes.lisCapture?.addEventListener('click', captureFromLis);
   nodes.revertAll.addEventListener('click', revertAllEdits);
   initKeys();
-  // The offline copy (src/offline.js): when it already runs this tab its files are on the computer
-  // and it starts at once, so a release that is waiting is taken at the first break. On a first
-  // open it waits until the page has loaded, so it never competes with start-up for the network.
-  const later = () => setTimeout(startOffline, 1000);
-  if (navigator.serviceWorker?.controller) startOffline();
-  else if (document.readyState === 'complete') later();
-  else window.addEventListener('load', later, { once: true });
+  scheduleOffline();
 }
 
 boot().catch((err) => {

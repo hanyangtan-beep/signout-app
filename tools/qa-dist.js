@@ -3,7 +3,7 @@
 // checks what is deployed: the bundled code writes every template's report exactly as the source
 // does, start-up needs few rounds of requests, the CNS code waits for a CNS form, and the offline
 // copy works - stored on the first open, used on the next, updated file by file, handed over at
-// New case, removed by ?nosw - without storing anything from Google.
+// New case, removed by ?nosw, started on the sign-in screen too - without storing anything from Google.
 //
 //   node tools/qa-dist.js            (after `npm run build`)
 //   QA_ONLY=offline node tools/qa-dist.js   runs the checks whose name matches
@@ -307,6 +307,41 @@ await check('offline copy: ?nosw removes the worker and its files and keeps it o
   await ready(sp);
   await until(sp, async () => (await navigator.serviceWorker.getRegistrations()).length > 0, null, { timeout: 10000 });
   return 'no worker and no stored files, still none after a reload; ?sw registers it again';
+});
+
+// The sign-in gate is off on localhost itself (src/gate.js) but on for any other name. Chrome sends
+// every *.localhost name to this machine and counts it as secure, so a service worker may run there.
+await check('offline copy: the sign-in screen starts it too, with the gate on', async () => {
+  const origin = 'http://signout.localhost:8742';
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } });
+  try {
+    const page = await ctx.newPage();
+    const errors = watch(page);
+    const gate = () => page.waitForFunction(() => document.documentElement.dataset.gate === 'signin' && !document.querySelector('#gate').hidden, null, { timeout: 15000 })
+      .catch(() => { throw new Error('the sign-in screen did not show'); });
+    await page.goto(`${origin}/`);
+    await gate();
+    assert(!(await page.locator('#report-blocks .block').count()), 'a case was built behind the sign-in screen');
+    await page.waitForFunction(() => !!navigator.serviceWorker.controller, null, { timeout: 15000 })
+      .catch(() => { throw new Error('no offline copy took charge of the sign-in screen within 15 s'); });
+    const stored = () => page.evaluate(async () => (await (await window.caches.open('signout-files')).keys()).map((r) => r.url));
+    let keys = [];
+    for (let i = 0; i < 120; i++) { keys = await stored(); if (keys.length >= expectWarm) break; await page.waitForTimeout(250); }
+    assert(keys.length >= expectWarm, `${keys.length} files stored at the sign-in screen, expected ${expectWarm}`);
+    const foreign = keys.filter((k) => !k.startsWith(`${origin}/`));
+    assert(!foreign.length, `stored from elsewhere: ${foreign.slice(0, 3).join(', ')}`);
+    const before = dist.log.length;
+    await page.reload();
+    await gate();
+    await page.waitForTimeout(300);
+    const fetched = dist.log.slice(before).map(pathOf).filter((p) => p !== 'sw.js' && p !== 'favicon.svg');
+    assert(!fetched.length, `fetched from the host on the second open: ${fetched.slice(0, 6).join(', ')}`);
+    const fatal = fatalErrors(errors);
+    assert(!fatal.length, `console errors:\n${fatal.slice(0, 5).join('\n')}`);
+    return `${keys.length} files stored before anyone signed in; the next open of the sign-in screen came from the computer`;
+  } finally {
+    await ctx.close();
+  }
 });
 
 await check('offline copy: no console errors across the offline checks', async () => {
