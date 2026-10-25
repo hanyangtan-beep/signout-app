@@ -149,16 +149,18 @@ export async function finalise(outDir, { root = ROOT } = {}) {
  *          (docs/specs/speed.md). Either way the page then reloads without the parameter.
  *   Otherwise, unless the offline copy answers this tab, it preloads the app, its chunks, the
  *   template lists and the template this tab opens (its draft's, one per part, else the default).
+ * In a sandboxed frame reading navigator.serviceWorker or caches throws; it then preloads as on a first open.
  */
 export function preloadScript() {
   return [
     '(function(){',
-    'var q=new URLSearchParams(location.search),sw=navigator.serviceWorker;',
+    'var q=new URLSearchParams(location.search),sw=null;try{sw=navigator.serviceWorker||null}catch(e){}',
     'function clean(k){q.delete(k);var s=q.toString();location.replace(location.pathname+(s?"?"+s:"")+location.hash)}',
     'if(q.has("sw")){try{localStorage.removeItem("signout.nosw")}catch(e){}clean("sw");return}',
-    'if(q.has("nosw")){try{localStorage.setItem("signout.nosw","1")}catch(e){}',
-    'Promise.all([sw?sw.getRegistrations().then(function(r){return Promise.all(r.map(function(x){return x.unregister()}))}):0,',
-    'window.caches?caches.keys().then(function(k){return Promise.all(k.map(function(n){return caches.delete(n)}))}):0]).catch(function(){}).then(function(){clean("nosw")});return}',
+    'if(q.has("nosw")){try{localStorage.setItem("signout.nosw","1")}catch(e){}var w=[];',
+    'try{if(sw)w.push(sw.getRegistrations().then(function(r){return Promise.all(r.map(function(x){return x.unregister()}))}));',
+    'if(window.caches)w.push(caches.keys().then(function(k){return Promise.all(k.map(function(n){return caches.delete(n)}))}))}catch(e){}',
+    'Promise.all(w).catch(function(){}).then(function(){clean("nosw")});return}',
     'if(sw&&sw.controller)return;',
     'var d;try{d=JSON.parse(document.getElementById("signout-files").textContent)}catch(e){return}',
     'var seen={},head=document.head;function add(rel,href,fetchAs){if(seen[href])return;seen[href]=1;var l=document.createElement("link");l.rel=rel;l.href=href;if(fetchAs){l.as="fetch";l.crossOrigin="anonymous"}head.appendChild(l)}',

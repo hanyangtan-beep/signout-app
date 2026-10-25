@@ -10,6 +10,19 @@ let stale = false; // another tab handed over to a newer release; this one reloa
 
 const idle = (fn) => (window.requestIdleCallback ? window.requestIdleCallback(fn, { timeout: 5000 }) : setTimeout(fn, 1500));
 
+/**
+ * The browser's service workers, or null. In a sandboxed frame (a deploy preview) merely reading
+ * navigator.serviceWorker throws, so every read goes through here and the app starts without the copy.
+ */
+function workers() {
+  try { return navigator.serviceWorker || null; } catch { return null; }
+}
+
+/** Does the offline copy already answer this tab? */
+export function offlineRunning() {
+  return !!workers()?.controller;
+}
+
 /** Turned off in this browser with ?nosw (back on with ?sw; the start-up script in index.html sets it). */
 function turnedOff() {
   try { return window.localStorage.getItem('signout.nosw') === '1'; } catch { return false; }
@@ -17,22 +30,22 @@ function turnedOff() {
 
 /** Is the offline copy wanted here? A built site on a secure origin, a browser with service workers, not turned off. */
 export function offlineSupported(loc = window.location) {
-  return !!buildId() && 'serviceWorker' in navigator && window.isSecureContext && !turnedOff() && !new URLSearchParams(loc.search).has('nosw');
+  return !!buildId() && !!workers() && window.isSecureContext && !turnedOff() && !new URLSearchParams(loc.search).has('nosw');
 }
 
 /** Turned off: clear away anything a worker in another tab stored since. */
 async function clearAway() {
   try {
-    await Promise.all((await navigator.serviceWorker.getRegistrations()).map((r) => r.unregister()));
+    await Promise.all((await workers().getRegistrations()).map((r) => r.unregister()));
     if (window.caches) await window.caches.delete('signout-files');
   } catch { /* nothing to clear */ }
 }
 
 /** Register the worker and warm the cache once it is in charge. Never throws; the app works without it. */
 export async function startOffline() {
-  if (buildId() && 'serviceWorker' in navigator && turnedOff()) return clearAway();
+  if (buildId() && workers() && turnedOff()) return clearAway();
   if (!offlineSupported()) return;
-  const sw = navigator.serviceWorker;
+  const sw = workers();
   const hadController = !!sw.controller;
   try {
     registration = await sw.register('sw.js', { updateViaCache: 'none' });
@@ -63,7 +76,7 @@ export async function handOver() {
   if (!waiting) return;
   await new Promise((resolve) => {
     const done = setTimeout(resolve, 3000);
-    navigator.serviceWorker.addEventListener('controllerchange', () => { clearTimeout(done); resolve(); }, { once: true });
+    workers().addEventListener('controllerchange', () => { clearTimeout(done); resolve(); }, { once: true });
     waiting.postMessage({ type: 'activate' });
   });
 }

@@ -344,6 +344,36 @@ await check('offline copy: the sign-in screen starts it too, with the gate on', 
   }
 });
 
+// In a sandboxed frame (a deploy preview) merely reading navigator.serviceWorker or caches throws a
+// SecurityError. The app has to start there without the copy: the workspace and the sign-in screen.
+await check('offline copy: where reading it throws (a sandboxed frame), the workspace and the sign-in screen still start', async () => {
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } });
+  await ctx.addInitScript(() => {
+    const refuse = (name) => ({ configurable: true, get() { throw new window.DOMException(`Failed to read the '${name}' property: the context is sandboxed`, 'SecurityError'); } });
+    Object.defineProperty(window.Navigator.prototype, 'serviceWorker', refuse('serviceWorker'));
+    Object.defineProperty(window, 'caches', refuse('caches'));
+  });
+  try {
+    const page = await ctx.newPage();
+    const errors = watch(page);
+    const failed = () => page.evaluate(() => /Failed to start/.test(document.body.innerText));
+    await page.goto('http://localhost:8742/');
+    await ready(page);
+    await page.waitForTimeout(1500); // past the moment the copy would start
+    assert(!(await failed()), 'the workspace shows "Failed to start"');
+    await page.goto('http://signout.localhost:8742/');
+    await page.waitForFunction(() => document.documentElement.dataset.gate === 'signin' && !document.querySelector('#gate').hidden, null, { timeout: 15000 })
+      .catch(() => { throw new Error('the sign-in screen did not show'); });
+    await page.waitForTimeout(1500);
+    assert(!(await failed()), 'the sign-in screen shows "Failed to start"');
+    const fatal = fatalErrors(errors);
+    assert(!fatal.length, `console errors:\n${fatal.slice(0, 5).join('\n')}`);
+    return 'both start, with no error and no copy';
+  } finally {
+    await ctx.close();
+  }
+});
+
 await check('offline copy: no console errors across the offline checks', async () => {
   const fatal = fatalErrors(stageErrors);
   assert(!fatal.length, fatal.slice(0, 5).join('\n'));

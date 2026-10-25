@@ -1,7 +1,7 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
 import { loadManifest, loadPlanned, loadTemplate } from './registry.js';
-import { startOffline, releaseReady, handOver } from './offline.js';
+import { startOffline, offlineRunning, releaseReady, handOver } from './offline.js';
 import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, rowOfKind, KIND_LABEL } from './picker.js';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, caseOptions, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset,
@@ -2476,7 +2476,7 @@ function initKeys() {
  */
 function scheduleOffline() {
   const later = () => setTimeout(startOffline, 1000);
-  if (navigator.serviceWorker?.controller) startOffline();
+  if (offlineRunning()) startOffline();
   else if (document.readyState === 'complete') later();
   else window.addEventListener('load', later, { once: true });
 }
@@ -2503,10 +2503,12 @@ async function boot() {
     });
     if (decision !== 'open') {
       if (back?.error) toast(back.error === 'access_denied' ? 'Google sign-in was cancelled' : `Google sign-in failed: ${back.error}`);
+      showGate(decision);
       // The sign-in screen starts the offline copy too, so a computer has it from its first open:
       // it holds the app's own files, which this screen has just loaded, and nothing from Google.
+      // After the screen is up, so the copy can never stand in its way.
       scheduleOffline();
-      return showGate(decision);
+      return;
     }
   }
   [state.manifest, state.planned] = await Promise.all([loadManifest(), loadPlanned()]); // both preloaded by index.html on a build

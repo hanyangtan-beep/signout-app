@@ -29,7 +29,7 @@ Untouched by all three: report text, every fixture, the templates, the Doc text 
 - A release: only the changed files download, in the background. A tab stays on the release it opened with until New case or Save & new; then it reloads on the same template and shows the same note. So the first open after a release can still show the previous one, until the first New case. Once every tab of the app has been closed, the next open starts on the newest release already downloaded. The worker keeps the current and previous releases' files and deletes older ones.
 - Nothing from another address is stored: no Google response, case, report, accession number or sign-in. Drafts stay in the tab's own storage, as before.
 - Several computers: each keeps its own copy and nothing syncs between them; cases still move through Drive. A computer unused for weeks downloads only what changed since its last visit.
-- Where it does not help: browsers that clear their data at log-off or when closed (the copy goes too, and the app loads from the host as before), private windows, and browsers without service workers.
+- Where it does not help: browsers that clear their data at log-off or when closed (the copy goes too, and the app loads from the host as before), private windows, browsers without service workers, and sandboxed frames such as a deploy preview, where the app starts without it.
 - Recovery: open `https://han-signout.pplx.app/?nosw`. It removes the worker and its files and keeps the copy off in that browser; `?sw` turns it back on. Either way the page then reloads without the parameter.
 
 ## Faster saves
@@ -55,9 +55,9 @@ Opening the app again with the offline copy took 0.28 s at 200 ms and 0.25 s at 
 ## Checks
 
 - `tests/swlogic.test.js`: which stored file answers a request, what a release still fetches, what is kept, and hashing as the build does.
-- `tests/build.test.js`: the build into a temporary folder; every hash, the page's file map, the install list, the CNS chunks kept out of start-up, a release id that changes only with the files, and the preloads for a draft and for a fresh tab.
+- `tests/build.test.js`: the build into a temporary folder; every hash, the page's file map, the install list, the CNS chunks kept out of start-up, a release id that changes only with the files, and the preloads for a draft, for a fresh tab and where reading the service worker throws.
 - `tests/drive_speed.test.js`: the calls and rounds of each save, the sorted-Sheet and missing-reply fallbacks, Doc reuse and re-creation, the Open list and the one-row open.
 - `tests/gauth.test.js`: `login_hint` and when a sign-in is renewed.
-- `tools/qa-dist.js` (`npm run qa:dist`, and a step of `npm run release` after the build): 80 templates the same as the source, start-up rounds, CNS loading, and the offline copy's first open, offline open, release, hand-over at New case, `?nosw` / `?sw`, and its start on the sign-in screen (opened as `signout.localhost`, where the gate is on), with no console error or unused preload.
+- `tools/qa-dist.js` (`npm run qa:dist`, and a step of `npm run release` after the build): 80 templates the same as the source, start-up rounds, CNS loading, and the offline copy's first open, offline open, release, hand-over at New case, `?nosw` / `?sw`, its start on the sign-in screen (opened as `signout.localhost`, where the gate is on), and a start where reading it throws, with no console error or unused preload.
 - `tools/qa-browser.js`: New case renews a sign-in near its end, for the same account, back on a blank case of the same template.
-- Found on the live site the same day: the first build started the copy only after a sign-in, because the sign-in screen returned before the copy was started, and the gate is off on `localhost`, where the QA ran. The sign-in screen now starts it too.
+- Found after the first release, the same day: the copy started only after a sign-in, because the sign-in screen returned before the copy was started, and the gate is off on `localhost`, where the QA ran. The sign-in screen now starts it too, once the screen is up. The deploy preview then showed that in a sandboxed frame merely reading `navigator.serviceWorker` throws, which stopped start-up with "Failed to start"; every read is now guarded.

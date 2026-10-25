@@ -112,6 +112,17 @@ test('the start-up script preloads the app and the templates of the tab\'s draft
   assert.equal(new Set(draft).size, draft.length, 'a file preloaded twice');
 });
 
+test('the start-up script still preloads where reading navigator.serviceWorker throws (a sandboxed frame)', () => {
+  const data = pageData(html);
+  const dom = new JSDOM(html.replace(/<script\b[^>]*src=[^>]*><\/script>/g, ''), { url: 'https://han-signout.pplx.app/', runScripts: 'outside-only' });
+  Object.defineProperty(dom.window.navigator, 'serviceWorker', {
+    get() { throw new dom.window.DOMException('Service worker is disabled because the context is sandboxed', 'SecurityError'); }
+  });
+  dom.window.eval(startScript(html));
+  const hrefs = [...dom.window.document.querySelectorAll('link[rel="modulepreload"], link[rel="preload"]')].map((l) => l.getAttribute('href'));
+  for (const href of [...data.boot.modules, ...data.boot.fetches]) assert.ok(hrefs.includes(href), href);
+});
+
 test('chunk imports are read from the bundled code, and followed to the end', () => {
   assert.deepEqual(staticImports('generators/x.js', 'import{a as b}from"../chunks/c-1.js";import"./d.js";const e=import("../chunks/lazy.js")'), ['chunks/c-1.js', 'generators/d.js']);
   const graph = { a: ['b', 'c'], b: ['c'], c: ['d'], d: [] };
