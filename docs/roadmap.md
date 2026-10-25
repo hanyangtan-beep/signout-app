@@ -2,13 +2,19 @@
 
 Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item, newest first. The app's Roadmap panel is built from this file, so a change here is rebuilt, deployed and published (user decision 2026-09-29); other docs-only changes are committed only. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`; the full Done write-ups to 2026-09-25 are in `docs/done-log.md`.
 
-State on 2026-10-23: 80 templates (19 small biopsy, 31 benign resection incl. LEEP, 1 frozen section, 20 synoptic cancer resections, 1 lymph node for lymphoma, 6 cytology, 1 biomarker, 1 generic), 2003 tests, published at `https://han-signout.pplx.app`.
+State on 2026-10-25: 80 templates (19 small biopsy, 31 benign resection incl. LEEP, 1 frozen section, 20 synoptic cancer resections, 1 lymph node for lymphoma, 6 cytology, 1 biomarker, 1 generic), 2030 tests, published at `https://han-signout.pplx.app`.
 
 ---
 
 ## Done
 
 Newest first. The full write-ups as they stood at ship time are in `docs/done-log.md`.
+
+- 2026-10-25 — Faster saves (user request): a case new to the tab saves in three rounds of Google calls rather than five in a row: one read of the accession and Doc id columns (no saved case's JSON) alongside the folder check, then the Doc, then the row. A re-save writes the Doc while it checks that the row seen last still holds the accession, then writes the row: two rounds rather than three. A Sheet sorted by hand sends the write to wherever the accession is now; an accession already in the Sheet reuses its Doc, and a Doc deleted in Drive is made again. Open lists cases from columns A to G and reads only the case picked. At New case or Save & new a sign-in with under 10 minutes left is renewed there and then, and every redirect to Google names the signed-in account (`login_hint`). The Doc text and Sheet columns are unchanged. Tests: `tests/drive_speed.test.js`. Spec: `docs/specs/speed.md`. Phase 79.
+
+- 2026-10-25 — Keep the app on the computer (user request): each computer keeps its own copy of the app in a service worker: the files that open the app, then every template in the background (about 3.6 MB), and reference photographs once viewed; nothing from Google, and no case, report or sign-in. Opening again took 0.28 s with every response held back 200 ms, and the app opens with the network off. Every file is named by its content, so a release downloads only what changed; a tab stays on its release until New case or Save & new, then reloads on the same template. `?nosw` removes the copy and keeps it off in that browser, and `?sw` turns it back on. `npm run release` now runs a QA of the built site (`tools/qa-dist.js`). Spec: `docs/specs/speed.md`. Phase 79.
+
+- 2026-10-25 — Faster start-up (user request): the build bundles the app and the generators with esbuild (the source tree stays unbundled), the CNS code loads only when a CNS form opens, and a start-up script preloads the app, the template lists and the template the tab opens. With every response held back 200 ms the first report took 1.07 s rather than 2.07 s (0.45 s rather than 1.46 s at 100 ms), from 15 requests rather than 35; start-up code is 64.7 kB compressed rather than about 163 kB. Every template writes the same report from the build as from the source, blank and with its example. The report text and every fixture are unchanged. Spec: `docs/specs/speed.md`. 80 templates, 2030 tests. Phase 79.
 
 - 2026-10-23 — Vulval carcinoma — reference galleries (user request): eight panels on Vulva Ca, which never print, with photographs of vulval lesions only (the user left out stand-ins from other sites): histological type (6 groups, 10 photographs), depth of invasion (the Bleeker et al. schematic and four annotated sections with the FIGO 2021, conventional and tumour thickness lines, their captions quoting the authors' survey), tumour border (4), squamous precursors at a margin (6), Paget disease at a margin (1; Paget disease now has its own panel, on its margin field), regional lymph nodes (the AJCC version 9 categories as text, no photograph), p16 (5) and p53 (the cervical biopsy panel under this form's option names, 7). 22 new images from open-access articles and 12 reused from the cervical biopsy galleries. A gallery group can now list links: 12 lead to 6 ExpertPath topics, which open with the reader's own ExpertPath login, and the app holds none of their images. Fix: the depth of invasion help gives the FIGO 2021 wording (the deepest adjacent dysplastic, tumour-free rete ridge, or the nearest dysplastic rete peg); it said "dysplasia-free". The report text and every fixture are unchanged. Schema 2026.10b. Spec: `docs/specs/vulval-carcinoma-gallery.md`. 80 templates, 2003 tests. Phase 78.
 
@@ -148,40 +154,7 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-The speed batch (user request 2026-10-25; pulled by the user the same day): three cards built as one batch, after the user found that loading and saving had slowed as the app grew, and asked how a copy kept on the computer would work across the several computers they use. The Phase 78 batch shipped on 2026-10-23 and its write-up is in Done. The morcellated leiomyoma and uterine leiomyosarcoma cards wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
-
-### Faster start-up (user request 2026-10-25; pulled by the user 2026-10-25)   Size: M; speed batch (1 of 3)
-Why:        the first report waits on about eight rounds of requests: 23 code modules in chains six deep, then the template list, the planned list and the template, each after the one before (2.07 s with every response held back 200 ms; 35 requests).
-Change:     the build bundles the app and the generators with esbuild into content-named chunks; the CNS modules load only when a CNS form opens; a start-up script preloads the app, the template lists and the template the tab opens (its draft's, else Gastric biopsy); the two lists are fetched together. The source tree stays unbundled.
-Untouched:  the report text and every fixture; the templates; the Doc layout.
-Accept:     every template writes the same report from the build as from the source, blank and with its example (80 templates); the first report arrives within five rounds of requests; the CNS code is fetched only with a CNS form; no console error and no unused preload.
-Verify:     tests + browser (light)
-Ship:       with batch
-Depends on: none
-Spec:       `docs/specs/speed.md`
-Source:     https://esbuild.github.io/api/#splitting; https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel/modulepreload
-
-### Keep the app on the computer (user request 2026-10-25; pulled by the user 2026-10-25)   Size: M; speed batch (2 of 3)
-Why:        the host keeps no nearby copy and lets the browser keep a file for an hour, and every release renamed every file, so most visits started from scratch; the user works on several computers.
-Change:     every file named by its content; a service worker keeps the app, every template and any photograph opened on each computer, and nothing from Google; a release downloads only the files that changed and takes over at the next New case or Save & new; `?nosw` removes the copy and keeps it off in that browser, `?sw` turns it back on.
-Untouched:  the report text and every fixture; the templates; the Doc layout; the sign-in gate; drafts stay in the tab.
-Accept:     the first open stores the app and every template and nothing from Google; the next open loads from the computer and works with the network off; a release fetches only the changed files and the open case stays on its release until New case; `?nosw` leaves no worker and no stored file.
-Verify:     tests + browser (light)
-Ship:       with batch
-Depends on: Faster start-up (this batch)
-Spec:       `docs/specs/speed.md`
-Source:     https://github.com/angular/angular-cli/commit/d396324b4eb3b16640526a64365d953642bc7ca1
-
-### Faster saves (user request 2026-10-25; pulled by the user 2026-10-25)   Size: M; speed batch (3 of 3)
-Why:        a first save made five Google calls in a row, the first reading every saved case; a re-save made three; Open read the whole Sheet twice; a sign-in that had run out sent the next save through Google.
-Change:     one read of the accession and Doc id columns finds the row and the Doc, alongside the folder check; a re-save writes the Doc while it checks the row seen last; Open lists from columns A to G and reads only the case picked; at New case or Save & new a sign-in with under 10 minutes left is renewed, naming the signed-in account.
-Untouched:  the report text and every fixture; the Doc text and Sheet columns; the sign-in gate; the row is still written only after the Doc.
-Accept:     a case new to the tab saves in three rounds of calls and a re-save in two; a Sheet sorted by hand still gets the right row; Open reads no case JSON for its list; New case renews a sign-in near its end for the same account and returns to a blank case of the same template.
-Verify:     tests + browser (light)
-Ship:       with batch
-Depends on: none
-Spec:       `docs/specs/speed.md`
-Source:     https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/batchGet; https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow
+Empty. The Phase 79 batch (faster start-up, a copy of the app kept on each computer, and faster saves) shipped on 2026-10-25; the write-ups are in Done, with the measurements in `docs/specs/speed.md`. The morcellated leiomyoma and uterine leiomyosarcoma cards wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
 
 ## Next
 

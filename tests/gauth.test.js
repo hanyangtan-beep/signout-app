@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildAuthUrl, parseAuthHash, redirectUri } from '../src/gauth.js';
+import { buildAuthUrl, parseAuthHash, redirectUri, renewalDueFor } from '../src/gauth.js';
 
 const config = { clientId: '123-abc.apps.googleusercontent.com', scopeMode: 'file' };
 
@@ -12,6 +12,24 @@ test('buildAuthUrl uses the implicit flow with the page as redirect target', () 
   assert.equal(u.searchParams.get('redirect_uri'), 'https://han-signout.pplx.app/');
   assert.equal(u.searchParams.get('scope'), 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets');
   assert.match(u.searchParams.get('state'), /^save:/);
+});
+
+test('the signed-in address goes to Google as login_hint, so the same account is picked (Phase 79)', () => {
+  const hinted = new URL(buildAuthUrl(config, { redirect: 'https://x/', action: 'renew', now: 1, loginHint: 'han@example.com' }));
+  assert.equal(hinted.searchParams.get('login_hint'), 'han@example.com');
+  assert.match(hinted.searchParams.get('state'), /^renew:/);
+  assert.equal(hinted.searchParams.get('prompt'), null);
+  const first = new URL(buildAuthUrl(config, { redirect: 'https://x/', now: 1 }));
+  assert.equal(first.searchParams.has('login_hint'), false);
+});
+
+test('a sign-in is renewed at a break once it has less than 10 minutes left (Phase 79)', () => {
+  const now = 1_000_000;
+  assert.equal(renewalDueFor(null, now), false);
+  assert.equal(renewalDueFor({ expires_at: now + 5 * 60 * 1000 }, now), true);
+  assert.equal(renewalDueFor({ expires_at: now - 1 }, now), true);
+  assert.equal(renewalDueFor({ expires_at: now + 10 * 60 * 1000 }, now), false);
+  assert.equal(renewalDueFor({ expires_at: now + 50 * 60 * 1000 }, now), false);
 });
 
 test('full scope mode requests the broader drive scope', () => {

@@ -16,12 +16,20 @@ const PENDING_KEY = 'signout.pending.v1'; // sessionStorage: action name to resu
 
 let token = readToken();
 let activeAction = 'signin';
+// The address named to Google on the next round trip (login_hint), so a renewal or a re-auth goes
+// straight back to the same account instead of through the account chooser. Kept when a token is
+// dropped on a 401, forgotten on Sign out.
+let hint = token?.email || '';
+// A sign-in with less than this left is renewed at the next natural break (New case, Save & new)
+// rather than in the middle of the save after it (docs/specs/speed.md, Phase 79).
+const RENEW_WITHIN = 10 * 60 * 1000;
 
 function readToken() {
   try { return JSON.parse(sessionStorage.getItem(TOKEN_KEY)) || null; } catch { return null; }
 }
 function writeToken(t) {
   token = t;
+  if (t?.email) hint = t.email;
   try { t ? sessionStorage.setItem(TOKEN_KEY, JSON.stringify(t)) : sessionStorage.removeItem(TOKEN_KEY); } catch { /* ignore */ }
 }
 
@@ -44,7 +52,7 @@ export function redirectUri(loc = window.location) {
 }
 
 /** Pure: build the authorisation URL. Exported for tests. */
-export function buildAuthUrl(config, { redirect, action = 'signin', now = Date.now() } = {}) {
+export function buildAuthUrl(config, { redirect, action = 'signin', now = Date.now(), loginHint = '' } = {}) {
   const p = new URLSearchParams({
     client_id: config.clientId,
     redirect_uri: redirect,
@@ -53,6 +61,9 @@ export function buildAuthUrl(config, { redirect, action = 'signin', now = Date.n
     include_granted_scopes: 'true',
     state: `${action}:${now.toString(36)}`
   });
+  // developers.google.com/identity/protocols/oauth2/javascript-implicit-flow: login_hint selects
+  // the matching signed-in Google session, so the account chooser is skipped.
+  if (loginHint) p.set('login_hint', loginHint);
   return `${AUTH_URL}?${p}`;
 }
 
@@ -87,7 +98,7 @@ export function consumeRedirect() {
 function redirectToGoogle(config, action) {
   try { sessionStorage.setItem(PENDING_KEY, action); } catch { /* ignore */ }
   document.dispatchEvent(new CustomEvent('signout:redirect'));
-  window.location.assign(buildAuthUrl(config, { redirect: redirectUri(), action }));
+  window.location.assign(buildAuthUrl(config, { redirect: redirectUri(), action, loginHint: hint }));
   return new Promise(() => {}); // never resolves; the page is leaving
 }
 
@@ -100,6 +111,21 @@ export async function getToken(config, { interactive = true, action } = {}) {
   if (!config.clientId) throw new Error('No Google client id set. Open Settings and paste the OAuth client id.');
   if (!interactive) throw new Error('Not signed in');
   return redirectToGoogle(config, action || activeAction);
+}
+
+/** Pure: is token `t` close enough to its end to renew at a break? False without one. Exported for tests. */
+export function renewalDueFor(t, now = Date.now()) {
+  return !!t && t.expires_at - now < RENEW_WITHIN;
+}
+
+/** Is this tab's sign-in close enough to its end to renew at this break? */
+export function renewalDue(now = Date.now()) {
+  return renewalDueFor(token, now);
+}
+
+/** Renew the sign-in now, by the same round trip as signing in. The page is leaving. */
+export function renewSignIn(config) {
+  return redirectToGoogle(config, 'renew');
 }
 
 /**
@@ -128,6 +154,7 @@ export function signOut() {
     }).catch(() => {});
   }
   writeToken(null);
+  hint = '';
 }
 
 /** Authenticated fetch against googleapis; on 401 the token is dropped and the user is sent to re-auth. */

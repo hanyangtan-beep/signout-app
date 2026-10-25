@@ -3,8 +3,7 @@
 
 import { parseRoadmap, summarise, inline, longDate } from './roadmap.js';
 import { SYSTEM_WIDE, TYPES, WHERE, LIMITS, suggestionWarnings, prefillUrl, appDetails } from './suggest.js';
-
-const BUILD = ''; // tools/build.js stamps this with the build id; '' means a source checkout
+import { buildId, versioned } from './registry.js';
 
 const el = (tag, attrs = {}, ...children) => {
   const n = document.createElement(tag);
@@ -31,8 +30,8 @@ let roadmap = null; // the summary, fetched once per page load
 async function loadRoadmap() {
   // A build ships the summary it made from docs/roadmap.md; a source checkout (browser QA, local
   // development) reads the markdown itself. Deciding on the build id avoids a 404 either way.
-  if (BUILD) {
-    const r = await fetch(new URL(`roadmap.json?v=${BUILD}`, document.baseURI));
+  if (buildId()) {
+    const r = await fetch(new URL(versioned('roadmap.json'), document.baseURI));
     if (!r.ok) throw new Error(`roadmap.json: ${r.status}`);
     return r.json();
   }
@@ -158,7 +157,7 @@ export function openSuggest(ctx) {
       suggestion,
       choices: attach.checked && isCurrent ? current.choices : '',
       by: ctx.email || '',
-      app: appDetails({ build: BUILD, templateId: t ? t.id : '', version: isCurrent ? current.version : (t?.version || ''), layout: ctx.layout })
+      app: appDetails({ build: buildId(), templateId: t ? t.id : '', version: isCurrent ? current.version : (t?.version || ''), layout: ctx.layout })
     });
     window.open(url, '_blank', 'noopener');
     dlg.close();

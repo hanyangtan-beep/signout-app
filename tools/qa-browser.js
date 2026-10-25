@@ -2294,6 +2294,79 @@ await check('top bar: Save & new saves the case to Drive, then starts a new case
   }
 });
 
+// Sign-in renewal (Phase 79, docs/specs/speed.md): with under 10 minutes left on the Google sign-in,
+// New case renews it there and then rather than in the middle of the next save. The redirect names
+// the signed-in account (login_hint), so Google can return without the account chooser, and the
+// blank case of the same template is waiting on return. Google is faked as in the check above.
+await check('sign-in: New case renews a sign-in near its end, for the same account, back on a blank case of the same template', async () => {
+  const ACCOUNT = 'qa.member@example.org';
+  const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'authorization, content-type', 'access-control-allow-methods': 'GET, POST, PUT, PATCH, OPTIONS' };
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 }, serviceWorkers: 'block' });
+  const tab = await ctx.newPage();
+  const errors = [];
+  let asked = null;
+  try {
+    tab.on('pageerror', (e) => errors.push(String(e)));
+    tab.on('dialog', (d) => d.accept());
+    await tab.route('http://localhost:3000/**', async (route) => {
+      let p = decodeURIComponent(new URL(route.request().url()).pathname);
+      if (p === '/') p = '/index.html';
+      const file = join(ROOT, normalize(p).replace(/^(\.\.[/\\])+/, ''));
+      const body = await readFile(file).catch(() => null);
+      await route.fulfill(body ? { status: 200, contentType: MIME[extname(file)] || 'application/octet-stream', body } : { status: 404, body: 'not found' });
+    });
+    await tab.route((url) => url.protocol === 'https:', (route) => {
+      const req = route.request();
+      if (!/(^|\.)googleapis\.com$/.test(new URL(req.url()).hostname)) return route.fulfill({ status: 404, body: '' });
+      if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
+      return route.fulfill({ status: 200, headers: { ...CORS, 'content-type': 'application/json' }, body: JSON.stringify({ user: { emailAddress: ACCOUNT }, email: ACCOUNT }) });
+    });
+    // Registered last, so it answers first: Google's sign-in sends the browser straight back.
+    await tab.route('https://accounts.google.com/**', (route) => {
+      asked = new URL(route.request().url());
+      const state = encodeURIComponent(asked.searchParams.get('state') || '');
+      return route.fulfill({ status: 302, headers: { location: `http://localhost:3000/#access_token=qa-renewed&token_type=Bearer&expires_in=3599&state=${state}` } });
+    });
+    await tab.addInitScript((email) => {
+      if (sessionStorage.getItem('qa.planted')) return; // once, not again on the return
+      sessionStorage.setItem('qa.planted', '1');
+      sessionStorage.setItem('signout.token.v1', JSON.stringify({ access_token: 'qa', expires_at: Date.now() + 5 * 60e3, email }));
+    }, ACCOUNT);
+    await tab.goto('http://localhost:3000/index.html', { waitUntil: 'networkidle' });
+    await tab.waitForSelector('#part-panel', { state: 'visible', timeout: 15000 });
+    await tab.locator('select.part-template').first().selectOption('skin_excision');
+    await tab.waitForFunction(() => /skin/i.test(document.querySelector('#status-template')?.textContent || ''), null, { timeout: 10000 });
+    await tab.fill('#meta-accession', 'S2610251');
+    const template = await tab.locator('#status-template').textContent();
+    const newCase = async () => {
+      await tab.evaluate(() => { document.querySelector('#toast').textContent = ''; });
+      await tab.click('#btn-case-menu');
+      await tab.locator('#case-menu-list .menu-item', { hasText: 'New case' }).first().click();
+    };
+    await newCase();
+    await tab.waitForFunction(() => document.querySelector('#toast')?.textContent === 'New case'
+      && JSON.parse(sessionStorage.getItem('signout.token.v1') || 'null')?.access_token === 'qa-renewed', null, { timeout: 15000 })
+      .catch(async () => { throw new Error(`after the renewal: toast "${await tab.locator('#toast').textContent().catch(() => '?')}", Google asked: ${asked}`); });
+    assert(asked, 'Google was not asked');
+    assert(asked.searchParams.get('login_hint') === ACCOUNT, `login_hint "${asked.searchParams.get('login_hint')}"`);
+    assert(/^renew:/.test(asked.searchParams.get('state') || ''), `state "${asked.searchParams.get('state')}"`);
+    const got = await tab.evaluate(() => ({ accession: document.querySelector('#meta-accession').value, template: document.querySelector('#status-template').textContent }));
+    assert(got.accession === '' && got.template === template, `after the renewal: accession "${got.accession}", template "${got.template}" (was "${template}")`);
+    // With time to spare the sign-in is left alone: New case stays on the page.
+    asked = null;
+    await tab.fill('#meta-accession', 'S2610252');
+    await newCase();
+    await tab.waitForFunction(() => document.querySelector('#toast')?.textContent === 'New case', null, { timeout: 5000 });
+    await tab.waitForTimeout(500);
+    assert(!asked, `renewed again with 59 minutes left: ${asked}`);
+    assert(errors.length === 0, `page errors: ${errors.join(' | ')}`);
+    return `login_hint ${ACCOUNT}; back on a blank ${template.split(' · ')[0]}; a fresh sign-in is left alone`;
+  } finally {
+    await tab.unrouteAll({ behavior: 'ignoreErrors' });
+    await ctx.close();
+  }
+});
+
 // Dermatoses (Phase 68): a pasted skin punch under a GVHD history opens the inflammatory skin biopsy form on the
 // GVHD pattern (the history reaches the presets); the NIH 2014 category words the line and hides the Lerner grade
 // when not Likely; a pattern swap shows that pattern's fields; a ?BCC punch stays out. Phase 69: every field gallery

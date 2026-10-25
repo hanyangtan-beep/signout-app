@@ -12,6 +12,7 @@
     "fixtures:force": "node tools/capture-fixtures.cjs --force",
     "build": "node tools/build.js",
     "qa": "node tools/qa-browser.js",
+    "qa:dist": "node tools/qa-dist.js",
     "release": "node tools/release.js",
     "new-template": "node scripts/new-template.mjs",
     "validate:ahk": "bash tools/validate-ahk.sh"
@@ -21,6 +22,7 @@
   "license": "ISC",
   "description": "Pathology sign-out app: schema-driven biopsy/synoptic reporting with Google Drive as the store",
   "devDependencies": {
+    "esbuild": "0.28.2",
     "eslint": "^9.39.5",
     "jsdom": "^29.1.1",
     "playwright": "^1.63.0"

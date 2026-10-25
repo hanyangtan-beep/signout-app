@@ -61,7 +61,13 @@ npm test             # golden-output tests (node --test)
 node tools/import-qmh.js page.html > draft.json   # Phase 5: QMH page → draft field list to curate into a schema
 npm run fixtures     # regenerate fixtures; refuses to overwrite existing files
 npm run fixtures:force   # overwrite — only after a deliberate, reviewed wording change
+npm run qa           # browser QA of the source tree
+npm run build        # dist/: bundled with esbuild, every file named by its content, sw.js (docs/specs/speed.md)
+npm run qa:dist      # browser QA of the built site: same reports as the source, start-up, the offline copy
+npm run release      # the gate before a deploy: lint, tests, both QAs, build, source archive
 ```
+
+The built site keeps a copy of itself on each computer (a service worker; `docs/specs/speed.md`). To remove it from a browser and keep it off there, open the app with `?nosw`; `?sw` turns it back on.
 
 ## Layout
 

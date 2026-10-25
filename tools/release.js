@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // One command to take the repo from "edited" to "ready to ship".
 //
-//   npm run release            full gate: lint, test, build, archive
+//   npm run release            full gate: lint, test, build, built-site QA, archive
 //   npm run release -- --skip-archive
 //
 // Why this exists: every phase so far has been shipped by remembering the right
@@ -100,6 +100,15 @@ step('browser QA', 'tools/qa-browser.js', () => {
 step('build', 'tools/build.js', () => {
   const out = run('node', ['tools/build.js']);
   return out.trim().split('\n').pop();
+});
+
+// The site that ships is the bundled one in dist/, not the source tree the browser QA drives
+// (docs/specs/speed.md): every template's report the same as the source's, start-up, the CNS
+// code kept apart, and the offline copy's install, offline open, release and hand-over.
+step('built-site QA', 'tools/qa-dist.js', () => {
+  const out = run('node', ['tools/qa-dist.js']);
+  const line = out.trim().split('\n').filter((l) => l.includes('checks')).pop();
+  return line ? line.trim() : out.trim().split('\n').pop();
 });
 
 step('artefacts untracked', 'node_modules, dist, analysis', () => {

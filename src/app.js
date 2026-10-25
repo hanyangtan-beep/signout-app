@@ -1,6 +1,7 @@
 // Sign-out UI: renders any schema in the registry, keeps case state, previews the report live.
 
 import { loadManifest, loadPlanned, loadTemplate } from './registry.js';
+import { startOffline, releaseReady, handOver } from './offline.js';
 import { rowGroups, standalonePlanned, biopsyRow, groupBySystem, selectorGroups, rankTemplates, labelOf, isBiopsy, pushRecent, togglePin, rowOfKind, KIND_LABEL } from './picker.js';
 import {
   createCase, createPart, relabel, isVisible, optionsFor, normalisePart, generateCase, caseOptions, templateIdOf, templatesInUse, snippetsFor, toggleOption, applyPreset,
@@ -8,7 +9,7 @@ import {
 } from './engine.js';
 import { loadDraft, setDraftOwner, saveCase as cacheCase, clearCase, copyText } from './store.js';
 import { loadConfig, saveConfig, accountConfig, rememberForAccount } from './config.js';
-import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction } from './gauth.js';
+import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction, renewalDue, renewSignIn } from './gauth.js';
 import { gateEnabled, gateState, parseAllowList, formatAllowList, BUILT_IN_ALLOWED, emailDigest, canonicalEmail } from './gate.js';
 import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js';
 import { normaliseAccession, phiWarnings } from './docformat.js';
@@ -19,11 +20,38 @@ import { britishise } from './style.js';
 import { spanFull, groupProgress as progressOf } from './formlayout.js';
 import { calculatorView, MIN_NUCLEI } from '../generators/dish_calculator.js';
 import { organIcon, mountOrganSprite } from './organicons.js';
-import { wizardSteps, wizardSupported, wizardProgress, visibleSteps, stepAnswered, atDefault, cautions } from './cnswizard.js';
-import { pathway, pathwaySupported, pathwayChart } from './cnspathway.js';
-import { plateFor, plateSupported, plateSelection, plateChart, plateEntries } from './cnsplates.js';
 import { openRoadmap, openSuggest } from './panels.js';
 import { choiceSummary } from './suggest.js';
+
+// The CNS-only code (guided intake, pathway drawer and family plates, about 180 kB) loads the
+// first time a CNS form opens rather than at start-up (docs/specs/speed.md, Phase 79). ensureTemplate
+// waits for it whenever a template asks the CNS questions, so a CNS part never renders without it;
+// until then the three support checks answer no, which is the right answer for every other form.
+let cns = null;
+const CNS_FIELDS = new Set(['idhBranch', 'molStatus', 'dxFamily']);
+const needsCns = (s) => (s?.fields || []).some((f) => CNS_FIELDS.has(f.id));
+async function loadCns() {
+  if (!cns) {
+    const [wizard, pathways, plates] = await Promise.all([import('./cnswizard.js'), import('./cnspathway.js'), import('./cnsplates.js')]);
+    cns = { ...wizard, ...pathways, ...plates };
+  }
+  return cns;
+}
+const wizardSupported = (s) => !!cns && cns.wizardSupported(s);
+const pathwaySupported = (s) => !!cns && cns.pathwaySupported(s);
+const plateSupported = (values) => !!cns && cns.plateSupported(values);
+const wizardSteps = (...a) => cns.wizardSteps(...a);
+const wizardProgress = (...a) => cns.wizardProgress(...a);
+const visibleSteps = (...a) => cns.visibleSteps(...a);
+const stepAnswered = (...a) => cns.stepAnswered(...a);
+const atDefault = (...a) => cns.atDefault(...a);
+const cautions = (...a) => cns.cautions(...a);
+const pathway = (...a) => cns.pathway(...a);
+const pathwayChart = (...a) => cns.pathwayChart(...a);
+const plateFor = (...a) => cns.plateFor(...a);
+const plateSelection = (...a) => cns.plateSelection(...a);
+const plateChart = (...a) => cns.plateChart(...a);
+const plateEntries = (...a) => cns.plateEntries(...a);
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, attrs = {}, ...children) => {
@@ -213,6 +241,7 @@ async function ensureTemplate(id) {
   if (state.templates[id]) return state.templates[id];
   if (!entryOf(id)) throw new Error(`Template ${id} is not installed`);
   const t = await loadTemplate(id);
+  if (needsCns(t.schema)) await loadCns();
   state.templates[id] = t;
   return t;
 }
@@ -2248,10 +2277,36 @@ async function doSave({ action = 'save', quiet = false } = {}) {
   }
 }
 
+// ---------- natural breaks (docs/specs/speed.md, Phase 79) ----------
+// New case and Save & new leave nothing in progress, so they are when a waiting release takes over
+// and when a sign-in near its end is renewed rather than in the middle of the next save. Either
+// one reloads the page: the blank case comes back from the tab's draft, and the message the user
+// would have seen is kept in the tab and shown after the reload.
+const NOTE_KEY = 'signout.note.v1';
+function leaveNote(text) { try { sessionStorage.setItem(NOTE_KEY, text); } catch { /* preview iframe */ } }
+function takeNote() {
+  try { const t = sessionStorage.getItem(NOTE_KEY) || ''; sessionStorage.removeItem(NOTE_KEY); return t; } catch { return ''; }
+}
+
+/** At a break: take over a waiting release, renew a sign-in with under 10 minutes left. True when the page is leaving. */
+async function atBreak(note) {
+  const renew = renewalDue() && AUTH_ORIGINS.includes(location.origin) && !!state.config.clientId;
+  const release = releaseReady();
+  if (!renew && !release) return false;
+  leaveNote(note);
+  cacheCase(state.caseState);
+  if (release) await handOver();
+  if (renew) renewSignIn(state.config); // Google sends the browser back to the blank case
+  else window.location.reload();
+  return true;
+}
+
 /** A blank case of the current template, as New and Save & new start it; the tab's draft is dropped. */
-function startNewCase() {
+async function startNewCase(note) {
   clearCase();
-  return newCase(state.caseState.schemaId);
+  await newCase(state.caseState.schemaId);
+  if (await atBreak(note)) return; // reloading, or away to Google; the note follows
+  toast(note);
 }
 
 /**
@@ -2264,8 +2319,7 @@ async function saveAndNew() {
   const accession = normaliseAccession(state.caseState.meta?.accession);
   const inDrive = !state.dirty && !!state.caseState.drive?.savedAt;
   if (!inDrive && !(await doSave({ action: 'savenew', quiet: true }))) return;
-  await startNewCase();
-  toast(inDrive ? `${accession} is already in Drive. New case started` : `Saved ${accession} to Drive. New case started`);
+  await startNewCase(inDrive ? `${accession} is already in Drive. New case started` : `Saved ${accession} to Drive. New case started`);
 }
 
 function renderCaseList(filter = '') {
@@ -2440,8 +2494,7 @@ async function boot() {
       return showGate(decision);
     }
   }
-  state.manifest = await loadManifest();
-  state.planned = await loadPlanned();
+  [state.manifest, state.planned] = await Promise.all([loadManifest(), loadPlanned()]); // both preloaded by index.html on a build
   loadPicker();
   // A draft left on this tab by another account (locked, then somebody else signed in) is cleared
   // rather than shown to them; on the signed-in site so is an untagged one, left by the build
@@ -2461,6 +2514,7 @@ async function boot() {
     setCase(saved, 0);
   } else await newCase(defaultId);
   if (isSignedIn() && !currentUser()) fetchUserInfo(await getToken(state.config, { interactive: false })).then(() => { useAccount(); renderAccount(); }).catch(() => {});
+  const note = takeNote(); // what New case or Save & new said before a release or a renewed sign-in reloaded the page
   if (back?.error) toast(back.error === 'access_denied' ? 'Google sign-in was cancelled' : `Google sign-in failed: ${back.error}`);
   // A resumed Save or Open belonged to the draft that was cleared, so it is not carried out.
   else if (droppedDraft) toast('New case: the draft left on this tab was not saved under this account');
@@ -2468,14 +2522,15 @@ async function boot() {
     if (back.action === 'save') { state.dirty = true; queueMicrotask(doSave); }
     else if (back.action === 'savenew') { state.dirty = true; queueMicrotask(saveAndNew); }
     else if (back.action === 'open') queueMicrotask(doOpen);
+    else if (back.action === 'renew') toast(note || 'Google sign-in renewed');
     else toast('Signed in');
-  }
+  } else if (note) toast(note);
 
   nodes.addPart.addEventListener('click', addPart);
   nodes.example.addEventListener('click', loadExample);
   nodes.newCase.addEventListener('click', () => {
     if (state.dirty && !window.confirm('Discard unsaved changes to this case?')) return;
-    startNewCase().then(() => toast('New case'));
+    startNewCase('New case').catch((err) => toast(err.message));
   });
   nodes.copyDx.addEventListener('click', () => doCopy(state.lastOut.diagnosis, 'Diagnosis'));
   nodes.copyReport.addEventListener('click', () => doCopy(state.lastOut.report, 'Full report'));
@@ -2483,6 +2538,13 @@ async function boot() {
   nodes.lisCapture?.addEventListener('click', captureFromLis);
   nodes.revertAll.addEventListener('click', revertAllEdits);
   initKeys();
+  // The offline copy (src/offline.js): when it already runs this tab its files are on the computer
+  // and it starts at once, so a release that is waiting is taken at the first break. On a first
+  // open it waits until the page has loaded, so it never competes with start-up for the network.
+  const later = () => setTimeout(startOffline, 1000);
+  if (navigator.serviceWorker?.controller) startOffline();
+  else if (document.readyState === 'complete') later();
+  else window.addEventListener('load', later, { once: true });
 }
 
 boot().catch((err) => {

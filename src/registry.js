@@ -3,17 +3,33 @@
 // first use, so the initial download does not grow as templates are added.
 // Works in the browser (fetch + import) and in Node (fs + import).
 
-const BUILD = ''; // tools/build.js stamps this with the build id for cache-busting
-
 const isNode = typeof window === 'undefined';
 let manifestPromise = null;
 const templateCache = new Map(); // id -> Promise<{ schema, generator }>
 
-function bust(url) {
-  if (!BUILD || isNode) return url;
-  const u = new URL(url);
-  u.searchParams.set('v', BUILD);
-  return u;
+// A built site names every file by its content (docs/specs/speed.md, Phase 79): index.html carries
+// the release id and a map of each lazily loaded file to its hash (tools/build-lib.js), so a URL
+// changes only when its file does. A source checkout has neither and loads plain paths.
+let fileMap = null;
+function files() {
+  if (fileMap === null) {
+    fileMap = {};
+    if (!isNode) {
+      try { fileMap = JSON.parse(document.getElementById('signout-files')?.textContent || '{}').files || {}; } catch { fileMap = {}; }
+    }
+  }
+  return fileMap;
+}
+
+/** `relPath` with its content hash (`?v=`) on a built site; unchanged in a source checkout. */
+export function versioned(relPath) {
+  const hash = files()[relPath];
+  return hash ? `${relPath}?v=${hash}` : relPath;
+}
+
+/** The release id of a built site ('' in a source checkout and in Node). */
+export function buildId() {
+  return isNode ? '' : (document.documentElement?.dataset.build || '');
 }
 
 async function readJson(relPath, baseUrl) {
@@ -21,7 +37,7 @@ async function readJson(relPath, baseUrl) {
     const { readFile } = await import('node:fs/promises');
     return JSON.parse(await readFile(new URL(`../${relPath}`, import.meta.url), 'utf8'));
   }
-  const res = await fetch(bust(new URL(relPath, baseUrl || document.baseURI)));
+  const res = await fetch(new URL(versioned(relPath), baseUrl || document.baseURI));
   if (!res.ok) throw new Error(`Cannot load ${relPath}: ${res.status}`);
   return res.json();
 }
@@ -76,8 +92,9 @@ export async function loadSchema(id, baseUrl) {
 }
 
 export async function loadGenerator(name) {
-  const url = new URL(`../generators/${name}.js`, import.meta.url);
-  const mod = await import(isNode ? url.href : bust(url).href);
+  // From src/ in a checkout, from src/ or chunks/ in a build: one level below generators/ either way.
+  const url = new URL(`../${isNode ? `generators/${name}.js` : versioned(`generators/${name}.js`)}`, import.meta.url);
+  const mod = await import(url.href);
   return mod.default;
 }
 

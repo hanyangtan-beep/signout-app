@@ -85,39 +85,76 @@ export async function ensureSheet(config, api = gfetch) {
 
 function colLetter(n) { return String.fromCharCode(64 + n); }
 
-/** All rows (excluding header) as objects with parsed caseState. */
-export async function listCases(config) {
-  const id = await ensureSheet(config);
-  const res = await gfetch(config, `${SHEETS}/${id}/values/A2:${colLetter(SHEET_HEADER.length)}?majorDimension=ROWS`);
-  const { values = [] } = await res.json();
-  return values.map((row, i) => ({ rowNumber: i + 2, ...fromSheetRow(row) })).filter((r) => r.accession);
-}
+// ---------- Rows (docs/specs/speed.md, Phase 79) ----------
+//
+// A save used to read the whole Sheet, every saved case's JSON included, to find the Doc id, then
+// the accession column again to find the row. One read of the accession and Doc id columns (A and
+// G) now finds both. A row number seen this session is a hint, not a fact: its accession cell is
+// read before the row is written, so a Sheet sorted by hand sends the write to wherever the
+// accession is now.
 
-async function findRow(config, accession) {
-  const id = await ensureSheet(config);
-  const res = await gfetch(config, `${SHEETS}/${id}/values/A2:A?majorDimension=COLUMNS`);
-  const { values = [[]] } = await res.json();
-  const col = values[0] || [];
+const rowHints = new Map(); // `${sheetId}|${accession}` -> row number seen this session
+const hintKey = (sheetId, accession) => `${sheetId}|${accession}`;
+const DOC_COL = colLetter(SHEET_HEADER.indexOf('doc_id') + 1); // G
+const LAST_COL = colLetter(SHEET_HEADER.length);                // H, the case JSON
+const LIST_COL = colLetter(SHEET_HEADER.length - 1);            // G: everything but the case JSON
+
+/**
+ * Row number and Doc id of an accession, from one read of the accession and Doc id columns.
+ * values.batchGet takes the ranges as repeated parameters and returns them in that order
+ * (developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/batchGet).
+ */
+async function lookupRow(config, sheetId, accession, api) {
+  const ranges = q([['ranges', 'A2:A'], ['ranges', `${DOC_COL}2:${DOC_COL}`], ['majorDimension', 'COLUMNS']]);
+  const res = await api(config, `${SHEETS}/${sheetId}/values:batchGet?${ranges}`);
+  const { valueRanges = [] } = await res.json();
+  const col = valueRanges[0]?.values?.[0] || [];
+  const docs = valueRanges[1]?.values?.[0] || [];
   const idx = col.findIndex((v) => normaliseAccession(v) === accession);
-  return idx === -1 ? null : idx + 2;
+  if (idx === -1) { rowHints.delete(hintKey(sheetId, accession)); return { rowNumber: null, docId: '' }; }
+  rowHints.set(hintKey(sheetId, accession), idx + 2);
+  return { rowNumber: idx + 2, docId: docs[idx] || '' };
 }
 
-async function upsertRow(config, caseState, docId, docUrl) {
-  const id = await ensureSheet(config);
-  const accession = normaliseAccession(caseState.meta?.accession);
-  const row = toSheetRow(caseState, docId, docUrl);
-  const rowNumber = await findRow(config, accession);
-  const last = colLetter(SHEET_HEADER.length);
+/** The row that holds this accession now: the hinted one if its cell still says so, else looked up. */
+async function placeRow(config, sheetId, accession, api) {
+  const hinted = rowHints.get(hintKey(sheetId, accession));
+  if (hinted) {
+    const res = await api(config, `${SHEETS}/${sheetId}/values/A${hinted}?majorDimension=COLUMNS`);
+    const cell = (await res.json())?.values?.[0]?.[0];
+    if (normaliseAccession(cell) === accession) return { rowNumber: hinted };
+  }
+  return lookupRow(config, sheetId, accession, api);
+}
+
+/** Write the case's row in place, or append it; the row it went to becomes this session's hint. */
+async function writeRow(config, sheetId, rowNumber, row, accession, api) {
+  const body = JSON.stringify({ values: [row] });
   if (rowNumber) {
-    await gfetch(config, `${SHEETS}/${id}/values/A${rowNumber}:${last}${rowNumber}?valueInputOption=RAW`, {
-      method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ values: [row] })
+    await api(config, `${SHEETS}/${sheetId}/values/A${rowNumber}:${LAST_COL}${rowNumber}?valueInputOption=RAW`, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' }, body
     });
+    rowHints.set(hintKey(sheetId, accession), rowNumber);
     return rowNumber;
   }
-  await gfetch(config, `${SHEETS}/${id}/values/A1:${last}1:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ values: [row] })
+  const res = await api(config, `${SHEETS}/${sheetId}/values/A1:${LAST_COL}1:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body
   });
-  return null;
+  // The reply names the range it wrote (updates.updatedRange, e.g. "Sheet1!A12:H12").
+  const written = /!\$?[A-Z]+\$?(\d+)/.exec((await res.json().catch(() => null))?.updates?.updatedRange || '');
+  if (!written) return null;
+  rowHints.set(hintKey(sheetId, accession), Number(written[1]));
+  return Number(written[1]);
+}
+
+/** Every saved case for the Open list: columns A to G, without the case JSON. */
+export async function listCases(config, api = gfetch) {
+  const id = await ensureSheet(config, api);
+  const res = await api(config, `${SHEETS}/${id}/values/A2:${LIST_COL}?majorDimension=ROWS`);
+  const { values = [] } = await res.json();
+  const rows = values.map((row, i) => ({ rowNumber: i + 2, ...fromSheetRow(row) })).filter((r) => r.accession);
+  for (const r of rows) rowHints.set(hintKey(id, normaliseAccession(r.accession)), r.rowNumber);
+  return rows;
 }
 
 // ---------- Doc ----------
@@ -130,57 +167,92 @@ function multipart(metadata, text) {
   return { body, contentType: `multipart/related; boundary=${boundary}` };
 }
 
-/** Create the Doc (text/plain converted to a Google Doc) or replace its content. */
-async function writeDoc(config, docId, name, text) {
-  const folderId = docId ? '' : await ensureFolder(config);
+/**
+ * Create the Doc (text/plain converted to a Google Doc) or replace its content. A new Doc goes in
+ * `folderId` when the caller has already checked the folder, else the folder is checked here.
+ */
+async function writeDoc(config, docId, name, text, api = gfetch, folderId = '') {
   if (docId) {
     // Replacing the media on an existing Google Doc re-imports the text as the document body.
-    const res = await gfetch(config, `${UPLOAD}/files/${docId}?${q({ uploadType: 'media', fields: 'id' })}`, {
+    const res = await api(config, `${UPLOAD}/files/${docId}?${q({ uploadType: 'media', fields: 'id' })}`, {
       method: 'PATCH', headers: { 'Content-Type': 'text/plain; charset=UTF-8' }, body: text
     });
     return (await res.json()).id;
   }
+  const parent = folderId || await ensureFolder(config, api);
   const { body, contentType } = multipart({
-    name, mimeType: 'application/vnd.google-apps.document', parents: folderId ? [folderId] : undefined
+    name, mimeType: 'application/vnd.google-apps.document', parents: parent ? [parent] : undefined
   }, text);
-  const res = await gfetch(config, `${UPLOAD}/files?${q({ uploadType: 'multipart', fields: 'id' })}`, {
+  const res = await api(config, `${UPLOAD}/files?${q({ uploadType: 'multipart', fields: 'id' })}`, {
     method: 'POST', headers: { 'Content-Type': contentType }, body
   });
   return (await res.json()).id;
 }
 
+/** writeDoc, recreating the Doc when the one on record was deleted. */
+async function writeDocOrRecreate(config, docId, name, text, api, folderId = '') {
+  try {
+    return await writeDoc(config, docId, name, text, api, folderId);
+  } catch (err) {
+    if (docId && err.status === 404) return writeDoc(config, '', name, text, api, folderId); // Doc was deleted; recreate
+    throw err;
+  }
+}
+
 // ---------- public API ----------
 
 /**
- * Save a case: Doc in the folder (create or update) + Sheet row upsert.
+ * Save a case: Doc in the folder (create or update) + Sheet row upsert. The row is written only
+ * once the Doc is, as before; what changed is what runs alongside (docs/specs/speed.md):
+ *   case new to this tab: look up the row and Doc id | check the folder, then the Doc, then the row
+ *     (three rounds of calls, where there were five);
+ *   re-save: the Doc | the row's accession cell, then the row (two rounds, where there were three).
  * Mutates caseState.drive with { docId, docUrl, savedAt }.
  */
-export async function saveCase(config, caseState, out) {
+export async function saveCase(config, caseState, out, api = gfetch) {
   const accession = normaliseAccession(caseState.meta?.accession);
   if (!accession) throw new Error('Enter an accession number before saving.');
-  let docId = caseState.drive?.docId || '';
-  if (!docId) {
-    // Reuse the Doc recorded in the Sheet for this accession, if any.
-    const rows = await listCases(config);
-    docId = rows.find((r) => r.accession === accession)?.doc_id || '';
-  }
+  const sheetId = await ensureSheet(config, api);
   const text = buildDocText(caseState, out);
-  let newId;
-  try {
-    newId = await writeDoc(config, docId, accession, text);
-  } catch (err) {
-    if (docId && err.status === 404) newId = await writeDoc(config, '', accession, text); // Doc was deleted; recreate
-    else throw err;
+  const known = caseState.drive?.docId || '';
+  let docId;
+  let placed;
+  if (known) {
+    [docId, placed] = await Promise.all([
+      writeDocOrRecreate(config, known, accession, text, api),
+      placeRow(config, sheetId, accession, api)
+    ]);
+  } else {
+    // Reuse the Doc recorded in the Sheet for this accession, if any; the folder is checked alongside.
+    const [found, folderId] = await Promise.all([lookupRow(config, sheetId, accession, api), ensureFolder(config, api)]);
+    placed = found;
+    docId = await writeDocOrRecreate(config, found.docId, accession, text, api, folderId);
   }
-  const docUrl = docUrlFor(newId);
-  caseState.drive = { docId: newId, docUrl, savedAt: new Date().toISOString() };
-  await upsertRow(config, caseState, newId, docUrl);
+  const docUrl = docUrlFor(docId);
+  caseState.drive = { docId, docUrl, savedAt: new Date().toISOString() };
+  await writeRow(config, sheetId, placed.rowNumber, toSheetRow(caseState, docId, docUrl), accession, api);
   return caseState.drive;
 }
 
-export async function openCase(config, accession) {
-  const rows = await listCases(config);
-  const row = rows.find((r) => r.accession === normaliseAccession(accession));
+/**
+ * One saved case, from its own row (A to H): one read when the Open list has just seen the row and
+ * it still holds the accession, else the row is looked up first.
+ */
+export async function openCase(config, accession, api = gfetch) {
+  const acc = normaliseAccession(accession);
+  const sheetId = await ensureSheet(config, api);
+  const readRow = async (n) => {
+    const res = await api(config, `${SHEETS}/${sheetId}/values/A${n}:${LAST_COL}${n}?majorDimension=ROWS`);
+    const values = (await res.json())?.values?.[0];
+    const row = values ? fromSheetRow(values) : null;
+    return row && normaliseAccession(row.accession) === acc ? row : null;
+  };
+  const hinted = rowHints.get(hintKey(sheetId, acc));
+  let row = hinted ? await readRow(hinted) : null;
+  if (!row) {
+    const { rowNumber } = await lookupRow(config, sheetId, acc, api);
+    row = rowNumber ? await readRow(rowNumber) : null;
+  }
   if (!row?.caseState) throw new Error(`No saved case for ${accession}`);
   row.caseState.drive = { docId: row.doc_id, docUrl: row.doc_url, savedAt: row.updated };
   return row.caseState;
