@@ -148,7 +148,40 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. The Phase 78 batch (vulval carcinoma reference galleries) shipped on 2026-10-23; the write-up is in Done, with the sources in `docs/specs/vulval-carcinoma-gallery.md`, and the Vulval carcinoma group is complete. The morcellated leiomyoma and uterine leiomyosarcoma cards wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+The speed batch (user request 2026-10-25; pulled by the user the same day): three cards built as one batch, after the user found that loading and saving had slowed as the app grew, and asked how a copy kept on the computer would work across the several computers they use. The Phase 78 batch shipped on 2026-10-23 and its write-up is in Done. The morcellated leiomyoma and uterine leiomyosarcoma cards wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+
+### Faster start-up (user request 2026-10-25; pulled by the user 2026-10-25)   Size: M; speed batch (1 of 3)
+Why:        the first report waits on about eight rounds of requests: 23 code modules in chains six deep, then the template list, the planned list and the template, each after the one before (2.07 s with every response held back 200 ms; 35 requests).
+Change:     the build bundles the app and the generators with esbuild into content-named chunks; the CNS modules load only when a CNS form opens; a start-up script preloads the app, the template lists and the template the tab opens (its draft's, else Gastric biopsy); the two lists are fetched together. The source tree stays unbundled.
+Untouched:  the report text and every fixture; the templates; the Doc layout.
+Accept:     every template writes the same report from the build as from the source, blank and with its example (80 templates); the first report arrives within five rounds of requests; the CNS code is fetched only with a CNS form; no console error and no unused preload.
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: none
+Spec:       `docs/specs/speed.md`
+Source:     https://esbuild.github.io/api/#splitting; https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel/modulepreload
+
+### Keep the app on the computer (user request 2026-10-25; pulled by the user 2026-10-25)   Size: M; speed batch (2 of 3)
+Why:        the host keeps no nearby copy and lets the browser keep a file for an hour, and every release renamed every file, so most visits started from scratch; the user works on several computers.
+Change:     every file named by its content; a service worker keeps the app, every template and any photograph opened on each computer, and nothing from Google; a release downloads only the files that changed and takes over at the next New case or Save & new; `?nosw` removes the copy and keeps it off in that browser, `?sw` turns it back on.
+Untouched:  the report text and every fixture; the templates; the Doc layout; the sign-in gate; drafts stay in the tab.
+Accept:     the first open stores the app and every template and nothing from Google; the next open loads from the computer and works with the network off; a release fetches only the changed files and the open case stays on its release until New case; `?nosw` leaves no worker and no stored file.
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: Faster start-up (this batch)
+Spec:       `docs/specs/speed.md`
+Source:     https://github.com/angular/angular-cli/commit/d396324b4eb3b16640526a64365d953642bc7ca1
+
+### Faster saves (user request 2026-10-25; pulled by the user 2026-10-25)   Size: M; speed batch (3 of 3)
+Why:        a first save made five Google calls in a row, the first reading every saved case; a re-save made three; Open read the whole Sheet twice; a sign-in that had run out sent the next save through Google.
+Change:     one read of the accession and Doc id columns finds the row and the Doc, alongside the folder check; a re-save writes the Doc while it checks the row seen last; Open lists from columns A to G and reads only the case picked; at New case or Save & new a sign-in with under 10 minutes left is renewed, naming the signed-in account.
+Untouched:  the report text and every fixture; the Doc text and Sheet columns; the sign-in gate; the row is still written only after the Doc.
+Accept:     a case new to the tab saves in three rounds of calls and a re-save in two; a Sheet sorted by hand still gets the right row; Open reads no case JSON for its list; New case renews a sign-in near its end for the same account and returns to a blank case of the same template.
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: none
+Spec:       `docs/specs/speed.md`
+Source:     https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/batchGet; https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow
 
 ## Next
 
