@@ -1,0 +1,36 @@
+{
+  "description": "morcellated myomectomy with a fleshy area, sampled further: STUMP with focal moderate to severe atypia",
+  "templateId": "uterus_morcellated",
+  "values": [
+    {
+      "procedure": "Morcellated myomectomy",
+      "weight": "160",
+      "dimensions": "12 x 9 x 5",
+      "fragmentCount": "",
+      "fragmentSize": "1 to 6",
+      "fragmentTissue": "",
+      "cutSurface": "Whorled",
+      "unusualArea": "Fleshy area",
+      "sampling": "Representative",
+      "blocks": "12",
+      "blockKeyText": "",
+      "leiomyoma": "Present",
+      "leiomyomaCount": "",
+      "leiomyomaType": "STUMP – see comment",
+      "changes": [],
+      "atypia": "Focal moderate to severe",
+      "mitoticCount": "6",
+      "tumourNecrosis": "Not identified",
+      "fhIhc": "Retained",
+      "cautery": "None",
+      "tissueTypes": [
+        "Myometrium"
+      ],
+      "endometrium": "Benign",
+      "adenomyosis": "Absent",
+      "additionalNotes": ""
+    }
+  ],
+  "report": "Uterus, fibroid, morcellated myomectomy\n\nReceived in formalin are multiple morcellated fragments of firm whitish tissue, weighing 160 g and measuring 12 x 9 x 5 cm in aggregate. The fragments measure from 1 to 6 cm across. Sectioning shows a whorled cut surface. A soft, fleshy area is present. Representative sections in 12 blocks.\n\n(1-12) Representative fragments.\n\nSections show pieces of smooth muscle tumour tissue comprising spindle cells arranged in fascicles and whorls. Thick walled vessels are seen. There is focal moderate to severe cytological atypia. Mitoses number 6 per 10 HPF. No epithelioid tumour cells or coagulative tumour necrosis are observed. Immunohistochemistry shows retained fumarate hydratase expression in the tumour cells. The features are those of a smooth muscle tumour of uncertain malignant potential (STUMP); see comment. Fragments of unremarkable myometrium are also present.\n\nUTERUS, fibroid, morcellated myomectomy - SMOOTH MUSCLE TUMOUR OF UNCERTAIN MALIGNANT POTENTIAL (STUMP); see comment\n\nThe smooth muscle tumour shows focal moderate to severe cytological atypia and a mitotic count of 6 per 10 HPF, with no coagulative tumour cell necrosis. Clinical follow-up is suggested.\n\nFragmentation of the morcellated specimen precludes assessment of the tumour border and the serosa.",
+  "checks": []
+}

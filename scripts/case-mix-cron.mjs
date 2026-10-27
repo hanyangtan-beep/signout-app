@@ -199,7 +199,7 @@ const COVER = {
   'Other FNA / non-gynae': [],
   Breast: ['breast_biopsy', 'breast_excision', 'breast_carcinoma', 'breast_dcis', 'phyllodes'],
   'Endometrium / curettings': ['endometrial_biopsy', 'endometrial_carcinoma'],
-  'Uterus resection': ['uterus_benign', 'uterine_sarcoma'],
+  'Uterus resection': ['uterus_benign', 'uterus_morcellated', 'uterine_sarcoma'],
   'Cervix biopsy / LEEP': ['cervical_biopsy', 'cervical_excision', 'cervical_carcinoma'],
   'Ovary / fallopian tube': ['ovarian_cyst', 'adnexa_benign', 'ovary_ft_peritoneum', 'uterus_benign'],
   Placenta: ['placenta'],

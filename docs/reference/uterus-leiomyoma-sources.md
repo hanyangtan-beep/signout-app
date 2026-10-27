@@ -1,6 +1,6 @@
-# Uterine leiomyoma assessment — sources (Phase 74, 23 October 2026)
+# Uterine leiomyoma assessment — sources (Phase 74, 23 October 2026; Phase 81, 27 October 2026)
 
-Reference for the leiomyoma fields on the benign uterus form (`schemas/uterus_benign.json`, `generators/uterus.js`). Nothing here is printed: the report carries only what is seen.
+Reference for the leiomyoma fields on the benign uterus form (`schemas/uterus_benign.json`, `generators/uterus.js`) and for the morcellated / hysteroscopic fibroid form (`schemas/uterus_morcellated.json`, `generators/uterus_morcellated.js`), which shares them. Apart from the bizarre nuclei caveat below, nothing here is printed: the report carries only what is seen.
 
 ## Types and changes
 
@@ -22,6 +22,16 @@ Source: [PathologyOutlines, STUMP](https://www.pathologyoutlines.com/topic/uteru
 
 - STUMP leads the diagnosis, the microscopy ends "The features are those of a smooth muscle tumour of uncertain malignant potential (STUMP); see comment." with no "There is no evidence of malignancy", and the comment suggests clinical follow-up.
 
+## Morcellated and hysteroscopic specimens (Phase 81)
+
+Source: [RCPath tissue pathways for gynaecological pathology](https://www.rcpath.org/static/94763195-0982-40ed-bbc79ca92370e9ac/Tissue-pathways-for-gynaecological-pathology.pdf) (version 3, February 2023).
+
+- Section 7.1: morcellated specimens come in multiple pieces, among which endometrial, endocervical or serosal surfaces and fibroid fragments may be identified. Section 7.2.4: in a morcellated hysterectomy, sample the cervical, endometrial and serosal surfaces and any focal lesion. The form records myometrium, endometrium, cervix and serosa among the fragments; a morcellated supracervical hysterectomy opens with myometrium, endometrium and serosa ticked, and a check notes a hysterectomy with no endometrium recorded.
+- Section 8.1: fragmented or morcellated specimens are measured in three dimensions and sliced, and any departure from a white, whorled cut surface is noted. Up to three representative blocks suffice in premenopausal women with no unusual history or imaging findings; any abnormality needs more extensive sampling, and the blocks should include the interface with normal myometrium where possible. The form prints the aggregate weight and size, the fragment size range, the cut surface and any fleshy area or necrosis; it opens on three blocks, and a check asks for more when a fleshy or necrotic area, or atypical features, are recorded with three blocks or fewer. RCPath gives the dimensions in millimetres; the form prints centimetres, as the house macroscopy does.
+- Section 8.2: leiomyomas in these specimens are reported as at hysterectomy (section 7.3), so the form uses the uterus form's leiomyoma fields and wording. A leiomyoma with bizarre nuclei may not be diagnosable on a morcellated specimen: RCPath advises sampling more tissue, and a caveat that the lesion needs complete removal for a confident diagnosis. The form prints the caveat in the comment ("As the specimen is fragmented, the diagnosis of leiomyoma with bizarre nuclei can be made with confidence only if the lesion has been completely removed.") and the diagnosis reads "see comment".
+- The fragmentation comment ("Fragmentation of the morcellated specimen precludes assessment of the tumour border and the serosa.") is a house snippet, automatic for a morcellated specimen and offered for a hysteroscopic one; neither source words it.
+- Background: [Seidman et al., PLoS One 2012](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0050058). Of 1,091 uterine morcellations (2005–2010) for presumed fibroids, 1.2% held an unexpected leiomyoma variant or an atypical or malignant smooth muscle tumour, and unexpected leiomyosarcoma was found in 0.09%. The authors took one block per 1 cm of the lesion's radiological greatest dimension; the form does not adopt that rule, which is noted for the leiomyosarcoma card.
+
 ## Datasets for the next cards
 
-- Morcellated leiomyoma and uterine leiomyosarcoma (both in Next): [ICCR uterine malignant dataset](https://www.iccr-cancer.org/datasets/published-datasets/female-reproductive/uterine-malignant/), [RCPath G106 uterine sarcomas](https://www.rcpath.org/static/c146b1c0-0e0e-47a4-a6ab29b3230d69f8/G106-Dataset-for-histopathological-reporting-of-uterine-sarcomas.pdf), [QMH GYN-Sarcoma template](https://awiloqmh.github.io/CancerReportingTemplate/GYN-Sarcoma.html), [RCPath tissue pathways for gynaecological pathology](https://www.rcpath.org/static/94763195-0982-40ed-bbc79ca92370e9ac/Tissue-pathways-for-gynaecological-pathology.pdf).
+- Uterine leiomyosarcoma (in Next): [ICCR uterine malignant dataset](https://www.iccr-cancer.org/datasets/published-datasets/female-reproductive/uterine-malignant/), [RCPath G106 uterine sarcomas](https://www.rcpath.org/static/c146b1c0-0e0e-47a4-a6ab29b3230d69f8/G106-Dataset-for-histopathological-reporting-of-uterine-sarcomas.pdf), [QMH GYN-Sarcoma template](https://awiloqmh.github.io/CancerReportingTemplate/GYN-Sarcoma.html); the RCPath tissue pathways are summarised above.

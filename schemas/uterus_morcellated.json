@@ -1,0 +1,552 @@
+{
+ "id": "uterus_morcellated",
+ "version": "2026.10",
+ "name": "Fibroid — morcellated or hysteroscopic excision",
+ "shortName": "Uterus · morcellated / hysteroscopic",
+ "label": "Morcellated / hysteroscopic",
+ "organ": "UTERUS",
+ "system": "Gynae",
+ "kind": "benign resection",
+ "rank": 27.5,
+ "aliases": [
+  "morcellation",
+  "morcellated myomectomy",
+  "morcellated hysterectomy",
+  "hysteroscopic myomectomy",
+  "hysteroscopic resection",
+  "TCRF",
+  "submucosal fibroid",
+  "fibroid fragments",
+  "leiomyoma"
+ ],
+ "match": {
+  "site": [
+   "fibroid",
+   "fibroid polyp",
+   "submucosal fibroid",
+   "submucous fibroid",
+   "leiomyoma",
+   "myoma",
+   "myomectomy",
+   "morcellated",
+   "morcellation",
+   "morcellator",
+   "TCRF",
+   "TCRM"
+  ],
+  "procedure": [
+   "morcellated",
+   "morcellation",
+   "morcellator",
+   "hysteroscopic",
+   "hysteroscopy",
+   "TCRF",
+   "TCRM",
+   "transcervical resection",
+   "resectoscope",
+   "resectoscopic",
+   "MyoSure",
+   "TruClear",
+   "tissue removal device",
+   "myomectomy",
+   "resection",
+   "excision",
+   "supracervical",
+   "subtotal",
+   "hysterectomy"
+  ],
+  "clinical": [
+   "hysteroscopic myomectomy",
+   "hysteroscopic resection",
+   "morcellation",
+   "morcellated",
+   "TCRF",
+   "submucosal fibroid",
+   "submucous fibroid",
+   "fibroid",
+   "fibroids",
+   "leiomyoma",
+   "leiomyomas",
+   "myoma",
+   "adenomyosis",
+   "menorrhagia",
+   "AUB",
+   "HMB",
+   "endometrial polyp",
+   "bulky uterus"
+  ],
+  "gate": "morcell|hysterosc|\\btcr[fm]?\\b|transcervical\\s+resection|resectoscop|myosure|truclear|tissue\\s+removal",
+  "exclude": [
+   "prostate",
+   "prostatic",
+   "HoLEP",
+   "ThuLEP",
+   "TURP",
+   "bladder",
+   "kidney",
+   "renal",
+   "nephrectomy",
+   "spleen",
+   "splenic",
+   "splenectomy",
+   "ovary",
+   "ovaries",
+   "ovarian",
+   "adnexa",
+   "adnexal"
+  ],
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "^(?=[\\s\\S]*morcell)(?=[\\s\\S]*(?:hysterect|supracervical|subtotal|sub-total|\\blsh\\b))",
+      "Morcellated supracervical hysterectomy"
+     ],
+     [
+      "hysterosc|\\btcr[fm]?\\b|transcervical|resectoscop|myosure|truclear|tissue\\s+removal",
+      "Hysteroscopic excision"
+     ],
+     [
+      "morcell",
+      "Morcellated myomectomy"
+     ]
+    ]
+   }
+  ]
+ },
+ "specimenNoun": "specimen",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "uterus_morcellated",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Macroscopy"
+  ],
+  "macroFields": [
+   "procedure"
+  ]
+ },
+ "fields": [
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "options": [
+    "Morcellated myomectomy",
+    "Morcellated supracervical hysterectomy",
+    "Hysteroscopic excision"
+   ],
+   "default": "Morcellated myomectomy"
+  },
+  {
+   "id": "weight",
+   "label": "Aggregate weight (g)",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 0,
+   "step": 0.1,
+   "suffix": "g",
+   "placeholder": "85",
+   "default": ""
+  },
+  {
+   "id": "dimensions",
+   "label": "Aggregate dimensions (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "9 x 7 x 4",
+   "default": ""
+  },
+  {
+   "id": "fragmentCount",
+   "label": "Fragments: number (blank = multiple)",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": ""
+  },
+  {
+   "id": "fragmentSize",
+   "label": "Fragments: size range (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "0.5 to 4",
+   "default": ""
+  },
+  {
+   "id": "fragmentTissue",
+   "label": "Fragments: description (blank = as usual for the procedure)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "firm whitish tissue",
+   "default": ""
+  },
+  {
+   "id": "cutSurface",
+   "label": "Cut surface",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Whorled",
+    "Degenerate",
+    "Haemorrhagic",
+    "Calcified"
+   ],
+   "default": "Whorled"
+  },
+  {
+   "id": "unusualArea",
+   "label": "Fleshy or necrotic area",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Not identified",
+    "Fleshy area",
+    "Necrosis",
+    "Fleshy area and necrosis"
+   ],
+   "default": "Not identified"
+  },
+  {
+   "id": "sampling",
+   "label": "Sampling",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Representative",
+    "All embedded"
+   ],
+   "default": "Representative",
+   "defaultByField": {
+    "field": "procedure",
+    "map": {
+     "Hysteroscopic excision": "All embedded"
+    }
+   }
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": "3",
+   "help": "RCPath (2023): up to three representative blocks for a typical morcellated leiomyoma in a premenopausal woman; sample any unusual area, and more extensively."
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key (optional; overrides the automatic key)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "(1-3) Fibroid. (4) Fragments with endometrium. (5) Fragments with serosa.",
+   "default": ""
+  },
+  {
+   "id": "leiomyoma",
+   "label": "Leiomyoma",
+   "type": "select",
+   "options": [
+    "Present",
+    "Absent"
+   ],
+   "default": "Present"
+  },
+  {
+   "id": "leiomyomaCount",
+   "label": "Leiomyomas: number (blank = one)",
+   "type": "number",
+   "min": 1,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "field": "leiomyoma",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "leiomyomaType",
+   "label": "Leiomyoma: type",
+   "type": "select",
+   "options": [
+    "Usual",
+    "Cellular",
+    "Mitotically active",
+    "With bizarre nuclei",
+    "Fumarate hydratase-deficient – see comment",
+    "Lipoleiomyoma",
+    "Epithelioid",
+    "Myxoid",
+    "Apoplectic",
+    "Hydropic",
+    "Dissecting",
+    "Diffuse leiomyomatosis",
+    "Intravenous leiomyomatosis – see comment",
+    "STUMP – see comment"
+   ],
+   "default": "Usual",
+   "showIf": {
+    "field": "leiomyoma",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "changes",
+   "label": "Leiomyoma: degeneration and change",
+   "type": "multiselect",
+   "options": [
+    "Hyaline degeneration",
+    "Hydropic change",
+    "Myxoid change",
+    "Cystic degeneration",
+    "Red degeneration",
+    "Infarct-type necrosis",
+    "Calcification"
+   ],
+   "default": [],
+   "showIf": {
+    "field": "leiomyoma",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "atypia",
+   "label": "Leiomyoma: cytological atypia",
+   "type": "select",
+   "options": [
+    "None",
+    "Mild",
+    "Focal moderate to severe",
+    "Diffuse moderate to severe"
+   ],
+   "default": "None",
+   "showIf": {
+    "field": "leiomyoma",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "mitoticCount",
+   "label": "Leiomyoma: mitoses (per 10 HPF, or '2/mm2')",
+   "type": "text",
+   "placeholder": "3",
+   "default": "",
+   "showIf": {
+    "field": "leiomyoma",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "tumourNecrosis",
+   "label": "Coagulative tumour cell necrosis",
+   "type": "select",
+   "options": [
+    "Not identified",
+    "Present"
+   ],
+   "default": "Not identified",
+   "showIf": {
+    "field": "leiomyoma",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "fhIhc",
+   "label": "FH immunohistochemistry",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "Retained",
+    "Lost"
+   ],
+   "default": "Not performed",
+   "showIf": {
+    "field": "leiomyoma",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "cautery",
+   "label": "Cautery artefact",
+   "type": "select",
+   "options": [
+    "None",
+    "Present",
+    "Marked, limiting assessment"
+   ],
+   "default": "None",
+   "showIf": {
+    "field": "procedure",
+    "is": "Hysteroscopic excision"
+   }
+  },
+  {
+   "id": "tissueTypes",
+   "label": "Also among the fragments",
+   "type": "multiselect",
+   "options": [
+    "Myometrium",
+    "Endometrium",
+    "Cervix",
+    "Serosa"
+   ],
+   "default": [],
+   "defaultByField": {
+    "field": "procedure",
+    "map": {
+     "Morcellated supracervical hysterectomy": [
+      "Myometrium",
+      "Endometrium",
+      "Serosa"
+     ]
+    }
+   }
+  },
+  {
+   "id": "endometrium",
+   "label": "Endometrium",
+   "type": "select",
+   "options": [
+    "Benign",
+    "Proliferative",
+    "Secretory",
+    "Weakly proliferative",
+    "Inactive-atrophic",
+    "Disordered proliferative",
+    "Endometrial polyp"
+   ],
+   "default": "Benign",
+   "defaultByField": {
+    "field": "procedure",
+    "map": {
+     "Morcellated supracervical hysterectomy": "Proliferative"
+    }
+   },
+   "showIf": {
+    "field": "tissueTypes",
+    "is": "Endometrium"
+   }
+  },
+  {
+   "id": "adenomyosis",
+   "label": "Adenomyosis",
+   "type": "select",
+   "options": [
+    "Absent",
+    "Present"
+   ],
+   "default": "Absent",
+   "showIf": {
+    "field": "tissueTypes",
+    "is": "Myometrium"
+   }
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional microscopy",
+   "type": "textarea",
+   "placeholder": "Free text appended to the microscopy for this part",
+   "default": ""
+  }
+ ],
+ "snippets": [
+  {
+   "id": "morcellated_fragmentation",
+   "label": "Morcellation — tumour border and serosa not assessable",
+   "auto": {
+    "field": "procedure",
+    "is": [
+     "Morcellated myomectomy",
+     "Morcellated supracervical hysterectomy"
+    ]
+   },
+   "text": "Fragmentation of the morcellated specimen ({parts}) precludes assessment of the tumour border and the serosa."
+  },
+  {
+   "id": "hysteroscopic_fragmentation",
+   "label": "Hysteroscopic fragments — tumour border not assessable",
+   "text": "Fragmentation of the hysteroscopic specimen ({parts}) precludes assessment of the tumour border."
+  }
+ ],
+ "macroExtract": {
+  "weight": {
+   "concept": "weight",
+   "unit": "g"
+  },
+  "dimensions": {
+   "concept": "dims",
+   "unit": "cm"
+  },
+  "fragmentCount": {
+   "concept": "count",
+   "of": "pieces?|fragments?"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  },
+  "blockKeyText": {
+   "concept": "blockKey"
+  }
+ },
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Morcellated myomectomy",
+     "weight": "85",
+     "dimensions": "9 x 7 x 4",
+     "fragmentCount": "",
+     "fragmentSize": "0.5 to 4",
+     "fragmentTissue": "",
+     "cutSurface": "Whorled",
+     "unusualArea": "Not identified",
+     "sampling": "Representative",
+     "blocks": "3",
+     "blockKeyText": "",
+     "leiomyoma": "Present",
+     "leiomyomaCount": "",
+     "leiomyomaType": "Usual",
+     "changes": [
+      "Hyaline degeneration"
+     ],
+     "atypia": "None",
+     "mitoticCount": "",
+     "tumourNecrosis": "Not identified",
+     "fhIhc": "Not performed",
+     "cautery": "None",
+     "tissueTypes": [
+      "Myometrium"
+     ],
+     "endometrium": "Benign",
+     "adenomyosis": "Absent",
+     "additionalNotes": ""
+    }
+   }
+  ]
+ }
+}

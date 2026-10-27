@@ -224,7 +224,7 @@ const MYOMETRIUM = {
   'Trabeculated with pinpoint haemorrhages (adenomyosis)': 'The myometrium is trabeculated with pinpoint haemorrhagic foci.'
 };
 
-const CUT_SURFACE = {
+export const CUT_SURFACE = {
   Whorled: 'a whorled cut surface',
   Degenerate: 'a soft, degenerate cut surface',
   Haemorrhagic: 'a haemorrhagic cut surface',
@@ -578,8 +578,9 @@ function leiomyomaMicro(v, opening) {
   return s.join(' ');
 }
 
-/** Myomectomy microscopy: the house paragraph, with the type and the assessment where recorded. */
-function myomectomyMicro(v) {
+/** Myomectomy microscopy: the house paragraph, with the type and the assessment where recorded. Also the
+ *  morcellated and hysteroscopic form's paragraph (generators/uterus_morcellated.js). */
+export function myomectomyMicro(v) {
   const t = lmType(v);
   const T = LM[t];
   const s = ['Sections show pieces of smooth muscle tumour tissue comprising spindle cells arranged in fascicles and whorls. Thick walled vessels are seen.'];

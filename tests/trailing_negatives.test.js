@@ -22,7 +22,7 @@ const TAIL = /;\s*(no evidence of (dysplasia or )?malignancy|NO EVIDENCE OF MALI
 const TEMPLATES = ['appendix', 'gallbladder', 'jaw_cyst', 'stoma', 'thyroid_benign', 'tonsils', 'nasal_polyps', 'duodenal_biopsy',
   'oesophageal_biopsy', 'uterus_benign', 'abscess_granulation', 'ovarian_cyst', 'skin_cyst', 'lung_biopsy', 'nasopharyngeal_biopsy',
   'breast_excision', 'soft_tissue_benign', 'bone_joint', 'cns_biopsy', 'liver_lesion_biopsy', 'turbt', 'salivary_benign',
-  'testis_benign', 'cervical_biopsy'];
+  'testis_benign', 'cervical_biopsy', 'uterus_morcellated'];
 
 test('a named benign diagnosis stands alone', () => {
   const cases = [

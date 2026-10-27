@@ -1,0 +1,36 @@
+{
+  "description": "hysteroscopic excision of a submucosal fibroid, all embedded, with cautery artefact and benign endometrium",
+  "templateId": "uterus_morcellated",
+  "values": [
+    {
+      "procedure": "Hysteroscopic excision",
+      "weight": "",
+      "dimensions": "2.5 x 2 x 1",
+      "fragmentCount": "",
+      "fragmentSize": "",
+      "fragmentTissue": "",
+      "cutSurface": "Whorled",
+      "unusualArea": "Not identified",
+      "sampling": "All embedded",
+      "blocks": "2",
+      "blockKeyText": "",
+      "leiomyoma": "Present",
+      "leiomyomaCount": "",
+      "leiomyomaType": "Usual",
+      "changes": [],
+      "atypia": "None",
+      "mitoticCount": "",
+      "tumourNecrosis": "Not identified",
+      "fhIhc": "Not performed",
+      "cautery": "Present",
+      "tissueTypes": [
+        "Endometrium"
+      ],
+      "endometrium": "Benign",
+      "adenomyosis": "Absent",
+      "additionalNotes": ""
+    }
+  ],
+  "report": "Uterus, submucosal fibroid, hysteroscopic excision\n\nReceived in formalin are multiple fragments of tan tissue, measuring 2.5 x 2 x 1 cm in aggregate. The fragments have a whorled appearance. No fleshy area or necrosis is identified. All embedded in 2 blocks.\n\n(1-2) Fragments, all embedded.\n\nSections show pieces of smooth muscle tumour tissue comprising spindle cells arranged in fascicles and whorls. Thick walled vessels are seen. No epithelioid tumour cells, significant nuclear atypia, coagulative tumour necrosis, or frequent mitoses are observed. There is no evidence of malignancy. Features are those of leiomyoma. Cautery artefact is present at the edges of the fragments. Benign endometrium is included, without features of atypical hyperplasia or chronic endometritis.\n\nUTERUS, submucosal fibroid, hysteroscopic excision - LEIOMYOMA",
+  "checks": []
+}

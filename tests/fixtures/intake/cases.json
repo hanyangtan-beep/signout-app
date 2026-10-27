@@ -945,6 +945,91 @@
           "level": ""
         }
       }
+    },
+    {
+      "name": "morcellated fibroid with a fibroid history (morcellated / hysteroscopic leiomyoma pair)",
+      "text": "History\nFibroid uterus\n\nSpecimen\n(A) Uterus, morcellated fibroid",
+      "history": "Fibroid uterus",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "uterus_morcellated",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "procedure": "Morcellated myomectomy"
+        }
+      }
+    },
+    {
+      "name": "morcellated myoma on its own (morcellated / hysteroscopic leiomyoma pair)",
+      "text": "(A) Morcellated myoma",
+      "history": "",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "uterus_morcellated",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "procedure": "Morcellated myomectomy"
+        }
+      }
+    },
+    {
+      "name": "hysteroscopy: the polyp keeps the endometrial form, the submucosal fibroid opens the morcellated / hysteroscopic form",
+      "text": "History\nMenorrhagia\n\nSpecimen\n(A) Endometrial polyp, hysteroscopic polypectomy and (B) Submucosal fibroid, hysteroscopic resection",
+      "history": "Menorrhagia",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "endometrial_biopsy",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "uterus_morcellated",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "B": {
+          "procedure": "Hysteroscopic excision"
+        }
+      }
+    },
+    {
+      "name": "a submucosal fibroid without morcellation or hysteroscopy keeps the uterus form (morcellated / hysteroscopic leiomyoma pair)",
+      "text": "History\nMenorrhagia\n\nSpecimen\n(A) Submucosal fibroid",
+      "history": "Menorrhagia",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "uterus_benign",
+          "tier": "confident"
+        }
+      ]
+    },
+    {
+      "name": "morcellated prostate chips keep their routes (morcellated / hysteroscopic leiomyoma pair)",
+      "text": "History\nBPH\n\nSpecimen\n(A) Morcellated prostate tissue",
+      "history": "BPH",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "turp",
+          "tier": "confident"
+        }
+      ]
     }
   ]
 }

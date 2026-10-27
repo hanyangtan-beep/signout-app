@@ -1,0 +1,38 @@
+{
+  "description": "morcellated myomectomy, usual leiomyoma with hyaline degeneration, three representative blocks",
+  "templateId": "uterus_morcellated",
+  "values": [
+    {
+      "procedure": "Morcellated myomectomy",
+      "weight": "85",
+      "dimensions": "9 x 7 x 4",
+      "fragmentCount": "",
+      "fragmentSize": "0.5 to 4",
+      "fragmentTissue": "",
+      "cutSurface": "Whorled",
+      "unusualArea": "Not identified",
+      "sampling": "Representative",
+      "blocks": "3",
+      "blockKeyText": "",
+      "leiomyoma": "Present",
+      "leiomyomaCount": "",
+      "leiomyomaType": "Usual",
+      "changes": [
+        "Hyaline degeneration"
+      ],
+      "atypia": "None",
+      "mitoticCount": "",
+      "tumourNecrosis": "Not identified",
+      "fhIhc": "Not performed",
+      "cautery": "None",
+      "tissueTypes": [
+        "Myometrium"
+      ],
+      "endometrium": "Benign",
+      "adenomyosis": "Absent",
+      "additionalNotes": ""
+    }
+  ],
+  "report": "Uterus, fibroid, morcellated myomectomy\n\nReceived in formalin are multiple morcellated fragments of firm whitish tissue, weighing 85 g and measuring 9 x 7 x 4 cm in aggregate. The fragments measure from 0.5 to 4 cm across. Sectioning shows a whorled cut surface. No fleshy area or necrosis is identified. Representative sections in 3 blocks.\n\n(1-3) Representative fragments.\n\nSections show pieces of smooth muscle tumour tissue comprising spindle cells arranged in fascicles and whorls. Thick walled vessels are seen. Areas of hyaline degeneration are present. No epithelioid tumour cells, significant nuclear atypia, coagulative tumour necrosis, or frequent mitoses are observed. There is no evidence of malignancy. Features are those of leiomyoma. Fragments of unremarkable myometrium are also present.\n\nUTERUS, fibroid, morcellated myomectomy - LEIOMYOMA\n\nFragmentation of the morcellated specimen precludes assessment of the tumour border and the serosa.",
+  "checks": []
+}

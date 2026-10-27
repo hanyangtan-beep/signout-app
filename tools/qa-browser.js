@@ -1557,6 +1557,49 @@ await check('tube and ovary: a pasted RRSO opens its own form, bilateral, risk-r
   return 'RRSO bilateral, risk-reducing, SEE-FIM; p53 signature sentence, closer and diagnosis; right salpingo-oophorectomy sided with the stains hidden';
 });
 
+// Phase 81 (2026-10-27): a hysteroscopic fibroid line opens the morcellated / hysteroscopic form, all embedded
+// and with the cautery field; a morcellated fibroid line reads as a morcellated myomectomy with the fragmentation
+// comment, and bizarre nuclei bring RCPath's caveat and sampling advice. A plain fibroid line keeps the uterus form.
+await check('morcellated fibroid: a hysteroscopic line opens its own form, all embedded; a morcellated myomectomy prints the fragmentation comment and the bizarre nuclei caveat', async () => {
+  const chosen = async (id) => {
+    const chips = await page.locator(`.chips[data-field="${id}"] .chip[aria-pressed="true"]`).allTextContents();
+    if (chips.length) return chips.map((c) => c.replace(/^\s*\d*\s*/, '').trim()).join(',');
+    const sel = page.locator(`[data-field="${id}"] select`).first();
+    return (await sel.count()) ? sel.inputValue() : '';
+  };
+  let routed = await pasteAndBuild('Submucosal fibroid, hysteroscopic resection');
+  assert(routed === 'uterus_morcellated', `hysteroscopic fibroid routed to ${routed}`);
+  for (const [id, want] of [['procedure', 'Hysteroscopic excision'], ['sampling', 'All embedded']]) {
+    const got = await chosen(id);
+    assert(got === want, `${id} read "${got}", expected "${want}"`);
+  }
+  let report = await reportText();
+  assert(report.includes('Received in formalin are multiple fragments of tan tissue.'), `macro wrong: ${report.slice(0, 400)}`);
+  assert(report.includes('UTERUS, submucosal fibroid, hysteroscopic excision - LEIOMYOMA'), `diagnosis line wrong: ${report.slice(-300)}`);
+  assert(!report.includes('Fragmentation of the'), 'fragmentation comment printed unasked for a hysteroscopic excision');
+  assert(await page.locator('.field[data-field="cautery"]:visible').count() === 1, 'cautery field hidden at hysteroscopy');
+  await shot('morcellated-hysteroscopic');
+  routed = await pasteAndBuild('Uterus, morcellated fibroid');
+  assert(routed === 'uterus_morcellated', `morcellated fibroid routed to ${routed}`);
+  assert(await chosen('procedure') === 'Morcellated myomectomy', 'procedure not read as a morcellated myomectomy');
+  assert(await page.locator('.field[data-field="cautery"]:visible').count() === 0, 'cautery field shows on a morcellated specimen');
+  report = await reportText();
+  assert(report.includes('Received in formalin are multiple morcellated fragments of firm whitish tissue.'), `macro wrong: ${report.slice(0, 400)}`);
+  assert(report.includes('Fragmentation of the morcellated specimen precludes assessment of the tumour border and the serosa.'), 'fragmentation comment missing');
+  await pickField('leiomyomaType', 'With bizarre nuclei');
+  await page.waitForTimeout(300);
+  report = await reportText();
+  assert(report.includes('- LEIOMYOMA with BIZARRE NUCLEI; see comment'), `bizarre nuclei diagnosis wrong: ${report.slice(-400)}`);
+  assert(report.includes('can be made with confidence only if the lesion has been completely removed.'), 'bizarre nuclei caveat missing');
+  const flagged = await checksText();
+  assert(flagged.includes('RCPath advises sampling more of the specimen.'), `sampling advice missing from Checks: ${flagged}`);
+  await page.locator('[data-field="leiomyomaType"]').first().scrollIntoViewIfNeeded();
+  await shot('morcellated-bizarre-nuclei');
+  routed = await pasteAndBuild('Submucosal fibroid');
+  assert(routed === 'uterus_benign', `plain submucosal fibroid routed to ${routed}`);
+  return 'hysteroscopic line: own form, all embedded, cautery shown, no fragmentation comment; morcellated line: myomectomy, fragmentation comment, bizarre nuclei caveat and RCPath sampling advice; a plain submucosal fibroid keeps the uterus form';
+});
+
 // Phase 75 (2026-10-23): a pituitary line opens the PitNET form (Endocrine), not Generic or the Glioma
 // form. The synoptic carries the lineage, and the stains sit in the histology paragraph; picking a
 // tumour type moves the lineage transcription factors with it. No glioma wording reaches the report.

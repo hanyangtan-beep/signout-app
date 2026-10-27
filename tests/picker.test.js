@@ -189,8 +189,9 @@ test('grouped browse and the part selector put Small biopsy first, systems in ca
   const gyn = groups.find((g) => g.system === 'Gynae');
   // Phase 74 (23 October 2026), deliberate: the benign tube and ovary form joins after Ovarian cyst.
   // Phase 77 (23 October 2026), deliberate: Vulva Ca joins the cancer resections, last by rank.
-  assert.deepEqual(gyn.items.map((t) => t.kind), ['biopsy', 'biopsy', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'cancer resection', 'cancer resection', 'cancer resection'], 'ascending specimen size within a system');
-  assert.deepEqual(gyn.items.slice(2).map(labelOf), ['LEEP', 'Placenta', 'Uterus', 'Ovarian cyst', 'Tube and ovary', 'Ectopic', 'Endometrial Ca', 'Ovary / tube / peritoneum Ca', 'Vulva Ca'], 'rank order within a kind');
+  // Phase 81 (27 October 2026), deliberate: the morcellated / hysteroscopic fibroid form joins after Uterus.
+  assert.deepEqual(gyn.items.map((t) => t.kind), ['biopsy', 'biopsy', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'cancer resection', 'cancer resection', 'cancer resection'], 'ascending specimen size within a system');
+  assert.deepEqual(gyn.items.slice(2).map(labelOf), ['LEEP', 'Placenta', 'Uterus', 'Morcellated / hysteroscopic', 'Ovarian cyst', 'Tube and ovary', 'Ectopic', 'Endometrial Ca', 'Ovary / tube / peritoneum Ca', 'Vulva Ca'], 'rank order within a kind');
   const sel = selectorGroups(manifest);
   assert.equal(sel[0].label, 'Small biopsy');
   assert.equal(sel[0].items.length, 19); // oral_biopsy joins in Phase 42, liver_biopsy and hirschsprung_biopsy on 2026-09-30, liver_lesion_biopsy on 2026-10-02, peritoneal_nodule on 2026-10-07, skin_inflammatory on 2026-10-11, gvhd_biopsy on 2026-10-14 (Phase 71, deliberate)

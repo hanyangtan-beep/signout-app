@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 80,
+  "count": 81,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -2093,6 +2093,128 @@
       "generator": "uterus",
       "generatorPath": "generators/uterus.js",
       "schemaPath": "schemas/uterus_benign.json"
+    },
+    {
+      "id": "uterus_morcellated",
+      "name": "Fibroid — morcellated or hysteroscopic excision",
+      "shortName": "Uterus · morcellated / hysteroscopic",
+      "label": "Morcellated / hysteroscopic",
+      "organ": "UTERUS",
+      "system": "Gynae",
+      "kind": "benign resection",
+      "rank": 27.5,
+      "aliases": [
+        "morcellation",
+        "morcellated myomectomy",
+        "morcellated hysterectomy",
+        "hysteroscopic myomectomy",
+        "hysteroscopic resection",
+        "TCRF",
+        "submucosal fibroid",
+        "fibroid fragments",
+        "leiomyoma"
+      ],
+      "match": {
+        "site": [
+          "fibroid",
+          "fibroid polyp",
+          "submucosal fibroid",
+          "submucous fibroid",
+          "leiomyoma",
+          "myoma",
+          "myomectomy",
+          "morcellated",
+          "morcellation",
+          "morcellator",
+          "TCRF",
+          "TCRM"
+        ],
+        "procedure": [
+          "morcellated",
+          "morcellation",
+          "morcellator",
+          "hysteroscopic",
+          "hysteroscopy",
+          "TCRF",
+          "TCRM",
+          "transcervical resection",
+          "resectoscope",
+          "resectoscopic",
+          "MyoSure",
+          "TruClear",
+          "tissue removal device",
+          "myomectomy",
+          "resection",
+          "excision",
+          "supracervical",
+          "subtotal",
+          "hysterectomy"
+        ],
+        "clinical": [
+          "hysteroscopic myomectomy",
+          "hysteroscopic resection",
+          "morcellation",
+          "morcellated",
+          "TCRF",
+          "submucosal fibroid",
+          "submucous fibroid",
+          "fibroid",
+          "fibroids",
+          "leiomyoma",
+          "leiomyomas",
+          "myoma",
+          "adenomyosis",
+          "menorrhagia",
+          "AUB",
+          "HMB",
+          "endometrial polyp",
+          "bulky uterus"
+        ],
+        "gate": "morcell|hysterosc|\\btcr[fm]?\\b|transcervical\\s+resection|resectoscop|myosure|truclear|tissue\\s+removal",
+        "exclude": [
+          "prostate",
+          "prostatic",
+          "HoLEP",
+          "ThuLEP",
+          "TURP",
+          "bladder",
+          "kidney",
+          "renal",
+          "nephrectomy",
+          "spleen",
+          "splenic",
+          "splenectomy",
+          "ovary",
+          "ovaries",
+          "ovarian",
+          "adnexa",
+          "adnexal"
+        ],
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "^(?=[\\s\\S]*morcell)(?=[\\s\\S]*(?:hysterect|supracervical|subtotal|sub-total|\\blsh\\b))",
+                "Morcellated supracervical hysterectomy"
+              ],
+              [
+                "hysterosc|\\btcr[fm]?\\b|transcervical|resectoscop|myosure|truclear|tissue\\s+removal",
+                "Hysteroscopic excision"
+              ],
+              [
+                "morcell",
+                "Morcellated myomectomy"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.10",
+      "generator": "uterus_morcellated",
+      "generatorPath": "generators/uterus_morcellated.js",
+      "schemaPath": "schemas/uterus_morcellated.json"
     },
     {
       "id": "ovarian_cyst",
