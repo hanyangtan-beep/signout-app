@@ -154,7 +154,18 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. The Phase 79 batch (faster start-up, a copy of the app kept on each computer, and faster saves) shipped on 2026-10-25; the write-ups are in Done, with the measurements in `docs/specs/speed.md`. The morcellated leiomyoma and uterine leiomyosarcoma cards wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+Status from the Open list (user request 2026-10-27): one card, built as a batch of its own. The Phase 79 batch (faster start-up, a copy of the app kept on each computer, and faster saves) shipped on 2026-10-25; the write-ups are in Done, with the measurements in `docs/specs/speed.md`. The morcellated leiomyoma and uterine leiomyosarcoma cards wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+
+### Status from the Open list (user request 2026-10-27)   Size: M
+Why:        a case's status (draft, ready or signed) changes only by opening the case, setting the field and saving it again; the user asked to change it from the Open list on 2026-10-27.
+Change:     each row of the Open list has a status menu (Draft, Ready, Signed) in place of its status label. Choosing one writes the case's Sheet row, its status column and its saved case in one call, then changes the status word in the Doc's last line; the case does not open, and the row keeps its time and its place in the list. A write that fails puts the menu back and says why. A case opens with the status in its Sheet column, so a status changed from the list, or typed into the Sheet, is the one it opens with; a case on screen with that accession shows the new status at once.
+Untouched:  the Doc's report text; the row's saved time and the list order; Save, Save & new, and opening a case by clicking its row; the Sheet's columns; golden fixtures.
+Accept:     the row and the Doc's text are read together, the status column and the saved case are written in one call, and only then the Doc, with only its last line changed (`drive_status.test.js`); a Doc that is missing or has no status line is left as it is and the toast says so; browser: choosing Signed in the list writes the row without opening the case, the case then opens as Signed, and a refused write puts the menu back.
+Verify:     tests + browser (light + dark, styles changed)
+Ship:       with batch
+Depends on: none
+Spec:       `docs/specs/open-status.md`
+Source:     https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate; https://developers.google.com/workspace/drive/api/reference/rest/v3/files/export
 
 ## Next
 
