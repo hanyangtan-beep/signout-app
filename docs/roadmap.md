@@ -156,13 +156,24 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. The Phase 80 card (status from the Open list) shipped on 2026-10-27; the write-up is in Done, with the design in `docs/specs/open-status.md`. The morcellated leiomyoma and uterine leiomyosarcoma cards wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+Morcellated and hysteroscopic leiomyoma (user requests 2026-10-23 and 2026-10-27): one card, built as a batch of its own. The Phase 80 card (status from the Open list) shipped on 2026-10-27; the write-up is in Done, with the design in `docs/specs/open-status.md`. The uterine leiomyosarcoma card waits in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+
+### Uterus — morcellated and hysteroscopic leiomyoma (user requests 2026-10-23 and 2026-10-27)   Size: M
+Why:        a morcellated myomectomy or hysterectomy, or a fibroid excised in fragments at hysteroscopy, is reported on the uterus form's myomectomy part, which has no fields for the fragments, the tissue types found among them or the fragmentation caveat; fewer than 10 specimen lines in either export name morcellation or a hysteroscopic fibroid removal. The user asked for the morcellated form on 2026-10-23 and for it to take hysteroscopic excision on 2026-10-27.
+Change:     new template `uterus_morcellated` (Gynae, benign resection, menu label "Morcellated / hysteroscopic", after Uterus): procedure (morcellated myomectomy, morcellated supracervical hysterectomy, hysteroscopic excision), aggregate weight and dimensions, fragment count and size range, cut surface and any fleshy or necrotic area, tissue types seen (leiomyoma, myometrium, endometrium, cervix, serosa), cautery and blocks, with the endometrium and adenomyosis for the supracervical uterus; microscopy and diagnosis reuse the leiomyoma assessment (type, changes, atypia, mitotic count, necrosis, FH, STUMP) in the uterus form's wording, from helpers that form exports; a comment that the fragmentation precludes assessment of the tumour border and the serosa, the RCPath caveat when bizarre nuclei are found in fragments, and the uterus form's STUMP, FH and intravenous leiomyomatosis comments. Intake: a line naming morcellation, or a hysteroscopic removal (hysteroscopy, TCRF, resectoscope, tissue removal device) with a fibroid word, opens it; prostate chips, hysteroscopic endometrial polyps and biopsies, and fibroid lines naming neither keep their routes.
+Untouched:  the uterus form's myomectomy part, its wording and every uterus fixture; the endometrial biopsy form.
+Accept:     fixtures for a morcellated usual leiomyoma, a cellular leiomyoma, a STUMP found on morcellation and a hysteroscopic submucosal leiomyoma; intake top-1 for "Uterus, morcellated fibroid", "Morcellated myoma" and "Submucosal fibroid, hysteroscopic resection"; "Morcellated prostate tissue", "Endometrial polyp, hysteroscopic polypectomy" and "Submucosal fibroid" keep their routes.
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: Benign uterus — leiomyoma assessment (shipped 2026-10-23)
+Spec:       card is the spec, with the intake section in `docs/specs/specimen-intake.md`
+Source:     https://www.rcpath.org/static/94763195-0982-40ed-bbc79ca92370e9ac/Tissue-pathways-for-gynaecological-pathology.pdf; https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0050058
 
 ## Next
 
 Build order (2026-09-15) is set by the LIS export of 4547 cases, 2024 to 2026-09 — `docs/case-mix-2026-09.md`, which found built templates covering 79.2 per cent of that caseload on the day. Of the four cards it ranked first, Oral cavity and oropharynx shipped on 2026-09-26 and Brain and CNS on 2026-09-19; Respiratory cytology and Joint fluid and CSF cytology are in Later. The cards after benign batch 4 were carried over from before the ranking. Placeholders in the app menus (`templates/planned.json`) are removed by the card that builds the template.
 
-After the Hirschsprung pull-through (still pulled), the perineurioma card and the two uterus cards, the Benign resections group (user request 2026-09-24) is next; batch 4 is the one left. It is sized by its own measure, diagnosis parts in both exports (`docs/case-mix/benign-resections-2021-2026.md`), and is built in the four batches its group note lists.
+After the Hirschsprung pull-through (still pulled), the perineurioma card and the uterine leiomyosarcoma card, the Benign resections group (user request 2026-09-24) is next; batch 4 is the one left. It is sized by its own measure, diagnosis parts in both exports (`docs/case-mix/benign-resections-2021-2026.md`), and is built in the four batches its group note lists.
 
 ### Hirschsprung disease — pull-through resection (user request 2026-09-29; pulled by the user 2026-09-30; moved from Now 2026-10-14 to make room, still pulled)   Size: M; Hirschsprung pair (L → split, 2 of 2)
 Why:        the resection report gives the length of the aganglionic segment and says whether the proximal margin is ganglionated and clear of the transition zone; pull-through lines open Generic today.
@@ -183,17 +194,6 @@ Verify:     tests only
 Ship:       with batch
 Spec:       card is the spec
 Source:     https://www.pathologyoutlines.com/topic/colontumorperineurioma.html; https://pmc.ncbi.nlm.nih.gov/articles/PMC5819702/
-
-### Uterus — morcellated leiomyoma (user request 2026-10-23)   Size: M
-Why:        a morcellated myomectomy or hysterectomy is reported on the uterus form's myomectomy part, which has no fields for the fragments, the tissue types found among them or the fragmentation caveat; fewer than 10 reports in either export name morcellation, so it waits here.
-Change:     new template `uterus_morcellated` (Gynae, benign resection, menu label "Morcellated"): procedure (morcellated myomectomy, morcellated supracervical hysterectomy), aggregate weight and dimensions, fragment count and size range, cut surface, tissue types seen (leiomyoma, myometrium, endometrium, cervix, serosa) and blocks; microscopy and diagnosis reuse the leiomyoma assessment (type, changes, atypia, mitotic count, necrosis, STUMP); a comment snippet that the fragmentation precludes assessment of the tumour border and the serosa.
-Untouched:  the uterus form's myomectomy part and every uterus fixture.
-Accept:     fixtures for a morcellated usual leiomyoma, a cellular leiomyoma and a STUMP found on morcellation; intake top-1 for "Uterus, morcellated fibroid" and "Morcellated myoma".
-Verify:     tests + browser (light)
-Ship:       with batch
-Depends on: Benign uterus — leiomyoma assessment
-Spec:       card is the spec
-Source:     https://www.rcpath.org/static/94763195-0982-40ed-bbc79ca92370e9ac/Tissue-pathways-for-gynaecological-pathology.pdf; https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0050058
 
 ### Uterine leiomyosarcoma — resection synoptic (user request 2026-10-23)   Size: L → split; two M cards, one batch
 Why:        a hysterectomy with leiomyosarcoma has no synoptic: `uterine_sarcoma` is a Later placeholder that opens Generic, so the type, size, mitotic count, necrosis, extent, margins and stage are typed by hand.
