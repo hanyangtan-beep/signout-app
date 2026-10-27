@@ -11,8 +11,8 @@ import { loadDraft, setDraftOwner, saveCase as cacheCase, clearCase, copyText } 
 import { loadConfig, saveConfig, accountConfig, rememberForAccount } from './config.js';
 import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction, renewalDue, renewSignIn } from './gauth.js';
 import { gateEnabled, gateState, parseAllowList, formatAllowList, BUILT_IN_ALLOWED, emailDigest, canonicalEmail } from './gate.js';
-import { saveCase as driveSave, listCases, openCase as driveOpen } from './drive.js';
-import { normaliseAccession, phiWarnings } from './docformat.js';
+import { saveCase as driveSave, listCases, openCase as driveOpen, setCaseStatus } from './drive.js';
+import { normaliseAccession, phiWarnings, STATUSES, statusOf } from './docformat.js';
 import { buildPayload, payloadKeys, payloadLabel, parseHarvest, nextCaptureTarget } from './lisbridge.js';
 import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js';
 import { applyMacroToCase } from './macroparse.js';
@@ -126,6 +126,7 @@ const nodes = {
   dlgOpen: $('#dlg-open'),
   openSearch: $('#open-search'),
   openList: $('#open-list'),
+  openNote: $('#open-note'),
   dlgSettings: $('#dlg-settings'),
   dlgPathway: $('#dlg-pathway'),
   dlgPlate: $('#dlg-plate'),
@@ -583,11 +584,13 @@ function initModeSwitch() {
   }
 }
 
+const STATUS_LABEL = { draft: 'Draft', ready: 'Ready', signed: 'Signed' };
+
 /** Accession, status and Drive state, kept in the bar because the case panel scrolls away. */
 function renderCaseId() {
   const meta = state.caseState?.meta || {};
   const acc = meta.accession?.trim();
-  const status = { draft: 'Draft', ready: 'Ready', signed: 'Signed' }[meta.status] || 'Draft';
+  const status = STATUS_LABEL[meta.status] || 'Draft';
   const d = state.caseState?.drive;
   let saveText = 'Unsaved';
   let saveClass = 'unsaved';
@@ -2322,31 +2325,89 @@ async function saveAndNew() {
   await startNewCase(inDrive ? `${accession} is already in Drive. New case started` : `Saved ${accession} to Drive. New case started`);
 }
 
+/**
+ * A line under the Open list for what the list did. A toast would sit behind the dialog's shade,
+ * and a modal dialog keeps the page under it from screen readers.
+ */
+function openNote(text, failed = false) {
+  nodes.openNote.textContent = text;
+  nodes.openNote.classList.toggle('failed', failed);
+}
+
+async function openFromList(r) {
+  try {
+    const cs = await driveOpen(state.config, r.accession);
+    await ensureTemplates(templatesInUse(cs));
+    nodes.dlgOpen.close();
+    setCase(cs, 0);
+    toast(`Opened ${r.accession}`);
+  } catch (err) { openNote(err.message, true); }
+}
+
+/** A status changed from the list reaches the case on screen when it is that case; it stays as clean or as edited as it was. */
+function followStatus(accession, status) {
+  const meta = state.caseState?.meta;
+  if (!meta || normaliseAccession(meta.accession) !== normaliseAccession(accession)) return;
+  meta.status = status;
+  nodes.meta.status.value = status;
+  cacheCase(state.caseState);
+  renderSaveStatus();
+}
+
+/**
+ * The row's status menu (user request 2026-10-27, docs/specs/open-status.md): a choice is written to
+ * the Sheet row and the Doc without opening the case, and the row keeps its place; a write that
+ * fails puts the menu back. A status the app does not know shows as Draft, as the top bar shows it.
+ */
+function statusMenu(r) {
+  const menu = el('select', { class: 'case-status', 'aria-label': `Status of ${r.accession}`, title: 'Change the status without opening the case' },
+    ...STATUSES.map((s) => el('option', { value: s, text: STATUS_LABEL[s] })));
+  const show = (s) => { menu.value = s; menu.dataset.status = s; };
+  show(statusOf(r.status) || 'draft');
+  menu.addEventListener('change', async () => {
+    const next = menu.value;
+    menu.dataset.status = next;
+    menu.disabled = true;
+    try {
+      const { doc } = await setCaseStatus(state.config, r.accession, next, r.doc_id);
+      r.status = next;
+      followStatus(r.accession, next);
+      openNote(`${r.accession} marked ${STATUS_LABEL[next]}${doc === 'failed' || doc === 'no-line' ? '; its Doc was not changed' : ''}`);
+    } catch (err) {
+      show(statusOf(r.status) || 'draft');
+      openNote(`${r.accession} not changed: ${err.message}`, true);
+    } finally {
+      // Disabling the focused menu sends focus to the page; it comes back so the keyboard keeps its place.
+      menu.disabled = false;
+      if (document.activeElement === document.body && nodes.dlgOpen.open) menu.focus();
+      // A search typed meanwhile drew the list again, from the case's status before this answer.
+      if (!menu.isConnected && nodes.dlgOpen.open) renderCaseList(nodes.openSearch.value);
+    }
+  });
+  return menu;
+}
+
 function renderCaseList(filter = '') {
   const f = normaliseAccession(filter);
   const rows = state.cases.filter((r) => !f || r.accession.includes(f))
     .sort((a, b) => (b.updated || '').localeCompare(a.updated || ''));
   if (!rows.length) return nodes.openList.replaceChildren(el('div', { class: 'empty', text: state.cases.length ? 'No matching cases' : 'No saved cases yet' }));
-  nodes.openList.replaceChildren(...rows.slice(0, 200).map((r) => el('button', {
-    type: 'button', class: 'case-row', role: 'listitem',
-    onclick: async () => {
-      try {
-        const cs = await driveOpen(state.config, r.accession);
-        await ensureTemplates(templatesInUse(cs));
-        nodes.dlgOpen.close();
-        setCase(cs, 0);
-        toast(`Opened ${r.accession}`);
-      } catch (err) { toast(err.message); }
-    }
+  // A click anywhere on the row opens the case, as when the row was one button, except on its status menu.
+  nodes.openList.replaceChildren(...rows.slice(0, 200).map((r) => el('div', {
+    class: 'case-row', role: 'listitem',
+    onclick: (e) => { if (!e.target.closest('.case-status')) openFromList(r); }
   },
-  el('div', {}, el('div', { class: 'acc', text: r.accession }), el('div', { class: 'sub', text: `${String(r.template).split('+').map((id) => entryOf(id)?.label || id).join(' + ')} · ${r.parts} part${r.parts === '1' ? '' : 's'}` })),
-  el('span', { class: `status ${r.status}`, text: r.status }),
+  el('button', { type: 'button', class: 'case-open', title: `Open ${r.accession}` },
+    el('span', { class: 'acc', text: r.accession }),
+    el('span', { class: 'sub', text: `${String(r.template).split('+').map((id) => entryOf(id)?.label || id).join(' + ')} · ${r.parts} part${r.parts === '1' ? '' : 's'}` })),
+  statusMenu(r),
   el('span', { class: 'sub', text: relTime(r.updated) }))));
 }
 
 async function doOpen() {
   nodes.openList.replaceChildren(el('div', { class: 'empty', text: 'Loading…' }));
   nodes.openSearch.value = '';
+  openNote('');
   nodes.dlgOpen.showModal();
   try {
     await ensureSignedIn(true, 'open');

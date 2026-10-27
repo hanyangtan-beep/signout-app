@@ -2294,6 +2294,182 @@ await check('top bar: Save & new saves the case to Drive, then starts a new case
   }
 });
 
+// Status from the Open list (Phase 80, user request 2026-10-27, docs/specs/open-status.md): each row's
+// status menu writes the Sheet row and the Doc's last line without opening the case. Google is faked
+// as in the Save & new check, but this fake keeps the Sheet and the Docs, so two cases are saved
+// through the app first and the list reads them back. 1680 px wide, where New and Open are in the bar.
+await check('Open list: a row\'s status menu writes the Sheet row and the Doc\'s last line without opening the case; a refused write puts it back', async () => {
+  const ACCOUNT = 'qa.member@example.org';
+  const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'authorization, content-type', 'access-control-allow-methods': 'GET, POST, PUT, PATCH, OPTIONS' };
+  const STUB = { id: 'qa-sheet', trashed: false, mimeType: 'application/vnd.google-apps.folder', capabilities: { canAddChildren: true }, files: [{ id: 'qa-sheet', name: 'qa' }], user: { emailAddress: ACCOUNT }, email: ACCOUNT };
+  // The Sheet below its header ([accession, updated, status, template, parts, doc_url, doc_id,
+  // case_json]) and the Docs, kept as Drive would: a save's writes land here and the list reads them.
+  const rows = [];
+  const docs = {};
+  const calls = [];
+  const errors = [];
+  let refuseRow = false;
+  const asExported = (text) => '\uFEFF' + text.replace(/\n/g, '\r\n'); // Drive's text/plain export
+  const json = (status, data) => ({ status, headers: { ...CORS, 'content-type': 'application/json' }, body: JSON.stringify(data) });
+  const sheetCall = (req, path, u) => {
+    const range = path.replace(/^\/v4\/spreadsheets\/[^/]+\/values/, '');
+    if (range === ':batchGet') return json(200, { valueRanges: [{ values: [rows.map((r) => r[0])] }, { values: [rows.map((r) => r[6] || '')] }] });
+    if (range === ':batchUpdate') {
+      if (refuseRow) return json(500, { error: { message: 'QA outage' } });
+      for (const { range: cell, values } of JSON.parse(req.postData()).data) {
+        const [, col, n] = /^([A-H])(\d+)$/.exec(cell);
+        rows[n - 2]['ABCDEFGH'.indexOf(col)] = values[0][0];
+      }
+      return json(200, {});
+    }
+    if (range === '/A1:H1:append') {
+      rows.push(JSON.parse(req.postData()).values[0]);
+      return json(200, { updates: { updatedRange: `Sheet1!A${rows.length + 1}:H${rows.length + 1}` } });
+    }
+    let m = /^\/A(\d+):H(\d+)$/.exec(range);
+    if (m && req.method() === 'PUT') { rows[m[1] - 2] = JSON.parse(req.postData()).values[0]; return json(200, {}); }
+    if (m) return json(200, { values: rows[m[1] - 2] ? [rows[m[1] - 2]] : undefined });
+    m = /^\/A(\d+)$/.exec(range);
+    if (m) return json(200, { values: rows[m[1] - 2] ? [[rows[m[1] - 2][0]]] : undefined });
+    if (range === '/A2:G') return json(200, { values: rows.map((r) => r.slice(0, 7)) });
+    if (range.startsWith('/A1:H1')) return json(200, {});
+    throw new Error(`unexpected Sheet call ${req.method()} ${path}${u.search}`);
+  };
+  const ctx = await browser.newContext({ viewport: { width: 1680, height: 950 }, serviceWorkers: 'block' });
+  const tab = await ctx.newPage();
+  try {
+    tab.on('pageerror', (e) => errors.push(String(e)));
+    tab.on('console', (m) => { if (m.type() === 'error' && !/favicon|net::ERR|status of (404|500)/.test(m.text())) errors.push(m.text()); });
+    await tab.route('http://localhost:3000/**', async (route) => {
+      let p = decodeURIComponent(new URL(route.request().url()).pathname);
+      if (p === '/') p = '/index.html';
+      const file = join(ROOT, normalize(p).replace(/^(\.\.[/\\])+/, ''));
+      const data = await readFile(file).catch(() => null);
+      await route.fulfill(data ? { status: 200, contentType: MIME[extname(file)] || 'application/octet-stream', body: data } : { status: 404, body: 'not found' });
+    });
+    await tab.route((url) => url.protocol === 'https:', (route) => {
+      const req = route.request();
+      const u = new URL(req.url());
+      if (!/(^|\.)googleapis\.com$/.test(u.hostname)) return route.fulfill({ status: 404, body: '' });
+      if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
+      const path = decodeURIComponent(u.pathname);
+      calls.push(`${req.method()} ${u.hostname}${path}`);
+      if (u.hostname === 'sheets.googleapis.com') return route.fulfill(sheetCall(req, path, u));
+      let m = /^\/drive\/v3\/files\/([^/]+)\/export$/.exec(path);
+      if (m) return route.fulfill(m[1] in docs ? { status: 200, headers: { ...CORS, 'content-type': 'text/plain; charset=utf-8' }, body: asExported(docs[m[1]]) } : json(404, { error: { message: 'File not found' } }));
+      if (path === '/upload/drive/v3/files' && req.method() === 'POST') {
+        const id = `QA-DOC-${Object.keys(docs).length + 1}`;
+        docs[id] = /Content-Type: text\/plain; charset=UTF-8\r\n\r\n([\s\S]*)\r\n--signout\w+--$/.exec(req.postData())[1];
+        return route.fulfill(json(200, { id }));
+      }
+      m = /^\/upload\/drive\/v3\/files\/([^/]+)$/.exec(path);
+      if (m && req.method() === 'PATCH') { docs[m[1]] = req.postData(); return route.fulfill(json(200, { id: m[1] })); }
+      return route.fulfill(json(200, STUB));
+    });
+    await tab.addInitScript((email) => {
+      if (sessionStorage.getItem('qa.planted')) return;
+      sessionStorage.setItem('qa.planted', '1');
+      sessionStorage.setItem('signout.token.v1', JSON.stringify({ access_token: 'qa', expires_at: Date.now() + 3600e3, email }));
+    }, ACCOUNT);
+    await tab.goto('http://localhost:3000/index.html', { waitUntil: 'networkidle' });
+    await tab.waitForSelector('#part-panel', { state: 'visible', timeout: 15000 });
+    const waitText = async (selector, test, what) => {
+      await tab.waitForFunction(([s, src]) => new RegExp(src).test(document.querySelector(s)?.textContent || ''), [selector, test.source], { timeout: 10000 })
+        .catch(async () => { throw new Error(`${what}: ${selector} reads "${await tab.locator(selector).textContent()}"`); });
+    };
+    // Two cases saved through the app itself, the second as Ready; it stays on screen.
+    for (const [acc, status] of [['S2604301', 'draft'], ['S2604302', 'ready']]) {
+      if (acc !== 'S2604301') await tab.click('#btn-new');
+      await tab.fill('#meta-accession', acc);
+      await tab.selectOption('#meta-status', status);
+      await tab.evaluate(() => { document.querySelector('#toast').textContent = ''; });
+      await tab.click('#btn-save');
+      await waitText('#toast', new RegExp(`^Saved ${acc} to Drive$`), `saving ${acc}`);
+    }
+    assert(rows.length === 2 && rows.map((r) => r[2]).join() === 'draft,ready', `rows after the saves: ${JSON.stringify(rows.map((r) => r.slice(0, 3)))}`);
+    const docOf = (acc) => docs[rows.find((r) => r[0] === acc)[6]];
+    const before = { rows: rows.map((r) => [...r]), d1: docOf('S2604301'), d2: docOf('S2604302') };
+
+    const openList = async () => {
+      await tab.click('#btn-open');
+      await tab.waitForSelector('#open-list .case-row', { timeout: 10000 });
+    };
+    const listed = () => tab.evaluate(() => [...document.querySelectorAll('#open-list .case-row')].map((r) => ({
+      acc: r.querySelector('.acc').textContent, status: r.querySelector('.case-status').value, shown: r.querySelector('.case-status').dataset.status, disabled: r.querySelector('.case-status').disabled
+    })));
+    const menu = (acc) => tab.locator(`#open-list select[aria-label="Status of ${acc}"]`);
+    await openList();
+    let list = await listed();
+    assert(JSON.stringify(list.map((r) => [r.acc, r.status, r.shown])) === JSON.stringify([['S2604302', 'ready', 'ready'], ['S2604301', 'draft', 'draft']]), `list: ${JSON.stringify(list)}`);
+    if (SHOTS) {
+      await mkdir(join(ROOT, 'analysis', 'qa'), { recursive: true });
+      await tab.screenshot({ path: join(ROOT, 'analysis', 'qa', 'open-status-light.png') });
+    }
+
+    // A case not on screen: Signed is written to its row and its Doc's last line; it does not open.
+    await menu('S2604301').focus();
+    let n = calls.length;
+    await menu('S2604301').selectOption('signed');
+    await waitText('#open-note', /^S2604301 marked Signed$/, 'Signed for S2604301');
+    const r1 = rows.find((r) => r[0] === 'S2604301');
+    assert(r1[2] === 'signed' && JSON.parse(r1[7]).meta.status === 'signed', `row: status ${r1[2]}, saved case ${JSON.parse(r1[7]).meta.status}`);
+    assert(r1[1] === before.rows[0][1], 'the row\'s saved time changed');
+    assert(JSON.stringify(rows[1]) === JSON.stringify(before.rows[1]), 'the other row changed');
+    assert(docOf('S2604301') === before.d1.replace(/Status: draft · Saved/, 'Status: signed · Saved') && docOf('S2604301') !== before.d1, `Doc: ${JSON.stringify(docOf('S2604301').split('\n').slice(-2))}`);
+    const made = calls.slice(n).map((c) => c.replace(/qa-sheet|QA-DOC-\d/g, '…'));
+    assert(made.filter((c) => !c.startsWith('GET')).join(' | ') === 'POST sheets.googleapis.com/v4/spreadsheets/…/values:batchUpdate | PATCH www.googleapis.com/upload/drive/v3/files/…', `writes: ${made.join(' | ')}`);
+    assert(await tab.locator('#dlg-open[open]').count() === 1, 'the dialog closed: the case opened');
+    let screen = await tab.evaluate(() => ({ acc: document.querySelector('#meta-accession').value, status: document.querySelector('#meta-status').value, pill: document.querySelector('.ci-status').textContent }));
+    assert(screen.acc === 'S2604302' && screen.status === 'ready' && screen.pill === 'Ready', `the case on screen changed: ${JSON.stringify(screen)}`);
+    list = await listed();
+    assert(list.map((r) => r.acc).join() === 'S2604302,S2604301' && list[1].shown === 'signed' && !list[1].disabled, `list after: ${JSON.stringify(list)}`);
+    const focus = await tab.evaluate(() => document.activeElement?.getAttribute('aria-label'));
+    assert(focus === 'Status of S2604301', `focus went to ${focus}`);
+
+    // The case on screen: it shows the new status at once and stays saved.
+    await menu('S2604302').selectOption('signed');
+    await waitText('#open-note', /^S2604302 marked Signed$/, 'Signed for S2604302');
+    screen = await tab.evaluate(() => ({ status: document.querySelector('#meta-status').value, pill: document.querySelector('.ci-status').textContent, saved: document.querySelector('#btn-save').classList.contains('is-saved') }));
+    assert(screen.status === 'signed' && screen.pill === 'Signed' && screen.saved, `the case on screen: ${JSON.stringify(screen)}`);
+
+    // A refused write: the menu goes back and the line says why; the Doc is not touched.
+    refuseRow = true;
+    n = calls.length;
+    const d1 = docOf('S2604301');
+    await menu('S2604301').selectOption('draft');
+    await waitText('#open-note', /^S2604301 not changed: Google API 500: QA outage$/, 'refused write');
+    list = await listed();
+    assert(list[1].status === 'signed' && list[1].shown === 'signed', `menu after a refused write: ${JSON.stringify(list[1])}`);
+    assert(await tab.locator('#open-note.failed').count() === 1, 'the line is not marked as a failure');
+    assert(!calls.slice(n).some((c) => c.startsWith('PATCH')) && docOf('S2604301') === d1 && rows.find((r) => r[0] === 'S2604301')[2] === 'signed', 'a refused write changed the Doc or the row');
+    refuseRow = false;
+    if (SHOTS) {
+      await tab.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
+      await tab.waitForTimeout(600); // colour transitions
+      await tab.screenshot({ path: join(ROOT, 'analysis', 'qa', 'open-status-dark.png') });
+      await tab.setViewportSize({ width: 390, height: 844 });
+      await tab.waitForTimeout(600);
+      await tab.screenshot({ path: join(ROOT, 'analysis', 'qa', 'open-status-phone.png') });
+      await tab.setViewportSize({ width: 1680, height: 950 });
+      await tab.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
+    }
+
+    // Clicking the row still opens the case, and it opens as Signed.
+    await tab.locator('#open-list .case-row', { hasText: 'S2604301' }).locator('.sub').last().click();
+    await waitText('#toast', /^Opened S2604301$/, 'opening S2604301');
+    screen = await tab.evaluate(() => ({ acc: document.querySelector('#meta-accession').value, status: document.querySelector('#meta-status').value, pill: document.querySelector('.ci-status').textContent, open: document.querySelector('#dlg-open').open }));
+    assert(screen.acc === 'S2604301' && screen.status === 'signed' && screen.pill === 'Signed' && !screen.open, `opened: ${JSON.stringify(screen)}`);
+    // Reopening the list starts with an empty line.
+    await openList();
+    assert((await tab.locator('#open-note').textContent()) === '', 'the line kept the last message');
+    await tab.keyboard.press('Escape');
+    assert(errors.length === 0, `page errors: ${errors.join(' | ')}`);
+    return 'Signed written to the row (status column and saved case, time kept) and the Doc\'s last line, the case not opened; the case on screen follows; a refused write puts the menu back; the row opens as Signed';
+  } finally {
+    await ctx.close();
+  }
+});
+
 // Sign-in renewal (Phase 79, docs/specs/speed.md): with under 10 minutes left on the Google sign-in,
 // New case renews it there and then rather than in the middle of the next save. The redirect names
 // the signed-in account (login_hint), so Google can return without the account chooser, and the

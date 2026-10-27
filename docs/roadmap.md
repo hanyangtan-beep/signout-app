@@ -2,13 +2,15 @@
 
 Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item, newest first. The app's Roadmap panel is built from this file, so a change here is rebuilt, deployed and published (user decision 2026-09-29); other docs-only changes are committed only. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`; the full Done write-ups to 2026-09-25 are in `docs/done-log.md`.
 
-State on 2026-10-25: 80 templates (19 small biopsy, 31 benign resection incl. LEEP, 1 frozen section, 20 synoptic cancer resections, 1 lymph node for lymphoma, 6 cytology, 1 biomarker, 1 generic), 2031 tests, published at `https://han-signout.pplx.app`.
+State on 2026-10-27: 80 templates (19 small biopsy, 31 benign resection incl. LEEP, 1 frozen section, 20 synoptic cancer resections, 1 lymph node for lymphoma, 6 cytology, 1 biomarker, 1 generic), 2043 tests, published at `https://han-signout.pplx.app`.
 
 ---
 
 ## Done
 
 Newest first. The full write-ups as they stood at ship time are in `docs/done-log.md`.
+
+- 2026-10-27 — Status from the Open list (user request): each row of the Open list has a status menu (Draft, Ready, Signed) in place of its label. Choosing one reads the case's row and its Doc together, writes the row's status column and saved case in one call, then changes only the status word in the Doc's last line; the case does not open, and the row keeps its saved time and its place in the list. A refused write puts the menu back, and a line under the list says what happened, including a Doc left as it was because it is missing or has no status line. A case now opens with the status in its Sheet column, and a case on screen with that accession shows the new status at once. As on Save, the Doc is rewritten from its text, so formatting added to it by hand does not survive. The report text and the Sheet's columns are unchanged. Tests: `tests/drive_status.test.js`. Spec: `docs/specs/open-status.md`. Phase 80.
 
 - 2026-10-25 — Faster saves (user request): a case new to the tab saves in three rounds of Google calls rather than five in a row: one read of the accession and Doc id columns (no saved case's JSON) alongside the folder check, then the Doc, then the row. A re-save writes the Doc while it checks that the row seen last still holds the accession, then writes the row: two rounds rather than three. A Sheet sorted by hand sends the write to wherever the accession is now; an accession already in the Sheet reuses its Doc, and a Doc deleted in Drive is made again. Open lists cases from columns A to G and reads only the case picked. At New case or Save & new a sign-in with under 10 minutes left is renewed there and then, and every redirect to Google names the signed-in account (`login_hint`). The Doc text and Sheet columns are unchanged. Tests: `tests/drive_speed.test.js`. Spec: `docs/specs/speed.md`. Phase 79.
 
@@ -154,18 +156,7 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Status from the Open list (user request 2026-10-27): one card, built as a batch of its own. The Phase 79 batch (faster start-up, a copy of the app kept on each computer, and faster saves) shipped on 2026-10-25; the write-ups are in Done, with the measurements in `docs/specs/speed.md`. The morcellated leiomyoma and uterine leiomyosarcoma cards wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
-
-### Status from the Open list (user request 2026-10-27)   Size: M
-Why:        a case's status (draft, ready or signed) changes only by opening the case, setting the field and saving it again; the user asked to change it from the Open list on 2026-10-27.
-Change:     each row of the Open list has a status menu (Draft, Ready, Signed) in place of its status label. Choosing one writes the case's Sheet row, its status column and its saved case in one call, then changes the status word in the Doc's last line; the case does not open, and the row keeps its time and its place in the list. A write that fails puts the menu back and says why. A case opens with the status in its Sheet column, so a status changed from the list, or typed into the Sheet, is the one it opens with; a case on screen with that accession shows the new status at once.
-Untouched:  the Doc's report text; the row's saved time and the list order; Save, Save & new, and opening a case by clicking its row; the Sheet's columns; golden fixtures.
-Accept:     the row and the Doc's text are read together, the status column and the saved case are written in one call, and only then the Doc, with only its last line changed (`drive_status.test.js`); a Doc that is missing or has no status line is left as it is and the toast says so; browser: choosing Signed in the list writes the row without opening the case, the case then opens as Signed, and a refused write puts the menu back.
-Verify:     tests + browser (light + dark, styles changed)
-Ship:       with batch
-Depends on: none
-Spec:       `docs/specs/open-status.md`
-Source:     https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate; https://developers.google.com/workspace/drive/api/reference/rest/v3/files/export
+Empty. The Phase 80 card (status from the Open list) shipped on 2026-10-27; the write-up is in Done, with the design in `docs/specs/open-status.md`. The morcellated leiomyoma and uterine leiomyosarcoma cards wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
 
 ## Next
 

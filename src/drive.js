@@ -3,7 +3,7 @@
 
 import { gfetch } from './gauth.js';
 import { rememberForAccount } from './config.js';
-import { SHEET_HEADER, normaliseAccession, buildDocText, toSheetRow, fromSheetRow, docUrlFor } from './docformat.js';
+import { SHEET_HEADER, normaliseAccession, buildDocText, toSheetRow, fromSheetRow, docUrlFor, statusOf, withDocStatus } from './docformat.js';
 
 const DRIVE = 'https://www.googleapis.com/drive/v3';
 const UPLOAD = 'https://www.googleapis.com/upload/drive/v3';
@@ -98,6 +98,7 @@ const hintKey = (sheetId, accession) => `${sheetId}|${accession}`;
 const DOC_COL = colLetter(SHEET_HEADER.indexOf('doc_id') + 1); // G
 const LAST_COL = colLetter(SHEET_HEADER.length);                // H, the case JSON
 const LIST_COL = colLetter(SHEET_HEADER.length - 1);            // G: everything but the case JSON
+const STATUS_COL = colLetter(SHEET_HEADER.indexOf('status') + 1); // C
 
 /**
  * Row number and Doc id of an accession, from one read of the accession and Doc id columns.
@@ -145,6 +146,24 @@ async function writeRow(config, sheetId, rowNumber, row, accession, api) {
   if (!written) return null;
   rowHints.set(hintKey(sheetId, accession), Number(written[1]));
   return Number(written[1]);
+}
+
+/**
+ * The row that holds this accession now, A to H, with its number: one read when the row seen last
+ * still holds the accession, else the row is looked up first. null when there is none.
+ */
+async function readCaseRow(config, sheetId, accession, api) {
+  const readRow = async (n) => {
+    const res = await api(config, `${SHEETS}/${sheetId}/values/A${n}:${LAST_COL}${n}?majorDimension=ROWS`);
+    const values = (await res.json())?.values?.[0];
+    const row = values ? fromSheetRow(values) : null;
+    return row && normaliseAccession(row.accession) === accession ? { rowNumber: n, ...row } : null;
+  };
+  const hinted = rowHints.get(hintKey(sheetId, accession));
+  const row = hinted ? await readRow(hinted) : null;
+  if (row) return row;
+  const { rowNumber } = await lookupRow(config, sheetId, accession, api);
+  return rowNumber ? readRow(rowNumber) : null;
 }
 
 /** Every saved case for the Open list: columns A to G, without the case JSON. */
@@ -236,24 +255,69 @@ export async function saveCase(config, caseState, out, api = gfetch) {
 
 /**
  * One saved case, from its own row (A to H): one read when the Open list has just seen the row and
- * it still holds the accession, else the row is looked up first.
+ * it still holds the accession, else the row is looked up first. The status is the row's status
+ * column, which the Open list shows and changes, when it holds one (docs/specs/open-status.md).
  */
 export async function openCase(config, accession, api = gfetch) {
-  const acc = normaliseAccession(accession);
   const sheetId = await ensureSheet(config, api);
-  const readRow = async (n) => {
-    const res = await api(config, `${SHEETS}/${sheetId}/values/A${n}:${LAST_COL}${n}?majorDimension=ROWS`);
-    const values = (await res.json())?.values?.[0];
-    const row = values ? fromSheetRow(values) : null;
-    return row && normaliseAccession(row.accession) === acc ? row : null;
-  };
-  const hinted = rowHints.get(hintKey(sheetId, acc));
-  let row = hinted ? await readRow(hinted) : null;
-  if (!row) {
-    const { rowNumber } = await lookupRow(config, sheetId, acc, api);
-    row = rowNumber ? await readRow(rowNumber) : null;
-  }
+  const row = await readCaseRow(config, sheetId, normaliseAccession(accession), api);
   if (!row?.caseState) throw new Error(`No saved case for ${accession}`);
+  const status = statusOf(row.status);
+  if (status) row.caseState.meta = { ...(row.caseState.meta || {}), status };
   row.caseState.drive = { docId: row.doc_id, docUrl: row.doc_url, savedAt: row.updated };
   return row.caseState;
+}
+
+/** A Google Doc's text (files.export as text/plain), or null when it cannot be read. */
+async function readDocText(config, docId, api) {
+  if (!docId) return null;
+  try {
+    const res = await api(config, `${DRIVE}/files/${docId}/export?${q({ mimeType: 'text/plain' })}`);
+    return await res.text();
+  } catch { return null; }
+}
+
+/**
+ * Change a saved case's status from the Open list (user request 2026-10-27,
+ * docs/specs/open-status.md). The row, its accession checked, and the Doc's text are read
+ * together; the status column and the saved case are written in one values.batchUpdate
+ * (developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate),
+ * and only then the Doc: its own text as files.export gives it
+ * (developers.google.com/workspace/drive/api/reference/rest/v3/files/export), with the status
+ * word in its last line changed. The row's saved time is left alone, so the list keeps its order.
+ * `docId` is the Doc the list showed; a row that names another has that one changed.
+ * Resolves to { status, doc }, doc being 'updated', 'current' (it already said so), 'none' (no Doc
+ * on record), 'no-line' (no status line to change) or 'failed' (not read or not written).
+ */
+export async function setCaseStatus(config, accession, status, docId = '', api = gfetch) {
+  const next = statusOf(status);
+  if (!next) throw new Error(`Not a status: ${status}`);
+  const sheetId = await ensureSheet(config, api);
+  const [row, listed] = await Promise.all([
+    readCaseRow(config, sheetId, normaliseAccession(accession), api),
+    readDocText(config, docId, api)
+  ]);
+  if (!row) throw new Error(`No saved case for ${accession}`);
+  const data = [{ range: `${STATUS_COL}${row.rowNumber}`, values: [[next]] }];
+  if (row.caseState) {
+    row.caseState.meta = { ...(row.caseState.meta || {}), status: next };
+    data.push({ range: `${LAST_COL}${row.rowNumber}`, values: [[JSON.stringify(row.caseState)]] });
+  }
+  await api(config, `${SHEETS}/${sheetId}/values:batchUpdate`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ valueInputOption: 'RAW', data })
+  });
+  const doc = row.doc_id || docId;
+  if (!doc) return { status: next, doc: 'none' };
+  const text = doc === docId ? listed : await readDocText(config, doc, api);
+  if (text === null) return { status: next, doc: 'failed' };
+  const changed = withDocStatus(text, next);
+  if (!changed.found) return { status: next, doc: 'no-line' };
+  if (changed.text === null) return { status: next, doc: 'current' };
+  try {
+    await api(config, `${UPLOAD}/files/${doc}?${q({ uploadType: 'media', fields: 'id' })}`, {
+      method: 'PATCH', headers: { 'Content-Type': 'text/plain; charset=UTF-8' }, body: changed.text
+    });
+    return { status: next, doc: 'updated' };
+  } catch { return { status: next, doc: 'failed' }; }
 }

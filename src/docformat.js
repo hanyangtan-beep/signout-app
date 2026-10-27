@@ -7,6 +7,12 @@ export const SHEET_HEADER = ['accession', 'updated', 'status', 'template', 'part
 
 export const STATUSES = ['draft', 'ready', 'signed'];
 
+/** A status as the app stores it, from whatever a Sheet cell holds ("Signed " counts); '' for anything else. */
+export function statusOf(raw) {
+  const s = String(raw ?? '').trim().toLowerCase();
+  return STATUSES.includes(s) ? s : '';
+}
+
 /** Uppercase and strip spaces, hyphens, slashes and underscores so "s 25-0012" and "S250012" match the same row. */
 export function normaliseAccession(raw) {
   return String(raw || '').toUpperCase().replace(/[\s\-_/]+/g, '').trim();
@@ -63,6 +69,28 @@ export function buildDocText(caseState, out) {
   }
   lines.push(`Template: ${templateLabel(caseState)} · Status: ${meta.status || 'draft'} · Saved ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC`);
   return lines.join('\n');
+}
+
+// The Doc's last line as buildDocText writes it: `Template: … · Status: draft · Saved 2026-10-27 09:30 UTC`.
+const STATUS_LINE = /^(Template: .* · Status: )(\S*)( · Saved .*)$/;
+
+/**
+ * The Doc's own text with the status in its status line changed, for a status changed from the
+ * Open list (docs/specs/open-status.md): the last line that reads like buildDocText's, so the text
+ * above it, hand edits included, stays as it is. `found` is false when the Doc has no such line;
+ * `text` is null when there is nothing to write. A byte-order mark at the start of an exported
+ * Doc is dropped, and line ends come back as \n, as a save writes them.
+ */
+export function withDocStatus(text, status) {
+  const lines = String(text ?? '').replace(/^\uFEFF/, '').split(/\r\n|\n|\r/);
+  for (let i = lines.length - 1; i >= 0; i -= 1) {
+    const m = STATUS_LINE.exec(lines[i]);
+    if (!m) continue;
+    if (m[2] === status) return { found: true, text: null };
+    lines[i] = `${m[1]}${status}${m[3]}`;
+    return { found: true, text: lines.join('\n') };
+  }
+  return { found: false, text: null };
 }
 
 export function toSheetRow(caseState, docId, docUrl, now = new Date()) {
