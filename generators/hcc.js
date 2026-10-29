@@ -21,6 +21,7 @@ import * as S from '../src/staging/hcc.js';
 import { renderSynoptic, renderDiagnosis } from '../src/synoptic.js';
 import { letteredBlockKey, checks } from './_house.js';
 import * as BG from './liver_background.js';
+import * as EX from './liver_explant.js';
 
 const num = (v) => { const n = parseFloat(String(v ?? '').trim()); return Number.isFinite(n) ? n : null; };
 const int = (v) => { const n = parseInt(String(v ?? '').trim(), 10); return Number.isFinite(n) ? n : null; };
@@ -98,8 +99,18 @@ export function staging(part) { return deriveTNM(part.values, 'hcc'); }
 
 const otherSizes = (v) => String(v.otherSizesCm || '').split(/[,;\s]+(?:and\s+)?/).map(num).filter((n) => n !== null);
 
+/**
+ * The liver explant this synoptic is linked under, or null (Phase 82). The engine gives a linked part its host
+ * (src/engine.js generateCase). Under an explant the synoptic prints no gross, block key or heading of its own,
+ * because the explant carries them, and the explant's background-liver clauses replace this form's.
+ */
+export const hostOf = (part) => (part?.host?.templateId === 'liver_explant' ? part.host : null);
+/** A total hepatectomy (an explant) has no parenchymal margin: its row, clause and check drop out. */
+const totalHepatectomy = (v) => v.procedure === 'Total hepatectomy';
+
 export function macro(part, ctx) {
   if (ctx?.options && ctx.options.macro === false) return '';
+  if (hostOf(part)) return '';
   const v = part.values;
   const proc = procedurePhrase(v);
   const article = /^[aeiou]/.test(proc) ? 'an' : 'a';
@@ -132,7 +143,7 @@ export function macro(part, ctx) {
 
 const lettered = (part, ctx) => new Set((ctx?.case?.parts || []).map((p) => p.label)).size > 1;
 
-export const blockKey = (part, ctx) => letteredBlockKey(part, ctx, { lettered, strip: stripDot });
+export const blockKey = (part, ctx) => (hostOf(part) ? '' : letteredBlockKey(part, ctx, { lettered, strip: stripDot }));
 
 // ---------- values shared by synoptic and diagnosis ----------
 
@@ -280,7 +291,8 @@ export function synoptic(part, ctx) {
   const viVal = /^Present/.test(vi) && stripDot(v.vascularDetail) ? `${vi} (${stripDot(v.vascularDetail)})` : vi;
   const other = v.otherMargin && !/^Not applicable/.test(v.otherMargin)
     ? `${resMarginText(v.otherMargin, v.otherMarginMm)}${stripDot(v.otherMarginDetail) ? ` (${stripDot(v.otherMarginDetail)})` : ''}` : '';
-  const findings = BG.findingItems(v);
+  const hosted = !!hostOf(part);
+  const findings = hosted ? [] : BG.findingItems(v);
   const sections = [
     { heading: 'Specimen and tumour', items: [
       item('Procedure', procedureText(v)),
@@ -299,8 +311,8 @@ export function synoptic(part, ctx) {
       item('Treatment effect', treatmentText(v))
     ] },
     { heading: 'Margins', items: [
-      item('Parenchymal margin', resMarginText(v.parenchymalMargin, v.parenchymalMarginMm) || 'Not recorded'),
-      other ? item('Other margin(s)', other) : null
+      totalHepatectomy(v) ? null : item('Parenchymal margin', resMarginText(v.parenchymalMargin, v.parenchymalMarginMm) || 'Not recorded'),
+      other ? item('Other margin(s)', other) : totalHepatectomy(v) ? item('Other margin(s)', 'Not recorded') : null
     ] },
     showNodes(st, ctx) ? { heading: 'Lymph nodes', items: [nodesItem(v)] } : null,
     showMets(st, ctx, metastasisValue(v)) ? { heading: 'Distant metastasis', items: [item('Distant metastasis', metastasisValue(v))] } : null,
@@ -308,13 +320,13 @@ export function synoptic(part, ctx) {
       { label: 'pTNM', value: st.overridden ? `${st.tnm} [pathologist override; derived ${st.derived.T}/${st.derived.N}${st.derived.M !== 'M-' ? `/${st.derived.M}` : ''}${stripDot(v.tnmOverrideReason) ? ` - ${stripDot(v.tnmOverrideReason)}` : ''}]` : st.tnm,
         sub: stageLine(st) ? [{ label: stageLine(st).split(': ')[0], value: stageLine(st).split(': ').slice(1).join(': ') }] : [] }
     ] } : null,
-    { heading: 'Additional findings', items: [
+    hosted && !stripDot(v.additionalNotes) ? null : { heading: 'Additional findings', items: [
       ...findings.map((t) => ({ text: t })),
       stripDot(v.additionalNotes) ? item('Additional notes', stripDot(v.additionalNotes)) : null,
       !findings.length && !stripDot(v.additionalNotes) ? { text: 'None identified' } : null
     ] }
   ].filter(Boolean);
-  const heading = lettered(part, ctx) ? `(${part.label}) ${uc1(specimenName(part))}` : '';
+  const heading = lettered(part, ctx) && !hosted ? `(${part.label}) ${uc1(specimenName(part))}` : '';
   return renderSynoptic(sections, heading);
 }
 
@@ -340,7 +352,7 @@ export function tumourDx(v) {
 /** "Margin clear", "Margins clear", "Parenchymal margin involved", "Margin cannot be assessed"; '' when not recorded. */
 export function marginDx(v) {
   const named = [
-    { name: 'parenchymal', value: v.parenchymalMargin || '' },
+    { name: 'parenchymal', value: totalHepatectomy(v) ? '' : v.parenchymalMargin || '' },
     { name: stripDot(v.otherMarginDetail) || 'other', value: v.otherMargin && !/^Not applicable/.test(v.otherMargin) ? v.otherMargin : '' }
   ].filter((m) => m.value);
   if (!named.length) return '';
@@ -382,10 +394,14 @@ export function diagnosis(part, ctx) {
   if (np) clauses.push(np + (v.ene === 'Present' ? '; extranodal extension present' : ''));
   const mets = chosen(v.distantMets).map((s) => lc1(specify(s)));
   if (mets.length) clauses.push(`Distant metastasis: ${listJoin(mets)}${stripDot(v.distantDetail) ? ` (${stripDot(v.distantDetail)})` : ''}`);
-  const bg = BG.backgroundDx(v);
-  if (bg) clauses.push(bg);
-  const nod = BG.nodulesDx(v);
-  if (nod) clauses.push(`${nod} in the background liver`);
+  const host = hostOf(part);
+  if (host) clauses.push(...EX.hostedClauses(host));
+  else {
+    const bg = BG.backgroundDx(v);
+    if (bg) clauses.push(bg);
+    const nod = BG.nodulesDx(v);
+    if (nod) clauses.push(`${nod} in the background liver`);
+  }
   return renderDiagnosis(head, clauses);
 }
 
@@ -423,7 +439,7 @@ export function validate(part) {
   if (v.histType === FIBROLAMELLAR && v.grade && !/^Not applicable/.test(v.grade)) info('Fibrolamellar carcinoma: CAP gives no grading guidance and the diagnosis line prints no grade; "Not applicable" also leaves the synoptic row out.', 'grade');
   if (/^Incomplete necrosis/.test(v.treatmentEffect || '') && num(v.necrosisPct) === null) warn('Incomplete necrosis: record the percentage of tumour necrosis.', 'necrosisPct');
   if (t0 && v.grade && !/^(GX|Not applicable)/.test(v.grade)) warn('No viable tumour: there is nothing to grade, so choose GX or "Not applicable".', 'grade');
-  if (/^Uninvolved/.test(v.parenchymalMargin || '') && num(v.parenchymalMarginMm) === null && !t0) warn('Parenchymal margin uninvolved: record the distance.', 'parenchymalMarginMm');
+  if (!totalHepatectomy(v) && /^Uninvolved/.test(v.parenchymalMargin || '') && num(v.parenchymalMarginMm) === null && !t0) warn('Parenchymal margin uninvolved: record the distance.', 'parenchymalMarginMm');
   if (/^Uninvolved/.test(v.otherMargin || '') && num(v.otherMarginMm) === null) warn('Other margin uninvolved: record the distance.', 'otherMarginMm');
   if (v.otherMargin && !/^Not applicable/.test(v.otherMargin) && !stripDot(v.otherMarginDetail)) warn('Other margin: name it (e.g. hilar vascular or bile duct margin).', 'otherMarginDetail');
   const ex = int(v.nodesExamined); const pos = int(v.nodesInvolved);
@@ -432,7 +448,13 @@ export function validate(part) {
   if (ex !== null && pos !== null && pos > ex) err('Involved nodes exceed the number examined.', 'nodesInvolved');
   if (pos && pos > 0 && (!v.ene || /^Not applicable/.test(v.ene))) info('Node-positive: extranodal extension is not recorded (a QMH item; the CAP protocol has none).', 'ene');
   if (chosen(v.distantMets).length && !stripDot(v.distantDetail)) warn('Distant metastasis: specify the site.', 'distantDetail');
-  for (const i of BG.backgroundIssues(v)) at(i.level, i.message, i.field);
+  const host = hostOf(part);
+  if (!host) for (const i of BG.backgroundIssues(v)) at(i.level, i.message, i.field);
+  else {
+    // Under an explant only the explant's background fields print; say so when this form's copy has drifted.
+    const differ = EX.BG_FIELDS.filter((k) => JSON.stringify(arr(v[k]).filter((x) => !/dysplastic nodule/.test(x))) !== JSON.stringify(arr(host.values[k])));
+    if (differ.length) info('Background liver: the explant\'s fields print under the explant; this synoptic\'s copy differs and is not printed.', differ[0]);
+  }
   const st = staging(part);
   // pNX is the expected state of a hepatectomy without nodes, so its note is not repeated as a check.
   const noteField = (x) => (/override/i.test(x) ? 'tnmOverride' : /necrosis/i.test(x) ? 'treatmentEffect' : /^Size/.test(x) ? 'tumourSizeCm'

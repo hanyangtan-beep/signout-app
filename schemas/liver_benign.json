@@ -57,6 +57,9 @@
    "biliary cyst",
    "hydatid"
   ],
+  "exclude": [
+   "donor"
+  ],
   "fill": [
    {
     "field": "segment",

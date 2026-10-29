@@ -767,12 +767,14 @@ export function frozenScenario(text) {
 
 /**
  * `match.fill`: `{field, from: "detail" | "text" | "options" | "side" | "map", fallback?, strip?, unless?, clock?,
- * noGuess?, scenario?, alone?, history?}` rules (a single object is accepted too). `alone` applies the rule only on a line
+ * noGuess?, scenario?, alone?, history?, when?}` rules (a single object is accepted too). `alone` applies the rule only on a line
  * that `match.alone` reads (see aloneFor). `clock` writes a breast site the house way
  * (see clockSite) and, when the line is not an LIS triple, still takes its clock position and distance from
  * the whole line. `noGuess` empties an options field the line names nothing on, so the form's default site
  * ("Frontal lobe", "Upper lobe") never prints for a request that did not name it. `side` writes the side the
- * line names (see sideFor). `scenario` applies the rule only to a frozen part read as that scenario. On an
+ * line names (see sideFor). `scenario` applies the rule only to a frozen part read as that scenario.
+ * `when: {field, is}` applies it only when an earlier rule has set that field to that value: the donor timing and
+ * sample fill only a line read as a donor biopsy (Phase 82), so "Liver, needle biopsy" presets nothing hidden. On an
  * options rule `strip` drops words before matching: the frozen CNS list offers "Brain" beside "Cerebellum",
  * and without it "Brain, right cerebellar lesion" is a one-word tie that matches neither.
  */
@@ -784,6 +786,7 @@ function applyFill(schema, part, values, history = '') {
     const f = field(rule.field);
     if (!f || values[rule.field]) continue;
     if (rule.scenario && values.scenario !== rule.scenario) continue;
+    if (rule.when && values[rule.when.field] !== rule.when.is) continue;
     if (rule.alone && !aloneFor(schema.match, text)) continue;
     if (rule.from === 'options') {
       if (!Array.isArray(f.options)) continue;

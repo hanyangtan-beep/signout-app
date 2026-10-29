@@ -358,6 +358,9 @@ export function generateCase(templates, caseState) {
     const id = templateIdOf(caseState, p);
     return normalisePart(templates[id].schema, { label: p.label, templateId: id, linked: !!p.linked && k > 0, values: { ...p.values } });
   });
+  // A linked part can read the part it is linked under (for example an HCC synoptic under a liver explant takes
+  // the explant's background liver). Not enumerable, so it stays out of saved cases and value copies.
+  parts.forEach((p, k) => { if (p.linked) Object.defineProperty(p, 'host', { value: parts[k - 1], enumerable: false }); });
 
   // One context per template, holding only that template's parts.
   const ctxs = {};

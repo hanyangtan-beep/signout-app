@@ -1,0 +1,141 @@
+{
+  "description": "HBV cirrhosis with two HCC after TACE, one completely necrotic and one 40% necrotic with 15 mm viable, and the linked HCC synoptic with pTNM printed",
+  "templateIds": [
+    "liver_explant",
+    "hcc"
+  ],
+  "parts": [
+    {
+      "templateId": "liver_explant",
+      "values": {
+        "specimenName": "",
+        "fixation": "Fresh",
+        "weightG": "1380",
+        "dims": "23 x 16 x 9",
+        "adherent": "",
+        "hilum": "Submitted en face",
+        "thrombus": [],
+        "thrombusDetail": "",
+        "gallbladder": "Present",
+        "gbDetail": "",
+        "nodesFound": "2",
+        "sliceMm": "5",
+        "background": "Cirrhotic",
+        "nodularity": "Micronodular",
+        "imagingMatch": "All imaging lesions identified",
+        "imagingDetail": "",
+        "blockKeyText": "1-2 Hilar margins en face\n3-4 Nodule 1\n5-8 Nodule 2\n9-12 Background liver\n13 Gallbladder\n14 Hilar lymph nodes",
+        "noduleCount": 2,
+        "n1Seg": "6",
+        "n1Mm": "20",
+        "n1Desc": "necrotic, with a lipiodol-stained rim",
+        "n1Histo": "Treated HCC, no viable tumour",
+        "n1Nec": "",
+        "n1Viable": "",
+        "n1Other": "",
+        "n2Seg": "8",
+        "n2Mm": "25",
+        "n2Desc": "tan, bulging, partly necrotic",
+        "n2Histo": "Hepatocellular carcinoma",
+        "n2Nec": "40",
+        "n2Viable": "15",
+        "n2Other": "",
+        "n3Seg": "",
+        "n3Mm": "",
+        "n3Desc": "",
+        "n3Histo": "",
+        "n3Nec": "",
+        "n3Viable": "",
+        "n3Other": "",
+        "n4Seg": "",
+        "n4Mm": "",
+        "n4Desc": "",
+        "n4Histo": "",
+        "n4Nec": "",
+        "n4Viable": "",
+        "n4Other": "",
+        "n5Seg": "",
+        "n5Mm": "",
+        "n5Desc": "",
+        "n5Histo": "",
+        "n5Nec": "",
+        "n5Viable": "",
+        "n5Other": "",
+        "moreNodules": false,
+        "otherNodules": "",
+        "bgFindings": [
+          "Cirrhosis",
+          "Chronic hepatitis (specify aetiology)"
+        ],
+        "bgStageSystem": "Ishak",
+        "bgStage": "6",
+        "bgAetiology": "Hepatitis B",
+        "bgAetiologyOther": "",
+        "bgSteatosisPct": "",
+        "bgOther": "",
+        "activity": "Mild",
+        "causeFeatures": [],
+        "cellChange": [],
+        "tumour": "",
+        "tumourOther": "",
+        "incidental": [],
+        "thrombusHisto": "Organising bland",
+        "nodesHisto": "Reactive changes",
+        "nodesPositive": "",
+        "nodesOther": "",
+        "gallbladderHisto": "Chronic cholecystitis",
+        "gbOther": "",
+        "necrosisPct": "",
+        "necrosisPattern": "Massive",
+        "necrosisZone": "Panacinar",
+        "necrosisFeatures": [],
+        "additionalNotes": ""
+      }
+    },
+    {
+      "templateId": "hcc",
+      "linked": true,
+      "values": {
+        "procedure": "Total hepatectomy",
+        "specimenName": "Native liver, total hepatectomy",
+        "specimenWeight": "1380",
+        "specimenDims": "230 x 160 x 90",
+        "segments": [
+          "Segment 8"
+        ],
+        "tumourCount": 1,
+        "tumourSizeCm": "1.5",
+        "otherSizesCm": "",
+        "treatmentEffect": "Incomplete necrosis (viable tumour present)",
+        "necrosisPct": "40",
+        "nodesExamined": 2,
+        "nodesInvolved": 0,
+        "bgFindings": [
+          "Cirrhosis",
+          "Chronic hepatitis (specify aetiology)"
+        ],
+        "bgStageSystem": "Ishak",
+        "bgStage": "6",
+        "bgAetiology": "Hepatitis B",
+        "bgAetiologyOther": "",
+        "bgSteatosisPct": "",
+        "bgOther": "",
+        "treatment": "TACE"
+      }
+    }
+  ],
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "report": "Native liver, total hepatectomy\n\nReceived fresh is a native liver weighing 1380 g and measuring 23 x 16 x 9 cm. The hilar margins (bile duct, portal vein and hepatic artery) are submitted en face. The gallbladder is attached. Two hilar lymph nodes are identified. The liver is serially sliced at 5 mm intervals. The parenchyma is diffusely micronodular. Nodule 1, in segment 6, measures 20 mm and is necrotic, with a lipiodol-stained rim. Nodule 2, in segment 8, measures 25 mm and is tan, bulging, partly necrotic. All lesions described on imaging are identified. Representative sections are taken; see block key.\n\n(1-2) Hilar margins en face.\n(3-4) Nodule 1.\n(5-8) Nodule 2.\n(9-12) Background liver.\n(13) Gallbladder.\n(14) Hilar lymph nodes.\n\nThe liver shows established cirrhosis (Ishak stage 6/6) with mild interface and lobular activity. Nodule 1 (segment 6, 20 mm) is completely necrotic, with no viable tumour, consistent with treated hepatocellular carcinoma. Nodule 2 (segment 8, 25 mm) is a hepatocellular carcinoma with about 40% necrosis; the viable tumour measures 15 mm. Two hilar lymph nodes show reactive changes. The gallbladder shows chronic cholecystitis.\n\nSpecimen and tumour\n- Procedure: Total hepatectomy\n- Tumour site: Segment 8\n- Tumour focality: Solitary\n- Tumour size: 1.5 cm (largest tumour, greatest dimension)\n\nMicroscopic findings\n- Histologic type: Hepatocellular carcinoma\n- Histologic grade: G2: Moderately differentiated\n- Tumour histology:\n  The tumour is a moderately differentiated hepatocellular carcinoma. The tumour cells are hepatocyte-like, with moderate nuclear atypia, and grow in thickened trabeculae and pseudoglandular structures.\n- Tumour extension: Tumour confined to liver\n- Satellitosis: Not identified\n- Vascular invasion: Not identified\n- Perineural invasion: Not identified\n- Treatment effect: Incomplete necrosis (viable tumour present), tumour necrosis\n  40%, after TACE\n\nMargins\n- Other margin(s): Not recorded\n\nLymph nodes\n- Regional lymph nodes: 2 examined; 0 involved\n  - Number examined: 2\n  - Number involved: 0\n\nPathological stage (AJCC 8th edition)\n- pTNM: ypT1a ypN0\n  - Stage group (if cM0): IA\n\nLIVER, native, total hepatectomy\n- Moderately differentiated HEPATOCELLULAR CARCINOMA\n- Treatment effect: incomplete necrosis (40%) after TACE\n- Stage ypT1a ypN0 (pTNM, AJCC 8th edition)\n- 0 of 2 regional lymph nodes involved\n- CHRONIC HEPATITIS B with CIRRHOSIS (Ishak stage 6/6)",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Transplant criteria on the explant: counting viable tumour, within Milan, within UCSF (one nodule, largest 15 mm); counting all nodules, within Milan, within UCSF (two nodules, largest 25 mm). Vascular invasion: not identified.",
+      "field": "noduleCount",
+      "part": "A"
+    }
+  ]
+}

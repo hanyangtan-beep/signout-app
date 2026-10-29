@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 81,
+  "count": 82,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -3942,6 +3942,9 @@
           "biliary cyst",
           "hydatid"
         ],
+        "exclude": [
+          "donor"
+        ],
         "fill": [
           {
             "field": "segment",
@@ -4165,6 +4168,83 @@
       "generator": "jawcyst",
       "generatorPath": "generators/jawcyst.js",
       "schemaPath": "schemas/jaw_cyst.json"
+    },
+    {
+      "id": "liver_explant",
+      "name": "Liver explant — native liver at transplant",
+      "shortName": "Liver · explant (total hepatectomy)",
+      "label": "Liver explant",
+      "organ": "LIVER",
+      "system": "Hepatobiliary",
+      "kind": "benign resection",
+      "rank": 41,
+      "aliases": [
+        "explant",
+        "liver explant",
+        "native liver",
+        "total hepatectomy",
+        "recipient hepatectomy",
+        "transplant hepatectomy",
+        "liver transplant",
+        "cirrhosis",
+        "end-stage liver disease",
+        "acute liver failure"
+      ],
+      "match": {
+        "site": [
+          "liver",
+          "hepatic",
+          "hepatectomy"
+        ],
+        "procedure": [
+          "explant",
+          "explanted",
+          "total hepatectomy",
+          "recipient hepatectomy",
+          "transplant hepatectomy",
+          "native liver",
+          "at transplant"
+        ],
+        "clinical": [
+          "cirrhosis",
+          "liver transplant",
+          "end-stage liver disease",
+          "ESLD",
+          "liver failure",
+          "HCC",
+          "hepatocellular carcinoma",
+          "PSC",
+          "PBC",
+          "biliary atresia"
+        ],
+        "gate": "\\b(?:explant\\w*|total\\s+hepatectom\\w*|native\\s+liver|recipient\\s+(?:liver|hepatectom\\w*)|transplant\\s+hepatectom\\w*|at\\s+(?:liver\\s+)?transplant\\w*)\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "core",
+          "needle",
+          "flexure",
+          "donor",
+          "allograft"
+        ],
+        "bias": 2,
+        "fill": [
+          {
+            "field": "tumour",
+            "from": "map",
+            "map": [
+              [
+                "(?<!\\?)\\b(?:HCC|hepatocellular|hepatoma)\\b",
+                "Hepatocellular carcinoma"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.10",
+      "generator": "liver_explant",
+      "generatorPath": "generators/liver_explant.js",
+      "schemaPath": "schemas/liver_explant.json"
     },
     {
       "id": "salivary_benign",
@@ -4970,8 +5050,7 @@
           "sectionectomy",
           "lobectomy",
           "resection",
-          "wedge",
-          "explant"
+          "wedge"
         ],
         "clinical": [
           "HCC",
@@ -4984,7 +5063,14 @@
           "biopsy",
           "biopsies",
           "core",
-          "needle"
+          "needle",
+          "explant",
+          "explanted",
+          "native liver",
+          "recipient",
+          "total hepatectomy",
+          "transplant hepatectomy",
+          "at transplant"
         ],
         "bias": 2,
         "fill": [
@@ -6700,7 +6786,11 @@
         "METAVIR",
         "liver transplant",
         "rejection",
-        "RAI"
+        "RAI",
+        "donor liver",
+        "time-zero biopsy",
+        "post-reperfusion biopsy",
+        "back-table biopsy"
       ],
       "match": {
         "site": [
@@ -6729,9 +6819,13 @@
           "LFT",
           "LFTs",
           "rejection",
-          "transplant"
+          "transplant",
+          "donor",
+          "time-zero",
+          "reperfusion",
+          "back-table"
         ],
-        "gate": "\\b(?:random|background|non-?lesional)\\b|^(?![\\s\\S]*\\b(?:mass(?:es)?|lesions?|nodules?|SOL|HCC|hepatoma|tumou?rs?|metasta\\w*|mets|abscess(?:es)?|cysts?|carcinoma|cholangiocarcinoma|neoplasm\\w*|malignan\\w*|adenomas?|ha?emangiomas?|FNH)\\b)[\\s\\S]*\\b(?:medical|parenchyma\\w*|deranged|LFTs?|liver\\s+function|ALT|ALP|GGT|transaminas\\w*|hepatitis|AIH|autoimmune|PBC|PSC|cholangitis|cholesta\\w*|jaundice|cirrho\\w*|fibros\\w*|steato\\w*|fatty|NASH|NAFLD|MASH|MASLD|MetALD|transplant\\w*|allograft|graft|OLT|LDLT|DDLT|rejection|transjugular|TJLB|ha?emochromatosis|iron|Wilson\\w*|A1AT|DILI|drugs?|HBV|HCV|hep\\s*[BC]|(?:right|left)\\s+lobe)\\b",
+        "gate": "\\b(?:random|background|non-?lesional|donor|time[\\s-]?zero|(?:post-?)?reperfusion|(?:pre-?)?implantation|back-?table)\\b|^(?![\\s\\S]*\\b(?:mass(?:es)?|lesions?|nodules?|SOL|HCC|hepatoma|tumou?rs?|metasta\\w*|mets|abscess(?:es)?|cysts?|carcinoma|cholangiocarcinoma|neoplasm\\w*|malignan\\w*|adenomas?|ha?emangiomas?|FNH)\\b)[\\s\\S]*\\b(?:medical|parenchyma\\w*|deranged|LFTs?|liver\\s+function|ALT|ALP|GGT|transaminas\\w*|hepatitis|AIH|autoimmune|PBC|PSC|cholangitis|cholesta\\w*|jaundice|cirrho\\w*|fibros\\w*|steato\\w*|fatty|NASH|NAFLD|MASH|MASLD|MetALD|transplant\\w*|allograft|graft|OLT|LDLT|DDLT|rejection|donor|time[\\s-]?zero|(?:post-?)?reperfusion|(?:pre-?)?implantation|back-?table|transjugular|TJLB|ha?emochromatosis|iron|Wilson\\w*|A1AT|DILI|drugs?|HBV|HCV|hep\\s*[BC]|(?:right|left)\\s+lobe)\\b",
         "bias": 1,
         "exclude": [
           "mass",
@@ -6771,6 +6865,13 @@
           },
           {
             "field": "specimenName",
+            "from": "text",
+            "strip": "\\b(?:liver|biops(?:y|ies))\\b",
+            "lower": true,
+            "unless": "^(?![\\s\\S]*\\b(?:donor|time[\\s-]?zero|post-?reperfusion|pre-?implantation|back-?table)\\b)"
+          },
+          {
+            "field": "specimenName",
             "from": "map",
             "map": [
               [
@@ -6802,6 +6903,95 @@
                 "left lobe"
               ]
             ]
+          },
+          {
+            "field": "pattern",
+            "from": "map",
+            "map": [
+              [
+                "\\b(?:time[\\s-]?zero|post-?reperfusion|pre-?implantation|back-?table)\\b",
+                "Donor (time zero)"
+              ],
+              [
+                "^(?![\\s\\S]*\\b(?:allo)?graft\\b)[\\s\\S]*\\bdonor\\b",
+                "Donor (time zero)"
+              ]
+            ]
+          },
+          {
+            "field": "pattern",
+            "from": "map",
+            "history": true,
+            "map": [
+              [
+                "\\b(?:time[\\s-]?zero|post-?reperfusion|pre-?implantation|back-?table)\\b",
+                "Donor (time zero)"
+              ]
+            ]
+          },
+          {
+            "field": "dnTiming",
+            "from": "map",
+            "history": true,
+            "map": [
+              [
+                "\\bpre-?(?:implantation|reperfusion)\\b|\\bback-?table\\b|\\bbefore\\s+(?:implantation|reperfusion)\\b",
+                "Pre-implantation (back table)"
+              ],
+              [
+                "\\b(?:post-?)?reperfusion\\b",
+                "Post-reperfusion"
+              ],
+              [
+                "\\bliving[\\s-]+donor\\b",
+                "Living-donor work-up"
+              ]
+            ],
+            "when": {
+              "field": "pattern",
+              "is": "Donor (time zero)"
+            }
+          },
+          {
+            "field": "dnSample",
+            "from": "map",
+            "map": [
+              [
+                "\\bwedge\\b",
+                "Wedge"
+              ],
+              [
+                "\\b(?:core|needle|tru-?cut)\\b",
+                "Needle core"
+              ]
+            ],
+            "when": {
+              "field": "pattern",
+              "is": "Donor (time zero)"
+            }
+          },
+          {
+            "field": "dnDonor",
+            "from": "map",
+            "history": true,
+            "map": [
+              [
+                "\\bDCD\\b|\\bcirculatory\\s+death\\b|\\bnon-?heart-?beating\\b",
+                "DCD"
+              ],
+              [
+                "\\bDBD\\b|\\bbrain[\\s-]?(?:stem[\\s-]+)?dea(?:th|d)\\b",
+                "DBD"
+              ],
+              [
+                "\\bliving[\\s-]+donor\\b",
+                "Living"
+              ]
+            ],
+            "when": {
+              "field": "pattern",
+              "is": "Donor (time zero)"
+            }
           }
         ]
       },
@@ -6871,7 +7061,13 @@
           "FNA",
           "aspirate",
           "aspiration",
-          "cytology"
+          "cytology",
+          "donor",
+          "time-zero",
+          "time zero",
+          "reperfusion",
+          "implantation",
+          "back-table"
         ],
         "bias": 1,
         "fill": [

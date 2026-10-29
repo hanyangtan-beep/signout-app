@@ -87,7 +87,12 @@ test('the site is written without "liver" or "biopsy"; procedure words and graft
     ['Needle core biopsy', 'Liver, biopsy', 'LIVER, biopsy'],
     ['Transjugular', 'Liver, transjugular biopsy', 'LIVER, transjugular biopsy'],
     ['allograft', 'Liver allograft, biopsy', 'LIVER ALLOGRAFT, biopsy'],
-    ['transplant', 'Liver allograft, biopsy', 'LIVER ALLOGRAFT, biopsy']
+    ['transplant', 'Liver allograft, biopsy', 'LIVER ALLOGRAFT, biopsy'],
+    // Phase 82: a donor word at the end, a graft first piece, and the last piece deciding the comma
+    ['donor, time-zero', 'Liver, donor, time-zero biopsy', 'LIVER, donor, time-zero biopsy'],
+    ['living donor', 'Liver, living donor biopsy', 'LIVER, living donor biopsy'],
+    ['graft, post-reperfusion', 'Liver allograft, post-reperfusion biopsy', 'LIVER ALLOGRAFT, post-reperfusion biopsy'],
+    ['time-zero, needle core', 'Liver, time-zero, needle core biopsy', 'LIVER, time-zero, needle core biopsy']
   ];
   for (const [name, spec, dx] of cases) {
     const r = run({ ...EXAMPLE, specimenName: name });
@@ -363,6 +368,97 @@ test('transplant: other findings, fibrosis as its own clause, and the RAI Checks
   assert.deepEqual(levelsFor(run({ ...TCMR, txDx: 'Indeterminate for rejection', raiPortal: '', raiBileDuct: '', raiVenous: '' }), 'raiPortal'), []);
 });
 
+// ---------- donor liver, time zero (Phase 82) ----------
+// Card: docs/roadmap.md "Liver donor biopsy — time zero (medical liver form)"; spec docs/specs/liver-transplant-pair.md.
+
+const DONOR = { specimenName: 'donor, wedge', pattern: 'Donor (time zero)', dnTiming: 'Post-reperfusion', dnSample: 'Wedge', portalTracts: '14',
+  dnLdfPct: '10', dnSdfPct: '20', dnIri: 'Mild', dnNecrosisPct: '0', portalInfl: 'Minimal', lobular: 'Absent', stageSystem: 'Ishak', stage: '' };
+
+test('donor: the post-reperfusion wedge reads the fat, the injury and the negatives in the order of the ten steps', () => {
+  const r = run(DONOR);
+  assert.equal(r.specimens, 'Liver, donor, wedge biopsy');
+  assert.equal(r.microscopy, 'Sections show a wedge biopsy of donor liver taken after reperfusion, with 14 portal tracts. '
+    + 'Large-droplet steatosis involves about 10% of the parenchyma and small-droplet steatosis about 20%. '
+    + 'There is mild ischaemia-reperfusion injury, with scattered sinusoidal neutrophils and occasional acidophil bodies. '
+    + 'There is no necrosis. The portal tracts show minimal inflammation. There is no fibrosis. No granuloma or neoplasm is seen.');
+  assert.equal(r.diagnosis, 'LIVER, donor, wedge biopsy - MILD ISCHAEMIA-REPERFUSION INJURY with LARGE-DROPLET STEATOSIS (10%) and NO FIBROSIS');
+  assert.deepEqual(r.issues, []);
+});
+
+test('donor: the specimen sentence follows the sample and the timing; the injury grade is for post-reperfusion biopsies', () => {
+  const first = (values) => run({ ...DONOR, ...values }).microscopy.split('. ')[0];
+  assert.equal(first({ dnSample: 'Needle core', cores: '2', coreLength: '22' }),
+    'Sections show two cores of donor liver taken after reperfusion, measuring 22 mm in aggregate length, with 14 portal tracts');
+  assert.equal(first({ dnTiming: 'Pre-implantation (back table)' }), 'Sections show a wedge biopsy of donor liver taken before implantation, with 14 portal tracts');
+  assert.equal(first({ dnTiming: 'Living-donor work-up', dnSample: 'Needle core', cores: '1', coreLength: '18' }),
+    'Sections show a core of donor liver measuring 18 mm in length, with 14 portal tracts');
+  const back = { ...DONOR, dnTiming: 'Pre-implantation (back table)' };
+  assert.doesNotMatch(run(back).microscopy, /reperfusion injury/);
+  assert.doesNotMatch(run(back).diagnosis, /REPERFUSION/);
+  assert.ok(!visible(back).includes('dnIri') && visible(DONOR).includes('dnIri'));
+  assert.ok(!visible(DONOR).includes('cores') && visible({ ...DONOR, dnSample: 'Needle core' }).includes('coreLength'), 'a wedge has no cores to count');
+  assert.ok(visible({ pattern: 'Hepatitic' }).includes('cores'), 'the other patterns keep the core fields');
+  for (const id of ['infiltrate', 'interface']) assert.ok(!visible(DONOR).includes(id), id);
+});
+
+test('donor: fat, necrosis, inflammation and the other findings', () => {
+  const m = (values) => run({ ...DONOR, ...values }).microscopy;
+  assert.match(m({ dnLdfPct: '0', dnSdfPct: '0' }), / There is no steatosis\. /);
+  assert.match(m({ dnLdfPct: '0', dnSdfPct: '0', dnMicro: 'Present' }), / There is no large- or small-droplet steatosis\. There is true microvesicular steatosis, with foamy hepatocytes\. /);
+  assert.match(m({ dnLdfPct: '0', dnSdfPct: '15' }), / There is no large-droplet steatosis; small-droplet steatosis involves about 15% of the parenchyma\. /);
+  assert.match(m({ dnLdfPct: '30', dnSdfPct: '0', dnFatZone: 'Zone 3' }),
+    / Large-droplet steatosis involves about 30% of the parenchyma, and there is no small-droplet steatosis\. The steatosis is predominantly in zone 3\. /);
+  assert.match(m({ dnNecrosisPct: '20', dnNecrosisSite: 'Zone 3 and subcapsular' }), / Necrosis involves about 20% of the parenchyma, in zone 3 and under the capsule\. /);
+  assert.doesNotMatch(m({ dnNecrosisPct: '' }), /necrosis/i, 'a blank necrosis is not a negative');
+  assert.match(m({ lobular: 'Mild' }), / The portal tracts show minimal inflammation\. There is mild lobular inflammation\. /);
+  assert.match(m({ dnOther: ['Cholestasis'] }), / There is no fibrosis\. Cholestasis is seen\. No granuloma or neoplasm is seen\.$/);
+  assert.match(m({ dnOther: ['Ballooned hepatocytes', 'Lipofuscin', 'Granulomas'] }), / Ballooned hepatocytes, lipofuscin pigment and granulomas are seen\. No neoplasm is seen\.$/);
+  assert.match(m({ dnOther: ['Neoplasm'] }), / A neoplasm is present \(see comment\)\. No granuloma is seen\.$/);
+  assert.ok(!visible({ ...DONOR, dnLdfPct: '0', dnSdfPct: '0' }).includes('dnFatZone') && visible(DONOR).includes('dnFatZone'));
+  assert.ok(!visible(DONOR).includes('dnNecrosisSite') && visible({ ...DONOR, dnNecrosisPct: '10' }).includes('dnNecrosisSite'));
+});
+
+test('donor: the line leads with the injury, then necrosis, fat and fibrosis; with nothing found the negatives print', () => {
+  const dx = (values) => run({ ...DONOR, ...values }).diagnosis.replace(/^LIVER, donor, wedge biopsy - /, '');
+  assert.equal(dx({ dnIri: 'Moderate', dnNecrosisPct: '20', dnLdfPct: '5' }),
+    'MODERATE ISCHAEMIA-REPERFUSION INJURY with ZONE 3 NECROSIS (20%), LARGE-DROPLET STEATOSIS (5%) and NO FIBROSIS');
+  assert.equal(dx({ dnTiming: 'Pre-implantation (back table)', dnLdfPct: '40' }), 'LARGE-DROPLET STEATOSIS (40%) without FIBROSIS');
+  assert.equal(dx({ dnTiming: 'Pre-implantation (back table)', dnLdfPct: '40', stage: '1' }), 'LARGE-DROPLET STEATOSIS (40%) with PORTAL FIBROSIS (Ishak stage 1/6)');
+  assert.equal(dx({ dnIri: 'None', dnLdfPct: '0' }), 'NO LARGE-DROPLET STEATOSIS, NECROSIS or FIBROSIS');
+  assert.equal(dx({ dnIri: 'None', dnLdfPct: '0', stage: '1' }), 'PORTAL FIBROSIS (Ishak stage 1/6) without LARGE-DROPLET STEATOSIS or NECROSIS');
+  assert.equal(dx({ dnOther: ['Neoplasm'] }), 'NEOPLASM (see comment); MILD ISCHAEMIA-REPERFUSION INJURY with LARGE-DROPLET STEATOSIS (10%) and NO FIBROSIS');
+  assert.doesNotMatch(run(DONOR).diagnosis, /SMALL-DROPLET/, 'small-droplet fat stays in the microscopy');
+});
+
+test('donor: the cut-offs that bear on graft use are Checks, and none of them prints', () => {
+  const lv = (values, field) => levelsFor(run({ ...DONOR, ...values }), field);
+  const msg = (values, field) => run({ ...DONOR, ...values }).issues.filter((i) => i.field === field).map((i) => i.message).join(' | ');
+  assert.deepEqual(lv({ portalTracts: '5' }, 'portalTracts'), ['warn']);
+  assert.deepEqual(lv({ portalTracts: '6' }, 'portalTracts'), []);
+  assert.deepEqual(lv({ portalTracts: '8' }, 'portalTracts'), [], 'no BSG tract-count Check for a donor');
+  assert.deepEqual(lv({ portalTracts: '' }, 'portalTracts'), ['info']);
+  assert.deepEqual(lv({ dnSample: 'Needle core', cores: '2', coreLength: '' }, 'coreLength'), [], 'no RCPath length tiers for a donor');
+  assert.deepEqual(lv({ dnLdfPct: '29' }, 'dnLdfPct'), []);
+  assert.match(msg({ dnLdfPct: '30' }, 'dnLdfPct'), /^Large-droplet fat 30%: 30% or more is a risk factor for short-term graft survival \(UCLA\)\.$/);
+  assert.match(msg({ dnLdfPct: '40' }, 'dnLdfPct'), /; over 33% raises the risk of complications after transplant \(Clin Transplant Res 2025\)\.$/);
+  assert.match(msg({ dnLdfPct: '70' }, 'dnLdfPct'), /; over 60-66% gives reperfusion syndrome in most recipients \(Banff 2022\)\.$/);
+  assert.match(msg({ dnLdfPct: '', dnSdfPct: '' }, 'dnLdfPct'), /^Large-droplet fat is not recorded/);
+  assert.match(msg({ dnLdfPct: '', dnSdfPct: '20' }, 'dnLdfPct'), /large-droplet fat blank/);
+  assert.deepEqual(lv({ dnLdfPct: '120' }, 'dnLdfPct'), ['error']);
+  assert.deepEqual(lv({ dnNecrosisPct: '9' }, 'dnNecrosisPct'), []);
+  assert.deepEqual(lv({ dnNecrosisPct: '10' }, 'dnNecrosisPct'), ['warn']);
+  assert.deepEqual(lv({ dnNecrosisPct: '' }, 'dnNecrosisPct'), ['info'], 'addressed in every deceased donor');
+  assert.deepEqual(lv({ dnNecrosisPct: '', dnTiming: 'Living-donor work-up' }, 'dnNecrosisPct'), []);
+  assert.deepEqual(lv({ dnIri: '' }, 'dnIri'), ['warn']);
+  assert.deepEqual(lv({ dnIri: '', dnTiming: 'Pre-implantation (back table)' }, 'dnIri'), []);
+  assert.deepEqual(lv({ stage: '1' }, 'stage'), []);
+  assert.deepEqual(lv({ stage: '2' }, 'stage'), ['warn']);
+  assert.deepEqual(lv({ dnOther: ['Neoplasm'] }, 'dnOther'), ['warn']);
+  const worst = run({ ...DONOR, portalTracts: '4', dnLdfPct: '70', dnNecrosisPct: '40', stage: '3', dnOther: ['Neoplasm'] });
+  assert.ok(worst.issues.length >= 5);
+  assert.doesNotMatch(worst.report, /UCLA|Banff|Sabry|Clin Transplant|unsuitable|suitab|at least six/i);
+});
+
 // ---------- other patterns ----------
 
 const OTHER = { ...SPEC, pattern: 'Other', stageSystem: '', fibrosis: 'No fibrosis' };
@@ -466,6 +562,7 @@ test('the pattern picks the field groups', () => {
   assert.deepEqual(groups('Biliary'), ['Specimen', 'Pattern', 'Inflammation', 'Biliary', 'Fibrosis', 'Stains']);
   assert.deepEqual(groups('Steatotic'), ['Specimen', 'Pattern', 'Steatosis', 'Fibrosis', 'Stains']);
   assert.deepEqual(groups('Transplant'), ['Specimen', 'Pattern', 'Transplant', 'Fibrosis', 'Stains']);
+  assert.deepEqual(groups('Donor (time zero)'), ['Specimen', 'Pattern', 'Donor', 'Inflammation', 'Fibrosis', 'Stains']);
   assert.deepEqual(groups('Other'), ['Specimen', 'Pattern', 'Other findings', 'Fibrosis', 'Stains']);
   assert.deepEqual(groups('No significant abnormality'), ['Specimen', 'Pattern', 'Fibrosis', 'Stains']);
   assert.ok(!visible({ pattern: 'Hepatitic', stage: '3' }).includes('fibrosis'), 'a stage replaces the descriptive fibrosis');
@@ -481,6 +578,7 @@ test('the staging system follows the pattern until it is changed', () => {
   };
   assert.equal(move('Hepatitic', 'Steatotic'), 'NASH CRN');
   assert.equal(move('Hepatitic', 'Transplant'), '');
+  assert.equal(move('Steatotic', 'Donor (time zero)', 'NASH CRN'), 'Ishak', 'a donor is staged by Ishak');
   assert.equal(move('Hepatitic', 'Steatotic', 'METAVIR'), 'METAVIR', 'a chosen system stays');
 });
 
@@ -511,7 +609,8 @@ test('correlation comments are offered for AIH, drug injury, sclerosing and obst
 
 test('reference galleries sit on the adequacy, pattern and score fields, each image sourced and under 150 kB', () => {
   const withGallery = schema.fields.filter((f) => f.reference).map((f) => f.id);
-  for (const id of ['adequacy', 'pattern', 'portalInfl', 'hepDx', 'ishakA', 'bilDx', 'nkFibrosis', 'steatDx', 'nasSteatosis', 'txDx', 'raiPortal', 'stage', 'ironSite']) {
+  for (const id of ['adequacy', 'pattern', 'portalInfl', 'hepDx', 'ishakA', 'bilDx', 'nkFibrosis', 'steatDx', 'nasSteatosis', 'txDx', 'raiPortal', 'stage', 'ironSite',
+    'dnTiming', 'dnMicro', 'dnIri']) {
     assert.ok(withGallery.includes(id), id);
   }
   const used = new Set();
@@ -547,6 +646,15 @@ test('each section heading of the form has its own gallery, and fibrosis staging
     assert.equal(schema.fields.find((x) => x.group === group).id, id, group);
     for (const g of ref(id).groups) for (const im of g.images || []) assert.ok(im.caption && im.credit && /^https?:\/\//.test(im.url), im.src);
   }
+  // Donor (Phase 82): the ten steps open the section as text; the fat and injury galleries reuse the liver photos
+  assert.equal(schema.fields.find((x) => x.group === 'Donor').id, 'dnTiming');
+  assert.equal(ref('dnTiming').groups.length, 10);
+  assert.equal(photos('dnTiming'), 0, 'the ten steps are criteria, not photos');
+  assert.deepEqual(headings('dnMicro'), ['Banff three-step method', 'Droplet type']);
+  assert.deepEqual(headings('dnIri'), ['Grades (Sabry 2025)', 'Preservation-reperfusion injury']);
+  const srcs = (id) => ref(id).groups.flatMap((g) => (g.images || []).map((im) => im.src));
+  assert.deepEqual(srcs('dnMicro'), srcs('steatDx').filter((s) => /microvesicular/.test(s)));
+  assert.deepEqual(srcs('dnIri'), srcs('txDx').filter((s) => /preservation/.test(s)));
 });
 
 // ---------- intake ----------
@@ -615,8 +723,36 @@ const CASES = [
   ['04-mash-nas-5-crn-stage-2', MASH],
   ['05-acute-tcmr-rai-6', TCMR],
   ['06-chronic-hepatitis-b-metavir', { ...HEP, specimenName: 'transjugular', cores: '3', fragmented: true, coreLength: '12', portalTracts: '11', hepDx: 'Chronic hepatitis B', interface: 'Mild', lobular: 'Mild', gradeSystem: 'METAVIR', metavirPn: '1', metavirLn: '1', stageSystem: 'METAVIR', stage: '2', hepFeatures: ['Ground-glass hepatocytes'], stains: ['Reticulin', 'HBsAg', 'HBcAg'], stHbsag: 'Cytoplasmic staining' }],
-  ['07-venous-outflow-obstruction', { ...OTHER, otherDx: 'Venous outflow obstruction', outflowFeatures: ['Zone 3 sinusoidal dilatation', 'Sinusoidal congestion', 'Zone 3 hepatocyte loss', 'Perivenular fibrosis'], stains: ['Reticulin'] }]
+  ['07-venous-outflow-obstruction', { ...OTHER, otherDx: 'Venous outflow obstruction', outflowFeatures: ['Zone 3 sinusoidal dilatation', 'Sinusoidal congestion', 'Zone 3 hepatocyte loss', 'Perivenular fibrosis'], stains: ['Reticulin'] }],
+  // Phase 82: the donor pattern
+  ['08-donor-post-reperfusion-mild-iri', DONOR],
+  ['09-donor-pre-implantation-large-droplet-40', { ...DONOR, specimenName: 'donor, pre-implantation', dnTiming: 'Pre-implantation (back table)', dnDonor: 'DBD', dnSample: 'Needle core',
+    cores: '2', coreLength: '22', portalTracts: '9', dnLdfPct: '40', dnSdfPct: '10', dnFatZone: 'Zone 3', dnIri: '', portalInfl: 'Mild', lobular: 'Mild' }],
+  ['10-donor-moderate-iri-zone-3-necrosis', { ...DONOR, specimenName: 'graft, post-reperfusion', dnDonor: 'DCD', portalTracts: '11', dnLdfPct: '5', dnSdfPct: '0',
+    dnIri: 'Moderate', dnNecrosisPct: '20', dnNecrosisSite: 'Zone 3', dnOther: ['Cholestasis', 'Lipofuscin'] }]
 ];
+
+test('intake: donor lines open the donor pattern; allograft and recipient lines keep theirs (Phase 82)', () => {
+  for (const line of ['Liver, donor, time-zero biopsy', 'Donor liver, wedge biopsy', 'Liver graft, post-reperfusion biopsy', 'Liver, donor, pre-implantation biopsy',
+    'Liver, living donor biopsy', 'Donor liver, back-table biopsy', 'Liver, time zero biopsy']) {
+    const r = route(line);
+    assert.deepEqual([r.templateId, r.tier], ['liver_biopsy', 'confident'], line);
+    assert.equal(preset(line).pattern, 'Donor (time zero)', line);
+  }
+  assert.deepEqual(preset('Liver, donor, time-zero biopsy'), { specimenName: 'donor, time-zero', pattern: 'Donor (time zero)' });
+  assert.deepEqual(preset('Donor liver, wedge biopsy'), { specimenName: 'donor, wedge', pattern: 'Donor (time zero)', dnSample: 'Wedge' });
+  assert.deepEqual(preset('Liver graft, post-reperfusion biopsy'), { specimenName: 'graft, post-reperfusion', pattern: 'Donor (time zero)', dnTiming: 'Post-reperfusion' });
+  assert.deepEqual(preset('Liver, living donor biopsy'), { specimenName: 'living donor', pattern: 'Donor (time zero)', dnTiming: 'Living-donor work-up', dnDonor: 'Living' });
+  assert.deepEqual(preset('Liver, donor, pre-implantation biopsy', 'DBD donor'),
+    { specimenName: 'donor, pre-implantation', pattern: 'Donor (time zero)', dnTiming: 'Pre-implantation (back table)', dnDonor: 'DBD' });
+  assert.deepEqual(preset('Liver, wedge biopsy', 'post-reperfusion, DCD donor'),
+    { pattern: 'Donor (time zero)', dnTiming: 'Post-reperfusion', dnSample: 'Wedge', dnDonor: 'DCD' }, 'the timing can sit in the history');
+  // a recipient's graft from a living donor is not a donor biopsy, and nothing hidden is preset on a plain line
+  assert.deepEqual(preset('Liver allograft, biopsy', 'living donor liver transplant 2019, ?rejection'), { specimenName: 'allograft' });
+  assert.equal(preset('Liver, living donor graft, biopsy').pattern, undefined);
+  assert.deepEqual(preset('Liver, needle biopsy', 'PBC'), {});
+  assert.equal(route('Donor liver, wedge biopsy', '', withoutLiverBiopsy).templateId, 'generic', 'the benign lesion form no longer takes a donor wedge');
+});
 
 test('golden fixtures reproduce byte-for-byte', () => {
   fs.mkdirSync(FIX, { recursive: true });

@@ -1,0 +1,1656 @@
+{
+ "id": "liver_explant",
+ "version": "2026.10",
+ "name": "Liver explant — native liver at transplant",
+ "shortName": "Liver · explant (total hepatectomy)",
+ "label": "Liver explant",
+ "organ": "LIVER",
+ "system": "Hepatobiliary",
+ "kind": "benign resection",
+ "rank": 41,
+ "aliases": [
+  "explant",
+  "liver explant",
+  "native liver",
+  "total hepatectomy",
+  "recipient hepatectomy",
+  "transplant hepatectomy",
+  "liver transplant",
+  "cirrhosis",
+  "end-stage liver disease",
+  "acute liver failure"
+ ],
+ "match": {
+  "site": [
+   "liver",
+   "hepatic",
+   "hepatectomy"
+  ],
+  "procedure": [
+   "explant",
+   "explanted",
+   "total hepatectomy",
+   "recipient hepatectomy",
+   "transplant hepatectomy",
+   "native liver",
+   "at transplant"
+  ],
+  "clinical": [
+   "cirrhosis",
+   "liver transplant",
+   "end-stage liver disease",
+   "ESLD",
+   "liver failure",
+   "HCC",
+   "hepatocellular carcinoma",
+   "PSC",
+   "PBC",
+   "biliary atresia"
+  ],
+  "gate": "\\b(?:explant\\w*|total\\s+hepatectom\\w*|native\\s+liver|recipient\\s+(?:liver|hepatectom\\w*)|transplant\\s+hepatectom\\w*|at\\s+(?:liver\\s+)?transplant\\w*)\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "core",
+   "needle",
+   "flexure",
+   "donor",
+   "allograft"
+  ],
+  "bias": 2,
+  "fill": [
+   {
+    "field": "tumour",
+    "from": "map",
+    "map": [
+     [
+      "(?<!\\?)\\b(?:HCC|hepatocellular|hepatoma)\\b",
+      "Hepatocellular carcinoma"
+     ]
+    ]
+   }
+  ]
+ },
+ "specimenNoun": "liver explant",
+ "maxParts": 3,
+ "defaultParts": 1,
+ "generator": "liver_explant",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "options": [
+  {
+   "$use": "includeHeader"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen as received",
+   "type": "text",
+   "placeholder": "Native liver, total hepatectomy",
+   "default": ""
+  },
+  {
+   "id": "fixation",
+   "label": "Received",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Fresh",
+    "In formalin"
+   ],
+   "default": "Fresh"
+  },
+  {
+   "id": "weightG",
+   "label": "Weight (g)",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 0,
+   "step": 1,
+   "default": ""
+  },
+  {
+   "id": "dims",
+   "label": "Dimensions (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "22 x 15 x 10",
+   "default": ""
+  },
+  {
+   "id": "adherent",
+   "label": "Adherent structures",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "a portion of diaphragm",
+   "default": ""
+  },
+  {
+   "id": "hilum",
+   "label": "Hilar margins (bile duct, portal vein, hepatic artery)",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Submitted en face",
+    "Not submitted"
+   ],
+   "default": "Submitted en face",
+   "reference": {
+    "title": "Explant grossing checklist",
+    "intro": "Sample the hilum before slicing, slice thinly, and map every nodule to a segment and to the imaging (RCPath G050; UCLA total hepatectomy grossing protocol).",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "Identify and measure",
+      "points": [
+       "Segments 1 to 8; weigh after opening the gallbladder and rinsing out the bile, and give three dimensions (RCPath G050)",
+       "Describe adherent structures such as diaphragm (UCLA)"
+      ]
+     },
+     {
+      "heading": "Hilum before slicing",
+      "points": [
+       "One cassette en face with the portal vein, hepatic artery and common hepatic duct margins; one with the hepatic vein margins, inked differentially (UCLA)",
+       "Thrombus in the portal vein, hepatic artery or hepatic veins: colour, size and site (UCLA)",
+       "Involvement of the main left or right portal vein or of the three main hepatic veins, with the vessel diameter (RCPath G050)"
+      ]
+     },
+     {
+      "heading": "Gallbladder and nodes",
+      "points": [
+       "Gallbladder size, contents, mucosa and stones; cystic duct shave and neck, body and fundus sections (UCLA)",
+       "Sampling a macroscopically normal gallbladder is optional (RCPath G050)",
+       "Submit hilar nodes entirely (UCLA)"
+      ]
+     },
+     {
+      "heading": "Slice",
+      "points": [
+       "Horizontal slices at right angles, for imaging correlation, as thin as possible and no more than 10 mm (RCPath G050)",
+       "Slices of 5 mm are advised, because thicker slices miss small lesions (Int J Organ Transplant Med 2017)",
+       "Background: normal, bile-stained, nutmeg, or fibrotic or cirrhotic (RCPath G050)"
+      ]
+     },
+     {
+      "heading": "Map every nodule",
+      "points": [
+       "Number each mass or prominent nodule: segment, size, description, distance from the capsule, necrosis with the viable dimension, and vascular invasion (UCLA)",
+       "Many nodules: full detail for the five largest, and the size range and location of the rest (CAP HCC protocol 4.2.0.0)",
+       "Not every imaging lesion found: the pathologist sees the specimen and the gross description says so (UCLA)",
+       "No tumour and no lesion: serial slicing shows no mass or prominent nodule (UCLA)"
+      ]
+     },
+     {
+      "heading": "Sample",
+      "points": [
+       "At least three tumour blocks, with all macroscopically distinct areas (RCPath G050)",
+       "After treatment, a tumour of 20 mm or less entirely through its largest diameter, plus one section for each further 10 mm (RCPath G050; CAP)",
+       "Any nodule appreciably larger than the background (CAP) or differing in colour, texture or appearance (Int J Hepatol 2016)",
+       "Four background blocks, right and left lobe, central and peripheral (UCLA), one of them as far from the tumour as possible (RCPath G050)"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "thrombus",
+   "label": "Thrombus seen",
+   "type": "multiselect",
+   "group": "Macroscopy",
+   "options": [
+    "Portal vein",
+    "Hepatic artery",
+    "Hepatic veins"
+   ],
+   "default": []
+  },
+  {
+   "id": "thrombusDetail",
+   "label": "Thrombus (gross)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "occluding the lumen, adherent to the wall",
+   "default": "",
+   "showIf": {
+    "field": "thrombus",
+    "truthy": true
+   }
+  },
+  {
+   "id": "gallbladder",
+   "label": "Gallbladder",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Present",
+    "Absent"
+   ],
+   "default": "Present"
+  },
+  {
+   "id": "gbDetail",
+   "label": "Gallbladder (gross)",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "8 cm, wall 2 mm, no stones",
+   "default": "",
+   "showIf": {
+    "field": "gallbladder",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "nodesFound",
+   "label": "Hilar lymph nodes found",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 0,
+   "step": 1,
+   "default": ""
+  },
+  {
+   "id": "sliceMm",
+   "label": "Slice interval (mm)",
+   "type": "number",
+   "group": "Macroscopy",
+   "min": 1,
+   "step": 1,
+   "default": ""
+  },
+  {
+   "id": "background",
+   "label": "Background liver (gross)",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Cirrhotic",
+    "Fibrotic",
+    "Bile-stained",
+    "Nutmeg",
+    "Massive necrosis",
+    "Normal"
+   ],
+   "default": "Cirrhotic"
+  },
+  {
+   "id": "nodularity",
+   "label": "Cirrhotic nodules",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "",
+    "Micronodular",
+    "Macronodular",
+    "Mixed"
+   ],
+   "optionLabels": {
+    "": "Not stated"
+   },
+   "default": "",
+   "showIf": {
+    "field": "background",
+    "is": "Cirrhotic"
+   }
+  },
+  {
+   "id": "imagingMatch",
+   "label": "Imaging correlation",
+   "type": "select",
+   "group": "Macroscopy",
+   "options": [
+    "Not recorded",
+    "All imaging lesions identified",
+    "Not all imaging lesions identified"
+   ],
+   "default": "Not recorded"
+  },
+  {
+   "id": "imagingDetail",
+   "label": "Imaging lesions not identified",
+   "type": "text",
+   "group": "Macroscopy",
+   "placeholder": "the 8 mm segment 2 lesion on CT",
+   "default": "",
+   "showIf": {
+    "field": "imagingMatch",
+    "is": "Not all imaging lesions identified"
+   }
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "type": "textarea",
+   "group": "Macroscopy",
+   "placeholder": "A1-A2 hilar margins en face\nA3-A5 nodule 1\nA6-A9 background liver\nA10 gallbladder",
+   "default": ""
+  },
+  {
+   "id": "noduleCount",
+   "label": "Nodules described (largest first)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "max": 5,
+   "step": 1,
+   "default": 0
+  },
+  {
+   "id": "n1Seg",
+   "label": "Nodule 1: segment",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "6",
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 1
+   }
+  },
+  {
+   "id": "n1Mm",
+   "label": "Nodule 1: size (mm)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 1
+   }
+  },
+  {
+   "id": "n1Desc",
+   "label": "Nodule 1: gross appearance",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "well circumscribed, yellow-green, bulging",
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 1
+   }
+  },
+  {
+   "id": "n1Histo",
+   "label": "Nodule 1: histology",
+   "type": "select",
+   "group": "Nodules",
+   "options": [
+    "",
+    "Hepatocellular carcinoma",
+    "Treated HCC, no viable tumour",
+    "High-grade dysplastic nodule",
+    "Low-grade dysplastic nodule",
+    "Large regenerative nodule",
+    "Other"
+   ],
+   "optionLabels": {
+    "": "Not yet chosen"
+   },
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 1
+   }
+  },
+  {
+   "id": "n1Nec",
+   "label": "Nodule 1: necrosis (%)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "max": 100,
+   "step": 5,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 1
+     },
+     {
+      "field": "n1Histo",
+      "is": "Hepatocellular carcinoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "n1Viable",
+   "label": "Nodule 1: viable tumour (mm)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 1
+     },
+     {
+      "field": "n1Histo",
+      "is": "Hepatocellular carcinoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "n1Other",
+   "label": "Nodule 1: histology (specify)",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "an inflammatory pseudotumour",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 1
+     },
+     {
+      "field": "n1Histo",
+      "is": "Other"
+     }
+    ]
+   }
+  },
+  {
+   "id": "n2Seg",
+   "label": "Nodule 2: segment",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "6",
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 2
+   }
+  },
+  {
+   "id": "n2Mm",
+   "label": "Nodule 2: size (mm)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 2
+   }
+  },
+  {
+   "id": "n2Desc",
+   "label": "Nodule 2: gross appearance",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "well circumscribed, yellow-green, bulging",
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 2
+   }
+  },
+  {
+   "id": "n2Histo",
+   "label": "Nodule 2: histology",
+   "type": "select",
+   "group": "Nodules",
+   "options": [
+    "",
+    "Hepatocellular carcinoma",
+    "Treated HCC, no viable tumour",
+    "High-grade dysplastic nodule",
+    "Low-grade dysplastic nodule",
+    "Large regenerative nodule",
+    "Other"
+   ],
+   "optionLabels": {
+    "": "Not yet chosen"
+   },
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 2
+   }
+  },
+  {
+   "id": "n2Nec",
+   "label": "Nodule 2: necrosis (%)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "max": 100,
+   "step": 5,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 2
+     },
+     {
+      "field": "n2Histo",
+      "is": "Hepatocellular carcinoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "n2Viable",
+   "label": "Nodule 2: viable tumour (mm)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 2
+     },
+     {
+      "field": "n2Histo",
+      "is": "Hepatocellular carcinoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "n2Other",
+   "label": "Nodule 2: histology (specify)",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "an inflammatory pseudotumour",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 2
+     },
+     {
+      "field": "n2Histo",
+      "is": "Other"
+     }
+    ]
+   }
+  },
+  {
+   "id": "n3Seg",
+   "label": "Nodule 3: segment",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "6",
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 3
+   }
+  },
+  {
+   "id": "n3Mm",
+   "label": "Nodule 3: size (mm)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 3
+   }
+  },
+  {
+   "id": "n3Desc",
+   "label": "Nodule 3: gross appearance",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "well circumscribed, yellow-green, bulging",
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 3
+   }
+  },
+  {
+   "id": "n3Histo",
+   "label": "Nodule 3: histology",
+   "type": "select",
+   "group": "Nodules",
+   "options": [
+    "",
+    "Hepatocellular carcinoma",
+    "Treated HCC, no viable tumour",
+    "High-grade dysplastic nodule",
+    "Low-grade dysplastic nodule",
+    "Large regenerative nodule",
+    "Other"
+   ],
+   "optionLabels": {
+    "": "Not yet chosen"
+   },
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 3
+   }
+  },
+  {
+   "id": "n3Nec",
+   "label": "Nodule 3: necrosis (%)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "max": 100,
+   "step": 5,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 3
+     },
+     {
+      "field": "n3Histo",
+      "is": "Hepatocellular carcinoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "n3Viable",
+   "label": "Nodule 3: viable tumour (mm)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 3
+     },
+     {
+      "field": "n3Histo",
+      "is": "Hepatocellular carcinoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "n3Other",
+   "label": "Nodule 3: histology (specify)",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "an inflammatory pseudotumour",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 3
+     },
+     {
+      "field": "n3Histo",
+      "is": "Other"
+     }
+    ]
+   }
+  },
+  {
+   "id": "n4Seg",
+   "label": "Nodule 4: segment",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "6",
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 4
+   }
+  },
+  {
+   "id": "n4Mm",
+   "label": "Nodule 4: size (mm)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 4
+   }
+  },
+  {
+   "id": "n4Desc",
+   "label": "Nodule 4: gross appearance",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "well circumscribed, yellow-green, bulging",
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 4
+   }
+  },
+  {
+   "id": "n4Histo",
+   "label": "Nodule 4: histology",
+   "type": "select",
+   "group": "Nodules",
+   "options": [
+    "",
+    "Hepatocellular carcinoma",
+    "Treated HCC, no viable tumour",
+    "High-grade dysplastic nodule",
+    "Low-grade dysplastic nodule",
+    "Large regenerative nodule",
+    "Other"
+   ],
+   "optionLabels": {
+    "": "Not yet chosen"
+   },
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 4
+   }
+  },
+  {
+   "id": "n4Nec",
+   "label": "Nodule 4: necrosis (%)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "max": 100,
+   "step": 5,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 4
+     },
+     {
+      "field": "n4Histo",
+      "is": "Hepatocellular carcinoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "n4Viable",
+   "label": "Nodule 4: viable tumour (mm)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 4
+     },
+     {
+      "field": "n4Histo",
+      "is": "Hepatocellular carcinoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "n4Other",
+   "label": "Nodule 4: histology (specify)",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "an inflammatory pseudotumour",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 4
+     },
+     {
+      "field": "n4Histo",
+      "is": "Other"
+     }
+    ]
+   }
+  },
+  {
+   "id": "n5Seg",
+   "label": "Nodule 5: segment",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "6",
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 5
+   }
+  },
+  {
+   "id": "n5Mm",
+   "label": "Nodule 5: size (mm)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 5
+   }
+  },
+  {
+   "id": "n5Desc",
+   "label": "Nodule 5: gross appearance",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "well circumscribed, yellow-green, bulging",
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 5
+   }
+  },
+  {
+   "id": "n5Histo",
+   "label": "Nodule 5: histology",
+   "type": "select",
+   "group": "Nodules",
+   "options": [
+    "",
+    "Hepatocellular carcinoma",
+    "Treated HCC, no viable tumour",
+    "High-grade dysplastic nodule",
+    "Low-grade dysplastic nodule",
+    "Large regenerative nodule",
+    "Other"
+   ],
+   "optionLabels": {
+    "": "Not yet chosen"
+   },
+   "default": "",
+   "showIf": {
+    "field": "noduleCount",
+    "min": 5
+   }
+  },
+  {
+   "id": "n5Nec",
+   "label": "Nodule 5: necrosis (%)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "max": 100,
+   "step": 5,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 5
+     },
+     {
+      "field": "n5Histo",
+      "is": "Hepatocellular carcinoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "n5Viable",
+   "label": "Nodule 5: viable tumour (mm)",
+   "type": "number",
+   "group": "Nodules",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 5
+     },
+     {
+      "field": "n5Histo",
+      "is": "Hepatocellular carcinoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "n5Other",
+   "label": "Nodule 5: histology (specify)",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "an inflammatory pseudotumour",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "noduleCount",
+      "min": 5
+     },
+     {
+      "field": "n5Histo",
+      "is": "Other"
+     }
+    ]
+   }
+  },
+  {
+   "id": "moreNodules",
+   "label": "More than five nodules",
+   "type": "checkbox",
+   "group": "Nodules",
+   "default": false,
+   "showIf": {
+    "field": "noduleCount",
+    "min": 5
+   }
+  },
+  {
+   "id": "otherNodules",
+   "label": "Other nodules (number, size range and site)",
+   "type": "text",
+   "group": "Nodules",
+   "placeholder": "about 20 further nodules, 3 to 8 mm, in both lobes",
+   "default": "",
+   "showIf": {
+    "field": "moreNodules",
+    "is": true
+   }
+  },
+  {
+   "id": "bgFindings",
+   "label": "Background liver",
+   "type": "multiselect",
+   "group": "Background liver",
+   "options": [
+    "None identified",
+    "Fibrosis (specify extent, providing name of the scheme and assessment scale used)",
+    "Cirrhosis",
+    "Steatosis",
+    "Steatohepatitis",
+    "Iron overload",
+    "Chronic hepatitis (specify aetiology)",
+    "Other (specify)"
+   ],
+   "default": [
+    "Cirrhosis"
+   ],
+   "reference": {
+    "title": "Explant microscopy checklist",
+    "intro": "Stage and grade the background, confirm the cause, then classify every nodule; the HCC synoptic carries the tumour (CAP HCC protocol 4.2.0.0; RCPath G050).",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "Background liver and cause",
+      "points": [
+       "Stage the fibrosis with a named system (the CAP protocol recommends Ishak) and grade the activity",
+       "Confirm the pre-transplant cause or find another: ground-glass cells, steatohepatitis, duct lesions or loss, copper-associated protein, PAS-D globules and iron (Int J Organ Transplant Med 2017)"
+      ]
+     },
+     {
+      "heading": "Nodules",
+      "points": [
+       "Large regenerative nodule, low-grade or high-grade dysplastic nodule, or early HCC, by the International Working Party criteria (CAP)",
+       "Low-grade against high-grade: portal tracts, nuclear-cytoplasmic ratio, atypia and mitoses (Hepat Mon 2016)",
+       "Name small cell change and large cell change as such (RCPath G050)"
+      ]
+     },
+     {
+      "heading": "Tumour",
+      "points": [
+       "Hepatocellular carcinoma: \"Add HCC synoptic\" links the synoptic under the same letter; staging uses the viable tumour size (CAP)"
+      ]
+     },
+     {
+      "heading": "Incidental lesions",
+      "points": [
+       "Incidental HCC, cholangiocarcinoma and biliary intraepithelial neoplasia, found even in end-stage livers without biliary disease (Int J Organ Transplant Med 2017)"
+      ]
+     },
+     {
+      "heading": "Vessels, nodes and gallbladder",
+      "points": [
+       "Bland, organising or tumour thrombus; say whether macroscopic vascular invasion is confirmed microscopically (RCPath G050)"
+      ]
+     },
+     {
+      "heading": "Acute liver failure",
+      "points": [
+       "Extent and pattern of necrosis (submassive or massive), the zone and the regeneration"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "bgStageSystem",
+   "label": "Fibrosis: staging system",
+   "type": "select",
+   "group": "Background liver",
+   "options": [
+    "",
+    "Ishak",
+    "METAVIR",
+    "NASH CRN",
+    "Batts-Ludwig"
+   ],
+   "default": "Ishak",
+   "showIf": {
+    "field": "bgFindings",
+    "is": [
+     "Fibrosis (specify extent, providing name of the scheme and assessment scale used)",
+     "Cirrhosis"
+    ]
+   }
+  },
+  {
+   "id": "bgStage",
+   "label": "Fibrosis: stage",
+   "type": "select",
+   "group": "Background liver",
+   "options": [
+    "",
+    "0",
+    "1",
+    "1a",
+    "1b",
+    "1c",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+   ],
+   "default": "",
+   "showIf": {
+    "field": "bgFindings",
+    "is": [
+     "Fibrosis (specify extent, providing name of the scheme and assessment scale used)",
+     "Cirrhosis"
+    ]
+   }
+  },
+  {
+   "id": "bgAetiology",
+   "label": "Chronic hepatitis: aetiology",
+   "type": "select",
+   "group": "Background liver",
+   "options": [
+    "Hepatitis B",
+    "Hepatitis C",
+    "Hepatitis B and D",
+    "Autoimmune",
+    "Not determined",
+    "Other (specify)"
+   ],
+   "default": "Hepatitis B",
+   "showIf": {
+    "field": "bgFindings",
+    "is": "Chronic hepatitis (specify aetiology)"
+   }
+  },
+  {
+   "id": "bgAetiologyOther",
+   "label": "Chronic hepatitis: aetiology (specify)",
+   "type": "text",
+   "group": "Background liver",
+   "default": "",
+   "showIf": {
+    "field": "bgAetiology",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "bgSteatosisPct",
+   "label": "Steatosis (% of parenchyma)",
+   "type": "number",
+   "group": "Background liver",
+   "min": 0,
+   "max": 100,
+   "step": 5,
+   "default": "",
+   "showIf": {
+    "field": "bgFindings",
+    "is": [
+     "Steatosis",
+     "Steatohepatitis"
+    ]
+   }
+  },
+  {
+   "id": "bgOther",
+   "label": "Other finding (specify)",
+   "type": "text",
+   "group": "Background liver",
+   "default": "",
+   "showIf": {
+    "field": "bgFindings",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "activity",
+   "label": "Inflammatory activity (interface and lobular)",
+   "type": "select",
+   "group": "Background liver",
+   "options": [
+    "",
+    "None",
+    "Mild",
+    "Moderate",
+    "Marked"
+   ],
+   "optionLabels": {
+    "": "Not stated"
+   },
+   "default": ""
+  },
+  {
+   "id": "causeFeatures",
+   "label": "Features of the cause",
+   "type": "multiselect",
+   "group": "Background liver",
+   "options": [
+    "Ground-glass hepatocytes",
+    "Florid duct lesions",
+    "Bile duct loss",
+    "Periductal concentric fibrosis",
+    "Copper-associated protein",
+    "PAS-D-positive globules",
+    "Mallory-Denk bodies"
+   ],
+   "default": [],
+   "reference": {
+    "title": "Features of the cause",
+    "intro": "What confirms the pre-transplant cause, or points to another (Int J Organ Transplant Med 2017).",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "Ground-glass hepatocytes",
+      "points": [
+       "Finely granular, pale, glassy cytoplasm; chronic hepatitis B"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/ground_glass.jpg",
+        "caption": "Ground-glass hepatocytes with finely granular pale cytoplasm in chronic hepatitis B (H&E).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Ground_glass_hepatocytes_high_mag_cropped.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Florid duct lesion",
+      "points": [
+       "Lymphocytes within the duct epithelium, often with epithelioid granulomas; primary biliary cholangitis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/pbc_duct_lesion.jpg",
+        "caption": "Primary biliary cholangitis: a damaged bile duct with intraepithelial lymphocytes in a mixed portal infiltrate, with a poorly formed granuloma nearby (H&E).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Primary_biliary_cirrhosis_intermed_mag_2.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Periductal concentric fibrosis",
+      "points": [
+       "Onion-skin fibrosis around a bile duct; primary sclerosing cholangitis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/psc_onion_skin.jpg",
+        "caption": "Primary sclerosing cholangitis: a bile duct surrounded by concentric periductal (onion-skin) fibrosis (H&E).",
+        "credit": "Worthington, Chapman, Orphanet J Rare Dis 2006, Fig 2 (cropped)",
+        "license": "CC BY 2.0",
+        "url": "https://ojrd.biomedcentral.com/articles/10.1186/1750-1172-1-41"
+       }
+      ]
+     },
+     {
+      "heading": "Copper and copper-associated protein",
+      "points": [
+       "Periportal copper (rhodanine) or copper-associated protein (orcein); chronic cholestasis or Wilson disease"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/copper_rhodanine.jpg",
+        "caption": "Copper in periportal hepatocytes as coarse orange-brown granules (rhodanine, x200); here Wilson disease.",
+        "credit": "Choi, Int J Mol Sci 2025, Fig 20",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12387026/"
+       }
+      ]
+     },
+     {
+      "heading": "Mallory-Denk bodies",
+      "points": [
+       "Ropy eosinophilic hepatocyte inclusions; steatohepatitis or chronic cholestasis"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/mallory_denk_body.jpg",
+        "caption": "Mallory-Denk body (circled): a ropy eosinophilic inclusion in a hepatocyte in steatohepatitis (H&E).",
+        "credit": "Nephron, Wikimedia Commons (cropped)",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Mallory_body_high_mag_cropped_annotated.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "PAS-D-positive globules and bile duct loss",
+      "points": [
+       "Periportal PAS-D-positive globules: alpha-1 antitrypsin deficiency",
+       "Bile duct loss: count the portal tracts without a duct"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "cellChange",
+   "label": "Liver cell change",
+   "type": "multiselect",
+   "group": "Background liver",
+   "options": [
+    "Large cell change",
+    "Small cell change"
+   ],
+   "default": []
+  },
+  {
+   "id": "tumour",
+   "label": "Malignancy",
+   "type": "select",
+   "group": "Other findings",
+   "options": [
+    "",
+    "None",
+    "Hepatocellular carcinoma",
+    "Other malignancy"
+   ],
+   "optionLabels": {
+    "": "From the nodule table"
+   },
+   "default": ""
+  },
+  {
+   "id": "tumourOther",
+   "label": "Malignancy (specify)",
+   "type": "text",
+   "group": "Other findings",
+   "placeholder": "intrahepatic cholangiocarcinoma",
+   "default": "",
+   "showIf": {
+    "field": "tumour",
+    "is": "Other malignancy"
+   }
+  },
+  {
+   "id": "incidental",
+   "label": "Biliary findings",
+   "type": "multiselect",
+   "group": "Other findings",
+   "options": [
+    "Low-grade BilIN",
+    "High-grade BilIN",
+    "Von Meyenburg complex",
+    "Bile duct adenoma"
+   ],
+   "default": []
+  },
+  {
+   "id": "thrombusHisto",
+   "label": "Thrombus (histology)",
+   "type": "select",
+   "group": "Other findings",
+   "options": [
+    "Bland",
+    "Organising bland",
+    "Tumour thrombus"
+   ],
+   "default": "Bland",
+   "showIf": {
+    "field": "thrombus",
+    "truthy": true
+   }
+  },
+  {
+   "id": "nodesHisto",
+   "label": "Hilar lymph nodes (histology)",
+   "type": "select",
+   "group": "Other findings",
+   "options": [
+    "Reactive changes",
+    "Metastatic tumour",
+    "Other (describe)"
+   ],
+   "default": "Reactive changes",
+   "showIf": {
+    "field": "nodesFound",
+    "min": 1
+   }
+  },
+  {
+   "id": "nodesPositive",
+   "label": "Nodes with metastatic tumour",
+   "type": "number",
+   "group": "Other findings",
+   "min": 0,
+   "step": 1,
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "nodesFound",
+      "min": 1
+     },
+     {
+      "field": "nodesHisto",
+      "is": "Metastatic tumour"
+     }
+    ]
+   }
+  },
+  {
+   "id": "nodesOther",
+   "label": "Hilar lymph nodes (describe)",
+   "type": "text",
+   "group": "Other findings",
+   "placeholder": "non-necrotising granulomas",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "nodesFound",
+      "min": 1
+     },
+     {
+      "field": "nodesHisto",
+      "is": "Other (describe)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "gallbladderHisto",
+   "label": "Gallbladder (histology)",
+   "type": "select",
+   "group": "Other findings",
+   "options": [
+    "Chronic cholecystitis",
+    "No significant abnormality",
+    "Other (describe)"
+   ],
+   "default": "Chronic cholecystitis",
+   "showIf": {
+    "field": "gallbladder",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "gbOther",
+   "label": "Gallbladder (describe)",
+   "type": "text",
+   "group": "Other findings",
+   "placeholder": "cholesterolosis",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "gallbladder",
+      "is": "Present"
+     },
+     {
+      "field": "gallbladderHisto",
+      "is": "Other (describe)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "necrosisPct",
+   "label": "Necrosis (% of parenchyma)",
+   "type": "number",
+   "group": "Necrosis",
+   "min": 0,
+   "max": 100,
+   "step": 5,
+   "default": "",
+   "showIf": {
+    "field": "background",
+    "is": "Massive necrosis"
+   }
+  },
+  {
+   "id": "necrosisPattern",
+   "label": "Necrosis pattern",
+   "type": "select",
+   "group": "Necrosis",
+   "options": [
+    "Massive",
+    "Submassive"
+   ],
+   "default": "Massive",
+   "showIf": {
+    "field": "background",
+    "is": "Massive necrosis"
+   },
+   "reference": {
+    "title": "Massive and submassive necrosis",
+    "groups": [
+     {
+      "heading": "Massive necrosis",
+      "points": [
+       "Hepatocyte loss across the acini, with residual hepatocytes and an intact portal framework"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/massive_necrosis.jpg",
+        "caption": "Massive hepatic necrosis in hepatitis B: hepatocyte dropout with residual hepatocytes and an intact portal framework (H&E, x100).",
+        "credit": "Xue, Zhu, Liu, Meng, Sci Rep 2019, via Wikimedia Commons",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_massive_hepatic_necrosis_in_hepatitis_B.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Submassive necrosis",
+      "points": [
+       "Necrosis spanning several adjacent acini (multiacinar), with surviving parenchyma between"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "necrosisZone",
+   "label": "Necrosis distribution",
+   "type": "select",
+   "group": "Necrosis",
+   "options": [
+    "Panacinar",
+    "Multiacinar",
+    "Zone 3"
+   ],
+   "default": "Panacinar",
+   "showIf": {
+    "field": "background",
+    "is": "Massive necrosis"
+   }
+  },
+  {
+   "id": "necrosisFeatures",
+   "label": "With",
+   "type": "multiselect",
+   "group": "Necrosis",
+   "options": [
+    "Parenchymal collapse",
+    "Ductular reaction",
+    "Regenerative hepatocyte nodules"
+   ],
+   "default": [],
+   "showIf": {
+    "field": "background",
+    "is": "Massive necrosis"
+   }
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes (printed at the end of the microscopy)",
+   "type": "textarea",
+   "group": "Other findings",
+   "default": ""
+  }
+ ],
+ "macroExtract": {
+  "weightG": {
+   "concept": "weight",
+   "unit": "g"
+  },
+  "dims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blockKeyText": {
+   "concept": "blockKey"
+  }
+ },
+ "example": {
+  "caseTitle": "",
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "",
+     "fixation": "Fresh",
+     "weightG": "1150",
+     "dims": "22 x 15 x 10",
+     "adherent": "",
+     "hilum": "Submitted en face",
+     "thrombus": [
+      "Portal vein"
+     ],
+     "thrombusDetail": "occluding the main trunk, adherent to the wall",
+     "gallbladder": "Present",
+     "gbDetail": "8 cm, wall 2 mm, no stones",
+     "nodesFound": "3",
+     "sliceMm": "5",
+     "background": "Cirrhotic",
+     "nodularity": "Micronodular",
+     "imagingMatch": "All imaging lesions identified",
+     "imagingDetail": "",
+     "blockKeyText": "1-2 Hilar margins en face\n3 Portal vein thrombus\n4-5 Nodule 1\n6-9 Background liver\n10 Gallbladder\n11 Hilar lymph nodes",
+     "noduleCount": 1,
+     "n1Seg": "6",
+     "n1Mm": "12",
+     "n1Desc": "pale, bulging, distinct from the background nodules",
+     "n1Histo": "High-grade dysplastic nodule",
+     "n1Nec": "",
+     "n1Viable": "",
+     "n1Other": "",
+     "n2Seg": "",
+     "n2Mm": "",
+     "n2Desc": "",
+     "n2Histo": "",
+     "n2Nec": "",
+     "n2Viable": "",
+     "n2Other": "",
+     "n3Seg": "",
+     "n3Mm": "",
+     "n3Desc": "",
+     "n3Histo": "",
+     "n3Nec": "",
+     "n3Viable": "",
+     "n3Other": "",
+     "n4Seg": "",
+     "n4Mm": "",
+     "n4Desc": "",
+     "n4Histo": "",
+     "n4Nec": "",
+     "n4Viable": "",
+     "n4Other": "",
+     "n5Seg": "",
+     "n5Mm": "",
+     "n5Desc": "",
+     "n5Histo": "",
+     "n5Nec": "",
+     "n5Viable": "",
+     "n5Other": "",
+     "moreNodules": false,
+     "otherNodules": "",
+     "bgFindings": [
+      "Cirrhosis",
+      "Chronic hepatitis (specify aetiology)"
+     ],
+     "bgStageSystem": "Ishak",
+     "bgStage": "6",
+     "bgAetiology": "Hepatitis B",
+     "bgAetiologyOther": "",
+     "bgSteatosisPct": "",
+     "bgOther": "",
+     "activity": "Mild",
+     "causeFeatures": [
+      "Ground-glass hepatocytes"
+     ],
+     "cellChange": [],
+     "tumour": "",
+     "tumourOther": "",
+     "incidental": [],
+     "thrombusHisto": "Organising bland",
+     "nodesHisto": "Reactive changes",
+     "nodesPositive": "",
+     "nodesOther": "",
+     "gallbladderHisto": "Chronic cholecystitis",
+     "gbOther": "",
+     "necrosisPct": "",
+     "necrosisPattern": "Massive",
+     "necrosisZone": "Panacinar",
+     "necrosisFeatures": [],
+     "additionalNotes": ""
+    }
+   }
+  ]
+ },
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Macroscopy",
+   "Nodules"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ }
+}

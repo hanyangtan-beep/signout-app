@@ -67,6 +67,8 @@ const hepatocellularIron = (v) => perlsShown(v) && ['Hepatocellular', 'Mixed'].i
 // A site word that is really the procedure reads "LIVER, transjugular biopsy", not "LIVER, transjugular, biopsy".
 const PROCEDURE_SITE = /^(?:transjugular|percutaneous|needle|core|needle core|laparoscopic|wedge)$/i;
 const GRAFT_SITE = /^(?:allograft|transplant|graft)$/i;
+// A donor word at the end does the same: "LIVER, donor, time-zero biopsy", "LIVER, living donor biopsy" (Phase 82).
+const DONOR_TAIL = /\b(?:time[\s-]?zero|post-?reperfusion|pre-?implantation|back-?table|wedge|donor)$/i;
 
 /** The site as typed, without "liver" or "biopsy": "random", "segment 6", "right lobe". */
 export function siteOf(v) {
@@ -82,8 +84,14 @@ export function siteOf(v) {
 function siteLine(head, v) {
   const s = siteOf(v);
   if (!s) return `${head}, biopsy`;
-  if (GRAFT_SITE.test(s)) return `${head} ${head === 'LIVER' ? 'ALLOGRAFT' : 'allograft'}, biopsy`;
-  return PROCEDURE_SITE.test(s) ? `${head}, ${s} biopsy` : `${head}, ${s}, biopsy`;
+  const graft = `${head} ${head === 'LIVER' ? 'ALLOGRAFT' : 'allograft'}`;
+  if (GRAFT_SITE.test(s)) return `${graft}, biopsy`;
+  // The last piece decides: "time-zero, needle core" reads "LIVER, time-zero, needle core biopsy".
+  const tail = (x) => (PROCEDURE_SITE.test(x.split(/\s*,\s*/).pop()) || DONOR_TAIL.test(x) ? `${x} biopsy` : `${x}, biopsy`);
+  // A graft first piece names the organ: "graft, post-reperfusion" reads "LIVER ALLOGRAFT, post-reperfusion biopsy".
+  const [first, ...rest] = s.split(/\s*,\s*/);
+  if (rest.length && GRAFT_SITE.test(first)) return `${graft}, ${tail(rest.join(', '))}`;
+  return `${head}, ${tail(s)}`;
 }
 
 export const specimenName = (part) => siteLine('Liver', part.values);
@@ -436,19 +444,167 @@ function stainSentences(v) {
   return out.filter(Boolean);
 }
 
+// ---------- donor liver, time zero (Phase 82) ----------
+//
+// Card: docs/roadmap.md "Liver donor biopsy — time zero (medical liver form)"; spec docs/specs/liver-transplant-pair.md.
+// The pattern reports what decides graft use, in the order of the spec's ten steps:
+//   - large- and small-droplet fat as separate percentages by the Banff three-step method, never added together, and
+//     true microvesicular steatosis under its own name (Banff 2022, https://pmc.ncbi.nlm.nih.gov/articles/PMC9299655/);
+//   - the ischaemia-reperfusion injury grade, on post-reperfusion biopsies only (Sabry 2025,
+//     https://pmc.ncbi.nlm.nih.gov/articles/PMC11991779/): minimal, sparse single sinusoidal neutrophils without
+//     hepatocyte loss; mild, sporadic hepatocyte detachment or acidophil bodies with isolated neutrophils; moderate,
+//     clusters of more than five neutrophils; severe, zonal or confluent (usually perivenular) loss;
+//   - necrosis to the nearest 10%, with its site (AASLD Pathology Pearls,
+//     https://www.aasld.org/liver-fellow-network/core-series/pathology-pearls/pathology-pearls-evaluation-donor-liver-biopsies);
+//   - portal and lobular inflammation, the fibrosis stage and the other findings.
+// The cut-offs that bear on graft use are Checks only (see validate), never printed.
+
+export const DONOR = 'Donor (time zero)';
+export const isDonor = (v) => patternOf(v) === DONOR;
+const postReperfusion = (v) => isDonor(v) && (v.dnTiming || 'Post-reperfusion') === 'Post-reperfusion';
+const livingDonor = (v) => v.dnDonor === 'Living' || v.dnTiming === 'Living-donor work-up';
+const donorOther = (v) => (Array.isArray(v.dnOther) ? v.dnOther : []);
+
+const DONOR_TIMING = { 'Post-reperfusion': ' taken after reperfusion', 'Pre-implantation (back table)': ' taken before implantation', 'Living-donor work-up': '' };
+
+function donorSpecimenSentence(v) {
+  const timing = DONOR_TIMING[v.dnTiming || 'Post-reperfusion'] ?? '';
+  const frag = v.fragmented ? 'fragmented ' : '';
+  const pt = num(v.portalTracts);
+  const tracts = pt === null ? '' : `, with ${pt === 0 ? 'no portal tracts' : pt === 1 ? 'one portal tract' : `${pt} portal tracts`}`;
+  if ((v.dnSample || 'Wedge') === 'Wedge') return `Sections show a ${frag}wedge biopsy of donor liver${timing}${tracts}.`;
+  const n = num(v.cores);
+  const noun = `${frag}${n === 1 ? 'core' : 'cores'} of donor liver`;
+  const cores = n === 1 ? `a ${noun}` : n && n <= 10 ? `${WORDS[n]} ${noun}` : n ? `${n} ${noun}` : noun;
+  const len = num(v.coreLength);
+  const measure = len ? `${timing ? ',' : ''} measuring ${len} mm in ${n === 1 ? 'length' : 'aggregate length'}` : '';
+  return `Sections show ${cores}${timing}${measure}${tracts}.`;
+}
+
+const FAT_ZONE = {
+  'Zone 3': 'The steatosis is predominantly in zone 3.', 'Zone 1': 'The steatosis is predominantly in zone 1.',
+  Azonal: 'The steatosis is azonal.', Panacinar: 'The steatosis is panacinar.'
+};
+
+function donorFatSentences(v) {
+  const ldf = num(v.dnLdfPct);
+  const sdf = num(v.dnSdfPct);
+  const micro = v.dnMicro === 'Present';
+  const out = [];
+  if (ldf > 0) {
+    if (sdf > 0) out.push(`Large-droplet steatosis involves about ${ldf}% of the parenchyma and small-droplet steatosis about ${sdf}%.`);
+    else if (sdf === 0) out.push(`Large-droplet steatosis involves about ${ldf}% of the parenchyma, and there is no small-droplet steatosis.`);
+    else out.push(`Large-droplet steatosis involves about ${ldf}% of the parenchyma.`);
+  } else if (ldf === 0) {
+    if (sdf > 0) out.push(`There is no large-droplet steatosis; small-droplet steatosis involves about ${sdf}% of the parenchyma.`);
+    else if (sdf === 0) out.push(micro ? 'There is no large- or small-droplet steatosis.' : 'There is no steatosis.');
+    else out.push('There is no large-droplet steatosis.');
+  } else if (sdf !== null) {
+    out.push(sdf > 0 ? `Small-droplet steatosis involves about ${sdf}% of the parenchyma.` : 'There is no small-droplet steatosis.');
+  }
+  if ((ldf > 0 || sdf > 0) && FAT_ZONE[v.dnFatZone]) out.push(FAT_ZONE[v.dnFatZone]);
+  if (micro) out.push('There is true microvesicular steatosis, with foamy hepatocytes.');
+  return out;
+}
+
+const IRI_SENTENCE = {
+  None: 'There is no ischaemia-reperfusion injury.',
+  Minimal: 'There is minimal ischaemia-reperfusion injury, with sparse single sinusoidal neutrophils and no hepatocyte loss.',
+  Mild: 'There is mild ischaemia-reperfusion injury, with scattered sinusoidal neutrophils and occasional acidophil bodies.',
+  Moderate: 'There is moderate ischaemia-reperfusion injury, with clusters of sinusoidal neutrophils.',
+  Severe: 'There is severe ischaemia-reperfusion injury, with zonal hepatocyte loss.'
+};
+const IRI_DX = { Minimal: 'MINIMAL', Mild: 'MILD', Moderate: 'MODERATE', Severe: 'SEVERE' };
+const NECROSIS_SITE = { 'Zone 3': 'in zone 3', Subcapsular: 'under the capsule', 'Zone 3 and subcapsular': 'in zone 3 and under the capsule', Random: 'in a random distribution' };
+const NECROSIS_DX = { 'Zone 3': 'ZONE 3 NECROSIS', Subcapsular: 'SUBCAPSULAR NECROSIS', 'Zone 3 and subcapsular': 'ZONE 3 AND SUBCAPSULAR NECROSIS', Random: 'NECROSIS' };
+
+function donorNecrosisSentence(v) {
+  const n = num(v.dnNecrosisPct);
+  if (n === null) return '';
+  if (n === 0) return 'There is no necrosis.';
+  return `Necrosis involves about ${n}% of the parenchyma, ${NECROSIS_SITE[v.dnNecrosisSite] || NECROSIS_SITE['Zone 3']}.`;
+}
+
+// [option, printed words, takes "is"]
+const DONOR_OTHER = [
+  ['Ballooned hepatocytes', 'ballooned hepatocytes', false], ['Cholestasis', 'cholestasis', true], ['Lipofuscin', 'lipofuscin pigment', true],
+  ['Granulomas', 'granulomas', false], ['Amyloid', 'amyloid deposits', false], ['Alpha-1 antitrypsin globules', 'alpha-1 antitrypsin globules', false]
+];
+
+function donorOtherSentences(v) {
+  const o = donorOther(v);
+  const seen = DONOR_OTHER.filter(([k]) => o.includes(k));
+  const out = [];
+  if (seen.length) out.push(`${cap1(listJoin(seen.map(([, w]) => w)))} ${seen.length === 1 && seen[0][2] ? 'is' : 'are'} seen.`);
+  const neoplasm = o.includes('Neoplasm');
+  if (neoplasm) out.push('A neoplasm is present (see comment).');
+  const none = [o.includes('Granulomas') ? '' : 'granuloma', neoplasm ? '' : 'neoplasm'].filter(Boolean);
+  if (none.length) out.push(`No ${none.join(' or ')} is seen.`);
+  return out;
+}
+
+/** Everything after the specimen sentence, the fibrosis included, so the closing negatives come last. */
+function donorSentences(v) {
+  const s = [...donorFatSentences(v)];
+  if (postReperfusion(v) && IRI_SENTENCE[v.dnIri]) s.push(IRI_SENTENCE[v.dnIri]);
+  const nec = donorNecrosisSentence(v);
+  if (nec) s.push(nec);
+  s.push(`The portal tracts show ${lc1(v.portalInfl || 'Mild')} inflammation.`);
+  if (v.lobular && v.lobular !== 'Absent') s.push(`There is ${lc1(v.lobular)} lobular inflammation.`);
+  const fib = fibrosisSentence(v);
+  if (fib) s.push(fib);
+  s.push(...donorOtherSentences(v));
+  return s;
+}
+
+const orList = (items) => (items.length <= 1 ? items[0] || '' : `${items.slice(0, -1).join(', ')} or ${items[items.length - 1]}`);
+
+/**
+ * "MILD ISCHAEMIA-REPERFUSION INJURY with LARGE-DROPLET STEATOSIS (10%) and NO FIBROSIS": the injury, the necrosis and
+ * the large-droplet fat in that order, then the fibrosis. Small-droplet fat stays in the microscopy. With nothing found
+ * the recorded negatives print: "NO LARGE-DROPLET STEATOSIS, NECROSIS or FIBROSIS".
+ */
+function donorLine(v) {
+  const ldf = num(v.dnLdfPct);
+  const nec = num(v.dnNecrosisPct);
+  const found = [
+    postReperfusion(v) && IRI_DX[v.dnIri] ? `${IRI_DX[v.dnIri]} ISCHAEMIA-REPERFUSION INJURY` : '',
+    nec > 0 ? `${NECROSIS_DX[v.dnNecrosisSite] || NECROSIS_DX['Zone 3']} (${nec}%)` : '',
+    ldf > 0 ? `LARGE-DROPLET STEATOSIS (${ldf}%)` : '',
+    v.dnMicro === 'Present' ? 'TRUE MICROVESICULAR STEATOSIS' : ''
+  ].filter(Boolean);
+  const fib = fibrosisDx(v);
+  const st = stageInfo(v);
+  const fibWord = fib === 'NONE' ? 'NO FIBROSIS' : fib ? `${fib}${st ? ` (${st.label})` : ''}` : '';
+  let line;
+  if (found.length) {
+    const extra = found.slice(1);
+    if (!fibWord) line = extra.length ? `${found[0]} with ${listJoin(extra)}` : found[0];
+    else if (extra.length) line = `${found[0]} with ${listJoin([...extra, fibWord])}`;
+    else line = fib === 'NONE' ? `${found[0]} without FIBROSIS` : `${found[0]} with ${fibWord}`;
+  } else {
+    const negatives = [ldf === 0 ? 'LARGE-DROPLET STEATOSIS' : '', nec === 0 ? 'NECROSIS' : ''].filter(Boolean);
+    if (fib && fib !== 'NONE') line = negatives.length ? `${fibWord} without ${orList(negatives)}` : fibWord;
+    else if (fib === 'NONE') line = `NO ${orList([...negatives, 'FIBROSIS'])}`;
+    else line = negatives.length ? `NO ${orList(negatives)}` : 'NO SIGNIFICANT HISTOLOGICAL ABNORMALITY';
+  }
+  return donorOther(v).includes('Neoplasm') ? `NEOPLASM (see comment); ${line}` : line;
+}
+
 // ---------- microscopy ----------
 
 export function microscopy(part) {
   const v = part.values;
-  const s = [specimenSentence(v)];
   const pattern = patternOf(v);
+  const s = [pattern === DONOR ? donorSpecimenSentence(v) : specimenSentence(v)];
   if (pattern === 'Hepatitic') s.push(...hepaticSentences(v));
   else if (pattern === 'Biliary') s.push(...biliarySentences(v));
   else if (pattern === 'Steatotic') s.push(...steatoticSentences(v));
   else if (pattern === 'Transplant') s.push(...transplantSentences(v));
+  else if (pattern === DONOR) s.push(...donorSentences(v));
   else if (pattern === 'Other') s.push(...otherSentences(v));
   else s.push('The lobular architecture is preserved, and the portal tracts and hepatocytes show no significant abnormality.');
-  const fib = fibrosisSentence(v);
+  const fib = pattern === DONOR ? '' : fibrosisSentence(v);
   if (fib) s.push(fib);
   s.push(...stainSentences(v));
   const limit = limitationSentence(v);
@@ -662,6 +818,7 @@ export function mainLine(v) {
   else if (pattern === 'Biliary') line = biliaryLine(v);
   else if (pattern === 'Steatotic') line = steatoticLine(v);
   else if (pattern === 'Transplant') line = transplantLine(v);
+  else if (pattern === DONOR) line = donorLine(v);
   else if (pattern === 'Other') line = otherLine(v);
   else line = `NO SIGNIFICANT HISTOLOGICAL ABNORMALITY${fibrosisClause(v)}`;
   return `${line}${ironClause(v)}`;
@@ -698,22 +855,61 @@ export function validate(part) {
   const info = (m, f) => at('info', m, f);
   const pattern = patternOf(v);
 
-  // Adequacy (RCPath G064; BSG 2020).
+  // Adequacy (RCPath G064; BSG 2020). A donor biopsy is judged on its portal tracts instead (the donor checks below).
+  const donor = isDonor(v);
   const len = num(v.coreLength);
   const derived = L.adequacyOf(v.coreLength);
-  if (len === null) info('The aggregate core length is not recorded: RCPath asks for it in every report.', 'coreLength');
+  if (donor) { /* no length tiers for a donor wedge or core */ }
+  else if (len === null) info('The aggregate core length is not recorded: RCPath asks for it in every report.', 'coreLength');
   else if (v.adequacy && v.adequacy !== 'Auto' && derived && v.adequacy !== derived) {
     warn(`Adequacy ${v.adequacy} does not match ${len} mm (${derived.toLowerCase()} by length: good over 20 mm, compromised 10-20 mm, inadequate under 10 mm).`, 'adequacy');
   } else if ((v.adequacy || 'Auto') === 'Auto' && derived === 'Compromised') {
     info(`${len} mm is compromised by length (10-20 mm): choose Compromised to state the limitation if it matters.`, 'adequacy');
   }
   const pt = num(v.portalTracts);
-  if (pt !== null && pt <= L.FEW_PORTAL_TRACTS && pattern !== 'No significant abnormality') {
+  if (pt !== null && pt <= L.FEW_PORTAL_TRACTS && pattern !== 'No significant abnormality' && !donor) {
     info(`${pt} portal tracts: 10 or fewer under-estimate grade and stage (BSG 2020).`, 'portalTracts');
   }
   const ductless = num(v.ductlessTracts);
   if (isBil(v) && has(v.bilFeatures, 'Bile duct loss') && ductless !== null && pt !== null && ductless > pt) {
     err(`${ductless} portal tracts without a bile duct is more than the ${pt} portal tracts recorded.`, 'ductlessTracts');
+  }
+
+  // Donor liver, time zero (Phase 82): the cut-offs that bear on graft use. None of them prints.
+  //   - At least six portal tracts; malignancy makes the graft unsuitable; necrosis of 10% or more may, though up to
+  //     50% has been used, especially from brain-dead donors; Ishak stage 2 or more makes it less suitable; large-droplet
+  //     fat over 33% raises the risk of complications (Clin Transplant Res 2025, https://pmc.ncbi.nlm.nih.gov/articles/PMC12783007/).
+  //   - Large-droplet fat of 30% or more is a risk factor for short-term graft survival (UCLA frozen section reporting,
+  //     https://www.uclahealth.org/sites/default/files/documents/Frozen%20section%20reporting%20for%20liver%20allograft.pdf).
+  //   - Over 60-66% gives reperfusion syndrome in most recipients, and small-droplet fat is given on its own
+  //     (Banff 2022, https://pmc.ncbi.nlm.nih.gov/articles/PMC9299655/).
+  if (donor) {
+    if (pt === null) info('The portal tracts are not counted: at least six is the common standard for a donor biopsy (Clin Transplant Res 2025).', 'portalTracts');
+    else if (pt < 6) warn(`${pt === 0 ? 'No' : pt} portal tract${pt === 1 ? '' : 's'}: at least six is the common standard for a donor biopsy (Clin Transplant Res 2025).`, 'portalTracts');
+    const ldf = num(v.dnLdfPct);
+    const sdf = num(v.dnSdfPct);
+    const nec = num(v.dnNecrosisPct);
+    for (const [id, x, what] of [['dnLdfPct', ldf, 'Large-droplet fat'], ['dnSdfPct', sdf, 'Small-droplet fat'], ['dnNecrosisPct', nec, 'Necrosis']]) {
+      if (x !== null && (x < 0 || x > 100)) err(`${what} ${x}% is not a percentage.`, id);
+    }
+    if (ldf === null) {
+      warn(sdf > 0 ? 'Small-droplet fat is entered with large-droplet fat blank: give large-droplet fat on its own (Banff 2022).'
+        : 'Large-droplet fat is not recorded: give it by the Banff three-step method (Banff 2022).', 'dnLdfPct');
+    } else if (ldf >= 30 && ldf <= 100) {
+      const more = [ldf > 33 ? 'over 33% raises the risk of complications after transplant (Clin Transplant Res 2025)' : '',
+        ldf > 60 ? 'over 60-66% gives reperfusion syndrome in most recipients (Banff 2022)' : ''].filter(Boolean);
+      warn(`Large-droplet fat ${ldf}%: 30% or more is a risk factor for short-term graft survival (UCLA)${more.length ? `; ${more.join('; ')}` : ''}.`, 'dnLdfPct');
+    }
+    if (nec === null) {
+      if (!livingDonor(v)) info('Necrosis is not recorded: address ischaemic necrosis in every deceased donor (Clin Transplant Res 2025).', 'dnNecrosisPct');
+    } else if (nec >= 10 && nec <= 100) {
+      warn(`Necrosis ${nec}%: 10% or more may make a graft unsuitable, though up to 50% has been used, especially from brain-dead donors (Clin Transplant Res 2025).`, 'dnNecrosisPct');
+    }
+    if (postReperfusion(v) && !v.dnIri) warn('A post-reperfusion biopsy needs an ischaemia-reperfusion injury grade (Sabry 2025).', 'dnIri');
+    if (stageInfo(v) && v.stageSystem === 'Ishak' && Number(v.stage) >= 2) {
+      warn(`Ishak stage ${v.stage}/6: stage 2 or more makes the graft less suitable (Clin Transplant Res 2025).`, 'stage');
+    }
+    if (donorOther(v).includes('Neoplasm')) warn('A neoplasm is ticked: give its type in a comment, as malignancy makes the graft unsuitable (Clin Transplant Res 2025).', 'dnOther');
   }
 
   // Grading.

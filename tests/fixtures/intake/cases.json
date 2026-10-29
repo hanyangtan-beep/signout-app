@@ -1030,6 +1030,69 @@
           "tier": "confident"
         }
       ]
+    },
+    {
+      "name": "a native liver explant for HCC with the donor liver's time-zero biopsy (liver transplant pair)",
+      "text": "History\nHBV cirrhosis with HCC, for liver transplant\n\nSpecimen\n(A) Liver, explant, HCC and (B) Liver, donor, time-zero biopsy",
+      "history": "HBV cirrhosis with HCC, for liver transplant",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "liver_explant",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "liver_biopsy",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "tumour": "Hepatocellular carcinoma"
+        },
+        "B": {
+          "specimenName": "donor, time-zero",
+          "pattern": "Donor (time zero)"
+        }
+      }
+    },
+    {
+      "name": "a native liver at total hepatectomy for PSC opens the explant form; the clinical HCC does not preset the tumour (liver transplant pair)",
+      "text": "History\nPSC, end-stage liver disease, ?HCC\n\nSpecimen\n(A) Native liver, total hepatectomy",
+      "history": "PSC, end-stage liver disease, ?HCC",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "liver_explant",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "tumour": ""
+        }
+      }
+    },
+    {
+      "name": "a partial hepatectomy for HCC keeps the HCC synoptic (liver transplant pair)",
+      "text": "History\nHCC\n\nSpecimen\n(A) Liver, right hepatectomy",
+      "history": "HCC",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "hcc",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "procedure": "Partial hepatectomy, major (3 segments or more)"
+        }
+      }
     }
   ]
 }

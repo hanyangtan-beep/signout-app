@@ -1,0 +1,123 @@
+{
+  "description": "steatohepatitic cirrhosis explant as (A) and the donor liver's post-reperfusion wedge biopsy as (B)",
+  "templateIds": [
+    "liver_explant",
+    "liver_biopsy"
+  ],
+  "parts": [
+    {
+      "templateId": "liver_explant",
+      "values": {
+        "specimenName": "",
+        "fixation": "Fresh",
+        "weightG": "1560",
+        "dims": "24 x 17 x 10",
+        "adherent": "",
+        "hilum": "Submitted en face",
+        "thrombus": [],
+        "thrombusDetail": "",
+        "gallbladder": "Present",
+        "gbDetail": "",
+        "nodesFound": "2",
+        "sliceMm": "5",
+        "background": "Cirrhotic",
+        "nodularity": "Mixed",
+        "imagingMatch": "All imaging lesions identified",
+        "imagingDetail": "",
+        "blockKeyText": "1 Hilar margins en face\n2-7 Background liver\n8 Gallbladder\n9 Hilar lymph nodes",
+        "noduleCount": 0,
+        "n1Seg": "",
+        "n1Mm": "",
+        "n1Desc": "",
+        "n1Histo": "",
+        "n1Nec": "",
+        "n1Viable": "",
+        "n1Other": "",
+        "n2Seg": "",
+        "n2Mm": "",
+        "n2Desc": "",
+        "n2Histo": "",
+        "n2Nec": "",
+        "n2Viable": "",
+        "n2Other": "",
+        "n3Seg": "",
+        "n3Mm": "",
+        "n3Desc": "",
+        "n3Histo": "",
+        "n3Nec": "",
+        "n3Viable": "",
+        "n3Other": "",
+        "n4Seg": "",
+        "n4Mm": "",
+        "n4Desc": "",
+        "n4Histo": "",
+        "n4Nec": "",
+        "n4Viable": "",
+        "n4Other": "",
+        "n5Seg": "",
+        "n5Mm": "",
+        "n5Desc": "",
+        "n5Histo": "",
+        "n5Nec": "",
+        "n5Viable": "",
+        "n5Other": "",
+        "moreNodules": false,
+        "otherNodules": "",
+        "bgFindings": [
+          "Cirrhosis",
+          "Steatohepatitis"
+        ],
+        "bgStageSystem": "Ishak",
+        "bgStage": "6",
+        "bgAetiology": "Hepatitis B",
+        "bgAetiologyOther": "",
+        "bgSteatosisPct": "15",
+        "bgOther": "",
+        "activity": "Mild",
+        "causeFeatures": [
+          "Mallory-Denk bodies"
+        ],
+        "cellChange": [
+          "Large cell change"
+        ],
+        "tumour": "",
+        "tumourOther": "",
+        "incidental": [],
+        "thrombusHisto": "Bland",
+        "nodesHisto": "Reactive changes",
+        "nodesPositive": "",
+        "nodesOther": "",
+        "gallbladderHisto": "No significant abnormality",
+        "gbOther": "",
+        "necrosisPct": "",
+        "necrosisPattern": "Massive",
+        "necrosisZone": "Panacinar",
+        "necrosisFeatures": [],
+        "additionalNotes": ""
+      }
+    },
+    {
+      "templateId": "liver_biopsy",
+      "values": {
+        "specimenName": "donor, wedge",
+        "pattern": "Donor (time zero)",
+        "dnTiming": "Post-reperfusion",
+        "dnSample": "Wedge",
+        "portalTracts": "14",
+        "dnLdfPct": "10",
+        "dnSdfPct": "20",
+        "dnIri": "Mild",
+        "dnNecrosisPct": "0",
+        "portalInfl": "Minimal",
+        "lobular": "Absent",
+        "stageSystem": "Ishak"
+      }
+    }
+  ],
+  "options": {
+    "includeHeader": false,
+    "macro": true
+  },
+  "report": "(A) Native liver, total hepatectomy\n(B) Liver, donor, wedge biopsy\n\n(A) Received fresh is a native liver weighing 1560 g and measuring 24 x 17 x 10 cm. The hilar margins (bile duct, portal vein and hepatic artery) are submitted en face. The gallbladder is attached. Two hilar lymph nodes are identified. The liver is serially sliced at 5 mm intervals. The parenchyma is diffusely nodular, with micronodules and macronodules. No mass or prominent nodule is seen. All lesions described on imaging are identified. Representative sections are taken; see block key.\n\n(A1) Hilar margins en face.\n(A2-7) Background liver.\n(A8) Gallbladder.\n(A9) Hilar lymph nodes.\n\n(A) The liver shows established cirrhosis (Ishak stage 6/6) with mild interface and lobular activity. There is steatohepatitis, with macrovesicular steatosis involving about 15% of the parenchyma. Mallory-Denk bodies are present. Large cell change is present. Two hilar lymph nodes show reactive changes. The gallbladder shows no significant abnormality. There is no malignancy.\n\n(B) Sections show a wedge biopsy of donor liver taken after reperfusion, with 14 portal tracts. Large-droplet steatosis involves about 10% of the parenchyma and small-droplet steatosis about 20%. There is mild ischaemia-reperfusion injury, with scattered sinusoidal neutrophils and occasional acidophil bodies. There is no necrosis. The portal tracts show minimal inflammation. There is no fibrosis. No granuloma or neoplasm is seen.\n\n(A) LIVER, native, total hepatectomy - STEATOHEPATITIS with CIRRHOSIS (Ishak stage 6/6)\n(B) LIVER, donor, wedge biopsy - MILD ISCHAEMIA-REPERFUSION INJURY with LARGE-DROPLET STEATOSIS (10%) and NO FIBROSIS",
+  "checks": []
+}

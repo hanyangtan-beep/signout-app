@@ -229,10 +229,12 @@ const preset = (line, history = '') => {
 
 test('intake: HCC resections open the synoptic; a wedge for ?metastasis stays benign', () => {
   for (const [line, history] of [['Liver, segment 6, resection, HCC', ''], ['Right hepatectomy, ?HCC', ''], ['Liver, segment 6, resection', 'HCC'],
-    ['Segment 7, segmentectomy, hepatoma', ''], ['Liver, explant, HCC', '']]) {
+    ['Segment 7, segmentectomy, hepatoma', '']]) {
     const r = route(line, history);
     assert.deepEqual([r.templateId, r.tier], ['hcc', 'confident'], `${line} [${history}]`);
   }
+  // Phase 82: an explant opens the liver explant form, which links this synoptic under its letter.
+  for (const line of ['Liver, explant, HCC', 'Native liver, total hepatectomy', 'Liver, total hepatectomy']) assert.equal(route(line, 'HCC').templateId, 'liver_explant', line);
   assert.equal(route('Liver, wedge resection, ?metastasis').templateId, 'liver_benign');
   assert.equal(route('Liver, segment 6, wedge resection', 'Liver haemangioma').templateId, 'liver_benign');
 });
@@ -242,7 +244,8 @@ test('intake: the segment and the procedure fill from the specimen line', () => 
   assert.deepEqual(preset('Right hepatectomy, ?HCC'), { specimenName: 'Liver, right hepatectomy', procedure: 'Partial hepatectomy, major (3 segments or more)' });
   assert.deepEqual(preset('Left lateral sectionectomy', 'HCC'), { specimenName: 'Liver, left lateral sectionectomy', procedure: 'Partial hepatectomy, minor (less than 3 segments)' });
   assert.deepEqual(preset('Segment 7, segmentectomy, hepatoma'), { segments: ['Segment 7'], procedure: 'Partial hepatectomy, minor (less than 3 segments)' });
-  assert.deepEqual(preset('Liver, explant, HCC'), { procedure: 'Total hepatectomy' });
+  // An explant line routes to the explant form (Phase 82); on this form it still reads as a total hepatectomy.
+  assert.deepEqual(presetValues(schema, parseIntake('Liver, explant, HCC').parts[0]), { procedure: 'Total hepatectomy' });
   assert.deepEqual(preset('Liver, S6, wedge resection', 'HCC'), { procedure: 'Wedge resection' });
 });
 

@@ -41,8 +41,7 @@
    "sectionectomy",
    "lobectomy",
    "resection",
-   "wedge",
-   "explant"
+   "wedge"
   ],
   "clinical": [
    "HCC",
@@ -55,7 +54,14 @@
    "biopsy",
    "biopsies",
    "core",
-   "needle"
+   "needle",
+   "explant",
+   "explanted",
+   "native liver",
+   "recipient",
+   "total hepatectomy",
+   "transplant hepatectomy",
+   "at transplant"
   ],
   "bias": 2,
   "fill": [
@@ -776,7 +782,11 @@
     "Involved by invasive carcinoma",
     "Uninvolved by invasive carcinoma (specify distance)"
    ],
-   "default": "Uninvolved by invasive carcinoma (specify distance)"
+   "default": "Uninvolved by invasive carcinoma (specify distance)",
+   "showIf": {
+    "field": "procedure",
+    "not": "Total hepatectomy"
+   }
   },
   {
    "id": "parenchymalMarginMm",
@@ -787,8 +797,16 @@
    "step": 0.5,
    "default": "",
    "showIf": {
-    "field": "parenchymalMargin",
-    "is": "Uninvolved by invasive carcinoma (specify distance)"
+    "all": [
+     {
+      "field": "parenchymalMargin",
+      "is": "Uninvolved by invasive carcinoma (specify distance)"
+     },
+     {
+      "field": "procedure",
+      "not": "Total hepatectomy"
+     }
+    ]
    }
   },
   {

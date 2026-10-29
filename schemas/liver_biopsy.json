@@ -29,7 +29,11 @@
   "METAVIR",
   "liver transplant",
   "rejection",
-  "RAI"
+  "RAI",
+  "donor liver",
+  "time-zero biopsy",
+  "post-reperfusion biopsy",
+  "back-table biopsy"
  ],
  "match": {
   "site": [
@@ -58,9 +62,13 @@
    "LFT",
    "LFTs",
    "rejection",
-   "transplant"
+   "transplant",
+   "donor",
+   "time-zero",
+   "reperfusion",
+   "back-table"
   ],
-  "gate": "\\b(?:random|background|non-?lesional)\\b|^(?![\\s\\S]*\\b(?:mass(?:es)?|lesions?|nodules?|SOL|HCC|hepatoma|tumou?rs?|metasta\\w*|mets|abscess(?:es)?|cysts?|carcinoma|cholangiocarcinoma|neoplasm\\w*|malignan\\w*|adenomas?|ha?emangiomas?|FNH)\\b)[\\s\\S]*\\b(?:medical|parenchyma\\w*|deranged|LFTs?|liver\\s+function|ALT|ALP|GGT|transaminas\\w*|hepatitis|AIH|autoimmune|PBC|PSC|cholangitis|cholesta\\w*|jaundice|cirrho\\w*|fibros\\w*|steato\\w*|fatty|NASH|NAFLD|MASH|MASLD|MetALD|transplant\\w*|allograft|graft|OLT|LDLT|DDLT|rejection|transjugular|TJLB|ha?emochromatosis|iron|Wilson\\w*|A1AT|DILI|drugs?|HBV|HCV|hep\\s*[BC]|(?:right|left)\\s+lobe)\\b",
+  "gate": "\\b(?:random|background|non-?lesional|donor|time[\\s-]?zero|(?:post-?)?reperfusion|(?:pre-?)?implantation|back-?table)\\b|^(?![\\s\\S]*\\b(?:mass(?:es)?|lesions?|nodules?|SOL|HCC|hepatoma|tumou?rs?|metasta\\w*|mets|abscess(?:es)?|cysts?|carcinoma|cholangiocarcinoma|neoplasm\\w*|malignan\\w*|adenomas?|ha?emangiomas?|FNH)\\b)[\\s\\S]*\\b(?:medical|parenchyma\\w*|deranged|LFTs?|liver\\s+function|ALT|ALP|GGT|transaminas\\w*|hepatitis|AIH|autoimmune|PBC|PSC|cholangitis|cholesta\\w*|jaundice|cirrho\\w*|fibros\\w*|steato\\w*|fatty|NASH|NAFLD|MASH|MASLD|MetALD|transplant\\w*|allograft|graft|OLT|LDLT|DDLT|rejection|donor|time[\\s-]?zero|(?:post-?)?reperfusion|(?:pre-?)?implantation|back-?table|transjugular|TJLB|ha?emochromatosis|iron|Wilson\\w*|A1AT|DILI|drugs?|HBV|HCV|hep\\s*[BC]|(?:right|left)\\s+lobe)\\b",
   "bias": 1,
   "exclude": [
    "mass",
@@ -100,6 +108,13 @@
    },
    {
     "field": "specimenName",
+    "from": "text",
+    "strip": "\\b(?:liver|biops(?:y|ies))\\b",
+    "lower": true,
+    "unless": "^(?![\\s\\S]*\\b(?:donor|time[\\s-]?zero|post-?reperfusion|pre-?implantation|back-?table)\\b)"
+   },
+   {
+    "field": "specimenName",
     "from": "map",
     "map": [
      [
@@ -131,6 +146,95 @@
       "left lobe"
      ]
     ]
+   },
+   {
+    "field": "pattern",
+    "from": "map",
+    "map": [
+     [
+      "\\b(?:time[\\s-]?zero|post-?reperfusion|pre-?implantation|back-?table)\\b",
+      "Donor (time zero)"
+     ],
+     [
+      "^(?![\\s\\S]*\\b(?:allo)?graft\\b)[\\s\\S]*\\bdonor\\b",
+      "Donor (time zero)"
+     ]
+    ]
+   },
+   {
+    "field": "pattern",
+    "from": "map",
+    "history": true,
+    "map": [
+     [
+      "\\b(?:time[\\s-]?zero|post-?reperfusion|pre-?implantation|back-?table)\\b",
+      "Donor (time zero)"
+     ]
+    ]
+   },
+   {
+    "field": "dnTiming",
+    "from": "map",
+    "history": true,
+    "map": [
+     [
+      "\\bpre-?(?:implantation|reperfusion)\\b|\\bback-?table\\b|\\bbefore\\s+(?:implantation|reperfusion)\\b",
+      "Pre-implantation (back table)"
+     ],
+     [
+      "\\b(?:post-?)?reperfusion\\b",
+      "Post-reperfusion"
+     ],
+     [
+      "\\bliving[\\s-]+donor\\b",
+      "Living-donor work-up"
+     ]
+    ],
+    "when": {
+     "field": "pattern",
+     "is": "Donor (time zero)"
+    }
+   },
+   {
+    "field": "dnSample",
+    "from": "map",
+    "map": [
+     [
+      "\\bwedge\\b",
+      "Wedge"
+     ],
+     [
+      "\\b(?:core|needle|tru-?cut)\\b",
+      "Needle core"
+     ]
+    ],
+    "when": {
+     "field": "pattern",
+     "is": "Donor (time zero)"
+    }
+   },
+   {
+    "field": "dnDonor",
+    "from": "map",
+    "history": true,
+    "map": [
+     [
+      "\\bDCD\\b|\\bcirculatory\\s+death\\b|\\bnon-?heart-?beating\\b",
+      "DCD"
+     ],
+     [
+      "\\bDBD\\b|\\bbrain[\\s-]?(?:stem[\\s-]+)?dea(?:th|d)\\b",
+      "DBD"
+     ],
+     [
+      "\\bliving[\\s-]+donor\\b",
+      "Living"
+     ]
+    ],
+    "when": {
+     "field": "pattern",
+     "is": "Donor (time zero)"
+    }
    }
   ]
  },
@@ -165,7 +269,19 @@
    "default": "",
    "min": 1,
    "step": 1,
-   "group": "Specimen"
+   "group": "Specimen",
+   "showIf": {
+    "any": [
+     {
+      "field": "pattern",
+      "not": "Donor (time zero)"
+     },
+     {
+      "field": "dnSample",
+      "is": "Needle core"
+     }
+    ]
+   }
   },
   {
    "id": "coreLength",
@@ -175,7 +291,19 @@
    "default": "",
    "min": 0,
    "step": 1,
-   "group": "Specimen"
+   "group": "Specimen",
+   "showIf": {
+    "any": [
+     {
+      "field": "pattern",
+      "not": "Donor (time zero)"
+     },
+     {
+      "field": "dnSample",
+      "is": "Needle core"
+     }
+    ]
+   }
   },
   {
    "id": "portalTracts",
@@ -250,6 +378,7 @@
     "Biliary",
     "Steatotic",
     "Transplant",
+    "Donor (time zero)",
     "Other",
     "No significant abnormality"
    ],
@@ -318,6 +447,13 @@
       "images": []
      },
      {
+      "heading": "Donor (time zero)",
+      "points": [
+       "A donor liver before or soon after implantation, or a living-donor work-up",
+       "Large- and small-droplet fat by the Banff three-step method, necrosis, ischaemia-reperfusion injury and fibrosis"
+      ]
+     },
+     {
       "heading": "Other",
       "points": [
        "Granulomas, iron overload, venous outflow obstruction, non-specific reactive change"
@@ -338,6 +474,382 @@
    "group": "Pattern"
   },
   {
+   "id": "dnTiming",
+   "label": "Timing",
+   "type": "select",
+   "options": [
+    "Post-reperfusion",
+    "Pre-implantation (back table)",
+    "Living-donor work-up"
+   ],
+   "default": "Post-reperfusion",
+   "group": "Donor",
+   "showIf": {
+    "field": "pattern",
+    "is": "Donor (time zero)"
+   },
+   "help": "Post-reperfusion biopsies are graded for ischaemia-reperfusion injury; back-table and work-up biopsies are not.",
+   "reference": {
+    "title": "Donor liver biopsy, step by step",
+    "intro": "Ten steps for a time-zero or work-up biopsy (Banff 2022, Clin Transplant Res 2025, AASLD Pathology Pearls, Sabry 2025, CAP). Cut-offs are for the Checks; none of them prints.",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "1. Timing and handling",
+      "points": [
+       "Back-table (before implantation), post-reperfusion, or a living-donor work-up biopsy (CAP)",
+       "Post-reperfusion biopsies: about 2-3 h after portal reperfusion (Sabry 2025)",
+       "Send fresh and quickly; no saline, air drying or absorbent paper (Clin Transplant Res 2025; UCLA)",
+       "Cut at 5-6 µm: thinner sections overestimate large-droplet fat (Banff 2022)"
+      ]
+     },
+     {
+      "heading": "2. Adequacy",
+      "points": [
+       "At least six portal tracts is the common standard (Clin Transplant Res 2025)"
+      ]
+     },
+     {
+      "heading": "3. Exclude malignancy first",
+      "points": [
+       "It makes the graft unsuitable: tick Neoplasm and give the type in a comment (Clin Transplant Res 2025)"
+      ]
+     },
+     {
+      "heading": "4. Steatosis, Banff three-step",
+      "points": [
+       "Low power: the share of the area occupied by fat",
+       "About x20: the share of hepatocytes in that area with large-droplet fat; their product is the large-droplet %",
+       "Small-droplet fat is given on its own and never added; true microvesicular steatosis (foamy cells) is rare and keeps its own term (Banff 2022)"
+      ]
+     },
+     {
+      "heading": "5. Necrosis",
+      "points": [
+       "Usually focal, in zone 3 or under the capsule; to the nearest 10%, with its site (AASLD)",
+       "Address ischaemic necrosis in every deceased donor (Clin Transplant Res 2025)"
+      ]
+     },
+     {
+      "heading": "6. Ischaemia-reperfusion injury",
+      "points": [
+       "Post-reperfusion only; graded none to severe (Sabry 2025)",
+       "Zonal necrosis without neutrophils is donor ischaemia: enter it as necrosis"
+      ]
+     },
+     {
+      "heading": "7. Inflammation",
+      "points": [
+       "Score portal and lobular inflammation separately",
+       "Minimal to mild non-specific inflammation is common; moderate or more suggests underlying disease (AASLD)"
+      ]
+     },
+     {
+      "heading": "8. Fibrosis",
+      "points": [
+       "Stage as usual, Ishak by default; precise staging needs a trichrome (AASLD; CAP)"
+      ]
+     },
+     {
+      "heading": "9. Other findings",
+      "points": [
+       "Ballooning, iron (zone 3 suggests overload: add Perls), lipofuscin and cholestasis (Clin Transplant Res 2025)",
+       "Granulomas and amyloid (AASLD); alpha-1 antitrypsin globules (Int J Organ Transplant Med 2017)"
+      ]
+     },
+     {
+      "heading": "10. Baseline for later biopsies",
+      "points": [
+       "Tells preservation-reperfusion injury in the first 1-2 weeks from acute rejection (Int J Organ Transplant Med 2017)",
+       "Preservation injury has a less dense infiltrate than TCMR and no endotheliitis (CAP)"
+      ]
+     }
+    ],
+    "note": "The Checks flag large-droplet fat of 30% or more (UCLA), over 33% (Clin Transplant Res 2025) and over 60-66% (Banff 2022); fewer than six portal tracts; necrosis of 10% or more, though up to 50% has been used, especially from brain-dead donors; and Ishak stage 2 or more (Clin Transplant Res 2025)."
+   }
+  },
+  {
+   "id": "dnDonor",
+   "label": "Donor type",
+   "type": "select",
+   "options": [
+    "Not stated",
+    "DBD",
+    "DCD",
+    "Living"
+   ],
+   "default": "Not stated",
+   "optionLabels": {
+    "DBD": "Brain death (DBD)",
+    "DCD": "Circulatory death (DCD)",
+    "Living": "Living donor"
+   },
+   "group": "Donor",
+   "showIf": {
+    "field": "pattern",
+    "is": "Donor (time zero)"
+   },
+   "help": "For the Checks only; it does not print."
+  },
+  {
+   "id": "dnSample",
+   "label": "Sample",
+   "type": "select",
+   "options": [
+    "Wedge",
+    "Needle core"
+   ],
+   "default": "Wedge",
+   "group": "Donor",
+   "showIf": {
+    "field": "pattern",
+    "is": "Donor (time zero)"
+   }
+  },
+  {
+   "id": "dnLdfPct",
+   "label": "Large-droplet fat (%)",
+   "type": "number",
+   "placeholder": "10",
+   "default": "",
+   "min": 0,
+   "max": 100,
+   "step": 1,
+   "group": "Donor",
+   "showIf": {
+    "field": "pattern",
+    "is": "Donor (time zero)"
+   },
+   "help": "Banff three-step: the area occupied by fat at low power, times the share of hepatocytes in it with large droplets at about x20."
+  },
+  {
+   "id": "dnSdfPct",
+   "label": "Small-droplet fat (%)",
+   "type": "number",
+   "placeholder": "20",
+   "default": "",
+   "min": 0,
+   "max": 100,
+   "step": 1,
+   "group": "Donor",
+   "showIf": {
+    "field": "pattern",
+    "is": "Donor (time zero)"
+   },
+   "help": "Given on its own; never added to the large-droplet figure."
+  },
+  {
+   "id": "dnMicro",
+   "label": "True microvesicular steatosis",
+   "type": "select",
+   "options": [
+    "Not seen",
+    "Present"
+   ],
+   "default": "Not seen",
+   "group": "Donor",
+   "showIf": {
+    "field": "pattern",
+    "is": "Donor (time zero)"
+   },
+   "help": "Foamy hepatocytes with innumerable tiny droplets and a central nucleus; rare, and kept apart from small-droplet fat.",
+   "reference": {
+    "title": "Donor steatosis",
+    "intro": "Give large- and small-droplet fat as separate percentages and never add them (Banff 2022).",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "Banff three-step method",
+      "points": [
+       "1. Low power: estimate the share of the area occupied by fat",
+       "2. About x20: estimate the share of hepatocytes in that area with large-droplet fat",
+       "3. The x20 share of the low-power share is the large-droplet %: 50% of 20% is 10%",
+       "Cut at 5-6 µm; thinner sections overestimate large-droplet fat"
+      ]
+     },
+     {
+      "heading": "Droplet type",
+      "points": [
+       "Large droplet: one droplet distends the cell and displaces the nucleus",
+       "Small droplet: smaller droplets with a central nucleus; true microvesicular steatosis is foamy cytoplasm, rare, and named apart"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/microvesicular_steatosis.jpg",
+        "caption": "Microvesicular steatosis in acute fatty liver of pregnancy: foamy hepatocytes (arrows); inset, macrovesicular steatosis for comparison (H&E).",
+        "credit": "Ronen, Shaheen, Steinberg, Justus, Cureus 2018, via Wikimedia Commons",
+        "license": "CC BY 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_microvesicular_steatosis.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "dnFatZone",
+   "label": "Fat distribution",
+   "type": "select",
+   "options": [
+    "",
+    "Zone 3",
+    "Zone 1",
+    "Azonal",
+    "Panacinar"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-"
+   },
+   "group": "Donor",
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Donor (time zero)"
+     },
+     {
+      "any": [
+       {
+        "field": "dnLdfPct",
+        "min": 0.1
+       },
+       {
+        "field": "dnSdfPct",
+        "min": 0.1
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "dnNecrosisPct",
+   "label": "Necrosis (%)",
+   "type": "number",
+   "placeholder": "0",
+   "default": "",
+   "min": 0,
+   "max": 100,
+   "step": 1,
+   "group": "Donor",
+   "showIf": {
+    "field": "pattern",
+    "is": "Donor (time zero)"
+   },
+   "help": "To the nearest 10%; usually zone 3 or subcapsular. Address it in every deceased donor."
+  },
+  {
+   "id": "dnNecrosisSite",
+   "label": "Necrosis site",
+   "type": "select",
+   "options": [
+    "Zone 3",
+    "Subcapsular",
+    "Zone 3 and subcapsular",
+    "Random"
+   ],
+   "default": "Zone 3",
+   "group": "Donor",
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Donor (time zero)"
+     },
+     {
+      "field": "dnNecrosisPct",
+      "min": 0.1
+     }
+    ]
+   }
+  },
+  {
+   "id": "dnIri",
+   "label": "Ischaemia-reperfusion injury",
+   "type": "select",
+   "options": [
+    "",
+    "None",
+    "Minimal",
+    "Mild",
+    "Moderate",
+    "Severe"
+   ],
+   "default": "",
+   "optionLabels": {
+    "": "-"
+   },
+   "group": "Donor",
+   "showIf": {
+    "all": [
+     {
+      "field": "pattern",
+      "is": "Donor (time zero)"
+     },
+     {
+      "field": "dnTiming",
+      "is": "Post-reperfusion"
+     }
+    ]
+   },
+   "help": "Sabry 2025 grades. Zonal necrosis without neutrophils is donor ischaemia: enter it as necrosis.",
+   "reference": {
+    "title": "Ischaemia-reperfusion injury at time zero",
+    "intro": "Grades from Sabry 2025, for post-reperfusion biopsies only.",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "Grades (Sabry 2025)",
+      "points": [
+       "None",
+       "Minimal: sparse single sinusoidal neutrophils, no hepatocyte loss",
+       "Mild: sporadic hepatocyte detachment or acidophil bodies, with isolated neutrophils",
+       "Moderate: clusters of more than five neutrophils, with or without hepatocyte loss",
+       "Severe: zonal or confluent, usually perivenular, hepatocyte loss"
+      ]
+     },
+     {
+      "heading": "Preservation-reperfusion injury",
+      "points": [
+       "Zone 3 hepatocyte swelling, apoptosis, cholestasis and sinusoidal neutrophil clusters",
+       "Usually mild and resolving within 1-2 weeks; compare with the time-zero biopsy"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/liver_biopsy/preservation_injury_time_zero.jpg",
+        "caption": "Time-zero biopsy: moderate ischaemia-reperfusion injury with clusters of more than 5 neutrophils and hepatocyte dropout (x200).",
+        "credit": "Sabry et al., Int J Hepatol 2025, Fig 4",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11991779/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "dnOther",
+   "label": "Other findings",
+   "type": "multiselect",
+   "options": [
+    "Neoplasm",
+    "Ballooned hepatocytes",
+    "Cholestasis",
+    "Lipofuscin",
+    "Granulomas",
+    "Amyloid",
+    "Alpha-1 antitrypsin globules"
+   ],
+   "default": [],
+   "group": "Donor",
+   "showIf": {
+    "field": "pattern",
+    "is": "Donor (time zero)"
+   },
+   "help": "Exclude malignancy first; give the type of any neoplasm in a comment. Iron is the Perls fields under Stains."
+  },
+  {
    "id": "portalInfl",
    "label": "Portal inflammation",
    "type": "grade",
@@ -353,7 +865,8 @@
     "field": "pattern",
     "is": [
      "Hepatitic",
-     "Biliary"
+     "Biliary",
+     "Donor (time zero)"
     ]
    },
    "reference": {
@@ -493,7 +1006,8 @@
     "field": "pattern",
     "is": [
      "Hepatitic",
-     "Biliary"
+     "Biliary",
+     "Donor (time zero)"
     ]
    }
   },
@@ -2330,7 +2844,8 @@
      "Steatotic": "NASH CRN",
      "Transplant": "",
      "Other": "",
-     "No significant abnormality": ""
+     "No significant abnormality": "",
+     "Donor (time zero)": "Ishak"
     }
    },
    "group": "Fibrosis",

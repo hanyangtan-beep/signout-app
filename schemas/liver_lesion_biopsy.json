@@ -60,7 +60,13 @@
    "FNA",
    "aspirate",
    "aspiration",
-   "cytology"
+   "cytology",
+   "donor",
+   "time-zero",
+   "time zero",
+   "reperfusion",
+   "implantation",
+   "back-table"
   ],
   "bias": 1,
   "fill": [

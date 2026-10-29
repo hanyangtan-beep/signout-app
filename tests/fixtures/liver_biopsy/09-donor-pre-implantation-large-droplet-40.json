@@ -1,0 +1,31 @@
+{
+  "templateId": "liver_biopsy",
+  "values": {
+    "specimenName": "donor, pre-implantation",
+    "pattern": "Donor (time zero)",
+    "dnTiming": "Pre-implantation (back table)",
+    "dnSample": "Needle core",
+    "portalTracts": "9",
+    "dnLdfPct": "40",
+    "dnSdfPct": "10",
+    "dnIri": "",
+    "dnNecrosisPct": "0",
+    "portalInfl": "Mild",
+    "lobular": "Mild",
+    "stageSystem": "Ishak",
+    "stage": "",
+    "dnDonor": "DBD",
+    "cores": "2",
+    "coreLength": "22",
+    "dnFatZone": "Zone 3"
+  },
+  "report": "Liver, donor, pre-implantation biopsy\n\nSections show two cores of donor liver taken before implantation, measuring 22 mm in aggregate length, with 9 portal tracts. Large-droplet steatosis involves about 40% of the parenchyma and small-droplet steatosis about 10%. The steatosis is predominantly in zone 3. There is no necrosis. The portal tracts show mild inflammation. There is mild lobular inflammation. There is no fibrosis. No granuloma or neoplasm is seen.\n\nLIVER, donor, pre-implantation biopsy - LARGE-DROPLET STEATOSIS (40%) without FIBROSIS",
+  "checks": [
+    {
+      "level": "warn",
+      "message": "Large-droplet fat 40%: 30% or more is a risk factor for short-term graft survival (UCLA); over 33% raises the risk of complications after transplant (Clin Transplant Res 2025).",
+      "field": "dnLdfPct",
+      "part": "A"
+    }
+  ]
+}

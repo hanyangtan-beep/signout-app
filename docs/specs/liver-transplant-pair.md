@@ -1,6 +1,6 @@
 # Liver transplant pair — native liver explant + donor liver time-zero biopsy
 
-Brief for the two "Liver transplant pair" cards in `docs/roadmap.md` (Next). It was planned on 2026-10-09 at the user's request: "prepare a paired card for liver explant resection. Liver explants also come with a paired liver biopsy (from the donor, 'time zero'). Please also have a systematic way to evaluate them." Nothing here is built yet; the cards wait for the user to pull them.
+Brief for the two "Liver transplant pair" cards in `docs/roadmap.md` (Next). It was planned on 2026-10-09 at the user's request: "prepare a paired card for liver explant resection. Liver explants also come with a paired liver biopsy (from the donor, 'time zero'). Please also have a systematic way to evaluate them." The user pulled both cards on 2026-10-29 and they were built that day as Phase 82; "As built" at the end records what was built and where it departs from this brief.
 
 **The pair.** A transplant case has two letters. (A) is the recipient's native liver, a total hepatectomy at transplant. (B) is the graft biopsy taken at time zero, either on the back table before implantation or after reperfusion. Each letter keeps its own form and its own diagnosis line. An explant containing hepatocellular carcinoma adds the existing `hcc` synoptic under the same letter (A), as a linked part. This is the frozen-to-synoptic link generalised ("Stage this part", `docs/specs/lung-pair.md`).
 
@@ -262,3 +262,38 @@ Brief for the two "Liver transplant pair" cards in `docs/roadmap.md` (Next). It 
 3. Should every explant line open `liver_explant` with the HCC synoptic linked under the same letter (proposed)? The alternative keeps HCC explants on `hcc` with explant fields added there.
 4. Are donor livers also assessed by frozen section before implantation? If so, a frozen-section scenario reusing the donor fields goes into Later.
 5. Should a non-tumour explant line add "no dysplastic nodule or malignancy"?
+
+## As built (Phase 82, 2026-10-29)
+
+Both cards shipped as one batch, the donor card first, with one deploy and one publish (the Done entry changes the roadmap, which is published on every change). All printed wording is still proposed, as no house explant or time-zero report has been seen (open point 1).
+
+### Card 1 — donor pattern on `liver_biopsy`
+
+- Fields, shown for "Donor (time zero)": `dnTiming` (Post-reperfusion, the default; Pre-implantation (back table); Living-donor work-up), `dnDonor` (Not stated, DBD, DCD, Living), `dnSample` (Wedge, the default; Needle core), `dnLdfPct`, `dnSdfPct`, `dnMicro`, `dnFatZone` (once either fat is entered), `dnNecrosisPct`, `dnNecrosisSite` (once necrosis is entered), `dnIri` (post-reperfusion only) and `dnOther`. A wedge hides the core count and core length.
+- Panels: the ten-step checklist "Donor liver biopsy, step by step" on `dnTiming` (text only); "Donor steatosis" on `dnMicro` and "Ischaemia-reperfusion injury at time zero" on `dnIri`, each with one photograph from the Phase 62 liver set. These replace attaching the Steatosis and Transplant galleries as they stand.
+- Specimen line: the request line less "liver" and "biopsy", so "Liver, donor, time-zero biopsy" reads "LIVER, donor, time-zero biopsy". The last piece decides ("time-zero, needle core" reads "LIVER, time-zero, needle core biopsy"), and a graft first piece names the organ ("LIVER ALLOGRAFT, post-reperfusion biopsy").
+- Alpha-1 antitrypsin globules are cited to [Int J Organ Transplant Med 2017](https://pmc.ncbi.nlm.nih.gov/articles/PMC5347400/) (PAS-D globules), as the CAP chapter names alpha-1 antitrypsin deficiency rather than the globules.
+- Intake: see `docs/specs/specimen-intake.md`, "Liver transplant pair". The fill rule key `when` (`src/intake.js`) is new: the timing, sample and donor type fill only a line already read as a donor biopsy.
+- Fixtures `tests/fixtures/liver_biopsy/08-10`, as the brief lists; the existing liver fixtures are byte-identical.
+
+### Card 2 — `liver_explant` and the pairing hook
+
+- Head: "LIVER, native, total hepatectomy" from the default specimen name "Native liver, total hepatectomy", which the request line does not overwrite.
+- Nodules: up to five rows, each with segment, size, description, histology (Hepatocellular carcinoma; Treated HCC, no viable tumour; high-grade or low-grade dysplastic nodule; large regenerative nodule; other), necrosis % and viable size. The per-nodule histology replaces the brief's `lgdnCount` and `hgdnCount`.
+- `tumour` (Malignancy): blank reads the nodule table ("From the nodule table"); None; Hepatocellular carcinoma; Other malignancy. Intake sets Hepatocellular carcinoma only when the line names HCC, hepatocellular or hepatoma, not after "?" and not from the history.
+- Open point 5: with no malignancy, the microscopy closes with "There is no dysplasia or malignancy." ("There is no malignancy." when a dysplastic nodule is recorded); the line does not carry it. The gallbladder and the nodes stay in the microscopy.
+- Pairing: a generator may export `pairedTemplate(part)`, `prefillPaired(values)`, `PAIR_TARGETS` and `PAIR_BUTTON`, and the engine gives a linked part its host (`part.host`, never saved). "Add HCC synoptic" shows while the explant holds HCC and has no linked synoptic; the tab and the part header read "linked to the liver explant".
+- Pre-fill: Total hepatectomy, the specimen name, weight and dimensions; the staged tumour, taken from the nodules with viable tumour (all tumour nodules when none has any): their segments as the tumour site (not segments 1-8), the count and the sizes (the viable size where recorded); the treatment effect when a nodule is treated or necrotic, and the necrosis % of a single viable nodule; the hilar node counts; large vessel invasion for a tumour thrombus in a hilar vessel; and the shared background fields, with the nodule table's dysplastic nodules.
+- Linked `hcc` prints no heading, macroscopy, block key or Additional findings (unless notes are typed), and its background clauses come from the explant. Checks say so when the synoptic's own background copy differs; that copy never prints.
+- `hcc` with Total hepatectomy, linked or not, has no parenchymal margin: the field hides, and its row, clause and distance check go. Every unlinked `hcc` fixture is byte-identical.
+- Checks, never printed: Milan and UCSF counted on viable tumour and on all nodules, with the vascular invasion from the synoptic; complete response when no nodule has viable tumour; weight and dimensions; slices over 10 mm; no background block named, once nodules are described; more than five nodules without the rest; an imaging mismatch without the lesions not found; HCC without a linked synoptic; a tumour thrombus without large vessel invasion on the synoptic. UCSF is cited in the code to the [WJG review](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4806190/), which restates Yao 2002.
+- Panels: "Explant grossing checklist" on `hilum` and "Explant microscopy checklist" on `bgFindings` (text only); "Features of the cause" on `causeFeatures` and "Massive and submassive necrosis" on `necrosisPattern`, with Phase 62 photographs.
+- Fixtures `tests/fixtures/liver_explant/01-05`, as the brief lists. In 02 the synoptic stages the viable nodule only, so it reads solitary; the completely necrotic nodule is in the explant's microscopy.
+
+### Open points after the build
+
+1. House examples: still awaited.
+2. Milan and UCSF: Checks only, as proposed.
+3. Every explant line opens `liver_explant`, and HCC links under the same letter, as proposed.
+4. No donor frozen-section scenario was built.
+5. A microscopy closer, as above.

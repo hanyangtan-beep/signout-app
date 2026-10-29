@@ -1,0 +1,20 @@
+{
+  "templateId": "liver_biopsy",
+  "values": {
+    "specimenName": "donor, wedge",
+    "pattern": "Donor (time zero)",
+    "dnTiming": "Post-reperfusion",
+    "dnSample": "Wedge",
+    "portalTracts": "14",
+    "dnLdfPct": "10",
+    "dnSdfPct": "20",
+    "dnIri": "Mild",
+    "dnNecrosisPct": "0",
+    "portalInfl": "Minimal",
+    "lobular": "Absent",
+    "stageSystem": "Ishak",
+    "stage": ""
+  },
+  "report": "Liver, donor, wedge biopsy\n\nSections show a wedge biopsy of donor liver taken after reperfusion, with 14 portal tracts. Large-droplet steatosis involves about 10% of the parenchyma and small-droplet steatosis about 20%. There is mild ischaemia-reperfusion injury, with scattered sinusoidal neutrophils and occasional acidophil bodies. There is no necrosis. The portal tracts show minimal inflammation. There is no fibrosis. No granuloma or neoplasm is seen.\n\nLIVER, donor, wedge biopsy - MILD ISCHAEMIA-REPERFUSION INJURY with LARGE-DROPLET STEATOSIS (10%) and NO FIBROSIS",
+  "checks": []
+}

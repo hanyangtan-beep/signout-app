@@ -313,7 +313,7 @@ async function setPartTemplate(i, id) {
   noteUsed(id);
   markDirty();
   const own = parts.filter((p, j) => j < i && templateIdOf(state.caseState, p) === id).length; // position within that template
-  const keepLink = !!parts[i].linked && Object.values(pairedTemplates()).includes(id);
+  const keepLink = !!parts[i].linked && (Object.values(pairedTemplates()).includes(id) || (i > 0 && (hostGen(parts[i - 1])?.PAIR_TARGETS || []).includes(id)));
   const row = carriedRow(parts[i]);
   parts[i] = { ...createPart(s, own), label: parts[i].label, templateId: id, ...(keepLink ? { linked: true } : {}), ...(parts[i].lis ? { lis: parts[i].lis } : {}) };
   if (row) prefillFromLine(s, parts[i], row, own);
@@ -352,9 +352,23 @@ function applyMacro() {
 
 /** Frozen scenario -> paired synoptic template id (from the frozen generator when it is loaded). */
 function pairedTemplates() { return state.templates.frozen_section?.generator?.PAIRED_TEMPLATE || {}; }
+/**
+ * The loaded generator of a part that hosts a linked synoptic of its own (Phase 82: a liver explant hosts the
+ * HCC synoptic), else null. Such a generator exports `pairedTemplate(part)`, `PAIR_TARGETS`, `PAIR_BUTTON` and
+ * `prefillPaired(values)`; the frozen section keeps its own pairing below.
+ */
+function hostGen(part) {
+  const g = part ? state.templates[templateIdOf(state.caseState, part)]?.generator : null;
+  return g && typeof g.pairedTemplate === 'function' ? g : null;
+}
+/** What a linked part is linked to, for the tab, the part header and the toast. */
+function hostNoun(host) { return host && hostGen(host) ? `the ${schemaOf(host).specimenNoun || schemaOf(host).name}` : 'the frozen section'; }
 /** Paired synoptic id for one frozen part: the generator's `pairTemplate` when it has one (the
- *  pancreatobiliary margin picks pancreas or ampulla from the origin), else the static map. */
+ *  pancreatobiliary margin picks pancreas or ampulla from the origin), else the static map. A host
+ *  part (hostGen) names its own. */
 function pairIdFor(part) {
+  const h = hostGen(part);
+  if (h) return h.pairedTemplate(part) || '';
   const g = state.templates.frozen_section?.generator;
   if (typeof g?.pairTemplate === 'function') return g.pairTemplate(part.values) || '';
   return pairedTemplates()[part.values.scenario] || '';
@@ -366,6 +380,7 @@ function pairSeparate(scenario) { return !!(state.templates.frozen_section?.gene
 function canStage(i) {
   const parts = state.caseState.parts;
   const part = parts[i];
+  if (part && hostGen(part)) return !part.linked && !!pairIdFor(part) && !parts[i + 1]?.linked;
   if (!part || templateIdOf(state.caseState, part) !== 'frozen_section') return false;
   const g = state.templates.frozen_section?.generator;
   if (!g || typeof g.stageable !== 'function' || !g.stageable(part)) return false;
@@ -394,14 +409,16 @@ async function stageThisPart(i) {
   markDirty();
   const own = parts.filter((p, j) => j <= i && templateIdOf(state.caseState, p) === pairId).length;
   const np = { ...createPart(s, own), templateId: pairId, ...(separate ? {} : { linked: true }) };
-  if (typeof g.prefillFromFrozen === 'function') Object.assign(np.values, g.prefillFromFrozen(part.values) || {});
+  const host = hostGen(part);
+  if (host) Object.assign(np.values, (typeof host.prefillPaired === 'function' && host.prefillPaired(part.values)) || {});
+  else if (typeof g.prefillFromFrozen === 'function') Object.assign(np.values, g.prefillFromFrozen(part.values) || {});
   if (separate) parts.push(np); else parts.splice(i + 1, 0, np);
   relabel(parts);
   syncPrimary();
   applyMacro();
   state.activePart = separate ? parts.length - 1 : i + 1;
   render();
-  toast(separate ? `Part ${np.label}: ${s.name} added from part ${part.label}` : `Part ${np.label}: ${s.name} linked to the frozen section`);
+  toast(separate ? `Part ${np.label}: ${s.name} added from part ${part.label}` : `Part ${np.label}: ${s.name} linked to ${hostNoun(part)}`);
 }
 
 /**
@@ -765,7 +782,7 @@ function renderTabs() {
   const parts = state.caseState.parts;
   nodes.tabs.replaceChildren(...parts.map((p, i) => el('button', {
     type: 'button', role: 'tab', class: 'tab', 'aria-selected': String(i === state.activePart),
-    title: p.linked ? `${schemaOf(p).name} (linked to the frozen section under the same letter)` : schemaOf(p).name,
+    title: p.linked ? `${schemaOf(p).name} (linked to ${hostNoun(parts[i - 1])} under the same letter)` : schemaOf(p).name,
     onclick: () => { state.activePart = i; render(); }
   }, iconForPart(p), el('span', { class: 'tab-label', text: p.linked ? `${p.label} syn` : p.label }))));
   nodes.addPart.disabled = parts.length >= maxPartsForCase();
@@ -1568,11 +1585,11 @@ function renderPanel() {
   const wiz = wizardSupported(s) ? wizardCard(s, part, i) : null;
   const pw = pathwaySupported(s) ? pathwayCard(part, i) : null;
   const head = el('div', { class: 'part-head' },
-    el('h3', {}, iconForPart(part), el('span', { text: part.linked ? `Part ${part.label} (synoptic, linked to the frozen section)` : `Part ${part.label}` })),
+    el('h3', {}, iconForPart(part), el('span', { text: part.linked ? `Part ${part.label} (synoptic, linked to ${hostNoun(state.caseState.parts[i - 1])})` : `Part ${part.label}` })),
     picker,
     el('div', { class: 'part-actions' },
       canUpgrade(i) ? el('button', { type: 'button', class: 'btn small', text: 'Upgrade this part', title: 'Switch this part to the synoptic template for the ticked neoplasm, carrying over what the benign form already answered', onclick: () => upgradeThisPart(i).catch((err) => { toast(err.message); render(); }) }) : null,
-      canStage(i) ? el('button', { type: 'button', class: 'btn small', text: pairSeparate(part.values.scenario) ? 'Add breast synoptic' : 'Stage this part', title: pairSeparate(part.values.scenario) ? 'Add the breast carcinoma resection as the next part, with the sentinel node counts pre-filled' : 'Add the paired cancer synoptic under the same letter, pre-filled from the frozen section', onclick: () => stageThisPart(i).catch((err) => { toast(err.message); render(); }) }) : null,
+      canStage(i) ? el('button', { type: 'button', class: 'btn small', text: hostGen(part)?.PAIR_BUTTON?.text || (pairSeparate(part.values.scenario) ? 'Add breast synoptic' : 'Stage this part'), title: hostGen(part)?.PAIR_BUTTON?.title || (pairSeparate(part.values.scenario) ? 'Add the breast carcinoma resection as the next part, with the sentinel node counts pre-filled' : 'Add the paired cancer synoptic under the same letter, pre-filled from the frozen section'), onclick: () => stageThisPart(i).catch((err) => { toast(err.message); render(); }) }) : null,
       i > 0 && !part.linked ? el('button', { type: 'button', class: 'btn ghost small', text: 'Same as previous', onclick: () => copyFromPrevious(i) }) : null,
       wizardSupported(s) ? el('button', {
         type: 'button', class: `btn small${wizardOpen(i) ? '' : ' ghost'}`,

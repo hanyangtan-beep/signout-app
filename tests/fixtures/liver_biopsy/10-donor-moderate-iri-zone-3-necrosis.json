@@ -1,0 +1,33 @@
+{
+  "templateId": "liver_biopsy",
+  "values": {
+    "specimenName": "graft, post-reperfusion",
+    "pattern": "Donor (time zero)",
+    "dnTiming": "Post-reperfusion",
+    "dnSample": "Wedge",
+    "portalTracts": "11",
+    "dnLdfPct": "5",
+    "dnSdfPct": "0",
+    "dnIri": "Moderate",
+    "dnNecrosisPct": "20",
+    "portalInfl": "Minimal",
+    "lobular": "Absent",
+    "stageSystem": "Ishak",
+    "stage": "",
+    "dnDonor": "DCD",
+    "dnNecrosisSite": "Zone 3",
+    "dnOther": [
+      "Cholestasis",
+      "Lipofuscin"
+    ]
+  },
+  "report": "Liver allograft, post-reperfusion biopsy\n\nSections show a wedge biopsy of donor liver taken after reperfusion, with 11 portal tracts. Large-droplet steatosis involves about 5% of the parenchyma, and there is no small-droplet steatosis. There is moderate ischaemia-reperfusion injury, with clusters of sinusoidal neutrophils. Necrosis involves about 20% of the parenchyma, in zone 3. The portal tracts show minimal inflammation. There is no fibrosis. Cholestasis and lipofuscin pigment are seen. No granuloma or neoplasm is seen.\n\nLIVER ALLOGRAFT, post-reperfusion biopsy - MODERATE ISCHAEMIA-REPERFUSION INJURY with ZONE 3 NECROSIS (20%), LARGE-DROPLET STEATOSIS (5%) and NO FIBROSIS",
+  "checks": [
+    {
+      "level": "warn",
+      "message": "Necrosis 20%: 10% or more may make a graft unsuitable, though up to 50% has been used, especially from brain-dead donors (Clin Transplant Res 2025).",
+      "field": "dnNecrosisPct",
+      "part": "A"
+    }
+  ]
+}
