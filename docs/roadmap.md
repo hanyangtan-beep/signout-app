@@ -158,7 +158,27 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. The Phase 81 card (morcellated and hysteroscopic leiomyoma) shipped on 2026-10-27; the write-up is in Done, with the intake section in `docs/specs/specimen-intake.md` and the sources in `docs/reference/uterus-leiomyoma-sources.md`. The uterine leiomyosarcoma card waits in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+Liver transplant pair (user request 2026-10-09; pulled by the user 2026-10-29): two cards, built as one batch, the donor card first. The Phase 81 card (morcellated and hysteroscopic leiomyoma) shipped on 2026-10-27; the write-up is in Done, with the intake section in `docs/specs/specimen-intake.md` and the sources in `docs/reference/uterus-leiomyoma-sources.md`. The uterine leiomyosarcoma card waits in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+
+### Liver donor biopsy — time zero (medical liver form) (user request 2026-10-09; pulled by the user 2026-10-29)   Size: M; Liver transplant pair (1 of 2)
+Why:        a time-zero or pre-implantation donor biopsy opens the medical liver form, which has no field for large- and small-droplet fat, necrosis extent or reperfusion injury, the items the donor-biopsy sources ask for.
+Change:     `liver_biopsy` gains the pattern "Donor (time zero)": timing (pre-implantation, post-reperfusion), donor type, large-droplet fat % (Banff three-step), small-droplet fat %, true microvesicular steatosis, fat zone, necrosis % (nearest 10%) and site, ischaemia-reperfusion injury grade (none to severe, Sabry 2025), and other findings (neoplasm, ballooning, lipofuscin, cholestasis, granulomas, amyloid, alpha-1 antitrypsin globules). It reuses adequacy, inflammation, fibrosis, the Perls iron fields and the Steatosis and Transplant galleries, with the ten-step checklist as a criteria panel. Line: "(B) LIVER, donor, time-zero biopsy - MILD ISCHAEMIA-REPERFUSION INJURY with LARGE-DROPLET STEATOSIS (10%) and NO FIBROSIS". Checks (reference only): large-droplet fat at 30, 33 and 60 per cent, fewer than 6 portal tracts, necrosis 10 per cent or more, Ishak 2 or more, no injury grade after reperfusion.
+Untouched:  the other patterns and every existing liver fixture; `liver_lesion_biopsy`; `hcc`.
+Accept:     fixtures for post-reperfusion mild injury (large-droplet 10%, small-droplet 20%), pre-implantation large-droplet 40% (Checks show the cut-offs) and moderate injury with 20% zone 3 necrosis; intake top-1 with the pattern set for "Liver, donor, time-zero biopsy", "Donor liver, wedge biopsy" and "Liver graft, post-reperfusion biopsy"; "Liver allograft, biopsy" keeps its route and its preset (the site only).
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: none
+Spec:       `docs/specs/liver-transplant-pair.md`, Card 1
+
+### Liver explant — native liver at transplant (user request 2026-10-09; pulled by the user 2026-10-29)   Size: M; Liver transplant pair (2 of 2)
+Why:        an explant line opens `hcc` only when HCC is named, and a non-tumour explant (cirrhosis, PSC, acute liver failure) has no form; neither form carries the explant steps (hilum, nodule map against imaging, background blocks, incidental lesions).
+Change:     new template `liver_explant` (Hepatobiliary, benign resection, menu label "Liver explant"; head "LIVER, native, total hepatectomy"). Gross: weight, dimensions, hilum and thrombi, gallbladder, nodes, slice interval, background appearance, a nodule table (up to five, with necrosis and viable size), imaging match and block key. Microscopy: background through `liver_background.js` with activity and cause features, dysplastic nodules, incidental lesions, thrombus, nodes, gallbladder, and necrosis extent for acute liver failure. Both checklists sit in a criteria panel. Engine: `pairedTemplate(part)` and `prefillPaired(values)` on any generator (today frozen sections only), so "Add HCC synoptic" links a pre-filled `hcc` part under (A); its own macro and block key stay silent when linked. `hcc` drops "explant" as a procedure word. Checks (never printed): Milan and UCSF on explant (viable nodules and all nodules), complete response, missing items.
+Untouched:  unlinked `hcc` output and all its fixtures; `liver_lesion_biopsy`; `liver_benign`; the frozen-section pairing.
+Accept:     the five fixtures in the spec (HBV cirrhosis; HCC after TACE with a linked synoptic and Checks "within Milan"; PSC with BilIN; acute liver failure; the A + B pair case); intake top-1 for "Native liver, total hepatectomy" and "Liver, explant"; a right hepatectomy under an HCC history stays on `hcc`.
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: Liver donor biopsy — time zero (for the pair fixture)
+Spec:       `docs/specs/liver-transplant-pair.md`, Card 2
 
 ## Next
 
@@ -200,28 +220,8 @@ Source:     https://awiloqmh.github.io/CancerReportingTemplate/GYN-Sarcoma.html;
 ### Liver transplant pair — group note (user request 2026-10-09)
 Pair:       (A) the native liver, total hepatectomy at transplant; (B) the donor graft biopsy at time zero (back table or after reperfusion). Each letter keeps its own form and line; an explant with HCC links the `hcc` synoptic under (A). Both forms open with a criteria panel holding their systematic checklist, which never prints.
 Evidence:   n.a. — the case-mix summaries hold no explant or donor-biopsy count; the wording waits for a de-identified house example of each (spec open point 1).
-Status:     carded at the user's request; waits to be pulled. The donor card (1 of 2) builds first, as it needs no engine change.
+Status:     both cards pulled by the user on 2026-10-29 and in Now as one batch; the donor card (1 of 2) builds first, as it needs no engine change.
 Spec:       `docs/specs/liver-transplant-pair.md` (sources, both checklists, Checks, fixtures, five open points)
-
-### Liver donor biopsy — time zero (medical liver form)   Size: M; Liver transplant pair (1 of 2)
-Why:        a time-zero or pre-implantation donor biopsy opens the medical liver form, which has no field for large- and small-droplet fat, necrosis extent or reperfusion injury, the items the donor-biopsy sources ask for.
-Change:     `liver_biopsy` gains the pattern "Donor (time zero)": timing (pre-implantation, post-reperfusion), donor type, large-droplet fat % (Banff three-step), small-droplet fat %, true microvesicular steatosis, fat zone, necrosis % (nearest 10%) and site, ischaemia-reperfusion injury grade (none to severe, Sabry 2025), and other findings (neoplasm, ballooning, iron zone, lipofuscin, cholestasis, granuloma, amyloid, alpha-1 antitrypsin globules). It reuses adequacy, inflammation, fibrosis, iron and the Steatosis and Transplant galleries, with the ten-step checklist as a criteria panel. Line: "(B) LIVER, donor, time-zero biopsy - MILD ISCHAEMIA-REPERFUSION INJURY with LARGE-DROPLET STEATOSIS (10%) and NO FIBROSIS". Checks (reference only): large-droplet fat at 30, 33 and 60 per cent, fewer than 6 portal tracts, necrosis 10 per cent or more, Ishak 2 or more, no injury grade after reperfusion.
-Untouched:  the other patterns and every existing liver fixture; `liver_lesion_biopsy`; `hcc`.
-Accept:     fixtures for post-reperfusion mild injury (large-droplet 10%, small-droplet 20%), pre-implantation large-droplet 40% (Checks show the cut-offs) and moderate injury with 20% zone 3 necrosis; intake top-1 with the pattern set for "Liver, donor, time-zero biopsy", "Donor liver, wedge biopsy" and "Liver graft, post-reperfusion biopsy"; "Liver allograft, biopsy" keeps the Transplant pattern.
-Verify:     tests + browser (light)
-Ship:       with batch
-Depends on: none
-Spec:       `docs/specs/liver-transplant-pair.md`, Card 1
-
-### Liver explant — native liver at transplant             Size: M; Liver transplant pair (2 of 2)
-Why:        an explant line opens `hcc` only when HCC is named, and a non-tumour explant (cirrhosis, PSC, acute liver failure) has no form; neither form carries the explant steps (hilum, nodule map against imaging, background blocks, incidental lesions).
-Change:     new template `liver_explant` (Hepatobiliary, benign resection, menu label "Liver explant"; head "LIVER, native, total hepatectomy"). Gross: weight, dimensions, hilum and thrombi, gallbladder, nodes, slice interval, background appearance, a nodule table (up to five, with necrosis and viable size), imaging match and block key. Microscopy: background through `liver_background.js` with activity and cause features, dysplastic nodules, incidental lesions, thrombus, nodes, gallbladder, and necrosis extent for acute liver failure. Both checklists sit in a criteria panel. Engine: `pairedTemplate(part)` and `prefillPaired(values)` on any generator (today frozen sections only), so "Add HCC synoptic" links a pre-filled `hcc` part under (A); its own macro and block key stay silent when linked. `hcc` drops "explant" as a procedure word. Checks (never printed): Milan and UCSF on explant (viable nodules and all nodules), complete response, missing items.
-Untouched:  unlinked `hcc` output and all its fixtures; `liver_lesion_biopsy`; `liver_benign`; the frozen-section pairing.
-Accept:     the five fixtures in the spec (HBV cirrhosis; HCC after TACE with a linked synoptic and Checks "within Milan"; PSC with BilIN; acute liver failure; the A + B pair case); intake top-1 for "Native liver, total hepatectomy" and "Liver, explant"; a right hepatectomy under an HCC history stays on `hcc`.
-Verify:     tests + browser (light)
-Ship:       with batch
-Depends on: Liver donor biopsy — time zero (for the pair fixture)
-Spec:       `docs/specs/liver-transplant-pair.md`, Card 2
 
 ### Benign resections — group note (user request 2026-09-24)
 Measure:    diagnosis parts, not the site-based table above: the five-year biopsy file (January 2021 to 14 September 2026, 9,325 cases) and the 2024–2026 LIS export (4,547 cases), counted by `tools/profile-benign-resections.py` into `docs/case-mix/benign-resections-2021-2026.md`. The twelve categories hold **1,144 parts in 1,017 cases (10.9 per cent) in the five-year file and 281 parts in 271 cases (6.0 per cent) in the export, and 975 of the 1,425 parts land on Generic today.** Counts in the cards read five-year / export.
