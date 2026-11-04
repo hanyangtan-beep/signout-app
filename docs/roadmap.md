@@ -162,7 +162,18 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. The Phase 82 cards (liver donor biopsy at time zero and liver explant) shipped on 2026-10-29; the write-up is in Done, with the intake section in `docs/specs/specimen-intake.md` and the sources in `docs/specs/liver-transplant-pair.md`. The uterine leiomyosarcoma card waits in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+One card (user request 2026-11-04): the ureter and renal pelvis urothelial carcinoma resection synoptic, with its AJCC 8th edition staging module. The uterine leiomyosarcoma card waits in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+
+### Ureter and renal pelvis — urothelial carcinoma resection synoptic (user request 2026-11-04)   Size: M
+Why:        a nephroureterectomy or ureterectomy for upper tract urothelial carcinoma has no synoptic: `ureter_renal_pelvis_carcinoma` is a Later placeholder, nephroureterectomy lines open Generic and "kidney and ureter" or ureterectomy lines open the bladder TURBT form, so the type, grade, extent, margins, nodes and stage are typed by hand. The exports hold fewer than 10 such resections.
+Change:     new template `ureter_renal_pelvis_carcinoma` (GU, cancer resection, menu label "Ureter / pelvis Ca") in the QMH UG-Ureter element order with the CAP (2.4.0.0) and ICCR (2nd edition) elements: procedure, laterality, site (renal pelvis, ureter with its level, kidney), size and focality, macroscopy with the bladder cuff and block key, histological type with subtypes and divergent differentiation, grade (low or high; G1 to G3 for squamous and glandular types), configuration, lymphovascular and perineural invasion, extent, margins (proximal and distal ureteric, bladder cuff, soft tissue, other; invasive, in situ or high-grade, low-grade and dysplasia apart), nodes, distant metastasis, associated lesions, the non-neoplastic kidney, and MMR in Molecular findings. A staging module on the AJCC 8th edition, which has no version 9 chapter for this site: pTa to pT4 with the renal pelvis and ureter routes to pT3, pN by the size of the deposit and the number of nodes, and the stage group in Checks only. Checks for the WHO 2022 grade rules, site and extent that disagree, one involved node with no size, a complete nephroureterectomy with no bladder cuff, and MMR testing (ICCR).
+Untouched:  the TURBT and urine cytology routes for ureteric biopsies, washings, strictures and cystectomy ureteric margins; the other staging protocols, apart from accepting pTa in a typed override; existing golden fixtures.
+Accept:     fixtures for a renal pelvis pT3 nephroureterectomy, a ureteric pTa low-grade ureterectomy, a pTis nephroureterectomy with carcinoma in situ at the bladder cuff margin, and a pT2 pN2 case; intake top-1 for "Left nephroureterectomy", "Right kidney and ureter" and "Right distal ureterectomy, ureteric tumour"; a ureteric tumour biopsy, a ureteric washing and a ureteric stricture route as they do today.
+Verify:     tests + browser (light)
+Ship:       its own publish
+Depends on: none
+Spec:       `docs/specs/upper-tract-urothelial.md`; intake in `docs/specs/specimen-intake.md`
+Source:     https://awiloqmh.github.io/CancerReportingTemplate/UG-Ureter.html; https://documents.cap.org/documents/New-Cancer-Protocols-March-2025/UreterRenalPelvis.Res_2.4.0.0.REL.CAPCP.pdf; https://www.iccr-cancer.org/datasets/published-datasets/urinary-male-genital/renal-pelvis-and-ureter/
 
 ## Next
 
