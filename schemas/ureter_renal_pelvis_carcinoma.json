@@ -1,0 +1,1468 @@
+{
+ "id": "ureter_renal_pelvis_carcinoma",
+ "version": "2026.11a",
+ "name": "Ureter and renal pelvis urothelial carcinoma resection",
+ "shortName": "Ureter / renal pelvis · carcinoma resection",
+ "label": "Ureter / pelvis Ca",
+ "organ": "URETER AND RENAL PELVIS",
+ "system": "GU",
+ "kind": "cancer resection",
+ "rank": 56,
+ "aliases": [
+  "upper tract urothelial carcinoma",
+  "UTUC",
+  "renal pelvis carcinoma",
+  "ureteric carcinoma",
+  "ureteral carcinoma",
+  "nephroureterectomy",
+  "radical nephroureterectomy",
+  "ureterectomy",
+  "segmental ureterectomy",
+  "kidney and ureter",
+  "transitional cell carcinoma, renal pelvis"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "ureter_renal_pelvis_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen and tumour",
+   "Macroscopy"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template, UG-Ureter (ureter and renal pelvis)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/UG-Ureter.html",
+  "capProtocol": "https://documents.cap.org/documents/New-Cancer-Protocols-March-2025/UreterRenalPelvis.Res_2.4.0.0.REL.CAPCP.pdf",
+  "dataset": "https://www.iccr-cancer.org/wp-content/uploads/2025/12/ICCR-UT-Renal-Pelvis-2nd-ed-v2.0-bookmarked.pdf",
+  "ajcc": "https://www.facs.org/media/c5ik5tkr/ajcc-current-staging-system-2026.pdf",
+  "staging": "AJCC 8th edition, renal pelvis and ureter (chapter 61): AJCC has no version 9 chapter for this site",
+  "grounding": "docs/reference/upper-tract-sources.md",
+  "savedPage": "docs/reference/UG-Ureter.html"
+ },
+ "match": {
+  "site": [
+   "ureter",
+   "ureteric",
+   "ureteral",
+   "renal pelvis",
+   "renal pelvic",
+   "pelvicalyceal",
+   "nephroureterectomy",
+   "nephro-ureterectomy",
+   "ureterectomy",
+   "kidney and ureter"
+  ],
+  "procedure": [
+   "nephroureterectomy",
+   "nephro-ureterectomy",
+   "radical nephroureterectomy",
+   "ureterectomy",
+   "segmental ureterectomy",
+   "distal ureterectomy",
+   "kidney and ureter",
+   "bladder cuff",
+   "resection",
+   "excision"
+  ],
+  "clinical": [
+   "urothelial carcinoma",
+   "UTUC",
+   "TCC",
+   "transitional cell carcinoma",
+   "carcinoma",
+   "cancer",
+   "tumour",
+   "tumor",
+   "malignancy"
+  ],
+  "gate": "\\bnephro-?\\s*ureterectom\\w*|\\bkidney\\s*(?:,\\s*|\\s+(?:and|&|with|plus)\\s+)(?:the\\s+|whole\\s+|entire\\s+)?ureter\\b|\\bureter\\s+(?:and|&|with)\\s+kidney\\b|^(?=[\\s\\S]*\\b(?:ureterectom\\w*|excision|resection|resected|nephrectom\\w*)\\b)(?=[\\s\\S]*\\b(?:tumou?rs?|mass(?:es)?|lesions?|carcinoma|ca|cancer|malignan\\w*|TCC|UC|UTUC|neoplasm)\\b)",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "punch",
+   "washing",
+   "washings",
+   "brushing",
+   "brushings",
+   "cytology",
+   "urine",
+   "fluid",
+   "stricture",
+   "ureteric margin",
+   "ureteral margin",
+   "cystectomy",
+   "cystoprostatectomy",
+   "TURBT",
+   "bladder tumour",
+   "bladder tumor",
+   "ureteric orifice",
+   "pyeloplasty",
+   "PUJO",
+   "VUJO",
+   "endometriosis",
+   "non-functioning",
+   "nonfunctioning",
+   "non functioning",
+   "poorly functioning",
+   "calculus",
+   "calculi",
+   "stone",
+   "staghorn",
+   "pyelonephritis",
+   "xanthogranulomatous",
+   "transplant",
+   "RCC",
+   "renal cell carcinoma",
+   "Wilms",
+   "nephroblastoma"
+  ],
+  "bias": 2,
+  "sideFromText": true,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\b(?:partial|incomplete)\\s+nephro-?\\s*ureterectom",
+      "Nephroureterectomy, partial"
+     ],
+     [
+      "\\bnephro-?\\s*ureterectom\\w*[\\s\\S]*\\bbladder\\s+cuff|\\b(?:radical|complete|total)\\s+nephro-?\\s*ureterectom|\\bbladder\\s+cuff[\\s\\S]*\\bnephro-?\\s*ureterectom",
+      "Nephroureterectomy, complete"
+     ],
+     [
+      "(?<![a-z-])ureterectom|\\bureter(?:ic|al)?\\b[^,;]*\\b(?:excision|resection)\\b",
+      "Ureterectomy"
+     ]
+    ]
+   },
+   {
+    "field": "tumourSite",
+    "from": "map",
+    "history": true,
+    "map": [
+     [
+      "\\brenal\\s+pelv\\w*|\\bpelvi-?calyc\\w*|\\bcalyc(?:eal|es)?\\b|\\bcalyx\\b",
+      "Renal pelvis"
+     ],
+     [
+      "\\bureter(?:ic|al)?\\s+(?:urothelial\\s+|transitional\\s+cell\\s+)?(?:tumou?rs?|mass(?:es)?|lesions?|carcinoma|ca|cancer|malignan\\w*|TCC|UC|UTUC|neoplasm)\\b|\\b(?:tumou?rs?|mass(?:es)?|lesions?|carcinoma|ca|cancer|malignan\\w*|TCC|UC|UTUC|neoplasm)\\s+(?:of|in|at)\\s+(?:the\\s+)?(?:left\\s+|right\\s+)?(?:upper\\s+|mid(?:dle)?\\s+|lower\\s+|distal\\s+|proximal\\s+)?ureter\\b|(?<![a-z-])ureterectom",
+      "Ureter"
+     ]
+    ]
+   },
+   {
+    "field": "ureterLevel",
+    "from": "map",
+    "history": true,
+    "map": [
+     [
+      "\\b(?:upper|proximal)\\s+(?:third\\s+of\\s+(?:the\\s+)?)?ureter(?:ic|al)?\\s+(?:urothelial\\s+|transitional\\s+cell\\s+)?(?:tumou?rs?|mass(?:es)?|lesions?|carcinoma|ca|cancer|malignan\\w*|TCC|UC|UTUC|neoplasm)\\b",
+      "Upper"
+     ],
+     [
+      "\\bmid(?:dle)?\\s*-?\\s*(?:third\\s+of\\s+(?:the\\s+)?)?ureter(?:ic|al)?\\s+(?:urothelial\\s+|transitional\\s+cell\\s+)?(?:tumou?rs?|mass(?:es)?|lesions?|carcinoma|ca|cancer|malignan\\w*|TCC|UC|UTUC|neoplasm)\\b",
+      "Middle"
+     ],
+     [
+      "\\b(?:lower|distal)\\s+(?:third\\s+of\\s+(?:the\\s+)?)?ureter(?:ic|al)?\\s+(?:urothelial\\s+|transitional\\s+cell\\s+)?(?:tumou?rs?|mass(?:es)?|lesions?|carcinoma|ca|cancer|malignan\\w*|TCC|UC|UTUC|neoplasm)\\b",
+      "Lower"
+     ]
+    ]
+   }
+  ]
+ },
+ "fields": [
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "",
+   "options": [
+    "Nephroureterectomy, partial",
+    "Nephroureterectomy, complete",
+    "Ureterectomy",
+    "Other (specify)",
+    "Not specified"
+   ],
+   "help": "Partial: the entire ureter is not removed. Complete (radical): includes a cuff of bladder wall (ICCR, Note 2)."
+  },
+  {
+   "id": "procedureOther",
+   "label": "Procedure (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "laterality",
+   "label": "Specimen laterality",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "",
+   "options": [
+    "Right",
+    "Left",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "tumourSite",
+   "label": "Tumour site",
+   "type": "multiselect",
+   "group": "Specimen and tumour",
+   "default": [],
+   "options": [
+    "Ureter",
+    "Renal pelvis",
+    "Kidney",
+    "Other (specify)",
+    "Cannot be determined"
+   ],
+   "exclusive": [
+    "Cannot be determined"
+   ],
+   "help": "Tick each site the tumour involves. Kidney: a tumour that invades the renal parenchyma."
+  },
+  {
+   "id": "tumourSiteOther",
+   "label": "Tumour site (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "tumourSite",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "ureterLevel",
+   "label": "Ureter, level",
+   "type": "multiselect",
+   "group": "Specimen and tumour",
+   "default": [],
+   "options": [
+    "Upper",
+    "Middle",
+    "Lower"
+   ],
+   "showIf": {
+    "field": "tumourSite",
+    "is": "Ureter"
+   }
+  },
+  {
+   "id": "tumourSizeMm",
+   "label": "Tumour size, greatest dimension (mm)",
+   "type": "number",
+   "group": "Specimen and tumour",
+   "default": "",
+   "help": "The largest tumour when there is more than one."
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "",
+   "options": [
+    "Unifocal",
+    "Multifocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "kidneyDims",
+   "label": "Kidney, dimensions (mm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. 115 x 60 x 45",
+   "showIf": {
+    "field": "procedure",
+    "not": "Ureterectomy"
+   }
+  },
+  {
+   "id": "specimenWeightG",
+   "label": "Specimen weight (g)",
+   "type": "number",
+   "group": "Macroscopy",
+   "default": ""
+  },
+  {
+   "id": "ureterLengthMm",
+   "label": "Ureter, length (mm)",
+   "type": "number",
+   "group": "Macroscopy",
+   "default": ""
+  },
+  {
+   "id": "ureterDiameterMm",
+   "label": "Ureter, diameter (mm)",
+   "type": "number",
+   "group": "Macroscopy",
+   "default": ""
+  },
+  {
+   "id": "bladderCuff",
+   "label": "Bladder cuff",
+   "type": "select",
+   "group": "Macroscopy",
+   "default": "",
+   "options": [
+    "Present",
+    "Not identified"
+   ]
+  },
+  {
+   "id": "lesionAppearance",
+   "label": "Tumour appearance",
+   "type": "select",
+   "group": "Macroscopy",
+   "default": "",
+   "options": [
+    "Papillary tumour",
+    "Sessile / solid tumour",
+    "Ulcerated tumour",
+    "Plaque-like thickening",
+    "Ill-defined lesion",
+    "No macroscopic tumour"
+   ]
+  },
+  {
+   "id": "lesionDims",
+   "label": "Tumour dimensions (mm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. 35 x 25 x 15",
+   "showIf": {
+    "field": "lesionAppearance",
+    "not": [
+     "",
+     "No macroscopic tumour"
+    ]
+   }
+  },
+  {
+   "id": "macroMarginMm",
+   "label": "Tumour to the closest margin (mm)",
+   "type": "number",
+   "group": "Macroscopy",
+   "default": "",
+   "showIf": {
+    "field": "lesionAppearance",
+    "not": [
+     "",
+     "No macroscopic tumour"
+    ]
+   }
+  },
+  {
+   "id": "macroMarginSite",
+   "label": "Closest margin",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. renal hilar soft tissue",
+   "showIf": {
+    "field": "lesionAppearance",
+    "not": [
+     "",
+     "No macroscopic tumour"
+    ]
+   }
+  },
+  {
+   "id": "macroOther",
+   "label": "Other macroscopic findings",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. The renal pelvis and calyces are dilated.",
+   "help": "One sentence, printed in the macroscopy as typed."
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "type": "textarea",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. A1-A4 tumour with renal parenchyma; A5 bladder cuff margin",
+   "help": "Printed after the macroscopy as typed."
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Papillary urothelial carcinoma, non-invasive",
+    "Urothelial carcinoma in situ",
+    "Urothelial carcinoma, invasive (conventional)",
+    "Urothelial carcinoma, micropapillary",
+    "Urothelial carcinoma, nested",
+    "Urothelial carcinoma, tubular and microcystic",
+    "Urothelial carcinoma, lymphoepithelioma-like",
+    "Urothelial carcinoma, plasmacytoid",
+    "Urothelial carcinoma, sarcomatoid",
+    "Urothelial carcinoma, giant cell",
+    "Urothelial carcinoma, poorly differentiated",
+    "Urothelial carcinoma, lipid-rich",
+    "Urothelial carcinoma, clear cell (glycogen-rich)",
+    "Urothelial carcinoma with squamous differentiation",
+    "Urothelial carcinoma with glandular differentiation",
+    "Urothelial carcinoma with trophoblastic differentiation",
+    "Urothelial carcinoma with Müllerian differentiation",
+    "Squamous cell carcinoma",
+    "Verrucous carcinoma",
+    "Squamous cell carcinoma in situ (no invasive carcinoma identified)",
+    "Adenocarcinoma, NOS",
+    "Adenocarcinoma, enteric",
+    "Adenocarcinoma, mucinous",
+    "Adenocarcinoma, mixed",
+    "Adenocarcinoma, signet-ring cell",
+    "Adenocarcinoma in situ (no invasive carcinoma identified)",
+    "Clear cell adenocarcinoma",
+    "Endometrioid carcinoma",
+    "Small cell neuroendocrine carcinoma",
+    "Large cell neuroendocrine carcinoma",
+    "Well-differentiated neuroendocrine tumour",
+    "Other histologic type (specify)",
+    "Carcinoma, type cannot be determined"
+   ],
+   "optionGroups": [
+    {
+     "label": "Urothelial",
+     "options": [
+      "Papillary urothelial carcinoma, non-invasive",
+      "Urothelial carcinoma in situ",
+      "Urothelial carcinoma, invasive (conventional)",
+      "Urothelial carcinoma, micropapillary",
+      "Urothelial carcinoma, nested",
+      "Urothelial carcinoma, tubular and microcystic",
+      "Urothelial carcinoma, lymphoepithelioma-like",
+      "Urothelial carcinoma, plasmacytoid",
+      "Urothelial carcinoma, sarcomatoid",
+      "Urothelial carcinoma, giant cell",
+      "Urothelial carcinoma, poorly differentiated",
+      "Urothelial carcinoma, lipid-rich",
+      "Urothelial carcinoma, clear cell (glycogen-rich)",
+      "Urothelial carcinoma with squamous differentiation",
+      "Urothelial carcinoma with glandular differentiation",
+      "Urothelial carcinoma with trophoblastic differentiation",
+      "Urothelial carcinoma with Müllerian differentiation"
+     ]
+    },
+    {
+     "label": "Squamous",
+     "options": [
+      "Squamous cell carcinoma",
+      "Verrucous carcinoma",
+      "Squamous cell carcinoma in situ (no invasive carcinoma identified)"
+     ]
+    },
+    {
+     "label": "Glandular",
+     "options": [
+      "Adenocarcinoma, NOS",
+      "Adenocarcinoma, enteric",
+      "Adenocarcinoma, mucinous",
+      "Adenocarcinoma, mixed",
+      "Adenocarcinoma, signet-ring cell",
+      "Adenocarcinoma in situ (no invasive carcinoma identified)"
+     ]
+    },
+    {
+     "label": "Müllerian",
+     "options": [
+      "Clear cell adenocarcinoma",
+      "Endometrioid carcinoma"
+     ]
+    },
+    {
+     "label": "Neuroendocrine",
+     "options": [
+      "Small cell neuroendocrine carcinoma",
+      "Large cell neuroendocrine carcinoma",
+      "Well-differentiated neuroendocrine tumour"
+     ]
+    },
+    {
+     "label": "Other",
+     "options": [
+      "Other histologic type (specify)",
+      "Carcinoma, type cannot be determined"
+     ]
+    }
+   ],
+   "help": "WHO 2022 (5th edition) types, as CAP Ureter, Renal Pelvis 2.4.0.0 lists them."
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Histologic type (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Other histologic type (specify)",
+     "Carcinoma, type cannot be determined"
+    ]
+   }
+  },
+  {
+   "id": "subtypes",
+   "label": "Subtypes and divergent differentiation also present",
+   "type": "multiselect",
+   "group": "Microscopic findings",
+   "default": [],
+   "options": [
+    "Micropapillary",
+    "Nested",
+    "Large nested",
+    "Tubular and microcystic",
+    "Lymphoepithelioma-like",
+    "Plasmacytoid",
+    "Sarcomatoid",
+    "Giant cell",
+    "Poorly differentiated",
+    "Lipid-rich",
+    "Clear cell (glycogen-rich)",
+    "Squamous differentiation",
+    "Glandular differentiation",
+    "Trophoblastic differentiation",
+    "Müllerian differentiation",
+    "Small cell neuroendocrine carcinoma",
+    "Large cell neuroendocrine carcinoma",
+    "Other (specify)"
+   ],
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Urothelial carcinoma, invasive (conventional)",
+     "Urothelial carcinoma, micropapillary",
+     "Urothelial carcinoma, nested",
+     "Urothelial carcinoma, tubular and microcystic",
+     "Urothelial carcinoma, lymphoepithelioma-like",
+     "Urothelial carcinoma, plasmacytoid",
+     "Urothelial carcinoma, sarcomatoid",
+     "Urothelial carcinoma, giant cell",
+     "Urothelial carcinoma, poorly differentiated",
+     "Urothelial carcinoma, lipid-rich",
+     "Urothelial carcinoma, clear cell (glycogen-rich)",
+     "Urothelial carcinoma with squamous differentiation",
+     "Urothelial carcinoma with glandular differentiation",
+     "Urothelial carcinoma with trophoblastic differentiation",
+     "Urothelial carcinoma with Müllerian differentiation"
+    ]
+   },
+   "help": "Components beside the type above; give their proportions below (CAP: totalling 100%)."
+  },
+  {
+   "id": "subtypeOther",
+   "label": "Subtype (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "subtypes",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "subtypePercents",
+   "label": "Proportions",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "e.g. conventional 70%, micropapillary 30%",
+   "showIf": {
+    "field": "subtypes",
+    "min": 1
+   }
+  },
+  {
+   "id": "ihcOther",
+   "label": "Other immunohistochemistry",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "e.g. The tumour cells are positive for GATA3 and p63.",
+   "help": "One sentence, printed in the histology paragraph as typed."
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Tumour histology (replaces the generated paragraph)",
+   "type": "textarea",
+   "group": "Microscopic findings",
+   "default": "",
+   "help": "Leave blank to use the paragraph built from the fields above."
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Low grade",
+    "High grade",
+    "G1, well differentiated",
+    "G2, moderately differentiated",
+    "G3, poorly differentiated",
+    "GX, cannot be assessed",
+    "Not applicable"
+   ],
+   "optionGroups": [
+    {
+     "label": "Urothelial carcinoma, its subtypes and divergent differentiation",
+     "options": [
+      "Low grade",
+      "High grade"
+     ]
+    },
+    {
+     "label": "Squamous cell carcinoma or adenocarcinoma",
+     "options": [
+      "G1, well differentiated",
+      "G2, moderately differentiated",
+      "G3, poorly differentiated",
+      "GX, cannot be assessed"
+     ]
+    },
+    {
+     "label": "Other",
+     "options": [
+      "Not applicable"
+     ]
+    }
+   ],
+   "help": "Urothelial carcinoma: low or high grade, on the highest-grade component; with up to 5% high grade the tumour is graded low grade, and all subtypes are high grade (WHO 2022, ICCR). Squamous cell carcinoma and adenocarcinoma: G1 to G3 (CAP). With several tumours, the highest grade."
+  },
+  {
+   "id": "highGradePct",
+   "label": "High-grade component (%)",
+   "type": "number",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "grade",
+    "is": [
+     "Low grade",
+     "High grade"
+    ]
+   },
+   "help": "Optional. With a high-grade component of up to 5% the tumour is graded low grade, and the proportion may be stated (ICCR)."
+  },
+  {
+   "id": "configuration",
+   "label": "Tumour configuration",
+   "type": "multiselect",
+   "group": "Microscopic findings",
+   "default": [],
+   "options": [
+    "Papillary",
+    "Solid / nodule",
+    "Flat",
+    "Ulcerated",
+    "Other (specify)",
+    "Cannot be determined"
+   ],
+   "exclusive": [
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "configurationOther",
+   "label": "Tumour configuration (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "configuration",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extension",
+   "type": "multiselect",
+   "group": "Microscopic findings",
+   "default": [],
+   "options": [
+    "Non-invasive papillary carcinoma",
+    "Carcinoma in situ",
+    "Invades subepithelial connective tissue",
+    "Invades the muscularis",
+    "Invades beyond the muscularis into peripelvic fat",
+    "Invades the renal parenchyma",
+    "Invades beyond the muscularis into periureteric fat",
+    "Invades through the kidney into perinephric fat",
+    "Invades adjacent organs (specify)",
+    "No evidence of primary tumour",
+    "Cannot be assessed"
+   ],
+   "exclusive": [
+    "No evidence of primary tumour",
+    "Cannot be assessed"
+   ],
+   "help": "Tick the deepest invasion and any carcinoma in situ. Peripelvic fat and renal parenchyma: renal pelvis tumours; periureteric fat: ureteric tumours (AJCC 8th edition)."
+  },
+  {
+   "id": "extensionOther",
+   "label": "Adjacent organs (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "extension",
+    "is": "Invades adjacent organs (specify)"
+   }
+  },
+  {
+   "id": "cisExtent",
+   "label": "Carcinoma in situ, extent",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Focal",
+    "Multifocal"
+   ],
+   "showIf": {
+    "any": [
+     {
+      "field": "extension",
+      "is": "Carcinoma in situ"
+     },
+     {
+      "field": "histType",
+      "is": "Urothelial carcinoma in situ"
+     }
+    ]
+   }
+  },
+  {
+   "id": "proximalMargin",
+   "label": "Proximal ureteric margin",
+   "type": "select",
+   "group": "Margins",
+   "default": "",
+   "options": [
+    "Uninvolved",
+    "Involved by invasive carcinoma",
+    "Involved by carcinoma in situ",
+    "Involved by high-grade non-invasive papillary carcinoma",
+    "Involved by low-grade non-invasive papillary carcinoma",
+    "Involved by urothelial dysplasia",
+    "Cannot be assessed"
+   ],
+   "showIf": {
+    "field": "procedure",
+    "not": [
+     "Nephroureterectomy, partial",
+     "Nephroureterectomy, complete"
+    ]
+   }
+  },
+  {
+   "id": "proximalMarginMm",
+   "label": "Proximal margin, distance (mm)",
+   "type": "number",
+   "group": "Margins",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "not": [
+       "Nephroureterectomy, partial",
+       "Nephroureterectomy, complete"
+      ]
+     },
+     {
+      "field": "proximalMargin",
+      "is": "Uninvolved"
+     }
+    ]
+   }
+  },
+  {
+   "id": "distalMargin",
+   "label": "Distal ureteric margin",
+   "type": "select",
+   "group": "Margins",
+   "default": "",
+   "options": [
+    "Uninvolved",
+    "Involved by invasive carcinoma",
+    "Involved by carcinoma in situ",
+    "Involved by high-grade non-invasive papillary carcinoma",
+    "Involved by low-grade non-invasive papillary carcinoma",
+    "Involved by urothelial dysplasia",
+    "Cannot be assessed"
+   ],
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "not": "Nephroureterectomy, complete"
+     },
+     {
+      "field": "bladderCuff",
+      "not": "Present"
+     }
+    ]
+   }
+  },
+  {
+   "id": "distalMarginMm",
+   "label": "Distal margin, distance (mm)",
+   "type": "number",
+   "group": "Margins",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "not": "Nephroureterectomy, complete"
+     },
+     {
+      "field": "bladderCuff",
+      "not": "Present"
+     },
+     {
+      "field": "distalMargin",
+      "is": "Uninvolved"
+     }
+    ]
+   }
+  },
+  {
+   "id": "bladderCuffMargin",
+   "label": "Bladder cuff margin",
+   "type": "select",
+   "group": "Margins",
+   "default": "",
+   "options": [
+    "Uninvolved",
+    "Involved by invasive carcinoma",
+    "Involved by carcinoma in situ",
+    "Involved by high-grade non-invasive papillary carcinoma",
+    "Involved by low-grade non-invasive papillary carcinoma",
+    "Involved by urothelial dysplasia",
+    "Cannot be assessed"
+   ],
+   "showIf": {
+    "any": [
+     {
+      "field": "procedure",
+      "is": "Nephroureterectomy, complete"
+     },
+     {
+      "field": "bladderCuff",
+      "is": "Present"
+     }
+    ]
+   }
+  },
+  {
+   "id": "bladderCuffMarginMm",
+   "label": "Bladder cuff margin, distance (mm)",
+   "type": "number",
+   "group": "Margins",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "any": [
+       {
+        "field": "procedure",
+        "is": "Nephroureterectomy, complete"
+       },
+       {
+        "field": "bladderCuff",
+        "is": "Present"
+       }
+      ]
+     },
+     {
+      "field": "bladderCuffMargin",
+      "is": "Uninvolved"
+     }
+    ]
+   }
+  },
+  {
+   "id": "softTissueMargin",
+   "label": "Soft tissue margin (periureteric, perirenal)",
+   "type": "select",
+   "group": "Margins",
+   "default": "",
+   "options": [
+    "Uninvolved",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "softTissueMarginMm",
+   "label": "Soft tissue margin, distance (mm)",
+   "type": "number",
+   "group": "Margins",
+   "default": "",
+   "showIf": {
+    "field": "softTissueMargin",
+    "is": "Uninvolved"
+   }
+  },
+  {
+   "id": "otherMargin",
+   "label": "Other margin",
+   "type": "select",
+   "group": "Margins",
+   "default": "",
+   "options": [
+    "Uninvolved",
+    "Involved by invasive carcinoma",
+    "Involved by carcinoma in situ",
+    "Involved by high-grade non-invasive papillary carcinoma",
+    "Involved by low-grade non-invasive papillary carcinoma",
+    "Involved by urothelial dysplasia",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "otherMarginName",
+   "label": "Other margin (name)",
+   "type": "text",
+   "group": "Margins",
+   "default": "",
+   "placeholder": "e.g. renal vein, Gerota's fascia",
+   "showIf": {
+    "field": "otherMargin",
+    "truthy": true
+   }
+  },
+  {
+   "id": "otherMarginMm",
+   "label": "Other margin, distance (mm)",
+   "type": "number",
+   "group": "Margins",
+   "default": "",
+   "showIf": {
+    "field": "otherMargin",
+    "is": "Uninvolved"
+   }
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "help": "Renal pelvis: renal hilar, paracaval, aortic and retroperitoneal nodes. Ureter: also iliac, periureteral and pelvic nodes (CAP). Leave blank when none were submitted."
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Lymph nodes involved",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "nodesExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension",
+   "type": "select",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Size of largest metastatic deposit (mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   },
+   "help": "pN1: one node, 20 mm or less; pN2: one node more than 20 mm, or more than one node."
+  },
+  {
+   "id": "largestDepositSite",
+   "label": "Largest deposit, site",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "placeholder": "e.g. renal hilar",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "largestNodeMm",
+   "label": "Size of largest lymph node involved (mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "largestNodeSite",
+   "label": "Largest involved node, site",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "placeholder": "e.g. paracaval",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis",
+   "type": "multiselect",
+   "group": "Lymph nodes and metastasis",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Lung",
+    "Liver",
+    "Bone",
+    "Other (specify)",
+    "Cannot be determined"
+   ],
+   "exclusive": [
+    "Not applicable",
+    "Not identified",
+    "Cannot be determined"
+   ],
+   "help": "Only when metastatic tissue is submitted or known."
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Distant metastasis (specify)",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "distantMets",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional findings",
+   "type": "multiselect",
+   "group": "Additional findings",
+   "default": [],
+   "options": [
+    "Inflammation / regenerative changes",
+    "Therapy-related changes",
+    "Cautery artefact",
+    "Ureteritis / pyelitis cystica et glandularis",
+    "Keratinising squamous metaplasia",
+    "Intestinal metaplasia",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "additionalOther",
+   "label": "Additional finding (specify)",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "showIf": {
+    "any": [
+     {
+      "field": "additionalFindings",
+      "is": "Other (specify)"
+     },
+     {
+      "field": "additionalFindings",
+      "is": "Therapy-related changes"
+     }
+    ]
+   },
+   "help": "For therapy-related changes, name the therapy."
+  },
+  {
+   "id": "associatedLesions",
+   "label": "Associated epithelial lesions",
+   "type": "multiselect",
+   "group": "Additional findings",
+   "default": [],
+   "options": [
+    "None identified",
+    "Urothelial papilloma",
+    "Urothelial papilloma, inverted type",
+    "Papillary urothelial neoplasm of low malignant potential (PUNLMP)",
+    "Urothelial proliferation of uncertain malignant potential",
+    "Urothelial dysplasia",
+    "Other (specify)"
+   ],
+   "exclusive": [
+    "None identified"
+   ]
+  },
+  {
+   "id": "associatedOther",
+   "label": "Associated lesion (specify)",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "showIf": {
+    "field": "associatedLesions",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "renal",
+   "label": "Ipsilateral non-neoplastic renal tissue",
+   "type": "multiselect",
+   "group": "Additional findings",
+   "default": [],
+   "options": [
+    "No significant abnormality",
+    "No or insufficient renal parenchyma",
+    "Glomerular disease (specify)",
+    "Tubulointerstitial disease (specify)",
+    "Vascular disease (specify)",
+    "Inflammation (specify)",
+    "Other (specify)"
+   ],
+   "exclusive": [
+    "No significant abnormality",
+    "No or insufficient renal parenchyma"
+   ],
+   "showIf": {
+    "field": "procedure",
+    "not": "Ureterectomy"
+   }
+  },
+  {
+   "id": "renalDetail",
+   "label": "Renal findings (specify)",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "placeholder": "e.g. arterionephrosclerosis with 10% globally sclerosed glomeruli",
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "not": "Ureterectomy"
+     },
+     {
+      "field": "renal",
+      "is": [
+       "Glomerular disease (specify)",
+       "Tubulointerstitial disease (specify)",
+       "Vascular disease (specify)",
+       "Inflammation (specify)",
+       "Other (specify)"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "otherFindings",
+   "label": "Other findings",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "placeholder": "e.g. Renal calculus"
+  },
+  {
+   "id": "mmrIhc",
+   "label": "Mismatch repair (MMR) IHC",
+   "type": "select",
+   "group": "Molecular findings",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Intact nuclear expression of MLH1, PMS2, MSH2 and MSH6",
+    "Loss of nuclear MMR protein expression (specify)",
+    "Subclonal loss of nuclear MMR protein expression (specify)",
+    "Requested; result to follow",
+    "Cannot be assessed (explain)"
+   ],
+   "help": "ICCR (Note 18) cites a review that recommends tissue testing (immunohistochemistry or molecular) when the patient is under 60, when there is a family history of upper tract urothelial, endometrial or colon cancer in a relative under 60, or when the patient has had colon or endometrial cancer; no screening protocol has been agreed."
+  },
+  {
+   "id": "mmrDetail",
+   "label": "MMR IHC: proteins lost / explain",
+   "type": "text",
+   "group": "Molecular findings",
+   "default": "",
+   "placeholder": "e.g. MSH2 and MSH6",
+   "showIf": {
+    "field": "mmrIhc",
+    "is": [
+     "Loss of nuclear MMR protein expression (specify)",
+     "Subclonal loss of nuclear MMR protein expression (specify)",
+     "Cannot be assessed (explain)"
+    ]
+   }
+  },
+  {
+   "id": "ancillaryOther",
+   "label": "Other ancillary studies",
+   "type": "text",
+   "group": "Molecular findings",
+   "default": "",
+   "placeholder": "Test and result"
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "After neoadjuvant therapy (y)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "treatmentEffect",
+   "label": "Treatment effect",
+   "type": "select",
+   "group": "Staging",
+   "default": "",
+   "options": [
+    "No known presurgical therapy",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "showIf": {
+    "field": "postTherapy",
+    "is": true
+   }
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "type": "text",
+   "group": "Staging",
+   "default": "",
+   "placeholder": "e.g. pT3 pN0",
+   "help": "Replaces the derived pTNM; give the reason below."
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "pTNM override: reason",
+   "type": "text",
+   "group": "Staging",
+   "default": "",
+   "showIf": {
+    "field": "tnmOverride",
+    "truthy": true
+   }
+  }
+ ],
+ "example": {
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true
+  },
+  "parts": [
+   {
+    "values": {
+     "procedure": "Nephroureterectomy, complete",
+     "procedureOther": "",
+     "laterality": "Left",
+     "tumourSite": [
+      "Renal pelvis"
+     ],
+     "tumourSiteOther": "",
+     "ureterLevel": [],
+     "tumourSizeMm": "35",
+     "focality": "Unifocal",
+     "kidneyDims": "115 x 60 x 45",
+     "specimenWeightG": "290",
+     "ureterLengthMm": "240",
+     "ureterDiameterMm": "6",
+     "bladderCuff": "Present",
+     "lesionAppearance": "Papillary tumour",
+     "lesionDims": "35 x 25 x 15",
+     "macroMarginMm": "25",
+     "macroMarginSite": "renal hilar soft tissue",
+     "macroOther": "The renal pelvis and calyces are dilated.",
+     "blocks": "14",
+     "blockKeyText": "1-4 Tumour with renal parenchyma and renal sinus fat\n5 Renal hilar soft tissue margin and vessels\n6-8 Ureter, proximal to distal\n9 Bladder cuff margin\n10-11 Non-neoplastic kidney\n12-14 Hilar lymph nodes",
+     "histType": "Urothelial carcinoma, invasive (conventional)",
+     "histTypeOther": "",
+     "subtypes": [],
+     "subtypeOther": "",
+     "subtypePercents": "",
+     "ihcOther": "",
+     "histologyNotes": "",
+     "grade": "High grade",
+     "highGradePct": "",
+     "configuration": [
+      "Papillary",
+      "Solid / nodule"
+     ],
+     "configurationOther": "",
+     "lvi": "Present",
+     "pni": "Not identified",
+     "extension": [
+      "Invades the renal parenchyma",
+      "Carcinoma in situ"
+     ],
+     "extensionOther": "",
+     "cisExtent": "Focal",
+     "proximalMargin": "",
+     "proximalMarginMm": "",
+     "distalMargin": "",
+     "distalMarginMm": "",
+     "bladderCuffMargin": "Uninvolved",
+     "bladderCuffMarginMm": "200",
+     "softTissueMargin": "Uninvolved",
+     "softTissueMarginMm": "25",
+     "otherMargin": "",
+     "otherMarginName": "",
+     "otherMarginMm": "",
+     "nodesExamined": "3",
+     "nodesInvolved": "0",
+     "ene": "",
+     "largestDepositMm": "",
+     "largestDepositSite": "",
+     "largestNodeMm": "",
+     "largestNodeSite": "",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "distantMetsOther": "",
+     "additionalFindings": [
+      "Inflammation / regenerative changes"
+     ],
+     "additionalOther": "",
+     "associatedLesions": [
+      "None identified"
+     ],
+     "associatedOther": "",
+     "renal": [
+      "Vascular disease (specify)"
+     ],
+     "renalDetail": "arterionephrosclerosis",
+     "otherFindings": "",
+     "mmrIhc": "Intact nuclear expression of MLH1, PMS2, MSH2 and MSH6",
+     "mmrDetail": "",
+     "ancillaryOther": "",
+     "multiplePrimaries": false,
+     "recurrent": false,
+     "postTherapy": false,
+     "treatmentEffect": "",
+     "tnmOverride": "",
+     "tnmOverrideReason": ""
+    }
+   }
+  ]
+ }
+}

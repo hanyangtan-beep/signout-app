@@ -1093,6 +1093,67 @@
           "procedure": "Partial hepatectomy, major (3 segments or more)"
         }
       }
+    },
+    {
+      "name": "a left nephroureterectomy with a bladder cuff for renal pelvis carcinoma opens the upper tract form (ureter and renal pelvis carcinoma)",
+      "text": "History\nLeft renal pelvis urothelial carcinoma\n\nSpecimen\n(A) Left nephroureterectomy with bladder cuff",
+      "history": "Left renal pelvis urothelial carcinoma",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "ureter_renal_pelvis_carcinoma",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "procedure": "Nephroureterectomy, complete",
+          "laterality": "Left"
+        }
+      }
+    },
+    {
+      "name": "a distal ureterectomy opens the upper tract form with the carcinoma in the history; the ureteric washing keeps urine cytology (ureter and renal pelvis carcinoma)",
+      "text": "History\nRight lower ureteric urothelial carcinoma\n\nSpecimen\n(A) Right distal ureterectomy and (B) Right ureteric washing",
+      "history": "Right lower ureteric urothelial carcinoma",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "ureter_renal_pelvis_carcinoma",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "urine_cytology",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "procedure": "Ureterectomy",
+          "laterality": "Right"
+        }
+      }
+    },
+    {
+      "name": "a ureteric tumour biopsy keeps Generic and a ureteric stricture keeps the TURBT form (ureter and renal pelvis carcinoma)",
+      "text": "History\nLeft ureteric tumour\n\nSpecimen\n(A) Left ureteric tumour, biopsy and (B) Left ureteric stricture",
+      "history": "Left ureteric tumour",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "B",
+          "templateId": "turbt",
+          "tier": "confident"
+        }
+      ]
     }
   ]
 }

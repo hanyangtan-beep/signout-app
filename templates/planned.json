@@ -303,15 +303,6 @@
    "qmh": "UG-Urinary Bladder"
   },
   {
-   "id": "ureter_renal_pelvis_carcinoma",
-   "name": "Ureter and renal pelvis urothelial carcinoma resection",
-   "label": "Ureter / pelvis Ca",
-   "system": "GU",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "UG-Ureter"
-  },
-  {
    "id": "urethral_carcinoma",
    "name": "Urethral carcinoma resection",
    "label": "Urethra Ca",

@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 82,
+  "count": 83,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -6594,6 +6594,167 @@
       "generator": "testis_benign",
       "generatorPath": "generators/testis_benign.js",
       "schemaPath": "schemas/testis_benign.json"
+    },
+    {
+      "id": "ureter_renal_pelvis_carcinoma",
+      "name": "Ureter and renal pelvis urothelial carcinoma resection",
+      "shortName": "Ureter / renal pelvis · carcinoma resection",
+      "label": "Ureter / pelvis Ca",
+      "organ": "URETER AND RENAL PELVIS",
+      "system": "GU",
+      "kind": "cancer resection",
+      "rank": 56,
+      "aliases": [
+        "upper tract urothelial carcinoma",
+        "UTUC",
+        "renal pelvis carcinoma",
+        "ureteric carcinoma",
+        "ureteral carcinoma",
+        "nephroureterectomy",
+        "radical nephroureterectomy",
+        "ureterectomy",
+        "segmental ureterectomy",
+        "kidney and ureter",
+        "transitional cell carcinoma, renal pelvis"
+      ],
+      "match": {
+        "site": [
+          "ureter",
+          "ureteric",
+          "ureteral",
+          "renal pelvis",
+          "renal pelvic",
+          "pelvicalyceal",
+          "nephroureterectomy",
+          "nephro-ureterectomy",
+          "ureterectomy",
+          "kidney and ureter"
+        ],
+        "procedure": [
+          "nephroureterectomy",
+          "nephro-ureterectomy",
+          "radical nephroureterectomy",
+          "ureterectomy",
+          "segmental ureterectomy",
+          "distal ureterectomy",
+          "kidney and ureter",
+          "bladder cuff",
+          "resection",
+          "excision"
+        ],
+        "clinical": [
+          "urothelial carcinoma",
+          "UTUC",
+          "TCC",
+          "transitional cell carcinoma",
+          "carcinoma",
+          "cancer",
+          "tumour",
+          "tumor",
+          "malignancy"
+        ],
+        "gate": "\\bnephro-?\\s*ureterectom\\w*|\\bkidney\\s*(?:,\\s*|\\s+(?:and|&|with|plus)\\s+)(?:the\\s+|whole\\s+|entire\\s+)?ureter\\b|\\bureter\\s+(?:and|&|with)\\s+kidney\\b|^(?=[\\s\\S]*\\b(?:ureterectom\\w*|excision|resection|resected|nephrectom\\w*)\\b)(?=[\\s\\S]*\\b(?:tumou?rs?|mass(?:es)?|lesions?|carcinoma|ca|cancer|malignan\\w*|TCC|UC|UTUC|neoplasm)\\b)",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "punch",
+          "washing",
+          "washings",
+          "brushing",
+          "brushings",
+          "cytology",
+          "urine",
+          "fluid",
+          "stricture",
+          "ureteric margin",
+          "ureteral margin",
+          "cystectomy",
+          "cystoprostatectomy",
+          "TURBT",
+          "bladder tumour",
+          "bladder tumor",
+          "ureteric orifice",
+          "pyeloplasty",
+          "PUJO",
+          "VUJO",
+          "endometriosis",
+          "non-functioning",
+          "nonfunctioning",
+          "non functioning",
+          "poorly functioning",
+          "calculus",
+          "calculi",
+          "stone",
+          "staghorn",
+          "pyelonephritis",
+          "xanthogranulomatous",
+          "transplant",
+          "RCC",
+          "renal cell carcinoma",
+          "Wilms",
+          "nephroblastoma"
+        ],
+        "bias": 2,
+        "sideFromText": true,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\b(?:partial|incomplete)\\s+nephro-?\\s*ureterectom",
+                "Nephroureterectomy, partial"
+              ],
+              [
+                "\\bnephro-?\\s*ureterectom\\w*[\\s\\S]*\\bbladder\\s+cuff|\\b(?:radical|complete|total)\\s+nephro-?\\s*ureterectom|\\bbladder\\s+cuff[\\s\\S]*\\bnephro-?\\s*ureterectom",
+                "Nephroureterectomy, complete"
+              ],
+              [
+                "(?<![a-z-])ureterectom|\\bureter(?:ic|al)?\\b[^,;]*\\b(?:excision|resection)\\b",
+                "Ureterectomy"
+              ]
+            ]
+          },
+          {
+            "field": "tumourSite",
+            "from": "map",
+            "history": true,
+            "map": [
+              [
+                "\\brenal\\s+pelv\\w*|\\bpelvi-?calyc\\w*|\\bcalyc(?:eal|es)?\\b|\\bcalyx\\b",
+                "Renal pelvis"
+              ],
+              [
+                "\\bureter(?:ic|al)?\\s+(?:urothelial\\s+|transitional\\s+cell\\s+)?(?:tumou?rs?|mass(?:es)?|lesions?|carcinoma|ca|cancer|malignan\\w*|TCC|UC|UTUC|neoplasm)\\b|\\b(?:tumou?rs?|mass(?:es)?|lesions?|carcinoma|ca|cancer|malignan\\w*|TCC|UC|UTUC|neoplasm)\\s+(?:of|in|at)\\s+(?:the\\s+)?(?:left\\s+|right\\s+)?(?:upper\\s+|mid(?:dle)?\\s+|lower\\s+|distal\\s+|proximal\\s+)?ureter\\b|(?<![a-z-])ureterectom",
+                "Ureter"
+              ]
+            ]
+          },
+          {
+            "field": "ureterLevel",
+            "from": "map",
+            "history": true,
+            "map": [
+              [
+                "\\b(?:upper|proximal)\\s+(?:third\\s+of\\s+(?:the\\s+)?)?ureter(?:ic|al)?\\s+(?:urothelial\\s+|transitional\\s+cell\\s+)?(?:tumou?rs?|mass(?:es)?|lesions?|carcinoma|ca|cancer|malignan\\w*|TCC|UC|UTUC|neoplasm)\\b",
+                "Upper"
+              ],
+              [
+                "\\bmid(?:dle)?\\s*-?\\s*(?:third\\s+of\\s+(?:the\\s+)?)?ureter(?:ic|al)?\\s+(?:urothelial\\s+|transitional\\s+cell\\s+)?(?:tumou?rs?|mass(?:es)?|lesions?|carcinoma|ca|cancer|malignan\\w*|TCC|UC|UTUC|neoplasm)\\b",
+                "Middle"
+              ],
+              [
+                "\\b(?:lower|distal)\\s+(?:third\\s+of\\s+(?:the\\s+)?)?ureter(?:ic|al)?\\s+(?:urothelial\\s+|transitional\\s+cell\\s+)?(?:tumou?rs?|mass(?:es)?|lesions?|carcinoma|ca|cancer|malignan\\w*|TCC|UC|UTUC|neoplasm)\\b",
+                "Lower"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11a",
+      "generator": "ureter_renal_pelvis_carcinoma",
+      "generatorPath": "generators/ureter_renal_pelvis_carcinoma.js",
+      "schemaPath": "schemas/ureter_renal_pelvis_carcinoma.json"
     },
     {
       "id": "cns_biopsy",

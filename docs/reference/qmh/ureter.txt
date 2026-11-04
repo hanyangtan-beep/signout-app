@@ -1,0 +1,262 @@
+Carcinoma of the ureter and renal pelvis
+Carcinoma of the ureter and renal pelvis
+click to access explanations in the original CAP template
+There is different protocol for biopsy specimen for biopsy specimens.
+Gross core data elements:
+- Procedure:
+[opt]
+[opt] Nephroureterectomy, partial
+[opt] Nephroureterectomy, complete
+[opt] Ureterectomy
+[opt] Other (specify):
+[opt] Not specified
+- Specimen laterality:
+[opt]
+[opt] Right
+[opt] Left
+[opt] Not specified
+- Tumor site:
+[opt]
+[opt] Ureter
+[opt] Renal pelvis
+[opt] Ureter and renal pelvis
+[opt] Kidney
+[opt] Other (specify):
+[opt] Cannot be determined
+- Tumor size:
+[opt]
+[opt] Greatest dimension (mm):
+[opt] All dimensions (mm x mm x mm):
+[opt] Cannot be determined (explain):
+Microscopic descriptions:
+- Tumor histology and immunohistochemical studies:
+- Histologic type (WHO 2022 5e) :
+[opt]
+[opt] Papillary urothelial carcinoma, noninvasive
+[opt] Urothelial carcinoma in situ
+[opt] Urothelial carcinoma, invasive (conventional)
+[opt] Urothelial carcinoma, micropapillary
+[opt] Urothelial carcinoma, nested
+[opt] Urothelial carcinoma, tubular and microcystic
+[opt] Urothelial carcinoma, lymphoepithelioma-like
+[opt] Urothelial carcinoma, plasmacytoid
+[opt] Urothelial carcinoma, sarcomatoid
+[opt] Urothelial carcinoma, giant cell
+[opt] Urothelial carcinoma, poorly differentiated
+[opt] Urothelial carcinoma, lipid-rich
+[opt] Urothelial carcinoma, clear cell (glycogen-rich)
+[opt] Urothelial carcinoma with squamous differentiation (with %):
+[opt] Urothelial carcinoma with glandular differentiation (with %)
+[opt] Urothelial carcinoma with trophoblastic differentiation (with %)
+[opt] Urothelial carcinoma with Mullerian differentiation (with %)
+[opt] Squamous cell carcinoma
+[opt] Verrucous carcinoma
+[opt] Squamous cell carcinoma in situ (no invasive carcinoma identified)
+[opt] Adenocarcinoma, NOS
+[opt] Adenocarcinoma, enteric
+[opt] Adenocarcinoma, mucinous
+[opt] Adenocarcinoma, mixed
+[opt] Adenocarcinoma, signet-ring cell
+[opt] Adenocarcinoma in situ (no invasive carcinoma identified)
+[opt] Clear cell carcinoma
+[opt] Endometrioid carcinoma
+[opt] Small cell neuroendocrine carcinoma (with %)
+[opt] Large cell neuroendocrine carcinoma (with %)
+[opt] Well differentiated neuroendocrine tumor
+[opt] Other histologic type not listed (specify):
+- Histologic grade for urothelial carcinoima :
+[opt]
+[opt] Low grade
+[opt] High grade
+[opt] Other (specify):
+- Histologic grade for SCC or adenoCA :
+[opt]
+[opt] G1: Well differentiated
+[opt] G2: Moderately differentiated
+[opt] G3: Poorly differentiated
+[opt] GX: Cannot be assessed
+[opt] Other (specify):
+[opt] Cannot be determined (explain):
+[opt] Not applicable
++ Tumor configuration:
+[checkbox] - Papillary
+Papillary
+[checkbox] - Solid/nodule
+Solid/nodule
+[checkbox] - Flat
+Flat
+[checkbox] - Ulcerated
+Ulcerated
+[checkbox] - Cannot be determined
+Cannot be determined
+[checkbox] - Other (specify):
+Other (specify):
+- Lymphatic and / or Vascular Invasion :
+[opt]
+[opt] Not identified
+[opt] Present
+[opt] Cannot be determined
++ Perineural invasion:
+[opt]
+[opt] Not identified
+[opt] Present
+[opt] Cannot be determined
+- Tumor extension :
+[checkbox] - Papillary noninvasive carcinoma
+Papillary noninvasive carcinoma
+[checkbox] - Carcinoma in situ
+Carcinoma in situ
+[checkbox] - Tumor invades subepithelial connective tissue
+Tumor invades subepithelial connective tissue
+[checkbox] - Tumor invades muscularis
+Tumor invades muscularis
+[checkbox] - Tumor invades beyond muscularis into periureteral fat or peripelvic fat or the renal parenchyma
+Tumor invades beyond muscularis into periureteral fat or peripelvic fat or the renal parenchyma
+[checkbox] - Tumor invades adjacent organs, or through the kidney into the perinephric fat
+Tumor invades adjacent organs, or through the kidney into the perinephric fat
+[checkbox] - Cannot be assessed
+Cannot be assessed
+[checkbox] - No evidence of primary tumor
+No evidence of primary tumor
+Surgical margins of excision specimen:
+- Proximal ureteral margin:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved by invasive carcinoma
+[opt] Uninvolved by invasive carcinoma and carcinoma in situ/ noninvasive urothelial carcinoma, specify distance:
+[opt] Involved by invasive carcinoma
+[opt] Involved by carcinoma in situ/noninvasive high-grade urothelial carcinoma
+[opt] Involved by noninvasive low-grade urothelial carcinoma/urothelial dysplasia
+- Distal ureteral margin:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved by invasive carcinoma
+[opt] Uninvolved by invasive carcinoma and carcinoma in situ/ noninvasive urothelial carcinoma, specify distance:
+[opt] Involved by invasive carcinoma
+[opt] Involved by carcinoma in situ/noninvasive high-grade urothelial carcinoma
+[opt] Involved by noninvasive low-grade urothelial carcinoma/urothelial dysplasia
+- Bladder cuff margin:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved by invasive carcinoma
+[opt] Uninvolved by invasive carcinoma and carcinoma in situ/ noninvasive urothelial carcinoma, specify distance:
+[opt] Involved by invasive carcinoma
+[opt] Involved by carcinoma in situ/noninvasive high-grade urothelial carcinoma
+[opt] Involved by noninvasive low-grade urothelial carcinoma/urothelial dysplasia
+- Soft tissue margin:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved by invasive carcinoma
+[opt] Uninvolved by invasive carcinoma and carcinoma in situ/ noninvasive urothelial carcinoma, specify distance:
+[opt] Involved by invasive carcinoma
+[opt] Involved by carcinoma in situ/noninvasive high-grade urothelial carcinoma
+[opt] Involved by noninvasive low-grade urothelial carcinoma/urothelial dysplasia
+- Other margin(s) (specify):
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved by invasive carcinoma
+[opt] Uninvolved by invasive carcinoma and carcinoma in situ/ noninvasive urothelial carcinoma, specify distance:
+[opt] Involved by invasive carcinoma
+[opt] Involved by carcinoma in situ/noninvasive high-grade urothelial carcinoma
+[opt] Involved by noninvasive low-grade urothelial carcinoma/urothelial dysplasia
+Regional lymph nodes :
+- Number of regional lymph nodes examined:
+- Number of lymph nodes involved:
+- Extranodal spread:
+[opt]
+[opt] Not identified
+[opt] Present
+[opt] Cannot be determined
+- Size of largest metastatic deposit (mm), specify site:
+- Size of largest lymph node involved (mm), specify site:
+Distant Metastasis:
+[checkbox] - Not applicable
+Not applicable
+[checkbox] - Not identified
+Not identified
+[checkbox] - Other (specify):
+Other (specify):
+[checkbox] - Cannot be determined:
+Cannot be determined:
+Pathologic Stage Classification (AJCC 8e) :
+- TNM Descriptors:
+[checkbox] m (multiple primary tumors)
+m (multiple primary tumors)
+[checkbox] r (recurrent)
+r (recurrent)
+[checkbox] y (post treatment)
+y (post treatment)
+- Primary tumor (pT) :
+[opt]
+[opt] pT not assigned (cannot be determined based on available pathological information)
+[opt] pT0: No evidence of primary tumor
+[opt] pTa: Non-invasive papillary carcinoma
+[opt] pTis: Carcinoma in situ
+[opt] pT1: Tumor invades subepithelial connective tissue
+[opt] pT2: Tumor invades muscularis
+[opt] pT3: For renal pelvis only: Tumor invades beyond muscularis into peripelvic fat or into the renal parenchyma
+[opt] pT3: For ureter only: Tumor invades beyond muscularis into periureteric fat
+[opt] pT4: Tumor invades adjacent organs, or through the kidney into the perinephric fat
+- Regional lymph nodes (pN):
+[opt]
+[opt] pN not assigned (no nodes submitted or found)
+[opt] pN not assigned (cannot be determined based on available pathological information)
+[opt] pN0: No regional lymph node metastasis
+[opt] pN1: Metastasis < or = 2 cm in greatest dimension, in a single lymph node
+[opt] pN2: Metastasis > 2 cm, in a single lymph node; or multiple lymph nodes
+- Distant metastasis (pM):
+[opt]
+[opt] Not applicable - pM cannot be determined from the submitted specimen(s)
+[opt] pM1: Distant metastasis
+- Specify site(s), if known:
+-->
++ Additional pathologic findings:
+[checkbox] - Keratinizing squamous metaplasia
+Keratinizing squamous metaplasia
+[checkbox] - Inflammation/regenerative changes
+Inflammation/regenerative changes
+[checkbox] - Cystitis cystica et glandularis
+Cystitis cystica et glandularis
+[checkbox] - Intestinal metaplasia
+Intestinal metaplasia
+[checkbox] - Therapy-related changes, specify:
+Therapy-related changes, specify:
+[checkbox] - Cautery artifact
+Cautery artifact
+- Other (specify):
++ Associated epithelial lesions:
+[checkbox] - None identified
+None identified
+[checkbox] - Urothelial papilloma
+Urothelial papilloma
+[checkbox] - Urothelial papilloma, inverted type
+Urothelial papilloma, inverted type
+[checkbox] - Papillary urothelial neoplasm, low malignant potential (PUNLMP)
+Papillary urothelial neoplasm, low malignant potential (PUNLMP)
+[checkbox] - Urothelial proliferation of uncertain malignant potential
+Urothelial proliferation of uncertain malignant potential
+[checkbox] - Urothelial dysplasia
+Urothelial dysplasia
+[checkbox] - Cannot be assessed (explain):
+Cannot be assessed (explain):
+Pathologic Findings in ipsilateral nonneoplastic renal tissue :
+[checkbox] - No or insufficient renal parenchyma
+No or insufficient renal parenchyma
+[checkbox] - None identified
+None identified
+[checkbox] - Glomerular disease (specify type):
+Glomerular disease (specify type):
+[checkbox] - Tubulointerstitial disease (specify type):
+Tubulointerstitial disease (specify type):
+[checkbox] - Vascular disease (specify type):
+Vascular disease (specify type):
+[checkbox] - Inflammation (specify type):
+Inflammation (specify type):
+- Other (specify):
+- Additional notes:
+Copy text to Clipboard
+Last upated on 31-Mar-2025,
+based on US CAP cancer protocol templates ,
+Ureter and Renal Pelvis Resection 2.4.0.0 (Mar-2025),
+html form was created on pForm , W3 School , StackOverflow , and Icons8 .
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.

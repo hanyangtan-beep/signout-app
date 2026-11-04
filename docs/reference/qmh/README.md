@@ -14,6 +14,7 @@ These were previously under `analysis/qmh/`, which is gitignored, so a fresh clo
 | `hcc.txt` | GI-HCC | `hcc` |
 | `pitnet.txt` | Endocrine-PitNET | `pituitary_net` |
 | `vulva.txt` | GYN-Vulva | `vulval_carcinoma` |
+| `ureter.txt` | UG-Ureter | `ureter_renal_pelvis_carcinoma` |
 | `stomach-biomarkers.txt` | Biomarker-Stomach (updated 11-Apr-2025) | `gastric_biopsy` (biomarker sentence order) |
 
 Do not edit by hand. To refresh a page, re-save the rendered HTML into `docs/reference/` and re-dump the text; a change here should be reviewed against the element-order test in the same commit.

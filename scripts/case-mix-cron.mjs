@@ -205,7 +205,7 @@ const COVER = {
   Placenta: ['placenta'],
   'Vulva / vagina': ['cervical_biopsy', 'vulval_carcinoma', 'vaginal_carcinoma'],
   Prostate: ['prostate_biopsy', 'turp', 'prostate_radical'],
-  'Bladder / urothelium': ['turbt', 'bladder_carcinoma'],
+  'Bladder / urothelium': ['turbt', 'bladder_carcinoma', 'ureter_renal_pelvis_carcinoma'],
   Kidney: ['renal_biopsy', 'kidney_carcinoma'],
   'Testis / penis / scrotum': ['testis_tumour', 'penile_carcinoma'],
   Skin: ['skin_excision', 'skin_cyst', 'melanoma', 'skin_scc'],

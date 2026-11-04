@@ -1,0 +1,111 @@
+{
+  "description": "low-grade non-invasive papillary urothelial carcinoma of the lower ureter, segmental ureterectomy, margins clear, no nodes, pTa",
+  "templateId": "ureter_renal_pelvis_carcinoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "procedure": "Ureterectomy",
+      "procedureOther": "",
+      "laterality": "Right",
+      "tumourSite": [
+        "Ureter"
+      ],
+      "tumourSiteOther": "",
+      "ureterLevel": [
+        "Lower"
+      ],
+      "tumourSizeMm": "12",
+      "focality": "Unifocal",
+      "kidneyDims": "",
+      "specimenWeightG": "",
+      "ureterLengthMm": "45",
+      "ureterDiameterMm": "8",
+      "bladderCuff": "",
+      "lesionAppearance": "Papillary tumour",
+      "lesionDims": "12 x 10 x 6",
+      "macroMarginMm": "15",
+      "macroMarginSite": "distal ureteric",
+      "macroOther": "",
+      "blocks": "6",
+      "blockKeyText": "1 Proximal ureteric margin\n2 Distal ureteric margin\n3-6 Tumour",
+      "histType": "Papillary urothelial carcinoma, non-invasive",
+      "histTypeOther": "",
+      "subtypes": [],
+      "subtypeOther": "",
+      "subtypePercents": "",
+      "ihcOther": "",
+      "histologyNotes": "",
+      "grade": "Low grade",
+      "highGradePct": "",
+      "configuration": [
+        "Papillary"
+      ],
+      "configurationOther": "",
+      "lvi": "Not identified",
+      "pni": "Not identified",
+      "extension": [
+        "Non-invasive papillary carcinoma"
+      ],
+      "extensionOther": "",
+      "cisExtent": "",
+      "proximalMargin": "Uninvolved",
+      "proximalMarginMm": "20",
+      "distalMargin": "Uninvolved",
+      "distalMarginMm": "15",
+      "bladderCuffMargin": "",
+      "bladderCuffMarginMm": "",
+      "softTissueMargin": "Uninvolved",
+      "softTissueMarginMm": "5",
+      "otherMargin": "",
+      "otherMarginName": "",
+      "otherMarginMm": "",
+      "nodesExamined": "",
+      "nodesInvolved": "",
+      "ene": "",
+      "largestDepositMm": "",
+      "largestDepositSite": "",
+      "largestNodeMm": "",
+      "largestNodeSite": "",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "distantMetsOther": "",
+      "additionalFindings": [],
+      "additionalOther": "",
+      "associatedLesions": [
+        "None identified"
+      ],
+      "associatedOther": "",
+      "renal": [],
+      "renalDetail": "",
+      "otherFindings": "",
+      "mmrIhc": "Not performed",
+      "mmrDetail": "",
+      "ancillaryOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "postTherapy": false,
+      "treatmentEffect": "",
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Ureter, right, ureterectomy\n\nReceived in formalin is a ureterectomy specimen comprising a segment of ureter measuring 45 mm in length and 8 mm in diameter. There is a papillary tumour in the lower ureter measuring 12 x 10 x 6 mm, 15 mm from the closest (distal ureteric) margin. Representative sections are taken in 6 blocks.\n\n(1) Proximal ureteric margin.\n(2) Distal ureteric margin.\n(3-6) Tumour.\n\nSpecimen and tumour\n- Procedure: Ureterectomy\n- Specimen laterality: Right\n- Tumour site: Lower ureter\n- Tumour size: 12 mm (greatest dimension)\n- Tumour focality: Unifocal\n\nMicroscopic findings\n- Histologic type: Papillary urothelial carcinoma, non-invasive\n- Tumour histology:\n  The tumour is a low-grade non-invasive papillary urothelial carcinoma. Slender papillae with fibrovascular cores and minimal fusion are lined by orderly urothelium with mild nuclear pleomorphism; mitoses are confined to the lower half. There is no stromal invasion.\n- Histologic grade: Low grade\n- Tumour configuration: Papillary\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n- Tumour extension: Non-invasive papillary carcinoma\n\nMargins\n- Proximal ureteric margin: Uninvolved (20 mm)\n- Distal ureteric margin: Uninvolved (15 mm)\n- Soft tissue margin: Uninvolved (5 mm)\n\nPathological stage (AJCC 8th edition)\n- pTNM: pTa\n\nAdditional findings\n- None identified\n\nURETER, right, ureterectomy\n- NON-INVASIVE PAPILLARY UROTHELIAL CARCINOMA of the lower ureter, low grade,\n  12 mm; completely excised (closest margin 5 mm, soft tissue); see synoptic\n  report\n- pTa (AJCC 8th edition)",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (reference, not reported): not assignable - the regional node category is needed",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "MMR immunohistochemistry not performed. ICCR (Note 18) cites a review that recommends tissue testing (immunohistochemistry or molecular) when the patient is under 60, when there is a family history of upper tract urothelial, endometrial or colon cancer in a relative under 60, or when the patient has had colon or endometrial cancer; no screening protocol has been agreed.",
+      "field": "mmrIhc",
+      "part": "A"
+    }
+  ]
+}

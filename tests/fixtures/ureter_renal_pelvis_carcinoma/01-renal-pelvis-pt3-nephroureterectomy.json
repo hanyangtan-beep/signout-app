@@ -1,0 +1,115 @@
+{
+  "description": "high-grade invasive urothelial carcinoma of the renal pelvis invading the renal parenchyma, focal carcinoma in situ, complete nephroureterectomy with a bladder cuff, three negative hilar nodes, intact MMR, pT3 pN0, the example",
+  "templateId": "ureter_renal_pelvis_carcinoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "procedure": "Nephroureterectomy, complete",
+      "procedureOther": "",
+      "laterality": "Left",
+      "tumourSite": [
+        "Renal pelvis"
+      ],
+      "tumourSiteOther": "",
+      "ureterLevel": [],
+      "tumourSizeMm": "35",
+      "focality": "Unifocal",
+      "kidneyDims": "115 x 60 x 45",
+      "specimenWeightG": "290",
+      "ureterLengthMm": "240",
+      "ureterDiameterMm": "6",
+      "bladderCuff": "Present",
+      "lesionAppearance": "Papillary tumour",
+      "lesionDims": "35 x 25 x 15",
+      "macroMarginMm": "25",
+      "macroMarginSite": "renal hilar soft tissue",
+      "macroOther": "The renal pelvis and calyces are dilated.",
+      "blocks": "14",
+      "blockKeyText": "1-4 Tumour with renal parenchyma and renal sinus fat\n5 Renal hilar soft tissue margin and vessels\n6-8 Ureter, proximal to distal\n9 Bladder cuff margin\n10-11 Non-neoplastic kidney\n12-14 Hilar lymph nodes",
+      "histType": "Urothelial carcinoma, invasive (conventional)",
+      "histTypeOther": "",
+      "subtypes": [],
+      "subtypeOther": "",
+      "subtypePercents": "",
+      "ihcOther": "",
+      "histologyNotes": "",
+      "grade": "High grade",
+      "highGradePct": "",
+      "configuration": [
+        "Papillary",
+        "Solid / nodule"
+      ],
+      "configurationOther": "",
+      "lvi": "Present",
+      "pni": "Not identified",
+      "extension": [
+        "Invades the renal parenchyma",
+        "Carcinoma in situ"
+      ],
+      "extensionOther": "",
+      "cisExtent": "Focal",
+      "proximalMargin": "",
+      "proximalMarginMm": "",
+      "distalMargin": "",
+      "distalMarginMm": "",
+      "bladderCuffMargin": "Uninvolved",
+      "bladderCuffMarginMm": "200",
+      "softTissueMargin": "Uninvolved",
+      "softTissueMarginMm": "25",
+      "otherMargin": "",
+      "otherMarginName": "",
+      "otherMarginMm": "",
+      "nodesExamined": "3",
+      "nodesInvolved": "0",
+      "ene": "",
+      "largestDepositMm": "",
+      "largestDepositSite": "",
+      "largestNodeMm": "",
+      "largestNodeSite": "",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "distantMetsOther": "",
+      "additionalFindings": [
+        "Inflammation / regenerative changes"
+      ],
+      "additionalOther": "",
+      "associatedLesions": [
+        "None identified"
+      ],
+      "associatedOther": "",
+      "renal": [
+        "Vascular disease (specify)"
+      ],
+      "renalDetail": "arterionephrosclerosis",
+      "otherFindings": "",
+      "mmrIhc": "Intact nuclear expression of MLH1, PMS2, MSH2 and MSH6",
+      "mmrDetail": "",
+      "ancillaryOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "postTherapy": false,
+      "treatmentEffect": "",
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Kidney and ureter, left, nephroureterectomy\n\nReceived in formalin is a nephroureterectomy specimen comprising a kidney measuring 115 x 60 x 45 mm and a ureter measuring 240 mm in length and 6 mm in diameter, with a cuff of bladder. The specimen weighs 290 g. There is a papillary tumour in the renal pelvis measuring 35 x 25 x 15 mm, 25 mm from the closest (renal hilar soft tissue) margin. The renal pelvis and calyces are dilated. Representative sections are taken in 14 blocks.\n\n(1-4) Tumour with renal parenchyma and renal sinus fat.\n(5) Renal hilar soft tissue margin and vessels.\n(6-8) Ureter, proximal to distal.\n(9) Bladder cuff margin.\n(10-11) Non-neoplastic kidney.\n(12-14) Hilar lymph nodes.\n\nSpecimen and tumour\n- Procedure: Nephroureterectomy, complete\n- Specimen laterality: Left\n- Tumour site: Renal pelvis\n- Tumour size: 35 mm (greatest dimension)\n- Tumour focality: Unifocal\n\nMicroscopic findings\n- Histologic type: Urothelial carcinoma, invasive (conventional)\n- Tumour histology:\n  The tumour is a high-grade urothelial carcinoma invading the renal parenchyma. Irregular nests and single cells with nuclear pleomorphism, hyperchromasia and frequent mitoses infiltrate the stroma. There is also focal carcinoma in situ, in which flat urothelium shows loss of polarity and nuclear crowding, with enlarged, pleomorphic nuclei and mitoses in the mid to upper layers.\n- Histologic grade: High grade\n- Tumour configuration: Papillary and solid / nodule\n- Lymphovascular invasion: Present\n- Perineural invasion: Not identified\n- Tumour extension: Invades the renal parenchyma; carcinoma in situ (focal)\n\nMargins\n- Bladder cuff margin: Uninvolved (200 mm)\n- Soft tissue margin: Uninvolved (25 mm)\n\nLymph nodes\n- Regional lymph nodes: 3 examined; none involved\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT3 pN0\n\nAdditional findings\n- Additional findings: Inflammation / regenerative changes\n- Ipsilateral non-neoplastic renal tissue: Vascular disease\n  (arterionephrosclerosis)\n\nAncillary studies\n- Mismatch repair (MMR) immunohistochemistry: Intact nuclear expression of MLH1,\n  PMS2, MSH2 and MSH6\n\nKIDNEY AND URETER, left, nephroureterectomy\n- INVASIVE UROTHELIAL CARCINOMA of the renal pelvis, high grade, 35 mm, invading\n  the renal parenchyma, with carcinoma in situ; completely excised (closest\n  margin 25 mm, soft tissue); see synoptic report\n- 0 of 3 regional lymph nodes involved\n- pT3 pN0 (AJCC 8th edition)",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Renal parenchymal invasion is pT3; in situ extension into the renal collecting ducts and tubules does not affect stage (CAP, Note E).",
+      "field": "extension",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (reference, not reported): III",
+      "part": "A"
+    }
+  ]
+}

@@ -2841,6 +2841,55 @@ await check('vulval carcinoma galleries: eight panels open with their photograph
   return 'adjacent HSIL and Paget ticked, two nodes; galleries load (type 10 with 6 ExpertPath links, depth 5, border 4 with 2, precursor margin 6 with 3, Paget margin 1 with 1, nodes criteria only, p16 5, p53 7); links open in a new tab; printed report unchanged';
 });
 
+// Phase 83 (2026-11-04): the ureter and renal pelvis carcinoma resection form from a pasted nephroureterectomy
+// with a renal pelvis carcinoma history; the margins follow the procedure and the bladder cuff; AJCC 8th edition
+// pTNM printed with the option, the stage group in Checks only. A ureteric washing keeps urine cytology.
+await check('upper tract carcinoma: a pasted nephroureterectomy opens Ureter / pelvis Ca; margins follow the bladder cuff; pT3 pN0, stage group in Checks; a ureteric washing keeps urine cytology', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const chosen = async (id) => {
+    const chips = await page.locator(`.chips[data-field="${id}"] .chip[aria-pressed="true"]`).allTextContents();
+    if (chips.length) return chips.map((c) => c.replace(/^\s*\d*\s*/, '').trim()).join(',');
+    const sel = page.locator(`[data-field="${id}"] select`).first();
+    return (await sel.count()) ? sel.inputValue() : '';
+  };
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
+  const type = async (id, value) => { await page.fill(`#f-A-${id}`, value); await page.waitForTimeout(300); };
+  let routed = await pasteAndBuild('History\nLeft renal pelvis urothelial carcinoma\n\nSpecimen\n(A) Left nephroureterectomy with bladder cuff');
+  assert(routed === 'ureter_renal_pelvis_carcinoma', `nephroureterectomy routed to ${routed}`);
+  assert(await chosen('laterality') === 'Left', `side read "${await chosen('laterality')}"`);
+  assert(await chosen('procedure') === 'Nephroureterectomy, complete', `procedure read "${await chosen('procedure')}"`);
+  assert(await chosen('tumourSite') === 'Renal pelvis', `site read "${await chosen('tumourSite')}"`);
+  assert(!(await shows('ureterLevel')) && !(await shows('proximalMargin')), 'the ureteric level or the proximal ureteric margin shows for a renal pelvis nephroureterectomy');
+  await pickField('bladderCuff', 'Present');
+  assert(await shows('bladderCuffMargin') && !(await shows('distalMargin')), 'with a bladder cuff the cuff margin should show instead of the distal ureteric margin');
+  await pickField('histType', 'Urothelial carcinoma, invasive (conventional)');
+  assert(await shows('subtypes'), 'the subtypes do not show for an invasive urothelial carcinoma');
+  await pickField('grade', 'High grade');
+  await pickField('extension', 'Invades the renal parenchyma');
+  await type('tumourSizeMm', '35');
+  await pickField('bladderCuffMargin', 'Uninvolved');
+  await pickField('softTissueMargin', 'Uninvolved');
+  await type('softTissueMarginMm', '25');
+  await type('nodesExamined', '3');
+  await type('nodesInvolved', '0');
+  await page.locator('#case-options label', { hasText: 'Print the pTNM block (AJCC 8th edition)' }).locator('input').check();
+  await page.waitForTimeout(300);
+  const report = await reportText();
+  assert(report.includes('The tumour is a high-grade urothelial carcinoma invading the renal parenchyma.'), `paragraph wrong: ${report.slice(0, 1400)}`);
+  assert(report.includes('pTNM: pT3 pN0') && report.includes('pT3 pN0 (AJCC 8th edition)'), `pTNM missing: ${report.slice(-700)}`);
+  assert(report.includes('KIDNEY AND URETER, left, nephroureterectomy'), `diagnosis head wrong: ${report.slice(-700)}`);
+  const printed = (await page.locator('#report-blocks .block pre').allInnerTexts()).join('\n');
+  assert(printed.includes('pT3 pN0') && !/Stage group|\bIII\b/.test(printed), `a stage group reached the printed report: ${printed.slice(-600)}`);
+  assert((await checksText()).includes('Stage group, AJCC 8th edition (reference, not reported): III'), `stage group missing from Checks: ${await checksText()}`);
+  await page.locator('[data-field="extension"]').first().scrollIntoViewIfNeeded();
+  await shot('upper-tract-synoptic');
+  routed = await pasteAndBuild('History\nLeft ureteric tumour\n\nSpecimen\n(A) Left ureteric washing');
+  assert(routed === 'urine_cytology', `ureteric washing routed to ${routed}`);
+  return 'nephroureterectomy line with a renal pelvis carcinoma history opens Ureter / pelvis Ca, left, complete, renal pelvis; cuff margin instead of the distal margin; pT3 pN0 printed with the option; stage group III in Checks; ureteric washing on urine cytology';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

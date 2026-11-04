@@ -1,0 +1,112 @@
+{
+  "description": "high-grade urothelial carcinoma of the middle ureter with a micropapillary component invading the muscularis, partial nephroureterectomy, carcinoma in situ at the distal ureteric margin, two involved paracaval nodes with extranodal extension, pT2 pN2",
+  "templateId": "ureter_renal_pelvis_carcinoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "procedure": "Nephroureterectomy, partial",
+      "procedureOther": "",
+      "laterality": "Right",
+      "tumourSite": [
+        "Ureter"
+      ],
+      "tumourSiteOther": "",
+      "ureterLevel": [
+        "Middle"
+      ],
+      "tumourSizeMm": "28",
+      "focality": "Unifocal",
+      "kidneyDims": "120 x 60 x 50",
+      "specimenWeightG": "310",
+      "ureterLengthMm": "180",
+      "ureterDiameterMm": "9",
+      "bladderCuff": "",
+      "lesionAppearance": "Sessile / solid tumour",
+      "lesionDims": "28 x 20 x 12",
+      "macroMarginMm": "30",
+      "macroMarginSite": "distal ureteric",
+      "macroOther": "",
+      "blocks": "15",
+      "blockKeyText": "1-5 Tumour\n6 Distal ureteric margin\n7-9 Kidney\n10-15 Paracaval lymph nodes",
+      "histType": "Urothelial carcinoma, invasive (conventional)",
+      "histTypeOther": "",
+      "subtypes": [
+        "Micropapillary"
+      ],
+      "subtypeOther": "",
+      "subtypePercents": "conventional 70%, micropapillary 30%",
+      "ihcOther": "",
+      "histologyNotes": "",
+      "grade": "High grade",
+      "highGradePct": "",
+      "configuration": [
+        "Solid / nodule"
+      ],
+      "configurationOther": "",
+      "lvi": "Present",
+      "pni": "Present",
+      "extension": [
+        "Invades the muscularis",
+        "Carcinoma in situ"
+      ],
+      "extensionOther": "",
+      "cisExtent": "Focal",
+      "proximalMargin": "",
+      "proximalMarginMm": "",
+      "distalMargin": "Involved by carcinoma in situ",
+      "distalMarginMm": "",
+      "bladderCuffMargin": "",
+      "bladderCuffMarginMm": "",
+      "softTissueMargin": "Uninvolved",
+      "softTissueMarginMm": "4",
+      "otherMargin": "",
+      "otherMarginName": "",
+      "otherMarginMm": "",
+      "nodesExamined": "5",
+      "nodesInvolved": "2",
+      "ene": "Present",
+      "largestDepositMm": "12",
+      "largestDepositSite": "paracaval",
+      "largestNodeMm": "15",
+      "largestNodeSite": "paracaval",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "distantMetsOther": "",
+      "additionalFindings": [
+        "Inflammation / regenerative changes"
+      ],
+      "additionalOther": "",
+      "associatedLesions": [
+        "None identified"
+      ],
+      "associatedOther": "",
+      "renal": [
+        "Tubulointerstitial disease (specify)"
+      ],
+      "renalDetail": "chronic obstructive changes",
+      "otherFindings": "",
+      "mmrIhc": "Intact nuclear expression of MLH1, PMS2, MSH2 and MSH6",
+      "mmrDetail": "",
+      "ancillaryOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "postTherapy": false,
+      "treatmentEffect": "",
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Kidney and ureter, right, nephroureterectomy\n\nReceived in formalin is a nephroureterectomy specimen comprising a kidney measuring 120 x 60 x 50 mm and a ureter measuring 180 mm in length and 9 mm in diameter. The specimen weighs 310 g. There is a sessile, solid tumour in the middle ureter measuring 28 x 20 x 12 mm, 30 mm from the closest (distal ureteric) margin. Representative sections are taken in 15 blocks.\n\n(1-5) Tumour.\n(6) Distal ureteric margin.\n(7-9) Kidney.\n(10-15) Paracaval lymph nodes.\n\nSpecimen and tumour\n- Procedure: Nephroureterectomy, partial\n- Specimen laterality: Right\n- Tumour site: Middle ureter\n- Tumour size: 28 mm (greatest dimension)\n- Tumour focality: Unifocal\n\nMicroscopic findings\n- Histologic type: Urothelial carcinoma, invasive (conventional)\n- Tumour histology:\n  The tumour is a high-grade urothelial carcinoma invading the muscularis. Irregular nests and single cells with nuclear pleomorphism, hyperchromasia and frequent mitoses infiltrate the stroma. In a micropapillary component, small nests of tumour cells without fibrovascular cores lie within lacunar spaces, several nests sharing one lacuna. There is also focal carcinoma in situ, in which flat urothelium shows loss of polarity and nuclear crowding, with enlarged, pleomorphic nuclei and mitoses in the mid to upper layers.\n- Subtypes and divergent differentiation: Micropapillary (conventional 70%,\n  micropapillary 30%)\n- Histologic grade: High grade\n- Tumour configuration: Solid / nodule\n- Lymphovascular invasion: Present\n- Perineural invasion: Present\n- Tumour extension: Invades the muscularis; carcinoma in situ (focal)\n\nMargins\n- Distal ureteric margin: Involved by carcinoma in situ\n- Soft tissue margin: Uninvolved (4 mm)\n\nLymph nodes\n- Regional lymph nodes: 5 examined; 2 involved\n  - Extranodal extension: Present\n  - Size of largest metastatic deposit: 12 mm (paracaval)\n  - Size of largest lymph node involved: 15 mm (paracaval)\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT2 pN2\n\nAdditional findings\n- Additional findings: Inflammation / regenerative changes\n- Ipsilateral non-neoplastic renal tissue: Tubulointerstitial disease (chronic\n  obstructive changes)\n\nAncillary studies\n- Mismatch repair (MMR) immunohistochemistry: Intact nuclear expression of MLH1,\n  PMS2, MSH2 and MSH6\n\nKIDNEY AND URETER, right, nephroureterectomy\n- INVASIVE UROTHELIAL CARCINOMA of the middle ureter, high grade, 28 mm,\n  invading the muscularis, with a micropapillary component and carcinoma in\n  situ; carcinoma in situ at the distal ureteric margin; see synoptic report\n- 2 of 5 regional lymph nodes involved; extranodal extension present\n- pT2 pN2 (AJCC 8th edition)",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (reference, not reported): IV",
+      "part": "A"
+    }
+  ]
+}

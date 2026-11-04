@@ -1,0 +1,117 @@
+{
+  "description": "multifocal urothelial carcinoma in situ of the renal pelvis and upper and middle ureter with no macroscopic tumour, carcinoma in situ at the bladder cuff margin, urothelial dysplasia, MSH2 and MSH6 loss, pTis",
+  "templateId": "ureter_renal_pelvis_carcinoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "procedure": "Nephroureterectomy, complete",
+      "procedureOther": "",
+      "laterality": "Right",
+      "tumourSite": [
+        "Renal pelvis",
+        "Ureter"
+      ],
+      "tumourSiteOther": "",
+      "ureterLevel": [
+        "Upper",
+        "Middle"
+      ],
+      "tumourSizeMm": "",
+      "focality": "Multifocal",
+      "kidneyDims": "110 x 55 x 40",
+      "specimenWeightG": "250",
+      "ureterLengthMm": "220",
+      "ureterDiameterMm": "5",
+      "bladderCuff": "Present",
+      "lesionAppearance": "No macroscopic tumour",
+      "lesionDims": "",
+      "macroMarginMm": "",
+      "macroMarginSite": "",
+      "macroOther": "The urothelium of the renal pelvis and upper ureter is velvety and erythematous",
+      "blocks": "16",
+      "blockKeyText": "1-6 Renal pelvis\n7-12 Ureter, proximal to distal\n13 Bladder cuff margin\n14-16 Kidney",
+      "histType": "Urothelial carcinoma in situ",
+      "histTypeOther": "",
+      "subtypes": [],
+      "subtypeOther": "",
+      "subtypePercents": "",
+      "ihcOther": "",
+      "histologyNotes": "",
+      "grade": "",
+      "highGradePct": "",
+      "configuration": [
+        "Flat"
+      ],
+      "configurationOther": "",
+      "lvi": "Not identified",
+      "pni": "Not identified",
+      "extension": [
+        "Carcinoma in situ"
+      ],
+      "extensionOther": "",
+      "cisExtent": "Multifocal",
+      "proximalMargin": "",
+      "proximalMarginMm": "",
+      "distalMargin": "",
+      "distalMarginMm": "",
+      "bladderCuffMargin": "Involved by carcinoma in situ",
+      "bladderCuffMarginMm": "",
+      "softTissueMargin": "Uninvolved",
+      "softTissueMarginMm": "10",
+      "otherMargin": "",
+      "otherMarginName": "",
+      "otherMarginMm": "",
+      "nodesExamined": "",
+      "nodesInvolved": "",
+      "ene": "",
+      "largestDepositMm": "",
+      "largestDepositSite": "",
+      "largestNodeMm": "",
+      "largestNodeSite": "",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "distantMetsOther": "",
+      "additionalFindings": [
+        "Inflammation / regenerative changes"
+      ],
+      "additionalOther": "",
+      "associatedLesions": [
+        "Urothelial dysplasia"
+      ],
+      "associatedOther": "",
+      "renal": [
+        "No significant abnormality"
+      ],
+      "renalDetail": "",
+      "otherFindings": "",
+      "mmrIhc": "Loss of nuclear MMR protein expression (specify)",
+      "mmrDetail": "MSH2 and MSH6",
+      "ancillaryOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "postTherapy": false,
+      "treatmentEffect": "",
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Kidney and ureter, right, nephroureterectomy\n\nReceived in formalin is a nephroureterectomy specimen comprising a kidney measuring 110 x 55 x 40 mm and a ureter measuring 220 mm in length and 5 mm in diameter, with a cuff of bladder. The specimen weighs 250 g. No macroscopic tumour is seen. The urothelium of the renal pelvis and upper ureter is velvety and erythematous. Representative sections are taken in 16 blocks.\n\n(1-6) Renal pelvis.\n(7-12) Ureter, proximal to distal.\n(13) Bladder cuff margin.\n(14-16) Kidney.\n\nSpecimen and tumour\n- Procedure: Nephroureterectomy, complete\n- Specimen laterality: Right\n- Tumour site: Renal pelvis and upper and middle ureter\n- Tumour size: No macroscopically visible tumour\n- Tumour focality: Multifocal\n\nMicroscopic findings\n- Histologic type: Urothelial carcinoma in situ\n- Tumour histology:\n  There is multifocal urothelial carcinoma in situ. Flat urothelium shows loss of polarity and nuclear crowding, with enlarged, pleomorphic nuclei and mitoses in the mid to upper layers.\n- Tumour configuration: Flat\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n- Tumour extension: Carcinoma in situ (multifocal)\n\nMargins\n- Bladder cuff margin: Involved by carcinoma in situ\n- Soft tissue margin: Uninvolved (10 mm)\n\nPathological stage (AJCC 8th edition)\n- pTNM: pTis\n\nAdditional findings\n- Additional findings: Inflammation / regenerative changes\n- Associated epithelial lesions: Urothelial dysplasia\n- Ipsilateral non-neoplastic renal tissue: No significant abnormality\n\nAncillary studies\n- Mismatch repair (MMR) immunohistochemistry: Loss of nuclear MMR protein\n  expression (MSH2 and MSH6)\n\nKIDNEY AND URETER, right, nephroureterectomy\n- UROTHELIAL CARCINOMA IN SITU of the renal pelvis and upper and middle ureter,\n  multifocal; carcinoma in situ at the bladder cuff margin; see synoptic report\n- pTis (AJCC 8th edition)\n- Background urothelial dysplasia",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (reference, not reported): not assignable - the regional node category is needed",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "Multifocal tumour: CAP adds the suffix m to the T category for multiple tumours; tick Multiple primary tumours (m) under Staging.",
+      "field": "multiplePrimaries",
+      "part": "A"
+    }
+  ]
+}
