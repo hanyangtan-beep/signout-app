@@ -78,7 +78,7 @@ Macroscopy, twin:
 6. Single disc: "The placental disc measures N x N x N cm." Separate discs: "The placental disc of twin I measures N x N x N cm, while that of twin II measures N x N x N cm."
 7. Monochorionic fetal surface, optional (no report has it; RCPath G108 asks for it): "The umbilical cord insertions are N cm apart." "The vascular equator divides the disc into about N% for twin I and N% for twin II." "N arterio-arterial, N veno-venous and N arteriovenous anastomoses are seen on the fetal surface." or "No vascular anastomosis is seen on the fetal surface." "Laser coagulation sites are seen along the vascular equator."
 8. Membranes and cut surface as for a singleton; a finding names its twin ("…in the placental disc of twin II, measuring N cm across.").
-9. "9 representative blocks." keyed "(1) Umbilical cord, twin I. (2) Placental membranes, twin I. (3)-(4) Placental disc, twin I. (5) Umbilical cord, twin II. (6) Placental membranes, twin II. (7)-(8) Placental disc, twin II. (9) Dividing membrane." The dividing membrane block is in 17 of 20. Optional: "(10) T-zone." (the user's key; fewer than 10 of 20).
+9. "9 representative blocks." keyed "(1) Umbilical cord, twin I. (2) Placental membranes, twin I. (3)-(4) Placental disc, twin I. (5) Umbilical cord, twin II. (6) Placental membranes, twin II. (7)-(8) Placental disc, twin II. (9) Dividing membrane." The dividing membrane block is in 17 of 20. Optional (user decision 2026-11-09): "(10) T-zone." (the user's key; fewer than 10 of 20).
 
 Microscopy, twin: sentences by default, as every twin report has them; the checklist stays available. This card prints the user's dividing membrane sentence, its layers only; the histology card (next section) fills it out.
 
@@ -210,6 +210,10 @@ Every placenta line already routes to `placenta` (checked 2026-11-09: "Placenta"
 - A case saved on the Phase 4b form (its example values) opens and prints without "undefined", empty sentences or the old wording.
 - The placenta cases in `tests/fixtures/macro/cases.json` and `tests/fixtures/intake/cases.json` pass unchanged.
 
+## Decisions (user, 2026-11-09)
+
+- The T-zone block stays optional (fewer than 10 of the 20 twins have one): the twin key ends "(9) Dividing membrane.", and "(10) T-zone." is added only when a T-zone block is taken. Only the Check for a detached amnion with no T-zone block suggests one.
+
 ## Open points for the user
 
 - "lustre" (British) rather than the reports' "luster".
@@ -219,7 +223,6 @@ Every placenta line already routes to `placenta` (checked 2026-11-09: "Placenta"
 - "atrophic villi and trophoblastic remnants" ticked by default in a dichorionic dividing membrane.
 - "of both twins" in the membrane and villous sentences.
 - "- DISCORDANT VILLOUS MATURATION, twin II territory less mature." and "- DIAMNIOTIC TWIN PLACENTA, chorionicity indeterminate".
-- The T-zone block stays optional (fewer than 10 of the 20 twins have one).
 
 ## Grounding
 
