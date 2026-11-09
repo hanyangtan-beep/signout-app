@@ -1,8 +1,8 @@
 // Browser QA of the built site in dist/ (docs/specs/speed.md, Phase 79). `npm run release` runs it
 // straight after the build. tools/qa-browser.js checks the app itself from the source tree; this
 // checks what is deployed: the bundled code writes every template's report exactly as the source
-// does, start-up needs few rounds of requests, the CNS code waits for a CNS form, and the offline
-// copy works - stored on the first open, used on the next, updated file by file, handed over at
+// does, start-up needs few rounds of requests, the CNS code waits for a CNS form, Suggest a change
+// opens its pre-filled form with the build id, and the offline copy works - stored on the first open, used on the next, updated file by file, handed over at
 // New case, removed by ?nosw, started on the sign-in screen too - without storing anything from Google.
 //
 //   node tools/qa-dist.js            (after `npm run build`)
@@ -14,6 +14,7 @@ import { extname, join, normalize } from 'node:path';
 import { tmpdir } from 'node:os';
 import { chromium } from 'playwright';
 import { finalise } from './build-lib.js';
+import { FORM } from '../src/suggest.js';
 
 const ROOT = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
 const DIST = join(ROOT, 'dist');
@@ -202,6 +203,48 @@ await check('the CNS code loads only when a CNS form opens, and the CNS tools th
   await ctx.close();
   assert(!fatal.length, `console errors:\n${fatal.slice(0, 5).join('\n')}`);
   return `${late.length} CNS chunks, fetched with the form; the guided intake opens`;
+});
+
+await check('suggest a change opens its pre-filled form from the header and from a part, with the build id', async () => {
+  // Only the built site has a build id (a source checkout prints "Build: source checkout"), and
+  // reading a date from the content-hash id threw, so on the published site "Open the form" did
+  // nothing from Phase 79 until the fix of 2026-11-09.
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 }, serviceWorkers: 'block' });
+  try {
+    const page = await ctx.newPage();
+    const errors = watch(page);
+    await page.goto('http://localhost:8742/');
+    await ready(page);
+    const build = await page.evaluate(() => document.documentElement.dataset.build || '');
+    assert(build, 'the built page carries no build id');
+    // The form is never really opened: window.open is replaced so the URL can be read instead.
+    await page.evaluate(() => { window.__opened = []; window.open = (u) => { window.__opened.push(String(u)); return null; }; });
+    for (const from of ['header', 'part']) {
+      if (from === 'header') await page.click('#btn-suggest');
+      else await page.locator('#part-panel .part-actions button', { hasText: 'Suggest a change' }).first().click();
+      await page.waitForSelector('#dlg-suggest[open] #sg-text', { timeout: 5000 });
+      await page.fill('#sg-text', 'The diagnosis line should read differently.');
+      await page.click('#sg-open');
+      const closed = await page.waitForFunction(() => !document.querySelector('#dlg-suggest[open]'), null, { timeout: 3000 }).then(() => true, () => false);
+      if (!closed) {
+        const err = await page.$eval('#sg-error', (e) => (e.hidden ? '' : e.textContent));
+        throw new Error(`Open the form did nothing from the ${from}: the dialog stayed open${err ? ` and says "${err}"` : ' with no message'}; ${fatalErrors(errors).join('; ') || 'no console error'}`);
+      }
+    }
+    const opened = await page.evaluate(() => window.__opened);
+    assert(opened.length === 2, `the form opened ${opened.length} times, not 2`);
+    const apps = opened.map((s) => {
+      const u = new URL(s);
+      assert(u.hostname === 'docs.google.com' && u.searchParams.get('usp') === 'pp_url', `unexpected URL ${u.origin}${u.pathname}`);
+      return u.searchParams.get(`entry.${FORM.entries.app}`) || '';
+    });
+    assert(apps.every((a) => a.startsWith(`Build ${build}`)), `App details read "${apps.join('" and "')}"`);
+    const fatal = fatalErrors(errors);
+    assert(!fatal.length, `console errors:\n${fatal.slice(0, 5).join('\n')}`);
+    return `opened twice; App details "${apps[1]}"`;
+  } finally {
+    await ctx.close();
+  }
 });
 
 // The offline copy runs on a copy of dist, so a release can be staged by editing one file.

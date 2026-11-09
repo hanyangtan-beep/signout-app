@@ -150,16 +150,23 @@ export function openSuggest(ctx) {
     if (warnings.length) { fail(`Remove patient details before sending: the text ${warnings.join('; ')}.`); text.focus(); return; }
     const t = byId.get(about.value) || null;
     const isCurrent = !!(t && current && t.id === current.id);
-    const url = prefillUrl({
-      template: t ? `${t.name} (${t.id})` : SYSTEM_WIDE,
-      type: type.value,
-      where: [...where.querySelectorAll('.chip[aria-pressed="true"]')].map((b) => b.textContent),
-      suggestion,
-      choices: attach.checked && isCurrent ? current.choices : '',
-      by: ctx.email || '',
-      app: appDetails({ build: buildId(), templateId: t ? t.id : '', version: isCurrent ? current.version : (t?.version || ''), layout: ctx.layout })
-    });
-    window.open(url, '_blank', 'noopener');
+    // A failure here must show in the dialog: a click that silently does nothing reads as a dead button.
+    try {
+      const url = prefillUrl({
+        template: t ? `${t.name} (${t.id})` : SYSTEM_WIDE,
+        type: type.value,
+        where: [...where.querySelectorAll('.chip[aria-pressed="true"]')].map((b) => b.textContent),
+        suggestion,
+        choices: attach.checked && isCurrent ? current.choices : '',
+        by: ctx.email || '',
+        app: appDetails({ build: buildId(), templateId: t ? t.id : '', version: isCurrent ? current.version : (t?.version || ''), layout: ctx.layout })
+      });
+      window.open(url, '_blank', 'noopener');
+    } catch (err) {
+      console.error(err);
+      fail(`The form could not be opened (${err?.message || err}). Reload the app and try again.`);
+      return;
+    }
     dlg.close();
     if (ctx.toast) ctx.toast('Google Forms opened in a new tab. Press Submit there to send it.');
   };

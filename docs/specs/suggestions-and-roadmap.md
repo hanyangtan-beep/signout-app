@@ -37,7 +37,7 @@ The form ("Sign-out app — suggestions", form id `1LFrHIihbJq12zOdsK8W7WxMJZ8Cr
 | Suggestion | 1135536539 | the text |
 | Form choices | 1090571533 | the attachment, if ticked |
 | Submitted by | 685570690 | the signed-in Google account, if any (editable in Forms) |
-| App details | 229315778 | `Build YYYY-MM-DD (id) · template vVERSION · desktop or phone` |
+| App details | 229315778 | `Build ID · template vVERSION · desktop or phone` (a build from before Phase 79 also printed its date: `Build YYYY-MM-DD (id)`) |
 
 All seven are text questions, so the pre-fill never depends on option lists kept in step with the app. If the form is rebuilt, read the entry ids again from its "Get pre-filled link" and update `FORM` in `src/suggest.js`; `tests/suggest.test.js` pins the URL shape.
 

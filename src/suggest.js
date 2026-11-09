@@ -102,16 +102,23 @@ export function choiceSummary(schema, values, index = 0) {
   return lines.join('\n');
 }
 
-/** Build id (base-36 milliseconds, stamped by tools/build.js) → "YYYY-MM-DD"; '' from source. */
+/**
+ * Build id → "YYYY-MM-DD" where the id carries a date; '' otherwise, and never an error. Builds
+ * before Phase 79 stamped base-36 milliseconds; since then tools/build-lib.js stamps a 12-character
+ * content hash, which carries no date (reading one from it threw "Invalid time value").
+ */
 export function buildDate(build) {
-  const ms = parseInt(String(build || ''), 36);
-  if (!build || !Number.isFinite(ms)) return '';
-  return new Date(ms).toISOString().slice(0, 10);
+  const s = String(build || '');
+  if (!/^[0-9a-z]{1,10}$/.test(s)) return '';
+  const d = new Date(parseInt(s, 36));
+  const year = d.getUTCFullYear(); // NaN for an invalid date
+  return year >= 2020 && year < 2100 ? d.toISOString().slice(0, 10) : '';
 }
 
 /** The "App details" answer: build, template and version, and the layout it was sent from. */
 export function appDetails({ build = '', templateId = '', version = '', layout = '' } = {}) {
-  const parts = [build ? `Build ${buildDate(build)} (${build})` : 'Build: source checkout'];
+  const date = buildDate(build);
+  const parts = [!build ? 'Build: source checkout' : date ? `Build ${date} (${build})` : `Build ${build}`];
   if (templateId) parts.push(`${templateId}${version ? ` v${version}` : ''}`);
   if (layout) parts.push(layout);
   return parts.join(' · ');

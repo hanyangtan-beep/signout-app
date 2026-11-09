@@ -6,6 +6,8 @@ import assert from 'node:assert/strict';
 import { FORM, SYSTEM_WIDE, TYPES, WHERE, LIMITS, suggestionWarnings, choiceSummary, prefillUrl, appDetails, buildDate } from '../src/suggest.js';
 import { defaultValues } from '../src/engine.js';
 import { schemaSync } from './_schema.js';
+import { Buffer } from 'node:buffer';
+import { sha12 } from '../tools/build-lib.js';
 
 const answer = (url, key) => new URL(url).searchParams.get(`entry.${FORM.entries[key]}`);
 
@@ -104,4 +106,16 @@ test('app details name the build date, template and layout', () => {
   assert.equal(buildDate(''), '');
   assert.equal(appDetails({ build, templateId: 'nasal_polyps', version: '2026.09', layout: 'phone' }), `Build 2026-09-29 (${build}) · nasal_polyps v2026.09 · phone`);
   assert.equal(appDetails({ layout: 'desktop' }), 'Build: source checkout · desktop');
+});
+
+test('app details name a content-hash build by its id, and never throw', () => {
+  // Since Phase 79 the build stamps a 12-character content hash. Reading a date from it threw
+  // "Invalid time value", so "Open the form" did nothing on the published site (fixed 2026-11-09).
+  const ids = ['f273df3caff9', '000000000000', '000abc123def', 'ffffffffffff'];
+  for (let i = 0; i < 500; i++) ids.push(sha12(Buffer.from(`release ${i}`)));
+  for (const build of ids) {
+    assert.equal(buildDate(build), '', build);
+    assert.equal(appDetails({ build, templateId: 'nasal_polyps', version: '2026.09', layout: 'desktop' }), `Build ${build} · nasal_polyps v2026.09 · desktop`);
+  }
+  for (const odd of ['zzzzzzzzzz', 'not a build', '1', 'F273DF3CAFF9']) assert.equal(buildDate(odd), '', odd);
 });
