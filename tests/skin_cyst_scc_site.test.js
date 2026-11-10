@@ -96,7 +96,7 @@ test('skin excision: the refined rule', () => {
   assert.equal(site(excision, 'deep resection margin on cheek'), '');
 });
 
-test('rule: the three skin forms share one Site rule, and only they drop a repeated piece', () => {
+test('rule: the three skin forms share one Site rule; only they and the sarcoma form drop a repeated piece', () => {
   const rule = (s) => s.match.fill.find((r) => r.field === 'specimenName');
   const shared = rule(excision);
   assert.deepEqual([shared.from, shared.fallback, shared.dedupe, shared.lower], ['detail', 'text', true, true]);
@@ -104,5 +104,7 @@ test('rule: the three skin forms share one Site rule, and only they drop a repea
   assert.equal(cyst.version, '2026.10');
   assert.equal(scc.version, '2026.10');
   const deduped = manifest.filter((t) => (t.match?.fill || []).some((r) => r.dedupe)).map((t) => t.id).sort();
-  assert.deepEqual(deduped, ['skin_cyst', 'skin_excision', 'skin_scc']);
+  // soft_tissue_sarcoma joins in Phase 84 - deliberate: its LIS lines list the site twice as well ("Right thigh
+  // sarcoma, right thigh"), and its Site rule reads the line, not the detail, so the rule above stays the skin forms' own.
+  assert.deepEqual(deduped, ['skin_cyst', 'skin_excision', 'skin_scc', 'soft_tissue_sarcoma']);
 });

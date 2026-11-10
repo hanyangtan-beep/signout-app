@@ -1,0 +1,98 @@
+{
+  "description": "myxoid liposarcoma of the left thigh with 10% hypercellular (round cell) areas, intermuscular, 95 mm, wide excision, DDIT3 rearranged, FNCLCC grade 2, deep margin clear by 8 mm, pT2",
+  "templateId": "soft_tissue_sarcoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "procedure": "Wide resection",
+      "procedureOther": "",
+      "siteGroup": "Trunk and extremities",
+      "siteGroupOther": "",
+      "site": "left thigh",
+      "clinicalLabel": "tumour",
+      "specimenName": "",
+      "organ": "",
+      "tumourSizeMm": "95",
+      "tumourDims": "95 x 70 x 50",
+      "focality": "Unifocal",
+      "focalityDetail": "",
+      "depth": [
+        "Skeletal muscle, intermuscular"
+      ],
+      "depthOther": "",
+      "hnInvasion": "",
+      "visceralExtent": "",
+      "orbitExtent": "",
+      "specimenDims": "150 x 100 x 70",
+      "skinDims": "",
+      "orientation": "one stitch proximal, two stitches medial",
+      "cutSurface": [
+        "Myxoid",
+        "Fleshy"
+      ],
+      "macroMarginMm": "8",
+      "macroMarginSite": "deep",
+      "macroOther": "",
+      "blocks": "12",
+      "blockKeyText": "1-8 Tumour\n9 Deep margin\n10 Proximal margin\n11 Distal margin\n12 Medial and lateral margins",
+      "histType": "Myxoid liposarcoma",
+      "histTypeOther": "",
+      "wdComponent": "",
+      "dedifSizeMm": "",
+      "heterologous": "",
+      "heterologousType": "",
+      "hypercellularPct": "10",
+      "ihcText": "",
+      "histologyNotes": "",
+      "gradeMode": "",
+      "diffScore": "",
+      "diffScoreOther": "",
+      "mitoticCount": "3",
+      "mitoticUnit": "per 10 HPF (22 mm eyepiece, 40x objective)",
+      "necrosis": "No tumour necrosis",
+      "necrosisPct": "",
+      "lvi": "Not identified",
+      "pni": "Not identified",
+      "marginsText": "Deep: 8 (block 9)\nProximal: 30 (block 10)\nDistal: 35 (block 11)\nMedial: 15 (block 12)\nLateral: 20 (block 12)",
+      "marginsNotAssessable": false,
+      "fascialEnvelope": "Present",
+      "nodesExamined": "",
+      "nodesInvolved": "",
+      "ene": "",
+      "largestDepositMm": "",
+      "nodeSites": "",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "distantMetsOther": "",
+      "preresection": [
+        "No known preresection therapy"
+      ],
+      "preresectionOther": "",
+      "treatmentEffect": "No known presurgical therapy",
+      "viablePct": "",
+      "treatmentFeatures": [],
+      "treatmentFeaturesOther": "",
+      "otherFindings": "",
+      "mdm2": "Not performed",
+      "ddit3": "DDIT3 rearrangement detected",
+      "ancillaryOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Left thigh tumour, wide excision\n\nReceived in formalin is a wide excision specimen from the left thigh, measuring 150 x 100 x 70 mm. The specimen is oriented (one stitch proximal, two stitches medial). Sectioning shows a myxoid, fleshy tumour measuring 95 x 70 x 50 mm, 8 mm from the closest (deep) margin. Representative sections are taken in 12 blocks.\n\n(1-8) Tumour.\n(9) Deep margin.\n(10) Proximal margin.\n(11) Distal margin.\n(12) Medial and lateral margins.\n\nSpecimen and tumour\n- Procedure: Wide resection\n- Tumour site: Trunk and extremities (left thigh)\n- Tumour size: 95 x 70 x 50 mm (greatest dimension 95 mm)\n- Tumour focality: Unifocal\n- Tumour depth: Skeletal muscle, intermuscular\n\nMicroscopic findings\n- Histologic type: Myxoid liposarcoma\n  - Hypercellular (round cell) areas: 10%\n- Tumour histology:\n  Sections show a myxoid liposarcoma. The tumour is composed of uniform ovoid cells arranged haphazardly in a myxoid stroma containing delicate, thin-walled, branching blood vessels. Hypercellular (round cell) areas account for about 10% of the tumour.\n- Histologic grade (FNCLCC grading): Grade 2 (score 4 or 5, high grade)\n  - Tumour differentiation: High-grade myxoid (round cell) liposarcoma (score 3)\n  - Mitotic rate: 3 mitoses per 10 HPF, 22 mm eyepiece (score 1)\n  - Tumour necrosis: Not identified (score 0)\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n\nMargins\n- Surgical margin: Uninvolved by tumour (closest 8 mm, deep margin)\n  - Deep margin: Clear by 8 mm (block 9)\n  - Proximal margin: Clear by 30 mm (block 10)\n  - Distal margin: Clear by 35 mm (block 11)\n  - Medial margin: Clear by 15 mm (block 12)\n  - Lateral margin: Clear by 20 mm (block 12)\n  - Intact fascial envelope / fibrous pseudocapsule at the closest margin:\n    Present\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT2\n\nAdditional findings\n- Preresection treatment: No known preresection therapy\n- Treatment effect: No known presurgical therapy\n\nAncillary studies\n- DDIT3 / FUS rearrangement (FISH): DDIT3 rearrangement detected\n\nSOFT TISSUE, left thigh tumour, wide excision:\n- MYXOID LIPOSARCOMA with 10% hypercellular (round cell) areas,\n- FNCLCC Grade 2,\n- Resection margins clear.",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (reference, not reported): IIIA (no node examined: N0, as CAP directs)",
+      "part": "A"
+    }
+  ]
+}

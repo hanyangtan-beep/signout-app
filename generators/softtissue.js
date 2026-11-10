@@ -633,4 +633,46 @@ export function validate(part) {
   return out;
 }
 
-export default { specimenName, macro, blockKey, microscopy, diagnosis, flags, comment, validate };
+// "Upgrade this part" (Phase 84): an atypical lipomatous tumour or a sarcoma excision becomes the soft tissue
+// sarcoma synoptic (`soft_tissue_sarcoma`) in place, carrying what this form already holds. A biopsy is not offered
+// it: the synoptic is for resections. The site group follows the intake words of the synoptic.
+const SITE_GROUP = [
+  [/\bretroperiton/i, 'Retroperitoneum'],
+  [/\b(?:thigh|leg|calf|popliteal|knee|foot|ankle|arm|forearm|elbow|wrist|hand|shoulder|axilla|axillary|buttock|gluteal|groin|inguinal|back|chest\s+wall|abdominal\s+wall|flank|trunk|extremity|limb)\b/i, 'Trunk and extremities'],
+  [/\b(?:neck|scalp|face|cheek)\b/i, 'Head and neck']
+];
+const UP_DEPTH = { Dermal: ['Dermis'], Subcutaneous: ['Subcutis'], Intramuscular: ['Skeletal muscle, intramuscular'] };
+const UP_CUT = { 'Homogeneous yellow': ['Fatty'], 'Whorled tan-white': ['Fibrous'], Myxoid: ['Myxoid'], Haemorrhagic: ['Haemorrhagic'], 'Necrotic areas – describe': ['Necrotic'] };
+const UP_MDM2 = { Amplified: 'Amplification detected', 'Not amplified': 'No amplification detected', Pending: 'Pending' };
+
+/** "6 x 4 x 2.5" (cm, this form) to "60 x 40 x 25" (mm, the synoptic); '' when a dimension is not a number. */
+export const cmToMm = (s) => {
+  const bits = String(s || '').replace(/\s*cm\b\.?/gi, '').trim().split(/\s*[x×]\s*/i).filter(Boolean);
+  if (!bits.length || bits.some((b) => !/^\d+(?:\.\d+)?$/.test(b))) return '';
+  return bits.map((b) => String(Math.round(parseFloat(b) * 100) / 10)).join(' x ');
+};
+
+export const UPGRADE_TO = {
+  to: 'soft_tissue_sarcoma',
+  label: 'Upgrade this part',
+  when: (v) => (isALT(v) || isSarcoma(v)) && v.procedure !== 'Biopsy',
+  map: (v) => {
+    const where = `${v.site || ''} ${v.clinicalLabel || ''} ${v.specimenName || ''}`;
+    return {
+      specimenName: stripDot(v.specimenName),
+      organ: v.organ && v.organ !== 'SOFT TISSUE' ? v.organ : '',
+      site: stripDot(v.site),
+      clinicalLabel: stripDot(v.clinicalLabel) || 'tumour',
+      siteGroup: (SITE_GROUP.find(([re]) => re.test(where)) || [])[1] || '',
+      specimenDims: cmToMm(v.dimensions),
+      cutSurface: UP_CUT[v.cutSurface] || [],
+      depth: UP_DEPTH[v.location] || [],
+      blocks: v.blocks ?? '',
+      histType: isALT(v) ? 'Atypical lipomatous tumour' : '',
+      ihcText: stripDot(v.ihc),
+      mdm2: UP_MDM2[v.mdm2] || 'Not performed'
+    };
+  }
+};
+
+export default { specimenName, macro, blockKey, microscopy, diagnosis, flags, comment, validate, UPGRADE_TO };

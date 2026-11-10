@@ -30,8 +30,9 @@ import * as oral from './oral.js';
 import * as hcc from './hcc.js';
 import * as vulva from './vulva.js';
 import * as ureter_renal_pelvis from './ureter_renal_pelvis.js';
+import * as softtissue from './softtissue.js';
 
-export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes, gastric, oesophagus, appendix, gallbladder, pancreas, ampulla, skin_scc, oral, hcc, vulva, ureter_renal_pelvis };
+export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes, gastric, oesophagus, appendix, gallbladder, pancreas, ampulla, skin_scc, oral, hcc, vulva, ureter_renal_pelvis, softtissue };
 
 // T, N and M alternatives are listed longest first (ovary: T1c1-3, T2a/b, T3a-c, N0(i+); lung: T1mi,
 // N2a/b, M1c1/c2; head and neck skin: N2c; renal pelvis and ureter: Ta (Phase 83); breast: Tis(DCIS), Tis(Paget), T4c/d, N0(mol+), N1mi, N3a-c and the optional (sn) / (f) node suffix); the negative look-aheads stand in for \b so "N0(i+)" and "T1c1 " both terminate cleanly.

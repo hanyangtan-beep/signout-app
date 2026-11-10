@@ -1,0 +1,97 @@
+{
+  "description": "dedifferentiated liposarcoma of the left retroperitoneum arising from a well-differentiated liposarcoma, 150 mm with a 60 mm dedifferentiated nodule, marginal resection, MDM2 amplified, FNCLCC grade 3, inked surface clear by 1 mm, pT3",
+  "templateId": "soft_tissue_sarcoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "procedure": "Marginal resection",
+      "procedureOther": "",
+      "siteGroup": "Retroperitoneum",
+      "siteGroupOther": "",
+      "site": "left retroperitoneum",
+      "clinicalLabel": "tumour",
+      "specimenName": "",
+      "organ": "",
+      "tumourSizeMm": "150",
+      "tumourDims": "150 x 150 x 100",
+      "focality": "Unifocal",
+      "focalityDetail": "",
+      "depth": [],
+      "depthOther": "",
+      "hnInvasion": "",
+      "visceralExtent": "",
+      "orbitExtent": "",
+      "specimenDims": "160 x 150 x 100",
+      "skinDims": "",
+      "orientation": "",
+      "cutSurface": [
+        "Fatty",
+        "Fleshy",
+        "Necrotic"
+      ],
+      "macroMarginMm": "1",
+      "macroMarginSite": "inked surface",
+      "macroOther": "a central fleshy, partly necrotic nodule measuring 60 mm is surrounded by a cuff of fatty tumour",
+      "blocks": "15",
+      "blockKeyText": "1 Fatty tumour\n2-7 Fleshy tumour\n8-11 Tumour capsule\n12-15 Tumour border",
+      "histType": "Dedifferentiated liposarcoma",
+      "histTypeOther": "",
+      "wdComponent": "Present",
+      "dedifSizeMm": "60",
+      "heterologous": "Not identified",
+      "heterologousType": "",
+      "hypercellularPct": "",
+      "ihcText": "The tumour cells are positive for MDM2 and CDK4.",
+      "histologyNotes": "",
+      "gradeMode": "",
+      "diffScore": "",
+      "diffScoreOther": "",
+      "mitoticCount": "23",
+      "mitoticUnit": "per 10 HPF (22 mm eyepiece, 40x objective)",
+      "necrosis": "Less than 50% tumour necrosis",
+      "necrosisPct": "30",
+      "lvi": "Not identified",
+      "pni": "Not identified",
+      "marginsText": "Inked surface: 1 (block 12)",
+      "marginsNotAssessable": false,
+      "fascialEnvelope": "Not applicable",
+      "nodesExamined": "",
+      "nodesInvolved": "",
+      "ene": "",
+      "largestDepositMm": "",
+      "nodeSites": "",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "distantMetsOther": "",
+      "preresection": [
+        "No known preresection therapy"
+      ],
+      "preresectionOther": "",
+      "treatmentEffect": "No known presurgical therapy",
+      "viablePct": "",
+      "treatmentFeatures": [],
+      "treatmentFeaturesOther": "",
+      "otherFindings": "",
+      "mdm2": "Amplification detected",
+      "ddit3": "Not performed",
+      "ancillaryOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Left retroperitoneal tumour, excision\n\nReceived in formalin is an excision specimen from the left retroperitoneum, measuring 160 x 150 x 100 mm. Sectioning shows a fatty, fleshy, necrotic tumour measuring 150 x 150 x 100 mm, 1 mm from the closest (inked surface) margin. A central fleshy, partly necrotic nodule measuring 60 mm is surrounded by a cuff of fatty tumour. Representative sections are taken in 15 blocks.\n\n(1) Fatty tumour.\n(2-7) Fleshy tumour.\n(8-11) Tumour capsule.\n(12-15) Tumour border.\n\nSpecimen and tumour\n- Procedure: Marginal resection\n- Tumour site: Retroperitoneum (left)\n- Tumour size: 150 x 150 x 100 mm (greatest dimension 150 mm)\n- Tumour focality: Unifocal\n\nMicroscopic findings\n- Histologic type: Dedifferentiated liposarcoma\n  - Well-differentiated component: Present\n  - Dedifferentiated component, size: 60 mm\n  - Heterologous differentiation: Not identified\n- Tumour histology:\n  Sections show a dedifferentiated liposarcoma. The tumour is composed of pleomorphic spindle cells arranged in sheets and short, haphazard interlacing fascicles, associated with hyalinised and sclerotic stroma. The tumour cells have enlarged, hyperchromatic nuclei with frequent bizarre or multinucleated forms. The dedifferentiated liposarcoma is surrounded by well-differentiated liposarcoma, comprising adipocytes that vary in size, separated by fibrous septa containing atypical stromal cells with hyperchromatic nuclei. The tumour cells are positive for MDM2 and CDK4.\n- Histologic grade (FNCLCC grading): Grade 3 (score 6 to 8, high grade)\n  - Tumour differentiation: Dedifferentiated liposarcoma (score 3)\n  - Mitotic rate: 23 mitoses per 10 HPF, 22 mm eyepiece (score 2)\n  - Tumour necrosis: 30% (score 1)\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n\nMargins\n- Surgical margin: Uninvolved by tumour (closest 1 mm, inked surface margin)\n  - Inked surface: Clear by 1 mm (block 12)\n  - Intact fascial envelope / fibrous pseudocapsule at the closest margin: Not\n    applicable\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT3\n\nAdditional findings\n- Preresection treatment: No known preresection therapy\n- Treatment effect: No known presurgical therapy\n\nAncillary studies\n- MDM2 amplification (FISH): Amplification detected\n\nLeft RETROPERITONEAL tumour, excision:\n- DEDIFFERENTIATED LIPOSARCOMA arising from adjacent WELL DIFFERENTIATED\n  LIPOSARCOMA,\n- FNCLCC Grade 3,\n- Resection margins clear.",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (reference, not reported): IIIB (no node examined: N0, as CAP directs)",
+      "part": "A"
+    }
+  ]
+}

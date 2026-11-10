@@ -1,0 +1,1602 @@
+{
+ "id": "soft_tissue_sarcoma",
+ "version": "2026.11a",
+ "name": "Soft tissue sarcoma resection",
+ "shortName": "Soft tissue · sarcoma resection",
+ "label": "Sarcoma",
+ "organ": "SOFT TISSUE",
+ "system": "Soft tissue",
+ "kind": "cancer resection",
+ "rank": 57,
+ "aliases": [
+  "sarcoma",
+  "soft tissue sarcoma",
+  "liposarcoma",
+  "dedifferentiated liposarcoma",
+  "well-differentiated liposarcoma",
+  "atypical lipomatous tumour",
+  "myxoid liposarcoma",
+  "pleomorphic liposarcoma",
+  "undifferentiated pleomorphic sarcoma",
+  "UPS",
+  "leiomyosarcoma",
+  "myxofibrosarcoma",
+  "synovial sarcoma",
+  "MPNST",
+  "FNCLCC"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "soft_tissue_sarcoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen and tumour",
+   "Macroscopy"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template, MS-Soft tissue sarcoma",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/MS-Soft%20tissue%20sarcoma.html",
+  "capProtocol": "https://www.cap.org/wp-content/uploads/protocols/Soft.Tissue_4.2.0.0.REL_CAPCP.docx?download=true",
+  "dataset": "https://www.iccr-cancer.org/wp-content/uploads/2022/10/ICCR-STSarcoma_Resection-1st-edn-v1.1-hyperlink.pdf",
+  "ajcc": "https://www.facs.org/media/c5ik5tkr/ajcc-current-staging-system-2026.pdf",
+  "staging": "AJCC 8th edition, soft tissue sarcoma (chapters 40, 41, 42, 44 and 70): AJCC has no version 9 chapter for these sites",
+  "grounding": "docs/reference/soft-tissue-sources.md",
+  "savedPage": "docs/reference/MS-Soft-tissue-sarcoma.html"
+ },
+ "match": {
+  "site": [
+   "soft tissue",
+   "thigh",
+   "leg",
+   "calf",
+   "popliteal",
+   "knee",
+   "foot",
+   "ankle",
+   "arm",
+   "forearm",
+   "elbow",
+   "wrist",
+   "hand",
+   "shoulder",
+   "axilla",
+   "axillary",
+   "buttock",
+   "gluteal",
+   "groin",
+   "inguinal",
+   "back",
+   "chest wall",
+   "abdominal wall",
+   "flank",
+   "trunk",
+   "extremity",
+   "limb",
+   "neck",
+   "retroperitoneum",
+   "retroperitoneal",
+   "sarcoma",
+   "liposarcoma",
+   "leiomyosarcoma",
+   "myxofibrosarcoma",
+   "rhabdomyosarcoma",
+   "angiosarcoma",
+   "fibrosarcoma",
+   "atypical lipomatous tumour",
+   "atypical lipomatous tumor",
+   "lipomatous tumour",
+   "lipomatous tumor",
+   "MPNST"
+  ],
+  "procedure": [
+   "wide excision",
+   "wide local excision",
+   "radical resection",
+   "radical excision",
+   "marginal excision",
+   "marginal resection",
+   "excisional biopsy",
+   "compartmentectomy",
+   "en bloc resection",
+   "excision",
+   "resection"
+  ],
+  "clinical": [
+   "sarcoma",
+   "liposarcoma",
+   "leiomyosarcoma",
+   "myxofibrosarcoma",
+   "rhabdomyosarcoma",
+   "synovial sarcoma",
+   "angiosarcoma",
+   "fibrosarcoma",
+   "atypical lipomatous tumour",
+   "atypical lipomatous tumor",
+   "ALT",
+   "WDLPS",
+   "DDLPS",
+   "UPS",
+   "MFH",
+   "MPNST",
+   "malignant peripheral nerve sheath tumour",
+   "malignant peripheral nerve sheath tumor"
+  ],
+  "gate": "\\b(?:lipo|leiomyo|myxofibro|rhabdomyo|angio|fibro)?sarcomas?\\b|atypical\\s+lipomatous|\\b(?:WDLPS|DDLPS|MLPS|UPS|MFH|MPNST|LMS)\\b|malignant\\s+peripheral\\s+nerve\\s+sheath",
+  "exclude": [
+   "lipoma",
+   "skin",
+   "bone",
+   "femur",
+   "tibia",
+   "fibula",
+   "humerus",
+   "radius",
+   "ulna",
+   "pelvis",
+   "sacrum",
+   "spine",
+   "vertebra",
+   "vertebral",
+   "rib",
+   "scapula",
+   "osteosarcoma",
+   "chondrosarcoma",
+   "Ewing",
+   "uterus",
+   "uterine",
+   "hysterectomy",
+   "endometrial",
+   "endometrium",
+   "myometrium",
+   "cervix",
+   "ovary",
+   "ovarian",
+   "GIST",
+   "gastrointestinal stromal",
+   "stomach",
+   "gastric",
+   "breast",
+   "phyllodes",
+   "Kaposi",
+   "DFSP",
+   "dermatofibrosarcoma",
+   "sarcomatoid",
+   "carcinosarcoma",
+   "lymph",
+   "node",
+   "nodes",
+   "LN",
+   "SLN",
+   "sentinel",
+   "margin",
+   "margins",
+   "dissection",
+   "core",
+   "cores",
+   "trucut",
+   "tru-cut",
+   "punch",
+   "FNA",
+   "aspirate",
+   "aspiration",
+   "cytology",
+   "needle",
+   "incisional",
+   "frozen"
+  ],
+  "not": [
+   "biopsy",
+   "biopsies",
+   "bx"
+  ],
+  "own": {
+   "site": [
+    "soft tissue",
+    "thigh",
+    "leg",
+    "calf",
+    "popliteal",
+    "knee",
+    "foot",
+    "ankle",
+    "arm",
+    "forearm",
+    "elbow",
+    "wrist",
+    "hand",
+    "shoulder",
+    "axilla",
+    "axillary",
+    "buttock",
+    "gluteal",
+    "groin",
+    "inguinal",
+    "back",
+    "chest wall",
+    "abdominal wall",
+    "flank",
+    "trunk",
+    "extremity",
+    "limb",
+    "neck",
+    "retroperitoneum",
+    "retroperitoneal",
+    "sarcoma",
+    "liposarcoma",
+    "leiomyosarcoma",
+    "myxofibrosarcoma",
+    "rhabdomyosarcoma",
+    "angiosarcoma",
+    "fibrosarcoma",
+    "atypical lipomatous tumour",
+    "atypical lipomatous tumor",
+    "lipomatous tumour",
+    "lipomatous tumor",
+    "MPNST"
+   ],
+   "procedure": [
+    "excisional biopsy"
+   ]
+  },
+  "bare": true,
+  "bias": 2,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bexcisional\\s+biops",
+      "Excisional biopsy"
+     ],
+     [
+      "\\bintralesional\\b",
+      "Intralesional resection"
+     ],
+     [
+      "\\bmarginal\\s+(?:resection|excision)",
+      "Marginal resection"
+     ],
+     [
+      "\\bradical\\s+(?:resection|excision)|\\bcompartmentectom",
+      "Radical resection"
+     ],
+     [
+      "\\bwide\\s+(?:local\\s+)?(?:resection|excision)|\\bWLE\\b",
+      "Wide resection"
+     ]
+    ]
+   },
+   {
+    "field": "siteGroup",
+    "from": "map",
+    "history": false,
+    "map": [
+     [
+      "\\bretroperitone",
+      "Retroperitoneum"
+     ],
+     [
+      "\\borbit",
+      "Orbit"
+     ],
+     [
+      "\\b(?:thigh|leg|calf|popliteal|knee|foot|ankle|arm|forearm|elbow|wrist|hand|shoulder|axilla|axillary|buttock|gluteal|groin|inguinal|back|chest\\s+wall|abdominal\\s+wall|flank|trunk|extremity|limb)\\b",
+      "Trunk and extremities"
+     ],
+     [
+      "\\b(?:neck|scalp|face|cheek)\\b",
+      "Head and neck"
+     ]
+    ]
+   },
+   {
+    "field": "site",
+    "from": "text",
+    "strip": "\\([^)]*\\)|\\?|\\b(?:soft\\s+tissues?|wide\\s+local\\s+excision|wide\\s+excision|WLE|radical\\s+(?:resection|excision)|marginal\\s+(?:resection|excision)|intralesional\\s+(?:resection|excision)|excisional\\s+biopsy|en\\s+bloc\\s+resection|compartmentectomy|re-excision|excision|excised|resection|resected|(?:atypical\\s+)?lipomatous\\s+(?:tumou?r|sarcoma)s?|(?:well[- ]differentiated\\s+|dedifferentiated\\s+|myxoid\\s+|pleomorphic\\s+|round\\s+cell\\s+)?liposarcomas?|leiomyosarcomas?|myxofibrosarcomas?|rhabdomyosarcomas?|angiosarcomas?|fibrosarcomas?|synovial\\s+sarcomas?|(?:high[- ]grade\\s+|low[- ]grade\\s+|spindle\\s+cell\\s+|pleomorphic\\s+|undifferentiated\\s+(?:pleomorphic\\s+)?)?sarcomas?|UPS|MFH|MPNST|ALT|WDLPS|DDLPS|MLPS|LMS|tumou?rs?|mass(?:es)?|lumps?|swellings?|lesions?|nodules?|recurrent|recurrence|of|the|from)\\b",
+    "lower": true,
+    "dedupe": true,
+    "unless": "stitch|sutur|\\bink|marking|o'?\\s*clock|\\d"
+   },
+   {
+    "field": "clinicalLabel",
+    "from": "map",
+    "map": [
+     [
+      "\\blipomatous\\s+sarcomas?\\b",
+      "lipomatous sarcoma"
+     ],
+     [
+      "\\btumou?rs?\\b",
+      "tumour"
+     ],
+     [
+      "\\bmass(?:es)?\\b",
+      "mass"
+     ],
+     [
+      "\\blumps?\\b",
+      "lump"
+     ],
+     [
+      "\\bswellings?\\b",
+      "swelling"
+     ],
+     [
+      "\\blesions?\\b",
+      "lesion"
+     ],
+     [
+      "\\bnodules?\\b",
+      "nodule"
+     ],
+     [
+      "\\bsarcomas?\\b",
+      "sarcoma"
+     ]
+    ]
+   }
+  ]
+ },
+ "fields": [
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "",
+   "options": [
+    "Excisional biopsy",
+    "Intralesional resection",
+    "Marginal resection",
+    "Wide resection",
+    "Radical resection",
+    "Other (specify)",
+    "Not specified"
+   ],
+   "help": "The four resection types are those of the QMH page; excisional biopsy is CAP's."
+  },
+  {
+   "id": "procedureOther",
+   "label": "Procedure (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "siteGroup",
+   "label": "Tumour site (AJCC site group)",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "",
+   "options": [
+    "Head and neck",
+    "Trunk and extremities",
+    "Abdominal visceral organs",
+    "Thoracic visceral organs",
+    "Retroperitoneum",
+    "Orbit",
+    "Other (specify)",
+    "Not specified"
+   ],
+   "help": "Sets the pT table: trunk and extremities and the retroperitoneum by size (50 / 100 / 150 mm); head and neck by size (20 / 40 mm) and invasion; the visceral organs by extent; the orbit by size and invasion. Sarcomas of the peritoneal, pleural or mediastinal cavities not arising in an organ may be staged as retroperitoneal (CAP, Note B)."
+  },
+  {
+   "id": "siteGroupOther",
+   "label": "Tumour site (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "siteGroup",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "site",
+   "label": "Site / laterality",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. right thigh",
+   "help": "Printed in the site row and the diagnosis line."
+  },
+  {
+   "id": "clinicalLabel",
+   "label": "Clinical label",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "tumour",
+   "placeholder": "tumour / mass / lipomatous sarcoma",
+   "help": "As the request names it: \"right thigh tumour\"."
+  },
+  {
+   "id": "specimenName",
+   "label": "Specimen as received (optional)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. Right thigh tumour, wide excision",
+   "help": "Replaces the generated diagnosis line after the organ word."
+  },
+  {
+   "id": "organ",
+   "label": "Organ (diagnosis line)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "SOFT TISSUE",
+   "help": "Leave blank for SOFT TISSUE (RETROPERITONEAL for the retroperitoneum)."
+  },
+  {
+   "id": "tumourSizeMm",
+   "label": "Tumour size, greatest dimension (mm)",
+   "type": "number",
+   "group": "Specimen and tumour",
+   "default": "",
+   "help": "Or give the three dimensions below; pT reads the greatest."
+  },
+  {
+   "id": "tumourDims",
+   "label": "Tumour dimensions (mm)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. 110 x 70 x 60"
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "",
+   "options": [
+    "Unifocal",
+    "Multifocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "focalityDetail",
+   "label": "Tumour focality (number and sizes / explain)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "focality",
+    "is": [
+     "Multifocal",
+     "Cannot be determined"
+    ]
+   }
+  },
+  {
+   "id": "depth",
+   "label": "Tumour depth",
+   "type": "multiselect",
+   "group": "Specimen and tumour",
+   "default": [],
+   "options": [
+    "Dermis",
+    "Subcutis",
+    "Deep fascia",
+    "Skeletal muscle, intramuscular",
+    "Skeletal muscle, intermuscular",
+    "Bone",
+    "Other (specify)"
+   ],
+   "help": "CAP (optional): tick each layer the tumour involves. Depth is not part of the AJCC 8th edition pT."
+  },
+  {
+   "id": "depthOther",
+   "label": "Tumour depth (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "depth",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "hnInvasion",
+   "label": "Head and neck: invasion of adjoining structures",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "",
+   "options": [
+    "No invasion of adjoining structures",
+    "Orbital invasion, skull base / dural invasion, invasion of central compartment viscera, involvement of facial skeleton, or invasion of pterygoid muscles",
+    "Brain parenchymal invasion, carotid artery encasement, prevertebral muscle invasion, or central nervous system involvement via perineural spread"
+   ],
+   "showIf": {
+    "field": "siteGroup",
+    "is": "Head and neck"
+   },
+   "help": "pT4a / pT4b whatever the size."
+  },
+  {
+   "id": "visceralExtent",
+   "label": "Visceral organs: extent",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "",
+   "options": [
+    "Organ confined",
+    "Invades serosa or visceral peritoneum",
+    "Extension beyond serosa (mesentery)",
+    "Invades another organ",
+    "Multifocal (2 sites)",
+    "Multifocal (3 to 5 sites)",
+    "Multifocal (more than 5 sites)"
+   ],
+   "showIf": {
+    "field": "siteGroup",
+    "is": [
+     "Abdominal visceral organs",
+     "Thoracic visceral organs"
+    ]
+   },
+   "help": "pT1 organ confined; pT2a / pT2b beyond the organ; pT3 another organ (including the diaphragm, abdominal wall or pelvic side wall); pT4a to pT4c multifocal."
+  },
+  {
+   "id": "orbitExtent",
+   "label": "Orbit: invasion",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "",
+   "options": [
+    "No invasion of bony walls or globe",
+    "Invasion of bony walls",
+    "Invasion of globe or periorbital structures (eyelid, conjunctiva, temporal fossa, nasal cavity, paranasal sinuses or central nervous system)"
+   ],
+   "showIf": {
+    "field": "siteGroup",
+    "is": "Orbit"
+   }
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (mm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. 160 x 110 x 80"
+  },
+  {
+   "id": "skinDims",
+   "label": "Skin ellipse (mm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. 120 x 30"
+  },
+  {
+   "id": "orientation",
+   "label": "Orientation",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. long stitch proximal, short stitch superficial"
+  },
+  {
+   "id": "cutSurface",
+   "label": "Cut surface",
+   "type": "multiselect",
+   "group": "Macroscopy",
+   "default": [],
+   "options": [
+    "Fleshy",
+    "Fatty",
+    "Myxoid",
+    "Fibrous",
+    "Haemorrhagic",
+    "Necrotic",
+    "Cystic"
+   ],
+   "help": "Printed in the macroscopy: \"a fleshy, necrotic tumour\"."
+  },
+  {
+   "id": "macroMarginMm",
+   "label": "Tumour to the closest margin (mm)",
+   "type": "number",
+   "group": "Macroscopy",
+   "default": ""
+  },
+  {
+   "id": "macroMarginSite",
+   "label": "Closest margin",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. deep"
+  },
+  {
+   "id": "macroOther",
+   "label": "Other macroscopic findings",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. The tumour abuts the femoral vessels.",
+   "help": "One sentence, printed in the macroscopy as typed."
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "type": "textarea",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. 1-6 tumour; 7 deep margin; 8 proximal margin",
+   "help": "Printed after the macroscopy as typed."
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Atypical spindle cell / pleomorphic lipomatous tumour",
+    "Atypical lipomatous tumour",
+    "Well-differentiated liposarcoma",
+    "Dedifferentiated liposarcoma",
+    "Myxoid liposarcoma",
+    "Pleomorphic liposarcoma, NOS",
+    "Epithelioid pleomorphic liposarcoma",
+    "Myxoid pleomorphic liposarcoma",
+    "Solitary fibrous tumour",
+    "Desmoid-type fibromatosis",
+    "Lipofibromatosis",
+    "Adult fibrosarcoma",
+    "Plexiform fibrohistiocytic tumour",
+    "Giant cell fibroblastoma",
+    "Dermatofibrosarcoma protuberans",
+    "Fibrosarcomatous dermatofibrosarcoma protuberans",
+    "Myxofibrosarcoma",
+    "Low-grade fibromyxoid sarcoma",
+    "Sclerosing epithelioid fibrosarcoma",
+    "Myofibroblastic sarcoma",
+    "Superficial CD34-positive fibroblastic tumour",
+    "Myxoinflammatory fibroblastic sarcoma",
+    "Giant cell tumour of soft tissue",
+    "Langerhans cell sarcoma",
+    "True histiocytic sarcoma",
+    "Malignant tenosynovial giant cell tumour",
+    "Dendritic reticulum cell sarcoma",
+    "Interdigitating reticulum cell sarcoma",
+    "Fibroblastic reticulum cell sarcoma",
+    "NTRK 1/2/3 fusion tumour",
+    "BRAF fusion tumour",
+    "RET fusion tumour",
+    "RAF fusion tumour",
+    "ALK fusion tumour, NOS",
+    "Inflammatory myofibroblastic tumour",
+    "Epithelioid inflammatory myofibroblastic sarcoma",
+    "Infantile fibrosarcoma",
+    "Glomus tumour, atypical / uncertain biologic potential",
+    "Glomus tumour, malignant",
+    "Kaposiform haemangioendothelioma",
+    "Papillary intralymphatic angioendothelioma",
+    "Retiform haemangioendothelioma",
+    "Composite haemangioendothelioma",
+    "Pseudomyogenic haemangioendothelioma",
+    "Kaposi sarcoma",
+    "Epithelioid haemangioendothelioma with WWTR1::CAMTA1 fusion",
+    "Epithelioid haemangioendothelioma with YAP1::TFE3 fusion",
+    "Epithelioid haemangioendothelioma, NOS",
+    "Epithelioid angiosarcoma",
+    "Radiation-associated angiosarcoma",
+    "Lymphoedema-associated angiosarcoma",
+    "Angiosarcoma, NOS",
+    "EBV-associated smooth muscle tumour",
+    "Leiomyosarcoma",
+    "Embryonal rhabdomyosarcoma",
+    "Alveolar rhabdomyosarcoma",
+    "Pleomorphic rhabdomyosarcoma",
+    "Spindle cell / sclerosing rhabdomyosarcoma, NOS",
+    "Congenital spindle cell rhabdomyosarcoma with VGLL2/NCOA2/CITED2 fusions",
+    "Spindle cell / sclerosing rhabdomyosarcoma with MYOD1 mutation",
+    "Spindle cell rhabdomyosarcoma with FUS/EWSR1::TFCP2 or MEIS1::NCOA2 rearrangements",
+    "Ectomesenchymoma",
+    "Malignant peripheral nerve sheath tumour, NOS",
+    "Epithelioid malignant peripheral nerve sheath tumour",
+    "Malignant Triton tumour",
+    "Melanotic malignant peripheral nerve sheath tumour",
+    "Malignant granular cell tumour",
+    "Malignant perineurioma",
+    "Extraskeletal osteosarcoma",
+    "Mesenchymal chondrosarcoma",
+    "Chondrosarcoma arising in synovial chondromatosis",
+    "Haemosiderotic fibrolipomatous tumour",
+    "Pleomorphic hyalinising angiectatic tumour",
+    "Atypical fibroxanthoma",
+    "Pleomorphic dermal sarcoma",
+    "Angiomatoid fibrous histiocytoma",
+    "Myoepithelioma",
+    "Mixed tumour, malignant",
+    "Myoepithelial carcinoma",
+    "Ossifying fibromyxoid tumour",
+    "Phosphaturic mesenchymal tumour, malignant",
+    "Synovial sarcoma",
+    "Epithelioid sarcoma, distal (classic) type",
+    "Epithelioid sarcoma, proximal (large cell) type",
+    "Alveolar soft part sarcoma",
+    "Clear cell sarcoma of soft tissue",
+    "Extraskeletal myxoid chondrosarcoma",
+    "Extraskeletal Ewing sarcoma",
+    "Desmoplastic small round cell tumour",
+    "Round cell sarcoma with EWSR1::non-ETS fusions",
+    "CIC-rearranged sarcoma",
+    "Sarcoma with BCOR genetic alterations",
+    "PEComa, NOS",
+    "PEComa, TSC2 mutated",
+    "PEComa, TFE3 rearranged",
+    "Intimal sarcoma",
+    "Extrarenal rhabdoid tumour",
+    "Undifferentiated pleomorphic sarcoma",
+    "Undifferentiated sarcoma, NOS",
+    "Other histologic type not listed (specify)",
+    "Cannot be determined"
+   ],
+   "optionGroups": [
+    {
+     "label": "Adipocytic tumours",
+     "options": [
+      "Atypical spindle cell / pleomorphic lipomatous tumour",
+      "Atypical lipomatous tumour",
+      "Well-differentiated liposarcoma",
+      "Dedifferentiated liposarcoma",
+      "Myxoid liposarcoma",
+      "Pleomorphic liposarcoma, NOS",
+      "Epithelioid pleomorphic liposarcoma",
+      "Myxoid pleomorphic liposarcoma"
+     ]
+    },
+    {
+     "label": "Fibroblastic / myofibroblastic / fibrohistiocytic tumours",
+     "options": [
+      "Solitary fibrous tumour",
+      "Desmoid-type fibromatosis",
+      "Lipofibromatosis",
+      "Adult fibrosarcoma",
+      "Plexiform fibrohistiocytic tumour",
+      "Giant cell fibroblastoma",
+      "Dermatofibrosarcoma protuberans",
+      "Fibrosarcomatous dermatofibrosarcoma protuberans",
+      "Myxofibrosarcoma",
+      "Low-grade fibromyxoid sarcoma",
+      "Sclerosing epithelioid fibrosarcoma",
+      "Myofibroblastic sarcoma",
+      "Superficial CD34-positive fibroblastic tumour",
+      "Myxoinflammatory fibroblastic sarcoma"
+     ]
+    },
+    {
+     "label": "Histiocytic / giant cell-rich tumours",
+     "options": [
+      "Giant cell tumour of soft tissue",
+      "Langerhans cell sarcoma",
+      "True histiocytic sarcoma",
+      "Malignant tenosynovial giant cell tumour",
+      "Dendritic reticulum cell sarcoma",
+      "Interdigitating reticulum cell sarcoma",
+      "Fibroblastic reticulum cell sarcoma"
+     ]
+    },
+    {
+     "label": "Tyrosine kinase fusion tumours, RAS-MAP pathway",
+     "options": [
+      "NTRK 1/2/3 fusion tumour",
+      "BRAF fusion tumour",
+      "RET fusion tumour",
+      "RAF fusion tumour",
+      "ALK fusion tumour, NOS",
+      "Inflammatory myofibroblastic tumour",
+      "Epithelioid inflammatory myofibroblastic sarcoma",
+      "Infantile fibrosarcoma"
+     ]
+    },
+    {
+     "label": "Pericytic / myopericytic tumours",
+     "options": [
+      "Glomus tumour, atypical / uncertain biologic potential",
+      "Glomus tumour, malignant"
+     ]
+    },
+    {
+     "label": "Vascular tumours",
+     "options": [
+      "Kaposiform haemangioendothelioma",
+      "Papillary intralymphatic angioendothelioma",
+      "Retiform haemangioendothelioma",
+      "Composite haemangioendothelioma",
+      "Pseudomyogenic haemangioendothelioma",
+      "Kaposi sarcoma",
+      "Epithelioid haemangioendothelioma with WWTR1::CAMTA1 fusion",
+      "Epithelioid haemangioendothelioma with YAP1::TFE3 fusion",
+      "Epithelioid haemangioendothelioma, NOS",
+      "Epithelioid angiosarcoma",
+      "Radiation-associated angiosarcoma",
+      "Lymphoedema-associated angiosarcoma",
+      "Angiosarcoma, NOS"
+     ]
+    },
+    {
+     "label": "Smooth muscle tumours",
+     "options": [
+      "EBV-associated smooth muscle tumour",
+      "Leiomyosarcoma"
+     ]
+    },
+    {
+     "label": "Skeletal muscle tumours",
+     "options": [
+      "Embryonal rhabdomyosarcoma",
+      "Alveolar rhabdomyosarcoma",
+      "Pleomorphic rhabdomyosarcoma",
+      "Spindle cell / sclerosing rhabdomyosarcoma, NOS",
+      "Congenital spindle cell rhabdomyosarcoma with VGLL2/NCOA2/CITED2 fusions",
+      "Spindle cell / sclerosing rhabdomyosarcoma with MYOD1 mutation",
+      "Spindle cell rhabdomyosarcoma with FUS/EWSR1::TFCP2 or MEIS1::NCOA2 rearrangements",
+      "Ectomesenchymoma"
+     ]
+    },
+    {
+     "label": "Peripheral nerve sheath tumours",
+     "options": [
+      "Malignant peripheral nerve sheath tumour, NOS",
+      "Epithelioid malignant peripheral nerve sheath tumour",
+      "Malignant Triton tumour",
+      "Melanotic malignant peripheral nerve sheath tumour",
+      "Malignant granular cell tumour",
+      "Malignant perineurioma"
+     ]
+    },
+    {
+     "label": "Chondro-osseous tumours",
+     "options": [
+      "Extraskeletal osteosarcoma",
+      "Mesenchymal chondrosarcoma",
+      "Chondrosarcoma arising in synovial chondromatosis"
+     ]
+    },
+    {
+     "label": "Tumours of uncertain differentiation / additional round and spindle cell tumours",
+     "options": [
+      "Haemosiderotic fibrolipomatous tumour",
+      "Pleomorphic hyalinising angiectatic tumour",
+      "Atypical fibroxanthoma",
+      "Pleomorphic dermal sarcoma",
+      "Angiomatoid fibrous histiocytoma",
+      "Myoepithelioma",
+      "Mixed tumour, malignant",
+      "Myoepithelial carcinoma",
+      "Ossifying fibromyxoid tumour",
+      "Phosphaturic mesenchymal tumour, malignant",
+      "Synovial sarcoma",
+      "Epithelioid sarcoma, distal (classic) type",
+      "Epithelioid sarcoma, proximal (large cell) type",
+      "Alveolar soft part sarcoma",
+      "Clear cell sarcoma of soft tissue",
+      "Extraskeletal myxoid chondrosarcoma",
+      "Extraskeletal Ewing sarcoma",
+      "Desmoplastic small round cell tumour",
+      "Round cell sarcoma with EWSR1::non-ETS fusions",
+      "CIC-rearranged sarcoma",
+      "Sarcoma with BCOR genetic alterations",
+      "PEComa, NOS",
+      "PEComa, TSC2 mutated",
+      "PEComa, TFE3 rearranged",
+      "Intimal sarcoma",
+      "Extrarenal rhabdoid tumour"
+     ]
+    },
+    {
+     "label": "Undifferentiated sarcomas",
+     "options": [
+      "Undifferentiated pleomorphic sarcoma",
+      "Undifferentiated sarcoma, NOS"
+     ]
+    },
+    {
+     "label": "Other",
+     "options": [
+      "Other histologic type not listed (specify)",
+      "Cannot be determined"
+     ]
+    }
+   ],
+   "help": "CAP Soft Tissue 4.2.0.0 list (WHO 5th edition, intermediate and malignant tumours), in British spelling."
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Histologic type (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Other histologic type not listed (specify)",
+     "Cannot be determined"
+    ]
+   }
+  },
+  {
+   "id": "wdComponent",
+   "label": "Well-differentiated component",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Present",
+    "Not identified"
+   ],
+   "showIf": {
+    "field": "histType",
+    "is": "Dedifferentiated liposarcoma"
+   },
+   "help": "Present: \"arising from adjacent well differentiated liposarcoma\" in the diagnosis."
+  },
+  {
+   "id": "dedifSizeMm",
+   "label": "Dedifferentiated component, size (mm)",
+   "type": "number",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "histType",
+    "is": "Dedifferentiated liposarcoma"
+   }
+  },
+  {
+   "id": "heterologous",
+   "label": "Heterologous differentiation",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Not identified",
+    "Present (specify)"
+   ],
+   "showIf": {
+    "field": "histType",
+    "is": "Dedifferentiated liposarcoma"
+   }
+  },
+  {
+   "id": "heterologousType",
+   "label": "Heterologous differentiation (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "e.g. rhabdomyoblastic, osteosarcomatous",
+   "showIf": {
+    "field": "heterologous",
+    "is": "Present (specify)"
+   }
+  },
+  {
+   "id": "hypercellularPct",
+   "label": "Hypercellular (round cell) areas (%)",
+   "type": "number",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "histType",
+    "is": "Myxoid liposarcoma"
+   },
+   "help": "More than 5% is high grade (WHO 5th edition), and the differentiation score is then 3."
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "e.g. The tumour cells are positive for MDM2 and CDK4.",
+   "help": "One or more sentences, printed in the histology paragraph as typed."
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Tumour histology (replaces the generated paragraph)",
+   "type": "textarea",
+   "group": "Microscopic findings",
+   "default": "",
+   "help": "Leave blank to use the paragraph built from the fields above."
+  },
+  {
+   "id": "gradeMode",
+   "label": "Histologic grade",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "FNCLCC",
+    "Not graded",
+    "Cannot be assessed (GX)"
+   ],
+   "help": "Blank: FNCLCC, except the types CAP does not grade (alveolar soft part, clear cell and epithelioid sarcoma, extraskeletal myxoid chondrosarcoma, low-grade fibromyxoid sarcoma, sclerosing epithelioid fibrosarcoma, angiosarcoma, solitary fibrous tumour) and those high grade by definition (desmoplastic small round cell tumour, alveolar rhabdomyosarcoma, intimal sarcoma)."
+  },
+  {
+   "id": "diffScore",
+   "label": "Tumour differentiation (FNCLCC)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Well-differentiated liposarcoma (score 1)",
+    "Well-differentiated leiomyosarcoma (score 1)",
+    "Malignant neurofibroma (score 1)",
+    "Well-differentiated fibrosarcoma (score 1)",
+    "Myxoid liposarcoma (score 2)",
+    "Conventional leiomyosarcoma (score 2)",
+    "Conventional MPNST (score 2)",
+    "Conventional fibrosarcoma (score 2)",
+    "Myxofibrosarcoma (score 2)",
+    "Myxoid chondrosarcoma (score 2)",
+    "Conventional angiosarcoma (score 2)",
+    "High-grade myxoid (round cell) liposarcoma (score 3)",
+    "Pleomorphic liposarcoma (score 3)",
+    "Dedifferentiated liposarcoma (score 3)",
+    "Rhabdomyosarcoma (score 3)",
+    "Poorly differentiated / pleomorphic leiomyosarcoma (score 3)",
+    "Poorly differentiated / epithelioid angiosarcoma (score 3)",
+    "Poorly differentiated MPNST (score 3)",
+    "Malignant Triton tumour (score 3)",
+    "Synovial sarcoma (score 3)",
+    "Mesenchymal chondrosarcoma (score 3)",
+    "Extraskeletal osteosarcoma (score 3)",
+    "Extraskeletal Ewing sarcoma (score 3)",
+    "Malignant rhabdoid tumour (score 3)",
+    "Clear cell sarcoma (score 3)",
+    "Epithelioid sarcoma (score 3)",
+    "Alveolar soft part sarcoma (score 3)",
+    "Undifferentiated (spindle cell and pleomorphic) sarcoma (score 3)",
+    "Other (score typed)"
+   ],
+   "showIf": {
+    "field": "gradeMode",
+    "not": [
+     "Not graded",
+     "Cannot be assessed (GX)"
+    ]
+   },
+   "help": "Leave blank to take the score from the histologic type; pick one to override it (e.g. a poorly differentiated leiomyosarcoma)."
+  },
+  {
+   "id": "diffScoreOther",
+   "label": "Differentiation score (1, 2 or 3)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "diffScore",
+    "is": "Other (score typed)"
+   }
+  },
+  {
+   "id": "mitoticCount",
+   "label": "Mitotic count",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "e.g. 23",
+   "showIf": {
+    "field": "gradeMode",
+    "not": [
+     "Not graded",
+     "Cannot be assessed (GX)"
+    ]
+   },
+   "help": "In the most mitotically active area. Per 10 HPF: score 1 under 14, score 2 14 to 28, score 3 over 28 (QMH, 22 mm eyepiece). Per mm2: 0 to 5, 6 to 11, over 11 (CAP)."
+  },
+  {
+   "id": "mitoticUnit",
+   "label": "Mitotic count, unit",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "per 10 HPF (22 mm eyepiece, 40x objective)",
+   "options": [
+    "per 10 HPF (22 mm eyepiece, 40x objective)",
+    "per mm²"
+   ],
+   "showIf": {
+    "field": "gradeMode",
+    "not": [
+     "Not graded",
+     "Cannot be assessed (GX)"
+    ]
+   }
+  },
+  {
+   "id": "necrosis",
+   "label": "Tumour necrosis",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "No tumour necrosis",
+    "Less than 50% tumour necrosis",
+    "50% or more tumour necrosis"
+   ],
+   "showIf": {
+    "field": "gradeMode",
+    "not": [
+     "Not graded",
+     "Cannot be assessed (GX)"
+    ]
+   },
+   "help": "Leave blank and type the percentage to score from it."
+  },
+  {
+   "id": "necrosisPct",
+   "label": "Tumour necrosis (%)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "e.g. 30",
+   "showIf": {
+    "field": "gradeMode",
+    "not": [
+     "Not graded",
+     "Cannot be assessed (GX)"
+    ]
+   }
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "marginsText",
+   "label": "Margins (one per line)",
+   "type": "textarea",
+   "group": "Margins",
+   "default": "",
+   "placeholder": "Deep: 2.2 (block 5)\nProximal: >20 (block 1)\nDistal: involved (block 9)",
+   "help": "\"Name: distance or status (blocks)\". A number is the clearance in mm; \"involved\", \"<1\", \"clear\" and \"distant\" are read as written."
+  },
+  {
+   "id": "marginsNotAssessable",
+   "label": "Margins cannot be assessed",
+   "type": "checkbox",
+   "group": "Margins",
+   "default": false
+  },
+  {
+   "id": "fascialEnvelope",
+   "label": "Intact fascial envelope / pseudocapsule at the closest margin",
+   "type": "select",
+   "group": "Margins",
+   "default": "",
+   "options": [
+    "Present",
+    "Absent",
+    "Cannot be determined",
+    "Not applicable"
+   ],
+   "help": "CAP (optional)."
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "help": "Leave blank when none were submitted: pN is then not assigned and the stage group reads N0 (CAP)."
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Lymph nodes involved",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "nodesExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension",
+   "type": "select",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Size of largest metastatic deposit (mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "nodeSites",
+   "label": "Nodal site(s) with tumour",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis",
+   "type": "multiselect",
+   "group": "Lymph nodes and metastasis",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Lung",
+    "Other (specify)",
+    "Cannot be determined"
+   ],
+   "exclusive": [
+    "Not applicable",
+    "Not identified",
+    "Cannot be determined"
+   ],
+   "help": "Only when metastatic tissue is submitted or pathologically confirmed."
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Distant metastasis (specify)",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "any": [
+     {
+      "field": "distantMets",
+      "is": "Other (specify)"
+     },
+     {
+      "field": "distantMets",
+      "is": "Non-regional lymph node(s)"
+     },
+     {
+      "field": "distantMets",
+      "is": "Lung"
+     }
+    ]
+   }
+  },
+  {
+   "id": "preresection",
+   "label": "Preresection treatment",
+   "type": "multiselect",
+   "group": "Additional findings",
+   "default": [
+    "No known preresection therapy"
+   ],
+   "options": [
+    "No known preresection therapy",
+    "Chemotherapy performed",
+    "Radiation therapy performed",
+    "Therapy performed, type not specified",
+    "Other (specify)",
+    "Not specified"
+   ],
+   "exclusive": [
+    "No known preresection therapy",
+    "Not specified"
+   ],
+   "help": "Chemotherapy, radiation therapy or therapy of unspecified type adds the y prefix (ypT)."
+  },
+  {
+   "id": "preresectionOther",
+   "label": "Preresection treatment (specify)",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "showIf": {
+    "field": "preresection",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "treatmentEffect",
+   "label": "Treatment effect",
+   "type": "select",
+   "group": "Additional findings",
+   "default": "No known presurgical therapy",
+   "options": [
+    "No known presurgical therapy",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "viablePct",
+   "label": "Viable tumour (%)",
+   "type": "number",
+   "group": "Additional findings",
+   "default": "",
+   "showIf": {
+    "field": "treatmentEffect",
+    "is": "Present"
+   },
+   "help": "QMH records the viable tumour; CAP expresses the response as the non-viable percentage of the tumour area."
+  },
+  {
+   "id": "treatmentFeatures",
+   "label": "Treatment effect, features",
+   "type": "multiselect",
+   "group": "Additional findings",
+   "default": [],
+   "options": [
+    "Geographic necrosis",
+    "Fibrosis",
+    "Hyalinisation",
+    "Haemorrhage",
+    "Cystic change",
+    "Histiocytic response",
+    "Inflammation",
+    "Other (specify)"
+   ],
+   "showIf": {
+    "field": "treatmentEffect",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "treatmentFeaturesOther",
+   "label": "Treatment effect, feature (specify)",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "showIf": {
+    "field": "treatmentFeatures",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "otherFindings",
+   "label": "Other findings",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "placeholder": "e.g. Skeletal muscle atrophy"
+  },
+  {
+   "id": "mdm2",
+   "label": "MDM2 amplification (FISH)",
+   "type": "select",
+   "group": "Molecular findings",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Amplification detected",
+    "No amplification detected",
+    "Pending"
+   ]
+  },
+  {
+   "id": "ddit3",
+   "label": "DDIT3 / FUS rearrangement (FISH)",
+   "type": "select",
+   "group": "Molecular findings",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "DDIT3 rearrangement detected",
+    "FUS rearrangement detected",
+    "FUS::DDIT3 fusion detected",
+    "EWSR1::DDIT3 fusion detected",
+    "No DDIT3 or FUS rearrangement detected",
+    "Pending"
+   ]
+  },
+  {
+   "id": "ancillaryOther",
+   "label": "Other ancillary studies",
+   "type": "text",
+   "group": "Molecular findings",
+   "default": "",
+   "placeholder": "Test and result, e.g. SS18 rearrangement detected (FISH)"
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "type": "text",
+   "group": "Staging",
+   "default": "",
+   "placeholder": "e.g. pT2",
+   "help": "Replaces the derived pTNM; give the reason below."
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "pTNM override: reason",
+   "type": "text",
+   "group": "Staging",
+   "default": "",
+   "showIf": {
+    "field": "tnmOverride",
+    "truthy": true
+   }
+  }
+ ],
+ "example": {
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true
+  },
+  "parts": [
+   {
+    "values": {
+     "procedure": "Wide resection",
+     "procedureOther": "",
+     "siteGroup": "Trunk and extremities",
+     "siteGroupOther": "",
+     "site": "right thigh",
+     "clinicalLabel": "tumour",
+     "specimenName": "",
+     "organ": "",
+     "tumourSizeMm": "110",
+     "tumourDims": "110 x 70 x 60",
+     "focality": "Unifocal",
+     "focalityDetail": "",
+     "depth": [
+      "Skeletal muscle, intramuscular"
+     ],
+     "depthOther": "",
+     "hnInvasion": "",
+     "visceralExtent": "",
+     "orbitExtent": "",
+     "specimenDims": "160 x 110 x 80",
+     "skinDims": "",
+     "orientation": "long stitch proximal, short stitch superficial",
+     "cutSurface": [
+      "Fleshy",
+      "Necrotic"
+     ],
+     "macroMarginMm": "2",
+     "macroMarginSite": "deep",
+     "macroOther": "",
+     "blocks": "9",
+     "blockKeyText": "1-6 Tumour\n7 Deep margin\n8 Proximal margin\n9 Distal margin",
+     "histType": "Undifferentiated pleomorphic sarcoma",
+     "histTypeOther": "",
+     "wdComponent": "",
+     "dedifSizeMm": "",
+     "heterologous": "",
+     "heterologousType": "",
+     "hypercellularPct": "",
+     "ihcText": "The tumour cells are negative for MDM2, desmin, S100 and SOX10.",
+     "histologyNotes": "",
+     "gradeMode": "",
+     "diffScore": "",
+     "diffScoreOther": "",
+     "mitoticCount": "32",
+     "mitoticUnit": "per 10 HPF (22 mm eyepiece, 40x objective)",
+     "necrosis": "Less than 50% tumour necrosis",
+     "necrosisPct": "30",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "marginsText": "Deep: 2.2 (block 7)\nProximal: 25 (block 8)\nDistal: >20 (block 9)",
+     "marginsNotAssessable": false,
+     "fascialEnvelope": "Present",
+     "nodesExamined": "",
+     "nodesInvolved": "",
+     "ene": "",
+     "largestDepositMm": "",
+     "nodeSites": "",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "distantMetsOther": "",
+     "preresection": [
+      "No known preresection therapy"
+     ],
+     "preresectionOther": "",
+     "treatmentEffect": "No known presurgical therapy",
+     "viablePct": "",
+     "treatmentFeatures": [],
+     "treatmentFeaturesOther": "",
+     "otherFindings": "",
+     "mdm2": "No amplification detected",
+     "ddit3": "Not performed",
+     "ancillaryOther": "",
+     "multiplePrimaries": false,
+     "recurrent": false,
+     "tnmOverride": "",
+     "tnmOverrideReason": ""
+    }
+   }
+  ]
+ }
+}

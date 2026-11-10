@@ -1,0 +1,98 @@
+{
+  "description": "undifferentiated pleomorphic sarcoma of the right thigh, intramuscular, 110 mm, wide excision, FNCLCC grade 3, deep margin clear by 2.2 mm with an intact fascial envelope, no node examined, pT3, the example",
+  "templateId": "soft_tissue_sarcoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "procedure": "Wide resection",
+      "procedureOther": "",
+      "siteGroup": "Trunk and extremities",
+      "siteGroupOther": "",
+      "site": "right thigh",
+      "clinicalLabel": "tumour",
+      "specimenName": "",
+      "organ": "",
+      "tumourSizeMm": "110",
+      "tumourDims": "110 x 70 x 60",
+      "focality": "Unifocal",
+      "focalityDetail": "",
+      "depth": [
+        "Skeletal muscle, intramuscular"
+      ],
+      "depthOther": "",
+      "hnInvasion": "",
+      "visceralExtent": "",
+      "orbitExtent": "",
+      "specimenDims": "160 x 110 x 80",
+      "skinDims": "",
+      "orientation": "long stitch proximal, short stitch superficial",
+      "cutSurface": [
+        "Fleshy",
+        "Necrotic"
+      ],
+      "macroMarginMm": "2",
+      "macroMarginSite": "deep",
+      "macroOther": "",
+      "blocks": "9",
+      "blockKeyText": "1-6 Tumour\n7 Deep margin\n8 Proximal margin\n9 Distal margin",
+      "histType": "Undifferentiated pleomorphic sarcoma",
+      "histTypeOther": "",
+      "wdComponent": "",
+      "dedifSizeMm": "",
+      "heterologous": "",
+      "heterologousType": "",
+      "hypercellularPct": "",
+      "ihcText": "The tumour cells are negative for MDM2, desmin, S100 and SOX10.",
+      "histologyNotes": "",
+      "gradeMode": "",
+      "diffScore": "",
+      "diffScoreOther": "",
+      "mitoticCount": "32",
+      "mitoticUnit": "per 10 HPF (22 mm eyepiece, 40x objective)",
+      "necrosis": "Less than 50% tumour necrosis",
+      "necrosisPct": "30",
+      "lvi": "Not identified",
+      "pni": "Not identified",
+      "marginsText": "Deep: 2.2 (block 7)\nProximal: 25 (block 8)\nDistal: >20 (block 9)",
+      "marginsNotAssessable": false,
+      "fascialEnvelope": "Present",
+      "nodesExamined": "",
+      "nodesInvolved": "",
+      "ene": "",
+      "largestDepositMm": "",
+      "nodeSites": "",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "distantMetsOther": "",
+      "preresection": [
+        "No known preresection therapy"
+      ],
+      "preresectionOther": "",
+      "treatmentEffect": "No known presurgical therapy",
+      "viablePct": "",
+      "treatmentFeatures": [],
+      "treatmentFeaturesOther": "",
+      "otherFindings": "",
+      "mdm2": "No amplification detected",
+      "ddit3": "Not performed",
+      "ancillaryOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Right thigh tumour, wide excision\n\nReceived in formalin is a wide excision specimen from the right thigh, measuring 160 x 110 x 80 mm. The specimen is oriented (long stitch proximal, short stitch superficial). Sectioning shows a fleshy, necrotic tumour measuring 110 x 70 x 60 mm, 2 mm from the closest (deep) margin. Representative sections are taken in 9 blocks.\n\n(1-6) Tumour.\n(7) Deep margin.\n(8) Proximal margin.\n(9) Distal margin.\n\nSpecimen and tumour\n- Procedure: Wide resection\n- Tumour site: Trunk and extremities (right thigh)\n- Tumour size: 110 x 70 x 60 mm (greatest dimension 110 mm)\n- Tumour focality: Unifocal\n- Tumour depth: Skeletal muscle, intramuscular\n\nMicroscopic findings\n- Histologic type: Undifferentiated pleomorphic sarcoma\n- Tumour histology:\n  Sections show an undifferentiated pleomorphic sarcoma. The tumour is composed of pleomorphic spindle and polygonal cells arranged in sheets and short, haphazard fascicles. The tumour cells have enlarged, hyperchromatic nuclei with bizarre and multinucleated forms. The tumour cells are negative for MDM2, desmin, S100 and SOX10.\n- Histologic grade (FNCLCC grading): Grade 3 (score 6 to 8, high grade)\n  - Tumour differentiation: Undifferentiated (spindle cell and pleomorphic)\n    sarcoma (score 3)\n  - Mitotic rate: 32 mitoses per 10 HPF, 22 mm eyepiece (score 3)\n  - Tumour necrosis: 30% (score 1)\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n\nMargins\n- Surgical margin: Uninvolved by tumour (closest 2.2 mm, deep margin)\n  - Deep margin: Clear by 2.2 mm (block 7)\n  - Proximal margin: Clear by 25 mm (block 8)\n  - Distal margin: Clear by >20 mm (block 9)\n  - Intact fascial envelope / fibrous pseudocapsule at the closest margin:\n    Present\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT3\n\nAdditional findings\n- Preresection treatment: No known preresection therapy\n- Treatment effect: No known presurgical therapy\n\nAncillary studies\n- MDM2 amplification (FISH): No amplification detected\n\nSOFT TISSUE, right thigh tumour, wide excision:\n- UNDIFFERENTIATED PLEOMORPHIC SARCOMA,\n- FNCLCC Grade 3,\n- Resection margins clear.",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (reference, not reported): IIIB (no node examined: N0, as CAP directs)",
+      "part": "A"
+    }
+  ]
+}

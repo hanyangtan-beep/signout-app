@@ -222,15 +222,6 @@
    "qmh": "Skin-Melanoma"
   },
   {
-   "id": "soft_tissue_sarcoma",
-   "name": "Soft tissue sarcoma resection",
-   "label": "Sarcoma",
-   "system": "Soft tissue",
-   "kind": "cancer resection",
-   "roadmap": "Next",
-   "qmh": "MS-Soft tissue sarcoma"
-  },
-  {
    "id": "bone_tumour",
    "name": "Bone tumour resection",
    "label": "Bone tumour",

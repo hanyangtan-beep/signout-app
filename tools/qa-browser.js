@@ -2890,6 +2890,68 @@ await check('upper tract carcinoma: a pasted nephroureterectomy opens Ureter / p
   return 'nephroureterectomy line with a renal pelvis carcinoma history opens Ureter / pelvis Ca, left, complete, renal pelvis; cuff margin instead of the distal margin; pT3 pN0 printed with the option; stage group III in Checks; ureteric washing on urine cytology';
 });
 
+// Phase 84 (2026-11-10): the soft tissue sarcoma resection form from a pasted thigh wide excision with a sarcoma
+// history; the FNCLCC grade from its three scores, one margin per line under the Surgical margin row, the AJCC 8th
+// edition pT printed with the option and the stage group in Checks only. A benign excision with an atypical
+// lipomatous tumour ticked offers "Upgrade this part" and opens the sarcoma form with its answers carried over.
+await check('soft tissue sarcoma: a pasted thigh wide excision opens Sarcoma; FNCLCC grade 3, pT2, stage group in Checks; a benign ALT excision upgrades in place', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const chosen = async (id) => {
+    const chips = await page.locator(`.chips[data-field="${id}"] .chip[aria-pressed="true"]`).allTextContents();
+    if (chips.length) return chips.map((c) => c.replace(/^\s*\d*\s*/, '').trim()).join(',');
+    const sel = page.locator(`[data-field="${id}"] select`).first();
+    return (await sel.count()) ? sel.inputValue() : '';
+  };
+  const type = async (id, value) => { await page.fill(`#f-A-${id}`, value); await page.waitForTimeout(300); };
+  let routed = await pasteAndBuild('History\nRight thigh sarcoma\n\nSpecimen\n(A) Right thigh tumour, wide excision');
+  assert(routed === 'soft_tissue_sarcoma', `thigh wide excision routed to ${routed}`);
+  assert(await chosen('procedure') === 'Wide resection', `procedure read "${await chosen('procedure')}"`);
+  assert(await chosen('siteGroup') === 'Trunk and extremities', `site group read "${await chosen('siteGroup')}"`);
+  await pickField('histType', 'Undifferentiated pleomorphic sarcoma');
+  await type('tumourSizeMm', '80');
+  await type('mitoticCount', '30');
+  await pickField('necrosis', 'Less than 50% tumour necrosis');
+  await type('marginsText', 'Deep: 3 (block 4)\nProximal: clear by 25 mm (block 5)');
+  await page.locator('#case-options label', { hasText: 'Print the pTNM block (AJCC 8th edition)' }).locator('input').check();
+  await page.waitForTimeout(300);
+  let report = await reportText();
+  assert(report.includes('Histologic grade (FNCLCC grading): Grade 3 (score 6 to 8, high grade)'), `grade row wrong: ${report.slice(0, 1600)}`);
+  assert(report.includes('Surgical margin: Uninvolved by tumour (closest 3 mm, deep margin)') && report.includes('Deep margin: Clear by 3 mm (block 4)'), `margins wrong: ${report.slice(-1200)}`);
+  assert(report.includes('pTNM: pT2'), `pT missing: ${report.slice(-900)}`);
+  assert(report.includes('SOFT TISSUE, right thigh tumour, wide excision:') && report.includes('- UNDIFFERENTIATED PLEOMORPHIC SARCOMA,') && report.includes('- FNCLCC Grade 3,'), `diagnosis wrong: ${report.slice(-500)}`);
+  const printed = (await page.locator('#report-blocks .block pre').allInnerTexts()).join('\n');
+  assert(!/Stage group|\bIIIA\b/.test(printed), `a stage group reached the printed report: ${printed.slice(-600)}`);
+  assert((await checksText()).includes('Stage group, AJCC 8th edition (reference, not reported): IIIA'), `stage group missing from Checks: ${await checksText()}`);
+  await page.locator('[data-field="histType"]').first().scrollIntoViewIfNeeded();
+  await shot('soft-tissue-sarcoma-synoptic');
+  // Upgrade from the benign form: the ticked atypical lipomatous tumour, the depth and MDM2 carry over.
+  // Cleared first: Build parts keeps the case's clinical history, and its "sarcoma" would route the excision too.
+  await clearMeta(page);
+  await page.waitForTimeout(300);
+  routed = await pasteAndBuild('Soft tissue, right thigh, excision');
+  assert(routed === 'soft_tissue_benign', `benign excision routed to ${routed}`);
+  assert(!(await page.locator('button', { hasText: 'Upgrade this part' }).count()), 'Upgrade this part shows for a lipoma');
+  await pickField('diagnosis', 'Atypical lipomatous tumour – see comment');
+  await pickField('location', 'Subcutaneous');
+  await pickField('mdm2', 'Amplified');
+  const up = page.locator('button', { hasText: 'Upgrade this part' }).first();
+  assert(await up.count(), 'Upgrade this part does not show for an atypical lipomatous tumour');
+  await up.click();
+  await page.waitForTimeout(800);
+  const now = await page.locator('select[aria-label="Template for part A"]').first().inputValue();
+  assert(now === 'soft_tissue_sarcoma', `the part is on ${now} after the upgrade`);
+  assert(await chosen('histType') === 'Atypical lipomatous tumour', `type read "${await chosen('histType')}"`);
+  assert(await chosen('depth') === 'Subcutis' && await chosen('mdm2') === 'Amplification detected' && await chosen('siteGroup') === 'Trunk and extremities', `carried over: depth "${await chosen('depth')}", MDM2 "${await chosen('mdm2')}", site group "${await chosen('siteGroup')}"`);
+  report = await reportText();
+  // No grade (an atypical lipomatous tumour is not graded in the diagnosis) and no margins typed yet: the type closes the line.
+  const dx = report.slice(Math.max(0, report.indexOf('SOFT TISSUE, right thigh')), report.indexOf('SOFT TISSUE, right thigh') + 120);
+  assert(dx.startsWith('SOFT TISSUE, right thigh tumour, excision:') && dx.includes('- ATYPICAL LIPOMATOUS TUMOUR.'), `upgraded diagnosis wrong: ${dx || report.slice(0, 500)}`);
+  assert(report.includes('MDM2 amplification (FISH): Amplification detected'), `MDM2 missing after the upgrade: ${report.slice(-900)}`);
+  return 'thigh wide excision under a sarcoma history opens Sarcoma on Wide resection and Trunk and extremities; UPS grade 3 (7), closest margin 3 mm deep, pT2 printed with the option, IIIA in Checks only; benign ALT excision upgrades in place with depth, site group and MDM2 carried over';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

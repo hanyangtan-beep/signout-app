@@ -1154,6 +1154,78 @@
           "tier": "confident"
         }
       ]
+    },
+    {
+      "name": "a right thigh wide excision for a sarcoma opens the sarcoma form; a thigh lipoma keeps the benign soft tissue form (soft tissue sarcoma)",
+      "text": "History\nRight thigh sarcoma\n\nSpecimen\n(A) Right thigh tumour, wide excision and (B) Left thigh lipoma, excision",
+      "history": "Right thigh sarcoma",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "soft_tissue_sarcoma",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "soft_tissue_benign",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "procedure": "Wide resection",
+          "siteGroup": "Trunk and extremities",
+          "site": "right thigh"
+        }
+      }
+    },
+    {
+      "name": "a left retroperitoneal tumour excision with liposarcoma in the history opens the sarcoma form on the retroperitoneum; an atypical lipomatous tumour line needs no history (soft tissue sarcoma)",
+      "text": "History\nLeft retroperitoneal liposarcoma\n\nSpecimen\n(A) Left retroperitoneal tumour, excision and (B) Right thigh atypical lipomatous tumour, marginal excision",
+      "history": "Left retroperitoneal liposarcoma",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "soft_tissue_sarcoma",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "soft_tissue_sarcoma",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "siteGroup": "Retroperitoneum",
+          "procedure": ""
+        },
+        "B": {
+          "procedure": "Marginal resection",
+          "siteGroup": "Trunk and extremities",
+          "site": "right thigh"
+        }
+      }
+    },
+    {
+      "name": "a thigh mass biopsy for ?sarcoma keeps Generic and a tibia resection keeps the bone form (soft tissue sarcoma)",
+      "text": "History\n?sarcoma\n\nSpecimen\n(A) Right thigh mass, biopsy and (B) Right tibia, resection",
+      "history": "?sarcoma",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "generic",
+          "tier": "none"
+        },
+        {
+          "label": "B",
+          "templateId": "bone_joint",
+          "tier": "confident"
+        }
+      ]
     }
   ]
 }

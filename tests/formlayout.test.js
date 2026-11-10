@@ -46,7 +46,7 @@ test('every template that splits its macroscopy also packs its form', () => {
   const split = schemas.filter(([, s]) => s.layout?.macroGroups).map(([f]) => f);
   const packed = schemas.filter(([, s]) => s.layout?.pack).map(([f]) => f);
   assert.deepEqual(packed.sort(), split.sort());
-  assert.equal(packed.length, 35); // skin_scc joins in Phase 39; oral_carcinoma in Phase 42; hcc in Phase 51; adnexa_benign in Phase 74; pituitary_net in Phase 75; vulval_carcinoma in Phase 77; uterus_morcellated in Phase 81; liver_explant in Phase 82; ureter_renal_pelvis_carcinoma in Phase 83 (deliberate)
+  assert.equal(packed.length, 36); // skin_scc joins in Phase 39; oral_carcinoma in Phase 42; hcc in Phase 51; adnexa_benign in Phase 74; pituitary_net in Phase 75; vulval_carcinoma in Phase 77; uterus_morcellated in Phase 81; liver_explant in Phase 82; ureter_renal_pelvis_carcinoma in Phase 83; soft_tissue_sarcoma in Phase 84 (deliberate)
 });
 
 test('the small templates stay one field per row', () => {

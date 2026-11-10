@@ -1,0 +1,330 @@
+Soft Tissue Tumors
+Soft tissue tumors
+click to access explanations in the original CAP template
+This is additional protocol for biopsy specimen of soft tissue tumors .
+Gross descriptions:
+- Procedure:
+[opt]
+[opt] Intralesional resection
+[opt] Marginal resectiony
+[opt] Wide resection
+[opt] Radical resection
+[opt] Other (specify):
+[opt] Not specified
+Gross descriptions:
+- Tumor site:
+[opt]
+[opt] Head and neck (specify site, if known):
+[opt] Trunk and extremities (specify site, if known):
+[opt] Abdominal visceral organs (specify site, if known):
+[opt] Thoracic visceral organs (specify site, if known):
+[opt] Retroperitoneum (specify, if known):
+[opt] Not specified
+- Tumor size:
+[opt]
+[opt] Greatest dimension (mm):
+[opt] All dimensions (mm x mm x mm):
+[opt] Cannot be determined (explain):
+- Tumor focality:
+[opt]
+[opt] Unifocal
+[opt] Multi-focal (number, sizes)
+[opt] Cannot be determined (explain):
+-->
+Microscopic descriptions:
+- Tumor histology and immunohistochemical studies:
+Adipocytic Tumors
+Atypical spindle cell / pleomorphic lipomatous tumor
+Atypical lipomatous tumor
+Well-differentiated liposarcoma
+Dedifferentiated liposarcoma
+Myxoid liposarcoma (+% hypercellular area)
+Pleomorphic liposarcoma, NOS
+Epithelioid pleomorphic liposarcoma
+Myxoid pleomorphic liposarcoma
+Fibroblastic / myofibroblastic / fibrohistiocytic tumors
+Solitary fibrous tumor
+Desmoid-type fibromatosis
+Lipofibromatosis
+Adult fibrosarcoma
+Plexiform fibrohistiocytic tumor
+Giant cell fibroblastoma
+Dermatofibrosarcoma protuberans
+Fibrosarcomatous dermatofibrosarcoma protuberansa
+Myxofibrosarcoma
+Low-grade fibromyxoid sarcoma
+Sclerosing epithelioid fibrosarcoma
+Myofibroblastic sarcoma
+Superficial CD34-positive fibroblastic tumor
+Myxoinflammatory fibroblastic sarcoma
+Histiocytic / giant cell rich tumors
+Giant cell tumor of soft tissue
+Langerhans cell sarcoma
+True histiocytic sarcoma
+Malignant tenosynovial giant cell tumor
+Dendritic reticulum cell sarcoma
+Interdigitating reticulum cell sarcoma
+Fibroblastic reticulum cell sarcoma
+Tyrosine kinase fusion tumors, RAS-MAP pathway
+NTRK 1/2/3 fusion tumor
+BRAF fusion tumor
+RET fusion tumor
+RAF fusion tumor
+ALK fusion tumor, NOS
+Inflammatory myofibroblastic tumor
+Epithelioid inflammatory myofibroblastic sarcoma
+Infantile fibrosarcoma
+Pericytic / myopericytic tumors
+Glomus tumor, atypical / uncertain biologic potential
+Glomus tumor, malignant
+Vascular tumors
+Kaposiform hemangioendothelioma
+Papillary intralymphatic angioendothelioma
+Retiform hemangioendothelioma
+Composite hemangioendothelioma
+Pseudomyogenic hemangioendothelioma
+Kaposi sarcoma
+Epithelioid hemangioendothelioma with WWTR1::CAMTA1 fusion
+Epithelioid hemangioendothelioma with YAP1::TFE3 fusion
+Epithelioid hemangioendothelioma, NOS
+Epithelioid angiosarcoma
+Radiation-associated angiosarcoma
+Lymphedema-associated angiosarcoma
+Angiosarcoma, NOS
+Smooth Muscle Tumors
+EBV-associated smooth muscle tumor
+Leiomyosarcoma
+Skeletal Muscle Tumors
+Embryonal rhabdomyosarcoma
+Alveolar rhabdomyosarcoma
+Pleomorphic rhabdomyosarcoma
+Spindle cell / sclerosing rhabdomyosarcoma NOS
+Congenital spindle cell rhabdomyosarcoma with VGLL2/NCOA2/CITED2 rearrangements
+Spindle cell / sclerosing rhabdomyosarcoma with MYOD1 mutation
+MYOD1-mutant spindle cell / sclerosing rhabdomyosarcoma
+Spindle cell rhabdomyosarcoma with FUS/EWSR1::TFCP2 or MEIS1::NCOA2 rearrangements
+Ectomesenchymoma
+Peripheral nerve sheath tumors
+Malignant peripheral nerve sheath tumor, NOS
+Epithelioid malignant peripheral nerve sheath tumor
+Malignant triton tumor
+Melanotic malignant peripheral nerve sheath tumor
+Malignant granular cell tumor
+Malignant perineurioma
+Chondro-osseous Tumors
+Extraskeletal osteosarcoma
+Mesenchymal chondrosarcoma
+Chondrosarcoma arising in synovial chondromatosis
+Tumors of uncertain differentiation / additional round and spindle cell tumors
+Hemosiderotic fibrolipomatous tumor
+Pleomorphic hyalinizing angiectatic tumor
+Atypical fibroxanthoma
+Pleomorphic dermal sarcoma
+Angiomatoid fibrous histiocytoma
+Myoepithelioma
+Mixed tumor, malignant
+Myoepithelial carcinoma
+Ossifying fibromyxoid tumor
+Phosphaturic mesenchymal tumor, malignant
+Synovial sarcoma
+Epithelioid sarcoma, distal classic type
+Epithelioid sarcoma, proximal large cell type
+Alveolar soft part sarcoma
+Clear cell sarcoma of soft tissue
+Extraskeletal myxoid chondrosarcoma
+Desmoplastic small round cell tumor (DSRCT)
+Round cell sarcoma with EWSR1::non ETS fusions
+CIC-rearranged sarcoma
+Sarcoma with BCOR genetic alterations
+PEComa, NOS
+PEComa, TSC2 mutated
+PEComa, TFE3 rearranged
+Intimal sarcoma
+Extrarenal rhabdoid tumor
+Undifferentiated sarcomas
+Undifferentiated pleomorphic sarcoma
+Undifferentiated sarcoma NOS
+- Histologic grade (FNCLCC grading) :
+(mitoic counts adjusted to 22 mm eyepiece, 40x objective)
+[opt]
+[opt] Grade 1 (score 2 or 3, low grade)
+[opt] Grade 2 (score 4 or 5, high grade)
+[opt] Grade 3 (score 6 to 8, high grade)
+- Histologic type :
+[opt]
+[opt] Well-differentiated liposarcoma (score 1)
+[opt] Well-differentiated leiomyosarcoma (score 1)
+[opt] Malignant neurofibroma (score 1)
+[opt] Well-differentiated fibrosarcoma (score 1)
+[opt] Myxoid liposarcoma (score 2)
+[opt] Conventional leiomyosarcoma (score 2)
+[opt] Conventional MPNST (score 2)
+[opt] Conventional fibrosarcoma (score 2)
+[opt] Myxofibrosarcoma (score 2)
+[opt] Myxoid chondrosarcoma (score 2)
+[opt] Conventional angiosarcoma (score 2)
+[opt] High-grade myxoid (round cell) liposarcoma (score 3)
+[opt] Pleomorphic liposarcoma (score 3)
+[opt] Dedifferentiated liposarcoma (score 3)
+[opt] Rhabdomyosarcoma (score 3)
+[opt] Poorly differentiated/pleomorphic leiomyosarcoma (score 3)
+[opt] Poorly differentiated/epithelioid angiosarcoma (score 3)
+[opt] Poorly differentiated MPNST (score 3)
+[opt] Malignant Triton tumor (score 3)
+[opt] Synovial sarcoma (score 3)
+[opt] Mesenchymal chondrosarcoma (score 3)
+[opt] Extraskeletal osteosarcoma (score 3)
+[opt] Extraskeletal Ewing sarcoma (score 3)
+[opt] Malignant rhabdoid tumor (score 3)
+[opt] Clear cell sarcoma (score 3)
+[opt] Epithelioid sarcoma (score 3)
+[opt] Alveolar soft part sarcoma (score 3)
+[opt] Undifferentiated (spindlecell and pleomorphic) sarcoma (score 3)
+[opt] Other (specify):
+- Mitotic rate :
+[opt]
+[opt]
+[opt] (Score 1)
+[opt] (Score 2) 14 to 28 mitoses per 10 HPF, specify:
+[opt] 28 mitoses per 10 HPF, specify:">(Score 3) > 28 mitoses per 10 HPF, specify:
+[opt] (Score 1) 0-5/1 mm2
+[opt] (Score 2) 6-11/1 mm2
+[opt] 11/1 mm2">(Score 3) >11/1 mm2
+- Tumor necrosis:
+[opt]
+[opt] No tumor necrosis (score 0)
+[opt]
+[opt] or = 50% tumor necrosis"> > or = 50% tumor necrosis (score 2)
+- Treatment effect :
+[opt]
+[opt] No known presurgical therapy
+[opt] Not identified
+[opt] Present, specify percentage of viable tumor:
+[opt] Cannot be determined
+- Lymphatic and / or Vascular Invasion:
+[opt]
+[opt] Not identified
+[opt] Present
+[opt] Cannot be determined
++ Perineural invasion:
+[opt]
+[opt] Not identified
+[opt] Present
+[opt] Cannot be determined
+Surgical margins:
+- Surgical margin:
+[opt]
+[opt] Cannot be assessed
+[opt] Uninvolved by tumor, specify: , closest distance: ,and those margins
+[opt] Involved by tumor, specify:
+Regional lymph nodes:
+- Number of regional lymph nodes examined:
+- Number of lymph nodes involved:
+- Extracapsular spread:
+[opt]
+[opt] Not identified
+[opt] Present
+[opt] Cannot be determined
+- Size of largest metastatic deposit (mm), specify site:
+- Size of largest lymph node involved (mm), specify site:
+Distant Metastasis:
+[checkbox] - Not applicable
+Not applicable
+[checkbox] - Not identified
+Not identified
+[checkbox] - Non-regional lymph node(s) (specify):
+Non-regional lymph node(s) (specify):
+[checkbox] - Lung (specify):
+Lung (specify):
+[checkbox] - Other (specify):
+Other (specify):
+[checkbox] - Cannot be determined:
+Cannot be determined:
+Pathologic stage classification (AJCC 8e) :
+- TNM Descriptors:
+[checkbox] m (multiple primary tumors)
+m (multiple primary tumors)
+[checkbox] r (recurrent)
+r (recurrent)
+[checkbox] y (post treatment)
+y (post treatment)
+- Primary tumor (pT) (Head and neck):
+[opt]
+[opt] pTX: Primary tumor cannot be assessed
+[opt] pT1: Tumor
+[opt] 2 to pT2: Tumor > 2 to
+[opt] 4 cm">pT3: Tumor > 4 cm
+[opt] pT4: Tumor > 4 cm
+[opt] pT4a: Tumor with orbital invasion, skull base/dural invasion, invasion of central compartment viscera, involvement of facial skeleton, or invasion of pterygoid muscles
+[opt] pT4b: Tumor with brain parenchymal invasion, carotid artery encasement, prevertebral muscle invasion, or central nervous system involvement via perineural spread
+[opt] pT4 (subcategory cannot be determined)
+- Primary tumor (pT) (Trunk and extremities):
+[opt]
+[opt] pT not assigned (cannot be determined based on available pathological information)
+[opt] pT0: No evidence of primary tumor
+[opt] pT1: Tumor
+[opt] 5 to pT2: Tumor > 5 to
+[opt] 10 to pT3: Tumor > 10 to
+[opt] 15 cm ">pT4: Tumor > 15 cm
+- Primary tumor (pT) (Abdo and thorax visceral organs):
+[opt]
+[opt] pT not assigned (cannot be determined based on available pathological information)
+[opt] pT1: Organ confined
+[opt] pT2: Tumor extension into tissue beyond organ
+[opt] pT2a: Invades serosa or visceral peritoneum
+[opt] pT2b: Extension beyond serosa (mesentery)
+[opt] pT2 (subcategory cannot be determined)
+[opt] pT3: Invades another organ
+[opt] pT4: Multifocal involvement
+[opt] pT4a: Multifocal (2 sites)
+[opt] pT4b: Multifocal (3-5 sites)
+[opt] 5 sites)">pT4c: Multifocal (>5 sites)
+[opt] pT4 (subcategory cannot be determined)
+- Primary tumor (pT) (Retroperitoneum):
+[opt]
+[opt] pT not assigned (cannot be determined based on available pathological information)
+[opt] pT0: No evidence of primary tumor
+[opt] pT1: Tumor
+[opt] 5 to pT2: Tumor > 5 to
+[opt] 10 to pT3: Tumor > 10 to
+[opt] 15 cm ">pT4: Tumor > 15 cm
+- Primary tumor (pT) (Orbit):
+[opt]
+[opt] pT not assigned (cannot be determined based on available pathological information)
+[opt] pT0: No evidence of primary tumor
+[opt] pT1: Tumor
+[opt] 2 cm in greatest dimension without invasion of bony walls or globe">pT2: Tumor >2 cm in greatest dimension without invasion of bony walls or globe
+[opt] pT3: Tumor of any size with invasion of bony walls
+[opt] pT4: Tumor of any size with invasion of globe or periorbital structures, including eyelid, conjunctiva, temporal fossa, nasal cavity, paranasal sinuses, and/or central nervous system
+- Regional lymph nodes (pN):
+[opt]
+[opt] pN not assigned (no nodes submitted or found)
+[opt] pN not assigned (cannot be determined based on available pathological information)
+[opt] pN0: No regional lymph node metastasis
+[opt] pN1: Regional lymph node metastasis
+- Distant metastasis (pM):
+[opt]
+[opt] Not applicable - pM cannot be determined from the submitted specimen(s)
+[opt] pM1:Distant metastasis
+- Specify site(s), if known:
+-->
+Additional pathologic findings:
++ Preresection treatment:
+[checkbox] - No known preresection therapy
+No known preresection therapy
+[checkbox] - Chemotherapy performed
+Chemotherapy performed
+[checkbox] - Radiation therapy performed
+Radiation therapy performed
+[checkbox] - Therapy performed, type not specified
+Therapy performed, type not specified
+[checkbox] - Not specified
+Not specified
++ Other (specify):
+- Additional notes:
+Copy text to Clipboard
+Last upated on 14-Aug-2024,
+based on US CAP cancer protocol templates .
+Soft Tissue Resection 4.2.0.0 (June 2024).
+html form was created on pForm , W3 School , StackOverflow , and Icons8 .
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.

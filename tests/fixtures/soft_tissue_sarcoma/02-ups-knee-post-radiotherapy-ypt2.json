@@ -1,0 +1,108 @@
+{
+  "description": "undifferentiated pleomorphic sarcoma of the right knee after preoperative radiotherapy, 90 mm, wide excision with skin, 90% necrosis and 10% viable tumour, FNCLCC grade 3 with the CAP grading caveat, anterior margin clear by 2.3 mm without a fascial envelope, ypT2",
+  "templateId": "soft_tissue_sarcoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "procedure": "Wide resection",
+      "procedureOther": "",
+      "siteGroup": "Trunk and extremities",
+      "siteGroupOther": "",
+      "site": "right knee",
+      "clinicalLabel": "tumour",
+      "specimenName": "",
+      "organ": "",
+      "tumourSizeMm": "90",
+      "tumourDims": "90 x 60 x 55",
+      "focality": "Unifocal",
+      "focalityDetail": "",
+      "depth": [
+        "Skeletal muscle, intramuscular"
+      ],
+      "depthOther": "",
+      "hnInvasion": "",
+      "visceralExtent": "",
+      "orbitExtent": "",
+      "specimenDims": "130 x 75 x 70",
+      "skinDims": "70 x 20",
+      "orientation": "one stitch proximal, two stitches anterior",
+      "cutSurface": [
+        "Haemorrhagic",
+        "Necrotic"
+      ],
+      "macroMarginMm": "2",
+      "macroMarginSite": "anterior",
+      "macroOther": "",
+      "blocks": "15",
+      "blockKeyText": "1 Skin\n2 Anterior margin\n3 Posterior margin\n4 Proximal margin\n5 Distal margin\n6-15 Tumour",
+      "histType": "Undifferentiated pleomorphic sarcoma",
+      "histTypeOther": "",
+      "wdComponent": "",
+      "dedifSizeMm": "",
+      "heterologous": "",
+      "heterologousType": "",
+      "hypercellularPct": "",
+      "ihcText": "The tumour cells are weakly positive for actin and negative for desmin, myogenin and SATB2.",
+      "histologyNotes": "",
+      "gradeMode": "",
+      "diffScore": "",
+      "diffScoreOther": "",
+      "mitoticCount": "5",
+      "mitoticUnit": "per 10 HPF (22 mm eyepiece, 40x objective)",
+      "necrosis": "50% or more tumour necrosis",
+      "necrosisPct": "90",
+      "lvi": "Not identified",
+      "pni": "Not identified",
+      "marginsText": "Anterior: 2.3 (block 2)\nPosterior: >10 (block 3)\nProximal: clear (block 4)\nDistal: clear (block 5)",
+      "marginsNotAssessable": false,
+      "fascialEnvelope": "Absent",
+      "nodesExamined": "",
+      "nodesInvolved": "",
+      "ene": "",
+      "largestDepositMm": "",
+      "nodeSites": "",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "distantMetsOther": "",
+      "preresection": [
+        "Radiation therapy performed"
+      ],
+      "preresectionOther": "",
+      "treatmentEffect": "Present",
+      "viablePct": "10",
+      "treatmentFeatures": [
+        "Geographic necrosis",
+        "Haemorrhage",
+        "Fibrosis"
+      ],
+      "treatmentFeaturesOther": "",
+      "otherFindings": "",
+      "mdm2": "No amplification detected",
+      "ddit3": "Not performed",
+      "ancillaryOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Right knee tumour, wide excision\n\nReceived in formalin is a wide excision specimen from the right knee, measuring 130 x 75 x 70 mm, with a skin ellipse measuring 70 x 20 mm. The specimen is oriented (one stitch proximal, two stitches anterior). Sectioning shows a haemorrhagic, necrotic tumour measuring 90 x 60 x 55 mm, 2 mm from the closest (anterior) margin. Representative sections are taken in 15 blocks.\n\n(1) Skin.\n(2) Anterior margin.\n(3) Posterior margin.\n(4) Proximal margin.\n(5) Distal margin.\n(6-15) Tumour.\n\nSpecimen and tumour\n- Procedure: Wide resection\n- Tumour site: Trunk and extremities (right knee)\n- Tumour size: 90 x 60 x 55 mm (greatest dimension 90 mm)\n- Tumour focality: Unifocal\n- Tumour depth: Skeletal muscle, intramuscular\n\nMicroscopic findings\n- Histologic type: Undifferentiated pleomorphic sarcoma\n- Tumour histology:\n  Sections show an undifferentiated pleomorphic sarcoma. The tumour is composed of pleomorphic spindle and polygonal cells arranged in sheets and short, haphazard fascicles. The tumour cells have enlarged, hyperchromatic nuclei with bizarre and multinucleated forms. The tumour cells are weakly positive for actin and negative for desmin, myogenin and SATB2.\n- Histologic grade (FNCLCC grading): Grade 3 (score 6 to 8, high grade)\n  - Tumour differentiation: Undifferentiated (spindle cell and pleomorphic)\n    sarcoma (score 3)\n  - Mitotic rate: 5 mitoses per 10 HPF, 22 mm eyepiece (score 1)\n  - Tumour necrosis: 90% (score 2)\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n\nMargins\n- Surgical margin: Uninvolved by tumour (closest 2.3 mm, anterior margin)\n  - Anterior margin: Clear by 2.3 mm (block 2)\n  - Posterior margin: Clear by >10 mm (block 3)\n  - Proximal margin: Clear (block 4)\n  - Distal margin: Clear (block 5)\n  - Intact fascial envelope / fibrous pseudocapsule at the closest margin:\n    Absent\n\nPathological stage (AJCC 8th edition)\n- pTNM: ypT2\n\nAdditional findings\n- Preresection treatment: Radiation therapy performed\n- Treatment effect: Present (10% viable tumour)\n  - Features: Geographic necrosis, haemorrhage and fibrosis\n\nAncillary studies\n- MDM2 amplification (FISH): No amplification detected\n\nSOFT TISSUE, right knee tumour, wide excision:\n- UNDIFFERENTIATED PLEOMORPHIC SARCOMA,\n- FNCLCC Grade 3,\n- Resection margins clear.",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Preresection therapy is recorded: CAP notes that an adequate sample for accurate grading \"is not always available ... in tumors previously treated with radiation or chemotherapy\" (Note G), and \"In problematic cases, the grade of the pretreatment specimen (if available) should take precedence\" (Note D).",
+      "field": "gradeMode",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (reference, not reported): IIIA (no node examined: N0, as CAP directs)",
+      "part": "A"
+    }
+  ]
+}

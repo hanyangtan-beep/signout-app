@@ -1,0 +1,103 @@
+{
+  "description": "atypical lipomatous tumour of the right thigh subcutis, 120 mm, marginal excision, MDM2 amplified, deep margin clear by 3 mm, pT3 with the CAP note that AJCC staging is not clinically relevant",
+  "templateId": "soft_tissue_sarcoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "procedure": "Marginal resection",
+      "procedureOther": "",
+      "siteGroup": "Trunk and extremities",
+      "siteGroupOther": "",
+      "site": "right thigh",
+      "clinicalLabel": "lipomatous tumour",
+      "specimenName": "",
+      "organ": "",
+      "tumourSizeMm": "120",
+      "tumourDims": "120 x 80 x 40",
+      "focality": "Unifocal",
+      "focalityDetail": "",
+      "depth": [
+        "Subcutis"
+      ],
+      "depthOther": "",
+      "hnInvasion": "",
+      "visceralExtent": "",
+      "orbitExtent": "",
+      "specimenDims": "140 x 90 x 50",
+      "skinDims": "",
+      "orientation": "one stitch proximal, two stitches medial",
+      "cutSurface": [
+        "Fatty"
+      ],
+      "macroMarginMm": "3",
+      "macroMarginSite": "deep",
+      "macroOther": "",
+      "blocks": "10",
+      "blockKeyText": "1 Deep margin\n2 Proximal margin\n3 Distal margin\n4 Medial margin\n5 Lateral margin\n6-10 Tumour",
+      "histType": "Atypical lipomatous tumour",
+      "histTypeOther": "",
+      "wdComponent": "",
+      "dedifSizeMm": "",
+      "heterologous": "",
+      "heterologousType": "",
+      "hypercellularPct": "",
+      "ihcText": "The atypical stromal cells are positive for MDM2, CDK4 and p16.",
+      "histologyNotes": "",
+      "gradeMode": "",
+      "diffScore": "",
+      "diffScoreOther": "",
+      "mitoticCount": "1",
+      "mitoticUnit": "per 10 HPF (22 mm eyepiece, 40x objective)",
+      "necrosis": "No tumour necrosis",
+      "necrosisPct": "",
+      "lvi": "Not identified",
+      "pni": "Not identified",
+      "marginsText": "Deep: 3 (block 1)\nProximal: 20 (block 2)\nDistal: 25 (block 3)\nMedial: 15 (block 4)\nLateral: 18 (block 5)",
+      "marginsNotAssessable": false,
+      "fascialEnvelope": "Present",
+      "nodesExamined": "",
+      "nodesInvolved": "",
+      "ene": "",
+      "largestDepositMm": "",
+      "nodeSites": "",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "distantMetsOther": "",
+      "preresection": [
+        "No known preresection therapy"
+      ],
+      "preresectionOther": "",
+      "treatmentEffect": "No known presurgical therapy",
+      "viablePct": "",
+      "treatmentFeatures": [],
+      "treatmentFeaturesOther": "",
+      "otherFindings": "",
+      "mdm2": "Amplification detected",
+      "ddit3": "Not performed",
+      "ancillaryOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Right thigh lipomatous tumour, excision\n\nReceived in formalin is an excision specimen from the right thigh, measuring 140 x 90 x 50 mm. The specimen is oriented (one stitch proximal, two stitches medial). Sectioning shows a fatty tumour measuring 120 x 80 x 40 mm, 3 mm from the closest (deep) margin. Representative sections are taken in 10 blocks.\n\n(1) Deep margin.\n(2) Proximal margin.\n(3) Distal margin.\n(4) Medial margin.\n(5) Lateral margin.\n(6-10) Tumour.\n\nSpecimen and tumour\n- Procedure: Marginal resection\n- Tumour site: Trunk and extremities (right thigh)\n- Tumour size: 120 x 80 x 40 mm (greatest dimension 120 mm)\n- Tumour focality: Unifocal\n- Tumour depth: Subcutis\n\nMicroscopic findings\n- Histologic type: Atypical lipomatous tumour\n- Tumour histology:\n  Sections show an atypical lipomatous tumour. The tumour is composed of lobules of adipocytes that vary in size, separated by fibrous septa containing scattered atypical stromal cells with enlarged, irregular, hyperchromatic nuclei. The atypical stromal cells are positive for MDM2, CDK4 and p16.\n- Histologic grade (FNCLCC grading): Grade 1 (score 2 or 3, low grade)\n  - Tumour differentiation: Well-differentiated liposarcoma (score 1)\n  - Mitotic rate: 1 mitosis per 10 HPF, 22 mm eyepiece (score 1)\n  - Tumour necrosis: Not identified (score 0)\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n\nMargins\n- Surgical margin: Uninvolved by tumour (closest 3 mm, deep margin)\n  - Deep margin: Clear by 3 mm (block 1)\n  - Proximal margin: Clear by 20 mm (block 2)\n  - Distal margin: Clear by 25 mm (block 3)\n  - Medial margin: Clear by 15 mm (block 4)\n  - Lateral margin: Clear by 18 mm (block 5)\n  - Intact fascial envelope / fibrous pseudocapsule at the closest margin:\n    Present\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT3\n\nAdditional findings\n- Preresection treatment: No known preresection therapy\n- Treatment effect: No known presurgical therapy\n\nAncillary studies\n- MDM2 amplification (FISH): Amplification detected\n\nSOFT TISSUE, right thigh lipomatous tumour, excision:\n- ATYPICAL LIPOMATOUS TUMOUR,\n- Resection margins clear.",
+  "checks": [
+    {
+      "level": "info",
+      "message": "CAP (Note F): AJCC staging is not considered clinically relevant for atypical lipomatous tumour; the pTNM still prints while the block is on.",
+      "field": "histType",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (reference, not reported): IB (no node examined: N0, as CAP directs)",
+      "part": "A"
+    }
+  ]
+}

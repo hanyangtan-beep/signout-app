@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 83,
+  "count": 84,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -3567,6 +3567,7 @@
           "skin",
           "soft tissue",
           "lipoma",
+          "synovial sarcoma",
           "ganglion",
           "tendon",
           "bursa",
@@ -6755,6 +6756,332 @@
       "generator": "ureter_renal_pelvis_carcinoma",
       "generatorPath": "generators/ureter_renal_pelvis_carcinoma.js",
       "schemaPath": "schemas/ureter_renal_pelvis_carcinoma.json"
+    },
+    {
+      "id": "soft_tissue_sarcoma",
+      "name": "Soft tissue sarcoma resection",
+      "shortName": "Soft tissue · sarcoma resection",
+      "label": "Sarcoma",
+      "organ": "SOFT TISSUE",
+      "system": "Soft tissue",
+      "kind": "cancer resection",
+      "rank": 57,
+      "aliases": [
+        "sarcoma",
+        "soft tissue sarcoma",
+        "liposarcoma",
+        "dedifferentiated liposarcoma",
+        "well-differentiated liposarcoma",
+        "atypical lipomatous tumour",
+        "myxoid liposarcoma",
+        "pleomorphic liposarcoma",
+        "undifferentiated pleomorphic sarcoma",
+        "UPS",
+        "leiomyosarcoma",
+        "myxofibrosarcoma",
+        "synovial sarcoma",
+        "MPNST",
+        "FNCLCC"
+      ],
+      "match": {
+        "site": [
+          "soft tissue",
+          "thigh",
+          "leg",
+          "calf",
+          "popliteal",
+          "knee",
+          "foot",
+          "ankle",
+          "arm",
+          "forearm",
+          "elbow",
+          "wrist",
+          "hand",
+          "shoulder",
+          "axilla",
+          "axillary",
+          "buttock",
+          "gluteal",
+          "groin",
+          "inguinal",
+          "back",
+          "chest wall",
+          "abdominal wall",
+          "flank",
+          "trunk",
+          "extremity",
+          "limb",
+          "neck",
+          "retroperitoneum",
+          "retroperitoneal",
+          "sarcoma",
+          "liposarcoma",
+          "leiomyosarcoma",
+          "myxofibrosarcoma",
+          "rhabdomyosarcoma",
+          "angiosarcoma",
+          "fibrosarcoma",
+          "atypical lipomatous tumour",
+          "atypical lipomatous tumor",
+          "lipomatous tumour",
+          "lipomatous tumor",
+          "MPNST"
+        ],
+        "procedure": [
+          "wide excision",
+          "wide local excision",
+          "radical resection",
+          "radical excision",
+          "marginal excision",
+          "marginal resection",
+          "excisional biopsy",
+          "compartmentectomy",
+          "en bloc resection",
+          "excision",
+          "resection"
+        ],
+        "clinical": [
+          "sarcoma",
+          "liposarcoma",
+          "leiomyosarcoma",
+          "myxofibrosarcoma",
+          "rhabdomyosarcoma",
+          "synovial sarcoma",
+          "angiosarcoma",
+          "fibrosarcoma",
+          "atypical lipomatous tumour",
+          "atypical lipomatous tumor",
+          "ALT",
+          "WDLPS",
+          "DDLPS",
+          "UPS",
+          "MFH",
+          "MPNST",
+          "malignant peripheral nerve sheath tumour",
+          "malignant peripheral nerve sheath tumor"
+        ],
+        "gate": "\\b(?:lipo|leiomyo|myxofibro|rhabdomyo|angio|fibro)?sarcomas?\\b|atypical\\s+lipomatous|\\b(?:WDLPS|DDLPS|MLPS|UPS|MFH|MPNST|LMS)\\b|malignant\\s+peripheral\\s+nerve\\s+sheath",
+        "exclude": [
+          "lipoma",
+          "skin",
+          "bone",
+          "femur",
+          "tibia",
+          "fibula",
+          "humerus",
+          "radius",
+          "ulna",
+          "pelvis",
+          "sacrum",
+          "spine",
+          "vertebra",
+          "vertebral",
+          "rib",
+          "scapula",
+          "osteosarcoma",
+          "chondrosarcoma",
+          "Ewing",
+          "uterus",
+          "uterine",
+          "hysterectomy",
+          "endometrial",
+          "endometrium",
+          "myometrium",
+          "cervix",
+          "ovary",
+          "ovarian",
+          "GIST",
+          "gastrointestinal stromal",
+          "stomach",
+          "gastric",
+          "breast",
+          "phyllodes",
+          "Kaposi",
+          "DFSP",
+          "dermatofibrosarcoma",
+          "sarcomatoid",
+          "carcinosarcoma",
+          "lymph",
+          "node",
+          "nodes",
+          "LN",
+          "SLN",
+          "sentinel",
+          "margin",
+          "margins",
+          "dissection",
+          "core",
+          "cores",
+          "trucut",
+          "tru-cut",
+          "punch",
+          "FNA",
+          "aspirate",
+          "aspiration",
+          "cytology",
+          "needle",
+          "incisional",
+          "frozen"
+        ],
+        "not": [
+          "biopsy",
+          "biopsies",
+          "bx"
+        ],
+        "own": {
+          "site": [
+            "soft tissue",
+            "thigh",
+            "leg",
+            "calf",
+            "popliteal",
+            "knee",
+            "foot",
+            "ankle",
+            "arm",
+            "forearm",
+            "elbow",
+            "wrist",
+            "hand",
+            "shoulder",
+            "axilla",
+            "axillary",
+            "buttock",
+            "gluteal",
+            "groin",
+            "inguinal",
+            "back",
+            "chest wall",
+            "abdominal wall",
+            "flank",
+            "trunk",
+            "extremity",
+            "limb",
+            "neck",
+            "retroperitoneum",
+            "retroperitoneal",
+            "sarcoma",
+            "liposarcoma",
+            "leiomyosarcoma",
+            "myxofibrosarcoma",
+            "rhabdomyosarcoma",
+            "angiosarcoma",
+            "fibrosarcoma",
+            "atypical lipomatous tumour",
+            "atypical lipomatous tumor",
+            "lipomatous tumour",
+            "lipomatous tumor",
+            "MPNST"
+          ],
+          "procedure": [
+            "excisional biopsy"
+          ]
+        },
+        "bare": true,
+        "bias": 2,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bexcisional\\s+biops",
+                "Excisional biopsy"
+              ],
+              [
+                "\\bintralesional\\b",
+                "Intralesional resection"
+              ],
+              [
+                "\\bmarginal\\s+(?:resection|excision)",
+                "Marginal resection"
+              ],
+              [
+                "\\bradical\\s+(?:resection|excision)|\\bcompartmentectom",
+                "Radical resection"
+              ],
+              [
+                "\\bwide\\s+(?:local\\s+)?(?:resection|excision)|\\bWLE\\b",
+                "Wide resection"
+              ]
+            ]
+          },
+          {
+            "field": "siteGroup",
+            "from": "map",
+            "history": false,
+            "map": [
+              [
+                "\\bretroperitone",
+                "Retroperitoneum"
+              ],
+              [
+                "\\borbit",
+                "Orbit"
+              ],
+              [
+                "\\b(?:thigh|leg|calf|popliteal|knee|foot|ankle|arm|forearm|elbow|wrist|hand|shoulder|axilla|axillary|buttock|gluteal|groin|inguinal|back|chest\\s+wall|abdominal\\s+wall|flank|trunk|extremity|limb)\\b",
+                "Trunk and extremities"
+              ],
+              [
+                "\\b(?:neck|scalp|face|cheek)\\b",
+                "Head and neck"
+              ]
+            ]
+          },
+          {
+            "field": "site",
+            "from": "text",
+            "strip": "\\([^)]*\\)|\\?|\\b(?:soft\\s+tissues?|wide\\s+local\\s+excision|wide\\s+excision|WLE|radical\\s+(?:resection|excision)|marginal\\s+(?:resection|excision)|intralesional\\s+(?:resection|excision)|excisional\\s+biopsy|en\\s+bloc\\s+resection|compartmentectomy|re-excision|excision|excised|resection|resected|(?:atypical\\s+)?lipomatous\\s+(?:tumou?r|sarcoma)s?|(?:well[- ]differentiated\\s+|dedifferentiated\\s+|myxoid\\s+|pleomorphic\\s+|round\\s+cell\\s+)?liposarcomas?|leiomyosarcomas?|myxofibrosarcomas?|rhabdomyosarcomas?|angiosarcomas?|fibrosarcomas?|synovial\\s+sarcomas?|(?:high[- ]grade\\s+|low[- ]grade\\s+|spindle\\s+cell\\s+|pleomorphic\\s+|undifferentiated\\s+(?:pleomorphic\\s+)?)?sarcomas?|UPS|MFH|MPNST|ALT|WDLPS|DDLPS|MLPS|LMS|tumou?rs?|mass(?:es)?|lumps?|swellings?|lesions?|nodules?|recurrent|recurrence|of|the|from)\\b",
+            "lower": true,
+            "dedupe": true,
+            "unless": "stitch|sutur|\\bink|marking|o'?\\s*clock|\\d"
+          },
+          {
+            "field": "clinicalLabel",
+            "from": "map",
+            "map": [
+              [
+                "\\blipomatous\\s+sarcomas?\\b",
+                "lipomatous sarcoma"
+              ],
+              [
+                "\\btumou?rs?\\b",
+                "tumour"
+              ],
+              [
+                "\\bmass(?:es)?\\b",
+                "mass"
+              ],
+              [
+                "\\blumps?\\b",
+                "lump"
+              ],
+              [
+                "\\bswellings?\\b",
+                "swelling"
+              ],
+              [
+                "\\blesions?\\b",
+                "lesion"
+              ],
+              [
+                "\\bnodules?\\b",
+                "nodule"
+              ],
+              [
+                "\\bsarcomas?\\b",
+                "sarcoma"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11a",
+      "generator": "soft_tissue_sarcoma",
+      "generatorPath": "generators/soft_tissue_sarcoma.js",
+      "schemaPath": "schemas/soft_tissue_sarcoma.json"
     },
     {
       "id": "cns_biopsy",
