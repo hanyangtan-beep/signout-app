@@ -87,15 +87,6 @@
    "qmh": "Pedi-Hepatoblastoma"
   },
   {
-   "id": "cervical_carcinoma",
-   "name": "Cervical carcinoma resection",
-   "label": "Cervix Ca",
-   "system": "Gynae",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "GYN-Cervix"
-  },
-  {
    "id": "vaginal_carcinoma",
    "name": "Vaginal carcinoma resection",
    "label": "Vagina Ca",

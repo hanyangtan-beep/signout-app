@@ -1,0 +1,350 @@
+﻿
+Cervix cancers
+Carcinoma of the cervix
+click to access explanations in the original CAP template
+This is additional protocol for excision specimen of cervix .
+Gross descriptions:
+- Procedure:
+Trachelectomy
+Total hysterectomy and bilateral salpingo-oophorectomy
+Radical hysterectomy
+Simple hysterectomy
+Pelvic exenteration (specify included organs):
+Bilateral salpingo-oophorectomy
+Right salpingo-oophorectomy
+Left salpingo-oophorectomy
+Salpingo-oophorectomy, side not specified
+Right oophorectomy
+Left oophorectomy
+Oophorectomy, side not specified
+Bilateral salpingectomy
+Right salpingectomy
+Left salpingectomy
+Salpingectomy, side not specified
+Omentectomy
+Vaginal cuff resection
+Other (specify):
+- Hysterectomy type:
+-
+- Abdominal
+- Vaginal
+- Vaginal, laparoscopic-assisted
+- Laparoscopic
+- Laparoscopic, robotic-assisted
+- Other (specify):
+- Not specified
+- Tumor site:
+Left superior (anterior) quadrant (12 to 3 o’clock)
+Left inferior (posterior) quadrant (3 to 6 o’clock)
+Right inferior (posterior) quadrant (6 to 9 o’clock)
+Right superior (anterior) quadrant (9 to 12 o’clock)
+Other (specify):
+Not specified
+- Tumor size:
+-
+- Greatest dimension (mm):
+- All dimensions (mm x mm x mm):
+- Cannot be determined (explain):
+-->
+Microscopic descriptions:
+- Tumor histology and immunohistochemical studies :
+- Histologic type (WHO 5e) :
+-
+- Squamous cell carcinoma, HPV-associated
+- Squamous cell carcinoma, HPV-independent
+- Squamous cell carcinoma, NOS
+- Adenocarcinoma, NOS
+- Adenocarcinoma, HPV-associated
+- Adenocarcinoma, HPV-independent, NOS
+- Adenocarcinoma, HPV-independent, gastric type
+- Adenocarcinoma, HPV-independent, clear cell type
+- Adenocarcinoma, HPV-independent, mesonephric type
+- Endometrioid carcinoma, NOS
+- Carcinosarcoma (malignant mixed Mullerian tumor)
+- Adenosquamous carcinoma
+- Adenoid basal carcinoma
+- Mucoepidermoid carcinoma
+- Carcinoma, unclassifiable (undifferentiated carcinoma)
+- Neuroendocrine tumor, NOS
+- Neuroendocrine tumor, grade 1
+- Neuroendocrine tumor, grade 2
+- Small cell neuroendocrine carcinoma
+- Large cell neuroendocrine carcinoma
+- Neuroendocrine carcinoma, NOS
+- Mixed neuroendocrine non-neuroendocrine carcinoma
+- Carcinoma, type cannot be determined
+- Other (specify):
+- Histologic grade :
+-
+- G1: Well differentiated
+- G2: Moderately differentiated
+- G3: Poorly differentiated
+- GX: Cannot be assessed
+- Not applicable
++ p16 immunohistochemistry :
+-
+- Negative
+- Positive
+- Not determined
+- Depth of stromal invasion :
+specify (mm):
+-
+- Specify (mm):
+- Not more than 3 mm
+- Greater than 3 mm but not more than 5 mm
+- Greater than 5 mm
+- Cannot be determined (explain)
++ Extent of Depth of Stromal Invasion:
+-
+- Superficial one-third
+- Middle one-third
+- Deep one-third
+- Cannot be determined (explain)
++ Horizontal extent of stromal invasion :
+-
+- Not applicable
+- Specify (mm):
+- Estimated as less than or equal to 7 mm, specify number of blocs involved
+- Estimated as greater than 7 mm, specify number of blocs involved
+- Cannot be determined (explain)
++ Silva pattern of invasion (endoCx adenoCA) :
+-
+- Pattern A (well-demarcated glands with rounded contours)
+- Pattern B (localized, limited, early destructive stromal invasion)
+- Pattern C (diffuse destructive stromal invasion)
+- Lymphatic and/or Vascular invasion :
+-
+- Not identified
+- Present
+- Equivocal, explain:
+- Cannot be determined
++ Perineural invasion:
+-
+- Not identified
+- Present
+- Cannot be determined
+- Other tissue/ organ involvement:
+Not applicable
+Not identified
+Right parametrium
+Left parametrium
+Parametrium (side not specified)
+Vagina, upper two-thirds
+Vagina, lower one-third
+Vagina (location not specified)
+Right ovary
+Left ovary
+Ovary (side not specified)
+Right fallopian tube
+Left fallopian tube
+Fallopian tube (side not specified)
+Pelvic wall
+Bladder wall
+Bladder mucosa
+Rectal wall
+Bowel mucosa
+Omentum
+Other organs/tissue (specify):
+Cannot be determined (explain):
+Surgical margins of excision specimen :
+- Ectocervical margin:
+Cannot be assessed (explain):
+Uninvolved by invasive carcinoma, specify location and distance:
+Involved by invasive carcinoma, specify location:
+Uninvolved by intraepithelial neoplasia
+Involved by high-grade squamous intraepithelial lesion (CIN 2-3), specify location:
+Involved by adenocarcinoma in situ (AIS), specify location:
+- Endocervical/lower uterine segment margin:
+Cannot be assessed (explain):
+Uninvolved by invasive carcinoma, specify location and distance:
+Involved by invasive carcinoma, specify location:
+Uninvolved by intraepithelial neoplasia
+Involved by high-grade squamous intraepithelial lesion (CIN 2-3), specify location:
+Involved by adenocarcinoma in situ (AIS), specify location:
+- Vaginal cuff margin:
+Cannot be assessed (explain):
+Uninvolved by invasive carcinoma, specify location and distance:
+Involved by invasive carcinoma, specify location:
+Uninvolved by intraepithelial neoplasia
+Involved by high-grade squamous intraepithelial lesion (VAIN 2-3), specify location:
+- Radial (circumferential) margin:
+-
+- Cannot be assessed
+- Uninvolved by invasive carcinoma, specify location and closest distance:
+- Involved by carcinioma
+Pelvic lymph nodes (all) :
+- Number of lymph nodes examined:
+- Number of lymph nodes with macrometastasis (>2 mm):
+- Number of lymph nodes with micrometastasis (2- 200 cells):
+- Number of lymph nodes with isolated tumor cells (
+- Site(s) with positive lymph nodes:
+- Size of largest metastatic deposit (mm), specify site:
+- Size of largest lymph node involved (mm), specify site:
+- Extranodal extension:
+-
+- Not identified
+- Present
+- Cannot be determined
+Pelvic sentinel lymph nodes :
+- Number of lymph nodes examined:
+- Number of lymph nodes with macrometastasis (>2 mm):
+- Number of lymph nodes with micrometastasis (2- 200 cells):
+- Number of lymph nodes with isolated tumor cells (
+- Site(s) with positive lymph nodes:
+- Size of largest metastatic deposit (mm), specify site:
+- Size of largest lymph node involved (mm), specify site:
+- Extranodal extension:
+-
+- Not identified
+- Present
+- Cannot be determined
+Para-aortic lymph nodes (all) :
+- Number of lymph nodes examined:
+- Number of lymph nodes with macrometastasis (>2 mm):
+- Number of lymph nodes with micrometastasis (2- 200 cells):
+- Number of lymph nodes with isolated tumor cells (
+- Site(s) with positive lymph nodes:
+- Size of largest metastatic deposit (mm), specify site:
+- Size of largest lymph node involved (mm), specify site:
+- Extranodal extension:
+-
+- Not identified
+- Present
+- Cannot be determined
+Para-aortic sentinel lymph nodes :
+- Number of lymph nodes examined:
+- Number of lymph nodes with macrometastasis (>2 mm):
+- Number of lymph nodes with micrometastasis (2- 200 cells):
+- Number of lymph nodes with isolated tumor cells (
+- Site(s) with positive lymph nodes:
+- Size of largest metastatic deposit (mm), specify site:
+- Size of largest lymph node involved (mm), specify site:
+- Extranodal extension:
+-
+- Not identified
+- Present
+- Cannot be determined
+Distant Metastasis:
+Not applicable
+Not identified
+Uterine serosa:
+Adnexa:
+Inguinal lymph node(s):
+Omentum:
+Extrapelvic peritoneum:
+Lung (specify):
+Liver (specify):
+Bone (specify):
+Other (specify):
+Cannot be determined:
+FIGO Stage (2018 FIGO Cancer Report):
+Click the table for the original reference.
+-->
+I: Carcinoma is strictly confined to the cervix (extension to the uterine corpus should be disregarded)
+- IA: Invasive cancer identified only microscopically. (All gross lesions even with superficial
+invasion are stage IB cancers.) Invasion is limited to measured stromal invasion with a maximum depth
+of 5 mm
+-- IA1: Measured invasion of stroma less than 3 mm in depth
+-- IA2: Measured invasion of stroma at least 3 mm but less than 5 mm in depth
+- IB: Invasive carcinoma with measured deepest invasion of 5 mm or greater and limited to the cervix
+uteri
+-- IB1: Invasive carcinoma that is less than 2 cm in greatest dimension with a depth of invasion of
+5 mm or greater
+-- IB2: Invasive carcinoma with a greatest dimension of at least 2 cm but less than 4 cm
+-- IB3: Invasive carcinoma 4 cm or greater in greatest dimension
+II: The carcinoma extends beyond the uterus but has not extended onto the pelvic wall or to the
+lower third of vagina
+- IIA: Involvement of up to the upper two-thirds of the vagina. No obvious parametrial involvement
+-- IIA1: Clinically visible lesion less than 4 cm
+-- IIA2: Clinically visible lesion 4 cm or greater
+- IIB: Obvious parametrial involvement but not onto the pelvic sidewall
+III: The carcinoma involves the lower third of the vagina and/or extends to the pelvic wall and/or
+causes hydronephrosis or nonfunctioning kidney and/or involves pelvic and/or para- aortic lymph nodes
+- IIIA: Involvement of the lower third of the vagina but no extension onto pelvic sidewall
+- IIIB: Extension onto the pelvic sidewall, and/or causing hydronephrosis/nonfunctioning kidney
+(unless known to be due to another cause)
+- IIIC: Involvement of pelvic and/or para- aortic lymph nodes, irrespective of tumor size and
+extent
+-- IIIC1: Pelvic lymph node metastasis only
+-- IIIC2: Para- aortic lymph node metastasis
+IV: Carcinoma has extended beyond the true pelvis or has involved (biopsy proven) the mucosa of
+the bladder and/or rectum (bullous edema is not sufficient) or spread to distant organs
+- IVA: Spread to adjacent pelvic organs, ie, tumor invading the mucosa of the bladder and/or
+rectum (biopsy proven) and/or extending beyond the true pelvis (bullous edema is not sufficient)
+- IVB: Spread to distant organs
+-
+- I: Carcinoma is strictly confined to the cervix (extension to the uterine corpus should be disregarded)
+- IA: Invasive cancer identified only microscopically. (All gross lesions even with superficial invasion are stage IB cancers.) Invasion is limited to measured stromal invasion with a maximum depth of 5 mm
+- IA1: Measured invasion of stroma less than 3 mm in depth
+- IA2: Measured invasion of stroma at least 3 mm but less than 5 mm in depth
+- IB: Invasive carcinoma with measured deepest invasion of 5 mm or greater and limited to the cervix uteri
+- IB1: Invasive carcinoma that is less than 2 cm in greatest dimension with a depth of invasion of 5 mm or greater
+- IB2: Invasive carcinoma with a greatest dimension of at least 2 cm but less than 4 cm
+- IB3: Invasive carcinoma 4 cm or greater in greatest dimension
+- IIA: The carcinoma extends beyond the uterus but has not extended onto the pelvic wall or to the lower third of vagina
+- II: Involvement of up to the upper two-thirds of the vagina. No obvious parametrial involvement
+- IIA1: Clinically visible lesion less than 4 cm
+- IIA2: Clinically visible lesion 4 cms or greater
+- IIB: Obvious parametrial involvement but not onto the pelvic sidewall
+- III: The carcinoma involves the lower third of the vagina and/or extends to the pelvic wall and/or causes hydronephrosis or nonfunctioning kidney and/or involves pelvic and/or para- aortic lymph nodes
+- IIIA: Involvement of the lower third of the vagina but no extension onto pelvic sidewall
+- IIIB: Extension onto the pelvic sidewall, and/or causing hydronephrosis/nonfunctioning kidney
+- IIIC: Involvement of pelvic and/or para- aortic lymph nodes, irrespective of tumor size and extent
+- IIIC1: Pelvic lymph node metastasis only
+- IIIC2: Para- aortic lymph node metastasis
+- IV: Carcinoma has extended beyond the true pelvis or has involved (biopsy proven) the mucosa of the bladder and/or rectum (bullous edema is not sufficient) or spread to distant organs
+- IVA: Spread to adjacent pelvic organs, ie, tumor invading the mucosa of the bladder and/or rectum and/or extending beyond the true pelvis (bullous edema is not sufficient)
+- IVB: Spread to distant organs
+-->
+Pathologic Stage Classification (AJCC 8e):
+- TNM Descriptors:
+m (multiple primary tumors)
+r (recurrent)
+y (post treatment)
+- Primary tumor:
+-
+- pTX: Primary tumor cannot be assessed
+- pT0: No evidence of primary tumor
+- pT1: Cervical carcinoma confined to uterus (extension to corpus should be disregarded)
+- pT1a: Invasive carcinoma diagnosed by microscopy only. Stromal invasion with a maximum depth of 5.0 mm measured from the base of the epithelium and a horizontal spread of 7.0 mm or less. Vascular space involvement, venous or lymphatic, does not affect classification.
+- pT1a1: Measured stromal invasion of 3.0 mm or less in depth and 7.0 mm or less in horizontal spread
+- pT1a2: Measured stromal invasion of more than 3.0 mm and not more than 5.0 mm, with a horizontal spread of 7.0 mm or less
+- pT1b: Clinically visible lesion confined to the cervix or microscopic lesion greater than T1a2/IA2. Includes all macroscopically visible lesions, even those with superficial invasion
+- pT1b1: Clinically visible lesion 4.0 cm or less in greatest dimension
+- pT1b2: Clinically visible lesion more than 4.0 cm in greatest dimension
+- pT2: Cervical carcinoma invading beyond the uterus but not to the pelvic wall or to lower third of the vagina
+- pT2a: Tumor without parametrial invasion
+- pT2a1: Clinically visible lesion 4.0 cm or less in greatest dimension
+- pT2a2: Clinically visiblume lesion more than 4.0 cm in greatest dimension
+- pT2b: Tumor with parametrial invasion
+- pT3: Tumor extending to the pelvic sidewall and/or involving the lower third of the vagina and/or causing hydronephrosis or nonfunctioning kidney
+- pT3a: Tumor involving the lower third of the vagina but not extending to the pelvic wall
+- pT3b: Tumor extending to the pelvic wall and/or causing hydronephrosis or nonfunctioning kidney
+- pT4: Tumor invading the mucosa of the bladder or rectum and/or extending beyond the true pelvis (bullous edema is not sufficient to classify a tumor as T4)
+- Lymph node Descriptors:
+(sn)
+(sn)(i-)
+(sn)(i+)
+- Regional lymph nodes (pN):
+-
+- pNX: Regional lymph nodes cannot be assessed
+- pN0: No regional lymph node metastasis
+- pN0(i+): Isolated tumor cells in regional lymph node(s)
+- Distant metastasis (pM):
+-
+- pM1: Distant metastasis (includes metastasis to inguinal lymph nodes, intraperitoneal disease, lung, liver, or bone. It excludes metastasis to pelvic or para-aortic lymph nodes, vagina, uterine serosa, or adnexa)
+- Specify site(s), if known:
+-->
++ Additional pathologic findings:
+Low-grade squamous intraepithelial lesion (CIN 1)
+High-grade squamous intraepithelial lesion (CIN 2 or 3)
+Inflammation
+Endocervical adenocarcinoma in situ
+- Other (specify):
+- Additional notes:
+Copy text to Clipboard
+Last upated on 25-Mar-2023,
+based on US CAP cancer protocol templates ,
+Uterine Cervix Resection 5.1.0.0 (Mar 2023),
+html form was created on pForm , W3 School , StackOverflow , and Icons8 .
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.

@@ -1,0 +1,1717 @@
+{
+ "id": "cervical_carcinoma",
+ "version": "2026.11",
+ "name": "Cervical carcinoma resection",
+ "shortName": "Cervix · carcinoma resection",
+ "label": "Cervix Ca",
+ "organ": "CERVIX",
+ "system": "Gynae",
+ "kind": "cancer resection",
+ "rank": 44.5,
+ "aliases": [
+  "cervical cancer",
+  "cervical SCC",
+  "cervical adenocarcinoma",
+  "carcinoma of cervix",
+  "radical hysterectomy",
+  "Wertheim hysterectomy",
+  "trachelectomy",
+  "radical trachelectomy",
+  "cone biopsy carcinoma",
+  "LEEP carcinoma",
+  "LLETZ carcinoma"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "cervical_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen and tumour",
+   "Macroscopy"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 9th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template GYN-Cervix (AJCC 8th edition), staged here on AJCC version 9 as CAP Cervix 5.1.1.0 lists it; ICCR carcinomas of the cervix dataset",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/GYN-Cervix.html",
+  "capProtocol": "https://documents.cap.org/documents/Cervix_5.1.1.0.REL_CAPCP.pdf",
+  "dataset": "https://www.iccr-cancer.org/datasets/published-datasets/female-reproductive/carcinomas-of-the-cervix/",
+  "figo": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12411820/",
+  "ajcc": "https://acsjournals.onlinelibrary.wiley.com/doi/full/10.3322/caac.21663",
+  "grounding": "docs/reference/cervix-sources.md",
+  "staging": "pTNM derived by src/staging/cervix.js on AJCC version 9 (cervix uteri, 2020), whose categories match FIGO 2018; the stage group shows in Checks only. The QMH page prints the AJCC 8th edition; version 9 follows the house rule (AJCC version 9 when it exists).",
+  "savedPage": "docs/reference/GYN-Cervix.html"
+ },
+ "match": {
+  "site": [
+   "cervix",
+   "cervical",
+   "cone",
+   "LEEP",
+   "LLETZ",
+   "trachelectomy",
+   "radical hysterectomy",
+   "Wertheim",
+   "exenteration"
+  ],
+  "procedure": [
+   "cone",
+   "LEEP",
+   "LLETZ",
+   "loop excision",
+   "trachelectomy",
+   "radical hysterectomy",
+   "hysterectomy",
+   "Wertheim",
+   "exenteration",
+   "excision"
+  ],
+  "clinical": [
+   "SCC",
+   "squamous cell carcinoma",
+   "adenocarcinoma",
+   "carcinoma",
+   "ca",
+   "cancer",
+   "malignancy"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:endometri\\w*|corpus|ovar\\w*|vulva[lr]?|vagina[l]?|rect\\w*|bladder|colorectal|bowel)\\s+\\b(?:c?SCC|ca(?![-\\s]?\\d)|carcinoma|cancer|adenocarcinoma)\\b(?![\\s-]+in[\\s-]?situ))(?![\\s\\S]*\\b(?:c?SCC|ca(?![-\\s]?\\d)|carcinoma|cancer|adenocarcinoma)\\b(?![\\s-]+in[\\s-]?situ)\\s+(?:of\\s+(?:the\\s+)?)?(?:endometri\\w*|corpus|ovar\\w*|vulva[lr]?|vagina[l]?|rect\\w*|bladder|colorectal|bowel)\\b)(?:[\\s\\S]*\\b(?:radical\\s+(?:\\w+\\s+){0,2}?(?:hysterectomy|trachelectomy)|trachelectomy|wertheim\\w*)\\b|(?=[\\s\\S]*\\b(?:cone|LEEP|LLETZ|loop)\\b)[\\s\\S]*(?<![?]\\s?)(?<!\\b(?:query|suspected|suspicious\\s+(?:of|for)|r/o|rule\\s+out|exclude|excluding|possible|probable|no|not|negative\\s+for|without|nil|free\\s+of|no\\s+evidence\\s+of)\\s)\\b(?:c?SCC|ca(?![-\\s]?\\d)|carcinoma|cancer|adenocarcinoma)\\b(?![\\s-]+in[\\s-]?situ)|[\\s\\S]*(?<![?]\\s?)(?<!\\b(?:query|suspected|suspicious\\s+(?:of|for)|r/o|rule\\s+out|exclude|excluding|possible|probable|no|not|negative\\s+for|without|nil|free\\s+of|no\\s+evidence\\s+of)\\s)(?:\\bcervical\\s+\\b(?:c?SCC|ca(?![-\\s]?\\d)|carcinoma|cancer|adenocarcinoma)\\b(?![\\s-]+in[\\s-]?situ)|\\b(?:c?SCC|ca(?![-\\s]?\\d)|carcinoma|cancer|adenocarcinoma)\\b(?![\\s-]+in[\\s-]?situ)\\s+(?:of\\s+(?:the\\s+)?)?(?:uterine\\s+)?cervix\\b))",
+  "bias": 1,
+  "exclude": [
+   "polyp",
+   "polypectomy",
+   "lymph node",
+   "lymph nodes",
+   "node",
+   "nodes",
+   "LN",
+   "neck",
+   "thyroid",
+   "spine",
+   "spinal",
+   "vertebra",
+   "vertebral",
+   "disc",
+   "oesophagus",
+   "oesophageal",
+   "esophagus",
+   "esophageal",
+   "lymphadenopathy",
+   "cytology",
+   "smear",
+   "curettings",
+   "ECC",
+   "endometrial",
+   "endometrium",
+   "ovary",
+   "ovarian",
+   "vulva",
+   "vulval",
+   "vulvar",
+   "frozen",
+   "FS"
+  ],
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bradical\\s+(?:\\w+\\s+){0,2}?trachelectomy",
+      "Radical trachelectomy"
+     ],
+     [
+      "\\btrachelectomy",
+      "Simple trachelectomy"
+     ],
+     [
+      "\\bradical\\s+(?:\\w+\\s+){0,2}?hysterectomy|\\bwertheim",
+      "Radical hysterectomy"
+     ],
+     [
+      "\\bexenteration",
+      "Pelvic exenteration"
+     ],
+     [
+      "\\bhysterectomy|\\bTAH\\b|\\bTLH\\b|\\bLAVH\\b",
+      "Simple hysterectomy"
+     ],
+     [
+      "\\bcone\\b",
+      "Cone biopsy"
+     ],
+     [
+      "\\bLEEP\\b|\\bLLETZ\\b|\\bloop\\b",
+      "Loop excision (LEEP / LLETZ)"
+     ]
+    ]
+   },
+   {
+    "field": "additionalProcedures",
+    "from": "map",
+    "map": [
+     [
+      "\\bBSO\\b|\\bbilateral\\s+salpingo-?\\s?oophorectom\\w*|\\b(?:both|bilateral)\\s+(?:adnexa\\w*|ovaries)",
+      "Bilateral salpingo-oophorectomy"
+     ],
+     [
+      "\\bRSO\\b|\\bright\\s+salpingo-?\\s?oophorectom\\w*",
+      "Right salpingo-oophorectomy"
+     ],
+     [
+      "\\bLSO\\b|\\bleft\\s+salpingo-?\\s?oophorectom\\w*",
+      "Left salpingo-oophorectomy"
+     ],
+     [
+      "\\bbilateral\\s+salpingectom\\w*",
+      "Bilateral salpingectomy"
+     ],
+     [
+      "\\bomentectom\\w*",
+      "Omentectomy"
+     ]
+    ]
+   },
+   {
+    "field": "orientation",
+    "from": "map",
+    "map": [
+     [
+      "\\b(?:stitch|suture)\\w*\\s+(?:at\\s+)?12\\b",
+      "stitch at 12 o'clock"
+     ]
+    ]
+   }
+  ]
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen (typed name, optional)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. Cervix, cone biopsy",
+   "help": "Leave blank to name the specimen from the procedure (\"Cervix, cone biopsy\", \"Uterus with cervix and bilateral adnexa, radical hysterectomy with bilateral salpingo-oophorectomy\")."
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "",
+   "options": [
+    "Loop excision (LEEP / LLETZ)",
+    "Cone biopsy",
+    "Simple trachelectomy",
+    "Radical trachelectomy",
+    "Simple hysterectomy",
+    "Radical hysterectomy",
+    "Pelvic exenteration",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Procedure (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "exenterationOrgans",
+   "label": "Pelvic exenteration: organs included",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. uterus, cervix, vagina, bladder and rectum",
+   "showIf": {
+    "field": "procedure",
+    "is": "Pelvic exenteration"
+   }
+  },
+  {
+   "id": "hysterectomyType",
+   "label": "Hysterectomy type",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "Not specified",
+   "options": [
+    "Abdominal",
+    "Vaginal",
+    "Vaginal, laparoscopic-assisted",
+    "Laparoscopic",
+    "Laparoscopic, robotic-assisted",
+    "Other (specify)",
+    "Not specified"
+   ],
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Simple hysterectomy",
+     "Radical hysterectomy"
+    ]
+   }
+  },
+  {
+   "id": "hysterectomyTypeOther",
+   "label": "Hysterectomy type (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "is": [
+       "Simple hysterectomy",
+       "Radical hysterectomy"
+      ]
+     },
+     {
+      "field": "hysterectomyType",
+      "is": "Other (specify)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "additionalProcedures",
+   "label": "Additional procedures",
+   "type": "multiselect",
+   "group": "Specimen and tumour",
+   "default": [],
+   "options": [
+    "Bilateral salpingo-oophorectomy",
+    "Right salpingo-oophorectomy",
+    "Left salpingo-oophorectomy",
+    "Bilateral salpingectomy",
+    "Right salpingectomy",
+    "Left salpingectomy",
+    "Right oophorectomy",
+    "Left oophorectomy",
+    "Omentectomy",
+    "Vaginal cuff resection"
+   ],
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Simple hysterectomy",
+     "Radical hysterectomy",
+     "Pelvic exenteration",
+     "Radical trachelectomy"
+    ]
+   },
+   "help": "Lymph nodes are recorded under Lymph nodes and metastasis."
+  },
+  {
+   "id": "tumourSite",
+   "label": "Tumour site",
+   "type": "multiselect",
+   "group": "Specimen and tumour",
+   "default": [],
+   "options": [
+    "Left superior (anterior) quadrant (12 to 3 o'clock)",
+    "Left inferior (posterior) quadrant (3 to 6 o'clock)",
+    "Right inferior (posterior) quadrant (6 to 9 o'clock)",
+    "Right superior (anterior) quadrant (9 to 12 o'clock)",
+    "Other (specify)",
+    "Not specified"
+   ],
+   "exclusive": [
+    "Not specified"
+   ]
+  },
+  {
+   "id": "tumourSiteOther",
+   "label": "Tumour site (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. 4 to 9 o'clock",
+   "showIf": {
+    "field": "tumourSite",
+    "is": "Other (specify)"
+   },
+   "help": "Clock positions (\"4 to 9 o'clock\") read \"from 4 to 9 o'clock\" in the histology paragraph."
+  },
+  {
+   "id": "tumourSizeMm",
+   "label": "Tumour size, greatest dimension (mm)",
+   "type": "number",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "mm",
+   "help": "Splits pT1b1 / pT1b2 / pT1b3 at 20 and 40 mm and pT2a1 / pT2a2 at 40 mm."
+  },
+  {
+   "id": "tumourDims",
+   "label": "Tumour size, all dimensions (mm)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. 25 x 18 x 9"
+  },
+  {
+   "id": "sizeAtLeast",
+   "label": "Tumour size is a minimum (tumour reaches a margin or is fragmented)",
+   "type": "checkbox",
+   "group": "Specimen and tumour",
+   "default": false
+  },
+  {
+   "id": "sizeReason",
+   "label": "Tumour size cannot be determined (explain)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. fragmented specimen"
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. 10 x 15 x 15 mm, or 1 cm from 12 to 6 o'clock, 1.5 cm from 3 to 9 o'clock",
+   "help": "Figures alone (\"10 x 15 x 15\") are printed in millimetres; anything else is printed as typed."
+  },
+  {
+   "id": "orientation",
+   "label": "Orientation",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. stitch at 12 o'clock"
+  },
+  {
+   "id": "lesionAppearance",
+   "label": "Lesion appearance",
+   "type": "select",
+   "group": "Macroscopy",
+   "default": "",
+   "options": [
+    "No macroscopic lesion",
+    "Exophytic tumour",
+    "Ulcerated tumour",
+    "Endophytic / infiltrative tumour"
+   ],
+   "help": "A macroscopically visible tumour is pT1b whatever its depth."
+  },
+  {
+   "id": "lesionDims",
+   "label": "Lesion dimensions (mm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. 25 x 20 x 12",
+   "showIf": {
+    "field": "lesionAppearance",
+    "not": [
+     "",
+     "No macroscopic lesion"
+    ]
+   }
+  },
+  {
+   "id": "inking",
+   "label": "Margin inks",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. ectocervix - blue, endocervix - black, radial - green",
+   "help": "Printed as \"The margins are inked: ...\"."
+  },
+  {
+   "id": "radialSections",
+   "label": "Radially sectioned and embedded in a clockwise fashion",
+   "type": "checkbox",
+   "group": "Macroscopy",
+   "default": false
+  },
+  {
+   "id": "allEmbedded",
+   "label": "All embedded",
+   "type": "checkbox",
+   "group": "Macroscopy",
+   "default": false,
+   "help": "\"All embedded in N blocks.\" rather than \"Representative sections are taken in N blocks.\""
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "group": "Macroscopy",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "type": "textarea",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. A1 tumour with deep margin; A2-A3 peripheral margins",
+   "help": "Printed after the macroscopy as typed."
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th edition)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Squamous cell carcinoma, HPV-associated",
+    "Squamous cell carcinoma, HPV-independent",
+    "Squamous cell carcinoma, NOS",
+    "Adenocarcinoma, NOS",
+    "Adenocarcinoma, HPV-associated",
+    "Adenocarcinoma, HPV-independent, NOS",
+    "Adenocarcinoma, HPV-independent, gastric type",
+    "Adenocarcinoma, HPV-independent, clear cell type",
+    "Adenocarcinoma, HPV-independent, mesonephric type",
+    "Endometrioid carcinoma, NOS",
+    "Carcinosarcoma (malignant mixed Mullerian tumour)",
+    "Adenosquamous carcinoma",
+    "Adenoid basal carcinoma",
+    "Mucoepidermoid carcinoma",
+    "Carcinoma, unclassifiable (undifferentiated carcinoma)",
+    "Neuroendocrine tumour, NOS",
+    "Neuroendocrine tumour, grade 1",
+    "Neuroendocrine tumour, grade 2",
+    "Small cell neuroendocrine carcinoma",
+    "Large cell neuroendocrine carcinoma",
+    "Neuroendocrine carcinoma, NOS",
+    "Mixed neuroendocrine non-neuroendocrine carcinoma",
+    "Carcinoma, type cannot be determined",
+    "Other histologic type (specify)"
+   ]
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Histologic type (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Other histologic type (specify)",
+     "Carcinoma, type cannot be determined"
+    ]
+   }
+  },
+  {
+   "id": "adenoSubtype",
+   "label": "HPV-associated adenocarcinoma: subtype",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Usual type",
+    "Mucinous type, NOS",
+    "Intestinal type",
+    "Signet-ring cell type",
+    "Invasive stratified mucin-producing carcinoma (iSMC)",
+    "Villoglandular type",
+    "Micropapillary type"
+   ],
+   "showIf": {
+    "field": "histType",
+    "is": "Adenocarcinoma, HPV-associated"
+   },
+   "help": "Printed after the type: \"Adenocarcinoma, HPV-associated, intestinal type\"."
+  },
+  {
+   "id": "sccPattern",
+   "label": "Squamous cell carcinoma: pattern",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Keratinising",
+    "Non-keratinising",
+    "Basaloid",
+    "Papillary",
+    "Warty",
+    "Verrucous",
+    "Lymphoepithelioma-like"
+   ],
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Squamous cell carcinoma, HPV-associated",
+     "Squamous cell carcinoma, HPV-independent",
+     "Squamous cell carcinoma, NOS"
+    ]
+   },
+   "help": "Written into the histology paragraph."
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "G1: Well differentiated",
+    "G2: Moderately differentiated",
+    "G3: Poorly differentiated",
+    "GX: Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "p16",
+   "label": "p16 immunohistochemistry",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Positive",
+    "Negative",
+    "Not determined"
+   ],
+   "help": "Leave blank when not performed. Positive means diffuse block-type staining."
+  },
+  {
+   "id": "ihcOther",
+   "label": "Other immunohistochemistry (typed, one sentence)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "e.g. CEA is positive and vimentin is negative",
+   "help": "Added to the histology paragraph."
+  },
+  {
+   "id": "doi",
+   "label": "Depth of stromal invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Not more than 3 mm",
+    "Greater than 3 mm but not more than 5 mm",
+    "Greater than 5 mm",
+    "Cannot be determined"
+   ],
+   "help": "Leave blank when a measurement is typed below: the category is then taken from it. Measured from the base of the epithelium (surface or gland) from which the carcinoma arises."
+  },
+  {
+   "id": "doiMm",
+   "label": "Depth of stromal invasion, deepest (mm)",
+   "type": "number",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "doi",
+    "not": "Cannot be determined"
+   },
+   "help": "pT1a1 3 mm or less, pT1a2 more than 3 to 5 mm, pT1b more than 5 mm."
+  },
+  {
+   "id": "doiSite",
+   "label": "Depth of stromal invasion: location",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "e.g. 7 o'clock",
+   "showIf": {
+    "field": "doi",
+    "not": "Cannot be determined"
+   }
+  },
+  {
+   "id": "doiAtLeast",
+   "label": "Depth is a minimum (invasion reaches the deep margin)",
+   "type": "checkbox",
+   "group": "Microscopic findings",
+   "default": false,
+   "showIf": {
+    "field": "doi",
+    "not": "Cannot be determined"
+   }
+  },
+  {
+   "id": "doiReason",
+   "label": "Depth cannot be determined (explain)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "doi",
+    "is": "Cannot be determined"
+   }
+  },
+  {
+   "id": "stromaThird",
+   "label": "Depth of stromal invasion (proportion)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Superficial one-third",
+    "Middle one-third",
+    "Deep one-third",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "horizontal",
+   "label": "Horizontal extent of stromal invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Specify (mm)",
+    "Estimated as less than or equal to 7 mm",
+    "Estimated as greater than 7 mm",
+    "Not applicable",
+    "Cannot be determined"
+   ],
+   "help": "Recorded for the report; under FIGO 2018 and AJCC version 9 it no longer changes the category."
+  },
+  {
+   "id": "horizontalMm",
+   "label": "Horizontal extent (mm)",
+   "type": "number",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "horizontal",
+    "is": [
+     "Specify (mm)",
+     "Estimated as less than or equal to 7 mm",
+     "Estimated as greater than 7 mm"
+    ]
+   }
+  },
+  {
+   "id": "horizontalBlocks",
+   "label": "Horizontal extent: number of blocks involved",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "e.g. 6/11 (blocks 4 to 9)",
+   "showIf": {
+    "field": "horizontal",
+    "is": [
+     "Specify (mm)",
+     "Estimated as less than or equal to 7 mm",
+     "Estimated as greater than 7 mm"
+    ]
+   }
+  },
+  {
+   "id": "silva",
+   "label": "Silva pattern of invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Pattern A",
+    "Pattern B",
+    "Pattern C",
+    "Not applicable"
+   ],
+   "showIf": {
+    "field": "histType",
+    "is": "Adenocarcinoma, HPV-associated"
+   },
+   "help": "HPV-associated adenocarcinoma only. A: well-demarcated glands with rounded contours, no destructive invasion or lymphovascular invasion. B: localised, limited destructive invasion arising from pattern A glands. C: diffuse destructive stromal invasion."
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Equivocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "extension",
+   "label": "Other tissue / organ involvement",
+   "type": "multiselect",
+   "group": "Microscopic findings",
+   "default": [],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Uterine corpus",
+    "Right parametrium",
+    "Left parametrium",
+    "Parametrium (side not specified)",
+    "Vagina, upper two-thirds",
+    "Vagina, lower one-third",
+    "Vagina (location not specified)",
+    "Right ovary",
+    "Left ovary",
+    "Ovary (side not specified)",
+    "Right fallopian tube",
+    "Left fallopian tube",
+    "Fallopian tube (side not specified)",
+    "Pelvic wall",
+    "Bladder wall",
+    "Bladder mucosa",
+    "Rectal wall",
+    "Bowel mucosa",
+    "Omentum",
+    "Other organs / tissue (specify)",
+    "Cannot be determined"
+   ],
+   "exclusive": [
+    "Not applicable",
+    "Not identified",
+    "Cannot be determined"
+   ],
+   "help": "Parametrium pT2b; upper two-thirds of the vagina pT2a; lower third pT3a; pelvic wall pT3b; bladder or bowel mucosa pT4. The ovaries, tubes and omentum are pM1 under AJCC version 9."
+  },
+  {
+   "id": "extensionOther",
+   "label": "Other tissue / organ involvement (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "extension",
+    "is": "Other organs / tissue (specify)"
+   }
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Tumour histology (replaces the generated paragraph)",
+   "type": "textarea",
+   "group": "Microscopic findings",
+   "default": "",
+   "help": "Leave blank to use the paragraph built from the fields above."
+  },
+  {
+   "id": "ectoMargin",
+   "label": "Ectocervical margin",
+   "type": "select",
+   "group": "Margins",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ],
+   "showIf": {
+    "field": "procedure",
+    "not": [
+     "Radical trachelectomy",
+     "Simple hysterectomy",
+     "Radical hysterectomy",
+     "Pelvic exenteration"
+    ]
+   }
+  },
+  {
+   "id": "ectoMarginSite",
+   "label": "Ectocervical margin: location (or why it cannot be assessed)",
+   "type": "text",
+   "group": "Margins",
+   "default": "",
+   "placeholder": "e.g. 7 o'clock",
+   "showIf": {
+    "field": "procedure",
+    "not": [
+     "Radical trachelectomy",
+     "Simple hysterectomy",
+     "Radical hysterectomy",
+     "Pelvic exenteration"
+    ]
+   }
+  },
+  {
+   "id": "ectoMarginMm",
+   "label": "Ectocervical margin: distance (mm)",
+   "type": "number",
+   "group": "Margins",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "not": [
+       "Radical trachelectomy",
+       "Simple hysterectomy",
+       "Radical hysterectomy",
+       "Pelvic exenteration"
+      ]
+     },
+     {
+      "field": "ectoMargin",
+      "is": "Uninvolved by invasive carcinoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "ectoPrecursor",
+   "label": "Ectocervical margin: intraepithelial neoplasia",
+   "type": "select",
+   "group": "Margins",
+   "default": "Uninvolved by intraepithelial neoplasia",
+   "options": [
+    "Uninvolved by intraepithelial neoplasia",
+    "Involved by HSIL (CIN 2-3)",
+    "Involved by AIS",
+    "Involved by HSIL (CIN 2-3) and AIS"
+   ],
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "not": [
+       "Radical trachelectomy",
+       "Simple hysterectomy",
+       "Radical hysterectomy",
+       "Pelvic exenteration"
+      ]
+     },
+     {
+      "field": "adjacent",
+      "is": [
+       "High-grade squamous intraepithelial lesion (CIN 2 or 3)",
+       "Endocervical adenocarcinoma in situ"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "ectoPrecursorSite",
+   "label": "Ectocervical margin: intraepithelial neoplasia, location",
+   "type": "text",
+   "group": "Margins",
+   "default": "",
+   "placeholder": "e.g. 12 o'clock",
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "not": [
+       "Radical trachelectomy",
+       "Simple hysterectomy",
+       "Radical hysterectomy",
+       "Pelvic exenteration"
+      ]
+     },
+     {
+      "field": "adjacent",
+      "is": [
+       "High-grade squamous intraepithelial lesion (CIN 2 or 3)",
+       "Endocervical adenocarcinoma in situ"
+      ]
+     },
+     {
+      "field": "ectoPrecursor",
+      "not": "Uninvolved by intraepithelial neoplasia"
+     }
+    ]
+   }
+  },
+  {
+   "id": "endoMargin",
+   "label": "Endocervical / lower uterine segment margin",
+   "type": "select",
+   "group": "Margins",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ],
+   "showIf": {
+    "field": "procedure",
+    "not": [
+     "Simple hysterectomy",
+     "Radical hysterectomy",
+     "Pelvic exenteration"
+    ]
+   }
+  },
+  {
+   "id": "endoMarginSite",
+   "label": "Endocervical / lower uterine segment margin: location (or why it cannot be assessed)",
+   "type": "text",
+   "group": "Margins",
+   "default": "",
+   "placeholder": "e.g. 7 o'clock",
+   "showIf": {
+    "field": "procedure",
+    "not": [
+     "Simple hysterectomy",
+     "Radical hysterectomy",
+     "Pelvic exenteration"
+    ]
+   }
+  },
+  {
+   "id": "endoMarginMm",
+   "label": "Endocervical / lower uterine segment margin: distance (mm)",
+   "type": "number",
+   "group": "Margins",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "not": [
+       "Simple hysterectomy",
+       "Radical hysterectomy",
+       "Pelvic exenteration"
+      ]
+     },
+     {
+      "field": "endoMargin",
+      "is": "Uninvolved by invasive carcinoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "endoPrecursor",
+   "label": "Endocervical / lower uterine segment margin: intraepithelial neoplasia",
+   "type": "select",
+   "group": "Margins",
+   "default": "Uninvolved by intraepithelial neoplasia",
+   "options": [
+    "Uninvolved by intraepithelial neoplasia",
+    "Involved by HSIL (CIN 2-3)",
+    "Involved by AIS",
+    "Involved by HSIL (CIN 2-3) and AIS"
+   ],
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "not": [
+       "Simple hysterectomy",
+       "Radical hysterectomy",
+       "Pelvic exenteration"
+      ]
+     },
+     {
+      "field": "adjacent",
+      "is": [
+       "High-grade squamous intraepithelial lesion (CIN 2 or 3)",
+       "Endocervical adenocarcinoma in situ"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "endoPrecursorSite",
+   "label": "Endocervical / lower uterine segment margin: intraepithelial neoplasia, location",
+   "type": "text",
+   "group": "Margins",
+   "default": "",
+   "placeholder": "e.g. 12 o'clock",
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "not": [
+       "Simple hysterectomy",
+       "Radical hysterectomy",
+       "Pelvic exenteration"
+      ]
+     },
+     {
+      "field": "adjacent",
+      "is": [
+       "High-grade squamous intraepithelial lesion (CIN 2 or 3)",
+       "Endocervical adenocarcinoma in situ"
+      ]
+     },
+     {
+      "field": "endoPrecursor",
+      "not": "Uninvolved by intraepithelial neoplasia"
+     }
+    ]
+   }
+  },
+  {
+   "id": "vaginalMargin",
+   "label": "Vaginal cuff margin",
+   "type": "select",
+   "group": "Margins",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ],
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Radical trachelectomy",
+     "Simple hysterectomy",
+     "Radical hysterectomy",
+     "Pelvic exenteration",
+     "Other (specify)"
+    ]
+   }
+  },
+  {
+   "id": "vaginalMarginSite",
+   "label": "Vaginal cuff margin: location (or why it cannot be assessed)",
+   "type": "text",
+   "group": "Margins",
+   "default": "",
+   "placeholder": "e.g. 7 o'clock",
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Radical trachelectomy",
+     "Simple hysterectomy",
+     "Radical hysterectomy",
+     "Pelvic exenteration",
+     "Other (specify)"
+    ]
+   }
+  },
+  {
+   "id": "vaginalMarginMm",
+   "label": "Vaginal cuff margin: distance (mm)",
+   "type": "number",
+   "group": "Margins",
+   "default": "",
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "is": [
+       "Radical trachelectomy",
+       "Simple hysterectomy",
+       "Radical hysterectomy",
+       "Pelvic exenteration",
+       "Other (specify)"
+      ]
+     },
+     {
+      "field": "vaginalMargin",
+      "is": "Uninvolved by invasive carcinoma"
+     }
+    ]
+   }
+  },
+  {
+   "id": "vaginalPrecursor",
+   "label": "Vaginal cuff margin: intraepithelial neoplasia",
+   "type": "select",
+   "group": "Margins",
+   "default": "Uninvolved by intraepithelial neoplasia",
+   "options": [
+    "Uninvolved by intraepithelial neoplasia",
+    "Involved by HSIL (VAIN 2-3)"
+   ],
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "is": [
+       "Radical trachelectomy",
+       "Simple hysterectomy",
+       "Radical hysterectomy",
+       "Pelvic exenteration",
+       "Other (specify)"
+      ]
+     },
+     {
+      "field": "adjacent",
+      "is": [
+       "High-grade squamous intraepithelial lesion (CIN 2 or 3)",
+       "Endocervical adenocarcinoma in situ"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "vaginalPrecursorSite",
+   "label": "Vaginal cuff margin: intraepithelial neoplasia, location",
+   "type": "text",
+   "group": "Margins",
+   "default": "",
+   "placeholder": "e.g. 12 o'clock",
+   "showIf": {
+    "all": [
+     {
+      "field": "procedure",
+      "is": [
+       "Radical trachelectomy",
+       "Simple hysterectomy",
+       "Radical hysterectomy",
+       "Pelvic exenteration",
+       "Other (specify)"
+      ]
+     },
+     {
+      "field": "adjacent",
+      "is": [
+       "High-grade squamous intraepithelial lesion (CIN 2 or 3)",
+       "Endocervical adenocarcinoma in situ"
+      ]
+     },
+     {
+      "field": "vaginalPrecursor",
+      "not": "Uninvolved by intraepithelial neoplasia"
+     }
+    ]
+   }
+  },
+  {
+   "id": "radialMargin",
+   "label": "Radial (circumferential) margin",
+   "type": "select",
+   "group": "Margins",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "radialMarginSite",
+   "label": "Radial (circumferential) margin: location (or why it cannot be assessed)",
+   "type": "text",
+   "group": "Margins",
+   "default": "",
+   "placeholder": "e.g. 7 o'clock"
+  },
+  {
+   "id": "radialMarginMm",
+   "label": "Radial (circumferential) margin: distance (mm)",
+   "type": "number",
+   "group": "Margins",
+   "default": "",
+   "showIf": {
+    "field": "radialMargin",
+    "is": "Uninvolved by invasive carcinoma"
+   }
+  },
+  {
+   "id": "otherMargin",
+   "label": "Other margins (specify)",
+   "type": "text",
+   "group": "Margins",
+   "default": "",
+   "placeholder": "e.g. Bladder and rectal margins uninvolved by invasive carcinoma",
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Pelvic exenteration",
+     "Other (specify)"
+    ]
+   }
+  },
+  {
+   "id": "adjacent",
+   "label": "Additional pathologic findings",
+   "type": "multiselect",
+   "group": "Additional findings",
+   "default": [],
+   "options": [
+    "None identified",
+    "Low-grade squamous intraepithelial lesion (CIN 1)",
+    "High-grade squamous intraepithelial lesion (CIN 2 or 3)",
+    "Inflammation",
+    "Endocervical adenocarcinoma in situ"
+   ],
+   "exclusive": [
+    "None identified"
+   ],
+   "help": "HSIL or adenocarcinoma in situ also opens the intraepithelial neoplasia line of each margin."
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Other findings",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "placeholder": "e.g. Leiomyoma, intramural"
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "type": "textarea",
+   "group": "Additional findings",
+   "default": "",
+   "help": "Printed as typed at the end of the synoptic report."
+  },
+  {
+   "id": "hpvPcr",
+   "label": "HPV testing (PCR)",
+   "type": "select",
+   "group": "Additional findings",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "High-risk HPV detected",
+    "High-risk HPV not detected",
+    "Pending",
+    "Failed"
+   ],
+   "help": "Printed under Molecular findings."
+  },
+  {
+   "id": "hpvGenotype",
+   "label": "HPV genotype",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "placeholder": "e.g. HPV 16",
+   "showIf": {
+    "field": "hpvPcr",
+    "is": "High-risk HPV detected"
+   }
+  },
+  {
+   "id": "pelvicExamined",
+   "label": "Pelvic lymph nodes examined (all, sentinel nodes included)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "help": "All parts together. Leave blank when none were submitted."
+  },
+  {
+   "id": "pelvicSentinel",
+   "label": "Pelvic: of these, sentinel lymph nodes",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "pelvicExamined",
+    "min": 1
+   },
+   "help": "When every node examined is a sentinel node, pN takes \"(sn)\"."
+  },
+  {
+   "id": "pelvicMacro",
+   "label": "Pelvic: nodes with macrometastasis (more than 2 mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "pelvicExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "pelvicMicro",
+   "label": "Pelvic: nodes with micrometastasis (more than 0.2 mm to 2 mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "pelvicExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "pelvicItc",
+   "label": "Pelvic: nodes with isolated tumour cells only (0.2 mm or less, or 200 cells or fewer)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "pelvicExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "pelvicSites",
+   "label": "Pelvic: site(s) with positive lymph nodes",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "placeholder": "e.g. right obturator",
+   "showIf": {
+    "field": "pelvicExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "pelvicDepositMm",
+   "label": "Pelvic: largest metastatic deposit (mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "pelvicExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "pelvicEne",
+   "label": "Pelvic: extranodal extension",
+   "type": "select",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "showIf": {
+    "field": "pelvicExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "paExamined",
+   "label": "Para-aortic lymph nodes examined (all, sentinel nodes included)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "help": "Para-aortic metastasis is pN2."
+  },
+  {
+   "id": "paSentinel",
+   "label": "Para-aortic: of these, sentinel lymph nodes",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "paExamined",
+    "min": 1
+   },
+   "help": "When every node examined is a sentinel node, pN takes \"(sn)\"."
+  },
+  {
+   "id": "paMacro",
+   "label": "Para-aortic: nodes with macrometastasis (more than 2 mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "paExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "paMicro",
+   "label": "Para-aortic: nodes with micrometastasis (more than 0.2 mm to 2 mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "paExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "paItc",
+   "label": "Para-aortic: nodes with isolated tumour cells only (0.2 mm or less, or 200 cells or fewer)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "paExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "paSites",
+   "label": "Para-aortic: site(s) with positive lymph nodes",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "placeholder": "e.g. right obturator",
+   "showIf": {
+    "field": "paExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "paDepositMm",
+   "label": "Para-aortic: largest metastatic deposit (mm)",
+   "type": "number",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "paExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "paEne",
+   "label": "Para-aortic: extranodal extension",
+   "type": "select",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "showIf": {
+    "field": "paExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis",
+   "type": "multiselect",
+   "group": "Lymph nodes and metastasis",
+   "default": [],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Uterine serosa",
+    "Adnexa",
+    "Inguinal lymph node(s)",
+    "Omentum",
+    "Extrapelvic peritoneum",
+    "Lung",
+    "Liver",
+    "Bone",
+    "Other (specify)",
+    "Cannot be determined"
+   ],
+   "exclusive": [
+    "Not applicable",
+    "Not identified",
+    "Cannot be determined"
+   ],
+   "help": "Inguinal nodes, intraperitoneal disease and distant organs are pM1; AJCC version 9 counts the uterine serosa and the adnexa as pM1 too (FIGO 2018 does not stage them as IV)."
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Distant metastasis (specify)",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "distantMets",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "After neoadjuvant therapy (y)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "treatmentEffect",
+   "label": "Treatment effect",
+   "type": "select",
+   "group": "Staging",
+   "default": "",
+   "options": [
+    "No known presurgical therapy",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "showIf": {
+    "field": "postTherapy",
+    "is": true
+   }
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "type": "text",
+   "group": "Staging",
+   "default": "",
+   "placeholder": "e.g. pT1b2 pN0(sn)",
+   "help": "Replaces the derived pTNM; give the reason below."
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "pTNM override: reason",
+   "type": "text",
+   "group": "Staging",
+   "default": "",
+   "showIf": {
+    "field": "tnmOverride",
+    "not": ""
+   }
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01185",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "",
+     "procedure": "Cone biopsy",
+     "procedureOther": "",
+     "exenterationOrgans": "",
+     "hysterectomyType": "Not specified",
+     "hysterectomyTypeOther": "",
+     "additionalProcedures": [],
+     "tumourSite": [
+      "Other (specify)"
+     ],
+     "tumourSiteOther": "4 to 9 o'clock",
+     "tumourSizeMm": "",
+     "tumourDims": "",
+     "sizeAtLeast": false,
+     "sizeReason": "",
+     "specimenDims": "10 mm from 12 to 6 o'clock, 15 mm from 3 to 9 o'clock and 15 mm from superficial to deep",
+     "orientation": "stitch at 12 o'clock",
+     "lesionAppearance": "No macroscopic lesion",
+     "lesionDims": "",
+     "inking": "ectocervix - blue, endocervix - black, radial - green",
+     "radialSections": true,
+     "allEmbedded": true,
+     "blocks": "11",
+     "blockKeyText": "1-10 1 to 10 o'clock respectively\n11 11 and 12 o'clock",
+     "histType": "Adenocarcinoma, HPV-associated",
+     "histTypeOther": "",
+     "adenoSubtype": "Intestinal type",
+     "sccPattern": "",
+     "grade": "G1: Well differentiated",
+     "p16": "Positive",
+     "ihcOther": "",
+     "doi": "Not more than 3 mm",
+     "doiMm": "1.9",
+     "doiSite": "7 o'clock",
+     "doiAtLeast": false,
+     "doiReason": "",
+     "stromaThird": "Superficial one-third",
+     "horizontal": "Estimated as greater than 7 mm",
+     "horizontalMm": "",
+     "horizontalBlocks": "6/11 (blocks 4 to 9)",
+     "silva": "Pattern A",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "extension": [],
+     "extensionOther": "",
+     "histologyNotes": "",
+     "ectoMargin": "Uninvolved by invasive carcinoma",
+     "ectoMarginSite": "7 o'clock",
+     "ectoMarginMm": "4.5",
+     "ectoPrecursor": "Uninvolved by intraepithelial neoplasia",
+     "ectoPrecursorSite": "",
+     "endoMargin": "Uninvolved by invasive carcinoma",
+     "endoMarginSite": "9 o'clock",
+     "endoMarginMm": "2.6",
+     "endoPrecursor": "Uninvolved by intraepithelial neoplasia",
+     "endoPrecursorSite": "",
+     "vaginalMargin": "Uninvolved by invasive carcinoma",
+     "vaginalMarginSite": "",
+     "vaginalMarginMm": "",
+     "vaginalPrecursor": "Uninvolved by intraepithelial neoplasia",
+     "vaginalPrecursorSite": "",
+     "radialMargin": "Uninvolved by invasive carcinoma",
+     "radialMarginSite": "7 o'clock",
+     "radialMarginMm": "3.3",
+     "otherMargin": "",
+     "adjacent": [
+      "Inflammation"
+     ],
+     "additionalFindings": "",
+     "additionalNotes": "",
+     "hpvPcr": "Not performed",
+     "hpvGenotype": "",
+     "pelvicExamined": "",
+     "pelvicSentinel": "",
+     "pelvicMacro": "",
+     "pelvicMicro": "",
+     "pelvicItc": "",
+     "pelvicSites": "",
+     "pelvicDepositMm": "",
+     "pelvicEne": "",
+     "paExamined": "",
+     "paSentinel": "",
+     "paMacro": "",
+     "paMicro": "",
+     "paItc": "",
+     "paSites": "",
+     "paDepositMm": "",
+     "paEne": "",
+     "distantMets": [],
+     "distantMetsOther": "",
+     "multiplePrimaries": false,
+     "recurrent": false,
+     "postTherapy": false,
+     "treatmentEffect": "",
+     "tnmOverride": "",
+     "tnmOverrideReason": ""
+    }
+   }
+  ]
+ }
+}

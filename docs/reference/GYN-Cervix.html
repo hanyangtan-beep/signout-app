@@ -1,0 +1,1600 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Cervix cancers</title>
+<link rel="stylesheet" type="text/css" href="view.css" media="all">
+<script type="text/javascript" src="view.js"></script>
+<script>
+function updateDescription (frm) 
+{
+    var Template = "";
+/* 	
+if (document.getElementById("A01").checked || document.getElementById("A02").checked ||
+	document.getElementById("A03").checked || document.getElementById("A04").checked || 
+	document.getElementById("A05").checked || document.getElementById("A06").checked ||
+	document.getElementById("A07").checked || document.getElementById("A08").checked || 
+	document.getElementById("A09").checked || document.getElementById("A10").checked ||
+	document.getElementById("A11").checked || 
+	document.getElementById("A12").checked || document.getElementById("A13").checked || 
+	document.getElementById("A14").checked || document.getElementById("A15").checked ||
+	document.getElementById("A16").checked || document.getElementById("A17").checked || 
+	document.getElementById("A18").checked || document.getElementById("A19").checked){
+	Template += "- Procedure: " + "\n";
+}
+
+if (document.getElementById("A01").checked){
+	Template += frm.A01.value + "\n";
+}
+
+if (document.getElementById("A02").checked){
+	Template += frm.A02.value + "\n";
+}
+
+if (document.getElementById("A03").checked){
+	Template += frm.A03.value + "\n";
+}
+
+if (document.getElementById("A04").checked){
+	Template += frm.A04.value + "\n";
+}
+
+if (document.getElementById("A05").checked){
+	Template += frm.A05.value + "\n";
+}
+
+if (document.getElementById("A06").checked){
+	Template += frm.A06.value + "\n";
+}
+
+if (document.getElementById("A07").checked){
+	Template += frm.A07.value + "\n";
+}
+
+if (document.getElementById("A08").checked){
+	Template += frm.A08.value + "\n";
+}
+
+if (document.getElementById("A09").checked){
+	Template += frm.A09.value + "\n";
+}
+
+if (document.getElementById("A10").checked){
+	Template += frm.A10.value + "\n";
+}
+
+if (document.getElementById("A11").checked){
+	Template += frm.A11.value + "\n";
+}
+
+if (document.getElementById("A12").checked){
+	Template += frm.A12.value + "\n";
+}
+
+if (document.getElementById("A13").checked){
+	Template += frm.A13.value + "\n";
+}
+
+if (document.getElementById("A14").checked){
+	Template += frm.A14.value + "\n";
+}
+
+
+if (document.getElementById("A15").checked){
+	Template += frm.A15.value + "\n";
+}
+
+if (document.getElementById("A16").checked){
+	Template += frm.A16.value + "\n";
+}
+
+if (document.getElementById("A17").checked){
+	Template += frm.A17.value + "\n";
+}
+
+if (document.getElementById("A18").checked){
+	Template += frm.A18.value + "\n";
+}
+
+if (document.getElementById("A19").checked){
+	Template += frm.A19.value + "\n";
+}
+
+if (frm.A20.value !== ""){
+	Template += "- Hysterectomy type: " + "\n"  + frm.A20.value + "\n";
+}
+	
+if (document.getElementById("A21").checked || document.getElementById("A22").checked ||
+	document.getElementById("A23").checked || document.getElementById("A24").checked || 
+	document.getElementById("A25").checked || document.getElementById("A26").checked){
+	Template += "- Tumor site: " + "\n";
+}
+
+if (document.getElementById("A21").checked){
+	Template += frm.A21.value + "\n";
+}
+
+if (document.getElementById("A22").checked){
+	Template += frm.A22.value + "\n";
+}
+
+if (document.getElementById("A23").checked){
+	Template += frm.A23.value + "\n";
+}
+
+if (document.getElementById("A24").checked){
+	Template += frm.A24.value + "\n";
+}
+
+if (document.getElementById("A25").checked){
+	Template += frm.A25.value + "\n";
+}
+
+if (document.getElementById("A26").checked){
+	Template += frm.A26.value + "\n";
+}
+
+if (frm.A27.value !== ""){
+	Template += "- Tumor size: " + "\n" + frm.A27.value + "\n";
+}
+*/
+if (frm.A28.value !== ""){
+	Template += "- Tumor histology and immunohistochemical studies: " + "\n" + "  - " + frm.A28.value + "\n";
+}
+
+if (frm.A29.value !== ""){
+	Template += "\n" + "- Histologic type: " + frm.A29.value + "\n";
+}
+
+if (frm.A30.value !== ""){
+	Template += "- Histologic grade: " + frm.A30.value + "\n";
+}
+
+if (frm.A31.value !== ""){
+	Template += "- p16 immunohistochemistry: " + frm.A31.value + "\n";
+}
+
+if (frm.A32.value !== ""){
+	Template += "- Depth of stromal invasion: " + frm.A32.value + "\n";
+}
+
+if (frm.A32A.value !== ""){
+	Template += "- Depth of stromal invasion (proportion): " + frm.A32A.value + "\n";
+}
+
+if (frm.A33.value !== ""){
+	Template += "- Horizontal extent of stromal invasion: " + frm.A33.value + "\n";
+}
+
+if (frm.A34.value !== ""){
+	Template += "- Silva pattern of invasion: " + frm.A34.value + "\n";
+}
+
+if (document.getElementById("A35").checked || document.getElementById("A36").checked ||
+	document.getElementById("A37").checked || document.getElementById("A38").checked || 
+	document.getElementById("A39").checked || document.getElementById("A40").checked || 
+	document.getElementById("A41").checked || document.getElementById("A42").checked ||
+	document.getElementById("A44").checked || document.getElementById("A45").checked || 
+	document.getElementById("A46").checked || document.getElementById("A47").checked || 
+	document.getElementById("A48").checked || document.getElementById("A49").checked || 
+	document.getElementById("A50").checked || document.getElementById("A51").checked || 
+	document.getElementById("A52").checked || document.getElementById("A53").checked || 
+	document.getElementById("A54").checked || document.getElementById("A55").checked || 
+	document.getElementById("A56").checked){
+	Template += "- Other tissue/ organ involvement: " + "\n";
+}
+
+if (document.getElementById("A35").checked){
+	Template += frm.A35.value + "\n";
+}
+
+if (document.getElementById("A36").checked){
+	Template += frm.A36.value + "\n";
+}
+
+if (document.getElementById("A37").checked){
+	Template += frm.A37.value + "\n";
+}
+
+if (document.getElementById("A38").checked){
+	Template += frm.A38.value + "\n";
+}
+
+if (document.getElementById("A39").checked){
+	Template += frm.A39.value + "\n";
+}
+
+if (document.getElementById("A40").checked){
+	Template += frm.A40.value + "\n";
+}
+
+if (document.getElementById("A41").checked){
+	Template += frm.A41.value + "\n";
+}
+
+if (document.getElementById("A42").checked){
+	Template += frm.A42.value + "\n";
+}
+
+if (document.getElementById("A43").checked){
+	Template += frm.A43.value + "\n";
+}
+
+if (document.getElementById("A44").checked){
+	Template += frm.A44.value + "\n";
+}
+
+if (document.getElementById("A45").checked){
+	Template += frm.A45.value + "\n";
+}
+
+if (document.getElementById("A46").checked){
+	Template += frm.A46.value + "\n";
+}
+
+if (document.getElementById("A47").checked){
+	Template += frm.A47.value + "\n";
+}
+
+if (document.getElementById("A48").checked){
+	Template += frm.A48.value + "\n";
+}
+
+if (document.getElementById("A49").checked){
+	Template += frm.A49.value + "\n";
+}
+
+if (document.getElementById("A50").checked){
+	Template += frm.A50.value + "\n";
+}
+
+if (document.getElementById("A51").checked){
+	Template += frm.A51.value + "\n";
+}
+
+if (document.getElementById("A52").checked){
+	Template += frm.A52.value + "\n";
+}
+
+if (document.getElementById("A53").checked){
+	Template += frm.A53.value + "\n";
+}
+
+if (document.getElementById("A54").checked){
+	Template += frm.A54.value + "\n";
+}
+
+if (document.getElementById("A55").checked){
+	Template += frm.A55.value + "\n";
+}
+
+if (document.getElementById("A56").checked){
+	Template += frm.A56.value + "\n";
+}
+
+if (frm.A57.value !== ""){
+	Template += "- Lymphovascular invasion: " + frm.A57.value + "\n";
+}
+
+if (frm.A58.value !== ""){
+	Template += "- Perineural invasion: " + frm.A58.value + "\n";
+}
+
+if (document.getElementById("A59").checked || document.getElementById("A60").checked ||
+	document.getElementById("A61").checked || document.getElementById("A62").checked || 
+	document.getElementById("A63").checked || document.getElementById("A64").checked || 
+	document.getElementById("A65").checked || document.getElementById("A66").checked ||
+	document.getElementById("A67").checked || document.getElementById("A68").checked || 
+	document.getElementById("A69").checked || frm.A70.value !==""){
+	Template += "\n" + "- Surgical margins: " + "\n";
+}
+
+if (document.getElementById("A59").checked || document.getElementById("A60").checked ||
+	document.getElementById("A61").checked || document.getElementById("A62").checked || 
+	document.getElementById("A63").checked || document.getElementById("A64").checked){
+	Template += "  - Ectocervical margin: " + "\n";
+}
+
+if (document.getElementById("A59").checked){
+	Template += "  " + frm.A59.value + "\n";
+}
+
+if (document.getElementById("A60").checked){
+	Template += "  " + frm.A60.value + "\n";
+}
+
+if (document.getElementById("A61").checked){
+	Template += "  " + frm.A61.value + "\n";
+}
+
+if (document.getElementById("A62").checked){
+	Template += "  " + frm.A62.value + "\n";
+}
+
+if (document.getElementById("A63").checked){
+	Template += "  " + frm.A63.value + "\n";
+}
+
+if (document.getElementById("A64").checked){
+	Template += "  " + frm.A64.value + "\n";
+}
+
+if (document.getElementById("A59A").checked || document.getElementById("A60A").checked ||
+	document.getElementById("A61A").checked || document.getElementById("A62A").checked || 
+	document.getElementById("A63A").checked || document.getElementById("A64A").checked){
+	Template += "  - Endocervical/lower uterine segment margin: " + "\n";
+}
+
+if (document.getElementById("A59A").checked){
+	Template += "  " + frm.A59A.value + "\n";
+}
+
+if (document.getElementById("A60A").checked){
+	Template += "  " + frm.A60A.value + "\n";
+}
+
+if (document.getElementById("A61A").checked){
+	Template += "  " + frm.A61A.value + "\n";
+}
+
+if (document.getElementById("A62A").checked){
+	Template += "  " + frm.A62A.value + "\n";
+}
+
+if (document.getElementById("A63A").checked){
+	Template += "  " + frm.A63A.value + "\n";
+}
+
+if (document.getElementById("A64A").checked){
+	Template += "  " + frm.A64A.value + "\n";
+}
+
+if (document.getElementById("A65").checked || document.getElementById("A66").checked ||
+	document.getElementById("A67").checked || document.getElementById("A68").checked || 
+	document.getElementById("A69").checked){
+	Template += "  - Vaginal cuff margin: " + "\n";
+}
+
+if (document.getElementById("A65").checked){
+	Template += "  " + frm.A65.value + "\n";
+}
+
+if (document.getElementById("A66").checked){
+	Template += "  " + frm.A66.value + "\n";
+}
+
+if (document.getElementById("A67").checked){
+	Template += "  " + frm.A67.value + "\n";
+}
+
+if (document.getElementById("A68").checked){
+	Template += "  " + frm.A68.value + "\n";
+}
+
+if (document.getElementById("A69").checked){
+	Template += "  " + frm.A69.value + "\n";
+}
+
+if (frm.A70.value !== ""){
+	Template +=  "  - Radial (circumferential) margin: "  + "\n" + "  " +frm.A70.value + "\n" ;
+}
+
+if (frm.A71.value + frm.A72.value + frm.A73.value + frm.A74.value + frm.A75.value 
+    + frm.A76.value + frm.A77.value + frm.A94.value !== ""){
+	Template += "\n" + "- Pelvic lymph nodes examination (all): " + "\n";
+}	
+
+if (frm.A71.value !== ""){
+	Template += "  - Number of regional lymph nodes examined: " + frm.A71.value + "\n";
+}
+
+if (frm.A72.value !== ""){
+	Template += "  - Number of lymph nodes with macrometastasis: " + frm.A72.value + "\n";
+}
+
+if (frm.A73.value !== ""){
+	Template += "  - Number of lymph nodes with micrometastasis 2-<0.2 mm, or >200 cells: " + frm.A73.value + "\n";
+}
+
+if (frm.A74.value !== ""){
+	Template += "  - Number of lymph nodes with isolated tumor cells (<= 0.2 mm, or <=200cells): " + frm.A74.value + "\n";
+}
+
+if (frm.A75.value !== ""){
+	Template += "  - Site(s) with positive lymph nodes: " + frm.A75.value + "\n";
+}
+
+if (frm.A76.value !== ""){
+	Template += "  - Size of largest metastatic deposit (mm), specify site: " + frm.A76.value + "\n";
+}
+
+if (frm.A77.value !== ""){
+	Template += "  - Size of largest lymph node involved (mm), specify site: " + frm.A77.value + "\n";
+}
+
+if (frm.A94.value !== ""){
+	Template += "  - Extranodal extension: " + frm.A94.value + "\n";
+}
+
+
+if (frm.A96.value + frm.A97.value + frm.A98.value + frm.A99.value + frm.A100.value 
+    + frm.A101.value + frm.A102.value + frm.A103.value !== ""){
+	Template += "\n" + "- Pelvic sentinel lymph nodes examination: " + "\n";
+}	
+
+if (frm.A96.value !== ""){
+	Template += "  - Number of regional lymph nodes examined: " + frm.A96.value + "\n";
+}
+
+if (frm.A97.value !== ""){
+	Template += "  - Number of lymph nodes with macrometastasis: " + frm.A97.value + "\n";
+}
+
+if (frm.A98.value !== ""){
+	Template += "  - Number of lymph nodes with micrometastasis (2-<0.2 mm, or >200 cells): " + frm.A98.value + "\n";
+}
+
+if (frm.A99.value !== ""){
+	Template += "  - Number of lymph nodes with isolated tumor cells (<= 0.2 mm, or <=200 cells): " + frm.A99.value + "\n";
+}
+
+if (frm.A100.value !== ""){
+	Template += "  - Site(s) with positive lymph nodes: " + frm.A100.value + "\n";
+}
+
+if (frm.A101.value !== ""){
+	Template += "  - Size of largest metastatic deposit (mm), specify site: " + frm.A101.value + "\n";
+}
+
+if (frm.A102.value !== ""){
+	Template += "  - Size of largest lymph node involved (mm), specify site: " + frm.A102.value + "\n";
+}
+
+if (frm.A103.value !== ""){
+	Template += "  - Extranodal extension: " + frm.A103.value + "\n";
+}
+
+
+if (frm.A104.value + frm.A105.value + frm.A106.value + frm.A107.value + frm.A108.value 
+    + frm.A109.value + frm.A110.value + frm.A111.value !== ""){
+	Template += "\n" + "- Para-aortic lymph nodes examination (all): " + "\n";
+}	
+
+if (frm.A104.value !== ""){
+	Template += "  - Number of regional lymph nodes examined: " + frm.A104.value + "\n";
+}
+
+if (frm.A105.value !== ""){
+	Template += "  - Number of lymph nodes with macrometastasis: " + frm.A105.value + "\n";
+}
+
+if (frm.A106.value !== ""){
+	Template += "  - Number of lymph nodes with micrometastasis 2-<0.2 mm, or >200 cells: " + frm.A106.value + "\n";
+}
+
+if (frm.A107.value !== ""){
+	Template += "  - Number of lymph nodes with isolated tumor cells (<= 0.2 mm, or <=200cells): " + frm.A107.value + "\n";
+}
+
+if (frm.A108.value !== ""){
+	Template += "  - Site(s) with positive lymph nodes: " + frm.A108.value + "\n";
+}
+
+if (frm.A109.value !== ""){
+	Template += "  - Size of largest metastatic deposit (mm), specify site: " + frm.A109.value + "\n";
+}
+
+if (frm.A110.value !== ""){
+	Template += "  - Size of largest lymph node involved (mm), specify site: " + frm.A110.value + "\n";
+}
+
+if (frm.A111.value !== ""){
+	Template += "  - Extranodal extension: " + frm.A111.value + "\n";
+}
+
+
+if (frm.A112.value + frm.A113.value + frm.A114.value + frm.A115.value + frm.A116.value 
+    + frm.A117.value + frm.A118.value + frm.A119.value !== ""){
+	Template += "\n" + "- Para-aortic sentinel lymph nodes examination: " + "\n";
+}	
+
+if (frm.A112.value !== ""){
+	Template += "  - Number of regional lymph nodes examined: " + frm.A112.value + "\n";
+}
+
+if (frm.A113.value !== ""){
+	Template += "  - Number of lymph nodes with macrometastasis: " + frm.A113.value + "\n";
+}
+
+if (frm.A114.value !== ""){
+	Template += "  - Number of lymph nodes with micrometastasis 2-<0.2 mm, or >200 cells: " + frm.A114.value + "\n";
+}
+
+if (frm.A115.value !== ""){
+	Template += "  - Number of lymph nodes with isolated tumor cells (<= 0.2 mm, or <=200cells): " + frm.A115.value + "\n";
+}
+
+if (frm.A116.value !== ""){
+	Template += "  - Site(s) with positive lymph nodes: " + frm.A116.value + "\n";
+}
+
+if (frm.A117.value !== ""){
+	Template += "  - Size of largest metastatic deposit (mm), specify site: " + frm.A117.value + "\n";
+}
+
+if (frm.A118.value !== ""){
+	Template += "  - Size of largest lymph node involved (mm), specify site: " + frm.A118.value + "\n";
+}
+
+if (frm.A119.value !== ""){
+	Template += "  - Extranodal extension: " + frm.A119.value + "\n";
+}
+
+if (document.getElementById("A120").checked || document.getElementById("A121").checked ||
+	document.getElementById("A123").checked ||
+	document.getElementById("A124").checked || document.getElementById("A125").checked ||
+	document.getElementById("A126").checked || document.getElementById("A127").checked ||
+ 	document.getElementById("A128").checked || document.getElementById("A129").checked ||
+ 	document.getElementById("A130").checked || document.getElementById("A131").checked ||
+    document.getElementById("A132").checked ){
+	Template += "\n" + "- Distant metastasis:" + "\n";
+}
+
+if (document.getElementById("A120").checked){
+	Template += frm.A120.value + "\n";
+}
+
+if (document.getElementById("A121").checked){
+	Template += frm.A121.value + "\n";
+}
+
+if (document.getElementById("A123").checked){
+	Template += frm.A123.value + "\n";
+}
+
+if (document.getElementById("A124").checked){
+	Template += frm.A124.value + "\n";
+}
+
+if (document.getElementById("A125").checked){
+	Template += frm.A125.value + "\n";
+}
+
+if (document.getElementById("A126").checked){
+	Template += frm.A126.value + "\n";
+}
+
+if (document.getElementById("A127").checked){
+	Template += frm.A127.value + "\n";
+}
+
+if (document.getElementById("A128").checked){
+	Template += frm.A128.value + "\n";
+}
+
+if (document.getElementById("A129").checked){
+	Template += frm.A129.value + "\n";
+}
+
+if (document.getElementById("A130").checked){
+	Template += frm.A130.value + "\n";
+}
+
+if (document.getElementById("A131").checked){
+	Template += frm.A131.value + "\n";
+}
+
+if (document.getElementById("A132").checked){
+	Template += frm.A132.value + "\n";
+}
+
+/* 
+if (frm.A88.value !== ""){
+	Template += "- FIGO Stage (2018 FIGO Cancer Report): " + "\n" + frm.A88.value + "\n";
+}
+
+if (document.getElementById("A78").checked || document.getElementById("A79").checked || 
+	document.getElementById("A80").checked ||
+	document.getElementById("A82").checked || document.getElementById("A83").checked || 
+	document.getElementById("A84").checked || frm.A81.value + frm.A85.value + frm.A86.value + 
+	frm.A87.value!== ""){
+	Template += "\n" + "- Pathologic stage classification (pTNM, AJCC 8th edition):" + "\n";
+}
+
+if (document.getElementById("A78").checked || document.getElementById("A79").checked || 
+	document.getElementById("A80").checked){
+	Template += "  - TNM Descriptors:" + "\n";
+}
+
+if (document.getElementById("A78").checked){
+	Template += "    " + frm.A78.value + "\n";
+}
+
+if (document.getElementById("A79").checked){
+	Template += "    " + frm.A79.value + "\n";
+}
+
+if (document.getElementById("A80").checked){
+	Template += "    " + frm.A80.value + "\n";
+}
+
+if (frm.A81.value !== ""){
+	Template += "  - Primary tumor: " + "\n" + "  " + frm.A81.value + "\n";
+}
+
+if (document.getElementById("A82").checked || document.getElementById("A83").checked || 
+	document.getElementById("A84").checked){
+	Template += "  - Lymph node descriptors:" + "\n";
+}
+
+if (document.getElementById("A82").checked){
+	Template += "    " + frm.A82.value + "\n";
+}
+
+if (document.getElementById("A83").checked){
+	Template += "    " + frm.A83.value + "\n";
+}
+
+if (document.getElementById("A84").checked){
+	Template += "    " + frm.A84.value + "\n";
+}
+
+if (frm.A85.value !== ""){
+	Template += "  - Regional lymph nodes (pN): " + "\n" + "  " + frm.A85.value + "\n";
+}
+
+if (frm.A86.value !== ""){
+	Template += "  - Distant metastasis: " + "\n" + "  " + frm.A86.value + "\n";
+}
+
+if (frm.A87.value !== ""){
+	Template += "    - Specify site(s): " + frm.A87.value + "\n";
+}
+*/
+if (document.getElementById("A89").checked || document.getElementById("A90").checked ||
+	document.getElementById("A91").checked || document.getElementById("A94").checked || frm.A92.value !==""){
+	Template += "\n" +  "- Additional pathologic findings: " + "\n";
+}
+
+if (document.getElementById("A89").checked){
+	Template += frm.A89.value + "\n";
+}
+
+if (document.getElementById("A90").checked){
+	Template += frm.A90.value + "\n";
+}
+
+if (document.getElementById("A91").checked){
+	Template += frm.A91.value + "\n";
+}
+
+if (document.getElementById("A95").checked){
+	Template += frm.A95.value + "\n";
+}
+
+if (frm.A92.value !== ""){
+	Template += "  - Others (specify): " +  frm.A92.value + "\n";
+}
+
+if (frm.A93.value !== ""){
+	Template += "\n" + "- Additional notes: " + "\n" + "  - " +  frm.A93.value + "\n";
+}
+
+frm.holdtext.value = Template;
+}
+
+function CopyToClipboard() {
+  /* Get the text field */
+  var copyText = document.getElementById("holdtext");
+
+  /* Select the text field */
+  copyText.select();
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+
+  /* Alert the copied text */
+  alert("Report copied to clipboard");
+}
+</script>
+<style>
+table, th, td {
+  border: 1px solid silver;
+  border-collapse: collapse;
+  padding: 4px;
+}
+</style>
+</head>
+
+<body>
+<img id="top" src="top.png" alt="">
+	<div id="form_container">
+	<div class="form_description">
+		<h2><a href=".\cap\Cancer-Protocols-2023-03-Update\Gynecologic Protocol Folder\Cervix_5.1.0.0.REL_CAPCP.pdf" target="_blank">
+		<div class="tooltip">Carcinoma of the cervix
+		<span class="tooltiptext">click to access explanations in the original CAP template</span>
+		</div>
+		</a></h2>
+	</div>
+<p> This is additional protocol for <a href=".\cap\Cancer-Protocols-2023-03-Update\Gynecologic Protocol Folder\Cervix.Bx_4.4.2.0.REL_CAPCP.pdf" target="_blank">excision specimen of cervix</a>.</p>
+<form>
+<!--
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend><label class="description">Gross descriptions:</label></legend>
+<p><label class="description">- Procedure:</label>
+<input class="element checkbox" type="checkbox"  id="A01" value="  - Trachelectomy"><label >Trachelectomy</label><br>
+<input class="element checkbox" type="checkbox"  id="A02" value="  - Total hysterectomy and bilateral salpingo-oophorectomy"><label >Total hysterectomy and bilateral salpingo-oophorectomy</label><br>
+<input class="element checkbox" type="checkbox"  id="A03" value="  - Radical hysterectomy"><label >Radical hysterectomy</label><br>
+<input class="element checkbox" type="checkbox"  id="A04" value="  - Simple hysterectomy"><label >Simple hysterectomy</label><br>
+<input class="element checkbox" type="checkbox"  id="A05" value="  - Pelvic exenteration (specify included organs):"><label >Pelvic exenteration (specify included organs):</label><br>
+<input class="element checkbox" type="checkbox"  id="A06" value="  - Bilateral salpingo-oophorectomy"><label >Bilateral salpingo-oophorectomy</label><br>
+<input class="element checkbox" type="checkbox"  id="A07" value="  - Right salpingo-oophorectomy"><label >Right salpingo-oophorectomy</label><br>
+<input class="element checkbox" type="checkbox"  id="A08" value="  - Left salpingo-oophorectomy"><label >Left salpingo-oophorectomy</label><br>
+<input class="element checkbox" type="checkbox"  id="A09" value="  - Salpingo-oophorectomy, side not specified"><label >Salpingo-oophorectomy, side not specified</label><br>
+<input class="element checkbox" type="checkbox"  id="A10" value="  - Right oophorectomy"><label >Right oophorectomy</label><br>
+<input class="element checkbox" type="checkbox"  id="A11" value="  - Left oophorectomy"><label >Left oophorectomy</label><br>
+<input class="element checkbox" type="checkbox"  id="A12" value="  - Oophorectomy, side not specified"><label >Oophorectomy, side not specified</label><br>
+<input class="element checkbox" type="checkbox"  id="A13" value="  - Bilateral salpingectomy"><label >Bilateral salpingectomy</label><br>
+<input class="element checkbox" type="checkbox"  id="A14" value="  - Right salpingectomy"><label >Right salpingectomy</label><br>
+<input class="element checkbox" type="checkbox"  id="A15" value="  - Left salpingectomy"><label >Left salpingectomy</label><br>
+<input class="element checkbox" type="checkbox"  id="A16" value="  - Salpingectomy, side not specified"><label >Salpingectomy, side not specified</label><br>
+<input class="element checkbox" type="checkbox"  id="A17" value="  - Omentectomy"><label >Omentectomy</label><br>
+<input class="element checkbox" type="checkbox"  id="A18" value="  - Vaginal cuff resection"><label >Vaginal cuff resection</label><br>
+<input class="element checkbox" type="checkbox"  id="A19" value="  - Other (specify):"><label >Other (specify):</label><br>
+</p>
+
+<p>
+<label class="description">- Hysterectomy type:</label> 
+	<select class="element select medium" ID="A20">
+		<option value=""></option>
+		<option value="  - Abdominal">Abdominal</option>
+		<option value="  - Vaginal">Vaginal</option>
+		<option value="  - Vaginal, laparoscopic-assisted">Vaginal, laparoscopic-assisted</option>
+		<option value="  - Laparoscopic">Laparoscopic</option>
+		<option value="  - Laparoscopic, robotic-assisted">Laparoscopic, robotic-assisted</option>
+		<option value="  - Other (specify):">Other (specify):</option>
+		<option value="  - Not specified">Not specified</option>
+	</select>
+</p>
+
+<p><label class="description">- Tumor site:</label>
+<input class="element checkbox" type="checkbox"  id="A21" value="  - Left superior (anterior) quadrant (12 to 3 o’clock)"><label >Left superior (anterior) quadrant (12 to 3 o’clock)</label><br>
+<input class="element checkbox" type="checkbox"  id="A22" value="  - Left inferior (posterior) quadrant (3 to 6 o’clock)"><label >Left inferior (posterior) quadrant (3 to 6 o’clock)</label><br>
+<input class="element checkbox" type="checkbox"  id="A23" value="  - Right inferior (posterior) quadrant (6 to 9 o’clock)"><label >Right inferior (posterior) quadrant (6 to 9 o’clock)</label><br>
+<input class="element checkbox" type="checkbox"  id="A24" value="  - Right superior (anterior) quadrant (9 to 12 o’clock)"><label >Right superior (anterior) quadrant (9 to 12 o’clock)</label><br>
+<input class="element checkbox" type="checkbox"  id="A25" value="  - Other (specify):"><label >Other (specify):</label><br>
+<input class="element checkbox" type="checkbox"  id="A26" value="  - Not specified"><label >Not specified</label><br>
+</p>
+
+<p>
+<label class="description">- Tumor size:</label> 
+	<select class="element select medium" ID="A27">
+		<option value=""></option>
+		<option value="  - Greatest dimension (mm): ">Greatest dimension (mm): </option>
+		<option value="  - All dimensions (mm x mm x mm): ">All dimensions (mm x mm x mm):</option>
+		<option value="  - Cannot be determined (explain): ">Cannot be determined (explain):</option>
+	</select>
+</p>
+<br>
+</fieldset>
+</p>
+-->
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend><label class="description">Microscopic descriptions:</label></legend>
+<p>
+<label class="description">- <a href=".\cap\Cancer-Protocols-2022-03-Update\Gynecologic Protocol Folder\Cervix_5.0.1.3.REL_CAPCP.pdf#page=22" target="_blank">Tumor histology and immunohistochemical studies</a>: </label>
+	<textarea ID="A28" class="element textarea medium"></textarea>
+</p>
+<p>
+<table border="1">
+<col width="60%">
+<tr>
+<td>
+<label class="description">- <a href=".\cap\Cancer-Protocols-2022-03-Update\Gynecologic Protocol Folder\Cervix_5.0.1.3.REL_CAPCP.pdf#page=18" target="_blank">Histologic type (WHO 5e)</a>:</label> 
+</td>
+<td>
+<select class="element select large" ID="A29">
+		<option value=""></option>
+		<option value="Squamous cell carcinoma, HPV-associated">Squamous cell carcinoma, HPV-associated</option>
+		<option value="Squamous cell carcinoma, HPV-independent">Squamous cell carcinoma, HPV-independent</option>
+		<option value="Squamous cell carcinoma, NOS">Squamous cell carcinoma, NOS</option>
+		<option value="Adenocarcinoma, NOS">Adenocarcinoma, NOS</option>	
+		<option value="Adenocarcinoma, HPV-associated">Adenocarcinoma, HPV-associated</option>
+		<option value="Adenocarcinoma, HPV-independent, NOS">Adenocarcinoma, HPV-independent, NOS</option>
+		<option value="Adenocarcinoma, HPV-independent, gastric type">Adenocarcinoma, HPV-independent, gastric type</option>
+		<option value="Adenocarcinoma, HPV-independent, clear cell type">Adenocarcinoma, HPV-independent, clear cell type</option>
+		<option value="Adenocarcinoma, HPV-independent, mesonephric type">Adenocarcinoma, HPV-independent, mesonephric type</option>	
+		<option value="Endometrioid carcinoma, NOS">Endometrioid carcinoma, NOS</option>
+		<option value="Carcinosarcoma (malignant mixed Mullerian tumor)">Carcinosarcoma (malignant mixed Mullerian tumor)</option>
+		<option value="Adenosquamous carcinoma">Adenosquamous carcinoma</option>	
+		<option value="Adenoid basal carcinoma">Adenoid basal carcinoma</option>
+		<option value="Mucoepidermoid carcinoma">Mucoepidermoid carcinoma</option>
+		<option value="Carcinoma, unclassifiable (undifferentiated carcinoma)">Carcinoma, unclassifiable (undifferentiated carcinoma)</option>	
+		<option value="Neuroendocrine tumor, NOS ">Neuroendocrine tumor, NOS </option>
+		<option value="Neuroendocrine tumor, grade 1">Neuroendocrine tumor, grade 1 </option>
+		<option value="Neuroendocrine tumor, grade 2">Neuroendocrine tumor, grade 2</option>	
+		<option value="Small cell neuroendocrine carcinoma">Small cell neuroendocrine carcinoma</option>
+		<option value="Large cell neuroendocrine carcinoma">Large cell neuroendocrine carcinoma</option>
+		<option value="Neuroendocrine carcinoma, NOS">Neuroendocrine carcinoma, NOS</option>
+		<option value="Mixed neuroendocrine non-neuroendocrine carcinoma">Mixed neuroendocrine non-neuroendocrine carcinoma</option>
+		<option value="Carcinoma, type cannot be determined">Carcinoma, type cannot be determined
+		<option value="Other (specify):">Other (specify):</option>		
+		</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- <a href=".\cap\Cancer-Protocols-2022-03-Update\Gynecologic Protocol Folder\Cervix_5.0.1.3.REL_CAPCP.pdf#page=18" target="_blank">Histologic grade</a>:</label>
+</td>
+<td>
+<select class="element select large" ID="A30">
+		<option value=""></option>
+		<option value="G1: Well differentiated">G1: Well differentiated</option>
+		<option value="G2: Moderately differentiated">G2: Moderately differentiated</option>
+		<option value="G3: Poorly differentiated">G3: Poorly differentiated</option>
+		<option value="GX: Cannot be assessed">GX: Cannot be assessed</option>
+		<option value="Not applicable">Not applicable</option>	
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label > + <a href=".\cap\Cancer-Protocols-2022-03-Update\Gynecologic Protocol Folder\Cervix_5.0.1.3.REL_CAPCP.pdf#page=22" target="_blank">p16 immunohistochemistry</a>: </label>
+</td>
+<td>
+<select class="element select large" ID="A31">
+		<option value=""></option>
+		<option value="Negative">Negative</option>
+		<option value="Positive">Positive</optiNegativeon>
+		<option value="Not determined">Not determined</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td valign="top" rowspan="2">
+<label class="description">- <a href=".\cap\Cancer-Protocols-2022-03-Update\Gynecologic Protocol Folder\Cervix_5.0.1.3.REL_CAPCP.pdf#page=15" target="_blank">Depth of stromal invasion</a>:</label>
+</td>
+<td  align="right">
+<label>specify (mm):</label>
+<select class="element select medium" ID="A32">
+		<option value=""></option>
+		<option value="Specify (mm):">Specify (mm):</option>
+		<option value="Not more than 3 mm">Not more than 3 mm</optiNegativeon>
+		<option value="Greater than 3 mm but not more than 5 mm">Greater than 3 mm but not more than 5 mm</option>
+		<option value=" Greater than 5 mm">Greater than 5 mm</option>
+		<option value="Cannot be determined (explain)">Cannot be determined (explain)</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td  align="right">
+<label>+ Extent of Depth of Stromal Invasion: </label>
+	<select class="element select mrfium" ID="A32A">
+		<option value=""></option>
+		<option value="Superficial one-third ">Superficial one-third </option>
+		<option value="Middle one-third">Middle one-third</optiNegativeon>
+		<option value="Deep one-third">Deep one-third</option>
+		<option value="Cannot be determined (explain)">Cannot be determined (explain)</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label > + <a href=".\cap\Cancer-Protocols-2022-03-Update\Gynecologic Protocol Folder\Cervix_5.0.1.3.REL_CAPCP.pdf#page=16" target="_blank">Horizontal extent of stromal invasion</a>:</label>
+</td>
+<td>
+	<select class="element select large" ID="A33">
+		<option value=""></option>
+		<option value="Not applicable">Not applicable</option>
+		<option value="Specify (mm):">Specify (mm):</option>
+		<option value="Estimated as less than or equal to 7 mm, specify number of blocs involved">Estimated as less than or equal to 7 mm, specify number of blocs involved</option>
+		<option value="Estimated as greater than 7 mm, specify number of blocs involved">Estimated as greater than 7 mm, specify number of blocs involved</option>
+		<option value="Cannot be determined (explain)">Cannot be determined (explain)</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label > + <a href=".\cap\Cancer-Protocols-2022-03-Update\Gynecologic Protocol Folder\Cervix_5.0.1.3.REL_CAPCP.pdf#page=16" target="_blank">Silva pattern of invasion (endoCx adenoCA)</a>:</label>
+</td>
+<td>
+<select class="element select large" ID="A34">
+		<option value=""></option>
+		<option value="Pattern A">Pattern A (well-demarcated glands with rounded contours)</option>
+		<option value="Pattern B">Pattern B (localized, limited, early destructive stromal invasion)</option>
+		<option value="Pattern C">Pattern C (diffuse destructive stromal invasion)</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- <a href=".\cap\Cancer-Protocols-2022-03-Update\Gynecologic Protocol Folder\Cervix_5.0.1.3.REL_CAPCP.pdf#page=19" target="_blank">Lymphatic and/or Vascular invasion</a>: </label>
+</td>
+<td>
+	<select class="element select large" ID="A57">
+		<option value=""></option>
+		<option value="Not identified">Not identified</option>
+		<option value="Present">Present</option>
+		<option value="Equivocal, explain:">Equivocal, explain:</option>
+		<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label > + Perineural invasion: </label>
+</td>
+<td>
+	<select class="element select large" ID="A58">
+		<option value=""></option>
+		<option value="Not identified">Not identified</option>
+		<option value="Present">Present</option>
+		<option value="Cannot be determined">Cannot be determined</option>
+	</select>
+</td>
+</tr>
+</table>
+</p>
+
+<p>
+<label class="description">- Other tissue/ organ involvement:</label>
+<input class="element checkbox" type="checkbox"  id="A35" value="  - Not applicable"><label  class="choice">Not applicable</label>
+<input class="element checkbox" type="checkbox"  id="A36" value="  - Not identified"><label  class="choice">Not identified</label>
+<input class="element checkbox" type="checkbox"  id="A37" value="  - Right parametrium"><label  class="choice">Right parametrium</label>
+<input class="element checkbox" type="checkbox"  id="A38" value="  - Left parametrium"><label  class="choice">Left parametrium</label>
+<input class="element checkbox" type="checkbox"  id="A39" value="  - Parametrium (side not specified)"><label  class="choice"><a href=".\cap\Cancer-Protocols-2022-03-Update\Gynecologic Protocol Folder\Cervix_5.0.1.3.REL_CAPCP.pdf#page=21" target="_blank">Parametrium (side not specified)</a></label>
+<input class="element checkbox" type="checkbox"  id="A40" value="  - Vagina, upper two-thirds"><label  class="choice">Vagina, upper two-thirds</label>
+<input class="element checkbox" type="checkbox"  id="A41" value="  - Vagina, lower one-third"><label  class="choice">Vagina, lower one-third</label>
+<input class="element checkbox" type="checkbox"  id="A42" value="  - Vagina (location not specified)"><label  class="choice">Vagina (location not specified)</label>
+<input class="element checkbox" type="checkbox"  id="A43" value="  - Right ovary"><label  class="choice">Right ovary</label>
+<input class="element checkbox" type="checkbox"  id="A44" value="  - Left ovary"><label  class="choice">Left ovary</label>
+<input class="element checkbox" type="checkbox"  id="A45" value="  - Ovary (side not specifLeft ovaryed)"><label  class="choice">Ovary (side not specified)</label>
+<input class="element checkbox" type="checkbox"  id="A46" value="  - Right fallopian tube"><label  class="choice">Right fallopian tube</label>
+<input class="element checkbox" type="checkbox"  id="A47" value="  - Left fallopian tube"><label  class="choice">Left fallopian tube</label>
+<input class="element checkbox" type="checkbox"  id="A48" value="  - Fallopian tube (side not specified)"><label  class="choice">Fallopian tube (side not specified)</label>
+<input class="element checkbox" type="checkbox"  id="A49" value="  - Pelvic wall"><label  class="choice">Pelvic wall</label>
+<input class="element checkbox" type="checkbox"  id="A50" value="  - Bladder wall"><label  class="choice">Bladder wall</label>
+<input class="element checkbox" type="checkbox"  id="A51" value="  - Bladder mucosa"><label  class="choice">Bladder mucosa</label>
+<input class="element checkbox" type="checkbox"  id="A52" value="  - Rectal wall"><label  class="choice">Rectal wall</label>
+<input class="element checkbox" type="checkbox"  id="A53" value="  - Bowel mucosa"><label  class="choice">Bowel mucosa</label>
+<input class="element checkbox" type="checkbox"  id="A54" value="  - Omentum"><label  class="choice">Omentum</label>
+<input class="element checkbox" type="checkbox"  id="A55" value="  - Other organs/tissue (specify):"><label  class="choice">Other organs/tissue (specify):</label>
+<input class="element checkbox" type="checkbox"  id="A56" value="  - Cannot be determined (explain):"><label  class="choice">Cannot be determined (explain):</label>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+<legend><label class="description"><a href=".\cap\Cancer-Protocols-2022-03-Update\Gynecologic Protocol Folder\Cervix_5.0.1.3.REL_CAPCP.pdf#page=19" target="_blank">Surgical margins of excision specimen</a>: </label></legend>
+<p>
+<label class="description">- Ectocervical margin:</label>
+<input class="element checkbox" type="checkbox"  id="A59" value="  - Cannot be assessed (explain):"><label  class="choice">Cannot be assessed (explain):</label>
+<input class="element checkbox" type="checkbox"  id="A60" value="  - Uninvolved by invasive carcinoma, specify location and distance:"><label  class="choice">Uninvolved by invasive carcinoma, specify location and distance:</label>
+<input class="element checkbox" type="checkbox"  id="A61" value="  - Involved by invasive carcinoma, specify location:"><label  class="choice">Involved by invasive carcinoma, specify location:</label>
+<input class="element checkbox" type="checkbox"  id="A62" value="  - Uninvolved by intraepithelial neoplasia"><label  class="choice">Uninvolved by intraepithelial neoplasia</label>
+<input class="element checkbox" type="checkbox"  id="A63" value="  - Involved by high-grade squamous intraepithelial lesion (CIN 2-3), specify location:"><label  class="choice">Involved by high-grade squamous intraepithelial lesion (CIN 2-3), specify location:</label>
+<input class="element checkbox" type="checkbox"  id="A64" value="  - Involved by adenocarcinoma in situ (AIS), specify location:"><label  class="choice">Involved by adenocarcinoma in situ (AIS), specify location:</label>
+</p>
+
+<p>
+<label class="description">- Endocervical/lower uterine segment margin:</label>
+<input class="element checkbox" type="checkbox"  id="A59A" value="  - Cannot be assessed (explain):"><label  class="choice">Cannot be assessed (explain):</label>
+<input class="element checkbox" type="checkbox"  id="A60A" value="  - Uninvolved by invasive carcinoma, specify location and distance:"><label  class="choice">Uninvolved by invasive carcinoma, specify location and distance:</label>
+<input class="element checkbox" type="checkbox"  id="A61A" value="  - Involved by invasive carcinoma, specify location:"><label  class="choice">Involved by invasive carcinoma, specify location:</label>
+<input class="element checkbox" type="checkbox"  id="A62A" value="  - Uninvolved by intraepithelial neoplasia"><label  class="choice">Uninvolved by intraepithelial neoplasia</label>
+<input class="element checkbox" type="checkbox"  id="A63A" value="  - Involved by high-grade squamous intraepithelial lesion (CIN 2-3), specify location:"><label  class="choice">Involved by high-grade squamous intraepithelial lesion (CIN 2-3), specify location:</label>
+<input class="element checkbox" type="checkbox"  id="A64A" value="  - Involved by adenocarcinoma in situ (AIS), specify location:"><label  class="choice">Involved by adenocarcinoma in situ (AIS), specify location:</label>
+</p>
+
+<p>
+<label class="description">- Vaginal cuff margin:</label>
+<input class="element checkbox" type="checkbox"  id="A65" value="  - Cannot be assessed (explain):"><label class="choice" >Cannot be assessed (explain):</label>
+<input class="element checkbox" type="checkbox"  id="A66" value="  - Uninvolved by invasive carcinoma, specify location and distance:"><label  class="choice">Uninvolved by invasive carcinoma, specify location and distance:</label>
+<input class="element checkbox" type="checkbox"  id="A67" value="  - Involved by invasive carcinoma, specify location:"><label  class="choice">Involved by invasive carcinoma, specify location:</label>
+<input class="element checkbox" type="checkbox"  id="A68" value="  - Uninvolved by intraepithelial neoplasia"><label  class="choice">Uninvolved by intraepithelial neoplasia</label>
+<input class="element checkbox" type="checkbox"  id="A69" value="  - Involved by high-grade squamous intraepithelial lesion (VAIN 2-3), specify location:"><label  class="choice">Involved by high-grade squamous intraepithelial lesion (VAIN 2-3), specify location:</label>
+</p>
+
+<p>
+<label class="description">- Radial (circumferential) margin:</label>
+	<select class="element select medium" ID="A70">
+		<option value=""></option>
+		<option value="  - Cannot be assessed">Cannot be assessed</option>
+		<option value="  - Uninvolved by invasive carcinoma, specify location and closest distance:">Uninvolved by invasive carcinoma, specify location and closest distance:</option>
+		<option value="  - Involved by invasive carcinioma">Involved by carcinioma</option>
+	</select>
+</p>
+
+<br>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> <a href=".\cap\Cancer-Protocols-2022-03-Update\Gynecologic Protocol Folder\Cervix_5.0.1.3.REL_CAPCP.pdf#page=21" target="_blank">Pelvic lymph nodes (all)</a>: </label></legend>
+<p>
+<table border="1">
+<col width="80%">
+<tr>
+<td>
+<label class="description">- Number of lymph nodes examined:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A71" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Number of lymph nodes with macrometastasis (>2 mm):</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A72" size="10">
+</td>
+</tr>
+<tr>
+<td>
+<label class="description">- Number of lymph nodes with micrometastasis (2-<0.2 mm, >200 cells):</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A73" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Number of lymph nodes with isolated tumor cells (<=0.2 mm, <=200 cells):</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A74" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Site(s) with positive lymph nodes:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A75" size="20">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Size of largest metastatic deposit (mm), specify site:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A76" size="20">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Size of largest lymph node involved (mm), specify site:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A77" size="20">
+</td>
+</tr>
+<tr>
+<td>
+<label class="description">- Extranodal extension:</label>
+</td>
+<td>
+<select class="element select large" ID="A94">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+</table>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> <a href=".\cap\Cancer-Protocols-2022-03-Update\Gynecologic Protocol Folder\Cervix_5.0.1.3.REL_CAPCP.pdf#page=21" target="_blank">Pelvic sentinel lymph nodes</a>: </label></legend>
+<p>
+<table border="1">
+<col width="80%">
+<tr>
+<td>
+<label class="description">- Number of lymph nodes examined:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A96" size="10">
+</td>
+</tr>
+<tr>
+<td>
+<label class="description">- Number of lymph nodes with macrometastasis (>2 mm):</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A97" size="10">
+</td>
+</tr>
+<tr>
+<td>
+<label class="description">- Number of lymph nodes with micrometastasis (2-<0.2 mm, >200 cells):</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A98" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Number of lymph nodes with isolated tumor cells (<=0.2 mm, <=200 cells):</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A99" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Site(s) with positive lymph nodes:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A100" size="20">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Size of largest metastatic deposit (mm), specify site:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A101" size="20">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Size of largest lymph node involved (mm), specify site:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A102" size="20">
+</td>
+</tr>
+<tr>
+<td>
+<label class="description">- Extranodal extension:</label>
+</td>
+<td>
+<select class="element select large" ID="A103">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+</table>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> <a href=".\cap\Cancer-Protocols-2022-03-Update\Gynecologic Protocol Folder\Cervix_5.0.1.3.REL_CAPCP.pdf#page=21" target="_blank">Para-aortic lymph nodes (all)</a>: </label></legend>
+<p>
+<table border="1">
+<col width="80%">
+<tr>
+<td>
+<label class="description">- Number of lymph nodes examined:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A104" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Number of lymph nodes with macrometastasis (>2 mm):</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A105" size="10">
+</td>
+</tr>
+<tr>
+<td>
+<label class="description">- Number of lymph nodes with micrometastasis (2-<0.2 mm, >200 cells):</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A106" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Number of lymph nodes with isolated tumor cells (<=0.2 mm, <=200 cells):</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A107" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Site(s) with positive lymph nodes:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A108" size="20">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Size of largest metastatic deposit (mm), specify site:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A109" size="20">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Size of largest lymph node involved (mm), specify site:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A110" size="20">
+</td>
+</tr>
+<tr>
+<td>
+<label class="description">- Extranodal extension:</label>
+</td>
+<td>
+<select class="element select large" ID="A111">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+</table>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> <a href=".\cap\Cancer-Protocols-2022-03-Update\Gynecologic Protocol Folder\Cervix_5.0.1.3.REL_CAPCP.pdf#page=21" target="_blank">Para-aortic sentinel lymph nodes</a>: </label></legend>
+<p>
+<table border="1">
+<col width="80%">
+<tr>
+<td>
+<label class="description">- Number of lymph nodes examined:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A112" size="10">
+</td>
+</tr>
+<tr>
+<td>
+<label class="description">- Number of lymph nodes with macrometastasis (>2 mm):</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A113" size="10">
+</td>
+</tr>
+<tr>
+<td>
+<label class="description">- Number of lymph nodes with micrometastasis (2-<0.2 mm, >200 cells):</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A114" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Number of lymph nodes with isolated tumor cells (<=0.2 mm, <=200 cells):</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A115" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Site(s) with positive lymph nodes:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A116" size="20">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Size of largest metastatic deposit (mm), specify site:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A117" size="20">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Size of largest lymph node involved (mm), specify site:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A118" size="20">
+</td>
+</tr>
+<tr>
+<td>
+<label class="description">- Extranodal extension:</label>
+</td>
+<td>
+<select class="element select large" ID="A119">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+</table>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> Distant Metastasis: </label></legend>
+
+<input class="element checkbox" type="checkbox" id="A120"  value="  - Not applicable"><label class="choice" >Not applicable</label>
+<input class="element checkbox" type="checkbox" id="A121"  value="  - Not identified"><label class="choice" >Not identified</label>
+<input class="element checkbox" type="checkbox" id="A123"  value="  - Uterine serosa:"><label class="choice" >Uterine serosa:</label>
+<input class="element checkbox" type="checkbox" id="A124"  value="  - Adnexa:"><label class="choice" >Adnexa:</label>
+<input class="element checkbox" type="checkbox" id="A125"  value="  - Inguinal lymph node(s):"><label class="choice" >Inguinal lymph node(s):</label>
+<input class="element checkbox" type="checkbox" id="A126"  value="  - Omentum:"><label class="choice" >Omentum:</label>
+<input class="element checkbox" type="checkbox" id="A127"  value="  - Extrapelvic peritoneum:"><label class="choice" >Extrapelvic peritoneum:</label>
+<input class="element checkbox" type="checkbox" id="A128"  value="  - Lung (specify):"><label class="choice" >Lung (specify):</label>
+<input class="element checkbox" type="checkbox" id="A129"  value="  - Liver (specify):"><label class="choice" >Liver (specify):</label>
+<input class="element checkbox" type="checkbox" id="A130"  value="  - Bone (specify):"><label class="choice" >Bone (specify):</label>
+<input class="element checkbox" type="checkbox" id="A131"  value="  - Other (specify):"><label class="choice" >Other (specify):</label>
+<input class="element checkbox" type="checkbox" id="A132"  value="  - Cannot be determined: "><label class="choice" >Cannot be determined: </label> 
+
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"><a href=".\cap\GYN_CervixCA.pdf" target="_blank">FIGO Stage (2018 FIGO Cancer Report):</a></label></legend>
+<!--<a href=".\cap\GYN_CervixCA.pdf" target="_blank">
+<img src=".\cap\GYN_CervixCA.JPG" alt="FIGO2018" width="600">
+</a>
+<br>
+Click the table for the original reference.
+-->
+
+<p>
+I: 	Carcinoma is strictly confined to the cervix (extension to the uterine corpus should be disregarded)<br>
+- IA: 	Invasive cancer identified only microscopically. (All gross lesions even with superficial <br>invasion are stage IB cancers.) Invasion is limited to measured stromal invasion with a maximum depth<br>
+ of 5 mm<br><br>
+-- IA1: 	Measured invasion of stroma less than 3 mm in depth<br>
+-- IA2: 	Measured invasion of stroma at least 3 mm but less than 5 mm in depth<br> 
+- IB: 	Invasive carcinoma with measured deepest invasion of 5 mm or greater and limited to the cervix <br>uteri<br>
+-- IB1: 	Invasive carcinoma that is less than 2 cm in greatest dimension with a depth of invasion of<br> 5 mm or greater<br>
+-- IB2:	Invasive carcinoma with a greatest dimension of at least 2 cm but less than 4 cm<br>
+-- IB3:	Invasive carcinoma 4 cm or greater in greatest dimension<br><br> 
+II: 	The carcinoma extends beyond the uterus but has not extended onto the pelvic wall or to the <br>
+lower third of vagina<br><br>
+- IIA: 	Involvement of up to the upper two-thirds of the vagina. No obvious parametrial involvement<br>
+-- IIA1: 	Clinically visible lesion less than 4 cm<br> 
+-- IIA2: 	Clinically visible lesion 4 cm or greater<br>
+- IIB: 	Obvious parametrial involvement but not onto the pelvic sidewall<br><br>
+III: 	The carcinoma involves the lower third of the vagina and/or extends to the pelvic wall and/or<br> causes hydronephrosis or nonfunctioning kidney and/or involves pelvic and/or para- aortic lymph nodes<br><br>
+- IIIA: 	Involvement of the lower third of the vagina but no extension onto pelvic sidewall<br>
+- IIIB: 	Extension onto the pelvic sidewall, and/or causing hydronephrosis/nonfunctioning kidney <br>(unless known to be due to another cause)<br>
+- IIIC: 	Involvement of pelvic and/or para- aortic lymph nodes, irrespective of tumor size and <br>
+extent<br>         
+-- IIIC1: Pelvic lymph node metastasis only <br>
+-- IIIC2: Para- aortic lymph node metastasis<br><br>
+IV: 	Carcinoma has extended beyond the true pelvis or has involved (biopsy proven) the mucosa of<br>
+ the bladder and/or rectum (bullous edema is not sufficient) or spread to distant organs<br><br>
+- IVA: 	Spread to adjacent pelvic organs, ie, tumor invading the mucosa of the bladder and/or <br>
+rectum (biopsy proven) and/or extending beyond the true pelvis (bullous edema is not sufficient)<br>
+- IVB: 	Spread to distant organs<br><br>
+
+</p>
+<!--
+<p>
+	<select class="element select medium" ID="A88">
+		<option value=""></option>
+		<option value="  - I: Carcinoma is strictly confined to the cervix (extension to the uterine corpus should be disregarded)">I: Carcinoma is strictly confined to the cervix (extension to the uterine corpus should be disregarded)</option>
+		<option value="  - IA: Invasive cancer identified only microscopically. (All gross lesions even with superficial invasion are stage IB cancers.) Invasion is limited to measured stromal invasion with a maximum depth of 5 mm">IA: Invasive cancer identified only microscopically. (All gross lesions even with superficial invasion are stage IB cancers.) Invasion is limited to measured stromal invasion with a maximum depth of 5 mm</option>
+		<option value="  - IA1: Measured invasion of stroma less than 3 mm in depth">IA1: Measured invasion of stroma less than 3 mm in depth</option>
+		<option value="  - IA2: Measured invasion of stroma at least 3 mm but less than 5 mm in depth ">IA2: Measured invasion of stroma at least 3 mm but less than 5 mm in depth</option>
+		<option value="  - IB: Invasive carcinoma with measured deepest invasion of 5 mm or greater and limited to the cervix uteri">IB: Invasive carcinoma with measured deepest invasion of 5 mm or greater and limited to the cervix uteri </option>
+		<option value="  - IB1: Invasive carcinoma that is less than 2 cm in greatest dimension with a depth of invasion of 5 mm or greater ">IB1: Invasive carcinoma that is less than 2 cm in greatest dimension with a depth of invasion of 5 mm or greater </option>
+		<option value="  - IB2: Invasive carcinoma with a greatest dimension of at least 2 cm but less than 4 cm ">IB2: Invasive carcinoma with a greatest dimension of at least 2 cm but less than 4 cm </option>
+		<option value="  - IB3:	Invasive carcinoma 4 cm or greater in greatest dimension ">IB3:	Invasive carcinoma 4 cm or greater in greatest dimension </option>
+		<option value="  - II: The carcinoma extends beyond the uterus but has not extended onto the pelvic wall or to the lower third of vagina">IIA: The carcinoma extends beyond the uterus but has not extended onto the pelvic wall or to the lower third of vagina</option>
+		<option value="  - IIA: Involvement of up to the upper two-thirds of the vagina. No obvious parametrial involvement">II: Involvement of up to the upper two-thirds of the vagina. No obvious parametrial involvement</option>
+		<option value="  - IIA1: Clinically visible lesion less than 4 cm">IIA1: Clinically visible lesion less than 4 cm</option>
+		<option value="  - IIA2: Clinically visible lesion 4 cms or greater">IIA2: Clinically visible lesion 4 cms or greater</option>
+		<option value="  - IIB: Obvious parametrial involvement but not onto the pelvic sidewall">IIB: Obvious parametrial involvement but not onto the pelvic sidewall</option>
+		<option value="  - III: The carcinoma involves the lower third of the vagina and/or extends to the pelvic wall and/or causes hydronephrosis or nonfunctioning kidney and/or involves pelvic and/or para- aortic lymph nodes">III: The carcinoma involves the lower third of the vagina and/or extends to the pelvic wall and/or causes hydronephrosis or nonfunctioning kidney and/or involves pelvic and/or para- aortic lymph nodes</option>
+		<option value="  - IIIA: Involvement of the lower third of the vagina but no extension onto pelvic sidewall">IIIA: Involvement of the lower third of the vagina but no extension onto pelvic sidewall</option>
+		<option value="  - IIIB: Extension onto the pelvic sidewall, and/or causing hydronephrosis/nonfunctioning kidney">IIIB: Extension onto the pelvic sidewall, and/or causing hydronephrosis/nonfunctioning kidney</option>
+		<option value="  - IIIC: Involvement of pelvic and/or para- aortic lymph nodes, irrespective of tumor size and extent">IIIC: Involvement of pelvic and/or para- aortic lymph nodes, irrespective of tumor size and extent </option>
+		<option value="  - IIIC1: Pelvic lymph node metastasis only ">IIIC1: Pelvic lymph node metastasis only </option>
+		<option value="  - IIIC2: Para- aortic lymph node metastasis">IIIC2: Para- aortic lymph node metastasis</option>
+		<option value="  - IV: Carcinoma has extended beyond the true pelvis or has involved (biopsy proven) the mucosa of the bladder and/or rectum (bullous edema is not sufficient) or spread to distant organs">IV: Carcinoma has extended beyond the true pelvis or has involved (biopsy proven) the mucosa of the bladder and/or rectum (bullous edema is not sufficient) or spread to distant organs</option>
+		<option value="  - IVA: Spread to adjacent pelvic organs, ie, tumor invading the mucosa of the bladder and/or rectum (biopsy proven) and/or extending beyond the true pelvis (bullous edema is not sufficient)">IVA: Spread to adjacent pelvic organs, ie, tumor invading the mucosa of the bladder and/or rectum and/or extending beyond the true pelvis (bullous edema is not sufficient)</option>
+		<option value="  - IVB: Spread to distant organs">IVB: Spread to distant organs</option>
+	</select>
+</p>
+-->
+
+</fieldset>
+</p>
+<!--
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label> Pathologic Stage Classification (AJCC 8e):</label></legend>
+	
+<p>
+<table border="1">
+<col width="40%">
+<tr>
+<td valign="top">
+  - TNM Descriptors:
+</td>
+<td>
+<input class="element checkbox" type="checkbox"  id="A78" value=" m (multiple primary tumors) "><label >m (multiple primary tumors)</label><br>
+<input class="element checkbox" type="checkbox"  id="A79" value=" r (recurrent) "><label >r (recurrent)</label><br>
+<input class="element checkbox" type="checkbox"  id="A80" value=" y (post treatment) "><label >y (post treatment)</label><br>
+</td>
+</tr>
+
+<tr>
+<td>
+- Primary tumor:
+</td>
+<td>
+	<select class="element select large" ID="A81">
+		<option value=""></option>
+		<option value="  - pTX: Primary tumor cannot be assessed">pTX: Primary tumor cannot be assessed</option>
+		<option value="  - pT0: No evidence of primary tumor">pT0: No evidence of primary tumor</option>
+		<option value="  - pT1: Cervical carcinoma confined to uterus (extension to corpus should be disregarded)">pT1: Cervical carcinoma confined to uterus (extension to corpus should be disregarded)</option>
+		<option value="  - pT1a: Invasive carcinoma diagnosed by microscopy only. Stromal invasion with a maximum depth of 5.0 mm measured from the base of the epithelium and a horizontal spread of 7.0 mm or less. Vascular space involvement, venous or lymphatic, does not affect classification.">pT1a: Invasive carcinoma diagnosed by microscopy only. Stromal invasion with a maximum depth of 5.0 mm measured from the base of the epithelium and a horizontal spread of 7.0 mm or less. Vascular space involvement, venous or lymphatic, does not affect classification.</option>
+		<option value="  - pT1a1: Measured stromal invasion of 3.0 mm or less in depth and 7.0 mm or less in horizontal spread">pT1a1: Measured stromal invasion of 3.0 mm or less in depth and 7.0 mm or less in horizontal spread</option>
+		<option value="  - pT1a2: Measured stromal invasion of more than 3.0 mm and not more than 5.0 mm, with a horizontal spread of 7.0 mm or less">pT1a2: Measured stromal invasion of more than 3.0 mm and not more than 5.0 mm, with a horizontal spread of 7.0 mm or less</option>
+		<option value="  - pT1b: Clinically visible lesion confined to the cervix or microscopic lesion greater than T1a2/IA2. Includes all macroscopically visible lesions, even those with superficial invasion">pT1b: Clinically visible lesion confined to the cervix or microscopic lesion greater than T1a2/IA2. Includes all macroscopically visible lesions, even those with superficial invasion</option>
+		<option value="  - pT1b1: Clinically visible lesion 4.0 cm or less in greatest dimension">pT1b1: Clinically visible lesion 4.0 cm or less in greatest dimension</option>
+		<option value="  - pT1b2: Clinically visible lesion more than 4.0 cm in greatest dimension">pT1b2: Clinically visible lesion more than 4.0 cm in greatest dimension</option>
+		<option value="  - pT2: Cervical carcinoma invading beyond the uterus but not to the pelvic wall or to lower third of the vagina">pT2: Cervical carcinoma invading beyond the uterus but not to the pelvic wall or to lower third of the vagina</option>
+		<option value="  - pT2a: Tumor without parametrial invasion">pT2a: Tumor without parametrial invasion</option>
+		<option value="  - pT2a1: Clinically visible lesion 4.0 cm or less in greatest dimension">pT2a1: Clinically visible lesion 4.0 cm or less in greatest dimension</option>
+		<option value="  - pT2a2: Clinically visiblume lesion more than 4.0 cm in greatest dimension">pT2a2: Clinically visiblume lesion more than 4.0 cm in greatest dimension</option>
+		<option value="  - pT2b: Tumor with parametrial invasion">pT2b: Tumor with parametrial invasion</option>
+		<option value="  - pT3: Tumor extending to the pelvic sidewall and/or involving the lower third of the vagina and/or causing hydronephrosis or nonfunctioning kidney">pT3: Tumor extending to the pelvic sidewall and/or involving the lower third of the vagina and/or causing hydronephrosis or nonfunctioning kidney</option>
+		<option value="  - pT3a: Tumor involving the lower third of the vagina but not extending to the pelvic wall">pT3a: Tumor involving the lower third of the vagina but not extending to the pelvic wall</option>
+		<option value="  - pT3b: Tumor extending to the pelvic wall and/or causing hydronephrosis or nonfunctioning kidney">pT3b: Tumor extending to the pelvic wall and/or causing hydronephrosis or nonfunctioning kidney</option>
+		<option value="  - pT4: Tumor invading the mucosa of the bladder or rectum and/or extending beyond the true pelvis (bullous edema is not sufficient to classify a tumor as T4)">pT4: Tumor invading the mucosa of the bladder or rectum and/or extending beyond the true pelvis (bullous edema is not sufficient to classify a tumor as T4)</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+- Lymph node Descriptors:
+</td>
+<td>
+<input class="element checkbox" type="checkbox"  id="A82" value=" (sn) "><label >(sn)</label><br>
+<input class="element checkbox" type="checkbox"  id="A83" value=" (sn)(i-) "><label >(sn)(i-)</label><br>
+<input class="element checkbox" type="checkbox"  id="A84" value=" (sn)(i+) "><label >(sn)(i+)</label><br>
+</td>
+</tr>
+
+<tr>
+<td>
+- Regional lymph nodes (pN):
+</td>
+<td>
+	<select class="element select large" ID="A85">
+		<option value=""></option>
+		<option value="  - pNX: Regional lymph nodes cannot be assessed">pNX: Regional lymph nodes cannot be assessed</option>
+		<option value="  - pN0: No regional lymph node metastasis">pN0: No regional lymph node metastasis</option>
+		<option value="  - pN0(i+): Isolated tumor cells in regional lymph node(s) < or = 0.2 mm">pN0(i+): Isolated tumor cells in regional lymph node(s) < or = 0.2 mm</option>
+		<option value="  - pN1: Regional lymph node metastasis">pN1: Regional lymph node metastasis</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td rowspan="2" valign="top">
+- Distant metastasis (pM):
+</td>
+<td>
+	<select class="element select large" ID="A86">
+		<option value=""></option>
+		<option value="  - pM1: Distant metastasis (includes metastasis to inguinal lymph nodes, intraperitoneal disease, lung, liver, or bone. It excludes metastasis to pelvic or para-aortic lymph nodes, vagina, uterine serosa, or adnexa)">pM1: Distant metastasis (includes metastasis to inguinal lymph nodes, intraperitoneal disease, lung, liver, or bone. It excludes metastasis to pelvic or para-aortic lymph nodes, vagina, uterine serosa, or adnexa)</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td>
+    - Specify site(s), if known:
+<input type="text" class="element text small" ID="A87" size="35">
+</td>
+</tr>
+</table>
+</p>
+</fieldset>
+</p>
+-->
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label > + Additional pathologic findings: </label></legend>
+
+<p>
+<input class="element checkbox" type="checkbox"  id="A89" value="  - Low-grade squamous intraepithelial lesion (CIN 1)"><label  class="choice">Low-grade squamous intraepithelial lesion (CIN 1)</label>
+<input class="element checkbox" type="checkbox"  id="A90" value="  - High-grade squamous intraepithelial lesion (CIN 2 or 3)"><label  class="choice">High-grade squamous intraepithelial lesion (CIN 2 or 3)</label>
+<input class="element checkbox" type="checkbox"  id="A91" value="  - Inflammation"><label  class="choice">Inflammation</label>
+<input class="element checkbox" type="checkbox"  id="A95" value="  - Endocervical adenocarcinoma in situ "><label  class="choice">Endocervical adenocarcinoma in situ</label>
+</p>
+<p>
+- Other (specify):
+	<input type="text" class="element text medium" ID="A92" size="35">
+</p>
+<br>
+</fieldset>
+</p>
+
+<p>
+<label class="description">- Additional notes:</label>
+ <textarea ID="A93" class = "element textarea medium" style="border-color:grey;"></textarea> 
+</p>
+
+<br><br>
+<input type="button" name="copyform" value="Check your Report" onclick="updateDescription(this.form)"/>
+<br>
+<TEXTAREA ID="holdtext" name="holdtext" class="textarea large" style="border-color:coral;"></TEXTAREA>
+
+<br><br>
+<!-- The button used to copy the text -->
+<button onclick="CopyToClipboard()">Copy text to Clipboard</button>
+
+<input type="reset" value="Reset Form" name="reset" style="float: right;">
+</form>
+<br>
+<br>
+
+<div id="footer">
+Last upated on 25-Mar-2023,<br>
+based on <a href="https://www.cap.org/protocols-and-guidelines/cancer-reporting-tools/cancer-protocol-templates" target="_blank">US CAP cancer protocol templates</a>,<br>
+Uterine Cervix Resection 5.1.0.0 (Mar 2023), <br>
+html form was created on <a href="https://www.phpform.org">pForm</a>, <a href="https://www.w3schools.com/">W3 School</a>, <a href="https://stackoverflow.com/">StackOverflow</a>, and <a href="https://icons8.com">Icons8</a>.<br><br>
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.
+</div>
+
+</div>
+<img id="bottom" src="bottom.png" alt="">
+</body>
+</html>

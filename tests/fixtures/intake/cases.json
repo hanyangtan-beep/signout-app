@@ -1226,6 +1226,76 @@
           "tier": "confident"
         }
       ]
+    },
+    {
+      "name": "a cone biopsy with adenocarcinoma on biopsy in the history opens the cervical carcinoma form on Cone biopsy with the stitch; endocervical curettings keep the biopsy form (cervical carcinoma)",
+      "text": "History\nAdenocarcinoma of cervix on punch biopsy\n\nSpecimen\n(A) Cervix, cone biopsy (stitch at 12 o'clock) and (B) Endocervical curettings",
+      "history": "Adenocarcinoma of cervix on punch biopsy",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "cervical_carcinoma",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "cervical_biopsy",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "procedure": "Cone biopsy",
+          "orientation": "stitch at 12 o'clock"
+        }
+      }
+    },
+    {
+      "name": "a radical hysterectomy under Ca cervix opens the cervical carcinoma form on Radical hysterectomy; the pelvic nodes keep the lymph node form (cervical carcinoma)",
+      "text": "History\nCa cervix IB1\n\nSpecimen\n(A) Uterus, cervix and bilateral adnexa, radical hysterectomy and BSO and (B) Right pelvic lymph nodes and (C) Left pelvic lymph nodes",
+      "history": "Ca cervix IB1",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "cervical_carcinoma",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        },
+        {
+          "label": "C",
+          "templateId": "lymph_node",
+          "tier": "confident"
+        }
+      ],
+      "values": {
+        "A": {
+          "procedure": "Radical hysterectomy"
+        }
+      }
+    },
+    {
+      "name": "a LLETZ and a punch biopsy under HSIL keep the LEEP and biopsy forms (cervical carcinoma)",
+      "text": "History\nHSIL on biopsy\n\nSpecimen\n(A) Cervix, LLETZ and (B) Cervix, punch biopsy",
+      "history": "HSIL on biopsy",
+      "casePrefix": "",
+      "expect": [
+        {
+          "label": "A",
+          "templateId": "cervical_excision",
+          "tier": "confident"
+        },
+        {
+          "label": "B",
+          "templateId": "cervical_biopsy",
+          "tier": "confident"
+        }
+      ]
     }
   ]
 }

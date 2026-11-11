@@ -109,8 +109,8 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   // The floor drops by one each time a QMH-stemmed placeholder ships (ampulla_carcinoma, Phase 22;
   // skin_scc, Phase 39; oropharynx_hpv_carcinoma into oral_carcinoma, Phase 42; hcc, Phase 51;
   // pituitary_net, Phase 75; vulval_carcinoma, Phase 77; ureter_renal_pelvis_carcinoma, Phase 83;
-  // soft_tissue_sarcoma, Phase 84 - deliberate).
-  assert.ok(planned.filter((t) => t.qmh).length >= 42);
+  // soft_tissue_sarcoma, Phase 84; cervical_carcinoma, Phase 85 - deliberate).
+  assert.ok(planned.filter((t) => t.qmh).length >= 41);
   // Biomarkers holds one built template (the standalone HER2 ISH report, Phase 30) and placeholders.
   const biomarkers = top.find((g) => g.system === 'Biomarkers').items;
   assert.ok(biomarkers.every((t) => t.kind === 'biomarker'));
@@ -157,8 +157,9 @@ test('palette ranking: exact shortName > alias > organ > keyword', () => {
   assert.equal(top('pipelle'), 'Endometrium');
   assert.equal(top('EBUS'), 'Lung');
   assert.equal(top('gstr'), 'Gastric');             // subsequence fallback
-  // organ beats keyword: "cervix" ranks the two cervical templates, biopsy first by rank (label renamed in Phase 70)
-  assert.deepEqual(rankTemplates(manifest, 'cervix').map(labelOf), ['Cervix / vagina / vulva', 'LEEP', 'Cervical smear', 'Uterus']);
+  // organ beats keyword: "cervix" ranks the cervical templates, biopsy first by rank (label renamed in Phase 70;
+  // Phase 85, deliberate: Cervix Ca joins after LEEP)
+  assert.deepEqual(rankTemplates(manifest, 'cervix').map(labelOf), ['Cervix / vagina / vulva', 'LEEP', 'Cervix Ca', 'Cervical smear', 'Uterus']);
   // Phase 70: vulval and vaginal biopsies are found under the cervical form. Phase 77 (deliberate): the
   // Vulva Ca label starts with the word, so it leads for "vulva" with the biopsy form next; "vulval",
   // "VIN", "dVIN" and "lichen sclerosus" still lead to the biopsy form.
@@ -168,8 +169,8 @@ test('palette ranking: exact shortName > alias > organ > keyword', () => {
   assert.equal(top('vulvectomy'), 'Vulva Ca');
   assert.equal(top('vagina'), 'Cervix / vagina / vulva');
   assert.equal(top('dVIN'), 'Cervix / vagina / vulva');
-  // multi-token: every token must match
-  assert.deepEqual(rankTemplates(manifest, 'cervix cone').map(labelOf), ['LEEP']);
+  // multi-token: every token must match (Phase 85, deliberate: Cervix Ca takes cones too, after LEEP)
+  assert.deepEqual(rankTemplates(manifest, 'cervix cone').map(labelOf), ['LEEP', 'Cervix Ca']);
   assert.deepEqual(rankTemplates(manifest, 'zzz'), []);
   // exclude filter (Resections ▾ hides biopsies)
   assert.ok(rankTemplates(manifest, '', { exclude: ['biopsy'] }).every((t) => t.kind !== 'biopsy'));
@@ -191,8 +192,9 @@ test('grouped browse and the part selector put Small biopsy first, systems in ca
   // Phase 74 (23 October 2026), deliberate: the benign tube and ovary form joins after Ovarian cyst.
   // Phase 77 (23 October 2026), deliberate: Vulva Ca joins the cancer resections, last by rank.
   // Phase 81 (27 October 2026), deliberate: the morcellated / hysteroscopic fibroid form joins after Uterus.
-  assert.deepEqual(gyn.items.map((t) => t.kind), ['biopsy', 'biopsy', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'cancer resection', 'cancer resection', 'cancer resection'], 'ascending specimen size within a system');
-  assert.deepEqual(gyn.items.slice(2).map(labelOf), ['LEEP', 'Placenta', 'Uterus', 'Morcellated / hysteroscopic', 'Ovarian cyst', 'Tube and ovary', 'Ectopic', 'Endometrial Ca', 'Ovary / tube / peritoneum Ca', 'Vulva Ca'], 'rank order within a kind');
+  // Phase 85 (11 November 2026), deliberate: Cervix Ca joins the cancer resections, after Vulva Ca by rank.
+  assert.deepEqual(gyn.items.map((t) => t.kind), ['biopsy', 'biopsy', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'benign resection', 'cancer resection', 'cancer resection', 'cancer resection', 'cancer resection'], 'ascending specimen size within a system');
+  assert.deepEqual(gyn.items.slice(2).map(labelOf), ['LEEP', 'Placenta', 'Uterus', 'Morcellated / hysteroscopic', 'Ovarian cyst', 'Tube and ovary', 'Ectopic', 'Endometrial Ca', 'Ovary / tube / peritoneum Ca', 'Vulva Ca', 'Cervix Ca'], 'rank order within a kind');
   const sel = selectorGroups(manifest);
   assert.equal(sel[0].label, 'Small biopsy');
   assert.equal(sel[0].items.length, 19); // oral_biopsy joins in Phase 42, liver_biopsy and hirschsprung_biopsy on 2026-09-30, liver_lesion_biopsy on 2026-10-02, peritoneal_nodule on 2026-10-07, skin_inflammatory on 2026-10-11, gvhd_biopsy on 2026-10-14 (Phase 71, deliberate)

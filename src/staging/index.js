@@ -31,13 +31,15 @@ import * as hcc from './hcc.js';
 import * as vulva from './vulva.js';
 import * as ureter_renal_pelvis from './ureter_renal_pelvis.js';
 import * as softtissue from './softtissue.js';
+import * as cervix from './cervix.js';
 
-export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes, gastric, oesophagus, appendix, gallbladder, pancreas, ampulla, skin_scc, oral, hcc, vulva, ureter_renal_pelvis, softtissue };
+export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes, gastric, oesophagus, appendix, gallbladder, pancreas, ampulla, skin_scc, oral, hcc, vulva, ureter_renal_pelvis, softtissue, cervix };
 
 // T, N and M alternatives are listed longest first (ovary: T1c1-3, T2a/b, T3a-c, N0(i+); lung: T1mi,
-// N2a/b, M1c1/c2; head and neck skin: N2c; renal pelvis and ureter: Ta (Phase 83); breast: Tis(DCIS), Tis(Paget), T4c/d, N0(mol+), N1mi, N3a-c and the optional (sn) / (f) node suffix); the negative look-aheads stand in for \b so "N0(i+)" and "T1c1 " both terminate cleanly.
-const OVERRIDE_RE = /\b(y?p?)T(is\(DCIS\)|is\(Paget\)|is|a|X|0|1mi|1c1|1c2|1c3|1c|1a|1b|1|2a|2b|2|3a2|3a1|3a|3b|3c|3|4a|4b|4c|4d|4)(?!\w).*?\b(?:y?p)?N(X|0\(i\+\)|0\(mol\+\)|0|1mi|1a|1b|1c|1|2a|2b|2c|2|3a|3b|3c|3)(?:\((?:sn|f)\))?(?!\w)(?:.*?\b(?:y?p)?M(1c1|1c2|1a|1b|1c|1|X)(?!\w))?/i;
-const CAT_RE = { T: /^y?p?(T(?:is\(DCIS\)|is\(Paget\)|is|a|X|0|1mi|1c1|1c2|1c3|1c|1a|1b|1|2a|2b|2|3a2|3a1|3a|3b|3c|3|4a|4b|4c|4d|4))$/i, N: /^y?p?(N(?:X|0\(i\+\)|0\(mol\+\)|0|1mi|1a|1b|1c|1|2a|2b|2c|2|3a|3b|3c|3)(?:\((?:sn|f)\))?)$/i };
+// N2a/b, M1c1/c2; head and neck skin: N2c; renal pelvis and ureter: Ta (Phase 83); cervix: T1a1/2, T1b1-3, T2a1/2,
+// N2mi (Phase 85); breast: Tis(DCIS), Tis(Paget), T4c/d, N0(mol+), N1mi, N3a-c and the optional (sn) / (f) node suffix); the negative look-aheads stand in for \b so "N0(i+)" and "T1c1 " both terminate cleanly.
+const OVERRIDE_RE = /\b(y?p?)T(is\(DCIS\)|is\(Paget\)|is|a|X|0|1mi|1c1|1c2|1c3|1c|1a1|1a2|1a|1b1|1b2|1b3|1b|1|2a1|2a2|2a|2b|2|3a2|3a1|3a|3b|3c|3|4a|4b|4c|4d|4)(?!\w).*?\b(?:y?p)?N(X|0\(i\+\)|0\(mol\+\)|0|1mi|1a|1b|1c|1|2mi|2a|2b|2c|2|3a|3b|3c|3)(?:\((?:sn|f)\))?(?!\w)(?:.*?\b(?:y?p)?M(1c1|1c2|1a|1b|1c|1|X)(?!\w))?/i;
+const CAT_RE = { T: /^y?p?(T(?:is\(DCIS\)|is\(Paget\)|is|a|X|0|1mi|1c1|1c2|1c3|1c|1a1|1a2|1a|1b1|1b2|1b3|1b|1|2a1|2a2|2a|2b|2|3a2|3a1|3a|3b|3c|3|4a|4b|4c|4d|4))$/i, N: /^y?p?(N(?:X|0\(i\+\)|0\(mol\+\)|0|1mi|1a|1b|1c|1|2mi|2a|2b|2c|2|3a|3b|3c|3)(?:\((?:sn|f)\))?)$/i };
 
 /** Normalise a typed prior category ("pT1a", "T1a", "ypN0") to the bare form, or null. */
 export function parseCategory(text, axis) {
@@ -48,7 +50,7 @@ export function parseCategory(text, axis) {
 // Ordinal rank of a category within its axis so a prior-specimen category can be compared with the
 // current one (higher wins for the combined stage).
 const RANK = (cat) => {
-  const order = ['T0', 'Ta', 'Tis', 'Tis(DCIS)', 'Tis(Paget)', 'T1mi', 'T1a', 'T1b', 'T1c', 'T1c1', 'T1c2', 'T1c3', 'T1', 'T2a', 'T2b', 'T2', 'T3a', 'T3a1', 'T3a2', 'T3b', 'T3c', 'T3', 'T4a', 'T4b', 'T4c', 'T4d', 'T4', 'N0', 'N0(i+)', 'N0(mol+)', 'N1mi', 'N1a', 'N1b', 'N1c', 'N1', 'N2a', 'N2b', 'N2c', 'N2', 'N3a', 'N3b', 'N3c', 'N3'];
+  const order = ['T0', 'Ta', 'Tis', 'Tis(DCIS)', 'Tis(Paget)', 'T1mi', 'T1a', 'T1a1', 'T1a2', 'T1b', 'T1b1', 'T1b2', 'T1b3', 'T1c', 'T1c1', 'T1c2', 'T1c3', 'T1', 'T2a', 'T2a1', 'T2a2', 'T2b', 'T2', 'T3a', 'T3a1', 'T3a2', 'T3b', 'T3c', 'T3', 'T4a', 'T4b', 'T4c', 'T4d', 'T4', 'N0', 'N0(i+)', 'N0(mol+)', 'N1mi', 'N1a', 'N1b', 'N1c', 'N1', 'N2mi', 'N2a', 'N2b', 'N2c', 'N2', 'N3a', 'N3b', 'N3c', 'N3'];
   const i = order.indexOf(String(cat || '').replace(/\((sn|f)\)$/i, ''));
   return i < 0 ? -1 : i;
 };

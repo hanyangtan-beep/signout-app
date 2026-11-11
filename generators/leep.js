@@ -226,4 +226,74 @@ export function summary(parts, ctx) {
   return `SUMMARY: ${bits.join('; ')}.`;
 }
 
-export default { specimenName, microscopy, diagnosis, summary };
+// ---------- upgrade to the cervical carcinoma synoptic (Phase 85) ----------
+
+const stripDot = (s) => String(s || '').trim().replace(/[.;\s]+$/, '');
+const UP_PROCEDURE = { LEEP: 'Loop excision (LEEP / LLETZ)', 'Cone biopsy': 'Cone biopsy', 'Top-hat endocervical excision': 'Other (specify)' };
+const UP_HSIL = 'High-grade squamous intraepithelial lesion (CIN 2 or 3)';
+const UP_AIS = 'Endocervical adenocarcinoma in situ';
+const UP_CANNOT = 'Cannot be assessed';
+
+/** One margin of the excision on the carcinoma form: the invasive status, the precursor and the site. */
+function upMargin(out, m, value, positions) {
+  if (isNA(value)) {
+    out[`${m}Margin`] = UP_CANNOT;
+    out[`${m}MarginSite`] = /cautery/.test(value) && /denuded/.test(value) ? 'denuded / cautery artefact' : /denuded/.test(value) ? 'denuded' : 'cautery artefact';
+  } else if (value === 'Involved by HSIL') {
+    out[`${m}Precursor`] = 'Involved by HSIL (CIN 2-3)';
+    if (stripDot(positions)) out[`${m}PrecursorSite`] = stripDot(positions);
+  } else if (value === 'Involved by AIS') {
+    out[`${m}Precursor`] = 'Involved by AIS';
+    if (stripDot(positions)) out[`${m}PrecursorSite`] = stripDot(positions);
+  }
+}
+
+/**
+ * "Upgrade this part": a LEEP, cone or top-hat excision with an invasive squamous cell carcinoma or adenocarcinoma
+ * ticked hands off to the cervical carcinoma synoptic (`cervical_carcinoma`). The procedure, orientation, blocks,
+ * type, depth, horizontal extent, lymphovascular invasion, p16, margins and positions carry over; the staging
+ * items start at the synoptic's defaults. Endocervical curettings are not offered the upgrade.
+ */
+export const UPGRADE_TO = {
+  to: 'cervical_carcinoma',
+  label: 'Upgrade this part',
+  when: (v) => !isECC(v) && (isSCC(v) || isAdenoCa(v)),
+  map: (v) => {
+    const out = { procedure: UP_PROCEDURE[v.specimenType] || 'Loop excision (LEEP / LLETZ)' };
+    if (v.specimenType === 'Top-hat endocervical excision') out.procedure = 'Other (specify)';
+    if (out.procedure === 'Other (specify)') out.procedureOther = 'Top-hat endocervical excision';
+    if (stripDot(v.orientation)) out.orientation = stripDot(v.orientation);
+    if (v.blocks !== undefined && v.blocks !== '') out.blocks = v.blocks;
+    if (stripDot(v.positions)) { out.tumourSite = ['Other (specify)']; out.tumourSiteOther = stripDot(v.positions); }
+    // Both an invasive squamous and an invasive glandular carcinoma ticked: the type is left for the pathologist.
+    if (isSCC(v) && !isAdenoCa(v)) {
+      out.histType = v.p16 === 'Block positive' ? 'Squamous cell carcinoma, HPV-associated' : 'Squamous cell carcinoma, NOS';
+      if (v.sccType) out.sccPattern = v.sccType;
+    } else if (isAdenoCa(v) && !isSCC(v)) {
+      out.histType = v.glandular === 'Adenocarcinoma, HPV-independent (gastric type)' ? 'Adenocarcinoma, HPV-independent, gastric type' : 'Adenocarcinoma, HPV-associated';
+    }
+    if (v.invasionDepth !== undefined && v.invasionDepth !== '') out.doiMm = v.invasionDepth;
+    if (v.horizontalExtent !== undefined && v.horizontalExtent !== '') { out.horizontal = 'Specify (mm)'; out.horizontalMm = v.horizontalExtent; }
+    if (v.lvi) out.lvi = v.lvi;
+    if (v.p16 === 'Block positive') out.p16 = 'Positive';
+    else if (v.p16 === 'Negative') out.p16 = 'Negative';
+    // The LEEP report states adjacent HSIL beside a squamous cell carcinoma; HSIL or AIS at a margin is adjacent too.
+    const adjacent = [];
+    if (isSCC(v) || v.ectoMargin === 'Involved by HSIL' || v.endoMargin === 'Involved by HSIL') adjacent.push(UP_HSIL);
+    if (v.endoMargin === 'Involved by AIS') adjacent.push(UP_AIS);
+    if (v.lsilBackground === 'Present' || v.ectoMargin === 'Involved by LSIL' || v.endoMargin === 'Involved by LSIL') adjacent.unshift('Low-grade squamous intraepithelial lesion (CIN 1)');
+    if (v.benign === 'Chronic cervicitis') adjacent.push('Inflammation');
+    if (adjacent.length) out.adjacent = adjacent;
+    if (v.benign && !['None', 'Chronic cervicitis'].includes(v.benign)) out.additionalFindings = v.benign;
+    upMargin(out, 'ecto', v.ectoMargin, v.ectoPositions);
+    upMargin(out, 'endo', v.endoMargin, v.endoPositions);
+    if (v.deepMargin === 'Involved') out.radialMargin = 'Involved by invasive carcinoma';
+    else if (isNA(v.deepMargin)) { out.radialMargin = UP_CANNOT; out.radialMarginSite = 'cautery artefact'; }
+    const closest = { Endocervical: 'endo', Ectocervical: 'ecto', 'Deep stromal': 'radial' }[v.clearanceMargin];
+    if (closest && v.clearance !== undefined && v.clearance !== '' && !out[`${closest}Margin`]) out[`${closest}MarginMm`] = v.clearance;
+    if (stripDot(v.additionalNotes)) out.additionalNotes = stripDot(v.additionalNotes);
+    return out;
+  }
+};
+
+export default { specimenName, microscopy, diagnosis, summary, UPGRADE_TO };

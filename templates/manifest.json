@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 84,
+  "count": 85,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -4658,6 +4658,175 @@
       "generator": "vulval_carcinoma",
       "generatorPath": "generators/vulval_carcinoma.js",
       "schemaPath": "schemas/vulval_carcinoma.json"
+    },
+    {
+      "id": "cervical_carcinoma",
+      "name": "Cervical carcinoma resection",
+      "shortName": "Cervix · carcinoma resection",
+      "label": "Cervix Ca",
+      "organ": "CERVIX",
+      "system": "Gynae",
+      "kind": "cancer resection",
+      "rank": 44.5,
+      "aliases": [
+        "cervical cancer",
+        "cervical SCC",
+        "cervical adenocarcinoma",
+        "carcinoma of cervix",
+        "radical hysterectomy",
+        "Wertheim hysterectomy",
+        "trachelectomy",
+        "radical trachelectomy",
+        "cone biopsy carcinoma",
+        "LEEP carcinoma",
+        "LLETZ carcinoma"
+      ],
+      "match": {
+        "site": [
+          "cervix",
+          "cervical",
+          "cone",
+          "LEEP",
+          "LLETZ",
+          "trachelectomy",
+          "radical hysterectomy",
+          "Wertheim",
+          "exenteration"
+        ],
+        "procedure": [
+          "cone",
+          "LEEP",
+          "LLETZ",
+          "loop excision",
+          "trachelectomy",
+          "radical hysterectomy",
+          "hysterectomy",
+          "Wertheim",
+          "exenteration",
+          "excision"
+        ],
+        "clinical": [
+          "SCC",
+          "squamous cell carcinoma",
+          "adenocarcinoma",
+          "carcinoma",
+          "ca",
+          "cancer",
+          "malignancy"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:endometri\\w*|corpus|ovar\\w*|vulva[lr]?|vagina[l]?|rect\\w*|bladder|colorectal|bowel)\\s+\\b(?:c?SCC|ca(?![-\\s]?\\d)|carcinoma|cancer|adenocarcinoma)\\b(?![\\s-]+in[\\s-]?situ))(?![\\s\\S]*\\b(?:c?SCC|ca(?![-\\s]?\\d)|carcinoma|cancer|adenocarcinoma)\\b(?![\\s-]+in[\\s-]?situ)\\s+(?:of\\s+(?:the\\s+)?)?(?:endometri\\w*|corpus|ovar\\w*|vulva[lr]?|vagina[l]?|rect\\w*|bladder|colorectal|bowel)\\b)(?:[\\s\\S]*\\b(?:radical\\s+(?:\\w+\\s+){0,2}?(?:hysterectomy|trachelectomy)|trachelectomy|wertheim\\w*)\\b|(?=[\\s\\S]*\\b(?:cone|LEEP|LLETZ|loop)\\b)[\\s\\S]*(?<![?]\\s?)(?<!\\b(?:query|suspected|suspicious\\s+(?:of|for)|r/o|rule\\s+out|exclude|excluding|possible|probable|no|not|negative\\s+for|without|nil|free\\s+of|no\\s+evidence\\s+of)\\s)\\b(?:c?SCC|ca(?![-\\s]?\\d)|carcinoma|cancer|adenocarcinoma)\\b(?![\\s-]+in[\\s-]?situ)|[\\s\\S]*(?<![?]\\s?)(?<!\\b(?:query|suspected|suspicious\\s+(?:of|for)|r/o|rule\\s+out|exclude|excluding|possible|probable|no|not|negative\\s+for|without|nil|free\\s+of|no\\s+evidence\\s+of)\\s)(?:\\bcervical\\s+\\b(?:c?SCC|ca(?![-\\s]?\\d)|carcinoma|cancer|adenocarcinoma)\\b(?![\\s-]+in[\\s-]?situ)|\\b(?:c?SCC|ca(?![-\\s]?\\d)|carcinoma|cancer|adenocarcinoma)\\b(?![\\s-]+in[\\s-]?situ)\\s+(?:of\\s+(?:the\\s+)?)?(?:uterine\\s+)?cervix\\b))",
+        "bias": 1,
+        "exclude": [
+          "polyp",
+          "polypectomy",
+          "lymph node",
+          "lymph nodes",
+          "node",
+          "nodes",
+          "LN",
+          "neck",
+          "thyroid",
+          "spine",
+          "spinal",
+          "vertebra",
+          "vertebral",
+          "disc",
+          "oesophagus",
+          "oesophageal",
+          "esophagus",
+          "esophageal",
+          "lymphadenopathy",
+          "cytology",
+          "smear",
+          "curettings",
+          "ECC",
+          "endometrial",
+          "endometrium",
+          "ovary",
+          "ovarian",
+          "vulva",
+          "vulval",
+          "vulvar",
+          "frozen",
+          "FS"
+        ],
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bradical\\s+(?:\\w+\\s+){0,2}?trachelectomy",
+                "Radical trachelectomy"
+              ],
+              [
+                "\\btrachelectomy",
+                "Simple trachelectomy"
+              ],
+              [
+                "\\bradical\\s+(?:\\w+\\s+){0,2}?hysterectomy|\\bwertheim",
+                "Radical hysterectomy"
+              ],
+              [
+                "\\bexenteration",
+                "Pelvic exenteration"
+              ],
+              [
+                "\\bhysterectomy|\\bTAH\\b|\\bTLH\\b|\\bLAVH\\b",
+                "Simple hysterectomy"
+              ],
+              [
+                "\\bcone\\b",
+                "Cone biopsy"
+              ],
+              [
+                "\\bLEEP\\b|\\bLLETZ\\b|\\bloop\\b",
+                "Loop excision (LEEP / LLETZ)"
+              ]
+            ]
+          },
+          {
+            "field": "additionalProcedures",
+            "from": "map",
+            "map": [
+              [
+                "\\bBSO\\b|\\bbilateral\\s+salpingo-?\\s?oophorectom\\w*|\\b(?:both|bilateral)\\s+(?:adnexa\\w*|ovaries)",
+                "Bilateral salpingo-oophorectomy"
+              ],
+              [
+                "\\bRSO\\b|\\bright\\s+salpingo-?\\s?oophorectom\\w*",
+                "Right salpingo-oophorectomy"
+              ],
+              [
+                "\\bLSO\\b|\\bleft\\s+salpingo-?\\s?oophorectom\\w*",
+                "Left salpingo-oophorectomy"
+              ],
+              [
+                "\\bbilateral\\s+salpingectom\\w*",
+                "Bilateral salpingectomy"
+              ],
+              [
+                "\\bomentectom\\w*",
+                "Omentectomy"
+              ]
+            ]
+          },
+          {
+            "field": "orientation",
+            "from": "map",
+            "map": [
+              [
+                "\\b(?:stitch|suture)\\w*\\s+(?:at\\s+)?12\\b",
+                "stitch at 12 o'clock"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "cervical_carcinoma",
+      "generatorPath": "generators/cervical_carcinoma.js",
+      "schemaPath": "schemas/cervical_carcinoma.json"
     },
     {
       "id": "breast_carcinoma",

@@ -2952,6 +2952,71 @@ await check('soft tissue sarcoma: a pasted thigh wide excision opens Sarcoma; FN
   return 'thigh wide excision under a sarcoma history opens Sarcoma on Wide resection and Trunk and extremities; UPS grade 3 (7), closest margin 3 mm deep, pT2 printed with the option, IIIA in Checks only; benign ALT excision upgrades in place with depth, site group and MDM2 carried over';
 });
 
+// Phase 85 (2026-11-11): the cervical carcinoma resection form from a pasted cone biopsy with a cervical
+// adenocarcinoma history; the margins follow the procedure, the depth prints in its band with the measurement,
+// the AJCC version 9 pT printed with the option and the stage group in Checks only. A LEEP with a squamous cell
+// carcinoma ticked offers "Upgrade this part" and opens the carcinoma form with its answers carried over.
+await check('cervical carcinoma: a pasted cone biopsy opens Cervix Ca; depth 1.9 mm prints Not more than 3 mm, pT1a1, stage group in Checks; a LEEP with a squamous cell carcinoma upgrades in place', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const chosen = async (id) => {
+    const chips = await page.locator(`.chips[data-field="${id}"] .chip[aria-pressed="true"]`).allTextContents();
+    if (chips.length) return chips.map((c) => c.replace(/^\s*\d*\s*/, '').trim()).join(',');
+    const sel = page.locator(`[data-field="${id}"] select`).first();
+    return (await sel.count()) ? sel.inputValue() : '';
+  };
+  const shows = async (id) => (await page.locator(`.field[data-field="${id}"]:visible`).count()) > 0;
+  const type = async (id, value) => { await page.fill(`#f-A-${id}`, value); await page.waitForTimeout(300); };
+  let routed = await pasteAndBuild("History\nAdenocarcinoma of cervix on punch biopsy\n\nSpecimen\n(A) Cervix, cone biopsy (stitch at 12 o'clock)");
+  assert(routed === 'cervical_carcinoma', `cone biopsy routed to ${routed}`);
+  assert(await chosen('procedure') === 'Cone biopsy', `procedure read "${await chosen('procedure')}"`);
+  assert(await page.inputValue('#f-A-orientation') === "stitch at 12 o'clock", `orientation read "${await page.inputValue('#f-A-orientation')}"`);
+  assert(await shows('ectoMargin') && await shows('endoMargin') && await shows('radialMargin') && !(await shows('vaginalMargin')), 'a cone should offer the ectocervical, endocervical and radial margins and no vaginal cuff margin');
+  await pickField('histType', 'Adenocarcinoma, HPV-associated');
+  await pickField('adenoSubtype', 'Usual type');
+  await pickField('silva', 'Pattern A');
+  await type('doiMm', '1.9');
+  await type('doiSite', "7 o'clock");
+  await type('ectoMarginMm', '4');
+  await type('endoMarginMm', '3');
+  await type('radialMarginMm', '2');
+  await page.locator('#case-options label', { hasText: 'Print the pTNM block (AJCC 9th edition)' }).locator('input').check();
+  await page.waitForTimeout(300);
+  let report = await reportText();
+  assert(report.includes("- Depth of stromal invasion: Not more than 3 mm (deepest 1.9 mm, 7 o'clock)"), `depth row wrong: ${report.slice(0, 1400)}`);
+  assert(report.includes('- Surgical margins: Uninvolved by invasive adenocarcinoma') && report.includes('- Radial (circumferential) margin: 2 mm'), `margins wrong: ${report.slice(-1200)}`);
+  assert(report.includes('- pTNM: pT1a1') && report.includes('- pT1a1 (AJCC 9th edition).'), `pT missing: ${report.slice(-700)}`);
+  assert(report.includes('CERVIX, cone biopsy:') && report.includes('- ADENOCARCINOMA, HPV-associated') && report.includes('- Margins clear'), `diagnosis wrong: ${report.slice(-500)}`);
+  const printed = (await page.locator('#report-blocks .block pre').allInnerTexts()).join('\n');
+  assert(!/Stage group|FIGO|\bIA1\b/.test(printed), `a stage group reached the printed report: ${printed.slice(-600)}`);
+  assert((await checksText()).includes('Stage group, AJCC 9th edition, matching FIGO 2018 (reference, not reported): IA1'), `stage group missing from Checks: ${await checksText()}`);
+  await page.locator('[data-field="doiMm"]').first().scrollIntoViewIfNeeded();
+  await shot('cervical-carcinoma-synoptic');
+  // Upgrade from the LEEP form: the procedure, the type, the depth and the adjacent HSIL carry over.
+  // Cleared first: Build parts keeps the case's clinical history, and its carcinoma would route the LEEP too.
+  await clearMeta(page);
+  await page.waitForTimeout(300);
+  routed = await pasteAndBuild('Cervix, LEEP');
+  assert(routed === 'cervical_excision', `LEEP routed to ${routed}`);
+  assert(!(await page.locator('button', { hasText: 'Upgrade this part' }).count()), 'Upgrade this part shows before a carcinoma is ticked');
+  await pickField('squamous', 'Squamous cell carcinoma');
+  await type('invasionDepth', '4');
+  const up = page.locator('button', { hasText: 'Upgrade this part' }).first();
+  assert(await up.count(), 'Upgrade this part does not show for a squamous cell carcinoma');
+  await up.click();
+  await page.waitForTimeout(800);
+  const now = await page.locator('select[aria-label="Template for part A"]').first().inputValue();
+  assert(now === 'cervical_carcinoma', `the part is on ${now} after the upgrade`);
+  assert(await chosen('procedure') === 'Loop excision (LEEP / LLETZ)' && await chosen('histType') === 'Squamous cell carcinoma, NOS', `carried over: procedure "${await chosen('procedure')}", type "${await chosen('histType')}"`);
+  assert(await page.inputValue('#f-A-doiMm') === '4', `depth read "${await page.inputValue('#f-A-doiMm')}"`);
+  report = await reportText();
+  assert(report.includes('- Depth of stromal invasion: Greater than 3 mm but not more than 5 mm'), `upgraded depth wrong: ${report.slice(0, 1400)}`);
+  assert(report.includes('CERVIX, LEEP:') && report.includes('- SQUAMOUS CELL CARCINOMA'), `upgraded diagnosis wrong: ${report.slice(-500)}`);
+  assert(report.includes('High-grade squamous intraepithelial lesion'), `adjacent HSIL not carried over: ${report.slice(-900)}`);
+  return 'cone biopsy line under a cervical adenocarcinoma history opens Cervix Ca on Cone biopsy with the stitch; cone margins only; HPV-associated adenocarcinoma 1.9 mm prints Not more than 3 mm, pT1a1 with the option, IA1 in Checks only; LEEP with a squamous cell carcinoma upgrades in place with the procedure, type, depth and adjacent HSIL';
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));
