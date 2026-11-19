@@ -261,7 +261,18 @@
           <option value="full">drive — full Drive access (use if the folder is not writable)</option>
         </select>
       </div>
-      <p class="field-note">Case data never leaves your browser except to Google Drive under your own account. The client id is public and safe to store here.</p>
+      <!-- Proofreading with PPLX 27B in Han Slide: docs/specs/proofreading.md. Set per browser. -->
+      <div class="field proof-settings">
+        <span class="field-label">Proofreading</span>
+        <label class="check"><input type="checkbox" id="cfg-proofOn" /> Proofread with PPLX 27B in Han Slide on this computer</label>
+        <div class="proof-code">
+          <input class="input mono" id="cfg-proofCode" type="text" placeholder="Pairing code, XXXX-XXXX-XXXX-XXXX" aria-label="Han Slide pairing code" autocomplete="off" spellcheck="false" />
+          <button class="btn ghost small" id="btn-proof-test" type="button">Test</button>
+        </div>
+        <p class="field-note" id="cfg-proofStatus" role="status" aria-live="polite"></p>
+        <p class="field-note">Turn this on only on the Mac with Han Slide, and leave it off on the PC. The code is in Han Slide › Settings › Proofreading. The report goes only to Han Slide on this computer. The rule checks run on every computer.</p>
+      </div>
+      <p class="field-note">Case data never leaves your browser except to Google Drive under your own account and, with proofreading on, to Han Slide on this computer. The client id is public and safe to store here.</p>
       <div class="dialog-actions">
         <button class="btn ghost small danger" id="btn-signout" type="button">Sign out of Google</button>
         <button class="btn primary" value="save" type="submit">Save settings</button>

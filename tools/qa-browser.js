@@ -3017,6 +3017,159 @@ await check('cervical carcinoma: a pasted cone biopsy opens Cervix Ca; depth 1.9
   return 'cone biopsy line under a cervical adenocarcinoma history opens Cervix Ca on Cone biopsy with the stitch; cone margins only; HPV-associated adenocarcinoma 1.9 mm prints Not more than 3 mm, pT1a1 with the option, IA1 in Checks only; LEEP with a squamous cell carcinoma upgrades in place with the procedure, type, depth and adjacent HSIL';
 });
 
+// Proofreading before sign-out (docs/specs/proofreading.md, Phase 86). A stand-in for Han Slide on
+// 127.0.0.1:47321 answers as Han Slide does: the pairing code as a bearer token, CORS for this
+// page's origin only, and an answer in PPLX 27B's shape built from the report it is sent. The real
+// model runs only on the Mac, so this checks the page's side of the exchange.
+await check('proofreading: off asks nothing; Ready asks the stand-in Han Slide; Accept, Dismiss and Accept all; the record after a reload; Copy for LIS asks once', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const CODE = 'QA12-QA34-QA56-QA78';
+  const seen = [];
+  const standIn = createServer(async (req, res) => {
+    const origin = req.headers.origin || '';
+    const cors = { 'Access-Control-Allow-Origin': origin, Vary: 'Origin', 'Access-Control-Allow-Headers': 'Authorization, Content-Type', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Private-Network': 'true', 'Cache-Control': 'no-store' };
+    const json = (code, o) => res.writeHead(code, { ...(origin === `http://localhost:${PORT}` ? cors : {}), 'Content-Type': 'application/json' }).end(JSON.stringify(o));
+    if (origin !== `http://localhost:${PORT}`) return json(403, { error: 'origin' });
+    if (req.method === 'OPTIONS') return res.writeHead(204, cors).end();
+    let body = '';
+    for await (const c of req) body += c;
+    seen.push({ path: req.url, auth: req.headers.authorization || '', body });
+    if (req.headers.authorization !== `Bearer ${CODE}`) return json(401, { error: 'unpaired' });
+    if (req.url === '/v1/status') return json(200, { app: 'Han Slide', version: '1.13.0', api: 1, model: 'PPLX 27B', ready: true, why: '', paired: true });
+    if (req.url !== '/v1/proofread') return json(404, { error: 'not found' });
+    const { prompt } = JSON.parse(body);
+    const dx = (prompt.split('[DX]\n')[1] || '').split('\n')[0];
+    const edits = [];
+    if (prompt.includes('Sections shows')) edits.push({ section: 'MICRO', find: 'Sections shows', replace: 'Sections show', kind: 'grammar', why: 'Plural verb' });
+    if (prompt.includes('recieved')) edits.push({ section: 'MICRO', find: 'recieved', replace: 'received', kind: 'spelling', why: 'Spelling' });
+    const flags = [{ section: 'DX', quote: dx, why: 'QA flag one' }, { section: 'MICRO', quote: 'There is no evidence of malignancy.', why: 'QA flag two' }];
+    return json(200, { text: '```json\n' + JSON.stringify({ edits, flags }) + '\n```', seconds: 1.2, outputTokens: 80, model: 'PPLX 27B', version: '1.13.0' });
+  });
+  await new Promise((resolve) => standIn.listen(47321, '127.0.0.1', resolve));
+  const box = page.locator('#report-blocks details.proof');
+  const row = (text) => box.locator('.proof-item', { hasText: text }).first();
+  const toastText = async () => (await page.locator('#toast').textContent()) || '';
+  const settings = async (on, code) => {
+    await page.click('#btn-settings');
+    await page.waitForSelector('#dlg-settings[open]');
+    await page.setChecked('#cfg-proofOn', on);
+    if (code !== undefined) await page.fill('#cfg-proofCode', code);
+  };
+  const saveSettings = async () => { await page.click('#settings-form button[value="save"]'); await page.waitForTimeout(300); };
+  const editBlock = async (name, text) => {
+    const block = page.locator('#report-blocks .block', { has: page.locator('h3', { hasText: name }) }).first();
+    await block.locator('button', { hasText: 'Edit' }).click();
+    await block.locator('textarea').fill(text);
+    await block.locator('button', { hasText: 'Done' }).click();
+    await page.waitForTimeout(300);
+  };
+  try {
+    await page.click('#btn-palette');
+    await page.waitForSelector('#dlg-palette[open]');
+    await page.locator('#palette-list [data-template="gastric_biopsy"]').first().click();
+    await page.waitForTimeout(300);
+    await caseMenu(page, 'Example');
+    await page.fill('#meta-accession', 'S26-01185');
+    // Off (the default): Ready asks nothing and the box is not there.
+    await page.selectOption('#meta-status', 'ready');
+    await page.waitForTimeout(500);
+    assert(seen.length === 0, `with proofreading off the page asked Han Slide ${seen.length} times`);
+    assert(!(await box.count()), 'the Proofreading box shows with proofreading off and nothing found');
+    await page.selectOption('#meta-status', 'draft');
+    // Settings: the code is tidied, Test asks for Han Slide's state with it.
+    await settings(true, 'qa12 qa34 qa56 qa78');
+    await page.click('#btn-proof-test');
+    await page.waitForFunction(() => /Connected to Han Slide 1\.13\.0: PPLX 27B is ready\./.test(document.querySelector('#cfg-proofStatus')?.textContent || ''), null, { timeout: 5000 });
+    assert(await page.inputValue('#cfg-proofCode') === CODE, `code read ${await page.inputValue('#cfg-proofCode')}`);
+    await saveSettings();
+    assert(seen.length === 1 && seen[0].path === '/v1/status' && seen[0].auth === `Bearer ${CODE}`, `Test sent ${JSON.stringify(seen.map((s) => [s.path, s.auth]))}`);
+    assert(/not proofread yet/.test(await box.locator('summary').innerText()), `box summary: ${await box.innerText()}`);
+    // A typed microscopy with a rule finding and the model's: Ready asks once.
+    await editBlock('Microscopic', 'Sections shows antral mucosa with a tumor-free surface. The fragments were recieved intact.\nThere is no evidence of malignancy.');
+    await page.selectOption('#meta-status', 'ready');
+    await row('QA flag two').waitFor({ timeout: 8000 });
+    const asks = seen.filter((s) => s.path === '/v1/proofread');
+    assert(asks.length === 1, `${asks.length} proofread requests`);
+    const sent = JSON.parse(asks[0].body);
+    assert(sent.prompt.startsWith('TASK: proofread') && sent.prompt.includes('[MICRO]\nSections shows antral mucosa') && sent.maxTokens === 1400 && /British/.test(sent.system), 'the question is not in the expected shape');
+    assert(!sent.prompt.includes('S26-01185'), 'the accession number was sent to Han Slide');
+    let text = await box.innerText();
+    for (const want of ['tumor', 'Sections shows', 'recieved', 'QA flag one', 'QA flag two', '3 to accept', '2 to look at']) assert(text.includes(want), `box lacks "${want}": ${text}`);
+    assert((await box.locator('.proof-item', { hasText: 'Sections shows' }).count()) === 1, 'the rule and the model both list "Sections shows"');
+    // Accept one, dismiss one, accept the rest.
+    await row('recieved').locator('button', { hasText: 'Accept' }).click();
+    await page.waitForTimeout(200);
+    let report = await page.locator('#report-blocks .block pre').allInnerTexts().then((t) => t.join('\n'));
+    assert(report.includes('The fragments were received intact.'), 'Accept did not change the microscopy');
+    await row('QA flag one').locator('button', { hasText: 'Dismiss' }).click();
+    await page.waitForTimeout(200);
+    await box.locator('button', { hasText: 'Accept all 2' }).click();
+    await page.waitForTimeout(300);
+    report = await page.locator('#report-blocks .block pre').allInnerTexts().then((t) => t.join('\n'));
+    assert(report.includes('Sections show antral mucosa with a tumour-free surface.'), `Accept all left: ${report.slice(0, 400)}`);
+    text = await box.innerText();
+    assert(!text.includes('QA flag one') && text.includes('QA flag two') && /1 to look at/.test(text), `after Dismiss and Accept all: ${text}`);
+    assert(/\(2 accepted, 1 dismissed\); unchanged since\./.test(text), `record line: ${text}`);
+    // Copy for LIS asks while a suggestion is open, once for the same ones.
+    await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+    let asked = 0;
+    const accept = (d) => { asked++; d.accept(); };
+    page.on('dialog', accept);
+    await page.click('#btn-copy-lis');
+    await page.waitForTimeout(300);
+    await page.click('#btn-copy-lis');
+    await page.waitForTimeout(300);
+    page.off('dialog', accept);
+    assert(asked === 1, `Copy for LIS asked ${asked} times`);
+    const clip = String(await page.evaluate(() => navigator.clipboard.readText()));
+    assert(clip.includes('<<<MICROSCOPY>>>') && clip.includes('Sections show antral mucosa'), 'the payload lacks the accepted microscopy');
+    // The record is kept with the case: back after a reload, and Proofread again keeps the dismissal.
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.waitForTimeout(600);
+    text = await box.innerText();
+    assert(/Proofread at \d\d:\d\d by PPLX 27B via Han Slide 1\.13\.0 \(2 accepted, 1 dismissed\); unchanged since\./.test(text) && text.includes('QA flag two'), `after a reload: ${text}`);
+    await box.locator('button', { hasText: 'Proofread again' }).click();
+    await page.waitForFunction(() => /nothing open|to look at/.test(document.querySelector('#report-blocks details.proof summary')?.textContent || '') && !/is reading the report/.test(document.querySelector('#report-blocks details.proof summary')?.textContent || ''), null, { timeout: 8000 });
+    await page.waitForTimeout(300);
+    text = await box.innerText();
+    assert(seen.filter((s) => s.path === '/v1/proofread').length === 2, 'Proofread again did not ask');
+    assert(!text.includes('QA flag one') && text.includes('QA flag two'), `a dismissed flag came back: ${text}`);
+    // A change after proofreading is named in Checks and in the Copy for LIS toast.
+    await editBlock('Diagnosis', 'STOMACH, antrum, biopsy:\n- MILD CHRONIC GASTRITIS.');
+    text = await box.innerText();
+    assert(/changed since: Diagnosis\./.test(text), `changed line: ${text}`);
+    page.on('dialog', accept);
+    await page.click('#btn-copy-lis');
+    await page.waitForTimeout(200);
+    page.off('dialog', accept);
+    assert(/Changed since proofreading: .*Diagnosis/.test(await toastText()), `toast: ${await toastText()}`);
+    await shot('proofreading');
+    // With nothing open, Copy for LIS copies without asking.
+    await row('QA flag two').locator('button', { hasText: 'Dismiss' }).click();
+    await page.waitForTimeout(200);
+    asked = 0;
+    page.on('dialog', accept);
+    await page.click('#btn-copy-lis');
+    await page.waitForTimeout(300);
+    page.off('dialog', accept);
+    assert(asked === 0, `Copy for LIS asked ${asked} times with nothing open`);
+    // Off again: nothing more is asked.
+    await settings(false);
+    await saveSettings();
+    const before = seen.length;
+    await page.selectOption('#meta-status', 'draft');
+    await page.selectOption('#meta-status', 'ready');
+    await page.waitForTimeout(400);
+    assert(seen.length === before, 'the page asked Han Slide with proofreading off');
+    await page.selectOption('#meta-status', 'draft');
+    return `${seen.length} requests to the stand-in (1 Test, 2 proofreads); rule and model suggestions together, Accept, Dismiss and Accept all; record and dismissal kept over a reload and a second proofread; Copy for LIS asked once, and not with nothing open`;
+  } finally {
+    await new Promise((resolve) => standIn.close(resolve));
+  }
+});
+
 await check('no console error accumulated across the whole run', async () => {
   const fatal = consoleErrors.filter((t) => !/favicon|gapi|accounts\.google|net::ERR/i.test(t));
   assert(fatal.length === 0, `${fatal.length} console errors:\n` + fatal.slice(0, 5).join('\n'));

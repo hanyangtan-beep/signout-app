@@ -654,6 +654,32 @@ textarea.input { min-height: 64px; resize: vertical; }
 .checks li.warn { color: #8a6208; }
 .checks li.info { color: var(--color-text-muted); }
 
+/* Proofreading (docs/specs/proofreading.md): a box under Checks. It is not pinned as Checks is, so a
+   long list scrolls away with the report instead of covering it. */
+.checks.proof { position: static; }
+.proof-line { margin: 0 0 var(--space-2); font-size: var(--text-xs); color: var(--color-text-muted); }
+.proof-error { margin: 0 0 var(--space-2); font-size: 13px; color: var(--color-alert); }
+.checks ul.proof-list { list-style: none; padding: 0; }
+.proof-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px var(--space-3); align-items: start; padding: var(--space-2) 0; border-top: 1px solid var(--color-border); }
+.proof-item:first-child { border-top: 0; padding-top: 0; }
+.proof-kind { grid-column: 1; font-size: var(--text-xs); color: var(--color-text-faint); }
+.proof-text { grid-column: 1; overflow-wrap: anywhere; }
+.proof-text del { color: var(--color-text-muted); text-decoration-color: var(--color-alert); }
+.proof-text ins { text-decoration: none; background: var(--color-primary-highlight); border-radius: var(--radius-sm); padding: 0 2px; }
+.proof-text q { background: var(--color-surface-2); border-radius: var(--radius-sm); padding: 0 2px; }
+.proof-sugg { color: var(--color-text-muted); }
+.proof-actions { grid-column: 2; grid-row: 1 / span 2; display: flex; gap: var(--space-1); align-self: center; }
+.proof-bar { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: flex-end; margin-top: var(--space-2); }
+.proof-settings .check { display: flex; gap: var(--space-2); align-items: center; font-size: var(--text-sm); cursor: pointer; }
+.proof-settings .check input { margin: 0; accent-color: var(--color-primary); }
+.proof-code { display: flex; gap: var(--space-2); align-items: center; }
+.proof-code .input { flex: 1 1 auto; min-width: 0; }
+.proof-settings .field-note:empty { display: none; }
+@media (max-width: 700px) {
+  .proof-item { grid-template-columns: minmax(0, 1fr); }
+  .proof-actions { grid-column: 1; grid-row: auto; justify-content: flex-end; }
+}
+
 /* LIS macro / block key override controls (case details panel) */
 .lis-row { grid-column: 2; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); margin-top: var(--space-2); font-size: var(--text-sm); }
 .lis-row .check { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--color-text); cursor: pointer; font-size: var(--text-sm); }

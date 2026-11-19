@@ -22,6 +22,11 @@ import { calculatorView, MIN_NUCLEI } from '../generators/dish_calculator.js';
 import { organIcon, mountOrganSprite } from './organicons.js';
 import { openRoadmap, openSuggest } from './panels.js';
 import { choiceSummary } from './suggest.js';
+import {
+  reportSections, ruleChecks, buildPrompt, parseReply, vetReply, newRecord, openItems, recordSummary, changedSince, applyEdit, fingerprint, sectionOf,
+  KIND_LABEL as PROOF_KIND, MODEL_NAME
+} from './proofread.js';
+import { loadSettings as loadProofSettings, saveSettings as saveProofSettings, status as hanSlideStatus, proofread as hanSlideProofread, describeStatus, normaliseCode } from './hanslide.js';
 
 // The CNS-only code (guided intake, pathway drawer and family plates, about 180 kB) loads the
 // first time a CNS form opens rather than at start-up (docs/specs/speed.md, Phase 79). ensureTemplate
@@ -81,7 +86,8 @@ const state = {
   saving: false,
   navMode: 'top',         // which side of the header mode switch is showing ('top' = biopsy)
   navModeFor: null,       // the template the mode was chosen against; a new template re-follows its own kind
-  cases: []               // last fetched Sheet rows for the Open dialog
+  cases: [],              // last fetched Sheet rows for the Open dialog
+  proof: { busy: false, error: '', caseState: null, startedAt: 0, copyAnyway: '' } // proofreading in progress (docs/specs/proofreading.md)
 };
 
 const META_FIELDS = ['accession', 'status', 'specimen', 'clinical', 'macro', 'blockKey'];
@@ -222,6 +228,7 @@ function setCase(caseState, activePart = 0) {
   state.caseState = ensureMeta(caseState);
   state.caseState.edits = state.caseState.edits || {};
   state.editing = null;
+  state.proof.copyAnyway = '';
   syncPrimary();
   state.dirty = false;
   state.activePart = Math.min(activePart, caseState.parts.length - 1);
@@ -1778,7 +1785,7 @@ function renderReport() {
     checksBox.open = localStorage.getItem('signout.checks') !== 'closed';
     checksBox.addEventListener('toggle', () => localStorage.setItem('signout.checks', checksBox.open ? 'open' : 'closed'));
   }
-  const checks = checksBox ? [checksBox] : [];
+  const checks = [checksBox, renderProofBox(out)].filter(Boolean);
   nodes.blocks.replaceChildren(...checks, ...blocks.map(([key, name, text]) => renderBlock(key, name, text, tagFor(key), out)));
   const edits = Object.keys(state.caseState.edits || {}).length;
   nodes.revertAll.hidden = edits === 0;
@@ -1852,6 +1859,190 @@ function revertAllEdits() {
   state.editing = null;
   markDirty(); renderReport(); cacheCase(state.caseState);
   toast('All edits reverted');
+}
+
+// ---------- proofreading (src/proofread.js, src/hanslide.js, docs/specs/proofreading.md) ----------
+// The rule checks are worked out whenever the report is shown, on every computer. PPLX 27B is asked
+// through Han Slide only where Settings › Proofreading is on (the Mac that drafts; never the PC).
+// Its record goes with the case, so the PC shows what was proofread and what has changed since.
+
+/** The suggestions for the report on screen: { sections, record, items }. */
+function proofView(out = state.lastOut) {
+  const sections = reportSections(out || {});
+  const record = state.caseState?.proofread || null;
+  return { sections, record, items: openItems(record, ruleChecks(sections), sections) };
+}
+
+const clock = (ms) => new Date(ms).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+/** The Proofreading box under Checks, or null when there is nothing to show. */
+function renderProofBox(out) {
+  const on = loadProofSettings().on;
+  const { sections, record, items } = proofView(out);
+  const mine = state.proof.caseState === state.caseState;
+  const busy = state.proof.busy && mine;
+  const error = mine ? state.proof.error : '';
+  if (!on && !items.length && !record?.at && !error) return null;
+  const edits = items.filter((i) => i.kind !== 'check');
+  const looks = items.length - edits.length;
+  const count = [edits.length ? `${edits.length} to accept` : '', looks ? `${looks} to look at` : ''].filter(Boolean).join(' \u00b7 ');
+  const summary = busy ? `${MODEL_NAME} is reading the report\u2026` : error ? 'did not run' : count || (record?.at ? 'nothing open' : on ? 'not proofread yet' : 'nothing found');
+  const box = el('details', { class: `checks proof ${error ? 'has-error' : items.length ? '' : 'info-only'}` },
+    el('summary', {}, el('div', { class: 'checks-head' }, el('h3', { text: 'Proofreading' }), el('span', { class: 'muted', text: summary }))));
+  const line = busy ? `Asked ${MODEL_NAME} through Han Slide on this computer at ${clock(state.proof.startedAt)}. You can keep working.`
+    : record?.at ? recordSummary(record, sections)
+      : on ? `Not proofread by ${MODEL_NAME} yet: it runs when the case is marked Ready, or press Proofread.`
+        : `Rule checks only. ${MODEL_NAME} proofreads where Settings › Proofreading is on (the Mac with Han Slide).`;
+  box.append(el('p', { class: 'proof-line', text: line }));
+  if (error) box.append(el('p', { class: 'proof-error', role: 'alert', text: error }));
+  if (items.length) box.append(el('ul', { class: 'proof-list' }, ...items.map(proofRow)));
+  const bar = el('div', { class: 'proof-bar' });
+  if (edits.length > 1) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: `Accept all ${edits.length}`, onclick: () => acceptProof(edits) }));
+  if (on) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: busy ? 'Proofreading\u2026' : record?.at ? 'Proofread again' : 'Proofread', disabled: busy, onclick: () => runProofread() }));
+  if (bar.childElementCount) box.append(bar);
+  box.open = localStorage.getItem('signout.proof') !== 'closed';
+  box.addEventListener('toggle', () => localStorage.setItem('signout.proof', box.open ? 'open' : 'closed'));
+  return box;
+}
+
+/** One suggestion: what it is and where, the change or the text to look at, Accept and Dismiss. */
+function proofRow(item) {
+  const where = sectionOf(item.section)?.label || item.section;
+  const head = el('span', { class: 'proof-kind', text: `${PROOF_KIND[item.kind] || item.kind} \u00b7 ${where}${item.source === 'model' ? ` \u00b7 ${MODEL_NAME.split(' ').join('\u00a0')}` : ''}` });
+  const body = el('span', { class: 'proof-text' });
+  if (item.kind === 'check') {
+    body.append(el('q', { text: item.quote }), ` ${item.why}`);
+    if (item.suggestion !== undefined) body.append(' ', el('span', { class: 'proof-sugg', text: `Suggested: ${item.suggestion || '(nothing)'}` }));
+  } else {
+    body.append(el('del', { text: item.find }), ' \u2192 ', item.replace ? el('ins', { text: item.replace }) : el('span', { class: 'muted', text: '(removed)' }));
+    if (item.all) body.append(el('span', { class: 'muted', text: ' (each time)' }));
+    if (item.why) body.append(` \u2014 ${item.why}`);
+  }
+  const actions = el('span', { class: 'proof-actions' });
+  if (item.kind !== 'check') actions.append(el('button', { type: 'button', class: 'btn small', text: 'Accept', onclick: () => acceptProof([item]) }));
+  actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Dismiss', onclick: () => dismissProof(item) }));
+  return el('li', { class: `proof-item ${item.kind === 'check' ? 'look' : 'edit'}` }, head, body, actions);
+}
+
+/**
+ * Accept edits, each applied in turn to its block. A generated block becomes an edit of that block,
+ * as typing in it would. A block unchanged since it was proofread keeps counting as proofread.
+ */
+function acceptProof(items) {
+  const out = state.lastOut;
+  const cs = state.caseState;
+  if (!out || !cs) return;
+  const textOf = (key) => String(out[key] ?? '').replace(/\s+$/, '');
+  const texts = {};
+  const done = [];
+  for (const item of items) {
+    const next = applyEdit(texts[item.section] ?? textOf(item.section), item);
+    if (next === null) continue;
+    texts[item.section] = next;
+    done.push(item);
+  }
+  if (!done.length) { renderReport(); toast('The text has changed since; nothing accepted'); return; }
+  const record = cs.proofread;
+  const kept = Object.keys(texts).filter((key) => record?.hashes?.[key] && record.hashes[key] === fingerprint(textOf(key)));
+  const nowEdited = [];
+  cs.edits = cs.edits || {};
+  for (const [key, text] of Object.entries(texts)) {
+    if (text.trim() === (out.generated?.[key] || '').trim()) delete cs.edits[key];
+    else {
+      if (!out.edited?.[key]) nowEdited.push(sectionOf(key)?.label || key);
+      cs.edits[key] = text;
+    }
+  }
+  for (const item of done) {
+    const own = item.source === 'model' ? record?.items?.find((i) => i.key === item.key) : null;
+    if (own) own.status = 'accepted';
+  }
+  state.editing = null;
+  markDirty();
+  renderReport();
+  if (kept.length) {
+    const now = reportSections(state.lastOut);
+    for (const key of kept) record.hashes[key] = fingerprint(now.find((s) => s.key === key)?.text ?? '');
+    renderReport();
+  }
+  cacheCase(cs);
+  const what = done.length === 1 ? 'Accepted' : `Accepted ${done.length} changes`;
+  toast(nowEdited.length ? `${what}. ${nowEdited.join(', ')} now print${nowEdited.length === 1 ? 's' : ''} as edited text (Revert goes back)` : what);
+}
+
+/** Dismiss a suggestion: it stays dismissed when it is suggested again. */
+function dismissProof(item) {
+  const cs = state.caseState;
+  const record = cs.proofread || (cs.proofread = { v: 1, dismissed: [] });
+  const own = item.source === 'model' ? (record.items || []).find((i) => i.key === item.key) : null;
+  if (own) own.status = 'dismissed';
+  else record.dismissed = [...new Set([...(record.dismissed || []), item.key])];
+  markDirty(); renderReport(); cacheCase(cs);
+}
+
+/** On Ready, and on Save while Ready: proofread when the report has not been, or has changed since. */
+function proofreadIfChanged() {
+  const cs = state.caseState;
+  if (!cs || cs.meta?.status !== 'ready' || !loadProofSettings().on) return;
+  if (cs.proofread?.at && !changedSince(cs.proofread, reportSections(state.lastOut || {})).length) return;
+  runProofread({ auto: true });
+}
+
+/** Ask PPLX 27B through Han Slide to proofread the report on screen; one question at a time. */
+async function runProofread({ auto = false } = {}) {
+  const settings = loadProofSettings();
+  const cs = state.caseState;
+  if (!settings.on || !cs || !state.lastOut) return;
+  if (state.proof.busy) {
+    if (!auto) toast(state.proof.caseState === cs ? 'Proofreading is already running' : 'Han Slide is still proofreading the case open before this one; try again in a minute');
+    return;
+  }
+  const sections = reportSections(state.lastOut);
+  if (!sections.length) { if (!auto) toast('Nothing in the report to proofread yet'); return; }
+  const question = buildPrompt(sections, cs.meta?.clinical || '');
+  state.proof = { ...state.proof, busy: !question.error, error: question.error || '', caseState: cs, startedAt: Date.now() };
+  renderReport();
+  if (question.error) return;
+  let record = null;
+  try {
+    const answer = await hanSlideProofread({ ...question, code: settings.code });
+    if (state.caseState === cs) {
+      const parsed = parseReply(answer.text);
+      if (!parsed.readable) throw new Error(`${MODEL_NAME}'s answer could not be read; try Proofread again.`);
+      const by = `${answer.model || MODEL_NAME} via Han Slide${answer.version ? ` ${answer.version}` : ''}`;
+      record = newRecord({ ...vetReply(parsed, sections), sections, by, seconds: answer.seconds, previous: cs.proofread });
+      cs.proofread = record;
+    }
+  } catch (err) {
+    if (state.caseState === cs) state.proof.error = err.message || 'Proofreading failed.';
+  } finally {
+    if (state.proof.caseState === cs) state.proof.busy = false;
+  }
+  if (state.caseState !== cs) return; // another case is open now; the answer was not for it
+  renderReport();
+  if (!record) { if (auto) toast('Proofreading did not run; see Proofreading'); return; }
+  const open = openItems(record, [], reportSections(state.lastOut)).length;
+  toast(open ? `${MODEL_NAME}: ${open} suggestion${open === 1 ? '' : 's'} in Proofreading` : `${MODEL_NAME} found nothing to change`);
+  await keepProofRecord();
+}
+
+/**
+ * The record goes with the case. A case saved to Drive and unchanged since is saved again quietly;
+ * otherwise the case is marked as changed and the record goes with the next save.
+ */
+async function keepProofRecord() {
+  cacheCase(state.caseState);
+  const inDrive = !state.dirty && !!state.caseState.drive?.savedAt;
+  if (inDrive && isSignedIn() && !state.saving && !saveWarnings().length && await doSave({ quiet: true })) return;
+  markDirty();
+}
+
+/** Settings › Proofreading › Test: ask Han Slide for its state with the code typed. */
+async function testHanSlide() {
+  const line = $('#cfg-proofStatus');
+  if (!$('#cfg-proofOn').checked) { line.textContent = 'Tick the box first: this computer contacts Han Slide only with proofreading on.'; return; }
+  line.textContent = 'Asking Han Slide\u2026';
+  try { line.textContent = describeStatus(await hanSlideStatus({ code: $('#cfg-proofCode').value })); } catch (err) { line.textContent = err.message; }
 }
 
 // ---------- LIS macro / block key override ----------
@@ -1934,9 +2125,17 @@ async function copyForLis() {
   const out = state.lastOut;
   const keys = payloadKeys(out || {});
   if (!keys.length) return toast('Nothing in the report to copy yet');
+  // Open proofreading suggestions are asked about once: the same ones do not ask again.
+  const { sections, record, items } = proofView(out);
+  const open = items.map((i) => i.key).join(' ');
+  if (items.length && state.proof.copyAnyway !== open) {
+    if (!window.confirm(`${items.length} proofreading suggestion${items.length === 1 ? ' is' : 's are'} still open. Copy for LIS anyway?`)) return;
+    state.proof.copyAnyway = open;
+  }
   const ok = await copyText(buildPayload(out, keys));
   if (!ok) return toast('Copy failed');
-  toast(`${keys.length} block${keys.length === 1 ? '' : 's'} on the clipboard: ${keys.map(payloadLabel).join(', ')}`);
+  const changed = record?.at ? changedSince(record, sections).map((k) => sectionOf(k)?.label || k) : [];
+  toast(`${keys.length} block${keys.length === 1 ? '' : 's'} on the clipboard: ${keys.map(payloadLabel).join(', ')}${changed.length ? `. Changed since proofreading: ${changed.join(', ')}` : ''}`);
 }
 
 /** Apply harvested text to the case meta and refresh whatever depends on it. */
@@ -2278,7 +2477,7 @@ async function doSave({ action = 'save', quiet = false } = {}) {
   if (state.saving) return false;
   const meta = state.caseState.meta;
   if (!normaliseAccession(meta.accession)) { nodes.meta.accession.focus(); toast('Enter an accession number first'); return false; }
-  const warnings = phiWarnings({ Specimen: meta.specimen, 'Clinical history': meta.clinical, Macroscopic: meta.macro, 'Block key': meta.blockKey, Report: state.lastOut?.report });
+  const warnings = saveWarnings();
   if (warnings.length && !window.confirm(`Possible patient identifiers:\n\n${warnings.join('\n')}\n\nOnly accession numbers and report text should go to Drive. Save anyway?`)) return false;
   try {
     state.saving = true; renderSaveStatus();
@@ -2287,7 +2486,10 @@ async function doSave({ action = 'save', quiet = false } = {}) {
     await driveSave(state.config, state.caseState, state.lastOut);
     state.dirty = false;
     cacheCase(state.caseState);
-    if (!quiet) toast(`Saved ${normaliseAccession(meta.accession)} to Drive`);
+    if (!quiet) {
+      toast(`Saved ${normaliseAccession(meta.accession)} to Drive`);
+      setTimeout(proofreadIfChanged, 0); // while Ready, a changed report is proofread again
+    }
     return true;
   } catch (err) {
     toast(err.message || 'Save failed');
@@ -2295,6 +2497,12 @@ async function doSave({ action = 'save', quiet = false } = {}) {
   } finally {
     state.saving = false; renderSaveStatus();
   }
+}
+
+/** Possible patient identifiers in what a save sends to Drive. */
+function saveWarnings() {
+  const meta = state.caseState.meta;
+  return phiWarnings({ Specimen: meta.specimen, 'Clinical history': meta.clinical, Macroscopic: meta.macro, 'Block key': meta.blockKey, Report: state.lastOut?.report });
 }
 
 // ---------- natural breaks (docs/specs/speed.md, Phase 79) ----------
@@ -2452,6 +2660,7 @@ function applySettingsForm() {
   const resetFolder = patch.folderId !== (state.config.folderId || '');
   if (resetSheet || resetFolder) patch.sheetId = '';
   const hadClientId = state.config.clientId;
+  saveProofSettings({ on: $('#cfg-proofOn').checked, code: $('#cfg-proofCode').value }); // this browser only
   saveConfig(patch);
   useAccount(); // the account's own folder and sheet ids survive a Settings save
   if (resetFolder) rememberForAccount(state.config, { folderId: patch.folderId, sheetId: '' });
@@ -2466,6 +2675,10 @@ function openSettings() {
   allow.value = allow.disabled ? '' : formatAllowList(state.config.allowedEmails);
   if (allow.disabled) allow.placeholder = `Fixed in this build: ${BUILT_IN_ALLOWED.length} Google account${BUILT_IN_ALLOWED.length === 1 ? '' : 's'}`;
   $('#cfg-density').value = document.documentElement.dataset.density || 'comfortable';
+  const proof = loadProofSettings();
+  $('#cfg-proofOn').checked = proof.on;
+  $('#cfg-proofCode').value = proof.code;
+  $('#cfg-proofStatus').textContent = '';
   nodes.signout.hidden = !isSignedIn();
   nodes.dlgSettings.showModal();
 }
@@ -2484,6 +2697,9 @@ function initDrive() {
   }
   initLis();
   initIntake();
+  nodes.meta.status.addEventListener('change', proofreadIfChanged); // after 'input' has stored it
+  $('#btn-proof-test').addEventListener('click', testHanSlide);
+  $('#cfg-proofCode').addEventListener('blur', (e) => { e.target.value = normaliseCode(e.target.value); });
   nodes.meta.accession.addEventListener('blur', (e) => {
     const n = normaliseAccession(e.target.value);
     if (n !== e.target.value) { e.target.value = n; state.caseState.meta.accession = n; cacheCase(state.caseState); }
@@ -2507,7 +2723,7 @@ function initDrive() {
       if (gateEnabled(location.hostname)) return lockApp();
       signOut();
     }
-    renderAccount(); renderSaveStatus();
+    renderAccount(); renderSaveStatus(); renderReport();
     toast('Settings saved');
   });
   // On the signed-in site Sign out is Lock: the workspace goes behind the gate instead of staying on
