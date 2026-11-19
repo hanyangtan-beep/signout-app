@@ -172,7 +172,26 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. The Phase 86 cards (proofreading before sign-out) shipped on 2026-11-19; the write-up is in Done, with the spec in `docs/specs/proofreading.md`. PPLX 27B's suggestions need Han Slide 1.13.0 (its Batch 2.15) on the Mac; until then the rule checks run on their own. The uterine leiomyosarcoma card and the three placenta cards (user request 2026-11-09) wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+The two proofreading follow-up cards (user request 2026-11-19) are being built as one batch; Han Slide needs no change, as its answers may already run to 2000 tokens. The Phase 86 cards shipped on 2026-11-19 and are in Done. The uterine leiomyosarcoma card and the three placenta cards (user request 2026-11-09) wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+
+### Proofreading — rewrites of whole sections and flagged changes (user request 2026-11-19)   Size: M; proofreading follow-up (L → split, 1 of 2)
+Why:        the user will accept drafted rewrites of whole sections, and changes to mismatches as long as they are flagged and accepted or rejected by hand; today a mismatch is a check without Accept, and a section that reads poorly gets only small edits.
+Change:     PPLX 27B may give up to two rewrites of a whole section (`"rewrites":[{"section","text","why"}]`) when a section needs three or more changes or reads poorly: the sentences restructured for flow, every fact and the layout (part letters, "- Label: value" lines) kept; a rewrite that loses a part letter or a label is set aside. A rewrite shows as tracked changes with a tick box for each change; a change that alters a fact (a number, unit, side, negation, grade, result, or a term from the case's own forms) is flagged and starts unticked, and Accept ticked takes only the ticked ones. A flag may carry its corrected wording (`"replace"`), and an edit that fails the guard keeps its wording: both show as flagged changes that say what they change, each with its own Accept. Accept all still takes only the safe edits. Answers may run to 2000 tokens.
+Untouched:  the rule checks; the safe edits and their Accept; records saved before this batch (they still read); Han Slide.
+Accept:     against the stand-in server, a rewrite shows its changes with the fact-changing one unticked, and Accept ticked changes only the ticked spans; a flagged change says what it changes and is taken only by its own Accept; ticks that would drop a number moved by the rewrite are refused with a message.
+Verify:     tests + browser (stand-in server)
+Ship:       with batch
+Spec:       `docs/specs/proofreading.md`
+
+### Proofreading — accepted changes back into the form (user request 2026-11-19)   Size: M; proofreading follow-up (L → split, 2 of 2)
+Why:        "Can the changes go back into the original form for iteration?" (user, 2026-11-19): an accepted change now makes the block an edit, so later changes in the form no longer reach it.
+Change:     `src/writeback.js` finds the one form change that prints the accepted text (a typed box, a number, a choice, a tick, the comment or the pasted macroscopy), checked by generating the report again, and makes it through the form's own path (linked defaults, derived fields); a line in Proofreading names the field and any other section it changed. A change no field gives (template wording, a rewrite's sentences) is kept with the case as a proofreading change over the form's text (`caseState.patches`), so the block still follows the form: when a later form change falls inside its text it is carried over where its words are still there, and otherwise it is named in Checks and the form's text prints. The block is tagged, and Revert takes its proofreading changes out. A block edited by hand takes the change as an edit, as now.
+Untouched:  a report with no accepted changes, so every golden fixture; manual edits, Revert and Revert all; the Sheet's columns (the changes are inside `case_json`).
+Accept:     accepting a flagged side or size change sets the form field and the block is not marked edited; a rewrite kept over the form follows a later size change made in the form; a form change that removes a change's text names it in Checks; Revert brings back the form's text.
+Verify:     tests + browser (stand-in server)
+Ship:       with batch
+Depends on: Proofreading — rewrites of whole sections and flagged changes
+Spec:       `docs/specs/proofreading.md`
 
 ## Next
 
