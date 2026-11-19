@@ -10,9 +10,12 @@
 // The model reads the whole report. An edit it suggests is offered only when the text it replaces
 // is in that section and it leaves every number, unit, side, negation, grade, stage and result as
 // it was, with no other word changed beyond a spelling; anything else is shown as a check to look
-// at. Nothing changes until the pathologist accepts an edit.
+// at, with its change flagged to accept by hand where the text is there once. A section that reads
+// poorly may come back rewritten whole (Phase 87): shown as tracked changes, a change that alters a
+// fact flagged and left unticked. Nothing changes until the pathologist accepts.
 
 import { BRITISH, britishise, houseConnectors, toAscii } from './style.js';
+import { diffWords, applyHunks } from './textdiff.js';
 
 /** The report blocks the proofreader reads, in report order (the block key is left out). */
 export const SECTIONS = [
@@ -28,17 +31,22 @@ const BY_TAG = Object.fromEntries(SECTIONS.map((s) => [s.tag, s]));
 const BY_KEY = Object.fromEntries(SECTIONS.map((s) => [s.key, s]));
 
 export const MODEL_NAME = 'PPLX 27B';
-/** Han Slide refuses longer questions (its own limit is the same). */
+/** The longest question sent; Han Slide refuses questions over 48000 characters (ProofreadLink.maxPromptCharacters). */
 export const MAX_PROMPT_CHARS = 40000;
-export const MAX_TOKENS = 1400;
+/** The longest answer asked for: the most Han Slide allows (ProofreadLink.maxTokensLimit). */
+export const MAX_TOKENS = 2000;
 export const MAX_EDITS = 12;
 export const MAX_FLAGS = 8;
+/** Whole-section rewrites in one answer, at most, and the sections that may be rewritten (prose, not lists). */
+export const MAX_REWRITES = 2;
+export const REWRITE_SECTIONS = ['macro', 'intraop', 'microscopy', 'comment'];
+const MAX_REWRITE = 4000;
 const MAX_FIND = 200;
 const MAX_REPLACE = 300;
 const MAX_WHY = 160;
 
 /** Labels for the kinds of suggestion, as Checks shows them. */
-export const KIND_LABEL = { spelling: 'Spelling', typing: 'Typing', grammar: 'Grammar', 'house style': 'House style', check: 'Check' };
+export const KIND_LABEL = { spelling: 'Spelling', typing: 'Typing', grammar: 'Grammar', 'house style': 'House style', check: 'Check', flagged: 'Flagged change', rewrite: 'Rewrite' };
 
 /** The section a block key belongs to, or null. */
 export function sectionOf(key) { return BY_KEY[key] || null; }
@@ -205,19 +213,22 @@ export const SYSTEM_PROMPT = [
   '1. Spelling, typing and grammar errors.',
   '2. Wording that departs from the house style below.',
   '3. Facts that disagree between sections: size, count, side, site, margin, grade, stage, a biomarker result, or the diagnosis against the microscopy or the macroscopic description.',
+  '4. A macroscopic description, intraoperative consultation, microscopy or comment that reads poorly or needs three or more changes: rewrite that section whole.',
   '',
   'House style:',
   ...HOUSE_STYLE.map((r) => `- ${r}`),
   '',
   'Rules:',
   '- Never change the meaning. Do not change a number, measurement, unit, side (left, right, bilateral), site, negation (no, not, without, negative, positive, absent, present), grade, stage, margin status, biomarker result, or one diagnosis for another; correcting the spelling of a word is allowed. If one of these looks wrong or disagrees with another section, report it in "flags" instead.',
+  '- A flag may give "replace", the corrected text for its quote, only when another section shows which is right.',
   '- [HISTORY] is context only: never edit it.',
-  '- "find" is copied exactly from one section: a few words on one line, enough to be unique there. "replace" is the corrected text for that span only.',
+  '- "find" and a flag\'s "quote" are copied exactly from one section: a few words on one line, enough to be unique there. "replace" is the corrected text for that span only.',
   '- "kind" is "spelling", "grammar" or "house style". "why" is at most 12 words.',
-  `- At most ${MAX_EDITS} edits and ${MAX_FLAGS} flags, the most important first. If nothing needs changing, reply {"edits":[],"flags":[]}.`,
+  `- A rewrite gives the whole new text of one section: MACRO, INTRAOP, MICRO or COMMENT. Change the sentence structure and flow, not just one word for a similar word. Keep every fact (each number, measurement, side, site, negation, grade and result) and the layout (line breaks, headings, "- Label: value" lines, part letters). Make no edits in a section you rewrite. At most ${MAX_REWRITES} rewrites.`,
+  `- At most ${MAX_EDITS} edits and ${MAX_FLAGS} flags, the most important first. Give the edits first, then the flags, then the rewrites. If nothing needs changing, reply {"edits":[],"flags":[],"rewrites":[]}.`,
   '',
   'Reply with one JSON object only, no other text:',
-  '{"edits":[{"section":"MICRO","find":"...","replace":"...","kind":"spelling","why":"..."}],"flags":[{"section":"DX","quote":"...","why":"..."}]}'
+  '{"edits":[{"section":"MICRO","find":"...","replace":"...","kind":"spelling","why":"..."}],"flags":[{"section":"DX","quote":"...","replace":"...","why":"..."}],"rewrites":[{"section":"MICRO","text":"...","why":"..."}]}'
 ].join('\n');
 
 /**
@@ -250,19 +261,21 @@ export function parseReply(text) {
   if (start >= 0 && end > start) {
     try {
       const o = JSON.parse(raw.slice(start, end + 1));
-      if (o && typeof o === 'object' && (Array.isArray(o.edits) || Array.isArray(o.flags))) {
-        return { edits: Array.isArray(o.edits) ? o.edits : [], flags: Array.isArray(o.flags) ? o.flags : [], whole: true, readable: true };
+      const list = (x) => (Array.isArray(x) ? x : []);
+      if (o && typeof o === 'object' && (Array.isArray(o.edits) || Array.isArray(o.flags) || Array.isArray(o.rewrites))) {
+        return { edits: list(o.edits), flags: list(o.flags), rewrites: list(o.rewrites), whole: true, readable: true };
       }
     } catch { /* cut off or untidy: take the items one by one */ }
   }
-  const edits = []; const flags = [];
+  const edits = []; const flags = []; const rewrites = [];
   for (const m of raw.matchAll(/\{[^{}]*\}/g)) {
     let o;
     try { o = JSON.parse(m[0]); } catch { continue; }
     if (o && typeof o.find === 'string') edits.push(o);
     else if (o && typeof o.quote === 'string') flags.push(o);
+    else if (o && typeof o.text === 'string') rewrites.push(o);
   }
-  return { edits, flags, whole: false, readable: edits.length + flags.length > 0 || /"(edits|flags)"\s*:/.test(raw) };
+  return { edits, flags, rewrites, whole: false, readable: edits.length + flags.length + rewrites.length > 0 || /"(edits|flags|rewrites)"\s*:/.test(raw) };
 }
 
 const clip = (s, n) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
@@ -286,16 +299,40 @@ function locate(sections, tag, has) {
 
 /** A stable key for a suggestion, so a dismissed one stays dismissed when it is suggested again. */
 export function itemKey(item) {
-  return fingerprint([item.source, item.section, item.kind === 'check' ? '' : item.kind, item.find || '', item.replace || '', item.quote || ''].join('\u0001'));
+  const parts = [item.source, item.section, item.kind === 'check' ? '' : item.kind, item.find || '', item.replace || '', item.quote || ''];
+  if (item.kind === 'rewrite') parts.push(item.text || '');
+  return fingerprint(parts.join('\u0001'));
 }
 
 /**
+ * The layout a rewrite must keep, as a list: the part letters opening lines, each "- Label:" label
+ * (nested ones too) and each heading line in capitals, in order.
+ */
+export function layoutOf(text) {
+  const marks = [];
+  for (const line of String(text ?? '').split('\n')) {
+    const t = line.trim();
+    if (!t) continue;
+    const letter = t.match(/^\(([A-Z]{1,2}\d*)\)/);
+    if (letter) marks.push(`(${letter[1]})`);
+    const label = t.match(/^-\s*([^:\n]{1,60}):/);
+    if (label) marks.push(`- ${label[1].trim().toLowerCase()}:`);
+    else if (/^[A-Z0-9][A-Z0-9 ,()/&+-]*:?$/.test(t) && /[A-Z]{3}/.test(t)) marks.push(t);
+  }
+  return marks;
+}
+const sameLayout = (a, b) => { const x = layoutOf(a); const y = layoutOf(b); return x.length === y.length && x.every((m, i) => m === y[i]); };
+
+/**
  * The model's answer, vetted against the report: { items, dropped }. Items are edits
- * ({ kind, section, find, replace, why, all }) or checks ({ kind: 'check', section, quote, why,
- * suggestion }); dropped counts say what was set aside and why.
+ * ({ kind, section, find, replace, why, all }), checks ({ kind: 'check', section, quote, why }) and
+ * rewrites ({ kind: 'rewrite', section, text, base, why }). A check with a change to accept by hand
+ * carries `suggestion` (and `all`): an edit the guard turned back, or a flag giving "replace", where
+ * the text is there once. `base` is the fingerprint of the section a rewrite was made from. Dropped
+ * counts say what was set aside and why.
  */
 export function vetReply(parsed, sections) {
-  const dropped = { section: 0, notFound: 0, notUnique: 0, size: 0, same: 0, extra: 0, quote: 0 };
+  const dropped = { section: 0, notFound: 0, notUnique: 0, size: 0, same: 0, extra: 0, quote: 0, rewrite: 0, layout: 0 };
   const items = [];
   const seen = new Set();
   const push = (item) => {
@@ -327,7 +364,7 @@ export function vetReply(parsed, sections) {
     } else {
       if (flags >= MAX_FLAGS) { dropped.extra++; continue; }
       flags++;
-      push({ kind: 'check', section: s.key, quote: find, suggestion: replace, why: why || 'Suggested change', guarded: guard.reason });
+      push({ kind: 'check', section: s.key, quote: find, suggestion: replace, why: why || 'Suggested change', guarded: guard.reason, ...(all ? { all } : {}) });
     }
   }
   for (const f of parsed?.flags || []) {
@@ -338,9 +375,131 @@ export function vetReply(parsed, sections) {
     if (!s) { dropped.quote++; continue; }
     if (flags >= MAX_FLAGS) { dropped.extra++; continue; }
     flags++;
-    push({ kind: 'check', section: s.key, quote, why });
+    const item = { kind: 'check', section: s.key, quote, why };
+    // The corrected text a flag gives is offered to accept by hand where its quote is in the section, exactly, once.
+    const exact = typeof f?.quote === 'string' ? f.quote : '';
+    const replace = typeof f?.replace === 'string' ? f.replace : null;
+    if (replace !== null && exact && exact !== replace && exact.length <= MAX_FIND && replace.length <= MAX_REPLACE && !/[\r\n]/.test(exact + replace)) {
+      const n = occurrences(s.text, exact);
+      const all = n > 1 && isWord(exact) && occurrences(s.text, exact, true) > 0;
+      if (n === 1 || all) Object.assign(item, { quote: exact, suggestion: replace, guarded: 'flag', ...(all ? { all } : {}) });
+    }
+    push(item);
+  }
+  let rewrites = 0;
+  const rewritten = new Set();
+  for (const r of parsed?.rewrites || []) {
+    const named = BY_TAG[String(r?.section ?? '').toUpperCase().replace(/[^A-Z]/g, '')];
+    const s = named && sections.find((x) => x.key === named.key);
+    const text = typeof r?.text === 'string' ? r.text.replace(/\r\n?/g, '\n').replace(/\s+$/, '') : '';
+    if (!s || !REWRITE_SECTIONS.includes(s.key) || !text.trim() || rewritten.has(s.key)) { dropped.rewrite++; continue; }
+    if (text === s.text) { dropped.same++; continue; }
+    if (text.length > MAX_REWRITE || text.length < s.text.length * 0.5 || text.length > s.text.length * 1.6 + 40) { dropped.size++; continue; }
+    if (!sameLayout(s.text, text)) { dropped.layout++; continue; }
+    if (rewrites >= MAX_REWRITES) { dropped.extra++; continue; }
+    rewrites++;
+    rewritten.add(s.key);
+    push({ kind: 'rewrite', section: s.key, text, base: fingerprint(s.text), why: clip(r.why, MAX_WHY) });
   }
   return { items, dropped };
+}
+
+// ---------- the facts a rewrite keeps ----------
+
+// Words of the case form's options that say nothing on their own.
+const PLAIN = new Set([...FUNCTION_WORDS, 'or', 'other', 'describe', 'specify', 'specified', 'applicable', 'assessed', 'assessable', 'only', 'than', 'more', 'less', 'per', 'see', 'type']);
+
+/**
+ * The words of the case form's options (and their labels), in lower case and British spelling: a
+ * rewrite that takes one out of a section, or brings a new one in, changes a fact.
+ */
+export function formTerms(schemas) {
+  const terms = new Set();
+  for (const s of schemas || []) {
+    for (const f of [...(s?.fields || []), ...(s?.caseFields || [])]) {
+      for (const o of f.options || []) {
+        for (const text of [o, f.optionLabels?.[o]]) {
+          for (const w of britishise(String(text ?? '')).toLowerCase().match(/[a-z]{3,}/g) || []) if (!PLAIN.has(w)) terms.add(w);
+        }
+      }
+    }
+  }
+  return terms;
+}
+
+/**
+ * The facts of a text, sorted: numbers (a decimal whole), tokens with a digit, the protected words,
+ * the symbols, and the form's terms (`terms`, from formTerms).
+ */
+export function factTokens(text, terms = null) {
+  const s = britishise(String(text ?? '')).toLowerCase();
+  const out = [];
+  for (const m of s.matchAll(/\d+(?:\.\d+)?[a-z0-9]*|[a-z]+[a-z0-9]*/g)) {
+    const t = m[0];
+    if (/\d/.test(t) || PROTECTED.has(t) || terms?.has(t)) out.push(t);
+  }
+  out.push(...(s.match(SYMBOLS) || []));
+  return out.sort();
+}
+
+/** The items of `a` left once each item of `b` has taken one out (lists as bags). */
+function bagMinus(a, b) {
+  const left = [...b];
+  const out = [];
+  for (const t of a) {
+    const k = left.indexOf(t);
+    if (k >= 0) left.splice(k, 1); else out.push(t);
+  }
+  return out;
+}
+
+/** What a change does to the facts, in words: "changes 2.3 to 2.5", "takes out not", "adds focal". */
+export function describeFacts(lost, added) {
+  const list = (x) => [...new Set(x)].join(', ');
+  if (lost.length === 1 && added.length === 1) return `changes ${lost[0]} to ${added[0]}`;
+  return [lost.length ? `takes out ${list(lost)}` : '', added.length ? `adds ${list(added)}` : ''].filter(Boolean).join('; ');
+}
+
+/** What changing `before` to `after` does to the facts, in words, or '' (a flagged change's label). */
+export function factChange(before, after, terms = null) {
+  const a = factTokens(before, terms); const b = factTokens(after, terms);
+  return describeFacts(bagMinus(a, b), bagMinus(b, a));
+}
+
+/**
+ * A rewrite as tracked changes over the section's text: [{ from, to, text, old, flagged, facts }]
+ * in order, positions in `base`. A change is flagged when it takes out a fact the whole rewrite
+ * loses or brings in one the whole rewrite adds; a fact only moved to another sentence is not.
+ */
+export function rewriteChanges(base, text, terms = null) {
+  const before = factTokens(base, terms); const after = factTokens(text, terms);
+  const lost = bagMinus(before, after); const added = bagMinus(after, before);
+  return diffWords(base, text, { join: 1 }).map((h) => {
+    const old = base.slice(h.from, h.to);
+    const a = factTokens(old, terms); const b = factTokens(h.text, terms);
+    const out = bagMinus(a, b).filter((t) => lost.includes(t));
+    const inn = bagMinus(b, a).filter((t) => added.includes(t));
+    return { ...h, old, flagged: out.length + inn.length > 0, facts: describeFacts(out, inn) };
+  });
+}
+
+/**
+ * Whether the ticked changes of a rewrite can be taken together: null, or what to tick with them.
+ * Taking some changes and not others must not lose a fact the whole rewrite keeps (moved from one
+ * sentence to another), nor bring one in twice.
+ */
+export function checkTicked(base, text, changes, ticked, terms = null) {
+  const result = applyHunks(base, changes.filter((c, i) => ticked[i]));
+  const before = factTokens(base, terms); const after = factTokens(text, terms); const now = factTokens(result, terms);
+  const lost = bagMinus(bagMinus(before, now), bagMinus(before, after));
+  const added = bagMinus(bagMinus(now, before), bagMinus(after, before));
+  if (!lost.length && !added.length) return null;
+  return `Tick both changes that move ${[...new Set([...lost, ...added])].join(', ')}, or neither`;
+}
+
+/** A rewrite with only the ticked changes made: the new text of the section. */
+export function tickedText(base, changes, ticked) {
+  return applyHunks(base, changes.filter((c, i) => ticked[i]));
 }
 
 // ---------- rule checks ----------
@@ -535,7 +694,7 @@ export function changedSince(record, sections) {
 export function newRecord({ items, dropped, sections, by, seconds, at = new Date().toISOString(), previous = null }) {
   const dismissed = new Set([...(previous?.dismissed || []), ...((previous?.items || []).filter((i) => i.status === 'dismissed').map((i) => i.key))]);
   return {
-    v: 1,
+    v: 2,
     at,
     by,
     seconds: Math.round((seconds || 0) * 10) / 10,
@@ -553,7 +712,9 @@ export function newRecord({ items, dropped, sections, by, seconds, at = new Date
 export function openItems(record, rules, sections) {
   const dismissed = new Set([...(record?.dismissed || []), ...((record?.items || []).filter((i) => i.status === 'dismissed').map((i) => i.key))]);
   const textOf = (key) => sections.find((s) => s.key === key)?.text ?? '';
-  const applies = (i) => (i.kind === 'check' ? quoteFound(textOf(i.section), i.quote) : applyEdit(textOf(i.section), i) !== null);
+  const applies = (i) => (i.kind === 'check' ? quoteFound(textOf(i.section), i.quote)
+    : i.kind === 'rewrite' ? !!i.text && fingerprint(textOf(i.section)) === i.base
+      : applyEdit(textOf(i.section), i) !== null);
   const fromModel = (record?.items || []).filter((i) => i.status === 'open' && applies(i));
   const ruleKeys = new Set();
   const fromRules = rules.filter((i) => !dismissed.has(i.key) && !fromModel.some((m) => m.section === i.section && m.find && m.find === i.find)).filter((i) => {

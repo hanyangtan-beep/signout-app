@@ -1,14 +1,15 @@
-// Proofreading before sign-out (src/proofread.js, docs/specs/proofreading.md, Phase 86): the rule
-// checks, the guard on PPLX 27B's edits, reading its answer, the question and the record kept with
-// the case. Every report text here is made up.
+// Proofreading before sign-out (src/proofread.js, docs/specs/proofreading.md, Phases 86 and 87): the
+// rule checks, the guard on PPLX 27B's edits, reading its answer, the question, the record kept with
+// the case, flagged changes and whole-section rewrites. Every report text here is made up.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  SECTIONS, MAX_EDITS, MAX_PROMPT_CHARS, MAX_TOKENS, HOUSE_STYLE, SYSTEM_PROMPT, reportSections, fingerprint, occurrences, applyEdit, quoteFound,
-  safeEdit, buildPrompt, parseReply, vetReply, editBetween, ruleChecks, sectionHashes, changedSince, newRecord, openItems, recordSummary, itemKey
+  SECTIONS, MAX_EDITS, MAX_PROMPT_CHARS, MAX_TOKENS, MAX_REWRITES, REWRITE_SECTIONS, HOUSE_STYLE, SYSTEM_PROMPT, reportSections, fingerprint, occurrences,
+  applyEdit, quoteFound, safeEdit, buildPrompt, parseReply, vetReply, editBetween, ruleChecks, sectionHashes, changedSince, newRecord, openItems,
+  recordSummary, itemKey, layoutOf, formTerms, factTokens, describeFacts, factChange, rewriteChanges, checkTicked, tickedText
 } from '../src/proofread.js';
 import { loadAll } from '../src/registry.js';
 import { generate } from '../src/engine.js';
@@ -145,7 +146,12 @@ test('the question: task line, history as context, tagged sections, a size limit
   assert.equal(q.prompt.split('\n')[0], 'TASK: proofread');
   assert.ok(q.prompt.includes('[HISTORY]\nPigmented lesion.\n\n[MACRO]\nSpecimen received in formalin.\n\n[DX]\nSKIN, excision:\n- NAEVUS.'));
   assert.equal(q.maxTokens, MAX_TOKENS);
+  assert.equal(MAX_TOKENS, 2000, 'room for two rewrites; Han Slide allows up to 2000');
   assert.equal(q.system, SYSTEM_PROMPT);
+  assert.ok(SYSTEM_PROMPT.includes('"rewrites":[{"section":"MICRO","text":"...","why":"..."}]'), 'the reply shape names the rewrites');
+  assert.ok(SYSTEM_PROMPT.includes(`At most ${MAX_REWRITES} rewrites`));
+  assert.ok(SYSTEM_PROMPT.includes('Change the sentence structure and flow, not just one word for a similar word.'));
+  assert.ok(SYSTEM_PROMPT.length < 12000, "within Han Slide's limit for the system text");
   for (const rule of HOUSE_STYLE) assert.ok(SYSTEM_PROMPT.includes(rule));
   assert.ok(!buildPrompt(sections).prompt.includes('\n[HISTORY]\n'));
   const long = buildPrompt([sec('microscopy', 'x'.repeat(MAX_PROMPT_CHARS))]);
@@ -155,7 +161,7 @@ test('the question: task line, history as context, tagged sections, a size limit
 
 test('reading the answer: fenced, with a thinking block, cut off, untidy or unreadable', () => {
   const body = '{"edits":[{"section":"MICRO","find":"tumuor","replace":"tumour","kind":"spelling","why":"typing"}],"flags":[]}';
-  assert.deepEqual(parseReply('```json\n' + body + '\n```'), { edits: [{ section: 'MICRO', find: 'tumuor', replace: 'tumour', kind: 'spelling', why: 'typing' }], flags: [], whole: true, readable: true });
+  assert.deepEqual(parseReply('```json\n' + body + '\n```'), { edits: [{ section: 'MICRO', find: 'tumuor', replace: 'tumour', kind: 'spelling', why: 'typing' }], flags: [], rewrites: [], whole: true, readable: true });
   assert.equal(parseReply('<think>{"edits":"no"}</think>' + body).whole, true);
   const cut = parseReply('{"edits":[{"section":"MICRO","find":"tumuor","replace":"tumour"},{"section":"DX","find":"Sec');
   assert.equal(cut.whole, false);
@@ -167,6 +173,12 @@ test('reading the answer: fenced, with a thinking block, cut off, untidy or unre
   assert.equal(parseReply('I cannot help with that.').readable, false);
   assert.equal(parseReply('{"answer": 1}').readable, false);
   assert.equal(parseReply('{"edits":[],"flags":[]}').readable, true);
+  assert.equal(parseReply('{"edits":[],"flags":[],"rewrites":[]}').readable, true);
+  const rewritten = parseReply('{"edits":[],"flags":[],"rewrites":[{"section":"MICRO","text":"Sections show skin.","why":"flow"}]}');
+  assert.deepEqual(rewritten.rewrites, [{ section: 'MICRO', text: 'Sections show skin.', why: 'flow' }]);
+  const cutRewrite = parseReply('{"edits":[],"flags":[],"rewrites":[{"section":"MICRO","text":"Sections show skin.","why":"flow"},{"section":"COMMENT","text":"Cut');
+  assert.equal(cutRewrite.whole, false);
+  assert.deepEqual(cutRewrite.rewrites.map((r) => r.section), ['MICRO'], 'the whole rewrite kept, the cut one left out');
 });
 
 test('vetting the answer against the report', () => {
@@ -193,7 +205,71 @@ test('vetting the answer against the report', () => {
   assert.equal(items[2].suggestion, 'Grade 3');
   assert.equal(items[2].guarded, 'protected');
   assert.ok(items.every((i) => i.source === 'model' && i.key === itemKey(i)));
-  assert.deepEqual(dropped, { section: 1, notFound: 1, notUnique: 0, size: 1, same: 1, extra: 0, quote: 2 });
+  assert.deepEqual(dropped, { section: 1, notFound: 1, notUnique: 0, size: 1, same: 1, extra: 0, quote: 2, rewrite: 0, layout: 0 });
+});
+
+test('a flag with the corrected text: offered to accept by hand where its quote is there once', () => {
+  const sections = [sec('macro', 'A tumour measuring 12 mm.'), sec('diagnosis', 'BREAST, left, excision:\n- INVASIVE CARCINOMA, 15 mm.')];
+  const { items } = vetReply({ flags: [
+    { section: 'DX', quote: '15 mm', replace: '12 mm', why: 'The macroscopy gives 12 mm' },
+    { section: 'DX', quote: 'invasive carcinoma, 15', replace: 'INVASIVE CARCINOMA, 12', why: 'Not the text as printed' },
+    { section: 'DX', quote: 'BREAST', replace: 'BREAST', why: 'No change' }
+  ] }, sections);
+  assert.deepEqual(items.map((i) => [i.kind, i.quote, i.suggestion, i.guarded]), [
+    ['check', '15 mm', '12 mm', 'flag'], ['check', 'invasive carcinoma, 15', undefined, undefined], ['check', 'BREAST', undefined, undefined]
+  ]);
+  assert.equal(applyEdit(sections[1].text, { find: items[0].quote, replace: items[0].suggestion }), 'BREAST, left, excision:\n- INVASIVE CARCINOMA, 12 mm.');
+  // An edit the guard turns back keeps its change, for every place a whole word is.
+  const side = vetReply({ edits: [{ section: 'MICRO', find: 'left', replace: 'right', kind: 'spelling' }] }, [sec('microscopy', 'The left lobe; left margin.')]);
+  assert.deepEqual(side.items.map((i) => [i.kind, i.quote, i.suggestion, i.guarded, i.all]), [['check', 'left', 'right', 'protected', true]]);
+});
+
+test('rewrites: prose sections only, one each, the size and the layout kept', () => {
+  const micro = 'Sections show breast tissue with an invasive carcinoma. The tumour is grade 2. There is no evidence of lymphovascular invasion.';
+  const rewrite = 'Sections show an invasive carcinoma of grade 2 in breast tissue. There is no evidence of lymphovascular invasion.';
+  const sections = [sec('macro', '(A) Skin, 10 x 5 mm.\n(B) Skin, 8 mm.'), sec('microscopy', micro), sec('diagnosis', 'BREAST, left, excision:\n- INVASIVE CARCINOMA, GRADE 2.')];
+  const { items, dropped } = vetReply({ rewrites: [
+    { section: 'MICRO', text: micro, why: 'unchanged' },
+    { section: 'MICRO', text: 'Carcinoma.', why: 'too short' },
+    { section: 'MICRO', text: rewrite + '\n\n', why: 'Reads in one flow' },
+    { section: 'MICRO', text: rewrite + ' Again.', why: 'a second for the same section' },
+    { section: 'DX', text: 'BREAST, left, excision:\n- GRADE 2 INVASIVE CARCINOMA.', why: 'not prose' },
+    { section: 'MACRO', text: '(A) Skin measuring 10 x 5 mm. (B) Skin, 8 mm.', why: 'joins the parts' },
+    { section: 'COMMENT', text: 'No comment in this report.', why: 'no such section' }
+  ] }, sections);
+  assert.deepEqual(items, [{ kind: 'rewrite', section: 'microscopy', text: rewrite, base: fingerprint(micro), why: 'Reads in one flow', source: 'model', key: items[0].key }]);
+  assert.equal(items[0].key, itemKey(items[0]));
+  assert.deepEqual(dropped, { section: 0, notFound: 0, notUnique: 0, size: 1, same: 1, extra: 0, quote: 0, rewrite: 3, layout: 1 });
+  assert.deepEqual(REWRITE_SECTIONS, ['macro', 'intraop', 'microscopy', 'comment']);
+  assert.deepEqual(layoutOf('(A) Skin:\n- Margin: clear\n  - Distance: 2 mm\nCOMMENT:'), ['(A)', '- margin:', '- distance:', 'COMMENT:']);
+});
+
+test('a rewrite as tracked changes: a change of fact flagged, a fact moved within it not', () => {
+  const base = 'Sections show a tumour measuring 12 mm. It is grade 2.';
+  const text = 'Sections show a grade 2 tumour measuring 15 mm.';
+  const changes = rewriteChanges(base, text);
+  assert.deepEqual(changes.map((c) => [c.old, c.text, c.flagged, c.facts]), [['', 'grade 2 ', false, ''], ['12 mm. It is grade 2', '15 mm', true, 'changes 12 to 15']]);
+  // Ticking one half of a moved fact would lose it, or print it twice.
+  assert.equal(checkTicked(base, text, changes, [true, false]), 'Tick both changes that move 2, grade, or neither');
+  assert.equal(checkTicked(base, text, changes, [false, true]), 'Tick both changes that move 2, grade, or neither');
+  assert.equal(checkTicked(base, text, changes, [true, true]), null);
+  assert.equal(tickedText(base, changes, [true, true]), text);
+  assert.equal(tickedText(base, changes, [false, false]), base);
+  assert.equal(rewriteChanges('Sections show a tumour. There is no necrosis.', 'Sections show a tumour, without necrosis.')[0].facts, 'changes no to without');
+  assert.equal(describeFacts([], ['focal']), 'adds focal');
+  assert.equal(factChange('INVASIVE CARCINOMA, 15 mm', 'INVASIVE CARCINOMA, 12 mm'), 'changes 15 to 12');
+  assert.equal(factChange('tumuor', 'tumour'), '');
+  assert.equal(describeFacts(['not', 'not'], []), 'takes out not');
+});
+
+test("the case form's options are facts too", () => {
+  const terms = formTerms([{ fields: [{ options: ['Mild', 'Moderate', 'Not applicable'], optionLabels: { Mild: 'Mild inflammation' } }], caseFields: [{ options: ['Tumor'] }] }]);
+  for (const t of ['mild', 'inflammation', 'moderate', 'tumour']) assert.ok(terms.has(t), t);
+  assert.ok(!terms.has('applicable'));
+  assert.deepEqual(factTokens('Mild chronic inflammation, 2 mm.', terms), ['2', 'inflammation', 'mild', 'mm']);
+  const changes = rewriteChanges('There is mild inflammation.', 'There is moderate inflammation.', terms);
+  assert.deepEqual(changes.map((c) => [c.flagged, c.facts]), [[true, 'changes mild to moderate']]);
+  assert.equal(rewriteChanges('There is mild inflammation.', 'There is moderate inflammation.')[0].flagged, false, 'without the form, an ordinary word');
 });
 
 test('vetting caps the edits and refuses an ambiguous phrase', () => {
@@ -210,7 +286,7 @@ test('the record: fingerprints, sections changed since and dismissals kept', () 
   const sections = [sec('microscopy', 'Sections show a tumuor.'), sec('diagnosis', 'SKIN, excision:\n- NAEVUS.')];
   const { items, dropped } = vetReply({ edits: [{ section: 'MICRO', find: 'tumuor', replace: 'tumour', kind: 'spelling', why: 'typing' }], flags: [{ section: 'DX', quote: 'NAEVUS', why: 'Check the type' }] }, sections);
   const record = newRecord({ items, dropped, sections, by: 'PPLX 27B via Han Slide 1.13.0', seconds: 41.26, at: '2026-11-19T02:00:00.000Z' });
-  assert.equal(record.v, 1);
+  assert.equal(record.v, 2);
   assert.equal(record.seconds, 41.3);
   assert.deepEqual(record.hashes, sectionHashes(sections));
   assert.deepEqual(record.items.map((i) => [i.id, i.status]), [['m1', 'open'], ['m2', 'open']]);
@@ -241,4 +317,14 @@ test('open items: rule checks with the record, dismissed and stale ones left out
   // The rule's "tumor" is dismissed, its "Sections shows" is the model's too and shown once, and
   // the model's "gone" is no longer in the text.
   assert.deepEqual(openItems(record, rules, sections).map((i) => `${i.source}:${i.find}`), ['model:Sections shows']);
+});
+
+test('open items: a rewrite only while its section reads as it was proofread', () => {
+  const sections = [sec('microscopy', 'Sections shows a tumour.')];
+  const rewrite = { kind: 'rewrite', section: 'microscopy', text: 'Sections show a tumour.', base: fingerprint('Sections shows a tumour.'), source: 'model', key: 'k3', id: 'm1', status: 'open' };
+  const record = { v: 2, at: '2026-11-19T02:00:00.000Z', hashes: sectionHashes(sections), dismissed: [], items: [rewrite] };
+  assert.deepEqual(openItems(record, [], sections).map((i) => i.id), ['m1']);
+  assert.deepEqual(openItems(record, [], [sec('microscopy', 'Sections show a tumour.')]), [], 'the section has changed');
+  delete rewrite.text;
+  assert.deepEqual(openItems(record, [], sections), [], 'its text is no longer kept');
 });

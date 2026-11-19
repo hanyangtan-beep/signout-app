@@ -23,9 +23,10 @@ import { organIcon, mountOrganSprite } from './organicons.js';
 import { openRoadmap, openSuggest } from './panels.js';
 import { choiceSummary } from './suggest.js';
 import {
-  reportSections, ruleChecks, buildPrompt, parseReply, vetReply, newRecord, openItems, recordSummary, changedSince, applyEdit, fingerprint, sectionOf,
-  KIND_LABEL as PROOF_KIND, MODEL_NAME
+  SECTIONS as PROOF_SECTIONS, reportSections, ruleChecks, buildPrompt, parseReply, vetReply, newRecord, openItems, recordSummary, changedSince, applyEdit,
+  fingerprint, sectionOf, KIND_LABEL as PROOF_KIND, MODEL_NAME, formTerms, factChange, rewriteChanges, checkTicked, tickedText
 } from './proofread.js';
+import { writeBack, carryPatches, carryText, blockText, showValue, patchFor } from './writeback.js';
 import { loadSettings as loadProofSettings, saveSettings as saveProofSettings, status as hanSlideStatus, proofread as hanSlideProofread, describeStatus, normaliseCode } from './hanslide.js';
 
 // The CNS-only code (guided intake, pathway drawer and family plates, about 180 kB) loads the
@@ -81,13 +82,16 @@ const state = {
   activePart: 0,
   editing: null,          // report block key currently open in the in-place editor
   lastOut: null,
+  lastOutCase: null,      // the case lastOut was generated for (proofreading changes follow its form changes)
   config: loadConfig(),
   dirty: false,           // edited since last Drive save
   saving: false,
   navMode: 'top',         // which side of the header mode switch is showing ('top' = biopsy)
   navModeFor: null,       // the template the mode was chosen against; a new template re-follows its own kind
   cases: [],              // last fetched Sheet rows for the Open dialog
-  proof: { busy: false, error: '', caseState: null, startedAt: 0, copyAnyway: '' } // proofreading in progress (docs/specs/proofreading.md)
+  // Proofreading in progress (docs/specs/proofreading.md): `ticks` are the changes of each rewrite
+  // ticked to accept (by suggestion key), `note` what the last accept put into the form.
+  proof: { busy: false, error: '', caseState: null, startedAt: 0, copyAnyway: '', ticks: new Map(), note: null }
 };
 
 const META_FIELDS = ['accession', 'status', 'specimen', 'clinical', 'macro', 'blockKey'];
@@ -1746,11 +1750,17 @@ function renderReport() {
   let out;
   try {
     out = generateCase(state.templates, state.caseState);
+    // After a form change, the changes accepted from proofreading follow it where their words allow:
+    // those kept over the form's text, and the rewrites still open (docs/specs/proofreading.md).
+    const prev = state.lastOutCase === state.caseState ? state.lastOut : null;
+    if (prev && carryPatches(state.caseState, prev, out)) out = generateCase(state.templates, state.caseState);
+    if (prev) carryRewrites(prev, out);
   } catch (err) {
     nodes.blocks.replaceChildren(el('div', { class: 'block' }, el('pre', { text: `Generator error: ${err.message}` })));
     return;
   }
   state.lastOut = out;
+  state.lastOutCase = state.caseState;
   const tagFor = (key) => ({ lis: 'from LIS', merged: '+ typed text', edited: 'edited' }[out.source?.[key]] || '');
   const biomarkerOnly = () => schemasInUse().every((s) => s.kind === 'biomarker');
   const blocks = [
@@ -1769,7 +1779,7 @@ function renderReport() {
     // empty for a biomarker report, where the results go, and absent everywhere else.
   ].filter(([key, , text]) => text || out.edited?.[key]
     || (key === 'microscopy' ? !biomarkerOnly() : key === 'molecular' ? biomarkerOnly() : ['specimens', 'diagnosis'].includes(key)));
-  const issues = out.issues || [];
+  const issues = [...(out.issues || []), ...patchIssues(out)];
   // Checks collapse to their one-line count so the report starts at the top of the column; an issue that
   // names a field is clickable and focuses it. The open state is remembered between cases.
   const checksBox = issues.length ? el('details', { class: `checks ${issues.some((i) => i.level === 'error') ? 'has-error' : issues.some((i) => i.level === 'warn') ? 'has-warn' : 'info-only'}` },
@@ -1779,7 +1789,7 @@ function renderReport() {
       class: `issue ${i.level}${i.field ? ' jump' : ''}`,
       title: i.field ? 'Go to the field this refers to' : undefined,
       onclick: i.field ? () => focusFieldNode(nodes.panel.querySelector(`.field[data-field="${CSS.escape(i.field)}"]`) || nodes.macroPanel.querySelector(`.field[data-field="${CSS.escape(i.field)}"]`)) : undefined,
-      text: `${state.caseState.parts.length > 1 ? `(${i.part}) ` : ''}${i.message}`
+      text: `${state.caseState.parts.length > 1 && i.part ? `(${i.part}) ` : ''}${i.message}`
     })))) : null;
   if (checksBox) {
     checksBox.open = localStorage.getItem('signout.checks') !== 'closed';
@@ -1797,6 +1807,12 @@ function renderReport() {
 function renderBlock(key, name, text, tag, out) {
   const h3 = el('h3', { text: name });
   if (tag) h3.append(' ', el('span', { class: `tag ${tag === 'edited' ? 'tag-edited' : ''}`, text: tag }));
+  // Changes accepted from proofreading that no form field gives, kept over the form's text.
+  const patched = !out.edited?.[key] && state.caseState.patches?.[key]?.length ? out.patched?.[key] : null;
+  if (patched) {
+    const n = patched.applied + patched.missed.length;
+    h3.append(' ', el('span', { class: 'tag tag-proof', text: 'proofread changes', title: `${n === 1 ? 'A change' : `${n} changes`} accepted from proofreading, kept over the text the form gives. The block still follows the form.` }));
+  }
   const head = el('div', { class: 'block-head' }, h3);
   const body = el('div', { class: 'block-body' });
   const editing = state.editing === key;
@@ -1821,6 +1837,7 @@ function renderBlock(key, name, text, tag, out) {
     body.append(pre);
     const actions = el('span', { class: 'block-actions' });
     if (out.edited?.[key]) actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Revert', title: 'Discard this edit and go back to the text generated from the fields', onclick: () => revertEdit(key) }));
+    else if (patched) actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Revert', title: "Take out the proofreading changes kept over the form's text; the form stays as it is", onclick: () => revertPatches(key) }));
     if (out.edited?.[key]) h3.title = 'Edited by hand — this block no longer follows the fields. Revert to regenerate it.';
     actions.append(
       el('button', { type: 'button', class: 'btn ghost small', text: 'Edit', onclick: () => startEdit(key) }),
@@ -1861,6 +1878,29 @@ function revertAllEdits() {
   toast('All edits reverted');
 }
 
+/** Take out a block's proofreading changes kept over the form's text; the form's values stay. */
+function revertPatches(key) {
+  const n = state.caseState.patches?.[key]?.length || 0;
+  if (!n) return;
+  const name = blockLabel(key);
+  if (!window.confirm(`Take out ${n === 1 ? 'the proofreading change' : `the ${n} proofreading changes`} kept over the form's text in ${name}? What was put into the form stays.`)) return;
+  delete state.caseState.patches[key];
+  markDirty(); renderReport(); cacheCase(state.caseState);
+  toast(`${name} follows the form's text again`);
+}
+
+const blockLabel = (key) => sectionOf(key)?.label || { blockKey: 'Block key' }[key] || key;
+const clipNote = (s, n = 48) => { const t = String(s ?? '').replace(/\s+/g, ' ').trim(); return t.length > n ? `${t.slice(0, n - 3)}...` : t; };
+
+/** Checks for proofreading changes that no longer fit the form's text, and so are left out. */
+function patchIssues(out) {
+  return Object.entries(out.patched || {}).filter(([key, p]) => p.missed.length && !out.edited?.[key]).map(([key, p]) => {
+    const n = p.missed.length;
+    const shown = p.missed.slice(0, 2).map((m) => `"${clipNote(m.find, 36)}" \u2192 "${clipNote(m.replace, 36)}"`).join('; ');
+    return { level: 'warn', message: `${blockLabel(key)}: ${n === 1 ? 'a proofreading change no longer fits' : `${n} proofreading changes no longer fit`} the text the form now gives and ${n === 1 ? 'is' : 'are'} left out (${shown}). Edit the block, or Revert to drop ${n === 1 ? 'it' : 'them'}.` };
+  });
+}
+
 // ---------- proofreading (src/proofread.js, src/hanslide.js, docs/specs/proofreading.md) ----------
 // The rule checks are worked out whenever the report is shown, on every computer. PPLX 27B is asked
 // through Han Slide only where Settings › Proofreading is on (the Mac that drafts; never the PC).
@@ -1875,6 +1915,66 @@ function proofView(out = state.lastOut) {
 
 const clock = (ms) => new Date(ms).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
+/** The words of the case form's options, for telling a change of fact in a rewrite (memoised by template). */
+let termsMemo = { key: '', terms: null };
+function proofTerms() {
+  const key = templatesInUse(state.caseState).join('+');
+  if (termsMemo.key !== key) termsMemo = { key, terms: formTerms(schemasInUse()) };
+  return termsMemo.terms;
+}
+
+/** A block's text as printed, as the proofreader read it. */
+const printedText = (out, key) => String(out?.[key] ?? '').replace(/\s+$/, '');
+
+/** A rewrite as tracked changes over the section's text now (memoised). */
+const rewriteMemo = new Map();
+function rewriteView(item, base) {
+  const terms = proofTerms();
+  const key = `${termsMemo.key}|${fingerprint(base)}|${fingerprint(item.text)}`;
+  if (!rewriteMemo.has(key)) {
+    if (rewriteMemo.size > 20) rewriteMemo.clear();
+    rewriteMemo.set(key, rewriteChanges(base, item.text, terms));
+  }
+  return rewriteMemo.get(key);
+}
+/** The changes of a rewrite ticked to accept: at first each one but those that change a fact. */
+function ticksFor(item, changes) {
+  let t = state.proof.ticks.get(item.key);
+  if (!t || t.length !== changes.length) { t = changes.map((c) => !c.flagged); state.proof.ticks.set(item.key, t); }
+  return t;
+}
+
+/** A suggestion made in a block's text: the new text, or null where it no longer fits. */
+function proofApply(item, text) {
+  if (item.kind === 'rewrite') {
+    if (!item.text || fingerprint(text) !== item.base) return null;
+    const changes = rewriteView(item, text);
+    const ticks = ticksFor(item, changes);
+    if (!ticks.some(Boolean) || checkTicked(text, item.text, changes, ticks, proofTerms())) return null;
+    return tickedText(text, changes, ticks);
+  }
+  if (item.kind === 'check') return item.suggestion === undefined ? null : applyEdit(text, { find: item.quote, replace: item.suggestion, all: item.all });
+  return applyEdit(text, item);
+}
+
+/**
+ * The rewrites still open, carried over a change of their section's text (a form change, an accepted
+ * edit): each change made in the rewrite where its words are there once. One that cannot be is no
+ * longer offered, as before.
+ */
+function carryRewrites(prev, out) {
+  for (const item of state.caseState?.proofread?.items || []) {
+    if (item.kind !== 'rewrite' || item.status !== 'open' || !item.text) continue;
+    const before = printedText(prev, item.section); const after = printedText(out, item.section);
+    if (before === after || fingerprint(before) !== item.base) continue;
+    const t = carryText(before, after, item.text);
+    if (t === null || t === after) continue;
+    item.text = t;
+    item.base = fingerprint(after);
+    state.proof.ticks.delete(item.key);
+  }
+}
+
 /** The Proofreading box under Checks, or null when there is nothing to show. */
 function renderProofBox(out) {
   const on = loadProofSettings().on;
@@ -1882,10 +1982,14 @@ function renderProofBox(out) {
   const mine = state.proof.caseState === state.caseState;
   const busy = state.proof.busy && mine;
   const error = mine ? state.proof.error : '';
-  if (!on && !items.length && !record?.at && !error) return null;
-  const edits = items.filter((i) => i.kind !== 'check');
-  const looks = items.length - edits.length;
-  const count = [edits.length ? `${edits.length} to accept` : '', looks ? `${looks} to look at` : ''].filter(Boolean).join(' \u00b7 ');
+  const note = state.proof.note?.caseState === state.caseState ? state.proof.note : null;
+  if (!on && !items.length && !record?.at && !error && !note) return null;
+  const rewrites = items.filter((i) => i.kind === 'rewrite');
+  const flagged = items.filter((i) => i.kind === 'check' && i.suggestion !== undefined);
+  const edits = items.filter((i) => i.kind !== 'check' && i.kind !== 'rewrite');
+  const looks = items.length - edits.length - flagged.length - rewrites.length;
+  const count = [edits.length ? `${edits.length} to accept` : '', flagged.length ? `${flagged.length} flagged` : '',
+    rewrites.length ? `${rewrites.length} rewrite${rewrites.length === 1 ? '' : 's'}` : '', looks ? `${looks} to look at` : ''].filter(Boolean).join(' \u00b7 ');
   const summary = busy ? `${MODEL_NAME} is reading the report\u2026` : error ? 'did not run' : count || (record?.at ? 'nothing open' : on ? 'not proofread yet' : 'nothing found');
   const box = el('details', { class: `checks proof ${error ? 'has-error' : items.length ? '' : 'info-only'}` },
     el('summary', {}, el('div', { class: 'checks-head' }, el('h3', { text: 'Proofreading' }), el('span', { class: 'muted', text: summary }))));
@@ -1895,9 +1999,13 @@ function renderProofBox(out) {
         : `Rule checks only. ${MODEL_NAME} proofreads where Settings › Proofreading is on (the Mac with Han Slide).`;
   box.append(el('p', { class: 'proof-line', text: line }));
   if (error) box.append(el('p', { class: 'proof-error', role: 'alert', text: error }));
-  if (items.length) box.append(el('ul', { class: 'proof-list' }, ...items.map(proofRow)));
+  if (note) {
+    box.append(el('div', { class: 'proof-note', role: 'status' }, ...note.lines.map((l) => el('p', { text: l })),
+      el('button', { type: 'button', class: 'btn ghost small', text: 'OK', title: 'Hide this note', onclick: () => { state.proof.note = null; renderReport(); } })));
+  }
+  if (items.length) box.append(el('ul', { class: 'proof-list' }, ...items.map((i) => proofRow(i, out))));
   const bar = el('div', { class: 'proof-bar' });
-  if (edits.length > 1) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: `Accept all ${edits.length}`, onclick: () => acceptProof(edits) }));
+  if (edits.length > 1) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: `Accept all ${edits.length}`, title: 'The spelling, grammar and house-style edits; flagged changes and rewrites are accepted one by one', onclick: () => acceptProof(edits) }));
   if (on) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: busy ? 'Proofreading\u2026' : record?.at ? 'Proofread again' : 'Proofread', disabled: busy, onclick: () => runProofread() }));
   if (bar.childElementCount) box.append(bar);
   box.open = localStorage.getItem('signout.proof') !== 'closed';
@@ -1906,77 +2014,183 @@ function renderProofBox(out) {
 }
 
 /** One suggestion: what it is and where, the change or the text to look at, Accept and Dismiss. */
-function proofRow(item) {
+function proofRow(item, out) {
   const where = sectionOf(item.section)?.label || item.section;
-  const head = el('span', { class: 'proof-kind', text: `${PROOF_KIND[item.kind] || item.kind} \u00b7 ${where}${item.source === 'model' ? ` \u00b7 ${MODEL_NAME.split(' ').join('\u00a0')}` : ''}` });
+  const flagged = item.kind === 'check' && item.suggestion !== undefined;
+  const kind = flagged ? PROOF_KIND.flagged : PROOF_KIND[item.kind] || item.kind;
+  const head = el('span', { class: 'proof-kind', text: `${kind} \u00b7 ${where}${item.source === 'model' ? ` \u00b7 ${MODEL_NAME.split(' ').join('\u00a0')}` : ''}` });
+  if (item.kind === 'rewrite') return rewriteRow(item, head, printedText(out, item.section));
   const body = el('span', { class: 'proof-text' });
-  if (item.kind === 'check') {
-    body.append(el('q', { text: item.quote }), ` ${item.why}`);
-    if (item.suggestion !== undefined) body.append(' ', el('span', { class: 'proof-sugg', text: `Suggested: ${item.suggestion || '(nothing)'}` }));
-  } else {
-    body.append(el('del', { text: item.find }), ' \u2192 ', item.replace ? el('ins', { text: item.replace }) : el('span', { class: 'muted', text: '(removed)' }));
+  const change = (find, replace) => {
+    body.append(el('del', { text: find }), ' \u2192 ', replace ? el('ins', { text: replace }) : el('span', { class: 'muted', text: '(removed)' }));
     if (item.all) body.append(el('span', { class: 'muted', text: ' (each time)' }));
+  };
+  if (flagged) {
+    change(item.quote, item.suggestion);
+    body.append(` \u2014 ${item.why}`);
+    const facts = factChange(item.quote, item.suggestion, proofTerms());
+    if (facts) body.append(' ', el('span', { class: 'proof-fact', text: facts }));
+  } else if (item.kind === 'check') {
+    body.append(el('q', { text: item.quote }), ` ${item.why}`);
+  } else {
+    change(item.find, item.replace);
     if (item.why) body.append(` \u2014 ${item.why}`);
   }
   const actions = el('span', { class: 'proof-actions' });
   if (item.kind !== 'check') actions.append(el('button', { type: 'button', class: 'btn small', text: 'Accept', onclick: () => acceptProof([item]) }));
+  else if (flagged && proofApply(item, printedText(out, item.section)) !== null) {
+    actions.append(el('button', { type: 'button', class: 'btn small', text: 'Accept change', title: 'Make this change; it goes into the form where a field gives the text', onclick: () => acceptProof([item]) }));
+  }
   actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Dismiss', onclick: () => dismissProof(item) }));
-  return el('li', { class: `proof-item ${item.kind === 'check' ? 'look' : 'edit'}` }, head, body, actions);
+  return el('li', { class: `proof-item ${flagged ? 'flag' : item.kind === 'check' ? 'look' : 'edit'}` }, head, body, actions);
 }
 
 /**
- * Accept edits, each applied in turn to its block. A generated block becomes an edit of that block,
- * as typing in it would. A block unchanged since it was proofread keeps counting as proofread.
+ * A rewrite as tracked changes over the section's text. Each change ticks or unticks on a click (or
+ * Enter or Space); one that changes a fact is marked with what it changes and starts unticked. The
+ * changes are inline spans acting as buttons, so they wrap with the text as it reads.
+ */
+function rewriteRow(item, head, base) {
+  const changes = rewriteView(item, base);
+  const ticks = ticksFor(item, changes);
+  const terms = proofTerms();
+  const warn = el('p', { class: 'proof-warn', role: 'status', hidden: true });
+  const accept = el('button', { type: 'button', class: 'btn small', onclick: () => acceptProof([item]) });
+  const update = () => {
+    const k = ticks.filter(Boolean).length;
+    accept.textContent = `Accept ticked (${k} of ${changes.length})`;
+    const w = k ? checkTicked(base, item.text, changes, ticks, terms) : null;
+    warn.textContent = w || '';
+    warn.hidden = !w;
+    accept.disabled = !k || !!w;
+  };
+  const view = el('div', { class: 'proof-rewrite' });
+  let last = 0;
+  changes.forEach((c, i) => {
+    if (c.from > last) view.append(base.slice(last, c.from));
+    const btn = el('span', { class: `chg${c.flagged ? ' flagged' : ''}${ticks[i] ? '' : ' off'}`, role: 'button', tabindex: '0', 'aria-pressed': String(ticks[i]),
+      title: `${c.flagged ? `Changes a fact (${c.facts}). ` : ''}Click to ${ticks[i] ? 'untick' : 'tick'} this change` });
+    if (c.old) btn.append(el('del', { text: c.old }));
+    if (c.text) btn.append(el('ins', { text: c.text }));
+    if (c.flagged) btn.append(el('span', { class: 'chg-fact', text: c.facts }));
+    const toggle = () => {
+      ticks[i] = !ticks[i];
+      btn.classList.toggle('off', !ticks[i]);
+      btn.setAttribute('aria-pressed', String(ticks[i]));
+      btn.title = `${c.flagged ? `Changes a fact (${c.facts}). ` : ''}Click to ${ticks[i] ? 'untick' : 'tick'} this change`;
+      update();
+    };
+    btn.addEventListener('click', toggle);
+    btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+    view.append(btn);
+    last = c.to;
+  });
+  if (last < base.length) view.append(base.slice(last));
+  update();
+  const nFlagged = changes.filter((c) => c.flagged).length;
+  const body = el('span', { class: 'proof-text' }, item.why ? `${item.why} ` : '',
+    el('span', { class: 'muted', text: `${changes.length} change${changes.length === 1 ? '' : 's'}${nFlagged ? `; ${nFlagged} that change${nFlagged === 1 ? 's' : ''} a fact, left unticked` : ''}. Click a change to tick or untick it.` }));
+  const actions = el('span', { class: 'proof-actions' }, accept,
+    el('button', { type: 'button', class: 'btn ghost small', text: 'Dismiss', onclick: () => dismissProof(item) }));
+  return el('li', { class: 'proof-item rewrite' }, head, body, view, warn, actions);
+}
+
+// What a field change put into the form, for the note.
+const KEEP_KEYS = new Set(['proofread', 'edits', 'drive']);
+function describeChange(c) {
+  if (c.typed) {
+    const p = patchFor(String(c.from ?? ''), String(c.value ?? ''));
+    return p ? `${c.label}: "${clipNote(p.find) || '(blank)'}" \u2192 "${clipNote(p.replace) || '(blank)'}"` : '';
+  }
+  return `${c.label}: ${showValue(c.from)} \u2192 ${showValue(c.to)}`;
+}
+function noteFor(label, r) {
+  const lines = [];
+  const changes = r.changes.map(describeChange).filter(Boolean);
+  if (changes.length) lines.push(`Into the form (${label}): ${changes.join('; ')}.`);
+  if (r.knockOn.length) lines.push(`The form also changed ${label}: ${r.knockOn.map((k) => `${k.old ? `"${clipNote(k.old)}"` : '(new)'} \u2192 ${k.text ? `"${clipNote(k.text)}"` : '(removed)'}`).join('; ')}.`);
+  if (r.also.length) lines.push(`The form change also altered: ${r.also.map(blockLabel).join(', ')}.`);
+  if (r.patches.length) lines.push(`${label}: ${r.patches.length === 1 ? 'one change' : `${r.patches.length} changes`} no field gives, kept over the form's wording (Revert in the block takes ${r.patches.length === 1 ? 'it' : 'them'} out).`);
+  return lines;
+}
+
+/**
+ * Accept suggestions, block by block. Each block is made to read as accepted through the form where
+ * it can be: a typed text, a number, a choice or a tick is changed as typing it would, so the report
+ * keeps following the form (src/writeback.js). What no field gives is kept as a proofreading change
+ * over the form's text. A block edited by hand stays an edit; a block that cannot be made to read so
+ * becomes one. A block unchanged since it was proofread keeps counting as proofread.
  */
 function acceptProof(items) {
-  const out = state.lastOut;
   const cs = state.caseState;
-  if (!out || !cs) return;
-  const textOf = (key) => String(out[key] ?? '').replace(/\s+$/, '');
-  const texts = {};
-  const done = [];
-  for (const item of items) {
-    const next = applyEdit(texts[item.section] ?? textOf(item.section), item);
-    if (next === null) continue;
-    texts[item.section] = next;
-    done.push(item);
-  }
-  if (!done.length) { renderReport(); toast('The text has changed since; nothing accepted'); return; }
+  if (!state.lastOut || !cs) return;
   const record = cs.proofread;
-  const kept = Object.keys(texts).filter((key) => record?.hashes?.[key] && record.hashes[key] === fingerprint(textOf(key)));
-  const nowEdited = [];
-  cs.edits = cs.edits || {};
-  for (const [key, text] of Object.entries(texts)) {
-    if (text.trim() === (out.generated?.[key] || '').trim()) delete cs.edits[key];
-    else {
-      if (!out.edited?.[key]) nowEdited.push(sectionOf(key)?.label || key);
-      cs.edits[key] = text;
+  const lines = []; const done = []; const nowEdited = []; const hashes = [];
+  let intoForm = false;
+  const macroBefore = cs.meta?.macro;
+  for (const key of PROOF_SECTIONS.map((s) => s.key).filter((k) => items.some((i) => i.section === k))) {
+    const out = generateCase(state.templates, cs);
+    const before = printedText(out, key);
+    let next = before;
+    const took = [];
+    for (const item of items.filter((i) => i.section === key)) {
+      const t = proofApply(item, next);
+      if (t === null) continue;
+      next = t;
+      took.push(item);
+    }
+    if (!took.length) continue;
+    done.push(...took);
+    for (const item of took) {
+      const own = item.source === 'model' ? record?.items?.find((i) => i.key === item.key) : null;
+      if (!own) continue;
+      own.status = 'accepted';
+      if (own.kind === 'rewrite') { delete own.text; state.proof.ticks.delete(own.key); } // kept small: the case goes in one Sheet cell
+    }
+    if (next === before) continue;
+    if (record?.hashes?.[key] && record.hashes[key] === fingerprint(before)) hashes.push(key);
+    const label = blockLabel(key);
+    cs.edits = cs.edits || {};
+    if (out.edited?.[key]) {
+      if (next.trim() === blockText(out, key).trim()) delete cs.edits[key]; else cs.edits[key] = next;
+      continue;
+    }
+    const r = writeBack(state.templates, cs, key, next);
+    if (r) {
+      for (const k of Object.keys(r.caseState)) if (!KEEP_KEYS.has(k) && JSON.stringify(r.caseState[k]) !== JSON.stringify(cs[k])) cs[k] = r.caseState[k];
+      if (r.changes.length) intoForm = true;
+      lines.push(...noteFor(label, r));
+    } else {
+      cs.edits[key] = next;
+      nowEdited.push(label);
+      lines.push(`${label}: could not be put into the form, so it now prints as edited text (Revert goes back).`);
     }
   }
-  for (const item of done) {
-    const own = item.source === 'model' ? record?.items?.find((i) => i.key === item.key) : null;
-    if (own) own.status = 'accepted';
-  }
+  if (!done.length) { renderReport(); toast('The text has changed since; nothing accepted'); return; }
+  if (cs.meta?.macro !== macroBefore) applyMacro();
+  state.proof.note = lines.length ? { caseState: cs, lines } : null;
   state.editing = null;
   markDirty();
-  renderReport();
-  if (kept.length) {
+  render();
+  if (hashes.length) {
     const now = reportSections(state.lastOut);
-    for (const key of kept) record.hashes[key] = fingerprint(now.find((s) => s.key === key)?.text ?? '');
+    for (const key of hashes) record.hashes[key] = fingerprint(now.find((s) => s.key === key)?.text ?? '');
     renderReport();
   }
   cacheCase(cs);
   const what = done.length === 1 ? 'Accepted' : `Accepted ${done.length} changes`;
-  toast(nowEdited.length ? `${what}. ${nowEdited.join(', ')} now print${nowEdited.length === 1 ? 's' : ''} as edited text (Revert goes back)` : what);
+  toast(nowEdited.length ? `${what}. ${nowEdited.join(', ')} now print${nowEdited.length === 1 ? 's' : ''} as edited text (Revert goes back)` : intoForm ? `${what} into the form` : what);
 }
 
 /** Dismiss a suggestion: it stays dismissed when it is suggested again. */
 function dismissProof(item) {
   const cs = state.caseState;
-  const record = cs.proofread || (cs.proofread = { v: 1, dismissed: [] });
+  const record = cs.proofread || (cs.proofread = { v: 2, dismissed: [] });
   const own = item.source === 'model' ? (record.items || []).find((i) => i.key === item.key) : null;
-  if (own) own.status = 'dismissed';
-  else record.dismissed = [...new Set([...(record.dismissed || []), item.key])];
+  if (own) {
+    own.status = 'dismissed';
+    if (own.kind === 'rewrite') { delete own.text; state.proof.ticks.delete(own.key); }
+  } else record.dismissed = [...new Set([...(record.dismissed || []), item.key])];
   markDirty(); renderReport(); cacheCase(cs);
 }
 
@@ -2000,7 +2214,7 @@ async function runProofread({ auto = false } = {}) {
   const sections = reportSections(state.lastOut);
   if (!sections.length) { if (!auto) toast('Nothing in the report to proofread yet'); return; }
   const question = buildPrompt(sections, cs.meta?.clinical || '');
-  state.proof = { ...state.proof, busy: !question.error, error: question.error || '', caseState: cs, startedAt: Date.now() };
+  state.proof = { ...state.proof, busy: !question.error, error: question.error || '', caseState: cs, startedAt: Date.now(), note: null };
   renderReport();
   if (question.error) return;
   let record = null;

@@ -479,6 +479,20 @@ export function generateCase(templates, caseState) {
     blocks[key] = r.text;
     source[key] = r.source;
   }
+  // Changes accepted from proofreading that no form field gives (docs/specs/proofreading.md, Phase 87):
+  // `caseState.patches[block] = [{ find, replace }]`, made in turn over the form's text. One whose text
+  // is no longer there exactly once is left out and listed in `patched[block].missed`; `formText` keeps
+  // the form's own text. A case with no patches prints as before.
+  const formText = {};
+  const patched = {};
+  for (const key of BLOCK_ORDER) {
+    const list = caseState.patches?.[key];
+    if (!Array.isArray(list) || !list.length) continue;
+    const r = applyPatches(blocks[key], list);
+    formText[key] = blocks[key];
+    blocks[key] = r.text;
+    patched[key] = { applied: list.length - r.missed.length, missed: r.missed };
+  }
   // Per-block manual edits made in the report preview (`caseState.edits[block] = text`)
   // replace the generated (or LIS) text verbatim. `generated` keeps the pre-edit text for Revert.
   const generated = { ...blocks };
@@ -490,7 +504,23 @@ export function generateCase(templates, caseState) {
     edited[key] = true;
     source[key] = 'edited';
   }
-  return { ...blocks, synoptic: tidy(letters(synoptic)), issues, source, edited, generated, report: assemble(blocks, !!options.includeHeader) };
+  return { ...blocks, synoptic: tidy(letters(synoptic)), issues, source, edited, generated, patched, formText, report: assemble(blocks, !!options.includeHeader) };
+}
+
+/**
+ * `text` with each patch made in turn: `{ text, missed }`. A patch whose `find` is not in the text
+ * exactly once is left out and returned in `missed`.
+ */
+export function applyPatches(text, list) {
+  let t = String(text ?? '');
+  const missed = [];
+  for (const p of list || []) {
+    const find = typeof p?.find === 'string' ? p.find : '';
+    const at = find ? t.indexOf(find) : -1;
+    if (at < 0 || t.indexOf(find, at + 1) >= 0) { missed.push(p); continue; }
+    t = t.slice(0, at) + String(p.replace ?? '') + t.slice(at + find.length);
+  }
+  return { text: t, missed };
 }
 
 /**

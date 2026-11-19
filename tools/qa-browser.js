@@ -3093,7 +3093,7 @@ await check('proofreading: off asks nothing; Ready asks the stand-in Han Slide; 
     const asks = seen.filter((s) => s.path === '/v1/proofread');
     assert(asks.length === 1, `${asks.length} proofread requests`);
     const sent = JSON.parse(asks[0].body);
-    assert(sent.prompt.startsWith('TASK: proofread') && sent.prompt.includes('[MICRO]\nSections shows antral mucosa') && sent.maxTokens === 1400 && /British/.test(sent.system), 'the question is not in the expected shape');
+    assert(sent.prompt.startsWith('TASK: proofread') && sent.prompt.includes('[MICRO]\nSections shows antral mucosa') && sent.maxTokens === 2000 && /British/.test(sent.system), 'the question is not in the expected shape');
     assert(!sent.prompt.includes('S26-01185'), 'the accession number was sent to Han Slide');
     let text = await box.innerText();
     for (const want of ['tumor', 'Sections shows', 'recieved', 'QA flag one', 'QA flag two', '3 to accept', '2 to look at']) assert(text.includes(want), `box lacks "${want}": ${text}`);
@@ -3166,6 +3166,162 @@ await check('proofreading: off asks nothing; Ready asks the stand-in Han Slide; 
     await page.selectOption('#meta-status', 'draft');
     return `${seen.length} requests to the stand-in (1 Test, 2 proofreads); rule and model suggestions together, Accept, Dismiss and Accept all; record and dismissal kept over a reload and a second proofread; Copy for LIS asked once, and not with nothing open`;
   } finally {
+    await new Promise((resolve) => standIn.close(resolve));
+  }
+});
+
+// Accepting proofreading into the form (docs/specs/proofreading.md, Phase 87). The stand-in answers the
+// skin excision example with a flagged change of a measurement and rewrites of the macroscopic and
+// microscopic descriptions, the macroscopic one moving a sentence. A change a field gives goes into
+// the form; the rest is kept over the form's wording, follows later form changes, is listed in Checks
+// where it no longer fits, and comes out with Revert in the block.
+await check('proofreading into the form: a flagged change sets its field; rewrites are kept over the form\'s wording, follow form changes, are listed when they no longer fit, and Revert takes them out', async () => {
+  await page.setViewportSize({ width: 1440, height: 950 });
+  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const CODE = 'QA12-QA34-QA56-QA78';
+  const MICRO_OLD = 'Sections show a piece of hair bearing skin with epidermis and dermis. A basaloid tumour is seen arising from the epidermis and infiltrating into the dermis, forming solid nodules with peripheral palisading.';
+  const MICRO_NEW = 'Sections show hair bearing skin, in which a basaloid tumour arises from the epidermis and infiltrates the dermis as solid nodules with peripheral palisading.';
+  const SUTURE_OLD = "A suture marks 12 o'clock, taken as superior. The lesion is 2 mm from the closest skin edge. The deep surface is inked.";
+  const SUTURE_NEW = "The lesion is 2 mm from the closest skin edge. The deep surface is inked, and a suture marks 12 o'clock, taken as superior.";
+  const asks = [];
+  const standIn = createServer(async (req, res) => {
+    const origin = req.headers.origin || '';
+    const cors = { 'Access-Control-Allow-Origin': origin, Vary: 'Origin', 'Access-Control-Allow-Headers': 'Authorization, Content-Type', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Private-Network': 'true', 'Cache-Control': 'no-store' };
+    const json = (code, o) => res.writeHead(code, { ...(origin === `http://localhost:${PORT}` ? cors : {}), 'Content-Type': 'application/json' }).end(JSON.stringify(o));
+    if (origin !== `http://localhost:${PORT}`) return json(403, { error: 'origin' });
+    if (req.method === 'OPTIONS') return res.writeHead(204, cors).end();
+    let body = '';
+    for await (const c of req) body += c;
+    if (req.headers.authorization !== `Bearer ${CODE}`) return json(401, { error: 'unpaired' });
+    if (req.url === '/v1/status') return json(200, { app: 'Han Slide', version: '1.13.0', api: 1, model: 'PPLX 27B', ready: true, why: '', paired: true });
+    if (req.url !== '/v1/proofread') return json(404, { error: 'not found' });
+    const { prompt } = JSON.parse(body);
+    asks.push(prompt);
+    const section = (tag) => (prompt.match(new RegExp(`\\[${tag}\\]\\n([\\s\\S]*?)\\n\\n(?:\\[[A-Z]+\\]|Reply with)`)) || [])[1] || '';
+    const macro = section('MACRO');
+    const micro = section('MICRO');
+    const flags = [];
+    const rewrites = [];
+    if (macro.includes('nodule measuring 0.8 cm')) flags.push({ section: 'MACRO', quote: 'nodule measuring 0.8 cm', replace: 'nodule measuring 0.9 cm', why: 'QA size flag' });
+    if (macro.includes('is an ellipse of skin measuring 2.5 x 1.2 x 0.6 cm bearing')) rewrites.push({ section: 'MACRO', text: macro.replace('is an ellipse of skin measuring 2.5 x 1.2 x 0.6 cm bearing', 'is a 2.5 x 1.2 x 0.6 cm ellipse of skin bearing').replace(SUTURE_OLD, SUTURE_NEW), why: 'QA macro rewrite' });
+    if (micro.includes(MICRO_OLD)) rewrites.push({ section: 'MICRO', text: micro.replace(MICRO_OLD, MICRO_NEW).replace('- Superior: 1.5 mm', '- Superior: 1.6 mm'), why: 'QA micro rewrite' });
+    return json(200, { text: '```json\n' + JSON.stringify({ edits: [], flags, rewrites }) + '\n```', seconds: 2.4, outputTokens: 420, model: 'PPLX 27B', version: '1.13.0' });
+  });
+  await new Promise((resolve) => standIn.listen(47321, '127.0.0.1', resolve));
+  const box = page.locator('#report-blocks details.proof');
+  const row = (text) => box.locator('.proof-item', { hasText: text }).first();
+  const block = (name) => page.locator('#report-blocks .block', { has: page.locator('h3', { hasText: name }) }).first();
+  const shown = (name) => block(name).locator('pre').innerText();
+  const tags = async (name) => ({ proof: await block(name).locator('.tag-proof').count(), edited: await block(name).locator('.tag-edited').count() });
+  const toastText = async () => (await page.locator('#toast').textContent()) || '';
+  const agree = (d) => d.accept();
+  page.on('dialog', agree);
+  try {
+    await caseMenu(page, 'New case');
+    await page.click('#btn-palette');
+    await page.waitForSelector('#dlg-palette[open]');
+    await page.locator('#palette-list [data-template="skin_excision"]').first().click();
+    await page.waitForTimeout(300);
+    await caseMenu(page, 'Example');
+    await page.fill('#meta-accession', 'S26-01185');
+    await page.click('#btn-settings');
+    await page.waitForSelector('#dlg-settings[open]');
+    await page.setChecked('#cfg-proofOn', true);
+    await page.fill('#cfg-proofCode', CODE);
+    await page.click('#settings-form button[value="save"]');
+    await page.waitForTimeout(300);
+    await page.selectOption('#meta-status', 'ready');
+    await row('QA micro rewrite').waitFor({ timeout: 8000 });
+    assert(asks.length === 1, `${asks.length} proofread requests`);
+    let text = await box.innerText();
+    for (const want of ['1 flagged', '2 rewrites', 'Flagged change', 'QA size flag', 'changes 0.8 to 0.9', 'Accept change', 'QA macro rewrite', 'Accept ticked (4 of 4)', '6 changes; 1 that changes a fact, left unticked.', 'Accept ticked (5 of 6)']) assert(text.includes(want), `box lacks "${want}": ${text}`);
+    // The flagged change goes into the form: the field reads the new size and the block still follows the form.
+    await row('QA size flag').locator('button', { hasText: 'Accept change' }).click();
+    await page.waitForTimeout(300);
+    assert(await page.inputValue('#f-A-lesionSize') === '0.9', `lesion size read "${await page.inputValue('#f-A-lesionSize')}"`);
+    let macro = await shown('Macroscopic');
+    assert(macro.includes('bearing a nodule measuring 0.9 cm'), `macro after the flagged change: ${macro}`);
+    let t = await tags('Macroscopic');
+    assert(!t.proof && !t.edited, `the macroscopic block is tagged after a change put into the form: ${JSON.stringify(t)}`);
+    text = await box.innerText();
+    assert(text.includes('Into the form (Macroscopic description): Lesion size (cm): "0.8" \u2192 "0.9".'), `note: ${text}`);
+    assert(/Accepted into the form/.test(await toastText()), `toast: ${await toastText()}`);
+    // The open macroscopic rewrite follows that change; accepting it keeps it over the form's wording.
+    const macroRow = row('QA macro rewrite');
+    assert((await macroRow.innerText()).includes('nodule measuring 0.9 cm'), `the macroscopic rewrite did not follow the form: ${await macroRow.innerText()}`);
+    // Ticking one half of the moved sentence only would lose it or print it twice: refused with a message.
+    const suture = macroRow.locator('.chg', { has: page.locator('del', { hasText: 'A suture marks' }) });
+    await suture.click();
+    const warn = macroRow.locator('.proof-warn');
+    assert(/Tick both changes that move .*12/.test(await warn.innerText()) && await macroRow.locator('button', { hasText: 'Accept ticked (3 of 4)' }).isDisabled(), `half the move: ${await warn.innerText()}`);
+    await suture.click();
+    assert(await warn.isHidden(), 'the message stayed with both halves ticked');
+    await macroRow.locator('button', { hasText: 'Accept ticked (4 of 4)' }).click();
+    await page.waitForTimeout(300);
+    macro = await shown('Macroscopic');
+    assert(macro.startsWith(`Received in formalin is a 2.5 x 1.2 x 0.6 cm ellipse of skin bearing a nodule measuring 0.9 cm. ${SUTURE_NEW}`), `macro after the rewrite: ${macro}`);
+    t = await tags('Macroscopic');
+    assert(t.proof === 1 && !t.edited, `macroscopic tags after the rewrite: ${JSON.stringify(t)}`);
+    text = await box.innerText();
+    assert(text.includes("Macroscopic description: 2 changes no field gives, kept over the form's wording (Revert in the block takes them out).") && !text.includes('Orientation'), `note: ${text}`);
+    const orientation = page.locator('.chips[data-field="orientation"] .chip[aria-pressed="true"], [data-field="orientation"] select');
+    assert(/Suture at 12 o'clock/.test(await orientation.first().evaluate((e) => (e.tagName === 'SELECT' ? e.options[e.selectedIndex]?.text : e.textContent) || '')), 'the moved sentence changed the orientation in the form');
+    // The microscopic rewrite: the change of a fact is marked and starts unticked; the rest is accepted.
+    const microRow = row('QA micro rewrite');
+    const fact = microRow.locator('.chg.flagged');
+    assert(await fact.count() === 1 && await fact.getAttribute('aria-pressed') === 'false', 'the change of a fact is not marked, or starts ticked');
+    await fact.click();
+    assert(await microRow.locator('button', { hasText: 'Accept ticked (6 of 6)' }).count() === 1, 'ticking the change of a fact did not count it');
+    await fact.click();
+    await microRow.locator('button', { hasText: 'Accept ticked (5 of 6)' }).click();
+    await page.waitForTimeout(300);
+    let micro = await shown('Microscopic');
+    assert(micro.startsWith(MICRO_NEW) && micro.includes('- Superior: 1.5 mm'), `micro after the rewrite: ${micro.slice(0, 400)}`);
+    t = await tags('Microscopic');
+    assert(t.proof === 1 && !t.edited, `microscopic tags after the rewrite: ${JSON.stringify(t)}`);
+    // Later form changes: the changes kept follow them, and are listed in Checks where they no longer fit.
+    await page.fill('#f-A-ellipseSize', '2.6 x 1.2 x 0.6');
+    await page.waitForTimeout(300);
+    macro = await shown('Macroscopic');
+    assert(macro.startsWith(`Received in formalin is a 2.6 x 1.2 x 0.6 cm ellipse of skin bearing a nodule measuring 0.9 cm. ${SUTURE_NEW}`), `macro after a form change: ${macro}`);
+    await pickField('diagnosis', 'Superficial BCC');
+    await page.waitForTimeout(300);
+    let checks = await checksText();
+    assert(/Microscopic examination: 4 proofreading changes no longer fit the text the form now gives and are left out/.test(checks), `checks with another diagnosis: ${checks}`);
+    await pickField('diagnosis', 'Nodular basal cell carcinoma');
+    await page.waitForTimeout(300);
+    micro = await shown('Microscopic');
+    checks = await checksText();
+    assert(micro.startsWith(MICRO_NEW) && !/no longer fit/.test(checks), `back on the first diagnosis: ${micro.slice(0, 200)} | ${checks}`);
+    // Kept with the case over a reload, and sent to the LIS as shown.
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.waitForTimeout(600);
+    micro = await shown('Microscopic');
+    t = await tags('Microscopic');
+    assert(micro.startsWith(MICRO_NEW) && t.proof === 1, `after a reload: ${micro.slice(0, 200)} ${JSON.stringify(t)}`);
+    await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.click('#btn-copy-lis');
+    await page.waitForTimeout(300);
+    const clip = String(await page.evaluate(() => navigator.clipboard.readText()));
+    assert(clip.includes('is a 2.6 x 1.2 x 0.6 cm ellipse of skin') && clip.includes(MICRO_NEW), 'the LIS payload lacks the accepted rewrites');
+    // Revert in the microscopic block takes its changes out; the form and the macroscopic changes stay.
+    await block('Microscopic').locator('button', { hasText: 'Revert' }).click();
+    await page.waitForTimeout(300);
+    micro = await shown('Microscopic');
+    t = await tags('Microscopic');
+    assert(micro.startsWith(MICRO_OLD) && !t.proof, `after Revert: ${micro.slice(0, 200)} ${JSON.stringify(t)}`);
+    assert((await shown('Macroscopic')).includes('is a 2.6 x 1.2 x 0.6 cm ellipse of skin') && await page.inputValue('#f-A-lesionSize') === '0.9', 'Revert in the microscopy touched the macroscopic changes or the form');
+    await shot('proofreading-into-form');
+    await page.click('#btn-settings');
+    await page.waitForSelector('#dlg-settings[open]');
+    await page.setChecked('#cfg-proofOn', false);
+    await page.click('#settings-form button[value="save"]');
+    await page.waitForTimeout(300);
+    await page.selectOption('#meta-status', 'draft');
+    return `${asks.length} proofread; flagged size into the field with no tag; open rewrite followed it; half a moved sentence refused, the move kept over the form with the orientation untouched; two rewrites kept over the form's wording with the change of a fact left unticked; a size change followed, a diagnosis change listed 4 that no longer fit and changing back restored them; kept over a reload and in the LIS payload; Revert took the microscopic changes out only`;
+  } finally {
+    page.off('dialog', agree);
     await new Promise((resolve) => standIn.close(resolve));
   }
 });
