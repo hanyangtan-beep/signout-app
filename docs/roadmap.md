@@ -170,7 +170,37 @@ Newest first. The full write-ups as they stood at ship time are in `docs/done-lo
 
 ## Now
 
-Empty. The Phase 85 cards (cervical carcinoma staging module and resection synoptic) shipped on 2026-11-11; the write-up is in Done, with the spec in `docs/specs/cervical-carcinoma.md`, the sources in `docs/reference/cervix-sources.md` and the intake section in `docs/specs/specimen-intake.md`. The uterine leiomyosarcoma card and the three placenta cards (user request 2026-11-09) wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+The proofreading cards (user request 2026-11-19) are being built as one batch; Han Slide's side is its Batch 2.15. The uterine leiomyosarcoma card and the three placenta cards (user request 2026-11-09) wait in Next. The Hirschsprung pull-through, pulled by the user on 2026-09-30, waits at the top of Next and is still pulled; the perineurioma card follows it.
+
+### Proofreading — rule checks in the house style (user request 2026-11-19)   Size: M; proofreading (L → split, 1 of 3)
+Why:        a report goes to the LIS with whatever typing errors, American spellings and stray wording it was drafted with; the user wants it proofread before sign-out, in the house style, on every computer and without credits.
+Change:     `src/proofread.js` with rule checks worked out in the page: British spelling, plain text for the LIS, the diagnosis connectors on a typed diagnosis, "There is no evidence of malignancy" for "No malignancy is seen", "Sections show", a word typed twice, a placeholder left in, Markdown, an unclosed bracket, and opposite sides in the specimen and the diagnosis. A Proofreading group in Checks lists them with Accept and Dismiss; accepting a fix to a generated block makes it an edit of that block. Nothing changes until accepted.
+Untouched:  the generated text, the style layer and every golden fixture; the existing Checks issues.
+Accept:     each rule found once in made-up text and not in the template examples' own reports; Accept changes only the span shown; a dismissed check stays dismissed.
+Verify:     tests + browser (light)
+Ship:       with batch
+Spec:       `docs/specs/proofreading.md`
+
+### Proofreading — PPLX 27B through Han Slide (user request 2026-11-19)   Size: M; proofreading (L → split, 2 of 3)
+Why:        the rules miss grammar, wording and facts that disagree between sections; the user chose PPLX 27B, run by Han Slide on the Mac where reports are drafted, reading the whole report.
+Change:     `src/hanslide.js` connects to Han Slide on this computer (127.0.0.1, port 47321, pairing code), off by default, set in Settings › Proofreading with a Test button. Marking a case Ready, saving a Ready case that has changed, or the Proofread button sends the printed report and the house style; the answer's edits are kept only when they change no number, unit, side, negation, grade, stage, margin, result or diagnosis, and any other change is shown as a check without Accept.
+Untouched:  the PC (off unless turned on); Drive and Sheet calls; the report when the model is off or Han Slide is closed.
+Accept:     against a stand-in server answering like Han Slide, Ready asks once and shows the suggestions; an edit changing a number or a side becomes a check; a cut-off answer keeps its whole items; Han Slide closed or the wrong code says what to do.
+Verify:     tests + browser (stand-in server)
+Ship:       with batch
+Depends on: Han Slide 1.13.0 (Batch 2.15) for the real model
+Spec:       `docs/specs/proofreading.md`
+Source:     https://developer.chrome.com/blog/local-network-access
+
+### Proofreading — the record, the PC and Copy for LIS (user request 2026-11-19)   Size: S; proofreading (L → split, 3 of 3)
+Why:        sign-out is on a PC with no model, so the proofreading done on the Mac must travel with the case and be seen before the report is copied to the LIS.
+Change:     the case keeps `proofread` (when, by which model, fingerprints of each block, the model's suggestions and their status, dismissals), saved with the case and quietly re-saved when an answer arrives after a save. Checks says when it was proofread and which sections changed since. Copy for LIS asks first while suggestions are open and says when the report changed after proofreading.
+Untouched:  the Sheet's columns (the record is inside `case_json`); cases never proofread.
+Accept:     a case proofread on one computer shows its suggestions and the "changed since" line after a reload; Copy for LIS asks with open suggestions and not without.
+Verify:     tests + browser (light)
+Ship:       with batch
+Depends on: Proofreading — PPLX 27B through Han Slide
+Spec:       `docs/specs/proofreading.md`
 
 ## Next
 
