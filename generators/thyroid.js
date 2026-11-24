@@ -297,4 +297,63 @@ export function diagnosis(part, ctx) {
   return `(${part.label}) ${organPhrase(part, ctx)} - ${clauses.join('; ')}`;
 }
 
-export default { specimenName, macro, blockKey, microscopy, diagnosis };
+// ---------- upgrade to the thyroid carcinoma synoptic ----------
+
+const UP_PROC = {
+  'Total thyroid': 'Total thyroidectomy',
+  'Right lobe and isthmus': 'Right lobectomy with isthmusectomy (hemithyroidectomy)',
+  'Left lobe and isthmus': 'Left lobectomy with isthmusectomy (hemithyroidectomy)',
+  'Right lobe': 'Right lobectomy',
+  'Left lobe': 'Left lobectomy',
+  Isthmus: 'Isthmusectomy'
+};
+
+/**
+ * "Upgrade this part": a benign thyroid form with a carcinoma diagnosis hands off to the
+ * thyroid carcinoma synoptic (`thyroid_carcinoma`), carrying over procedure, site, macroscopy,
+ * dominant nodule size, background findings and notes.
+ */
+export const UPGRADE_TO = {
+  to: 'thyroid_carcinoma',
+  label: 'Upgrade this part',
+  when: (v) => isMalignant(v),
+  map: (v) => {
+    const out = {};
+    if (v.procedure === 'Completion thyroidectomy') out.procedure = 'Completion thyroidectomy (reoperative)';
+    else if (v.procedure === 'Total thyroidectomy') out.procedure = 'Total thyroidectomy';
+    else if (v.procedure === 'Isthmusectomy') out.procedure = 'Isthmusectomy';
+    else out.procedure = UP_PROC[v.specimenName] || 'Right lobectomy with isthmusectomy (hemithyroidectomy)';
+
+    if (/^Right/.test(v.specimenName || '')) out.tumourSite = ['Right lobe'];
+    else if (/^Left/.test(v.specimenName || '')) out.tumourSite = ['Left lobe'];
+    else if (v.specimenName === 'Isthmus') out.tumourSite = ['Isthmus'];
+
+    if (v.diagnosis === 'Papillary thyroid carcinoma - see comment') out.histType = 'Papillary carcinoma, classic subtype';
+    else if (v.diagnosis === 'Follicular carcinoma - see comment') out.histType = 'Minimally invasive follicular carcinoma';
+
+    if (v.weight !== undefined && v.weight !== '') out.weight = v.weight;
+    if (v.dimensions) out.specimenDims = v.dimensions;
+    if (v.capsule) out.capsule = v.capsule;
+    if (v.background) out.background = v.background;
+    if (v.blocks !== undefined && v.blocks !== '') out.blocks = v.blocks;
+    // Convert dominant nodule size (cm on benign form) to greatest dimension (mm) when numeric.
+    const cm = num(String(v.noduleSize || '').split(/[xX×]/)[0]);
+    if (cm !== null) out.tumourSizeMm = String(Math.round(cm * 10));
+
+    const add = [];
+    if (v.thyroiditis && v.thyroiditis !== 'Absent') {
+      add.push('Thyroiditis');
+      out.thyroiditisType = v.thyroiditis === 'Diffuse with germinal centres' ? 'chronic lymphocytic thyroiditis' : 'focal lymphocytic thyroiditis';
+    }
+    if (v.parathyroid && v.parathyroid !== 'Not seen') {
+      add.push('Parathyroid gland(s) present');
+      out.parathyroidDetail = v.parathyroid === 'Normal' ? 'normal parathyroid gland' : 'parathyroid gland with nodular hyperplasia';
+    }
+    if (v.cCell === 'Present') add.push('C-cell hyperplasia');
+    if (add.length) out.additionalPathologic = add;
+    if ((v.additionalNotes || '').trim()) out.additionalNotes = v.additionalNotes.trim();
+    return out;
+  }
+};
+
+export default { specimenName, macro, blockKey, microscopy, diagnosis, UPGRADE_TO };

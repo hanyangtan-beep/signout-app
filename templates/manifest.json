@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 85,
+  "count": 86,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -6108,6 +6108,160 @@
       "generator": "ear_cholesteatoma",
       "generatorPath": "generators/ear_cholesteatoma.js",
       "schemaPath": "schemas/ear_cholesteatoma.json"
+    },
+    {
+      "id": "thyroid_carcinoma",
+      "name": "Thyroid carcinoma resection",
+      "shortName": "Thyroid · carcinoma resection",
+      "label": "Thyroid Ca",
+      "organ": "THYROID GLAND",
+      "system": "Endocrine",
+      "kind": "cancer resection",
+      "rank": 52,
+      "aliases": [
+        "thyroid cancer",
+        "papillary thyroid carcinoma",
+        "PTC",
+        "follicular thyroid carcinoma",
+        "FTC",
+        "oncocytic thyroid carcinoma",
+        "Hurthle cell carcinoma",
+        "medullary thyroid carcinoma",
+        "MTC",
+        "anaplastic thyroid carcinoma",
+        "ATC",
+        "poorly differentiated thyroid carcinoma",
+        "PDTC",
+        "differentiated high-grade thyroid carcinoma",
+        "DHGTC",
+        "total thyroidectomy carcinoma",
+        "hemithyroidectomy carcinoma"
+      ],
+      "match": {
+        "site": [
+          "thyroid",
+          "thyroid lobe",
+          "hemithyroid",
+          "isthmus",
+          "hemithyroidectomy",
+          "thyroidectomy"
+        ],
+        "procedure": [
+          "total thyroidectomy",
+          "hemithyroidectomy",
+          "lobectomy",
+          "isthmusectomy",
+          "completion thyroidectomy",
+          "thyroidectomy",
+          "resection"
+        ],
+        "clinical": [
+          "PTC",
+          "FTC",
+          "MTC",
+          "ATC",
+          "PDTC",
+          "DHGTC",
+          "papillary carcinoma",
+          "follicular carcinoma",
+          "medullary carcinoma",
+          "anaplastic carcinoma",
+          "oncocytic carcinoma",
+          "thyroid carcinoma",
+          "thyroid cancer",
+          "carcinoma",
+          "ca",
+          "cancer"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:FNA|FNAC|aspirat\\w*|cytolog\\w*|smear|parathyroid|frozen|FS|biopsy|trucut)\\b)[\\s\\S]*(?<![?]\\s?)(?<!\\b(?:query|suspected|suspicious\\s+(?:of|for)|r/o|rule\\s+out|exclude|excluding|possible|probable|no|not|negative\\s+for|without|nil|free\\s+of|no\\s+evidence\\s+of)\\s)\\b(?:PTC|FTC|MTC|ATC|PDTC|DHGTC|papillary\\s+(?:thyroid\\s+)?carcinoma|follicular\\s+(?:thyroid\\s+)?carcinoma|medullary\\s+(?:thyroid\\s+)?carcinoma|anaplastic\\s+(?:thyroid\\s+)?carcinoma|oncocytic\\s+(?:thyroid\\s+)?carcinoma|thyroid\\s+(?:carcinoma|cancer|ca\\b)|(?:carcinoma|cancer|ca)(?![-\\s]?\\d)\\s+(?:of\\s+(?:the\\s+)?)?thyroid)\\b",
+        "bias": 1,
+        "exclude": [
+          "FNA",
+          "FNAC",
+          "aspirate",
+          "cytology",
+          "smear",
+          "parathyroid",
+          "lymph node",
+          "lymph nodes",
+          "node",
+          "nodes",
+          "LN",
+          "neck dissection",
+          "frozen",
+          "FS",
+          "biopsy",
+          "core biopsy",
+          "trucut",
+          "NIFTP"
+        ],
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bcompletion\\s+thyroidectomy\\b",
+                "Completion thyroidectomy (reoperative)"
+              ],
+              [
+                "\\btotal\\s+thyroidectomy\\b",
+                "Total thyroidectomy"
+              ],
+              [
+                "\\bright\\s+(?:hemi-?thyroidectomy|lobectomy\\s+with\\s+isthmusectomy)\\b|\\bhemi-?thyroidectomy[,\\s]+right\\b",
+                "Right lobectomy with isthmusectomy (hemithyroidectomy)"
+              ],
+              [
+                "\\bleft\\s+(?:hemi-?thyroidectomy|lobectomy\\s+with\\s+isthmusectomy)\\b|\\bhemi-?thyroidectomy[,\\s]+left\\b",
+                "Left lobectomy with isthmusectomy (hemithyroidectomy)"
+              ],
+              [
+                "\\bright\\s+(?:thyroid\\s+)?lobectomy\\b",
+                "Right lobectomy"
+              ],
+              [
+                "\\bleft\\s+(?:thyroid\\s+)?lobectomy\\b",
+                "Left lobectomy"
+              ],
+              [
+                "\\bisthmusectomy\\b",
+                "Isthmusectomy"
+              ],
+              [
+                "\\bsubtotal\\s+thyroidectomy\\b|\\bnear[-\\s]?total\\s+thyroidectomy\\b",
+                "Total thyroidectomy"
+              ]
+            ]
+          },
+          {
+            "field": "tumourSite",
+            "from": "map",
+            "map": [
+              [
+                "\\bright\\s+(?:thyroid\\s+)?lobe\\b",
+                "Right lobe"
+              ],
+              [
+                "\\bleft\\s+(?:thyroid\\s+)?lobe\\b",
+                "Left lobe"
+              ],
+              [
+                "\\bisthmus\\b",
+                "Isthmus"
+              ],
+              [
+                "\\bpyramidal\\s+lobe\\b",
+                "Pyramidal lobe"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "thyroid_carcinoma",
+      "generatorPath": "generators/thyroid_carcinoma.js",
+      "schemaPath": "schemas/thyroid_carcinoma.json"
     },
     {
       "id": "hernia_sac",

@@ -109,8 +109,8 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   // The floor drops by one each time a QMH-stemmed placeholder ships (ampulla_carcinoma, Phase 22;
   // skin_scc, Phase 39; oropharynx_hpv_carcinoma into oral_carcinoma, Phase 42; hcc, Phase 51;
   // pituitary_net, Phase 75; vulval_carcinoma, Phase 77; ureter_renal_pelvis_carcinoma, Phase 83;
-  // soft_tissue_sarcoma, Phase 84; cervical_carcinoma, Phase 85 - deliberate).
-  assert.ok(planned.filter((t) => t.qmh).length >= 41);
+  // soft_tissue_sarcoma, Phase 84; cervical_carcinoma, Phase 85; thyroid_carcinoma, Phase 88 - deliberate).
+  assert.ok(planned.filter((t) => t.qmh).length >= 40);
   // Biomarkers holds one built template (the standalone HER2 ISH report, Phase 30) and placeholders.
   const biomarkers = top.find((g) => g.system === 'Biomarkers').items;
   assert.ok(biomarkers.every((t) => t.kind === 'biomarker'));

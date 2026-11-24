@@ -168,15 +168,6 @@
    "qmh": "HN-Mucosal Melanoma"
   },
   {
-   "id": "thyroid_carcinoma",
-   "name": "Thyroid carcinoma resection",
-   "label": "Thyroid Ca",
-   "system": "Endocrine",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "Endocrine-Thyroid"
-  },
-  {
    "id": "adrenal_cortical_carcinoma",
    "name": "Adrenal cortical carcinoma resection",
    "label": "Adrenal",

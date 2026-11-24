@@ -1,0 +1,90 @@
+{
+  "description": "right hemithyroidectomy for encapsulated angioinvasive follicular carcinoma, 35 mm, extensive angioinvasion, gross strap muscle extension, involved margin, no nodes, pT3b",
+  "templateId": "thyroid_carcinoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "specimenName": "",
+      "procedure": "Right lobectomy with isthmusectomy (hemithyroidectomy)",
+      "procedureOther": "",
+      "tumourSite": [
+        "Right lobe"
+      ],
+      "tumourSiteOther": "",
+      "tumourFocality": "Unifocal",
+      "tumourFociCount": "",
+      "tumourSizeMm": "35",
+      "tumourDims": "35 x 28 x 22",
+      "sizeAtLeast": false,
+      "sizeReason": "",
+      "weight": "28",
+      "specimenDims": "right lobe 5 x 3 x 2 cm, left lobe 4.5 x 2.5 x 2 cm, isthmus 2 x 1.5 x 0.8 cm",
+      "capsule": "Intact",
+      "lesionAppearance": "Firm, pale white infiltrative mass",
+      "background": "Unremarkable",
+      "blocks": "10",
+      "blockKeyText": "1-5 Right lobe tumour with capsule and posterior margin\n6 Isthmus\n7-8 Left lobe\n9-10 Central compartment lymph nodes",
+      "histType": "Encapsulated angioinvasive follicular carcinoma",
+      "histTypeOther": "",
+      "mitoticCount": "Less than 3 mitoses per 2 mm²",
+      "mitoticExact": "1",
+      "ki67": "",
+      "mtcGrade": "",
+      "necrosis": "Not identified",
+      "necrosisDetail": "",
+      "angioinvasion": "Extensive (>= 4 vessels)",
+      "lymphaticInvasion": "Not identified",
+      "pni": "Not identified",
+      "ete": "Gross, invading only strap muscles",
+      "ihcOther": "",
+      "histologyNotes": "",
+      "marginStatus": "Involved by carcinoma",
+      "marginSite": "anterior strap muscle interface",
+      "marginMm": "",
+      "centralExamined": "",
+      "centralInvolved": "",
+      "centralSites": "",
+      "lateralExamined": "",
+      "lateralInvolved": "",
+      "lateralSites": "",
+      "otherNodesExamined": "",
+      "otherNodesInvolved": "",
+      "otherNodesSites": "",
+      "ene": "",
+      "largestDepositMm": "",
+      "largestDepositSite": "",
+      "largestNodeMm": "",
+      "largestNodeSite": "",
+      "distantMets": [],
+      "distantMetsOther": "",
+      "additionalPathologic": [
+        "None identified"
+      ],
+      "thyroiditisType": "",
+      "parathyroidDetail": "",
+      "cCellDetail": "",
+      "additionalFindingsOther": "",
+      "additionalNotes": "",
+      "braf": "Not performed",
+      "molecularOther": "",
+      "patientAgeGroup": "55 years or older",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "postTherapy": false,
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Thyroid, right lobe and isthmus, hemithyroidectomy\n\nReceived in formalin is a right hemithyroidectomy specimen weighing 28 g and measuring right lobe 5 x 3 x 2 cm, left lobe 4.5 x 2.5 x 2 cm, isthmus 2 x 1.5 x 0.8 cm. The thyroid capsule is intact. Sectioning shows a firm, pale white infiltrative mass in the right lobe measuring 35 x 28 x 22 mm. The background parenchyma is unremarkable. Representative sections are taken in 10 blocks.\n\n(1-5) Right lobe tumour with capsule and posterior margin.\n(6) Isthmus.\n(7-8) Left lobe.\n(9-10) Central compartment lymph nodes.\n\nSpecimen and tumour\n- Procedure: Right lobectomy with isthmusectomy (hemithyroidectomy)\n- Tumour site: Right lobe\n- Tumour focality: Unifocal\n- Tumour size: 35 mm (greatest dimension)\n  - All dimensions: 35 x 28 x 22 mm\n\nMicroscopic findings\n- Histologic type: Encapsulated angioinvasive follicular carcinoma\n- Mitotic count (per 2 mm2): Less than 3 mitoses per 2 mm2 (1 per 2 mm2)\n- Tumour necrosis: Not identified\n- Angioinvasion: Extensive (>= 4 vessels)\n- Lymphatic invasion: Not identified\n- Perineural invasion: Not identified\n- Extrathyroidal extension: Gross, invading only strap muscles\n- Tumour histology:\n  Sections of the thyroid show encapsulated angioinvasive follicular carcinoma in the right lobe. A follicular-patterned neoplasm lacking papillary-like nuclear features shows capsular and/or vascular invasion.\n\nMargins\n- Surgical margins: Involved by carcinoma (anterior strap muscle interface)\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT3b\n\nAdditional findings\n- Additional pathologic findings: None identified\n\nTHYROID, right lobe and isthmus, hemithyroidectomy:\n- ENCAPSULATED ANGIOINVASIVE FOLLICULAR CARCINOMA, 35 mm\n- gross extrathyroidal extension into strap muscles\n- Surgical margin involved by carcinoma (anterior strap muscle interface)\n- pT3b (AJCC 8th edition).",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (Differentiated, reference, not reported): II (if cM0)",
+      "part": "A"
+    }
+  ]
+}

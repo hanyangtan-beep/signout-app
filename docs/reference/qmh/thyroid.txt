@@ -1,0 +1,469 @@
+Thyroid cancers
+function updateDescription (frm)
+{
+var Template = "";
+/*
+if (frm.A01.value !== ""){
+Template += "- Procedure: " + "\n" + frm.A01.value + "\n";
+}
+if (frm.A02.value !== ""){
+Template += "- Tumor focality: " + "\n" + frm.A02.value + "\n";
+}
+if (document.getElementById("A03").checked ||
+document.getElementById("A04").checked || document.getElementById("A05").checked ||
+document.getElementById("A06").checked || document.getElementById("A07").checked){
+Template += "- Tumor site: " + "\n";
+}
+if (document.getElementById("A03").checked){
+Template += frm.A03.value + "\n";
+}
+if (document.getElementById("A04").checked){
+Template += frm.A04.value + "\n";
+}
+if (document.getElementById("A05").checked){
+Template += frm.A05.value + "\n";
+}
+if (document.getElementById("A06").checked){
+Template += frm.A06.value + "\n";
+}
+if (document.getElementById("A07").checked){
+Template += frm.A07.value + "\n";
+}
+if (frm.A08.value !== ""){
+Template += "- Tumor size: " + "\n" + frm.A08.value + "\n";
+}
+*/
+if (frm.A09.value !== ""){
+Template += "- Tumor histology and immunohistochemical studies: " + "\n" + "  - " + frm.A09.value + "\n";
+}
+if (frm.A10.value !== ""){
+Template += "\n" + "- Histologic type: " + frm.A10.value + "\n";
+}
+if (frm.A11.value !== ""){
+Template += "\n" + "- Histologic type: " + frm.A11.value + "\n";
+}
+if (frm.A12.value !== ""){
+Template += "\n" + "- Histologic type: " + frm.A12.value + "\n";
+}
+if (frm.A53.value !== ""){
+Template += "\n" + "- Histologic type: " + frm.A53.value + "\n";
+}
+if (frm.A54.value !== ""){
+Template += "\n" + "- Histologic type: " + frm.A54.value + "\n";
+}
+if (frm.A55.value !== ""){
+Template += "\n" + "- Histologic type: " + frm.A55.value + "\n";
+}
+if (frm.A56.value !== ""){
+Template += "\n" + "- Histologic type: " + frm.A56.value + "\n";
+}
+if (frm.A57.value !== ""){
+Template += "\n" + "- Histologic type: " + frm.A57.value + "\n";
+}
+if (frm.A58.value !== ""){
+Template += "\n" + "- Histologic type: " + frm.A58.value + "\n";
+}
+if (frm.A13.value !== ""){
+Template += "- Mitotic count (per 2 mm2): " + "\n" + frm.A13.value + "\n";
+}
+if (frm.A59.value !== ""){
+Template += "- Ki67 labeling index: " + frm.A59.value + "\n";
+}
+if (frm.A02.value !== ""){
+Template += "- Tumor focality: " + "\n" + frm.A02.value + "\n";
+}
+if (frm.A08.value !== ""){
+Template += "- Tumor size: " + "\n" + frm.A08.value + "\n";
+}
+if (frm.A60.value !== ""){
+Template += "- Tumor necrosis: " + "\n" + frm.A60.value + "\n";
+}
+if (frm.A14.value !== ""){
+Template += "- Angionvasion: "  + frm.A14.value + "\n";
+}
+if (frm.A15.value !== ""){
+Template += "- Lymphatic invasion: " + frm.A15.value + "\n";
+}
+if (frm.A16.value !== ""){
+Template += "- Perineural invasion: " + frm.A16.value + "\n";
+}
+if (frm.A17.value !== ""){
+Template += "- Extrathyroidal extension: " + frm.A17.value + "\n";
+}
+if (frm.A18.value !== ""){
+Template += "\n" + "- Surgical margins: "  + frm.A18.value + "\n" ;
+}
+if (frm.A19.value + frm.A20.value + frm.A21.value + frm.A22.value + frm.A23.value +
+frm.A24.value + frm.A25.value + frm.A26.value + frm.A21A.value + frm.A22A.value +
+frm.A23A.value + frm.A24A.value + frm.A25A.value+ frm.A27.value + frm.A28.value + frm.A29.value
+!== "0 out of total of ...0 out of total of ...0 out of total of ...0 out of total of ...0 out of total of ...0 out of total of ...0 out of total of ...0 out of total of ...0 out of total of ...0 out of total of ...0 out of total of ...0 out of total of ...0 out of total of ..."){
+Template += "\n" + "- Lymph nodes examination: " + "\n";
+}
+if (frm.A19.value !== "0 out of total of ..."){
+Template += "  - Number of regional lymph nodes involved at level VI: " + frm.A19.value + "\n";
+}
+if (frm.A20.value !== "0 out of total of ..."){
+Template += "  - Number of regional lymph nodes involved at level VII: " + frm.A20.value + "\n";
+}
+if (frm.A21.value !== "0 out of total of ..."){
+Template += "  - Number of regional lymph nodes involved at Right level I: " + frm.A21.value + "\n";
+}
+if (frm.A22.value !== "0 out of total of ..."){
+Template += "  - Number of regional lymph nodes involved at Right level II: " + frm.A22.value + "\n";
+}
+if (frm.A23.value !== "0 out of total of ..."){
+Template += "  - Number of regional lymph nodes involved at Right level III: " + frm.A23.value + "\n";
+}
+if (frm.A24.value !== "0 out of total of ..."){
+Template += "  - Number of regional lymph nodes involved at Right level IV: " + frm.A24.value + "\n";
+}
+if (frm.A25.value !== "0 out of total of ..."){
+Template += "  - Number of regional lymph nodes involved at Right level V: " + frm.A25.value + "\n";
+}
+if (frm.A21A.value !== "0 out of total of ..."){
+Template += "  - Number of regional lymph nodes involved at Left level I: " + frm.A21A.value + "\n";
+}
+if (frm.A22A.value !== "0 out of total of ..."){
+Template += "  - Number of regional lymph nodes involved at Left level II: " + frm.A22A.value + "\n";
+}
+if (frm.A23A.value !== "0 out of total of ..."){
+Template += "  - Number of regional lymph nodes involved at Left level III: " + frm.A23A.value + "\n";
+}
+if (frm.A24A.value !== "0 out of total of ..."){
+Template += "  - Number of regional lymph nodes involved at Left level IV: " + frm.A24A.value + "\n";
+}
+if (frm.A25A.value !== "0 out of total of ..."){
+Template += "  - Number of regional lymph nodes involved at Left level V: " + frm.A25A.value + "\n";
+}
+if (frm.A26.value !== "0 out of total of ..."){
+Template += "  - Number of lymph nodes involved, specify group: " + frm.A26.value + "\n";
+}
+if (frm.A27.value !== ""){
+Template += "  - Extranodal extension (ENE) : " + frm.A27.value + "\n";
+}
+if (frm.A28.value !== ""){
+Template += "  - Size of largest metastatic deposit (mm), specify site: " + frm.A28.value + "\n";
+}
+if (frm.A29.value !== ""){
+Template += "  - Size of largest lymph node involved (mm), specify site: " + frm.A29.value + "\n";
+}
+if (document.getElementById("A46").checked || document.getElementById("A47").checked ||
+document.getElementById("A48").checked || document.getElementById("A49").checked ||
+document.getElementById("A50").checked || document.getElementById("A51").checked ||
+document.getElementById("A52").checked ){
+Template += "\n" + "- Distant metastasis:" + "\n";
+}
+if (document.getElementById("A46").checked){
+Template += frm.A46.value + "\n";
+}
+if (document.getElementById("A47").checked){
+Template += frm.A47.value + "\n";
+}
+if (document.getElementById("A48").checked){
+Template += frm.A48.value + "\n";
+}
+if (document.getElementById("A49").checked){
+Template += frm.A49.value + "\n";
+}
+if (document.getElementById("A50").checked){
+Template += frm.A50.value + "\n";
+}
+if (document.getElementById("A51").checked){
+Template += frm.A51.value + "\n";
+}
+if (document.getElementById("A52").checked){
+Template += frm.A52.value + "\n";
+}
+if (document.getElementById("A30").checked || document.getElementById("A31").checked ||
+document.getElementById("A32").checked || frm.A33.value + frm.A34.value + frm.A35.value +
+frm.A36.value !== ""){
+Template += "\n" + "- Pathologic stage classification (pTNM, AJCC 8th edition):" + "\n";
+}
+if (document.getElementById("A30").checked || document.getElementById("A31").checked ||
+document.getElementById("A32").checked){
+Template += "  - TNM Descriptors:" + "\n";
+}
+if (document.getElementById("A30").checked){
+Template += "    " + frm.A30.value + "\n";
+}
+if (document.getElementById("A31").checked){
+Template += "    " + frm.A31.value + "\n";
+}
+if (document.getElementById("A32").checked){
+Template += "    " +frm.A32.value + "\n";
+}
+if (frm.A33.value !== ""){
+Template += "  - Primary tumor (pT): " + "\n" + "  " + frm.A33.value + "\n";
+}
+if (frm.A34.value !== ""){
+Template += "  - Primary tumor (pT): " + "\n" + "  " + frm.A34.value + "\n";
+}
+if (frm.A35.value !== ""){
+Template += "  - Regional lymph nodes (pN): " + "\n"  + "  " + frm.A35.value + "\n";
+}
+if (frm.A36.value !== ""){
+Template += "  - Distant metastasis (pM): " + "\n" +  "  " + frm.A36.value + "\n";
+}
+/**
+if (frm.A37.value !== ""){
+Template += "    - Specify site(s): " + frm.A37.value + "\n";
+}
+**/
+if (document.getElementById("A38").checked || document.getElementById("A39").checked ||
+document.getElementById("A40").checked ||  document.getElementById("A41").checked ||
+document.getElementById("A42").checked ||  document.getElementById("A43").checked ||
+frm.A44.value !==""){
+Template += "\n" + "- Additional pathologic findings: " + "\n";
+}
+if (document.getElementById("A38").checked){
+Template += frm.A38.value + "\n";
+}
+if (document.getElementById("A39").checked){
+Template += frm.A39.value + "\n";
+}
+if (document.getElementById("A40").checked){
+Template += frm.A40.value + "\n";
+}
+if (document.getElementById("A41").checked){
+Template += frm.A41.value + "\n";
+}
+if (document.getElementById("A42").checked){
+Template += frm.A42.value + "\n";
+}
+if (document.getElementById("A43").checked){
+Template += frm.A43.value + "\n";
+}
+if (frm.A44.value !== ""){
+Template += "  - Others (specify): " +  frm.A44.value + "\n";
+}
+if (frm.A45.value !== ""){
+Template += "\n" + "- Additional notes: " + "\n" + "  - " +  frm.A45.value + "\n";
+}
+frm.holdtext.value = Template;
+}
+function CopyToClipboard() {
+/* Get the text field */
+var copyText = document.getElementById("holdtext");
+/* Select the text field */
+copyText.select();
+/* Copy the text inside the text field */
+document.execCommand("copy");
+/* Alert the copied text */
+alert("Report copied to clipboard");
+}
+table, th, td {
+border: 1px solid silver;
+border-collapse: collapse;
+padding: 4px;
+}
+Carcinoma of the thyroid
+click to access explanations in the original CAP template
+Microscopic descriptions:
+- Tumor histology and immunohistochemical studies:
+- Low-risk follicular cell-derived thyroid neoplasms:
+Thyroid follicular tumor of uncertain malignant potential
+Thyroid well-differentiated tumor of uncertain malignant potential
+Hyalinizing trabecular tumor
+Non-invasive follicular thyroid neoplasm with papillary like nuclear features (NIFTP)
+Other low-risk follicular cell-derived thyroid neoplasm (specify):
+- Follicular carcinoma:
+Minimally invasive follicular carcinoma
+Encapsulated angioinvasive follicular carcinoma
+Widely invasive follicular carcinoma
+Other follicular carcinoma (specify):
+- Invasive encapsulated follicular variant papillary thyroid carcinoma:
+Minimally invasive follicular variant papillary carcinoma
+Minimally invasive oncocytic follicular variant papillary carcinoma
+Encapsulated angioinvasive follicular variant papillary carcinoma
+Encapsulated angioinvasive oncocytic follicular variant papillary carcinoma
+Minimally invasive follicular variant papillary carcinoma
+Widely invasive follicular variant papillary carcinoma
+Other invasive encapsulated follicular variant papillary thyroid carcinoma (specify):
+- Papillary carcinoma:
+Papillary carcinoma, classic subtype
+Papillary carcinoma, encapsulated classic subtype
+Papillary carcinoma, oncocytic classic subtype
+Papillary carcinoma, infiltrative follicular subtype
+Papillary carcinoma, tall cell variant
+Papillary carcinoma, hobnail subtype
+Papillary carcinoma, columnar cell subtype
+Papillary carcinoma, clear cell subtype
+Papillary carcinoma, spindle cell subtype
+Papillary carcinoma, solid subtype
+Papillary carcinoma, diffuse sclerosing subtype
+Papillary carcinoma with fibromatosis / fasciitis-like / desmoid type stroma
+Papillary carcinoma, Warthin-like subtype
+Papillary carcinoma, other subtype (specify):
+- Oncocytic carcinoma of the thyroid:
+Minimally invasive oncocytic carcinoma
+Encapsulated angioinvasive oncocytic carcinoma
+Widely invasive oncocytic carcinoma
+Oncocytic carcinoma, other (specify):
+- High-grade follicular cell-derived differentiated thyroid carcinoma:
+High-grade follicular thyroid carcinoma (specify subtype):
+High-grade invasive encapsulated follicular variant papillary thyroid carcinoma (specify subtype):
+High-grade papillary thyroid carcinoma (specify subtype):
+High-grade oncocytic carcinoma of the thyroid (specify subtype):
+High-grade differentiated thyroid carcinoma, NOS
+- Poorly differentiated thyroid carcinoma:
+Poorly differentiated thyroid carcinoma, NOS
+Oncocytic poorly differentiated thyroid carcinoma
+Poorly differentiated thyroid carcinoma, other (specify):
+- Anaplastic follicular cell-derived thyroid carcinoma:
+Anaplastic thyroid carcinoma, NOS
+Anaplastic thyroid carcinoma, focal or minor component without extrathyroidal extension
+Anaplastic thyroid carcinoma, major component
+Other anaplastic follicular cell-derived thyroid carcinoma (specify):
+- Other carcinomas:
+Medullary thyroid carcinoma
+Other medullary thyroid carcinoma (specify):
+Mixed medullary carcinoma and follicular thyroid carcinoma (specify):
+Mixed medullary carcinoma and follicular variant papillary carcinoma (specify):
+Mixed medullary carcinoma and papillary thyroid carcinoma (specify):
+Other mixed medullary and follicular cell-derived thyroid carcinoma (specify):
+Mucoepidermoid carcinoma of the thyroid gland
+Secretory carcinoma of salivary gland type
+Other salivary gland-type carcinoma of the thyroid (specify):
+Thymoma family (specify, if possible):
+Thymic carcinoma family (specify, if possible):
+Spindle epithelial tumor with thymus-like elements (SETTLE)
+Other thymic neoplasm within the thyroid (specify):
+Cribriform-morular thyroid carcinoma
+Sclerosing mucoepidermoid carcinoma with eosinophilia (SMECE)
+Other thyroid neoplasm of uncertain cytogenesis (specify):
+Embryonal thyroid neoplasm, thyroblastoma
+Other histologic type not listed (specify):
+Malignant thyroid neoplasm, type cannot be determined:
+- Mitotic count (per 2 mm2):
+Less than 3 mitoses per 2mm2
+Greater than or equal to 3 but less than 5 mitoses per 2 mm2
+Greater than or equal to 5 mitoses per 2 mm2
+Cannot be determined (explain):
+- Ki67 Labeing index:
+- Tumor focality:
+Unifocal
+Multifocal
+Cannot be determined (explain):
+- Tumor size:
+Greatest dimension (mm):
+All dimensions (mm x mm x mm):
+Cannot be determined (explain):
+- Tumor necrosis:
+Not identified
+Present, specify:
+Cannot be determined (explain):
+- Angionvasion:
+Not identified
+Focal (< 4 vessels)
+Extensive (= or > 4 vessels)
+Cannot be determined
+- Lymphatic invasion:
+Not identified
+Present
+Cannot be determined
++ Perineural invasion:
+Not identified
+Present
+Cannot be determined
+- Extrathyroidal extension:
+Not identified
+Invading only strap muscles
+Invading subcutaneous soft tissues, larynx, trachea, esophagus or recurrent laryngeal nerve
+Invading prevertebral fascia or encasing the carotid artery or mediastinal vessels
+Cannot be determined
+Using 22 mm eyepiece at x40 objective, counting 42 fields = 10 mm2
+Divide by 5 to get hot spot mitotic count of 2 mm2
+The Ki-67 proliferation index reporting is required in all medullary thyroid carcinomas as well as in the medullary thyroid carcinoma component of mixed medullary and follicular cell-derived thyroid carcinomas. The Ki-67 proliferation assessment should follow the IARC / WHO guidelines. Visual estimation based on routine microscopic examination (also known as eyeballing) is not allowed.
+Surgical margins of excision specimen:
+- Surgical margin:
+Cannot be assessed
+Involved by carcinoma, specify:
+Uninvolved by carcinoma, specify location and distance (mm):
+Lymph nodes examination:
+- Number of regional lymph nodes involved at level VI
+(pretracheal, paratracheal and prelaryngeal/Delphian,
+perithyroidal (central compartment dissection):
+- Number of regional lymph nodes involved at level VII
+(superior mediastinal lymph nodes):
+- Number of regional lymph nodes involved at Right level I:
+- Number of regional lymph nodes involved at Right level II:
+- Number of regional lymph nodes involved at Right level III:
+- Number of regional lymph nodes involved at Right level IV:
+- Number of regional lymph nodes involved at Right level V:
+- Number of regional lymph nodes involved at Left level I:
+- Number of regional lymph nodes involved at Left level II:
+- Number of regional lymph nodes involved at Left level III:
+- Number of regional lymph nodes involved at Left level IV:
+- Number of regional lymph nodes involved at Left level V:
+- Number of regional lymph nodes involved, specify group:
+- Extranodal extension:
+Not identified
+Present
+Cannot be determined
+- Size of largest metastatic deposit (mm), specify site:
+- Size of largest lymph node involved (mm), specify site:
+Distant Metastasis:
+Not applicable
+Not identified
+Non-regional lymph node(s) (specify):
+Lung (specify):
+Bone (specify):
+Other (specify):
+Cannot be determined:
+Pathologic Stage Classification (AJCC 8e):
+- TNM Descriptors:
+m (multiple primary tumors)
+r (recurrent)
+y (post treatment)
+- Primary tumor (pT) for all carcinoma, except MTC:
+pT not assigned (cannot be determined based on available pathological information)
+pT0: No evidence of primary tumor
+pT1 (subcategory cannot be determined)
+pT1a: Tumor < or = 1 cm, limited to the thyroid
+pT1b: Tumor > 1 cm but < or = 2 cm, limited to the thyroid
+pT2: Tumor > 2 cm, but < or = 4 cm, limited to thyroid
+pT3 (subcategory cannot be determined)
+pT3a: Tumor > 4 cm limited to the thyroid
+pT3b: Gross extrathyroidal extension invading only strap muscles (sternohyoid, sternothyroid, thyrohyoid, or omohyoid muscles) from a tumor of any size
+pT4 (subcategory cannot be determined)
+pT4a: Gross extrathyroidal extension invading subcutaneous soft tissues, larynx, trachea, esophagus, or recurrent laryngeal nerve from a tumor of any size
+pT4b: Gross extrathyroidal extension invading prevertebral fascia or encasing the carotid artery or mediastinal vessels from a tumor of any size
+- Primary tumor (pT) for medullary thyroid carcinoma:
+pT not assigned (cannot be determined based on available pathological information)
+pT0: No evidence of primary tumor
+pT1 (subcategory cannot be determined)
+pT1a: Tumor < or = 1 cm, limited to the thyroid
+pT1b: Tumor > 1 cm but < or = 2 cm, limited to the thyroid
+pT2: Tumor > 2 cm, but < or = 4 cm, limited to thyroid
+pT3 (subcategory cannot be determined)
+pT3a: Tumor > 4 cm limited to the thyroid
+pT3b: Gross extrathyroidal extension invading only strap muscles (sternohyoid, sternothyroid, thyrohyoid, or omohyoid muscles) from a tumor of any size
+pT4 (subcategory cannot be determined)
+pT4a: Moderately advanced disease; tumor of any size with gross extrathyroidal extension into the nearby tissues of the neck, including subcutaneous soft tissue, larynx, trachea, esophagus, or recurrent laryngeal nerve
+pT4b: Very advanced disease; tumor of any size with extension toward the spine or into nearby large blood vessels, gross extrathyroidal extension invading the prevertebral fascia, or encasing the carotid artery or mediastinal vessels
+- Regional lymph nodes (pN):
+pN not assigned (no nodes submitted or found)
+pN not assigned (cannot be determined based on available pathological information)
+pN0: No regional lymph node metastasis
+pN0a: One or more cytologically or histologically confirmed benign lymph nodes
+pN1: Metastasis to regional nodes
+pN1a: Metastasis to level VI or VII (pretracheal, paratracheal, or prelaryngeal/Delphian, or upper mediastinal) lymph nodes. This can be unilateral or bilateral disease
+pN1b: Metastasis to unilateral, bilateral, or contralateral lateral neck lymph nodes (levels I, II, III, IV, or V) or retropharyngeal lymph nodes
+- Distant metastasis (pM):
+Not applicable - pM cannot be determined from the submitted specimen(s)
+pM1: Distant metastasis
++ Additional pathologic findings:
+Adenoma
+Adenomatoid nodule(s) or nodular follicular disease
+Diffuse hyperplasia (Graves’ disease)
+Thyroiditis (specify type):
+Parathyroid gland(s) present (specify number, location, and findings):
+C-cell hyperplasia (specify type and focality
+- Other (specify):
+- Additional notes:
+Copy text to Clipboard
+Last upated on 25-Mar-2023,
+based on US CAP cancer protocol templates.
+Thyroid 4.4.0.0 (Mar 2023),
+html form was created on pForm, W3 School, StackOverflow, and Icons8.
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.

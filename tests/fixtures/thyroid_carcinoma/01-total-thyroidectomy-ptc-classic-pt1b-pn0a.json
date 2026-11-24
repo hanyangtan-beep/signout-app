@@ -1,0 +1,90 @@
+{
+  "description": "total thyroidectomy for classic papillary thyroid carcinoma, 18 mm, margins clear, 6 negative level VI lymph nodes, pT1b pN0a (example)",
+  "templateId": "thyroid_carcinoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "specimenName": "",
+      "procedure": "Total thyroidectomy",
+      "procedureOther": "",
+      "tumourSite": [
+        "Right lobe"
+      ],
+      "tumourSiteOther": "",
+      "tumourFocality": "Unifocal",
+      "tumourFociCount": "",
+      "tumourSizeMm": "18",
+      "tumourDims": "18 x 15 x 12",
+      "sizeAtLeast": false,
+      "sizeReason": "",
+      "weight": "28",
+      "specimenDims": "right lobe 5 x 3 x 2 cm, left lobe 4.5 x 2.5 x 2 cm, isthmus 2 x 1.5 x 0.8 cm",
+      "capsule": "Intact",
+      "lesionAppearance": "Firm, pale white infiltrative mass",
+      "background": "Unremarkable",
+      "blocks": "10",
+      "blockKeyText": "1-5 Right lobe tumour with capsule and posterior margin\n6 Isthmus\n7-8 Left lobe\n9-10 Central compartment lymph nodes",
+      "histType": "Papillary carcinoma, classic subtype",
+      "histTypeOther": "",
+      "mitoticCount": "Less than 3 mitoses per 2 mm²",
+      "mitoticExact": "1",
+      "ki67": "",
+      "mtcGrade": "",
+      "necrosis": "Not identified",
+      "necrosisDetail": "",
+      "angioinvasion": "Not identified",
+      "lymphaticInvasion": "Not identified",
+      "pni": "Not identified",
+      "ete": "Not identified",
+      "ihcOther": "",
+      "histologyNotes": "",
+      "marginStatus": "Uninvolved by carcinoma",
+      "marginSite": "posterior inked surface",
+      "marginMm": "1.5",
+      "centralExamined": "6",
+      "centralInvolved": "0",
+      "centralSites": "level VI",
+      "lateralExamined": "",
+      "lateralInvolved": "",
+      "lateralSites": "",
+      "otherNodesExamined": "",
+      "otherNodesInvolved": "",
+      "otherNodesSites": "",
+      "ene": "",
+      "largestDepositMm": "",
+      "largestDepositSite": "",
+      "largestNodeMm": "",
+      "largestNodeSite": "",
+      "distantMets": [],
+      "distantMetsOther": "",
+      "additionalPathologic": [
+        "Thyroiditis"
+      ],
+      "thyroiditisType": "chronic lymphocytic thyroiditis",
+      "parathyroidDetail": "",
+      "cCellDetail": "",
+      "additionalFindingsOther": "",
+      "additionalNotes": "",
+      "braf": "Not performed",
+      "molecularOther": "",
+      "patientAgeGroup": "55 years or older",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "postTherapy": false,
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Thyroid, total thyroidectomy\n\nReceived in formalin is a total thyroidectomy specimen weighing 28 g and measuring right lobe 5 x 3 x 2 cm, left lobe 4.5 x 2.5 x 2 cm, isthmus 2 x 1.5 x 0.8 cm. The thyroid capsule is intact. Sectioning shows a firm, pale white infiltrative mass in the right lobe measuring 18 x 15 x 12 mm. The background parenchyma is unremarkable. Representative sections are taken in 10 blocks.\n\n(1-5) Right lobe tumour with capsule and posterior margin.\n(6) Isthmus.\n(7-8) Left lobe.\n(9-10) Central compartment lymph nodes.\n\nSpecimen and tumour\n- Procedure: Total thyroidectomy\n- Tumour site: Right lobe\n- Tumour focality: Unifocal\n- Tumour size: 18 mm (greatest dimension)\n  - All dimensions: 18 x 15 x 12 mm\n\nMicroscopic findings\n- Histologic type: Papillary carcinoma, classic subtype\n- Mitotic count (per 2 mm2): Less than 3 mitoses per 2 mm2 (1 per 2 mm2)\n- Tumour necrosis: Not identified\n- Angioinvasion: Not identified\n- Lymphatic invasion: Not identified\n- Perineural invasion: Not identified\n- Extrathyroidal extension: Not identified\n- Tumour histology:\n  Sections of the thyroid show papillary carcinoma, classic subtype in the right lobe. Complex branching papillae with fibrovascular cores are lined by follicular cells with enlarged, elongated, overlapping optically clear nuclei, nuclear grooves and intranuclear pseudoinclusions.\n\nMargins\n- Surgical margins: Uninvolved by carcinoma (posterior inked surface, 1.5 mm)\n\nLymph nodes\n- Central compartment (level VI / VII): 0 of 6 involved (level VI)\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT1b pN0a\n\nAdditional findings\n- Additional pathologic findings: Thyroiditis (chronic lymphocytic thyroiditis)\n\nTHYROID, total thyroidectomy:\n- PAPILLARY CARCINOMA, classic subtype, 18 mm\n- Margins clear\n- 0 of 6 central compartment lymph nodes involved\n- pT1b pN0a (AJCC 8th edition).",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (Differentiated, reference, not reported): I (if cM0)",
+      "part": "A"
+    }
+  ]
+}

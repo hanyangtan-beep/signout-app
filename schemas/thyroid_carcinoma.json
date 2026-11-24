@@ -1,0 +1,1130 @@
+{
+ "id": "thyroid_carcinoma",
+ "version": "2026.11",
+ "name": "Thyroid carcinoma resection",
+ "shortName": "Thyroid · carcinoma resection",
+ "label": "Thyroid Ca",
+ "organ": "THYROID GLAND",
+ "system": "Endocrine",
+ "kind": "cancer resection",
+ "rank": 52,
+ "aliases": [
+  "thyroid cancer",
+  "papillary thyroid carcinoma",
+  "PTC",
+  "follicular thyroid carcinoma",
+  "FTC",
+  "oncocytic thyroid carcinoma",
+  "Hurthle cell carcinoma",
+  "medullary thyroid carcinoma",
+  "MTC",
+  "anaplastic thyroid carcinoma",
+  "ATC",
+  "poorly differentiated thyroid carcinoma",
+  "PDTC",
+  "differentiated high-grade thyroid carcinoma",
+  "DHGTC",
+  "total thyroidectomy carcinoma",
+  "hemithyroidectomy carcinoma"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "thyroid_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen and tumour",
+   "Macroscopy"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Endocrine-Thyroid (CAP Thyroid 4.4.0.0, March 2023; AJCC 8th edition), updated with WHO 5th edition (2022) thyroid tumour classification and IMTCGS grading",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Endocrine-Thyroid.html",
+  "capProtocol": "CAP Thyroid 4.4.0.0 (March 2023)",
+  "who": "WHO Classification of Endocrine and Neuroendocrine Tumours, 5th edition (2022)",
+  "staging": "pTNM derived by src/staging/thyroid.js on AJCC 8th edition (Chapters 73 & 74: Differentiated/Anaplastic and Medullary thyroid carcinoma); stage group shows in Checks only. Low-risk follicular cell-derived neoplasms are not staged.",
+  "savedPage": "docs/reference/Endocrine-Thyroid.html"
+ },
+ "match": {
+  "site": [
+   "thyroid",
+   "thyroid lobe",
+   "hemithyroid",
+   "isthmus",
+   "hemithyroidectomy",
+   "thyroidectomy"
+  ],
+  "procedure": [
+   "total thyroidectomy",
+   "hemithyroidectomy",
+   "lobectomy",
+   "isthmusectomy",
+   "completion thyroidectomy",
+   "thyroidectomy",
+   "resection"
+  ],
+  "clinical": [
+   "PTC",
+   "FTC",
+   "MTC",
+   "ATC",
+   "PDTC",
+   "DHGTC",
+   "papillary carcinoma",
+   "follicular carcinoma",
+   "medullary carcinoma",
+   "anaplastic carcinoma",
+   "oncocytic carcinoma",
+   "thyroid carcinoma",
+   "thyroid cancer",
+   "carcinoma",
+   "ca",
+   "cancer"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:FNA|FNAC|aspirat\\w*|cytolog\\w*|smear|parathyroid|frozen|FS|biopsy|trucut)\\b)[\\s\\S]*(?<![?]\\s?)(?<!\\b(?:query|suspected|suspicious\\s+(?:of|for)|r/o|rule\\s+out|exclude|excluding|possible|probable|no|not|negative\\s+for|without|nil|free\\s+of|no\\s+evidence\\s+of)\\s)\\b(?:PTC|FTC|MTC|ATC|PDTC|DHGTC|papillary\\s+(?:thyroid\\s+)?carcinoma|follicular\\s+(?:thyroid\\s+)?carcinoma|medullary\\s+(?:thyroid\\s+)?carcinoma|anaplastic\\s+(?:thyroid\\s+)?carcinoma|oncocytic\\s+(?:thyroid\\s+)?carcinoma|thyroid\\s+(?:carcinoma|cancer|ca\\b)|(?:carcinoma|cancer|ca)(?![-\\s]?\\d)\\s+(?:of\\s+(?:the\\s+)?)?thyroid)\\b",
+  "bias": 1,
+  "exclude": [
+   "FNA",
+   "FNAC",
+   "aspirate",
+   "cytology",
+   "smear",
+   "parathyroid",
+   "lymph node",
+   "lymph nodes",
+   "node",
+   "nodes",
+   "LN",
+   "neck dissection",
+   "frozen",
+   "FS",
+   "biopsy",
+   "core biopsy",
+   "trucut",
+   "NIFTP"
+  ],
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bcompletion\\s+thyroidectomy\\b",
+      "Completion thyroidectomy (reoperative)"
+     ],
+     [
+      "\\btotal\\s+thyroidectomy\\b",
+      "Total thyroidectomy"
+     ],
+     [
+      "\\bright\\s+(?:hemi-?thyroidectomy|lobectomy\\s+with\\s+isthmusectomy)\\b|\\bhemi-?thyroidectomy[,\\s]+right\\b",
+      "Right lobectomy with isthmusectomy (hemithyroidectomy)"
+     ],
+     [
+      "\\bleft\\s+(?:hemi-?thyroidectomy|lobectomy\\s+with\\s+isthmusectomy)\\b|\\bhemi-?thyroidectomy[,\\s]+left\\b",
+      "Left lobectomy with isthmusectomy (hemithyroidectomy)"
+     ],
+     [
+      "\\bright\\s+(?:thyroid\\s+)?lobectomy\\b",
+      "Right lobectomy"
+     ],
+     [
+      "\\bleft\\s+(?:thyroid\\s+)?lobectomy\\b",
+      "Left lobectomy"
+     ],
+     [
+      "\\bisthmusectomy\\b",
+      "Isthmusectomy"
+     ],
+     [
+      "\\bsubtotal\\s+thyroidectomy\\b|\\bnear[-\\s]?total\\s+thyroidectomy\\b",
+      "Total thyroidectomy"
+     ]
+    ]
+   },
+   {
+    "field": "tumourSite",
+    "from": "map",
+    "map": [
+     [
+      "\\bright\\s+(?:thyroid\\s+)?lobe\\b",
+      "Right lobe"
+     ],
+     [
+      "\\bleft\\s+(?:thyroid\\s+)?lobe\\b",
+      "Left lobe"
+     ],
+     [
+      "\\bisthmus\\b",
+      "Isthmus"
+     ],
+     [
+      "\\bpyramidal\\s+lobe\\b",
+      "Pyramidal lobe"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "weight": {
+   "concept": "weight",
+   "unit": "g"
+  },
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen (typed name, optional)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. Thyroid, total thyroidectomy",
+   "help": "Leave blank to name the specimen from the procedure."
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "",
+   "options": [
+    "Total thyroidectomy",
+    "Right lobectomy with isthmusectomy (hemithyroidectomy)",
+    "Left lobectomy with isthmusectomy (hemithyroidectomy)",
+    "Right lobectomy",
+    "Left lobectomy",
+    "Right lobe with partial left lobectomy (subtotal or near-total thyroidectomy)",
+    "Left lobe with partial right lobectomy (subtotal or near-total thyroidectomy)",
+    "Isthmusectomy",
+    "Completion thyroidectomy (reoperative)",
+    "Right partial excision",
+    "Left partial excision",
+    "Partial excision (specify)",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Procedure (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": [
+     "Partial excision (specify)",
+     "Other (specify)"
+    ]
+   }
+  },
+  {
+   "id": "tumourSite",
+   "label": "Tumour site",
+   "type": "multiselect",
+   "group": "Specimen and tumour",
+   "default": [],
+   "options": [
+    "Right lobe",
+    "Left lobe",
+    "Isthmus",
+    "Pyramidal lobe",
+    "Other (specify)",
+    "Not specified"
+   ],
+   "exclusive": [
+    "Not specified"
+   ]
+  },
+  {
+   "id": "tumourSiteOther",
+   "label": "Tumour site (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "tumourSite",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "tumourFocality",
+   "label": "Tumour focality",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "Unifocal",
+   "options": [
+    "Unifocal",
+    "Multifocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "tumourFociCount",
+   "label": "Number of tumour foci (optional)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. 2 (largest in right lobe)",
+   "showIf": {
+    "field": "tumourFocality",
+    "is": "Multifocal"
+   }
+  },
+  {
+   "id": "tumourSizeMm",
+   "label": "Tumour size, greatest dimension (mm)",
+   "type": "number",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "mm",
+   "help": "AJCC 8th boundaries: <= 10 mm pT1a, > 10 to 20 mm pT1b, > 20 to 40 mm pT2, > 40 mm pT3a."
+  },
+  {
+   "id": "tumourDims",
+   "label": "Tumour size, all dimensions (mm)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. 18 x 15 x 12"
+  },
+  {
+   "id": "sizeAtLeast",
+   "label": "Tumour size is a minimum (tumour reaches a margin or is fragmented)",
+   "type": "checkbox",
+   "group": "Specimen and tumour",
+   "default": false
+  },
+  {
+   "id": "sizeReason",
+   "label": "Tumour size cannot be determined (explain)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. fragmented specimen"
+  },
+  {
+   "id": "weight",
+   "label": "Weight (g)",
+   "type": "number",
+   "min": 0,
+   "step": 0.1,
+   "group": "Macroscopy",
+   "default": ""
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. right lobe 5 x 3 x 2 cm, left lobe 4.5 x 2.5 x 2 cm"
+  },
+  {
+   "id": "capsule",
+   "label": "Thyroid capsule",
+   "type": "select",
+   "group": "Macroscopy",
+   "default": "Intact",
+   "options": [
+    "Intact",
+    "Focally disrupted",
+    "Grossly breached by tumour"
+   ]
+  },
+  {
+   "id": "lesionAppearance",
+   "label": "Tumour macroscopic appearance",
+   "type": "select",
+   "group": "Macroscopy",
+   "default": "Firm, pale white infiltrative mass",
+   "options": [
+    "Firm, pale white infiltrative mass",
+    "Well-circumscribed solid tan nodule",
+    "Encapsulated fleshy nodule",
+    "Calcified or fibrotic mass",
+    "Cystic and solid mass",
+    "No discrete macroscopic lesion"
+   ]
+  },
+  {
+   "id": "background",
+   "label": "Background parenchyma",
+   "type": "select",
+   "group": "Macroscopy",
+   "default": "Unremarkable",
+   "options": [
+    "Unremarkable",
+    "Nodular",
+    "Pale, firm (thyroiditis)"
+   ]
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "min": 1,
+   "step": 1,
+   "group": "Macroscopy",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "type": "textarea",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "1-4 Right lobe tumour with capsule\n5 Isthmus\n6-7 Left lobe",
+   "help": "Printed after the macroscopy as typed."
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th edition)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Papillary carcinoma, classic subtype",
+    "Papillary carcinoma, encapsulated classic subtype",
+    "Papillary carcinoma, oncocytic classic subtype",
+    "Papillary carcinoma, infiltrative follicular subtype",
+    "Papillary carcinoma, tall cell subtype",
+    "Papillary carcinoma, hobnail subtype",
+    "Papillary carcinoma, columnar cell subtype",
+    "Papillary carcinoma, clear cell subtype",
+    "Papillary carcinoma, spindle cell subtype",
+    "Papillary carcinoma, solid subtype",
+    "Papillary carcinoma, diffuse sclerosing subtype",
+    "Papillary carcinoma with fibromatosis / fasciitis-like / desmoid-type stroma",
+    "Papillary carcinoma, Warthin-like subtype",
+    "Papillary carcinoma, other subtype (specify)",
+    "Minimally invasive follicular variant papillary carcinoma",
+    "Minimally invasive oncocytic follicular variant papillary carcinoma",
+    "Encapsulated angioinvasive follicular variant papillary carcinoma",
+    "Encapsulated angioinvasive oncocytic follicular variant papillary carcinoma",
+    "Widely invasive follicular variant papillary carcinoma",
+    "Other invasive encapsulated follicular variant papillary thyroid carcinoma (specify)",
+    "Minimally invasive follicular carcinoma",
+    "Encapsulated angioinvasive follicular carcinoma",
+    "Widely invasive follicular carcinoma",
+    "Other follicular carcinoma (specify)",
+    "Minimally invasive oncocytic carcinoma",
+    "Encapsulated angioinvasive oncocytic carcinoma",
+    "Widely invasive oncocytic carcinoma",
+    "Oncocytic carcinoma, other (specify)",
+    "High-grade follicular thyroid carcinoma (specify subtype)",
+    "High-grade invasive encapsulated follicular variant papillary thyroid carcinoma (specify subtype)",
+    "High-grade papillary thyroid carcinoma (specify subtype)",
+    "High-grade oncocytic carcinoma of the thyroid (specify subtype)",
+    "High-grade differentiated thyroid carcinoma, NOS",
+    "Poorly differentiated thyroid carcinoma, NOS",
+    "Oncocytic poorly differentiated thyroid carcinoma",
+    "Poorly differentiated thyroid carcinoma, other (specify)",
+    "Anaplastic thyroid carcinoma, NOS",
+    "Anaplastic thyroid carcinoma, squamous cell carcinoma pattern",
+    "Anaplastic thyroid carcinoma, focal or minor component without extrathyroidal extension",
+    "Anaplastic thyroid carcinoma, major component",
+    "Other anaplastic follicular cell-derived thyroid carcinoma (specify)",
+    "Medullary thyroid carcinoma",
+    "Other medullary thyroid carcinoma (specify)",
+    "Mixed medullary carcinoma and follicular thyroid carcinoma (specify)",
+    "Mixed medullary carcinoma and follicular variant papillary carcinoma (specify)",
+    "Mixed medullary carcinoma and papillary thyroid carcinoma (specify)",
+    "Other mixed medullary and follicular cell-derived thyroid carcinoma (specify)",
+    "Cribriform-morular thyroid carcinoma",
+    "Mucoepidermoid carcinoma of the thyroid gland",
+    "Secretory carcinoma of salivary gland type",
+    "Sclerosing mucoepidermoid carcinoma with eosinophilia (SMECE)",
+    "Intrathyroidal thymic carcinoma",
+    "Spindle epithelial tumour with thymus-like elements (SETTLE)",
+    "Embryonal thyroid neoplasm, thyroblastoma",
+    "Thyroid follicular tumour of uncertain malignant potential (FT-UMP)",
+    "Thyroid well-differentiated tumour of uncertain malignant potential (WDT-UMP)",
+    "Hyalinising trabecular tumour",
+    "Non-invasive follicular thyroid neoplasm with papillary-like nuclear features (NIFTP)",
+    "Other low-risk follicular cell-derived thyroid neoplasm (specify)",
+    "Other histologic type not listed (specify)",
+    "Malignant thyroid neoplasm, type cannot be determined"
+   ],
+   "help": "WHO 5th edition (2022) / CAP Thyroid 4.4.0.0. Subcentimetre papillary carcinomas are subtyped like larger tumours. Squamous cell carcinoma of the thyroid is classified under anaplastic thyroid carcinoma."
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Histologic type / subtype (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Papillary carcinoma, other subtype (specify)",
+     "Other invasive encapsulated follicular variant papillary thyroid carcinoma (specify)",
+     "Other follicular carcinoma (specify)",
+     "Oncocytic carcinoma, other (specify)",
+     "High-grade follicular thyroid carcinoma (specify subtype)",
+     "High-grade invasive encapsulated follicular variant papillary thyroid carcinoma (specify subtype)",
+     "High-grade papillary thyroid carcinoma (specify subtype)",
+     "High-grade oncocytic carcinoma of the thyroid (specify subtype)",
+     "Poorly differentiated thyroid carcinoma, other (specify)",
+     "Other anaplastic follicular cell-derived thyroid carcinoma (specify)",
+     "Other medullary thyroid carcinoma (specify)",
+     "Mixed medullary carcinoma and follicular thyroid carcinoma (specify)",
+     "Mixed medullary carcinoma and follicular variant papillary carcinoma (specify)",
+     "Mixed medullary carcinoma and papillary thyroid carcinoma (specify)",
+     "Other mixed medullary and follicular cell-derived thyroid carcinoma (specify)",
+     "Other low-risk follicular cell-derived thyroid neoplasm (specify)",
+     "Other histologic type not listed (specify)",
+     "Malignant thyroid neoplasm, type cannot be determined"
+    ]
+   }
+  },
+  {
+   "id": "mitoticCount",
+   "label": "Mitotic count (per 2 mm²)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Less than 3 mitoses per 2 mm²",
+   "options": [
+    "Less than 3 mitoses per 2 mm²",
+    "Greater than or equal to 3 but less than 5 mitoses per 2 mm²",
+    "Greater than or equal to 5 mitoses per 2 mm²",
+    "Cannot be determined"
+   ],
+   "help": "Hot spot count per 2 mm² (using a 22 mm eyepiece at 40x objective, ~8.4 HPF = 2 mm²). >= 5 mitoses/2 mm² defines DHGTC in differentiated carcinomas and high-grade MTC."
+  },
+  {
+   "id": "mitoticExact",
+   "label": "Exact mitotic count (per 2 mm², optional)",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "mitoticCount",
+    "not": "Cannot be determined"
+   }
+  },
+  {
+   "id": "ki67",
+   "label": "Ki-67 labelling index (%)",
+   "type": "number",
+   "min": 0,
+   "max": 100,
+   "step": 0.1,
+   "group": "Microscopic findings",
+   "default": "",
+   "help": "Required for medullary thyroid carcinoma (IMTCGS: >= 5% is high grade); optional for follicular cell-derived carcinomas. Count at least 500 tumour cells in a hot spot."
+  },
+  {
+   "id": "mtcGrade",
+   "label": "Medullary thyroid carcinoma grade (IMTCGS)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Low grade",
+    "High grade",
+    "Cannot be determined"
+   ],
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Medullary thyroid carcinoma",
+     "Other medullary thyroid carcinoma (specify)",
+     "Mixed medullary carcinoma and follicular thyroid carcinoma (specify)",
+     "Mixed medullary carcinoma and follicular variant papillary carcinoma (specify)",
+     "Mixed medullary carcinoma and papillary thyroid carcinoma (specify)",
+     "Other mixed medullary and follicular cell-derived thyroid carcinoma (specify)"
+    ]
+   },
+   "help": "International Medullary Thyroid Carcinoma Grading System (WHO 5th edition): High grade if >= 5 mitoses/2 mm², tumour necrosis, or Ki-67 >= 5%."
+  },
+  {
+   "id": "necrosis",
+   "label": "Tumour necrosis",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "necrosisDetail",
+   "label": "Tumour necrosis (specify, optional)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "necrosis",
+    "not": "Not identified"
+   }
+  },
+  {
+   "id": "angioinvasion",
+   "label": "Angioinvasion (blood vessel invasion)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Focal (< 4 vessels)",
+    "Extensive (>= 4 vessels)",
+    "Cannot be determined"
+   ],
+   "help": "CAP 4.4.0.0 separates blood vessel invasion (angioinvasion) from lymphatic invasion; >= 4 vessels is extensive angioinvasion."
+  },
+  {
+   "id": "lymphaticInvasion",
+   "label": "Lymphatic invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ete",
+   "label": "Extrathyroidal extension",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Microscopic only (perithyroidal soft tissue)",
+    "Gross, invading only strap muscles",
+    "Gross, invading subcutaneous soft tissues, larynx, trachea, oesophagus or recurrent laryngeal nerve",
+    "Gross, invading prevertebral fascia or encasing the carotid artery or mediastinal vessels",
+    "Cannot be determined"
+   ],
+   "help": "AJCC 8th edition: microscopic extrathyroidal extension does not upstage to pT3b. Gross strap muscle invasion is pT3b; larynx/trachea/oesophagus/RLN/subcutaneous tissue is pT4a; prevertebral fascia/carotid/mediastinal vessels is pT4b."
+  },
+  {
+   "id": "ihcOther",
+   "label": "Immunohistochemistry (typed, one sentence)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "e.g. TTF-1 and PAX8 are diffusely positive; calcitonin is negative",
+   "help": "Added to the tumour histology paragraph."
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Tumour histology (replaces the generated paragraph)",
+   "type": "textarea",
+   "group": "Microscopic findings",
+   "default": "",
+   "help": "Leave blank to use the paragraph built from the fields above."
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "type": "select",
+   "group": "Margins",
+   "default": "Uninvolved by carcinoma",
+   "options": [
+    "Uninvolved by carcinoma",
+    "Involved by carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "marginSite",
+   "label": "Surgical margins: location (or why cannot be assessed)",
+   "type": "text",
+   "group": "Margins",
+   "default": "",
+   "placeholder": "e.g. posterior inked surface of right lobe"
+  },
+  {
+   "id": "marginMm",
+   "label": "Closest margin distance (mm)",
+   "type": "number",
+   "min": 0,
+   "step": 0.1,
+   "group": "Margins",
+   "default": "",
+   "showIf": {
+    "field": "marginStatus",
+    "is": "Uninvolved by carcinoma"
+   }
+  },
+  {
+   "id": "centralExamined",
+   "label": "Central compartment lymph nodes (level VI / VII) examined",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "help": "Pretracheal, paratracheal, prelaryngeal (Delphian), perithyroidal and superior mediastinal (level VII). Positive = pN1a."
+  },
+  {
+   "id": "centralInvolved",
+   "label": "Central compartment (level VI / VII) involved",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "centralExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "centralSites",
+   "label": "Central compartment: level(s) / site(s)",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "placeholder": "e.g. level VI (right paratracheal)",
+   "showIf": {
+    "field": "centralExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "lateralExamined",
+   "label": "Lateral neck / retropharyngeal lymph nodes (levels I–V) examined",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "help": "Unilateral, bilateral or contralateral lateral neck (levels I–V) or retropharyngeal nodes. Positive = pN1b."
+  },
+  {
+   "id": "lateralInvolved",
+   "label": "Lateral neck / retropharyngeal (levels I–V) involved",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "lateralExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "lateralSites",
+   "label": "Lateral neck: level(s) / side(s)",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "placeholder": "e.g. right levels II, III and IV",
+   "showIf": {
+    "field": "lateralExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "otherNodesExamined",
+   "label": "Other regional lymph nodes examined",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "group": "Lymph nodes and metastasis",
+   "default": ""
+  },
+  {
+   "id": "otherNodesInvolved",
+   "label": "Other regional lymph nodes involved",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "otherNodesExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "otherNodesSites",
+   "label": "Other regional lymph nodes: specify group",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "otherNodesExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "type": "select",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Size of largest metastatic deposit (mm)",
+   "type": "number",
+   "min": 0,
+   "step": 0.1,
+   "group": "Lymph nodes and metastasis",
+   "default": ""
+  },
+  {
+   "id": "largestDepositSite",
+   "label": "Largest metastatic deposit: site",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "placeholder": "e.g. right level III",
+   "showIf": {
+    "field": "largestDepositMm",
+    "not": ""
+   }
+  },
+  {
+   "id": "largestNodeMm",
+   "label": "Size of largest involved lymph node (mm)",
+   "type": "number",
+   "min": 0,
+   "step": 0.1,
+   "group": "Lymph nodes and metastasis",
+   "default": ""
+  },
+  {
+   "id": "largestNodeSite",
+   "label": "Largest involved lymph node: site",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "placeholder": "e.g. right level III",
+   "showIf": {
+    "field": "largestNodeMm",
+    "not": ""
+   }
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis",
+   "type": "multiselect",
+   "group": "Lymph nodes and metastasis",
+   "default": [],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Lung",
+    "Bone",
+    "Other (specify)",
+    "Cannot be determined"
+   ],
+   "exclusive": [
+    "Not applicable",
+    "Not identified",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Distant metastasis (specify)",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "distantMets",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "additionalPathologic",
+   "label": "Additional pathologic findings",
+   "type": "multiselect",
+   "group": "Additional findings",
+   "default": [],
+   "options": [
+    "None identified",
+    "Adenoma",
+    "Adenomatoid nodule(s) or follicular nodular disease",
+    "Diffuse hyperplasia (Graves disease)",
+    "Thyroiditis",
+    "Parathyroid gland(s) present",
+    "C-cell hyperplasia"
+   ],
+   "exclusive": [
+    "None identified"
+   ]
+  },
+  {
+   "id": "thyroiditisType",
+   "label": "Thyroiditis (specify type)",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "placeholder": "e.g. chronic lymphocytic (Hashimoto) thyroiditis",
+   "showIf": {
+    "field": "additionalPathologic",
+    "is": "Thyroiditis"
+   }
+  },
+  {
+   "id": "parathyroidDetail",
+   "label": "Parathyroid gland(s) (number, location, findings)",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "placeholder": "e.g. one normal parathyroid gland attached to right lower pole",
+   "showIf": {
+    "field": "additionalPathologic",
+    "is": "Parathyroid gland(s) present"
+   }
+  },
+  {
+   "id": "cCellDetail",
+   "label": "C-cell hyperplasia (type and focality)",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "placeholder": "e.g. neoplastic, multifocal",
+   "showIf": {
+    "field": "additionalPathologic",
+    "is": "C-cell hyperplasia"
+   }
+  },
+  {
+   "id": "additionalFindingsOther",
+   "label": "Other findings",
+   "type": "text",
+   "group": "Additional findings",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "type": "textarea",
+   "group": "Additional findings",
+   "default": "",
+   "help": "Printed at the end of the synoptic report."
+  },
+  {
+   "id": "braf",
+   "label": "BRAF V600E (IHC / molecular)",
+   "type": "select",
+   "group": "Additional findings",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Positive (BRAF V600E detected)",
+    "Negative (no BRAF V600E detected)",
+    "Pending"
+   ],
+   "help": "Printed under Molecular findings when performed."
+  },
+  {
+   "id": "molecularOther",
+   "label": "Other molecular findings (e.g. TERT, RAS, RET, NTRK)",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "placeholder": "e.g. RET p.Met918Thr mutation detected",
+   "help": "Printed under Molecular findings."
+  },
+  {
+   "id": "patientAgeGroup",
+   "label": "Patient age group (for AJCC 8th DTC stage group in Checks only)",
+   "type": "select",
+   "group": "Staging",
+   "default": "Not specified",
+   "options": [
+    "Not specified",
+    "Under 55 years",
+    "55 years or older"
+   ],
+   "help": "Used only to compute the differentiated thyroid carcinoma stage group in Checks; never printed."
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "After neoadjuvant therapy (y)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "type": "text",
+   "group": "Staging",
+   "default": "",
+   "placeholder": "e.g. pT3b pN1a",
+   "help": "Replaces the derived pTNM; give the reason below."
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "pTNM override: reason",
+   "type": "text",
+   "group": "Staging",
+   "default": "",
+   "showIf": {
+    "field": "tnmOverride",
+    "not": ""
+   }
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01420",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "",
+     "procedure": "Total thyroidectomy",
+     "procedureOther": "",
+     "tumourSite": [
+      "Right lobe"
+     ],
+     "tumourSiteOther": "",
+     "tumourFocality": "Unifocal",
+     "tumourFociCount": "",
+     "tumourSizeMm": "18",
+     "tumourDims": "18 x 15 x 12",
+     "sizeAtLeast": false,
+     "sizeReason": "",
+     "weight": "28",
+     "specimenDims": "right lobe 5 x 3 x 2 cm, left lobe 4.5 x 2.5 x 2 cm, isthmus 2 x 1.5 x 0.8 cm",
+     "capsule": "Intact",
+     "lesionAppearance": "Firm, pale white infiltrative mass",
+     "background": "Unremarkable",
+     "blocks": "10",
+     "blockKeyText": "1-5 Right lobe tumour with capsule and posterior margin\n6 Isthmus\n7-8 Left lobe\n9-10 Central compartment lymph nodes",
+     "histType": "Papillary carcinoma, classic subtype",
+     "histTypeOther": "",
+     "mitoticCount": "Less than 3 mitoses per 2 mm²",
+     "mitoticExact": "1",
+     "ki67": "",
+     "mtcGrade": "",
+     "necrosis": "Not identified",
+     "necrosisDetail": "",
+     "angioinvasion": "Not identified",
+     "lymphaticInvasion": "Not identified",
+     "pni": "Not identified",
+     "ete": "Not identified",
+     "ihcOther": "",
+     "histologyNotes": "",
+     "marginStatus": "Uninvolved by carcinoma",
+     "marginSite": "posterior inked surface",
+     "marginMm": "1.5",
+     "centralExamined": "6",
+     "centralInvolved": "0",
+     "centralSites": "level VI",
+     "lateralExamined": "",
+     "lateralInvolved": "",
+     "lateralSites": "",
+     "otherNodesExamined": "",
+     "otherNodesInvolved": "",
+     "otherNodesSites": "",
+     "ene": "",
+     "largestDepositMm": "",
+     "largestDepositSite": "",
+     "largestNodeMm": "",
+     "largestNodeSite": "",
+     "distantMets": [],
+     "distantMetsOther": "",
+     "additionalPathologic": [
+      "Thyroiditis"
+     ],
+     "thyroiditisType": "chronic lymphocytic thyroiditis",
+     "parathyroidDetail": "",
+     "cCellDetail": "",
+     "additionalFindingsOther": "",
+     "additionalNotes": "",
+     "braf": "Not performed",
+     "molecularOther": "",
+     "patientAgeGroup": "55 years or older",
+     "multiplePrimaries": false,
+     "recurrent": false,
+     "postTherapy": false,
+     "tnmOverride": "",
+     "tnmOverrideReason": ""
+    }
+   }
+  ]
+ }
+}

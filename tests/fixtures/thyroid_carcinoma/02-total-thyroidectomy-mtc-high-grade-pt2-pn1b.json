@@ -1,0 +1,90 @@
+{
+  "description": "total thyroidectomy for high-grade medullary thyroid carcinoma (IMTCGS), 26 mm, Ki-67 8.5%, necrosis, central and lateral neck metastases with ENE, RET mutation, pT2 pN1b",
+  "templateId": "thyroid_carcinoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "specimenName": "",
+      "procedure": "Total thyroidectomy",
+      "procedureOther": "",
+      "tumourSite": [
+        "Left lobe"
+      ],
+      "tumourSiteOther": "",
+      "tumourFocality": "Unifocal",
+      "tumourFociCount": "",
+      "tumourSizeMm": "26",
+      "tumourDims": "26 x 20 x 18",
+      "sizeAtLeast": false,
+      "sizeReason": "",
+      "weight": "28",
+      "specimenDims": "right lobe 5 x 3 x 2 cm, left lobe 4.5 x 2.5 x 2 cm, isthmus 2 x 1.5 x 0.8 cm",
+      "capsule": "Intact",
+      "lesionAppearance": "Firm, pale white infiltrative mass",
+      "background": "Unremarkable",
+      "blocks": "10",
+      "blockKeyText": "1-5 Right lobe tumour with capsule and posterior margin\n6 Isthmus\n7-8 Left lobe\n9-10 Central compartment lymph nodes",
+      "histType": "Medullary thyroid carcinoma",
+      "histTypeOther": "",
+      "mitoticCount": "Greater than or equal to 5 mitoses per 2 mm²",
+      "mitoticExact": "6",
+      "ki67": "8.5",
+      "mtcGrade": "High grade",
+      "necrosis": "Present",
+      "necrosisDetail": "",
+      "angioinvasion": "Focal (< 4 vessels)",
+      "lymphaticInvasion": "Not identified",
+      "pni": "Not identified",
+      "ete": "Not identified",
+      "ihcOther": "",
+      "histologyNotes": "",
+      "marginStatus": "Uninvolved by carcinoma",
+      "marginSite": "posterior surface",
+      "marginMm": "2",
+      "centralExamined": "5",
+      "centralInvolved": "2",
+      "centralSites": "level VI",
+      "lateralExamined": "14",
+      "lateralInvolved": "3",
+      "lateralSites": "left levels II–IV",
+      "otherNodesExamined": "",
+      "otherNodesInvolved": "",
+      "otherNodesSites": "",
+      "ene": "Present",
+      "largestDepositMm": "12",
+      "largestDepositSite": "left level III",
+      "largestNodeMm": "",
+      "largestNodeSite": "",
+      "distantMets": [],
+      "distantMetsOther": "",
+      "additionalPathologic": [
+        "C-cell hyperplasia"
+      ],
+      "thyroiditisType": "",
+      "parathyroidDetail": "",
+      "cCellDetail": "neoplastic, bilateral",
+      "additionalFindingsOther": "",
+      "additionalNotes": "",
+      "braf": "Not performed",
+      "molecularOther": "RET p.Met918Thr mutation detected",
+      "patientAgeGroup": "55 years or older",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "postTherapy": false,
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Thyroid, total thyroidectomy\n\nReceived in formalin is a total thyroidectomy specimen weighing 28 g and measuring right lobe 5 x 3 x 2 cm, left lobe 4.5 x 2.5 x 2 cm, isthmus 2 x 1.5 x 0.8 cm. The thyroid capsule is intact. Sectioning shows a firm, pale white infiltrative mass in the left lobe measuring 26 x 20 x 18 mm. The background parenchyma is unremarkable. Representative sections are taken in 10 blocks.\n\n(1-5) Right lobe tumour with capsule and posterior margin.\n(6) Isthmus.\n(7-8) Left lobe.\n(9-10) Central compartment lymph nodes.\n\nSpecimen and tumour\n- Procedure: Total thyroidectomy\n- Tumour site: Left lobe\n- Tumour focality: Unifocal\n- Tumour size: 26 mm (greatest dimension)\n  - All dimensions: 26 x 20 x 18 mm\n\nMicroscopic findings\n- Histologic type: Medullary thyroid carcinoma\n- Medullary thyroid carcinoma grade (IMTCGS): High grade\n- Mitotic count (per 2 mm2): Greater than or equal to 5 mitoses per 2 mm2 (6 per\n  2 mm2)\n- Ki-67 labelling index: 8.5%\n- Tumour necrosis: Present\n- Angioinvasion: Focal (< 4 vessels)\n- Lymphatic invasion: Not identified\n- Perineural invasion: Not identified\n- Extrathyroidal extension: Not identified\n- Tumour histology:\n  Sections of the thyroid show medullary thyroid carcinoma in the left lobe. Nests, sheets and trabeculae of polygonal to spindle-shaped parafollicular cells with finely granular salt-and-pepper chromatin lie in a fibrous stroma with amyloid deposition.\n\nMargins\n- Surgical margins: Uninvolved by carcinoma (posterior surface, 2 mm)\n\nLymph nodes\n- Central compartment (level VI / VII): 2 of 5 involved (level VI)\n- Lateral neck / retropharyngeal (levels I-V): 3 of 14 involved (left levels\n  II-IV)\n- Extranodal extension (ENE): Present\n- Size of largest metastatic deposit: 12 mm (left level III)\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT2 pN1b\n\nAdditional findings\n- Additional pathologic findings: C-cell hyperplasia (neoplastic, bilateral)\n\nMolecular studies\n- Other molecular studies: RET p.Met918Thr mutation detected\n\nTHYROID, total thyroidectomy:\n- MEDULLARY THYROID CARCINOMA, high grade, 26 mm\n- Margins clear\n- 2 of 5 central compartment and 3 of 14 lateral neck lymph nodes involved;\n  extranodal extension present\n- pT2 pN1b (AJCC 8th edition).",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (Medullary, reference, not reported): IVA (if cM0)",
+      "part": "A"
+    }
+  ]
+}
