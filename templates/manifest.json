@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 86,
+  "count": 87,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -7405,6 +7405,200 @@
       "generator": "soft_tissue_sarcoma",
       "generatorPath": "generators/soft_tissue_sarcoma.js",
       "schemaPath": "schemas/soft_tissue_sarcoma.json"
+    },
+    {
+      "id": "bone_tumour",
+      "name": "Bone tumour resection",
+      "shortName": "Bone · tumour resection",
+      "label": "Bone tumour",
+      "organ": "BONE",
+      "system": "Soft tissue",
+      "kind": "cancer resection",
+      "rank": 58,
+      "aliases": [
+        "bone tumour",
+        "bone tumor",
+        "bone sarcoma",
+        "osteosarcoma",
+        "chondrosarcoma",
+        "atypical cartilaginous tumour",
+        "Ewing sarcoma",
+        "chordoma",
+        "adamantinoma",
+        "giant cell tumour of bone",
+        "osteoblastoma",
+        "primary bone malignancy"
+      ],
+      "match": {
+        "site": [
+          "bone",
+          "femur",
+          "femoral",
+          "tibia",
+          "tibial",
+          "fibula",
+          "humerus",
+          "humeral",
+          "radius",
+          "ulna",
+          "pelvis",
+          "pelvic",
+          "ilium",
+          "iliac",
+          "ischium",
+          "pubis",
+          "acetabulum",
+          "sacrum",
+          "sacral",
+          "spine",
+          "vertebra",
+          "vertebral",
+          "scapula",
+          "clavicle",
+          "rib",
+          "sternum",
+          "skull",
+          "cranium",
+          "mandible",
+          "maxilla",
+          "calcaneus",
+          "talus",
+          "metacarpal",
+          "metatarsal",
+          "osteosarcoma",
+          "chondrosarcoma",
+          "chordoma",
+          "adamantinoma"
+        ],
+        "procedure": [
+          "segmental resection",
+          "wide resection",
+          "wide excision",
+          "wide local excision",
+          "radical resection",
+          "marginal resection",
+          "intralesional resection",
+          "en bloc resection",
+          "hemipelvectomy",
+          "spondylectomy",
+          "vertebrectomy",
+          "sacrectomy",
+          "amputation",
+          "disarticulation",
+          "resection",
+          "excision"
+        ],
+        "clinical": [
+          "osteosarcoma",
+          "chondrosarcoma",
+          "atypical cartilaginous tumour",
+          "atypical cartilaginous tumor",
+          "Ewing sarcoma",
+          "chordoma",
+          "adamantinoma",
+          "bone sarcoma",
+          "bone tumour",
+          "bone tumor",
+          "primary bone",
+          "giant cell tumour of bone",
+          "giant cell tumor of bone",
+          "osteoblastoma",
+          "desmoplastic fibroma",
+          "parosteal",
+          "periosteal"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:FNA|FNAC|aspirat\\w*|cytolog\\w*|smear|frozen|FS|core\\s+biops\\w*|trephine|tru-?cut|needle\\s+biops\\w*|incisional\\s+biops\\w*|punch\\s+biops\\w*|osteoarthritis|arthroplasty|hemiarthroplasty|THR|TKR|osteomyelitis|discectomy|laminectomy|synovectomy)\\b)[\\s\\S]*(?<![?]\\s?)(?<!\\b(?:no|not|negative\\s+for|without|rule\\s+out|r/o|exclude)\\s)\\b(?:osteosarcoma|chondrosarcoma|chordoma|adamantinoma|bone\\s+sarcoma|bone\\s+tumou?r|primary\\s+bone\\s+(?:sarcoma|malignancy|tumou?r)|atypical\\s+cartilaginous\\s+tumou?r|giant\\s+cell\\s+tumou?r\\s+of\\s+bone|osteoblastoma|desmoplastic\\s+fibroma|Ewing(?:'s)?\\s+sarcoma)\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "core",
+          "cores",
+          "trephine",
+          "trucut",
+          "tru-cut",
+          "FNA",
+          "FNAC",
+          "aspirate",
+          "cytology",
+          "smear",
+          "frozen",
+          "FS",
+          "arthroplasty",
+          "hemiarthroplasty",
+          "THR",
+          "TKR",
+          "replacement",
+          "osteoarthritis",
+          "osteomyelitis",
+          "synovium",
+          "synovectomy",
+          "disc",
+          "discectomy",
+          "ligamentum",
+          "reaming",
+          "reamings",
+          "lymph node",
+          "lymph nodes",
+          "LN",
+          "SLN",
+          "sentinel",
+          "liposarcoma",
+          "soft tissue",
+          "extraskeletal"
+        ],
+        "bias": 3,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bintralesional\\b",
+                "Intralesional resection"
+              ],
+              [
+                "\\bmarginal\\s+(?:resection|excision)",
+                "Marginal resection"
+              ],
+              [
+                "\\bradical\\s+(?:resection|excision)",
+                "Radical resection"
+              ],
+              [
+                "\\bamputation|disarticulation",
+                "Amputation / disarticulation"
+              ],
+              [
+                "\\b(?:segmental|wide|en\\s+bloc)\\s+(?:local\\s+)?(?:resection|excision)|\\bhemipelvectomy\\b|\\bspondylectomy\\b|\\bvertebrectomy\\b|\\bsacrectomy\\b",
+                "Segmental / wide resection"
+              ]
+            ]
+          },
+          {
+            "field": "siteGroup",
+            "from": "map",
+            "map": [
+              [
+                "\\b(?:pelvis|pelvic|ilium|iliac|ischium|pubis|acetabul|hemipelvectomy)\\b",
+                "Pelvis"
+              ],
+              [
+                "\\b(?:spine|spinal|vertebra|vertebral|sacrum|sacral|spondylectomy|vertebrectomy|sacrectomy|thoracic\\s+spine|lumbar\\s+spine|cervical\\s+spine)\\b",
+                "Spine"
+              ],
+              [
+                "\\b(?:femur|femoral|tibia|tibial|fibula|humerus|humeral|radius|ulna|scapula|clavicle|rib|sternum|skull|cranium|mandible|maxilla|calcaneus|talus|metacarpal|metatarsal)\\b",
+                "Appendicular skeleton, trunk, skull, and facial bones"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "bone_tumour",
+      "generatorPath": "generators/bone_tumour.js",
+      "schemaPath": "schemas/bone_tumour.json"
     },
     {
       "id": "cns_biopsy",

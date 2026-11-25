@@ -204,15 +204,6 @@
    "qmh": "Skin-Melanoma"
   },
   {
-   "id": "bone_tumour",
-   "name": "Bone tumour resection",
-   "label": "Bone tumour",
-   "system": "Soft tissue",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "MS-Bone"
-  },
-  {
    "id": "ewing_sarcoma",
    "name": "Ewing sarcoma (paediatric) resection",
    "label": "Ewing",

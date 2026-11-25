@@ -1,0 +1,1588 @@
+{
+ "id": "bone_tumour",
+ "version": "2026.11",
+ "name": "Bone tumour resection",
+ "shortName": "Bone · tumour resection",
+ "label": "Bone tumour",
+ "organ": "BONE",
+ "system": "Soft tissue",
+ "kind": "cancer resection",
+ "rank": 58,
+ "aliases": [
+  "bone tumour",
+  "bone tumor",
+  "bone sarcoma",
+  "osteosarcoma",
+  "chondrosarcoma",
+  "atypical cartilaginous tumour",
+  "Ewing sarcoma",
+  "chordoma",
+  "adamantinoma",
+  "giant cell tumour of bone",
+  "osteoblastoma",
+  "primary bone malignancy"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 6,
+ "defaultParts": 1,
+ "generator": "bone_tumour",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen and tumour",
+   "Macroscopy"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template MS-Bone (CAP Bone Tumor Resection 4.2.0.0, June 2024; AJCC 8th edition, Chapter 38), aligned with WHO 5th edition (2020) Soft Tissue and Bone Tumours",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/MS-Bone.html",
+  "capProtocol": "CAP Bone 4.2.0.0 (June 2024)",
+  "who": "WHO Classification of Soft Tissue and Bone Tumours, 5th edition (2020)",
+  "staging": "pTNM derived by src/staging/bone.js on AJCC 8th edition (Chapter 38: Appendicular skeleton/trunk/skull/facial bones, Spine, and Pelvis). Stage group (appendicular/trunk/skull only) shows in Checks only; non-sarcomatous locally aggressive bone neoplasms are not staged.",
+  "savedPage": "docs/reference/MS-Bone.html"
+ },
+ "match": {
+  "site": [
+   "bone",
+   "femur",
+   "femoral",
+   "tibia",
+   "tibial",
+   "fibula",
+   "humerus",
+   "humeral",
+   "radius",
+   "ulna",
+   "pelvis",
+   "pelvic",
+   "ilium",
+   "iliac",
+   "ischium",
+   "pubis",
+   "acetabulum",
+   "sacrum",
+   "sacral",
+   "spine",
+   "vertebra",
+   "vertebral",
+   "scapula",
+   "clavicle",
+   "rib",
+   "sternum",
+   "skull",
+   "cranium",
+   "mandible",
+   "maxilla",
+   "calcaneus",
+   "talus",
+   "metacarpal",
+   "metatarsal",
+   "osteosarcoma",
+   "chondrosarcoma",
+   "chordoma",
+   "adamantinoma"
+  ],
+  "procedure": [
+   "segmental resection",
+   "wide resection",
+   "wide excision",
+   "wide local excision",
+   "radical resection",
+   "marginal resection",
+   "intralesional resection",
+   "en bloc resection",
+   "hemipelvectomy",
+   "spondylectomy",
+   "vertebrectomy",
+   "sacrectomy",
+   "amputation",
+   "disarticulation",
+   "resection",
+   "excision"
+  ],
+  "clinical": [
+   "osteosarcoma",
+   "chondrosarcoma",
+   "atypical cartilaginous tumour",
+   "atypical cartilaginous tumor",
+   "Ewing sarcoma",
+   "chordoma",
+   "adamantinoma",
+   "bone sarcoma",
+   "bone tumour",
+   "bone tumor",
+   "primary bone",
+   "giant cell tumour of bone",
+   "giant cell tumor of bone",
+   "osteoblastoma",
+   "desmoplastic fibroma",
+   "parosteal",
+   "periosteal"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:FNA|FNAC|aspirat\\w*|cytolog\\w*|smear|frozen|FS|core\\s+biops\\w*|trephine|tru-?cut|needle\\s+biops\\w*|incisional\\s+biops\\w*|punch\\s+biops\\w*|osteoarthritis|arthroplasty|hemiarthroplasty|THR|TKR|osteomyelitis|discectomy|laminectomy|synovectomy)\\b)[\\s\\S]*(?<![?]\\s?)(?<!\\b(?:no|not|negative\\s+for|without|rule\\s+out|r/o|exclude)\\s)\\b(?:osteosarcoma|chondrosarcoma|chordoma|adamantinoma|bone\\s+sarcoma|bone\\s+tumou?r|primary\\s+bone\\s+(?:sarcoma|malignancy|tumou?r)|atypical\\s+cartilaginous\\s+tumou?r|giant\\s+cell\\s+tumou?r\\s+of\\s+bone|osteoblastoma|desmoplastic\\s+fibroma|Ewing(?:'s)?\\s+sarcoma)\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "core",
+   "cores",
+   "trephine",
+   "trucut",
+   "tru-cut",
+   "FNA",
+   "FNAC",
+   "aspirate",
+   "cytology",
+   "smear",
+   "frozen",
+   "FS",
+   "arthroplasty",
+   "hemiarthroplasty",
+   "THR",
+   "TKR",
+   "replacement",
+   "osteoarthritis",
+   "osteomyelitis",
+   "synovium",
+   "synovectomy",
+   "disc",
+   "discectomy",
+   "ligamentum",
+   "reaming",
+   "reamings",
+   "lymph node",
+   "lymph nodes",
+   "LN",
+   "SLN",
+   "sentinel",
+   "liposarcoma",
+   "soft tissue",
+   "extraskeletal"
+  ],
+  "bias": 3,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bintralesional\\b",
+      "Intralesional resection"
+     ],
+     [
+      "\\bmarginal\\s+(?:resection|excision)",
+      "Marginal resection"
+     ],
+     [
+      "\\bradical\\s+(?:resection|excision)",
+      "Radical resection"
+     ],
+     [
+      "\\bamputation|disarticulation",
+      "Amputation / disarticulation"
+     ],
+     [
+      "\\b(?:segmental|wide|en\\s+bloc)\\s+(?:local\\s+)?(?:resection|excision)|\\bhemipelvectomy\\b|\\bspondylectomy\\b|\\bvertebrectomy\\b|\\bsacrectomy\\b",
+      "Segmental / wide resection"
+     ]
+    ]
+   },
+   {
+    "field": "siteGroup",
+    "from": "map",
+    "map": [
+     [
+      "\\b(?:pelvis|pelvic|ilium|iliac|ischium|pubis|acetabul|hemipelvectomy)\\b",
+      "Pelvis"
+     ],
+     [
+      "\\b(?:spine|spinal|vertebra|vertebral|sacrum|sacral|spondylectomy|vertebrectomy|sacrectomy|thoracic\\s+spine|lumbar\\s+spine|cervical\\s+spine)\\b",
+      "Spine"
+     ],
+     [
+      "\\b(?:femur|femoral|tibia|tibial|fibula|humerus|humeral|radius|ulna|scapula|clavicle|rib|sternum|skull|cranium|mandible|maxilla|calcaneus|talus|metacarpal|metatarsal)\\b",
+      "Appendicular skeleton, trunk, skull, and facial bones"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen (typed name, optional)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. Distal right femur, segmental resection",
+   "help": "Leave blank to build the specimen name from the bone/site and procedure."
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "",
+   "options": [
+    "Intralesional resection",
+    "Marginal resection",
+    "Segmental / wide resection",
+    "Radical resection",
+    "Amputation / disarticulation",
+    "Other (specify)",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Procedure (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "siteGroup",
+   "label": "Tumour site (AJCC site group)",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "Appendicular skeleton, trunk, skull, and facial bones",
+   "options": [
+    "Appendicular skeleton, trunk, skull, and facial bones",
+    "Spine",
+    "Pelvis",
+    "Not specified"
+   ],
+   "help": "Selects the AJCC 8th edition pT table (appendicular/trunk/skull by 80 mm and skip lesions; spine by vertebral segments/canal/great vessels; pelvis by pelvic segments, extraosseous extension and 80 mm).",
+   "reference": {
+    "title": "AJCC 8th edition bone staging site tables",
+    "intro": "AJCC 8th edition Chapter 38 uses three separate pT tables based on anatomical site. Prognostic stage groups (IA–IVB) are defined ONLY for appendicular skeleton, trunk, skull, and facial bones.",
+    "groups": [
+     {
+      "heading": "Appendicular skeleton, trunk, skull, and facial bones",
+      "points": [
+       "pT1: <= 80 mm (8 cm) in greatest dimension; pT2: > 80 mm; pT3: discontinuous tumours (skip metastases) in the primary bone site.",
+       "Stage groups (Checks only): IA (T1 G1), IB (T2–T3 G1), IIA (T1 G2–G3), IIB (T2 G2–G3), III (T3 G2–G3), IVA (M1a lung only, N0), IVB (any N1 or M1b non-lung)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Bone Tumors, Staging",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Pelvis (four pelvic segments: iliac wing, acetabulum, pubic rami/ischium, sacrum)",
+      "points": [
+       "pT1: 1 segment without extraosseous extension (a <= 80 mm, b > 80 mm).",
+       "pT2: 1 segment with extraosseous extension OR 2 segments without extraosseous extension (a <= 80 mm, b > 80 mm).",
+       "pT3: 2 segments with extraosseous extension (a <= 80 mm, b > 80 mm).",
+       "pT4a: involves sacroiliac joint and extends medial to sacral neuroforamen; pT4b: encasement of external iliac vessels or gross tumour thrombus in major pelvic vessels. No AJCC 8th stage groups."
+      ]
+     },
+     {
+      "heading": "Spine (five vertebral segments: right/left pedicles, right/left body halves, posterior element)",
+      "points": [
+       "pT1: confined to 1 or 2 adjacent vertebral segments; pT2: 3 adjacent segments; pT3: >= 4 adjacent or any nonadjacent segments.",
+       "pT4a: extension into the spinal canal; pT4b: gross vascular invasion or tumour thrombus in the great vessels. No AJCC 8th stage groups."
+      ]
+     }
+    ],
+    "note": "Criteria follow AJCC 8th edition Chapter 38 and CAP Bone 4.2.0.0. ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
+  },
+  {
+   "id": "site",
+   "label": "Bone / anatomical site and laterality",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. distal right femur, proximal left tibia, L3 vertebral body, right ilium"
+  },
+  {
+   "id": "locationExtent",
+   "label": "Tumour location and extent",
+   "type": "multiselect",
+   "group": "Specimen and tumour",
+   "default": [],
+   "options": [
+    "Epiphysis or apophysis",
+    "Metaphysis",
+    "Diaphysis",
+    "Cortical",
+    "Medullary cavity",
+    "Surface",
+    "Tumour involves joint",
+    "Tumour extension into soft tissue",
+    "Cannot be determined"
+   ],
+   "exclusive": [
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "tumourSizeMm",
+   "label": "Tumour size, greatest dimension (mm)",
+   "type": "number",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "mm",
+   "help": "AJCC 8th boundary is 80 mm (8 cm): <= 80 mm = pT1 (appendicular) / a-subcategory (pelvis); > 80 mm = pT2 / b-subcategory."
+  },
+  {
+   "id": "tumourDims",
+   "label": "Tumour size, all dimensions (mm)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. 95 x 62 x 54"
+  },
+  {
+   "id": "sizeAtLeast",
+   "label": "Tumour size is a minimum (fragmented or reaches margin)",
+   "type": "checkbox",
+   "group": "Specimen and tumour",
+   "default": false
+  },
+  {
+   "id": "sizeReason",
+   "label": "Tumour size cannot be determined (explain)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. fragmented curettage specimen"
+  },
+  {
+   "id": "discontinuous",
+   "label": "Discontinuous tumours (skip metastases) in primary bone site (pT3)",
+   "type": "checkbox",
+   "group": "Specimen and tumour",
+   "default": false,
+   "showIf": {
+    "field": "siteGroup",
+    "is": "Appendicular skeleton, trunk, skull, and facial bones"
+   }
+  },
+  {
+   "id": "spineExtent",
+   "label": "Spine: vertebral segment involvement and extension",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "",
+   "options": [
+    "Confined to 1 vertebral segment or 2 adjacent vertebral segments",
+    "Confined to 3 adjacent vertebral segments",
+    "Confined to 4 or more adjacent vertebral segments, or any nonadjacent vertebral segments",
+    "Extension into the spinal canal",
+    "Gross vascular invasion or tumour thrombus in the great vessels",
+    "Extension into the spinal canal or great vessels (subcategory cannot be determined)"
+   ],
+   "showIf": {
+    "field": "siteGroup",
+    "is": "Spine"
+   }
+  },
+  {
+   "id": "pelvisExtent",
+   "label": "Pelvis: pelvic segment involvement and extension",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "",
+   "options": [
+    "Confined to 1 pelvic segment with no extraosseous extension",
+    "Confined to 1 pelvic segment with extraosseous extension, or 2 segments without extraosseous extension",
+    "Spans 2 pelvic segments with extraosseous extension",
+    "Involves sacroiliac joint and extends medial to the sacral neuroforamen",
+    "Encasement of external iliac vessels or gross tumour thrombus in major pelvic vessels",
+    "Spans 3 pelvic segments or crosses the sacroiliac joint (subcategory cannot be determined)"
+   ],
+   "showIf": {
+    "field": "siteGroup",
+    "is": "Pelvis"
+   }
+  },
+  {
+   "id": "noPrimary",
+   "label": "No residual primary tumour identified (pT0)",
+   "type": "checkbox",
+   "group": "Specimen and tumour",
+   "default": false
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. 18 x 9 x 8"
+  },
+  {
+   "id": "orientation",
+   "label": "Orientation / anatomical landmarks",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. includes distal femoral articular surface and overlying biopsy tract"
+  },
+  {
+   "id": "cutSurface",
+   "label": "Cut surface",
+   "type": "multiselect",
+   "group": "Macroscopy",
+   "default": [],
+   "options": [
+    "Firm, tan-white",
+    "Gritty / ossified",
+    "Lobulated blue-grey cartilaginous",
+    "Fleshy",
+    "Haemorrhagic",
+    "Necrotic",
+    "Cystic",
+    "Gelatinous / myxoid"
+   ]
+  },
+  {
+   "id": "cortexStatus",
+   "label": "Cortical integrity",
+   "type": "select",
+   "group": "Macroscopy",
+   "default": "Cortical destruction with soft tissue extension",
+   "options": [
+    "Intact cortex",
+    "Endosteal scalloping / cortical thinning",
+    "Cortical breach without soft tissue mass",
+    "Cortical destruction with soft tissue extension",
+    "Surface lesion without medullary invasion"
+   ],
+   "reference": {
+    "title": "Cortical destruction, marrow permeation and soft tissue extension",
+    "intro": "Assessing bone permeation, cortical integrity, and extraosseous soft tissue extension is essential both for malignancy diagnosis (especially cartilaginous lesions) and for pelvic pT2/pT3 staging and margin assessment.",
+    "groups": [
+     {
+      "heading": "Marrow permeation and entrapment of host lamellar bone",
+      "points": [
+       "In hyaline cartilage neoplasms, permeation of medullary marrow spaces with complete encirclement (entrapment) of pre-existing host lamellar bone trabeculae separates ACT / chondrosarcoma from benign enchondroma.",
+       "Similarly, permeation of native lamellar bone separates low-grade central osteosarcoma from fibrous dysplasia."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Chondrosarcoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Endosteal scalloping vs cortical destruction and soft tissue extension",
+      "points": [
+       "Deep endosteal scalloping (> 2/3 of cortical thickness) favours ACT/chondrosarcoma over enchondroma.",
+       "Full-thickness cortical breakthrough with extraosseous soft tissue extension directly upstages pelvic bone sarcomas (pT1 -> pT2/pT3) and defines the closest soft tissue surgical margin."
+      ]
+     },
+     {
+      "heading": "Surface lesions without medullary invasion",
+      "points": [
+       "Parosteal osteosarcoma, periosteal osteosarcoma, high-grade surface osteosarcoma and periosteal chondrosarcoma arise on the cortical surface.",
+       "Document whether the underlying cortex is breached and whether medullary canal invasion is present (seen in ~25% of parosteal osteosarcomas; does not by itself signify dedifferentiation)."
+      ]
+     }
+    ],
+    "note": "Criteria follow WHO 5th edition (2020) and CAP Bone 4.2.0.0. ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
+  },
+  {
+   "id": "macroMarginMm",
+   "label": "Macroscopic closest margin (mm)",
+   "type": "number",
+   "min": 0,
+   "step": 0.1,
+   "group": "Macroscopy",
+   "default": ""
+  },
+  {
+   "id": "macroMarginSite",
+   "label": "Macroscopic closest margin site",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. medial soft tissue margin"
+  },
+  {
+   "id": "decalcification",
+   "label": "Decalcification",
+   "type": "select",
+   "group": "Macroscopy",
+   "default": "Formic acid",
+   "options": [
+    "Formic acid",
+    "EDTA",
+    "Nitric acid",
+    "None"
+   ]
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "min": 1,
+   "step": 1,
+   "group": "Macroscopy",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "type": "textarea",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "1-12 Slab-mapped tumour cross-section\n13 Proximal bone marrow margin\n14 Closest medial soft tissue margin",
+   "help": "Printed after the macroscopy as typed."
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th edition / CAP 4.2.0.0)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "Synovial chondromatosis",
+    "Atypical cartilaginous tumour",
+    "Chondrosarcoma",
+    "Chondrosarcoma, secondary (specify)",
+    "Dedifferentiated chondrosarcoma",
+    "Periosteal chondrosarcoma",
+    "Clear cell chondrosarcoma",
+    "Mesenchymal chondrosarcoma",
+    "Osteoblastoma",
+    "Low-grade central osteosarcoma",
+    "Low-grade central osteosarcoma with high-grade transformation",
+    "Parosteal osteosarcoma",
+    "Parosteal osteosarcoma with high-grade transformation",
+    "Conventional osteosarcoma",
+    "Telangiectatic osteosarcoma",
+    "Small cell osteosarcoma",
+    "Periosteal osteosarcoma",
+    "High-grade surface osteosarcoma",
+    "Secondary osteosarcoma (specify)",
+    "Ewing sarcoma",
+    "Round cell sarcoma with EWSR1::non-ETS fusions (specify)",
+    "CIC-rearranged sarcoma",
+    "Sarcoma with BCOR genetic alterations",
+    "Sclerosing epithelioid fibrosarcoma",
+    "Primary malignant giant cell tumour of bone",
+    "Secondary malignant giant cell tumour of bone",
+    "Giant cell tumour of bone",
+    "Langerhans cell histiocytosis",
+    "Desmoplastic fibroma",
+    "Conventional chordoma",
+    "Poorly differentiated chordoma",
+    "Dedifferentiated chordoma",
+    "Epithelioid haemangioma",
+    "Pseudomyogenic haemangioendothelioma",
+    "Epithelioid haemangioendothelioma",
+    "Angiosarcoma",
+    "Adamantinoma of long bones",
+    "Osteofibrous dysplasia-like adamantinoma",
+    "Dedifferentiated adamantinoma",
+    "Leiomyosarcoma of bone",
+    "Rhabdomyosarcoma of bone (specify)",
+    "TK-fusion (NTRK, ALK, BRAF) tumour, primary intraosseous (specify)",
+    "Undifferentiated pleomorphic sarcoma",
+    "Other histologic type not listed (specify)",
+    "Cannot be determined"
+   ],
+   "optionGroups": [
+    {
+     "label": "Chondrogenic tumours",
+     "options": [
+      "Synovial chondromatosis",
+      "Atypical cartilaginous tumour",
+      "Chondrosarcoma",
+      "Chondrosarcoma, secondary (specify)",
+      "Dedifferentiated chondrosarcoma",
+      "Periosteal chondrosarcoma",
+      "Clear cell chondrosarcoma",
+      "Mesenchymal chondrosarcoma"
+     ]
+    },
+    {
+     "label": "Osteogenic tumours",
+     "options": [
+      "Osteoblastoma",
+      "Low-grade central osteosarcoma",
+      "Low-grade central osteosarcoma with high-grade transformation",
+      "Parosteal osteosarcoma",
+      "Parosteal osteosarcoma with high-grade transformation",
+      "Conventional osteosarcoma",
+      "Telangiectatic osteosarcoma",
+      "Small cell osteosarcoma",
+      "Periosteal osteosarcoma",
+      "High-grade surface osteosarcoma",
+      "Secondary osteosarcoma (specify)"
+     ]
+    },
+    {
+     "label": "Undifferentiated small round cell sarcomas",
+     "options": [
+      "Ewing sarcoma",
+      "Round cell sarcoma with EWSR1::non-ETS fusions (specify)",
+      "CIC-rearranged sarcoma",
+      "Sarcoma with BCOR genetic alterations"
+     ]
+    },
+    {
+     "label": "Fibrogenic / fibrohistiocytic / histiocytic tumours",
+     "options": [
+      "Sclerosing epithelioid fibrosarcoma",
+      "Primary malignant giant cell tumour of bone",
+      "Secondary malignant giant cell tumour of bone",
+      "Giant cell tumour of bone",
+      "Langerhans cell histiocytosis",
+      "Desmoplastic fibroma"
+     ]
+    },
+    {
+     "label": "Notochordal tumours",
+     "options": [
+      "Conventional chordoma",
+      "Poorly differentiated chordoma",
+      "Dedifferentiated chordoma"
+     ]
+    },
+    {
+     "label": "Vascular tumours",
+     "options": [
+      "Epithelioid haemangioma",
+      "Pseudomyogenic haemangioendothelioma",
+      "Epithelioid haemangioendothelioma",
+      "Angiosarcoma"
+     ]
+    },
+    {
+     "label": "Epithelial tumours",
+     "options": [
+      "Adamantinoma of long bones",
+      "Osteofibrous dysplasia-like adamantinoma",
+      "Dedifferentiated adamantinoma"
+     ]
+    },
+    {
+     "label": "Other mesenchymal tumours",
+     "options": [
+      "Leiomyosarcoma of bone",
+      "Rhabdomyosarcoma of bone (specify)",
+      "TK-fusion (NTRK, ALK, BRAF) tumour, primary intraosseous (specify)",
+      "Undifferentiated pleomorphic sarcoma"
+     ]
+    },
+    {
+     "label": "Other",
+     "options": [
+      "Other histologic type not listed (specify)",
+      "Cannot be determined"
+     ]
+    }
+   ],
+   "reference": {
+    "title": "Bone tumour types (WHO 5th edition)",
+    "intro": "WHO 5th edition (2020) and CAP Bone 4.2.0.0 integrate morphology with defining molecular alterations (MDM2, IDH1/2, EWSR1/CIC/BCOR, H3F3A G34W, TBXT/brachyury, SMARCB1).",
+    "noteTop": "Always correlate bone tumour histopathology with plain radiographs and MRI (location, matrix, cortical destruction, soft tissue mass) before finalising the diagnosis.",
+    "groups": [
+     {
+      "heading": "High-grade osteosarcomas (conventional, telangiectatic, small cell)",
+      "points": [
+       "Conventional osteosarcoma (G3): direct production of irregular lace-like or trabecular neoplastic osteoid by markedly atypical malignant cells; subtyped as osteoblastic, chondroblastic or fibroblastic.",
+       "Small cell osteosarcoma: sheets of small round cells with focal malignant osteoid; negative for EWSR1::FLI1.",
+       "Telangiectatic osteosarcoma: blood-filled aneurysmal spaces lined by septa containing high-grade sarcomatous cells and fine osteoid."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bone_tumour/osteosarcoma_conv.jpg",
+        "caption": "Conventional high-grade osteosarcoma: markedly pleomorphic malignant mesenchymal cells directly producing irregular lace-like eosinophilic neoplastic osteoid (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Osteosarcoma_-_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/bone_tumour/osteosarcoma_small_cell.jpg",
+        "caption": "Small cell osteosarcoma: sheets of uniform small round blue cells accompanied by delicate lace-like malignant osteoid; lacks EWSR1 rearrangement (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Small_cell_osteosarcoma_-_high_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Conventional Osteosarcoma",
+        "url": "https://app.expertpath.com/"
+       },
+       {
+        "label": "ExpertPath: Small Cell Osteosarcoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Low-grade osteosarcomas (parosteal, low-grade central) and osteoblastoma",
+      "points": [
+       "Parosteal and low-grade central osteosarcoma (G1): parallel/anastomosing woven bone trabeculae in a bland fibroblastic spindle cell stroma; MDM2 amplification (12q13–15) distinguishes them from fibrous dysplasia and osteoblastoma.",
+       "Look closely for high-grade transformation (dedifferentiation), which upgrades the tumour to G3.",
+       "Osteoblastoma: benign/locally aggressive (not staged); well-circumscribed anastomosing woven bone rimmed by plump osteoblasts with FOS/FOSB rearrangements."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bone_tumour/osteosarcoma_parosteal.jpg",
+        "caption": "Parosteal osteosarcoma: parallel (\"streamer-like\") woven and lamellar bone trabeculae separated by a bland, low-grade fibroblastic spindle cell stroma (MDM2 amplified) (H&E).",
+        "credit": "藤澤孝志",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Parosteal_osteosarcoma.jpg"
+       },
+       {
+        "src": "assets/reference/bone_tumour/osteoblastoma.jpg",
+        "caption": "Osteoblastoma: anastomosing woven bone trabeculae rimmed by plump benign osteoblasts within a loose fibrovascular stroma; lacks permeation of native bone (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Osteoblastoma_-_high_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Parosteal Osteosarcoma",
+        "url": "https://app.expertpath.com/"
+       },
+       {
+        "label": "ExpertPath: Osteoblastoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Chondrosarcoma (conventional, dedifferentiated, mesenchymal, clear cell)",
+      "points": [
+       "Conventional chondrosarcoma / ACT: hyaline cartilage lobules permeating host lamellar bone trabeculae (IDH1/IDH2 mutations in ~50% of central tumours).",
+       "Dedifferentiated chondrosarcoma (G3): abrupt bimorphic interface between low-grade cartilage and a high-grade non-cartilaginous sarcoma (UPS, osteosarcoma or fibrosarcoma-like).",
+       "Mesenchymal chondrosarcoma (G3): biphasic sheets of small round cells with islands of hyaline cartilage and staghorn vessels (HEY1::NCOA2 fusion)."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bone_tumour/chondrosarcoma_dediff.jpg",
+        "caption": "Dedifferentiated chondrosarcoma: abrupt transition from well-differentiated hyaline cartilage (bottom right) to a high-grade pleomorphic non-cartilaginous sarcoma (upper left) (H&E).",
+        "credit": "Sarahkayb",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Bone_Chondrosarcoma_Dedifferentiated_HP_PA.jpg"
+       },
+       {
+        "src": "assets/reference/bone_tumour/chondrosarcoma_mesench.jpg",
+        "caption": "Mesenchymal chondrosarcoma: biphasic tumour with sheets of undifferentiated small round blue cells sharply juxtaposed against islands of hyaline cartilage (HEY1::NCOA2) (H&E).",
+        "credit": "Sarahkayb",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Bone_Chondrosarcoma_Mesenchymal_MP5_PA.JPG"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Chondrosarcoma",
+        "url": "https://app.expertpath.com/"
+       },
+       {
+        "label": "ExpertPath: Dedifferentiated Chondrosarcoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Undifferentiated small round cell sarcomas (Ewing, CIC, BCOR, EWSR1::non-ETS)",
+      "points": [
+       "Ewing sarcoma (G3): uniform small round cells with crisp diffuse membranous CD99, nuclear NKX2.2 and FET::ETS fusion (most commonly EWSR1::FLI1).",
+       "WHO 5th edition separates CIC-rearranged sarcoma, BCOR-altered sarcoma and EWSR1::non-ETS round cell sarcoma as distinct entities."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bone_tumour/ewing_sarcoma.jpg",
+        "caption": "Ewing sarcoma: uniform sheets of small round cells with scant pale cytoplasm and finely stippled chromatin; diffuse membranous CD99 and NKX2.2 positive (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Ewing_sarcoma_-_high_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Ewing Sarcoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Notochordal tumours (conventional, poorly differentiated and dedifferentiated chordoma)",
+      "points": [
+       "Conventional chordoma: midline axial skeleton (sacrum, clivus, mobile spine); cords of vacuolated physaliphorous cells in myxoid stroma; positive for brachyury (TBXT), pan-CK, EMA and S100.",
+       "Poorly differentiated chordoma: sheets of epithelioid/rhabdoid cells with brachyury positivity and characteristic loss of SMARCB1 (INI1)."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bone_tumour/chordoma.jpg",
+        "caption": "Conventional chordoma: cords and nests of epithelioid cells with multivacuolated bubbly cytoplasm (physaliphorous cells) in abundant basophilic myxoid stroma; brachyury positive (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Chordoma_--_high_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Chordoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Giant cell tumour of bone (GCTB) and malignant GCTB",
+      "points": [
+       "GCTB (not staged as sarcoma): epiphyseal-metaphyseal lesion with evenly spaced osteoclast-like giant cells and mononuclear stromal cells carrying H3F3A (H3-3A) p.Gly34Trp (G34W) mutation.",
+       "Malignant GCTB (primary or secondary): high-grade sarcoma juxtaposed with typical GCTB or arising at a prior GCTB site."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bone_tumour/gct_bone.jpg",
+        "caption": "Giant cell tumour of bone: uniformly distributed large osteoclast-like multinucleated giant cells admixed with round-to-oval mononuclear stromal cells (H3F3A G34W positive) (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Giant_cell_tumour_of_bone_-_high_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Giant Cell Tumor of Bone",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Adamantinoma of long bones",
+      "points": [
+       "Classic diaphyseal tibial lesion: islands and cords of basaloid/squamoid/tubular epithelial cells (pan-CK and p63 positive) in an osteofibrous stroma.",
+       "Osteofibrous dysplasia-like adamantinoma has smaller isolated epithelial strands; dedifferentiated adamantinoma contains a high-grade sarcomatous component."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bone_tumour/adamantinoma.jpg",
+        "caption": "Adamantinoma of long bones: nests and cords of basaloid/epithelial tumour cells with peripheral palisading embedded in a bland osteofibrous stroma; CK positive (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Adamantinoma_-_intermed_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Adamantinoma of Long Bones",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Vascular and other primary bone sarcomas",
+      "points": [
+       "Epithelioid haemangioma (not staged) vs epithelioid haemangioendothelioma (WWTR1::CAMTA1 or YAP1::TFE3) vs angiosarcoma of bone (CD31/ERG positive, marked atypia and vasoformative/solid sheets).",
+       "Primary leiomyosarcoma, rhabdomyosarcoma and undifferentiated pleomorphic sarcoma (UPS) of bone are diagnoses of exclusion requiring sampling to rule out dedifferentiated chondrosarcoma or osteosarcoma."
+      ]
+     }
+    ],
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Histologic type / precipitating factor / fusion (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "e.g. osteoblastic subtype; arising in Paget disease; EWSR1::NFATC2",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Chondrosarcoma, secondary (specify)",
+     "Secondary osteosarcoma (specify)",
+     "Round cell sarcoma with EWSR1::non-ETS fusions (specify)",
+     "Rhabdomyosarcoma of bone (specify)",
+     "TK-fusion (NTRK, ALK, BRAF) tumour, primary intraosseous (specify)",
+     "Other histologic type not listed (specify)",
+     "Cannot be determined"
+    ]
+   }
+  },
+  {
+   "id": "osteosarcomaSubtype",
+   "label": "Conventional osteosarcoma subtype (optional)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "",
+    "Osteoblastic",
+    "Chondroblastic",
+    "Fibroblastic"
+   ],
+   "showIf": {
+    "field": "histType",
+    "is": "Conventional osteosarcoma"
+   }
+  },
+  {
+   "id": "histGrade",
+   "label": "Histologic grade (AJCC 8th / CAP 4.2.0.0)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "G1: Well differentiated, low grade",
+    "G2: Moderately differentiated, high grade",
+    "G3: Poorly differentiated, high grade",
+    "GX: Cannot be assessed",
+    "Not applicable"
+   ],
+   "help": "AJCC 8th groups G1 as low grade and G2–G3 as high grade. Conventional, telangiectatic, small cell, high-grade surface and dedifferentiated sarcomas and Ewing sarcoma are G3 (high grade); parosteal and low-grade central osteosarcoma are G1 (unless high-grade transformation).",
+   "reference": {
+    "title": "Histologic grading of bone sarcomas (AJCC 8th / WHO 5th)",
+    "intro": "AJCC 8th edition uses a 3-tier system (G1 = low grade; G2 and G3 = high grade for stage grouping). Grade is assigned by histologic type for most bone sarcomas and by 3-tier morphology for conventional chondrosarcoma.",
+    "groups": [
+     {
+      "heading": "G1: Well differentiated, low grade",
+      "points": [
+       "Grade 1 chondrosarcoma / atypical cartilaginous tumour (ACT): low-to-moderate cellularity, small uniform hyperchromatic nuclei, occasional binucleation, abundant hyaline matrix, no mitoses or necrosis.",
+       "Grade-by-definition G1 osteosarcomas: parosteal osteosarcoma and low-grade central osteosarcoma (without high-grade transformation)."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bone_tumour/osteosarcoma_parosteal.jpg",
+        "caption": "Parosteal osteosarcoma: parallel (\"streamer-like\") woven and lamellar bone trabeculae separated by a bland, low-grade fibroblastic spindle cell stroma (MDM2 amplified) (H&E).",
+        "credit": "藤澤孝志",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Parosteal_osteosarcoma.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Chondrosarcoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "G2: Moderately differentiated, high grade (for AJCC staging)",
+      "points": [
+       "Grade 2 chondrosarcoma: increased cellularity, larger plump vesicular/hyperchromatic nuclei with visible nucleoli, frequent binucleation, myxoid matrix change, rare mitoses (< 2 per 10 HPF), and focal necrosis.",
+       "Periosteal osteosarcoma is classically intermediate grade (G2). Note: AJCC 8th edition groups G2 with G3 as high grade for appendicular stage grouping (IIA/IIB/III)."
+      ]
+     },
+     {
+      "heading": "G3: Poorly differentiated, high grade",
+      "points": [
+       "Grade 3 chondrosarcoma: high cellularity, marked nuclear pleomorphism, spindle-cell peripheral zones, brisk mitotic activity (>= 2 per 10 HPF), extensive myxoid change and necrosis.",
+       "Grade-by-definition G3 bone sarcomas: conventional, telangiectatic, small cell and high-grade surface osteosarcoma; dedifferentiated and mesenchymal chondrosarcoma; Ewing, CIC and BCOR sarcomas; poorly differentiated/dedifferentiated chordoma; angiosarcoma; UPS."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bone_tumour/osteosarcoma_conv.jpg",
+        "caption": "Conventional high-grade osteosarcoma: markedly pleomorphic malignant mesenchymal cells directly producing irregular lace-like eosinophilic neoplastic osteoid (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Osteosarcoma_-_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/bone_tumour/chondrosarcoma_dediff.jpg",
+        "caption": "Dedifferentiated chondrosarcoma: abrupt transition from well-differentiated hyaline cartilage (bottom right) to a high-grade pleomorphic non-cartilaginous sarcoma (upper left) (H&E).",
+        "credit": "Sarahkayb",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Bone_Chondrosarcoma_Dedifferentiated_HP_PA.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Conventional Osteosarcoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ],
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
+  },
+  {
+   "id": "mitoticCount",
+   "label": "Mitotic rate",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "e.g. 14",
+   "help": "Count in 10 most active fields (22 mm eyepiece at 40x objective: divide by 1.373 for 10 traditional HPF, or report per mm²)."
+  },
+  {
+   "id": "mitoticUnit",
+   "label": "Mitotic rate unit",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "per 10 HPF",
+   "options": [
+    "per 10 HPF",
+    "per mm²"
+   ]
+  },
+  {
+   "id": "necrosis",
+   "label": "Necrosis (in the absence of neoadjuvant therapy)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "necrosisPct",
+   "label": "Necrosis extent (%, optional)",
+   "type": "number",
+   "min": 0,
+   "max": 100,
+   "step": 1,
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "necrosis",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry (typed, one or more sentences)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "e.g. Tumour cells are positive for SATB2 and negative for S100 and pan-cytokeratin."
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Tumour histology (replaces the generated paragraph)",
+   "type": "textarea",
+   "group": "Microscopic findings",
+   "default": "",
+   "help": "Leave blank to use the paragraph built from the fields above."
+  },
+  {
+   "id": "marginsText",
+   "label": "Surgical margins (one per line)",
+   "type": "textarea",
+   "group": "Margins",
+   "default": "",
+   "placeholder": "Proximal bone marrow: 35 (block 13)\nMedial soft tissue: 4 (block 14)\nLateral soft tissue: >15 (block 15)",
+   "help": "\"Name: distance in mm or status (blocks)\". A number prints as clearance in mm; \"involved\", \"<1\" or \"clear\" prints as written."
+  },
+  {
+   "id": "marginsNotAssessable",
+   "label": "Surgical margins cannot be assessed",
+   "type": "checkbox",
+   "group": "Margins",
+   "default": false
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "help": "Leave blank if no regional lymph nodes were submitted (pN is then omitted from printed pTNM)."
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "nodesExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "type": "select",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Size of largest metastatic deposit (mm)",
+   "type": "number",
+   "min": 0,
+   "step": 0.1,
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "largestNodeMm",
+   "label": "Size of largest involved lymph node (mm)",
+   "type": "number",
+   "min": 0,
+   "step": 0.1,
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "nodeSites",
+   "label": "Nodal site(s)",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "placeholder": "e.g. right inguinal",
+   "showIf": {
+    "field": "nodesExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis",
+   "type": "multiselect",
+   "group": "Lymph nodes and metastasis",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Lung",
+    "Bone",
+    "Non-regional lymph node(s)",
+    "Other (specify)",
+    "Cannot be determined"
+   ],
+   "exclusive": [
+    "Not applicable",
+    "Not identified",
+    "Cannot be determined"
+   ],
+   "help": "Pathologically confirmed only: Lung alone = pM1a; Bone, non-regional lymph node(s) or other site = pM1b."
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Distant metastasis: specify site(s)",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "any": [
+     {
+      "field": "distantMets",
+      "is": "Lung"
+     },
+     {
+      "field": "distantMets",
+      "is": "Bone"
+     },
+     {
+      "field": "distantMets",
+      "is": "Non-regional lymph node(s)"
+     },
+     {
+      "field": "distantMets",
+      "is": "Other (specify)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "preresection",
+   "label": "Preresection treatment",
+   "type": "multiselect",
+   "group": "Additional findings",
+   "default": [
+    "No known preresection therapy"
+   ],
+   "options": [
+    "No known preresection therapy",
+    "Chemotherapy performed",
+    "Radiation therapy performed",
+    "Therapy performed, type not specified",
+    "Not specified"
+   ],
+   "exclusive": [
+    "No known preresection therapy",
+    "Not specified"
+   ],
+   "help": "Chemotherapy, radiation therapy or unspecified therapy adds the y prefix (ypT)."
+  },
+  {
+   "id": "treatmentEffect",
+   "label": "Treatment effect",
+   "type": "select",
+   "group": "Additional findings",
+   "default": "No known presurgical therapy",
+   "options": [
+    "No known presurgical therapy",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "reference": {
+    "title": "Neoadjuvant treatment effect in bone sarcomas (CAP 4.2.0.0 / Huvos)",
+    "intro": "Post-neoadjuvant histological response is one of the strongest independent prognostic factors in conventional osteosarcoma and Ewing sarcoma. Sample a full representative slab across the greatest tumour plane and map blocks to a gross photograph.",
+    "groups": [
+     {
+      "heading": "Good histological response (>= 90% necrosis / <= 10% viable tumour)",
+      "points": [
+       "CAP Bone 4.2.0.0 expresses response as % treatment-related necrosis (= 100% minus % viable tumour); QMH records % viable tumour.",
+       "In osteosarcoma, >= 90% necrosis (<= 10% viable tumour; Huvos grade III–IV) predicts significantly improved event-free and overall survival."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Conventional Osteosarcoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Poor histological response (< 90% necrosis / > 10% viable tumour)",
+      "points": [
+       "Sheets or confluent nests of viable pleomorphic tumour cells with intact nuclear detail and mitotic figures remaining across > 10% of the mapped tumour area.",
+       "Record the estimated percentage across the entire mapped cross-section, not from a single block."
+      ]
+     },
+     {
+      "heading": "Recognising treatment-related change vs viable tumour",
+      "points": [
+       "Non-viable tumour: coagulative/geographic necrosis, acellular/hyalinised osteoid or chondroid matrix with empty lacunae, loose fibrous replacement, haemorrhage, haemosiderin and foamy histiocytes.",
+       "Residual acellular osteoid without viable malignant cells counts as non-viable (necrotic/treated) tumour."
+      ]
+     }
+    ],
+    "note": "No openly licensed bone sarcoma post-chemotherapy histology photograph was included; criteria follow CAP Bone 4.2.0.0 and Huvos grading. ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
+  },
+  {
+   "id": "viablePct",
+   "label": "Viable tumour (%)",
+   "type": "number",
+   "min": 0,
+   "max": 100,
+   "step": 1,
+   "group": "Additional findings",
+   "default": "",
+   "showIf": {
+    "field": "treatmentEffect",
+    "is": "Present"
+   },
+   "help": "QMH records % viable tumour (CAP Bone 4.2.0.0 expresses treatment-related necrosis as 100% minus viable %; >= 90% necrosis / <= 10% viable tumour is a good histological response in osteosarcoma)."
+  },
+  {
+   "id": "treatmentFeatures",
+   "label": "Treatment effect, features",
+   "type": "multiselect",
+   "group": "Additional findings",
+   "default": [],
+   "options": [
+    "Geographic necrosis",
+    "Fibrosis",
+    "Hyalinisation",
+    "Haemorrhage",
+    "Cystic change",
+    "Histiocytic response",
+    "Inflammation",
+    "Other (specify)"
+   ],
+   "showIf": {
+    "field": "treatmentEffect",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "treatmentFeaturesOther",
+   "label": "Treatment effect, feature (specify)",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "showIf": {
+    "field": "treatmentFeatures",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "otherFindings",
+   "label": "Other pathologic findings",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "placeholder": "e.g. Background Paget disease of bone; overlying biopsy tract uninvolved"
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "type": "textarea",
+   "group": "Additional findings",
+   "default": "",
+   "help": "Printed at the end of the synoptic report."
+  },
+  {
+   "id": "ewsr1",
+   "label": "EWSR1 rearrangement (FISH / molecular)",
+   "type": "select",
+   "group": "Molecular findings",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "EWSR1 rearrangement detected",
+    "EWSR1::FLI1 fusion detected",
+    "EWSR1::ERG fusion detected",
+    "No EWSR1 rearrangement detected",
+    "Pending"
+   ]
+  },
+  {
+   "id": "mdm2",
+   "label": "MDM2 amplification (FISH)",
+   "type": "select",
+   "group": "Molecular findings",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Amplification detected",
+    "No amplification detected",
+    "Pending"
+   ]
+  },
+  {
+   "id": "idh",
+   "label": "IDH1 / IDH2 mutation",
+   "type": "select",
+   "group": "Molecular findings",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "IDH1 mutation detected",
+    "IDH2 mutation detected",
+    "No IDH1 or IDH2 mutation detected",
+    "Pending"
+   ]
+  },
+  {
+   "id": "molecularOther",
+   "label": "Other molecular / cytogenetic studies",
+   "type": "text",
+   "group": "Molecular findings",
+   "default": "",
+   "placeholder": "e.g. H3F3A p.Gly34Trp mutation detected; SMARCB1 (INI1) loss"
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "type": "text",
+   "group": "Staging",
+   "default": "",
+   "placeholder": "e.g. ypT2 pN0",
+   "help": "Replaces the derived pTNM; give the reason below."
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "pTNM override: reason",
+   "type": "text",
+   "group": "Staging",
+   "default": "",
+   "showIf": {
+    "field": "tnmOverride",
+    "not": ""
+   }
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01580",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "",
+     "procedure": "Segmental / wide resection",
+     "procedureOther": "",
+     "siteGroup": "Appendicular skeleton, trunk, skull, and facial bones",
+     "site": "distal right femur",
+     "locationExtent": [
+      "Metaphysis",
+      "Medullary cavity",
+      "Cortical",
+      "Tumour extension into soft tissue"
+     ],
+     "tumourSizeMm": "95",
+     "tumourDims": "95 x 62 x 54",
+     "sizeAtLeast": false,
+     "sizeReason": "",
+     "discontinuous": false,
+     "spineExtent": "",
+     "pelvisExtent": "",
+     "noPrimary": false,
+     "specimenDims": "18 x 9 x 8",
+     "orientation": "includes distal femoral articular surface and overlying biopsy tract",
+     "cutSurface": [
+      "Gritty / ossified",
+      "Necrotic"
+     ],
+     "cortexStatus": "Cortical destruction with soft tissue extension",
+     "macroMarginMm": "6",
+     "macroMarginSite": "medial soft tissue margin",
+     "decalcification": "Formic acid",
+     "blocks": "16",
+     "blockKeyText": "1-12 Slab-mapped tumour cross-section\n13 Proximal bone marrow margin\n14 Medial soft tissue margin\n15 Anterior soft tissue margin\n16 Biopsy tract",
+     "histType": "Conventional osteosarcoma",
+     "histTypeOther": "",
+     "osteosarcomaSubtype": "Osteoblastic",
+     "histGrade": "G3: Poorly differentiated, high grade",
+     "mitoticCount": "14",
+     "mitoticUnit": "per 10 HPF",
+     "necrosis": "Not identified",
+     "necrosisPct": "",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "ihcText": "",
+     "histologyNotes": "",
+     "marginsText": "Proximal bone marrow: 35 (block 13)\nMedial soft tissue: 6 (block 14)\nAnterior soft tissue: >15 (block 15)\nBiopsy tract: uninvolved (block 16)",
+     "marginsNotAssessable": false,
+     "nodesExamined": "",
+     "nodesInvolved": "",
+     "ene": "",
+     "largestDepositMm": "",
+     "largestNodeMm": "",
+     "nodeSites": "",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "distantMetsOther": "",
+     "preresection": [
+      "Chemotherapy performed"
+     ],
+     "treatmentEffect": "Present",
+     "viablePct": "5",
+     "treatmentFeatures": [
+      "Geographic necrosis",
+      "Fibrosis",
+      "Hyalinisation"
+     ],
+     "treatmentFeaturesOther": "",
+     "otherFindings": "",
+     "additionalNotes": "",
+     "ewsr1": "Not performed",
+     "mdm2": "Not performed",
+     "idh": "Not performed",
+     "molecularOther": "",
+     "multiplePrimaries": false,
+     "recurrent": false,
+     "tnmOverride": "",
+     "tnmOverrideReason": ""
+    }
+   }
+  ]
+ }
+}

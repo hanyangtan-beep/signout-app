@@ -1,0 +1,91 @@
+{
+  "description": "right internal hemipelvectomy for grade 2 chondrosarcoma, 115 mm, 2 pelvic segments with extraosseous extension, IDH1 mutation, pT3b",
+  "templateId": "bone_tumour",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "specimenName": "",
+      "procedure": "Segmental / wide resection",
+      "procedureOther": "",
+      "siteGroup": "Pelvis",
+      "site": "right ilium and acetabulum",
+      "locationExtent": [
+        "Medullary cavity",
+        "Cortical",
+        "Tumour extension into soft tissue"
+      ],
+      "tumourSizeMm": "115",
+      "tumourDims": "115 x 85 x 70",
+      "sizeAtLeast": false,
+      "sizeReason": "",
+      "discontinuous": false,
+      "spineExtent": "",
+      "pelvisExtent": "Spans 2 pelvic segments with extraosseous extension",
+      "noPrimary": false,
+      "specimenDims": "20 x 14 x 10",
+      "orientation": "internal hemipelvectomy specimen",
+      "cutSurface": [
+        "Lobulated blue-grey cartilaginous"
+      ],
+      "cortexStatus": "Cortical destruction with soft tissue extension",
+      "macroMarginMm": "2",
+      "macroMarginSite": "posterior sacral osteotomy margin",
+      "decalcification": "Formic acid",
+      "blocks": "14",
+      "blockKeyText": "1-10 Tumour\n11-12 Osteotomy margins\n13-14 Soft tissue margins",
+      "histType": "Chondrosarcoma",
+      "histTypeOther": "",
+      "osteosarcomaSubtype": "",
+      "histGrade": "G2: Moderately differentiated, high grade",
+      "mitoticCount": "4",
+      "mitoticUnit": "per 10 HPF",
+      "necrosis": "Present",
+      "necrosisPct": "15",
+      "lvi": "Not identified",
+      "pni": "Not identified",
+      "ihcText": "",
+      "histologyNotes": "",
+      "marginsText": "Posterior osteotomy: 2 (block 11)\nAnterior pubis osteotomy: 18 (block 12)\nSoft tissue: 10 (block 13)",
+      "marginsNotAssessable": false,
+      "nodesExamined": "",
+      "nodesInvolved": "",
+      "ene": "",
+      "largestDepositMm": "",
+      "largestNodeMm": "",
+      "nodeSites": "",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "distantMetsOther": "",
+      "preresection": [
+        "No known preresection therapy"
+      ],
+      "treatmentEffect": "No known presurgical therapy",
+      "viablePct": "",
+      "treatmentFeatures": [],
+      "treatmentFeaturesOther": "",
+      "otherFindings": "",
+      "additionalNotes": "",
+      "ewsr1": "Not performed",
+      "mdm2": "Not performed",
+      "idh": "IDH1 mutation detected",
+      "molecularOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Right ilium and acetabulum, segmental / wide resection\n\nReceived in formalin is a segmental / wide resection specimen of the right ilium and acetabulum measuring 20 x 14 x 10 cm (internal hemipelvectomy specimen). Sectioning shows a lobulated blue-grey cartilaginous tumour measuring 115 x 85 x 70 mm. The tumour destroys the cortex and extends into the adjacent soft tissue. Macroscopically, the tumour lies 2 mm from the closest (posterior sacral osteotomy margin) margin. Representative sections are taken in 14 blocks after formic acid decalcification.\n\n(1-10) Tumour.\n(11-12) Osteotomy margins.\n(13-14) Soft tissue margins.\n\nSpecimen and tumour\n- Procedure: Segmental / wide resection\n- Tumour site: Pelvis (right ilium and acetabulum)\n- Tumour location and extent: Medullary cavity; Cortical; Tumour extension into\n  soft tissue\n- Tumour size: 115 mm (greatest dimension)\n  - All dimensions: 115 x 85 x 70 mm\n- Pelvic extent: Spans 2 pelvic segments with extraosseous extension\n\nMicroscopic findings\n- Histologic type: Chondrosarcoma\n- Histologic grade: G2: Moderately differentiated, high grade\n- Mitotic rate: 4 per 10 HPF\n- Necrosis (in absence of neoadjuvant therapy): Present (15%)\n- Treatment effect: No known presurgical therapy\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n- Tumour histology:\n  Sections of the right ilium and acetabulum show chondrosarcoma. Lobules of malignant hyaline cartilage show increased cellularity, nuclear atypia, binucleation and permeation of host bone trabeculae with entrapment of pre-existing bone.\n\nMargins\n- Surgical margins: Uninvolved by tumour\n  - Posterior osteotomy: Uninvolved, 2 mm (block 11)\n  - Anterior pubis osteotomy: Uninvolved, 18 mm (block 12)\n  - Soft tissue: Uninvolved, 10 mm (block 13)\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT3b\n\nAdditional findings\n- Preresection treatment: No known preresection therapy\n\nMolecular studies\n- IDH1 / IDH2: IDH1 mutation detected\n\nRIGHT ILIUM AND ACETABULUM, segmental / wide resection:\n- CHONDROSARCOMA, grade 2, 115 mm\n- Margins clear (closest 2 mm, posterior osteotomy)\n- pT3b (AJCC 8th edition).",
+  "checks": [
+    {
+      "level": "info",
+      "message": "AJCC 8th edition defines no prognostic stage groups for primary bone sarcomas of the pelvis.",
+      "part": "A"
+    }
+  ]
+}

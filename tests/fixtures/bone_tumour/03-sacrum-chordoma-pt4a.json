@@ -1,0 +1,92 @@
+{
+  "description": "en bloc sacrectomy for conventional chordoma, 72 mm, spinal canal extension, involved anterior epidural margin, pT4a",
+  "templateId": "bone_tumour",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "specimenName": "",
+      "procedure": "Segmental / wide resection",
+      "procedureOther": "",
+      "siteGroup": "Spine",
+      "site": "S2-S4 sacrum",
+      "locationExtent": [
+        "Medullary cavity",
+        "Cortical",
+        "Tumour extension into soft tissue"
+      ],
+      "tumourSizeMm": "72",
+      "tumourDims": "72 x 58 x 45",
+      "sizeAtLeast": false,
+      "sizeReason": "",
+      "discontinuous": false,
+      "spineExtent": "Extension into the spinal canal",
+      "pelvisExtent": "",
+      "noPrimary": false,
+      "specimenDims": "11 x 9 x 7",
+      "orientation": "en bloc sacrectomy specimen",
+      "cutSurface": [
+        "Gelatinous / myxoid",
+        "Haemorrhagic"
+      ],
+      "cortexStatus": "Cortical destruction with soft tissue extension",
+      "macroMarginMm": "0",
+      "macroMarginSite": "anterior epidural margin",
+      "decalcification": "Formic acid",
+      "blocks": "12",
+      "blockKeyText": "1-9 Tumour\n10 Proximal sacral osteotomy\n11-12 Anterior epidural margin",
+      "histType": "Conventional chordoma",
+      "histTypeOther": "",
+      "osteosarcomaSubtype": "",
+      "histGrade": "Not applicable",
+      "mitoticCount": "2",
+      "mitoticUnit": "per 10 HPF",
+      "necrosis": "Not identified",
+      "necrosisPct": "",
+      "lvi": "Not identified",
+      "pni": "Not identified",
+      "ihcText": "Tumour cells are diffusely positive for brachyury, pan-cytokeratin (AE1/AE3) and S100.",
+      "histologyNotes": "",
+      "marginsText": "Anterior epidural: involved (block 11)\nProximal sacral osteotomy: 12 (block 10)",
+      "marginsNotAssessable": false,
+      "nodesExamined": "",
+      "nodesInvolved": "",
+      "ene": "",
+      "largestDepositMm": "",
+      "largestNodeMm": "",
+      "nodeSites": "",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "distantMetsOther": "",
+      "preresection": [
+        "No known preresection therapy"
+      ],
+      "treatmentEffect": "No known presurgical therapy",
+      "viablePct": "",
+      "treatmentFeatures": [],
+      "treatmentFeaturesOther": "",
+      "otherFindings": "",
+      "additionalNotes": "",
+      "ewsr1": "Not performed",
+      "mdm2": "Not performed",
+      "idh": "Not performed",
+      "molecularOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "S2-S4 sacrum, segmental / wide resection\n\nReceived in formalin is a segmental / wide resection specimen of the S2-S4 sacrum measuring 11 x 9 x 7 cm (en bloc sacrectomy specimen). Sectioning shows a gelatinous / myxoid and haemorrhagic tumour measuring 72 x 58 x 45 mm. The tumour destroys the cortex and extends into the adjacent soft tissue. Macroscopically, the tumour lies 0 mm from the closest (anterior epidural margin) margin. Representative sections are taken in 12 blocks after formic acid decalcification.\n\n(1-9) Tumour.\n(10) Proximal sacral osteotomy.\n(11-12) Anterior epidural margin.\n\nSpecimen and tumour\n- Procedure: Segmental / wide resection\n- Tumour site: Spine (S2-S4 sacrum)\n- Tumour location and extent: Medullary cavity; Cortical; Tumour extension into\n  soft tissue\n- Tumour size: 72 mm (greatest dimension)\n  - All dimensions: 72 x 58 x 45 mm\n- Vertebral extent: Extension into the spinal canal\n\nMicroscopic findings\n- Histologic type: Conventional chordoma\n- Histologic grade: Not applicable\n- Mitotic rate: 2 per 10 HPF\n- Necrosis (in absence of neoadjuvant therapy): Not identified\n- Treatment effect: No known presurgical therapy\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n- Tumour histology:\n  Sections of the S2-S4 sacrum show conventional chordoma. Lobules of cords and nests of epithelioid cells with prominent intracytoplasmic vacuoles (physaliphorous cells) lie within an abundant basophilic myxoid stroma. Tumour cells are diffusely positive for brachyury, pan-cytokeratin (AE1/AE3) and S100.\n\nMargins\n- Surgical margins: Involved by tumour (anterior epidural)\n  - Anterior epidural: involved (block 11)\n  - Proximal sacral osteotomy: Uninvolved, 12 mm (block 10)\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT4a\n\nAdditional findings\n- Preresection treatment: No known preresection therapy\n\nS2-S4 SACRUM, segmental / wide resection:\n- CONVENTIONAL CHORDOMA, 72 mm\n- Surgical margin involved by tumour (anterior epidural)\n- pT4a (AJCC 8th edition).",
+  "checks": [
+    {
+      "level": "info",
+      "message": "AJCC 8th edition defines no prognostic stage groups for primary bone sarcomas of the spine.",
+      "part": "A"
+    }
+  ]
+}

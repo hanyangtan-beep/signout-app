@@ -1,0 +1,103 @@
+{
+  "description": "distal right femur segmental resection for post-neoadjuvant conventional osteoblastic osteosarcoma, 95 mm, 95% necrosis, clear margins, ypT2 (example)",
+  "templateId": "bone_tumour",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "specimenName": "",
+      "procedure": "Segmental / wide resection",
+      "procedureOther": "",
+      "siteGroup": "Appendicular skeleton, trunk, skull, and facial bones",
+      "site": "distal right femur",
+      "locationExtent": [
+        "Metaphysis",
+        "Medullary cavity",
+        "Cortical",
+        "Tumour extension into soft tissue"
+      ],
+      "tumourSizeMm": "95",
+      "tumourDims": "95 x 62 x 54",
+      "sizeAtLeast": false,
+      "sizeReason": "",
+      "discontinuous": false,
+      "spineExtent": "",
+      "pelvisExtent": "",
+      "noPrimary": false,
+      "specimenDims": "18 x 9 x 8",
+      "orientation": "includes distal femoral articular surface and overlying biopsy tract",
+      "cutSurface": [
+        "Gritty / ossified",
+        "Necrotic"
+      ],
+      "cortexStatus": "Cortical destruction with soft tissue extension",
+      "macroMarginMm": "6",
+      "macroMarginSite": "medial soft tissue margin",
+      "decalcification": "Formic acid",
+      "blocks": "16",
+      "blockKeyText": "1-12 Slab-mapped tumour cross-section\n13 Proximal bone marrow margin\n14 Medial soft tissue margin\n15 Anterior soft tissue margin\n16 Biopsy tract",
+      "histType": "Conventional osteosarcoma",
+      "histTypeOther": "",
+      "osteosarcomaSubtype": "Osteoblastic",
+      "histGrade": "G3: Poorly differentiated, high grade",
+      "mitoticCount": "14",
+      "mitoticUnit": "per 10 HPF",
+      "necrosis": "Not identified",
+      "necrosisPct": "",
+      "lvi": "Not identified",
+      "pni": "Not identified",
+      "ihcText": "",
+      "histologyNotes": "",
+      "marginsText": "Proximal bone marrow: 35 (block 13)\nMedial soft tissue: 6 (block 14)\nAnterior soft tissue: >15 (block 15)\nBiopsy tract: uninvolved (block 16)",
+      "marginsNotAssessable": false,
+      "nodesExamined": "",
+      "nodesInvolved": "",
+      "ene": "",
+      "largestDepositMm": "",
+      "largestNodeMm": "",
+      "nodeSites": "",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "distantMetsOther": "",
+      "preresection": [
+        "Chemotherapy performed"
+      ],
+      "treatmentEffect": "Present",
+      "viablePct": "5",
+      "treatmentFeatures": [
+        "Geographic necrosis",
+        "Fibrosis",
+        "Hyalinisation"
+      ],
+      "treatmentFeaturesOther": "",
+      "otherFindings": "",
+      "additionalNotes": "",
+      "ewsr1": "Not performed",
+      "mdm2": "Not performed",
+      "idh": "Not performed",
+      "molecularOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Distal right femur, segmental / wide resection\n\nReceived in formalin is a segmental / wide resection specimen of the distal right femur measuring 18 x 9 x 8 cm (includes distal femoral articular surface and overlying biopsy tract). Sectioning shows a gritty / ossified and necrotic tumour measuring 95 x 62 x 54 mm. The tumour destroys the cortex and extends into the adjacent soft tissue. Macroscopically, the tumour lies 6 mm from the closest (medial soft tissue margin) margin. Representative sections are taken in 16 blocks after formic acid decalcification.\n\n(1-12) Slab-mapped tumour cross-section.\n(13) Proximal bone marrow margin.\n(14) Medial soft tissue margin.\n(15) Anterior soft tissue margin.\n(16) Biopsy tract.\n\nSpecimen and tumour\n- Procedure: Segmental / wide resection\n- Tumour site: Appendicular skeleton, trunk, skull, and facial bones (distal\n  right femur)\n- Tumour location and extent: Metaphysis; Medullary cavity; Cortical; Tumour\n  extension into soft tissue\n- Tumour size: 95 mm (greatest dimension)\n  - All dimensions: 95 x 62 x 54 mm\n\nMicroscopic findings\n- Histologic type: Conventional osteosarcoma (osteoblastic subtype)\n- Histologic grade: G3: Poorly differentiated, high grade\n- Mitotic rate: 14 per 10 HPF\n- Necrosis (in absence of neoadjuvant therapy): Not identified\n- Treatment effect: Present (5% viable tumour (95% treatment-related necrosis);\n  geographic necrosis, fibrosis and hyalinisation)\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Not identified\n- Tumour histology:\n  Sections of the distal right femur show conventional osteosarcoma (osteoblastic subtype). Proliferating pleomorphic, hyperchromatic malignant mesenchymal cells directly produce irregular lace-like and trabecular neoplastic osteoid.\n\nMargins\n- Surgical margins: Uninvolved by tumour\n  - Proximal bone marrow: Uninvolved, 35 mm (block 13)\n  - Medial soft tissue: Uninvolved, 6 mm (block 14)\n  - Anterior soft tissue: >15 (block 15)\n  - Biopsy tract: uninvolved (block 16)\n\nPathological stage (AJCC 8th edition)\n- pTNM: ypT2\n\nAdditional findings\n- Preresection treatment: Chemotherapy performed\n\nDISTAL RIGHT FEMUR, segmental / wide resection:\n- CONVENTIONAL OSTEOSARCOMA (osteoblastic subtype), grade 3, 95 mm\n- treatment effect present (95% necrosis / 5% viable tumour)\n- Margins clear (closest 6 mm, medial soft tissue)\n- ypT2 (AJCC 8th edition).",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Osteosarcoma histological response: 95% necrosis (good response, >= 90% necrosis).",
+      "field": "viablePct",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (reference, not reported): Stage IIB (assuming cN0, assuming cM0).",
+      "part": "A"
+    }
+  ]
+}
