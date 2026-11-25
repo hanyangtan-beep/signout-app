@@ -1,0 +1,59 @@
+{
+  "description": "right radical nephrectomy for 52 mm clear cell RCC G2 confined to kidney, margins clear, 4 negative hilar nodes, pT1b pN0 (example)",
+  "templateId": "kidney_carcinoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true,
+    "printNodesMets": false
+  },
+  "values": [
+    {
+      "procedure": "Radical nephrectomy",
+      "laterality": "Right",
+      "weight": "485",
+      "specimenDims": "14.0 x 9.5 x 7.0",
+      "focality": "Unifocal",
+      "site": [
+        "Upper pole"
+      ],
+      "sizeMm": "52",
+      "allDimsMm": "52 x 44 x 38",
+      "grossAppearance": "circumscribed golden-yellow cortical mass with focal haemorrhage",
+      "adrenalGross": "unremarkable and uninvolved by tumour",
+      "blocks": "12",
+      "histType": "Clear cell renal cell carcinoma",
+      "grade": "G2: Nucleoli conspicuous and eosinophilic at 400x, visible but not prominent at 100x",
+      "sarcomatoid": "Not identified",
+      "rhabdoid": "Not identified",
+      "necrosis": "Not identified",
+      "lvi": "Not identified",
+      "pni": "Not assessed",
+      "ihcText": "",
+      "extension": [
+        "Limited to kidney"
+      ],
+      "marginStatus": "All margins uninvolved by invasive carcinoma",
+      "closestMarginMm": "6",
+      "closestMarginSite": "perinephric fat margin",
+      "nodesExamined": "4",
+      "nodesInvolved": "0",
+      "nodeSites": "renal hilar",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "nonNeoplastic": [
+        "Arterionephrosclerosis / vascular disease"
+      ],
+      "blockKeyText": "A1: ureteral and renal vascular margins\nA2-A7: tumour with renal sinus interface and capsule\nA8-A9: non-neoplastic kidney\nA10: adrenal gland\nA11-A12: renal hilar lymph nodes"
+    }
+  ],
+  "report": "Right kidney, radical nephrectomy\n\nReceived in formalin is a right radical nephrectomy specimen weighing 485 g and measuring 14.0 x 9.5 x 7.0 cm. Sectioning reveals a 52 mm (52 x 44 x 38 mm) tumour in the upper pole, circumscribed golden-yellow cortical mass with focal haemorrhage. Adrenal gland: unremarkable and uninvolved by tumour. Sections are submitted in 12 blocks.\n\n(A1) ureteral and renal vascular margins.\n(A2-A7) tumour with renal sinus interface and capsule.\n(A8-A9) non-neoplastic kidney.\n(A10) adrenal gland.\n(A11-A12) renal hilar lymph nodes.\n\nSpecimen and tumour\n- Procedure: Radical nephrectomy\n- Specimen laterality: Right\n- Tumour focality: Unifocal\n- Tumour site: Upper pole\n- Tumour size (greatest dimension): 52 mm (52 x 44 x 38 mm)\n\nMicroscopic findings\n- Histologic type: Clear cell renal cell carcinoma\n- Histologic grade (WHO/ISUP): G2: Nucleoli conspicuous and eosinophilic at\n  400x, visible but not prominent at 100x\n- Sarcomatoid features: Not identified\n- Rhabdoid features: Not identified\n- Tumour necrosis: Not identified\n- Lymphovascular invasion (excluding renal vein / IVC): Not identified\n- Tumour extension: Limited to kidney\n- Tumour histology:\n  Sections of the kidney show clear cell renal cell carcinoma, G2: Nucleoli conspicuous and eosinophilic at 400x, visible but not prominent at 100x. Nests and acini of polygonal tumour cells with optically clear cytoplasm are separated by a delicate branching sinusoidal capillary network.\n\nMargins\n- Surgical margins: All margins uninvolved by invasive carcinoma\n- Distance to closest margin: 6 mm (perinephric fat margin)\n\nLymph nodes\n- Regional lymph nodes: 0 of 4 involved (renal hilar)\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT1b pN0\n\nAdditional findings\n- Non-neoplastic kidney: Arterionephrosclerosis / vascular disease\n\nRIGHT KIDNEY, radical nephrectomy:\n- CLEAR CELL RENAL CELL CARCINOMA, G2: Nucleoli conspicuous and eosinophilic at\n  400x, visible but not prominent at 100x, 52 mm\n- Confined to the kidney\n- Surgical margins clear (closest 6 mm, perinephric fat margin)\n- 0 of 4 regional lymph nodes involved\n- pT1b pN0 (AJCC 8th edition).",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (reference, not reported): Stage I (assuming cM0).",
+      "part": "A"
+    }
+  ]
+}

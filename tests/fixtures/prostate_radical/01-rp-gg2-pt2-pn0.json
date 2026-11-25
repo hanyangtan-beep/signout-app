@@ -1,0 +1,88 @@
+{
+  "description": "radical prostatectomy for conventional acinar adenocarcinoma Grade Group 2 (3+4=7), organ confined, margins clear, 10 negative pelvic nodes, pT2 pN0 (example)",
+  "templateId": "prostate_radical",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "specimenName": "",
+      "procedure": "Radical prostatectomy",
+      "procedureOther": "",
+      "weight": "46",
+      "specimenDims": "4.5 x 4.0 x 3.5",
+      "pctProstate": "15",
+      "dominantNoduleMm": "16",
+      "dominantNoduleDims": "16 x 12 x 10",
+      "dominantNoduleSite": "right posterior peripheral zone",
+      "noPrimary": false,
+      "seminalVesiclesDims": "right seminal vesicle 3.5 cm, left seminal vesicle 3.2 cm, grossly unremarkable",
+      "inked": "Yes",
+      "blocks": "18",
+      "blockKeyText": "1-2 Apical margin\n3-4 Bladder neck margin\n5-16 Whole-mount slices apex to base\n17-18 Seminal vesicles and vasa deferentia",
+      "histType": "Acinar adenocarcinoma, conventional (usual)",
+      "histTypeOther": "",
+      "primary": "3",
+      "secondary": "4",
+      "tertiary": "",
+      "pctPattern4": "25",
+      "pctPattern5": "",
+      "idcp": "Not identified",
+      "cribriform": "Not identified",
+      "epe": "Not identified",
+      "epeLocations": [],
+      "epeOther": "",
+      "bladderNeck": "Not identified",
+      "svi": "Not identified",
+      "adjacentInvasion": "Not identified",
+      "adjacentDetail": "",
+      "lvi": "Not identified",
+      "pni": "Present",
+      "treatmentEffect": "No known presurgical therapy",
+      "treatmentOther": "",
+      "ihcText": "",
+      "histologyNotes": "",
+      "marginStatus": "Uninvolved by invasive carcinoma",
+      "marginLinearMm": "",
+      "marginFocality": "",
+      "marginLocations": [],
+      "marginOther": "",
+      "marginEpe": "",
+      "marginGleason": "",
+      "nodesExamined": "10",
+      "nodesInvolved": "0",
+      "nodeSites": "bilateral pelvic",
+      "ene": "",
+      "largestDepositMm": "",
+      "largestNodeMm": "",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "distantMetsOther": "",
+      "additionalFindings": [
+        "High-grade prostatic intraepithelial neoplasia (HGPIN)",
+        "Nodular prostatic hyperplasia"
+      ],
+      "inflammationType": "",
+      "additionalOther": "",
+      "additionalNotes": "",
+      "mmr": "Not performed",
+      "molecularOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "postTherapy": false,
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Prostate and seminal vesicles, radical prostatectomy\n\nReceived in formalin is a radical prostatectomy specimen weighing 46 g and measuring 4.5 x 4.0 x 3.5 cm. Attached seminal vesicles and vasa deferentia: right seminal vesicle 3.5 cm, left seminal vesicle 3.2 cm, grossly unremarkable. The outer surface is differentially inked (right and left sides) and the prostate is serially sectioned from apex to base. Sectioning shows a dominant tumour nodule in the right posterior peripheral zone measuring 16 mm. Sections are submitted in 18 blocks.\n\n(1-2) Apical margin.\n(3-4) Bladder neck margin.\n(5-16) Whole-mount slices apex to base.\n(17-18) Seminal vesicles and vasa deferentia.\n\nSpecimen and tumour\n- Procedure: Radical prostatectomy\n- Prostate weight: 46 g\n- Prostate dimensions: 4.5 x 4.0 x 3.5 cm\n- Tumour quantitation: 15%\n  - Dominant tumour nodule: 16 mm (all dimensions 16 x 12 x 10 mm, right\n    posterior peripheral zone)\n\nMicroscopic findings\n- Histologic type: Acinar adenocarcinoma, conventional (usual)\n- Histologic grade: Grade Group 2 (Gleason score 3 + 4 = 7)\n  - Primary Gleason pattern: Pattern 3\n  - Secondary Gleason pattern: Pattern 4\n  - Percentage of pattern 4: 25%\n- Intraductal carcinoma (IDC-P): Not identified\n- Cribriform glands: Not identified\n- Extraprostatic extension (EPE): Not identified\n- Urinary bladder neck invasion: Not identified\n- Seminal vesicle invasion: Not identified\n- Lymphovascular invasion: Not identified\n- Perineural invasion: Present\n- Treatment effect: No known presurgical therapy\n- Tumour histology:\n  Sections of the prostate show acinar adenocarcinoma, conventional (usual), Grade Group 2 (Gleason score 3 + 4 = 7). Infiltrating malignant prostatic acini lined by cells with enlarged nuclei, prominent nucleoli and amphophilic cytoplasm lack a basal cell layer.\n\nMargins\n- Surgical margins: Uninvolved by invasive carcinoma\n\nLymph nodes\n- Regional lymph nodes: 0 of 10 involved (bilateral pelvic)\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT2 pN0\n\nAdditional findings\n- Additional pathologic findings: High-grade prostatic intraepithelial neoplasia\n  (HGPIN); Nodular prostatic hyperplasia\n\nPROSTATE AND SEMINAL VESICLES, radical prostatectomy:\n- ACINAR ADENOCARCINOMA, Grade Group 2 (Gleason score 3 + 4 = 7)\n- Organ confined (no extraprostatic extension or seminal vesicle invasion)\n- Surgical margins clear\n- 0 of 10 regional lymph nodes involved\n- pT2 pN0 (AJCC 8th edition).",
+  "checks": [
+    {
+      "level": "info",
+      "message": "AJCC 8th edition prognostic stage groups I–IIIC require preoperative serum PSA and are not derived from pathology alone.",
+      "part": "A"
+    }
+  ]
+}

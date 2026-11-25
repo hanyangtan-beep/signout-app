@@ -1,0 +1,53 @@
+{
+  "description": "left partial nephrectomy for 32 mm chromophobe RCC (WHO/ISUP grade not applicable), parenchymal margin clear 2 mm, no nodes, pT1a",
+  "templateId": "kidney_carcinoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true,
+    "printNodesMets": false
+  },
+  "values": [
+    {
+      "procedure": "Partial nephrectomy",
+      "laterality": "Left",
+      "weight": "62",
+      "specimenDims": "5.5 x 4.5 x 4.0",
+      "focality": "Unifocal",
+      "site": [
+        "Lower pole"
+      ],
+      "sizeMm": "32",
+      "allDimsMm": "32 x 28 x 24",
+      "grossAppearance": "well-circumscribed mahogany-brown solid mass",
+      "adrenalGross": "",
+      "blocks": "8",
+      "histType": "Chromophobe renal cell carcinoma",
+      "grade": "Not applicable",
+      "sarcomatoid": "Not identified",
+      "rhabdoid": "Not identified",
+      "necrosis": "Not identified",
+      "lvi": "Not identified",
+      "pni": "Not assessed",
+      "ihcText": "CD117 and CK7 diffuse strongly positive; CAIX negative",
+      "extension": [
+        "Limited to kidney"
+      ],
+      "marginStatus": "All margins uninvolved by invasive carcinoma",
+      "closestMarginMm": "2",
+      "closestMarginSite": "parenchymal margin",
+      "nodesExamined": "0",
+      "nodesInvolved": "0",
+      "nodeSites": "",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "nonNeoplastic": [
+        "Arterionephrosclerosis / vascular disease"
+      ],
+      "blockKeyText": "A1-A6: tumour with inked parenchymal margin\nA7-A8: adjacent renal cortex"
+    }
+  ],
+  "report": "Left kidney, partial nephrectomy\n\nReceived in formalin is a left partial nephrectomy specimen weighing 62 g and measuring 5.5 x 4.5 x 4.0 cm. Sectioning reveals a 32 mm (32 x 28 x 24 mm) tumour in the lower pole, well-circumscribed mahogany-brown solid mass. Sections are submitted in 8 blocks.\n\n(A1-A6) tumour with inked parenchymal margin.\n(A7-A8) adjacent renal cortex.\n\nSpecimen and tumour\n- Procedure: Partial nephrectomy\n- Specimen laterality: Left\n- Tumour focality: Unifocal\n- Tumour site: Lower pole\n- Tumour size (greatest dimension): 32 mm (32 x 28 x 24 mm)\n\nMicroscopic findings\n- Histologic type: Chromophobe renal cell carcinoma\n- Histologic grade (WHO/ISUP): Not applicable\n- Sarcomatoid features: Not identified\n- Rhabdoid features: Not identified\n- Tumour necrosis: Not identified\n- Lymphovascular invasion (excluding renal vein / IVC): Not identified\n- Tumour extension: Limited to kidney\n- Tumour histology:\n  Sections of the kidney show chromophobe renal cell carcinoma. Solid sheets of pale polygonal and eosinophilic cells display prominent plant-like cell membranes, raisinoid nuclei and perinuclear haloes. CD117 and CK7 diffuse strongly positive; CAIX negative.\n\nMargins\n- Surgical margins: All margins uninvolved by invasive carcinoma\n- Distance to closest margin: 2 mm (parenchymal margin)\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT1a\n\nAdditional findings\n- Non-neoplastic kidney: Arterionephrosclerosis / vascular disease\n\nLEFT KIDNEY, partial nephrectomy:\n- CHROMOPHOBE RENAL CELL CARCINOMA, 32 mm\n- Confined to the kidney\n- Surgical margins clear (closest 2 mm, parenchymal margin)\n- pT1a (AJCC 8th edition).",
+  "checks": []
+}

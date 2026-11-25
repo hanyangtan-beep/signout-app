@@ -1,0 +1,710 @@
+{
+ "id": "hepatoblastoma",
+ "version": "2026.11",
+ "name": "Hepatoblastoma (paediatric) resection",
+ "shortName": "Liver \u00b7 hepatoblastoma (paediatric)",
+ "label": "Hepatoblastoma",
+ "organ": "LIVER",
+ "system": "Hepatobiliary",
+ "kind": "cancer resection",
+ "rank": 88,
+ "aliases": [
+  "hepatoblastoma",
+  "paediatric liver tumour",
+  "pediatric liver tumor",
+  "fetal hepatoblastoma",
+  "embryonal hepatoblastoma",
+  "mixed epithelial mesenchymal hepatoblastoma",
+  "HBL"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "hepatoblastoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Pedi-Hepatoblastoma (CAP Hepatoblastoma Resection 5.0.0.1, June 2025; WHO 5th edition)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Pedi-Hepatoblastoma.html",
+  "savedPage": "docs/reference/Pedi-Hepatoblastoma.html",
+  "staging": "No AJCC pTNM staging system is clinically applicable; PRETEXT / POST-TEXT imaging staging governs risk stratification."
+ },
+ "match": {
+  "site": [
+   "liver",
+   "hepatic",
+   "hepatoblastoma"
+  ],
+  "procedure": [
+   "right lobectomy",
+   "extended right lobectomy",
+   "left lateral segmentectomy",
+   "medial segmentectomy",
+   "total left lobectomy",
+   "hepatectomy",
+   "explanted liver"
+  ],
+  "clinical": [
+   "hepatoblastoma",
+   "paediatric liver mass",
+   "pediatric liver mass"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|core|fna|frozen|FS)\\b)[\\s\\S]*\\bhepatoblastoma\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "core",
+   "fna",
+   "frozen",
+   "FS"
+  ],
+  "bias": 4,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bextended\\s+right\\s+lobectomy\\b|\\btrisectionectomy\\b",
+      "Extended right lobectomy"
+     ],
+     [
+      "\\bright\\s+lobectomy\\b|\\bright\\s+hepatectomy\\b",
+      "Right lobectomy"
+     ],
+     [
+      "\\bleft\\s+lateral\\s+segmentectomy\\b",
+      "Left lateral segmentectomy"
+     ],
+     [
+      "\\btotal\\s+left\\s+lobectomy\\b|\\bleft\\s+hepatectomy\\b",
+      "Total left lobectomy"
+     ],
+     [
+      "\\bexplant",
+      "Explanted liver"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "weight": {
+   "concept": "weight",
+   "unit": "g"
+  },
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Right lobectomy",
+   "options": [
+    "Right lobectomy",
+    "Extended right lobectomy",
+    "Medial segmentectomy",
+    "Left lateral segmentectomy",
+    "Total left lobectomy",
+    "Explanted liver",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour site",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Right lobe",
+   "options": [
+    "Right lobe",
+    "Left lobe",
+    "Right and left lobes",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality (within liver)",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Unifocal",
+   "options": [
+    "Unifocal",
+    "Multifocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "weight",
+   "label": "Specimen weight (g)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "macroExtent",
+   "label": "Macroscopic extent of tumour",
+   "group": "Specimen & Gross",
+   "type": "multiselect",
+   "default": [
+    "Tumour confined to liver"
+   ],
+   "options": [
+    "Tumour confined to liver",
+    "Extends into diaphragm",
+    "Extends into abdominal wall",
+    "Extends into adjacent organ(s)",
+    "Intraoperative tumour spill",
+    "Gross tumour rupture, preoperative",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "afpLevel",
+   "label": "Serum alpha-fetoprotein (AFP) level",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "100 ng/mL \u2013 1.2 million ng/mL",
+   "options": [
+    "Not known",
+    "< 100 ng/mL",
+    "100 ng/mL \u2013 1.2 million ng/mL",
+    "> 1.2 million ng/mL"
+   ]
+  },
+  {
+   "id": "pretext",
+   "label": "PRETEXT / POST-TEXT stage (imaging, optional)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (CAP 5.0.0.1 / WHO 5th)",
+   "group": "Histology & IHC",
+   "type": "select",
+   "default": "Hepatoblastoma, epithelial type, fetal pattern (mitotically active / crowded)",
+   "options": [
+    "Hepatoblastoma, epithelial type, fetal pattern (mitotically inactive / well differentiated)",
+    "Hepatoblastoma, epithelial type, fetal pattern (mitotically active / crowded)",
+    "Hepatoblastoma, epithelial type, embryonal",
+    "Hepatoblastoma, epithelial type, pleomorphic (poorly differentiated)",
+    "Hepatoblastoma, epithelial type, macrotrabecular pattern",
+    "Hepatoblastoma, epithelial type, small cell undifferentiated pattern",
+    "Hepatoblastoma, mixed epithelial-mesenchymal without teratoid features",
+    "Hepatoblastoma, mixed epithelial-mesenchymal with teratoid features",
+    "Hepatoblastoma, other (specify)",
+    "Hepatocellular neoplasm, NOS"
+   ],
+   "reference": {
+    "title": "Hepatoblastoma histologic patterns (fetal, embryonal, mesenchymal, SCUD)",
+    "intro": "Identify all epithelial and mesenchymal patterns present. Pure well-differentiated (mitotically inactive, <= 2 mitoses/10 HPF) fetal hepatoblastoma completely resected upfront has an excellent prognosis; small cell undifferentiated (SCUD) foci require INI1/SMARCB1 testing to exclude malignant rhabdoid tumour.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Fetal pattern (well-differentiated vs crowded/mitotically active)",
+      "points": [
+       "Thin trabeculae/sheets of small uniform hepatoblasts with alternating clear (glycogen/lipid-rich) and eosinophilic cytoplasm ('light and dark' pattern) and extramedullary haematopoiesis.",
+       "Well-differentiated fetal: <= 2 mitoses/10 HPF; crowded/mitotically active fetal: > 2 mitoses/10 HPF with amphophilic cytoplasm."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Hepatoblastoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hepatoblastoma/hb_low_mag.jpg",
+        "caption": "Hepatoblastoma (low power): lobulated architecture with alternating light and dark fetal zones.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Hepatoblastoma_-_low_mag.jpg"
+       },
+       {
+        "src": "assets/reference/hepatoblastoma/hb_fetal.jpg",
+        "caption": "Hepatoblastoma (high power): uniform fetal hepatoblasts with round nuclei and alternating clear and eosinophilic cytoplasm.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Hepatoblastoma_-_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Embryonal pattern",
+      "points": [
+       "Sheets, ribbons, pseudorosettes and acini of angulated primitive cells with scant basophilic cytoplasm, high N:C ratio, coarse chromatin and frequent mitoses."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Hepatoblastoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hepatoblastoma/hb_embryonal.jpg",
+        "caption": "Hepatoblastoma (embryonal pattern): primitive hepatoblasts with high nuclear-to-cytoplasmic ratio arranged in ribbons and nests.",
+        "credit": "David C Chhieng",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Hepatoblastoma.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Mixed epithelial-mesenchymal & pleomorphic / rhabdoid patterns",
+      "points": [
+       "Mixed epithelial-mesenchymal hepatoblastoma contains osteoid-like matrix (very common post-chemotherapy!), spindle cell stroma, cartilage or skeletal muscle (teratoid if neuroectodermal/melanin/glandular elements present).",
+       "Pleomorphic / rhabdoid or small cell undifferentiated patterns warrant INI1 (SMARCB1) IHC to exclude malignant rhabdoid tumour."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Hepatoblastoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hepatoblastoma/hb_mixed_mesenchymal.jpg",
+        "caption": "High-grade / rhabdoid-like hepatoblastoma: evaluate INI1 (SMARCB1) nuclear expression whenever rhabdoid or small cell undifferentiated features are seen.",
+        "credit": "Viola Salvestrini",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Adult_Hepatoblastoma_with_rhabdoid_features.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & IHC",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Hepatoblastoma, other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "preopTherapy",
+   "label": "Preoperative treatment history",
+   "group": "Histology & IHC",
+   "type": "select",
+   "default": "Preoperative therapy given",
+   "options": [
+    "No known preoperative therapy",
+    "Preoperative therapy given",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "treatmentEffect",
+   "label": "Treatment effect",
+   "group": "Histology & IHC",
+   "type": "select",
+   "default": "Necrosis present",
+   "options": [
+    "Necrosis not identified",
+    "Necrosis present",
+    "Cannot be determined",
+    "Not applicable"
+   ],
+   "reference": {
+    "title": "Post-chemotherapy changes in hepatoblastoma",
+    "intro": "Most hepatoblastomas are resected after cisplatin-based neoadjuvant chemotherapy. Post-therapy specimens commonly show extensive necrosis, fibrosis, haemosiderin-laden macrophages, calcification and prominent osteoid-like matrix.",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Distinguishing therapy effect from native mesenchymal osteoid",
+      "points": [
+       "Estimate percentage of tumour necrosis across mapped whole-slice sections.",
+       "Chemotherapy-induced cyto-differentiation can mimic mature hepatocytes or osteoid; always review pre-treatment biopsy if available."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Hepatoblastoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "necrosisPct",
+   "label": "Estimated tumour necrosis (%)",
+   "group": "Histology & IHC",
+   "type": "number",
+   "showIf": {
+    "field": "treatmentEffect",
+    "is": "Necrosis present"
+   },
+   "default": ""
+  },
+  {
+   "id": "macroVascular",
+   "label": "Macroscopic vascular invasion",
+   "group": "Histology & IHC",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Portal vein invasion present",
+    "Hepatic vein invasion present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Microscopic lymphovascular invasion",
+   "group": "Histology & IHC",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & IHC",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ini1",
+   "label": "INI1 (SMARCB1) IHC",
+   "group": "Histology & IHC",
+   "type": "select",
+   "default": "INI1 expression retained",
+   "options": [
+    "INI1 expression retained",
+    "INI1 expression lost",
+    "Not performed",
+    "Cannot be determined"
+   ],
+   "reference": {
+    "title": "Mandatory IHC panel in hepatoblastoma (INI1, Beta-catenin, Glypican-3)",
+    "intro": "CAP 5.0.0.1 highlights three key immunostains: INI1 (SMARCB1) to exclude malignant rhabdoid tumour, nuclear beta-catenin (CTNNB1 pathway), and Glypican-3.",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "INI1 (SMARCB1), Beta-catenin and Glypican-3",
+      "points": [
+       "INI1 (SMARCB1): retained in true hepatoblastoma; loss of nuclear INI1 in a small cell undifferentiated / rhabdoid tumour with low serum AFP (< 100 ng/mL) indicates malignant rhabdoid tumour of the liver.",
+       "Beta-catenin: aberrant nuclear (and cytoplasmic) staining is seen in ~80\u201390% of hepatoblastomas.",
+       "Glypican-3: fine granular cytoplasmic staining in fetal hepatoblastoma and coarse/diffuse positivity in embryonal areas."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Hepatoblastoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "glypican3",
+   "label": "Glypican-3 IHC",
+   "group": "Histology & IHC",
+   "type": "select",
+   "default": "Positive",
+   "options": [
+    "Positive",
+    "Negative",
+    "Not performed",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "betaCatenin",
+   "label": "Beta-catenin IHC",
+   "group": "Histology & IHC",
+   "type": "select",
+   "default": "Positive (nuclear / cytoplasmic)",
+   "options": [
+    "Positive (nuclear / cytoplasmic)",
+    "Membranous only (negative for nuclear)",
+    "Not performed",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Additional IHC notes",
+   "group": "Histology & IHC",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & IHC",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "group": "Margins & Nodes",
+   "type": "select",
+   "default": "Uninvolved by tumour",
+   "options": [
+    "Uninvolved by tumour",
+    "Involved by tumour",
+    "Cannot be assessed"
+   ],
+   "reference": {
+    "title": "Hepatoblastoma surgical margins & PRETEXT/POST-TEXT context",
+    "intro": "Report distance (mm) to the closest hepatic parenchymal and soft tissue margins, and document any preoperative rupture or intraoperative tumour spill.",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Margins & staging context",
+      "points": [
+       "Microscopic margin involvement at the hepatic parenchymal surface vs extrahepatic soft tissue is key for postoperative risk stratification.",
+       "No AJCC pTNM system applies to hepatoblastoma; clinical staging relies on PRETEXT / POST-TEXT imaging."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Hepatoblastoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Margins & Nodes",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest margin site",
+   "group": "Margins & Nodes",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "involvedMarginDetail",
+   "label": "Involved margin(s)",
+   "group": "Margins & Nodes",
+   "type": "text",
+   "showIf": {
+    "field": "marginStatus",
+    "is": "Involved by tumour"
+   },
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Margins & Nodes",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Margins & Nodes",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeSites",
+   "label": "Lymph node station(s)",
+   "group": "Margins & Nodes",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Margins & Nodes",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "backgroundLiver",
+   "label": "Background liver findings",
+   "group": "Additional",
+   "type": "multiselect",
+   "options": [
+    "Unremarkable",
+    "Fibrosis / cirrhosis",
+    "Iron overload",
+    "Hepatitis",
+    "No background liver available"
+   ],
+   "default": [
+    "Unremarkable"
+   ]
+  },
+  {
+   "id": "backgroundOther",
+   "label": "Other background liver findings",
+   "group": "Additional",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01740",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Right lobectomy",
+     "site": "Right lobe",
+     "focality": "Unifocal",
+     "weight": "380",
+     "specimenDims": "12.0 x 9.5 x 6.5",
+     "sizeMm": "68",
+     "macroExtent": [
+      "Tumour confined to liver"
+     ],
+     "afpLevel": "100 ng/mL \u2013 1.2 million ng/mL",
+     "pretext": "PRETEXT III / POST-TEXT II",
+     "blocks": "16",
+     "blockKeyText": "A1-A2: hepatic parenchymal margin\nA3-A12: mapped full-face tumour sections\nA13-A14: background liver\nA15-A16: hilar lymph nodes",
+     "histType": "Hepatoblastoma, mixed epithelial-mesenchymal without teratoid features",
+     "preopTherapy": "Preoperative therapy given",
+     "treatmentEffect": "Necrosis present",
+     "necrosisPct": "60",
+     "macroVascular": "Not identified",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "ini1": "INI1 expression retained",
+     "glypican3": "Positive",
+     "betaCatenin": "Positive (nuclear / cytoplasmic)",
+     "marginStatus": "Uninvolved by tumour",
+     "closestMarginMm": "10",
+     "closestMarginSite": "hepatic parenchymal margin",
+     "nodesExamined": "3",
+     "nodesInvolved": "0",
+     "nodeSites": "hilar",
+     "backgroundLiver": [
+      "Unremarkable"
+     ]
+    }
+   }
+  ]
+ }
+}

@@ -1,0 +1,1078 @@
+{
+ "id": "kidney_carcinoma",
+ "version": "2026.11",
+ "name": "Renal cell carcinoma nephrectomy",
+ "shortName": "Kidney · renal cell carcinoma nephrectomy",
+ "label": "Kidney Ca",
+ "organ": "KIDNEY",
+ "system": "GU",
+ "kind": "cancer resection",
+ "rank": 56,
+ "aliases": [
+  "nephrectomy",
+  "partial nephrectomy",
+  "radical nephrectomy",
+  "renal cell carcinoma",
+  "RCC",
+  "clear cell RCC",
+  "papillary RCC",
+  "chromophobe RCC",
+  "kidney cancer",
+  "kidney carcinoma"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "kidney_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template UG-Kidney (CAP Kidney 4.3.0.0, Sept 2023; AJCC 8th edition Chapter 60), aligned with WHO 5th edition (2022)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/UG-Kidney.html",
+  "capProtocol": "CAP Kidney 4.3.0.0 (September 2023)",
+  "who": "WHO Classification of Urinary and Male Genital Tumours, 5th edition (2022)",
+  "staging": "pTNM derived by src/staging/kidney.js on AJCC 8th edition (Chapter 60: Kidney).",
+  "savedPage": "docs/reference/UG-Kidney.html"
+ },
+ "match": {
+  "site": [
+   "kidney",
+   "renal",
+   "nephrectomy",
+   "partial nephrectomy",
+   "radical nephrectomy"
+  ],
+  "procedure": [
+   "radical nephrectomy",
+   "partial nephrectomy",
+   "total nephrectomy",
+   "nephrectomy",
+   "kidney resection"
+  ],
+  "clinical": [
+   "renal cell carcinoma",
+   "RCC",
+   "renal mass",
+   "kidney tumour",
+   "kidney tumor",
+   "renal tumour"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|core|cores|fna|nephroureterectomy|renal\\s+pelvis|urothelial|wilms|nephroblastoma|donor|frozen|FS)\\b)[\\s\\S]*(?:\\b(?:partial|radical|total|simple)?\\s*nephrectomy\\b|\\bkidney\\s+resection\\b)",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "core",
+   "cores",
+   "fna",
+   "nephroureterectomy",
+   "renal pelvis",
+   "urothelial",
+   "wilms",
+   "nephroblastoma",
+   "donor",
+   "lymph node",
+   "LN",
+   "frozen",
+   "FS"
+  ],
+  "bias": 3,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bpartial\\s+nephrectomy\\b|\\bnephron[- ]sparing\\b",
+      "Partial nephrectomy"
+     ],
+     [
+      "\\bradical\\s+nephrectomy\\b",
+      "Radical nephrectomy"
+     ],
+     [
+      "\\b(?:total|simple)\\s+nephrectomy\\b",
+      "Total nephrectomy"
+     ]
+    ]
+   },
+   {
+    "field": "laterality",
+    "from": "map",
+    "map": [
+     [
+      "\\bright\\b",
+      "Right"
+     ],
+     [
+      "\\bleft\\b",
+      "Left"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "weight": {
+   "concept": "weight",
+   "unit": "g"
+  },
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "placeholder": "Leave blank to derive from laterality and procedure",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Radical nephrectomy",
+   "options": [
+    "Partial nephrectomy",
+    "Radical nephrectomy",
+    "Total nephrectomy",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "laterality",
+   "label": "Laterality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Right",
+   "options": [
+    "Right",
+    "Left",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "weight",
+   "label": "Specimen weight (g)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "placeholder": "e.g. 420",
+   "default": ""
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "placeholder": "e.g. 13.5 x 9.0 x 7.5",
+   "default": ""
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Unifocal",
+   "options": [
+    "Unifocal",
+    "Multifocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "site",
+   "label": "Tumour site",
+   "group": "Specimen & Gross",
+   "type": "multiselect",
+   "options": [
+    "Upper pole",
+    "Middle",
+    "Lower pole",
+    "Hilum / renal sinus"
+   ],
+   "default": []
+  },
+  {
+   "id": "siteOther",
+   "label": "Other site",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "placeholder": "e.g. 52",
+   "default": ""
+  },
+  {
+   "id": "allDimsMm",
+   "label": "All tumour dimensions (mm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "placeholder": "e.g. 52 x 44 x 38",
+   "default": ""
+  },
+  {
+   "id": "grossAppearance",
+   "label": "Gross appearance",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "placeholder": "e.g. circumscribed golden-yellow mass with focal haemorrhage",
+   "default": ""
+  },
+  {
+   "id": "adrenalGross",
+   "label": "Adrenal gland (if included)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "placeholder": "e.g. unremarkable, uninvolved by tumour",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "placeholder": "A1: ureteral and vascular margins\nA2-A6: tumour with renal sinus and perinephric fat...",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Clear cell renal cell carcinoma",
+   "options": [
+    "Clear cell renal cell carcinoma",
+    "Multilocular cystic renal neoplasm of low malignant potential",
+    "Papillary renal cell carcinoma",
+    "Chromophobe renal cell carcinoma",
+    "Other oncocytic tumours of the kidney (specify)",
+    "Collecting duct carcinoma",
+    "Clear cell papillary renal cell tumour",
+    "Mucinous tubular and spindle cell carcinoma",
+    "Tubulocystic renal cell carcinoma",
+    "Acquired cystic disease-associated renal cell carcinoma",
+    "Eosinophilic solid and cystic renal cell carcinoma",
+    "TFE3-rearranged renal cell carcinoma",
+    "TFEB-altered renal cell carcinoma",
+    "ELOC-mutated renal cell carcinoma",
+    "FH-deficient renal cell carcinoma",
+    "SDH-deficient renal cell carcinoma",
+    "ALK-rearranged renal cell carcinoma",
+    "SMARCB1-deficient renal medullary carcinoma",
+    "Renal cell carcinoma, NOS",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "Renal cell tumour subtypes (WHO 5th edition)",
+    "intro": "WHO 5th edition (2022) groups renal cell tumours into morphologically defined entities and molecularly defined RCC. Pair H&E architecture with targeted IHC (CAIX, CK7, CD117, AMACR, GATA3, FH/2SC, SDHB, TFE3) when clear or eosinophilic patterns overlap.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Clear cell renal cell carcinoma",
+      "points": [
+       "Solid nests, acini and alveolar architecture with a delicate branching sinusoidal capillary network ('chicken-wire' vessels).",
+       "Diffuse strong membranous (box-like) CAIX, PAX8+, CD10+, RCC+, and usually CK7-negative (focal CK7 may appear in high-grade or cystic areas).",
+       "Distinguish from clear cell papillary RCT (cup-like CAIX, diffuse CK7+, apical nuclei) and TFE3-rearranged RCC (CAIX-negative/focal, TFE3+)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Clear Cell Renal Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/kidney_carcinoma/rcc_clear_cell.jpg",
+        "caption": "Clear cell RCC: nests of optically clear polygonal cells separated by a delicate branching capillary network.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Clear_cell_renal_cell_carcinoma_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Papillary renal cell carcinoma",
+      "points": [
+       "WHO 5th edition no longer requires Type 1 / Type 2 subclassification; classic papillary RCC shows fibrovascular cores, foamy macrophages and psammoma bodies.",
+       "Typically CK7+, AMACR+, PAX8+, and CAIX-negative (except focal perinecrotic staining).",
+       "High-grade eosinophilic papillary tumours warrant screening for FH-deficient RCC (FH loss, 2SC+) or TFE3-rearranged RCC."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Papillary Renal Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/kidney_carcinoma/rcc_papillary.jpg",
+        "caption": "Papillary RCC: true fibrovascular papillae lined by cuboidal cells with foamy histiocytes in the cores.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Papillary_renal_cell_carcinoma_--_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Chromophobe RCC vs renal oncocytoma",
+      "points": [
+       "Chromophobe RCC: classic pale plant-like cells and/or eosinophilic cells with wrinkled 'raisinoid' nuclei, binucleation and perinuclear haloes; diffuse membranous CD117+ and diffuse strong CK7+.",
+       "Renal oncocytoma (benign mimic): nested eosinophilic cells in oedematous/hyalinised stroma with uniform round nuclei and central nucleoli; CD117+ but CK7-negative or only scattered single cells.",
+       "Chromophobe RCC is NOT graded by the WHO/ISUP nucleolar grading system."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Chromophobe Renal Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       },
+       {
+        "label": "ExpertPath: Renal Oncocytoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/kidney_carcinoma/rcc_chromophobe_classic.jpg",
+        "caption": "Classic chromophobe RCC: pale polygonal cells with sharp plant-like cell membranes and perinuclear haloes.",
+        "credit": "Ohashi et al. (Cancers 2019)",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_classic_chromophobe_renal_cell_carcinoma_with_pale_cells.jpg"
+       },
+       {
+        "src": "assets/reference/kidney_carcinoma/rcc_chromophobe_eosin.jpg",
+        "caption": "Eosinophilic chromophobe RCC: wrinkled raisinoid nuclei with perinuclear clearing; confirm with diffuse CK7 and CD117.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Chromophobe_renal_cell_carcinoma,_eosinophilic_variant_-_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/kidney_carcinoma/renal_oncocytoma.jpg",
+        "caption": "Renal oncocytoma (benign mimic): nested eosinophilic cells with regular round nuclei; CK7 is negative or only focal.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Renal_oncocytoma_--_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Clear cell papillary renal cell tumour",
+      "points": [
+       "Renamed 'tumour' (indolent behaviour) in WHO 5th edition; never graded by WHO/ISUP.",
+       "Low-grade clear cells arranged in tubules and papillae with nuclei lined up apically away from the basement membrane ('piano-key' arrangement).",
+       "Characteristic immunoprofile: diffuse strong CK7+, cup-shaped (basolateral) CAIX+, GATA3+, AMACR-negative, CD10-negative."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Clear Cell Papillary Renal Cell Tumour",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/kidney_carcinoma/rcc_ccprct.jpg",
+        "caption": "Clear cell papillary renal cell tumour: low-grade clear cells with apically aligned nuclei away from the basement membrane.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Clear_cell_papillary_renal_cell_carcinoma_-_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Molecularly defined & high-grade RCC",
+      "points": [
+       "TFE3-rearranged and TFEB-altered RCC: clear/eosinophilic papillary or biphasic tumours with psammoma bodies or basement membrane globules; confirm by FISH/RNA fusion.",
+       "FH-deficient RCC: aggressive papillary/tubulocystic tumour with prominent inclusion-like eosinophilic nucleoli and perinucleolar haloes; loss of FH, strong 2SC+.",
+       "SDH-deficient RCC: uniform eosinophilic cells with flocculent intracytoplasmic vacuoles/inclusions; loss of SDHB.",
+       "Collecting duct carcinoma & SMARCB1-deficient renal medullary carcinoma: infiltrative high-grade medullary tumours with desmoplasia; check INI1/SMARCB1 loss and sickle cell trait."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Molecularly Defined Renal Cell Carcinomas",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Other oncocytic tumours of the kidney (specify)",
+     "Renal cell carcinoma, NOS",
+     "Other histologic type not listed (specify)"
+    ]
+   },
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "WHO/ISUP Grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "G2: Nucleoli conspicuous and eosinophilic at 400x, visible but not prominent at 100x",
+   "options": [
+    "G1: Nucleoli absent or inconspicuous and basophilic at 400x",
+    "G2: Nucleoli conspicuous and eosinophilic at 400x, visible but not prominent at 100x",
+    "G3: Nucleoli conspicuous and eosinophilic at 100x",
+    "G4: Extreme nuclear pleomorphism, multinucleated giant cells, and/or rhabdoid and/or sarcomatoid differentiation",
+    "GX: Cannot be assessed",
+    "Not applicable"
+   ],
+   "reference": {
+    "title": "WHO/ISUP nucleolar grading (Grades 1–4)",
+    "intro": "Assign the highest WHO/ISUP grade present across the tumour (a single high-power field suffices). Validated for clear cell RCC and papillary RCC; do not apply to chromophobe RCC.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Grades 1 and 2 (400x nucleolar assessment)",
+      "points": [
+       "G1: Nucleoli are absent or inconspicuous and basophilic at 400x magnification.",
+       "G2: Nucleoli are conspicuous and eosinophilic at 400x magnification, and visible but not prominent at 100x magnification."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: WHO/ISUP Grading of Renal Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/kidney_carcinoma/rcc_clear_cell.jpg",
+        "caption": "Low-grade clear cell RCC (G1–G2): small uniform nuclei with absent or inconspicuous nucleoli at medium power.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Clear_cell_renal_cell_carcinoma_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Grade 3 (100x prominent eosinophilic nucleoli)",
+      "points": [
+       "G3: Nucleoli are conspicuous and eosinophilic already at 100x magnification.",
+       "Ensure nucleoli are evaluated in well-fixed, non-necrotic areas."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: WHO/ISUP Grading of Renal Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/kidney_carcinoma/rcc_clear_cell_g3.jpg",
+        "caption": "High-grade clear cell RCC (G3): enlarged nuclei with prominent cherry-red eosinophilic nucleoli easily seen at 100x.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Clear_cell_renal_cell_carcinoma_--_very_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Grade 4 (pleomorphism, sarcomatoid or rhabdoid)",
+      "points": [
+       "G4: Tumour giant cells, extreme nuclear pleomorphism, sarcomatoid differentiation, and/or rhabdoid differentiation.",
+       "Any amount of sarcomatoid or rhabdoid differentiation automatically assigns Grade 4."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Sarcomatoid and Rhabdoid Renal Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Tumours NOT graded by WHO/ISUP",
+      "points": [
+       "Select 'Not applicable' for chromophobe RCC (nuclear atypia is intrinsic and does not correlate with outcome).",
+       "Select 'Not applicable' for clear cell papillary renal cell tumour and multilocular cystic renal neoplasm of low malignant potential."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "sarcomatoid",
+   "label": "Sarcomatoid features",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "reference": {
+    "title": "Sarcomatoid and rhabdoid differentiation",
+    "intro": "Sarcomatoid and rhabdoid features represent high-grade dedifferentiation across any RCC subtype, automatically confer WHO/ISUP Grade 4, and must be reported with an estimated percentage (CAP 4.3.0.0).",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Sarcomatoid differentiation",
+      "points": [
+       "Malignant spindle cell proliferation resembling a pleomorphic or fascicular sarcoma (any amount qualifies; no minimum percentage).",
+       "Always assigns WHO/ISUP Grade 4 even if seen in chromophobe RCC.",
+       "Report the underlying epithelial subtype when identifiable (e.g. clear cell RCC with sarcomatoid features) and estimate the percentage."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Sarcomatoid Renal Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Rhabdoid differentiation",
+      "points": [
+       "Sheets or clusters of large discohesive epithelioid cells with eccentric vesicular nuclei, prominent nucleoli and large paranuclear eosinophilic cytoplasmic globules.",
+       "Automatically assigns WHO/ISUP Grade 4; estimate the percentage of the rhabdoid component."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Rhabdoid Renal Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "sarcomatoidPct",
+   "label": "Sarcomatoid component (%)",
+   "group": "Histology & Grade",
+   "type": "number",
+   "showIf": {
+    "field": "sarcomatoid",
+    "is": "Present"
+   },
+   "placeholder": "e.g. 20",
+   "default": ""
+  },
+  {
+   "id": "rhabdoid",
+   "label": "Rhabdoid features",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "rhabdoidPct",
+   "label": "Rhabdoid component (%)",
+   "group": "Histology & Grade",
+   "type": "number",
+   "showIf": {
+    "field": "rhabdoid",
+    "is": "Present"
+   },
+   "placeholder": "e.g. 15",
+   "default": ""
+  },
+  {
+   "id": "necrosis",
+   "label": "Tumour necrosis",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "necrosisPct",
+   "label": "Estimated tumour necrosis (%)",
+   "group": "Histology & Grade",
+   "type": "number",
+   "showIf": {
+    "field": "necrosis",
+    "is": "Present"
+   },
+   "placeholder": "e.g. 10",
+   "default": ""
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not assessed",
+   "options": [
+    "Not assessed",
+    "Not identified",
+    "Present"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "placeholder": "e.g. PAX8 and CAIX diffuse membranous positive; CK7 negative",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "placeholder": "Leave blank to generate from histologic type, grade and IHC",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extension (pT)",
+   "group": "Extension & Margins",
+   "type": "multiselect",
+   "default": [
+    "Limited to kidney"
+   ],
+   "options": [
+    "Limited to kidney",
+    "Perinephric fat (not beyond Gerota's fascia)",
+    "Renal sinus fat",
+    "Pelvicalyceal system",
+    "Renal vein or its segmental branches",
+    "Vena cava below diaphragm",
+    "Vena cava above diaphragm or invading vena cava wall",
+    "Beyond Gerota's fascia (including contiguous ipsilateral adrenal gland)",
+    "Cannot be assessed"
+   ],
+   "reference": {
+    "title": "pT3a–pT4 anatomic landmarks (renal sinus, fat, vein, adrenal)",
+    "intro": "Careful sampling of the renal sinus interface is the single most common source of pT3a upstaging in RCC because no fibrous capsule separates the renal cortex from the renal sinus fat.",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Renal sinus fat and pelvicalyceal system (pT3a)",
+      "points": [
+       "Renal sinus invasion (pT3a): direct contact of tumour with renal sinus fat or loose connective tissue containing muscular venous branches, OR invasion of any endothelial-lined space within the renal sinus.",
+       "Pelvicalyceal invasion (pT3a): tumour breaks through the urothelial basement membrane into the calyceal or pelvic lumen."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Staging of Renal Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Perinephric fat and venous invasion (pT3a vs pT3b/pT3c)",
+      "points": [
+       "Perinephric fat (pT3a): tumour breaches the renal capsule to touch perinephric adipocytes (do not upstage for bulging into an intact fibrous pseudocapsule).",
+       "Renal vein / segmental branches (pT3a): tumour within any muscular-walled renal venous branch (gross or microscopic).",
+       "IVC below diaphragm = pT3b; IVC above diaphragm OR direct invasion of the vena cava wall = pT3c."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Staging of Renal Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Gerota's fascia and ipsilateral adrenal gland (pT4 vs pM1)",
+      "points": [
+       "Contiguous direct extension beyond Gerota's fascia, including direct invasion into the ipsilateral adrenal gland = pT4.",
+       "Non-contiguous (haematogenous) metastasis to the ipsilateral adrenal gland = pM1, NOT pT4."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Staging of Renal Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "All margins uninvolved by invasive carcinoma",
+   "options": [
+    "All margins uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ],
+   "reference": {
+    "title": "Nephrectomy surgical margins (partial vs radical)",
+    "intro": "Relevant margins depend on whether the specimen is a partial or radical nephrectomy. Ink the parenchymal bed and capsular surface before sectioning.",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Partial nephrectomy margins",
+      "points": [
+       "Evaluate the inked renal parenchymal resection margin (distance in mm if clear; tumour on ink = positive) and the perinephric fat / capsular margin.",
+       "A thin intact fibrous pseudocapsule at ink without tumour cells touching ink is reported as uninvolved (closest < 1 mm)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Kidney Specimen Handling and Margins",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Radical nephrectomy margins",
+      "points": [
+       "Evaluate the renal vein margin (en face — check for tumour thrombus adherent to or extending to the stapled/transected vein edge), ureteral margin, perinephric fat / Gerota's fascia soft tissue margin, and renal sinus soft tissue margin."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Kidney Specimen Handling and Margins",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "showIf": {
+    "field": "marginStatus",
+    "is": "All margins uninvolved by invasive carcinoma"
+   },
+   "placeholder": "e.g. 5",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "showIf": {
+    "field": "marginStatus",
+    "is": "All margins uninvolved by invasive carcinoma"
+   },
+   "placeholder": "e.g. parenchymal margin",
+   "default": ""
+  },
+  {
+   "id": "involvedMargins",
+   "label": "Involved margin(s)",
+   "group": "Extension & Margins",
+   "type": "multiselect",
+   "showIf": {
+    "field": "marginStatus",
+    "is": "Involved by invasive carcinoma"
+   },
+   "options": [
+    "Renal parenchymal margin",
+    "Capsular / perinephric fat margin",
+    "Renal sinus soft tissue margin",
+    "Gerota's fascia margin",
+    "Renal vein margin",
+    "Ureteral margin"
+   ],
+   "default": []
+  },
+  {
+   "id": "involvedMarginsOther",
+   "label": "Other involved margin",
+   "group": "Extension & Margins",
+   "type": "text",
+   "showIf": {
+    "field": "marginStatus",
+    "is": "Involved by invasive carcinoma"
+   },
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "placeholder": "0 if none submitted",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "placeholder": "0",
+   "default": ""
+  },
+  {
+   "id": "nodeSites",
+   "label": "Lymph node station(s)",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "placeholder": "e.g. renal hilar and paracaval",
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Largest nodal deposit (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-contiguous ipsilateral adrenal gland",
+    "Contralateral kidney or adrenal gland",
+    "Non-regional lymph node(s)",
+    "Other distant site (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "noPrimary",
+   "label": "No residual primary tumour (pT0)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple synchronous primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "placeholder": "e.g. pT3a pN0",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "nonNeoplastic",
+   "label": "Non-neoplastic kidney findings",
+   "group": "Additional & Molecular",
+   "type": "multiselect",
+   "options": [
+    "Arterionephrosclerosis / vascular disease",
+    "Glomerulosclerosis / diabetic nephropathy",
+    "Tubulointerstitial fibrosis / chronic pyelonephritis",
+    "Simple cortical cyst(s)",
+    "Papillary adenoma(s)"
+   ],
+   "default": []
+  },
+  {
+   "id": "nonNeoplasticOther",
+   "label": "Other non-neoplastic findings",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "molecularNotes",
+   "label": "Molecular / cytogenetic studies",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "placeholder": "e.g. TFE3 FISH negative",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Radical nephrectomy",
+     "laterality": "Right",
+     "weight": "485",
+     "specimenDims": "14.0 x 9.5 x 7.0",
+     "focality": "Unifocal",
+     "site": [
+      "Upper pole"
+     ],
+     "sizeMm": "52",
+     "allDimsMm": "52 x 44 x 38",
+     "grossAppearance": "circumscribed golden-yellow cortical mass with focal haemorrhage",
+     "adrenalGross": "unremarkable and uninvolved by tumour",
+     "blocks": "12",
+     "histType": "Clear cell renal cell carcinoma",
+     "grade": "G2: Nucleoli conspicuous and eosinophilic at 400x, visible but not prominent at 100x",
+     "sarcomatoid": "Not identified",
+     "rhabdoid": "Not identified",
+     "necrosis": "Not identified",
+     "lvi": "Not identified",
+     "pni": "Not assessed",
+     "ihcText": "",
+     "extension": [
+      "Limited to kidney"
+     ],
+     "marginStatus": "All margins uninvolved by invasive carcinoma",
+     "closestMarginMm": "6",
+     "closestMarginSite": "perinephric fat margin",
+     "nodesExamined": "4",
+     "nodesInvolved": "0",
+     "nodeSites": "renal hilar",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "nonNeoplastic": [
+      "Arterionephrosclerosis / vascular disease"
+     ],
+     "blockKeyText": "A1: ureteral and renal vascular margins\nA2-A7: tumour with renal sinus interface and capsule\nA8-A9: non-neoplastic kidney\nA10: adrenal gland\nA11-A12: renal hilar lymph nodes"
+    }
+   }
+  ],
+  "case": {
+   "accession": "S26-01620",
+   "status": "Draft"
+  }
+ }
+}

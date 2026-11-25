@@ -18,26 +18,10 @@
    "roadmap": "Later"
   },
   {
-   "id": "prostate_radical",
-   "name": "Radical prostatectomy",
-   "label": "Prostatectomy",
-   "system": "GU",
-   "kind": "cancer resection",
-   "roadmap": "Later"
-  },
-  {
    "id": "gi_net",
-   "name": "GI neuroendocrine tumour resection (stomach, duodenum / ampulla, jejunum–ileum, appendix, colon)",
+   "name": "GI neuroendocrine tumour resection (stomach, duodenum / ampulla, jejunum\u2013ileum, appendix, colon)",
    "label": "GI NET",
    "system": "GI",
-   "kind": "cancer resection",
-   "roadmap": "Later"
-  },
-  {
-   "id": "bile_duct_carcinoma",
-   "name": "Extrahepatic bile duct carcinoma resection (distal / perihilar)",
-   "label": "Bile duct Ca",
-   "system": "Hepatobiliary",
    "kind": "cancer resection",
    "roadmap": "Later"
   },
@@ -58,33 +42,6 @@
    "kind": "cancer resection",
    "roadmap": "Later",
    "qmh": "GI-Anus"
-  },
-  {
-   "id": "intrahepatic_cholangiocarcinoma",
-   "name": "Intrahepatic cholangiocarcinoma resection",
-   "label": "iCCA",
-   "system": "Hepatobiliary",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "GI-Intrahepatic bile ducts"
-  },
-  {
-   "id": "pancreas_net",
-   "name": "Pancreatic neuroendocrine tumour resection",
-   "label": "Pancreas NET",
-   "system": "Hepatobiliary",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "Endocrine-Pancreas-NET"
-  },
-  {
-   "id": "hepatoblastoma",
-   "name": "Hepatoblastoma (paediatric) resection",
-   "label": "Hepatoblastoma",
-   "system": "Hepatobiliary",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "Pedi-Hepatoblastoma"
   },
   {
    "id": "vaginal_carcinoma",
@@ -247,24 +204,6 @@
    "kind": "cancer resection",
    "roadmap": "Later",
    "qmh": "Thorax-Thymus"
-  },
-  {
-   "id": "kidney_carcinoma",
-   "name": "Renal cell carcinoma nephrectomy",
-   "label": "Kidney Ca",
-   "system": "GU",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "UG-Kidney"
-  },
-  {
-   "id": "bladder_carcinoma",
-   "name": "Urinary bladder carcinoma cystectomy",
-   "label": "Bladder Ca",
-   "system": "GU",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "UG-Urinary Bladder"
   },
   {
    "id": "urethral_carcinoma",

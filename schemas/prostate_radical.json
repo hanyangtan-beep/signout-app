@@ -1,0 +1,1447 @@
+{
+ "id": "prostate_radical",
+ "version": "2026.11",
+ "name": "Radical prostatectomy",
+ "shortName": "Prostate · radical prostatectomy",
+ "label": "Prostatectomy",
+ "organ": "PROSTATE",
+ "system": "GU",
+ "kind": "cancer resection",
+ "rank": 55,
+ "aliases": [
+  "radical prostatectomy",
+  "prostatectomy",
+  "RALP",
+  "RARP",
+  "LRP",
+  "prostate cancer",
+  "prostate carcinoma",
+  "prostatic adenocarcinoma",
+  "Gleason",
+  "ISUP"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "prostate_radical",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen and tumour",
+   "Macroscopy"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template UG-Prostate (CAP Prostate Radical Prostatectomy 4.3.0.0, Sept 2023; AJCC 8th edition Chapter 58), aligned with WHO 5th edition (2022)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/UG-Prostate.html",
+  "capProtocol": "CAP Prostate Radical Prostatectomy 4.3.0.0 (September 2023)",
+  "who": "WHO Classification of Urinary and Male Genital Tumours, 5th edition (2022)",
+  "staging": "pTNM derived by src/staging/prostate.js on AJCC 8th edition (Chapter 58: Prostate).",
+  "savedPage": "docs/reference/UG-Prostate.html"
+ },
+ "match": {
+  "site": [
+   "prostate",
+   "prostatic",
+   "prostate and seminal vesicles",
+   "radical prostatectomy",
+   "prostatectomy",
+   "RALP",
+   "RARP"
+  ],
+  "procedure": [
+   "radical prostatectomy",
+   "prostatectomy",
+   "robotic radical prostatectomy",
+   "robot-assisted radical prostatectomy",
+   "RALP",
+   "RARP",
+   "LRP"
+  ],
+  "clinical": [
+   "prostatic adenocarcinoma",
+   "prostate carcinoma",
+   "prostate cancer",
+   "Gleason",
+   "adenocarcinoma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:TRUS|transperineal|needle|cores?|biops(?:y|ies)|bx|TURP|chips|enucleation|BPH|cystectomy|cystoprostatectomy|frozen|FS)\\b)[\\s\\S]*(?:\\bradical\\s+prostatectomy\\b|\\b(?:RALP|RARP|LRP)\\b|\\bprostatectomy\\b)",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "core",
+   "cores",
+   "TRUS",
+   "transperineal",
+   "TURP",
+   "chips",
+   "BPH",
+   "lymph node",
+   "lymph nodes",
+   "LN",
+   "SLN",
+   "frozen",
+   "FS",
+   "cystectomy",
+   "cystoprostatectomy"
+  ],
+  "bias": 3,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bradical\\s+cystoprostatectomy\\b",
+      "Radical cystoprostatectomy"
+     ],
+     [
+      "\\b(?:radical\\s+prostatectomy|RALP|RARP|LRP|prostatectomy)\\b",
+      "Radical prostatectomy"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "weight": {
+   "concept": "weight",
+   "unit": "g"
+  },
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen (typed name, optional)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. Prostate and seminal vesicles, radical prostatectomy"
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "type": "select",
+   "group": "Specimen and tumour",
+   "default": "Radical prostatectomy",
+   "options": [
+    "Radical prostatectomy",
+    "Radical cystoprostatectomy",
+    "Other (specify)",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Procedure (specify)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   }
+  },
+  {
+   "id": "weight",
+   "label": "Prostate weight (g)",
+   "type": "number",
+   "min": 0,
+   "step": 0.1,
+   "group": "Specimen and tumour",
+   "default": ""
+  },
+  {
+   "id": "specimenDims",
+   "label": "Prostate dimensions (cm)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. 4.5 x 4.0 x 3.5"
+  },
+  {
+   "id": "pctProstate",
+   "label": "Estimated percentage of prostate involved by tumour (%)",
+   "type": "number",
+   "min": 0,
+   "max": 100,
+   "step": 1,
+   "group": "Specimen and tumour",
+   "default": ""
+  },
+  {
+   "id": "dominantNoduleMm",
+   "label": "Dominant tumour nodule, greatest dimension (mm)",
+   "type": "number",
+   "min": 0,
+   "step": 0.5,
+   "group": "Specimen and tumour",
+   "default": ""
+  },
+  {
+   "id": "dominantNoduleDims",
+   "label": "Dominant nodule, all dimensions (mm)",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. 18 x 14 x 12"
+  },
+  {
+   "id": "dominantNoduleSite",
+   "label": "Dominant nodule location",
+   "type": "text",
+   "group": "Specimen and tumour",
+   "default": "",
+   "placeholder": "e.g. right posterior peripheral zone"
+  },
+  {
+   "id": "noPrimary",
+   "label": "No residual primary tumour identified (pT0)",
+   "type": "checkbox",
+   "group": "Specimen and tumour",
+   "default": false
+  },
+  {
+   "id": "seminalVesiclesDims",
+   "label": "Seminal vesicles and vasa deferentia (macroscopy)",
+   "type": "text",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "e.g. right SV 3.5 cm, left SV 3.2 cm, unremarkable"
+  },
+  {
+   "id": "inked",
+   "label": "Differentially inked and serially sectioned apex to base",
+   "type": "select",
+   "group": "Macroscopy",
+   "default": "Yes",
+   "options": [
+    "Yes",
+    "No"
+   ]
+  },
+  {
+   "id": "blocks",
+   "label": "Blocks",
+   "type": "number",
+   "min": 1,
+   "step": 1,
+   "group": "Macroscopy",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "type": "textarea",
+   "group": "Macroscopy",
+   "default": "",
+   "placeholder": "1-2 Apical margin\n3-4 Bladder neck margin\n5-16 Whole-mount prostate slices apex to base\n17-18 Right and left seminal vesicles and vasa deferentia"
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th edition)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Acinar adenocarcinoma, conventional (usual)",
+   "options": [
+    "Acinar adenocarcinoma, conventional (usual)",
+    "Acinar adenocarcinoma, signet-ring-like cell",
+    "Acinar adenocarcinoma, pleomorphic giant cell",
+    "Acinar adenocarcinoma, sarcomatoid",
+    "Acinar adenocarcinoma, prostatic intraepithelial neoplasia-like",
+    "Ductal adenocarcinoma",
+    "Intraductal carcinoma",
+    "Adenosquamous carcinoma",
+    "Squamous cell carcinoma",
+    "Basal cell (adenoid cystic) carcinoma",
+    "Adenocarcinoma with neuroendocrine differentiation",
+    "Well-differentiated neuroendocrine tumour",
+    "Small cell neuroendocrine carcinoma",
+    "Large cell neuroendocrine carcinoma",
+    "Other histologic type not listed (specify)",
+    "Carcinoma, type cannot be determined"
+   ],
+   "reference": {
+    "title": "Prostate carcinoma types (WHO 5th edition)",
+    "intro": "WHO 5th edition (2022) recommends diagnosing ductal adenocarcinoma on radical prostatectomy only when >= 50% of the tumour has ductal morphology; otherwise report acinar adenocarcinoma with ductal features.",
+    "groups": [
+     {
+      "heading": "Acinar adenocarcinoma, conventional (usual)",
+      "points": [
+       "Discrete, fused, cribriform or solid infiltrating malignant acini lacking a basal cell layer.",
+       "Graded using Gleason patterns 3–5 and WHO/ISUP Grade Groups 1–5."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate/cat_adenocarcinoma.jpg",
+        "caption": "Acinar adenocarcinoma: discrete infiltrating glands lacking a basal cell layer (Gleason score 3+3=6)",
+        "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2a",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_6_(3%2B3).jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Acinar Adenocarcinoma of Prostate",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Ductal adenocarcinoma",
+      "points": [
+       "Large papillary and cribriform glands lined by tall pseudostratified columnar cells with elongated hyperchromatic nuclei.",
+       "On radical prostatectomy, requires >= 50% ductal morphology; graded as Gleason pattern 4 (or pattern 5 if comedonecrosis is present)."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate_radical/ductal_adeno.jpg",
+        "caption": "Ductal adenocarcinoma of the prostate: tall pseudostratified columnar epithelium with elongated hyperchromatic nuclei forming papillary and cribriform architecture (graded as Gleason pattern 4) (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Ductal_adenocarcinoma_of_prostate_--_high_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Ductal Adenocarcinoma of Prostate",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Intraductal carcinoma of the prostate (IDC-P)",
+      "points": [
+       "Malignant proliferation filling and expanding pre-existing ducts with retained basal cells (p63 / 34betaE12).",
+       "Pure IDC-P without invasive carcinoma is not assigned a Gleason grade."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate/idcp_dense_cribriform.jpg",
+        "caption": "Expanded duct filled by a dense cribriform proliferation of atypical cells (H&E, x100)",
+        "credit": "Destouni et al., Cancers 2022, Fig 3a (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://doi.org/10.3390/cancers14133041"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Intraductal Carcinoma of Prostate",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Treatment-related neuroendocrine / small cell & rare subtypes",
+      "points": [
+       "Small cell neuroendocrine carcinoma (synaptophysin/INSM1+, TTF-1 often+, PSA/NKX3.1 usually lost), sarcomatoid carcinoma and pleomorphic giant cell adenocarcinoma are aggressive variants.",
+       "Do not assign a Gleason score to pure neuroendocrine, squamous or basal cell carcinoma."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Neuroendocrine Carcinoma of Prostate",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ],
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Histologic type (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Other histologic type not listed (specify)",
+     "Carcinoma, type cannot be determined"
+    ]
+   }
+  },
+  {
+   "id": "primary",
+   "label": "Primary Gleason pattern",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "3",
+   "options": [
+    "3",
+    "4",
+    "5",
+    "Not applicable",
+    "Cannot be determined"
+   ],
+   "reference": {
+    "title": "Gleason patterns 3, 4 and 5 (radical prostatectomy)",
+    "intro": "On radical prostatectomy, the Gleason score is primary + secondary pattern. Unlike needle biopsy, a minor higher-grade pattern comprising < 5% of the tumour is recorded as a minor (tertiary) pattern rather than replacing the secondary grade.",
+    "noteTop": "5% rule (radical prostatectomy only): >= 5% higher-grade pattern enters the Gleason score; < 5% is reported as a minor (tertiary) pattern (e.g. 3+4=7 with minor pattern 5).",
+    "groups": [
+     {
+      "heading": "Pattern 3 — discrete, separate glands",
+      "points": [
+       "Well-formed individual glands surrounded by stroma, each with a single cell layer and separate lumen."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate/primary_p3_discrete.jpg",
+        "caption": "Gleason score 3+3=6: discrete, separate, variably sized glands, each with its own lumen",
+        "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2a",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_6_(3%2B3).jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Prostate Cancer Grading (Gleason / Grade Group)",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Pattern 4 — poorly formed, fused, cribriform or glomeruloid",
+      "points": [
+       "Poorly formed glands (absent/abortive lumina at 10x), fused glands sharing walls, cribriform sheets with punched-out lumina, or glomeruloid tufts.",
+       "Report percentage of pattern 4 for all Gleason score 7 tumours (CAP 4.3.0.0)."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate/primary_p4_poorly_formed.jpg",
+        "caption": "Poorly formed glands with incomplete or absent lumina (Gleason score 4+4=8)",
+        "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2f",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_poorly-formed_glands.jpg"
+       },
+       {
+        "src": "assets/reference/prostate/primary_p4_fused.jpg",
+        "caption": "Fused glands sharing a common wall; cytoplasmic vacuoles present (Gleason score 4+4=8)",
+        "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2d",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_fused_glands_with_cytoplasmic_vacuoles.jpg"
+       },
+       {
+        "src": "assets/reference/prostate/primary_p4_glomeruloid.jpg",
+        "caption": "Glomeruloid glands: intraluminal cribriform tufts attached at one edge (Gleason score 4+4=8)",
+        "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2e",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_glomeruloid_glands.jpg"
+       },
+       {
+        "src": "assets/reference/prostate/primary_p4_cribriform.jpg",
+        "caption": "Irregular cribriform glands (Gleason score 4+4=8)",
+        "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2c",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_irregular_cribriform_glands.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Prostate Cancer Grading (Gleason / Grade Group)",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Pattern 5 — sheets, cords, single cells, comedonecrosis",
+      "points": [
+       "Solid sheets, cords, single infiltrating cells, or unequivocal comedonecrosis within solid/cribriform nests."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate/primary_p5_sheets.jpg",
+        "caption": "Solid sheets of tumour cells without gland formation (Gleason score 5+5=10)",
+        "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 3a",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_10_(5%2B5)_with_solid_sheets_of_cells.jpg"
+       },
+       {
+        "src": "assets/reference/prostate/primary_p5_cords.jpg",
+        "caption": "Cords of tumour cells (Gleason score 5+5=10)",
+        "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 3b",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_10_(5%2B5)_with_cords_of_cells.jpg"
+       },
+       {
+        "src": "assets/reference/prostate/primary_p5_single_cells.jpg",
+        "caption": "Individually infiltrating tumour cells (Gleason score 5+5=10)",
+        "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 3c",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_10_(5%2B5)_with_individual_cells.jpg"
+       },
+       {
+        "src": "assets/reference/prostate/primary_p5_comedonecrosis.jpg",
+        "caption": "Cribriform glands, some with central comedonecrosis (Gleason score 4+5=9)",
+        "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 3d",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_9_(4%2B5)_with_cribriform_glands,_some_with_necrosis.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Borderline 3 vs 4 — favour the lower grade",
+      "points": [
+       "Avoid overcalling tangentially sectioned pattern 3 glands as pattern 4; look at adjacent levels and neighbouring well-formed glands."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate/primary_borderline_tangential_a.jpg",
+        "caption": "Bordering 3+3=6 with tangential cuts against 3+4=7 with poorly formed glands; the ISUP panel favoured 3+3=6 (H&E, x20 objective)",
+        "credit": "Egevad et al., Virchows Arch 2020, Fig 3a (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://doi.org/10.1007/s00428-020-02858-w"
+       }
+      ]
+     }
+    ],
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
+  },
+  {
+   "id": "secondary",
+   "label": "Secondary Gleason pattern",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "4",
+   "options": [
+    "3",
+    "4",
+    "5",
+    "Not applicable",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "tertiary",
+   "label": "Minor (tertiary) Gleason pattern (< 5%, optional)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "",
+   "options": [
+    "",
+    "4",
+    "5"
+   ],
+   "help": "Radical prostatectomy 5% rule: record a higher-grade pattern < 5% here rather than upgrading the Gleason score."
+  },
+  {
+   "id": "pctPattern4",
+   "label": "Percentage of pattern 4 (for Gleason score >= 7)",
+   "type": "number",
+   "min": 0,
+   "max": 100,
+   "step": 1,
+   "group": "Microscopic findings",
+   "default": ""
+  },
+  {
+   "id": "pctPattern5",
+   "label": "Percentage of pattern 5 (optional)",
+   "type": "number",
+   "min": 0,
+   "max": 100,
+   "step": 1,
+   "group": "Microscopic findings",
+   "default": ""
+  },
+  {
+   "id": "idcp",
+   "label": "Intraductal carcinoma (IDC-P)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present, IDC not incorporated in grade",
+    "Present, IDC incorporated in grade",
+    "Present",
+    "Cannot be determined"
+   ],
+   "reference": {
+    "title": "Intraductal carcinoma of the prostate (IDC-P)",
+    "intro": "IDC-P expands pre-existing ducts with retained basal cells. GUPS recommends excluding IDC-P from the Gleason grade; ISUP recommends incorporating it when associated with invasive cancer — CAP 4.3.0.0 asks you to state which convention was used.",
+    "groups": [
+     {
+      "heading": "IDC-P criteria and basal cell confirmation",
+      "points": [
+       "Expansile solid, dense cribriform or comedo proliferation inside pre-existing ducts with retained p63 / 34betaE12 basal cells."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate/idcp_dense_cribriform.jpg",
+        "caption": "Expanded duct filled by a dense cribriform proliferation of atypical cells (H&E, x100)",
+        "credit": "Destouni et al., Cancers 2022, Fig 3a (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://doi.org/10.3390/cancers14133041"
+       },
+       {
+        "src": "assets/reference/prostate/idcp_amacr_p63.jpg",
+        "caption": "AMACR (brown) with p63 (pink) double stain: strong cytoplasmic AMACR with a preserved p63-positive basal layer",
+        "credit": "Compérat et al., Cancers 2024, Fig 1B (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://doi.org/10.3390/cancers16112002"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Intraductal Carcinoma of Prostate",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "IDC-P vs invasive cribriform carcinoma",
+      "points": [
+       "Basal cell IHC (p63 / HMWCK) separates IDC-P (basal cells retained) from invasive cribriform carcinoma (basal cells absent) when grade would change."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate/idcp_vs_inv_he.jpg",
+        "caption": "IDC-P glands with cribriform morphology surrounded by invasive carcinoma glands",
+        "credit": "Surintrspanont & Zhou, Cancers 2023, Fig 2A (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://doi.org/10.3390/cancers15225319"
+       },
+       {
+        "src": "assets/reference/prostate/idcp_vs_inv_p63.jpg",
+        "caption": "p63 (brown): the intraductal glands retain basal cells while the invasive glands lack them",
+        "credit": "Surintrspanont & Zhou, Cancers 2023, Fig 2B (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://doi.org/10.3390/cancers15225319"
+       }
+      ]
+     }
+    ],
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
+  },
+  {
+   "id": "cribriform",
+   "label": "Cribriform glands (for Gleason score 7 or 8)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "reference": {
+    "title": "Cribriform pattern 4 (ISUP / WHO 5th)",
+    "intro": "Invasive cribriform pattern 4 independently predicts biochemical recurrence and metastasis in Gleason score 7–8 prostate cancer.",
+    "groups": [
+     {
+      "heading": "ISUP definition of cribriform pattern 4",
+      "points": [
+       "Confluent sheet of contiguous tumour cells punched by multiple lumina, visible at 10x, with no intervening stroma or mucin."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate/crib_definition.jpg",
+        "caption": "Confluent sheets of tumour cells forming cohesive trabeculae with punched-out lumina and no intervening stroma (H&E, 100x)",
+        "credit": "Compérat et al., Cancers 2024, Fig 2",
+        "license": "CC BY 4.0",
+        "url": "https://doi.org/10.3390/cancers16112002"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Prostate Cancer Grading (Gleason / Grade Group)",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Large / complex cribriform architecture",
+      "points": [
+       "Large cribriform glands carry the strongest adverse prognostic significance; report cribriform growth as Present in Gleason 7 and 8 tumours."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate/crib_large_complex.jpg",
+        "caption": "Large, complex cribriform structure invading periprostatic adipose tissue (x100)",
+        "credit": "Destouni et al., Cancers 2022, Fig 4b (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://doi.org/10.3390/cancers14133041"
+       }
+      ]
+     },
+     {
+      "heading": "Mimics — not cribriform",
+      "points": [
+       "Glomeruloid tufts (attached at one point; still pattern 4), basal cell hyperplasia, and clear cell cribriform hyperplasia are not invasive cribriform carcinoma."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate/crib_not_glomeruloid.jpg",
+        "caption": "Glomeruloid glands: the intraluminal tuft stays attached at one edge, so this is not cribriform",
+        "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2e",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_8_(4%2B4)_with_glomeruloid_glands.jpg"
+       },
+       {
+        "src": "assets/reference/prostate/crib_not_bch.jpg",
+        "caption": "Basal cell hyperplasia with a cribriform pattern (x100)",
+        "credit": "Destouni et al., Cancers 2022, Fig 1b (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://doi.org/10.3390/cancers14133041"
+       }
+      ]
+     }
+    ],
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
+  },
+  {
+   "id": "epe",
+   "label": "Extraprostatic extension (EPE)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present, focal",
+    "Present, nonfocal",
+    "Cannot be determined"
+   ],
+   "help": "Any EPE (focal or nonfocal) assigns pT3a.",
+   "reference": {
+    "title": "Extraprostatic extension (pT3a) and seminal vesicle invasion (pT3b)",
+    "intro": "EPE is tumour extending beyond the confines of the prostate gland into periprostatic soft tissue (adipose tissue, perineural spaces of neurovascular bundles, or desmoplastic bulging beyond the prostatic contour).",
+    "groups": [
+     {
+      "heading": "Extraprostatic extension (pT3a): focal vs nonfocal",
+      "points": [
+       "Focal EPE: only a few neoplastic glands outside the prostate in 1–2 slides (or <= 0.6 mm radial / <= 1 HPF).",
+       "Nonfocal (established) EPE: more extensive extraprostatic tumour beyond focal criteria.",
+       "Pitfall: at the apex and anteriorly the prostatic capsule is poorly defined and benign skeletal muscle intermixes with prostate — tumour in skeletal muscle alone at the apex is NOT EPE."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate_radical/epe_high.jpg",
+        "caption": "Extraprostatic extension (pT3a): infiltrating Gleason pattern 4 prostatic adenocarcinoma extending into periprostatic adipose tissue (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Prostate_carcinoma_with_extraprostatic_extension_--_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/prostate/crib_large_complex.jpg",
+        "caption": "Large, complex cribriform structure invading periprostatic adipose tissue (x100)",
+        "credit": "Destouni et al., Cancers 2022, Fig 4b (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://doi.org/10.3390/cancers14133041"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Prostate Carcinoma Staging",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Microscopic urinary bladder neck invasion (pT3a)",
+      "points": [
+       "Tumour infiltrating thick smooth muscle bundles of the bladder neck without residual benign prostatic glands.",
+       "Under AJCC 8th edition, microscopic bladder neck invasion is pT3a (NOT pT4)."
+      ]
+     },
+     {
+      "heading": "Seminal vesicle invasion (pT3b)",
+      "points": [
+       "Requires invasive carcinoma infiltrating the muscular wall of the extraprostatic seminal vesicle.",
+       "Tumour confined to the perivesicular fat or ejaculatory duct without seminal vesicle muscular wall invasion is pT3a (EPE), NOT pT3b."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate_radical/sv_normal.jpg",
+        "caption": "Benign seminal vesicle epithelium: golden-brown lipofuscin pigment and degenerative nuclear pleomorphism; seminal vesicle invasion (pT3b) requires tumour invading the muscular wall of the seminal vesicle (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Seminal_vesicle_high_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Prostate Carcinoma Staging",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ],
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
+  },
+  {
+   "id": "epeLocations",
+   "label": "Locations of EPE",
+   "type": "multiselect",
+   "group": "Microscopic findings",
+   "default": [],
+   "options": [
+    "Right apical",
+    "Right bladder neck",
+    "Right anterior",
+    "Right lateral",
+    "Right posterolateral (neurovascular bundle)",
+    "Right posterior",
+    "Left apical",
+    "Left bladder neck",
+    "Left anterior",
+    "Left lateral",
+    "Left posterolateral (neurovascular bundle)",
+    "Left posterior"
+   ],
+   "showIf": {
+    "field": "epe",
+    "is": [
+     "Present, focal",
+     "Present, nonfocal"
+    ]
+   }
+  },
+  {
+   "id": "epeOther",
+   "label": "EPE location (other, specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "epe",
+    "is": [
+     "Present, focal",
+     "Present, nonfocal"
+    ]
+   }
+  },
+  {
+   "id": "bladderNeck",
+   "label": "Urinary bladder neck invasion (microscopic -> pT3a)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "svi",
+   "label": "Seminal vesicle invasion (pT3b)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present, right",
+    "Present, left",
+    "Present, bilateral",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "adjacentInvasion",
+   "label": "Adjacent structure invasion (pT4: rectum, bladder wall, levator, pelvic wall)",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "adjacentDetail",
+   "label": "Adjacent structure(s) invaded (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "adjacentInvasion",
+    "is": "Present"
+   }
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "Present",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "treatmentEffect",
+   "label": "Treatment effect",
+   "type": "select",
+   "group": "Microscopic findings",
+   "default": "No known presurgical therapy",
+   "options": [
+    "No known presurgical therapy",
+    "Not identified",
+    "Radiation therapy effect present",
+    "Hormonal therapy effect present",
+    "Radiation and hormonal therapy effects present",
+    "Other therapy effect(s) present (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "treatmentOther",
+   "label": "Treatment effect (specify)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "showIf": {
+    "field": "treatmentEffect",
+    "is": "Other therapy effect(s) present (specify)"
+   }
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry (optional)",
+   "type": "text",
+   "group": "Microscopic findings",
+   "default": "",
+   "placeholder": "e.g. Tumour glands lack p63/34betaE12 basal cells and overexpress AMACR."
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Tumour histology (replaces generated paragraph)",
+   "type": "textarea",
+   "group": "Microscopic findings",
+   "default": ""
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "type": "select",
+   "group": "Margins",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Uninvolved by invasive carcinoma, benign prostate glands at margins",
+    "Involved by invasive carcinoma, limited (< 3 mm)",
+    "Involved by invasive carcinoma, non-limited (>= 3 mm)",
+    "Cannot be assessed"
+   ],
+   "reference": {
+    "title": "Radical prostatectomy surgical margins (CAP 4.3.0.0)",
+    "intro": "A surgical margin is positive ONLY when invasive carcinoma cells directly touch the inked resection surface. Close proximity (< 0.1 mm) without ink contact is reported as uninvolved.",
+    "groups": [
+     {
+      "heading": "Limited (< 3 mm) vs non-limited (>= 3 mm) positive margin",
+      "points": [
+       "Measure the linear extent of ink contact (mm) — cumulative length >= 3 mm independently increases biochemical recurrence risk.",
+       "Specify all anatomical locations and whether positive margins are unifocal or multifocal."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Radical Prostatectomy Margins",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Gleason pattern at positive margin(s)",
+      "points": [
+       "Record the highest Gleason pattern touching ink (Pattern 3 vs Pattern 4 or 5) — pattern 4/5 at the margin carries higher recurrence risk than pattern 3 alone."
+      ]
+     },
+     {
+      "heading": "Intraprostatic (capsular) incision vs margin positivity in EPE",
+      "points": [
+       "A positive margin inside an area of organ-confined tumour (intraprostatic incision) does NOT upstage pT2 to pT3a.",
+       "Record whether margin positivity occurs within an area of extraprostatic extension (pT3a)."
+      ]
+     }
+    ],
+    "note": "Criteria follow CAP Prostate Radical Prostatectomy 4.3.0.0 and ISUP guidelines. ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
+  },
+  {
+   "id": "marginLinearMm",
+   "label": "Linear length of positive margin (mm)",
+   "type": "number",
+   "min": 0,
+   "step": 0.5,
+   "group": "Margins",
+   "default": "",
+   "showIf": {
+    "field": "marginStatus",
+    "is": [
+     "Involved by invasive carcinoma, limited (< 3 mm)",
+     "Involved by invasive carcinoma, non-limited (>= 3 mm)"
+    ]
+   }
+  },
+  {
+   "id": "marginFocality",
+   "label": "Positive margin focality",
+   "type": "select",
+   "group": "Margins",
+   "default": "",
+   "options": [
+    "",
+    "Unifocal",
+    "Multifocal"
+   ],
+   "showIf": {
+    "field": "marginStatus",
+    "is": [
+     "Involved by invasive carcinoma, limited (< 3 mm)",
+     "Involved by invasive carcinoma, non-limited (>= 3 mm)"
+    ]
+   }
+  },
+  {
+   "id": "marginLocations",
+   "label": "Locations of positive margins",
+   "type": "multiselect",
+   "group": "Margins",
+   "default": [],
+   "options": [
+    "Right apical",
+    "Right bladder neck",
+    "Right anterior",
+    "Right lateral",
+    "Right posterolateral (neurovascular bundle)",
+    "Right posterior",
+    "Left apical",
+    "Left bladder neck",
+    "Left anterior",
+    "Left lateral",
+    "Left posterolateral (neurovascular bundle)",
+    "Left posterior"
+   ],
+   "showIf": {
+    "field": "marginStatus",
+    "is": [
+     "Involved by invasive carcinoma, limited (< 3 mm)",
+     "Involved by invasive carcinoma, non-limited (>= 3 mm)"
+    ]
+   }
+  },
+  {
+   "id": "marginOther",
+   "label": "Positive margin location (other, specify)",
+   "type": "text",
+   "group": "Margins",
+   "default": "",
+   "showIf": {
+    "field": "marginStatus",
+    "is": [
+     "Involved by invasive carcinoma, limited (< 3 mm)",
+     "Involved by invasive carcinoma, non-limited (>= 3 mm)"
+    ]
+   }
+  },
+  {
+   "id": "marginEpe",
+   "label": "Margin positivity in area of EPE",
+   "type": "select",
+   "group": "Margins",
+   "default": "",
+   "options": [
+    "",
+    "Not identified",
+    "Present"
+   ],
+   "showIf": {
+    "field": "marginStatus",
+    "is": [
+     "Involved by invasive carcinoma, limited (< 3 mm)",
+     "Involved by invasive carcinoma, non-limited (>= 3 mm)"
+    ]
+   }
+  },
+  {
+   "id": "marginGleason",
+   "label": "Gleason pattern at positive margin(s)",
+   "type": "select",
+   "group": "Margins",
+   "default": "",
+   "options": [
+    "",
+    "Pattern 3",
+    "Pattern 4 or 5"
+   ],
+   "showIf": {
+    "field": "marginStatus",
+    "is": [
+     "Involved by invasive carcinoma, limited (< 3 mm)",
+     "Involved by invasive carcinoma, non-limited (>= 3 mm)"
+    ]
+   }
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "help": "Obturator, internal iliac, external iliac, sacral and pelvic nodes. Leave blank if none submitted."
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "type": "number",
+   "min": 0,
+   "step": 1,
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "nodesExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "nodeSites",
+   "label": "Nodal site(s)",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "placeholder": "e.g. bilateral pelvic (obturator and external iliac)",
+   "showIf": {
+    "field": "nodesExamined",
+    "min": 1
+   }
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "type": "select",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Size of largest metastatic deposit (mm)",
+   "type": "number",
+   "min": 0,
+   "step": 0.1,
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "largestNodeMm",
+   "label": "Size of largest involved lymph node (mm)",
+   "type": "number",
+   "min": 0,
+   "step": 0.1,
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "field": "nodesInvolved",
+    "min": 1
+   }
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis",
+   "type": "multiselect",
+   "group": "Lymph nodes and metastasis",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Bone",
+    "Other (specify)",
+    "Cannot be determined"
+   ],
+   "exclusive": [
+    "Not applicable",
+    "Not identified",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Distant metastasis (specify)",
+   "type": "text",
+   "group": "Lymph nodes and metastasis",
+   "default": "",
+   "showIf": {
+    "any": [
+     {
+      "field": "distantMets",
+      "is": "Non-regional lymph node(s)"
+     },
+     {
+      "field": "distantMets",
+      "is": "Bone"
+     },
+     {
+      "field": "distantMets",
+      "is": "Other (specify)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "type": "multiselect",
+   "group": "Additional findings",
+   "default": [
+    "High-grade prostatic intraepithelial neoplasia (HGPIN)",
+    "Nodular prostatic hyperplasia"
+   ],
+   "options": [
+    "None identified",
+    "Atypical intraductal proliferation (AIP)",
+    "High-grade prostatic intraepithelial neoplasia (HGPIN)",
+    "Inflammation",
+    "Atypical adenomatous hyperplasia (adenosis)",
+    "Nodular prostatic hyperplasia"
+   ],
+   "exclusive": [
+    "None identified"
+   ]
+  },
+  {
+   "id": "inflammationType",
+   "label": "Inflammation (specify type)",
+   "type": "text",
+   "group": "Additional findings",
+   "default": "",
+   "showIf": {
+    "field": "additionalFindings",
+    "is": "Inflammation"
+   }
+  },
+  {
+   "id": "additionalOther",
+   "label": "Other additional findings",
+   "type": "text",
+   "group": "Additional findings",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "type": "textarea",
+   "group": "Additional findings",
+   "default": ""
+  },
+  {
+   "id": "mmr",
+   "label": "Mismatch repair (MMR) IHC",
+   "type": "select",
+   "group": "Molecular findings",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Intact nuclear expression of MLH1, PMS2, MSH2 and MSH6",
+    "Loss of nuclear MMR protein expression (specify below)",
+    "Pending"
+   ]
+  },
+  {
+   "id": "molecularOther",
+   "label": "Other molecular / biomarker studies (e.g. BRCA1/2, PTEN, MSI)",
+   "type": "text",
+   "group": "Molecular findings",
+   "default": ""
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "After neoadjuvant therapy (y)",
+   "type": "checkbox",
+   "group": "Staging",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "type": "text",
+   "group": "Staging",
+   "default": "",
+   "placeholder": "e.g. pT3a pN0"
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "pTNM override: reason",
+   "type": "text",
+   "group": "Staging",
+   "default": "",
+   "showIf": {
+    "field": "tnmOverride",
+    "not": ""
+   }
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01610",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "specimenName": "",
+     "procedure": "Radical prostatectomy",
+     "procedureOther": "",
+     "weight": "46",
+     "specimenDims": "4.5 x 4.0 x 3.5",
+     "pctProstate": "15",
+     "dominantNoduleMm": "16",
+     "dominantNoduleDims": "16 x 12 x 10",
+     "dominantNoduleSite": "right posterior peripheral zone",
+     "noPrimary": false,
+     "seminalVesiclesDims": "right seminal vesicle 3.5 cm, left seminal vesicle 3.2 cm, grossly unremarkable",
+     "inked": "Yes",
+     "blocks": "18",
+     "blockKeyText": "1-2 Apical margin\n3-4 Bladder neck margin\n5-16 Whole-mount slices apex to base\n17-18 Seminal vesicles and vasa deferentia",
+     "histType": "Acinar adenocarcinoma, conventional (usual)",
+     "histTypeOther": "",
+     "primary": "3",
+     "secondary": "4",
+     "tertiary": "",
+     "pctPattern4": "25",
+     "pctPattern5": "",
+     "idcp": "Not identified",
+     "cribriform": "Not identified",
+     "epe": "Not identified",
+     "epeLocations": [],
+     "epeOther": "",
+     "bladderNeck": "Not identified",
+     "svi": "Not identified",
+     "adjacentInvasion": "Not identified",
+     "adjacentDetail": "",
+     "lvi": "Not identified",
+     "pni": "Present",
+     "treatmentEffect": "No known presurgical therapy",
+     "treatmentOther": "",
+     "ihcText": "",
+     "histologyNotes": "",
+     "marginStatus": "Uninvolved by invasive carcinoma",
+     "marginLinearMm": "",
+     "marginFocality": "",
+     "marginLocations": [],
+     "marginOther": "",
+     "marginEpe": "",
+     "marginGleason": "",
+     "nodesExamined": "10",
+     "nodesInvolved": "0",
+     "nodeSites": "bilateral pelvic",
+     "ene": "",
+     "largestDepositMm": "",
+     "largestNodeMm": "",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "distantMetsOther": "",
+     "additionalFindings": [
+      "High-grade prostatic intraepithelial neoplasia (HGPIN)",
+      "Nodular prostatic hyperplasia"
+     ],
+     "inflammationType": "",
+     "additionalOther": "",
+     "additionalNotes": "",
+     "mmr": "Not performed",
+     "molecularOther": "",
+     "multiplePrimaries": false,
+     "recurrent": false,
+     "postTherapy": false,
+     "tnmOverride": "",
+     "tnmOverrideReason": ""
+    }
+   }
+  ]
+ }
+}

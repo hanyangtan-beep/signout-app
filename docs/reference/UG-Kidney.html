@@ -1,0 +1,813 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Kidney Cancers</title>
+<link rel="stylesheet" type="text/css" href="view.css" media="all">
+<script type="text/javascript" src="view.js"></script>
+<script>
+function updateDescription (frm) 
+{
+    var Template = "";
+	
+
+if (frm.A01.value !== ""){
+	Template += "- Procedure: " + frm.A01.value + "\n";
+}
+
+if (frm.A02.value !== ""){
+	Template += "- Tumor laterality: " + frm.A02.value + "\n";
+}
+
+if (frm.A58.value !== ""){
+	Template += "- Tumor focality: " + frm.A58.value + "\n";
+}
+
+if (document.getElementById("A03").checked || document.getElementById("A04").checked ||
+	document.getElementById("A05").checked || document.getElementById("A06").checked ||
+	document.getElementById("A07").checked){
+	Template += "- Tumor sites: " + "\n";
+}
+
+if (document.getElementById("A03").checked){
+	Template += frm.A03.value + "\n";
+}
+
+if (document.getElementById("A04").checked){
+	Template += frm.A04.value + "\n";
+}
+
+if (document.getElementById("A05").checked){
+	Template += frm.A05.value + "\n";
+}
+
+if (document.getElementById("A06").checked){
+	Template += frm.A06.value + "\n";
+}
+
+if (document.getElementById("A07").checked){
+	Template += frm.A07.value + "\n";
+}
+
+if (frm.A08.value !== ""){
+	Template += "- Tumor size: " + frm.A08.value + "\n";
+}
+
+if (frm.A09.value !== ""){
+	Template += "- Tumor histology and immunohistochemical studies: " + "\n" + "  - " + frm.A09.value + "\n";
+}
+
+if (frm.A10.value !== ""){
+	Template += "\n" + "- Histologic type (WHO 5e): " + frm.A10.value + "\n";
+}
+
+if (frm.A11.value !== ""){
+	Template += "- Sarcomatoid features: " + frm.A11.value + "\n";
+}
+
+if (frm.A12.value !== ""){
+	Template += "- Rhabdoid features: " + frm.A12.value + "\n";
+}
+
+if (frm.A13.value !== ""){
+	Template += "- Histologic grade (WHO / ISUP Grade): " + frm.A13.value + "\n";
+}
+
+if (frm.A14.value !== ""){
+	Template += "- Tumor necrosis: " + frm.A14.value + "\n";
+}
+
+if (frm.A15.value !== ""){
+	Template += "- Lymphovascular invasion (exclude renal vein and its segmental branches, and IVC): " + frm.A15.value + "\n";
+}
+
+if (frm.A16.value !== ""){
+	Template += "- Perineural invasion: " + frm.A16.value + "\n";
+}
+
+if (document.getElementById("A17").checked || document.getElementById("A18").checked ||
+	document.getElementById("A19").checked || document.getElementById("A20").checked ||
+	document.getElementById("A21").checked || document.getElementById("A22").checked ||
+	document.getElementById("A23").checked || document.getElementById("A24").checked ||
+	document.getElementById("A25").checked || document.getElementById("A26").checked ||
+	document.getElementById("A27").checked){
+	Template += "- Tumor extension: " + "\n";
+}
+
+if (document.getElementById("A17").checked){
+	Template += frm.A17.value + "\n";
+}
+
+if (document.getElementById("A18").checked){
+	Template += frm.A18.value + "\n";
+}
+
+if (document.getElementById("A19").checked){
+	Template += frm.A19.value + "\n";
+}
+
+if (document.getElementById("A20").checked){
+	Template += frm.A20.value + "\n";
+}
+
+if (document.getElementById("A21").checked){
+	Template += frm.A21.value + "\n";
+}
+
+if (document.getElementById("A22").checked){
+	Template += frm.A22.value + "\n";
+}
+
+if (document.getElementById("A23").checked){
+	Template += frm.A23.value + "\n";
+}
+
+if (document.getElementById("A24").checked){
+	Template += frm.A24.value + "\n";
+}
+
+if (document.getElementById("A25").checked){
+	Template += frm.A25.value + "\n";
+}
+
+if (document.getElementById("A26").checked){
+	Template += frm.A26.value + "\n";
+}
+
+if (document.getElementById("A27").checked){
+	Template += frm.A27.value + "\n";
+}
+
+if (document.getElementById("A28").checked || document.getElementById("A29").checked ||
+	document.getElementById("A30").checked || document.getElementById("A31").checked ||
+	document.getElementById("A32").checked || document.getElementById("A33").checked ||
+	document.getElementById("A34").checked || document.getElementById("A35").checked ||
+	document.getElementById("A36").checked || document.getElementById("A37").checked 
+	){
+	Template += "\n" + "- Surgical margins of excision specimen: " + "\n";
+}
+
+if (document.getElementById("A28").checked){
+	Template += frm.A28.value + "\n";
+}
+
+if (document.getElementById("A29").checked){
+	Template += frm.A29.value + "\n";
+}
+
+if (document.getElementById("A30").checked){
+	Template += frm.A30.value + "\n";
+}
+
+if (document.getElementById("A31").checked){
+	Template += frm.A31.value + "\n";
+}
+
+if (document.getElementById("A32").checked){
+	Template += frm.A32.value + "\n";
+}
+
+if (document.getElementById("A33").checked){
+	Template += frm.A33.value + "\n";
+}
+
+if (document.getElementById("A34").checked){
+	Template += frm.A34.value + "\n";
+}
+
+if (document.getElementById("A35").checked){
+	Template += frm.A35.value + "\n";
+}
+
+if (document.getElementById("A36").checked){
+	Template += frm.A36.value + "\n";
+}
+
+if (document.getElementById("A37").checked){
+	Template += frm.A37.value + "\n";
+}
+
+if (frm.A38.value + frm.A39.value + frm.A40.value + frm.A41.value + frm.A42.value !== ""){
+	Template += "\n" + "- Lymph nodes examination: " + "\n";
+}	
+
+if (frm.A38.value !== ""){
+	Template += "  - Number of regional lymph nodes examined: " + frm.A38.value + "\n";
+}
+
+if (frm.A39.value !== ""){
+	Template += "  - Number of lymph nodes involved: " + frm.A39.value + "\n";
+}
+
+if (frm.A40.value !== ""){
+	Template += "  - Extranodal extension (ENE) : " + frm.A40.value + "\n";
+}
+
+if (frm.A41.value !== ""){
+	Template += "  - Size of largest metastatic deposit (mm), specify site: " + frm.A41.value + " mm" + "\n";
+}
+
+if (frm.A42.value !== ""){
+	Template += "  - Size of largest lymph node involved (mm), specify site: " + frm.A42.value + " mm" + "\n";
+}
+
+if (document.getElementById("A59").checked || document.getElementById("A60").checked ||
+	document.getElementById("A61").checked || document.getElementById("A62").checked ){
+	Template += "\n" + "- Distant metastasis:" + "\n";
+}
+
+if (document.getElementById("A59").checked){
+	Template += frm.A59.value + "\n";
+}
+
+if (document.getElementById("A60").checked){
+	Template += frm.A60.value + "\n";
+}
+
+if (document.getElementById("A61").checked){
+	Template += frm.A61.value + "\n";
+}
+
+if (document.getElementById("A62").checked){
+	Template += frm.A62.value + "\n";
+}
+
+if (document.getElementById("A43").checked || document.getElementById("A44").checked ||
+	document.getElementById("A45").checked || frm.A46.value + frm.A47.value + frm.A48.value
+	!== ""){
+	Template += "\n" + "- Pathologic stage classification (pTNM, AJCC 8th edition):" + "\n";
+}
+
+if (document.getElementById("A43").checked || document.getElementById("A44").checked ||
+	document.getElementById("A45").checked){
+	Template += "  - TNM Descriptors:" + "\n";
+}
+
+if (document.getElementById("A43").checked){
+	Template += "    " + frm.A43.value + "\n";
+}
+
+if (document.getElementById("A44").checked){
+	Template += "    " + frm.A44.value + "\n";
+}
+
+if (document.getElementById("A45").checked){
+	Template += "    " +frm.A45.value + "\n";
+}
+
+if (frm.A46.value !== ""){
+	Template += "  - Primary tumor (pT): " + "\n" + "  " + frm.A46.value + "\n";
+}
+
+if (frm.A47.value !== ""){
+	Template += "  - Regional lymph nodes (pN): " + "\n" + "  " + frm.A47.value + "\n";
+}
+
+if (frm.A48.value !== ""){
+	Template += "  - Distant metastasis: " + "\n" + "  " + frm.A48.value + "\n";
+}
+
+if (document.getElementById("A50").checked || document.getElementById("A51").checked ||
+	document.getElementById("A52").checked || document.getElementById("A53").checked ||
+	document.getElementById("A54").checked || document.getElementById("A55").checked ||
+	frm.A56.value !==""){
+	Template += "\n" + "- Additional pathologic findings: " + "\n";
+}
+
+if (document.getElementById("A50").checked){
+	Template += frm.A50.value + "\n";
+}
+
+if (document.getElementById("A51").checked){
+	Template += frm.A51.value + "\n";
+}
+
+if (document.getElementById("A52").checked){
+	Template += frm.A52.value + "\n";
+}
+
+if (document.getElementById("A53").checked){
+	Template += frm.A53.value + "\n";
+}
+
+if (document.getElementById("A54").checked){
+	Template += frm.A54.value + "\n";
+}
+
+if (document.getElementById("A55").checked){
+	Template += frm.A55.value + "\n";
+}
+
+if (frm.A56.value !== ""){
+	Template += "  - Other: " + frm.A56.value + "\n";
+}
+
+if (frm.A57.value !== ""){
+	Template += "\n" + "- Additional notes: " + "\n" + "  - " +  frm.A57.value + "\n";
+}
+
+frm.holdtext.value = Template;
+}
+
+function CopyToClipboard() {
+  /* Get the text field */
+  var copyText = document.getElementById("holdtext");
+
+  /* Select the text field */
+  copyText.select();
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+
+  /* Alert the copied text */
+  alert("Report copied to clipboard");
+}
+</script>
+<style>
+table, th, td {
+  border: 1px solid silver;
+  border-collapse: collapse;
+  padding: 4px;
+}
+</style>
+</head>
+
+<body>
+<img id="top" src="top.png" alt="">
+	<div id="form_container">
+	<div class="form_description">
+		<h2>
+		<a href=".\cap\Cancer-Protocols-2026-06-Update\Genitourinary Protocol Folder\Kidney_4.3.0.0.REL_CAPCP.pdf" target="_blank">
+		<div class="tooltip">
+		Renal Cell Carcinoma
+		<span class="tooltiptext">click to access explanations in the original CAP template</span>
+		</div>
+		<a>
+		</h2>
+	</div>
+	
+<form>
+<p> This is additional protocol for <a href=".\cap\Cancer-Protocols-2026-06-Update\Genitourinary Protocol Folder\Kidney_4.3.0.0.REL_CAPCP.pdf" target="_blank">biopsy specimen</a>.</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend><label class="description">Gross core data elements:</label></legend>
+<p>
+<table border="1">
+<col width="70%">
+<tr>
+<td>
+<label class="description">- Procedure:</label>
+</td>
+<td>
+<select class="element select large" ID="A01">
+	<option value=""></option>
+	<option value="  - Partial nephrectomy">Partial nephrectomy</option> 
+	<option value="  - Radical nephrectomy">Radical nephrectomy</option> 
+	<option value="  - Total nephrectomy">Total nephrectomy</option> 
+	<option value="  - Other (specify):">Other (specify):</option>
+	<option value="  - Not specified">Not specified</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Tumor Laterality:</label> 
+</td>
+<td>
+<select class="element select large" ID="A02">
+	<option value=""></option>
+	<option value="  - Right">Right</option> 
+	<option value="  - Left">Left</option> 
+	<option value="  - Other (specify):">Other (specify):</option>
+	<option value="  - Not specified">Not specified</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Tumor Focality:</label> 
+</td>
+<td>
+<select class="element select large" ID="A58">
+	<option value=""></option>
+	<option value="  - Unifocal">Unifocal</option> 
+	<option value="  - Multifocal">Multifocal</option>
+	<option value="  - Not specified">Not specified</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<label class="description">- Tumor site:</label>
+</td>
+<td>
+<input class="element checkbox" type="checkbox"  id="A03" value="  - Upper pole"><label class="choice">Upper pole</label>
+<input class="element checkbox" type="checkbox"  id="A04" value="  - Middle"><label class="choice">Middle</label>
+<input class="element checkbox" type="checkbox"  id="A05" value="  - Lower pole"><label class="choice">Lower pole</label>
+<input class="element checkbox" type="checkbox"  id="A06" value="  - Other (specify):"><label class="choice" >Other (specify):</label>
+<input class="element checkbox" type="checkbox"  id="A07" value="  - Not specified"><label class="choice">Not specified</label>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Tumor size:</label> 
+</td>
+<td>
+<select class="element select large" ID="A08">
+		<option value=""></option>
+		<option value="  - Greatest dimension (mm): ">Greatest dimension (mm): </option>
+		<option value="  - Cannot be determined (explain): ">Cannot be determined (explain):</option>
+</select>
+</td>
+</tr>
+</table>
+</p>
+
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend><label class="description">Microscopic descriptions:</label></legend>
+
+<p><label class="description">- Tumor histology and immunohistochemical studies: </label>
+ <textarea ID="A09" class="element textarea medium"></textarea>
+</p>
+
+<p>
+<table border="1">
+<col width="50%">
+<tr>
+<td>
+<label class="description">- Histologic type (WHO 5e):</label> 
+</td>
+<td>
+<select class="element select large" ID="A10">
+	<option value=""></option>
+	<option value="Clear cell renal cell carcinoma">Clear cell renal cell carcinoma</option>
+	<option value="Multilocular cystic renal cell neoplasm of low malignant potential">Multilocular cystic renal cell neoplasm of low malignant potential</option>
+	<option value="Papillary renal cell carcinoma">Papillary renal cell carcinoma</option>	
+	<option value="Chromophobe renal cell carcinoma">Chromophobe renal cell carcinoma</option>
+	<option value="Other oncocytic tumors of the kidney (specify):">Other oncocytic tumors of the kidney (specify):</option>
+	<option value="Collecting duct carcinoma">Collecting duct carcinoma</option>	
+	<option value="Clear cell papillary renal cell carcinoma">Clear cell papillary renal cell carcinoma</option>
+	<option value="Mucinous tubular and spindle renal cell carcinoma">Mucinous tubular and spindle renal cell carcinoma</option>
+	<option value="Tubulocystic renal cell carcinoma">Tubulocystic renal cell carcinoma</option>
+	<option value="Acquired cystic disease associated renal cell carcinoma">Acquired cystic disease associated renal cell carcinoma</option>	
+	<option value="Eosinophilic solid and cystic renal cell carcinoma">Eosinophilic solid and cystic renal cell carcinoma</option>	
+	<option value="Renal cell carcinoma, NOS (unclassified)">Renal cell carcinoma, NOS (unclassified)</option>	
+	<option value="TFE3-rearranged renal cell carcinoma">TFE3-rearranged renal cell carcinoma</option>
+	<option value="TFEB-altered renal cell carcinoma">TFEB-altered renal cell carcinoma</option>	
+	<option value="ELOC (formerly TCEB1)-mutated renal cell carcinoma">ELOC (formerly TCEB1)-mutated renal cell carcinoma</option>
+	<option value="Fumarate hydratase-deficient renal cell carcinoma">Fumarate hydratase-deficient renal cell carcinoma</option>
+	<option value="Succinate dehydrogenase (SDH) deficient renal cell carcinoma">Succinate dehydrogenase (SDH) deficient renal cell carcinoma</option>	
+	<option value="ALK-rearranged renal cell carcinoma">ALK-rearranged renal cell carcinoma</option>	
+	<option value="SMARCB1-deficient renal medullary carcinoma">SMARCB1-deficient renal medullary carcinoma</option>	
+	<option value="Renal cell carcinoma, subtype pending additional studies">Renal cell carcinoma, subtype pending additional studies</option>
+	<option value="Other (specify):">Other (specify):</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Sarcomatoid features: </label>
+</td>
+<td>
+<select class="element select large" ID="A11">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Present, specify %:">Present, specify %:</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Rhabdoid features: </label>
+</td>
+<td>
+<select class="element select large" ID="A12">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Present, specify %:">Present, specify %:</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Histologic grade (WHO / ISUP Grade):</label>
+</td>
+<td>
+<select class="element select large" ID="A13">
+	<option value=""></option>
+	<option value="G1: Nucleoli absent or inconspicuous and basophilic at 400x">G1: Nucleoli absent or inconspicuous and basophilic at 400x</option>
+	<option value="G2: Nucleoli conspicuous and eosinophilic at 400x magnification, visible but not prominent at 100x magnification">G2: Nucleoli conspicuous and eosinophilic at 400x magnification, visible but not prominent at 100x magnification</option>
+	<option value="G3: Nucleoli conspicuous and eosinophilic at 100x magnification">G3: Nucleoli conspicuous and eosinophilic at 100x magnification</option>
+	<option value="G4: Extreme nuclear pleomorphism and/or multi-nuclear giant cells and/or rhabdoid and/or sarcomatoid differentiation">G4: Extreme nuclear pleomorphism and/or multi-nuclear giant cells and/or rhabdoid and/or sarcomatoid differentiation</option>
+	<option value="GX: Cannot be assessed">GX: Cannot be assessed</option>
+	<option value="Not applicable">Not applicable</option>	
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Tumoe necrosis: </label>
+</td>
+<td>
+<select class="element select large" ID="A14">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Present, specify %:">Present, specify %:</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Lymphatic and / or Vascular Invasion : </label>
+(excluding renal vein and its segmental branches, and IVC)
+</td>
+<td valign="top">
+<select class="element select large" ID="A15">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="">+ Perineural invasion: </label>
+</td>
+<td>
+<select class="element select large" ID="A16">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+</table>
+</p>
+
+<p>
+<label class="description">- Tumor extension:</label>
+<input class="element checkbox" type="checkbox"  id="A18" value="  - Tumor limited to kidney"><label  class="choice">Tumor limited to kidney</label>
+<input class="element checkbox" type="checkbox"  id="A19" value="  - Tumor extension into perinephric tissue (beyond renal capsule)"><label  class="choice">Tumor extension into perinephric tissue (beyond renal capsule)</label>
+<input class="element checkbox" type="checkbox"  id="A20" value="  - Tumor extension into renal sinus"><label  class="choice">Tumor extension into renal sinus</label>
+<input class="element checkbox" type="checkbox"  id="A21" value="  - Tumor extension beyond Gerota’s fascia"><label  class="choice">Tumor extension beyond Gerota’s fascia</label>
+<input class="element checkbox" type="checkbox"  id="A22" value="  - Tumor extension into major vein (renal vein or its segmental branches, inferior vena cava)"><label  class="choice">Tumor extension into major vein (renal vein or its segmental branches, inferior vena cava)</label>
+<input class="element checkbox" type="checkbox"  id="A23" value="  - Tumor extension into pelvicalyceal system"><label  class="choice">Tumor extension into pelvicalyceal system</label>
+<input class="element checkbox" type="checkbox"  id="A24" value="  - Tumor extension into adrenal gland (direct invasion, T4)"><label  class="choice">Tumor extension into adrenal gland (direct invasion, T4)</label>
+<input class="element checkbox" type="checkbox"  id="A25" value="  - Tumor extension into adrenal gland (non-contiguous)"><label  class="choice">Tumor extension into adrenal gland (non-contiguous)</label>
+<input class="element checkbox" type="checkbox"  id="A26" value="  - Tumor extension into other organ(s)/structure(s) (specify):"><label  class="choice">Tumor extension into other organ(s)/structure(s) (specify):</label>
+<input class="element checkbox" type="checkbox"  id="A27" value="  - Cannot be assessed"><label  class="choice">Cannot be assessed</label>
+<input class="element checkbox" type="checkbox"  id="A17" value="  - No evidence of primary tumor"><label  class="choice">No evidence of primary tumor</label>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend><label class="description">Surgical margins of excision specimen:</label></legend>
+<p>
+<input class="element checkbox" type="checkbox"  id="A28" value="  - Cannot be assessed"><label  class="choice">Cannot be assessed</label>
+<input class="element checkbox" type="checkbox"  id="A29" value="  - Uninvolved by invasive carcinoma"><label  class="choice">Uninvolved by invasive carcinoma</label>
+<input class="element checkbox" type="checkbox"  id="A30" value="  - Involved by invasive carcinoma, renal parenchymal margin"><label  class="choice">Involved by invasive carcinoma, renal parenchymal margin (for partial nephrectomy)</label>
+<input class="element checkbox" type="checkbox"  id="A31" value="  - Involved by invasive carcinoma, renal capsular margin"><label  class="choice">Involved by invasive carcinoma, renal capsular margin (for partial nephrectomy)</label>
+<input class="element checkbox" type="checkbox"  id="A32" value="  - Involved by invasive carcinoma, perinephric fat margin"><label  class="choice">Involved by invasive carcinoma, perinephric fat margin</label>
+<input class="element checkbox" type="checkbox"  id="A33" value="  - Involved by invasive carcinoma, renal sinus soft tissue margin"><label class="choice" >Involved by invasive carcinoma, renal sinus soft tissue margin</label>
+<input class="element checkbox" type="checkbox"  id="A34" value="  - Involved by invasive carcinoma, gerota’s fascial margin"><label  class="choice">Involved by invasive carcinoma, gerota’s fascial margin</label>
+<input class="element checkbox" type="checkbox"  id="A35" value="  - Involved by invasive carcinoma, renal vein margin"><label  class="choice">Involved by invasive carcinoma, renal vein margin</label>
+<input class="element checkbox" type="checkbox"  id="A36" value="  - Involved by invasive carcinoma, ureter margin"><label  class="choice">Involved by invasive carcinoma, ureter margin</label>
+<input class="element checkbox" type="checkbox"  id="A37" value="  - Involved by invasive carcinoma, other (specify): "><label  class="choice">Involved by invasive carcinoma, other (specify):</label>
+</p>
+
+</fieldset>
+</p>
+
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> Regional ymph nodes: </label></legend>
+
+<p>
+<table border="1">
+<col width="75%">
+<tr>
+<td>
+<label class="description">- Number of regional lymph nodes examined:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A38" size="15">
+</tr>
+
+<tr>
+<td>
+<label class="description">- Number of lymph nodes involved (specify locations):</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A39" size="15">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Extranodal extension:</label>
+</td>
+<td>
+<select class="element select large" ID="A40">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Size of largest metastatic deposit (mm), specify site:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A41" size="15">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Size of largest lymph node involved (mm), specify site:</label>
+</td>
+<td>
+<input type="text" class="element text large" ID="A42" size="15">
+</td>
+</tr>
+</table>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> Distant Metastasis: </label></legend>
+<input class="element checkbox" type="checkbox" id="A59"  value="  - Not applicable"><label class="choice" >Not applicable</label>
+<input class="element checkbox" type="checkbox" id="A60"  value="  - Not identified"><label class="choice" >Not identified</label>
+<input class="element checkbox" type="checkbox" id="A61"  value="  - Other (specify):"><label class="choice" >Other (specify):</label>
+<input class="element checkbox" type="checkbox" id="A62"  value="  - Cannot be determined: "><label class="choice" >Cannot be determined: </label> 
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> Pathologic Stage Classification (AJCC 8e):</label></legend>
+	
+<p>
+<table border="1">
+<col width="40%">
+<tr>
+<td valign="top">
+ <label class="description"> - TNM Descriptors:</label>
+</td>
+<td>
+<input class="element checkbox" type="checkbox"  id="A43" value=" m (multiple primary tumors) "><label  class="choice">m (multiple primary tumors)</label>
+<input class="element checkbox" type="checkbox"  id="A44" value=" r (recurrent) "><label  class="choice">r (recurrent)</label>
+<input class="element checkbox" type="checkbox"  id="A45" value=" y (post treatment) "><label class="choice" >y (post treatment)</label>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">  - Primary tumor (pT):</label>
+</td>
+<td>
+<select class="element select large" ID="A46">
+	<option value=""></option>
+	<option value="  - pT not assigned (cannot be determined based on available pathological information)">pT not assigned (cannot be determined based on available pathological information)</option>
+	<option value="  - pT0: No evidence of primary tumor">pT0: No evidence of primary tumor</option>
+	<option value="  - pT1: Tumor < or = 7 cm, limited to the kidney">T1: Tumor < or = 7 cm, limited to the kidney</option>
+	<option value="  - pT1a: Tumor < or = 4 cm, limited to the kidney">pT1a: Tumor < or = 4 cm, limited to the kidney</option>
+	<option value="  - pT1b: Tumor > 4 cm but < or = 7 cm, limited to the kidney">pT1b: Tumor > 4 cm but < or = 7 cm, limited to the kidney</option>
+	<option value="  - pT1 (subcategory cannot be determined)">pT1 (subcategory cannot be determined)</option>
+	<option value="  - pT2: Tumor > 7 cm, limited to the kidney">pT2: Tumor > 7 cm, limited to the kidney</option>
+	<option value="  - pT2a: Tumor > 7 cm but < or = 10 cm, limited to the kidney">pT2a: Tumor > 7 cm but < or = 10 cm, limited to the kidney</option>
+	<option value="  - pT2b: Tumor > 10 cm, limited to the kidney">pT2b: Tumor > 10 cm, limited to the kidney</option>
+	<option value="  - pT2 (subcategory cannot be determined)">pT2 (subcategory cannot be determined)</option>
+	<option value="  - pT3: Tumor extends into major veins or perinephric tissues, but not into the ipsilateral adrenal gland and not beyond Gerota’s fascia">pT3: Tumor extends into major veins or perinephric tissues, but not into the ipsilateral adrenal gland and not beyond Gerota’s fascia</option>
+	<option value="  - pT3a: Tumor extends into the renal vein or its segmental branches, or invades the pelvicalyceal system, or invades perirenal and/or renal sinus fat but not beyond Gerota’s fascia">pT3a: Tumor extends into the renal vein or its segmental branches, or invades the pelvicalyceal system, or invades perirenal and/or renal sinus fat but not beyond Gerota’s fascia</option>
+	<option value="  - pT3b: Tumor extends into the vena cava below the diaphragm">pT3b: Tumor extends into the vena cava below the diaphragm</option>
+	<option value="  - pT3c: Tumor extends into vena cava above the diaphragm or invades the wall of the vena cava">pT3c: Tumor extends into vena cava above the diaphragm or invades the wall of the vena cava</option>
+	<option value="  - pT3 (subcategory cannot be determined)">pT3 (subcategory cannot be determined)</option>
+	<option value="  - pT4: Tumor invades beyond Gerota’s fascia (including contiguous extension into the ipsilateral adrenal gland)">pT4: Tumor invades beyond Gerota’s fascia (including contiguous extension into the ipsilateral adrenal gland)</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description"> - Regional lymph nodes (pN):</label>
+</td>
+<td>
+<select class="element select large" ID="A47">
+	<option value=""></option>
+	<option value="  - pN not assigned (no nodes submitted or found)">pN not assigned (no nodes submitted or found)</option>
+	<option value="  - pN not assigned (cannot be determined based on available pathological information)">pN not assigned (cannot be determined based on available pathological information)</option>
+	<option value="  - pN0: No regional lymph node metastasis">pN0: No regional lymph node metastasis</option>
+	<option value="  - pN1: Metastasis in regional lymph node(s)">pN1: Metastasis in regional lymph node(s)</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td valign="top" rowspan="2">
+<label class="description">  - Distant metastasis (pM):</label>
+</td>
+<td>
+<select class="element select large" ID="A48">
+	<option value=""></option>
+	<option value="  - Not applicable - pM cannot be determined from the submitted specimen(s)">Not applicable - pM cannot be determined from the submitted specimen(s)</option>
+	<option value="  - pM1: Distant metastasis">pM1: Distant metastasis</option>
+</select>
+</td>
+</tr>
+<!--
+<tr>
+<td>
+    - Specify site(s), if known:
+<input type="text" class="element text small" ID="A49" size="35">
+</td>
+</tr>
+-->
+</table>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class=""> + Additional pathologic findings: </label></legend>
+
+<p>
+<input class="element checkbox" type="checkbox"   id="A50" value="  - Insufficient normal kidney tissue for assessment"><label  class="choice">Insufficient normal kidney tissue for assessment</label>
+<input class="element checkbox" type="checkbox"   id="A51" value="  - Glomerular disease (specify type):"><label  class="choice">Glomerular disease (specify type):</label>
+<input class="element checkbox" type="checkbox"   id="A52" value="  - Tubulointerstitial disease (specify type):"><label  class="choice">Tubulointerstitial disease (specify type):</label>
+<input class="element checkbox" type="checkbox"   id="A53" value="  - Vascular disease (specify type):"><label  class="choice">Vascular disease (specify type):</label>
+<input class="element checkbox" type="checkbox"   id="A54" value="  - Cyst(s) (specify type):"><label  class="choice">Cyst(s) (specify type):</label>
+<input class="element checkbox" type="checkbox"   id="A55" value="  - Tubular (papillary) adenoma(s)"><label  class="choice">Tubular (papillary) adenoma(s)</label>
+</p>
+<p>
+- Other (specify):
+<input type="text" class = "element text medium" ID="A56" size="35">
+</p>
+
+</fieldset>
+</p>
+
+<p>
+<label class="description">- Additional notes:</label>
+ <textarea ID="A57" class = "element textarea medium" style="border-color:Grey;"></textarea> 
+</p>
+
+<br><br>
+<input type="button" name="copyform" value="Check your Report" onclick="updateDescription(this.form)"/>
+<br>
+<TEXTAREA ID="holdtext" name="holdtext" class="textarea large" style="border-color:coral;"></TEXTAREA>
+
+<br><br>
+<!-- The button used to copy the text -->
+<button onclick="CopyToClipboard()">Copy text to Clipboard</button>
+
+<input type="reset" value="Reset Form" name="reset" style="float: right;">
+</form>
+<br>
+<br>
+
+<div id="footer">
+Last upated on 27-Jul-2026,<br>
+based on <a href="https://www.cap.org/protocols-and-guidelines/cancer-reporting-tools/cancer-protocol-templates" target="_blank">US CAP cancer protocol templates</a>,<br>
+Kidney Resection 4.3.0.0 (June 2026), <br>
+html form was created on <a href="https://www.phpform.org">pForm</a>, <a href="https://www.w3schools.com/">W3 School</a>, <a href="https://stackoverflow.com/">StackOverflow</a>, and <a href="https://icons8.com">Icons8</a>.<br><br>
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.
+</div>
+
+</div>
+<img id="bottom" src="bottom.png" alt="">
+</body>
+</html>

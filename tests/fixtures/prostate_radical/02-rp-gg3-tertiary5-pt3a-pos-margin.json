@@ -1,0 +1,93 @@
+{
+  "description": "radical prostatectomy for Grade Group 3 (4+3=7) with minor tertiary pattern 5, cribriform, IDC-P, nonfocal EPE, positive right posterolateral margin 4.5 mm, pT3a pN0",
+  "templateId": "prostate_radical",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true
+  },
+  "values": [
+    {
+      "specimenName": "",
+      "procedure": "Radical prostatectomy",
+      "procedureOther": "",
+      "weight": "46",
+      "specimenDims": "4.5 x 4.0 x 3.5",
+      "pctProstate": "30",
+      "dominantNoduleMm": "22",
+      "dominantNoduleDims": "22 x 16 x 14",
+      "dominantNoduleSite": "right posterolateral peripheral zone",
+      "noPrimary": false,
+      "seminalVesiclesDims": "right seminal vesicle 3.5 cm, left seminal vesicle 3.2 cm, grossly unremarkable",
+      "inked": "Yes",
+      "blocks": "18",
+      "blockKeyText": "1-2 Apical margin\n3-4 Bladder neck margin\n5-16 Whole-mount slices apex to base\n17-18 Seminal vesicles and vasa deferentia",
+      "histType": "Acinar adenocarcinoma, conventional (usual)",
+      "histTypeOther": "",
+      "primary": "4",
+      "secondary": "3",
+      "tertiary": "5",
+      "pctPattern4": "65",
+      "pctPattern5": "3",
+      "idcp": "Present, IDC not incorporated in grade",
+      "cribriform": "Present",
+      "epe": "Present, nonfocal",
+      "epeLocations": [
+        "Right posterolateral (neurovascular bundle)",
+        "Right posterior"
+      ],
+      "epeOther": "",
+      "bladderNeck": "Not identified",
+      "svi": "Not identified",
+      "adjacentInvasion": "Not identified",
+      "adjacentDetail": "",
+      "lvi": "Present",
+      "pni": "Present",
+      "treatmentEffect": "No known presurgical therapy",
+      "treatmentOther": "",
+      "ihcText": "",
+      "histologyNotes": "",
+      "marginStatus": "Involved by invasive carcinoma, non-limited (>= 3 mm)",
+      "marginLinearMm": "4.5",
+      "marginFocality": "Unifocal",
+      "marginLocations": [
+        "Right posterolateral (neurovascular bundle)"
+      ],
+      "marginOther": "",
+      "marginEpe": "Present",
+      "marginGleason": "Pattern 4 or 5",
+      "nodesExamined": "14",
+      "nodesInvolved": "0",
+      "nodeSites": "bilateral pelvic",
+      "ene": "",
+      "largestDepositMm": "",
+      "largestNodeMm": "",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "distantMetsOther": "",
+      "additionalFindings": [
+        "High-grade prostatic intraepithelial neoplasia (HGPIN)",
+        "Nodular prostatic hyperplasia"
+      ],
+      "inflammationType": "",
+      "additionalOther": "",
+      "additionalNotes": "",
+      "mmr": "Not performed",
+      "molecularOther": "",
+      "multiplePrimaries": false,
+      "recurrent": false,
+      "postTherapy": false,
+      "tnmOverride": "",
+      "tnmOverrideReason": ""
+    }
+  ],
+  "report": "Prostate and seminal vesicles, radical prostatectomy\n\nReceived in formalin is a radical prostatectomy specimen weighing 46 g and measuring 4.5 x 4.0 x 3.5 cm. Attached seminal vesicles and vasa deferentia: right seminal vesicle 3.5 cm, left seminal vesicle 3.2 cm, grossly unremarkable. The outer surface is differentially inked (right and left sides) and the prostate is serially sectioned from apex to base. Sectioning shows a dominant tumour nodule in the right posterolateral peripheral zone measuring 22 mm. Sections are submitted in 18 blocks.\n\n(1-2) Apical margin.\n(3-4) Bladder neck margin.\n(5-16) Whole-mount slices apex to base.\n(17-18) Seminal vesicles and vasa deferentia.\n\nSpecimen and tumour\n- Procedure: Radical prostatectomy\n- Prostate weight: 46 g\n- Prostate dimensions: 4.5 x 4.0 x 3.5 cm\n- Tumour quantitation: 30%\n  - Dominant tumour nodule: 22 mm (all dimensions 22 x 16 x 14 mm, right\n    posterolateral peripheral zone)\n\nMicroscopic findings\n- Histologic type: Acinar adenocarcinoma, conventional (usual)\n- Histologic grade: Grade Group 3 (Gleason score 4 + 3 = 7) with minor\n  (tertiary) pattern 5\n  - Primary Gleason pattern: Pattern 4\n  - Secondary Gleason pattern: Pattern 3\n  - Minor (tertiary) Gleason pattern: Pattern 5\n  - Percentage of pattern 4: 65%\n  - Percentage of pattern 5: 3%\n- Intraductal carcinoma (IDC-P): Present, IDC not incorporated in grade\n- Cribriform glands: Present\n- Extraprostatic extension (EPE): Present, nonfocal (right posterolateral\n  (neurovascular bundle) and right posterior)\n- Urinary bladder neck invasion: Not identified\n- Seminal vesicle invasion: Not identified\n- Lymphovascular invasion: Present\n- Perineural invasion: Present\n- Treatment effect: No known presurgical therapy\n- Tumour histology:\n  Sections of the prostate show acinar adenocarcinoma, conventional (usual), Grade Group 3 (Gleason score 4 + 3 = 7) with minor (tertiary) pattern 5. Infiltrating malignant prostatic acini lined by cells with enlarged nuclei, prominent nucleoli and amphophilic cytoplasm lack a basal cell layer.\n\nMargins\n- Surgical margins: Involved by invasive carcinoma, non-limited (>= 3 mm)\n  (linear extent 4.5 mm; unifocal; right posterolateral (neurovascular bundle))\n  - Margin positivity in area of EPE: Present\n  - Gleason pattern at positive margin(s): Pattern 4 or 5\n\nLymph nodes\n- Regional lymph nodes: 0 of 14 involved (bilateral pelvic)\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT3a pN0\n\nAdditional findings\n- Additional pathologic findings: High-grade prostatic intraepithelial neoplasia\n  (HGPIN); Nodular prostatic hyperplasia\n\nPROSTATE AND SEMINAL VESICLES, radical prostatectomy:\n- ACINAR ADENOCARCINOMA, Grade Group 3 (Gleason score 4 + 3 = 7) with minor\n  (tertiary) pattern 5\n- Extraprostatic extension (nonfocal)\n- Surgical margin involved by carcinoma (4.5 mm, right posterolateral\n  (neurovascular bundle))\n- 0 of 14 regional lymph nodes involved\n- pT3a pN0 (AJCC 8th edition).",
+  "checks": [
+    {
+      "level": "info",
+      "message": "AJCC 8th edition prognostic stage groups I–IIIC require preoperative serum PSA and are not derived from pathology alone.",
+      "part": "A"
+    }
+  ]
+}

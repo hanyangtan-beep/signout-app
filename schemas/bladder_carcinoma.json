@@ -1,0 +1,1070 @@
+{
+ "id": "bladder_carcinoma",
+ "version": "2026.11",
+ "name": "Urinary bladder carcinoma cystectomy",
+ "shortName": "Bladder · urinary bladder carcinoma cystectomy",
+ "label": "Bladder Ca",
+ "organ": "URINARY BLADDER",
+ "system": "GU",
+ "kind": "cancer resection",
+ "rank": 57,
+ "aliases": [
+  "cystectomy",
+  "radical cystectomy",
+  "partial cystectomy",
+  "cystoprostatectomy",
+  "anterior exenteration",
+  "urothelial carcinoma",
+  "bladder cancer",
+  "bladder carcinoma"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "bladder_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template UG-Urinary Bladder (CAP Urinary Bladder 4.2.0.0, June 2023; AJCC 8th edition Chapter 62), aligned with WHO 5th edition (2022)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/UG-Urinary%20Bladder.html",
+  "capProtocol": "CAP Urinary Bladder 4.2.0.0 (June 2023)",
+  "who": "WHO Classification of Urinary and Male Genital Tumours, 5th edition (2022)",
+  "staging": "pTNM derived by src/staging/bladder.js on AJCC 8th edition (Chapter 62: Urinary Bladder).",
+  "savedPage": "docs/reference/UG-Urinary-Bladder.html"
+ },
+ "match": {
+  "site": [
+   "urinary bladder",
+   "bladder",
+   "radical cystectomy",
+   "partial cystectomy",
+   "cystoprostatectomy"
+  ],
+  "procedure": [
+   "radical cystectomy",
+   "partial cystectomy",
+   "radical cystoprostatectomy",
+   "anterior exenteration",
+   "bladder resection"
+  ],
+  "clinical": [
+   "urothelial carcinoma",
+   "bladder carcinoma",
+   "bladder cancer",
+   "muscle-invasive urothelial carcinoma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:turbt|turb|transurethral|biops(?:y|ies)|bx|cytology|washing|washings|frozen|FS|ovar(?:y|ian)|paratubal|fimbrial|fallopian|adnexa(?:l)?|cyst|bartholin|choledochal|sebaceous|epidermoid|dermoid|thyroglossal|branchial)\\b)[\\s\\S]*(?:\\b(?:radical|partial)\\s+cystectomy\\b|\\bcystoprostatectomy\\b|\\banterior\\s+exenteration\\b|\\bbladder\\s+resection\\b|\\b(?:urinary\\s+)?bladder\\b[\\s\\S]*\\bcystectomy\\b)",
+  "exclude": [
+   "turbt",
+   "turb",
+   "transurethral",
+   "biopsy",
+   "biopsies",
+   "bx",
+   "cytology",
+   "washing",
+   "washings",
+   "lymph node",
+   "LN",
+   "frozen",
+   "FS",
+   "ovary",
+   "ovarian",
+   "paratubal",
+   "fimbrial",
+   "fallopian",
+   "adnexa",
+   "cyst"
+  ],
+  "bias": 3,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bradical\\s+cystoprostatectomy\\b|\\bcystoprostatectomy\\b",
+      "Radical cystoprostatectomy"
+     ],
+     [
+      "\\banterior\\s+exenteration\\b",
+      "Anterior exenteration"
+     ],
+     [
+      "\\bpartial\\s+cystectomy\\b",
+      "Partial cystectomy"
+     ],
+     [
+      "\\bradical\\s+cystectomy\\b",
+      "Radical cystectomy"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "placeholder": "Leave blank to derive from procedure",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Radical cystoprostatectomy",
+   "options": [
+    "Partial cystectomy",
+    "Radical cystectomy",
+    "Radical cystoprostatectomy",
+    "Anterior exenteration",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "placeholder": "e.g. 12.0 x 9.5 x 7.0",
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour site",
+   "group": "Specimen & Gross",
+   "type": "multiselect",
+   "options": [
+    "Trigone",
+    "Right lateral wall",
+    "Left lateral wall",
+    "Anterior wall",
+    "Posterior wall",
+    "Dome",
+    "Bladder neck"
+   ],
+   "default": []
+  },
+  {
+   "id": "siteOther",
+   "label": "Other site",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "placeholder": "e.g. 42",
+   "default": ""
+  },
+  {
+   "id": "configuration",
+   "label": "Tumour configuration",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Solid / nodular",
+   "options": [
+    "Papillary",
+    "Solid / nodular",
+    "Ulcerated",
+    "Flat",
+    "Indeterminate",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "adjacentOrgansGross",
+   "label": "Attached organs (gross)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "placeholder": "e.g. prostate and seminal vesicles grossly unremarkable",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "placeholder": "A1-A2: right and left ureteral margins\nA3: urethral margin\nA4-A10: tumour full thickness...",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Urothelial carcinoma, conventional (invasive)",
+   "options": [
+    "Urothelial carcinoma, conventional (invasive)",
+    "Non-invasive papillary urothelial carcinoma",
+    "Urothelial carcinoma in situ",
+    "Urothelial carcinoma, micropapillary",
+    "Urothelial carcinoma, nested",
+    "Urothelial carcinoma, tubular and microcystic",
+    "Urothelial carcinoma, lymphoepithelioma-like",
+    "Urothelial carcinoma, plasmacytoid",
+    "Urothelial carcinoma, sarcomatoid",
+    "Urothelial carcinoma, giant cell",
+    "Urothelial carcinoma, poorly differentiated",
+    "Urothelial carcinoma, lipid-rich",
+    "Urothelial carcinoma, clear cell (glycogen-rich)",
+    "Urothelial carcinoma with squamous differentiation",
+    "Urothelial carcinoma with glandular differentiation",
+    "Urothelial carcinoma with trophoblastic differentiation",
+    "Urothelial carcinoma with Mullerian differentiation",
+    "Squamous cell carcinoma",
+    "Verrucous carcinoma",
+    "Adenocarcinoma, NOS",
+    "Adenocarcinoma, enteric",
+    "Adenocarcinoma, mucinous",
+    "Adenocarcinoma, signet-ring cell",
+    "Clear cell adenocarcinoma (Mullerian)",
+    "Small cell neuroendocrine carcinoma",
+    "Large cell neuroendocrine carcinoma",
+    "Well-differentiated neuroendocrine tumour",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "Urothelial carcinoma subtypes & divergent differentiation (WHO 5th)",
+    "intro": "WHO 5th edition (2022) recommends reporting any aggressive urothelial subtype (micropapillary, plasmacytoid, nested, sarcomatoid) and divergent differentiation (squamous, glandular) with an estimated percentage.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Non-invasive papillary & conventional invasive urothelial carcinoma",
+      "points": [
+       "Non-invasive papillary UC (pTa): branching fibrovascular papillae lined by urothelium with orderly (low-grade) or disordered pleomorphic (high-grade) architecture and an intact basement membrane.",
+       "Conventional invasive UC: irregular nests, cords and sheets of malignant urothelial cells with eosinophilic cytoplasm and desmoplastic stroma; GATA3+, p63+, uroplakin II/III+, CK7+, CK20 variable."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Invasive Urothelial Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bladder_carcinoma/uc_low_grade_papillary.jpg",
+        "caption": "Low-grade papillary urothelial carcinoma: ordered papillary fronds with mild nuclear variation and preserved polarity.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Low-grade_papillary_urothelial_carcinoma_--_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Micropapillary urothelial carcinoma",
+      "points": [
+       "Small tight clusters and slender tufts lacking true fibrovascular cores within prominent lacunar retraction spaces ('reverse polarity').",
+       "High rate of lymphovascular invasion and nodal metastasis; report percentage even when focal."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Micropapillary Urothelial Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bladder_carcinoma/uc_micropapillary.jpg",
+        "caption": "Micropapillary urothelial carcinoma: tight small clusters and tufts within lacunar retraction spaces.",
+        "credit": "CoRus13",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micropapillary_urothelial_carcinoma,_very_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Plasmacytoid urothelial carcinoma",
+      "points": [
+       "Discohesive sheets and single-file cords of cells with eccentric nuclei and abundant eosinophilic cytoplasm (resembling plasma cells or lobular breast / signet-ring carcinoma).",
+       "Characterised by CDH1 (E-cadherin) loss, GATA3+, CD138+ (pitfall: do not misdiagnose as plasmacytoma!); high risk of occult peritoneal and radial margin spread."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Plasmacytoid Urothelial Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bladder_carcinoma/uc_plasmacytoid.jpg",
+        "caption": "Plasmacytoid urothelial carcinoma: discohesive cells with eccentric nuclei and abundant eosinophilic cytoplasm.",
+        "credit": "CoRus13",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Plasmacytoid_urothelial_carcinoma,_very_high_mag.1.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Nested urothelial carcinoma",
+      "points": [
+       "Deceptively bland, closely packed nests and tubules infiltrating deeply into the lamina propria and muscularis propria.",
+       "Distinguish from von Brunn nests and florid cystitis cystica by deep irregular infiltration into muscularis propria, focal deeper nuclear atypia, and TERT promoter mutation."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Nested Urothelial Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bladder_carcinoma/uc_nested.jpg",
+        "caption": "Nested urothelial carcinoma: deceptively bland infiltrative urothelial nests simulating von Brunn nests.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Nested_variant_of_urothelial_carcinoma_-_very_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Sarcomatoid urothelial carcinoma",
+      "points": [
+       "Biphasic tumour showing both malignant epithelial (usually high-grade UC or CIS) and malignant spindle cell / pleomorphic mesenchymal-like components (may contain heterologous osteosarcoma, chondrosarcoma or rhabdomyosarcoma).",
+       "Distinguish from postoperative spindle cell nodule and inflammatory myofibroblastic tumour (check ALK, marked pleomorphism, atypical mitoses, GATA3/p63/keratin)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Sarcomatoid Urothelial Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bladder_carcinoma/uc_sarcomatoid.jpg",
+        "caption": "Sarcomatoid urothelial carcinoma: pleomorphic malignant spindle cell proliferation with high mitotic activity.",
+        "credit": "CoRus13",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Sarcomatoid_carcinoma_of_the_urinary_bladder,_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Clear cell (glycogen-rich) UC & divergent differentiation",
+      "points": [
+       "Clear cell (glycogen-rich) UC: high-grade UC with abundant clear cytoplasm (GATA3+, PAX8-negative); distinguish from Mullerian clear cell adenocarcinoma (PAX8+, HNF1B+, tubulocystic/hobnail) and metastatic clear cell RCC (PAX8+, CAIX+).",
+       "Squamous or glandular differentiation: report as urothelial carcinoma with squamous/glandular differentiation (and estimate %) rather than pure SCC or adenocarcinoma whenever any urothelial component or UCIS is present."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Clear Cell Urothelial Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bladder_carcinoma/uc_clear_cell.jpg",
+        "caption": "Clear cell (glycogen-rich) urothelial carcinoma: sheets of high-grade urothelial cells with optically clear cytoplasm.",
+        "credit": "CoRus13",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Clear_cell_urothelial_carcinoma,_high_mag.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Other histologic type not listed (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "subtypePct",
+   "label": "Subtype / divergent component (%)",
+   "group": "Histology & Grade",
+   "type": "number",
+   "placeholder": "e.g. 30",
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "High-grade",
+   "options": [
+    "Low-grade",
+    "High-grade",
+    "G1: Well differentiated (non-urothelial)",
+    "G2: Moderately differentiated (non-urothelial)",
+    "G3: Poorly differentiated (non-urothelial)",
+    "Cannot be assessed",
+    "Not applicable"
+   ],
+   "reference": {
+    "title": "WHO 5th grading of urothelial & non-urothelial bladder carcinomas",
+    "intro": "Urothelial carcinomas use the two-tier WHO/ISUP system (Low-grade vs High-grade); virtually all invasive urothelial carcinomas and all subtypes (micropapillary, plasmacytoid, nested, sarcomatoid) are High-grade.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Low-grade vs High-grade urothelial carcinoma",
+      "points": [
+       "Low-grade papillary UC: overall orderly appearance with mild variation in nuclear size, shape and chromatin, rare basally located mitoses.",
+       "High-grade UC: architectural disorder, marked nuclear pleomorphism, hyperchromasia, prominent nucleoli, and frequent mitoses including upper layers and atypical forms."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Grading of Urothelial Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bladder_carcinoma/uc_low_grade_papillary.jpg",
+        "caption": "Low-grade papillary urothelial carcinoma: cohesive fronds with minimal pleomorphism and preserved polarity.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Low-grade_papillary_urothelial_carcinoma_--_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Non-urothelial bladder carcinomas",
+      "points": [
+       "Pure squamous cell carcinoma and pure adenocarcinoma are graded G1 (well), G2 (moderately), or G3 (poorly differentiated).",
+       "Small cell and large cell neuroendocrine carcinomas are high-grade by definition."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Non-Urothelial Carcinomas of the Bladder",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "cisStatus",
+   "label": "Associated urothelial CIS (UCIS)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present, focal",
+    "Present, extensive / multifocal",
+    "Cannot be determined"
+   ],
+   "reference": {
+    "title": "Urothelial carcinoma in situ (UCIS) vs benign / reactive urothelium",
+    "intro": "Flat UCIS shows full-thickness or pagetoid severe cytologic atypia and frequently denudes ('clinging CIS'). Use CK20, p53 and CD44 as an adjunct panel only when H&E is equivocal.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Urothelial carcinoma in situ (H&E, CK20, p53)",
+      "points": [
+       "H&E: large pleomorphic hyperchromatic nuclei (>= 5x lymphocyte size), loss of polarity, frequent mitoses and discohesive / clinging cells.",
+       "IHC triad for UCIS: full-thickness aberrant CK20 positivity, aberrant p53 (diffuse strong nuclear overexpression OR complete null loss), and loss of basal CD44."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Urothelial Carcinoma In Situ",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bladder_carcinoma/uc_cis_he.jpg",
+        "caption": "Urothelial carcinoma in situ (H&E): marked nuclear enlargement, hyperchromasia, pleomorphism and loss of polarity.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Urothelial_carcinoma_in_situ_--_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/bladder_carcinoma/uc_cis_ck20.jpg",
+        "caption": "UCIS — CK20 IHC: strong full-thickness cytoplasmic positivity (contrast with umbrella-cell-only staining in benign urothelium).",
+        "credit": "CoRus13",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Urothelial_carcinoma_in_situ_-_CK20,_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/bladder_carcinoma/uc_cis_p53.jpg",
+        "caption": "UCIS — p53 IHC: diffuse strong nuclear overexpression (aberrant mutant-type staining).",
+        "credit": "CoRus13",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Urothelial_carcinoma_in_situ_-_p53,_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Benign & reactive urothelium (mimics)",
+      "points": [
+       "Benign urothelium preserves maturation towards large superficial umbrella cells (which may be binucleated or mildly enlarged) with regular nuclear membranes and open chromatin.",
+       "Reactive atypia (inflammation, catheter, BCG, radiation): uniform vesicular nuclei with prominent single nucleoli, preserved polarity, umbrella-only CK20, wild-type patchy p53, and full-thickness CD44."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Reactive Urothelial Atypia",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bladder_carcinoma/uc_benign_umbrella.jpg",
+        "caption": "Benign urothelium: preserved polarity with prominent superficial umbrella cells (avoid mistaking large umbrella nuclei for CIS).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Benign_urothelium_with_large_superficial_cells_--_high_mag.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not assessed",
+   "options": [
+    "Not assessed",
+    "Not identified",
+    "Present"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "placeholder": "e.g. GATA3 and p63 positive; CK20 and p53 aberrant in adjacent CIS",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "placeholder": "Leave blank to generate from histologic type, grade and IHC",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extension (pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Deep muscularis propria, outer half (pT2b)",
+   "options": [
+    "Non-invasive papillary carcinoma (pTa)",
+    "Carcinoma in situ (flat tumour, pTis)",
+    "Subepithelial connective tissue / lamina propria (pT1)",
+    "Superficial muscularis propria, inner half (pT2a)",
+    "Deep muscularis propria, outer half (pT2b)",
+    "Perivesical soft tissue, microscopic (pT3a)",
+    "Perivesical soft tissue, macroscopic extravesical mass (pT3b)",
+    "Direct transmural invasion of prostatic stroma, seminal vesicles, uterus or vagina (pT4a)",
+    "Pelvic wall or abdominal wall (pT4b)",
+    "Cannot be assessed"
+   ],
+   "reference": {
+    "title": "Urinary bladder staging landmarks (pT1–pT4b)",
+    "intro": "Distinguish thin discontinuous muscularis mucosae (pT1) from thick compact muscularis propria bundles (pT2), and distinguish direct transmural prostatic stroma invasion (pT4a) from urethral/ductal spread (staged separately).",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Lamina propria (pT1) vs muscularis propria (pT2a / pT2b)",
+      "points": [
+       "pT1: invasion into lamina propria, including around or into thin wispy fascicles of muscularis mucosae (often accompanied by large blood vessels).",
+       "pT2a vs pT2b: thick, compact smooth muscle bundles of detrusor (muscularis propria); inner half = pT2a, outer half = pT2b."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Staging of Urinary Bladder Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Perivesical soft tissue (pT3a vs pT3b)",
+      "points": [
+       "Fat is normally present within the muscularis propria — do NOT call pT3 unless tumour extends BEYOND the outer contour of the muscularis propria into true perivesical adipose tissue.",
+       "pT3a: microscopic extension into perivesical fat; pT3b: grossly visible extravesical mass / nodule."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Staging of Urinary Bladder Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Prostatic stroma invasion (pT4a pitfall)",
+      "points": [
+       "Direct transmural invasion through the bladder wall into prostatic stroma = pT4a.",
+       "Subepithelial invasion into prostatic stroma arising from urothelial carcinoma/CIS of the prostatic urethra or prostatic ducts/acini is NOT bladder pT4a (it is staged under the urethra protocol, pT2)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Staging of Urinary Bladder Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Adjacent pelvic organs (pT4a) vs pelvic/abdominal wall (pT4b)",
+      "points": [
+       "pT4a: direct extravesical invasion into seminal vesicles, uterus, vagina, or prostatic stroma (transmural).",
+       "pT4b: direct invasion into the pelvic wall or abdominal wall."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Staging of Urinary Bladder Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "prostateInvasion",
+   "label": "Prostatic involvement (if present)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Not applicable",
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Prostatic urethra / ducts / acini only (NOT pT4a)",
+    "Direct transmural invasion of prostatic stroma (pT4a)"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins (overall)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "All margins uninvolved by invasive carcinoma and CIS",
+   "options": [
+    "All margins uninvolved by invasive carcinoma and CIS",
+    "Uninvolved by invasive carcinoma; CIS present at margin",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ],
+   "reference": {
+    "title": "Cystectomy surgical margins (ureteral, urethral, soft tissue)",
+    "intro": "Report ureteral, urethral and perivesical soft tissue margins separately for both invasive carcinoma and urothelial carcinoma in situ (CAP 4.2.0.0).",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Ureteral and urethral mucosal margins",
+      "points": [
+       "Submit en-face rings of right ureter, left ureter and distal urethral/apical margin (or final shaved intraoperative frozen-section margins if revised).",
+       "Clearly distinguish involvement by invasive carcinoma from flat UCIS or low-grade dysplasia."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Cystectomy Specimen Handling and Margins",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Perivesical soft tissue (radial) margins",
+      "points": [
+       "Ink the entire non-peritonealised perivesical soft tissue surface before opening the bladder.",
+       "Tumour on ink = positive soft tissue margin; if negative, record distance in mm to the closest inked soft tissue surface."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Cystectomy Specimen Handling and Margins",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "rightUreterMargin",
+   "label": "Right ureteral margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma and CIS",
+   "options": [
+    "Uninvolved by invasive carcinoma and CIS",
+    "Involved by CIS",
+    "Involved by invasive carcinoma",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "leftUreterMargin",
+   "label": "Left ureteral margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma and CIS",
+   "options": [
+    "Uninvolved by invasive carcinoma and CIS",
+    "Involved by CIS",
+    "Involved by invasive carcinoma",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "urethralMargin",
+   "label": "Urethral margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma and CIS",
+   "options": [
+    "Uninvolved by invasive carcinoma and CIS",
+    "Involved by CIS",
+    "Involved by invasive carcinoma",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "softTissueMargin",
+   "label": "Perivesical soft tissue margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest soft tissue margin (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "placeholder": "e.g. 8",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "placeholder": "e.g. posterior perivesical soft tissue",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "placeholder": "0 if none submitted",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "placeholder": "0",
+   "default": ""
+  },
+  {
+   "id": "commonIliacInvolved",
+   "label": "Common iliac nodes involved (pN3)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "placeholder": "0",
+   "default": ""
+  },
+  {
+   "id": "nodeSites",
+   "label": "Lymph node station(s)",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "placeholder": "e.g. bilateral pelvic (obturator, internal/external iliac)",
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Largest nodal deposit (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s) beyond common iliacs (pM1a)",
+    "Non-lymph node distant metastasis (specify) (pM1b)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "noPrimary",
+   "label": "No residual primary tumour (pT0)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple synchronous primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "placeholder": "e.g. ypT2b ypN0",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional & Molecular",
+   "type": "multiselect",
+   "options": [
+    "Urothelial dysplasia",
+    "Cystitis cystica et glandularis",
+    "Squamous metaplasia",
+    "Therapy-related changes (fibrosis / giant cell reaction)",
+    "Incidental prostatic adenocarcinoma (report separately)"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalOther",
+   "label": "Other additional findings",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "pdl1",
+   "label": "PD-L1 IHC",
+   "group": "Additional & Molecular",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Positive (CPS >= 10)",
+    "Negative (CPS < 10)",
+    "Pending"
+   ]
+  },
+  {
+   "id": "her2",
+   "label": "HER2 IHC",
+   "group": "Additional & Molecular",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "0",
+    "1+",
+    "2+ (equivocal)",
+    "3+ (positive)",
+    "Pending"
+   ]
+  },
+  {
+   "id": "molecularNotes",
+   "label": "Other molecular / biomarker studies",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "placeholder": "e.g. FGFR3 mutation panel pending",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Radical cystoprostatectomy",
+     "specimenDims": "12.5 x 9.5 x 7.0",
+     "site": [
+      "Right lateral wall",
+      "Posterior wall"
+     ],
+     "sizeMm": "42",
+     "configuration": "Ulcerated",
+     "adjacentOrgansGross": "prostate and seminal vesicles grossly unremarkable",
+     "blocks": "18",
+     "histType": "Urothelial carcinoma, conventional (invasive)",
+     "grade": "High-grade",
+     "cisStatus": "Present, focal",
+     "lvi": "Not identified",
+     "pni": "Not assessed",
+     "ihcText": "",
+     "extension": "Deep muscularis propria, outer half (pT2b)",
+     "prostateInvasion": "Not identified",
+     "marginStatus": "All margins uninvolved by invasive carcinoma and CIS",
+     "rightUreterMargin": "Uninvolved by invasive carcinoma and CIS",
+     "leftUreterMargin": "Uninvolved by invasive carcinoma and CIS",
+     "urethralMargin": "Uninvolved by invasive carcinoma and CIS",
+     "softTissueMargin": "Uninvolved by invasive carcinoma",
+     "closestMarginMm": "8",
+     "closestMarginSite": "right posterolateral perivesical soft tissue",
+     "nodesExamined": "18",
+     "nodesInvolved": "0",
+     "commonIliacInvolved": "0",
+     "nodeSites": "bilateral pelvic (obturator and external iliac)",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "additionalFindings": [
+      "Cystitis cystica et glandularis"
+     ],
+     "blockKeyText": "A1-A2: right and left ureteral margins\nA3: urethral margin\nA4-A11: bladder tumour full thickness with perivesical fat\nA12-A14: representative bladder mucosa\nA15-A16: prostate and seminal vesicles\nA17-A18: bilateral pelvic lymph nodes"
+    }
+   }
+  ],
+  "case": {
+   "accession": "S26-01630",
+   "status": "Draft"
+  }
+ }
+}

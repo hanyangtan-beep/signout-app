@@ -1,0 +1,697 @@
+{
+ "id": "intrahepatic_cholangiocarcinoma",
+ "version": "2026.11",
+ "name": "Intrahepatic cholangiocarcinoma resection",
+ "shortName": "Liver \u00b7 intrahepatic cholangiocarcinoma",
+ "label": "iCCA",
+ "organ": "INTRAHEPATIC BILE DUCTS",
+ "system": "Hepatobiliary",
+ "kind": "cancer resection",
+ "rank": 86,
+ "aliases": [
+  "intrahepatic cholangiocarcinoma",
+  "iCCA",
+  "intrahepatic bile duct carcinoma",
+  "cholangiocarcinoma hepatectomy",
+  "small duct cholangiocarcinoma",
+  "large duct cholangiocarcinoma",
+  "ICC"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "intrahepatic_cholangiocarcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template GI-Intrahepatic bile ducts (CAP IntrahepaticBileDuct 4.4.0.0; WHO 6th edition; AJCC 8th edition Chapter 23)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/GI-Intrahepatic%20bile%20ducts.html",
+  "savedPage": "docs/reference/GI-Intrahepatic-bile-ducts.html",
+  "staging": "pTNM derived by src/staging/intrahepatic_bile_duct.js (AJCC 8th edition, Chapter 23)."
+ },
+ "match": {
+  "site": [
+   "liver",
+   "intrahepatic bile duct",
+   "intrahepatic bile ducts",
+   "intrahepatic cholangiocarcinoma"
+  ],
+  "procedure": [
+   "hepatectomy",
+   "partial hepatectomy",
+   "right hepatectomy",
+   "left hepatectomy",
+   "segmentectomy"
+  ],
+  "clinical": [
+   "intrahepatic cholangiocarcinoma",
+   "iCCA",
+   "cholangiocarcinoma",
+   "intrahepatic bile duct carcinoma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|core|fna|hepatocellular|HCC|hepatoblastoma|explant|metasta(?:sis|tic)|colorectal|perihilar|hilar|Klatskin|distal|frozen|FS)\\b)[\\s\\S]*(?:\\bintrahepatic\\s+(?:cholangiocarcinoma|bile\\s+duct)\\b|\\biCCA\\b|(?:\\bhepatectomy\\b|\\bliver\\s+resection\\b)[\\s\\S]*\\bcholangiocarcinoma\\b)",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "core",
+   "fna",
+   "hepatocellular",
+   "HCC",
+   "hepatoblastoma",
+   "explant",
+   "perihilar",
+   "Klatskin",
+   "frozen",
+   "FS"
+  ],
+  "bias": 5,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bwedge\\b",
+      "Wedge resection"
+     ],
+     [
+      "\\btotal\\s+hepatectomy\\b",
+      "Total hepatectomy"
+     ],
+     [
+      "\\bhepatectomy\\b|\\bsegmentectomy\\b|\\blobectomy\\b",
+      "Partial hepatectomy"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "weight": {
+   "concept": "weight",
+   "unit": "g"
+  },
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Partial hepatectomy",
+   "options": [
+    "Wedge resection",
+    "Partial hepatectomy",
+    "Total hepatectomy",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "weight",
+   "label": "Specimen weight (g)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Solitary",
+   "options": [
+    "Solitary",
+    "Multiple"
+   ]
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "growthPattern",
+   "label": "Tumour growth pattern",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Mass-forming",
+   "options": [
+    "Mass-forming",
+    "Periductal infiltrating",
+    "Mixed mass-forming and periductal infiltrating",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 6th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Intrahepatic cholangiocarcinoma, small duct, NOS",
+   "options": [
+    "Intrahepatic cholangiocarcinoma, small duct, NOS",
+    "Intrahepatic cholangiocarcinoma, small duct, cholangiolocellular",
+    "Intrahepatic cholangiocarcinoma, small duct, ductal plate malformation-type",
+    "Intrahepatic cholangiocarcinoma, small duct, solid-tubulocystic-type",
+    "Intrahepatic cholangiocarcinoma, small duct, lymphoepithelioma-like",
+    "Intrahepatic cholangiocarcinoma, large duct, NOS",
+    "Intrahepatic cholangiocarcinoma, large duct, adenosquamous",
+    "Intrahepatic cholangiocarcinoma, large duct, mucinous / colloid",
+    "Intrahepatic cholangiocarcinoma, large duct, mucoepidermoid",
+    "Intrahepatic cholangiocarcinoma, large duct, enteroblastic",
+    "Cholangiocarcinoma, NOS",
+    "Combined hepatocellular-cholangiocarcinoma",
+    "Mucinous cystic neoplasm with an associated invasive carcinoma",
+    "Intraductal papillary neoplasm (IPN) with associated invasive carcinoma",
+    "Intraductal tubulopapillary neoplasm with associated invasive carcinoma",
+    "Intraductal oncocytic papillary neoplasm with associated invasive carcinoma",
+    "Large cell neuroendocrine carcinoma",
+    "Small cell neuroendocrine carcinoma",
+    "Mixed neuroendocrine-non-neuroendocrine neoplasm (MiNEN) (specify)",
+    "Other histologic type (specify)"
+   ],
+   "reference": {
+    "title": "Intrahepatic cholangiocarcinoma: small-duct vs large-duct subtypes (WHO 6th)",
+    "intro": "WHO separates intrahepatic cholangiocarcinoma into small-duct type (peripheral, non-mucinous, IDH1/2 & FGFR2 alterations) and large-duct type (central/perihilar-like, mucin-producing, KRAS/TP53/SMAD4, BilIN precursor). Confirm biliary phenotype with CK7/CK19 and exclude metastatic adenocarcinoma and HCC.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Small-duct vs Large-duct iCCA (H&E)",
+      "points": [
+       "Small-duct iCCA: peripheral mass-forming tumour with small non-mucinous tubules/ductules, low cuboidal cells, hyalinised stroma, CRP/N-cadherin/CD56+; enriched for actionable IDH1/2 mutations and FGFR2 fusions.",
+       "Large-duct iCCA: central periductal-infiltrating or mass-forming mucinous columnar glands with frequent perineural invasion, S100P+, MUC5AC/MUC6+, and BilIN precursor."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Intrahepatic Cholangiocarcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/intrahepatic_cholangiocarcinoma/icca_he_low.jpg",
+        "caption": "Intrahepatic cholangiocarcinoma (low power): infiltrating biliary-type glands in abundant fibrous desmoplastic stroma.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Cholangiocarcinoma_-_low_mag.jpg"
+       },
+       {
+        "src": "assets/reference/intrahepatic_cholangiocarcinoma/icca_he_high.jpg",
+        "caption": "Intrahepatic cholangiocarcinoma (intermediate power): anastomosing malignant ductular/glandular structures invading hepatic parenchyma.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Cholangiocarcinoma_-_intermed_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Immunohistochemistry (CK7 / CK19) & combined HCC-CCA",
+      "points": [
+       "Typical iCCA profile: CK7+, CK19+, albumin ISH+ (often in small-duct type), HepPar1-, Arginase-1-, Glypican-3-.",
+       "Combined hepatocellular-cholangiocarcinoma requires unequivocal hepatocytic AND cholangiocytic differentiation on H&E (not just focal CK19 in an otherwise typical HCC)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Combined Hepatocellular-Cholangiocarcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/intrahepatic_cholangiocarcinoma/icca_ck19.jpg",
+        "caption": "CK19 IHC in cholangiocarcinoma: strong diffuse cytoplasmic staining in infiltrating biliary tumour glands.",
+        "credit": "Mikael H\u00e4ggstr\u00f6m, M.D.",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Immunohistochemistry_for_CK19_in_metastatic_cholangiocarcinoma_to_the_liver.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Mixed neuroendocrine-non-neuroendocrine neoplasm (MiNEN) (specify)",
+     "Other histologic type (specify)"
+    ]
+   },
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "G2: Moderately differentiated",
+   "options": [
+    "G1: Well-differentiated",
+    "G2: Moderately differentiated",
+    "G3: Poorly differentiated",
+    "GX: Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion (upstages solitary iCCA to pT2)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "treatmentEffect",
+   "label": "Treatment effect",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "No known presurgical therapy",
+   "options": [
+    "No known presurgical therapy",
+    "Score 0: Complete response",
+    "Score 1: Near-complete response",
+    "Score 2: Partial response",
+    "Score 3: Poor or no response",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extension (pT)",
+   "group": "Extension & Margins",
+   "type": "multiselect",
+   "default": [
+    "Confined to hepatic parenchyma"
+   ],
+   "options": [
+    "Confined to intrahepatic bile ducts (carcinoma in situ / high-grade dysplasia)",
+    "Confined to hepatic parenchyma",
+    "Perforates visceral peritoneal surface",
+    "Directly invades gallbladder",
+    "Directly invades adjacent extrahepatic structure(s) other than gallbladder (specify)",
+    "Cannot be assessed"
+   ],
+   "reference": {
+    "title": "Intrahepatic cholangiocarcinoma staging landmarks (AJCC 8th Ch. 23)",
+    "intro": "AJCC 8th edition splits solitary iCCA without vascular invasion at 5 cm (pT1a <= 5 cm, pT1b > 5 cm). Vascular invasion or multiple tumours (including satellite nodules) assign pT2.",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "pT1a/b vs pT2 vs pT3 vs pT4",
+      "points": [
+       "pT1a (<= 5 cm) / pT1b (> 5 cm): solitary tumour without intrahepatic vascular invasion.",
+       "pT2: solitary tumour WITH intrahepatic vascular invasion (micro- or macrovascular), OR multiple tumours (satellites/intrahepatic metastases).",
+       "pT3: perforation of the visceral peritoneum (Glisson's capsule breached onto mesothelial surface).",
+       "pT4: direct invasion of local extrahepatic structures (gallbladder, diaphragm, colon, stomach, IVC)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Staging of Intrahepatic Cholangiocarcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "hepaticMargin",
+   "label": "Hepatic parenchymal margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest hepatic margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "bileDuctMargin",
+   "label": "Bile duct margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Not applicable",
+   "options": [
+    "Not applicable",
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "hgdMargin",
+   "label": "High-grade intraepithelial neoplasia at margins",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "All margins negative for high-grade intraepithelial neoplasia",
+   "options": [
+    "All margins negative for high-grade intraepithelial neoplasia",
+    "High-grade intraepithelial neoplasia present at bile duct margin",
+    "Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeSites",
+   "label": "Lymph node station(s)",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Largest nodal deposit (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Peritoneum (distant)",
+    "Other distant site (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "noPrimary",
+   "label": "No residual primary tumour (pT0)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "backgroundLiver",
+   "label": "Background liver findings",
+   "group": "Additional & Molecular",
+   "type": "multiselect",
+   "options": [
+    "Hepatic fibrosis",
+    "Cirrhosis",
+    "Primary sclerosing cholangitis",
+    "Biliary stones",
+    "Chronic hepatitis",
+    "Steatosis"
+   ],
+   "default": []
+  },
+  {
+   "id": "backgroundOther",
+   "label": "Other background liver findings",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "mmr",
+   "label": "MMR / MSI",
+   "group": "Additional & Molecular",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Intact (pMMR)",
+    "Deficient (dMMR)",
+    "Pending"
+   ]
+  },
+  {
+   "id": "her2",
+   "label": "HER2 IHC",
+   "group": "Additional & Molecular",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "0",
+    "1+",
+    "2+ (equivocal)",
+    "3+ (positive)",
+    "Pending"
+   ]
+  },
+  {
+   "id": "molecularNotes",
+   "label": "Molecular profiling (IDH1/2, FGFR2, BRAF)",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01720",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Partial hepatectomy",
+     "weight": "540",
+     "specimenDims": "16.0 x 12.0 x 7.5",
+     "focality": "Solitary",
+     "sizeMm": "42",
+     "growthPattern": "Mass-forming",
+     "blocks": "12",
+     "blockKeyText": "A1-A2: hepatic parenchymal margin\nA3-A8: tumour with capsule and adjacent liver\nA9-A10: background liver\nA11-A12: hilar lymph nodes",
+     "histType": "Intrahepatic cholangiocarcinoma, small duct, NOS",
+     "grade": "G2: Moderately differentiated",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "ihcText": "CK7 and CK19 diffuse positive; HepPar1 and Arginase-1 negative",
+     "extension": [
+      "Confined to hepatic parenchyma"
+     ],
+     "hepaticMargin": "Uninvolved by invasive carcinoma",
+     "closestMarginMm": "12",
+     "bileDuctMargin": "Not applicable",
+     "hgdMargin": "All margins negative for high-grade intraepithelial neoplasia",
+     "nodesExamined": "5",
+     "nodesInvolved": "0",
+     "nodeSites": "hilar / hepatoduodenal ligament",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "mmr": "Intact (pMMR)",
+     "her2": "0"
+    }
+   }
+  ]
+ }
+}

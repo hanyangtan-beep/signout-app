@@ -1,0 +1,787 @@
+{
+ "id": "bile_duct_carcinoma",
+ "version": "2026.11",
+ "name": "Extrahepatic bile duct carcinoma resection (distal / perihilar)",
+ "shortName": "Bile duct \u00b7 extrahepatic carcinoma resection",
+ "label": "Bile duct Ca",
+ "organ": "EXTRAHEPATIC BILE DUCT",
+ "system": "Hepatobiliary",
+ "kind": "cancer resection",
+ "rank": 85,
+ "aliases": [
+  "extrahepatic cholangiocarcinoma",
+  "perihilar cholangiocarcinoma",
+  "Klatskin tumour",
+  "hilar cholangiocarcinoma",
+  "distal bile duct carcinoma",
+  "common bile duct carcinoma",
+  "bile duct resection",
+  "CBD",
+  "EBD"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "bile_duct_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "CAP Perihilar & Distal Extrahepatic Bile Ducts 4.2.0.0; AJCC 8th edition Chapters 25\u201326; WHO 5th/6th edition",
+  "staging": "Site-aware pTNM derived by src/staging/bile_duct.js (Perihilar Ch. 25 vs Distal Ch. 26)."
+ },
+ "match": {
+  "site": [
+   "extrahepatic bile duct",
+   "perihilar bile duct",
+   "hilar bile duct",
+   "common bile duct",
+   "common hepatic duct",
+   "distal bile duct"
+  ],
+  "procedure": [
+   "bile duct resection",
+   "extrahepatic bile duct resection",
+   "hilar resection",
+   "Klatskin resection"
+  ],
+  "clinical": [
+   "perihilar cholangiocarcinoma",
+   "hilar cholangiocarcinoma",
+   "Klatskin",
+   "distal cholangiocarcinoma",
+   "extrahepatic cholangiocarcinoma",
+   "bile duct carcinoma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|brushings?|cytology|intrahepatic|gallbladder|cholecystectomy|ampulla|ampullary|pancreatic\\s+adenocarcinoma|PDAC|frozen|FS)\\b)[\\s\\S]*(?:\\b(?:perihilar|hilar|distal|extrahepatic|common)\\s+(?:bile\\s+duct|hepatic\\s+duct|cholangiocarcinoma)\\b|\\bKlatskin\\b|\\bbile\\s+duct\\s+resection\\b)",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "brushings",
+   "cytology",
+   "intrahepatic",
+   "gallbladder",
+   "cholecystectomy",
+   "ampulla",
+   "ampullary",
+   "frozen",
+   "FS"
+  ],
+  "bias": 3,
+  "fill": [
+   {
+    "field": "anatomicLocation",
+    "from": "map",
+    "map": [
+     [
+      "\\bdistal\\b|\\bWhipple\\b|\\bpancreaticoduodenectomy\\b",
+      "Distal extrahepatic bile duct"
+     ],
+     [
+      "\\bperihilar\\b|\\bhilar\\b|\\bKlatskin\\b|\\bhepatic\\s+duct\\b",
+      "Perihilar bile ducts"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "placeholder": "Leave blank to derive from location and procedure",
+   "default": ""
+  },
+  {
+   "id": "anatomicLocation",
+   "label": "Anatomic location (selects AJCC 8th Ch. 25 vs Ch. 26)",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Perihilar bile ducts",
+   "options": [
+    "Perihilar bile ducts",
+    "Distal extrahepatic bile duct"
+   ],
+   "reference": {
+    "title": "Perihilar (Ch. 25) vs Distal (Ch. 26) extrahepatic bile duct landmarks",
+    "intro": "The insertion of the cystic duct separates perihilar bile ducts (proximal: right/left hepatic ducts, confluence, common hepatic duct) from the distal extrahepatic bile duct (common bile duct down to the ampulla).",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Perihilar bile ducts (AJCC 8th Chapter 25)",
+      "points": [
+       "Staged by anatomic extent: pT1 confined to duct wall, pT2a periductal adipose tissue, pT2b adjacent hepatic parenchyma, pT3 unilateral portal vein/hepatic artery, pT4 main/bilateral vessels or bilateral 2nd-order biliary radicals."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Perihilar Cholangiocarcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Distal extrahepatic bile duct (AJCC 8th Chapter 26)",
+      "points": [
+       "Staged strictly by measured depth of invasion from the basement membrane of adjacent normal epithelium (or deepest invasive point if ulcerated): pT1 < 5 mm, pT2 5\u201312 mm, pT3 > 12 mm; pT4 involves coeliac axis, SMA, or common hepatic artery."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Distal Extrahepatic Bile Duct Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Extrahepatic bile duct resection with partial hepatectomy",
+   "options": [
+    "Extrahepatic bile duct resection",
+    "Extrahepatic bile duct resection with partial hepatectomy",
+    "Pancreaticoduodenectomy (Whipple resection)",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "subsite",
+   "label": "Subsite / Bismuth-Corlette extent",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "placeholder": "e.g. hepatic duct confluence (Bismuth type IIIa)",
+   "default": ""
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "placeholder": "e.g. 14.0 x 10.0 x 6.5",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "placeholder": "e.g. 24",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Adenocarcinoma, pancreatobiliary-type",
+   "options": [
+    "Adenocarcinoma, pancreatobiliary-type",
+    "Adenocarcinoma, intestinal-type",
+    "Adenocarcinoma, gastric foveolar-type",
+    "Mucinous adenocarcinoma",
+    "Clear cell adenocarcinoma",
+    "Signet-ring cell carcinoma",
+    "Adenosquamous carcinoma",
+    "Squamous cell carcinoma",
+    "Intraductal papillary neoplasm with associated invasive carcinoma",
+    "Small cell neuroendocrine carcinoma",
+    "Large cell neuroendocrine carcinoma",
+    "Mixed neuroendocrine-non-neuroendocrine neoplasm (MiNEN) (specify)",
+    "Other histologic type (specify)"
+   ],
+   "reference": {
+    "title": "Extrahepatic cholangiocarcinoma histology & mimics",
+    "intro": "Most extrahepatic bile duct carcinomas are pancreatobiliary-type adenocarcinomas eliciting dense desmoplasia and extensive perineural invasion. Distinguish well-differentiated invasive glands from reactive peribiliary glands.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Pancreatobiliary-type adenocarcinoma",
+      "points": [
+       "Widely spaced, angulated irregular glands and single cells in a desmoplastic stroma; nuclear size variation >= 4:1, loss of polarity, intraluminal necrotic debris, and frequent perineural invasion.",
+       "Benign peribiliary glands retain lobular architecture with uniform basal nuclei and lack desmoplasia."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Extrahepatic Bile Duct Adenocarcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bile_duct_carcinoma/ebdc_cholangioca_he.jpg",
+        "caption": "Cholangiocarcinoma: infiltrating irregular malignant glands embedded in dense desmoplastic stroma (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Cholangiocarcinoma_-_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/bile_duct_carcinoma/ebdc_mucinous_glands.jpg",
+        "caption": "Cholangiocarcinoma (high power): marked nuclear pleomorphism, hyperchromasia and loss of polarity in infiltrating biliary glands.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Cholangiocarcinoma_-_very_high_mag.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Mixed neuroendocrine-non-neuroendocrine neoplasm (MiNEN) (specify)",
+     "Other histologic type (specify)"
+    ]
+   },
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "G2: Moderately differentiated",
+   "options": [
+    "G1: Well differentiated (> 95% gland formation)",
+    "G2: Moderately differentiated",
+    "G3: Poorly differentiated (< 50% gland formation)",
+    "GX: Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "precursor",
+   "label": "Precursor lesion (BilIN / IPNB)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Low-grade biliary intraepithelial neoplasia (BilIN)",
+    "High-grade biliary intraepithelial neoplasia (BilIN / CIS)",
+    "Intraductal papillary neoplasm of the bile ducts (IPNB)",
+    "Cannot be determined"
+   ],
+   "reference": {
+    "title": "Biliary intraepithelial neoplasia (BilIN) & bile duct margin dysplasia",
+    "intro": "WHO 5th edition uses a two-tier grading system for flat biliary dysplasia: low-grade BilIN vs high-grade BilIN (carcinoma in situ). Distinguishing high-grade BilIN from reactive stent atypia is critical at frozen section and final bile duct margins.",
+    "note": "Photomicrograph from Wikimedia Commons under an open Creative Commons licence. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Low-grade vs High-grade BilIN",
+      "points": [
+       "Low-grade BilIN: pseudostratified nuclei with mild-to-moderate atypia confined to the basal two-thirds and preserved polarity.",
+       "High-grade BilIN (CIS): full-thickness loss of polarity, marked pleomorphism, complex micropapillary/cribriform tufting, and aberrant p53 / loss of SMAD4."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Biliary Intraepithelial Neoplasia (BilIN)",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/bile_duct_carcinoma/ebdc_bilin_dysplasia.jpg",
+        "caption": "Low-grade biliary intraepithelial neoplasia (BilIN): pseudostratified columnar epithelium with mild-to-moderate atypia and retained polarity.",
+        "credit": "Ed Uthman",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Low-grade_Biliary_Intraepithelial_Neoplasia_of_the_Gallbladder_(51031106572).jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Present",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "treatmentEffect",
+   "label": "Treatment effect",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "No known presurgical therapy",
+   "options": [
+    "No known presurgical therapy",
+    "Score 0: Complete response (no viable cancer cells)",
+    "Score 1: Near-complete response (single cells or rare small groups)",
+    "Score 2: Partial response",
+    "Score 3: Poor or no response",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "perihilarExtension",
+   "label": "Perihilar tumour extension (pT, Ch. 25)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Beyond bile duct wall into surrounding adipose tissue (pT2a)",
+   "showIf": {
+    "field": "anatomicLocation",
+    "is": "Perihilar bile ducts"
+   },
+   "options": [
+    "Carcinoma in situ / high-grade dysplasia (pTis)",
+    "Confined to bile duct (up to muscle layer or fibrous tissue) (pT1)",
+    "Beyond bile duct wall into surrounding adipose tissue (pT2a)",
+    "Adjacent hepatic parenchyma (pT2b)",
+    "Unilateral branches of portal vein or hepatic artery (pT3)",
+    "Main portal vein / bilateral branches, common hepatic artery, or bilateral 2nd-order biliary radicals (pT4)",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "distalExtension",
+   "label": "Distal bile duct extent (pT, Ch. 26)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Invasive carcinoma (depth of invasion determines pT1\u2013pT3)",
+   "showIf": {
+    "field": "anatomicLocation",
+    "is": "Distal extrahepatic bile duct"
+   },
+   "options": [
+    "Carcinoma in situ / high-grade dysplasia (pTis)",
+    "Invasive carcinoma (depth of invasion determines pT1\u2013pT3)",
+    "Coeliac axis, superior mesenteric artery, and/or common hepatic artery (pT4)",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "invasionDepthMm",
+   "label": "Depth of invasion (mm, distal bile duct: <5 = pT1, 5\u201312 = pT2, >12 = pT3)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "showIf": {
+    "field": "anatomicLocation",
+    "is": "Distal extrahepatic bile duct"
+   },
+   "placeholder": "e.g. 7.5",
+   "default": ""
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins (overall)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "All margins uninvolved by invasive carcinoma and high-grade BilIN",
+   "options": [
+    "All margins uninvolved by invasive carcinoma and high-grade BilIN",
+    "Uninvolved by invasive carcinoma; high-grade BilIN at bile duct margin",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ],
+   "reference": {
+    "title": "Extrahepatic bile duct resection margins",
+    "intro": "Evaluate proximal and distal bile duct mucosal margins separately for invasive carcinoma and high-grade BilIN (low-grade BilIN at a margin does not require re-resection), plus the radial periductal soft tissue and hepatic parenchymal margins.",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Bile duct & radial soft tissue margins",
+      "points": [
+       "Proximal and distal bile duct margins: report invasive carcinoma and high-grade BilIN separately; note any intraoperative frozen-section revision.",
+       "Radial / periductal soft tissue margin: ink the entire periductal soft tissue and hepatic artery / portal vein groove; positive radial margin is the most common site of R1 resection."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Extrahepatic Bile Duct Specimen Handling",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "proximalDuctMargin",
+   "label": "Proximal bile duct margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma and high-grade BilIN",
+   "options": [
+    "Uninvolved by invasive carcinoma and high-grade BilIN",
+    "Involved by high-grade BilIN",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "distalDuctMargin",
+   "label": "Distal bile duct margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma and high-grade BilIN",
+   "options": [
+    "Uninvolved by invasive carcinoma and high-grade BilIN",
+    "Involved by high-grade BilIN",
+    "Involved by invasive carcinoma",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "radialMargin",
+   "label": "Radial / periductal soft tissue margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "hepaticMargin",
+   "label": "Hepatic parenchymal margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeSites",
+   "label": "Lymph node station(s)",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Largest nodal deposit (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Liver (non-contiguous)",
+    "Peritoneum",
+    "Other distant site (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "noPrimary",
+   "label": "No residual primary tumour (pT0)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional & Molecular",
+   "type": "multiselect",
+   "options": [
+    "Primary sclerosing cholangitis",
+    "Cholelithiasis / hepatolithiasis",
+    "Chronic cholangitis",
+    "Hepatic fibrosis / cirrhosis"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalOther",
+   "label": "Other additional findings",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "her2",
+   "label": "HER2 IHC",
+   "group": "Additional & Molecular",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "0",
+    "1+",
+    "2+ (equivocal)",
+    "3+ (positive)",
+    "Pending"
+   ]
+  },
+  {
+   "id": "mmr",
+   "label": "MMR IHC",
+   "group": "Additional & Molecular",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Intact (pMMR)",
+    "Deficient (dMMR)",
+    "Pending"
+   ]
+  },
+  {
+   "id": "molecularNotes",
+   "label": "Other molecular studies",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01710",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "anatomicLocation": "Perihilar bile ducts",
+     "procedure": "Extrahepatic bile duct resection with partial hepatectomy",
+     "subsite": "hepatic duct confluence (Bismuth type IIIa)",
+     "specimenDims": "15.0 x 11.0 x 7.0",
+     "sizeMm": "24",
+     "blocks": "14",
+     "blockKeyText": "A1-A2: proximal and distal bile duct margins\nA3-A8: hilar tumour with periductal fat and liver interface\nA9-A11: hepatic parenchymal margin and background liver\nA12-A14: hepatoduodenal ligament lymph nodes",
+     "histType": "Adenocarcinoma, pancreatobiliary-type",
+     "grade": "G2: Moderately differentiated",
+     "precursor": "High-grade biliary intraepithelial neoplasia (BilIN / CIS)",
+     "lvi": "Not identified",
+     "pni": "Present",
+     "treatmentEffect": "No known presurgical therapy",
+     "perihilarExtension": "Beyond bile duct wall into surrounding adipose tissue (pT2a)",
+     "marginStatus": "All margins uninvolved by invasive carcinoma and high-grade BilIN",
+     "proximalDuctMargin": "Uninvolved by invasive carcinoma and high-grade BilIN",
+     "distalDuctMargin": "Uninvolved by invasive carcinoma and high-grade BilIN",
+     "radialMargin": "Uninvolved by invasive carcinoma",
+     "hepaticMargin": "Uninvolved by invasive carcinoma",
+     "closestMarginMm": "3",
+     "closestMarginSite": "radial periductal soft tissue margin",
+     "nodesExamined": "9",
+     "nodesInvolved": "0",
+     "nodeSites": "hepatoduodenal ligament",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

@@ -1,0 +1,67 @@
+{
+  "description": "radical cystectomy for 55 mm micropapillary urothelial carcinoma (40%) with microscopic perivesical invasion, left ureteral CIS margin, 3/22 positive nodes including 1 common iliac with ENE, pT3a pN3",
+  "templateId": "bladder_carcinoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true,
+    "printNodesMets": false
+  },
+  "values": [
+    {
+      "procedure": "Radical cystectomy",
+      "specimenDims": "12.5 x 9.5 x 7.0",
+      "site": [
+        "Trigone",
+        "Left lateral wall"
+      ],
+      "sizeMm": "55",
+      "configuration": "Solid / nodular",
+      "adjacentOrgansGross": "prostate and seminal vesicles grossly unremarkable",
+      "blocks": "18",
+      "histType": "Urothelial carcinoma, micropapillary",
+      "grade": "High-grade",
+      "cisStatus": "Present, extensive / multifocal",
+      "lvi": "Present",
+      "pni": "Present",
+      "ihcText": "",
+      "extension": "Perivesical soft tissue, microscopic (pT3a)",
+      "prostateInvasion": "Not applicable",
+      "marginStatus": "Uninvolved by invasive carcinoma; CIS present at margin",
+      "rightUreterMargin": "Uninvolved by invasive carcinoma and CIS",
+      "leftUreterMargin": "Involved by CIS",
+      "urethralMargin": "Uninvolved by invasive carcinoma and CIS",
+      "softTissueMargin": "Uninvolved by invasive carcinoma",
+      "closestMarginMm": "8",
+      "closestMarginSite": "right posterolateral perivesical soft tissue",
+      "nodesExamined": "22",
+      "nodesInvolved": "3",
+      "commonIliacInvolved": "1",
+      "nodeSites": "bilateral pelvic and left common iliac",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "additionalFindings": [
+        "Cystitis cystica et glandularis"
+      ],
+      "blockKeyText": "A1-A2: right and left ureteral margins\nA3: urethral margin\nA4-A11: bladder tumour full thickness with perivesical fat\nA12-A14: representative bladder mucosa\nA15-A16: prostate and seminal vesicles\nA17-A18: bilateral pelvic lymph nodes",
+      "subtypePct": "40",
+      "ene": "Present",
+      "largestDepositMm": "14"
+    }
+  ],
+  "report": "Urinary bladder, radical cystectomy\n\nReceived in formalin is a radical cystectomy specimen measuring 12.5 x 9.5 x 7.0 cm. Opening the bladder reveals a 55 mm solid / nodular tumour involving the trigone and left lateral wall. Attached organs: prostate and seminal vesicles grossly unremarkable. Sections are submitted in 18 blocks.\n\n(A1-A2) right and left ureteral margins.\n(A3) urethral margin.\n(A4-A11) bladder tumour full thickness with perivesical fat.\n(A12-A14) representative bladder mucosa.\n(A15-A16) prostate and seminal vesicles.\n(A17-A18) bilateral pelvic lymph nodes.\n\nSpecimen and tumour\n- Procedure: Radical cystectomy\n- Tumour site: Trigone and left lateral wall\n- Tumour size (greatest dimension): 55 mm\n- Tumour configuration: Solid / nodular\n\nMicroscopic findings\n- Histologic type: Urothelial carcinoma, micropapillary (40%)\n- Histologic grade: High-grade\n- Associated urothelial carcinoma in situ (UCIS): Present, extensive /\n  multifocal\n- Tumour extension (depth of invasion): Perivesical soft tissue, microscopic\n  (pT3a)\n- Lymphovascular invasion: Present\n- Perineural invasion: Present\n- Tumour histology:\n  Sections of the urinary bladder show urothelial carcinoma, micropapillary (40%), high-grade. Small tight clusters and delicate papillary tufts without fibrovascular cores lie within prominent retraction spaces.\n\nMargins\n- Surgical margins: Uninvolved by invasive carcinoma; CIS present at margin\n  - Right ureteral margin: Uninvolved by invasive carcinoma and CIS\n  - Left ureteral margin: Involved by CIS\n  - Urethral margin: Uninvolved by invasive carcinoma and CIS\n  - Perivesical soft tissue margin: Uninvolved by invasive carcinoma\n- Distance to closest margin: 8 mm (right posterolateral perivesical soft\n  tissue)\n\nLymph nodes\n- Regional lymph nodes: 3 of 22 involved (bilateral pelvic and left common\n  iliac); common iliac nodes involved: 1\n- Extranodal extension (ENE): Present\n- Size of largest metastatic deposit: 14 mm\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT3a pN3\n\nAdditional findings\n- Additional pathologic findings: Cystitis cystica et glandularis\n\nURINARY BLADDER, radical cystectomy:\n- UROTHELIAL CARCINOMA, MICROPAPILLARY (40%), high-grade, 55 mm\n- Tumour invades perivesical soft tissue, microscopic\n- Associated urothelial carcinoma in situ (present, extensive / multifocal)\n- Surgical margins clear of invasive carcinoma and CIS\n- 3 of 22 regional lymph nodes involved; extranodal extension present\n- pT3a pN3 (AJCC 8th edition).",
+  "checks": [
+    {
+      "level": "warn",
+      "message": "Overall margin status is uninvolved, but an individual margin is marked Involved.",
+      "field": "marginStatus",
+      "part": "A"
+    },
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (reference, not reported): Stage IIIB (assuming cM0).",
+      "part": "A"
+    }
+  ]
+}

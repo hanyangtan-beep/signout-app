@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 87,
+  "count": 94,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -6675,6 +6675,97 @@
       "schemaPath": "schemas/nail_digit.json"
     },
     {
+      "id": "prostate_radical",
+      "name": "Radical prostatectomy",
+      "shortName": "Prostate · radical prostatectomy",
+      "label": "Prostatectomy",
+      "organ": "PROSTATE",
+      "system": "GU",
+      "kind": "cancer resection",
+      "rank": 55,
+      "aliases": [
+        "radical prostatectomy",
+        "prostatectomy",
+        "RALP",
+        "RARP",
+        "LRP",
+        "prostate cancer",
+        "prostate carcinoma",
+        "prostatic adenocarcinoma",
+        "Gleason",
+        "ISUP"
+      ],
+      "match": {
+        "site": [
+          "prostate",
+          "prostatic",
+          "prostate and seminal vesicles",
+          "radical prostatectomy",
+          "prostatectomy",
+          "RALP",
+          "RARP"
+        ],
+        "procedure": [
+          "radical prostatectomy",
+          "prostatectomy",
+          "robotic radical prostatectomy",
+          "robot-assisted radical prostatectomy",
+          "RALP",
+          "RARP",
+          "LRP"
+        ],
+        "clinical": [
+          "prostatic adenocarcinoma",
+          "prostate carcinoma",
+          "prostate cancer",
+          "Gleason",
+          "adenocarcinoma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:TRUS|transperineal|needle|cores?|biops(?:y|ies)|bx|TURP|chips|enucleation|BPH|cystectomy|cystoprostatectomy|frozen|FS)\\b)[\\s\\S]*(?:\\bradical\\s+prostatectomy\\b|\\b(?:RALP|RARP|LRP)\\b|\\bprostatectomy\\b)",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "core",
+          "cores",
+          "TRUS",
+          "transperineal",
+          "TURP",
+          "chips",
+          "BPH",
+          "lymph node",
+          "lymph nodes",
+          "LN",
+          "SLN",
+          "frozen",
+          "FS",
+          "cystectomy",
+          "cystoprostatectomy"
+        ],
+        "bias": 3,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bradical\\s+cystoprostatectomy\\b",
+                "Radical cystoprostatectomy"
+              ],
+              [
+                "\\b(?:radical\\s+prostatectomy|RALP|RARP|LRP|prostatectomy)\\b",
+                "Radical prostatectomy"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "prostate_radical",
+      "generatorPath": "generators/prostate_radical.js",
+      "schemaPath": "schemas/prostate_radical.json"
+    },
+    {
       "id": "testis_benign",
       "name": "Testis and foreskin — benign",
       "shortName": "Testis · foreskin",
@@ -6920,6 +7011,110 @@
       "schemaPath": "schemas/testis_benign.json"
     },
     {
+      "id": "kidney_carcinoma",
+      "name": "Renal cell carcinoma nephrectomy",
+      "shortName": "Kidney · renal cell carcinoma nephrectomy",
+      "label": "Kidney Ca",
+      "organ": "KIDNEY",
+      "system": "GU",
+      "kind": "cancer resection",
+      "rank": 56,
+      "aliases": [
+        "nephrectomy",
+        "partial nephrectomy",
+        "radical nephrectomy",
+        "renal cell carcinoma",
+        "RCC",
+        "clear cell RCC",
+        "papillary RCC",
+        "chromophobe RCC",
+        "kidney cancer",
+        "kidney carcinoma"
+      ],
+      "match": {
+        "site": [
+          "kidney",
+          "renal",
+          "nephrectomy",
+          "partial nephrectomy",
+          "radical nephrectomy"
+        ],
+        "procedure": [
+          "radical nephrectomy",
+          "partial nephrectomy",
+          "total nephrectomy",
+          "nephrectomy",
+          "kidney resection"
+        ],
+        "clinical": [
+          "renal cell carcinoma",
+          "RCC",
+          "renal mass",
+          "kidney tumour",
+          "kidney tumor",
+          "renal tumour"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|core|cores|fna|nephroureterectomy|renal\\s+pelvis|urothelial|wilms|nephroblastoma|donor|frozen|FS)\\b)[\\s\\S]*(?:\\b(?:partial|radical|total|simple)?\\s*nephrectomy\\b|\\bkidney\\s+resection\\b)",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "core",
+          "cores",
+          "fna",
+          "nephroureterectomy",
+          "renal pelvis",
+          "urothelial",
+          "wilms",
+          "nephroblastoma",
+          "donor",
+          "lymph node",
+          "LN",
+          "frozen",
+          "FS"
+        ],
+        "bias": 3,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bpartial\\s+nephrectomy\\b|\\bnephron[- ]sparing\\b",
+                "Partial nephrectomy"
+              ],
+              [
+                "\\bradical\\s+nephrectomy\\b",
+                "Radical nephrectomy"
+              ],
+              [
+                "\\b(?:total|simple)\\s+nephrectomy\\b",
+                "Total nephrectomy"
+              ]
+            ]
+          },
+          {
+            "field": "laterality",
+            "from": "map",
+            "map": [
+              [
+                "\\bright\\b",
+                "Right"
+              ],
+              [
+                "\\bleft\\b",
+                "Left"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "kidney_carcinoma",
+      "generatorPath": "generators/kidney_carcinoma.js",
+      "schemaPath": "schemas/kidney_carcinoma.json"
+    },
+    {
       "id": "ureter_renal_pelvis_carcinoma",
       "name": "Ureter and renal pelvis urothelial carcinoma resection",
       "shortName": "Ureter / renal pelvis · carcinoma resection",
@@ -7079,6 +7274,100 @@
       "generator": "ureter_renal_pelvis_carcinoma",
       "generatorPath": "generators/ureter_renal_pelvis_carcinoma.js",
       "schemaPath": "schemas/ureter_renal_pelvis_carcinoma.json"
+    },
+    {
+      "id": "bladder_carcinoma",
+      "name": "Urinary bladder carcinoma cystectomy",
+      "shortName": "Bladder · urinary bladder carcinoma cystectomy",
+      "label": "Bladder Ca",
+      "organ": "URINARY BLADDER",
+      "system": "GU",
+      "kind": "cancer resection",
+      "rank": 57,
+      "aliases": [
+        "cystectomy",
+        "radical cystectomy",
+        "partial cystectomy",
+        "cystoprostatectomy",
+        "anterior exenteration",
+        "urothelial carcinoma",
+        "bladder cancer",
+        "bladder carcinoma"
+      ],
+      "match": {
+        "site": [
+          "urinary bladder",
+          "bladder",
+          "radical cystectomy",
+          "partial cystectomy",
+          "cystoprostatectomy"
+        ],
+        "procedure": [
+          "radical cystectomy",
+          "partial cystectomy",
+          "radical cystoprostatectomy",
+          "anterior exenteration",
+          "bladder resection"
+        ],
+        "clinical": [
+          "urothelial carcinoma",
+          "bladder carcinoma",
+          "bladder cancer",
+          "muscle-invasive urothelial carcinoma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:turbt|turb|transurethral|biops(?:y|ies)|bx|cytology|washing|washings|frozen|FS|ovar(?:y|ian)|paratubal|fimbrial|fallopian|adnexa(?:l)?|cyst|bartholin|choledochal|sebaceous|epidermoid|dermoid|thyroglossal|branchial)\\b)[\\s\\S]*(?:\\b(?:radical|partial)\\s+cystectomy\\b|\\bcystoprostatectomy\\b|\\banterior\\s+exenteration\\b|\\bbladder\\s+resection\\b|\\b(?:urinary\\s+)?bladder\\b[\\s\\S]*\\bcystectomy\\b)",
+        "exclude": [
+          "turbt",
+          "turb",
+          "transurethral",
+          "biopsy",
+          "biopsies",
+          "bx",
+          "cytology",
+          "washing",
+          "washings",
+          "lymph node",
+          "LN",
+          "frozen",
+          "FS",
+          "ovary",
+          "ovarian",
+          "paratubal",
+          "fimbrial",
+          "fallopian",
+          "adnexa",
+          "cyst"
+        ],
+        "bias": 3,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bradical\\s+cystoprostatectomy\\b|\\bcystoprostatectomy\\b",
+                "Radical cystoprostatectomy"
+              ],
+              [
+                "\\banterior\\s+exenteration\\b",
+                "Anterior exenteration"
+              ],
+              [
+                "\\bpartial\\s+cystectomy\\b",
+                "Partial cystectomy"
+              ],
+              [
+                "\\bradical\\s+cystectomy\\b",
+                "Radical cystectomy"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "bladder_carcinoma",
+      "generatorPath": "generators/bladder_carcinoma.js",
+      "schemaPath": "schemas/bladder_carcinoma.json"
     },
     {
       "id": "soft_tissue_sarcoma",
@@ -8911,6 +9200,348 @@
       "generator": "pituitary_net",
       "generatorPath": "generators/pituitary_net.js",
       "schemaPath": "schemas/pituitary_net.json"
+    },
+    {
+      "id": "bile_duct_carcinoma",
+      "name": "Extrahepatic bile duct carcinoma resection (distal / perihilar)",
+      "shortName": "Bile duct · extrahepatic carcinoma resection",
+      "label": "Bile duct Ca",
+      "organ": "EXTRAHEPATIC BILE DUCT",
+      "system": "Hepatobiliary",
+      "kind": "cancer resection",
+      "rank": 85,
+      "aliases": [
+        "extrahepatic cholangiocarcinoma",
+        "perihilar cholangiocarcinoma",
+        "Klatskin tumour",
+        "hilar cholangiocarcinoma",
+        "distal bile duct carcinoma",
+        "common bile duct carcinoma",
+        "bile duct resection",
+        "CBD",
+        "EBD"
+      ],
+      "match": {
+        "site": [
+          "extrahepatic bile duct",
+          "perihilar bile duct",
+          "hilar bile duct",
+          "common bile duct",
+          "common hepatic duct",
+          "distal bile duct"
+        ],
+        "procedure": [
+          "bile duct resection",
+          "extrahepatic bile duct resection",
+          "hilar resection",
+          "Klatskin resection"
+        ],
+        "clinical": [
+          "perihilar cholangiocarcinoma",
+          "hilar cholangiocarcinoma",
+          "Klatskin",
+          "distal cholangiocarcinoma",
+          "extrahepatic cholangiocarcinoma",
+          "bile duct carcinoma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|brushings?|cytology|intrahepatic|gallbladder|cholecystectomy|ampulla|ampullary|pancreatic\\s+adenocarcinoma|PDAC|frozen|FS)\\b)[\\s\\S]*(?:\\b(?:perihilar|hilar|distal|extrahepatic|common)\\s+(?:bile\\s+duct|hepatic\\s+duct|cholangiocarcinoma)\\b|\\bKlatskin\\b|\\bbile\\s+duct\\s+resection\\b)",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "brushings",
+          "cytology",
+          "intrahepatic",
+          "gallbladder",
+          "cholecystectomy",
+          "ampulla",
+          "ampullary",
+          "frozen",
+          "FS"
+        ],
+        "bias": 3,
+        "fill": [
+          {
+            "field": "anatomicLocation",
+            "from": "map",
+            "map": [
+              [
+                "\\bdistal\\b|\\bWhipple\\b|\\bpancreaticoduodenectomy\\b",
+                "Distal extrahepatic bile duct"
+              ],
+              [
+                "\\bperihilar\\b|\\bhilar\\b|\\bKlatskin\\b|\\bhepatic\\s+duct\\b",
+                "Perihilar bile ducts"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "bile_duct_carcinoma",
+      "generatorPath": "generators/bile_duct_carcinoma.js",
+      "schemaPath": "schemas/bile_duct_carcinoma.json"
+    },
+    {
+      "id": "intrahepatic_cholangiocarcinoma",
+      "name": "Intrahepatic cholangiocarcinoma resection",
+      "shortName": "Liver · intrahepatic cholangiocarcinoma",
+      "label": "iCCA",
+      "organ": "INTRAHEPATIC BILE DUCTS",
+      "system": "Hepatobiliary",
+      "kind": "cancer resection",
+      "rank": 86,
+      "aliases": [
+        "intrahepatic cholangiocarcinoma",
+        "iCCA",
+        "intrahepatic bile duct carcinoma",
+        "cholangiocarcinoma hepatectomy",
+        "small duct cholangiocarcinoma",
+        "large duct cholangiocarcinoma",
+        "ICC"
+      ],
+      "match": {
+        "site": [
+          "liver",
+          "intrahepatic bile duct",
+          "intrahepatic bile ducts",
+          "intrahepatic cholangiocarcinoma"
+        ],
+        "procedure": [
+          "hepatectomy",
+          "partial hepatectomy",
+          "right hepatectomy",
+          "left hepatectomy",
+          "segmentectomy"
+        ],
+        "clinical": [
+          "intrahepatic cholangiocarcinoma",
+          "iCCA",
+          "cholangiocarcinoma",
+          "intrahepatic bile duct carcinoma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|core|fna|hepatocellular|HCC|hepatoblastoma|explant|metasta(?:sis|tic)|colorectal|perihilar|hilar|Klatskin|distal|frozen|FS)\\b)[\\s\\S]*(?:\\bintrahepatic\\s+(?:cholangiocarcinoma|bile\\s+duct)\\b|\\biCCA\\b|(?:\\bhepatectomy\\b|\\bliver\\s+resection\\b)[\\s\\S]*\\bcholangiocarcinoma\\b)",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "core",
+          "fna",
+          "hepatocellular",
+          "HCC",
+          "hepatoblastoma",
+          "explant",
+          "perihilar",
+          "Klatskin",
+          "frozen",
+          "FS"
+        ],
+        "bias": 5,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bwedge\\b",
+                "Wedge resection"
+              ],
+              [
+                "\\btotal\\s+hepatectomy\\b",
+                "Total hepatectomy"
+              ],
+              [
+                "\\bhepatectomy\\b|\\bsegmentectomy\\b|\\blobectomy\\b",
+                "Partial hepatectomy"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "intrahepatic_cholangiocarcinoma",
+      "generatorPath": "generators/intrahepatic_cholangiocarcinoma.js",
+      "schemaPath": "schemas/intrahepatic_cholangiocarcinoma.json"
+    },
+    {
+      "id": "pancreas_net",
+      "name": "Pancreatic neuroendocrine tumour resection",
+      "shortName": "Pancreas · neuroendocrine tumour (PanNET)",
+      "label": "Pancreas NET",
+      "organ": "PANCREAS",
+      "system": "Hepatobiliary",
+      "kind": "cancer resection",
+      "rank": 87,
+      "aliases": [
+        "PanNET",
+        "pNET",
+        "pancreatic neuroendocrine tumour",
+        "pancreatic neuroendocrine tumor",
+        "islet cell tumour",
+        "insulinoma",
+        "gastrinoma",
+        "glucagonoma",
+        "VIPoma",
+        "somatostatinoma",
+        "PNT"
+      ],
+      "match": {
+        "site": [
+          "pancreas",
+          "pancreatic",
+          "pancreatic neuroendocrine"
+        ],
+        "procedure": [
+          "distal pancreatectomy",
+          "pancreaticoduodenectomy",
+          "enucleation",
+          "segmental pancreatectomy",
+          "total pancreatectomy"
+        ],
+        "clinical": [
+          "pancreatic neuroendocrine tumour",
+          "pancreatic neuroendocrine tumor",
+          "PanNET",
+          "pNET",
+          "insulinoma",
+          "gastrinoma",
+          "glucagonoma",
+          "somatostatinoma",
+          "VIPoma",
+          "islet cell tumour"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|eus|cytology|ductal\\s+adenocarcinoma|PDAC|IPMN|MCN|serous\\s+cystadenoma|frozen|FS)\\b)[\\s\\S]*(?:\\b(?:PanNET|pNET|insulinoma|gastrinoma|glucagonoma|somatostatinoma|VIPoma|islet\\s+cell)\\b|(?:\\bpancrea(?:s|tic|tectomy|ticoduodenectomy)\\b)[\\s\\S]*\\b(?:neuroendocrine|NET)\\b)",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "eus",
+          "cytology",
+          "ductal adenocarcinoma",
+          "PDAC",
+          "IPMN",
+          "MCN",
+          "frozen",
+          "FS"
+        ],
+        "bias": 4,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\benucleation\\b",
+                "Excisional biopsy (enucleation)"
+              ],
+              [
+                "\\bWhipple\\b|\\bpancreaticoduodenectomy\\b",
+                "Pancreaticoduodenectomy (Whipple resection)"
+              ],
+              [
+                "\\bdistal\\s+pancreatectomy\\b",
+                "Distal pancreatectomy (pancreatic body/tail)"
+              ],
+              [
+                "\\bsegmental\\s+pancreatectomy\\b",
+                "Segmental pancreatectomy (pancreatic body)"
+              ],
+              [
+                "\\btotal\\s+pancreatectomy\\b",
+                "Total pancreatectomy"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "pancreas_net",
+      "generatorPath": "generators/pancreas_net.js",
+      "schemaPath": "schemas/pancreas_net.json"
+    },
+    {
+      "id": "hepatoblastoma",
+      "name": "Hepatoblastoma (paediatric) resection",
+      "shortName": "Liver · hepatoblastoma (paediatric)",
+      "label": "Hepatoblastoma",
+      "organ": "LIVER",
+      "system": "Hepatobiliary",
+      "kind": "cancer resection",
+      "rank": 88,
+      "aliases": [
+        "hepatoblastoma",
+        "paediatric liver tumour",
+        "pediatric liver tumor",
+        "fetal hepatoblastoma",
+        "embryonal hepatoblastoma",
+        "mixed epithelial mesenchymal hepatoblastoma",
+        "HBL"
+      ],
+      "match": {
+        "site": [
+          "liver",
+          "hepatic",
+          "hepatoblastoma"
+        ],
+        "procedure": [
+          "right lobectomy",
+          "extended right lobectomy",
+          "left lateral segmentectomy",
+          "medial segmentectomy",
+          "total left lobectomy",
+          "hepatectomy",
+          "explanted liver"
+        ],
+        "clinical": [
+          "hepatoblastoma",
+          "paediatric liver mass",
+          "pediatric liver mass"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|core|fna|frozen|FS)\\b)[\\s\\S]*\\bhepatoblastoma\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "core",
+          "fna",
+          "frozen",
+          "FS"
+        ],
+        "bias": 4,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bextended\\s+right\\s+lobectomy\\b|\\btrisectionectomy\\b",
+                "Extended right lobectomy"
+              ],
+              [
+                "\\bright\\s+lobectomy\\b|\\bright\\s+hepatectomy\\b",
+                "Right lobectomy"
+              ],
+              [
+                "\\bleft\\s+lateral\\s+segmentectomy\\b",
+                "Left lateral segmentectomy"
+              ],
+              [
+                "\\btotal\\s+left\\s+lobectomy\\b|\\bleft\\s+hepatectomy\\b",
+                "Total left lobectomy"
+              ],
+              [
+                "\\bexplant",
+                "Explanted liver"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "hepatoblastoma",
+      "generatorPath": "generators/hepatoblastoma.js",
+      "schemaPath": "schemas/hepatoblastoma.json"
     },
     {
       "id": "generic",

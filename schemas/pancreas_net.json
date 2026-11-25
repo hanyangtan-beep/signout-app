@@ -1,0 +1,703 @@
+{
+ "id": "pancreas_net",
+ "version": "2026.11",
+ "name": "Pancreatic neuroendocrine tumour resection",
+ "shortName": "Pancreas \u00b7 neuroendocrine tumour (PanNET)",
+ "label": "Pancreas NET",
+ "organ": "PANCREAS",
+ "system": "Hepatobiliary",
+ "kind": "cancer resection",
+ "rank": 87,
+ "aliases": [
+  "PanNET",
+  "pNET",
+  "pancreatic neuroendocrine tumour",
+  "pancreatic neuroendocrine tumor",
+  "islet cell tumour",
+  "insulinoma",
+  "gastrinoma",
+  "glucagonoma",
+  "VIPoma",
+  "somatostatinoma",
+  "PNT"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "pancreas_net",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 9th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Endocrine-Pancreas-NET (CAP Pancreas Endocrine 5.0.1.0, June 2024; WHO 5th edition; AJCC 9th edition)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Endocrine-Pancreas-NET.html",
+  "savedPage": "docs/reference/Endocrine-Pancreas-NET.html",
+  "staging": "pTNM derived by src/staging/pancreas_net.js on AJCC 9th edition."
+ },
+ "match": {
+  "site": [
+   "pancreas",
+   "pancreatic",
+   "pancreatic neuroendocrine"
+  ],
+  "procedure": [
+   "distal pancreatectomy",
+   "pancreaticoduodenectomy",
+   "enucleation",
+   "segmental pancreatectomy",
+   "total pancreatectomy"
+  ],
+  "clinical": [
+   "pancreatic neuroendocrine tumour",
+   "pancreatic neuroendocrine tumor",
+   "PanNET",
+   "pNET",
+   "insulinoma",
+   "gastrinoma",
+   "glucagonoma",
+   "somatostatinoma",
+   "VIPoma",
+   "islet cell tumour"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|eus|cytology|ductal\\s+adenocarcinoma|PDAC|IPMN|MCN|serous\\s+cystadenoma|frozen|FS)\\b)[\\s\\S]*(?:\\b(?:PanNET|pNET|insulinoma|gastrinoma|glucagonoma|somatostatinoma|VIPoma|islet\\s+cell)\\b|(?:\\bpancrea(?:s|tic|tectomy|ticoduodenectomy)\\b)[\\s\\S]*\\b(?:neuroendocrine|NET)\\b)",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "eus",
+   "cytology",
+   "ductal adenocarcinoma",
+   "PDAC",
+   "IPMN",
+   "MCN",
+   "frozen",
+   "FS"
+  ],
+  "bias": 4,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\benucleation\\b",
+      "Excisional biopsy (enucleation)"
+     ],
+     [
+      "\\bWhipple\\b|\\bpancreaticoduodenectomy\\b",
+      "Pancreaticoduodenectomy (Whipple resection)"
+     ],
+     [
+      "\\bdistal\\s+pancreatectomy\\b",
+      "Distal pancreatectomy (pancreatic body/tail)"
+     ],
+     [
+      "\\bsegmental\\s+pancreatectomy\\b",
+      "Segmental pancreatectomy (pancreatic body)"
+     ],
+     [
+      "\\btotal\\s+pancreatectomy\\b",
+      "Total pancreatectomy"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Distal pancreatectomy (pancreatic body/tail)",
+   "options": [
+    "Excisional biopsy (enucleation)",
+    "Pancreaticoduodenectomy (Whipple resection)",
+    "Distal pancreatectomy (pancreatic body/tail)",
+    "Segmental pancreatectomy (pancreatic body)",
+    "Total pancreatectomy",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour site",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Pancreatic tail",
+   "options": [
+    "Pancreatic head",
+    "Uncinate process",
+    "Pancreatic body",
+    "Pancreatic tail",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Unifocal",
+   "options": [
+    "Unifocal",
+    "Multifocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "Histologic type and WHO 5th grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "G1: Well-differentiated neuroendocrine tumour",
+   "options": [
+    "G1: Well-differentiated neuroendocrine tumour",
+    "G2: Well-differentiated neuroendocrine tumour",
+    "G3: Well-differentiated neuroendocrine tumour",
+    "GX: Grade cannot be assessed",
+    "Not applicable"
+   ],
+   "reference": {
+    "title": "WHO 5th grading of pancreatic neuroendocrine tumours (PanNET G1\u2013G3 vs PanNEC)",
+    "intro": "Assign the higher grade whenever mitotic rate and Ki-67 labelling index fall into different tiers. Count mitoses in 10 mm2 (42 HPF with 22 mm eyepiece / x40 objective) and divide by 5 for mitoses per 2 mm2; count >= 500 tumour cells in the Ki-67 hot spot.",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "WHO 5th Grade Cutoffs (PanNET)",
+      "points": [
+       "G1: < 2 mitoses / 2 mm2 AND Ki-67 < 3%.",
+       "G2: 2\u201320 mitoses / 2 mm2 OR Ki-67 3\u201320%.",
+       "G3: > 20 mitoses / 2 mm2 OR Ki-67 > 20% (retains well-differentiated organoid architecture, uniform chromatin, DAXX/ATRX loss, preserved Rb and wild-type p53)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Pancreatic Neuroendocrine Tumour",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "PanNET G3 vs poorly differentiated PanNEC",
+      "points": [
+       "PanNEC (small cell or large cell) shows marked pleomorphism, diffuse sheets, geographic necrosis, Ki-67 typically > 55%, abnormal p53, Rb loss, and retained DAXX/ATRX \u2014 report PanNEC using the exocrine pancreas carcinoma protocol rather than the PanNET protocol."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Pancreatic Neuroendocrine Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "mitoticCount",
+   "label": "Mitotic rate (per 2 mm2)",
+   "group": "Histology & Grade",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "ki67Pct",
+   "label": "Ki-67 labelling index (%)",
+   "group": "Histology & Grade",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "functionalType",
+   "label": "Functional type",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Pancreatic neuroendocrine tumour, non-functional",
+   "options": [
+    "Pancreatic neuroendocrine tumour, non-functional",
+    "Pancreatic neuroendocrine tumour, functional, insulin-producing (insulinoma)",
+    "Pancreatic neuroendocrine tumour, functional, gastrin-producing (gastrinoma)",
+    "Pancreatic neuroendocrine tumour, functional, glucagon-producing (glucagonoma)",
+    "Pancreatic neuroendocrine tumour, functional, somatostatin-producing (somatostatinoma)",
+    "Pancreatic neuroendocrine tumour, functional, VIP-producing (VIPoma)",
+    "Pancreatic neuroendocrine tumour, functional, serotonin-producing",
+    "Pancreatic neuroendocrine tumour, functional status unknown"
+   ],
+   "reference": {
+    "title": "Functional vs non-functional PanNET & hereditary syndromes",
+    "intro": "Functional classification is a clinical diagnosis (hormone hypersecretion syndrome) \u2014 hormone IHC positivity alone without a clinical syndrome does NOT make a PanNET functional.",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Clinical syndromes & MEN1 / VHL clues",
+      "points": [
+       "Multifocal PanNETs or background microadenomatosis (< 5 mm microadenomas) strongly suggest MEN1, VHL, NF1, or TSC.",
+       "Clear-cell lipid-rich PanNET is associated with VHL; psammomatous somatostatinoma in the periampullary duodenum is associated with NF1."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Pancreatic Neuroendocrine Tumour Syndromes",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "necrosis",
+   "label": "Tumour necrosis",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extension (AJCC 9th pT)",
+   "group": "Extension & Margins",
+   "type": "multiselect",
+   "default": [
+    "Limited to the pancreas"
+   ],
+   "options": [
+    "Limited to the pancreas",
+    "Common bile duct",
+    "Ampulla of Vater",
+    "Duodenum",
+    "Stomach",
+    "Spleen",
+    "Colon",
+    "Adrenal gland",
+    "Wall of large vessels (coeliac axis, SMA, SMV, portal, splenic or gastroduodenal)",
+    "Other adjacent organ(s) (specify)",
+    "Cannot be assessed"
+   ],
+   "reference": {
+    "title": "AJCC 9th staging of pancreatic neuroendocrine tumours (pT1\u2013pT4, pM1a\u2013c)",
+    "intro": "Unlike exocrine PDAC, peripancreatic soft tissue extension alone does NOT upstage a PanNET to pT3 \u2014 size cutoffs (<2 cm, 2\u20134 cm, >4 cm) govern pT1\u2013pT3 unless duodenum, ampulla, CBD (pT3), adjacent organs, or large vessel walls (pT4) are invaded.",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Key AJCC 9th pT and pM rules",
+      "points": [
+       "pT1: < 2 cm, limited to pancreas; pT2: 2\u20134 cm, limited to pancreas; pT3: > 4 cm OR invades duodenum / ampulla / common bile duct; pT4: invades stomach, spleen, colon, adrenal gland, or wall of large vessels.",
+       "pM1a: liver only; pM1b: extrahepatic site(s) only; pM1c: both hepatic and extrahepatic sites."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Staging of Pancreatic Neuroendocrine Tumours",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "All margins uninvolved by tumour",
+   "options": [
+    "All margins uninvolved by tumour",
+    "Involved by tumour",
+    "Cannot be assessed"
+   ],
+   "reference": {
+    "title": "PanNET resection margins by procedure",
+    "intro": "Report the procedure-specific pancreatic parenchymal, bile duct, uncinate/SMA, and enteric margins (CAP 5.0.1.0).",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Procedure-specific margins",
+      "points": [
+       "Distal pancreatectomy: proximal pancreatic parenchymal margin and posterior/anterior retroperitoneal soft tissue surfaces.",
+       "Pancreaticoduodenectomy (Whipple): pancreatic neck, bile duct, uncinate (SMA/retroperitoneal), and proximal/distal GI margins.",
+       "Enucleation: inked circumferential pancreatic parenchymal rim."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Pancreas Specimen Handling",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "involvedMarginDetail",
+   "label": "Involved margin(s) detail",
+   "group": "Extension & Margins",
+   "type": "text",
+   "showIf": {
+    "field": "marginStatus",
+    "is": "Involved by tumour"
+   },
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeSites",
+   "label": "Lymph node station(s)",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Largest nodal deposit (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (AJCC 9th pM1a/b/c)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Liver",
+    "Non-regional lymph node(s)",
+    "Lung",
+    "Bone",
+    "Peritoneum",
+    "Ovary",
+    "Other extrahepatic site (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify extrahepatic site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "noPrimary",
+   "label": "No residual primary tumour (pT0)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional & Molecular",
+   "type": "multiselect",
+   "options": [
+    "Atrophy",
+    "Chronic inflammation",
+    "Acute pancreatitis",
+    "Adenomatosis (multiple neuroendocrine microadenomas < 5 mm)"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalOther",
+   "label": "Other additional findings",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "daxxAtrx",
+   "label": "DAXX / ATRX IHC",
+   "group": "Additional & Molecular",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Retained (DAXX and ATRX intact)",
+    "Loss of DAXX expression",
+    "Loss of ATRX expression",
+    "Pending"
+   ]
+  },
+  {
+   "id": "sstr2",
+   "label": "SSTR2A IHC",
+   "group": "Additional & Molecular",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Positive (diffuse membranous)",
+    "Focal / weak positive",
+    "Negative",
+    "Pending"
+   ]
+  },
+  {
+   "id": "molecularNotes",
+   "label": "Other molecular studies",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01730",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Distal pancreatectomy (pancreatic body/tail)",
+     "site": "Pancreatic tail",
+     "focality": "Unifocal",
+     "specimenDims": "9.5 x 4.5 x 3.0",
+     "sizeMm": "26",
+     "blocks": "10",
+     "blockKeyText": "A1: proximal pancreatic parenchymal margin\nA2-A7: tumour with capsule and adjacent pancreas\nA8-A10: peripancreatic lymph nodes",
+     "grade": "G1: Well-differentiated neuroendocrine tumour",
+     "mitoticCount": "1",
+     "ki67Pct": "2",
+     "functionalType": "Pancreatic neuroendocrine tumour, non-functional",
+     "necrosis": "Not identified",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "ihcText": "Synaptophysin, chromogranin A and INSM1 diffuse strongly positive; Ki-67 labelling index 2%",
+     "extension": [
+      "Limited to the pancreas"
+     ],
+     "marginStatus": "All margins uninvolved by tumour",
+     "closestMarginMm": "6",
+     "closestMarginSite": "proximal pancreatic parenchymal margin",
+     "nodesExamined": "11",
+     "nodesInvolved": "0",
+     "nodeSites": "peripancreatic",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

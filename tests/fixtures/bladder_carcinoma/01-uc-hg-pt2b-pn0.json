@@ -1,0 +1,58 @@
+{
+  "description": "radical cystoprostatectomy for 42 mm high-grade conventional invasive urothelial carcinoma invading deep muscularis propria with focal CIS, margins clear, 18 negative pelvic nodes, pT2b pN0 (example)",
+  "templateId": "bladder_carcinoma",
+  "options": {
+    "includeHeader": false,
+    "macro": true,
+    "printPTNM": true,
+    "printNodesMets": false
+  },
+  "values": [
+    {
+      "procedure": "Radical cystoprostatectomy",
+      "specimenDims": "12.5 x 9.5 x 7.0",
+      "site": [
+        "Right lateral wall",
+        "Posterior wall"
+      ],
+      "sizeMm": "42",
+      "configuration": "Ulcerated",
+      "adjacentOrgansGross": "prostate and seminal vesicles grossly unremarkable",
+      "blocks": "18",
+      "histType": "Urothelial carcinoma, conventional (invasive)",
+      "grade": "High-grade",
+      "cisStatus": "Present, focal",
+      "lvi": "Not identified",
+      "pni": "Not assessed",
+      "ihcText": "",
+      "extension": "Deep muscularis propria, outer half (pT2b)",
+      "prostateInvasion": "Not identified",
+      "marginStatus": "All margins uninvolved by invasive carcinoma and CIS",
+      "rightUreterMargin": "Uninvolved by invasive carcinoma and CIS",
+      "leftUreterMargin": "Uninvolved by invasive carcinoma and CIS",
+      "urethralMargin": "Uninvolved by invasive carcinoma and CIS",
+      "softTissueMargin": "Uninvolved by invasive carcinoma",
+      "closestMarginMm": "8",
+      "closestMarginSite": "right posterolateral perivesical soft tissue",
+      "nodesExamined": "18",
+      "nodesInvolved": "0",
+      "commonIliacInvolved": "0",
+      "nodeSites": "bilateral pelvic (obturator and external iliac)",
+      "distantMets": [
+        "Not applicable"
+      ],
+      "additionalFindings": [
+        "Cystitis cystica et glandularis"
+      ],
+      "blockKeyText": "A1-A2: right and left ureteral margins\nA3: urethral margin\nA4-A11: bladder tumour full thickness with perivesical fat\nA12-A14: representative bladder mucosa\nA15-A16: prostate and seminal vesicles\nA17-A18: bilateral pelvic lymph nodes"
+    }
+  ],
+  "report": "Urinary bladder, prostate and seminal vesicles, radical cystoprostatectomy\n\nReceived in formalin is a radical cystoprostatectomy specimen measuring 12.5 x 9.5 x 7.0 cm. Opening the bladder reveals a 42 mm ulcerated tumour involving the right lateral wall and posterior wall. Attached organs: prostate and seminal vesicles grossly unremarkable. Sections are submitted in 18 blocks.\n\n(A1-A2) right and left ureteral margins.\n(A3) urethral margin.\n(A4-A11) bladder tumour full thickness with perivesical fat.\n(A12-A14) representative bladder mucosa.\n(A15-A16) prostate and seminal vesicles.\n(A17-A18) bilateral pelvic lymph nodes.\n\nSpecimen and tumour\n- Procedure: Radical cystoprostatectomy\n- Tumour site: Right lateral wall and posterior wall\n- Tumour size (greatest dimension): 42 mm\n- Tumour configuration: Ulcerated\n\nMicroscopic findings\n- Histologic type: Urothelial carcinoma, conventional (invasive)\n- Histologic grade: High-grade\n- Associated urothelial carcinoma in situ (UCIS): Present, focal\n- Tumour extension (depth of invasion): Deep muscularis propria, outer half\n  (pT2b)\n- Prostatic involvement (if cystoprostatectomy): Not identified\n- Lymphovascular invasion: Not identified\n- Tumour histology:\n  Sections of the urinary bladder show urothelial carcinoma, conventional (invasive), high-grade. Irregular nests and sheets of pleomorphic urothelial cells with eosinophilic cytoplasm and frequent mitoses infiltrate through the lamina propria into the bladder wall.\n\nMargins\n- Surgical margins: All margins uninvolved by invasive carcinoma and CIS\n  - Right ureteral margin: Uninvolved by invasive carcinoma and CIS\n  - Left ureteral margin: Uninvolved by invasive carcinoma and CIS\n  - Urethral margin: Uninvolved by invasive carcinoma and CIS\n  - Perivesical soft tissue margin: Uninvolved by invasive carcinoma\n- Distance to closest margin: 8 mm (right posterolateral perivesical soft\n  tissue)\n\nLymph nodes\n- Regional lymph nodes: 0 of 18 involved (bilateral pelvic (obturator and\n  external iliac))\n\nPathological stage (AJCC 8th edition)\n- pTNM: pT2b pN0\n\nAdditional findings\n- Additional pathologic findings: Cystitis cystica et glandularis\n\nURINARY BLADDER, prostate and seminal vesicles, radical cystoprostatectomy:\n- UROTHELIAL CARCINOMA, high-grade, 42 mm\n- Tumour invades deep muscularis propria, outer half\n- Associated urothelial carcinoma in situ (present, focal)\n- Surgical margins clear of invasive carcinoma and CIS\n- 0 of 18 regional lymph nodes involved\n- pT2b pN0 (AJCC 8th edition).",
+  "checks": [
+    {
+      "level": "info",
+      "message": "Stage group, AJCC 8th edition (reference, not reported): Stage II (assuming cM0).",
+      "part": "A"
+    }
+  ]
+}
