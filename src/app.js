@@ -2664,8 +2664,8 @@ function lockApp() {
   location.reload();
 }
 
-const CANONICAL = 'https://han-signout.pplx.app/';
-const AUTH_ORIGINS = ['https://han-signout.pplx.app', 'http://localhost:3000', 'http://127.0.0.1:3000'];
+const CANONICAL = 'https://hanyangtan-beep.github.io/signout-app/';
+const AUTH_ORIGINS = ['https://hanyangtan-beep.github.io', 'https://han-signout.pplx.app', 'http://localhost:3000', 'http://127.0.0.1:3000'];
 
 async function ensureSignedIn(interactive = true, action = 'signin') {
   if (interactive && !AUTH_ORIGINS.includes(location.origin)) {
