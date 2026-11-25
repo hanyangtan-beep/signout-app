@@ -245,3 +245,68 @@ for (const [name, description, values] of CASES) {
     assert.doesNotMatch(r.report, /undefined|\[object|NaN/);
   });
 }
+
+// ---------- reference galleries ----------
+
+const GALLERIES = {
+  histType: ['Thyroid carcinoma types (WHO 5th edition)', 10, 13],
+  capsule: ['Capsular invasion and post-FNA mimickers', 3, 2],
+  angioinvasion: ['Angioinvasion vs lymphatic invasion (CAP 4.4.0.0)', 3, 1],
+  mitoticCount: ['High-grade features: DHGTC, PDTC and IMTCGS', 3, 4],
+  ete: ['Extrathyroidal extension (AJCC 8th edition)', 4, 0],
+  ene: ['Regional lymph node compartments and extranodal extension (AJCC 8th edition)', 3, 1]
+};
+
+const jpegSize = (buf) => {
+  for (let i = 2; i < buf.length - 8;) {
+    if (buf[i] !== 0xff) { i++; continue; }
+    const m = buf[i + 1];
+    if (m >= 0xc0 && m <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(m)) return { h: buf.readUInt16BE(i + 5), w: buf.readUInt16BE(i + 7) };
+    i += 2 + buf.readUInt16BE(i + 2);
+  }
+  return null;
+};
+
+test('thyroid_carcinoma galleries: six panels on select fields with open-licence thyroid photos and ExpertPath links', () => {
+  const root = path.join(here, '..');
+  const used = new Set();
+  for (const [id, [title, groups, photos]] of Object.entries(GALLERIES)) {
+    const f = t.schema.fields.find((x) => x.id === id);
+    assert.ok(f && (f.type === 'select' || f.type === 'multiselect'), `${id} is a select/multiselect field so the gallery button renders`);
+    const ref = f.reference;
+    assert.ok(ref, `${id} has a reference panel`);
+    assert.equal(ref.title, title, `${id} panel title`);
+    assert.equal(ref.groups.length, groups, `${id} group count`);
+    const images = ref.groups.flatMap((g) => g.images || []);
+    assert.equal(images.length, photos, `${id} photo count`);
+    for (const g of ref.groups) {
+      assert.ok(g.points?.length, `${id}: ${g.heading} has points`);
+      for (const l of g.links || []) {
+        assert.ok(l.label.startsWith('ExpertPath: ') && l.url.startsWith('https://app.expertpath.com/'), `${id}: ${l.label}`);
+      }
+    }
+    if (ref.groups.some((g) => g.links?.length)) {
+      assert.match(ref.note, /own ExpertPath login/, `${id} notes ExpertPath login requirement`);
+    }
+    for (const im of images) {
+      used.add(im.src);
+      assert.ok(im.src.startsWith('assets/reference/thyroid_carcinoma/'), `${im.src} folder`);
+      assert.match(im.license, /^CC(0| BY| BY-SA)/, `${im.src} open licence`);
+      assert.doesNotMatch(im.license, /\b(NC|ND)\b/, `${im.src} no NC/ND`);
+      assert.match(im.url, /^https:\/\//, `${im.src} https source URL`);
+      const buf = fs.readFileSync(path.join(root, im.src));
+      const size = jpegSize(buf);
+      assert.ok(buf.length <= 150 * 1024 && size && size.w <= 900 && size.h <= 900, `${im.src} is JPEG <= 900 px and <= 150 kB`);
+    }
+  }
+  const folder = fs.readdirSync(path.join(root, 'assets/reference/thyroid_carcinoma')).map((n) => `assets/reference/thyroid_carcinoma/${n}`);
+  assert.deepEqual(folder.filter((s) => !used.has(s)), [], 'every file in assets/reference/thyroid_carcinoma is used');
+  assert.equal(folder.length, 19, '19 unique thyroid carcinoma reference photographs');
+  const r = run(one(EXAMPLE, OPTIONS));
+  for (const id of Object.keys(GALLERIES)) {
+    const ref = t.schema.fields.find((x) => x.id === id).reference;
+    for (const txt of [ref.intro, ...ref.groups.flatMap((g) => [...g.points, ...(g.images || []).map((im) => im.caption)])]) {
+      assert.ok(!r.report.includes(txt), `"${txt.slice(0, 60)}" reached the printed report`);
+    }
+  }
+});

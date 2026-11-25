@@ -366,7 +366,60 @@
     "Intact",
     "Focally disrupted",
     "Grossly breached by tumour"
-   ]
+   ],
+   "reference": {
+    "title": "Capsular invasion and post-FNA mimickers",
+    "intro": "Distinguishing true trans-capsular invasion from post-FNA artefact determines whether an encapsulated follicular-patterned tumour is benign/low-risk (adenoma, NIFTP), uncertain (FT-UMP/WDT-UMP), or invasive carcinoma.",
+    "groups": [
+     {
+      "heading": "Unequivocal capsular invasion",
+      "points": [
+       "Requires complete, full-thickness penetration of the fibrous tumour capsule by tumour cells (\"mushrooming\" protrusion) or a separate tumour nest completely outside the outer edge of the capsule.",
+       "Minimally invasive FTC/IEFVPTC/oncocytic carcinoma: capsular invasion only, with no angioinvasion.",
+       "Widely invasive: extensive infiltration of the capsule and surrounding thyroid parenchyma, often grossly apparent."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/capsular_invasion.jpg",
+        "caption": "Unequivocal capsular invasion: full-thickness trans-capsular \"mushrooming\" protrusion (A, B) and separate satellite tumour nests beyond the fibrous capsule (C, D) (H&E).",
+        "credit": "Dioufa et al., Virchows Archiv 2025 (PMC12876452), Fig 1",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12876452/"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Follicular Thyroid Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Mimickers of capsular invasion (post-FNA change)",
+      "points": [
+       "Prior fine-needle aspiration produces a linear needle tract through the capsule with fresh haemorrhage, haemosiderin-laden macrophages, granulation tissue, fibrosis and mechanically displaced follicles.",
+       "Do not diagnose capsular invasion solely at a site showing FNA-tract reaction; examine the remainder of the capsule thoroughly."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/capsular_mimic_fna.jpg",
+        "caption": "Mimickers of capsular invasion: reactive fibrosis, haemorrhage, haemosiderin-laden macrophages and displaced follicles along a prior fine-needle aspiration tract (H&E).",
+        "credit": "Dioufa et al., Virchows Archiv 2025 (PMC12876452), Fig 2",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12876452/"
+       }
+      ]
+     },
+     {
+      "heading": "Tumours of uncertain malignant potential (FT-UMP / WDT-UMP)",
+      "points": [
+       "Reserved for encapsulated follicular-patterned tumours with questionable (incomplete or ambiguous) capsular or vascular invasion after thorough sampling and deeper levels.",
+       "FT-UMP lacks papillary-like nuclear features; WDT-UMP has well- or partially developed papillary-like nuclear features. Neither is staged as carcinoma."
+      ]
+     }
+    ],
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
   },
   {
    "id": "lesionAppearance",
@@ -482,7 +535,262 @@
     "Other histologic type not listed (specify)",
     "Malignant thyroid neoplasm, type cannot be determined"
    ],
-   "help": "WHO 5th edition (2022) / CAP Thyroid 4.4.0.0. Subcentimetre papillary carcinomas are subtyped like larger tumours. Squamous cell carcinoma of the thyroid is classified under anaplastic thyroid carcinoma."
+   "help": "WHO 5th edition (2022) / CAP Thyroid 4.4.0.0. Subcentimetre papillary carcinomas are subtyped like larger tumours. Squamous cell carcinoma of the thyroid is classified under anaplastic thyroid carcinoma.",
+   "reference": {
+    "title": "Thyroid carcinoma types (WHO 5th edition)",
+    "intro": "WHO 5th edition (2022) separates invasive encapsulated follicular variant PTC (IEFVPTC) from classic/infiltrative PTC, introduces differentiated high-grade thyroid carcinoma (DHGTC), and classifies pure squamous cell carcinoma of the thyroid under anaplastic thyroid carcinoma.",
+    "noteTop": "Subcentimetre papillary carcinomas are subtyped by the same criteria as larger tumours; \"papillary microcarcinoma\" is no longer a separate WHO subtype.",
+    "groups": [
+     {
+      "heading": "Papillary carcinoma, classic subtype",
+      "points": [
+       "Well-formed papillae with fibrovascular cores lined by cells with enlarged, elongated, overlapping, optically clear nuclei, longitudinal grooves and intranuclear pseudoinclusions.",
+       "Psammoma bodies and stromal fibrosis are frequent; BRAF V600E is the predominant driver."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/ptc_classic.jpg",
+        "caption": "Classic papillary thyroid carcinoma: enlarged, overlapping, optically clear (\"Orphan Annie eye\") nuclei with longitudinal nuclear grooves and intranuclear pseudoinclusions (H&E).",
+        "credit": "Librepath",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Papillary_thyroid_carcinoma_-_pi_--_high_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Papillary Thyroid Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Aggressive papillary carcinoma subtypes (tall cell, hobnail, columnar cell)",
+      "points": [
+       "Tall cell subtype (WHO 5th): >= 30% of tumour cells with height >= 3x width, abundant eosinophilic cytoplasm, distinct cell borders and \"tram-track\" elongated follicles.",
+       "Hobnail subtype: >= 30% of cells with apically placed nuclei bulging into the lumen (loss of polarity) and micropapillary architecture.",
+       "Columnar cell subtype: prominent nuclear pseudostratification and supranuclear/subnuclear cytoplasmic vacuoles."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/ptc_tall_cell.jpg",
+        "caption": "Papillary carcinoma, tall cell subtype: elongated \"tram-track\" follicles and papillae lined by eosinophilic cells at least three times as tall as wide (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Papillary_thyroid_carcinoma_tall_cell_var_intermed_mag.jpg"
+       },
+       {
+        "src": "assets/reference/thyroid_carcinoma/ptc_tall_hobnail.jpg",
+        "caption": "Tall cell and hobnail subtypes of papillary thyroid carcinoma: elongated eosinophilic tall cells contrasted with micropapillae showing apically placed, bulging hobnail nuclei (H&E).",
+        "credit": "Cameselle-Teijeiro, Eloy & Sobrinho-Simões (Endocr Pathol 2020)",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_tall_cell_and_hobnail_variants_of_papillary_thyroid_carcinoma.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Papillary Thyroid Carcinoma, Tall Cell Variant",
+        "url": "https://app.expertpath.com/"
+       },
+       {
+        "label": "ExpertPath: Papillary Thyroid Carcinoma, Hobnail Variant",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Papillary carcinoma, oncocytic classic subtype",
+      "points": [
+       "Papillary architecture lined by oncocytic cells with abundant granular eosinophilic cytoplasm and diagnostic papillary nuclear features.",
+       "Distinguish from oncocytic (Hürthle cell) carcinoma, which lacks papillary nuclear features and is follicular-patterned."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/ptc_oncocytic.jpg",
+        "caption": "Papillary carcinoma, oncocytic subtype: papillae lined by tumour cells with abundant granular eosinophilic cytoplasm and classic papillary nuclear features (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Papillary_thyroid_carcinoma_oncocytic_variant_--_high_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Papillary Thyroid Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Invasive encapsulated follicular variant papillary thyroid carcinoma (IEFVPTC)",
+      "points": [
+       "Recognised as a separate entity from classic PTC in WHO 5th edition because it shares RAS-like biology and metastatic behaviour with follicular carcinoma.",
+       "Encapsulated follicular-patterned tumour with papillary-like nuclear features AND unequivocal capsular or vascular invasion.",
+       "Subdivided into minimally invasive (capsular invasion only), encapsulated angioinvasive, and widely invasive."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/iefvptc.jpg",
+        "caption": "Minimally invasive encapsulated follicular variant of papillary thyroid carcinoma (IEFVPTC): follicular-patterned encapsulated tumour with unequivocal capsular invasion and papillary-like nuclear features (H&E).",
+        "credit": "Dioufa et al., Virchows Archiv 2025 (PMC12876452), Fig 9",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12876452/"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Papillary Thyroid Carcinoma, Follicular Variant",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Follicular thyroid carcinoma",
+      "points": [
+       "Follicular-patterned encapsulated or invasive neoplasm WITHOUT papillary-like nuclear features and WITH unequivocal capsular and/or vascular invasion.",
+       "Subdivided into minimally invasive (capsular invasion only), encapsulated angioinvasive (count blood vessels: < 4 vs >= 4), and widely invasive."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/ftc_low.jpg",
+        "caption": "Follicular thyroid carcinoma: follicular-patterned tumour lacking papillary-like nuclear features and invading through its fibrous capsule (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Follicular_thyroid_carcinoma_--_low_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Follicular Thyroid Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Oncocytic carcinoma of the thyroid",
+      "points": [
+       "Replaces \"Hürthle cell carcinoma\" in WHO 5th edition: >= 75% oncocytic follicular cells with abundant granular eosinophilic cytoplasm and prominent nucleoli, lacking papillary nuclear features.",
+       "Requires capsular and/or vascular invasion; subdivided into minimally invasive, encapsulated angioinvasive, and widely invasive."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/oncocytic_ca.jpg",
+        "caption": "Oncocytic (Hürthle cell) carcinoma of the thyroid: >= 75% oncocytic follicular cells with abundant granular eosinophilic cytoplasm and prominent nucleoli, lacking papillary nuclear features (H&E).",
+        "credit": "Librepath",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Hurthle_cell_carcinoma_--_high_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Oncocytic (Hürthle Cell) Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Differentiated high-grade (DHGTC) and poorly differentiated (PDTC) thyroid carcinoma",
+      "points": [
+       "DHGTC: retains differentiated architecture/cytology (PTC, FTC or oncocytic carcinoma) with >= 5 mitoses/2 mm² and/or tumour necrosis, without anaplastic features.",
+       "PDTC (Turin criteria): solid/trabecular/insular growth, absence of conventional PTC nuclear features, and at least one of >= 3 mitoses/2 mm², tumour necrosis or convoluted nuclei."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/dhgtc_necrosis.jpg",
+        "caption": "Differentiated high-grade thyroid carcinoma (DHGTC): retained differentiated cytomorphology with trabecular/solid areas and extensive coagulative tumour necrosis (arrow) (H&E).",
+        "credit": "Cochand-Priollet et al., Current Oncology 2023 (PMC10453903), Fig 6",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10453903/"
+       },
+       {
+        "src": "assets/reference/thyroid_carcinoma/pdtc_insular.jpg",
+        "caption": "Poorly differentiated thyroid carcinoma (PDTC): solid/insular growth pattern with capsular invasion and loss of conventional papillary nuclear features (H&E).",
+        "credit": "Dioufa et al., Virchows Archiv 2025 (PMC12876452), Fig 10",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12876452/"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Poorly Differentiated Thyroid Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Anaplastic thyroid carcinoma (including squamous cell carcinoma pattern)",
+      "points": [
+       "Undifferentiated follicular cell-derived carcinoma composed of pleomorphic epithelioid, spindle, giant or squamoid cells; PAX8 is retained in ~50–70% while TTF-1 and thyroglobulin are usually lost.",
+       "WHO 5th edition classifies pure squamous cell carcinoma of the thyroid under anaplastic thyroid carcinoma (always staged as pT4 unless a minor/focal component without ETE — check BRAF V600E urgently)."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/atc_low.jpg",
+        "caption": "Anaplastic thyroid carcinoma: sheets of markedly pleomorphic, undifferentiated epithelioid and spindle cells with high mitotic activity and infiltrative growth (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Anaplastic_thyroid_carcinoma_low_mag.jpg"
+       },
+       {
+        "src": "assets/reference/thyroid_carcinoma/atc_scc.jpg",
+        "caption": "Anaplastic thyroid carcinoma, squamous cell carcinoma pattern: cohesive sheets and ribbons of malignant squamous cells; classified under ATC in WHO 5th edition (H&E).",
+        "credit": "Cochand-Priollet et al., Current Oncology 2023 (PMC10453903), Fig 8",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10453903/"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Anaplastic Thyroid Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Medullary thyroid carcinoma",
+      "points": [
+       "C-cell-derived neuroendocrine carcinoma: nests/sheets of round, plasmacytoid or spindle cells with salt-and-pepper chromatin and frequent stromal amyloid.",
+       "Positive for calcitonin, CEA, chromogranin, synaptophysin and INSM1; negative for thyroglobulin. Always grade using IMTCGS."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/mtc_high.jpg",
+        "caption": "Medullary thyroid carcinoma: nests of round to plasmacytoid neuroendocrine cells with salt-and-pepper chromatin set in eosinophilic amyloid stroma (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Medullary_thyroid_carcinoma_-_high_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Medullary Thyroid Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Non-invasive follicular thyroid neoplasm with papillary-like nuclear features (NIFTP)",
+      "points": [
+       "Low-risk follicular-patterned neoplasm (not staged by pTNM): well-demarcated/encapsulated, nuclear score 2–3, < 1% true papillae, no psammoma bodies, no capsular or vascular invasion, no tumour necrosis, and < 3 mitoses/2 mm².",
+       "Requires submission of the entire tumour-to-capsule interface to exclude invasion."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/niftp.jpg",
+        "caption": "Non-invasive follicular thyroid neoplasm with papillary-like nuclear features (NIFTP): well-demarcated follicular-patterned nodule with papillary-like nuclei and an intact capsule with no invasion (H&E).",
+        "credit": "Mikael Häggström",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_NIFTP.png"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Noninvasive Follicular Thyroid Neoplasm with Papillary-Like Nuclear Features (NIFTP)",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ],
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
   },
   {
    "id": "histTypeOther",
@@ -526,7 +834,89 @@
     "Greater than or equal to 5 mitoses per 2 mm²",
     "Cannot be determined"
    ],
-   "help": "Hot spot count per 2 mm² (using a 22 mm eyepiece at 40x objective, ~8.4 HPF = 2 mm²). >= 5 mitoses/2 mm² defines DHGTC in differentiated carcinomas and high-grade MTC."
+   "help": "Hot spot count per 2 mm² (using a 22 mm eyepiece at 40x objective, ~8.4 HPF = 2 mm²). >= 5 mitoses/2 mm² defines DHGTC in differentiated carcinomas and high-grade MTC.",
+   "reference": {
+    "title": "High-grade features: DHGTC, PDTC and IMTCGS",
+    "intro": "WHO 5th edition requires mitotic counting per 2 mm² in a hot spot (~8.4 HPF with a 22 mm eyepiece at 40x objective) plus evaluation of coagulative tumour necrosis (and Ki-67 in medullary carcinoma).",
+    "groups": [
+     {
+      "heading": "Differentiated high-grade thyroid carcinoma (DHGTC)",
+      "points": [
+       "Retains differentiated architecture/cytology of PTC, FTC or oncocytic carcinoma.",
+       "Defined by >= 5 mitoses per 2 mm² AND/OR coagulative tumour necrosis (exclude post-FNA infarction/degeneration).",
+       "No anaplastic (undifferentiated) component."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/dhgtc_necrosis.jpg",
+        "caption": "Differentiated high-grade thyroid carcinoma (DHGTC): retained differentiated cytomorphology with trabecular/solid areas and extensive coagulative tumour necrosis (arrow) (H&E).",
+        "credit": "Cochand-Priollet et al., Current Oncology 2023 (PMC10453903), Fig 6",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10453903/"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Poorly Differentiated Thyroid Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Poorly differentiated thyroid carcinoma (PDTC — Turin criteria)",
+      "points": [
+       "Solid, trabecular or insular growth pattern in a follicular cell-derived invasive carcinoma.",
+       "Absence of conventional nuclear features of papillary thyroid carcinoma.",
+       "At least ONE of: >= 3 mitoses per 2 mm², tumour necrosis, or convoluted nuclei."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/pdtc_insular.jpg",
+        "caption": "Poorly differentiated thyroid carcinoma (PDTC): solid/insular growth pattern with capsular invasion and loss of conventional papillary nuclear features (H&E).",
+        "credit": "Dioufa et al., Virchows Archiv 2025 (PMC12876452), Fig 10",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12876452/"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Poorly Differentiated Thyroid Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "High-grade medullary thyroid carcinoma (IMTCGS)",
+      "points": [
+       "International Medullary Thyroid Carcinoma Grading System (WHO 5th edition): two-tiered (low grade vs high grade).",
+       "High grade if ANY ONE of the following is present: >= 5 mitoses per 2 mm², tumour necrosis, or Ki-67 labelling index >= 5% (count >= 500 tumour cells in a hot spot)."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/mtc_mitoses.jpg",
+        "caption": "High-grade medullary thyroid carcinoma: easily identified mitotic figures (arrows) in a hot spot; >= 5 mitoses per 2 mm² defines high grade under IMTCGS (H&E).",
+        "credit": "Cochand-Priollet et al., Current Oncology 2023 (PMC10453903), Fig 10",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10453903/"
+       },
+       {
+        "src": "assets/reference/thyroid_carcinoma/mtc_high_grade.jpg",
+        "caption": "High-grade medullary thyroid carcinoma (IMTCGS): coagulative tumour necrosis (A, H&E), frequent mitotic figures (B, H&E), and elevated Ki-67 labelling index >= 5% (C, Ki-67 immunostain).",
+        "credit": "Goswami et al., Journal of Medicine and Life 2024 (PMC11080517), Fig 7",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11080517/"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Medullary Thyroid Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ],
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
   },
   {
    "id": "mitoticExact",
@@ -611,7 +1001,50 @@
     "Extensive (>= 4 vessels)",
     "Cannot be determined"
    ],
-   "help": "CAP 4.4.0.0 separates blood vessel invasion (angioinvasion) from lymphatic invasion; >= 4 vessels is extensive angioinvasion."
+   "help": "CAP 4.4.0.0 separates blood vessel invasion (angioinvasion) from lymphatic invasion; >= 4 vessels is extensive angioinvasion.",
+   "reference": {
+    "title": "Angioinvasion vs lymphatic invasion (CAP 4.4.0.0)",
+    "intro": "CAP Thyroid 4.4.0.0 and WHO 5th edition separate blood vessel invasion (angioinvasion) from lymphatic invasion because extensive angioinvasion (>= 4 vessels) independently predicts distant haematogenous metastasis.",
+    "groups": [
+     {
+      "heading": "True angioinvasion (blood vessel invasion)",
+      "points": [
+       "Tumour cells within a blood vessel located in the tumour capsule or immediately beyond it (intratumoural vessels do not count).",
+       "Must show attachment to the vessel wall, fibrin thrombus formation, or covering by endothelial cells (CD31/ERG can confirm endothelial wrapping; free-floating tumour fragments in a lumen are artefact)."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/angioinvasion.jpg",
+        "caption": "True angioinvasion: tumour thrombus attached to the wall of an intracapsular blood vessel (A, H&E), enveloped by endothelial cells (B, endothelial immunostain) and confirmed as thyroid tumour (C, immunostain).",
+        "credit": "Dioufa et al., Virchows Archiv 2025 (PMC12876452), Fig 3",
+        "license": "CC BY 4.0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12876452/"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Follicular Thyroid Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Extent of angioinvasion: focal (< 4) vs extensive (>= 4)",
+      "points": [
+       "Count separate foci of blood vessel invasion across all submitted sections of the tumour capsule and peritumoural tissue.",
+       "Focal angioinvasion: < 4 involved blood vessels. Extensive angioinvasion: >= 4 involved blood vessels (high-risk feature in ATA risk stratification)."
+      ]
+     },
+     {
+      "heading": "Lymphatic invasion (report separately)",
+      "points": [
+       "Tumour plugs and/or psammoma bodies inside thin-walled, D2-40-positive lymphatic channels without a muscular wall or fibrin thrombus.",
+       "Common in classic and diffuse sclerosing PTC; correlates with nodal spread rather than haematogenous metastasis and must NOT be counted towards the angioinvasion vessel count."
+      ]
+     }
+    ],
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
   },
   {
    "id": "lymphaticInvasion",
@@ -651,7 +1084,47 @@
     "Gross, invading prevertebral fascia or encasing the carotid artery or mediastinal vessels",
     "Cannot be determined"
    ],
-   "help": "AJCC 8th edition: microscopic extrathyroidal extension does not upstage to pT3b. Gross strap muscle invasion is pT3b; larynx/trachea/oesophagus/RLN/subcutaneous tissue is pT4a; prevertebral fascia/carotid/mediastinal vessels is pT4b."
+   "help": "AJCC 8th edition: microscopic extrathyroidal extension does not upstage to pT3b. Gross strap muscle invasion is pT3b; larynx/trachea/oesophagus/RLN/subcutaneous tissue is pT4a; prevertebral fascia/carotid/mediastinal vessels is pT4b.",
+   "reference": {
+    "title": "Extrathyroidal extension (AJCC 8th edition)",
+    "intro": "AJCC 8th edition removed microscopic extrathyroidal extension from pT3. Only gross (macroscopic/intraoperative) extrathyroidal extension upstages the primary tumour.",
+    "groups": [
+     {
+      "heading": "Microscopic extrathyroidal extension (does not upstage)",
+      "points": [
+       "Tumour extends microscopically into perithyroidal adipose tissue or skeletal muscle without gross invasion noted by the surgeon or on macroscopy.",
+       "Pitfall: the thyroid fibrous capsule is anatomically incomplete, especially at the isthmus and anteriorly, so benign adipose tissue and skeletal muscle can lie within the gland — do not overcall ETE.",
+       "Record as \"Microscopic only (perithyroidal soft tissue)\"; pT remains governed by tumour size (pT1a–pT3a)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Papillary Thyroid Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Gross strap muscle invasion only (pT3b)",
+      "points": [
+       "Gross (macroscopically or intraoperatively evident) extension into strap muscles only (sternohyoid, sternothyroid, thyrohyoid or omohyoid) from a tumour of any size.",
+       "Correlate histology with the operative note and gross examination before assigning pT3b."
+      ]
+     },
+     {
+      "heading": "Gross invasion of major neck structures (pT4a)",
+      "points": [
+       "Gross extension into subcutaneous soft tissues, larynx, trachea, oesophagus or recurrent laryngeal nerve from a tumour of any size."
+      ]
+     },
+     {
+      "heading": "Gross invasion of prevertebral fascia or great vessels (pT4b)",
+      "points": [
+       "Gross extension into prevertebral fascia or encasement of the carotid artery or mediastinal vessels from a tumour of any size."
+      ]
+     }
+    ],
+    "note": "No openly licensed thyroid extrathyroidal extension histopathology photograph was included; criteria follow AJCC 8th edition and CAP Thyroid 4.4.0.0. ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
   },
   {
    "id": "ihcOther",
@@ -816,7 +1289,50 @@
     "Not identified",
     "Present",
     "Cannot be determined"
-   ]
+   ],
+   "reference": {
+    "title": "Regional lymph node compartments and extranodal extension (AJCC 8th edition)",
+    "intro": "AJCC 8th edition assigns pN1a vs pN1b solely by anatomical compartment — not by deposit size or extranodal extension — while CAP 4.4.0.0 still requires reporting ENE and largest deposit size for ATA risk stratification.",
+    "groups": [
+     {
+      "heading": "Central compartment: level VI and level VII (pN1a)",
+      "points": [
+       "Includes pretracheal, paratracheal, prelaryngeal (Delphian), perithyroidal and superior mediastinal (level VII) lymph nodes.",
+       "Any metastatic deposit in these compartments without lateral neck involvement assigns pN1a (unilateral or bilateral)."
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thyroid_carcinoma/ln_ptc_met.jpg",
+        "caption": "Lymph node metastasis of papillary thyroid carcinoma: papillary fronds and colloid-filled follicles with optically clear nuclei replacing nodal lymphoid parenchyma (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Lymph_node_with_papillary_thyroid_carcinoma.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Papillary Thyroid Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Lateral neck (levels I–V) and retropharyngeal nodes (pN1b)",
+      "points": [
+       "Includes unilateral, bilateral or contralateral lateral cervical nodes (levels I–V) or retropharyngeal lymph nodes.",
+       "Involvement of any lateral neck or retropharyngeal node assigns pN1b regardless of central compartment status."
+      ]
+     },
+     {
+      "heading": "Extranodal extension (ENE) and deposit size",
+      "points": [
+       "ENE is defined as metastatic tumour extending through the lymph node capsule into perinodal adipose tissue or adjacent soft tissue, with or without a desmoplastic stromal reaction.",
+       "Record the greatest dimension of the largest metastatic deposit (mm) — ATA 2015 uses > 2 mm, > 5 involved nodes, and >= 30 mm (3 cm) deposits to stratify recurrence risk."
+      ]
+     }
+    ],
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images."
+   }
   },
   {
    "id": "largestDepositMm",
