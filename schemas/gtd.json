@@ -2,7 +2,7 @@
  "id": "gtd",
  "version": "2026.11",
  "name": "Gestational trophoblastic disease",
- "shortName": "Trophoblast · gestational trophoblastic disease",
+ "shortName": "Trophoblast \u00b7 gestational trophoblastic disease",
  "label": "GTD",
  "organ": "TROPHOBLAST",
  "system": "Gynae",
@@ -260,8 +260,8 @@
    ],
    "reference": {
     "title": "WHO 5th gestational trophoblastic neoplasms & IHC panel",
-    "intro": "Distinguish choriocarcinoma (trimorphic/dimorphic, hCG+, high Ki-67 > 90%) from intermediate trophoblastic tumours: PSTT (hPL+, Mel-CAM+, Ki-67 10–30%) and ETT (p63+, Cyclin E+, HLA-G+).",
-    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "intro": "Distinguish choriocarcinoma (trimorphic/dimorphic, hCG+, high Ki-67 > 90%) from intermediate trophoblastic tumours: PSTT (hPL+, Mel-CAM+, Ki-67 10\u201330%) and ETT (p63+, Cyclin E+, HLA-G+).",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
     "groups": [
      {
       "heading": "Invasive hydatidiform mole",
@@ -273,6 +273,22 @@
        {
         "label": "ExpertPath: Invasive Hydatidiform Mole",
         "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/gtd/complete_mole.jpg",
+        "caption": "Complete hydatidiform mole: markedly hydropic avascular chorionic villi with central cisterns and circumferential trophoblastic hyperplasia (H&E).",
+        "credit": "KGH",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Hydatidiform_mole_(1)_complete_type.jpg"
+       },
+       {
+        "src": "assets/reference/gtd/partial_mole.jpg",
+        "caption": "Partial hydatidiform mole: dual population of enlarged scalloped hydropic villi alongside smaller fibrotic villi (H&E).",
+        "credit": "Ed Uthman",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Partial_Hydatidiform_Mole_(134249052).jpg"
        }
       ]
      },
@@ -287,18 +303,36 @@
         "label": "ExpertPath: Gestational Choriocarcinoma",
         "url": "https://app.expertpath.com/"
        }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/gtd/choriocarcinoma.jpg",
+        "caption": "Choriocarcinoma: biphasic sheets of mononuclear cytotrophoblast/intermediate trophoblast and multinucleated syncytiotrophoblast with haemorrhage (H&E).",
+        "credit": "Yale Rosen",
+        "license": "CC BY-SA 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Metastatic_choriocarcinoma_(5433741268).jpg"
+       }
       ]
      },
      {
       "heading": "PSTT & ETT (intermediate trophoblastic tumours)",
       "points": [
-       "PSTT: monomorphic implantation-site intermediate trophoblast infiltrating between myometrial fibres and replacing spiral artery walls; hPL+, Mel-CAM+, p63-, Ki-67 10–30%.",
+       "PSTT: monomorphic implantation-site intermediate trophoblast infiltrating between myometrial fibres and replacing spiral artery walls; hPL+, Mel-CAM+, p63-, Ki-67 10\u201330%.",
        "ETT: nests and cords of chorionic-type intermediate trophoblast with eosinophilic cytoplasm and geographic hyaline necrosis; p63+, Cyclin E+, GATA3+, hPL focal/negative."
       ],
       "links": [
        {
         "label": "ExpertPath: Placental Site & Epithelioid Trophoblastic Tumour",
         "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/gtd/pstt.jpg",
+        "caption": "Placental site trophoblastic tumour (PSTT): sheets of monomorphic implantation-site intermediate trophoblast infiltrating myometrium (H&E).",
+        "credit": "Mike Burdett",
+        "license": "CC BY-SA 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:G-PSST_(33068002045).jpg"
        }
       ]
      }
@@ -472,8 +506,8 @@
    "default": "",
    "options": [
     "",
-    "1–4",
-    "5–8",
+    "1\u20134",
+    "5\u20138",
     "> 8"
    ]
   },

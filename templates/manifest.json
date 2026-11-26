@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 100,
+  "count": 106,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -8951,6 +8951,157 @@
       "schemaPath": "schemas/liver_lesion_biopsy.json"
     },
     {
+      "id": "nasopharyngeal_carcinoma",
+      "name": "Nasopharyngeal carcinoma",
+      "shortName": "Nasopharynx · carcinoma resection",
+      "label": "NPC Ca",
+      "organ": "NASOPHARYNX",
+      "system": "Head and neck",
+      "kind": "cancer resection",
+      "rank": 61,
+      "aliases": [
+        "nasopharyngeal carcinoma",
+        "NPC resection",
+        "nasopharyngectomy",
+        "salvage nasopharyngectomy",
+        "non-keratinising nasopharyngeal carcinoma",
+        "undifferentiated nasopharyngeal carcinoma",
+        "NPC Ca"
+      ],
+      "match": {
+        "site": [
+          "nasopharynx",
+          "nasopharyngeal",
+          "fossa of Rosenmuller",
+          "nasopharyngectomy"
+        ],
+        "procedure": [
+          "nasopharyngectomy",
+          "salvage nasopharyngectomy",
+          "endoscopic nasopharyngectomy",
+          "maxillary swing"
+        ],
+        "clinical": [
+          "nasopharyngeal carcinoma",
+          "recurrent NPC",
+          "NPC resection"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|frozen|FS)\\b)[\\s\\S]*\\b(?:nasopharyngectomy|maxillary\\s+swing|nasopharyn\\w*[\\s\\S]*resection)\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "frozen",
+          "FS"
+        ],
+        "bias": 4,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bmaxillary\\s+swing\\b",
+                "Nasopharyngectomy (maxillary swing)"
+              ],
+              [
+                "\\bendoscopic\\s+nasopharyngectomy\\b",
+                "Endoscopic nasopharyngectomy"
+              ],
+              [
+                "\\bnasopharyngectomy\\b",
+                "Salvage nasopharyngectomy"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "nasopharyngeal_carcinoma",
+      "generatorPath": "generators/nasopharyngeal_carcinoma.js",
+      "schemaPath": "schemas/nasopharyngeal_carcinoma.json"
+    },
+    {
+      "id": "hypopharynx_oropharynx_carcinoma",
+      "name": "Hypopharynx / oropharynx (HPV-negative) carcinoma resection",
+      "shortName": "Hypopharynx · carcinoma resection",
+      "label": "Hypopharynx Ca",
+      "organ": "HYPOPHARYNX / OROPHARYNX",
+      "system": "Head and neck",
+      "kind": "cancer resection",
+      "rank": 62,
+      "aliases": [
+        "hypopharynx carcinoma",
+        "hypopharyngeal carcinoma",
+        "pyriform sinus carcinoma",
+        "postcricoid carcinoma",
+        "HPV-negative oropharyngeal carcinoma",
+        "HPV-independent oropharynx",
+        "pharyngolaryngectomy",
+        "pharyngectomy"
+      ],
+      "match": {
+        "site": [
+          "hypopharynx",
+          "hypopharyngeal",
+          "pyriform sinus",
+          "piriform sinus",
+          "postcricoid",
+          "posterior pharyngeal wall",
+          "oropharynx"
+        ],
+        "procedure": [
+          "pharyngolaryngectomy",
+          "laryngopharyngectomy",
+          "pharyngectomy",
+          "partial pharyngectomy",
+          "transoral robotic surgery"
+        ],
+        "clinical": [
+          "hypopharyngeal carcinoma",
+          "hypopharynx SCC",
+          "pyriform sinus SCC",
+          "HPV-negative oropharyngeal carcinoma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|HPV[- ]positive|HPV[- ]associated|p16[- ]positive|frozen|FS)\\b)[\\s\\S]*\\b(?:hypopharyn\\w*|pyriform|piriform|postcricoid|pharyngolaryngectomy|laryngopharyngectomy|pharyngectomy)\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "HPV-positive",
+          "HPV-associated",
+          "p16-positive",
+          "frozen",
+          "FS"
+        ],
+        "bias": 4,
+        "fill": [
+          {
+            "field": "site",
+            "from": "map",
+            "map": [
+              [
+                "\\boropharyn",
+                "Oropharynx (HPV-independent)"
+              ],
+              [
+                "\\bhypopharyn|\\bpyriform|\\bpiriform|\\bpostcricoid",
+                "Hypopharynx"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "hypopharynx_oropharynx_carcinoma",
+      "generatorPath": "generators/hypopharynx_oropharynx_carcinoma.js",
+      "schemaPath": "schemas/hypopharynx_oropharynx_carcinoma.json"
+    },
+    {
       "id": "hirschsprung_biopsy",
       "name": "Hirschsprung rectal biopsy",
       "shortName": "Rectum · Hirschsprung biopsy",
@@ -9055,6 +9206,119 @@
       "generator": "hirschsprung_biopsy",
       "generatorPath": "generators/hirschsprung_biopsy.js",
       "schemaPath": "schemas/hirschsprung_biopsy.json"
+    },
+    {
+      "id": "larynx_carcinoma",
+      "name": "Laryngeal carcinoma resection",
+      "shortName": "Larynx · carcinoma resection",
+      "label": "Larynx Ca",
+      "organ": "LARYNX",
+      "system": "Head and neck",
+      "kind": "cancer resection",
+      "rank": 63,
+      "aliases": [
+        "laryngeal carcinoma",
+        "larynx carcinoma",
+        "laryngeal SCC",
+        "laryngectomy",
+        "total laryngectomy",
+        "supraglottic laryngectomy",
+        "glottic carcinoma",
+        "vocal cord carcinoma"
+      ],
+      "match": {
+        "site": [
+          "larynx",
+          "laryngeal",
+          "glottis",
+          "glottic",
+          "supraglottis",
+          "supraglottic",
+          "subglottis",
+          "subglottic",
+          "vocal cord",
+          "epiglottis"
+        ],
+        "procedure": [
+          "total laryngectomy",
+          "partial laryngectomy",
+          "supraglottic laryngectomy",
+          "supracricoid laryngectomy",
+          "hemilaryngectomy",
+          "transoral laser excision",
+          "endolaryngeal excision"
+        ],
+        "clinical": [
+          "laryngeal carcinoma",
+          "laryngeal SCC",
+          "glottic carcinoma",
+          "supraglottic carcinoma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|pharyngolaryngectomy|laryngopharyngectomy|melanoma|frozen|FS)\\b)[\\s\\S]*\\b(?:laryngectomy|hemilaryngectomy|laryn\\w*[\\s\\S]*(?:carcinoma|SCC|resection|excision)|glottic[\\s\\S]*(?:carcinoma|laser|excision))\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "pharyngolaryngectomy",
+          "laryngopharyngectomy",
+          "melanoma",
+          "frozen",
+          "FS"
+        ],
+        "bias": 4,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\btotal\\s+laryngectomy\\b",
+                "Total laryngectomy"
+              ],
+              [
+                "\\bsupraglottic\\s+laryngectomy\\b",
+                "Supraglottic laryngectomy"
+              ],
+              [
+                "\\bsupracricoid\\s+laryngectomy\\b",
+                "Supracricoid laryngectomy"
+              ],
+              [
+                "\\bhemilaryngectomy\\b",
+                "Vertical hemilaryngectomy"
+              ],
+              [
+                "\\blaser\\b",
+                "Transoral laser excision (glottis)"
+              ]
+            ]
+          },
+          {
+            "field": "subsite",
+            "from": "map",
+            "map": [
+              [
+                "\\bsupraglott|\\bepiglott",
+                "Supraglottis"
+              ],
+              [
+                "\\bsubglott",
+                "Subglottis"
+              ],
+              [
+                "\\bglott|\\bvocal\\s+cord",
+                "Glottis"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "larynx_carcinoma",
+      "generatorPath": "generators/larynx_carcinoma.js",
+      "schemaPath": "schemas/larynx_carcinoma.json"
     },
     {
       "id": "peritoneal_nodule",
@@ -9672,6 +9936,136 @@
       "schemaPath": "schemas/gvhd_biopsy.json"
     },
     {
+      "id": "sinonasal_carcinoma",
+      "name": "Nasal cavity and paranasal sinus carcinoma resection",
+      "shortName": "Sinonasal · carcinoma resection",
+      "label": "Sinonasal Ca",
+      "organ": "SINONASAL TRACT",
+      "system": "Head and neck",
+      "kind": "cancer resection",
+      "rank": 64,
+      "aliases": [
+        "sinonasal carcinoma",
+        "sinonasal SCC",
+        "maxillary sinus carcinoma",
+        "nasal cavity carcinoma",
+        "ethmoid sinus carcinoma",
+        "maxillectomy",
+        "SNUC",
+        "NUT carcinoma",
+        "sinonasal"
+      ],
+      "match": {
+        "site": [
+          "sinonasal",
+          "nasal cavity",
+          "nasal septum",
+          "maxillary sinus",
+          "ethmoid sinus",
+          "frontal sinus",
+          "sphenoid sinus",
+          "paranasal sinus"
+        ],
+        "procedure": [
+          "partial maxillectomy",
+          "radical maxillectomy",
+          "maxillectomy",
+          "craniofacial resection",
+          "endoscopic sinonasal resection"
+        ],
+        "clinical": [
+          "sinonasal carcinoma",
+          "maxillary sinus carcinoma",
+          "nasal cavity carcinoma",
+          "sinonasal undifferentiated carcinoma",
+          "SNUC",
+          "intestinal-type adenocarcinoma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|polyps?|sinusitis|papilloma|melanoma|frozen|FS)\\b)[\\s\\S]*\\b(?:maxillectomy|craniofacial\\s+resection|(?:sinonasal|nasal\\s+cavity|nasal\\s+septum|maxillary\\s+sinus|ethmoid\\s+sinus|paranasal\\s+sinus)[\\s\\S]*(?:carcinoma|SCC|SNUC|adenocarcinoma|resection|excision))\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "polyp",
+          "polyps",
+          "sinusitis",
+          "papilloma",
+          "melanoma",
+          "frozen",
+          "FS"
+        ],
+        "bias": 4,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bradical\\s+maxillectomy\\b",
+                "Radical maxillectomy"
+              ],
+              [
+                "\\bpartial\\s+maxillectomy|\\bmedial\\s+maxillectomy|\\binfrastructure\\s+maxillectomy",
+                "Partial maxillectomy"
+              ],
+              [
+                "\\bmaxillectomy\\b",
+                "Radical maxillectomy"
+              ],
+              [
+                "\\bexcision\\b",
+                "Excision"
+              ]
+            ]
+          },
+          {
+            "field": "site",
+            "from": "map",
+            "map": [
+              [
+                "\\bmaxillary\\s+sinus\\b",
+                "Paranasal sinus(es), maxillary"
+              ],
+              [
+                "\\bethmoid\\s+sinus\\b",
+                "Paranasal sinus(es), ethmoid"
+              ],
+              [
+                "\\bfrontal\\s+sinus\\b",
+                "Paranasal sinus(es), frontal"
+              ],
+              [
+                "\\bsphenoid\\s+sinus\\b",
+                "Paranasal sinus(es), sphenoid"
+              ],
+              [
+                "\\bnasal\\s+septum\\b",
+                "Nasal septum"
+              ],
+              [
+                "\\bnasal\\s+floor\\b",
+                "Nasal floor"
+              ],
+              [
+                "\\blateral\\s+wall\\b",
+                "Nasal lateral wall"
+              ],
+              [
+                "\\bvestibule\\b",
+                "Nasal vestibule"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "sinonasal_carcinoma",
+      "generatorPath": "generators/sinonasal_carcinoma.js",
+      "schemaPath": "schemas/sinonasal_carcinoma.json"
+    },
+    {
       "id": "pituitary_net",
       "name": "Pituitary neuroendocrine tumour (PitNET) resection",
       "shortName": "Pituitary · PitNET resection",
@@ -9773,6 +10167,220 @@
       "generator": "pituitary_net",
       "generatorPath": "generators/pituitary_net.js",
       "schemaPath": "schemas/pituitary_net.json"
+    },
+    {
+      "id": "salivary_carcinoma",
+      "name": "Salivary gland carcinoma resection",
+      "shortName": "Salivary · carcinoma resection",
+      "label": "Salivary Ca",
+      "organ": "SALIVARY GLAND",
+      "system": "Head and neck",
+      "kind": "cancer resection",
+      "rank": 65,
+      "aliases": [
+        "salivary carcinoma",
+        "salivary gland carcinoma",
+        "parotid carcinoma",
+        "submandibular carcinoma",
+        "mucoepidermoid carcinoma",
+        "adenoid cystic carcinoma",
+        "acinic cell carcinoma",
+        "salivary duct carcinoma",
+        "carcinoma ex pleomorphic adenoma",
+        "ca ex PA"
+      ],
+      "match": {
+        "site": [
+          "parotid",
+          "parotid gland",
+          "submandibular gland",
+          "sublingual gland",
+          "salivary gland"
+        ],
+        "procedure": [
+          "superficial parotidectomy",
+          "total parotidectomy",
+          "deep parotidectomy",
+          "parotidectomy",
+          "submandibular gland resection",
+          "sublingual gland resection"
+        ],
+        "clinical": [
+          "salivary gland carcinoma",
+          "parotid carcinoma",
+          "mucoepidermoid carcinoma",
+          "adenoid cystic carcinoma",
+          "acinic cell carcinoma",
+          "salivary duct carcinoma",
+          "carcinoma ex pleomorphic adenoma",
+          "secretory carcinoma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|warthin|sialadenitis|sialolithiasis|mucocele|benign|melanoma|frozen|FS)\\b)[\\s\\S]*\\b(?:(?:parotid|parotidectomy|submandibular|sublingual|salivary)[\\s\\S]*(?:carcinoma|adenocarcinoma|mucoepidermoid|adenoid\\s+cystic|acinic\\s+cell|secretory|polymorphous|myoepithelial|carcinosarcoma|sialoblastoma|malignant)|(?:mucoepidermoid|adenoid\\s+cystic|acinic\\s+cell|salivary\\s+duct|carcinoma\\s+ex\\s+pleomorphic\\s+adenoma)[\\s\\S]*(?:parotid|submandibular|sublingual|salivary|resection|excision|parotidectomy))\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "warthin",
+          "sialadenitis",
+          "sialolithiasis",
+          "mucocele",
+          "benign",
+          "melanoma",
+          "frozen",
+          "FS"
+        ],
+        "bias": 4,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bsuperficial\\s+parotidectomy\\b",
+                "Parotidectomy, superficial"
+              ],
+              [
+                "\\bdeep\\s+parotidectomy\\b",
+                "Parotidectomy, deep"
+              ],
+              [
+                "\\btotal\\s+parotidectomy\\b",
+                "Parotidectomy, total"
+              ],
+              [
+                "\\bparotidectomy\\b",
+                "Parotidectomy, not specified"
+              ],
+              [
+                "\\bsubmandibular\\b",
+                "Resection, submandibular gland"
+              ],
+              [
+                "\\bsublingual\\b",
+                "Resection, sublingual gland"
+              ]
+            ]
+          },
+          {
+            "field": "site",
+            "from": "map",
+            "map": [
+              [
+                "\\bsuperficial\\s+(?:lobe|parotid)",
+                "Parotid gland, superficial lobe"
+              ],
+              [
+                "\\bdeep\\s+(?:lobe|parotid)",
+                "Parotid gland, deep lobe"
+              ],
+              [
+                "\\bparotid\\b",
+                "Parotid gland, NOS"
+              ],
+              [
+                "\\bsubmandibular\\b",
+                "Submandibular gland"
+              ],
+              [
+                "\\bsublingual\\b",
+                "Sublingual gland"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "salivary_carcinoma",
+      "generatorPath": "generators/salivary_carcinoma.js",
+      "schemaPath": "schemas/salivary_carcinoma.json"
+    },
+    {
+      "id": "mucosal_melanoma",
+      "name": "Mucosal melanoma (head and neck) resection",
+      "shortName": "H&N · mucosal melanoma resection",
+      "label": "Mucosal melanoma",
+      "organ": "HEAD AND NECK MUCOSA",
+      "system": "Head and neck",
+      "kind": "cancer resection",
+      "rank": 66,
+      "aliases": [
+        "mucosal melanoma",
+        "MM",
+        "sinonasal melanoma",
+        "oral mucosal melanoma",
+        "nasal melanoma",
+        "head and neck melanoma"
+      ],
+      "match": {
+        "site": [
+          "nasal cavity",
+          "sinonasal",
+          "paranasal sinus",
+          "oral mucosa",
+          "hard palate",
+          "gingiva",
+          "pharynx",
+          "larynx"
+        ],
+        "procedure": [
+          "wide local excision",
+          "maxillectomy",
+          "sinonasal resection",
+          "mucosal resection",
+          "palatectomy"
+        ],
+        "clinical": [
+          "mucosal melanoma",
+          "sinonasal melanoma",
+          "oral mucosal melanoma",
+          "nasal melanoma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|cutaneous|skin|naevus|nevus|frozen|FS)\\b)[\\s\\S]*\\b(?:mucosal\\s+melanoma|(?:nasal|sinonasal|paranasal|maxillary|ethmoid|oral|palate|gingiva|pharyn\\w*|laryn\\w*)[\\s\\S]*melanoma)\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "cutaneous",
+          "skin",
+          "naevus",
+          "nevus",
+          "frozen",
+          "FS"
+        ],
+        "bias": 5,
+        "fill": [
+          {
+            "field": "site",
+            "from": "map",
+            "map": [
+              [
+                "\\bnasal|\\bsinonasal|\\bmaxillary|\\bethmoid|\\bparanasal",
+                "Nasal cavity / paranasal sinuses"
+              ],
+              [
+                "\\boral|\\bpalate|\\bgingiva|\\btongue|\\bbuccal",
+                "Oral cavity"
+              ],
+              [
+                "\\bpharyn|\\bnasopharyn|\\boropharyn|\\bhypopharyn",
+                "Pharynx"
+              ],
+              [
+                "\\blaryn",
+                "Larynx"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "mucosal_melanoma",
+      "generatorPath": "generators/mucosal_melanoma.js",
+      "schemaPath": "schemas/mucosal_melanoma.json"
     },
     {
       "id": "bile_duct_carcinoma",

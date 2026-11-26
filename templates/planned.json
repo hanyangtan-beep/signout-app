@@ -18,60 +18,6 @@
    "roadmap": "Later"
   },
   {
-   "id": "nasopharyngeal_carcinoma",
-   "name": "Nasopharyngeal carcinoma",
-   "label": "NPC",
-   "system": "Head and neck",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "HN-Nasopharynx"
-  },
-  {
-   "id": "hypopharynx_oropharynx_carcinoma",
-   "name": "Hypopharynx / oropharynx (HPV-negative) carcinoma resection",
-   "label": "Hypopharynx",
-   "system": "Head and neck",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "HN-Hypopharynx"
-  },
-  {
-   "id": "larynx_carcinoma",
-   "name": "Laryngeal carcinoma resection",
-   "label": "Larynx Ca",
-   "system": "Head and neck",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "HN-Larynx"
-  },
-  {
-   "id": "sinonasal_carcinoma",
-   "name": "Nasal cavity and paranasal sinus carcinoma resection",
-   "label": "Sinonasal Ca",
-   "system": "Head and neck",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "HN-Nasal cavity and Nasal sinuses"
-  },
-  {
-   "id": "salivary_carcinoma",
-   "name": "Salivary gland carcinoma resection",
-   "label": "Salivary Ca",
-   "system": "Head and neck",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "HN-Salivary gland"
-  },
-  {
-   "id": "mucosal_melanoma",
-   "name": "Mucosal melanoma (head and neck) resection",
-   "label": "Mucosal melanoma",
-   "system": "Head and neck",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "HN-Mucosal Melanoma"
-  },
-  {
    "id": "adrenal_cortical_carcinoma",
    "name": "Adrenal cortical carcinoma resection",
    "label": "Adrenal",

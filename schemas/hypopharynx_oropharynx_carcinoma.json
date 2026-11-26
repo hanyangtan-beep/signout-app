@@ -1,0 +1,604 @@
+{
+ "id": "hypopharynx_oropharynx_carcinoma",
+ "version": "2026.11",
+ "name": "Hypopharynx / oropharynx (HPV-negative) carcinoma resection",
+ "shortName": "Hypopharynx · carcinoma resection",
+ "label": "Hypopharynx Ca",
+ "organ": "HYPOPHARYNX / OROPHARYNX",
+ "system": "Head and neck",
+ "kind": "cancer resection",
+ "rank": 62,
+ "aliases": [
+  "hypopharynx carcinoma",
+  "hypopharyngeal carcinoma",
+  "pyriform sinus carcinoma",
+  "postcricoid carcinoma",
+  "HPV-negative oropharyngeal carcinoma",
+  "HPV-independent oropharynx",
+  "pharyngolaryngectomy",
+  "pharyngectomy"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "hypopharynx_oropharynx_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template HN-Hypopharynx (CAP HPV-independent Oropharynx and Hypopharynx; WHO 5th edition; AJCC 8th edition)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/HN-Hypopharynx.html",
+  "savedPage": "docs/reference/HN-Hypopharynx.html",
+  "staging": "Dual-site pT and ENE-integrated pN derived by src/staging/hypopharynx_oropharynx.js on AJCC 8th edition."
+ },
+ "match": {
+  "site": [
+   "hypopharynx",
+   "hypopharyngeal",
+   "pyriform sinus",
+   "piriform sinus",
+   "postcricoid",
+   "posterior pharyngeal wall",
+   "oropharynx"
+  ],
+  "procedure": [
+   "pharyngolaryngectomy",
+   "laryngopharyngectomy",
+   "pharyngectomy",
+   "partial pharyngectomy",
+   "transoral robotic surgery"
+  ],
+  "clinical": [
+   "hypopharyngeal carcinoma",
+   "hypopharynx SCC",
+   "pyriform sinus SCC",
+   "HPV-negative oropharyngeal carcinoma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|HPV[- ]positive|HPV[- ]associated|p16[- ]positive|frozen|FS)\\b)[\\s\\S]*\\b(?:hypopharyn\\w*|pyriform|piriform|postcricoid|pharyngolaryngectomy|laryngopharyngectomy|pharyngectomy)\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "HPV-positive",
+   "HPV-associated",
+   "p16-positive",
+   "frozen",
+   "FS"
+  ],
+  "bias": 4,
+  "fill": [
+   {
+    "field": "site",
+    "from": "map",
+    "map": [
+     [
+      "\\boropharyn",
+      "Oropharynx (HPV-independent)"
+     ],
+     [
+      "\\bhypopharyn|\\bpyriform|\\bpiriform|\\bpostcricoid",
+      "Hypopharynx"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Primary site (governs AJCC 8th pT)",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Hypopharynx",
+   "options": [
+    "Hypopharynx",
+    "Oropharynx (HPV-independent)"
+   ]
+  },
+  {
+   "id": "subsite",
+   "label": "Subsite",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Pyriform sinus",
+   "options": [
+    "Pyriform sinus",
+    "Postcricoid area",
+    "Posterior pharyngeal wall",
+    "Base of tongue (HPV-independent)",
+    "Tonsil (HPV-independent)",
+    "Soft palate / uvula",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Total laryngopharyngectomy",
+   "options": [
+    "Total laryngopharyngectomy",
+    "Partial pharyngectomy",
+    "Transoral resection",
+    "Radical tonsillectomy / composite resection",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Squamous cell carcinoma, conventional keratinising, HPV-independent",
+   "options": [
+    "Squamous cell carcinoma, conventional keratinising, HPV-independent",
+    "Squamous cell carcinoma, non-keratinising, NOS, HPV-independent",
+    "Adenosquamous carcinoma, HPV-independent",
+    "Basaloid squamous cell carcinoma, HPV-independent",
+    "Papillary squamous cell carcinoma, HPV-independent",
+    "Spindle cell / sarcomatoid squamous carcinoma, HPV-independent",
+    "Verrucous carcinoma, HPV-independent",
+    "Carcinoma cuniculatum",
+    "Lymphoepithelial carcinoma (non-nasopharyngeal), HPV-independent",
+    "Neuroendocrine tumour, grade 1",
+    "Neuroendocrine tumour, grade 2",
+    "Neuroendocrine tumour, grade 3",
+    "Neuroendocrine carcinoma, small cell type",
+    "Neuroendocrine carcinoma, large cell type",
+    "Combined neuroendocrine carcinoma (specify types)",
+    "Carcinoma, type cannot be determined",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th hypopharyngeal & HPV-independent oropharyngeal SCC variants",
+    "intro": "Confirm HPV-independent status (p16 negative/patchy) for oropharyngeal primaries; p16-positive oropharyngeal SCC uses the separate HPV-associated staging system.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Basaloid squamous cell carcinoma & conventional SCC",
+      "points": [
+       "Basaloid SCC: lobules of hyperchromatic basaloid cells with peripheral palisading, comedonecrosis and stromal hyalinisation; aggressive behaviour in hypopharynx/HPV-negative oropharynx.",
+       "Conventional keratinising SCC: infiltrating nests with keratin pearls, intercellular bridges, desmoplasia and adjacent mucosal dysplasia."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Hypopharyngeal Squamous Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hypopharynx_oropharynx_carcinoma/scc_basaloid.jpg",
+        "caption": "Basaloid squamous cell carcinoma: lobules of basaloid cells with peripheral palisading and surface squamous dysplasia (H&E).",
+        "credit": "Samir K El-Mofty",
+        "license": "CC BY 2.5",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_basaloid_squamous_cell_carcinoma.png"
+       }
+      ]
+     },
+     {
+      "heading": "Perineural invasion & extranodal extension (ENE)",
+      "points": [
+       "Perineural invasion (especially extratumoural or large-nerve involvement) is a core adverse feature guiding adjuvant chemoradiation.",
+       "Pathological ENE upstages a single ipsilateral node <= 3 cm to pN2a and any larger/multiple/contralateral node to pN3b."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Extranodal Extension in Head and Neck SCC",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/hypopharynx_oropharynx_carcinoma/scc_pni.jpg",
+        "caption": "Squamous cell carcinoma with perineural invasion: malignant squamous nests circumferentially tracking a peripheral nerve (H&E).",
+        "credit": "Valerie R. Yanofsky et al.",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_squamous-cell_carcinoma_with_perineural_invasion.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Combined neuroendocrine carcinoma (specify types)",
+     "Other histologic type not listed (specify)"
+    ]
+   },
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "G2: Moderately differentiated",
+   "options": [
+    "G1: Well differentiated",
+    "G2: Moderately differentiated",
+    "G3: Poorly differentiated",
+    "GX: Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Present, intratumoural",
+    "Present, extratumoural",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "p16",
+   "label": "HPV status by p16 IHC",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Negative",
+   "options": [
+    "Negative",
+    "Positive",
+    "Not performed",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "eber",
+   "label": "EBER ISH",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Negative",
+    "Positive",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Other immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extent (AJCC 8th pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Confined to primary site (size / subsite governs pT1–pT3)",
+   "options": [
+    "Carcinoma in situ (pTis)",
+    "Confined to primary site (size / subsite governs pT1–pT3)",
+    "Invades > 1 subsite of hypopharynx or adjacent site without hemilarynx fixation (pT2)",
+    "Hemilarynx fixation, oesophageal mucosa (hypopharynx) or lingual epiglottis (oropharynx) (pT3)",
+    "Moderately advanced local disease (cartilage, hyoid, thyroid, larynx, extrinsic tongue muscle, mandible, hard palate, central soft tissue) (pT4a)",
+    "Very advanced local disease (prevertebral fascia, carotid artery encasement, skull base, pterygoid plates, mediastinal structures) (pT4b)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins (invasive carcinoma)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "All margins negative for invasive carcinoma",
+   "options": [
+    "All margins negative for invasive carcinoma",
+    "Margin(s) involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "nonInvasiveMargin",
+   "label": "Margins (high-grade dysplasia / in situ)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "All margins negative for in situ disease",
+   "options": [
+    "All margins negative for in situ disease",
+    "Margin(s) involved by high-grade dysplasia / in situ disease",
+    "Not applicable",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest / involved margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "largestNodeMm",
+   "label": "Largest involved lymph node (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeLaterality",
+   "label": "Nodal laterality",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "default": "Ipsilateral (including midline)",
+   "options": [
+    "Ipsilateral (including midline)",
+    "Contralateral",
+    "Bilateral",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present, minor (<= 2 mm)",
+    "Present, major (> 2 mm)",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Lung",
+    "Liver",
+    "Bone",
+    "Brain",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01902",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "site": "Hypopharynx",
+     "subsite": "Pyriform sinus",
+     "procedure": "Total laryngopharyngectomy",
+     "specimenDims": "11.5 x 7.0 x 6.0",
+     "sizeMm": "34",
+     "blocks": "14",
+     "blockKeyText": "A1-A4: mucosal resection margins (superior, inferior, lateral, medial)\nA5-A10: pyriform sinus tumour with thyroid cartilage\nA11-A14: ipsilateral neck lymph nodes",
+     "histType": "Squamous cell carcinoma, conventional keratinising, HPV-independent",
+     "grade": "G2: Moderately differentiated",
+     "lvi": "Present",
+     "pni": "Present, intratumoural",
+     "p16": "Negative",
+     "extension": "Confined to primary site (size / subsite governs pT1–pT3)",
+     "marginStatus": "All margins negative for invasive carcinoma",
+     "nonInvasiveMargin": "All margins negative for in situ disease",
+     "closestMarginMm": "5",
+     "closestMarginSite": "inferior oesophageal mucosal margin",
+     "nodesExamined": "22",
+     "nodesInvolved": "1",
+     "largestNodeMm": "24",
+     "nodeLaterality": "Ipsilateral (including midline)",
+     "ene": "Not identified",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

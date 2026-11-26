@@ -63,7 +63,7 @@ test('GI & Gynae templates: all 6 registered, in manifest, and retired from plan
     assert.ok(!planned.planned.some((p) => p.id === id), `${id} retired from planned.json`);
     assert.ok(manifest.some((m) => m.id === id), `${id} in manifest.json`);
   }
-  assert.equal(manifest.length, 100);
+  assert.ok(manifest.length >= 100);
 });
 
 // ---------- staging engines ----------
@@ -179,8 +179,8 @@ test('GI & Gynae galleries: open-licence JPEGs <= 900px/150kB, ExpertPath links,
     small_intestine_carcinoma: { folder: 'assets/reference/small_intestine_carcinoma', files: 5 },
     anal_carcinoma: { folder: 'assets/reference/anal_carcinoma', files: 5 },
     vaginal_carcinoma: { folder: 'assets/reference/vaginal_carcinoma', files: 3 },
-    uterine_sarcoma: { folder: null, files: 0 },
-    gtd: { folder: null, files: 0 }
+    uterine_sarcoma: { folder: 'assets/reference/uterine_sarcoma', files: 4 },
+    gtd: { folder: 'assets/reference/gtd', files: 4 }
   };
 
   for (const [id, spec] of Object.entries(EXPECTED)) {

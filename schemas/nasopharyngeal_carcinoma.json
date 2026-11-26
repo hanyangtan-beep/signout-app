@@ -1,0 +1,602 @@
+{
+ "id": "nasopharyngeal_carcinoma",
+ "version": "2026.11",
+ "name": "Nasopharyngeal carcinoma",
+ "shortName": "Nasopharynx · carcinoma resection",
+ "label": "NPC Ca",
+ "organ": "NASOPHARYNX",
+ "system": "Head and neck",
+ "kind": "cancer resection",
+ "rank": 61,
+ "aliases": [
+  "nasopharyngeal carcinoma",
+  "NPC resection",
+  "nasopharyngectomy",
+  "salvage nasopharyngectomy",
+  "non-keratinising nasopharyngeal carcinoma",
+  "undifferentiated nasopharyngeal carcinoma",
+  "NPC Ca"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "nasopharyngeal_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 9th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template HN-Nasopharynx (CAP Nasopharynx 1.0.0.0, April 2026; WHO 5th edition; AJCC 9th edition)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/HN-Nasopharynx.html",
+  "savedPage": "docs/reference/HN-Nasopharynx.html",
+  "staging": "pTNM derived by src/staging/nasopharynx.js on AJCC 9th edition."
+ },
+ "match": {
+  "site": [
+   "nasopharynx",
+   "nasopharyngeal",
+   "fossa of Rosenmuller",
+   "nasopharyngectomy"
+  ],
+  "procedure": [
+   "nasopharyngectomy",
+   "salvage nasopharyngectomy",
+   "endoscopic nasopharyngectomy",
+   "maxillary swing"
+  ],
+  "clinical": [
+   "nasopharyngeal carcinoma",
+   "recurrent NPC",
+   "NPC resection"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|frozen|FS)\\b)[\\s\\S]*\\b(?:nasopharyngectomy|maxillary\\s+swing|nasopharyn\\w*[\\s\\S]*resection)\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "frozen",
+   "FS"
+  ],
+  "bias": 4,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bmaxillary\\s+swing\\b",
+      "Nasopharyngectomy (maxillary swing)"
+     ],
+     [
+      "\\bendoscopic\\s+nasopharyngectomy\\b",
+      "Endoscopic nasopharyngectomy"
+     ],
+     [
+      "\\bnasopharyngectomy\\b",
+      "Salvage nasopharyngectomy"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Endoscopic nasopharyngectomy",
+   "options": [
+    "Endoscopic nasopharyngectomy",
+    "Salvage nasopharyngectomy",
+    "Nasopharyngectomy (maxillary swing)",
+    "Neck (lymph node) dissection",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour site",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Nasopharynx, lateral wall (fossa of Rosenmuller)",
+   "options": [
+    "Nasopharynx, posterosuperior wall",
+    "Nasopharynx, lateral wall (fossa of Rosenmuller)",
+    "Nasopharynx, inferior wall",
+    "Nasopharynx, not otherwise specified"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Non-keratinising squamous cell carcinoma, undifferentiated subtype",
+   "options": [
+    "Non-keratinising squamous cell carcinoma, undifferentiated subtype",
+    "Non-keratinising squamous cell carcinoma, differentiated subtype",
+    "Squamous cell carcinoma, keratinising, NOS",
+    "Basaloid squamous cell carcinoma",
+    "Low-grade nasopharyngeal papillary adenocarcinoma",
+    "Neuroendocrine tumour, grade 1",
+    "Neuroendocrine tumour, grade 2",
+    "Neuroendocrine tumour, grade 3",
+    "Neuroendocrine carcinoma, small cell type",
+    "Neuroendocrine carcinoma, large cell type",
+    "Combined (or composite) neuroendocrine carcinoma (specify types)",
+    "Carcinoma, type cannot be determined",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th nasopharyngeal carcinoma subtypes & EBV (EBER) testing",
+    "intro": "Non-keratinising NPC (undifferentiated and differentiated subtypes) accounts for > 95% of cases in endemic areas and is strongly EBV-driven (diffuse nuclear EBER ISH positive). Always confirm EBER ISH and p16/HPV where relevant.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Non-keratinising NPC (undifferentiated & differentiated) & EBER ISH",
+      "points": [
+       "Undifferentiated subtype: syncytial sheets (Regaud) or irregular anastomosing cords (Schmincke) of large cells with indistinct borders, vesicular nuclei, prominent single eosinophilic nucleoli and dense lymphoplasmacytic infiltrate.",
+       "EBER ISH shows strong diffuse nuclear positivity; tumour cells are CK5/6+, p63+, p40+, and negative for lymphoid markers."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Nasopharyngeal Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/nasopharyngeal_carcinoma/npc_nonkerat.jpg",
+        "caption": "Non-keratinising nasopharyngeal carcinoma: syncytial islands of atypical epithelial cells amidst a dense lymphoid infiltrate (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Nasopharyngeal_carcinoma_--_low_mag.jpg"
+       },
+       {
+        "src": "assets/reference/nasopharyngeal_carcinoma/npc_eber.jpg",
+        "caption": "Nasopharyngeal carcinoma — EBER ISH: strong, diffuse nuclear positivity in the malignant syncytial epithelial nests.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Nasopharyngeal_carcinoma_-_EBER_--_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Keratinising SCC, basaloid SCC & low-grade nasopharyngeal papillary adenocarcinoma",
+      "points": [
+       "Keratinising SCC shows definite keratin pearls and intercellular bridges with desmoplastic stroma; EBV association is lower.",
+       "Low-grade nasopharyngeal papillary adenocarcinoma (LGNPPA): arborising papillae with hyalinised cores, optically clear/grooved nuclei mimicking papillary thyroid carcinoma, TTF1+ but thyroglobulin-negative."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Nasopharyngeal Papillary Adenocarcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Combined (or composite) neuroendocrine carcinoma (specify types)",
+     "Other histologic type not listed (specify)"
+    ]
+   },
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not applicable",
+   "options": [
+    "Not applicable",
+    "G1: Well differentiated",
+    "G2: Moderately differentiated",
+    "G3: Poorly differentiated",
+    "GX: Cannot be assessed"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Present, intratumoural",
+    "Present, extratumoural",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "eber",
+   "label": "EBV (EBER ISH)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Positive",
+   "options": [
+    "Positive",
+    "Negative",
+    "Not performed",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "p16",
+   "label": "HPV status by p16 IHC",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Positive",
+    "Negative",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Other immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extent (AJCC 9th pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Confined to nasopharynx, or extends to oropharynx and/or nasal cavity without parapharyngeal involvement (pT1)",
+   "options": [
+    "Carcinoma in situ (pTis)",
+    "Confined to nasopharynx, or extends to oropharynx and/or nasal cavity without parapharyngeal involvement (pT1)",
+    "Parapharyngeal space and/or adjacent soft tissue (medial pterygoid, lateral pterygoid, prevertebral muscles) (pT2)",
+    "Bony structures of skull base (including pterygoid structures), paranasal sinuses, or cervical vertebrae (pT3)",
+    "Intracranial extension, cranial nerves, hypopharynx, orbit (including inferior orbital fissure), parotid gland, or extensive soft tissue beyond lateral pterygoid (pT4)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest / involved margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "largestNodeMm",
+   "label": "Largest involved lymph node (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeLaterality",
+   "label": "Nodal laterality",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "default": "Ipsilateral (including midline)",
+   "options": [
+    "Ipsilateral (including midline)",
+    "Contralateral",
+    "Bilateral",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "retropharyngealOnly",
+   "label": "Retropharyngeal node(s) only (remains pN1 even if bilateral)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "belowCricoid",
+   "label": "Extension below caudal border of cricoid cartilage (pN3)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present, minor (<= 2 mm)",
+    "Present, major (> 2 mm)",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "advancedEne",
+   "label": "Advanced ENE into muscle / skin / neurovascular bundle (AJCC 9th pN3)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (AJCC 9th pM1a/b)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Lung",
+    "Liver",
+    "Bone",
+    "Brain",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "metastasisBurden",
+   "label": "Metastatic lesion burden (AJCC 9th pM1a vs pM1b)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "default": "",
+   "options": [
+    "",
+    "<= 3 metastatic lesions (pM1a)",
+    "> 3 metastatic lesions (pM1b)"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "noPrimary",
+   "label": "No primary identified with EBV+ cervical node (pT0)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01901",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Endoscopic nasopharyngectomy",
+     "site": "Nasopharynx, lateral wall (fossa of Rosenmuller)",
+     "specimenDims": "3.2 x 2.4 x 1.2",
+     "sizeMm": "16",
+     "blocks": "8",
+     "blockKeyText": "A1-A4: nasopharyngectomy specimen, serially sectioned\nA5-A8: peripheral and deep mucosal/soft tissue margins",
+     "histType": "Non-keratinising squamous cell carcinoma, undifferentiated subtype",
+     "grade": "Not applicable",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "eber": "Positive",
+     "p16": "Not performed",
+     "ihcText": "CK5/6 and p40 strongly positive; EBER ISH diffusely positive in tumour nuclei",
+     "extension": "Confined to nasopharynx, or extends to oropharynx and/or nasal cavity without parapharyngeal involvement (pT1)",
+     "marginStatus": "Uninvolved by invasive carcinoma",
+     "closestMarginMm": "3",
+     "closestMarginSite": "deep posterior margin",
+     "nodesExamined": "0",
+     "recurrent": true,
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

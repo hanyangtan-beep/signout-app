@@ -1,0 +1,683 @@
+{
+ "id": "sinonasal_carcinoma",
+ "version": "2026.11",
+ "name": "Nasal cavity and paranasal sinus carcinoma resection",
+ "shortName": "Sinonasal · carcinoma resection",
+ "label": "Sinonasal Ca",
+ "organ": "SINONASAL TRACT",
+ "system": "Head and neck",
+ "kind": "cancer resection",
+ "rank": 64,
+ "aliases": [
+  "sinonasal carcinoma",
+  "sinonasal SCC",
+  "maxillary sinus carcinoma",
+  "nasal cavity carcinoma",
+  "ethmoid sinus carcinoma",
+  "maxillectomy",
+  "SNUC",
+  "NUT carcinoma",
+  "sinonasal"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "sinonasal_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template HN-Nasal cavity and Nasal sinuses (CAP NasalCavityParanasalSinus 4.3.0.0, April 2026; WHO 5th edition; AJCC 8th edition)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/HN-Nasal%20cavity%20and%20Nasal%20sinuses.html",
+  "savedPage": "docs/reference/HN-Nasal-cavity-and-Nasal-sinuses.html",
+  "staging": "Dual-track pT (maxillary sinus vs nasal cavity and ethmoid sinus) and ENE-integrated pN derived by src/staging/sinonasal.js on AJCC 8th edition."
+ },
+ "match": {
+  "site": [
+   "sinonasal",
+   "nasal cavity",
+   "nasal septum",
+   "maxillary sinus",
+   "ethmoid sinus",
+   "frontal sinus",
+   "sphenoid sinus",
+   "paranasal sinus"
+  ],
+  "procedure": [
+   "partial maxillectomy",
+   "radical maxillectomy",
+   "maxillectomy",
+   "craniofacial resection",
+   "endoscopic sinonasal resection"
+  ],
+  "clinical": [
+   "sinonasal carcinoma",
+   "maxillary sinus carcinoma",
+   "nasal cavity carcinoma",
+   "sinonasal undifferentiated carcinoma",
+   "SNUC",
+   "intestinal-type adenocarcinoma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|polyps?|sinusitis|papilloma|melanoma|frozen|FS)\\b)[\\s\\S]*\\b(?:maxillectomy|craniofacial\\s+resection|(?:sinonasal|nasal\\s+cavity|nasal\\s+septum|maxillary\\s+sinus|ethmoid\\s+sinus|paranasal\\s+sinus)[\\s\\S]*(?:carcinoma|SCC|SNUC|adenocarcinoma|resection|excision))\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "polyp",
+   "polyps",
+   "sinusitis",
+   "papilloma",
+   "melanoma",
+   "frozen",
+   "FS"
+  ],
+  "bias": 4,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bradical\\s+maxillectomy\\b",
+      "Radical maxillectomy"
+     ],
+     [
+      "\\bpartial\\s+maxillectomy|\\bmedial\\s+maxillectomy|\\binfrastructure\\s+maxillectomy",
+      "Partial maxillectomy"
+     ],
+     [
+      "\\bmaxillectomy\\b",
+      "Radical maxillectomy"
+     ],
+     [
+      "\\bexcision\\b",
+      "Excision"
+     ]
+    ]
+   },
+   {
+    "field": "site",
+    "from": "map",
+    "map": [
+     [
+      "\\bmaxillary\\s+sinus\\b",
+      "Paranasal sinus(es), maxillary"
+     ],
+     [
+      "\\bethmoid\\s+sinus\\b",
+      "Paranasal sinus(es), ethmoid"
+     ],
+     [
+      "\\bfrontal\\s+sinus\\b",
+      "Paranasal sinus(es), frontal"
+     ],
+     [
+      "\\bsphenoid\\s+sinus\\b",
+      "Paranasal sinus(es), sphenoid"
+     ],
+     [
+      "\\bnasal\\s+septum\\b",
+      "Nasal septum"
+     ],
+     [
+      "\\bnasal\\s+floor\\b",
+      "Nasal floor"
+     ],
+     [
+      "\\blateral\\s+wall\\b",
+      "Nasal lateral wall"
+     ],
+     [
+      "\\bvestibule\\b",
+      "Nasal vestibule"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Partial maxillectomy",
+   "options": [
+    "Excision",
+    "Partial maxillectomy",
+    "Radical maxillectomy",
+    "Craniofacial resection",
+    "Neck (lymph node) dissection",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour site (governs maxillary vs nasal/ethmoid AJCC 8th pT)",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Paranasal sinus(es), maxillary",
+   "options": [
+    "Paranasal sinus(es), maxillary",
+    "Nasal septum",
+    "Nasal floor",
+    "Nasal lateral wall",
+    "Nasal vestibule",
+    "Nasal cavity, NOS",
+    "Paranasal sinus(es), ethmoid",
+    "Paranasal sinus(es), frontal",
+    "Paranasal sinus(es), sphenoid"
+   ]
+  },
+  {
+   "id": "laterality",
+   "label": "Laterality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Right",
+   "options": [
+    "Right",
+    "Left",
+    "Midline",
+    "Bilateral",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Unifocal",
+   "options": [
+    "Unifocal",
+    "Multifocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Squamous cell carcinoma, keratinising",
+   "options": [
+    "Squamous cell carcinoma, keratinising",
+    "Squamous cell carcinoma, non-keratinising, HPV-independent",
+    "Squamous cell carcinoma, non-keratinising, HPV-associated",
+    "Squamous cell carcinoma, non-keratinising, DEK::AFF2 translocated",
+    "Lymphoepithelial carcinoma",
+    "Adenosquamous carcinoma",
+    "Basaloid squamous cell carcinoma",
+    "Papillary squamous cell carcinoma",
+    "Spindle cell squamous cell carcinoma",
+    "Verrucous squamous cell carcinoma",
+    "NUT carcinoma",
+    "SWI/SNF complex-deficient sinonasal carcinoma",
+    "Sinonasal undifferentiated carcinoma (SNUC)",
+    "HPV-associated multiphenotypic sinonasal carcinoma",
+    "Intestinal-type sinonasal adenocarcinoma",
+    "Non-intestinal-type sinonasal adenocarcinoma",
+    "Minor salivary gland-type carcinoma (specify)",
+    "Neuroendocrine tumour (G1–G3)",
+    "Neuroendocrine carcinoma (small cell / large cell)",
+    "Carcinoma, type cannot be determined",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th sinonasal carcinoma classification & ancillary panel",
+    "intro": "Poorly differentiated sinonasal carcinomas require systematic exclusion of molecularly defined entities (NUT, SWI/SNF complex-deficient, HPV-associated multiphenotypic, DEK::AFF2, EBV-positive lymphoepithelial carcinoma) before diagnosing SNUC.",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Squamous cell carcinoma & DEK::AFF2 carcinoma",
+      "points": [
+       "Keratinising SCC resembles conventional mucosal SCC and frequently arises in the maxillary sinus or in association with inverted sinonasal papilloma (EGFR exon 20).",
+       "Non-keratinising SCC forms smooth-contoured ribbons and lobules of basaloid cells with minimal keratinisation; test p16 / high-risk HPV ISH (approx. 20–30% HPV-associated).",
+       "DEK::AFF2 non-keratinising SCC shows deceptively bland exophytic/endophytic papillary ribbons with prominent neutrophilic infiltrate and strong nuclear AFF2 positivity (or DEK::AFF2 fusion)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Sinonasal Squamous Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Molecularly defined poorly differentiated entities & SNUC",
+      "points": [
+       "NUT carcinoma: monotonous poorly differentiated round cells with abrupt squamous differentiation; diffuse speckled nuclear NUT immunoreactivity (BRD4/BRD3/NSD3::NUTM1).",
+       "SWI/SNF complex-deficient sinonasal carcinoma: basaloid or plasmacytoid/rhabdoid nests with complete nuclear loss of SMARCB1 (INI1) or SMARCA4 (BRG1).",
+       "HPV-associated multiphenotypic sinonasal carcinoma (HMSC): adenoid cystic-like cribriform/solid basaloid growth with surface squamous dysplasia, diffuse p16, and high-risk HPV (most often type 33).",
+       "SNUC is a diagnosis of exclusion: undifferentiated sheets with necrosis, keratin-positive, negative for p40/squamous differentiation, EBER, NUT, SMARCB1/SMARCA4 loss, and neuroendocrine markers (IDH2 R172 mutations common)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Sinonasal Undifferentiated Carcinoma & NUT Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Sinonasal adenocarcinomas",
+      "points": [
+       "Intestinal-type adenocarcinoma (ITAC): papillary, colonic, solid, mucinous or mixed patterns expressing CDX2, CK20, SATB2 and MUC2; associated with hardwood/leather dust exposure.",
+       "Non-intestinal-type adenocarcinoma: low-grade (tubulopapillary, bland, seromucinous phenotype, S100/SOX10/DOG1 variable) vs high-grade (solid/glandular, pleomorphic, necrosis)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Sinonasal Intestinal-Type Adenocarcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Minor salivary gland-type carcinoma (specify)",
+     "Other histologic type not listed (specify)"
+    ]
+   },
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "G2: Moderately differentiated",
+   "options": [
+    "G1: Well differentiated",
+    "G2: Moderately differentiated",
+    "G3: Poorly differentiated",
+    "Low grade",
+    "High grade",
+    "GX: Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "ancillaryStatus",
+   "label": "Key ancillary / biomarker profile",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "p16 positive / high-risk HPV positive",
+    "p16 negative / HPV-independent",
+    "NUT positive (diffuse speckled nuclear)",
+    "SMARCB1 (INI1) deficient",
+    "SMARCA4 (BRG1) deficient",
+    "EBER positive",
+    "AFF2 positive / DEK::AFF2 fusion",
+    "IDH2 R172 mutated (SNUC)",
+    "Other (specify in immunohistochemistry)"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry / molecular",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extent (AJCC 8th pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Posterior maxillary wall, subcutaneous tissue, medial/floor of orbit, pterygoid fossa, ethmoid (maxillary) or medial/floor of orbit, maxillary sinus, palate, cribriform plate (nasal/ethmoid) (pT3)",
+   "options": [
+    "Carcinoma in situ (pTis)",
+    "Limited to mucosa (maxillary sinus, no bone erosion) or one subsite of nasal cavity/ethmoid with or without bone invasion (pT1)",
+    "Bone erosion/destruction of hard palate or middle meatus (maxillary) or two subsites / adjacent nasoethmoidal region (nasal/ethmoid) (pT2)",
+    "Posterior maxillary wall, subcutaneous tissue, medial/floor of orbit, pterygoid fossa, ethmoid (maxillary) or medial/floor of orbit, maxillary sinus, palate, cribriform plate (nasal/ethmoid) (pT3)",
+    "Anterior orbital contents, skin of cheek/nose, pterygoid plates, infratemporal fossa, cribriform plate / minimal anterior cranial fossa, sphenoid or frontal sinus (pT4a)",
+    "Orbital apex, dura, brain, middle cranial fossa, cranial nerves other than V2, nasopharynx, or clivus (pT4b)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins (invasive carcinoma)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "dysplasiaMargin",
+   "label": "Surgical margins (high-grade dysplasia / CIS)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by high-grade dysplasia / in situ disease",
+   "options": [
+    "Uninvolved by high-grade dysplasia / in situ disease",
+    "Involved by high-grade dysplasia / in situ disease",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest / involved margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "largestNodeMm",
+   "label": "Largest involved lymph node (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeLaterality",
+   "label": "Nodal laterality",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "default": "Ipsilateral (including midline)",
+   "options": [
+    "Ipsilateral (including midline)",
+    "Contralateral",
+    "Bilateral",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present, minor (<= 2 mm)",
+    "Present, major (> 2 mm)",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Lung",
+    "Liver",
+    "Bone",
+    "Brain",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional & Molecular",
+   "type": "multiselect",
+   "options": [
+    "Inverted sinonasal papilloma",
+    "Oncocytic sinonasal papilloma",
+    "Exophytic sinonasal papilloma",
+    "Dysplasia, high grade / CIS",
+    "Chronic rhinosinusitis / nasal polyps"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01904",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Partial maxillectomy",
+     "site": "Paranasal sinus(es), maxillary",
+     "laterality": "Right",
+     "focality": "Unifocal",
+     "specimenDims": "5.5 x 4.2 x 3.8",
+     "sizeMm": "32",
+     "blocks": "12",
+     "blockKeyText": "A1-A4: medial, posterior, orbital floor and palatal margins\nA5-A12: right maxillary sinus tumour with bone invasion",
+     "histType": "Squamous cell carcinoma, keratinising",
+     "grade": "G2: Moderately differentiated",
+     "ancillaryStatus": "p16 negative / HPV-independent",
+     "lvi": "Not identified",
+     "pni": "Present",
+     "extension": "Posterior maxillary wall, subcutaneous tissue, medial/floor of orbit, pterygoid fossa, ethmoid (maxillary) or medial/floor of orbit, maxillary sinus, palate, cribriform plate (nasal/ethmoid) (pT3)",
+     "marginStatus": "Uninvolved by invasive carcinoma",
+     "dysplasiaMargin": "Uninvolved by high-grade dysplasia / in situ disease",
+     "closestMarginMm": "4",
+     "closestMarginSite": "posterior maxillary wall margin",
+     "nodesExamined": "0",
+     "nodesInvolved": "0",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "additionalFindings": [
+      "Inverted sinonasal papilloma"
+     ]
+    }
+   }
+  ]
+ }
+}

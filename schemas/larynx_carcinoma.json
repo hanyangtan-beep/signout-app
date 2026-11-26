@@ -1,0 +1,648 @@
+{
+ "id": "larynx_carcinoma",
+ "version": "2026.11",
+ "name": "Laryngeal carcinoma resection",
+ "shortName": "Larynx · carcinoma resection",
+ "label": "Larynx Ca",
+ "organ": "LARYNX",
+ "system": "Head and neck",
+ "kind": "cancer resection",
+ "rank": 63,
+ "aliases": [
+  "laryngeal carcinoma",
+  "larynx carcinoma",
+  "laryngeal SCC",
+  "laryngectomy",
+  "total laryngectomy",
+  "supraglottic laryngectomy",
+  "glottic carcinoma",
+  "vocal cord carcinoma"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "larynx_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template HN-Larynx (CAP Larynx 4.3.0.0, April 2026; WHO 5th edition; AJCC 8th edition)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/HN-Larynx.html",
+  "savedPage": "docs/reference/HN-Larynx.html",
+  "staging": "Tri-subsite (supraglottis / glottis / subglottis) pT and ENE-integrated pN derived by src/staging/larynx.js on AJCC 8th edition."
+ },
+ "match": {
+  "site": [
+   "larynx",
+   "laryngeal",
+   "glottis",
+   "glottic",
+   "supraglottis",
+   "supraglottic",
+   "subglottis",
+   "subglottic",
+   "vocal cord",
+   "epiglottis"
+  ],
+  "procedure": [
+   "total laryngectomy",
+   "partial laryngectomy",
+   "supraglottic laryngectomy",
+   "supracricoid laryngectomy",
+   "hemilaryngectomy",
+   "transoral laser excision",
+   "endolaryngeal excision"
+  ],
+  "clinical": [
+   "laryngeal carcinoma",
+   "laryngeal SCC",
+   "glottic carcinoma",
+   "supraglottic carcinoma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|pharyngolaryngectomy|laryngopharyngectomy|melanoma|frozen|FS)\\b)[\\s\\S]*\\b(?:laryngectomy|hemilaryngectomy|laryn\\w*[\\s\\S]*(?:carcinoma|SCC|resection|excision)|glottic[\\s\\S]*(?:carcinoma|laser|excision))\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "pharyngolaryngectomy",
+   "laryngopharyngectomy",
+   "melanoma",
+   "frozen",
+   "FS"
+  ],
+  "bias": 4,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\btotal\\s+laryngectomy\\b",
+      "Total laryngectomy"
+     ],
+     [
+      "\\bsupraglottic\\s+laryngectomy\\b",
+      "Supraglottic laryngectomy"
+     ],
+     [
+      "\\bsupracricoid\\s+laryngectomy\\b",
+      "Supracricoid laryngectomy"
+     ],
+     [
+      "\\bhemilaryngectomy\\b",
+      "Vertical hemilaryngectomy"
+     ],
+     [
+      "\\blaser\\b",
+      "Transoral laser excision (glottis)"
+     ]
+    ]
+   },
+   {
+    "field": "subsite",
+    "from": "map",
+    "map": [
+     [
+      "\\bsupraglott|\\bepiglott",
+      "Supraglottis"
+     ],
+     [
+      "\\bsubglott",
+      "Subglottis"
+     ],
+     [
+      "\\bglott|\\bvocal\\s+cord",
+      "Glottis"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Total laryngectomy",
+   "options": [
+    "Total laryngectomy",
+    "Supraglottic laryngectomy",
+    "Supracricoid laryngectomy",
+    "Vertical hemilaryngectomy",
+    "Partial laryngectomy",
+    "Transoral laser excision (glottis)",
+    "Endolaryngeal excision",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "subsite",
+   "label": "Laryngeal subsite (governs AJCC 8th pT)",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Glottis",
+   "options": [
+    "Supraglottis",
+    "Glottis",
+    "Subglottis"
+   ]
+  },
+  {
+   "id": "transglottic",
+   "label": "Transglottic extension",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present"
+   ]
+  },
+  {
+   "id": "laterality",
+   "label": "Laterality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Right",
+   "options": [
+    "Right",
+    "Left",
+    "Midline",
+    "Bilateral",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Unifocal",
+   "options": [
+    "Unifocal",
+    "Multifocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Squamous cell carcinoma, conventional (keratinising)",
+   "options": [
+    "Squamous cell carcinoma, conventional (keratinising)",
+    "Squamous cell carcinoma, non-keratinising",
+    "Adenosquamous carcinoma",
+    "Basaloid squamous cell carcinoma",
+    "Papillary squamous cell carcinoma",
+    "Spindle cell (sarcomatoid) squamous carcinoma",
+    "Verrucous squamous cell carcinoma",
+    "Carcinoma cuniculatum",
+    "Lymphoepithelial carcinoma (non-nasopharyngeal)",
+    "Neuroendocrine tumour, grade 1",
+    "Neuroendocrine tumour, grade 2",
+    "Neuroendocrine tumour, grade 3",
+    "Neuroendocrine carcinoma, small cell type",
+    "Neuroendocrine carcinoma, large cell type",
+    "Minor salivary gland-type carcinoma (specify)",
+    "Carcinoma, type cannot be determined",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th laryngeal carcinoma subtypes & staging landmarks",
+    "intro": "Assess thyroid cartilage inner cortex (pT3) vs outer cortex penetration (pT4a), paraglottic/pre-epiglottic space invasion (pT3), and subglottic/transglottic spread.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Conventional laryngeal squamous cell carcinoma",
+      "points": [
+       "Irregular infiltrating nests of keratinising squamous cells with intercellular bridges, keratin pearls and desmoplastic stroma.",
+       "Glottic tumours confined to one cord = pT1a; both cords = pT1b; paraglottic space or inner thyroid cartilage cortex = pT3; through outer cortex = pT4a."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Laryngeal Squamous Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/larynx_carcinoma/larynx_scc.jpg",
+        "caption": "Laryngeal squamous cell carcinoma: moderately differentiated infiltrating nests with lymphovascular invasion (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Laryngeal_squamous_carcinoma_--_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Spindle cell (sarcomatoid) squamous carcinoma & variants",
+      "points": [
+       "Polypoid glottic mass composed of pleomorphic spindle cells with surface squamous dysplasia/CIS; p63/p40 and broad-spectrum keratins help confirm epithelial lineage.",
+       "Verrucous carcinoma invades on a broad pushing front with minimal atypia (do not overdiagnose as conventional SCC)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Spindle Cell Squamous Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/larynx_carcinoma/larynx_spindle.jpg",
+        "caption": "Spindle cell (sarcomatoid) squamous cell carcinoma with p63 immunohistochemistry confirming squamous lineage.",
+        "credit": "Valerie R. Yanofsky et al.",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_spindle_cell_(sarcomatoid)_squamous_cell_carcinoma_with_immunohistochemistry_for_p63.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Minor salivary gland-type carcinoma (specify)",
+     "Other histologic type not listed (specify)"
+    ]
+   },
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "G2: Moderately differentiated",
+   "options": [
+    "G1: Well differentiated",
+    "G2: Moderately differentiated",
+    "G3: Poorly differentiated",
+    "GX: Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extent (AJCC 8th pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Limited to larynx with vocal cord fixation and/or paraglottic / pre-epiglottic space, postcricoid area, or inner cortex of thyroid cartilage (pT3)",
+   "options": [
+    "Carcinoma in situ (pTis)",
+    "Limited to one subsite / subglottis with normal mobility (pT1)",
+    "Limited to one vocal cord, normal mobility (glottis pT1a)",
+    "Involves both vocal cords, normal mobility (glottis pT1b)",
+    "Extends to adjacent laryngeal subsite / supraglottis / subglottis and/or impaired vocal cord mobility (pT2)",
+    "Limited to larynx with vocal cord fixation and/or paraglottic / pre-epiglottic space, postcricoid area, or inner cortex of thyroid cartilage (pT3)",
+    "Invades through outer cortex of thyroid cartilage and/or tissues beyond larynx (trachea, cricoid, strap muscles, thyroid, oesophagus, deep tongue) (pT4a)",
+    "Invades prevertebral space, encases carotid artery, or invades mediastinal structures (pT4b)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins (invasive carcinoma)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "dysplasiaMargin",
+   "label": "Surgical margins (high-grade dysplasia / CIS)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by high-grade dysplasia / in situ disease",
+   "options": [
+    "Uninvolved by high-grade dysplasia / in situ disease",
+    "Involved by high-grade dysplasia / in situ disease",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest / involved margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "largestNodeMm",
+   "label": "Largest involved lymph node (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeLaterality",
+   "label": "Nodal laterality",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "default": "Ipsilateral (including midline)",
+   "options": [
+    "Ipsilateral (including midline)",
+    "Contralateral",
+    "Bilateral",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present, minor (<= 2 mm)",
+    "Present, major (> 2 mm)",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Lung",
+    "Liver",
+    "Bone",
+    "Brain",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional & Molecular",
+   "type": "multiselect",
+   "options": [
+    "Dysplasia, low grade",
+    "Dysplasia, high grade / CIS",
+    "Squamous papilloma",
+    "Squamous metaplasia"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01903",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Total laryngectomy",
+     "subsite": "Glottis",
+     "transglottic": "Present",
+     "laterality": "Right",
+     "focality": "Unifocal",
+     "specimenDims": "9.0 x 6.5 x 5.5",
+     "sizeMm": "28",
+     "blocks": "14",
+     "blockKeyText": "A1-A3: superior pharyngeal, tracheal and base of tongue margins\nA4-A10: right glottic/transglottic tumour with thyroid cartilage\nA11-A14: bilateral level II-IV neck lymph nodes",
+     "histType": "Squamous cell carcinoma, conventional (keratinising)",
+     "grade": "G2: Moderately differentiated",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "extension": "Limited to larynx with vocal cord fixation and/or paraglottic / pre-epiglottic space, postcricoid area, or inner cortex of thyroid cartilage (pT3)",
+     "marginStatus": "Uninvolved by invasive carcinoma",
+     "dysplasiaMargin": "Uninvolved by high-grade dysplasia / in situ disease",
+     "closestMarginMm": "6",
+     "closestMarginSite": "tracheal resection margin",
+     "nodesExamined": "18",
+     "nodesInvolved": "0",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

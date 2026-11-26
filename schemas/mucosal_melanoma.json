@@ -1,0 +1,589 @@
+{
+ "id": "mucosal_melanoma",
+ "version": "2026.11",
+ "name": "Mucosal melanoma (head and neck) resection",
+ "shortName": "H&N · mucosal melanoma resection",
+ "label": "Mucosal melanoma",
+ "organ": "HEAD AND NECK MUCOSA",
+ "system": "Head and neck",
+ "kind": "cancer resection",
+ "rank": 66,
+ "aliases": [
+  "mucosal melanoma",
+  "MM",
+  "sinonasal melanoma",
+  "oral mucosal melanoma",
+  "nasal melanoma",
+  "head and neck melanoma"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "mucosal_melanoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template HN-Mucosal Melanoma (CAP Mucosal Melanoma 1.1.0.0, June 2026; WHO 5th edition; AJCC 8th edition)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/HN-Mucosal%20Melanoma.html",
+  "savedPage": "docs/reference/HN-Mucosal-Melanoma.html",
+  "staging": "Head and neck mucosal melanoma pT3–pT4b and pN0/pN1 (with optional (sn)/(f) suffix) derived by src/staging/mucosal_melanoma.js on AJCC 8th edition."
+ },
+ "match": {
+  "site": [
+   "nasal cavity",
+   "sinonasal",
+   "paranasal sinus",
+   "oral mucosa",
+   "hard palate",
+   "gingiva",
+   "pharynx",
+   "larynx"
+  ],
+  "procedure": [
+   "wide local excision",
+   "maxillectomy",
+   "sinonasal resection",
+   "mucosal resection",
+   "palatectomy"
+  ],
+  "clinical": [
+   "mucosal melanoma",
+   "sinonasal melanoma",
+   "oral mucosal melanoma",
+   "nasal melanoma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|cutaneous|skin|naevus|nevus|frozen|FS)\\b)[\\s\\S]*\\b(?:mucosal\\s+melanoma|(?:nasal|sinonasal|paranasal|maxillary|ethmoid|oral|palate|gingiva|pharyn\\w*|laryn\\w*)[\\s\\S]*melanoma)\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "cutaneous",
+   "skin",
+   "naevus",
+   "nevus",
+   "frozen",
+   "FS"
+  ],
+  "bias": 5,
+  "fill": [
+   {
+    "field": "site",
+    "from": "map",
+    "map": [
+     [
+      "\\bnasal|\\bsinonasal|\\bmaxillary|\\bethmoid|\\bparanasal",
+      "Nasal cavity / paranasal sinuses"
+     ],
+     [
+      "\\boral|\\bpalate|\\bgingiva|\\btongue|\\bbuccal",
+      "Oral cavity"
+     ],
+     [
+      "\\bpharyn|\\bnasopharyn|\\boropharyn|\\bhypopharyn",
+      "Pharynx"
+     ],
+     [
+      "\\blaryn",
+      "Larynx"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Wide local excision",
+   "options": [
+    "Wide local excision",
+    "Endoscopic sinonasal resection",
+    "Partial maxillectomy",
+    "Radical maxillectomy",
+    "Palatectomy / oral resection",
+    "Neck (lymph node) dissection",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour site",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Nasal cavity / paranasal sinuses",
+   "options": [
+    "Nasal cavity / paranasal sinuses",
+    "Oral cavity",
+    "Pharynx",
+    "Larynx",
+    "Other head and neck mucosa (specify)"
+   ]
+  },
+  {
+   "id": "siteOther",
+   "label": "Other mucosal site",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "site",
+    "is": "Other head and neck mucosa (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "laterality",
+   "label": "Laterality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Right",
+   "options": [
+    "Right",
+    "Left",
+    "Midline",
+    "Bilateral",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Unifocal",
+   "options": [
+    "Unifocal",
+    "Multifocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic subtype (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Mucosal melanoma, not specified",
+   "options": [
+    "Mucosal melanoma, not specified",
+    "Mucosal melanoma, lentiginous",
+    "Mucosal melanoma, nodular",
+    "Mucosal melanoma, desmoplastic",
+    "Mucosal melanoma, other (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th head and neck mucosal melanoma & AJCC 8th staging",
+    "intro": "Primary mucosal melanoma of the head and neck begins at pT3 (mucosa/submucosa); pT4a involves deep soft tissue, muscle, cartilage, bone or overlying skin; pT4b involves brain, dura, skull base, lower cranial nerves (IX–XII), masticator space, carotid artery, prevertebral space or mediastinum.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Morphology, immunohistochemistry & molecular testing",
+      "points": [
+       "Pleomorphic epithelioid, spindled, plasmacytoid or small round cell sheets with prominent cherry-red nucleoli, intranuclear pseudoinclusions, necrosis and variable (or absent) melanin pigment.",
+       "Confirm melanocytic lineage with SOX10, S100, Melan-A, HMB45 and/or PRAME (amelanotic tumours mimic SNUC, lymphoma, olfactory neuroblastoma or sarcoma).",
+       "Molecular profile differs from cutaneous melanoma: KIT, NRAS and SF3B1 mutations are enriched while BRAF V600E is uncommon."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Sinonasal and Oral Mucosal Melanoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/mucosal_melanoma/melanoma_pigment.jpg",
+        "caption": "Nodular melanoma showing sheets of pleomorphic epithelioid melanocytes with heavy intracytoplasmic melanin pigmentation (H&E).",
+        "credit": "Ahmet Cemil Kaur / Zekayi Kutlubay et al.",
+        "license": "CC BY 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Nodular_melanoma_with_heavy_melanin_pigmentation.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic subtype",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Mucosal melanoma, other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "pigmentation",
+   "label": "Melanin pigmentation",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Present",
+   "options": [
+    "Present",
+    "Amelanotic / not identified"
+   ]
+  },
+  {
+   "id": "ulceration",
+   "label": "Mucosal ulceration",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Present",
+   "options": [
+    "Present",
+    "Not identified",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry / molecular (SOX10 / S100 / HMB45 / KIT / NRAS / BRAF)",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extent (AJCC 8th pT3–pT4b)",
+   "group": "Extension & Margins",
+   "type": "multiselect",
+   "default": [
+    "Limited to mucosa and/or immediately underlying soft tissue (pT3)"
+   ],
+   "options": [
+    "Limited to mucosa and/or immediately underlying soft tissue (pT3)",
+    "Deep soft tissues, muscle, cartilage, bone, or overlying skin (pT4a)",
+    "Brain, dura, skull base, lower cranial nerves (IX–XII), masticator space, carotid artery, prevertebral space, or mediastinum (pT4b)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins (invasive melanoma)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive melanoma",
+   "options": [
+    "Uninvolved by invasive melanoma",
+    "Involved by invasive melanoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "inSituMargin",
+   "label": "Surgical margins (melanoma in situ)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by melanoma in situ",
+   "options": [
+    "Uninvolved by melanoma in situ",
+    "Involved by melanoma in situ",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest / involved margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeSuffix",
+   "label": "pN suffix",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "default": "None",
+   "options": [
+    "None",
+    "(sn) Sentinel node",
+    "(f) FNA / core"
+   ]
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Lung",
+    "Liver",
+    "Bone",
+    "Brain",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional & Molecular",
+   "type": "multiselect",
+   "options": [
+    "Melanoma in situ / junctional component",
+    "Tumour necrosis",
+    "Satellite mucosal nodules"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01906",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Endoscopic sinonasal resection",
+     "site": "Nasal cavity / paranasal sinuses",
+     "laterality": "Left",
+     "focality": "Unifocal",
+     "specimenDims": "3.8 x 2.6 x 1.8",
+     "sizeMm": "22",
+     "blocks": "8",
+     "blockKeyText": "A1-A3: mucosal resection margins\nA4-A8: pigmented left nasal septum tumour",
+     "histType": "Mucosal melanoma, nodular",
+     "pigmentation": "Present",
+     "ulceration": "Present",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "ihcText": "Tumour cells are diffusely positive for SOX10, S100 and HMB45, and negative for AE1/AE3",
+     "extension": [
+      "Limited to mucosa and/or immediately underlying soft tissue (pT3)"
+     ],
+     "marginStatus": "Uninvolved by invasive melanoma",
+     "inSituMargin": "Uninvolved by melanoma in situ",
+     "closestMarginMm": "3",
+     "closestMarginSite": "posterior septal mucosal margin",
+     "nodesExamined": "0",
+     "nodesInvolved": "0",
+     "nodeSuffix": "None",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "additionalFindings": [
+      "Melanoma in situ / junctional component"
+     ]
+    }
+   }
+  ]
+ }
+}

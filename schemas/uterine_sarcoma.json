@@ -2,7 +2,7 @@
  "id": "uterine_sarcoma",
  "version": "2026.11",
  "name": "Uterine sarcoma resection",
- "shortName": "Uterus · sarcoma resection",
+ "shortName": "Uterus \u00b7 sarcoma resection",
  "label": "Uterine sarcoma",
  "organ": "UTERUS",
  "system": "Gynae",
@@ -246,7 +246,7 @@
    "reference": {
     "title": "WHO 5th classification of uterine sarcomas & diagnostic criteria",
     "intro": "Apply Stanford criteria for spindle leiomyosarcoma (>= 2 of: diffuse moderate-to-severe atypia, tumour cell necrosis, >= 10 mitoses/10 HPF) and distinct myxoid/epithelioid thresholds.",
-    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
     "groups": [
      {
       "heading": "Leiomyosarcoma (spindle, epithelioid, myxoid)",
@@ -258,6 +258,22 @@
        {
         "label": "ExpertPath: Uterine Leiomyosarcoma",
         "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/uterine_sarcoma/uterine_lms.jpg",
+        "caption": "Uterine leiomyosarcoma: intersecting fascicles of atypical spindle cells with nuclear pleomorphism and mitotic figures (H&E).",
+        "credit": "Eiji Kobayashi et al.",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_leiomyosarcoma.jpg"
+       },
+       {
+        "src": "assets/reference/uterine_sarcoma/epithelioid_lms.jpg",
+        "caption": "Epithelioid leiomyosarcoma of the uterus: sheets of round-to-polygonal epithelioid smooth muscle cells with nuclear atypia (H&E).",
+        "credit": "Luke King et al.",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_epithelioid_leiomyosarcoma.jpg"
        }
       ]
      },
@@ -272,6 +288,15 @@
         "label": "ExpertPath: Endometrial Stromal Sarcoma",
         "url": "https://app.expertpath.com/"
        }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/uterine_sarcoma/lg_ess.jpg",
+        "caption": "Endometrial stromal sarcoma: uniform small oval-to-spindle stromal cells surrounding prominent spiral arteriole-like vessels (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Endometrial_stromal_sarcoma_-_very_high_mag.jpg"
+       }
       ]
      },
      {
@@ -284,6 +309,15 @@
        {
         "label": "ExpertPath: Mullerian Adenosarcoma",
         "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/uterine_sarcoma/adenosarcoma.jpg",
+        "caption": "Uterine Mullerian adenosarcoma: benign-appearing glands with condensed periglandular stromal cuffing and leaf-like architecture (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Uterine_adenosarcoma_-_intermed_mag.jpg"
        }
       ]
      }
@@ -342,7 +376,7 @@
   },
   {
    "id": "myometrialInvasion",
-   "label": "Myometrial invasion (governs adenosarcoma pT1a–c)",
+   "label": "Myometrial invasion (governs adenosarcoma pT1a\u2013c)",
    "group": "Histology & Grade",
    "type": "select",
    "default": "Not applicable",
@@ -409,7 +443,7 @@
   },
   {
    "id": "extension",
-   "label": "Extrauterine extension (AJCC 8th pT2–pT4)",
+   "label": "Extrauterine extension (AJCC 8th pT2\u2013pT4)",
    "group": "Extension & Margins",
    "type": "multiselect",
    "default": [

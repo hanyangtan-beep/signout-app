@@ -1,0 +1,651 @@
+{
+ "id": "salivary_carcinoma",
+ "version": "2026.11",
+ "name": "Salivary gland carcinoma resection",
+ "shortName": "Salivary · carcinoma resection",
+ "label": "Salivary Ca",
+ "organ": "SALIVARY GLAND",
+ "system": "Head and neck",
+ "kind": "cancer resection",
+ "rank": 65,
+ "aliases": [
+  "salivary carcinoma",
+  "salivary gland carcinoma",
+  "parotid carcinoma",
+  "submandibular carcinoma",
+  "mucoepidermoid carcinoma",
+  "adenoid cystic carcinoma",
+  "acinic cell carcinoma",
+  "salivary duct carcinoma",
+  "carcinoma ex pleomorphic adenoma",
+  "ca ex PA"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "salivary_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 9th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template HN-Salivary gland (CAP Salivary Gland 1.0.0.0, April 2026; WHO 5th edition; AJCC 9th edition)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/HN-Salivary%20gland.html",
+  "savedPage": "docs/reference/HN-Salivary-gland.html",
+  "staging": "Major salivary gland pT and AJCC 9th pN (pN1 1–3 nodes without ENE; pN2 > 3 nodes or any definitive ENE) derived by src/staging/salivary.js."
+ },
+ "match": {
+  "site": [
+   "parotid",
+   "parotid gland",
+   "submandibular gland",
+   "sublingual gland",
+   "salivary gland"
+  ],
+  "procedure": [
+   "superficial parotidectomy",
+   "total parotidectomy",
+   "deep parotidectomy",
+   "parotidectomy",
+   "submandibular gland resection",
+   "sublingual gland resection"
+  ],
+  "clinical": [
+   "salivary gland carcinoma",
+   "parotid carcinoma",
+   "mucoepidermoid carcinoma",
+   "adenoid cystic carcinoma",
+   "acinic cell carcinoma",
+   "salivary duct carcinoma",
+   "carcinoma ex pleomorphic adenoma",
+   "secretory carcinoma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|warthin|sialadenitis|sialolithiasis|mucocele|benign|melanoma|frozen|FS)\\b)[\\s\\S]*\\b(?:(?:parotid|parotidectomy|submandibular|sublingual|salivary)[\\s\\S]*(?:carcinoma|adenocarcinoma|mucoepidermoid|adenoid\\s+cystic|acinic\\s+cell|secretory|polymorphous|myoepithelial|carcinosarcoma|sialoblastoma|malignant)|(?:mucoepidermoid|adenoid\\s+cystic|acinic\\s+cell|salivary\\s+duct|carcinoma\\s+ex\\s+pleomorphic\\s+adenoma)[\\s\\S]*(?:parotid|submandibular|sublingual|salivary|resection|excision|parotidectomy))\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "warthin",
+   "sialadenitis",
+   "sialolithiasis",
+   "mucocele",
+   "benign",
+   "melanoma",
+   "frozen",
+   "FS"
+  ],
+  "bias": 4,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bsuperficial\\s+parotidectomy\\b",
+      "Parotidectomy, superficial"
+     ],
+     [
+      "\\bdeep\\s+parotidectomy\\b",
+      "Parotidectomy, deep"
+     ],
+     [
+      "\\btotal\\s+parotidectomy\\b",
+      "Parotidectomy, total"
+     ],
+     [
+      "\\bparotidectomy\\b",
+      "Parotidectomy, not specified"
+     ],
+     [
+      "\\bsubmandibular\\b",
+      "Resection, submandibular gland"
+     ],
+     [
+      "\\bsublingual\\b",
+      "Resection, sublingual gland"
+     ]
+    ]
+   },
+   {
+    "field": "site",
+    "from": "map",
+    "map": [
+     [
+      "\\bsuperficial\\s+(?:lobe|parotid)",
+      "Parotid gland, superficial lobe"
+     ],
+     [
+      "\\bdeep\\s+(?:lobe|parotid)",
+      "Parotid gland, deep lobe"
+     ],
+     [
+      "\\bparotid\\b",
+      "Parotid gland, NOS"
+     ],
+     [
+      "\\bsubmandibular\\b",
+      "Submandibular gland"
+     ],
+     [
+      "\\bsublingual\\b",
+      "Sublingual gland"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Parotidectomy, superficial",
+   "options": [
+    "Excision",
+    "Parotidectomy, superficial",
+    "Parotidectomy, deep",
+    "Parotidectomy, total",
+    "Parotidectomy, not specified",
+    "Resection, submandibular gland",
+    "Resection, sublingual gland",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour site",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Parotid gland, superficial lobe",
+   "options": [
+    "Parotid gland, superficial lobe",
+    "Parotid gland, deep lobe",
+    "Parotid gland, entire parotid gland",
+    "Parotid gland, NOS",
+    "Submandibular gland",
+    "Sublingual gland",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "siteOther",
+   "label": "Other site",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "site",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "laterality",
+   "label": "Laterality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Right",
+   "options": [
+    "Right",
+    "Left",
+    "Bilateral",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Unifocal",
+   "options": [
+    "Unifocal",
+    "Multifocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Mucoepidermoid carcinoma",
+   "options": [
+    "Mucoepidermoid carcinoma",
+    "Adenoid cystic carcinoma, tubular / cribriform pattern",
+    "Adenoid cystic carcinoma, solid pattern",
+    "Acinic cell carcinoma",
+    "Secretory carcinoma",
+    "Polymorphous adenocarcinoma, conventional",
+    "Polymorphous adenocarcinoma, cribriform subtype",
+    "Salivary duct carcinoma",
+    "Carcinoma ex pleomorphic adenoma, intracapsular (non-invasive)",
+    "Carcinoma ex pleomorphic adenoma, minimally invasive",
+    "Carcinoma ex pleomorphic adenoma, invasive",
+    "Epithelial-myoepithelial carcinoma",
+    "Hyalinising clear cell carcinoma",
+    "Microsecretory adenocarcinoma",
+    "Intraductal carcinoma",
+    "Basal cell adenocarcinoma",
+    "Myoepithelial carcinoma",
+    "Mucinous adenocarcinoma, NOS",
+    "Mucinous adenocarcinoma, intraductal papillary mucinous neoplasia subtype",
+    "Mucinous adenocarcinoma, colloid / signet-ring subtype",
+    "Sclerosing microcystic adenocarcinoma",
+    "Lymphoepithelial carcinoma",
+    "Sebaceous adenocarcinoma",
+    "Carcinosarcoma",
+    "Sialoblastoma",
+    "Neuroendocrine carcinoma (small cell / large cell)",
+    "Carcinoma, type cannot be determined",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th salivary gland carcinomas & AJCC 9th staging",
+    "intro": "Report histologic subtype, grade/high-grade transformation, capsular invasion depth for carcinoma ex pleomorphic adenoma (intracapsular = pTis; minimally invasive <= 4–6 mm vs widely invasive), and AJCC 9th pN (pN1 = 1–3 nodes without ENE; pN2 = > 3 nodes or any definitive ENE).",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Carcinoma ex pleomorphic adenoma (Ca ex PA)",
+      "points": [
+       "Malignant epithelial neoplasm (most commonly salivary duct carcinoma, adenocarcinoma NOS, or myoepithelial carcinoma) arising within a pre-existing or residual hyalinised/chondromyxoid pleomorphic adenoma (PLAG1 or HMGA2 rearranged).",
+       "Intracapsular (non-invasive) Ca ex PA is staged as pTis; measure maximum distance of invasion beyond the PA capsule for minimally invasive vs widely invasive disease."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Carcinoma Ex Pleomorphic Adenoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/salivary_carcinoma/ca_ex_pa.jpg",
+        "caption": "Carcinoma ex pleomorphic adenoma: high-grade infiltrating carcinoma arising adjacent to hyalinised pleomorphic adenoma (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Carcinoma_ex_pleomorphic_adenoma_--_intermed_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Molecularly defined WHO 5th salivary gland carcinomas",
+      "points": [
+       "Mucoepidermoid carcinoma: CRTC1/CRTC3::MAML2 fusion; grade using AFIP/Brandwein/MSKCC criteria (cystic component, PNI, necrosis, mitoses, anaplasia).",
+       "Adenoid cystic carcinoma: MYB/MYBL1::NFIB fusion; record % solid growth (> 30% solid = high-grade behaviour) and perineural invasion.",
+       "Acinic cell carcinoma: NR4A3 nuclear overexpression; Secretory carcinoma: ETV6::NTRK3 (S100+/mammaglobin+/DOG1-); Hyalinising clear cell carcinoma: EWSR1::ATF1; Microsecretory adenocarcinoma: MEF2C::SS18.",
+       "Salivary duct carcinoma: apocrine comedonecrosis morphology; test AR (strongly positive) and HER2 (IHC/ISH) for targeted therapy."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Salivary Gland Carcinomas",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Other histologic type not listed (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Low grade",
+   "options": [
+    "Low grade",
+    "Intermediate grade",
+    "High grade",
+    "High-grade transformation present",
+    "GX: Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "caExPaInvasionMm",
+   "label": "Extent of invasion beyond PA capsule (mm, if Ca ex PA)",
+   "group": "Histology & Grade",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry / molecular",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Extraparenchymal extension (AJCC 9th pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "No evidence of extraparenchymal extension",
+   "options": [
+    "No evidence of extraparenchymal extension",
+    "Gross extraparenchymal soft tissue extension (pT3)",
+    "Invades skin, bone, cartilage, facial/named nerve, ear canal, or adjacent organ parenchyma (pT4a)",
+    "Invades skull base, pterygoid plates, and/or encases carotid artery (pT4b)",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "noPrimary",
+   "label": "No evidence of primary tumour (pT0)",
+   "group": "Extension & Margins",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest / involved margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined (intraparotid + neck)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "largestNodeMm",
+   "label": "Largest involved lymph node (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE — upgrades AJCC 9th pN to pN2)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present, minor (<= 2 mm)",
+    "Present, major (> 2 mm)",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Lung",
+    "Liver",
+    "Bone",
+    "Brain",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional & Molecular",
+   "type": "multiselect",
+   "options": [
+    "Residual pleomorphic adenoma",
+    "Chronic sialadenitis",
+    "Intraparotid lymph nodes (benign)",
+    "Tumour necrosis"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01905",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Parotidectomy, superficial",
+     "site": "Parotid gland, superficial lobe",
+     "laterality": "Right",
+     "focality": "Unifocal",
+     "specimenDims": "6.2 x 4.5 x 2.8",
+     "sizeMm": "24",
+     "blocks": "10",
+     "blockKeyText": "A1-A8: right superficial parotid tumour with inked surgical margins\nA9-A10: intraparotid lymph nodes",
+     "histType": "Mucoepidermoid carcinoma",
+     "grade": "Low grade",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "extension": "No evidence of extraparenchymal extension",
+     "marginStatus": "Uninvolved by invasive carcinoma",
+     "closestMarginMm": "3",
+     "closestMarginSite": "deep facial nerve plane margin",
+     "nodesExamined": "4",
+     "nodesInvolved": "0",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}
