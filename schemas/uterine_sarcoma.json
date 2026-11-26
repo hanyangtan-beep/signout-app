@@ -1,0 +1,614 @@
+{
+ "id": "uterine_sarcoma",
+ "version": "2026.11",
+ "name": "Uterine sarcoma resection",
+ "shortName": "Uterus · sarcoma resection",
+ "label": "Uterine sarcoma",
+ "organ": "UTERUS",
+ "system": "Gynae",
+ "kind": "cancer resection",
+ "rank": 47,
+ "aliases": [
+  "uterine sarcoma",
+  "leiomyosarcoma",
+  "uterine leiomyosarcoma",
+  "LMS",
+  "endometrial stromal sarcoma",
+  "ESS",
+  "LG-ESS",
+  "HG-ESS",
+  "adenosarcoma",
+  "Mullerian adenosarcoma",
+  "undifferentiated uterine sarcoma",
+  "PEComa"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "uterine_sarcoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template GYN-Sarcoma (CAP Uterine Sarcoma 4.4.0.0, March 2022; WHO 5th edition; AJCC 8th edition Chapter 54 / FIGO 2009)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/GYN-Sarcoma.html",
+  "savedPage": "docs/reference/GYN-Sarcoma.html",
+  "staging": "Dual-track pTNM derived by src/staging/uterine_sarcoma.js (All sarcoma vs Adenosarcoma) on AJCC 8th edition (Chapter 54) / FIGO 2009."
+ },
+ "match": {
+  "site": [
+   "uterus",
+   "uterine",
+   "myometrium",
+   "endometrium",
+   "hysterectomy"
+  ],
+  "procedure": [
+   "total hysterectomy",
+   "TAH",
+   "TLH",
+   "radical hysterectomy",
+   "simple hysterectomy",
+   "supracervical hysterectomy"
+  ],
+  "clinical": [
+   "uterine sarcoma",
+   "leiomyosarcoma",
+   "endometrial stromal sarcoma",
+   "adenosarcoma",
+   "undifferentiated uterine sarcoma",
+   "PEComa"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|leiomyoma|fibroid|adenomyosis|endometrioid|serous\\s+carcinoma|frozen|FS)\\b)[\\s\\S]*\\b(?:uterine\\s+sarcoma|leiomyosarcoma|endometrial\\s+stromal\\s+sarcoma|adenosarcoma|undifferentiated\\s+uterine\\s+sarcoma)\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "leiomyoma",
+   "fibroid",
+   "adenomyosis",
+   "frozen",
+   "FS"
+  ],
+  "bias": 4,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bradical\\s+hysterectomy\\b",
+      "Radical hysterectomy"
+     ],
+     [
+      "\\bsupracervical\\b",
+      "Supracervical hysterectomy"
+     ],
+     [
+      "\\btotal\\s+hysterectomy\\b|\\bTAH\\b|\\bTLH\\b",
+      "Total hysterectomy and bilateral salpingo-oophorectomy"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Total hysterectomy and bilateral salpingo-oophorectomy",
+   "options": [
+    "Total hysterectomy and bilateral salpingo-oophorectomy",
+    "Simple hysterectomy",
+    "Radical hysterectomy",
+    "Supracervical hysterectomy",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "hysterectomyType",
+   "label": "Hysterectomy type",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Abdominal",
+   "options": [
+    "Abdominal",
+    "Vaginal",
+    "Vaginal, laparoscopic-assisted",
+    "Laparoscopic",
+    "Laparoscopic, robotic-assisted",
+    "Other (specify)",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "specimenIntegrity",
+   "label": "Specimen integrity",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Intact",
+   "options": [
+    "Intact",
+    "Opened",
+    "Morcellated",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Leiomyosarcoma, NOS",
+   "options": [
+    "Leiomyosarcoma, NOS",
+    "Leiomyosarcoma, epithelioid type",
+    "Leiomyosarcoma, myxoid type",
+    "Endometrial stromal sarcoma, low grade",
+    "Endometrial stromal sarcoma, high grade",
+    "Adenosarcoma, NOS",
+    "Adenosarcoma with sarcomatous overgrowth",
+    "Rhabdomyosarcoma",
+    "Malignant perivascular epithelioid cell tumour (PEComa)",
+    "Undifferentiated uterine sarcoma",
+    "Other (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th classification of uterine sarcomas & diagnostic criteria",
+    "intro": "Apply Stanford criteria for spindle leiomyosarcoma (>= 2 of: diffuse moderate-to-severe atypia, tumour cell necrosis, >= 10 mitoses/10 HPF) and distinct myxoid/epithelioid thresholds.",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Leiomyosarcoma (spindle, epithelioid, myxoid)",
+      "points": [
+       "Spindle LMS: >= 2 of diffuse moderate-to-severe cytologic atypia, coagulative tumour cell necrosis, and >= 10 mitoses / 10 HPF (4 mitoses/mm2).",
+       "Myxoid LMS: lower thresholds (>= 1 of: moderate-to-severe atypia, tumour cell necrosis, > 1 mitosis/10 HPF, or infiltrative borders); Epithelioid LMS: >= 4 mitoses/10 HPF or tumour cell necrosis with atypia."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Uterine Leiomyosarcoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Low-grade vs High-grade Endometrial Stromal Sarcoma",
+      "points": [
+       "LG-ESS: tongue-like myometrial/LVI infiltration of uniform small stromal cells with spiral-arteriole network; CD10+, ER+, PR+; JAZF1-SUZ12 or PHF1 fusions.",
+       "HG-ESS: YWHAE-NUTM2A/B (round cell component, cyclin D1+, BCOR+, CD10/ER/PR-) or ZC3H7B-BCOR / BCOR ITD (myxoid spindle/round cells)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Endometrial Stromal Sarcoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Mullerian adenosarcoma & sarcomatous overgrowth",
+      "points": [
+       "Benign/atypical Mullerian epithelium with leaf-like/phyllodes architecture and condensed periglandular stromal cuffing.",
+       "Sarcomatous overgrowth (>= 25% of tumour composed of pure high-grade sarcoma without epithelial component) carries a worse prognosis; note adenosarcoma uses a separate pT1a/b/c myometrial invasion staging track."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Mullerian Adenosarcoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "adenosarcomaGrade",
+   "label": "Histologic grade (for adenosarcoma)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Low grade",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Adenosarcoma, NOS",
+     "Adenosarcoma with sarcomatous overgrowth"
+    ]
+   },
+   "options": [
+    "Low grade",
+    "High grade",
+    "With sarcomatous overgrowth",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "mitoticRate",
+   "label": "Mitotic rate (per 10 HPF / 2 mm2)",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "necrosis",
+   "label": "Coagulative tumour cell necrosis",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "myometrialInvasion",
+   "label": "Myometrial invasion (governs adenosarcoma pT1a–c)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not applicable",
+   "options": [
+    "Not applicable",
+    "Not identified (limited to endometrium / endocervix)",
+    "Less than 50% myometrial invasion",
+    "50% or more myometrial invasion",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "peritonealFluid",
+   "label": "Peritoneal / ascitic fluid",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not submitted / unknown",
+   "options": [
+    "Not submitted / unknown",
+    "Malignant cells not identified",
+    "Atypical",
+    "Suspicious",
+    "Malignant cells present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Extrauterine extension (AJCC 8th pT2–pT4)",
+   "group": "Extension & Margins",
+   "type": "multiselect",
+   "default": [
+    "Limited to uterus"
+   ],
+   "options": [
+    "Limited to uterus",
+    "Adnexa (ovary / fallopian tube)",
+    "Other extrauterine pelvic tissue (parametrium / vagina / pelvic wall)",
+    "Abdominal tissues (1 site)",
+    "Abdominal tissues (> 1 site)",
+    "Bladder and/or rectal mucosa",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "All margins uninvolved by sarcoma",
+   "options": [
+    "All margins uninvolved by sarcoma",
+    "Involved by sarcoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes with frank metastasis",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesItc",
+   "label": "Nodes with isolated tumour cells only (<= 0.2 mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeSites",
+   "label": "Lymph node station(s)",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Lung",
+    "Liver",
+    "Bone",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "noPrimary",
+   "label": "No residual primary tumour (pT0)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "molecularNotes",
+   "label": "Molecular / fusion studies",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01805",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Total hysterectomy and bilateral salpingo-oophorectomy",
+     "hysterectomyType": "Abdominal",
+     "specimenIntegrity": "Intact",
+     "specimenDims": "14.5 x 11.0 x 8.5",
+     "sizeMm": "78",
+     "blocks": "14",
+     "blockKeyText": "A1-A2: cervix and vaginal cuff\nA3-A8: uterine mass with serosa and adjacent myometrium\nA9-A10: endometrium and uninvolved myometrium\nA11-A14: bilateral ovaries and fallopian tubes",
+     "histType": "Leiomyosarcoma, NOS",
+     "mitoticRate": "18 per 10 HPF",
+     "necrosis": "Present",
+     "myometrialInvasion": "Not applicable",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "ihcText": "SMA, desmin and h-caldesmon positive; Ki-67 40%",
+     "extension": [
+      "Limited to uterus"
+     ],
+     "marginStatus": "All margins uninvolved by sarcoma",
+     "closestMarginMm": "5",
+     "closestMarginSite": "uterine serosa",
+     "nodesExamined": "0",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

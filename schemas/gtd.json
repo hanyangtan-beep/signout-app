@@ -1,0 +1,585 @@
+{
+ "id": "gtd",
+ "version": "2026.11",
+ "name": "Gestational trophoblastic disease",
+ "shortName": "Trophoblast · gestational trophoblastic disease",
+ "label": "GTD",
+ "organ": "TROPHOBLAST",
+ "system": "Gynae",
+ "kind": "cancer resection",
+ "rank": 48,
+ "aliases": [
+  "GTD",
+  "gestational trophoblastic disease",
+  "gestational trophoblastic neoplasia",
+  "choriocarcinoma",
+  "invasive mole",
+  "hydatidiform mole",
+  "placental site trophoblastic tumour",
+  "PSTT",
+  "epithelioid trophoblastic tumour",
+  "ETT"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "gtd",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template GYN-Trophoblast (CAP Trophoblast 4.1.0.1, November 2021; WHO 5th edition; AJCC 8th edition Chapter 56 / FIGO)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/GYN-Trophoblast.html",
+  "savedPage": "docs/reference/GYN-Trophoblast.html",
+  "staging": "pTNM derived by src/staging/gtd.js on AJCC 8th edition (Chapter 56) / FIGO."
+ },
+ "match": {
+  "site": [
+   "uterus",
+   "uterine",
+   "trophoblast",
+   "placental",
+   "endometrium"
+  ],
+  "procedure": [
+   "dilation and curettage",
+   "D&C",
+   "simple hysterectomy",
+   "radical hysterectomy",
+   "supracervical hysterectomy",
+   "pelvic exenteration"
+  ],
+  "clinical": [
+   "gestational trophoblastic",
+   "choriocarcinoma",
+   "invasive mole",
+   "hydatidiform mole",
+   "placental site trophoblastic tumour",
+   "PSTT",
+   "epithelioid trophoblastic tumour",
+   "ETT"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:products\\s+of\\s+conception|POC|miscarriage|ectopic|frozen|FS)\\b)[\\s\\S]*\\b(?:choriocarcinoma|invasive\\s+mole|hydatidiform\\s+mole|placental\\s+site\\s+trophoblastic|PSTT|epithelioid\\s+trophoblastic|ETT|gestational\\s+trophoblastic)\\b",
+  "exclude": [
+   "products of conception",
+   "POC",
+   "miscarriage",
+   "ectopic",
+   "frozen",
+   "FS"
+  ],
+  "bias": 4,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bD\\s*&\\s*C\\b|\\bdilation\\s+and\\s+curettage\\b|\\bcurettage\\b",
+      "Dilation and curettage"
+     ],
+     [
+      "\\bradical\\s+hysterectomy\\b",
+      "Radical hysterectomy"
+     ],
+     [
+      "\\bsupracervical\\b",
+      "Supracervical hysterectomy"
+     ],
+     [
+      "\\bpelvic\\s+exenteration\\b",
+      "Pelvic exenteration"
+     ],
+     [
+      "\\bhysterectomy\\b",
+      "Simple hysterectomy"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Simple hysterectomy",
+   "options": [
+    "Dilation and curettage",
+    "Simple hysterectomy",
+    "Supracervical hysterectomy",
+    "Radical hysterectomy",
+    "Pelvic exenteration",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "hysterectomyType",
+   "label": "Hysterectomy type",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Abdominal",
+   "options": [
+    "Abdominal",
+    "Vaginal",
+    "Vaginal, laparoscopic-assisted",
+    "Laparoscopic",
+    "Laparoscopic, robotic-assisted",
+    "Other (specify)",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "specimenIntegrity",
+   "label": "Specimen integrity",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Intact",
+   "options": [
+    "Intact",
+    "Opened",
+    "Morcellated",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "site",
+   "label": "Tumour site",
+   "group": "Specimen & Gross",
+   "type": "multiselect",
+   "default": [
+    "Uterine corpus"
+   ],
+   "options": [
+    "Uterine corpus",
+    "Uterine cervix",
+    "Cannot be determined",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Choriocarcinoma",
+   "options": [
+    "Hydatidiform mole, invasive",
+    "Choriocarcinoma",
+    "Placental site trophoblastic tumour",
+    "Epithelioid trophoblastic tumour",
+    "Malignant trophoblastic tumour, type cannot be determined",
+    "Other (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th gestational trophoblastic neoplasms & IHC panel",
+    "intro": "Distinguish choriocarcinoma (trimorphic/dimorphic, hCG+, high Ki-67 > 90%) from intermediate trophoblastic tumours: PSTT (hPL+, Mel-CAM+, Ki-67 10–30%) and ETT (p63+, Cyclin E+, HLA-G+).",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Invasive hydatidiform mole",
+      "points": [
+       "Hydropic chorionic villi with circumferential trophoblastic hyperplasia directly invading myometrium or myometrial vessels.",
+       "p57 nuclear expression is lost in complete mole villous cytotrophoblast and stromal cells (retained in partial mole)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Invasive Hydatidiform Mole",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "Choriocarcinoma",
+      "points": [
+       "Biphasic/trimorphic sheets of cytotrophoblast, intermediate trophoblast and multinucleated syncytiotrophoblast with extensive haemorrhage and necrosis, lacking chorionic villi.",
+       "Diffusely hCG+, SALL4+, GATA3+, Ki-67 > 90%."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Gestational Choriocarcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     },
+     {
+      "heading": "PSTT & ETT (intermediate trophoblastic tumours)",
+      "points": [
+       "PSTT: monomorphic implantation-site intermediate trophoblast infiltrating between myometrial fibres and replacing spiral artery walls; hPL+, Mel-CAM+, p63-, Ki-67 10–30%.",
+       "ETT: nests and cords of chorionic-type intermediate trophoblast with eosinophilic cytoplasm and geographic hyaline necrosis; p63+, Cyclin E+, GATA3+, hPL focal/negative."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Placental Site & Epithelioid Trophoblastic Tumour",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Equivocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "p57",
+   "label": "p57 immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Lost in villous cytotrophoblast and stromal cells (complete mole pattern)",
+    "Retained in villous cytotrophoblast and stromal cells",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Other immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extension (AJCC 8th pT)",
+   "group": "Extension & Margins",
+   "type": "multiselect",
+   "default": [
+    "Limited to the uterus"
+   ],
+   "options": [
+    "Limited to the uterus",
+    "Other genital structures (ovary, fallopian tube, vagina, broad ligament)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins (overall)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "All margins uninvolved by tumour",
+   "options": [
+    "All margins uninvolved by tumour",
+    "Involved by tumour",
+    "Cannot be assessed",
+    "Not applicable (curettage)"
+   ]
+  },
+  {
+   "id": "vaginalCuffMargin",
+   "label": "Ectocervical / vaginal cuff margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by tumour",
+   "options": [
+    "Uninvolved by tumour",
+    "Involved by tumour",
+    "Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "parametrialMargin",
+   "label": "Parametrial / paracervical margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by tumour",
+   "options": [
+    "Uninvolved by tumour",
+    "Involved by tumour",
+    "Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (AJCC 8th pM1a/b)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Lung",
+    "Spleen",
+    "Kidney",
+    "Gastrointestinal tract",
+    "Liver",
+    "Brain",
+    "Lymph node(s)",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "metastasisCount",
+   "label": "Number of metastases (WHO/FIGO)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "default": "",
+   "options": [
+    "",
+    "1–4",
+    "5–8",
+    "> 8"
+   ]
+  },
+  {
+   "id": "noPrimary",
+   "label": "No residual primary tumour (pT0)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional & Molecular",
+   "type": "multiselect",
+   "options": [
+    "Implantation site"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalOther",
+   "label": "Other additional findings",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01806",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Simple hysterectomy",
+     "hysterectomyType": "Abdominal",
+     "specimenIntegrity": "Intact",
+     "site": [
+      "Uterine corpus"
+     ],
+     "specimenDims": "11.0 x 7.5 x 5.5",
+     "sizeMm": "34",
+     "blocks": "10",
+     "blockKeyText": "A1-A2: cervix and vaginal cuff\nA3-A7: haemorrhagic uterine mass with full-thickness myometrium\nA8-A10: uninvolved endometrium and myometrium",
+     "histType": "Choriocarcinoma",
+     "lvi": "Present",
+     "pni": "Not identified",
+     "p57": "Not applicable",
+     "ihcText": "Beta-hCG, SALL4 and GATA3 diffusely positive; Ki-67 index > 90%",
+     "extension": [
+      "Limited to the uterus"
+     ],
+     "marginStatus": "All margins uninvolved by tumour",
+     "vaginalCuffMargin": "Uninvolved by tumour",
+     "parametrialMargin": "Uninvolved by tumour",
+     "closestMarginMm": "12",
+     "closestMarginSite": "uterine serosa",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

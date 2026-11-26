@@ -18,59 +18,6 @@
    "roadmap": "Later"
   },
   {
-   "id": "gi_net",
-   "name": "GI neuroendocrine tumour resection (stomach, duodenum / ampulla, jejunum\u2013ileum, appendix, colon)",
-   "label": "GI NET",
-   "system": "GI",
-   "kind": "cancer resection",
-   "roadmap": "Later"
-  },
-  {
-   "id": "small_intestine_carcinoma",
-   "name": "Small intestine carcinoma resection",
-   "label": "Small bowel Ca",
-   "system": "GI",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "GI-Small intestine"
-  },
-  {
-   "id": "anal_carcinoma",
-   "name": "Anal canal carcinoma resection",
-   "label": "Anal Ca",
-   "system": "GI",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "GI-Anus"
-  },
-  {
-   "id": "vaginal_carcinoma",
-   "name": "Vaginal carcinoma resection",
-   "label": "Vagina Ca",
-   "system": "Gynae",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "GYN-Vagina"
-  },
-  {
-   "id": "uterine_sarcoma",
-   "name": "Uterine sarcoma resection",
-   "label": "Uterine sarcoma",
-   "system": "Gynae",
-   "kind": "cancer resection",
-   "roadmap": "Next",
-   "qmh": "GYN-Sarcoma"
-  },
-  {
-   "id": "gtd",
-   "name": "Gestational trophoblastic disease",
-   "label": "GTD",
-   "system": "Gynae",
-   "kind": "cancer resection",
-   "roadmap": "Later",
-   "qmh": "GYN-Trophoblast"
-  },
-  {
    "id": "nasopharyngeal_carcinoma",
    "name": "Nasopharyngeal carcinoma",
    "label": "NPC",

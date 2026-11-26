@@ -1,0 +1,843 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Anal cancers</title>
+<link rel="stylesheet" type="text/css" href="view.css" media="all">
+<script type="text/javascript" src="view.js"></script>
+<script>
+function updateDescription (frm) 
+{
+    var Template = "";
+	
+/*
+if (frm.A01.value !== ""){
+	Template += "- Procedure: " + "\n" + frm.A01.value + "\n";
+}
+
+if (frm.A02.value !== ""){
+	Template += "- Specimen integrity: " + "\n" + frm.A02.value + "\n";
+}
+
+if (frm.A03.value !== ""){
+	Template += "- Tumor site: " + "\n" + frm.A03.value + "\n";
+}
+
+if (frm.A04.value !== ""){
+	Template += "- Tumor size: " + "\n" + frm.A04.value + "\n";
+}
+*/
+if (frm.A05.value !== ""){
+	Template += "- Tumor histology and immunohistochemical studies: " + "\n" + "  - " + frm.A05.value + "\n";
+}
+
+if (frm.A06.value !== ""){
+	Template += "\n" + "- Histologic type (WHO 2019): " + frm.A06.value + "\n";
+}
+
+if (frm.A07.value !== ""){
+	Template += "- Histologic grade: " + frm.A07.value + "\n";
+}
+
+if (document.getElementById("A08").checked || document.getElementById("A09").checked || 
+	document.getElementById("A10").checked || document.getElementById("A11").checked ||
+	document.getElementById("A12").checked || document.getElementById("A13").checked || 
+	document.getElementById("A14").checked || document.getElementById("A15").checked || 
+	document.getElementById("A16").checked || document.getElementById("A17").checked ||
+	document.getElementById("A18").checked){
+	Template += "- Tumor extension:" + "\n";
+}
+
+if (document.getElementById("A08").checked){
+	Template += frm.A08.value + "\n";
+}
+
+if (document.getElementById("A09").checked){
+	Template += frm.A09.value + "\n";
+}
+
+if (document.getElementById("A10").checked){
+	Template += frm.A10.value + "\n";
+}
+
+if (document.getElementById("A11").checked){
+	Template += frm.A11.value + "\n";
+}
+
+if (document.getElementById("A12").checked){
+	Template += frm.A12.value + "\n";
+}
+
+if (document.getElementById("A13").checked){
+	Template += frm.A13.value + "\n";
+}
+
+if (document.getElementById("A14").checked){
+	Template += frm.A14.value + "\n";
+}
+
+if (document.getElementById("A15").checked){
+	Template += frm.A15.value + "\n";
+}
+
+if (document.getElementById("A16").checked){
+	Template += frm.A16.value + "\n";
+}
+
+if (document.getElementById("A17").checked){
+	Template += frm.A17.value + "\n";
+}
+
+if (document.getElementById("A18").checked){
+	Template += frm.A18.value + "\n";
+}
+
+if (frm.A19.value !== ""){
+	Template += "- Lymphatic and/or Vascular Invasion: " + frm.A19.value + "\n";
+}
+
+if (frm.A20.value !== ""){
+	Template += "- Perineural invasion: " + frm.A20.value + "\n";
+}
+
+if (frm.A21.value !== ""){
+	Template += "- Treatment effect: "+ frm.A21.value + "\n";
+}
+
+if (frm.A22.value + frm.A23.value + frm.A24.value + frm.A25.value + 
+	frm.A26.value + frm.A27.value + frm.A28.value !== ""){
+	Template += "\n" + "- Surgical margins: " +"\n";
+}
+
+if (frm.A22.value !== ""){
+	Template +=  "  - Proximal margins: "  + frm.A22.value + "\n" ;
+}
+
+if (frm.A23.value !== ""){
+	Template +=  "  - Distal margins: "  + frm.A23.value + "\n" ;
+}
+
+if (frm.A24.value !== ""){
+	Template +=  "  - Circumferential (radial) margin: "  + frm.A24.value + "\n" ;
+}
+
+if (frm.A25.value !== ""){
+	Template +=  "  - Other margin(s) (specify: ): "  + frm.A25.value + "\n" ;
+}
+
+if (frm.A26.value !== ""){
+	Template +=  "  - Deep margin: "  + frm.A26.value + "\n" ;
+}
+
+if (frm.A27.value !== ""){
+	Template +=  "  - Mucosal margin: "  + frm.A27.value + "\n" ;
+}
+
+if (frm.A28.value !== ""){
+	Template +=  "  - Other margin(s) (specify: ): "  + frm.A28.value + "\n" ;
+}
+
+if (frm.A29.value + frm.A30.value + frm.A31.value + frm.A32.value + frm.A33.value + frm.A34.value + frm.A35.value !== ""){
+	Template += "\n" + "- Lymph nodes examination: " + "\n";
+}	
+
+if (frm.A29.value !== ""){
+	Template += "  - Number of external iliac lymph nodes examined: " + frm.A29.value + "\n";
+}
+
+if (frm.A30.value !== ""){
+	Template += "  - Number of external iliac lymph nodes involved: " + frm.A30.value + "\n";
+}
+
+if (frm.A31.value !== ""){
+	Template += "  - Number of regional lymph nodes examined: " + frm.A31.value + "\n";
+}
+
+if (frm.A32.value !== ""){
+	Template += "  - Number of lymph nodes involved: " + frm.A32.value + "\n";
+}
+
+if (frm.A33.value !== ""){
+	Template += "  - Extranodal extension (ENE) : " + frm.A33.value + "\n";
+}
+
+if (frm.A34.value !== ""){
+	Template += "  - Size of largest metastatic deposit (mm), specify site: " + frm.A34.value + "\n";
+}
+
+if (frm.A35.value !== ""){
+	Template += "  - Size of largest lymph node involved (mm), specify site: " + frm.A35.value + "\n";
+}
+
+if (document.getElementById("A50").checked || document.getElementById("A51").checked ||
+	document.getElementById("A52").checked || document.getElementById("A53").checked ||
+	document.getElementById("A54").checked || document.getElementById("A55").checked ){
+	Template += "\n" + "- Distant metastasis:" + "\n";
+}
+
+if (document.getElementById("A50").checked){
+	Template += frm.A50.value + "\n";
+}
+
+if (document.getElementById("A51").checked){
+	Template += frm.A51.value + "\n";
+}
+
+if (document.getElementById("A52").checked){
+	Template += frm.A52.value + "\n";
+}
+
+if (document.getElementById("A53").checked){
+	Template += frm.A53.value + "\n";
+}
+
+if (document.getElementById("A54").checked){
+	Template += frm.A54.value + "\n";
+}
+
+if (document.getElementById("A55").checked){
+	Template += frm.A55.value + "\n";
+}
+
+if (document.getElementById("A36").checked || document.getElementById("A37").checked || 
+	document.getElementById("A38").checked || frm.A39.value + frm.A40.value + frm.A41.value !== ""){
+	Template += "\n" + "- Pathologic stage classification (pTNM, AJCC 9th edition):" + "\n";
+}
+
+if (document.getElementById("A36").checked || document.getElementById("A37").checked || 
+	document.getElementById("A38").checked){
+	Template += "  - TNM Descriptors:" + "\n";
+}
+
+if (document.getElementById("A36").checked){
+	Template += "    " + frm.A36.value + "\n";
+}
+
+if (document.getElementById("A37").checked){
+	Template += "    " + frm.A37.value + "\n";
+}
+
+if (document.getElementById("A38").checked){
+	Template += "    " +frm.A38.value + "\n";
+}
+
+if (frm.A39.value !== ""){
+	Template += "  - Primary tumor (pT): " + "\n" + "  " + frm.A39.value + "\n";
+}
+
+if (frm.A40.value !== ""){
+	Template += "  - Regional lymph nodes (pN): " + "\n"  + "  " + frm.A40.value + "\n";
+}
+
+if (frm.A41.value !== ""){
+	Template += "  - Distant metastasis (pM): " + "\n" +  "  " + frm.A41.value + "\n";
+}
+
+if (document.getElementById("A43").checked || document.getElementById("A44").checked ||
+	document.getElementById("A45").checked || document.getElementById("A46").checked ||
+	document.getElementById("A47").checked || frm.A48.value !==""){
+	Template += "\n" + "- Additional pathologic findings: " + "\n";
+}
+
+if (document.getElementById("A43").checked){
+	Template += frm.A43.value + "\n";
+}
+
+if (document.getElementById("A44").checked){
+	Template += frm.A44.value + "\n";
+}
+
+if (document.getElementById("A45").checked){
+	Template += frm.A45.value + "\n";
+}
+
+if (document.getElementById("A46").checked){
+	Template += frm.A46.value + "\n";
+}
+
+if (document.getElementById("A47").checked){
+	Template += frm.A47.value + "\n";
+}
+
+if (frm.A48.value !== ""){
+	Template += "  - Others (specify): " +  frm.A48.value + "\n";
+}
+
+if (frm.A49.value !== ""){
+	Template += "\n" + "- Additional notes: " + "\n" + "  - " +  frm.A49.value + "\n";
+}
+
+frm.holdtext.value = Template;
+}
+
+function CopyToClipboard() {
+  /* Get the text field */
+  var copyText = document.getElementById("holdtext");
+
+  /* Select the text field */
+  copyText.select();
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+
+  /* Alert the copied text */
+  alert("Report copied to clipboard");
+}
+</script>
+<style>
+table, th, td {
+  border: 1px solid silver;
+  border-collapse: collapse;
+  padding: 4px;
+}
+</style>
+</head>
+
+<body>
+<img id="top" src="top.png" alt="">
+	<div id="form_container">
+	<div class="form_description">
+		<h2><a href=".\cap\Cancer-Protocols-2023-09-Update\Gastrointestinal Protocol Folder\Anus_5.0.0.0.REL_CAPCP.pdf" target="_blank">
+		<div class="tooltip">Carcinoma of the Anus
+		<span class="tooltiptext">click to access explanations in the original CAP template</span>
+		</div>
+		</a></h2>
+	</div>
+	
+<form>
+<p>
+There is different protocol for <a href=".\cap\Cancer-Protocols-2023-09-Update\Gastrointestinal Protocol Folder\Anus.Bx.TDE_5.0.0.0.REL_CAPCP.pdf" target="_blank">biopsy specimen</a>
+</p>
+<!--
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend><label class="description">Gross descriptions:</label></legend>
+<p>
+<table border="1">
+<col width="40%">
+<tr>
+<td>
+<label class="description">- Procedure:</label>
+</td>
+<td>
+<select class="element select large" ID="A01">
+	<option value=""></option>
+	<option value="  - Abdominoperineal Resection">Abdominoperineal Resection</option> 
+	<option value="  - Excisional biopsy (polypectomy)">Excisional biopsy (polypectomy)</option>
+	<option value="  - Local excision (transanal disk excision)">Local excision (transanal disk excision)</option>
+	<option value="  - Other (specify):">Other (specify):</option>
+	<option value="  - Not specified">Not specified</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Specimen integrity:</label> 
+</td>
+<td>
+<select class="element select large" ID="A02">
+	<option value=""></option>
+	<option value="  - Intact">Intact</option>
+	<option value="  - Fragmented, number of pieces:">Fragmented, number of pieces:</option>
+	<option value="  - Other (specify):">Other (specify):</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Tumor site:</label> 
+</td>
+<td>
+<select class="element select large" ID="A03">
+	<option value=""></option>
+	<option value="  - Anal canal">Anal canal</option>
+	<option value="  - Perianal region">Perianal region</option>
+	<option value="  - Anus, not otherwise specified">Anus, not otherwise specified</option>
+	<option value="  - Not known">Not known</option>
+	<option value="  - Other (specify):">Other (specify):</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Tumor size:</label> 
+</td>
+<td>
+<select class="element select large" ID="A04">
+		<option value=""></option>
+		<option value="  - Greatest dimension (mm): ">Greatest dimension (mm): </option>
+		<option value="  - All dimensions (mm x mm x mm): ">All dimensions (mm x mm x mm):</option>
+		<option value="  - Cannot be determined (explain): ">Cannot be determined (explain):</option>
+</select>
+</td>
+</tr>
+</table>
+</p>
+</fieldset>
+</p>
+-->
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend><label class="description">Microscopic descriptions:</label></legend>
+<p><label class="description">- Tumor histology and immunohistochemical studies: </label>
+ <textarea ID="A05" class="element textarea medium"></textarea>
+</p>
+<p>
+<table border="1">
+<col width="40%">
+<tr>
+<td>
+<label class="description">- <a href=".\cap\Cancer-Protocols-2022-06-Update\Gastrointestinal Protocol Folder\Anus_5.0.0.0.REL_CAPCP.pdf#page=11" target="_blank">Histologic type (WHO 2019)</a>:</label> 
+</td>
+<td>
+<select class="element select large" ID="A06">
+	<option value=""></option>
+	<option value="Squamous cell carcinoma">Squamous cell carcinoma</option>
+	<option value="Basaloid squamous cell carcinoma">Basaloid squamous cell carcinoma</option>
+	<option value="Basal cell carcinoma">Basal cell carcinoma</option>
+	<option value="Verrucous squamous cell carcinoma">Verrucous squamous cell carcinoma</option>
+	<option value="Neuroendocrine carcinoma">Neuroendocrine carcinoma</option>
+	<option value="Adenocarcinoma">Adenocarcinoma</option>
+	<option value="Adenocarcinoma of the anal glands">Adenocarcinoma of the anal glands</option>
+	<option value="Neuroendocrine carcinoma">Neuroendocrine carcinoma</option>
+	<option value="Large cell neuroendocrine carcinoma">Large cell neuroendocrine carcinoma</option>
+	<option value="Small cell neuroendocrine carcinoma">Small cell neuroendocrine carcinoma</option>
+	<option value="Mixed adenoneuroendocrine carcinoma (MANEC)">Mixed adenoneuroendocrine carcinoma (MANEC)</option>
+	<option value="Undifferentiated carcinoma">Undifferentiated carcinoma</option>
+	<option value="Other histologic type not listed (specify):">Other histologic type not listed (specify):</option>
+	<option value="Carcinoma, type cannot be determined">Carcinoma, type cannot be determined</option>	
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- <a href=".\cap\Cancer-Protocols-2022-06-Update\Gastrointestinal Protocol Folder\Anus_5.0.0.0.REL_CAPCP.pdf#page=13" target="_blank">Histologic grade</a>:</label>
+</td>
+<td>
+<select class="element select large" ID="A07">
+	<option value=""></option>
+	<option value="G1: Well differentiated">G1: Well differentiated</option>
+	<option value="G2: Moderately differentiated">G2: Moderately differentiated</option>
+	<option value="G3: Poorly differentiated">G3: Poorly differentiated</option>
+	<option value="G4: Undifferentiated">G4: Undifferentiated</option>	
+	<option value="GX: Cannot be assessed">GX: Cannot be assessed</option>	
+	<option value="Other (specify):">Other (specify):</option>
+	<option value="Not applicable">Not applicable</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class=""> + Lymphatic and/or Vascular Invasion: </label>
+</td>
+<td>
+<select class="element select large" ID="A19">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class=""> + Perineural invasion: </label>
+</td>
+<td>
+<select class="element select large" ID="A20">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- <a href=".\cap\Cancer-Protocols-2022-06-Update\Gastrointestinal Protocol Folder\Anus_5.0.0.0.REL_CAPCP.pdf#page=13" target="_blank">Treatment effect</a>: </label>
+</td>
+<td>
+<select class="element select large" ID="A21">
+	<option value=""></option>
+	<option value="No known presurgical therapy">No known presurgical therapy</option>
+	<option value="Present, with no viable cancer cells (complete response, score 0)">Present, with no viable cancer cells (complete response, score 0)</option>
+	<option value="Present, with single cells or rare small groups of cancer cells (near complete response, score 1)">Present, with single cells or rare small groups of cancer cells (near complete response, score 1)</option>
+	<option value="Present, with residual cancer showing evident tumor regression, but more than single cells or rare small groups of cancer cells (partial response, score 2)">Present, with residual cancer showing evident tumor regression, but more than single cells or rare small groups of cancer cells (partial response, score 2)</option>
+	<option value="Present (not otherwise specified)">Present (not otherwise specified)</option>
+	<option value="Absent, with extensive residual cancer and no evident tumor regression (poor or no response, score 3)">Absent, with extensive residual cancer and no evident tumor regression (poor or no response, score3)</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+</table>
+</p>
+
+<p>
+<label class="description">- Tumor extension:</label>
+<input class="element checkbox" type="checkbox"   id="A09" value="  - Carcinoma in situ"><label  class="choice">Carcinoma in situ</label>
+<input class="element checkbox" type="checkbox"   id="A10" value="  - Tumor invades lamina propria"><label  class="choice">Tumor invades lamina propria</label>
+<input class="element checkbox" type="checkbox"   id="A11" value="  - Tumor invades muscularis mucosae"><label  class="choice">Tumor invades muscularis mucosae</label>
+<input class="element checkbox" type="checkbox"   id="A12" value="  - Tumor invades submucosa"><label  class="choice">Tumor invades submucosa</label>
+<input class="element checkbox" type="checkbox"   id="A13" value="  - Tumor invades into but not through anal sphincter muscle"><label  class="choice">Tumor invades into but not through anal sphincter muscle</label>
+<input class="element checkbox" type="checkbox"   id="A14" value="  - Tumor invades into but not through muscularis propria of rectum"><label  class="choice">Tumor invades into but not through muscularis propria of rectum</label>
+<input class="element checkbox" type="checkbox"   id="A15" value="  - Tumor invades through anal sphincter muscle into perianal or perirectal soft tissue without involvement of adjacent structures"><label  class="choice">Tumor invades through anal sphincter muscle into perianal or perirectal soft tissue without involvement of adjacent structures</label>
+<input class="element checkbox" type="checkbox"   id="A16" value="  - Tumor directly invades adjacent structures (specify):"><label  class="choice">Tumor directly invades adjacent structures (specify):</label>
+<input class="element checkbox" type="checkbox"   id="A17" value="  - Tumor invades perianal skin"><label  class="choice">Tumor invades perianal skin</label>
+<input class="element checkbox" type="checkbox"   id="A18" value="  - Cannot be determinied: "><label  class="choice">Cannot be determined: </label>
+<input class="element checkbox" type="checkbox"   id="A08" value="  - No evidence of primary tumor"><label  class="choice">No evidence of primary tumor</label>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend><label class="description">Surgical margins for abdominoperineal resection specimens:</label></legend>
+<p>
+<table border="1">
+<col width="40%">
+<tr>
+<td>
+<label class="description">- Proximal margin:</label>
+</td>
+<td>
+<select class="element select large" ID="A22">
+	<option value=""></option>
+	<option value="Cannot be assessed">Cannot be assessed</option>
+	<option value="Uninvolved by invasive carcinoma and high-grade intraepithelial neoplasia, specify distance (mm):">Uninvolved by invasive carcinoma and high-grade intraepithelial neoplasia, specify distance (mm):</option>
+	<option value="Uninvolved by invasive carcinoma, specify distance (mm):">Uninvolved by invasive carcinoma, specify distance (mm):</option>
+	<option value="Involved by invasive carcinoma">Involved by invasive carcinoma</option>
+	<option value="Involved by high-grade intraepithelial neoplasia">Involved by high-grade intraepithelial neoplasia</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Distal margin:</label>
+</td>
+<td>
+<select class="element select large" ID="A23">
+	<option value=""></option>
+	<option value="Cannot be assessed">Cannot be assessed</option>
+	<option value="Uninvolved by invasive carcinoma and high-grade intraepithelial neoplasia, specify distance (mm):">Uninvolved by invasive carcinoma and high-grade intraepithelial neoplasia, specify distance (mm):</option>
+	<option value="Uninvolved by invasive carcinoma, specify distance (mm):">Uninvolved by invasive carcinoma, specify distance (mm):</option>
+	<option value="Involved by invasive carcinoma">Involved by invasive carcinoma</option>
+	<option value="Involved by high-grade intraepithelial neoplasia">Involved by high-grade intraepithelial neoplasia</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Circumferential (radial) margin:</label>
+</td>
+<td>
+<select class="element select large" ID="A24">
+	<option value=""></option>
+	<option value="Cannot be assessed">Cannot be assessed</option>
+	<option value="Uninvolved by invasive carcinoma, specify distance (mm):">Uninvolved by invasive carcinoma, specify distance (mm):</option>
+	<option value="Involved by invasive carcinoma">Involved by invasive carcinoma</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label>- Other margin(s) (specify: ):</label>
+</td>
+<td>
+<select class="element select large" ID="A25">
+	<option value=""></option>
+	<option value="Cannot be assessed">Cannot be assessed</option>
+	<option value="Uninvolved by invasive carcinoma, specify distance (mm):">Uninvolved by invasive carcinoma, specify distance (mm):</option>
+	<option value="Involved by invasive carcinoma">Involved by invasive carcinoma</option>
+</select>
+</td>
+</tr>
+</table>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend><label class="description">Surgical margins for transanal disk excision or polypectomy specimens:</label></legend>
+<p>
+<table border="1">
+<col width="40%">
+<tr>
+<td>
+<label class="description">- Deep margin:</label>
+</td>
+<td>
+<select class="element select large" ID="A26">
+	<option value=""></option>
+	<option value="Cannot be assessed">Cannot be assessed</option>
+	<option value="Uninvolved by invasive carcinoma, specify distance (mm):">Uninvolved by invasive carcinoma, specify distance (mm):</option>
+	<option value="Involved by invasive carcinoma">Involved by invasive carcinoma</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Mucosal margin:</label>
+</td>
+<td>
+<select class="element select large" ID="A27">
+	<option value=""></option>
+	<option value="Cannot be assessed">Cannot be assessed</option>
+	<option value="Involved by invasive carcinoma">Involved by invasive carcinoma</option>
+	<option value="Uninvolved by invasive carcinoma">Uninvolved by invasive carcinoma</option>
+	<option value="Uninvolved by invasive carcinoma, uninvolved by dysplasia">Uninvolved by invasive carcinoma, uninvolved by dysplasia</option>
+	<option value="Uninvolved by invasive carcinoma, involved by intramucosal adenocarcinoma, specify location:">Uninvolved by invasive carcinoma, involved by intramucosal adenocarcinoma, specify location:</option>
+	<option value="Uninvolved by invasive carcinoma, involved by high grade dysplasia, specify location:">Uninvolved by invasive carcinoma, involved by high grade dysplasia, specify location:</option>
+	<option value="Uninvolved by invasive carcinoma, involved by adenoma, specify location:">Uninvolved by invasive carcinoma, involved by adenoma, specify location:</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label>- Other margin(s) (specify: ):</label>
+</td>
+<td>
+<select class="element select large" ID="A28">
+	<option value=""></option>
+	<option value="Cannot be assessed">Cannot be assessed</option>
+	<option value="Uninvolved by invasive carcinoma, specify distance (mm):">Uninvolved by invasive carcinoma, specify distance (mm):</option>
+	<option value="Involved by invasive carcinoma">Involved by invasive carcinoma</option>
+	<option value="Involved by invasive carcinoma">Involved by invasive carcinoma</option>
+</select>
+</td>
+</tr>
+</table>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> Lymph nodes examination: </label></legend>
+<p>
+<table border="1">
+<col width="75%">
+<tr>
+<td>
+<label class="description">- Number of exterrnal iliac lymph nodes examined:</label>
+</td>
+<td>
+<input type="text" ID="A29" class = "element text large" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Number of exterrnal iliac lymph nodes involved:</label>
+</td>
+<td>
+<input type="text" ID="A30" class = "element text large" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Number of other regional lymph nodes examined:</label>
+</td>
+<td>
+<input type="text" ID="A31" class = "element text large" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Number of other regional lymph nodes involved:</label>
+</td>
+<td>
+<input type="text" ID="A32" class = "element text large" size="10">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Extranodal extensxion:</label>
+</td>
+<td>
+<select class="element select large" ID="A33">
+	<option value=""></option>
+	<option value="Not identified">Not identified</option>
+	<option value="Present">Present</option>
+	<option value="Cannot be determined">Cannot be determined</option>
+</select>
+</td>
+</tr>
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> Distant Metastasis: </label></legend>
+
+<input class="element checkbox" type="checkbox" id="A50"  value="  - Not applicable"><label class="choice" >Not applicable</label>
+<input class="element checkbox" type="checkbox" id="A51"  value="  - Not identified"><label class="choice" >Not identified</label>
+<input class="element checkbox" type="checkbox" id="A52"  value="  - Non-regional lymph node(s) (specify):"><label class="choice" >Non-regional lymph node(s) (specify):</label>
+<input class="element checkbox" type="checkbox" id="A53"  value="  - Liver (specify):"><label class="choice" >Liver (specify):</label>
+<input class="element checkbox" type="checkbox" id="A54"  value="  - Other (specify):"><label class="choice" >Other (specify):</label>
+<input class="element checkbox" type="checkbox" id="A55"  value="  - Cannot be determined: "><label class="choice" >Cannot be determined: </label> 
+
+</fieldset>
+</p>
+
+<tr>
+<td>
+<label class="description">- Size of largest metastatic deposit (mm), specify site:</label>
+</td>
+<td>
+<input type="text" ID="A34" class = "element text large" size="20">
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Size of largest lymph node involved (mm), specify site:</label>
+</td>
+<td>
+<input type="text" ID="A35" class = "element text large" size="20">
+</td>
+</tr>
+</table>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> <a href=".\cap\Cancer-Protocols-2022-06-Update\Gastrointestinal Protocol Folder\Anus_5.0.0.0.REL_CAPCP.pdf#page=14" target="_blank">Pathologic Stage Classification (AJCC 9e)</a>:</label></legend>
+<p>
+<table border="1">
+<col width="40%">
+<tr>
+<td valign="top">
+<label class="description">- TNM Descriptors:</label>
+</td>
+<td>
+<input class="element checkbox" type="checkbox" id="A36"  value=" m (multiple primary tumors) "><label  class="choice">m (multiple primary tumors)</label>
+<input class="element checkbox" type="checkbox" id="A37"   value=" r (recurrent) "><label  class="choice">r (recurrent)</label>
+<input class="element checkbox" type="checkbox" id="A38"   value=" y (post treatment) "><label  class="choice">y (post treatment)</label>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Primary tumor (pT):</label>
+</td>
+<td>
+<select class="element select large" ID="A39">
+	<option value=""></option>
+	<option value="  - pT not assigned (cannot be determined based on available pathological information)">pT not assigned (cannot be determined based on available pathological information)</option>
+	<option value="  - pT0: No evidence of primary tumor">pT0: No evidence of primary tumor</option>
+	<option value="  - pT1: Tumor < or = 2 cm">pT1: Tumor < or = 2 cm</option>
+	<option value="  - pT2: Tumor > 2 cm but < or = 5 cm">pT2: Tumor > 2 cm but < or = 5 cm</option>
+	<option value="  - pT3: Tumor > 5 cm">pT3: Tumor > 5 cm</option>
+	<option value="  - pT4: Tumor of any size invading adjacent organ(s) such as the vagina, urethra, or bladder ">pT4: Tumor invades the visceral peritoneum or invades or adheres to adjacent organ or structure</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Regional lymph nodes (pN):</label>
+</td>
+<td>
+<select class="element select large" ID="A40">
+	<option value=""></option>
+	<option value="  - pN not assigned (no nodes submitted or found)">pN not assigned (no nodes submitted or found)</option>
+	<option value="  - pN not assigned (cannot be determined based on available pathological information)">pN not assigned (cannot be determined based on available pathological information)</option>
+	<option value="  - pN0: No regional lymph node metastasis">pN0: No regional lymph node metastasis</option>
+	<option value="  - pN1a: Metastasis in inguinal, mesorectal, or internal iliac lymph nodes">pN1a: Metastasis in inguinal, mesorectal, or internal iliac lymph nodes</option>
+	<option value="  - pN1b: Metastasis in external iliac lymph nodes">pN1b: Metastasis in external iliac lymph nodes</option>
+	<option value="  - pN1c: Metastasis in external iliac with any N1a nodes">pN1c: Metastasis in external iliac with any N1a nodes</option>
+	<option value="  - pN1 (subcategory cannot be determined)">pN1 (subcategory cannot be determined)</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td >
+<label class="description">- Distant metastasis (pM):</label>
+</td>
+<td>
+<select class="element select large" ID="A41">
+	<option value="  - Not applicable - pM cannot be determined from the submitted specimen(s)">Not applicable - pM cannot be determined from the submitted specimen(s)</option>
+	<option value="  - pM1: Distant metastasis">pM1: Distant metastasis</option>
+</select>
+</td>
+</tr>
+<!--
+<tr>
+<td>
+<label>- Specify site(s), if known:</label>
+<input type="text" ID="A42" class = "element text small" size="35">
+</td>
+</tr>
+-->
+</table>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class=""> + Additional pathologic findings: </label></legend>
+
+<p>
+<input class="element checkbox" type="checkbox"   id="A43" value="  - Condyloma acuminatum"><label class="choice" >Condyloma acuminatum</label>
+<input class="element checkbox" type="checkbox"   id="A44" value="  - Crohn disease"><label  class="choice">Crohn disease</label>
+<input class="element checkbox" type="checkbox"   id="A45" value="  - Anal fistula"><label  class="choice">Anal fistula</label>
+<input class="element checkbox" type="checkbox"   id="A46" value="  - Dysplasia"><label  class="choice">Dysplasia</label>
+<input class="element checkbox" type="checkbox"   id="A47" value="  - Associated rectal carcinoma (Paget disease)"><label  class="choice">Associated rectal carcinoma (Paget disease)</label>
+</p>
+<p>
+- Other (specify):
+<input type="text" class = "element text medium" ID="A48" size="35">
+</p>
+<br>
+</fieldset>
+</p>
+
+<p>
+<label class="description">- Additional notes:</label>
+ <textarea ID="A49" class = "element textarea medium" style="border-color:Grey;"></textarea> 
+</p>
+
+<br><br>
+<input type="button" name="copyform" value="Check your Report" onclick="updateDescription(this.form)"/>
+<br>
+<TEXTAREA ID="holdtext" name="holdtext" class="textarea large" style="border-color:coral;"></TEXTAREA>
+
+<br><br>
+<!-- The button used to copy the text -->
+<button onclick="CopyToClipboard()">Copy text to Clipboard</button>
+
+<input type="reset" value="Reset Form" name="reset" style="float: right;">
+</form>
+<br>
+<br>
+
+<div id="footer">
+Last upated on 01-Oct-2023,<br>
+based on <a href="https://www.cap.org/protocols-and-guidelines/cancer-reporting-tools/cancer-protocol-templates" target="_blank">US CAP cancer protocol templates</a>.<br>
+Anus 5.0.0.0 (Sep 2023), <br>
+html form was created on <a href="https://www.phpform.org">pForm</a>, <a href="https://www.w3schools.com/">W3 School</a>, <a href="https://stackoverflow.com/">StackOverflow</a>, and <a href="https://icons8.com">Icons8</a>.<br><br>
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.
+</div>
+
+</div>
+<img id="bottom" src="bottom.png" alt="">
+</body>
+</html>

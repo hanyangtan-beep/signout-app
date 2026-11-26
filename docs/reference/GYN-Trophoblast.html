@@ -1,0 +1,684 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Gestational trophoblastic tumor</title>
+<link rel="stylesheet" type="text/css" href="view.css" media="all">
+<script type="text/javascript" src="view.js"></script>
+<script>
+function updateDescription (frm) 
+{
+    var Template = "";
+/*
+if (frm.A01.value !== ""){
+	Template += "- Procedure: " + "\n"  + frm.A01.value + "\n";
+}
+
+if (frm.A02.value !== ""){
+	Template += "- Hysterectomy type: " + "\n"  + frm.A02.value + "\n";
+}
+
+if (frm.A03.value !== ""){
+	Template += "- Specimen integrity: " + "\n" + frm.A03.value + "\n";
+}
+
+if (document.getElementById("A04").checked || document.getElementById("A05").checked ||
+	document.getElementById("A06").checked || document.getElementById("A07").checked){
+	Template += "- Other tissue/ organ involvement: " + "\n";
+}
+
+if (document.getElementById("A04").checked){
+	Template += frm.A04.value + "\n";
+}
+
+if (document.getElementById("A05").checked){
+	Template += frm.A05.value + "\n";
+}
+
+if (document.getElementById("A06").checked){
+	Template += frm.A06.value + "\n";
+}
+
+if (document.getElementById("A07").checked){
+	Template += frm.A07.value + "\n";
+}
+
+if (frm.A08.value !== ""){
+	Template += "- Tumor size: " + "\n" + frm.A08.value + "\n";
+}
+*/
+if (frm.A09.value !== ""){
+	Template += "- Tumor histology and immunohistochemical studies: " + "\n" + "  - " + frm.A09.value + "\n";
+}
+
+if (frm.A10.value !== ""){
+	Template += "\n" + "- Histologic type: " + frm.A10.value + "\n";
+}
+
+if (document.getElementById("A11").checked || document.getElementById("A12").checked ||
+	document.getElementById("A13").checked || document.getElementById("A14").checked || 
+	document.getElementById("A15").checked || document.getElementById("A16").checked || 
+	document.getElementById("A17").checked || document.getElementById("A18").checked ||
+	document.getElementById("A19").checked || document.getElementById("A20").checked || 
+	document.getElementById("A21").checked || document.getElementById("A22").checked || 
+	document.getElementById("A23").checked || document.getElementById("A24").checked){
+	Template += "- Other tissue/ organ involvement: " + "\n";
+}
+
+if (document.getElementById("A11").checked){
+	Template += frm.A11.value + "\n";
+}
+
+if (document.getElementById("A12").checked){
+	Template += frm.A12.value + "\n";
+}
+
+if (document.getElementById("A13").checked){
+	Template += frm.A13.value + "\n";
+}
+
+if (document.getElementById("A14").checked){
+	Template += frm.A14.value + "\n";
+}
+
+if (document.getElementById("A15").checked){
+	Template += frm.A15.value + "\n";
+}
+
+if (document.getElementById("A16").checked){
+	Template += frm.A16.value + "\n";
+}
+
+if (document.getElementById("A17").checked){
+	Template += frm.A17.value + "\n";
+}
+
+if (document.getElementById("A18").checked){
+	Template += frm.A18.value + "\n";
+}
+
+if (document.getElementById("A19").checked){
+	Template += frm.A19.value + "\n";
+}
+
+if (document.getElementById("A20").checked){
+	Template += frm.A20.value + "\n";
+}
+
+if (document.getElementById("A21").checked){
+	Template += frm.A21.value + "\n";
+}
+
+if (document.getElementById("A22").checked){
+	Template += frm.A22.value + "\n";
+}
+
+if (document.getElementById("A23").checked){
+	Template += frm.A23.value + "\n";
+}
+
+if (document.getElementById("A24").checked){
+	Template += frm.A24.value + "\n";
+}
+
+if (frm.A25.value !== ""){
+	Template += "- Lymphovascular invasion: " + frm.A25.value + "\n";
+}
+
+if (frm.A26.value !== ""){
+	Template += "- Perineural invasion: " + frm.A26.value + "\n";
+}
+
+if (frm.A27.value + frm.A28.value + frm.A29.value !== ""){
+	Template += "\n" + "- Surgical margins of excision specimen: " + "\n";
+}	
+
+if (frm.A27.value !== ""){
+	Template +=  "  - Ectocervical/vaginal cuff margin: "  + frm.A27.value + "\n" ;
+}
+
+if (frm.A28.value !== ""){
+	Template +=  "  - Parametrial/paracervical margin: "  + frm.A28.value + "\n" ;
+}
+
+if (frm.A29.value !== ""){
+	Template +=  "  - Other margins (specify): "  + frm.A29.value + "\n" ;
+}
+
+if (document.getElementById("A40").checked || 
+	document.getElementById("A41").checked || document.getElementById("A42").checked ||
+	document.getElementById("A43").checked || document.getElementById("A44").checked ||
+	document.getElementById("A45").checked || document.getElementById("A46").checked ||
+	document.getElementById("A47").checked || document.getElementById("A48").checked ||
+ 	document.getElementById("A49").checked || document.getElementById("A50").checked ){
+	Template += "\n" + "- Distant metastasis:" + "\n";
+}
+
+if (document.getElementById("A40").checked){
+	Template += frm.A40.value + "\n";
+}
+
+if (document.getElementById("A41").checked){
+	Template += frm.A41.value + "\n";
+}
+
+if (document.getElementById("A42").checked){
+	Template += frm.A42.value + "\n";
+}
+
+if (document.getElementById("A43").checked){
+	Template += frm.A43.value + "\n";
+}
+
+if (document.getElementById("A44").checked){
+	Template += frm.A44.value + "\n";
+}
+
+if (document.getElementById("A45").checked){
+	Template += frm.A45.value + "\n";
+}
+
+if (document.getElementById("A46").checked){
+	Template += frm.A46.value + "\n";
+}
+
+if (document.getElementById("A47").checked){
+	Template += frm.A47.value + "\n";
+}
+
+if (document.getElementById("A48").checked){
+	Template += frm.A48.value + "\n";
+}
+
+if (document.getElementById("A49").checked){
+	Template += frm.A49.value + "\n";
+}
+
+if (document.getElementById("A50").checked){
+	Template += frm.A50.value + "\n";
+}
+
+/*
+if (frm.A36.value !== ""){
+	Template += "\n" + "- FIGO Stage (2015 FIGO Cancer Report): " + "\n" + frm.A36.value + "\n";
+}
+
+if (document.getElementById("A30").checked || document.getElementById("A31").checked || 
+	frm.A32.value + frm.A33.value + frm.A34.value + frm.A35.value	!== ""){
+	Template += "- Pathologic stage classification (pTNM, AJCC 8th edition):" + "\n";
+}
+
+if (document.getElementById("A30").checked || document.getElementById("A31").checked){
+	Template += "  - TNM Descriptors:" + "\n";
+}
+
+if (document.getElementById("A30").checked){
+	Template += "    " + frm.A30.value + "\n";
+}
+
+if (document.getElementById("A31").checked){
+	Template += "    " + frm.A31.value + "\n";
+}
+
+if (frm.A32.value !== ""){
+	Template += "  - Primary tumor: " + "\n" + "  " + frm.A32.value + "\n";
+}
+
+if (frm.A33.value !== ""){
+	Template += "  - Distant metastasis: " + "\n" + "  " + frm.A33.value + "\n";
+}
+
+if (frm.A34.value !== ""){
+	Template += "    - Specify site(s): " + frm.A34.value + "\n";
+}
+
+if (frm.A35.value !== ""){
+	Template += "    - Number of metastasis: " + frm.A35.value + "\n";
+}
+*/
+if (document.getElementById("A37").checked || frm.A38.value !==""){
+	Template += "\n" + "- Additional pathologic findings:" + "\n";
+}
+
+if (document.getElementById("A37").checked){
+	Template += frm.A37.value + "\n";
+}
+
+if (frm.A38.value !== ""){
+	Template += "  - Other (specify): " + frm.A38.value + "\n";
+}
+
+if (frm.A39.value !== ""){
+	Template += "- Additional notes: " + "\n" + "  - " +  frm.A39.value + "\n";
+}
+
+frm.holdtext.value = Template;
+}
+
+function CopyToClipboard() {
+  /* Get the text field */
+  var copyText = document.getElementById("holdtext");
+
+  /* Select the text field */
+  copyText.select();
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+
+  /* Alert the copied text */
+  alert("Report copied to clipboard");
+}
+</script>
+<style>
+table, th, td {
+  border: 1px solid silver;
+  border-collapse: collapse;
+  padding: 4px;
+}
+
+</style>
+</head>
+
+<body>
+<img id="top" src="top.png" alt="">
+	<div id="form_container">
+	<div class="form_description">
+		<h2><a href=".\cap\Cancer-Protocols-2021-11-Update\Trophoblast_4.1.0.1.REL_CAPCP.pdf" target="_blank">
+		<div class="tooltip">Primary gestational trophoblastic malignancy
+		<span class="tooltiptext">click to access explanations in the original CAP template</span>
+		</div>
+		</a></h2>
+	</div>
+	
+<form>
+<!--
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend><label class="description">Gross descriptions:</label></legend>
+<p>
+<table border="1">
+<col width="40%">
+<tr>
+<td>
+<label class="description">- Procedure:</label>
+</td>
+<td>
+	<select class="element select large" ID="A01">
+		<option value=""></option>
+		<option value="  - Dilation and curettage">Dilation and curettage</option>
+		<option value="  - Simple hysterectomy">Simple hysterectomy</option>
+		<option value="  - Supracervical hysterectomy">Supracervical hysterectomy</option>
+		<option value="  - Radical hysterectomy">Radical hysterectomy</option>
+		<option value="  - Pelvic exenteration">Pelvic exenteration</option>
+		<option value="  - Other (specify):">Other (specify):</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Hysterectomy type:</label> 
+</td>
+<td>
+	<select class="element select large" ID="A02">
+		<option value=""></option>
+		<option value="  - Abdominal">Abdominal</option>
+		<option value="  - Vaginal">Vaginal</option>
+		<option value="  - Vaginal, laparoscopic-assisted">Vaginal, laparoscopic-assisted</option>
+		<option value="  - Laparoscopic">Laparoscopic</option>
+		<option value="  - Laparoscopic, robotic-assisted">Laparoscopic, robotic-assisted</option>
+		<option value="  - Other (specify):">Other (specify):</option>
+		<option value="  - Not specified">Not specified</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Specimen integrity:</label> 
+</td>
+<td>
+	<select class="element select large" ID="A03">
+		<option value=""></option>
+		<option value="  - Intact">Intact</option>
+		<option value="  - Opened">Opened</option>
+		<option value="  - Morcellated">Morcellated</option>
+		<option value="  - Other (specify):">Other (specify):</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<label class="description">- Tumor site:</label>
+</td>
+<td>
+<input type="checkbox"  id="A04" value="  - Uterine corpus"><label >Uterine corpus</label><br>
+<input type="checkbox"  id="A05" value="  - Uterine cervix"><label >Uterine cervix</label><br>
+<input type="checkbox"  id="A06" value="  - Cannot be determined"><label >Cannot be determined</label><br>
+<input type="checkbox"  id="A07" value="  - Other (specify):"><label >Other (specify):</label><br>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Tumor size:</label> 
+</td>
+<td>
+	<select class="element select large" ID="A08">
+		<option value=""></option>
+		<option value="  - Greatest dimension (mm): ">Greatest dimension (mm): </option>
+		<option value="  - All dimensions (mm x mm x mm): ">All dimensions (mm x mm x mm):</option>
+		<option value="  - Cannot be determined (explain): ">Cannot be determined (explain):</option>
+	</select>
+</td>
+</tr>
+</table>
+</p>
+</fieldset>
+</p>
+-->
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend><label class="description">Microscopic descriptions:</label></legend>
+<p>
+<label class="description">- <a href=".\cap\Cancer-Protocols-2021-11-Update\Trophoblast_4.1.0.1.REL_CAPCP.pdf#page=8" target="_blank">Tumor histology and immunohistochemical studies</a>: </label>
+	<textarea ID="A09" class="element textarea medium"></textarea>
+</p>
+<p>
+<table border="1">
+<col width="40%">
+<tr>
+<td>
+<label class="description">- <a href=".\cap\Cancer-Protocols-2021-11-Update\Trophoblast_4.1.0.1.REL_CAPCP.pdf#page=7" target="_blank">Histologic type</a>:</label> 
+</td>
+<td>
+	<select class="element select large" ID="A10">
+		<option value=""></option>
+		<option value="Hydatidiform mole, invasive">Hydatidiform mole, invasive</option>
+		<option value="Choriocarcinoma">Choriocarcinoma</option>
+		<option value="Placental site trophoblastic tumor">Placental site trophoblastic tumor</option>
+		<option value="Epithelioid trophoblastic tumor">Epithelioid trophoblastic tumor</option>	
+		<option value="Malignant trophoblastic tumor, type cannot be determined">Malignant trophoblastic tumor, type cannot be determined</option>
+		<option value="Other (specify):">Other (specify):</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<label class="description">- Other tissue/ organ involvement:</label>
+</td>
+<td>
+<input type="checkbox"  id="A11" value="  - Not applicable"><label >Not applicable</label><br>
+<input type="checkbox"  id="A12" value="  - Not identified"><label >Not identified</label><br>
+<input type="checkbox"  id="A13" value="  - Right ovary"><label >Right ovary</label><br>
+<input type="checkbox"  id="A14" value="  - Left ovary"><label >Left ovary</label><br>
+<input type="checkbox"  id="A15" value="  - Ovary (side not specified)"><label >Ovary (side not specified)</label><br>
+<input type="checkbox"  id="A16" value="  - Right fallopian tube"><label >Right fallopian tube</label><br>
+<input type="checkbox"  id="A17" value="  - Left fallopian tube"><label >Left fallopian tube</label><br>
+<input type="checkbox"  id="A18" value="  - Fallopian tube (side not specified)"><label >Fallopian tube (side not specified)</label><br>
+<input type="checkbox"  id="A19" value="  - Vagina"><label >Vagina</label><br>
+<input type="checkbox"  id="A20" value="  - Right broad ligament"><label >Right broad ligament</label><br>
+<input type="checkbox"  id="A21" value="  - Left broad ligament"><label >Left broad ligamentm</label><br>
+<input type="checkbox"  id="A22" value="  - Broad ligament (side not specified)"><label >Broad ligament (side not specified)</label><br>
+<input type="checkbox"  id="A23" value="  - Other organs/tissue (specify):"><label >Other organs/tissue (specify):</label><br>
+<input type="checkbox"  id="A24" value="  - Cannot be determined (explain):"><label >Cannot be determined (explain):</label><br>
+</td>
+</tr>
+
+
+<tr>
+<td>
+<label class="description">- Lymphovascular invasion: </label>
+</td>
+<td>
+	<select class="element select large" ID="A25">
+		<option value=""></option>
+		<option value="Not identified">Not identified</option>
+		<option value="Present">Present</option>
+		<option value="Equivocal (explain)">Equivocal (explain)</option>
+		<option value="Cannot be determined">Cannot be determined</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label > + Perineural invasion: </label>
+</td>
+<td>
+	<select class="element select large" ID="A26">
+		<option value=""></option>
+		<option value="Not identified">Not identified</option>
+		<option value="Present">Present</option>
+		<option value="Cannot be determined">Cannot be determined</option>
+	</select>
+</td>
+</tr>
+</table>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+<legend><label class="description">Surgical margins of excision specimen: </label></legend>
+<p>
+<table border="1">
+<col width="40%">
+<tr>
+<td>
+<label class="description">- Ectocervical/vaginal cuff margin:</label>
+</td>
+<td>
+	<select class="element select large" ID="A27">
+		<option value=""></option>
+		<option value="Cannot be assessed">Cannot be assessed</option>
+		<option value="Uninvolved by tumor, specify location and closest distance:">Uninvolved by tumor, specify location and closest distance:</option>
+		<option value="Involved by tumor">Involved by tumor</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label class="description">- Parametrial/paracervical margin:</label>
+</td>
+<td>
+	<select class="element select large" ID="A28">
+		<option value=""></option>
+		<option value="Cannot be assessed">Cannot be assessed</option>
+		<option value="Uninvolved by tumor, specify location and closest distance:">Uninvolved by tumor, specify location and closest distance:</option>
+		<option value="Involved by tumor">Involved by tumor</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td>
+<label>- Other margins (specify):</label>
+</td>
+<td>
+	<select class="element select large" ID="A29">
+		<option value=""></option>
+		<option value="Cannot be assessed">Cannot be assessed</option>
+		<option value="Uninvolved by tumor, specify location and closest distance:">Uninvolved by tumor, specify location and closest distance:</option>
+		<option value="Involved by tumor">Involved by tumor</option>
+	</select>
+</td>
+</tr>
+</table>
+</p>
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"> Distant Metastasis: </label></legend>
+
+<input class="element checkbox" type="checkbox" id="A40"  value="  - Not applicable"><label class="choice" >Not applicable</label>
+<input class="element checkbox" type="checkbox" id="A41"  value="  - Not identified"><label class="choice" >Not identified</label>
+<input class="element checkbox" type="checkbox" id="A42"  value="  - Lung:"><label class="choice" >Lung :</label>
+<input class="element checkbox" type="checkbox" id="A43"  value="  - Spleen:"><label class="choice" >Spleen:</label>
+<input class="element checkbox" type="checkbox" id="A44"  value="  - Kidney:"><label class="choice" >Kidney:</label>
+<input class="element checkbox" type="checkbox" id="A45"  value="  - Gastrointestinal tract:"><label class="choice" >Gastrointestinal tract:</label>
+<input class="element checkbox" type="checkbox" id="A46"  value="  - Liver:"><label class="choice" >Liver:</label>
+<input class="element checkbox" type="checkbox" id="A47"  value="  - Brain:"><label class="choice" >Brain:</label>
+<input class="element checkbox" type="checkbox" id="A48"  value="  - Lymph node(s) (specify):"><label class="choice" >Lymph node(s), any LN, (specify):</label>
+<input class="element checkbox" type="checkbox" id="A49"  value="  - Other (specify):"><label class="choice" >Other (specify):</label>
+<input class="element checkbox" type="checkbox" id="A50"  value="  - Cannot be determined: "><label class="choice" >Cannot be determined: </label> 
+
+</fieldset>
+</p>
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label class="description"><a href=".\cap\GYN_Trophoblastic.pdf" target="_blank"> FIGO stage (2015 Cancer Report):</a></label></legend>
+<!--
+<a href=".\cap\GYN_Trophoblastic.pdf" target="_blank">
+<img src=".\cap\GYN_Trophoblastic.JPG" alt="FIGO2018" width="600">
+</a>
+<br>
+Click the table for the original reference.
+-->
+<p>
+I: Disease confined to the uterus<br><br>
+II: Gestational trophoblastic tumor extends outside of the uterus, but limited to the genital <br>
+structures (adenexa, vagina, broad ligament)<br><br>
+III: Gestational trophoblastic tumor extends to the lungs, with or without known genital tract<br>
+ involvement<br><br>
+IV: All other metastatic sites<br><br>
+</p>
+<!--
+<p>
+	<select class="element select medium" ID="A36">
+		<option value=""></option>
+		<option value="  - I: Tumor confined to the uterus">I: Tumor confined to the uterus</option>
+		<option value="  - II: Gestational trophoblastic tumor extends outside of the uterus, but limited to the genital structures (adenexa, vagina, broad ligament)">II: Gestational trophoblastic tumor extends outside of the uterus, but limited to the genital structures (adenexa, vagina, broad ligament)</option>
+		<option value="  - III: Gestational trophoblastic tumor extends to the lungs, with or without known genital tract involvement">III: Gestational trophoblastic tumor extends to the lungs, with or without known genital tract involvement</option>
+		<option value="  - IV: All other metastatic sites">IV: All other metastatic sites</option>
+	</select>
+</p>
+-->
+</fieldset>
+</p>
+
+<!--
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label> Pathologic Stage Classification (AJCC 8e):</label></legend>
+	
+<p>
+<table border="1">
+<col width="40%">
+<tr>
+<td valign="top">
+  - TNM Descriptors:
+</td>
+<td>
+<input type="checkbox"  id="A30" value=" r (recurrent) "><label >r (recurrent)</label><br>
+<input type="checkbox"  id="A31" value=" y (post treatment) "><label >y (post treatment)</label><br>
+</td>
+</tr>
+
+<tr>
+<td>
+  - Primary tumor:
+</td>
+<td>
+	<select class="element select large" ID="A32">
+		<option value=""></option>
+		<option value="  - pTX: Primary tumor cannot be assessed">pTX: Primary tumor cannot be assessed</option>
+		<option value="  - pT0: No evidence of primary tumor">pT0: No evidence of primary tumor</option>
+		<option value="  - pT1: Tumor is limited to the uterus">pT1:Tumor is limited to the uterus</option>
+		<option value="  - pT2: Tumor extends to other genital structures (ovary, tube, vagina, broad ligaments) by metastasis or direct extension">pT2: Tumor extends to other genital structures (ovary, tube, vagina, broad ligaments) by metastasis or direct extension</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td rowspan="3" valign="top">
+  - Distant metastasis (pM):
+</td>
+<td>
+	<select class="element select large" ID="A33">
+		<option value=""></option>
+		<option value="  - pM1: Distant metastasis">pM1: Distant metastasis</option>
+		<option value="  - pM1a: Lung metastasis">pM1a: Lung metastasis</option>
+		<option value="  - pM1b: All other distant metastasis">pM1b: All other distant metastasis</option>
+	</select>
+</td>
+</tr>
+
+<tr>
+<td>
+  - Specify site(s), if known:
+<input type="text" class="element text small" ID="A34" size="35">
+</td>
+</tr>
+
+<tr>
+<td>
+  - Number of metastasis:
+	<select class="element select medium" ID="A35">
+		<option value=""></option>
+		<option value="1-4">1-4</option>
+		<option value="5-8">5-8</option>
+		<option value="> 8">> 8</option>
+	</select>
+</td>
+</tr>
+</table>
+</p>
+</fieldset>
+</p>
+-->
+
+<p>
+<fieldset style="border-color:#e6e6ff;">
+	<legend> <label > + Additional pathologic findings: </label></legend>
+
+<p>
+<input type="checkbox"  id="A37" value="  - Implantation site"><label >Implantation site</label><br>
+</p>
+<p>
+- Other (specify):
+	<input type="text" class="element text medium" ID="A38" size="35">
+</p>
+<br>
+</fieldset>
+</p>
+
+<p>
+<label class="description">- Additional notes:</label>
+ <textarea ID="A39" class = "element textarea medium" style="border-color:grey;"></textarea> 
+</p>
+
+<br><br>
+<input type="button" name="copyform" value="Check your Report" onclick="updateDescription(this.form)"/>
+<br>
+<TEXTAREA ID="holdtext" name="holdtext" class="textarea large" style="border-color:coral;"></TEXTAREA>
+
+<br><br>
+<!-- The button used to copy the text -->
+<button onclick="CopyToClipboard()">Copy text to Clipboard</button>
+
+<input type="reset" value="Reset Form" name="reset" style="float: right;">
+</form>
+<br>
+<br>
+
+<div id="footer">
+Last upated on 14-Nov-2021,<br>
+based on <a href="https://www.cap.org/protocols-and-guidelines/cancer-reporting-tools/cancer-protocol-templates" target="_blank">US CAP cancer protocol templates</a>,<br>
+Trophoblast 4.1.0.1 (Nov 2021), <br>
+html form was created on <a href="https://www.phpform.org">pForm</a>, <a href="https://www.w3schools.com/">W3 School</a>, <a href="https://stackoverflow.com/">StackOverflow</a>, and <a href="https://icons8.com">Icons8</a>.<br><br>
+Anatomical Pathology Division, Queen Mary Hospital, Hong Kong.
+</div>
+
+</div>
+<img id="bottom" src="bottom.png" alt="">
+</body>
+</html>

@@ -1,0 +1,754 @@
+{
+ "id": "anal_carcinoma",
+ "version": "2026.11",
+ "name": "Anal canal carcinoma resection",
+ "shortName": "Anus · carcinoma resection",
+ "label": "Anal Ca",
+ "organ": "ANAL CANAL",
+ "system": "GI",
+ "kind": "cancer resection",
+ "rank": 58,
+ "aliases": [
+  "anal carcinoma",
+  "anal squamous cell carcinoma",
+  "anal SCC",
+  "anal canal carcinoma",
+  "abdominoperineal resection anus",
+  "APR anus",
+  "perianal carcinoma",
+  "cloacogenic carcinoma"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "anal_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 9th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template GI-Anus (CAP Anus 5.0.0.0, September 2023; WHO 5th edition; AJCC 9th edition)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/GI-Anus.html",
+  "savedPage": "docs/reference/GI-Anus.html",
+  "staging": "pTNM derived by src/staging/anal.js on AJCC 9th edition."
+ },
+ "match": {
+  "site": [
+   "anal canal",
+   "anus",
+   "anal",
+   "perianal",
+   "anal margin"
+  ],
+  "procedure": [
+   "abdominoperineal resection",
+   "APR",
+   "transanal disk excision",
+   "local excision",
+   "wide local excision"
+  ],
+  "clinical": [
+   "anal squamous cell carcinoma",
+   "anal carcinoma",
+   "anal SCC",
+   "anal cancer",
+   "anal adenocarcinoma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|haemorrhoid|hemorrhoid|fistula|fissure|condyloma|frozen|FS)\\b)[\\s\\S]*\\b(?:anal\\s+canal|anus|perianal|anal\\s+margin)\\b[\\s\\S]*\\b(?:carcinoma|SCC|squamous\\s+cell|adenocarcinoma|abdominoperineal|APR|excision|resection)\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "haemorrhoid",
+   "hemorrhoid",
+   "fistula",
+   "fissure",
+   "condyloma",
+   "frozen",
+   "FS"
+  ],
+  "bias": 3,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\babdominoperineal\\b|\\bAPR\\b",
+      "Abdominoperineal resection"
+     ],
+     [
+      "\\btransanal\\b|\\bdisk\\s+excision\\b|\\blocal\\s+excision\\b",
+      "Local excision (transanal disk excision)"
+     ],
+     [
+      "\\bpolypectomy\\b|\\bexcisional\\s+biopsy\\b",
+      "Excisional biopsy (polypectomy)"
+     ]
+    ]
+   },
+   {
+    "field": "site",
+    "from": "map",
+    "map": [
+     [
+      "\\bperianal\\b|\\banal\\s+margin\\b",
+      "Perianal region"
+     ],
+     [
+      "\\banal\\s+canal\\b",
+      "Anal canal"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Abdominoperineal resection",
+   "options": [
+    "Abdominoperineal resection",
+    "Local excision (transanal disk excision)",
+    "Excisional biopsy (polypectomy)",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "specimenIntegrity",
+   "label": "Specimen integrity",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Intact",
+   "options": [
+    "Intact",
+    "Fragmented",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "site",
+   "label": "Tumour site",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Anal canal",
+   "options": [
+    "Anal canal",
+    "Perianal region",
+    "Anus, not otherwise specified",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "siteOther",
+   "label": "Other site",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "site",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Squamous cell carcinoma",
+   "options": [
+    "Squamous cell carcinoma",
+    "Basaloid squamous cell carcinoma",
+    "Verrucous squamous cell carcinoma",
+    "Basal cell carcinoma",
+    "Adenocarcinoma",
+    "Adenocarcinoma of the anal glands",
+    "Large cell neuroendocrine carcinoma",
+    "Small cell neuroendocrine carcinoma",
+    "Neuroendocrine carcinoma",
+    "Mixed neuroendocrine-non-neuroendocrine neoplasm (MiNEN)",
+    "Undifferentiated carcinoma",
+    "Carcinoma, type cannot be determined",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "Anal canal & perianal carcinoma subtypes (WHO 5th)",
+    "intro": "Most anal canal carcinomas are HPV-associated squamous cell carcinomas (p16 block-type positive); basaloid/cloacogenic morphology is recognised as a histological pattern within anal SCC.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Squamous cell carcinoma & HSIL (AIN 2–3)",
+      "points": [
+       "Infiltrating nests and sheets of squamous cells with variable keratinisation, intercellular bridges, p16 block-type positivity and p63/p40 expression.",
+       "Look for adjacent anal intraepithelial neoplasia (HSIL / AIN 2–3) in the transitional zone."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Anal Squamous Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/anal_carcinoma/anal_scc.jpg",
+        "caption": "Anal epithelium progression from normal mucosa through LSIL and HSIL to invasive anal squamous cell carcinoma (H&E).",
+        "credit": "Cristina Rovelli et al.",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_anal_epithelium_with_normal_histology,_low-grade_dysplasia,_high-grade_dysplasia_and_squamous_cell_carcinoma.jpg"
+       },
+       {
+        "src": "assets/reference/anal_carcinoma/hsil_ain.jpg",
+        "caption": "High-grade anal squamous intraepithelial neoplasia (AIN 2–3 / HSIL): full-thickness nuclear atypia and disorganisation (H&E).",
+        "credit": "CoRus13",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:High-grade_anal_squamous_intraepithelial_neoplasia_(ASIN-H),_low_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Basaloid squamous cell carcinoma",
+      "points": [
+       "Lobules of basaloid cells with scant cytoplasm, peripheral nuclear palisading, central comedonecrosis and stromal retraction clefts.",
+       "Diffuse p16 block-type positivity and p63/p40 expression distinguish it from neuroendocrine carcinoma."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Basaloid Squamous Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/anal_carcinoma/basaloid_scc.jpg",
+        "caption": "Basaloid squamous cell carcinoma: nests of basaloid cells with peripheral palisading and surface squamous dysplasia (H&E).",
+        "credit": "Samir K El-Mofty",
+        "license": "CC BY 2.5",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_basaloid_squamous_cell_carcinoma.png"
+       }
+      ]
+     },
+     {
+      "heading": "Verrucous squamous cell carcinoma",
+      "points": [
+       "Exophytic papillomatous proliferation of bland, well-differentiated keratinising squamous epithelium invading on a broad pushing front with bulbous rete pegs.",
+       "Usually HPV-negative / low-risk HPV 6/11 (giant condyloma of Buschke-Lowenstein)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Verrucous Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/anal_carcinoma/verrucous_ca.jpg",
+        "caption": "Verrucous carcinoma: papillomatosis, acanthosis and broad pushing bulbous nests (illustrated in anogenital site, H&E).",
+        "credit": "Prodromos Philippou et al.",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_penile_verrucous_carcinoma_-_20x.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Anal adenocarcinoma & perianal Paget disease",
+      "points": [
+       "True anal gland adenocarcinoma (CK7+, CK20-, CDX2-) must be distinguished from low rectal adenocarcinoma extending into the anal canal (CK20+, CDX2+).",
+       "Perianal Paget disease may be primary cutaneous (CK7+, GCDFP15+) or secondary to colorectal adenocarcinoma (CK20+, CDX2+)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Anal Adenocarcinoma & Paget Disease",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/anal_carcinoma/anal_paget.jpg",
+        "caption": "Extramammary Paget disease: large pale intraepithelial cells with clear cytoplasm in the epidermis (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Extramammary_Paget_disease_-_low_mag.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Other histologic type not listed (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "G2: Moderately differentiated",
+   "options": [
+    "G1: Well differentiated",
+    "G2: Moderately differentiated",
+    "G3: Poorly differentiated",
+    "G4: Undifferentiated",
+    "GX: Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "treatmentEffect",
+   "label": "Treatment effect",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "No known presurgical therapy",
+   "options": [
+    "No known presurgical therapy",
+    "Present, with no viable cancer cells (complete response, score 0)",
+    "Present, with single cells or rare small groups of cancer cells (near complete response, score 1)",
+    "Present, with residual cancer showing evident tumor regression, but more than single cells or rare small groups (partial response, score 2)",
+    "Present (not otherwise specified)",
+    "Absent, with extensive residual cancer and no evident tumor regression (poor or no response, score 3)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "p16",
+   "label": "p16 immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Block-type positive",
+    "Negative",
+    "Patchy, non-block-type"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Other immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extension (AJCC 9th pT)",
+   "group": "Extension & Margins",
+   "type": "multiselect",
+   "default": [
+    "Tumour invades through anal sphincter muscle into perianal or perirectal soft tissue without involvement of adjacent structures"
+   ],
+   "options": [
+    "Carcinoma in situ (HSIL / AIN 2–3 / Paget disease)",
+    "Tumour invades lamina propria",
+    "Tumour invades muscularis mucosae",
+    "Tumour invades submucosa",
+    "Tumour invades into but not through anal sphincter muscle",
+    "Tumour invades into but not through muscularis propria of rectum",
+    "Tumour invades through anal sphincter muscle into perianal or perirectal soft tissue without involvement of adjacent structures",
+    "Tumour invades perianal skin",
+    "Tumour directly invades adjacent organ(s) (vagina, urethra, bladder, etc.)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "extensionOther",
+   "label": "Specify adjacent organ(s)",
+   "group": "Extension & Margins",
+   "type": "text",
+   "showIf": {
+    "field": "extension",
+    "includes": "Tumour directly invades adjacent organ(s) (vagina, urethra, bladder, etc.)"
+   },
+   "default": ""
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins (overall)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "All margins uninvolved by invasive carcinoma and high-grade intraepithelial neoplasia",
+   "options": [
+    "All margins uninvolved by invasive carcinoma and high-grade intraepithelial neoplasia",
+    "Uninvolved by invasive carcinoma; high-grade intraepithelial neoplasia at margin",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "proximalMargin",
+   "label": "Proximal margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma and high-grade intraepithelial neoplasia",
+   "options": [
+    "Uninvolved by invasive carcinoma and high-grade intraepithelial neoplasia",
+    "Uninvolved by invasive carcinoma",
+    "Involved by high-grade intraepithelial neoplasia",
+    "Involved by invasive carcinoma",
+    "Not applicable",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "distalMargin",
+   "label": "Distal / mucosal margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma and high-grade intraepithelial neoplasia",
+   "options": [
+    "Uninvolved by invasive carcinoma and high-grade intraepithelial neoplasia",
+    "Uninvolved by invasive carcinoma",
+    "Involved by high-grade intraepithelial neoplasia",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "radialMargin",
+   "label": "Circumferential (radial) / deep margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "otherNodesExamined",
+   "label": "Inguinal / mesorectal / internal iliac nodes examined (pN1a)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "otherNodesInvolved",
+   "label": "Inguinal / mesorectal / internal iliac nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "externalIliacExamined",
+   "label": "External iliac nodes examined (pN1b)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "externalIliacInvolved",
+   "label": "External iliac nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Largest nodal deposit (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s) (specify)",
+    "Liver",
+    "Lung",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "noPrimary",
+   "label": "No residual primary tumour (pT0)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional & Molecular",
+   "type": "multiselect",
+   "options": [
+    "Condyloma acuminatum",
+    "Crohn disease",
+    "Anal fistula",
+    "Dysplasia / HSIL (AIN 2–3)",
+    "Associated rectal carcinoma (Paget disease)"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalOther",
+   "label": "Other additional findings",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01803",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Abdominoperineal resection",
+     "specimenIntegrity": "Intact",
+     "site": "Anal canal",
+     "specimenDims": "24.0 x 6.5 x 5.0",
+     "sizeMm": "32",
+     "blocks": "12",
+     "blockKeyText": "A1: proximal colonic margin\nA2: distal anal skin margin\nA3: circumferential radial margin\nA4-A8: tumour full thickness\nA9-A12: mesorectal lymph nodes",
+     "histType": "Squamous cell carcinoma",
+     "grade": "G2: Moderately differentiated",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "treatmentEffect": "No known presurgical therapy",
+     "p16": "Block-type positive",
+     "extension": [
+      "Tumour invades through anal sphincter muscle into perianal or perirectal soft tissue without involvement of adjacent structures"
+     ],
+     "marginStatus": "All margins uninvolved by invasive carcinoma and high-grade intraepithelial neoplasia",
+     "proximalMargin": "Uninvolved by invasive carcinoma and high-grade intraepithelial neoplasia",
+     "distalMargin": "Uninvolved by invasive carcinoma and high-grade intraepithelial neoplasia",
+     "radialMargin": "Uninvolved by invasive carcinoma",
+     "closestMarginMm": "7",
+     "closestMarginSite": "circumferential radial margin",
+     "otherNodesExamined": "11",
+     "otherNodesInvolved": "1",
+     "externalIliacExamined": "0",
+     "externalIliacInvolved": "0",
+     "ene": "Not identified",
+     "largestDepositMm": "5",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

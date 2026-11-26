@@ -1,0 +1,680 @@
+{
+ "id": "vaginal_carcinoma",
+ "version": "2026.11",
+ "name": "Vaginal carcinoma resection",
+ "shortName": "Vagina \u00b7 carcinoma resection",
+ "label": "Vagina Ca",
+ "organ": "VAGINA",
+ "system": "Gynae",
+ "kind": "cancer resection",
+ "rank": 46,
+ "aliases": [
+  "vaginal carcinoma",
+  "vaginal SCC",
+  "vaginal squamous cell carcinoma",
+  "vaginectomy",
+  "radical vaginectomy",
+  "partial vaginectomy",
+  "vaginal cancer"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "vaginal_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template GYN-Vagina (WHO 5th edition; AJCC 8th edition Chapter 50 / FIGO)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/GYN-Vagina.html",
+  "savedPage": "docs/reference/GYN-Vagina.html",
+  "staging": "pTNM derived by src/staging/vagina.js on AJCC 8th edition (Chapter 50) / FIGO."
+ },
+ "match": {
+  "site": [
+   "vagina",
+   "vaginal",
+   "vaginal wall",
+   "vaginal cuff",
+   "fornix"
+  ],
+  "procedure": [
+   "vaginectomy",
+   "partial vaginectomy",
+   "radical vaginectomy",
+   "wide local excision"
+  ],
+  "clinical": [
+   "vaginal carcinoma",
+   "vaginal SCC",
+   "vaginal cancer",
+   "clear cell carcinoma vagina"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|hysterectomy|cervix|cervical|vulva|vulval|frozen|FS)\\b)[\\s\\S]*\\bvagin(?:a|al|ectomy)\\b[\\s\\S]*\\b(?:carcinoma|SCC|squamous\\s+cell|adenocarcinoma|vaginectomy|resection|excision)\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "hysterectomy",
+   "cervix",
+   "cervical",
+   "vulva",
+   "vulval",
+   "frozen",
+   "FS"
+  ],
+  "bias": 3,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bradical\\s+vaginectomy\\b",
+      "Radical vaginectomy"
+     ],
+     [
+      "\\bpartial\\s+vaginectomy\\b|\\bvaginectomy\\b",
+      "Partial vaginectomy"
+     ],
+     [
+      "\\bexcision\\b",
+      "Excision"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Partial vaginectomy",
+   "options": [
+    "Excision",
+    "Partial vaginectomy",
+    "Radical vaginectomy",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour site",
+   "group": "Specimen & Gross",
+   "type": "multiselect",
+   "default": [
+    "Vagina, upper third"
+   ],
+   "options": [
+    "Vagina, upper third",
+    "Vagina, middle third",
+    "Vagina, lower third",
+    "Vagina, further delineation not specified"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Squamous cell carcinoma, HPV-associated",
+   "options": [
+    "Squamous cell carcinoma, HPV-associated",
+    "Squamous cell carcinoma, HPV-independent",
+    "Squamous cell carcinoma, NOS",
+    "Adenocarcinoma, NOS",
+    "Adenocarcinoma, HPV-associated",
+    "Adenocarcinoma, Skene, Cowper and Littre gland origin",
+    "Mucinous carcinoma, NOS",
+    "Mucinous carcinoma, gastric type",
+    "Mucinous carcinoma, intestinal type",
+    "Endometrioid carcinoma",
+    "Clear cell carcinoma",
+    "Mesonephric carcinoma",
+    "Adenosquamous carcinoma",
+    "Adenoid basal carcinoma",
+    "Small cell neuroendocrine carcinoma",
+    "Large cell neuroendocrine carcinoma",
+    "Combined small cell neuroendocrine carcinoma",
+    "Combined large cell neuroendocrine carcinoma",
+    "Neuroendocrine tumour, NOS",
+    "Undifferentiated carcinoma",
+    "Mixed tumour, NOS",
+    "Carcinosarcoma",
+    "Adenosarcoma",
+    "Germ cell tumour (specify)",
+    "Carcinoma, type cannot be determined",
+    "Other (specify)"
+   ],
+   "reference": {
+    "title": "Vaginal carcinoma histologic types (WHO 5th)",
+    "intro": "Primary vaginal carcinoma is diagnosed only after excluding primary cervical, vulval, or endometrial extension. HPV status separates HPV-associated from HPV-independent vaginal SCC.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Squamous cell carcinoma (HPV-associated vs HPV-independent) & HSIL",
+      "points": [
+       "HPV-associated SCC: basaloid or non-keratinising nests with diffuse block-type p16 positivity and adjacent VaIN 2\u20133 (HSIL).",
+       "HPV-independent SCC: keratinising nests with p16 negative/patchy and often abnormal p53."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Vaginal Squamous Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/vaginal_carcinoma/hsil_vagina.jpg",
+        "caption": "High-grade squamous intraepithelial lesion (HSIL / VaIN): full-thickness atypical basaloid proliferation beside normal epithelium (H&E).",
+        "credit": "Mikael H\u00e4ggstr\u00f6m",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_high-grade_squamous_intraepithelial_lesion_(HSIL)_of_vulva.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Clear cell carcinoma (DES-related and sporadic)",
+      "points": [
+       "Tubulocystic, papillary and solid patterns lined by hobnail and clear cells with glycogen-rich cytoplasm; PAX8+, HNF1B+, Napsin A+.",
+       "May arise from atypical vaginal adenosis or endometriosis."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Vaginal Clear Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/vaginal_carcinoma/clear_cell_adeno.jpg",
+        "caption": "Adenocarcinoma with clear cell change: glandular and solid profiles with abundant optically clear cytoplasm (H&E).",
+        "credit": "Yale Rosen",
+        "license": "CC BY-SA 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Adenocarcinoma_with_focal_clear_cell_change_(5765883962).jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Endometrioid & mucinous adenocarcinomas",
+      "points": [
+       "Endometrioid carcinoma often arises in vaginal endometriosis (ER+, PR+, PAX8+, vimentin+).",
+       "Distinguish primary vaginal intestinal/gastric-type mucinous carcinoma from secondary spread from cervix, endometrium or colorectum."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Vaginal Adenocarcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/vaginal_carcinoma/endometrioid_adeno.jpg",
+        "caption": "Endometrioid adenocarcinoma: confluent back-to-back malignant glands with mucinous/squamous metaplasia (H&E).",
+        "credit": "Mikael H\u00e4ggstr\u00f6m",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_grade_2_endometrioid_endometrial_adenocarcinoma_with_mucinous_differentiation,_high_magnification.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Germ cell tumour (specify)",
+     "Other (specify)"
+    ]
+   },
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "G2: Moderately differentiated",
+   "options": [
+    "G1: Well differentiated",
+    "G2: Moderately differentiated",
+    "G3: Poorly differentiated",
+    "G4: Undifferentiated",
+    "GX: Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "p16",
+   "label": "p16 immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Block-type positive",
+    "Negative",
+    "Patchy, non-block-type"
+   ]
+  },
+  {
+   "id": "p53",
+   "label": "p53 immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Wild-type pattern",
+    "Abnormal, overexpression",
+    "Abnormal, null",
+    "Abnormal, cytoplasmic"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Other immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Other tissue / organ involvement (AJCC 8th pT)",
+   "group": "Extension & Margins",
+   "type": "multiselect",
+   "default": [
+    "Not identified (confined to vaginal wall)"
+   ],
+   "options": [
+    "Not identified (confined to vaginal wall)",
+    "Paravaginal tissues (not pelvic sidewall)",
+    "Pelvic sidewall",
+    "Vagina, lower third (with pelvic sidewall or hydronephrosis)",
+    "Bladder mucosa",
+    "Rectal mucosa",
+    "Beyond the true pelvis",
+    "Other organs/tissue (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "hydronephrosis",
+   "label": "Hydronephrosis / non-functioning kidney (pT3)",
+   "group": "Extension & Margins",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins (overall)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "All margins uninvolved by invasive carcinoma and intraepithelial neoplasia",
+   "options": [
+    "All margins uninvolved by invasive carcinoma and intraepithelial neoplasia",
+    "Uninvolved by invasive carcinoma; high-grade intraepithelial lesion (VaIN 2\u20133) at margin",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "peripheralMargin",
+   "label": "Peripheral margins",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma and intraepithelial neoplasia",
+   "options": [
+    "Uninvolved by invasive carcinoma and intraepithelial neoplasia",
+    "Uninvolved by invasive carcinoma; VaIN 2\u20133 at margin",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "deepMargin",
+   "label": "Deep margins",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma and intraepithelial neoplasia",
+   "options": [
+    "Uninvolved by invasive carcinoma and intraepithelial neoplasia",
+    "Uninvolved by invasive carcinoma; VaIN 2\u20133 at margin",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes with frank metastasis",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesItc",
+   "label": "Nodes with isolated tumour cells only (<= 0.2 mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeSites",
+   "label": "Lymph node station(s)",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Largest nodal deposit (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Distant metastasis (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "noPrimary",
+   "label": "No residual primary tumour (pT0)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional & Molecular",
+   "type": "multiselect",
+   "options": [
+    "LSIL / VaIN 1",
+    "HSIL / VaIN 2",
+    "HSIL / VaIN 3",
+    "Condyloma acuminatum",
+    "Adenocarcinoma in situ (AIS)",
+    "Atypical adenosis"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalOther",
+   "label": "Other additional findings",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01804",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Partial vaginectomy",
+     "site": [
+      "Vagina, upper third"
+     ],
+     "specimenDims": "5.5 x 4.0 x 1.8",
+     "sizeMm": "18",
+     "blocks": "8",
+     "blockKeyText": "A1-A4: tumour with deep paravaginal tissue\nA5-A8: peripheral mucosal margins",
+     "histType": "Squamous cell carcinoma, HPV-associated",
+     "grade": "G2: Moderately differentiated",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "p16": "Block-type positive",
+     "p53": "Wild-type pattern",
+     "extension": [
+      "Not identified (confined to vaginal wall)"
+     ],
+     "marginStatus": "All margins uninvolved by invasive carcinoma and intraepithelial neoplasia",
+     "peripheralMargin": "Uninvolved by invasive carcinoma and intraepithelial neoplasia",
+     "deepMargin": "Uninvolved by invasive carcinoma and intraepithelial neoplasia",
+     "closestMarginMm": "6",
+     "closestMarginSite": "deep paravaginal margin",
+     "nodesExamined": "6",
+     "nodesInvolved": "0",
+     "nodesItc": "0",
+     "nodeSites": "pelvic",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "additionalFindings": [
+      "HSIL / VaIN 3"
+     ]
+    }
+   }
+  ]
+ }
+}

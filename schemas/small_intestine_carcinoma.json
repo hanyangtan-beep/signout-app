@@ -1,0 +1,775 @@
+{
+ "id": "small_intestine_carcinoma",
+ "version": "2026.11",
+ "name": "Small intestine carcinoma resection",
+ "shortName": "Small bowel · carcinoma resection",
+ "label": "Small bowel Ca",
+ "organ": "SMALL INTESTINE",
+ "system": "GI",
+ "kind": "cancer resection",
+ "rank": 57,
+ "aliases": [
+  "small intestine carcinoma",
+  "small bowel carcinoma",
+  "duodenal adenocarcinoma",
+  "jejunal adenocarcinoma",
+  "ileal adenocarcinoma",
+  "small bowel adenocarcinoma",
+  "small intestine resection"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "small_intestine_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template GI-Small intestine (CAP Small Intestine 4.3.0.0, June 2025; WHO 5th edition; AJCC 8th edition Chapter 18)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/GI-Small%20intestine.html",
+  "savedPage": "docs/reference/GI-Small-intestine.html",
+  "staging": "pTNM derived by src/staging/small_intestine.js on AJCC 8th edition (Chapter 18)."
+ },
+ "match": {
+  "site": [
+   "small intestine",
+   "small bowel",
+   "duodenum",
+   "duodenal",
+   "jejunum",
+   "jejunal",
+   "ileum",
+   "ileal"
+  ],
+  "procedure": [
+   "segmental resection",
+   "small bowel resection",
+   "ileocolic resection",
+   "pancreaticoduodenectomy",
+   "Whipple"
+  ],
+  "clinical": [
+   "adenocarcinoma",
+   "carcinoma",
+   "small bowel cancer",
+   "small intestine carcinoma",
+   "duodenal carcinoma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|neuroendocrine|NET|carcinoid|GIST|frozen|FS|ampulla(?:ry)?|pancreas|PDAC|pancreatic\\s+(?:head|body|tail|mass|ductal|adenocarcinoma|carcinoma))\\b)[\\s\\S]*\\b(?:small\\s+(?:intestin\\w*|bowel)|duoden\\w*|jejun\\w*|ile(?:um|al|ocolic))\\b[\\s\\S]*\\b(?:carcinoma|adenocarcinoma|resection|Whipple|pancreaticoduodenectomy)\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "neuroendocrine",
+   "NET",
+   "carcinoid",
+   "GIST",
+   "frozen",
+   "FS",
+   "ampullary",
+   "pancreas",
+   "PDAC"
+  ],
+  "bias": 3,
+  "fill": [
+   {
+    "field": "site",
+    "from": "map",
+    "map": [
+     [
+      "\\bduoden",
+      "Duodenum"
+     ],
+     [
+      "\\bjejun",
+      "Jejunum"
+     ],
+     [
+      "\\bileum\\b|\\bileal\\b|\\bileocolic\\b",
+      "Ileum"
+     ]
+    ]
+   },
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\bWhipple\\b|\\bpancreaticoduodenectomy\\b",
+      "Pancreaticoduodenectomy (Whipple resection)"
+     ],
+     [
+      "\\bileocolic\\b",
+      "Ileocolic resection"
+     ],
+     [
+      "\\bsegmental\\b|\\bsmall\\s+bowel\\s+resection\\b",
+      "Segmental resection"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Segmental resection",
+   "options": [
+    "Segmental resection",
+    "Ileocolic resection",
+    "Pancreaticoduodenectomy (Whipple resection)",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour site",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Jejunum",
+   "options": [
+    "Duodenum",
+    "Jejunum",
+    "Ileum",
+    "Small intestine, not otherwise specified",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "siteOther",
+   "label": "Other site",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "site",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "perforation",
+   "label": "Macroscopic tumour perforation",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Adenocarcinoma, NOS",
+   "options": [
+    "Adenocarcinoma, NOS",
+    "Mucinous adenocarcinoma (greater than 50% mucinous)",
+    "Poorly cohesive cell carcinoma",
+    "Signet-ring cell carcinoma",
+    "Medullary carcinoma",
+    "Adenosquamous carcinoma",
+    "Squamous cell carcinoma",
+    "Large cell neuroendocrine carcinoma",
+    "Small cell neuroendocrine carcinoma",
+    "Neuroendocrine carcinoma (poorly differentiated)",
+    "Mixed neuroendocrine-non-neuroendocrine neoplasm (MiNEN) (specify components)",
+    "Undifferentiated carcinoma, NOS",
+    "Carcinoma, type cannot be determined",
+    "Other (specify)"
+   ],
+   "reference": {
+    "title": "Small intestine carcinoma histologic subtypes (WHO 5th)",
+    "intro": "Report small intestinal adenocarcinoma subtypes per WHO 5th edition; screen for Lynch syndrome / MMR deficiency (especially medullary, mucinous, and Crohn-associated carcinomas).",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Adenocarcinoma, NOS (intestinal & pancreatobiliary-like)",
+      "points": [
+       "Irregular infiltrating glands with tall columnar cells, pseudostratified hyperchromatic nuclei, dirty luminal necrosis and desmoplastic stroma.",
+       "Duodenal adenocarcinomas may show intestinal (CDX2+/CK20+) or pancreatobiliary/gastric (MUC1+/CK7+) immunophenotypes."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Small Intestine Adenocarcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/small_intestine_carcinoma/si_adeno.jpg",
+        "caption": "Small intestinal adenocarcinoma: infiltrating malignant glands within the bowel wall with desmoplastic stroma (H&E).",
+        "credit": "Xilin Wu et al.",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Light_microscopy_of_small_intestinal_adenocarcinoma.jpg"
+       },
+       {
+        "src": "assets/reference/small_intestine_carcinoma/duodenal_adeno.jpg",
+        "caption": "Periampullary / duodenal adenocarcinoma: crowded malignant glandular profiles with nuclear stratification and atypia (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Periampullary_adenocarcinoma_--_high_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Mucinous adenocarcinoma (> 50% extracellular mucin)",
+      "points": [
+       "More than 50% of the lesion composed of pools of extracellular mucin containing malignant glandular epithelium, strips or signet-ring cells.",
+       "Strongly associated with Lynch syndrome / dMMR and Crohn disease."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Mucinous Adenocarcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/small_intestine_carcinoma/mucinous_adeno.jpg",
+        "caption": "Mucinous adenocarcinoma: abundant extracellular mucin lakes containing strips and clusters of malignant glandular epithelium (H&E).",
+        "credit": "Patho",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Mucinous_adenocarcinoma_of_the_colon,_HE_5.JPG"
+       }
+      ]
+     },
+     {
+      "heading": "Signet-ring cell & poorly cohesive carcinoma",
+      "points": [
+       "Signet-ring cell carcinoma: > 50% of tumour cells with prominent intracytoplasmic mucin displacing a crescentic nucleus to the periphery.",
+       "Poorly cohesive carcinoma: single cells and cords without gland formation (< 50% classic signet-ring cells)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Signet-Ring Cell Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/small_intestine_carcinoma/signet_ring.jpg",
+        "caption": "Signet-ring cell carcinoma of the ileum: discohesive cells with intracytoplasmic mucin vacuoles compressing eccentric nuclei (H&E).",
+        "credit": "Hammami MB et al.",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_signet_ring_cell_carcinoma_of_ileum.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Goblet cell / MiNEN differential",
+      "points": [
+       "MiNEN requires >= 30% of each distinct neuroendocrine and non-neuroendocrine component; confirm neuroendocrine component with synaptophysin, chromogranin A and INSM1."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Mixed Neuroendocrine-Non-Neuroendocrine Neoplasm",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/small_intestine_carcinoma/goblet_cell.jpg",
+        "caption": "Goblet cell adenocarcinoma (illustrated in appendix for morphological comparison): small mucin-filled nests infiltrating the wall (H&E).",
+        "credit": "Sarahkayb",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Appendix_Carcinoid_GobletCell_MP_PA.JPG"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type / MiNEN components",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Mixed neuroendocrine-non-neuroendocrine neoplasm (MiNEN) (specify components)",
+     "Other (specify)"
+    ]
+   },
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "G2: Moderately differentiated",
+   "options": [
+    "G1: Well differentiated",
+    "G2: Moderately differentiated",
+    "G3: Poorly differentiated",
+    "G4: Undifferentiated",
+    "GX: Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "treatmentEffect",
+   "label": "Treatment effect",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "No known presurgical therapy",
+   "options": [
+    "No known presurgical therapy",
+    "Present, with no viable cancer cells (complete response, score 0)",
+    "Present, with single cells or rare small groups of cancer cells (near complete response, score 1)",
+    "Present, with residual cancer showing evident tumor regression, but more than single cells or rare small groups (partial response, score 2)",
+    "Present, NOS",
+    "Absent, with extensive residual cancer and no evident tumor regression (poor or no response, score 3)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extension (AJCC 8th pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Tumour invades through the muscularis propria into the subserosa or nonperitonealised perimuscular tissue (mesentery or retroperitoneum) without serosal penetration",
+   "options": [
+    "High-grade dysplasia / carcinoma in situ",
+    "Tumour invades the lamina propria",
+    "Tumour invades the submucosa",
+    "Tumour invades the muscularis propria",
+    "Tumour invades through the muscularis propria into the subserosa or nonperitonealised perimuscular tissue (mesentery or retroperitoneum) without serosal penetration",
+    "Tumour perforates the visceral peritoneum",
+    "Tumour directly invades the pancreas",
+    "Tumour directly invades the bile duct",
+    "Tumour directly invades other organs or structures (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "extensionOther",
+   "label": "Specify invaded organ(s)",
+   "group": "Extension & Margins",
+   "type": "text",
+   "showIf": {
+    "field": "extension",
+    "is": "Tumour directly invades other organs or structures (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins (overall)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "All margins uninvolved by invasive carcinoma and high-grade dysplasia",
+   "options": [
+    "All margins uninvolved by invasive carcinoma and high-grade dysplasia",
+    "Uninvolved by invasive carcinoma; high-grade dysplasia / adenoma at margin",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "proximalMargin",
+   "label": "Proximal margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma or high-grade dysplasia",
+   "options": [
+    "Uninvolved by invasive carcinoma or high-grade dysplasia",
+    "Uninvolved by invasive carcinoma, involved by high-grade dysplasia / adenoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "distalMargin",
+   "label": "Distal margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma or high-grade dysplasia",
+   "options": [
+    "Uninvolved by invasive carcinoma or high-grade dysplasia",
+    "Uninvolved by invasive carcinoma, involved by high-grade dysplasia / adenoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "radialMargin",
+   "label": "Radial / mesenteric (or uncinate) margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeSites",
+   "label": "Lymph node station(s)",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Largest nodal deposit (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s) (specify)",
+    "Liver",
+    "Peritoneum",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "noPrimary",
+   "label": "No residual primary tumour (pT0)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional & Molecular",
+   "type": "multiselect",
+   "options": [
+    "Adenoma(s)",
+    "Crohn disease",
+    "Coeliac disease",
+    "Other polyps"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalOther",
+   "label": "Other additional findings",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "mmr",
+   "label": "MMR IHC",
+   "group": "Additional & Molecular",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Intact (proficient MMR)",
+    "Loss of MLH1 / PMS2",
+    "Loss of MSH2 / MSH6",
+    "Loss of MSH6",
+    "Loss of PMS2",
+    "Pending"
+   ]
+  },
+  {
+   "id": "her2",
+   "label": "HER2 IHC",
+   "group": "Additional & Molecular",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "0",
+    "1+",
+    "2+ (equivocal)",
+    "3+ (positive)",
+    "Pending"
+   ]
+  },
+  {
+   "id": "molecularNotes",
+   "label": "Other molecular studies",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01802",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Segmental resection",
+     "site": "Jejunum",
+     "specimenDims": "22.0 x 4.0 x 3.5",
+     "sizeMm": "38",
+     "perforation": "Not identified",
+     "blocks": "10",
+     "blockKeyText": "A1-A2: proximal and distal resection margins\nA3: mesenteric margin\nA4-A7: tumour full thickness with serosa\nA8-A10: mesenteric lymph nodes",
+     "histType": "Adenocarcinoma, NOS",
+     "grade": "G2: Moderately differentiated",
+     "lvi": "Present",
+     "pni": "Not identified",
+     "treatmentEffect": "No known presurgical therapy",
+     "extension": "Tumour invades through the muscularis propria into the subserosa or nonperitonealised perimuscular tissue (mesentery or retroperitoneum) without serosal penetration",
+     "marginStatus": "All margins uninvolved by invasive carcinoma and high-grade dysplasia",
+     "proximalMargin": "Uninvolved by invasive carcinoma or high-grade dysplasia",
+     "distalMargin": "Uninvolved by invasive carcinoma or high-grade dysplasia",
+     "radialMargin": "Uninvolved by invasive carcinoma",
+     "closestMarginMm": "14",
+     "closestMarginSite": "mesenteric margin",
+     "nodesExamined": "16",
+     "nodesInvolved": "1",
+     "nodeSites": "mesenteric",
+     "ene": "Not identified",
+     "largestDepositMm": "6",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "mmr": "Intact (proficient MMR)"
+    }
+   }
+  ]
+ }
+}

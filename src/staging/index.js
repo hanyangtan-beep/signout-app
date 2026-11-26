@@ -40,8 +40,14 @@ import * as bladder from './bladder.js';
 import * as bile_duct from './bile_duct.js';
 import * as intrahepatic_bile_duct from './intrahepatic_bile_duct.js';
 import * as pancreas_net from './pancreas_net.js';
+import * as gi_net from './gi_net.js';
+import * as small_intestine from './small_intestine.js';
+import * as anal from './anal.js';
+import * as vagina from './vagina.js';
+import * as uterine_sarcoma from './uterine_sarcoma.js';
+import * as gtd from './gtd.js';
 
-export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes, gastric, oesophagus, appendix, gallbladder, pancreas, ampulla, skin_scc, oral, hcc, vulva, ureter_renal_pelvis, softtissue, cervix, thyroid, bone, prostate, kidney, bladder, bile_duct, intrahepatic_bile_duct, pancreas_net };
+export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes, gastric, oesophagus, appendix, gallbladder, pancreas, ampulla, skin_scc, oral, hcc, vulva, ureter_renal_pelvis, softtissue, cervix, thyroid, bone, prostate, kidney, bladder, bile_duct, intrahepatic_bile_duct, pancreas_net, gi_net, small_intestine, anal, vagina, uterine_sarcoma, gtd };
 
 // T, N and M alternatives are listed longest first (ovary: T1c1-3, T2a/b, T3a-c, N0(i+); lung: T1mi,
 // N2a/b, M1c1/c2; head and neck skin: N2c; renal pelvis and ureter: Ta (Phase 83); cervix: T1a1/2, T1b1-3, T2a1/2,

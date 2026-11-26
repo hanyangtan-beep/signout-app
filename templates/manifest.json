@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 94,
+  "count": 100,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -5086,6 +5086,86 @@
       "schemaPath": "schemas/breast_dcis.json"
     },
     {
+      "id": "vaginal_carcinoma",
+      "name": "Vaginal carcinoma resection",
+      "shortName": "Vagina · carcinoma resection",
+      "label": "Vagina Ca",
+      "organ": "VAGINA",
+      "system": "Gynae",
+      "kind": "cancer resection",
+      "rank": 46,
+      "aliases": [
+        "vaginal carcinoma",
+        "vaginal SCC",
+        "vaginal squamous cell carcinoma",
+        "vaginectomy",
+        "radical vaginectomy",
+        "partial vaginectomy",
+        "vaginal cancer"
+      ],
+      "match": {
+        "site": [
+          "vagina",
+          "vaginal",
+          "vaginal wall",
+          "vaginal cuff",
+          "fornix"
+        ],
+        "procedure": [
+          "vaginectomy",
+          "partial vaginectomy",
+          "radical vaginectomy",
+          "wide local excision"
+        ],
+        "clinical": [
+          "vaginal carcinoma",
+          "vaginal SCC",
+          "vaginal cancer",
+          "clear cell carcinoma vagina"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|hysterectomy|cervix|cervical|vulva|vulval|frozen|FS)\\b)[\\s\\S]*\\bvagin(?:a|al|ectomy)\\b[\\s\\S]*\\b(?:carcinoma|SCC|squamous\\s+cell|adenocarcinoma|vaginectomy|resection|excision)\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "hysterectomy",
+          "cervix",
+          "cervical",
+          "vulva",
+          "vulval",
+          "frozen",
+          "FS"
+        ],
+        "bias": 3,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bradical\\s+vaginectomy\\b",
+                "Radical vaginectomy"
+              ],
+              [
+                "\\bpartial\\s+vaginectomy\\b|\\bvaginectomy\\b",
+                "Partial vaginectomy"
+              ],
+              [
+                "\\bexcision\\b",
+                "Excision"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "vaginal_carcinoma",
+      "generatorPath": "generators/vaginal_carcinoma.js",
+      "schemaPath": "schemas/vaginal_carcinoma.json"
+    },
+    {
       "id": "phyllodes",
       "name": "Breast phyllodes tumour resection",
       "shortName": "Breast · phyllodes tumour",
@@ -5324,6 +5404,93 @@
       "schemaPath": "schemas/hcc.json"
     },
     {
+      "id": "uterine_sarcoma",
+      "name": "Uterine sarcoma resection",
+      "shortName": "Uterus · sarcoma resection",
+      "label": "Uterine sarcoma",
+      "organ": "UTERUS",
+      "system": "Gynae",
+      "kind": "cancer resection",
+      "rank": 47,
+      "aliases": [
+        "uterine sarcoma",
+        "leiomyosarcoma",
+        "uterine leiomyosarcoma",
+        "LMS",
+        "endometrial stromal sarcoma",
+        "ESS",
+        "LG-ESS",
+        "HG-ESS",
+        "adenosarcoma",
+        "Mullerian adenosarcoma",
+        "undifferentiated uterine sarcoma",
+        "PEComa"
+      ],
+      "match": {
+        "site": [
+          "uterus",
+          "uterine",
+          "myometrium",
+          "endometrium",
+          "hysterectomy"
+        ],
+        "procedure": [
+          "total hysterectomy",
+          "TAH",
+          "TLH",
+          "radical hysterectomy",
+          "simple hysterectomy",
+          "supracervical hysterectomy"
+        ],
+        "clinical": [
+          "uterine sarcoma",
+          "leiomyosarcoma",
+          "endometrial stromal sarcoma",
+          "adenosarcoma",
+          "undifferentiated uterine sarcoma",
+          "PEComa"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|leiomyoma|fibroid|adenomyosis|endometrioid|serous\\s+carcinoma|frozen|FS)\\b)[\\s\\S]*\\b(?:uterine\\s+sarcoma|leiomyosarcoma|endometrial\\s+stromal\\s+sarcoma|adenosarcoma|undifferentiated\\s+uterine\\s+sarcoma)\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "leiomyoma",
+          "fibroid",
+          "adenomyosis",
+          "frozen",
+          "FS"
+        ],
+        "bias": 4,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bradical\\s+hysterectomy\\b",
+                "Radical hysterectomy"
+              ],
+              [
+                "\\bsupracervical\\b",
+                "Supracervical hysterectomy"
+              ],
+              [
+                "\\btotal\\s+hysterectomy\\b|\\bTAH\\b|\\bTLH\\b",
+                "Total hysterectomy and bilateral salpingo-oophorectomy"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "uterine_sarcoma",
+      "generatorPath": "generators/uterine_sarcoma.js",
+      "schemaPath": "schemas/uterine_sarcoma.json"
+    },
+    {
       "id": "pancreas_carcinoma",
       "name": "Pancreatic carcinoma resection",
       "shortName": "Pancreas · carcinoma resection",
@@ -5433,6 +5600,97 @@
       "generator": "pancreas_carcinoma",
       "generatorPath": "generators/pancreas_carcinoma.js",
       "schemaPath": "schemas/pancreas_carcinoma.json"
+    },
+    {
+      "id": "gtd",
+      "name": "Gestational trophoblastic disease",
+      "shortName": "Trophoblast · gestational trophoblastic disease",
+      "label": "GTD",
+      "organ": "TROPHOBLAST",
+      "system": "Gynae",
+      "kind": "cancer resection",
+      "rank": 48,
+      "aliases": [
+        "GTD",
+        "gestational trophoblastic disease",
+        "gestational trophoblastic neoplasia",
+        "choriocarcinoma",
+        "invasive mole",
+        "hydatidiform mole",
+        "placental site trophoblastic tumour",
+        "PSTT",
+        "epithelioid trophoblastic tumour",
+        "ETT"
+      ],
+      "match": {
+        "site": [
+          "uterus",
+          "uterine",
+          "trophoblast",
+          "placental",
+          "endometrium"
+        ],
+        "procedure": [
+          "dilation and curettage",
+          "D&C",
+          "simple hysterectomy",
+          "radical hysterectomy",
+          "supracervical hysterectomy",
+          "pelvic exenteration"
+        ],
+        "clinical": [
+          "gestational trophoblastic",
+          "choriocarcinoma",
+          "invasive mole",
+          "hydatidiform mole",
+          "placental site trophoblastic tumour",
+          "PSTT",
+          "epithelioid trophoblastic tumour",
+          "ETT"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:products\\s+of\\s+conception|POC|miscarriage|ectopic|frozen|FS)\\b)[\\s\\S]*\\b(?:choriocarcinoma|invasive\\s+mole|hydatidiform\\s+mole|placental\\s+site\\s+trophoblastic|PSTT|epithelioid\\s+trophoblastic|ETT|gestational\\s+trophoblastic)\\b",
+        "exclude": [
+          "products of conception",
+          "POC",
+          "miscarriage",
+          "ectopic",
+          "frozen",
+          "FS"
+        ],
+        "bias": 4,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bD\\s*&\\s*C\\b|\\bdilation\\s+and\\s+curettage\\b|\\bcurettage\\b",
+                "Dilation and curettage"
+              ],
+              [
+                "\\bradical\\s+hysterectomy\\b",
+                "Radical hysterectomy"
+              ],
+              [
+                "\\bsupracervical\\b",
+                "Supracervical hysterectomy"
+              ],
+              [
+                "\\bpelvic\\s+exenteration\\b",
+                "Pelvic exenteration"
+              ],
+              [
+                "\\bhysterectomy\\b",
+                "Simple hysterectomy"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "gtd",
+      "generatorPath": "generators/gtd.js",
+      "schemaPath": "schemas/gtd.json"
     },
     {
       "id": "ampulla_carcinoma",
@@ -7011,6 +7269,119 @@
       "schemaPath": "schemas/testis_benign.json"
     },
     {
+      "id": "gi_net",
+      "name": "GI neuroendocrine tumour resection (stomach, duodenum / ampulla, jejunum–ileum, appendix, colon)",
+      "shortName": "GI NET · neuroendocrine tumour resection",
+      "label": "GI NET",
+      "organ": "GASTROINTESTINAL TRACT",
+      "system": "GI",
+      "kind": "cancer resection",
+      "rank": 56,
+      "aliases": [
+        "GI NET",
+        "neuroendocrine tumour",
+        "neuroendocrine tumor",
+        "carcinoid",
+        "gastric NET",
+        "duodenal NET",
+        "ileal NET",
+        "appendiceal NET",
+        "rectal NET",
+        "colorectal NET",
+        "ECL-cell NET",
+        "EC-cell NET"
+      ],
+      "match": {
+        "site": [
+          "stomach",
+          "gastric",
+          "duodenum",
+          "duodenal",
+          "ampulla",
+          "jejunum",
+          "ileum",
+          "small intestine",
+          "appendix",
+          "appendiceal",
+          "colon",
+          "rectum",
+          "rectal"
+        ],
+        "procedure": [
+          "gastrectomy",
+          "wedge resection",
+          "polypectomy",
+          "endoscopic mucosal resection",
+          "EMR",
+          "ESD",
+          "small bowel resection",
+          "segmental resection",
+          "right hemicolectomy",
+          "appendicectomy",
+          "appendectomy",
+          "anterior resection",
+          "colectomy",
+          "transanal excision"
+        ],
+        "clinical": [
+          "neuroendocrine tumour",
+          "neuroendocrine tumor",
+          "NET",
+          "carcinoid",
+          "GI NET",
+          "well-differentiated neuroendocrine"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|pancrea(?:s|tic)|PanNET|adenocarcinoma|GIST|frozen|FS)\\b)[\\s\\S]*\\b(?:neuroendocrine\\s+tumou?r|carcinoid|GI\\s*NET)\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "pancreas",
+          "pancreatic",
+          "PanNET",
+          "adenocarcinoma",
+          "GIST",
+          "frozen",
+          "FS"
+        ],
+        "bias": 4,
+        "fill": [
+          {
+            "field": "site",
+            "from": "map",
+            "map": [
+              [
+                "\\bstomach\\b|\\bgastric\\b|\\bgastrectomy\\b",
+                "Stomach"
+              ],
+              [
+                "\\bduoden|\\bampulla",
+                "Duodenum / Ampulla"
+              ],
+              [
+                "\\bjejun|\\bileum\\b|\\bileal\\b|\\bileocolic\\b",
+                "Jejunum / Ileum"
+              ],
+              [
+                "\\bappendi",
+                "Appendix"
+              ],
+              [
+                "\\bcolon\\b|\\bcolectomy\\b|\\bhemicolectomy\\b|\\brectum\\b|\\brectal\\b|\\banterior\\s+resection\\b",
+                "Colon / Rectum"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "gi_net",
+      "generatorPath": "generators/gi_net.js",
+      "schemaPath": "schemas/gi_net.json"
+    },
+    {
       "id": "kidney_carcinoma",
       "name": "Renal cell carcinoma nephrectomy",
       "shortName": "Kidney · renal cell carcinoma nephrectomy",
@@ -7370,6 +7741,111 @@
       "schemaPath": "schemas/bladder_carcinoma.json"
     },
     {
+      "id": "small_intestine_carcinoma",
+      "name": "Small intestine carcinoma resection",
+      "shortName": "Small bowel · carcinoma resection",
+      "label": "Small bowel Ca",
+      "organ": "SMALL INTESTINE",
+      "system": "GI",
+      "kind": "cancer resection",
+      "rank": 57,
+      "aliases": [
+        "small intestine carcinoma",
+        "small bowel carcinoma",
+        "duodenal adenocarcinoma",
+        "jejunal adenocarcinoma",
+        "ileal adenocarcinoma",
+        "small bowel adenocarcinoma",
+        "small intestine resection"
+      ],
+      "match": {
+        "site": [
+          "small intestine",
+          "small bowel",
+          "duodenum",
+          "duodenal",
+          "jejunum",
+          "jejunal",
+          "ileum",
+          "ileal"
+        ],
+        "procedure": [
+          "segmental resection",
+          "small bowel resection",
+          "ileocolic resection",
+          "pancreaticoduodenectomy",
+          "Whipple"
+        ],
+        "clinical": [
+          "adenocarcinoma",
+          "carcinoma",
+          "small bowel cancer",
+          "small intestine carcinoma",
+          "duodenal carcinoma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|neuroendocrine|NET|carcinoid|GIST|frozen|FS|ampulla(?:ry)?|pancreas|PDAC|pancreatic\\s+(?:head|body|tail|mass|ductal|adenocarcinoma|carcinoma))\\b)[\\s\\S]*\\b(?:small\\s+(?:intestin\\w*|bowel)|duoden\\w*|jejun\\w*|ile(?:um|al|ocolic))\\b[\\s\\S]*\\b(?:carcinoma|adenocarcinoma|resection|Whipple|pancreaticoduodenectomy)\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "neuroendocrine",
+          "NET",
+          "carcinoid",
+          "GIST",
+          "frozen",
+          "FS",
+          "ampullary",
+          "pancreas",
+          "PDAC"
+        ],
+        "bias": 3,
+        "fill": [
+          {
+            "field": "site",
+            "from": "map",
+            "map": [
+              [
+                "\\bduoden",
+                "Duodenum"
+              ],
+              [
+                "\\bjejun",
+                "Jejunum"
+              ],
+              [
+                "\\bileum\\b|\\bileal\\b|\\bileocolic\\b",
+                "Ileum"
+              ]
+            ]
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bWhipple\\b|\\bpancreaticoduodenectomy\\b",
+                "Pancreaticoduodenectomy (Whipple resection)"
+              ],
+              [
+                "\\bileocolic\\b",
+                "Ileocolic resection"
+              ],
+              [
+                "\\bsegmental\\b|\\bsmall\\s+bowel\\s+resection\\b",
+                "Segmental resection"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "small_intestine_carcinoma",
+      "generatorPath": "generators/small_intestine_carcinoma.js",
+      "schemaPath": "schemas/small_intestine_carcinoma.json"
+    },
+    {
       "id": "soft_tissue_sarcoma",
       "name": "Soft tissue sarcoma resection",
       "shortName": "Soft tissue · sarcoma resection",
@@ -7694,6 +8170,103 @@
       "generator": "soft_tissue_sarcoma",
       "generatorPath": "generators/soft_tissue_sarcoma.js",
       "schemaPath": "schemas/soft_tissue_sarcoma.json"
+    },
+    {
+      "id": "anal_carcinoma",
+      "name": "Anal canal carcinoma resection",
+      "shortName": "Anus · carcinoma resection",
+      "label": "Anal Ca",
+      "organ": "ANAL CANAL",
+      "system": "GI",
+      "kind": "cancer resection",
+      "rank": 58,
+      "aliases": [
+        "anal carcinoma",
+        "anal squamous cell carcinoma",
+        "anal SCC",
+        "anal canal carcinoma",
+        "abdominoperineal resection anus",
+        "APR anus",
+        "perianal carcinoma",
+        "cloacogenic carcinoma"
+      ],
+      "match": {
+        "site": [
+          "anal canal",
+          "anus",
+          "anal",
+          "perianal",
+          "anal margin"
+        ],
+        "procedure": [
+          "abdominoperineal resection",
+          "APR",
+          "transanal disk excision",
+          "local excision",
+          "wide local excision"
+        ],
+        "clinical": [
+          "anal squamous cell carcinoma",
+          "anal carcinoma",
+          "anal SCC",
+          "anal cancer",
+          "anal adenocarcinoma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|haemorrhoid|hemorrhoid|fistula|fissure|condyloma|frozen|FS)\\b)[\\s\\S]*\\b(?:anal\\s+canal|anus|perianal|anal\\s+margin)\\b[\\s\\S]*\\b(?:carcinoma|SCC|squamous\\s+cell|adenocarcinoma|abdominoperineal|APR|excision|resection)\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "haemorrhoid",
+          "hemorrhoid",
+          "fistula",
+          "fissure",
+          "condyloma",
+          "frozen",
+          "FS"
+        ],
+        "bias": 3,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\babdominoperineal\\b|\\bAPR\\b",
+                "Abdominoperineal resection"
+              ],
+              [
+                "\\btransanal\\b|\\bdisk\\s+excision\\b|\\blocal\\s+excision\\b",
+                "Local excision (transanal disk excision)"
+              ],
+              [
+                "\\bpolypectomy\\b|\\bexcisional\\s+biopsy\\b",
+                "Excisional biopsy (polypectomy)"
+              ]
+            ]
+          },
+          {
+            "field": "site",
+            "from": "map",
+            "map": [
+              [
+                "\\bperianal\\b|\\banal\\s+margin\\b",
+                "Perianal region"
+              ],
+              [
+                "\\banal\\s+canal\\b",
+                "Anal canal"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "anal_carcinoma",
+      "generatorPath": "generators/anal_carcinoma.js",
+      "schemaPath": "schemas/anal_carcinoma.json"
     },
     {
       "id": "bone_tumour",

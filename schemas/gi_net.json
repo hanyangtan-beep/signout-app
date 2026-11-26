@@ -1,0 +1,794 @@
+{
+ "id": "gi_net",
+ "version": "2026.11",
+ "name": "GI neuroendocrine tumour resection (stomach, duodenum / ampulla, jejunum–ileum, appendix, colon)",
+ "shortName": "GI NET · neuroendocrine tumour resection",
+ "label": "GI NET",
+ "organ": "GASTROINTESTINAL TRACT",
+ "system": "GI",
+ "kind": "cancer resection",
+ "rank": 56,
+ "aliases": [
+  "GI NET",
+  "neuroendocrine tumour",
+  "neuroendocrine tumor",
+  "carcinoid",
+  "gastric NET",
+  "duodenal NET",
+  "ileal NET",
+  "appendiceal NET",
+  "rectal NET",
+  "colorectal NET",
+  "ECL-cell NET",
+  "EC-cell NET"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "gi_net",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "CAP GI Neuroendocrine Tumour protocols (Stomach, Duodenum / Ampulla, Jejunum / Ileum, Appendix, Colon / Rectum); WHO 5th edition; AJCC 8th edition Chapters 29–33",
+  "staging": "Site-aware pTNM derived by src/staging/gi_net.js on AJCC 8th edition (Chapters 29–33)."
+ },
+ "match": {
+  "site": [
+   "stomach",
+   "gastric",
+   "duodenum",
+   "duodenal",
+   "ampulla",
+   "jejunum",
+   "ileum",
+   "small intestine",
+   "appendix",
+   "appendiceal",
+   "colon",
+   "rectum",
+   "rectal"
+  ],
+  "procedure": [
+   "gastrectomy",
+   "wedge resection",
+   "polypectomy",
+   "endoscopic mucosal resection",
+   "EMR",
+   "ESD",
+   "small bowel resection",
+   "segmental resection",
+   "right hemicolectomy",
+   "appendicectomy",
+   "appendectomy",
+   "anterior resection",
+   "colectomy",
+   "transanal excision"
+  ],
+  "clinical": [
+   "neuroendocrine tumour",
+   "neuroendocrine tumor",
+   "NET",
+   "carcinoid",
+   "GI NET",
+   "well-differentiated neuroendocrine"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|pancrea(?:s|tic)|PanNET|adenocarcinoma|GIST|frozen|FS)\\b)[\\s\\S]*\\b(?:neuroendocrine\\s+tumou?r|carcinoid|GI\\s*NET)\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "pancreas",
+   "pancreatic",
+   "PanNET",
+   "adenocarcinoma",
+   "GIST",
+   "frozen",
+   "FS"
+  ],
+  "bias": 4,
+  "fill": [
+   {
+    "field": "site",
+    "from": "map",
+    "map": [
+     [
+      "\\bstomach\\b|\\bgastric\\b|\\bgastrectomy\\b",
+      "Stomach"
+     ],
+     [
+      "\\bduoden|\\bampulla",
+      "Duodenum / Ampulla"
+     ],
+     [
+      "\\bjejun|\\bileum\\b|\\bileal\\b|\\bileocolic\\b",
+      "Jejunum / Ileum"
+     ],
+     [
+      "\\bappendi",
+      "Appendix"
+     ],
+     [
+      "\\bcolon\\b|\\bcolectomy\\b|\\bhemicolectomy\\b|\\brectum\\b|\\brectal\\b|\\banterior\\s+resection\\b",
+      "Colon / Rectum"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Anatomical site (governs AJCC 8th pT/pN)",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Jejunum / Ileum",
+   "options": [
+    "Stomach",
+    "Duodenum / Ampulla",
+    "Jejunum / Ileum",
+    "Appendix",
+    "Colon / Rectum"
+   ],
+   "reference": {
+    "title": "Site-specific GI neuroendocrine tumour pathology (WHO 5th)",
+    "intro": "AJCC 8th edition staging and WHO 5th clinicopathological subtypes depend on the anatomical site of origin.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Stomach (ECL-cell NET, Types 1–3)",
+      "points": [
+       "Type 1 (atrophic autoimmune gastritis, hypergastrinaemia) and Type 2 (MEN1/ZES) are often multifocal, small (< 10 mm) and indolent; Type 3 is sporadic, solitary, larger (> 20 mm) and higher risk.",
+       "AJCC 8th Ch. 29: pT1 <= 10 mm and lamina propria/submucosa; pT2 muscularis propria or > 10 mm."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Gastric Neuroendocrine Tumour",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/gi_net/gastric_net.jpg",
+        "caption": "Gastric well-differentiated neuroendocrine tumour: uniform organoid nests and trabeculae in the mucosa/submucosa (H&E).",
+        "credit": "Mikael Häggström",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_a_well-differentiated_neuroendocrine_tumor_on_a_stomach_biopsy.jpg"
+       },
+       {
+        "src": "assets/reference/gi_net/net_chromogranin.jpg",
+        "caption": "Gastric neuroendocrine tumour: diffuse strong cytoplasmic positivity for chromogranin A (chromogranin A IHC).",
+        "credit": "CoRus13",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Gastric_neuroendocrine_tumor_(chromogranin),_intermed._mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Duodenum / Ampulla (G-cell, D-cell / somatostatinoma)",
+      "points": [
+       "Gastrin-producing NETs occur in the proximal duodenum; psammomatous somatostatin-producing NETs favour the periampullary region (associated with NF1).",
+       "AJCC 8th Ch. 30: pT1 <= 10 mm and lamina propria/submucosa; pT2 muscularis propria or > 10 mm; pT3 pancreas/peripancreatic tissue."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Duodenal Neuroendocrine Tumour",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/gi_net/duodenal_net.jpg",
+        "caption": "Duodenal well-differentiated neuroendocrine tumour: submucosal nests and ribbons beneath Brunner glands and mucosa (H&E).",
+        "credit": "Ed Uthman",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Well-differentiated_neuroendocrine_tumor_of_the_duodenum_(3047617417).jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Jejunum / Ileum (EC-cell serotonin-producing NET)",
+      "points": [
+       "Classic insular/nested pattern with peripheral palisading, eosinophilic granules, mesenteric fibrosis and elastic vascular sclerosis; CDX2+.",
+       "AJCC 8th Ch. 31: pN2 = >= 12 regional nodes OR large mesenteric mass(es) > 20 mm."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Small Intestinal Neuroendocrine Tumour",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/gi_net/ileal_net.jpg",
+        "caption": "Small intestinal (ileal) neuroendocrine tumour: solid insular nests with peripheral palisading and desmoplastic stroma (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Small_intestine_neuroendocrine_tumour_intermed_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Appendix (EC-cell and L-cell NET)",
+      "points": [
+       "Usually incidental at the appendiceal tip; size (> 20 mm) and mesoappendiceal invasion are key for right hemicolectomy decisions.",
+       "Goblet cell adenocarcinoma is NO LONGER classified as a NET in WHO 5th edition (report under Appendix Carcinoma)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Appendiceal Neuroendocrine Tumour",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/gi_net/appendiceal_net.jpg",
+        "caption": "Appendiceal well-differentiated neuroendocrine tumour at the tip of the appendix (H&E).",
+        "credit": "Adel Elkbuli et al.",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_appendiceal_carcinoid.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Colon / Rectum (L-cell and EC-cell NET)",
+      "points": [
+       "Rectal L-cell NETs show trabecular/ribbon architecture, express SATB2 and PAP, and may be chromogranin-negative (synaptophysin/INSM1+).",
+       "AJCC 8th Ch. 33: pT1a < 10 mm; pT1b 10–20 mm; pT2 muscularis propria or > 20 mm."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Colorectal Neuroendocrine Tumour",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Segmental resection",
+   "options": [
+    "Endoscopic resection (EMR / ESD / polypectomy)",
+    "Wedge resection",
+    "Segmental resection",
+    "Right hemicolectomy",
+    "Appendicectomy",
+    "Anterior resection",
+    "Gastrectomy (partial / total)",
+    "Pancreaticoduodenectomy (Whipple resection)",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Unifocal",
+   "options": [
+    "Unifocal",
+    "Multifocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Well-differentiated neuroendocrine tumour (NET)",
+   "options": [
+    "Well-differentiated neuroendocrine tumour (NET)",
+    "ECL-cell neuroendocrine tumour (gastric)",
+    "EC-cell, serotonin-producing neuroendocrine tumour",
+    "Gastrin-producing neuroendocrine tumour (gastrinoma)",
+    "Somatostatin-producing neuroendocrine tumour",
+    "L-cell, glucagon-like peptide / PP-producing neuroendocrine tumour",
+    "Tubular neuroendocrine tumour (appendiceal)",
+    "Clear cell neuroendocrine tumour",
+    "Other neuroendocrine tumour subtype (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th grading & mitotic / Ki-67 assessment (GI NET)",
+    "intro": "Assign the higher grade whenever mitotic rate and Ki-67 index fall into different tiers. Count mitoses in 10 mm2 (divide by 5 for mitoses per 2 mm2); count >= 500 tumour cells in the Ki-67 hot spot.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "WHO 5th Grade Cutoffs (GI NET G1–G3)",
+      "points": [
+       "G1: < 2 mitoses / 2 mm2 AND Ki-67 < 3%.",
+       "G2: 2–20 mitoses / 2 mm2 OR Ki-67 3–20%.",
+       "G3: > 20 mitoses / 2 mm2 OR Ki-67 > 20% with retained well-differentiated organoid morphology (distinguish from poorly differentiated NEC)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Gastrointestinal Neuroendocrine Tumours",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/gi_net/net_mitosis.jpg",
+        "caption": "Mitotic figure in a well-differentiated neuroendocrine tumour (H&E).",
+        "credit": "Mikael Häggström",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Mitosis_in_a_neuroendocrine_tumor_(original).jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Other neuroendocrine tumour subtype (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "WHO 5th grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "G1: Well-differentiated neuroendocrine tumour",
+   "options": [
+    "G1: Well-differentiated neuroendocrine tumour",
+    "G2: Well-differentiated neuroendocrine tumour",
+    "G3: Well-differentiated neuroendocrine tumour",
+    "GX: Grade cannot be assessed"
+   ]
+  },
+  {
+   "id": "mitoticCount",
+   "label": "Mitotic rate (per 2 mm2)",
+   "group": "Histology & Grade",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "ki67Pct",
+   "label": "Ki-67 labelling index (%)",
+   "group": "Histology & Grade",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "necrosis",
+   "label": "Tumour necrosis",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "depth",
+   "label": "Depth of invasion (pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Subserosa / mesoappendix / perirectal tissue without serosal penetration",
+   "options": [
+    "Lamina propria or submucosa",
+    "Muscularis propria",
+    "Subserosa / mesoappendix / perirectal tissue without serosal penetration",
+    "Visceral peritoneum (serosa)",
+    "Adjacent organ(s) or structure(s)",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "pancreasInvasion",
+   "label": "Pancreas / peripancreatic tissue invasion (duodenum/ampulla pT3)",
+   "group": "Extension & Margins",
+   "type": "checkbox",
+   "showIf": {
+    "field": "site",
+    "is": "Duodenum / Ampulla"
+   },
+   "default": false
+  },
+  {
+   "id": "mesoappendixMm",
+   "label": "Mesoappendiceal invasion depth (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "showIf": {
+    "field": "site",
+    "is": "Appendix"
+   },
+   "default": ""
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "All margins uninvolved by tumour",
+   "options": [
+    "All margins uninvolved by tumour",
+    "Involved by tumour",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "involvedMarginDetail",
+   "label": "Involved margin(s) detail",
+   "group": "Extension & Margins",
+   "type": "text",
+   "showIf": {
+    "field": "marginStatus",
+    "is": "Involved by tumour"
+   },
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "mesentericMassOver20mm",
+   "label": "Large mesenteric mass(es) > 20 mm (jejunum/ileum pN2)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "showIf": {
+    "field": "site",
+    "is": "Jejunum / Ileum"
+   },
+   "default": false
+  },
+  {
+   "id": "nodeSites",
+   "label": "Lymph node station(s)",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "largestDepositMm",
+   "label": "Largest nodal deposit (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (AJCC 8th pM1a/b/c)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Liver",
+    "Non-regional lymph node(s)",
+    "Lung",
+    "Bone",
+    "Peritoneum",
+    "Other extrahepatic site (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify extrahepatic site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "noPrimary",
+   "label": "No residual primary tumour (pT0)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional & Molecular",
+   "type": "multiselect",
+   "options": [
+    "ECL-cell hyperplasia (linear / micronodular)",
+    "Atrophic gastritis",
+    "Mesenteric elastic vascular sclerosis",
+    "Acute appendicitis"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalOther",
+   "label": "Other additional findings",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sstr2",
+   "label": "SSTR2A IHC",
+   "group": "Additional & Molecular",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Positive (diffuse membranous)",
+    "Focal / weak positive",
+    "Negative",
+    "Pending"
+   ]
+  },
+  {
+   "id": "molecularNotes",
+   "label": "Other molecular studies",
+   "group": "Additional & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional & Molecular",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-01801",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "site": "Jejunum / Ileum",
+     "procedure": "Segmental resection",
+     "focality": "Unifocal",
+     "specimenDims": "18.0 x 3.5 x 3.0",
+     "sizeMm": "18",
+     "blocks": "8",
+     "blockKeyText": "A1-A2: proximal and distal resection margins\nA3: mesenteric margin\nA4-A6: tumour full thickness\nA7-A8: mesenteric lymph nodes",
+     "histType": "EC-cell, serotonin-producing neuroendocrine tumour",
+     "grade": "G1: Well-differentiated neuroendocrine tumour",
+     "mitoticCount": "1",
+     "ki67Pct": "2",
+     "necrosis": "Not identified",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "ihcText": "Synaptophysin, chromogranin A and CDX2 diffuse strongly positive; Ki-67 labelling index 2%",
+     "depth": "Subserosa / mesoappendix / perirectal tissue without serosal penetration",
+     "marginStatus": "All margins uninvolved by tumour",
+     "closestMarginMm": "12",
+     "closestMarginSite": "mesenteric margin",
+     "nodesExamined": "14",
+     "nodesInvolved": "2",
+     "mesentericMassOver20mm": false,
+     "nodeSites": "mesenteric",
+     "ene": "Not identified",
+     "largestDepositMm": "7",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}
