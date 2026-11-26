@@ -315,7 +315,7 @@
    "reference": {
     "title": "WHO 5th sinonasal carcinoma classification & ancillary panel",
     "intro": "Poorly differentiated sinonasal carcinomas require systematic exclusion of molecularly defined entities (NUT, SWI/SNF complex-deficient, HPV-associated multiphenotypic, DEK::AFF2, EBV-positive lymphoepithelial carcinoma) before diagnosing SNUC.",
-    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
     "groups": [
      {
       "heading": "Squamous cell carcinoma & DEK::AFF2 carcinoma",
@@ -343,6 +343,15 @@
        {
         "label": "ExpertPath: Sinonasal Undifferentiated Carcinoma & NUT Carcinoma",
         "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/sinonasal_carcinoma/snuc.jpg",
+        "caption": "Sinonasal undifferentiated carcinoma (SNUC, very high magnification): sheets of pleomorphic undifferentiated epithelial cells with prominent nucleoli and brisk mitotic activity (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3ASinonasal_undifferentiated_carcinoma_-_very_high_mag.jpg"
        }
       ]
      },

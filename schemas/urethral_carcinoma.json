@@ -1,0 +1,579 @@
+{
+ "id": "urethral_carcinoma",
+ "version": "2026.11",
+ "name": "Urethral carcinoma resection",
+ "shortName": "Urethra · carcinoma resection",
+ "label": "Urethra Ca",
+ "organ": "URETHRA",
+ "system": "GU",
+ "kind": "cancer resection",
+ "rank": 70,
+ "aliases": [
+  "URC",
+  "urethral carcinoma",
+  "urethra carcinoma",
+  "urethrectomy",
+  "periurethral carcinoma"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "urethral_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template UG-Urethra (CAP Urethra Resection 4.3.0.0, Dec 2024; WHO 5th edition; AJCC 8th edition)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/UG-Urethra.html",
+  "savedPage": "docs/reference/UG-Urethra.html",
+  "staging": "Dual-track urethral pT (prostatic urethra vs male penile / female urethra) and pN0–pN2 derived by src/staging/urethra.js on AJCC 8th edition."
+ },
+ "match": {
+  "site": [
+   "urethra",
+   "penile urethra",
+   "bulbomembranous urethra",
+   "prostatic urethra",
+   "periurethral gland"
+  ],
+  "procedure": [
+   "partial urethrectomy",
+   "total urethrectomy",
+   "urethrectomy",
+   "urethrectomy with cystectomy",
+   "urethrectomy with penectomy"
+  ],
+  "clinical": [
+   "urethral carcinoma",
+   "carcinoma of the urethra",
+   "periurethral adenocarcinoma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|turbt|fna|cytology|frozen|FS)\\b)[\\s\\S]*\\b(?:urethrectomy|urethr\\w*[\\s\\S]*(?:carcinoma|adenocarcinoma|SCC|resection|excision))\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "turbt",
+   "fna",
+   "cytology",
+   "frozen",
+   "FS"
+  ],
+  "bias": 5,
+  "fill": [
+   {
+    "field": "site",
+    "from": "map",
+    "map": [
+     [
+      "\\bprostatic\\s+urethra\\b",
+      "Male, prostatic urethra"
+     ],
+     [
+      "\\bbulbomembranous\\b",
+      "Male, bulbomembranous urethra"
+     ],
+     [
+      "\\bpenile\\s+urethra\\b",
+      "Male, penile urethra"
+     ],
+     [
+      "\\bfemale\\b[\\s\\S]*\\banterior\\b",
+      "Female, anterior urethra"
+     ],
+     [
+      "\\bfemale\\b[\\s\\S]*\\bposterior\\b",
+      "Female, posterior urethra"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Total urethrectomy",
+   "options": [
+    "Partial urethrectomy",
+    "Total urethrectomy",
+    "Urethrectomy with cystectomy",
+    "Urethrectomy with cystoprostatectomy",
+    "Urethrectomy with penectomy",
+    "Anterior exenteration",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour site (governs AJCC 8th dual-track pT)",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Male, bulbomembranous urethra",
+   "options": [
+    "Male, penile urethra",
+    "Male, bulbomembranous urethra",
+    "Male, prostatic urethra",
+    "Female, anterior urethra",
+    "Female, posterior urethra",
+    "Urethra, not otherwise specified"
+   ]
+  },
+  {
+   "id": "configuration",
+   "label": "Tumour configuration",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Solid / nodular",
+   "options": [
+    "Papillary",
+    "Solid / nodular",
+    "Flat",
+    "Ulcerated",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Urothelial carcinoma, invasive (conventional)",
+   "options": [
+    "Papillary urothelial carcinoma, non-invasive",
+    "Urothelial carcinoma in situ",
+    "Urothelial carcinoma, invasive (conventional)",
+    "Urothelial carcinoma, micropapillary",
+    "Urothelial carcinoma, nested",
+    "Urothelial carcinoma, tubular and microcystic",
+    "Urothelial carcinoma, lymphoepithelioma-like",
+    "Urothelial carcinoma, plasmacytoid",
+    "Urothelial carcinoma, sarcomatoid",
+    "Urothelial carcinoma, giant cell",
+    "Urothelial carcinoma, poorly differentiated",
+    "Urothelial carcinoma, lipid-rich",
+    "Urothelial carcinoma, clear cell (glycogen-rich)",
+    "Urothelial carcinoma with squamous differentiation",
+    "Urothelial carcinoma with glandular differentiation",
+    "Urothelial carcinoma with trophoblastic differentiation",
+    "Urothelial carcinoma with Mullerian differentiation",
+    "Squamous cell carcinoma",
+    "Verrucous carcinoma",
+    "Squamous cell carcinoma in situ",
+    "Adenocarcinoma, NOS",
+    "Adenocarcinoma, enteric",
+    "Adenocarcinoma, mucinous",
+    "Adenocarcinoma, mixed",
+    "Adenocarcinoma, signet-ring cell",
+    "Clear cell adenocarcinoma (Mullerian type)",
+    "Endometrioid carcinoma (Mullerian type)",
+    "Small cell neuroendocrine carcinoma",
+    "Large cell neuroendocrine carcinoma",
+    "Littre gland adenocarcinoma",
+    "Skene gland adenocarcinoma",
+    "Cowper gland adenocarcinoma",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th urethral & periurethral carcinoma — dual-track AJCC 8th staging",
+    "intro": "Urethral carcinomas follow two separate AJCC 8th pT tables depending on anatomic site: Male penile/bulbomembranous & female urethra vs Prostatic urethra. Specify percentages of any urothelial histologic subtypes or divergent differentiations.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Site-specific tumour spectrum & staging landmarks",
+      "points": [
+       "Distal male/female urethra predominantly yields squamous cell carcinoma; proximal/prostatic urethra yields urothelial carcinoma; urethral diverticula (especially in females) are enriched for clear cell adenocarcinoma (PAX8+, HNF1beta+, Napsin A+) and enteric/mucinous adenocarcinoma.",
+       "Prostatic urethra pT: pTis = CIS involving prostatic urethra or prostatic ducts without stromal invasion; pT1 = subepithelial connective tissue; pT2 = prostatic stroma; pT3 = periprostatic fat; pT4 = extraprostatic bladder wall / rectal wall / seminal vesicle.",
+       "Male penile / female urethra pT: pT2 = corpus spongiosum or periurethral muscle; pT3 = corpus cavernosum or anterior vagina; pT4 = bladder wall or other adjacent organs."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Carcinoma of the Urethra",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/urethral_carcinoma/urethra_uc.jpg",
+        "caption": "High-grade papillary urothelial carcinoma showing architectural disorder and nuclear pleomorphism (H&E).",
+        "credit": "CoRus13",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File%3APapillary_urothelial_carcinoma_%28high-grade%29%2C_high_mag.1.jpg"
+       },
+       {
+        "src": "assets/reference/urethral_carcinoma/urethra_micropap.jpg",
+        "caption": "Micropapillary urothelial carcinoma infiltrating the lamina propria as tight clusters within retraction lacunae (H&E).",
+        "credit": "González IA, Bauer PS, Liu J, Chatterjee D",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AHistopathology_of_typical_micropapillary_urothelial_carcinoma_infiltrating_the_lamina_propria.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Other histologic type not listed (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "subtypePct",
+   "label": "Subtype / divergent differentiation percentages (if mixed)",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "High grade",
+   "options": [
+    "Low grade",
+    "High grade",
+    "G1: Well differentiated",
+    "G2: Moderately differentiated",
+    "G3: Poorly differentiated",
+    "GX: Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extent (AJCC 8th pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Invades corpus spongiosum or periurethral muscle (penile/female) OR prostatic stroma (prostatic urethra) (pT2)",
+   "options": [
+    "No evidence of primary tumour (pT0)",
+    "Non-invasive papillary carcinoma (pTa)",
+    "Carcinoma in situ (including prostatic urethra / prostatic ducts without stromal invasion) (pTis)",
+    "Invades subepithelial connective tissue (pT1)",
+    "Invades corpus spongiosum or periurethral muscle (penile/female) OR prostatic stroma (prostatic urethra) (pT2)",
+    "Invades corpus cavernosum or anterior vagina (penile/female) OR periprostatic fat (prostatic urethra) (pT3)",
+    "Invades other adjacent organs (bladder wall, seminal vesicle, rectal wall, scrotum) (pT4)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "proximalMargin",
+   "label": "Proximal mucosal margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma and CIS",
+   "options": [
+    "Uninvolved by invasive carcinoma and CIS",
+    "Uninvolved by invasive carcinoma (CIS present)",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "distalMargin",
+   "label": "Distal mucosal margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma and CIS",
+   "options": [
+    "Uninvolved by invasive carcinoma and CIS",
+    "Uninvolved by invasive carcinoma (CIS present)",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "deepMargin",
+   "label": "Deep soft tissue margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined (inguinal / true pelvic)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Lung",
+    "Liver",
+    "Bone",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional",
+   "type": "multiselect",
+   "options": [
+    "Urothelial carcinoma in situ",
+    "Keratinising squamous metaplasia",
+    "Urethritis cystica et glandularis",
+    "Intestinal metaplasia",
+    "Condyloma acuminatum"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02004",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Total urethrectomy",
+     "site": "Male, bulbomembranous urethra",
+     "configuration": "Ulcerated",
+     "specimenDims": "12.0 x 2.4 x 2.0",
+     "sizeMm": "26",
+     "blocks": "10",
+     "blockKeyText": "A1-A2: proximal and distal urethral margins\nA3-A10: bulbomembranous urethral tumour with corpus spongiosum",
+     "histType": "Urothelial carcinoma, invasive (conventional)",
+     "grade": "High grade",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "extension": "Invades corpus spongiosum or periurethral muscle (penile/female) OR prostatic stroma (prostatic urethra) (pT2)",
+     "proximalMargin": "Uninvolved by invasive carcinoma and CIS",
+     "distalMargin": "Uninvolved by invasive carcinoma and CIS",
+     "deepMargin": "Uninvolved by invasive carcinoma",
+     "nodesExamined": "6",
+     "nodesInvolved": "0",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

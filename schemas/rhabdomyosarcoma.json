@@ -1,0 +1,421 @@
+{
+ "id": "rhabdomyosarcoma",
+ "version": "2026.11",
+ "name": "Rhabdomyosarcoma (paediatric) resection",
+ "shortName": "Paediatric · rhabdomyosarcoma resection",
+ "label": "RMS",
+ "organ": "SOFT TISSUE",
+ "system": "Soft tissue",
+ "kind": "cancer resection",
+ "rank": 79,
+ "aliases": [
+  "RMS",
+  "rhabdomyosarcoma",
+  "embryonal rhabdomyosarcoma",
+  "alveolar rhabdomyosarcoma",
+  "spindle cell rhabdomyosarcoma"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "rhabdomyosarcoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print COG / IRS stage & Clinical Group"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Pedi-Rhadomyosarcoma (WHO 5th edition Soft Tissue & Bone Tumours; COG / IRS Staging)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Pedi-Rhadomyosarcoma.html",
+  "savedPage": "docs/reference/Pedi-Rhadomyosarcoma.html",
+  "staging": "COG / IRS pretreatment site-based TNM (Stage 1–4) and IRS Clinical Group I–IV derived by src/staging/rhabdomyosarcoma.js."
+ },
+ "match": {
+  "site": [
+   "orbit",
+   "paratesticular",
+   "parameningeal",
+   "extremity",
+   "retroperitoneum",
+   "bladder",
+   "prostate",
+   "soft tissue"
+  ],
+  "procedure": [
+   "wide excision",
+   "resection",
+   "delayed primary excision",
+   "exenteration"
+  ],
+  "clinical": [
+   "rhabdomyosarcoma",
+   "embryonal rhabdomyosarcoma",
+   "alveolar rhabdomyosarcoma",
+   "botryoid rhabdomyosarcoma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|rhabdomyoma|leiomyosarcoma|liposarcoma|frozen|FS)\\b)[\\s\\S]*\\brhabdomyosarcoma\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "rhabdomyoma",
+   "leiomyosarcoma",
+   "liposarcoma",
+   "frozen",
+   "FS"
+  ],
+  "bias": 5,
+  "fill": []
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Wide local excision",
+   "options": [
+    "Wide local excision",
+    "Delayed primary excision (post-chemotherapy)",
+    "Radical resection / exenteration",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "siteGroup",
+   "label": "COG anatomic site group (governs Stage 1 vs 2/3)",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Favourable site (orbit, non-parameningeal head/neck, non-bladder/prostate GU, biliary)",
+   "options": [
+    "Favourable site (orbit, non-parameningeal head/neck, non-bladder/prostate GU, biliary)",
+    "Unfavourable site (parameningeal, extremity, bladder/prostate, trunk, retroperitoneum, perineum)"
+   ]
+  },
+  {
+   "id": "site",
+   "label": "Specific anatomic site",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": "Paratesticular soft tissue"
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm — 50 mm T1a/T1b cutoff)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Molecular",
+   "type": "select",
+   "default": "Embryonal rhabdomyosarcoma, conventional",
+   "options": [
+    "Embryonal rhabdomyosarcoma, conventional",
+    "Embryonal rhabdomyosarcoma, botryoid",
+    "Embryonal rhabdomyosarcoma with anaplasia",
+    "Alveolar rhabdomyosarcoma, FOXO1 fusion-positive",
+    "Alveolar rhabdomyosarcoma, FOXO1 fusion-negative",
+    "Spindle cell / sclerosing rhabdomyosarcoma (MYOD1-mutant / VGLL2-NCOA2 / NOS)",
+    "Pleomorphic rhabdomyosarcoma",
+    "Rhabdomyosarcoma with TFCP2 rearrangement (intraosseous / epithelioid)"
+   ],
+   "reference": {
+    "title": "WHO 5th rhabdomyosarcoma, FOXO1 fusion & COG/IRS staging",
+    "intro": "Molecular FOXO1 fusion status (PAX3::FOXO1 or PAX7::FOXO1) is essential for risk stratification: FOXO1-negative alveolar RMS behaves clinically like embryonal RMS, whereas MYOD1 L122R-mutant spindle cell/sclerosing RMS carries high risk.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "IHC, fusion status & COG/IRS risk rules",
+      "points": [
+       "Skeletal muscle confirmation: desmin, nuclear myogenin (diffuse strong in alveolar RMS; patchy/heterogeneous in embryonal RMS), and MYOD1 (strong diffuse in spindle cell/sclerosing RMS).",
+       "COG pretreatment TNM: Favourable site without M1 = Stage 1; Unfavourable site <= 5 cm & N0 = Stage 2; Unfavourable site > 5 cm or N1 = Stage 3; M1 = Stage 4.",
+       "IRS Clinical Group: I = localised completely excised; II = microscopic residual or regional nodes completely excised; III = gross residual or biopsy only; IV = distant metastasis."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Rhabdomyosarcoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/rhabdomyosarcoma/rms_alveolar.jpg",
+        "caption": "Alveolar rhabdomyosarcoma: fibrovascular septa dividing discohesive nests of primitive small round blue rhabdomyoblasts (H&E).",
+        "credit": "Humpath",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AAlveolar_rhabdomyosarcoma_4.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "molecularStatus",
+   "label": "Molecular status (FOXO1 / MYOD1 / VGLL2 / TFCP2)",
+   "group": "Histology & Molecular",
+   "type": "select",
+   "default": "FOXO1 rearrangement not detected",
+   "options": [
+    "FOXO1 rearrangement not detected",
+    "PAX3::FOXO1 fusion detected",
+    "PAX7::FOXO1 fusion detected",
+    "MYOD1 L122R mutation detected",
+    "VGLL2 / NCOA2 rearrangement detected",
+    "TFCP2 rearrangement detected",
+    "Pending / not performed"
+   ]
+  },
+  {
+   "id": "anaplasia",
+   "label": "Anaplasia",
+   "group": "Histology & Molecular",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Focal anaplasia",
+    "Diffuse anaplasia"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Molecular",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry (desmin / myogenin / MYOD1)",
+   "group": "Histology & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Molecular",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Local invasiveness (T1 vs T2)",
+   "group": "Margins & Stage",
+   "type": "select",
+   "default": "Confined to anatomic site of origin (T1)",
+   "options": [
+    "Confined to anatomic site of origin (T1)",
+    "Extension and/or fixation beyond site of origin (T2)"
+   ]
+  },
+  {
+   "id": "irsGroup",
+   "label": "IRS surgical-pathological Clinical Group",
+   "group": "Margins & Stage",
+   "type": "select",
+   "default": "Group I (localised disease, completely resected)",
+   "options": [
+    "Group I (localised disease, completely resected)",
+    "Group II (microscopic residual disease and/or resected regional nodes)",
+    "Group III (incomplete resection / gross residual disease)",
+    "Group IV (distant metastatic disease)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "group": "Margins & Stage",
+   "type": "select",
+   "default": "Uninvolved by sarcoma",
+   "options": [
+    "Uninvolved by sarcoma",
+    "Involved by sarcoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Margins & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Margins & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Margins & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis",
+   "group": "Margins & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Lung",
+    "Bone marrow",
+    "Bone",
+    "Distant lymph node(s)",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Margins & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02106",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Wide local excision",
+     "siteGroup": "Favourable site (orbit, non-parameningeal head/neck, non-bladder/prostate GU, biliary)",
+     "site": "Right paratesticular soft tissue",
+     "specimenDims": "6.0 x 4.5 x 3.8",
+     "sizeMm": "42",
+     "blocks": "10",
+     "blockKeyText": "A1-A8: paratesticular tumour with inked margins\nA9-A10: spermatic cord margin",
+     "histType": "Embryonal rhabdomyosarcoma, conventional",
+     "molecularStatus": "FOXO1 rearrangement not detected",
+     "anaplasia": "Not identified",
+     "lvi": "Not identified",
+     "ihcText": "Tumour cells are positive for desmin with heterogeneous nuclear myogenin and MYOD1 staining",
+     "extension": "Confined to anatomic site of origin (T1)",
+     "irsGroup": "Group I (localised disease, completely resected)",
+     "marginStatus": "Uninvolved by sarcoma",
+     "closestMarginMm": "6",
+     "nodesExamined": "0",
+     "nodesInvolved": "0",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

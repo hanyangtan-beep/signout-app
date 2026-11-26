@@ -1,0 +1,398 @@
+{
+ "id": "meningioma",
+ "version": "2026.11",
+ "name": "Meningioma resection",
+ "shortName": "CNS · meningioma resection",
+ "label": "Meningioma",
+ "organ": "MENINGES / CNS",
+ "system": "CNS",
+ "kind": "cancer resection",
+ "rank": 77,
+ "aliases": [
+  "MNG",
+  "meningioma",
+  "atypical meningioma",
+  "anaplastic meningioma",
+  "dural tumour"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "meningioma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print integrated CNS WHO grade (WHO CNS5)"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template CNS-Meningioma (WHO CNS5, 5th edition 2021; cIMPACT-NOW)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/CNS-Meningioma.html",
+  "savedPage": "docs/reference/CNS-Meningioma.html",
+  "staging": "Integrated CNS WHO Grade 1–3 (incorporating mitoses, brain invasion, atypical criteria, chordoid/clear cell, and TERT/CDKN2A/B molecular overrule) derived by src/staging/meningioma.js."
+ },
+ "match": {
+  "site": [
+   "dura",
+   "meninges",
+   "falx",
+   "convexity",
+   "parasagittal",
+   "sphenoid wing",
+   "olfactory groove",
+   "tentorium",
+   "spinal dura"
+  ],
+  "procedure": [
+   "craniotomy",
+   "resection of meningioma",
+   "excision of dural tumour",
+   "laminectomy"
+  ],
+  "clinical": [
+   "meningioma",
+   "atypical meningioma",
+   "anaplastic meningioma",
+   "dural-based mass"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:glioma|glioblastoma|astrocytoma|oligodendroglioma|schwannoma|pituitary|solitary\\s+fibrous|frozen|FS)\\b)[\\s\\S]*\\bmeningioma\\b",
+  "exclude": [
+   "glioma",
+   "glioblastoma",
+   "astrocytoma",
+   "oligodendroglioma",
+   "schwannoma",
+   "pituitary",
+   "solitary fibrous",
+   "frozen",
+   "FS"
+  ],
+  "bias": 5,
+  "fill": []
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Craniotomy and tumour resection",
+   "options": [
+    "Craniotomy and tumour resection",
+    "Simpson grade I/II complete resection",
+    "Subtotal resection / debulking",
+    "Spinal laminectomy and tumour excision",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Anatomic location",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Cerebral convexity",
+   "options": [
+    "Cerebral convexity",
+    "Parasagittal / falcine",
+    "Sphenoid wing / skull base",
+    "Olfactory groove / planum sphenoidale",
+    "Posterior fossa / cerebellopontine angle / tentorial",
+    "Intraventricular",
+    "Spinal dura",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "laterality",
+   "label": "Laterality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Right",
+   "options": [
+    "Right",
+    "Left",
+    "Midline",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Morphological subtype (WHO CNS5 — 15 subtypes)",
+   "group": "WHO CNS5 Grading & Molecular",
+   "type": "select",
+   "default": "Meningothelial meningioma",
+   "options": [
+    "Meningothelial meningioma",
+    "Fibrous meningioma",
+    "Transitional meningioma",
+    "Psammomatous meningioma",
+    "Angiomatous meningioma",
+    "Microcystic meningioma",
+    "Secretory meningioma",
+    "Lymphoplasmacyte-rich meningioma",
+    "Metaplastic meningioma",
+    "Chordoid meningioma",
+    "Clear cell meningioma",
+    "Atypical meningioma",
+    "Papillary meningioma",
+    "Rhabdoid meningioma",
+    "Anaplastic (malignant) meningioma"
+   ],
+   "reference": {
+    "title": "WHO CNS5 meningioma integrated grading & molecular overrule",
+    "intro": "WHO CNS5 treats meningioma as a single tumour type with 15 subtypes and assigns CNS WHO grade 1, 2, or 3 using combined histologic and molecular criteria. TERT promoter mutation or CDKN2A/B homozygous deletion automatically assigns CNS WHO grade 3 regardless of histology.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "WHO CNS5 grading rules & key IHC/molecular associations",
+      "points": [
+       "CNS WHO grade 2: 4–19 mitoses/10 HPF (1.6 mm2), OR brain invasion (irregular tongues into GFAP+ brain parenchyma), OR >= 3 of 5 atypical features (sheeting, hypercellularity, small cells with high N:C, prominent nucleoli, spontaneous necrosis), OR chordoid / clear cell subtype.",
+       "CNS WHO grade 3: >= 20 mitoses/10 HPF, OR frank anaplasia (carcinoma/melanoma/sarcoma-like), OR TERT promoter mutation, OR CDKN2A/B homozygous deletion. (Papillary and rhabdoid are no longer grade 3 on morphology alone.)",
+       "IHC/molecular: SSTR2A (most sensitive) and EMA positive; STAT6 negative (excludes solitary fibrous tumour); SMARCE1 loss in clear cell; BAP1 loss in aggressive rhabdoid/papillary; KLF4/TRAF7 in secretory."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Meningioma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/meningioma/mng_psammomatous.jpg",
+        "caption": "Psammomatous meningioma: numerous concentrically laminated calcified psammoma bodies within meningothelial whorls (H&E).",
+        "credit": "Jensflorian",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3ANP_psammomatous_meningioma_0002.jpg"
+       },
+       {
+        "src": "assets/reference/meningioma/mng_atypical.jpg",
+        "caption": "Meningioma cytology smear: characteristic cellular whorls and uniform oval nuclei with delicate chromatin and intranuclear pseudoinclusions.",
+        "credit": "Jensflorian",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AMeningioma_cytologie.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "mitosesPer10Hpf",
+   "label": "Mitotic count (per 10 HPF / 1.6 mm2)",
+   "group": "WHO CNS5 Grading & Molecular",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "brainInvasion",
+   "label": "Brain invasion (upgrades to CNS WHO grade 2)",
+   "group": "WHO CNS5 Grading & Molecular",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "No brain parenchyma sampled / cannot be assessed"
+   ]
+  },
+  {
+   "id": "atypicalFeatures",
+   "label": "Atypical histologic features (>= 3 of 5 = CNS WHO grade 2)",
+   "group": "WHO CNS5 Grading & Molecular",
+   "type": "multiselect",
+   "options": [
+    "Increased cellularity",
+    "Small cells with high nuclear-to-cytoplasmic ratio",
+    "Prominent nucleoli",
+    "Patternless / sheet-like growth",
+    "Spontaneous (non-embolisation) necrosis"
+   ],
+   "default": []
+  },
+  {
+   "id": "frankAnaplasia",
+   "label": "Frank anaplasia (carcinoma-, melanoma-, or sarcoma-like — CNS WHO grade 3)",
+   "group": "WHO CNS5 Grading & Molecular",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tertPromoter",
+   "label": "TERT promoter mutation (molecular CNS WHO grade 3 overrule)",
+   "group": "WHO CNS5 Grading & Molecular",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Wild-type",
+    "Mutated"
+   ]
+  },
+  {
+   "id": "cdkn2ab",
+   "label": "CDKN2A/B status (homozygous deletion = molecular CNS WHO grade 3)",
+   "group": "WHO CNS5 Grading & Molecular",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Intact / no homozygous deletion",
+    "Homozygous deletion"
+   ]
+  },
+  {
+   "id": "ki67Pct",
+   "label": "Ki-67 (MIB-1) labelling index (%)",
+   "group": "WHO CNS5 Grading & Molecular",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry (SSTR2A / EMA / PR / STAT6 / GFAP / BAP1 / SMARCE1)",
+   "group": "WHO CNS5 Grading & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "WHO CNS5 Grading & Molecular",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "duralBoneInvasion",
+   "label": "Dural / bone / soft tissue invasion",
+   "group": "Additional",
+   "type": "select",
+   "default": "Dural attachment present; no bone invasion sampled",
+   "options": [
+    "Dural attachment present; no bone invasion sampled",
+    "Bone / hyperostosis invasion present",
+    "No dural or bone invasion identified"
+   ]
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02104",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Craniotomy and tumour resection",
+     "site": "Cerebral convexity",
+     "laterality": "Right",
+     "specimenDims": "4.2 x 3.8 x 2.6",
+     "sizeMm": "40",
+     "blocks": "8",
+     "blockKeyText": "A1-A8: representative sections of dural-based convexity mass including brain-tumour interface",
+     "histType": "Meningothelial meningioma",
+     "mitosesPer10Hpf": "1",
+     "brainInvasion": "Not identified",
+     "atypicalFeatures": [],
+     "frankAnaplasia": false,
+     "tertPromoter": "Not performed",
+     "cdkn2ab": "Not performed",
+     "ki67Pct": "3",
+     "ihcText": "Tumour cells are diffusely positive for SSTR2A, EMA and progesterone receptor, and negative for STAT6"
+    }
+   }
+  ]
+ }
+}

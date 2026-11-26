@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 106,
+  "count": 120,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -10383,6 +10383,938 @@
       "schemaPath": "schemas/mucosal_melanoma.json"
     },
     {
+      "id": "adrenal_cortical_carcinoma",
+      "name": "Adrenal cortical carcinoma resection",
+      "shortName": "Adrenal · cortical carcinoma resection",
+      "label": "Adrenal Ca",
+      "organ": "ADRENAL GLAND",
+      "system": "Endocrine",
+      "kind": "cancer resection",
+      "rank": 67,
+      "aliases": [
+        "ACC",
+        "adrenal cortical carcinoma",
+        "adrenocortical carcinoma",
+        "adrenal carcinoma",
+        "adrenalectomy"
+      ],
+      "match": {
+        "site": [
+          "adrenal",
+          "adrenal gland",
+          "adrenal cortex"
+        ],
+        "procedure": [
+          "adrenalectomy",
+          "total adrenalectomy",
+          "partial adrenalectomy",
+          "laparoscopic adrenalectomy",
+          "open adrenalectomy"
+        ],
+        "clinical": [
+          "adrenal cortical carcinoma",
+          "adrenocortical carcinoma",
+          "adrenal carcinoma",
+          "ACC"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|phaeochromocytoma|pheochromocytoma|paraganglioma|neuroblastoma|myelolipoma|adenoma|frozen|FS)\\b)[\\s\\S]*\\b(?:adrenal\\s+cortical\\s+carcinoma|adrenocortical\\s+carcinoma|adrenal\\s+carcinoma|adrenalectomy[\\s\\S]*(?:carcinoma|malignant|ACC|Weiss))\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "phaeochromocytoma",
+          "pheochromocytoma",
+          "paraganglioma",
+          "neuroblastoma",
+          "myelolipoma",
+          "adenoma",
+          "frozen",
+          "FS"
+        ],
+        "bias": 4,
+        "fill": [
+          {
+            "field": "laterality",
+            "from": "map",
+            "map": [
+              [
+                "\\bright\\b",
+                "Right"
+              ],
+              [
+                "\\bleft\\b",
+                "Left"
+              ],
+              [
+                "\\bbilateral\\b",
+                "Bilateral"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "adrenal_cortical_carcinoma",
+      "generatorPath": "generators/adrenal_cortical_carcinoma.js",
+      "schemaPath": "schemas/adrenal_cortical_carcinoma.json"
+    },
+    {
+      "id": "pheochromocytoma",
+      "name": "Phaeochromocytoma / paraganglioma resection",
+      "shortName": "Adrenal / PGL · phaeochromocytoma resection",
+      "label": "Phaeo",
+      "organ": "ADRENAL MEDULLA / PARAGANGLIA",
+      "system": "Endocrine",
+      "kind": "cancer resection",
+      "rank": 68,
+      "aliases": [
+        "PGL",
+        "phaeochromocytoma",
+        "pheochromocytoma",
+        "paraganglioma",
+        "PPGL"
+      ],
+      "match": {
+        "site": [
+          "adrenal",
+          "adrenal medulla",
+          "retroperitoneum",
+          "organ of Zuckerkandl",
+          "paraganglion",
+          "carotid body"
+        ],
+        "procedure": [
+          "adrenalectomy",
+          "partial adrenalectomy",
+          "paraganglioma excision",
+          "retroperitoneal excision"
+        ],
+        "clinical": [
+          "phaeochromocytoma",
+          "pheochromocytoma",
+          "paraganglioma",
+          "PPGL"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|cortical\\s+carcinoma|adrenocortical|adenoma|neuroblastoma|frozen|FS)\\b)[\\s\\S]*\\b(?:phaeochromocytoma|pheochromocytoma|paraganglioma|PPGL)\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "cortical carcinoma",
+          "adrenocortical",
+          "adenoma",
+          "neuroblastoma",
+          "frozen",
+          "FS"
+        ],
+        "bias": 5,
+        "fill": [
+          {
+            "field": "laterality",
+            "from": "map",
+            "map": [
+              [
+                "\\bright\\b",
+                "Right"
+              ],
+              [
+                "\\bleft\\b",
+                "Left"
+              ],
+              [
+                "\\bbilateral\\b",
+                "Bilateral"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "pheochromocytoma",
+      "generatorPath": "generators/pheochromocytoma.js",
+      "schemaPath": "schemas/pheochromocytoma.json"
+    },
+    {
+      "id": "neuroblastoma",
+      "name": "Neuroblastoma (paediatric) resection",
+      "shortName": "Paediatric · neuroblastoma resection",
+      "label": "Neuroblastoma",
+      "organ": "SYMPATHETIC NERVOUS SYSTEM / ADRENAL",
+      "system": "Endocrine",
+      "kind": "cancer resection",
+      "rank": 69,
+      "aliases": [
+        "NBL",
+        "neuroblastoma",
+        "ganglioneuroblastoma",
+        "ganglioneuroma",
+        "INPC",
+        "Shimada"
+      ],
+      "match": {
+        "site": [
+          "adrenal",
+          "retroperitoneum",
+          "posterior mediastinum",
+          "paravertebral",
+          "sympathetic chain"
+        ],
+        "procedure": [
+          "adrenalectomy",
+          "tumour resection",
+          "retroperitoneal resection",
+          "mediastinal resection"
+        ],
+        "clinical": [
+          "neuroblastoma",
+          "ganglioneuroblastoma",
+          "peripheral neuroblastic tumour"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|bone\\s+marrow|olfactory|esthesioneuroblastoma|frozen|FS)\\b)[\\s\\S]*\\b(?:neuroblastoma|ganglioneuroblastoma)\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "bone marrow",
+          "olfactory",
+          "esthesioneuroblastoma",
+          "frozen",
+          "FS"
+        ],
+        "bias": 5,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "neuroblastoma",
+      "generatorPath": "generators/neuroblastoma.js",
+      "schemaPath": "schemas/neuroblastoma.json"
+    },
+    {
+      "id": "urethral_carcinoma",
+      "name": "Urethral carcinoma resection",
+      "shortName": "Urethra · carcinoma resection",
+      "label": "Urethra Ca",
+      "organ": "URETHRA",
+      "system": "GU",
+      "kind": "cancer resection",
+      "rank": 70,
+      "aliases": [
+        "URC",
+        "urethral carcinoma",
+        "urethra carcinoma",
+        "urethrectomy",
+        "periurethral carcinoma"
+      ],
+      "match": {
+        "site": [
+          "urethra",
+          "penile urethra",
+          "bulbomembranous urethra",
+          "prostatic urethra",
+          "periurethral gland"
+        ],
+        "procedure": [
+          "partial urethrectomy",
+          "total urethrectomy",
+          "urethrectomy",
+          "urethrectomy with cystectomy",
+          "urethrectomy with penectomy"
+        ],
+        "clinical": [
+          "urethral carcinoma",
+          "carcinoma of the urethra",
+          "periurethral adenocarcinoma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|turbt|fna|cytology|frozen|FS)\\b)[\\s\\S]*\\b(?:urethrectomy|urethr\\w*[\\s\\S]*(?:carcinoma|adenocarcinoma|SCC|resection|excision))\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "turbt",
+          "fna",
+          "cytology",
+          "frozen",
+          "FS"
+        ],
+        "bias": 5,
+        "fill": [
+          {
+            "field": "site",
+            "from": "map",
+            "map": [
+              [
+                "\\bprostatic\\s+urethra\\b",
+                "Male, prostatic urethra"
+              ],
+              [
+                "\\bbulbomembranous\\b",
+                "Male, bulbomembranous urethra"
+              ],
+              [
+                "\\bpenile\\s+urethra\\b",
+                "Male, penile urethra"
+              ],
+              [
+                "\\bfemale\\b[\\s\\S]*\\banterior\\b",
+                "Female, anterior urethra"
+              ],
+              [
+                "\\bfemale\\b[\\s\\S]*\\bposterior\\b",
+                "Female, posterior urethra"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "urethral_carcinoma",
+      "generatorPath": "generators/urethral_carcinoma.js",
+      "schemaPath": "schemas/urethral_carcinoma.json"
+    },
+    {
+      "id": "penile_carcinoma",
+      "name": "Penile carcinoma resection",
+      "shortName": "Penis · carcinoma resection",
+      "label": "Penis Ca",
+      "organ": "PENIS",
+      "system": "GU",
+      "kind": "cancer resection",
+      "rank": 71,
+      "aliases": [
+        "PEN",
+        "penile carcinoma",
+        "penile SCC",
+        "penectomy",
+        "partial penectomy",
+        "glansectomy"
+      ],
+      "match": {
+        "site": [
+          "penis",
+          "penile",
+          "glans penis",
+          "glans",
+          "foreskin",
+          "prepuce",
+          "coronal sulcus",
+          "penile shaft"
+        ],
+        "procedure": [
+          "partial penectomy",
+          "total penectomy",
+          "penectomy",
+          "glansectomy",
+          "circumcision"
+        ],
+        "clinical": [
+          "penile carcinoma",
+          "penile squamous cell carcinoma",
+          "penile SCC",
+          "verrucous carcinoma of penis"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|condyloma|phimosis|balanitis|urethrectomy|frozen|FS)\\b)[\\s\\S]*\\b(?:penectomy|glansectomy|(?:penis|penile|glans|prepuce|foreskin)[\\s\\S]*(?:carcinoma|SCC|squamous\\s+cell|verrucous))\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "condyloma",
+          "phimosis",
+          "balanitis",
+          "urethrectomy",
+          "frozen",
+          "FS"
+        ],
+        "bias": 4,
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\btotal\\s+penectomy\\b",
+                "Total penectomy"
+              ],
+              [
+                "\\bpartial\\s+penectomy\\b",
+                "Partial penectomy"
+              ],
+              [
+                "\\bglansectomy\\b",
+                "Glansectomy"
+              ],
+              [
+                "\\bcircumcision\\b",
+                "Circumcision"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "penile_carcinoma",
+      "generatorPath": "generators/penile_carcinoma.js",
+      "schemaPath": "schemas/penile_carcinoma.json"
+    },
+    {
+      "id": "testis_tumour",
+      "name": "Testicular tumour orchidectomy",
+      "shortName": "Testis · tumour orchidectomy",
+      "label": "Testis",
+      "organ": "TESTIS",
+      "system": "GU",
+      "kind": "cancer resection",
+      "rank": 72,
+      "aliases": [
+        "GCT",
+        "testis tumour",
+        "testicular tumour",
+        "testicular cancer",
+        "seminoma",
+        "non-seminoma",
+        "embryonal carcinoma",
+        "yolk sac tumour",
+        "radical orchidectomy",
+        "orchiectomy"
+      ],
+      "match": {
+        "site": [
+          "testis",
+          "testicle",
+          "testicular",
+          "scrotum",
+          "spermatic cord"
+        ],
+        "procedure": [
+          "radical orchidectomy",
+          "radical orchiectomy",
+          "orchidectomy",
+          "orchiectomy",
+          "partial orchidectomy"
+        ],
+        "clinical": [
+          "testicular tumour",
+          "testicular mass",
+          "seminoma",
+          "germ cell tumour",
+          "embryonal carcinoma",
+          "yolk sac tumour",
+          "teratoma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|torsion|cryptorchid|undescended|atrophy|hydrocele|prostate|castration|frozen|FS)\\b)[\\s\\S]*\\b(?:radical\\s+orchi(?:d)?ectomy|(?:testis|testicle|testicular|orchi(?:d)?ectomy)[\\s\\S]*(?:tumou?r|mass|seminoma|germ\\s+cell|GCT|embryonal|yolk\\s+sac|teratoma|choriocarcinoma|leydig|sertoli|carcinoma))\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "torsion",
+          "cryptorchid",
+          "undescended",
+          "atrophy",
+          "hydrocele",
+          "prostate",
+          "castration",
+          "frozen",
+          "FS"
+        ],
+        "bias": 4,
+        "fill": [
+          {
+            "field": "laterality",
+            "from": "map",
+            "map": [
+              [
+                "\\bright\\b",
+                "Right"
+              ],
+              [
+                "\\bleft\\b",
+                "Left"
+              ],
+              [
+                "\\bbilateral\\b",
+                "Bilateral"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "testis_tumour",
+      "generatorPath": "generators/testis_tumour.js",
+      "schemaPath": "schemas/testis_tumour.json"
+    },
+    {
+      "id": "wilms_tumour",
+      "name": "Wilms tumour (paediatric) nephrectomy",
+      "shortName": "Paediatric · Wilms tumour nephrectomy",
+      "label": "Wilms",
+      "organ": "KIDNEY (PAEDIATRIC)",
+      "system": "GU",
+      "kind": "cancer resection",
+      "rank": 73,
+      "aliases": [
+        "WT",
+        "Wilms tumour",
+        "Wilms tumor",
+        "nephroblastoma",
+        "paediatric renal tumour"
+      ],
+      "match": {
+        "site": [
+          "kidney",
+          "renal",
+          "paediatric kidney"
+        ],
+        "procedure": [
+          "nephrectomy",
+          "radical nephrectomy",
+          "partial nephrectomy",
+          "nephron-sparing resection"
+        ],
+        "clinical": [
+          "Wilms tumour",
+          "Wilms tumor",
+          "nephroblastoma",
+          "paediatric renal tumour"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|renal\\s+cell\\s+carcinoma|RCC|urothelial|oncocytoma|frozen|FS)\\b)[\\s\\S]*\\b(?:wilms|nephroblastoma)\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "renal cell carcinoma",
+          "RCC",
+          "urothelial",
+          "oncocytoma",
+          "frozen",
+          "FS"
+        ],
+        "bias": 5,
+        "fill": [
+          {
+            "field": "laterality",
+            "from": "map",
+            "map": [
+              [
+                "\\bright\\b",
+                "Right"
+              ],
+              [
+                "\\bleft\\b",
+                "Left"
+              ],
+              [
+                "\\bbilateral\\b",
+                "Bilateral"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "wilms_tumour",
+      "generatorPath": "generators/wilms_tumour.js",
+      "schemaPath": "schemas/wilms_tumour.json"
+    },
+    {
+      "id": "mesothelioma",
+      "name": "Pleural mesothelioma resection",
+      "shortName": "Pleura · mesothelioma resection",
+      "label": "Mesothelioma",
+      "organ": "PLEURA",
+      "system": "Thoracic",
+      "kind": "cancer resection",
+      "rank": 74,
+      "aliases": [
+        "MPM",
+        "pleural mesothelioma",
+        "mesothelioma",
+        "extrapleural pneumonectomy",
+        "pleurectomy decortication"
+      ],
+      "match": {
+        "site": [
+          "pleura",
+          "pleural",
+          "hemithorax",
+          "chest wall"
+        ],
+        "procedure": [
+          "extrapleural pneumonectomy",
+          "extended pleurectomy decortication",
+          "pleurectomy decortication",
+          "pleurectomy"
+        ],
+        "clinical": [
+          "pleural mesothelioma",
+          "malignant mesothelioma",
+          "epithelioid mesothelioma",
+          "biphasic mesothelioma",
+          "sarcomatoid mesothelioma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|fluid|effusion|peritoneal|peritoneum|adenocarcinoma|frozen|FS)\\b)[\\s\\S]*\\b(?:extrapleural\\s+pneumonectomy|pleurectomy[\\s\\S]*decortication|mesothelioma)\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "fluid",
+          "effusion",
+          "peritoneal",
+          "peritoneum",
+          "adenocarcinoma",
+          "frozen",
+          "FS"
+        ],
+        "bias": 5,
+        "fill": [
+          {
+            "field": "laterality",
+            "from": "map",
+            "map": [
+              [
+                "\\bright\\b",
+                "Right"
+              ],
+              [
+                "\\bleft\\b",
+                "Left"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "mesothelioma",
+      "generatorPath": "generators/mesothelioma.js",
+      "schemaPath": "schemas/mesothelioma.json"
+    },
+    {
+      "id": "melanoma",
+      "name": "Melanoma excision",
+      "shortName": "Skin · melanoma excision",
+      "label": "Melanoma",
+      "organ": "SKIN",
+      "system": "Skin",
+      "kind": "cancer resection",
+      "rank": 76,
+      "aliases": [
+        "MEL",
+        "cutaneous melanoma",
+        "malignant melanoma",
+        "melanoma",
+        "superficial spreading melanoma",
+        "nodular melanoma",
+        "lentigo maligna melanoma",
+        "acral lentiginous melanoma"
+      ],
+      "match": {
+        "site": [
+          "skin",
+          "back",
+          "forearm",
+          "leg",
+          "thigh",
+          "scalp",
+          "cheek",
+          "sole",
+          "subungual",
+          "ear"
+        ],
+        "procedure": [
+          "wide local excision",
+          "excision",
+          "excisional biopsy",
+          "re-excision",
+          "sentinel lymph node biopsy"
+        ],
+        "clinical": [
+          "melanoma",
+          "cutaneous melanoma",
+          "malignant melanoma",
+          "lentigo maligna"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:mucosal|sinonasal|nasal|oral|palate|gingiva|pharyn\\w*|laryn\\w*|uveal|choroidal|conjunctiv\\w*|naevus|nevus|frozen|FS)\\b)[\\s\\S]*\\b(?:cutaneous\\s+melanoma|malignant\\s+melanoma|lentigo\\s+maligna\\s+melanoma|melanoma[\\s\\S]*(?:excision|re-excision|skin|WLE|wide\\s+local)|(?:skin|back|leg|arm|scalp|foot|sole|cheek|trunk)[\\s\\S]*melanoma)\\b",
+        "exclude": [
+          "mucosal",
+          "sinonasal",
+          "nasal",
+          "oral",
+          "palate",
+          "gingiva",
+          "pharynx",
+          "larynx",
+          "uveal",
+          "choroidal",
+          "conjunctiva",
+          "naevus",
+          "nevus",
+          "frozen",
+          "FS"
+        ],
+        "bias": 4,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "melanoma",
+      "generatorPath": "generators/melanoma.js",
+      "schemaPath": "schemas/melanoma.json"
+    },
+    {
+      "id": "meningioma",
+      "name": "Meningioma resection",
+      "shortName": "CNS · meningioma resection",
+      "label": "Meningioma",
+      "organ": "MENINGES / CNS",
+      "system": "CNS",
+      "kind": "cancer resection",
+      "rank": 77,
+      "aliases": [
+        "MNG",
+        "meningioma",
+        "atypical meningioma",
+        "anaplastic meningioma",
+        "dural tumour"
+      ],
+      "match": {
+        "site": [
+          "dura",
+          "meninges",
+          "falx",
+          "convexity",
+          "parasagittal",
+          "sphenoid wing",
+          "olfactory groove",
+          "tentorium",
+          "spinal dura"
+        ],
+        "procedure": [
+          "craniotomy",
+          "resection of meningioma",
+          "excision of dural tumour",
+          "laminectomy"
+        ],
+        "clinical": [
+          "meningioma",
+          "atypical meningioma",
+          "anaplastic meningioma",
+          "dural-based mass"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:glioma|glioblastoma|astrocytoma|oligodendroglioma|schwannoma|pituitary|solitary\\s+fibrous|frozen|FS)\\b)[\\s\\S]*\\bmeningioma\\b",
+        "exclude": [
+          "glioma",
+          "glioblastoma",
+          "astrocytoma",
+          "oligodendroglioma",
+          "schwannoma",
+          "pituitary",
+          "solitary fibrous",
+          "frozen",
+          "FS"
+        ],
+        "bias": 5,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "meningioma",
+      "generatorPath": "generators/meningioma.js",
+      "schemaPath": "schemas/meningioma.json"
+    },
+    {
+      "id": "ewing_sarcoma",
+      "name": "Ewing sarcoma (paediatric) resection",
+      "shortName": "Paediatric · Ewing sarcoma resection",
+      "label": "Ewing",
+      "organ": "BONE / SOFT TISSUE",
+      "system": "Soft tissue",
+      "kind": "cancer resection",
+      "rank": 78,
+      "aliases": [
+        "EWS",
+        "Ewing sarcoma",
+        "Ewing",
+        "extraskeletal Ewing sarcoma",
+        "FET-ETS"
+      ],
+      "match": {
+        "site": [
+          "femur",
+          "pelvis",
+          "tibia",
+          "rib",
+          "chest wall",
+          "soft tissue",
+          "bone"
+        ],
+        "procedure": [
+          "wide excision",
+          "limb-sparing resection",
+          "resection",
+          "amputation"
+        ],
+        "clinical": [
+          "Ewing sarcoma",
+          "extraskeletal Ewing sarcoma",
+          "EWSR1-FLI1"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|osteosarcoma|chondrosarcoma|rhabdomyosarcoma|frozen|FS)\\b)[\\s\\S]*\\bewing(?:\\s+sarcoma)?\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "osteosarcoma",
+          "chondrosarcoma",
+          "rhabdomyosarcoma",
+          "frozen",
+          "FS"
+        ],
+        "bias": 5,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "ewing_sarcoma",
+      "generatorPath": "generators/ewing_sarcoma.js",
+      "schemaPath": "schemas/ewing_sarcoma.json"
+    },
+    {
+      "id": "rhabdomyosarcoma",
+      "name": "Rhabdomyosarcoma (paediatric) resection",
+      "shortName": "Paediatric · rhabdomyosarcoma resection",
+      "label": "RMS",
+      "organ": "SOFT TISSUE",
+      "system": "Soft tissue",
+      "kind": "cancer resection",
+      "rank": 79,
+      "aliases": [
+        "RMS",
+        "rhabdomyosarcoma",
+        "embryonal rhabdomyosarcoma",
+        "alveolar rhabdomyosarcoma",
+        "spindle cell rhabdomyosarcoma"
+      ],
+      "match": {
+        "site": [
+          "orbit",
+          "paratesticular",
+          "parameningeal",
+          "extremity",
+          "retroperitoneum",
+          "bladder",
+          "prostate",
+          "soft tissue"
+        ],
+        "procedure": [
+          "wide excision",
+          "resection",
+          "delayed primary excision",
+          "exenteration"
+        ],
+        "clinical": [
+          "rhabdomyosarcoma",
+          "embryonal rhabdomyosarcoma",
+          "alveolar rhabdomyosarcoma",
+          "botryoid rhabdomyosarcoma"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|rhabdomyoma|leiomyosarcoma|liposarcoma|frozen|FS)\\b)[\\s\\S]*\\brhabdomyosarcoma\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "rhabdomyoma",
+          "leiomyosarcoma",
+          "liposarcoma",
+          "frozen",
+          "FS"
+        ],
+        "bias": 5,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "rhabdomyosarcoma",
+      "generatorPath": "generators/rhabdomyosarcoma.js",
+      "schemaPath": "schemas/rhabdomyosarcoma.json"
+    },
+    {
+      "id": "extragonadal_gct",
+      "name": "Extragonadal germ cell tumour (paediatric) resection",
+      "shortName": "Paediatric · extragonadal GCT resection",
+      "label": "Extragonadal GCT",
+      "organ": "EXTRAGONADAL GERM CELL",
+      "system": "Soft tissue",
+      "kind": "cancer resection",
+      "rank": 80,
+      "aliases": [
+        "EGC",
+        "extragonadal GCT",
+        "extragonadal germ cell tumour",
+        "sacrococcygeal teratoma",
+        "mediastinal germ cell tumour"
+      ],
+      "match": {
+        "site": [
+          "sacrococcygeal",
+          "coccyx",
+          "anterior mediastinum",
+          "mediastinum",
+          "retroperitoneum",
+          "extragonadal"
+        ],
+        "procedure": [
+          "sacrococcygeal teratoma resection",
+          "excision with coccygectomy",
+          "mediastinal tumour resection",
+          "retroperitoneal resection"
+        ],
+        "clinical": [
+          "sacrococcygeal teratoma",
+          "extragonadal germ cell tumour",
+          "mediastinal germ cell tumour",
+          "mediastinal teratoma",
+          "yolk sac tumour"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|testis|testicular|orchi(?:d)?ectomy|ovary|ovarian|oophorectomy|thymoma|frozen|FS)\\b)[\\s\\S]*\\b(?:sacrococcygeal\\s+(?:teratoma|germ\\s+cell|GCT)|extragonadal[\\s\\S]*(?:germ\\s+cell|GCT|teratoma)|(?:mediastin\\w*|retroperitone\\w*|coccy\\w*)[\\s\\S]*(?:germ\\s+cell|GCT|teratoma|yolk\\s+sac|germinoma|seminoma|choriocarcinoma))\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "testis",
+          "testicular",
+          "orchidectomy",
+          "orchiectomy",
+          "ovary",
+          "ovarian",
+          "oophorectomy",
+          "thymoma",
+          "frozen",
+          "FS"
+        ],
+        "bias": 5,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "extragonadal_gct",
+      "generatorPath": "generators/extragonadal_gct.js",
+      "schemaPath": "schemas/extragonadal_gct.json"
+    },
+    {
       "id": "bile_duct_carcinoma",
       "name": "Extrahepatic bile duct carcinoma resection (distal / perihilar)",
       "shortName": "Bile duct · extrahepatic carcinoma resection",
@@ -10840,6 +11772,61 @@
       "generator": "cytology",
       "generatorPath": "generators/cytology.js",
       "schemaPath": "schemas/salivary_fna.json"
+    },
+    {
+      "id": "thymic_tumour",
+      "name": "Thymic epithelial tumour resection",
+      "shortName": "Thymus · epithelial tumour resection",
+      "label": "Thymus",
+      "organ": "THYMUS",
+      "system": "Thoracic",
+      "kind": "cancer resection",
+      "rank": 620,
+      "aliases": [
+        "TET",
+        "thymoma",
+        "thymic carcinoma",
+        "thymic epithelial tumour",
+        "thymectomy"
+      ],
+      "match": {
+        "site": [
+          "thymus",
+          "thymic",
+          "anterior mediastinum"
+        ],
+        "procedure": [
+          "thymectomy",
+          "total thymectomy",
+          "extended thymectomy",
+          "mediastinal mass excision"
+        ],
+        "clinical": [
+          "thymoma",
+          "thymic carcinoma",
+          "thymic epithelial tumour",
+          "thymic neuroendocrine tumour"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|hyperplasia|lymphoma|teratoma|frozen|FS)\\b)[\\s\\S]*\\b(?:thymoma|thymic\\s+carcinoma|thymic\\s+epithelial|thymic\\s+neuroendocrine|thymectomy[\\s\\S]*(?:thymoma|tumou?r|mass|carcinoma))\\b",
+        "exclude": [
+          "biopsy",
+          "biopsies",
+          "bx",
+          "fna",
+          "cytology",
+          "hyperplasia",
+          "lymphoma",
+          "teratoma",
+          "frozen",
+          "FS"
+        ],
+        "bias": 5,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "thymic_tumour",
+      "generatorPath": "generators/thymic_tumour.js",
+      "schemaPath": "schemas/thymic_tumour.json"
     },
     {
       "id": "lymph_node_fna",

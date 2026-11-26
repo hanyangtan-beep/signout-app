@@ -1,0 +1,465 @@
+{
+ "id": "wilms_tumour",
+ "version": "2026.11",
+ "name": "Wilms tumour (paediatric) nephrectomy",
+ "shortName": "Paediatric · Wilms tumour nephrectomy",
+ "label": "Wilms",
+ "organ": "KIDNEY (PAEDIATRIC)",
+ "system": "GU",
+ "kind": "cancer resection",
+ "rank": 73,
+ "aliases": [
+  "WT",
+  "Wilms tumour",
+  "Wilms tumor",
+  "nephroblastoma",
+  "paediatric renal tumour"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "wilms_tumour",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print COG / SIOP pathological stage"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Pedi-Wilms (WHO 5th Paediatric Tumours; COG & SIOP Staging Protocols)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Pedi-Wilms.html",
+  "savedPage": "docs/reference/Pedi-Wilms.html",
+  "staging": "Dual-protocol COG (upfront) and SIOP (post-chemotherapy) Stage I–V derived by src/staging/wilms.js."
+ },
+ "match": {
+  "site": [
+   "kidney",
+   "renal",
+   "paediatric kidney"
+  ],
+  "procedure": [
+   "nephrectomy",
+   "radical nephrectomy",
+   "partial nephrectomy",
+   "nephron-sparing resection"
+  ],
+  "clinical": [
+   "Wilms tumour",
+   "Wilms tumor",
+   "nephroblastoma",
+   "paediatric renal tumour"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|renal\\s+cell\\s+carcinoma|RCC|urothelial|oncocytoma|frozen|FS)\\b)[\\s\\S]*\\b(?:wilms|nephroblastoma)\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "renal cell carcinoma",
+   "RCC",
+   "urothelial",
+   "oncocytoma",
+   "frozen",
+   "FS"
+  ],
+  "bias": 5,
+  "fill": [
+   {
+    "field": "laterality",
+    "from": "map",
+    "map": [
+     [
+      "\\bright\\b",
+      "Right"
+     ],
+     [
+      "\\bleft\\b",
+      "Left"
+     ],
+     [
+      "\\bbilateral\\b",
+      "Bilateral"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "protocol",
+   "label": "Treatment / staging protocol",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "COG (upfront nephrectomy)",
+   "options": [
+    "COG (upfront nephrectomy)",
+    "SIOP (post-preoperative chemotherapy)"
+   ]
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Radical nephrectomy",
+   "options": [
+    "Radical nephrectomy",
+    "Partial nephrectomy (nephron-sparing)",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "laterality",
+   "label": "Laterality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Left",
+   "options": [
+    "Right",
+    "Left",
+    "Bilateral",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "bilateral",
+   "label": "Bilateral renal involvement at diagnosis (Stage V)",
+   "group": "Specimen & Gross",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "weightG",
+   "label": "Specimen weight (g)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic subtype / risk category (WHO 5th / COG / SIOP)",
+   "group": "Histology & Anaplasia",
+   "type": "select",
+   "default": "Wilms tumour (nephroblastoma), favourable histology — triphasic / mixed",
+   "options": [
+    "Wilms tumour (nephroblastoma), favourable histology — triphasic / mixed",
+    "Wilms tumour (nephroblastoma), favourable histology — blastemal predominant",
+    "Wilms tumour (nephroblastoma), favourable histology — epithelial predominant",
+    "Wilms tumour (nephroblastoma), favourable histology — stromal predominant",
+    "Wilms tumour (nephroblastoma), regressive type (post-chemotherapy SIOP)",
+    "Wilms tumour (nephroblastoma), completely necrotic (post-chemotherapy SIOP)",
+    "Wilms tumour (nephroblastoma), focal anaplasia (unfavourable histology)",
+    "Wilms tumour (nephroblastoma), diffuse anaplasia (unfavourable histology)",
+    "Cystic partially differentiated nephroblastoma",
+    "Clear cell sarcoma of the kidney (non-Wilms differential)",
+    "Malignant rhabdoid tumour of the kidney (SMARCB1/INI1-deficient)",
+    "Other paediatric renal tumour (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th Wilms tumour — COG vs SIOP risk groups & anaplasia criteria",
+    "intro": "Anaplasia requires ALL three criteria: (1) multipolar polyploid mitotic figures, (2) marked nuclear enlargement (>= 3x adjacent nuclei of same lineage), and (3) hyperchromasia. Tumour rupture/spillage, positive margins, or regional lymph node metastasis automatically upgrades to Stage III.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "COG vs SIOP stratification & adverse molecular markers",
+      "points": [
+       "Focal anaplasia: sharply circumscribed anaplastic focus confined within the primary tumour without nuclear unrest elsewhere and without anaplasia in vessels/extratumoural sites. Any other pattern = diffuse anaplasia.",
+       "SIOP post-chemotherapy high-risk: blastemal-predominant (> 66% viable tumour is blastema with < 66% chemotherapy-induced necrosis) or diffuse anaplasia; low-risk: completely necrotic.",
+       "Adverse biomarkers: combined LOH at 1p and 16q, 1q gain, and TP53 mutation (strongly linked to anaplasia). WT1 nuclear positivity highlights blastema/epithelium; BCOR/cyclin D1 flags CCSK; INI1 loss flags MRTK."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Wilms Tumor (Nephroblastoma)",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/wilms_tumour/wilms_triphasic.jpg",
+        "caption": "Wilms tumour (high magnification): triphasic nephroblastoma combining blastemal sheets, primitive epithelial tubules and spindle-cell stroma (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AWilms_tumour_-_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/wilms_tumour/wilms_nephro.jpg",
+        "caption": "Nephroblastoma (Wilms tumour): dense small round blue blastema with differentiating tubules (H&E).",
+        "credit": "Ed Uthman from Houston, TX, USA",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AWilms_Tumor_%28Nephroblastoma%29_%284882456062%29.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Anaplasia",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Other paediatric renal tumour (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "necrosisPct",
+   "label": "Chemotherapy-induced necrosis / regression (%)",
+   "group": "Histology & Anaplasia",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blastemaPct",
+   "label": "Viable blastemal component (% of viable tumour)",
+   "group": "Histology & Anaplasia",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nephrogenicRests",
+   "label": "Nephrogenic rests in adjacent kidney",
+   "group": "Histology & Anaplasia",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Perilobar nephrogenic rest(s)",
+    "Intralobar nephrogenic rest(s)",
+    "Combined perilobar and intralobar nephrogenic rests",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "molecularStatus",
+   "label": "Molecular / cytogenetics (1p/16q LOH, 1q gain, TP53)",
+   "group": "Histology & Anaplasia",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry (WT1 / p53 / INI1 / BCOR)",
+   "group": "Histology & Anaplasia",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Anaplasia",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Local tumour extent (COG / SIOP)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Limited to kidney with intact capsule, no renal sinus/vessel invasion, completely excised (Stage I)",
+   "options": [
+    "Limited to kidney with intact capsule, no renal sinus/vessel invasion, completely excised (Stage I)",
+    "Extends beyond kidney (perirenal fat, renal sinus soft tissue/vessels, or renal vein) but completely excised with negative margins (Stage II)",
+    "Residual non-haematogenous tumour confined to abdomen: positive margins, tumour rupture/spillage, regional lymph node metastasis, peritoneal implants, or piecemeal resection (Stage III)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "capsuleRupture",
+   "label": "Preoperative / intraoperative tumour rupture or spillage (upgrades to Stage III)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins (renal vein, ureter, perirenal soft tissue)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by tumour",
+   "options": [
+    "Uninvolved by tumour",
+    "Involved by tumour",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved (upgrades to Stage III)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (Stage IV)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Lung",
+    "Liver",
+    "Bone",
+    "Brain",
+    "Extra-abdominal lymph node(s)",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02007",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "protocol": "COG (upfront nephrectomy)",
+     "procedure": "Radical nephrectomy",
+     "laterality": "Left",
+     "bilateral": false,
+     "specimenDims": "13.0 x 9.5 x 8.0",
+     "weightG": "480",
+     "sizeMm": "95",
+     "blocks": "16",
+     "blockKeyText": "A1-A2: renal vein, artery and ureteric margins\nA3-A12: representative sections of Wilms tumour including capsule and renal sinus\nA13-A14: uninvolved renal cortex for nephrogenic rests\nA15-A16: hilar and para-aortic lymph nodes",
+     "histType": "Wilms tumour (nephroblastoma), favourable histology — triphasic / mixed",
+     "nephrogenicRests": "Perilobar nephrogenic rest(s)",
+     "ihcText": "Blastemal and epithelial elements are positive for WT1; p53 shows wild-type staining",
+     "extension": "Limited to kidney with intact capsule, no renal sinus/vessel invasion, completely excised (Stage I)",
+     "capsuleRupture": "Not identified",
+     "marginStatus": "Uninvolved by tumour",
+     "nodesExamined": "7",
+     "nodesInvolved": "0",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

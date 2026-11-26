@@ -1,0 +1,562 @@
+{
+ "id": "melanoma",
+ "version": "2026.11",
+ "name": "Melanoma excision",
+ "shortName": "Skin · melanoma excision",
+ "label": "Melanoma",
+ "organ": "SKIN",
+ "system": "Skin",
+ "kind": "cancer resection",
+ "rank": 76,
+ "aliases": [
+  "MEL",
+  "cutaneous melanoma",
+  "malignant melanoma",
+  "melanoma",
+  "superficial spreading melanoma",
+  "nodular melanoma",
+  "lentigo maligna melanoma",
+  "acral lentiginous melanoma"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "melanoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Skin-Melanoma (WHO 5th edition Skin Tumours; AJCC 8th edition)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Skin-Melanoma.html",
+  "savedPage": "docs/reference/Skin-Melanoma.html",
+  "staging": "Cutaneous melanoma pT1a/pT1b (0.8 mm Breslow threshold + ulceration) through pT4b, pN0–pN3c (microsatellites/satellites/in-transit), and pM1a–d derived by src/staging/melanoma.js on AJCC 8th edition."
+ },
+ "match": {
+  "site": [
+   "skin",
+   "back",
+   "forearm",
+   "leg",
+   "thigh",
+   "scalp",
+   "cheek",
+   "sole",
+   "subungual",
+   "ear"
+  ],
+  "procedure": [
+   "wide local excision",
+   "excision",
+   "excisional biopsy",
+   "re-excision",
+   "sentinel lymph node biopsy"
+  ],
+  "clinical": [
+   "melanoma",
+   "cutaneous melanoma",
+   "malignant melanoma",
+   "lentigo maligna"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:mucosal|sinonasal|nasal|oral|palate|gingiva|pharyn\\w*|laryn\\w*|uveal|choroidal|conjunctiv\\w*|naevus|nevus|frozen|FS)\\b)[\\s\\S]*\\b(?:cutaneous\\s+melanoma|malignant\\s+melanoma|lentigo\\s+maligna\\s+melanoma|melanoma[\\s\\S]*(?:excision|re-excision|skin|WLE|wide\\s+local)|(?:skin|back|leg|arm|scalp|foot|sole|cheek|trunk)[\\s\\S]*melanoma)\\b",
+  "exclude": [
+   "mucosal",
+   "sinonasal",
+   "nasal",
+   "oral",
+   "palate",
+   "gingiva",
+   "pharynx",
+   "larynx",
+   "uveal",
+   "choroidal",
+   "conjunctiva",
+   "naevus",
+   "nevus",
+   "frozen",
+   "FS"
+  ],
+  "bias": 4,
+  "fill": []
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Wide local excision",
+   "options": [
+    "Excision (complete excisional biopsy)",
+    "Wide local excision",
+    "Re-excision",
+    "Amputation / digital excision",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Anatomic site",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": "Back"
+  },
+  {
+   "id": "specimenDims",
+   "label": "Skin ellipse dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "lesionSizeMm",
+   "label": "Clinical / gross lesion diameter (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic subtype (WHO 5th)",
+   "group": "Histology & Microstaging",
+   "type": "select",
+   "default": "Superficial spreading melanoma (low-CSD melanoma)",
+   "options": [
+    "Superficial spreading melanoma (low-CSD melanoma)",
+    "Lentigo maligna melanoma (high-CSD melanoma)",
+    "Desmoplastic melanoma, pure",
+    "Desmoplastic melanoma, mixed",
+    "Nodular melanoma",
+    "Acral lentiginous melanoma",
+    "Spitz melanoma (malignant Spitz tumour)",
+    "Melanoma arising in a blue naevus",
+    "Melanoma arising in a giant congenital naevus",
+    "Nevoid melanoma",
+    "Melanoma in situ",
+    "Melanoma, not otherwise specified",
+    "Other histologic subtype not listed (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th cutaneous melanoma & AJCC 8th microstaging",
+    "intro": "Report Breslow thickness to the nearest 0.1 mm (not 0.01 mm). In AJCC 8th, pT1 splits at 0.8 mm (pT1a < 0.8 mm non-ulcerated; pT1b < 0.8 mm ulcerated or 0.8–1.0 mm); mitotic rate is still required for prognosis but no longer governs pT1a/b.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Microstaging, microsatellites & molecular testing",
+      "points": [
+       "Breslow thickness is measured from the top of the granular layer (or base of ulcer) to the deepest invasive melanoma cell (excluding adventitial/adnexal extension and microsatellites).",
+       "Microsatellites (any discontinuous dermal/subcutaneous nest separated from main tumour by normal tissue), satellites, or in-transit metastases upstage N to pN1c (0 nodes), pN2c (1 node), or pN3c (>= 2 nodes).",
+       "IHC/molecular: SOX10, S100, Melan-A, HMB45, PRAME; test BRAF V600E/K (and NRAS/KIT for acral/high-CSD) on stage III/IV or high-risk resected disease."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Cutaneous Melanoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/melanoma/mel_ssm.jpg",
+        "caption": "Superficial spreading melanoma: dermoscopy, reflectance confocal microscopy and correlated histopathology showing atypical melanocytic proliferation.",
+        "credit": "Juliana Casagrande Tavoloni Braga et al.",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3ASuperficial_spreading_melanoma_on_dermoscopy%2C_reflectance_confocal_microscopy_and_histopathology_1.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic subtype",
+   "group": "Histology & Microstaging",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Other histologic subtype not listed (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "breslowMm",
+   "label": "Breslow thickness (mm — nearest 0.1 mm)",
+   "group": "Histology & Microstaging",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "ulceration",
+   "label": "Ulceration (splits pT1–pT4 into a / b)",
+   "group": "Histology & Microstaging",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "clarkLevel",
+   "label": "Clark anatomic level",
+   "group": "Histology & Microstaging",
+   "type": "select",
+   "default": "Level III (fills and expands papillary dermis)",
+   "options": [
+    "Level I (in situ, confined to epidermis)",
+    "Level II (invades papillary dermis)",
+    "Level III (fills and expands papillary dermis)",
+    "Level IV (invades reticular dermis)",
+    "Level V (invades subcutaneous fat)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "mitoticRate",
+   "label": "Dermal mitotic rate (per mm2)",
+   "group": "Histology & Microstaging",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "microsatellites",
+   "label": "Microsatellites / satellites / in-transit metastases (pN1c–pN3c)",
+   "group": "Histology & Microstaging",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "tils",
+   "label": "Tumour-infiltrating lymphocytes (TILs)",
+   "group": "Histology & Microstaging",
+   "type": "select",
+   "default": "Present, non-brisk",
+   "options": [
+    "Absent",
+    "Present, non-brisk",
+    "Present, brisk",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "regression",
+   "label": "Tumour regression",
+   "group": "Histology & Microstaging",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present (< 75% of lesion)",
+    "Present (>= 75% of lesion)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Microstaging",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Neurotropism / perineural invasion",
+   "group": "Histology & Microstaging",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry / molecular (SOX10 / PRAME / BRAF V600E)",
+   "group": "Histology & Microstaging",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Microstaging",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "peripheralMargin",
+   "label": "Peripheral surgical margins (invasive melanoma)",
+   "group": "Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive melanoma",
+   "options": [
+    "Uninvolved by invasive melanoma",
+    "Involved by invasive melanoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "inSituMargin",
+   "label": "Peripheral surgical margins (melanoma in situ)",
+   "group": "Margins",
+   "type": "select",
+   "default": "Uninvolved by melanoma in situ",
+   "options": [
+    "Uninvolved by melanoma in situ",
+    "Involved by melanoma in situ",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "deepMargin",
+   "label": "Deep surgical margin",
+   "group": "Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive melanoma",
+   "options": [
+    "Uninvolved by invasive melanoma",
+    "Involved by invasive melanoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestPeripheralMm",
+   "label": "Closest peripheral margin distance (mm)",
+   "group": "Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestDeepMm",
+   "label": "Closest deep margin distance (mm)",
+   "group": "Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeDetection",
+   "label": "Nodal metastasis detection",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "default": "Clinically occult (detected by SLNB)",
+   "options": [
+    "Clinically occult (detected by SLNB)",
+    "Clinically detected (macroscopic / palpable)"
+   ]
+  },
+  {
+   "id": "nodeSuffix",
+   "label": "pN suffix",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "default": "None",
+   "options": [
+    "None",
+    "(sn) Sentinel node"
+   ]
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Distant skin, soft tissue (including muscle), and/or non-regional lymph node (pM1a)",
+    "Lung metastasis with or without M1a sites (pM1b)",
+    "Non-CNS visceral sites with or without M1a/M1b sites (pM1c)",
+    "Central nervous system (CNS) metastasis (pM1d)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02103",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Wide local excision",
+     "site": "Upper back",
+     "specimenDims": "4.5 x 2.5 x 1.0",
+     "lesionSizeMm": "12",
+     "blocks": "8",
+     "blockKeyText": "A1-A8: serially sectioned skin ellipse submitted entirely",
+     "histType": "Superficial spreading melanoma (low-CSD melanoma)",
+     "breslowMm": "1.4",
+     "ulceration": "Not identified",
+     "clarkLevel": "Level III (fills and expands papillary dermis)",
+     "mitoticRate": "2",
+     "microsatellites": "Not identified",
+     "tils": "Present, non-brisk",
+     "regression": "Not identified",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "peripheralMargin": "Uninvolved by invasive melanoma",
+     "inSituMargin": "Uninvolved by melanoma in situ",
+     "deepMargin": "Uninvolved by invasive melanoma",
+     "closestPeripheralMm": "10",
+     "closestDeepMm": "6",
+     "nodesExamined": "2",
+     "nodesInvolved": "0",
+     "nodeSuffix": "(sn) Sentinel node",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

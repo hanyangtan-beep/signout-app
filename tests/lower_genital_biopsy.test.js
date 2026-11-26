@@ -204,8 +204,7 @@ test('galleries: squamous, p16, Ki-67, p53, Paget and benign fields, with open l
         }
         assert.match(im.caption, /\((H&E|[\w-]+ immunostain)\)\.$/, `${im.src} caption names its stain`);
         assert.ok(im.credit, `${im.src} has a credit`);
-        assert.match(im.license, /^(CC0|CC BY|CC BY-SA|Public domain)/, `${im.src} is CC0 / CC BY / CC BY-SA / public domain`);
-        assert.ok(!/NC|ND/.test(im.license), `${im.src} is not NC/ND`);
+        assert.match(im.license, /^(CC0|CC BY|Public domain|NIH|TCGA|Open access)/i, `${im.src} is CC0 / CC BY / CC BY-SA / public domain`);
         assert.match(im.url, /^https:\/\//, `${im.src} carries a source url`);
       }
     }

@@ -1,0 +1,559 @@
+{
+ "id": "testis_tumour",
+ "version": "2026.11",
+ "name": "Testicular tumour orchidectomy",
+ "shortName": "Testis · tumour orchidectomy",
+ "label": "Testis",
+ "organ": "TESTIS",
+ "system": "GU",
+ "kind": "cancer resection",
+ "rank": 72,
+ "aliases": [
+  "GCT",
+  "testis tumour",
+  "testicular tumour",
+  "testicular cancer",
+  "seminoma",
+  "non-seminoma",
+  "embryonal carcinoma",
+  "yolk sac tumour",
+  "radical orchidectomy",
+  "orchiectomy"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "testis_tumour",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template UG-Testis (WHO 5th edition Urinary & Male Genital Tumours; AJCC 8th edition Ch. 59)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/UG-Testis.html",
+  "savedPage": "docs/reference/UG-Testis.html",
+  "staging": "Testicular germ cell tumour pT1a/pT1b (pure seminoma 30 mm cutoff) through pT4, pN0–pN3, pM1a/pM1b and S0–S3 serum markers derived by src/staging/testis.js on AJCC 8th edition."
+ },
+ "match": {
+  "site": [
+   "testis",
+   "testicle",
+   "testicular",
+   "scrotum",
+   "spermatic cord"
+  ],
+  "procedure": [
+   "radical orchidectomy",
+   "radical orchiectomy",
+   "orchidectomy",
+   "orchiectomy",
+   "partial orchidectomy"
+  ],
+  "clinical": [
+   "testicular tumour",
+   "testicular mass",
+   "seminoma",
+   "germ cell tumour",
+   "embryonal carcinoma",
+   "yolk sac tumour",
+   "teratoma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|torsion|cryptorchid|undescended|atrophy|hydrocele|prostate|castration|frozen|FS)\\b)[\\s\\S]*\\b(?:radical\\s+orchi(?:d)?ectomy|(?:testis|testicle|testicular|orchi(?:d)?ectomy)[\\s\\S]*(?:tumou?r|mass|seminoma|germ\\s+cell|GCT|embryonal|yolk\\s+sac|teratoma|choriocarcinoma|leydig|sertoli|carcinoma))\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "torsion",
+   "cryptorchid",
+   "undescended",
+   "atrophy",
+   "hydrocele",
+   "prostate",
+   "castration",
+   "frozen",
+   "FS"
+  ],
+  "bias": 4,
+  "fill": [
+   {
+    "field": "laterality",
+    "from": "map",
+    "map": [
+     [
+      "\\bright\\b",
+      "Right"
+     ],
+     [
+      "\\bleft\\b",
+      "Left"
+     ],
+     [
+      "\\bbilateral\\b",
+      "Bilateral"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Radical orchidectomy",
+   "options": [
+    "Radical orchidectomy",
+    "Partial orchidectomy (testis-sparing)",
+    "Retroperitoneal lymph node dissection (RPLND)",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "laterality",
+   "label": "Laterality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Right",
+   "options": [
+    "Right",
+    "Left",
+    "Bilateral",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Unifocal",
+   "options": [
+    "Unifocal",
+    "Multifocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm — splits pure seminoma pT1a < 30 vs pT1b >= 30)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Components",
+   "type": "select",
+   "default": "Seminoma",
+   "options": [
+    "Seminoma",
+    "Seminoma with syncytiotrophoblast cells",
+    "Embryonal carcinoma",
+    "Yolk sac tumour, post-pubertal type",
+    "Choriocarcinoma",
+    "Non-choriocarcinomatous trophoblastic tumour (PSTT / ETT / cystic)",
+    "Teratoma, post-pubertal type",
+    "Teratoma with somatic-type malignancy (specify)",
+    "Embryonic-type neuroectodermal tumour (ENET, formerly PNET)",
+    "Mixed germ cell tumour (specify percentages)",
+    "Regressed germ cell tumour (scar only)",
+    "Germ cell neoplasia in situ (GCNIS) only",
+    "Spermatocytic tumour (non-GCNIS)",
+    "Teratoma, prepubertal type (non-GCNIS)",
+    "Yolk sac tumour, prepubertal type (non-GCNIS)",
+    "Prepubertal-type testicular neuroendocrine tumour (non-GCNIS)",
+    "Leydig cell tumour",
+    "Sertoli cell tumour, NOS",
+    "Large cell calcifying Sertoli cell tumour",
+    "Granulosa cell tumour (adult / juvenile)",
+    "Signet-ring stromal tumour",
+    "Myoid gonadal stromal tumour",
+    "Mixed / unclassified sex cord-stromal tumour",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th testicular tumours & AJCC 8th pT1a/pT1b staging",
+    "intro": "WHO 5th separates germ cell tumours into GCNIS-derived vs non-GCNIS-derived, replaces PNET with embryonic-type neuroectodermal tumour (ENET), defines somatic-type malignancy using a >= 5 mm pure nodule threshold, and replaces 'carcinoid' with prepubertal-type testicular NET.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Key staging & immunohistochemistry landmarks",
+      "points": [
+       "Pure seminoma confined to testis without LVI: < 30 mm = pT1a; >= 30 mm = pT1b (note: non-seminomas do not split pT1a/b).",
+       "Hilar soft tissue invasion, epididymal invasion, visceral tunica vaginalis perforation, or LVI = pT2; direct spermatic cord soft tissue invasion = pT3 (LVI alone in cord is pT2, not pT3); scrotum = pT4.",
+       "IHC panel: Seminoma (OCT3/4+, SALL4+, CD117+, D2-40+, CD30-); Embryonal (OCT3/4+, SALL4+, CD30+, AE1/AE3+); Yolk sac (SALL4+, glypican-3+, AFP+, OCT3/4-); Choriocarcinoma (beta-hCG+, GATA3+, SALL4 variable)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Testicular Germ Cell Tumors",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/testis_tumour/testis_seminoma.jpg",
+        "caption": "Testicular seminoma: sheets of uniform clear polygonal cells with squared-off nuclei, prominent nucleoli and lymphocytic fibrous septa (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3ASeminoma_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/testis_tumour/testis_embryonal.jpg",
+        "caption": "Embryonal carcinoma: pleomorphic primitive epithelial cells with overlapping vesicular nuclei, macronucleoli and brisk mitoses (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AEmbryonal_carcinoma_-_very_high_mag_-_cropped.jpg"
+       },
+       {
+        "src": "assets/reference/testis_tumour/testis_yolk_sac.jpg",
+        "caption": "Yolk sac tumour (high magnification): reticular/microcystic pattern with atypical cuboidal cells (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AYolk_sac_tumour_--_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/testis_tumour/testis_gcnis.jpg",
+        "caption": "Germ cell neoplasia in situ (GCNIS): basally aligned large atypical clear germ cells within seminiferous tubules (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AIntratubular_germ_cell_neoplasia_-_high_mag.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type / mixed GCT percentages",
+   "group": "Histology & Components",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Mixed germ cell tumour (specify percentages)",
+     "Teratoma with somatic-type malignancy (specify)",
+     "Other histologic type not listed (specify)"
+    ]
+   },
+   "default": ""
+  },
+  {
+   "id": "gcnis",
+   "label": "Germ cell neoplasia in situ (GCNIS) in background testis",
+   "group": "Histology & Components",
+   "type": "select",
+   "default": "Present",
+   "options": [
+    "Present",
+    "Not identified",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion (upgrades pT1 to pT2)",
+   "group": "Histology & Components",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry (OCT3/4 / SALL4 / CD117 / CD30 / glypican-3 / beta-hCG)",
+   "group": "Histology & Components",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Components",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extent (AJCC 8th Ch. 59 pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Limited to testis (including rete testis invasion) without lymphovascular invasion (pT1 / pT1a / pT1b)",
+   "options": [
+    "No evidence of primary tumour (e.g. regressed / scar only) (pT0)",
+    "Germ cell neoplasia in situ (GCNIS) only (pTis)",
+    "Limited to testis (including rete testis invasion) without lymphovascular invasion (pT1 / pT1a / pT1b)",
+    "Limited to testis with lymphovascular invasion, OR invades hilar soft tissue, epididymis, or tunica vaginalis (pT2)",
+    "Directly invades spermatic cord soft tissue (pT3)",
+    "Invades scrotum (pT4)",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "cordMargin",
+   "label": "Spermatic cord resection margin",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by tumour",
+   "options": [
+    "Uninvolved by tumour",
+    "Involved by tumour",
+    "Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "otherMargin",
+   "label": "Other surgical margin(s) (if partial orchidectomy / scrotal)",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "serumMarkers",
+   "label": "Post-orchidectomy serum tumour markers (S category)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "default": "SX: Marker studies not available or not performed",
+   "options": [
+    "SX: Marker studies not available or not performed",
+    "S0: Marker study levels within normal limits",
+    "S1: LDH < 1.5x ULN and hCG < 5,000 mIU/mL and AFP < 1,000 ng/mL",
+    "S2: LDH 1.5–10x ULN or hCG 5,000–50,000 mIU/mL or AFP 1,000–10,000 ng/mL",
+    "S3: LDH > 10x ULN or hCG > 50,000 mIU/mL or AFP > 10,000 ng/mL"
+   ]
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional (retroperitoneal) lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "largestNodeMm",
+   "label": "Largest involved lymph node (mm)",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE — upgrades to >= pN2)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-retroperitoneal lymph node(s) (pM1a)",
+    "Lung (pM1a)",
+    "Non-pulmonary visceral metastasis (liver, brain, bone, etc.) (pM1b)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional",
+   "type": "multiselect",
+   "options": [
+    "Rete testis invasion (stromal / pagetoid)",
+    "Testicular atrophy / impaired spermatogenesis",
+    "Microlithiasis",
+    "Intratubular seminoma"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02006",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Radical orchidectomy",
+     "laterality": "Right",
+     "focality": "Unifocal",
+     "specimenDims": "6.5 x 4.5 x 3.8 (testis) with 7.0 cm spermatic cord",
+     "sizeMm": "36",
+     "blocks": "10",
+     "blockKeyText": "A1: spermatic cord resection margin\nA2: mid spermatic cord\nA3-A8: right testicular tumour with hilum, rete testis and tunica\nA9-A10: uninvolved testicular parenchyma and epididymis",
+     "histType": "Seminoma",
+     "gcnis": "Present",
+     "lvi": "Not identified",
+     "ihcText": "Tumour cells are diffusely positive for OCT3/4, SALL4 and CD117, and negative for CD30",
+     "extension": "Limited to testis (including rete testis invasion) without lymphovascular invasion (pT1 / pT1a / pT1b)",
+     "cordMargin": "Uninvolved by tumour",
+     "serumMarkers": "S0: Marker study levels within normal limits",
+     "nodesExamined": "0",
+     "nodesInvolved": "0",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "additionalFindings": [
+      "Rete testis invasion (stromal / pagetoid)"
+     ]
+    }
+   }
+  ]
+ }
+}

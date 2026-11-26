@@ -1,0 +1,598 @@
+{
+ "id": "penile_carcinoma",
+ "version": "2026.11",
+ "name": "Penile carcinoma resection",
+ "shortName": "Penis · carcinoma resection",
+ "label": "Penis Ca",
+ "organ": "PENIS",
+ "system": "GU",
+ "kind": "cancer resection",
+ "rank": 71,
+ "aliases": [
+  "PEN",
+  "penile carcinoma",
+  "penile SCC",
+  "penectomy",
+  "partial penectomy",
+  "glansectomy"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "penile_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template UG-Penis (WHO 5th edition Urinary & Male Genital Tumours; AJCC 8th edition)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/UG-Penis.html",
+  "savedPage": "docs/reference/UG-Penis.html",
+  "staging": "Penile carcinoma pT1a/pT1b (auto-upgraded on LVI, PNI, or G3) through pT4 and pN0–pN3 derived by src/staging/penis.js on AJCC 8th edition."
+ },
+ "match": {
+  "site": [
+   "penis",
+   "penile",
+   "glans penis",
+   "glans",
+   "foreskin",
+   "prepuce",
+   "coronal sulcus",
+   "penile shaft"
+  ],
+  "procedure": [
+   "partial penectomy",
+   "total penectomy",
+   "penectomy",
+   "glansectomy",
+   "circumcision"
+  ],
+  "clinical": [
+   "penile carcinoma",
+   "penile squamous cell carcinoma",
+   "penile SCC",
+   "verrucous carcinoma of penis"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|condyloma|phimosis|balanitis|urethrectomy|frozen|FS)\\b)[\\s\\S]*\\b(?:penectomy|glansectomy|(?:penis|penile|glans|prepuce|foreskin)[\\s\\S]*(?:carcinoma|SCC|squamous\\s+cell|verrucous))\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "condyloma",
+   "phimosis",
+   "balanitis",
+   "urethrectomy",
+   "frozen",
+   "FS"
+  ],
+  "bias": 4,
+  "fill": [
+   {
+    "field": "procedure",
+    "from": "map",
+    "map": [
+     [
+      "\\btotal\\s+penectomy\\b",
+      "Total penectomy"
+     ],
+     [
+      "\\bpartial\\s+penectomy\\b",
+      "Partial penectomy"
+     ],
+     [
+      "\\bglansectomy\\b",
+      "Glansectomy"
+     ],
+     [
+      "\\bcircumcision\\b",
+      "Circumcision"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Partial penectomy",
+   "options": [
+    "Circumcision",
+    "Wide local excision",
+    "Glansectomy",
+    "Partial penectomy",
+    "Total penectomy",
+    "Inguinal / pelvic lymph node dissection",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour site",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Glans penis",
+   "options": [
+    "Glans penis",
+    "Foreskin (prepuce)",
+    "Coronal sulcus",
+    "Penile shaft",
+    "Glans and foreskin",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Unifocal",
+   "options": [
+    "Unifocal",
+    "Multifocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "depthMm",
+   "label": "Depth of invasion (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th — HPV-associated vs HPV-independent)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "HPV-independent squamous cell carcinoma, usual type",
+   "options": [
+    "HPV-independent squamous cell carcinoma, usual type",
+    "HPV-independent squamous cell carcinoma, verrucous carcinoma",
+    "HPV-independent squamous cell carcinoma, papillary",
+    "HPV-independent squamous cell carcinoma, pseudohyperplastic",
+    "HPV-independent squamous cell carcinoma, pseudoglandular",
+    "HPV-independent squamous cell carcinoma, sarcomatoid",
+    "HPV-associated squamous cell carcinoma, basaloid",
+    "HPV-associated squamous cell carcinoma, warty (condylomatous)",
+    "HPV-associated squamous cell carcinoma, warty-basaloid",
+    "HPV-associated squamous cell carcinoma, clear cell",
+    "HPV-associated squamous cell carcinoma, lymphoepithelial",
+    "HPV-associated squamous cell carcinoma, medullary",
+    "Squamous cell carcinoma, NOS (HPV status not determined)",
+    "Penile intraepithelial neoplasia (PeIN), HPV-associated",
+    "Penile intraepithelial neoplasia (PeIN), differentiated (HPV-independent)",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th penile squamous cell carcinoma & AJCC 8th pT1a/pT1b staging",
+    "intro": "WHO 5th classifies penile SCC and PeIN into HPV-associated (p16 block-positive) and HPV-independent (p16 negative, often lichen sclerosus / differentiated PeIN / TP53-mutated). In AJCC 8th, lamina propria/dartos invasion is pT1a without high-risk features and auto-upgrades to pT1b if LVI, PNI, or Grade 3 is present.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "HPV stratification & staging pitfalls",
+      "points": [
+       "HPV-associated SCC (basaloid, warty, warty-basaloid, clear cell, lymphoepithelial): block-type diffuse nuclear and cytoplasmic p16 positivity; arises from basaloid/warty PeIN.",
+       "HPV-independent SCC (usual keratinising, verrucous, papillary, pseudohyperplastic, sarcomatoid): p16 negative; frequently associated with lichen sclerosus and differentiated PeIN.",
+       "pT1a vs pT1b: presence of LVI, PNI, or any Grade 3 component upgrades lamina propria/dartos invasion from pT1a to pT1b. Corpus spongiosum = pT2; corpus cavernosum = pT3; scrotum/prostate/pubis = pT4."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Squamous Cell Carcinoma of the Penis",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/penile_carcinoma/penis_scc.jpg",
+        "caption": "Penile squamous cell carcinoma: infiltrating nests of keratinising squamous carcinoma invading subepithelial stroma (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3ASquamous_carcinoma_of_the_penis_--_low_mag.jpg"
+       },
+       {
+        "src": "assets/reference/penile_carcinoma/penis_pein.jpg",
+        "caption": "Penile intraepithelial neoplasia (PeIN): full-thickness epithelial atypia confined above an intact basement membrane (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3APenile_intraepithelial_neoplasia_--_low_mag.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Grade",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Other histologic type not listed (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "p16Status",
+   "label": "p16 immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Negative",
+   "options": [
+    "Positive (block-type diffuse nuclear and cytoplasmic)",
+    "Negative",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade (governs pT1a vs pT1b)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "G2: Moderately differentiated",
+   "options": [
+    "G1: Well differentiated",
+    "G2: Moderately differentiated",
+    "G3: Poorly differentiated",
+    "GX: Cannot be assessed",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion (upgrades pT1a to pT1b)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pni",
+   "label": "Perineural invasion (upgrades pT1a to pT1b)",
+   "group": "Histology & Grade",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry",
+   "group": "Histology & Grade",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grade",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extent (AJCC 8th pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Invades corpus spongiosum (with or without urethral invasion) (pT2)",
+   "options": [
+    "Penile intraepithelial neoplasia (PeIN / carcinoma in situ) (pTis)",
+    "Non-invasive localised squamous cell carcinoma (pTa)",
+    "Invades subepithelial connective tissue / lamina propria / dartos (pT1a or pT1b)",
+    "Invades corpus spongiosum (with or without urethral invasion) (pT2)",
+    "Invades corpus cavernosum (with or without urethral invasion) (pT3)",
+    "Invades adjacent structures (scrotum, prostate, pubic bone) (pT4)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins (invasive carcinoma)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by invasive carcinoma",
+   "options": [
+    "Uninvolved by invasive carcinoma",
+    "Involved by invasive carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "peinMargin",
+   "label": "Surgical margins (PeIN)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by PeIN",
+   "options": [
+    "Uninvolved by PeIN",
+    "Involved by PeIN",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest / involved margin site (urethral / corpora / skin)",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeLaterality",
+   "label": "Inguinal nodal laterality",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "default": "Unilateral inguinal",
+   "options": [
+    "Unilateral inguinal",
+    "Bilateral inguinal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "pelvicNodesInvolved",
+   "label": "Pelvic lymph node(s) involved (pN3)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "ene",
+   "label": "Extranodal extension (ENE — upgrades to pN3)",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "options": [
+    "",
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ],
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Lung",
+    "Liver",
+    "Bone",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional",
+   "type": "multiselect",
+   "options": [
+    "Lichen sclerosus (balanitis xerotica obliterans)",
+    "Differentiated PeIN (HPV-independent)",
+    "HPV-associated PeIN",
+    "Squamous hyperplasia"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02005",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Partial penectomy",
+     "site": "Glans penis",
+     "focality": "Unifocal",
+     "specimenDims": "5.5 x 3.6 x 3.2",
+     "sizeMm": "28",
+     "depthMm": "9",
+     "blocks": "10",
+     "blockKeyText": "A1-A3: urethral, corporal and skin shaft resection margins\nA4-A10: glans tumour with corpus spongiosum and tunica albuginea",
+     "histType": "HPV-independent squamous cell carcinoma, usual type",
+     "p16Status": "Negative",
+     "grade": "G2: Moderately differentiated",
+     "lvi": "Not identified",
+     "pni": "Not identified",
+     "extension": "Invades corpus spongiosum (with or without urethral invasion) (pT2)",
+     "marginStatus": "Uninvolved by invasive carcinoma",
+     "peinMargin": "Uninvolved by PeIN",
+     "closestMarginMm": "12",
+     "closestMarginSite": "proximal corpus spongiosum margin",
+     "nodesExamined": "0",
+     "nodesInvolved": "0",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "additionalFindings": [
+      "Lichen sclerosus (balanitis xerotica obliterans)",
+      "Differentiated PeIN (HPV-independent)"
+     ]
+    }
+   }
+  ]
+ }
+}

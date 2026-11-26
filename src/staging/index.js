@@ -52,8 +52,22 @@ import * as larynx from './larynx.js';
 import * as sinonasal from './sinonasal.js';
 import * as salivary from './salivary.js';
 import * as mucosal_melanoma from './mucosal_melanoma.js';
+import * as adrenal from './adrenal.js';
+import * as pheochromocytoma from './pheochromocytoma.js';
+import * as neuroblastoma from './neuroblastoma.js';
+import * as urethra from './urethra.js';
+import * as penis from './penis.js';
+import * as testis from './testis.js';
+import * as wilms from './wilms.js';
+import * as mesothelioma from './mesothelioma.js';
+import * as thymus from './thymus.js';
+import * as melanoma from './melanoma.js';
+import * as meningioma from './meningioma.js';
+import * as ewing from './ewing.js';
+import * as rhabdomyosarcoma from './rhabdomyosarcoma.js';
+import * as extragonadal_gct from './extragonadal_gct.js';
 
-export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes, gastric, oesophagus, appendix, gallbladder, pancreas, ampulla, skin_scc, oral, hcc, vulva, ureter_renal_pelvis, softtissue, cervix, thyroid, bone, prostate, kidney, bladder, bile_duct, intrahepatic_bile_duct, pancreas_net, gi_net, small_intestine, anal, vagina, uterine_sarcoma, gtd, nasopharynx, hypopharynx_oropharynx, larynx, sinonasal, salivary, mucosal_melanoma };
+export const PROTOCOLS = { colorectal, gist, endometrium, ovary, lung, breast, phyllodes, gastric, oesophagus, appendix, gallbladder, pancreas, ampulla, skin_scc, oral, hcc, vulva, ureter_renal_pelvis, softtissue, cervix, thyroid, bone, prostate, kidney, bladder, bile_duct, intrahepatic_bile_duct, pancreas_net, gi_net, small_intestine, anal, vagina, uterine_sarcoma, gtd, nasopharynx, hypopharynx_oropharynx, larynx, sinonasal, salivary, mucosal_melanoma, adrenal, pheochromocytoma, neuroblastoma, urethra, penis, testis, wilms, mesothelioma, thymus, melanoma, meningioma, ewing, rhabdomyosarcoma, extragonadal_gct };
 
 // T, N and M alternatives are listed longest first (ovary: T1c1-3, T2a/b, T3a-c, N0(i+); lung: T1mi,
 // N2a/b, M1c1/c2; head and neck skin: N2c; renal pelvis and ureter: Ta (Phase 83); cervix: T1a1/2, T1b1-3, T2a1/2,

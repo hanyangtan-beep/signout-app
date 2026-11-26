@@ -1,0 +1,419 @@
+{
+ "id": "extragonadal_gct",
+ "version": "2026.11",
+ "name": "Extragonadal germ cell tumour (paediatric) resection",
+ "shortName": "Paediatric · extragonadal GCT resection",
+ "label": "Extragonadal GCT",
+ "organ": "EXTRAGONADAL GERM CELL",
+ "system": "Soft tissue",
+ "kind": "cancer resection",
+ "rank": 80,
+ "aliases": [
+  "EGC",
+  "extragonadal GCT",
+  "extragonadal germ cell tumour",
+  "sacrococcygeal teratoma",
+  "mediastinal germ cell tumour"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "extragonadal_gct",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print COG / MaGIC paediatric stage"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Pedi-GermCellTumors (WHO 5th edition Paediatric Tumours; COG / MaGIC Extragonadal GCT Staging)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Pedi-GermCellTumors.html",
+  "savedPage": "docs/reference/Pedi-GermCellTumors.html",
+  "staging": "COG / MaGIC Paediatric Extragonadal GCT Stage I–IV (with Altman I–IV for sacrococcygeal primary) derived by src/staging/extragonadal_gct.js."
+ },
+ "match": {
+  "site": [
+   "sacrococcygeal",
+   "coccyx",
+   "anterior mediastinum",
+   "mediastinum",
+   "retroperitoneum",
+   "extragonadal"
+  ],
+  "procedure": [
+   "sacrococcygeal teratoma resection",
+   "excision with coccygectomy",
+   "mediastinal tumour resection",
+   "retroperitoneal resection"
+  ],
+  "clinical": [
+   "sacrococcygeal teratoma",
+   "extragonadal germ cell tumour",
+   "mediastinal germ cell tumour",
+   "mediastinal teratoma",
+   "yolk sac tumour"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|testis|testicular|orchi(?:d)?ectomy|ovary|ovarian|oophorectomy|thymoma|frozen|FS)\\b)[\\s\\S]*\\b(?:sacrococcygeal\\s+(?:teratoma|germ\\s+cell|GCT)|extragonadal[\\s\\S]*(?:germ\\s+cell|GCT|teratoma)|(?:mediastin\\w*|retroperitone\\w*|coccy\\w*)[\\s\\S]*(?:germ\\s+cell|GCT|teratoma|yolk\\s+sac|germinoma|seminoma|choriocarcinoma))\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "testis",
+   "testicular",
+   "orchidectomy",
+   "orchiectomy",
+   "ovary",
+   "ovarian",
+   "oophorectomy",
+   "thymoma",
+   "frozen",
+   "FS"
+  ],
+  "bias": 5,
+  "fill": []
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Complete resection with coccygectomy",
+   "options": [
+    "Complete resection with coccygectomy",
+    "Complete resection without coccygectomy",
+    "Mediastinal tumour resection",
+    "Retroperitoneal tumour resection",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Primary extragonadal site",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Sacrococcygeal region",
+   "options": [
+    "Sacrococcygeal region",
+    "Anterior mediastinum",
+    "Retroperitoneum",
+    "Head and neck / cervical",
+    "Other extragonadal site (specify)"
+   ]
+  },
+  {
+   "id": "altmanType",
+   "label": "Altman classification (if sacrococcygeal)",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "showIf": {
+    "field": "site",
+    "is": "Sacrococcygeal region"
+   },
+   "default": "Type I (predominantly external)",
+   "options": [
+    "Type I (predominantly external)",
+    "Type II (external with significant intrapelvic component)",
+    "Type III (visible externally, predominantly pelvic/abdominal)",
+    "Type IV (entirely presacral / internal)",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Components",
+   "type": "select",
+   "default": "Mature teratoma",
+   "options": [
+    "Mature teratoma",
+    "Immature teratoma, grade 1",
+    "Immature teratoma, grade 2",
+    "Immature teratoma, grade 3",
+    "Yolk sac tumour",
+    "Germinoma / seminoma",
+    "Embryonal carcinoma",
+    "Choriocarcinoma",
+    "Mixed malignant germ cell tumour (specify percentages)",
+    "Teratoma with somatic-type malignancy (specify)",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th paediatric extragonadal germ cell tumours & COG staging",
+    "intro": "Thorough sampling (at least 1 block/cm of solid/fleshy areas) is critical in sacrococcygeal and mediastinal teratomas to exclude microscopic foci of yolk sac tumour. Coccygectomy is mandatory for Stage I sacrococcygeal primaries.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Component identification, immature grading & COG staging",
+      "points": [
+       "Immature teratoma grade (Gonzalez-Crussi / Norris): Grade 1 <= 1 LPF immature neuroectoderm per slide; Grade 2 = 2–3 LPF; Grade 3 >= 4 LPF. Always exclude microscopic yolk sac tumour (SALL4+, glypican-3+, AFP+).",
+       "COG Stage I = complete resection with negative margins (and coccygectomy for sacrococcygeal) and normalising markers; Stage II = microscopic residual; Stage III = gross residual or regional nodal metastasis; Stage IV = distant metastasis."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Extragonadal Germ Cell Tumors",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/extragonadal_gct/gct_teratoma.jpg",
+        "caption": "Mature teratoma: benign differentiated tissues representing multiple germ cell layers without immature neuroectoderm (H&E).",
+        "credit": "Ed Uthman, MD",
+        "license": "Public domain",
+        "url": "https://commons.wikimedia.org/wiki/File%3AMature_cystic_teratoma_of_ovary.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify mixed GCT percentages / somatic malignancy",
+   "group": "Histology & Components",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": [
+     "Mixed malignant germ cell tumour (specify percentages)",
+     "Teratoma with somatic-type malignancy (specify)",
+     "Other histologic type not listed (specify)"
+    ]
+   },
+   "default": ""
+  },
+  {
+   "id": "yolkSacFoci",
+   "label": "Microscopic yolk sac tumour foci",
+   "group": "Histology & Components",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present (focal / microscopic)",
+    "Present (predominant)"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry (SALL4 / glypican-3 / AFP / OCT3/4 / beta-hCG)",
+   "group": "Histology & Components",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Components",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "resectionCompleteness",
+   "label": "Completeness of resection",
+   "group": "Margins & Stage",
+   "type": "select",
+   "default": "Complete gross resection (R0/R1)",
+   "options": [
+    "Complete gross resection (R0/R1)",
+    "Incomplete resection with gross residual disease (R2)",
+    "Biopsy only"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "group": "Margins & Stage",
+   "type": "select",
+   "default": "Uninvolved by tumour",
+   "options": [
+    "Uninvolved by tumour",
+    "Involved by tumour (microscopic residual)",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "coccyxPresent",
+   "label": "Coccyx present and uninvolved (sacrococcygeal primary)",
+   "group": "Margins & Stage",
+   "type": "select",
+   "default": "Present, uninvolved by tumour",
+   "options": [
+    "Present, uninvolved by tumour",
+    "Present, involved by tumour",
+    "Not submitted / not applicable"
+   ]
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Margins & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Margins & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis",
+   "group": "Margins & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Lung",
+    "Liver",
+    "Bone",
+    "CNS / brain",
+    "Distant lymph node(s)",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy",
+   "group": "Margins & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02107",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Complete resection with coccygectomy",
+     "site": "Sacrococcygeal region",
+     "altmanType": "Type I (predominantly external)",
+     "specimenDims": "9.5 x 8.0 x 6.5",
+     "sizeMm": "88",
+     "blocks": "16",
+     "blockKeyText": "A1-A14: representative sections of solid and cystic sacrococcygeal mass\nA15-A16: coccyx and deep surgical margin",
+     "histType": "Immature teratoma, grade 2",
+     "yolkSacFoci": "Not identified",
+     "ihcText": "SALL4 and glypican-3 are negative for microscopic yolk sac tumour foci",
+     "resectionCompleteness": "Complete gross resection (R0/R1)",
+     "marginStatus": "Uninvolved by tumour",
+     "coccyxPresent": "Present, uninvolved by tumour",
+     "nodesExamined": "0",
+     "nodesInvolved": "0",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

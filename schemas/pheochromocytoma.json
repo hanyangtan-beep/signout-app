@@ -1,0 +1,533 @@
+{
+ "id": "pheochromocytoma",
+ "version": "2026.11",
+ "name": "Phaeochromocytoma / paraganglioma resection",
+ "shortName": "Adrenal / PGL · phaeochromocytoma resection",
+ "label": "Phaeo",
+ "organ": "ADRENAL MEDULLA / PARAGANGLIA",
+ "system": "Endocrine",
+ "kind": "cancer resection",
+ "rank": 68,
+ "aliases": [
+  "PGL",
+  "phaeochromocytoma",
+  "pheochromocytoma",
+  "paraganglioma",
+  "PPGL"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "pheochromocytoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Endocrine-Pheochromocytoma (WHO 5th edition 2022 PPGL; RCPath 2024; AJCC 8th edition Ch. 77)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Endocrine-Pheochromocytoma.html",
+  "savedPage": "docs/reference/Endocrine-Pheochromocytoma.html",
+  "staging": "Phaeochromocytoma and sympathetic paraganglioma pT1–pT3, pN0/pN1, pM1a–c derived by src/staging/pheochromocytoma.js on AJCC 8th edition Ch. 77."
+ },
+ "match": {
+  "site": [
+   "adrenal",
+   "adrenal medulla",
+   "retroperitoneum",
+   "organ of Zuckerkandl",
+   "paraganglion",
+   "carotid body"
+  ],
+  "procedure": [
+   "adrenalectomy",
+   "partial adrenalectomy",
+   "paraganglioma excision",
+   "retroperitoneal excision"
+  ],
+  "clinical": [
+   "phaeochromocytoma",
+   "pheochromocytoma",
+   "paraganglioma",
+   "PPGL"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|cortical\\s+carcinoma|adrenocortical|adenoma|neuroblastoma|frozen|FS)\\b)[\\s\\S]*\\b(?:phaeochromocytoma|pheochromocytoma|paraganglioma|PPGL)\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "cortical carcinoma",
+   "adrenocortical",
+   "adenoma",
+   "neuroblastoma",
+   "frozen",
+   "FS"
+  ],
+  "bias": 5,
+  "fill": [
+   {
+    "field": "laterality",
+    "from": "map",
+    "map": [
+     [
+      "\\bright\\b",
+      "Right"
+     ],
+     [
+      "\\bleft\\b",
+      "Left"
+     ],
+     [
+      "\\bbilateral\\b",
+      "Bilateral"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Total adrenalectomy",
+   "options": [
+    "Total adrenalectomy",
+    "Cortex-sparing partial adrenalectomy",
+    "Excision of extra-adrenal paraganglioma",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour site",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Adrenal gland (intra-adrenal)",
+   "options": [
+    "Adrenal gland (intra-adrenal)",
+    "Extra-adrenal, retroperitoneal / para-aortic (sympathetic)",
+    "Extra-adrenal, thoracic / mediastinal (sympathetic)",
+    "Extra-adrenal, urinary bladder / pelvic (sympathetic)",
+    "Extra-adrenal, head and neck (parasympathetic)",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "laterality",
+   "label": "Laterality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Right",
+   "options": [
+    "Right",
+    "Left",
+    "Midline",
+    "Bilateral",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "focality",
+   "label": "Tumour focality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Unifocal",
+   "options": [
+    "Unifocal",
+    "Multifocal",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Risk",
+   "type": "select",
+   "default": "Phaeochromocytoma (intra-adrenal paraganglioma)",
+   "options": [
+    "Phaeochromocytoma (intra-adrenal paraganglioma)",
+    "Composite phaeochromocytoma (with ganglioneuroma / neuroblastoma / MPNST)",
+    "Sympathetic paraganglioma (extra-adrenal)",
+    "Composite sympathetic paraganglioma",
+    "Parasympathetic paraganglioma (head and neck)",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th phaeochromocytoma / paraganglioma & SDHB screening",
+    "intro": "All phaeochromocytomas and paragangliomas are regarded as having metastatic potential (the terms 'benign' and 'malignant' are no longer used). SDHB immunohistochemistry is strongly recommended on all PPGLs to screen for hereditary SDHx mutations.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Diagnostic phenotype, SDHB & risk scores",
+      "points": [
+       "Classic Zellballen (nested) architecture of polygonal basophilic/amphophilic chief cells surrounded by S100/SOX10-positive sustentacular cells; positive for chromogranin A, synaptophysin, INSM1, GATA3 and tyrosine hydroxylase; negative for keratins.",
+       "Loss of granular cytoplasmic SDHB staining indicates an underlying SDHx (SDHA/B/C/D) mutation and high metastatic risk — recommend clinical genetics referral.",
+       "PASS (>= 4) and GAPP (0–2 well, 3–6 moderately, 7–10 poorly differentiated) may be recorded as ancillary risk tools alongside Ki-67 % and mitotic count per 2 mm2."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Pheochromocytoma and Paraganglioma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/pheochromocytoma/phaeo_zellballen.jpg",
+        "caption": "Phaeochromocytoma (high magnification): nested Zellballen architecture of polygonal amphophilic chief cells with granular cytoplasm (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3APheochromocytoma_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/pheochromocytoma/pgl_carotid.jpg",
+        "caption": "Paraganglioma (high magnification): classic Zellballen nests separated by fibrovascular septa and sustentacular cells (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AParaganglioma_-_high_mag.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Risk",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Other histologic type not listed (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "sdhbIhc",
+   "label": "SDHB immunohistochemistry",
+   "group": "Histology & Risk",
+   "type": "select",
+   "default": "Intact (retained granular cytoplasmic staining)",
+   "options": [
+    "Intact (retained granular cytoplasmic staining)",
+    "Lost (absent cytoplasmic staining — SDHx-deficient)",
+    "Weak / equivocal",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "mitoticRate",
+   "label": "Mitotic rate (per 2 mm2)",
+   "group": "Histology & Risk",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "ki67Pct",
+   "label": "Ki-67 labelling index (%)",
+   "group": "Histology & Risk",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "riskScore",
+   "label": "PASS / GAPP score (optional)",
+   "group": "Histology & Risk",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "necrosis",
+   "label": "Comedo-type / confluent tumour necrosis",
+   "group": "Histology & Risk",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Vascular invasion",
+   "group": "Histology & Risk",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry (GATA3 / chromogranin / S100 / keratin / SDHA)",
+   "group": "Histology & Risk",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Risk",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extent (AJCC 8th Ch. 77 pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "No extra-adrenal / surrounding tissue invasion",
+   "options": [
+    "No extra-adrenal / surrounding tissue invasion",
+    "Invasion into surrounding tissues (e.g. liver, pancreas, spleen, kidney) (pT3)",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by tumour",
+   "options": [
+    "Uninvolved by tumour",
+    "Involved by tumour",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Bone",
+    "Distant lymph node(s)",
+    "Liver",
+    "Lung",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalFindings",
+   "label": "Additional pathologic findings",
+   "group": "Additional",
+   "type": "multiselect",
+   "options": [
+    "Adrenal medullary hyperplasia (MEN2-associated)",
+    "Micro-phaeochromocytoma(s)",
+    "Intratumoural haemorrhage / cystic degeneration"
+   ],
+   "default": []
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02002",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Total adrenalectomy",
+     "site": "Adrenal gland (intra-adrenal)",
+     "laterality": "Right",
+     "focality": "Unifocal",
+     "specimenDims": "6.5 x 5.2 x 4.4",
+     "sizeMm": "42",
+     "blocks": "10",
+     "blockKeyText": "A1-A8: representative sections of right adrenal tumour with capsule\nA9-A10: uninvolved adrenal cortex and medulla",
+     "histType": "Phaeochromocytoma (intra-adrenal paraganglioma)",
+     "sdhbIhc": "Intact (retained granular cytoplasmic staining)",
+     "mitoticRate": "1",
+     "ki67Pct": "2",
+     "riskScore": "PASS 2; GAPP 2 (well differentiated)",
+     "necrosis": "Not identified",
+     "lvi": "Not identified",
+     "ihcText": "Tumour cells are positive for chromogranin A, synaptophysin and GATA3, negative for AE1/AE3, with S100-positive sustentacular cells",
+     "extension": "No extra-adrenal / surrounding tissue invasion",
+     "marginStatus": "Uninvolved by tumour",
+     "closestMarginMm": "3",
+     "nodesExamined": "0",
+     "nodesInvolved": "0",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

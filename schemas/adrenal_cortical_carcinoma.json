@@ -1,0 +1,525 @@
+{
+ "id": "adrenal_cortical_carcinoma",
+ "version": "2026.11",
+ "name": "Adrenal cortical carcinoma resection",
+ "shortName": "Adrenal · cortical carcinoma resection",
+ "label": "Adrenal Ca",
+ "organ": "ADRENAL GLAND",
+ "system": "Endocrine",
+ "kind": "cancer resection",
+ "rank": 67,
+ "aliases": [
+  "ACC",
+  "adrenal cortical carcinoma",
+  "adrenocortical carcinoma",
+  "adrenal carcinoma",
+  "adrenalectomy"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "adrenal_cortical_carcinoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition / ENSAT)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Endocrine-Adrenal (WHO 5th edition Endocrine & Neuroendocrine Tumours; RCPath 2024; AJCC 8th / ENSAT)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Endocrine-Adrenal.html",
+  "savedPage": "docs/reference/Endocrine-Adrenal.html",
+  "staging": "Adrenal cortical carcinoma pT1–pT4 and pN0/pN1 derived by src/staging/adrenal.js on AJCC 8th edition / ENSAT."
+ },
+ "match": {
+  "site": [
+   "adrenal",
+   "adrenal gland",
+   "adrenal cortex"
+  ],
+  "procedure": [
+   "adrenalectomy",
+   "total adrenalectomy",
+   "partial adrenalectomy",
+   "laparoscopic adrenalectomy",
+   "open adrenalectomy"
+  ],
+  "clinical": [
+   "adrenal cortical carcinoma",
+   "adrenocortical carcinoma",
+   "adrenal carcinoma",
+   "ACC"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|phaeochromocytoma|pheochromocytoma|paraganglioma|neuroblastoma|myelolipoma|adenoma|frozen|FS)\\b)[\\s\\S]*\\b(?:adrenal\\s+cortical\\s+carcinoma|adrenocortical\\s+carcinoma|adrenal\\s+carcinoma|adrenalectomy[\\s\\S]*(?:carcinoma|malignant|ACC|Weiss))\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "phaeochromocytoma",
+   "pheochromocytoma",
+   "paraganglioma",
+   "neuroblastoma",
+   "myelolipoma",
+   "adenoma",
+   "frozen",
+   "FS"
+  ],
+  "bias": 4,
+  "fill": [
+   {
+    "field": "laterality",
+    "from": "map",
+    "map": [
+     [
+      "\\bright\\b",
+      "Right"
+     ],
+     [
+      "\\bleft\\b",
+      "Left"
+     ],
+     [
+      "\\bbilateral\\b",
+      "Bilateral"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Total adrenalectomy",
+   "options": [
+    "Total adrenalectomy",
+    "Partial adrenalectomy",
+    "Adrenalectomy with en bloc resection of adjacent organ(s)",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "laterality",
+   "label": "Laterality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Left",
+   "options": [
+    "Right",
+    "Left",
+    "Bilateral",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "weightG",
+   "label": "Tumour / specimen weight (g)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic subtype (WHO 5th)",
+   "group": "Histology & Scoring",
+   "type": "select",
+   "default": "Adrenal cortical carcinoma, conventional",
+   "options": [
+    "Adrenal cortical carcinoma, conventional",
+    "Adrenal cortical carcinoma, oncocytic (> 90% oncocytic)",
+    "Adrenal cortical carcinoma, myxoid",
+    "Adrenal cortical carcinoma, sarcomatoid",
+    "Adrenal cortical carcinoma, paediatric",
+    "Adrenal cortical neoplasm of uncertain malignant potential",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "WHO 5th adrenal cortical carcinoma & multiparameter scoring",
+    "intro": "Apply the appropriate diagnostic algorithm by subtype and age: Weiss / Modified Weiss / Helsinki / Reticulin for conventional adult ACC, Lin-Weiss-Bisceglia for oncocytic (> 90%), and Wieneke for paediatric neoplasms. Report mitotic count per 10 mm2 (50 HPF) and Ki-67 labelling index.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Scoring systems & grading thresholds",
+      "points": [
+       "Weiss system (conventional adult): >= 3 of 9 criteria supports malignancy (high nuclear grade, > 5 mitoses/10 mm2, atypical mitoses, <= 25% clear cells, > 1/3 diffuse architecture, confluent necrosis, venous invasion, sinusoidal invasion, capsular invasion).",
+       "Lin-Weiss-Bisceglia (oncocytic): any 1 major criterion (> 5 mitoses/10 mm2, atypical mitoses, or venous invasion) = carcinoma; minor criteria alone = uncertain malignant potential.",
+       "Reticulin algorithm: disrupted reticulin framework plus any 1 of > 5 mitoses/10 mm2, tumour necrosis, or vascular invasion.",
+       "Grade: Low-grade <= 20 mitoses/10 mm2 vs High-grade > 20 mitoses/10 mm2. Specify Ki-67 % (carcinomas typically > 5%; > 10–20% adverse). SF1 confirms adrenocortical lineage; IGF2 paranuclear granular staining in ~80%; nuclear beta-catenin and mutant p53 are adverse."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Adrenal Cortical Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/adrenal_cortical_carcinoma/acc_conv.jpg",
+        "caption": "Adrenal cortical carcinoma (high magnification): pleomorphic eosinophilic adrenocortical cells with nuclear atypia and mitotic activity (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AAdrenal_cortical_carcinoma_-_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/adrenal_cortical_carcinoma/acc_intermed.jpg",
+        "caption": "Adrenal cortical carcinoma (intermediate magnification): diffuse sheet-like architecture with lipid-poor eosinophilic cytoplasm (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AAdrenal_cortical_carcinoma_-_intermed_mag.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "Histology & Scoring",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Other histologic type not listed (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "scoringSystem",
+   "label": "Diagnostic scoring system applied",
+   "group": "Histology & Scoring",
+   "type": "select",
+   "default": "Weiss score",
+   "options": [
+    "Weiss score",
+    "Modified Weiss score",
+    "Lin-Weiss-Bisceglia (oncocytic)",
+    "Reticulin algorithm",
+    "Helsinki score",
+    "Wieneke criteria (paediatric)"
+   ]
+  },
+  {
+   "id": "scoreValue",
+   "label": "Score / criteria result (e.g. 6/9 or major criterion present)",
+   "group": "Histology & Scoring",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "grade",
+   "label": "Histologic grade (mitotic count per 10 mm2)",
+   "group": "Histology & Scoring",
+   "type": "select",
+   "default": "Low grade (<= 20 mitoses / 10 mm2)",
+   "options": [
+    "Low grade (<= 20 mitoses / 10 mm2)",
+    "High grade (> 20 mitoses / 10 mm2)",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "mitoticRate",
+   "label": "Mitotic rate (per 10 mm2 / 50 HPF)",
+   "group": "Histology & Scoring",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "ki67Pct",
+   "label": "Ki-67 labelling index (%)",
+   "group": "Histology & Scoring",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "necrosis",
+   "label": "Confluent tumour necrosis",
+   "group": "Histology & Scoring",
+   "type": "select",
+   "default": "Present",
+   "options": [
+    "Present",
+    "Not identified",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Vascular invasion (venous / capsular / lymphatic)",
+   "group": "Histology & Scoring",
+   "type": "select",
+   "default": "Present",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry (SF1 / melan-A / inhibin / p53 / beta-catenin / IGF2)",
+   "group": "Histology & Scoring",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Scoring",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extent (AJCC 8th / ENSAT pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Confined to adrenal gland (no extra-adrenal invasion)",
+   "options": [
+    "Confined to adrenal gland (no extra-adrenal invasion)",
+    "Infiltrates surrounding extra-adrenal adipose tissue without adjacent organ invasion (pT3)",
+    "Invades adjacent organs (kidney, diaphragm, pancreas, spleen, liver) and/or venous tumour thrombus in renal vein or vena cava (pT4)",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by carcinoma",
+   "options": [
+    "Uninvolved by carcinoma",
+    "Involved by carcinoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "closestMarginSite",
+   "label": "Closest / involved margin site",
+   "group": "Extension & Margins",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Liver",
+    "Lung",
+    "Bone",
+    "Non-regional lymph node(s)",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02001",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Total adrenalectomy",
+     "laterality": "Left",
+     "specimenDims": "9.5 x 7.2 x 6.0",
+     "weightG": "215",
+     "sizeMm": "82",
+     "blocks": "14",
+     "blockKeyText": "A1-A12: representative sections of left adrenal tumour including capsule and inked surgical margin\nA13-A14: residual uninvolved adrenal gland",
+     "histType": "Adrenal cortical carcinoma, conventional",
+     "scoringSystem": "Weiss score",
+     "scoreValue": "6/9",
+     "grade": "Low grade (<= 20 mitoses / 10 mm2)",
+     "mitoticRate": "12",
+     "ki67Pct": "14",
+     "necrosis": "Present",
+     "lvi": "Present",
+     "ihcText": "Tumour cells are diffusely positive for SF1 and melan-A, with disrupted reticulin framework",
+     "extension": "Confined to adrenal gland (no extra-adrenal invasion)",
+     "marginStatus": "Uninvolved by carcinoma",
+     "closestMarginMm": "2",
+     "closestMarginSite": "periadrenal soft tissue margin",
+     "nodesExamined": "0",
+     "nodesInvolved": "0",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

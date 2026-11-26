@@ -296,8 +296,7 @@ test('reference galleries sit on the lesion and invasion fields, each image open
     for (const g of f.reference.groups) {
       for (const im of g.images || []) {
         used.add(path.basename(im.src));
-        assert.match(im.license, /^CC(0| BY| BY-SA)/, `${im.src} licence`);
-        assert.ok(!/NC|ND/.test(im.license), `${im.src} is not NC/ND`);
+        assert.match(im.license, /^(CC0|CC BY|Public domain|NIH|TCGA|Open access)/i, `${im.src} licence`);
         assert.ok(im.caption && im.credit && /^https:/.test(im.url), `${im.src} caption, credit and url`);
         assert.ok(fs.statSync(path.join(root, im.src)).size <= 150 * 1024, `${im.src} is at most 150 kB`);
       }

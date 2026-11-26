@@ -1,0 +1,444 @@
+{
+ "id": "thymic_tumour",
+ "version": "2026.11",
+ "name": "Thymic epithelial tumour resection",
+ "shortName": "Thymus · epithelial tumour resection",
+ "label": "Thymus",
+ "organ": "THYMUS",
+ "system": "Thoracic",
+ "kind": "cancer resection",
+ "rank": 620,
+ "aliases": [
+  "TET",
+  "thymoma",
+  "thymic carcinoma",
+  "thymic epithelial tumour",
+  "thymectomy"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "thymic_tumour",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 9th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Thorax-Thymus (WHO 5th edition Thoracic Tumours; ITMIG / AJCC 9th edition 2025; Modified Masaoka-Koga)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Thorax-Thymus.html",
+  "savedPage": "docs/reference/Thorax-Thymus.html",
+  "staging": "Thymic epithelial tumour AJCC 9th (pT1a <= 50 mm / pT1b > 50 mm; pT2 pericardium/lung/phrenic nerve) and reference Modified Masaoka-Koga derived by src/staging/thymus.js."
+ },
+ "match": {
+  "site": [
+   "thymus",
+   "thymic",
+   "anterior mediastinum"
+  ],
+  "procedure": [
+   "thymectomy",
+   "total thymectomy",
+   "extended thymectomy",
+   "mediastinal mass excision"
+  ],
+  "clinical": [
+   "thymoma",
+   "thymic carcinoma",
+   "thymic epithelial tumour",
+   "thymic neuroendocrine tumour"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|hyperplasia|lymphoma|teratoma|frozen|FS)\\b)[\\s\\S]*\\b(?:thymoma|thymic\\s+carcinoma|thymic\\s+epithelial|thymic\\s+neuroendocrine|thymectomy[\\s\\S]*(?:thymoma|tumou?r|mass|carcinoma))\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "hyperplasia",
+   "lymphoma",
+   "teratoma",
+   "frozen",
+   "FS"
+  ],
+  "bias": 5,
+  "fill": []
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Total thymectomy",
+   "options": [
+    "Total thymectomy",
+    "Extended thymectomy (with perithymic fat / adjacent structures)",
+    "Thymomectomy / partial thymectomy",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm — splits AJCC 9th pT1a <= 50 vs pT1b > 50)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Staging",
+   "type": "select",
+   "default": "Thymoma, type AB",
+   "options": [
+    "Thymoma, type A (conventional)",
+    "Thymoma, type A (atypical)",
+    "Thymoma, type AB",
+    "Thymoma, type B1",
+    "Thymoma, type B2",
+    "Thymoma, type B3",
+    "Thymoma, mixed subtype (specify 10% increments)",
+    "Micronodular thymoma with lymphoid stroma",
+    "Metaplastic thymoma",
+    "Thymic squamous cell carcinoma",
+    "Thymic basaloid carcinoma",
+    "Thymic lymphoepithelial carcinoma",
+    "Thymic NUT carcinoma",
+    "Thymic mucoepidermoid carcinoma",
+    "Thymic clear cell carcinoma",
+    "Thymic sarcomatoid carcinoma",
+    "Thymic adenocarcinoma (papillary / enteric / adenoid cystic-like / NOS)",
+    "Thymic carcinoma, undifferentiated",
+    "Thymic neuroendocrine tumour (typical / atypical carcinoid)",
+    "Thymic neuroendocrine carcinoma (small cell / large cell)"
+   ],
+   "reference": {
+    "title": "WHO 5th thymic epithelial tumours & AJCC 9th (2025) staging",
+    "intro": "AJCC 9th (2025) splits pT1 by tumour size (pT1a <= 50 mm vs pT1b > 50 mm) and moves direct invasion of lung and phrenic nerve into pT2 alongside pericardium. Report mixed thymomas in 10% increments.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "WHO 5th subtypes, IHC & AJCC 9th revisions",
+      "points": [
+       "Thymoma A (bland spindle/oval cells, TdT-poor) vs AB (A + lymphocyte-rich B-like areas) vs B1 (resembles normal thymus with medullary islands) vs B2 (polygonal epithelioid clusters in dense TdT+ T-cell background) vs B3 (sheets of mildly atypical polygonal cells, sparse TdT+ cells).",
+       "Thymic squamous cell carcinoma is typically CD5+, CD117 (KIT)+, GLUT1+, PAX8+ (polyclonal) and lacks TdT+ immature thymocytes.",
+       "AJCC 9th pT: pT1a <= 5 cm, pT1b > 5 cm (thymus/mediastinal fat/mediastinal pleura); pT2 = pericardium, lung, or phrenic nerve; pT3 = brachiocephalic vein, SVC, chest wall, or extrapericardial pulmonary vessels; pT4 = aorta, arch vessels, intrapericardial pulmonary vessels, myocardium, trachea, or oesophagus."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Thymoma and Thymic Carcinoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/thymic_tumour/thymoma_a.jpg",
+        "caption": "Type B1 thymoma: lymphocyte-rich organoid lobules closely recapitulating normal thymic cortex with paler medullary islands (H&E).",
+        "credit": "KGH",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AThymoma_type_B1_%281%29.JPG"
+       },
+       {
+        "src": "assets/reference/thymic_tumour/thymoma_b2.jpg",
+        "caption": "Type B2 thymoma (intermediate magnification): lobules of polygonal epithelial cells amidst dense immature T lymphocytes (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AThymoma_type_B2_--_intermed_mag.jpg"
+       },
+       {
+        "src": "assets/reference/thymic_tumour/thymic_ca.jpg",
+        "caption": "Thymic carcinoma: infiltrating nests of overtly malignant epithelial cells within a desmoplastic stroma lacking immature thymocytes (H&E).",
+        "credit": "Humpath",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AThymic_carcinoma_NOS_2.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "mixedBreakdown",
+   "label": "Mixed thymoma 10% increment breakdown (e.g. B2 70%, B3 30%)",
+   "group": "Histology & Staging",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Thymoma, mixed subtype (specify 10% increments)"
+   },
+   "default": ""
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Staging",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry (TdT / p40 / PAX8 / CD5 / CD117)",
+   "group": "Histology & Staging",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Staging",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extent (AJCC 9th pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Limited to thymus (encapsulated or unencapsulated), mediastinal fat, or direct invasion of mediastinal pleura (pT1a <= 50 mm / pT1b > 50 mm)",
+   "options": [
+    "Limited to thymus (encapsulated or unencapsulated), mediastinal fat, or direct invasion of mediastinal pleura (pT1a <= 50 mm / pT1b > 50 mm)",
+    "Direct invasion of pericardium (partial or full thickness), lung, or phrenic nerve (pT2)",
+    "Direct invasion of brachiocephalic vein, superior vena cava, chest wall, or extrapericardial pulmonary vessels (pT3)",
+    "Direct invasion of aorta, arch vessels, intrapericardial pulmonary vessels, myocardium, trachea, or oesophagus (pT4)",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "masaokaKoga",
+   "label": "Modified Masaoka-Koga stage (optional reference)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Stage I (completely encapsulated)",
+   "options": [
+    "Stage I (completely encapsulated)",
+    "Stage IIa (microscopic transcapsular invasion)",
+    "Stage IIb (macroscopic perithymic fat invasion / gross adherence)",
+    "Stage III (macroscopic invasion of neighbouring organ)",
+    "Stage IVa (pleural or pericardial dissemination)",
+    "Stage IVb (lymphogenous or haematogenous metastasis)",
+    "Not applicable"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Uninvolved by tumour",
+   "options": [
+    "Uninvolved by tumour",
+    "Involved by tumour",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Extension & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeStation",
+   "label": "Involved lymph node station",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "default": "Anterior (perithymic) lymph nodes (pN1)",
+   "options": [
+    "Anterior (perithymic) lymph nodes (pN1)",
+    "Deep intrathoracic or cervical lymph nodes (pN2)"
+   ]
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Separate pleural or pericardial nodule(s) (pM1a)",
+    "Pulmonary intraparenchymal nodule or distant organ metastasis (pM1b)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "multiplePrimaries",
+   "label": "Multiple primary tumours (m)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02102",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Total thymectomy",
+     "specimenDims": "10.5 x 7.5 x 4.5",
+     "sizeMm": "48",
+     "blocks": "12",
+     "blockKeyText": "A1-A10: encapsulated anterior mediastinal tumour with capsule and inked margins\nA11-A12: residual involuted thymus",
+     "histType": "Thymoma, type AB",
+     "lvi": "Not identified",
+     "ihcText": "Epithelial cells are positive for p40 and PAX8; abundant TdT-positive immature T lymphocytes are present in type B-like lobules",
+     "extension": "Limited to thymus (encapsulated or unencapsulated), mediastinal fat, or direct invasion of mediastinal pleura (pT1a <= 50 mm / pT1b > 50 mm)",
+     "masaokaKoga": "Stage I (completely encapsulated)",
+     "marginStatus": "Uninvolved by tumour",
+     "closestMarginMm": "3",
+     "nodesExamined": "3",
+     "nodesInvolved": "0",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}

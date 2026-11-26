@@ -1,0 +1,429 @@
+{
+ "id": "neuroblastoma",
+ "version": "2026.11",
+ "name": "Neuroblastoma (paediatric) resection",
+ "shortName": "Paediatric · neuroblastoma resection",
+ "label": "Neuroblastoma",
+ "organ": "SYMPATHETIC NERVOUS SYSTEM / ADRENAL",
+ "system": "Endocrine",
+ "kind": "cancer resection",
+ "rank": 69,
+ "aliases": [
+  "NBL",
+  "neuroblastoma",
+  "ganglioneuroblastoma",
+  "ganglioneuroma",
+  "INPC",
+  "Shimada"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "neuroblastoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print INPC prognostic group & INRGSS stage"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Pedi-Neuroblastoma (WHO 5th Paediatric Tumours; INPC / Shimada; INRGSS)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Pedi-Neuroblastoma.html",
+  "savedPage": "docs/reference/Pedi-Neuroblastoma.html",
+  "staging": "INPC (Shimada) Favourable/Unfavourable histology and INRGSS L1/L2/M/MS derived by src/staging/neuroblastoma.js."
+ },
+ "match": {
+  "site": [
+   "adrenal",
+   "retroperitoneum",
+   "posterior mediastinum",
+   "paravertebral",
+   "sympathetic chain"
+  ],
+  "procedure": [
+   "adrenalectomy",
+   "tumour resection",
+   "retroperitoneal resection",
+   "mediastinal resection"
+  ],
+  "clinical": [
+   "neuroblastoma",
+   "ganglioneuroblastoma",
+   "peripheral neuroblastic tumour"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|bone\\s+marrow|olfactory|esthesioneuroblastoma|frozen|FS)\\b)[\\s\\S]*\\b(?:neuroblastoma|ganglioneuroblastoma)\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "bone marrow",
+   "olfactory",
+   "esthesioneuroblastoma",
+   "frozen",
+   "FS"
+  ],
+  "bias": 5,
+  "fill": []
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Primary tumour resection (adrenal / retroperitoneal)",
+   "options": [
+    "Primary tumour resection (adrenal / retroperitoneal)",
+    "Post-chemotherapy delayed resection",
+    "Thoracic / posterior mediastinal resection",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Primary site",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Adrenal gland",
+   "options": [
+    "Adrenal gland",
+    "Retroperitoneum (non-adrenal)",
+    "Posterior mediastinum / thorax",
+    "Pelvis / organ of Zuckerkandl",
+    "Cervical / neck",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "laterality",
+   "label": "Laterality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Right",
+   "options": [
+    "Right",
+    "Left",
+    "Midline",
+    "Bilateral",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "ageMonths",
+   "label": "Patient age at diagnosis (months — governs INPC)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "INPC / WHO 5th histologic category",
+   "group": "INPC & Molecular",
+   "type": "select",
+   "default": "Neuroblastoma (Schwannian stroma-poor), poorly differentiated",
+   "options": [
+    "Neuroblastoma (Schwannian stroma-poor), undifferentiated",
+    "Neuroblastoma (Schwannian stroma-poor), poorly differentiated",
+    "Neuroblastoma (Schwannian stroma-poor), differentiating",
+    "Ganglioneuroblastoma, intermixed (Schwannian stroma-rich)",
+    "Ganglioneuroblastoma, nodular (composite)",
+    "Ganglioneuroma, maturing (Schwannian stroma-dominant)",
+    "Ganglioneuroma, mature (Schwannian stroma-dominant)",
+    "Post-therapy peripheral neuroblastic tumour (NOS / unclassifiable)",
+    "Other histologic type not listed (specify)"
+   ],
+   "reference": {
+    "title": "INPC (Shimada) classification, MKI & INRGSS risk stratification",
+    "intro": "INPC assigns Favourable vs Unfavourable histology by integrating Schwannian stroma content, neuroblastic differentiation, Mitosis-Karyorrhexis Index (MKI), and patient age (< 18 months, 18–60 months, >= 60 months). Evaluate pre-therapy tissue whenever available.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "INPC age × differentiation × MKI rules & molecular markers",
+      "points": [
+       "Neuroblastoma < 18 months: Poorly differentiated or differentiating with Low (< 2%) or Intermediate (2–4%) MKI = Favourable; Undifferentiated or High MKI (> 4%) = Unfavourable.",
+       "Neuroblastoma 18–60 months: Only Differentiating with Low MKI (< 2%) = Favourable; all others = Unfavourable. Age >= 60 months (5 years): always Unfavourable.",
+       "Ganglioneuroma (maturing/mature) and Ganglioneuroblastoma intermixed = Favourable. Ganglioneuroblastoma nodular is stratified by applying INPC to the neuroblastic nodule.",
+       "Key biomarkers: PHOX2B / synaptophysin / chromogranin / NB84 confirm lineage; MYCN amplification, 1p/11q segmental chromosomal aberrations (SCAs), ALK and ATRX drive risk stratification."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Neuroblastoma and Peripheral Neuroblastic Tumors",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/neuroblastoma/nbl_histology.jpg",
+        "caption": "Adrenal neuroblastoma: lobules of small round blue neuroblastic cells set in pink fibrillary neuropil with Homer-Wright pseudorosettes (H&E).",
+        "credit": "Ed Uthman from Houston, TX, USA",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3ANeuroblastoma_of_the_Adrenal_Gland_%282%29_%282274260465%29.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "histTypeOther",
+   "label": "Specify histologic type",
+   "group": "INPC & Molecular",
+   "type": "text",
+   "showIf": {
+    "field": "histType",
+    "is": "Other histologic type not listed (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "mki",
+   "label": "Mitosis-Karyorrhexis Index (MKI, per 5,000 cells)",
+   "group": "INPC & Molecular",
+   "type": "select",
+   "default": "Low (< 2% or < 100 / 5,000 cells)",
+   "options": [
+    "Low (< 2% or < 100 / 5,000 cells)",
+    "Intermediate (2–4% or 100–200 / 5,000 cells)",
+    "High (> 4% or > 200 / 5,000 cells)",
+    "Not applicable / cannot be determined"
+   ]
+  },
+  {
+   "id": "gnbnSubset",
+   "label": "Ganglioneuroblastoma, nodular subset",
+   "group": "INPC & Molecular",
+   "type": "select",
+   "showIf": {
+    "field": "histType",
+    "is": "Ganglioneuroblastoma, nodular (composite)"
+   },
+   "default": "Unfavourable subset",
+   "options": [
+    "Unfavourable subset",
+    "Favourable subset"
+   ]
+  },
+  {
+   "id": "mycnStatus",
+   "label": "MYCN amplification (FISH / molecular)",
+   "group": "INPC & Molecular",
+   "type": "select",
+   "default": "Not amplified",
+   "options": [
+    "Not amplified",
+    "Amplified",
+    "Gain (non-amplified)",
+    "Pending / not performed"
+   ]
+  },
+  {
+   "id": "scaStatus",
+   "label": "Segmental chromosomal aberrations (1p / 11q / 17q)",
+   "group": "INPC & Molecular",
+   "type": "select",
+   "default": "Not performed / pending",
+   "options": [
+    "Not performed / pending",
+    "Numerical chromosomal aberrations only (NCA)",
+    "Segmental chromosomal aberrations present (1p del / 11q del / 17q gain)"
+   ]
+  },
+  {
+   "id": "therapyNecrosisPct",
+   "label": "Post-therapy necrosis / regression (%, if treated)",
+   "group": "INPC & Molecular",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry (PHOX2B / synaptophysin / S100 / ALK / ATRX)",
+   "group": "INPC & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "INPC & Molecular",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "group": "Stage & Margins",
+   "type": "select",
+   "default": "Uninvolved by tumour",
+   "options": [
+    "Uninvolved by tumour",
+    "Involved by tumour",
+    "Cannot be assessed (piecemeal / fragmented)"
+   ]
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Stage & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Stage & Margins",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "inrgStage",
+   "label": "INRGSS pretreatment stage (clinical / imaging correlation)",
+   "group": "Stage & Margins",
+   "type": "select",
+   "default": "L1: Localised tumour not involving vital structures (no IDRFs) and confined to one body compartment",
+   "options": [
+    "L1: Localised tumour not involving vital structures (no IDRFs) and confined to one body compartment",
+    "L2: Locoregional tumour with presence of one or more image-defined risk factors (IDRFs)",
+    "M: Distant metastatic disease (except MS)",
+    "MS: Metastatic disease in children < 18 months confined to skin, liver, and/or bone marrow (< 10%)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-induction chemotherapy resection",
+   "group": "Stage & Margins",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02003",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Primary tumour resection (adrenal / retroperitoneal)",
+     "site": "Adrenal gland",
+     "laterality": "Right",
+     "ageMonths": "11",
+     "specimenDims": "6.0 x 4.8 x 4.2",
+     "sizeMm": "48",
+     "blocks": "12",
+     "blockKeyText": "A1-A10: representative sections of adrenal neuroblastoma\nA11-A12: regional lymph nodes",
+     "histType": "Neuroblastoma (Schwannian stroma-poor), poorly differentiated",
+     "mki": "Low (< 2% or < 100 / 5,000 cells)",
+     "mycnStatus": "Not amplified",
+     "scaStatus": "Numerical chromosomal aberrations only (NCA)",
+     "ihcText": "Tumour cells are diffusely positive for PHOX2B and synaptophysin",
+     "marginStatus": "Uninvolved by tumour",
+     "nodesExamined": "4",
+     "nodesInvolved": "0",
+     "inrgStage": "L1: Localised tumour not involving vital structures (no IDRFs) and confined to one body compartment",
+     "postTherapy": false
+    }
+   }
+  ]
+ }
+}

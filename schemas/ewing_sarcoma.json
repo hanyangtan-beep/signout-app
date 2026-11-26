@@ -1,0 +1,412 @@
+{
+ "id": "ewing_sarcoma",
+ "version": "2026.11",
+ "name": "Ewing sarcoma (paediatric) resection",
+ "shortName": "Paediatric · Ewing sarcoma resection",
+ "label": "Ewing",
+ "organ": "BONE / SOFT TISSUE",
+ "system": "Soft tissue",
+ "kind": "cancer resection",
+ "rank": 78,
+ "aliases": [
+  "EWS",
+  "Ewing sarcoma",
+  "Ewing",
+  "extraskeletal Ewing sarcoma",
+  "FET-ETS"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "ewing_sarcoma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 8th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Pedi-EwingSarcoma (WHO 5th edition Soft Tissue & Bone Tumours; AJCC 8th edition)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Pedi-EwingSarcoma.html",
+  "savedPage": "docs/reference/Pedi-EwingSarcoma.html",
+  "staging": "Site-aware AJCC 8th bone (80 mm T1/T2 + T3 skip) vs extraskeletal soft tissue (50/100/150 mm T1–T4) derived by src/staging/ewing.js."
+ },
+ "match": {
+  "site": [
+   "femur",
+   "pelvis",
+   "tibia",
+   "rib",
+   "chest wall",
+   "soft tissue",
+   "bone"
+  ],
+  "procedure": [
+   "wide excision",
+   "limb-sparing resection",
+   "resection",
+   "amputation"
+  ],
+  "clinical": [
+   "Ewing sarcoma",
+   "extraskeletal Ewing sarcoma",
+   "EWSR1-FLI1"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|osteosarcoma|chondrosarcoma|rhabdomyosarcoma|frozen|FS)\\b)[\\s\\S]*\\bewing(?:\\s+sarcoma)?\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "osteosarcoma",
+   "chondrosarcoma",
+   "rhabdomyosarcoma",
+   "frozen",
+   "FS"
+  ],
+  "bias": 5,
+  "fill": []
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Wide limb-sparing resection",
+   "options": [
+    "Wide limb-sparing resection",
+    "Wide soft tissue excision",
+    "Chest wall / rib resection",
+    "Amputation",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "siteCategory",
+   "label": "Primary compartment (governs Bone vs Soft Tissue AJCC 8th)",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Bone (appendicular / trunk / pelvis)",
+   "options": [
+    "Bone (appendicular / trunk / pelvis)",
+    "Extraskeletal soft tissue"
+   ]
+  },
+  {
+   "id": "site",
+   "label": "Anatomic site",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": "Distal femur"
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "sizeMm",
+   "label": "Greatest tumour dimension (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Molecular",
+   "type": "select",
+   "default": "Ewing sarcoma, classic",
+   "options": [
+    "Ewing sarcoma, classic",
+    "Ewing sarcoma, atypical / large-cell",
+    "Ewing sarcoma, adamantinoma-like",
+    "Round cell sarcoma with EWSR1::non-ETS fusion",
+    "CIC-rearranged sarcoma",
+    "Sarcoma with BCOR genetic alterations"
+   ],
+   "reference": {
+    "title": "WHO 5th Ewing sarcoma, FET::ETS confirmation & post-chemo necrosis",
+    "intro": "Definitive diagnosis of Ewing sarcoma requires molecular confirmation of a FET::ETS fusion (most commonly EWSR1::FLI1 or EWSR1::ERG, rarely FUS::ETS) to separate it from CIC-rearranged, BCOR-altered, and EWSR1::non-ETS round cell sarcomas.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Immunophenotype, molecular confirmation & therapy response",
+      "points": [
+       "Classic Ewing sarcoma: uniform sheets of small round blue cells with finely dispersed chromatin, glycogen-rich clear cytoplasm (PAS+), diffuse strong membranous CD99 and nuclear NKX2.2 positivity.",
+       "Post-neoadjuvant chemotherapy response: map entire cross-section and report % necrosis (>= 90% or >= 95% necrosis / < 10% viable tumour indicates good histologic response).",
+       "CIC-rearranged sarcomas (ETV4+, WT1+) and BCOR-altered sarcomas (BCOR+, SATB2+, cyclin D1+) are distinct WHO 5th entities with different clinical trajectories."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Ewing Sarcoma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/ewing_sarcoma/ewing_he.jpg",
+        "caption": "Ewing sarcoma (high magnification): uniform sheets of small round blue cells with finely dispersed chromatin and scant clear cytoplasm (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AEwing_sarcoma_-_high_mag.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "fusionStatus",
+   "label": "Molecular fusion confirmation",
+   "group": "Histology & Molecular",
+   "type": "select",
+   "default": "EWSR1::FLI1 fusion detected",
+   "options": [
+    "EWSR1::FLI1 fusion detected",
+    "EWSR1::ERG fusion detected",
+    "FUS::ETS fusion detected",
+    "EWSR1 rearrangement by FISH (partner not specified)",
+    "CIC rearrangement / BCOR alteration",
+    "Pending / not performed"
+   ]
+  },
+  {
+   "id": "necrosisPct",
+   "label": "Post-neoadjuvant treatment necrosis (%)",
+   "group": "Histology & Molecular",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Molecular",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry (CD99 / NKX2.2 / FLI1 / ERG / BCOR / ETV4)",
+   "group": "Histology & Molecular",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Molecular",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "skipMetastases",
+   "label": "Discontinuous skip tumour(s) in primary bone site (pT3)",
+   "group": "Margins & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins (bone and soft tissue)",
+   "group": "Margins & Stage",
+   "type": "select",
+   "default": "Uninvolved by sarcoma",
+   "options": [
+    "Uninvolved by sarcoma",
+    "Involved by sarcoma",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "closestMarginMm",
+   "label": "Closest margin distance (mm)",
+   "group": "Margins & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Margins & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Margins & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Margins & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Lung only (pM1a)",
+    "Bone or other distant site(s) (pM1b)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Margins & Stage",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Margins & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Margins & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Margins & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02105",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Wide limb-sparing resection",
+     "siteCategory": "Bone (appendicular / trunk / pelvis)",
+     "site": "Left distal femur",
+     "specimenDims": "18.0 x 7.5 x 6.8",
+     "sizeMm": "72",
+     "blocks": "24",
+     "blockKeyText": "A1-A2: proximal bony marrow and soft tissue margins\nA3-A24: complete slab map of distal femoral tumour bed",
+     "histType": "Ewing sarcoma, classic",
+     "fusionStatus": "EWSR1::FLI1 fusion detected",
+     "necrosisPct": "95",
+     "lvi": "Not identified",
+     "ihcText": "Residual viable tumour cells show diffuse membranous CD99 and nuclear NKX2.2 positivity",
+     "skipMetastases": false,
+     "marginStatus": "Uninvolved by sarcoma",
+     "closestMarginMm": "8",
+     "nodesExamined": "0",
+     "nodesInvolved": "0",
+     "distantMets": [
+      "Not applicable"
+     ],
+     "postTherapy": true
+    }
+   }
+  ]
+ }
+}

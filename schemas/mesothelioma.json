@@ -1,0 +1,493 @@
+{
+ "id": "mesothelioma",
+ "version": "2026.11",
+ "name": "Pleural mesothelioma resection",
+ "shortName": "Pleura · mesothelioma resection",
+ "label": "Mesothelioma",
+ "organ": "PLEURA",
+ "system": "Thoracic",
+ "kind": "cancer resection",
+ "rank": 74,
+ "aliases": [
+  "MPM",
+  "pleural mesothelioma",
+  "mesothelioma",
+  "extrapleural pneumonectomy",
+  "pleurectomy decortication"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "mesothelioma",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Gross"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description and block key",
+   "type": "checkbox",
+   "default": true
+  },
+  {
+   "$use": "printPTNM",
+   "label": "Print the pTNM block (AJCC 9th edition)"
+  },
+  {
+   "$use": "printNodesMets"
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Thorax-Mesothelioma (WHO 5th edition Thoracic Tumours; Husain 2024 Guidelines; AJCC 9th edition 2025)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Thorax-Mesothelioma.html",
+  "savedPage": "docs/reference/Thorax-Mesothelioma.html",
+  "staging": "Pleural mesothelioma pT1–pT4, pN0–pN2, pM1 and epithelioid 2-tier nuclear grade derived by src/staging/mesothelioma.js on AJCC 9th edition."
+ },
+ "match": {
+  "site": [
+   "pleura",
+   "pleural",
+   "hemithorax",
+   "chest wall"
+  ],
+  "procedure": [
+   "extrapleural pneumonectomy",
+   "extended pleurectomy decortication",
+   "pleurectomy decortication",
+   "pleurectomy"
+  ],
+  "clinical": [
+   "pleural mesothelioma",
+   "malignant mesothelioma",
+   "epithelioid mesothelioma",
+   "biphasic mesothelioma",
+   "sarcomatoid mesothelioma"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:biops(?:y|ies)|bx|fna|cytology|fluid|effusion|peritoneal|peritoneum|adenocarcinoma|frozen|FS)\\b)[\\s\\S]*\\b(?:extrapleural\\s+pneumonectomy|pleurectomy[\\s\\S]*decortication|mesothelioma)\\b",
+  "exclude": [
+   "biopsy",
+   "biopsies",
+   "bx",
+   "fna",
+   "cytology",
+   "fluid",
+   "effusion",
+   "peritoneal",
+   "peritoneum",
+   "adenocarcinoma",
+   "frozen",
+   "FS"
+  ],
+  "bias": 5,
+  "fill": [
+   {
+    "field": "laterality",
+    "from": "map",
+    "map": [
+     [
+      "\\bright\\b",
+      "Right"
+     ],
+     [
+      "\\bleft\\b",
+      "Left"
+     ]
+    ]
+   }
+  ]
+ },
+ "macroExtract": {
+  "specimenDims": {
+   "concept": "specimenDims",
+   "unit": "cm"
+  },
+  "blocks": {
+   "concept": "blocks",
+   "unit": "count"
+  }
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "procedure",
+   "label": "Procedure",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Extended pleurectomy / decortication (eP/D)",
+   "options": [
+    "Extrapleural pneumonectomy (EPP)",
+    "Extended pleurectomy / decortication (eP/D)",
+    "Pleurectomy / decortication (P/D)",
+    "Partial pleurectomy / local excision",
+    "Other (specify)"
+   ]
+  },
+  {
+   "id": "procedureOther",
+   "label": "Other procedure",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "showIf": {
+    "field": "procedure",
+    "is": "Other (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "laterality",
+   "label": "Laterality",
+   "group": "Specimen & Gross",
+   "type": "select",
+   "default": "Right",
+   "options": [
+    "Right",
+    "Left",
+    "Bilateral",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "specimenDims",
+   "label": "Specimen dimensions (cm)",
+   "group": "Specimen & Gross",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "pleuralThicknessMm",
+   "label": "Maximum pleural thickness (mm)",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blocks",
+   "label": "Number of blocks",
+   "group": "Specimen & Gross",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "blockKeyText",
+   "label": "Block key",
+   "group": "Specimen & Gross",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "histType",
+   "label": "Histologic type (WHO 5th)",
+   "group": "Histology & Grading",
+   "type": "select",
+   "default": "Epithelioid mesothelioma",
+   "options": [
+    "Epithelioid mesothelioma",
+    "Biphasic mesothelioma",
+    "Sarcomatoid mesothelioma",
+    "Sarcomatoid mesothelioma, desmoplastic",
+    "Sarcomatoid mesothelioma with heterologous differentiation",
+    "Localised pleural mesothelioma",
+    "Mesothelioma in situ",
+    "Well-differentiated papillary mesothelial tumour (WDPMT)"
+   ],
+   "reference": {
+    "title": "WHO 5th pleural mesothelioma nuclear grading, BAP1/MTAP & AJCC 9th",
+    "intro": "WHO 5th mandates 2-tier nuclear grading (Low vs High grade) for all epithelioid mesotheliomas using nuclear atypia (1–3), mitotic count (1–3), and necrosis. Report % sarcomatoid component in biphasic mesothelioma.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Epithelioid 2-tier nuclear grading & ancillary confirmation",
+      "points": [
+       "Nuclear atypia (1=mild, 2=moderate, 3=severe) + mitotic count (1=<=1/2 mm2, 2=2–4/2 mm2, 3=>=5/2 mm2) = total score 2–6 (Grade I=2–3, Grade II=4–5, Grade III=6). Low grade = Grade I, or Grade II without necrosis; High grade = Grade II with necrosis, or Grade III.",
+       "Mesothelial confirmation: at least 2 positive mesothelial markers (calretinin nuclear+cytoplasmic, WT1, D2-40, CK5/6) and 2 negative carcinoma markers (claudin-4, BerEP4, TTF-1, PAX8).",
+       "Malignancy vs reactive mesothelial hyperplasia: BAP1 nuclear loss (~50–70% epithelioid) and/or MTAP cytoplasmic loss / CDKN2A (p16) homozygous deletion by FISH."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Pleural Mesothelioma",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/mesothelioma/meso_epithelioid.jpg",
+        "caption": "Malignant epithelioid pleural mesothelioma (high magnification): polygonal mesothelial cells with eosinophilic cytoplasm and round-to-oval nuclei (H&E).",
+        "credit": "Nephron",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File%3AMalignant_epithelioid_mesothelioma_-_high_mag.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "sarcomatoidPct",
+   "label": "Sarcomatoid component (% — if biphasic)",
+   "group": "Histology & Grading",
+   "type": "number",
+   "showIf": {
+    "field": "histType",
+    "is": "Biphasic mesothelioma"
+   },
+   "default": ""
+  },
+  {
+   "id": "nuclearAtypiaScore",
+   "label": "Epithelioid nuclear atypia score (1–3)",
+   "group": "Histology & Grading",
+   "type": "select",
+   "showIf": {
+    "field": "histType",
+    "is": "Epithelioid mesothelioma"
+   },
+   "default": "2",
+   "options": [
+    "1",
+    "2",
+    "3"
+   ]
+  },
+  {
+   "id": "mitoticScore",
+   "label": "Epithelioid mitotic score (1: <=1, 2: 2–4, 3: >=5 / 2 mm2)",
+   "group": "Histology & Grading",
+   "type": "select",
+   "showIf": {
+    "field": "histType",
+    "is": "Epithelioid mesothelioma"
+   },
+   "default": "1",
+   "options": [
+    "1",
+    "2",
+    "3"
+   ]
+  },
+  {
+   "id": "necrosis",
+   "label": "Tumour necrosis (upgrades Grade II epithelioid to High grade)",
+   "group": "Histology & Grading",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "bap1Mtap",
+   "label": "BAP1 / MTAP / CDKN2A (p16) status",
+   "group": "Histology & Grading",
+   "type": "select",
+   "default": "BAP1 nuclear loss",
+   "options": [
+    "BAP1 nuclear loss",
+    "MTAP loss / CDKN2A (p16) homozygous deletion",
+    "Both BAP1 loss and MTAP/CDKN2A loss",
+    "BAP1 and MTAP retained",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "lvi",
+   "label": "Lymphovascular invasion",
+   "group": "Histology & Grading",
+   "type": "select",
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "ihcText",
+   "label": "Immunohistochemistry (calretinin / WT1 / D2-40 / claudin-4 / TTF-1)",
+   "group": "Histology & Grading",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "histologyNotes",
+   "label": "Histology paragraph override",
+   "group": "Histology & Grading",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "extension",
+   "label": "Tumour extent (AJCC 9th pT)",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Each ipsilateral pleural surface with diaphragmatic muscle invasion and/or confluent visceral pleural extension into lung parenchyma (pT2)",
+   "options": [
+    "Ipsilateral parietal pleura with or without mediastinal, diaphragmatic, or visceral pleura involvement (pT1)",
+    "Each ipsilateral pleural surface with diaphragmatic muscle invasion and/or confluent visceral pleural extension into lung parenchyma (pT2)",
+    "Locally advanced potentially resectable: endothoracic fascia, mediastinal fat, solitary chest wall soft tissue focus, or non-transmural pericardium (pT3)",
+    "Diffuse/multifocal chest wall (with/without rib), transdiaphragmatic peritoneum, contralateral pleura, mediastinal organs, spine, transmural pericardium/myocardium, or brachial plexus (pT4)",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "marginStatus",
+   "label": "Surgical margins",
+   "group": "Extension & Margins",
+   "type": "select",
+   "default": "Involved by mesothelioma (microscopic residual R1)",
+   "options": [
+    "Uninvolved by mesothelioma (R0)",
+    "Involved by mesothelioma (microscopic residual R1)",
+    "Cannot be assessed"
+   ]
+  },
+  {
+   "id": "nodesExamined",
+   "label": "Regional lymph nodes examined",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodesInvolved",
+   "label": "Regional lymph nodes involved",
+   "group": "Nodes, Mets & Stage",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "nodeStation",
+   "label": "Involved lymph node station",
+   "group": "Nodes, Mets & Stage",
+   "type": "select",
+   "default": "Ipsilateral bronchopulmonary, hilar, or mediastinal (pN1)",
+   "options": [
+    "Ipsilateral bronchopulmonary, hilar, or mediastinal (pN1)",
+    "Contralateral mediastinal or ipsilateral/contralateral supraclavicular (pN2)"
+   ]
+  },
+  {
+   "id": "distantMets",
+   "label": "Distant metastasis (pM)",
+   "group": "Nodes, Mets & Stage",
+   "type": "multiselect",
+   "default": [
+    "Not applicable"
+   ],
+   "options": [
+    "Not applicable",
+    "Not identified",
+    "Non-regional lymph node(s)",
+    "Contralateral lung",
+    "Liver",
+    "Bone",
+    "Peritoneum (distant)",
+    "Other (specify)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "distantMetsOther",
+   "label": "Specify distant metastasis site",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "postTherapy",
+   "label": "Post-neoadjuvant therapy (yp)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "recurrent",
+   "label": "Recurrent tumour (r)",
+   "group": "Nodes, Mets & Stage",
+   "type": "checkbox",
+   "default": false
+  },
+  {
+   "id": "tnmOverride",
+   "label": "pTNM override",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tnmOverrideReason",
+   "label": "Override reason",
+   "group": "Nodes, Mets & Stage",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Additional",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02101",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true,
+   "printPTNM": true,
+   "printNodesMets": false
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "procedure": "Extended pleurectomy / decortication (eP/D)",
+     "laterality": "Right",
+     "specimenDims": "18.0 x 14.0 x 2.5 (pleural rind)",
+     "pleuralThicknessMm": "14",
+     "blocks": "16",
+     "blockKeyText": "A1-A12: parietal, visceral, diaphragmatic and pericardial pleural rind\nA13-A16: ipsilateral mediastinal and hilar lymph nodes",
+     "histType": "Epithelioid mesothelioma",
+     "nuclearAtypiaScore": "2",
+     "mitoticScore": "1",
+     "necrosis": "Not identified",
+     "bap1Mtap": "BAP1 nuclear loss",
+     "lvi": "Not identified",
+     "ihcText": "Tumour cells are positive for calretinin, WT1 and D2-40, negative for claudin-4 and TTF-1, with nuclear loss of BAP1",
+     "extension": "Each ipsilateral pleural surface with diaphragmatic muscle invasion and/or confluent visceral pleural extension into lung parenchyma (pT2)",
+     "marginStatus": "Involved by mesothelioma (microscopic residual R1)",
+     "nodesExamined": "10",
+     "nodesInvolved": "0",
+     "distantMets": [
+      "Not applicable"
+     ]
+    }
+   }
+  ]
+ }
+}
