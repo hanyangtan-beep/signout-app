@@ -64,14 +64,14 @@ export function macro(part, ctx) {
 export function blockKey(part, ctx) { return letteredBlockKey(part, ctx, { lettered }); }
 
 const TYPE_MORPH = {
-  'Embryonal rhabdomyosarcoma, conventional': 'Alternating hypercellular and hypocellular myxoid zones of primitive round-to-spindle mesenchymal cells with scattered differentiating eosinophilic rhabdomyoblasts (strap cells with cross-striations) infiltrate soft tissue.',
-  'Embryonal rhabdomyosarcoma, botryoid': 'Polypoid grape-like mucosal projections show a dense subepithelial cambium layer of primitive rhabdomyoblasts overlying a hypocellular myxoid core.',
-  'Embryonal rhabdomyosarcoma with anaplasia': 'Embryonal rhabdomyosarcoma displays enlarged hyperchromatic pleomorphic nuclei (>= 3x adjacent nuclei) and atypical multipolar mitotic figures.',
-  'Alveolar rhabdomyosarcoma, FOXO1 fusion-positive': 'Fibrovascular septa divide discohesive nests of monotonous primitive small round blue cells with central alveolar loss of cohesion, occasional multinucleated wreath-like giant cells and diffuse myogenin expression.',
-  'Alveolar rhabdomyosarcoma, FOXO1 fusion-negative': 'Alveolar/solid nested small round cell rhabdomyosarcoma lacks FOXO1 gene rearrangement on molecular testing.',
-  'Spindle cell / sclerosing rhabdomyosarcoma (MYOD1-mutant / VGLL2-NCOA2 / NOS)': 'Intersecting fascicles of atypical elongated eosinophilic spindle cells and/or pseudovascular cords embedded in a densely hyalinised sclerotic stroma show strong diffuse MYOD1 expression.',
-  'Pleomorphic rhabdomyosarcoma': 'Disorganised sheets of markedly pleomorphic large polygonal, spindled and bizarre multinucleated eosinophilic rhabdomyoblasts invade skeletal muscle.',
-  'Rhabdomyosarcoma with TFCP2 rearrangement (intraosseous / epithelioid)': 'Sheets of epithelioid and spindled rhabdomyoblastic cells with strong keratin, ALK and myogenic marker expression infiltrate bone and adjacent soft tissue.'
+  'Embryonal rhabdomyosarcoma, conventional': 'Alternating hypercellular and hypocellular myxoid zones of primitive round-to-spindle mesenchymal cells with scattered differentiating eosinophilic rhabdomyoblasts (strap or tadpole cells with cross-striations) infiltrate soft tissue. Shows patchy/heterogeneous nuclear myogenin and MyoD1 alongside cytoplasmic desmin expression.',
+  'Embryonal rhabdomyosarcoma, botryoid': 'Polypoid grape-like mucosal projections covered by intact epithelium show a condensed subepithelial cellular "cambium layer" of primitive rhabdomyoblasts overlying a hypocellular myxoid core.',
+  'Embryonal rhabdomyosarcoma with anaplasia': 'Embryonal rhabdomyosarcoma displays enlarged hyperchromatic pleomorphic nuclei (>= 3x adjacent nuclei) and atypical multipolar mitotic figures (focal or diffuse anaplasia).',
+  'Alveolar rhabdomyosarcoma, FOXO1 fusion-positive': 'Fibrovascular septa divide discohesive nests of monotonous primitive small round blue cells with central alveolar loss of cohesion ("picket-fence" peripheral lining) and occasional multinucleated wreath-like giant cells. Strong diffuse nuclear myogenin (> 50%) and FOXO1 rearrangement are diagnostic hallmarks.',
+  'Alveolar rhabdomyosarcoma, FOXO1 fusion-negative': 'Alveolar or solid nested small round cell rhabdomyosarcoma lacks PAX3/7::FOXO1 gene rearrangement on molecular testing and behaves biologically closer to embryonal RMS.',
+  'Spindle cell / sclerosing rhabdomyosarcoma (MYOD1-mutant / VGLL2-NCOA2 / NOS)': 'Intersecting fascicles of atypical elongated eosinophilic spindle cells and/or pseudovascular microalveolar cords embedded within a densely hyalinised sclerotic stroma show strong diffuse nuclear MyoD1 expression (with MYOD1 p.L122R conferring aggressive behaviour and VGLL2/NCOA2 in congenital/infantile cases conferring favourable outcome).',
+  'Pleomorphic rhabdomyosarcoma': 'Disorganised sheets of markedly pleomorphic large polygonal, spindled and bizarre multinucleated eosinophilic rhabdomyoblasts with brisk atypical mitoses and necrosis invade adult skeletal muscle.',
+  'Rhabdomyosarcoma with TFCP2 rearrangement (intraosseous / epithelioid)': 'Sheets and fascicles of epithelioid and spindled rhabdomyoblastic cells with strong pancytokeratin, ALK and myogenic marker (desmin, MyoD1, myogenin) co-expression infiltrate craniofacial/gnathic bone and adjacent soft tissue.'
 };
 
 export function histologyPara(v) {

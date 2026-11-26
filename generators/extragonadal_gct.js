@@ -64,17 +64,17 @@ export function macro(part, ctx) {
 export function blockKey(part, ctx) { return letteredBlockKey(part, ctx, { lettered }); }
 
 const TYPE_MORPH = {
-  'Mature teratoma': 'Well-differentiated mature tissues representing ectodermal (stratified squamous epithelium, skin adnexa, mature neuroglia), mesodermal (adipose tissue, smooth muscle, cartilage, bone) and endodermal (respiratory and gastrointestinal epithelium) lineages lack immature neuroectoderm or malignant germ cell elements.',
+  'Mature teratoma': 'Well-differentiated mature tissues representing ectodermal (stratified squamous epithelium, skin adnexa, mature neuroglia), mesodermal (adipose tissue, smooth muscle, cartilage, bone) and endodermal (respiratory and gastrointestinal epithelium) lineages lack immature neuroectoderm or malignant germ cell elements. Thorough sampling is essential to exclude microscopic yolk sac tumour foci.',
   'Immature teratoma, grade 1': 'Mature teratomatous tissues contain rare small foci of immature neuroectodermal tubules and rosettes occupying <= 1 low-power field on any single slide.',
-  'Immature teratoma, grade 2': 'Mature teratomatous elements are accompanied by moderate amounts of immature neuroectodermal tubules and neuroepithelium occupying 2–3 low-power fields on any slide.',
-  'Immature teratoma, grade 3': 'Abundant confluent sheets and rosettes of immature embryonic-type neuroectoderm occupy >= 4 low-power fields on at least one slide.',
-  'Yolk sac tumour': 'Microcystic/reticular, papillary, solid and endodermal sinus (Schiller-Duval bodies) proliferations of atypical cuboidal cells with PAS-positive hyaline globules infiltrate the extragonadal mass.',
-  'Germinoma / seminoma': 'Sheets of uniform clear polygonal germ cells with distinct cell membranes, squared-off nuclei and central nucleoli are divided by lymphocyte-rich fibrous septa.',
-  'Embryonal carcinoma': 'Solid sheets, glandular spaces and papillae of large primitive pleomorphic epithelial cells with overlapping vesicular nuclei, macronucleoli and geographic necrosis infiltrate the mass.',
-  'Choriocarcinoma': 'Biphasic malignant proliferation of mononucleated cytotrophoblast and intermediate trophoblast capped by pleomorphic multinucleated syncytiotrophoblast is set amidst extensive haemorrhage and necrosis.',
-  'Mixed malignant germ cell tumour (specify percentages)': 'Intimately admixed malignant germ cell tumour components replace the extragonadal mass.',
-  'Teratoma with somatic-type malignancy (specify)': 'Teratoma contains an expansile pure nodule (>= 5 mm) of somatic-type malignant carcinoma, sarcoma or neuroectodermal tumour.',
-  'Other histologic type not listed (specify)': 'Extragonadal germ cell neoplasm is present.'
+  'Immature teratoma, grade 2': 'Mature teratomatous elements are accompanied by moderate amounts of immature neuroectodermal tubules and neuroepithelium occupying 2–3 low-power fields on any single slide.',
+  'Immature teratoma, grade 3': 'Abundant confluent sheets and multilayered rosettes of immature embryonic-type neuroectoderm occupy >= 4 low-power fields on at least one slide.',
+  'Yolk sac tumour': 'Microcystic/reticular (honeycomb meshwork), papillary, solid, myxoid and endodermal sinus (perivascular Schiller-Duval bodies) proliferations of atypical cuboidal cells with PAS-positive diastase-resistant hyaline globules infiltrate the extragonadal mass, expressing SALL4, AFP and glypican-3.',
+  'Germinoma / seminoma': 'Sheets and lobules of uniform clear glycogen-rich polygonal germ cells with distinct cell membranes, squared-off central nuclei and prominent nucleoli are divided by lymphocyte-rich fibrous septa with occasional granulomas, expressing OCT3/4, SALL4 and CD117.',
+  'Embryonal carcinoma': 'Solid sheets, glandular spaces and papillae of large primitive pleomorphic epithelial cells with amphophilic cytoplasm, overlapping vesicular nuclei, macronucleoli, brisk mitoses and geographic necrosis infiltrate the mass, expressing CD30, OCT3/4 and SALL4.',
+  'Choriocarcinoma': 'Biphasic malignant proliferation of mononucleated cytotrophoblast and intermediate trophoblast intimately capped by pleomorphic, hCG-positive multinucleated syncytiotrophoblast is set amidst extensive haemorrhage and coagulative necrosis.',
+  'Mixed malignant germ cell tumour (specify percentages)': 'Intimately admixed malignant germ cell tumour components (such as yolk sac tumour, embryonal carcinoma, germinoma, choriocarcinoma and/or teratoma) replace the extragonadal mass.',
+  'Teratoma with somatic-type malignancy (specify)': 'Teratoma contains an expansile pure nodule (>= 5 mm) of somatic-type malignant carcinoma, sarcoma or neuroectodermal tumour overgrowing the germ cell elements.',
+  'Other histologic type not listed (specify)': 'Extragonadal germ cell neoplasm is present with characteristic lineage features.'
 };
 
 export function histTypeName(v) {

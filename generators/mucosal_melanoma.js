@@ -72,11 +72,11 @@ export function macro(part, ctx) {
 export function blockKey(part, ctx) { return letteredBlockKey(part, ctx, { lettered }); }
 
 const TYPE_MORPH = {
-  'Mucosal melanoma, not specified': 'Infiltrating sheets, nests and fascicles of pleomorphic epithelioid, spindled or plasmacytoid melanocytes with vesicular nuclei, prominent eosinophilic nucleoli, intranuclear pseudoinclusions and brisk mitotic activity invade the submucosa.',
-  'Mucosal melanoma, lentiginous': 'Confluent lentiginous proliferation of atypical melanocytes along the mucosal basal layer with pagetoid upward spread is accompanied by invasive dermal/submucosal nests of pleomorphic melanocytes.',
-  'Mucosal melanoma, nodular': 'Expansile vertical-growth nodule composed of cohesive sheets of pleomorphic epithelioid and/or spindled melanocytes with prominent nucleoli, frequent mitoses and variable melanin pigmentation invades the submucosa beneath ulcerated mucosa.',
-  'Mucosal melanoma, desmoplastic': 'Paucicellular-to-moderately cellular fascicles of atypical hyperchromatic spindle cells infiltrate within a dense fibrous collagenous stroma with lymphoid aggregates and prominent neurotropism.',
-  'Mucosal melanoma, other (specify)': 'Infiltrating malignant melanocytic neoplasm involves the head and neck mucosa.'
+  'Mucosal melanoma, not specified': 'Infiltrating sheets, nests and fascicles of pleomorphic epithelioid, spindled, plasmacytoid or small round melanocytes invade the submucosa and underlying bone/cartilage. Tumour cells display large vesicular nuclei, prominent eosinophilic macronucleoli, intranuclear cytoplasmic pseudoinclusions and brisk atypical mitotic activity with frequent ulceration and necrosis. S100, SOX10, Melan-A and HMB45 confirm melanocytic lineage.',
+  'Mucosal melanoma, lentiginous': 'Confluent lentiginous proliferation of atypical hyperchromatic melanocytes along the mucosal basal layer with pagetoid upward migration is accompanied by invasive submucosal nests of pleomorphic melanocytes. Frequently demonstrates prominent radial mucosal spread that may extend beyond clinical margins.',
+  'Mucosal melanoma, nodular': 'Expansile vertical-growth nodule composed of cohesive sheets of pleomorphic epithelioid and/or spindled melanocytes with prominent eosinophilic nucleoli, frequent mitoses and variable melanin pigmentation invades the submucosa beneath ulcerated mucosa without a prominent radial in situ component.',
+  'Mucosal melanoma, desmoplastic': 'Paucicellular-to-moderately cellular fascicles of atypical hyperchromatic spindle cells infiltrate within a dense fibrous collagenous stroma accompanied by patchy lymphoid aggregates and prominent neurotropism. Typically S100 and SOX10 positive while Melan-A and HMB45 are frequently negative.',
+  'Mucosal melanoma, other (specify)': 'Infiltrating malignant melanocytic neoplasm involves the head and neck mucosa with destructive submucosal invasion.'
 };
 
 export function histTypeName(v) {

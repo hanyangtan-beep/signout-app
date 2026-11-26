@@ -60,21 +60,21 @@ export function macro(part, ctx) {
 export function blockKey(part, ctx) { return letteredBlockKey(part, ctx, { lettered }); }
 
 const TYPE_MORPH = {
-  'Meningothelial meningioma': 'Lobules and syncytial sheets of uniform epithelioid meningothelial cells with indistinct cell borders, pale eosinophilic cytoplasm, round-to-oval nuclei, delicate chromatin, intranuclear pseudoinclusions and occasional cellular whorls are separated by thin fibrovascular septa.',
-  'Fibrous meningioma': 'Intersecting fascicles of bland elongated spindle cells are embedded within an abundant collagenous and reticulin-rich intercellular matrix.',
-  'Transitional meningioma': 'Combined meningothelial lobules with prominent concentric whorls and psammoma bodies transition smoothly into fascicular fibrous zones.',
-  'Psammomatous meningioma': 'Confluent lamellated calcified psammoma bodies vastly predominate over intervening meningothelial whorls and spindle cells.',
-  'Angiomatous meningioma': 'Numerous tightly packed small-to-medium hyalinised blood vessels comprise > 50% of the tumour area amidst intervening meningothelial cells.',
-  'Microcystic meningioma': 'Cobweb-like architecture of elongated vacuolated meningothelial cells surrounds abundant pale eosinophilic intercellular microcysts.',
-  'Secretory meningioma': 'Meningothelial lobules contain numerous intracellular PAS-positive eosinophilic hyaline pseudopsammoma bodies surrounded by CEA/cytokeratin-positive glandular-like lumina.',
-  'Lymphoplasmacyte-rich meningioma': 'Extensive chronic inflammatory infiltrate of mature lymphocytes and plasma cells partially obscures underlying meningothelial lobules.',
-  'Metaplastic meningioma': 'Meningothelial tumour exhibits prominent mesenchymal metaplasia (lipomatous, osseous, cartilaginous, myxoid or xanthomatous).',
-  'Chordoid meningioma': 'Cords and trabeculae of epithelioid vacuolated meningothelial cells are set within an abundant basophilic mucoid/myxoid stroma resembling chordoma.',
-  'Clear cell meningioma': 'Patternless sheets of polygonal meningothelial cells with abundant optically clear glycogen-rich cytoplasm are traversed by broad blocky interstitial and perivascular collagen bands.',
-  'Atypical meningioma': 'Meningothelial proliferation demonstrates elevated mitotic activity (4–19/10 HPF), brain invasion and/or >= 3 atypical histologic features.',
-  'Papillary meningioma': 'Perivascular pseudopapillary architecture of discohesive meningothelial cells radiates around fibrovascular cores.',
-  'Rhabdoid meningioma': 'Sheets of plump rhabdoid meningothelial cells display eccentric vesicular nuclei, prominent nucleoli and paranuclear eosinophilic hyaline inclusions.',
-  'Anaplastic (malignant) meningioma': 'Markedly pleomorphic malignant meningothelial proliferation displays frank anaplasia and/or >= 20 mitoses/10 HPF with geographic necrosis.'
+  'Meningothelial meningioma': 'Lobules and syncytial sheets of uniform epithelioid meningothelial cells with indistinct cell borders, pale eosinophilic cytoplasm, round-to-oval nuclei, delicate chromatin, intranuclear pseudoinclusions and occasional cellular whorls are separated by thin fibrovascular septa. Expresses EMA and SSTR2A.',
+  'Fibrous meningioma': 'Intersecting fascicles and storiform bundles of bland elongated spindle cells are embedded within an abundant collagenous and reticulin-rich intercellular matrix, with sparse whorls and psammoma bodies.',
+  'Transitional meningioma': 'Combined meningothelial lobules with prominent concentric cellular whorls and lamellated psammoma bodies transition smoothly into fascicular collagen-rich fibrous zones.',
+  'Psammomatous meningioma': 'Confluent lamellated calcified psammoma bodies vastly predominate (> 50% of tumour) over intervening meningothelial whorls and spindle cells.',
+  'Angiomatous meningioma': 'Numerous tightly packed, variably sized hyalinised blood vessels comprise > 50% of the tumour area amidst intervening meningothelial cells with frequent degenerative nuclear pleomorphism.',
+  'Microcystic meningioma': 'Cobweb-like architecture of elongated, stellate vacuolated meningothelial cells surrounds abundant pale eosinophilic mucinous/oedematous intercellular microcysts.',
+  'Secretory meningioma': 'Meningothelial lobules contain numerous intracellular PAS-positive eosinophilic hyaline pseudopsammoma bodies surrounded by CEA/cytokeratin-positive glandular-like lumina; frequently associated with KLF4/TRAF7 mutations and marked peritumoural brain oedema.',
+  'Lymphoplasmacyte-rich meningioma': 'Extensive chronic inflammatory infiltrate of mature lymphocytes and polyclonal plasma cells (often with Russell bodies) partially obscures underlying meningothelial lobules.',
+  'Metaplastic meningioma': 'Meningothelial tumour exhibits prominent focal or widespread mesenchymal differentiation (lipomatous, osseous, cartilaginous, myxoid or xanthomatous metaplasia).',
+  'Chordoid meningioma': 'Cords and trabeculae of epithelioid vacuolated ("physaliferous-like") meningothelial cells are set within an abundant basophilic mucoid/myxoid stroma resembling chordoma; when >= 50%, assigned CNS WHO grade 2.',
+  'Clear cell meningioma': 'Patternless sheets of polygonal meningothelial cells with abundant optically clear, PAS-positive glycogen-rich cytoplasm are traversed by broad blocky interstitial and perivascular collagen bands; assigned CNS WHO grade 2 (often SMARCE1-deficient).',
+  'Atypical meningioma': 'Meningothelial proliferation demonstrates elevated mitotic activity (4–19 mitoses/10 HPF [1.6 mm2]), unequivocal brain invasion (irregular tongue-like projections into gliotic parenchyma without intervening pia) and/or >= 3 atypical histologic features (sheeting, hypercellularity, small cell change, macronucleoli, spontaneous necrosis); assigned CNS WHO grade 2.',
+  'Papillary meningioma': 'Predominant (> 50%) perivascular pseudopapillary architecture of discohesive meningothelial cells radiates around fibrovascular cores; assigned CNS WHO grade 3.',
+  'Rhabdoid meningioma': 'Sheets of plump rhabdoid meningothelial cells display eccentric vesicular nuclei, prominent nucleoli and paranuclear eosinophilic hyaline inclusions (often BAP1-deficient); assigned CNS WHO grade 3 when widespread or accompanied by high-grade features.',
+  'Anaplastic (malignant) meningioma': 'Markedly pleomorphic malignant meningothelial proliferation displays frank sarcomatous/carcinomatous/melanoma-like anaplasia and/or >= 20 mitoses/10 HPF (1.6 mm2) with geographic necrosis, or harbours TERT promoter mutation / CDKN2A/B homozygous deletion; assigned CNS WHO grade 3.'
 };
 
 export function histologyPara(v) {

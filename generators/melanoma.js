@@ -65,19 +65,19 @@ export function macro(part, ctx) {
 export function blockKey(part, ctx) { return letteredBlockKey(part, ctx, { lettered }); }
 
 const TYPE_MORPH = {
-  'Superficial spreading melanoma (low-CSD melanoma)': 'Asymmetric proliferation of atypical epithelioid melanocytes with prominent pagetoid upward epidermal scatter, confluent irregular junctional nests and dermal invasion lacking maturation infiltrates the dermis.',
-  'Lentigo maligna melanoma (high-CSD melanoma)': 'Confluent lentiginous proliferation of atypical hyperchromatic melanocytes along an atrophic epidermis with marked solar elastosis and adnexal extension is accompanied by dermal invasion.',
-  'Desmoplastic melanoma, pure': 'Paucicellular fascicles of atypical hyperchromatic spindle cells infiltrate within a dense fibrous collagenous dermis (> 90% desmoplastic) with lymphoid aggregates and frequent neurotropism.',
-  'Desmoplastic melanoma, mixed': 'Desmoplastic spindle-cell melanoma is admixed with a non-desmoplastic cellular epithelioid or spindled melanoma component.',
-  'Nodular melanoma': 'Expansile vertical-growth dermal nodule composed of cohesive sheets of pleomorphic epithelioid melanocytes with prominent nucleoli and mitotic activity lacks an extensive adjacent radial-growth in situ component.',
-  'Acral lentiginous melanoma': 'Broad confluent lentiginous proliferation of atypical dendritic and epithelioid melanocytes along hyperplastic acral skin with marked pagetoid spread invades the underlying dermis.',
-  'Spitz melanoma (malignant Spitz tumour)': 'Large epithelioid and/or spindled Spitzoid melanocytes with abundant eosinophilic cytoplasm exhibit marked pleomorphism, deep dermal mitoses, asymmetry and lack of maturation.',
-  'Melanoma arising in a blue naevus': 'Expansile sheets of pleomorphic epithelioid or spindled malignant melanocytes with necrosis and mitotic activity arise within a pre-existing cellular blue naevus.',
-  'Melanoma arising in a giant congenital naevus': 'Proliferative sheets of high-grade atypical melanocytes with brisk mitotic activity and necrosis arise within a congenital melanocytic naevus.',
-  'Nevoid melanoma': 'Deceptively symmetrical verrucous or dome-shaped dermal proliferation of small-to-medium monomorphic melanocytes exhibits incomplete maturation, subtle atypia and deep dermal mitoses.',
-  'Melanoma in situ': 'Confluent and pagetoid intraepidermal proliferation of atypical melanocytes is confined strictly above the epidermal basement membrane without dermal invasion.',
-  'Melanoma, not otherwise specified': 'Invasive proliferation of atypical pleomorphic melanocytes infiltrates the dermis without maturation.',
-  'Other histologic subtype not listed (specify)': 'Cutaneous malignant melanoma is present.'
+  'Superficial spreading melanoma (low-CSD melanoma)': 'Asymmetric intraepidermal proliferation of atypical epithelioid melanocytes displays prominent pagetoid upward scatter across all epidermal layers, confluent irregular junctional nests and dermal invasion lacking deep maturation. Dermal tumour cells show pleomorphic vesicular nuclei, prominent eosinophilic nucleoli, dusty melanin pigment and dermal mitotic figures, often with a lymphocytic host response.',
+  'Lentigo maligna melanoma (high-CSD melanoma)': 'Confluent lentiginous proliferation of atypical hyperchromatic melanocytes along an effaced, atrophic epidermis over marked solar elastosis extends down hair follicles and sweat ducts, accompanied by invasive dermal nests or spindle cells.',
+  'Desmoplastic melanoma, pure': 'Paucicellular fascicles of atypical hyperchromatic spindle cells infiltrate within a dense fibrous collagenous dermis (>= 90% desmoplastic) accompanied by nodular lymphoid aggregates and frequent neurotropism. Typically S100 and SOX10 positive while Melan-A and HMB45 are negative.',
+  'Desmoplastic melanoma, mixed': 'Desmoplastic spindle-cell melanoma in collagenous stroma is admixed with >= 10% non-desmoplastic cellular epithelioid or spindled melanoma.',
+  'Nodular melanoma': 'Expansile vertical-growth dermal nodule composed of cohesive sheets of pleomorphic epithelioid or spindled melanocytes with prominent nucleoli, brisk dermal mitoses and frequent ulceration lacks an adjacent radial-growth in situ component beyond three rete ridges.',
+  'Acral lentiginous melanoma': 'Broad confluent lentiginous proliferation of atypical dendritic and epithelioid melanocytes along hyperplastic acral skin with compact hyperkeratosis and marked pagetoid scatter invades the underlying dermis.',
+  'Spitz melanoma (malignant Spitz tumour)': 'Large epithelioid and/or spindled Spitzoid melanocytes with abundant eosinophilic ground-glass cytoplasm exhibit marked nuclear pleomorphism, deep dermal mitoses, asymmetry, epidermal consumption and lack of maturation with depth.',
+  'Melanoma arising in a blue naevus': 'Expansile sheets of pleomorphic epithelioid or spindled malignant melanocytes with coagulative necrosis and brisk mitotic activity arise abruptly within a pre-existing cellular blue naevus.',
+  'Melanoma arising in a giant congenital naevus': 'Proliferative sheets of high-grade atypical melanocytes with brisk mitotic activity and necrosis arise within a pre-existing congenital melanocytic naevus.',
+  'Nevoid melanoma': 'Deceptively symmetrical verrucous or dome-shaped dermal proliferation of small-to-medium monomorphic melanocytes exhibits incomplete maturation, subtle nuclear atypia, deep dermal mitoses and loss of p16 or HMB45 gradient.',
+  'Melanoma in situ': 'Confluent lentiginous and pagetoid intraepidermal proliferation of atypical melanocytes is confined strictly above the epidermal basement membrane without dermal invasion.',
+  'Melanoma, not otherwise specified': 'Invasive proliferation of atypical pleomorphic melanocytes infiltrates the dermis without maturation with depth.',
+  'Other histologic subtype not listed (specify)': 'Cutaneous malignant melanoma is present with atypical melanocytic proliferation.'
 };
 
 export function histTypeName(v) {

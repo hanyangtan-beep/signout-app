@@ -64,12 +64,12 @@ export function macro(part, ctx) {
 export function blockKey(part, ctx) { return letteredBlockKey(part, ctx, { lettered }); }
 
 const TYPE_MORPH = {
-  'Ewing sarcoma, classic': 'Monotonous sheets and lobules of uniform small round blue cells with round nuclei, finely dispersed chromatin, inconspicuous nucleoli and scant clear-to-pale glycogen-rich cytoplasm infiltrate bone and/or soft tissue with occasional Homer-Wright pseudorosettes.',
-  'Ewing sarcoma, atypical / large-cell': 'Sheets of larger round-to-oval cells with moderate nuclear pleomorphism, coarser chromatin and prominent nucleoli retain diffuse membranous CD99 and FET::ETS fusion.',
-  'Ewing sarcoma, adamantinoma-like': 'Basaloid nested and palisading round-cell proliferation displays overt epithelial/squamous keratinisation and p40/cytokeratin expression alongside FET::ETS rearrangement.',
-  'Round cell sarcoma with EWSR1::non-ETS fusion': 'Sheets and cords of uniform round-to-spindle cells in variable fibrous/myxoid stroma harbour an EWSR1::non-ETS translocation.',
-  'CIC-rearranged sarcoma': 'Lobulated sheets of mildly pleomorphic round-to-epithelioid cells with vesicular nuclei, prominent nucleoli, myxoid stromal change and geographic necrosis infiltrate soft tissue.',
-  'Sarcoma with BCOR genetic alterations': 'Sheets and fascicles of uniform round-to-short spindle cells with fine chromatin in a myxoid vascular stroma infiltrate bone or soft tissue.'
+  'Ewing sarcoma, classic': 'Monotonous sheets and lobules separated by fibrous septa are composed of uniform small round blue cells with round nuclei, finely dispersed chromatin, inconspicuous nucleoli and scant clear-to-pale PAS-positive glycogen-rich cytoplasm. Occasional Homer Wright pseudorosettes and geographic necrosis with perivascular sparing ("filigree" pattern) are classic, with strong diffuse membranous CD99, nuclear NKX2.2 and FET::ETS rearrangement.',
+  'Ewing sarcoma, atypical / large-cell': 'Sheets of larger round-to-oval cells with moderate nuclear pleomorphism, irregular contours, coarser chromatin and prominent nucleoli infiltrate bone or soft tissue while retaining diffuse membranous CD99, NKX2.2 and FET::ETS fusion.',
+  'Ewing sarcoma, adamantinoma-like': 'Basaloid nested and palisading round-cell proliferation displays overt epithelial/squamous keratinisation (squamous pearls) and diffuse p40, CK5/6 and pancytokeratin expression alongside CD99, NKX2.2 and FET::ETS rearrangement.',
+  'Round cell sarcoma with EWSR1::non-ETS fusion': 'Sheets, nests and cords of uniform round-to-spindle cells in variable fibrous, collagenous or myxoid stroma harbour an EWSR1::non-ETS translocation (such as EWSR1::NFATC2 or EWSR1::PATZ1).',
+  'CIC-rearranged sarcoma': 'Lobulated sheets of mildly-to-moderately pleomorphic round-to-epithelioid and focally spindled cells with vesicular nuclei, prominent nucleoli, myxoid stromal change and extensive geographic necrosis infiltrate soft tissue. Typically shows patchy CD99 and diffuse nuclear ETV4 and WT1 expression.',
+  'Sarcoma with BCOR genetic alterations': 'Sheets and fascicles of uniform round-to-short spindle cells with fine chromatin and scant-to-moderate cytoplasm within a myxoid, richly vascularised stroma infiltrate bone or soft tissue, characteristically expressing nuclear BCOR, SATB2 and TLE1.'
 };
 
 export function histologyPara(v) {
