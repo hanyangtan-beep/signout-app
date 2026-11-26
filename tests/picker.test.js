@@ -55,7 +55,7 @@ test('small-biopsy row lists exactly the kind: biopsy templates in frequency ord
   // Phase 70 (2026-10-12), deliberate: the cervical form also takes vaginal and vulval biopsies, so its label is
   // "Cervix / vagina / vulva"; it keeps its place.
   // Phase 71 (2026-10-14), deliberate: GI and oral GVHD biopsy (rank 64) appended last; the others keep their order.
-  assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix / vagina / vulva', 'Endometrium', 'Lung', 'NPC', 'Oral cavity', 'Dermatoses', 'Brain', 'Liver (medical)', 'Liver (mass)', 'Hirschsprung', 'Peritoneum', 'GVHD']);
+  assert.deepEqual(row, ['Gastric', 'Colonic polyp', 'Duodenum', 'Oesophagus', 'IBD', 'Prostate', 'Breast', 'Cervix / vagina / vulva', 'Endometrium', 'Lung', 'NPC', 'Oral cavity', 'Dermatoses', 'Brain', 'Liver (medical)', 'Liver (mass)', 'Hirschsprung', 'Peritoneum', 'GVHD', 'Renal', 'Endomyocardial']);
   assert.ok(!row.includes('LEEP') && !row.includes('Frozen'));
   assert.deepEqual(pushRecent(['a', 'b'], 'b'), ['b', 'a']);
   assert.deepEqual(togglePin(togglePin([], 'x'), 'x'), []);
@@ -64,7 +64,7 @@ test('small-biopsy row lists exactly the kind: biopsy templates in frequency ord
 const planned = await loadPlanned();
 
 test('planned.json: unique ids that do not collide with built templates; known systems and row kinds', () => {
-  assert.ok(planned.length >= 10);
+  assert.equal(planned.length, 1);
   const ids = planned.map((t) => t.id);
   assert.equal(new Set(ids).size, ids.length, 'unique ids');
   const built = new Set(manifest.map((t) => t.id));
@@ -110,12 +110,12 @@ test('header rows: top = biopsy + cytology, bottom = resections + frozen + free 
   // skin_scc, Phase 39; oropharynx_hpv_carcinoma into oral_carcinoma, Phase 42; hcc, Phase 51;
   // pituitary_net, Phase 75; vulval_carcinoma, Phase 77; ureter_renal_pelvis_carcinoma, Phase 83;
   // soft_tissue_sarcoma, Phase 84; cervical_carcinoma, Phase 85; thyroid_carcinoma, Phase 88; bone_tumour, Phase 89 - deliberate).
-  assert.ok(planned.filter((t) => t.qmh).length >= 9);
-  // Biomarkers holds one built template (the standalone HER2 ISH report, Phase 30) and placeholders.
+  assert.equal(planned.filter((t) => t.qmh).length, 0);
+  // Biomarkers holds all 10 built biomarker templates (0 pending).
   const biomarkers = top.find((g) => g.system === 'Biomarkers').items;
   assert.ok(biomarkers.every((t) => t.kind === 'biomarker'));
-  assert.deepEqual(biomarkers.filter((t) => !t.planned).map((t) => t.id), ['breast_biomarkers']);
-  assert.ok(biomarkers.filter((t) => t.planned).length >= 8);
+  assert.deepEqual(biomarkers.filter((t) => !t.planned).map((t) => t.id), ['breast_biomarkers', 'gyn_biomarkers', 'colon_her2', 'stomach_biomarkers', 'mmr_msi', 'pdl1_ihc', 'dna_pcr_tests', 'rna_rtpcr_tests', 'fish_tests', 'ngs_tests']);
+  assert.equal(biomarkers.filter((t) => t.planned).length, 0);
   assert.equal(bottom.find((g) => g.system === 'General').label, 'Generic');
   assert.equal(bottom[bottom.length - 1].system, 'General', 'Free text last');
   // built before planned within a group; planned carry the flag and open Generic in the app
@@ -187,7 +187,7 @@ test('palette ranking: exact shortName > alias > organ > keyword', () => {
 
 test('grouped browse and the part selector put Small biopsy first, systems in canonical order', () => {
   const groups = groupBySystem(manifest);
-  assert.deepEqual(groups.map((g) => g.system), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Biomarkers', 'Cytology', 'General']);
+  assert.deepEqual(groups.map((g) => g.system), ['GI', 'Hepatobiliary', 'GU', 'Renal', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Biomarkers', 'Cytology', 'General']);
   const gyn = groups.find((g) => g.system === 'Gynae');
   // Phase 74 (23 October 2026), deliberate: the benign tube and ovary form joins after Ovarian cyst.
   // Phase 77 (23 October 2026), deliberate: Vulva Ca joins the cancer resections, last by rank.
@@ -197,7 +197,7 @@ test('grouped browse and the part selector put Small biopsy first, systems in ca
   assert.deepEqual(gyn.items.slice(2).map(labelOf), ['LEEP', 'Placenta', 'Uterus', 'Morcellated / hysteroscopic', 'Ovarian cyst', 'Tube and ovary', 'Ectopic', 'Endometrial Ca', 'Ovary / tube / peritoneum Ca', 'Vulva Ca', 'Cervix Ca', 'Vagina Ca', 'Uterine sarcoma', 'GTD'], 'rank order within a kind');
   const sel = selectorGroups(manifest);
   assert.equal(sel[0].label, 'Small biopsy');
-  assert.equal(sel[0].items.length, 19); // oral_biopsy joins in Phase 42, liver_biopsy and hirschsprung_biopsy on 2026-09-30, liver_lesion_biopsy on 2026-10-02, peritoneal_nodule on 2026-10-07, skin_inflammatory on 2026-10-11, gvhd_biopsy on 2026-10-14 (Phase 71, deliberate)
+  assert.equal(sel[0].items.length, 21); // + renal_biopsy, endomyocardial_biopsy
   // The CNS biopsy sits in the Small biopsy group; the CNS system group holds the resection.
   assert.deepEqual(sel.slice(1).map((g) => g.label), ['GI', 'Hepatobiliary', 'GU', 'Gynae', 'Breast', 'Thoracic', 'Head and neck', 'CNS', 'Skin', 'Cardiovascular', 'Lymphoid', 'Soft tissue', 'Endocrine', 'Frozen', 'Biomarkers', 'Cytology', 'General']);
 });

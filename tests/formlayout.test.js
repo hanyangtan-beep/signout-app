@@ -46,7 +46,7 @@ test('every template that splits its macroscopy also packs its form', () => {
   const split = schemas.filter(([, s]) => s.layout?.macroGroups).map(([f]) => f);
   const packed = schemas.filter(([, s]) => s.layout?.pack).map(([f]) => f);
   assert.deepEqual(packed.sort(), split.sort());
-  assert.equal(packed.length, 72); // + 7 Wave 2 Thoracic, Skin, CNS & Soft Tissue/Paediatric cancer resections
+  assert.equal(packed.length, 74); // + 2 medical biopsies (renal_biopsy, endomyocardial_biopsy); 9 biomarkers unpacked
 });
 
 test('the small templates stay one field per row', () => {

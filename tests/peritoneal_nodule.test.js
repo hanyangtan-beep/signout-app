@@ -59,7 +59,7 @@ test('it follows Hirschsprung in the GI biopsy row, built rather than pending; t
   assert.deepEqual(group.items.map((i) => i.id), ['gastric_biopsy', 'colonic_polyp', 'duodenal_biopsy', 'oesophageal_biopsy', 'ibd_biopsy', 'hirschsprung_biopsy', 'peritoneal_nodule', 'gvhd_biopsy']);
   assert.ok(!group.items.find((i) => i.id === 'peritoneal_nodule').planned, 'a built template, not a pending one');
   const row = biopsyRow(manifest).map((x) => x.id);
-  assert.equal(row[row.length - 2], 'peritoneal_nodule', 'appended to the Small biopsy row, before GVHD (Phase 71)');
+  assert.equal(row[row.indexOf('gvhd_biopsy') - 1], 'peritoneal_nodule', 'appended to the Small biopsy row, before GVHD (Phase 71)');
 });
 
 // ---------- the example ----------

@@ -1,0 +1,220 @@
+{
+ "id": "fish_tests",
+ "version": "2026.11",
+ "name": "FISH tests",
+ "shortName": "Molecular · FISH",
+ "label": "FISH",
+ "organ": "TUMOUR TISSUE",
+ "system": "Biomarkers",
+ "kind": "biomarker",
+ "rank": 678,
+ "aliases": [
+  "FSH",
+  "FISH",
+  "ALK FISH",
+  "ROS1 FISH",
+  "MDM2 FISH",
+  "MYC FISH",
+  "EWSR1 FISH",
+  "break-apart"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 2,
+ "defaultParts": 1,
+ "generator": "biomarker_suite",
+ "style": {
+  "british": true
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers"
+  },
+  {
+   "id": "macro",
+   "label": "Include block selection line",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Biomarker-FISH (Break-apart rearrangement, dual-fusion, gene amplification & deletion FISH)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Biomarker-FISH.html"
+ },
+ "match": {
+  "site": [
+   "lung",
+   "soft tissue",
+   "brain",
+   "paraffin block",
+   "tumour"
+  ],
+  "procedure": [
+   "FISH",
+   "in situ hybridisation",
+   "break-apart"
+  ],
+  "clinical": [
+   "ALK FISH",
+   "ROS1 FISH",
+   "MDM2 FISH",
+   "MYC FISH",
+   "EWSR1 FISH",
+   "1p/19q FISH",
+   "FISH test"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:breast[\\s\\S]*core\\s+biopsy|DISH|dual\\s+ISH)\\b)[\\s\\S]*\\bFISH\\b",
+  "exclude": [
+   "DISH",
+   "dual ISH"
+  ],
+  "bias": 5,
+  "fill": []
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour type / primary site",
+   "type": "text",
+   "default": "Lung adenocarcinoma"
+  },
+  {
+   "id": "blockNo",
+   "label": "Paraffin block",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "assayPanel",
+   "label": "FISH probe / target locus",
+   "group": "FISH Probe & Scoring",
+   "type": "select",
+   "default": "ALK (2p23) break-apart FISH",
+   "options": [
+    "ALK (2p23) break-apart FISH",
+    "ROS1 (6q22) break-apart FISH",
+    "RET (10q11) break-apart FISH",
+    "MDM2 (12q15) / CEP12 amplification FISH",
+    "EWSR1 (22q12) break-apart FISH",
+    "SS18 (18q11.2) break-apart FISH",
+    "DDIT3 (12q13) break-apart FISH",
+    "FOXO1 (13q14) break-apart FISH",
+    "MYC (8q24) / BCL2 (18q21) / BCL6 (3q27) lymphoma FISH",
+    "1p / 19q co-deletion FISH (oligodendroglioma)",
+    "CDKN2A (9p21) homozygous deletion FISH",
+    "HER2 (17q12) / CEP17 amplification FISH",
+    "Other FISH probe (specify in notes)"
+   ],
+   "reference": {
+    "title": "Interphase FISH scoring criteria (break-apart rearrangements & gene amplification)",
+    "intro": "Score non-overlapping tumour nuclei mapped against the matching H&E section. Confirm hybridisation efficiency on internal non-neoplastic cells before scoring.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Break-apart rearrangement vs dual-colour amplification patterns",
+      "points": [
+       "Break-apart FISH (e.g. ALK, ROS1, EWSR1, SS18, MYC): positive nucleus shows split 5'/3' signals separated by >= 2 signal diameters, or an isolated 3' (typically red) signal with loss of the 5' partner. Standard ALK threshold: >= 15% of >= 50 (or 100) scored tumour nuclei.",
+       "Amplification FISH (e.g. MDM2/CEP12, HER2/CEP17): report mean target signals/cell, mean centromere signals/cell, and target/centromere ratio (typically >= 2.0 or tight signal clusters = amplified)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Fluorescence In Situ Hybridization (FISH)",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/fish_tests/alk_breakapart.jpg",
+        "caption": "ALK break-apart FISH in lung adenocarcinoma showing intact fused yellow signals alongside an isolated 3' red signal indicating ALK gene rearrangement.",
+        "credit": "Manuel Medina Pérez",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Hibridaci%C3%B3n_in_situ_fluorescente_con_reordenamiento_para_ALK_(FISH_del_gen_ALK).jpg"
+       },
+       {
+        "src": "assets/reference/fish_tests/her2_fish_amp.jpg",
+        "caption": "Dual-colour HER2/CEP17 FISH demonstrating high-level gene amplification with clusters of red target signals relative to green centromere controls.",
+        "credit": "Anistalista",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:HER2_FISH.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "nucleiCounted",
+   "label": "Number of tumour nuclei scored",
+   "group": "FISH Probe & Scoring",
+   "type": "number",
+   "default": "100"
+  },
+  {
+   "id": "positivePct",
+   "label": "Positive nuclei (%) or target/control ratio",
+   "group": "FISH Probe & Scoring",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "signalPattern",
+   "label": "Predominant signal pattern",
+   "group": "FISH Probe & Scoring",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "overallResult",
+   "label": "Overall FISH interpretation",
+   "group": "FISH Results",
+   "type": "select",
+   "default": "Positive (rearrangement detected)",
+   "options": [
+    "Positive (rearrangement detected)",
+    "Negative (no rearrangement detected)",
+    "Positive (gene amplification detected)",
+    "Negative (no gene amplification detected)",
+    "Positive (deletion / co-deletion detected)",
+    "Negative (no deletion detected)",
+    "Borderline / equivocal",
+    "Indeterminate / hybridisation failed"
+   ]
+  },
+  {
+   "id": "variantsDetected",
+   "label": "Summary finding",
+   "group": "FISH Results",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "site": "Lung adenocarcinoma",
+     "blockNo": "26BX-01520-A1",
+     "assayPanel": "ALK (2p23) break-apart FISH",
+     "nucleiCounted": "100",
+     "positivePct": "42% (cutoff >= 15%)",
+     "signalPattern": "Split red/green signals and isolated 3' red signals",
+     "overallResult": "Positive (rearrangement detected)",
+     "variantsDetected": "ALK (2p23) rearrangement positive in 42% of scored tumour nuclei"
+    }
+   }
+  ]
+ }
+}

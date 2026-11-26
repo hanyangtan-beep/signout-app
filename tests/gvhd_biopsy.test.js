@@ -51,10 +51,11 @@ test('template is registered with the required metadata', () => {
   assert.deepEqual(schema.caseFields.map((f) => f.id), ['transplantDay', 'mmf']);
 });
 
-test('GVHD is last in the Small biopsy row', () => {
+test('GVHD follows Peritoneum in the Small biopsy row', () => {
   const row = biopsyRow(manifest).map(labelOf);
-  assert.equal(row[row.length - 1], 'GVHD');
-  assert.equal(row[row.length - 2], 'Peritoneum');
+  const idx = row.indexOf('GVHD');
+  assert.ok(idx > 0);
+  assert.equal(row[idx - 1], 'Peritoneum');
 });
 
 test('the form offers gut, oral and salivary findings by site, and the grade for the bowel only', () => {

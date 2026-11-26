@@ -1,0 +1,249 @@
+{
+ "id": "dna_pcr_tests",
+ "version": "2026.11",
+ "name": "DNA tests (PCR)",
+ "shortName": "Molecular · DNA PCR",
+ "label": "DNA PCR",
+ "organ": "TUMOUR TISSUE",
+ "system": "Biomarkers",
+ "kind": "biomarker",
+ "rank": 676,
+ "aliases": [
+  "PCR",
+  "DNA PCR",
+  "EGFR PCR",
+  "BRAF PCR",
+  "KRAS PCR",
+  "cobas",
+  "Idylla"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 2,
+ "defaultParts": 1,
+ "generator": "biomarker_suite",
+ "style": {
+  "british": true
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers"
+  },
+  {
+   "id": "macro",
+   "label": "Include block selection line",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Biomarker-PCR (Real-time allele-specific PCR / Sanger / pyrosequencing / fragment analysis)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Biomarker-PCR.html"
+ },
+ "match": {
+  "site": [
+   "lung",
+   "colon",
+   "thyroid",
+   "melanoma",
+   "tumour"
+  ],
+  "procedure": [
+   "PCR",
+   "DNA PCR",
+   "mutation test"
+  ],
+  "clinical": [
+   "EGFR PCR",
+   "BRAF PCR",
+   "KRAS PCR",
+   "DNA PCR",
+   "cobas",
+   "Idylla"
+  ],
+  "gate": "^[\\s\\S]*\\b(?:DNA\\s+PCR|(?:EGFR|BRAF|KRAS|NRAS|PIK3CA|KIT|PDGFRA|IDH1|IDH2|TERT)\\s+PCR|cobas|Idylla)\\b",
+  "exclude": [
+   "RT-PCR",
+   "RNA"
+  ],
+  "bias": 5,
+  "fill": []
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour type / primary site",
+   "type": "text",
+   "default": "Lung adenocarcinoma"
+  },
+  {
+   "id": "blockNo",
+   "label": "Paraffin block",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tumourCellularityPct",
+   "label": "Estimated tumour cellularity (%)",
+   "group": "Pre-analytic & Assay",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "macrodissection",
+   "label": "Macrodissection / enrichment",
+   "group": "Pre-analytic & Assay",
+   "type": "select",
+   "default": "Performed",
+   "options": [
+    "Performed",
+    "Not required",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "assayPanel",
+   "label": "DNA PCR assay / target gene(s)",
+   "group": "Pre-analytic & Assay",
+   "type": "select",
+   "default": "EGFR mutation PCR (exons 18–21)",
+   "options": [
+    "EGFR mutation PCR (exons 18–21)",
+    "KRAS / NRAS mutation PCR (exons 2, 3, 4)",
+    "BRAF V600 mutation PCR",
+    "KIT / PDGFRA mutation PCR",
+    "IDH1 / IDH2 mutation PCR",
+    "TERT promoter mutation PCR (C228T / C250T)",
+    "MGMT promoter methylation-specific PCR",
+    "MSI PCR (pentaplex mononucleotide panel)",
+    "B-cell / T-cell clonality PCR (BIOMED-2)",
+    "Other DNA PCR assay (specify in notes)"
+   ],
+   "reference": {
+    "title": "Real-time DNA PCR amplification & melting-curve quality control",
+    "intro": "Confirm adequate tumour cellularity above the assay limit of detection (typically >= 5–10% for real-time allele-specific PCR; >= 20% for Sanger sequencing) and inspect internal control Ct and melt peaks before calling a negative result.",
+    "note": "Reference figures are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Amplification curves & melt-peak specificity",
+      "points": [
+       "A valid positive call shows a clean sigmoidal amplification curve crossing the threshold within the validated Ct window with an intact endogenous internal control.",
+       "Non-responsive flat baselines with failed internal control indicate DNA degradation, decalcification artefact, or PCR inhibition — report as indeterminate rather than wild-type.",
+       "Derivative melting-curve analysis confirms a single specific amplicon peak and excludes primer-dimer artefacts."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Molecular Testing (PCR & Mutation Assays)",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/dna_pcr_tests/qpcr_curves.jpg",
+        "caption": "Real-time PCR amplification curves illustrating responsive target amplification, non-responsive baseline, and ambiguous traces requiring repeat or orthogonal review.",
+        "credit": "Tzachi Bar",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Responsive,_non-responsive_and_ambiguous_real-time_PCR_curves..png"
+       },
+       {
+        "src": "assets/reference/dna_pcr_tests/qpcr_melting.jpg",
+        "caption": "Real-time PCR derivative melting-curve plot showing sharp, single-peak amplicon specificity across replicates.",
+        "credit": "Zuzanna K. Filutowska",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Qpcr-melting.png"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "platform",
+   "label": "Platform / method",
+   "group": "Pre-analytic & Assay",
+   "type": "select",
+   "default": "Real-time allele-specific PCR (cobas / Idylla / LDT)",
+   "options": [
+    "Real-time allele-specific PCR (cobas / Idylla / LDT)",
+    "Sanger sequencing",
+    "Pyrosequencing",
+    "Fragment analysis (capillary electrophoresis)",
+    "Digital droplet PCR (ddPCR)",
+    "Methylation-specific PCR"
+   ]
+  },
+  {
+   "id": "overallResult",
+   "label": "Overall result",
+   "group": "PCR Results",
+   "type": "select",
+   "default": "Mutation detected",
+   "options": [
+    "Mutation detected",
+    "No mutation detected (wild-type for tested loci)",
+    "Methylated",
+    "Unmethylated",
+    "Clonal rearrangement detected",
+    "Polyclonal (no clonal rearrangement detected)",
+    "Indeterminate / test failed (insufficient or degraded DNA)"
+   ]
+  },
+  {
+   "id": "variantsDetected",
+   "label": "Detected variant(s) (HGVS / protein notation)",
+   "group": "PCR Results",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "internalControl",
+   "label": "Internal control / run QC",
+   "group": "PCR Results",
+   "type": "select",
+   "default": "Valid (passed)",
+   "options": [
+    "Valid (passed)",
+    "Suboptimal (low DNA input / high Ct)",
+    "Failed"
+   ]
+  },
+  {
+   "id": "limitOfDetection",
+   "label": "Assay limit of detection (LOD)",
+   "group": "PCR Results",
+   "type": "text",
+   "default": "5% mutant allele frequency (10% tumour cellularity)"
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes / clinical interpretation",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "site": "Lung adenocarcinoma",
+     "blockNo": "26BX-01501-A1",
+     "tumourCellularityPct": "40",
+     "macrodissection": "Performed",
+     "assayPanel": "EGFR mutation PCR (exons 18–21)",
+     "platform": "Real-time allele-specific PCR (cobas / Idylla / LDT)",
+     "overallResult": "Mutation detected",
+     "variantsDetected": "EGFR exon 19 deletion (c.2235_2249del, p.Glu746_Ala750del)",
+     "internalControl": "Valid (passed)",
+     "limitOfDetection": "5% mutant allele frequency (10% tumour cellularity)"
+    }
+   }
+  ]
+ }
+}

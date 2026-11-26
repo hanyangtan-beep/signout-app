@@ -65,7 +65,51 @@
    "label": "HER2 DISH calculator",
    "type": "dishCounter",
    "default": [],
-   "help": "HER2 (black) and CEP17 (red) signals in at least 20 non-overlapping invasive tumour nuclei, as on the QMH calculator. The cells counted, both averages, the ratio and the result below fill in from the counts; Enter moves to the next box. Not printed."
+   "help": "HER2 (black) and CEP17 (red) signals in at least 20 non-overlapping invasive tumour nuclei, as on the QMH calculator. The cells counted, both averages, the ratio and the result below fill in from the counts; Enter moves to the next box. Not printed.",
+   "reference": {
+    "title": "ASCO/CAP HER2 dual ISH & IHC scoring (Groups 1–5)",
+    "intro": "Count HER2 (black) and CEP17 (red) signals in at least 20 non-overlapping invasive tumour nuclei. Integrate concurrent HER2 IHC for ISH Groups 2–4 (2018/2023 ASCO/CAP algorithm).",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "HER2 ISH amplification, equivocal polysomy & IHC 3+ reference",
+      "points": [
+       "Group 1 (Positive): HER2/CEP17 >= 2.0 AND mean HER2 >= 4.0 signals/cell.",
+       "Group 5 (Negative): HER2/CEP17 < 2.0 AND mean HER2 < 4.0 signals/cell.",
+       "Groups 2–4 require concurrent IHC review and blinded recount by a second observer if IHC is 2+: Groups 2 and 4 are positive only with IHC 3+; Group 3 is positive with IHC 2+ or 3+."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Breast Carcinoma HER2 Biomarker Testing",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/breast_biomarkers/her2_fish_amp.jpg",
+        "caption": "Dual-colour HER2/CEP17 FISH showing HER2 gene amplification (clusters of red HER2 signals relative to green CEP17 controls).",
+        "credit": "Anistalista",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:HER2_FISH.jpg"
+       },
+       {
+        "src": "assets/reference/breast_biomarkers/her2_fish_equivocal.jpg",
+        "caption": "HER2 FISH nucleus showing 5 HER2 (red) and 5 CEP17 (green) signals (ratio < 2.0, mean HER2 4.0–5.9 — Group 4 requiring concurrent IHC correlation).",
+        "credit": "Manuel Medina Pérez",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Hibridaci%C3%B3n_in_situ_fluorescente_del_gen_Her2_(FISH_del_gen_Her2;_5_se%C3%B1ales).jpg"
+       },
+       {
+        "src": "assets/reference/breast_biomarkers/her2_ihc_3plus.jpg",
+        "caption": "HER2 IHC 3+ in invasive breast carcinoma showing strong, complete, circumferential membranous staining.",
+        "credit": "Sandi Shen, Gaofang Xiao, Richang Du, Ningdong Hu, Xu Xia, Haibo Zhou",
+        "license": "CC BY 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Positive_immunohistochemistry_of_HER2_in_invasive_breast_cancer.jpg"
+       }
+      ]
+     }
+    ]
+   }
   },
   {
    "id": "dishIhc",

@@ -1,0 +1,196 @@
+{
+ "id": "rna_rtpcr_tests",
+ "version": "2026.11",
+ "name": "RNA tests (RT-PCR)",
+ "shortName": "Molecular · RNA RT-PCR",
+ "label": "RNA RT-PCR",
+ "organ": "TUMOUR TISSUE",
+ "system": "Biomarkers",
+ "kind": "biomarker",
+ "rank": 677,
+ "aliases": [
+  "RTP",
+  "RT-PCR",
+  "RNA RT-PCR",
+  "fusion RT-PCR",
+  "BCR-ABL",
+  "EWSR1-FLI1",
+  "SS18-SSX"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 2,
+ "defaultParts": 1,
+ "generator": "biomarker_suite",
+ "style": {
+  "british": true
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers"
+  },
+  {
+   "id": "macro",
+   "label": "Include block selection line",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Biomarker-RT-PCR (Reverse-transcription PCR for oncogenic gene fusions and transcripts)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Biomarker-RT-PCR.html"
+ },
+ "match": {
+  "site": [
+   "soft tissue",
+   "lung",
+   "bone marrow",
+   "sarcoma",
+   "tumour"
+  ],
+  "procedure": [
+   "RT-PCR",
+   "RNA PCR",
+   "fusion PCR"
+  ],
+  "clinical": [
+   "RT-PCR",
+   "RNA fusion",
+   "SS18-SSX",
+   "EWSR1-FLI1",
+   "PAX3-FOXO1",
+   "BCR-ABL"
+  ],
+  "gate": "^[\\s\\S]*\\b(?:RT-?PCR|RNA\\s+(?:PCR|fusion)|SS18-SSX|EWSR1-FLI1|PAX[37]-FOXO1|BCR-ABL1?)\\b",
+  "exclude": [],
+  "bias": 12,
+  "fill": []
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour type / primary site",
+   "type": "text",
+   "default": "Soft tissue sarcoma (synovial sarcoma workup)"
+  },
+  {
+   "id": "blockNo",
+   "label": "Paraffin block / specimen",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tumourCellularityPct",
+   "label": "Estimated tumour cellularity (%)",
+   "group": "Pre-analytic & Assay",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "assayPanel",
+   "label": "RNA RT-PCR target fusion / transcript",
+   "group": "Pre-analytic & Assay",
+   "type": "select",
+   "default": "SS18-SSX1 / SS18-SSX2 fusion RT-PCR (synovial sarcoma)",
+   "options": [
+    "SS18-SSX1 / SS18-SSX2 fusion RT-PCR (synovial sarcoma)",
+    "EWSR1-FLI1 / EWSR1-ERG fusion RT-PCR (Ewing sarcoma)",
+    "PAX3-FOXO1 / PAX7-FOXO1 fusion RT-PCR (alveolar rhabdomyosarcoma)",
+    "ALK / ROS1 / RET / NTRK / MET exon 14 skipping RT-PCR",
+    "BCR-ABL1 (p210 / p190) quantitative RT-PCR",
+    "PML-RARA fusion RT-PCR",
+    "COL1A1-PDGFB fusion RT-PCR (DFSP)",
+    "Other RNA RT-PCR fusion assay (specify in notes)"
+   ],
+   "reference": {
+    "title": "RNA RT-PCR fusion detection & housekeeping control QC",
+    "intro": "FFPE RNA is prone to fragmentation; a negative RT-PCR fusion result is valid ONLY when the endogenous housekeeping transcript (e.g. PGK, ABL1, B2M, or ACTB) amplifies within the validated Ct threshold.",
+    "note": "Reference figures are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Housekeeping control & breakpoint caveats",
+      "points": [
+       "Always verify housekeeping gene amplification (Ct within QC limits) before reporting 'Fusion transcript not detected'.",
+       "Targeted RT-PCR only detects the specific primer-covered exon-exon junctions; atypical breakpoints or alternative fusion partners (e.g. EWSR1-FEV, SS18-SSX4) may require FISH or anchored multiplex RNA NGS."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Molecular Diagnostics — Gene Fusions & RT-PCR",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/rna_rtpcr_tests/rtpcr_curves.jpg",
+        "caption": "Quantitative RT-PCR amplification plot (A) comparing earlier housekeeping gene threshold cycle against target transcripts, with derivative and normalised melting curves (B, C) confirming amplicon specificity.",
+        "credit": "Wikimedia Commons contributor",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:QPCR_results_-_amplification_plot_and_melting_curves.png"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "housekeepingControl",
+   "label": "Endogenous RNA housekeeping control (PGK / ABL1 / B2M)",
+   "group": "Pre-analytic & Assay",
+   "type": "select",
+   "default": "Amplified (adequate RNA quality)",
+   "options": [
+    "Amplified (adequate RNA quality)",
+    "Suboptimal (high Ct / degraded FFPE RNA)",
+    "Failed (inadequate RNA for interpretation)"
+   ]
+  },
+  {
+   "id": "overallResult",
+   "label": "Overall result",
+   "group": "RT-PCR Results",
+   "type": "select",
+   "default": "Fusion transcript detected",
+   "options": [
+    "Fusion transcript detected",
+    "No target fusion transcript detected",
+    "Exon-skipping transcript detected",
+    "Indeterminate / test failed (degraded RNA)"
+   ]
+  },
+  {
+   "id": "variantsDetected",
+   "label": "Detected fusion / transcript isoform",
+   "group": "RT-PCR Results",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes / clinical interpretation",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "site": "Soft tissue sarcoma, right thigh",
+     "blockNo": "26SX-01510-A2",
+     "tumourCellularityPct": "75",
+     "assayPanel": "SS18-SSX1 / SS18-SSX2 fusion RT-PCR (synovial sarcoma)",
+     "housekeepingControl": "Amplified (adequate RNA quality)",
+     "overallResult": "Fusion transcript detected",
+     "variantsDetected": "SS18-SSX1 fusion transcript detected"
+    }
+   }
+  ]
+ }
+}

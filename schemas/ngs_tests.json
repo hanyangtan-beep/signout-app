@@ -1,0 +1,240 @@
+{
+ "id": "ngs_tests",
+ "version": "2026.11",
+ "name": "NGS tests",
+ "shortName": "Molecular · NGS panel",
+ "label": "NGS",
+ "organ": "TUMOUR TISSUE",
+ "system": "Biomarkers",
+ "kind": "biomarker",
+ "rank": 679,
+ "aliases": [
+  "NGS",
+  "next generation sequencing",
+  "comprehensive genomic profiling",
+  "CGP",
+  "Oncomine",
+  "TMB",
+  "FoundationOne"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 2,
+ "defaultParts": 1,
+ "generator": "biomarker_suite",
+ "style": {
+  "british": true
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers"
+  },
+  {
+   "id": "macro",
+   "label": "Include block selection line",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Biomarker-NGS (AMP/ASCO/CAP Tier I–IV somatic variant reporting, fusions, CNVs, TMB & MSI)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Biomarker-NGS.html"
+ },
+ "match": {
+  "site": [
+   "lung",
+   "NSCLC",
+   "paraffin block",
+   "colon",
+   "breast",
+   "ovary",
+   "brain",
+   "tumour"
+  ],
+  "procedure": [
+   "NGS",
+   "NGS panel",
+   "next generation sequencing",
+   "comprehensive genomic profiling"
+  ],
+  "clinical": [
+   "NGS panel",
+   "Oncomine",
+   "TruSight",
+   "CGP",
+   "TMB",
+   "next-generation sequencing"
+  ],
+  "gate": "^[\\s\\S]*\\b(?:NGS|next[-\\s]generation\\s+sequencing|Oncomine|TruSight|FoundationOne|comprehensive\\s+genomic\\s+profiling)\\b",
+  "exclude": [],
+  "bias": 12,
+  "fill": []
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour type / primary site",
+   "type": "text",
+   "default": "Non-small cell lung carcinoma (NSCLC)"
+  },
+  {
+   "id": "blockNo",
+   "label": "Paraffin block",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "tumourCellularityPct",
+   "label": "Estimated tumour cellularity (%)",
+   "group": "Pre-analytic & Sequencing QC",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "assayPanel",
+   "label": "NGS panel / assay",
+   "group": "Pre-analytic & Sequencing QC",
+   "type": "select",
+   "default": "Targeted DNA + RNA solid tumour NGS panel (Oncomine / TruSight)",
+   "options": [
+    "Targeted DNA + RNA solid tumour NGS panel (Oncomine / TruSight)",
+    "Comprehensive genomic profiling (CGP — DNA + RNA + TMB + MSI)",
+    "Myeloid / lymphoid haematolymphoid NGS panel",
+    "CNS tumour targeted NGS panel",
+    "BRCA1/2 & homologous recombination repair (HRR) NGS panel",
+    "Liquid biopsy ctDNA NGS panel",
+    "Other NGS panel (specify in notes)"
+   ],
+   "reference": {
+    "title": "AMP / ASCO / CAP somatic NGS variant tiers & sequencing QC",
+    "intro": "Classify somatic alterations into AMP/ASCO/CAP Tiers I–IV based on clinical actionability, and verify minimum tumour cellularity (>= 20% for CNV/TMB), read depth (>= 500x for somatic hotspots), and RNA fusion QC.",
+    "note": "Reference figures are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "AMP/ASCO/CAP Tiers & sequencing workflow",
+      "points": [
+       "Tier I (Strong clinical significance): FDA/guideline-approved therapy, diagnostic or prognostic marker in this tumour type (e.g. EGFR exon 19 del in NSCLC).",
+       "Tier II (Potential clinical significance): approved therapy in another tumour type, investigational clinical-trial target, or emerging biomarker.",
+       "Tier III (Uncertain clinical significance — VUS): insufficient evidence; do not use for clinical decision-making. Tier IV (Benign / likely benign): generally not reported.",
+       "Verify variant allele frequency (VAF) against estimated tumour cellularity; VAF near 50% or 100% in cancer-predisposition genes (BRCA1/2, MLH1, MSH2, TP53) warrants germline confirmation."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Next-Generation Sequencing (NGS) in Oncology",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/ngs_tests/sbs_sequencing.jpg",
+        "caption": "Sequencing-by-synthesis principle: fluorescently labelled reversible-terminator nucleotides are incorporated cyclically to generate base calls.",
+        "credit": "DMLapato",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Sequence_By_Synthesis.png"
+       },
+       {
+        "src": "assets/reference/ngs_tests/ngs_workflow.jpg",
+        "caption": "Hybridisation-capture and short-read NGS library preparation and alignment workflow schematic.",
+        "credit": "Nkrobin",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:RAGE-Seq_Workflow.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "meanCoverage",
+   "label": "Mean target sequencing depth (x)",
+   "group": "Pre-analytic & Sequencing QC",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "overallResult",
+   "label": "Overall NGS summary",
+   "group": "Variants & Genomic Signatures",
+   "type": "select",
+   "default": "Tier I / II clinically significant alteration(s) detected",
+   "options": [
+    "Tier I / II clinically significant alteration(s) detected",
+    "No Tier I / II clinically significant alterations detected",
+    "Variants of uncertain significance (Tier III) only",
+    "Indeterminate / sequencing QC failed"
+   ]
+  },
+  {
+   "id": "variantsDetected",
+   "label": "Tier I / II SNVs & indels (gene, HGVS, VAF%)",
+   "group": "Variants & Genomic Signatures",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "fusionsCnvs",
+   "label": "Gene fusions & copy-number alterations (CNVs)",
+   "group": "Variants & Genomic Signatures",
+   "type": "text",
+   "default": "None detected"
+  },
+  {
+   "id": "tmb",
+   "label": "Tumour mutational burden (TMB, mut/Mb)",
+   "group": "Variants & Genomic Signatures",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "msiNgs",
+   "label": "Microsatellite instability (NGS-MSI)",
+   "group": "Variants & Genomic Signatures",
+   "type": "select",
+   "default": "Not assessed",
+   "options": [
+    "Not assessed",
+    "Microsatellite stable (MSS)",
+    "Microsatellite instability-high (MSI-H)",
+    "Indeterminate"
+   ]
+  },
+  {
+   "id": "vusText",
+   "label": "Tier III variants of uncertain significance (VUS)",
+   "group": "Variants & Genomic Signatures",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes / pertinent negatives",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "site": "Non-small cell lung carcinoma (NSCLC)",
+     "blockNo": "26BX-01530-A1",
+     "tumourCellularityPct": "50",
+     "assayPanel": "Targeted DNA + RNA solid tumour NGS panel (Oncomine / TruSight)",
+     "meanCoverage": "1,420x",
+     "overallResult": "Tier I / II clinically significant alteration(s) detected",
+     "variantsDetected": "KRAS c.34G>T (p.Gly12Cys), VAF 28% (Tier I); TP53 c.524G>A (p.Arg175His), VAF 31% (Tier II)",
+     "fusionsCnvs": "No ALK, ROS1, RET, NTRK1–3, or MET exon 14 alterations detected",
+     "tmb": "11.4 mut/Mb (TMB-High >= 10 mut/Mb)",
+     "msiNgs": "Microsatellite stable (MSS)"
+    }
+   }
+  ]
+ }
+}

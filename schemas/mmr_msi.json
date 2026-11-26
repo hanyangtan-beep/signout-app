@@ -1,0 +1,228 @@
+{
+ "id": "mmr_msi",
+ "version": "2026.11",
+ "name": "MMR immunohistochemistry / MSI test",
+ "shortName": "Biomarker · MMR IHC / MSI",
+ "label": "MMR / MSI",
+ "organ": "TUMOUR TISSUE",
+ "system": "Biomarkers",
+ "kind": "biomarker",
+ "rank": 674,
+ "aliases": [
+  "MMR",
+  "MSI",
+  "dMMR",
+  "pMMR",
+  "Lynch",
+  "mismatch repair"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 2,
+ "defaultParts": 1,
+ "generator": "biomarker_suite",
+ "style": {
+  "british": true
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers"
+  },
+  {
+   "id": "macro",
+   "label": "Include block selection line",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Biomarker-MMR-IHC (CAP DNA Mismatch Repair Biomarker Reporting)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Biomarker-MMR-IHC.html"
+ },
+ "match": {
+  "site": [
+   "colon",
+   "endometrium",
+   "stomach",
+   "tumour"
+  ],
+  "procedure": [
+   "MMR",
+   "MSI",
+   "immunohistochemistry"
+  ],
+  "clinical": [
+   "MMR IHC",
+   "mismatch repair",
+   "microsatellite instability",
+   "Lynch screening"
+  ],
+  "gate": "^[\\s\\S]*\\b(?:MMR\\s+(?:IHC|test|panel)|mismatch\\s+repair|MSI\\s+(?:test|PCR|panel))\\b",
+  "exclude": [],
+  "bias": 5,
+  "fill": []
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour site / primary",
+   "type": "text",
+   "default": "Colorectal adenocarcinoma"
+  },
+  {
+   "id": "blockNo",
+   "label": "Paraffin block",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "mlh1",
+   "label": "MLH1 nuclear expression",
+   "group": "MMR Immunohistochemistry",
+   "type": "select",
+   "default": "Intact nuclear expression",
+   "options": [
+    "Intact nuclear expression",
+    "Loss of nuclear expression (internal control intact)",
+    "Equivocal / subclonal loss",
+    "Indeterminate (internal control absent)",
+    "Not performed"
+   ],
+   "reference": {
+    "title": "CAP MMR IHC & MSI interpretation and Lynch reflex algorithm",
+    "intro": "Any unequivocal nuclear staining in tumour cells (even focal, weaker than internal control) is scored as intact. Confirmed loss requires an intact positive internal control (stromal cells, lymphocytes, or normal crypts).",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Reflex testing algorithm & MMR IHC patterns",
+      "points": [
+       "Loss of MLH1 + PMS2: in colorectal carcinoma test BRAF V600E (or MLH1 promoter hypermethylation); in endometrial carcinoma test MLH1 promoter hypermethylation directly (BRAF is not informative).",
+       "Loss of MSH2 + MSH6, isolated MSH6 loss, or isolated PMS2 loss: high likelihood of Lynch syndrome — recommend genetic counselling and germline testing."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Mismatch Repair Deficiency and Lynch Syndrome",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/mmr_msi/mlh1_loss.jpg",
+        "caption": "Colorectal adenocarcinoma showing complete loss of MLH1 nuclear expression in tumour glands with intact positive stromal and lymphocytic internal control.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Colorectal_adenocarcinoma_with_MMR_-_MLH1_--_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/mmr_msi/msh6_indeterminate.jpg",
+        "caption": "Indeterminate MSH6 immunohistochemistry (> 0% and < 10% nuclear staining) in colonic adenocarcinoma — warrants orthogonal MSI PCR / NGS correlation.",
+        "credit": "Mikael Häggström",
+        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/File:Immunohistochemistry_of_indeterminate_expression_of_MSH-6.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "pms2",
+   "label": "PMS2 nuclear expression",
+   "group": "MMR Immunohistochemistry",
+   "type": "select",
+   "default": "Intact nuclear expression",
+   "options": [
+    "Intact nuclear expression",
+    "Loss of nuclear expression (internal control intact)",
+    "Equivocal / subclonal loss",
+    "Indeterminate (internal control absent)",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "msh2",
+   "label": "MSH2 nuclear expression",
+   "group": "MMR Immunohistochemistry",
+   "type": "select",
+   "default": "Intact nuclear expression",
+   "options": [
+    "Intact nuclear expression",
+    "Loss of nuclear expression (internal control intact)",
+    "Equivocal / subclonal loss",
+    "Indeterminate (internal control absent)",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "msh6",
+   "label": "MSH6 nuclear expression",
+   "group": "MMR Immunohistochemistry",
+   "type": "select",
+   "default": "Intact nuclear expression",
+   "options": [
+    "Intact nuclear expression",
+    "Loss of nuclear expression (internal control intact)",
+    "Equivocal / subclonal loss",
+    "Indeterminate (internal control absent)",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "msiStatus",
+   "label": "MSI PCR / NGS result",
+   "group": "MSI Molecular",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Microsatellite stable (MSS)",
+    "Microsatellite instability-low (MSI-L)",
+    "Microsatellite instability-high (MSI-H)",
+    "Indeterminate"
+   ]
+  },
+  {
+   "id": "reflexTesting",
+   "label": "Reflex BRAF V600E / MLH1 promoter methylation",
+   "group": "MSI Molecular",
+   "type": "select",
+   "default": "Not applicable",
+   "options": [
+    "Not applicable",
+    "BRAF V600E mutation detected (supports sporadic dMMR)",
+    "BRAF wild-type (consider MLH1 methylation / genetics)",
+    "MLH1 promoter hypermethylation detected (supports sporadic dMMR)",
+    "MLH1 promoter unmethylated (recommend genetic counselling)"
+   ]
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "site": "Colorectal adenocarcinoma",
+     "blockNo": "26SX-00610-A2",
+     "mlh1": "Loss of nuclear expression (internal control intact)",
+     "pms2": "Loss of nuclear expression (internal control intact)",
+     "msh2": "Intact nuclear expression",
+     "msh6": "Intact nuclear expression",
+     "msiStatus": "Microsatellite instability-high (MSI-H)",
+     "reflexTesting": "BRAF V600E mutation detected (supports sporadic dMMR)"
+    }
+   }
+  ]
+ }
+}

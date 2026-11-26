@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 120,
+  "count": 131,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -10066,6 +10066,89 @@
       "schemaPath": "schemas/sinonasal_carcinoma.json"
     },
     {
+      "id": "renal_biopsy",
+      "name": "Renal biopsy (medical; Banff / MEST-C / ISN-RPS)",
+      "shortName": "Kidney · medical renal biopsy",
+      "label": "Renal",
+      "organ": "KIDNEY (MEDICAL)",
+      "system": "Renal",
+      "kind": "biopsy",
+      "rank": 65,
+      "aliases": [
+        "REN",
+        "renal biopsy",
+        "kidney biopsy",
+        "medical renal biopsy",
+        "native kidney biopsy",
+        "transplant kidney biopsy",
+        "Banff",
+        "MEST-C",
+        "ISN-RPS",
+        "IgA nephropathy",
+        "lupus nephritis"
+      ],
+      "match": {
+        "site": [
+          "kidney",
+          "native kidney",
+          "renal",
+          "transplant kidney",
+          "renal allograft"
+        ],
+        "procedure": [
+          "renal biopsy",
+          "kidney biopsy",
+          "needle core biopsy",
+          "allograft biopsy"
+        ],
+        "clinical": [
+          "nephrotic syndrome",
+          "nephritic syndrome",
+          "proteinuria",
+          "haematuria",
+          "IgA nephropathy",
+          "lupus nephritis",
+          "allograft rejection",
+          "AKI",
+          "glomerulonephritis"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:nephrectomy|mass|tumou?r|carcinoma|RCC|wilms|oncocytoma|frozen|FS)\\b)[\\s\\S]*\\b(?:renal\\s+biopsy|kidney\\s+biopsy|allograft\\s+biopsy|medical\\s+renal|(?:native\\s+kidney|transplant\\s+kidney|renal\\s+allograft)[\\s\\S]*(?:biopsy|core))\\b",
+        "exclude": [
+          "nephrectomy",
+          "mass",
+          "tumour",
+          "tumor",
+          "carcinoma",
+          "RCC",
+          "wilms",
+          "oncocytoma",
+          "frozen",
+          "FS"
+        ],
+        "bias": 5,
+        "fill": [
+          {
+            "field": "biopsyContext",
+            "from": "map",
+            "map": [
+              [
+                "\\btransplant|\\ballograft|\\bgraft",
+                "Transplant allograft kidney biopsy (Banff)"
+              ],
+              [
+                "\\bnative\\b",
+                "Native kidney biopsy"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "renal_biopsy",
+      "generatorPath": "generators/renal_biopsy.js",
+      "schemaPath": "schemas/renal_biopsy.json"
+    },
+    {
       "id": "pituitary_net",
       "name": "Pituitary neuroendocrine tumour (PitNET) resection",
       "shortName": "Pituitary · PitNET resection",
@@ -10381,6 +10464,79 @@
       "generator": "mucosal_melanoma",
       "generatorPath": "generators/mucosal_melanoma.js",
       "schemaPath": "schemas/mucosal_melanoma.json"
+    },
+    {
+      "id": "endomyocardial_biopsy",
+      "name": "Endomyocardial biopsy (ISHLT)",
+      "shortName": "Heart · endomyocardial biopsy",
+      "label": "Endomyocardial",
+      "organ": "HEART / MYOCARDIUM",
+      "system": "Cardiovascular",
+      "kind": "biopsy",
+      "rank": 66,
+      "aliases": [
+        "EMB",
+        "endomyocardial biopsy",
+        "myocardial biopsy",
+        "cardiac biopsy",
+        "heart transplant",
+        "ISHLT",
+        "myocarditis",
+        "cardiac amyloidosis"
+      ],
+      "match": {
+        "site": [
+          "right ventricle",
+          "right ventricular",
+          "myocardium",
+          "endomyocardium",
+          "endomyocardial",
+          "heart",
+          "cardiac allograft"
+        ],
+        "procedure": [
+          "endomyocardial biopsy",
+          "myocardial biopsy",
+          "cardiac biopsy"
+        ],
+        "clinical": [
+          "heart transplant",
+          "allograft rejection",
+          "ISHLT",
+          "myocarditis",
+          "cardiac amyloidosis",
+          "cardiomyopathy"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:valve|aorta|pericardium|frozen|FS)\\b)[\\s\\S]*\\b(?:endomyocardial\\s+biopsy|myocardial\\s+biopsy|cardiac\\s+biopsy|heart\\s+transplant[\\s\\S]*biopsy)\\b",
+        "exclude": [
+          "valve",
+          "aorta",
+          "pericardium",
+          "frozen",
+          "FS"
+        ],
+        "bias": 5,
+        "fill": [
+          {
+            "field": "biopsyContext",
+            "from": "map",
+            "map": [
+              [
+                "\\btransplant|\\ballograft|\\bISHLT|\\brejection",
+                "Cardiac allograft surveillance (ISHLT)"
+              ],
+              [
+                "\\bmyocarditis|\\bamyloid|\\bcardiomyopathy|\\bnative",
+                "Native endomyocardial biopsy"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "endomyocardial_biopsy",
+      "generatorPath": "generators/endomyocardial_biopsy.js",
+      "schemaPath": "schemas/endomyocardial_biopsy.json"
     },
     {
       "id": "adrenal_cortical_carcinoma",
@@ -12037,6 +12193,440 @@
       "generator": "breast_ish",
       "generatorPath": "generators/breast_ish.js",
       "schemaPath": "schemas/breast_biomarkers.json"
+    },
+    {
+      "id": "gyn_biomarkers",
+      "name": "Gynaecological biomarkers (ER / PR / p53 / MMR / HER2)",
+      "shortName": "Gynae · biomarker panel",
+      "label": "Gyn markers",
+      "organ": "GYNAECOLOGICAL TRACT",
+      "system": "Biomarkers",
+      "kind": "biomarker",
+      "rank": 671,
+      "aliases": [
+        "GYN",
+        "gyn biomarkers",
+        "gynae markers",
+        "endometrial biomarkers",
+        "p53",
+        "ProMisE",
+        "POLE"
+      ],
+      "match": {
+        "site": [
+          "endometrium",
+          "uterus",
+          "ovary",
+          "fallopian tube",
+          "cervix"
+        ],
+        "procedure": [
+          "biomarker",
+          "immunohistochemistry",
+          "panel"
+        ],
+        "clinical": [
+          "gyn biomarkers",
+          "gynae markers",
+          "endometrial molecular",
+          "p53 MMR"
+        ],
+        "gate": "^[\\s\\S]*\\b(?:gyn(?:ae|ecological)?\\s+(?:biomarkers?|markers?)|endometrial\\s+(?:biomarkers?|molecular\\s+panel)|ProMisE)\\b",
+        "exclude": [],
+        "bias": 4,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "biomarker_suite",
+      "generatorPath": "generators/biomarker_suite.js",
+      "schemaPath": "schemas/gyn_biomarkers.json"
+    },
+    {
+      "id": "colon_her2",
+      "name": "Colon HER2 test",
+      "shortName": "Colon · HER2 biomarker test",
+      "label": "Colon HER2",
+      "organ": "COLON / RECTUM",
+      "system": "Biomarkers",
+      "kind": "biomarker",
+      "rank": 672,
+      "aliases": [
+        "CH2",
+        "colon HER2",
+        "colorectal HER2",
+        "HERACLES"
+      ],
+      "match": {
+        "site": [
+          "colon",
+          "rectum",
+          "colorectal"
+        ],
+        "procedure": [
+          "HER2",
+          "IHC",
+          "ISH"
+        ],
+        "clinical": [
+          "colon HER2",
+          "colorectal HER2",
+          "HERACLES"
+        ],
+        "gate": "^[\\s\\S]*\\b(?:colon|rectal|colorectal)[\\s\\S]*\\bHER2\\b",
+        "exclude": [],
+        "bias": 5,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "biomarker_suite",
+      "generatorPath": "generators/biomarker_suite.js",
+      "schemaPath": "schemas/colon_her2.json"
+    },
+    {
+      "id": "stomach_biomarkers",
+      "name": "Stomach biomarkers (HER2 / PD-L1 / MMR / EBER / CLDN18.2)",
+      "shortName": "Stomach · biomarker panel",
+      "label": "Stomach markers",
+      "organ": "STOMACH / GEJ",
+      "system": "Biomarkers",
+      "kind": "biomarker",
+      "rank": 673,
+      "aliases": [
+        "STM",
+        "stomach biomarkers",
+        "gastric biomarkers",
+        "gastric HER2",
+        "CLDN18.2",
+        "claudin 18.2"
+      ],
+      "match": {
+        "site": [
+          "stomach",
+          "gastric",
+          "gastro-oesophageal junction",
+          "GEJ"
+        ],
+        "procedure": [
+          "biomarker",
+          "panel"
+        ],
+        "clinical": [
+          "stomach biomarkers",
+          "gastric biomarkers",
+          "gastric HER2",
+          "claudin 18.2"
+        ],
+        "gate": "^[\\s\\S]*\\b(?:stomach|gastric|GEJ)[\\s\\S]*\\b(?:biomarkers?|markers?|HER2|CLDN18|claudin)\\b",
+        "exclude": [],
+        "bias": 5,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "biomarker_suite",
+      "generatorPath": "generators/biomarker_suite.js",
+      "schemaPath": "schemas/stomach_biomarkers.json"
+    },
+    {
+      "id": "mmr_msi",
+      "name": "MMR immunohistochemistry / MSI test",
+      "shortName": "Biomarker · MMR IHC / MSI",
+      "label": "MMR / MSI",
+      "organ": "TUMOUR TISSUE",
+      "system": "Biomarkers",
+      "kind": "biomarker",
+      "rank": 674,
+      "aliases": [
+        "MMR",
+        "MSI",
+        "dMMR",
+        "pMMR",
+        "Lynch",
+        "mismatch repair"
+      ],
+      "match": {
+        "site": [
+          "colon",
+          "endometrium",
+          "stomach",
+          "tumour"
+        ],
+        "procedure": [
+          "MMR",
+          "MSI",
+          "immunohistochemistry"
+        ],
+        "clinical": [
+          "MMR IHC",
+          "mismatch repair",
+          "microsatellite instability",
+          "Lynch screening"
+        ],
+        "gate": "^[\\s\\S]*\\b(?:MMR\\s+(?:IHC|test|panel)|mismatch\\s+repair|MSI\\s+(?:test|PCR|panel))\\b",
+        "exclude": [],
+        "bias": 5,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "biomarker_suite",
+      "generatorPath": "generators/biomarker_suite.js",
+      "schemaPath": "schemas/mmr_msi.json"
+    },
+    {
+      "id": "pdl1_ihc",
+      "name": "PD-L1 immunohistochemistry",
+      "shortName": "Biomarker · PD-L1 IHC",
+      "label": "PD-L1",
+      "organ": "TUMOUR TISSUE",
+      "system": "Biomarkers",
+      "kind": "biomarker",
+      "rank": 675,
+      "aliases": [
+        "PDL",
+        "PD-L1",
+        "22C3",
+        "SP263",
+        "SP142",
+        "TPS",
+        "CPS"
+      ],
+      "match": {
+        "site": [
+          "lung",
+          "head and neck",
+          "stomach",
+          "oesophagus",
+          "bladder",
+          "breast",
+          "cervix"
+        ],
+        "procedure": [
+          "PD-L1",
+          "IHC"
+        ],
+        "clinical": [
+          "PD-L1 IHC",
+          "PD-L1 testing",
+          "22C3",
+          "TPS",
+          "CPS"
+        ],
+        "gate": "^[\\s\\S]*\\bPD-?L1\\b",
+        "exclude": [],
+        "bias": 5,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "biomarker_suite",
+      "generatorPath": "generators/biomarker_suite.js",
+      "schemaPath": "schemas/pdl1_ihc.json"
+    },
+    {
+      "id": "dna_pcr_tests",
+      "name": "DNA tests (PCR)",
+      "shortName": "Molecular · DNA PCR",
+      "label": "DNA PCR",
+      "organ": "TUMOUR TISSUE",
+      "system": "Biomarkers",
+      "kind": "biomarker",
+      "rank": 676,
+      "aliases": [
+        "PCR",
+        "DNA PCR",
+        "EGFR PCR",
+        "BRAF PCR",
+        "KRAS PCR",
+        "cobas",
+        "Idylla"
+      ],
+      "match": {
+        "site": [
+          "lung",
+          "colon",
+          "thyroid",
+          "melanoma",
+          "tumour"
+        ],
+        "procedure": [
+          "PCR",
+          "DNA PCR",
+          "mutation test"
+        ],
+        "clinical": [
+          "EGFR PCR",
+          "BRAF PCR",
+          "KRAS PCR",
+          "DNA PCR",
+          "cobas",
+          "Idylla"
+        ],
+        "gate": "^[\\s\\S]*\\b(?:DNA\\s+PCR|(?:EGFR|BRAF|KRAS|NRAS|PIK3CA|KIT|PDGFRA|IDH1|IDH2|TERT)\\s+PCR|cobas|Idylla)\\b",
+        "exclude": [
+          "RT-PCR",
+          "RNA"
+        ],
+        "bias": 5,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "biomarker_suite",
+      "generatorPath": "generators/biomarker_suite.js",
+      "schemaPath": "schemas/dna_pcr_tests.json"
+    },
+    {
+      "id": "rna_rtpcr_tests",
+      "name": "RNA tests (RT-PCR)",
+      "shortName": "Molecular · RNA RT-PCR",
+      "label": "RNA RT-PCR",
+      "organ": "TUMOUR TISSUE",
+      "system": "Biomarkers",
+      "kind": "biomarker",
+      "rank": 677,
+      "aliases": [
+        "RTP",
+        "RT-PCR",
+        "RNA RT-PCR",
+        "fusion RT-PCR",
+        "BCR-ABL",
+        "EWSR1-FLI1",
+        "SS18-SSX"
+      ],
+      "match": {
+        "site": [
+          "soft tissue",
+          "lung",
+          "bone marrow",
+          "sarcoma",
+          "tumour"
+        ],
+        "procedure": [
+          "RT-PCR",
+          "RNA PCR",
+          "fusion PCR"
+        ],
+        "clinical": [
+          "RT-PCR",
+          "RNA fusion",
+          "SS18-SSX",
+          "EWSR1-FLI1",
+          "PAX3-FOXO1",
+          "BCR-ABL"
+        ],
+        "gate": "^[\\s\\S]*\\b(?:RT-?PCR|RNA\\s+(?:PCR|fusion)|SS18-SSX|EWSR1-FLI1|PAX[37]-FOXO1|BCR-ABL1?)\\b",
+        "exclude": [],
+        "bias": 12,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "biomarker_suite",
+      "generatorPath": "generators/biomarker_suite.js",
+      "schemaPath": "schemas/rna_rtpcr_tests.json"
+    },
+    {
+      "id": "fish_tests",
+      "name": "FISH tests",
+      "shortName": "Molecular · FISH",
+      "label": "FISH",
+      "organ": "TUMOUR TISSUE",
+      "system": "Biomarkers",
+      "kind": "biomarker",
+      "rank": 678,
+      "aliases": [
+        "FSH",
+        "FISH",
+        "ALK FISH",
+        "ROS1 FISH",
+        "MDM2 FISH",
+        "MYC FISH",
+        "EWSR1 FISH",
+        "break-apart"
+      ],
+      "match": {
+        "site": [
+          "lung",
+          "soft tissue",
+          "brain",
+          "paraffin block",
+          "tumour"
+        ],
+        "procedure": [
+          "FISH",
+          "in situ hybridisation",
+          "break-apart"
+        ],
+        "clinical": [
+          "ALK FISH",
+          "ROS1 FISH",
+          "MDM2 FISH",
+          "MYC FISH",
+          "EWSR1 FISH",
+          "1p/19q FISH",
+          "FISH test"
+        ],
+        "gate": "^(?![\\s\\S]*\\b(?:breast[\\s\\S]*core\\s+biopsy|DISH|dual\\s+ISH)\\b)[\\s\\S]*\\bFISH\\b",
+        "exclude": [
+          "DISH",
+          "dual ISH"
+        ],
+        "bias": 5,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "biomarker_suite",
+      "generatorPath": "generators/biomarker_suite.js",
+      "schemaPath": "schemas/fish_tests.json"
+    },
+    {
+      "id": "ngs_tests",
+      "name": "NGS tests",
+      "shortName": "Molecular · NGS panel",
+      "label": "NGS",
+      "organ": "TUMOUR TISSUE",
+      "system": "Biomarkers",
+      "kind": "biomarker",
+      "rank": 679,
+      "aliases": [
+        "NGS",
+        "next generation sequencing",
+        "comprehensive genomic profiling",
+        "CGP",
+        "Oncomine",
+        "TMB",
+        "FoundationOne"
+      ],
+      "match": {
+        "site": [
+          "lung",
+          "NSCLC",
+          "paraffin block",
+          "colon",
+          "breast",
+          "ovary",
+          "brain",
+          "tumour"
+        ],
+        "procedure": [
+          "NGS",
+          "NGS panel",
+          "next generation sequencing",
+          "comprehensive genomic profiling"
+        ],
+        "clinical": [
+          "NGS panel",
+          "Oncomine",
+          "TruSight",
+          "CGP",
+          "TMB",
+          "next-generation sequencing"
+        ],
+        "gate": "^[\\s\\S]*\\b(?:NGS|next[-\\s]generation\\s+sequencing|Oncomine|TruSight|FoundationOne|comprehensive\\s+genomic\\s+profiling)\\b",
+        "exclude": [],
+        "bias": 12,
+        "fill": []
+      },
+      "version": "2026.11",
+      "generator": "biomarker_suite",
+      "generatorPath": "generators/biomarker_suite.js",
+      "schemaPath": "schemas/ngs_tests.json"
     }
   ]
 }

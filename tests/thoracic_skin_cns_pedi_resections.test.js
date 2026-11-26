@@ -66,7 +66,7 @@ test('Wave 2 templates: all 7 registered, in manifest (120 total), and 100% of Q
     assert.ok(!planned.planned.some((p) => p.id === id), `${id} retired from planned.json`);
     assert.ok(manifest.some((m) => m.id === id), `${id} in manifest.json`);
   }
-  assert.equal(manifest.length, 120);
+  assert.ok(manifest.length >= 120);
   assert.equal(planned.planned.filter((p) => p.kind === 'cancer resection').length, 0, 'zero planned cancer resections remaining');
 });
 

@@ -1,0 +1,211 @@
+{
+ "id": "pdl1_ihc",
+ "version": "2026.11",
+ "name": "PD-L1 immunohistochemistry",
+ "shortName": "Biomarker · PD-L1 IHC",
+ "label": "PD-L1",
+ "organ": "TUMOUR TISSUE",
+ "system": "Biomarkers",
+ "kind": "biomarker",
+ "rank": 675,
+ "aliases": [
+  "PDL",
+  "PD-L1",
+  "22C3",
+  "SP263",
+  "SP142",
+  "TPS",
+  "CPS"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 2,
+ "defaultParts": 1,
+ "generator": "biomarker_suite",
+ "style": {
+  "british": true
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers"
+  },
+  {
+   "id": "macro",
+   "label": "Include block selection line",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Biomarker-PD-L1-IHC (22C3 pharmDx / SP263 / SP142 / 28-8 TPS, CPS & IC scoring)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Biomarker-PD-L1-IHC.html"
+ },
+ "match": {
+  "site": [
+   "lung",
+   "head and neck",
+   "stomach",
+   "oesophagus",
+   "bladder",
+   "breast",
+   "cervix"
+  ],
+  "procedure": [
+   "PD-L1",
+   "IHC"
+  ],
+  "clinical": [
+   "PD-L1 IHC",
+   "PD-L1 testing",
+   "22C3",
+   "TPS",
+   "CPS"
+  ],
+  "gate": "^[\\s\\S]*\\bPD-?L1\\b",
+  "exclude": [],
+  "bias": 5,
+  "fill": []
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour type / primary site",
+   "type": "select",
+   "default": "Non-small cell lung carcinoma (NSCLC)",
+   "options": [
+    "Non-small cell lung carcinoma (NSCLC)",
+    "Head and neck squamous cell carcinoma (HNSCC)",
+    "Gastric / GEJ adenocarcinoma",
+    "Oesophageal squamous cell carcinoma",
+    "Urothelial carcinoma",
+    "Triple-negative breast carcinoma (TNBC)",
+    "Cervical carcinoma",
+    "Other"
+   ]
+  },
+  {
+   "id": "blockNo",
+   "label": "Paraffin block",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "pdl1Clone",
+   "label": "Antibody clone / assay",
+   "group": "PD-L1 Scoring",
+   "type": "select",
+   "default": "22C3 pharmDx (Dako)",
+   "options": [
+    "22C3 pharmDx (Dako)",
+    "SP263 (Ventana)",
+    "SP142 (Ventana)",
+    "28-8 pharmDx (Dako)",
+    "Laboratory-developed test (specify in notes)"
+   ],
+   "reference": {
+    "title": "PD-L1 IHC scoring algorithms (TPS, CPS & IC)",
+    "intro": "Require at least 100 viable invasive tumour cells for adequacy. Score partial or complete linear membranous staining on tumour cells (exclude cytoplasmic-only staining and necrosis).",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Algorithm definitions & membranous expression spectrum",
+      "points": [
+       "TPS (NSCLC): % of viable tumour cells showing partial or complete membrane staining (< 1%, 1–49%, >= 50%).",
+       "CPS (HNSCC, gastric, oesophageal, cervical, TNBC, urothelial): ([PD-L1+ tumour cells + mononuclear immune cells] / total viable tumour cells) x 100, capped at 100.",
+       "IC (SP142): % of tumour area occupied by PD-L1+ tumour-infiltrating immune cells."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: PD-L1 Biomarker Testing",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/pdl1_ihc/pdl1_levels.jpg",
+        "caption": "Representative PD-L1 immunohistochemistry demonstrating negative (A), low (B), and high (C) membranous staining.",
+        "credit": "Müller T, Braun M, Dietrich D, Aktekin S, Höft S, Kristiansen G",
+        "license": "CC BY 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Negative,_low_and_high_PD-L1_expression_by_immunohistochemistry.png"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "adequacy",
+   "label": "Specimen adequacy",
+   "group": "PD-L1 Scoring",
+   "type": "select",
+   "default": "Adequate (>= 100 viable tumour cells)",
+   "options": [
+    "Adequate (>= 100 viable tumour cells)",
+    "Inadequate (< 100 viable tumour cells)"
+   ]
+  },
+  {
+   "id": "tpsScore",
+   "label": "Tumour Proportion Score (TPS, %)",
+   "group": "PD-L1 Scoring",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "cpsScore",
+   "label": "Combined Positive Score (CPS, 0–100)",
+   "group": "PD-L1 Scoring",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "icScore",
+   "label": "Immune Cell score (IC, %)",
+   "group": "PD-L1 Scoring",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "interpretation",
+   "label": "Overall interpretation",
+   "group": "PD-L1 Scoring",
+   "type": "select",
+   "default": "High PD-L1 expression (TPS >= 50%)",
+   "options": [
+    "No PD-L1 expression (TPS < 1% / CPS < 1)",
+    "Low / positive PD-L1 expression (TPS 1–49%)",
+    "High PD-L1 expression (TPS >= 50%)",
+    "Positive (CPS >= 1)",
+    "Positive (CPS >= 10)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "site": "Non-small cell lung carcinoma (NSCLC)",
+     "blockNo": "26BX-01401-A1",
+     "pdl1Clone": "22C3 pharmDx (Dako)",
+     "adequacy": "Adequate (>= 100 viable tumour cells)",
+     "tpsScore": "65",
+     "interpretation": "High PD-L1 expression (TPS >= 50%)"
+    }
+   }
+  ]
+ }
+}

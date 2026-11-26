@@ -1,0 +1,184 @@
+{
+ "id": "colon_her2",
+ "version": "2026.11",
+ "name": "Colon HER2 test",
+ "shortName": "Colon · HER2 biomarker test",
+ "label": "Colon HER2",
+ "organ": "COLON / RECTUM",
+ "system": "Biomarkers",
+ "kind": "biomarker",
+ "rank": 672,
+ "aliases": [
+  "CH2",
+  "colon HER2",
+  "colorectal HER2",
+  "HERACLES"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 2,
+ "defaultParts": 1,
+ "generator": "biomarker_suite",
+ "style": {
+  "british": true
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers"
+  },
+  {
+   "id": "macro",
+   "label": "Include block selection line",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Biomarker-Colon-HER2 (HERACLES / CAP Colorectal HER2 criteria)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Biomarker-Colon-HER2.html"
+ },
+ "match": {
+  "site": [
+   "colon",
+   "rectum",
+   "colorectal"
+  ],
+  "procedure": [
+   "HER2",
+   "IHC",
+   "ISH"
+  ],
+  "clinical": [
+   "colon HER2",
+   "colorectal HER2",
+   "HERACLES"
+  ],
+  "gate": "^[\\s\\S]*\\b(?:colon|rectal|colorectal)[\\s\\S]*\\bHER2\\b",
+  "exclude": [],
+  "bias": 5,
+  "fill": []
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Tumour site",
+   "type": "select",
+   "default": "Colon / rectum (primary)",
+   "options": [
+    "Colon / rectum (primary)",
+    "Liver metastasis (colorectal primary)",
+    "Lung / distant metastasis (colorectal primary)",
+    "Other"
+   ]
+  },
+  {
+   "id": "blockNo",
+   "label": "Paraffin block",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "her2Ihc",
+   "label": "HER2 IHC result (colorectal criteria)",
+   "group": "HER2 IHC & ISH",
+   "type": "select",
+   "default": "Score 0 (Negative: no staining or faint/incomplete in < 10%)",
+   "options": [
+    "Score 0 (Negative: no staining or faint/incomplete in < 10%)",
+    "Score 1+ (Negative: faint/barely perceptible incomplete staining in >= 10%)",
+    "Score 2+ (Equivocal: weak-to-moderate complete/basolateral/lateral staining in >= 10% — reflex ISH)",
+    "Score 3+ (Positive: intense complete/basolateral/lateral staining in > 50% [HERACLES] / >= 10% [CAP])",
+    "Cannot be determined"
+   ],
+   "reference": {
+    "title": "Colorectal HER2 scoring (HERACLES & CAP criteria)",
+    "intro": "Evaluate complete, basolateral, or lateral membranous staining in invasive colorectal adenocarcinoma. Score 2+ requires reflex ISH confirmation (HER2/CEP17 >= 2.0).",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "HERACLES vs CAP thresholds & IHC patterns",
+      "points": [
+       "HERACLES positive: IHC 3+ in > 50% of tumour cells, OR IHC 2+ in > 50% with HER2/CEP17 >= 2.0 in > 50% of cells.",
+       "CAP / NCCN: IHC 3+ in >= 10% (or IHC 2+ with ISH amplification HER2/CEP17 >= 2.0) supports anti-HER2 therapy eligibility in RAS/BRAF wild-type metastatic CRC."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Colorectal Biomarkers (HER2 / RAS / BRAF)",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/colon_her2/her2_ihc_3plus.jpg",
+        "caption": "HER2 IHC 3+ reference: intense, continuous membranous staining.",
+        "credit": "Sandi Shen, Gaofang Xiao, Richang Du, Ningdong Hu, Xu Xia, Haibo Zhou",
+        "license": "CC BY 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Positive_immunohistochemistry_of_HER2_in_invasive_breast_cancer.jpg"
+       },
+       {
+        "src": "assets/reference/colon_her2/her2_ihc_2plus.jpg",
+        "caption": "HER2 IHC 2+ equivocal reference: weak-to-moderate membranous staining requiring reflex ISH confirmation.",
+        "credit": "Nitta H, Kelly BD, Padilla M, Wick N, Brunhoeber P, Bai I",
+        "license": "CC BY 2.5",
+        "url": "https://commons.wikimedia.org/wiki/File:HER2_immunohistochemistry_with_2_plus_pattern.png"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "her2Pct",
+   "label": "Stained tumour cells (%)",
+   "group": "HER2 IHC & ISH",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "her2Ish",
+   "label": "HER2 ISH / DISH result",
+   "group": "HER2 IHC & ISH",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Amplified (HER2/CEP17 >= 2.0)",
+    "Not amplified (HER2/CEP17 < 2.0)",
+    "Cannot be determined"
+   ]
+  },
+  {
+   "id": "her2Ratio",
+   "label": "HER2/CEP17 ratio",
+   "group": "HER2 IHC & ISH",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "site": "Colon / rectum (primary)",
+     "blockNo": "26SX-00501-A3",
+     "her2Ihc": "Score 3+ (Positive: intense complete/basolateral/lateral staining in > 50% [HERACLES] / >= 10% [CAP])",
+     "her2Pct": "80",
+     "her2Ish": "Not performed"
+    }
+   }
+  ]
+ }
+}

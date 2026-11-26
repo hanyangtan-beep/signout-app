@@ -1,0 +1,352 @@
+{
+ "id": "renal_biopsy",
+ "version": "2026.11",
+ "name": "Renal biopsy (medical; Banff / MEST-C / ISN-RPS)",
+ "shortName": "Kidney · medical renal biopsy",
+ "label": "Renal",
+ "organ": "KIDNEY (MEDICAL)",
+ "system": "Renal",
+ "kind": "biopsy",
+ "rank": 65,
+ "aliases": [
+  "REN",
+  "renal biopsy",
+  "kidney biopsy",
+  "medical renal biopsy",
+  "native kidney biopsy",
+  "transplant kidney biopsy",
+  "Banff",
+  "MEST-C",
+  "ISN-RPS",
+  "IgA nephropathy",
+  "lupus nephritis"
+ ],
+ "specimenNoun": "biopsy",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "renal_biopsy",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Adequacy"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "source": {
+  "template": "Medical renal biopsy synoptic (Banff 2022/2024 Allograft Classification; Oxford MEST-C for IgA Nephropathy; ISN/RPS 2018 Lupus Nephritis; RPS Diabetic Nephropathy).",
+  "url": "https://app.expertpath.com/"
+ },
+ "match": {
+  "site": [
+   "kidney",
+   "native kidney",
+   "renal",
+   "transplant kidney",
+   "renal allograft"
+  ],
+  "procedure": [
+   "renal biopsy",
+   "kidney biopsy",
+   "needle core biopsy",
+   "allograft biopsy"
+  ],
+  "clinical": [
+   "nephrotic syndrome",
+   "nephritic syndrome",
+   "proteinuria",
+   "haematuria",
+   "IgA nephropathy",
+   "lupus nephritis",
+   "allograft rejection",
+   "AKI",
+   "glomerulonephritis"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:nephrectomy|mass|tumou?r|carcinoma|RCC|wilms|oncocytoma|frozen|FS)\\b)[\\s\\S]*\\b(?:renal\\s+biopsy|kidney\\s+biopsy|allograft\\s+biopsy|medical\\s+renal|(?:native\\s+kidney|transplant\\s+kidney|renal\\s+allograft)[\\s\\S]*(?:biopsy|core))\\b",
+  "exclude": [
+   "nephrectomy",
+   "mass",
+   "tumour",
+   "tumor",
+   "carcinoma",
+   "RCC",
+   "wilms",
+   "oncocytoma",
+   "frozen",
+   "FS"
+  ],
+  "bias": 5,
+  "fill": [
+   {
+    "field": "biopsyContext",
+    "from": "map",
+    "map": [
+     [
+      "\\btransplant|\\ballograft|\\bgraft",
+      "Transplant allograft kidney biopsy (Banff)"
+     ],
+     [
+      "\\bnative\\b",
+      "Native kidney biopsy"
+     ]
+    ]
+   }
+  ]
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Adequacy",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "biopsyContext",
+   "label": "Biopsy context",
+   "group": "Specimen & Adequacy",
+   "type": "select",
+   "default": "Native kidney biopsy",
+   "options": [
+    "Native kidney biopsy",
+    "Transplant allograft kidney biopsy (Banff)"
+   ]
+  },
+  {
+   "id": "laterality",
+   "label": "Laterality / graft site",
+   "group": "Specimen & Adequacy",
+   "type": "select",
+   "default": "Left",
+   "options": [
+    "Left",
+    "Right",
+    "Transplant allograft (iliac fossa)",
+    "Not specified"
+   ]
+  },
+  {
+   "id": "coresCount",
+   "label": "Number of needle cores received",
+   "group": "Specimen & Adequacy",
+   "type": "number",
+   "default": "2"
+  },
+  {
+   "id": "glomTotal",
+   "label": "Total glomeruli on light microscopy",
+   "group": "Specimen & Adequacy",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "glomGlobalScl",
+   "label": "Globally sclerosed glomeruli",
+   "group": "Specimen & Adequacy",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "glomSegScl",
+   "label": "Segmentally sclerosed glomeruli",
+   "group": "Specimen & Adequacy",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "glomCrescents",
+   "label": "Glomeruli with cellular / fibrocellular crescents",
+   "group": "Specimen & Adequacy",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "arteriesCount",
+   "label": "Arteries sampled (Banff adequacy: >= 10 glom & >= 2 arteries)",
+   "group": "Specimen & Adequacy",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "primaryDx",
+   "label": "Primary diagnosis",
+   "group": "Diagnosis & Classification",
+   "type": "select",
+   "default": "IgA nephropathy",
+   "options": [
+    "IgA nephropathy",
+    "Lupus nephritis (ISN/RPS)",
+    "Membranous nephropathy (PLA2R-associated / secondary)",
+    "Minimal change disease",
+    "Focal segmental glomerulosclerosis (FSGS)",
+    "Diabetic nephropathy (RPS)",
+    "Pauci-immune crescentic glomerulonephritis (ANCA-associated)",
+    "Immune complex-mediated MPGN / C3 glomerulopathy",
+    "Thrombotic microangiopathy (TMA)",
+    "Acute tubular injury / necrosis (ATN)",
+    "Acute tubulointerstitial nephritis (AIN)",
+    "Renal amyloidosis (AL / AA)",
+    "Light chain cast nephropathy / MGRS",
+    "Hypertensive arterionephrosclerosis",
+    "Allograft: No evidence of rejection (Banff Category 1)",
+    "Allograft: Borderline changes suspicious for acute TCMR (Banff Category 3)",
+    "Allograft: Acute T-cell-mediated rejection (TCMR, Banff Category 4)",
+    "Allograft: Chronic active T-cell-mediated rejection (Banff Category 4)",
+    "Allograft: Active antibody-mediated rejection (AMR, Banff Category 2)",
+    "Allograft: Chronic active antibody-mediated rejection (Banff Category 2)",
+    "Allograft: Polyomavirus (BK) nephropathy",
+    "Allograft: Calcineurin inhibitor (CNI) nephrotoxicity",
+    "Other medical renal diagnosis (specify)"
+   ],
+   "reference": {
+    "title": "Medical renal biopsy scoring: Oxford MEST-C, ISN/RPS 2018 & Banff 2022",
+    "intro": "Report glomerular counts (total, globally sclerosed, segmentally sclerosed, crescents), IFTA %, immunofluorescence intensities (0–3+), electron microscopy ultrastructure, and disease-specific scores.",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Key scoring systems",
+      "points": [
+       "IgA nephropathy (Oxford MEST-C): M0/M1 (mesangial hypercellularity > 50% gloms), E0/E1 (endocapillary), S0/S1 (segmental sclerosis), T0 (<=25%)/T1 (26–50%)/T2 (>50% IFTA), C0/C1 (<25%)/C2 (>=25% crescents).",
+       "Lupus nephritis (ISN/RPS 2018): Classes I–VI + modified NIH Activity Index (/24) and Chronicity Index (/12).",
+       "Transplant allograft (Banff 2022): Adequacy >= 10 glomeruli & >= 2 arteries; score i, t, v, g, ptc, ci, ct, cv, cg, ah, ti, i-IFTA, C4d (IF >= 2 or IHC >= 1 = positive), SV40/pvl."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Medical Renal Diseases & Allograft Pathology",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "primaryDxOther",
+   "label": "Specify diagnosis",
+   "group": "Diagnosis & Classification",
+   "type": "text",
+   "showIf": {
+    "field": "primaryDx",
+    "is": "Other medical renal diagnosis (specify)"
+   },
+   "default": ""
+  },
+  {
+   "id": "mestcScore",
+   "label": "Oxford MEST-C score (IgA nephropathy, e.g. M1 E0 S1 T0 C1)",
+   "group": "Diagnosis & Classification",
+   "type": "text",
+   "showIf": {
+    "field": "primaryDx",
+    "is": "IgA nephropathy"
+   },
+   "default": ""
+  },
+  {
+   "id": "lupusClass",
+   "label": "ISN/RPS Lupus Nephritis class & NIH AI/CI (e.g. Class IV, AI 8/24, CI 2/12)",
+   "group": "Diagnosis & Classification",
+   "type": "text",
+   "showIf": {
+    "field": "primaryDx",
+    "is": "Lupus nephritis (ISN/RPS)"
+   },
+   "default": ""
+  },
+  {
+   "id": "banffScores",
+   "label": "Banff lesion scores (e.g. i2 t2 v0 g0 ptc0 ci1 ct1 cv1 cg0 ah1 C4d0 pvl0)",
+   "group": "Diagnosis & Classification",
+   "type": "text",
+   "showIf": {
+    "field": "biopsyContext",
+    "is": "Transplant allograft kidney biopsy (Banff)"
+   },
+   "default": ""
+  },
+  {
+   "id": "iftaPct",
+   "label": "Interstitial fibrosis and tubular atrophy (IFTA, %)",
+   "group": "Light, IF & EM",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "lmSummary",
+   "label": "Light microscopy (glomeruli, tubules, interstitium, vessels)",
+   "group": "Light, IF & EM",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "ifSummary",
+   "label": "Immunofluorescence (IgG / IgA / IgM / C3 / C1q / kappa / lambda / C4d / PLA2R)",
+   "group": "Light, IF & EM",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "emSummary",
+   "label": "Electron microscopy (GBM, podocyte foot processes, electron-dense deposits)",
+   "group": "Light, IF & EM",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes / clinicopathologic correlation",
+   "group": "Light, IF & EM",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02201",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "biopsyContext": "Native kidney biopsy",
+     "laterality": "Left",
+     "coresCount": "2",
+     "glomTotal": "18",
+     "glomGlobalScl": "2",
+     "glomSegScl": "2",
+     "glomCrescents": "1",
+     "arteriesCount": "3",
+     "primaryDx": "IgA nephropathy",
+     "mestcScore": "M1 E0 S1 T0 C1",
+     "iftaPct": "10",
+     "lmSummary": "Glomeruli show diffuse mesangial matrix expansion and hypercellularity with segmental sclerosis in 2 glomeruli and 1 cellular crescent. Mild interstitial fibrosis and tubular atrophy (~10%). Mild arteriolar hyalinosis.",
+     "ifSummary": "Dominant granular mesangial IgA (3+) with co-dominant C3 (2+), kappa (2+) and lambda (2+); IgG, IgM and C1q negative.",
+     "emSummary": "Abundant mesangial and paramesangial electron-dense deposits with focal (~30%) podocyte foot process effacement; glomerular basement membranes of normal thickness."
+    }
+   }
+  ]
+ }
+}

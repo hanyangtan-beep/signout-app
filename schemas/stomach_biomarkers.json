@@ -1,0 +1,279 @@
+{
+ "id": "stomach_biomarkers",
+ "version": "2026.11",
+ "name": "Stomach biomarkers (HER2 / PD-L1 / MMR / EBER / CLDN18.2)",
+ "shortName": "Stomach · biomarker panel",
+ "label": "Stomach markers",
+ "organ": "STOMACH / GEJ",
+ "system": "Biomarkers",
+ "kind": "biomarker",
+ "rank": 673,
+ "aliases": [
+  "STM",
+  "stomach biomarkers",
+  "gastric biomarkers",
+  "gastric HER2",
+  "CLDN18.2",
+  "claudin 18.2"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 2,
+ "defaultParts": 1,
+ "generator": "biomarker_suite",
+ "style": {
+  "british": true
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers"
+  },
+  {
+   "id": "macro",
+   "label": "Include block selection line",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Biomarker-Stomach (CAP Gastric HER2 / ToGA; PD-L1 CPS; MMR; EBER; CLDN18.2)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Biomarker-Stomach.html"
+ },
+ "match": {
+  "site": [
+   "stomach",
+   "gastric",
+   "gastro-oesophageal junction",
+   "GEJ"
+  ],
+  "procedure": [
+   "biomarker",
+   "panel"
+  ],
+  "clinical": [
+   "stomach biomarkers",
+   "gastric biomarkers",
+   "gastric HER2",
+   "claudin 18.2"
+  ],
+  "gate": "^[\\s\\S]*\\b(?:stomach|gastric|GEJ)[\\s\\S]*\\b(?:biomarkers?|markers?|HER2|CLDN18|claudin)\\b",
+  "exclude": [],
+  "bias": 5,
+  "fill": []
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Specimen type / site",
+   "type": "select",
+   "default": "Stomach, biopsy",
+   "options": [
+    "Stomach, biopsy",
+    "Stomach, resection",
+    "Gastro-oesophageal junction, biopsy",
+    "Gastro-oesophageal junction, resection",
+    "Metastatic site (gastric primary)"
+   ]
+  },
+  {
+   "id": "blockNo",
+   "label": "Paraffin block",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "her2Ihc",
+   "label": "HER2 IHC (ToGA / CAP gastric criteria)",
+   "group": "HER2, PD-L1 & CLDN18.2",
+   "type": "select",
+   "default": "Score 0 (Negative)",
+   "options": [
+    "Score 0 (Negative)",
+    "Score 1+ (Negative)",
+    "Score 2+ (Equivocal — reflex ISH recommended)",
+    "Score 3+ (Positive — strong complete/basolateral/lateral in >= 10% resection or >= 5-cell cluster biopsy)",
+    "Not performed"
+   ],
+   "reference": {
+    "title": "Gastric / GEJ biomarker panel (HER2, PD-L1 CPS, CLDN18.2, MMR, EBER)",
+    "intro": "Gastric HER2 uses distinct biopsy (>= 5 cohesive tumour cells) vs resection (>= 10% tumour cells) thresholds and includes basolateral/lateral U-shaped staining. CLDN18.2 positivity requires >= 75% tumour cells with moderate-to-strong (2+/3+) membranous staining.",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Gastric predictive biomarker thresholds & staining patterns",
+      "points": [
+       "HER2: 3+ positive; 2+ equivocal -> reflex ISH (HER2/CEP17 >= 2.0).",
+       "PD-L1 (22C3 / 28-8): report exact Combined Positive Score (CPS = [PD-L1+ tumour cells + lymphocytes + macrophages] / total viable tumour cells x 100, capped at 100).",
+       "CLDN18.2 (43-14A): positive if >= 75% of viable tumour cells show 2+/3+ membranous staining."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Gastric Carcinoma Biomarkers",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/stomach_biomarkers/her2_ihc_3plus.jpg",
+        "caption": "HER2 IHC 3+ reference: strong continuous membranous staining.",
+        "credit": "Sandi Shen, Gaofang Xiao, Richang Du, Ningdong Hu, Xu Xia, Haibo Zhou",
+        "license": "CC BY 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Positive_immunohistochemistry_of_HER2_in_invasive_breast_cancer.jpg"
+       },
+       {
+        "src": "assets/reference/stomach_biomarkers/pdl1_levels.jpg",
+        "caption": "PD-L1 IHC expression spectrum illustrating negative (A), low (B), and high (C) membranous staining.",
+        "credit": "Müller T, Braun M, Dietrich D, Aktekin S, Höft S, Kristiansen G",
+        "license": "CC BY 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Negative,_low_and_high_PD-L1_expression_by_immunohistochemistry.png"
+       },
+       {
+        "src": "assets/reference/nasopharyngeal_carcinoma/npc_eber.jpg",
+        "caption": "EBER in situ hybridisation (ISH) positive reference: strong, diffuse nuclear positivity in EBV-associated carcinoma.",
+        "credit": "Nephron",
+        "license": "CC BY-SA 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Nasopharyngeal_carcinoma_-_EBER_--_high_mag.jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "her2Ish",
+   "label": "HER2 ISH / DISH",
+   "group": "HER2, PD-L1 & CLDN18.2",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Amplified (HER2/CEP17 >= 2.0)",
+    "Not amplified (HER2/CEP17 < 2.0)"
+   ]
+  },
+  {
+   "id": "pdl1Clone",
+   "label": "PD-L1 antibody clone",
+   "group": "HER2, PD-L1 & CLDN18.2",
+   "type": "select",
+   "default": "22C3 pharmDx",
+   "options": [
+    "22C3 pharmDx",
+    "28-8",
+    "SP263",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "pdl1Cps",
+   "label": "PD-L1 Combined Positive Score (CPS, 0–100)",
+   "group": "HER2, PD-L1 & CLDN18.2",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "cldn18Status",
+   "label": "CLDN18.2 (Claudin 18.2) IHC",
+   "group": "HER2, PD-L1 & CLDN18.2",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Positive (>= 75% tumour cells with 2+/3+ membranous staining)",
+    "Negative (< 75% tumour cells with 2+/3+ membranous staining)"
+   ]
+  },
+  {
+   "id": "eberStatus",
+   "label": "EBV (EBER ISH)",
+   "group": "MMR & EBV",
+   "type": "select",
+   "default": "Negative",
+   "options": [
+    "Negative",
+    "Positive",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "mlh1",
+   "label": "MLH1 IHC",
+   "group": "MMR & EBV",
+   "type": "select",
+   "default": "Intact nuclear expression",
+   "options": [
+    "Intact nuclear expression",
+    "Loss of nuclear expression (internal control intact)",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "pms2",
+   "label": "PMS2 IHC",
+   "group": "MMR & EBV",
+   "type": "select",
+   "default": "Intact nuclear expression",
+   "options": [
+    "Intact nuclear expression",
+    "Loss of nuclear expression (internal control intact)",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "msh2",
+   "label": "MSH2 IHC",
+   "group": "MMR & EBV",
+   "type": "select",
+   "default": "Intact nuclear expression",
+   "options": [
+    "Intact nuclear expression",
+    "Loss of nuclear expression (internal control intact)",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "msh6",
+   "label": "MSH6 IHC",
+   "group": "MMR & EBV",
+   "type": "select",
+   "default": "Intact nuclear expression",
+   "options": [
+    "Intact nuclear expression",
+    "Loss of nuclear expression (internal control intact)",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "site": "Stomach, biopsy",
+     "blockNo": "26BX-01122-A1",
+     "her2Ihc": "Score 0 (Negative)",
+     "pdl1Clone": "22C3 pharmDx",
+     "pdl1Cps": "12",
+     "cldn18Status": "Positive (>= 75% tumour cells with 2+/3+ membranous staining)",
+     "eberStatus": "Negative",
+     "mlh1": "Intact nuclear expression",
+     "pms2": "Intact nuclear expression",
+     "msh2": "Intact nuclear expression",
+     "msh6": "Intact nuclear expression"
+    }
+   }
+  ]
+ }
+}

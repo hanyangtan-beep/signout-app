@@ -1,0 +1,310 @@
+{
+ "id": "endomyocardial_biopsy",
+ "version": "2026.11",
+ "name": "Endomyocardial biopsy (ISHLT)",
+ "shortName": "Heart · endomyocardial biopsy",
+ "label": "Endomyocardial",
+ "organ": "HEART / MYOCARDIUM",
+ "system": "Cardiovascular",
+ "kind": "biopsy",
+ "rank": 66,
+ "aliases": [
+  "EMB",
+  "endomyocardial biopsy",
+  "myocardial biopsy",
+  "cardiac biopsy",
+  "heart transplant",
+  "ISHLT",
+  "myocarditis",
+  "cardiac amyloidosis"
+ ],
+ "specimenNoun": "biopsy",
+ "maxParts": 4,
+ "defaultParts": 1,
+ "generator": "endomyocardial_biopsy",
+ "style": {
+  "british": true
+ },
+ "caseFields": [],
+ "partDefaults": [],
+ "layout": {
+  "pack": true,
+  "macroGroups": [
+   "Specimen & Adequacy"
+  ],
+  "macroFields": [
+   "specimenName"
+  ]
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers (SPECIMEN / MICROSCOPIC EXAMINATION AND SYNOPTIC REPORT / DIAGNOSIS)"
+  },
+  {
+   "id": "macro",
+   "label": "Generate the macroscopic description",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "source": {
+  "template": "Endomyocardial biopsy synoptic (ISHLT 2004 Acute Cellular Rejection; ISHLT 2013 Antibody-Mediated Rejection pAMR; Dallas Myocarditis Criteria).",
+  "url": "https://app.expertpath.com/"
+ },
+ "match": {
+  "site": [
+   "right ventricle",
+   "right ventricular",
+   "myocardium",
+   "endomyocardium",
+   "endomyocardial",
+   "heart",
+   "cardiac allograft"
+  ],
+  "procedure": [
+   "endomyocardial biopsy",
+   "myocardial biopsy",
+   "cardiac biopsy"
+  ],
+  "clinical": [
+   "heart transplant",
+   "allograft rejection",
+   "ISHLT",
+   "myocarditis",
+   "cardiac amyloidosis",
+   "cardiomyopathy"
+  ],
+  "gate": "^(?![\\s\\S]*\\b(?:valve|aorta|pericardium|frozen|FS)\\b)[\\s\\S]*\\b(?:endomyocardial\\s+biopsy|myocardial\\s+biopsy|cardiac\\s+biopsy|heart\\s+transplant[\\s\\S]*biopsy)\\b",
+  "exclude": [
+   "valve",
+   "aorta",
+   "pericardium",
+   "frozen",
+   "FS"
+  ],
+  "bias": 5,
+  "fill": [
+   {
+    "field": "biopsyContext",
+    "from": "map",
+    "map": [
+     [
+      "\\btransplant|\\ballograft|\\bISHLT|\\brejection",
+      "Cardiac allograft surveillance (ISHLT)"
+     ],
+     [
+      "\\bmyocarditis|\\bamyloid|\\bcardiomyopathy|\\bnative",
+      "Native endomyocardial biopsy"
+     ]
+    ]
+   }
+  ]
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "group": "Specimen & Adequacy",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "biopsyContext",
+   "label": "Biopsy context",
+   "group": "Specimen & Adequacy",
+   "type": "select",
+   "default": "Cardiac allograft surveillance (ISHLT)",
+   "options": [
+    "Cardiac allograft surveillance (ISHLT)",
+    "Native endomyocardial biopsy"
+   ]
+  },
+  {
+   "id": "fragmentsTotal",
+   "label": "Total tissue fragments",
+   "group": "Specimen & Adequacy",
+   "type": "number",
+   "default": "4"
+  },
+  {
+   "id": "fragmentsMyocardium",
+   "label": "Evaluable myocardial fragments (ISHLT adequacy >= 3)",
+   "group": "Specimen & Adequacy",
+   "type": "number",
+   "default": "4"
+  },
+  {
+   "id": "acrGrade",
+   "label": "ISHLT 2004 Acute Cellular Rejection (ACR)",
+   "group": "ISHLT & Native Findings",
+   "type": "select",
+   "showIf": {
+    "field": "biopsyContext",
+    "is": "Cardiac allograft surveillance (ISHLT)"
+   },
+   "default": "Grade 0R: No acute cellular rejection",
+   "options": [
+    "Grade 0R: No acute cellular rejection",
+    "Grade 1R: Mild acute cellular rejection (interstitial/perivascular infiltrate with up to 1 focus of myocyte damage)",
+    "Grade 2R: Moderate acute cellular rejection (>= 2 foci of infiltrate with associated myocyte damage)",
+    "Grade 3R: Severe acute cellular rejection (diffuse infiltrate with multifocal myocyte damage, +/- oedema, haemorrhage or vasculitis)",
+    "Inadequate for grading"
+   ],
+   "reference": {
+    "title": "ISHLT 2004 ACR & 2013 pAMR grading and native EMB criteria",
+    "intro": "ISHLT allograft adequacy requires at least 3 evaluable myocardial fragments (>= 50% myocardium, excluding prior biopsy site, scar, or adipose tissue). Report ACR (0R–3R), pAMR (0–3), Quilty lesions, and ischaemic injury.",
+    "note": "ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "ISHLT rejection grading & native myocardial differentials",
+      "points": [
+       "ACR (2004): 0R = none; 1R = mild (interstitial/perivascular lymphocytes +/- 1 focus of myocyte damage); 2R = moderate (>= 2 foci with myocyte damage); 3R = severe (diffuse infiltrate, multifocal damage, oedema/haemorrhage/vasculitis).",
+       "pAMR (2013): pAMR 0 (H-/I-); pAMR 1(H+) (histologic microvascular inflammation only); pAMR 1(I+) (immunopathologic C4d/CD68 only); pAMR 2 (both H+ and I+); pAMR 3 (severe AMR with haemorrhage, capillary fragmentation, necrosis).",
+       "Native EMB: Dallas criteria for active myocarditis (inflammatory infiltrate + myocyte necrosis); Congo red apple-green birefringence + AL/ATTR typing for cardiac amyloidosis."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Heart Transplant Rejection & Myocarditis",
+        "url": "https://app.expertpath.com/"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "pamrGrade",
+   "label": "ISHLT 2013 Antibody-Mediated Rejection (pAMR)",
+   "group": "ISHLT & Native Findings",
+   "type": "select",
+   "showIf": {
+    "field": "biopsyContext",
+    "is": "Cardiac allograft surveillance (ISHLT)"
+   },
+   "default": "pAMR 0: Negative for pathologic antibody-mediated rejection",
+   "options": [
+    "pAMR 0: Negative for pathologic antibody-mediated rejection",
+    "pAMR 1 (H+): Histopathologic AMR alone",
+    "pAMR 1 (I+): Immunopathologic AMR alone (C4d / CD68 positive)",
+    "pAMR 2: Pathologic antibody-mediated rejection (both H+ and I+)",
+    "pAMR 3: Severe pathologic antibody-mediated rejection",
+    "Not assessed (immunopathology not performed)"
+   ]
+  },
+  {
+   "id": "c4dIhc",
+   "label": "Capillary C4d / CD68 immunostaining",
+   "group": "ISHLT & Native Findings",
+   "type": "select",
+   "showIf": {
+    "field": "biopsyContext",
+    "is": "Cardiac allograft surveillance (ISHLT)"
+   },
+   "default": "C4d negative (0); CD68 negative",
+   "options": [
+    "C4d negative (0); CD68 negative",
+    "C4d focal positive (< 50% capillaries)",
+    "C4d diffuse positive (> 50% capillaries)",
+    "CD68 intravascular macrophages positive (> 10% capillaries)",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "quilty",
+   "label": "Endocardial lymphocytic infiltrate (Quilty effect)",
+   "group": "ISHLT & Native Findings",
+   "type": "select",
+   "showIf": {
+    "field": "biopsyContext",
+    "is": "Cardiac allograft surveillance (ISHLT)"
+   },
+   "default": "Not identified",
+   "options": [
+    "Not identified",
+    "Present, Quilty A (confined to endocardium)",
+    "Present, Quilty B (extends into underlying myocardium)"
+   ]
+  },
+  {
+   "id": "nativeDx",
+   "label": "Native biopsy diagnosis",
+   "group": "ISHLT & Native Findings",
+   "type": "select",
+   "showIf": {
+    "field": "biopsyContext",
+    "is": "Native endomyocardial biopsy"
+   },
+   "default": "No active myocarditis or infiltrative disease",
+   "options": [
+    "No active myocarditis or infiltrative disease",
+    "Active lymphocytic myocarditis (Dallas criteria)",
+    "Borderline myocarditis (infiltrate without myocyte necrosis)",
+    "Giant cell myocarditis",
+    "Eosinophilic myocarditis",
+    "Cardiac sarcoidosis (granulomatous myocarditis)",
+    "Cardiac amyloidosis (Congo red positive — specify AL / ATTR)",
+    "Non-specific myocyte hypertrophy and interstitial fibrosis (cardiomyopathy pattern)",
+    "Other native myocardial pathology (specify)"
+   ]
+  },
+  {
+   "id": "nativeDxOther",
+   "label": "Specify native diagnosis / amyloid type",
+   "group": "ISHLT & Native Findings",
+   "type": "text",
+   "showIf": {
+    "field": "biopsyContext",
+    "is": "Native endomyocardial biopsy"
+   },
+   "default": ""
+  },
+  {
+   "id": "specialStains",
+   "label": "Special stains & IHC (Masson trichrome / Congo red / Prussian blue / CD3 / CD68)",
+   "group": "Microscopy & Notes",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "microSummary",
+   "label": "Microscopic description",
+   "group": "Microscopy & Notes",
+   "type": "textarea",
+   "default": ""
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "group": "Microscopy & Notes",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "case": {
+   "accession": "S26-02202",
+   "status": "Draft"
+  },
+  "options": {
+   "includeHeader": false,
+   "macro": true
+  },
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "biopsyContext": "Cardiac allograft surveillance (ISHLT)",
+     "fragmentsTotal": "4",
+     "fragmentsMyocardium": "4",
+     "acrGrade": "Grade 1R: Mild acute cellular rejection (interstitial/perivascular infiltrate with up to 1 focus of myocyte damage)",
+     "pamrGrade": "pAMR 0: Negative for pathologic antibody-mediated rejection",
+     "c4dIhc": "C4d negative (0); CD68 negative",
+     "quilty": "Not identified",
+     "specialStains": "Masson trichrome shows minimal interstitial fibrosis; C4d is negative in myocardial capillaries",
+     "microSummary": "Four adequate fragments of right ventricular myocardium show focal perivascular and interstitial lymphocytic infiltration with a single focus of myocyte injury. No microvascular inflammation, endothelial swelling, ischaemic necrosis or Quilty lesion is identified."
+    }
+   }
+  ]
+ }
+}

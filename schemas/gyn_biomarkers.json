@@ -1,0 +1,290 @@
+{
+ "id": "gyn_biomarkers",
+ "version": "2026.11",
+ "name": "Gynaecological biomarkers (ER / PR / p53 / MMR / HER2)",
+ "shortName": "Gynae · biomarker panel",
+ "label": "Gyn markers",
+ "organ": "GYNAECOLOGICAL TRACT",
+ "system": "Biomarkers",
+ "kind": "biomarker",
+ "rank": 671,
+ "aliases": [
+  "GYN",
+  "gyn biomarkers",
+  "gynae markers",
+  "endometrial biomarkers",
+  "p53",
+  "ProMisE",
+  "POLE"
+ ],
+ "specimenNoun": "specimen",
+ "maxParts": 2,
+ "defaultParts": 1,
+ "generator": "biomarker_suite",
+ "style": {
+  "british": true
+ },
+ "options": [
+  {
+   "$use": "includeHeader",
+   "label": "Section headers"
+  },
+  {
+   "id": "macro",
+   "label": "Include block selection line",
+   "type": "checkbox",
+   "default": true
+  }
+ ],
+ "source": {
+  "template": "QMH Cancer Reporting Template Biomarker-Gyn-markers (WHO 5th Female Genital Tumours; ProMisE / TCGA endometrial molecular classification; ASCO/CAP serous HER2)",
+  "url": "https://awiloqmh.github.io/CancerReportingTemplate/Biomarker-Gyn-markers.html"
+ },
+ "match": {
+  "site": [
+   "endometrium",
+   "uterus",
+   "ovary",
+   "fallopian tube",
+   "cervix"
+  ],
+  "procedure": [
+   "biomarker",
+   "immunohistochemistry",
+   "panel"
+  ],
+  "clinical": [
+   "gyn biomarkers",
+   "gynae markers",
+   "endometrial molecular",
+   "p53 MMR"
+  ],
+  "gate": "^[\\s\\S]*\\b(?:gyn(?:ae|ecological)?\\s+(?:biomarkers?|markers?)|endometrial\\s+(?:biomarkers?|molecular\\s+panel)|ProMisE)\\b",
+  "exclude": [],
+  "bias": 4,
+  "fill": []
+ },
+ "fields": [
+  {
+   "id": "specimenName",
+   "label": "Specimen line override",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "site",
+   "label": "Primary site",
+   "type": "select",
+   "default": "Endometrium",
+   "options": [
+    "Endometrium",
+    "Ovary / fallopian tube / peritoneum",
+    "Cervix",
+    "Vagina / vulva",
+    "Other"
+   ]
+  },
+  {
+   "id": "blockNo",
+   "label": "Paraffin block",
+   "type": "text",
+   "default": ""
+  },
+  {
+   "id": "p53Status",
+   "label": "p53 immunohistochemistry",
+   "group": "Molecular & IHC Panel",
+   "type": "select",
+   "default": "Wild-type (variable patchy nuclear staining)",
+   "options": [
+    "Wild-type (variable patchy nuclear staining)",
+    "Abnormal / mutant-type: diffuse strong nuclear overexpression (> 80%)",
+    "Abnormal / mutant-type: complete absence (null) with intact internal control",
+    "Abnormal / mutant-type: diffuse cytoplasmic staining",
+    "Subclonal abnormal / mutant-type",
+    "Not performed"
+   ],
+   "reference": {
+    "title": "WHO 5th gynaecological biomarker scoring (p53, MMR, HER2, ER/PR, POLE)",
+    "intro": "For endometrial carcinoma, integrate POLE mutation, MMR IHC, and p53 IHC to assign the TCGA/ProMisE molecular subtype (POLEmut, MMRd, NSMP, or p53abn). Use endometrial serous HER2 criteria (complete/basolateral 3+ in > 30% tumour cells).",
+    "note": "Photomicrographs are from Wikimedia Commons under open Creative Commons licences. ExpertPath pages open with your own ExpertPath login; the app holds none of their images.",
+    "groups": [
+     {
+      "heading": "Scoring thresholds & p53 / ER IHC patterns",
+      "points": [
+       "p53 abnormal patterns: diffuse strong nuclear overexpression (> 80%), complete absence (null) with positive internal control, or unequivocal cytoplasmic staining.",
+       "HER2 (endometrial serous): 3+ = strong complete or basolateral/lateral membranous staining in > 30% of tumour cells; 2+ = equivocal (reflex ISH)."
+      ],
+      "links": [
+       {
+        "label": "ExpertPath: Endometrial Carcinoma Molecular Classification",
+        "url": "https://app.expertpath.com/"
+       }
+      ],
+      "images": [
+       {
+        "src": "assets/reference/gyn_biomarkers/p53_patterns.jpg",
+        "caption": "Four-pattern p53 IHC reference in endometrial carcinoma: (A) wild-type heterogeneous nuclear, (B) abnormal diffuse strong nuclear overexpression, (C) abnormal complete absence (null) with intact stromal internal control, and (D) abnormal cytoplasmic staining.",
+        "credit": "Köbel M, Ronnett BM, Singh N, Soslow RA, Gilks CB, McCluggage WG",
+        "license": "CC BY 4.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Patterns_of_p53_expression,_original.png"
+       },
+       {
+        "src": "assets/reference/gyn_biomarkers/er_ihc_positive.jpg",
+        "caption": "Strong diffuse nuclear oestrogen receptor (ER) immunohistochemistry positivity.",
+        "credit": "Ed Uthman",
+        "license": "CC BY 2.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Stomach_Metastatic_Breast_Carcinoma,_IHC_for_Estrogen_Receptor_(5610737866).jpg"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "mlh1",
+   "label": "MLH1 IHC",
+   "group": "MMR Panel",
+   "type": "select",
+   "default": "Intact nuclear expression",
+   "options": [
+    "Intact nuclear expression",
+    "Loss of nuclear expression (internal control intact)",
+    "Indeterminate / equivocal",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "pms2",
+   "label": "PMS2 IHC",
+   "group": "MMR Panel",
+   "type": "select",
+   "default": "Intact nuclear expression",
+   "options": [
+    "Intact nuclear expression",
+    "Loss of nuclear expression (internal control intact)",
+    "Indeterminate / equivocal",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "msh2",
+   "label": "MSH2 IHC",
+   "group": "MMR Panel",
+   "type": "select",
+   "default": "Intact nuclear expression",
+   "options": [
+    "Intact nuclear expression",
+    "Loss of nuclear expression (internal control intact)",
+    "Indeterminate / equivocal",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "msh6",
+   "label": "MSH6 IHC",
+   "group": "MMR Panel",
+   "type": "select",
+   "default": "Intact nuclear expression",
+   "options": [
+    "Intact nuclear expression",
+    "Loss of nuclear expression (internal control intact)",
+    "Indeterminate / equivocal",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "erStatus",
+   "label": "Oestrogen receptor (ER) IHC",
+   "group": "Hormone Receptors & HER2",
+   "type": "select",
+   "default": "Positive",
+   "options": [
+    "Positive",
+    "Negative",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "erPct",
+   "label": "ER positive nuclei (%)",
+   "group": "Hormone Receptors & HER2",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "prStatus",
+   "label": "Progesterone receptor (PR) IHC",
+   "group": "Hormone Receptors & HER2",
+   "type": "select",
+   "default": "Positive",
+   "options": [
+    "Positive",
+    "Negative",
+    "Not performed"
+   ]
+  },
+  {
+   "id": "prPct",
+   "label": "PR positive nuclei (%)",
+   "group": "Hormone Receptors & HER2",
+   "type": "number",
+   "default": ""
+  },
+  {
+   "id": "her2Ihc",
+   "label": "HER2 IHC (endometrial serous / carcinosarcoma)",
+   "group": "Hormone Receptors & HER2",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Score 0 (Negative)",
+    "Score 1+ (Negative)",
+    "Score 2+ (Equivocal — reflex ISH recommended)",
+    "Score 3+ (Positive — > 30% strong complete/basolateral)"
+   ]
+  },
+  {
+   "id": "poleStatus",
+   "label": "POLE exonuclease domain sequencing",
+   "group": "Hormone Receptors & HER2",
+   "type": "select",
+   "default": "Not performed",
+   "options": [
+    "Not performed",
+    "Pathogenic POLE mutation detected (POLEmut)",
+    "No pathogenic POLE mutation detected (wild-type)",
+    "Pending"
+   ]
+  },
+  {
+   "id": "additionalNotes",
+   "label": "Additional notes",
+   "type": "textarea",
+   "default": ""
+  }
+ ],
+ "example": {
+  "parts": [
+   {
+    "label": "A",
+    "values": {
+     "site": "Endometrium",
+     "blockNo": "26SX-00412-A4",
+     "p53Status": "Wild-type (variable patchy nuclear staining)",
+     "mlh1": "Intact nuclear expression",
+     "pms2": "Intact nuclear expression",
+     "msh2": "Intact nuclear expression",
+     "msh6": "Intact nuclear expression",
+     "erStatus": "Positive",
+     "erPct": "85",
+     "prStatus": "Positive",
+     "prPct": "70",
+     "her2Ihc": "Not performed",
+     "poleStatus": "Not performed"
+    }
+   }
+  ]
+ }
+}
