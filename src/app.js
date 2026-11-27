@@ -28,7 +28,7 @@ import {
 } from './proofread.js';
 import { writeBack, carryPatches, carryText, blockText, showValue, patchFor } from './writeback.js';
 import { loadSettings as loadProofSettings, saveSettings as saveProofSettings, status as hanSlideStatus, proofread as hanSlideProofread, describeStatus, normaliseCode } from './hanslide.js';
-import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, describeVertexStatus } from './vertexai.js';
+import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, describeVertexStatus, VERTEX_PROOFREAD_SYSTEM_PROMPT } from './vertexai.js';
 
 // The CNS-only code (guided intake, pathway drawer and family plates, about 180 kB) loads the
 // first time a CNS form opens rather than at start-up (docs/specs/speed.md, Phase 79). ensureTemplate
@@ -2248,7 +2248,7 @@ async function runProofread({ auto = false } = {}) {
     if (useVertex) {
       const token = await getToken(state.config, { interactive: false }).catch(() => '');
       if (!token) throw new Error('Sign in to Google first to use Vertex AI proofreading.');
-      answer = await vertexProofread({ ...question, kind, proxyUrl, token });
+      answer = await vertexProofread({ ...question, system: VERTEX_PROOFREAD_SYSTEM_PROMPT, kind, proxyUrl, token });
       label = answer.model || 'Vertex AI';
     } else {
       answer = await hanSlideProofread({ ...question, code: settings.code });

@@ -178,7 +178,7 @@ export const VERTEX_PROOFREAD_SYSTEM_PROMPT = [
 
 /** Run proofreading (or extraction/audit) through the Cloud Run Vertex AI proxy. */
 export async function vertexProofread({
-  system,
+  system = VERTEX_PROOFREAD_SYSTEM_PROMPT,
   prompt,
   kind = '',
   task = 'proofread',
