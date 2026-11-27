@@ -33,6 +33,7 @@ import { DRAFT_RESPONSE_SCHEMA, buildDraftPrompt, parseDraftReply, vetDraftReply
 import { isAuditEligible, AUDIT_RESPONSE_SCHEMA, buildAuditPrompt, parseAuditReply, vetAuditFindings, applyAuditFieldPatch } from './aiaudit.js';
 import { IHC_RESPONSE_SCHEMA, buildIhcPrompt, parseIhcReply, vetIhcReply, appendIhcComment } from './aiihc.js';
 import { BLOCK_KEY_RESPONSE_SCHEMA, buildBlockKeyPrompt, parseBlockKeyReply, vetBlockKeyReply, applyBlockKeyFieldPatch } from './aiblockkey.js';
+import { FLAG_REASONS, loadAiRules, saveAiRules, addAiRule, formatAiRules, appendRulesToSystem, loadAiLog, clearAiLog, recordAiEvent, formatAiLogSummary, exportAiLogPayload } from './aifeedback.js';
 import { EXTRACT_RESPONSE_SCHEMA, buildExtractPrompt, parseExtractReply, vetExtractedFields, applyExtractedFields, CASE_EXTRACT_RESPONSE_SCHEMA, buildCaseExtractPrompt, parseCaseExtractReply, vetCaseExtractedFields, applyCaseExtractedFields, INTAKE_RESPONSE_SCHEMA, buildIntakePrompt, parseIntakeReply, vetIntakeParts } from './aiextract.js';
 
 // The CNS-only code (guided intake, pathway drawer and family plates, about 180 kB) loads the
@@ -1590,6 +1591,55 @@ function openPathwayChart(i) {
   nodes.dlgPathway.showModal();
 }
 
+// ---------- Live AI preferences & PHI-free telemetry helpers (src/aifeedback.js) ----------
+const withAiRules = (system) => appendRulesToSystem(system, loadAiRules());
+const withProofRules = (prompt) => {
+  const rules = loadAiRules();
+  return rules.length ? `${prompt}\n\n[CONSULTANT PERSONAL PREFERENCES]\n${rules.map((r) => `- ${r}`).join('\n')}` : prompt;
+};
+const activeTemplateId = () => (state.caseState?.parts?.[state.activePart] ? templateIdOf(state.caseState, activePart()) : '');
+const aiFlag = { key: '' };
+
+function promptAddAiRule(suggested = '') {
+  const raw = window.prompt('Add a personal AI preference rule (applied to all AI workflows immediately):', suggested);
+  if (raw === null) return;
+  const { rules, added } = addAiRule(raw);
+  toast(added ? `Saved AI rule (${rules.length} active)` : 'Rule already saved or blank');
+}
+
+function flagPickerRow({ workflow, key, model = '', tag = '', suggestedRule = '' }) {
+  if (aiFlag.key !== key) return null;
+  return el('div', { class: 'lis-row', style: 'margin-top:4px;' },
+    el('span', { class: 'muted', text: 'Flag reason:' }),
+    ...FLAG_REASONS.map((r) => el('button', {
+      type: 'button', class: 'btn ghost small', text: r.label,
+      onclick: () => {
+        recordAiEvent({ workflow, action: 'flagged', templateId: activeTemplateId(), model, reason: r.id, tag });
+        aiFlag.key = '';
+        renderReport();
+        toast(`Flagged (${r.label}) — use + Rule to prevent this next time`);
+      }
+    })),
+    el('button', {
+      type: 'button', class: 'btn ghost small', text: '+ Rule',
+      title: 'Save a permanent personal AI rule',
+      onclick: () => { aiFlag.key = ''; renderReport(); promptAddAiRule(suggestedRule); }
+    }),
+    el('button', { type: 'button', class: 'btn ghost small', text: 'Cancel', onclick: () => { aiFlag.key = ''; renderReport(); } }));
+}
+
+function exportAiLog() {
+  const payload = exportAiLogPayload(loadAiLog(), loadAiRules());
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `signout-ai-log-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast(`Exported ${payload.summary.total} AI log event${payload.summary.total === 1 ? '' : 's'}`);
+}
+
 // ---------- Shorthand-to-report & Shorthand-to-form AI autofill (src/aidraft.js) ----------
 const aiDraft = { text: {}, busy: false, note: '', undo: null };
 
@@ -1623,6 +1673,11 @@ function shorthandCard(s, part, i) {
       text: isGeneric ? 'Undo AI draft' : 'Undo AI fill',
       onclick: () => undoAiDraft(i)
     }) : null,
+    el('button', {
+      type: 'button', class: 'btn ghost small', text: '+ Rule',
+      title: 'Add a personal AI preference rule applied to all AI workflows',
+      onclick: () => promptAddAiRule()
+    }),
     aiDraft.note ? el('span', { class: 'muted lis-status', text: aiDraft.note }) : null);
 
   if (isGeneric) {
@@ -1660,7 +1715,7 @@ async function runGenericDraft(part, i, key) {
   renderPanel();
   try {
     const ans = await vertexDraft({
-      system: req.system,
+      system: withAiRules(req.system),
       prompt: req.prompt,
       responseSchema: DRAFT_RESPONSE_SCHEMA,
       proxyUrl: loadVertexSettings().proxyUrl,
@@ -1670,6 +1725,7 @@ async function runGenericDraft(part, i, key) {
     const parsed = parseDraftReply(ans.text);
     if (!parsed.readable) throw new Error('Gemini returned an unreadable draft; try again.');
     const vetted = vetDraftReply(parsed, part);
+    recordAiEvent({ workflow: 'draft', action: 'run', templateId: GENERIC_ID, model: ans.model || 'gemini-3.8-flash', seconds: ans.seconds || 0, count: Object.keys(vetted.patch).length });
     if (!Object.keys(vetted.patch).length) {
       aiDraft.note = `Gemini (${ans.seconds || 0}s) returned no draft text.`;
       return toast(aiDraft.note);
@@ -1677,7 +1733,7 @@ async function runGenericDraft(part, i, key) {
     const prevComment = cs.comment || '';
     const snap = applyDraftToPart(part, vetted);
     if (vetted.comment && !prevComment.trim()) cs.comment = vetted.comment;
-    aiDraft.undo = { caseState: cs, partIndex: i, prevComment, ...snap };
+    aiDraft.undo = { caseState: cs, partIndex: i, workflow: 'draft', prevComment, ...snap };
     aiDraft.note = `Drafted Part ${part.label} (${ans.model || 'gemini-3.8-flash'}, ${ans.seconds || 0}s) — edit freely below.`;
     markDirty();
     render();
@@ -1713,7 +1769,7 @@ async function runFormFill(s, part, i, key) {
   renderPanel();
   try {
     const ans = await vertexDraft({
-      system: req.system,
+      system: withAiRules(req.system),
       prompt: req.prompt,
       responseSchema: FORM_FILL_RESPONSE_SCHEMA,
       maxOutputTokens: 4096,
@@ -1724,6 +1780,7 @@ async function runFormFill(s, part, i, key) {
     const parsed = parseFormFillReply(ans.text);
     if (!parsed.readable) throw new Error('Gemini returned an unreadable form fill; try again.');
     const vetted = vetFormFillReply(parsed, s, part);
+    recordAiEvent({ workflow: 'form-fill', action: 'run', templateId: s.id, model: ans.model || 'gemini-3.8-flash', seconds: ans.seconds || 0, count: vetted.applied.length });
     if (!vetted.applied.length && !vetted.comment) {
       aiDraft.note = `Gemini (${ans.seconds || 0}s) found no matching form fields to update.`;
       return toast(aiDraft.note);
@@ -1731,7 +1788,7 @@ async function runFormFill(s, part, i, key) {
     const prevComment = cs.comment || '';
     const snap = applyFormFillToPart(s, templateOf(part).generator, part, vetted.applied);
     if (vetted.comment && !prevComment.trim()) cs.comment = vetted.comment;
-    aiDraft.undo = { caseState: cs, partIndex: i, prevComment, ...snap };
+    aiDraft.undo = { caseState: cs, partIndex: i, workflow: 'form-fill', prevComment, ...snap };
     const names = vetted.applied.slice(0, 4).map((a) => a.label).join(', ');
     const more = vetted.applied.length > 4 ? ` (+${vetted.applied.length - 4} more)` : '';
     const unmapped = vetted.unmapped.length ? ` · Unmapped: ${vetted.unmapped.join('; ')}` : '';
@@ -1756,6 +1813,7 @@ function undoAiDraft(i) {
   if (!part || part.label !== u.partLabel) return;
   part.values = Object.fromEntries(u.previous.map(([k, v]) => [k, Array.isArray(v) ? [...v] : v]));
   cs.comment = u.prevComment;
+  recordAiEvent({ workflow: u.workflow || 'form-fill', action: 'undone', templateId: templateIdOf(cs, part) });
   aiDraft.undo = null;
   aiDraft.note = `Reverted AI fill on Part ${part.label}.`;
   markDirty();
@@ -2203,6 +2261,7 @@ function renderProofBox(out) {
   const bar = el('div', { class: 'proof-bar' });
   if (edits.length > 1) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: `Accept all ${edits.length}`, title: 'The spelling, grammar and house-style edits; flagged changes and rewrites are accepted one by one', onclick: () => acceptProof(edits) }));
   if (on) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: busy ? 'Proofreading\u2026' : record?.at ? 'Proofread again' : 'Proofread', disabled: busy, onclick: () => runProofread() }));
+  if (on) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: '+ Rule', title: 'Add a personal AI preference rule (applied to all AI workflows)', onclick: () => promptAddAiRule() }));
   if (bar.childElementCount) box.append(bar);
   box.open = localStorage.getItem('signout.proof') !== 'closed';
   box.addEventListener('toggle', () => localStorage.setItem('signout.proof', box.open ? 'open' : 'closed'));
@@ -2237,8 +2296,11 @@ function proofRow(item, out, modelTag = MODEL_NAME) {
   else if (flagged && proofApply(item, printedText(out, item.section)) !== null) {
     actions.append(el('button', { type: 'button', class: 'btn small', text: 'Accept change', title: 'Make this change; it goes into the form where a field gives the text', onclick: () => acceptProof([item]) }));
   }
+  const fKey = `proof:${item.key}`;
+  if (item.source === 'model') actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Flag', title: 'Flag bad AI suggestion or save a personal rule', onclick: () => { aiFlag.key = aiFlag.key === fKey ? '' : fKey; renderReport(); } }));
   actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Dismiss', onclick: () => dismissProof(item) }));
-  return el('li', { class: `proof-item ${flagged ? 'flag' : item.kind === 'check' ? 'look' : 'edit'}` }, head, body, actions);
+  const picker = item.source === 'model' ? flagPickerRow({ workflow: 'proofread', key: fKey, model: modelTag, tag: item.kind, suggestedRule: item.why ? `Do not flag: ${item.why}` : '' }) : null;
+  return el('li', { class: `proof-item ${flagged ? 'flag' : item.kind === 'check' ? 'look' : 'edit'}` }, head, body, actions, picker);
 }
 
 /**
@@ -2373,6 +2435,7 @@ function acceptProof(items) {
     for (const key of hashes) record.hashes[key] = fingerprint(now.find((s) => s.key === key)?.text ?? '');
     renderReport();
   }
+  recordAiEvent({ workflow: 'proofread', action: 'accepted', templateId: activeTemplateId(), count: done.length });
   cacheCase(cs);
   const what = done.length === 1 ? 'Accepted' : `Accepted ${done.length} changes`;
   toast(nowEdited.length ? `${what}. ${nowEdited.join(', ')} now print${nowEdited.length === 1 ? 's' : ''} as edited text (Revert goes back)` : intoForm ? `${what} into the form` : what);
@@ -2387,6 +2450,7 @@ function dismissProof(item) {
     own.status = 'dismissed';
     if (own.kind === 'rewrite') { delete own.text; state.proof.ticks.delete(own.key); }
   } else record.dismissed = [...new Set([...(record.dismissed || []), item.key])];
+  if (item.source === 'model') recordAiEvent({ workflow: 'proofread', action: 'dismissed', templateId: activeTemplateId(), tag: item.kind });
   markDirty(); renderReport(); cacheCase(cs);
 }
 
@@ -2430,7 +2494,7 @@ async function runProofread({ auto = false } = {}) {
     if (useVertex) {
       const token = await getToken(state.config, { interactive: false }).catch(() => '');
       if (!token) throw new Error('Sign in to Google first to use Vertex AI proofreading.');
-      answer = await vertexProofread({ ...question, system: VERTEX_PROOFREAD_SYSTEM_PROMPT, kind, proxyUrl, token });
+      answer = await vertexProofread({ ...question, prompt: withProofRules(question.prompt), system: VERTEX_PROOFREAD_SYSTEM_PROMPT, kind, proxyUrl, token });
       label = answer.model || 'Vertex AI';
     } else {
       answer = await hanSlideProofread({ ...question, code: settings.code });
@@ -2443,6 +2507,7 @@ async function runProofread({ auto = false } = {}) {
         : `${answer.model || MODEL_NAME} via Han Slide${answer.version ? ` ${answer.version}` : ''}`;
       record = newRecord({ ...vetReply(parsed, sections), sections, by, seconds: answer.seconds, previous: cs.proofread });
       cs.proofread = record;
+      recordAiEvent({ workflow: 'proofread', action: 'run', templateId: activeTemplateId(), model: label, seconds: answer.seconds || 0, count: (record.items || []).length });
     }
   } catch (err) {
     if (state.caseState === cs) state.proof.error = err.message || 'Proofreading failed.';
@@ -2535,6 +2600,7 @@ function renderAuditBox(out) {
   const bar = el('div', { class: 'proof-bar' });
   bar.append(el('button', { type: 'button', class: 'btn ghost small', text: busy ? 'Auditing\u2026' : result ? 'Audit again' : 'Run staging audit', disabled: busy, onclick: () => runStagingAudit() }));
   if (undo) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Undo last fix', onclick: () => undoAuditFix() }));
+  bar.append(el('button', { type: 'button', class: 'btn ghost small', text: '+ Rule', title: 'Add a personal AI preference rule', onclick: () => promptAddAiRule() }));
   box.append(bar);
   box.open = localStorage.getItem('signout.audit') !== 'closed';
   box.addEventListener('toggle', () => localStorage.setItem('signout.audit', box.open ? 'open' : 'closed'));
@@ -2565,9 +2631,12 @@ function auditRow(f, out) {
       focusFieldNode(fieldNode(f.fieldPatch.fieldId));
     } }));
   }
-  actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Dismiss', onclick: () => { state.audit.dismissed.add(f.key); renderReport(); } }));
+  const fKey = `audit:${f.key}`;
+  actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Flag', title: 'Flag bad audit item or save a personal rule', onclick: () => { aiFlag.key = aiFlag.key === fKey ? '' : fKey; renderReport(); } }));
+  actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Dismiss', onclick: () => { state.audit.dismissed.add(f.key); recordAiEvent({ workflow: 'audit', action: 'dismissed', templateId: activeTemplateId(), tag: f.category }); renderReport(); } }));
+  const picker = flagPickerRow({ workflow: 'audit', key: fKey, model: state.audit.result?.model || 'gemini-4-neon', tag: f.category, suggestedRule: `In staging audit, do not flag: ${f.title}` });
   const itemCls = f.severity === 'critical' ? 'flag' : f.fieldPatch || f.textPatch ? 'edit' : 'look';
-  return el('li', { class: `proof-item ${itemCls}` }, head, body, actions);
+  return el('li', { class: `proof-item ${itemCls}` }, head, body, actions, picker);
 }
 
 async function runStagingAudit() {
@@ -2587,7 +2656,7 @@ async function runStagingAudit() {
   renderReport();
   try {
     const ans = await vertexAudit({
-      system: req.system,
+      system: withAiRules(req.system),
       prompt: req.prompt,
       responseSchema: AUDIT_RESPONSE_SCHEMA,
       proxyUrl: loadVertexSettings().proxyUrl,
@@ -2598,6 +2667,7 @@ async function runStagingAudit() {
     if (!parsed.readable) throw new Error('Gemini returned an unreadable audit response; try again.');
     const vetted = vetAuditFindings(parsed, cs.parts, (p) => schemaOf(p), sections);
     state.audit.result = { ...vetted, model: ans.model || 'gemini-4-neon', seconds: ans.seconds || 0 };
+    recordAiEvent({ workflow: 'audit', action: 'run', templateId: activeTemplateId(), model: ans.model || 'gemini-4-neon', seconds: ans.seconds || 0, count: vetted.findings.length });
     const n = vetted.findings.length;
     toast(n ? `Staging audit: ${n} item${n === 1 ? '' : 's'} to review` : 'Staging audit: no issues found');
   } catch (err) {
@@ -2620,6 +2690,7 @@ function applyAuditFix(f) {
     state.audit.dismissed.add(f.key);
     state.audit.note = `Updated Part ${fp.partLabel} · ${fp.fieldLabel} in the form (Undo last fix reverts it).`;
     state.activePart = fp.partIndex;
+    recordAiEvent({ workflow: 'audit', action: 'applied', templateId: templateIdOf(cs, part), tag: f.category });
     markDirty();
     render();
     toast(`Updated ${fp.fieldLabel} in Part ${fp.partLabel}`);
@@ -2643,6 +2714,7 @@ function applyAuditFix(f) {
     }
     state.audit.undo = { caseState: cs, kind: 'case', snapCase };
     state.audit.dismissed.add(f.key);
+    recordAiEvent({ workflow: 'audit', action: 'applied', templateId: activeTemplateId(), tag: f.category });
     markDirty();
     render();
     toast(`Applied fix to ${tp.sectionLabel}`);
@@ -2661,6 +2733,7 @@ function undoAuditFix() {
   } else if (u.kind === 'case' && u.snapCase) {
     Object.assign(cs, u.snapCase);
   }
+  recordAiEvent({ workflow: 'audit', action: 'undone', templateId: activeTemplateId() });
   state.audit.undo = null;
   state.audit.note = 'Reverted the last staging audit fix.';
   markDirty();
@@ -2736,7 +2809,11 @@ function renderIhcBox() {
     onclick: () => runIhcConsult()
   }));
   if (undo) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Undo comment insert', onclick: () => undoIhcComment() }));
+  if (result) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Flag', title: 'Flag IHC consult output', onclick: () => { aiFlag.key = aiFlag.key === 'ihc:result' ? '' : 'ihc:result'; renderReport(); } }));
+  bar.append(el('button', { type: 'button', class: 'btn ghost small', text: '+ Rule', title: 'Add a personal AI preference rule', onclick: () => promptAddAiRule() }));
   box.append(bar);
+  const picker = result ? flagPickerRow({ workflow: 'ihc', key: 'ihc:result', model: result.model || 'gemini-4-neon', tag: 'consult' }) : null;
+  if (picker) box.append(picker);
   box.open = localStorage.getItem('signout.ihc') === 'open' || busy || !!result || !!error;
   box.addEventListener('toggle', () => localStorage.setItem('signout.ihc', box.open ? 'open' : 'closed'));
   return box;
@@ -2760,7 +2837,7 @@ async function runIhcConsult() {
   renderReport();
   try {
     const ans = await vertexIhc({
-      system: req.system,
+      system: withAiRules(req.system),
       prompt: req.prompt,
       responseSchema: IHC_RESPONSE_SCHEMA,
       proxyUrl: loadVertexSettings().proxyUrl,
@@ -2771,6 +2848,7 @@ async function runIhcConsult() {
     if (!parsed.readable) throw new Error('Gemini returned an unreadable IHC consult; try again.');
     const vetted = vetIhcReply(parsed);
     state.ihc.result = { ...vetted, model: ans.model || 'gemini-4-neon', seconds: ans.seconds || 0 };
+    recordAiEvent({ workflow: 'ihc', action: 'run', templateId: activeTemplateId(), model: ans.model || 'gemini-4-neon', seconds: ans.seconds || 0, count: vetted.nextStains.length });
     toast(`IHC consult ready (${vetted.differential.length} DDx, ${vetted.nextStains.length} stains)`);
   } catch (err) {
     if (state.caseState === cs) state.ihc.error = err.message || 'IHC consult failed.';
@@ -2787,6 +2865,7 @@ function insertIhcComment(draft) {
   if (!changed) return;
   state.ihc.undo = { caseState: cs, prevComment };
   state.ihc.note = 'Inserted into Comment (Undo comment insert reverts it).';
+  recordAiEvent({ workflow: 'ihc', action: 'applied', templateId: activeTemplateId(), tag: 'comment' });
   markDirty();
   render();
   toast('Inserted IHC paragraph into Comment');
@@ -2797,6 +2876,7 @@ function undoIhcComment() {
   const cs = state.caseState;
   if (!u || u.caseState !== cs) return;
   cs.comment = u.prevComment;
+  recordAiEvent({ workflow: 'ihc', action: 'undone', templateId: activeTemplateId(), tag: 'comment' });
   state.ihc.undo = null;
   state.ihc.note = 'Reverted inserted IHC comment.';
   markDirty();
@@ -2878,7 +2958,7 @@ async function fillMacroWithAi() {
     : 'Asking Gemini to extract specimen and macro fields\u2026';
   try {
     const ans = await vertexExtract({
-      system: req.system,
+      system: withAiRules(req.system),
       prompt: req.prompt,
       responseSchema: multi ? CASE_EXTRACT_RESPONSE_SCHEMA : EXTRACT_RESPONSE_SCHEMA,
       maxOutputTokens: multi ? 4096 : 2048,
@@ -2890,6 +2970,7 @@ async function fillMacroWithAi() {
       const parsed = parseCaseExtractReply(ans.text);
       if (!parsed.readable) throw new Error('Gemini returned an unreadable multi-part extraction reply; try again.');
       const { byPart, totalApplied } = vetCaseExtractedFields(parsed, cs.parts, (p) => schemaOf(p));
+      recordAiEvent({ workflow: 'macro', action: 'run', templateId: activeTemplateId(), model: ans.model || 'gemini-3.5-flash-lite', seconds: ans.seconds || 0, count: totalApplied });
       if (!totalApplied) {
         const msg = `Gemini (${ans.seconds || 0}s) found no new macro fields to fill across ${cs.parts.length} parts.`;
         ui.status.textContent = msg;
@@ -2909,6 +2990,7 @@ async function fillMacroWithAi() {
       const parsed = parseExtractReply(ans.text);
       if (!parsed.readable) throw new Error('Gemini returned an unreadable extraction reply; try again.');
       const { applied } = vetExtractedFields(parsed, s, part);
+      recordAiEvent({ workflow: 'macro', action: 'run', templateId: s.id, model: ans.model || 'gemini-3.5-flash-lite', seconds: ans.seconds || 0, count: applied.length });
       if (!applied.length) {
         const msg = `Gemini (${ans.seconds || 0}s) found no new macro fields to fill.`;
         ui.status.textContent = msg;
@@ -2944,6 +3026,7 @@ function undoMacroAi() {
     part.values = Object.fromEntries(snap.previous.map(([k, v]) => [k, Array.isArray(v) ? [...v] : v]));
     reverted++;
   }
+  recordAiEvent({ workflow: 'macro', action: 'undone', templateId: activeTemplateId(), count: reverted });
   aiMacroUndo = null;
   if (nodes.lis.macro.aiUndo) nodes.lis.macro.aiUndo.hidden = true;
   markDirty();
@@ -2986,6 +3069,7 @@ function renderBlockCheckBox() {
   const bar = el('div', { class: 'proof-bar' });
   bar.append(el('button', { type: 'button', class: 'btn ghost small', text: busy ? 'Checking\u2026' : 'Re-check blocks', disabled: busy, onclick: () => runBlockKeyAi() }));
   if (undo) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Undo last fix', onclick: () => undoBlockCheckFix() }));
+  bar.append(el('button', { type: 'button', class: 'btn ghost small', text: '+ Rule', title: 'Add a personal AI preference rule', onclick: () => promptAddAiRule() }));
   box.append(bar);
   box.open = localStorage.getItem('signout.blockCheck') !== 'closed';
   box.addEventListener('toggle', () => localStorage.setItem('signout.blockCheck', box.open ? 'open' : 'closed'));
@@ -3011,9 +3095,12 @@ function blockCheckRow(c) {
       focusFieldNode(fieldNode(c.fieldPatch.fieldId));
     } }));
   }
-  actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Dismiss', onclick: () => { state.blockCheck.dismissed.add(c.key); renderReport(); } }));
+  const fKey = `block:${c.key}`;
+  actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Flag', title: 'Flag bad block-key item or save a personal rule', onclick: () => { aiFlag.key = aiFlag.key === fKey ? '' : fKey; renderReport(); } }));
+  actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Dismiss', onclick: () => { state.blockCheck.dismissed.add(c.key); recordAiEvent({ workflow: 'block-key', action: 'dismissed', templateId: activeTemplateId(), tag: c.category }); renderReport(); } }));
+  const picker = flagPickerRow({ workflow: 'block-key', key: fKey, model: state.blockCheck.result?.model || 'gemini-3.8-flash', tag: c.category, suggestedRule: `In block-key check, do not flag: ${c.title}` });
   const itemCls = c.severity === 'critical' ? 'flag' : c.fieldPatch ? 'edit' : 'look';
-  return el('li', { class: `proof-item ${itemCls}` }, head, body, actions);
+  return el('li', { class: `proof-item ${itemCls}` }, head, body, actions, picker);
 }
 
 async function runBlockKeyAi() {
@@ -3036,7 +3123,7 @@ async function runBlockKeyAi() {
   renderReport();
   try {
     const ans = await vertexDraft({
-      system: req.system,
+      system: withAiRules(req.system),
       prompt: req.prompt,
       responseSchema: BLOCK_KEY_RESPONSE_SCHEMA,
       maxOutputTokens: 4096,
@@ -3056,6 +3143,7 @@ async function runBlockKeyAi() {
       markDirty();
     }
     state.blockCheck.result = { ...vetted, model: ans.model || 'gemini-3.8-flash', seconds: ans.seconds || 0 };
+    recordAiEvent({ workflow: 'block-key', action: 'run', templateId: activeTemplateId(), model: ans.model || 'gemini-3.8-flash', seconds: ans.seconds || 0, count: vetted.checks.length });
     const n = vetted.checks.length;
     toast(n ? `Block key checked: ${n} item${n === 1 ? '' : 's'} to review` : 'Block key cleaned and reconciled');
   } catch (err) {
@@ -3076,6 +3164,7 @@ function undoBlockKeyAi() {
   cs.meta.blockKey = u.prevText;
   cs.meta.useLisBlockKey = u.prevToggle;
   if (nodes.meta.blockKey) nodes.meta.blockKey.value = u.prevText;
+  recordAiEvent({ workflow: 'block-key', action: 'undone', templateId: activeTemplateId(), tag: 'clean' });
   aiBlockKeyUndo = null;
   if (nodes.lis.blockKey.aiUndo) nodes.lis.blockKey.aiUndo.hidden = true;
   markDirty();
@@ -3095,6 +3184,7 @@ function applyBlockCheckFix(c) {
   state.blockCheck.dismissed.add(c.key);
   state.blockCheck.note = `Updated Part ${fp.partLabel} · ${fp.fieldLabel} in the form (Undo last fix reverts it).`;
   state.activePart = fp.partIndex;
+  recordAiEvent({ workflow: 'block-key', action: 'applied', templateId: templateIdOf(cs, part), tag: c.category });
   markDirty();
   render();
   toast(`Updated ${fp.fieldLabel} in Part ${fp.partLabel}`);
@@ -3108,6 +3198,7 @@ function undoBlockCheckFix() {
   if (part && part.label === u.partLabel) {
     part.values = Object.fromEntries(u.previous.map(([k, v]) => [k, Array.isArray(v) ? [...v] : v]));
   }
+  recordAiEvent({ workflow: 'block-key', action: 'undone', templateId: activeTemplateId(), tag: 'fix' });
   state.blockCheck.undo = null;
   state.blockCheck.note = 'Reverted the last gross-to-slide fix.';
   markDirty();
@@ -3268,7 +3359,7 @@ async function parseIntakeWithAi() {
   renderIntake();
   try {
     const ans = await vertexExtract({
-      system: req.system,
+      system: withAiRules(req.system),
       prompt: req.prompt,
       responseSchema: INTAKE_RESPONSE_SCHEMA,
       proxyUrl: loadVertexSettings().proxyUrl,
@@ -3278,6 +3369,7 @@ async function parseIntakeWithAi() {
     const parsedReply = parseIntakeReply(ans.text);
     if (!parsedReply.readable) throw new Error('Gemini returned an unreadable specimen list; try again.');
     const { parsed, rows } = vetIntakeParts(parsedReply, state.manifest, meta.clinical || '');
+    recordAiEvent({ workflow: 'intake', action: 'run', model: ans.model || 'gemini-3.5-flash-lite', seconds: ans.seconds || 0, count: rows.length });
     if (!rows.length) {
       intake.aiNote = `Gemini (${ans.seconds || 0}s) found no specimen parts.`;
       return toast(intake.aiNote);
@@ -3752,6 +3844,7 @@ function applySettingsForm() {
   if ($('#cfg-proofBackend')) {
     saveVertexSettings({ backend: $('#cfg-proofBackend').value, proxyUrl: $('#cfg-proofProxyUrl')?.value });
   }
+  if ($('#cfg-aiRules')) saveAiRules($('#cfg-aiRules').value);
   saveConfig(patch);
   useAccount(); // the account's own folder and sheet ids survive a Settings save
   if (resetFolder) rememberForAccount(state.config, { folderId: patch.folderId, sheetId: '' });
@@ -3772,6 +3865,8 @@ function openSettings() {
   const vertex = loadVertexSettings();
   if ($('#cfg-proofBackend')) $('#cfg-proofBackend').value = vertex.backend;
   if ($('#cfg-proofProxyUrl')) $('#cfg-proofProxyUrl').value = vertex.proxyUrl;
+  if ($('#cfg-aiRules')) $('#cfg-aiRules').value = formatAiRules(loadAiRules());
+  if ($('#cfg-aiLogSummary')) $('#cfg-aiLogSummary').textContent = formatAiLogSummary(loadAiLog());
   $('#cfg-proofStatus').textContent = '';
   nodes.signout.hidden = !isSignedIn();
   nodes.dlgSettings.showModal();
@@ -3793,6 +3888,14 @@ function initDrive() {
   initIntake();
   nodes.meta.status.addEventListener('change', proofreadIfChanged); // after 'input' has stored it
   $('#btn-proof-test').addEventListener('click', testHanSlide);
+  $('#btn-ai-log-export')?.addEventListener('click', exportAiLog);
+  $('#btn-ai-log-clear')?.addEventListener('click', () => {
+    if (!loadAiLog().length) return toast('AI log is already empty');
+    if (!window.confirm('Clear all logged AI telemetry events on this browser? Your AI preference rules stay intact.')) return;
+    clearAiLog();
+    if ($('#cfg-aiLogSummary')) $('#cfg-aiLogSummary').textContent = formatAiLogSummary([]);
+    toast('AI log cleared');
+  });
   $('#cfg-proofCode').addEventListener('blur', (e) => { e.target.value = normaliseCode(e.target.value); });
   nodes.meta.accession.addEventListener('blur', (e) => {
     const n = normaliseAccession(e.target.value);
