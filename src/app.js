@@ -32,6 +32,7 @@ import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, 
 import { DRAFT_RESPONSE_SCHEMA, buildDraftPrompt, parseDraftReply, vetDraftReply, applyDraftToPart, FORM_FILL_RESPONSE_SCHEMA, buildFormFillPrompt, parseFormFillReply, vetFormFillReply, applyFormFillToPart } from './aidraft.js';
 import { isAuditEligible, AUDIT_RESPONSE_SCHEMA, buildAuditPrompt, parseAuditReply, vetAuditFindings, applyAuditFieldPatch } from './aiaudit.js';
 import { IHC_RESPONSE_SCHEMA, buildIhcPrompt, parseIhcReply, vetIhcReply, appendIhcComment } from './aiihc.js';
+import { BLOCK_KEY_RESPONSE_SCHEMA, buildBlockKeyPrompt, parseBlockKeyReply, vetBlockKeyReply, applyBlockKeyFieldPatch } from './aiblockkey.js';
 import { EXTRACT_RESPONSE_SCHEMA, buildExtractPrompt, parseExtractReply, vetExtractedFields, applyExtractedFields, CASE_EXTRACT_RESPONSE_SCHEMA, buildCaseExtractPrompt, parseCaseExtractReply, vetCaseExtractedFields, applyCaseExtractedFields, INTAKE_RESPONSE_SCHEMA, buildIntakePrompt, parseIntakeReply, vetIntakeParts } from './aiextract.js';
 
 // The CNS-only code (guided intake, pathway drawer and family plates, about 180 kB) loads the
@@ -98,7 +99,8 @@ const state = {
   // ticked to accept (by suggestion key), `note` what the last accept put into the form.
   proof: { busy: false, error: '', caseState: null, startedAt: 0, copyAnyway: '', ticks: new Map(), note: null },
   audit: { busy: false, error: '', caseState: null, startedAt: 0, result: null, dismissed: new Set(), undo: null, note: '' },
-  ihc: { busy: false, error: '', caseState: null, startedAt: 0, notes: '', result: null, undo: null, note: '' }
+  ihc: { busy: false, error: '', caseState: null, startedAt: 0, notes: '', result: null, undo: null, note: '' },
+  blockCheck: { busy: false, error: '', caseState: null, startedAt: 0, result: null, dismissed: new Set(), undo: null, note: '' }
 };
 
 const META_FIELDS = ['accession', 'status', 'specimen', 'clinical', 'macro', 'blockKey'];
@@ -156,7 +158,7 @@ const nodes = {
   lisHint: $('#lis-hint'),
   lis: {
     macro: { toggle: $('#meta-useLisMacro'), ai: $('#btn-macro-ai'), aiUndo: $('#btn-macro-ai-undo'), generated: $('#btn-macro-generated'), clear: $('#btn-macro-clear'), status: $('#lis-status-macro') },
-    blockKey: { toggle: $('#meta-useLisBlockKey'), generated: $('#btn-blockKey-generated'), clear: $('#btn-blockKey-clear'), status: $('#lis-status-blockKey') }
+    blockKey: { toggle: $('#meta-useLisBlockKey'), ai: $('#btn-blockKey-ai'), aiUndo: $('#btn-blockKey-ai-undo'), generated: $('#btn-blockKey-generated'), clear: $('#btn-blockKey-clear'), status: $('#lis-status-blockKey') }
   },
   statusTemplate: $('#status-template'),
   statusSave: $('#status-save'),
@@ -1976,7 +1978,7 @@ function renderReport() {
     checksBox.open = localStorage.getItem('signout.checks') !== 'closed';
     checksBox.addEventListener('toggle', () => localStorage.setItem('signout.checks', checksBox.open ? 'open' : 'closed'));
   }
-  const checks = [checksBox, renderProofBox(out), renderAuditBox(out), renderIhcBox(out)].filter(Boolean);
+  const checks = [checksBox, renderProofBox(out), renderAuditBox(out), renderBlockCheckBox(), renderIhcBox(out)].filter(Boolean);
   nodes.blocks.replaceChildren(...checks, ...blocks.map(([key, name, text]) => renderBlock(key, name, text, tagFor(key), out)));
   const edits = Object.keys(state.caseState.edits || {}).length;
   nodes.revertAll.hidden = edits === 0;
@@ -2949,9 +2951,175 @@ function undoMacroAi() {
   toast(reverted > 1 ? `Reverted AI fill across ${reverted} parts` : `Reverted AI fill on Part ${u.snapshots[0].partLabel}`);
 }
 
+let aiBlockKeyUndo = null;
+const BLOCK_SEV = { critical: 'Critical', warn: 'Review', info: 'Note' };
+const BLOCK_CAT = { margins: 'Margins', nodes: 'Nodes', blocks: 'Blocks', laterality: 'Laterality', lesion: 'Lesion', omission: 'Omission' };
+
+function renderBlockCheckBox() {
+  const mine = state.blockCheck.caseState === state.caseState;
+  const busy = state.blockCheck.busy && mine;
+  const error = mine ? state.blockCheck.error : '';
+  const result = mine ? state.blockCheck.result : null;
+  const note = mine ? state.blockCheck.note : '';
+  const undo = mine ? state.blockCheck.undo : null;
+  if (!busy && !error && !result && !note) return null;
+
+  const open = (result?.checks || []).filter((c) => !state.blockCheck.dismissed.has(c.key));
+  const nCrit = open.filter((c) => c.severity === 'critical').length;
+  const nWarn = open.filter((c) => c.severity === 'warn').length;
+  const counts = [nCrit ? `${nCrit} critical` : '', nWarn ? `${nWarn} to review` : '', open.length - nCrit - nWarn > 0 ? `${open.length - nCrit - nWarn} note${open.length - nCrit - nWarn === 1 ? '' : 's'}` : ''].filter(Boolean).join(' \u00b7 ');
+  const summary = busy ? 'Gemini is reconciling blocks\u2026' : error ? 'did not run' : counts || 'all blocks reconciled';
+  const cls = `checks proof ${error || nCrit ? 'has-error' : nWarn ? 'has-warn' : 'info-only'}`;
+  const box = el('details', { class: cls },
+    el('summary', {}, el('div', { class: 'checks-head' }, el('h3', { text: 'Gross-to-slide check' }), el('span', { class: 'muted', text: summary }))));
+  const line = busy ? `Cleaning block key and reconciling cassettes against the form at ${clock(state.blockCheck.startedAt)}.`
+    : result ? `${result.summary} (${result.model || 'gemini-3.8-flash'}, ${result.seconds || 0}s)` : '';
+  if (line) box.append(el('p', { class: 'proof-line', text: line }));
+  if (error) box.append(el('p', { class: 'proof-error', role: 'alert', text: error }));
+  if (note) {
+    box.append(el('div', { class: 'proof-note', role: 'status' }, el('p', { text: note }),
+      el('button', { type: 'button', class: 'btn ghost small', text: 'OK', onclick: () => { state.blockCheck.note = ''; renderReport(); } })));
+  }
+  if (open.length) {
+    box.append(el('ul', { class: 'proof-list' }, ...open.map((c) => blockCheckRow(c))));
+  }
+  const bar = el('div', { class: 'proof-bar' });
+  bar.append(el('button', { type: 'button', class: 'btn ghost small', text: busy ? 'Checking\u2026' : 'Re-check blocks', disabled: busy, onclick: () => runBlockKeyAi() }));
+  if (undo) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Undo last fix', onclick: () => undoBlockCheckFix() }));
+  box.append(bar);
+  box.open = localStorage.getItem('signout.blockCheck') !== 'closed';
+  box.addEventListener('toggle', () => localStorage.setItem('signout.blockCheck', box.open ? 'open' : 'closed'));
+  return box;
+}
+
+function blockCheckRow(c) {
+  const sev = BLOCK_SEV[c.severity] || 'Review';
+  const cat = BLOCK_CAT[c.category] || c.category;
+  const head = el('span', { class: 'proof-kind', text: `${sev} \u00b7 ${cat}` });
+  const body = el('span', { class: 'proof-text' }, el('strong', { text: c.title }), ` \u2014 ${c.detail}`);
+  if (c.fieldPatch) {
+    const fp = c.fieldPatch;
+    const fmt = (v) => (Array.isArray(v) ? (v.length ? v.join(', ') : '(none)') : (v === '' || v === undefined ? '(blank)' : String(v)));
+    body.append(' ', el('span', { class: 'muted', text: `[Part ${fp.partLabel} · ${fp.fieldLabel}: ` }), el('del', { text: fmt(fp.before) }), ' \u2192 ', el('ins', { text: fmt(fp.after) }), el('span', { class: 'muted', text: ']' }));
+  }
+  const actions = el('span', { class: 'proof-actions' });
+  if (c.fieldPatch) {
+    actions.append(el('button', { type: 'button', class: 'btn small', text: 'Apply to form', title: 'Write this fix straight into the form', onclick: () => applyBlockCheckFix(c) }));
+    actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Jump', title: `Focus ${c.fieldPatch.fieldLabel} on Part ${c.fieldPatch.partLabel}`, onclick: () => {
+      state.activePart = c.fieldPatch.partIndex;
+      render();
+      focusFieldNode(fieldNode(c.fieldPatch.fieldId));
+    } }));
+  }
+  actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Dismiss', onclick: () => { state.blockCheck.dismissed.add(c.key); renderReport(); } }));
+  const itemCls = c.severity === 'critical' ? 'flag' : c.fieldPatch ? 'edit' : 'look';
+  return el('li', { class: `proof-item ${itemCls}` }, head, body, actions);
+}
+
+async function runBlockKeyAi() {
+  const ui = nodes.lis.blockKey;
+  const cs = state.caseState;
+  if (!cs || !cs.parts?.length) return;
+  if (state.blockCheck.busy) return toast('Block-key check is already running');
+  const sections = reportSections(state.lastOut || {});
+  const req = buildBlockKeyPrompt({ caseState: cs, parts: cs.parts, schemaFor: (p) => schemaOf(p), sections });
+  if (req.error) { if (ui.status) ui.status.textContent = req.error; return toast(req.error); }
+  const token = await getToken(state.config, { interactive: false }).catch(() => '');
+  if (!token) {
+    const msg = 'Sign in to Google first to clean and check block keys with AI.';
+    if (ui.status) ui.status.textContent = msg;
+    return toast(msg);
+  }
+  if (ui.ai) { ui.ai.disabled = true; ui.ai.textContent = 'Checking\u2026'; }
+  if (ui.status) ui.status.textContent = 'Cleaning block key and checking gross-to-slide concordance\u2026';
+  state.blockCheck = { busy: true, error: '', caseState: cs, startedAt: Date.now(), result: null, dismissed: new Set(), undo: null, note: '' };
+  renderReport();
+  try {
+    const ans = await vertexDraft({
+      system: req.system,
+      prompt: req.prompt,
+      responseSchema: BLOCK_KEY_RESPONSE_SCHEMA,
+      maxOutputTokens: 4096,
+      proxyUrl: loadVertexSettings().proxyUrl,
+      token
+    });
+    if (state.caseState !== cs) return;
+    const parsed = parseBlockKeyReply(ans.text);
+    if (!parsed.readable) throw new Error('Gemini returned an unreadable block-key check; try again.');
+    const vetted = vetBlockKeyReply(parsed, cs.parts, (p) => schemaOf(p));
+    if (vetted.cleanedBlockKey && vetted.cleanedBlockKey !== (cs.meta.blockKey || '').trim()) {
+      aiBlockKeyUndo = { caseState: cs, prevText: cs.meta.blockKey || '', prevToggle: !!cs.meta.useLisBlockKey };
+      cs.meta.blockKey = vetted.cleanedBlockKey;
+      cs.meta.useLisBlockKey = true;
+      if (nodes.meta.blockKey) nodes.meta.blockKey.value = vetted.cleanedBlockKey;
+      if (ui.aiUndo) ui.aiUndo.hidden = false;
+      markDirty();
+    }
+    state.blockCheck.result = { ...vetted, model: ans.model || 'gemini-3.8-flash', seconds: ans.seconds || 0 };
+    const n = vetted.checks.length;
+    toast(n ? `Block key checked: ${n} item${n === 1 ? '' : 's'} to review` : 'Block key cleaned and reconciled');
+  } catch (err) {
+    if (state.caseState === cs) state.blockCheck.error = err.message || 'Block-key check failed.';
+    if (ui.status) ui.status.textContent = err.message || 'Block-key check failed.';
+    toast(err.message || 'Block-key check failed');
+  } finally {
+    if (state.blockCheck.caseState === cs) state.blockCheck.busy = false;
+    if (ui.ai) { ui.ai.disabled = false; ui.ai.textContent = 'Clean & check with AI'; }
+  }
+  if (state.caseState === cs) { renderReport(); cacheCase(cs); }
+}
+
+function undoBlockKeyAi() {
+  const u = aiBlockKeyUndo;
+  const cs = state.caseState;
+  if (!u || u.caseState !== cs) return;
+  cs.meta.blockKey = u.prevText;
+  cs.meta.useLisBlockKey = u.prevToggle;
+  if (nodes.meta.blockKey) nodes.meta.blockKey.value = u.prevText;
+  aiBlockKeyUndo = null;
+  if (nodes.lis.blockKey.aiUndo) nodes.lis.blockKey.aiUndo.hidden = true;
+  markDirty();
+  renderReport();
+  cacheCase(cs);
+  toast('Reverted AI block-key clean');
+}
+
+function applyBlockCheckFix(c) {
+  const cs = state.caseState;
+  const fp = c.fieldPatch;
+  if (!cs || !fp) return;
+  const part = cs.parts[fp.partIndex];
+  if (!part) return toast('Target part no longer exists');
+  const snap = applyBlockKeyFieldPatch(schemaOf(part), templateOf(part).generator, part, fp);
+  state.blockCheck.undo = { caseState: cs, partIndex: fp.partIndex, ...snap };
+  state.blockCheck.dismissed.add(c.key);
+  state.blockCheck.note = `Updated Part ${fp.partLabel} · ${fp.fieldLabel} in the form (Undo last fix reverts it).`;
+  state.activePart = fp.partIndex;
+  markDirty();
+  render();
+  toast(`Updated ${fp.fieldLabel} in Part ${fp.partLabel}`);
+}
+
+function undoBlockCheckFix() {
+  const u = state.blockCheck.undo;
+  const cs = state.caseState;
+  if (!u || u.caseState !== cs) return;
+  const part = cs.parts[u.partIndex];
+  if (part && part.label === u.partLabel) {
+    part.values = Object.fromEntries(u.previous.map(([k, v]) => [k, Array.isArray(v) ? [...v] : v]));
+  }
+  state.blockCheck.undo = null;
+  state.blockCheck.note = 'Reverted the last gross-to-slide fix.';
+  markDirty();
+  render();
+  toast('Reverted gross-to-slide fix');
+}
+
 function initLis() {
   nodes.lis.macro.ai?.addEventListener('click', () => fillMacroWithAi());
   nodes.lis.macro.aiUndo?.addEventListener('click', () => undoMacroAi());
+  nodes.lis.blockKey.ai?.addEventListener('click', () => runBlockKeyAi());
+  nodes.lis.blockKey.aiUndo?.addEventListener('click', () => undoBlockKeyAi());
   for (const [key, { toggle, label }] of Object.entries(LIS_KEYS)) {
     const ui = nodes.lis[key];
     if (!ui.toggle) continue;

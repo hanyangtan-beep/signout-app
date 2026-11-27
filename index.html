@@ -149,6 +149,8 @@
         <div class="field"><label for="meta-blockKey">Block key</label><textarea class="input" id="meta-blockKey" rows="2" placeholder="Paste the LIS block key here"></textarea>
           <div class="lis-row">
             <label class="check"><input type="checkbox" id="meta-useLisBlockKey"> Use this text instead of the generated block key</label>
+            <button class="btn ghost small" id="btn-blockKey-ai" type="button" title="Clean block key into British-English house format and reconcile blocks against the form using Gemini (Vertex AI)">Clean &amp; check with AI</button>
+            <button class="btn ghost small" id="btn-blockKey-ai-undo" type="button" hidden title="Revert the last AI block-key clean">Undo AI block key</button>
             <button class="btn ghost small" id="btn-blockKey-generated" type="button" title="Copy the generated block key into this box for editing">Use generated</button>
             <button class="btn ghost small" id="btn-blockKey-clear" type="button">Clear</button>
             <span class="muted lis-status" id="lis-status-blockKey"></span>
