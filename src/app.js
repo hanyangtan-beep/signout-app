@@ -28,7 +28,8 @@ import {
 } from './proofread.js';
 import { writeBack, carryPatches, carryText, blockText, showValue, patchFor } from './writeback.js';
 import { loadSettings as loadProofSettings, saveSettings as saveProofSettings, status as hanSlideStatus, proofread as hanSlideProofread, describeStatus, normaliseCode } from './hanslide.js';
-import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, vertexExtract, describeVertexStatus, VERTEX_PROOFREAD_SYSTEM_PROMPT } from './vertexai.js';
+import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, vertexExtract, vertexAudit, describeVertexStatus, VERTEX_PROOFREAD_SYSTEM_PROMPT } from './vertexai.js';
+import { isAuditEligible, AUDIT_RESPONSE_SCHEMA, buildAuditPrompt, parseAuditReply, vetAuditFindings, applyAuditFieldPatch } from './aiaudit.js';
 import { EXTRACT_RESPONSE_SCHEMA, buildExtractPrompt, parseExtractReply, vetExtractedFields, applyExtractedFields, CASE_EXTRACT_RESPONSE_SCHEMA, buildCaseExtractPrompt, parseCaseExtractReply, vetCaseExtractedFields, applyCaseExtractedFields, INTAKE_RESPONSE_SCHEMA, buildIntakePrompt, parseIntakeReply, vetIntakeParts } from './aiextract.js';
 
 // The CNS-only code (guided intake, pathway drawer and family plates, about 180 kB) loads the
@@ -93,7 +94,8 @@ const state = {
   cases: [],              // last fetched Sheet rows for the Open dialog
   // Proofreading in progress (docs/specs/proofreading.md): `ticks` are the changes of each rewrite
   // ticked to accept (by suggestion key), `note` what the last accept put into the form.
-  proof: { busy: false, error: '', caseState: null, startedAt: 0, copyAnyway: '', ticks: new Map(), note: null }
+  proof: { busy: false, error: '', caseState: null, startedAt: 0, copyAnyway: '', ticks: new Map(), note: null },
+  audit: { busy: false, error: '', caseState: null, startedAt: 0, result: null, dismissed: new Set(), undo: null, note: '' }
 };
 
 const META_FIELDS = ['accession', 'status', 'specimen', 'clinical', 'macro', 'blockKey'];
@@ -1797,7 +1799,7 @@ function renderReport() {
     checksBox.open = localStorage.getItem('signout.checks') !== 'closed';
     checksBox.addEventListener('toggle', () => localStorage.setItem('signout.checks', checksBox.open ? 'open' : 'closed'));
   }
-  const checks = [checksBox, renderProofBox(out)].filter(Boolean);
+  const checks = [checksBox, renderProofBox(out), renderAuditBox(out)].filter(Boolean);
   nodes.blocks.replaceChildren(...checks, ...blocks.map(([key, name, text]) => renderBlock(key, name, text, tagFor(key), out)));
   const edits = Object.keys(state.caseState.edits || {}).length;
   nodes.revertAll.hidden = edits === 0;
@@ -2315,6 +2317,176 @@ async function testHanSlide() {
   ]);
   const fmt = (r) => (r.status === 'fulfilled' ? r.value : r.reason?.message || 'failed');
   line.textContent = `Han Slide: ${fmt(hs)} | Vertex AI: ${fmt(vx)}`;
+}
+
+// ---------- Cancer synoptic staging & clinical QA audit (src/aiaudit.js) ----------
+const AUDIT_SEV = { critical: 'Critical', warn: 'Review', info: 'Note' };
+const AUDIT_CAT = { staging: 'Staging', grading: 'Grading', margins: 'Margins', laterality: 'Laterality', 'cross-part': 'Cross-part', biomarkers: 'Biomarkers', history: 'History', omission: 'Omission' };
+
+function renderAuditBox(out) {
+  const eligible = isAuditEligible(schemasInUse());
+  const mine = state.audit.caseState === state.caseState;
+  const busy = state.audit.busy && mine;
+  const error = mine ? state.audit.error : '';
+  const result = mine ? state.audit.result : null;
+  const note = mine ? state.audit.note : '';
+  const undo = mine ? state.audit.undo : null;
+  if (!eligible && !result && !busy && !error) return null;
+
+  const open = (result?.findings || []).filter((f) => !state.audit.dismissed.has(f.key));
+  const nCrit = open.filter((f) => f.severity === 'critical').length;
+  const nWarn = open.filter((f) => f.severity === 'warn').length;
+  const counts = [nCrit ? `${nCrit} critical` : '', nWarn ? `${nWarn} to review` : '', open.length - nCrit - nWarn > 0 ? `${open.length - nCrit - nWarn} note${open.length - nCrit - nWarn === 1 ? '' : 's'}` : ''].filter(Boolean).join(' \u00b7 ');
+  const summary = busy ? 'Gemini 4 Neon is auditing\u2026' : error ? 'did not run' : result ? (counts || 'no issues found') : 'ready to audit';
+  const cls = `checks proof ${error || nCrit ? 'has-error' : nWarn ? 'has-warn' : 'info-only'}`;
+  const box = el('details', { class: cls },
+    el('summary', {}, el('div', { class: 'checks-head' }, el('h3', { text: 'Staging audit' }), el('span', { class: 'muted', text: summary }))));
+  const line = busy ? `Auditing staging, margins, and cross-part concordance via Vertex AI at ${clock(state.audit.startedAt)}. You can keep working.`
+    : result ? `${result.summary} (${result.model || 'gemini-4-neon'}, ${result.seconds || 0}s)`
+      : 'Checks staging/grading arithmetic, cross-part totals, margins, biomarkers, and clinical history — and can write fixes back into the form.';
+  box.append(el('p', { class: 'proof-line', text: line }));
+  if (error) box.append(el('p', { class: 'proof-error', role: 'alert', text: error }));
+  if (note) {
+    box.append(el('div', { class: 'proof-note', role: 'status' }, el('p', { text: note }),
+      el('button', { type: 'button', class: 'btn ghost small', text: 'OK', onclick: () => { state.audit.note = ''; renderReport(); } })));
+  }
+  if (open.length) {
+    box.append(el('ul', { class: 'proof-list' }, ...open.map((f) => auditRow(f, out))));
+  }
+  const bar = el('div', { class: 'proof-bar' });
+  bar.append(el('button', { type: 'button', class: 'btn ghost small', text: busy ? 'Auditing\u2026' : result ? 'Audit again' : 'Run staging audit', disabled: busy, onclick: () => runStagingAudit() }));
+  if (undo) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Undo last fix', onclick: () => undoAuditFix() }));
+  box.append(bar);
+  box.open = localStorage.getItem('signout.audit') !== 'closed';
+  box.addEventListener('toggle', () => localStorage.setItem('signout.audit', box.open ? 'open' : 'closed'));
+  return box;
+}
+
+function auditRow(f, out) {
+  const sev = AUDIT_SEV[f.severity] || 'Review';
+  const cat = AUDIT_CAT[f.category] || f.category;
+  const head = el('span', { class: 'proof-kind', text: `${sev} \u00b7 ${cat}` });
+  const body = el('span', { class: 'proof-text' }, el('strong', { text: f.title }), ` \u2014 ${f.detail}`);
+  if (f.fieldPatch) {
+    const fp = f.fieldPatch;
+    const fmt = (v) => (Array.isArray(v) ? (v.length ? v.join(', ') : '(none)') : (v === '' || v === undefined ? '(blank)' : String(v)));
+    body.append(' ', el('span', { class: 'muted', text: `[Part ${fp.partLabel} · ${fp.fieldLabel}: ` }), el('del', { text: fmt(fp.before) }), ' \u2192 ', el('ins', { text: fmt(fp.after) }), el('span', { class: 'muted', text: ']' }));
+  } else if (f.textPatch) {
+    const tp = f.textPatch;
+    body.append(' ', el('span', { class: 'muted', text: `[${tp.sectionLabel}: ` }), el('del', { text: tp.find }), ' \u2192 ', el('ins', { text: tp.replace }), el('span', { class: 'muted', text: ']' }));
+  }
+  const actions = el('span', { class: 'proof-actions' });
+  if (f.fieldPatch || (f.textPatch && applyEdit(printedText(out, f.textPatch.section), f.textPatch) !== null)) {
+    actions.append(el('button', { type: 'button', class: 'btn small', text: 'Apply to form', title: 'Write this change back into the form and regenerate the report', onclick: () => applyAuditFix(f) }));
+  }
+  if (f.fieldPatch) {
+    actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Jump', title: `Focus ${f.fieldPatch.fieldLabel} on Part ${f.fieldPatch.partLabel}`, onclick: () => {
+      state.activePart = f.fieldPatch.partIndex;
+      render();
+      focusFieldNode(fieldNode(f.fieldPatch.fieldId));
+    } }));
+  }
+  actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Dismiss', onclick: () => { state.audit.dismissed.add(f.key); renderReport(); } }));
+  const itemCls = f.severity === 'critical' ? 'flag' : f.fieldPatch || f.textPatch ? 'edit' : 'look';
+  return el('li', { class: `proof-item ${itemCls}` }, head, body, actions);
+}
+
+async function runStagingAudit() {
+  const cs = state.caseState;
+  if (!cs || !state.lastOut) return;
+  if (state.audit.busy) return toast('Staging audit is already running');
+  const sections = reportSections(state.lastOut);
+  const req = buildAuditPrompt({ caseState: cs, parts: cs.parts, schemaFor: (p) => schemaOf(p), sections });
+  if (req.error) return toast(req.error);
+  const token = await getToken(state.config, { interactive: false }).catch(() => '');
+  if (!token) {
+    state.audit = { ...state.audit, caseState: cs, error: 'Sign in to Google first to run Staging audit.', busy: false };
+    renderReport();
+    return toast('Sign in to Google first to run Staging audit');
+  }
+  state.audit = { busy: true, error: '', caseState: cs, startedAt: Date.now(), result: null, dismissed: new Set(), undo: null, note: '' };
+  renderReport();
+  try {
+    const ans = await vertexAudit({
+      system: req.system,
+      prompt: req.prompt,
+      responseSchema: AUDIT_RESPONSE_SCHEMA,
+      proxyUrl: loadVertexSettings().proxyUrl,
+      token
+    });
+    if (state.caseState !== cs) return;
+    const parsed = parseAuditReply(ans.text);
+    if (!parsed.readable) throw new Error('Gemini returned an unreadable audit response; try again.');
+    const vetted = vetAuditFindings(parsed, cs.parts, (p) => schemaOf(p), sections);
+    state.audit.result = { ...vetted, model: ans.model || 'gemini-4-neon', seconds: ans.seconds || 0 };
+    const n = vetted.findings.length;
+    toast(n ? `Staging audit: ${n} item${n === 1 ? '' : 's'} to review` : 'Staging audit: no issues found');
+  } catch (err) {
+    if (state.caseState === cs) state.audit.error = err.message || 'Staging audit failed.';
+  } finally {
+    if (state.audit.caseState === cs) state.audit.busy = false;
+  }
+  if (state.caseState === cs) renderReport();
+}
+
+function applyAuditFix(f) {
+  const cs = state.caseState;
+  if (!cs || !state.lastOut) return;
+  if (f.fieldPatch) {
+    const fp = f.fieldPatch;
+    const part = cs.parts[fp.partIndex];
+    if (!part) return toast('Target part no longer exists');
+    const snap = applyAuditFieldPatch(schemaOf(part), templateOf(part).generator, part, fp);
+    state.audit.undo = { caseState: cs, partIndex: fp.partIndex, ...snap };
+    state.audit.dismissed.add(f.key);
+    state.audit.note = `Updated Part ${fp.partLabel} · ${fp.fieldLabel} in the form (Undo last fix reverts it).`;
+    state.activePart = fp.partIndex;
+    markDirty();
+    render();
+    toast(`Updated ${fp.fieldLabel} in Part ${fp.partLabel}`);
+    return;
+  }
+  if (f.textPatch) {
+    const tp = f.textPatch;
+    const out = generateCase(state.templates, cs);
+    const before = printedText(out, tp.section);
+    const next = applyEdit(before, tp);
+    if (next === null) return toast('The report text has changed since the audit; run Audit again');
+    const snapCase = JSON.parse(JSON.stringify({ parts: cs.parts, meta: cs.meta, options: cs.options, snippets: cs.snippets, comment: cs.comment, patches: cs.patches, edits: cs.edits }));
+    const r = out.edited?.[tp.section] ? null : writeBack(state.templates, cs, tp.section, next);
+    if (r) {
+      for (const k of Object.keys(r.caseState)) if (!KEEP_KEYS.has(k) && JSON.stringify(r.caseState[k]) !== JSON.stringify(cs[k])) cs[k] = r.caseState[k];
+      state.audit.note = r.changes.length ? `Written back into the form (${tp.sectionLabel}).` : `Applied as a reversible patch on ${tp.sectionLabel}.`;
+    } else {
+      cs.edits = cs.edits || {};
+      cs.edits[tp.section] = next;
+      state.audit.note = `Applied to ${tp.sectionLabel} as edited text (Revert goes back).`;
+    }
+    state.audit.undo = { caseState: cs, kind: 'case', snapCase };
+    state.audit.dismissed.add(f.key);
+    markDirty();
+    render();
+    toast(`Applied fix to ${tp.sectionLabel}`);
+  }
+}
+
+function undoAuditFix() {
+  const u = state.audit.undo;
+  const cs = state.caseState;
+  if (!u || u.caseState !== cs) return;
+  if (u.kind === 'field') {
+    const part = cs.parts[u.partIndex];
+    if (part && part.label === u.partLabel) {
+      part.values = Object.fromEntries(u.previous.map(([k, v]) => [k, Array.isArray(v) ? [...v] : v]));
+    }
+  } else if (u.kind === 'case' && u.snapCase) {
+    Object.assign(cs, u.snapCase);
+  }
+  state.audit.undo = null;
+  state.audit.note = 'Reverted the last staging audit fix.';
+  markDirty();
+  render();
+  toast('Reverted staging audit fix');
 }
 
 // ---------- LIS macro / block key override ----------
