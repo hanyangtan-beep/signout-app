@@ -29,7 +29,7 @@ import {
 import { writeBack, carryPatches, carryText, blockText, showValue, patchFor } from './writeback.js';
 import { loadSettings as loadProofSettings, saveSettings as saveProofSettings, status as hanSlideStatus, proofread as hanSlideProofread, describeStatus, normaliseCode } from './hanslide.js';
 import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, vertexExtract, vertexAudit, vertexDraft, describeVertexStatus, VERTEX_PROOFREAD_SYSTEM_PROMPT } from './vertexai.js';
-import { DRAFT_RESPONSE_SCHEMA, buildDraftPrompt, parseDraftReply, vetDraftReply, applyDraftToPart } from './aidraft.js';
+import { DRAFT_RESPONSE_SCHEMA, buildDraftPrompt, parseDraftReply, vetDraftReply, applyDraftToPart, FORM_FILL_RESPONSE_SCHEMA, buildFormFillPrompt, parseFormFillReply, vetFormFillReply, applyFormFillToPart } from './aidraft.js';
 import { isAuditEligible, AUDIT_RESPONSE_SCHEMA, buildAuditPrompt, parseAuditReply, vetAuditFindings, applyAuditFieldPatch } from './aiaudit.js';
 import { EXTRACT_RESPONSE_SCHEMA, buildExtractPrompt, parseExtractReply, vetExtractedFields, applyExtractedFields, CASE_EXTRACT_RESPONSE_SCHEMA, buildCaseExtractPrompt, parseCaseExtractReply, vetCaseExtractedFields, applyCaseExtractedFields, INTAKE_RESPONSE_SCHEMA, buildIntakePrompt, parseIntakeReply, vetIntakeParts } from './aiextract.js';
 
@@ -1586,38 +1586,53 @@ function openPathwayChart(i) {
   nodes.dlgPathway.showModal();
 }
 
-// ---------- Shorthand-to-report AI drafting for Generic (free text) parts (src/aidraft.js) ----------
+// ---------- Shorthand-to-report & Shorthand-to-form AI autofill (src/aidraft.js) ----------
 const aiDraft = { text: {}, busy: false, note: '', undo: null };
 
-function genericDraftCard(part, i) {
+function shorthandCard(s, part, i) {
+  const isGeneric = s.id === GENERIC_ID;
   const key = `${part.label}:${i}`;
   const ta = el('textarea', {
     class: 'input',
     rows: '2',
-    placeholder: 'Jot shorthand findings (e.g. "ulcerated mod diff SCC, 18 mm, DOI 6 mm, PNI+, LVI-, deep margin 4 mm")',
+    placeholder: isGeneric
+      ? 'Jot shorthand findings (e.g. "ulcerated mod diff SCC, 18 mm, DOI 6 mm, PNI+, LVI-, deep margin 4 mm")'
+      : 'Dictate or jot shorthand findings to autofill form fields (e.g. "mod diff adeno, pT3, LVI+, PNI-, 2/18 nodes+, CRM 4 mm, MMR intact")',
     oninput: (e) => { aiDraft.text[key] = e.target.value; }
   });
   ta.value = aiDraft.text[key] || '';
   const canUndo = aiDraft.undo?.caseState === state.caseState && aiDraft.undo?.partIndex === i;
-  return el('div', { class: 'field', style: 'margin-bottom:12px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;' },
-    el('label', { text: 'Draft from shorthand (AI · Gemini 3.8 Flash)' }),
-    ta,
-    el('div', { class: 'lis-row', style: 'margin-top:6px;' },
-      el('button', {
-        type: 'button',
-        class: 'btn small',
-        text: aiDraft.busy ? 'Drafting\u2026' : 'Draft with AI',
-        disabled: aiDraft.busy,
-        title: 'Expand shorthand notes into British-English, LIS-ready Microscopy and Diagnosis fields',
-        onclick: () => runGenericDraft(part, i, key)
-      }),
-      canUndo ? el('button', {
-        type: 'button',
-        class: 'btn ghost small',
-        text: 'Undo AI draft',
-        onclick: () => undoGenericDraft(i)
-      }) : null,
-      aiDraft.note ? el('span', { class: 'muted lis-status', text: aiDraft.note }) : null));
+  const row = el('div', { class: 'lis-row', style: 'margin-top:6px;' },
+    el('button', {
+      type: 'button',
+      class: 'btn small',
+      text: aiDraft.busy ? (isGeneric ? 'Drafting\u2026' : 'Filling\u2026') : (isGeneric ? 'Draft with AI' : 'Fill form with AI'),
+      disabled: aiDraft.busy,
+      title: isGeneric
+        ? 'Expand shorthand notes into British-English, LIS-ready Microscopy and Diagnosis fields'
+        : 'Map shorthand findings straight into this template\u2019s structured fields (schema-vetted, with Undo)',
+      onclick: () => (isGeneric ? runGenericDraft(part, i, key) : runFormFill(s, part, i, key))
+    }),
+    canUndo ? el('button', {
+      type: 'button',
+      class: 'btn ghost small',
+      text: isGeneric ? 'Undo AI draft' : 'Undo AI fill',
+      onclick: () => undoAiDraft(i)
+    }) : null,
+    aiDraft.note ? el('span', { class: 'muted lis-status', text: aiDraft.note }) : null);
+
+  if (isGeneric) {
+    return el('div', { class: 'field', style: 'margin-bottom:12px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;' },
+      el('label', { text: 'Draft from shorthand (AI · Gemini 3.8 Flash)' }),
+      ta,
+      row);
+  }
+  const box = el('details', { class: 'field-group', style: 'margin-bottom:10px;' },
+    el('summary', { text: 'Fill form from shorthand (AI · Gemini 3.8 Flash)' }),
+    el('div', { class: 'field', style: 'margin-top:6px;' }, ta, row));
+  box.open = localStorage.getItem('signout.shorthand') === 'open' || aiDraft.busy || canUndo || !!(aiDraft.text[key] || '').trim();
+  box.addEventListener('toggle', () => localStorage.setItem('signout.shorthand', box.open ? 'open' : 'closed'));
+  return box;
 }
 
 async function runGenericDraft(part, i, key) {
@@ -1672,7 +1687,64 @@ async function runGenericDraft(part, i, key) {
   }
 }
 
-function undoGenericDraft(i) {
+async function runFormFill(s, part, i, key) {
+  const cs = state.caseState;
+  const req = buildFormFillPrompt({
+    shorthand: aiDraft.text[key] || '',
+    schema: s,
+    part,
+    specimen: cs.meta?.specimen || '',
+    clinical: cs.meta?.clinical || '',
+    macro: cs.meta?.macro || ''
+  });
+  if (req.error) { aiDraft.note = req.error; renderPanel(); return toast(req.error); }
+  const token = await getToken(state.config, { interactive: false }).catch(() => '');
+  if (!token) {
+    aiDraft.note = 'Sign in to Google first to autofill with AI.';
+    renderPanel();
+    return toast(aiDraft.note);
+  }
+  aiDraft.busy = true;
+  aiDraft.note = `Mapping shorthand into ${s.shortName || s.name} fields with Gemini\u2026`;
+  renderPanel();
+  try {
+    const ans = await vertexDraft({
+      system: req.system,
+      prompt: req.prompt,
+      responseSchema: FORM_FILL_RESPONSE_SCHEMA,
+      maxOutputTokens: 4096,
+      proxyUrl: loadVertexSettings().proxyUrl,
+      token
+    });
+    if (state.caseState !== cs || state.caseState.parts[i] !== part) return;
+    const parsed = parseFormFillReply(ans.text);
+    if (!parsed.readable) throw new Error('Gemini returned an unreadable form fill; try again.');
+    const vetted = vetFormFillReply(parsed, s, part);
+    if (!vetted.applied.length && !vetted.comment) {
+      aiDraft.note = `Gemini (${ans.seconds || 0}s) found no matching form fields to update.`;
+      return toast(aiDraft.note);
+    }
+    const prevComment = cs.comment || '';
+    const snap = applyFormFillToPart(s, templateOf(part).generator, part, vetted.applied);
+    if (vetted.comment && !prevComment.trim()) cs.comment = vetted.comment;
+    aiDraft.undo = { caseState: cs, partIndex: i, prevComment, ...snap };
+    const names = vetted.applied.slice(0, 4).map((a) => a.label).join(', ');
+    const more = vetted.applied.length > 4 ? ` (+${vetted.applied.length - 4} more)` : '';
+    const unmapped = vetted.unmapped.length ? ` · Unmapped: ${vetted.unmapped.join('; ')}` : '';
+    aiDraft.note = `Filled ${vetted.applied.length} field${vetted.applied.length === 1 ? '' : 's'} (${ans.seconds || 0}s): ${names}${more}${unmapped}`;
+    markDirty();
+    render();
+    toast(`AI filled ${vetted.applied.length} field${vetted.applied.length === 1 ? '' : 's'} in Part ${part.label}`);
+  } catch (err) {
+    aiDraft.note = err.message || 'AI form fill failed.';
+    toast(aiDraft.note);
+  } finally {
+    aiDraft.busy = false;
+    if (state.caseState === cs) renderPanel();
+  }
+}
+
+function undoAiDraft(i) {
   const u = aiDraft.undo;
   const cs = state.caseState;
   if (!u || u.caseState !== cs || u.partIndex !== i) return;
@@ -1681,10 +1753,10 @@ function undoGenericDraft(i) {
   part.values = Object.fromEntries(u.previous.map(([k, v]) => [k, Array.isArray(v) ? [...v] : v]));
   cs.comment = u.prevComment;
   aiDraft.undo = null;
-  aiDraft.note = `Reverted AI draft on Part ${part.label}.`;
+  aiDraft.note = `Reverted AI fill on Part ${part.label}.`;
   markDirty();
   render();
-  toast(`Reverted AI draft on Part ${part.label}`);
+  toast(`Reverted AI fill on Part ${part.label}`);
 }
 
 function renderPanel() {
@@ -1701,7 +1773,7 @@ function renderPanel() {
   }))));
   const wiz = wizardSupported(s) ? wizardCard(s, part, i) : null;
   const pw = pathwaySupported(s) ? pathwayCard(part, i) : null;
-  const draft = s.id === GENERIC_ID ? genericDraftCard(part, i) : null;
+  const draft = shorthandCard(s, part, i);
   const head = el('div', { class: 'part-head' },
     el('h3', {}, iconForPart(part), el('span', { text: part.linked ? `Part ${part.label} (synoptic, linked to ${hostNoun(state.caseState.parts[i - 1])})` : `Part ${part.label}` })),
     picker,
