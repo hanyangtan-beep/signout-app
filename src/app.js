@@ -28,6 +28,7 @@ import {
 } from './proofread.js';
 import { writeBack, carryPatches, carryText, blockText, showValue, patchFor } from './writeback.js';
 import { loadSettings as loadProofSettings, saveSettings as saveProofSettings, status as hanSlideStatus, proofread as hanSlideProofread, describeStatus, normaliseCode } from './hanslide.js';
+import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, describeVertexStatus } from './vertexai.js';
 
 // The CNS-only code (guided intake, pathway drawer and family plates, about 180 kB) loads the
 // first time a CNS form opens rather than at start-up (docs/specs/speed.md, Phase 79). ensureTemplate
@@ -2202,13 +2203,22 @@ function proofreadIfChanged() {
   runProofread({ auto: true });
 }
 
-/** Ask PPLX 27B through Han Slide to proofread the report on screen; one question at a time. */
+/** Highest-complexity template kind in the current case, used to route Vertex AI tiers. */
+function caseKindForAi() {
+  const kinds = schemasInUse().map((s) => String(s?.kind || '').toLowerCase());
+  if (kinds.some((k) => k.includes('cancer'))) return 'cancer resection';
+  if (kinds.some((k) => k.includes('biomarker'))) return 'biomarker';
+  return kinds[0] || 'biopsy';
+}
+
+/** Ask Han Slide or Vertex AI to proofread the report on screen; one question at a time. */
 async function runProofread({ auto = false } = {}) {
   const settings = loadProofSettings();
+  const vertex = loadVertexSettings();
   const cs = state.caseState;
   if (!settings.on || !cs || !state.lastOut) return;
   if (state.proof.busy) {
-    if (!auto) toast(state.proof.caseState === cs ? 'Proofreading is already running' : 'Han Slide is still proofreading the case open before this one; try again in a minute');
+    if (!auto) toast(state.proof.caseState === cs ? 'Proofreading is already running' : 'Proofreading is still running on the previous case; try again in a minute');
     return;
   }
   const sections = reportSections(state.lastOut);
@@ -2217,13 +2227,27 @@ async function runProofread({ auto = false } = {}) {
   state.proof = { ...state.proof, busy: !question.error, error: question.error || '', caseState: cs, startedAt: Date.now(), note: null };
   renderReport();
   if (question.error) return;
+  const kind = caseKindForAi();
+  const useVertex = vertex.backend === 'vertex'
+    || (vertex.backend === 'hybrid' && (kind === 'cancer resection' || kind === 'biomarker'));
   let record = null;
+  let label = MODEL_NAME;
   try {
-    const answer = await hanSlideProofread({ ...question, code: settings.code });
+    let answer;
+    if (useVertex) {
+      const token = await getToken(state.config, { interactive: false }).catch(() => '');
+      if (!token) throw new Error('Sign in to Google first to use Vertex AI proofreading.');
+      answer = await vertexProofread({ ...question, kind, proxyUrl: vertex.proxyUrl, token });
+      label = answer.model || 'Vertex AI';
+    } else {
+      answer = await hanSlideProofread({ ...question, code: settings.code });
+    }
     if (state.caseState === cs) {
       const parsed = parseReply(answer.text);
-      if (!parsed.readable) throw new Error(`${MODEL_NAME}'s answer could not be read; try Proofread again.`);
-      const by = `${answer.model || MODEL_NAME} via Han Slide${answer.version ? ` ${answer.version}` : ''}`;
+      if (!parsed.readable) throw new Error(`${label}'s answer could not be read; try Proofread again.`);
+      const by = useVertex
+        ? `${answer.model || 'Gemini'} via Vertex AI${answer.thinkingLevel ? ` (${answer.thinkingLevel})` : ''}`
+        : `${answer.model || MODEL_NAME} via Han Slide${answer.version ? ` ${answer.version}` : ''}`;
       record = newRecord({ ...vetReply(parsed, sections), sections, by, seconds: answer.seconds, previous: cs.proofread });
       cs.proofread = record;
     }
@@ -2236,7 +2260,7 @@ async function runProofread({ auto = false } = {}) {
   renderReport();
   if (!record) { if (auto) toast('Proofreading did not run; see Proofreading'); return; }
   const open = openItems(record, [], reportSections(state.lastOut)).length;
-  toast(open ? `${MODEL_NAME}: ${open} suggestion${open === 1 ? '' : 's'} in Proofreading` : `${MODEL_NAME} found nothing to change`);
+  toast(open ? `${label}: ${open} suggestion${open === 1 ? '' : 's'} in Proofreading` : `${label} found nothing to change`);
   await keepProofRecord();
 }
 
@@ -2251,12 +2275,34 @@ async function keepProofRecord() {
   markDirty();
 }
 
-/** Settings › Proofreading › Test: ask Han Slide for its state with the code typed. */
+/** Settings › Proofreading › Test: check the selected backend (Han Slide, Vertex AI, or both). */
 async function testHanSlide() {
   const line = $('#cfg-proofStatus');
-  if (!$('#cfg-proofOn').checked) { line.textContent = 'Tick the box first: this computer contacts Han Slide only with proofreading on.'; return; }
-  line.textContent = 'Asking Han Slide\u2026';
-  try { line.textContent = describeStatus(await hanSlideStatus({ code: $('#cfg-proofCode').value })); } catch (err) { line.textContent = err.message; }
+  if (!$('#cfg-proofOn').checked) { line.textContent = 'Tick the box first: this computer contacts the proofreader only when enabled.'; return; }
+  const backend = $('#cfg-proofBackend')?.value || 'hanslide';
+  const proxyUrl = $('#cfg-proofProxyUrl')?.value;
+  if (backend === 'hanslide') {
+    line.textContent = 'Asking Han Slide\u2026';
+    try { line.textContent = describeStatus(await hanSlideStatus({ code: $('#cfg-proofCode').value })); } catch (err) { line.textContent = err.message; }
+    return;
+  }
+  const testVertex = async () => {
+    const token = await getToken(state.config, { interactive: false }).catch(() => '');
+    if (!token) throw new Error('Sign in to Google first to test Vertex AI.');
+    return describeVertexStatus(await vertexStatus({ proxyUrl, token }));
+  };
+  if (backend === 'vertex') {
+    line.textContent = 'Asking Vertex AI proxy\u2026';
+    try { line.textContent = await testVertex(); } catch (err) { line.textContent = err.message; }
+    return;
+  }
+  line.textContent = 'Testing Han Slide and Vertex AI proxy\u2026';
+  const [hs, vx] = await Promise.allSettled([
+    hanSlideStatus({ code: $('#cfg-proofCode').value }).then(describeStatus),
+    testVertex()
+  ]);
+  const fmt = (r) => (r.status === 'fulfilled' ? r.value : r.reason?.message || 'failed');
+  line.textContent = `Han Slide: ${fmt(hs)} | Vertex AI: ${fmt(vx)}`;
 }
 
 // ---------- LIS macro / block key override ----------
@@ -2875,6 +2921,9 @@ function applySettingsForm() {
   if (resetSheet || resetFolder) patch.sheetId = '';
   const hadClientId = state.config.clientId;
   saveProofSettings({ on: $('#cfg-proofOn').checked, code: $('#cfg-proofCode').value }); // this browser only
+  if ($('#cfg-proofBackend')) {
+    saveVertexSettings({ backend: $('#cfg-proofBackend').value, proxyUrl: $('#cfg-proofProxyUrl')?.value });
+  }
   saveConfig(patch);
   useAccount(); // the account's own folder and sheet ids survive a Settings save
   if (resetFolder) rememberForAccount(state.config, { folderId: patch.folderId, sheetId: '' });
@@ -2892,6 +2941,9 @@ function openSettings() {
   const proof = loadProofSettings();
   $('#cfg-proofOn').checked = proof.on;
   $('#cfg-proofCode').value = proof.code;
+  const vertex = loadVertexSettings();
+  if ($('#cfg-proofBackend')) $('#cfg-proofBackend').value = vertex.backend;
+  if ($('#cfg-proofProxyUrl')) $('#cfg-proofProxyUrl').value = vertex.proxyUrl;
   $('#cfg-proofStatus').textContent = '';
   nodes.signout.hidden = !isSignedIn();
   nodes.dlgSettings.showModal();

@@ -184,15 +184,35 @@ export async function callWithFallback(aiClient, { task, kind, system, prompt, r
 export async function verifyGoogleToken(authHeader, fetchImpl = globalThis.fetch) {
   const m = /^Bearer\s+(\S+)$/i.exec(String(authHeader || '').trim());
   if (!m) return { ok: false, status: 401, error: 'Missing Bearer token.' };
-  const res = await fetchImpl('https://www.googleapis.com/oauth2/v3/userinfo', {
-    headers: { Authorization: `Bearer ${m[1]}` }
-  });
-  if (!res.ok) return { ok: false, status: 401, error: 'Invalid or expired Google token.' };
-  const info = await res.json();
-  if (!info?.email || info.email_verified === false) {
-    return { ok: false, status: 403, error: 'Unverified Google account.' };
+  const headers = { Authorization: `Bearer ${m[1]}` };
+
+  let email = '';
+  let verified = true;
+  let authed = false;
+
+  // Browser tokens from src/gauth.js carry Drive + Sheets scopes (not userinfo.email),
+  // so check Drive about first and fall back to oauth2/v3/userinfo for gcloud CLI tokens.
+  const driveRes = await fetchImpl('https://www.googleapis.com/drive/v3/about?fields=user(emailAddress)', { headers }).catch(() => null);
+  if (driveRes?.ok) {
+    authed = true;
+    const data = await driveRes.json().catch(() => null);
+    email = data?.user?.emailAddress || '';
   }
-  const digest = emailDigest(info.email);
+
+  if (!email) {
+    const infoRes = await fetchImpl('https://www.googleapis.com/oauth2/v3/userinfo', { headers }).catch(() => null);
+    if (infoRes?.ok) {
+      authed = true;
+      const info = await infoRes.json().catch(() => null);
+      email = info?.email || '';
+      if (info?.email_verified === false) verified = false;
+    }
+  }
+
+  if (!authed) return { ok: false, status: 401, error: 'Invalid or expired Google token.' };
+  if (!email || !verified) return { ok: false, status: 403, error: 'Unverified Google account.' };
+
+  const digest = emailDigest(email);
   if (!BUILT_IN_ALLOWED.has(digest)) {
     return { ok: false, status: 403, error: 'Account is not on the Han Sign-out allow-list.' };
   }
