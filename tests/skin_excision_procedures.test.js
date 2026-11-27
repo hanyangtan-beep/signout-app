@@ -73,16 +73,17 @@ test('schema: Procedure follows the site; four linked defaults; the small margin
   assert.equal(ids[ids.indexOf('specimenName') + 1], 'procedure');
   const proc = fieldOf('procedure');
   assert.equal(proc.type, 'select');
-  assert.deepEqual(proc.options, ['Excision', 'Shave', 'Punch', 'Curettings']);
+  assert.deepEqual(proc.options, ['Excision', 'Incision', 'Shave', 'Punch', 'Curettings']);
   assert.equal(proc.default, 'Excision');
-  assert.deepEqual(fieldOf('blocks').defaultByField, { field: 'procedure', map: { Shave: '1', Punch: '1', Curettings: '1' } });
+  assert.deepEqual(fieldOf('blocks').defaultByField, { field: 'procedure', map: { Incision: '1', Shave: '1', Punch: '1', Curettings: '1' } });
   assert.equal(linkedDefault(fieldOf('clinicalLabel'), 'Shave'), '');
+  assert.equal(linkedDefault(fieldOf('clinicalLabel'), 'Incision'), '');
   assert.equal(linkedDefault(fieldOf('clinicalLabel'), 'Excision'), 'nodule');
   assert.equal(linkedDefault(fieldOf('lesionAppearance'), 'Punch'), 'Papule');
   assert.equal(linkedDefault(fieldOf('diagnosis'), 'Curettings'), 'Seborrhoeic keratosis');
   assert.equal(linkedDefault(fieldOf('diagnosis'), 'Punch'), 'Nodular basal cell carcinoma');
   const small = fieldOf('smallMargin');
-  assert.deepEqual(small.options, ['Not stated', 'Completely excised', 'Lesion extends to the edge of the shave', 'Lesion extends to the lateral margin', 'Involves deep margin']);
+  assert.deepEqual(small.options, ['Not stated', 'Completely excised', 'Lesion extends to the margins (incisional biopsy)', 'Lesion extends to the edge of the shave', 'Lesion extends to the lateral margin', 'Involves deep margin']);
   assert.equal(small.default, 'Not stated');
   assert.ok(!small.optionsByField.map.Punch.includes('Lesion extends to the edge of the shave'));
   assert.equal(fieldOf('ellipseSize').label, 'Specimen size (cm)');
@@ -90,19 +91,21 @@ test('schema: Procedure follows the site; four linked defaults; the small margin
   assert.equal(manifest.find((t) => t.id === 'skin_lesion'), undefined, 'the retired form is gone');
 });
 
-test('visibility: a shave or punch hides the ellipse fields; curettings also hide size, appearance and margins', () => {
-  const hidden = (procedure) => schema.fields.filter((f) => !isVisible(f, { ...createPart(schema, 0).values, procedure })).map((f) => f.id);
-  const ELLIPSE = ['orientation', 'macroMargin', 'inking', 'blockScheme', 'marginSuperior', 'marginInferior', 'marginLateral', 'marginMedial', 'marginDeep', 'completeness'];
-  for (const p of ['Shave', 'Punch']) {
+test('visibility: a shave, punch or incision hides the ellipse fields; curettings also hide size, appearance and margins', () => {
+  const hidden = (procedure, extra = {}) => schema.fields.filter((f) => !isVisible(f, { ...createPart(schema, 0).values, procedure, ...extra })).map((f) => f.id);
+  const ELLIPSE = ['orientation', 'macroMargin', 'inking', 'blockScheme', 'marginScheme', 'marginRadial', 'margin12', 'margin3', 'margin6', 'margin9', 'marginSuperior', 'marginInferior', 'marginLateral', 'marginMedial', 'marginDeep', 'completeness'];
+  for (const p of ['Incision', 'Shave', 'Punch']) {
     const h = hidden(p);
     for (const id of ELLIPSE) assert.ok(h.includes(id), `${p}: ${id}`);
     for (const id of ['smallMargin', 'lesionSize', 'lesionAppearance', 'ellipseSize', 'blocks']) assert.ok(!h.includes(id), `${p}: ${id} shows`);
   }
   const cur = hidden('Curettings');
   for (const id of [...ELLIPSE, 'smallMargin', 'lesionSize', 'lesionAppearance']) assert.ok(cur.includes(id), `Curettings: ${id}`);
-  const exc = hidden('Excision');
-  for (const id of ELLIPSE) assert.ok(!exc.includes(id), `Excision: ${id} shows`);
-  assert.ok(exc.includes('smallMargin'));
+  const excUnoriented = hidden('Excision');
+  for (const id of ['orientation', 'macroMargin', 'inking', 'blockScheme', 'marginScheme', 'marginRadial', 'marginDeep', 'completeness']) assert.ok(!excUnoriented.includes(id), `Excision (unoriented): ${id} shows`);
+  for (const id of ['marginSuperior', 'marginInferior', 'marginLateral', 'marginMedial', 'margin12', 'margin3', 'margin6', 'margin9', 'smallMargin']) assert.ok(excUnoriented.includes(id), `Excision (unoriented): ${id} hidden`);
+  const excAnat = hidden('Excision', { marginScheme: gen.SCHEME_ANATOMICAL });
+  for (const id of ['marginSuperior', 'marginInferior', 'marginLateral', 'marginMedial', 'marginDeep']) assert.ok(!excAnat.includes(id), `Excision (anatomical): ${id} shows`);
 });
 
 test('shave: macro, block key, margin sentence and diagnosis in the retired form\'s wording', () => {

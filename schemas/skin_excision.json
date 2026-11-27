@@ -1,12 +1,13 @@
 {
   "id": "skin_excision",
-  "version": "2026.10",
+  "version": "2026.11",
   "name": "Skin lesion excision",
-  "shortName": "Skin · excision, shave, punch, curettings",
+  "shortName": "Skin · excision, incision, shave, punch, curettings",
   "label": "Skin excision",
   "organ": "SKIN",
   "system": "Skin",
   "kind": "benign resection",
+  "kindLabel": "Excision / biopsy",
   "rank": 30,
   "aliases": [
     "BCC",
@@ -42,6 +43,9 @@
     "scar",
     "skin tag",
     "fibroepithelial polyp",
+    "incision",
+    "incisional",
+    "incisional biopsy",
     "shave",
     "punch",
     "curettings",
@@ -69,6 +73,9 @@
       "wide excision",
       "re-excision",
       "ellipse",
+      "incision",
+      "incisional",
+      "incisional biopsy",
       "shave",
       "punch",
       "curetting",
@@ -127,7 +134,7 @@
         "field": "specimenName",
         "from": "detail",
         "fallback": "text",
-        "strip": "^(?!.*lid\\s+margin)(?!.*\\b(?:anal|costal)\\s+margin)\\s*(?:\\S+\\s+){0,3}margins?(?:\\s+\\w{1,2}|\\s+(?:on|of|from|at)\\b.*)?\\s*$|^\\s*\\?\\s*|^\\s*(?:skin\\s+)?(?:(?:sebac\\w*|seb|epidermoid|epidermal|pilar|tri\\w*lemmal|infected|inflamed|ruptured|recurrent|pigmented)\\s+)*(?:cysts?|keratos[ie]s|SK|lesions?|nodules?|warts?|naev[iu]s|nev[iu]s|moles?|BCC|SCC)\\s+(?:(?:at|over|on|of|from|in)\\s+(?:the\\s+)?)?(?!(?:wall|contents?|lining|excision|biops\\w*|with|and|x)\\b)(?=[A-Za-z])|\\b(?:skin(?:\\s+and)?|excision(?:al)?\\s+biops(?:y|ies)|incisional\\s+biops(?:y|ies)|wide\\s+(?:local\\s+)?excision|re-?excision|excisional|excision|excised|ellipse|shave(?:\\s+biopsy)?|punch(?:\\s+biopsy)?|curett(?:ings?|age)|biops(?:y|ies)|debrided|debridement)\\b|(?:\\(\\s*)?(?:\\?|\\b(?:\\d+(?:\\.\\d+)?\\s*(?:mm|cm)\\b|\\d+(?:\\.\\d+)?\\s*x\\s*\\d|x\\s*\\d+\\b|lesions?|lestions?|nodules?|nodular|mass(?:es)?|lumps?|swellings?|cysts?|cystic|sebac\\w*|seb|epidermoid|epidermal|pilar|tri\\w*lemmal|dermoid|cutaneous|subcut\\w*|eccrine|apocrine|papillomas?|tags?|polyps?|warts?|viral|verruca\\w*|seborrh?o?eic|keratos[ie]s|keratotic|actinic|AK|SK|naev[iu]s|naevi|nev[iu]s|nevi|moles?|pigmented|melanocytic|BCC|SCC|basal|squamous|(?!stomas?\\b)\\w+omas?|\\w+itis|DFSP|pyogenic|scars?|keloid|ulcers?|ulcerated|venous|tumou?rs?|growths?|papules?|plaques?|patch(?:es)?|rash|erythematous|vascular|induration|indurated|perilesional|blister\\w*|abscess\\w*|chronic|xanthelasma|Bowen\\S*|corns?|callus|horn|stitch\\w*|sttich\\w*|stich\\w*|(?:short|long)(?=(?:\\s+(?:and\\s+)?(?:short|long))*\\s+(?:stitch|suture|sttich|stich))|sutures?|previously|infected|inflamed|recurrent|ruptured|superficial|suspicious|suspected|query|multiple|tissue|further|resection)\\b).*$",
+        "strip": "^(?!.*lid\\s+margin)(?!.*\\b(?:anal|costal)\\s+margin)\\s*(?:\\S+\\s+){0,3}margins?(?:\\s+\\w{1,2}|\\s+(?:on|of|from|at)\\b.*)?\\s*$|^\\s*\\?\\s*|^\\s*(?:skin\\s+)?(?:(?:sebac\\w*|seb|epidermoid|epidermal|pilar|tri\\w*lemmal|infected|inflamed|ruptured|recurrent|pigmented)\\s+)*(?:cysts?|keratos[ie]s|SK|lesions?|nodules?|warts?|naev[iu]s|nev[iu]s|moles?|BCC|SCC)\\s+(?:(?:at|over|on|of|from|in)\\s+(?:the\\s+)?)?(?!(?:wall|contents?|lining|excision|incision\\w*|biops\\w*|with|and|x)\\b)(?=[A-Za-z])|\\b(?:skin(?:\\s+and)?|excision(?:al)?\\s+biops(?:y|ies)|incision(?:al)?\\s+biops(?:y|ies)|wide\\s+(?:local\\s+)?excision|re-?excision|excisional|excision|excised|incisional|incision|ellipse|shave(?:\\s+biopsy)?|punch(?:\\s+biopsy)?|curett(?:ings?|age)|biops(?:y|ies)|debrided|debridement)\\b|(?:\\(\\s*)?(?:\\?|\\b(?:\\d+(?:\\.\\d+)?\\s*(?:mm|cm)\\b|\\d+(?:\\.\\d+)?\\s*x\\s*\\d|x\\s*\\d+\\b|lesions?|lestions?|nodules?|nodular|mass(?:es)?|lumps?|swellings?|cysts?|cystic|sebac\\w*|seb|epidermoid|epidermal|pilar|tri\\w*lemmal|dermoid|cutaneous|subcut\\w*|eccrine|apocrine|papillomas?|tags?|polyps?|warts?|viral|verruca\\w*|seborrh?o?eic|keratos[ie]s|keratotic|actinic|AK|SK|naev[iu]s|naevi|nev[iu]s|nevi|moles?|pigmented|melanocytic|BCC|SCC|basal|squamous|(?!stomas?\\b)\\w+omas?|\\w+itis|DFSP|pyogenic|scars?|keloid|ulcers?|ulcerated|venous|tumou?rs?|growths?|papules?|plaques?|patch(?:es)?|rash|erythematous|vascular|induration|indurated|perilesional|blister\\w*|abscess\\w*|chronic|xanthelasma|Bowen\\S*|corns?|callus|horn|stitch\\w*|sttich\\w*|stich\\w*|(?:short|long)(?=(?:\\s+(?:and\\s+)?(?:short|long))*\\s+(?:stitch|suture|sttich|stich))|sutures?|previously|infected|inflamed|recurrent|ruptured|superficial|suspicious|suspected|query|multiple|tissue|further|resection)\\b).*$",
         "dedupe": true,
         "lower": true
       },
@@ -135,6 +142,10 @@
         "field": "procedure",
         "from": "map",
         "map": [
+          [
+            "\\bincision",
+            "Incision"
+          ],
           [
             "\\b(excision|excised|ellipse)",
             "Excision"
@@ -217,6 +228,7 @@
       "type": "select",
       "options": [
         "Excision",
+        "Incision",
         "Shave",
         "Punch",
         "Curettings"
@@ -232,6 +244,7 @@
       "defaultByField": {
         "field": "procedure",
         "map": {
+          "Incision": "",
           "Shave": "",
           "Punch": "",
           "Curettings": ""
@@ -291,13 +304,21 @@
       "group": "Macroscopy",
       "options": [
         "None",
+        "Suture at 12 o'clock",
         "Suture at 12 o'clock = superior",
         "Other – describe"
       ],
+      "optionLabels": {
+        "None": "None (unoriented)",
+        "Suture at 12 o'clock": "Suture at 12 o'clock (clock-face)",
+        "Suture at 12 o'clock = superior": "Suture at 12 o'clock = superior (anatomical)",
+        "Other – describe": "Other – describe"
+      },
       "default": "None",
       "showIf": {
         "field": "procedure",
         "not": [
+          "Incision",
           "Shave",
           "Punch",
           "Curettings"
@@ -320,6 +341,7 @@
           {
             "field": "procedure",
             "not": [
+              "Incision",
               "Shave",
               "Punch",
               "Curettings"
@@ -338,6 +360,7 @@
       "showIf": {
         "field": "procedure",
         "not": [
+          "Incision",
           "Shave",
           "Punch",
           "Curettings"
@@ -358,6 +381,7 @@
       "showIf": {
         "field": "procedure",
         "not": [
+          "Incision",
           "Shave",
           "Punch",
           "Curettings"
@@ -375,6 +399,7 @@
       "defaultByField": {
         "field": "procedure",
         "map": {
+          "Incision": "1",
           "Shave": "1",
           "Punch": "1",
           "Curettings": "1"
@@ -394,6 +419,7 @@
       "showIf": {
         "field": "procedure",
         "not": [
+          "Incision",
           "Shave",
           "Punch",
           "Curettings"
@@ -450,7 +476,7 @@
         "Lipoma",
         "Naevus lipomatosus cutaneous superficialis",
         "Benign adnexal tumour, other",
-        "Benign, other"
+        "Skin lesion, other"
       ],
       "optionGroups": [
         {
@@ -583,17 +609,175 @@
       "default": "Absent"
     },
     {
+      "id": "marginScheme",
+      "label": "Margin orientation",
+      "type": "select",
+      "options": [
+        "Unoriented (radial / deep)",
+        "Clock-face (12 / 3 / 6 / 9 / deep)",
+        "Anatomical (superior / inferior / lateral / medial / deep)"
+      ],
+      "default": "Unoriented (radial / deep)",
+      "defaultByField": {
+        "field": "orientation",
+        "map": {
+          "None": "Unoriented (radial / deep)",
+          "Suture at 12 o'clock": "Clock-face (12 / 3 / 6 / 9 / deep)",
+          "Suture at 12 o'clock = superior": "Anatomical (superior / inferior / lateral / medial / deep)",
+          "Other – describe": "Anatomical (superior / inferior / lateral / medial / deep)"
+        }
+      },
+      "showIf": {
+        "field": "procedure",
+        "not": [
+          "Incision",
+          "Shave",
+          "Punch",
+          "Curettings"
+        ]
+      }
+    },
+    {
+      "id": "marginRadial",
+      "label": "Closest radial margin (mm)",
+      "type": "text",
+      "placeholder": "2",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "procedure",
+            "not": [
+              "Incision",
+              "Shave",
+              "Punch",
+              "Curettings"
+            ]
+          },
+          {
+            "field": "marginScheme",
+            "is": "Unoriented (radial / deep)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "margin12",
+      "label": "12 o'clock margin (mm)",
+      "type": "text",
+      "placeholder": "2",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "procedure",
+            "not": [
+              "Incision",
+              "Shave",
+              "Punch",
+              "Curettings"
+            ]
+          },
+          {
+            "field": "marginScheme",
+            "is": "Clock-face (12 / 3 / 6 / 9 / deep)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "margin3",
+      "label": "3 o'clock margin (mm)",
+      "type": "text",
+      "placeholder": "2.5",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "procedure",
+            "not": [
+              "Incision",
+              "Shave",
+              "Punch",
+              "Curettings"
+            ]
+          },
+          {
+            "field": "marginScheme",
+            "is": "Clock-face (12 / 3 / 6 / 9 / deep)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "margin6",
+      "label": "6 o'clock margin (mm)",
+      "type": "text",
+      "placeholder": "3",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "procedure",
+            "not": [
+              "Incision",
+              "Shave",
+              "Punch",
+              "Curettings"
+            ]
+          },
+          {
+            "field": "marginScheme",
+            "is": "Clock-face (12 / 3 / 6 / 9 / deep)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "margin9",
+      "label": "9 o'clock margin (mm)",
+      "type": "text",
+      "placeholder": "2",
+      "default": "",
+      "showIf": {
+        "all": [
+          {
+            "field": "procedure",
+            "not": [
+              "Incision",
+              "Shave",
+              "Punch",
+              "Curettings"
+            ]
+          },
+          {
+            "field": "marginScheme",
+            "is": "Clock-face (12 / 3 / 6 / 9 / deep)"
+          }
+        ]
+      }
+    },
+    {
       "id": "marginSuperior",
       "label": "Superior margin (mm)",
       "type": "text",
       "placeholder": "1.5",
       "default": "",
       "showIf": {
-        "field": "procedure",
-        "not": [
-          "Shave",
-          "Punch",
-          "Curettings"
+        "all": [
+          {
+            "field": "procedure",
+            "not": [
+              "Incision",
+              "Shave",
+              "Punch",
+              "Curettings"
+            ]
+          },
+          {
+            "field": "marginScheme",
+            "is": "Anatomical (superior / inferior / lateral / medial / deep)"
+          }
         ]
       }
     },
@@ -604,11 +788,20 @@
       "placeholder": "2.5",
       "default": "",
       "showIf": {
-        "field": "procedure",
-        "not": [
-          "Shave",
-          "Punch",
-          "Curettings"
+        "all": [
+          {
+            "field": "procedure",
+            "not": [
+              "Incision",
+              "Shave",
+              "Punch",
+              "Curettings"
+            ]
+          },
+          {
+            "field": "marginScheme",
+            "is": "Anatomical (superior / inferior / lateral / medial / deep)"
+          }
         ]
       }
     },
@@ -619,11 +812,20 @@
       "placeholder": "3.5",
       "default": "",
       "showIf": {
-        "field": "procedure",
-        "not": [
-          "Shave",
-          "Punch",
-          "Curettings"
+        "all": [
+          {
+            "field": "procedure",
+            "not": [
+              "Incision",
+              "Shave",
+              "Punch",
+              "Curettings"
+            ]
+          },
+          {
+            "field": "marginScheme",
+            "is": "Anatomical (superior / inferior / lateral / medial / deep)"
+          }
         ]
       }
     },
@@ -634,11 +836,20 @@
       "placeholder": "6",
       "default": "",
       "showIf": {
-        "field": "procedure",
-        "not": [
-          "Shave",
-          "Punch",
-          "Curettings"
+        "all": [
+          {
+            "field": "procedure",
+            "not": [
+              "Incision",
+              "Shave",
+              "Punch",
+              "Curettings"
+            ]
+          },
+          {
+            "field": "marginScheme",
+            "is": "Anatomical (superior / inferior / lateral / medial / deep)"
+          }
         ]
       }
     },
@@ -651,6 +862,7 @@
       "showIf": {
         "field": "procedure",
         "not": [
+          "Incision",
           "Shave",
           "Punch",
           "Curettings"
@@ -670,6 +882,7 @@
       "showIf": {
         "field": "procedure",
         "not": [
+          "Incision",
           "Shave",
           "Punch",
           "Curettings"
@@ -685,8 +898,36 @@
         "Inferior",
         "Lateral",
         "Medial",
+        "12 o'clock",
+        "3 o'clock",
+        "6 o'clock",
+        "9 o'clock",
+        "Radial",
         "Deep"
       ],
+      "optionsByField": {
+        "field": "marginScheme",
+        "map": {
+          "Unoriented (radial / deep)": [
+            "Radial",
+            "Deep"
+          ],
+          "Clock-face (12 / 3 / 6 / 9 / deep)": [
+            "12 o'clock",
+            "3 o'clock",
+            "6 o'clock",
+            "9 o'clock",
+            "Deep"
+          ],
+          "Anatomical (superior / inferior / lateral / medial / deep)": [
+            "Superior",
+            "Inferior",
+            "Lateral",
+            "Medial",
+            "Deep"
+          ]
+        }
+      },
       "default": [],
       "showIf": {
         "all": [
@@ -697,6 +938,7 @@
           {
             "field": "procedure",
             "not": [
+              "Incision",
               "Shave",
               "Punch",
               "Curettings"
@@ -712,6 +954,7 @@
       "options": [
         "Not stated",
         "Completely excised",
+        "Lesion extends to the margins (incisional biopsy)",
         "Lesion extends to the edge of the shave",
         "Lesion extends to the lateral margin",
         "Involves deep margin"
@@ -719,6 +962,20 @@
       "optionsByField": {
         "field": "procedure",
         "map": {
+          "Incision": [
+            "Lesion extends to the margins (incisional biopsy)",
+            "Not stated",
+            "Lesion extends to the lateral margin",
+            "Involves deep margin",
+            "Completely excised"
+          ],
+          "Shave": [
+            "Not stated",
+            "Completely excised",
+            "Lesion extends to the edge of the shave",
+            "Lesion extends to the lateral margin",
+            "Involves deep margin"
+          ],
           "Punch": [
             "Not stated",
             "Completely excised",
@@ -728,9 +985,16 @@
         }
       },
       "default": "Not stated",
+      "defaultByField": {
+        "field": "procedure",
+        "map": {
+          "Incision": "Lesion extends to the margins (incisional biopsy)"
+        }
+      },
       "showIf": {
         "field": "procedure",
         "is": [
+          "Incision",
           "Shave",
           "Punch"
         ]
@@ -755,7 +1019,7 @@
           "Melanoma – see comment"
         ]
       },
-      "text": "An invasive skin cancer is identified ({parts}). This benign template does not stage the lesion; the QMH skin cancer template should be used for the final synoptic report."
+      "text": "An invasive skin cancer is identified ({parts}). This template does not stage the lesion; the QMH skin cancer template should be used for the final synoptic report."
     }
   ],
   "example": {
@@ -784,6 +1048,12 @@
           "keratotic": true,
           "pni": "Absent",
           "ulceration": "Absent",
+          "marginScheme": "Anatomical (superior / inferior / lateral / medial / deep)",
+          "marginRadial": "",
+          "margin12": "",
+          "margin3": "",
+          "margin6": "",
+          "margin9": "",
           "marginSuperior": "1.5",
           "marginInferior": "2.5",
           "marginLateral": "3.5",

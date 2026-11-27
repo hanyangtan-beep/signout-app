@@ -26,7 +26,7 @@ const ORIGINAL = [
   'Nodular basal cell carcinoma', 'Superficial BCC', 'Infiltrative BCC', 'Micronodular BCC', 'Keratoacanthoma',
   'Seborrhoeic keratosis', 'Intradermal naevus', 'Compound naevus', 'Dermatofibroma', 'Pyogenic granuloma',
   'Actinic keratosis', 'Squamous cell carcinoma in situ (Bowen disease)', 'Invasive SCC – see comment',
-  'Melanoma – see comment', 'Benign, other'
+  'Melanoma – see comment', 'Skin lesion, other'
 ];
 
 // option -> [diagnosis line after the dash, closing sentences before the margin block]
@@ -73,7 +73,7 @@ test('Phase 40 lesions join the list; the original options keep their order and 
   assert.equal(new Set(opts).size, opts.length, 'no duplicate options');
   assert.deepEqual(opts.filter((o) => ORIGINAL.includes(o)), ORIGINAL);
   for (const o of Object.keys(ADDED)) assert.ok(opts.includes(o), o);
-  assert.deepEqual(opts.slice(-2), ['Benign adnexal tumour, other', 'Benign, other'], 'the two catch-alls close the list');
+  assert.deepEqual(opts.slice(-2), ['Benign adnexal tumour, other', 'Skin lesion, other'], 'the two catch-alls close the list');
   assert.equal(field.default, 'Nodular basal cell carcinoma');
   assert.equal(field.type, 'select');
 });
@@ -87,7 +87,7 @@ test('optgroups: every option in exactly one group, except the two catch-alls th
   const grouped = groups.flatMap((g) => g.options);
   assert.equal(new Set(grouped).size, grouped.length, 'no option in two groups');
   for (const o of grouped) assert.ok(field.options.includes(o), `group option ${o} is a real option`);
-  assert.deepEqual(field.options.filter((o) => !grouped.includes(o)), ['Benign adnexal tumour, other', 'Benign, other']);
+  assert.deepEqual(field.options.filter((o) => !grouped.includes(o)), ['Benign adnexal tumour, other', 'Skin lesion, other']);
   assert.deepEqual(groups.find((g) => g.label === 'Neural').options, ['Neurofibroma', 'Schwannoma', 'Granular cell tumour']);
   assert.deepEqual(groups.find((g) => g.label === 'Adnexal, sebaceous').options, ['Sebaceous hyperplasia', 'Sebaceous adenoma', 'Sebaceoma', 'Naevus sebaceus']);
 });

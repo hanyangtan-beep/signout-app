@@ -9,7 +9,7 @@ import path from 'node:path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-export const MANIFEST_KEYS = ['id', 'name', 'shortName', 'label', 'organ', 'system', 'kind', 'rank', 'aliases', 'match', 'version', 'generator'];
+export const MANIFEST_KEYS = ['id', 'name', 'shortName', 'label', 'organ', 'system', 'kind', 'kindLabel', 'rank', 'aliases', 'match', 'version', 'generator'];
 // `biomarker` was already a kind the picker groups (ROWS.top in src/picker.js, 2026-09-12) and the
 // planned placeholders already used it; breast_biomarkers is the first built template to carry it.
 export const KINDS = ['biopsy', 'benign resection', 'cancer resection', 'frozen', 'cytology', 'biomarker', 'generic'];

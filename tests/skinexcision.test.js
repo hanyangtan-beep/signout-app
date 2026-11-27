@@ -15,21 +15,21 @@ const one = (values, options = {}) => {
   Object.assign(c.options, options);
   return c;
 };
-const MARGINS = { marginSuperior: '1.5', marginInferior: '2.5', marginLateral: '3.5', marginMedial: '6', marginDeep: '2.5' };
+const MARGINS = { marginScheme: gen.SCHEME_ANATOMICAL, marginSuperior: '1.5', marginInferior: '2.5', marginLateral: '3.5', marginMedial: '6', marginDeep: '2.5' };
 const MARGIN_LINES = '- Superior: 1.5 mm\n- Inferior: 2.5 mm\n- Lateral: 3.5 mm\n- Medial: 6 mm\n- Deep: 2.5 mm';
 const BCC_PARA = 'Sections show a piece of hair bearing skin with epidermis and dermis. A basaloid tumour is seen arising from the epidermis and infiltrating into the dermis, forming solid nodules with peripheral palisading. The cells display oval basophilic nuclei, prominent nucleoli, pink cytoplasm and indistinct cytoplasmic borders. Areas of central keratinisation are seen within the tumour. Mitoses are occasionally seen. The findings are those of nodular basal cell carcinoma, keratotic variant.';
 
-test('metadata: benign skin resection with search aliases and complete defaults', () => {
+test('metadata: skin lesion excision with search aliases and complete defaults', () => {
   assert.equal(schema.id, 'skin_excision');
   assert.equal(schema.generator, 'skinexcision');
   assert.equal(schema.kind, 'benign resection');
+  assert.equal(schema.kindLabel, 'Excision / biopsy');
   assert.equal(schema.system, 'Skin');
   assert.equal(schema.name, 'Skin lesion excision');
   assert.equal(schema.label, 'Skin excision');
   assert.equal(schema.organ, 'SKIN');
   assert.equal(schema.rank, 30);
-  // Phase 43: the retired Skin lesion form's shave, punch and curettings are Procedure choices here.
-  assert.equal(schema.shortName, 'Skin · excision, shave, punch, curettings');
+  assert.equal(schema.shortName, 'Skin · excision, incision, shave, punch, curettings');
   assert.ok(schema.shortName.includes(' · '));
   assert.ok(schema.aliases.length >= 6);
   for (const a of ['BCC', 'basal cell carcinoma', 'keratoacanthoma', 'seborrhoeic keratosis', 'naevus', 'nevus', 'dermatofibroma', 'pyogenic granuloma', 'actinic keratosis', 'SCC in situ', 'Bowen', 'margins', 'ellipse', 'orientation suture']) assert.ok(schema.aliases.includes(a), a);
@@ -137,6 +137,7 @@ test('each diagnosis option yields the right capitalised diagnosis', () => {
   assert.equal(dx('Squamous cell carcinoma in situ (Bowen disease)'), `${P}SQUAMOUS CELL CARCINOMA IN SITU (BOWEN DISEASE); completely excised`);
   assert.equal(dx('Invasive SCC – see comment'), `${P}INVASIVE SQUAMOUS CELL CARCINOMA; see comment`);
   assert.equal(dx('Melanoma – see comment'), `${P}MELANOMA; see comment`);
+  assert.equal(dx('Skin lesion, other'), `${P}SKIN LESION (see microscopic examination); completely excised`);
   assert.equal(dx('Benign, other'), `${P}BENIGN SKIN LESION (see microscopic examination); completely excised`);
   // keratotic flag is ignored outside BCC
   assert.equal(dx('Keratoacanthoma', { keratotic: true }), `${P}KERATOACANTHOMA; completely excised`);
@@ -171,7 +172,7 @@ test('involved and close margins: house sentences and diagnosis clauses', () => 
   const inv = run(one({ specimenName: 'left cheek', keratotic: true, ...MARGINS, marginDeep: 'involved', completeness: 'Involved – which', involvedMargins: ['Deep'] }));
   assert.equal(inv.diagnosis, 'SKIN, left cheek nodule, excision - NODULAR BASAL CELL CARCINOMA, keratotic variant; involved at the deep margin');
   assert.ok(inv.microscopy.includes('Excision is incomplete; the lesion involves the deep margin. The margins are as follows:\n- Superior: 1.5 mm\n- Inferior: 2.5 mm\n- Lateral: 3.5 mm\n- Medial: 6 mm\n- Deep: involved'));
-  const two = run(one({ completeness: 'Involved – which', involvedMargins: ['Lateral', 'Deep'] }));
+  const two = run(one({ marginScheme: gen.SCHEME_ANATOMICAL, completeness: 'Involved – which', involvedMargins: ['Lateral', 'Deep'] }));
   assert.ok(two.microscopy.endsWith('Excision is incomplete; the lesion involves the lateral and deep margins.'));
   assert.ok(two.diagnosis.endsWith('; involved at the lateral and deep margins'));
   const none = run(one({ completeness: 'Involved – which', involvedMargins: [] }));
@@ -180,7 +181,7 @@ test('involved and close margins: house sentences and diagnosis clauses', () => 
   assert.ok(close.microscopy.includes('Excision is complete but close (< 1 mm) and the margins are as follows:\n- Superior: 1.5 mm'));
   assert.ok(close.microscopy.endsWith('- Deep: 0.5 mm'));
   assert.equal(close.diagnosis, 'SKIN, nose nodule, excision - NODULAR BASAL CELL CARCINOMA; excised but close (closest margin 0.5 mm, deep)');
-  const tie = run(one({ marginSuperior: '2', marginDeep: '2' }));
+  const tie = run(one({ marginScheme: gen.SCHEME_ANATOMICAL, marginSuperior: '2', marginDeep: '2' }));
   assert.ok(tie.diagnosis.endsWith('; completely excised (closest margin 2 mm, superior and deep)'));
 });
 
@@ -218,7 +219,7 @@ test('invasive SCC and melanoma give a short line and the QMH skin cancer templa
   assert.equal(scc.diagnosis, 'SKIN, left cheek nodule, excision - INVASIVE SQUAMOUS CELL CARCINOMA; see comment');
   assert.equal(scc.microscopy, 'Sections show an invasive squamous cell carcinoma arising from the epidermis and infiltrating the dermis; see comment.');
   assert.ok(!scc.microscopy.includes('margins are as follows'));
-  assert.equal(scc.comment, 'An invasive skin cancer is identified. This benign template does not stage the lesion; the QMH skin cancer template should be used for the final synoptic report.');
+  assert.equal(scc.comment, 'An invasive skin cancer is identified. This template does not stage the lesion; the QMH skin cancer template should be used for the final synoptic report.');
   const mel = run(one({ diagnosis: 'Melanoma – see comment' }));
   assert.equal(mel.diagnosis, 'SKIN, nodule, excision - MELANOMA; see comment');
   assert.ok(mel.microscopy.includes('features of melanoma; see comment.'));

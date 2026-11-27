@@ -639,7 +639,7 @@ function menuItem(t, current) {
     type: 'button', role: 'menuitem', class: 'menu-item', 'aria-current': String(t.id === current), 'data-template': t.id,
     title: state.dirty || state.caseState.meta?.accession ? `Use ${t.name} for part ${activePart().label}` : `New ${t.name} case`,
     onclick: () => { sysmenu.open = null; switchTemplate(t.id).catch((e) => toast(e.message)); }
-  }, organIcon(t), el('span', { class: 'mi-text' }, el('span', { class: 'mi-name', text: t.name }), el('span', { class: 'mi-sub', text: KIND_LABEL[t.kind] || t.kind })));
+  }, organIcon(t), el('span', { class: 'mi-text' }, el('span', { class: 'mi-name', text: t.name }), el('span', { class: 'mi-sub', text: t.kindLabel || KIND_LABEL[t.kind] || t.kind })));
 }
 
 function systemButton(row, g, current) {
@@ -788,7 +788,7 @@ function paletteRow(t, i, current) {
   },
   organIcon(t),
   el('span', {}, el('span', { class: 'pi-name', text: t.shortName === labelOf(t) ? t.name : t.shortName }), el('span', { class: 'pi-sub', text: `${t.name}${t.id === current ? ' · current' : ''}${t.aliases?.length ? ' · ' + t.aliases.slice(0, 4).join(', ') : ''}` })),
-  el('span', { class: 'pi-kind', text: KIND_LABEL[t.kind] || t.kind }),
+  el('span', { class: 'pi-kind', text: t.kindLabel || KIND_LABEL[t.kind] || t.kind }),
   isBiopsy(t) ? el('span') : pin);
   return row;
 }

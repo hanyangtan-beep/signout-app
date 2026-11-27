@@ -49,17 +49,22 @@ export const isBcc = (v) => BCC.includes(v.diagnosis);
 export const isCancerReferral = (v) => CANCER.includes(dash(v.diagnosis));
 export const isMalignant = (v) => MALIGNANT.includes(dash(v.diagnosis));
 
-export const SMALL = ['Shave', 'Punch', 'Curettings'];
+export const SMALL = ['Incision', 'Shave', 'Punch', 'Curettings'];
 export const procedureOf = (v) => (SMALL.includes(v.procedure) ? v.procedure : 'Excision');
 export const isSmall = (v) => procedureOf(v) !== 'Excision';
-// The shave, punch and curettings wording is the retired Skin lesion form's, unchanged.
+// The shave, punch and curettings wording is the retired Skin lesion form's, unchanged; incision adds partial-sampling biopsy.
 const PROC = {
   Excision: { word: 'excision' },
+  Incision: { word: 'incision', received: 'is an incisional biopsy of skin', block: 'Incisional biopsy, all embedded.' },
   Shave: { word: 'shave', received: 'is a shave of skin', block: 'Shave, all embedded.' },
   Punch: { word: 'punch', received: 'is a punch biopsy of skin', block: 'Punch, all embedded.' },
   Curettings: { word: 'curettings', received: 'are multiple fragments of skin (curettings)', block: 'Curettings, all embedded.' }
 };
 const procWord = (v) => PROC[procedureOf(v)].word;
+
+export const SCHEME_UNORIENTED = 'Unoriented (radial / deep)';
+export const SCHEME_CLOCK = 'Clock-face (12 / 3 / 6 / 9 / deep)';
+export const SCHEME_ANATOMICAL = 'Anatomical (superior / inferior / lateral / medial / deep)';
 
 export const MARGINS = [
   ['Superior', 'marginSuperior'],
@@ -68,6 +73,32 @@ export const MARGINS = [
   ['Medial', 'marginMedial'],
   ['Deep', 'marginDeep']
 ];
+export const MARGINS_CLOCK = [
+  ["12 o'clock", 'margin12'],
+  ["3 o'clock", 'margin3'],
+  ["6 o'clock", 'margin6'],
+  ["9 o'clock", 'margin9'],
+  ['Deep', 'marginDeep']
+];
+export const MARGINS_UNORIENTED = [
+  ['Closest radial', 'marginRadial', 'Radial'],
+  ['Deep', 'marginDeep', 'Deep']
+];
+
+const hasAny = (v, ids) => ids.some((id) => String(v[id] || '').trim() !== '');
+
+/** Active margin scheme; falls back to whichever margin fields are populated for saved pre-redesign cases. */
+export function marginSchemeOf(v) {
+  if ([SCHEME_UNORIENTED, SCHEME_CLOCK, SCHEME_ANATOMICAL].includes(v.marginScheme)) return v.marginScheme;
+  const inv = Array.isArray(v.involvedMargins) ? v.involvedMargins : [];
+  if (hasAny(v, ['marginSuperior', 'marginInferior', 'marginLateral', 'marginMedial']) || inv.some((m) => ['Superior', 'Inferior', 'Lateral', 'Medial'].includes(m))) return SCHEME_ANATOMICAL;
+  if (hasAny(v, ['margin12', 'margin3', 'margin6', 'margin9']) || inv.some((m) => m.includes("o'clock"))) return SCHEME_CLOCK;
+  if (hasAny(v, ['marginRadial']) || inv.includes('Radial')) return SCHEME_UNORIENTED;
+  const orient = dash(v.orientation || '');
+  if (orient === "Suture at 12 o'clock") return SCHEME_CLOCK;
+  if (orient === 'None' || orient === '') return SCHEME_UNORIENTED;
+  return SCHEME_ANATOMICAL;
+}
 
 /** "2.5x1.2" -> "2.5 x 1.2 cm"; '' when blank. */
 export function sizePhrase(raw) {
@@ -86,10 +117,12 @@ export function mmPhrase(raw) {
   return n === null ? s : `${fmt(n)} mm`;
 }
 
-/** Filled margins in house order: [{ name, raw, mm }]. */
+/** Filled margins in house order for the active scheme: [{ name, shortName, raw, mm }]. */
 export function marginList(v) {
-  return MARGINS.filter(([, id]) => String(v[id] || '').trim() !== '')
-    .map(([name, id]) => ({ name, raw: String(v[id]).trim(), mm: num(v[id]) }));
+  const scheme = marginSchemeOf(v);
+  const defs = scheme === SCHEME_CLOCK ? MARGINS_CLOCK : scheme === SCHEME_UNORIENTED ? MARGINS_UNORIENTED : MARGINS;
+  return defs.filter(([, id]) => String(v[id] || '').trim() !== '')
+    .map(([name, id, shortName]) => ({ name, shortName: shortName || name, raw: String(v[id]).trim(), mm: num(v[id]) }));
 }
 
 /** Closest numeric margin: { mm, names: ['Superior'] } or null when no numeric margin is typed. */
@@ -97,7 +130,7 @@ export function closestMargin(v) {
   const numeric = marginList(v).filter((m) => m.mm !== null);
   if (!numeric.length) return null;
   const min = Math.min(...numeric.map((m) => m.mm));
-  return { mm: min, names: numeric.filter((m) => m.mm === min).map((m) => m.name) };
+  return { mm: min, names: numeric.filter((m) => m.mm === min).map((m) => m.shortName || m.name) };
 }
 
 /** "left cheek nodule" — site then clinical label, whichever are filled. */
@@ -151,7 +184,8 @@ export function macro(part, ctx) {
   const lesion = sizePhrase(v.lesionSize);
   s.push(`Received in formalin is an ellipse of skin${ellipse ? ` measuring ${ellipse}` : ''} bearing ${appearance(v)}${lesion ? ` measuring ${lesion}` : ''}.`);
   const orient = dash(v.orientation || '');
-  if (orient === "Suture at 12 o'clock = superior") s.push("A suture marks 12 o'clock, taken as superior.");
+  if (orient === "Suture at 12 o'clock") s.push("A suture marks 12 o'clock.");
+  else if (orient === "Suture at 12 o'clock = superior") s.push("A suture marks 12 o'clock, taken as superior.");
   else if (orient === 'Other - describe') {
     const d = stripDot(v.orientationOther);
     if (d) s.push(`The specimen is orientated: ${lc1(d)}.`);
@@ -453,6 +487,9 @@ const LESION_MICRO = {
     'Sections show a benign adnexal tumour; see additional description.',
     'There is no evidence of malignancy.'
   ],
+  'Skin lesion, other': [
+    'Sections show a skin lesion; see additional description.'
+  ],
   'Benign, other': [
     'Sections show a benign skin lesion; see additional description.',
     'There is no evidence of malignancy.'
@@ -485,14 +522,15 @@ const involvedNames = (v) => listJoin(involvedList(v).map((s) => s.toLowerCase()
 // "Not stated" prints nothing, and curettings carry no margin.
 const SMALL_MARGIN = {
   'Completely excised': ['The lesion is completely excised.', 'completely excised'],
+  'Lesion extends to the margins (incisional biopsy)': ['The lesion extends to the margins of this incisional biopsy; completeness of excision cannot be assessed.', 'lesion extends to the margins (incisional biopsy)'],
   'Lesion extends to the edge of the shave': ['The lesion extends to the edge of the shave.', 'lesion extends to the edge of the shave'],
   'Lesion extends to the lateral margin': ['The lesion extends to the lateral margin.', 'lesion extends to the lateral margin'],
   'Involves deep margin': ['The lesion involves the deep margin.', 'lesion involves the deep margin']
 };
 const smallMargin = (v) => (procedureOf(v) === 'Curettings' ? null : SMALL_MARGIN[dash(v.smallMargin || '')] || null);
-/** "The lesion extends to the edge of the shave." for a shave or punch; '' when not stated or curettings. */
+/** "The lesion extends to the edge of the shave." for an incision, shave or punch; '' when not stated or curettings. */
 export const smallMarginSentence = (v) => smallMargin(v)?.[0] || '';
-/** "lesion extends to the edge of the shave" for a shave or punch; '' when not stated or curettings. */
+/** "lesion extends to the edge of the shave" for an incision, shave or punch; '' when not stated or curettings. */
 export const smallMarginClause = (v) => smallMargin(v)?.[1] || '';
 
 export function microscopy(part) {
@@ -500,7 +538,7 @@ export function microscopy(part) {
   const s = [];
   const dx = dash(v.diagnosis || '');
   if (isBcc(v)) s.push(...bccParagraph(v).filter(Boolean));
-  else s.push(...(LESION_MICRO[dx] || LESION_MICRO['Benign, other']));
+  else s.push(...(LESION_MICRO[dx] || LESION_MICRO['Skin lesion, other']));
 
   if (v.ulceration === 'Present') s.push('The overlying epidermis is ulcerated.');
   if (v.pni === 'Present') s.push('Perineural invasion is present.');
@@ -570,6 +608,7 @@ const MAIN = {
   Lipoma: 'LIPOMA',
   'Naevus lipomatosus cutaneous superficialis': 'NAEVUS LIPOMATOSUS CUTANEOUS SUPERFICIALIS',
   'Benign adnexal tumour, other': 'BENIGN ADNEXAL TUMOUR (see microscopic examination)',
+  'Skin lesion, other': 'SKIN LESION (see microscopic examination)',
   'Benign, other': 'BENIGN SKIN LESION (see microscopic examination)'
 };
 

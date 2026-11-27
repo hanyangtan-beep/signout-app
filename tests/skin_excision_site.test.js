@@ -69,7 +69,7 @@ test('site: a line that names no site leaves Site blank rather than guessing', (
 test('site: the fill rule and the casing option', () => {
   const rule = schema.match.fill.find((r) => r.field === 'specimenName');
   assert.deepEqual([rule.from, rule.fallback, rule.lower], ['detail', 'text', true]);
-  assert.equal(schema.version, '2026.10');
+  assert.equal(schema.version, '2026.11');
   // `strip` cuts from the first lesion word to the end of each comma piece; a piece left empty is dropped.
   assert.equal(stripWords('Skin, left nasal scar, sttich at 12 OC', rule.strip), 'left nasal');
   assert.equal(stripWords('Skin, right hip haematoma', rule.strip), 'right hip');

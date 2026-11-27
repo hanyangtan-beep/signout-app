@@ -218,10 +218,14 @@ export function optionsFor(field, values) {
   return field.options || [];
 }
 
-/** Coerce a value to something in the allowed option list (first option if not). */
+/** Coerce a value to something in the allowed option list (first option if not; filtered array for multiselect). */
 export function coerceValue(field, values) {
   if (!field.options) return values[field.id];
   const opts = optionsFor(field, values);
+  if (field.type === 'multiselect') {
+    const cur = Array.isArray(values[field.id]) ? values[field.id] : [];
+    return cur.filter((v) => opts.includes(v));
+  }
   return opts.includes(values[field.id]) ? values[field.id] : opts[0];
 }
 
