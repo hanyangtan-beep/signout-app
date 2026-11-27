@@ -29,7 +29,7 @@ import {
 import { writeBack, carryPatches, carryText, blockText, showValue, patchFor } from './writeback.js';
 import { loadSettings as loadProofSettings, saveSettings as saveProofSettings, status as hanSlideStatus, proofread as hanSlideProofread, describeStatus, normaliseCode } from './hanslide.js';
 import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, vertexExtract, describeVertexStatus, VERTEX_PROOFREAD_SYSTEM_PROMPT } from './vertexai.js';
-import { EXTRACT_RESPONSE_SCHEMA, buildExtractPrompt, parseExtractReply, vetExtractedFields, applyExtractedFields } from './aiextract.js';
+import { EXTRACT_RESPONSE_SCHEMA, buildExtractPrompt, parseExtractReply, vetExtractedFields, applyExtractedFields, INTAKE_RESPONSE_SCHEMA, buildIntakePrompt, parseIntakeReply, vetIntakeParts } from './aiextract.js';
 
 // The CNS-only code (guided intake, pathway drawer and family plates, about 180 kB) loads the
 // first time a CNS form opens rather than at start-up (docs/specs/speed.md, Phase 79). ensureTemplate
@@ -2555,23 +2555,69 @@ function warnOnCapture(fields) {
 // markers when the paste has them and otherwise from the lines and spaceless commas the LIS writes,
 // so a single specimen ("Antrum") is a part without needing a letter. "Build parts"
 // replaces the case's parts, pre-fills what the LIS line tells us and derives the case title.
-const intake = { key: '', raw: '', rows: [], picks: {}, userPicks: new Set(), built: false };   // picks: label -> template id in the strip; userPicks: labels the user changed; built: collapsed after Build
+const intake = { key: '', raw: '', rows: [], picks: {}, userPicks: new Set(), built: false, aiBusy: false, aiNote: '' };   // picks: label -> template id in the strip; userPicks: labels the user changed; built: collapsed after Build
 
 function intakeNodes() { return { box: nodes.meta.specimen, strip: $('#intake-preview') }; }
+
+async function parseIntakeWithAi() {
+  const meta = state.caseState?.meta || {};
+  const raw = meta.specimen || '';
+  const req = buildIntakePrompt({ raw, clinical: meta.clinical || '', manifest: state.manifest });
+  if (req.error) return toast(req.error);
+  const token = await getToken(state.config, { interactive: false }).catch(() => '');
+  if (!token) {
+    intake.aiNote = 'Sign in to Google first to parse specimen lists with AI.';
+    renderIntake();
+    return toast(intake.aiNote);
+  }
+  intake.aiBusy = true;
+  intake.aiNote = 'Asking Gemini to split parts and match templates\u2026';
+  renderIntake();
+  try {
+    const ans = await vertexExtract({
+      system: req.system,
+      prompt: req.prompt,
+      responseSchema: INTAKE_RESPONSE_SCHEMA,
+      proxyUrl: loadVertexSettings().proxyUrl,
+      token
+    });
+    if ((state.caseState?.meta?.specimen || '') !== raw) return;
+    const parsedReply = parseIntakeReply(ans.text);
+    if (!parsedReply.readable) throw new Error('Gemini returned an unreadable specimen list; try again.');
+    const { parsed, rows } = vetIntakeParts(parsedReply, state.manifest, meta.clinical || '');
+    if (!rows.length) {
+      intake.aiNote = `Gemini (${ans.seconds || 0}s) found no specimen parts.`;
+      return toast(intake.aiNote);
+    }
+    intake.parsed = parsed;
+    intake.rows = rows;
+    intake.userPicks = new Set();
+    intake.picks = Object.fromEntries(rows.map((r) => [r.label, r.templateId]));
+    intake.built = false;
+    intake.aiNote = `AI parsed ${rows.length} part${rows.length === 1 ? '' : 's'} (${ans.seconds || 0}s) — review and click Build parts.`;
+    toast(`AI parsed ${rows.length} part${rows.length === 1 ? '' : 's'}`);
+  } catch (err) {
+    intake.aiNote = err.message || 'AI specimen parsing failed.';
+    toast(intake.aiNote);
+  } finally {
+    intake.aiBusy = false;
+    renderIntake();
+  }
+}
 
 function renderIntake() {
   const { strip } = intakeNodes();
   if (!strip) return;
   const meta = state.caseState?.meta || {};
   const raw = meta.specimen || '';
-  if (!raw.trim()) { strip.hidden = true; strip.replaceChildren(); intake.key = ''; intake.raw = ''; intake.rows = []; intake.picks = {}; intake.userPicks = new Set(); intake.built = false; return; }
+  if (!raw.trim()) { strip.hidden = true; strip.replaceChildren(); intake.key = ''; intake.raw = ''; intake.rows = []; intake.picks = {}; intake.userPicks = new Set(); intake.built = false; intake.aiNote = ''; return; }
   const key = `${raw}\u0000${meta.clinical || ''}`;
   if (key !== intake.key) {
     const parsed = parseIntake(raw);
     const history = [parsed.history, meta.clinical || ''].filter(Boolean).join('\n');
     intake.parsed = parsed;
     intake.rows = matchParts(parsed, history, state.manifest);
-    if (raw !== intake.raw) { intake.userPicks = new Set(); intake.built = false; }   // a new list: forget manual picks and re-expand
+    if (raw !== intake.raw) { intake.userPicks = new Set(); intake.built = false; intake.aiNote = ''; }   // a new list: forget manual picks and re-expand
     intake.picks = Object.fromEntries(intake.rows.map((r) => [r.label, intake.userPicks.has(r.label) && entryOf(intake.picks[r.label]) ? intake.picks[r.label] : r.templateId]));
     intake.key = key;
     intake.raw = raw;
@@ -2598,16 +2644,17 @@ function renderIntake() {
     const [mark, tip] = TIER[r.tier] || TIER.none;
     return el('tr', {},
       el('td', { class: 'letter', text: `(${r.label})` }),
-      el('td', { class: 'text', text: r.text, title: r.raw }),
+      el('td', { class: 'text', text: r.text, title: r.aiReason ? `${r.raw} — ${r.aiReason}` : r.raw }),
       el('td', { class: 'pick' }, sel),
-      el('td', { class: `tier tier-${r.tier}`, text: mark, title: tip }));
+      el('td', { class: `tier tier-${r.tier}`, text: mark, title: r.aiReason || tip }));
   }));
   const hasParts = rows.length > 0;
   const replacing = partsTouched();
-  const build = el('button', { type: 'button', class: 'btn primary small', id: 'btn-build-parts', text: replacing ? 'Replace parts' : 'Build parts', disabled: !hasParts, onclick: () => buildPartsFromIntake().catch((e) => toast(e.message)) });
-  const summary = hasParts ? `${rows.length} part${rows.length === 1 ? '' : 's'} · ${rows.filter((r) => r.tier === 'confident').length} confident · ${rows.filter((r) => intake.picks[r.label] === GENERIC_ID).length} generic` : '';
+  const build = el('button', { type: 'button', class: 'btn primary small', id: 'btn-build-parts', text: replacing ? 'Replace parts' : 'Build parts', disabled: !hasParts || intake.aiBusy, onclick: () => buildPartsFromIntake().catch((e) => toast(e.message)) });
+  const aiBtn = el('button', { type: 'button', class: 'btn ghost small', id: 'btn-intake-ai', text: intake.aiBusy ? 'Parsing\u2026' : 'Parse with AI', disabled: intake.aiBusy, title: 'Use Gemini (Vertex AI) to split messy multi-part lists and pick the best template for each part', onclick: () => parseIntakeWithAi() });
+  const summary = intake.aiNote || (hasParts ? `${rows.length} part${rows.length === 1 ? '' : 's'} · ${rows.filter((r) => r.tier === 'confident').length} confident · ${rows.filter((r) => intake.picks[r.label] === GENERIC_ID).length} generic` : '');
   const warns = [...(parsed?.warnings || [])];
-  const foot = el('div', { class: 'intake-foot' }, build, el('span', { class: 'muted', text: summary }),
+  const foot = el('div', { class: 'intake-foot' }, build, aiBtn, el('span', { class: 'muted', text: summary }),
     ...warns.map((w) => el('span', { class: 'intake-warn', text: w })));
   strip.replaceChildren(...(hasParts ? [table] : []), foot);
   strip.hidden = false;

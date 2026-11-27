@@ -6,6 +6,7 @@
 
 import { optionsFor, applyLinkedDefaults, applyDerived, normalisePart } from './engine.js';
 import { britishise } from './style.js';
+import { LETTERS, MAX_PARTS, GENERIC_ID, splitTriple, tidyText, matchParts } from './intake.js';
 
 const MAX_FIELDS = 35;
 const MAX_PROMPT_CHARS = 36000;
@@ -221,4 +222,124 @@ export function applyExtractedFields(schema, generator, part, applied) {
   }
   normalisePart(schema, part);
   return snapshot;
+}
+
+// ---------- AI multi-part specimen intake (gemini-3.5-flash-lite) ----------
+
+export const INTAKE_RESPONSE_SCHEMA = {
+  type: 'OBJECT',
+  properties: {
+    history: { type: 'STRING' },
+    parts: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        properties: {
+          label: { type: 'STRING' },
+          text: { type: 'STRING' },
+          templateId: { type: 'STRING' },
+          reason: { type: 'STRING' }
+        },
+        required: ['label', 'text', 'templateId']
+      }
+    }
+  },
+  required: ['parts']
+};
+
+export const INTAKE_SYSTEM_PROMPT = [
+  'You parse surgical pathology LIS specimen lists into ordered specimen parts and match each part to the best installed reporting template.',
+  '',
+  'Rules:',
+  '- Split [SPECIMEN] into ordered specimen parts labelled A, B, C... (single uppercase letters, up to Z). Preserve explicit container letters when present; map numbered containers (1., 2., 3.) to A, B, C.',
+  '- Separate any clinical history embedded inside [SPECIMEN] into "history" — never turn clinical history into a specimen part.',
+  '- Write each part\'s "text" as a clean, concise LIS specimen line preserving laterality, organ, subsite, clock position, lymph node station, and procedure (e.g. "Breast, right 11 o\'clock, core biopsy").',
+  '- Choose "templateId" strictly from the [TEMPLATES] list using BOTH the part text and [CLINICAL HISTORY] (e.g. cancer history -> cancer resection template; benign/polyp/biopsy -> biopsy or benign resection template; lymph node / SLN -> lymph_node or lymphoma_node; HER2 DISH request -> breast_biomarkers; if no template clearly fits, use "generic").',
+  '- Keep "reason" concise (<= 10 words).',
+  '- Reply with one JSON object matching the schema only.'
+].join('\n');
+
+/** Build the multi-part intake prompt from raw LIS text and the installed template manifest. */
+export function buildIntakePrompt({ raw = '', clinical = '', manifest = [] } = {}) {
+  const sp = String(raw || '').trim();
+  if (!sp) return { error: 'Paste a specimen list first.' };
+  const catalogue = manifest
+    .map((t) => {
+      const aliases = Array.isArray(t.aliases) && t.aliases.length ? ` | aliases: ${t.aliases.slice(0, 6).join(', ')}` : '';
+      return `- ${t.id} | ${t.name} | ${t.kind || ''}${aliases}`;
+    });
+  const lines = [
+    'TASK: extract',
+    'Split this LIS specimen text into ordered specimen parts and pick the best templateId for each part.',
+    '',
+    '[TEMPLATES]',
+    ...catalogue,
+    ''
+  ];
+  const cl = String(clinical || '').trim();
+  if (cl) lines.push('[CLINICAL HISTORY]', cl, '');
+  lines.push('[SPECIMEN]', sp, '', 'Reply with the JSON object only.');
+  const prompt = lines.join('\n');
+  if (prompt.length > MAX_PROMPT_CHARS) {
+    return { error: `The specimen list is too long to parse with AI (${prompt.length} characters).` };
+  }
+  return { system: INTAKE_SYSTEM_PROMPT, prompt };
+}
+
+/** Parse the JSON reply for multi-part intake; returns { history, parts[], readable }. */
+export function parseIntakeReply(text) {
+  const raw = String(text ?? '')
+    .replace(/<think>[\s\S]*?<\/think>/g, '')
+    .replace(/```(?:json)?/g, '')
+    .replace(/,\s*([}\]])/g, '$1');
+  const start = raw.indexOf('{');
+  const end = raw.lastIndexOf('}');
+  if (start >= 0 && end > start) {
+    try {
+      const obj = JSON.parse(raw.slice(start, end + 1));
+      if (obj && Array.isArray(obj.parts)) {
+        return {
+          history: typeof obj.history === 'string' ? obj.history.trim() : '',
+          parts: obj.parts,
+          readable: true
+        };
+      }
+    } catch { /* fall through */ }
+  }
+  return { history: '', parts: [], readable: false };
+}
+
+/**
+ * Validate AI-parsed specimen parts and enrich them with matchParts() metadata
+ * so buildPartsFromIntake() works identically to deterministic intake.
+ */
+export function vetIntakeParts(parsed, manifest = [], fallbackHistory = '') {
+  const validIds = new Set(manifest.map((t) => t.id));
+  validIds.add(GENERIC_ID);
+  const history = parsed?.history || String(fallbackHistory || '').trim();
+  const rawParts = [];
+  const chosenIds = [];
+  const reasons = [];
+
+  for (const p of (parsed?.parts || []).slice(0, MAX_PARTS)) {
+    const body = String(p?.text ?? '').replace(/\s+/g, ' ').trim();
+    if (!body) continue;
+    const idx = rawParts.length;
+    const rawLabel = String(p?.label ?? '').trim().toUpperCase().replace(/[^A-Z]/g, '');
+    const label = rawLabel.length === 1 ? rawLabel : (LETTERS[idx] || String(idx + 1));
+    const tid = typeof p?.templateId === 'string' && validIds.has(p.templateId.trim()) ? p.templateId.trim() : GENERIC_ID;
+    rawParts.push({ label, text: tidyText(body), raw: body, ...splitTriple(body) });
+    chosenIds.push(tid);
+    reasons.push(String(p?.reason ?? '').trim().slice(0, 100));
+  }
+
+  const parsedObj = { history, casePrefix: '', parts: rawParts, warnings: [] };
+  const matched = matchParts(parsedObj, history, manifest);
+  const rows = matched.map((r, i) => ({
+    ...r,
+    templateId: chosenIds[i],
+    tier: chosenIds[i] === GENERIC_ID ? 'none' : 'confident',
+    aiReason: reasons[i]
+  }));
+  return { parsed: parsedObj, rows };
 }
