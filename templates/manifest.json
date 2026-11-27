@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 133,
+  "count": 137,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -11866,6 +11866,479 @@
       "generator": "generic",
       "generatorPath": "generators/generic.js",
       "schemaPath": "schemas/generic.json"
+    },
+    {
+      "id": "heart_explant",
+      "name": "Heart explant — native cardiomyopathy & failed allograft",
+      "shortName": "Heart · explant",
+      "label": "Heart explant",
+      "organ": "Heart",
+      "system": "Cardiovascular",
+      "kind": "benign resection",
+      "aliases": [
+        "heart explant",
+        "explanted heart",
+        "cardiac explant",
+        "cardiomyopathy",
+        "dilated cardiomyopathy",
+        "hypertrophic cardiomyopathy",
+        "ischaemic cardiomyopathy",
+        "ischemic cardiomyopathy",
+        "arrhythmogenic cardiomyopathy",
+        "ARVC",
+        "cardiac amyloidosis",
+        "cardiac sarcoidosis",
+        "giant cell myocarditis",
+        "failed cardiac allograft",
+        "heart re-transplant",
+        "cardiac allograft vasculopathy"
+      ],
+      "match": {
+        "any": [
+          "\\bheart\\b",
+          "\\bcardiac\\b",
+          "\\bcardiomyopathy\\b",
+          "\\bmyocardium\\b"
+        ],
+        "gate": [
+          "explant",
+          "transplant",
+          "allograft",
+          "cardiomyopathy",
+          "\\bdcm\\b",
+          "\\bhcm\\b",
+          "\\bicm\\b",
+          "\\barvc\\b",
+          "amyloid",
+          "sarcoid",
+          "myocarditis",
+          "\\blvad\\b",
+          "vasculopathy",
+          "\\bcav\\b"
+        ],
+        "exclude": [
+          "biopsy",
+          "endomyocardial",
+          "valve\\s+replacement",
+          "aortic\\s+valve",
+          "mitral\\s+valve",
+          "frozen"
+        ],
+        "fill": [
+          {
+            "field": "context",
+            "map": [
+              [
+                "allograft|re-?transplant|failed\\s+graft|vasculopathy|\\bcav\\b|rejection",
+                "Failed cardiac allograft (re-transplant)"
+              ],
+              [
+                "native|cardiomyopathy|amyloid|sarcoid|myocarditis|lvad",
+                "Native diseased heart"
+              ]
+            ]
+          },
+          {
+            "field": "nativeDx",
+            "map": [
+              [
+                "ischa?emic|\\bicm\\b",
+                "Ischaemic cardiomyopathy"
+              ],
+              [
+                "hypertrophic|\\bhcm\\b",
+                "Hypertrophic cardiomyopathy (HCM)"
+              ],
+              [
+                "arrhythmogenic|\\barvc\\b|\\bacm\\b",
+                "Arrhythmogenic cardiomyopathy (ACM / ARVC)"
+              ],
+              [
+                "amyloid",
+                "Cardiac amyloidosis (restrictive cardiomyopathy)"
+              ],
+              [
+                "giant\\s+cell",
+                "Giant cell myocarditis"
+              ],
+              [
+                "myocarditis",
+                "Lymphocytic myocarditis / inflammatory cardiomyopathy"
+              ],
+              [
+                "sarcoid",
+                "Cardiac sarcoidosis"
+              ],
+              [
+                "dilated|\\bdcm\\b",
+                "Dilated cardiomyopathy (DCM)"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "1.0",
+      "generator": "heart_explant",
+      "rank": 100,
+      "generatorPath": "generators/heart_explant.js",
+      "schemaPath": "schemas/heart_explant.json"
+    },
+    {
+      "id": "kidney_explant",
+      "name": "Kidney explant — native diseased & failed allograft",
+      "shortName": "Kidney · explant / non-neoplastic",
+      "label": "Kidney explant",
+      "organ": "Kidney",
+      "system": "GU",
+      "kind": "benign resection",
+      "aliases": [
+        "kidney explant",
+        "renal allograft nephrectomy",
+        "transplant nephrectomy",
+        "failed renal graft",
+        "failed kidney transplant",
+        "polycystic kidney",
+        "ADPKD",
+        "ARPKD",
+        "acquired cystic kidney disease",
+        "xanthogranulomatous pyelonephritis",
+        "end-stage kidney",
+        "native nephrectomy"
+      ],
+      "match": {
+        "any": [
+          "\\bkidney\\b",
+          "\\bnephrectomy\\b",
+          "\\brenal\\s+allograft\\b",
+          "\\brenal\\s+graft\\b",
+          "\\bpolycystic\\s+kidney\\b",
+          "\\badpkd\\b"
+        ],
+        "gate": [
+          "explant",
+          "allograft",
+          "transplant",
+          "failed\\s+graft",
+          "rejection",
+          "polycystic",
+          "\\badpkd\\b",
+          "\\barpkd\\b",
+          "acquired\\s+cystic",
+          "end[-\\s]?stage",
+          "pyelonephritis",
+          "xanthogranulomatous",
+          "hydronephrosis",
+          "non[-\\s]?functioning"
+        ],
+        "exclude": [
+          "biopsy",
+          "core",
+          "needle",
+          "carcinoma",
+          "\\brcc\\b",
+          "wilms",
+          "urothelial",
+          "frozen"
+        ],
+        "fill": [
+          {
+            "field": "context",
+            "map": [
+              [
+                "allograft|transplant|failed\\s+graft|rejection",
+                "Failed renal allograft"
+              ],
+              [
+                "native|polycystic|adpkd|arpkd|pyelonephritis|hydronephrosis",
+                "Native diseased kidney"
+              ]
+            ]
+          },
+          {
+            "field": "side",
+            "map": [
+              [
+                "bilateral",
+                "Bilateral"
+              ],
+              [
+                "\\bleft\\b",
+                "Left"
+              ],
+              [
+                "\\bright\\b",
+                "Right"
+              ]
+            ]
+          },
+          {
+            "field": "nativeDx",
+            "map": [
+              [
+                "adpkd|adult\\s+polycystic|autosomal\\s+dominant",
+                "Autosomal dominant polycystic kidney disease (ADPKD)"
+              ],
+              [
+                "arpkd|autosomal\\s+recessive",
+                "Autosomal recessive polycystic kidney disease (ARPKD)"
+              ],
+              [
+                "acquired\\s+cystic",
+                "Acquired cystic kidney disease"
+              ],
+              [
+                "xanthogranulomatous",
+                "Xanthogranulomatous pyelonephritis"
+              ],
+              [
+                "pyelonephritis|reflux",
+                "Chronic pyelonephritis / reflux nephropathy"
+              ],
+              [
+                "hydronephrosis|obstruct",
+                "End-stage obstructive nephropathy / hydronephrosis"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "1.0",
+      "generator": "kidney_explant",
+      "rank": 100,
+      "generatorPath": "generators/kidney_explant.js",
+      "schemaPath": "schemas/kidney_explant.json"
+    },
+    {
+      "id": "liver_allograft_explant",
+      "name": "Liver allograft explant — failed graft (re-transplant)",
+      "shortName": "Liver · allograft explant",
+      "label": "Liver allograft explant",
+      "organ": "Liver",
+      "system": "Hepatobiliary",
+      "kind": "benign resection",
+      "aliases": [
+        "LAE",
+        "HAT",
+        "liver allograft explant",
+        "failed liver allograft",
+        "failed liver graft",
+        "liver re-transplant",
+        "re-transplant hepatectomy",
+        "allograft hepatectomy",
+        "chronic ductopenic rejection",
+        "hepatic artery thrombosis liver",
+        "ischaemic cholangiopathy"
+      ],
+      "match": {
+        "any": [
+          "\\bliver\\s+allograft\\b",
+          "\\bhepatic\\s+allograft\\b",
+          "\\ballograft\\s+liver\\b",
+          "\\ballograft\\s+hepatectomy\\b",
+          "\\bre-?transplant\\s+hepatectomy\\b",
+          "\\bfailed\\s+liver\\s+(?:allo)?graft\\b",
+          "\\bliver\\b"
+        ],
+        "gate": [
+          "allograft",
+          "re-?transplant",
+          "failed\\s+(?:liver\\s+)?graft",
+          "ductopenic\\s+rejection",
+          "chronic\\s+rejection"
+        ],
+        "exclude": [
+          "biopsy",
+          "core",
+          "needle",
+          "native\\s+liver",
+          "time[-\\s]?zero",
+          "back[-\\s]?table",
+          "frozen"
+        ],
+        "fill": [
+          {
+            "field": "dx",
+            "map": [
+              [
+                "chronic.*rejection|ductopeni",
+                "Chronic (ductopenic) allograft rejection"
+              ],
+              [
+                "acute.*rejection|tcmr",
+                "Acute / late-onset T-cell-mediated rejection (TCMR)"
+              ],
+              [
+                "antibody[-\\s]?mediated|\\bamr\\b",
+                "Antibody-mediated rejection (acute or chronic AMR)"
+              ],
+              [
+                "hepatic\\s+artery\\s+thrombos|ischa?emic\\s+cholangiopathy",
+                "Hepatic artery thrombosis / ischaemic cholangiopathy"
+              ],
+              [
+                "biliary\\s+stricture|obstruction",
+                "Biliary anastomotic stricture / chronic biliary obstruction"
+              ],
+              [
+                "primary\\s+non[-\\s]?function",
+                "Primary non-function / severe ischaemia-reperfusion injury"
+              ],
+              [
+                "recurren",
+                "Recurrent primary liver disease"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "1.0",
+      "generator": "liver_allograft_explant",
+      "rank": 100,
+      "generatorPath": "generators/liver_allograft_explant.js",
+      "schemaPath": "schemas/liver_allograft_explant.json"
+    },
+    {
+      "id": "lung_explant",
+      "name": "Lung explant — native ILD/cystic & failed allograft",
+      "shortName": "Lung · explant",
+      "label": "Lung explant",
+      "organ": "Lung",
+      "system": "Thoracic",
+      "kind": "benign resection",
+      "aliases": [
+        "lung explant",
+        "explanted lung",
+        "bilateral lung explant",
+        "lymphangioleiomyomatosis",
+        "LAM",
+        "usual interstitial pneumonia",
+        "UIP",
+        "IPF",
+        "NSIP",
+        "cystic fibrosis lung",
+        "emphysema explant",
+        "pulmonary hypertension explant",
+        "pulmonary Langerhans cell histiocytosis",
+        "PLCH",
+        "failed lung allograft",
+        "CLAD",
+        "bronchiolitis obliterans syndrome",
+        "restrictive allograft syndrome"
+      ],
+      "match": {
+        "any": [
+          "\\blung\\b",
+          "\\bpneumonectomy\\b",
+          "\\blung\\s+allograft\\b",
+          "\\blymphangioleiomyomatosis\\b"
+        ],
+        "gate": [
+          "explant",
+          "transplant",
+          "allograft",
+          "lymphangioleiomyomatosis",
+          "\\blam\\b",
+          "\\buip\\b",
+          "\\bipf\\b",
+          "\\bnsip\\b",
+          "interstitial\\s+lung",
+          "cystic\\s+fibrosis",
+          "emphysema",
+          "bronchiectasis",
+          "pulmonary\\s+hypertension",
+          "\\bclad\\b",
+          "obliterative\\s+bronchiolitis",
+          "restrictive\\s+allograft",
+          "langerhans"
+        ],
+        "exclude": [
+          "biopsy",
+          "transbronchial",
+          "carcinoma",
+          "adenocarcinoma",
+          "squamous",
+          "mesothelioma",
+          "frozen"
+        ],
+        "fill": [
+          {
+            "field": "context",
+            "map": [
+              [
+                "allograft|re-?transplant|failed\\s+graft|\\bclad\\b|\\bbos\\b|\\bras\\b|rejection",
+                "Failed lung allograft (re-transplant)"
+              ],
+              [
+                "native|lymphangioleiomyomatosis|\\blam\\b|\\buip\\b|\\bipf\\b|cystic\\s+fibrosis|emphysema|hypertension",
+                "Native diseased lung"
+              ]
+            ]
+          },
+          {
+            "field": "side",
+            "map": [
+              [
+                "bilateral",
+                "Bilateral"
+              ],
+              [
+                "\\bleft\\b",
+                "Left"
+              ],
+              [
+                "\\bright\\b",
+                "Right"
+              ]
+            ]
+          },
+          {
+            "field": "nativeDx",
+            "map": [
+              [
+                "lymphangioleiomyomatosis|\\blam\\b",
+                "Lymphangioleiomyomatosis (LAM)"
+              ],
+              [
+                "\\buip\\b|\\bipf\\b|usual\\s+interstitial",
+                "Usual interstitial pneumonia (UIP / IPF)"
+              ],
+              [
+                "\\bnsip\\b|non[-\\s]?specific\\s+interstitial",
+                "Fibrotic non-specific interstitial pneumonia (NSIP)"
+              ],
+              [
+                "hypersensitivity",
+                "Fibrotic hypersensitivity pneumonitis"
+              ],
+              [
+                "langerhans|\\bplch\\b",
+                "Pulmonary Langerhans cell histiocytosis (PLCH)"
+              ],
+              [
+                "cystic\\s+fibrosis|bronchiectasis",
+                "Cystic fibrosis / severe bronchiectasis"
+              ],
+              [
+                "emphysema|\\bcopd\\b",
+                "Severe emphysema / COPD"
+              ],
+              [
+                "pulmonary\\s+(?:arterial\\s+)?hypertension",
+                "Pulmonary arterial hypertension (plexogenic arteriopathy)"
+              ],
+              [
+                "sarcoid",
+                "Pulmonary sarcoidosis"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "1.0",
+      "generator": "lung_explant",
+      "rank": 100,
+      "generatorPath": "generators/lung_explant.js",
+      "schemaPath": "schemas/lung_explant.json"
     },
     {
       "id": "spleen_benign",

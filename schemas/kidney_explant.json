@@ -1,0 +1,482 @@
+{
+  "id": "kidney_explant",
+  "name": "Kidney explant — native diseased & failed allograft",
+  "shortName": "Kidney · explant / non-neoplastic",
+  "label": "Kidney explant",
+  "version": "1.0",
+  "system": "GU",
+  "organ": "Kidney",
+  "kind": "benign resection",
+  "specimenNoun": "kidney",
+  "generator": "kidney_explant",
+  "style": { "british": true },
+  "source": "Banff 2022 Classification of Renal Allograft Pathology (Naesens et al., Am J Transplant 2024) and WHO Classification of Urinary and Male Genital Tumours (5th ed.) for cystic / end-stage renal disease",
+  "aliases": [
+    "kidney explant",
+    "renal allograft nephrectomy",
+    "transplant nephrectomy",
+    "failed renal graft",
+    "failed kidney transplant",
+    "polycystic kidney",
+    "ADPKD",
+    "ARPKD",
+    "acquired cystic kidney disease",
+    "xanthogranulomatous pyelonephritis",
+    "end-stage kidney",
+    "native nephrectomy"
+  ],
+  "layout": {
+    "pack": true,
+    "macroGroups": ["Specimen and macroscopy"]
+  },
+  "match": {
+    "any": [
+      "\\bkidney\\b",
+      "\\bnephrectomy\\b",
+      "\\brenal\\s+allograft\\b",
+      "\\brenal\\s+graft\\b",
+      "\\bpolycystic\\s+kidney\\b",
+      "\\badpkd\\b"
+    ],
+    "gate": [
+      "explant",
+      "allograft",
+      "transplant",
+      "failed\\s+graft",
+      "rejection",
+      "polycystic",
+      "\\badpkd\\b",
+      "\\barpkd\\b",
+      "acquired\\s+cystic",
+      "end[-\\s]?stage",
+      "pyelonephritis",
+      "xanthogranulomatous",
+      "hydronephrosis",
+      "non[-\\s]?functioning"
+    ],
+    "exclude": [
+      "biopsy",
+      "core",
+      "needle",
+      "carcinoma",
+      "\\brcc\\b",
+      "wilms",
+      "urothelial",
+      "frozen"
+    ],
+    "fill": [
+      {
+        "field": "context",
+        "map": [
+          ["allograft|transplant|failed\\s+graft|rejection", "Failed renal allograft"],
+          ["native|polycystic|adpkd|arpkd|pyelonephritis|hydronephrosis", "Native diseased kidney"]
+        ]
+      },
+      {
+        "field": "side",
+        "map": [
+          ["bilateral", "Bilateral"],
+          ["\\bleft\\b", "Left"],
+          ["\\bright\\b", "Right"]
+        ]
+      },
+      {
+        "field": "nativeDx",
+        "map": [
+          ["adpkd|adult\\s+polycystic|autosomal\\s+dominant", "Autosomal dominant polycystic kidney disease (ADPKD)"],
+          ["arpkd|autosomal\\s+recessive", "Autosomal recessive polycystic kidney disease (ARPKD)"],
+          ["acquired\\s+cystic", "Acquired cystic kidney disease"],
+          ["xanthogranulomatous", "Xanthogranulomatous pyelonephritis"],
+          ["pyelonephritis|reflux", "Chronic pyelonephritis / reflux nephropathy"],
+          ["hydronephrosis|obstruct", "End-stage obstructive nephropathy / hydronephrosis"]
+        ]
+      }
+    ]
+  },
+  "options": [
+    { "id": "macro", "label": "Include macroscopic description", "default": true },
+    { "id": "blockKey", "label": "Include block key", "default": true }
+  ],
+  "fields": [
+    {
+      "id": "context",
+      "label": "Specimen context",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Native diseased kidney",
+      "options": ["Native diseased kidney", "Failed renal allograft"]
+    },
+    {
+      "id": "side",
+      "label": "Laterality / site",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Left",
+      "options": ["Left", "Right", "Bilateral", "Right iliac fossa (allograft)", "Left iliac fossa (allograft)", "Not specified"]
+    },
+    {
+      "id": "weight",
+      "label": "Weight (g)",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "placeholder": "e.g. 1850"
+    },
+    {
+      "id": "dimensions",
+      "label": "Dimensions (cm)",
+      "group": "Specimen and macroscopy",
+      "type": "text",
+      "placeholder": "e.g. 24.0 x 14.5 x 11.0"
+    },
+    {
+      "id": "cutSurface",
+      "label": "Cut surface appearance",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Diffusely replaced by innumerable thin-walled cysts",
+      "options": [
+        "Diffusely replaced by innumerable thin-walled cysts",
+        "Contracted, granular cortex with thinned parenchyma and multiple small cysts",
+        "Swollen, mottled haemorrhagic / infarcted parenchyma",
+        "Yellow-orange lobulated nodules distorting pelvicalyceal system",
+        "Markedly dilated pelvicalyceal system with attenuated cortex",
+        "Pale, fibrotic, shrunken end-stage kidney"
+      ]
+    },
+    {
+      "id": "maxCystCm",
+      "label": "Largest cyst diameter (cm)",
+      "group": "Specimen and macroscopy",
+      "type": "text",
+      "placeholder": "e.g. 6.5"
+    },
+    {
+      "id": "vessels",
+      "label": "Renal artery / vein & anastomotic vessels",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Patent, no thrombus",
+      "options": [
+        "Patent, no thrombus",
+        "Renal artery thrombosis",
+        "Renal vein thrombosis",
+        "Severe concentric intimal thickening / arteriosclerosis",
+        "Not identified / fragmented"
+      ]
+    },
+    {
+      "id": "blocks",
+      "label": "Number of blocks",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "placeholder": "e.g. 8"
+    },
+    {
+      "id": "macroNotes",
+      "label": "Additional macroscopic notes",
+      "group": "Specimen and macroscopy",
+      "type": "textarea",
+      "placeholder": "Optional gross details (e.g. cyst contents, solid papillary areas sampled to exclude RCC)"
+    },
+    {
+      "id": "nativeDx",
+      "label": "Primary native renal diagnosis",
+      "group": "Diagnosis and morphology",
+      "type": "select",
+      "default": "Autosomal dominant polycystic kidney disease (ADPKD)",
+      "options": [
+        "Autosomal dominant polycystic kidney disease (ADPKD)",
+        "Autosomal recessive polycystic kidney disease (ARPKD)",
+        "Acquired cystic kidney disease",
+        "End-stage renal disease (diabetic nephropathy)",
+        "End-stage renal disease (hypertensive nephrosclerosis)",
+        "End-stage renal disease (chronic glomerulonephritis, NOS)",
+        "Chronic pyelonephritis / reflux nephropathy",
+        "Xanthogranulomatous pyelonephritis",
+        "End-stage obstructive nephropathy / hydronephrosis",
+        "Other (specify)"
+      ],
+      "showIf": { "field": "context", "eq": "Native diseased kidney" },
+      "reference": {
+        "title": "Kidney explant & failed renal allograft reference gallery",
+        "intro": "Open-licence gross and histological references for polycystic kidney disease, xanthogranulomatous pyelonephritis, acute cellular rejection and BK polyomavirus nephropathy.",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "Autosomal dominant polycystic kidney disease (ADPKD)",
+            "points": [
+              "Massively enlarged kidneys diffusely replaced by innumerable variably sized fluid- or haemorrhage-filled cysts",
+              "Cysts lined by flattened to cuboidal epithelium with compressed, sclerotic intervening parenchyma and occasional papillary epithelial hyperplasia",
+              "Always sample any thickened cyst wall or solid/haemorrhagic nodule to exclude incidental RCC"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/kidney_explant/adpkd_gross.jpg",
+                "caption": "ADPKD — massively enlarged native kidney diffusely replaced by innumerable cortical and medullary cysts (gross).",
+                "credit": "Ed Uthman (Wikimedia Commons)",
+                "license": "CC BY 2.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Adult_Polycystic_Kidney.jpg"
+              },
+              {
+                "src": "assets/reference/kidney_explant/adpkd_he.jpg",
+                "caption": "Polycystic kidney disease — multiple dilated cysts lined by bland cuboidal-to-flattened epithelium with intervening fibrotic parenchyma (H&E).",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Polycystic_kidney_disease_--_intermed_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Xanthogranulomatous pyelonephritis (XGP)",
+            "points": [
+              "Sheets of lipid-laden foamy macrophages (CD68+), lymphocytes, plasma cells and multinucleated giant cells replacing parenchyma",
+              "Classic clinical and radiological mimic of renal cell carcinoma (negative for PAX8/RCC/CK; strongly CD68+)"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/kidney_explant/xgp_cd68.jpg",
+                "caption": "Xanthogranulomatous pyelonephritis — dense sheets of CD68-positive foamy histiocytes and giant cells.",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Xanthogranulomatous_pyelonephritis_cd68.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Renal allograft rejection (Banff 2022) & BK polyomavirus",
+            "points": [
+              "Active TCMR: interstitial mononuclear inflammation (i), tubulitis (t) and/or intimal arteritis (v); Chronic active TCMR adds chronic allograft arteriopathy (cv) and inflammation in areas of IFTA (i-IFTA)",
+              "Active/Chronic active ABMR: microvascular inflammation (g + ptc >= 2), transplant glomerulopathy (cg > 0), and linear peritubular capillary C4d",
+              "BK polyomavirus nephropathy: basophilic intranuclear ground-glass viral inclusions in tubular epithelium confirmed by SV40 IHC"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/kidney_explant/renal_acr.jpg",
+                "caption": "Acute cellular rejection in renal allograft — dense interstitial lymphocytic infiltrate with tubulitis (H&E).",
+                "credit": "Dept of Pathology, Calicut Medical College (Wikimedia Commons)",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Acute_cellular_rejection,_renal_graft_biopsy.jpg"
+              },
+              {
+                "src": "assets/reference/kidney_explant/bk_polyoma.jpg",
+                "caption": "BK polyomavirus — enlarged tubular epithelial nuclei with ground-glass basophilic intranuclear viral inclusions.",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Polyomavirus.jpg"
+              }
+            ]
+          }
+        ],
+        "note": "Banff 2022 renal allograft criteria (Naesens et al., Am J Transplant 2024). Click any thumbnail to enlarge."
+      }
+    },
+    {
+      "id": "allograftDx",
+      "label": "Primary failed allograft diagnosis",
+      "group": "Diagnosis and morphology",
+      "type": "select",
+      "default": "Chronic active T-cell-mediated rejection",
+      "options": [
+        "Chronic active T-cell-mediated rejection",
+        "Active T-cell-mediated rejection",
+        "Chronic active antibody-mediated rejection",
+        "Active antibody-mediated rejection",
+        "Mixed T-cell-mediated and antibody-mediated rejection",
+        "Severe chronic allograft nephropathy / IFTA",
+        "BK polyomavirus nephropathy",
+        "Calcineurin inhibitor nephrotoxicity",
+        "Allograft vascular thrombosis with infarction",
+        "Recurrent primary glomerular disease",
+        "Post-transplant lymphoproliferative disorder (PTLD)",
+        "Other (specify)"
+      ],
+      "showIf": { "field": "context", "eq": "Failed renal allograft" },
+      "reference": {
+        "title": "Failed renal allograft reference gallery (Banff 2022)",
+        "intro": "Key morphological patterns of renal allograft failure: T-cell-mediated rejection, antibody-mediated rejection, chronic allograft arteriopathy and BK polyomavirus nephropathy.",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "T-cell-mediated & antibody-mediated rejection (Banff 2022)",
+            "points": [
+              "TCMR: tubulitis (t), interstitial inflammation (i), intimal arteritis (v), chronic allograft arteriopathy (cv) with neointimal lymphocytes/foam cells",
+              "ABMR: glomerulitis (g), peritubular capillaritis (ptc), double contours / transplant glomerulopathy (cg), peritubular capillary C4d"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/kidney_explant/renal_acr.jpg",
+                "caption": "Renal allograft acute cellular rejection — dense interstitial mononuclear infiltrate with tubulitis (H&E).",
+                "credit": "Dept of Pathology, Calicut Medical College (Wikimedia Commons)",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Acute_cellular_rejection,_renal_graft_biopsy.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "BK polyomavirus nephropathy",
+            "points": [
+              "Intranuclear basophilic ground-glass viral inclusions in tubular epithelial cells with tubulointerstitial nephritis",
+              "Confirm with SV40 (simian virus 40) large T-antigen immunohistochemistry"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/kidney_explant/bk_polyoma.jpg",
+                "caption": "Polyomavirus — enlarged nuclei with homogeneous basophilic ground-glass intranuclear inclusions.",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Polyomavirus.jpg"
+              }
+            ]
+          }
+        ],
+        "note": "Banff 2022 renal allograft criteria. Click any thumbnail to enlarge."
+      }
+    },
+    {
+      "id": "dxOther",
+      "label": "Specify diagnosis",
+      "group": "Diagnosis and morphology",
+      "type": "text",
+      "placeholder": "e.g. Recurrent IgA nephropathy with crescents",
+      "showIf": {
+        "any": [
+          { "field": "nativeDx", "eq": "Other (specify)" },
+          { "field": "allograftDx", "eq": "Other (specify)" }
+        ]
+      }
+    },
+    {
+      "id": "banffFeatures",
+      "label": "Allograft / Banff 2022 histological features",
+      "group": "Banff 2022 & ancillary studies",
+      "type": "multiselect",
+      "default": [],
+      "options": [
+        "Interstitial inflammation (i)",
+        "Tubulitis (t)",
+        "Intimal arteritis / endarteritis (v)",
+        "Glomerulitis (g)",
+        "Peritubular capillaritis (ptc)",
+        "Transplant glomerulopathy / double contours (cg)",
+        "Chronic allograft arteriopathy (cv) with intimal fibrosis",
+        "Severe interstitial fibrosis and tubular atrophy (IFTA, ci3/ct3)",
+        "Arteriolar hyalinosis (ah)",
+        "Thrombotic microangiopathy (TMA)",
+        "Coagulative cortical infarction"
+      ],
+      "showIf": { "field": "context", "eq": "Failed renal allograft" }
+    },
+    {
+      "id": "c4d",
+      "label": "C4d immunohistochemistry (peritubular capillaries)",
+      "group": "Banff 2022 & ancillary studies",
+      "type": "select",
+      "default": "Not performed",
+      "options": ["Not performed", "Negative (C4d0)", "Minimal (C4d1, <10%)", "Focal (C4d2, 10-50%)", "Diffuse (C4d3, >50%)"],
+      "showIf": { "field": "context", "eq": "Failed renal allograft" }
+    },
+    {
+      "id": "sv40",
+      "label": "SV40 (BK polyomavirus) IHC",
+      "group": "Banff 2022 & ancillary studies",
+      "type": "select",
+      "default": "Not performed",
+      "options": ["Not performed", "Negative", "Positive in tubular epithelial nuclei"],
+      "showIf": { "field": "context", "eq": "Failed renal allograft" }
+    },
+    {
+      "id": "parenchymalFeatures",
+      "label": "Parenchymal & vascular changes",
+      "group": "Diagnosis and morphology",
+      "type": "multiselect",
+      "default": [],
+      "options": [
+        "Global glomerulosclerosis (>50% of glomeruli)",
+        "Marked interstitial fibrosis and tubular atrophy (IFTA)",
+        "Thyroidisation of tubules",
+        "Severe arteriosclerosis and arteriolosclerosis",
+        "Calcium oxalate crystal deposition",
+        "Papillary epithelial hyperplasia in cyst walls",
+        "Chronic pyelonephritis / lymphoid aggregates"
+      ]
+    },
+    {
+      "id": "incidentalTumour",
+      "label": "Incidental renal neoplasm identified",
+      "group": "Banff 2022 & ancillary studies",
+      "type": "select",
+      "default": "None identified",
+      "options": [
+        "None identified",
+        "Papillary adenoma (<= 15 mm)",
+        "Acquired cystic disease-associated RCC (use Kidney Ca synoptic)",
+        "Renal cell carcinoma, other subtype (use Kidney Ca synoptic)",
+        "Angiomyolipoma / benign mesenchymal lesion"
+      ]
+    },
+    {
+      "id": "morphNotes",
+      "label": "Additional microscopic notes",
+      "group": "Banff 2022 & ancillary studies",
+      "type": "textarea",
+      "placeholder": "Optional free-text observations (e.g. Banff lesion scores, immunofluorescence / EM summary)"
+    }
+  ],
+  "snippets": [
+    {
+      "id": "adpkdNoMalignancy",
+      "label": "ADPKD — no malignancy note",
+      "when": "adpkd",
+      "text": "Extensive sampling of thickened cyst walls and solid areas shows no evidence of renal cell carcinoma."
+    },
+    {
+      "id": "banffCorrelate",
+      "label": "Banff 2022 DSA / clinical correlation",
+      "when": "allograft",
+      "text": "Correlation with donor-specific HLA antibody (DSA) testing, immunosuppression history and pre-explant clinical findings is recommended in accordance with the Banff 2022 classification."
+    },
+    {
+      "id": "incidentalRccSynoptic",
+      "label": "Incidental RCC synoptic reminder",
+      "when": "incidentalRcc",
+      "text": "An incidental renal cell carcinoma is identified; formal synoptic staging should be completed using the Kidney carcinoma resection template."
+    }
+  ],
+  "example": {
+    "caseTitle": "Kidney explant — ADPKD",
+    "options": { "macro": true, "blockKey": true },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "context": "Native diseased kidney",
+          "side": "Left",
+          "weight": 2150,
+          "dimensions": "25.0 x 15.0 x 11.5",
+          "cutSurface": "Diffusely replaced by innumerable thin-walled cysts",
+          "maxCystCm": "6.5",
+          "vessels": "Patent, no thrombus",
+          "blocks": 8,
+          "macroNotes": "Cysts contain clear straw-coloured to dark haemorrhagic fluid; no solid tumour mass identified",
+          "nativeDx": "Autosomal dominant polycystic kidney disease (ADPKD)",
+          "allograftDx": "Chronic active T-cell-mediated rejection",
+          "dxOther": "",
+          "banffFeatures": [],
+          "c4d": "Not performed",
+          "sv40": "Not performed",
+          "parenchymalFeatures": [
+            "Global glomerulosclerosis (>50% of glomeruli)",
+            "Marked interstitial fibrosis and tubular atrophy (IFTA)",
+            "Severe arteriosclerosis and arteriolosclerosis"
+          ],
+          "incidentalTumour": "None identified",
+          "morphNotes": ""
+        }
+      }
+    ]
+  }
+}

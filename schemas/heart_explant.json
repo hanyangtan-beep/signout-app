@@ -1,0 +1,466 @@
+{
+  "id": "heart_explant",
+  "name": "Heart explant — native cardiomyopathy & failed allograft",
+  "shortName": "Heart · explant",
+  "label": "Heart explant",
+  "version": "1.0",
+  "system": "Cardiovascular",
+  "organ": "Heart",
+  "kind": "benign resection",
+  "specimenNoun": "heart",
+  "generator": "heart_explant",
+  "style": { "british": true },
+  "source": "ISHLT Working Formulation for Cardiac Allograft Rejection (ACR 0R-3R, pAMR 0-3, CAV) and Society for Cardiovascular Pathology / AECVP Cardiomyopathy Guidelines",
+  "aliases": [
+    "heart explant",
+    "explanted heart",
+    "cardiac explant",
+    "cardiomyopathy",
+    "dilated cardiomyopathy",
+    "hypertrophic cardiomyopathy",
+    "ischaemic cardiomyopathy",
+    "ischemic cardiomyopathy",
+    "arrhythmogenic cardiomyopathy",
+    "ARVC",
+    "cardiac amyloidosis",
+    "cardiac sarcoidosis",
+    "giant cell myocarditis",
+    "failed cardiac allograft",
+    "heart re-transplant",
+    "cardiac allograft vasculopathy"
+  ],
+  "layout": {
+    "pack": true,
+    "macroGroups": ["Specimen and macroscopy"]
+  },
+  "match": {
+    "any": [
+      "\\bheart\\b",
+      "\\bcardiac\\b",
+      "\\bcardiomyopathy\\b",
+      "\\bmyocardium\\b"
+    ],
+    "gate": [
+      "explant",
+      "transplant",
+      "allograft",
+      "cardiomyopathy",
+      "\\bdcm\\b",
+      "\\bhcm\\b",
+      "\\bicm\\b",
+      "\\barvc\\b",
+      "amyloid",
+      "sarcoid",
+      "myocarditis",
+      "\\blvad\\b",
+      "vasculopathy",
+      "\\bcav\\b"
+    ],
+    "exclude": [
+      "biopsy",
+      "endomyocardial",
+      "valve\\s+replacement",
+      "aortic\\s+valve",
+      "mitral\\s+valve",
+      "frozen"
+    ],
+    "fill": [
+      {
+        "field": "context",
+        "map": [
+          ["allograft|re-?transplant|failed\\s+graft|vasculopathy|\\bcav\\b|rejection", "Failed cardiac allograft (re-transplant)"],
+          ["native|cardiomyopathy|amyloid|sarcoid|myocarditis|lvad", "Native diseased heart"]
+        ]
+      },
+      {
+        "field": "nativeDx",
+        "map": [
+          ["ischa?emic|\\bicm\\b", "Ischaemic cardiomyopathy"],
+          ["hypertrophic|\\bhcm\\b", "Hypertrophic cardiomyopathy (HCM)"],
+          ["arrhythmogenic|\\barvc\\b|\\bacm\\b", "Arrhythmogenic cardiomyopathy (ACM / ARVC)"],
+          ["amyloid", "Cardiac amyloidosis (restrictive cardiomyopathy)"],
+          ["giant\\s+cell", "Giant cell myocarditis"],
+          ["myocarditis", "Lymphocytic myocarditis / inflammatory cardiomyopathy"],
+          ["sarcoid", "Cardiac sarcoidosis"],
+          ["dilated|\\bdcm\\b", "Dilated cardiomyopathy (DCM)"]
+        ]
+      }
+    ]
+  },
+  "options": [
+    { "id": "macro", "label": "Include macroscopic description", "default": true },
+    { "id": "blockKey", "label": "Include block key", "default": true }
+  ],
+  "fields": [
+    {
+      "id": "context",
+      "label": "Specimen context",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Native diseased heart",
+      "options": ["Native diseased heart", "Failed cardiac allograft (re-transplant)"]
+    },
+    {
+      "id": "weight",
+      "label": "Explanted heart weight (g)",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 50,
+      "step": 1,
+      "placeholder": "e.g. 540"
+    },
+    {
+      "id": "lvWallMm",
+      "label": "LV free wall thickness (mm)",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "placeholder": "e.g. 14"
+    },
+    {
+      "id": "septumMm",
+      "label": "Interventricular septum thickness (mm)",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "placeholder": "e.g. 15"
+    },
+    {
+      "id": "rvWallMm",
+      "label": "RV free wall thickness (mm)",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "placeholder": "e.g. 4"
+    },
+    {
+      "id": "chambers",
+      "label": "Ventricular chambers & myocardium (gross)",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Four-chamber / biventricular dilatation with pale patchy fibrosis",
+      "options": [
+        "Four-chamber / biventricular dilatation with pale patchy fibrosis",
+        "Dilated LV with regional transmural/subendocardial scar(s)",
+        "Asymmetric septal hypertrophy with narrowed LV outflow tract",
+        "RV dilatation with fibrofatty wall thinning",
+        "Concentric biventricular hypertrophy with firm, waxy myocardium",
+        "Mottled haemorrhagic / pale necrotic myocardium"
+      ]
+    },
+    {
+      "id": "coronaries",
+      "label": "Epicardial coronary arteries",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Patent with minimal or no atherosclerosis",
+      "options": [
+        "Patent with minimal or no atherosclerosis",
+        "Severe multivessel atherosclerotic stenosis (>=75%) / occlusion",
+        "Diffuse concentric intimal thickening (cardiac allograft vasculopathy)",
+        "Prior coronary stents and/or bypass grafts present"
+      ]
+    },
+    {
+      "id": "lvadSite",
+      "label": "Mechanical support (LVAD / BiVAD) site",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "None",
+      "options": ["None", "LV apical inflow cannula site with fibrous rim", "Biventricular assist device cannula sites"]
+    },
+    {
+      "id": "blocks",
+      "label": "Number of blocks",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "placeholder": "e.g. 14"
+    },
+    {
+      "id": "macroNotes",
+      "label": "Additional macroscopic notes",
+      "group": "Specimen and macroscopy",
+      "type": "textarea",
+      "placeholder": "Optional gross details (e.g. mural thrombus, pacemaker leads, valve leaflet changes)"
+    },
+    {
+      "id": "nativeDx",
+      "label": "Primary native cardiac diagnosis",
+      "group": "Diagnosis and morphology",
+      "type": "select",
+      "default": "Dilated cardiomyopathy (DCM)",
+      "options": [
+        "Ischaemic cardiomyopathy",
+        "Dilated cardiomyopathy (DCM)",
+        "Hypertrophic cardiomyopathy (HCM)",
+        "Arrhythmogenic cardiomyopathy (ACM / ARVC)",
+        "Cardiac amyloidosis (restrictive cardiomyopathy)",
+        "Restrictive cardiomyopathy (non-amyloid / storage / idiopathic)",
+        "Giant cell myocarditis",
+        "Lymphocytic myocarditis / inflammatory cardiomyopathy",
+        "Cardiac sarcoidosis",
+        "End-stage valvular / congenital heart disease",
+        "Other (specify)"
+      ],
+      "showIf": { "field": "context", "eq": "Native diseased heart" },
+      "reference": {
+        "title": "Heart explant reference gallery (cardiomyopathies & myocarditis)",
+        "intro": "Open-licence photomicrographs and key diagnostic criteria for cardiac amyloidosis, giant cell myocarditis, lymphocytic myocarditis, HCM, ACM and cardiac allograft vasculopathy.",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "Cardiac amyloidosis",
+            "points": [
+              "Extracellular amorphous eosinophilic pericellular/interstitial and vascular deposits compressing myocytes",
+              "Congo red positive with apple-green birefringence under polarised light; always type (ATTR vs AL) by IHC or mass spectrometry"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/heart_explant/amyloid_he.jpg",
+                "caption": "Cardiac amyloidosis — extracellular fluffy eosinophilic amyloid surrounding atrophic myocytes with lipofuscin (H&E, high mag).",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Cardiac_amyloidosis_high_mag_he.jpg"
+              },
+              {
+                "src": "assets/reference/heart_explant/amyloid_congo.jpg",
+                "caption": "Cardiac amyloidosis — salmon-pink interstitial amyloid deposits on Congo red stain (intermediate mag).",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Cardiac_amyloidosis_intermed_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Giant cell myocarditis vs lymphocytic myocarditis",
+            "points": [
+              "Giant cell myocarditis: diffuse mixed inflammatory infiltrate (lymphocytes, eosinophils, macrophages) with prominent multinucleated giant cells and extensive myocyte necrosis, without well-formed non-necrotising granulomas (distinguish from cardiac sarcoidosis)",
+              "Lymphocytic myocarditis: interstitial T-lymphocytic infiltrate closely associated with myocyte necrosis/damage"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/heart_explant/gcm_he.jpg",
+                "caption": "Giant cell myocarditis — diffuse mixed inflammatory infiltrate with multinucleated giant cells and myocyte necrosis (H&E).",
+                "credit": "Takei et al., JA Clin Rep 2016 (PMC5813737), Wikimedia Commons",
+                "license": "CC BY 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_giant-cell_myocarditis.jpg"
+              },
+              {
+                "src": "assets/reference/heart_explant/lymphocytic_myocarditis.jpg",
+                "caption": "Lymphocytic myocarditis — interstitial lymphocytic infiltrate with focal myocyte necrosis (H&E, annotated).",
+                "credit": "Mikael Häggström (Wikimedia Commons)",
+                "license": "CC0",
+                "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_lymphocytic_myocarditis_with_myocyte_necrosis,_annotated.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "HCM, ACM & Cardiac Allograft Vasculopathy (criteria)",
+            "points": [
+              "HCM: extensive myocyte disarray (>10% of myocardium), myocyte hypertrophy with boxcar nuclei, interstitial fibrosis and intramural small-vessel dysplasia",
+              "ACM (ARVC): transmural fibrofatty replacement progressing from epicardium to endocardium in RV (and/or LV) with residual myocyte islands",
+              "CAV (re-transplant): diffuse concentric fibrointimal hyperplasia of epicardial and intramyocardial coronary arteries with intact internal elastic lamina, distinct from eccentric calcific native atherosclerosis"
+            ],
+            "images": []
+          }
+        ],
+        "note": "ISHLT & SCVP/AECVP explanted heart criteria. Click any thumbnail to enlarge."
+      }
+    },
+    {
+      "id": "allograftDx",
+      "label": "Primary failed cardiac allograft diagnosis",
+      "group": "Diagnosis and morphology",
+      "type": "select",
+      "default": "Cardiac allograft vasculopathy (CAV)",
+      "options": [
+        "Cardiac allograft vasculopathy (CAV)",
+        "Acute cellular rejection (ISHLT)",
+        "Antibody-mediated rejection (ISHLT pAMR)",
+        "Mixed cellular and antibody-mediated rejection with CAV",
+        "Primary graft dysfunction / ischaemic infarction",
+        "Other (specify)"
+      ],
+      "showIf": { "field": "context", "eq": "Failed cardiac allograft (re-transplant)" }
+    },
+    {
+      "id": "dxOther",
+      "label": "Specify diagnosis",
+      "group": "Diagnosis and morphology",
+      "type": "text",
+      "placeholder": "e.g. Fabry disease / cardiac haemochromatosis",
+      "showIf": {
+        "any": [
+          { "field": "nativeDx", "eq": "Other (specify)" },
+          { "field": "allograftDx", "eq": "Other (specify)" }
+        ]
+      }
+    },
+    {
+      "id": "myocardialFeatures",
+      "label": "Myocardial histological features",
+      "group": "Diagnosis and morphology",
+      "type": "multiselect",
+      "default": [],
+      "options": [
+        "Myocyte hypertrophy with enlarged hyperchromatic nuclei",
+        "Interstitial and replacement fibrosis",
+        "Myocyte disarray (>10% of myocardium)",
+        "Intramural small-vessel dysplasia",
+        "Transmural fibrofatty replacement of RV/LV myocardium",
+        "Regional healed / organising myocardial infarction",
+        "Extracellular eosinophilic amyloid deposits",
+        "Non-necrotising epithelioid granulomas",
+        "Multinucleated giant cells with myocyte necrosis",
+        "Quilty lesion(s) (endocardial lymphoid infiltrate)"
+      ]
+    },
+    {
+      "id": "ishltAcr",
+      "label": "ISHLT Acute Cellular Rejection grade",
+      "group": "Allograft & special stains",
+      "type": "select",
+      "default": "Grade 0R (no rejection)",
+      "options": [
+        "Grade 0R (no rejection)",
+        "Grade 1R (mild)",
+        "Grade 2R (moderate)",
+        "Grade 3R (severe)"
+      ],
+      "showIf": { "field": "context", "eq": "Failed cardiac allograft (re-transplant)" }
+    },
+    {
+      "id": "ishltPamr",
+      "label": "ISHLT Antibody-Mediated Rejection (pAMR)",
+      "group": "Allograft & special stains",
+      "type": "select",
+      "default": "pAMR 0 (negative)",
+      "options": [
+        "pAMR 0 (negative)",
+        "pAMR 1(H+) (histopathologic only)",
+        "pAMR 1(I+) (immunopathologic only)",
+        "pAMR 2 (pathologic AMR)",
+        "pAMR 3 (severe pathologic AMR)"
+      ],
+      "showIf": { "field": "context", "eq": "Failed cardiac allograft (re-transplant)" }
+    },
+    {
+      "id": "cavGrade",
+      "label": "Cardiac allograft vasculopathy (CAV) severity",
+      "group": "Allograft & special stains",
+      "type": "select",
+      "default": "Severe (diffuse concentric intimal hyperplasia, >75% luminal narrowing)",
+      "options": [
+        "Absent",
+        "Mild (<50% luminal narrowing)",
+        "Moderate (50-75% luminal narrowing)",
+        "Severe (diffuse concentric intimal hyperplasia, >75% luminal narrowing)"
+      ],
+      "showIf": { "field": "context", "eq": "Failed cardiac allograft (re-transplant)" }
+    },
+    {
+      "id": "c4dHeart",
+      "label": "Capillary C4d / CD68 immunohistochemistry",
+      "group": "Allograft & special stains",
+      "type": "select",
+      "default": "Not performed",
+      "options": ["Not performed", "Negative", "Focal capillary C4d+ (<50%)", "Diffuse capillary C4d+ (>50%) with intravascular CD68+ macrophages"],
+      "showIf": { "field": "context", "eq": "Failed cardiac allograft (re-transplant)" }
+    },
+    {
+      "id": "congoRed",
+      "label": "Congo red stain",
+      "group": "Allograft & special stains",
+      "type": "select",
+      "default": "Not performed",
+      "options": ["Not performed", "Negative", "Positive with apple-green birefringence under polarised light"]
+    },
+    {
+      "id": "amyloidType",
+      "label": "Amyloid subtype",
+      "group": "Allograft & special stains",
+      "type": "select",
+      "default": "Pending typing (IHC / mass spectrometry)",
+      "options": ["ATTR (transthyretin)", "AL-lambda", "AL-kappa", "Pending typing (IHC / mass spectrometry)"],
+      "showIf": { "field": "congoRed", "eq": "Positive with apple-green birefringence under polarised light" }
+    },
+    {
+      "id": "specialStains",
+      "label": "Special stains & IHC performed",
+      "group": "Allograft & special stains",
+      "type": "multiselect",
+      "default": [],
+      "options": ["Masson trichrome", "Elastic van Gieson (EVG)", "Perls iron", "Congo red", "CD3", "CD68", "C4d", "Ziehl-Neelsen (ZN)", "Grocott (GMS)"]
+    },
+    {
+      "id": "morphNotes",
+      "label": "Additional microscopic notes",
+      "group": "Allograft & special stains",
+      "type": "textarea",
+      "placeholder": "Optional free-text observations (e.g. conduction system, valve histology, LVAD thrombus)"
+    }
+  ],
+  "snippets": [
+    {
+      "id": "geneticCardiomyopathy",
+      "label": "Genetic counselling note (HCM / ACM / DCM)",
+      "when": "genetic",
+      "text": "Given the histopathological diagnosis, clinical genetics referral and cascade family screening may be considered if not already performed."
+    },
+    {
+      "id": "amyloidTyping",
+      "label": "Amyloid typing note (mass spectrometry / IHC)",
+      "when": "amyloid",
+      "text": "Definitive amyloid subtyping (ATTR vs AL) by immunohistochemistry and/or laser microdissection–tandem mass spectrometry is recommended to guide systemic management."
+    },
+    {
+      "id": "cavCorrelate",
+      "label": "Failed cardiac allograft DSA correlation",
+      "when": "allograft",
+      "text": "Correlation with donor-specific HLA antibodies (DSA) and pre-retransplant coronary angiography is recommended."
+    }
+  ],
+  "example": {
+    "caseTitle": "Heart explant — HCM",
+    "options": { "macro": true, "blockKey": true },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "context": "Native diseased heart",
+          "weight": 620,
+          "lvWallMm": 16,
+          "septumMm": 24,
+          "rvWallMm": 5,
+          "chambers": "Asymmetric septal hypertrophy with narrowed LV outflow tract",
+          "coronaries": "Patent with minimal or no atherosclerosis",
+          "lvadSite": "None",
+          "blocks": 14,
+          "macroNotes": "Endocardial fibrous friction plaque in the left ventricular outflow tract",
+          "nativeDx": "Hypertrophic cardiomyopathy (HCM)",
+          "allograftDx": "Cardiac allograft vasculopathy (CAV)",
+          "dxOther": "",
+          "myocardialFeatures": [
+            "Myocyte hypertrophy with enlarged hyperchromatic nuclei",
+            "Interstitial and replacement fibrosis",
+            "Myocyte disarray (>10% of myocardium)",
+            "Intramural small-vessel dysplasia"
+          ],
+          "ishltAcr": "Grade 0R (no rejection)",
+          "ishltPamr": "pAMR 0 (negative)",
+          "cavGrade": "Absent",
+          "c4dHeart": "Not performed",
+          "congoRed": "Negative",
+          "amyloidType": "Pending typing (IHC / mass spectrometry)",
+          "specialStains": ["Masson trichrome", "Congo red"],
+          "morphNotes": ""
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,438 @@
+{
+  "id": "lung_explant",
+  "name": "Lung explant — native ILD/cystic & failed allograft",
+  "shortName": "Lung · explant",
+  "label": "Lung explant",
+  "version": "1.0",
+  "system": "Thoracic",
+  "organ": "Lung",
+  "kind": "benign resection",
+  "specimenNoun": "lung",
+  "generator": "lung_explant",
+  "style": { "british": true },
+  "source": "ATS/ERS/JRS/ALAT ILD Guidelines, WHO Thoracic Tumours (5th ed.) for LAM/PLCH, and ISHLT Working Formulation for Lung Allograft Rejection & CLAD (BOS / RAS)",
+  "aliases": [
+    "lung explant",
+    "explanted lung",
+    "bilateral lung explant",
+    "lymphangioleiomyomatosis",
+    "LAM",
+    "usual interstitial pneumonia",
+    "UIP",
+    "IPF",
+    "NSIP",
+    "cystic fibrosis lung",
+    "emphysema explant",
+    "pulmonary hypertension explant",
+    "pulmonary Langerhans cell histiocytosis",
+    "PLCH",
+    "failed lung allograft",
+    "CLAD",
+    "bronchiolitis obliterans syndrome",
+    "restrictive allograft syndrome"
+  ],
+  "layout": {
+    "pack": true,
+    "macroGroups": ["Specimen and macroscopy"]
+  },
+  "match": {
+    "any": [
+      "\\blung\\b",
+      "\\bpneumonectomy\\b",
+      "\\blung\\s+allograft\\b",
+      "\\blymphangioleiomyomatosis\\b"
+    ],
+    "gate": [
+      "explant",
+      "transplant",
+      "allograft",
+      "lymphangioleiomyomatosis",
+      "\\blam\\b",
+      "\\buip\\b",
+      "\\bipf\\b",
+      "\\bnsip\\b",
+      "interstitial\\s+lung",
+      "cystic\\s+fibrosis",
+      "emphysema",
+      "bronchiectasis",
+      "pulmonary\\s+hypertension",
+      "\\bclad\\b",
+      "obliterative\\s+bronchiolitis",
+      "restrictive\\s+allograft",
+      "langerhans"
+    ],
+    "exclude": [
+      "biopsy",
+      "transbronchial",
+      "carcinoma",
+      "adenocarcinoma",
+      "squamous",
+      "mesothelioma",
+      "frozen"
+    ],
+    "fill": [
+      {
+        "field": "context",
+        "map": [
+          ["allograft|re-?transplant|failed\\s+graft|\\bclad\\b|\\bbos\\b|\\bras\\b|rejection", "Failed lung allograft (re-transplant)"],
+          ["native|lymphangioleiomyomatosis|\\blam\\b|\\buip\\b|\\bipf\\b|cystic\\s+fibrosis|emphysema|hypertension", "Native diseased lung"]
+        ]
+      },
+      {
+        "field": "side",
+        "map": [
+          ["bilateral", "Bilateral"],
+          ["\\bleft\\b", "Left"],
+          ["\\bright\\b", "Right"]
+        ]
+      },
+      {
+        "field": "nativeDx",
+        "map": [
+          ["lymphangioleiomyomatosis|\\blam\\b", "Lymphangioleiomyomatosis (LAM)"],
+          ["\\buip\\b|\\bipf\\b|usual\\s+interstitial", "Usual interstitial pneumonia (UIP / IPF)"],
+          ["\\bnsip\\b|non[-\\s]?specific\\s+interstitial", "Fibrotic non-specific interstitial pneumonia (NSIP)"],
+          ["hypersensitivity", "Fibrotic hypersensitivity pneumonitis"],
+          ["langerhans|\\bplch\\b", "Pulmonary Langerhans cell histiocytosis (PLCH)"],
+          ["cystic\\s+fibrosis|bronchiectasis", "Cystic fibrosis / severe bronchiectasis"],
+          ["emphysema|\\bcopd\\b", "Severe emphysema / COPD"],
+          ["pulmonary\\s+(?:arterial\\s+)?hypertension", "Pulmonary arterial hypertension (plexogenic arteriopathy)"],
+          ["sarcoid", "Pulmonary sarcoidosis"]
+        ]
+      }
+    ]
+  },
+  "options": [
+    { "id": "macro", "label": "Include macroscopic description", "default": true },
+    { "id": "blockKey", "label": "Include block key", "default": true }
+  ],
+  "fields": [
+    {
+      "id": "context",
+      "label": "Specimen context",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Native diseased lung",
+      "options": ["Native diseased lung", "Failed lung allograft (re-transplant)"]
+    },
+    {
+      "id": "side",
+      "label": "Laterality",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Right",
+      "options": ["Right", "Left", "Bilateral"]
+    },
+    {
+      "id": "weight",
+      "label": "Weight (g)",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 50,
+      "step": 1,
+      "placeholder": "e.g. 680"
+    },
+    {
+      "id": "dimensions",
+      "label": "Dimensions (cm)",
+      "group": "Specimen and macroscopy",
+      "type": "text",
+      "placeholder": "e.g. 22.0 x 14.0 x 9.5"
+    },
+    {
+      "id": "pleura",
+      "label": "Visceral pleura",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Cobblestone appearance with diffuse subpleural cysts",
+      "options": [
+        "Cobblestone appearance with diffuse subpleural cysts",
+        "Diffusely bosselated with thin-walled cysts throughout all lobes",
+        "Marked apical / upper-lobe pleural thickening (PPFE-like)",
+        "Bullous emphysematous changes",
+        "Fibrous adhesions",
+        "Smooth and glistening"
+      ]
+    },
+    {
+      "id": "cutSurface",
+      "label": "Cut surface appearance",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Peripheral and basilar honeycomb fibrosis",
+      "options": [
+        "Peripheral and basilar honeycomb fibrosis",
+        "Diffuse innumerable thin-walled cysts (2-20 mm) throughout all lobes",
+        "Upper-lobe predominant stellate scars and irregular cysts",
+        "Severe saccular/cylindrical bronchiectasis with mucopurulent plugs",
+        "Diffuse panacinar / centrilobular emphysema with bullae",
+        "Firm, fibrotic subpleural and upper-lobe consolidation",
+        "Prominent thickened pulmonary arteries with atherosclerotic plaques"
+      ]
+    },
+    {
+      "id": "hilarNodes",
+      "label": "Hilar / bronchopulmonary lymph nodes",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Anthracotic, grossly unremarkable",
+      "options": ["Anthracotic, grossly unremarkable", "Enlarged / granulomatous", "None identified"]
+    },
+    {
+      "id": "blocks",
+      "label": "Number of blocks",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "placeholder": "e.g. 12"
+    },
+    {
+      "id": "macroNotes",
+      "label": "Additional macroscopic notes",
+      "group": "Specimen and macroscopy",
+      "type": "textarea",
+      "placeholder": "Optional gross details (e.g. bronchial anastomotic margin, pulmonary artery thrombus, discrete nodule)"
+    },
+    {
+      "id": "nativeDx",
+      "label": "Primary native pulmonary diagnosis",
+      "group": "Diagnosis and morphology",
+      "type": "select",
+      "default": "Lymphangioleiomyomatosis (LAM)",
+      "options": [
+        "Usual interstitial pneumonia (UIP / IPF)",
+        "Fibrotic non-specific interstitial pneumonia (NSIP)",
+        "Fibrotic hypersensitivity pneumonitis",
+        "Lymphangioleiomyomatosis (LAM)",
+        "Pulmonary Langerhans cell histiocytosis (PLCH)",
+        "Severe emphysema / COPD",
+        "Cystic fibrosis / severe bronchiectasis",
+        "Pulmonary arterial hypertension (plexogenic arteriopathy)",
+        "Pulmonary sarcoidosis",
+        "Connective tissue disease-associated ILD (CTD-ILD)",
+        "Other (specify)"
+      ],
+      "showIf": { "field": "context", "eq": "Native diseased lung" },
+      "reference": {
+        "title": "Lung explant reference gallery (LAM, UIP, PLCH & CLAD)",
+        "intro": "Open-licence photomicrographs and key diagnostic discriminators for lymphangioleiomyomatosis, UIP/IPF, PLCH, pulmonary hypertension and CLAD.",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "Lymphangioleiomyomatosis (LAM)",
+            "points": [
+              "Diffuse thin-walled parenchymal cysts throughout all lobes with nodular/fascicular proliferations of immature spindle-to-epithelioid smooth muscle-like (LAM) cells in cyst walls, lymphatics and vessels",
+              "Positive for HMB-45 (patchy/focal), SMA, Cathepsin K, ER and PR; frequently accompanied by haemosiderin-laden macrophages"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/lung_explant/lam_he.jpg",
+                "caption": "Lymphangioleiomyomatosis — spindle-to-epithelioid smooth muscle-like LAM cells lining thin-walled cystic spaces (H&E, high mag).",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Lymphangioleiomyomatosis_-_high_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Usual interstitial pneumonia (UIP / IPF)",
+            "points": [
+              "Spatial and temporal heterogeneity: patchy subpleural/paraseptal dense collagenous fibrosis alternating with spared lung, microscopic honeycombing (bronchiolar epithelium-lined cysts) and fibroblastic foci at the leading edge",
+              "Exclude airway-centred fibrosis / granulomas (fibrotic HP) and prominent lymphoid follicles / pleuritis (CTD-ILD)"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/lung_explant/uip_honeycomb.jpg",
+                "caption": "UIP — honeycomb fibrosis with remodeled airspaces lined by respiratory epithelium separated by dense fibrous bands (H&E).",
+                "credit": "Yale Rosen (Wikimedia Commons)",
+                "license": "CC BY-SA 2.0",
+                "url": "https://commons.wikimedia.org/wiki/File:UIP_(Usual_interstitial_pneumonia)-Honeycomb_fibrosis.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Pulmonary Langerhans cell histiocytosis (PLCH)",
+            "points": [
+              "Upper-lobe predominant bronchiolocentric stellate fibrotic nodules and irregular cysts in smokers",
+              "Clusters of Langerhans cells with coffee-bean grooved nuclei and admixed eosinophils; confirm with CD1a and Langerin (CD207)"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/lung_explant/plch_he.jpg",
+                "caption": "Pulmonary Langerhans cell histiocytosis — Langerhans cells with grooved nuclei and admixed eosinophils (H&E, high mag).",
+                "credit": "Librepath (Wikimedia Commons)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Pulmonary_Langerhans_cell_histiocytosis_--_high_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "CLAD (BOS vs RAS) & Pulmonary Hypertension (criteria)",
+            "points": [
+              "CLAD-BOS: constrictive / obliterative bronchiolitis — concentric subepithelial fibrosis narrowing or completely obliterating membranous and respiratory bronchioles (use EVG/trichrome to spot obliterated airways)",
+              "CLAD-RAS: pleuroparenchymal fibroelastosis (PPFE) / alveolar fibroelastosis filling subpleural alveoli, often coexisting with obliterative bronchiolitis",
+              "PAH (Heath–Edwards): medial hypertrophy, concentric laminar intimal fibrosis and plexiform/dilatation lesions of muscular pulmonary arteries"
+            ],
+            "images": []
+          }
+        ],
+        "note": "ATS/ERS ILD and ISHLT CLAD criteria. Click any thumbnail to enlarge."
+      }
+    },
+    {
+      "id": "allograftDx",
+      "label": "Primary failed lung allograft diagnosis",
+      "group": "Diagnosis and morphology",
+      "type": "select",
+      "default": "Chronic lung allograft dysfunction — bronchiolitis obliterans syndrome (CLAD-BOS)",
+      "options": [
+        "Chronic lung allograft dysfunction — bronchiolitis obliterans syndrome (CLAD-BOS)",
+        "Chronic lung allograft dysfunction — restrictive allograft syndrome (CLAD-RAS)",
+        "Mixed CLAD (obliterative bronchiolitis and pleuroparenchymal fibroelastosis)",
+        "Acute cellular rejection (ISHLT)",
+        "Antibody-mediated rejection (AMR)",
+        "Primary graft dysfunction / diffuse alveolar damage",
+        "Other (specify)"
+      ],
+      "showIf": { "field": "context", "eq": "Failed lung allograft (re-transplant)" }
+    },
+    {
+      "id": "dxOther",
+      "label": "Specify diagnosis",
+      "group": "Diagnosis and morphology",
+      "type": "text",
+      "placeholder": "e.g. Pulmonary veno-occlusive disease (PVOD)",
+      "showIf": {
+        "any": [
+          { "field": "nativeDx", "eq": "Other (specify)" },
+          { "field": "allograftDx", "eq": "Other (specify)" }
+        ]
+      }
+    },
+    {
+      "id": "lungFeatures",
+      "label": "Histological features",
+      "group": "Diagnosis and morphology",
+      "type": "multiselect",
+      "default": [],
+      "options": [
+        "Honeycomb change with bronchiolar metaplasia",
+        "Fibroblastic foci",
+        "Constrictive / obliterative bronchiolitis",
+        "Pleuroparenchymal / alveolar fibroelastosis (PPFE)",
+        "LAM cell nodules in cyst walls and lymphatics",
+        "Pulmonary hypertensive arteriopathy / plexiform lesions",
+        "Non-necrotising epithelioid granulomas",
+        "Severe bronchiectasis with suppurative inflammation",
+        "Diffuse emphysematous airspace enlargement",
+        "Organising / acute diffuse alveolar damage",
+        "CMV inclusions / fungal hyphae (superinfection)"
+      ]
+    },
+    {
+      "id": "ishltA",
+      "label": "ISHLT Acute Cellular Rejection (A grade)",
+      "group": "Allograft & ancillary studies",
+      "type": "select",
+      "default": "A0 (no acute rejection)",
+      "options": ["A0 (no acute rejection)", "A1 (minimal)", "A2 (mild)", "A3 (moderate)", "A4 (severe)"],
+      "showIf": { "field": "context", "eq": "Failed lung allograft (re-transplant)" }
+    },
+    {
+      "id": "ishltB",
+      "label": "ISHLT Airway Inflammation (B grade)",
+      "group": "Allograft & ancillary studies",
+      "type": "select",
+      "default": "B0 (none)",
+      "options": ["B0 (none)", "B1R (low-grade)", "B2R (high-grade)", "BX (ungradeable)"],
+      "showIf": { "field": "context", "eq": "Failed lung allograft (re-transplant)" }
+    },
+    {
+      "id": "c4dLung",
+      "label": "Capillary C4d immunohistochemistry",
+      "group": "Allograft & ancillary studies",
+      "type": "select",
+      "default": "Not performed",
+      "options": ["Not performed", "Negative", "Focal (<50%)", "Diffuse (>50%) linear alveolar capillary staining"],
+      "showIf": { "field": "context", "eq": "Failed lung allograft (re-transplant)" }
+    },
+    {
+      "id": "ihcStains",
+      "label": "Immunohistochemistry & special stains",
+      "group": "Allograft & ancillary studies",
+      "type": "multiselect",
+      "default": [],
+      "options": ["HMB-45", "SMA", "Cathepsin K", "ER", "PR", "CD1a", "Langerin (CD207)", "EVG / Elastic", "Masson trichrome", "Grocott (GMS)", "Ziehl-Neelsen (ZN)", "CMV IHC"]
+    },
+    {
+      "id": "incidentalTumour",
+      "label": "Incidental lung malignancy",
+      "group": "Allograft & ancillary studies",
+      "type": "select",
+      "default": "None identified",
+      "options": [
+        "None identified",
+        "Atypical adenomatous hyperplasia (AAH) / DIPNECH",
+        "Incidental lung carcinoma (use Lung Ca synoptic)"
+      ]
+    },
+    {
+      "id": "morphNotes",
+      "label": "Additional microscopic notes",
+      "group": "Allograft & ancillary studies",
+      "type": "textarea",
+      "placeholder": "Optional free-text observations (e.g. hilar lymph node involvement by LAM, microbiology correlation)"
+    }
+  ],
+  "snippets": [
+    {
+      "id": "lamProfile",
+      "label": "LAM TSC / genetics note",
+      "when": "lam",
+      "text": "Lymphangioleiomyomatosis (LAM) may occur sporadically or in association with tuberous sclerosis complex (TSC1/TSC2); clinical correlation for renal angiomyolipomas and TSC evaluation is recommended."
+    },
+    {
+      "id": "cladCorrelate",
+      "label": "CLAD ISHLT clinical correlation",
+      "when": "allograft",
+      "text": "Correlation with pre-retransplant pulmonary function tests, HRCT findings and donor-specific HLA antibodies (DSA) is recommended in accordance with the ISHLT CLAD consensus."
+    },
+    {
+      "id": "incidentalLungCa",
+      "label": "Incidental lung carcinoma synoptic reminder",
+      "when": "incidentalCa",
+      "text": "An incidental primary lung carcinoma is identified; formal synoptic staging should be completed using the Lung carcinoma resection template."
+    }
+  ],
+  "example": {
+    "caseTitle": "Lung explant — LAM",
+    "options": { "macro": true, "blockKey": true },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "context": "Native diseased lung",
+          "side": "Right",
+          "weight": 740,
+          "dimensions": "23.0 x 15.0 x 10.0",
+          "pleura": "Diffusely bosselated with thin-walled cysts throughout all lobes",
+          "cutSurface": "Diffuse innumerable thin-walled cysts (2-20 mm) throughout all lobes",
+          "hilarNodes": "Anthracotic, grossly unremarkable",
+          "blocks": 12,
+          "macroNotes": "No solid tumour mass identified; bronchial and vascular margins unremarkable",
+          "nativeDx": "Lymphangioleiomyomatosis (LAM)",
+          "allograftDx": "Chronic lung allograft dysfunction — bronchiolitis obliterans syndrome (CLAD-BOS)",
+          "dxOther": "",
+          "lungFeatures": ["LAM cell nodules in cyst walls and lymphatics"],
+          "ishltA": "A0 (no acute rejection)",
+          "ishltB": "B0 (none)",
+          "c4dLung": "Not performed",
+          "ihcStains": ["HMB-45", "SMA", "ER", "PR"],
+          "incidentalTumour": "None identified",
+          "morphNotes": "HMB-45 highlights patchy cytoplasmic positivity in the spindle-to-epithelioid LAM cells; SMA, ER and PR are diffusely positive"
+        }
+      }
+    ]
+  }
+}

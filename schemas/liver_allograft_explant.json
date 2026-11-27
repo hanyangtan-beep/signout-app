@@ -1,0 +1,396 @@
+{
+  "id": "liver_allograft_explant",
+  "name": "Liver allograft explant — failed graft (re-transplant)",
+  "shortName": "Liver · allograft explant",
+  "label": "Liver allograft explant",
+  "version": "1.0",
+  "system": "Hepatobiliary",
+  "organ": "Liver",
+  "kind": "benign resection",
+  "specimenNoun": "liver allograft",
+  "generator": "liver_allograft_explant",
+  "style": { "british": true },
+  "source": "Banff Working Group on Liver Allograft Pathology (Demetris et al., Am J Transplant 2016; Banff 2022) for acute/chronic TCMR, AMR, ischaemic cholangiopathy and recurrent disease",
+  "aliases": [
+    "LAE",
+    "HAT",
+    "liver allograft explant",
+    "failed liver allograft",
+    "failed liver graft",
+    "liver re-transplant",
+    "re-transplant hepatectomy",
+    "allograft hepatectomy",
+    "chronic ductopenic rejection",
+    "hepatic artery thrombosis liver",
+    "ischaemic cholangiopathy"
+  ],
+  "layout": {
+    "pack": true,
+    "macroGroups": ["Specimen and macroscopy"]
+  },
+  "match": {
+    "any": [
+      "\\bliver\\s+allograft\\b",
+      "\\bhepatic\\s+allograft\\b",
+      "\\ballograft\\s+liver\\b",
+      "\\ballograft\\s+hepatectomy\\b",
+      "\\bre-?transplant\\s+hepatectomy\\b",
+      "\\bfailed\\s+liver\\s+(?:allo)?graft\\b",
+      "\\bliver\\b"
+    ],
+    "gate": [
+      "allograft",
+      "re-?transplant",
+      "failed\\s+(?:liver\\s+)?graft",
+      "ductopenic\\s+rejection",
+      "chronic\\s+rejection"
+    ],
+    "exclude": [
+      "biopsy",
+      "core",
+      "needle",
+      "native\\s+liver",
+      "time[-\\s]?zero",
+      "back[-\\s]?table",
+      "frozen"
+    ],
+    "fill": [
+      {
+        "field": "dx",
+        "map": [
+          ["chronic.*rejection|ductopeni", "Chronic (ductopenic) allograft rejection"],
+          ["acute.*rejection|tcmr", "Acute / late-onset T-cell-mediated rejection (TCMR)"],
+          ["antibody[-\\s]?mediated|\\bamr\\b", "Antibody-mediated rejection (acute or chronic AMR)"],
+          ["hepatic\\s+artery\\s+thrombos|ischa?emic\\s+cholangiopathy", "Hepatic artery thrombosis / ischaemic cholangiopathy"],
+          ["biliary\\s+stricture|obstruction", "Biliary anastomotic stricture / chronic biliary obstruction"],
+          ["primary\\s+non[-\\s]?function", "Primary non-function / severe ischaemia-reperfusion injury"],
+          ["recurren", "Recurrent primary liver disease"]
+        ]
+      }
+    ]
+  },
+  "options": [
+    { "id": "macro", "label": "Include macroscopic description", "default": true },
+    { "id": "blockKey", "label": "Include block key", "default": true }
+  ],
+  "fields": [
+    {
+      "id": "weight",
+      "label": "Weight (g)",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 100,
+      "step": 1,
+      "placeholder": "e.g. 1320"
+    },
+    {
+      "id": "dimensions",
+      "label": "Dimensions (cm)",
+      "group": "Specimen and macroscopy",
+      "type": "text",
+      "placeholder": "e.g. 22.0 x 15.0 x 9.5"
+    },
+    {
+      "id": "vessels",
+      "label": "Hilar vessels (hepatic artery, portal vein, hepatic veins)",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Patent, no macroscopic thrombus",
+      "options": [
+        "Patent, no macroscopic thrombus",
+        "Hepatic artery thrombosis",
+        "Portal vein thrombosis",
+        "Hepatic vein / outflow thrombosis",
+        "Thickened hilar arterial walls (obliterative arteriopathy)"
+      ]
+    },
+    {
+      "id": "biliaryTree",
+      "label": "Hilar & intrahepatic biliary tree",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Unremarkable",
+      "options": [
+        "Unremarkable",
+        "Biliary casts, sloughing and necrosis (ischaemic cholangiopathy)",
+        "Anastomotic stricture with proximal biliary dilatation",
+        "Bile-stained parenchyma with cholangitic abscesses"
+      ]
+    },
+    {
+      "id": "cutSurface",
+      "label": "Parenchymal cut surface",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Deeply bile-stained (cholestatic), firm",
+      "options": [
+        "Deeply bile-stained (cholestatic), firm",
+        "Map-like geographic areas of infarction / necrosis",
+        "Cirrhotic / nodular",
+        "Mottled, congested (nutmeg)",
+        "Discrete mass / nodule(s) identified"
+      ]
+    },
+    {
+      "id": "blocks",
+      "label": "Number of blocks",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "placeholder": "e.g. 10"
+    },
+    {
+      "id": "macroNotes",
+      "label": "Additional macroscopic notes",
+      "group": "Specimen and macroscopy",
+      "type": "textarea",
+      "placeholder": "Optional gross details (e.g. vascular anastomosis margins, biloma, stent)"
+    },
+    {
+      "id": "dx",
+      "label": "Primary cause of liver allograft failure",
+      "group": "Diagnosis and Banff grading",
+      "type": "select",
+      "default": "Chronic (ductopenic) allograft rejection",
+      "options": [
+        "Chronic (ductopenic) allograft rejection",
+        "Acute / late-onset T-cell-mediated rejection (TCMR)",
+        "Antibody-mediated rejection (acute or chronic AMR)",
+        "Hepatic artery thrombosis / ischaemic cholangiopathy",
+        "Biliary anastomotic stricture / chronic biliary obstruction",
+        "Portal vein thrombosis / venous outflow obstruction",
+        "Primary non-function / severe ischaemia-reperfusion injury",
+        "Recurrent primary liver disease",
+        "Post-transplant lymphoproliferative disorder (PTLD)",
+        "Other (specify)"
+      ],
+      "reference": {
+        "title": "Failed liver allograft reference gallery (Banff)",
+        "intro": "Open-licence photomicrographs of acute TCMR, central perivenulitis, acute/chronic AMR, chronic ductopenic rejection and ischaemic necrosis.",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "Acute TCMR & central perivenulitis",
+            "points": [
+              "Classic triad: mixed portal inflammation, bile duct inflammatory damage and portal/central venous endotheliitis (RAI 0-9)",
+              "Central perivenulitis with perivenular hepatocyte dropout may dominate late-onset TCMR"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/liver_biopsy/tcmr_portal.jpg",
+                "caption": "Acute TCMR — mixed portal infiltrate around damaged bile duct (B) with portal vein (PV) endothelialitis (H&E, x600).",
+                "credit": "Ronca, Wootton, Milani, Cain, Front Immunol 2020, Fig 1A (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://www.frontiersin.org/journals/immunology/articles/10.3389/fimmu.2020.02155/full"
+              },
+              {
+                "src": "assets/reference/liver_biopsy/central_perivenulitis.jpg",
+                "caption": "Central perivenulitis — perivenular lymphocytic infiltrate and hepatocyte dropout in liver allograft (H&E, x400).",
+                "credit": "Jiang, Guo, Yang et al., J Pers Med 2023, Fig 2d (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://www.mdpi.com/2075-4426/13/1/41"
+              }
+            ]
+          },
+          {
+            "heading": "Chronic (ductopenic) rejection",
+            "points": [
+              "Duct atrophy/senescence and bile duct loss in >=50% of portal tracts (late CR; <50% early CR)",
+              "Obliterative foam cell arteriopathy in hilar/medium-sized hepatic arteries (best seen in explants!) and perivenular fibrosis"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/liver_biopsy/chronic_rejection_duct_loss.jpg",
+                "caption": "Chronic rejection — portal tract showing hepatic artery and portal vein with loss of interlobular bile duct and canalicular cholestasis (H&E, x170).",
+                "credit": "Kim et al., J Clin Med 2023, Fig 2",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9917672/"
+              }
+            ]
+          },
+          {
+            "heading": "Antibody-mediated rejection (AMR) & arteriopathy",
+            "points": [
+              "Portal microvascular endothelial hypertrophy, capillary dilatation, microvasculitis, periportal oedema and diffuse C4d staining",
+              "Intrahepatic arterial endothelial oedema and luminal narrowing in failed allografts"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/liver_biopsy/amr_portal_microvasculature.jpg",
+                "caption": "Acute AMR — portal microvascular endothelial hypertrophy with dilated capillaries in a mixed portal infiltrate (H&E).",
+                "credit": "Cicalese et al., Transpl Int 2024, Fig 2B (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11391112/"
+              },
+              {
+                "src": "assets/reference/liver_biopsy/amr_arteriopathy.jpg",
+                "caption": "Failed liver allograft — intrahepatic artery with endothelial oedema and luminal narrowing (H&E, x400).",
+                "credit": "Jiang, Guo, Yang et al., J Pers Med 2023, Fig 1g (cropped)",
+                "license": "CC BY 4.0",
+                "url": "https://www.mdpi.com/2075-4426/13/1/41"
+              }
+            ]
+          },
+          {
+            "heading": "Ischaemic injury / hepatic artery thrombosis",
+            "points": [
+              "Geographic/centrilobular coagulative necrosis, bile duct necrosis/sloughing with bile casts and bilomas"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/liver_biopsy/centrilobular_necrosis_ischaemic.jpg",
+                "caption": "Ischaemic hepatic necrosis — centrilobular coagulative necrosis with preserved periportal hepatocytes (H&E).",
+                "credit": "Mikael Häggström (Wikimedia Commons)",
+                "license": "CC0 1.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_early_centrilobular_hepatic_necrosis_of_shock_liver_(intermediate_magnification).jpg"
+              }
+            ]
+          }
+        ],
+        "note": "Banff Working Group on Liver Allograft Pathology. Click any thumbnail to enlarge."
+      }
+    },
+    {
+      "id": "dxOther",
+      "label": "Specify diagnosis",
+      "group": "Diagnosis and Banff grading",
+      "type": "text",
+      "placeholder": "e.g. De novo autoimmune hepatitis / sinusoidal obstruction syndrome",
+      "showIf": { "field": "dx", "eq": "Other (specify)" }
+    },
+    {
+      "id": "recurrentDisease",
+      "label": "Recurrent primary disease",
+      "group": "Diagnosis and Banff grading",
+      "type": "select",
+      "default": "None",
+      "options": ["None", "Recurrent HBV", "Recurrent HCV", "Recurrent PSC", "Recurrent PBC", "Recurrent autoimmune hepatitis", "Recurrent MASH / alcohol-related steatohepatitis", "Recurrent HCC"]
+    },
+    {
+      "id": "raiPortal",
+      "label": "Banff RAI — Portal inflammation (0-3)",
+      "group": "Diagnosis and Banff grading",
+      "type": "select",
+      "default": "0",
+      "options": ["0", "1", "2", "3"]
+    },
+    {
+      "id": "raiBileDuct",
+      "label": "Banff RAI — Bile duct damage (0-3)",
+      "group": "Diagnosis and Banff grading",
+      "type": "select",
+      "default": "0",
+      "options": ["0", "1", "2", "3"]
+    },
+    {
+      "id": "raiVenous",
+      "label": "Banff RAI — Venous endotheliitis (0-3)",
+      "group": "Diagnosis and Banff grading",
+      "type": "select",
+      "default": "0",
+      "options": ["0", "1", "2", "3"]
+    },
+    {
+      "id": "ductLoss",
+      "label": "Bile duct loss (ductopenia)",
+      "group": "Chronic rejection & ancillary",
+      "type": "select",
+      "default": "None",
+      "options": [
+        "None",
+        "Bile duct senescence/atrophy without significant duct loss",
+        "Duct loss in <50% of portal tracts (early chronic rejection)",
+        "Duct loss in >=50% of portal tracts (late chronic rejection)"
+      ]
+    },
+    {
+      "id": "arteriopathy",
+      "label": "Allograft arteriopathy",
+      "group": "Chronic rejection & ancillary",
+      "type": "select",
+      "default": "Absent",
+      "options": [
+        "Absent",
+        "Foam cell obliterative arteriopathy (chronic rejection)",
+        "Organising / recent hepatic artery thrombosis",
+        "Arteriolar loss in portal tracts"
+      ]
+    },
+    {
+      "id": "fibrosis",
+      "label": "Allograft fibrosis",
+      "group": "Chronic rejection & ancillary",
+      "type": "select",
+      "default": "Perivenular / bridging fibrosis",
+      "options": ["None / minimal", "Portal / periportal fibrosis", "Perivenular / bridging fibrosis", "Established cirrhosis"]
+    },
+    {
+      "id": "c4dLiver",
+      "label": "C4d immunohistochemistry (portal microvasculature / sinusoids)",
+      "group": "Chronic rejection & ancillary",
+      "type": "select",
+      "default": "Not performed",
+      "options": ["Not performed", "Negative (score 0)", "Minimal (score 1, <10%)", "Focal (score 2, 10-50%)", "Diffuse (score 3, >50%)"]
+    },
+    {
+      "id": "viralStains",
+      "label": "Viral / ancillary stains",
+      "group": "Chronic rejection & ancillary",
+      "type": "multiselect",
+      "default": [],
+      "options": ["CK7 / CK19 (duct loss)", "Masson trichrome", "C4d", "CMV IHC", "EBER ISH", "HBsAg / HBcAg"]
+    },
+    {
+      "id": "morphNotes",
+      "label": "Additional microscopic notes",
+      "group": "Chronic rejection & ancillary",
+      "type": "textarea",
+      "placeholder": "Optional free-text observations (e.g. central perivenulitis, biloma, vascular anastomosis)"
+    }
+  ],
+  "snippets": [
+    {
+      "id": "liverAllograftCorrelate",
+      "label": "Banff DSA / clinical correlation",
+      "when": "amr",
+      "text": "Correlation with donor-specific HLA antibody (DSA) titres and clinical/serological findings is recommended in accordance with the Banff Working Group criteria."
+    },
+    {
+      "id": "hatVascularNote",
+      "label": "Hepatic artery thrombosis note",
+      "when": "hat",
+      "text": "The hilar and intrahepatic findings of biliary necrosis/sloughing and geographic parenchymal infarction are characteristic of hepatic artery thrombosis and ischaemic cholangiopathy."
+    }
+  ],
+  "example": {
+    "caseTitle": "Liver allograft explant — chronic rejection",
+    "options": { "macro": true, "blockKey": true },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "weight": 1280,
+          "dimensions": "21.5 x 14.5 x 9.0",
+          "vessels": "Thickened hilar arterial walls (obliterative arteriopathy)",
+          "biliaryTree": "Unremarkable",
+          "cutSurface": "Deeply bile-stained (cholestatic), firm",
+          "blocks": 10,
+          "macroNotes": "Hilar vascular and bile duct anastomoses sampled en face",
+          "dx": "Chronic (ductopenic) allograft rejection",
+          "dxOther": "",
+          "recurrentDisease": "None",
+          "raiPortal": "1",
+          "raiBileDuct": "1",
+          "raiVenous": "0",
+          "ductLoss": "Duct loss in >=50% of portal tracts (late chronic rejection)",
+          "arteriopathy": "Foam cell obliterative arteriopathy (chronic rejection)",
+          "fibrosis": "Perivenular / bridging fibrosis",
+          "c4dLiver": "Negative (score 0)",
+          "viralStains": ["CK7 / CK19 (duct loss)", "Masson trichrome", "C4d"],
+          "morphNotes": "CK7 confirms absence of interlobular bile ducts in approximately 70% of portal tracts"
+        }
+      }
+    ]
+  }
+}
