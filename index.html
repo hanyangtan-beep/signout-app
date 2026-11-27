@@ -139,6 +139,8 @@
         <div class="field"><label for="meta-macro">Macroscopic</label><textarea class="input" id="meta-macro" rows="4" placeholder="Paste the LIS macroscopic description here"></textarea>
           <div class="lis-row">
             <label class="check"><input type="checkbox" id="meta-useLisMacro"> Use this text instead of the generated macro</label>
+            <button class="btn ghost small" id="btn-macro-ai" type="button" title="Extract specimen and macroscopic fields into the active part using Gemini (Vertex AI)">Fill with AI</button>
+            <button class="btn ghost small" id="btn-macro-ai-undo" type="button" hidden title="Revert the last AI fill on this part">Undo AI fill</button>
             <button class="btn ghost small" id="btn-macro-generated" type="button" title="Copy the generated macroscopic description into this box for editing">Use generated</button>
             <button class="btn ghost small" id="btn-macro-clear" type="button">Clear</button>
             <span class="muted lis-status" id="lis-status-macro"></span>

@@ -176,9 +176,9 @@ export const VERTEX_PROOFREAD_SYSTEM_PROMPT = [
   '- Reply with one JSON object matching the schema only.'
 ].join('\n');
 
-/** Run proofreading (or extraction/audit) through the Cloud Run Vertex AI proxy. */
+/** Run proofreading (or audit) through the Cloud Run Vertex AI proxy. */
 export async function vertexProofread({
-  system = VERTEX_PROOFREAD_SYSTEM_PROMPT,
+  system,
   prompt,
   kind = '',
   task = 'proofread',
@@ -201,6 +201,33 @@ export async function vertexProofread({
       ...(thinkingLevel ? { thinkingLevel } : {})
     },
     timeout: options.timeout ?? AI_TIMEOUT_MS
+  });
+  if (typeof data.text !== 'string') throw new VertexAIError('failed', 'Vertex AI proxy answered without model text.');
+  return data;
+}
+
+/** Run fast structured specimen/macro extraction via Vertex AI (gemini-3.5-flash-lite). */
+export async function vertexExtract({
+  system,
+  prompt,
+  responseSchema,
+  maxOutputTokens = 2048,
+  thinkingLevel = 'LOW',
+  ...options
+} = {}) {
+  const data = await call('/v1/ai', {
+    ...options,
+    method: 'POST',
+    body: {
+      task: 'extract',
+      kind: 'extract',
+      system,
+      prompt,
+      responseSchema,
+      maxOutputTokens,
+      thinkingLevel
+    },
+    timeout: options.timeout ?? 45000
   });
   if (typeof data.text !== 'string') throw new VertexAIError('failed', 'Vertex AI proxy answered without model text.');
   return data;

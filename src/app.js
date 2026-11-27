@@ -28,7 +28,8 @@ import {
 } from './proofread.js';
 import { writeBack, carryPatches, carryText, blockText, showValue, patchFor } from './writeback.js';
 import { loadSettings as loadProofSettings, saveSettings as saveProofSettings, status as hanSlideStatus, proofread as hanSlideProofread, describeStatus, normaliseCode } from './hanslide.js';
-import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, describeVertexStatus, VERTEX_PROOFREAD_SYSTEM_PROMPT } from './vertexai.js';
+import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, vertexExtract, describeVertexStatus, VERTEX_PROOFREAD_SYSTEM_PROMPT } from './vertexai.js';
+import { EXTRACT_RESPONSE_SCHEMA, buildExtractPrompt, parseExtractReply, vetExtractedFields, applyExtractedFields } from './aiextract.js';
 
 // The CNS-only code (guided intake, pathway drawer and family plates, about 180 kB) loads the
 // first time a CNS form opens rather than at start-up (docs/specs/speed.md, Phase 79). ensureTemplate
@@ -149,7 +150,7 @@ const nodes = {
   lisCaptureStatus: $('#lis-status-capture'),
   lisHint: $('#lis-hint'),
   lis: {
-    macro: { toggle: $('#meta-useLisMacro'), generated: $('#btn-macro-generated'), clear: $('#btn-macro-clear'), status: $('#lis-status-macro') },
+    macro: { toggle: $('#meta-useLisMacro'), ai: $('#btn-macro-ai'), aiUndo: $('#btn-macro-ai-undo'), generated: $('#btn-macro-generated'), clear: $('#btn-macro-clear'), status: $('#lis-status-macro') },
     blockKey: { toggle: $('#meta-useLisBlockKey'), generated: $('#btn-blockKey-generated'), clear: $('#btn-blockKey-clear'), status: $('#lis-status-blockKey') }
   },
   statusTemplate: $('#status-template'),
@@ -2349,7 +2350,83 @@ function generatedBlock(key) {
   } catch { return ''; }
 }
 
+let aiMacroUndo = null;
+
+async function fillMacroWithAi() {
+  const ui = nodes.lis.macro;
+  const cs = state.caseState;
+  const part = activePart();
+  if (!cs || !part) return;
+  const s = schemaOf(part);
+  const g = templateOf(part).generator;
+  const req = buildExtractPrompt({
+    schema: s,
+    part,
+    specimen: cs.meta?.specimen || '',
+    clinical: cs.meta?.clinical || '',
+    macro: cs.meta?.macro || ''
+  });
+  if (req.error) { ui.status.textContent = req.error; return toast(req.error); }
+  const token = await getToken(state.config, { interactive: false }).catch(() => '');
+  if (!token) {
+    const msg = 'Sign in to Google first to use Fill with AI.';
+    ui.status.textContent = msg;
+    return toast(msg);
+  }
+  const prevText = ui.ai.textContent;
+  ui.ai.disabled = true;
+  ui.ai.textContent = 'Extracting\u2026';
+  ui.status.textContent = 'Asking Gemini to extract specimen and macro fields\u2026';
+  try {
+    const ans = await vertexExtract({
+      system: req.system,
+      prompt: req.prompt,
+      responseSchema: EXTRACT_RESPONSE_SCHEMA,
+      proxyUrl: loadVertexSettings().proxyUrl,
+      token
+    });
+    if (state.caseState !== cs) return;
+    const parsed = parseExtractReply(ans.text);
+    if (!parsed.readable) throw new Error('Gemini returned an unreadable extraction reply; try again.');
+    const { applied } = vetExtractedFields(parsed, s, part);
+    if (!applied.length) {
+      const msg = `Gemini (${ans.seconds || 0}s) found no new macro fields to fill.`;
+      ui.status.textContent = msg;
+      return toast(msg);
+    }
+    aiMacroUndo = { caseState: cs, partIndex: state.activePart, ...applyExtractedFields(s, g, part, applied) };
+    if (ui.aiUndo) ui.aiUndo.hidden = false;
+    markDirty();
+    render();
+    const summary = applied.slice(0, 4).map((a) => `${a.label}: ${Array.isArray(a.after) ? a.after.join(', ') : a.after}`).join('; ');
+    const more = applied.length > 4 ? ` (+${applied.length - 4} more)` : '';
+    ui.status.textContent = `AI filled ${applied.length} field${applied.length === 1 ? '' : 's'} (${ans.seconds || 0}s): ${summary}${more}.`;
+    toast(`AI filled ${applied.length} field${applied.length === 1 ? '' : 's'} in Part ${part.label}`);
+  } catch (err) {
+    ui.status.textContent = err.message || 'AI extraction failed.';
+    toast(err.message || 'AI extraction failed');
+  } finally {
+    ui.ai.disabled = false;
+    ui.ai.textContent = prevText;
+  }
+}
+
+function undoMacroAi() {
+  const u = aiMacroUndo;
+  if (!u || u.caseState !== state.caseState) return;
+  const part = state.caseState.parts[u.partIndex];
+  if (!part || part.label !== u.partLabel) return;
+  part.values = Object.fromEntries(u.previous.map(([k, v]) => [k, Array.isArray(v) ? [...v] : v]));
+  aiMacroUndo = null;
+  if (nodes.lis.macro.aiUndo) nodes.lis.macro.aiUndo.hidden = true;
+  markDirty();
+  render();
+  toast(`Reverted AI fill on Part ${part.label}`);
+}
+
 function initLis() {
+  nodes.lis.macro.ai?.addEventListener('click', () => fillMacroWithAi());
+  nodes.lis.macro.aiUndo?.addEventListener('click', () => undoMacroAi());
   for (const [key, { toggle, label }] of Object.entries(LIS_KEYS)) {
     const ui = nodes.lis[key];
     if (!ui.toggle) continue;
