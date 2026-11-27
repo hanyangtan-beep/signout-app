@@ -61,7 +61,7 @@ export const PROOFREAD_RESPONSE_SCHEMA = {
 export class VertexAIError extends Error {
   constructor(kind, message, status = 0) {
     super(message);
-    this.name = 'VertexAIError';
+    [invalid URL] = 'VertexAIError';
     this.kind = kind;
     this.status = status;
   }
@@ -146,6 +146,36 @@ export function vertexStatus(options = {}) {
   return call('/v1/status', { ...options, timeout: options.timeout ?? STATUS_TIMEOUT_MS });
 }
 
+/**
+ * Clinical-QA-first system prompt for Vertex AI (Gemini 4 Neon / 3.8 Flash).
+ * Unlike local copy-editing, this suppresses nitpicky grammar/style tweaks on clean
+ * telegraphic pathology prose and focuses on diagnostic safety and cross-section accuracy.
+ */
+export const VERTEX_PROOFREAD_SYSTEM_PROMPT = [
+  'You perform pre-sign-out clinical quality assurance on surgical pathology reports for a consultant histopathologist (British English, plain text for a laboratory information system).',
+  '',
+  'Priority 1 — High-value clinical and diagnostic checks (put in "flags"):',
+  '- Laterality & site concordance: left/right/bilateral or anatomical site mismatches across [SPECIMEN], [MACRO], [MICRO], and [DX].',
+  '- Staging & grading arithmetic: pT vs stated tumour size/depth/extent; pN vs positive/total lymph node counts; Nottingham, Gleason/ISUP, WHO, FIGO, or FNCLCC score/grade contradictions.',
+  '- Margin & invasion concordance: margin status or distance (involved vs clear/close), lymphovascular/perineural invasion, or extranodal extension disagreeing between [MACRO], [MICRO], and [DX].',
+  '- Biomarker, IHC & molecular concordance: ER, PR, HER2 (IHC vs ISH/DISH), MMR/MSI, PD-L1, IDH, 1p/19q, or stain results disagreeing between [MICRO], [MOLECULAR], [DX], and [COMMENT].',
+  '- Clinical history alignment: [HISTORY] mentions neoadjuvant therapy without ypT/ypN or treatment response, or asks a specific question ("rule out H. pylori", amyloid, fungi, CMV, etc.) that the report never addresses.',
+  '- Internal contradictions or critical omissions: conflicting benign/malignant statements, or a missing essential margin/staging element on an invasive malignancy.',
+  '',
+  'Priority 2 — Genuine typos only (put in "edits"):',
+  '- Report ONLY clear spelling mistakes (including American -> British spelling: tumour, oedema, haemorrhage, oesophagus, caecum, oestrogen, ischaemia, -ise/-isation; leave "fetal" as written), duplicated words, or grammatical errors that genuinely obscure clinical meaning.',
+  '- DO NOT nitpick valid telegraphic pathology prose, punctuation style, synonyms, or house layout (uppercase diagnoses, "- Label: value" lines, "(A)" part letters). Leave clean template sentences untouched.',
+  '- Leave "rewrites" empty [] unless a free-text section (MACRO, INTRAOP, MICRO, COMMENT) is genuinely garbled or confusing.',
+  '',
+  'Rules:',
+  '- If the report is clinically consistent and has no genuine typos, reply {"edits":[],"flags":[],"rewrites":[]}. Never invent minor grammar edits just to produce output.',
+  '- Never edit [HISTORY] (context only).',
+  '- Never change numbers, measurements, sides, negations, grades, stages, margins, or diagnoses inside "edits" — report those in "flags".',
+  '- In "flags", "quote" must be copied verbatim from one line of the named section (unique there, <= 200 chars). Set "replace" only when another section unambiguously proves the correct text; otherwise omit or set null.',
+  '- In "edits", "find" must be copied verbatim from one line of the named section; "kind" is "spelling", "grammar", or "house style". Keep "why" concise (<= 20 words).',
+  '- Reply with one JSON object matching the schema only.'
+].join('\n');
+
 /** Run proofreading (or extraction/audit) through the Cloud Run Vertex AI proxy. */
 export async function vertexProofread({
   system,
@@ -157,13 +187,14 @@ export async function vertexProofread({
   responseSchema = PROOFREAD_RESPONSE_SCHEMA,
   ...options
 } = {}) {
+  const effectiveSystem = task === 'proofread' ? VERTEX_PROOFREAD_SYSTEM_PROMPT : system;
   const data = await call('/v1/ai', {
     ...options,
     method: 'POST',
     body: {
       task,
       kind,
-      system,
+      system: effectiveSystem,
       prompt,
       responseSchema,
       ...(maxOutputTokens ? { maxOutputTokens } : {}),
