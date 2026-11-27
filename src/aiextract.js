@@ -343,3 +343,151 @@ export function vetIntakeParts(parsed, manifest = [], fallbackHistory = '') {
   }));
   return { parsed: parsedObj, rows };
 }
+
+// ---------- AI multi-part macroscopic extraction (one call for all parts) ----------
+
+export const CASE_EXTRACT_RESPONSE_SCHEMA = {
+  type: 'OBJECT',
+  properties: {
+    parts: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        properties: {
+          partIndex: { type: 'INTEGER' },
+          label: { type: 'STRING' },
+          fields: {
+            type: 'ARRAY',
+            items: {
+              type: 'OBJECT',
+              properties: {
+                id: { type: 'STRING' },
+                value: { type: 'STRING' },
+                values: { type: 'ARRAY', items: { type: 'STRING' } },
+                evidence: { type: 'STRING' }
+              },
+              required: ['id', 'evidence']
+            }
+          }
+        },
+        required: ['partIndex', 'fields']
+      }
+    }
+  },
+  required: ['parts']
+};
+
+export const CASE_EXTRACT_SYSTEM_PROMPT = [
+  'You extract structured specimen and macroscopic fields across ALL parts of a multi-part surgical pathology case from LIS text.',
+  '',
+  'Rules:',
+  '- Each part is identified by its 0-based "partIndex" and letter ("A", "B", ...). Map each section of [SPECIMEN] and [MACROSCOPIC] (whether labelled "(A)/(B)", numbered "1./2.", or described by organ) strictly to its matching partIndex.',
+  '- NEVER cross-contaminate measurements, weights, node counts, or laterality between different parts.',
+  '- Extract ONLY facts explicitly stated in [SPECIMEN], [CLINICAL HISTORY], or [MACROSCOPIC]. NEVER guess microscopic/histologic findings or staging.',
+  '- For "select" fields, "value" MUST be copied verbatim from that part\'s allowed options list. For "multiselect", use "values".',
+  '- For "number" fields, return a plain number string (no unit), converting units to match the field\'s required unit (e.g. 2.5 cm -> "25" for mm; 15 mm -> "1.5" for cm).',
+  '- For "checkbox" fields, use "true" or "false". For "text"/"textarea", use concise British English plain text.',
+  '- Include a short verbatim "evidence" quote (<= 100 chars) for every extracted field. Omit parts with no extractable fields.',
+  '- Reply with one JSON object matching the schema only.'
+].join('\n');
+
+/** Build one extraction prompt covering all parts of a multi-part case. */
+export function buildCaseExtractPrompt({ parts = [], schemaFor, specimen = '', clinical = '', macro = '' } = {}) {
+  const sp = String(specimen || '').trim();
+  const cl = String(clinical || '').trim();
+  const ma = String(macro || '').trim();
+  if (!sp && !cl && !ma) return { error: 'Paste a specimen or macroscopic description first.' };
+
+  const perPartCap = parts.length > 6 ? 18 : parts.length > 3 ? 24 : MAX_FIELDS;
+  const partBlocks = [];
+  let totalFields = 0;
+
+  parts.forEach((part, i) => {
+    const schema = schemaFor(part);
+    const fields = extractableFields(schema).slice(0, perPartCap);
+    if (!fields.length) return;
+    totalFields += fields.length;
+    partBlocks.push(
+      `### partIndex ${i} — Part (${part.label})${part.linked ? ' [linked synoptic]' : ''}: ${schema?.name || 'Pathology report'}`,
+      ...fields.map((f) => describeField(schema, f, part.values)),
+      ''
+    );
+  });
+
+  if (!totalFields) return { error: 'None of the parts in this case have specimen or macroscopic fields to extract.' };
+
+  const lines = [
+    'TASK: extract',
+    `Extract specimen and macroscopic fields for all ${parts.length} parts of this case.`,
+    '',
+    '[PARTS AND FIELDS]',
+    ...partBlocks
+  ];
+  if (sp) lines.push('[SPECIMEN]', sp, '');
+  if (cl) lines.push('[CLINICAL HISTORY]', cl, '');
+  if (ma) lines.push('[MACROSCOPIC]', ma, '');
+  lines.push('Reply with the JSON object only.');
+
+  const prompt = lines.join('\n');
+  if (prompt.length > MAX_PROMPT_CHARS) {
+    return { error: `The multi-part case text is too long to extract in one call (${prompt.length} characters).` };
+  }
+  return { system: CASE_EXTRACT_SYSTEM_PROMPT, prompt };
+}
+
+/** Parse the JSON reply for multi-part extraction; returns { parts[], readable }. */
+export function parseCaseExtractReply(text) {
+  const raw = String(text ?? '')
+    .replace(/<think>[\s\S]*?<\/think>/g, '')
+    .replace(/```(?:json)?/g, '')
+    .replace(/,\s*([}\]])/g, '$1');
+  const start = raw.indexOf('{');
+  const end = raw.lastIndexOf('}');
+  if (start >= 0 && end > start) {
+    try {
+      const obj = JSON.parse(raw.slice(start, end + 1));
+      if (obj && Array.isArray(obj.parts)) return { parts: obj.parts, readable: true };
+    } catch { /* fall through */ }
+  }
+  return { parts: [], readable: false };
+}
+
+/** Validate multi-part extracted fields against each part's schema. */
+export function vetCaseExtractedFields(parsed, parts, schemaFor) {
+  const byPart = [];
+  const seenParts = new Set();
+  let totalApplied = 0;
+  let totalSkipped = 0;
+
+  for (const entry of parsed?.parts || []) {
+    let idx = Number.isInteger(entry?.partIndex) ? entry.partIndex : -1;
+    if (idx < 0 || idx >= parts.length) {
+      const lbl = String(entry?.label ?? '').trim().toUpperCase();
+      const matches = parts.map((p, i) => (p.label === lbl ? i : -1)).filter((i) => i >= 0);
+      idx = matches.length === 1 ? matches[0] : -1;
+    }
+    if (idx < 0 || seenParts.has(idx)) { totalSkipped++; continue; }
+    seenParts.add(idx);
+    const part = parts[idx];
+    const schema = schemaFor(part);
+    const { applied, skipped } = vetExtractedFields({ fields: entry.fields || [] }, schema, part);
+    totalSkipped += skipped;
+    if (applied.length) {
+      totalApplied += applied.length;
+      byPart.push({ partIndex: idx, label: part.label, applied });
+    }
+  }
+  return { byPart, totalApplied, totalSkipped };
+}
+
+/** Apply vetted multi-part extracted fields and return a reversible undo snapshot for all touched parts. */
+export function applyCaseExtractedFields(parts, schemaFor, generatorFor, byPart) {
+  const snapshots = [];
+  for (const entry of byPart) {
+    const part = parts[entry.partIndex];
+    if (!part) continue;
+    const snap = applyExtractedFields(schemaFor(part), generatorFor(part), part, entry.applied);
+    snapshots.push({ partIndex: entry.partIndex, ...snap });
+  }
+  return { snapshots };
+}

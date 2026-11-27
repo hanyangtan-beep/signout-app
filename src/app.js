@@ -29,7 +29,7 @@ import {
 import { writeBack, carryPatches, carryText, blockText, showValue, patchFor } from './writeback.js';
 import { loadSettings as loadProofSettings, saveSettings as saveProofSettings, status as hanSlideStatus, proofread as hanSlideProofread, describeStatus, normaliseCode } from './hanslide.js';
 import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, vertexExtract, describeVertexStatus, VERTEX_PROOFREAD_SYSTEM_PROMPT } from './vertexai.js';
-import { EXTRACT_RESPONSE_SCHEMA, buildExtractPrompt, parseExtractReply, vetExtractedFields, applyExtractedFields, INTAKE_RESPONSE_SCHEMA, buildIntakePrompt, parseIntakeReply, vetIntakeParts } from './aiextract.js';
+import { EXTRACT_RESPONSE_SCHEMA, buildExtractPrompt, parseExtractReply, vetExtractedFields, applyExtractedFields, CASE_EXTRACT_RESPONSE_SCHEMA, buildCaseExtractPrompt, parseCaseExtractReply, vetCaseExtractedFields, applyCaseExtractedFields, INTAKE_RESPONSE_SCHEMA, buildIntakePrompt, parseIntakeReply, vetIntakeParts } from './aiextract.js';
 
 // The CNS-only code (guided intake, pathway drawer and family plates, about 180 kB) loads the
 // first time a CNS form opens rather than at start-up (docs/specs/speed.md, Phase 79). ensureTemplate
@@ -2323,6 +2323,10 @@ const LIS_KEYS = { macro: { toggle: 'useLisMacro', label: 'macro' }, blockKey: {
 /** Explain, under each pasted-text box, which text is printing in the report. */
 function renderLisStatus(out) {
   const meta = state.caseState.meta;
+  const nParts = state.caseState?.parts?.length || 1;
+  if (nodes.lis.macro.ai && !nodes.lis.macro.ai.disabled) {
+    nodes.lis.macro.ai.textContent = nParts > 1 ? `Fill all ${nParts} parts with AI` : 'Fill with AI';
+  }
   for (const [key, { toggle, label }] of Object.entries(LIS_KEYS)) {
     const ui = nodes.lis[key];
     if (!ui.toggle) continue;
@@ -2355,17 +2359,24 @@ let aiMacroUndo = null;
 async function fillMacroWithAi() {
   const ui = nodes.lis.macro;
   const cs = state.caseState;
+  if (!cs || !cs.parts?.length) return;
+  const multi = cs.parts.length > 1;
   const part = activePart();
-  if (!cs || !part) return;
-  const s = schemaOf(part);
-  const g = templateOf(part).generator;
-  const req = buildExtractPrompt({
-    schema: s,
-    part,
-    specimen: cs.meta?.specimen || '',
-    clinical: cs.meta?.clinical || '',
-    macro: cs.meta?.macro || ''
-  });
+  const req = multi
+    ? buildCaseExtractPrompt({
+      parts: cs.parts,
+      schemaFor: (p) => schemaOf(p),
+      specimen: cs.meta?.specimen || '',
+      clinical: cs.meta?.clinical || '',
+      macro: cs.meta?.macro || ''
+    })
+    : buildExtractPrompt({
+      schema: schemaOf(part),
+      part,
+      specimen: cs.meta?.specimen || '',
+      clinical: cs.meta?.clinical || '',
+      macro: cs.meta?.macro || ''
+    });
   if (req.error) { ui.status.textContent = req.error; return toast(req.error); }
   const token = await getToken(state.config, { interactive: false }).catch(() => '');
   if (!token) {
@@ -2373,55 +2384,84 @@ async function fillMacroWithAi() {
     ui.status.textContent = msg;
     return toast(msg);
   }
-  const prevText = ui.ai.textContent;
   ui.ai.disabled = true;
   ui.ai.textContent = 'Extracting\u2026';
-  ui.status.textContent = 'Asking Gemini to extract specimen and macro fields\u2026';
+  ui.status.textContent = multi
+    ? `Asking Gemini to extract specimen and macro fields across all ${cs.parts.length} parts\u2026`
+    : 'Asking Gemini to extract specimen and macro fields\u2026';
   try {
     const ans = await vertexExtract({
       system: req.system,
       prompt: req.prompt,
-      responseSchema: EXTRACT_RESPONSE_SCHEMA,
+      responseSchema: multi ? CASE_EXTRACT_RESPONSE_SCHEMA : EXTRACT_RESPONSE_SCHEMA,
+      maxOutputTokens: multi ? 4096 : 2048,
       proxyUrl: loadVertexSettings().proxyUrl,
       token
     });
     if (state.caseState !== cs) return;
-    const parsed = parseExtractReply(ans.text);
-    if (!parsed.readable) throw new Error('Gemini returned an unreadable extraction reply; try again.');
-    const { applied } = vetExtractedFields(parsed, s, part);
-    if (!applied.length) {
-      const msg = `Gemini (${ans.seconds || 0}s) found no new macro fields to fill.`;
-      ui.status.textContent = msg;
-      return toast(msg);
+    if (multi) {
+      const parsed = parseCaseExtractReply(ans.text);
+      if (!parsed.readable) throw new Error('Gemini returned an unreadable multi-part extraction reply; try again.');
+      const { byPart, totalApplied } = vetCaseExtractedFields(parsed, cs.parts, (p) => schemaOf(p));
+      if (!totalApplied) {
+        const msg = `Gemini (${ans.seconds || 0}s) found no new macro fields to fill across ${cs.parts.length} parts.`;
+        ui.status.textContent = msg;
+        return toast(msg);
+      }
+      const { snapshots } = applyCaseExtractedFields(cs.parts, (p) => schemaOf(p), (p) => templateOf(p).generator, byPart);
+      aiMacroUndo = { caseState: cs, snapshots };
+      if (ui.aiUndo) ui.aiUndo.hidden = false;
+      markDirty();
+      render();
+      const perPart = byPart.map((e) => `(${e.label}) ${e.applied.length}`).join(', ');
+      ui.status.textContent = `AI filled ${totalApplied} field${totalApplied === 1 ? '' : 's'} across ${byPart.length} part${byPart.length === 1 ? '' : 's'} (${ans.seconds || 0}s): ${perPart}.`;
+      toast(`AI filled ${totalApplied} field${totalApplied === 1 ? '' : 's'} across ${byPart.length} part${byPart.length === 1 ? '' : 's'}`);
+    } else {
+      const s = schemaOf(part);
+      const g = templateOf(part).generator;
+      const parsed = parseExtractReply(ans.text);
+      if (!parsed.readable) throw new Error('Gemini returned an unreadable extraction reply; try again.');
+      const { applied } = vetExtractedFields(parsed, s, part);
+      if (!applied.length) {
+        const msg = `Gemini (${ans.seconds || 0}s) found no new macro fields to fill.`;
+        ui.status.textContent = msg;
+        return toast(msg);
+      }
+      const snap = applyExtractedFields(s, g, part, applied);
+      aiMacroUndo = { caseState: cs, snapshots: [{ partIndex: state.activePart, ...snap }] };
+      if (ui.aiUndo) ui.aiUndo.hidden = false;
+      markDirty();
+      render();
+      const summary = applied.slice(0, 4).map((a) => `${a.label}: ${Array.isArray(a.after) ? a.after.join(', ') : a.after}`).join('; ');
+      const more = applied.length > 4 ? ` (+${applied.length - 4} more)` : '';
+      ui.status.textContent = `AI filled ${applied.length} field${applied.length === 1 ? '' : 's'} (${ans.seconds || 0}s): ${summary}${more}.`;
+      toast(`AI filled ${applied.length} field${applied.length === 1 ? '' : 's'} in Part ${part.label}`);
     }
-    aiMacroUndo = { caseState: cs, partIndex: state.activePart, ...applyExtractedFields(s, g, part, applied) };
-    if (ui.aiUndo) ui.aiUndo.hidden = false;
-    markDirty();
-    render();
-    const summary = applied.slice(0, 4).map((a) => `${a.label}: ${Array.isArray(a.after) ? a.after.join(', ') : a.after}`).join('; ');
-    const more = applied.length > 4 ? ` (+${applied.length - 4} more)` : '';
-    ui.status.textContent = `AI filled ${applied.length} field${applied.length === 1 ? '' : 's'} (${ans.seconds || 0}s): ${summary}${more}.`;
-    toast(`AI filled ${applied.length} field${applied.length === 1 ? '' : 's'} in Part ${part.label}`);
   } catch (err) {
     ui.status.textContent = err.message || 'AI extraction failed.';
     toast(err.message || 'AI extraction failed');
   } finally {
     ui.ai.disabled = false;
-    ui.ai.textContent = prevText;
+    const n = state.caseState?.parts?.length || 1;
+    ui.ai.textContent = n > 1 ? `Fill all ${n} parts with AI` : 'Fill with AI';
   }
 }
 
 function undoMacroAi() {
   const u = aiMacroUndo;
-  if (!u || u.caseState !== state.caseState) return;
-  const part = state.caseState.parts[u.partIndex];
-  if (!part || part.label !== u.partLabel) return;
-  part.values = Object.fromEntries(u.previous.map(([k, v]) => [k, Array.isArray(v) ? [...v] : v]));
+  if (!u || u.caseState !== state.caseState || !u.snapshots?.length) return;
+  let reverted = 0;
+  for (const snap of u.snapshots) {
+    const part = state.caseState.parts[snap.partIndex];
+    if (!part || part.label !== snap.partLabel) continue;
+    part.values = Object.fromEntries(snap.previous.map(([k, v]) => [k, Array.isArray(v) ? [...v] : v]));
+    reverted++;
+  }
   aiMacroUndo = null;
   if (nodes.lis.macro.aiUndo) nodes.lis.macro.aiUndo.hidden = true;
   markDirty();
   render();
-  toast(`Reverted AI fill on Part ${part.label}`);
+  toast(reverted > 1 ? `Reverted AI fill across ${reverted} parts` : `Reverted AI fill on Part ${u.snapshots[0].partLabel}`);
 }
 
 function initLis() {
