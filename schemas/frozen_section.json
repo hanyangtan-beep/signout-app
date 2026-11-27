@@ -450,12 +450,57 @@
       "options": [
         "Pancreatic neck (transection)",
         "Bile duct",
+        "Common bile duct",
+        "Common hepatic duct",
+        "Proximal bile duct",
+        "Distal bile duct",
         "Uncinate (superior mesenteric artery)",
         "Pancreatic duct",
         "Proximal (gastric or duodenal)",
         "Distal (duodenal or jejunal)"
       ],
       "default": "Pancreatic neck (transection)",
+      "showIf": {
+        "field": "scenario",
+        "is": "Pancreatic / bile duct margin"
+      }
+    },
+    {
+      "id": "pdForm",
+      "label": "Specimen form",
+      "type": "select",
+      "options": [
+        "Not specified",
+        "Shave",
+        "Ring",
+        "Cuff"
+      ],
+      "default": "Not specified",
+      "showIf": {
+        "field": "scenario",
+        "is": "Pancreatic / bile duct margin"
+      }
+    },
+    {
+      "id": "pdEnFace",
+      "label": "Embedded en face",
+      "type": "checkbox",
+      "default": false,
+      "showIf": {
+        "field": "scenario",
+        "is": "Pancreatic / bile duct margin"
+      }
+    },
+    {
+      "id": "pdEpithelium",
+      "label": "Ductal epithelium",
+      "type": "select",
+      "options": [
+        "Not specified",
+        "Intact",
+        "Denuded"
+      ],
+      "default": "Not specified",
       "showIf": {
         "field": "scenario",
         "is": "Pancreatic / bile duct margin"
@@ -487,7 +532,8 @@
         "High-grade dysplasia only",
         "Low-grade dysplasia only",
         "Atypical, deferred",
-        "No epithelium identified"
+        "No epithelium identified",
+        "Denuded epithelium (cannot assess)"
       ],
       "optionLabels": {
         "Negative": "No carcinoma or dysplasia",
@@ -496,7 +542,8 @@
         "High-grade dysplasia only": "High-grade dysplasia, no invasion",
         "Low-grade dysplasia only": "Low-grade dysplasia, no invasion",
         "Atypical, deferred": "Atypical, defer to paraffin",
-        "No epithelium identified": "No ductal epithelium"
+        "No epithelium identified": "No ductal epithelium",
+        "Denuded epithelium (cannot assess)": "Denuded epithelium (cannot assess)"
       },
       "default": "Negative",
       "showIf": {
@@ -2189,6 +2236,72 @@
       "near": "node"
     }
   },
+  "presets": [
+    {
+      "id": "oral_tongue_5",
+      "label": "Oral tongue (5 margins)",
+      "help": "Anterior, posterior, medial, lateral and deep margins",
+      "parts": [
+        { "values": { "scenario": "Margin", "mgOrgan": "TONGUE", "mgDescriptor": "anterior", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "TONGUE", "mgDescriptor": "posterior", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "TONGUE", "mgDescriptor": "medial", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "TONGUE", "mgDescriptor": "lateral", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "TONGUE", "mgDescriptor": "deep", "mgProcedure": "excision" } }
+      ]
+    },
+    {
+      "id": "oral_tongue_6",
+      "label": "Oral tongue (6 margins)",
+      "help": "Anterior, posterior, medial, lateral, deep and floor of mouth margins",
+      "parts": [
+        { "values": { "scenario": "Margin", "mgOrgan": "TONGUE", "mgDescriptor": "anterior", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "TONGUE", "mgDescriptor": "posterior", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "TONGUE", "mgDescriptor": "medial", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "TONGUE", "mgDescriptor": "lateral", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "TONGUE", "mgDescriptor": "deep", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "TONGUE", "mgDescriptor": "floor of mouth", "mgProcedure": "excision" } }
+      ]
+    },
+    {
+      "id": "oropharynx_7",
+      "label": "Oropharynx (7 margins)",
+      "help": "Anterior, posterior, superior, inferior, medial, lateral and deep margins",
+      "parts": [
+        { "values": { "scenario": "Margin", "mgOrgan": "OROPHARYNX", "mgDescriptor": "anterior", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "OROPHARYNX", "mgDescriptor": "posterior", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "OROPHARYNX", "mgDescriptor": "superior", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "OROPHARYNX", "mgDescriptor": "inferior", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "OROPHARYNX", "mgDescriptor": "medial", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "OROPHARYNX", "mgDescriptor": "lateral", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "OROPHARYNX", "mgDescriptor": "deep", "mgProcedure": "excision" } }
+      ]
+    },
+    {
+      "id": "nasal_ala_bcc",
+      "label": "Nasal ala BCC (Rm A-D + deep)",
+      "help": "Four radial skin margins (Rm A-D) plus deep margin",
+      "parts": [
+        { "values": { "scenario": "Margin", "mgOrgan": "SKIN", "mgDescriptor": "Other", "mgDescriptorOther": "Rm A (superior)", "mgProcedure": "excision", "tissueDesc": "skin", "tumourType": "basal cell carcinoma" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "SKIN", "mgDescriptor": "Other", "mgDescriptorOther": "Rm B (inferior)", "mgProcedure": "excision", "tissueDesc": "skin", "tumourType": "basal cell carcinoma" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "SKIN", "mgDescriptor": "Other", "mgDescriptorOther": "Rm C (medial)", "mgProcedure": "excision", "tissueDesc": "skin", "tumourType": "basal cell carcinoma" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "SKIN", "mgDescriptor": "Other", "mgDescriptorOther": "Rm D (lateral)", "mgProcedure": "excision", "tissueDesc": "skin", "tumourType": "basal cell carcinoma" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "SKIN", "mgDescriptor": "deep", "mgProcedure": "excision", "tumourType": "basal cell carcinoma" } }
+      ]
+    },
+    {
+      "id": "maxillectomy_6",
+      "label": "Maxillectomy (6 margins)",
+      "help": "Anterior, posterior, superior, inferior, medial and deep margins",
+      "parts": [
+        { "values": { "scenario": "Margin", "mgOrgan": "NASAL CAVITY", "mgDescriptor": "anterior", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "NASAL CAVITY", "mgDescriptor": "posterior", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "NASAL CAVITY", "mgDescriptor": "superior", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "NASAL CAVITY", "mgDescriptor": "inferior", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "NASAL CAVITY", "mgDescriptor": "medial", "mgProcedure": "excision" } },
+        { "values": { "scenario": "Margin", "mgOrgan": "NASAL CAVITY", "mgDescriptor": "deep", "mgProcedure": "excision" } }
+      ]
+    }
+  ],
   "snippets": [
     {
       "id": "cns_integrated_to_follow",
@@ -2199,6 +2312,16 @@
       "id": "cns_meningioma_grade_deferred",
       "label": "CNS — meningioma grading deferred",
       "text": "Grading of the meningioma is deferred to paraffin sections."
+    },
+    {
+      "id": "pd_stent_atypia",
+      "label": "Bile / pancreatic duct — reactive atypia (stent)",
+      "text": "The ductal epithelium shows reactive atypia in keeping with previous biliary stenting; there is no convincing evidence of high-grade dysplasia or invasive carcinoma."
+    },
+    {
+      "id": "pd_peribiliary_glands",
+      "label": "Bile duct — peribiliary glands caveat",
+      "text": "Lobules of benign peribiliary glands are noted within the bile duct wall and should not be misinterpreted as infiltrating adenocarcinoma."
     }
   ]
 }

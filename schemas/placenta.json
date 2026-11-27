@@ -1,480 +1,1172 @@
 {
- "id": "placenta",
- "version": "2026.09",
- "name": "Placenta",
- "shortName": "Placenta · delivery",
- "label": "Placenta",
- "organ": "PLACENTA",
- "system": "Gynae",
- "kind": "benign resection",
- "layout": {
-  "pack": true,
-  "macroGroups": [
-   "Macroscopy"
+  "id": "placenta",
+  "version": "2026.11",
+  "name": "Placenta",
+  "shortName": "Placenta · delivery",
+  "label": "Placenta",
+  "organ": "PLACENTA",
+  "system": "Gynae",
+  "kind": "benign resection",
+  "layout": {
+    "pack": true,
+    "macroGroups": [
+      "Macroscopy",
+      "Twin I",
+      "Twin II",
+      "Twin III",
+      "Monochorionic fetal surface"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
+  "rank": 22,
+  "aliases": [
+    "chorioamnionitis",
+    "funisitis",
+    "villitis",
+    "umbilical cord",
+    "membranes",
+    "twin",
+    "triplet",
+    "DCDA",
+    "MCDA",
+    "MCMA",
+    "dichorionic",
+    "monochorionic",
+    "infarct",
+    "MVM",
+    "FVM",
+    "retroplacental haematoma",
+    "Amsterdam",
+    "meconium"
   ],
-  "macroFields": [
-   "specimenName"
-  ]
- },
- "rank": 22,
- "aliases": [
-  "chorioamnionitis",
-  "funisitis",
-  "villitis",
-  "umbilical cord",
-  "membranes",
-  "twin",
-  "dichorionic",
-  "monochorionic",
-  "infarct",
-  "MVM",
-  "FVM",
-  "retroplacental haematoma",
-  "Amsterdam",
-  "meconium"
- ],
- "match": {
-  "site": [
-   "placenta",
-   "placental",
-   "cord",
-   "membranes"
-  ],
-  "procedure": [
-   "delivery",
-   "caesarean",
-   "vaginal"
-  ],
-  "clinical": [
-   "chorioamnionitis",
-   "preterm",
-   "IUGR",
-   "FGR",
-   "stillbirth",
-   "pre-eclampsia",
-   "preeclampsia",
-   "GDM",
-   "twin",
-   "PPROM",
-   "abruption"
-  ]
- },
- "macroExtract": {
-  "weight": {
-   "concept": "weight",
-   "unit": "g"
+  "match": {
+    "site": [
+      "placenta",
+      "placental",
+      "cord",
+      "membranes"
+    ],
+    "procedure": [
+      "delivery",
+      "caesarean",
+      "LSCS",
+      "vaginal"
+    ],
+    "clinical": [
+      "chorioamnionitis",
+      "preterm",
+      "IUGR",
+      "FGR",
+      "stillbirth",
+      "pre-eclampsia",
+      "preeclampsia",
+      "GDM",
+      "twin",
+      "triplet",
+      "DCDA",
+      "MCDA",
+      "MCMA",
+      "PPROM",
+      "abruption"
+    ],
+    "fill": [
+      {
+        "field": "plurality",
+        "map": [
+          ["\\btriplets?\\b|\\bTCTA\\b|\\bDCTA\\b|\\bMCTA\\b", "Triplet"],
+          ["\\btwins?\\b|\\bDCDA\\b|\\bMCDA\\b|\\bMCMA\\b|\\bdichorionic\\b|\\bmonochorionic\\b", "Twin"]
+        ]
+      },
+      {
+        "field": "requestChorionicity",
+        "map": [
+          ["\\bTCTA\\b|trichorionic", "Triplet - TCTA"],
+          ["\\bDCTA\\b", "Triplet - DCTA"],
+          ["\\bMCTA\\b", "Triplet - MCTA"],
+          ["\\bDCDA\\b|dichorionic\\s+diamniotic", "DCDA"],
+          ["\\bMCDA\\b|monochorionic\\s+diamniotic", "MCDA"],
+          ["\\bMCMA\\b|monochorionic\\s+monoamniotic", "MCMA"]
+        ]
+      }
+    ]
   },
-  "discSize": {
-   "concept": "dims",
-   "unit": "cm",
-   "near": "disc|placenta"
-  },
-  "cordLength": {
-   "concept": "length",
-   "unit": "cm",
-   "near": "cord"
-  },
-  "cordDiameter": {
-   "concept": "diameter",
-   "unit": "cm",
-   "near": "cord"
-  },
-  "blocks": {
-   "concept": "blocks",
-   "unit": "count"
-  }
- },
- "specimenNoun": "delivery",
- "maxParts": 2,
- "defaultParts": 1,
- "generator": "placenta",
- "style": {
-  "british": true
- },
- "caseFields": [],
- "options": [
-  {
-   "$use": "includeHeader"
-  },
-  {
-   "id": "macro",
-   "label": "Generate the macroscopic description and block key",
-   "type": "checkbox",
-   "default": true
-  }
- ],
- "fields": [
-  {
-   "id": "specimenName",
-   "label": "Specimen as received",
-   "type": "text",
-   "placeholder": "Placenta / Twin A placenta",
-   "default": ""
-  },
-  {
-   "id": "weight",
-   "label": "Weight",
-   "type": "number",
-   "min": 0,
-   "step": 1,
-   "suffix": "g",
-   "default": "",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "gestation",
-   "label": "Gestation",
-   "type": "select",
-   "options": [
-    "Third trimester",
-    "Second trimester",
-    "First trimester"
-   ],
-   "default": "Third trimester",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "plurality",
-   "label": "Plurality",
-   "type": "select",
-   "options": [
-    "Singleton",
-    "Twin - dichorionic diamniotic",
-    "Twin - monochorionic diamniotic",
-    "Twin - monochorionic monoamniotic"
-   ],
-   "default": "Singleton",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "discSize",
-   "label": "Placental disc dimensions (cm)",
-   "type": "text",
-   "placeholder": "18 x 16 x 2.5",
-   "default": "",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "cordLength",
-   "label": "Cord length",
-   "type": "number",
-   "min": 0,
-   "step": 0.5,
-   "suffix": "cm",
-   "default": "",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "cordDiameter",
-   "label": "Cord diameter",
-   "type": "number",
-   "min": 0,
-   "step": 0.1,
-   "suffix": "cm",
-   "default": "",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "cordInsertion",
-   "label": "Cord insertion",
-   "type": "select",
-   "options": [
-    "Central",
-    "Eccentric",
-    "Marginal",
-    "Velamentous"
-   ],
-   "default": "Central",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "cordVessels",
-   "label": "Cord vessels",
-   "type": "select",
-   "options": [
-    "Three",
-    "Two"
-   ],
-   "default": "Three",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "cordFeatures",
-   "label": "Cord coiling / knots (optional)",
-   "type": "text",
-   "placeholder": "Hypercoiled / true knot / false knot",
-   "default": "",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "membranes",
-   "label": "Membranes",
-   "type": "select",
-   "options": [
-    "Complete",
-    "Incomplete"
-   ],
-   "default": "Complete",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "membraneColour",
-   "label": "Membrane colour",
-   "type": "select",
-   "options": [
-    "Translucent",
-    "Opaque",
-    "Green-stained"
-   ],
-   "default": "Translucent",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "membraneInsertion",
-   "label": "Membrane insertion",
-   "type": "select",
-   "options": [
-    "Marginal",
-    "Circummarginate",
-    "Circumvallate"
-   ],
-   "default": "Marginal",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "cutSurface",
-   "label": "Cut surface",
-   "type": "select",
-   "options": [
-    "Unremarkable",
-    "Infarct(s)",
-    "Retroplacental haematoma",
-    "Intervillous thrombi",
-    "Other - describe"
-   ],
-   "default": "Unremarkable",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "cutSurfaceInfarctPercent",
-   "label": "Infarct extent (% of disc)",
-   "type": "text",
-   "placeholder": "5",
-   "default": "",
-   "showIf": {
-    "field": "cutSurface",
-    "is": "Infarct(s)"
-   },
-   "group": "Macroscopy"
-  },
-  {
-   "id": "cutSurfaceOther",
-   "label": "Cut surface description",
-   "type": "text",
-   "placeholder": "a 2 cm pale firm area at the margin",
-   "default": "",
-   "showIf": {
-    "field": "cutSurface",
-    "is": "Other - describe"
-   },
-   "group": "Macroscopy"
-  },
-  {
-   "id": "blocks",
-   "label": "Blocks",
-   "type": "number",
-   "min": 1,
-   "step": 1,
-   "default": "4",
-   "group": "Macroscopy"
-  },
-  {
-   "id": "villousMaturation",
-   "label": "Villous maturation",
-   "type": "select",
-   "options": [
-    "Appropriate for gestation",
-    "Accelerated",
-    "Delayed - distal villous immaturity"
-   ],
-   "default": "Appropriate for gestation"
-  },
-  {
-   "id": "chorioamnionitis",
-   "label": "Chorioamnionitis (maternal inflammatory response)",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Stage 1 - acute subchorionitis",
-    "Stage 2 - acute chorioamnionitis",
-    "Stage 3 - necrotising"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "fetalResponse",
-   "label": "Fetal inflammatory response",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Stage 1 - umbilical phlebitis or chorionic vasculitis",
-    "Stage 2 - umbilical arteritis",
-    "Stage 3 - necrotising funisitis"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "villitis",
-   "label": "Villitis",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Chronic villitis of unknown aetiology - low grade",
-    "Chronic villitis of unknown aetiology - high grade"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "infarcts",
-   "label": "Infarcts",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Present - recent",
-    "Present - remote"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "infarctPercent",
-   "label": "Infarct extent (% of parenchyma)",
-   "type": "text",
-   "placeholder": "5",
-   "default": "",
-   "showIf": {
-    "field": "infarcts",
-    "not": "Absent"
-   }
-  },
-  {
-   "id": "retroplacentalHaematoma",
-   "label": "Retroplacental haematoma",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Present"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "mvm",
-   "label": "Maternal vascular malperfusion features",
-   "type": "multiselect",
-   "options": [
-    "None",
-    "Distal villous hypoplasia",
-    "Increased syncytial knots",
-    "Decidual arteriopathy",
-    "Accelerated villous maturation"
-   ],
-   "exclusive": [
-    "None"
-   ],
-   "default": [
-    "None"
-   ]
-  },
-  {
-   "id": "fvm",
-   "label": "Fetal vascular malperfusion features",
-   "type": "multiselect",
-   "options": [
-    "None",
-    "Avascular villi",
-    "Thrombosis of fetal vessels",
-    "Villous stromal-vascular karyorrhexis"
-   ],
-   "exclusive": [
-    "None"
-   ],
-   "default": [
-    "None"
-   ]
-  },
-  {
-   "id": "meconium",
-   "label": "Meconium",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Present - membranes",
-    "Present - membranes and cord"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "intervillousThrombi",
-   "label": "Intervillous thrombi",
-   "type": "select",
-   "options": [
-    "Absent",
-    "Present"
-   ],
-   "default": "Absent"
-  },
-  {
-   "id": "additionalNotes",
-   "label": "Additional microscopy",
-   "type": "textarea",
-   "placeholder": "Free text appended to the microscopy for this part",
-   "default": ""
-  }
- ],
- "example": {
-  "caseTitle": "",
-  "options": {
-   "includeHeader": false,
-   "macro": true
-  },
-  "parts": [
-   {
-    "label": "A",
-    "values": {
-     "specimenName": "Placenta, delivery",
-     "weight": "480",
-     "gestation": "Third trimester",
-     "plurality": "Singleton",
-     "discSize": "18 x 16 x 2.5",
-     "cordLength": "45",
-     "cordDiameter": "1.2",
-     "cordInsertion": "Central",
-     "cordVessels": "Three",
-     "cordFeatures": "",
-     "membranes": "Complete",
-     "membraneColour": "Translucent",
-     "membraneInsertion": "Marginal",
-     "cutSurface": "Unremarkable",
-     "cutSurfaceInfarctPercent": "",
-     "cutSurfaceOther": "",
-     "blocks": "4",
-     "villousMaturation": "Appropriate for gestation",
-     "chorioamnionitis": "Absent",
-     "fetalResponse": "Absent",
-     "villitis": "Absent",
-     "infarcts": "Absent",
-     "infarctPercent": "",
-     "retroplacentalHaematoma": "Absent",
-     "mvm": [
-      "None"
-     ],
-     "fvm": [
-      "None"
-     ],
-     "meconium": "Absent",
-     "intervillousThrombi": "Absent",
-     "additionalNotes": ""
+  "macroExtract": {
+    "weight": {
+      "concept": "weight",
+      "unit": "g"
+    },
+    "discSize": {
+      "concept": "dims",
+      "unit": "cm",
+      "near": "disc|placenta"
+    },
+    "cordLength": {
+      "concept": "length",
+      "unit": "cm",
+      "near": "cord"
+    },
+    "cordDiameter": {
+      "concept": "diameter",
+      "unit": "cm",
+      "near": "cord"
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
     }
-   }
-  ]
- }
+  },
+  "specimenNoun": "delivery",
+  "maxParts": 2,
+  "defaultParts": 1,
+  "generator": "placenta",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "$use": "includeHeader"
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen as received",
+      "type": "text",
+      "placeholder": "Placenta / Placenta, LSCS / Twin placenta",
+      "default": ""
+    },
+    {
+      "id": "plurality",
+      "label": "Plurality",
+      "type": "select",
+      "options": [
+        "Singleton",
+        "Twin",
+        "Triplet"
+      ],
+      "default": "Singleton",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "requestChorionicity",
+      "label": "Chorionicity stated on request",
+      "type": "select",
+      "options": [
+        "Not stated",
+        "DCDA",
+        "MCDA",
+        "MCMA",
+        "Triplet - TCTA",
+        "Triplet - DCTA",
+        "Triplet - MCTA"
+      ],
+      "default": "Not stated",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Macroscopy",
+      "help": "Prints ', confirmed' on the diagnosis line when the dividing membrane agrees, and flags a discrepancy in Checks."
+    },
+    {
+      "id": "formalin",
+      "label": "Received in formalin",
+      "type": "checkbox",
+      "default": false,
+      "group": "Macroscopy"
+    },
+    {
+      "id": "containerLabel",
+      "label": "Container label (optional)",
+      "type": "text",
+      "placeholder": "Placenta",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "weight",
+      "label": "Weight",
+      "type": "number",
+      "min": 0,
+      "step": 1,
+      "suffix": "g",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "trimmedWeight",
+      "label": "Trimmed weight (optional)",
+      "type": "number",
+      "min": 0,
+      "step": 1,
+      "suffix": "g",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "gestation",
+      "label": "Gestation",
+      "type": "select",
+      "options": [
+        "Third trimester",
+        "Second trimester",
+        "First trimester"
+      ],
+      "default": "Third trimester",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "discConfiguration",
+      "label": "Disc configuration",
+      "type": "select",
+      "options": [
+        "Fused",
+        "Separate"
+      ],
+      "optionLabels": {
+        "Fused": "Fused (single cotyledon)",
+        "Separate": "Separate (discrete cotyledons)"
+      },
+      "default": "Fused",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "discSize",
+      "label": "Placental disc dimensions (cm)",
+      "type": "text",
+      "placeholder": "18 x 16 x 2.5",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cordLength",
+      "label": "Cord length",
+      "type": "number",
+      "min": 0,
+      "step": 0.5,
+      "suffix": "cm",
+      "default": "",
+      "showIf": {
+        "field": "plurality",
+        "is": "Singleton"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cordDiameter",
+      "label": "Cord diameter",
+      "type": "number",
+      "min": 0,
+      "step": 0.1,
+      "suffix": "cm",
+      "default": "",
+      "showIf": {
+        "field": "plurality",
+        "is": "Singleton"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cordInsertion",
+      "label": "Cord insertion",
+      "type": "select",
+      "options": [
+        "Eccentric",
+        "Central",
+        "Marginal",
+        "Velamentous"
+      ],
+      "default": "Eccentric",
+      "showIf": {
+        "field": "plurality",
+        "is": "Singleton"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cordVessels",
+      "label": "Cord vessels",
+      "type": "select",
+      "options": [
+        "Three",
+        "Two"
+      ],
+      "default": "Three",
+      "showIf": {
+        "field": "plurality",
+        "is": "Singleton"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "falseKnotCm",
+      "label": "False knot distance from insertion (cm, optional)",
+      "type": "number",
+      "min": 0,
+      "step": 0.5,
+      "default": "",
+      "showIf": {
+        "field": "plurality",
+        "is": "Singleton"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cordFeatures",
+      "label": "Cord coiling / knots (optional)",
+      "type": "text",
+      "placeholder": "Hypercoiled / true knot",
+      "default": "",
+      "showIf": {
+        "field": "plurality",
+        "is": "Singleton"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "twin1Clips",
+      "label": "Twin I clips",
+      "type": "text",
+      "default": "one clip",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Twin I"
+    },
+    {
+      "id": "twin1CordLength",
+      "label": "Twin I cord length (cm)",
+      "type": "number",
+      "min": 0,
+      "step": 0.5,
+      "default": "",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Twin I"
+    },
+    {
+      "id": "twin1CordDiameter",
+      "label": "Twin I cord diameter (cm)",
+      "type": "number",
+      "min": 0,
+      "step": 0.1,
+      "default": "",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Twin I"
+    },
+    {
+      "id": "twin1CordVessels",
+      "label": "Twin I cord vessels",
+      "type": "select",
+      "options": [
+        "Three",
+        "Two"
+      ],
+      "default": "Three",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Twin I"
+    },
+    {
+      "id": "twin1CordInsertion",
+      "label": "Twin I cord insertion",
+      "type": "select",
+      "options": [
+        "Eccentric",
+        "Central",
+        "Marginal",
+        "Velamentous"
+      ],
+      "default": "Eccentric",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Twin I"
+    },
+    {
+      "id": "twin1DiscSize",
+      "label": "Twin I disc dimensions (cm)",
+      "type": "text",
+      "placeholder": "15 x 13 x 2.5",
+      "default": "",
+      "showIf": {
+        "all": [
+          { "field": "plurality", "not": "Singleton" },
+          { "field": "discConfiguration", "is": "Separate" }
+        ]
+      },
+      "group": "Twin I"
+    },
+    {
+      "id": "twin2Clips",
+      "label": "Twin II clips",
+      "type": "text",
+      "default": "two clips",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Twin II"
+    },
+    {
+      "id": "twin2CordLength",
+      "label": "Twin II cord length (cm)",
+      "type": "number",
+      "min": 0,
+      "step": 0.5,
+      "default": "",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Twin II"
+    },
+    {
+      "id": "twin2CordDiameter",
+      "label": "Twin II cord diameter (cm)",
+      "type": "number",
+      "min": 0,
+      "step": 0.1,
+      "default": "",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Twin II"
+    },
+    {
+      "id": "twin2CordVessels",
+      "label": "Twin II cord vessels",
+      "type": "select",
+      "options": [
+        "Three",
+        "Two"
+      ],
+      "default": "Three",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Twin II"
+    },
+    {
+      "id": "twin2CordInsertion",
+      "label": "Twin II cord insertion",
+      "type": "select",
+      "options": [
+        "Eccentric",
+        "Central",
+        "Marginal",
+        "Velamentous"
+      ],
+      "default": "Eccentric",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Twin II"
+    },
+    {
+      "id": "twin2DiscSize",
+      "label": "Twin II disc dimensions (cm)",
+      "type": "text",
+      "placeholder": "14 x 12 x 2.2",
+      "default": "",
+      "showIf": {
+        "all": [
+          { "field": "plurality", "not": "Singleton" },
+          { "field": "discConfiguration", "is": "Separate" }
+        ]
+      },
+      "group": "Twin II"
+    },
+    {
+      "id": "twin3Clips",
+      "label": "Triplet III clips",
+      "type": "text",
+      "default": "three clips",
+      "showIf": {
+        "field": "plurality",
+        "is": "Triplet"
+      },
+      "group": "Twin III"
+    },
+    {
+      "id": "twin3CordLength",
+      "label": "Triplet III cord length (cm)",
+      "type": "number",
+      "min": 0,
+      "step": 0.5,
+      "default": "",
+      "showIf": {
+        "field": "plurality",
+        "is": "Triplet"
+      },
+      "group": "Twin III"
+    },
+    {
+      "id": "twin3CordDiameter",
+      "label": "Triplet III cord diameter (cm)",
+      "type": "number",
+      "min": 0,
+      "step": 0.1,
+      "default": "",
+      "showIf": {
+        "field": "plurality",
+        "is": "Triplet"
+      },
+      "group": "Twin III"
+    },
+    {
+      "id": "twin3CordVessels",
+      "label": "Triplet III cord vessels",
+      "type": "select",
+      "options": [
+        "Three",
+        "Two"
+      ],
+      "default": "Three",
+      "showIf": {
+        "field": "plurality",
+        "is": "Triplet"
+      },
+      "group": "Twin III"
+    },
+    {
+      "id": "twin3CordInsertion",
+      "label": "Triplet III cord insertion",
+      "type": "select",
+      "options": [
+        "Eccentric",
+        "Central",
+        "Marginal",
+        "Velamentous"
+      ],
+      "default": "Eccentric",
+      "showIf": {
+        "field": "plurality",
+        "is": "Triplet"
+      },
+      "group": "Twin III"
+    },
+    {
+      "id": "twin3DiscSize",
+      "label": "Triplet III disc dimensions (cm)",
+      "type": "text",
+      "placeholder": "13 x 11 x 2",
+      "default": "",
+      "showIf": {
+        "all": [
+          { "field": "plurality", "is": "Triplet" },
+          { "field": "discConfiguration", "is": "Separate" }
+        ]
+      },
+      "group": "Twin III"
+    },
+    {
+      "id": "dividingMembraneGross",
+      "label": "Dividing membrane (gross)",
+      "type": "select",
+      "options": [
+        "Equidistant",
+        "Thin",
+        "Thin, translucent and mobile",
+        "Thick, opaque and tethered by a chorionic ridge",
+        "Absent (monoamniotic)"
+      ],
+      "default": "Equidistant",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cordDistanceCm",
+      "label": "Distance between cord insertions (cm, optional)",
+      "type": "number",
+      "min": 0,
+      "step": 0.5,
+      "default": "",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Monochorionic fetal surface"
+    },
+    {
+      "id": "vascularEquator",
+      "label": "Vascular equator share (e.g. 60 / 40, optional)",
+      "type": "text",
+      "placeholder": "60 / 40",
+      "default": "",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Monochorionic fetal surface"
+    },
+    {
+      "id": "anastomoses",
+      "label": "Fetal-surface vascular anastomoses",
+      "type": "multiselect",
+      "options": [
+        "Not assessed",
+        "None seen",
+        "Arterio-arterial (AA)",
+        "Veno-venous (VV)",
+        "Arteriovenous (AV)"
+      ],
+      "exclusive": [
+        "Not assessed",
+        "None seen"
+      ],
+      "default": [
+        "Not assessed"
+      ],
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Monochorionic fetal surface"
+    },
+    {
+      "id": "laserSites",
+      "label": "Laser coagulation sites along vascular equator",
+      "type": "checkbox",
+      "default": false,
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Monochorionic fetal surface"
+    },
+    {
+      "id": "membranesAppearance",
+      "label": "Placental membranes",
+      "type": "select",
+      "options": [
+        "Smooth and no loss of lustre",
+        "Smooth",
+        "Dull",
+        "Meconium-stained"
+      ],
+      "default": "Smooth and no loss of lustre",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "discFragmented",
+      "label": "Placental disc fragmented prior to submission",
+      "type": "checkbox",
+      "default": false,
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cutSurface",
+      "label": "Cut surface",
+      "type": "select",
+      "options": [
+        "Unremarkable",
+        "Focal infarct",
+        "Peripheral infarcts",
+        "Retroplacental haematoma",
+        "Intervillous thrombi",
+        "Other - describe"
+      ],
+      "default": "Unremarkable",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cutSurfaceSize",
+      "label": "Lesion size (cm, optional)",
+      "type": "text",
+      "placeholder": "2.5 / 3 x 2",
+      "default": "",
+      "showIf": {
+        "field": "cutSurface",
+        "is": [
+          "Focal infarct",
+          "Peripheral infarcts",
+          "Retroplacental haematoma"
+        ]
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "cutSurfaceOther",
+      "label": "Cut surface description",
+      "type": "text",
+      "placeholder": "a 2 cm pale firm area at the margin",
+      "default": "",
+      "showIf": {
+        "field": "cutSurface",
+        "is": "Other - describe"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "blocks",
+      "label": "Blocks",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "default": "",
+      "placeholder": "4 (singleton) / 9 (twin)",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "blockKeyStyle",
+      "label": "Singleton block key",
+      "type": "select",
+      "options": [
+        "4-block standard",
+        "3-block combined"
+      ],
+      "default": "4-block standard",
+      "showIf": {
+        "field": "plurality",
+        "is": "Singleton"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "lesionBlock",
+      "label": "Extra lesion block label (optional)",
+      "type": "text",
+      "placeholder": "Infarct",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "tZoneBlock",
+      "label": "T-zone block taken",
+      "type": "checkbox",
+      "default": false,
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Macroscopy",
+      "help": "Adds '(10) T-zone.' to the twin block key and enables T-zone histology."
+    },
+    {
+      "id": "microStyle",
+      "label": "Microscopy format",
+      "type": "select",
+      "options": [
+        "Auto",
+        "Checklist",
+        "Sentences"
+      ],
+      "optionLabels": {
+        "Auto": "Auto (Checklist for singleton, Sentences for twins)",
+        "Checklist": "Checklist",
+        "Sentences": "Sentences"
+      },
+      "default": "Auto"
+    },
+    {
+      "id": "microLayout",
+      "label": "Twin microscopy layout",
+      "type": "select",
+      "options": [
+        "Combined",
+        "By twin"
+      ],
+      "default": "Combined",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      }
+    },
+    {
+      "id": "membraneSampled",
+      "label": "Dividing membrane sampled as",
+      "type": "select",
+      "options": [
+        "Roll",
+        "T-zone",
+        "Roll and T-zone",
+        "Not sampled"
+      ],
+      "default": "Roll",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Dividing membrane"
+    },
+    {
+      "id": "membraneLayers",
+      "label": "Dividing membrane layers",
+      "type": "select",
+      "options": [
+        "Two amnions with chorion between them",
+        "Two amnions and two chorions",
+        "Two amnions without chorion",
+        "Chorion with one amnion, the other detached",
+        "Incomplete",
+        "No dividing membrane (monoamniotic)"
+      ],
+      "default": "Two amnions with chorion between them",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Dividing membrane"
+    },
+    {
+      "id": "chorionContents",
+      "label": "In the chorion",
+      "type": "multiselect",
+      "options": [
+        "Atrophic villi and trophoblastic remnants",
+        "Vessel remnants",
+        "Fibrinoid"
+      ],
+      "default": [
+        "Atrophic villi and trophoblastic remnants"
+      ],
+      "showIf": {
+        "all": [
+          { "field": "plurality", "not": "Singleton" },
+          {
+            "field": "membraneLayers",
+            "is": [
+              "Two amnions with chorion between them",
+              "Two amnions and two chorions",
+              "Chorion with one amnion, the other detached"
+            ]
+          }
+        ]
+      },
+      "group": "Dividing membrane"
+    },
+    {
+      "id": "noTrophoblastBetween",
+      "label": "No trophoblast or atrophic villi between amnions",
+      "type": "checkbox",
+      "default": true,
+      "showIf": {
+        "all": [
+          { "field": "plurality", "not": "Singleton" },
+          { "field": "membraneLayers", "is": "Two amnions without chorion" }
+        ]
+      },
+      "group": "Dividing membrane"
+    },
+    {
+      "id": "tZoneFinding",
+      "label": "T-zone junction",
+      "type": "select",
+      "options": [
+        "Follow layers",
+        "Chorionic layers fused with the chorionic plate",
+        "Two amnions over an uninterrupted chorionic plate",
+        "Junction not in the section"
+      ],
+      "default": "Follow layers",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Dividing membrane"
+    },
+    {
+      "id": "membraneInflammation",
+      "label": "Dividing membrane inflammation",
+      "type": "select",
+      "options": [
+        "None",
+        "Twin I aspect",
+        "Twin II aspect",
+        "Both aspects"
+      ],
+      "default": "None",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Dividing membrane"
+    },
+    {
+      "id": "tripletMembrane12",
+      "label": "Triplets I / II membrane",
+      "type": "select",
+      "options": [
+        "Dichorionic (chorion present)",
+        "Monochorionic (no chorion)"
+      ],
+      "default": "Monochorionic (no chorion)",
+      "showIf": {
+        "field": "plurality",
+        "is": "Triplet"
+      },
+      "group": "Dividing membrane"
+    },
+    {
+      "id": "tripletMembrane23",
+      "label": "Triplets II / III membrane",
+      "type": "select",
+      "options": [
+        "Dichorionic (chorion present)",
+        "Monochorionic (no chorion)"
+      ],
+      "default": "Dichorionic (chorion present)",
+      "showIf": {
+        "field": "plurality",
+        "is": "Triplet"
+      },
+      "group": "Dividing membrane"
+    },
+    {
+      "id": "tripletMembrane13",
+      "label": "Triplets I / III membrane",
+      "type": "select",
+      "options": [
+        "Dichorionic (chorion present)",
+        "Monochorionic (no chorion)"
+      ],
+      "default": "Dichorionic (chorion present)",
+      "showIf": {
+        "field": "plurality",
+        "is": "Triplet"
+      },
+      "group": "Dividing membrane"
+    },
+    {
+      "id": "territoryComparison",
+      "label": "Monochorionic territory comparison",
+      "type": "select",
+      "options": [
+        "Similar maturity and vascularity",
+        "Discordant — twin I less mature",
+        "Discordant — twin II less mature"
+      ],
+      "default": "Similar maturity and vascularity",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      },
+      "group": "Dividing membrane"
+    },
+    {
+      "id": "findingTwin",
+      "label": "Positive findings affect",
+      "type": "select",
+      "options": [
+        "Both",
+        "Twin I",
+        "Twin II",
+        "Twin III"
+      ],
+      "default": "Both",
+      "showIf": {
+        "field": "plurality",
+        "not": "Singleton"
+      }
+    },
+    {
+      "id": "villousMaturation",
+      "label": "Villous maturation",
+      "type": "select",
+      "options": [
+        "Appropriate for gestation",
+        "Accelerated",
+        "Delayed - distal villous immaturity"
+      ],
+      "default": "Appropriate for gestation"
+    },
+    {
+      "id": "chorioamnionitis",
+      "label": "Chorioamnionitis (maternal inflammatory response)",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Stage 1 - acute subchorionitis",
+        "Stage 2 - acute chorioamnionitis",
+        "Stage 3 - necrotising"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "fetalResponse",
+      "label": "Funisitis / fetal inflammatory response",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Stage 1 - umbilical phlebitis or chorionic vasculitis",
+        "Stage 2 - umbilical arteritis",
+        "Stage 3 - necrotising funisitis"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "villitis",
+      "label": "Villitis",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Chronic villitis of unknown aetiology - low grade",
+        "Chronic villitis of unknown aetiology - high grade"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "infarcts",
+      "label": "Infarcts",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present - recent",
+        "Present - remote"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "infarctPercent",
+      "label": "Infarct extent (% of parenchyma)",
+      "type": "text",
+      "placeholder": "5",
+      "default": "",
+      "showIf": {
+        "field": "infarcts",
+        "not": "Absent"
+      }
+    },
+    {
+      "id": "retroplacentalHaematoma",
+      "label": "Retroplacental haematoma",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "mvm",
+      "label": "Maternal vascular malperfusion features",
+      "type": "multiselect",
+      "options": [
+        "None",
+        "Distal villous hypoplasia",
+        "Increased syncytial knots",
+        "Decidual arteriopathy",
+        "Accelerated villous maturation"
+      ],
+      "exclusive": [
+        "None"
+      ],
+      "default": [
+        "None"
+      ]
+    },
+    {
+      "id": "fvm",
+      "label": "Fetal vascular malperfusion features",
+      "type": "multiselect",
+      "options": [
+        "None",
+        "Avascular villi",
+        "Thrombosis of fetal vessels",
+        "Villous stromal-vascular karyorrhexis"
+      ],
+      "exclusive": [
+        "None"
+      ],
+      "default": [
+        "None"
+      ]
+    },
+    {
+      "id": "meconium",
+      "label": "Meconium",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present - membranes",
+        "Present - membranes and cord"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "intervillousThrombi",
+      "label": "Intervillous thrombi",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": ""
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "Placenta",
+          "plurality": "Singleton",
+          "weight": "480",
+          "gestation": "Third trimester",
+          "discSize": "18 x 16 x 2.5",
+          "cordLength": "45",
+          "cordDiameter": "1.2",
+          "cordInsertion": "Eccentric",
+          "cordVessels": "Three",
+          "membranesAppearance": "Smooth and no loss of lustre",
+          "cutSurface": "Unremarkable",
+          "blocks": "4",
+          "blockKeyStyle": "4-block standard",
+          "microStyle": "Auto",
+          "villousMaturation": "Appropriate for gestation",
+          "chorioamnionitis": "Absent",
+          "fetalResponse": "Absent",
+          "villitis": "Absent",
+          "infarcts": "Absent",
+          "retroplacentalHaematoma": "Absent",
+          "mvm": ["None"],
+          "fvm": ["None"],
+          "meconium": "Absent",
+          "intervillousThrombi": "Absent",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
 }

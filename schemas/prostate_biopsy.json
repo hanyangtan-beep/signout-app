@@ -148,13 +148,15 @@
     "Benign",
     "HGPIN",
     "ASAP",
-    "Adenocarcinoma"
+    "Adenocarcinoma",
+    "Inadequate"
    ],
    "optionLabels": {
     "Benign": "Benign prostatic tissue",
     "HGPIN": "High grade PIN",
     "ASAP": "ASAP (atypical small acinar proliferation)",
-    "Adenocarcinoma": "Acinar adenocarcinoma"
+    "Adenocarcinoma": "Acinar adenocarcinoma",
+    "Inadequate": "Inadequate for diagnosis"
    },
    "default": "Benign",
    "reference": {
@@ -223,6 +225,12 @@
         "credit": "Smith & Wobker, Cancers 2024, Fig 2B (cropped)",
         "license": "CC BY 4.0",
         "url": "https://doi.org/10.3390/cancers16061097"
+       }
+      ],
+      "links": [
+       {
+        "label": "Zhou, Modern Pathology 2018 — HGPIN, PIN-like, ductal & IDC-P",
+        "url": "https://www.nature.com/articles/modpathol.2017.138"
        }
       ]
      },
@@ -343,6 +351,40 @@
         "license": "CC BY-SA 3.0",
         "url": "https://commons.wikimedia.org/wiki/File:Basal_cell_hyperplasia_of_prostate_-_intermed_mag.jpg"
        }
+      ],
+      "links": [
+       {
+        "label": "Trpkov, Modern Pathology 2018 — Benign mimics of prostatic adenocarcinoma",
+        "url": "https://www.nature.com/articles/modpathol.2017.136"
+       }
+      ]
+     },
+     {
+      "heading": "Unusual variants & ductal adenocarcinoma",
+      "points": [
+       "Ductal adenocarcinoma: tall pseudostratified columnar cells with elongated hyperchromatic nuclei in papillary or cribriform architecture (graded as Gleason pattern 4, or pattern 5 with comedonecrosis)",
+       "PIN-like adenocarcinoma: large discrete glands lined by stratified columnar cells lacking basal cells — grade as pattern 3",
+       "Atrophic, pseudohyperplastic, and foamy gland variants: grade on underlying architecture (usually pattern 3) despite bland or unusual cytology",
+       "Mucinous (colloid) adenocarcinoma: extracellular mucin pools >=25% of tumour; grade on architecture (ISUP 2019)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate_radical/ductal_adeno.jpg",
+        "caption": "Ductal adenocarcinoma of the prostate: tall pseudostratified columnar epithelium forming papillary and cribriform fronds",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Ductal_adenocarcinoma_of_prostate_--_high_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "Zhou, Modern Pathology 2018 — PIN-like, ductal & intraductal carcinoma",
+        "url": "https://www.nature.com/articles/modpathol.2017.138"
+       },
+       {
+        "label": "Belisario & van Leenders, Pathologie 2025 — Current grading & unusual patterns (Fig. 2)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12696124/"
+       }
       ]
      }
     ]
@@ -387,6 +429,82 @@
      "Benign",
      "HGPIN",
      "ASAP"
+    ]
+   },
+   "reference": {
+    "title": "Atrophy, partial atrophy, adenosis & basal cell hyperplasia",
+    "intro": "Benign small-gland proliferations are the most frequent mimics of Gleason pattern 3 adenocarcinoma on needle biopsy. Lobular architecture, pale cytoplasm and at least patchy basal cell staining (p63 / 34betaE12) distinguish them from carcinoma.",
+    "columns": 3,
+    "groups": [
+     {
+      "heading": "Simple & partial atrophy",
+      "points": [
+       "Simple atrophy: lobular, angulated glands lined by attenuated basophilic cells with scant cytoplasm and small uniform nuclei",
+       "Partial atrophy: crowded pale glands with scant apical cytoplasm so nuclei reach the luminal border; basal cells are patchy on p63/34betaE12 and AMACR may be focally positive",
+       "Look for low-power lobularity and adjacent classic atrophic glands"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate/cat_mimic_atrophy.jpg",
+        "caption": "Prostatic atrophy: small angulated glands with scant cytoplasm and retained basal cells",
+        "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+        "license": "CC0 1.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histology_of_prostate_atrophy.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "Trpkov, Modern Pathology 2018 — Benign mimics of prostatic adenocarcinoma",
+        "url": "https://www.nature.com/articles/modpathol.2017.136"
+       }
+      ]
+     },
+     {
+      "heading": "Adenosis & basal cell hyperplasia",
+      "points": [
+       "Adenosis (atypical adenomatous hyperplasia): circumscribed lobular cluster of crowded small glands with pale-to-clear cytoplasm merging with larger benign glands; patchy basal cells",
+       "Basal cell hyperplasia: solid, nested or cribriform proliferations of uniform basal cells strongly positive for p63 and 34betaE12 throughout"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate/cat_mimic_adenosis.jpg",
+        "caption": "Adenosis: circumscribed lobule of small bland glands merging with benign acini",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Adenosis_of_prostate_--_intermed_mag.jpg"
+       },
+       {
+        "src": "assets/reference/prostate/cat_mimic_bch.jpg",
+        "caption": "Basal cell hyperplasia: uniform basaloid nests retaining strong p63 positivity",
+        "credit": "Librepath, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Basal_cell_hyperplasia_of_prostate_-_intermed_mag.jpg"
+       }
+      ]
+     },
+     {
+      "heading": "Seminal vesicle & Cowper glands",
+      "points": [
+       "Seminal vesicle / ejaculatory duct: golden-brown lipofuscin pigment and degenerative nuclear pleomorphism without mitoses",
+       "Cowper (bulbourethral) glands: lobules of bland mucinous acini beside skeletal muscle near the apex"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate_radical/sv_normal.jpg",
+        "caption": "Seminal vesicle epithelium with degenerative atypia and cytoplasmic lipofuscin",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Seminal_vesicle_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/prostate/cat_mimic_cowper.jpg",
+        "caption": "Cowper (bulbourethral) glands: lobules of bland mucinous acini",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Bulbourethral_gland_--_high_mag.jpg"
+       }
+      ]
+     }
     ]
    }
   },
@@ -546,6 +664,16 @@
         "credit": "Nephron, Wikimedia Commons, full figure",
         "license": "CC BY-SA 3.0",
         "url": "https://commons.wikimedia.org/wiki/File:Gleason_4_and_5_intermed_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "Hansum et al., Modern Pathology 2021 — Comedonecrosis as Gleason pattern 5",
+        "url": "https://www.nature.com/articles/s41379-021-00860-4"
+       },
+       {
+        "label": "Tercan et al., Ann Saudi Med 2024 — Cribriform, EPE, IDC-P & comedonecrosis atlas",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11316946/"
        }
       ]
      },
@@ -898,6 +1026,12 @@
         "license": "CC BY 4.0",
         "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_10_(5%2B5)_with_solid_sheets_of_cells.jpg"
        }
+      ],
+      "links": [
+       {
+        "label": "Hansum et al., Modern Pathology 2021 — Comedonecrosis pattern 5 criteria",
+        "url": "https://www.nature.com/articles/s41379-021-00860-4"
+       }
       ]
      },
      {
@@ -989,6 +1123,20 @@
         "credit": "Gordetsky & Epstein, Diagn Pathol 2016, via Wikimedia Commons, Fig 2b",
         "license": "CC BY 4.0",
         "url": "https://commons.wikimedia.org/wiki/File:Micrograph_of_prostate_cancer_with_Gleason_score_7_(3%2B4)_with_minor_component_of_cribriform_glands.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "Hollemans et al., Modern Pathology 2019 — Large vs small cribriform & IDC-P (Fig. 1)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6300553/"
+       },
+       {
+        "label": "Chan et al., Modern Pathology 2022 — 0.25 mm threshold for large cribriform",
+        "url": "https://www.nature.com/articles/s41379-022-01009-7"
+       },
+       {
+        "label": "Shah et al., Am J Cancer Res 2021 — 27-pathologist consensus for/against cribriform (Figs. 1-4)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8414383/"
        }
       ]
      },
@@ -1109,6 +1257,16 @@
         "credit": "Nephron, Wikimedia Commons, full figure",
         "license": "CC BY-SA 3.0",
         "url": "https://commons.wikimedia.org/wiki/File:Intraductal_carcinoma_of_prostate_--_intermed_mag.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "Zhou, Modern Pathology 2018 — HGPIN, ductal & IDC-P diagnostic criteria",
+        "url": "https://www.nature.com/articles/modpathol.2017.138"
+       },
+       {
+        "label": "Hollemans et al., Modern Pathology 2019 — IDC-P and cribriform grading",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6300553/"
        }
       ]
      },
@@ -1273,6 +1431,36 @@
    "showIf": {
     "field": "category",
     "is": "Adenocarcinoma"
+   },
+   "reference": {
+    "title": "Perineural invasion on needle biopsy",
+    "intro": "Circumferential or intraneural tracking of carcinoma along a prostatic nerve confirms invasive malignancy and is associated with higher risk of extraprostatic extension at radical prostatectomy.",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "True perineural invasion",
+      "points": [
+       "Malignant glands wrapping circumferentially or indenting a nerve fascicle within the perineural space",
+       "Distinguish from benign perineural indentation (extremely rare; benign glands retain basal cells on p63 / 34betaE12)",
+       "Do not confuse smooth muscle bundles or ganglia with small nerves"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate/cat_pni.jpg",
+        "caption": "Circumferential perineural invasion by prostatic adenocarcinoma",
+        "credit": "Mikael Häggström, Wikimedia Commons, full figure",
+        "license": "CC0 1.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Histopathology_of_prostatic_adenocarcinoma_with_circumferential_perineural_invasion.jpg"
+       }
+      ],
+      "links": [
+       {
+        "label": "Perineural invasion quantification on prostate biopsy (PMC13098363)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13098363/"
+       }
+      ]
+     }
+    ]
    }
   },
   {
@@ -1288,6 +1476,48 @@
    "showIf": {
     "field": "category",
     "is": "Adenocarcinoma"
+   },
+   "reference": {
+    "title": "Extraprostatic extension on needle biopsy",
+    "intro": "On needle biopsy, extraprostatic extension (EPE) is diagnosed only when carcinoma is seen directly within periprostatic adipose tissue (or, rarely, involving extraprostatic ganglion cells / large neurovascular bundles outside the gland contour).",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "Definite EPE on needle core",
+      "points": [
+       "Adenocarcinoma directly infiltrating mature periprostatic adipose tissue",
+       "Intraprostatic adipose tissue is exceedingly rare (<0.1%), so tumour in fat on a needle core is reported as EPE",
+       "Skeletal muscle involvement at the apex is NOT EPE — skeletal muscle fibres normally interdigitate into the apical prostate",
+       "If no periprostatic fat is present in the core, report EPE as Not identified (or Cannot be assessed if fragmented)"
+      ],
+      "images": [
+       {
+        "src": "assets/reference/prostate_radical/epe_high.jpg",
+        "caption": "Extraprostatic extension: prostatic adenocarcinoma infiltrating mature periprostatic adipose tissue",
+        "credit": "Nephron, Wikimedia Commons, full figure",
+        "license": "CC BY-SA 3.0",
+        "url": "https://commons.wikimedia.org/wiki/File:Prostate_carcinoma_with_extraprostatic_extension_--_high_mag.jpg"
+       },
+       {
+        "src": "assets/reference/prostate/crib_large_complex.jpg",
+        "caption": "Large cribriform adenocarcinoma directly invading periprostatic adipose tissue (x100)",
+        "credit": "Destouni et al., Cancers 2022, Fig 4b (cropped)",
+        "license": "CC BY 4.0",
+        "url": "https://doi.org/10.3390/cancers14133041"
+       }
+      ],
+      "links": [
+       {
+        "label": "Magi-Galluzzi et al., Modern Pathology 2011 — ISUP WG3 EPE & LVI criteria",
+        "url": "https://www.nature.com/articles/modpathol.2010.158"
+       },
+       {
+        "label": "Extraprostatic extension on prostate needle biopsy cohort (PMC5014705)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5014705/"
+       }
+      ]
+     }
+    ]
    }
   },
   {
@@ -1302,6 +1532,35 @@
    "showIf": {
     "field": "category",
     "is": "Adenocarcinoma"
+   },
+   "reference": {
+    "title": "Lymphovascular invasion & retraction mimics",
+    "intro": "True lymphovascular invasion (LVI) is uncommon on needle biopsy and usually occurs in high-grade (Grade Group 4-5) disease. Retraction artefact around tumour nests is the main pitfall.",
+    "columns": 2,
+    "groups": [
+     {
+      "heading": "Criteria for LVI vs retraction artefact",
+      "points": [
+       "Tumour cells within an unmistakable endothelial-lined space, often with an attached thrombus or conforming to the vessel contour",
+       "Retraction artefact lacks an endothelial lining and mirrors the jagged outline of the tumour nest",
+       "Confirm equivocal foci with endothelial immunohistochemistry (ERG, CD31, or D2-40 for lymphatics) — remember ERG also stains ~50% of prostatic adenocarcinomas, so look specifically for flat endothelial nuclei lining the space"
+      ],
+      "links": [
+       {
+        "label": "Magi-Galluzzi et al., Modern Pathology 2011 — ISUP WG3 LVI criteria",
+        "url": "https://www.nature.com/articles/modpathol.2010.158"
+       },
+       {
+        "label": "LVI morphologic atlas & mimics (H&E and ERG, PMC10492436)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10492436/"
+       },
+       {
+        "label": "LVI assessment with D2-40 immunohistochemistry (PMC8967869)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8967869/"
+       }
+      ]
+     }
+    ]
    }
   },
   {
@@ -1429,5 +1688,16 @@
    "unit": "count",
    "of": "cores?|core biops(?:y|ies)|needle cores?"
   }
- }
+ },
+ "snippets": [
+  {
+   "id": "prostate_inadequate_repeat",
+   "label": "Inadequate core — repeat sampling",
+   "auto": {
+    "field": "category",
+    "is": "Inadequate"
+   },
+   "text": "As no prostatic glandular tissue is sampled ({parts}), repeat sampling is advised if clinically indicated."
+  }
+ ]
 }

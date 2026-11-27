@@ -11,7 +11,7 @@ import { loadDraft, setDraftOwner, saveCase as cacheCase, clearCase, copyText } 
 import { loadConfig, saveConfig, accountConfig, rememberForAccount } from './config.js';
 import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction, renewalDue, renewSignIn } from './gauth.js';
 import { gateEnabled, gateState, parseAllowList, formatAllowList, BUILT_IN_ALLOWED, emailDigest, canonicalEmail } from './gate.js';
-import { saveCase as driveSave, listCases, openCase as driveOpen, setCaseStatus, deleteCase as driveDelete } from './drive.js';
+import { saveCase as driveSave, listCases, openCase as driveOpen, setCaseStatus, deleteCase as driveDelete, lookupDocUrl } from './drive.js';
 import { normaliseAccession, phiWarnings, STATUSES, statusOf } from './docformat.js';
 import { buildPayload, payloadKeys, payloadLabel, parseHarvest, nextCaptureTarget } from './lisbridge.js';
 import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js';
@@ -146,6 +146,7 @@ const nodes = {
   open: $('#btn-open'),
   save: $('#btn-save'),
   saveNew: $('#btn-save-new'),
+  openDoc: $('#btn-open-doc'),
   google: $('#btn-google'),
   settings: $('#btn-settings'),
   roadmap: $('#btn-roadmap'),
@@ -3640,6 +3641,13 @@ function renderSaveStatus() {
   );
   nodes.save.disabled = state.saving;
   nodes.saveNew.disabled = state.saving;
+  if (nodes.openDoc) {
+    const acc = normaliseAccession(state.caseState?.meta?.accession);
+    nodes.openDoc.disabled = state.saving || (!d?.docUrl && !acc);
+    nodes.openDoc.title = d?.docUrl
+      ? (state.dirty ? `Open Google Doc (edited since save · ${relTime(d.savedAt)})` : `Open Google Doc (saved ${relTime(d.savedAt)})`)
+      : (acc ? `Look up saved Google Doc for ${acc} in Drive` : 'Save case to Drive first');
+  }
   nodes.save.classList.toggle('primary', state.dirty && !!state.caseState?.meta?.accession);
   nodes.save.classList.toggle('is-dirty', state.dirty);
   nodes.save.classList.toggle('is-saved', !state.dirty && !!d?.savedAt);
@@ -3803,6 +3811,24 @@ async function startNewCase(note) {
  * The new case starts only once the save has gone through, so a refused or failed save leaves the
  * case on screen; a case already in Drive and unchanged since is not written again.
  */
+async function openCurrentDoc() {
+  const d = state.caseState?.drive;
+  if (d?.docUrl) { window.open(d.docUrl, '_blank', 'noopener'); return; }
+  const acc = normaliseAccession(state.caseState?.meta?.accession);
+  if (!acc) { nodes.meta.accession.focus(); return toast('Enter an accession number or save the case first'); }
+  try {
+    await ensureSignedIn(true, 'opendoc');
+    const url = await lookupDocUrl(state.config, acc);
+    if (!url) return toast(`No saved Google Doc for ${acc} yet — click Save first`);
+    state.caseState.drive = { ...(state.caseState.drive || {}), docUrl: url };
+    cacheCase(state.caseState);
+    renderSaveStatus();
+    window.open(url, '_blank', 'noopener');
+  } catch (err) {
+    toast(err.message || 'Could not look up Google Doc');
+  }
+}
+
 async function saveAndNew() {
   if (state.saving) return;
   const accession = normaliseAccession(state.caseState.meta?.accession);
@@ -4022,6 +4048,7 @@ function initDrive() {
   });
   nodes.save.addEventListener('click', () => doSave());
   nodes.saveNew.addEventListener('click', saveAndNew);
+  nodes.openDoc?.addEventListener('click', () => openCurrentDoc());
   nodes.open.addEventListener('click', doOpen);
   nodes.openSearch.addEventListener('input', (e) => renderCaseList(e.target.value));
   nodes.google.addEventListener('click', async () => {

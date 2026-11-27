@@ -78,6 +78,15 @@ export const templates = {
       'Low grade dysplasia': 'TRADITIONAL SERRATED ADENOMA with LOW GRADE DYSPLASIA',
       'High grade dysplasia': 'TRADITIONAL SERRATED ADENOMA with HIGH GRADE DYSPLASIA'
     }
+  },
+  perineurioma: {
+    label: 'Perineurioma',
+    micro: {
+      'Not applicable': 'Sections show a poorly circumscribed proliferation of bland spindle cells with ovoid nuclei and pale, indistinct cytoplasm within a fine collagenous stroma, filling the lamina propria and separating and entrapping serrated / hyperplastic crypts. There is no evidence of dysplasia or malignancy.'
+    },
+    diagnosis: {
+      'Not applicable': 'PERINEURIOMA'
+    }
   }
 };
 
@@ -96,7 +105,8 @@ function resolve(values) {
   return { t, grade };
 }
 
-const isAdenomatous = (values) => (templates[values.type] || templates.tubularAdenoma) !== templates.hyperplasticPolyp;
+const NON_ADENOMATOUS = new Set([templates.hyperplasticPolyp, templates.perineurioma]);
+const isAdenomatous = (values) => !NON_ADENOMATOUS.has(templates[values.type] || templates.tubularAdenoma);
 const isAtLeastHgd = (values) => values.dysplasia === AT_LEAST_HGD && isAdenomatous(values);
 const isInvasive = (values) => values.dysplasia === INVASIVE && isAdenomatous(values);
 
@@ -191,10 +201,27 @@ const isFocalHgd = (values) => !!values.hgdFocal && values.dysplasia === HGD && 
  * the resolved grade; "at least high grade" passes 'High grade dysplasia'. Hyperplastic polyps keep
  * their own closing sentence.
  */
+const PERINEURIOMA_IHC = {
+  'EMA / GLUT1 / claudin-1 positive; S100 negative': 'Immunohistochemistry shows weak / focal EMA and diffuse GLUT1, claudin-1 and collagen IV positivity, with negative S100, CD34, CD117, SMA and desmin, supporting the diagnosis of a mucosal perineurioma.',
+  'EMA / claudin-1 positive; S100 negative': 'Immunohistochemistry shows EMA and claudin-1 positivity with negative S100, supporting the diagnosis of a mucosal perineurioma.',
+  'S100 positive': 'Immunohistochemistry shows S100 positivity in the spindle cell proliferation.'
+};
+
+function perineuriomaMicro(values) {
+  const parts = [
+    'Sections show a poorly circumscribed proliferation of bland spindle cells with ovoid nuclei and pale, indistinct cytoplasm within a fine collagenous stroma, filling the lamina propria and separating and entrapping serrated / hyperplastic crypts.',
+    PERINEURIOMA_IHC[values.perineuriomaIhc] || '',
+    values.perineuriomaGanglion ? 'Scattered ganglion cells are identified within the spindle cell proliferation.' : '',
+    'There is no evidence of dysplasia or malignancy.'
+  ];
+  return parts.filter(Boolean).join(' ');
+}
+
 function lesionMicro(values, grade) {
   const type = templates[values.type] ? values.type : 'tubularAdenoma';
   const t = templates[type];
   if (type === 'hyperplasticPolyp') return t.micro[grade];
+  if (type === 'perineurioma') return perineuriomaMicro(values);
   if (type === 'sessileSerrated') {
     if (grade === 'No dysplasia') return `${sslSentence(values)} No cytological dysplasia is identified.`;
     return `${sslSentence(values)} ${serratedDysplasiaSentence(values, grade)}`;
@@ -466,7 +493,7 @@ export function microscopy(part) {
   else if (isAtLeastHgd(s)) text = atLeastHgdMicro(s);
   else {
     const { t, grade } = resolve(s);
-    text = t === templates.hyperplasticPolyp ? t.micro[grade] : `${lesionMicro(s, grade)}${NO_INVASION}`;
+    text = t === templates.hyperplasticPolyp ? t.micro[grade] : t === templates.perineurioma ? perineuriomaMicro(s) : `${lesionMicro(s, grade)}${NO_INVASION}`;
   }
   const c = (s.comment || '').trim();
   if (c) text += ` ${c}`;
@@ -519,4 +546,26 @@ export function flags(parts) {
   return out;
 }
 
-export default { specimenName, microscopy, diagnosis, flags };
+export function validate(part) {
+  const v = part.values || {};
+  const issues = [];
+  if (v.type === 'perineurioma') {
+    if (v.perineuriomaIhc === 'S100 positive') {
+      issues.push({
+        level: 'warn',
+        field: 'perineuriomaIhc',
+        message: 'S100 positivity favours mucosal Schwann cell hamartoma rather than perineurioma (perineurioma is S100 negative, EMA/GLUT1/claudin-1 positive).'
+      });
+    }
+    if (v.perineuriomaGanglion) {
+      issues.push({
+        level: 'warn',
+        field: 'perineuriomaGanglion',
+        message: 'Ganglion cells within a mucosal spindle cell proliferation favour ganglioneuroma rather than perineurioma.'
+      });
+    }
+  }
+  return issues;
+}
+
+export default { specimenName, microscopy, diagnosis, flags, validate };

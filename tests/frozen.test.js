@@ -320,7 +320,11 @@ test('pancreatic / bile duct margin: result line, final diagnosis and the site t
   const v = (extra) => ({ specimenName: 'Pancreatic neck margin', scenario: PD, pdSite: 'Pancreatic neck (transection)', pdOrigin: 'Pancreatic', pdResult: 'Negative', ...extra });
   const line = (extra) => frozenResult({ label: 'A', values: v(extra) });
   assert.equal(PD, 'Pancreatic / bile duct margin');
-  assert.deepEqual(Object.keys(PD_SITES), ['Pancreatic neck (transection)', 'Bile duct', 'Uncinate (superior mesenteric artery)', 'Pancreatic duct', 'Proximal (gastric or duodenal)', 'Distal (duodenal or jejunal)']);
+  assert.deepEqual(Object.keys(PD_SITES), [
+    'Pancreatic neck (transection)', 'Bile duct', 'Common bile duct', 'Common hepatic duct',
+    'Proximal bile duct', 'Distal bile duct', 'Uncinate (superior mesenteric artery)',
+    'Pancreatic duct', 'Proximal (gastric or duodenal)', 'Distal (duodenal or jejunal)'
+  ]);
   assert.equal(line(), 'No carcinoma or dysplasia at the pancreatic neck margin.');
   assert.equal(line({ pdResult: 'Carcinoma present at margin' }), 'Carcinoma present at the pancreatic neck margin.');
   assert.equal(line({ pdResult: 'Carcinoma close to margin', pdDistanceMm: '0.6' }), 'No carcinoma at the pancreatic neck margin; carcinoma approaches to within 0.6 mm.');

@@ -54,6 +54,7 @@ function siteClause(part) {
 }
 
 const isCa = (part) => part.values.category === 'Adenocarcinoma';
+const isInadequate = (part) => part.values.category === 'Inadequate';
 
 function coreCount(part) {
   const n = num(part.values.coresTotal);
@@ -89,6 +90,9 @@ export function microscopy(part) {
     lines.push(`- Extraprostatic extension: ${s.epe}`);
     lines.push(`- Lymphovascular invasion: ${s.lvi}`);
     lines.push(`- Adjacent high grade PIN: ${s.hgpinAdjacent}`);
+  } else if (isInadequate(part)) {
+    const coreText = total === 1 ? 'a core' : `${total} cores`;
+    lines.push(`Sections show ${coreText} of fibromuscular tissue only. No prostatic glandular tissue is present for assessment.`);
   } else {
     if (s.category === 'Benign') {
       const coreText = total === 1 ? 'a core' : `${total} cores`;
@@ -117,6 +121,9 @@ function benignQualifier(s) {
 export function diagnosis(part, ctx) {
   const s = part.values;
   let line = `(${part.label}) ${ctx.schema.organ}, ${siteClause(part)}${ctx.schema.specimenNoun} - `;
+  if (isInadequate(part)) {
+    return line + 'INADEQUATE FOR DIAGNOSIS - fibromuscular tissue only, no prostatic glands sampled';
+  }
   if (s.category === 'Benign') {
     return line + 'NO EVIDENCE OF MALIGNANCY';
   }
@@ -148,13 +155,15 @@ export function diagnosis(part, ctx) {
   return line;
 }
 
-/** Case summary: cores positive, highest grade, adverse features, ASAP / HGPIN parts. */
+/** Case summary: cores positive, highest grade, adverse features, ASAP / HGPIN / inadequate parts. */
 export function summary(parts, ctx) {
   if (ctx.options.summary === false || parts.length < 2) return '';
-  const totalCores = parts.reduce((n, p) => n + coreCount(p), 0);
-  const ca = parts.filter(isCa);
-  const asap = parts.filter((p) => p.values.category === 'ASAP').map((p) => p.label);
-  const hgpin = parts.filter((p) => p.values.category === 'HGPIN').map((p) => p.label);
+  const adequate = parts.filter((p) => !isInadequate(p));
+  const inadequate = parts.filter(isInadequate).map((p) => p.label);
+  const totalCores = adequate.reduce((n, p) => n + coreCount(p), 0);
+  const ca = adequate.filter(isCa);
+  const asap = adequate.filter((p) => p.values.category === 'ASAP').map((p) => p.label);
+  const hgpin = adequate.filter((p) => p.values.category === 'HGPIN').map((p) => p.label);
   const multi = parts.length > 1;
   const partsWord = (labels) => (labels.length === 1 ? `part ${labels[0]}` : `parts ${labels.join(', ')}`);
   const inParts = (labels) => (multi ? ` (${partsWord(labels)})` : '');
@@ -174,11 +183,12 @@ export function summary(parts, ctx) {
     if (ca.some((p) => p.values.pni === 'Present')) bits.push('perineural invasion present');
     if (ca.some((p) => p.values.epe === 'Present')) bits.push('extraprostatic extension present');
     if (ca.some((p) => p.values.lvi === 'Present')) bits.push('lymphovascular invasion present');
-  } else {
+  } else if (adequate.length) {
     bits.push(`No evidence of malignancy in ${totalCores} ${totalCores === 1 ? 'core' : 'cores'}`);
   }
   if (asap.length) bits.push(multi ? `ASAP in ${partsWord(asap)}` : 'ASAP present');
   if (hgpin.length) bits.push(multi ? `high grade PIN in ${partsWord(hgpin)}` : 'high grade PIN present');
+  if (inadequate.length) bits.push(`${inadequate.map((l) => `(${l})`).join(', ')} inadequate`);
   return `SUMMARY: ${bits.join('; ')}.`;
 }
 

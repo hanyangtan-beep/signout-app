@@ -27,7 +27,7 @@ test('schema offers the two new grades for every adenomatous type but not hyperp
   const f = schema.fields.find((x) => x.id === 'dysplasia');
   assert.deepEqual(f.options.slice(-2), ['At least high grade dysplasia', 'Invasive adenocarcinoma']);
   for (const [type, opts] of Object.entries(f.optionsByField.map)) {
-    if (type === 'hyperplasticPolyp') assert.deepEqual(opts, ['Not applicable']);
+    if (type === 'hyperplasticPolyp' || type === 'perineurioma') assert.deepEqual(opts, ['Not applicable']);
     else assert.ok(opts.includes('At least high grade dysplasia') && opts.includes('Invasive adenocarcinoma'), type);
   }
 });

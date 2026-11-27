@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 137,
+  "count": 138,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -108,7 +108,9 @@
         "malignant polyp",
         "EMR",
         "ESD",
-        "MMR"
+        "MMR",
+        "perineurioma",
+        "mucosal perineurioma"
       ],
       "match": {
         "site": [
@@ -1678,6 +1680,10 @@
         "umbilical cord",
         "membranes",
         "twin",
+        "triplet",
+        "DCDA",
+        "MCDA",
+        "MCMA",
         "dichorionic",
         "monochorionic",
         "infarct",
@@ -1697,6 +1703,7 @@
         "procedure": [
           "delivery",
           "caesarean",
+          "LSCS",
           "vaginal"
         ],
         "clinical": [
@@ -1709,11 +1716,59 @@
           "preeclampsia",
           "GDM",
           "twin",
+          "triplet",
+          "DCDA",
+          "MCDA",
+          "MCMA",
           "PPROM",
           "abruption"
+        ],
+        "fill": [
+          {
+            "field": "plurality",
+            "map": [
+              [
+                "\\btriplets?\\b|\\bTCTA\\b|\\bDCTA\\b|\\bMCTA\\b",
+                "Triplet"
+              ],
+              [
+                "\\btwins?\\b|\\bDCDA\\b|\\bMCDA\\b|\\bMCMA\\b|\\bdichorionic\\b|\\bmonochorionic\\b",
+                "Twin"
+              ]
+            ]
+          },
+          {
+            "field": "requestChorionicity",
+            "map": [
+              [
+                "\\bTCTA\\b|trichorionic",
+                "Triplet - TCTA"
+              ],
+              [
+                "\\bDCTA\\b",
+                "Triplet - DCTA"
+              ],
+              [
+                "\\bMCTA\\b",
+                "Triplet - MCTA"
+              ],
+              [
+                "\\bDCDA\\b|dichorionic\\s+diamniotic",
+                "DCDA"
+              ],
+              [
+                "\\bMCDA\\b|monochorionic\\s+diamniotic",
+                "MCDA"
+              ],
+              [
+                "\\bMCMA\\b|monochorionic\\s+monoamniotic",
+                "MCMA"
+              ]
+            ]
+          }
         ]
       },
-      "version": "2026.09",
+      "version": "2026.11",
       "generator": "placenta",
       "generatorPath": "generators/placenta.js",
       "schemaPath": "schemas/placenta.json"
@@ -9245,6 +9300,89 @@
       "generator": "hirschsprung_biopsy",
       "generatorPath": "generators/hirschsprung_biopsy.js",
       "schemaPath": "schemas/hirschsprung_biopsy.json"
+    },
+    {
+      "id": "hirschsprung_resection",
+      "name": "Hirschsprung disease — pull-through resection",
+      "shortName": "Colon · Hirschsprung pull-through",
+      "label": "Pull-through",
+      "organ": "COLON",
+      "system": "GI",
+      "kind": "benign resection",
+      "rank": 63,
+      "aliases": [
+        "Hirschsprung",
+        "pull-through",
+        "pull through",
+        "TERPT",
+        "Soave",
+        "Duhamel",
+        "Swenson",
+        "aganglionosis",
+        "transition zone",
+        "total colonic aganglionosis"
+      ],
+      "match": {
+        "gate": "\\b(?:pull[-\\s]?through|terpt|soave|duhamel|swenson|hirschsprung|aganglion\\w*)\\b",
+        "site": [
+          "colon",
+          "rectum",
+          "rectosigmoid",
+          "sigmoid",
+          "bowel",
+          "large bowel",
+          "large intestine"
+        ],
+        "procedure": [
+          "pull-through",
+          "pull through",
+          "TERPT",
+          "Soave",
+          "Duhamel",
+          "Swenson",
+          "resection",
+          "colectomy"
+        ],
+        "clinical": [
+          "Hirschsprung",
+          "aganglionosis",
+          "transition zone",
+          "pull-through",
+          "megacolon"
+        ],
+        "fill": [
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "\\bterpt\\b|transanal\\s+endorectal",
+                "Transanal endorectal pull-through (TERPT)"
+              ],
+              [
+                "\\bsoave\\b",
+                "Soave pull-through"
+              ],
+              [
+                "\\bduhamel\\b",
+                "Duhamel pull-through"
+              ],
+              [
+                "\\bswenson\\b",
+                "Swenson pull-through"
+              ],
+              [
+                "total\\s+colectomy",
+                "Total colectomy / pull-through"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "hirschsprung_resection",
+      "generatorPath": "generators/hirschsprung_resection.js",
+      "schemaPath": "schemas/hirschsprung_resection.json"
     },
     {
       "id": "larynx_carcinoma",

@@ -350,3 +350,15 @@ export async function deleteCase(config, accession, docId = '', api = gfetch) {
     return { deleted: true, doc: err?.status === 404 ? 'missing' : 'failed' };
   }
 }
+
+/**
+ * Look up the Google Doc URL for a given accession with a single Sheet column read.
+ * Returns the Doc URL string if found, or null when no saved row / Doc exists.
+ */
+export async function lookupDocUrl(config, accession, api = gfetch) {
+  const acc = normaliseAccession(accession);
+  if (!acc) return null;
+  const sheetId = await ensureSheet(config, api);
+  const { docId } = await lookupRow(config, sheetId, acc, api);
+  return docId ? docUrlFor(docId) : null;
+}

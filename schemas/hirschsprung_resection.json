@@ -1,0 +1,307 @@
+{
+  "id": "hirschsprung_resection",
+  "version": "2026.11",
+  "name": "Hirschsprung disease — pull-through resection",
+  "shortName": "Colon · Hirschsprung pull-through",
+  "label": "Pull-through",
+  "organ": "COLON",
+  "system": "GI",
+  "kind": "benign resection",
+  "rank": 63,
+  "aliases": [
+    "Hirschsprung",
+    "pull-through",
+    "pull through",
+    "TERPT",
+    "Soave",
+    "Duhamel",
+    "Swenson",
+    "aganglionosis",
+    "transition zone",
+    "total colonic aganglionosis"
+  ],
+  "match": {
+    "gate": "\\b(?:pull[-\\s]?through|terpt|soave|duhamel|swenson|hirschsprung|aganglion\\w*)\\b",
+    "site": [
+      "colon",
+      "rectum",
+      "rectosigmoid",
+      "sigmoid",
+      "bowel",
+      "large bowel",
+      "large intestine"
+    ],
+    "procedure": [
+      "pull-through",
+      "pull through",
+      "TERPT",
+      "Soave",
+      "Duhamel",
+      "Swenson",
+      "resection",
+      "colectomy"
+    ],
+    "clinical": [
+      "Hirschsprung",
+      "aganglionosis",
+      "transition zone",
+      "pull-through",
+      "megacolon"
+    ],
+    "fill": [
+      {
+        "field": "procedure",
+        "from": "map",
+        "map": [
+          [
+            "\\bterpt\\b|transanal\\s+endorectal",
+            "Transanal endorectal pull-through (TERPT)"
+          ],
+          [
+            "\\bsoave\\b",
+            "Soave pull-through"
+          ],
+          [
+            "\\bduhamel\\b",
+            "Duhamel pull-through"
+          ],
+          [
+            "\\bswenson\\b",
+            "Swenson pull-through"
+          ],
+          [
+            "total\\s+colectomy",
+            "Total colectomy / pull-through"
+          ]
+        ]
+      }
+    ]
+  },
+  "macroExtract": {
+    "specimenLength": {
+      "concept": "length",
+      "unit": "cm"
+    },
+    "blocks": {
+      "concept": "blocks",
+      "unit": "count"
+    }
+  },
+  "specimenNoun": "pull-through resection",
+  "maxParts": 4,
+  "defaultParts": 1,
+  "generator": "hirschsprung_resection",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "$use": "includeHeader"
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "fields": [
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Transanal endorectal pull-through (TERPT)",
+        "Soave pull-through",
+        "Duhamel pull-through",
+        "Swenson pull-through",
+        "Total colectomy / pull-through",
+        "Pull-through resection, NOS"
+      ],
+      "default": "Transanal endorectal pull-through (TERPT)"
+    },
+    {
+      "id": "specimenLength",
+      "label": "Total specimen length (cm)",
+      "type": "number",
+      "group": "Macroscopy",
+      "min": 0,
+      "step": 0.5,
+      "placeholder": "18",
+      "default": ""
+    },
+    {
+      "id": "narrowSegment",
+      "label": "Distal narrowed segment (cm)",
+      "type": "number",
+      "group": "Macroscopy",
+      "min": 0,
+      "step": 0.5,
+      "placeholder": "8",
+      "default": ""
+    },
+    {
+      "id": "transitionCone",
+      "label": "Macroscopic cone / transition zone (cm)",
+      "type": "number",
+      "group": "Macroscopy",
+      "min": 0,
+      "step": 0.5,
+      "placeholder": "3",
+      "default": ""
+    },
+    {
+      "id": "dilatedSegment",
+      "label": "Proximal dilated segment (cm)",
+      "type": "number",
+      "group": "Macroscopy",
+      "min": 0,
+      "step": 0.5,
+      "placeholder": "7",
+      "default": ""
+    },
+    {
+      "id": "samplingMethod",
+      "label": "Sampling method",
+      "type": "select",
+      "group": "Macroscopy",
+      "options": [
+        "Full-circumference proximal margin ring + longitudinal strip",
+        "Mapped transverse rings along specimen",
+        "Representative sections"
+      ],
+      "default": "Full-circumference proximal margin ring + longitudinal strip"
+    },
+    {
+      "id": "blocks",
+      "label": "Blocks",
+      "type": "number",
+      "group": "Macroscopy",
+      "min": 1,
+      "step": 1,
+      "default": "6"
+    },
+    {
+      "id": "aganglionicLength",
+      "label": "Aganglionic segment length (cm)",
+      "type": "number",
+      "min": 0,
+      "step": 0.5,
+      "placeholder": "9",
+      "default": ""
+    },
+    {
+      "id": "transitionZone",
+      "label": "Transition zone features",
+      "type": "multiselect",
+      "options": [
+        "Hypoganglionosis",
+        "Partial circumferential aganglionosis",
+        "Nerve trunk hypertrophy (>40 um)",
+        "Myenteric / submucosal eosinophilic or lymphocytic ganglionitis"
+      ],
+      "default": [
+        "Hypoganglionosis",
+        "Nerve trunk hypertrophy (>40 um)"
+      ]
+    },
+    {
+      "id": "proximalMargin",
+      "label": "Proximal resection margin",
+      "type": "select",
+      "options": [
+        "Circumferential ganglion cells, no nerve trunk hypertrophy",
+        "Circumferential ganglion cells with mild nerve trunk hypertrophy (possible transition zone)",
+        "Partial circumferential aganglionosis / hypoganglionosis (transition zone at margin)",
+        "Aganglionic (no ganglion cells identified)"
+      ],
+      "default": "Circumferential ganglion cells, no nerve trunk hypertrophy"
+    },
+    {
+      "id": "calretinin",
+      "label": "Calretinin immunohistochemistry",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Loss of mucosal nerve fibres in aganglionic segment; intact at proximal margin",
+        "Intact at proximal margin",
+        "Absent at proximal margin"
+      ],
+      "default": "Not performed"
+    },
+    {
+      "id": "enterocolitis",
+      "label": "Hirschsprung-associated enterocolitis",
+      "type": "select",
+      "options": [
+        "Absent",
+        "Present - mild (crypt dilatation / mucin retention)",
+        "Present - moderate (cryptitis / crypt abscesses)",
+        "Present - severe (mucosal ulceration / pseudomembranes)"
+      ],
+      "default": "Absent"
+    },
+    {
+      "id": "totalColonic",
+      "label": "Total colonic aganglionosis",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "appendixStatus",
+      "label": "Appendix (if included)",
+      "type": "select",
+      "options": [
+        "Not included",
+        "Aganglionic (supports total colonic aganglionosis)",
+        "Ganglion cells present"
+      ],
+      "default": "Not included",
+      "showIf": {
+        "field": "totalColonic",
+        "truthy": true
+      }
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional notes",
+      "type": "textarea",
+      "placeholder": "Additional microscopy comments",
+      "default": ""
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "procedure": "Transanal endorectal pull-through (TERPT)",
+          "specimenLength": "18",
+          "narrowSegment": "8",
+          "transitionCone": "3",
+          "dilatedSegment": "7",
+          "samplingMethod": "Full-circumference proximal margin ring + longitudinal strip",
+          "blocks": "6",
+          "aganglionicLength": "9",
+          "transitionZone": [
+            "Hypoganglionosis",
+            "Nerve trunk hypertrophy (>40 um)"
+          ],
+          "proximalMargin": "Circumferential ganglion cells, no nerve trunk hypertrophy",
+          "calretinin": "Loss of mucosal nerve fibres in aganglionic segment; intact at proximal margin",
+          "enterocolitis": "Absent",
+          "totalColonic": false,
+          "appendixStatus": "Not included",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

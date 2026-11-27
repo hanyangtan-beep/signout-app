@@ -117,7 +117,8 @@ export function macro(part, ctx) {
   const smear = isCns(v) ? cnsSmearSentence(v) : '';
   const tail = v.cnsPrep === 'Smear only' ? '' : ` ${handling}`;
   const reserved = isCns(v) ? cnsTissueSentences(v) : '';
-  return `(${part.label}) Received in a fresh state ${received}.${within}${smear ? ` ${smear}` : ''}${tail}${reserved}`;
+  const pdExtra = isPd(v) ? pdMacroNote(v) : '';
+  return `(${part.label}) Received in a fresh state ${received}.${within}${smear ? ` ${smear}` : ''}${tail}${pdExtra}${reserved}`;
 }
 
 // ---------- frozen (intraoperative) diagnosis ----------
@@ -430,7 +431,11 @@ const isPd = (v) => v.scenario === PD;
 /** Margin name -> the noun the report prints, and the paraffin field it pre-fills. */
 export const PD_SITES = {
   'Pancreatic neck (transection)': { noun: 'pancreatic neck margin', field: 'neckMargin', mm: 'neckMarginMm' },
-  'Bile duct': { noun: 'bile duct margin', field: 'bileDuctMargin', mm: 'bileDuctMarginMm' },
+  'Bile duct': { noun: 'bile duct margin', field: 'bileDuctMargin', mm: 'bileDuctMarginMm', biliary: true },
+  'Common bile duct': { noun: 'common bile duct margin', field: 'bileDuctMargin', mm: 'bileDuctMarginMm', biliary: true },
+  'Common hepatic duct': { noun: 'common hepatic duct margin', field: 'bileDuctMargin', mm: 'bileDuctMarginMm', biliary: true },
+  'Proximal bile duct': { noun: 'proximal bile duct margin', field: 'bileDuctMargin', mm: 'bileDuctMarginMm', biliary: true },
+  'Distal bile duct': { noun: 'distal bile duct margin', field: 'bileDuctMargin', mm: 'bileDuctMarginMm', biliary: true },
   'Uncinate (superior mesenteric artery)': { noun: 'uncinate margin', field: 'uncinateMargin', mm: 'uncinateMarginMm' },
   'Pancreatic duct': { noun: 'pancreatic duct margin', field: 'pancDuctMargin', mm: 'pancDuctMarginMm' },
   'Proximal (gastric or duodenal)': { noun: 'proximal margin', field: 'proximalMargin', mm: 'proximalMarginMm' },
@@ -440,6 +445,14 @@ const PD_ORIGIN_TEMPLATE = { Pancreatic: 'pancreas_carcinoma', Ampullary: 'ampul
 const PD_MALIGNANT = ['Carcinoma present at margin', 'Carcinoma close to margin'];
 const pdSite = (v) => PD_SITES[v.pdSite] || PD_SITES['Pancreatic neck (transection)'];
 const pdResult = (v) => v.pdResult || 'Negative';
+
+function pdMacroNote(v) {
+  const form = v.pdForm && v.pdForm !== 'Not specified' ? lc1(v.pdForm) : '';
+  if (form && v.pdEnFace) return ` Submitted as a ${form} and embedded en face.`;
+  if (form) return ` Submitted as a ${form}.`;
+  if (v.pdEnFace) return ' Embedded en face.';
+  return '';
+}
 
 function pdResultLine(v) {
   const noun = pdSite(v).noun;
@@ -451,6 +464,7 @@ function pdResultLine(v) {
     case 'Low-grade dysplasia only': return `Low-grade dysplasia at the ${noun}; no invasive carcinoma.`;
     case 'Atypical, deferred': return `Atypical epithelium at the ${noun}; deferred to paraffin sections.`;
     case 'No epithelium identified': return `No ductal epithelium is identified in the ${noun}.`;
+    case 'Denuded epithelium (cannot assess)': return `Epithelium is denuded at the ${noun}; cannot assess for dysplasia or carcinoma.`;
     default: return `No carcinoma or dysplasia at the ${noun}.`;
   }
 }
@@ -465,18 +479,21 @@ function pdFinalDx(v) {
     case 'Low-grade dysplasia only': return 'LOW-GRADE DYSPLASIA; no evidence of invasive carcinoma';
     case 'Atypical, deferred': return 'SEE MICROSCOPIC EXAMINATION';
     case 'No epithelium identified': return 'NO DUCTAL EPITHELIUM IDENTIFIED';
+    case 'Denuded epithelium (cannot assess)': return 'EPITHELIUM DENUDED; CANNOT ASSESS MARGIN';
     default: return 'NO EVIDENCE OF MALIGNANCY';
   }
 }
 
 function pdTissue(v) {
+  const site = pdSite(v);
   switch (pdResult(v)) {
-    case 'Carcinoma present at margin': return `infiltrating ${lc1(tumour(v, 'carcinoma'))} involving the ${pdSite(v).noun}`;
-    case 'Carcinoma close to margin': return `infiltrating ${lc1(tumour(v, 'carcinoma'))} lying close to the inked ${pdSite(v).noun}`;
-    case 'High-grade dysplasia only': return 'ductal epithelium with high-grade dysplasia';
-    case 'Low-grade dysplasia only': return 'ductal epithelium with low-grade dysplasia';
-    case 'No epithelium identified': return 'pancreatic parenchyma and fibrous tissue without ductal epithelium';
-    default: return 'pancreatic parenchyma and ducts lined by bland cuboidal epithelium';
+    case 'Carcinoma present at margin': return `infiltrating ${lc1(tumour(v, 'carcinoma'))} involving the ${site.noun}`;
+    case 'Carcinoma close to margin': return `infiltrating ${lc1(tumour(v, 'carcinoma'))} lying close to the inked ${site.noun}`;
+    case 'High-grade dysplasia only': return site.biliary ? 'biliary epithelium with high-grade dysplasia (BilIN-3)' : 'ductal epithelium with high-grade dysplasia (PanIN-3)';
+    case 'Low-grade dysplasia only': return site.biliary ? 'biliary epithelium with low-grade dysplasia' : 'ductal epithelium with low-grade dysplasia';
+    case 'No epithelium identified': return site.biliary ? 'bile duct wall and fibrous tissue without surface epithelium' : 'pancreatic parenchyma and fibrous tissue without ductal epithelium';
+    case 'Denuded epithelium (cannot assess)': return site.biliary ? 'bile duct wall with denuded surface epithelium' : 'pancreatic duct wall with denuded surface epithelium';
+    default: return site.biliary ? 'bile duct wall lined by bland biliary epithelium' : 'pancreatic parenchyma and ducts lined by bland cuboidal epithelium';
   }
 }
 
@@ -1140,6 +1157,7 @@ const CNS_NO_CLOSING = ['Low-grade glial neoplasm', 'Glial neoplasm, grade defer
 function closingSentence(v) {
   if (malignant(v) || v.scenario === 'Parathyroid') return '';
   if (isCns(v) && CNS_NO_CLOSING.includes(cnsResult(v))) return '';
+  if (isPd(v) && pdResult(v) === 'Denuded epithelium (cannot assess)') return '';
   if (isPd(v) && /dysplasia only$/i.test(pdResult(v))) return 'There is no evidence of invasive carcinoma.';
   if (isPd(v)) return 'There is no evidence of dysplasia or malignancy.';
   if (v.scenario === 'Margin' && v.marginResult === 'Dysplasia only') return 'There is no evidence of invasive malignancy.';
@@ -1341,6 +1359,8 @@ export function validate(part, ctx) {
     if (pdResult(v) === 'Carcinoma close to margin' && d === null) info('Record the clearance in mm: the distance is printed in the intraoperative line and carried into the paraffin synoptic.', 'pdDistanceMm');
     if (pdResult(v) === 'No epithelium identified' && /neck|duct/i.test(v.pdSite || 'Pancreatic neck (transection)')) info('No ductal epithelium in the shaving: say so in the intraoperative line rather than reporting the margin as negative.', 'pdResult');
     if (pdResult(v) === 'High-grade dysplasia only') info('High-grade dysplasia at the margin is recorded separately in the paraffin synoptic; it does not make the margin positive for invasive carcinoma.', 'pdResult');
+    if (v.pdEpithelium === 'Denuded' && pdResult(v) === 'Negative') warn('Ductal epithelium is marked denuded but the result is Negative: report as "Denuded epithelium (cannot assess)" rather than negative.', 'pdResult');
+    if (v.pdEpithelium === 'Denuded' && /dysplasia only$/i.test(pdResult(v))) warn('Ductal epithelium is marked denuded: confirm dysplasia is present on intact epithelium or report as denuded.', 'pdResult');
   }
   if (v.scenario === 'Lymph node') {
     const examined = num(v.lnExamined);

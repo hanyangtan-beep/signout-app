@@ -1,7 +1,9 @@
 {
  "id": "colonic_polyp",
  "version": "2026.10",
- "style": { "british": true },
+ "style": {
+  "british": true
+ },
  "name": "Colonic polyp",
  "shortName": "Colon · polyp",
  "label": "Colonic polyp",
@@ -26,7 +28,9 @@
   "malignant polyp",
   "EMR",
   "ESD",
-  "MMR"
+  "MMR",
+  "perineurioma",
+  "mucosal perineurioma"
  ],
  "match": {
   "site": [
@@ -143,7 +147,8 @@
     "villousAdenoma",
     "sessileSerrated",
     "hyperplasticPolyp",
-    "traditionalSerrated"
+    "traditionalSerrated",
+    "perineurioma"
    ],
    "optionLabels": {
     "tubularAdenoma": "Tubular adenoma",
@@ -151,7 +156,8 @@
     "villousAdenoma": "Villous adenoma",
     "sessileSerrated": "Sessile serrated lesion / adenoma",
     "hyperplasticPolyp": "Hyperplastic polyp",
-    "traditionalSerrated": "Traditional serrated adenoma"
+    "traditionalSerrated": "Traditional serrated adenoma",
+    "perineurioma": "Perineurioma"
    },
    "default": "tubularAdenoma"
   },
@@ -204,12 +210,41 @@
       "High grade dysplasia",
       "At least high grade dysplasia",
       "Invasive adenocarcinoma"
+     ],
+     "perineurioma": [
+      "Not applicable"
      ]
     }
    },
    "optionLabels": {
     "At least high grade dysplasia": "At least HGD (invasion not excluded)",
     "Invasive adenocarcinoma": "Invasive adenocarcinoma"
+   }
+  },
+  {
+   "id": "perineuriomaIhc",
+   "label": "Immunohistochemistry (perineurioma)",
+   "type": "select",
+   "options": [
+    "Not performed",
+    "EMA / GLUT1 / claudin-1 positive; S100 negative",
+    "EMA / claudin-1 positive; S100 negative",
+    "S100 positive"
+   ],
+   "default": "Not performed",
+   "showIf": {
+    "field": "type",
+    "is": "perineurioma"
+   }
+  },
+  {
+   "id": "perineuriomaGanglion",
+   "label": "Ganglion cells present",
+   "type": "checkbox",
+   "default": false,
+   "showIf": {
+    "field": "type",
+    "is": "perineurioma"
    }
   },
   {
