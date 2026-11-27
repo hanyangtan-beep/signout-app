@@ -1976,6 +1976,17 @@ function carryRewrites(prev, out) {
   }
 }
 
+/** Which backend and display name the current case will use for AI proofreading. */
+function proofTarget() {
+  const vertex = loadVertexSettings();
+  const kind = caseKindForAi();
+  const useVertex = vertex.backend === 'vertex'
+    || (vertex.backend === 'hybrid' && (kind === 'cancer resection' || kind === 'biomarker'));
+  return useVertex
+    ? { useVertex: true, kind, proxyUrl: vertex.proxyUrl, model: 'Gemini', via: 'Vertex AI' }
+    : { useVertex: false, kind, proxyUrl: vertex.proxyUrl, model: MODEL_NAME, via: 'Han Slide on this computer' };
+}
+
 /** The Proofreading box under Checks, or null when there is nothing to show. */
 function renderProofBox(out) {
   const on = loadProofSettings().on;
@@ -1985,26 +1996,28 @@ function renderProofBox(out) {
   const error = mine ? state.proof.error : '';
   const note = state.proof.note?.caseState === state.caseState ? state.proof.note : null;
   if (!on && !items.length && !record?.at && !error && !note) return null;
+  const target = (busy && state.proof.target) || proofTarget();
   const rewrites = items.filter((i) => i.kind === 'rewrite');
   const flagged = items.filter((i) => i.kind === 'check' && i.suggestion !== undefined);
   const edits = items.filter((i) => i.kind !== 'check' && i.kind !== 'rewrite');
   const looks = items.length - edits.length - flagged.length - rewrites.length;
   const count = [edits.length ? `${edits.length} to accept` : '', flagged.length ? `${flagged.length} flagged` : '',
     rewrites.length ? `${rewrites.length} rewrite${rewrites.length === 1 ? '' : 's'}` : '', looks ? `${looks} to look at` : ''].filter(Boolean).join(' \u00b7 ');
-  const summary = busy ? `${MODEL_NAME} is reading the report\u2026` : error ? 'did not run' : count || (record?.at ? 'nothing open' : on ? 'not proofread yet' : 'nothing found');
+  const summary = busy ? `${target.model} is reading the report\u2026` : error ? 'did not run' : count || (record?.at ? 'nothing open' : on ? 'not proofread yet' : 'nothing found');
   const box = el('details', { class: `checks proof ${error ? 'has-error' : items.length ? '' : 'info-only'}` },
     el('summary', {}, el('div', { class: 'checks-head' }, el('h3', { text: 'Proofreading' }), el('span', { class: 'muted', text: summary }))));
-  const line = busy ? `Asked ${MODEL_NAME} through Han Slide on this computer at ${clock(state.proof.startedAt)}. You can keep working.`
+  const line = busy ? `Asked ${target.model} through ${target.via} at ${clock(state.proof.startedAt)}. You can keep working.`
     : record?.at ? recordSummary(record, sections)
-      : on ? `Not proofread by ${MODEL_NAME} yet: it runs when the case is marked Ready, or press Proofread.`
-        : `Rule checks only. ${MODEL_NAME} proofreads where Settings › Proofreading is on (the Mac with Han Slide).`;
+      : on ? `Not proofread by ${target.model} yet: it runs when the case is marked Ready, or press Proofread.`
+        : 'Rule checks only. Turn on Settings › Proofreading (Han Slide or Vertex AI) to proofread with AI.';
   box.append(el('p', { class: 'proof-line', text: line }));
   if (error) box.append(el('p', { class: 'proof-error', role: 'alert', text: error }));
   if (note) {
     box.append(el('div', { class: 'proof-note', role: 'status' }, ...note.lines.map((l) => el('p', { text: l })),
       el('button', { type: 'button', class: 'btn ghost small', text: 'OK', title: 'Hide this note', onclick: () => { state.proof.note = null; renderReport(); } })));
   }
-  if (items.length) box.append(el('ul', { class: 'proof-list' }, ...items.map((i) => proofRow(i, out))));
+  const modelTag = (record?.by ? String(record.by).split(' via ')[0] : '') || target.model;
+  if (items.length) box.append(el('ul', { class: 'proof-list' }, ...items.map((i) => proofRow(i, out, modelTag))));
   const bar = el('div', { class: 'proof-bar' });
   if (edits.length > 1) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: `Accept all ${edits.length}`, title: 'The spelling, grammar and house-style edits; flagged changes and rewrites are accepted one by one', onclick: () => acceptProof(edits) }));
   if (on) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: busy ? 'Proofreading\u2026' : record?.at ? 'Proofread again' : 'Proofread', disabled: busy, onclick: () => runProofread() }));
@@ -2015,11 +2028,11 @@ function renderProofBox(out) {
 }
 
 /** One suggestion: what it is and where, the change or the text to look at, Accept and Dismiss. */
-function proofRow(item, out) {
+function proofRow(item, out, modelTag = MODEL_NAME) {
   const where = sectionOf(item.section)?.label || item.section;
   const flagged = item.kind === 'check' && item.suggestion !== undefined;
   const kind = flagged ? PROOF_KIND.flagged : PROOF_KIND[item.kind] || item.kind;
-  const head = el('span', { class: 'proof-kind', text: `${kind} \u00b7 ${where}${item.source === 'model' ? ` \u00b7 ${MODEL_NAME.split(' ').join('\u00a0')}` : ''}` });
+  const head = el('span', { class: 'proof-kind', text: `${kind} \u00b7 ${where}${item.source === 'model' ? ` \u00b7 ${modelTag.split(' ').join('\u00a0')}` : ''}` });
   if (item.kind === 'rewrite') return rewriteRow(item, head, printedText(out, item.section));
   const body = el('span', { class: 'proof-text' });
   const change = (find, replace) => {
@@ -2214,7 +2227,6 @@ function caseKindForAi() {
 /** Ask Han Slide or Vertex AI to proofread the report on screen; one question at a time. */
 async function runProofread({ auto = false } = {}) {
   const settings = loadProofSettings();
-  const vertex = loadVertexSettings();
   const cs = state.caseState;
   if (!settings.on || !cs || !state.lastOut) return;
   if (state.proof.busy) {
@@ -2224,20 +2236,19 @@ async function runProofread({ auto = false } = {}) {
   const sections = reportSections(state.lastOut);
   if (!sections.length) { if (!auto) toast('Nothing in the report to proofread yet'); return; }
   const question = buildPrompt(sections, cs.meta?.clinical || '');
-  state.proof = { ...state.proof, busy: !question.error, error: question.error || '', caseState: cs, startedAt: Date.now(), note: null };
+  const target = proofTarget();
+  state.proof = { ...state.proof, busy: !question.error, error: question.error || '', caseState: cs, startedAt: Date.now(), note: null, target };
   renderReport();
   if (question.error) return;
-  const kind = caseKindForAi();
-  const useVertex = vertex.backend === 'vertex'
-    || (vertex.backend === 'hybrid' && (kind === 'cancer resection' || kind === 'biomarker'));
+  const { useVertex, kind, proxyUrl } = target;
   let record = null;
-  let label = MODEL_NAME;
+  let label = target.model;
   try {
     let answer;
     if (useVertex) {
       const token = await getToken(state.config, { interactive: false }).catch(() => '');
       if (!token) throw new Error('Sign in to Google first to use Vertex AI proofreading.');
-      answer = await vertexProofread({ ...question, kind, proxyUrl: vertex.proxyUrl, token });
+      answer = await vertexProofread({ ...question, kind, proxyUrl, token });
       label = answer.model || 'Vertex AI';
     } else {
       answer = await hanSlideProofread({ ...question, code: settings.code });
