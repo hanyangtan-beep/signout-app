@@ -542,8 +542,10 @@ textarea.input { min-height: 64px; resize: vertical; }
   .dialog.suggest .dialog-actions { flex-wrap: wrap; }
 }
 .case-list { display: grid; gap: var(--space-1); max-height: 50vh; overflow: auto; }
-.case-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: var(--space-3); align-items: center; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-2) var(--space-3); background: var(--color-surface); cursor: pointer; text-align: left; font-size: var(--text-sm); }
+.case-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: var(--space-3); align-items: center; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-2) var(--space-3); background: var(--color-surface); cursor: pointer; text-align: left; font-size: var(--text-sm); }
 .case-row:hover { background: var(--color-surface-2); }
+.case-row .case-delete { opacity: 0.72; }
+.case-row:hover .case-delete, .case-row .case-delete:focus-visible { opacity: 1; }
 .case-row .case-open { display: grid; min-width: 0; padding: 0; border: 0; background: none; text-align: left; cursor: pointer; }
 .case-row .acc { font-family: var(--font-mono); font-weight: 500; }
 .case-row .sub { color: var(--color-text-muted); font-size: var(--text-xs); }

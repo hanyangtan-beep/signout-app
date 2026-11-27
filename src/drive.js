@@ -321,3 +321,32 @@ export async function setCaseStatus(config, accession, status, docId = '', api =
     return { status: next, doc: 'updated' };
   } catch { return { status: next, doc: 'failed' }; }
 }
+
+/**
+ * Delete a saved case from the Open list: clears its row in the Sign-out cases Sheet (so other row
+ * numbers and hints stay intact, and listCases skips the empty row) and moves its Google Doc to
+ * Drive Trash (recoverable from Trash if deleted by mistake).
+ * Resolves to { deleted: true, doc }, doc being 'trashed', 'none', 'missing' (404) or 'failed'.
+ */
+export async function deleteCase(config, accession, docId = '', api = gfetch) {
+  const acc = normaliseAccession(accession);
+  if (!acc) throw new Error('Enter an accession number to delete.');
+  const sheetId = await ensureSheet(config, api);
+  const placed = await placeRow(config, sheetId, acc, api);
+  if (!placed.rowNumber) throw new Error(`No saved case for ${accession}`);
+  const rowDoc = placed.docId || docId;
+  await api(config, `${SHEETS}/${sheetId}/values/A${placed.rowNumber}:${LAST_COL}${placed.rowNumber}:clear`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}'
+  });
+  rowHints.delete(hintKey(sheetId, acc));
+  if (!rowDoc) return { deleted: true, doc: 'none' };
+  try {
+    await api(config, `${DRIVE}/files/${rowDoc}?${q({ fields: 'id,trashed' })}`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ trashed: true })
+    });
+    return { deleted: true, doc: 'trashed' };
+  } catch (err) {
+    return { deleted: true, doc: err?.status === 404 ? 'missing' : 'failed' };
+  }
+}

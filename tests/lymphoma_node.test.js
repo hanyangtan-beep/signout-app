@@ -66,7 +66,7 @@ test('it replaces the Lymphoma placeholder and follows the lymph node form in th
   const planned = JSON.parse(fs.readFileSync(path.join(root, 'templates', 'planned.json'), 'utf8')).planned;
   assert.ok(!planned.some((p) => p.id === 'lymphoma_node'), 'no placeholder left');
   const group = rowGroups(manifest, planned, 'bottom').find((g) => g.system === 'Lymphoid');
-  assert.deepEqual(group.items.filter((i) => !i.planned).map((i) => i.id), ['lymph_node', 'lymphoma_node']);
+  assert.deepEqual(group.items.filter((i) => !i.planned).map((i) => i.id), ['lymph_node', 'spleen_benign', 'lymphoma_node', 'spleen_lymphoma']);
 });
 
 test('the diagnosis list carries the WHO-HAEM5 names in groups, and every marker has a result field', () => {

@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 131,
+  "count": 133,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -11866,6 +11866,256 @@
       "generator": "generic",
       "generatorPath": "generators/generic.js",
       "schemaPath": "schemas/generic.json"
+    },
+    {
+      "id": "spleen_benign",
+      "name": "Spleen (benign & vascular)",
+      "shortName": "Spleen · benign & vascular",
+      "label": "Spleen (benign & vascular)",
+      "organ": "Spleen",
+      "system": "Lymphoid",
+      "kind": "benign resection",
+      "aliases": [
+        "splenectomy",
+        "spleen",
+        "splenunculus",
+        "accessory spleen",
+        "splenic cyst",
+        "splenic rupture",
+        "splenic infarct",
+        "SANT",
+        "sclerosing angiomatoid nodular transformation",
+        "littoral cell angioma",
+        "splenic hamartoma",
+        "splenic haemangioma",
+        "splenic hemangioma",
+        "splenic angiosarcoma",
+        "EBV inflammatory FDC sarcoma"
+      ],
+      "match": {
+        "any": [
+          "\\bspleen\\b",
+          "\\bsplenectomy\\b",
+          "\\bsplenunculus\\b",
+          "\\baccessory\\s+spleen\\b",
+          "\\bsplenic\\b",
+          "\\bsplenomegaly\\b",
+          "\\blittoral\\s+cell\\s+angioma\\b",
+          "\\bsclerosing\\s+angiomatoid\\b"
+        ],
+        "exclude": [
+          "pancreatectomy",
+          "whipple",
+          "ramps",
+          "distal\\s+pancreas",
+          "lymphoma",
+          "leukaemia",
+          "leukemia",
+          "lymphoproliferative",
+          "\\bsmzl\\b",
+          "\\bhcl\\b",
+          "\\bsdrpl\\b",
+          "\\bsblpn\\b",
+          "\\bhstcl\\b",
+          "\\bdlbcl\\b",
+          "myeloid\\s+sarcoma",
+          "frozen"
+        ],
+        "fill": [
+          {
+            "field": "procedure",
+            "map": [
+              [
+                "partial\\s+splenectomy",
+                "Partial splenectomy"
+              ],
+              [
+                "splenunculus|accessory\\s+spleen",
+                "Excision of accessory spleen (splenunculus)"
+              ],
+              [
+                "cystectomy|decapsulation|unroofing",
+                "Splenic cyst excision / decapsulation"
+              ],
+              [
+                "splenectomy|spleen",
+                "Total splenectomy"
+              ]
+            ]
+          },
+          {
+            "field": "dx",
+            "map": [
+              [
+                "rupture|lacerat|trauma",
+                "Traumatic rupture / laceration"
+              ],
+              [
+                "splenunculus|accessory\\s+spleen",
+                "Accessory spleen (splenunculus)"
+              ],
+              [
+                "infarct",
+                "Splenic infarction"
+              ],
+              [
+                "sant|sclerosing\\s+angiomatoid",
+                "Sclerosing angiomatoid nodular transformation (SANT)"
+              ],
+              [
+                "littoral\\s+cell",
+                "Littoral cell angioma"
+              ],
+              [
+                "hamartoma",
+                "Splenic hamartoma"
+              ],
+              [
+                "angiosarcoma",
+                "Splenic angiosarcoma"
+              ],
+              [
+                "lymphangioma",
+                "Lymphangioma"
+              ],
+              [
+                "haemangioma|hemangioma",
+                "Cavernous haemangioma"
+              ],
+              [
+                "hydatid|echinococc",
+                "Hydatid (echinococcal) cyst"
+              ],
+              [
+                "pseudocyst",
+                "Pseudocyst (post-traumatic / non-epithelial)"
+              ],
+              [
+                "cyst",
+                "Epithelial (epidermoid / mesothelial) cyst"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "1.0",
+      "generator": "spleen_benign",
+      "rank": 100,
+      "generatorPath": "generators/spleen_benign.js",
+      "schemaPath": "schemas/spleen_benign.json"
+    },
+    {
+      "id": "spleen_lymphoma",
+      "name": "Spleen (lymphoma, WHO-HAEM5)",
+      "shortName": "Spleen · lymphoma",
+      "label": "Spleen (lymphoma)",
+      "organ": "Spleen",
+      "system": "Lymphoid",
+      "kind": "cancer resection",
+      "aliases": [
+        "splenic lymphoma",
+        "splenectomy lymphoma",
+        "SMZL",
+        "splenic marginal zone lymphoma",
+        "HCL",
+        "hairy cell leukaemia",
+        "hairy cell leukemia",
+        "SDRPL",
+        "splenic diffuse red pulp small B-cell lymphoma",
+        "SBLPN",
+        "splenic B-cell lymphoma with prominent nucleoli",
+        "HCL-v",
+        "HSTCL",
+        "hepatosplenic T-cell lymphoma",
+        "primary splenic DLBCL"
+      ],
+      "match": {
+        "any": [
+          "\\bspleen\\b",
+          "\\bsplenectomy\\b",
+          "\\bsplenic\\b",
+          "\\bsmzl\\b",
+          "\\bsdrpl\\b",
+          "\\bsblpn\\b",
+          "\\bhstcl\\b"
+        ],
+        "gate": [
+          "lymphoma",
+          "leukaemia",
+          "leukemia",
+          "lymphoproliferative",
+          "\\bsmzl\\b",
+          "\\bhcl\\b",
+          "\\bsdrpl\\b",
+          "\\bsblpn\\b",
+          "\\bhstcl\\b",
+          "\\bdlbcl\\b",
+          "marginal\\s+zone",
+          "hairy\\s+cell",
+          "hepatosplenic",
+          "myeloid\\s+sarcoma",
+          "hodgkin"
+        ],
+        "exclude": [
+          "pancreatectomy",
+          "whipple",
+          "ramps",
+          "distal\\s+pancreas",
+          "frozen"
+        ],
+        "fill": [
+          {
+            "field": "dx",
+            "map": [
+              [
+                "marginal\\s+zone|\\bsmzl\\b",
+                "Splenic marginal zone lymphoma"
+              ],
+              [
+                "prominent\\s+nucleoli|\\bsblpn\\b|hcl[-\\s]?v|variant\\s+hairy",
+                "Splenic B-cell lymphoma/leukaemia with prominent nucleoli"
+              ],
+              [
+                "diffuse\\s+red\\s+pulp|\\bsdrpl\\b",
+                "Splenic diffuse red pulp small B-cell lymphoma"
+              ],
+              [
+                "hairy\\s+cell|\\bhcl\\b",
+                "Hairy cell leukaemia"
+              ],
+              [
+                "hepatosplenic|\\bhstcl\\b",
+                "Hepatosplenic T-cell lymphoma"
+              ],
+              [
+                "dlbcl|diffuse\\s+large\\s+b",
+                "Diffuse large B-cell lymphoma, NOS"
+              ],
+              [
+                "follicular\\s+lymphoma",
+                "Follicular lymphoma"
+              ],
+              [
+                "mantle\\s+cell",
+                "Mantle cell lymphoma"
+              ],
+              [
+                "hodgkin",
+                "Classic Hodgkin lymphoma"
+              ],
+              [
+                "myeloid\\s+sarcoma",
+                "Myeloid sarcoma / myeloproliferative neoplasm involvement"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "1.0",
+      "generator": "spleen_lymphoma",
+      "rank": 100,
+      "generatorPath": "generators/spleen_lymphoma.js",
+      "schemaPath": "schemas/spleen_lymphoma.json"
     },
     {
       "id": "thyroid_fna",

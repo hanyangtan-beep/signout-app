@@ -1,0 +1,619 @@
+{
+  "id": "spleen_lymphoma",
+  "name": "Spleen (lymphoma, WHO-HAEM5)",
+  "shortName": "Spleen · lymphoma",
+  "label": "Spleen (lymphoma)",
+  "version": "1.0",
+  "system": "Lymphoid",
+  "organ": "Spleen",
+  "kind": "cancer resection",
+  "specimenNoun": "spleen",
+  "generator": "spleen_lymphoma",
+  "style": { "british": true },
+  "source": "WHO Classification of Haematolymphoid Tumours, 5th ed. (WHO-HAEM5, Alaggio et al. Leukemia 2022, PMC9214472): Splenic B-cell lymphomas/leukaemias (SMZL, HCL, SDRPL, SBLPN), hepatosplenic T-cell lymphoma and secondary splenic lymphomas",
+  "aliases": [
+    "splenic lymphoma",
+    "splenectomy lymphoma",
+    "SMZL",
+    "splenic marginal zone lymphoma",
+    "HCL",
+    "hairy cell leukaemia",
+    "hairy cell leukemia",
+    "SDRPL",
+    "splenic diffuse red pulp small B-cell lymphoma",
+    "SBLPN",
+    "splenic B-cell lymphoma with prominent nucleoli",
+    "HCL-v",
+    "HSTCL",
+    "hepatosplenic T-cell lymphoma",
+    "primary splenic DLBCL"
+  ],
+  "layout": {
+    "pack": true,
+    "macroGroups": ["Specimen and macroscopy"]
+  },
+  "match": {
+    "any": [
+      "\\bspleen\\b",
+      "\\bsplenectomy\\b",
+      "\\bsplenic\\b",
+      "\\bsmzl\\b",
+      "\\bsdrpl\\b",
+      "\\bsblpn\\b",
+      "\\bhstcl\\b"
+    ],
+    "gate": [
+      "lymphoma",
+      "leukaemia",
+      "leukemia",
+      "lymphoproliferative",
+      "\\bsmzl\\b",
+      "\\bhcl\\b",
+      "\\bsdrpl\\b",
+      "\\bsblpn\\b",
+      "\\bhstcl\\b",
+      "\\bdlbcl\\b",
+      "marginal\\s+zone",
+      "hairy\\s+cell",
+      "hepatosplenic",
+      "myeloid\\s+sarcoma",
+      "hodgkin"
+    ],
+    "exclude": [
+      "pancreatectomy",
+      "whipple",
+      "ramps",
+      "distal\\s+pancreas",
+      "frozen"
+    ],
+    "fill": [
+      {
+        "field": "dx",
+        "map": [
+          ["marginal\\s+zone|\\bsmzl\\b", "Splenic marginal zone lymphoma"],
+          ["prominent\\s+nucleoli|\\bsblpn\\b|hcl[-\\s]?v|variant\\s+hairy", "Splenic B-cell lymphoma/leukaemia with prominent nucleoli"],
+          ["diffuse\\s+red\\s+pulp|\\bsdrpl\\b", "Splenic diffuse red pulp small B-cell lymphoma"],
+          ["hairy\\s+cell|\\bhcl\\b", "Hairy cell leukaemia"],
+          ["hepatosplenic|\\bhstcl\\b", "Hepatosplenic T-cell lymphoma"],
+          ["dlbcl|diffuse\\s+large\\s+b", "Diffuse large B-cell lymphoma, NOS"],
+          ["follicular\\s+lymphoma", "Follicular lymphoma"],
+          ["mantle\\s+cell", "Mantle cell lymphoma"],
+          ["hodgkin", "Classic Hodgkin lymphoma"],
+          ["myeloid\\s+sarcoma", "Myeloid sarcoma / myeloproliferative neoplasm involvement"]
+        ]
+      }
+    ]
+  },
+  "options": [
+    { "id": "macro", "label": "Include macroscopic description", "default": true },
+    { "id": "blockKey", "label": "Include block key", "default": true },
+    { "id": "ihcList", "label": "Include synoptic immunohistochemistry list", "default": true }
+  ],
+  "fields": [
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Total splenectomy",
+      "options": ["Total splenectomy", "Partial splenectomy", "Splenic core / incisional biopsy"]
+    },
+    {
+      "id": "fixation",
+      "label": "Received",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Fresh",
+      "options": ["Fresh", "In formalin"]
+    },
+    {
+      "id": "freshFor",
+      "label": "Fresh tissue taken for",
+      "group": "Specimen and macroscopy",
+      "type": "multiselect",
+      "default": ["Flow cytometry"],
+      "options": ["Flow cytometry", "Cytogenetics / FISH", "Molecular studies", "Touch imprints"],
+      "showIf": { "field": "fixation", "eq": "Fresh" }
+    },
+    {
+      "id": "weight",
+      "label": "Weight (g)",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "placeholder": "e.g. 1150"
+    },
+    {
+      "id": "dimensions",
+      "label": "Dimensions (cm)",
+      "group": "Specimen and macroscopy",
+      "type": "text",
+      "placeholder": "e.g. 22.0 x 14.5 x 8.5"
+    },
+    {
+      "id": "cutSurface",
+      "label": "Cut surface pattern",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Prominent / expanded white pulp (miliary nodularity)",
+      "options": [
+        "Prominent / expanded white pulp (miliary nodularity)",
+        "Diffuse beefy-red expansion of red pulp without discrete nodules",
+        "Solitary or multiple fleshy tan tumour masses",
+        "Diffuse nodularity with confluent pale nodules",
+        "Congested with focal infarcts / haemorrhage"
+      ]
+    },
+    {
+      "id": "massSize",
+      "label": "Dominant mass size (cm)",
+      "group": "Specimen and macroscopy",
+      "type": "text",
+      "placeholder": "e.g. 6.5 x 5.2 x 4.8"
+    },
+    {
+      "id": "blocks",
+      "label": "Number of blocks",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "placeholder": "e.g. 10"
+    },
+    {
+      "id": "macroNotes",
+      "label": "Additional macroscopic notes",
+      "group": "Specimen and macroscopy",
+      "type": "textarea",
+      "placeholder": "Optional gross details (e.g. hilar lymphadenopathy, capsular tear)"
+    },
+    {
+      "id": "dx",
+      "label": "WHO-HAEM5 diagnosis",
+      "group": "Diagnosis and morphology",
+      "type": "select",
+      "default": "Splenic marginal zone lymphoma",
+      "options": [
+        "Splenic marginal zone lymphoma",
+        "Hairy cell leukaemia",
+        "Splenic diffuse red pulp small B-cell lymphoma",
+        "Splenic B-cell lymphoma/leukaemia with prominent nucleoli",
+        "Diffuse large B-cell lymphoma, NOS",
+        "Follicular lymphoma",
+        "Mantle cell lymphoma",
+        "Chronic lymphocytic leukaemia/small lymphocytic lymphoma",
+        "Lymphoplasmacytic lymphoma",
+        "B-cell lymphoma, not further classified",
+        "Hepatosplenic T-cell lymphoma",
+        "T-cell large granular lymphocytic leukaemia",
+        "Peripheral T-cell lymphoma, NOS",
+        "Classic Hodgkin lymphoma",
+        "Myeloid sarcoma / myeloproliferative neoplasm involvement",
+        "Other (specify)"
+      ],
+      "optionGroups": [
+        {
+          "label": "WHO-HAEM5 Splenic B-cell lymphomas/leukaemias",
+          "options": [
+            "Splenic marginal zone lymphoma",
+            "Hairy cell leukaemia",
+            "Splenic diffuse red pulp small B-cell lymphoma",
+            "Splenic B-cell lymphoma/leukaemia with prominent nucleoli"
+          ]
+        },
+        {
+          "label": "Other Mature B-cell Lymphomas",
+          "options": [
+            "Diffuse large B-cell lymphoma, NOS",
+            "Follicular lymphoma",
+            "Mantle cell lymphoma",
+            "Chronic lymphocytic leukaemia/small lymphocytic lymphoma",
+            "Lymphoplasmacytic lymphoma",
+            "B-cell lymphoma, not further classified"
+          ]
+        },
+        {
+          "label": "T-cell & NK-cell Lymphomas",
+          "options": [
+            "Hepatosplenic T-cell lymphoma",
+            "T-cell large granular lymphocytic leukaemia",
+            "Peripheral T-cell lymphoma, NOS"
+          ]
+        },
+        {
+          "label": "Hodgkin & Myeloid",
+          "options": [
+            "Classic Hodgkin lymphoma",
+            "Myeloid sarcoma / myeloproliferative neoplasm involvement"
+          ]
+        },
+        {
+          "label": "Other",
+          "options": ["Other (specify)"]
+        }
+      ],
+      "help": "WHO-HAEM5 recognises four primary splenic B-cell lymphomas/leukaemias (SMZL, HCL, SDRPL and SBLPN — the latter absorbing former HCL-variant and CD5- B-PLL).",
+      "reference": {
+        "title": "WHO-HAEM5 splenic lymphoma & leukaemia reference gallery",
+        "intro": "Open-licence photomicrographs and WHO-HAEM5 compartment/immunophenotype discriminators for primary and secondary splenic lymphoid neoplasms.",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "Splenic marginal zone lymphoma (SMZL)",
+            "points": [
+              "White pulp-predominant expansion with biphasic targetoid nodules (inner small dark lymphocytes + outer pale marginal zone cells) and secondary red pulp cord/sinus involvement",
+              "CD20+, PAX5+, BCL2+, IgM+/IgD+; typically CD5-, CD10-, BCL6-, Cyclin D1-, CD23-, Annexin A1-, CD25-, CD103-",
+              "Hilar lymph nodes frequently involved; watch for large-cell transformation to DLBCL"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/spleen_lymphoma/smzl_he.jpg",
+                "caption": "SMZL — splenic parenchyma showing nodular white pulp expansion with marginal zone pattern and red pulp infiltration (H&E).",
+                "credit": "Cureus 2026 (PMC12867676), Fig 4",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12867676/"
+              }
+            ]
+          },
+          {
+            "heading": "Hairy cell leukaemia (HCL)",
+            "points": [
+              "Diffuse red pulp expansion with white pulp atrophy and classic RBC-filled pseudosinuses ('blood lakes') lined by widely spaced lymphoid cells with abundant pale cytoplasm ('fried-egg' appearance)",
+              "CD20+, Annexin A1+, CD25+, CD103+, CD123+, DBA.44+, Cyclin D1 (weak/variable)+",
+              "BRAF p.V600E mutated in >95% of cases (distinguishes classic HCL from SBLPN and SDRPL)"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/spleen_lymphoma/hcl_spleen_braf.jpg",
+                "caption": "HCL in spleen — diffuse red pulp infiltration with strong BRAF V600E mutant protein expression by immunohistochemistry.",
+                "credit": "Kim et al., J Hematol 2025 (PMC12151096), Fig 4",
+                "license": "CC BY-NC 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12151096/"
+              },
+              {
+                "src": "assets/reference/spleen_lymphoma/hcl_smear.jpg",
+                "caption": "Hairy cell leukaemia — characteristic circulating lymphoid cells with fine circumferential cytoplasmic ('hairy') projections.",
+                "credit": "Prof Osaro Erhabor (Wikimedia Commons)",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Hairy_Cell_Leukaemia_(HCL).jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Splenic diffuse red pulp small B-cell lymphoma (SDRPL) & SBLPN",
+            "points": [
+              "SDRPL: diffuse monotonous infiltration of splenic red pulp cords and sinusoids with white pulp atrophy and blood lakes; small-to-medium cells with condensed chromatin and absent/inconspicuous nucleoli; CD20+, DBA.44+, IgG+; negative for Annexin A1, CD25, CD123, Cyclin D1 and BRAF V600E",
+              "SBLPN (WHO-HAEM5): absorbs former HCL-variant and CD5- B-PLL; red pulp infiltrate of medium-to-large cells with a prominent single central nucleolus; CD20+, CD11c+, CD103+, DBA.44+; negative for CD25, Annexin A1, CD123 and BRAF V600E; ~50% MAP2K1 mutated"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/spleen_lymphoma/sdrpl_cd20.jpg",
+                "caption": "SDRPL — intrasinusoidal B-cell infiltration highlighted by CD20 immunohistochemistry (negative for Cyclin D1 and BRAF V600E).",
+                "credit": "Genes (Basel) 2025 (PMC12027168), Fig 3a",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12027168/"
+              },
+              {
+                "src": "assets/reference/spleen_lymphoma/sdrpl_smear.jpg",
+                "caption": "SDRPL — peripheral blood smear showing small-to-medium lymphoid cells with oval nuclei, condensed chromatin and polar villous projections.",
+                "credit": "Genes (Basel) 2025 (PMC12027168), Fig 1",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12027168/"
+              }
+            ]
+          },
+          {
+            "heading": "Hepatosplenic T-cell lymphoma (HSTCL)",
+            "points": [
+              "Marked red pulp expansion with intrasinusoidal and cordal infiltration by monotonous medium-sized lymphoid cells; white pulp is atrophic",
+              "Typically CD3+, CD2+, CD7+, TIA-1+, TCR-gamma/delta+ (less often alpha/beta+), CD56+/-; characteristically CD4-/CD8- (double negative), CD5- and Granzyme B-/Perforin- (non-activated cytotoxic phenotype)",
+              "Isochromosome 7q [i(7q)] and trisomy 8 are recurrent cytogenetic abnormalities"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/spleen_lymphoma/hstcl_he.jpg",
+                "caption": "HSTCL — expanded splenic red pulp infiltrated by a monotonous population of medium-sized atypical lymphoid cells (H&E).",
+                "credit": "Ammad Ud Din et al., Cureus 2020 (PMC7402550), Fig 2",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7402550/"
+              },
+              {
+                "src": "assets/reference/spleen_lymphoma/hstcl_cd3_cd5.jpg",
+                "caption": "HSTCL — strong CD3 positivity (right) with characteristic loss of CD5 expression (left).",
+                "credit": "Ammad Ud Din et al., Cureus 2020 (PMC7402550), Fig 3",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7402550/"
+              },
+              {
+                "src": "assets/reference/spleen_lymphoma/hstcl_tia1.jpg",
+                "caption": "HSTCL — strong cytoplasmic granular positivity for TIA-1 in sinusoidal/red pulp neoplastic T cells.",
+                "credit": "Ammad Ud Din et al., Cureus 2020 (PMC7402550), Fig 4",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7402550/"
+              }
+            ]
+          },
+          {
+            "heading": "Primary / secondary splenic follicular lymphoma & DLBCL",
+            "points": [
+              "Splenic FL: closely packed white pulp neoplastic follicles lacking mantle zones and polarisation; CD20+, CD10+, BCL6+, BCL2+ (inappropriate germinal centre expression)",
+              "Splenic DLBCL: typically forms single or multiple large fleshy tan destructive masses with coagulative necrosis; CD20+, high Ki-67"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/spleen_lymphoma/fl_spleen_he.jpg",
+                "caption": "Primary splenic follicular lymphoma — crowded neoplastic white pulp follicles lacking mantle zones and polarisation (H&E, 100x).",
+                "credit": "Cureus 2025 (PMC12576758), Fig 2",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12576758/"
+              },
+              {
+                "src": "assets/reference/spleen_lymphoma/fl_spleen_ihc.jpg",
+                "caption": "Primary splenic follicular lymphoma — CD20+ neoplastic follicles (A) with diffuse BCL2 positivity (B) and low Ki-67 ~20% (C).",
+                "credit": "Cureus 2025 (PMC12576758), Fig 3",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12576758/"
+              },
+              {
+                "src": "assets/reference/spleen_lymphoma/dlbcl_gross.jpg",
+                "caption": "Splenic diffuse large B-cell lymphoma — cut surface showing large confluent fleshy tan tumour masses replacing parenchyma (gross).",
+                "credit": "Ed Uthman (Wikimedia Commons)",
+                "license": "CC BY 2.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Spleen,_Diffuse_Large_B_Cell_Lymphoma_(9187421536).jpg"
+              }
+            ]
+          }
+        ],
+        "note": "WHO-HAEM5 splenic lymphoma classification (Alaggio et al., Leukemia 2022, PMC9214472). Click any thumbnail to enlarge."
+      }
+    },
+    {
+      "id": "dxOther",
+      "label": "Specify diagnosis",
+      "group": "Diagnosis and morphology",
+      "type": "text",
+      "placeholder": "e.g. T-cell prolymphocytic leukaemia",
+      "showIf": { "field": "dx", "eq": "Other (specify)" }
+    },
+    {
+      "id": "certainty",
+      "label": "Diagnostic certainty",
+      "group": "Diagnosis and morphology",
+      "type": "select",
+      "default": "Definite",
+      "options": ["Definite", "Consistent with", "In keeping with", "Suspicious for"]
+    },
+    {
+      "id": "compartment",
+      "label": "Predominant splenic compartment",
+      "group": "Diagnosis and morphology",
+      "type": "select",
+      "default": "White pulp-predominant (biphasic marginal zone nodules) with red pulp involvement",
+      "options": [
+        "White pulp-predominant (biphasic marginal zone nodules) with red pulp involvement",
+        "Diffuse red pulp (cords and sinusoids) with white pulp atrophy",
+        "Diffuse red pulp with blood lakes / pseudosinuses and white pulp atrophy",
+        "Intrasinusoidal and cordal red pulp infiltration with white pulp atrophy",
+        "Crowded neoplastic white pulp follicles",
+        "Mass-forming / diffuse parenchymal effacement"
+      ]
+    },
+    {
+      "id": "cytology",
+      "label": "Cytological features",
+      "group": "Diagnosis and morphology",
+      "type": "multiselect",
+      "default": [],
+      "options": [
+        "Small lymphocytes with condensed chromatin",
+        "Marginal zone / monocytoid cells with pale cytoplasm",
+        "Widely spaced cells with abundant pale cytoplasm ('fried-egg')",
+        "Medium-to-large cells with prominent single central nucleolus",
+        "Medium-sized monotonous lymphoid cells",
+        "Large atypical lymphoid cells with vesicular nuclei and prominent nucleoli",
+        "Plasmacytic differentiation",
+        "Frequent mitoses / necrosis"
+      ]
+    },
+    {
+      "id": "largeCellTransform",
+      "label": "Large-cell transformation (DLBCL) present",
+      "group": "Diagnosis and morphology",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "hilarNodes",
+      "label": "Splenic hilar lymph nodes",
+      "group": "Diagnosis and morphology",
+      "type": "select",
+      "default": "Not sampled",
+      "options": ["Not sampled", "Negative for lymphoma", "Involved by lymphoma"]
+    },
+    {
+      "id": "morphNotes",
+      "label": "Additional microscopic notes",
+      "group": "Diagnosis and morphology",
+      "type": "textarea",
+      "placeholder": "Optional free-text observations"
+    },
+    {
+      "id": "panel",
+      "label": "Immunohistochemistry panel",
+      "group": "Immunohistochemistry & ISH",
+      "type": "multiselect",
+      "default": ["CD20", "CD5", "CD10", "Cyclin D1"],
+      "options": [
+        "CD20",
+        "PAX5",
+        "CD5",
+        "CD10",
+        "BCL6",
+        "BCL2",
+        "Cyclin D1",
+        "LEF1",
+        "CD23",
+        "CD25",
+        "CD103",
+        "CD123",
+        "Annexin A1",
+        "DBA.44",
+        "IgD",
+        "CD3",
+        "CD4",
+        "CD8",
+        "CD56",
+        "TIA-1",
+        "Granzyme B",
+        "TCR-gamma/delta",
+        "CD30",
+        "MPO"
+      ]
+    },
+    { "id": "r_CD20", "label": "CD20", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Positive", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "CD20" } },
+    { "id": "r_PAX5", "label": "PAX5", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Positive", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "PAX5" } },
+    { "id": "r_CD5", "label": "CD5", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "CD5" } },
+    { "id": "r_CD10", "label": "CD10", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "CD10" } },
+    { "id": "r_BCL6", "label": "BCL6", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "BCL6" } },
+    { "id": "r_BCL2", "label": "BCL2", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Positive", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "BCL2" } },
+    { "id": "r_CyclinD1", "label": "Cyclin D1", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "Cyclin D1" } },
+    { "id": "r_LEF1", "label": "LEF1", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "LEF1" } },
+    { "id": "r_CD23", "label": "CD23", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "CD23" } },
+    { "id": "r_CD25", "label": "CD25", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "CD25" } },
+    { "id": "r_CD103", "label": "CD103", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "CD103" } },
+    { "id": "r_CD123", "label": "CD123", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "CD123" } },
+    { "id": "r_AnnexinA1", "label": "Annexin A1", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "Annexin A1" } },
+    { "id": "r_DBA44", "label": "DBA.44", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Positive", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "DBA.44" } },
+    { "id": "r_IgD", "label": "IgD", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Positive", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "IgD" } },
+    { "id": "r_CD3", "label": "CD3", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "CD3" } },
+    { "id": "r_CD4", "label": "CD4", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "CD4" } },
+    { "id": "r_CD8", "label": "CD8", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "CD8" } },
+    { "id": "r_CD56", "label": "CD56", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "CD56" } },
+    { "id": "r_TIA1", "label": "TIA-1", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Positive", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "TIA-1" } },
+    { "id": "r_GranzymeB", "label": "Granzyme B", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "Granzyme B" } },
+    { "id": "r_TCRgd", "label": "TCR-gamma/delta", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Positive", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "TCR-gamma/delta" } },
+    { "id": "r_CD30", "label": "CD30", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "CD30" } },
+    { "id": "r_MPO", "label": "MPO", "group": "Immunohistochemistry & ISH", "type": "select", "default": "Negative", "options": ["Positive", "Negative", "Positive (subset)", "Weak"], "showIf": { "field": "panel", "contains": "MPO" } },
+    {
+      "id": "ki67",
+      "label": "Ki-67 proliferative index (%)",
+      "group": "Immunohistochemistry & ISH",
+      "type": "number",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "placeholder": "e.g. 15"
+    },
+    {
+      "id": "eber",
+      "label": "EBER in situ hybridisation",
+      "group": "Immunohistochemistry & ISH",
+      "type": "select",
+      "default": "Not performed",
+      "options": ["Not performed", "Negative", "Positive in neoplastic cells"]
+    },
+    {
+      "id": "brafV600E",
+      "label": "BRAF p.V600E (IHC or PCR/NGS)",
+      "group": "Molecular & cytogenetics",
+      "type": "select",
+      "default": "Not performed",
+      "options": ["Not performed", "Detected (mutated)", "Not detected (wild-type)", "Pending"]
+    },
+    {
+      "id": "map2k1",
+      "label": "MAP2K1 mutation",
+      "group": "Molecular & cytogenetics",
+      "type": "select",
+      "default": "Not performed",
+      "options": ["Not performed", "Detected (mutated)", "Not detected (wild-type)", "Pending"]
+    },
+    {
+      "id": "tp53",
+      "label": "TP53 / del(17p) status",
+      "group": "Molecular & cytogenetics",
+      "type": "select",
+      "default": "Not performed",
+      "options": ["Not performed", "Mutated / deleted", "Wild-type / intact", "Pending"]
+    },
+    {
+      "id": "otherMolecular",
+      "label": "Other molecular / cytogenetics / flow",
+      "group": "Molecular & cytogenetics",
+      "type": "textarea",
+      "placeholder": "e.g. del(7q) detected; i(7q) and trisomy 8; flow cytometry kappa-restricted CD5-/CD10- B-cell clone"
+    }
+  ],
+  "snippets": [
+    {
+      "id": "sblpnNote",
+      "label": "SBLPN WHO-HAEM5 terminology note",
+      "when": "sblpn",
+      "text": "Splenic B-cell lymphoma/leukaemia with prominent nucleoli (SBLPN) is a WHO-HAEM5 entity encompassing cases previously classified as hairy cell leukaemia variant (HCL-v) and CD5-negative B-cell prolymphocytic leukaemia. Correlation with peripheral blood morphology, bone marrow biopsy and molecular testing (BRAF wild-type; MAP2K1 / TP53) is recommended."
+    },
+    {
+      "id": "sdrplNote",
+      "label": "SDRPL correlation note",
+      "when": "sdrpl",
+      "text": "Splenic diffuse red pulp small B-cell lymphoma (SDRPL) is a rare indolent splenic B-cell neoplasm distinguished from hairy cell leukaemia by the absence of CD25, CD123, Annexin A1 and BRAF p.V600E. Correlation with peripheral blood and bone marrow findings is recommended."
+    },
+    {
+      "id": "hstclNote",
+      "label": "HSTCL cytogenetics / marrow note",
+      "when": "hstcl",
+      "text": "Hepatosplenic T-cell lymphoma (HSTCL) is an aggressive extranodal T-cell lymphoma. Cytogenetic/FISH testing for isochromosome 7q [i(7q)] and trisomy 8, together with bone marrow staging, is recommended."
+    },
+    {
+      "id": "studiesPending",
+      "label": "Pending molecular / ancillary studies note",
+      "when": "pending",
+      "text": "Molecular/cytogenetic studies are pending and will be reported in a supplementary report."
+    }
+  ],
+  "example": {
+    "caseTitle": "Spleen — SMZL",
+    "options": { "macro": true, "blockKey": true, "ihcList": true },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "procedure": "Total splenectomy",
+          "fixation": "Fresh",
+          "freshFor": ["Flow cytometry", "Cytogenetics / FISH"],
+          "weight": 1240,
+          "dimensions": "23.0 x 15.0 x 9.0",
+          "cutSurface": "Prominent / expanded white pulp (miliary nodularity)",
+          "massSize": "",
+          "blocks": 12,
+          "macroNotes": "Two enlarged splenic hilar lymph nodes up to 1.8 cm",
+          "dx": "Splenic marginal zone lymphoma",
+          "dxOther": "",
+          "certainty": "Definite",
+          "compartment": "White pulp-predominant (biphasic marginal zone nodules) with red pulp involvement",
+          "cytology": [
+            "Small lymphocytes with condensed chromatin",
+            "Marginal zone / monocytoid cells with pale cytoplasm"
+          ],
+          "largeCellTransform": false,
+          "hilarNodes": "Involved by lymphoma",
+          "morphNotes": "",
+          "panel": ["CD20", "CD5", "CD10", "BCL2", "Cyclin D1", "Annexin A1", "IgD"],
+          "r_CD20": "Positive",
+          "r_CD5": "Negative",
+          "r_CD10": "Negative",
+          "r_BCL2": "Positive",
+          "r_CyclinD1": "Negative",
+          "r_AnnexinA1": "Negative",
+          "r_IgD": "Positive",
+          "ki67": 15,
+          "eber": "Negative",
+          "brafV600E": "Not detected (wild-type)",
+          "map2k1": "Not performed",
+          "tp53": "Wild-type / intact",
+          "otherMolecular": "Flow cytometry shows a kappa-restricted CD19+/CD20+/CD5-/CD10- B-cell population"
+        }
+      }
+    ]
+  }
+}

@@ -11,7 +11,7 @@ import { loadDraft, setDraftOwner, saveCase as cacheCase, clearCase, copyText } 
 import { loadConfig, saveConfig, accountConfig, rememberForAccount } from './config.js';
 import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction, renewalDue, renewSignIn } from './gauth.js';
 import { gateEnabled, gateState, parseAllowList, formatAllowList, BUILT_IN_ALLOWED, emailDigest, canonicalEmail } from './gate.js';
-import { saveCase as driveSave, listCases, openCase as driveOpen, setCaseStatus } from './drive.js';
+import { saveCase as driveSave, listCases, openCase as driveOpen, setCaseStatus, deleteCase as driveDelete } from './drive.js';
 import { normaliseAccession, phiWarnings, STATUSES, statusOf } from './docformat.js';
 import { buildPayload, payloadKeys, payloadLabel, parseHarvest, nextCaptureTarget } from './lisbridge.js';
 import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js';
@@ -3873,21 +3873,53 @@ function statusMenu(r) {
   return menu;
 }
 
+async function deleteFromList(r, btn) {
+  if (!window.confirm(`Delete saved accession ${r.accession}?\n\nThis removes it from your saved list and moves its Google Doc to Drive Trash.`)) return;
+  btn.disabled = true;
+  try {
+    const { doc } = await driveDelete(state.config, r.accession, r.doc_id);
+    state.cases = state.cases.filter((c) => c !== r);
+    const cur = state.caseState?.meta?.accession;
+    if (cur && normaliseAccession(cur) === normaliseAccession(r.accession)) {
+      state.caseState.drive = null;
+      state.dirty = true;
+      cacheCase(state.caseState);
+      renderSaveStatus();
+    }
+    renderCaseList(nodes.openSearch.value);
+    const note = doc === 'trashed' ? ' (Google Doc moved to Drive Trash)' : doc === 'failed' ? '; its Google Doc could not be trashed' : '';
+    openNote(`Deleted ${r.accession}${note}`);
+  } catch (err) {
+    btn.disabled = false;
+    openNote(`${r.accession} not deleted: ${err.message}`, true);
+  }
+}
+
 function renderCaseList(filter = '') {
   const f = normaliseAccession(filter);
   const rows = state.cases.filter((r) => !f || r.accession.includes(f))
     .sort((a, b) => (b.updated || '').localeCompare(a.updated || ''));
   if (!rows.length) return nodes.openList.replaceChildren(el('div', { class: 'empty', text: state.cases.length ? 'No matching cases' : 'No saved cases yet' }));
-  // A click anywhere on the row opens the case, as when the row was one button, except on its status menu.
-  nodes.openList.replaceChildren(...rows.slice(0, 200).map((r) => el('div', {
-    class: 'case-row', role: 'listitem',
-    onclick: (e) => { if (!e.target.closest('.case-status')) openFromList(r); }
-  },
-  el('button', { type: 'button', class: 'case-open', title: `Open ${r.accession}` },
-    el('span', { class: 'acc', text: r.accession }),
-    el('span', { class: 'sub', text: `${String(r.template).split('+').map((id) => entryOf(id)?.label || id).join(' + ')} · ${r.parts} part${r.parts === '1' ? '' : 's'}` })),
-  statusMenu(r),
-  el('span', { class: 'sub', text: relTime(r.updated) }))));
+  // A click anywhere on the row opens the case, except on its status menu or delete button.
+  nodes.openList.replaceChildren(...rows.slice(0, 200).map((r) => {
+    const del = el('button', {
+      type: 'button', class: 'btn ghost small danger case-delete',
+      'aria-label': `Delete ${r.accession}`,
+      title: `Delete ${r.accession} (moves its Google Doc to Drive Trash)`,
+      text: 'Delete',
+      onclick: (e) => { e.stopPropagation(); deleteFromList(r, del); }
+    });
+    return el('div', {
+      class: 'case-row', role: 'listitem',
+      onclick: (e) => { if (!e.target.closest('.case-status, .case-delete')) openFromList(r); }
+    },
+    el('button', { type: 'button', class: 'case-open', title: `Open ${r.accession}` },
+      el('span', { class: 'acc', text: r.accession }),
+      el('span', { class: 'sub', text: `${String(r.template).split('+').map((id) => entryOf(id)?.label || id).join(' + ')} · ${r.parts} part${r.parts === '1' ? '' : 's'}` })),
+    statusMenu(r),
+    el('span', { class: 'sub', text: relTime(r.updated) }),
+    del);
+  }));
 }
 
 async function doOpen() {

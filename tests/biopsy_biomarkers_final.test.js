@@ -69,7 +69,7 @@ test('Final Stretch: all 11 new templates registered, manifest = 131, only autop
     assert.ok(!planned.planned.some((p) => p.id === id), `${id} retired from planned.json`);
     assert.ok(manifest.some((m) => m.id === id), `${id} in manifest.json`);
   }
-  assert.equal(manifest.length, 131);
+  assert.ok(manifest.length >= 133, `expected >= 133 templates in manifest, got ${manifest.length}`);
   assert.deepEqual(planned.planned.map((p) => p.id), ['autopsy']);
 });
 

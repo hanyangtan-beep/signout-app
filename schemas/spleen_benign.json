@@ -1,0 +1,567 @@
+{
+  "id": "spleen_benign",
+  "name": "Spleen (benign & vascular)",
+  "shortName": "Spleen · benign & vascular",
+  "label": "Spleen (benign & vascular)",
+  "version": "1.0",
+  "system": "Lymphoid",
+  "organ": "Spleen",
+  "kind": "benign resection",
+  "specimenNoun": "spleen",
+  "generator": "spleen_benign",
+  "style": { "british": true },
+  "source": "WHO Classification of Haematolymphoid Tumours, 5th ed. (WHO-HAEM5, Alaggio et al. Leukemia 2022, PMC9214472): Stroma-derived neoplasms of lymphoid tissues, vascular lesions, cysts and non-neoplastic splenic pathology",
+  "aliases": [
+    "splenectomy",
+    "spleen",
+    "splenunculus",
+    "accessory spleen",
+    "splenic cyst",
+    "splenic rupture",
+    "splenic infarct",
+    "SANT",
+    "sclerosing angiomatoid nodular transformation",
+    "littoral cell angioma",
+    "splenic hamartoma",
+    "splenic haemangioma",
+    "splenic hemangioma",
+    "splenic angiosarcoma",
+    "EBV inflammatory FDC sarcoma"
+  ],
+  "layout": {
+    "pack": true,
+    "macroGroups": ["Specimen and macroscopy"]
+  },
+  "match": {
+    "any": [
+      "\\bspleen\\b",
+      "\\bsplenectomy\\b",
+      "\\bsplenunculus\\b",
+      "\\baccessory\\s+spleen\\b",
+      "\\bsplenic\\b",
+      "\\bsplenomegaly\\b",
+      "\\blittoral\\s+cell\\s+angioma\\b",
+      "\\bsclerosing\\s+angiomatoid\\b"
+    ],
+    "exclude": [
+      "pancreatectomy",
+      "whipple",
+      "ramps",
+      "distal\\s+pancreas",
+      "lymphoma",
+      "leukaemia",
+      "leukemia",
+      "lymphoproliferative",
+      "\\bsmzl\\b",
+      "\\bhcl\\b",
+      "\\bsdrpl\\b",
+      "\\bsblpn\\b",
+      "\\bhstcl\\b",
+      "\\bdlbcl\\b",
+      "myeloid\\s+sarcoma",
+      "frozen"
+    ],
+    "fill": [
+      {
+        "field": "procedure",
+        "map": [
+          ["partial\\s+splenectomy", "Partial splenectomy"],
+          ["splenunculus|accessory\\s+spleen", "Excision of accessory spleen (splenunculus)"],
+          ["cystectomy|decapsulation|unroofing", "Splenic cyst excision / decapsulation"],
+          ["splenectomy|spleen", "Total splenectomy"]
+        ]
+      },
+      {
+        "field": "dx",
+        "map": [
+          ["rupture|lacerat|trauma", "Traumatic rupture / laceration"],
+          ["splenunculus|accessory\\s+spleen", "Accessory spleen (splenunculus)"],
+          ["infarct", "Splenic infarction"],
+          ["sant|sclerosing\\s+angiomatoid", "Sclerosing angiomatoid nodular transformation (SANT)"],
+          ["littoral\\s+cell", "Littoral cell angioma"],
+          ["hamartoma", "Splenic hamartoma"],
+          ["angiosarcoma", "Splenic angiosarcoma"],
+          ["lymphangioma", "Lymphangioma"],
+          ["haemangioma|hemangioma", "Cavernous haemangioma"],
+          ["hydatid|echinococc", "Hydatid (echinococcal) cyst"],
+          ["pseudocyst", "Pseudocyst (post-traumatic / non-epithelial)"],
+          ["cyst", "Epithelial (epidermoid / mesothelial) cyst"]
+        ]
+      }
+    ]
+  },
+  "options": [
+    { "id": "macro", "label": "Include macroscopic description", "default": true },
+    { "id": "blockKey", "label": "Include block key", "default": true }
+  ],
+  "fields": [
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Total splenectomy",
+      "options": [
+        "Total splenectomy",
+        "Partial splenectomy",
+        "Excision of accessory spleen (splenunculus)",
+        "Splenic cyst excision / decapsulation",
+        "Splenic biopsy"
+      ]
+    },
+    {
+      "id": "weight",
+      "label": "Weight (g)",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "placeholder": "e.g. 240"
+    },
+    {
+      "id": "dimensions",
+      "label": "Dimensions (cm)",
+      "group": "Specimen and macroscopy",
+      "type": "text",
+      "placeholder": "e.g. 12.5 x 8.0 x 4.5"
+    },
+    {
+      "id": "capsule",
+      "label": "Capsule",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Intact and smooth",
+      "options": [
+        "Intact and smooth",
+        "Lacerated / ruptured with adherent blood clot",
+        "Thickened with fibrous plaques (hyaloserositis)",
+        "Disrupted / fragmented",
+        "Not assessable"
+      ]
+    },
+    {
+      "id": "cutSurface",
+      "label": "Cut surface",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Homogeneous, beefy red",
+      "options": [
+        "Homogeneous, beefy red",
+        "Solitary well-circumscribed stellate / multinodular mass",
+        "Multiple spongy haemorrhagic nodules",
+        "Unilocular or multilocular cyst with trabeculated wall",
+        "Wedge-shaped pale / haemorrhagic infarct(s)",
+        "Congested and dark red",
+        "Haemorrhagic and necrotic mass(es)"
+      ]
+    },
+    {
+      "id": "lesionSize",
+      "label": "Lesion / cyst size (cm)",
+      "group": "Specimen and macroscopy",
+      "type": "text",
+      "placeholder": "e.g. 4.2 x 3.8 x 3.5"
+    },
+    {
+      "id": "lesionCount",
+      "label": "Lesion multiplicity",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "Not applicable",
+      "options": ["Not applicable", "Solitary", "Multiple"]
+    },
+    {
+      "id": "hilarNodes",
+      "label": "Splenic hilar lymph nodes",
+      "group": "Specimen and macroscopy",
+      "type": "select",
+      "default": "None identified",
+      "options": ["None identified", "Present, grossly unremarkable", "Present, enlarged"]
+    },
+    {
+      "id": "blocks",
+      "label": "Number of blocks",
+      "group": "Specimen and macroscopy",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "placeholder": "e.g. 6"
+    },
+    {
+      "id": "macroNotes",
+      "label": "Additional macroscopic notes",
+      "group": "Specimen and macroscopy",
+      "type": "textarea",
+      "placeholder": "Optional gross details (e.g. subcapsular haematoma, accessory spleen at hilum)"
+    },
+    {
+      "id": "dx",
+      "label": "Primary diagnosis",
+      "group": "Diagnosis and morphology",
+      "type": "select",
+      "default": "Traumatic rupture / laceration",
+      "options": [
+        "Traumatic rupture / laceration",
+        "Congestive splenomegaly",
+        "Splenic infarction",
+        "Accessory spleen (splenunculus)",
+        "Unremarkable spleen (incidental / staging)",
+        "Granulomatous splenitis",
+        "Extramedullary haematopoiesis",
+        "Hyaloserositis (sugar-coated spleen)",
+        "Epithelial (epidermoid / mesothelial) cyst",
+        "Pseudocyst (post-traumatic / non-epithelial)",
+        "Hydatid (echinococcal) cyst",
+        "Sclerosing angiomatoid nodular transformation (SANT)",
+        "Littoral cell angioma",
+        "Splenic hamartoma",
+        "Cavernous haemangioma",
+        "Lymphangioma",
+        "Splenic angiosarcoma",
+        "EBV-positive inflammatory follicular dendritic cell sarcoma",
+        "Follicular dendritic cell sarcoma",
+        "Other (specify)"
+      ],
+      "optionGroups": [
+        {
+          "label": "Non-neoplastic & traumatic",
+          "options": [
+            "Traumatic rupture / laceration",
+            "Congestive splenomegaly",
+            "Splenic infarction",
+            "Accessory spleen (splenunculus)",
+            "Unremarkable spleen (incidental / staging)",
+            "Granulomatous splenitis",
+            "Extramedullary haematopoiesis",
+            "Hyaloserositis (sugar-coated spleen)"
+          ]
+        },
+        {
+          "label": "Splenic cysts",
+          "options": [
+            "Epithelial (epidermoid / mesothelial) cyst",
+            "Pseudocyst (post-traumatic / non-epithelial)",
+            "Hydatid (echinococcal) cyst"
+          ]
+        },
+        {
+          "label": "WHO-HAEM5 stroma-derived & vascular",
+          "options": [
+            "Sclerosing angiomatoid nodular transformation (SANT)",
+            "Littoral cell angioma",
+            "Splenic hamartoma",
+            "Cavernous haemangioma",
+            "Lymphangioma",
+            "Splenic angiosarcoma",
+            "EBV-positive inflammatory follicular dendritic cell sarcoma",
+            "Follicular dendritic cell sarcoma"
+          ]
+        },
+        {
+          "label": "Other",
+          "options": ["Other (specify)"]
+        }
+      ],
+      "help": "WHO-HAEM5 groups SANT, littoral cell angioma, splenic hamartoma, FDC sarcoma and EBV-positive inflammatory FDC sarcoma under stroma-derived neoplasms of lymphoid tissues.",
+      "reference": {
+        "title": "Splenic vascular, stromal, cystic & reactive reference gallery",
+        "intro": "Open-licence photomicrographs and WHO-HAEM5 diagnostic discriminators for benign, vascular, cystic and stroma-derived splenic lesions.",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "Sclerosing angiomatoid nodular transformation (SANT)",
+            "points": [
+              "Multiple coalescing angiomatoid nodules separated by concentric fibrosclerotic / myofibroblastic stroma",
+              "Triphasic immunophenotype: CD34+/CD31+/CD8- capillaries, CD34-/CD31+/CD8+ sinusoids, CD34-/CD31+/CD8- small veins",
+              "Benign; distinguish from hamartoma, littoral cell angioma and inflammatory pseudotumour"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/spleen_benign/sant_he.jpg",
+                "caption": "SANT — gross stellate fibrotic mass and coalescing angiomatoid nodules in dense collagenous stroma (H&E).",
+                "credit": "Pelizzo et al., Case Rep Surg 2018 (PMC5964553), Fig 3",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5964553/"
+              },
+              {
+                "src": "assets/reference/spleen_benign/sant_ihc.jpg",
+                "caption": "SANT — immunohistochemical comparison showing the distinct vascular phenotype of lesional nodules vs adjacent splenic red pulp.",
+                "credit": "Pelizzo et al., Case Rep Surg 2018 (PMC5964553), Fig 4",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5964553/"
+              }
+            ]
+          },
+          {
+            "heading": "Littoral cell angioma (LCA)",
+            "points": [
+              "Anastomosing blood-filled vascular channels with papillary fronds lined by tall plump endothelial cells",
+              "Sloughed histiocyte-like cells in lumina with haemophagocytosis / haemosiderin",
+              "Dual endothelial–histiocytic phenotype: CD31+, ERG+, CD68+, CD163+, CD21+; characteristically CD8- and CD34-"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/spleen_benign/lca_intermed.jpg",
+                "caption": "Littoral cell angioma — anastomosing vascular channels with papillary projections (H&E, intermediate mag).",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Littoral_cell_angioma_of_the_spleen_-_intermed_mag.jpg"
+              },
+              {
+                "src": "assets/reference/spleen_benign/lca_high.jpg",
+                "caption": "Littoral cell angioma — plump lining cells with bland nuclei and intraluminal exfoliated cells (H&E, high mag).",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Littoral_cell_angioma_of_the_spleen_-_high_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Splenic hamartoma",
+            "points": [
+              "Unencapsulated mass composed of disorganised red pulp elements (slit-like sinusoids and cords) lacking organised white pulp follicles",
+              "Sinusoidal lining retains normal splenic littoral phenotype: CD8+, CD31+, Factor VIII+, CD34-"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/spleen_benign/hamartoma.jpg",
+                "caption": "Splenic hamartoma — disorganised red pulp sinusoids without normal white pulp architecture (H&E, intermediate mag).",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Splenic_hamartoma_-_intermed_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Primary splenic angiosarcoma",
+            "points": [
+              "Destructive, irregular anastomosing vascular channels and solid spindle/epithelioid sheets with marked nuclear atypia, mitoses and necrosis",
+              "Expresses at least two vascular markers (CD31+, ERG+, CD34+/-, Factor VIII+); variable CD68/CD8"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/spleen_benign/angiosarcoma.jpg",
+                "caption": "Primary splenic angiosarcoma — imaging and histopathology showing atypical vasoformative/spindle proliferation and endothelial IHC.",
+                "credit": "Acta Oncologica 2024 (PMC11332537), Fig 1",
+                "license": "CC BY 4.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11332537/"
+              }
+            ]
+          },
+          {
+            "heading": "Follicular dendritic cell sarcoma & EBV+ inflammatory FDC sarcoma",
+            "points": [
+              "Spindle-to-ovoid cells in fascicles, storiform arrays or whorls with indistinct borders and admixed small lymphocytes/plasma cells",
+              "Positive for FDC markers CD21, CD23 and CD35 (often D2-40/clusterin+)",
+              "EBV-positive inflammatory FDC sarcoma (WHO-HAEM5): strong EBER ISH positivity in neoplastic spindle cells with prominent lymphoplasmacytic infiltrate"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/spleen_benign/fdcs_he.jpg",
+                "caption": "Follicular dendritic cell sarcoma — syncytial spindle/ovoid tumour cells with vesicular nuclei and admixed lymphocytes (H&E, high mag).",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Follicular_dendritic_cell_sarcoma_--_high_mag.jpg"
+              },
+              {
+                "src": "assets/reference/spleen_benign/fdcs_cd23.jpg",
+                "caption": "Follicular dendritic cell sarcoma — diffuse strong CD23 immunoreactivity highlighting dendritic meshwork.",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 4.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Follicular_dendritic_cell_sarcoma_-_CD23_--_intermed_mag.jpg"
+              }
+            ]
+          },
+          {
+            "heading": "Splenic cysts & reactive changes",
+            "points": [
+              "Epithelial (primary) cyst: fibrous trabeculated wall lined by stratified squamous (epidermoid) and/or cuboidal mesothelial epithelium (CK+, calretinin/WT1 in mesothelial areas)",
+              "Gamna–Gandy bodies: fibro-siderotic nodules encrusted with iron and calcium in congestive splenomegaly / portal hypertension",
+              "Hyaloserositis (sugar-coated spleen): dense hyalinised paucicellular collagenous capsular plaques"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/spleen_benign/epithelial_cyst.jpg",
+                "caption": "Primary splenic epithelial cyst — cuboidal epithelium transitioning to stratified squamous metaplasia over a fibrous wall (H&E).",
+                "credit": "Daga et al., J Indian Assoc Pediatr Surg 2011 (PMC3047768), Fig 2",
+                "license": "CC BY-NC-SA 3.0",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3047768/"
+              },
+              {
+                "src": "assets/reference/spleen_benign/gamna_gandy.jpg",
+                "caption": "Gamna–Gandy bodies — encrusted iron- and calcium-laden fibrous nodules with haemosiderin pigment (H&E).",
+                "credit": "Bhatt S, Simon R, Dogra VS (Wikimedia Commons)",
+                "license": "CC BY 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Histology_slide_of_the_spleen_showing_Gamna-Gandy_bodies_and_haemosiderin_pigment.jpg"
+              },
+              {
+                "src": "assets/reference/spleen_benign/hyaloserositis.jpg",
+                "caption": "Splenic hyaloserositis — dense hyalinised fibrous capsular thickening ('sugar-coated' spleen, H&E).",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Spleen_hyaloserositis_-_intermed_mag.jpg"
+              }
+            ]
+          }
+        ],
+        "note": "Reference criteria follow WHO-HAEM5 (Alaggio et al., Leukemia 2022, PMC9214472). Click any thumbnail to enlarge."
+      }
+    },
+    {
+      "id": "dxOther",
+      "label": "Specify diagnosis",
+      "group": "Diagnosis and morphology",
+      "type": "text",
+      "placeholder": "e.g. Splenic abscess / peliosis",
+      "showIf": { "field": "dx", "eq": "Other (specify)" }
+    },
+    {
+      "id": "backgroundFeatures",
+      "label": "Parenchymal & reactive features",
+      "group": "Diagnosis and morphology",
+      "type": "multiselect",
+      "default": [],
+      "options": [
+        "Red pulp congestion",
+        "Subcapsular / parenchymal haemorrhage",
+        "Coagulative necrosis / infarction",
+        "Gamna-Gandy bodies",
+        "Extramedullary haematopoiesis",
+        "Haemosiderosis",
+        "Hyaloserositis",
+        "Unremarkable white and red pulp"
+      ]
+    },
+    {
+      "id": "cystLining",
+      "label": "Cyst lining",
+      "group": "Diagnosis and morphology",
+      "type": "select",
+      "default": "Stratified squamous (epidermoid)",
+      "options": [
+        "Stratified squamous (epidermoid)",
+        "Cuboidal / flattened mesothelial",
+        "Mixed squamous and mesothelial",
+        "Fibrous wall without epithelial lining (pseudocyst)",
+        "Acellular laminated membrane with germinal layer (hydatid)"
+      ],
+      "showIf": {
+        "field": "dx",
+        "in": [
+          "Epithelial (epidermoid / mesothelial) cyst",
+          "Pseudocyst (post-traumatic / non-epithelial)",
+          "Hydatid (echinococcal) cyst"
+        ]
+      }
+    },
+    {
+      "id": "ihcDone",
+      "label": "Immunohistochemistry / ISH performed",
+      "group": "Ancillary studies",
+      "type": "multiselect",
+      "default": [],
+      "options": [
+        "CD31",
+        "CD34",
+        "CD8",
+        "ERG",
+        "CD68",
+        "CD163",
+        "CD21",
+        "CD23",
+        "CD35",
+        "D2-40",
+        "SMA",
+        "Cytokeratin (AE1/AE3)",
+        "Calretinin",
+        "Ki-67"
+      ]
+    },
+    {
+      "id": "ihcSummary",
+      "label": "Immunohistochemistry summary",
+      "group": "Ancillary studies",
+      "type": "textarea",
+      "placeholder": "e.g. Triphasic vascular pattern: CD34+/CD31+/CD8- capillaries, CD34-/CD31+/CD8+ sinusoids, CD34-/CD31+/CD8- veins"
+    },
+    {
+      "id": "eber",
+      "label": "EBER in situ hybridisation",
+      "group": "Ancillary studies",
+      "type": "select",
+      "default": "Not performed",
+      "options": ["Not performed", "Negative", "Positive in neoplastic spindle cells"]
+    },
+    {
+      "id": "hilarNodeStatus",
+      "label": "Hilar lymph node histology",
+      "group": "Ancillary studies",
+      "type": "select",
+      "default": "Not sampled",
+      "options": ["Not sampled", "Reactive / unremarkable", "Involved by tumour"]
+    },
+    {
+      "id": "morphNotes",
+      "label": "Additional microscopic notes",
+      "group": "Ancillary studies",
+      "type": "textarea",
+      "placeholder": "Optional free-text observations"
+    }
+  ],
+  "snippets": [
+    {
+      "id": "santTriphasic",
+      "label": "SANT triphasic immunophenotype note",
+      "when": "sant",
+      "text": "Sclerosing angiomatoid nodular transformation (SANT) is a benign vascular lesion of the spleen characterised by coalescing angiomatoid nodules containing three distinct vessel types (CD34+/CD31+/CD8- capillaries, CD34-/CD31+/CD8+ sinusoids and CD34-/CD31+/CD8- small veins); splenectomy is curative."
+    },
+    {
+      "id": "lcaNote",
+      "label": "Littoral cell angioma note",
+      "when": "lca",
+      "text": "Littoral cell angioma is a benign splenic vascular neoplasm with a dual endothelial and histiocytic immunophenotype (CD31+, CD68+, CD163+, CD21+, CD8-, CD34-). Clinical follow-up is occasionally recommended because of reported associations with visceral malignancies and immune-mediated disorders."
+    },
+    {
+      "id": "ebvFdcsNote",
+      "label": "EBV+ inflammatory FDC sarcoma note",
+      "when": "ebvFdcs",
+      "text": "EBV-positive inflammatory follicular dendritic cell sarcoma (WHO-HAEM5) is an indolent stroma-derived neoplasm of the spleen and liver; complete excision is usually curative, though local recurrence may occur."
+    },
+    {
+      "id": "angiosarcomaNote",
+      "label": "Primary splenic angiosarcoma note",
+      "when": "angiosarcoma",
+      "text": "Primary splenic angiosarcoma is an aggressive malignant vascular neoplasm with a high risk of distant metastasis and spontaneous rupture; multidisciplinary oncology review is recommended."
+    }
+  ],
+  "example": {
+    "caseTitle": "Spleen — SANT",
+    "options": { "macro": true, "blockKey": true },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "procedure": "Total splenectomy",
+          "weight": 265,
+          "dimensions": "13.0 x 8.5 x 5.0",
+          "capsule": "Intact and smooth",
+          "cutSurface": "Solitary well-circumscribed stellate / multinodular mass",
+          "lesionSize": "4.5 x 4.0 x 3.8",
+          "lesionCount": "Solitary",
+          "hilarNodes": "Present, grossly unremarkable",
+          "blocks": 8,
+          "macroNotes": "Central whitish stellate fibrous scar radiating between dark red-brown nodules",
+          "dx": "Sclerosing angiomatoid nodular transformation (SANT)",
+          "dxOther": "",
+          "backgroundFeatures": ["Unremarkable white and red pulp"],
+          "cystLining": "Stratified squamous (epidermoid)",
+          "ihcDone": ["CD31", "CD34", "CD8", "SMA"],
+          "ihcSummary": "Angiomatoid nodules highlight three vascular subsets: CD34+/CD31+/CD8- capillaries, CD34-/CD31+/CD8+ sinusoids and CD34-/CD31+/CD8- small veins; SMA highlights concentric myofibroblasts",
+          "eber": "Negative",
+          "hilarNodeStatus": "Reactive / unremarkable",
+          "morphNotes": ""
+        }
+      }
+    ]
+  }
+}
