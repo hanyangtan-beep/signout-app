@@ -28,7 +28,8 @@ import {
 } from './proofread.js';
 import { writeBack, carryPatches, carryText, blockText, showValue, patchFor } from './writeback.js';
 import { loadSettings as loadProofSettings, saveSettings as saveProofSettings, status as hanSlideStatus, proofread as hanSlideProofread, describeStatus, normaliseCode } from './hanslide.js';
-import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, vertexExtract, vertexAudit, describeVertexStatus, VERTEX_PROOFREAD_SYSTEM_PROMPT } from './vertexai.js';
+import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, vertexExtract, vertexAudit, vertexDraft, describeVertexStatus, VERTEX_PROOFREAD_SYSTEM_PROMPT } from './vertexai.js';
+import { DRAFT_RESPONSE_SCHEMA, buildDraftPrompt, parseDraftReply, vetDraftReply, applyDraftToPart } from './aidraft.js';
 import { isAuditEligible, AUDIT_RESPONSE_SCHEMA, buildAuditPrompt, parseAuditReply, vetAuditFindings, applyAuditFieldPatch } from './aiaudit.js';
 import { EXTRACT_RESPONSE_SCHEMA, buildExtractPrompt, parseExtractReply, vetExtractedFields, applyExtractedFields, CASE_EXTRACT_RESPONSE_SCHEMA, buildCaseExtractPrompt, parseCaseExtractReply, vetCaseExtractedFields, applyCaseExtractedFields, INTAKE_RESPONSE_SCHEMA, buildIntakePrompt, parseIntakeReply, vetIntakeParts } from './aiextract.js';
 
@@ -1585,6 +1586,107 @@ function openPathwayChart(i) {
   nodes.dlgPathway.showModal();
 }
 
+// ---------- Shorthand-to-report AI drafting for Generic (free text) parts (src/aidraft.js) ----------
+const aiDraft = { text: {}, busy: false, note: '', undo: null };
+
+function genericDraftCard(part, i) {
+  const key = `${part.label}:${i}`;
+  const ta = el('textarea', {
+    class: 'input',
+    rows: '2',
+    placeholder: 'Jot shorthand findings (e.g. "ulcerated mod diff SCC, 18 mm, DOI 6 mm, PNI+, LVI-, deep margin 4 mm")',
+    oninput: (e) => { aiDraft.text[key] = e.target.value; }
+  });
+  ta.value = aiDraft.text[key] || '';
+  const canUndo = aiDraft.undo?.caseState === state.caseState && aiDraft.undo?.partIndex === i;
+  return el('div', { class: 'field', style: 'margin-bottom:12px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;' },
+    el('label', { text: 'Draft from shorthand (AI · Gemini 3.8 Flash)' }),
+    ta,
+    el('div', { class: 'lis-row', style: 'margin-top:6px;' },
+      el('button', {
+        type: 'button',
+        class: 'btn small',
+        text: aiDraft.busy ? 'Drafting\u2026' : 'Draft with AI',
+        disabled: aiDraft.busy,
+        title: 'Expand shorthand notes into British-English, LIS-ready Microscopy and Diagnosis fields',
+        onclick: () => runGenericDraft(part, i, key)
+      }),
+      canUndo ? el('button', {
+        type: 'button',
+        class: 'btn ghost small',
+        text: 'Undo AI draft',
+        onclick: () => undoGenericDraft(i)
+      }) : null,
+      aiDraft.note ? el('span', { class: 'muted lis-status', text: aiDraft.note }) : null));
+}
+
+async function runGenericDraft(part, i, key) {
+  const cs = state.caseState;
+  const req = buildDraftPrompt({
+    shorthand: aiDraft.text[key] || '',
+    part,
+    specimen: cs.meta?.specimen || '',
+    clinical: cs.meta?.clinical || '',
+    macro: cs.meta?.macro || ''
+  });
+  if (req.error) { aiDraft.note = req.error; renderPanel(); return toast(req.error); }
+  const token = await getToken(state.config, { interactive: false }).catch(() => '');
+  if (!token) {
+    aiDraft.note = 'Sign in to Google first to draft with AI.';
+    renderPanel();
+    return toast(aiDraft.note);
+  }
+  aiDraft.busy = true;
+  aiDraft.note = 'Drafting Microscopy and Diagnosis with Gemini\u2026';
+  renderPanel();
+  try {
+    const ans = await vertexDraft({
+      system: req.system,
+      prompt: req.prompt,
+      responseSchema: DRAFT_RESPONSE_SCHEMA,
+      proxyUrl: loadVertexSettings().proxyUrl,
+      token
+    });
+    if (state.caseState !== cs || state.caseState.parts[i] !== part) return;
+    const parsed = parseDraftReply(ans.text);
+    if (!parsed.readable) throw new Error('Gemini returned an unreadable draft; try again.');
+    const vetted = vetDraftReply(parsed, part);
+    if (!Object.keys(vetted.patch).length) {
+      aiDraft.note = `Gemini (${ans.seconds || 0}s) returned no draft text.`;
+      return toast(aiDraft.note);
+    }
+    const prevComment = cs.comment || '';
+    const snap = applyDraftToPart(part, vetted);
+    if (vetted.comment && !prevComment.trim()) cs.comment = vetted.comment;
+    aiDraft.undo = { caseState: cs, partIndex: i, prevComment, ...snap };
+    aiDraft.note = `Drafted Part ${part.label} (${ans.model || 'gemini-3.8-flash'}, ${ans.seconds || 0}s) — edit freely below.`;
+    markDirty();
+    render();
+    toast(`Drafted Part ${part.label} from shorthand`);
+  } catch (err) {
+    aiDraft.note = err.message || 'AI drafting failed.';
+    toast(aiDraft.note);
+  } finally {
+    aiDraft.busy = false;
+    if (state.caseState === cs) renderPanel();
+  }
+}
+
+function undoGenericDraft(i) {
+  const u = aiDraft.undo;
+  const cs = state.caseState;
+  if (!u || u.caseState !== cs || u.partIndex !== i) return;
+  const part = cs.parts[i];
+  if (!part || part.label !== u.partLabel) return;
+  part.values = Object.fromEntries(u.previous.map(([k, v]) => [k, Array.isArray(v) ? [...v] : v]));
+  cs.comment = u.prevComment;
+  aiDraft.undo = null;
+  aiDraft.note = `Reverted AI draft on Part ${part.label}.`;
+  markDirty();
+  render();
+  toast(`Reverted AI draft on Part ${part.label}`);
+}
+
 function renderPanel() {
   const i = state.activePart;
   const part = state.caseState.parts[i];
@@ -1599,6 +1701,7 @@ function renderPanel() {
   }))));
   const wiz = wizardSupported(s) ? wizardCard(s, part, i) : null;
   const pw = pathwaySupported(s) ? pathwayCard(part, i) : null;
+  const draft = s.id === GENERIC_ID ? genericDraftCard(part, i) : null;
   const head = el('div', { class: 'part-head' },
     el('h3', {}, iconForPart(part), el('span', { text: part.linked ? `Part ${part.label} (synoptic, linked to ${hostNoun(state.caseState.parts[i - 1])})` : `Part ${part.label}` })),
     picker,
@@ -1645,11 +1748,11 @@ function renderPanel() {
     nodes.macroPanel.replaceChildren(
       el('div', { class: 'part-head' }, el('h3', {}, iconForPart(part), el('span', { text: `Part ${part.label} \u00b7 specimen and macroscopy` }))),
       ...groupFields(split.macro, part, i, pack));
-    nodes.panel.replaceChildren(head, ...[wiz, pw, pack ? sectionRail(split.histo, part) : null].filter(Boolean), ...groupFields(split.histo, part, i, pack));
+    nodes.panel.replaceChildren(head, ...[draft, wiz, pw, pack ? sectionRail(split.histo, part) : null].filter(Boolean), ...groupFields(split.histo, part, i, pack));
   } else {
     nodes.macroPanel.hidden = true;
     nodes.macroPanel.replaceChildren();
-    nodes.panel.replaceChildren(head, ...[wiz, pw, pack ? sectionRail(s.fields, part) : null].filter(Boolean), ...groupFields(s.fields, part, i, pack));
+    nodes.panel.replaceChildren(head, ...[draft, wiz, pw, pack ? sectionRail(s.fields, part) : null].filter(Boolean), ...groupFields(s.fields, part, i, pack));
   }
 }
 

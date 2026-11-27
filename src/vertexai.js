@@ -260,6 +260,33 @@ export async function vertexAudit({
   return data;
 }
 
+/** Run shorthand-to-report drafting via Vertex AI (gemini-3.8-flash, LOW thinking). */
+export async function vertexDraft({
+  system,
+  prompt,
+  responseSchema,
+  maxOutputTokens = 2048,
+  thinkingLevel = 'LOW',
+  ...options
+} = {}) {
+  const data = await call('/v1/ai', {
+    ...options,
+    method: 'POST',
+    body: {
+      task: 'proofread',
+      kind: 'biopsy',
+      system,
+      prompt,
+      responseSchema,
+      maxOutputTokens,
+      thinkingLevel
+    },
+    timeout: options.timeout ?? 45000
+  });
+  if (typeof data.text !== 'string') throw new VertexAIError('failed', 'Vertex AI proxy answered without model text.');
+  return data;
+}
+
 export function describeVertexStatus(s) {
   const cancer = s?.routes?.proofreadCancer?.[0] || 'gemini-4-neon';
   const biopsy = s?.routes?.proofreadBiopsy?.[0] || 'gemini-3.8-flash';
