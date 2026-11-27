@@ -61,7 +61,7 @@ export const PROOFREAD_RESPONSE_SCHEMA = {
 export class VertexAIError extends Error {
   constructor(kind, message, status = 0) {
     super(message);
-    [invalid URL] = 'VertexAIError';
+    this.name = 'VertexAIError';
     this.kind = kind;
     this.status = status;
   }
