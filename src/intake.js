@@ -386,8 +386,8 @@ const DISTANCE = /(\d+(?:\.\d+)?)\s?(?:cm)?\s?(?:FN|FTN|from\s+(?:the\s+)?nipple
 // only beside the site word: on its own "RT" is as often radiotherapy. In the 208 CNS request lines of
 // the 2021-2026 biopsy and 2024-2026 LIS exports the side is written "R CPA", "L sphenoidal" and
 // "Rt temporal" as well as in full.
-const SIDED_SITE = '(?:frontal|temporal|parietal|occipital|fronto|temporo|parieto|occipito|cerebell|cpa\\b|cerebello-?pontine|sphenoid|thalam|upper|middle|lower|lung)';
-const SIDE_WORDS = new RegExp(`\\b(left|right)\\b|\\b(lt|rt)\\b\\.?(?=\\s*(?:\\d|breast|axill|${SIDED_SITE}))|\\b([lr])\\b\\.?(?=\\s*${SIDED_SITE})`, 'gi');
+const SIDED_SITE = '(?:frontal|temporal|parietal|occipital|fronto|temporo|parieto|occipito|cerebell|cpa\\b|cerebello-?pontine|sphenoid|thalam|upper|middle|lower|lung|bronch|pleura|fallopian|tubes?|ovar|adnex|salping|oophor|paratubal|fimbrial|breast|mammary|axill|kidney|renal|nephrect|ureter|adrenal|thyroid|hemithyroid|parathyroid|parotid|submandibular|tonsil|testis|testicular|epididym|inguin|femoral|pelvic|iliac|obturator|neck|arm|forearm|hand|leg|thigh|calf|foot|shoulder|elbow|wrist|hip|knee|ankle|ear|eyelid|cheek|temple)';
+const SIDE_WORDS = new RegExp(`\\b(left|right)\\b|\\b(lt|rt)\\b\\.?(?=\\s*(?:\\d|${SIDED_SITE}))|\\b([lr])\\b\\.?(?=\\s*${SIDED_SITE})`, 'gi');
 // A lung lobe written as the house abbreviation carries its side: RUL, RML, RLL, LUL, LLL.
 const LOBE_ABBREV = /\b(R(?:UL|ML|LL)|L(?:UL|LL))\b/gi;
 const TARGET_NOUNS = /\b(lesions?|mass(?:es)?|lumps?|nodules?|tumou?rs?)\b/gi;

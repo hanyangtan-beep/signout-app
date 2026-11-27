@@ -2,6 +2,7 @@
 // the report from a schema + generator module. Runs unchanged in the browser and in Node.
 
 import { applyStyle, houseConnectors } from './style.js';
+import { checkSpecimenAlignment } from './specimenalign.js';
 
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -356,7 +357,7 @@ export function generateCase(templates, caseState) {
   // Normalised parts in case order, each tagged with its template.
   const parts = caseState.parts.map((p, k) => {
     const id = templateIdOf(caseState, p);
-    return normalisePart(templates[id].schema, { label: p.label, templateId: id, linked: !!p.linked && k > 0, values: { ...p.values } });
+    return normalisePart(templates[id].schema, { label: p.label, templateId: id, linked: !!p.linked && k > 0, ...(p.lis ? { lis: p.lis } : {}), values: { ...p.values } });
   });
   // A linked part can read the part it is linked under (for example an HCC synoptic under a liver explant takes
   // the explant's background liver). Not enumerable, so it stays out of saved cases and value copies.
@@ -415,12 +416,18 @@ export function generateCase(templates, caseState) {
     .map((p) => styled(p.templateId, ctxs[p.templateId].gen.molecular(p, ctxs[p.templateId]))).filter((t) => t && t.trim() !== '').join('\n\n');
   const hasSynoptic = parts.some((p) => ctxs[p.templateId].gen.synoptic);
   const synoptic = parts.filter((p) => ctxs[p.templateId].gen.synoptic).map(perPart).filter((t) => t && t.trim() !== '').join('\n\n');
-  // Validation issues (`{level: 'error'|'warn', message}`) from templates with a `validate` hook.
+  // Validation issues (`{level: 'error'|'warn', message}`) from templates with a `validate` hook,
+  // plus specimen alignment checks comparing each pasted LIS line (`p.lis`) against the printed specimen.
   const issues = [];
   for (const p of parts) {
     const g = ctxs[p.templateId].gen;
-    if (!g.validate) continue;
-    for (const it of g.validate(p, ctxs[p.templateId]) || []) issues.push({ ...it, part: p.label });
+    if (g.validate) {
+      for (const it of g.validate(p, ctxs[p.templateId]) || []) issues.push({ ...it, part: p.label });
+    }
+    if (p.lis && !p.linked && typeof g.specimenName === 'function') {
+      const printed = styled(p.templateId, g.specimenName(p, ctxs[p.templateId]));
+      for (const it of checkSpecimenAlignment(p.lis, printed, templates[p.templateId].schema)) issues.push({ ...it, part: p.label });
+    }
   }
   // Multi-line diagnoses (synoptic templates: specimen line + "- " clauses) get a blank line between parts.
   // A linked pair prints one diagnosis for its letter: the synoptic's clauses under the frozen part's

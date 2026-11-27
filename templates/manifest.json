@@ -1973,9 +1973,10 @@
           "bulky uterus"
         ],
         "alone": {
-          "unless": "ovar|oophor|adnex|appendage|\\buter|hysterect|cervi|myom|fibroid|\\bTAH|\\bBSO\\b|ectopic|pregnan|gestation|villi|products of",
+          "unless": "ovar|oophor|adnex|appendage|\\buter|hysterect|cervi|myom|fibroid|\\bTAH|\\bBSO\\b|ectopic|pregnan|gestation|villi|products of|eustachian|neural|endotracheal|chest\\s+tube|peg\\s+tube|ng\\s+tube|nasogastric|gastrostomy|tracheostomy",
           "site": [
             "fallopian tube",
+            "tube",
             "salpingectomy",
             "paratubal",
             "fimbrial cyst",
@@ -1992,6 +1993,7 @@
             "sterilisation",
             "sterilization",
             "excision",
+            "resection",
             "cystectomy"
           ]
         },
@@ -2006,11 +2008,11 @@
                 "Fallopian tube(s), sterilisation"
               ],
               [
-                "^(?=[\\s\\S]*salpingectom)[\\s\\S]*\\bleft\\b",
+                "^(?=[\\s\\S]*salpingectom)[\\s\\S]*(?:\\bleft\\b|\\blt\\.?\\b|\\bl\\.?\\s+(?=fallopian|tube|salping))",
                 "Left fallopian tube, salpingectomy"
               ],
               [
-                "^(?=[\\s\\S]*salpingectom)[\\s\\S]*\\bright\\b",
+                "^(?=[\\s\\S]*salpingectom)[\\s\\S]*(?:\\bright\\b|\\brt\\.?\\b|\\br\\.?\\s+(?=fallopian|tube|salping))",
                 "Right fallopian tube, salpingectomy"
               ],
               [
@@ -2018,11 +2020,11 @@
                 "Paratubal cyst, excision"
               ],
               [
-                "\\bleft\\b",
+                "\\bleft\\b|\\blt\\.?\\b|\\bl\\.?\\s+(?=fallopian|tube|salping)",
                 "Left fallopian tube, salpingectomy"
               ],
               [
-                "\\bright\\b",
+                "\\bright\\b|\\brt\\.?\\b|\\br\\.?\\s+(?=fallopian|tube|salping)",
                 "Right fallopian tube, salpingectomy"
               ]
             ]
@@ -2086,6 +2088,32 @@
           {
             "field": "specimenName",
             "from": "options"
+          },
+          {
+            "field": "specimenName",
+            "from": "map",
+            "map": [
+              [
+                "\\bmyomectom",
+                "Myomectomy"
+              ],
+              [
+                "\\b(?:subtotal|sub-total|supracervical)\\b",
+                "Uterus, subtotal"
+              ],
+              [
+                "(?:\\b(?:left|lt)\\b|\\bl\\.?\\s+(?=tube|fallopian|ovar|adnex))[\\s\\S]*(?:ovar|oophor|adnex)|(?:ovar|oophor|adnex)[\\s\\S]*(?:\\b(?:left|lt)\\b)",
+                "Left tube and ovary"
+              ],
+              [
+                "(?:\\b(?:right|rt)\\b|\\br\\.?\\s+(?=tube|fallopian|ovar|adnex))[\\s\\S]*(?:ovar|oophor|adnex)|(?:ovar|oophor|adnex)[\\s\\S]*(?:\\b(?:right|rt)\\b)",
+                "Right tube and ovary"
+              ],
+              [
+                "\\buter|hysterect|\\b(?:tah|tlh|lavh|vh)\\b",
+                "Uterus and cervix, total hysterectomy"
+              ]
+            ]
           }
         ]
       },

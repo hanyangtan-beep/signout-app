@@ -444,7 +444,7 @@ test('leiomyoma checks: shown beside the report, never printed', () => {
 test('intake: attached tubes and ovaries and the leiomyoma are read from the specimen line and history', () => {
   const TOTAL = 'Uterus and cervix, total hysterectomy';
   assert.deepEqual(preset('Uterus, cervix, left tube and ovary'), { specimenName: TOTAL, attachedAdnexa: 'Left tube and ovary' });
-  assert.deepEqual(preset('Uterus and cervix with bilateral tubes'), { attachedAdnexa: 'Bilateral tubes' });
+  assert.deepEqual(preset('Uterus and cervix with bilateral tubes'), { specimenName: TOTAL, attachedAdnexa: 'Bilateral tubes' });
   assert.deepEqual(preset('Uterus, subtotal hysterectomy and right salpingo-oophorectomy'), { specimenName: 'Uterus, subtotal', attachedAdnexa: 'Right tube and ovary' });
   assert.equal(preset('Uterus, both ovaries and tubes').attachedAdnexa, 'Bilateral tubes and ovaries');
   assert.equal(preset('Uterus, cervix and bilateral adnexa, TAH BSO').specimenName, 'Uterus, cervix and bilateral adnexa');
