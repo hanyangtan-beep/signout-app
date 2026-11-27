@@ -101,7 +101,8 @@ const state = {
   proof: { busy: false, error: '', caseState: null, startedAt: 0, copyAnyway: '', ticks: new Map(), note: null },
   audit: { busy: false, error: '', caseState: null, startedAt: 0, result: null, dismissed: new Set(), undo: null, note: '' },
   ihc: { busy: false, error: '', caseState: null, startedAt: 0, notes: '', result: null, undo: null, note: '' },
-  blockCheck: { busy: false, error: '', caseState: null, startedAt: 0, result: null, dismissed: new Set(), undo: null, note: '' }
+  blockCheck: { busy: false, error: '', caseState: null, startedAt: 0, result: null, dismissed: new Set(), undo: null, note: '' },
+  hiddenCols: { case: false, histo: false, report: false }
 };
 
 const META_FIELDS = ['accession', 'status', 'specimen', 'clinical', 'macro', 'blockKey'];
@@ -113,6 +114,12 @@ function ensureMeta(caseState) {
 
 const nodes = {
   header: document.querySelector('header.topbar'),
+  workspace: document.querySelector('main.workspace'),
+  cols: { case: $('#case'), histo: $('#histo'), report: $('#report') },
+  colBtns: { case: $('#col-case'), histo: $('#col-histo'), report: $('#col-report') },
+  colCollapse: { case: $('#collapse-case'), histo: $('#collapse-histo'), report: $('#collapse-report') },
+  colRail: { case: $('#rail-case'), histo: $('#rail-histo'), report: $('#rail-report') },
+  railMeta: { case: $('#rail-case-meta'), histo: $('#rail-histo-meta'), report: $('#rail-report-meta') },
   systemRow: $('#system-row'),
   modeTop: $('#mode-top'),
   modeBottom: $('#mode-bottom'),
@@ -226,6 +233,72 @@ function initDensity() {
 function setDensity(value) {
   document.documentElement.dataset.density = value === 'compact' ? 'compact' : 'comfortable';
   try { localStorage.setItem('signout.density', document.documentElement.dataset.density); } catch { /* ignore */ }
+}
+
+// ---------- collapsible columns & slim edge rails ----------
+const COL_KEYS = ['case', 'histo', 'report'];
+
+function applyColumnLayout({ rerender = false } = {}) {
+  const h = state.hiddenCols;
+  if (nodes.workspace) {
+    nodes.workspace.dataset.hideCase = String(!!h.case);
+    nodes.workspace.dataset.hideHisto = String(!!h.histo);
+    nodes.workspace.dataset.hideReport = String(!!h.report);
+  }
+  for (const k of COL_KEYS) {
+    if (nodes.cols[k]) nodes.cols[k].dataset.collapsed = String(!!h[k]);
+    if (nodes.colBtns[k]) nodes.colBtns[k].setAttribute('aria-pressed', String(!h[k]));
+  }
+  if (rerender && state.caseState) { renderPanel(); renderColRails(); }
+}
+
+function toggleColumn(col) {
+  if (!COL_KEYS.includes(col)) return;
+  const h = state.hiddenCols;
+  const nextHidden = !h[col];
+  if (nextHidden && COL_KEYS.filter((k) => k !== col && !h[k]).length === 0) {
+    toast('Keep at least one column open');
+    return;
+  }
+  h[col] = nextHidden;
+  try { localStorage.setItem('signout.cols', JSON.stringify(h)); } catch { /* ignore */ }
+  applyColumnLayout({ rerender: true });
+}
+
+function initColumnLayout() {
+  try {
+    const raw = JSON.parse(localStorage.getItem('signout.cols') || 'null');
+    if (raw && typeof raw === 'object') {
+      const next = { case: !!raw.case, histo: !!raw.histo, report: !!raw.report };
+      if (COL_KEYS.some((k) => !next[k])) state.hiddenCols = next;
+    }
+  } catch { /* ignore */ }
+  for (const k of COL_KEYS) {
+    nodes.colBtns[k]?.addEventListener('click', () => toggleColumn(k));
+    nodes.colCollapse[k]?.addEventListener('click', () => toggleColumn(k));
+    nodes.colRail[k]?.addEventListener('click', () => toggleColumn(k));
+  }
+  applyColumnLayout();
+}
+
+function renderColRails() {
+  const cs = state.caseState;
+  if (!cs) return;
+  if (nodes.railMeta.case) {
+    nodes.railMeta.case.textContent = cs.meta?.accession?.trim() || 'New';
+  }
+  if (nodes.railMeta.histo) {
+    const p = cs.parts?.[state.activePart];
+    nodes.railMeta.histo.textContent = p ? (cs.parts.length > 1 ? `${p.label} (${cs.parts.length})` : `Part ${p.label}`) : '';
+  }
+  if (nodes.railMeta.report) {
+    const out = state.lastOut;
+    const issues = out ? [...(out.issues || []), ...patchIssues(out)] : [];
+    const nErr = issues.filter((i) => i.level === 'error').length;
+    const nWarn = issues.filter((i) => i.level === 'warn').length;
+    nodes.railMeta.report.className = `rail-meta ${nErr ? 'has-error' : nWarn ? 'has-warn' : 'is-ok'}`;
+    nodes.railMeta.report.textContent = nErr ? `${nErr} fix` : nWarn ? `${nWarn} warn` : 'OK';
+  }
 }
 
 // ---------- toast ----------
@@ -641,6 +714,7 @@ function renderCaseId() {
     el('span', { class: `ci-save ${saveClass}` }, el('span', { class: 'dot', 'aria-hidden': 'true' }), el('span', { text: saveText }))
   );
   nodes.caseId.title = acc ? `${acc} · ${status} · ${saveText} — go to the accession field` : 'No accession yet — go to the accession field';
+  renderColRails();
 }
 
 /** Example / New / Open collapse into this menu on narrower screens; the inline buttons stay the source of truth. */
@@ -808,6 +882,7 @@ function renderTabs() {
   }, iconForPart(p), el('span', { class: 'tab-label', text: p.linked ? `${p.label} syn` : p.label }))));
   nodes.addPart.disabled = parts.length >= maxPartsForCase();
   nodes.addPart.title = `Add part ${LETTERS_NEXT(parts.length)} (${schema().name})`;
+  renderColRails();
 }
 
 // Display only. The stored value keeps the schema's spelling (a saved case holds site "Cecum"), so
@@ -1609,7 +1684,7 @@ function promptAddAiRule(suggested = '') {
 
 function flagPickerRow({ workflow, key, model = '', tag = '', suggestedRule = '' }) {
   if (aiFlag.key !== key) return null;
-  return el('div', { class: 'lis-row', style: 'margin-top:4px;' },
+  return el('div', { class: 'lis-row ai-flag-row' },
     el('span', { class: 'muted', text: 'Flag reason:' }),
     ...FLAG_REASONS.map((r) => el('button', {
       type: 'button', class: 'btn ghost small', text: r.label,
@@ -1656,10 +1731,10 @@ function shorthandCard(s, part, i) {
   });
   ta.value = aiDraft.text[key] || '';
   const canUndo = aiDraft.undo?.caseState === state.caseState && aiDraft.undo?.partIndex === i;
-  const row = el('div', { class: 'lis-row', style: 'margin-top:6px;' },
+  const row = el('div', { class: 'lis-row ai-row' },
     el('button', {
       type: 'button',
-      class: 'btn small',
+      class: 'btn small ai-btn',
       text: aiDraft.busy ? (isGeneric ? 'Drafting\u2026' : 'Filling\u2026') : (isGeneric ? 'Draft with AI' : 'Fill form with AI'),
       disabled: aiDraft.busy,
       title: isGeneric
@@ -1681,14 +1756,14 @@ function shorthandCard(s, part, i) {
     aiDraft.note ? el('span', { class: 'muted lis-status', text: aiDraft.note }) : null);
 
   if (isGeneric) {
-    return el('div', { class: 'field', style: 'margin-bottom:12px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;' },
-      el('label', { text: 'Draft from shorthand (AI · Gemini 3.8 Flash)' }),
+    return el('div', { class: 'field ai-shorthand-card' },
+      el('label', { text: 'Draft from shorthand' }),
       ta,
       row);
   }
-  const box = el('details', { class: 'field-group', style: 'margin-bottom:10px;' },
-    el('summary', { text: 'Fill form from shorthand (AI · Gemini 3.8 Flash)' }),
-    el('div', { class: 'field', style: 'margin-top:6px;' }, ta, row));
+  const box = el('details', { class: 'field-group ai-shorthand' },
+    el('summary', { text: 'Fill form from shorthand' }),
+    el('div', { class: 'field ai-field' }, ta, row));
   box.open = localStorage.getItem('signout.shorthand') === 'open' || aiDraft.busy || canUndo || !!(aiDraft.text[key] || '').trim();
   box.addEventListener('toggle', () => localStorage.setItem('signout.shorthand', box.open ? 'open' : 'closed'));
   return box;
@@ -1873,8 +1948,8 @@ function renderPanel() {
   // in the case column under the LIS boxes, so macroscopy sits beside the report while histology fills the middle.
   const split = splitFields(s, part);
   // Packed forms are opt-in per template (`layout.pack`) and only once there is room for two cells;
-  // below that the single-column layout is still the right one. docs/specs/layout-3col.md
-  const pack = !!s.layout?.pack && packLayout.matches;
+  // collapsing Case or Report on desktop also frees enough width for two cells. docs/specs/layout-3col.md
+  const pack = !!s.layout?.pack && (packLayout.matches || (desktopLayout.matches && (state.hiddenCols.case || state.hiddenCols.report)));
   nodes.panel.classList.toggle('pack', pack);
   nodes.macroPanel.classList.toggle('pack', pack);
   if (split) {
@@ -1916,6 +1991,8 @@ for (const [id, target] of [['#m-copy-dx', nodes.copyDx], ['#m-copy-report', nod
   $(id)?.addEventListener('click', () => target?.click());
 }
 
+const desktopLayout = window.matchMedia('(min-width: 961px)');
+desktopLayout.addEventListener('change', () => { if (state.caseState) render(); });
 const wideLayout = window.matchMedia('(min-width: 1400px)');
 wideLayout.addEventListener('change', () => { if (state.caseState) render(); });
 // Two 320px cells plus the gap need roughly a 700px column, which the histology column reaches at
@@ -1925,7 +2002,7 @@ packLayout.addEventListener('change', () => { if (state.caseState) render(); });
 
 function splitFields(s) {
   const lay = s.layout;
-  if (!lay || !wideLayout.matches) return null;
+  if (!lay || !wideLayout.matches || state.hiddenCols.case) return null;
   const groups = new Set(lay.macroGroups || []);
   const ids = new Set(lay.macroFields || []);
   const macro = s.fields.filter((f) => groups.has(f.group) || ids.has(f.id));
@@ -2042,6 +2119,7 @@ function renderReport() {
   nodes.revertAll.hidden = edits === 0;
   nodes.revertAll.textContent = `Revert ${edits === 1 ? 'edit' : `${edits} edits`}`;
   renderLisStatus(out);
+  renderColRails();
 }
 
 /** One report block: heading with tags, Copy and Edit / Revert; the text or, while editing, a textarea. */
@@ -2260,10 +2338,11 @@ function renderProofBox(out) {
   if (items.length) box.append(el('ul', { class: 'proof-list' }, ...items.map((i) => proofRow(i, out, modelTag))));
   const bar = el('div', { class: 'proof-bar' });
   if (edits.length > 1) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: `Accept all ${edits.length}`, title: 'The spelling, grammar and house-style edits; flagged changes and rewrites are accepted one by one', onclick: () => acceptProof(edits) }));
-  if (on) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: busy ? 'Proofreading\u2026' : record?.at ? 'Proofread again' : 'Proofread', disabled: busy, onclick: () => runProofread() }));
+  if (on) bar.append(el('button', { type: 'button', class: 'btn small ai-btn', text: busy ? 'Proofreading\u2026' : record?.at ? 'Proofread again' : 'Proofread', disabled: busy, onclick: () => runProofread() }));
   if (on) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: '+ Rule', title: 'Add a personal AI preference rule (applied to all AI workflows)', onclick: () => promptAddAiRule() }));
   if (bar.childElementCount) box.append(bar);
-  box.open = localStorage.getItem('signout.proof') !== 'closed';
+  const proofStored = localStorage.getItem('signout.proof');
+  box.open = proofStored ? proofStored === 'open' : (busy || !!error || items.length > 0 || !!note);
   box.addEventListener('toggle', () => localStorage.setItem('signout.proof', box.open ? 'open' : 'closed'));
   return box;
 }
@@ -2598,11 +2677,12 @@ function renderAuditBox(out) {
     box.append(el('ul', { class: 'proof-list' }, ...open.map((f) => auditRow(f, out))));
   }
   const bar = el('div', { class: 'proof-bar' });
-  bar.append(el('button', { type: 'button', class: 'btn ghost small', text: busy ? 'Auditing\u2026' : result ? 'Audit again' : 'Run staging audit', disabled: busy, onclick: () => runStagingAudit() }));
+  bar.append(el('button', { type: 'button', class: 'btn small ai-btn', text: busy ? 'Auditing\u2026' : result ? 'Audit again' : 'Run staging audit', disabled: busy, onclick: () => runStagingAudit() }));
   if (undo) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Undo last fix', onclick: () => undoAuditFix() }));
   bar.append(el('button', { type: 'button', class: 'btn ghost small', text: '+ Rule', title: 'Add a personal AI preference rule', onclick: () => promptAddAiRule() }));
   box.append(bar);
-  box.open = localStorage.getItem('signout.audit') !== 'closed';
+  const auditStored = localStorage.getItem('signout.audit');
+  box.open = auditStored ? auditStored === 'open' : (busy || !!error || !!result || !!note);
   box.addEventListener('toggle', () => localStorage.setItem('signout.audit', box.open ? 'open' : 'closed'));
   return box;
 }
@@ -2763,7 +2843,7 @@ function renderIhcBox() {
     oninput: (e) => { state.ihc.caseState = state.caseState; state.ihc.notes = e.target.value; }
   });
   ta.value = mine ? (state.ihc.notes || '') : '';
-  box.append(el('div', { class: 'field', style: 'margin:6px 0;' }, ta));
+  box.append(el('div', { class: 'field ai-field' }, ta));
 
   if (busy) {
     box.append(el('p', { class: 'proof-line', text: `Consulting Gemini 4 Neon via Vertex AI at ${clock(state.ihc.startedAt)}. You can keep working.` }));
@@ -2792,7 +2872,7 @@ function renderIhcBox() {
         el('span', { class: 'proof-text', text: p })))));
     }
     if (result.commentDraft) {
-      box.append(el('div', { class: 'proof-note', style: 'margin-top:6px;' },
+      box.append(el('div', { class: 'proof-note ai-note-top' },
         el('p', { text: `Draft comment: ${result.commentDraft}` }),
         el('button', {
           type: 'button', class: 'btn small', text: 'Insert into Comment',
@@ -2803,7 +2883,7 @@ function renderIhcBox() {
   }
   const bar = el('div', { class: 'proof-bar' });
   bar.append(el('button', {
-    type: 'button', class: 'btn ghost small',
+    type: 'button', class: 'btn small ai-btn',
     text: busy ? 'Consulting\u2026' : result ? 'Re-run IHC consult' : 'Suggest IHC & differential',
     disabled: busy,
     onclick: () => runIhcConsult()
@@ -3067,7 +3147,7 @@ function renderBlockCheckBox() {
     box.append(el('ul', { class: 'proof-list' }, ...open.map((c) => blockCheckRow(c))));
   }
   const bar = el('div', { class: 'proof-bar' });
-  bar.append(el('button', { type: 'button', class: 'btn ghost small', text: busy ? 'Checking\u2026' : 'Re-check blocks', disabled: busy, onclick: () => runBlockKeyAi() }));
+  bar.append(el('button', { type: 'button', class: 'btn small ai-btn', text: busy ? 'Checking\u2026' : 'Re-check blocks', disabled: busy, onclick: () => runBlockKeyAi() }));
   if (undo) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Undo last fix', onclick: () => undoBlockCheckFix() }));
   bar.append(el('button', { type: 'button', class: 'btn ghost small', text: '+ Rule', title: 'Add a personal AI preference rule', onclick: () => promptAddAiRule() }));
   box.append(bar);
@@ -3436,7 +3516,7 @@ function renderIntake() {
   const hasParts = rows.length > 0;
   const replacing = partsTouched();
   const build = el('button', { type: 'button', class: 'btn primary small', id: 'btn-build-parts', text: replacing ? 'Replace parts' : 'Build parts', disabled: !hasParts || intake.aiBusy, onclick: () => buildPartsFromIntake().catch((e) => toast(e.message)) });
-  const aiBtn = el('button', { type: 'button', class: 'btn ghost small', id: 'btn-intake-ai', text: intake.aiBusy ? 'Parsing\u2026' : 'Parse with AI', disabled: intake.aiBusy, title: 'Use Gemini (Vertex AI) to split messy multi-part lists and pick the best template for each part', onclick: () => parseIntakeWithAi() });
+  const aiBtn = el('button', { type: 'button', class: 'btn small ai-btn', id: 'btn-intake-ai', text: intake.aiBusy ? 'Parsing\u2026' : 'Parse with AI', disabled: intake.aiBusy, title: 'Use Gemini (Vertex AI) to split messy multi-part lists and pick the best template for each part', onclick: () => parseIntakeWithAi() });
   const summary = intake.aiNote || (hasParts ? `${rows.length} part${rows.length === 1 ? '' : 's'} · ${rows.filter((r) => r.tier === 'confident').length} confident · ${rows.filter((r) => intake.picks[r.label] === GENERIC_ID).length} generic` : '');
   const warns = [...(parsed?.warnings || [])];
   const foot = el('div', { class: 'intake-foot' }, build, aiBtn, el('span', { class: 'muted', text: summary }),
@@ -3956,6 +4036,9 @@ function initKeys() {
     else if (e.altKey && e.key === 'ArrowLeft') { e.preventDefault(); state.activePart = Math.max(0, state.activePart - 1); render(); }
     else if (e.altKey && e.key === 'ArrowDown') { e.preventDefault(); jumpToUnset(1); }
     else if (e.altKey && e.key === 'ArrowUp') { e.preventDefault(); jumpToUnset(-1); }
+    else if (e.altKey && !mod && !e.shiftKey && (e.code === 'Digit1' || e.key === '1')) { e.preventDefault(); toggleColumn('case'); }
+    else if (e.altKey && !mod && !e.shiftKey && (e.code === 'Digit2' || e.key === '2')) { e.preventDefault(); toggleColumn('histo'); }
+    else if (e.altKey && !mod && !e.shiftKey && (e.code === 'Digit3' || e.key === '3')) { e.preventDefault(); toggleColumn('report'); }
   });
 }
 
@@ -3975,6 +4058,7 @@ function scheduleOffline() {
 async function boot() {
   initTheme();
   initDensity();
+  initColumnLayout();
   mountOrganSprite(); // organ glyphs; non-blocking, falls back to a neutral glyph
   const back = consumeRedirect(); // did Google just send us back here?
   // The gate runs before any case is built, so a refused visitor gets an empty page rather than a

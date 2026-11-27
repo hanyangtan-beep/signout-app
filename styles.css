@@ -102,14 +102,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .brand { display: flex; align-items: center; gap: var(--space-2); color: var(--color-primary); flex: none; margin-right: var(--space-1); }
 .brand h1 { font-size: 1.125rem; color: var(--color-text); letter-spacing: -0.01em; white-space: nowrap; }
 
-/* Kind switch (Biopsy / Resection) */
-.mode-switch { display: inline-flex; gap: 2px; padding: 3px; background: var(--color-surface-2); border-radius: var(--radius-md); flex: none; }
-.mode-btn {
+/* Kind switch (Biopsy / Resection) & column visibility switch (Case / Histology / Report) */
+.mode-switch, .col-switch { display: inline-flex; gap: 2px; padding: 3px; background: var(--color-surface-2); border-radius: var(--radius-md); flex: none; }
+.mode-btn, .col-btn {
   border: 0; background: transparent; color: var(--color-text-muted); cursor: pointer; white-space: nowrap;
   font-size: 13px; font-weight: 600; padding: 0 10px; height: 30px; display: inline-flex; align-items: center; border-radius: var(--radius-sm);
 }
-.mode-btn:hover { color: var(--color-text); }
-.mode-btn[aria-pressed='true'] { background: var(--color-surface); color: var(--color-text); box-shadow: var(--shadow-sm); }
+.col-btn { font-size: 12.5px; padding: 0 8px; }
+.mode-btn:hover, .col-btn:hover { color: var(--color-text); }
+.mode-btn[aria-pressed='true'], .col-btn[aria-pressed='true'] { background: var(--color-surface); color: var(--color-text); box-shadow: var(--shadow-sm); }
 
 .templates { display: flex; gap: var(--space-1); padding: var(--space-1); background: var(--color-surface-2); border-radius: var(--radius-md); flex-wrap: wrap; min-width: 0; }
 .templates button {
@@ -236,6 +237,29 @@ kbd { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; b
 .btn.small { min-height: 32px; padding: var(--space-1) var(--space-3); }
 .btn.danger { color: var(--color-alert); }
 .btn.danger:hover { background: var(--color-alert-highlight); }
+/* AI-assisted action button (haematoxylin tint; docs/style-guide.md) */
+.btn.ai-btn {
+  background: var(--color-primary-highlight);
+  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
+  color: var(--color-primary);
+}
+.btn.ai-btn:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 45%, transparent);
+}
+.btn.ai-btn:disabled { opacity: 0.55; cursor: progress; }
+.ai-row { margin-top: var(--space-2); }
+.ai-flag-row { margin-top: var(--space-1); }
+.ai-field { grid-template-columns: 1fr; gap: var(--space-1); padding: var(--space-1) 0; }
+.ai-shorthand { margin-bottom: var(--space-3); }
+.ai-shorthand-card {
+  grid-template-columns: 1fr; gap: var(--space-2);
+  margin-bottom: var(--space-3); padding: var(--space-3);
+  border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+.ai-shorthand-card > label { padding-top: 0; }
+.ai-note-top { margin-top: var(--space-2); }
 .icon-btn {
   border: 1px solid var(--color-border); background: transparent; color: var(--color-text-muted);
   width: 40px; height: 40px; border-radius: var(--radius-md); display: inline-grid; place-items: center; cursor: pointer;
@@ -247,28 +271,86 @@ kbd { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; b
 .workspace {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  --col-left: minmax(0, 1fr);
+  --col-report: minmax(0, 1fr);
+  grid-template-columns: var(--col-left) var(--col-report);
   grid-template-areas: "case report" "histo report";
   grid-template-rows: auto 1fr;
   gap: 0 var(--space-6);
   padding: var(--space-6);
   max-width: 1440px; width: 100%; margin: 0 auto;
 }
+.workspace[data-hide-report='true'] { --col-report: 44px; }
+.workspace[data-hide-case='true'][data-hide-histo='true'] { --col-left: 44px; }
 .case, .histo, .report { min-width: 0; }
 .case { grid-area: case; }
 .histo { grid-area: histo; }
 .report { grid-area: report; }
 .macro-panel { margin-top: var(--space-4); }
 .macro-panel .part-head h3 { color: var(--color-text-muted); font-weight: 500; }
+.col-collapse {
+  margin-left: auto; min-width: 28px; min-height: 28px; padding: 0 6px;
+  font-size: 14px; line-height: 1; color: var(--color-text-faint);
+}
+.col-collapse:hover { color: var(--color-text); }
+.report-head .col-collapse { margin-left: var(--space-1); }
+.col-rail { display: none; }
+
+@media (min-width: 961px) {
+  .case[data-collapsed='true'] > :not(.col-rail),
+  .histo[data-collapsed='true'] > :not(.col-rail),
+  .report[data-collapsed='true'] > :not(.col-rail) { display: none; }
+  .case[data-collapsed='true'] > .col-rail,
+  .histo[data-collapsed='true'] > .col-rail,
+  .report[data-collapsed='true'] > .col-rail {
+    display: flex; flex-direction: column; align-items: center; gap: var(--space-3);
+    width: 44px; min-height: 220px; padding: var(--space-3) 0;
+    border: 1px solid var(--color-border); border-radius: var(--radius-lg);
+    background: var(--color-surface); color: var(--color-text-muted);
+    cursor: pointer; position: sticky; top: calc(var(--topbar-h, 64px) + var(--space-4));
+    box-shadow: var(--shadow-sm);
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+  .col-rail:hover { background: var(--color-surface-2); border-color: var(--color-border-strong); color: var(--color-text); }
+  .col-rail .rail-chevron { font-size: 15px; line-height: 1; color: var(--color-primary); font-weight: 600; }
+  .col-rail .rail-label { writing-mode: vertical-rl; text-orientation: mixed; font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+  .col-rail .rail-meta { writing-mode: vertical-rl; text-orientation: mixed; font-family: var(--font-mono); font-size: 11px; color: var(--color-text-faint); max-height: 120px; overflow: hidden; text-overflow: ellipsis; }
+  .col-rail .rail-meta.has-error { color: var(--color-alert); font-weight: 600; }
+  .col-rail .rail-meta.has-warn { color: var(--color-warn); font-weight: 600; }
+  .col-rail .rail-meta.is-ok { color: var(--color-ok); font-weight: 600; }
+  .report[data-collapsed='true'] { overflow: visible; max-height: none; }
+}
+@media (min-width: 961px) and (max-width: 1399px) {
+  /* In 2-column mode, collapsing Case or Histology alone turns it into a slim horizontal bar so the sibling keeps full width. */
+  .workspace:not([data-hide-histo='true']) .case[data-collapsed='true'] > .col-rail,
+  .workspace:not([data-hide-case='true']) .histo[data-collapsed='true'] > .col-rail {
+    flex-direction: row; width: 100%; min-height: 36px; padding: 0 var(--space-3);
+    position: static; margin-bottom: var(--space-3);
+  }
+  .workspace:not([data-hide-histo='true']) .case[data-collapsed='true'] > .col-rail .rail-label,
+  .workspace:not([data-hide-histo='true']) .case[data-collapsed='true'] > .col-rail .rail-meta,
+  .workspace:not([data-hide-case='true']) .histo[data-collapsed='true'] > .col-rail .rail-label,
+  .workspace:not([data-hide-case='true']) .histo[data-collapsed='true'] > .col-rail .rail-meta {
+    writing-mode: horizontal-tb; max-height: none;
+  }
+  .workspace:not([data-hide-histo='true']) .case[data-collapsed='true'] > .col-rail .rail-meta,
+  .workspace:not([data-hide-case='true']) .histo[data-collapsed='true'] > .col-rail .rail-meta { margin-left: auto; }
+}
 /* Three columns (case + macroscopy | histology | report) once the viewport is wide enough; docs/specs/layout-3col.md */
 @media (min-width: 1400px) {
   .workspace {
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.2fr) minmax(0, 0.95fr);
+    --col-case: minmax(0, 0.85fr);
+    --col-histo: minmax(0, 1.2fr);
+    --col-report: minmax(0, 0.95fr);
+    grid-template-columns: var(--col-case) var(--col-histo) var(--col-report);
     grid-template-areas: "case histo report";
     grid-template-rows: auto;
     gap: var(--space-6);
     max-width: min(2400px, 100%);
   }
+  .workspace[data-hide-case='true'] { --col-case: 44px; }
+  .workspace[data-hide-histo='true'] { --col-histo: 44px; }
+  .workspace[data-hide-report='true'] { --col-report: 44px; }
   .histo .parts-bar { margin-top: 0; }
 }
 /* Ultrawide: the extra width goes to the histology column, which is where a third card column lands.
@@ -276,10 +358,15 @@ kbd { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; b
    than the width gains. docs/specs/layout-3col.md */
 @media (min-width: 2000px) {
   .workspace {
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.35fr) minmax(0, 1fr);
+    --col-case: minmax(0, 0.8fr);
+    --col-histo: minmax(0, 1.35fr);
+    --col-report: minmax(0, 1fr);
     gap: var(--space-8);
     padding: var(--space-6) var(--space-8);
   }
+  .workspace[data-hide-case='true'] { --col-case: 44px; }
+  .workspace[data-hide-histo='true'] { --col-histo: 44px; }
+  .workspace[data-hide-report='true'] { --col-report: 44px; }
 }
 .report { position: sticky; top: calc(var(--topbar-h, 64px) + var(--space-4)); align-self: start; max-height: calc(100vh - var(--topbar-h, 64px) - var(--space-4) - var(--space-6)); overflow: auto; scrollbar-width: thin; }
 
@@ -516,6 +603,7 @@ textarea.input { min-height: 64px; resize: vertical; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
 
 @media (max-width: 960px) {
+  .col-switch, .col-collapse, .col-rail { display: none !important; }
   .workspace { grid-template-columns: 1fr; grid-template-areas: "case" "histo" "report"; grid-template-rows: auto; padding: var(--space-4); gap: var(--space-4); }
   .report { position: static; max-height: none; overflow: visible; }
   .topbar-actions { margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }

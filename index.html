@@ -62,6 +62,11 @@
       </button>
 
       <div class="topbar-right">
+      <div class="col-switch" role="group" aria-label="Workspace columns">
+        <button class="col-btn" id="col-case" type="button" aria-pressed="true" title="Toggle Case column (Alt+1)">Case</button>
+        <button class="col-btn" id="col-histo" type="button" aria-pressed="true" title="Toggle Histology column (Alt+2)">Histology</button>
+        <button class="col-btn" id="col-report" type="button" aria-pressed="true" title="Toggle Report column (Alt+3)">Report</button>
+      </div>
       <button class="case-id" id="case-id" type="button" title="Go to the accession field"></button>
 
       <div class="topbar-actions">
@@ -107,7 +112,15 @@
 
   <main class="workspace">
     <section class="case" id="case" aria-labelledby="case-heading">
-      <div class="col-head case-head"><h2 id="case-heading">Case</h2></div>
+      <button class="col-rail" id="rail-case" type="button" aria-label="Expand Case column" title="Expand Case column (Alt+1)">
+        <span class="rail-chevron" aria-hidden="true">&raquo;</span>
+        <span class="rail-label">Case</span>
+        <span class="rail-meta" id="rail-case-meta"></span>
+      </button>
+      <div class="col-head case-head">
+        <h2 id="case-heading">Case</h2>
+        <button class="btn ghost small col-collapse" id="collapse-case" type="button" aria-label="Collapse Case column" title="Collapse Case column (Alt+1)">&laquo;</button>
+      </div>
       <div class="case-card">
       <div class="meta-row">
         <div class="field">
@@ -139,7 +152,7 @@
         <div class="field"><label for="meta-macro">Macroscopic</label><textarea class="input" id="meta-macro" rows="4" placeholder="Paste the LIS macroscopic description here"></textarea>
           <div class="lis-row">
             <label class="check"><input type="checkbox" id="meta-useLisMacro"> Use this text instead of the generated macro</label>
-            <button class="btn ghost small" id="btn-macro-ai" type="button" title="Extract specimen and macroscopic fields into the active part using Gemini (Vertex AI)">Fill with AI</button>
+            <button class="btn small ai-btn" id="btn-macro-ai" type="button" title="Extract specimen and macroscopic fields into the active part using Gemini (Vertex AI)">Fill with AI</button>
             <button class="btn ghost small" id="btn-macro-ai-undo" type="button" hidden title="Revert the last AI fill on this part">Undo AI fill</button>
             <button class="btn ghost small" id="btn-macro-generated" type="button" title="Copy the generated macroscopic description into this box for editing">Use generated</button>
             <button class="btn ghost small" id="btn-macro-clear" type="button">Clear</button>
@@ -149,7 +162,7 @@
         <div class="field"><label for="meta-blockKey">Block key</label><textarea class="input" id="meta-blockKey" rows="2" placeholder="Paste the LIS block key here"></textarea>
           <div class="lis-row">
             <label class="check"><input type="checkbox" id="meta-useLisBlockKey"> Use this text instead of the generated block key</label>
-            <button class="btn ghost small" id="btn-blockKey-ai" type="button" title="Clean block key into British-English house format and reconcile blocks against the form using Gemini (Vertex AI)">Clean &amp; check with AI</button>
+            <button class="btn small ai-btn" id="btn-blockKey-ai" type="button" title="Clean block key into British-English house format and reconcile blocks against the form using Gemini (Vertex AI)">Clean &amp; check with AI</button>
             <button class="btn ghost small" id="btn-blockKey-ai-undo" type="button" hidden title="Revert the last AI block-key clean">Undo AI block key</button>
             <button class="btn ghost small" id="btn-blockKey-generated" type="button" title="Copy the generated block key into this box for editing">Use generated</button>
             <button class="btn ghost small" id="btn-blockKey-clear" type="button">Clear</button>
@@ -163,16 +176,27 @@
     </section>
 
     <section class="histo" id="histo" aria-labelledby="histo-heading">
+      <button class="col-rail" id="rail-histo" type="button" aria-label="Expand Histology column" title="Expand Histology column (Alt+2)">
+        <span class="rail-chevron" aria-hidden="true">&raquo;</span>
+        <span class="rail-label">Histology</span>
+        <span class="rail-meta" id="rail-histo-meta"></span>
+      </button>
       <h2 id="histo-heading" class="sr-only">Parts and histology</h2>
       <div class="col-head parts-bar">
         <div class="tabs" id="part-tabs" role="tablist" aria-label="Parts"></div>
         <button class="btn ghost small" id="btn-add-part" type="button">+ Part</button>
+        <button class="btn ghost small col-collapse" id="collapse-histo" type="button" aria-label="Collapse Histology column" title="Collapse Histology column (Alt+2)">&laquo;</button>
       </div>
       <div id="part-panel" class="part-panel" role="tabpanel"></div>
       <div id="case-options" class="case-options"></div>
     </section>
 
-    <section class="report" aria-labelledby="report-heading">
+    <section class="report" id="report" aria-labelledby="report-heading">
+      <button class="col-rail" id="rail-report" type="button" aria-label="Expand Report column" title="Expand Report column (Alt+3)">
+        <span class="rail-chevron" aria-hidden="true">&laquo;</span>
+        <span class="rail-label">Report</span>
+        <span class="rail-meta" id="rail-report-meta"></span>
+      </button>
       <div class="col-head report-head">
         <h2 id="report-heading">Report</h2>
         <div class="report-actions">
@@ -181,6 +205,7 @@
           <button class="btn" id="btn-copy-report" type="button" title="Cmd/Ctrl + Enter">Copy full report</button>
           <button class="btn" id="btn-copy-lis" type="button" title="Copy every block as one marked payload for the bridge script to paste into the LIS">Copy for LIS</button>
         </div>
+        <button class="btn ghost small col-collapse" id="collapse-report" type="button" aria-label="Collapse Report column" title="Collapse Report column (Alt+3)">&raquo;</button>
       </div>
       <div id="report-blocks" class="report-blocks"></div>
     </section>
@@ -197,7 +222,7 @@
 
   <footer class="statusbar">
     <span id="status-template"></span>
-    <span class="hint">Number keys pick options in the focused field. Cmd/Ctrl+Shift+V captures from the LIS, Cmd/Ctrl+Shift+C copies the diagnosis, Cmd/Ctrl+Enter the full report.</span>
+    <span class="hint">Number keys pick options in the focused field. Alt+1/2/3 toggles columns, Cmd/Ctrl+Shift+V captures from the LIS, Cmd/Ctrl+Shift+C copies the diagnosis, Cmd/Ctrl+Enter the full report.</span>
     <span id="status-save">Not saved to Drive.</span>
   </footer>
 
@@ -286,7 +311,7 @@
         <label for="cfg-aiRules">AI preferences (personal rules)</label>
         <textarea class="input" id="cfg-aiRules" rows="3" placeholder="One rule per line — applied to all AI workflows, e.g.&#10;Do not flag telegraphic microscopy sentences.&#10;Keep (AE) in block keys rather than expanding to all embedded."></textarea>
         <p class="field-note">Appended to every Vertex AI prompt immediately (zero redeploy). You can also add rules from any AI panel via + Rule.</p>
-        <div class="lis-row" style="margin-top:6px;">
+        <div class="lis-row ai-row">
           <button class="btn ghost small" id="btn-ai-log-export" type="button" title="Download PHI-free AI usage, acceptance, undo, and flag stats as JSON">Export AI log (JSON)</button>
           <button class="btn ghost small" id="btn-ai-log-clear" type="button">Clear log</button>
         </div>
