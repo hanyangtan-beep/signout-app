@@ -28,9 +28,10 @@ import {
 } from './proofread.js';
 import { writeBack, carryPatches, carryText, blockText, showValue, patchFor } from './writeback.js';
 import { loadSettings as loadProofSettings, saveSettings as saveProofSettings, status as hanSlideStatus, proofread as hanSlideProofread, describeStatus, normaliseCode } from './hanslide.js';
-import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, vertexExtract, vertexAudit, vertexDraft, describeVertexStatus, VERTEX_PROOFREAD_SYSTEM_PROMPT } from './vertexai.js';
+import { loadVertexSettings, saveVertexSettings, vertexStatus, vertexProofread, vertexExtract, vertexAudit, vertexDraft, vertexIhc, describeVertexStatus, VERTEX_PROOFREAD_SYSTEM_PROMPT } from './vertexai.js';
 import { DRAFT_RESPONSE_SCHEMA, buildDraftPrompt, parseDraftReply, vetDraftReply, applyDraftToPart, FORM_FILL_RESPONSE_SCHEMA, buildFormFillPrompt, parseFormFillReply, vetFormFillReply, applyFormFillToPart } from './aidraft.js';
 import { isAuditEligible, AUDIT_RESPONSE_SCHEMA, buildAuditPrompt, parseAuditReply, vetAuditFindings, applyAuditFieldPatch } from './aiaudit.js';
+import { IHC_RESPONSE_SCHEMA, buildIhcPrompt, parseIhcReply, vetIhcReply, appendIhcComment } from './aiihc.js';
 import { EXTRACT_RESPONSE_SCHEMA, buildExtractPrompt, parseExtractReply, vetExtractedFields, applyExtractedFields, CASE_EXTRACT_RESPONSE_SCHEMA, buildCaseExtractPrompt, parseCaseExtractReply, vetCaseExtractedFields, applyCaseExtractedFields, INTAKE_RESPONSE_SCHEMA, buildIntakePrompt, parseIntakeReply, vetIntakeParts } from './aiextract.js';
 
 // The CNS-only code (guided intake, pathway drawer and family plates, about 180 kB) loads the
@@ -96,7 +97,8 @@ const state = {
   // Proofreading in progress (docs/specs/proofreading.md): `ticks` are the changes of each rewrite
   // ticked to accept (by suggestion key), `note` what the last accept put into the form.
   proof: { busy: false, error: '', caseState: null, startedAt: 0, copyAnyway: '', ticks: new Map(), note: null },
-  audit: { busy: false, error: '', caseState: null, startedAt: 0, result: null, dismissed: new Set(), undo: null, note: '' }
+  audit: { busy: false, error: '', caseState: null, startedAt: 0, result: null, dismissed: new Set(), undo: null, note: '' },
+  ihc: { busy: false, error: '', caseState: null, startedAt: 0, notes: '', result: null, undo: null, note: '' }
 };
 
 const META_FIELDS = ['accession', 'status', 'specimen', 'clinical', 'macro', 'blockKey'];
@@ -1974,7 +1976,7 @@ function renderReport() {
     checksBox.open = localStorage.getItem('signout.checks') !== 'closed';
     checksBox.addEventListener('toggle', () => localStorage.setItem('signout.checks', checksBox.open ? 'open' : 'closed'));
   }
-  const checks = [checksBox, renderProofBox(out), renderAuditBox(out)].filter(Boolean);
+  const checks = [checksBox, renderProofBox(out), renderAuditBox(out), renderIhcBox(out)].filter(Boolean);
   nodes.blocks.replaceChildren(...checks, ...blocks.map(([key, name, text]) => renderBlock(key, name, text, tagFor(key), out)));
   const edits = Object.keys(state.caseState.edits || {}).length;
   nodes.revertAll.hidden = edits === 0;
@@ -2662,6 +2664,142 @@ function undoAuditFix() {
   markDirty();
   render();
   toast('Reverted staging audit fix');
+}
+
+// ---------- IHC Panel & Differential Diagnosis Assistant (src/aiihc.js) ----------
+const IHC_LIKELIHOOD = { primary: 'Leading', consider: 'Consider', exclude: 'Exclude' };
+
+function renderIhcBox() {
+  const mine = state.ihc.caseState === state.caseState;
+  const busy = state.ihc.busy && mine;
+  const error = mine ? state.ihc.error : '';
+  const result = mine ? state.ihc.result : null;
+  const note = mine ? state.ihc.note : '';
+  const undo = mine ? state.ihc.undo : null;
+
+  const summary = busy ? 'Gemini 4 Neon is thinking\u2026' : error ? 'did not run' : result ? `${result.differential.length} DDx \u00b7 ${result.nextStains.length} stain${result.nextStains.length === 1 ? '' : 's'}` : 'optional consult';
+  const box = el('details', { class: `checks proof ${error ? 'has-error' : 'info-only'}` },
+    el('summary', {}, el('div', { class: 'checks-head' }, el('h3', { text: 'IHC & differential' }), el('span', { class: 'muted', text: summary }))));
+
+  const ta = el('textarea', {
+    class: 'input',
+    rows: '2',
+    placeholder: 'Morphology, site, and stains done so far (e.g. "epithelioid sheets, CK7+, CK20-, TTF1-, GATA3 weak+, rule out breast vs urothelial")',
+    oninput: (e) => { state.ihc.caseState = state.caseState; state.ihc.notes = e.target.value; }
+  });
+  ta.value = mine ? (state.ihc.notes || '') : '';
+  box.append(el('div', { class: 'field', style: 'margin:6px 0;' }, ta));
+
+  if (busy) {
+    box.append(el('p', { class: 'proof-line', text: `Consulting Gemini 4 Neon via Vertex AI at ${clock(state.ihc.startedAt)}. You can keep working.` }));
+  } else if (result?.summary) {
+    box.append(el('p', { class: 'proof-line', text: `${result.summary} (${result.model || 'gemini-4-neon'}, ${result.seconds || 0}s)` }));
+  }
+  if (error) box.append(el('p', { class: 'proof-error', role: 'alert', text: error }));
+  if (note) {
+    box.append(el('div', { class: 'proof-note', role: 'status' }, el('p', { text: note }),
+      el('button', { type: 'button', class: 'btn ghost small', text: 'OK', onclick: () => { state.ihc.note = ''; renderReport(); } })));
+  }
+  if (result) {
+    if (result.differential.length) {
+      box.append(el('ul', { class: 'proof-list' }, ...result.differential.map((d) => el('li', { class: `proof-item ${d.likelihood === 'primary' ? 'edit' : 'look'}` },
+        el('span', { class: 'proof-kind', text: `${IHC_LIKELIHOOD[d.likelihood] || 'Consider'} \u00b7 DDx` }),
+        el('span', { class: 'proof-text' }, el('strong', { text: d.entity }), ` \u2014 ${d.rationale}`, d.profile ? el('span', { class: 'muted', text: ` [${d.profile}]` }) : null)))));
+    }
+    if (result.nextStains.length) {
+      box.append(el('ul', { class: 'proof-list' }, ...result.nextStains.map((st) => el('li', { class: 'proof-item look' },
+        el('span', { class: 'proof-kind', text: 'Next stain' }),
+        el('span', { class: 'proof-text' }, el('strong', { text: st.marker }), st.purpose ? ` \u2014 ${st.purpose}` : '')))));
+    }
+    if (result.pitfalls.length) {
+      box.append(el('ul', { class: 'proof-list' }, ...result.pitfalls.map((p) => el('li', { class: 'proof-item flag' },
+        el('span', { class: 'proof-kind', text: 'Pitfall' }),
+        el('span', { class: 'proof-text', text: p })))));
+    }
+    if (result.commentDraft) {
+      box.append(el('div', { class: 'proof-note', style: 'margin-top:6px;' },
+        el('p', { text: `Draft comment: ${result.commentDraft}` }),
+        el('button', {
+          type: 'button', class: 'btn small', text: 'Insert into Comment',
+          title: 'Append this British-English paragraph to the case Comment box (with Undo)',
+          onclick: () => insertIhcComment(result.commentDraft)
+        })));
+    }
+  }
+  const bar = el('div', { class: 'proof-bar' });
+  bar.append(el('button', {
+    type: 'button', class: 'btn ghost small',
+    text: busy ? 'Consulting\u2026' : result ? 'Re-run IHC consult' : 'Suggest IHC & differential',
+    disabled: busy,
+    onclick: () => runIhcConsult()
+  }));
+  if (undo) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Undo comment insert', onclick: () => undoIhcComment() }));
+  box.append(bar);
+  box.open = localStorage.getItem('signout.ihc') === 'open' || busy || !!result || !!error;
+  box.addEventListener('toggle', () => localStorage.setItem('signout.ihc', box.open ? 'open' : 'closed'));
+  return box;
+}
+
+async function runIhcConsult() {
+  const cs = state.caseState;
+  if (!cs || !state.lastOut) return;
+  if (state.ihc.busy) return toast('IHC consult is already running');
+  const notes = state.ihc.caseState === cs ? (state.ihc.notes || '') : '';
+  const sections = reportSections(state.lastOut);
+  const req = buildIhcPrompt({ notes, caseState: cs, sections });
+  if (req.error) return toast(req.error);
+  const token = await getToken(state.config, { interactive: false }).catch(() => '');
+  if (!token) {
+    state.ihc = { ...state.ihc, caseState: cs, error: 'Sign in to Google first to run IHC & differential.', busy: false };
+    renderReport();
+    return toast('Sign in to Google first to run IHC & differential');
+  }
+  state.ihc = { busy: true, error: '', caseState: cs, startedAt: Date.now(), notes, result: null, undo: state.ihc.undo?.caseState === cs ? state.ihc.undo : null, note: '' };
+  renderReport();
+  try {
+    const ans = await vertexIhc({
+      system: req.system,
+      prompt: req.prompt,
+      responseSchema: IHC_RESPONSE_SCHEMA,
+      proxyUrl: loadVertexSettings().proxyUrl,
+      token
+    });
+    if (state.caseState !== cs) return;
+    const parsed = parseIhcReply(ans.text);
+    if (!parsed.readable) throw new Error('Gemini returned an unreadable IHC consult; try again.');
+    const vetted = vetIhcReply(parsed);
+    state.ihc.result = { ...vetted, model: ans.model || 'gemini-4-neon', seconds: ans.seconds || 0 };
+    toast(`IHC consult ready (${vetted.differential.length} DDx, ${vetted.nextStains.length} stains)`);
+  } catch (err) {
+    if (state.caseState === cs) state.ihc.error = err.message || 'IHC consult failed.';
+  } finally {
+    if (state.ihc.caseState === cs) state.ihc.busy = false;
+  }
+  if (state.caseState === cs) renderReport();
+}
+
+function insertIhcComment(draft) {
+  const cs = state.caseState;
+  if (!cs || !draft) return;
+  const { prevComment, changed } = appendIhcComment(cs, draft);
+  if (!changed) return;
+  state.ihc.undo = { caseState: cs, prevComment };
+  state.ihc.note = 'Inserted into Comment (Undo comment insert reverts it).';
+  markDirty();
+  render();
+  toast('Inserted IHC paragraph into Comment');
+}
+
+function undoIhcComment() {
+  const u = state.ihc.undo;
+  const cs = state.caseState;
+  if (!u || u.caseState !== cs) return;
+  cs.comment = u.prevComment;
+  state.ihc.undo = null;
+  state.ihc.note = 'Reverted inserted IHC comment.';
+  markDirty();
+  render();
+  toast('Reverted IHC comment');
 }
 
 // ---------- LIS macro / block key override ----------

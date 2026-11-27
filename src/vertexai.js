@@ -287,6 +287,33 @@ export async function vertexDraft({
   return data;
 }
 
+/** Run IHC panel & differential diagnosis consult via Vertex AI (gemini-4-neon, MEDIUM thinking). */
+export async function vertexIhc({
+  system,
+  prompt,
+  responseSchema,
+  maxOutputTokens = 4096,
+  thinkingLevel = 'MEDIUM',
+  ...options
+} = {}) {
+  const data = await call('/v1/ai', {
+    ...options,
+    method: 'POST',
+    body: {
+      task: 'audit',
+      kind: 'cancer resection',
+      system,
+      prompt,
+      responseSchema,
+      maxOutputTokens,
+      thinkingLevel
+    },
+    timeout: options.timeout ?? AI_TIMEOUT_MS
+  });
+  if (typeof data.text !== 'string') throw new VertexAIError('failed', 'Vertex AI proxy answered without model text.');
+  return data;
+}
+
 export function describeVertexStatus(s) {
   const cancer = s?.routes?.proofreadCancer?.[0] || 'gemini-4-neon';
   const biopsy = s?.routes?.proofreadBiopsy?.[0] || 'gemini-3.8-flash';
