@@ -3358,6 +3358,7 @@ function applyCapture(fields) {
     cs.meta[key] = text;
     if (nodes.meta[key]) nodes.meta[key].value = text;
   }
+  if (typeof fields.macro === 'string' && fields.macro.trim()) cs.meta.useLisMacro = true;
   // A captured macro refills the macro fields the same way a typed one does; a captured specimen
   // re-runs the intake strip. Everything else only changes the report.
   if (fields.macro !== undefined) { applyMacro(); render(); } else { renderIntake(); renderReport(); }
@@ -3956,7 +3957,13 @@ function initDrive() {
   for (const k of META_FIELDS) {
     nodes.meta[k].addEventListener('input', (e) => {
       markDirty();
+      const prev = state.caseState.meta[k] || '';
       state.caseState.meta[k] = e.target.value;
+      if (k === 'macro') {
+        const hasText = !!e.target.value.trim();
+        if (hasText && (!prev.trim() || e.inputType === 'insertFromPaste')) state.caseState.meta.useLisMacro = true;
+        else if (!hasText) state.caseState.meta.useLisMacro = false;
+      }
       cacheCase(state.caseState);
       if (k === 'accession' || k === 'status') renderSaveStatus();
       if (k === 'macro') { applyMacro(); render(); }
