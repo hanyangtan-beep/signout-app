@@ -291,22 +291,23 @@
           <option value="full">drive — full Drive access (use if the folder is not writable)</option>
         </select>
       </div>
-      <!-- Proofreading with Han Slide (local Mac) or Vertex AI (Cloud Run): docs/specs/proofreading.md. Set per browser. -->
+      <!-- AI assistants & proofreading (Han Slide local Mac or Vertex AI Cloud Run): docs/specs/proofreading.md. Set per browser. -->
       <div class="field proof-settings">
-        <span class="field-label">Proofreading</span>
-        <label class="check"><input type="checkbox" id="cfg-proofOn" /> Enable AI proofreading on this computer</label>
+        <span class="field-label">AI assistants &amp; proofreading</span>
+        <label class="check"><input type="checkbox" id="cfg-proofOn" /> Enable AI assistants on this computer</label>
+        <label class="check"><input type="checkbox" id="cfg-proofAutoReady" /> Auto-proofread when marking a case Ready</label>
         <select class="input" id="cfg-proofBackend" aria-label="AI proofreading backend">
           <option value="hanslide">Han Slide (local Mac, PPLX 27B)</option>
           <option value="vertex">Vertex AI Cloud Run (Gemini Neon / 3.8 Flash)</option>
-          <option value="hybrid">Hybrid (Han Slide on Mac, fallback to Vertex AI)</option>
+          <option value="hybrid">Hybrid (Vertex AI for cancer/biomarkers, Han Slide for biopsies)</option>
         </select>
         <div class="proof-code">
           <input class="input mono" id="cfg-proofCode" type="text" placeholder="Han Slide pairing code, XXXX-XXXX-XXXX-XXXX" aria-label="Han Slide pairing code" autocomplete="off" spellcheck="false" />
+          <input class="input mono" id="cfg-proofProxyUrl" type="url" placeholder="https://signout-vertex-proxy-….us-central1.run.app" aria-label="Vertex AI proxy URL" autocomplete="off" spellcheck="false" />
           <button class="btn ghost small" id="btn-proof-test" type="button">Test</button>
         </div>
-        <input class="input mono" id="cfg-proofProxyUrl" type="url" placeholder="https://signout-vertex-proxy-….us-central1.run.app" aria-label="Vertex AI proxy URL" autocomplete="off" spellcheck="false" />
         <p class="field-note" id="cfg-proofStatus" role="status" aria-live="polite"></p>
-        <p class="field-note">Han Slide runs locally on your Mac only. Vertex AI Cloud Run works on both Mac and PC using your Google sign-in and routes cancer resections to Gemini 4 Neon (with automatic fallback to 3.8 Flash). The rule checks run on every computer.</p>
+        <p class="field-note">Controls all AI tools on this browser (Proofreading &amp; audit, Specimen intake, Macro fill, Block-key check, Shorthand drafting, and IHC consult). Deterministic rule checks always run even when AI is off.</p>
       </div>
       <div class="field proof-settings">
         <label for="cfg-aiRules">AI preferences (personal rules)</label>

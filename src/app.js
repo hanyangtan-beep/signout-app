@@ -1738,10 +1738,21 @@ function exportAiLog() {
   toast(`Exported ${payload.summary.total} AI log event${payload.summary.total === 1 ? '' : 's'}`);
 }
 
+// ---------- Master AI toggle & auto-proofread-on-Ready preference ----------
+const AI_AUTO_READY_KEY = 'signout.ai.autoReady';
+const aiEnabled = () => loadProofSettings().on;
+const autoProofreadOn = () => {
+  try { return localStorage.getItem(AI_AUTO_READY_KEY) !== 'false'; } catch { return true; }
+};
+const saveAutoProofread = (v) => {
+  try { localStorage.setItem(AI_AUTO_READY_KEY, v ? 'true' : 'false'); } catch { /* preview iframe */ }
+};
+
 // ---------- Shorthand-to-report & Shorthand-to-form AI autofill (src/aidraft.js) ----------
 const aiDraft = { text: {}, busy: false, note: '', undo: null };
 
 function shorthandCard(s, part, i) {
+  if (!aiEnabled()) return null;
   const isGeneric = s.id === GENERIC_ID;
   const key = `${part.label}:${i}`;
   const ta = el('textarea', {
@@ -2367,7 +2378,7 @@ function isUnifiedReview() {
 
 /** The Proofreading (or unified Proofreading & audit) box under Checks, or null when nothing to show. */
 function renderProofBox(out) {
-  const on = loadProofSettings().on;
+  const on = aiEnabled();
   const unified = isUnifiedReview();
   const { sections, record, items } = proofView(out);
   const mine = state.proof.caseState === state.caseState;
@@ -2424,13 +2435,13 @@ function renderProofBox(out) {
       if (auditResult) box.append(el('p', { class: 'proof-line', text: `Staging audit: ${auditResult.summary} (${auditResult.model || 'gemini-4-neon'} HIGH, ${auditResult.seconds || 0}s)` }));
       if (record?.at) box.append(el('p', { class: 'proof-line', text: recordSummary(record, sections) }));
     } else {
-      box.append(el('p', { class: 'proof-line', text: 'Runs Staging audit (Neon HIGH) and Proofreading (Neon MEDIUM) in parallel. Marking Ready auto-runs proofreading only.' }));
+      box.append(el('p', { class: 'proof-line', text: autoProofreadOn() ? 'Runs Staging audit (Neon HIGH) and Proofreading (Neon MEDIUM) in parallel. Marking Ready auto-runs proofreading only.' : 'Runs Staging audit (Neon HIGH) and Proofreading (Neon MEDIUM) in parallel.' }));
     }
   } else {
     const line = busy ? `Asked ${target.model} through ${target.via} at ${clock(state.proof.startedAt)}. You can keep working.`
       : record?.at ? recordSummary(record, sections)
-        : on ? `Not proofread by ${target.model} yet: it runs when the case is marked Ready, or press Proofread.`
-          : 'Rule checks only. Turn on Settings › Proofreading (Han Slide or Vertex AI) to proofread with AI.';
+        : on ? (autoProofreadOn() ? `Not proofread by ${target.model} yet: it runs when the case is marked Ready, or press Proofread.` : `Not proofread by ${target.model} yet: press Proofread to run.`)
+          : 'Rule checks only. Turn on Settings › AI assistants to enable AI proofreading, audit, and drafting.';
     box.append(el('p', { class: 'proof-line', text: line }));
   }
   if (auditError) box.append(el('p', { class: 'proof-error', role: 'alert', text: `Staging audit: ${auditError}` }));
@@ -2460,7 +2471,7 @@ function renderProofBox(out) {
     bar.append(el('button', { type: 'button', class: 'btn small ai-btn', text: busy ? 'Proofreading\u2026' : record?.at ? 'Proofread again' : 'Proofread', disabled: busy, onclick: () => runProofread() }));
   }
   if (auditUndo) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Undo last fix', onclick: () => undoAuditFix() }));
-  bar.append(el('button', { type: 'button', class: 'btn ghost small', text: ruleCount ? `+ Rule (${ruleCount})` : '+ Rule', title: 'Add a personal AI preference rule (applied to all AI workflows)', onclick: () => promptAddAiRule() }));
+  if (on) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: ruleCount ? `+ Rule (${ruleCount})` : '+ Rule', title: 'Add a personal AI preference rule (applied to all AI workflows)', onclick: () => promptAddAiRule() }));
   if (bar.childElementCount) box.append(bar);
   const proofStored = localStorage.getItem('signout.proof');
   box.open = proofStored ? proofStored === 'open' : (anyBusy || anyError || hasItems || !!note || !!auditNote || !!auditResult);
@@ -2695,7 +2706,7 @@ function dismissProof(item) {
 /** On Ready, and on Save while Ready: proofread when the report has not been, or has changed since. */
 function proofreadIfChanged() {
   const cs = state.caseState;
-  if (!cs || cs.meta?.status !== 'ready' || !loadProofSettings().on) return;
+  if (!cs || cs.meta?.status !== 'ready' || !aiEnabled() || !autoProofreadOn()) return;
   if (cs.proofread?.at && !changedSince(cs.proofread, reportSections(state.lastOut || {})).length) return;
   runProofread({ auto: true });
 }
@@ -2849,7 +2860,7 @@ const AUDIT_SEV = { critical: 'Critical', warn: 'Review', info: 'Note' };
 const AUDIT_CAT = { staging: 'Staging', grading: 'Grading', margins: 'Margins', laterality: 'Laterality', 'cross-part': 'Cross-part', biomarkers: 'Biomarkers', history: 'History', omission: 'Omission' };
 
 function renderAuditBox(out) {
-  if (isUnifiedReview()) return null;
+  if (!aiEnabled() || isUnifiedReview()) return null;
   const eligible = isAuditEligible(schemasInUse());
   const mine = state.audit.caseState === state.caseState;
   const busy = state.audit.busy && mine;
@@ -3044,6 +3055,7 @@ function undoAuditFix() {
 const IHC_LIKELIHOOD = { primary: 'Leading', consider: 'Consider', exclude: 'Exclude' };
 
 function renderIhcBox() {
+  if (!aiEnabled()) return null;
   const mine = state.ihc.caseState === state.caseState;
   const busy = state.ihc.busy && mine;
   const error = mine ? state.ihc.error : '';
@@ -3190,9 +3202,16 @@ const LIS_KEYS = { macro: { toggle: 'useLisMacro', label: 'macro' }, blockKey: {
 function renderLisStatus(out) {
   const meta = state.caseState.meta;
   const nParts = state.caseState?.parts?.length || 1;
-  if (nodes.lis.macro.ai && !nodes.lis.macro.ai.disabled) {
-    nodes.lis.macro.ai.textContent = nParts > 1 ? `Fill all ${nParts} parts with AI` : 'Fill with AI';
+  const aiOn = aiEnabled();
+  if (nodes.lis.macro.ai) {
+    nodes.lis.macro.ai.hidden = !aiOn;
+    if (!nodes.lis.macro.ai.disabled) {
+      nodes.lis.macro.ai.textContent = nParts > 1 ? `Fill all ${nParts} parts with AI` : 'Fill with AI';
+    }
   }
+  if (nodes.lis.blockKey.ai) nodes.lis.blockKey.ai.hidden = !aiOn;
+  if (!aiOn && nodes.lis.macro.aiUndo) nodes.lis.macro.aiUndo.hidden = true;
+  if (!aiOn && nodes.lis.blockKey.aiUndo) nodes.lis.blockKey.aiUndo.hidden = true;
   for (const [key, { toggle, label }] of Object.entries(LIS_KEYS)) {
     const ui = nodes.lis[key];
     if (!ui.toggle) continue;
@@ -3338,6 +3357,7 @@ const BLOCK_SEV = { critical: 'Critical', warn: 'Review', info: 'Note' };
 const BLOCK_CAT = { margins: 'Margins', nodes: 'Nodes', blocks: 'Blocks', laterality: 'Laterality', lesion: 'Lesion', omission: 'Omission' };
 
 function renderBlockCheckBox() {
+  if (!aiEnabled()) return null;
   const mine = state.blockCheck.caseState === state.caseState;
   const busy = state.blockCheck.busy && mine;
   const error = mine ? state.blockCheck.error : '';
@@ -3736,7 +3756,7 @@ function renderIntake() {
   const hasParts = rows.length > 0;
   const replacing = partsTouched();
   const build = el('button', { type: 'button', class: 'btn primary small', id: 'btn-build-parts', text: replacing ? 'Replace parts' : 'Build parts', disabled: !hasParts || intake.aiBusy, onclick: () => buildPartsFromIntake().catch((e) => toast(e.message)) });
-  const aiBtn = el('button', { type: 'button', class: 'btn small ai-btn', id: 'btn-intake-ai', text: intake.aiBusy ? 'Parsing\u2026' : 'Parse with AI', disabled: intake.aiBusy, title: 'Use Gemini (Vertex AI) to split messy multi-part lists and pick the best template for each part', onclick: () => parseIntakeWithAi() });
+  const aiBtn = aiEnabled() ? el('button', { type: 'button', class: 'btn small ai-btn', id: 'btn-intake-ai', text: intake.aiBusy ? 'Parsing\u2026' : 'Parse with AI', disabled: intake.aiBusy, title: 'Use Gemini (Vertex AI) to split messy multi-part lists and pick the best template for each part', onclick: () => parseIntakeWithAi() }) : null;
   const summary = intake.aiNote || (hasParts ? `${rows.length} part${rows.length === 1 ? '' : 's'} · ${rows.filter((r) => r.tier === 'confident').length} confident · ${rows.filter((r) => intake.picks[r.label] === GENERIC_ID).length} generic` : '');
   const warns = [...(parsed?.warnings || [])];
   const foot = el('div', { class: 'intake-foot' }, build, aiBtn, el('span', { class: 'muted', text: summary }),
@@ -4198,6 +4218,7 @@ function applySettingsForm() {
   if (resetSheet || resetFolder) patch.sheetId = '';
   const hadClientId = state.config.clientId;
   saveProofSettings({ on: $('#cfg-proofOn').checked, code: $('#cfg-proofCode').value }); // this browser only
+  if ($('#cfg-proofAutoReady')) saveAutoProofread($('#cfg-proofAutoReady').checked);
   if ($('#cfg-proofBackend')) {
     saveVertexSettings({ backend: $('#cfg-proofBackend').value, proxyUrl: $('#cfg-proofProxyUrl')?.value });
   }
@@ -4209,6 +4230,15 @@ function applySettingsForm() {
   return { clientIdChanged: patch.clientId !== hadClientId };
 }
 
+/** Show only the credential inputs relevant to the selected AI backend and disable Auto-proofread when AI is off. */
+function syncAiSettingsUi() {
+  const on = !!$('#cfg-proofOn')?.checked;
+  const backend = $('#cfg-proofBackend')?.value || 'hanslide';
+  if ($('#cfg-proofAutoReady')) $('#cfg-proofAutoReady').disabled = !on;
+  if ($('#cfg-proofCode')) $('#cfg-proofCode').hidden = backend === 'vertex';
+  if ($('#cfg-proofProxyUrl')) $('#cfg-proofProxyUrl').hidden = backend === 'hanslide';
+}
+
 function openSettings() {
   for (const k of ['clientId', 'folderId', 'sheetName', 'scopeMode']) $(`#cfg-${k}`).value = state.config[k] || '';
   const allow = $('#cfg-allowedEmails');
@@ -4218,6 +4248,7 @@ function openSettings() {
   $('#cfg-density').value = document.documentElement.dataset.density || 'comfortable';
   const proof = loadProofSettings();
   $('#cfg-proofOn').checked = proof.on;
+  if ($('#cfg-proofAutoReady')) $('#cfg-proofAutoReady').checked = autoProofreadOn();
   $('#cfg-proofCode').value = proof.code;
   const vertex = loadVertexSettings();
   if ($('#cfg-proofBackend')) $('#cfg-proofBackend').value = vertex.backend;
@@ -4225,6 +4256,7 @@ function openSettings() {
   if ($('#cfg-aiRules')) $('#cfg-aiRules').value = formatAiRules(loadAiRules());
   if ($('#cfg-aiLogSummary')) $('#cfg-aiLogSummary').textContent = formatAiLogSummary(loadAiLog());
   $('#cfg-proofStatus').textContent = '';
+  syncAiSettingsUi();
   nodes.signout.hidden = !isSignedIn();
   nodes.dlgSettings.showModal();
 }
@@ -4250,6 +4282,8 @@ function initDrive() {
   initLis();
   initIntake();
   nodes.meta.status.addEventListener('change', proofreadIfChanged); // after 'input' has stored it
+  $('#cfg-proofOn')?.addEventListener('change', syncAiSettingsUi);
+  $('#cfg-proofBackend')?.addEventListener('change', syncAiSettingsUi);
   $('#btn-proof-test').addEventListener('click', testHanSlide);
   $('#btn-ai-log-export')?.addEventListener('click', exportAiLog);
   $('#btn-ai-log-clear')?.addEventListener('click', () => {
@@ -4284,7 +4318,7 @@ function initDrive() {
       if (gateEnabled(location.hostname)) return lockApp();
       signOut();
     }
-    renderAccount(); renderSaveStatus(); renderReport();
+    renderAccount(); render();
     toast('Settings saved');
   });
   // On the signed-in site Sign out is Lock: the workspace goes behind the gate instead of staying on

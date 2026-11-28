@@ -821,8 +821,8 @@ textarea.input { min-height: 64px; resize: vertical; }
 .block-head h3 .tag.tag-proof { background: var(--color-warn-highlight); color: var(--color-text); }
 .proof-settings .check { display: flex; gap: var(--space-2); align-items: center; font-size: var(--text-sm); cursor: pointer; }
 .proof-settings .check input { margin: 0; accent-color: var(--color-primary); }
-.proof-code { display: flex; gap: var(--space-2); align-items: center; }
-.proof-code .input { flex: 1 1 auto; min-width: 0; }
+.proof-code { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+.proof-code .input { flex: 1 1 200px; min-width: 0; }
 .proof-settings .field-note:empty { display: none; }
 @media (max-width: 700px) {
   .proof-item { grid-template-columns: minmax(0, 1fr); }
