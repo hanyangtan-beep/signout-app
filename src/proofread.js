@@ -38,7 +38,7 @@ export const MAX_TOKENS = 2000;
 export const MAX_EDITS = 12;
 export const MAX_FLAGS = 8;
 /** Whole-section rewrites in one answer, at most, and the sections that may be rewritten (prose, not lists). */
-export const MAX_REWRITES = 2;
+export const MAX_REWRITES = 4;
 export const REWRITE_SECTIONS = ['macro', 'intraop', 'microscopy', 'comment'];
 const MAX_REWRITE = 4000;
 const MAX_FIND = 200;
@@ -213,7 +213,7 @@ export const SYSTEM_PROMPT = [
   '1. Spelling, typing and grammar errors.',
   '2. Wording that departs from the house style below.',
   '3. Facts that disagree between sections: size, count, side, site, margin, grade, stage, a biomarker result, or the diagnosis against the microscopy or the macroscopic description.',
-  '4. A macroscopic description, intraoperative consultation, microscopy or comment that reads poorly or needs three or more changes: rewrite that section whole.',
+  '4. For any macroscopic description, intraoperative consultation, microscopy or comment that needs grammar, house-style or readability changes: rewrite that section whole in "rewrites" with all changes applied at once rather than piecemeal "edits".',
   '',
   'House style:',
   ...HOUSE_STYLE.map((r) => `- ${r}`),
@@ -224,7 +224,7 @@ export const SYSTEM_PROMPT = [
   '- [HISTORY] is context only: never edit it.',
   '- "find" and a flag\'s "quote" are copied exactly from one section: a few words on one line, enough to be unique there. "replace" is the corrected text for that span only.',
   '- "kind" is "spelling", "grammar" or "house style". "why" is at most 12 words.',
-  `- A rewrite gives the whole new text of one section: MACRO, INTRAOP, MICRO or COMMENT. Change the sentence structure and flow, not just one word for a similar word. Keep every fact (each number, measurement, side, site, negation, grade and result) and the layout (line breaks, headings, "- Label: value" lines, part letters). Make no edits in a section you rewrite. At most ${MAX_REWRITES} rewrites.`,
+  `- A rewrite gives the whole new text of one section: MACRO, INTRAOP, MICRO or COMMENT. Apply all grammar and house-style improvements together. Change the sentence structure and flow, not just one word for a similar word. Keep every fact (each number, measurement, side, site, negation, grade and result) and the layout (line breaks, headings, "- Label: value" lines, part letters). Make no edits in a section you rewrite. At most ${MAX_REWRITES} rewrites.`,
   `- At most ${MAX_EDITS} edits and ${MAX_FLAGS} flags, the most important first. Give the edits first, then the flags, then the rewrites. If nothing needs changing, reply {"edits":[],"flags":[],"rewrites":[]}.`,
   '',
   'Reply with one JSON object only, no other text:',
@@ -723,6 +723,76 @@ export function openItems(record, rules, sections) {
     return true;
   });
   return [...fromRules, ...fromModel];
+}
+
+/**
+ * Consolidate piecemeal spelling, typing, grammar and house-style edits into one whole-segment
+ * rewrite preview per section, so the consultant reviews and accepts all changes for a segment
+ * together rather than sentence by sentence. Clinical checks and flagged changes stay separate.
+ */
+export function groupEditsAsRewrites(items, sections) {
+  const byKey = Object.fromEntries((sections || []).map((s) => [s.key, s]));
+  const checks = [];
+  const perSection = new Map();
+  for (const item of items || []) {
+    if (item.kind === 'check') { checks.push(item); continue; }
+    let bucket = perSection.get(item.section);
+    if (!bucket) { bucket = { rewrite: null, edits: [] }; perSection.set(item.section, bucket); }
+    if (item.kind === 'rewrite' && !bucket.rewrite) bucket.rewrite = item;
+    else if (item.kind !== 'rewrite') bucket.edits.push(item);
+  }
+  const out = [...checks];
+  for (const s of SECTIONS) {
+    const bucket = perSection.get(s.key);
+    if (!bucket) continue;
+    const { rewrite, edits } = bucket;
+    if (!edits.length) {
+      if (rewrite) out.push(rewrite);
+      continue;
+    }
+    const base = byKey[s.key]?.text ?? '';
+    if (!base) {
+      if (rewrite) out.push(rewrite);
+      out.push(...edits);
+      continue;
+    }
+    let next = rewrite ? rewrite.text : base;
+    const applied = rewrite ? [rewrite] : [];
+    const leftover = [];
+    for (const e of edits) {
+      const t = applyEdit(next, e);
+      if (t !== null && t !== next) {
+        next = t;
+        applied.push(e);
+      } else if (rewrite && applyEdit(base, e) !== null && t === null) {
+        // The AI rewrite already resolved this rule/edit span; bundle it so Accept/Dismiss clears both.
+        applied.push(e);
+      } else {
+        leftover.push(e);
+      }
+    }
+    if (next !== base && applied.length) {
+      const kinds = [...new Set(applied.map((m) => m.kind).filter((k) => k && k !== 'rewrite'))];
+      const reasons = [...new Set(applied.map((m) => m.why).filter(Boolean))];
+      const source = applied.some((m) => m.source === 'model') ? 'model' : 'rule';
+      const combined = {
+        kind: 'rewrite',
+        section: s.key,
+        text: next,
+        base: fingerprint(base),
+        why: clip(reasons.join('; '), MAX_WHY),
+        source,
+        kinds,
+        combined: applied
+      };
+      combined.key = itemKey(combined);
+      out.push(combined);
+    } else if (rewrite) {
+      out.push(rewrite);
+    }
+    out.push(...leftover);
+  }
+  return out;
 }
 
 /** A line for Checks: when and by what the report was proofread, and what has changed since. */

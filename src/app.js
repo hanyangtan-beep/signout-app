@@ -23,7 +23,7 @@ import { organIcon, mountOrganSprite } from './organicons.js';
 import { openRoadmap, openSuggest } from './panels.js';
 import { choiceSummary } from './suggest.js';
 import {
-  SECTIONS as PROOF_SECTIONS, reportSections, ruleChecks, buildPrompt, parseReply, vetReply, newRecord, openItems, recordSummary, changedSince, applyEdit,
+  SECTIONS as PROOF_SECTIONS, reportSections, ruleChecks, buildPrompt, parseReply, vetReply, newRecord, openItems, groupEditsAsRewrites, recordSummary, changedSince, applyEdit,
   fingerprint, sectionOf, KIND_LABEL as PROOF_KIND, MODEL_NAME, formTerms, factChange, rewriteChanges, checkTicked, tickedText
 } from './proofread.js';
 import { writeBack, carryPatches, carryText, blockText, showValue, patchFor } from './writeback.js';
@@ -98,7 +98,7 @@ const state = {
   cases: [],              // last fetched Sheet rows for the Open dialog
   // Proofreading in progress (docs/specs/proofreading.md): `ticks` are the changes of each rewrite
   // ticked to accept (by suggestion key), `note` what the last accept put into the form.
-  proof: { busy: false, error: '', caseState: null, startedAt: 0, copyAnyway: '', ticks: new Map(), note: null },
+  proof: { busy: false, error: '', caseState: null, startedAt: 0, copyAnyway: '', ticks: new Map(), previewMode: new Map(), note: null },
   audit: { busy: false, error: '', caseState: null, startedAt: 0, result: null, dismissed: new Set(), undo: null, note: '' },
   ihc: { busy: false, error: '', caseState: null, startedAt: 0, notes: '', result: null, undo: null, note: '' },
   blockCheck: { busy: false, error: '', caseState: null, startedAt: 0, result: null, dismissed: new Set(), undo: null, note: '' },
@@ -1680,6 +1680,7 @@ function promptAddAiRule(suggested = '') {
   const raw = window.prompt('Add a personal AI preference rule (applied to all AI workflows immediately):', suggested);
   if (raw === null) return;
   const { rules, added } = addAiRule(raw);
+  if (added && state.caseState) renderReport();
   toast(added ? `Saved AI rule (${rules.length} active)` : 'Rule already saved or blank');
 }
 
@@ -2230,7 +2231,7 @@ function patchIssues(out) {
 function proofView(out = state.lastOut) {
   const sections = reportSections(out || {});
   const record = state.caseState?.proofread || null;
-  return { sections, record, items: openItems(record, ruleChecks(sections), sections) };
+  return { sections, record, items: groupEditsAsRewrites(openItems(record, ruleChecks(sections), sections), sections) };
 }
 
 const clock = (ms) => new Date(ms).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
@@ -2338,9 +2339,10 @@ function renderProofBox(out) {
   const modelTag = (record?.by ? String(record.by).split(' via ')[0] : '') || target.model;
   if (items.length) box.append(el('ul', { class: 'proof-list' }, ...items.map((i) => proofRow(i, out, modelTag))));
   const bar = el('div', { class: 'proof-bar' });
+  const ruleCount = loadAiRules().length;
   if (edits.length > 1) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: `Accept all ${edits.length}`, title: 'The spelling, grammar and house-style edits; flagged changes and rewrites are accepted one by one', onclick: () => acceptProof(edits) }));
   if (on) bar.append(el('button', { type: 'button', class: 'btn small ai-btn', text: busy ? 'Proofreading\u2026' : record?.at ? 'Proofread again' : 'Proofread', disabled: busy, onclick: () => runProofread() }));
-  if (on) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: '+ Rule', title: 'Add a personal AI preference rule (applied to all AI workflows)', onclick: () => promptAddAiRule() }));
+  bar.append(el('button', { type: 'button', class: 'btn ghost small', text: ruleCount ? `+ Rule (${ruleCount})` : '+ Rule', title: 'Add a personal AI preference rule (applied to all AI workflows)', onclick: () => promptAddAiRule() }));
   if (bar.childElementCount) box.append(bar);
   const proofStored = localStorage.getItem('signout.proof');
   box.open = proofStored ? proofStored === 'open' : (busy || !!error || items.length > 0 || !!note);
@@ -2352,9 +2354,12 @@ function renderProofBox(out) {
 function proofRow(item, out, modelTag = MODEL_NAME) {
   const where = sectionOf(item.section)?.label || item.section;
   const flagged = item.kind === 'check' && item.suggestion !== undefined;
-  const kind = flagged ? PROOF_KIND.flagged : PROOF_KIND[item.kind] || item.kind;
+  const kind = flagged ? PROOF_KIND.flagged
+    : item.kind === 'rewrite' && item.kinds?.length
+      ? `${PROOF_KIND.rewrite} (${item.kinds.map((k) => PROOF_KIND[k] || k).join(', ')})`
+      : PROOF_KIND[item.kind] || item.kind;
   const head = el('span', { class: 'proof-kind', text: `${kind} \u00b7 ${where}${item.source === 'model' ? ` \u00b7 ${modelTag.split(' ').join('\u00a0')}` : ''}` });
-  if (item.kind === 'rewrite') return rewriteRow(item, head, printedText(out, item.section));
+  if (item.kind === 'rewrite') return rewriteRow(item, head, printedText(out, item.section), modelTag);
   const body = el('span', { class: 'proof-text' });
   const change = (find, replace) => {
     body.append(el('del', { text: find }), ' \u2192 ', replace ? el('ins', { text: replace }) : el('span', { class: 'muted', text: '(removed)' }));
@@ -2377,35 +2382,46 @@ function proofRow(item, out, modelTag = MODEL_NAME) {
     actions.append(el('button', { type: 'button', class: 'btn small', text: 'Accept change', title: 'Make this change; it goes into the form where a field gives the text', onclick: () => acceptProof([item]) }));
   }
   const fKey = `proof:${item.key}`;
+  const suggestedRule = item.why ? `Do not flag: ${item.why}` : '';
   if (item.source === 'model') actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Flag', title: 'Flag bad AI suggestion or save a personal rule', onclick: () => { aiFlag.key = aiFlag.key === fKey ? '' : fKey; renderReport(); } }));
+  actions.append(el('button', { type: 'button', class: 'btn ghost small', text: '+ Rule', title: 'Save a personal AI preference rule', onclick: () => promptAddAiRule(suggestedRule) }));
   actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Dismiss', onclick: () => dismissProof(item) }));
-  const picker = item.source === 'model' ? flagPickerRow({ workflow: 'proofread', key: fKey, model: modelTag, tag: item.kind, suggestedRule: item.why ? `Do not flag: ${item.why}` : '' }) : null;
+  const picker = item.source === 'model' ? flagPickerRow({ workflow: 'proofread', key: fKey, model: modelTag, tag: item.kind, suggestedRule }) : null;
   return el('li', { class: `proof-item ${flagged ? 'flag' : item.kind === 'check' ? 'look' : 'edit'}` }, head, body, actions, picker);
 }
 
 /**
- * A rewrite as tracked changes over the section's text. Each change ticks or unticks on a click (or
- * Enter or Space); one that changes a fact is marked with what it changes and starts unticked. The
- * changes are inline spans acting as buttons, so they wrap with the text as it reads.
+ * A rewrite as tracked changes over the whole section, with a toggle to preview the clean
+ * rewritten segment. Each change ticks or unticks on a click (or Enter or Space); one that changes
+ * a fact is marked with what it changes and starts unticked.
  */
-function rewriteRow(item, head, base) {
+function rewriteRow(item, head, base, modelTag = MODEL_NAME) {
   const changes = rewriteView(item, base);
   const ticks = ticksFor(item, changes);
   const terms = proofTerms();
   const warn = el('p', { class: 'proof-warn', role: 'status', hidden: true });
   const accept = el('button', { type: 'button', class: 'btn small', onclick: () => acceptProof([item]) });
+  const mode = state.proof.previewMode.get(item.key) || 'diff';
+  const view = el('div', { class: `proof-rewrite${mode === 'clean' ? ' clean' : ''}` });
+  const cleanPre = el('div', { class: 'proof-rewrite-clean', hidden: mode !== 'clean' });
+  const diffSpan = el('div', { class: 'proof-rewrite-diff', hidden: mode === 'clean' });
+  const toggleBtn = el('button', {
+    type: 'button', class: 'btn ghost small',
+    text: mode === 'clean' ? 'Tracked changes' : 'Clean preview',
+    title: 'Switch between tracked changes and the clean rewritten segment preview'
+  });
   const update = () => {
     const k = ticks.filter(Boolean).length;
-    accept.textContent = `Accept ticked (${k} of ${changes.length})`;
+    accept.textContent = k === changes.length ? `Accept all (${k})` : `Accept ticked (${k} of ${changes.length})`;
     const w = k ? checkTicked(base, item.text, changes, ticks, terms) : null;
     warn.textContent = w || '';
     warn.hidden = !w;
     accept.disabled = !k || !!w;
+    cleanPre.textContent = tickedText(base, changes, ticks);
   };
-  const view = el('div', { class: 'proof-rewrite' });
   let last = 0;
   changes.forEach((c, i) => {
-    if (c.from > last) view.append(base.slice(last, c.from));
+    if (c.from > last) diffSpan.append(base.slice(last, c.from));
     const btn = el('span', { class: `chg${c.flagged ? ' flagged' : ''}${ticks[i] ? '' : ' off'}`, role: 'button', tabindex: '0', 'aria-pressed': String(ticks[i]),
       title: `${c.flagged ? `Changes a fact (${c.facts}). ` : ''}Click to ${ticks[i] ? 'untick' : 'tick'} this change` });
     if (c.old) btn.append(el('del', { text: c.old }));
@@ -2420,17 +2436,33 @@ function rewriteRow(item, head, base) {
     };
     btn.addEventListener('click', toggle);
     btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
-    view.append(btn);
+    diffSpan.append(btn);
     last = c.to;
   });
-  if (last < base.length) view.append(base.slice(last));
+  if (last < base.length) diffSpan.append(base.slice(last));
+  view.append(diffSpan, cleanPre);
+  toggleBtn.addEventListener('click', () => {
+    const next = (state.proof.previewMode.get(item.key) || 'diff') === 'clean' ? 'diff' : 'clean';
+    state.proof.previewMode.set(item.key, next);
+    view.classList.toggle('clean', next === 'clean');
+    diffSpan.hidden = next === 'clean';
+    cleanPre.hidden = next !== 'clean';
+    toggleBtn.textContent = next === 'clean' ? 'Tracked changes' : 'Clean preview';
+  });
   update();
   const nFlagged = changes.filter((c) => c.flagged).length;
   const body = el('span', { class: 'proof-text' }, item.why ? `${item.why} ` : '',
     el('span', { class: 'muted', text: `${changes.length} change${changes.length === 1 ? '' : 's'}${nFlagged ? `; ${nFlagged} that change${nFlagged === 1 ? 's' : ''} a fact, left unticked` : ''}. Click a change to tick or untick it.` }));
-  const actions = el('span', { class: 'proof-actions' }, accept,
+  const fKey = `proof:${item.key}`;
+  const suggestedRule = item.why ? `For ${sectionOf(item.section)?.label || item.section}: ${item.why}` : '';
+  const actions = el('span', { class: 'proof-actions' },
+    accept,
+    toggleBtn,
+    item.source === 'model' ? el('button', { type: 'button', class: 'btn ghost small', text: 'Flag', title: 'Flag bad AI suggestion or save a personal rule', onclick: () => { aiFlag.key = aiFlag.key === fKey ? '' : fKey; renderReport(); } }) : null,
+    el('button', { type: 'button', class: 'btn ghost small', text: '+ Rule', title: 'Save a personal AI preference rule', onclick: () => promptAddAiRule(suggestedRule) }),
     el('button', { type: 'button', class: 'btn ghost small', text: 'Dismiss', onclick: () => dismissProof(item) }));
-  return el('li', { class: 'proof-item rewrite' }, head, body, view, warn, actions);
+  const picker = item.source === 'model' ? flagPickerRow({ workflow: 'proofread', key: fKey, model: modelTag, tag: item.kind, suggestedRule }) : null;
+  return el('li', { class: 'proof-item rewrite' }, head, body, view, warn, actions, picker);
 }
 
 // What a field change put into the form, for the note.
@@ -2480,10 +2512,14 @@ function acceptProof(items) {
     if (!took.length) continue;
     done.push(...took);
     for (const item of took) {
-      const own = item.source === 'model' ? record?.items?.find((i) => i.key === item.key) : null;
-      if (!own) continue;
-      own.status = 'accepted';
-      if (own.kind === 'rewrite') { delete own.text; state.proof.ticks.delete(own.key); } // kept small: the case goes in one Sheet cell
+      const targets = item.combined?.length ? item.combined : [item];
+      for (const sub of targets) {
+        const own = sub.source === 'model' ? record?.items?.find((i) => i.key === sub.key) : null;
+        if (!own) continue;
+        own.status = 'accepted';
+        if (own.kind === 'rewrite') { delete own.text; state.proof.ticks.delete(own.key); state.proof.previewMode.delete(own.key); } // kept small: the case goes in one Sheet cell
+      }
+      if (item.kind === 'rewrite') { state.proof.ticks.delete(item.key); state.proof.previewMode.delete(item.key); }
     }
     if (next === before) continue;
     if (record?.hashes?.[key] && record.hashes[key] === fingerprint(before)) hashes.push(key);
@@ -2525,12 +2561,16 @@ function acceptProof(items) {
 function dismissProof(item) {
   const cs = state.caseState;
   const record = cs.proofread || (cs.proofread = { v: 2, dismissed: [] });
-  const own = item.source === 'model' ? (record.items || []).find((i) => i.key === item.key) : null;
-  if (own) {
-    own.status = 'dismissed';
-    if (own.kind === 'rewrite') { delete own.text; state.proof.ticks.delete(own.key); }
-  } else record.dismissed = [...new Set([...(record.dismissed || []), item.key])];
-  if (item.source === 'model') recordAiEvent({ workflow: 'proofread', action: 'dismissed', templateId: activeTemplateId(), tag: item.kind });
+  const targets = item.combined?.length ? item.combined : [item];
+  for (const sub of targets) {
+    const own = sub.source === 'model' ? (record.items || []).find((i) => i.key === sub.key) : null;
+    if (own) {
+      own.status = 'dismissed';
+      if (own.kind === 'rewrite') { delete own.text; state.proof.ticks.delete(own.key); state.proof.previewMode.delete(own.key); }
+    } else record.dismissed = [...new Set([...(record.dismissed || []), sub.key])];
+    if (sub.source === 'model') recordAiEvent({ workflow: 'proofread', action: 'dismissed', templateId: activeTemplateId(), tag: sub.kind });
+  }
+  if (item.kind === 'rewrite') { state.proof.ticks.delete(item.key); state.proof.previewMode.delete(item.key); }
   markDirty(); renderReport(); cacheCase(cs);
 }
 
@@ -2577,7 +2617,7 @@ async function runProofread({ auto = false } = {}) {
       answer = await vertexProofread({ ...question, prompt: withProofRules(question.prompt), system: VERTEX_PROOFREAD_SYSTEM_PROMPT, kind, proxyUrl, token });
       label = answer.model || 'Vertex AI';
     } else {
-      answer = await hanSlideProofread({ ...question, code: settings.code });
+      answer = await hanSlideProofread({ ...question, prompt: withProofRules(question.prompt), code: settings.code });
     }
     if (state.caseState === cs) {
       const parsed = parseReply(answer.text);

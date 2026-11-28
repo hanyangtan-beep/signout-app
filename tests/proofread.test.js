@@ -8,7 +8,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   SECTIONS, MAX_EDITS, MAX_PROMPT_CHARS, MAX_TOKENS, MAX_REWRITES, REWRITE_SECTIONS, HOUSE_STYLE, SYSTEM_PROMPT, reportSections, fingerprint, occurrences,
-  applyEdit, quoteFound, safeEdit, buildPrompt, parseReply, vetReply, editBetween, ruleChecks, sectionHashes, changedSince, newRecord, openItems,
+  applyEdit, quoteFound, safeEdit, buildPrompt, parseReply, vetReply, editBetween, ruleChecks, sectionHashes, changedSince, newRecord, openItems, groupEditsAsRewrites,
   recordSummary, itemKey, layoutOf, formTerms, factTokens, describeFacts, factChange, rewriteChanges, checkTicked, tickedText
 } from '../src/proofread.js';
 import { loadAll } from '../src/registry.js';
@@ -327,4 +327,39 @@ test('open items: a rewrite only while its section reads as it was proofread', (
   assert.deepEqual(openItems(record, [], [sec('microscopy', 'Sections show a tumour.')]), [], 'the section has changed');
   delete rewrite.text;
   assert.deepEqual(openItems(record, [], sections), [], 'its text is no longer kept');
+});
+
+test('groupEditsAsRewrites combines per-section spelling, grammar and house-style edits into one whole-segment preview', () => {
+  const micro = 'Sections shows a tumor with hemorrhage and edema. No malignancy is seen.';
+  const dx = 'COLON, sigmoid, polypectomy:\n- TUBULAR ADENOMA WITH LOW GRADE DYSPLASIA.';
+  const sections = [sec('microscopy', micro), sec('diagnosis', dx)];
+  const rules = ruleChecks(sections);
+  const modelEdit = { source: 'model', kind: 'house style', section: 'microscopy', find: 'No malignancy is seen', replace: 'There is no evidence of malignancy', why: 'House negative wording', key: 'm1' };
+  const flag = { source: 'model', kind: 'check', section: 'diagnosis', quote: 'TUBULAR ADENOMA', why: 'Check dysplasia grade', key: 'm2' };
+  const grouped = groupEditsAsRewrites([...rules, modelEdit, flag], sections);
+  assert.equal(grouped.length, 3, '1 check + 1 microscopy rewrite + 1 diagnosis rewrite');
+  assert.equal(grouped[0].kind, 'check');
+  assert.equal(grouped[1].kind, 'rewrite');
+  assert.equal(grouped[1].section, 'microscopy');
+  assert.equal(grouped[1].text, 'Sections show a tumour with haemorrhage and oedema. There is no evidence of malignancy.');
+  assert.equal(grouped[1].base, fingerprint(micro));
+  assert.equal(grouped[1].source, 'model');
+  assert.equal(grouped[1].combined.length, 5, '4 rule edits + 1 model edit bundled');
+  assert.deepEqual(grouped[1].kinds.sort(), ['grammar', 'house style', 'spelling']);
+  assert.equal(grouped[2].kind, 'rewrite');
+  assert.equal(grouped[2].section, 'diagnosis');
+  assert.equal(grouped[2].text, 'COLON, sigmoid, polypectomy:\n- TUBULAR ADENOMA with LOW GRADE DYSPLASIA.');
+  assert.equal(grouped[2].source, 'rule');
+});
+
+test('groupEditsAsRewrites merges rule edits on top of an existing AI rewrite without duplicating them', () => {
+  const micro = 'Sections shows a tumor. It is benign.';
+  const sections = [sec('microscopy', micro)];
+  const rules = ruleChecks(sections); // Sections shows -> Sections show; tumor -> tumour
+  const aiRewrite = { source: 'model', kind: 'rewrite', section: 'microscopy', text: 'Sections show a benign tumor.', base: fingerprint(micro), why: 'Tighter prose', key: 'r1' };
+  const grouped = groupEditsAsRewrites([...rules, aiRewrite], sections);
+  assert.equal(grouped.length, 1);
+  assert.equal(grouped[0].kind, 'rewrite');
+  assert.equal(grouped[0].text, 'Sections show a benign tumour.', 'rule British spelling applied onto the AI rewrite');
+  assert.equal(grouped[0].combined.length, 3, 'AI rewrite + both rule edits bundled for Accept/Dismiss');
 });
