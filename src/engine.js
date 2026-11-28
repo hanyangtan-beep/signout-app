@@ -464,11 +464,13 @@ export function generateCase(templates, caseState) {
   const extraParts = parts.some((p) => typeof ctxs[p.templateId].gen.hasExtraParts === 'function' && ctxs[p.templateId].gen.hasExtraParts(p));
   const single = letterCount(parts) === 1 && !extraParts && !ids.some((id) => templates[id].schema.alwaysLetter) && !options.alwaysLetter;
   const letters = (text) => (single ? dropPartLetters(text, parts[0].label) : text);
+  const reconciliation = reconcileCase(templates, caseState, parts);
   // Generators may add a case-level comment (`comment(parts, ctx)`: e.g. the completion-resection
   // staging sentence); it prints before the snippets and the typed comment.
   const genComments = ids.map((id) => (ctxs[id].gen.comment ? styled(id, ctxs[id].gen.comment(ctxs[id].parts, ctxs[id]) || '') : ''));
   const comment = [
     ...genComments,
+    reconciliation.provenance,
     ...snippetsFor(templates, caseState).filter((sn) => sn.active).map((sn) => styled(sn.templateId, renderSnippet(sn, single))),
     (caseState.comment || '').trim()
   ].filter((t) => t && t.trim() !== '').join('\n\n');
@@ -516,7 +518,6 @@ export function generateCase(templates, caseState) {
     edited[key] = true;
     source[key] = 'edited';
   }
-  const reconciliation = reconcileCase(templates, caseState, parts);
   return { ...blocks, synoptic: tidy(letters(synoptic)), issues, reconciliation, source, edited, generated, patched, formText, report: assemble(blocks, !!options.includeHeader) };
 }
 

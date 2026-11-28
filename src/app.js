@@ -11,7 +11,7 @@ import { loadDraft, setDraftOwner, saveCase as cacheCase, clearCase, copyText } 
 import { loadConfig, saveConfig, accountConfig, rememberForAccount } from './config.js';
 import { getToken, fetchUserInfo, isSignedIn, currentUser, signOut, consumeRedirect, setActiveAction, renewalDue, renewSignIn } from './gauth.js';
 import { gateEnabled, gateState, parseAllowList, formatAllowList, BUILT_IN_ALLOWED, emailDigest, canonicalEmail } from './gate.js';
-import { saveCase as driveSave, listCases, openCase as driveOpen, setCaseStatus, deleteCase as driveDelete, lookupDocUrl } from './drive.js';
+import { saveCase as driveSave, listCases, openCase as driveOpen, setCaseStatus, deleteCase as driveDelete, lookupDocUrl, loadDriveAiRules, saveDriveAiRules } from './drive.js';
 import { normaliseAccession, phiWarnings, STATUSES, statusOf } from './docformat.js';
 import { buildPayload, payloadKeys, payloadLabel, parseHarvest, nextCaptureTarget } from './lisbridge.js';
 import { parseIntake, matchParts, presetValues, deriveTitle, MAX_PARTS, GENERIC_ID } from './intake.js';
@@ -33,7 +33,7 @@ import { DRAFT_RESPONSE_SCHEMA, buildDraftPrompt, parseDraftReply, vetDraftReply
 import { isAuditEligible, AUDIT_RESPONSE_SCHEMA, buildAuditPrompt, parseAuditReply, vetAuditFindings, applyAuditFieldPatch } from './aiaudit.js';
 import { IHC_RESPONSE_SCHEMA, buildIhcPrompt, parseIhcReply, vetIhcReply, appendIhcComment } from './aiihc.js';
 import { BLOCK_KEY_RESPONSE_SCHEMA, buildBlockKeyPrompt, parseBlockKeyReply, vetBlockKeyReply, applyBlockKeyFieldPatch } from './aiblockkey.js';
-import { FLAG_REASONS, loadAiRules, saveAiRules, addAiRule, formatAiRules, appendRulesToSystem, loadAiLog, clearAiLog, recordAiEvent, formatAiLogSummary, exportAiLogPayload } from './aifeedback.js';
+import { FLAG_REASONS, loadAiRules, saveAiRules, addAiRule, mergeAiRules, formatAiRules, appendRulesToSystem, loadAiLog, clearAiLog, recordAiEvent, formatAiLogSummary, exportAiLogPayload } from './aifeedback.js';
 import { EXTRACT_RESPONSE_SCHEMA, buildExtractPrompt, parseExtractReply, vetExtractedFields, applyExtractedFields, CASE_EXTRACT_RESPONSE_SCHEMA, buildCaseExtractPrompt, parseCaseExtractReply, vetCaseExtractedFields, applyCaseExtractedFields, INTAKE_RESPONSE_SCHEMA, buildIntakePrompt, parseIntakeReply, vetIntakeParts } from './aiextract.js';
 
 // The CNS-only code (guided intake, pathway drawer and family plates, about 180 kB) loads the
@@ -1697,12 +1697,66 @@ const withProofRules = (prompt) => {
 };
 const activeTemplateId = () => (state.caseState?.parts?.[state.activePart] ? templateIdOf(state.caseState, activePart()) : '');
 const aiFlag = { key: '' };
+const aiRulesSync = { status: '', synced: false, busy: false };
+
+function setAiRulesStatus(msg) {
+  aiRulesSync.status = msg;
+  if ($('#cfg-aiRulesStatus')) $('#cfg-aiRulesStatus').textContent = msg;
+}
+
+async function syncAiRulesFromDrive() {
+  if (!isSignedIn() || !state.config?.clientId || aiRulesSync.busy) {
+    if (!isSignedIn()) setAiRulesStatus('Saved locally on this browser (sign in to Google Drive to sync across computers).');
+    return;
+  }
+  aiRulesSync.busy = true;
+  setAiRulesStatus('Syncing personal AI rules with Google Drive…');
+  try {
+    const remote = await loadDriveAiRules(state.config);
+    const local = loadAiRules();
+    const merged = mergeAiRules(local, remote.rules);
+    const localChanged = merged.length !== local.length || merged.some((r, i) => r !== local[i]);
+    const remoteChanged = !remote.found || merged.length !== remote.rules.length || merged.some((r, i) => r !== remote.rules[i]);
+    if (localChanged) {
+      saveAiRules(merged);
+      if ($('#cfg-aiRules') && nodes.dlgSettings?.open) $('#cfg-aiRules').value = formatAiRules(merged);
+      if (state.caseState) renderReport();
+    }
+    if (remoteChanged && merged.length) {
+      await saveDriveAiRules(state.config, merged);
+    }
+    aiRulesSync.synced = true;
+    setAiRulesStatus(merged.length ? `Synced with Google Drive (${merged.length} rule${merged.length === 1 ? '' : 's'})` : 'Connected to Google Drive (no personal rules yet)');
+  } catch {
+    setAiRulesStatus('Saved locally (Google Drive sync unavailable right now).');
+  } finally {
+    aiRulesSync.busy = false;
+  }
+}
+
+async function pushAiRulesToDrive(rules) {
+  if (!isSignedIn() || !state.config?.clientId) {
+    setAiRulesStatus('Saved locally on this browser (sign in to Google Drive to sync across computers).');
+    return;
+  }
+  setAiRulesStatus('Saving personal AI rules to Google Drive…');
+  try {
+    await saveDriveAiRules(state.config, rules);
+    aiRulesSync.synced = true;
+    setAiRulesStatus(`Synced with Google Drive (${rules.length} rule${rules.length === 1 ? '' : 's'})`);
+  } catch {
+    setAiRulesStatus('Saved locally (Google Drive sync failed; will retry on next save).');
+  }
+}
 
 function promptAddAiRule(suggested = '') {
   const raw = window.prompt('Add a personal AI preference rule (applied to all AI workflows immediately):', suggested);
   if (raw === null) return;
   const { rules, added } = addAiRule(raw);
-  if (added && state.caseState) renderReport();
+  if (added) {
+    if (state.caseState) renderReport();
+    pushAiRulesToDrive(rules);
+  }
   toast(added ? `Saved AI rule (${rules.length} active)` : 'Rule already saved or blank');
 }
 
@@ -2424,7 +2478,8 @@ function applyReconcilePatch(item) {
   markDirty();
   cacheCase(cs);
   render();
-  toast(`Synced ${item.kind === 'deposit' ? 'peritoneal findings' : 'satellite nodes'} into Part ${item.primaryLabel}`);
+  const label = item.kind === 'deposit' ? 'peritoneal findings' : item.kind === 'margin' ? 'separate margins' : 'satellite nodes';
+  toast(`Synced ${label} into (${item.primaryLabel})`);
 }
 
 function undoReconcileSync() {
@@ -4289,7 +4344,10 @@ function applySettingsForm() {
   if ($('#cfg-proofBackend')) {
     saveVertexSettings({ backend: $('#cfg-proofBackend').value, proxyUrl: $('#cfg-proofProxyUrl')?.value });
   }
-  if ($('#cfg-aiRules')) saveAiRules($('#cfg-aiRules').value);
+  if ($('#cfg-aiRules')) {
+    const savedRules = saveAiRules($('#cfg-aiRules').value);
+    pushAiRulesToDrive(savedRules);
+  }
   saveConfig(patch);
   useAccount(); // the account's own folder and sheet ids survive a Settings save
   if (resetFolder) rememberForAccount(state.config, { folderId: patch.folderId, sheetId: '' });
@@ -4321,11 +4379,13 @@ function openSettings() {
   if ($('#cfg-proofBackend')) $('#cfg-proofBackend').value = vertex.backend;
   if ($('#cfg-proofProxyUrl')) $('#cfg-proofProxyUrl').value = vertex.proxyUrl;
   if ($('#cfg-aiRules')) $('#cfg-aiRules').value = formatAiRules(loadAiRules());
+  if ($('#cfg-aiRulesStatus')) $('#cfg-aiRulesStatus').textContent = aiRulesSync.status || (isSignedIn() ? 'Syncing with Google Drive…' : 'Saved locally on this browser (sign in to Google Drive to sync across computers).');
   if ($('#cfg-aiLogSummary')) $('#cfg-aiLogSummary').textContent = formatAiLogSummary(loadAiLog());
   $('#cfg-proofStatus').textContent = '';
   syncAiSettingsUi();
   nodes.signout.hidden = !isSignedIn();
   nodes.dlgSettings.showModal();
+  if (isSignedIn() && !aiRulesSync.synced) syncAiRulesFromDrive();
 }
 
 function initDrive() {
@@ -4372,7 +4432,7 @@ function initDrive() {
   nodes.openSearch.addEventListener('input', (e) => renderCaseList(e.target.value));
   nodes.google.addEventListener('click', async () => {
     if (!state.config.clientId) { openSettings(); return toast('Paste the Google OAuth client id first'); }
-    try { await ensureSignedIn(true, 'signin'); toast(`Signed in as ${currentUser() || 'Google user'}`); } catch (err) { toast(err.message); }
+    try { await ensureSignedIn(true, 'signin'); syncAiRulesFromDrive(); toast(`Signed in as ${currentUser() || 'Google user'}`); } catch (err) { toast(err.message); }
   });
   nodes.settings.addEventListener('click', openSettings);
   nodes.roadmap.addEventListener('click', () => openRoadmap());
@@ -4490,7 +4550,8 @@ async function boot() {
     await ensureTemplates(templatesInUse(saved));
     setCase(saved, 0);
   } else await newCase(defaultId);
-  if (isSignedIn() && !currentUser()) fetchUserInfo(await getToken(state.config, { interactive: false })).then(() => { useAccount(); renderAccount(); }).catch(() => {});
+  if (isSignedIn() && !currentUser()) fetchUserInfo(await getToken(state.config, { interactive: false })).then(() => { useAccount(); renderAccount(); syncAiRulesFromDrive(); }).catch(() => {});
+  else if (isSignedIn()) syncAiRulesFromDrive();
   const note = takeNote(); // what New case or Save & new said before a release or a renewed sign-in reloaded the page
   if (back?.error) toast(back.error === 'access_denied' ? 'Google sign-in was cancelled' : `Google sign-in failed: ${back.error}`);
   // A resumed Save or Open belonged to the draft that was cleared, so it is not carried out.

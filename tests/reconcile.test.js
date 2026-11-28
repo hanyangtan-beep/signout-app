@@ -9,6 +9,7 @@ import { buildAuditPrompt } from '../src/aiaudit.js';
 
 import lymphNodeGen from '../generators/lymphnode.js';
 import peritonealGen from '../generators/peritoneal_nodule.js';
+import genericGen from '../generators/generic.js';
 import lungGen from '../generators/lung_carcinoma.js';
 import breastGen from '../generators/breast_carcinoma.js';
 import colonGen from '../generators/colon_resection.js';
@@ -22,6 +23,7 @@ const loadSchema = (name) => JSON.parse(readFileSync(resolve(`schemas/${name}.js
 const templates = {
   lymph_node: { schema: loadSchema('lymph_node'), generator: lymphNodeGen },
   peritoneal_nodule: { schema: loadSchema('peritoneal_nodule'), generator: peritonealGen },
+  generic: { schema: loadSchema('generic'), generator: genericGen },
   lung_carcinoma: { schema: loadSchema('lung_carcinoma'), generator: lungGen },
   breast_carcinoma: { schema: loadSchema('breast_carcinoma'), generator: breastGen },
   colon_resection: { schema: loadSchema('colon_resection'), generator: colonGen },
@@ -180,10 +182,10 @@ test('generic cancer template (gastric_carcinoma) reconciles nodesExamined / nod
     reconciliation: out.reconciliation
   });
   assert.match(req.prompt, /\[MULTI-PART RECONCILIATION \(DETERMINISTIC\)\]/);
-  assert.match(req.prompt, /Part B/);
+  assert.match(req.prompt, /\(B\)/);
 });
 
-test('endometrial_carcinoma + peritoneal_nodule (pelvic + omental) reconciles pelvicPeritoneum and distantMets to pM1 / IVB', () => {
+test('endometrial_carcinoma + peritoneal_nodule (pelvic + omental) reconciles pelvicPeritoneum and distantMets to pM1 / IVB with (B)/(C) provenance', () => {
   const cs = {
     templateId: 'endometrial_carcinoma',
     options: { printPTNM: true },
@@ -201,12 +203,13 @@ test('endometrial_carcinoma + peritoneal_nodule (pelvic + omental) reconciles pe
   assert.equal(item.status, 'needs-sync');
   assert.equal(item.patch.fields.pelvicPeritoneum, 'Present');
   assert.deepEqual(item.patch.fields.distantMets, ['Omentum']);
-  assert.match(item.patch.fields.distantDetail, /Part C \(Omentum\)/);
+  assert.match(item.patch.fields.distantDetail, /Omentum \(C\)/);
 
   Object.assign(cs.parts[0].values, item.patch.fields);
   const out2 = generateCase(templates, cs);
   assert.equal(out2.reconciliation.items.find((i) => i.kind === 'deposit').status, 'synced');
   assert.match(out2.synoptic, /pM1/);
+  assert.match(out2.comment, /\(B\) Pouch of Douglas, \(C\) Omentum/);
 });
 
 test('ovary_ft_peritoneum + omental & diaphragmatic peritoneal_nodule updates otherInvolvement', () => {
@@ -246,7 +249,7 @@ test('colon_resection + peritoneal_nodule reconciles Peritoneum into distantMeta
   const item = out1.reconciliation.items.find((i) => i.kind === 'deposit');
   assert.equal(item.status, 'needs-sync');
   assert.deepEqual(item.patch.fields.distantMetastasis, ['Peritoneum']);
-  assert.match(item.patch.fields.metastasisDetail, /Part B \(Omentum\)/);
+  assert.match(item.patch.fields.metastasisDetail, /Omentum \(B\)/);
 
   Object.assign(cs.parts[0].values, item.patch.fields);
   const out2 = generateCase(templates, cs);
@@ -272,4 +275,48 @@ test('appendix_carcinoma + peritoneal_nodule reconciles intraperitoneal metastas
   Object.assign(cs.parts[0].values, item.patch.fields);
   const out2 = generateCase(templates, cs);
   assert.equal(out2.reconciliation.items.find((i) => i.kind === 'deposit').status, 'synced');
+});
+
+test('colon_resection + separate clear distal donut margin reconciles distalMargin and prints (B) provenance', () => {
+  const cs = {
+    templateId: 'colon_resection',
+    meta: {},
+    parts: [
+      makePart('colon_resection', 'A', { distalMargin: 'Involved by invasive carcinoma' }),
+      makePart('generic', 'B', { specimenName: 'Distal anastomotic donut', diagnosis: 'No evidence of malignancy' })
+    ]
+  };
+
+  const out1 = generateCase(templates, cs);
+  const item = out1.reconciliation.items.find((i) => i.kind === 'margin');
+  assert.ok(item);
+  assert.equal(item.status, 'needs-sync');
+  assert.equal(item.patch.fields.distalMargin, 'Uninvolved by invasive carcinoma');
+
+  Object.assign(cs.parts[0].values, item.patch.fields);
+  const out2 = generateCase(templates, cs);
+  assert.equal(out2.reconciliation.items.find((i) => i.kind === 'margin').status, 'synced');
+  assert.match(out2.comment, /\(B\) Distal anastomotic donut \(clear\)/);
+});
+
+test('breast_carcinoma + separate anterior cavity shave appends bracketed (B) line to marginsInvasive', () => {
+  const cs = {
+    templateId: 'breast_carcinoma',
+    meta: {},
+    parts: [
+      makePart('breast_carcinoma', 'A', { marginsInvasive: 'Anterior margin: involved' }),
+      makePart('generic', 'B', { specimenName: 'Anterior cavity shave', diagnosis: 'Uninvolved by invasive carcinoma, clearance 4 mm' })
+    ]
+  };
+
+  const out1 = generateCase(templates, cs);
+  const item = out1.reconciliation.items.find((i) => i.kind === 'margin');
+  assert.ok(item);
+  assert.equal(item.status, 'needs-sync');
+  assert.match(item.patch.fields.marginsInvasive, /Anterior cavity shave \(B\): uninvolved by invasive carcinoma \(4 mm\)/);
+
+  Object.assign(cs.parts[0].values, item.patch.fields);
+  const out2 = generateCase(templates, cs);
+  assert.equal(out2.reconciliation.items.find((i) => i.kind === 'margin').status, 'synced');
+  assert.match(out2.comment, /\(B\) Anterior cavity shave \(clear\)/);
 });

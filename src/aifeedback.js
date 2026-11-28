@@ -73,6 +73,11 @@ export function addAiRule(ruleText, storage = globalThis.localStorage) {
   return { rules, added: true };
 }
 
+/** Merge local and Drive-synced AI rules without case-insensitive duplicates (remote rules first, local additions preserved). */
+export function mergeAiRules(localRules = [], remoteRules = []) {
+  return parseAiRules([...(Array.isArray(remoteRules) ? remoteRules : []), ...(Array.isArray(localRules) ? localRules : [])]);
+}
+
 /** Append the consultant's personal preference rules to any AI system prompt. */
 export function appendRulesToSystem(system, rules = []) {
   const base = String(system ?? '');

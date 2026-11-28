@@ -312,7 +312,8 @@
       <div class="field proof-settings">
         <label for="cfg-aiRules">AI preferences (personal rules)</label>
         <textarea class="input" id="cfg-aiRules" rows="3" placeholder="One rule per line — applied to all AI workflows, e.g.&#10;Do not flag telegraphic microscopy sentences.&#10;Keep (AE) in block keys rather than expanding to all embedded."></textarea>
-        <p class="field-note">Appended to every Vertex AI prompt immediately (zero redeploy). You can also add rules from any AI panel via + Rule.</p>
+        <p class="field-note">Appended to every Vertex AI prompt immediately (zero redeploy) and synced to Google Drive (<code>ai-rules.json</code>) when signed in. You can also add rules from any AI panel via + Rule.</p>
+        <p class="field-note" id="cfg-aiRulesStatus" role="status" aria-live="polite"></p>
         <div class="lis-row ai-row">
           <button class="btn ghost small" id="btn-ai-log-export" type="button" title="Download PHI-free AI usage, acceptance, undo, and flag stats as JSON">Export AI log (JSON)</button>
           <button class="btn ghost small" id="btn-ai-log-clear" type="button">Clear log</button>

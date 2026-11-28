@@ -23,8 +23,11 @@ const numOrNull = (v) => {
 const listLabels = (labels) => {
   const uniq = [...new Set(labels.filter(Boolean))];
   if (!uniq.length) return '';
-  if (uniq.length === 1) return `Part ${uniq[0]}`;
-  return `Parts ${uniq.slice(0, -1).join(', ')} & ${uniq[uniq.length - 1]}`;
+  if (uniq.length === 1) return `(${uniq[0]})`;
+  const codes = uniq.map((l) => (l.length === 1 ? l.charCodeAt(0) : -1));
+  const contiguous = codes.length >= 3 && codes.every((c, i) => c >= 65 && (i === 0 || c === codes[i - 1] + 1));
+  if (contiguous) return `(${uniq[0]}\u2013${uniq[uniq.length - 1]})`;
+  return uniq.map((l) => `(${l})`).join(', ');
 };
 
 const isCancerSynoptic = (schema, gen) => {
@@ -462,7 +465,7 @@ function mergeMulti(current, additions) {
 }
 
 function depositPartDesc(contribs) {
-  return contribs.map((c) => `Part ${c.partLabel} (${c.siteLabel})`).join(', ');
+  return contribs.map((c) => `${c.siteLabel} (${c.partLabel})`).join(', ');
 }
 
 function reconcileEndometrialDeposits(primary, primaryIndex, schema, contribs) {
@@ -664,13 +667,169 @@ function reconcileGenericDeposits(primary, primaryIndex, schema, contribs) {
   };
 }
 
+function pickMarginOption(schema, fieldId, status) {
+  const f = (schema.fields || []).find((x) => x.id === fieldId);
+  if (!f?.options?.length) return '';
+  if (status === 'clear') {
+    return f.options.find((o) => /^Uninvolved by invasive carcinoma$/i.test(o))
+      || f.options.find((o) => /^Uninvolved by carcinoma$/i.test(o))
+      || f.options.find((o) => /^Uninvolved/i.test(o))
+      || '';
+  }
+  if (status === 'involved') {
+    return f.options.find((o) => /^Involved by invasive carcinoma$/i.test(o))
+      || f.options.find((o) => /^Involved by carcinoma$/i.test(o))
+      || f.options.find((o) => /^Involved/i.test(o))
+      || '';
+  }
+  return '';
+}
+
+function reconcileBreastMargins(primary, primaryIndex, schema, contribs) {
+  const known = contribs.filter((c) => c.status === 'clear' || c.status === 'involved');
+  if (!known.length) return null;
+  const v = primary.values || {};
+  const current = String(v.marginsInvasive || '').trim();
+  const linesToAdd = [];
+
+  for (const c of known) {
+    if (current.includes(`(${c.partLabel})`)) continue;
+    const statusPhrase = c.status === 'clear'
+      ? `uninvolved by invasive carcinoma${c.distanceMm !== null ? ` (${c.distanceMm} mm)` : ''}`
+      : 'involved by invasive carcinoma';
+    linesToAdd.push(`${c.site} (${c.partLabel}): ${statusPhrase}`);
+  }
+
+  const fields = {};
+  if (linesToAdd.length) {
+    fields.marginsInvasive = current ? `${current}\n${linesToAdd.join('\n')}` : linesToAdd.join('\n');
+  }
+  const needsSync = Object.keys(fields).length > 0;
+  const satLabels = known.map((c) => c.partLabel);
+  return {
+    id: `margins:${primaryIndex}`,
+    kind: 'margin',
+    primaryIndex,
+    primaryLabel: primary.label,
+    primaryTemplateId: primary.templateId,
+    primaryName: schema.name || primary.templateId,
+    satelliteLabels: satLabels,
+    status: needsSync ? 'needs-sync' : 'synced',
+    summary: needsSync
+      ? `${listLabels(satLabels)} (${known.map((c) => `${c.site}: ${c.status}`).join('; ')}) not yet reflected in (${primary.label}) margins`
+      : `${listLabels(satLabels)} separate margin(s) reflected in (${primary.label})`,
+    detail: needsSync
+      ? `Appends ${linesToAdd.join('; ')} to (${primary.label}) invasive margins.`
+      : 'Primary resection margins already cite the separate cavity shave / margin part(s).',
+    patch: needsSync ? { partIndex: primaryIndex, fields } : null,
+    provenancePart: known.map((c) => `(${c.partLabel}) ${c.site} (${c.status})`).join(', ')
+  };
+}
+
+function reconcileSelectMargins(primary, primaryIndex, schema, contribs) {
+  const known = contribs.filter((c) => c.status === 'clear' || c.status === 'involved');
+  if (!known.length) return null;
+  const v = primary.values || {};
+  const fieldIds = new Set((schema.fields || []).map((f) => f.id));
+  const fields = {};
+  const matched = [];
+  const otherClear = [];
+  const otherInvolved = [];
+
+  for (const c of known) {
+    const fieldMap = {
+      proximal: 'proximalMargin',
+      distal: 'distalMargin',
+      radial: 'radialMargin',
+      bronchial: 'bronchialMargin',
+      vascular: 'vascularMargin',
+      parenchymal: 'parenchymalMargin'
+    };
+    const mapped = fieldMap[c.target];
+    if (mapped && fieldIds.has(mapped)) {
+      const cur = String(v[mapped] || '');
+      const desired = pickMarginOption(schema, mapped, c.status);
+      if (desired) {
+        const curInvolved = /^Involved/i.test(cur);
+        const curUninvolved = /^Uninvolved/i.test(cur);
+        if ((c.status === 'clear' && !curUninvolved) || (c.status === 'involved' && !curInvolved)) {
+          fields[mapped] = desired;
+        }
+        matched.push(c);
+        continue;
+      }
+    }
+    if (c.status === 'clear') otherClear.push(c);
+    else if (c.status === 'involved') otherInvolved.push(c);
+  }
+
+  const otherAll = [...otherInvolved, ...otherClear];
+  if (otherAll.length && fieldIds.has('otherMargin')) {
+    const aggStatus = otherInvolved.length ? 'involved' : 'clear';
+    const desired = pickMarginOption(schema, 'otherMargin', aggStatus);
+    const cur = String(v.otherMargin || '');
+    const nameField = fieldIds.has('otherMarginName') ? 'otherMarginName' : fieldIds.has('otherMarginDetail') ? 'otherMarginDetail' : '';
+    const desc = otherAll.map((c) => `${c.site} (${c.partLabel})`).join(', ');
+    if (desired && ((aggStatus === 'clear' && !/^Uninvolved/i.test(cur)) || (aggStatus === 'involved' && !/^Involved/i.test(cur)))) {
+      fields.otherMargin = desired;
+      if (nameField && !String(v[nameField] || '').includes(`(${otherAll[0].partLabel})`)) fields[nameField] = desc;
+    } else if (nameField && !String(v[nameField] || '').includes(`(${otherAll[0].partLabel})`) && !String(v[nameField] || '').trim()) {
+      fields[nameField] = desc;
+    }
+    matched.push(...otherAll);
+  }
+
+  if (!matched.length) return null;
+  const needsSync = Object.keys(fields).length > 0;
+  const satLabels = matched.map((c) => c.partLabel);
+  return {
+    id: `margins:${primaryIndex}`,
+    kind: 'margin',
+    primaryIndex,
+    primaryLabel: primary.label,
+    primaryTemplateId: primary.templateId,
+    primaryName: schema.name || primary.templateId,
+    satelliteLabels: satLabels,
+    status: needsSync ? 'needs-sync' : 'synced',
+    summary: needsSync
+      ? `${listLabels(satLabels)} (${matched.map((c) => `${c.site}: ${c.status}`).join('; ')}) not yet reflected in (${primary.label}) margins`
+      : `${listLabels(satLabels)} separate margin(s) consistent with (${primary.label})`,
+    detail: needsSync
+      ? `Updates (${primary.label}) margin status from ${matched.map((c) => `${c.site} (${c.partLabel})`).join(', ')}.`
+      : 'Primary resection margin fields are consistent with the separate margin / donut part(s).',
+    patch: needsSync ? { partIndex: primaryIndex, fields } : null,
+    provenancePart: matched.map((c) => `(${c.partLabel}) ${c.site} (${c.status})`).join(', ')
+  };
+}
+
+function buildProvenanceNote(items, contributions) {
+  const synced = items.filter((it) => it.status === 'synced');
+  if (!synced.length) return '';
+  const clauses = [];
+  for (const it of synced) {
+    if (it.kind === 'nodes') {
+      const nodes = contributions.filter((c) => c.kind === 'nodes' && it.satelliteLabels.includes(c.partLabel));
+      const desc = nodes.map((c) => `(${c.partLabel})${c.site ? ` ${c.site}` : ''} (${c.positive}/${c.examined})`).join(', ');
+      if (desc) clauses.push(`regional lymph nodes from ${desc}`);
+    } else if (it.kind === 'deposit') {
+      const deps = contributions.filter((c) => c.kind === 'deposit' && it.satelliteLabels.includes(c.partLabel));
+      const desc = deps.map((c) => `(${c.partLabel}) ${c.siteLabel}`).join(', ');
+      if (desc) clauses.push(`peritoneal findings from ${desc}`);
+    } else if (it.kind === 'margin' && it.provenancePart) {
+      clauses.push(`separate margin(s) from ${it.provenancePart}`);
+    }
+  }
+  if (!clauses.length) return '';
+  return `Consolidated staging and synoptic findings incorporate ${clauses.join('; ')}.`;
+}
+
 /**
- * Reconcile satellite parts (`lymph_node`, `peritoneal_nodule`) against primary cancer synoptic parts.
- * Returns `{ contributions, items }` where each item is `{ id, kind, primaryIndex, primaryLabel,
- * primaryTemplateId, primaryName, satelliteLabels, status, summary, detail, patch }`.
+ * Reconcile satellite parts (`lymph_node`, `peritoneal_nodule`, separate margin `generic` parts)
+ * against primary cancer synoptic parts.
+ * Returns `{ contributions, items, provenance }`.
  */
 export function reconcileCase(templates, caseState, parts) {
-  if (!Array.isArray(parts) || parts.length < 2) return { contributions: [], items: [] };
+  if (!Array.isArray(parts) || parts.length < 2) return { contributions: [], items: [], provenance: '' };
 
   const contributions = [];
   const primaries = [];
@@ -687,10 +846,11 @@ export function reconcileCase(templates, caseState, parts) {
     }
   });
 
-  if (!primaries.length || !contributions.length) return { contributions, items: [] };
+  if (!primaries.length || !contributions.length) return { contributions, items: [], provenance: '' };
 
   const nodeContribs = contributions.filter((c) => c.kind === 'nodes' && (c.examined > 0 || c.positive > 0 || c.itc > 0));
   const depositContribs = contributions.filter((c) => c.kind === 'deposit');
+  const marginContribs = contributions.filter((c) => c.kind === 'margin');
   const items = [];
 
   // Reconcile against the primary cancer synoptic (when there is a single primary, all satellites belong to it).
@@ -717,9 +877,18 @@ export function reconcileCase(templates, caseState, parts) {
       else depItem = reconcileGenericDeposits(part, index, schema, otherDeposits);
       if (depItem) items.push(depItem);
     }
+
+    const otherMargins = marginContribs.filter((c) => c.partIndex !== index);
+    if (otherMargins.length) {
+      let mItem = null;
+      if (part.templateId === 'breast_carcinoma') mItem = reconcileBreastMargins(part, index, schema, otherMargins);
+      else mItem = reconcileSelectMargins(part, index, schema, otherMargins);
+      if (mItem) items.push(mItem);
+    }
   }
 
-  return { contributions, items };
+  const provenance = buildProvenanceNote(items, contributions);
+  return { contributions, items, provenance };
 }
 
 /** Concise plain-text summary of deterministic reconciliation for the Neon HIGH Staging audit prompt. */

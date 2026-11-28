@@ -362,3 +362,72 @@ export async function lookupDocUrl(config, accession, api = gfetch) {
   const { docId } = await lookupRow(config, sheetId, acc, api);
   return docId ? docUrlFor(docId) : null;
 }
+
+// ---------- Personal AI rules (ai-rules.json in the account's Drive folder) ----------
+
+const AI_RULES_FILE = 'ai-rules.json';
+
+async function findAiRulesFileId(config, folderId, api) {
+  const res = await api(config, `${DRIVE}/files?${q({
+    q: `name='${AI_RULES_FILE}' and '${esc(folderId)}' in parents and trashed=false`,
+    fields: 'files(id,modifiedTime)',
+    pageSize: '5'
+  })}`);
+  const data = await res.json();
+  return data?.files?.[0]?.id || '';
+}
+
+/**
+ * Read personal AI preference rules from `ai-rules.json` in this account's Drive folder.
+ * Returns `{ found, fileId, rules, updatedAt }`.
+ */
+export async function loadDriveAiRules(config, api = gfetch) {
+  const folderId = await ensureFolder(config, api);
+  const fileId = await findAiRulesFileId(config, folderId, api);
+  if (!fileId) return { found: false, fileId: '', rules: [], updatedAt: '' };
+  const res = await api(config, `${DRIVE}/files/${fileId}?alt=media`);
+  const data = await res.json().catch(() => ({}));
+  const rules = Array.isArray(data?.rules) ? data.rules : [];
+  return { found: true, fileId, rules, updatedAt: String(data?.updatedAt || '') };
+}
+
+/**
+ * Write personal AI preference rules to `ai-rules.json` in this account's Drive folder
+ * (creates the file on first save, updates in place thereafter).
+ */
+export async function saveDriveAiRules(config, rules = [], api = gfetch) {
+  const folderId = await ensureFolder(config, api);
+  const existingId = await findAiRulesFileId(config, folderId, api);
+  const updatedAt = new Date().toISOString();
+  const payload = JSON.stringify({ version: 1, updatedAt, rules: Array.isArray(rules) ? rules : [] }, null, 2);
+
+  if (existingId) {
+    await api(config, `${UPLOAD}/files/${existingId}?uploadType=media`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: payload
+    });
+    return { fileId: existingId, updatedAt, count: rules.length };
+  }
+
+  const boundary = `signout_${Date.now()}`;
+  const meta = JSON.stringify({ name: AI_RULES_FILE, mimeType: 'application/json', parents: [folderId] });
+  const body = [
+    `--${boundary}`,
+    'Content-Type: application/json; charset=UTF-8',
+    '',
+    meta,
+    `--${boundary}`,
+    'Content-Type: application/json',
+    '',
+    payload,
+    `--${boundary}--`
+  ].join('\r\n');
+  const res = await api(config, `${UPLOAD}/files?${q({ uploadType: 'multipart', fields: 'id' })}`, {
+    method: 'POST',
+    headers: { 'Content-Type': `multipart/related; boundary=${boundary}` },
+    body
+  });
+  const created = await res.json();
+  return { fileId: created?.id || '', updatedAt, count: rules.length };
+}
