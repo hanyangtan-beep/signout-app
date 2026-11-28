@@ -8,20 +8,26 @@ import { extractLungStation, formatReconciliationForAudit } from '../src/reconci
 import { buildAuditPrompt } from '../src/aiaudit.js';
 
 import lymphNodeGen from '../generators/lymphnode.js';
+import peritonealGen from '../generators/peritoneal_nodule.js';
 import lungGen from '../generators/lung_carcinoma.js';
 import breastGen from '../generators/breast_carcinoma.js';
 import colonGen from '../generators/colon_resection.js';
 import endometrialGen from '../generators/endometrial_carcinoma.js';
+import ovaryGen from '../generators/ovary_ft_peritoneum.js';
+import appendixGen from '../generators/appendix_carcinoma.js';
 import gastricGen from '../generators/gastric_carcinoma.js';
 
 const loadSchema = (name) => JSON.parse(readFileSync(resolve(`schemas/${name}.json`), 'utf8'));
 
 const templates = {
   lymph_node: { schema: loadSchema('lymph_node'), generator: lymphNodeGen },
+  peritoneal_nodule: { schema: loadSchema('peritoneal_nodule'), generator: peritonealGen },
   lung_carcinoma: { schema: loadSchema('lung_carcinoma'), generator: lungGen },
   breast_carcinoma: { schema: loadSchema('breast_carcinoma'), generator: breastGen },
   colon_resection: { schema: loadSchema('colon_resection'), generator: colonGen },
   endometrial_carcinoma: { schema: loadSchema('endometrial_carcinoma'), generator: endometrialGen },
+  ovary_ft_peritoneum: { schema: loadSchema('ovary_ft_peritoneum'), generator: ovaryGen },
+  appendix_carcinoma: { schema: loadSchema('appendix_carcinoma'), generator: appendixGen },
   gastric_carcinoma: { schema: loadSchema('gastric_carcinoma'), generator: gastricGen }
 };
 
@@ -175,4 +181,95 @@ test('generic cancer template (gastric_carcinoma) reconciles nodesExamined / nod
   });
   assert.match(req.prompt, /\[MULTI-PART RECONCILIATION \(DETERMINISTIC\)\]/);
   assert.match(req.prompt, /Part B/);
+});
+
+test('endometrial_carcinoma + peritoneal_nodule (pelvic + omental) reconciles pelvicPeritoneum and distantMets to pM1 / IVB', () => {
+  const cs = {
+    templateId: 'endometrial_carcinoma',
+    options: { printPTNM: true },
+    meta: {},
+    parts: [
+      makePart('endometrial_carcinoma', 'A', { pelvicPeritoneum: 'Not submitted', distantMets: ['Not identified'] }),
+      makePart('peritoneal_nodule', 'B', { site: 'Pouch of Douglas', dx: 'Metastatic carcinoma', carcinomaType: 'Adenocarcinoma' }),
+      makePart('peritoneal_nodule', 'C', { site: 'Omentum', dx: 'Metastatic carcinoma', carcinomaType: 'Adenocarcinoma' })
+    ]
+  };
+
+  const out1 = generateCase(templates, cs);
+  const item = out1.reconciliation.items.find((i) => i.kind === 'deposit');
+  assert.ok(item);
+  assert.equal(item.status, 'needs-sync');
+  assert.equal(item.patch.fields.pelvicPeritoneum, 'Present');
+  assert.deepEqual(item.patch.fields.distantMets, ['Omentum']);
+  assert.match(item.patch.fields.distantDetail, /Part C \(Omentum\)/);
+
+  Object.assign(cs.parts[0].values, item.patch.fields);
+  const out2 = generateCase(templates, cs);
+  assert.equal(out2.reconciliation.items.find((i) => i.kind === 'deposit').status, 'synced');
+  assert.match(out2.synoptic, /pM1/);
+});
+
+test('ovary_ft_peritoneum + omental & diaphragmatic peritoneal_nodule updates otherInvolvement', () => {
+  const cs = {
+    templateId: 'ovary_ft_peritoneum',
+    meta: {},
+    parts: [
+      makePart('ovary_ft_peritoneum', 'A', { otherInvolvement: ['Not identified'] }),
+      makePart('peritoneal_nodule', 'B', { site: 'Omentum', dx: 'Metastatic carcinoma', carcinomaType: 'High-grade serous carcinoma' }),
+      makePart('peritoneal_nodule', 'C', { site: 'Diaphragm', side: 'Right', dx: 'Metastatic carcinoma', carcinomaType: 'High-grade serous carcinoma' })
+    ]
+  };
+
+  const out1 = generateCase(templates, cs);
+  const item = out1.reconciliation.items.find((i) => i.kind === 'deposit');
+  assert.equal(item.status, 'needs-sync');
+  assert.deepEqual(item.patch.fields.otherInvolvement, ['Omentum', 'Diaphragm']);
+  assert.match(item.patch.fields.extrapelvicSite, /Omentum, Right diaphragm/);
+
+  Object.assign(cs.parts[0].values, item.patch.fields);
+  const out2 = generateCase(templates, cs);
+  assert.equal(out2.reconciliation.items.find((i) => i.kind === 'deposit').status, 'synced');
+});
+
+test('colon_resection + peritoneal_nodule reconciles Peritoneum into distantMetastasis (pM1c)', () => {
+  const cs = {
+    templateId: 'colon_resection',
+    options: { printPTNM: true },
+    meta: {},
+    parts: [
+      makePart('colon_resection', 'A', { distantMetastasis: ['Not applicable'] }),
+      makePart('peritoneal_nodule', 'B', { site: 'Omentum', dx: 'Metastatic carcinoma', carcinomaType: 'Adenocarcinoma' })
+    ]
+  };
+
+  const out1 = generateCase(templates, cs);
+  const item = out1.reconciliation.items.find((i) => i.kind === 'deposit');
+  assert.equal(item.status, 'needs-sync');
+  assert.deepEqual(item.patch.fields.distantMetastasis, ['Peritoneum']);
+  assert.match(item.patch.fields.metastasisDetail, /Part B \(Omentum\)/);
+
+  Object.assign(cs.parts[0].values, item.patch.fields);
+  const out2 = generateCase(templates, cs);
+  assert.equal(out2.reconciliation.items.find((i) => i.kind === 'deposit').status, 'synced');
+  assert.match(out2.synoptic, /pM1c/);
+});
+
+test('appendix_carcinoma + peritoneal_nodule reconciles intraperitoneal metastasis (pM1b)', () => {
+  const cs = {
+    templateId: 'appendix_carcinoma',
+    meta: {},
+    parts: [
+      makePart('appendix_carcinoma', 'A', { distantMets: ['Not applicable'] }),
+      makePart('peritoneal_nodule', 'B', { site: 'Parietal peritoneum', dx: 'Metastatic carcinoma', carcinomaType: 'Mucinous adenocarcinoma' })
+    ]
+  };
+
+  const out1 = generateCase(templates, cs);
+  const item = out1.reconciliation.items.find((i) => i.kind === 'deposit');
+  assert.equal(item.status, 'needs-sync');
+  assert.deepEqual(item.patch.fields.distantMets, ['Intraperitoneal metastasis only (including peritoneal mucinous deposits containing tumour cells) (specify)']);
+
+  Object.assign(cs.parts[0].values, item.patch.fields);
+  const out2 = generateCase(templates, cs);
+  assert.equal(out2.reconciliation.items.find((i) => i.kind === 'deposit').status, 'synced');
 });

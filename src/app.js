@@ -2416,14 +2416,15 @@ function applyReconcilePatch(item) {
   const target = cs.parts[patch.partIndex];
   const prev = {};
   for (const [k, v] of Object.entries(patch.fields || {})) {
-    prev[k] = target.values[k];
-    target.values[k] = v;
+    const cur = target.values[k];
+    prev[k] = Array.isArray(cur) ? [...cur] : cur;
+    target.values[k] = Array.isArray(v) ? [...v] : v;
   }
   state.reconcileUndo = { caseState: cs, partIndex: patch.partIndex, prev };
   markDirty();
   cacheCase(cs);
   render();
-  toast(`Synced satellite nodes into Part ${item.primaryLabel}`);
+  toast(`Synced ${item.kind === 'deposit' ? 'peritoneal findings' : 'satellite nodes'} into Part ${item.primaryLabel}`);
 }
 
 function undoReconcileSync() {

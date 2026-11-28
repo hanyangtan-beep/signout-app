@@ -460,4 +460,33 @@ export function validate(part) {
   return out;
 }
 
-export default { specimenName, microscopy, diagnosis, validate, flags };
+/** Structured deposit summary emitted to src/reconcile.js for multi-part cancer staging reconciliation. */
+export function contribution(part) {
+  const v = part?.values || {};
+  const dx = v.dx || 'No evidence of malignancy';
+  const site = v.site || 'Parietal peritoneum';
+  const rawLabel = site === 'Other (specify)' ? (v.siteOther || '').trim() || 'Peritoneum'
+    : site === 'Serosa of a named organ' ? `${(v.organ || '').trim() ? `${v.organ.trim()} ` : ''}serosa`
+      : site;
+  const siteLabel = v.side ? `${v.side} ${rawLabel.charAt(0).toLowerCase()}${rawLabel.slice(1)}` : rawLabel;
+  const lc = `${site} ${v.siteOther || ''}`.toLowerCase();
+  const region = /pelvic|pouch of douglas|cul-de-sac/.test(lc) ? 'pelvic'
+    : /oment/.test(lc) ? 'omentum'
+      : /diaphragm/.test(lc) ? 'diaphragm'
+        : /mesenter/.test(lc) ? 'mesentery'
+          : 'extrapelvic';
+  return {
+    kind: 'deposit',
+    partLabel: part?.label || '',
+    site,
+    siteLabel,
+    region,
+    dx,
+    malignant: dx === 'Metastatic carcinoma',
+    negative: dx === 'No evidence of malignancy',
+    carcinomaType: v.carcinomaType || '',
+    primarySite: v.primarySite || ''
+  };
+}
+
+export default { specimenName, microscopy, diagnosis, validate, flags, contribution };

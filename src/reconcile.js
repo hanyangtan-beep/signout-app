@@ -448,10 +448,226 @@ function reconcileGenericNodes(primary, primaryIndex, schema, contribs) {
   };
 }
 
+const asArr = (v) => (Array.isArray(v) ? v.filter(Boolean) : v ? [String(v)] : []);
+const PLACEHOLDER_OPTS = new Set(['Not applicable', 'Not identified', 'Cannot be determined']);
+
+function mergeMulti(current, additions) {
+  const base = asArr(current).filter((x) => !PLACEHOLDER_OPTS.has(x));
+  let changed = false;
+  for (const a of additions) {
+    if (!base.includes(a)) { base.push(a); changed = true; }
+  }
+  if (!changed) return null;
+  return base;
+}
+
+function depositPartDesc(contribs) {
+  return contribs.map((c) => `Part ${c.partLabel} (${c.siteLabel})`).join(', ');
+}
+
+function reconcileEndometrialDeposits(primary, primaryIndex, schema, contribs) {
+  const v = primary.values || {};
+  const pelvic = contribs.filter((c) => c.region === 'pelvic');
+  const extrapelvic = contribs.filter((c) => c.region !== 'pelvic');
+  const pelvicPos = pelvic.filter((c) => c.malignant);
+  const pelvicNegOnly = pelvic.length > 0 && pelvicPos.length === 0 && pelvic.every((c) => c.negative);
+  const extraPos = extrapelvic.filter((c) => c.malignant);
+
+  const fields = {};
+  if (pelvicPos.length && v.pelvicPeritoneum !== 'Present') {
+    fields.pelvicPeritoneum = 'Present';
+  } else if (pelvicNegOnly && (!v.pelvicPeritoneum || v.pelvicPeritoneum === 'Not submitted')) {
+    fields.pelvicPeritoneum = 'Not identified';
+  }
+
+  if (extraPos.length) {
+    const add = [];
+    if (extraPos.some((c) => c.region === 'omentum')) add.push('Omentum');
+    if (extraPos.some((c) => c.region !== 'omentum')) add.push('Extrapelvic peritoneum');
+    const merged = mergeMulti(v.distantMets, add);
+    if (merged) {
+      fields.distantMets = merged;
+      if (!String(v.distantDetail || '').trim()) fields.distantDetail = depositPartDesc(extraPos);
+    }
+  }
+
+  const relevant = [...pelvicPos, ...(pelvicNegOnly ? pelvic : []), ...extraPos];
+  if (!relevant.length) return null;
+  const needsSync = Object.keys(fields).length > 0;
+  const satLabels = relevant.map((c) => c.partLabel);
+  const posList = [...pelvicPos, ...extraPos];
+  const stageHint = extraPos.length ? ' → pM1 / FIGO IVB' : pelvicPos.length ? ' → pelvic peritoneum involved' : '';
+
+  return {
+    id: `deposits:${primaryIndex}`,
+    kind: 'deposit',
+    primaryIndex,
+    primaryLabel: primary.label,
+    primaryTemplateId: primary.templateId,
+    primaryName: schema.name || primary.templateId,
+    satelliteLabels: satLabels,
+    status: needsSync ? 'needs-sync' : 'synced',
+    summary: needsSync
+      ? `${listLabels(satLabels)} (${posList.length ? `metastatic deposit: ${posList.map((c) => c.siteLabel).join(', ')}` : 'pelvic peritoneum negative'}${stageHint}) not yet reflected in Part ${primary.label}`
+      : `${listLabels(satLabels)} peritoneal finding(s) reflected in Part ${primary.label}`,
+    detail: needsSync
+      ? `Updates Part ${primary.label}${fields.pelvicPeritoneum ? ` pelvic peritoneum to "${fields.pelvicPeritoneum}"` : ''}${fields.pelvicPeritoneum && fields.distantMets ? ' and' : ''}${fields.distantMets ? ` distant metastasis to ${fields.distantMets.join(', ')}` : ''}.`
+      : 'Peritoneal and distant metastasis fields already reflect the separate biopsy part(s).',
+    patch: needsSync ? { partIndex: primaryIndex, fields } : null
+  };
+}
+
+function reconcileOvaryDeposits(primary, primaryIndex, schema, contribs) {
+  const pos = contribs.filter((c) => c.malignant);
+  if (!pos.length) return null;
+  const v = primary.values || {};
+  const mapRegion = {
+    pelvic: 'Pelvic peritoneum',
+    omentum: 'Omentum',
+    diaphragm: 'Diaphragm',
+    mesentery: 'Mesentery',
+    extrapelvic: 'Extrapelvic peritoneum'
+  };
+  const add = [...new Set(pos.map((c) => mapRegion[c.region] || 'Extrapelvic peritoneum'))];
+  const merged = mergeMulti(v.otherInvolvement, add);
+  const fields = {};
+  if (merged) fields.otherInvolvement = merged;
+  const extraPos = pos.filter((c) => c.region !== 'pelvic');
+  if (extraPos.length && !String(v.extrapelvicSite || '').trim()) {
+    fields.extrapelvicSite = extraPos.map((c) => c.siteLabel).join(', ');
+  }
+
+  const needsSync = Object.keys(fields).length > 0;
+  const satLabels = pos.map((c) => c.partLabel);
+  const focusNote = extraPos.length && (!v.extrapelvicFocus || v.extrapelvicFocus === 'Not applicable')
+    ? ' Remember to set Largest extrapelvic peritoneal focus (microscopic / <=2 cm / >2 cm) for pT3a–c.'
+    : '';
+
+  return {
+    id: `deposits:${primaryIndex}`,
+    kind: 'deposit',
+    primaryIndex,
+    primaryLabel: primary.label,
+    primaryTemplateId: primary.templateId,
+    primaryName: schema.name || primary.templateId,
+    satelliteLabels: satLabels,
+    status: needsSync ? 'needs-sync' : 'synced',
+    summary: needsSync
+      ? `${listLabels(satLabels)} (metastatic deposit: ${pos.map((c) => c.siteLabel).join(', ')}) not yet reflected in Part ${primary.label}`
+      : `${listLabels(satLabels)} peritoneal involvement reflected in Part ${primary.label}`,
+    detail: needsSync
+      ? `Adds ${add.join(', ')} to Part ${primary.label} tissue/organ involvement.${focusNote}`
+      : `Part ${primary.label} already records ${add.join(', ')}.${focusNote}`,
+    patch: needsSync ? { partIndex: primaryIndex, fields } : null
+  };
+}
+
+function reconcileColonDeposits(primary, primaryIndex, schema, contribs) {
+  const pos = contribs.filter((c) => c.malignant);
+  if (!pos.length) return null;
+  const v = primary.values || {};
+  const merged = mergeMulti(v.distantMetastasis, ['Peritoneum']);
+  const fields = {};
+  if (merged) {
+    fields.distantMetastasis = merged;
+    if (!String(v.metastasisDetail || '').trim()) fields.metastasisDetail = depositPartDesc(pos);
+  }
+  const needsSync = Object.keys(fields).length > 0;
+  const satLabels = pos.map((c) => c.partLabel);
+  return {
+    id: `deposits:${primaryIndex}`,
+    kind: 'deposit',
+    primaryIndex,
+    primaryLabel: primary.label,
+    primaryTemplateId: primary.templateId,
+    primaryName: schema.name || primary.templateId,
+    satelliteLabels: satLabels,
+    status: needsSync ? 'needs-sync' : 'synced',
+    summary: needsSync
+      ? `${listLabels(satLabels)} (peritoneal metastasis: ${pos.map((c) => c.siteLabel).join(', ')} → pM1c) not yet reflected in Part ${primary.label}`
+      : `${listLabels(satLabels)} peritoneal metastasis reflected in Part ${primary.label}`,
+    detail: needsSync
+      ? `Adds Peritoneum to Part ${primary.label} distant metastasis (${depositPartDesc(pos)}).`
+      : 'Part A distant metastasis already records peritoneal involvement.',
+    patch: needsSync ? { partIndex: primaryIndex, fields } : null
+  };
+}
+
+function reconcileAppendixDeposits(primary, primaryIndex, schema, contribs) {
+  const pos = contribs.filter((c) => c.malignant);
+  if (!pos.length) return null;
+  const v = primary.values || {};
+  const opt = 'Intraperitoneal metastasis only (including peritoneal mucinous deposits containing tumour cells) (specify)';
+  const merged = mergeMulti(v.distantMets, [opt]);
+  const fields = {};
+  if (merged) {
+    fields.distantMets = merged;
+    if (!String(v.distantDetail || '').trim()) fields.distantDetail = depositPartDesc(pos);
+  }
+  const needsSync = Object.keys(fields).length > 0;
+  const satLabels = pos.map((c) => c.partLabel);
+  return {
+    id: `deposits:${primaryIndex}`,
+    kind: 'deposit',
+    primaryIndex,
+    primaryLabel: primary.label,
+    primaryTemplateId: primary.templateId,
+    primaryName: schema.name || primary.templateId,
+    satelliteLabels: satLabels,
+    status: needsSync ? 'needs-sync' : 'synced',
+    summary: needsSync
+      ? `${listLabels(satLabels)} (intraperitoneal metastasis: ${pos.map((c) => c.siteLabel).join(', ')} → pM1b) not yet reflected in Part ${primary.label}`
+      : `${listLabels(satLabels)} intraperitoneal metastasis reflected in Part ${primary.label}`,
+    detail: needsSync
+      ? `Adds intraperitoneal metastasis with tumour cells to Part ${primary.label} (${depositPartDesc(pos)}).`
+      : 'Part A distant metastasis already records intraperitoneal metastasis.',
+    patch: needsSync ? { partIndex: primaryIndex, fields } : null
+  };
+}
+
+function reconcileGenericDeposits(primary, primaryIndex, schema, contribs) {
+  const pos = contribs.filter((c) => c.malignant);
+  if (!pos.length) return null;
+  const field = (schema.fields || []).find((f) => (f.id === 'distantMets' || f.id === 'distantMetastasis') && f.type === 'multiselect');
+  if (!field) return null;
+  const opts = field.options || [];
+  const preferred = ['Peritoneum', 'Extrapelvic peritoneum', 'Omentum', 'Other (specify)', 'Other', 'Other site'];
+  const pick = preferred.find((o) => opts.includes(o));
+  if (!pick) return null;
+
+  const v = primary.values || {};
+  const merged = mergeMulti(v[field.id], [pick]);
+  const fields = {};
+  if (merged) {
+    fields[field.id] = merged;
+    const detailField = (schema.fields || []).find((f) => f.id === 'distantDetail' || f.id === 'metastasisDetail');
+    if (detailField && !String(v[detailField.id] || '').trim()) fields[detailField.id] = depositPartDesc(pos);
+  }
+  const needsSync = Object.keys(fields).length > 0;
+  const satLabels = pos.map((c) => c.partLabel);
+  return {
+    id: `deposits:${primaryIndex}`,
+    kind: 'deposit',
+    primaryIndex,
+    primaryLabel: primary.label,
+    primaryTemplateId: primary.templateId,
+    primaryName: schema.name || primary.templateId,
+    satelliteLabels: satLabels,
+    status: needsSync ? 'needs-sync' : 'synced',
+    summary: needsSync
+      ? `${listLabels(satLabels)} (metastatic deposit: ${pos.map((c) => c.siteLabel).join(', ')} → pM1) not yet reflected in Part ${primary.label}`
+      : `${listLabels(satLabels)} metastatic deposit reflected in Part ${primary.label}`,
+    detail: needsSync
+      ? `Adds "${pick}" to Part ${primary.label} distant metastasis (${depositPartDesc(pos)}).`
+      : 'Primary synoptic distant metastasis already records this deposit.',
+    patch: needsSync ? { partIndex: primaryIndex, fields } : null
+  };
+}
+
 /**
- * Reconcile satellite parts (currently `lymph_node`) against primary cancer synoptic parts.
+ * Reconcile satellite parts (`lymph_node`, `peritoneal_nodule`) against primary cancer synoptic parts.
  * Returns `{ contributions, items }` where each item is `{ id, kind, primaryIndex, primaryLabel,
- * primaryTemplateId, primaryName, satelliteLabels, status, summary, detail, patch, totals }`.
+ * primaryTemplateId, primaryName, satelliteLabels, status, summary, detail, patch }`.
  */
 export function reconcileCase(templates, caseState, parts) {
   if (!Array.isArray(parts) || parts.length < 2) return { contributions: [], items: [] };
@@ -474,20 +690,32 @@ export function reconcileCase(templates, caseState, parts) {
   if (!primaries.length || !contributions.length) return { contributions, items: [] };
 
   const nodeContribs = contributions.filter((c) => c.kind === 'nodes' && (c.examined > 0 || c.positive > 0 || c.itc > 0));
+  const depositContribs = contributions.filter((c) => c.kind === 'deposit');
   const items = [];
 
-  // Reconcile against the primary cancer synoptic (when there is a single primary, all node parts belong to it).
-  if (nodeContribs.length && primaries.length === 1) {
+  // Reconcile against the primary cancer synoptic (when there is a single primary, all satellites belong to it).
+  if (primaries.length === 1) {
     const { part, index, schema } = primaries[0];
-    const others = nodeContribs.filter((c) => c.partIndex !== index);
-    if (others.length) {
+    const otherNodes = nodeContribs.filter((c) => c.partIndex !== index);
+    if (otherNodes.length) {
       let item = null;
-      if (part.templateId === 'lung_carcinoma') item = reconcileLung(part, index, schema, others);
-      else if (part.templateId === 'breast_carcinoma') item = reconcileBreast(part, index, schema, others);
-      else if (part.templateId === 'colon_resection') item = reconcileColon(part, index, schema, others);
-      else if (part.templateId === 'endometrial_carcinoma') item = reconcileEndometrial(part, index, schema, others);
-      else item = reconcileGenericNodes(part, index, schema, others);
+      if (part.templateId === 'lung_carcinoma') item = reconcileLung(part, index, schema, otherNodes);
+      else if (part.templateId === 'breast_carcinoma') item = reconcileBreast(part, index, schema, otherNodes);
+      else if (part.templateId === 'colon_resection') item = reconcileColon(part, index, schema, otherNodes);
+      else if (part.templateId === 'endometrial_carcinoma') item = reconcileEndometrial(part, index, schema, otherNodes);
+      else item = reconcileGenericNodes(part, index, schema, otherNodes);
       if (item) items.push(item);
+    }
+
+    const otherDeposits = depositContribs.filter((c) => c.partIndex !== index);
+    if (otherDeposits.length) {
+      let depItem = null;
+      if (part.templateId === 'endometrial_carcinoma') depItem = reconcileEndometrialDeposits(part, index, schema, otherDeposits);
+      else if (part.templateId === 'ovary_ft_peritoneum') depItem = reconcileOvaryDeposits(part, index, schema, otherDeposits);
+      else if (part.templateId === 'colon_resection') depItem = reconcileColonDeposits(part, index, schema, otherDeposits);
+      else if (part.templateId === 'appendix_carcinoma') depItem = reconcileAppendixDeposits(part, index, schema, otherDeposits);
+      else depItem = reconcileGenericDeposits(part, index, schema, otherDeposits);
+      if (depItem) items.push(depItem);
     }
   }
 
