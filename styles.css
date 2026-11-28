@@ -35,6 +35,9 @@
   --color-ok: oklch(0.52 0.11 155);
   --color-warn: oklch(0.55 0.12 70);
   --color-warn-highlight: oklch(0.7 0.13 75 / 0.16);
+  --color-accent: var(--color-primary);
+  --color-warning: var(--color-warn);
+  --color-success: var(--color-ok);
 
   --shadow-sm: 0 1px 2px oklch(0.2 0.02 250 / 0.06), 0 1px 1px oklch(0.2 0.02 250 / 0.04);
   color-scheme: light;
@@ -378,6 +381,9 @@ kbd { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; b
 }
 .field + .field { border-top: 1px solid var(--color-border); }
 .field > label, .field > .field-label { font-size: var(--text-sm); color: var(--color-text-muted); padding-top: 9px; font-weight: 500; }
+.field.is-empty > label, .field.is-empty > .field-label { color: var(--color-text-faint); }
+.field.is-empty > .input, .field.is-empty .field-control > .input { border-style: dashed; border-color: var(--color-border); }
+.field.is-empty > .input:focus, .field.is-empty .field-control > .input:focus { border-style: solid; border-color: var(--color-primary); }
 .field.hidden { display: none; }
 .field-help { grid-column: 2; font-size: var(--text-xs); color: var(--color-text-faint); margin-top: calc(-1 * var(--space-1)); }
 
@@ -421,6 +427,9 @@ textarea.input { min-height: 64px; resize: vertical; }
   cursor: pointer; padding: 0 var(--space-3);
 }
 .tab[aria-selected='true'] { background: var(--color-text); color: var(--color-text-inverse); border-color: var(--color-text); }
+.tab .tab-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.tab .tab-dot.has-error { background: var(--color-alert); }
+.tab .tab-dot.has-warn { background: var(--color-warn); }
 .part-panel {
   background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg);
   padding: var(--space-4) var(--space-5); box-shadow: var(--shadow-sm);
@@ -466,8 +475,15 @@ textarea.input { min-height: 64px; resize: vertical; }
   font-variant-numeric: tabular-nums;
   line-height: 1.6;
 }
+.block.block-dx { border-left: 3px solid var(--color-primary); }
+.block.block-dx .block-head h3 { color: var(--color-primary); }
 .block pre .part-label { color: var(--color-primary); font-weight: 500; }
 .block pre .changed { background: var(--color-primary-highlight); border-radius: 2px; }
+.block pre .changed-line { display: inline; border-radius: 3px; animation: line-flash 1.4s ease-out; }
+@keyframes line-flash {
+  0% { background: color-mix(in oklch, var(--color-primary) 22%, transparent); }
+  100% { background: transparent; }
+}
 
 /* Case meta */
 .meta-row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--space-4); margin-bottom: var(--space-2); }
@@ -602,7 +618,7 @@ textarea.input { min-height: 64px; resize: vertical; }
   .casemenu .menu-item.narrow-only { display: block; }
 }
 
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
 
 @media (max-width: 960px) {
   .col-switch, .col-collapse, .col-rail { display: none !important; }
@@ -721,7 +737,7 @@ textarea.input { min-height: 64px; resize: vertical; }
    A collapsible <details> pinned to the top of the report column so the report itself starts at the
    top of the viewport instead of being pushed down by a long check list. */
 .checks {
-  background: var(--color-surface); border: 1px solid var(--color-border); border-left: 4px solid #b9840a;
+  background: var(--color-surface); border: 1px solid var(--color-border); border-left: 4px solid var(--color-warn);
   border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); padding: var(--space-3) var(--space-4);
   position: sticky; top: 0; z-index: 4;
 }
@@ -743,12 +759,26 @@ textarea.input { min-height: 64px; resize: vertical; }
 .checks-head .muted { font-size: var(--text-xs); color: var(--color-text-faint); }
 .checks ul { margin: 0; padding-left: 1.1em; font-size: 13px; line-height: 1.5; }
 .checks li.error { color: var(--color-alert); }
-.checks li.warn { color: #8a6208; }
+.checks li.warn { color: var(--color-warn); }
 .checks li.info { color: var(--color-text-muted); }
 
-/* Proofreading (docs/specs/proofreading.md): a box under Checks. It is not pinned as Checks is, so a
-   long list scrolls away with the report instead of covering it. */
-.checks.proof { position: static; }
+/* Proofreading & AI utility boxes: slightly recessed surface so printed report blocks stand out as paper sheets. */
+.checks.proof { position: static; background: var(--color-surface-2); box-shadow: none; }
+.proof-divider {
+  margin: var(--space-2) 0 var(--space-1); padding-top: var(--space-2);
+  border-top: 1px dashed var(--color-border-strong);
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+.audit-badge {
+  display: inline-block; padding: 0 6px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.02em; vertical-align: baseline;
+}
+.audit-badge.is-critical { background: var(--color-alert-highlight); color: var(--color-alert); }
+.audit-badge.is-warn { background: var(--color-warn-highlight); color: var(--color-warn); }
+.audit-badge.is-info { background: var(--color-primary-highlight); color: var(--color-primary); }
+.proof-item.audit-critical { border-left: 3px solid var(--color-alert); padding-left: var(--space-2); }
+.proof-item.audit-warn { border-left: 2px solid var(--color-warn); padding-left: var(--space-2); }
 .proof-line { margin: 0 0 var(--space-2); font-size: var(--text-xs); color: var(--color-text-muted); }
 .proof-error { margin: 0 0 var(--space-2); font-size: 13px; color: var(--color-alert); }
 .checks ul.proof-list { list-style: none; padding: 0; }
@@ -804,7 +834,7 @@ textarea.input { min-height: 64px; resize: vertical; }
 .lis-row .check { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--color-text); cursor: pointer; font-size: var(--text-sm); }
 .lis-row .check input { margin: 0; accent-color: var(--color-primary); }
 .lis-row .lis-status { flex-basis: 100%; font-size: var(--text-xs); }
-.lis-row .lis-status.warn { color: #8a6208; }
+.lis-row .lis-status.warn { color: var(--color-warn); }
 /* The specimen box is the widest input in the app and its row carries a line of help. In the field
    grid the label column squeezed the box to two thirds and wrapped its hint to ten lines, so the
    help moved down beside Capture from LIS and the label keeps only its one word. */

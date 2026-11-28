@@ -877,13 +877,32 @@ function applyCasePreset(preset) {
 function renderTabs() {
   const parts = state.caseState.parts;
   nodes.tabs.replaceChildren(...parts.map((p, i) => el('button', {
-    type: 'button', role: 'tab', class: 'tab', 'aria-selected': String(i === state.activePart),
+    type: 'button', role: 'tab', class: 'tab', 'data-part': p.label, 'aria-selected': String(i === state.activePart),
     title: p.linked ? `${schemaOf(p).name} (linked to ${hostNoun(parts[i - 1])} under the same letter)` : schemaOf(p).name,
     onclick: () => { state.activePart = i; render(); }
   }, iconForPart(p), el('span', { class: 'tab-label', text: p.linked ? `${p.label} syn` : p.label }))));
   nodes.addPart.disabled = parts.length >= maxPartsForCase();
   nodes.addPart.title = `Add part ${LETTERS_NEXT(parts.length)} (${schema().name})`;
   renderColRails();
+}
+
+/** Show tiny eosin/amber status dots on Part tabs that have open Checks errors or warnings. */
+function renderTabBadges(issues = []) {
+  const byPart = new Map();
+  for (const iss of issues) {
+    if (!iss.part || (iss.level !== 'error' && iss.level !== 'warn')) continue;
+    const cur = byPart.get(iss.part) || { err: 0, warn: 0 };
+    if (iss.level === 'error') cur.err++; else cur.warn++;
+    byPart.set(iss.part, cur);
+  }
+  nodes.tabs.querySelectorAll('.tab[data-part]').forEach((tab) => {
+    tab.querySelector('.tab-dot')?.remove();
+    const hit = byPart.get(tab.dataset.part);
+    if (!hit) return;
+    const cls = hit.err ? 'tab-dot has-error' : 'tab-dot has-warn';
+    const label = [hit.err ? `${hit.err} to fix` : '', hit.warn ? `${hit.warn} to review` : ''].filter(Boolean).join(', ');
+    tab.append(el('span', { class: cls, 'aria-label': label, title: `Part ${tab.dataset.part}: ${label}` }));
+  });
 }
 
 // Display only. The stored value keeps the schema's spelling (a saved case holds site "Cecum"), so
@@ -1067,8 +1086,9 @@ function renderField(field, part, index) {
   if (field.type === 'dishCounter') return dishCounterField(field, part);
   const visible = isVisible(field, part.values);
   const id = `f-${part.label}-${field.id}`;
-  const wrap = el('div', { class: `field${visible ? '' : ' hidden'}${field.reference ? ' has-ref' : ''}`, 'data-field': field.id });
   const value = part.values[field.id];
+  const empty = field.type !== 'checkbox' && (Array.isArray(value) ? !value.length : value === undefined || value === null || value === '');
+  const wrap = el('div', { class: `field${visible ? '' : ' hidden'}${field.reference ? ' has-ref' : ''}${empty ? ' is-empty' : ''}`, 'data-field': field.id });
 
   if (field.type === 'text' || field.type === 'textarea' || field.type === 'number') {
     const input = el(field.type === 'textarea' ? 'textarea' : 'input', {
@@ -1076,6 +1096,7 @@ function renderField(field, part, index) {
       oninput: (e) => {
         markDirty();
         part.values[field.id] = e.target.value;
+        wrap.classList.toggle('is-empty', e.target.value === '');
         // A derive hook may fill other fields from this one (the breast excision form reads the side and
         // margin from the specimen as received); they change in place, so the cursor stays in the box.
         const changed = applyDerived(templateOf(part).generator, part, field.id);
@@ -2066,13 +2087,39 @@ function highlightParts(text) {
   return frag;
 }
 
+/** Return line indices in `nextText` that differ from `prevText`, for subtle live-edit flash. */
+function diffLineIndices(prevText, nextText) {
+  if (prevText === nextText) return null;
+  const prevLines = String(prevText || '').split('\n');
+  const nextLines = String(nextText || '').split('\n');
+  const prevSet = new Set(prevLines);
+  const changed = new Set();
+  nextLines.forEach((line, idx) => {
+    if (line.trim() && line !== prevLines[idx] && !prevSet.has(line)) changed.add(idx);
+  });
+  return changed.size ? changed : null;
+}
+
+/** Render block lines with part-label anchors and optional soft flash on newly changed lines. */
+function renderBlockLines(text, changedIdx) {
+  if (!changedIdx || !changedIdx.size) return highlightParts(text);
+  const frag = document.createDocumentFragment();
+  const lines = String(text || '').split('\n');
+  lines.forEach((line, idx) => {
+    if (idx > 0) frag.append('\n');
+    if (changedIdx.has(idx)) frag.append(el('span', { class: 'changed-line' }, highlightParts(line)));
+    else frag.append(highlightParts(line));
+  });
+  return frag;
+}
+
 function renderReport() {
+  const prev = state.lastOutCase === state.caseState ? state.lastOut : null;
   let out;
   try {
     out = generateCase(state.templates, state.caseState);
     // After a form change, the changes accepted from proofreading follow it where their words allow:
     // those kept over the form's text, and the rewrites still open (docs/specs/proofreading.md).
-    const prev = state.lastOutCase === state.caseState ? state.lastOut : null;
     if (prev && carryPatches(state.caseState, prev, out)) out = generateCase(state.templates, state.caseState);
     if (prev) carryRewrites(prev, out);
   } catch (err) {
@@ -2115,17 +2162,23 @@ function renderReport() {
     checksBox.open = localStorage.getItem('signout.checks') !== 'closed';
     checksBox.addEventListener('toggle', () => localStorage.setItem('signout.checks', checksBox.open ? 'open' : 'closed'));
   }
-  const checks = [checksBox, renderProofBox(out), renderAuditBox(out), renderBlockCheckBox(), renderIhcBox(out)].filter(Boolean);
-  nodes.blocks.replaceChildren(...checks, ...blocks.map(([key, name, text]) => renderBlock(key, name, text, tagFor(key), out)));
+  const checks = [checksBox, renderProofBox(out), renderAuditBox(out), renderBlockCheckBox()].filter(Boolean);
+  const footerBoxes = [renderIhcBox(out)].filter(Boolean);
+  nodes.blocks.replaceChildren(
+    ...checks,
+    ...blocks.map(([key, name, text]) => renderBlock(key, name, text, tagFor(key), out, prev ? diffLineIndices(prev[key], text) : null)),
+    ...footerBoxes
+  );
   const edits = Object.keys(state.caseState.edits || {}).length;
   nodes.revertAll.hidden = edits === 0;
   nodes.revertAll.textContent = `Revert ${edits === 1 ? 'edit' : `${edits} edits`}`;
   renderLisStatus(out);
+  renderTabBadges(issues);
   renderColRails();
 }
 
 /** One report block: heading with tags, Copy and Edit / Revert; the text or, while editing, a textarea. */
-function renderBlock(key, name, text, tag, out) {
+function renderBlock(key, name, text, tag, out, changedIdx = null) {
   const h3 = el('h3', { text: name });
   if (tag) h3.append(' ', el('span', { class: `tag ${tag === 'edited' ? 'tag-edited' : ''}`, text: tag }));
   // Changes accepted from proofreading that no form field gives, kept over the form's text.
@@ -2154,7 +2207,7 @@ function renderBlock(key, name, text, tag, out) {
     head.append(el('span', { class: 'block-actions' }));
   } else {
     const pre = el('pre', {});
-    pre.append(highlightParts(text));
+    pre.append(renderBlockLines(text, changedIdx));
     body.append(pre);
     const actions = el('span', { class: 'block-actions' });
     if (out.edited?.[key]) actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Revert', title: 'Discard this edit and go back to the text generated from the fields', onclick: () => revertEdit(key) }));
@@ -2165,7 +2218,7 @@ function renderBlock(key, name, text, tag, out) {
       el('button', { type: 'button', class: 'btn ghost small', text: 'Copy', onclick: () => doCopy(text, name) }));
     head.append(actions);
   }
-  return el('div', { class: `block ${editing ? 'editing' : ''} ${out.edited?.[key] ? 'edited' : ''}` }, head, body);
+  return el('div', { class: `block${key === 'diagnosis' ? ' block-dx' : ''}${editing ? ' editing' : ''}${out.edited?.[key] ? ' edited' : ''}` }, head, body);
 }
 
 // ---------- manual edits to the final report ----------
@@ -2392,8 +2445,10 @@ function renderProofBox(out) {
   }
   const modelTag = (record?.by ? String(record.by).split(' via ')[0] : '') || target.model;
   if (hasItems) {
+    const divider = auditOpen.length && items.length ? [el('li', { class: 'proof-divider', role: 'presentation', text: 'Proofreading' })] : [];
     box.append(el('ul', { class: 'proof-list' },
       ...auditOpen.map((f) => auditRow(f, out)),
+      ...divider,
       ...items.map((i) => proofRow(i, out, modelTag))));
   }
   const bar = el('div', { class: 'proof-bar' });
@@ -2838,7 +2893,10 @@ function renderAuditBox(out) {
 function auditRow(f, out) {
   const sev = AUDIT_SEV[f.severity] || 'Review';
   const cat = AUDIT_CAT[f.category] || f.category;
-  const head = el('span', { class: 'proof-kind', text: `${sev} \u00b7 ${cat}` });
+  const sevKey = ['critical', 'warn', 'info'].includes(f.severity) ? f.severity : 'warn';
+  const head = el('span', { class: 'proof-kind' },
+    el('span', { class: `audit-badge is-${sevKey}`, text: sev }),
+    document.createTextNode(` \u00b7 ${cat}`));
   const body = el('span', { class: 'proof-text' }, el('strong', { text: f.title }), ` \u2014 ${f.detail}`);
   if (f.fieldPatch) {
     const fp = f.fieldPatch;
@@ -2866,7 +2924,7 @@ function auditRow(f, out) {
   actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Dismiss', onclick: () => { state.audit.dismissed.add(f.key); recordAiEvent({ workflow: 'audit', action: 'dismissed', templateId: activeTemplateId(), tag: f.category }); renderReport(); } }));
   const picker = flagPickerRow({ workflow: 'audit', key: fKey, model: state.audit.result?.model || 'gemini-4-neon', tag: f.category, suggestedRule });
   const itemCls = f.severity === 'critical' ? 'flag' : f.fieldPatch || f.textPatch ? 'edit' : 'look';
-  return el('li', { class: `proof-item ${itemCls}` }, head, body, actions, picker);
+  return el('li', { class: `proof-item ${itemCls} audit-${sevKey}` }, head, body, actions, picker);
 }
 
 async function runStagingAudit({ quiet = false, token: sharedToken = '' } = {}) {
