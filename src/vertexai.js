@@ -236,13 +236,13 @@ export async function vertexExtract({
   return data;
 }
 
-/** Run pre-sign-out staging & clinical QA audit via Vertex AI (gemini-4-neon, MEDIUM thinking). */
+/** Run pre-sign-out staging & clinical QA audit via Vertex AI (gemini-4-neon, HIGH thinking). */
 export async function vertexAudit({
   system,
   prompt,
   responseSchema,
-  maxOutputTokens = 8192,
-  thinkingLevel = 'MEDIUM',
+  maxOutputTokens = 12000,
+  thinkingLevel = 'HIGH',
   ...options
 } = {}) {
   const data = await call('/v1/ai', {
@@ -257,7 +257,7 @@ export async function vertexAudit({
       maxOutputTokens,
       thinkingLevel
     },
-    timeout: options.timeout ?? AI_TIMEOUT_MS
+    timeout: options.timeout ?? 120000
   });
   if (typeof data.text !== 'string') throw new VertexAIError('failed', 'Vertex AI proxy answered without model text.');
   return data;

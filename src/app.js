@@ -2307,45 +2307,108 @@ function proofTarget() {
     : { useVertex: false, kind, proxyUrl: vertex.proxyUrl, model: MODEL_NAME, via: 'Han Slide on this computer' };
 }
 
-/** The Proofreading box under Checks, or null when there is nothing to show. */
+/** True when Proofreading and Staging audit run together in one unified panel (Build 2b). */
+function isUnifiedReview() {
+  return loadProofSettings().on && proofTarget().useVertex && isAuditEligible(schemasInUse());
+}
+
+/** The Proofreading (or unified Proofreading & audit) box under Checks, or null when nothing to show. */
 function renderProofBox(out) {
   const on = loadProofSettings().on;
+  const unified = isUnifiedReview();
   const { sections, record, items } = proofView(out);
   const mine = state.proof.caseState === state.caseState;
   const busy = state.proof.busy && mine;
   const error = mine ? state.proof.error : '';
   const note = state.proof.note?.caseState === state.caseState ? state.proof.note : null;
+
+  const auditMine = state.audit.caseState === state.caseState;
+  const auditBusy = unified && state.audit.busy && auditMine;
+  const auditError = unified && auditMine ? state.audit.error : '';
+  const auditResult = unified && auditMine ? state.audit.result : null;
+  const auditNote = unified && auditMine ? state.audit.note : '';
+  const auditUndo = unified && auditMine ? state.audit.undo : null;
+  const auditOpen = auditResult ? (auditResult.findings || []).filter((f) => !state.audit.dismissed.has(f.key)) : [];
+  const nAuditCrit = auditOpen.filter((f) => f.severity === 'critical').length;
+  const nAuditWarn = auditOpen.filter((f) => f.severity === 'warn').length;
+  const nAuditInfo = auditOpen.length - nAuditCrit - nAuditWarn;
+
   if (!on && !items.length && !record?.at && !error && !note) return null;
   const target = (busy && state.proof.target) || proofTarget();
   const rewrites = items.filter((i) => i.kind === 'rewrite');
   const flagged = items.filter((i) => i.kind === 'check' && i.suggestion !== undefined);
   const edits = items.filter((i) => i.kind !== 'check' && i.kind !== 'rewrite');
   const looks = items.length - edits.length - flagged.length - rewrites.length;
-  const count = [edits.length ? `${edits.length} to accept` : '', flagged.length ? `${flagged.length} flagged` : '',
-    rewrites.length ? `${rewrites.length} rewrite${rewrites.length === 1 ? '' : 's'}` : '', looks ? `${looks} to look at` : ''].filter(Boolean).join(' \u00b7 ');
-  const summary = busy ? `${target.model} is reading the report\u2026` : error ? 'did not run' : count || (record?.at ? 'nothing open' : on ? 'not proofread yet' : 'nothing found');
-  const box = el('details', { class: `checks proof ${error ? 'has-error' : items.length ? '' : 'info-only'}` },
-    el('summary', {}, el('div', { class: 'checks-head' }, el('h3', { text: 'Proofreading' }), el('span', { class: 'muted', text: summary }))));
-  const line = busy ? `Asked ${target.model} through ${target.via} at ${clock(state.proof.startedAt)}. You can keep working.`
-    : record?.at ? recordSummary(record, sections)
-      : on ? `Not proofread by ${target.model} yet: it runs when the case is marked Ready, or press Proofread.`
-        : 'Rule checks only. Turn on Settings › Proofreading (Han Slide or Vertex AI) to proofread with AI.';
-  box.append(el('p', { class: 'proof-line', text: line }));
-  if (error) box.append(el('p', { class: 'proof-error', role: 'alert', text: error }));
+  const count = [
+    nAuditCrit ? `${nAuditCrit} critical` : '',
+    nAuditWarn ? `${nAuditWarn} audit` : '',
+    nAuditInfo ? `${nAuditInfo} note${nAuditInfo === 1 ? '' : 's'}` : '',
+    edits.length ? `${edits.length} to accept` : '',
+    flagged.length ? `${flagged.length} flagged` : '',
+    rewrites.length ? `${rewrites.length} rewrite${rewrites.length === 1 ? '' : 's'}` : '',
+    looks ? `${looks} to look at` : '',
+    (error && !auditError) || (!error && auditError) ? 'partial error' : ''
+  ].filter(Boolean).join(' \u00b7 ');
+  const anyBusy = busy || auditBusy;
+  const anyError = !!(error || auditError);
+  const hasItems = items.length > 0 || auditOpen.length > 0;
+  const summary = busy && auditBusy ? 'Auditing (Neon HIGH) & proofreading\u2026'
+    : auditBusy ? 'Gemini 4 Neon is auditing\u2026'
+      : busy ? `${target.model} is reading the report\u2026`
+        : (error && (!unified || auditError)) ? 'did not run'
+          : count || ((record?.at || auditResult) ? 'nothing open' : on ? (unified ? 'ready to proofread & audit' : 'not proofread yet') : 'nothing found');
+  const cls = `checks proof ${anyError || nAuditCrit ? 'has-error' : nAuditWarn ? 'has-warn' : hasItems ? '' : 'info-only'}`;
+  const box = el('details', { class: cls },
+    el('summary', {}, el('div', { class: 'checks-head' }, el('h3', { text: unified ? 'Proofreading & audit' : 'Proofreading' }), el('span', { class: 'muted', text: summary }))));
+  if (unified) {
+    if (busy && auditBusy) {
+      box.append(el('p', { class: 'proof-line', text: `Running Staging audit (Neon HIGH) and Proofreading (Neon MEDIUM) in parallel since ${clock(Math.min(state.proof.startedAt || Date.now(), state.audit.startedAt || Date.now()))}. You can keep working.` }));
+    } else if (auditBusy) {
+      box.append(el('p', { class: 'proof-line', text: `Staging audit (Neon HIGH) running since ${clock(state.audit.startedAt)}.${record?.at ? ` ${recordSummary(record, sections)}` : ' You can keep working.'}` }));
+    } else if (busy) {
+      box.append(el('p', { class: 'proof-line', text: `Proofreading running since ${clock(state.proof.startedAt)}.${auditResult ? ` Staging audit: ${auditResult.summary} (${auditResult.model || 'gemini-4-neon'} HIGH, ${auditResult.seconds || 0}s)` : ' You can keep working.'}` }));
+    } else if (auditResult || record?.at) {
+      if (auditResult) box.append(el('p', { class: 'proof-line', text: `Staging audit: ${auditResult.summary} (${auditResult.model || 'gemini-4-neon'} HIGH, ${auditResult.seconds || 0}s)` }));
+      if (record?.at) box.append(el('p', { class: 'proof-line', text: recordSummary(record, sections) }));
+    } else {
+      box.append(el('p', { class: 'proof-line', text: 'Runs Staging audit (Neon HIGH) and Proofreading (Neon MEDIUM) in parallel. Marking Ready auto-runs proofreading only.' }));
+    }
+  } else {
+    const line = busy ? `Asked ${target.model} through ${target.via} at ${clock(state.proof.startedAt)}. You can keep working.`
+      : record?.at ? recordSummary(record, sections)
+        : on ? `Not proofread by ${target.model} yet: it runs when the case is marked Ready, or press Proofread.`
+          : 'Rule checks only. Turn on Settings › Proofreading (Han Slide or Vertex AI) to proofread with AI.';
+    box.append(el('p', { class: 'proof-line', text: line }));
+  }
+  if (auditError) box.append(el('p', { class: 'proof-error', role: 'alert', text: `Staging audit: ${auditError}` }));
+  if (error) box.append(el('p', { class: 'proof-error', role: 'alert', text: unified ? `Proofreading: ${error}` : error }));
+  if (auditNote) {
+    box.append(el('div', { class: 'proof-note', role: 'status' }, el('p', { text: auditNote }),
+      el('button', { type: 'button', class: 'btn ghost small', text: 'OK', onclick: () => { state.audit.note = ''; renderReport(); } })));
+  }
   if (note) {
     box.append(el('div', { class: 'proof-note', role: 'status' }, ...note.lines.map((l) => el('p', { text: l })),
       el('button', { type: 'button', class: 'btn ghost small', text: 'OK', title: 'Hide this note', onclick: () => { state.proof.note = null; renderReport(); } })));
   }
   const modelTag = (record?.by ? String(record.by).split(' via ')[0] : '') || target.model;
-  if (items.length) box.append(el('ul', { class: 'proof-list' }, ...items.map((i) => proofRow(i, out, modelTag))));
+  if (hasItems) {
+    box.append(el('ul', { class: 'proof-list' },
+      ...auditOpen.map((f) => auditRow(f, out)),
+      ...items.map((i) => proofRow(i, out, modelTag))));
+  }
   const bar = el('div', { class: 'proof-bar' });
   const ruleCount = loadAiRules().length;
   if (edits.length > 1) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: `Accept all ${edits.length}`, title: 'The spelling, grammar and house-style edits; flagged changes and rewrites are accepted one by one', onclick: () => acceptProof(edits) }));
-  if (on) bar.append(el('button', { type: 'button', class: 'btn small ai-btn', text: busy ? 'Proofreading\u2026' : record?.at ? 'Proofread again' : 'Proofread', disabled: busy, onclick: () => runProofread() }));
+  if (unified) {
+    bar.append(el('button', { type: 'button', class: 'btn small ai-btn', text: anyBusy ? 'Proofreading & auditing\u2026' : (record?.at || auditResult) ? 'Re-run proofread & audit' : 'Proofread & audit', disabled: anyBusy, onclick: () => runProofread({ withAudit: true }) }));
+  } else if (on) {
+    bar.append(el('button', { type: 'button', class: 'btn small ai-btn', text: busy ? 'Proofreading\u2026' : record?.at ? 'Proofread again' : 'Proofread', disabled: busy, onclick: () => runProofread() }));
+  }
+  if (auditUndo) bar.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Undo last fix', onclick: () => undoAuditFix() }));
   bar.append(el('button', { type: 'button', class: 'btn ghost small', text: ruleCount ? `+ Rule (${ruleCount})` : '+ Rule', title: 'Add a personal AI preference rule (applied to all AI workflows)', onclick: () => promptAddAiRule() }));
   if (bar.childElementCount) box.append(bar);
   const proofStored = localStorage.getItem('signout.proof');
-  box.open = proofStored ? proofStored === 'open' : (busy || !!error || items.length > 0 || !!note);
+  box.open = proofStored ? proofStored === 'open' : (anyBusy || anyError || hasItems || !!note || !!auditNote || !!auditResult);
   box.addEventListener('toggle', () => localStorage.setItem('signout.proof', box.open ? 'open' : 'closed'));
   return box;
 }
@@ -2590,52 +2653,95 @@ function caseKindForAi() {
   return kinds[0] || 'biopsy';
 }
 
-/** Ask Han Slide or Vertex AI to proofread the report on screen; one question at a time. */
-async function runProofread({ auto = false } = {}) {
+/** Ask Han Slide or Vertex AI to proofread the report on screen; optionally runs Staging audit in parallel (Build 2b). */
+async function runProofread({ auto = false, withAudit = false } = {}) {
   const settings = loadProofSettings();
   const cs = state.caseState;
   if (!settings.on || !cs || !state.lastOut) return;
-  if (state.proof.busy) {
-    if (!auto) toast(state.proof.caseState === cs ? 'Proofreading is already running' : 'Proofreading is still running on the previous case; try again in a minute');
+  const target = proofTarget();
+  const runAuditToo = withAudit && !auto && target.useVertex && isAuditEligible(schemasInUse());
+  if (state.proof.busy || (runAuditToo && state.audit.busy)) {
+    if (!auto) toast(state.proof.caseState === cs ? 'Proofreading & audit already running' : 'Proofreading is still running on the previous case; try again in a minute');
     return;
   }
   const sections = reportSections(state.lastOut);
   if (!sections.length) { if (!auto) toast('Nothing in the report to proofread yet'); return; }
   const question = buildPrompt(sections, cs.meta?.clinical || '');
-  const target = proofTarget();
-  state.proof = { ...state.proof, busy: !question.error, error: question.error || '', caseState: cs, startedAt: Date.now(), note: null, target };
-  renderReport();
-  if (question.error) return;
+  if (question.error) {
+    state.proof = { ...state.proof, busy: false, error: question.error, caseState: cs, note: null, target };
+    renderReport();
+    return;
+  }
   const { useVertex, kind, proxyUrl } = target;
+  let sharedToken = '';
+  if (useVertex) {
+    sharedToken = await getToken(state.config, { interactive: false }).catch(() => '');
+    if (!sharedToken) {
+      const msg = 'Sign in to Google first to use Vertex AI proofreading.';
+      state.proof = { ...state.proof, busy: false, error: msg, caseState: cs, note: null, target };
+      renderReport();
+      if (!auto) toast(msg);
+      return;
+    }
+  }
+  state.proof = { ...state.proof, busy: true, error: '', caseState: cs, startedAt: Date.now(), note: null, target };
+  renderReport();
+
   let record = null;
   let label = target.model;
-  try {
-    let answer;
-    if (useVertex) {
-      const token = await getToken(state.config, { interactive: false }).catch(() => '');
-      if (!token) throw new Error('Sign in to Google first to use Vertex AI proofreading.');
-      answer = await vertexProofread({ ...question, prompt: withProofRules(question.prompt), system: VERTEX_PROOFREAD_SYSTEM_PROMPT, kind, proxyUrl, token });
-      label = answer.model || 'Vertex AI';
-    } else {
-      answer = await hanSlideProofread({ ...question, prompt: withProofRules(question.prompt), code: settings.code });
+  const proofTask = (async () => {
+    try {
+      let answer;
+      if (useVertex) {
+        answer = await vertexProofread({ ...question, prompt: withProofRules(question.prompt), system: VERTEX_PROOFREAD_SYSTEM_PROMPT, kind, proxyUrl, token: sharedToken });
+        label = answer.model || 'Vertex AI';
+      } else {
+        answer = await hanSlideProofread({ ...question, prompt: withProofRules(question.prompt), code: settings.code });
+      }
+      if (state.caseState === cs) {
+        const parsed = parseReply(answer.text);
+        if (!parsed.readable) throw new Error(`${label}'s answer could not be read; try Proofread again.`);
+        const by = useVertex
+          ? `${answer.model || 'Gemini'} via Vertex AI${answer.thinkingLevel ? ` (${answer.thinkingLevel})` : ''}`
+          : `${answer.model || MODEL_NAME} via Han Slide${answer.version ? ` ${answer.version}` : ''}`;
+        record = newRecord({ ...vetReply(parsed, sections), sections, by, seconds: answer.seconds, previous: cs.proofread });
+        cs.proofread = record;
+        recordAiEvent({ workflow: 'proofread', action: 'run', templateId: activeTemplateId(), model: label, seconds: answer.seconds || 0, count: (record.items || []).length });
+      }
+    } catch (err) {
+      if (state.caseState === cs) state.proof.error = err.message || 'Proofreading failed.';
+    } finally {
+      if (state.proof.caseState === cs) state.proof.busy = false;
+      if (state.caseState === cs) renderReport();
     }
-    if (state.caseState === cs) {
-      const parsed = parseReply(answer.text);
-      if (!parsed.readable) throw new Error(`${label}'s answer could not be read; try Proofread again.`);
-      const by = useVertex
-        ? `${answer.model || 'Gemini'} via Vertex AI${answer.thinkingLevel ? ` (${answer.thinkingLevel})` : ''}`
-        : `${answer.model || MODEL_NAME} via Han Slide${answer.version ? ` ${answer.version}` : ''}`;
-      record = newRecord({ ...vetReply(parsed, sections), sections, by, seconds: answer.seconds, previous: cs.proofread });
-      cs.proofread = record;
-      recordAiEvent({ workflow: 'proofread', action: 'run', templateId: activeTemplateId(), model: label, seconds: answer.seconds || 0, count: (record.items || []).length });
-    }
-  } catch (err) {
-    if (state.caseState === cs) state.proof.error = err.message || 'Proofreading failed.';
-  } finally {
-    if (state.proof.caseState === cs) state.proof.busy = false;
+  })();
+
+  let auditOutcome = null;
+  if (runAuditToo) {
+    const [, auditSettled] = await Promise.allSettled([proofTask, runStagingAudit({ quiet: true, token: sharedToken })]);
+    auditOutcome = auditSettled.status === 'fulfilled' ? auditSettled.value : { ok: false, count: 0 };
+  } else {
+    await proofTask;
   }
+
   if (state.caseState !== cs) return; // another case is open now; the answer was not for it
   renderReport();
+  if (runAuditToo) {
+    const pOpen = record ? openItems(record, [], reportSections(state.lastOut)).length : 0;
+    const aOk = !!auditOutcome?.ok;
+    const aCount = auditOutcome?.count || 0;
+    if (record && aOk) {
+      toast(aCount || pOpen
+        ? `Audit: ${aCount} item${aCount === 1 ? '' : 's'} \u00b7 Proofreading: ${pOpen} suggestion${pOpen === 1 ? '' : 's'}`
+        : 'Proofread & audit: no issues found');
+    } else if (record || aOk) {
+      toast(aOk ? `Staging audit done (${aCount}); proofreading failed` : `Proofreading done (${pOpen}); staging audit failed`);
+    } else {
+      toast('Proofread & audit did not run; see panel');
+    }
+    if (record) await keepProofRecord();
+    return;
+  }
   if (!record) { if (auto) toast('Proofreading did not run; see Proofreading'); return; }
   const open = openItems(record, [], reportSections(state.lastOut)).length;
   toast(open ? `${label}: ${open} suggestion${open === 1 ? '' : 's'} in Proofreading` : `${label} found nothing to change`);
@@ -2688,6 +2794,7 @@ const AUDIT_SEV = { critical: 'Critical', warn: 'Review', info: 'Note' };
 const AUDIT_CAT = { staging: 'Staging', grading: 'Grading', margins: 'Margins', laterality: 'Laterality', 'cross-part': 'Cross-part', biomarkers: 'Biomarkers', history: 'History', omission: 'Omission' };
 
 function renderAuditBox(out) {
+  if (isUnifiedReview()) return null;
   const eligible = isAuditEligible(schemasInUse());
   const mine = state.audit.caseState === state.caseState;
   const busy = state.audit.busy && mine;
@@ -2753,28 +2860,39 @@ function auditRow(f, out) {
     } }));
   }
   const fKey = `audit:${f.key}`;
+  const suggestedRule = `In staging audit, do not flag: ${f.title}`;
   actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Flag', title: 'Flag bad audit item or save a personal rule', onclick: () => { aiFlag.key = aiFlag.key === fKey ? '' : fKey; renderReport(); } }));
+  actions.append(el('button', { type: 'button', class: 'btn ghost small', text: '+ Rule', title: 'Save a personal AI preference rule', onclick: () => promptAddAiRule(suggestedRule) }));
   actions.append(el('button', { type: 'button', class: 'btn ghost small', text: 'Dismiss', onclick: () => { state.audit.dismissed.add(f.key); recordAiEvent({ workflow: 'audit', action: 'dismissed', templateId: activeTemplateId(), tag: f.category }); renderReport(); } }));
-  const picker = flagPickerRow({ workflow: 'audit', key: fKey, model: state.audit.result?.model || 'gemini-4-neon', tag: f.category, suggestedRule: `In staging audit, do not flag: ${f.title}` });
+  const picker = flagPickerRow({ workflow: 'audit', key: fKey, model: state.audit.result?.model || 'gemini-4-neon', tag: f.category, suggestedRule });
   const itemCls = f.severity === 'critical' ? 'flag' : f.fieldPatch || f.textPatch ? 'edit' : 'look';
   return el('li', { class: `proof-item ${itemCls}` }, head, body, actions, picker);
 }
 
-async function runStagingAudit() {
+async function runStagingAudit({ quiet = false, token: sharedToken = '' } = {}) {
   const cs = state.caseState;
-  if (!cs || !state.lastOut) return;
-  if (state.audit.busy) return toast('Staging audit is already running');
+  if (!cs || !state.lastOut) return { ok: false, count: 0 };
+  if (state.audit.busy) {
+    if (!quiet) toast('Staging audit is already running');
+    return { ok: false, count: 0 };
+  }
   const sections = reportSections(state.lastOut);
   const req = buildAuditPrompt({ caseState: cs, parts: cs.parts, schemaFor: (p) => schemaOf(p), sections });
-  if (req.error) return toast(req.error);
-  const token = await getToken(state.config, { interactive: false }).catch(() => '');
+  if (req.error) {
+    if (!quiet) toast(req.error);
+    return { ok: false, count: 0, error: req.error };
+  }
+  const token = sharedToken || await getToken(state.config, { interactive: false }).catch(() => '');
   if (!token) {
     state.audit = { ...state.audit, caseState: cs, error: 'Sign in to Google first to run Staging audit.', busy: false };
     renderReport();
-    return toast('Sign in to Google first to run Staging audit');
+    if (!quiet) toast('Sign in to Google first to run Staging audit');
+    return { ok: false, count: 0, error: 'auth' };
   }
   state.audit = { busy: true, error: '', caseState: cs, startedAt: Date.now(), result: null, dismissed: new Set(), undo: null, note: '' };
   renderReport();
+  let ok = false;
+  let count = 0;
   try {
     const ans = await vertexAudit({
       system: withAiRules(req.system),
@@ -2783,20 +2901,22 @@ async function runStagingAudit() {
       proxyUrl: loadVertexSettings().proxyUrl,
       token
     });
-    if (state.caseState !== cs) return;
+    if (state.caseState !== cs) return { ok: false, count: 0 };
     const parsed = parseAuditReply(ans.text);
     if (!parsed.readable) throw new Error('Gemini returned an unreadable audit response; try again.');
     const vetted = vetAuditFindings(parsed, cs.parts, (p) => schemaOf(p), sections);
     state.audit.result = { ...vetted, model: ans.model || 'gemini-4-neon', seconds: ans.seconds || 0 };
     recordAiEvent({ workflow: 'audit', action: 'run', templateId: activeTemplateId(), model: ans.model || 'gemini-4-neon', seconds: ans.seconds || 0, count: vetted.findings.length });
-    const n = vetted.findings.length;
-    toast(n ? `Staging audit: ${n} item${n === 1 ? '' : 's'} to review` : 'Staging audit: no issues found');
+    ok = true;
+    count = vetted.findings.length;
+    if (!quiet) toast(count ? `Staging audit: ${count} item${count === 1 ? '' : 's'} to review` : 'Staging audit: no issues found');
   } catch (err) {
     if (state.caseState === cs) state.audit.error = err.message || 'Staging audit failed.';
   } finally {
     if (state.audit.caseState === cs) state.audit.busy = false;
   }
   if (state.caseState === cs) renderReport();
+  return { ok, count };
 }
 
 function applyAuditFix(f) {

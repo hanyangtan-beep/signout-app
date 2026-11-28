@@ -19,7 +19,7 @@ export function isAuditEligible(schemas = []) {
     const kind = String(s?.kind || '').toLowerCase();
     const id = String(s?.id || '').toLowerCase();
     return kind.includes('cancer') || kind.includes('biomarker')
-      || /\b(cns|brain|melanoma|lymphoma|sarcoma)\b/.test(id);
+      || /(?:^|[_-])(cns|brain|melanoma|lymphoma|sarcoma)(?:$|[_-])/.test(id);
   });
 }
 
