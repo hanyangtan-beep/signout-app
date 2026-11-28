@@ -363,3 +363,67 @@ test('groupEditsAsRewrites merges rule edits on top of an existing AI rewrite wi
   assert.equal(grouped[0].text, 'Sections show a benign tumour.', 'rule British spelling applied onto the AI rewrite');
   assert.equal(grouped[0].combined.length, 3, 'AI rewrite + both rule edits bundled for Accept/Dismiss');
 });
+
+test('guard protects expanded orientation, margin, clinical modifier and unit tokens', () => {
+  for (const [a, b] of [
+    ['superior margin', 'inferior margin'],
+    ['proximal resection margin', 'distal resection margin'],
+    ['viable tumour', 'necrotic tumour'],
+    ['inadequate core', 'adequate core'],
+    ['dichorionic diamniotic', 'monochorionic diamniotic'],
+    ['5 per 10 hpf', '5 per 10 mm2'],
+    ['3 cores involved', '3 nodes involved']
+  ]) {
+    assert.deepEqual(safeEdit(a, b), { safe: false, reason: 'protected' }, `${a} -> ${b}`);
+  }
+});
+
+test('rule: part-by-part bilateral laterality and part-letter census', () => {
+  const spec = '(A) Breast, left, core biopsy\n(B) Breast, right, core biopsy';
+  const dx = '(A) BREAST, left, core biopsy:\n- FIBROADENOMA.\n(B) BREAST, left, core biopsy:\n- FIBROADENOMA.';
+  const lat = ruleChecks([sec('specimens', spec), sec('diagnosis', dx)]);
+  assert.deepEqual(lat.map((i) => [i.kind, i.section, i.why]), [
+    ['check', 'diagnosis', 'Part (B): specimen says right, diagnosis says left']
+  ]);
+
+  const spec3 = '(A) Antrum\n(B) Body\n(C) Duodenum';
+  const dxMissing = '(A) STOMACH, antrum:\n- GASTRITIS.\n(B) STOMACH, body:\n- GASTRITIS.\n(D) COLON:\n- POLYP.';
+  const census = ruleChecks([sec('specimens', spec3), sec('diagnosis', dxMissing)]);
+  assert.deepEqual(census.map((i) => i.why), [
+    'Part (C) is in Specimen but missing from Diagnosis',
+    'Part (D) is in Diagnosis but not in Specimen'
+  ]);
+
+  // Combined range "(A)-(C)" satisfies the census without false positives.
+  const dxRange = '(A)-(C) STOMACH AND DUODENUM:\n- NO SIGNIFICANT PATHOLOGY.';
+  assert.equal(ruleChecks([sec('specimens', spec3), sec('diagnosis', dxRange)]).length, 0);
+});
+
+test('rule: stray punctuation/spacing typos and cm vs mm unit mismatches', () => {
+  const typos = rulesFor('microscopy', 'Sections show a benign polyp.. Mild oedema , and congestion .');
+  assert.deepEqual(typos.map((i) => [i.kind, i.why]), [
+    ['typing', 'Double full stop'],
+    ['typing', 'Extra space before punctuation'],
+    ['typing', 'Extra space before punctuation']
+  ]);
+  const dupComma = rulesFor('comment', 'See note, , correlation advised.');
+  assert.deepEqual(dupComma.map((i) => i.why), ['Repeated comma']);
+  assert.equal(rulesFor('molecular', 'HER2/CEP17 ratio : 2.30\nSee note...').length, 0, 'aligned colons and ellipsis are allowed');
+
+  const unitHit = ruleChecks([
+    sec('macro', 'A well-circumscribed tumour measuring 15 mm in maximum dimension.'),
+    sec('diagnosis', 'BREAST, left, excision:\n- INVASIVE CARCINOMA, 15 cm.')
+  ]);
+  assert.deepEqual(unitHit.map((i) => [i.kind, i.section, i.why]), [
+    ['check', 'diagnosis', 'Possible unit mismatch: 15 mm in Macroscopic description vs 15 cm in Diagnosis']
+  ]);
+});
+
+test('house style scopes microscopy phrasing and Vertex prompt covers workflow QA and house style', async () => {
+  const { VERTEX_PROOFREAD_SYSTEM_PROMPT } = await import('../src/vertexai.js');
+  assert.ok(HOUSE_STYLE.some((r) => r.includes('Surgical narrative microscopy') && r.includes('placenta checklists')));
+  assert.ok(VERTEX_PROOFREAD_SYSTEM_PROMPT.includes('Inadequate cores'));
+  assert.ok(VERTEX_PROOFREAD_SYSTEM_PROMPT.includes('chorionicity/amnionicity'));
+  assert.ok(VERTEX_PROOFREAD_SYSTEM_PROMPT.includes('frozen section vs paraffin'));
+  assert.ok(VERTEX_PROOFREAD_SYSTEM_PROMPT.includes('named benign diagnosis stands alone'));
+});

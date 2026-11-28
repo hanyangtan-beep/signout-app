@@ -114,19 +114,26 @@ export function quoteFound(text, quote) {
 // digit (pT1b, G2, HER2, 3+), these must be the same, the same number of times, before and after.
 const PROTECTED = new Set([
   'left', 'right', 'bilateral', 'unilateral', 'ipsilateral', 'contralateral', 'both',
+  'superior', 'inferior', 'medial', 'lateral', 'anterior', 'posterior', 'deep', 'superficial',
+  'proximal', 'distal', 'radial', 'circumferential', 'serosal', 'mucosal', 'submucosal', 'transmural',
   'no', 'not', 'none', 'nil', 'nor', 'neither', 'never', 'without', 'cannot', 'absent', 'present',
   'negative', 'positive', 'equivocal', 'indeterminate', 'suspicious', 'possible', 'probable', 'likely',
   'high', 'low', 'intermediate', 'well', 'moderately', 'poorly', 'undifferentiated', 'differentiated',
   'benign', 'malignant', 'malignancy', 'invasive', 'invasion', 'microinvasive', 'situ', 'non',
   'involved', 'uninvolved', 'clear', 'close', 'free', 'margin', 'margins', 'focal', 'diffuse', 'extensive',
+  'viable', 'nonviable', 'necrotic', 'ischaemic', 'ischemic', 'perforated', 'ruptured', 'denuded',
+  'inadequate', 'adequate', 'acute', 'active', 'inactive', 'recurrent', 'residual', 'metastatic', 'primary',
+  'borderline', 'atypical', 'dysplasia', 'hyperplasia', 'cirrhosis', 'rejection', 'amyloid',
+  'dichorionic', 'monochorionic', 'diamniotic', 'monoamniotic',
   'grade', 'stage', 'ajcc', 'figo', 'gleason', 'isup', 'who', 'fnclcc', 'nottingham', 'tnm',
-  'mm', 'cm', 'm', 'g', 'kg', 'mg', 'ml', 'l', 'um', 'micron', 'microns', 'x', 'percent',
+  'mm', 'cm', 'm', 'g', 'kg', 'mg', 'ml', 'l', 'um', 'micron', 'microns', 'hpf', 'mm2', 'x', 'percent',
+  'cores', 'blocks', 'nodes',
   'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
   'single', 'multiple', 'multifocal', 'unifocal', 'several', 'all', 'some', 'few', 'many',
   'er', 'pr', 'ki', 'mmr', 'mlh', 'pms', 'msh', 'pd', 'alk', 'ros', 'egfr', 'kras', 'braf', 'idh',
   'myc', 'bcl', 'cd', 'ck', 'ttf', 'gata', 'sox', 'wt', 'p', 'sstr', 'synaptophysin', 'chromogranin',
   'amplified', 'nonamplified', 'mutated', 'mutant', 'wild', 'type', 'deficient', 'proficient', 'loss', 'retained', 'intact',
-  'equivocal', 'score', 'tps', 'cps', 'ihc', 'ish', 'fish', 'dish', 'pcr', 'stain', 'stains'
+  'score', 'tps', 'cps', 'ihc', 'ish', 'fish', 'dish', 'pcr', 'stain', 'stains'
 ]);
 const SYMBOLS = /[%<>=+]/g;
 
@@ -202,7 +209,7 @@ export const HOUSE_STYLE = [
   'Plain text for the LIS: no Markdown, bold or tables; "x" between dimensions, straight quotes, "-" for dashes, "micro" for the micro sign.',
   'Keep the layout exactly: headings, line breaks, "- Label: value" lines, part letters such as "(A)" and capital letters.',
   'Diagnosis: the organ in capitals, then the side, site and procedure in lower case ("BREAST, right, wide local excision"); diagnostic terms in capitals; "with" and an article after it in lower case between capitalised terms ("TUBULAR ADENOMA with LOW GRADE DYSPLASIA"); "In keeping with", "Consistent with" and "Compatible with" in sentence case when they open a clause and in lower case after a comma; WITHOUT and AND as written. A named benign diagnosis stands alone, without a trailing "no evidence of malignancy".',
-  'Microscopy opens with "Sections show"; a negative reads "There is no evidence of ..." ("no evidence of malignancy", not "no malignancy is seen" or "negative for malignancy"); immunohistochemistry stays in the microscopy paragraph.',
+  'Surgical narrative microscopy opens with "Sections show"; a negative reads "There is no evidence of ..." ("no evidence of malignancy", not "no malignancy is seen" or "negative for malignancy"); immunohistochemistry stays in the microscopy paragraph. Leave structured synoptics, placenta checklists, intraoperative frozen sections and cytology reports in their own format.',
   'Concise: take out a repeated word or phrase; leave a correct sentence as it is.'
 ];
 
@@ -593,6 +600,19 @@ export function ruleChecks(sections) {
       const e = phraseEdit(text, m, m[1]);
       if (e) push({ kind: 'typing', section: s.key, ...e, why: `"${m[1].toLowerCase()}" is typed twice` });
     }
+    // Stray punctuation and spacing typos ("..", ",,", "word .").
+    for (const m of text.matchAll(/(?<!\.)\.\.(?!\.)/g)) {
+      const e = editBetween(text, text.slice(0, m.index) + '.' + text.slice(m.index + 2));
+      if (e) push({ kind: 'typing', section: s.key, ...e, why: 'Double full stop' });
+    }
+    for (const m of text.matchAll(/,[ \t]*,/g)) {
+      const e = editBetween(text, text.slice(0, m.index) + ',' + text.slice(m.index + m[0].length));
+      if (e) push({ kind: 'typing', section: s.key, ...e, why: 'Repeated comma' });
+    }
+    for (const m of text.matchAll(/([A-Za-z0-9]) +([,.;])(?=\s|$)/g)) {
+      const e = phraseEdit(text, m, `${m[1]}${m[2]}`);
+      if (e) push({ kind: 'typing', section: s.key, ...e, why: 'Extra space before punctuation' });
+    }
     if (s.key === 'microscopy') {
       for (const [re, to, kind, why] of HOUSE_PHRASES) {
         for (const m of text.matchAll(re)) {
@@ -624,17 +644,107 @@ export function ruleChecks(sections) {
       }
     }
   }
-  // A side named in the specimen and only the other side in the diagnosis.
+  // Laterality & part-letter census across Specimen and Diagnosis.
   const spec = sections.find((s) => s.key === 'specimens');
   if (spec && dx) {
     const sides = (t) => new Set([...t.matchAll(SIDE)].map((m) => m[1].toLowerCase()));
-    const a = sides(spec.text); const b = sides(dx.text);
-    if (a.size === 1 && b.size === 1 && [...a][0] !== [...b][0]) {
-      const at = dx.text.search(SIDE);
-      push({ kind: 'check', section: 'diagnosis', quote: lineAround(dx.text, at), why: `The specimen says ${[...a][0]}, the diagnosis ${[...b][0]}` });
+    const specParts = partChunks(spec.text);
+    const dxParts = partChunks(dx.text);
+    if (specParts.length && dxParts.length) {
+      const dxMap = new Map(dxParts.map((p) => [p.letter, p]));
+      for (const sp of specParts) {
+        const dp = dxMap.get(sp.letter);
+        if (!dp) continue;
+        const a = sides(sp.text); const b = sides(dp.text);
+        if (a.size === 1 && b.size === 1 && [...a][0] !== [...b][0]) {
+          const rel = dp.text.search(SIDE);
+          push({ kind: 'check', section: 'diagnosis', quote: lineAround(dx.text, dp.index + Math.max(0, rel)), why: `Part (${sp.letter}): specimen says ${[...a][0]}, diagnosis says ${[...b][0]}` });
+        }
+      }
+    } else {
+      const a = sides(spec.text); const b = sides(dx.text);
+      if (a.size === 1 && b.size === 1 && [...a][0] !== [...b][0]) {
+        const at = dx.text.search(SIDE);
+        push({ kind: 'check', section: 'diagnosis', quote: lineAround(dx.text, at), why: `The specimen says ${[...a][0]}, the diagnosis ${[...b][0]}` });
+      }
+    }
+    if (specParts.length >= 2) {
+      const specLetters = new Set(specParts.map((p) => p.letter));
+      const dxMentioned = mentionedPartLetters(dx.text);
+      if (dxMentioned.size > 0) {
+        for (const sp of specParts) {
+          if (!dxMentioned.has(sp.letter)) {
+            push({ kind: 'check', section: 'specimens', quote: lineAround(spec.text, sp.index), why: `Part (${sp.letter}) is in Specimen but missing from Diagnosis` });
+          }
+        }
+        for (const dp of dxParts) {
+          if (!specLetters.has(dp.letter)) {
+            push({ kind: 'check', section: 'diagnosis', quote: lineAround(dx.text, dp.index), why: `Part (${dp.letter}) is in Diagnosis but not in Specimen` });
+          }
+        }
+      }
+    }
+  }
+  // Cross-section cm vs mm order-of-magnitude mismatch on lesion/tumour measurements.
+  const sizeSections = ['macro', 'microscopy', 'diagnosis'].map((k) => sections.find((s) => s.key === k)).filter(Boolean);
+  if (sizeSections.length >= 2) {
+    const seen = new Map(); // numeric string -> { unit, section, index }
+    for (const s of sizeSections) {
+      for (const hit of lesionSizes(s.text)) {
+        const prev = seen.get(hit.num);
+        if (!prev) {
+          seen.set(hit.num, { unit: hit.unit, section: s, index: hit.index });
+        } else if (prev.section.key !== s.key && prev.unit !== hit.unit) {
+          push({
+            kind: 'check',
+            section: s.key,
+            quote: lineAround(s.text, hit.index),
+            why: `Possible unit mismatch: ${hit.num} ${prev.unit} in ${prev.section.label} vs ${hit.num} ${hit.unit} in ${s.label}`
+          });
+        }
+      }
     }
   }
   return items;
+}
+
+/** Split a section into per-part chunks keyed by leading "(A)" .. "(Z)" markers. */
+function partChunks(text) {
+  const headers = [...String(text ?? '').matchAll(/(?:^|\n)\(([A-Z])\)(?=\s|$)/g)];
+  if (!headers.length) return [];
+  const out = [];
+  for (let i = 0; i < headers.length; i++) {
+    const m = headers[i];
+    const start = m.index + (m[0].startsWith('\n') ? 1 : 0);
+    const end = i + 1 < headers.length ? headers[i + 1].index : text.length;
+    out.push({ letter: m[1], index: start, text: text.slice(start, end) });
+  }
+  return out;
+}
+
+/** All part letters referenced in a section, expanding ranges like "(A)-(C)" or "(A) to (C)". */
+function mentionedPartLetters(text) {
+  const letters = new Set();
+  const s = String(text ?? '');
+  for (const m of s.matchAll(/\(([A-Z])\)/g)) letters.add(m[1]);
+  for (const m of s.matchAll(/\(([A-Z])\)\s*(?:-|to)\s*\(([A-Z])\)/gi)) {
+    const a = m[1].toUpperCase().charCodeAt(0);
+    const b = m[2].toUpperCase().charCodeAt(0);
+    if (b > a && b - a <= 25) for (let c = a; c <= b; c++) letters.add(String.fromCharCode(c));
+  }
+  return letters;
+}
+
+/** Extract lesion/tumour measurements (value >= 1, unit mm/cm) for unit-mismatch checks. */
+function lesionSizes(text) {
+  const out = [];
+  const re = /(?:tumour|tumor|lesion|carcinoma|adenoma|polyp|nodule|mass|melanoma|sarcoma|size)[^.\n]{0,40}?\b(\d+(?:\.\d+)?)\s*(mm|cm)\b/gi;
+  for (const m of String(text ?? '').matchAll(re)) {
+    const n = parseFloat(m[1]);
+    if (!Number.isFinite(n) || n < 1) continue;
+    out.push({ num: String(n), unit: m[2].toLowerCase(), index: m.index });
+  }
+  return out;
 }
 
 /** An edit replacing a matched phrase: the phrase itself when it occurs once, else the shortest unique span. */
