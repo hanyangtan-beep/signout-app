@@ -456,4 +456,42 @@ export function validate(part) {
   return out;
 }
 
-export default { specimenName, macro, blockKey, microscopy, diagnosis, validate };
+/** Structured node summary emitted to src/reconcile.js for multi-part cancer staging reconciliation. */
+export function contribution(part) {
+  const v = part?.values || {};
+  const total = num(v.nodesTotal) ?? num(v.nodesReceived) ?? 0;
+  const examined = Number.isFinite(total) && total > 0 ? Math.round(total) : 0;
+  const rawPos = num(v.positiveNodes);
+  const positive = isMetastatic(v) ? Math.round(rawPos !== null && rawPos >= 0 ? rawPos : (examined > 0 ? 1 : 0)) : 0;
+  const itc = isItc(v) ? Math.round(rawPos !== null && rawPos >= 0 ? rawPos : (examined > 0 ? 1 : 0)) : 0;
+  const mm = depositMm(v);
+  let macro = 0;
+  let micro = 0;
+  if (positive > 0) {
+    const cat = v.metCategory || (mm !== null && mm > 0.2 && mm <= 2 ? 'Micrometastasis' : mm !== null && mm > 2 ? 'Macrometastasis' : '');
+    if (cat === 'Micrometastasis') micro = positive;
+    else macro = positive;
+  }
+  const ene = v.extranodal === 'Present' ? 'Present'
+    : v.extranodal === 'Absent' ? 'Not identified'
+      : v.extranodal === 'Cannot be determined' ? 'Cannot be determined' : '';
+  const site = String(v.specimenName || '').trim();
+  const sentinel = v.procedure === 'Sentinel lymph node biopsy' || /\b(sln\d*|sentinel)\b/i.test(site);
+  return {
+    kind: 'nodes',
+    partLabel: part?.label || '',
+    site,
+    procedure: v.procedure || '',
+    sentinel,
+    examined,
+    positive,
+    macro,
+    micro,
+    itc,
+    depositMm: mm,
+    ene,
+    result: v.result || ''
+  };
+}
+
+export default { specimenName, macro, blockKey, microscopy, diagnosis, validate, contribution };

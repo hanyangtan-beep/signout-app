@@ -3,6 +3,7 @@
 
 import { applyStyle, houseConnectors } from './style.js';
 import { checkSpecimenAlignment } from './specimenalign.js';
+import { reconcileCase } from './reconcile.js';
 
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -367,12 +368,12 @@ export function generateCase(templates, caseState) {
   // the explant's background liver). Not enumerable, so it stays out of saved cases and value copies.
   parts.forEach((p, k) => { if (p.linked) Object.defineProperty(p, 'host', { value: parts[k - 1], enumerable: false }); });
 
-  // One context per template, holding only that template's parts.
+  // One context per template, holding that template's parts plus `allParts` for cross-part awareness.
   const ctxs = {};
   for (const id of ids) {
     const { schema, generator: gen } = templates[id];
     const own = parts.filter((p) => p.templateId === id);
-    const ctx = { schema, gen, case: caseState, options, parts: own, prepared: {} };
+    const ctx = { schema, gen, case: caseState, options, parts: own, allParts: parts, prepared: {} };
     if (gen.prepare) ctx.prepared = gen.prepare(caseState, ctx) || {};
     ctxs[id] = ctx;
   }
@@ -515,7 +516,8 @@ export function generateCase(templates, caseState) {
     edited[key] = true;
     source[key] = 'edited';
   }
-  return { ...blocks, synoptic: tidy(letters(synoptic)), issues, source, edited, generated, patched, formText, report: assemble(blocks, !!options.includeHeader) };
+  const reconciliation = reconcileCase(templates, caseState, parts);
+  return { ...blocks, synoptic: tidy(letters(synoptic)), issues, reconciliation, source, edited, generated, patched, formText, report: assemble(blocks, !!options.includeHeader) };
 }
 
 /**

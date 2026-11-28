@@ -100,6 +100,7 @@ const state = {
   // ticked to accept (by suggestion key), `note` what the last accept put into the form.
   proof: { busy: false, error: '', caseState: null, startedAt: 0, copyAnyway: '', ticks: new Map(), previewMode: new Map(), note: null },
   audit: { busy: false, error: '', caseState: null, startedAt: 0, result: null, dismissed: new Set(), undo: null, note: '' },
+  reconcileUndo: null,
   ihc: { busy: false, error: '', caseState: null, startedAt: 0, notes: '', result: null, undo: null, note: '' },
   blockCheck: { busy: false, error: '', caseState: null, startedAt: 0, result: null, dismissed: new Set(), undo: null, note: '' },
   hiddenCols: { case: false, histo: false, report: false }
@@ -2173,7 +2174,7 @@ function renderReport() {
     checksBox.open = localStorage.getItem('signout.checks') !== 'closed';
     checksBox.addEventListener('toggle', () => localStorage.setItem('signout.checks', checksBox.open ? 'open' : 'closed'));
   }
-  const checks = [checksBox, renderProofBox(out), renderAuditBox(out), renderBlockCheckBox()].filter(Boolean);
+  const checks = [checksBox, renderReconcileBox(out), renderProofBox(out), renderAuditBox(out), renderBlockCheckBox()].filter(Boolean);
   const footerBoxes = [renderIhcBox(out)].filter(Boolean);
   nodes.blocks.replaceChildren(
     ...checks,
@@ -2374,6 +2375,71 @@ function proofTarget() {
 /** True when Proofreading and Staging audit run together in one unified panel (Build 2b). */
 function isUnifiedReview() {
   return loadProofSettings().on && proofTarget().useVertex && isAuditEligible(schemasInUse());
+}
+
+/** Deterministic multi-part reconciliation box under Checks (always active, independent of AI toggle). */
+function renderReconcileBox(out) {
+  const items = out?.reconciliation?.items || [];
+  const canUndo = state.reconcileUndo?.caseState === state.caseState;
+  if (!items.length && !canUndo) return null;
+  const pending = items.filter((it) => it.status === 'needs-sync');
+  const summary = pending.length ? `${pending.length} to sync` : 'synced';
+  const cls = `checks proof ${pending.length ? 'has-warn' : 'info-only'}`;
+  const box = el('details', { class: cls },
+    el('summary', {}, el('div', { class: 'checks-head' }, el('h3', { text: 'Multi-part reconciliation' }), el('span', { class: 'muted', text: summary }))));
+  if (items.length) {
+    const list = el('ul', { class: 'proof-list' });
+    for (const it of items) {
+      const row = el('li', { class: 'proof-item' },
+        el('span', { class: 'proof-kind', text: `${it.status === 'needs-sync' ? 'Needs sync' : 'Synced'} \u00b7 Part ${it.primaryLabel}` }),
+        el('span', { class: 'proof-text' }, el('strong', { text: it.summary }), it.detail ? ` — ${it.detail}` : ''));
+      if (it.patch) {
+        row.append(el('span', { class: 'proof-act' },
+          el('button', { type: 'button', class: 'btn small primary', text: `Sync to Part ${it.primaryLabel}`, onclick: () => applyReconcilePatch(it) })));
+      }
+      list.append(row);
+    }
+    box.append(list);
+  }
+  if (canUndo) {
+    box.append(el('div', { class: 'proof-bar' },
+      el('button', { type: 'button', class: 'btn ghost small', text: 'Undo last sync', onclick: () => undoReconcileSync() })));
+  }
+  box.open = pending.length > 0;
+  return box;
+}
+
+function applyReconcilePatch(item) {
+  const cs = state.caseState;
+  const patch = item?.patch;
+  if (!cs || !patch || !cs.parts[patch.partIndex]) return;
+  const target = cs.parts[patch.partIndex];
+  const prev = {};
+  for (const [k, v] of Object.entries(patch.fields || {})) {
+    prev[k] = target.values[k];
+    target.values[k] = v;
+  }
+  state.reconcileUndo = { caseState: cs, partIndex: patch.partIndex, prev };
+  markDirty();
+  cacheCase(cs);
+  render();
+  toast(`Synced satellite nodes into Part ${item.primaryLabel}`);
+}
+
+function undoReconcileSync() {
+  const u = state.reconcileUndo;
+  const cs = state.caseState;
+  if (!u || u.caseState !== cs || !cs?.parts[u.partIndex]) return;
+  const target = cs.parts[u.partIndex];
+  for (const [k, v] of Object.entries(u.prev)) {
+    if (v === undefined) delete target.values[k];
+    else target.values[k] = v;
+  }
+  state.reconcileUndo = null;
+  markDirty();
+  cacheCase(cs);
+  render();
+  toast('Reconciliation sync undone');
 }
 
 /** The Proofreading (or unified Proofreading & audit) box under Checks, or null when nothing to show. */
@@ -2946,7 +3012,7 @@ async function runStagingAudit({ quiet = false, token: sharedToken = '' } = {}) 
     return { ok: false, count: 0 };
   }
   const sections = reportSections(state.lastOut);
-  const req = buildAuditPrompt({ caseState: cs, parts: cs.parts, schemaFor: (p) => schemaOf(p), sections });
+  const req = buildAuditPrompt({ caseState: cs, parts: cs.parts, schemaFor: (p) => schemaOf(p), sections, reconciliation: state.lastOut?.reconciliation });
   if (req.error) {
     if (!quiet) toast(req.error);
     return { ok: false, count: 0, error: req.error };

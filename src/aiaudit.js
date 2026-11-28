@@ -7,6 +7,7 @@
 import { isVisible, optionsFor, applyLinkedDefaults, applyDerived, normalisePart } from './engine.js';
 import { britishise } from './style.js';
 import { SECTIONS, applyEdit, fingerprint } from './proofread.js';
+import { formatReconciliationForAudit } from './reconcile.js';
 
 const MAX_PROMPT_CHARS = 38000;
 const MAX_FINDINGS = 8;
@@ -105,7 +106,7 @@ function describeFormField(f, values) {
 }
 
 /** Build the audit prompt from case state, visible form fields, and generated report sections. */
-export function buildAuditPrompt({ caseState, parts = [], schemaFor, sections = [] } = {}) {
+export function buildAuditPrompt({ caseState, parts = [], schemaFor, sections = [], reconciliation = null } = {}) {
   if (!sections.length) return { error: 'Nothing in the report to audit yet.' };
   const lines = [
     'TASK: audit',
@@ -116,9 +117,11 @@ export function buildAuditPrompt({ caseState, parts = [], schemaFor, sections = 
   const clinical = String(caseState?.meta?.clinical || '').trim();
   const specimenPaste = String(caseState?.meta?.specimen || '').trim();
   const macroPaste = String(caseState?.meta?.macro || '').trim();
+  const reconSummary = formatReconciliationForAudit(reconciliation);
   if (clinical) lines.push('[HISTORY]', clinical, '');
   if (specimenPaste) lines.push('[SPECIMEN PASTE]', specimenPaste, '');
   if (macroPaste) lines.push('[MACRO PASTE]', macroPaste, '');
+  if (reconSummary) lines.push('[MULTI-PART RECONCILIATION (DETERMINISTIC)]', reconSummary, '');
 
   lines.push('[FORM STATE]');
   parts.forEach((part, i) => {
