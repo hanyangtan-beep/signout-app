@@ -46,7 +46,7 @@ test('every template that splits its macroscopy also packs its form', () => {
   const split = schemas.filter(([, s]) => s.layout?.macroGroups).map(([f]) => f);
   const packed = schemas.filter(([, s]) => s.layout?.pack).map(([f]) => f);
   assert.deepEqual(packed.sort(), split.sort());
-  assert.equal(packed.length, 80); // + 4 explant templates (kidney_explant, heart_explant, lung_explant, liver_allograft_explant)
+  assert.equal(packed.length, 81); // + 4 explant templates + bowel_benign
 });
 
 test('the small templates stay one field per row', () => {

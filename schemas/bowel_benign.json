@@ -1,0 +1,920 @@
+{
+  "id": "bowel_benign",
+  "version": "2026.11",
+  "name": "Benign and inflammatory bowel resection",
+  "shortName": "Bowel · benign resection",
+  "label": "Benign bowel",
+  "organ": "COLON",
+  "system": "GI",
+  "kind": "benign resection",
+  "layout": {
+    "pack": true,
+    "macroGroups": [
+      "Macroscopy"
+    ],
+    "macroFields": [
+      "specimenName"
+    ]
+  },
+  "rank": 41,
+  "aliases": [
+    "benign colon",
+    "benign bowel",
+    "small bowel resection",
+    "diverticulitis",
+    "diverticular disease",
+    "diverticulosis",
+    "ulcerative colitis",
+    "Crohn disease",
+    "Crohn's",
+    "IBD",
+    "ischaemic colitis",
+    "ischemic bowel",
+    "bowel infarction",
+    "gangrene",
+    "volvulus",
+    "amyloidosis",
+    "radiation colitis",
+    "Meckel diverticulum",
+    "resection margin",
+    "anastomotic ring",
+    "donut"
+  ],
+  "match": {
+    "site": [
+      "colon",
+      "colonic",
+      "rectum",
+      "rectal",
+      "caecum",
+      "cecum",
+      "sigmoid",
+      "ileocaecal",
+      "ileocecal",
+      "small bowel",
+      "small intestine",
+      "ileum",
+      "ileal",
+      "jejunum",
+      "jejunal",
+      "bowel",
+      "colectomy",
+      "hemicolectomy",
+      "enterectomy",
+      "meckel",
+      "donut",
+      "doughnut",
+      "anastomotic ring"
+    ],
+    "procedure": [
+      "resection",
+      "colectomy",
+      "hemicolectomy",
+      "hartmann",
+      "proctocolectomy",
+      "enterectomy",
+      "excision",
+      "anastomotic ring",
+      "donut",
+      "doughnut",
+      "margin"
+    ],
+    "clinical": [
+      "diverticulitis",
+      "diverticular",
+      "diverticulosis",
+      "ulcerative colitis",
+      "crohn",
+      "ibd",
+      "inflammatory bowel",
+      "ischaemia",
+      "ischemia",
+      "ischaemic",
+      "ischemic",
+      "infarct",
+      "gangrene",
+      "necrosis",
+      "volvulus",
+      "strangulation",
+      "intussusception",
+      "perforation",
+      "amyloid",
+      "radiation",
+      "meckel",
+      "stricture",
+      "adhesion",
+      "angiodysplasia",
+      "pneumatosis",
+      "endometriosis",
+      "megacolon"
+    ],
+    "gate": "diverticul|ulcerative\\s+colitis|crohn|\\bibd\\b|inflammatory\\s+bowel|ischa?emi|infarct|gangren|volvulus|strangulat|intussuscept|perforat|amyloid|radiation|meckel|stricture|adhesion|angiodysplasia|pneumatosis|megacolon|benign|donut|doughnut|anastomotic\\s+ring|stapler\\s+ring",
+    "exclude": [
+      "carcinoma",
+      "adenocarcinoma",
+      "cancer",
+      "malignan",
+      "tumour",
+      "tumor",
+      "stoma",
+      "ileostomy",
+      "colostomy",
+      "pull-through",
+      "pullthrough",
+      "hirschsprung",
+      "frozen",
+      "intraoperative",
+      "polyp",
+      "polypectomy",
+      "biopsy",
+      "biopsies"
+    ],
+    "bias": 2,
+    "fill": [
+      {
+        "field": "bowelSegment",
+        "from": "map",
+        "map": [
+          ["ileoca?ec", "Ileocaecal / right colon"],
+          ["small\\s+bowel|small\\s+intestin|jejun|ile(?:um|al)|meckel", "Small bowel"],
+          ["sigmoid", "Sigmoid colon"],
+          ["rectosigmoid|rectum|rectal", "Rectosigmoid / rectum"],
+          ["descending|left\\s+hemicolectomy|left\\s+colon", "Left colon"],
+          ["transverse", "Transverse colon"],
+          ["caec|cec|ascending|right\\s+hemicolectomy|right\\s+colon", "Right colon"],
+          ["total\\s+colectomy|subtotal\\s+colectomy|proctocolectomy", "Total / subtotal colon"]
+        ]
+      },
+      {
+        "field": "procedure",
+        "from": "map",
+        "map": [
+          ["donut|doughnut|anastomotic\\s+ring|stapler\\s+ring", "Resection margin / anastomotic ring"],
+          ["meckel", "Meckel diverticulectomy"],
+          ["total\\s+proctocolectomy", "Total proctocolectomy"],
+          ["subtotal\\s+colectomy", "Subtotal colectomy"],
+          ["total\\s+colectomy", "Total colectomy"],
+          ["hartmann", "Hartmann's procedure"],
+          ["right\\s+hemicolectomy", "Right hemicolectomy"],
+          ["left\\s+hemicolectomy", "Left hemicolectomy"],
+          ["sigmoid\\s+colectomy", "Sigmoid colectomy"],
+          ["anterior\\s+resection", "Anterior resection"],
+          ["small\\s+bowel|enterectomy|ileal|jejunal", "Small bowel resection"]
+        ]
+      },
+      {
+        "field": "pattern",
+        "from": "map",
+        "history": true,
+        "map": [
+          ["donut|doughnut|anastomotic\\s+ring|stapler\\s+ring", "Resection margin only (viable / clear)"],
+          ["diverticul", "Diverticular disease"],
+          ["ulcerative\\s+colitis|crohn|\\bibd\\b|inflammatory\\s+bowel|megacolon", "Inflammatory bowel disease (IBD)"],
+          ["ischa?emi|infarct|gangren|volvulus|strangulat|intussuscept", "Ischaemia / infarction"],
+          ["amyloid", "Amyloidosis"],
+          ["meckel", "Meckel diverticulum"],
+          ["radiation", "Radiation enterocolitis"],
+          ["\\bcmv\\b|cytomegalovirus|pseudomembran|c\\.?\\s*diff|infect", "Infectious / pseudomembranous / CMV"],
+          ["endometriosis", "Endometriosis"],
+          ["angiodysplasia", "Angiodysplasia / vascular malformation"],
+          ["pneumatosis", "Pneumatosis intestinalis"],
+          ["perforat", "Perforation (non-diverticular / stercoral / iatrogenic)"],
+          ["stricture|adhesion", "Benign stricture / adhesions"]
+        ]
+      }
+    ]
+  },
+  "macroExtract": {
+    "specimenLength": {
+      "concept": "length",
+      "unit": "cm",
+      "near": "colon|bowel|intestine|ileum|jejunum|rectum|segment|specimen|length"
+    },
+    "blockKeyText": {
+      "concept": "blockKey"
+    }
+  },
+  "specimenNoun": "resection",
+  "maxParts": 4,
+  "defaultParts": 1,
+  "generator": "bowel_benign",
+  "style": {
+    "british": true
+  },
+  "caseFields": [],
+  "options": [
+    {
+      "$use": "includeHeader"
+    },
+    {
+      "id": "macro",
+      "label": "Generate the macroscopic description and block key",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "fields": [
+    {
+      "id": "specimenName",
+      "label": "Specimen as received",
+      "type": "text",
+      "placeholder": "e.g. Sigmoid colon, Hartmann's procedure / Small bowel, resection",
+      "default": ""
+    },
+    {
+      "id": "bowelSegment",
+      "label": "Bowel segment",
+      "type": "select",
+      "options": [
+        "Sigmoid colon",
+        "Right colon",
+        "Ileocaecal / right colon",
+        "Transverse colon",
+        "Left colon",
+        "Rectosigmoid / rectum",
+        "Total / subtotal colon",
+        "Small bowel",
+        "Colon, NOS"
+      ],
+      "default": "Sigmoid colon",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "procedure",
+      "label": "Procedure",
+      "type": "select",
+      "options": [
+        "Segmental resection",
+        "Sigmoid colectomy",
+        "Hartmann's procedure",
+        "Right hemicolectomy",
+        "Left hemicolectomy",
+        "Anterior resection",
+        "Subtotal colectomy",
+        "Total colectomy",
+        "Total proctocolectomy",
+        "Small bowel resection",
+        "Meckel diverticulectomy",
+        "Resection margin / anastomotic ring",
+        "Other"
+      ],
+      "default": "Sigmoid colectomy",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "procedureOther",
+      "label": "Procedure (specify)",
+      "type": "text",
+      "default": "",
+      "showIf": {
+        "field": "procedure",
+        "is": "Other"
+      },
+      "group": "Macroscopy"
+    },
+    {
+      "id": "specimenLength",
+      "label": "Specimen length",
+      "type": "number",
+      "min": 0,
+      "step": 0.5,
+      "suffix": "cm",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "attachedStructures",
+      "label": "Attached structures (optional)",
+      "type": "text",
+      "placeholder": "e.g. terminal ileum 8 cm and appendix 5 cm",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "serosaGross",
+      "label": "Serosa",
+      "type": "select",
+      "options": [
+        "Unremarkable",
+        "Fibrinous / purulent exudate (serositis)",
+        "Congested and dusky",
+        "Fibrous adhesions",
+        "Creeping fat",
+        "Fistula tract / pericolic abscess cavity"
+      ],
+      "default": "Unremarkable",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "perforationGross",
+      "label": "Perforation",
+      "type": "select",
+      "options": [
+        "Not identified",
+        "Present — frank perforation",
+        "Present — sealed perforation"
+      ],
+      "default": "Not identified",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "mucosaGross",
+      "label": "Mucosa & bowel wall",
+      "type": "select",
+      "options": [
+        "Unremarkable",
+        "Multiple diverticular ostia with thickened muscularis propria",
+        "Continuous mucosal ulceration and erythema",
+        "Skip areas with aphthous / linear ulcers and cobblestoning",
+        "Haemorrhagic, dusky and necrotic mucosa",
+        "Focal ulceration / stricture",
+        "Thickened waxy wall / mucosal fold thickening"
+      ],
+      "default": "Multiple diverticular ostia with thickened muscularis propria",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "macroNotes",
+      "label": "Additional macroscopic notes",
+      "type": "text",
+      "placeholder": "e.g. stricture length, pseudopolyps, perforation diameter",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "blockKeyText",
+      "label": "Block key (optional — leave blank for standard key)",
+      "type": "textarea",
+      "default": "",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "blocks",
+      "label": "Number of blocks",
+      "type": "number",
+      "min": 1,
+      "step": 1,
+      "default": "6",
+      "group": "Macroscopy"
+    },
+    {
+      "id": "pattern",
+      "label": "Primary pathology pattern",
+      "type": "select",
+      "options": [
+        "Diverticular disease",
+        "Inflammatory bowel disease (IBD)",
+        "Ischaemia / infarction",
+        "Amyloidosis",
+        "Meckel diverticulum",
+        "Radiation enterocolitis",
+        "Infectious / pseudomembranous / CMV",
+        "Endometriosis",
+        "Angiodysplasia / vascular malformation",
+        "Pneumatosis intestinalis",
+        "Benign stricture / adhesions",
+        "Perforation (non-diverticular / stercoral / iatrogenic)",
+        "Resection margin only (viable / clear)",
+        "Other (specify)"
+      ],
+      "default": "Diverticular disease",
+      "group": "Microscopy",
+      "reference": {
+        "title": "Benign & inflammatory bowel resection reference gallery",
+        "intro": "Diagnostic criteria, open-licence photomicrographs and literature links for diverticular disease, IBD (UC vs Crohn disease), ischaemic enterocolitis, gastrointestinal amyloidosis and mimics.",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "Diverticular disease",
+            "points": [
+              "False (pseudodiverticula) herniations of mucosa and submucosa through the muscularis propria at vasa recta entry points, accompanied by muscularis propria hypertrophy",
+              "Acute diverticulitis: active neutrophilic inflammation, ulceration, suppurative peridiverticulitis, pericolic abscess or fibrinous serositis",
+              "Segmental colitis associated with diverticulosis (SCAD): chronic active colitis confined to the interdiverticular mucosa (sparing rectum and proximal colon)"
+            ],
+            "links": [
+              {
+                "label": "PathologyOutlines — Colonic diverticulosis & diverticulitis",
+                "url": "https://www.pathologyoutlines.com/topic/colondiverticulosis.html"
+              },
+              {
+                "label": "PMC — Colonic diverticular pathology overview",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7947368/"
+              }
+            ]
+          },
+          {
+            "heading": "Inflammatory bowel disease (UC vs Crohn disease)",
+            "points": [
+              "Ulcerative colitis: continuous colorectal involvement extending proximally from the rectum; inflammation limited to mucosa and superficial submucosa (except fulminant colitis/toxic megacolon); marked crypt architectural distortion, basal plasmacytosis and Paneth cell metaplasia",
+              "Crohn disease: segmental skip lesions (any GI site, commonly terminal ileum/ileocaecal); transmural lymphoid aggregates (rosary-bead pattern), knife-like fissuring ulcers, sinus tracts/fistulae, creeping fat and non-necrotising epithelioid granulomas",
+              "Always screen multiple blocks for IBD-associated dysplasia (conventional, hypermucinous, serrated, crypt cell) and invasive adenocarcinoma"
+            ],
+            "links": [
+              {
+                "label": "JPTM (2021) — Dysplastic Subtypes in Inflammatory Bowel Disease (Choi)",
+                "url": "https://www.jpatholtm.org/upload/pdf/jptm_v55n2_full.pdf"
+              }
+            ]
+          },
+          {
+            "heading": "Ischaemia / infarction",
+            "points": [
+              "Acute ischaemic enterocolitis: superficial mucosal coagulative necrosis with withered/atrophic ('ghost') crypts, lamina propria hyalinisation and haemorrhage, capillary fibrin thrombi and overlying pseudomembranes",
+              "Transmural infarction / gangrene: full-thickness coagulative necrosis involving muscularis propria and serosa with acute serositis; inspect mesenteric vessels for thrombus, embolus, atherosclerosis or vasculitis",
+              "Chronic ischaemia: submucosal fibrosis, haemosiderin-laden macrophages, mucosal atrophy and stricturing; assess both resection margins for viability"
+            ],
+            "links": [
+              {
+                "label": "PathologyOutlines — Ischaemic colitis",
+                "url": "https://pathologyoutlinesblog.wordpress.com/tag/ischemic-colitis/"
+              }
+            ]
+          },
+          {
+            "heading": "Gastrointestinal amyloidosis",
+            "points": [
+              "Extracellular acellular, amorphous eosinophilic deposits in submucosal vessel walls, lamina propria, muscularis mucosae and/or muscularis propria (may cause ischaemia, ulceration or pseudo-obstruction)",
+              "Congo red positive (salmon-pink on brightfield) with characteristic apple-green birefringence under polarised light; always recommend amyloid subtyping (AA vs AL vs ATTR by IHC or mass spectrometry)"
+            ],
+            "images": [
+              {
+                "src": "assets/reference/heart_explant/amyloid_he.jpg",
+                "caption": "Amyloidosis reference (H&E) — extracellular amorphous eosinophilic amyloid deposits.",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Cardiac_amyloidosis_high_mag_he.jpg"
+              },
+              {
+                "src": "assets/reference/heart_explant/amyloid_congo.jpg",
+                "caption": "Amyloidosis reference (Congo red) — salmon-pink amyloid deposits (apple-green birefringence under polarised light).",
+                "credit": "Nephron (Wikimedia Commons)",
+                "license": "CC BY-SA 3.0",
+                "url": "https://commons.wikimedia.org/wiki/File:Cardiac_amyloidosis_intermed_mag.jpg"
+              }
+            ],
+            "links": [
+              {
+                "label": "PathologyOutlines — Colonic amyloidosis",
+                "url": "https://www.pathologyoutlines.com/topic/colonamyloidosis.html"
+              }
+            ]
+          },
+          {
+            "heading": "Radiation, CMV & other mimics",
+            "points": [
+              "Radiation enterocolitis: hyalinised lamina propria and submucosa, bizarre atypical radiation fibroblasts, telangiectatic vessels and obliterative endarteritis",
+              "CMV enterocolitis: enlarged endothelial and stromal cells with basophilic intranuclear ('owl's eye') and cytoplasmic inclusions; confirm with CMV immunohistochemistry",
+              "Meckel diverticulum: true diverticulum containing all layers of bowel wall; document heterotopic gastric or pancreatic tissue and any adjacent peptic ulceration"
+            ]
+          }
+        ],
+        "note": "Reference criteria and open-access links for benign and inflammatory bowel resections; nothing here prints."
+      }
+    },
+    {
+      "id": "patternOther",
+      "label": "Specify pathology",
+      "type": "text",
+      "default": "",
+      "showIf": {
+        "field": "pattern",
+        "is": "Other (specify)"
+      },
+      "group": "Microscopy"
+    },
+    {
+      "id": "diverticularComplication",
+      "label": "Diverticular disease severity",
+      "type": "select",
+      "options": [
+        "Uncomplicated diverticulosis",
+        "Acute diverticulitis",
+        "Perforated acute diverticulitis with pericolic abscess",
+        "Chronic diverticulitis with fibrosis / stricture",
+        "Diverticular disease with fistula"
+      ],
+      "default": "Acute diverticulitis",
+      "showIf": {
+        "field": "pattern",
+        "is": "Diverticular disease"
+      },
+      "group": "Microscopy"
+    },
+    {
+      "id": "diverticularFeatures",
+      "label": "Diverticular features",
+      "type": "multiselect",
+      "options": [
+        "Muscularis propria hypertrophy",
+        "Acute peridiverticulitis / suppurative inflammation",
+        "Fibrinous serositis / acute peritonitis",
+        "Diverticular colitis (SCAD)",
+        "Foreign-body giant cell reaction to faecal material"
+      ],
+      "default": [
+        "Muscularis propria hypertrophy"
+      ],
+      "showIf": {
+        "field": "pattern",
+        "is": "Diverticular disease"
+      },
+      "group": "Microscopy"
+    },
+    {
+      "id": "ibdSubtype",
+      "label": "IBD classification",
+      "type": "select",
+      "options": [
+        "Ulcerative colitis",
+        "Crohn disease",
+        "Inflammatory bowel disease, unclassified (IBD-U)"
+      ],
+      "default": "Crohn disease",
+      "showIf": {
+        "field": "pattern",
+        "is": "Inflammatory bowel disease (IBD)"
+      },
+      "group": "Microscopy"
+    },
+    {
+      "id": "ibdActivity",
+      "label": "IBD activity",
+      "type": "select",
+      "options": [
+        "Inactive / quiescent",
+        "Mildly active",
+        "Moderately active",
+        "Severely active",
+        "Fulminant / toxic megacolon"
+      ],
+      "default": "Moderately active",
+      "showIf": {
+        "field": "pattern",
+        "is": "Inflammatory bowel disease (IBD)"
+      },
+      "group": "Microscopy"
+    },
+    {
+      "id": "ibdFeatures",
+      "label": "IBD histological features",
+      "type": "multiselect",
+      "options": [
+        "Crypt architectural distortion and basal plasmacytosis",
+        "Cryptitis and crypt abscesses",
+        "Mucosal ulceration with inflammatory pseudopolyps",
+        "Transmural chronic inflammation with lymphoid aggregates",
+        "Knife-like fissuring ulcers / sinus tracts",
+        "Non-necrotising epithelioid granulomas",
+        "Pyloric gland / Paneth cell metaplasia",
+        "Backwash ileitis / terminal ileal involvement"
+      ],
+      "default": [
+        "Crypt architectural distortion and basal plasmacytosis",
+        "Cryptitis and crypt abscesses"
+      ],
+      "showIf": {
+        "field": "pattern",
+        "is": "Inflammatory bowel disease (IBD)"
+      },
+      "group": "Microscopy"
+    },
+    {
+      "id": "ibdDysplasia",
+      "label": "IBD-associated dysplasia",
+      "type": "select",
+      "options": [
+        "Negative for dysplasia",
+        "Indefinite for dysplasia",
+        "Low-grade dysplasia",
+        "High-grade dysplasia",
+        "Invasive adenocarcinoma (use Colorectal Ca synoptic)"
+      ],
+      "default": "Negative for dysplasia",
+      "showIf": {
+        "field": "pattern",
+        "is": "Inflammatory bowel disease (IBD)"
+      },
+      "group": "Microscopy",
+      "reference": {
+        "title": "IBD-associated dysplasia grading",
+        "intro": "Riddell / ECCO / BSG grading criteria for dysplasia in IBD.",
+        "columns": 2,
+        "groups": [
+          {
+            "heading": "Low-grade vs High-grade dysplasia",
+            "points": [
+              "Low-grade dysplasia: pencillate hyperchromatic nuclei confined to the basal half of cells, preserved polarity, extending to the surface epithelium without maturation",
+              "High-grade dysplasia: marked nuclear pleomorphism, loss of polarity, full-thickness stratification, complex cribriform/back-to-back architecture and atypical mitoses",
+              "Always exclude regenerative atypia adjacent to active ulceration before diagnosing dysplasia; confirm invasive carcinoma using the Colorectal Ca synoptic"
+            ],
+            "links": [
+              {
+                "label": "JPTM (2021) — Dysplastic Subtypes in Inflammatory Bowel Disease",
+                "url": "https://www.jpatholtm.org/upload/pdf/jptm_v55n2_full.pdf"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "ischaemiaAcuity",
+      "label": "Ischaemia acuity & depth",
+      "type": "select",
+      "options": [
+        "Acute mucosal / superficial ischaemia",
+        "Acute partial-thickness ischaemia (mucosal and submucosal)",
+        "Transmural ischaemic infarction / gangrene",
+        "Chronic ischaemic enterocolitis with stricture"
+      ],
+      "default": "Transmural ischaemic infarction / gangrene",
+      "showIf": {
+        "field": "pattern",
+        "is": "Ischaemia / infarction"
+      },
+      "group": "Microscopy"
+    },
+    {
+      "id": "ischaemiaFeatures",
+      "label": "Ischaemic features",
+      "type": "multiselect",
+      "options": [
+        "Mucosal coagulative necrosis with withered ('ghost') crypts",
+        "Lamina propria hyalinisation and haemorrhage",
+        "Overlying fibrinous pseudomembranes",
+        "Submucosal oedema and haemorrhage",
+        "Mesenteric vessel thrombosis / thromboembolism",
+        "Severe mesenteric atherosclerosis",
+        "Acute serositis / peritonitis",
+        "Mural fibrosis and haemosiderin-laden macrophages"
+      ],
+      "default": [
+        "Mucosal coagulative necrosis with withered ('ghost') crypts",
+        "Submucosal oedema and haemorrhage"
+      ],
+      "showIf": {
+        "field": "pattern",
+        "is": "Ischaemia / infarction"
+      },
+      "group": "Microscopy"
+    },
+    {
+      "id": "amyloidCompartment",
+      "label": "Amyloid deposition site",
+      "type": "multiselect",
+      "options": [
+        "Submucosal vessel walls",
+        "Lamina propria",
+        "Muscularis mucosae",
+        "Muscularis propria",
+        "Subserosal vessels"
+      ],
+      "default": [
+        "Submucosal vessel walls",
+        "Muscularis mucosae"
+      ],
+      "showIf": {
+        "field": "pattern",
+        "is": "Amyloidosis"
+      },
+      "group": "Microscopy"
+    },
+    {
+      "id": "congoRed",
+      "label": "Congo red stain",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Positive with apple-green birefringence under polarised light",
+        "Negative"
+      ],
+      "default": "Positive with apple-green birefringence under polarised light",
+      "showIf": {
+        "field": "pattern",
+        "is": "Amyloidosis"
+      },
+      "group": "Microscopy"
+    },
+    {
+      "id": "amyloidSubtype",
+      "label": "Amyloid subtype",
+      "type": "select",
+      "options": [
+        "Pending typing (IHC / mass spectrometry)",
+        "AA amyloidosis (SAA positive)",
+        "AL amyloidosis (lambda)",
+        "AL amyloidosis (kappa)",
+        "ATTR (transthyretin)"
+      ],
+      "default": "Pending typing (IHC / mass spectrometry)",
+      "showIf": {
+        "field": "pattern",
+        "is": "Amyloidosis"
+      },
+      "group": "Microscopy"
+    },
+    {
+      "id": "meckelHeterotopia",
+      "label": "Meckel diverticulum heterotopia",
+      "type": "select",
+      "options": [
+        "No heterotopic tissue identified",
+        "Heterotopic gastric mucosa (oxyntic type)",
+        "Heterotopic pancreatic tissue",
+        "Heterotopic gastric and pancreatic tissue"
+      ],
+      "default": "Heterotopic gastric mucosa (oxyntic type)",
+      "showIf": {
+        "field": "pattern",
+        "is": "Meckel diverticulum"
+      },
+      "group": "Microscopy"
+    },
+    {
+      "id": "proximalMargin",
+      "label": "Proximal resection margin",
+      "type": "select",
+      "options": [
+        "Viable and unremarkable",
+        "Viable, with mild non-specific inflammation",
+        "Viable, with active inflammation (IBD / diverticulitis)",
+        "Involved by Crohn disease (transmural inflammation / granulomas)",
+        "Ischaemic / non-viable",
+        "Dysplasia present",
+        "Not applicable"
+      ],
+      "default": "Viable and unremarkable",
+      "group": "Resection margins"
+    },
+    {
+      "id": "distalMargin",
+      "label": "Distal resection margin",
+      "type": "select",
+      "options": [
+        "Viable and unremarkable",
+        "Viable, with mild non-specific inflammation",
+        "Viable, with active inflammation (IBD / diverticulitis)",
+        "Involved by Crohn disease (transmural inflammation / granulomas)",
+        "Ischaemic / non-viable",
+        "Dysplasia present",
+        "Not applicable"
+      ],
+      "default": "Viable and unremarkable",
+      "group": "Resection margins"
+    },
+    {
+      "id": "otherMargin",
+      "label": "Anastomotic ring / radial margin (optional)",
+      "type": "select",
+      "options": [
+        "Not submitted",
+        "Viable and unremarkable",
+        "Viable, with active inflammation",
+        "Ischaemic / non-viable",
+        "Dysplasia present"
+      ],
+      "default": "Not submitted",
+      "group": "Resection margins"
+    },
+    {
+      "id": "lymphNodes",
+      "label": "Regional lymph nodes",
+      "type": "select",
+      "options": [
+        "Reactive hyperplasia, no malignancy",
+        "Reactive with non-necrotising granulomas",
+        "Not sampled"
+      ],
+      "default": "Reactive hyperplasia, no malignancy",
+      "group": "Additional findings & stains"
+    },
+    {
+      "id": "appendix",
+      "label": "Appendix (if attached)",
+      "type": "select",
+      "options": [
+        "Not included",
+        "Unremarkable",
+        "Acute serositis / periappendicitis",
+        "Involved by IBD",
+        "Fibrous obliteration of lumen"
+      ],
+      "default": "Not included",
+      "group": "Additional findings & stains"
+    },
+    {
+      "id": "cmvIhc",
+      "label": "CMV immunohistochemistry",
+      "type": "select",
+      "options": [
+        "Not performed",
+        "Negative",
+        "Positive (nuclear inclusions confirmed)"
+      ],
+      "default": "Not performed",
+      "group": "Additional findings & stains"
+    },
+    {
+      "id": "otherStains",
+      "label": "Other stains / incidental findings (optional)",
+      "type": "text",
+      "placeholder": "e.g. ZN and GMS negative; incidental 4 mm tubular adenoma",
+      "default": "",
+      "group": "Additional findings & stains"
+    },
+    {
+      "id": "neoplasia",
+      "label": "Dysplasia / malignancy",
+      "type": "select",
+      "options": [
+        "No dysplasia or malignancy",
+        "Dysplasia present (see description)",
+        "Incidental invasive carcinoma (use Colorectal Ca synoptic)"
+      ],
+      "default": "No dysplasia or malignancy",
+      "group": "Additional findings & stains"
+    },
+    {
+      "id": "additionalNotes",
+      "label": "Additional microscopy",
+      "type": "textarea",
+      "placeholder": "Free text appended to the microscopy for this part",
+      "default": "",
+      "group": "Additional findings & stains"
+    }
+  ],
+  "snippets": [
+    {
+      "id": "bowel_benign_amyloid_typing",
+      "label": "Amyloidosis — recommend subtyping",
+      "auto": {
+        "all": [
+          { "field": "pattern", "is": "Amyloidosis" },
+          { "field": "amyloidSubtype", "is": "Pending typing (IHC / mass spectrometry)" }
+        ]
+      },
+      "text": "Amyloid subtyping (AA, AL or ATTR) by immunohistochemistry and/or mass spectrometry, together with systemic clinical evaluation, is recommended."
+    },
+    {
+      "id": "bowel_benign_carcinoma_upgrade",
+      "label": "Incidental carcinoma — use cancer synoptic",
+      "auto": {
+        "any": [
+          { "field": "neoplasia", "is": "Incidental invasive carcinoma (use Colorectal Ca synoptic)" },
+          { "field": "ibdDysplasia", "is": "Invasive adenocarcinoma (use Colorectal Ca synoptic)" }
+        ]
+      },
+      "text": "Invasive adenocarcinoma is identified. Please switch to or link the Colon and rectum carcinoma resection synoptic template for full CAP/AJCC staging."
+    },
+    {
+      "id": "bowel_benign_ischaemic_margin",
+      "label": "Ischaemic resection margin — clinical correlation",
+      "auto": {
+        "any": [
+          { "field": "proximalMargin", "is": "Ischaemic / non-viable" },
+          { "field": "distalMargin", "is": "Ischaemic / non-viable" },
+          { "field": "otherMargin", "is": "Ischaemic / non-viable" }
+        ]
+      },
+      "text": "Ischaemic change involves a resection margin; close clinical correlation with anastomotic viability is advised."
+    }
+  ],
+  "example": {
+    "caseTitle": "",
+    "options": {
+      "includeHeader": false,
+      "macro": true
+    },
+    "parts": [
+      {
+        "label": "A",
+        "values": {
+          "specimenName": "Sigmoid colon, Hartmann's procedure",
+          "bowelSegment": "Sigmoid colon",
+          "procedure": "Hartmann's procedure",
+          "specimenLength": "18",
+          "attachedStructures": "",
+          "serosaGross": "Fibrinous / purulent exudate (serositis)",
+          "perforationGross": "Present — frank perforation",
+          "mucosaGross": "Multiple diverticular ostia with thickened muscularis propria",
+          "blocks": "6",
+          "pattern": "Diverticular disease",
+          "diverticularComplication": "Perforated acute diverticulitis with pericolic abscess",
+          "diverticularFeatures": [
+            "Muscularis propria hypertrophy",
+            "Acute peridiverticulitis / suppurative inflammation",
+            "Fibrinous serositis / acute peritonitis"
+          ],
+          "proximalMargin": "Viable and unremarkable",
+          "distalMargin": "Viable and unremarkable",
+          "otherMargin": "Not submitted",
+          "lymphNodes": "Reactive hyperplasia, no malignancy",
+          "appendix": "Not included",
+          "cmvIhc": "Not performed",
+          "neoplasia": "No dysplasia or malignancy",
+          "additionalNotes": ""
+        }
+      }
+    ]
+  }
+}

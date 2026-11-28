@@ -1,6 +1,6 @@
 {
   "generated": "scripts/build-manifest.mjs",
-  "count": 138,
+  "count": 139,
   "templates": [
     {
       "id": "gastric_biopsy",
@@ -4125,6 +4125,283 @@
       "generator": "oesophageal_carcinoma",
       "generatorPath": "generators/oesophageal_carcinoma.js",
       "schemaPath": "schemas/oesophageal_carcinoma.json"
+    },
+    {
+      "id": "bowel_benign",
+      "name": "Benign and inflammatory bowel resection",
+      "shortName": "Bowel · benign resection",
+      "label": "Benign bowel",
+      "organ": "COLON",
+      "system": "GI",
+      "kind": "benign resection",
+      "rank": 41,
+      "aliases": [
+        "benign colon",
+        "benign bowel",
+        "small bowel resection",
+        "diverticulitis",
+        "diverticular disease",
+        "diverticulosis",
+        "ulcerative colitis",
+        "Crohn disease",
+        "Crohn's",
+        "IBD",
+        "ischaemic colitis",
+        "ischemic bowel",
+        "bowel infarction",
+        "gangrene",
+        "volvulus",
+        "amyloidosis",
+        "radiation colitis",
+        "Meckel diverticulum",
+        "resection margin",
+        "anastomotic ring",
+        "donut"
+      ],
+      "match": {
+        "site": [
+          "colon",
+          "colonic",
+          "rectum",
+          "rectal",
+          "caecum",
+          "cecum",
+          "sigmoid",
+          "ileocaecal",
+          "ileocecal",
+          "small bowel",
+          "small intestine",
+          "ileum",
+          "ileal",
+          "jejunum",
+          "jejunal",
+          "bowel",
+          "colectomy",
+          "hemicolectomy",
+          "enterectomy",
+          "meckel",
+          "donut",
+          "doughnut",
+          "anastomotic ring"
+        ],
+        "procedure": [
+          "resection",
+          "colectomy",
+          "hemicolectomy",
+          "hartmann",
+          "proctocolectomy",
+          "enterectomy",
+          "excision",
+          "anastomotic ring",
+          "donut",
+          "doughnut",
+          "margin"
+        ],
+        "clinical": [
+          "diverticulitis",
+          "diverticular",
+          "diverticulosis",
+          "ulcerative colitis",
+          "crohn",
+          "ibd",
+          "inflammatory bowel",
+          "ischaemia",
+          "ischemia",
+          "ischaemic",
+          "ischemic",
+          "infarct",
+          "gangrene",
+          "necrosis",
+          "volvulus",
+          "strangulation",
+          "intussusception",
+          "perforation",
+          "amyloid",
+          "radiation",
+          "meckel",
+          "stricture",
+          "adhesion",
+          "angiodysplasia",
+          "pneumatosis",
+          "endometriosis",
+          "megacolon"
+        ],
+        "gate": "diverticul|ulcerative\\s+colitis|crohn|\\bibd\\b|inflammatory\\s+bowel|ischa?emi|infarct|gangren|volvulus|strangulat|intussuscept|perforat|amyloid|radiation|meckel|stricture|adhesion|angiodysplasia|pneumatosis|megacolon|benign|donut|doughnut|anastomotic\\s+ring|stapler\\s+ring",
+        "exclude": [
+          "carcinoma",
+          "adenocarcinoma",
+          "cancer",
+          "malignan",
+          "tumour",
+          "tumor",
+          "stoma",
+          "ileostomy",
+          "colostomy",
+          "pull-through",
+          "pullthrough",
+          "hirschsprung",
+          "frozen",
+          "intraoperative",
+          "polyp",
+          "polypectomy",
+          "biopsy",
+          "biopsies"
+        ],
+        "bias": 2,
+        "fill": [
+          {
+            "field": "bowelSegment",
+            "from": "map",
+            "map": [
+              [
+                "ileoca?ec",
+                "Ileocaecal / right colon"
+              ],
+              [
+                "small\\s+bowel|small\\s+intestin|jejun|ile(?:um|al)|meckel",
+                "Small bowel"
+              ],
+              [
+                "sigmoid",
+                "Sigmoid colon"
+              ],
+              [
+                "rectosigmoid|rectum|rectal",
+                "Rectosigmoid / rectum"
+              ],
+              [
+                "descending|left\\s+hemicolectomy|left\\s+colon",
+                "Left colon"
+              ],
+              [
+                "transverse",
+                "Transverse colon"
+              ],
+              [
+                "caec|cec|ascending|right\\s+hemicolectomy|right\\s+colon",
+                "Right colon"
+              ],
+              [
+                "total\\s+colectomy|subtotal\\s+colectomy|proctocolectomy",
+                "Total / subtotal colon"
+              ]
+            ]
+          },
+          {
+            "field": "procedure",
+            "from": "map",
+            "map": [
+              [
+                "donut|doughnut|anastomotic\\s+ring|stapler\\s+ring",
+                "Resection margin / anastomotic ring"
+              ],
+              [
+                "meckel",
+                "Meckel diverticulectomy"
+              ],
+              [
+                "total\\s+proctocolectomy",
+                "Total proctocolectomy"
+              ],
+              [
+                "subtotal\\s+colectomy",
+                "Subtotal colectomy"
+              ],
+              [
+                "total\\s+colectomy",
+                "Total colectomy"
+              ],
+              [
+                "hartmann",
+                "Hartmann's procedure"
+              ],
+              [
+                "right\\s+hemicolectomy",
+                "Right hemicolectomy"
+              ],
+              [
+                "left\\s+hemicolectomy",
+                "Left hemicolectomy"
+              ],
+              [
+                "sigmoid\\s+colectomy",
+                "Sigmoid colectomy"
+              ],
+              [
+                "anterior\\s+resection",
+                "Anterior resection"
+              ],
+              [
+                "small\\s+bowel|enterectomy|ileal|jejunal",
+                "Small bowel resection"
+              ]
+            ]
+          },
+          {
+            "field": "pattern",
+            "from": "map",
+            "history": true,
+            "map": [
+              [
+                "donut|doughnut|anastomotic\\s+ring|stapler\\s+ring",
+                "Resection margin only (viable / clear)"
+              ],
+              [
+                "diverticul",
+                "Diverticular disease"
+              ],
+              [
+                "ulcerative\\s+colitis|crohn|\\bibd\\b|inflammatory\\s+bowel|megacolon",
+                "Inflammatory bowel disease (IBD)"
+              ],
+              [
+                "ischa?emi|infarct|gangren|volvulus|strangulat|intussuscept",
+                "Ischaemia / infarction"
+              ],
+              [
+                "amyloid",
+                "Amyloidosis"
+              ],
+              [
+                "meckel",
+                "Meckel diverticulum"
+              ],
+              [
+                "radiation",
+                "Radiation enterocolitis"
+              ],
+              [
+                "\\bcmv\\b|cytomegalovirus|pseudomembran|c\\.?\\s*diff|infect",
+                "Infectious / pseudomembranous / CMV"
+              ],
+              [
+                "endometriosis",
+                "Endometriosis"
+              ],
+              [
+                "angiodysplasia",
+                "Angiodysplasia / vascular malformation"
+              ],
+              [
+                "pneumatosis",
+                "Pneumatosis intestinalis"
+              ],
+              [
+                "perforat",
+                "Perforation (non-diverticular / stercoral / iatrogenic)"
+              ],
+              [
+                "stricture|adhesion",
+                "Benign stricture / adhesions"
+              ]
+            ]
+          }
+        ]
+      },
+      "version": "2026.11",
+      "generator": "bowel_benign",
+      "generatorPath": "generators/bowel_benign.js",
+      "schemaPath": "schemas/bowel_benign.json"
     },
     {
       "id": "gist_resection",
@@ -9516,6 +9793,7 @@
         "mesothelioma",
         "mesentery",
         "pouch of Douglas",
+        "POD",
         "paracolic gutter",
         "diaphragm",
         "serosa",
@@ -9532,7 +9810,11 @@
           "mesocolon",
           "mesocolic",
           "pouch of douglas",
+          "pod",
+          "p.o.d.",
           "cul-de-sac",
+          "rectouterine pouch",
+          "rectovaginal pouch",
           "paracolic",
           "diaphragm",
           "diaphragmatic",
@@ -9649,7 +9931,11 @@
             "mesocolon",
             "mesocolic",
             "pouch of douglas",
+            "pod",
+            "p.o.d.",
             "cul-de-sac",
+            "rectouterine pouch",
+            "rectovaginal pouch",
             "paracolic",
             "diaphragm",
             "diaphragmatic",
@@ -9664,6 +9950,7 @@
             "excised"
           ]
         },
+        "bare": true,
         "bias": 2,
         "sideFromText": true,
         "fill": [
@@ -9672,7 +9959,7 @@
             "from": "map",
             "map": [
               [
-                "pouch of douglas|cul[- ]?de[- ]?sac|recto-?uterine|recto-?vaginal pouch",
+                "pouch of douglas|\\bP\\.?O\\.?D\\.?\\b|cul[- ]?de[- ]?sac|recto-?uterine|recto-?vaginal pouch",
                 "Pouch of Douglas"
               ],
               [

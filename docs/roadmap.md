@@ -2,7 +2,7 @@
 
 Live roadmap in the parsimonious format (`docs/roadmap-template.md`). Rules: only cards in **Next** get built; **Now** holds at most three cards (the current batch); ideas enter **Later** as one line; **Done** is one line per shipped item, newest first. The app's Roadmap panel is built from this file, so a change here is rebuilt, deployed and published (user decision 2026-09-29); other docs-only changes are committed only. Full build briefs for open items live in `docs/specs/`; the original phased plan is preserved in `docs/roadmap-history.md`; the full Done write-ups to 2026-09-25 are in `docs/done-log.md`.
 
-State on 2026-11-28: 138 built templates (138 manifest entries incl. placeholders), 2434 tests, published on GitHub Pages.
+State on 2026-11-28: 139 templates, 2441 tests, published on GitHub Pages.
 
 ---
 
@@ -10,6 +10,8 @@ State on 2026-11-28: 138 built templates (138 manifest entries incl. placeholder
 
 Newest first. The full write-ups as they stood at ship time are in `docs/done-log.md`.
 
+- 2026-11-28 — Benign and inflammatory bowel resection (`bowel_benign`) with reference galleries: new GI benign resection template (menu label "Benign bowel") covering colon, rectum and small bowel resections — resection margins / anastomotic rings, diverticular disease, IBD (UC, Crohn disease, IBD-U with dysplasia screen), ischaemia / infarction, amyloidosis (with Congo red & subtyping), Meckel diverticulum, radiation / CMV / infectious enterocolitis, endometriosis, angiodysplasia, pneumatosis, stricture and perforation — plus illustrated reference galleries and validation checks. Tests: `tests/bowel_benign.test.js`.
+- 2026-11-28 — Specimen intake fix for POD -> Peritoneal nodule biopsy: added `POD` / `P.O.D.` and rectouterine/rectovaginal pouch matching (`bare: true`, prefills Site to Pouch of Douglas) to `peritoneal_nodule` while keeping `POD fluid` / `POD washing` on cytology. Tests: `tests/peritoneal_pod.test.js`.
 - 2026-11-27 — Placenta — singleton, multiple pregnancy and dividing membrane 3-card batch: rewrote `placenta` on house wording (`docs/specs/placenta.md`) with singleton checklist/sentences, twin/triplet macroscopy and dividing membrane histology, T-zone, co-twin territory comparison, RCPath G108 checks, and Phase 4b backward compatibility. Tests: `tests/placenta.test.js`.
 - 2026-11-27 — Frozen section scenarios (b & e): extended `Pancreatic / bile duct margin` (CBD/CHD/proximal/distal bile duct, form, en face, denuded epithelium, BilIN-3/PanIN-3, stent/peribiliary caveats) and added 5 head-and-neck named-margin presets. Tests: `tests/frozen_scenarios_next.test.js`.
 - 2026-11-27 — Open Google Doc button: added `lookupDocUrl` in `src/drive.js`, `#btn-open-doc` in `index.html`, and wired button state/tooltips in `src/app.js`. Tests: `tests/drive_opendoc.test.js`.
